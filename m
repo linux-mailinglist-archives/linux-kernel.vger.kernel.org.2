@@ -2,106 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6603771DD
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 14:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51EE63771E0
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 14:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhEHMjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 08:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
+        id S230506AbhEHMom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 08:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231225AbhEHMjD (ORCPT
+        with ESMTP id S230419AbhEHMol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 08:39:03 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BFBEC061760;
-        Sat,  8 May 2021 05:38:01 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id f24so17661263ejc.6;
-        Sat, 08 May 2021 05:38:01 -0700 (PDT)
+        Sat, 8 May 2021 08:44:41 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C04C061574;
+        Sat,  8 May 2021 05:43:39 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id h4so11874694wrt.12;
+        Sat, 08 May 2021 05:43:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=kKYG8ob0N102i49XdsyoJlNpypHz4XdicUmmY8YrBm8=;
-        b=SZXbeqJYH4Rvw5YTLCZ684jtQQ9XkKWV/PLa+f2/6q2APp41GjQCtU3xBrw1ONDjBh
-         +WUQ0y5zObLWZw71SxP3ozGubUgdZGZAmv+TmkhSCwz8BOJgSwjqhNrJRh9dCsa+Lcxa
-         +hfpja3I70Ti5RclTugVGp2qQ5YsyQB9XnGBvrDCsfap8smU3vpT0NnzjIjRqBYouuDt
-         uHBr5UxpxvQfOTL7hXJvOAPJlM7EHxYTZppq16qbRG17cIJHiIy2OGZruKMcymObgMet
-         YAKP7QLlKb9IlPyx3yQg2Z03PQqCGVKYEyeTwQkiYws/7lYLPYbKnfIz0DpChvqPJDWP
-         vatw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8dWNJqGeO28h3+LJctIyuduk63WWQ2H2We1e6Kmdbcc=;
+        b=WJlqlfw4KqEJEYtwo3XvIxHn2oPgFjIosnEp35LUQWmP6KIWRPCLeFPwhBe2hued2W
+         qRPVKROfJq0qsWqSW+VhzZLwF36wc2sjLKsvWCSRD80Z3a8efekHbJmuTjHbsH2JDrGc
+         gltTqoqxFiEQbhF3C2wuq7Qd/5T8hGkTyLRqun1VbtNH5DkxmA+aWC5RSsiuE1eZsOAz
+         omUhnanjUSPgUlNIq1/mwvczuUBycxAFvdkSSrVmF+4d3dAYd1GcZtwcsugcOHuxOkRf
+         dWp6UkJKc1EZJB4bqflfrj6ptYZ+RiVSOWjX9YtdbZU4Chk6xqB1i5O/xNlIq11yQhhn
+         qIiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=kKYG8ob0N102i49XdsyoJlNpypHz4XdicUmmY8YrBm8=;
-        b=fD/B4Q7Nsu7FVVmiWO6w0xtBk7t7UwBIv1NOCae7IvexAPnBahxzNBlOyZk4KKtXjG
-         BLHl0HNY6iIpPza6dbDPZSzYNvS5Pd/B/2VpTPEtAJ33FDs1xgI6xrv3vYebpQ6Objtr
-         9xLkRchxcPfmmPs6lbtaaDKGY8lPk/KarfZqWWGDiVKZY7Pi39mEAv2Lroy3UE7Bz/4Z
-         U6Z/yAzNflczZhAe8K2nErtiZ5Bm0YEwWfIrNZnKV/qOFQQFJmSB42cknVvg+OGrlzZ1
-         BiVN7QkXtH/GfZZ4zroPfH72GzzufHw7IudSLaUMktv4z7TP9Q6FEa7LVV+725t35Cnp
-         fCIQ==
-X-Gm-Message-State: AOAM533c/+kqnq35fuBK/kJsQpo3ObABwPmRRdddgqzYObZ0wdN3wtsX
-        KJqZ9dvYtBushVbZBIg1Lv4=
-X-Google-Smtp-Source: ABdhPJyribyIKpHanX97X8mGzuRPy4EQuIN3hdClvLQ3RrA1Um+6A/V8iGIVuTzkj9mNHnvOipR5RQ==
-X-Received: by 2002:a17:906:a103:: with SMTP id t3mr15664038ejy.334.1620477480152;
-        Sat, 08 May 2021 05:38:00 -0700 (PDT)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id q25sm6262618edt.51.2021.05.08.05.37.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 08 May 2021 05:37:59 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, jay.xu@rock-chips.com,
-        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
-        zhangqing@rock-chips.com, huangtao@rock-chips.com,
-        cl@rock-chips.com, linux-gpio@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/4] arm64: dts: rename grf-gpio nodename in rk3328.dtsi
-Date:   Sat,  8 May 2021 14:37:43 +0200
-Message-Id: <20210508123743.18128-5-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210508123743.18128-1-jbx6244@gmail.com>
-References: <20210508123743.18128-1-jbx6244@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8dWNJqGeO28h3+LJctIyuduk63WWQ2H2We1e6Kmdbcc=;
+        b=bqXZJwdB43wxAj2r22XDbwUrCZzH0ChOtIUqzdqztrmj+1yIlRp/3T+xkFS0MkUZpk
+         EwEa5cNtKWETLLBZpknmb7+jgZ7XWEAdq+ro36W8NxjcErcpAtRCw/Rnt//U8uroW9bv
+         8FblRa9qEDeVI6Hc0AJjF2XC8D7XX7/bYgTkm263OjS7+VJe33LF5BzxRPcgv9Xr6zZI
+         ucnOA2+s26mV0++eHR2YDKqoMTjtQbk/qWEUOabSA3/0A+EBDD1tYZ8vtBwzi7kVJTKA
+         goqJXwHL7MNXpGt7FeFr162FFBnDruyxf0JKKH4XCOi5/36NGwy62VrNR33hPQj9aONQ
+         qTXQ==
+X-Gm-Message-State: AOAM532oTLfWp2qPr5eB47B4/Rw6AwI82umyMlebzzTKU9eDbuO/7VFJ
+        xCR2dXWn6ahqI5nwGJI2ToLe0nN6JCF2Sg==
+X-Google-Smtp-Source: ABdhPJwHlX5yjTi1BS6fd7w3SLeYJMZkzI9LwKOChEaQhz+1kQpQxmiv8o4Q6ozyrp+9E8awxNt9OA==
+X-Received: by 2002:a5d:4acd:: with SMTP id y13mr18747852wrs.185.1620477818392;
+        Sat, 08 May 2021 05:43:38 -0700 (PDT)
+Received: from agape.jhs ([5.171.72.44])
+        by smtp.gmail.com with ESMTPSA id e38sm16491786wmp.21.2021.05.08.05.43.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 May 2021 05:43:38 -0700 (PDT)
+Date:   Sat, 8 May 2021 14:43:35 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] staging: media: atomisp: remove useless returns
+Message-ID: <20210508124334.GA1403@agape.jhs>
+References: <cover.1620475909.git.paskripkin@gmail.com>
+ <f5b8abd8a92fcdd9b0ec49902d4363bc35c86218.1620475909.git.paskripkin@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5b8abd8a92fcdd9b0ec49902d4363bc35c86218.1620475909.git.paskripkin@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A test with the command below gives this error:
+Hi Pavel,
 
-/arch/arm64/boot/dts/rockchip/rk3328-a1.dt.yaml: syscon@ff100000:
-grf-gpio: {'compatible': ['rockchip,rk3328-grf-gpio'],
-'gpio-controller': True, '#gpio-cells': [[2]], 'phandle': [[68]]} is not
-of type 'array'
-From schema:
-~/.local/lib/python3.5/site-packages/dtschema/schemas/gpio/gpio-consumer.yaml
+On Sat, May 08, 2021 at 03:21:52PM +0300, Pavel Skripkin wrote:
+> Breaks are not useful at the end of void function,
+> they can simply be removed.
 
-Due to the regex "(?<!,nr)-gpios?$" anything that ends on
-'-gpio', '-gpios' gives a match.
+this commit description is not really describing the changes that
+have been made
 
-Rename 'grf-gpio' nodename to generic 'gpio'
+> 
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 
-make ARCH=arm64 dtbs_check
-DT_SCHEMA_FILES=~/.local/lib/python3.5/site-packages/dtschema/
-schemas/gpio/gpio-consumer.yaml
+thank you,
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm64/boot/dts/rockchip/rk3328.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-index 4ce49aae7..2e458fb87 100644
---- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-@@ -291,7 +291,7 @@
- 			status = "disabled";
- 		};
- 
--		grf_gpio: grf-gpio {
-+		grf_gpio: gpio {
- 			compatible = "rockchip,rk3328-grf-gpio";
- 			gpio-controller;
- 			#gpio-cells = <2>;
--- 
-2.11.0
-
+fabio
