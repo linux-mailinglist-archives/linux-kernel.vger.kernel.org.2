@@ -2,64 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B39377478
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 00:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24DBD377477
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 00:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbhEHW5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 18:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
+        id S229697AbhEHW42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 18:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhEHW5G (ORCPT
+        with ESMTP id S229649AbhEHW41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 18:57:06 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E98BC061574
-        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 15:56:03 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id v5so3430680edc.8
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 15:56:03 -0700 (PDT)
+        Sat, 8 May 2021 18:56:27 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550A7C061574
+        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 15:55:25 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id o16so16196700ljp.3
+        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 15:55:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uU2C84LxLUzQFwZElgypUBzdpgy1KMmCT9LOJvhbML4=;
-        b=RAYIrloAyTI0escC4FJrZEqff58mGNKpKYKPCWyfaq6tPSVX7E0HvbEpZICexuWOJl
-         cTb8VTtrxxvNrokrOEsTOilRR8r0Du+gtbA27yAia0bgOluq1xb1ES21ZBT6x5owDQfQ
-         d+VnnukbT/eYVV1K8DnY34CmcMlPrprr6+vgE=
+        bh=0kA/KDUDO096vq2rEKxFXAZivI52axFruzSdRkQyvoI=;
+        b=PWRMIeUKO0nmSZhexye/3YzAUVpInwAh7XXlaTHnWhlKIAuWvggExHJgbfmaYh9nR0
+         DRNpc5CAKtPEke/TFa5iaD4eYxQPerPxY17lVXLaNXY4SEls6TLdUjya9c5Rt62dxKkG
+         IgPGuzEDzfaGsPkyXdCfqJY1xki5yy39Ae+Yg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uU2C84LxLUzQFwZElgypUBzdpgy1KMmCT9LOJvhbML4=;
-        b=bRG4PxU5H2T1/JyZTM1F3ti70TuI9jV00r+vviPPZbpWyRtXOLBNgmI0Sm6NNSwztN
-         Cgr243F+PBnIWGsF2kTZjLHo2+KUTcFrraWUhh3HAoSad4AXJM/Q/eGFvhZo0Nf8LuTC
-         g8fa7ERlq1f25eGbkc57HHvW/SnXogKmQDnqCzkBknQy7WSITQsfMjXr9Lw+IUNGvdVR
-         Q1yduMUxnsXRJzdaYcNgfnCjZhE3dK3hjARl5e8nbfE/xBhc5498X71TTbv32PlRxS12
-         +iEt0ChCK+lzakzaI+xwTYcYkQHuq71aLwtJ914Rx5achrPKO44GAm1BGO5BMVAv6gkr
-         gAFg==
-X-Gm-Message-State: AOAM5307wxsICVst6RK5xeOfN+Kwh9xmDOhXoORXMeNIy0QgbNZC4GK+
-        XcFQv+AI4gE7l5Kvs2do0e7yZlVtpvik6qaIlDg=
-X-Google-Smtp-Source: ABdhPJzw33TEd+Ou6gTI9wsZ5P8SMwITX12cnx1aMZlnsaHcTy5Z2BVuDTecRBh4dPlclMfbL/m8zg==
-X-Received: by 2002:a05:6402:1d8f:: with SMTP id dk15mr17589674edb.146.1620514562138;
-        Sat, 08 May 2021 15:56:02 -0700 (PDT)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id 16sm5973509ejw.0.2021.05.08.15.56.02
+        bh=0kA/KDUDO096vq2rEKxFXAZivI52axFruzSdRkQyvoI=;
+        b=Z5hIIdEUVdgSX6OLMbByD8jggFl6qhES5EXdQd8fQ4z0M1xEGwEmon3U1e85a4xPF3
+         eVTO92T/4/9RHB0cEfa5/PNc//evvJH4+cCh0McpQwKUC+lNeE5+WJINtSQNnUfxCHKm
+         yhgYAGdzLrN6ZeSdSebQfOOa1GOv5cgQJ21HJEEViFg1KebWYkESccnwOKrVBD1GODlE
+         zYY6de/0KITqxIW36aYQYFMwwo1/vLEbzTKtsrguBHnyrKQlnNfGPHxamFQMEBob86p1
+         SIybkUE0dROZiREnUctR1Dyga7IUSoODAn9kSLDMzh7ByI0XhiDGBqUkjny60gGcptYr
+         9nWg==
+X-Gm-Message-State: AOAM530Pq9MHug6M1kJHLgVbRoTr7a6P5ucSrC7i2SQ0M6DgCH1vaJvR
+        JEYhqw30lNEj9h9XAqbVBN/lGUXkGwCTdcUDLrw=
+X-Google-Smtp-Source: ABdhPJw/QnBu77yQyvyChjciHO0e5CqBXDG4M57shxr9saeQn1PrRbWjTHa9tyXni9gv/avXKie99A==
+X-Received: by 2002:a2e:e11:: with SMTP id 17mr13746914ljo.90.1620514523763;
+        Sat, 08 May 2021 15:55:23 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id c15sm1739409lfk.153.2021.05.08.15.55.23
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 08 May 2021 15:56:02 -0700 (PDT)
-Received: by mail-ed1-f48.google.com with SMTP id v5so3430670edc.8
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 15:56:02 -0700 (PDT)
-X-Received: by 2002:a05:6512:1095:: with SMTP id j21mr10765354lfg.40.1620514074003;
- Sat, 08 May 2021 15:47:54 -0700 (PDT)
+        Sat, 08 May 2021 15:55:23 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id z9so17910436lfu.8
+        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 15:55:23 -0700 (PDT)
+X-Received: by 2002:ac2:5e6e:: with SMTP id a14mr10896192lfr.201.1620514114222;
+ Sat, 08 May 2021 15:48:34 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210508122530.1971-1-justin.he@arm.com> <20210508122530.1971-2-justin.he@arm.com>
  <CAHk-=wgSFUUWJKW1DXa67A0DXVzQ+OATwnC3FCwhqfTJZsvj1A@mail.gmail.com>
  <YJbivrA4Awp4FXo8@zeniv-ca.linux.org.uk> <CAHk-=whZhNXiOGgw8mXG+PTpGvxnRG1v5_GjtjHpoYXd2Fn_Ow@mail.gmail.com>
- <YJb9KFBO7MwJeDHz@zeniv-ca.linux.org.uk> <CAHk-=wjhrhkWbV_EY0gupi2ea7QHpGW=68x7g09j_Tns5ZnsLA@mail.gmail.com>
-In-Reply-To: <CAHk-=wjhrhkWbV_EY0gupi2ea7QHpGW=68x7g09j_Tns5ZnsLA@mail.gmail.com>
+ <YJb9KFBO7MwJeDHz@zeniv-ca.linux.org.uk> <CAHk-=wjgXvy9EoE1_8KpxE9P3J_a-NF7xRKaUzi9MPSCmYnq+Q@mail.gmail.com>
+ <YJcUvwo2pn0JEs27@zeniv-ca.linux.org.uk>
+In-Reply-To: <YJcUvwo2pn0JEs27@zeniv-ca.linux.org.uk>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 8 May 2021 15:47:38 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiOPkSm-01yZzamTvX2RPdJ0784+uWa0OMK-at+3XDd0g@mail.gmail.com>
-Message-ID: <CAHk-=wiOPkSm-01yZzamTvX2RPdJ0784+uWa0OMK-at+3XDd0g@mail.gmail.com>
+Date:   Sat, 8 May 2021 15:48:18 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgbaLFNU3448HhUX7AZB1xxqTg=A8PLbzazQxR_ukyJsw@mail.gmail.com>
+Message-ID: <CAHk-=wgbaLFNU3448HhUX7AZB1xxqTg=A8PLbzazQxR_ukyJsw@mail.gmail.com>
 Subject: Re: [PATCH RFC 1/3] fs: introduce helper d_path_fast()
 To:     Al Viro <viro@zeniv.linux.org.uk>
 Cc:     Jia He <justin.he@arm.com>, Petr Mladek <pmladek@suse.com>,
@@ -87,24 +88,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 8, 2021 at 3:42 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Sat, May 8, 2021 at 3:46 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
 >
-> But your READ_ONCE() is definitely the right thing to do (whether we
-> do your re-org or not, and whether we do this "prepend_buffer" thing
-> or not).
+> static inline struct mount *real_mount(struct vfsmount *mnt)
+> {
+>         return container_of(mnt, struct mount, mnt);
 
-Oh, and looking at it some more, I think it would probably be a good
-thing to make __dentry_path() take a
+Too subtle for me indeed.
 
-       struct prepend_buffer *orig
-
-argument, the same way prepend_path() does. Also, like prepend_path(),
-the terminating NUL should probably be done by the caller.
-
-Doing those two changes would simplify the hackery we now have in
-"dentry_path()" due to the "//deleted" games. The whole "restore '/'
-that was overwritten by the NUL added by __dentry_path() is
-unbelievably ugly.
-
-            Linus
+           Linus
