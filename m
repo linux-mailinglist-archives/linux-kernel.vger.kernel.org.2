@@ -2,184 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E2D3773DA
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 21:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090173773DD
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 21:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbhEHTkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 15:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
+        id S229694AbhEHTku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 15:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhEHTkR (ORCPT
+        with ESMTP id S229546AbhEHTkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 15:40:17 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9745AC061574;
-        Sat,  8 May 2021 12:39:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=jlOPCSK2nRsEwzsZJOeJDlZYSy04L7PKk/OEX0babh8=; b=1hF67LgOgSVJl00M6MckSAPaZ
-        nOZ9xzjCD6Lsp3aYOKa5GGWaLXwwOxz1Wu4dqB5r/rejS48Qa4oI1IE/0ozPb1NOZ6mORinSsBXu5
-        Jf9TNIV4i5fBOyJ2ccrbU2LiuzlqCeEueK3qwvKOuqVqYkXpBNPs64uh7BHCkOmfof0c+302sel82
-        EHx62/o5ARqOGG43NcJPzmmwYUqVHEOYWF7ua3KaIjFZ7KiUfbUdJlDZv2kzS+mfAKPxyISZxNJbK
-        nk05Oo5UiaQwchZTh0d+5Lyj8K/n+v4wr0nvJpLS+4y5JGZ8hI33stcvOWlWHg+VFiH/DLp5ymF1+
-        Eww/1WxZA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43794)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lfSnA-0006Kp-JO; Sat, 08 May 2021 20:39:12 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lfSn9-0006wz-G0; Sat, 08 May 2021 20:39:11 +0100
-Date:   Sat, 8 May 2021 20:39:11 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next v3 19/20] net: dsa: qca8k: pass
- switch_revision info to phy dev_flags
-Message-ID: <20210508193911.GG1336@shell.armlinux.org.uk>
-References: <20210504222915.17206-1-ansuelsmth@gmail.com>
- <20210504222915.17206-19-ansuelsmth@gmail.com>
- <20210506112458.yhgbpifebusc2eal@skbuf>
- <YJXMit3YfBXKM98j@Ansuel-xps.localdomain>
- <20210507233353.GE1336@shell.armlinux.org.uk>
- <20210508182620.vmzjvmqhexutj7p3@skbuf>
+        Sat, 8 May 2021 15:40:49 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1683C061574;
+        Sat,  8 May 2021 12:39:47 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id o6-20020a05600c4fc6b029015ec06d5269so263590wmq.0;
+        Sat, 08 May 2021 12:39:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/aT2AFj/W6pt+Y3HFn5Q+rY7c1xeC8Z2fMPQBVN+RjI=;
+        b=S3ej4r8Wmp0240zqQhmNsHAcsH5gByygrKd1YQd6wNG9zlPJaYkHCWWWNcfHQkIWY5
+         2KwNDcmYIfKy3qAgjLmeZw/YlI6t1E5OjY06XmhKiHbwuTjS02SOh0WUcQ8cYHCZg05P
+         +a7LkBZZJDGOyUHuY0Rw8002AK6qc/V6I7QmGzbxnAuZjJxiRaAlONwu7/eRTmSZcxHk
+         hGI1i0MFgDrET1zhnEn/ztqetpdbowmKh1SWYo9UwZeupiH445Mycnyq4w5l/Z8omqs5
+         vb9iMnGOYQkgjZ52ma3/SYCeKMtMh2tnetJCKBxSJwBqQO2eqP4lzj1s4yRvA4MGulev
+         YeYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/aT2AFj/W6pt+Y3HFn5Q+rY7c1xeC8Z2fMPQBVN+RjI=;
+        b=J5RMs/6TfhJbwX5isQc+ZJjOH0Lg1lx5xU9M+INaoVDxAFNd+ODnJ1V06E8Ox/mgww
+         2lXiYrqWfR2iFRHduOp79zA34TUu/a924nunkGz8ZEDj3CBBn317BBu+Iw0Jl+iBLpV2
+         jfRMD9MXj0VwHj0nuUDDmIFakOPQPQT0gdOBUWQzRnZvvq5fj3CZ0hbjf+d4e5etqko1
+         4ZrR/o9gMOg7FnI0wQ7Y4AQj3pVmUkYevTYGRV53/j6Zi7JD/SmHoxLiLWwBSEXJEz/X
+         n/hFgPy5vX77i2WMH0hLTOR5/xw7ugf6qcAWSSleiVO8aKfG5ECQJk489fJ1l8HcoVtq
+         8jhw==
+X-Gm-Message-State: AOAM5311/zde8/KzH6ejgSx8v3lI6g3mn/BjZRV0kXmp4n/DOVI3rSje
+        +rfdIYg7r9SDAeQTwHdtQsP7X0k/pk47dQ==
+X-Google-Smtp-Source: ABdhPJwFwC43on281PSVJ9/z+oV3EVuqNO4OKfwmHJwMU2KxkyH+ddQmClfeBUPVbt5B0Z8GGcR2DQ==
+X-Received: by 2002:a1c:b38b:: with SMTP id c133mr4649652wmf.8.1620502786282;
+        Sat, 08 May 2021 12:39:46 -0700 (PDT)
+Received: from michael-VirtualBox (cbl217-132-244-50.bb.netvision.net.il. [217.132.244.50])
+        by smtp.gmail.com with ESMTPSA id d3sm1000822wrs.41.2021.05.08.12.39.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 May 2021 12:39:45 -0700 (PDT)
+Date:   Sat, 8 May 2021 22:39:43 +0300
+From:   Michael Zaidman <michael.zaidman@gmail.com>
+To:     trix@redhat.com
+Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, michael.zaidman@gmail.com
+Subject: Re: [PATCH] HID: ft260: improve error handling of
+ ft260_hid_feature_report_get()
+Message-ID: <20210508193943.GA1581@michael-VirtualBox>
+References: <20210507183757.68810-1-trix@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210508182620.vmzjvmqhexutj7p3@skbuf>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20210507183757.68810-1-trix@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 09:26:20PM +0300, Vladimir Oltean wrote:
-> On Sat, May 08, 2021 at 12:33:53AM +0100, Russell King - ARM Linux admin wrote:
-> > On Sat, May 08, 2021 at 01:26:02AM +0200, Ansuel Smith wrote:
-> > > On Thu, May 06, 2021 at 02:24:58PM +0300, Vladimir Oltean wrote:
-> > > > On Wed, May 05, 2021 at 12:29:13AM +0200, Ansuel Smith wrote:
-> > > > > Define get_phy_flags to pass switch_Revision needed to tweak the
-> > > > > internal PHY with debug values based on the revision.
-> > > > > 
-> > > > > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > > > > ---
-> > > > >  drivers/net/dsa/qca8k.c | 19 +++++++++++++++++++
-> > > > >  1 file changed, 19 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-> > > > > index b4cd891ad35d..237e09bb1425 100644
-> > > > > --- a/drivers/net/dsa/qca8k.c
-> > > > > +++ b/drivers/net/dsa/qca8k.c
-> > > > > @@ -1654,6 +1654,24 @@ qca8k_port_vlan_del(struct dsa_switch *ds, int port,
-> > > > >  	return ret;
-> > > > >  }
-> > > > >  
-> > > > > +static u32 qca8k_get_phy_flags(struct dsa_switch *ds, int port)
-> > > > > +{
-> > > > > +	struct qca8k_priv *priv = ds->priv;
-> > > > > +
-> > > > > +	pr_info("revision from phy %d", priv->switch_revision);
-> > > > 
-> > > > Log spam.
-> > > > 
-> > > > > +	/* Communicate to the phy internal driver the switch revision.
-> > > > > +	 * Based on the switch revision different values needs to be
-> > > > > +	 * set to the dbg and mmd reg on the phy.
-> > > > > +	 * The first 2 bit are used to communicate the switch revision
-> > > > > +	 * to the phy driver.
-> > > > > +	 */
-> > > > > +	if (port > 0 && port < 6)
-> > > > > +		return priv->switch_revision;
-> > > > > +
-> > > > > +	return 0;
-> > > > > +}
-> > > > > +
-> > > > >  static enum dsa_tag_protocol
-> > > > >  qca8k_get_tag_protocol(struct dsa_switch *ds, int port,
-> > > > >  		       enum dsa_tag_protocol mp)
-> > > > > @@ -1687,6 +1705,7 @@ static const struct dsa_switch_ops qca8k_switch_ops = {
-> > > > >  	.phylink_mac_config	= qca8k_phylink_mac_config,
-> > > > >  	.phylink_mac_link_down	= qca8k_phylink_mac_link_down,
-> > > > >  	.phylink_mac_link_up	= qca8k_phylink_mac_link_up,
-> > > > > +	.get_phy_flags		= qca8k_get_phy_flags,
-> > > > >  };
-> > > > >  
-> > > > >  static int qca8k_read_switch_id(struct qca8k_priv *priv)
-> > > > > -- 
-> > > > > 2.30.2
-> > > > > 
-> > > > 
-> > > > Florian, I think at one point you said that a correct user of
-> > > > phydev->dev_flags should first check the PHY revision and not apply
-> > > > dev_flags in blind, since they are namespaced to each PHY driver?
-> > > > It sounds a bit circular to pass the PHY revision to the PHY through
-> > > > phydev->dev_flags, either that or I'm missing some piece.
-> > > 
-> > > Just to make sure. This is the SWITCH revision not the PHY revision. It
-> > > was pointed out in old version that I should get this value from the PHY
-> > > regs but they are different values. This is why the dsa driver needs to
-> > > use the dev_flags to pass the SWITCH revision to the phy driver. Am I
-> > > implementing this in the wrong way and I should declare something to
-> > > pass this value in a more standard way? (anyway i'm pushing v4 so i
-> > > don't know if we should continue that there)
-> > 
-> > Vladimir is confused - it is not PHY revision at all, but the PHY
-> > identifiers.
-> > 
-> > What was actually suggested was checking the PHY identifiers before
-> > passing PHY-driver specific flags, so that we didn't end up setting
-> > driver private flags that are intending for one driver, but end up
-> > actually binding a different driver, and mis-interpreting the flags.
-> > 
-> > This is one of the problems of the current scheme: it's just a
-> > meaningless opaque u32 variable with no defined structure to it that
-> > the various PHY drivers themselves use in whatever way they see fit.
-> > That is only fine to use _if_ you know for certain which driver is
-> > going to bind ahead of time.
-> > 
-> > As I mentioned in direct reply to your patch, there was discussions
-> > about this back in February, but they seem to have stalled.
+On Fri, May 07, 2021 at 11:37:57AM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
-> Yes, I was indeed confused. My problem was mixing up the PHY OUI/device ID
-> and revision concepts in one big fuzzy notion. I remembered Heiner's
-> suggestion to do something similar to mv88e6xxx_mdio_read from here:
-> https://patchwork.kernel.org/project/netdevbpf/patch/20210423014741.11858-12-ansuelsmth@gmail.com/
-> (where the problem is that some internal PHYs are lacking a device
-> identifier) and thought that the problem here is the same.
+> Static analysis reports this representative problem
 > 
-> Nonetheless, now it is clear to me that with care (don't set dev_flags
-> except for internal PHYs which are statically known), it is possible for
-> the PHY driver to have a larger identifier (PHY ID concatenated with
-> switch revision passed through dev_flags) based on which it can
-> configure the hardware.
+> hid-ft260.c:787:9: warning: 4th function call argument is an
+>   uninitialized value
+>         return scnprintf(buf, PAGE_SIZE, "%hi\n", *field);
+>                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Uses of ft260_hid_feature_report_get() check if the return size matches
+> the requested size.  But the function can also fail with at least -ENOMEM.
+> Add the < 0 checks.
 
-We do have the problem with Marvell DSA vs Marvell PHY setup in that
-the Marvell DSA driver assumes that all integrated PHYs that do not
-have an ID are all the same. They are most definitely not, and this
-shows itself up when we register the hwmon stuff inappropriately, or
-access the wrong registers to report hwmon values.
+Hi Tom, thanks for catching and fixing it!
 
-We really need to solve this problem properly rather than bodging
-around it with driver specific usage of dev_flags.
+I applied the patch, built the driver, and run some tests on my HW setup -
+no regression so far. But I think the fix can be improved even more, by
+reducing the number of questions to one in the successful case where the
+performance matters. Please see the proposal below inline.
 
-We already have the ability for drivers to have custom match functions
-(match_phy_device) that do not depend on the probed ID - maybe we
-should have an additional u32 member in struct phy_device for the
-switch_id that the PHY is a part of that PHY drivers can check in their
-match_phy_device method if necessary, or otherwise use that to parse
-the switch revision from. Or something like that?
+> 
+> In ft260_hid_feature_report_get(), do not do the memcpy to the caller's
+> buffer if there is an error.
+> 
+> Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  drivers/hid/hid-ft260.c | 19 +++++++++++++++----
+>  1 file changed, 15 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
+> index 7a9ba984a75a..628fa664a10b 100644
+> --- a/drivers/hid/hid-ft260.c
+> +++ b/drivers/hid/hid-ft260.c
+> @@ -249,7 +249,8 @@ static int ft260_hid_feature_report_get(struct hid_device *hdev,
+>  
+>  	ret = hid_hw_raw_request(hdev, report_id, buf, len, HID_FEATURE_REPORT,
+>  				 HID_REQ_GET_REPORT);
+> -	memcpy(data, buf, len);
+> +	if (ret == len)
+> +		memcpy(data, buf, len);
+>  	kfree(buf);
+>  	return ret;
+>  }
+> @@ -295,12 +296,16 @@ static int ft260_xfer_status(struct ft260_device *dev)
+>  	struct hid_device *hdev = dev->hdev;
+>  	struct ft260_get_i2c_status_report report;
+>  	int ret;
+> +	int len = sizeof(report);
+>  
+>  	ret = ft260_hid_feature_report_get(hdev, FT260_I2C_STATUS,
+> -					   (u8 *)&report, sizeof(report));
+> -	if (ret < 0) {
+> +					   (u8 *)&report, len);
+> +	if (ret != len) {
+>  		hid_err(hdev, "failed to retrieve status: %d\n", ret);
+> -		return ret;
+> +		if (ret >= 0)
+> +			return -EIO;
+> +		else
+> +			return ret;
+>  	}
+>  
+>  	dev->clock = le16_to_cpu(report.clock);
+> @@ -728,6 +733,8 @@ static int ft260_get_system_config(struct hid_device *hdev,
+>  		hid_err(hdev, "failed to retrieve system status\n");
+>  		if (ret >= 0)
+>  			return -EIO;
+> +		else
+> +			return ret;
+>  	}
+>  	return 0;
+>  }
+> @@ -782,6 +789,8 @@ static int ft260_byte_show(struct hid_device *hdev, int id, u8 *cfg, int len,
+>  	ret = ft260_hid_feature_report_get(hdev, id, cfg, len);
+>  	if (ret != len && ret >= 0)
+>  		return -EIO;
+> +	else if (ret < 0)
+> +		return  ret;
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Please consider the below code to reduce the number of questions to one in the "likely" case
+and two in the worst-case scenario.
+
+	if (ret != len) {
+	        if (ret >= 0)
+                        return -EIO;
+                else
+                        return ret;
+        }
+
+>  
+>  	return scnprintf(buf, PAGE_SIZE, "%hi\n", *field);
+>  }
+> @@ -794,6 +803,8 @@ static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
+>  	ret = ft260_hid_feature_report_get(hdev, id, cfg, len);
+>  	if (ret != len && ret >= 0)
+>  		return -EIO;
+> +	else if (ret < 0)
+> +		return ret;
+
+The same.
+
+>  
+>  	return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
+>  }
+> -- 
+> 2.26.3
+> 
