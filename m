@@ -2,101 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C530637716E
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 13:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B98377170
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 13:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhEHLdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 07:33:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbhEHLd3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 07:33:29 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC17C061574;
-        Sat,  8 May 2021 04:32:27 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id x2so16447496lff.10;
-        Sat, 08 May 2021 04:32:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PXAa7ncW6tnQNSCVmINwjOAXmzqHMKlEEaaWFcl+Zig=;
-        b=sPUbSjRETuhU1bfQmElfOC8xI1jqxOeo727f0En4w3gRQCDqhkU0fR2gOC7DAu+5DV
-         w0ZQWlSEH6VTyTQx2zWBMlxoBcGVRawJuZd5DP6Lk7h4wLHN3bZ2nPJNaBz1IidvbxnG
-         DesFThsHa7xq2omfQaJh43yu9DRxjsBKttN4QhKDw9IC5x3xC2ngffQGj2ZJQ7driXKM
-         aNR1fCZZcxPG8bod4Zraf7Jh83oXbG7hf3Hus99ggnxoIpSvGW7K1OuMCa54sSDCipwc
-         ULhsDzXM4xYh/7crNbBImG4dDYscEphdJHP6vzpjq6be0aWuQ2j1cH05dqQeDM/XLNTB
-         4BQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PXAa7ncW6tnQNSCVmINwjOAXmzqHMKlEEaaWFcl+Zig=;
-        b=TDH6xs+/Aqj2Gj/enV4znajSVoZNoiO/eA+Eig2+3RNVIY1L5DIQv1gjX27SFNtwAS
-         wYp7KKrzkqsQfmdX04AEIJzpXfj3QJb6hASz1yB6g/4ZhLTdmHQTZI7g/9ou2oPcLKZr
-         quEqUDmOoqyNpiwLFizyCwiGW//GWgkMLstsWrQjqNmdrDcX2n4urbZjZnp0BGq4NUDO
-         WVt+7LE5nAuKcnOWKXdFaU0Mmqg2nbRRL13a0eL4OGi5GOY876o4NxOogoypm1+FK/iO
-         IGigADHXcEE+Xef5LnESt4ygtFBCFyUgtZx7WPLvXhtpDpFgmVdmALhn64mlhmDrPiGp
-         w/HA==
-X-Gm-Message-State: AOAM530+Yj1oNnXt0q+zhEkwrR/d6fK3Ysy+lUBHeOnp32MSGU3bIbvZ
-        b8yRLLmvMTs5MU3vWqxRyjk=
-X-Google-Smtp-Source: ABdhPJyEgioyenwxZoCGG+r6LrzxG1yPLmEV5JjlAUjlK+TN8vTgsFK6s5swlQsTZyMzZ5/uclhsHw==
-X-Received: by 2002:a05:6512:3e12:: with SMTP id i18mr10122lfv.154.1620473545722;
-        Sat, 08 May 2021 04:32:25 -0700 (PDT)
-Received: from localhost.localdomain ([185.215.60.119])
-        by smtp.gmail.com with ESMTPSA id s4sm2278568ljp.114.2021.05.08.04.32.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 May 2021 04:32:25 -0700 (PDT)
-Date:   Sat, 8 May 2021 14:32:20 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        id S230506AbhEHLe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 07:34:59 -0400
+Received: from mout.gmx.net ([212.227.17.20]:37793 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230234AbhEHLe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 07:34:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1620473634;
+        bh=yjwGGl/zXrCMTYrbrC8+EDsU3PDJjMfbSr5bOfa/aUs=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=gfcDGTLqH3UCeLP+S3GOVF29duDBm+2SDB99bPxbPurHTIZHiroO4i8TEnA3JsyRy
+         t6b9aQbedOsgOH1o+a5XMOOdaZ1fQE63cZH6a7ww7T8J0hWxXfDMj5SqzYMdzLWCzD
+         TbYYaCKnPMZT2jgyRW/dFEDR+93dQamCFeLc1DDI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.126]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N1Obb-1lYVVB21Sl-012mdI; Sat, 08
+ May 2021 13:33:54 +0200
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     openbmc@lists.ozlabs.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: media: atomisp: code cleanup
-Message-ID: <20210508143220.0b92bc37@gmail.com>
-In-Reply-To: <YJZuviLa3SRLWASk@kroah.com>
-References: <20210507075458.GB3@paasikivi.fi.intel.com>
-        <20210508105129.2698-1-paskripkin@gmail.com>
-        <YJZuviLa3SRLWASk@kroah.com>
-X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+Subject: [PATCH] MAINTAINERS: Nuvoton NPCM: Add myself as reviewer
+Date:   Sat,  8 May 2021 13:33:42 +0200
+Message-Id: <20210508113342.94457-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:xLX2yTtE7abk1R7iXLdEZMFtMYhhVRIWGEg/Vj3E2nmwZpZ1z7y
+ u66rYrr3YqalW21cR34Xl/RSYAj7p1d7igxQ+nz67NiQIXcjBmkvNYQwbl+AnwnOKqUpFPE
+ Rcpd++5QeRpXUiRbcuOMx0ZMG/UBfcQgOBCcOkyoNIgRYOn8rib3ldUxVoTtbhG3BYoP28K
+ QvmcAHTdEPKr4smh5Q1GQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3fQgF26cF/c=:JXq4DYe5tCORfk5c2rBx5w
+ 1U5BcnwhuHmCDmRSxBesN5/l2UMjSZUB0pTS9xiEgFDmvA4yuzrQau8+LSr/5rwr+so9XzDPG
+ WrKnWsvh7dKyYBzkJqxY92Gai2RmIVKDixknWAHkPcJIDw3yg5fu3v0/cmqvJedWCywof0gtJ
+ 8ZtqDXmq8HZ/yINZlHCQb8fnBJvXhK4Ud5UZOHqc+lxeNjYebyr2jF4+UEI5yzZcui0C+8DW6
+ WeTRK/j5eEA3Fsc+956TWkq92UpkI7DYb3yTomt/R2pTCEmIciucTJUY4jseGRW+1bKMdWL4I
+ 2lVufeMjipknpqSwFSl2cv1X1VYIVN195hQZ+J73LH/u87EK8MpMt61UbtI3Q3R3wBaCgiSni
+ ZoQgLaBvXgTYrRoOq3PAeCJswY3PcsodFMiqxQ2xExk7SSuDcpTX6brVH5aLo0j8sD8svN1cz
+ pAovO8CCwnchKfa6eHcO7iX/avqxQGYsG37NWOuL3018Jv7cfQQyXmRt/L6l4PtVY1A4rxxJN
+ 36dE6UmzHHMhuPM7P9zKXEZWycuZoRtQM/MqPkrS+97tG/K4fmgvd0uSJwupOE45IPiA8xwDY
+ prCxFWJGs5slZ7Gu1XhTUsi64XWxkHqYQwASKpE+p4CvfZ/eF1uCvXmKJjxuPb7z2jSng61Yd
+ tg+V5nmXs3DwBttHZ+wu8o0D0MlGMZiWYK5PJJrQCngVnN6xDHLHY+2EtUZCzTpiz8wbemS9W
+ /X8MmZrfA2KuyuA+1F5Y8JqGluvk2zO2M53Jyaka490DAW1R9Pcwnjr0McR+bpJQ5TQbPy4Vg
+ mLDPBP/S6kzOPHSohf03ohI0qmumEH1VNZvCTUxamAk5uQOHK7mIhOrc2O4AsqyNYx2JnJCf6
+ J0x2De+u1Dlxk4DHXNQn+FBbPDczbLFWtRJ/oA4E6aAiIs0GqYdS64eCMxt6VHzdmhjL9WprY
+ zbvCA0VEZ3V43mRsvRlGrTCNtSz+pPThXWE8bmDq+4GQX5q0pc2yw5yagrYzwGMVd8GdtuDFE
+ lZHa15swFRLo1bjyLbpNiLmqHnuYzwBB29ITbZMAL+71FB4ymYqx3axnrwhSLdM0fd8AQXYVs
+ 4CWX2JDmv+liF+q4Wb7L9Rmq4bWjUJrWtdDewxMHsi1G1pWnGNJl1SLKBwbcr1jW1mlh9rrA0
+ abYR/wMZ+INXWdjww6Hk/1eICf2bpW35naxtTqJjeTTrIe3evO43HcwOCmhKdvN5/rBfuGqe1
+ 0QxVdj9DkVcCZMXmW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Greg!
+Nuvoton NPCM7xx SoCs share a lot of the hardware design with Nuvoton
+WPCM450. I'm adding myself as a reviewer, so I don't miss patches that
+affect both NPCM7xx and WPCM450.
 
-On Sat, 8 May 2021 12:58:06 +0200
-Greg KH <gregkh@linuxfoundation.org> wrote:
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-> On Sat, May 08, 2021 at 01:51:29PM +0300, Pavel Skripkin wrote:
-> > Breaks are not useful after a return, they can
-> > simply be removed.
-> > 
-> > Also, dropped the individual return statements
-> > after or inside switch cases
-> 
-> Almost always, when you say "also" in a patch changelog, that means
-> this should be split up into two different patches.
-> 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 661770e8e6fc1..78f9df2b6cd20 100644
+=2D-- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2184,6 +2184,7 @@ M:	Tali Perry <tali.perry1@gmail.com>
+ R:	Patrick Venture <venture@google.com>
+ R:	Nancy Yuen <yuenn@google.com>
+ R:	Benjamin Fair <benjaminfair@google.com>
++R:	Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+ L:	openbmc@lists.ozlabs.org (moderated for non-subscribers)
+ S:	Supported
+ F:	Documentation/devicetree/bindings/*/*/*npcm*
+=2D-
+2.30.2
 
-I thought, I could add this to current patch, because It was suggested
-by maintainer, but, I guess, I was wrong :)
-
-> I recommend doing that here as well, this should be a 2 patch series,
-> right?
-> 
-
-Thanks for suggestion! I will also remove returns at the end of void
-functions as 3rd patch in serie.
-
-> thanks,
-> 
-> greg k-h
-
-With regards,
-Pavel Skripkin
