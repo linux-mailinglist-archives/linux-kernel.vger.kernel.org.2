@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1C6377005
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 08:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E494437700A
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 08:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbhEHGSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 02:18:04 -0400
-Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:59166 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhEHGSD (ORCPT
+        id S229778AbhEHGWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 02:22:04 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:17481 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhEHGWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 02:18:03 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d66 with ME
-        id 26Gz2500721Fzsu036H0FJ; Sat, 08 May 2021 08:17:01 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 08 May 2021 08:17:01 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     srinivas.kandagatla@linaro.org, bgolaszewski@baylibre.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH V2] nvmem: core: add a missing of_node_put
-Date:   Sat,  8 May 2021 08:16:58 +0200
-Message-Id: <10f4577d8a72765780006fbaf7751c8df9c26d0a.1620454485.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sat, 8 May 2021 02:22:02 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FccZQ03YNzkWRc;
+        Sat,  8 May 2021 14:18:22 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 8 May 2021 14:20:48 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] genirq/timings: Fix error return code in irq_timings_test_irqs()
+Date:   Sat, 8 May 2021 14:20:43 +0800
+Message-ID: <20210508062043.2524-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'for_each_child_of_node' performs an of_node_get on each iteration, so a
-return from the middle of the loop requires an of_node_put.
+Fix to return a negative error code from the error handling case instead
+of 0, as done elsewhere in this function.
 
-Fixes: e888d445ac33 ("nvmem: resolve cells from DT at registration time")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Fixes: f52da98d900e ("genirq/timings: Add selftest for irqs circular buffer")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
-v2: Reorder code to delay the 'cell->np = of_node_get(child);'
-    Without this change, we needed a double 'of_node_put' in the last
-    hunk which could be confusing to the reader
----
- drivers/nvmem/core.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ kernel/irq/timings.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index bca671ff4e54..f9c9c9859919 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -686,15 +686,17 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
- 			continue;
- 		if (len < 2 * sizeof(u32)) {
- 			dev_err(dev, "nvmem: invalid reg on %pOF\n", child);
-+			of_node_put(child);
- 			return -EINVAL;
+diff --git a/kernel/irq/timings.c b/kernel/irq/timings.c
+index d309d6fbf5bd..12893be1199a 100644
+--- a/kernel/irq/timings.c
++++ b/kernel/irq/timings.c
+@@ -794,12 +794,14 @@ static int __init irq_timings_test_irqs(struct timings_intervals *ti)
+ 
+ 		__irq_timings_store(irq, irqs, ti->intervals[i]);
+ 		if (irqs->circ_timings[i & IRQ_TIMINGS_MASK] != index) {
++			ret = -EFAULT;
+ 			pr_err("Failed to store in the circular buffer\n");
+ 			goto out;
  		}
- 
- 		cell = kzalloc(sizeof(*cell), GFP_KERNEL);
--		if (!cell)
-+		if (!cell) {
-+			of_node_put(child);
- 			return -ENOMEM;
-+		}
- 
- 		cell->nvmem = nvmem;
--		cell->np = of_node_get(child);
- 		cell->offset = be32_to_cpup(addr++);
- 		cell->bytes = be32_to_cpup(addr);
- 		cell->name = kasprintf(GFP_KERNEL, "%pOFn", child);
-@@ -715,11 +717,12 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
- 				cell->name, nvmem->stride);
- 			/* Cells already added will be freed later. */
- 			kfree_const(cell->name);
--			of_node_put(cell->np);
- 			kfree(cell);
-+			of_node_put(child);
- 			return -EINVAL;
- 		}
- 
-+		cell->np = of_node_get(child);
- 		nvmem_cell_add(cell);
  	}
  
+ 	if (irqs->count != ti->count) {
++		ret = -EFAULT;
+ 		pr_err("Count differs\n");
+ 		goto out;
+ 	}
 -- 
-2.30.2
+2.25.1
+
 
