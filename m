@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4B037717C
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 13:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 530293771A0
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 14:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhEHLnV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 8 May 2021 07:43:21 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:26373 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230257AbhEHLnT (ORCPT
+        id S230499AbhEHMW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 08:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230419AbhEHMW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 07:43:19 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-30-pslduLlcNaOjNqxPJEEhyg-1; Sat, 08 May 2021 12:42:15 +0100
-X-MC-Unique: pslduLlcNaOjNqxPJEEhyg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Sat, 8 May 2021 12:42:13 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Sat, 8 May 2021 12:42:13 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC 02/12] openrisc: always use unaligned-struct header
-Thread-Topic: [RFC 02/12] openrisc: always use unaligned-struct header
-Thread-Index: AQHXQ42+sCloTJU1UUOieiWkxU7/TarZco2w
-Date:   Sat, 8 May 2021 11:42:13 +0000
-Message-ID: <7f2ca7e366a444108932c4c3bb95c2f9@AcuMS.aculab.com>
-References: <20210507220813.365382-1-arnd@kernel.org>
- <20210507220813.365382-3-arnd@kernel.org>
-In-Reply-To: <20210507220813.365382-3-arnd@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 8 May 2021 08:22:26 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565F0C061574;
+        Sat,  8 May 2021 05:21:24 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id c11so16564927lfi.9;
+        Sat, 08 May 2021 05:21:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=04cgrkWh50flqZpRh37baQFAIaC4WlfO0T6oXLED7ks=;
+        b=mExExvHoG8jNOehgnXXg0lQ2Y7jCePctD8KnPz4fksYeeg24T0xXYp1+pCQAbXbMJ6
+         dbGpEJBUECwthAvx3d9YIH6KPvL3vGBUo/NWc1baxesdpdqoUNc3rwDBH455x0nMJRbH
+         ngGDI+EUMZUVRO+UCj/msTEoPTXv7t6fSHC9jdRP/qaF2GJdBQWiUSG/UTrUbETJaOZS
+         bxitWoIWcfIF0qhJOiZrgcS+mmjxvSGckcP68D6B6yJqNZ9HYBtU9ZobBguRHdjAEMZp
+         O8Jt6kdK58fvWL0mfcDSKtnMm0gAgOkJD+JauC1TvPLDQPQS5BjydGWx2uTHIssG1DzQ
+         eybA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=04cgrkWh50flqZpRh37baQFAIaC4WlfO0T6oXLED7ks=;
+        b=W9KJidtIwwIi5dcPoorVTSF0fG5BJzgBytMrLcQq39BDLjrUm697HK1/fqTIZmJcXo
+         AbFczEmrVqWDj8lrEa4/XyLQnILwZ6tMkSwlay8kMCFCjcJYpHAY9S+xQ8DioqhaFSB3
+         tj1rTfPvRmCvWua0Fu4r/bPEbQJwZdlRRVa8nUEVXfnSYSnxxX6t7fGIiAi6eMfw+o5m
+         bMoD+cASrWDcUHdvN+UtHtetUv40JUiR/VEo2wAXWK5c5iEIkiu2RH0xUKp3pnX+dZ8i
+         goBrzlAPIhVNJnA67Y0DpTx7t/bcJAJrmKjim6JzVzm+LNPsHcKUPjkz4WDBztTgIoj3
+         QHTA==
+X-Gm-Message-State: AOAM530YY09yi70JE6wIMluLyzXnHr7WOmkeU8pm0E1lqXgS2PAd/wup
+        aWxu9BC3/jOunuy/G7CXZe4=
+X-Google-Smtp-Source: ABdhPJzPNFgLMWYqVx205XcNshsO4fb+1wFy+XgJ4uRekQG1wGH6SIr+SADaI6l/hmdiIF/ZNgCruQ==
+X-Received: by 2002:ac2:5497:: with SMTP id t23mr9953657lfk.52.1620476482679;
+        Sat, 08 May 2021 05:21:22 -0700 (PDT)
+Received: from localhost.localdomain ([185.215.60.119])
+        by smtp.gmail.com with ESMTPSA id u5sm1627354lfk.237.2021.05.08.05.21.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 May 2021 05:21:22 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH v3 0/3] staging: media: atomisp: code clean up
+Date:   Sat,  8 May 2021 15:21:16 +0300
+Message-Id: <cover.1620475909.git.paskripkin@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <YJZuviLa3SRLWASk@kroah.com>
+References: <YJZuviLa3SRLWASk@kroah.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann
-> Sent: 07 May 2021 23:08
-...
-> I don't know how the loads/store perform compared to the shift version
-> on a particular microarchitecture, but my guess is that the shifts
-> are better.
+This patch series includes code clean up for input_system.c.
 
-What does the nios use?
-Shifts generate reasonable code for put_unaligned() but
-they get horrid for get_unaligned().
+Changes from v3:
+  Removed returns at the end of void functions
+  Split all changes into 3 patches
 
-On the nios writing the 4 bytes to memory and reading back
-a 32bit value should generate shorter faster code.
-You do need to generate 4 byte loads, 4 bytes stores, 32bit load.
-(The load will cause a stall if the data is needed for one
-of the next two instructions, and there is a (undocumented)
-stall between a write and read to the same memory area.
-The shift version requires 3 shifts and 3 ors - but I think
-gcc makes a bigger pig's breakfast of it.)
+Changes from v2:
+  Removed useless returns
 
-OTOH I'm not sure anyone in their right mind would run Linux on nios.
-It is a soft cpu for the altera (now intel) fpgas.
-We use them with 4k code and sub 64k data for real time processing.
+Pavel Skripkin (3):
+  staging: media: atomisp: remove useless breaks
+  staging: media: atomisp: remove dublicate code
+  staging: media: atomisp: remove useless returns
 
-	David
+ .../hive_isp_css_common/host/input_system.c   | 62 -------------------
+ 1 file changed, 62 deletions(-)
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+-- 
+2.31.1
 
