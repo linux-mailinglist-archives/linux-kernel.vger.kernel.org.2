@@ -2,73 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21963771DE
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 14:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53A83771E9
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 14:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbhEHMlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 08:41:09 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17485 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230419AbhEHMlI (ORCPT
+        id S231129AbhEHMzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 08:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230438AbhEHMzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 08:41:08 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fcmzq42HhzkXPc;
-        Sat,  8 May 2021 20:37:27 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 8 May 2021 20:39:56 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH] mm: page-writeback: Kill get_writeback_state() comments
-Date:   Sat, 8 May 2021 20:50:26 +0800
-Message-ID: <20210508125026.56600-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        Sat, 8 May 2021 08:55:22 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB58C061574;
+        Sat,  8 May 2021 05:54:07 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id l7so15480551ybf.8;
+        Sat, 08 May 2021 05:54:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aXVXrFw3OGzh7nVtDJeFdDpq7b/QcyboCBGX47RVf78=;
+        b=aekVGnd449/i9yVzo2TgnVAsOPnB78JLrCiAFCnk9wDt3RwY1XU3/p+x9Y5QN9zCE8
+         qkfWF1ownY2HwvYl4h0hrkJ6D2fnSaiM7zvCJ6MrI+2HAZYsLoEjN+3re6mxrz2aeSUD
+         uv9Uz3l8feQ9VJXV6CdCYgppOBphHZG1FesPXGYK7O/STINXgZjQSal7mxumay+9UOhA
+         DYVOfPARzFyDYfi/lYiDY13g0mg01I+2GFtLo9+KS7Dtwu0+h2+V52czH5+jGCvNm9C8
+         2iNsrf+LbpBM4IJZgz+qYiKhVaL3Z24ST0S6XyciqFtGZR4ZwXLaCStsGVPcC2D4KhYp
+         M/GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aXVXrFw3OGzh7nVtDJeFdDpq7b/QcyboCBGX47RVf78=;
+        b=Pd2hpZO2j9Wr9jqYlUimdh7yA0i5uS8D+RPJu0NSQELAO+XGkkFQA4AFjSyX5V5747
+         uMyx0pafLavIB54B8xJuTji0our2MC89Wh8r4fHoKjGeH0a7OK/F4juQfDpg3OxtvPs8
+         jbGWmq8EuO/9squ9wJIJOYCTNlIRZuWZkADVrSm74J3jsFM4hSUIrzNh04rm+uCsezFR
+         zARaVFfRG8uq3VHbXtNldQYGe1qZfr03Z5Vm9s1emYXrRIohWsYU4JsyObmguaEt13Q3
+         We+E4y28y9AF39/lwUeMYPL/EaZE8Sa/4p/XtRpJEITaYZlZAANP8rD9+LC5vSgbaJ2W
+         f9wg==
+X-Gm-Message-State: AOAM532l8mlBFow83qXfs5f3bNvG3T5tX8jOnpqL0GLm4V2hBhJ+fN5d
+        0YRxOW2DBi6zTwem9XOw15I+EIFdKFf0bjynQ9vljuJQ9nllmw==
+X-Google-Smtp-Source: ABdhPJyb/sC0ao9kv47LEMxG2PnSQdrq895Z/M3G/4emGSqWcKLCKYdyG3tUt5Ul/WZ46VKYX+Qcknk6SLiQmFn5GnU=
+X-Received: by 2002:a25:5741:: with SMTP id l62mr19697754ybb.119.1620478447017;
+ Sat, 08 May 2021 05:54:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+References: <d995e27db003a26e5b5eb53b0f40b55f8015d873.1620245794.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <d995e27db003a26e5b5eb53b0f40b55f8015d873.1620245794.git.christophe.jaillet@wanadoo.fr>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Sat, 8 May 2021 13:53:41 +0100
+Message-ID: <CA+V-a8sd7GYGWqvDQX4Zc1Z-t+L1oSSmYUpHrVkB0-6mqVhnBA@mail.gmail.com>
+Subject: Re: [PATCH V2] media: i2c: ov2659: Fix an error message
+To:     christophe.jaillet@wanadoo.fr
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Benoit Parrot <bparrot@ti.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The get_writeback_state() has gone since 2006, kill related comments.
+Hi Christophe,
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- mm/page-writeback.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+Thank you for the patch.
 
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 0062d5c57d41..1bbe185a6524 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -1869,10 +1869,9 @@ DEFINE_PER_CPU(int, dirty_throttle_leaks) = 0;
-  * which was newly dirtied.  The function will periodically check the system's
-  * dirty state and will initiate writeback if needed.
-  *
-- * On really big machines, get_writeback_state is expensive, so try to avoid
-- * calling it too often (ratelimiting).  But once we're over the dirty memory
-- * limit we decrease the ratelimiting by a lot, to prevent individual processes
-- * from overshooting the limit by (ratelimit_pages) each.
-+ * Once we're over the dirty memory limit we decrease the ratelimiting
-+ * by a lot, to prevent individual processes from overshooting the limit
-+ * by (ratelimit_pages) each.
-  */
- void balance_dirty_pages_ratelimited(struct address_space *mapping)
- {
-@@ -2045,8 +2044,6 @@ void laptop_sync_completion(void)
- /*
-  * If ratelimit_pages is too high then we can get into dirty-data overload
-  * if a large number of processes all perform writes at the same time.
-- * If it is too low then SMP machines will call the (expensive)
-- * get_writeback_state too often.
-  *
-  * Here we set ratelimit_pages to a level which ensures that when all CPUs are
-  * dirtying in parallel, we cannot go more than 3% (1/32) over the dirty memory
--- 
-2.26.2
+On Wed, May 5, 2021 at 9:17 PM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> 'ret' is known to be 0 here and printing -ENODEV wouldn't be really
+> helpful. So remove it from the error message.
+>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> V2: Remove the Fixes tag. It doesn't really fix something, it just removes
+>     a useless information.
+>     Just remove ret. No need to add something else.
+> ---
+>  drivers/media/i2c/ov2659.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+Acked-by: Lad Prabhakar <prabhakar.csengg@gmail.com>
 
+Cheers,
+Prabhakar
+
+> diff --git a/drivers/media/i2c/ov2659.c b/drivers/media/i2c/ov2659.c
+> index 42f64175a6df..6bbbb94fdda4 100644
+> --- a/drivers/media/i2c/ov2659.c
+> +++ b/drivers/media/i2c/ov2659.c
+> @@ -1368,8 +1368,7 @@ static int ov2659_detect(struct v4l2_subdev *sd)
+>                 id = OV265X_ID(pid, ver);
+>                 if (id != OV2659_ID) {
+>                         dev_err(&client->dev,
+> -                               "Sensor detection failed (%04X, %d)\n",
+> -                               id, ret);
+> +                               "Sensor detection failed (%04X)\n", id);
+>                         ret = -ENODEV;
+>                 } else {
+>                         dev_info(&client->dev, "Found OV%04X sensor\n", id);
+> --
+> 2.30.2
+>
