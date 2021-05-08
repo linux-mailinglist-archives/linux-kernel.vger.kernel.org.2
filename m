@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6393770EF
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0E23770F5
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbhEHJdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 05:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhEHJdM (ORCPT
+        id S230257AbhEHJfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 05:35:10 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:17601 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229583AbhEHJfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 05:33:12 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98132C061756;
-        Sat,  8 May 2021 02:32:10 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id b21so6498435plz.0;
-        Sat, 08 May 2021 02:32:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=1CGHW9g1U7mxu/mVGb43UumaGiz2ve3vaE4gPvsroXY=;
-        b=pbDNw1Fx99ba7QrZGEIm3/SSQPA+bqJOrtp8ZLb9V73V8MxilDw19X7PFvb6cmZHlr
-         tWsyk85UfQdF1vdn/Gzb1CZITBpP0i/KxS2W/2wEL9L+l2I1kUagiHakVRr2SaxxnbEm
-         QTu2kzhqPT6bab/UqOaOoLw4vMasOeqqHD7kX4VfKoZ1iM0xlIEsyO+L+Xsz4+0TiEKg
-         8YQhDFEbjSbSfWzYzsCfUkybNrPTk5djolvDN2iWu1z+nll5XaU+/17OvAjhbfTA62+v
-         Hl5LOzFPTW0bvHLcqWx+SMDAVN1rasBs3Q5jSaJp/lbeclLW4QFCxLzvrFuKu+r3O7sM
-         SI6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=1CGHW9g1U7mxu/mVGb43UumaGiz2ve3vaE4gPvsroXY=;
-        b=nx8kNBusuWfeiTqbEqLZ+J4E9UnFXKc95WDiOdop1r5NQhRmAwawxGDi6RuoUmmWd3
-         LUzV5w8/5lwEnBQsV0CK+mbtdjIUxx0sVfU5t3LpHTPG/LQbKCLv7/ENjHZNNAEW9GTj
-         uK8818l/yQvKPxH4daMW6yJmJkO7/ZQRxObEB0W1FreSkkEQgBZMKHoIW3grDvp6DbWa
-         oLKOdn4Txe9o0IMhT9prveN44ZrpOXDwFQfT9k7k5NlGm1ntfVFfDotbe6iPMWpOL1L3
-         Xg4LL1u9K6YPGVMjnKjKvsQzPtVHLpwGlX+oWhXg+gdpiLNIt6GhuBDEYCk6pSPZjFke
-         /JDA==
-X-Gm-Message-State: AOAM530ndE7Xt/iTv/EeSdX5MI29FInSofknkn+YerdDL3Gaci5NJaAp
-        9qfSo+GxSV704inmSFxBtgO0wRR3Vq0=
-X-Google-Smtp-Source: ABdhPJy//+f7HmIzch4pMQ1TT6uDnh5IuVL+45PNnmpu/8oWSEAXNCv0ga9U3CCfGHrHzyAqD2BfwA==
-X-Received: by 2002:a17:902:bc88:b029:ee:7ef1:e770 with SMTP id bb8-20020a170902bc88b02900ee7ef1e770mr14621444plb.19.1620466329986;
-        Sat, 08 May 2021 02:32:09 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.6])
-        by smtp.googlemail.com with ESMTPSA id f3sm40437765pjo.3.2021.05.08.02.32.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 08 May 2021 02:32:09 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, stable@vger.kernel.org
-Subject: [PATCH 3/3] KVM: X86: Fix vCPU preempted state from guest point of view
-Date:   Sat,  8 May 2021 17:31:50 +0800
-Message-Id: <1620466310-8428-3-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620466310-8428-1-git-send-email-wanpengli@tencent.com>
-References: <1620466310-8428-1-git-send-email-wanpengli@tencent.com>
+        Sat, 8 May 2021 05:35:10 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FchsG5B6cz1BJPP;
+        Sat,  8 May 2021 17:31:30 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 8 May 2021 17:33:58 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Edmund Dea <edmund.j.dea@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] drm/kmb: Remove several unneeded semicolons
+Date:   Sat, 8 May 2021 17:33:49 +0800
+Message-ID: <20210508093349.2730-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+The semicolon immediately following '}' is unneeded.
 
-Commit 66570e966dd9 (kvm: x86: only provide PV features if enabled in guest's 
-CPUID) avoids to access pv tlb shootdown host side logic when this pv feature 
-is not exposed to guest, however, kvm_steal_time.preempted not only leveraged 
-by pv tlb shootdown logic but also mitigate the lock holder preemption issue. 
-From guest point of view, vCPU is always preempted since we lose the reset of
-kvm_steal_time.preempted before vmentry if pv tlb shootdown feature is not 
-exposed. This patch fixes it by clearing kvm_steal_time.preempted before 
-vmentry.
-
-Fixes: 66570e966dd9 (kvm: x86: only provide PV features if enabled in guest's CPUID)
-Cc: stable@vger.kernel.org
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- arch/x86/kvm/x86.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/kmb/kmb_dsi.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index c0244a6..c38e990 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3105,7 +3105,8 @@ static void record_steal_time(struct kvm_vcpu *vcpu)
- 				       st->preempted & KVM_VCPU_FLUSH_TLB);
- 		if (xchg(&st->preempted, 0) & KVM_VCPU_FLUSH_TLB)
- 			kvm_vcpu_flush_tlb_guest(vcpu);
--	}
-+	} else
-+		st->preempted = 0;
+diff --git a/drivers/gpu/drm/kmb/kmb_dsi.c b/drivers/gpu/drm/kmb/kmb_dsi.c
+index 4b5d82af84b3014..231041b269f5395 100644
+--- a/drivers/gpu/drm/kmb/kmb_dsi.c
++++ b/drivers/gpu/drm/kmb/kmb_dsi.c
+@@ -281,7 +281,7 @@ static u32 mipi_get_datatype_params(u32 data_type, u32 data_mode,
+ 		default:
+ 			DRM_ERROR("DSI: Invalid data_mode %d\n", data_mode);
+ 			return -EINVAL;
+-		};
++		}
+ 		break;
+ 	case DSI_LP_DT_PPS_YCBCR422_16B:
+ 		data_type_param.size_constraint_pixels = 2;
+@@ -301,7 +301,7 @@ static u32 mipi_get_datatype_params(u32 data_type, u32 data_mode,
+ 		default:
+ 			DRM_ERROR("DSI: Invalid data_mode %d\n", data_mode);
+ 			return -EINVAL;
+-		};
++		}
+ 		break;
+ 	case DSI_LP_DT_LPPS_YCBCR422_20B:
+ 	case DSI_LP_DT_PPS_YCBCR422_24B:
+@@ -318,7 +318,7 @@ static u32 mipi_get_datatype_params(u32 data_type, u32 data_mode,
+ 		default:
+ 			DRM_ERROR("DSI: Invalid data_mode %d\n", data_mode);
+ 			return -EINVAL;
+-		};
++		}
+ 		break;
+ 	case DSI_LP_DT_PPS_RGB565_16B:
+ 		data_type_param.size_constraint_pixels = 1;
+@@ -337,7 +337,7 @@ static u32 mipi_get_datatype_params(u32 data_type, u32 data_mode,
+ 		default:
+ 			DRM_ERROR("DSI: Invalid data_mode %d\n", data_mode);
+ 			return -EINVAL;
+-		};
++		}
+ 		break;
+ 	case DSI_LP_DT_PPS_RGB666_18B:
+ 		data_type_param.size_constraint_pixels = 4;
+@@ -361,7 +361,7 @@ static u32 mipi_get_datatype_params(u32 data_type, u32 data_mode,
+ 	default:
+ 		DRM_ERROR("DSI: Invalid data_type %d\n", data_type);
+ 		return -EINVAL;
+-	};
++	}
  
- 	vcpu->arch.st.preempted = 0;
- 
+ 	*params = data_type_param;
+ 	return 0;
 -- 
-2.7.4
+2.26.0.106.g9fadedd
+
 
