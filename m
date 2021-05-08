@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B98377170
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 13:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19886377179
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 13:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhEHLe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 07:34:59 -0400
-Received: from mout.gmx.net ([212.227.17.20]:37793 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230234AbhEHLe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 07:34:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1620473634;
-        bh=yjwGGl/zXrCMTYrbrC8+EDsU3PDJjMfbSr5bOfa/aUs=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=gfcDGTLqH3UCeLP+S3GOVF29duDBm+2SDB99bPxbPurHTIZHiroO4i8TEnA3JsyRy
-         t6b9aQbedOsgOH1o+a5XMOOdaZ1fQE63cZH6a7ww7T8J0hWxXfDMj5SqzYMdzLWCzD
-         TbYYaCKnPMZT2jgyRW/dFEDR+93dQamCFeLc1DDI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.126]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N1Obb-1lYVVB21Sl-012mdI; Sat, 08
- May 2021 13:33:54 +0200
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     openbmc@lists.ozlabs.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Nuvoton NPCM: Add myself as reviewer
-Date:   Sat,  8 May 2021 13:33:42 +0200
-Message-Id: <20210508113342.94457-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.30.2
+        id S230473AbhEHLjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 07:39:55 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:35923 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230234AbhEHLjx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 07:39:53 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1Mk0e8-1lHEtG30BM-00kRTx; Sat, 08 May 2021 13:38:50 +0200
+Received: by mail-wr1-f45.google.com with SMTP id d4so11774690wru.7;
+        Sat, 08 May 2021 04:38:50 -0700 (PDT)
+X-Gm-Message-State: AOAM530oiKh2MMZczvHPrNgu7fSD+VN8zO5/lSTjR/pBiVVMXua+ZRzY
+        C/AmWmvTiLYcNz1zJIw1OVqQuDEXioGgwqqzRhU=
+X-Google-Smtp-Source: ABdhPJz9Ugr0PcKykwE/hh6B427vWc6utZRdX8QIU/0Cr6kUxmxhdoRfUEI4Usf4M2X1Uz94Uu4T5nd0trDb5rVyhQE=
+X-Received: by 2002:a5d:4452:: with SMTP id x18mr19275744wrr.286.1620473930435;
+ Sat, 08 May 2021 04:38:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xLX2yTtE7abk1R7iXLdEZMFtMYhhVRIWGEg/Vj3E2nmwZpZ1z7y
- u66rYrr3YqalW21cR34Xl/RSYAj7p1d7igxQ+nz67NiQIXcjBmkvNYQwbl+AnwnOKqUpFPE
- Rcpd++5QeRpXUiRbcuOMx0ZMG/UBfcQgOBCcOkyoNIgRYOn8rib3ldUxVoTtbhG3BYoP28K
- QvmcAHTdEPKr4smh5Q1GQ==
+References: <20210507220813.365382-1-arnd@kernel.org> <20210507220813.365382-7-arnd@kernel.org>
+In-Reply-To: <20210507220813.365382-7-arnd@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 8 May 2021 13:38:01 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3GP7Wwyes_08nRQ-ESfx2dQr2Ygdz6jpSC1754M2s82A@mail.gmail.com>
+Message-ID: <CAK8P3a3GP7Wwyes_08nRQ-ESfx2dQr2Ygdz6jpSC1754M2s82A@mail.gmail.com>
+Subject: Re: [RFC 06/12] asm-generic: unaligned: remove byteshift helpers
+To:     linux-arch <linux-arch@vger.kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:XIlD8vjJ1W0rLa4aosdkuaHT/wJ+yPvLA/7TDScMAiGnUZCyqxh
+ +4KaoW2vz/TF7k2wlKZzm3p11YXDyOVX4jRAGtHWRTx8gbLBN3cegyQV6C2YZUhGysY6F7S
+ R9CCRYlLsOT3MCa5bSxIlUrffruSigXnSNMBYiFF+lBocA1ukt0JFo6oDEGUgL6gHJPdDeH
+ i0C7zbtIlQybllb1Z0SYA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3fQgF26cF/c=:JXq4DYe5tCORfk5c2rBx5w
- 1U5BcnwhuHmCDmRSxBesN5/l2UMjSZUB0pTS9xiEgFDmvA4yuzrQau8+LSr/5rwr+so9XzDPG
- WrKnWsvh7dKyYBzkJqxY92Gai2RmIVKDixknWAHkPcJIDw3yg5fu3v0/cmqvJedWCywof0gtJ
- 8ZtqDXmq8HZ/yINZlHCQb8fnBJvXhK4Ud5UZOHqc+lxeNjYebyr2jF4+UEI5yzZcui0C+8DW6
- WeTRK/j5eEA3Fsc+956TWkq92UpkI7DYb3yTomt/R2pTCEmIciucTJUY4jseGRW+1bKMdWL4I
- 2lVufeMjipknpqSwFSl2cv1X1VYIVN195hQZ+J73LH/u87EK8MpMt61UbtI3Q3R3wBaCgiSni
- ZoQgLaBvXgTYrRoOq3PAeCJswY3PcsodFMiqxQ2xExk7SSuDcpTX6brVH5aLo0j8sD8svN1cz
- pAovO8CCwnchKfa6eHcO7iX/avqxQGYsG37NWOuL3018Jv7cfQQyXmRt/L6l4PtVY1A4rxxJN
- 36dE6UmzHHMhuPM7P9zKXEZWycuZoRtQM/MqPkrS+97tG/K4fmgvd0uSJwupOE45IPiA8xwDY
- prCxFWJGs5slZ7Gu1XhTUsi64XWxkHqYQwASKpE+p4CvfZ/eF1uCvXmKJjxuPb7z2jSng61Yd
- tg+V5nmXs3DwBttHZ+wu8o0D0MlGMZiWYK5PJJrQCngVnN6xDHLHY+2EtUZCzTpiz8wbemS9W
- /X8MmZrfA2KuyuA+1F5Y8JqGluvk2zO2M53Jyaka490DAW1R9Pcwnjr0McR+bpJQ5TQbPy4Vg
- mLDPBP/S6kzOPHSohf03ohI0qmumEH1VNZvCTUxamAk5uQOHK7mIhOrc2O4AsqyNYx2JnJCf6
- J0x2De+u1Dlxk4DHXNQn+FBbPDczbLFWtRJ/oA4E6aAiIs0GqYdS64eCMxt6VHzdmhjL9WprY
- zbvCA0VEZ3V43mRsvRlGrTCNtSz+pPThXWE8bmDq+4GQX5q0pc2yw5yagrYzwGMVd8GdtuDFE
- lZHa15swFRLo1bjyLbpNiLmqHnuYzwBB29ITbZMAL+71FB4ymYqx3axnrwhSLdM0fd8AQXYVs
- 4CWX2JDmv+liF+q4Wb7L9Rmq4bWjUJrWtdDewxMHsi1G1pWnGNJl1SLKBwbcr1jW1mlh9rrA0
- abYR/wMZ+INXWdjww6Hk/1eICf2bpW35naxtTqJjeTTrIe3evO43HcwOCmhKdvN5/rBfuGqe1
- 0QxVdj9DkVcCZMXmW
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0bghlFN1rqo=:xGxxNCBXGlDvRQFCULRRjW
+ rs0RgZTUzaY6c7wXv3Gwe8HCYsAMC3JIY1eGN2kTkt4DMtmSSJJ4UcZApHv0xtIhlOnknQx4Z
+ NE2Hbs5vH0YI+GfqBA/cLKR1881YRlsctcsCtFbaVhJXtgjB17wo3GZE54eWgDLU8N68XWmLE
+ lD8AbcvnppxzP8p3yGaNKEJ3PMNx0dTdbHHM6Zd5Y2PzI1uZNQ75jZs5TPdVYVHRj8PWNedJx
+ 8cmZZ3JZJTs6/yyLQbshZYXsdCvaWj+3FRyXGfHW5xQLkKMkXbCJo4cgXxx29D/1yjh9ys5xz
+ n+mM+Y+fjkteLNpWFckp9N8KPiGTcHsO+CQ/NdGYl2thZwjyOzci5eZwA7THLB5W90UZZpL8S
+ Vjk6stl+lpJhQHkir5iteuy8P9t5jlLnmVQahxfVS0Gx6vgmKP1riQXQP8vjwDRZo9YS85w80
+ he+zGIv9cjMV19FfmdLX5MeWO3PYjQCiHOQROhZ/Z5o1/CTmozPEzlPzWTqtHAsEotg/6rtC8
+ w5qOv2kWcQ6wBLseEcMyRY=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nuvoton NPCM7xx SoCs share a lot of the hardware design with Nuvoton
-WPCM450. I'm adding myself as a reviewer, so I don't miss patches that
-affect both NPCM7xx and WPCM450.
+On Sat, May 8, 2021 at 12:11 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> I've included this patch in the series because Linus asked about
+> removing the byteshift version, but after trying it out, I'd
+> prefer to drop this and use the byteshift version for the
+> generic code as well.
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Update: I've tried to create a small test case that illustrates the problem
+with using the swab() based version, however all cases combinations
+I tried showed either both producing identical output, or the shift
+version being worse, see https://godbolt.org/z/bTdsjnjfT
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 661770e8e6fc1..78f9df2b6cd20 100644
-=2D-- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2184,6 +2184,7 @@ M:	Tali Perry <tali.perry1@gmail.com>
- R:	Patrick Venture <venture@google.com>
- R:	Nancy Yuen <yuenn@google.com>
- R:	Benjamin Fair <benjaminfair@google.com>
-+R:	Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
- L:	openbmc@lists.ozlabs.org (moderated for non-subscribers)
- S:	Supported
- F:	Documentation/devicetree/bindings/*/*/*npcm*
-=2D-
-2.30.2
+I'll rewrite the patch description accordingly and leave this in place.
 
+       Arnd
