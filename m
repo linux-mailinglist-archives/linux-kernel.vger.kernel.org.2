@@ -2,103 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90523772DE
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 18:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 544D63772E3
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 18:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbhEHQGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 12:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhEHQGD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 12:06:03 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46374C061574
-        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 09:05:01 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id a36so15387843ljq.8
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 09:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gse-cs-msu-ru.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7DhCvIteBF1AiZLgolJdfWDXx7RlxiueUEPWfMrlLO0=;
-        b=qjXvg4TkfMJbXDBLbUb7ptQZpozeTcxE3jz3cMNqAl4XcCBz55Xj3dGyNClf2ND/49
-         Si0ZiJBAYJNlaA/xBCLN0LwrQgnIzn/zr+vvIyUD7mFSnUQp4gsgWPofcecWxdZyErdR
-         BRBaLk97hB4P3ZpTBRUwl9dhmIUnR4U7sHTIOaaNJ/pOUgd6RyrP+p9TAXmr2N7klB0G
-         XvjQK+uTxwJeJze1rKpX2Ir7IqAcBJjHqsgS8xc3dzp8ikF0Pg4FlUkrqIOG/UEMaezy
-         nFYcu3XgjTQ2SDO0twXPwbWCtj6FeUq6AtsbjG+4mtB8hVihBztSMOBYnHJnZPtbbxJK
-         TANw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7DhCvIteBF1AiZLgolJdfWDXx7RlxiueUEPWfMrlLO0=;
-        b=jmf0SNySoi/KktgIV/inUeoqKYRo4Lc03FGpy0sIT0yxj194F85WwVmclHAXWqr+xA
-         ZyCRea89+LYzkDF2FItgj/ErJ+tFeDt3ezRpUFpsbm7DEPwZxaQ1lvBp9ldreeS4TKrs
-         7D3atyf2eqsikanrvXYQg02P1FFGzK1sI4TJwjNka3U6B0fNSzar6FWseSpbW88pYBnp
-         sUrqgbzkowotYmeHbA4B1iMUfqAjfo0xwBzvqlzc/Cnta3PIZaY6aWVoHfnaghGdmQcm
-         XAvU42QYaRx22SC42OBU+WyBHBzZaUN5nqZDyEUXonq1ARjahT5h9JkN2Mai+1jFser1
-         Q9rQ==
-X-Gm-Message-State: AOAM533xY0kpg3D+HVpvO4v+KrSvBnXrVlxWBqiEGpMuVso7yWFCVhvz
-        MiMPziTSL2TRsTiItvjTlLc6lg==
-X-Google-Smtp-Source: ABdhPJyV1vkEl+NROpF0QFiCOzWCNEOAGU8Jji8JGy3yPbWPrMuh6hvpp23ZjvrL3uMgSaiq2QoL8g==
-X-Received: by 2002:a2e:b601:: with SMTP id r1mr12313125ljn.203.1620489899128;
-        Sat, 08 May 2021 09:04:59 -0700 (PDT)
-Received: from localhost.localdomain ([79.165.19.240])
-        by smtp.gmail.com with ESMTPSA id o139sm1665325lfa.129.2021.05.08.09.04.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 May 2021 09:04:58 -0700 (PDT)
-From:   Yuri Savinykh <s02190703@gse.cs.msu.ru>
-To:     Michael Tretter <m.tretter@pengutronix.de>
-Cc:     Yuri Savinykh <s02190703@gse.cs.msu.ru>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-Subject: [bug report] media: allegro: possible NULL pointer dereference.
-Date:   Sat,  8 May 2021 19:04:55 +0300
-Message-Id: <20210508160455.86976-1-s02190703@gse.cs.msu.ru>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229681AbhEHQKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 12:10:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229500AbhEHQKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 12:10:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C05B3611BD;
+        Sat,  8 May 2021 16:09:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620490187;
+        bh=iebm6uA8PQV7WkeDMZxLl/j6IyUUC0ngp8SVR1pGz60=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=d7/EnYDOYt3YEebyDTeVfVD5t+UeGMdmDXMr0ydkbJQwelRIVVvUN7OmOTU3YJi4k
+         2TxCG/MbOiZn+zjXz5P960F8c+Gu011iVwvwf++pY8k0l1WDqKdR6PocO9VCvjmhZh
+         jz33kjSYNweIMNWI8Mmgp3MvfcyUWYf3vl3rQ6cxf2Wv73cRu6SYghPfCaxt91aC+G
+         ACl8L6BiXv447OyzlPSq1jA0Lq02lSpiqXm8/Cx68bMsSb6l69N4QghUFvwIMHbP45
+         xbY6ln/fEaASwdYktbVkFfAtDGLrxZkSnub70thIuKElUEed7YZKfqG+9BLGY3ueAI
+         4xjZg1fw94+rA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A967D60A02;
+        Sat,  8 May 2021 16:09:47 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for 5.13-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210508005952.3236141-1-kuba@kernel.org>
+References: <20210508005952.3236141-1-kuba@kernel.org>
+X-PR-Tracked-List-Id: <netdev.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210508005952.3236141-1-kuba@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.13-rc1
+X-PR-Tracked-Commit-Id: 55bc1af3d9115d669570aa633e5428d6e2302e8f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: fc858a5231089b972076642a86cf62481d95d82e
+Message-Id: <162049018763.24889.6610704138877432590.pr-tracker-bot@kernel.org>
+Date:   Sat, 08 May 2021 16:09:47 +0000
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The pull request you sent on Fri,  7 May 2021 17:59:52 -0700:
 
-At the moment of enabling irq handling:
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.13-rc1
 
-3166     ret = devm_request_threaded_irq(&pdev->dev, irq,
-3167                     allegro_hardirq,
-3168                     allegro_irq_thread,
-3169                     IRQF_SHARED, dev_name(&pdev->dev), dev);
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/fc858a5231089b972076642a86cf62481d95d82e
 
-there is still uninitialized field mbox_status of struct allegro_dev *dev.
-If an interrupt occurs in the interval between the installation of the
-interrupt handler and the initialization of this field, NULL pointer
-dereference happens.
+Thank you!
 
-This field is dereferenced in the handler function without any check:
-
-1801 static irqreturn_t allegro_irq_thread(int irq, void *data)
-1802 {
-1803     struct allegro_dev *dev = data;
-1804
-1805     allegro_mbox_notify(dev->mbox_status);
-
-
-and then:
-
-752 static void allegro_mbox_notify(struct allegro_mbox *mbox)
-753 {
-754     struct allegro_dev *dev = mbox->dev;
-
-The initialization of the mbox_status field happens asynchronously in
-allegro_fw_callback() via allegro_mcu_hw_init(). 
-
-Is it guaranteed that an interrupt does not occur in this interval?
-If it is not, is it better to move interrupt handler installation
-after initialization of this field has been completed?
-
-Found by Linux Driver Verification project (linuxtesting.org).
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
