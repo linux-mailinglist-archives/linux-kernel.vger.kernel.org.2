@@ -2,66 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42E9377415
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 22:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C7337741D
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 23:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbhEHU5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 16:57:06 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:59668 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229522AbhEHU5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 16:57:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=g/WsiBFvrJ4SfQSvjJJFtE2IU9SObL9caGm/yUDzgis=; b=EEUFhQXK9kJAj1EPmMy0eFtAf2
-        Xs3ZAfPEsCNYLbgS+g0f2GIpc4ftdalOtXJQDQBVKYOTbmsenQbWgGyWXs5UqZ/WRSs1PszTmKxaN
-        wJpDjpdDhyG+lmUmB8kR4As7fUBOxpGhkPgKlE0rRGv/2EQAD93QaGY1Zu7C+kygz2Ac=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lfTzS-003JA0-9Z; Sat, 08 May 2021 22:55:58 +0200
-Date:   Sat, 8 May 2021 22:55:58 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next v3 19/20] net: dsa: qca8k: pass
- switch_revision info to phy dev_flags
-Message-ID: <YJb63t/TFVs/3uIZ@lunn.ch>
-References: <20210504222915.17206-1-ansuelsmth@gmail.com>
- <20210504222915.17206-19-ansuelsmth@gmail.com>
- <20210506112458.yhgbpifebusc2eal@skbuf>
- <YJXMit3YfBXKM98j@Ansuel-xps.localdomain>
- <20210507233353.GE1336@shell.armlinux.org.uk>
- <20210508182620.vmzjvmqhexutj7p3@skbuf>
- <20210508193911.GG1336@shell.armlinux.org.uk>
+        id S229644AbhEHVHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 17:07:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhEHVHa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 17:07:30 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E13C061574;
+        Sat,  8 May 2021 14:06:28 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lfU8u-00Cktr-Je; Sat, 08 May 2021 21:05:44 +0000
+Date:   Sat, 8 May 2021 21:05:44 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jia He <justin.he@arm.com>, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@ftp.linux.org.uk>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH RFC 1/3] fs: introduce helper d_path_fast()
+Message-ID: <YJb9KFBO7MwJeDHz@zeniv-ca.linux.org.uk>
+References: <20210508122530.1971-1-justin.he@arm.com>
+ <20210508122530.1971-2-justin.he@arm.com>
+ <CAHk-=wgSFUUWJKW1DXa67A0DXVzQ+OATwnC3FCwhqfTJZsvj1A@mail.gmail.com>
+ <YJbivrA4Awp4FXo8@zeniv-ca.linux.org.uk>
+ <CAHk-=whZhNXiOGgw8mXG+PTpGvxnRG1v5_GjtjHpoYXd2Fn_Ow@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210508193911.GG1336@shell.armlinux.org.uk>
+In-Reply-To: <CAHk-=whZhNXiOGgw8mXG+PTpGvxnRG1v5_GjtjHpoYXd2Fn_Ow@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> We do have the problem with Marvell DSA vs Marvell PHY setup in that
-> the Marvell DSA driver assumes that all integrated PHYs that do not
-> have an ID are all the same. They are most definitely not, and this
-> shows itself up when we register the hwmon stuff inappropriately, or
-> access the wrong registers to report hwmon values.
+On Sat, May 08, 2021 at 01:39:45PM -0700, Linus Torvalds wrote:
 
-Hi Russell
+> +static inline int prepend_entries(struct prepend_buffer *b, const struct path *path, const struct path *root, struct mount *mnt)
 
-This was to some degree fixed recently. Rather than always use the
-6390 ID for everything, the family ID is now used. This should avoid
-the issue with the SERDES being incorrectly considered a PHY, since
-that particular family ID is not listed in the PHY driver.
+If anything, s/path/dentry/, since vfsmnt here will be equal to &mnt->mnt all along.
 
-      Andrew
+> +{
+> +	struct dentry *dentry = path->dentry;
+> +	struct vfsmount *vfsmnt = path->mnt;
+> +
+> +	while (dentry != root->dentry || vfsmnt != root->mnt) {
+> +		int error;
+> +		struct dentry * parent;
+> +
+> +		if (dentry == vfsmnt->mnt_root || IS_ROOT(dentry)) {
+> +			struct mount *parent = READ_ONCE(mnt->mnt_parent);
+> +			struct mnt_namespace *mnt_ns;
+> +
+> +			/* Escaped? */
+> +			if (dentry != vfsmnt->mnt_root)
+> +				return 3;
+> +
+> +			/* Global root? */
+> +			if (mnt != parent) {
+> +				dentry = READ_ONCE(mnt->mnt_mountpoint);
+> +				mnt = parent;
+> +				vfsmnt = &mnt->mnt;
+> +				continue;
+> +			}
+> +			mnt_ns = READ_ONCE(mnt->mnt_ns);
+> +			/* open-coded is_mounted() to use local mnt_ns */
+> +			if (!IS_ERR_OR_NULL(mnt_ns) && !is_anon_ns(mnt_ns))
+> +				return 1;	// absolute root
+> +
+> +			return 2;		// detached or not attached yet
+> +			break;
+
+?
+
+> +		}
+> +		parent = dentry->d_parent;
+> +		prefetch(parent);
+> +		error = prepend_name(b, &dentry->d_name);
+> +		if (error)
+> +			break;
+
+return error, surely?
+
+> +		dentry = parent;
+> +	}
+> +	return 0;
+> +}
+
+FWIW, if we go that way, I would make that
+
+	while (dentry != root->dentry || &mnt->mnt != root->mnt) {
+		int error;
+		struct dentry *parent = READ_ONCE(dentry->d_parent);
+
+		if (unlikely(dentry == mnt->mnt.mnt_root)) {
+			struct mount *m = READ_ONCE(mnt->mnt_parent);
+
+			/* Global root? */
+			if (unlikely(mnt == m) {
+				struct mnt_namespace *mnt_ns;
+
+				mnt_ns = READ_ONCE(mnt->mnt_ns);
+				/* open-coded is_mounted() to use local mnt_ns */
+				if (!IS_ERR_OR_NULL(mnt_ns) && !is_anon_ns(mnt_ns))
+					return 1;	// absolute root
+				else
+					return 2;	// detached or not attached yet
+			}
+			// cross into whatever it's mounted on
+			dentry = READ_ONCE(mnt->mnt_mountpoint);
+			mnt = m;
+			continue;
+		}
+
+		/* Escaped? */
+		if (unlikely(dentry == parent))
+			return 3;
+
+		prefetch(parent);
+		error = prepend_name(b, &dentry->d_name);
+		if (error)
+			return error;
+		dentry = parent;
+	}
+	return 0;
