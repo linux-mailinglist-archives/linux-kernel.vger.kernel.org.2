@@ -2,160 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D900B376E10
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 03:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8B6376E13
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 03:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhEHB0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 21:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhEHB0d (ORCPT
+        id S230213AbhEHB1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 21:27:18 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:13906 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229775AbhEHB1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 21:26:33 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43896C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 18:25:32 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id v6so13814024ljj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 18:25:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UO5n5JJicAxX5p7zS8VwfLqfSuD5YIVNKEByE2pLl0c=;
-        b=gRGkAPLgXjC0nFFXFZ5lswhY9Zog40ucTQNVIX4auWckQ3XCgkA64OyBVraUAD+scW
-         xPYCk+pUHF+wyEJy5cQDPovPIuRjV9+MYVdQ6HXg+wMAg0kM0irYdtZiiVDATbn92Xt2
-         EFXgHacn6LHs9Ufg5vgyfXeqo0lNEfCZ9cyWhkbOkPaWvenQyrYKQETMVD3TQZZfa704
-         78diNLnF5wmzIVM6vSn5v03H7TdEGPjJEgAwLzu29VfHlKC8KskOXLH4+2ayD5K2bAVE
-         5GNG21C2+kZm2aYjilpTW8n6qL03Sg1uGHznTESlnxxwqoU/VnmjmgJsfcePhw//tfq4
-         UBTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UO5n5JJicAxX5p7zS8VwfLqfSuD5YIVNKEByE2pLl0c=;
-        b=E+rJ6pggftHgbtxYp7V9twZT8K8ChW0AhvibcBo+UNM1ICNENahC1iLlVGGBaVDipk
-         JI0zReLHRQH1SaK+vddsbT8sJCkxansGZmpZSHdV4QnmGDPiz+zpCwLrh1zvjfXFRtTe
-         dtH6Ld8l0czt0FCKHxqWHfis0oV2K8XupjvRIsR0L/TaP+8hmq7KtmUjPtj8N2O+LGfN
-         GJJWKaoWR0w1W8U4PhK8bzkbIZHsRQCw0EMVlx+xgN9o5LMdgwMcFbbyLqRthIXMaqFH
-         gsvYnVqI10E6rd3hbIWJlYYbhbhEqeCSgfJegMnA6k2sScGUb2ywE9ldTdeRWrAPvmmD
-         jZfw==
-X-Gm-Message-State: AOAM531erA63NgGYROJakRwmoaR6ZjlOsLQubcYoXchstcIguB8Jgcow
-        Pkitwyff13s9WLIz2BeE1skW9gSM9VbW6x3o/4lVqMuKuRZvLQ==
-X-Google-Smtp-Source: ABdhPJzmNE5WWJ+b+uIqJYWfNX8Pwstl6LwR+4PpW2ly9j2+eYp9aJWPedLb/vd4Hj1lmGPRkxfavt1v9XvE96ssdpE=
-X-Received: by 2002:a2e:a489:: with SMTP id h9mr10249085lji.21.1620437130695;
- Fri, 07 May 2021 18:25:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210507112031.23073-1-xuewen.yan94@gmail.com>
- <20210507123528.GA106818@e120877-lin.cambridge.arm.com> <da0fe50a-f419-e6a1-d67f-76fbe5cbf520@arm.com>
- <20210507153827.GA176408@e120877-lin.cambridge.arm.com> <c265d9ab-f06f-692f-df43-464bf4f2ea68@arm.com>
- <20210507171438.GA326455@e120877-lin.cambridge.arm.com>
-In-Reply-To: <20210507171438.GA326455@e120877-lin.cambridge.arm.com>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Sat, 8 May 2021 09:23:55 +0800
-Message-ID: <CAB8ipk_VF0iD-4Lp73UsPYwz9wOawro5ZfyZihFU4Pu3_ehZjA@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/pelt: Keep UTIL_AVG_UNCHANGED flag in sync when
- calculating last_enqueued_diff
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Ryan Y <xuewyan@foxmail.com>
+        Fri, 7 May 2021 21:27:18 -0400
+X-UUID: 49f2a9260c924ab29931aaf303c27f0b-20210508
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=nutVWr3hj7bZu1jyL7Kcy7LCd3FoB69So5Jsa45A8nc=;
+        b=BYF36mNPSelcP304PLje7S0wjlCSl23pAaIDJNWoIRqd8bwWXurX6E21u1xTXDM18X0W+n8zWsjg9OjnqwtNvUqJe2LyA3gbzqU6qt3y8eATN88hZaZcN08WuGXOrqt87GeJ44HyRRu2Gu/91qhf0hNZaa4g3GQwV9tgzVB+jd4=;
+X-UUID: 49f2a9260c924ab29931aaf303c27f0b-20210508
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 837447625; Sat, 08 May 2021 09:26:11 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N1.mediatek.inc
+ (172.27.4.71) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 8 May
+ 2021 09:26:09 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 8 May 2021 09:26:08 +0800
+Message-ID: <1620437169.10796.10.camel@mhfsdcap03>
+Subject: Re: [PATCH] usb: fotg210-hcd: Fix an error message
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+CC:     <gregkh@linuxfoundation.org>, <shubhankarvk@gmail.com>,
+        <lee.jones@linaro.org>, <gustavoars@kernel.org>,
+        <vulab@iscas.ac.cn>, <john453@faraday-tech.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+Date:   Sat, 8 May 2021 09:26:09 +0800
+In-Reply-To: <75002e1a-bca7-8726-de2e-56905f255693@wanadoo.fr>
+References: <94531bcff98e46d4f9c20183a90b7f47f699126c.1620333419.git.christophe.jaillet@wanadoo.fr>
+         <1620354030.10796.6.camel@mhfsdcap03>
+         <75002e1a-bca7-8726-de2e-56905f255693@wanadoo.fr>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 97B07E1BE83D35AEE515145D4491D420241A3ED52927466B5CF9C472810CFB982000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 8, 2021 at 1:14 AM Vincent Donnefort
-<vincent.donnefort@arm.com> wrote:
->
-> [...]
->
-> > >
-> > > But we take the abs() of last_enqueued_diff.
-> > >
-> > > If we consider the following examples:
-> > >
-> > >    enqueued_old = 5, enqueued_new = 9
-> > >    diff = 5 - (9 + 1) => 5 - 10 => -5
-> > >
-> > >    enqueued_old = 9, enqueued_new = 5
-> > >    diff = 9 - (5 + 1) => 9 - 6 => 3
-> > >
-> > > In both cases the delta is supposed to be 4. But in the first case we end-up
-> > > with 5. In the second, we end-up with 3. That's why I meant the effect on the
-> > > diff depends on who's greater, ue.enqueued or task_util().
-> >
-> > Ah, OK, due to the abs() in within_margin(). But util's LSB is lost due
-> > to the flag anyway. Hence I assume e.g. enqueued_new = 9 should be
-> > (task_util() = 8) + 1 (| flag) in the example.
->
-> Yeah, I should have used an even number for the demonstration :-)
->
-> >
-> > OTHA, implementing UTIL_AVG_UNCHANGED as LSB and making this visible on
-> > the util_est 'API' has other issues too. The condition
-> > `!task_util_est(p)` can never be true in find_energy_efficient_cpu()
-> > because of UTIL_AVG_UNCHANGED.
-> >
-> > So why not use `UTIL_AVG_UNCHANGED = 0x80000000` and just keep its use
-> > internal (between cfs_se_util_change() and util_est_update()), i.e. not
-> > exporting it (via _task_util_est()) and not eclipsing util_est's LSB
-> > value?
->
-> As this would be fixing two issues at once, it's probably preferable.
->
-> [...]
->
-> >  kernel/sched/fair.c |  5 +++--
-> >  kernel/sched/pelt.h | 11 ++++++-----
-> >  2 files changed, 9 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 1d75af1ecfb4..dd30e362c3cc 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -3902,7 +3902,7 @@ static inline unsigned long _task_util_est(struct task_struct *p)
-> >  {
-> >       struct util_est ue = READ_ONCE(p->se.avg.util_est);
-> >
-> > -     return (max(ue.ewma, ue.enqueued) | UTIL_AVG_UNCHANGED);
-> > +     return max(ue.ewma, (ue.enqueued & ~UTIL_AVG_UNCHANGED));
-> >  }
-> >
-> >  static inline unsigned long task_util_est(struct task_struct *p)
-> > @@ -4002,7 +4002,7 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
-> >        * Reset EWMA on utilization increases, the moving average is used only
-> >        * to smooth utilization decreases.
-> >        */
->
-> Needs to be updated to add:
->
->         last_enqueued_diff = ue.enqueued & ~UTIL_AVG_UNCHANGED;
+T24gRnJpLCAyMDIxLTA1LTA3IGF0IDA5OjA2ICswMjAwLCBDaHJpc3RvcGhlIEpBSUxMRVQgd3Jv
+dGU6DQo+IExlIDA3LzA1LzIwMjEgw6AgMDQ6MjAsIENodW5mZW5nIFl1biBhIMOpY3JpdCA6DQo+
+ID4gT24gVGh1LCAyMDIxLTA1LTA2IGF0IDIyOjM5ICswMjAwLCBDaHJpc3RvcGhlIEpBSUxMRVQg
+d3JvdGU6DQo+ID4+ICdyZXR2YWwnIGlzIGtub3duIHRvIGJlIC1FTk9ERVYgaGVyZS4NCj4gPj4g
+VGhpcyBpcyBhIGhhcmQtY29kZWQgZGVmYXVsdCBlcnJvciBjb2RlIHdoaWNoIGlzIG5vdCB1c2Vm
+dWwgaW4gdGhlIGVycm9yDQo+ID4+IG1lc3NhZ2UuIE1vcmVvdmVyLCBhbm90aGVyIGVycm9yIG1l
+c3NhZ2UgaXMgcHJpbnRlZCBhdCB0aGUgZW5kIG9mIHRoZQ0KPiA+PiBlcnJvciBoYW5kbGluZyBw
+YXRoLiBUaGUgY29ycmVzcG9uZGluZyBlcnJvciBjb2RlICgtRU5PTUVNKSBpcyBtb3JlDQo+ID4+
+IGluZm9ybWF0aXZlLg0KPiA+Pg0KPiA+PiBTbyByZW1vdmUgc2ltcGxpZnkgdGhlIGZpcnN0IGVy
+cm9yIG1lc3NhZ2UuDQo+ID4+DQo+ID4+IFdoaWxlIGF0IGl0LCBhbHNvIHJlbW92ZSB0aGUgdXNl
+bGVzcyBpbml0aWFsaXphdGlvbiBvZiAncmV0dmFsJy4NCj4gPj4NCj4gPj4gRml4ZXM6IDdkNTAx
+OTVmNmM1MCAoInVzYjogaG9zdDogRmFyYWRheSBmb3RnMjEwLWhjZCBkcml2ZXIiKQ0KPiA+PiBT
+aWduZWQtb2ZmLWJ5OiBDaHJpc3RvcGhlIEpBSUxMRVQgPGNocmlzdG9waGUuamFpbGxldEB3YW5h
+ZG9vLmZyPg0KPiA+PiAtLS0NCj4gPj4gICBkcml2ZXJzL3VzYi9ob3N0L2ZvdGcyMTAtaGNkLmMg
+fCA0ICsrLS0NCj4gPj4gICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0
+aW9ucygtKQ0KPiA+Pg0KPiA+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvaG9zdC9mb3RnMjEw
+LWhjZC5jIGIvZHJpdmVycy91c2IvaG9zdC9mb3RnMjEwLWhjZC5jDQo+ID4+IGluZGV4IDZjYWM2
+NDI1MjBmYy4uOWMyZWRhMDkxOGUxIDEwMDY0NA0KPiA+PiAtLS0gYS9kcml2ZXJzL3VzYi9ob3N0
+L2ZvdGcyMTAtaGNkLmMNCj4gPj4gKysrIGIvZHJpdmVycy91c2IvaG9zdC9mb3RnMjEwLWhjZC5j
+DQo+ID4+IEBAIC01NTY4LDcgKzU1NjgsNyBAQCBzdGF0aWMgaW50IGZvdGcyMTBfaGNkX3Byb2Jl
+KHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4+ICAgCXN0cnVjdCB1c2JfaGNkICpo
+Y2Q7DQo+ID4+ICAgCXN0cnVjdCByZXNvdXJjZSAqcmVzOw0KPiA+PiAgIAlpbnQgaXJxOw0KPiA+
+PiAtCWludCByZXR2YWwgPSAtRU5PREVWOw0KPiA+PiArCWludCByZXR2YWw7DQo+ID4+ICAgCXN0
+cnVjdCBmb3RnMjEwX2hjZCAqZm90ZzIxMDsNCj4gPj4gICANCj4gPj4gICAJaWYgKHVzYl9kaXNh
+YmxlZCgpKQ0KPiA+PiBAQCAtNTU4OCw3ICs1NTg4LDcgQEAgc3RhdGljIGludCBmb3RnMjEwX2hj
+ZF9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiA+PiAgIAloY2QgPSB1c2Jf
+Y3JlYXRlX2hjZCgmZm90ZzIxMF9mb3RnMjEwX2hjX2RyaXZlciwgZGV2LA0KPiA+PiAgIAkJCWRl
+dl9uYW1lKGRldikpOw0KPiA+PiAgIAlpZiAoIWhjZCkgew0KPiA+PiAtCQlkZXZfZXJyKGRldiwg
+ImZhaWxlZCB0byBjcmVhdGUgaGNkIHdpdGggZXJyICVkXG4iLCByZXR2YWwpOw0KPiA+PiArCQlk
+ZXZfZXJyKGRldiwgImZhaWxlZCB0byBjcmVhdGUgaGNkXG4iKTsNCj4gPj4gICAJCXJldHZhbCA9
+IC1FTk9NRU07DQo+ID4gSG93IGFib3V0IG1vdmluZyB0aGlzIGxpbmUgYmVmb3JlIGRldl9lcnIo
+KT8gdGhlbiBjb3VsZCBrZWVwIGVycm9yIGxvZw0KPiA+IHVuY2hhbmdlZC4NCj4gPiANCj4gDQo+
+IE1vc3RseSBhIG1hdHRlciBvZiB0YXN0ZS4NCj4gSSBkb24ndCB0aGluayBpdCBhZGQgYW55IHVz
+ZWZ1bCBpbmZvcm1hdGlvbiAodGhpcyBpcyBub3Qgc29tZXRoaW5nIA0KPiBjb21pbmcgZnJvbSBh
+IGNhbGwgY2hhaW4gb3IgdGhhdCBjYW4gaGF2ZSBkaWZmZXJlbnQgdmFsdWVzLCBpdCBpcyBqdXN0
+IGEgDQo+IGhhcmQtY29kZWQgY29uc3RhbnQpIGFuZCB0aGUgbGluZSBhZnRlciB3ZSB3aWxsIGFs
+cmVhZHkgaGF2ZToNCj4gCWRldl9lcnIoZGV2LCAiaW5pdCAlcyBmYWlsLCAlZFxuIiwgZGV2X25h
+bWUoZGV2KSwgcmV0dmFsKTsNCj4gd2hlcmUgcmV0dmFsID0gLUVOT01FTQ0KPiANCj4gU28gdGhl
+IC1FTk9NRU0gZXJyb3IgY29kZSBpcyBhbHJlYWR5IHJlcG9ydGVkLg0KWWVzDQoNCj4gDQo+IE1v
+cmVvdmVyLCBoYXZpbmcgZXJyb3IgY29kZSByZXBvcnRlZCBvciBub3QgaXMgYWxyZWFkeSBub3Qg
+Y29uc2lzdGVudCBpbiANCj4gdGhlIGZ1bmN0aW9uLiBGb3IgZXhhbXBsZSAiZmFpbGVkIHRvIGVu
+YWJsZSBQQ0xLXG4iIHdoZXJlICdyZXR2YWwnIGNvdWxkIA0KPiBiZSByZXBvcnRlZCBhcyB3ZWxs
+Lg0KPiANCj4gDQo+IA0KPiBCVFcsIGlzIGl0IHVzZWZ1bCB0byBoYXZlICdkZXZfbmFtZShkZXYp
+JyBpbiBhIGRldl9lcnI/DQpkZXZfZXJyKGRldiwgLi4uKSBpdHNlbGYgd2lsbCBwcmludCBpdC4N
+Cg0KPiANCj4gQ0oNCj4gDQo+ID4+ICAgCQlnb3RvIGZhaWxfY3JlYXRlX2hjZDsNCj4gPj4gICAJ
+fQ0KPiA+IA0KPiANCg0K
 
-The flag had been cleared before, otherwise would return earlier, so
-there is no need to clear this flag again.
-
->
-> > -     ue.enqueued = (task_util(p) | UTIL_AVG_UNCHANGED);
-> > +     ue.enqueued = task_util(p);
-> >       if (sched_feat(UTIL_EST_FASTUP)) {
-> >               if (ue.ewma < ue.enqueued) {
-> >                       ue.ewma = ue.enqueued;
-> > @@ -4051,6 +4051,7 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
-> >       ue.ewma  += last_ewma_diff;
-> >       ue.ewma >>= UTIL_EST_WEIGHT_SHIFT;
-> >  done:
-> > +     ue.enqueued |= UTIL_AVG_UNCHANGED;
-> >       WRITE_ONCE(p->se.avg.util_est, ue);
-> >
-> >       trace_sched_util_est_se_tp(&p->se);
-> > diff --git a/kernel/sched/pelt.h b/kernel/sched/pelt.h
-> > index 1462846d244e..476faf61f14a 100644
