@@ -2,58 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41DB37727A
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 16:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2D537728B
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 17:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbhEHOsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 10:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhEHOsH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 10:48:07 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7DFC061574;
-        Sat,  8 May 2021 07:47:05 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1lfOEL-0006F5-EK; Sat, 08 May 2021 16:46:57 +0200
-Date:   Sat, 8 May 2021 16:46:57 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+154bd5be532a63aa778b@syzkaller.appspotmail.com>,
-        coreteam@netfilter.org, David Miller <davem@davemloft.net>,
-        Florian Westphal <fw@strlen.de>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: [syzbot] WARNING in __nf_unregister_net_hook (4)
-Message-ID: <20210508144657.GC4038@breakpoint.cc>
-References: <0000000000008ce91e05bf9f62bc@google.com>
- <CACT4Y+a6L_x22XNJVX+VYY-XKmLQ0GaYndCVYnaFmoxk58GPgw@mail.gmail.com>
+        id S229631AbhEHPQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 11:16:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229500AbhEHPQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 11:16:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3969F6141D;
+        Sat,  8 May 2021 15:15:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620486953;
+        bh=Sgq70qU/onynKPpWMpEi2Z7PKmV25AfeplhuLwk1LM0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oOli2pVOIo5aByrJNtI/blSsYE14nBNMJ1M7nVXjfvjNfOuAWzdcrQ+qrX28rcvMa
+         uKZeQv5N+W9FXYwGxkHPcgwmAMbBv80yucSowuLps1khomqIjGcuw2BSIJ2neV7wRS
+         6WSIRVR5YFb9n6QOVzLVITsDq68mFboVwMpAAFVLFOQ1v73pdyT2EXzm/34MVWAFn0
+         3TFny9vremhxcuTA7F3fTZmIwzeIZwl8EHv9JqNH53mBZ9J85SYG4jF7NJfgWFkocw
+         xo97lgQIT7HLAcPiVxQNYgpWGEMF+2uLKhz9lD003UtwJ4FxRtKRIEYfnax8HXxcjf
+         el1hwJ9qGnMnw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A30F34034C; Sat,  8 May 2021 12:15:49 -0300 (-03)
+Date:   Sat, 8 May 2021 12:15:49 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Dmitry Koshelev <karaghiozis@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf: Fix swapping of cpu_map and stat_config records
+Message-ID: <YJarJWbjlhizmt5A@kernel.org>
+References: <20210506131244.13328-1-karaghiozis@gmail.com>
+ <YJPv2u6NBuYX9FUX@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+a6L_x22XNJVX+VYY-XKmLQ0GaYndCVYnaFmoxk58GPgw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YJPv2u6NBuYX9FUX@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dmitry Vyukov <dvyukov@google.com> wrote:
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+154bd5be532a63aa778b@syzkaller.appspotmail.com
+Em Thu, May 06, 2021 at 03:32:10PM +0200, Jiri Olsa escreveu:
+> On Thu, May 06, 2021 at 01:11:49PM +0000, Dmitry Koshelev wrote:
+> > 'data' field in perf_record_cpu_map_data struct is 16-bit
+> > wide and so should be swapped using bswap_16().
+> > 
+> > 'nr' field in perf_record_stat_config struct should be
+> > swapped before being used for size calculation.
+> > 
+> > Signed-off-by: Dmitry Koshelev <karaghiozis@gmail.com>
 > 
-> Is this also fixed by "netfilter: arptables: use pernet ops struct
-> during unregister"?
-> The warning is the same, but the stack is different...
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-No, this is a different bug.
+Thanks, applied.
 
-In both cases the caller attempts to unregister a hook that the core
-can't find, but in this case the caller is nftables, not arptables.
+- Arnaldo
 
+ 
+> thanks,
+> jirka
+> 
+> > ---
+> >  tools/perf/util/session.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> > index a12cf4f0e97a..106b3d60881a 100644
+> > --- a/tools/perf/util/session.c
+> > +++ b/tools/perf/util/session.c
+> > @@ -904,7 +904,7 @@ static void perf_event__cpu_map_swap(union perf_event *event,
+> >  	struct perf_record_record_cpu_map *mask;
+> >  	unsigned i;
+> >  
+> > -	data->type = bswap_64(data->type);
+> > +	data->type = bswap_16(data->type);
+> >  
+> >  	switch (data->type) {
+> >  	case PERF_CPU_MAP__CPUS:
+> > @@ -937,7 +937,7 @@ static void perf_event__stat_config_swap(union perf_event *event,
+> >  {
+> >  	u64 size;
+> >  
+> > -	size  = event->stat_config.nr * sizeof(event->stat_config.data[0]);
+> > +	size  = bswap_64(event->stat_config.nr) * sizeof(event->stat_config.data[0]);
+> >  	size += 1; /* nr item itself */
+> >  	mem_bswap_64(&event->stat_config.nr, size);
+> >  }
+> > -- 
+> > 2.25.1
+> > 
+> 
+
+-- 
+
+- Arnaldo
