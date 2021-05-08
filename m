@@ -2,168 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4973773B9
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 20:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CDF3773BE
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 20:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbhEHS5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 14:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbhEHS5T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 14:57:19 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E230C061763
-        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 11:56:17 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso10061204ots.10
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 11:56:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IF7Fac0YjVDycbq5PH+VvNCEX38AVPA4fKxY5+X2pvM=;
-        b=PUqcaScEb9tsf7vUvHj3CnZsCwzWf3odcLsWYZX9AtdI1hc4sT58bXGsUhazsSPyWI
-         6Q6kBqJcVBJZgaxWMz3M7RZJYw4eqyTkDsILIbnC1E1xxqSzc316q931UtbagBNF20ma
-         156h+ehNaRPmn35EfI/9L4A5U6GjV4KBICyzI1eHarm/92TJyfZ0rREoWPcNWGegyDVv
-         L1yO/eZLul0v1cZ41ndHwaMbCGiPESt4zyISiWKNkIHF5wwVjA84EkC9VkLvHvxF0RRb
-         UzbBBWKZy5vRQlr9iE1nZLtvcescqeEuUx9GHyqoND2oK+jyGr+AZVrK+LrPt6b5XP1H
-         j2CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IF7Fac0YjVDycbq5PH+VvNCEX38AVPA4fKxY5+X2pvM=;
-        b=LZtqxkuRXmDGH37YVbS4HvHMGDiHjHGccCdRp6tyHDurC9QCCc3QFmOThBWPwpUVMF
-         UbReRK7SVtnSEjXiipe34DipS2e/g/dqRISL3zLMXU4v6UGxU/yZSTbtOM/Bg1lncH7t
-         vP/UAu25q046koq7yFYU2cQrdcQuhkcNCei/2tNRDIe1wbjNCzFHMv303OcataurD+EA
-         tt6M+v65GfLZdpk5yNochkkuopuucxrYhSYku60+DTp0wLianJZGkkcRtlEzOW5nC/QK
-         c939dLWRTf+R5HXzthrgys/xjh3WWQfqgku+ng0194jwWtBgtWzwUKBVPKNhG4BuoeOo
-         Dz/Q==
-X-Gm-Message-State: AOAM532U5yXuDLWHpyivOrzqUGC06v4+bdAqgVc8Ag6owAehyIXxeb7Y
-        pkLh7oXKOBMg9FEDSv6BBrIG+l7GtVr6to1sCPAwtSiZ6Dw=
-X-Google-Smtp-Source: ABdhPJwSVaVB5oB3yhUXmvXMdKhgh8GWruFZ82+rfw+bzS/cGv/WjBJnJLO0ry+vEzbyw1Po+3sMwFzSUAbOpuPcAsg=
-X-Received: by 2002:a9d:51c7:: with SMTP id d7mr5449017oth.51.1620500177155;
- Sat, 08 May 2021 11:56:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210505213731.538612-1-bhupesh.sharma@linaro.org> <20210507211434.GA2879094@robh.at.kernel.org>
-In-Reply-To: <20210507211434.GA2879094@robh.at.kernel.org>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Sun, 9 May 2021 00:26:06 +0530
-Message-ID: <CAH=2Ntwwzu5Ftwj=r9RWnKv6xvRdKz0qjyqvJvxFwmoTP1zTqg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/17] Enable Qualcomm Crypto Engine on sm8250
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhupesh.linux@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+        id S229691AbhEHTAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 15:00:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52272 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229552AbhEHTAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 15:00:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 86C4B610A7;
+        Sat,  8 May 2021 18:59:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620500382;
+        bh=tx918tkZbZwk5k4/pxpWS1CEZAX0ZmOIuptimUUWpZU=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=UtRDVlrN+0I7NVTze6fxdx6ZWB8SR7HcB0rBVSwzCyNtvsk3nUlRGtdNGXwbZd+7Z
+         OJq235Ii5ziA/UAN6xnDpH0pGcwK67KoqL0dJKjZfw8M3Gb6s7RAGAMtmZ0r4x/a2v
+         ltaeb4Ppmv+3F3q0kUR4hCJ7g6Zl+tg3E4o2eV2UJJISbwD3eKBu1zWDHOASShv1xq
+         GLP5hcS+u/6xP2bHkPRWh1gZdjj0C8NIDPsbv5ZHlNYl6p6xQxjHi36l35QwMwvevv
+         Nv7qYfMxelixm2/yKpUrqqDWjjOEVE22Q7vL4MjjOuXDLQ6QayUGhVmtfThRu+l1Ff
+         55gRINx2g7zPg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 739AE60A0C;
+        Sat,  8 May 2021 18:59:42 +0000 (UTC)
+Subject: Re: [GIT PULL] RISC-V Fixes for the Merge Window, Part 2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <mhng-00f4b683-5870-489d-b713-aa5f18aaa6c5@palmerdabbelt-glaptop>
+References: <mhng-00f4b683-5870-489d-b713-aa5f18aaa6c5@palmerdabbelt-glaptop>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <mhng-00f4b683-5870-489d-b713-aa5f18aaa6c5@palmerdabbelt-glaptop>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.13-mw1
+X-PR-Tracked-Commit-Id: beaf5ae15a13d835a01e30c282c8325ce0f1eb7e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b741596468b010af2846b75f5e75a842ce344a6e
+Message-Id: <162050038240.29908.7380888985130805845.pr-tracker-bot@kernel.org>
+Date:   Sat, 08 May 2021 18:59:42 +0000
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+The pull request you sent on Sat, 08 May 2021 11:25:56 -0700 (PDT):
 
-On Sat, 8 May 2021 at 02:44, Rob Herring <robh@kernel.org> wrote:
->
-> On Thu, May 06, 2021 at 03:07:14AM +0530, Bhupesh Sharma wrote:
-> > Changes since v1:
-> > =================
-> > - v1 can be seen here: https://lore.kernel.org/linux-arm-msm/20210310052503.3618486-1-bhupesh.sharma@linaro.org/
-> > - v1 did not work well as reported earlier by Dmitry, so v2 contains the following
-> >   changes/fixes:
-> >   ~ Enable the interconnect path b/w BAM DMA and main memory first
-> >     before trying to access the BAM DMA registers.
-> >   ~ Enable the interconnect path b/w qce crytpo and main memory first
-> >     before trying to access the qce crypto registers.
-> >   ~ Make sure to document the required and optional properties for both
-> >     BAM DMA and qce crypto drivers.
-> >   ~ Add a few debug related print messages in case the qce crypto driver
-> >     passes or fails to probe.
-> >   ~ Convert the qce crypto driver probe to a defered one in case the BAM DMA
-> >     or the interconnect driver(s) (needed on specific Qualcomm parts) are not
-> >     yet probed.
-> >
-> > Qualcomm crypto engine is also available on sm8250 SoC.
-> > It supports hardware accelerated algorithms for encryption
-> > and authentication. It also provides support for aes, des, 3des
-> > encryption algorithms and sha1, sha256, hmac(sha1), hmac(sha256)
-> > authentication algorithms.
-> >
-> > Tested the enabled crypto algorithms with cryptsetup test utilities
-> > on sm8250-mtp and RB5 board (see [1]).
-> >
-> > While at it, also make a minor fix in 'sdm845.dtsi', to make
-> > sure it confirms with the other .dtsi files which expose
-> > crypto nodes on qcom SoCs.
-> >
-> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Andy Gross <agross@kernel.org>
-> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> > Cc: David S. Miller <davem@davemloft.net>
-> > Cc: Stephen Boyd <sboyd@kernel.org>
-> > Cc: Michael Turquette <mturquette@baylibre.com>
-> > Cc: Vinod Koul <vkoul@kernel.org>
-> > Cc: dmaengine@vger.kernel.org
-> > Cc: linux-clk@vger.kernel.org
-> > Cc: linux-crypto@vger.kernel.org
-> > Cc: devicetree@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: bhupesh.linux@gmail.com
-> >
-> > Bhupesh Sharma (14):
-> >   dt-bindings: qcom-bam: Add 'interconnects' & 'interconnect-names' to
-> >     optional properties
-> >   dt-bindings: qcom-bam: Add 'iommus' to required properties
-> >   dt-bindings: qcom-qce: Add 'iommus' to required properties
-> >   dt-bindings: qcom-qce: Add 'interconnects' and move 'clocks' to
-> >     optional properties
-> >   arm64/dts: qcom: sdm845: Use RPMH_CE_CLK macro directly
-> >   dt-bindings: crypto : Add new compatible strings for qcom-qce
->
-> Please convert these bindings to schemas.
+> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.13-mw1
 
-Ok, will fix it in v3.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b741596468b010af2846b75f5e75a842ce344a6e
 
-Thanks,
-Bhupesh
+Thank you!
 
->
-> >   arm64/dts: qcom: Use new compatibles for crypto nodes
-> >   crypto: qce: Add new compatibles for qce crypto driver
-> >   crypto: qce: Print a failure msg in case probe() fails
-> >   crypto: qce: Convert the device found dev_dbg() to dev_info()
-> >   dma: qcom: bam_dma: Create a new header file for BAM DMA driver
-> >   crypto: qce: Defer probing if BAM dma is not yet initialized
-> >   crypto: qce: Defer probe in case interconnect is not yet initialized
-> >   arm64/dts: qcom: sm8250: Add dt entries to support crypto engine.
-> >
-> > Thara Gopinath (3):
-> >   dma: qcom: bam_dma: Add support to initialize interconnect path
-> >   crypto: qce: core: Add support to initialize interconnect path
-> >   crypto: qce: core: Make clocks optional
-> >
-> >  .../devicetree/bindings/crypto/qcom-qce.txt   |  22 +-
-> >  .../devicetree/bindings/dma/qcom_bam_dma.txt  |   5 +
-> >  arch/arm64/boot/dts/qcom/ipq6018.dtsi         |   2 +-
-> >  arch/arm64/boot/dts/qcom/sdm845.dtsi          |   6 +-
-> >  arch/arm64/boot/dts/qcom/sm8250.dtsi          |  28 ++
-> >  drivers/crypto/qce/core.c                     | 112 +++++--
-> >  drivers/crypto/qce/core.h                     |   3 +
-> >  drivers/dma/qcom/bam_dma.c                    | 306 ++----------------
-> >  include/soc/qcom/bam_dma.h                    | 290 +++++++++++++++++
-> >  9 files changed, 457 insertions(+), 317 deletions(-)
-> >  create mode 100644 include/soc/qcom/bam_dma.h
-> >
-> > --
-> > 2.30.2
-> >
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
