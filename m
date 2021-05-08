@@ -2,114 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7244F377393
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 20:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACED377395
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 20:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbhEHSVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 14:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53424 "EHLO
+        id S229647AbhEHSWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 14:22:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhEHSVQ (ORCPT
+        with ESMTP id S229523AbhEHSWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 14:21:16 -0400
-Received: from magratgarlick.emantor.de (magratgarlick.emantor.de [IPv6:2a01:4f8:c17:c88::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B0CC061574
-        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 11:20:14 -0700 (PDT)
-Received: by magratgarlick.emantor.de (Postfix, from userid 114)
-        id 0FAFA125A86; Sat,  8 May 2021 20:20:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=czerwinskis.de;
-        s=mail; t=1620498008;
-        bh=eTcUQwqKOuKmD2QbJtpZOH7NjK31efH/FQy8a+iwiSA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=K0/O/l0HDupx6iqKphG/jbvhXdPkdoWq7F3G03IJjHZA+y6wuZsieOFnklf5VZzQr
-         sGY/8HAuupZyh5nA/b6X4q01GdI+TAZfabvSMDQtLbc3/JvcaU/Rb1F5AKWj6wVoEz
-         WRAymVgkkWTea9XRksUcVJe8fA4kG+TtGy4j9Xaw=
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on
-        magratgarlick.emantor.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-Received: from localhost (unknown [IPv6:2001:9e8:73:702:c0d3:dbff:fefe:ff70])
-        by magratgarlick.emantor.de (Postfix) with ESMTPSA id 3BE5C125A80;
-        Sat,  8 May 2021 20:20:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=czerwinskis.de;
-        s=mail; t=1620498003;
-        bh=eTcUQwqKOuKmD2QbJtpZOH7NjK31efH/FQy8a+iwiSA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bxD2sC729WZWz4PWcg8D6L/D+rFjOl1PK7xdH1Dnxx+IoPpMimiHpPeGSCz9o9Uge
-         AJ+QdvQRXxbtUif+1DbkVyBubb8HmQDV/GimrSLtPqsV7nJD+T2usK4aj1yuIUYthX
-         AjNSFqwqVBW1aoAqjedKmoOg75HBkThKKNQ8R+JI=
-From:   Rouven Czerwinski <rouven@czerwinskis.de>
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     kernel@pengutronix.de, Rouven Czerwinski <rouven@czerwinskis.de>,
-        Rouven Czerwinski <r.czerwinski@pengutronix.de>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amd/display: remove unused function dc_link_perform_link_training
-Date:   Sat,  8 May 2021 20:19:51 +0200
-Message-Id: <20210508181951.129548-1-rouven@czerwinskis.de>
-X-Mailer: git-send-email 2.31.1
+        Sat, 8 May 2021 14:22:23 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36F3C061574
+        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 11:21:20 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id a36so15663793ljq.8
+        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 11:21:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vpLZHnBATYASHX2qyiYXjM99nZsADzAJuHz545iDnMw=;
+        b=mO2WlNzoRrtDS3eRiZFmbBIjJyWzwqejoHEMnZi79SbFMnr2JnZlY/c0Qoa5dv2XAa
+         rCqqL771Im0TYp8v8wom22qna9AviEv5GvP2xEN3HPrm4OirjqN/6a2+qo2xjLfRCdGS
+         o6VjV+OsbreQ5X/On0x2vINCoRmDEQJXps/e0eWqOQxzd6K+xS4bVvqIEGkEfpHaMDoN
+         U2a/GNhxpYXZmNStIu9c8uecnLb/XrhnvypOWIgCSiauXyjfDsmm757GhDphaPVapoGX
+         GNgDiFliI2KVvv2dNk7v6quVqcNjXwP6d+vUpHr6/uA3TsgxezqthST2NFx3bYwTfJ94
+         Ttng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vpLZHnBATYASHX2qyiYXjM99nZsADzAJuHz545iDnMw=;
+        b=VMJv8PzHDdk1rkgJyNqBt7Ig2mWbxEL4mk+4E8BFG9YCwN7r7nM/9Uy8+1veuanxfD
+         Ky4azUF5U3lphbZJQUfmcdHLCDMxiYNBAfJat+pDMueqXY/gASvtiyC8cRgCaql/xQpP
+         jKYF3bqU9jKcwZNLdFj+ztPTntted+Ep1V/T0HnImjFRXJ8mFhnqFg7f+wYGD1UHknvY
+         GDbB7quGM2KoaM0gdBN1fJijTjbjMVNE6DrpteZ6FKxTn5FDM8XBtzz+ZyUU9RFr0OKy
+         aHFjsCeiODgbM5PEHwkImGWBFCJo2aFCWVOnJUPF4+nhvhkJkhAbQ9iQPJ7Tvviq/tVh
+         DPBg==
+X-Gm-Message-State: AOAM530e13xSsWwP+93YYkNyiJVfxEK+Z+mSsjsm0chfofNpc09GUUzo
+        vfkS3FS4q+LjMu+KRxte9PBoS7SlveYLCD+Ehla0gp/gTPM=
+X-Google-Smtp-Source: ABdhPJy9paLVPUwnbFLwB+T8DxKC5dCGEYLRFZ1EvriEcPhw9kKSXHzsqwSSsevyxFuDqZjnAxwAkqVYVAnoBEoQ1ms=
+X-Received: by 2002:a2e:2e12:: with SMTP id u18mr12755146lju.200.1620498079364;
+ Sat, 08 May 2021 11:21:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210503144350.7496-1-aardelean@deviqon.com> <20210508161643.5990ec15@jic23-huawei>
+In-Reply-To: <20210508161643.5990ec15@jic23-huawei>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 8 May 2021 20:21:08 +0200
+Message-ID: <CACRpkdaK6AMVUC+B7JW3y28nNeAYHAS9UjC40KfShZNrHLD7rQ@mail.gmail.com>
+Subject: Re: [PATCH] iio: core: return ENODEV if ioctl is unknown
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Nuno Sa <nuno.sa@analog.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function is not used anywhere, remove it. It was added in
-40dd6bd376a4 ("drm/amd/display: Linux Set/Read link rate and lane count
-through debugfs") and moved in fe798de53a7a ("drm/amd/display: Move link
-functions from dc to dc_link"), but a user is missing.
+On Sat, May 8, 2021 at 5:15 PM Jonathan Cameron <jic23@kernel.org> wrote:
+> On Mon,  3 May 2021 17:43:50 +0300 Alexandru Ardelean <aardelean@deviqon.com> wrote:
+>
+> > When the ioctl() mechanism was introduced in IIO core to centralize the
+> > registration of all ioctls in one place via commit 8dedcc3eee3ac ("iio:
+> > core: centralize ioctl() calls to the main chardev"), the return code was
+> > changed from ENODEV to EINVAL, when the ioctl code isn't known.
+> >
+> > This was done by accident.
+> >
+> > This change reverts back to the old behavior, where if the ioctl() code
+> > isn't known, ENODEV is returned (vs EINVAL).
+> >
+> > This was brought into perspective by this patch:
+> >   https://lore.kernel.org/linux-iio/20210428150815.136150-1-paul@crapouillou.net/
+> >
+> > Fixes: 8dedcc3eee3ac ("iio: core: centralize ioctl() calls to the main chardev")
+> > Cc: Linus Walleij <linus.walleij@linaro.org>
+> > Cc: Paul Cercueil <paul@crapouillou.net>
+> > Cc: Nuno Sa <nuno.sa@analog.com>
+> > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+>
+> This is going to be a little messy to apply as lots of churn in that file.
+> What I've done for now is pulled the fixes-togreg branch forwards onto
+> current staging/staging-linus but I'll do that again after
+> staging/staging-linus moves onto an rc1 or similar base.
 
-Signed-off-by: Rouven Czerwinski <r.czerwinski@pengutronix.de>
----
- drivers/gpu/drm/amd/display/dc/core/dc_link.c | 13 -------------
- drivers/gpu/drm/amd/display/dc/dc_link.h      |  3 ---
- 2 files changed, 16 deletions(-)
+This is starting to become a recurring problem is it not?
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link.c b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-index 3fb0cebd6938..55c5cf2264b3 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-@@ -3553,19 +3553,6 @@ void dc_link_set_drive_settings(struct dc *dc,
- 	dc_link_dp_set_drive_settings(dc->links[i], lt_settings);
- }
- 
--void dc_link_perform_link_training(struct dc *dc,
--				   struct dc_link_settings *link_setting,
--				   bool skip_video_pattern)
--{
--	int i;
--
--	for (i = 0; i < dc->link_count; i++)
--		dc_link_dp_perform_link_training(
--			dc->links[i],
--			link_setting,
--			skip_video_pattern);
--}
--
- void dc_link_set_preferred_link_settings(struct dc *dc,
- 					 struct dc_link_settings *link_setting,
- 					 struct dc_link *link)
-diff --git a/drivers/gpu/drm/amd/display/dc/dc_link.h b/drivers/gpu/drm/amd/display/dc/dc_link.h
-index fc5622ffec3d..45c927cd27ab 100644
---- a/drivers/gpu/drm/amd/display/dc/dc_link.h
-+++ b/drivers/gpu/drm/amd/display/dc/dc_link.h
-@@ -363,9 +363,6 @@ bool dc_link_is_hdcp22(struct dc_link *link, enum signal_type signal);
- void dc_link_set_drive_settings(struct dc *dc,
- 				struct link_training_settings *lt_settings,
- 				const struct dc_link *link);
--void dc_link_perform_link_training(struct dc *dc,
--				   struct dc_link_settings *link_setting,
--				   bool skip_video_pattern);
- void dc_link_set_preferred_link_settings(struct dc *dc,
- 					 struct dc_link_settings *link_setting,
- 					 struct dc_link *link);
--- 
-2.31.1
+Have you considered the option to start to send your pull
+requests to Linus (Torvalds) directly?
 
+I suppose the current scheme is used because IIO changes
+can affect drivers/staging/ but at this point that thing is
+so much smaller than the stuff in drivers/iio proper that
+I start to question if it's worth it.
+
+Unless you really like to base your work on Gregs tree for
+some reason or other, that is.
+
+Yours,
+Linus Walleij
