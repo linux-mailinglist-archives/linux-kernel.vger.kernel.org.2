@@ -2,141 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E34237709A
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 10:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D33137709C
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 10:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbhEHIQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 04:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhEHIQB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 04:16:01 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F4CC061574;
-        Sat,  8 May 2021 01:14:59 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id l6so11018534oii.1;
-        Sat, 08 May 2021 01:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LU8jKR/glSZQ1rljYYLoBqW6kISM9gd4Gb/bFqyTUFc=;
-        b=sT3t4e8FVRnAAgjl7dqCScSU/JgYZapOuA2/1w3xVreaHtZHrAQ3qw7slsqSgV9q9J
-         b8owuzxeA+Uj8KS2NGiEKvbcgLBQQJAKiJY4gWL8SUMeVuhS2cquQ3SWhhqj8P6LtlgG
-         f95jci2zWIIxxTJJ+tCxtkcP4eRtTROt1SYNJIPswMohZHJKsb1IXVOYFyYOwh5AGLOr
-         2lxp+cYl/6U599Zk8zocJgodQlaUjMxFOK/D2h/nhFYY2aWce1gKXtGN4GnKY6JVyomt
-         iDMNE6z0SCB6nUbX9//m4SXtE+MYOZ2WDTxKARbl6E+rtv1o0XqvBhINLlUkwcrN+DE1
-         g7lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LU8jKR/glSZQ1rljYYLoBqW6kISM9gd4Gb/bFqyTUFc=;
-        b=Y6jmTdV0huj0RGpvNivbuegosyXl6LEeiBZrQnucR5VSmqaXEdluA+x5WPGD5trL5Y
-         Ymmerx1RmkVqtEFMz5zBF3BMjOZ1Z5HVUAwDv6JyhdHdtJ/JNZ/M/LZb/w6zW4Xhg8LV
-         NRJcchOfeEjF5JQfccWCQvWIneaOwTpKuuLgcx2ifIa0tIpgHMyUzFC7Jck9KnTdWNNT
-         SCL7kLaYZW7asA5mGWO2JSCaBjmIsuPuSAFnNieJF78knIyxFSCN/qi9E9xjQK2DkHvX
-         D6JVG4Pwn6HnBLM50FJ5qM/8OZ/zQnYtus9iEL4bSLr4OEIr9muFWg4NFCYCQ3yBmFs/
-         Spyg==
-X-Gm-Message-State: AOAM532vyzm4wwCDi+Uh+XTyRMBkvYirMPLvL7QUaL0PQLrIzWzOlgd4
-        gzT7bcnsAeb806dB8HHjHoMEaqNbDQ4cszsz2UA=
-X-Google-Smtp-Source: ABdhPJxgQ1w8xN1tnzhwRFlVtK8F20JS1QGyM99KOeL+EB16/MZGoW9pb+91fjBX6chk4+LOGDZX9feyGd9uRk0CM5w=
-X-Received: by 2002:a05:6808:906:: with SMTP id w6mr3352777oih.6.1620461698750;
- Sat, 08 May 2021 01:14:58 -0700 (PDT)
+        id S230114AbhEHIQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 04:16:57 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:56187 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229797AbhEHIQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 04:16:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620461753; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=0KPm7oGzmL0q2aWv65LlrmKsUkDV5qha/CX/tq0j1zM=; b=BA1xC97KHfkE4b8gMiiv8LcsxN99MDlXhIHusYxz5KxB918RU5J+Q7EEiamLIzJqN6K7W8+N
+ uE0Xp4aDP4bvtFrsR3EC/DuffwMLc2nKSoyj+/7D3JP5ebak299WbxksXU153KzFeg55PqZd
+ 46L6BqOsHUXRvSqUVIv17GfDJ0E=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 609648b987ce1fbb563eaca5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 08 May 2021 08:15:53
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6FEC7C43145; Sat,  8 May 2021 08:15:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.110.52.184] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D568CC4338A;
+        Sat,  8 May 2021 08:15:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D568CC4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH] usb: dwc3: gadget: Replace list_for_each_entry_safe() if
+ using giveback
+To:     Peter Chen <peter.chen@kernel.org>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org
+References: <1620412923-11990-1-git-send-email-wcheng@codeaurora.org>
+ <20210508034551.GA2728@nchen>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <cec4b493-ff09-4543-661e-68c0c4d44e0f@codeaurora.org>
+Date:   Sat, 8 May 2021 01:15:49 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <6cffd7eebba54ed8acd043d51d212ec1@rohde-schwarz.com>
-In-Reply-To: <6cffd7eebba54ed8acd043d51d212ec1@rohde-schwarz.com>
-From:   dave penkler <dpenkler@gmail.com>
-Date:   Sat, 8 May 2021 10:14:41 +0200
-Message-ID: <CAL=kjP0xOQ32xLytyVm9=d+9rnKzV2dW2VJQ6c8MAwTK7rg2Kw@mail.gmail.com>
-Subject: Re: Re: Re: Re: Re: [syzbot] INFO: rcu detected stall in tx
-To:     Guido Kiener <Guido.Kiener@rohde-schwarz.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "x86@kernel.org" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210508034551.GA2728@nchen>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 6 May 2021 at 22:31, Guido Kiener
-<Guido.Kiener@rohde-schwarz.com> wrote:
->
-> > -----Original Message-----
-> > From: Alan Stern
-> > Sent: Thursday, May 6, 2021 8:32 PM
-> > To: Kiener Guido 14DS1
-> >
-> > On Thu, May 06, 2021 at 05:44:55PM +0000, Guido Kiener wrote:
-> > > > -----Original Message-----
-> > > > From: Alan Stern
-> > > > Sent: Thursday, May 6, 2021 3:49 PM
-> > > > To: Kiener Guido 14DS1 <Guido.Kiener@rohde-schwarz.com>
-> > > > >
-> > > > > Thanks for your assessment. I agree with the general feeling. I
-> > > > > counted about hundred specific usb drivers, so wouldn't it be
-> > > > > better to fix the
-> > > > problem in some of the host drivers (e.g. urb.c)?
-> > > > > We could return an error when calling usb_submit_urb() on an erroneous
-> > pipe.
-> > > > > I cannot estimate the side effects and we need to check all
-> > > > > drivers again how they deal with the error situation. Maybe there
-> > > > > are some special driver
-> > > > that need a specialized error handling.
-> > > > > In this case these drivers could reset the (new?) error flag to
-> > > > > allow calling usb_submit_urb() again without error. This could work, isn't it?
-> > > >
-> > > > That is feasible, although it would be an awkward approach.  As you
-> > > > said, the side effects aren't clear.  But it might work.
-> > >
-> > > Otherwise I see only the other approach to change hundred drivers and
-> > > add the cases EPROTO, EILSEQ and ETIME in each callback handler. The
-> > > usbtmc driver already respects the EILSEQ and ETIME, and only EPROTO is
-> > missing.
-> > > The rest should be more a management task.
-> > > BTW do you assume it is only a problem for INT pipes or is it also a
-> > > problem for isochronous and bulk transfers?
-> >
-> > All of them.  Control too.
-> >
-> > > > Will you be able to test patches?
-> > >
-> > > I only can test the USBTMC function in some different PCs. I do not
-> > > have automated regression tests for USB drivers or Linux kernels.
-> > > Maybe there is company who could do that.
-> >
-> > Well then, if I do find time to write a patch, I'll ask you to try it out with the usbtmc
-> > driver.
->
-> You mean that you will do a patch in urb.c or a host driver? Or just add a line in usbtmc.c?
-> Anyhow there is no hurry. On May 20 I will send you a mail if I'm able to
-> provoke one of these hardware errors EPROTO, EILSQ, or ETIME. Otherwise
-> it doesn't make sense to test it.
->
-> -Guido
 
-EPROTO is a link level issue and needs to be handled by the host driver.
-When the host driver detects a protocol error while processing an URB
-it completes the URB with EPROTO status and marks the endpoint as
-halted.
-When the class driver resubmits the URB and the if the host driver
-finds the endpoint still marked as halted it should return EPIPE
-status on the resubmitted URB
-When the class driver and usbtmc in particular receives an URB with
-EPIPE status it cleans up and does not resubmit.
-Can someone from syzbot land please confirm whether usbtmc running on
-the xhci host driver causes an RCU stall to be detected ?
--Dave
+
+On 5/7/2021 8:45 PM, Peter Chen wrote:
+> On 21-05-07 11:42:03, Wesley Cheng wrote:
+>> The list_for_each_entry_safe() macro saves the current item (n) and
+>> the item after (n+1), so that n can be safely removed without
+>> corrupting the list.  However, when traversing the list and removing
+>> items using gadget giveback, the DWC3 lock is briefly released,
+
+Hi Peter,
+
+Thanks for the review.
+
+> 
+> I see dwc3_gadget_del_and_unmap_request remove the list, the lock is
+> still held there. Am I something wrong?
+> 
+
+The scenario the issue happens in is say the follow thread is running
+the sequence below:
+
+Thread#1:
+__dwc3_gadget_ep_set_halt() - CLEAR HALT
+  -> dwc3_gadget_ep_cleanup_cancelled_requests()
+    ->list_for_each_entry_safe()
+    ->dwc3_gadget_giveback()
+      ->dwc3_gadget_del_and_unmap_request()-n deleted cancelled_list
+      ->spin_unlock
+
+Thread#2:
+dwc3_gadget_pullup()
+  ->waiting for dwc3 spin_lock
+  ->Thread#1 released lock
+  ->dwc3_stop_active_transfers()
+    ->dwc3_remove_requests()
+      ->fetches n+1 item from cancelled_list (n removed by thread#1)
+      ->dwc3_gadget_giveback()
+        ->dwc3_gadget_del_and_unmap_request()-n+1 deleted cancelled_list
+        ->spin_unlock
+
+So now, if thread#1 takes the DWC3 lock again, it will continue to item
+n+1, which was already removed by thread#2, leading to a double list
+removal.  We saw this issue on our platform after enabling list debug.
+
+Thanks
+Wesley Cheng
+
+> Peter
+>        
+>> allowing other routines to execute.  There is a situation where while
+>> items are being removed from the cancelled_list using
+>> dwc3_gadget_ep_cleanup_cancelled_requests(), the pullup disable
+>> routine is running in parallel (due to UDC unbind).  As the cleanup
+>> routine removes n, and the pullup disable removes n+1, once the
+>> cleanup retakes the DWC3 lock, it references a request who was already
+>> removed/handled.  With list debug enabled, this leads to a panic.
+>> Ensure all instances of the macro are replaced where gadget giveback
+>> is used.
+>>
+>> Fixes: d4f1afe5e896 ("usb: dwc3: gadget: move requests to cancelled_list")
+>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>> ---
+>>  drivers/usb/dwc3/gadget.c | 8 ++++----
+>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>> index dd80e5c..efa939b 100644
+>> --- a/drivers/usb/dwc3/gadget.c
+>> +++ b/drivers/usb/dwc3/gadget.c
+>> @@ -1737,10 +1737,10 @@ static void dwc3_gadget_ep_skip_trbs(struct dwc3_ep *dep, struct dwc3_request *r
+>>  static void dwc3_gadget_ep_cleanup_cancelled_requests(struct dwc3_ep *dep)
+>>  {
+>>  	struct dwc3_request		*req;
+>> -	struct dwc3_request		*tmp;
+>>  	struct dwc3			*dwc = dep->dwc;
+>>  
+>> -	list_for_each_entry_safe(req, tmp, &dep->cancelled_list, list) {
+>> +	while (!list_empty(&dep->cancelled_list)) {
+>> +		req = next_request(&dep->cancelled_list);
+>>  		dwc3_gadget_ep_skip_trbs(dep, req);
+>>  		switch (req->status) {
+>>  		case DWC3_REQUEST_STATUS_DISCONNECTED:
+>> @@ -2935,11 +2935,11 @@ static void dwc3_gadget_ep_cleanup_completed_requests(struct dwc3_ep *dep,
+>>  		const struct dwc3_event_depevt *event, int status)
+>>  {
+>>  	struct dwc3_request	*req;
+>> -	struct dwc3_request	*tmp;
+>>  
+>> -	list_for_each_entry_safe(req, tmp, &dep->started_list, list) {
+>> +	while (!list_empty(&dep->started_list)) {
+>>  		int ret;
+>>  
+>> +		req = next_request(&dep->started_list);
+>>  		ret = dwc3_gadget_ep_cleanup_completed_request(dep, event,
+>>  				req, status);
+>>  		if (ret)
+>> -- 
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+>> a Linux Foundation Collaborative Project
+>>
+> 
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
