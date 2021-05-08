@@ -2,64 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82003376F4C
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 05:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCC3376F50
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 05:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbhEHD5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 23:57:22 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:17599 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbhEHD5V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 23:57:21 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FcYMT1TF9z16Pc9;
-        Sat,  8 May 2021 11:53:41 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 8 May 2021 11:56:10 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] drm/mga: Fix error return code in mga_do_pci_dma_bootstrap()
-Date:   Sat, 8 May 2021 11:55:54 +0800
-Message-ID: <20210508035554.2424-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        id S231166AbhEHD5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 23:57:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231129AbhEHD5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 23:57:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46A8261106;
+        Sat,  8 May 2021 03:56:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620446212;
+        bh=R0O9/+3NWKcgkdhHuXxWuRHSC7X1XKa4b11RA5ahgDo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GOMUeeLS1VCHhk3XgLtQLAE0wQrqFLLgX89RApUvVVmASHZDHgeRaPpASvDwr9NW9
+         OLJFimoEQbwJoMuwcD6HTCJW4frq9ELzXSRicqJIWOfhPUEBKWfC4ISqscmHMk9l5j
+         zs1Y3R1+JUF4lk8N5KV5y4F6KkEulKdbEg3Nj0WdkY+ZCJrj3H3eHp6plbJ10pLnxp
+         NFTP7O6ehUr2AZfKg5jrd/z8cfavE32FftkNPU8vJqrjy7ZtQoAM1a7m7R5MUxnSUU
+         dwAB1m4Qpkh1Kl6UQzEbOlz61V8qTK7Gh2ITV4iCKHO+ivZfK45xvCYIyhRZ1AeNqA
+         q8nJ+NAsb9Xdw==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        reinette.chatre@intel.com, Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/2] selftests/sgx: Rename 'eenter' and 'sgx_call_vdso'
+Date:   Sat,  8 May 2021 06:56:46 +0300
+Message-Id: <20210508035648.18176-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The user may incorrectly set the value of dma_bs->secondary_bin_count to 0.
-In this case, the for loop is not entered and the 'err' value remains 0.
+Rename symbols for better clarity:
 
-Fixes: 6795c985a648 ("Add support for PCI MGA cards to MGA DRM.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+* 'eenter' -> 'vdso_sgx_enter_enclave'
+* 'sgx_call_vdso' -> 'sgx_enter_enclave'
+
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 ---
- drivers/gpu/drm/mga/mga_dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/mga/mga_dma.c b/drivers/gpu/drm/mga/mga_dma.c
-index 1cb7d120d18f..e41d44ec26de 100644
---- a/drivers/gpu/drm/mga/mga_dma.c
-+++ b/drivers/gpu/drm/mga/mga_dma.c
-@@ -693,7 +693,7 @@ static int mga_do_pci_dma_bootstrap(struct drm_device *dev,
- 	}
+v2:
+Refined thh renames just a bit.
+
+ tools/testing/selftests/sgx/call.S |  6 +++---
+ tools/testing/selftests/sgx/main.c | 25 +++++++++++++------------
+ tools/testing/selftests/sgx/main.h |  4 ++--
+ 3 files changed, 18 insertions(+), 17 deletions(-)
+
+diff --git a/tools/testing/selftests/sgx/call.S b/tools/testing/selftests/sgx/call.S
+index 4ecadc7490f4..b09a25890f3b 100644
+--- a/tools/testing/selftests/sgx/call.S
++++ b/tools/testing/selftests/sgx/call.S
+@@ -5,8 +5,8 @@
  
- 	if (bin_count == 0) {
--		DRM_ERROR("Unable to add secondary DMA buffers: %d\n", err);
-+		DRM_ERROR("Unable to add secondary DMA buffers: %d\n", err ? : -EINVAL);
- 		return err;
- 	}
+ 	.text
  
+-	.global sgx_call_vdso
+-sgx_call_vdso:
++	.global sgx_enter_enclave
++sgx_enter_enclave:
+ 	.cfi_startproc
+ 	push	%r15
+ 	.cfi_adjust_cfa_offset	8
+@@ -27,7 +27,7 @@ sgx_call_vdso:
+ 	.cfi_adjust_cfa_offset	8
+ 	push	0x38(%rsp)
+ 	.cfi_adjust_cfa_offset	8
+-	call	*eenter(%rip)
++	call	*vdso_sgx_enter_enclave(%rip)
+ 	add	$0x10, %rsp
+ 	.cfi_adjust_cfa_offset	-0x10
+ 	pop	%rbx
+diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
+index d304a4044eb9..43da68388e25 100644
+--- a/tools/testing/selftests/sgx/main.c
++++ b/tools/testing/selftests/sgx/main.c
+@@ -21,7 +21,7 @@
+ #include "../kselftest.h"
+ 
+ static const uint64_t MAGIC = 0x1122334455667788ULL;
+-vdso_sgx_enter_enclave_t eenter;
++vdso_sgx_enter_enclave_t vdso_sgx_enter_enclave;
+ 
+ struct vdso_symtab {
+ 	Elf64_Sym *elf_symtab;
+@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
+ {
+ 	struct sgx_enclave_run run;
+ 	struct vdso_symtab symtab;
+-	Elf64_Sym *eenter_sym;
++	Elf64_Sym *sgx_enter_enclave_sym;
+ 	uint64_t result = 0;
+ 	struct encl encl;
+ 	unsigned int i;
+@@ -194,29 +194,30 @@ int main(int argc, char *argv[])
+ 	if (!vdso_get_symtab(addr, &symtab))
+ 		goto err;
+ 
+-	eenter_sym = vdso_symtab_get(&symtab, "__vdso_sgx_enter_enclave");
+-	if (!eenter_sym)
++	sgx_enter_enclave_sym = vdso_symtab_get(&symtab, "__vdso_sgx_enter_enclave");
++	if (!sgx_enter_enclave_sym)
+ 		goto err;
+ 
+-	eenter = addr + eenter_sym->st_value;
++	vdso_sgx_enter_enclave = addr + sgx_enter_enclave_sym->st_value;
+ 
+-	ret = sgx_call_vdso((void *)&MAGIC, &result, 0, EENTER, NULL, NULL, &run);
+-	if (!report_results(&run, ret, result, "sgx_call_vdso"))
++	ret = sgx_enter_enclave((void *)&MAGIC, &result, 0, EENTER,
++					    NULL, NULL, &run);
++	if (!report_results(&run, ret, result, "sgx_enter_enclave_unclobbered"))
+ 		goto err;
+ 
+ 
+ 	/* Invoke the vDSO directly. */
+ 	result = 0;
+-	ret = eenter((unsigned long)&MAGIC, (unsigned long)&result, 0, EENTER,
+-		     0, 0, &run);
+-	if (!report_results(&run, ret, result, "eenter"))
++	ret = vdso_sgx_enter_enclave((unsigned long)&MAGIC, (unsigned long)&result,
++				     0, EENTER, 0, 0, &run);
++	if (!report_results(&run, ret, result, "sgx_enter_enclave"))
+ 		goto err;
+ 
+ 	/* And with an exit handler. */
+ 	run.user_handler = (__u64)user_handler;
+ 	run.user_data = 0xdeadbeef;
+-	ret = eenter((unsigned long)&MAGIC, (unsigned long)&result, 0, EENTER,
+-		     0, 0, &run);
++	ret = vdso_sgx_enter_enclave((unsigned long)&MAGIC, (unsigned long)&result,
++				     0, EENTER, 0, 0, &run);
+ 	if (!report_results(&run, ret, result, "user_handler"))
+ 		goto err;
+ 
+diff --git a/tools/testing/selftests/sgx/main.h b/tools/testing/selftests/sgx/main.h
+index 67211a708f04..68672fd86cf9 100644
+--- a/tools/testing/selftests/sgx/main.h
++++ b/tools/testing/selftests/sgx/main.h
+@@ -35,7 +35,7 @@ bool encl_load(const char *path, struct encl *encl);
+ bool encl_measure(struct encl *encl);
+ bool encl_build(struct encl *encl);
+ 
+-int sgx_call_vdso(void *rdi, void *rsi, long rdx, u32 function, void *r8, void *r9,
+-		  struct sgx_enclave_run *run);
++int sgx_enter_enclave(void *rdi, void *rsi, long rdx, u32 function, void *r8, void *r9,
++		      struct sgx_enclave_run *run);
+ 
+ #endif /* MAIN_H */
 -- 
-2.25.1
-
+2.31.1
 
