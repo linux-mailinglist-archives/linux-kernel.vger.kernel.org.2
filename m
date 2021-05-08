@@ -2,290 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE266377081
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 09:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0EC377086
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 09:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbhEHH4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 03:56:19 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:38268 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbhEHH4Q (ORCPT
+        id S230198AbhEHH56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 03:57:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbhEHH55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 03:56:16 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 950651F44390;
-        Sat,  8 May 2021 08:55:12 +0100 (BST)
-Date:   Sat, 8 May 2021 09:55:06 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     <patrice.chotard@foss.st.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
-Subject: Re: [PATCH v2 1/3] spi: spi-mem: add automatic poll status
- functions
-Message-ID: <20210508095506.4d0d628a@collabora.com>
-In-Reply-To: <20210507131756.17028-2-patrice.chotard@foss.st.com>
-References: <20210507131756.17028-1-patrice.chotard@foss.st.com>
-        <20210507131756.17028-2-patrice.chotard@foss.st.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Sat, 8 May 2021 03:57:57 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B19CC061761
+        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 00:56:55 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id w16so2788832oiv.3
+        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 00:56:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=JrQQPnsSDvIt+Vs+sC/UQRgUAX7dRIg7UlNi3hAtXkE=;
+        b=NcSUpamwkblVtQWP+uVaCVkgeaL5EmFvgVrX9hva5KZt7Zpv7uXli8NxLz54Tw3ik1
+         TlcVnxqa7iK4Rcyoy4FGiRkIZ6ik8/QU3+PpkRMb/Q22mXXwRlS/xPPaAwMxFFxrbCdI
+         k882WIM8/QvoTqgT15FA6sYpk9zPNNt28w4bo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=JrQQPnsSDvIt+Vs+sC/UQRgUAX7dRIg7UlNi3hAtXkE=;
+        b=gHM71m81YwxiDJwXDzU3riR4QXnaHdS+43rbJEm/63jZmkBK8AD4GMdkGwGj46SRy8
+         ty4OmfGqHNWUgA/kTtAuILRseqh6sUYrqmNgMhWyKVu15B73u3RAJzeA2tzSYYWhNrtI
+         OdQ/JiB4ObK5Pe29j9o7dUVTYISYwxV0KYRwDkStHyWVS0Dr+AjYaakJtHPwZSYtpWIh
+         tDLdfBJnOVsYJZewav7xClLUzDcRqxqKVaEgrOt309zkIgzujxFC4Hk6HDiwGCTdKCP3
+         c0yvlJcdMc5AVnK5h273gxNoFbrEdzKje2Ulo1544HDBQ/rhp5Lq/2Ju+T1Dyt6X/jWx
+         DDIQ==
+X-Gm-Message-State: AOAM5338+6/MaVgUrwltzhQlNGjV7p+Mdtrqof2wiI1rmz8dXbfE3jze
+        ROGQjMlbWd4w1y6QhRdW64r/Sj0kNICvZIz36Jf7Eg==
+X-Google-Smtp-Source: ABdhPJzCngHZLZwvIFlG4AXfe17Dm6sGZGCEACxJNB2T+RputFCCLcQ2dgn1fZdP4KPk1rqSENbK3+ZrtMd309glq8E=
+X-Received: by 2002:a05:6808:3d9:: with SMTP id o25mr18570086oie.166.1620460614405;
+ Sat, 08 May 2021 00:56:54 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Sat, 8 May 2021 03:56:53 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAE-0n51YQf=NZxnw9+FLU=PSG8di7Ztp5pP03JdLXgEWGM0AZg@mail.gmail.com>
+References: <d23263dcb0f1535275ff37524b0203b2@codeaurora.org> <CAE-0n51YQf=NZxnw9+FLU=PSG8di7Ztp5pP03JdLXgEWGM0AZg@mail.gmail.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Sat, 8 May 2021 03:56:53 -0400
+Message-ID: <CAE-0n51MEJ_+7QKpBKenjjB+rwdGN-=vxx=4oo8_-P=_yJe+jQ@mail.gmail.com>
+Subject: Re: [PATCH V9] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+To:     rojay@codeaurora.org
+Cc:     wsa@kernel.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, skananth@codeaurora.org,
+        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 7 May 2021 15:17:54 +0200
-<patrice.chotard@foss.st.com> wrote:
+Quoting Stephen Boyd (2021-05-07 13:09:21)
+> Quoting rojay@codeaurora.org (2021-05-07 03:07:42)
+> > On 2021-05-05 07:08, Stephen Boyd wrote:
+> > > Quoting Roja Rani Yarubandi (2021-04-20 04:13:55)
+> >
+> > > In fact, where is that code? I'd expect to see i2c_del_adapter() in
+> > > here
+> > > so we know the adapter can't accept transfers anymore. Maybe
+> > > i2c_del_adapter() could be called, and then there's nothing to do after
+> > > that? This whole patch is trying to rip the adapter out from under the
+> > > i2c core framework, when we should take the opposite approach and
+> > > remove
+> > > it from the core framework so that it can't transfer anything anymore
+> > > and thus the IOMMU can remove the mapping.
+> > >
+> >
+> > IIUC about probe/remove/shutdown calls, during "remove" we will unplug
+> > the
+> > device with opposite calls to "probe's" plug operations.
+> > For example i2c_add_adapter() from 'probe' and i2c_del_adapter() from
+> > 'remove'.
+> > For "shutdown", as system is going to shutdown, there is no need of
+> > unplug
+> > operations to be done.
+> >
+> > And also, I had a glance on other upstream i2c drivers, and noticed
+> > "i2c-i801.c"
+> > driver has i2c_del_adapter() called from remove callback but not from
+> > shutdown
+> > callback.
+>
+> Sure, other drivers could also be broken.
 
-> From: Patrice Chotard <patrice.chotard@foss.st.com>
-> 
-> With STM32 QSPI, it is possible to poll the status register of the device.
-> This could be done to offload the CPU during an operation (erase or
-> program a SPI NAND for example).
-> 
-> spi_mem_poll_status API has been added to handle this feature.
-> This new function take care of the offload/non-offload cases.
-> 
-> For the non-offload case, use read_poll_timeout() to poll the status in
-> order to release CPU during this phase.
-> 
-> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
-> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> ---
-> Changes in v2:
->   - Indicates the spi_mem_poll_status() timeout unit
->   - Use 2-byte wide status register
->   - Add spi_mem_supports_op() call in spi_mem_poll_status()
->   - Add completion management in spi_mem_poll_status()
->   - Add offload/non-offload case mangement in spi_mem_poll_status()
->   - Optimize the non-offload case by using read_poll_timeout()
-> 
->  drivers/spi/spi-mem.c       | 71 +++++++++++++++++++++++++++++++++++++
->  include/linux/spi/spi-mem.h | 10 ++++++
->  2 files changed, 81 insertions(+)
-> 
-> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-> index 1513553e4080..3f29c604df7d 100644
-> --- a/drivers/spi/spi-mem.c
-> +++ b/drivers/spi/spi-mem.c
-> @@ -6,6 +6,7 @@
->   * Author: Boris Brezillon <boris.brezillon@bootlin.com>
->   */
->  #include <linux/dmaengine.h>
-> +#include <linux/iopoll.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/spi/spi.h>
->  #include <linux/spi/spi-mem.h>
-> @@ -743,6 +744,75 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
->  	return container_of(drv, struct spi_mem_driver, spidrv.driver);
->  }
->  
-> +/**
-> + * spi_mem_finalize_op - report completion of spi_mem_op
-> + * @ctlr: the controller reporting completion
-> + *
-> + * Called by SPI drivers using the spi-mem spi_mem_poll_status()
-> + * implementation to notify it that the current spi_mem_op has
-> + * finished.
-> + */
-> +void spi_mem_finalize_op(struct spi_controller *ctlr)
-> +{
-> +	complete(&ctlr->xfer_completion);
-> +}
-> +EXPORT_SYMBOL_GPL(spi_mem_finalize_op);
-> +
-> +/**
-> + * spi_mem_poll_status() - Poll memory device status
-> + * @mem: SPI memory device
-> + * @op: the memory operation to execute
-> + * @mask: status bitmask to ckeck
-> + * @match: (status & mask) expected value
-> + * @timeout_ms: timeout in milliseconds
-> + *
-> + * This function send a polling status request to the controller driver
-> + *
-> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
-> + *         -EOPNOTSUPP if not supported.
-> + */
-> +int spi_mem_poll_status(struct spi_mem *mem,
-> +			const struct spi_mem_op *op,
-> +			u16 mask, u16 match, u16 timeout_ms)
-> +{
-> +	struct spi_controller *ctlr = mem->spi->controller;
-> +	unsigned long ms;
-> +	int ret = -EOPNOTSUPP;
-> +	int exec_op_ret;
-> +	u16 *status;
-> +
-> +	if (!spi_mem_supports_op(mem, op))
-> +		return ret;
+What does it have in the shutdown callback? I see that it is wrong to
+delete the adapter in shutdown because this problem happens. First
+shutdown is called for various i2c clients, then shutdown is called for
+the adapter. If the adapter shutdown calls i2c_del_adapter(), then
+remove is called for the various i2c clients. The i2c clients aren't
+expecting this and start doing double frees and stuff. It's really quite
+a mess. I suspect i2c shutdown should probably block remove from being
+called on it entirely. Either way, it's the wrong approach.
 
-You should only test that in the SW-based polling path. The driver
-->poll_status() method is expected to check the operation and
-return -EOPNOTSUPP if HW-based polling doesn't work for this op,
-no need to check things twice.
+Instead, I think we should merely suspend the i2c bus like this. Then we
+can hunt down the various drivers that try to access the bus after the
+i2c bus has been removed. I've already done that for rt5682 (see the
+patch link later).
 
-> +
-> +	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
-> +		ret = spi_mem_access_start(mem);
-> +		if (ret)
-> +			return ret;
-> +
-> +		reinit_completion(&ctlr->xfer_completion);
-> +
-> +		ret = ctlr->mem_ops->poll_status(mem, op, mask, match,
-> +						 timeout_ms);
-> +
-> +		ms = wait_for_completion_timeout(&ctlr->xfer_completion,
-> +						 msecs_to_jiffies(timeout_ms));
+----8<---
+diff --git a/drivers/i2c/busses/i2c-qcom-geni.c
+b/drivers/i2c/busses/i2c-qcom-geni.c
+index 20216e382b4c..af3ed808ba2e 100644
+--- a/drivers/i2c/busses/i2c-qcom-geni.c
++++ b/drivers/i2c/busses/i2c-qcom-geni.c
+@@ -655,6 +655,14 @@ static int geni_i2c_remove(struct platform_device *pdev)
+ 	return 0;
+ }
 
-Why do you need to wait here? I'd expect the poll_status to take care
-of this wait.
++static void geni_i2c_shutdown(struct platform_device *pdev)
++{
++	struct geni_i2c_dev *gi2c = platform_get_drvdata(pdev);
++
++	/* Make client i2c transfers start failing */
++	i2c_mark_adapter_suspended(&gi2c->adap);
++}
++
+ static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
+ {
+ 	int ret;
+@@ -719,6 +727,7 @@ MODULE_DEVICE_TABLE(of, geni_i2c_dt_match);
+ static struct platform_driver geni_i2c_driver = {
+ 	.probe  = geni_i2c_probe,
+ 	.remove = geni_i2c_remove,
++	.shutdown = geni_i2c_shutdown,
+ 	.driver = {
+ 		.name = "geni_i2c",
+ 		.pm = &geni_i2c_pm_ops,
 
-> +
-> +		spi_mem_access_end(mem);
-> +		if (!ms)
-> +			return -ETIMEDOUT;
-> +	} else {
-> +		status = (u16 *)op->data.buf.in;
+>
+> >
+> > And actually I tried calling i2c_del_adapter() from geni_i2c_shutdown(),
+> > and it resulted in below WARNING trace
+> > [   90.320282] Call trace:
+> > [   90.322807]  _regulator_put+0xc4/0xcc
+> > [   90.326583]  regulator_bulk_free+0x48/0x6c
+> > [   90.330808]  devm_regulator_bulk_release+0x20/0x2c
+> > [   90.335744]  release_nodes+0x1d0/0x244
+> > [   90.339609]  devres_release_all+0x3c/0x54
+> > [   90.343735]  device_release_driver_internal+0x108/0x194
+> > [   90.349109]  device_release_driver+0x24/0x30
+> > [   90.353510]  bus_remove_device+0xd0/0xf4
+> > [   90.357548]  device_del+0x1a8/0x2f8
+> > [   90.361143]  device_unregister+0x1c/0x34
+> > [   90.365181]  __unregister_client+0x78/0x88
+> > [   90.369397]  device_for_each_child+0x64/0xb4
+> > [   90.373797]  i2c_del_adapter+0xf0/0x1d4
+> > [   90.377745]  geni_i2c_shutdown+0x9c/0xc0
+> > [   90.381783]  platform_drv_shutdown+0x28/0x34
+> > [   90.386182]  device_shutdown+0x148/0x1f0
+> >
+> > Can you please suggest me what might be missing here?
+> >
+>
+> It looks like some device that is on the i2c bus is putting a regulator
+> in the remove path without disabling it. Can you print out which device
+> driver it is and fix that driver to call regulator_disable() on the
+> driver remove path? I'll try locally and see if I can find the driver
+> too.
 
-Hm, I don't think it's safe, for 2 reasons:
-
-1/ op->data.buf.in might be a 1byte buffer, but you're doing a 2byte check
-2/ data is in big endian in the SPI buffer, which means your check
-   won't work on LE architectures.
-
-You really need a dedicated spi_mem_read_status() function that's passed
-an u16 pointer:
-
-int spi_mem_read_status(struct spi_mem *mem,
-			const struct spi_mem_op *op,
-			u16 *status)
-{
-	const u8 *bytes = (u8 *)op->data.buf.in;
-	int ret;
-
-	ret = spi_mem_exec_op(mem, op);
-	if (ret)
-		return ret;
-
-	if (op->data.nbytes > 1)
-		*status = ((u16)bytes[0] << 8) | bytes[1];
-	else
-		*status = bytes[0];
-
-	return 0;
-}
-
-> +		ret = read_poll_timeout(spi_mem_exec_op, exec_op_ret,
-> +					((*status) & mask) == match, 20,
-> +					timeout_ms * 1000, false, mem, op);
-> +		if (exec_op_ret)
-> +			return exec_op_ret;
-> +	}
-> +
-
-I would do something like this instead:
-
-int spi_mem_poll_status(struct spi_mem *mem,
-			const struct spi_mem_op *op,
-			u16 mask, u16 match, u16 timeout_ms)
-{
-	struct spi_controller *ctlr = mem->spi->controller;
-	int ret = -EOPNOTSUPP;
-
-	if (op->data.nbytes < 1 || op->data.nbytes > 2)
-		return -EINVAL;
-
-	if (ctlr->mem_ops && ctlr->mem_ops->poll_status) {
-		ret = spi_mem_access_start(mem);
-		if (ret)
-			return ret;
-
-		ret = ctlr->mem_ops->poll_status(mem, op, mask, match,
-						 timeout_ms);
-
-		spi_mem_access_end(mem);
-	}
-
-
-	if (ret == -EOPNOTSUPP) {
-                u16 status;
-		int read_status_ret;
-
-		if (!spi_mem_supports_op(mem, op))
-			return -EOPNOTSUPP;
-
-		ret = read_poll_timeout(spi_mem_read_status, exec_op_ret,
-					(read_status_ret || ((status & mask) == match), 20,
-					timeout_ms * 1000, false, mem, op, &status);
-
-		if (read_status_ret)
-			return read_status_ret;
-	}
-
-	return ret;
-}
-
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(spi_mem_poll_status);
-> +
->  static int spi_mem_probe(struct spi_device *spi)
->  {
->  	struct spi_mem_driver *memdrv = to_spi_mem_drv(spi->dev.driver);
-> @@ -763,6 +833,7 @@ static int spi_mem_probe(struct spi_device *spi)
->  	if (IS_ERR_OR_NULL(mem->name))
->  		return PTR_ERR_OR_ZERO(mem->name);
->  
-> +	init_completion(&ctlr->xfer_completion);
->  	spi_set_drvdata(spi, mem);
->  
->  	return memdrv->probe(mem);
-> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-> index 2b65c9edc34e..0fbf5d0a3d31 100644
-> --- a/include/linux/spi/spi-mem.h
-> +++ b/include/linux/spi/spi-mem.h
-> @@ -250,6 +250,7 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
->   *		  the currently mapped area), and the caller of
->   *		  spi_mem_dirmap_write() is responsible for calling it again in
->   *		  this case.
-> + * @poll_status: poll memory device status
->   *
->   * This interface should be implemented by SPI controllers providing an
->   * high-level interface to execute SPI memory operation, which is usually the
-> @@ -274,6 +275,9 @@ struct spi_controller_mem_ops {
->  			       u64 offs, size_t len, void *buf);
->  	ssize_t (*dirmap_write)(struct spi_mem_dirmap_desc *desc,
->  				u64 offs, size_t len, const void *buf);
-> +	int (*poll_status)(struct spi_mem *mem,
-> +			   const struct spi_mem_op *op,
-> +			   u16 mask, u16 match, unsigned long timeout);
->  };
->  
->  /**
-> @@ -369,6 +373,12 @@ devm_spi_mem_dirmap_create(struct device *dev, struct spi_mem *mem,
->  void devm_spi_mem_dirmap_destroy(struct device *dev,
->  				 struct spi_mem_dirmap_desc *desc);
->  
-> +void spi_mem_finalize_op(struct spi_controller *ctlr);
-> +
-> +int spi_mem_poll_status(struct spi_mem *mem,
-> +			const struct spi_mem_op *op,
-> +			u16 mask, u16 match, u16 timeout);
-> +
->  int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
->  				       struct module *owner);
->  
-
+I see that it's the rt5682 driver. I sent
+https://lore.kernel.org/r/20210508075151.1626903-2-swboyd@chromium.org
+for this in case you want to look, but it won't be necessary.
