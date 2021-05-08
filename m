@@ -2,99 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D9337725A
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 16:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3F1377268
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 16:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbhEHOZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 10:25:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhEHOZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 10:25:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A4EF61152;
-        Sat,  8 May 2021 14:24:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620483887;
-        bh=8PNUi3u1sNjGhQpreLLWjaaXpzUEGjI9S77UbGL/xoQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s+4wIOzUZ1E6nPQF7zk9L/b2q0DET3en9a0CTWuZ+m3UbEXLF+TywTwibFFMMW5Vk
-         bc4a5R47Jqv7NWmr2x8t4rb7FuKvMS3574C0IEak1ttu+R83/W6S4Dt8R2UrvpxRG1
-         eYc5DYRx0LueoCm72TA4OgbMHJvPS6nA7ro9s6hGIceXz4S0FK1KiOeUR0zfpu5sIP
-         vZ7uzfqcSPU2RSjgLEXUJpzbNmBXiF1A8jc1JKFlUSfffyxsmtdeTBoNjqqQGswqaI
-         SE2WZscLr48Z8JhSVhZyxCQFUpqsbAocVgZSphvAydghXq397fZTAVuH+stjT+xE31
-         SEV9r0e3/LnZQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 106144034C; Sat,  8 May 2021 11:24:44 -0300 (-03)
-Date:   Sat, 8 May 2021 11:24:44 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] perf jevents: Silence warning for ArchStd files
-Message-ID: <YJafLNqrrP3RHx+v@kernel.org>
-References: <20210506225640.1461000-1-irogers@google.com>
- <4f9a4f20-82ac-dd68-4aee-b560396755f2@huawei.com>
- <CAP-5=fUGRU+vi5NfYLBV9dXgZcG0WY45srsi3Q75T7pPLBLnMQ@mail.gmail.com>
- <946c888e-7918-3692-ecdd-9f4706cbc764@huawei.com>
+        id S229662AbhEHOav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 10:30:51 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:45905 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229586AbhEHOat (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 10:30:49 -0400
+Received: (qmail 811116 invoked by uid 1000); 8 May 2021 10:29:47 -0400
+Date:   Sat, 8 May 2021 10:29:47 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     dave penkler <dpenkler@gmail.com>
+Cc:     Guido Kiener <Guido.Kiener@rohde-schwarz.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: Re: Re: Re: Re: [syzbot] INFO: rcu detected stall in tx
+Message-ID: <20210508142947.GB810516@rowland.harvard.edu>
+References: <6cffd7eebba54ed8acd043d51d212ec1@rohde-schwarz.com>
+ <CAL=kjP0xOQ32xLytyVm9=d+9rnKzV2dW2VJQ6c8MAwTK7rg2Kw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <946c888e-7918-3692-ecdd-9f4706cbc764@huawei.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAL=kjP0xOQ32xLytyVm9=d+9rnKzV2dW2VJQ6c8MAwTK7rg2Kw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, May 07, 2021 at 05:29:06PM +0100, John Garry escreveu:
-> On 07/05/2021 16:46, Ian Rogers wrote:
-> > On Fri, May 7, 2021 at 2:00 AM John Garry<john.garry@huawei.com>  wrote:
-> > > On 06/05/2021 23:56, Ian Rogers wrote:
-> > > > json files in the level 1 directory are used for ArchStd events (see
-> > > > preprocess_arch_std_files), as such they shouldn't be warned about.
-> > > > 
-> > > > Signed-off-by: Ian Rogers<irogers@google.com>
-> > > > ---
-> > > >    tools/perf/pmu-events/jevents.c | 6 ++++--
-> > > >    1 file changed, 4 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-> > > > index ed4f0bd72e5a..7422b0ea8790 100644
-> > > > --- a/tools/perf/pmu-events/jevents.c
-> > > > +++ b/tools/perf/pmu-events/jevents.c
-> > > > @@ -1123,8 +1123,10 @@ static int process_one_file(const char *fpath, const struct stat *sb,
-> > > >                        mapfile = strdup(fpath);
-> > > >                        return 0;
-> > > >                }
-> > > > -
-> > > > -             pr_info("%s: Ignoring file %s\n", prog, fpath);
-> > > > +             if (is_json_file(bname))
-> > > > +                     pr_debug("%s: ArchStd json is preprocessed %s\n", prog, fpath)
-> > > We could get more elaborate and add the same first debug print in
-> > > process_one_file() to preprocess_arch_std_file() to give the allusion
-> > > that they are preprocessed, and change the logic not print that for arch
-> > > std files (in process_one_file()). But not sure it's worth it.
-> > > 
-> > > Or else we could also just omit any print here for archstd files here.
-> > I thought about just dropping the print in the json case but then a
-> > comment would be nice, the pr_debug is a comment and is somewhat
-> > intention revealing. If you think it is overkill then it is ok to
-> > change.
+On Sat, May 08, 2021 at 10:14:41AM +0200, dave penkler wrote:
+> On Thu, 6 May 2021 at 22:31, Guido Kiener
+> <Guido.Kiener@rohde-schwarz.com> wrote:
+> >
+> > > -----Original Message-----
+> > > From: Alan Stern
+> > > Sent: Thursday, May 6, 2021 8:32 PM
+> > > To: Kiener Guido 14DS1
+> > >
+> > > On Thu, May 06, 2021 at 05:44:55PM +0000, Guido Kiener wrote:
+> > > > > -----Original Message-----
+> > > > > From: Alan Stern
+> > > > > Sent: Thursday, May 6, 2021 3:49 PM
+> > > > > To: Kiener Guido 14DS1 <Guido.Kiener@rohde-schwarz.com>
+> > > > > >
+> > > > > > Thanks for your assessment. I agree with the general feeling. I
+> > > > > > counted about hundred specific usb drivers, so wouldn't it be
+> > > > > > better to fix the
+> > > > > problem in some of the host drivers (e.g. urb.c)?
+> > > > > > We could return an error when calling usb_submit_urb() on an erroneous
+> > > pipe.
+> > > > > > I cannot estimate the side effects and we need to check all
+> > > > > > drivers again how they deal with the error situation. Maybe there
+> > > > > > are some special driver
+> > > > > that need a specialized error handling.
+> > > > > > In this case these drivers could reset the (new?) error flag to
+> > > > > > allow calling usb_submit_urb() again without error. This could work, isn't it?
+> > > > >
+> > > > > That is feasible, although it would be an awkward approach.  As you
+> > > > > said, the side effects aren't clear.  But it might work.
+> > > >
+> > > > Otherwise I see only the other approach to change hundred drivers and
+> > > > add the cases EPROTO, EILSEQ and ETIME in each callback handler. The
+> > > > usbtmc driver already respects the EILSEQ and ETIME, and only EPROTO is
+> > > missing.
+> > > > The rest should be more a management task.
+> > > > BTW do you assume it is only a problem for INT pipes or is it also a
+> > > > problem for isochronous and bulk transfers?
+> > >
+> > > All of them.  Control too.
+> > >
+> > > > > Will you be able to test patches?
+> > > >
+> > > > I only can test the USBTMC function in some different PCs. I do not
+> > > > have automated regression tests for USB drivers or Linux kernels.
+> > > > Maybe there is company who could do that.
+> > >
+> > > Well then, if I do find time to write a patch, I'll ask you to try it out with the usbtmc
+> > > driver.
+> >
+> > You mean that you will do a patch in urb.c or a host driver? Or just add a line in usbtmc.c?
+> > Anyhow there is no hurry. On May 20 I will send you a mail if I'm able to
+> > provoke one of these hardware errors EPROTO, EILSQ, or ETIME. Otherwise
+> > it doesn't make sense to test it.
+> >
+> > -Guido
 > 
-> I don't think it's a big deal either way.
-> 
-> Reviewed-by: John Garry <john.garry@huawei.com>
+> EPROTO is a link level issue and needs to be handled by the host driver.
 
-Thanks, applied.
+Are you referring to the host controller driver, or to the class device 
+driver running on the host?  The host controller driver is responsible 
+for creating the -EPROTO error code in the first place.  The class 
+device driver is responsible for taking an appropriate action in 
+response.
 
-- Arnaldo
+> When the host driver detects a protocol error while processing an URB
+> it completes the URB with EPROTO status and marks the endpoint as
+> halted.
 
+Not true.  It does not mark the endpoint as halted, not unless it 
+receives a STALL handshake from the device.  A STALL is not a protocol 
+error.
+
+> When the class driver resubmits the URB and the if the host driver
+> finds the endpoint still marked as halted it should return EPIPE
+> status on the resubmitted URB
+
+Irrelevant.
+
+> When the class driver and usbtmc in particular receives an URB with
+> EPIPE status it cleans up and does not resubmit.
+> Can someone from syzbot land please confirm whether usbtmc running on
+> the xhci host driver causes an RCU stall to be detected ?
+
+That is not an easy thing to test, and syzbot is not capable of testing 
+it.  You would need a USB device which could deliberately be set to 
+create a protocol error; I don't know of any devices like that.
+
+Alan Stern
