@@ -2,108 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8B1377104
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE0A377101
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhEHJpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 05:45:47 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:33062 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhEHJpq (ORCPT
+        id S230350AbhEHJpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 05:45:13 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:17161 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229869AbhEHJpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 05:45:46 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1489iWBS019624;
-        Sat, 8 May 2021 09:44:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=+7ZZyYeUYy9IQ3ZxTjAWfnpZ4ty+iYLlka/hAfiNP4U=;
- b=IFce8VSQZEA2AAnfDoQWgi7u7nQeClHrqAsEhnZvR8cwkDtMg7HaWsi/8cs54RViMSjv
- HE6GsNm7ThtDlcvVzyFv7aR4NkoPZQUi3P4HkZoHUCUE8oYem1Q+2TIS/wN4uujjq2uU
- ZTFwBY6ZNiv9NVcJXE8KES9VjJ+zlSmLd7SYM5J6LRyWUgcasW8jfmCJxezqLQ8wmraN
- 1e05dEOqVkTrDxRRaLFkjQkWk4yEjNa4n4RH/kp2jNTwwBw5/Wwpv6nc68zai1qQNnlU
- 3wy7d1EwLSVFfdePqykkp9hvc63Zqni6HxLeWJDP8KiaaNXe7WA45w6BCs+DGEal5Nmj Rw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 38dg5b8djg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 08 May 2021 09:44:32 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1489iUoF179553;
-        Sat, 8 May 2021 09:44:32 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38djf0uadg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 08 May 2021 09:44:32 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1489iVcf179564;
-        Sat, 8 May 2021 09:44:31 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 38djf0uadd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 08 May 2021 09:44:31 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1489iTfm005380;
-        Sat, 8 May 2021 09:44:29 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 08 May 2021 02:44:28 -0700
-Date:   Sat, 8 May 2021 12:43:50 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Pavle Rohalj <pavle.rohalj@gmail.com>
-Cc:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
-        gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 02/49] staging: sm750fb: Rename dviInit to dvi_init
- and update param names
-Message-ID: <20210508094350.GJ1955@kadam>
-References: <cover.1617776878.git.pavle.rohalj@gmail.com>
- <6c6ecf7eee7d41492dbbcc4410db7eefd1fbb13d.1617776878.git.pavle.rohalj@gmail.com>
+        Sat, 8 May 2021 05:45:12 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fcj43523nzncCk;
+        Sat,  8 May 2021 17:40:51 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 8 May 2021 17:44:02 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Anton Altaparmakov <anton@tuxera.com>,
+        linux-ntfs-dev <linux-ntfs-dev@lists.sourceforge.net>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] ntfs: Remove several unneeded semicolons
+Date:   Sat, 8 May 2021 17:43:56 +0800
+Message-ID: <20210508094356.2836-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6c6ecf7eee7d41492dbbcc4410db7eefd1fbb13d.1617776878.git.pavle.rohalj@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: TzmPJEEHRRvF5WfjN67V6i6ygZ5sj5wF
-X-Proofpoint-ORIG-GUID: TzmPJEEHRRvF5WfjN67V6i6ygZ5sj5wF
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9977 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
- bulkscore=0 spamscore=0 clxscore=1011 priorityscore=1501 adultscore=0
- mlxlogscore=999 mlxscore=0 suspectscore=0 impostorscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105080070
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 11:36:01PM -0700, Pavle Rohalj wrote:
-> Fix "Avoid CamelCase" checkpatch.pl checks for the function dviInit and
-> its parameter names in ddk750_dvi.h.
-> 
-> Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
-> ---
->  drivers/staging/sm750fb/ddk750_dvi.c |  2 +-
->  drivers/staging/sm750fb/ddk750_dvi.h | 20 ++++++++++----------
->  2 files changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/staging/sm750fb/ddk750_dvi.c b/drivers/staging/sm750fb/ddk750_dvi.c
-> index db19bf732482..943cbcafcffa 100644
-> --- a/drivers/staging/sm750fb/ddk750_dvi.c
-> +++ b/drivers/staging/sm750fb/ddk750_dvi.c
-> @@ -30,7 +30,7 @@ static struct dvi_ctrl_device dcft_supported_dvi_controller[] = {
->  #endif
->  };
->  
-> -int dviInit(unsigned char edge_select,
-> +int dvi_init(unsigned char edge_select,
->  	    unsigned char bus_select,
->  	    unsigned char dual_edge_clk_select,
->  	    unsigned char hsync_enable,
+The semicolon immediately following '}' is unneeded.
 
-The fact that you were able to change this without changing any callers
-suggests that this is not used.  In that case, just delete it instead
-of renaming it.
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ fs/ntfs/lcnalloc.c | 2 +-
+ fs/ntfs/super.c    | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-regards,
-dan carpenter
+diff --git a/fs/ntfs/lcnalloc.c b/fs/ntfs/lcnalloc.c
+index eda9972e61599ab..66c2b29e09ddb0c 100644
+--- a/fs/ntfs/lcnalloc.c
++++ b/fs/ntfs/lcnalloc.c
+@@ -899,7 +899,7 @@ s64 __ntfs_cluster_free(ntfs_inode *ni, const VCN start_vcn, s64 count,
+ 		}
+ 		/* We have freed @to_free real clusters. */
+ 		real_freed = to_free;
+-	};
++	}
+ 	/* Go to the next run and adjust the number of clusters left to free. */
+ 	++rl;
+ 	if (count >= 0)
+diff --git a/fs/ntfs/super.c b/fs/ntfs/super.c
+index 0d7e948cb29c931..a45e06fa8a73baa 100644
+--- a/fs/ntfs/super.c
++++ b/fs/ntfs/super.c
+@@ -1612,7 +1612,7 @@ static bool load_and_init_attrdef(ntfs_volume *vol)
+ 		memcpy((u8*)vol->attrdef + (index++ << PAGE_SHIFT),
+ 				page_address(page), size);
+ 		ntfs_unmap_page(page);
+-	};
++	}
+ 	if (size == PAGE_SIZE) {
+ 		size = i_size & ~PAGE_MASK;
+ 		if (size)
+@@ -1681,7 +1681,7 @@ static bool load_and_init_upcase(ntfs_volume *vol)
+ 		memcpy((char*)vol->upcase + (index++ << PAGE_SHIFT),
+ 				page_address(page), size);
+ 		ntfs_unmap_page(page);
+-	};
++	}
+ 	if (size == PAGE_SIZE) {
+ 		size = i_size & ~PAGE_MASK;
+ 		if (size)
+-- 
+2.26.0.106.g9fadedd
+
 
