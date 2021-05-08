@@ -2,82 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62FFB3770CD
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C21B3770D5
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhEHJOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 05:14:46 -0400
-Received: from ivanoab7.miniserver.com ([37.128.132.42]:54666 "EHLO
-        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhEHJOp (ORCPT
+        id S230264AbhEHJT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 05:19:26 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:18014 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229583AbhEHJTZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 05:14:45 -0400
-Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
-        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1lfJ1r-0005sH-PC; Sat, 08 May 2021 09:13:43 +0000
-Received: from madding.kot-begemot.co.uk ([192.168.3.98])
-        by jain.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1lfJ1p-0005PV-L8; Sat, 08 May 2021 10:13:43 +0100
-Subject: Re: [PATCH 1/1] um: fix error return code in winch_tramp()
-To:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Eduard-Gabriel Munteanu <maxdamage@aladin.ro>,
-        linux-um <linux-um@lists.infradead.org>,
+        Sat, 8 May 2021 05:19:25 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FchVB5wbPzQkJl;
+        Sat,  8 May 2021 17:14:58 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.72) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Sat, 8 May 2021
+ 17:18:14 +0800
+Subject: Re: [PATCH 1/1] drm/nouveau: fix error return code in
+ nouveau_backlight_init()
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        nouveau <nouveau@lists.freedesktop.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210508032239.2177-1-thunder.leizhen@huawei.com>
-From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Organization: Cambridge Greys
-Message-ID: <01f2ebc7-effd-19f1-53cf-648cf81f811b@cambridgegreys.com>
-Date:   Sat, 8 May 2021 10:13:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+References: <20210508034810.2374-1-thunder.leizhen@huawei.com>
+ <20210508073400.nnmwwyoxqqiwv36w@pmoreau.org>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <0b94bd89-c8a0-f1e8-057f-2f639464fadd@huawei.com>
+Date:   Sat, 8 May 2021 17:18:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210508032239.2177-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210508073400.nnmwwyoxqqiwv36w@pmoreau.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.72]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/05/2021 04:22, Zhen Lei wrote:
-> Fix to return a negative error code from the error handling case instead
-> of 0, as done elsewhere in this function.
-> 
-> Fixes: 89df6bfc0405 ("uml: DEBUG_SHIRQ fixes")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->   arch/um/drivers/chan_user.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/um/drivers/chan_user.c b/arch/um/drivers/chan_user.c
-> index d8845d4aac6a..6040817c036f 100644
-> --- a/arch/um/drivers/chan_user.c
-> +++ b/arch/um/drivers/chan_user.c
-> @@ -256,7 +256,8 @@ static int winch_tramp(int fd, struct tty_port *port, int *fd_out,
->   		goto out_close;
->   	}
->   
-> -	if (os_set_fd_block(*fd_out, 0)) {
-> +	err = os_set_fd_block(*fd_out, 0);
-> +	if (err) {
->   		printk(UM_KERN_ERR "winch_tramp: failed to set thread_fd "
->   		       "non-blocking.\n");
->   		goto out_close;
-> 
-Acked-By: anton.ivanov@cambridgegreys.com
 
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+
+On 2021/5/8 15:34, Pierre Moreau wrote:
+> Hello Zhen,
+> 
+> There was a similar patch sent in last month, though which does not seem to
+> have been merged yet; see
+> https://lists.freedesktop.org/archives/nouveau/2021-April/038451.html.
+> 
+> Whether `ret` should be `-ENOSPC` or `-ENOMEM` is hard to say as
+> `nouveau_get_backlight_name()` could fail due to either.
+> 
+> I will propose an alternative fix which modifies `nouveau_get_backlight_name()`
+> to return an int so the actual error code can be propagated back instead of
+> guessed, as well as fix an ida ID leak which I just spotted.
+
+It's a good idea.
+
+> 
+> Best,
+> Pierre
+> 
+> On 2021-05-08 — 11:48, Zhen Lei wrote:
+>> Fix to return a negative error code from the error handling case instead
+>> of 0, as done elsewhere in this function.
+>>
+>> Fixes: db1a0ae21461 ("drm/nouveau/bl: Assign different names to interfaces")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  drivers/gpu/drm/nouveau/nouveau_backlight.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/gpu/drm/nouveau/nouveau_backlight.c b/drivers/gpu/drm/nouveau/nouveau_backlight.c
+>> index 72f35a2babcb..097ca344a086 100644
+>> --- a/drivers/gpu/drm/nouveau/nouveau_backlight.c
+>> +++ b/drivers/gpu/drm/nouveau/nouveau_backlight.c
+>> @@ -273,6 +273,7 @@ nouveau_backlight_init(struct drm_connector *connector)
+>>  		return -ENOMEM;
+>>  
+>>  	if (!nouveau_get_backlight_name(backlight_name, bl)) {
+>> +		ret = -ENOSPC;
+>>  		NV_ERROR(drm, "Failed to retrieve a unique name for the backlight interface\n");
+>>  		goto fail_alloc;
+>>  	}
+>> -- 
+>> 2.25.1
+>>
+>>
+> 
+> .
+> 
+
