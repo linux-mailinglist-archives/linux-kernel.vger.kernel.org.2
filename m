@@ -2,84 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B14376F4A
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 05:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2814D376F4E
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 05:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhEHDyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 23:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbhEHDyO (ORCPT
+        id S231147AbhEHD5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 23:57:38 -0400
+Received: from mail-m121142.qiye.163.com ([115.236.121.142]:12588 "EHLO
+        mail-m121142.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231129AbhEHD5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 23:54:14 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BD8C061574;
-        Fri,  7 May 2021 20:53:11 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id t21so6244985plo.2;
-        Fri, 07 May 2021 20:53:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=UVAOZkyEJJo57GwyWj7UmAw4YWwIKnE98l3Qa37aUrA=;
-        b=mNwrBtO/OOX8pi/1NNE+PTtq0ZOeF3CacIDY7MHwUixuNegSIOdz4+2Y70kXv/HdPw
-         6xL96O+ZDjTNkhDVUUHqdFNN5okffMHJtnzZBIbT05kZEJXInJFqrjksb7VEPm9pVtaH
-         Bnh5V9pqZMrcSfdSgvC8OTtR3kvvF1Ae0By8xqKaeAGphPmMkNn+P/0xo0b3hZO4YADA
-         khKpYcNkXfHlLLB+B0J4k8GmIdEH87h5Sy3xkktS3um2eLYgV4OFVWQCDVSIwCw0qL70
-         F9teJL1xCwel3MW1cLpokvIU3IbFD5ixCrJY3DNEm47zIYixWGWwUsZywX2IBtbssSAi
-         lKHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=UVAOZkyEJJo57GwyWj7UmAw4YWwIKnE98l3Qa37aUrA=;
-        b=K+mUcvMVFUHnBGDVWIzSGSa3blhHXokyyOi8fS7XZNGV+6/yEl+5evqU0Rds/ZT/6J
-         bq9So0Gr9wzLsc1t8kLDHXAoOEtOh41foHI4/MMvCOExZiRzSh+0/AZDPTB3vXLFvWr5
-         kowgUNJKJmPUBO05kAw+jwZfswuEypo2JUoy/1/Ia4mimVcjaeKu2WWBr1BdZcW8JGKk
-         4Ur8pXIrMca5kP99QHEK7fQBIeFbKh/pdMlv3nBCn53+sgz9nhaSquShNybM6qo0nyoH
-         uOElGyF18CBTPMg79EImhWRwUxTFXmZCCdOMfkP1vQupr6EhjxaPPZ37s12C2WiWyFra
-         /ikw==
-X-Gm-Message-State: AOAM531aUgaA7hqLNMmpJPtthGvYhTO4CABjfwrCXSBfdSQNaxzqrqJU
-        1rS1Qu6nCJ1+4B+MIeJq4w==
-X-Google-Smtp-Source: ABdhPJz00ehHYbTCOyJuzDdcnPdndMZbvOZBT+hYbOvMjS+C7Yh/JrMU21VkKlC5C6zpOtljamD5kw==
-X-Received: by 2002:a17:903:230a:b029:ee:a909:4f92 with SMTP id d10-20020a170903230ab02900eea9094f92mr13880320plh.44.1620445991077;
-        Fri, 07 May 2021 20:53:11 -0700 (PDT)
-Received: from localhost.localdomain ([210.32.145.152])
-        by smtp.gmail.com with ESMTPSA id a13sm5694824pgm.43.2021.05.07.20.53.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 20:53:10 -0700 (PDT)
-From:   Jinmeng Zhou <jjjinmeng.zhou@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shenwenbosmile@gmail.com, Jeimon <jjjinmeng.zhou@gmail.com>
-Subject: [PATCH] net/nfc/rawsock.c: fix a permission check bug
-Date:   Sat,  8 May 2021 11:52:30 +0800
-Message-Id: <20210508035230.8229-1-jjjinmeng.zhou@gmail.com>
+        Fri, 7 May 2021 23:57:37 -0400
+Received: from localhost.localdomain (unknown [14.154.28.254])
+        by mail-m121142.qiye.163.com (Hmail) with ESMTPA id B20FD80762;
+        Sat,  8 May 2021 11:56:31 +0800 (CST)
+From:   Ding Hui <dinghui@sangfor.com.cn>
+To:     david@redhat.com, naoya.horiguchi@nec.com, osalvador@suse.de
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Ding Hui <dinghui@sangfor.com.cn>
+Subject: [PATCH v2] mm/page_alloc: fix counting of free pages after take off from buddy
+Date:   Sat,  8 May 2021 11:55:33 +0800
+Message-Id: <20210508035533.23222-1-dinghui@sangfor.com.cn>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <8cd355d2-1adc-4189-7b65-cfea13129db5@sangfor.com.cn>
+References: <8cd355d2-1adc-4189-7b65-cfea13129db5@sangfor.com.cn>
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGUseSlYYTElMGR0fGkhDH01VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        9ISFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MTo6Tjo4CT8KPzkPNCoZNw8u
+        H1YKCTlVSlVKTUlLT09NSkJJSEtOVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
+        QVlKT1VKTk9VSUNVSU5PWVdZCAFZQUlKT0I3Bg++
+X-HM-Tid: 0a794a1ea173b037kuuub20fd80762
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeimon <jjjinmeng.zhou@gmail.com>
+Recently we found there is a lot MemFree left in /proc/meminfo after
+do a lot of pages soft offline.
 
-The function rawsock_create() calls a privileged function sk_alloc(), which requires a ns-aware check to check net->user_ns, i.e., ns_capable(). However, the original code checks the init_user_ns using capable(). So we replace the capable() with ns_capable().
+I think it's incorrect since NR_FREE_PAGES should not contain HWPoison pages.
+For offline free pages, after a successful call take_page_off_buddy(), the
+page is no longer belong to buddy allocator, and will not be used any more,
+but we missed accounting NR_FREE_PAGES in this situation.
 
-Signed-off-by: Jeimon <jjjinmeng.zhou@gmail.com>
+Do update like rmqueue() does.
+
+Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
 ---
- net/nfc/rawsock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+V2:
+use __mod_zone_freepage_state instead of __mod_zone_page_state
 
-diff --git a/net/nfc/rawsock.c b/net/nfc/rawsock.c
-index 955c195ae..a76b62f55 100644
---- a/net/nfc/rawsock.c
-+++ b/net/nfc/rawsock.c
-@@ -329,7 +329,7 @@ static int rawsock_create(struct net *net, struct socket *sock,
- 		return -ESOCKTNOSUPPORT;
- 
- 	if (sock->type == SOCK_RAW) {
--		if (!capable(CAP_NET_RAW))
-+		if (!ns_capable(net->user_ns, CAP_NET_RAW))
- 			return -EPERM;
- 		sock->ops = &rawsock_raw_ops;
- 	} else {
+ mm/page_alloc.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index cfc72873961d..e124a615303b 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8947,6 +8947,7 @@ bool take_page_off_buddy(struct page *page)
+ 			del_page_from_free_list(page_head, zone, page_order);
+ 			break_down_buddy_pages(zone, page_head, page, 0,
+ 						page_order, migratetype);
++			__mod_zone_freepage_state(zone, -1, migratetype);
+ 			ret = true;
+ 			break;
+ 		}
 -- 
 2.17.1
 
