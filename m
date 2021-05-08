@@ -2,65 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D8B377114
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4FA377117
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbhEHJwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 05:52:33 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:33359 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229583AbhEHJw2 (ORCPT
+        id S230387AbhEHJxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 05:53:17 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:18016 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229701AbhEHJxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 05:52:28 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UY8pXIE_1620467482;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UY8pXIE_1620467482)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 08 May 2021 17:51:24 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     dhowells@redhat.com
-Cc:     jarkko@kernel.org, jmorris@namei.org, serge@hallyn.com,
-        nathan@kernel.org, ndesaulniers@google.com,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] Keys: Remove redundant initialization of cred
-Date:   Sat,  8 May 2021 17:51:21 +0800
-Message-Id: <1620467481-110575-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sat, 8 May 2021 05:53:16 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FcjFK1ZPWzQjgR;
+        Sat,  8 May 2021 17:48:53 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 8 May 2021 17:52:03 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Geoff Levand <geoff@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] powerpc/ps3: Remove a couple of unneeded semicolons
+Date:   Sat, 8 May 2021 17:51:50 +0800
+Message-ID: <20210508095150.2942-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pointer cred is being initialized however this value is never
-read as cred is assigned an updated value from the returned
-call to get_current_cred(). Remove the redundant initialization.
+The semicolon immediately following '}' is unneeded.
 
-Cleans up clang warning:
-
-security/keys/request_key.c:119:21: warning: Value stored to 'cred'
-during its initialization is never read
-[clang-analyzer-deadcode.DeadStores]
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: 'commit bb952bb98a7e ("CRED: Separate per-task-group keyrings from signal_struct")'
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- security/keys/request_key.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/platforms/ps3/system-bus.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/security/keys/request_key.c b/security/keys/request_key.c
-index 2da4404..873c31f 100644
---- a/security/keys/request_key.c
-+++ b/security/keys/request_key.c
-@@ -116,7 +116,7 @@ static int call_sbin_request_key(struct key *authkey, void *aux)
- {
- 	static char const request_key[] = "/sbin/request-key";
- 	struct request_key_auth *rka = get_request_key_auth(authkey);
--	const struct cred *cred = current_cred();
-+	const struct cred *cred;
- 	key_serial_t prkey, sskey;
- 	struct key *key = rka->target_key, *keyring, *session, *user_session;
- 	char *argv[9], *envp[3], uid_str[12], gid_str[12];
+diff --git a/arch/powerpc/platforms/ps3/system-bus.c b/arch/powerpc/platforms/ps3/system-bus.c
+index b431f41c6cb53ab..5c739267ddd2174 100644
+--- a/arch/powerpc/platforms/ps3/system-bus.c
++++ b/arch/powerpc/platforms/ps3/system-bus.c
+@@ -603,7 +603,7 @@ static dma_addr_t ps3_ioc0_map_page(struct device *_dev, struct page *page,
+ 	default:
+ 		/* not happned */
+ 		BUG();
+-	};
++	}
+ 	result = ps3_dma_map(dev->d_region, (unsigned long)ptr, size,
+ 			     &bus_addr, iopte_flag);
+ 
+@@ -762,7 +762,7 @@ int ps3_system_bus_device_register(struct ps3_system_bus_device *dev)
+ 		break;
+ 	default:
+ 		BUG();
+-	};
++	}
+ 
+ 	dev->core.of_node = NULL;
+ 	set_dev_node(&dev->core, 0);
 -- 
-1.8.3.1
+2.26.0.106.g9fadedd
+
 
