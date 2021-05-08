@@ -2,143 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247ED3770FD
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3283770FF
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhEHJmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 05:42:37 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:17160 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhEHJmg (ORCPT
+        id S230349AbhEHJmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 05:42:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32237 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229870AbhEHJmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 05:42:36 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fcj132mk6zncMX;
-        Sat,  8 May 2021 17:38:15 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 8 May 2021 17:41:25 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] scsi: pmcraid: Remove several unneeded semicolons
-Date:   Sat, 8 May 2021 17:41:18 +0800
-Message-ID: <20210508094118.2783-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Sat, 8 May 2021 05:42:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620466911;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e8g0FbMtPR9vOJqczBJQph07+IiVAO0G06d1hPFLBp4=;
+        b=aWjbNej+VqLqgzzosPNbISMsucXibFXK7gDzuWPEc0t4TojY5LRJ2bwBpzW11zZ7q73AGn
+        CIwnTN2ziT2kTq1qZtEUgBUZK4uELkg7qmPs9+8RxUpSS7LIKSzr5CFdvgrlkeNedO+Fum
+        u4KumnA3rUJNgWNactnb68KMUmsHvHg=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-568-t5vemS4_O7GqLa2RwdjNMA-1; Sat, 08 May 2021 05:41:48 -0400
+X-MC-Unique: t5vemS4_O7GqLa2RwdjNMA-1
+Received: by mail-ed1-f71.google.com with SMTP id u30-20020a50a41e0000b0290385504d6e4eso5879713edb.7
+        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 02:41:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e8g0FbMtPR9vOJqczBJQph07+IiVAO0G06d1hPFLBp4=;
+        b=itE1zZeO17ncVCXEJhi4IRHWT48T7D6umd0O+EqL9F439pUP42F9sqAKeoX7Ow3a9v
+         nyM5zujxzIyiJK2BWz7/UQ5W/cJMqJ76QEoUI9Vl/GXUU/mfYnN+B6RSBeEpjP2z7DKa
+         FK0sseDOB+H+FH2cfkfQSQU/jvuknkLVZY7PaTnVivovCp9U3ba4CgWdiRD5rOrsKjYL
+         z57Hc+oxbMTtsHoXOQlgjidZa4tNnGfijwpP2z/5EG/aAIfsO3XrDSG1kvK1l31/VfjQ
+         M2htcFu1wyqhNsfCnQWXr6gQ6/7L6jIbS1qVmnizpXOVhoDeTlZM5g4Rn4JtmI2ne0ki
+         Zjlw==
+X-Gm-Message-State: AOAM531XQHu6r5ACQIff+mVaU9MeMKl8F2rik3tKZXOdfnuNe07NLbvJ
+        f9RPoSuP4HE6AI9Do70CJSrrG7itX5Prw2FBbp4RTA890wkR/26QSIweXD5ZsrJCtLKCyKOQn9u
+        SpnpPCn37lHqrt+4l0RB0Rq5T
+X-Received: by 2002:a17:906:80d6:: with SMTP id a22mr14495186ejx.159.1620466907125;
+        Sat, 08 May 2021 02:41:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxri80XuBnxGDuVafu5UlMWlY6ndqQ/BrRSzL1WJ1RXqM0/pLeNgvGYwaJJ07V1m729A99mKw==
+X-Received: by 2002:a17:906:80d6:: with SMTP id a22mr14495176ejx.159.1620466906968;
+        Sat, 08 May 2021 02:41:46 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id q10sm6026768eds.36.2021.05.08.02.41.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 08 May 2021 02:41:46 -0700 (PDT)
+Subject: Re: [PATCH v2] iio: bme680_i2c: Remove ACPI support
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+References: <20210506034332.752263-1-linux@roeck-us.net>
+ <20210507103154.00006763@Huawei.com> <20210508030936.GA3879276@roeck-us.net>
+ <CAHp75Vfa3GT9bnimxw7EJsJyRF8HZP3PGsUNikSScuNiU4qArg@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <294dacb7-aef3-ede0-e46d-5c8fd91e9c17@redhat.com>
+Date:   Sat, 8 May 2021 11:41:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAHp75Vfa3GT9bnimxw7EJsJyRF8HZP3PGsUNikSScuNiU4qArg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The semicolon immediately following '}' is unneeded.
+Hi,
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/scsi/aha1542.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+On 5/8/21 9:48 AM, Andy Shevchenko wrote:
+> 
+> 
+> On Saturday, May 8, 2021, Guenter Roeck <linux@roeck-us.net <mailto:linux@roeck-us.net>> wrote:
+> 
+>     On Fri, May 07, 2021 at 10:31:54AM +0100, Jonathan Cameron wrote:
+>     > On Wed,  5 May 2021 20:43:32 -0700
+>     > Guenter Roeck <linux@roeck-us.net <mailto:linux@roeck-us.net>> wrote:
+>     >
+>     > > With CONFIG_ACPI=n and -Werror, 0-day reports:
+>     > >
+>     > > drivers/iio/chemical/bme680_i2c.c:46:36: error:
+>     > >     'bme680_acpi_match' defined but not used
+>     > >
+>     > > Apparently BME0680 is not a valid ACPI ID. Remove it and with it
+>     > > ACPI support from the bme680_i2c driver.
+>     > >
+>     > > Reported-by: kernel test robot <lkp@intel.com <mailto:lkp@intel.com>>
+>     > > Cc: Andy Shevchenko <andy.shevchenko@gmail.com <mailto:andy.shevchenko@gmail.com>>
+>     > > Cc: Hans de Goede <hdegoede@redhat.com <mailto:hdegoede@redhat.com>>
+>     > > Signed-off-by: Guenter Roeck <linux@roeck-us.net <mailto:linux@roeck-us.net>>
+>     >
+>     > A note for these is that I'll change the patch titles when applying.
+>     > We aren't removing ACPI support from the drivers, we are simply
+>     > removing the ACPI ID table entries.  For most of these PRP0001 magic
+>     > will work just fine with the OF table.  That's probably the
+>     > right way for small companies etc to use these in products without
+>     > having to jump through the hoops of getting an ACPI ID.
+>     >
+> 
+>     Below is what Coccinelle tells me about ACPI IDs in drivers/iio.
+>     The script (tries) to do a prefix match of all ACPI IDs it finds against
+>     the PNP and ACPI ID databases from https://uefi.org/PNP_ACPI_Registry <https://uefi.org/PNP_ACPI_Registry>.
+> 
+>     Andy, Hans, does that look about right ?
+> 
+> 
+> 
+> The result looks nice for the first step!
+>  
+> 
+> 
+>     Next question is what to do with the mismatches and with false
+>     negatives such as:
+> 
+>     drivers/iio/accel/stk8312.c
+>       STK8312: match (prefix) against STK (SANTAK CORP.)
+>     drivers/iio/light/isl29018.c
+>       ISL29018: match (prefix) against ISL (Isolation Systems)
+>       ISL29023: match (prefix) against ISL (Isolation Systems)
+>       ISL29035: match (prefix) against ISL (Isolation Systems)
+>     drivers/iio/gyro/bmg160_i2c.c
+> 
+> 
+>  
+> 
+>       BMI055B: match (prefix) against BMI (Benson Medical Instruments Company)
+>       BMI088B: match (prefix) against BMI (Benson Medical Instruments Company)
+> 
+> 
+> These I think the real ones from the existing devices.
 
-diff --git a/drivers/scsi/aha1542.c b/drivers/scsi/aha1542.c
-index 1210e61afb1838a..7229748a57b95ff 100644
---- a/drivers/scsi/aha1542.c
-+++ b/drivers/scsi/aha1542.c
-@@ -304,7 +304,7 @@ static irqreturn_t aha1542_interrupt(int irq, void *dev_id)
- 		if (flag & SCRD)
- 			printk("SCRD ");
- 		printk("status %02x\n", inb(STATUS(sh->io_port)));
--	};
-+	}
- #endif
- 	number_serviced = 0;
- 
-@@ -346,7 +346,7 @@ static irqreturn_t aha1542_interrupt(int irq, void *dev_id)
- 			if (!number_serviced)
- 				shost_printk(KERN_WARNING, sh, "interrupt received, but no mail.\n");
- 			return IRQ_HANDLED;
--		};
-+		}
- 
- 		mbo = (scsi2int(mb[mbi].ccbptr) - (unsigned long)aha1542->ccb_handle) / sizeof(struct ccb);
- 		mbistatus = mb[mbi].status;
-@@ -411,7 +411,7 @@ static irqreturn_t aha1542_interrupt(int irq, void *dev_id)
- 						 */
- 		my_done(tmp_cmd);
- 		number_serviced++;
--	};
-+	}
- }
- 
- static int aha1542_queuecommand(struct Scsi_Host *sh, struct scsi_cmnd *cmd)
-@@ -537,7 +537,7 @@ static void setup_mailboxes(struct Scsi_Host *sh)
- 		any2scsi(aha1542->mb[i].ccbptr,
- 			 aha1542->ccb_handle + i * sizeof(struct ccb));
- 		aha1542->mb[AHA1542_MAILBOXES + i].status = 0;
--	};
-+	}
- 	aha1542_intr_reset(sh->io_port);	/* reset interrupts, so they don't block */
- 	any2scsi(mb_cmd + 2, aha1542->mb_handle);
- 	if (aha1542_out(sh->io_port, mb_cmd, 5))
-@@ -552,7 +552,7 @@ static int aha1542_getconfig(struct Scsi_Host *sh)
- 	i = inb(STATUS(sh->io_port));
- 	if (i & DF) {
- 		i = inb(DATA(sh->io_port));
--	};
-+	}
- 	aha1542_outb(sh->io_port, CMD_RETCONF);
- 	aha1542_in(sh->io_port, inquiry_result, 3, 0);
- 	if (!wait_mask(INTRFLAGS(sh->io_port), INTRMASK, HACC, 0, 0))
-@@ -581,7 +581,7 @@ static int aha1542_getconfig(struct Scsi_Host *sh)
- 	default:
- 		shost_printk(KERN_ERR, sh, "Unable to determine DMA channel.\n");
- 		return -1;
--	};
-+	}
- 	switch (inquiry_result[1]) {
- 	case 0x40:
- 		sh->irq = 15;
-@@ -604,7 +604,7 @@ static int aha1542_getconfig(struct Scsi_Host *sh)
- 	default:
- 		shost_printk(KERN_ERR, sh, "Unable to determine IRQ level.\n");
- 		return -1;
--	};
-+	}
- 	sh->this_id = inquiry_result[2] & 7;
- 	return 0;
- }
-@@ -639,7 +639,7 @@ static int aha1542_mbenable(struct Scsi_Host *sh)
- 
- 		if (aha1542_out(sh->io_port, mbenable_cmd, 3))
- 			goto fail;
--	};
-+	}
- 	while (0) {
- fail:
- 		shost_printk(KERN_ERR, sh, "Mailbox init failed\n");
-@@ -657,7 +657,7 @@ static int aha1542_query(struct Scsi_Host *sh)
- 	i = inb(STATUS(sh->io_port));
- 	if (i & DF) {
- 		i = inb(DATA(sh->io_port));
--	};
-+	}
- 	aha1542_outb(sh->io_port, CMD_INQUIRY);
- 	aha1542_in(sh->io_port, inquiry_result, 4, 0);
- 	if (!wait_mask(INTRFLAGS(sh->io_port), INTRMASK, HACC, 0, 0))
-@@ -676,7 +676,7 @@ static int aha1542_query(struct Scsi_Host *sh)
- 	if (inquiry_result[0] == 0x43) {
- 		shost_printk(KERN_INFO, sh, "Emulation mode not supported for AHA-1740 hardware, use aha1740 driver instead.\n");
- 		return 1;
--	};
-+	}
- 
- 	/*
- 	 * Always call this - boards that do not support extended bios translation
--- 
-2.26.0.106.g9fadedd
+No that is wrong, these are Bosch sensors, so the BOSC0200 entry for
+the companion accelerometer is the only entry using the official company
+prefix. At least "BMA" ("BMA250E") and "BSG" ("BSG1160", "BSG2150") are
+also know to be used as prefixes for ACPI HIDs which are in active
+use for Bosch sensors :|
 
+And Benson Medical Instruments Company has nothing to do with these
+sensors :|
+
+Regards,
+
+Hans
 
