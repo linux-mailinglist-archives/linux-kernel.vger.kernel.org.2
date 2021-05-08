@@ -2,109 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514FE3771C2
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 14:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA143771AF
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 14:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbhEHMag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 08:30:36 -0400
-Received: from foss.arm.com ([217.140.110.172]:53656 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231183AbhEHMae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 08:30:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ACE3C139F;
-        Sat,  8 May 2021 05:29:32 -0700 (PDT)
-Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.110])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3BBF23F73B;
-        Sat,  8 May 2021 05:29:25 -0700 (PDT)
-From:   Jia He <justin.he@arm.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@ftp.linux.org.uk>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jia He <justin.he@arm.com>
-Subject: [PATCH RFC 3/3] s390/hmcdrv: remove the redundant directory path in debug message
-Date:   Sat,  8 May 2021 20:25:30 +0800
-Message-Id: <20210508122530.1971-4-justin.he@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210508122530.1971-1-justin.he@arm.com>
-References: <20210508122530.1971-1-justin.he@arm.com>
+        id S230500AbhEHM1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 08:27:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55470 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230419AbhEHM1i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 08:27:38 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620476795;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Kx3itcBh5bmvjR+cUMbnARdy9x4AqAuYlijs5gThVpY=;
+        b=CP8vQBTgguVuYcT9FMUlZt5qmDQ8uiRkoEn04X5N8+V6EnC/cBJuVW9MFB/t9TZ0pj3e0y
+        7dx9Kaxm++dX+OshSenWsL9nyfJAK4XtfyU2J1oWBKP6Pe930MgavDm5KvMCRYzU6u8iye
+        a93uNft0TmKo/j3CC0WwJVGTPngaVLPdcM+nDQEUlvu8y/PvmO8YlylHnM8lWOe8SfkL+G
+        zwSE9buEzpB2rucQzcQNcz5qSjQPBGhXIy5am2qGBI5eWfZM5EVAyLRn1pTQqPCpFSqWtJ
+        7QAhUm0QnwDs2ApMF70PVfzkrmuW1KfsUZUkMx2TU5liw18zAgysAHxWEI00ag==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620476795;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Kx3itcBh5bmvjR+cUMbnARdy9x4AqAuYlijs5gThVpY=;
+        b=JeexpvwmSNy08L3nUg6D4BMN9tCEhZZ7o1YbMgFtelRUsgx2XNW+fPJDONXgqvIVvcH6RJ
+        VNrlaoQd6Ec3+rDQ==
+To:     xuyihang <xuyihang@huawei.com>, Ming Lei <ming.lei@redhat.com>
+Cc:     Peter Xu <peterx@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Jason Wang <jasowang@redhat.com>,
+        Luiz Capitulino <lcapitulino@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>, minlei@redhat.com,
+        liaochang1@huawei.com
+Subject: Re: Virtio-scsi multiqueue irq affinity
+In-Reply-To: <0f6c8a5f-ad33-1199-f313-53fe9187a672@huawei.com>
+References: <20190318062150.GC6654@xz-x1> <alpine.DEB.2.21.1903231805310.1798@nanos.tec.linutronix.de> <20190325050213.GH9149@xz-x1> <20190325070616.GA9642@ming.t460p> <alpine.DEB.2.21.1903250948490.1798@nanos.tec.linutronix.de> <20190325095011.GA23225@ming.t460p> <0f6c8a5f-ad33-1199-f313-53fe9187a672@huawei.com>
+Date:   Sat, 08 May 2021 14:26:35 +0200
+Message-ID: <87zgx5l8ck.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It would be better to use full file path with '%pD' instead of hard coding.
+Yihang,
 
-Signed-off-by: Jia He <justin.he@arm.com>
----
- drivers/s390/char/hmcdrv_dev.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+On Sat, May 08 2021 at 15:52, xuyihang wrote:
+>
+> We are dealing with a scenario which may need to assign a default 
+> irqaffinity for managed IRQ.
+> 
+> Assume we have a full CPU usage RT thread running binded to a specific
+> CPU.
+>
+> In the mean while, interrupt handler registered by a device which is
+> ksoftirqd may never have a chance to run. (And we don't want to use
+> isolate CPU)
 
-diff --git a/drivers/s390/char/hmcdrv_dev.c b/drivers/s390/char/hmcdrv_dev.c
-index 20e9cd542e03..cdde75508c8a 100644
---- a/drivers/s390/char/hmcdrv_dev.c
-+++ b/drivers/s390/char/hmcdrv_dev.c
-@@ -137,7 +137,7 @@ static int hmcdrv_dev_open(struct inode *inode, struct file *fp)
- 	if (rc)
- 		module_put(THIS_MODULE);
- 
--	pr_debug("open file '/dev/%pD' with return code %d\n", fp, rc);
-+	pr_debug("open file '%pD' with return code %d\n", fp, rc);
- 	return rc;
- }
- 
-@@ -146,7 +146,7 @@ static int hmcdrv_dev_open(struct inode *inode, struct file *fp)
-  */
- static int hmcdrv_dev_release(struct inode *inode, struct file *fp)
- {
--	pr_debug("closing file '/dev/%pD'\n", fp);
-+	pr_debug("closing file '%pD'\n", fp);
- 	kfree(fp->private_data);
- 	fp->private_data = NULL;
- 	hmcdrv_ftp_shutdown();
-@@ -231,7 +231,7 @@ static ssize_t hmcdrv_dev_read(struct file *fp, char __user *ubuf,
- 	retlen = hmcdrv_dev_transfer((char *) fp->private_data,
- 				     *pos, ubuf, len);
- 
--	pr_debug("read from file '/dev/%pD' at %lld returns %zd/%zu\n",
-+	pr_debug("read from file '%pD' at %lld returns %zd/%zu\n",
- 		 fp, (long long) *pos, retlen, len);
- 
- 	if (retlen > 0)
-@@ -248,7 +248,7 @@ static ssize_t hmcdrv_dev_write(struct file *fp, const char __user *ubuf,
- {
- 	ssize_t retlen;
- 
--	pr_debug("writing file '/dev/%pD' at pos. %lld with length %zd\n",
-+	pr_debug("writing file '%pD' at pos. %lld with length %zd\n",
- 		 fp, (long long) *pos, len);
- 
- 	if (!fp->private_data) { /* first expect a cmd write */
-@@ -272,7 +272,7 @@ static ssize_t hmcdrv_dev_write(struct file *fp, const char __user *ubuf,
- 	if (retlen > 0)
- 		*pos += retlen;
- 
--	pr_debug("write to file '/dev/%pD' returned %zd\n", fp, retlen);
-+	pr_debug("write to file '%pD' returned %zd\n", fp, retlen);
- 
- 	return retlen;
- }
--- 
-2.17.1
+A device cannot register and interrupt handler in ksoftirqd.
 
+> There could be a couple way to deal with this problem:
+>
+> 1. Adjust priority of ksoftirqd or RT thread, so the interrupt handler 
+> could preempt
+>
+> RT thread. However, I am not sure whether it could have some side 
+> effects or not.
+>
+> 2. Adjust interrupt CPU affinity or RT thread affinity. But managed IRQ 
+> seems design to forbid user from manipulating interrupt affinity.
+>
+> It seems managed IRQ is coupled with user side application to me.
+>
+> Would you share your thoughts about this issue please?
+
+Can you please provide a more detailed description of your system?
+
+    - Number of CPUs
+
+    - Kernel version
+    - Is NOHZ full enabled?
+    - Any isolation mechanisms enabled, and if so how are they
+      configured (e.g. on the kernel command line)?
+
+    - Number of queues in the multiqueue device
+          
+    - Is the RT thread issuing I/O to the multiqueue device?
+
+Thanks,
+
+        tglx
