@@ -2,64 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D033773E2
+	by mail.lfdr.de (Postfix) with ESMTP id D905D3773E4
 	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 21:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbhEHTyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 15:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
+        id S229727AbhEHTyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 15:54:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhEHTyB (ORCPT
+        with ESMTP id S229549AbhEHTyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 15:54:01 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E4FC061574
-        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 12:52:59 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id m12so10275169pgr.9
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 12:52:59 -0700 (PDT)
+        Sat, 8 May 2021 15:54:05 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106A1C061574;
+        Sat,  8 May 2021 12:53:03 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so7874929pjv.1;
+        Sat, 08 May 2021 12:53:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OBsK6dWp5skNfFIzG+9Owffi0WswqdNNRuWbcPljwx4=;
-        b=ZJ9IHRTafnvjESVpofVZbajXd0g/0aiRJOCf0yg83Nd7stLc8cvrc1xywNOPZAyPIq
-         oU4x5sET3dK0qUNJNxQ4Q/6TaLD04bdtrekXTFVwVJfDK2PLLCFVh9R9mBuKX/KBhRhC
-         DJ6XFqvgZYcNh6QamqJttii1hodqp9cOR3fZFz7QdsuFHhbpJscNv+xOnPXA9472d9wm
-         KoDQmGARa5YkBuaP16+grXzuNQ6Xi3lDo6Ma8hFLLgHPvFCqp+UrZyoYOW3RIJP1e9S+
-         zZC6IhZK/B2Stk4woMbjILKijrJEeLmm6NE6VcvzwKTi99YopSWYDg3lzNkWGYnorJFG
-         7dJA==
+        bh=P7qWaXSLZT/HSg5BGmuOtFL+9OavfUK43XNh+avyzkE=;
+        b=Cfz6kXOQ7lqNfnzW70b8KqN+tUSJD0CXYqIS6qaQ1jYmxz8btG4RZHeN1w5BrbyI8O
+         dGL2brbo+0eiVkFGuUoqNfqpIiBgcu+ZFkwMM3q9G8kA+j6gUtVEWo8peuSFxZ4QYVzR
+         oS/hswtOr5v0V1Se+RGAGRHT6MJgDNK7avqyXT3wBlu5djN7qFJmqh93sBjuyzIWb9Q9
+         Ji0Jcoa6GaOtW1fvE5rkTPFN4Mr/rlBjGJkQgs/9tdO3krNNTTsvhinGf3Dp4QN7Cs4P
+         xIeDlmvQD5dPJVR2o55d/LYGT3muYdKY5/RrT659fVp9tAf1wjBg/auTDLZKXCcfxgwT
+         KUcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OBsK6dWp5skNfFIzG+9Owffi0WswqdNNRuWbcPljwx4=;
-        b=ZU9FCN73yT2MWCqcyseI2bWWbh+of8VSmEnseTZX45BvoeBfB33+tuXFRU1D8lvygE
-         65Gp8ntL05HrxRKOxnOPjzpyVlWv+yeAlL/ev4RcUlbl80STMgg+z+guHrcLcdEbbJsp
-         JfmTWvtOUnZuHIG8xhIGGG40r2FSb8PvrYPjds6ZAns/bFEjHQ66xoLYghz10BZOAUsn
-         +CN9oqJAdhtS5tw/BKdNr9t6JTYWqp3iu3tlqK4fae6ynh6vVkiYsBeyotYIb63WLZp8
-         MaVr6iEwm6YIT6Jh95i7K98DI2JIqECaWflauCF3un3GY9xwI/wgWm+kkCTwi+IvKElF
-         gOOw==
-X-Gm-Message-State: AOAM530/CkhO5JYkrjzh2lYD528FBndxCIhlwPira9ORY5jcsb5Z2HDL
-        U5ljg0WoXRjHb7GKdAbTbcc=
-X-Google-Smtp-Source: ABdhPJxLZGpE+T5z69LFABcJUtb/z3YZRyWlRRfvZxgGDGJ5WhVgR3JBhTe/zsTCMHQnxQTIgldqcA==
-X-Received: by 2002:a05:6a00:ccd:b029:28e:d682:cc66 with SMTP id b13-20020a056a000ccdb029028ed682cc66mr16730988pfv.53.1620503579375;
-        Sat, 08 May 2021 12:52:59 -0700 (PDT)
+        bh=P7qWaXSLZT/HSg5BGmuOtFL+9OavfUK43XNh+avyzkE=;
+        b=eucR1DFITse3NQqsBDoXEDSd3qWNHc/u9gU6mUsqJo1Fy0fDFn982kFAQ+AJB291/A
+         URqil0t5Zzm34/Nwt+/zedL6SXl9H3E8fQnof6S5acKnQFCCu5TiO88vejtCFJneFO69
+         5EoIFdzCfkOndtywgfUNtFkOVmcu0XPn8KkvPvbI/W3czhKom2M2+QNru0jbkpxetq64
+         c/Yhyr2PYdpYoArn5C4t3ZQWPnXkJCCy5x6VcXeq9/vK8UzMMLilao8Bm+Ub9FPUQHcq
+         JrcAEtYwB0savXKXGkwaVgo0WdvzECqMl02czI31d9BzNhv7wOnXdU5o0gYNyL+U6ajq
+         KFQA==
+X-Gm-Message-State: AOAM5330lBKLAYCdG4ESrqk2ymANs9IEQFLH00sNHt5yEgXOkS3Y/9bS
+        cXSiz/nR+mZJO7GsXJV+kH2VHZfkcuU1ow==
+X-Google-Smtp-Source: ABdhPJwLl3aQzZ4odu6hB+uFJI7LKqDT9XIEAljRfcQb0PSIx+QTdBUvLKu9+xxTse/3dzOqGWlCGg==
+X-Received: by 2002:a17:90a:c297:: with SMTP id f23mr17680567pjt.197.1620503582651;
+        Sat, 08 May 2021 12:53:02 -0700 (PDT)
 Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id j7sm7087347pfc.164.2021.05.08.12.52.58
+        by smtp.gmail.com with ESMTPSA id j26sm7484972pfn.47.2021.05.08.12.53.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 May 2021 12:52:58 -0700 (PDT)
+        Sat, 08 May 2021 12:53:01 -0700 (PDT)
 From:   Rob Clark <robdclark@gmail.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     Rob Clark <robdclark@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 1/2] drm: Fix dirtyfb stalls
-Date:   Sat,  8 May 2021 12:56:38 -0700
-Message-Id: <20210508195641.397198-2-robdclark@gmail.com>
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Hongbo Yao <yaohongbo@huawei.com>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 2/2] drm/msm/dpu: Wire up needs_dirtyfb
+Date:   Sat,  8 May 2021 12:56:39 -0700
+Message-Id: <20210508195641.397198-3-robdclark@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210508195641.397198-1-robdclark@gmail.com>
 References: <20210508195641.397198-1-robdclark@gmail.com>
@@ -71,68 +77,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rob Clark <robdclark@chromium.org>
 
-drm_atomic_helper_dirtyfb() will end up stalling for vblank on "video
-mode" type displays, which is pointless and unnecessary.  Add an
-optional helper vfunc to determine if a plane is attached to a CRTC
-that actually needs dirtyfb, and skip over them.
-
 Signed-off-by: Rob Clark <robdclark@chromium.org>
 ---
- drivers/gpu/drm/drm_damage_helper.c      |  8 ++++++++
- include/drm/drm_modeset_helper_vtables.h | 14 ++++++++++++++
- 2 files changed, 22 insertions(+)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/drivers/gpu/drm/drm_damage_helper.c b/drivers/gpu/drm/drm_damage_helper.c
-index 3a4126dc2520..a0bed1a2c2dc 100644
---- a/drivers/gpu/drm/drm_damage_helper.c
-+++ b/drivers/gpu/drm/drm_damage_helper.c
-@@ -211,6 +211,7 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
- retry:
- 	drm_for_each_plane(plane, fb->dev) {
- 		struct drm_plane_state *plane_state;
-+		struct drm_crtc *crtc;
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+index 5a74f93e29da..868ee6136438 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+@@ -143,6 +143,19 @@ static bool dpu_crtc_get_scanout_position(struct drm_crtc *crtc,
+ 	return true;
+ }
  
- 		ret = drm_modeset_lock(&plane->mutex, state->acquire_ctx);
- 		if (ret)
-@@ -221,6 +222,13 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
- 			continue;
- 		}
- 
-+		crtc = plane->state->crtc;
-+		if (crtc->helper_private->needs_dirtyfb &&
-+				!crtc->helper_private->needs_dirtyfb(crtc)) {
-+			drm_modeset_unlock(&plane->mutex);
-+			continue;
++static bool dpu_crtc_needs_dirtyfb(struct drm_crtc *crtc)
++{
++	struct drm_encoder *encoder;
++
++	drm_for_each_encoder_mask (encoder, crtc->dev, crtc->state->encoder_mask) {
++		if (dpu_encoder_get_intf_mode(encoder) == INTF_MODE_CMD) {
++			return true;
 +		}
++	}
 +
- 		plane_state = drm_atomic_get_plane_state(state, plane);
- 		if (IS_ERR(plane_state)) {
- 			ret = PTR_ERR(plane_state);
-diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
-index eb706342861d..afa8ec5754e7 100644
---- a/include/drm/drm_modeset_helper_vtables.h
-+++ b/include/drm/drm_modeset_helper_vtables.h
-@@ -487,6 +487,20 @@ struct drm_crtc_helper_funcs {
- 				     bool in_vblank_irq, int *vpos, int *hpos,
- 				     ktime_t *stime, ktime_t *etime,
- 				     const struct drm_display_mode *mode);
++	return false;
++}
 +
-+	/**
-+	 * @needs_dirtyfb
-+	 *
-+	 * Optional callback used by damage helpers to determine if fb_damage_clips
-+	 * update is needed.
-+	 *
-+	 * Returns:
-+	 *
-+	 * True if fb_damage_clips update is needed to handle DIRTYFB, False
-+	 * otherwise.  If this callback is not implemented, then True is
-+	 * assumed.
-+	 */
-+	bool (*needs_dirtyfb)(struct drm_crtc *crtc);
+ static void _dpu_crtc_setup_blend_cfg(struct dpu_crtc_mixer *mixer,
+ 		struct dpu_plane_state *pstate, struct dpu_format *format)
+ {
+@@ -1343,6 +1356,7 @@ static const struct drm_crtc_helper_funcs dpu_crtc_helper_funcs = {
+ 	.atomic_begin = dpu_crtc_atomic_begin,
+ 	.atomic_flush = dpu_crtc_atomic_flush,
+ 	.get_scanout_position = dpu_crtc_get_scanout_position,
++	.needs_dirtyfb = dpu_crtc_needs_dirtyfb,
  };
  
- /**
+ /* initialize crtc */
 -- 
 2.30.2
 
