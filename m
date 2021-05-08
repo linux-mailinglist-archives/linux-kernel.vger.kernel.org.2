@@ -2,100 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0493772C9
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 17:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDEDD3772B5
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 17:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbhEHPut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 11:50:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48728 "EHLO
+        id S229683AbhEHPqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 11:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhEHPur (ORCPT
+        with ESMTP id S229500AbhEHPqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 11:50:47 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AABD3C061574
-        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 08:49:44 -0700 (PDT)
+        Sat, 8 May 2021 11:46:23 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5278C061574;
+        Sat,  8 May 2021 08:45:21 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id fa21-20020a17090af0d5b0290157eb6b590fso7219866pjb.5;
+        Sat, 08 May 2021 08:45:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=30943O0R59jxDTzI32LnwOuhF+THVYq4XlJ4VEaU5rQ=; b=npbcOiaRYb1+B
-        qgVIWLHBmMfZZ10JnR52+YsRVQiYemB/kvwrOdcF7DzFbL1kV4R4s9Yw8ZElPgNH
-        PV9ePKeGbfHIULzRHAfXbOwEmSsTIgNaRPHIUcb3cuvWc2KflYzhRLqmUOhRYVbB
-        DTfYmWTvq7YJdUZz8LEWnsIBeqUFvk=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBXXZ3wspZg7YCmAA--.28038S2;
-        Sat, 08 May 2021 23:49:05 +0800 (CST)
-Date:   Sat, 8 May 2021 23:43:47 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: kprobes: Fix build error when MMU=n
-Message-ID: <20210508234347.0b40b94a@xhacker>
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EyGIO+zb9FI2/JqagPe/JEsAThaV4XnNGT1Na66oGes=;
+        b=BwwAgEd4Bol14g0pvsBZDRQ8VPvHWsegSDmxMFJTvNoy/Ahgkp1UZ6Zj+Gxojl6wVy
+         /JTPHPtW8NHoTkTIfBJEz+Weu6Ffu4mJp+DthVDRd3DKxjCr9EroqNG9y3MEp4tTwNbt
+         VS2QIBh9YLExU6L6uwlLMbhMd3ypyXu7rHrSs1i7UKoPFzpScs6fHxg0Fz75e9E3Kyka
+         p21KHyRf21IEJpjQW+CThUZ56xGNwcf5qMav45XJPLgL2BoRSYBIEFcdhWT7DvU0R/UU
+         ZpL+wFKCFdWekfE2sCVRyyOkKhzsNYe4p+evBL3KRBkRcIUak1f9VfzzoVxHOLbFE3Fi
+         XDkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EyGIO+zb9FI2/JqagPe/JEsAThaV4XnNGT1Na66oGes=;
+        b=pKBeeDVlWxwBFpJ9C+uVcNGot8xloGqHuYXzzTIlv53MfiD9aXyg9XSawu27zMI7iA
+         qrOZB8dpSmT6pLCnlENgV4aM2cchcrySuiYVvk0uqi2JkoCQw8P1MaWf6jjc4UVixqpe
+         i4ctifDtTT32GECac0EBMg4L6Z1FmtRVuL2d3MlN/nFzwhuEovOr1pJEBphV7m1OzR0f
+         z1Wvk/jqoti3bZ0XN8nMmWybDgbFP7xZEd+4nmK9A0NifXg8bKwb9lh75wO+Q8ahbZr7
+         LI+kq05Yba7q9X4llNvHxOmJf0xZRUE7BBgR9Q02OXq6ldgJznYFR1vQGx21yCO9rptN
+         5s4A==
+X-Gm-Message-State: AOAM533wuCZs2NzjK8RQ94doE3yn2Nbp8UqQoxjEy1DMvcJs8cxKCZ0d
+        ArcTUuOiGfdktRGvx0ATU52repPi+YM=
+X-Google-Smtp-Source: ABdhPJwmEgE/d3pwWy/OTpkj4vTw5G2ogFBpWeV1KlJF+259iWr/NFagWAiWszfmf4Dqqh20CAFCYw==
+X-Received: by 2002:a17:902:104:b029:ec:9fa6:c08 with SMTP id 4-20020a1709020104b02900ec9fa60c08mr15878036plb.10.1620488720940;
+        Sat, 08 May 2021 08:45:20 -0700 (PDT)
+Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id u21sm7029024pfm.89.2021.05.08.08.45.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 08 May 2021 08:45:20 -0700 (PDT)
+Subject: Re: [RFC PATCH net-next v4 28/28] net: phy: add qca8k driver for
+ qca8k switch internal PHY
+To:     Ansuel Smith <ansuelsmth@gmail.com>,
+        DENG Qingfang <dqfext@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20210508002920.19945-1-ansuelsmth@gmail.com>
+ <20210508002920.19945-28-ansuelsmth@gmail.com>
+ <20210508043535.18520-1-dqfext@gmail.com>
+ <YJZ2bE8j+nqnCEp8@Ansuel-xps.localdomain>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <d778eae8-07da-dafd-3dac-29ea68ac4b17@gmail.com>
+Date:   Sat, 8 May 2021 08:45:13 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YJZ2bE8j+nqnCEp8@Ansuel-xps.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygBXXZ3wspZg7YCmAA--.28038S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFyxArWDtFy8KFW8AFWrKrg_yoW8GrWfpF
-        4DCws8ArWrJw4fG3y3tw4kuw10van8Ww43KrWDJr15Aw15Jr4DAws2grWxXrn0gryYkrWf
-        Cr4DZrWFyayxA37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyYb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCF
-        s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
-        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
-        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r
-        W3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8
-        JbIYCTnIWIevJa73UjIFyTuYvjxUcDDGUUUUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
 
-lkp reported a randconfig failure:
 
-arch/riscv/kernel/probes/kprobes.c:90:22: error: use of undeclared identifier 'PAGE_KERNEL_READ_EXEC'
+On 5/8/2021 4:30 AM, Ansuel Smith wrote:
+> On Sat, May 08, 2021 at 12:35:35PM +0800, DENG Qingfang wrote:
+>> On Sat, May 08, 2021 at 02:29:18AM +0200, Ansuel Smith wrote:
+>>> Add initial support for qca8k internal PHYs. The internal PHYs requires
+>>> special mmd and debug values to be set based on the switch revision
+>>> passwd using the dev_flags. Supports output of idle, receive and eee_wake
+>>> errors stats.
+>>> Some debug values sets can't be translated as the documentation lacks any
+>>> reference about them.
+>>
+>> I think this can be merged into at803x.c, as they have almost the same
+>> registers, and some features such as interrupt handler and cable test
+>> can be reused.
+>>
+> 
+> Wouldn't this be a little bit confusing? But actually yes... interrupt
+> handler and cable test have the same regs. My main concern is about the
+> phy_dev flags and the dbg regs that I think are different and would
+> create some confusion. If this It's not a proble, sure I can rework this
+> a put in the at803x.c phy driver.
 
-We implemented the alloc_insn_page() to allocate PAGE_KERNEL_READ_EXEC
-page for kprobes insn page for STRICT_MODULE_RWX. But if MMU=n, we
-should fall back to the generic weak alloc_insn_page() by generic
-kprobe subsystem.
-
-Fixes: cdd1b2bd358f ("riscv: kprobes: Implement alloc_insn_page()")
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-Reported-by: kernel test robot <lkp@intel.com>
----
- arch/riscv/kernel/probes/kprobes.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
-index 10b965c34536..15cc65ac7ca6 100644
---- a/arch/riscv/kernel/probes/kprobes.c
-+++ b/arch/riscv/kernel/probes/kprobes.c
-@@ -84,6 +84,7 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
- 	return 0;
- }
- 
-+#ifdef CONFIG_MMU
- void *alloc_insn_page(void)
- {
- 	return  __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
-@@ -91,6 +92,7 @@ void *alloc_insn_page(void)
- 				     VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
- 				     __builtin_return_address(0));
- }
-+#endif
- 
- /* install breakpoint in text */
- void __kprobes arch_arm_kprobe(struct kprobe *p)
+Consistency is key, and having all of your PHY eggs in the same PHY
+driver basket is easier for maintenance and generalizing features.
+drivers/net/phy/broadcom.c contains PHY entries for integrated PHY
+switches, too (5395, 53125). As far as phydev::dev_flags, you can skip
+interpreting those unless you match the QCA8K PHY driver entry/probe.
 -- 
-2.31.0
-
-
+Florian
