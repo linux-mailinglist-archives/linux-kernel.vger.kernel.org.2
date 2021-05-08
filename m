@@ -2,70 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2814D376F4E
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 05:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82003376F4C
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 05:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhEHD5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 23:57:38 -0400
-Received: from mail-m121142.qiye.163.com ([115.236.121.142]:12588 "EHLO
-        mail-m121142.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbhEHD5h (ORCPT
+        id S229947AbhEHD5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 23:57:22 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:17599 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230249AbhEHD5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 23:57:37 -0400
-Received: from localhost.localdomain (unknown [14.154.28.254])
-        by mail-m121142.qiye.163.com (Hmail) with ESMTPA id B20FD80762;
-        Sat,  8 May 2021 11:56:31 +0800 (CST)
-From:   Ding Hui <dinghui@sangfor.com.cn>
-To:     david@redhat.com, naoya.horiguchi@nec.com, osalvador@suse.de
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Ding Hui <dinghui@sangfor.com.cn>
-Subject: [PATCH v2] mm/page_alloc: fix counting of free pages after take off from buddy
-Date:   Sat,  8 May 2021 11:55:33 +0800
-Message-Id: <20210508035533.23222-1-dinghui@sangfor.com.cn>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <8cd355d2-1adc-4189-7b65-cfea13129db5@sangfor.com.cn>
-References: <8cd355d2-1adc-4189-7b65-cfea13129db5@sangfor.com.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGUseSlYYTElMGR0fGkhDH01VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        9ISFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MTo6Tjo4CT8KPzkPNCoZNw8u
-        H1YKCTlVSlVKTUlLT09NSkJJSEtOVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
-        QVlKT1VKTk9VSUNVSU5PWVdZCAFZQUlKT0I3Bg++
-X-HM-Tid: 0a794a1ea173b037kuuub20fd80762
+        Fri, 7 May 2021 23:57:21 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FcYMT1TF9z16Pc9;
+        Sat,  8 May 2021 11:53:41 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 8 May 2021 11:56:10 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] drm/mga: Fix error return code in mga_do_pci_dma_bootstrap()
+Date:   Sat, 8 May 2021 11:55:54 +0800
+Message-ID: <20210508035554.2424-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently we found there is a lot MemFree left in /proc/meminfo after
-do a lot of pages soft offline.
+The user may incorrectly set the value of dma_bs->secondary_bin_count to 0.
+In this case, the for loop is not entered and the 'err' value remains 0.
 
-I think it's incorrect since NR_FREE_PAGES should not contain HWPoison pages.
-For offline free pages, after a successful call take_page_off_buddy(), the
-page is no longer belong to buddy allocator, and will not be used any more,
-but we missed accounting NR_FREE_PAGES in this situation.
-
-Do update like rmqueue() does.
-
-Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
+Fixes: 6795c985a648 ("Add support for PCI MGA cards to MGA DRM.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
-V2:
-use __mod_zone_freepage_state instead of __mod_zone_page_state
+ drivers/gpu/drm/mga/mga_dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- mm/page_alloc.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index cfc72873961d..e124a615303b 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8947,6 +8947,7 @@ bool take_page_off_buddy(struct page *page)
- 			del_page_from_free_list(page_head, zone, page_order);
- 			break_down_buddy_pages(zone, page_head, page, 0,
- 						page_order, migratetype);
-+			__mod_zone_freepage_state(zone, -1, migratetype);
- 			ret = true;
- 			break;
- 		}
+diff --git a/drivers/gpu/drm/mga/mga_dma.c b/drivers/gpu/drm/mga/mga_dma.c
+index 1cb7d120d18f..e41d44ec26de 100644
+--- a/drivers/gpu/drm/mga/mga_dma.c
++++ b/drivers/gpu/drm/mga/mga_dma.c
+@@ -693,7 +693,7 @@ static int mga_do_pci_dma_bootstrap(struct drm_device *dev,
+ 	}
+ 
+ 	if (bin_count == 0) {
+-		DRM_ERROR("Unable to add secondary DMA buffers: %d\n", err);
++		DRM_ERROR("Unable to add secondary DMA buffers: %d\n", err ? : -EINVAL);
+ 		return err;
+ 	}
+ 
 -- 
-2.17.1
+2.25.1
+
 
