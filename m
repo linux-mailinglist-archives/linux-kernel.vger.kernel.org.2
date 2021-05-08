@@ -2,71 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46832377011
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 08:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A90377018
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 08:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbhEHG0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 02:26:42 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:18013 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229760AbhEHG0k (ORCPT
+        id S229920AbhEHGbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 02:31:20 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:17157 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229583AbhEHGbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 02:26:40 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fccfz5WVBzQjFm;
-        Sat,  8 May 2021 14:22:19 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 8 May 2021 14:25:27 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Alexander Aring <alex.aring@gmail.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        linux-wpan <linux-wpan@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] ieee802154: fix error return code in ieee802154_add_iface()
-Date:   Sat, 8 May 2021 14:25:17 +0800
-Message-ID: <20210508062517.2574-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Sat, 8 May 2021 02:31:16 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FccmH0kzvzncHs;
+        Sat,  8 May 2021 14:26:55 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.498.0; Sat, 8 May 2021
+ 14:30:08 +0800
+Subject: Re: [f2fs-dev] [RESEND][PATCH 1/2] resize.f2fs: fix memory leak
+ caused by migrate_nat()
+To:     Seung-Woo Kim <sw0312.kim@samsung.com>, <jaegeuk@kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+CC:     <linux-kernel@vger.kernel.org>
+References: <CGME20210507110917epcas1p13e027d5e0319629c255524c8c6f6461b@epcas1p1.samsung.com>
+ <20210507111224.29887-1-sw0312.kim@samsung.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <62135167-c553-259e-0228-8059cf238576@huawei.com>
+Date:   Sat, 8 May 2021 14:30:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
+In-Reply-To: <20210507111224.29887-1-sw0312.kim@samsung.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+On 2021/5/7 19:12, Seung-Woo Kim wrote:
+> Alloced nat_block doesn't freed from migrate_nat(). Fix to free
+> nat_block.
+> 
+> Signed-off-by: Seung-Woo Kim <sw0312.kim@samsung.com>
 
-Fixes: be51da0f3e34 ("ieee802154: Stop using NLA_PUT*().")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- net/ieee802154/nl-phy.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-diff --git a/net/ieee802154/nl-phy.c b/net/ieee802154/nl-phy.c
-index 2cdc7e63fe17..88215b5c93aa 100644
---- a/net/ieee802154/nl-phy.c
-+++ b/net/ieee802154/nl-phy.c
-@@ -241,8 +241,10 @@ int ieee802154_add_iface(struct sk_buff *skb, struct genl_info *info)
- 	}
- 
- 	if (nla_put_string(msg, IEEE802154_ATTR_PHY_NAME, wpan_phy_name(phy)) ||
--	    nla_put_string(msg, IEEE802154_ATTR_DEV_NAME, dev->name))
-+	    nla_put_string(msg, IEEE802154_ATTR_DEV_NAME, dev->name)) {
-+		rc = -EMSGSIZE;
- 		goto nla_put_failure;
-+	}
- 	dev_put(dev);
- 
- 	wpan_phy_put(phy);
--- 
-2.25.1
-
-
+Thanks,
