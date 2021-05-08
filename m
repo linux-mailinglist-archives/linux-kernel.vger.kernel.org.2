@@ -2,295 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3319E376DE4
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 02:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FBD376DDD
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 02:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbhEHAdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 20:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbhEHAdC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 20:33:02 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1103FC06138B;
-        Fri,  7 May 2021 17:30:06 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id y124-20020a1c32820000b029010c93864955so8035135wmy.5;
-        Fri, 07 May 2021 17:30:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qcblg99dKtUzLmP9mbJXQAISMB0uNfwt/9mCJ1r1c3U=;
-        b=etIGs1jthj7TT3R3upyK1KJK/meiSJ/3xzDUsWPWzZfiC7je/C4T70+esGB1sqd/b2
-         ab+2+DqrTxCGhdOgKrs2h8rYxrzazKtdANaB6pYxwzmGNTZKbT68BE7PE0CuHuBrk3ej
-         ppAlNioGZMxW1rJbd8clItMTwUyWK1jwwBx1iHZrsGtpABgfVlqmPVgO3SQLIp5vK0OT
-         AMpPQuYXOitb3LyXClYxnyrQgpcUgoJ5Ae6NpU6f3rhV1VOoxGkhQQ1fI1WwuSb0NX8/
-         b54NV/G9f7cOsEtojWLpGK8fM/JXqlDlrHCjzxSNTUiDwL34StnLksXfA8nX6zAU1iqC
-         xX1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qcblg99dKtUzLmP9mbJXQAISMB0uNfwt/9mCJ1r1c3U=;
-        b=IeeeL7og55ZkxeLNTsgDPRUa0Xz5jMd5peICPv6uld+a0zBsV8N+1+6jSgreUdHuF/
-         z96wSOd3Qq7hLClbo8Kpzak9/I32qiqBSgNzh+1srtPto8ycxia887bxJRXw6ATPALf6
-         gBnZjbkaXal7ZS4nqgIvis5P/MVcaVPJ+yuzTG3XMeguhWIOn9lHoN8sL8OBbCdKmK1N
-         +7ia2DBRBcwD+A7HmDZb4xkN5HDCKc1bBh89VEVuLliP1rOBHfxV8Uv1efq5z/x48XGe
-         3gJPEVYYNguQHL9elmWWiei86ZaBzZrdgruxFqh1/O8nJQATjJ9GBVeklyGZ5pYOAA1j
-         jy+g==
-X-Gm-Message-State: AOAM530rli312ufZ+C64Y+PV9Eji3+1hyigu6QeFYYtPVD5RbY9evxLr
-        XyyiUd2nJRoI2gjjO6CJgtA=
-X-Google-Smtp-Source: ABdhPJxA4mWVt96aVWdM3JrX/XlR3pFVe3a0oxDkqFUAQL1JUD98eNCjYiMTyTznve5LaPn67o04Dw==
-X-Received: by 2002:a1c:2097:: with SMTP id g145mr23480081wmg.33.1620433804651;
-        Fri, 07 May 2021 17:30:04 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
-        by smtp.googlemail.com with ESMTPSA id f4sm10967597wrz.33.2021.05.07.17.30.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 17:30:04 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [RFC PATCH net-next v4 28/28] net: phy: add qca8k driver for qca8k switch internal PHY
-Date:   Sat,  8 May 2021 02:29:18 +0200
-Message-Id: <20210508002920.19945-28-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210508002920.19945-1-ansuelsmth@gmail.com>
-References: <20210508002920.19945-1-ansuelsmth@gmail.com>
+        id S231561AbhEHAce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 20:32:34 -0400
+Received: from mail-dm6nam12on2083.outbound.protection.outlook.com ([40.107.243.83]:57440
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231396AbhEHAbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 20:31:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wb4Essvv5JYEN6c9lLQca2AgVOdzwstJ4lzkDqdk9Rsyi1dRtMIAQ8+IhpgLxVtiSfyreOzyNzTlXJQ2/SjPhK8og4hBA7xgnL0u2xlRaW+Pz5Upoj4o53y3THeoYIve3KhOl5s82uomNfIfKqCOSK2/7iP2hw7TZ1Uy7rmG3uhe1caCN/pYuVGRcnXYwK4l+aZ3qqtk5gymkMpB9ZumeVFKn60eo8BEy1mp303BHf4sVyuciQo1Xddc61yGtkUqon1tlHKgLEYi1VV44z/Ur0b9XA+M3LHfjanWQ8XKAssRJIcbLvB0LMsknjyiL3Lb2oTEXsm6Xn0b2jzPiPpZ1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dBzeHmEa0rACwzkbn1Pjo4FgmihouGO5M9XYT+VJLlg=;
+ b=IsyGntmDar7e9Pd+G3Yx1WTfWexzToiHjVesUqEENWicpMza66HGP01YLBM2b2D/5zIMT36n/iQ+bD0zPaEaNFMUaNZ6Y4i9C7Q3fwA5Qnt+aCOUbist4ZNhDJMSv+sM+Wr94JZTqxDt5uVJbZkKwXuBjFVyRhQjIummy3SD1gqigfDpSiMWViNKwkeDlH/DnhLv8QIlsB3iuALP4WJ1qQgMGhEyoDJ6RaKqlAXs/ne907OHovvFCuQK5g9eqIIyEbPNhpGilq0vYRYn7onEgl0mhE0QH7vTIX0Sezqm/r4xmukAu78kSYdc6qTxj4GpF4eFZFAmxOk1RAwolxzrOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dBzeHmEa0rACwzkbn1Pjo4FgmihouGO5M9XYT+VJLlg=;
+ b=BcSZl3UYk/K6kvquAfCygGQWmW8ZoIgcwkcVZqfreOCfYPcsjYcq1woz4OoxC1SEV78TR6FPtHez5Bvh7ATVJAhZcLhuSKC4Ple6+zKEwtDQ4A1yAvnvwl/mQTp74gDz+soh8aaGrBW1VeS0KVGsk3NP7YkOjnvB/cKKmjU4uV+RDIusbKqld+A7FfOUNE3f2/pogXLaceFLLjuYhfKYZt2VNw0g0umcfj36zmOpEtcnm0WMmGMEGQjsDnt6eYR+TPgUR0Hep8SJ6d0IZ0C+Mo55G5czUx/VbN4R2qot84CZ08cVpk+taUA48ErlApMMlNiIYJ/9e/tovk9tIRb2bg==
+Received: from BN8PR15CA0044.namprd15.prod.outlook.com (2603:10b6:408:80::21)
+ by MN2PR12MB3021.namprd12.prod.outlook.com (2603:10b6:208:c2::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.27; Sat, 8 May
+ 2021 00:30:15 +0000
+Received: from BN8NAM11FT030.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:80:cafe::f5) by BN8PR15CA0044.outlook.office365.com
+ (2603:10b6:408:80::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend
+ Transport; Sat, 8 May 2021 00:30:15 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ BN8NAM11FT030.mail.protection.outlook.com (10.13.177.146) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4108.25 via Frontend Transport; Sat, 8 May 2021 00:30:15 +0000
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 7 May
+ 2021 17:30:15 -0700
+Received: from vdi.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 8 May 2021 00:30:14 +0000
+From:   Liming Sun <limings@nvidia.com>
+To:     Andy Shevchenko <andy@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Vadim Pasternak <vadimp@mellanox.com>
+CC:     Liming Sun <limings@nvidia.com>, <linux-kernel@vger.kernel.org>,
+        <platform-driver-x86@vger.kernel.org>
+Subject: [PATCH v2] platform/mellanox: mlxbf-tmfifo: Fix a memory barrier issue
+Date:   Fri, 7 May 2021 20:30:12 -0400
+Message-ID: <1620433812-17911-1-git-send-email-limings@nvidia.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <177d12443460bc613aa495fbdbabbbeef43ba7ff.1620400475.git.limings@nvidia.com>
+References: <177d12443460bc613aa495fbdbabbbeef43ba7ff.1620400475.git.limings@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e623302f-fb39-4bfa-7f32-08d911b8737a
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3021:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB302157FEE11815206AF0904AD3569@MN2PR12MB3021.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:556;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Zbcj9DapSXw/gzDfbbV0r4g1+ANPFnXmb21qjfHt4M+dVIUuIwBKPYGWL24kY7epiJhYjabE/Kvm2nFP7nGZPOteI3EnsLK8JnYy9/iqiXQYL849U/ftlKeDUn10FUATI2GdeiLpUWNt3u7WEldfcDJ+2XgLmr7kPIii0ziAD4VdaLjTOY5I82zVXCsI/P6VzK31PynsKLMfd1UL1q8+u+FPZcYIzaQyytoh3umomU48X5bj7DWTC8ZDw4tD7KWs7pirbA4oaNo/6jH2OI06PppmZFusjq4EngSWk0bNC91P5pYiTcvLr3e13OJ/e4N//0QHCbIGgg6IOqrNfevX0nbzQH6mAe5JFl6b3l76PGNzImAHpq3YPghLaWDdGbg2JQQVAcXeNa16P1Iyjl6mi8GUIaOQI0cPf/HY0qyviJ5ZJCbASlRjN27OUouexk81VVoW4Q7hEHEuuqnWYGYxF9sQXHLRRuW6nGKSDCKjoQkt/muWcVYIu7sBfjxCAdOD2sulsMWqXgcqDV0SXPlK28kFPujl6/tKWYQcuEhxOyTDN9dYoRpfp/fRHPs42BnNroTo2UPTn5EllmjWzGAJTsqThcOEuM+b299EehN8wEepS2JALNdyVv+YRBuAWHa9++YQmkFi3InXvHJJGQPq9g==
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(136003)(346002)(46966006)(36840700001)(70206006)(8676002)(70586007)(26005)(8936002)(4326008)(478600001)(54906003)(186003)(82740400003)(5660300002)(2616005)(47076005)(336012)(110136005)(426003)(7636003)(316002)(86362001)(36756003)(356005)(2906002)(36860700001)(83380400001)(7696005)(82310400003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2021 00:30:15.6889
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e623302f-fb39-4bfa-7f32-08d911b8737a
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT030.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3021
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial support for qca8k internal PHYs. The internal PHYs requires
-special mmd and debug values to be set based on the switch revision
-passwd using the dev_flags. Supports output of idle, receive and eee_wake
-errors stats.
-Some debug values sets can't be translated as the documentation lacks any
-reference about them.
+The virtio framework uses wmb() when updating avail->idx. It
+guarantees the write order, but not necessarily loading order
+for the code accessing the memory. This commit adds a load barrier
+after reading the avail->idx to make sure all the data in the
+descriptor is visible. It also adds a barrier when returning the
+packet to virtio framework to make sure read/writes are visible to
+the virtio code.
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Fixes: 1357dfd7261f ("platform/mellanox: Add TmFifo driver for Mellanox BlueField Soc")
+Signed-off-by: Liming Sun <limings@nvidia.com>
 ---
- drivers/net/phy/Kconfig  |   7 ++
- drivers/net/phy/Makefile |   1 +
- drivers/net/phy/qca8k.c  | 172 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 180 insertions(+)
- create mode 100644 drivers/net/phy/qca8k.c
+v1->v2:
+  Updates for Vadim's comments:
+  - Add the 'Fixes' field in the commit message.
+v1: Initial version
+---
+ drivers/platform/mellanox/mlxbf-tmfifo.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-index 698bea312adc..cdf01613eb37 100644
---- a/drivers/net/phy/Kconfig
-+++ b/drivers/net/phy/Kconfig
-@@ -245,6 +245,13 @@ config QSEMI_PHY
- 	help
- 	  Currently supports the qs6612
+diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+index bbc4e71..38800e8 100644
+--- a/drivers/platform/mellanox/mlxbf-tmfifo.c
++++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+@@ -294,6 +294,9 @@ static irqreturn_t mlxbf_tmfifo_irq_handler(int irq, void *arg)
+ 	if (vring->next_avail == virtio16_to_cpu(vdev, vr->avail->idx))
+ 		return NULL;
  
-+config QCA8K_PHY
-+	tristate "Qualcomm Atheros AR833x Internal PHYs"
-+	help
-+	  This PHY is for the internal PHYs present on the QCA833x switch.
++	/* Make sure 'avail->idx' is visible already. */
++	virtio_rmb(false);
 +
-+	  Currently supports the AR8334, AR8337 model
+ 	idx = vring->next_avail % vr->num;
+ 	head = virtio16_to_cpu(vdev, vr->avail->ring[idx]);
+ 	if (WARN_ON(head >= vr->num))
+@@ -322,7 +325,7 @@ static void mlxbf_tmfifo_release_desc(struct mlxbf_tmfifo_vring *vring,
+ 	 * done or not. Add a memory barrier here to make sure the update above
+ 	 * completes before updating the idx.
+ 	 */
+-	mb();
++	virtio_mb(false);
+ 	vr->used->idx = cpu_to_virtio16(vdev, vr_idx + 1);
+ }
+ 
+@@ -733,6 +736,12 @@ static bool mlxbf_tmfifo_rxtx_one_desc(struct mlxbf_tmfifo_vring *vring,
+ 		desc = NULL;
+ 		fifo->vring[is_rx] = NULL;
+ 
++		/*
++		 * Make sure the load/store are in order before
++		 * returning back to virtio.
++		 */
++		virtio_mb(false);
 +
- config REALTEK_PHY
- 	tristate "Realtek PHYs"
- 	help
-diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
-index a13e402074cf..5f3cfd5606bb 100644
---- a/drivers/net/phy/Makefile
-+++ b/drivers/net/phy/Makefile
-@@ -72,6 +72,7 @@ obj-$(CONFIG_MICROSEMI_PHY)	+= mscc/
- obj-$(CONFIG_NATIONAL_PHY)	+= national.o
- obj-$(CONFIG_NXP_TJA11XX_PHY)	+= nxp-tja11xx.o
- obj-$(CONFIG_QSEMI_PHY)		+= qsemi.o
-+obj-$(CONFIG_QCA8K_PHY)		+= qca8k.o
- obj-$(CONFIG_REALTEK_PHY)	+= realtek.o
- obj-$(CONFIG_RENESAS_PHY)	+= uPD60620.o
- obj-$(CONFIG_ROCKCHIP_PHY)	+= rockchip.o
-diff --git a/drivers/net/phy/qca8k.c b/drivers/net/phy/qca8k.c
-new file mode 100644
-index 000000000000..53bbd506d184
---- /dev/null
-+++ b/drivers/net/phy/qca8k.c
-@@ -0,0 +1,172 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+#include <linux/kernel.h>
-+#include <linux/mii.h>
-+#include <linux/phy.h>
-+#include <linux/module.h>
-+#include <linux/bitfield.h>
-+#include <linux/etherdevice.h>
-+#include <linux/ethtool_netlink.h>
-+
-+#define QCA8K_DEVFLAGS_REVISION_MASK		GENMASK(2, 0)
-+
-+#define QCA8K_PHY_ID_MASK			0xffffffff
-+#define QCA8K_PHY_ID_QCA8327			0x004dd034
-+#define QCA8K_PHY_ID_QCA8337			0x004dd036
-+
-+#define MDIO_AZ_DEBUG				0x800d
-+
-+#define MDIO_DBG_ANALOG_TEST			0x0
-+#define MDIO_DBG_SYSTEM_CONTROL_MODE		0x5
-+#define MDIO_DBG_CONTROL_FEATURE_CONF		0x3d
-+
-+/* QCA specific MII registers */
-+#define MII_ATH_DBG_ADDR			0x1d
-+#define MII_ATH_DBG_DATA			0x1e
-+
-+/* QCA specific MII registers access function */
-+static void qca8k_phy_dbg_write(struct mii_bus *bus, int phy_addr, u16 dbg_addr, u16 dbg_data)
-+{
-+	bus->write(bus, phy_addr, MII_ATH_DBG_ADDR, dbg_addr);
-+	bus->write(bus, phy_addr, MII_ATH_DBG_DATA, dbg_data);
-+}
-+
-+enum stat_access_type {
-+	PHY,
-+	MMD
-+};
-+
-+struct qca8k_hw_stat {
-+	const char *string;
-+	u8 reg;
-+	u32 mask;
-+	enum stat_access_type access_type;
-+};
-+
-+static struct qca8k_hw_stat qca8k_hw_stats[] = {
-+	{ "phy_idle_errors", 0xa, GENMASK(7, 0), PHY},
-+	{ "phy_receive_errors", 0x15, GENMASK(15, 0), PHY},
-+	{ "eee_wake_errors", 0x16, GENMASK(15, 0), MMD},
-+};
-+
-+struct qca8k_phy_priv {
-+	u8 switch_revision;
-+	u64 stats[ARRAY_SIZE(qca8k_hw_stats)];
-+};
-+
-+static int qca8k_get_sset_count(struct phy_device *phydev)
-+{
-+	return ARRAY_SIZE(qca8k_hw_stats);
-+}
-+
-+static void qca8k_get_strings(struct phy_device *phydev, u8 *data)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(qca8k_hw_stats); i++) {
-+		strscpy(data + i * ETH_GSTRING_LEN,
-+			qca8k_hw_stats[i].string, ETH_GSTRING_LEN);
-+	}
-+}
-+
-+static u64 qca8k_get_stat(struct phy_device *phydev, int i)
-+{
-+	struct qca8k_hw_stat stat = qca8k_hw_stats[i];
-+	struct qca8k_phy_priv *priv = phydev->priv;
-+	int val;
-+	u64 ret;
-+
-+	if (stat.access_type == MMD)
-+		val = phy_read_mmd(phydev, MDIO_MMD_PCS, stat.reg);
-+	else
-+		val = phy_read(phydev, stat.reg);
-+
-+	if (val < 0) {
-+		ret = U64_MAX;
-+	} else {
-+		val = val & stat.mask;
-+		priv->stats[i] += val;
-+		ret = priv->stats[i];
-+	}
-+
-+	return ret;
-+}
-+
-+static void qca8k_get_stats(struct phy_device *phydev,
-+			    struct ethtool_stats *stats, u64 *data)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(qca8k_hw_stats); i++)
-+		data[i] = qca8k_get_stat(phydev, i);
-+}
-+
-+static int qca8k_config_init(struct phy_device *phydev)
-+{
-+	struct qca8k_phy_priv *priv = phydev->priv;
-+	struct mii_bus *bus = phydev->mdio.bus;
-+	int phy_addr = phydev->mdio.addr;
-+
-+	priv->switch_revision = phydev->dev_flags & QCA8K_DEVFLAGS_REVISION_MASK;
-+
-+	switch (priv->switch_revision) {
-+	case 1:
-+		/* For 100M waveform */
-+		qca8k_phy_dbg_write(bus, phy_addr, MDIO_DBG_ANALOG_TEST, 0x02ea);
-+		/* Turn on Gigabit clock */
-+		qca8k_phy_dbg_write(bus, phy_addr, MDIO_DBG_CONTROL_FEATURE_CONF, 0x68a0);
-+		break;
-+
-+	case 2:
-+		phy_write_mmd(phydev, MDIO_MMD_AN, MDIO_AN_EEE_ADV, 0x0);
-+		fallthrough;
-+	case 4:
-+		phy_write_mmd(phydev, MDIO_MMD_PCS, MDIO_AZ_DEBUG, 0x803f);
-+		qca8k_phy_dbg_write(bus, phy_addr, MDIO_DBG_CONTROL_FEATURE_CONF, 0x6860);
-+		qca8k_phy_dbg_write(bus, phy_addr, MDIO_DBG_SYSTEM_CONTROL_MODE, 0x2c46);
-+		qca8k_phy_dbg_write(bus, phy_addr, 0x3c, 0x6000);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int qca8k_probe(struct phy_device *phydev)
-+{
-+	struct qca8k_phy_priv *priv;
-+
-+	priv = devm_kzalloc(&phydev->mdio.dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	phydev->priv = priv;
-+
-+	return 0;
-+}
-+
-+static struct phy_driver qca8k_drivers[] = {
-+	{
-+		.phy_id = QCA8K_PHY_ID_QCA8337,
-+		.phy_id_mask = QCA8K_PHY_ID_MASK,
-+		.name = "QCA PHY 8337",
-+		/* PHY_GBIT_FEATURES */
-+		.probe = qca8k_probe,
-+		.flags = PHY_IS_INTERNAL,
-+		.config_init = qca8k_config_init,
-+		.soft_reset = genphy_soft_reset,
-+		.get_sset_count = qca8k_get_sset_count,
-+		.get_strings = qca8k_get_strings,
-+		.get_stats = qca8k_get_stats,
-+	},
-+};
-+
-+module_phy_driver(qca8k_drivers);
-+
-+static struct mdio_device_id __maybe_unused qca8k_tbl[] = {
-+	{ QCA8K_PHY_ID_QCA8337, QCA8K_PHY_ID_MASK },
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(mdio, qca8k_tbl);
-+MODULE_DESCRIPTION("Qualcomm QCA8k PHY driver");
-+MODULE_AUTHOR("Ansuel Smith");
-+MODULE_LICENSE("GPL");
+ 		/* Notify upper layer that packet is done. */
+ 		spin_lock_irqsave(&fifo->spin_lock[is_rx], flags);
+ 		vring_interrupt(0, vring->vq);
 -- 
-2.30.2
+1.8.3.1
 
