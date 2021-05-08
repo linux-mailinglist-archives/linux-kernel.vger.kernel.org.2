@@ -2,80 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055043770DC
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02D13770E6
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhEHJ0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 05:26:48 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:36489 "EHLO pegase2.c-s.fr"
+        id S230355AbhEHJaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 05:30:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230308AbhEHJ0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 05:26:46 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Fchkc4QLwz9sbC;
-        Sat,  8 May 2021 11:25:44 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ke41vRBUCvmZ; Sat,  8 May 2021 11:25:44 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Fchkc3V2Lz9sZs;
-        Sat,  8 May 2021 11:25:44 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5C0EA8B774;
-        Sat,  8 May 2021 11:25:44 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id zNCmdLJsctqi; Sat,  8 May 2021 11:25:44 +0200 (CEST)
-Received: from localhost.localdomain (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 28FFE8B76B;
-        Sat,  8 May 2021 11:25:44 +0200 (CEST)
-Received: by localhost.localdomain (Postfix, from userid 0)
-        id 0435C64921; Sat,  8 May 2021 09:25:44 +0000 (UTC)
-Message-Id: <cadc0a328bc8e6c5bf133193e7547d5c10ae7895.1620465920.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/signal: Fix possible build failure with
- unsafe_copy_fpr_{to/from}_user
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Sat,  8 May 2021 09:25:44 +0000 (UTC)
+        id S229583AbhEHJaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 05:30:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B101461430;
+        Sat,  8 May 2021 09:29:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620466155;
+        bh=R6RMIUYi3bq0SpvGcfXGDP9cDJfCB+cyfouoJdnFiRI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sHJQs0+GeEQ9GsxbId71DGEqb8J/IkMWOCo5LDI4s1VlhJJRyHRVPvLaRSiqzF+zs
+         uevx6s4CiFMC7l3+NIsJA0p2L46mjHZNqfmMmpQI4XiFuIkRpXumoH4sX7YrNixoRe
+         54el9y7wUj/q9N+vWhdgmCRpOUKiG+qwdmipfSTpAFxxK1qY+zgBi6STJ4VUKTfPr2
+         VodIeRiiVRg2FsI3I9sX3elIkIbsaTVonmschSZhrWg72a/+3g1SV/ijXgXhW8iire
+         Hs2JVNwnBT7BYkk9vvXYWenCaFuvP32WhORaro73FcuFVo6Jg/cwdBUkYhf09vRCFs
+         5+Y95P0irCz4g==
+Received: by mail-ot1-f48.google.com with SMTP id u25-20020a0568302319b02902ac3d54c25eso10102599ote.1;
+        Sat, 08 May 2021 02:29:15 -0700 (PDT)
+X-Gm-Message-State: AOAM533yMIwIEUQldB/Bk2Eo0sLH/6uK1DA3F3dxpXsmpHgL2WeWqHQ0
+        Hv3ZitNlK07i4m4NZvs6us1D+l+DXGy/ro1IFo8=
+X-Google-Smtp-Source: ABdhPJzzxX8ZeyeaB2I42nvNj8llnJjhTpj8VT5r7VdzqSAU7R4/NDjXSro8yRZtlbdoR2DGmjy2Rh3zyAWVFMJx7lo=
+X-Received: by 2002:a9d:30b:: with SMTP id 11mr11493944otv.298.1620466155082;
+ Sat, 08 May 2021 02:29:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210507220813.365382-1-arnd@kernel.org> <20210507220813.365382-13-arnd@kernel.org>
+ <CAHk-=wiqLPZbiWFZ3rDNCY0fm=dFR3SSDONvrVNVbkOQmQS1vw@mail.gmail.com>
+In-Reply-To: <CAHk-=wiqLPZbiWFZ3rDNCY0fm=dFR3SSDONvrVNVbkOQmQS1vw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sat, 8 May 2021 11:28:26 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3sxfYG4WReXPe6fg33K7tQaP4K-F53yBcTfyEXv0W22A@mail.gmail.com>
+Message-ID: <CAK8P3a3sxfYG4WReXPe6fg33K7tQaP4K-F53yBcTfyEXv0W22A@mail.gmail.com>
+Subject: Re: [RFC 12/12] asm-generic: simplify asm/unaligned.h
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When neither CONFIG_VSX nor CONFIG_PPC_FPU_REGS are selected,
-unsafe_copy_fpr_to_user() and unsafe_copy_fpr_from_user() are
-doing nothing.
+On Sat, May 8, 2021 at 1:54 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Fri, May 7, 2021 at 3:12 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > The get_unaligned()/put_unaligned() implementations are much more complex
+> > than necessary, now that all architectures use the same code.
+>
+> Thanks for doing this, it looks good to me.
+>
+> I suspect it's still slightly unnecessarily complicated - why is that
+> get_unaligned() not just
+>
+>   #define get_unaligned(ptr) \
+>         __get_unaligned_t(typeof(*__ptr), __ptr)
+>
+> Because I'm not seeing the reason for doing that "__auto_type __ptr"
+> thing - the argument to a "typeof()" isn't actually evaluated.
 
-Then, unless the 'label' operand is used elsewhere, GCC complains
-about it being defined but not used.
+Both versions are equally correct, I picked the __auto_type version
+because this tends to produce smaller preprocessor output when you have
+multiple layers of nested macros with 'ptr' expanding to something
+complicated, and the get_unaligned() itself being expanded multiple
+times again.
 
-To fix that, add an impossible 'goto label'.
+When I recently experimented with possible changes to cmpxchg() and
+get_user(), it had a measurable impact on compile time with clang on
+those macros.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/signal.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+get_unaligned() doesn't appear to be used much in nested macros
+at all, so it probably won't actually help here, and I can just do the
+simpler version instead.
 
-diff --git a/arch/powerpc/kernel/signal.h b/arch/powerpc/kernel/signal.h
-index f4aafa337c2e..1f07317964e4 100644
---- a/arch/powerpc/kernel/signal.h
-+++ b/arch/powerpc/kernel/signal.h
-@@ -166,9 +166,9 @@ copy_ckfpr_from_user(struct task_struct *task, void __user *from)
- }
- #endif /* CONFIG_PPC_TRANSACTIONAL_MEM */
- #else
--#define unsafe_copy_fpr_to_user(to, task, label) do { } while (0)
-+#define unsafe_copy_fpr_to_user(to, task, label) do { if (0) goto label;} while (0)
- 
--#define unsafe_copy_fpr_from_user(task, from, label) do { } while (0)
-+#define unsafe_copy_fpr_from_user(task, from, label) do { if (0) goto label;} while (0)
- 
- static inline unsigned long
- copy_fpr_to_user(void __user *to, struct task_struct *task)
--- 
-2.25.0
+I forgot to mention in the changelog that this version does not actually
+require the argument to be a scalar, not sure if this is something
+we want or not. It does allow developers to write something like
 
+__be32 get_ip_saddr(struct sk_buff *skb)
+{
+      struct iphdr *iph = ip_hdr(skb);
+      return get_unaligned(iph).saddr;
+}
+
+and get the expected result. While this seems handy, it also makes it
+harder to change the macro back to one that only works on scalars
+after such usage becomes widespread.
+
+        Arnd
