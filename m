@@ -2,122 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FBC93772A2
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 17:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040FE3772AC
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 17:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbhEHPcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 11:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhEHPcF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 11:32:05 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D02C061574
-        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 08:31:03 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id w4so15336417ljw.9
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 08:31:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T80RW0N0f2bW+RbqzRU+sONErcUEsqlqhrSCovQJd4U=;
-        b=J06BUQYI0u+DnqsTFDFBW9BAol4dCToP14yYTvqrpw03eRMBn6wqgvdBIcmTmtUa4A
-         5W0K6bMRkpOlnT6CwcVWRYVNjl9UHUiTVQt8AyjTba2fa2urqSpsnng7MZQLkZqrRfpu
-         j85e+lD83jQdKI1jb6V7KdAg91qs6OZW5Fam0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T80RW0N0f2bW+RbqzRU+sONErcUEsqlqhrSCovQJd4U=;
-        b=kZyT+Psq/S6quU71doE8ukWvg9BAdzTEypycj1e8orsjKALxWm4Z82K8r/8uxUGuvi
-         SwBVZay9p684/2NVKma0CkPWKu3BAXoWzTuPL+frMFZIcK7eyO5srXIWrUYODoH0oOkq
-         EpS/OKTaJZu24vhWM790KC2sLAM2w43mVhjELLQ3tkgp/k9B78sQpMoK/WVK2zKSlRsj
-         97G1bPIFNazsZ6Az30kU7CVZrZhB1NJ81lFm/8DM25UGwpFt4wkKjI+Rv1cbrDArnCxP
-         S7CxNNwUM0Mulg9QYM0jVZqQMIK/Nx23c/naHtPymv9CHeKfZpcq70LmQElQv2hYxBdf
-         dqiw==
-X-Gm-Message-State: AOAM532u8MIveAe9wcd8Hy1amnc9dTMX5aj3IFMesziy3a4ibUtRCEgB
-        Rd6hus3quEd7IlglXCM/KXM0Y6bykC7+Zqqi
-X-Google-Smtp-Source: ABdhPJwrsRD9U4myRGzg1+UHb2zZyJei0RzleBzRTDFwEDQOL7iKd5CVRq2SXn0TRKjsc8tJEL2y+w==
-X-Received: by 2002:a2e:b0e5:: with SMTP id h5mr9734005ljl.453.1620487861655;
-        Sat, 08 May 2021 08:31:01 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id a17sm1648407lfl.228.2021.05.08.08.30.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 08 May 2021 08:31:00 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id b21so15313358ljf.11
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 08:30:59 -0700 (PDT)
-X-Received: by 2002:a05:651c:1311:: with SMTP id u17mr12053441lja.48.1620487859712;
- Sat, 08 May 2021 08:30:59 -0700 (PDT)
+        id S229605AbhEHPlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 11:41:19 -0400
+Received: from smtp2-g21.free.fr ([212.27.42.2]:35529 "EHLO smtp2-g21.free.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229500AbhEHPlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 11:41:17 -0400
+Received: from [192.168.1.128] (unknown [31.21.111.237])
+        (Authenticated sender: pieleric@free.fr)
+        by smtp2-g21.free.fr (Postfix) with ESMTPSA id 0344A2003DC;
+        Sat,  8 May 2021 17:39:59 +0200 (CEST)
+Subject: Re: [PATCH] platform/x86: hp_accel: Avoid invoking _INI to speed up
+ resume
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, hdegoede@redhat.com,
+        mgross@linux.intel.com
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:X86 PLATFORM DRIVERS" 
+        <platform-driver-x86@vger.kernel.org>
+References: <20210430060736.590321-1-kai.heng.feng@canonical.com>
+From:   =?UTF-8?Q?=c3=89ric_Piel?= <eric.piel@tremplin-utc.net>
+Message-ID: <288b9b09-b7c7-4265-5eea-8fe7679fe4d1@tremplin-utc.net>
+Date:   Sat, 8 May 2021 17:39:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210508122530.1971-1-justin.he@arm.com> <20210508122530.1971-2-justin.he@arm.com>
-In-Reply-To: <20210508122530.1971-2-justin.he@arm.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 8 May 2021 08:30:43 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgSFUUWJKW1DXa67A0DXVzQ+OATwnC3FCwhqfTJZsvj1A@mail.gmail.com>
-Message-ID: <CAHk-=wgSFUUWJKW1DXa67A0DXVzQ+OATwnC3FCwhqfTJZsvj1A@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/3] fs: introduce helper d_path_fast()
-To:     Jia He <justin.he@arm.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Al Viro <viro@ftp.linux.org.uk>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210430060736.590321-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 8, 2021 at 5:29 AM Jia He <justin.he@arm.com> wrote:
->
-> This helper is similar to d_path except for not taking seqlock/spinlock.
+On 30/04/2021 08:07, Kai-Heng Feng wrote:
+> hp_accel can take almost two seconds to resume on some HP laptops.
+> 
+> The bottleneck is on evaluating _INI, which is only needed to run once.
+> 
+> Resolve the issue by only invoking _INI when it's necessary. Namely, on
+> probe and on hibernation restore.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-I see why you did it that way, but conditional locking is something we
-really really try to avoid in the kernel.
+Although I'm listed as the maintainer, I don't have the hardware anymore 
+to test. However, the changes seem fine to me.
 
-It basically makes a lot of static tools unable to follow the locking
-rules, and it makes it hard for people to se what's going on too.
+Acked-by: Éric Piel <eric.piel@trempplin-utc.net>
 
-So instead of passing a "bool need_lock" thing down, the way to do
-these things is generally to extract the code inside the locked region
-into a helper function of its own, and then you have
+Best,
+Éric
 
-  __unlocked_version(...)
-  {
-       .. do the actual work
-  }
+> ---
+>   drivers/misc/lis3lv02d/lis3lv02d.h |  1 +
+>   drivers/platform/x86/hp_accel.c    | 22 +++++++++++++++++++++-
+>   2 files changed, 22 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/misc/lis3lv02d/lis3lv02d.h b/drivers/misc/lis3lv02d/lis3lv02d.h
+> index c394c0b08519a..7ac788fae1b86 100644
+> --- a/drivers/misc/lis3lv02d/lis3lv02d.h
+> +++ b/drivers/misc/lis3lv02d/lis3lv02d.h
+> @@ -271,6 +271,7 @@ struct lis3lv02d {
+>   	int			regs_size;
+>   	u8                      *reg_cache;
+>   	bool			regs_stored;
+> +	bool			init_required;
+>   	u8                      odr_mask;  /* ODR bit mask */
+>   	u8			whoami;    /* indicates measurement precision */
+>   	s16 (*read_data) (struct lis3lv02d *lis3, int reg);
+> diff --git a/drivers/platform/x86/hp_accel.c b/drivers/platform/x86/hp_accel.c
+> index 799cbe2ffcf36..8c0867bda8280 100644
+> --- a/drivers/platform/x86/hp_accel.c
+> +++ b/drivers/platform/x86/hp_accel.c
+> @@ -88,6 +88,9 @@ MODULE_DEVICE_TABLE(acpi, lis3lv02d_device_ids);
+>   static int lis3lv02d_acpi_init(struct lis3lv02d *lis3)
+>   {
+>   	struct acpi_device *dev = lis3->bus_priv;
+> +	if (!lis3->init_required)
+> +		return 0;
+> +
+>   	if (acpi_evaluate_object(dev->handle, METHOD_NAME__INI,
+>   				 NULL, NULL) != AE_OK)
+>   		return -EINVAL;
+> @@ -356,6 +359,7 @@ static int lis3lv02d_add(struct acpi_device *device)
+>   	}
+>   
+>   	/* call the core layer do its init */
+> +	lis3_dev.init_required = true;
+>   	ret = lis3lv02d_init_device(&lis3_dev);
+>   	if (ret)
+>   		return ret;
+> @@ -403,11 +407,27 @@ static int lis3lv02d_suspend(struct device *dev)
+>   
+>   static int lis3lv02d_resume(struct device *dev)
+>   {
+> +	lis3_dev.init_required = false;
+> +	lis3lv02d_poweron(&lis3_dev);
+> +	return 0;
+> +}
+> +
+> +static int lis3lv02d_restore(struct device *dev)
+> +{
+> +	lis3_dev.init_required = true;
+>   	lis3lv02d_poweron(&lis3_dev);
+>   	return 0;
+>   }
+>   
+> -static SIMPLE_DEV_PM_OPS(hp_accel_pm, lis3lv02d_suspend, lis3lv02d_resume);
+> +static const struct dev_pm_ops hp_accel_pm = {
+> +	.suspend = lis3lv02d_suspend,
+> +	.resume = lis3lv02d_resume,
+> +	.freeze = lis3lv02d_suspend,
+> +	.thaw = lis3lv02d_resume,
+> +	.poweroff = lis3lv02d_suspend,
+> +	.restore = lis3lv02d_restore,
+> +};
+> +
+>   #define HP_ACCEL_PM (&hp_accel_pm)
+>   #else
+>   #define HP_ACCEL_PM NULL
+> 
 
-  locked_version(..)
-  {
-      take_lock(..)
-      retval = __unlocked_version(..);
-      release_lock(..);
-      return retval;
-  }
-
-this prepend_path() case is a bit more complicated because there's two
-layers of locking, but I think the pattern should still work fine.
-
-In fact, I think it would clean up prepend_path() and make it more
-legible to have the two layers of mount_lock / rename_lock be done in
-callers with the restarting being done as a loop in the caller rather
-than as "goto restart_*".
-
-              Linus
