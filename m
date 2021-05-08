@@ -2,159 +2,530 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BCC376FBB
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 07:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D7F376FCC
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 07:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhEHF1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 01:27:43 -0400
-Received: from esa6.fujitsucc.c3s2.iphmx.com ([68.232.159.83]:48728 "EHLO
-        esa6.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229749AbhEHF1m (ORCPT
+        id S229669AbhEHFpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 01:45:52 -0400
+Received: from gproxy6-pub.mail.unifiedlayer.com ([67.222.39.168]:51405 "EHLO
+        gproxy6-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229473AbhEHFpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 01:27:42 -0400
-IronPort-SDR: sDHXWIVpvAjtMaVQC0yuKmAnHkOqJ/3Whja4/WqPTZXtkr10druYH/z5gzzuZVnGNn5Ho+33wv
- e5j7fVxOcXNmBHZw1XtGOzGLaAf+e9zvtVO4lQ25qhRhkoE5hHAlichlsVZgU7DLHO/k+Jkpw7
- cxZSIcS+NIdlvYWIP+cx22LqUpxeXN4l1IczDbu+gONtqWT8MbeMTHVYAfyBm7lixmrbLcWlBs
- w1os0YzrZ7B8L3opeObhMhho6Nh7xhFBcpvoLlEniHcglNxsXdhiRhWJI4t8XgRhJBNuOqMAoe
- GkE=
-X-IronPort-AV: E=McAfee;i="6200,9189,9977"; a="31107942"
-X-IronPort-AV: E=Sophos;i="5.82,282,1613401200"; 
-   d="scan'208";a="31107942"
-Received: from mail-os2jpn01lp2056.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.56])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2021 14:26:35 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L1IggSGYzbkNfUj3P18LztakePeTkcHiDulieEBJBddeF7fZx1g0BeFFC71V0HLOC+7PveX785faIbiNgD/Vlk+dMPh/nQiR1FXfVa9OgzF3wa8md9rV1L2uHhjZTVcExSqUdrgus3mbR4b41ytvfjKxwYjTdMT5Z/DURuQXVyx6GNtFdRUVXtYs1amhe4EKXk3uU30aMjSUTIg+jSc3eoT/PrRIK7DldD3mk0KEMV22TSIJm9VFo8SiZwowiDdwOMQZzA/A7Tn7VEYU7E5QTn9cEZ92CuM9DRmbQ3vNM6gJ1FWwA11iTgt5zw/7+ixatFFoY3yDtZfh1z1RxzFvcA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kOeC3vu+7clFPbAHDHS3thSf5/YASS1sMfLbA5OMCBA=;
- b=RXdBx9V44F3xhpL8+5aP33B/N4fKYoWPLbvaFH8+yLxvlYjBpNm4gO3rqvCMShy++elevHYutGKZLKnINYDUGX+4C9/BrowWbHT+gf1mOj34q+lkMuTXIH+UVOZBLqtxTwss5D9qFhWHqLQHYQIPm4lnjVqXXS4xkYyhhVaaU3pTioc1rTYI0EPGiZacV34F7c0+r/sgNuhL752Y268GX0CJt7v2f/YJScrwkJ2iNB0J61hhy8GfnIAjiPKi0HujWzFkcWtFMP4m/NmivG4y2HgLubJgGSrVFlZyNbt6jqRgiYrD/bqrEEEC8czcXieoF6bhwi7treYSlmpecgqdww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kOeC3vu+7clFPbAHDHS3thSf5/YASS1sMfLbA5OMCBA=;
- b=WatrRG8c2VKu7SYHO4uIHb1OOrVwft4sgWQvgokI2kVotwYcSDNQsVNoe1VIQUiUuvomyU/5s/VK9v66yu1ME23OhUkdUXO26MslOWK2yePCSInYwlYWNww6YaqTuAuW6jHxo6WlzR0OgkK4WDwwz2C4cbGOdLcOl4nCNuVLG/k=
-Received: from OSBPR01MB2920.jpnprd01.prod.outlook.com (2603:1096:604:18::16)
- by OSZPR01MB6293.jpnprd01.prod.outlook.com (2603:1096:604:ed::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Sat, 8 May
- 2021 05:26:32 +0000
-Received: from OSBPR01MB2920.jpnprd01.prod.outlook.com
- ([fe80::b985:8239:6cf0:1228]) by OSBPR01MB2920.jpnprd01.prod.outlook.com
- ([fe80::b985:8239:6cf0:1228%7]) with mapi id 15.20.4108.031; Sat, 8 May 2021
- 05:26:32 +0000
-From:   "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>
-To:     "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>
-Subject: RE: [PATCH v3 0/3] fsdax: Factor helper functions to simplify the
- code
-Thread-Topic: [PATCH v3 0/3] fsdax: Factor helper functions to simplify the
- code
-Thread-Index: AQHXN325ZvNg0AwKgEyTZt/tgpBu/qrZJMtA
-Date:   Sat, 8 May 2021 05:26:32 +0000
-Message-ID: <OSBPR01MB29205D645B33F4721E890660F4569@OSBPR01MB2920.jpnprd01.prod.outlook.com>
-References: <20210422134501.1596266-1-ruansy.fnst@fujitsu.com>
-In-Reply-To: <20210422134501.1596266-1-ruansy.fnst@fujitsu.com>
-Accept-Language: en-US, zh-CN
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=fujitsu.com;
-x-originating-ip: [223.111.68.150]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5df88144-5d5d-4a9f-739b-08d911e1d701
-x-ms-traffictypediagnostic: OSZPR01MB6293:
-x-microsoft-antispam-prvs: <OSZPR01MB6293271876D5981797A260B3F4569@OSZPR01MB6293.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cc9u2bdaMbUkID9Edub3sB5dBGouniStjSEfaSRKtCH/OcGR5QlpTIfjIjtK8sjSh5jqpJuSfAgfMdclVzDRjICWSu/qmx7SWxn8kmu6zXSHAyEOSRVVsEW4S7gqlvqrro71S3NGN12WuW0COx+yuGDBsw7GJgKw4OzFAFGO4S3byVrjXdD16vKX6VTQXFeayvu1al5GnqUVIRft+X91hIskl+CAyv2DHXsHT6aAJRr30ILBfEHhVho1frm9tyavOmM8bvrrQJ+i31pHFeDYx6kgvQBKDogrNec0vKCeqX7dpr04LkmrWKdgYobUntMd15i+wC4NTB8ap5LWR+Wgd9hNWMXZdhRu68NDbx6syUNWbxTkVASSQU4uC7NkTHOm5l189fnxrKuh0Vl4QjjdCVIET1UifpyR8wMqV8H1PeCpF6HwPvikUHzYm5/4Xn9w1GjiXuQngD6VNakdQFwFmrWSyX+YT212Mem9/zkqyfUcBM/0FlxCKOLByeD8SRbdGc0WrviVQ9usrKTvOtkj2Potx/RnsZY5Z3gmU9XucR7p6+nkt+NUlyGysRP3DnpdxI3EOmIVpUPZ0Jj6oyCOFMjIiSGKk0bQF1R8jXHeMKXdl7kspntxOZfs1DlH4doDgHIkK7kVciDKkiUzuC95htOF9b7l7vNysHlO7nHUwtK4nBijOpnx3Ds6IY6uHhbc
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB2920.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(376002)(39860400002)(396003)(33656002)(7416002)(186003)(316002)(8936002)(8676002)(85182001)(26005)(71200400001)(7696005)(4326008)(110136005)(54906003)(122000001)(52536014)(76116006)(66946007)(66556008)(2906002)(66476007)(66446008)(9686003)(38100700002)(64756008)(5660300002)(966005)(6506007)(478600001)(86362001)(53546011)(83380400001)(55016002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?gb2312?B?S3E5cHNsY0t2V2tiZ2lBdmcvSUNwVksrNWg4Q2ZEWm5OTCs5aXVwUkpTOGxq?=
- =?gb2312?B?SkJ4ZW1OTTVCSnI3RnpoUlJXR2FiNFpRK3JoS296eVAzVWM4TVJJUFlVZUUr?=
- =?gb2312?B?M1NNN0JrY3laWnZDd2FZdjQ0RjVVaE5jS3NlQ09neUxZM2FxaDJZdkVSR1Qv?=
- =?gb2312?B?b1BieDhhRENaN3B1YkNOMVk5TWdWcjdKYy8rMjVhOEVsdDQwQ0pKZ0R2Zisy?=
- =?gb2312?B?S0xTYXppR0h2V3hQVmlvTEprWUVrMnZkNmNaYzB5MktuREpFTm8zRXNvK3BX?=
- =?gb2312?B?VTRKMTRzQ3A2dFZ5V0RiclhQZFdzdTVVblNOVkhiUnlJMlVKY2xoV2tyNTdJ?=
- =?gb2312?B?YjV4RGRLd3Z5SVRxSlBqbUlKMVMzV0RQZ3RpRlhCVUhqNlJnSXhmbjFZU3Z2?=
- =?gb2312?B?M0NoQ3pvQzVBOXJIUFFaejNmb29CbThOQkJ5cmRsN1loSVMxVkNuWTc2MEpw?=
- =?gb2312?B?NTdPOW9EOGRVeXg1RklHV0RjWUJHcGpzMlN6MXFTMksxTjJtVDI4dHBrUkJl?=
- =?gb2312?B?aDRZbEdjOUhiQnNwcVRKTHpmRUFlRWN3WlcvOUtEdEJneGllallKZFY1NWd6?=
- =?gb2312?B?eVdnajRrQXBGNjNvcXdHKzIwUlJLTWh6TG5pZXFOQU5oR1ROWDJENDFVZVF3?=
- =?gb2312?B?amQ5dW1nT2NJOWdPcDdJVEhsZlJHNWY0NXR3SVlkRDBsUVNraHRwWmRVbzR2?=
- =?gb2312?B?Uy9QTUtidlh5ZFJUbEZGOWprMmVORXVuOFhBMEt1VnAveWtjalFjeGN3dHVo?=
- =?gb2312?B?WTFmMVdIYTZybFNsbVFnMCtQU1RyTWF1M2d4SzN1ZmtrczFqUUhYMnVxalRB?=
- =?gb2312?B?cHlkVnM4TlBhaXRpelZxSmZGekFtK0pYOWhTeFBUWWRCUjRzekdHemF2NjJp?=
- =?gb2312?B?N1plcHlScTZnUFR3WTVRRDU0eVZhVmVRU0ZXcFdYaUQ1UElOVHNaeXpKaTdn?=
- =?gb2312?B?RGdCOWRRQ3AwZTJEOUQ4cjJ4VGRBdTVEMXhpb2RLTTRWQjdNcDFSbk9heWg1?=
- =?gb2312?B?TWRCZUlDTTdWbGZBUzFKbFJLMExlQW5Ld2d3bTF1ZHVDVGVhWmorbG5KbTl6?=
- =?gb2312?B?bXVSYnN6aStKWVFoemw1VUw3TWpJMkJTSGRvczRsT3M3WURiY0N3S2R1SHJR?=
- =?gb2312?B?Z0ZseGoyRWVkaWlLaDhZSWpnWktzczFoY2xiaDNNMnlwa0RnUWg1SVRWb2la?=
- =?gb2312?B?c3VQdWdkdy9KTXAvdkVyYkVTU3NRTEhnU3owWnNDR2NwRjA1RXArSXlNTjky?=
- =?gb2312?B?aEVRcmhmdi9QMXpRVU9zU0crTkEreE1IMXF5L0RLdktWN1I2bFU4V0xybkNW?=
- =?gb2312?B?MkJIOTJseko2VU9sQVN1YnE1cVd6Z2pqeUFZZ2wxNlpnOERaVExQSjF6aDgv?=
- =?gb2312?B?ZGcvWTBucWNlMk1GWTZ6ZUVoZjdxcFZUNUtWNDVZaW1TbTlDWUU4djUzMFla?=
- =?gb2312?B?MVFiOStwVmEwRHJWL0tDNmtMei9mdzVnRnNRTXU1TlQ5KzRVV293cWF0RGsx?=
- =?gb2312?B?bGlUamkxaFM1WmZFVWFLKy9ENVdOZXJSeUVrU2RJMUtuMUxqcWV1VHRjaGY1?=
- =?gb2312?B?Y2tobndDMkRqaW1yOGI2djVVb2txVFRray9GWUhnWW8vU1VLbXVKSFE5aEZE?=
- =?gb2312?B?WHJtajBjVDgwNzB3TUoxS3RlZHprbTBNc2ZLU3RZdDZCSGVYVytXMGEzVkVF?=
- =?gb2312?B?WmFHNnZPVyt2R2dFTmtaam1adEYzK2Rpa2FpdHRxNmRJM21iSTh6WU5PZEYw?=
- =?gb2312?Q?chKMTlGsrX2bHXeDlJr8xF8o1RSPkaSRgR9rcTc?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Sat, 8 May 2021 01:45:51 -0400
+X-Greylist: delayed 1496 seconds by postgrey-1.27 at vger.kernel.org; Sat, 08 May 2021 01:45:51 EDT
+Received: from cmgw10.unifiedlayer.com (unknown [10.9.0.10])
+        by gproxy6.mail.unifiedlayer.com (Postfix) with ESMTP id 2D5188028FC1
+        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 05:19:51 +0000 (UTC)
+Received: from md-in-79.webhostbox.net ([43.225.55.182])
+        by cmsmtp with ESMTP
+        id fFNUlP0wBgYcLfFNWltZKg; Fri, 07 May 2021 23:19:51 -0600
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.4 cv=LOEF/La9 c=1 sm=1 tr=0 ts=60961f77
+ a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=LfuyaZh/8e9VOkaVZk0aRw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=5FLXtPjwQuUA:10:nop_rcvd_month_year
+ a=oz0wMknONp8A:10:endurance_base64_authed_username_1 a=vU9dKmh3AAAA:8
+ a=NcCfH-bgAAAA:8 a=lhsWNlwdHoQvLuVuHl0A:9 a=rsP06fVo5MYu2ilr0aT5:22
+ a=nZLUJm6UEJn402BoZzOq:22 a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
+        ; s=default; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=eNQrwguVRDQ+gFV2BAONwnF0mXGn8VDVt2fb9wwNT+0=; b=NbBl76VA4yW16HpFTONgILr2D5
+        8ehp3AyiXJnl4exCE5kW4V1X2nY+K8clYMxW5+AYo40GKJaXfgKH8Mu/T9Afh3p4XN73c+ARkfG7H
+        naGcZKRAS7lCTtxzxG/xgqXoyNwYbbSy+kYKppxRq7IPFkznUc5YXmjNEWwtM51XMZowNWwrm/+yO
+        e6It55wtGvAL5uzPBTdxDnzgVJqF4kUe+9BFIJOzdDq8ipyqUgWNk9yCT9GppiIBm0UD+k8pUgQg1
+        wE7yO+jz+jXGpmBGQ6iIRMomqInAgMm0N3PtB1aZUEnybkEWZcJuPTHRwwdpWkSlO24oPMTPwGznL
+        Goj3trHQ==;
+Received: from [117.202.189.152] (port=58710 helo=localhost.localdomain)
+        by md-in-79.webhostbox.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <navin@linumiz.com>)
+        id 1lfFNT-003rwa-SR; Sat, 08 May 2021 05:19:47 +0000
+From:   Navin Sankar Velliangiri <navin@linumiz.com>
+Cc:     navin@linumiz.com, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4] hwmon: Add sht4x Temperature and Humidity Sensor Driver
+Date:   Sat,  8 May 2021 10:50:00 +0530
+Message-Id: <20210508052002.14732-1-navin@linumiz.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB2920.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5df88144-5d5d-4a9f-739b-08d911e1d701
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2021 05:26:32.1596
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Tmc3JVee0tT5HXUWFd/ubGa0FB96bemoZrISCS1DQzugBq3SRFE1oQZbyIqfcjvQva1vChKRFrMBfDPziVV7CA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSZPR01MB6293
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - linumiz.com
+X-BWhitelist: no
+X-Source-IP: 117.202.189.152
+X-Source-L: No
+X-Exim-ID: 1lfFNT-003rwa-SR
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (localhost.localdomain) [117.202.189.152]:58710
+X-Source-Auth: linumcmc
+X-Email-Count: 1
+X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
+X-Local-Domain: yes
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIERhbg0KDQpEbyB5b3UgaGF2ZSBhbnkgY29tbWVudHMgb24gdGhpcz8NCg0KDQotLQ0KVGhh
-bmtzLA0KUnVhbiBTaGl5YW5nLg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZy
-b206IFNoaXlhbmcgUnVhbiA8cnVhbnN5LmZuc3RAZnVqaXRzdS5jb20+DQo+IFNlbnQ6IFRodXJz
-ZGF5LCBBcHJpbCAyMiwgMjAyMSA5OjQ1IFBNDQo+IFN1YmplY3Q6IFtQQVRDSCB2MyAwLzNdIGZz
-ZGF4OiBGYWN0b3IgaGVscGVyIGZ1bmN0aW9ucyB0byBzaW1wbGlmeSB0aGUgY29kZQ0KPiANCj4g
-RnJvbTogU2hpeWFuZyBSdWFuIDxydWFuc3kuZm5zdEBjbi5mdWppdHN1LmNvbT4NCj4gDQo+IFRo
-ZSBwYWdlIGZhdWx0IHBhcnQgb2YgZnNkYXggY29kZSBpcyBsaXR0bGUgY29tcGxleC4gSW4gb3Jk
-ZXIgdG8gYWRkIENvVyBmZWF0dXJlDQo+IGFuZCBtYWtlIGl0IGVhc3kgdG8gdW5kZXJzdGFuZCwg
-SSB3YXMgc3VnZ2VzdGVkIHRvIGZhY3RvciBzb21lIGhlbHBlciBmdW5jdGlvbnMNCj4gdG8gc2lt
-cGxpZnkgdGhlIGN1cnJlbnQgZGF4IGNvZGUuDQo+IA0KPiBUaGlzIGlzIHNlcGFyYXRlZCBmcm9t
-IHRoZSBwcmV2aW91cyBwYXRjaHNldCBjYWxsZWQgIlYzIGZzZGF4LHhmczogQWRkDQo+IHJlZmxp
-bmsmZGVkdXBlIHN1cHBvcnQgZm9yIGZzZGF4IiwgYW5kIHRoZSBwcmV2aW91cyBjb21tZW50cyBh
-cmUgaGVyZVsxXS4NCj4gDQo+IFsxXToNCj4gaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9w
-cm9qZWN0L2xpbnV4LW52ZGltbS9wYXRjaC8yMDIxMDMxOTAxNTIzNy45OQ0KPiAzODgwLTMtcnVh
-bnN5LmZuc3RAZnVqaXRzdS5jb20vDQo+IA0KPiBDaGFuZ2VzIGZyb20gVjI6DQo+ICAtIGZpeCB0
-aGUgdHlwZSBvZiAnbWFqb3InIGluIHBhdGNoIDINCj4gIC0gUmViYXNlZCBvbiB2NS4xMi1yYzgN
-Cj4gDQo+IENoYW5nZXMgZnJvbSBWMToNCj4gIC0gZml4IFJpdGVzaCdzIGVtYWlsIGFkZHJlc3MN
-Cj4gIC0gc2ltcGxpZnkgcmV0dXJuIGxvZ2ljIGluIGRheF9mYXVsdF9jb3dfcGFnZSgpDQo+IA0K
-PiAoUmViYXNlZCBvbiB2NS4xMi1yYzgpDQo+ID09DQo+IA0KPiBTaGl5YW5nIFJ1YW4gKDMpOg0K
-PiAgIGZzZGF4OiBGYWN0b3IgaGVscGVycyB0byBzaW1wbGlmeSBkYXggZmF1bHQgY29kZQ0KPiAg
-IGZzZGF4OiBGYWN0b3IgaGVscGVyOiBkYXhfZmF1bHRfYWN0b3IoKQ0KPiAgIGZzZGF4OiBPdXRw
-dXQgYWRkcmVzcyBpbiBkYXhfaW9tYXBfcGZuKCkgYW5kIHJlbmFtZSBpdA0KPiANCj4gIGZzL2Rh
-eC5jIHwgNDQzICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAyMzQgaW5zZXJ0aW9ucygrKSwgMjA5IGRlbGV0
-aW9ucygtKQ0KPiANCj4gLS0NCj4gMi4zMS4xDQoNCg==
+This patch adds a hwmon driver for the SHT4x Temperature and
+Humidity sensor.
+
+Signed-off-by: Navin Sankar Velliangiri <navin@linumiz.com>
+---
+
+Changes in v2:
+
+* Removed unused macro SHT4X_MIN_POLL_INTERVAL
+* Replaced time_after instead of ktime_after
+* Used goto statements for error handling
+* Hardcorded the interval_time instead of clamp_val().
+
+Changes in v3:
+
+* Accept the poll interval if it is greater than SHT4X_MIN_POLL_INTERVAL and
+  return -EINVAL for negative values & less than SHT4X_MIN_POLL_INTERVAL.
+* Changed the data type of update_interval and last_upadated to long.
+
+Changes in v4:
+
+* "update interval" is long but msecs_to_jiffies() accepts only unsigned int.
+  clamp_val() api is used to assign the update_interval stays within UINT_MAX.
+
+ Documentation/hwmon/index.rst |   1 +
+ Documentation/hwmon/sht4x.rst |  45 +++++
+ drivers/hwmon/Kconfig         |  13 +-
+ drivers/hwmon/Makefile        |   1 +
+ drivers/hwmon/sht4x.c         | 305 ++++++++++++++++++++++++++++++++++
+ 5 files changed, 364 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/hwmon/sht4x.rst
+ create mode 100644 drivers/hwmon/sht4x.c
+
+diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+index 8d5a2df1ecb6..2a20c6616e21 100644
+--- a/Documentation/hwmon/index.rst
++++ b/Documentation/hwmon/index.rst
+@@ -160,6 +160,7 @@ Hardware Monitoring Kernel Drivers
+    sht15
+    sht21
+    sht3x
++   sht4x
+    shtc1
+    sis5595
+    sl28cpld
+diff --git a/Documentation/hwmon/sht4x.rst b/Documentation/hwmon/sht4x.rst
+new file mode 100644
+index 000000000000..3b37abcd4a46
+--- /dev/null
++++ b/Documentation/hwmon/sht4x.rst
+@@ -0,0 +1,45 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++Kernel driver sht4x
++===================
++
++Supported Chips:
++
++  * Sensirion SHT4X
++
++    Prefix: 'sht4x'
++
++    Addresses scanned: None
++
++    Datasheet:
++
++      English: https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/2_Humidity_Sensors/Datasheets/Sensirion_Humidity_Sensors_SHT4x_Datasheet.pdf
++
++Author: Navin Sankar Velliangiri <navin@linumiz.com>
++
++
++Description
++-----------
++
++This driver implements support for the Sensirion SHT4x chip, a humidity
++and temperature sensor. Temperature is measured in degree celsius, relative
++humidity is expressed as a percentage. In sysfs interface, all values are
++scaled by 1000, i.e. the value for 31.5 degrees celsius is 31500.
++
++Usage Notes
++-----------
++
++The device communicates with the I2C protocol. Sensors can have the I2C
++address 0x44. See Documentation/i2c/instantiating-devices.rst for methods
++to instantiate the device.
++
++Sysfs entries
++-------------
++
++=============== ============================================
++temp1_input     Measured temperature in millidegrees Celcius
++humidity1_input Measured humidity in %H
++update_interval The minimum interval for polling the sensor,
++                in milliseconds. Writable. Must be at least
++                2000.
++============== =============================================
+diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+index 54f04e61fb83..ad10469d7b13 100644
+--- a/drivers/hwmon/Kconfig
++++ b/drivers/hwmon/Kconfig
+@@ -1583,6 +1583,17 @@ config SENSORS_SHT3x
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called sht3x.
+
++config SENSORS_SHT4x
++	tristate "Sensiron humidity and temperature sensors. SHT4x and compat."
++	depends on I2C
++	select CRC8
++	help
++	  If you say yes here you get support for thr Sensiron SHT40, SHT41 and
++	  SHT45 humidity and temperature sensors.
++
++	  This driver can also be built as a module. If so, the module
++	  will be called sht4x.
++
+ config SENSORS_SHTC1
+ 	tristate "Sensiron humidity and temperature sensors. SHTC1 and compat."
+ 	depends on I2C
+@@ -1798,7 +1809,7 @@ config SENSORS_ADS7871
+
+ config SENSORS_AMC6821
+ 	tristate "Texas Instruments AMC6821"
+-	depends on I2C
++	depends on I2C
+ 	help
+ 	  If you say yes here you get support for the Texas Instruments
+ 	  AMC6821 hardware monitoring chips.
+diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+index fe38e8a5c979..62cee3e03c7f 100644
+--- a/drivers/hwmon/Makefile
++++ b/drivers/hwmon/Makefile
+@@ -170,6 +170,7 @@ obj-$(CONFIG_SENSORS_SL28CPLD)	+= sl28cpld-hwmon.o
+ obj-$(CONFIG_SENSORS_SHT15)	+= sht15.o
+ obj-$(CONFIG_SENSORS_SHT21)	+= sht21.o
+ obj-$(CONFIG_SENSORS_SHT3x)	+= sht3x.o
++obj-$(CONFIG_SENSORS_SHT4x)	+= sht4x.o
+ obj-$(CONFIG_SENSORS_SHTC1)	+= shtc1.o
+ obj-$(CONFIG_SENSORS_SIS5595)	+= sis5595.o
+ obj-$(CONFIG_SENSORS_SMM665)	+= smm665.o
+diff --git a/drivers/hwmon/sht4x.c b/drivers/hwmon/sht4x.c
+new file mode 100644
+index 000000000000..e33a0ba3aaed
+--- /dev/null
++++ b/drivers/hwmon/sht4x.c
+@@ -0,0 +1,305 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++/*
++ * Copyright (c) Linumiz 2021
++ *
++ * sht4x.c - Linux hwmon driver for SHT4x Temperature and Humidity sensor
++ *
++ * Author: Navin Sankar Velliangiri <navin@linumiz.com>
++ */
++
++#include <linux/crc8.h>
++#include <linux/delay.h>
++#include <linux/hwmon.h>
++#include <linux/i2c.h>
++#include <linux/jiffies.h>
++#include <linux/module.h>
++#include <linux/ktime.h>
++
++/*
++ * Poll intervals (in milliseconds)
++ */
++#define SHT4X_MIN_POLL_INTERVAL	2000
++
++/*
++ * I2C command delays (in microseconds)
++ */
++#define SHT4X_MEAS_DELAY	1000
++#define SHT4X_DELAY_EXTRA	10000
++
++/*
++ * Command Bytes
++ */
++#define SHT4X_CMD_MEASURE_HPM	0b11111101
++#define SHT4X_CMD_RESET		0b10010100
++
++#define SHT4X_CMD_LEN		1
++#define SHT4X_CRC8_LEN		1
++#define SHT4X_WORD_LEN		2
++#define SHT4X_RESPONSE_LENGTH	6
++#define SHT4X_CRC8_POLYNOMIAL	0x31
++#define SHT4X_CRC8_INIT		0xff
++#define SHT4X_MIN_TEMPERATURE	-45000
++#define SHT4X_MAX_TEMPERATURE	125000
++#define SHT4X_MIN_HUMIDITY	0
++#define SHT4X_MAX_HUMIDITY	100000
++
++DECLARE_CRC8_TABLE(sht4x_crc8_table);
++
++/**
++ * struct sht4x_data - All the data required to operate an SHT4X chip
++ * @client: the i2c client associated with the SHT4X
++ * @lock: a mutex that is used to prevent parallel access to the i2c client
++ * @update_interval: the minimum poll interval
++ * @last_updated: the previous time that the SHT4X was polled
++ * @temperature: the latest temperature value received from the SHT4X
++ * @humidity: the latest humidity value received from the SHT4X
++ */
++struct sht4x_data {
++	struct i2c_client	*client;
++	struct mutex		lock;	/* atomic read data updates */
++	bool			valid;	/* validity of fields below */
++	long			update_interval;	/* in milli-seconds */
++	long			last_updated;	/* in jiffies */
++	s32			temperature;
++	s32			humidity;
++};
++
++/**
++ * sht4x_read_values() - read and parse the raw data from the SHT4X
++ * @sht4x_data: the struct sht4x_data to use for the lock
++ * Return: 0 if succesfull, 1 if not
++ */
++static int sht4x_read_values(struct sht4x_data *data)
++{
++	int ret;
++	u16 t_ticks, rh_ticks;
++	unsigned long next_update;
++	struct i2c_client *client = data->client;
++	u8 crc, raw_data[SHT4X_RESPONSE_LENGTH],
++	cmd[] = {SHT4X_CMD_MEASURE_HPM};
++
++	mutex_lock(&data->lock);
++	next_update = data->last_updated +
++		      msecs_to_jiffies(data->update_interval);
++	if (!data->valid || time_after(jiffies, next_update)) {
++		ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
++		if (ret < 0)
++			goto unlock;
++
++		usleep_range(SHT4X_MEAS_DELAY,
++			     SHT4X_MEAS_DELAY + SHT4X_DELAY_EXTRA);
++
++		ret = i2c_master_recv(client, raw_data, SHT4X_RESPONSE_LENGTH);
++		if (ret != SHT4X_RESPONSE_LENGTH) {
++			if (ret >= 0)
++				ret = -ENODATA;
++
++			goto unlock;
++		}
++
++		t_ticks = raw_data[0] << 8 | raw_data[1];
++		rh_ticks = raw_data[3] << 8 | raw_data[4];
++
++		crc = crc8(sht4x_crc8_table, &raw_data[0], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
++		if (crc != raw_data[2]) {
++			dev_err(&client->dev, "data integrity check failed\n");
++			ret = -EIO;
++			goto unlock;
++		}
++
++		crc = crc8(sht4x_crc8_table, &raw_data[3], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
++		if (crc != raw_data[5]) {
++			dev_err(&client->dev, "data integrity check failed\n");
++			ret = -EIO;
++			goto unlock;
++		}
++
++		data->temperature = ((21875 * (int32_t)t_ticks) >> 13) - 45000;
++		data->humidity = ((15625 * (int32_t)rh_ticks) >> 13) - 6000;
++		data->last_updated = jiffies;
++		data->valid = true;
++	}
++
++unlock:
++	mutex_unlock(&data->lock);
++	return ret;
++}
++
++static ssize_t sht4x_interval_write(struct sht4x_data *data,
++				    long val)
++{
++	if (val >= SHT4X_MIN_POLL_INTERVAL)
++		data->update_interval = val;
++	else
++		return -EINVAL;
++
++	return 0;
++}
++
++/**
++ * sht4x_interval_read() - read the minimum poll interval
++ *			   in milliseconds
++ */
++static size_t sht4x_interval_read(struct sht4x_data *data,
++				  long *val)
++{
++	*val = data->update_interval;
++	return 0;
++}
++
++/**
++ * sht4x_temperature1_read() - read the temperature in millidegrees
++ */
++static int sht4x_temperature1_read(struct sht4x_data *data, long *val)
++{
++	int ret;
++
++	ret = sht4x_read_values(data);
++	if (ret < 0)
++		return ret;
++
++	*val = data->temperature;
++
++	return 0;
++}
++
++/**
++ * sht4x_humidity1_read() - read a relative humidity in millipercent
++ */
++static int sht4x_humidity1_read(struct sht4x_data *data, long *val)
++{
++	int ret;
++
++	ret = sht4x_read_values(data);
++	if (ret < 0)
++		return ret;
++
++	*val = data->humidity;
++
++	return 0;
++}
++
++static umode_t sht4x_hwmon_visible(const void *data,
++				   enum hwmon_sensor_types type,
++				   u32 attr, int channel)
++{
++	switch (type) {
++	case hwmon_temp:
++	case hwmon_humidity:
++		return 0444;
++	case hwmon_chip:
++		return 0644;
++	default:
++		return 0;
++	}
++}
++
++static int sht4x_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
++			    u32 attr, int channel, long *val)
++{
++	struct sht4x_data *data = dev_get_drvdata(dev);
++
++	switch (type) {
++	case hwmon_temp:
++		return sht4x_temperature1_read(data, val);
++	case hwmon_humidity:
++		return sht4x_humidity1_read(data, val);
++	case hwmon_chip:
++		return sht4x_interval_read(data, val);
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static int sht4x_hwmon_write(struct device *dev, enum hwmon_sensor_types type,
++			     u32 attr, int channel, long val)
++{
++	struct sht4x_data *data = dev_get_drvdata(dev);
++
++	switch (type) {
++	case hwmon_chip:
++		return sht4x_interval_write(data, val);
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static const struct hwmon_channel_info *sht4x_info[] = {
++	HWMON_CHANNEL_INFO(chip, HWMON_C_UPDATE_INTERVAL),
++	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT),
++	HWMON_CHANNEL_INFO(humidity, HWMON_H_INPUT),
++	NULL,
++};
++
++static const struct hwmon_ops sht4x_hwmon_ops = {
++	.is_visible = sht4x_hwmon_visible,
++	.read = sht4x_hwmon_read,
++	.write = sht4x_hwmon_write,
++};
++
++static const struct hwmon_chip_info sht4x_chip_info = {
++	.ops = &sht4x_hwmon_ops,
++	.info = sht4x_info,
++};
++
++static int sht4x_probe(struct i2c_client *client,
++		       const struct i2c_device_id *sht4x_id)
++{
++	struct device *device = &client->dev;
++	struct device *hwmon_dev;
++	struct sht4x_data *data;
++	u8 cmd[] = {SHT4X_CMD_RESET};
++	int ret;
++
++	/*
++	 * we require full i2c support since the sht4x uses multi-byte read and
++	 * writes as well as multi-byte commands which are not supported by
++	 * the smbus protocol
++	 */
++	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
++		return -EOPNOTSUPP;
++
++	data = devm_kzalloc(device, sizeof(*data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	data->update_interval = SHT4X_MIN_POLL_INTERVAL;
++	data->client = client;
++
++	mutex_init(&data->lock);
++
++	crc8_populate_msb(sht4x_crc8_table, SHT4X_CRC8_POLYNOMIAL);
++
++	ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
++	if (ret != SHT4X_CMD_LEN)
++		return -EIO;
++
++	hwmon_dev = devm_hwmon_device_register_with_info(device,
++							 client->name,
++							 data,
++							 &sht4x_chip_info,
++							 NULL);
++
++	return PTR_ERR_OR_ZERO(hwmon_dev);
++}
++
++static const struct i2c_device_id sht4x_id[] = {
++	{ "sht4x", 0 },
++	{ },
++};
++MODULE_DEVICE_TABLE(i2c, sht4x_id);
++
++static struct i2c_driver sht4x_driver = {
++	.driver = {
++		.name = "sht4x",
++	},
++	.probe		= sht4x_probe,
++	.id_table	= sht4x_id,
++};
++
++module_i2c_driver(sht4x_driver);
++
++MODULE_AUTHOR("Navin Sankar Velliangiri <navin@linumiz.com>");
++MODULE_DESCRIPTION("Sensirion SHT4x humidity and temperature sensor driver");
++MODULE_LICENSE("GPL v2");
+--
+2.31.1
+
