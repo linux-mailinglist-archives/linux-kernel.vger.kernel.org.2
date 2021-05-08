@@ -2,143 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11058377023
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 08:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0E8377025
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 08:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbhEHGl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 02:41:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43152 "EHLO
+        id S229864AbhEHGpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 02:45:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhEHGlz (ORCPT
+        with ESMTP id S229481AbhEHGpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 02:41:55 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304EAC061574;
-        Fri,  7 May 2021 23:40:53 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id i81so10873317oif.6;
-        Fri, 07 May 2021 23:40:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xX1is4SChHjrs4j+7h4A1M2iT4Pn7Fk4B4vamTtYWNg=;
-        b=Imz8wSLlAusRO73bwSesFa8LgAzl8kdck2RliwjGaTk0RPj7pTEoOUYeIcdnkzZwOA
-         SjBg9mby8dpHeUC0piMKcKEPha8K3oJ0UWysG7TjOaJFGohLsWmjv6awScr48i60MUxV
-         JwAd8n1Von368QV3ApB+8ocb+i7cMHe1d1dxrzs/0RJqNYa2b/oz7S0p9uT6+tJnm57K
-         ACmd3ZG1A+9Wdk3dt1pRH1imrojRAm2upBFOMsO/0vCPxRW3nHacS6YP8+AkiBPKCdum
-         bGTtAufpQekTCpTS4t1DPYBl8vlfau4YHt+4+GF+Xf6AKOLqkwwNLrosSSRz/4LYlpaG
-         jbuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xX1is4SChHjrs4j+7h4A1M2iT4Pn7Fk4B4vamTtYWNg=;
-        b=krWI/7VTJhq1nhuB2qMs4hn4L7VDdZOcMbQ4boAkvBSU217as9l3QUrs01z8vSQbOp
-         aBRZQbkhjFjAiBUR6RsWsEiWz+rA9u5smmaMQu/9wMSj32RJgSvlKmsdVRNNFrJxn3n/
-         Co6uh8rFh4nuL6I7Q90INk+xM5X8jdQdUXowhn5gIZHZdmMGgIUNFdxL801s9i4F2Epj
-         RiwcDo8sIDbTlSp0gqPmSeRH04fegXaFvMG7qGiQcNqMGBT9d/nro6SPTkMr7DG0qCC4
-         IRnMxxlJx4OFJ3BKU/+7oavA/XE8zRE8eCcF00cvIC2iovfIzS5NXZoU7aJCN6zWU+sq
-         Vh+Q==
-X-Gm-Message-State: AOAM5330OccK+m4gUjLxTnUM1Tx4r0V2OcN7mZYzLrgHIlIzPoUMNLOP
-        BSZTuAiue0fduldcOMHDsDsSVYtMTqrmEBjofVg=
-X-Google-Smtp-Source: ABdhPJwAyGss2cNFyssIhfj5RZk/SL9XXRRmz0u6ykjl2Fblq8Iiz/GgYCUu65PFCmus8x9Wk7PHoX5r1mvRSIO7EwA=
-X-Received: by 2002:aca:2813:: with SMTP id 19mr18254142oix.23.1620456052653;
- Fri, 07 May 2021 23:40:52 -0700 (PDT)
+        Sat, 8 May 2021 02:45:04 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E274AC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 23:44:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=FKusSNyoh+OEEXZ/+GdDEuHgJf+XToWFKizqQ6dxr6I=; b=qwiLB8zcU1fnQObKPH2oFfogwX
+        jCL8cczDVEXVL18DU1skVoSRDMqh7Pvlq3iBRVQh+rcR8vjAGKKvfb0HhU4w1RnFdu/b8nOowQ+he
+        v4Pz4o/RFdHRFFcglMXz/9M6EVuHXqPPFD9eNITOPvIXi4MIaoGn02Dpx7N3Jyp9DT5Q5qao14Cu2
+        2eK5NhGi5r3iivTLAjwgOW41MEsDqmSa+0uD6RqerV132rnB+Y4+7RcAZSHQ3IrFug1+/b7dZewmT
+        LFJ3Ql3BZQjG/dbAUUSp1OgByjgeKN6ghf1gb1AAugWSmhcPxdeYVsiGfY3mIdzkKH3P7s2rdHGsc
+        3IkH/5yw==;
+Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lfGgy-007PBr-Tb; Sat, 08 May 2021 06:44:01 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v2] STM: <linux/stm.h>: drop a duplicated word
+Date:   Fri,  7 May 2021 23:43:58 -0700
+Message-Id: <20210508064358.20335-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210506111531.21978-1-sergio.paracuellos@gmail.com>
- <20210506111531.21978-3-sergio.paracuellos@gmail.com> <20210507221200.GA2984128@robh.at.kernel.org>
-In-Reply-To: <20210507221200.GA2984128@robh.at.kernel.org>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Sat, 8 May 2021 08:40:41 +0200
-Message-ID: <CAMhs-H8MF+EpcutEN=maCNMReFXaTXejfScMK8N9cKz3oaM15w@mail.gmail.com>
-Subject: Re: [PATCH 2/5] dt-bindings: phy: mediatek,mt7621-pci-phy: add clock entries
-To:     Rob Herring <robh@kernel.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, linux-phy@lists.infradead.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        Greg KH <gregkh@linuxfoundation.org>,
-        NeilBrown <neil@brown.name>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Drop the repeated word "the" in a comment.
 
-On Sat, May 8, 2021 at 12:12 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Thu, May 06, 2021 at 01:15:28PM +0200, Sergio Paracuellos wrote:
-> > MT7621 SoC clock driver has already mainlined in
-> > 'commit 48df7a26f470 ("clk: ralink: add clock driver for mt7621 SoC")'
-> > Hence update schema with the add of the entries related to
-> > clock.
-> >
-> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > ---
-> >  .../bindings/phy/mediatek,mt7621-pci-phy.yaml        | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/phy/mediatek,mt7621-pci-phy.yaml b/Documentation/devicetree/bindings/phy/mediatek,mt7621-pci-phy.yaml
-> > index 0ccaded3f245..d8614ef8995c 100644
-> > --- a/Documentation/devicetree/bindings/phy/mediatek,mt7621-pci-phy.yaml
-> > +++ b/Documentation/devicetree/bindings/phy/mediatek,mt7621-pci-phy.yaml
-> > @@ -16,6 +16,14 @@ properties:
-> >    reg:
-> >      maxItems: 1
-> >
-> > +  clocks:
-> > +    maxItems: 1
-> > +    description:
-> > +      PHY reference clock. Must contain an entry in clock-names.
-> > +
-> > +  clock-names:
-> > +    const: sys_clk
->
-> You don't really need -names when there is only 1.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+v2: rebase, add more Cc:s
 
-Ok, I will drop this property then and
->
-> > +
-> >    "#phy-cells":
-> >      const: 1
-> >      description: selects if the phy is dual-ported
-> > @@ -23,6 +31,8 @@ properties:
-> >  required:
-> >    - compatible
-> >    - reg
-> > +  - clocks
-> > +  - clock-names
->
-> Technically, you can't add new properties and make them required as that
-> breaks the ABI. If that's okay here, explain it in the commit message.
+ include/linux/stm.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So until now no clock driver existed and things were not properly
-being done in driver code directly accessing registers to get the
-clock frequency to properly configure the phy. Since the new clock
-driver enters into the scene, make this mandatory force to update both
-driver and dtb, which is something pretty normal when upgrading the
-kind of devices using this SoC. So I think it should be finde to make
-this a requirement.
-
->
-> >    - "#phy-cells"
-> >
-> >  additionalProperties: false
-> > @@ -32,5 +42,7 @@ examples:
-> >      pcie0_phy: pcie-phy@1e149000 {
-> >        compatible = "mediatek,mt7621-pci-phy";
-> >        reg = <0x1e149000 0x0700>;
-> > +      clocks = <&sysc 0>;
-> > +      clock-names = "sys_clk";
-> >        #phy-cells = <1>;
-> >      };
-> > --
-> > 2.25.1
-> >
-
-Best regards,
-    Sergio Paracuellos
+--- linux-next-20210507.orig/include/linux/stm.h
++++ linux-next-20210507/include/linux/stm.h
+@@ -57,7 +57,7 @@ struct stm_device;
+  *
+  * Normally, an STM device will have a range of masters available to software
+  * and the rest being statically assigned to various hardware trace sources.
+- * The former is defined by the the range [@sw_start..@sw_end] of the device
++ * The former is defined by the range [@sw_start..@sw_end] of the device
+  * description. That is, the lowest master that can be allocated to software
+  * writers is @sw_start and data from this writer will appear is @sw_start
+  * master in the STP stream.
