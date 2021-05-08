@@ -2,104 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1681C377354
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 19:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5816E377358
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 19:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbhEHRFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 13:05:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36978 "EHLO
+        id S229605AbhEHROE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 13:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbhEHRFH (ORCPT
+        with ESMTP id S229544AbhEHROD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 13:05:07 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA01C061760;
-        Sat,  8 May 2021 10:04:04 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id m190so9827817pga.2;
-        Sat, 08 May 2021 10:04:04 -0700 (PDT)
+        Sat, 8 May 2021 13:14:03 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35069C061574
+        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 10:13:00 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id a4so12318528wrr.2
+        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 10:13:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JBRMa8mKQ62OMgm3Mexb2/wyLqKwT/ApM4zOBZB39Yc=;
-        b=dNlNvdUl7OspSLy79vEclZ4kN6t0at9zZHsCGnZ1Yh5ucsrh178wTSv1Ur8UbLisL+
-         126nasA8yTX3B38f4IntWfJPwoKGW2y5bTiCDXGysOpZmthAyD1cjLz1uSwE/LHxpgLc
-         /8BOgrT3ZFV1/TyuD4rLmUdVYUf+9x92YrgfD+yYlNs5tO3mMJSyEqv9osf+I6CSSSbf
-         k+T73ckW2SuX2Oz9LdI1SwqXHXww+MvBtLgd7Lb5MIsVKOtsOQv6zrwzuja1mfzy1oFC
-         0cwmPFtzvCRfPfPPgtmw6E3Swp9CVzQdMI5VtnZ/1Unbl5p+IOUmQQMyZhbg32Y17Hv+
-         B3Ww==
+        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language;
+        bh=MlJ15Eimaa/ohi2NqJkSgI1k0gxqgltxjJ+GZTJTu6g=;
+        b=xmttTTCD+L0FItd29ZapV6IJf/Uqh04ytF3bf7lr6tPZdkh56kJwEpB8VKYFYzYMFB
+         l+wl5C0xIYGM8wpww13Fo3YLL+wiEUsIt5m5uwUvF7KPP7sQtRXTGrCeNAwzFo/6Cihd
+         GdHh6mzMeVNbc8HglmfYdKnilsfjj7UdLy6FYmOb9qdbO/aLdd/0LN34FT9W8xIyIV66
+         eAKlOkkU2bqwsQklWoYFh4IPmkBHlJ71bel00pRi188RR8xp3+T4lLtpdqhxuV/LxcC0
+         CmTULppT9ubeXWKfSrBoNV9CrxzHPaaBeWFPP54o8CPgk7siz1jlw4i/qe2bmFtOsC2U
+         EdmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JBRMa8mKQ62OMgm3Mexb2/wyLqKwT/ApM4zOBZB39Yc=;
-        b=mlZuvGkAwx5kp9gIgcY7VQ/5U5fcsyBUvQRhnbfLmBrIMRasuR3RPlEF3aEMRnNmVW
-         Oh/kla7op8qxPLSLiVJPFNs/93Exm/21WBzuDhDM+5goTX9HPYQr1SBNYhyJAyOKcO/u
-         mq6Dy3X9QrdMbP38HGE9/N8L5hi6Sqnr4YJSp5gzz7fnmzgNVbxPnnOc8gVt7LMixdBH
-         pLgLCJwHJCvIkdKJpd5XDVQapSBjO4Om2kyCsMW/zfxWfhgb5jXWTucFlIE1inZ/2sYG
-         q+FWb9YRgOqwwxVUT/eVlvHTxwLFiOLm3XDbCd0DtZxFNbTysVXijgorysSVdscK2C1q
-         fZrQ==
-X-Gm-Message-State: AOAM531/ZL44Ehd2p3YDTPL35sPvjVmsXc9x4OAW5Ry5WMwfT9DibSzb
-        /Lz3DdpMYUXmg4AHQNjsOdVnXXDtCTFoqg==
-X-Google-Smtp-Source: ABdhPJyIJa0FLN63hYJAyi/EaMc92EspsxKhKA18IERo1UmSo/2Gx29v1rFx/gLtIY2oPWJRXOuZGw==
-X-Received: by 2002:a63:2542:: with SMTP id l63mr17050916pgl.128.1620493444127;
-        Sat, 08 May 2021 10:04:04 -0700 (PDT)
-Received: from localhost.localdomain ([2001:4490:4409:357e:ddc0:965d:2b13:8892])
-        by smtp.gmail.com with ESMTPSA id g190sm1674468pfb.60.2021.05.08.10.04.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 May 2021 10:04:03 -0700 (PDT)
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     b-liu@ti.com, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Saurav Girepunje <saurav.girepunje@gmail.com>
-Subject: [PATCH 2/2] usb: musb: Remove unused function argument dma, qh, offset, length
-Date:   Sat,  8 May 2021 22:33:17 +0530
-Message-Id: <20210508170317.24403-3-saurav.girepunje@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210508170317.24403-1-saurav.girepunje@gmail.com>
-References: <20210508170317.24403-1-saurav.girepunje@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language;
+        bh=MlJ15Eimaa/ohi2NqJkSgI1k0gxqgltxjJ+GZTJTu6g=;
+        b=ad62oC0aE5IkxAWnjcbNrpL1XvUrbUPBF7k5PpkbaNqKJzWIEQu20Hscae/ML7sbOM
+         PoWRaWIK48BaVht3QI/3vkQll9cBa3sGtCdDiIihibn770I76wpSR7Pkv3lMjmJlwMFS
+         JQEYWdtEiczjIsO6G7hnI6UGIQ9D0vCxPuHZgOKmTxdYQP8cAqiNDVCle6r21CopoClv
+         jsknyEZWBHOZMn9ZoOhw2iUk6PwuZyitnTDh1zUa//Rf1m9Ddu6LYbFzQonOmzmfX+EQ
+         Jtrw/RR8WhlQRchxESy3EwSjRrZCix57+F2cKkpNJcqDIfxjgSV9BPvrUD6vISnwowD2
+         etJA==
+X-Gm-Message-State: AOAM531xrr4VxJD9txeM0eC+Kn7zMQcCjp58Q/j4D3K689edvG792JgR
+        j/88Miurk/FQTdcXLMxx5OA5Xg==
+X-Google-Smtp-Source: ABdhPJzzL+54gpEljBFqKWMNVQUR7Bcsh+SI5YM5rBoMgYAfW/f3HmQl9FsUA5Up9pIXBPb490a/jg==
+X-Received: by 2002:a5d:4304:: with SMTP id h4mr20425448wrq.210.1620493978405;
+        Sat, 08 May 2021 10:12:58 -0700 (PDT)
+Received: from localhost.localdomain (p200300d99735cc000203a406ef8aeb48.dip0.t-ipconnect.de. [2003:d9:9735:cc00:203:a406:ef8a:eb48])
+        by smtp.googlemail.com with ESMTPSA id x4sm18214270wmj.17.2021.05.08.10.12.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 08 May 2021 10:12:57 -0700 (PDT)
+Subject: Re: [PATCH] ipc/mqueue: Avoid relying on a stack reference past its
+ expiry
+To:     Varad Gautam <varad.gautam@suse.com>, linux-kernel@vger.kernel.org
+Cc:     Matthias von Faber <matthias.vonfaber@aox-tech.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Davidlohr Bueso <dbueso@suse.de>
+References: <20210504155534.17270-1-varad.gautam@suse.com>
+From:   Manfred Spraul <manfred@colorfullife.com>
+Message-ID: <b693cd00-0cd4-3d4b-04c1-1c007f1c26d3@colorfullife.com>
+Date:   Sat, 8 May 2021 19:12:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210504155534.17270-1-varad.gautam@suse.com>
+Content-Type: multipart/mixed;
+ boundary="------------34D77433C2BE168C9815A1F9"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused function argument dma, qh, offset, length from
-musb_tx_dma_set_mode_cppi_tusb() in musb_host.c
+This is a multi-part message in MIME format.
+--------------34D77433C2BE168C9815A1F9
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+Hi Varad,
+
+On 5/4/21 5:55 PM, Varad Gautam wrote:
+> do_mq_timedsend::__pipelined_op() should not dereference `this` after
+> setting STATE_READY, as the receiver counterpart is now free to return.
+> Change __pipelined_op to call wake_q_add_safe on the receiver's
+> task_struct returned by get_task_struct, instead of dereferencing
+> `this` which sits on the receiver's stack.
+Correct. I was so concentrated on the risks of reordered memory that I 
+have overlooked the simple bug.
+> Fixes: c5b2cbdbdac563 ("ipc/mqueue.c: update/document memory barriers")
+Actually, sem.c and msg.c contain the same bug. Thus all three must be 
+fixed.
+> Signed-off-by: Varad Gautam <varad.gautam@suse.com>
+> Reported-by: Matthias von Faber <matthias.vonfaber@aox-tech.de>
+> Cc: Christian Brauner <christian.brauner@ubuntu.com>
+> Cc: Oleg Nesterov <oleg@redhat.com>
+> Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+> Cc: Manfred Spraul <manfred@colorfullife.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Davidlohr Bueso <dbueso@suse.de>
+>
+> ---
+>   ipc/mqueue.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/ipc/mqueue.c b/ipc/mqueue.c
+> index 8031464ed4ae2..8f78057c6be53 100644
+> --- a/ipc/mqueue.c
+> +++ b/ipc/mqueue.c
+> @@ -1004,12 +1004,14 @@ static inline void __pipelined_op(struct wake_q_head *wake_q,
+>   				  struct mqueue_inode_info *info,
+>   				  struct ext_wait_queue *this)
+>   {
+> +	struct task_struct *t;
+> +
+>   	list_del(&this->list);
+> -	get_task_struct(this->task);
+> +	t = get_task_struct(this->task);
+>   
+>   	/* see MQ_BARRIER for purpose/pairing */
+>   	smp_store_release(&this->state, STATE_READY);
+> -	wake_q_add_safe(wake_q, this->task);
+> +	wake_q_add_safe(wake_q, t);
+>   }
+
+The change fixes the issue, but I would prefer to use t = this->task 
+instead of using the return value of get_task_struct():
+Then all wake_q_add_safe() users are identical.
+
+Ok for you?
+
+Slightly tested patch attached.
+
+--
+
+     Manfred
+
+
+--------------34D77433C2BE168C9815A1F9
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-ipc-sem.c-mqueue.c-msg.c-Fix-incorrect-wake_q_add_sa.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ipc-sem.c-mqueue.c-msg.c-Fix-incorrect-wake_q_add_sa.pa";
+ filename*1="tch"
+
+From 06f91b4bbc440e9509c85acb7be1b15388b7bc0f Mon Sep 17 00:00:00 2001
+From: Manfred Spraul <manfred@colorfullife.com>
+Date: Sat, 8 May 2021 18:41:30 +0200
+Subject: [PATCH] ipc/sem.c, mqueue.c, msg.c: Fix incorrect wake_q_add_safe()
+
+The wakeup code used by ipc contains a potential use-after-free:
+When modifying the code to use wake_q_add_safe(), it was
+forgotten to transfer the task struct pointer into a local
+variable before the smp_store_release().
+
+Solution: Add local variables to the affected functions.
+
+Result: ipc is now using the same approach as kernel/futex.c
+and kernel/locking/rwsem.c.
+
+Note: No need to use READ_ONCE(), as smp_store_release() contains
+a barrier(), thus the compiler cannot reread ptr->task.
+
+Signed-off-by: Manfred Spraul <manfred@colorfullife.com>
+Fixes: c5b2cbdbdac563 ("ipc/mqueue.c: update/document memory barriers")
+Fixes: 8116b54e7e23ef ("ipc/sem.c: document and update memory barriers")
+Fixes: 0d97a82ba830d8 ("ipc/msg.c: update and document memory barriers")
+Reported-by: Matthias von Faber <matthias.vonfaber@aox-tech.de>
+Cc: Varad Gautam <varad.gautam@suse.com>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Manfred Spraul <manfred@colorfullife.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Davidlohr Bueso <dbueso@suse.de>
 ---
- drivers/usb/musb/musb_host.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ ipc/mqueue.c | 12 +++++++++---
+ ipc/msg.c    |  6 ++++--
+ ipc/sem.c    |  6 ++++--
+ 3 files changed, 17 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/usb/musb/musb_host.c b/drivers/usb/musb/musb_host.c
-index 14d9b366e605..a4c185747358 100644
---- a/drivers/usb/musb/musb_host.c
-+++ b/drivers/usb/musb/musb_host.c
-@@ -601,12 +601,8 @@ static void musb_tx_dma_set_mode_mentor(struct musb_hw_ep *hw_ep,
- 	musb_writew(epio, MUSB_TXCSR, csr);
+diff --git a/ipc/mqueue.c b/ipc/mqueue.c
+index 8031464ed4ae..838c4f24a337 100644
+--- a/ipc/mqueue.c
++++ b/ipc/mqueue.c
+@@ -78,7 +78,11 @@ struct posix_msg_tree_node {
+  * MQ_BARRIER:
+  * To achieve proper release/acquire memory barrier pairing, the state is set to
+  * STATE_READY with smp_store_release(), and it is read with READ_ONCE followed
+- * by smp_acquire__after_ctrl_dep(). In addition, wake_q_add_safe() is used.
++ * by smp_acquire__after_ctrl_dep(). Immediately after the smp_store_release(),
++ * the struct ext_wait_queue can go out of scope. Thus the task struct pointer
++ * is copied into a local variable. The wakeup is performed using
++ * wake_q_add_safe().
++ *
+  *
+  * This prevents the following races:
+  *
+@@ -1004,12 +1008,14 @@ static inline void __pipelined_op(struct wake_q_head *wake_q,
+ 				  struct mqueue_inode_info *info,
+ 				  struct ext_wait_queue *this)
+ {
++	struct task_struct *task = this->task;
++
+ 	list_del(&this->list);
+-	get_task_struct(this->task);
++	get_task_struct(task);
+ 
+ 	/* see MQ_BARRIER for purpose/pairing */
+ 	smp_store_release(&this->state, STATE_READY);
+-	wake_q_add_safe(wake_q, this->task);
++	wake_q_add_safe(wake_q, task);
  }
  
--static void musb_tx_dma_set_mode_cppi_tusb(struct dma_controller *dma,
--					   struct musb_hw_ep *hw_ep,
--					   struct musb_qh *qh,
-+static void musb_tx_dma_set_mode_cppi_tusb(struct musb_hw_ep *hw_ep,
- 					   struct urb *urb,
--					   u32 offset,
--					   u32 *length,
- 					   u8 *mode)
- {
- 	struct dma_channel *channel = hw_ep->tx_channel;
-@@ -632,8 +628,7 @@ static bool musb_tx_dma_program(struct dma_controller *dma,
- 		musb_tx_dma_set_mode_mentor(hw_ep, qh,
- 					    &length, &mode);
- 	else if (is_cppi_enabled(hw_ep->musb) || tusb_dma_omap(hw_ep->musb))
--		musb_tx_dma_set_mode_cppi_tusb(dma, hw_ep, qh, urb, offset,
--					       &length, &mode);
-+		musb_tx_dma_set_mode_cppi_tusb(hw_ep, urb, &mode);
- 	else
- 		return false;
+ /* pipelined_send() - send a message directly to the task waiting in
+diff --git a/ipc/msg.c b/ipc/msg.c
+index acd1bc7af55a..d273482b71ea 100644
+--- a/ipc/msg.c
++++ b/ipc/msg.c
+@@ -251,11 +251,13 @@ static void expunge_all(struct msg_queue *msq, int res,
+ 	struct msg_receiver *msr, *t;
  
+ 	list_for_each_entry_safe(msr, t, &msq->q_receivers, r_list) {
+-		get_task_struct(msr->r_tsk);
++		struct task_struct *task = msr->r_tsk;
++
++		get_task_struct(task);
+ 
+ 		/* see MSG_BARRIER for purpose/pairing */
+ 		smp_store_release(&msr->r_msg, ERR_PTR(res));
+-		wake_q_add_safe(wake_q, msr->r_tsk);
++		wake_q_add_safe(wake_q, task);
+ 	}
+ }
+ 
+diff --git a/ipc/sem.c b/ipc/sem.c
+index e0ec239680cb..04700a823e79 100644
+--- a/ipc/sem.c
++++ b/ipc/sem.c
+@@ -784,12 +784,14 @@ static int perform_atomic_semop(struct sem_array *sma, struct sem_queue *q)
+ static inline void wake_up_sem_queue_prepare(struct sem_queue *q, int error,
+ 					     struct wake_q_head *wake_q)
+ {
+-	get_task_struct(q->sleeper);
++	struct task_struct *task = q->sleeper;
++
++	get_task_struct(task);
+ 
+ 	/* see SEM_BARRIER_2 for purpose/pairing */
+ 	smp_store_release(&q->status, error);
+ 
+-	wake_q_add_safe(wake_q, q->sleeper);
++	wake_q_add_safe(wake_q, task);
+ }
+ 
+ static void unlink_queue(struct sem_array *sma, struct sem_queue *q)
 -- 
-2.25.1
+2.30.2
 
+
+--------------34D77433C2BE168C9815A1F9--
