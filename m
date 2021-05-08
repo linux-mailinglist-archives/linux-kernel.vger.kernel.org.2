@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101B13772CB
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 17:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B50F53772D0
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 17:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbhEHPv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 11:51:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229657AbhEHPvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 11:51:24 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74869610C9;
-        Sat,  8 May 2021 15:50:21 +0000 (UTC)
-Date:   Sat, 8 May 2021 16:51:19 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v2] iio: bme680_i2c: Remove ACPI support
-Message-ID: <20210508165119.69ca980c@jic23-huawei>
-In-Reply-To: <20210506034332.752263-1-linux@roeck-us.net>
-References: <20210506034332.752263-1-linux@roeck-us.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229675AbhEHPxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 11:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhEHPx2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 11:53:28 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB3BC061760;
+        Sat,  8 May 2021 08:52:12 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id gx21-20020a17090b1255b02901589d39576eso693020pjb.0;
+        Sat, 08 May 2021 08:52:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IfLRKS9WxhrfJ7ArtUDmOZDluJrvD3dt4wUAIZFo2pU=;
+        b=kAdMsz7O2auZAQfmEnd2c4os5ou8Qqtk5ZuRctLXWvXfNCIPtchYlzczN52WzW+pHw
+         1/0yjiGYDqz/380JA+isihM/q+5gKbfxe3Z0ej1IsWzXOwPs72x1IjxCDh6tunhRMOxS
+         fEfQ9XrpvAOpLl9PZoj/T730R1Vg9dQg3kMIsdBbwJfA7UXYyEheIIZiN/z6d24CYWMb
+         9QJktRd+9Ps1t0iWVShoyD4lfZFzg81xu3aYS5hz46ef+Ze4lgB5ZM31J4nQEcNKjOj1
+         x6auBc6lwkux4f+/TLG+W7FUZvTEsU6UeGhReIC4Y7pY4D/jMF21os0EWNaAITMTt6Z3
+         oqkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IfLRKS9WxhrfJ7ArtUDmOZDluJrvD3dt4wUAIZFo2pU=;
+        b=C/SKEQ/ym7pqCZRbuLy2ZIoaUbDkVmwZIyh2nTSGLEe6ZVHBnwj5Ib3tft5NlbbFJ8
+         kzmlrE5d1kPyBbA2tFpSQnkR7VxuHpyt7js449ZTb7fCGam9IFhvbQ4n3wJosqQg6Pov
+         eIMiObQV+xn7ByE0uVtoebU8bawomGfkrTwA8T/avPw7W0JMAqZUzRN3DUSBu93HbFX7
+         I3PMG/ctXisEzeRwTDIB1Y1a1YP94AqBdHnfSnf11EAJLYr7RJavm06uxrtX5dwdmxcx
+         nsWlE7EmWxFIN13m722ZzzLYslRvGcoKkMQFXl7GCxcKZ6FgVowLZz3FVqo8xQmgFba0
+         yv0A==
+X-Gm-Message-State: AOAM533jbnKGF8RPJHfiZ+g4zTAhFY7B0RQwqsOt+gINyPUkM9LLd4XW
+        oUB7+qk7zjqAER7yX+DhOnGVxg8G8wE=
+X-Google-Smtp-Source: ABdhPJx1sSW0kSc7oWp1+s+LoUTkLYqaWhk3j0UNgud/X2hCXnOz7PwN/wUnhSMzsJfqPpJaen9NNg==
+X-Received: by 2002:a17:902:ecce:b029:ee:cf77:3b22 with SMTP id a14-20020a170902ecceb02900eecf773b22mr15664202plh.46.1620489131209;
+        Sat, 08 May 2021 08:52:11 -0700 (PDT)
+Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id p9sm15435698pjb.32.2021.05.08.08.52.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 08 May 2021 08:52:10 -0700 (PDT)
+Subject: Re: [RFC PATCH net-next v4 26/28] net: dsa: permit driver to provide
+ custom phy_mii_mask for slave mdiobus
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210508002920.19945-1-ansuelsmth@gmail.com>
+ <20210508002920.19945-26-ansuelsmth@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <086f92b8-8c91-f618-f5cb-9df18f890f13@gmail.com>
+Date:   Sat, 8 May 2021 08:52:03 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210508002920.19945-26-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  5 May 2021 20:43:32 -0700
-Guenter Roeck <linux@roeck-us.net> wrote:
 
-> With CONFIG_ACPI=n and -Werror, 0-day reports:
-> 
-> drivers/iio/chemical/bme680_i2c.c:46:36: error:
-> 	'bme680_acpi_match' defined but not used
-> 
-> Apparently BME0680 is not a valid ACPI ID. Remove it and with it
-> ACPI support from the bme680_i2c driver.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Message tweaked to reflect PRP0001 route which should work just fine
-with ACPI and this driver.
 
-Jonathan
+On 5/7/2021 5:29 PM, Ansuel Smith wrote:
+> Some switch doesn't have a 1:1 map phy to port. Permit driver to provide
+> a custom phy_mii_mask so the internal mdiobus can correctly use the
+> provided phy reg as it can differ from the port reg.
+> The qca8k driver is provided as a first user of this function.
 
-> ---
-> v2: Instead of making bme680_acpi_match conditional,
->     remove ACPI support entirely since the ACPI ID is
->     not valid.
-> 
->  drivers/iio/chemical/bme680_i2c.c | 8 --------
->  1 file changed, 8 deletions(-)
-> 
-> diff --git a/drivers/iio/chemical/bme680_i2c.c b/drivers/iio/chemical/bme680_i2c.c
-> index 29c0dfa4702b..74cf89c82c0a 100644
-> --- a/drivers/iio/chemical/bme680_i2c.c
-> +++ b/drivers/iio/chemical/bme680_i2c.c
-> @@ -11,7 +11,6 @@
->   * Note: SDO pin cannot be left floating otherwise I2C address
->   *	 will be undefined.
->   */
-> -#include <linux/acpi.h>
->  #include <linux/i2c.h>
->  #include <linux/module.h>
->  #include <linux/regmap.h>
-> @@ -42,12 +41,6 @@ static const struct i2c_device_id bme680_i2c_id[] = {
->  };
->  MODULE_DEVICE_TABLE(i2c, bme680_i2c_id);
->  
-> -static const struct acpi_device_id bme680_acpi_match[] = {
-> -	{"BME0680", 0},
-> -	{},
-> -};
-> -MODULE_DEVICE_TABLE(acpi, bme680_acpi_match);
-> -
->  static const struct of_device_id bme680_of_i2c_match[] = {
->  	{ .compatible = "bosch,bme680", },
->  	{},
-> @@ -57,7 +50,6 @@ MODULE_DEVICE_TABLE(of, bme680_of_i2c_match);
->  static struct i2c_driver bme680_i2c_driver = {
->  	.driver = {
->  		.name			= "bme680_i2c",
-> -		.acpi_match_table       = ACPI_PTR(bme680_acpi_match),
->  		.of_match_table		= bme680_of_i2c_match,
->  	},
->  	.probe = bme680_i2c_probe,
-
+Why not have qca8k be in charge of allocating its internal MDIO bus like
+what mv88e6xxx or bcm_sf2 do? That would allow you to do all sorts of
+customization there and you could skip having patches 23 and 24.
+-- 
+Florian
