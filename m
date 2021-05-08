@@ -2,88 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0941F3772F1
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 18:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E0E3772F4
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 18:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229664AbhEHQ37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 12:29:59 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:35130 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhEHQ36 (ORCPT
+        id S229741AbhEHQab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 12:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhEHQa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 12:29:58 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 148GSnX2045349;
-        Sat, 8 May 2021 11:28:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620491329;
-        bh=R4AEAR4Q2jlh2pQrn3wkNPw0QXvndpxnxqagfXAENWo=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=Bqib1FuywtXw9a0/UAE3n19/DZNySJpLTzCJibh/qgkPL3BBTFvSB0UpX3XRJxEeC
-         67JJ4rtYUWnafTQ/xZg3Cg0XcQ1K8wCjfCc9YtS30WqK8l3ODbHYS3J6UpWbWJFmjI
-         hBtHFK4xKnZN4PBcPz3HTm+x1UQ4A5JCndw+lGJg=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 148GSnEi050200
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 8 May 2021 11:28:49 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 8 May
- 2021 11:28:48 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Sat, 8 May 2021 11:28:49 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 148GSnQc122781;
-        Sat, 8 May 2021 11:28:49 -0500
-Date:   Sat, 8 May 2021 11:28:49 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2] platform_data: emif_plat.h: drop a duplicated word
-Message-ID: <20210508162849.zxaaxiadaxvxi66r@empirical>
-References: <20210508065557.22224-1-rdunlap@infradead.org>
+        Sat, 8 May 2021 12:30:27 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B36C061574;
+        Sat,  8 May 2021 09:29:25 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id b11-20020a7bc24b0000b0290148da0694ffso8770245wmj.2;
+        Sat, 08 May 2021 09:29:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bVRDKdENJWxwkNST3ljV2kIRILcgjQXziV66z6KKgCY=;
+        b=ZiI/JOTvEn+ecPiFOfso3KJEoQOEah2HHuaCQ/ocWmQA0WS4aGN/8Ta+Da0l9C+zid
+         u7hKI57zWP+miStmYdLrtHkszi5lzWOjsKGODIVAZ3fUF71FFFXEU6O4uAryxTVAmFkV
+         RiOP6cQsQ7JEZ6ulT93eBEfWP5iXGHHoDvhiAfQU95LiHv/TL+GcQG3ud3vnSFXxz3gv
+         k1Q3Ul3nwdcoJXrg9zEMwWRE+fJZeXLWM1eVOSbBnck6nmuxEaHBNYSbuUAYPtyXof+j
+         azK60STmJx6S66G4XlGO5KBc/yrLdPKn6RNS8nNKdNTIl52+dR1F9u80b8o5RN90PLND
+         YPyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bVRDKdENJWxwkNST3ljV2kIRILcgjQXziV66z6KKgCY=;
+        b=GfxNK+IRZ/QK8FcpxnLfrF40cx7Fvb37h4MO4/HN+Xr3Tp3rgRbxOISE972pqdArGH
+         ZVZ7rBPVGEmUfwaWcibuANWGb/Vs3NVP2O9FYFYnYz5AxLKpHlV5BKapWI06X5QiAxaP
+         03cca1+MtteHoxdjzOnb3tL3qmml+4/nvlWdv54wKOZdbsFg8psMUiR7ZozaInAFJB2y
+         RjWQdW3LwT2ZFCx98Dm48t/NKbQCF/Y5GY+ryYhefqBpLXf5Pjola2BydMRzrb1CpsPk
+         tBdwYshdCBcta7W8Oc7DSc2bqbXj3R7W2iIAF36l+LCPzit0/P1nt3rukm+1J/QuJ/Zt
+         KR3A==
+X-Gm-Message-State: AOAM5312P4+IsMtpc8/6M+dswi3XXaDelu7CyNwU2ASqO2xZ44ky2bah
+        +S6aQThwJFW9gBxU6X9LfvtqzoFxqF4Eeg==
+X-Google-Smtp-Source: ABdhPJyve22KTNe+xKecFcC1Wj1YJLJ4a5qZ3nPGVsQdQkAh/HS6W7HyK4pDYuHNk82evR1pl0gihQ==
+X-Received: by 2002:a1c:1f8d:: with SMTP id f135mr13689499wmf.109.1620491363779;
+        Sat, 08 May 2021 09:29:23 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
+        by smtp.gmail.com with ESMTPSA id k6sm17802377wmi.42.2021.05.08.09.29.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 May 2021 09:29:23 -0700 (PDT)
+Date:   Sat, 8 May 2021 18:29:21 +0200
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH net-next v4 26/28] net: dsa: permit driver to provide
+ custom phy_mii_mask for slave mdiobus
+Message-ID: <YJa8YYSA21gUYhIl@Ansuel-xps.localdomain>
+References: <20210508002920.19945-1-ansuelsmth@gmail.com>
+ <20210508002920.19945-26-ansuelsmth@gmail.com>
+ <086f92b8-8c91-f618-f5cb-9df18f890f13@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210508065557.22224-1-rdunlap@infradead.org>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <086f92b8-8c91-f618-f5cb-9df18f890f13@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23:55-20210507, Randy Dunlap wrote:
-> Drop the repeated word "if" in a comment.
+On Sat, May 08, 2021 at 08:52:03AM -0700, Florian Fainelli wrote:
 > 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Nishanth Menon <nm@ti.com>
-> Cc: Santosh Shilimkar <ssantosh@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> ---
-> v2: Drop bad Cc: Aneesh V <aneesh@ti.com>;
->     Add Cc: Andrew Morton
 > 
->  include/linux/platform_data/emif_plat.h |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On 5/7/2021 5:29 PM, Ansuel Smith wrote:
+> > Some switch doesn't have a 1:1 map phy to port. Permit driver to provide
+> > a custom phy_mii_mask so the internal mdiobus can correctly use the
+> > provided phy reg as it can differ from the port reg.
+> > The qca8k driver is provided as a first user of this function.
 > 
-> --- linux-next-20210507.orig/include/linux/platform_data/emif_plat.h
-> +++ linux-next-20210507/include/linux/platform_data/emif_plat.h
-> @@ -98,7 +98,7 @@ struct emif_custom_configs {
->   *			as type, bus width, density etc
->   * @timings:		Timings information from device datasheet passed
->   *			as an array of 'struct lpddr2_timings'. Can be NULL
-> - *			if if default timings are ok
-> + *			if default timings are ok
+> Why not have qca8k be in charge of allocating its internal MDIO bus like
+> what mv88e6xxx or bcm_sf2 do? That would allow you to do all sorts of
+> customization there and you could skip having patches 23 and 24.
 
-LGTM.
+Oh ok, I will implement the internal MDIO bus directly in the qca8k
+driver. Was thinking... Should I keep the extra mdio node and move the
+documentation to qca8k or should I handle all of that internally?
+To me it looks cleaner the direct definition in the devicetree than the 
+port_to_phy function in the driver but as you can see extra checks are
+required to handle the new implementation and still supports the old
+one.
 
-Reviewed-by: Nishanth Menon <nm@ti.com>
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
