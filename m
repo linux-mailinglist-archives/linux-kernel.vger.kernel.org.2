@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F903771C8
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 14:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CBC3771D7
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 14:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhEHMie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 08:38:34 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:51269 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230326AbhEHMi2 (ORCPT
+        id S231251AbhEHMjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 08:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231211AbhEHMiz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 08:38:28 -0400
-Received: from localhost.localdomain ([37.4.249.151]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis)
- id 1MHWvH-1lk5JZ1wgb-00DW9t; Sat, 08 May 2021 14:37:20 +0200
-From:   Stefan Wahren <stefan.wahren@i2se.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stefan Wahren <stefan.wahren@i2se.com>
-Subject: [PATCH 3/3 net-next] net: qca_spi: Introduce stat about bad signature
-Date:   Sat,  8 May 2021 14:36:35 +0200
-Message-Id: <1620477395-12740-4-git-send-email-stefan.wahren@i2se.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620477395-12740-1-git-send-email-stefan.wahren@i2se.com>
-References: <1620477395-12740-1-git-send-email-stefan.wahren@i2se.com>
-X-Provags-ID: V03:K1:hTAdZudLB0O1qGOMwLsXCKisf+g+CQ4SWZ7xf+WmX4m1+2zAg2x
- 4Sne7TOergYWAb2dwZ9BhK2et90Rqq/weS1y5NaWLEKsRA2FJMxN/B3cIfbFrXjwwc7P4V7
- +6jAY2/8VaA8gpYKALUlWRrVtBC67xfOwrPy+WLXF0hYpPNjaJf/7mQYg7man4E6dPhVGXW
- 8+lPPo8HNWBCOVZRvOV0A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:prqYyrZ+S5M=:wxmBbhxfwX4G3CXoZeCxkN
- pJ71xzZ4+Hh+TOuCRYk29A2iFfsMdyOhx5pn0m+5tx2MM8rf8AUe3f+ML56wSO2teqGVm7ShR
- KHlqiDf6D7I7nyeLMweQuplPJR7TZj/mBDlCNjmJB0pY332vmNxn8rHTiqXw6eObZrEJZFvPk
- trBP7mka1tm3jXooDP5NbuRMgSNSJqo2X3nHS7P7feVmoiwitZFJmHVnnDVCpUNDd+ZVnzIWj
- PJcz0giMezzR+CRQhnkm0fla7ltNyGjnQakuINOm4F8s8ljHwWNsy4WvHKe1D8CkkXudgnvWb
- Ls0rTt3l3o+wo0xR6bVsHPxiAn02YUFgfhzEV+GLKLmhXeJh/eQfO0zYJT+96szh5h4f4ktZW
- k7SiiRHh0mqpP6q8890DbBTzpOZYN0bn6MASt7wucqbUbPOSZj3P+RuJK+yCFUfWZ0fRawXiV
- iUrIFLF2MbLaqzX1nCTmKRBGYMso9xh9vTOX65+oLO/hJXE7+DqXWVMKG2aoKnYX+Y+QCkhsm
- s4pOMW3xoCdGS9q4KUn8ko=
+        Sat, 8 May 2021 08:38:55 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52299C061756;
+        Sat,  8 May 2021 05:37:54 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id n25so13397656edr.5;
+        Sat, 08 May 2021 05:37:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=V6aLRfOO1B1ohRWCDcHhmocgBoD4D8Oa0X2F/UWU3rg=;
+        b=e6vYdC/0tscyHByuE3PCugLPodyufEVoohEe8tWabjuvxLsrJOlZJsdxxstc8Fgx3p
+         5GGkqGNvbtwI18/vU7HcmnX8+aQa8phYb7zLsD0e9CNZzhGdTm7jnJkAdm+7d/+Kbkm7
+         XtObigQmeel0O1v23gc7yfmM0nkJXV63U0XNdQeW8z6c0Gt20haFrbgjGDH/xDQO9oN6
+         u7J5QD4JWa2iqVdziUsTfyI6031Mq90RNt6cxudV4sSOqi7TSSIYTeMcveq+E7KX+qsz
+         3uYOkFS2nPWrzluwDaYz4xSOEj2fhsKahB3jV/cTBT5a5c+rFA3QqoGWMPj91eYGO2qV
+         4COg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=V6aLRfOO1B1ohRWCDcHhmocgBoD4D8Oa0X2F/UWU3rg=;
+        b=F+fgIhokiwvfVZJi3hmuUmaXkbGUoyQwhcMx92JpkryTP1CoHi6CtbMWMW1KHXvTGu
+         WFX3ojYRF2LKTXpYyjMDhTmKmHNJFRCqHT7SO+9miwI0GPON8lqjLiSO2GbIEBZDcQv4
+         ljAVmwF+44R9JSdjRUsxfYx5M1atz0OHe4zMr8BSS9gJlituoh0FMDAnHeuVOSHXY/8/
+         r1CAsYhQR2H11oYSzoKowb0exNLNKA2zlnL6f83yW69bdgp9MAO44GAuXJiJkTCg8QLJ
+         pZwOkzMNpdZoLrSbvrpbt/UD8CXEuxPLY9fHiuQ7+hte4qNxhGeg687/7RduXkSZkfKb
+         fv1g==
+X-Gm-Message-State: AOAM531fDCXllD4Tnj0y5es+qJ9WzbHogbPKPzlheScdTp8EQ6ncicPK
+        Ulcy+44EKKeVPNHIkdierhxbQC4jUqGNlg==
+X-Google-Smtp-Source: ABdhPJyF86hB2/UGwESN0ylhg/ap4N2xW8De3BKKYA3uoVLX4r1aWDcy9BGzrUVY5z+4mnfQmyUndg==
+X-Received: by 2002:a50:9990:: with SMTP id m16mr5042430edb.292.1620477472996;
+        Sat, 08 May 2021 05:37:52 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id q25sm6262618edt.51.2021.05.08.05.37.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 08 May 2021 05:37:52 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        cl@rock-chips.com, linux-gpio@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/4] convert grf.txt to YAML
+Date:   Sat,  8 May 2021 14:37:39 +0200
+Message-Id: <20210508123743.18128-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to identify significant signature issues add a new stat counter,
-which increases on bad signature values that causes a sync loss.
+Changed V3:
+  remove select
+  change unevaluatedProperties
+  add separate schemas for each 'if' subset
 
-Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
----
- drivers/net/ethernet/qualcomm/qca_debug.c | 1 +
- drivers/net/ethernet/qualcomm/qca_spi.c   | 4 ++++
- drivers/net/ethernet/qualcomm/qca_spi.h   | 1 +
- 3 files changed, 6 insertions(+)
+Changed V2:
+  add rockchip,rk3328-grf-gpio.yaml
+  rename grf-gpio nodename
 
-diff --git a/drivers/net/ethernet/qualcomm/qca_debug.c b/drivers/net/ethernet/qualcomm/qca_debug.c
-index 702aa21..d59fff2 100644
---- a/drivers/net/ethernet/qualcomm/qca_debug.c
-+++ b/drivers/net/ethernet/qualcomm/qca_debug.c
-@@ -62,6 +62,7 @@ static const char qcaspi_gstrings_stats[][ETH_GSTRING_LEN] = {
- 	"SPI errors",
- 	"Write verify errors",
- 	"Buffer available errors",
-+	"Bad signature",
- };
- 
- #ifdef CONFIG_DEBUG_FS
-diff --git a/drivers/net/ethernet/qualcomm/qca_spi.c b/drivers/net/ethernet/qualcomm/qca_spi.c
-index 0937ceb..79fe3ec 100644
---- a/drivers/net/ethernet/qualcomm/qca_spi.c
-+++ b/drivers/net/ethernet/qualcomm/qca_spi.c
-@@ -504,6 +504,9 @@ qcaspi_qca7k_sync(struct qcaspi *qca, int event)
- 		qcaspi_read_register(qca, SPI_REG_SIGNATURE, &signature);
- 		qcaspi_read_register(qca, SPI_REG_SIGNATURE, &signature);
- 		if (signature != QCASPI_GOOD_SIGNATURE) {
-+			if (qca->sync == QCASPI_SYNC_READY)
-+				qca->stats.bad_signature++;
-+
- 			qca->sync = QCASPI_SYNC_UNKNOWN;
- 			netdev_dbg(qca->net_dev, "sync: got CPU on, but signature was invalid, restart\n");
- 			return;
-@@ -531,6 +534,7 @@ qcaspi_qca7k_sync(struct qcaspi *qca, int event)
- 
- 		if (signature != QCASPI_GOOD_SIGNATURE) {
- 			qca->sync = QCASPI_SYNC_UNKNOWN;
-+			qca->stats.bad_signature++;
- 			netdev_dbg(qca->net_dev, "sync: bad signature, restart\n");
- 			/* don't reset right away */
- 			return;
-diff --git a/drivers/net/ethernet/qualcomm/qca_spi.h b/drivers/net/ethernet/qualcomm/qca_spi.h
-index d13a67e..3067356 100644
---- a/drivers/net/ethernet/qualcomm/qca_spi.h
-+++ b/drivers/net/ethernet/qualcomm/qca_spi.h
-@@ -75,6 +75,7 @@ struct qcaspi_stats {
- 	u64 spi_err;
- 	u64 write_verify_failed;
- 	u64 buf_avail_err;
-+	u64 bad_signature;
- };
- 
- struct qcaspi {
+Johan Jonker (4):
+  dt-bindings: gpio: convert rk3328-grf-gpio.txt to YAML
+  dt-bindings: soc: rockchip: convert grf.txt to YAML
+  ARM: dts: rockchip: add grf register compatible for rk3066/rk3188
+  arm64: dts: rename grf-gpio nodename in rk3328.dtsi
+
+ .../bindings/gpio/rockchip,rk3328-grf-gpio.txt     |  32 ---
+ .../bindings/gpio/rockchip,rk3328-grf-gpio.yaml    |  51 ++++
+ .../devicetree/bindings/soc/rockchip/grf.txt       |  61 -----
+ .../devicetree/bindings/soc/rockchip/grf.yaml      | 262 +++++++++++++++++++++
+ arch/arm/boot/dts/rk3xxx.dtsi                      |   2 +-
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi           |   2 +-
+ 6 files changed, 315 insertions(+), 95 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/gpio/rockchip,rk3328-grf-gpio.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/rockchip,rk3328-grf-gpio.yaml
+ delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.txt
+ create mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+
 -- 
-2.7.4
+2.11.0
 
