@@ -2,111 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF146376FB2
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 07:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F187C376FA9
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 07:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhEHFJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 01:09:54 -0400
-Received: from mga05.intel.com ([192.55.52.43]:44649 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229841AbhEHFJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 01:09:52 -0400
-IronPort-SDR: PV/luzZuE82VIC9b1M9LifUL7iKLG6C5D846ri5UNlEBF/+7VtdzUPdCRZBejh38UV83ns7JAu
- jZpiswjunfYg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9977"; a="284333992"
-X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
-   d="asc'?scan'208";a="284333992"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 22:08:52 -0700
-IronPort-SDR: Dv3dGDws6GEtevLyQTECKkR1AuLUReLH1KTJFez646MGA6b4ixaiVRy+90+G3n+Xr5SvbCm8K9
- suwx2W96fVUQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
-   d="asc'?scan'208";a="460405312"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
-  by FMSMGA003.fm.intel.com with ESMTP; 07 May 2021 22:08:50 -0700
-Date:   Sat, 8 May 2021 12:50:04 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     tkffaul@outlook.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfio/pci: Sanity check IGD OpRegion Size
-Message-ID: <20210508045004.GH4589@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <162041357421.21800.16214130780777455390.stgit@omen>
+        id S230343AbhEHFFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 01:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhEHFFF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 01:05:05 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3A1C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 22:04:05 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id g13so8224476qts.4
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 22:04:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=14phvkyaG3Z9zvqOpQWg9ARBVRW3kycoUCHqs9pgPes=;
+        b=pyG9+mRgHuL7NklNHc8HF675/1f2nodTpa2OBy/61Hg+NcspINXxyG8jB8d1hc/hFc
+         SZHzRnQS73zjW10aqFwTAJobaZrLSlJNyOiZH8VuBy6aM5ltkKNK2/aLgVjMYSA6RaaW
+         1ZXCtBErhKnGLfAW84F2u2cK1rj0bgMplq2maTlU+CQNl15i1kqeqKgEshyJd0Ydtvps
+         /h/LzvXFozH0gIXtiW4Lbhl5D3aORfBXD8XTLMSl9wo6ZtR5m6Im1V7djqes0Zxa33wn
+         80HDu4/KlL2BSVP9nf+5vtdPMKmVBDEDL47zRAWu7mqbZrPMfSjHAfMFlKdtRLzLJSO1
+         hAlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=14phvkyaG3Z9zvqOpQWg9ARBVRW3kycoUCHqs9pgPes=;
+        b=cec7tEH/EVHqW4HkK4cmG8Wkn5ba4+lWoQvIxkhP8zCnhRZer13Y6je1vN2eZswTBm
+         mC36Q1DCPk8ZYhSnn+4ShI4KAY/AhKCteBCpQFyNdS2JM7MAx0Fn9gB7RyNGjku3QBta
+         Q59GpcSHqHMQfkrNgIO98IT4vXqXxLwfx6oimnf2Ka6BCBJCOmbmMtDjNJ+/XLPAwbhz
+         /oY4fVNtJFUWnTNWjyTCV09VjWJfual7WXXIWNmkbm9DVlsJGuKqe0TSJhrxNxKJPRQ/
+         +uUvwyMsqKqo9g+wVAkEoelmSRbnQfcko3HB/PfMqsEaFTGMvlP10UeYTY4RRI5/a5x0
+         Vr3w==
+X-Gm-Message-State: AOAM533fJeHsApI881RKodqsPE3pPjLGl7zCRMyYYdfDfOXejoJju+kA
+        q467dOBhtw56Hvfiz4B4kGjtDcBfmZD0LNEvP7rcMw==
+X-Google-Smtp-Source: ABdhPJzeYX90jxHezeIF03ACIDBTPGylgPFNhiU8m8LZM1Gut+MViVR2oA1sk+9phb4rLJeKfhQQ89hLbb/gBjPpThc=
+X-Received: by 2002:ac8:518a:: with SMTP id c10mr12574502qtn.66.1620450242631;
+ Fri, 07 May 2021 22:04:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="KFztAG8eRSV9hGtP"
-Content-Disposition: inline
-In-Reply-To: <162041357421.21800.16214130780777455390.stgit@omen>
+References: <0000000000006540d705c1b013b5@google.com> <YJT8ZPM5YGzX8Jtk@hirez.programming.kicks-ass.net>
+ <CACT4Y+aaGyfiEgbKca-6gourQjtwVMHuwUcb30QJPOF1LhLcxQ@mail.gmail.com> <20210507171901.GV975577@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20210507171901.GV975577@paulmck-ThinkPad-P17-Gen-1>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Sat, 8 May 2021 07:03:51 +0200
+Message-ID: <CACT4Y+Ydu6Dcmx1tXe-1aOw-hAcHgjwncrSmWuEr_8tfq02Dtg@mail.gmail.com>
+Subject: Re: [syzbot] WARNING: suspicious RCU usage in get_signal
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        syzbot <syzbot+37fc8b84ffa2279d636d@syzkaller.appspotmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Collingbourne <pcc@google.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 7, 2021 at 7:19 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Fri, May 07, 2021 at 10:42:48AM +0200, Dmitry Vyukov wrote:
+> > On Fri, May 7, 2021 at 10:38 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Thu, May 06, 2021 at 02:34:27PM -0700, syzbot wrote:
+> > > > Hello,
+> > > >
+> > > > syzbot found the following issue on:
+> > > >
+> > > > HEAD commit:    d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
+> > > > git tree:       upstream
+> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=123a56a5d00000
+> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=65c207250bba4efe
+> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=37fc8b84ffa2279d636d
+> > > > userspace arch: i386
+> > > >
+> > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > >
+> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > Reported-by: syzbot+37fc8b84ffa2279d636d@syzkaller.appspotmail.com
+> > > >
+> > > > =============================
+> > > > WARNING: suspicious RCU usage
+> > > > 5.12.0-syzkaller #0 Not tainted
+> > > > -----------------------------
+> > > > kernel/sched/core.c:8304 Illegal context switch in RCU-sched read-side critical section!
+> > > >
+> > > > other info that might help us debug this:
+> > > >
+> > > >
+> > > > rcu_scheduler_active = 2, debug_locks = 0
+> > > > no locks held by syz-executor.4/10430.
+> > >
+> > > Looks like this is a concurrent fail?, if !debug_locks (as per the above)
+> > > then RCU_LOCKDEP_WARN() should not trigger.
+> >
+> > FTR the log is here:
+> > https://syzkaller.appspot.com/text?tag=CrashLog&x=123a56a5d00000
+> >
+> > It contains 2 intermixed reports:
+> >
+> > [  289.896033][T10430] =============================
+> > [  289.896039][T10430] WARNING: suspicious RCU usage
+> > [  289.896046][T10430] 5.12.0-syzkaller #0 Not tainted
+> > [  289.898388][T13493] ======================================================
+> > [  289.898401][T13493] WARNING: possible circular locking dependency detected
+> > [  289.898410][T13493] 5.12.0-syzkaller #0 Not tainted
+> > [  289.898424][T13493] ------------------------------------------------------
+> > [  289.898432][T13493] syz-executor.0/13493 is trying to acquire lock:
+> > [  289.898448][T13493] ffff888019065ca0 (&bdev->bd_mutex){+.+.}-{3:3},
+> > at: del_gendisk+0x250/0x9e0
+>
+> This "suspicious RCU usage" false positive looks to be addressed by this
+> commit in -rcu, slated for the v5.14 merge window:
+>
+> 81a5e05455d4 ("rcu: Reject RCU_LOCKDEP_WARN() false positives")
+>
+> So I suggest ignoring the "suspicious RCU usage" report in favor of the
+> "possible circular locking dependency detected" report.
 
---KFztAG8eRSV9hGtP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Oh, I see, it's not merged yet.
+In my memory we discussed it so long ago that I assumed it is fixed already.
+Let's mark it as fixed then:
 
-On 2021.05.07 12:53:17 -0600, Alex Williamson wrote:
-> The size field of the IGD OpRegion table is supposed to indicate table
-> size in KB, but we've seen at least one report of a BIOS that appears
-> to incorrectly report size in bytes.  The default size is 8 (*1024 =3D
-> 8KB), but an incorrect implementation may report 8192 (*1024 =3D 8MB)
-> and can cause a variety of mapping errors.
->=20
-> It's believed that 8MB would be an implausible, if not absurd, actual
-> size, so we can probably be pretty safe in assuming this is a BIOS bug
-> where the intended size is likely 8KB.
->=20
-> Reported-by: Travis Faulhaber <tkffaul@outlook.com>
-> Tested-by: Travis Faulhaber <tkffaul@outlook.com>
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> ---
->  drivers/vfio/pci/vfio_pci_igd.c |   11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/vfio/pci/vfio_pci_igd.c b/drivers/vfio/pci/vfio_pci_=
-igd.c
-> index 228df565e9bc..c89a4797cd18 100644
-> --- a/drivers/vfio/pci/vfio_pci_igd.c
-> +++ b/drivers/vfio/pci/vfio_pci_igd.c
-> @@ -86,7 +86,16 @@ static int vfio_pci_igd_opregion_init(struct vfio_pci_=
-device *vdev)
->  		return -EINVAL;
->  	}
-> =20
-> -	size *=3D 1024; /* In KB */
-> +	/*
-> +	 * The OpRegion size field is specified as size in KB, but there have b=
-een
-> +	 * user reports where this field appears to report size in bytes.  If we
-> +	 * read 8192, assume this is the case.
-> +	 */
-> +	if (size =3D=3D OPREGION_SIZE)
-> +		pci_warn(vdev->pdev,
-> +			 "BIOS Bug, IGD OpRegion reports invalid size, assuming default 8KB\n=
-");
-> +	else
-> +		size *=3D 1024; /* In KB */
-> =20
->  	/*
->  	 * Support opregion v2.1+
->=20
+#syz fix: rcu: Reject RCU_LOCKDEP_WARN() false positives
 
-Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-
-thanks
-
---KFztAG8eRSV9hGtP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYJYYcwAKCRCxBBozTXgY
-J9gLAJ9WZQAELAZanHt41Fm37Zpywbd/5wCgnfwh7QDlG6+zsX/eLRycHAm9RmY=
-=mQOk
------END PGP SIGNATURE-----
-
---KFztAG8eRSV9hGtP--
+Thanks for double checking.
