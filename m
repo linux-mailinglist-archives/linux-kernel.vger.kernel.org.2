@@ -2,60 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713D9377348
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 18:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E3F37734E
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 19:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbhEHRAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 13:00:32 -0400
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:17310 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhEHRAb (ORCPT
+        id S229649AbhEHRCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 13:02:20 -0400
+Received: from smtprelay0127.hostedemail.com ([216.40.44.127]:50022 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229552AbhEHRCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 13:00:31 -0400
-Received: from [192.168.1.18] ([86.243.172.93])
-        by mwinf5d16 with ME
-        id 2GzR2500221Fzsu03GzRHm; Sat, 08 May 2021 18:59:28 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 08 May 2021 18:59:28 +0200
-X-ME-IP: 86.243.172.93
-Subject: Re: [PATCH] rtc: max77686: Remove some dead code
-To:     Edmundo Carmona Antoranz <eantoranz@gmail.com>
-Cc:     cw00.choi@samsung.com, krzysztof.kozlowski@canonical.com,
-        b.zolnierkie@samsung.com, a.zummo@towertech.it,
-        alexandre.belloni@bootlin.com, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <a6b23ee8d3ea78f62d3fda0b53aa273718f14c6d.1620452523.git.christophe.jaillet@wanadoo.fr>
- <CAOc6etaUPtJqoH9DBDE72nDW7s7iEZHnaJRpKx9zFow02WOZig@mail.gmail.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <9f34ebcd-0c17-cd7f-eb08-52c6c3dc7b03@wanadoo.fr>
-Date:   Sat, 8 May 2021 18:59:25 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Sat, 8 May 2021 13:02:19 -0400
+Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id C92D2837F24A;
+        Sat,  8 May 2021 17:01:16 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id 442CA20D758;
+        Sat,  8 May 2021 17:01:15 +0000 (UTC)
+Message-ID: <1eb0428d352be2498739de71eb65746309c90f4c.camel@perches.com>
+Subject: Re: [PATCH] iio: tsl2583: Fix division by a zero lux_val
+From:   Joe Perches <joe@perches.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Colin King <colin.king@canonical.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jon Brenner <jbrenner@taosinc.com>, linux-iio@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sat, 08 May 2021 10:01:14 -0700
+In-Reply-To: <20210508171258.2ef71a70@jic23-huawei>
+References: <20210507183041.115864-1-colin.king@canonical.com>
+         <20210508171258.2ef71a70@jic23-huawei>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <CAOc6etaUPtJqoH9DBDE72nDW7s7iEZHnaJRpKx9zFow02WOZig@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.90
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 442CA20D758
+X-Stat-Signature: wnkp43btcie7ymskkaw68ca5r135z3t9
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+/qTRbq/tfWb64s6ZzCDbmjtWe8vVdDaM=
+X-HE-Tag: 1620493275-211571
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 08/05/2021 Ã  16:38, Edmundo Carmona Antoranz a Ã©critÂ :
-> On Fri, May 7, 2021 at 11:43 PM Christophe JAILLET
-> <christophe.jaillet@wanadoo.fr> wrote:
->>          if (IS_ERR(info->rtc_dev)) {
->>                  ret = PTR_ERR(info->rtc_dev);
->>                  dev_err(&pdev->dev, "Failed to register RTC device: %d\n", ret);
-> 
-> Following the recent conversations, I think it might make sense to do
-> dev_err(&pdev->dev, "Failed to register RTC device: %pe\n", info->rtc_dev);
-> 
-> Is that right?
-> 
+On Sat, 2021-05-08 at 17:12 +0100, Jonathan Cameron wrote:
+> On Fri,  7 May 2021 19:30:41 +0100 Colin King <colin.king@canonical.com> wrote:
+[]
+> > The lux_val returned from tsl2583_get_lux can potentially be zero,
+> > so check for this to avoid a division by zero and an overflowed
+> > gain_trim_val.
+[]
+> > Fixes: ac4f6eee8fe8 ("staging: iio: TAOS tsl258x: Device driver")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Definitely looks like it could happen so applied to the fixes-togreg branch of
+> iio.git and marked for stable.
+[]
+> > diff --git a/drivers/iio/light/tsl2583.c b/drivers/iio/light/tsl2583.c
+[]
+> > @@ -341,6 +341,14 @@ static int tsl2583_als_calibrate(struct iio_dev *indio_dev)
+> >  		return lux_val;
+> >  	}
+> > 
+> > +	/* Avoid division by zero of lux_value later on */
+> > +	if (lux_val == 0) {
+> > +		dev_err(&chip->client->dev,
+> > +			"%s: lux_val of 0 will produce out of range trim_value\n",
+> > +			__func__);
+> > +		return -ENODATA;
+> > +	}
+> > +
+> >  	gain_trim_val = (unsigned int)(((chip->als_settings.als_cal_target)
+> >  			* chip->als_settings.als_gain_trim) / lux_val);
 
-Yes, it is right, but it should be done in another patch.
+Is a multiplication overflow possible here?
+There are also unnecessary parentheses.
 
-Would you like to give it a try?
 
-CJ
