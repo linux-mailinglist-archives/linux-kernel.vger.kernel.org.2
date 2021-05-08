@@ -2,155 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3283770FF
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8B1377104
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbhEHJmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 05:42:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32237 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229870AbhEHJmx (ORCPT
+        id S230355AbhEHJpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 05:45:47 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:33062 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229583AbhEHJpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 05:42:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620466911;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e8g0FbMtPR9vOJqczBJQph07+IiVAO0G06d1hPFLBp4=;
-        b=aWjbNej+VqLqgzzosPNbISMsucXibFXK7gDzuWPEc0t4TojY5LRJ2bwBpzW11zZ7q73AGn
-        CIwnTN2ziT2kTq1qZtEUgBUZK4uELkg7qmPs9+8RxUpSS7LIKSzr5CFdvgrlkeNedO+Fum
-        u4KumnA3rUJNgWNactnb68KMUmsHvHg=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-568-t5vemS4_O7GqLa2RwdjNMA-1; Sat, 08 May 2021 05:41:48 -0400
-X-MC-Unique: t5vemS4_O7GqLa2RwdjNMA-1
-Received: by mail-ed1-f71.google.com with SMTP id u30-20020a50a41e0000b0290385504d6e4eso5879713edb.7
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 02:41:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=e8g0FbMtPR9vOJqczBJQph07+IiVAO0G06d1hPFLBp4=;
-        b=itE1zZeO17ncVCXEJhi4IRHWT48T7D6umd0O+EqL9F439pUP42F9sqAKeoX7Ow3a9v
-         nyM5zujxzIyiJK2BWz7/UQ5W/cJMqJ76QEoUI9Vl/GXUU/mfYnN+B6RSBeEpjP2z7DKa
-         FK0sseDOB+H+FH2cfkfQSQU/jvuknkLVZY7PaTnVivovCp9U3ba4CgWdiRD5rOrsKjYL
-         z57Hc+oxbMTtsHoXOQlgjidZa4tNnGfijwpP2z/5EG/aAIfsO3XrDSG1kvK1l31/VfjQ
-         M2htcFu1wyqhNsfCnQWXr6gQ6/7L6jIbS1qVmnizpXOVhoDeTlZM5g4Rn4JtmI2ne0ki
-         Zjlw==
-X-Gm-Message-State: AOAM531XQHu6r5ACQIff+mVaU9MeMKl8F2rik3tKZXOdfnuNe07NLbvJ
-        f9RPoSuP4HE6AI9Do70CJSrrG7itX5Prw2FBbp4RTA890wkR/26QSIweXD5ZsrJCtLKCyKOQn9u
-        SpnpPCn37lHqrt+4l0RB0Rq5T
-X-Received: by 2002:a17:906:80d6:: with SMTP id a22mr14495186ejx.159.1620466907125;
-        Sat, 08 May 2021 02:41:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxri80XuBnxGDuVafu5UlMWlY6ndqQ/BrRSzL1WJ1RXqM0/pLeNgvGYwaJJ07V1m729A99mKw==
-X-Received: by 2002:a17:906:80d6:: with SMTP id a22mr14495176ejx.159.1620466906968;
-        Sat, 08 May 2021 02:41:46 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id q10sm6026768eds.36.2021.05.08.02.41.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 08 May 2021 02:41:46 -0700 (PDT)
-Subject: Re: [PATCH v2] iio: bme680_i2c: Remove ACPI support
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-References: <20210506034332.752263-1-linux@roeck-us.net>
- <20210507103154.00006763@Huawei.com> <20210508030936.GA3879276@roeck-us.net>
- <CAHp75Vfa3GT9bnimxw7EJsJyRF8HZP3PGsUNikSScuNiU4qArg@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <294dacb7-aef3-ede0-e46d-5c8fd91e9c17@redhat.com>
-Date:   Sat, 8 May 2021 11:41:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Sat, 8 May 2021 05:45:46 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1489iWBS019624;
+        Sat, 8 May 2021 09:44:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=+7ZZyYeUYy9IQ3ZxTjAWfnpZ4ty+iYLlka/hAfiNP4U=;
+ b=IFce8VSQZEA2AAnfDoQWgi7u7nQeClHrqAsEhnZvR8cwkDtMg7HaWsi/8cs54RViMSjv
+ HE6GsNm7ThtDlcvVzyFv7aR4NkoPZQUi3P4HkZoHUCUE8oYem1Q+2TIS/wN4uujjq2uU
+ ZTFwBY6ZNiv9NVcJXE8KES9VjJ+zlSmLd7SYM5J6LRyWUgcasW8jfmCJxezqLQ8wmraN
+ 1e05dEOqVkTrDxRRaLFkjQkWk4yEjNa4n4RH/kp2jNTwwBw5/Wwpv6nc68zai1qQNnlU
+ 3wy7d1EwLSVFfdePqykkp9hvc63Zqni6HxLeWJDP8KiaaNXe7WA45w6BCs+DGEal5Nmj Rw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 38dg5b8djg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 08 May 2021 09:44:32 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1489iUoF179553;
+        Sat, 8 May 2021 09:44:32 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 38djf0uadg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 08 May 2021 09:44:32 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1489iVcf179564;
+        Sat, 8 May 2021 09:44:31 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 38djf0uadd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 08 May 2021 09:44:31 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1489iTfm005380;
+        Sat, 8 May 2021 09:44:29 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 08 May 2021 02:44:28 -0700
+Date:   Sat, 8 May 2021 12:43:50 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Pavle Rohalj <pavle.rohalj@gmail.com>
+Cc:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
+        gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 02/49] staging: sm750fb: Rename dviInit to dvi_init
+ and update param names
+Message-ID: <20210508094350.GJ1955@kadam>
+References: <cover.1617776878.git.pavle.rohalj@gmail.com>
+ <6c6ecf7eee7d41492dbbcc4410db7eefd1fbb13d.1617776878.git.pavle.rohalj@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vfa3GT9bnimxw7EJsJyRF8HZP3PGsUNikSScuNiU4qArg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6c6ecf7eee7d41492dbbcc4410db7eefd1fbb13d.1617776878.git.pavle.rohalj@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: TzmPJEEHRRvF5WfjN67V6i6ygZ5sj5wF
+X-Proofpoint-ORIG-GUID: TzmPJEEHRRvF5WfjN67V6i6ygZ5sj5wF
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9977 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
+ bulkscore=0 spamscore=0 clxscore=1011 priorityscore=1501 adultscore=0
+ mlxlogscore=999 mlxscore=0 suspectscore=0 impostorscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105080070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Apr 06, 2021 at 11:36:01PM -0700, Pavle Rohalj wrote:
+> Fix "Avoid CamelCase" checkpatch.pl checks for the function dviInit and
+> its parameter names in ddk750_dvi.h.
+> 
+> Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
+> ---
+>  drivers/staging/sm750fb/ddk750_dvi.c |  2 +-
+>  drivers/staging/sm750fb/ddk750_dvi.h | 20 ++++++++++----------
+>  2 files changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/staging/sm750fb/ddk750_dvi.c b/drivers/staging/sm750fb/ddk750_dvi.c
+> index db19bf732482..943cbcafcffa 100644
+> --- a/drivers/staging/sm750fb/ddk750_dvi.c
+> +++ b/drivers/staging/sm750fb/ddk750_dvi.c
+> @@ -30,7 +30,7 @@ static struct dvi_ctrl_device dcft_supported_dvi_controller[] = {
+>  #endif
+>  };
+>  
+> -int dviInit(unsigned char edge_select,
+> +int dvi_init(unsigned char edge_select,
+>  	    unsigned char bus_select,
+>  	    unsigned char dual_edge_clk_select,
+>  	    unsigned char hsync_enable,
 
-On 5/8/21 9:48 AM, Andy Shevchenko wrote:
-> 
-> 
-> On Saturday, May 8, 2021, Guenter Roeck <linux@roeck-us.net <mailto:linux@roeck-us.net>> wrote:
-> 
->     On Fri, May 07, 2021 at 10:31:54AM +0100, Jonathan Cameron wrote:
->     > On Wed,  5 May 2021 20:43:32 -0700
->     > Guenter Roeck <linux@roeck-us.net <mailto:linux@roeck-us.net>> wrote:
->     >
->     > > With CONFIG_ACPI=n and -Werror, 0-day reports:
->     > >
->     > > drivers/iio/chemical/bme680_i2c.c:46:36: error:
->     > >     'bme680_acpi_match' defined but not used
->     > >
->     > > Apparently BME0680 is not a valid ACPI ID. Remove it and with it
->     > > ACPI support from the bme680_i2c driver.
->     > >
->     > > Reported-by: kernel test robot <lkp@intel.com <mailto:lkp@intel.com>>
->     > > Cc: Andy Shevchenko <andy.shevchenko@gmail.com <mailto:andy.shevchenko@gmail.com>>
->     > > Cc: Hans de Goede <hdegoede@redhat.com <mailto:hdegoede@redhat.com>>
->     > > Signed-off-by: Guenter Roeck <linux@roeck-us.net <mailto:linux@roeck-us.net>>
->     >
->     > A note for these is that I'll change the patch titles when applying.
->     > We aren't removing ACPI support from the drivers, we are simply
->     > removing the ACPI ID table entries.  For most of these PRP0001 magic
->     > will work just fine with the OF table.  That's probably the
->     > right way for small companies etc to use these in products without
->     > having to jump through the hoops of getting an ACPI ID.
->     >
-> 
->     Below is what Coccinelle tells me about ACPI IDs in drivers/iio.
->     The script (tries) to do a prefix match of all ACPI IDs it finds against
->     the PNP and ACPI ID databases from https://uefi.org/PNP_ACPI_Registry <https://uefi.org/PNP_ACPI_Registry>.
-> 
->     Andy, Hans, does that look about right ?
-> 
-> 
-> 
-> The result looks nice for the first step!
->  
-> 
-> 
->     Next question is what to do with the mismatches and with false
->     negatives such as:
-> 
->     drivers/iio/accel/stk8312.c
->       STK8312: match (prefix) against STK (SANTAK CORP.)
->     drivers/iio/light/isl29018.c
->       ISL29018: match (prefix) against ISL (Isolation Systems)
->       ISL29023: match (prefix) against ISL (Isolation Systems)
->       ISL29035: match (prefix) against ISL (Isolation Systems)
->     drivers/iio/gyro/bmg160_i2c.c
-> 
-> 
->  
-> 
->       BMI055B: match (prefix) against BMI (Benson Medical Instruments Company)
->       BMI088B: match (prefix) against BMI (Benson Medical Instruments Company)
-> 
-> 
-> These I think the real ones from the existing devices.
+The fact that you were able to change this without changing any callers
+suggests that this is not used.  In that case, just delete it instead
+of renaming it.
 
-No that is wrong, these are Bosch sensors, so the BOSC0200 entry for
-the companion accelerometer is the only entry using the official company
-prefix. At least "BMA" ("BMA250E") and "BSG" ("BSG1160", "BSG2150") are
-also know to be used as prefixes for ACPI HIDs which are in active
-use for Bosch sensors :|
-
-And Benson Medical Instruments Company has nothing to do with these
-sensors :|
-
-Regards,
-
-Hans
+regards,
+dan carpenter
 
