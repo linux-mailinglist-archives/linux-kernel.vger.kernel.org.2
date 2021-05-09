@@ -2,75 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89300377603
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 11:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A37E83775FA
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 11:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229596AbhEIJ2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 05:28:14 -0400
-Received: from cumulus.eginity.com ([199.168.187.4]:43302 "EHLO
-        nimbus.eginity.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhEIJ2N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 05:28:13 -0400
-X-Greylist: delayed 1092 seconds by postgrey-1.27 at vger.kernel.org; Sun, 09 May 2021 05:28:13 EDT
-Received: from [192.168.0.10] (unknown [68.204.106.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dmerillat@eginity.com)
-        by nimbus.eginity.com (Postfix) with ESMTPSA id 18B632043F;
-        Sun,  9 May 2021 05:08:55 -0400 (EDT)
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.101.5 at nimbus
-DKIM-Filter: OpenDKIM Filter v2.9.2 nimbus.eginity.com 18B632043F
-To:     Len Brown <lenb@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   Dan Merillat <git@dan.eginity.com>
-Subject: [PATCH] tools/power/turbostat: fix dump for AMD cpus
-Message-ID: <c60a2dcd-acc4-a9da-6518-fc05165ae4ef@eginity.com>
-Date:   Sun, 9 May 2021 05:08:55 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S229649AbhEIJMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 05:12:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229596AbhEIJMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 05:12:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3210D613D9;
+        Sun,  9 May 2021 09:11:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620551470;
+        bh=WzG2lAYSFUb1qOykunoY65bLJ+09ULrrsSxpy9StCGI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tKf/JefM9p7PyZRzddthC9m72Khd0qTm2laCNQQFNGeO7h4bdiXSJ+MOJxbCULW3Z
+         Gudn1UedLnYAKooaCKePhLVTYU8UXgJ6gUASyVTKonWAynFo9Q74uRFevq9KSXvgbx
+         4CknSQg/fp0r7LfK1IrStnfaJv3wAES0SZHywIwPu+rfabC3vMv+GHUgpRoyFQnk8T
+         EbMQOBlC+5pkW9DBA5vxRktI9Jk918/bwRJuEfywFC3UcKWaNldRumznDe6C2lInTd
+         Bqn+CRMLVEre0MldhH7OPPcrQtvv37kMn0izaFG232OBldcN7JBJFv2vk2BAoOKwC3
+         uo4Bkqfh/jROQ==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        openrisc@lists.librecores.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] openrisc: mm/init.c: fix compilation warnings
+Date:   Sun,  9 May 2021 12:11:01 +0300
+Message-Id: <20210509091103.7985-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-turbostat --Dump exits early with status 243 (-13)
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-get_counters() calls get_msr_sum() on zen CPUS
-for MSR_PKG_ENERGY_STAT, but per_cpu_msr_sum
-has not been initialized.
+Hi,
 
-Signed-off-by: Dan Merillat <git@dan.eginity.com>
----
- tools/power/x86/turbostat/turbostat.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Kbuld test bot reported an unused in map_ram() and while on it I've found
+another compilation warning about unused variable in paging_init().
 
-diff --git a/tools/power/x86/turbostat/turbostat.c
-b/tools/power/x86/turbostat/turbostat.c
-index 47d3ba895d6d..c133fef270f6 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -6432,6 +6432,8 @@ int main(int argc, char **argv)
+Here are the fixes for both.
+The patches are vs 5.12.
 
- 	turbostat_init();
+Mike Rapoport (2):
+  openrisc: mm/init.c: remove unused memblock_region variable in map_ram()
+  openrisc: mm/init.c: remove unused variable 'end' in paging_init()
 
-+	msr_sum_record();
-+
- 	/* dump counters and exit */
- 	if (dump_only)
- 		return get_and_dump_counters();
-@@ -6443,7 +6445,6 @@ int main(int argc, char **argv)
- 		return 0;
- 	}
+ arch/openrisc/mm/init.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
--	msr_sum_record();
- 	/*
- 	 * if any params left, it must be a command to fork
- 	 */
+
+base-commit: 9f4ad9e425a1d3b6a34617b8ea226d56a119a717
 -- 
-2.31.1
+2.28.0
 
