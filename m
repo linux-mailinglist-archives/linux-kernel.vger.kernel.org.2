@@ -2,88 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CAE377769
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B81377772
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbhEIPnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 11:43:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46144 "EHLO
+        id S229853AbhEIPxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 11:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbhEIPni (ORCPT
+        with ESMTP id S229645AbhEIPxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 11:43:38 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BF3C061573
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 08:42:35 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id s25so17733448lji.0
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 08:42:35 -0700 (PDT)
+        Sun, 9 May 2021 11:53:34 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E80C061573;
+        Sun,  9 May 2021 08:52:30 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id s82so7793311wmf.3;
+        Sun, 09 May 2021 08:52:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=PXgXNpSb7vjgteIty9OCQxIuvvV/8IokdELG1uqHUhs=;
-        b=cg46VEhE4vmQ60m8FygJZ+YaG1Jkb9uYbOwlT0FXyAtqzmQCDMVHOLXnmoBvYR5CO9
-         1NvqVJLU5VLkME+/eaQr8LkEP1f/A9Tkz5wbK+qa1nznkS9dWEK4XTc3lfjRDlYIbmr3
-         GToMzufdkJfDmgbp1Oekreu+oJGOWlvu7fIQQDxIqdy9QFUlEWpbVdu0pCNhfrKMq3tL
-         QDR9uevhNEC49kY4e5xmbOziha1AECleTMEssJJAI6ez+cEb5M0lVCgZPT+JmKdWgesa
-         lOXt/EdHQcR4SXoXA8N5jAZBPkKjYZQx27oW5w+nKZ8kDcPJn5Ve3IxfuGjpQGq57VPe
-         xg3Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/ypDkbMZaKPK8sfgDZCv9j21HgYlr75ecNlXl40Qqfc=;
+        b=EoPa8bUdKFyBjVbsoqioR3RF8WK0eQBFtO6JeAJjjMKaT3ZyunKakwUcpUEE5LeJ73
+         D0we/k8vulIchkHVu9VFjO0jBYpZoiXe/D1bZygKujfQAbPNxhPIh/DVzYayB0uAFq7f
+         tWBlYJNdWaIUYAVnvJiRE+Q6K7Wt13sns47QTujP2+5jf4SlL5RGXESRgytBDDdij3o8
+         LsXR9Py4gxjHyqOCEjxJDkDhKWetUfDo/2k2nNCAlPyePPtco5Oa1PTFKS4zPOAs1UTO
+         NEqXPSxPN3gMVXuUtkpTc18lD4pCZKDhIgCMUwrML034BK8WRVWKbc+TQpasJmTT2U+k
+         F35A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=PXgXNpSb7vjgteIty9OCQxIuvvV/8IokdELG1uqHUhs=;
-        b=m7apT91QEPkj9yKpV8T6asaaEsB23TjokeEoHbi7bW7BND34MUMhHvvz27z1cmx5Is
-         wtyFh/CsQ/aNbF1AG6rJc6uqjSsQIk9tVOXFggXXjV0/0bRwwMw87nhMlTUAYhfpe98e
-         QGKUyQ2jQzM/J/ehnOrB0lm78aAoomjlzaY2+GybiGH46yM3w3juE10EIzSzNlICUmHH
-         vlvlaXAbsKKb6CWn9Xqci9Wkp4c92D3Cw5cvdwIJVjG/VS5en9H2Z90EoZ3GrwLJXRxZ
-         kOP7Fwg7pVRisyR/asbBSZLIPVXC9WC74SFSIzQPI/oE+yB5UulQGx3y/0dJM7RTGt1U
-         EeBw==
-X-Gm-Message-State: AOAM533rwXFGrH5oISCooML5CXb806xhrEue8MrWpk+0EU+R26lV5CG/
-        0knbKzmxCnm+fB23Ua6vgzftotrqMtll+gC3L1WC43Y1QZRDCoj1
-X-Google-Smtp-Source: ABdhPJx+juNBJa1Z9PloK2Mz0fuQbGypxZnhZxUFVUtiUKVkR8QCRoxFddt4r2fFv9QHNS14Jqjajg2eeIWpES91vzg=
-X-Received: by 2002:a2e:b4b1:: with SMTP id q17mr9235345ljm.40.1620574953684;
- Sun, 09 May 2021 08:42:33 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/ypDkbMZaKPK8sfgDZCv9j21HgYlr75ecNlXl40Qqfc=;
+        b=S2IaT79w44GjaSTzt6IWd5tqZXu93XMnDT3glFpCSfOBfZOJ7Mtt0uLRZ1w1DlTgkq
+         wQzf5K4InZwOyeSGrVOz57xMQ1aDYxNl9vl4cZlhPOoi8qWqQ6+wdi5OrC0HQqUeqLSg
+         /MTB1o6iIm2ekUTrab2kTaMrkWIFNu2vDKNBqrIuNvOhvJY/9lRTz6urRqxkTlK+G06c
+         G6z3G2pVQ7ZQDw9y0k0n11na5y4siBGixUjaf3KcI9IK7QL28auZzgsXlAZWMfzBnUsz
+         mUh74k6pIudcHCuYeqVVMrxmDjunCxxAt//HCpE4VA577uCqSzWsMPnHG042Ny3j8QfI
+         yuOA==
+X-Gm-Message-State: AOAM533NiBDyU58andPfDjYZPUJX5AwXnzNCZDyqf2tcORqQVcPRtx9Y
+        +wM8+r89cyTLiyrsmV/K29PGJBL898bCYKR1
+X-Google-Smtp-Source: ABdhPJwJYntq3Tn5Ue0vG01f4EXq0m3ObkAuA36mJMvQSRj6jrBm1DvonCOH8ATTF31Z8RKMjmrmgQ==
+X-Received: by 2002:a1c:9a95:: with SMTP id c143mr22019705wme.143.1620575548969;
+        Sun, 09 May 2021 08:52:28 -0700 (PDT)
+Received: from localhost.localdomain ([94.73.38.147])
+        by smtp.gmail.com with ESMTPSA id i3sm13591172wmq.28.2021.05.09.08.52.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 May 2021 08:52:28 -0700 (PDT)
+From:   =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+To:     jikos@kernel.org
+Cc:     benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+Subject: [PATCH] HID: magicmouse: fix crash when disconnecting Magic Trackpad 2
+Date:   Sun,  9 May 2021 17:51:38 +0200
+Message-Id: <20210509155138.39601-1-jose.exposito89@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Sun, 9 May 2021 21:12:22 +0530
-Message-ID: <CABJPP5BExfW+xre-3E-9EysYMhLGRzNrkPbTW3qomOKqc31PSQ@mail.gmail.com>
-Subject: Codespell dictionary path is no longer absolute
-To:     Joe Perches <joe@perches.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A year ago, the codespell dictionary was moved from
-/usr/share/codespell/dictionary.txt to data/dictionary.txt under
-the codespell_lib installation directory.
+When the Apple Magic Trackpad 2 is connected over USB it registers four
+hid_device interfaces, however, the driver only handles the one with
+type HID_TYPE_USBMOUSE and ignores the other three, thus, no driver
+data is attached to them.
 
-checkpatch.pl still has the default codespell path as
-/usr/share/codespell/dictionary.txt.
-Any new installations will now also need to specify --codespellfile
-option along with --codespell.
+When the device is disconnected, the remove method is called for the
+four hid_device interfaces, crashing when the driver data is NULL.
 
-Can auto detection of the dictionary path be enabled with something
-like this?
+Check that the driver data is not NULL before using it on the remove
+callback.
 
------
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 23697a6b1eaa..28ca5cfff2d5 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -889,6 +889,9 @@ if (open(my $spelling, '<', $spelling_file)) {
-}
+Signed-off-by: José Expósito <jose.exposito89@gmail.com>
+---
+ linux/drivers/hid/hid-magicmouse.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-if ($codespell) {
-+       if (! -e "$codespellfile" && which("python") ne "") {
-+               $codespellfile = `python -c "import os.path as op; import code
-spell_lib; print(op.join(op.dirname(codespell_lib.__file__), 'data', 'dictiona
-ry.txt'), end='')"`;
-+       }
-       if (open(my $spelling, '<', $codespellfile)) {
-               while (<$spelling>) {
-                       my $line = $_;
------
+diff --git a/linux/drivers/hid/hid-magicmouse.c b/linux/drivers/hid/hid-magicmouse.c
+index 2bb473d..097870e 100644
+--- a/linux/drivers/hid/hid-magicmouse.c
++++ b/linux/drivers/hid/hid-magicmouse.c
+@@ -779,7 +779,10 @@ err_stop_hw:
+ static void magicmouse_remove(struct hid_device *hdev)
+ {
+ 	struct magicmouse_sc *msc = hid_get_drvdata(hdev);
+-	cancel_delayed_work_sync(&msc->work);
++
++	if (msc)
++		cancel_delayed_work_sync(&msc->work);
++
+ 	hid_hw_stop(hdev);
+ }
+ 
+-- 
+2.25.1
 
-Thanks,
-Dwaipayan.
