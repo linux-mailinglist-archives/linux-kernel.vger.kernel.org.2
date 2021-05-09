@@ -2,112 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F183778A7
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 23:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F763778AA
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 23:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhEIVTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 17:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33908 "EHLO
+        id S229937AbhEIV1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 17:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbhEIVTL (ORCPT
+        with ESMTP id S229699AbhEIV1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 17:19:11 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27CA4C061573
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 14:18:08 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id z6-20020a17090a1706b0290155e8a752d8so8899785pjd.4
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 14:18:08 -0700 (PDT)
+        Sun, 9 May 2021 17:27:49 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66324C061573
+        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 14:26:45 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id x20so20424951lfu.6
+        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 14:26:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rbwIn0tWgSdNhdH5lPly7AWTzAvikcCRK3NlmDTHFjU=;
-        b=Q2P/aJfZKZWxPibdU09rZbB0qLe+e0iNJq86pTd1bKHjeOHHyWyVq99HdnUtYBLmu4
-         /eeN3qr0F+bFjntQ+WXlA5Ppb6Vs/LYlw9bKtBGotJZ77IJuAlJX4VXb7by1EcS5Qwy4
-         vE+FR8UPqt4LEym7SUih26vGJupRoih6Ukwv7ZHQL9qJGSAwgJVmvwdZwIUQ/aGfXvkh
-         XAbUG5tQ6kwSrD19/qzjnJQWtLcmQBStf9jqk+Mb9h0Okkw3ds66bpMPFKFTsQSAs9vL
-         TxLdISFQfy2OzN/Xou9kXQdrIUoOQ43RdyeDlXtrw1CofwTOnuZkBr4N/TJt7aWKwlvB
-         7kEg==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XnuIGDHz+vWuMXJWxtX9N5UENBs226CX5hzP3bDj+NE=;
+        b=YtCpBUB7I9innRiRVY6qqANz4wGuCSq3nS1d16rPHtz7iPxjzWbk76l4mllNaivafB
+         SBNlBiWz98s2pMCqOBCDO9U0Jr/MidaotwWuafuu20L7ywZSrx9dGB+TBqaaRlv+3zN+
+         zkjKQFA2jNL14hwI8w6b5VEB0Wlq+uMBscZvuE3foEthKmlMLJoGRfls65OyOWSnVwxJ
+         UwbRX86Qo++axUGRLjLfVehSqvszOM6/kWrZ4onyeJe+irq9qLzlpCrXhgiWf4YU2ZR7
+         LD0VVxACoF1M2CkhtMjG7Uo1LBWlLYsw/W3ZvbQCErvAhx6d1KxTq1OPk/Fy7HycvHSb
+         1P3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rbwIn0tWgSdNhdH5lPly7AWTzAvikcCRK3NlmDTHFjU=;
-        b=biEXseTiKHgbzTMtMScUOV014Et1HwXF3reqmOYKMkq2LSuj9JJEc4wDoUAgNnznh1
-         hLrYtAbTechYkZuiBsOF+EcvJtjecuu2WZnySPfDdfXiWUxyEa2fS8Jg6mC51Q2djS+l
-         L+9BN1+fTAmlBkMFf+4YuU4beAf1TxhyCN/9SYXulz+BjYZZmFcADN8yqjvYgrfPLpBx
-         zXsnhFVIWJV8A1cOhOxvgKCRoyysIrLAHfExd5O0OcuYlgg5APnqgAfR9A6m9sTu3sTe
-         /G+c+Ss8BU1pno/l1oQj50lkt6nk5YVsErQBKtt9jYPQRQd1EDFDKX9neYzvf2EyOc+Z
-         YZ+A==
-X-Gm-Message-State: AOAM532CcVdxbQMBVcSoegIkRoeiYrAPQRzR/NcV57NDd0IssZY7vVXt
-        AELJVf20zJnk3tSLUADnKTY=
-X-Google-Smtp-Source: ABdhPJwVYtPv05PhD6q9QfU7ekFxHIsmxearWyimhPp8Ae96Q8Ri5OE5fDR9tnS/UcWV413cw//76Q==
-X-Received: by 2002:a17:902:7281:b029:ea:afe2:b356 with SMTP id d1-20020a1709027281b02900eaafe2b356mr21766956pll.16.1620595087712;
-        Sun, 09 May 2021 14:18:07 -0700 (PDT)
-Received: from localhost (g1.222-224-229.ppp.wakwak.ne.jp. [222.224.229.1])
-        by smtp.gmail.com with ESMTPSA id r32sm9486424pgm.49.2021.05.09.14.18.06
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XnuIGDHz+vWuMXJWxtX9N5UENBs226CX5hzP3bDj+NE=;
+        b=ALmq8wkWAyr9dUT4o9UV5PMG9/Mgvjmfy/mcu4aWChXYFD8CtTF4l2rTOn3kykNG5R
+         f6sOr1ACklR5AZUlr3VR/3d+J/QFP2CGY3A/LrysLPzeBiXlBVSdqV4pEqhQqICEPp7i
+         34kTBcZBgMKeQ8/V6hzJuYoP8jukL1Yjg7Pvi5DjRn30x1LJ/HqzG2qntHrw3VKgJkEI
+         aEnXY9WdnXmNb/V1OpXHEUDFBg8AKIDpvoAnPdz9+WY6HOz9KU5Yhj2hl+MrtI92Ap5b
+         L2Pfi50Y1yHCIh+ydScDtkCDijwOBteJCj83sAb9kbN5dtBD9g7g1yodW5/93H0V5Y9J
+         G5fA==
+X-Gm-Message-State: AOAM533/ajJ6E2dWxjzTsmrBCSrKCQ7fKoPGzjy6LR/tWXOIYNABauym
+        gRamRj1069LtXzyfZ/lVZh8qLc0RH0c=
+X-Google-Smtp-Source: ABdhPJwRMr947DzuupSIRzSqQlbwxhpXzwE8XuPrSB3NgTjdSx/m6FxyYhl99GiFfU0NkPnDemFp9g==
+X-Received: by 2002:ac2:4ed9:: with SMTP id p25mr14223916lfr.576.1620595603784;
+        Sun, 09 May 2021 14:26:43 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id j16sm1984029lfe.152.2021.05.09.14.26.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 14:18:07 -0700 (PDT)
-Date:   Mon, 10 May 2021 06:18:05 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        openrisc@lists.librecores.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] openrisc: mm/init.c: remove unused variable 'end' in
- paging_init()
-Message-ID: <YJhRjTPdJbjI5iyj@antec>
-References: <20210509091103.7985-1-rppt@kernel.org>
- <20210509091103.7985-3-rppt@kernel.org>
+        Sun, 09 May 2021 14:26:43 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Sun, 9 May 2021 23:26:41 +0200
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Mel Gorman <mgorman@suse.de>, Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2 2/2] mm/vmalloc: Print a warning message first on
+ failure
+Message-ID: <20210509212641.GA3220@pc638.lan>
+References: <20210509193844.2562-1-urezki@gmail.com>
+ <20210509193844.2562-2-urezki@gmail.com>
+ <YJg8QO2JXm0+8UH6@casper.infradead.org>
+ <20210509200519.GA3016@pc638.lan>
+ <YJhDpkpdUKiNEAnt@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210509091103.7985-3-rppt@kernel.org>
+In-Reply-To: <YJhDpkpdUKiNEAnt@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 09, 2021 at 12:11:03PM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Sun, May 09, 2021 at 09:18:46PM +0100, Matthew Wilcox wrote:
+> On Sun, May 09, 2021 at 10:05:19PM +0200, Uladzislau Rezki wrote:
+> > On Sun, May 09, 2021 at 08:47:12PM +0100, Matthew Wilcox wrote:
+> > > > +++ b/mm/vmalloc.c
+> > > > @@ -2781,11 +2781,11 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+> > > >  	}
+> > > >  
+> > > >  	if (!area->pages) {
+> > > > -		free_vm_area(area);
+> > > >  		warn_alloc(gfp_mask, NULL,
+> > > >  			   "vmalloc size %lu allocation failure: "
+> > > >  			   "page array size %lu allocation failed",
+> > > >  			   nr_small_pages * PAGE_SIZE, array_size);
+> > > > +		free_vm_area(area);
+> > > >  		return NULL;
+> > > >  	}
+> > > 
+> > > I think this is a bad idea.  We're clearly low on memory (a memory
+> > > allocation just failed).  We should free the memory we have allocated
+> > > to improve the chances of the warning message making it out.
+> > Not sure if i fully follow you here. We do free the memory. The intention
+> > was to print a warning message first because, if, potentially, the
+> > free_vm_area(area) also does some prints it would be a bit messy from the
+> > point what has been broken first.
+> > 
+> > So, could you please clarify what was your concern?
 > 
-> A build with W=1 enabled produces the following warning:
-> 
->   CC      arch/openrisc/mm/init.o
-> arch/openrisc/mm/init.c: In function 'paging_init':
-> arch/openrisc/mm/init.c:131:16: warning: variable 'end' set but not used [-Wunused-but-set-variable]
->   131 |  unsigned long end;
->       |                ^~~
-> 
-> Remove the unused variable 'end'.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  arch/openrisc/mm/init.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/arch/openrisc/mm/init.c b/arch/openrisc/mm/init.c
-> index f3fa02b8838a..6e38ec96cab8 100644
-> --- a/arch/openrisc/mm/init.c
-> +++ b/arch/openrisc/mm/init.c
-> @@ -128,7 +128,6 @@ void __init paging_init(void)
->  {
->  	extern void tlb_init(void);
->  
-> -	unsigned long end;
->  	int i;
->  
->  	printk(KERN_INFO "Setting up paging and PTEs.\n");
-> @@ -144,8 +143,6 @@ void __init paging_init(void)
->  	 */
->  	current_pgd[smp_processor_id()] = init_mm.pgd;
->  
-> -	end = (unsigned long)__va(max_low_pfn * PAGE_SIZE);
-> -
->  	map_ram();
->  
->  	zone_sizes_init();
+> We may need to allocate memory in order to emit the error message.
+>
+> Your commit message didn't mention the potential confusion, and I think
+> that is worth adding for a v4.
+I agree that the commit message should be updated in regard of potential
+confusion, because it was the main intention of this patch.
 
-Thanks, I will queue this in the openrisc fixes queue.
+I will upload a v4 tomorrow.
 
--Stafford
+--
+Vlad Rezki
