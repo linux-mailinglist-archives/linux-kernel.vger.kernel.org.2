@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A933777A9
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 18:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEB33777AE
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 19:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhEIQ4J convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 9 May 2021 12:56:09 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:50170 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229925AbhEIQ4I (ORCPT
+        id S229948AbhEIRDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 13:03:45 -0400
+Received: from smtprelay0215.hostedemail.com ([216.40.44.215]:58428 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229924AbhEIRDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 12:56:08 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-198-FopczfqiPWaL-OVgYN3BgQ-1; Sun, 09 May 2021 17:54:54 +0100
-X-MC-Unique: FopczfqiPWaL-OVgYN3BgQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Sun, 9 May 2021 17:54:52 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Sun, 9 May 2021 17:54:52 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Russell King - ARM Linux admin' <linux@armlinux.org.uk>,
-        Ansuel Smith <ansuelsmth@gmail.com>
-CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RESEND PATCH] arm: Enlarge IO_SPACE_LIMIT needed for some SoC
-Thread-Topic: [RESEND PATCH] arm: Enlarge IO_SPACE_LIMIT needed for some SoC
-Thread-Index: AQHXRNSfOfqwrTJOkUK/ibckCmgRtKrbXBSg
-Date:   Sun, 9 May 2021 16:54:51 +0000
-Message-ID: <4f6e5115e00e4df2a84a57ed0359e907@AcuMS.aculab.com>
-References: <20210508175537.202-1-ansuelsmth@gmail.com>
- <20210508185043.GF1336@shell.armlinux.org.uk>
- <YJcV6I6yYt5zIsXQ@Ansuel-xps.localdomain>
- <20210509130956.GI1336@shell.armlinux.org.uk>
-In-Reply-To: <20210509130956.GI1336@shell.armlinux.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sun, 9 May 2021 13:03:44 -0400
+Received: from omf02.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id A6CB718029D82;
+        Sun,  9 May 2021 17:02:40 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id 1BC3E1D42F4;
+        Sun,  9 May 2021 17:02:40 +0000 (UTC)
+Message-ID: <6be9a194814f8fd113f4967d80c19f861b908356.camel@perches.com>
+Subject: Re: Codespell dictionary path is no longer absolute
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Sun, 09 May 2021 10:02:38 -0700
+In-Reply-To: <CABJPP5BExfW+xre-3E-9EysYMhLGRzNrkPbTW3qomOKqc31PSQ@mail.gmail.com>
+References: <CABJPP5BExfW+xre-3E-9EysYMhLGRzNrkPbTW3qomOKqc31PSQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 1BC3E1D42F4
+X-Spam-Status: No, score=-2.84
+X-Stat-Signature: g98wcsokpwo5qzyjqnn1ybyz9zxfekb1
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19+Tw4/r2/KfN9DDHloOYVYMG0z5wRA5Qo=
+X-HE-Tag: 1620579759-821716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-...
-> Well, an obvious question would be: do you really need that much IO
-> space? PCs have got away with 64K of IO space without having a problem
-> for years, so 64K per bus should be fine. If you have 3 buses, that
-> should be 3 * 64K or 192K.
+On Sun, 2021-05-09 at 21:12 +0530, Dwaipayan Ray wrote:
+> A year ago, the codespell dictionary was moved from
+> /usr/share/codespell/dictionary.txt to data/dictionary.txt under
+> the codespell_lib installation directory.
+> 
+> checkpatch.pl still has the default codespell path as
+> /usr/share/codespell/dictionary.txt.
+> Any new installations will now also need to specify --codespellfile
+> option along with --codespell.
+> 
+> Can auto detection of the dictionary path be enabled with something
+> like this?
+[]
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -889,6 +889,9 @@ if (open(my $spelling, '<', $spelling_file)) {
+> }
+> 
+> if ($codespell) {
+> +       if (! -e "$codespellfile" && which("python") ne "") {
+> +               $codespellfile = `python -c "import os.path as op; import code
+> spell_lib; print(op.join(op.dirname(codespell_lib.__file__), 'data', 'dictiona
+> ry.txt'), end='')"`;
+> +       }
 
-Not only that, but most modern PCI (even) cards don't require IO space.
-Or does this include memory space - which can be much bigger.
+Maybe, but it doesn't work with python2
 
-I have cut one of our FPGA PCIe slaves down from two 8MB BARs to
-two 1MB ones, with the extra small BARs (eg for MSI-X) the bridge
-would have allocated 32MB, now 4MB.
-Fortunately that card only needs to work on x86-64.
+And it's likely better to do as few things in python as possible
+so maybe ditch the op.join and use perl instead
 
-	David
+	if (! -e "$codespellfile" && which("python") ne "" &&
+	    `python -c "import sys; print(sys.version_info.major)"` >= "3") {
+		$codespellfile = dirname(`python -c "import codespell_lib; print(codespell_lib.__file__);"`) . "/data/dictionary.txt";
+	}
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 
