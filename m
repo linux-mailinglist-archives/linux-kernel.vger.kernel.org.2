@@ -2,63 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5283776FC
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 16:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 780C8377704
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 16:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbhEIOdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 10:33:13 -0400
-Received: from conuserg-10.nifty.com ([210.131.2.77]:45437 "EHLO
-        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhEIOdM (ORCPT
+        id S229685AbhEIOig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 10:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229616AbhEIOif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 10:33:12 -0400
-Received: from grover.RMN.KIBA.LAB.jp (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 149EVSmU017769;
-        Sun, 9 May 2021 23:31:28 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 149EVSmU017769
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1620570688;
-        bh=G3dhZI2nEP2lqV1Crk/J+8JZ6EDNlHY8x4P5T08t35A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=edFxT94kKcgAscGEQryn+T5qC5Q1nElQ7G2rEZ7SU0PBzcE47xTIrpObphuL8OXRS
-         hpRTDYOoXRYG5ZmegWYyAnFA/eY0mNiT0BM2NOASi29CgrVrqdEurZkdSstnVB1gqT
-         SV1lC/8ewZgsEhHC47xCtz/r6BVzZWuZ05zTl8MMyU6K5UiVs+Jlyw+7VJkEdzrfyI
-         Pmrn1/ollru0iw80vI2Xfb77jVnxsxfykWjhiotj/rijgEZKPdI1lnr9bbxvet5cKk
-         yazmlEyPsIFqOHaOFKeOU1AMLo3T/09zcaaiSkiiRbbGrVh8oEtNqiBy/SVb32d3SR
-         kRqwcB9/02vXQ==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] nds32: add arch/nds32/boot/.gitignore
-Date:   Sun,  9 May 2021 23:31:24 +0900
-Message-Id: <20210509143124.259483-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Sun, 9 May 2021 10:38:35 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 178B7C061573;
+        Sun,  9 May 2021 07:37:31 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2so19618926lft.4;
+        Sun, 09 May 2021 07:37:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=eR+qIrsc6puQFKGRLPujBb09dj7L2kKkd3JJNgcefe8=;
+        b=KenUXs/+on5KOyFi5K8qMK6YXR7Gw0clCM18fHLJCJ+gdGsiSu3eAj82Pgbz53vaL+
+         vbPaVZafPRWS1tpFDqZAS955A1ESnlCsnhY+xVeyCZqrYLse3lpluBHt+kKOgkvrhB2W
+         04AjuKLy+ZfcZLalQkLz2UoHwX5iyQvBXQQfAPEbJrHy4lVlKM0wGbzcEx0j8fPNOLTJ
+         lSMr+jz//sg0AiHw3ypRMqO/39QpF7b7HuQK8tEWfCD41UDu33otoblXzhAcF1jfPzVl
+         CBcNdrE6GW1lxa9l6b/TjAW5oKDKdgPlOwDxb8m4/AY0QEJ/dZebeRqPRqveVQoklQM0
+         +viw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=eR+qIrsc6puQFKGRLPujBb09dj7L2kKkd3JJNgcefe8=;
+        b=iK+Cno3xUqchDQahaLpunB5SWb2sb0PX0ESHGClZFugsluxWd92ILKHOHumLuxdfp7
+         firbBDhNRiAj/Np6zozJnfQfmsmafSAM7vCibX71EG+kHS28TeU5Fwqin8i1xv9v0wjU
+         5QuLfyF9PZ1AKMxY+KQq3n1wziCeNdEirnc4zioX3SYmMu4PVCr9rP2JHLbHP97uWTIU
+         6ckDqpdcOa/hXvqkliUSFoe063T+pnBVHrG4m0qqPxoU+p4BaL8XquNr27qbyCYoQZjs
+         2qEyvTdfa5MujdkGHtVTLJPZ7wGTgbLqn7OtY3FGaQxZ87DySNxxzvi+CxzVl9Af0pns
+         VlvQ==
+X-Gm-Message-State: AOAM533xSntPO+pBGYAmgKx2dHTK/pADNOHKBItatSAimJ9yezrS3qcG
+        sR88/YG5wI6kAmSBvAI0toqDINQGvW2d7mWL1YzMP6RyDb8=
+X-Google-Smtp-Source: ABdhPJwnDFjkRVKvU4HqMS4qNIBRHtKdHZVzCe6yQSYEACwRfSg3FHCVeGYcoiFq/NP6Xu2N41p7fCMEy9ljlxhd2HA=
+X-Received: by 2002:a05:6512:142:: with SMTP id m2mr14219059lfo.313.1620571049295;
+ Sun, 09 May 2021 07:37:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Steve French <smfrench@gmail.com>
+Date:   Sun, 9 May 2021 09:37:17 -0500
+Message-ID: <CAH2r5mspgQ7Xh22vuiSVbfJ00QGeQNJL_J1V4u+Mt=-U5jK+Pw@mail.gmail.com>
+Subject: [GIT PULL] SMB3 Fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ignore arch/nds32/boot/Image.
+Please pull the following changes since commit
+7c9e41e0ef7d44a0818a3beec30634f3f588a23d:
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+  Merge tag '5.13-rc-smb3-part2' of
+git://git.samba.org/sfrench/cifs-2.6 (2021-05-05 13:37:07 -0700)
 
- arch/nds32/boot/.gitignore | 2 ++
- 1 file changed, 2 insertions(+)
- create mode 100644 arch/nds32/boot/.gitignore
+are available in the Git repository at:
 
-diff --git a/arch/nds32/boot/.gitignore b/arch/nds32/boot/.gitignore
-new file mode 100644
-index 000000000000..9182a3a1ea0a
---- /dev/null
-+++ b/arch/nds32/boot/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+/Image
--- 
-2.27.0
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.13-rc-smb3-part3
 
+for you to fetch changes up to c1f8a398b6d661b594556a91224b096d92293061:
+
+  smb3: if max_channels set to more than one channel request
+multichannel (2021-05-08 10:51:06 -0500)
+
+----------------------------------------------------------------
+3 small SMB3 multichannel related changesets (also for stable) from
+the SMB3 test event this week.  The other fixes are still in
+review/testing
+
+Regression test results:
+http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/634
+----------------------------------------------------------------
+Steve French (3):
+      smb3: when mounting with multichannel include it in requested capabilities
+      smb3: do not attempt multichannel to server which does not support it
+      smb3: if max_channels set to more than one channel request multichannel
+
+ fs/cifs/fs_context.c | 3 +++
+ fs/cifs/sess.c       | 6 ++++++
+ fs/cifs/smb2pdu.c    | 5 +++++
+
+
+--
+Thanks,
+
+Steve
