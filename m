@@ -2,88 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49824377719
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCD837771D
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbhEIPCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 11:02:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhEIPCH (ORCPT
+        id S229685AbhEIPHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 11:07:15 -0400
+Received: from mail-lj1-f176.google.com ([209.85.208.176]:38631 "EHLO
+        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhEIPHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 11:02:07 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD62CC061573
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 08:01:03 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id h20so7915097plr.4
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 08:01:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YWggVXdnRquifL9/XQ7A1rwSATVVaZDpBuuzR8KgOIA=;
-        b=QyPVlGeznb4Timxlcr3NnZoGOeZsHAk5KhNKlmoslgY+Llmm0GywfkSAxqZAH16aZX
-         FROK4h1pm3XJH5AHleAIo5OTVmvEsMWToYsTDIe7oOSWkXzptivogxoHoe/15qnLkE4b
-         R/kS7ZCQSeXbNJr1wapSA4T+wBBKMLSmrNwvB0ocXqbxMbJJGkwvEdmMST6K5OZZA5yy
-         036tbjurJRIxbj+mSnSHg4VV9KHORIcs3HJwrbVI6NWGdFS4BvoXcenCm6scvxF4BQn0
-         RTxDfzG7v/lsjhe1x8omZhXPJG7VTsOBV7Qow0B85WEH6NkdCa6v59thlZCohDHshKjL
-         yVxw==
+        Sun, 9 May 2021 11:07:13 -0400
+Received: by mail-lj1-f176.google.com with SMTP id v6so17651370ljj.5;
+        Sun, 09 May 2021 08:06:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YWggVXdnRquifL9/XQ7A1rwSATVVaZDpBuuzR8KgOIA=;
-        b=UpXtULzC1oqSmk+V0pFtVDH758VjMenA31MRgWoMx9MyOVccZ4WpwBEDVaXXgTHjU0
-         kwowldnnX6LksmQ0zBw26hLKkCMkFjD2lmhMoreDjWeLKW0h8T8VhaMrWVVKxhEgmXSs
-         isIo53SwwIS0lk7su/py1QA84K+czeP7y2LXAI00U7+UvTXifKqMqNJboe91u674adVj
-         PUy2+StUZoXcAukwL3ZMumppZBzva50WuB8C3XqxUu0F60T3x9T1JM5lpfu7uEm4aEGv
-         kJzjiXd1tGeSfG2IAqDQBvAYlpChKOiJNHi8fny81K6QVwOmw3H/hkp8Xl9jJZBoNb0W
-         fCJg==
-X-Gm-Message-State: AOAM532PDFZqdJFPoxTu+T3BWNfKGYffSowAjYwsuFbdXRIV2YZyT/HK
-        c+0dQ1UD7NTv0/URisLfnUj5DbNxM9Avi8up6vE=
-X-Google-Smtp-Source: ABdhPJyQB+aOSYqUog7CKxqOhnUBq8QNYbbYVPBkwY/On1NIFLZgFZVOY9W2205bADdwGieVZdMFXw==
-X-Received: by 2002:a17:902:fe94:b029:ee:ba90:a27a with SMTP id x20-20020a170902fe94b02900eeba90a27amr20079450plm.53.1620572462019;
-        Sun, 09 May 2021 08:01:02 -0700 (PDT)
-Received: from localhost.localdomain (host-219-71-67-82.dynamic.kbtelecom.net. [219.71.67.82])
-        by smtp.gmail.com with ESMTPSA id y64sm9201718pfy.204.2021.05.09.08.01.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 08:01:01 -0700 (PDT)
-From:   Wei Ming Chen <jj251510319013@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        Wei Ming Chen <jj251510319013@gmail.com>
-Subject: [PATCH] scsi: libsas: Use fallthrough pseudo-keyword
-Date:   Sun,  9 May 2021 23:00:52 +0800
-Message-Id: <20210509150052.15828-1-jj251510319013@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=OQjw04OJR2D4IqoTtXU0N4drQxCgCETBxjmIRrkObds=;
+        b=fIAMHNKevosjt4dyL6cre+Vvd7IaA4cO2h09izNbUpQsgQaDhdPnWQQWv++HJvkxoL
+         tA3XZkSJ3d1zSVLjINfCcZ4ckt2cj2apFElL7Zt4oOCdJxPgZnwfkd8bwTHynw9gBE/W
+         NV4Q+eaB+3BIGf7uShoSFLErEnCJQcX3NtGkah6sH31SSN84nZmngmfM1bTdkDTM80Tt
+         pJmaevRqFFZvifI6NioIWDM9oucTyk+yyni1alfX9IqCe6Wf/YRrvWNFYMgw9K6BVaiE
+         N8zAFhzK4FAl/3SOjWwRMs+lQIiSxNewD/QhZZEXz6TzicqIEl3lhjKwyLns6tJ5AAWD
+         TEbw==
+X-Gm-Message-State: AOAM530TyT9Vp/dNeC5IWhS2okJuaagGH4LH+fUAL7y7nw3mCOGcwFTg
+        tBzEINDPw0kWEYPZsayGSPxRTmu7hJ/Ttg==
+X-Google-Smtp-Source: ABdhPJzRcT+xfJZpru0kNQwPbQoQxC80kteh6gI6yOm+3/Ly3/+jDMEP1fGZx4NYxI3tuuiIB3tfjg==
+X-Received: by 2002:a2e:8756:: with SMTP id q22mr16773180ljj.414.1620572769323;
+        Sun, 09 May 2021 08:06:09 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id v14sm1938381lfo.76.2021.05.09.08.06.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 09 May 2021 08:06:08 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id b7so17637121ljr.4;
+        Sun, 09 May 2021 08:06:08 -0700 (PDT)
+X-Received: by 2002:a2e:9810:: with SMTP id a16mr17138024ljj.78.1620572768750;
+ Sun, 09 May 2021 08:06:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210421090354.GF19953@lemon.iwr.uni-heidelberg.de>
+ <CAGb2v64U3vMew8LUU776Mx7jYj3eVb4FXQdXMZ0aJNBPUh2D2A@mail.gmail.com> <20210505112902.GC5302@lemon.iwr.uni-heidelberg.de>
+In-Reply-To: <20210505112902.GC5302@lemon.iwr.uni-heidelberg.de>
+Reply-To: wens@csie.org
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Sun, 9 May 2021 23:05:56 +0800
+X-Gmail-Original-Message-ID: <CAGb2v64UN6=26QiQLqSWmNJPo49bPOQ3Q-Oz=LsbZz3JcszU0Q@mail.gmail.com>
+Message-ID: <CAGb2v64UN6=26QiQLqSWmNJPo49bPOQ3Q-Oz=LsbZz3JcszU0Q@mail.gmail.com>
+Subject: Re: [PATCH] power: supply: axp20x_battery: implement writeable status
+ to enable/disable battery charging
+To:     Hermann.Lauer@uni-heidelberg.de
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace /* Fall through */ comment with pseudo-keyword macro fallthrough[1]
+Hi,
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+On Wed, May 5, 2021 at 7:29 PM <Hermann.Lauer@uni-heidelberg.de> wrote:
+>
+> Dear Maintainers,
+>
+> this patch allows enabling/disabling charging for the axp209 PMIC through a
+> writeable status property.
 
-Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
----
- drivers/scsi/libsas/sas_discover.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  ^ writable
 
-diff --git a/drivers/scsi/libsas/sas_discover.c b/drivers/scsi/libsas/sas_discover.c
-index 9f5068f3bcfb..dd205414e505 100644
---- a/drivers/scsi/libsas/sas_discover.c
-+++ b/drivers/scsi/libsas/sas_discover.c
-@@ -461,7 +461,7 @@ static void sas_discover_domain(struct work_struct *work)
- 		break;
- #else
- 		pr_notice("ATA device seen but CONFIG_SCSI_SAS_ATA=N so cannot attach\n");
--		/* Fall through */
-+		fallthrough;
- #endif
- 		/* Fall through - only for the #else condition above. */
- 	default:
--- 
-2.25.1
+>
+> This works on the axp209 of Banana {Pi M1+,Pro}. I have no access to
+> the other chips the driver deals with.
 
+This should work on all the AXP chips, as it's the same bit that
+controls the charger on all of them.
+
+> Thanks to ChenYu for the idea and greetings
+>   Hermann
+>
+> Signed-off-by: Hermann.Lauer@uni-heidelberg.de
+
+The patch itself looks good, but your commit message needs a bit of
+cleanup. Your commit message should only include details about the
+patch, especially why the patch was done, which is kind of missing.
+"What" was done is already obvious when looking at the body of the
+patch.
+
+Any pleasantries and other comments addressed to maintainers should
+be included after the "---" so as not to be included in git history.
+
+
+Thanks
+ChenYu
+
+
+> ---
+>  drivers/power/supply/axp20x_battery.c | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/power/supply/axp20x_battery.c b/drivers/power/supply/axp20x_battery.c
+> --- a/drivers/power/supply/axp20x_battery.c
+> +++ b/drivers/power/supply/axp20x_battery.c
+> @@ -40,6 +40,7 @@
+>  #define AXP209_FG_PERCENT              GENMASK(6, 0)
+>  #define AXP22X_FG_VALID                        BIT(7)
+>
+> +#define AXP20X_CHRG_CTRL1_ENABLE       BIT(7)
+>  #define AXP20X_CHRG_CTRL1_TGT_VOLT     GENMASK(6, 5)
+>  #define AXP20X_CHRG_CTRL1_TGT_4_1V     (0 << 5)
+>  #define AXP20X_CHRG_CTRL1_TGT_4_15V    (1 << 5)
+> @@ -468,7 +469,17 @@
+>         case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
+>                 return axp20x_set_max_constant_charge_current(axp20x_batt,
+>                                                               val->intval);
+> +       case POWER_SUPPLY_PROP_STATUS:
+> +               switch (val->intval) {
+> +               case POWER_SUPPLY_STATUS_CHARGING:
+> +                       return regmap_update_bits(axp20x_batt->regmap, AXP20X_CHRG_CTRL1,
+> +                               AXP20X_CHRG_CTRL1_ENABLE, AXP20X_CHRG_CTRL1_ENABLE);
+>
+> +               case POWER_SUPPLY_STATUS_DISCHARGING:
+> +               case POWER_SUPPLY_STATUS_NOT_CHARGING:
+> +                       return regmap_update_bits(axp20x_batt->regmap, AXP20X_CHRG_CTRL1,
+> +                               AXP20X_CHRG_CTRL1_ENABLE, 0);
+> +       }
+>         default:
+>                 return -EINVAL;
+>         }
+> @@ -491,7 +502,8 @@
+>  static int axp20x_battery_prop_writeable(struct power_supply *psy,
+>                                          enum power_supply_property psp)
+>  {
+> -       return psp == POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN ||
+> +       return psp == POWER_SUPPLY_PROP_STATUS ||
+> +              psp == POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN ||
+>                psp == POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN ||
+>                psp == POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT ||
+>                psp == POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX;
