@@ -2,84 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 658FA3775FC
+	by mail.lfdr.de (Postfix) with ESMTP id AE8A63775FD
 	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 11:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229700AbhEIJMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 05:12:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37520 "EHLO mail.kernel.org"
+        id S229731AbhEIJM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 05:12:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39566 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229596AbhEIJMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 05:12:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F03D6141D;
-        Sun,  9 May 2021 09:11:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620551475;
-        bh=dTPu7qA+xLGeJ/0FDcGhgI4f0XSe/BLwn8owpVQCXU4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BrUZPb9PWta8j618Q2nRKtwWz4Kgme+kHuy2vmxb9IjLL/+5XW0FpJPI9J9W1GLY3
-         QozJ3kTd0TbKMyNf6d2L/mVk/RQnQTrC7GPssaT+CclpgC7XGVbO80WkUOcYBAvW+v
-         aulBp/ENa7iKuuquLKrsugOJu6NR2qjkJUJMQgClXbNzVz+RRc/kAX4rSfWkFuNoCa
-         jtXooiGfc0LBV2Q6fCEJ+getejIiBUY9Q+JpLaJSJ3fLmAcKRoK8ZxEQx/JJUvPKav
-         B4U25EWsPRTAUgMHmZ5XeVOEKb4aWI9qtZwnDm/rXRnHQ0r8FWmbw11d7PB8GdCBhZ
-         mvU9tPNdUCt2Q==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        openrisc@lists.librecores.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] openrisc: mm/init.c: remove unused variable 'end' in paging_init()
-Date:   Sun,  9 May 2021 12:11:03 +0300
-Message-Id: <20210509091103.7985-3-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210509091103.7985-1-rppt@kernel.org>
-References: <20210509091103.7985-1-rppt@kernel.org>
+        id S229596AbhEIJM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 05:12:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6FC7AADDD;
+        Sun,  9 May 2021 09:11:55 +0000 (UTC)
+Date:   Sun, 9 May 2021 11:11:51 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] perf/urgent for v5.13-rc1
+Message-ID: <YJenV2X0Xo0i5TKE@zn.tnic>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Hi Linus,
 
-A build with W=1 enabled produces the following warning:
+please pull a single perf/urgent fix for 5.13-rc1.
 
-  CC      arch/openrisc/mm/init.o
-arch/openrisc/mm/init.c: In function 'paging_init':
-arch/openrisc/mm/init.c:131:16: warning: variable 'end' set but not used [-Wunused-but-set-variable]
-  131 |  unsigned long end;
-      |                ^~~
+Thx.
 
-Remove the unused variable 'end'.
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- arch/openrisc/mm/init.c | 3 ---
- 1 file changed, 3 deletions(-)
 
-diff --git a/arch/openrisc/mm/init.c b/arch/openrisc/mm/init.c
-index f3fa02b8838a..6e38ec96cab8 100644
---- a/arch/openrisc/mm/init.c
-+++ b/arch/openrisc/mm/init.c
-@@ -128,7 +128,6 @@ void __init paging_init(void)
- {
- 	extern void tlb_init(void);
- 
--	unsigned long end;
- 	int i;
- 
- 	printk(KERN_INFO "Setting up paging and PTEs.\n");
-@@ -144,8 +143,6 @@ void __init paging_init(void)
- 	 */
- 	current_pgd[smp_processor_id()] = init_mm.pgd;
- 
--	end = (unsigned long)__va(max_low_pfn * PAGE_SIZE);
--
- 	map_ram();
- 
- 	zone_sizes_init();
+The following changes since commit 635de956a7f5a6ffcb04f29d70630c64c717b56b:
+
+  Merge tag 'x86-mm-2021-04-29' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2021-04-29 11:41:43 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/perf_urgent_for_v5.13_rc1
+
+for you to fetch changes up to e10de314287c2c14b0e6f0e3e961975ce2f4a83d:
+
+  x86/events/amd/iommu: Fix invalid Perf result due to IOMMU PMC power-gating (2021-05-06 15:33:37 +0200)
+
+----------------------------------------------------------------
+Handle power-gating of AMD IOMMU perf counters properly when they are used.
+
+----------------------------------------------------------------
+Suravee Suthikulpanit (1):
+      x86/events/amd/iommu: Fix invalid Perf result due to IOMMU PMC power-gating
+
+ arch/x86/events/amd/iommu.c | 47 +++++++++++++++++++++++++--------------------
+ 1 file changed, 26 insertions(+), 21 deletions(-)
+
 -- 
-2.28.0
+Regards/Gruss,
+    Boris.
 
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
