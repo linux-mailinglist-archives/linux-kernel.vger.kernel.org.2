@@ -2,173 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173693774FC
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 04:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988F5377505
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 05:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbhEICgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 22:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46904 "EHLO
+        id S229699AbhEIDCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 23:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbhEICgx (ORCPT
+        with ESMTP id S229609AbhEIDCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 22:36:53 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908BDC061573
-        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 19:35:51 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id l6so12630189oii.1
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 19:35:51 -0700 (PDT)
+        Sat, 8 May 2021 23:02:44 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D4BC061573
+        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 20:01:40 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id a36so16506544ljq.8
+        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 20:01:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=r9Ua8oWrlaXnevwp1qRBCTYfaP2Kxy6kKlxQ7g9TNto=;
-        b=aRah5HVhSQD2lY7Xysyz+2AAdfczQP8Cm3324TGvJUGJI/x+4x2lqCvG4Ty1CKpdwh
-         TQfIf5fon4xgumYNce3vmWzt2iuX5B/Al88wm/2e4sE5u0TGjfx+Esua0zUzMPtGv+oA
-         JVB0gx/ThQiaNav1FYRkqZ9Fg5XcW/Ue83SFtKJj+cvnd89PrlUfigCwR7AMo2VD3yse
-         1++MuCy/qtJIPrVMxvv8oMVVbwHQETO4Uu0AtyHUaXbsFIVc70dBOYDMUsAVc/utvpKC
-         QfswuKwRK0qfPXYLLLuUqJzQz+qPr5WRo9kneZsEJQKB9k1VtdnBTAz49lxzPVGmvEez
-         oAOg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c00F5gdQd8J96Q6xsAfPKXtIOJ12DymA7I1VC+ABJMI=;
+        b=ZXbbWzGH/eL1fUAgVLnCJUUj6r+YqzdqdDMv0ikvcdMmVSBjVlBU3527+tNRCUaiSM
+         7m8ZTZPhoRTWkoXcymBN+P2y/Luf4xF3yzPt9VOXchyeMYTKTr57ivdXERQucDgeqYM2
+         ShoIySWR1fYr4SscaXtb78xNk5uidMng7rfzg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r9Ua8oWrlaXnevwp1qRBCTYfaP2Kxy6kKlxQ7g9TNto=;
-        b=ga0XpwZixfrZkOyPIgL81IubtK6HJdTjTmEP8BPikqRK0P36hAlw+1kAAWxYdw7Zck
-         vwST7j9jpd2yRkA+PJ1LDDvxYWFnjUvybZLNLIgKU4tJ8HOAEHnjtdjIOvsoPUgnJU97
-         GLTXEc1/SYZNevdRivbC0VaXMSBwWP/uDaldQh4B21pwot1WUkghgbsO3+kZv2EOc9Qt
-         bJVroMZPq5Al7BuwTyPUpoToWOWVi/bpdldYod8QVb5jJlok4tzG/Txb1I6WyKf1YXA2
-         kp1Lu7lRsO0DKjjCod2aau5tFTfVa0spo0uqyzQFAh2T7QYWyIc8qkPdoNDAcQcvB0nh
-         7S+g==
-X-Gm-Message-State: AOAM5306Tj5jIKxmZzvG+0vhIr0PcBjhESrpXiaow1UHftiQOMnYpJYb
-        vMrAfuAQlx/e4ODOI5WaruFMzw==
-X-Google-Smtp-Source: ABdhPJyVHEOsinNeIS1NO9xmznO1ZsHBCrMXt2BUBxRe+9jUIF88nrsAk0L02sHsbDYILGyL7tND8g==
-X-Received: by 2002:aca:d493:: with SMTP id l141mr7303636oig.51.1620527750843;
-        Sat, 08 May 2021 19:35:50 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x65sm848344otb.59.2021.05.08.19.35.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 May 2021 19:35:50 -0700 (PDT)
-Date:   Sat, 8 May 2021 21:35:47 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Prasad Malisetty <pmaliset@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        mgautam@codeaurora.org, swboyd@chromium.org, dianders@chromium.org,
-        mka@chromium.org
-Subject: Re: [PATCH] PCIe: qcom: Add support to control pipe clk mux
-Message-ID: <20210509023547.GJ2484@yoga>
-References: <1620520860-8589-1-git-send-email-pmaliset@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c00F5gdQd8J96Q6xsAfPKXtIOJ12DymA7I1VC+ABJMI=;
+        b=q6jGsSaS9KPERgjxSeI2AGGBhGy2p4K7nUXbgX1KGGafvwtFIftlDDODArwygU6XyR
+         iW0iS4LAoZ/k68AgxEbe/WlXGNdK5OtPIiFs6363V2EBEcytkdTsgi0oVFwYNH40GgpX
+         fTujnxjPf3acay7MVrCi9Ztiw5WGkwiIQXmSCgnFKS8f3OBSCoHpcy+UepdvEmC4Ltb2
+         hjh+L/6r4dVViMQv3uPxomO0zN85L9POlgjbUha3M+KSGkp2q0J4gR/e4zwFERD8MTF6
+         yXP/QwQr+slPIHRiEbT5Kit+7/oTWCJ/w5qizbc7NmlhpG1Me5v3phhp5J6wAGSijK2j
+         USUg==
+X-Gm-Message-State: AOAM5301BAUSYk8ZENQrPqTdX5mW9MyejUpGHHpL4PNiXPFK9szqf3cy
+        r796Js7b/IhNuXl50YFyBg7CE2NOsbElvXazWt0=
+X-Google-Smtp-Source: ABdhPJwORR8Ysb0fJlR/GTZz64uMFNvdAiw7yKD/yAZhuDfwHskEsBOmUiJcgWRn3VjLrC6Fx4P1Fw==
+X-Received: by 2002:a05:651c:2009:: with SMTP id s9mr10340409ljo.31.1620529298709;
+        Sat, 08 May 2021 20:01:38 -0700 (PDT)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id w23sm1773648lfu.132.2021.05.08.20.01.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 08 May 2021 20:01:38 -0700 (PDT)
+Received: by mail-lj1-f178.google.com with SMTP id s25so16558923lji.0
+        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 20:01:38 -0700 (PDT)
+X-Received: by 2002:ac2:5e6e:: with SMTP id a14mr11470223lfr.201.1620528822658;
+ Sat, 08 May 2021 19:53:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620520860-8589-1-git-send-email-pmaliset@codeaurora.org>
+References: <20210508122530.1971-1-justin.he@arm.com> <20210508122530.1971-2-justin.he@arm.com>
+ <CAHk-=wgSFUUWJKW1DXa67A0DXVzQ+OATwnC3FCwhqfTJZsvj1A@mail.gmail.com>
+ <YJbivrA4Awp4FXo8@zeniv-ca.linux.org.uk> <CAHk-=whZhNXiOGgw8mXG+PTpGvxnRG1v5_GjtjHpoYXd2Fn_Ow@mail.gmail.com>
+ <YJb9KFBO7MwJeDHz@zeniv-ca.linux.org.uk> <CAHk-=wjhrhkWbV_EY0gupi2ea7QHpGW=68x7g09j_Tns5ZnsLA@mail.gmail.com>
+ <CAHk-=wiOPkSm-01yZzamTvX2RPdJ0784+uWa0OMK-at+3XDd0g@mail.gmail.com> <YJdIx6iiU9YwnQYz@zeniv-ca.linux.org.uk>
+In-Reply-To: <YJdIx6iiU9YwnQYz@zeniv-ca.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 8 May 2021 19:53:26 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wih_O+0xG4QbLw-3XJ71Yh43_SFm3gp9swj8knzXoceZQ@mail.gmail.com>
+Message-ID: <CAHk-=wih_O+0xG4QbLw-3XJ71Yh43_SFm3gp9swj8knzXoceZQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/3] fs: introduce helper d_path_fast()
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Jia He <justin.he@arm.com>, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@ftp.linux.org.uk>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 08 May 19:41 CDT 2021, Prasad Malisetty wrote:
+On Sat, May 8, 2021 at 7:28 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+>         Re READ_ONCE() - we are wrapped into
+> read_seqbegin_or_lock(&rename_lock, &seq) there, so it's more about
+> being explicit than about correctness considerations.
 
-> PCIe driver needs to toggle between bi_tcxo and phy pipe
-> clock as part of its LPM sequence. This is done by setting
-> pipe_clk/ref_clk_src as parent of pipe_clk_src after phy init
-> 
-> Dependent on below change:
-> 
-> 	https://lore.kernel.org/patchwork/patch/1422499/
+Well, part of this all is that the next step is that "vsnprintf()"
+with '%pD' would basically use prepend_entries() with just the RCU
+lock.
 
-In what way is this change to the driver dependent on the addition of
-the node to DT?
+That said, even with the rename lock, that will only cause a retry on
+rename - it won't necessarily fix any confusion that comes from the
+compiler possibly silently re-loading 'parent' multiple times, and
+getting different pointers due to a concurrent rename.
 
-> 
-> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 23 ++++++++++++++++++++++-
->  1 file changed, 22 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 8a7a300..a9f69e8 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -9,6 +9,7 @@
->   */
->  
->  #include <linux/clk.h>
-> +#include <linux/clk-provider.h>
+Now, those different results should all be individually ok, due to RCU
+freeing, but it's _really_ confusing if 'parent' might be two
+different things within the same iteration of the loop.
 
-Can you help me see why this is needed?
+I don't see anything truly horrible that would happen - mainly "we'll
+prefetch one parent, and then due to reloading the pointer we might
+actually _use_ another parent entirely for the next iteration", but it
+really is best to avoid that kind of confusion.
 
->  #include <linux/crc8.h>
->  #include <linux/delay.h>
->  #include <linux/gpio/consumer.h>
-> @@ -166,6 +167,9 @@ struct qcom_pcie_resources_2_7_0 {
->  	struct regulator_bulk_data supplies[2];
->  	struct reset_control *pci_reset;
->  	struct clk *pipe_clk;
-> +	struct clk *pipe_clk_src;
-> +	struct clk *pipe_ext_src;
-> +	struct clk *ref_clk_src;
->  };
->  
->  union qcom_pcie_resources {
-> @@ -1168,7 +1172,19 @@ static int qcom_pcie_get_resources_2_7_0(struct qcom_pcie *pcie)
->  		return ret;
->  
->  	res->pipe_clk = devm_clk_get(dev, "pipe");
-> -	return PTR_ERR_OR_ZERO(res->pipe_clk);
-> +	if (IS_ERR(res->pipe_clk))
-> +		return PTR_ERR(res->pipe_clk);
-> +
-> +	res->pipe_clk_src = devm_clk_get(dev, "pipe_src");
-> +	if (IS_ERR(res->pipe_clk_src))
-
-How does this not fail on existing targets?
-
-> +		return PTR_ERR(res->pipe_clk_src);
-> +
-> +	res->pipe_ext_src = devm_clk_get(dev, "pipe_ext");
-> +	if (IS_ERR(res->pipe_ext_src))
-> +		return PTR_ERR(res->pipe_ext_src);
-> +
-> +	res->ref_clk_src = devm_clk_get(dev, "ref");
-> +	return PTR_ERR_OR_ZERO(res->ref_clk_src);
->  }
->  
->  static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
-> @@ -1255,6 +1271,11 @@ static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
->  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
->  {
->  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
-> +	struct dw_pcie *pci = pcie->pci;
-> +	struct device *dev = pci->dev;
-> +
-> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280"))
-
-Why is this specific to sc7280?
-
-> +		clk_set_parent(res->pipe_clk_src, res->pipe_ext_src);
-
-The naming here is not obvious to me, but I think you're going to use
-this to set parent of gcc_pcie_0_pipe_clk_src to pcie_0_pipe_clk?
-
-But in the commit message you're talking about switching back and forth
-between the pipe clock and tcxo, can you please help me understand where
-this is happening?
-
-
-PS. The new clocks should be mentioned in the binding.
-
-Regards,
-Bjorn
-
->  
->  	return clk_prepare_enable(res->pipe_clk);
->  }
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+                Linus
