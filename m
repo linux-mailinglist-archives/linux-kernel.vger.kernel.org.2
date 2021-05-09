@@ -2,123 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB86377791
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 18:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D08837778E
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 18:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhEIQ0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 12:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55356 "EHLO
+        id S229882AbhEIQ0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 12:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbhEIQ0m (ORCPT
+        with ESMTP id S229648AbhEIQZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 12:26:42 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3303AC061573
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 09:25:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=KRn3B1NtIl+yLDWbQMHjQsRz0WhuDJp2AzBSzKYNPXs=; b=imv9hB2TML0JeBx7j2mQHrO5O
-        AYFcyIq8/VbdQSDB+BQ1hpunSQhkNLg2Jw43jXsOW7ESZD0IVP8LPDpwoHKfsYAwXTIxt+jqPsX9n
-        /UrPmvtvfWdL/VmruDwTG+BUgYZKdmfcuEdVvyNIuDW/CPEW/2Cs5F66iB08GxQLA8Fxhs7BvuW87
-        Dgar8liqt2WxxhWgkB0i31ObqbFhlzEaLKfidGIWQnfYdjOrzJlJc47jPtLB1dLNIHp5ekmoJyS6E
-        6WI2rCMdMB06aeowGM8vvPTkfJ4mbAIdAiqtSCVl4UVhbct5v1nWA93Wgkot/cHiD5Qh8txqZ+DN5
-        JtSlq0niw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43816)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lfmF0-0007R1-3t; Sun, 09 May 2021 17:25:14 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lfmEn-0007ky-JK; Sun, 09 May 2021 17:25:01 +0100
-Date:   Sun, 9 May 2021 17:25:01 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: arch/arm/boot/compressed/decompress.c:50: warning: "memmove"
- redefined
-Message-ID: <20210509162501.GJ1336@shell.armlinux.org.uk>
-References: <202105091112.F5rmd4By-lkp@intel.com>
- <20210509122227.GH1336@shell.armlinux.org.uk>
- <CACRpkdaNVg9zgaDN0JG+Z8dMMk+0fdpYHwGMHS-FKUG9MZAb4w@mail.gmail.com>
+        Sun, 9 May 2021 12:25:59 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F569C061573;
+        Sun,  9 May 2021 09:24:55 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id p14-20020a05600c358eb029015c01f207d7so1782408wmq.5;
+        Sun, 09 May 2021 09:24:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eDSzWlroomnQ5h3Y6dUDqkb1FsjYS2fbu1DIxKf7c3A=;
+        b=cQozjKYypAyMo0LvueEtTElyTE89pbNeSyAoFIrXqpB1CpGFAdKfj7MVmVliTQj8q9
+         wbN9Nxi/zHWx8eZu4r9G59UNIuDM6+PtVjJiN1YBECdhW71T2vjY0vnnH5KpALtLXFek
+         Xums8DkBafio8UuYgRN6YGcnQQRUZ7H6hxO6genyBZWTKwj++V9YdtZ3QHDHqaaghcw0
+         LrUxJkyi8UDEjjDd62HYANDeBdcI1/zO6AyKgtL7RqSbdhV6FOcfX+TDgbk/PyD7lON2
+         dFL9H5Ud8wOUsk18ENiOcnGSzTpQdTOdnKUTTVRdfeoCeApLMmQXb+hoG1ZkZIynMuzG
+         IsVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eDSzWlroomnQ5h3Y6dUDqkb1FsjYS2fbu1DIxKf7c3A=;
+        b=ipGKHVR38A3t+8ElbNtGS+CpQ2DmpUaLyJowlL5SRLc/IEquv5EAkHTW6KwnssRm/c
+         uUZymeXKq50B9aOb7urbgSAyde4u5SOUsl6KQEEoNPZAyoJO1YBF5lZtMN1bo50A4D7Y
+         zO2ds6Zd7bcjIgXPEqo5NVjapeFAVSzTs72TX0/Uhy3xWr4FDrZU/Cj2o3n7aF7Z5YaF
+         f1pUiixPOx+3i0Teh1Cz0HRNYx3rdZjV4iEQ1eQmnwz6KYbuYDDouSlIWwZ8Mu3t1Za+
+         rQQpeAkuWEbMBNgHtwR876tDeYUl1aynLsuUVLCTNf5TjHlrvf2yFd5ElsYvZbgXql0P
+         6Gcg==
+X-Gm-Message-State: AOAM531A0P3QnlfimQLDofjCsXNQLK0StfNdJq9daVEuEaQMqo4CXwc5
+        2Fro1IhUvJJt0ni1ylQ4au7RJZGEgu7MrGG7ZQI=
+X-Google-Smtp-Source: ABdhPJxCTH5X6v8qARUz2sTxBc7o5z4ShukPhUKB3YkniYCZ9F1AhWzx8i6yLXakzqyxm36pS5Poti9A3Xxakw2v9vQ=
+X-Received: by 2002:a7b:c101:: with SMTP id w1mr33251557wmi.164.1620577493717;
+ Sun, 09 May 2021 09:24:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdaNVg9zgaDN0JG+Z8dMMk+0fdpYHwGMHS-FKUG9MZAb4w@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+References: <20210508195641.397198-1-robdclark@gmail.com> <20210508195641.397198-3-robdclark@gmail.com>
+In-Reply-To: <20210508195641.397198-3-robdclark@gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Sun, 9 May 2021 09:28:35 -0700
+Message-ID: <CAF6AEGvWJuOQqf7QqoVHB3CSM_uhgRLh3JZVFa=4m+FiD-hu3A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] drm/msm/dpu: Wire up needs_dirtyfb
+To:     dri-devel <dri-devel@lists.freedesktop.org>
+Cc:     Rob Clark <robdclark@chromium.org>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Hongbo Yao <yaohongbo@huawei.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ryan Houdek <Houdek.Ryan@fex-emu.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 09, 2021 at 05:17:49PM +0200, Linus Walleij wrote:
-> OK, paging in the KSan mailing list and key people.
-> 
-> Certainly this problem must be the same on all platforms
-> using an XZ-compressed kernel and not just Arm?
-> 
-> What I wonder is why the other platforms that use
-> XZ compression don't redefine memmove and
-> memcpy in their decompress.c clause for XZ?
-> 
-> Can we just delete these two lines?
-> #define memmove memmove
-> #define memcpy memcpy
+On Sat, May 8, 2021 at 12:53 PM Rob Clark <robdclark@gmail.com> wrote:
+>
+> From: Rob Clark <robdclark@chromium.org>
+>
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 
-We can't. XZ has:
+From Ryan (sending this for him because mailing list workflow is lame):
 
-#ifndef memmove
-/* Not static to avoid a conflict with the prototype in the Linux
- * headers. */
-void *memmove(void *dest, const void *src, size_t size)
-{
-...
-}
-#endif
+I have tested this on my end and it resolves the 120hz problem.
 
-So, if memmove is not defined in the preprocessor, the code will create
-its own implementation. memmove() is also defined in
-arch/arm/boot/compressed/string.c for use with other decompressors, so
-the local version in lib/decompress_unxz.c will conflict and cause a
-link time error.
+Tested-By: Ryan Houdek <Houdek.Ryan@fex-emu.org>
 
-The addition of KASan added this to arch/arm/include/asm/string.h:
-
-#if defined(CONFIG_KASAN) && !defined(__SANITIZE_ADDRESS__)
-#define memcpy(dst, src, len) __memcpy(dst, src, len)
-#define memmove(dst, src, len) __memmove(dst, src, len)
-#define memset(s, c, n) __memset(s, c, n)
-
-#ifndef __NO_FORTIFY
-#define __NO_FORTIFY /* FORTIFY_SOURCE uses __builtin_memcpy, etc. */
-#endif
-
-#endif
-
-created a conditional definition of memmove in the preprocessor, which
-ultimately caused this problem. lib/decompress_unxz.c wants it defined
-in the preprocessor _if_ one has a local implementation (we do.)
-
-Given that KASan should be disabled in the decompressor, maybe the
-conditional added by KASan to asm/string.h is insufficient? The
-makefile has:
-
-KASAN_SANITIZE          := n
-
-So really we should not be playing _any_ KASan games in the
-decompressor code.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+> index 5a74f93e29da..868ee6136438 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+> @@ -143,6 +143,19 @@ static bool dpu_crtc_get_scanout_position(struct drm_crtc *crtc,
+>         return true;
+>  }
+>
+> +static bool dpu_crtc_needs_dirtyfb(struct drm_crtc *crtc)
+> +{
+> +       struct drm_encoder *encoder;
+> +
+> +       drm_for_each_encoder_mask (encoder, crtc->dev, crtc->state->encoder_mask) {
+> +               if (dpu_encoder_get_intf_mode(encoder) == INTF_MODE_CMD) {
+> +                       return true;
+> +               }
+> +       }
+> +
+> +       return false;
+> +}
+> +
+>  static void _dpu_crtc_setup_blend_cfg(struct dpu_crtc_mixer *mixer,
+>                 struct dpu_plane_state *pstate, struct dpu_format *format)
+>  {
+> @@ -1343,6 +1356,7 @@ static const struct drm_crtc_helper_funcs dpu_crtc_helper_funcs = {
+>         .atomic_begin = dpu_crtc_atomic_begin,
+>         .atomic_flush = dpu_crtc_atomic_flush,
+>         .get_scanout_position = dpu_crtc_get_scanout_position,
+> +       .needs_dirtyfb = dpu_crtc_needs_dirtyfb,
+>  };
+>
+>  /* initialize crtc */
+> --
+> 2.30.2
+>
