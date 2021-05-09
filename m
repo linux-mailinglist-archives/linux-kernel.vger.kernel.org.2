@@ -2,58 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45D813775F4
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 11:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89300377603
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 11:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhEII7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 04:59:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229607AbhEII7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 04:59:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 297196140A;
-        Sun,  9 May 2021 08:58:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620550696;
-        bh=PcMjlLJocNQns2vKI2Mcx1MouVYWg+3v61Punsj0VxI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VVW/uJ4XMjbWJE+b5/8orGzzZtdEh4W/lIQcI9mDBGhH/Jv8Oa2gnY1VsQUgfl6p9
-         7LKESqyoRopKzNjCVGtCzu0641w0u+Gy5lkLXWFD21a2set6adJAHAT2Ms8OWHrMhO
-         W68JfHMGqS9Qh2h5a+6lSLYupw0t9Gpdht5bA22EdyPYW0du46MDviMzje8B8ZsC2u
-         M7ATMsxU0Sl/wS0JVNx1+Dellul2MGlvT25r70oURpT9kWbC8OcxTd6S9cdwImv5XE
-         iTMxlCSHRvtmCc2dAG9AZmnsbZlsPpzI9YqhEUTfnQbOHSqJKfxsXJ/3Nd4MmZO24A
-         1SUz/QudfBmuw==
-Date:   Sun, 9 May 2021 11:58:13 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     yishaih@nvidia.com, dledford@redhat.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/mlx4: Remove unnessesary check in
- mlx4_ib_modify_wq()
-Message-ID: <YJekJchyiVv2D+TO@unreal>
-References: <1620382961-69701-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        id S229596AbhEIJ2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 05:28:14 -0400
+Received: from cumulus.eginity.com ([199.168.187.4]:43302 "EHLO
+        nimbus.eginity.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhEIJ2N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 05:28:13 -0400
+X-Greylist: delayed 1092 seconds by postgrey-1.27 at vger.kernel.org; Sun, 09 May 2021 05:28:13 EDT
+Received: from [192.168.0.10] (unknown [68.204.106.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dmerillat@eginity.com)
+        by nimbus.eginity.com (Postfix) with ESMTPSA id 18B632043F;
+        Sun,  9 May 2021 05:08:55 -0400 (EDT)
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.101.5 at nimbus
+DKIM-Filter: OpenDKIM Filter v2.9.2 nimbus.eginity.com 18B632043F
+To:     Len Brown <lenb@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Dan Merillat <git@dan.eginity.com>
+Subject: [PATCH] tools/power/turbostat: fix dump for AMD cpus
+Message-ID: <c60a2dcd-acc4-a9da-6518-fc05165ae4ef@eginity.com>
+Date:   Sun, 9 May 2021 05:08:55 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620382961-69701-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 06:22:41PM +0800, Jiapeng Chong wrote:
-> cur_state and new_state are enums and when GCC considers
-> them as unsigned, the conditions are never met.
-> 
-> Clean up the following smatch warning:
-> 
-> drivers/infiniband/hw/mlx4/qp.c:4258 mlx4_ib_modify_wq() warn: unsigned
-> 'cur_state' is never less than zero.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/infiniband/hw/mlx4/qp.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+turbostat --Dump exits early with status 243 (-13)
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+get_counters() calls get_msr_sum() on zen CPUS
+for MSR_PKG_ENERGY_STAT, but per_cpu_msr_sum
+has not been initialized.
+
+Signed-off-by: Dan Merillat <git@dan.eginity.com>
+---
+ tools/power/x86/turbostat/turbostat.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/tools/power/x86/turbostat/turbostat.c
+b/tools/power/x86/turbostat/turbostat.c
+index 47d3ba895d6d..c133fef270f6 100644
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -6432,6 +6432,8 @@ int main(int argc, char **argv)
+
+ 	turbostat_init();
+
++	msr_sum_record();
++
+ 	/* dump counters and exit */
+ 	if (dump_only)
+ 		return get_and_dump_counters();
+@@ -6443,7 +6445,6 @@ int main(int argc, char **argv)
+ 		return 0;
+ 	}
+
+-	msr_sum_record();
+ 	/*
+ 	 * if any params left, it must be a command to fork
+ 	 */
+-- 
+2.31.1
+
