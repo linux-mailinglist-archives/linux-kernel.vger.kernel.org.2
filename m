@@ -2,102 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B82377755
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3880377760
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhEIPa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 11:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
+        id S229852AbhEIPkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 11:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhEIPa0 (ORCPT
+        with ESMTP id S229645AbhEIPkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 11:30:26 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7552DC061574
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 08:29:23 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id t11so19641287lfl.11
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 08:29:23 -0700 (PDT)
+        Sun, 9 May 2021 11:40:13 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC56C061573
+        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 08:39:10 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id 69so3320810plc.5
+        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 08:39:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RfytLqDiupqOX141fLSL5xEwQRMVrqKR8ufOfjP5OyA=;
-        b=Ktds/ZaQeE5yB1wDXiD5N5gvkojsmePb+JwhTjC9LepAwBxMhNer2JQfvxPn6D2I5c
-         GjuoVORhoE1YlrqXe4XFQooOGPkmgIgjFbO7okAVLp05Rn9q55IV1SxGasgPvX0SPwMb
-         tEkRU9phTqgpHUJngUYXdG4H7Xj7SyiYuLCykRJ+kbEPfDV7zakynUgNZn94lvF8vb69
-         mB1wzSG06iyK/0bkWOdFuRw0nrNArksEN6tlC7QPafZwXvqxBW88SRKGF5U68aErubmV
-         Wp3/eomuX3rqFTUx93CNgCIB7VA/H2/tBSOiTFqaeLwQwluYNEzO4jBM2eyid+jgFEd+
-         vgLg==
+        d=fex-emu.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=oj0cxtHt4k2QsOXZJ1mqPuS+LtZjL33yvcuTzOU4i9s=;
+        b=iPAkYy0A4N8s4fD0pZoq7FzyT0D+8DjZXwCk6RYtKFLK7vSjHvVnOIk+ObDRKyOj50
+         tSp4hbp0MFDRo4U5V5RjC0lJEhqmUhidM34nw1H7TTDHJR3lsbgzdrb86iUWYsekbGoA
+         IjlqnNTtyNj3z2m3qndB7GPdKpB6Uirek398l58yxQdH667l3ySPwwKs+ER37NXLZtqC
+         f2Xyzakp4dd+55nb7onMffwEfH1/NxuCWefIj3hJ+u6HLcVBWxZKEuHI+/5txKXomSz4
+         wo3ORaUiHQ/DnKM8g+YJfNB0mQx3KRG9yKYxbgcP3Z4l2e75E5edYfzZyz6SyM8G5RmA
+         Pj6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RfytLqDiupqOX141fLSL5xEwQRMVrqKR8ufOfjP5OyA=;
-        b=TUhNFcFPwFpJzHGFqHuqpIJosGqOdhYntX4mRpufbfZCKcgPRJfdfrSewEwkZorcAC
-         ZggRjnt098EJIQGu5XoQcMDll5pymtQz01YjaWm3vYHncQ4E6d4INS5vRgbxneucdZE8
-         6Tec8EWopxMDEe7q+uhEQ9XHOZPvwUnpEGVH5G3IbInzoJk39gW/OMnp5+L2VYv4a692
-         7d4GR3ZYfm4NvHVCn/LVPTklTxRoeaOtt95cRZQDCGTqR4sjS/tVDECpT04ixOXzTgj8
-         WEztWxTwcRowGrfBLDREPwBjkigkcD04xegDKqu/tJVz/18q0nQhA300akB9VxGW28Sl
-         41ZQ==
-X-Gm-Message-State: AOAM532Rj4AiAAdUO3ypar/G5c6N88Z3X8iY9b6xJcF5hoDe4Q2XBoRd
-        2Hw8eT2pZG/3RQuZ7dG94IEdNK0ZD0VPGa79yP53og==
-X-Google-Smtp-Source: ABdhPJwduQTbLLBzaZ6ljrIubI2SeSOyYd8nExbkfVznc6U3Xu9stSuhqtNubx9O6xTJeH+5A/gdVoso1OHYnDxk5lY=
-X-Received: by 2002:a19:b0b:: with SMTP id 11mr13534649lfl.291.1620574161920;
- Sun, 09 May 2021 08:29:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oj0cxtHt4k2QsOXZJ1mqPuS+LtZjL33yvcuTzOU4i9s=;
+        b=TMeDA9t7GR+OW+S08KvGznSfJ+71xsivUV/JEFrpYJAap6g1HZWhBUHvwaLrduUlTx
+         ZH1rw9PZRUvreQmxRCyWtv1srexzDyE8cCK1duhsEt23FXK42ajH70UU2fn8ICZ827r3
+         8cks/lpOppctVc05RvgRqZSQ/9Ogi3KyKVnc9RcRdPil/w50EzNLQA2bcL3Bkxd/47nD
+         LvS55ougg7bPB3DLPnvstZjQqJFdxBwySl4gI+cqd9/avWOuQXHcUpnyluy7LqxaC48h
+         5y0mhUciwm1i8YEd3gQv99XK/GjksmrdSJt7XNkx/XNOLhCMC2R+R495D04EibqHZFO/
+         rgXA==
+X-Gm-Message-State: AOAM533KoAWz2/8NdI4N6rHoacuviaWZQnqg1m1b9oHSfinZEnzcCrEF
+        oD2989H0QlYkScK1etYhQ/doDg==
+X-Google-Smtp-Source: ABdhPJzuLvXgVXIw+/LHFTPK/5u6YP6h1gj2+taNgTrrzE8i9b7+EhMUEJXEeJqGgSCKFtZKjzuPGg==
+X-Received: by 2002:a17:902:7c94:b029:e6:e1d7:62b7 with SMTP id y20-20020a1709027c94b02900e6e1d762b7mr20240359pll.29.1620574750226;
+        Sun, 09 May 2021 08:39:10 -0700 (PDT)
+Received: from localhost.localdomain (76-242-91-105.lightspeed.sntcca.sbcglobal.net. [76.242.91.105])
+        by smtp.gmail.com with ESMTPSA id x27sm9505403pfo.216.2021.05.09.08.39.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 May 2021 08:39:09 -0700 (PDT)
+From:   houdek.ryan@fex-emu.org
+X-Google-Original-From: Houdek.Ryan@fex-emu.org
+To:     robdclark@gmail.com
+Cc:     abhinavk@codeaurora.org, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        kalyan_t@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maxime@cerno.tech,
+        miaoqinglang@huawei.com, robdclark@chromium.org, sean@poorly.run,
+        swboyd@chromium.org, yaohongbo@huawei.com,
+        Ryan Houdek <Houdek.Ryan@fex-emu.org>
+Subject: Tested
+Date:   Sun,  9 May 2021 08:38:42 -0700
+Message-Id: <20210509153842.124974-1-Houdek.Ryan@fex-emu.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210508195641.397198-3-robdclark@gmail.com>
+References: <20210508195641.397198-3-robdclark@gmail.com>
 MIME-Version: 1.0
-References: <20210503144350.7496-1-aardelean@deviqon.com> <20210508161643.5990ec15@jic23-huawei>
- <CACRpkdaK6AMVUC+B7JW3y28nNeAYHAS9UjC40KfShZNrHLD7rQ@mail.gmail.com> <20210509111925.52f3f4e3@jic23-huawei>
-In-Reply-To: <20210509111925.52f3f4e3@jic23-huawei>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 9 May 2021 17:29:10 +0200
-Message-ID: <CACRpkdZ2mC5V6PdphmtmtQKHZwPfc7mVgZ-FH3io2ihB8foA4g@mail.gmail.com>
-Subject: Re: [PATCH] iio: core: return ENODEV if ioctl is unknown
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexandru Ardelean <aardelean@deviqon.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Nuno Sa <nuno.sa@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 9, 2021 at 12:18 PM Jonathan Cameron <jic23@kernel.org> wrote:
-> On Sat, 8 May 2021 20:21:08 +0200
-> Linus Walleij <linus.walleij@linaro.org> wrote:
+I have tested this on my end and it resolves the 120hz problem.
 
-> > Unless you really like to base your work on Gregs tree for
-> > some reason or other, that is.
->
-> Definitely appreciate Greg's help (and patience), but no
-> particularly strong reason to waste his time dealing with my
-> mess ups. Hopefully they'll reduce now IIO trees are going directly
-> into linux-next though.
-
-I'd suggest to move to sending pulls to Torvalds directly
-for IIO to cut the intermediary staging tree step, since
-now the subsystem is pretty large and see a bunch of
-frequent fixes that need an express path to Torvalds.
-
-Pushing through Greg per se isn't really the problem,
-I think the problem is that IIO is going through the
-staging tree which (I guess) isn't a high priority activity
-and not expected to carry any serious critical fixes and
-I guess this can cause lags.
-
-Maybe Greg has some other branch to take in IIO
-fixes and for-next but I don't really see the point.
-
-The IIO left in the staging tree is just regular staging
-business at this point, the main IIO is much more
-important.
-
-Linus 2: would pulling the IIO tree directly work for
-you if Jonathan makes up his mind in favor for that?
-
-Yours,
-Linus Walleij
+Tested-By: Ryan Houdek <Houdek.Ryan@fex-emu.org>
