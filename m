@@ -2,139 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCD837771D
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633D5377724
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbhEIPHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 11:07:15 -0400
-Received: from mail-lj1-f176.google.com ([209.85.208.176]:38631 "EHLO
-        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhEIPHN (ORCPT
+        id S229699AbhEIPMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 11:12:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhEIPMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 11:07:13 -0400
-Received: by mail-lj1-f176.google.com with SMTP id v6so17651370ljj.5;
-        Sun, 09 May 2021 08:06:10 -0700 (PDT)
+        Sun, 9 May 2021 11:12:21 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252B0C061573;
+        Sun,  9 May 2021 08:11:18 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id t4so20832276ejo.0;
+        Sun, 09 May 2021 08:11:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=uGbBfBDdd27ACbtuU1IcDMGTiO49DUlYvgrRV0jM4gc=;
+        b=T36kbnA5q3XgUHp75M44R1ULfkZmAo7kFZXbv495VUupuO5EUgvagD5KdrXlK7W8PL
+         LkKg3QE9Zneg5TOemZDjWspb9yzDp/3swh7kTvQE/QwkMKR/KY2yQkjrakwKE97deDGD
+         mlopZn5CUDVVSvnmxZtRKbTfhb6OpXyS7CMW4TDgAgn6g81ipikMJNvXjC55QDLrtL1y
+         az3p0t5SIt9BOeZuMBAR0tXJtlLllioQzhPVyllM5AfdADicsyPdGrAxq8IfV0eiGy7/
+         8fv8zH/pXUbOUro2psS+FeznIUthRnGomQ7JpOHSne7es/FazGknXUsRDzdFZzA4kpaT
+         yfKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=OQjw04OJR2D4IqoTtXU0N4drQxCgCETBxjmIRrkObds=;
-        b=fIAMHNKevosjt4dyL6cre+Vvd7IaA4cO2h09izNbUpQsgQaDhdPnWQQWv++HJvkxoL
-         tA3XZkSJ3d1zSVLjINfCcZ4ckt2cj2apFElL7Zt4oOCdJxPgZnwfkd8bwTHynw9gBE/W
-         NV4Q+eaB+3BIGf7uShoSFLErEnCJQcX3NtGkah6sH31SSN84nZmngmfM1bTdkDTM80Tt
-         pJmaevRqFFZvifI6NioIWDM9oucTyk+yyni1alfX9IqCe6Wf/YRrvWNFYMgw9K6BVaiE
-         N8zAFhzK4FAl/3SOjWwRMs+lQIiSxNewD/QhZZEXz6TzicqIEl3lhjKwyLns6tJ5AAWD
-         TEbw==
-X-Gm-Message-State: AOAM530TyT9Vp/dNeC5IWhS2okJuaagGH4LH+fUAL7y7nw3mCOGcwFTg
-        tBzEINDPw0kWEYPZsayGSPxRTmu7hJ/Ttg==
-X-Google-Smtp-Source: ABdhPJzRcT+xfJZpru0kNQwPbQoQxC80kteh6gI6yOm+3/Ly3/+jDMEP1fGZx4NYxI3tuuiIB3tfjg==
-X-Received: by 2002:a2e:8756:: with SMTP id q22mr16773180ljj.414.1620572769323;
-        Sun, 09 May 2021 08:06:09 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id v14sm1938381lfo.76.2021.05.09.08.06.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 09 May 2021 08:06:08 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id b7so17637121ljr.4;
-        Sun, 09 May 2021 08:06:08 -0700 (PDT)
-X-Received: by 2002:a2e:9810:: with SMTP id a16mr17138024ljj.78.1620572768750;
- Sun, 09 May 2021 08:06:08 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=uGbBfBDdd27ACbtuU1IcDMGTiO49DUlYvgrRV0jM4gc=;
+        b=hL0iaz8vBtY7xs/NZ4WOUy7hLWu7Ohx1bu2PXZmtrbLbwUl12PYxol5ntGuZ6oByxY
+         qm7MwF1egWWc2hRCa8lhn0K0llt34aXnn1gY7T5FhLm+ThqkTMyx1NzglP9FduvHXUpW
+         79pD9G7mMFgh5k1YH4U6ktwpHxH0IwTYOjMDnSKv3Re2U7vo/5Pmfg/NMw9I3l8jGwxV
+         F2V+4lQGK8QtyzX3RKYSYW+75rkWq1CuMEwjAwtk/JRzHVqj5M8Uw6MMp87j80yaPrEs
+         J4Ou2dX6y6V93Ugp6d8EwDVFUCF3wxTN+Gq2mxc1HDQD6mSQNxMCRWB0xe4a5Vdgrigc
+         zf6Q==
+X-Gm-Message-State: AOAM533cU44RHkO0vGEVlDMTIQp2UBEaG/aeUQVwLSilBBaX+vXCa/Fe
+        37LnUk/ArLVcX4t+pgqa+BQ=
+X-Google-Smtp-Source: ABdhPJx2OrA83CaWegJKdEVv8+rk5M7JCtI80qpL4yLmEy2KKtTfcjWXrxOosouQnt/hRGBSO0aChA==
+X-Received: by 2002:a17:906:36da:: with SMTP id b26mr21532198ejc.8.1620573075316;
+        Sun, 09 May 2021 08:11:15 -0700 (PDT)
+Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
+        by smtp.gmail.com with ESMTPSA id p13sm6901728ejr.87.2021.05.09.08.11.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 May 2021 08:11:14 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sun, 9 May 2021 17:11:12 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Valdis Kl=?utf-8?Q?=c4=93?=tnieks <valdis.kletnieks@vt.edu>,
+        David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: 'make O=' indigestion with module signing
+Message-ID: <20210509151112.GA839293@gmail.com>
+References: <134696.1615510534@turing-police>
+ <109018.1615463088@turing-police>
+ <91190.1615444370@turing-police>
+ <972381.1615459754@warthog.procyon.org.uk>
+ <1486567.1615464259@warthog.procyon.org.uk>
+ <2026575.1615539696@warthog.procyon.org.uk>
 MIME-Version: 1.0
-References: <20210421090354.GF19953@lemon.iwr.uni-heidelberg.de>
- <CAGb2v64U3vMew8LUU776Mx7jYj3eVb4FXQdXMZ0aJNBPUh2D2A@mail.gmail.com> <20210505112902.GC5302@lemon.iwr.uni-heidelberg.de>
-In-Reply-To: <20210505112902.GC5302@lemon.iwr.uni-heidelberg.de>
-Reply-To: wens@csie.org
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Sun, 9 May 2021 23:05:56 +0800
-X-Gmail-Original-Message-ID: <CAGb2v64UN6=26QiQLqSWmNJPo49bPOQ3Q-Oz=LsbZz3JcszU0Q@mail.gmail.com>
-Message-ID: <CAGb2v64UN6=26QiQLqSWmNJPo49bPOQ3Q-Oz=LsbZz3JcszU0Q@mail.gmail.com>
-Subject: Re: [PATCH] power: supply: axp20x_battery: implement writeable status
- to enable/disable battery charging
-To:     Hermann.Lauer@uni-heidelberg.de
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2026575.1615539696@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Wed, May 5, 2021 at 7:29 PM <Hermann.Lauer@uni-heidelberg.de> wrote:
->
-> Dear Maintainers,
->
-> this patch allows enabling/disabling charging for the axp209 PMIC through a
-> writeable status property.
+* David Howells <dhowells@redhat.com> wrote:
 
-  ^ writable
+> Valdis Klētnieks <valdis.kletnieks@vt.edu> wrote:
+> 
+> > So the root cause was: 'make mrproper doesn't clean certs/' out enough,
+> > and this chunk of certs/Makefile
+> > ...
+> > I admit not being sure how (or if) this should be fixed
+> 
+> It's tricky because CONFIG_MODULE_SIG_KEY may not point to a file, let alone a
+> file that was autogenerated - it can be given a PKCS#11 URI, for instance.  I
+> had to put in the autogeneration based on a magic config string value to stop
+> randconfig blowing up - but it only does the autogeneration if you don't put
+> in your own file there before building.
+> 
+> Possibly I can add something like:
+> 
+> 	clean-files := signing_key.pem x509.genkey
+> 
+> inside the
+> 
+> 	ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
+> 	...
+> 	endif
+> 
+> section.
 
->
-> This works on the axp209 of Banana {Pi M1+,Pro}. I have no access to
-> the other chips the driver deals with.
+Note that this bug is now upstream in Linus's tree and has broken
+the deb-pkg distro kernel build method.
 
-This should work on all the AXP chips, as it's the same bit that
-controls the charger on all of them.
+Would be nice to make 'make mrproper' work again.
 
-> Thanks to ChenYu for the idea and greetings
->   Hermann
->
-> Signed-off-by: Hermann.Lauer@uni-heidelberg.de
+Thanks,
 
-The patch itself looks good, but your commit message needs a bit of
-cleanup. Your commit message should only include details about the
-patch, especially why the patch was done, which is kind of missing.
-"What" was done is already obvious when looking at the body of the
-patch.
-
-Any pleasantries and other comments addressed to maintainers should
-be included after the "---" so as not to be included in git history.
-
-
-Thanks
-ChenYu
-
-
-> ---
->  drivers/power/supply/axp20x_battery.c | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/power/supply/axp20x_battery.c b/drivers/power/supply/axp20x_battery.c
-> --- a/drivers/power/supply/axp20x_battery.c
-> +++ b/drivers/power/supply/axp20x_battery.c
-> @@ -40,6 +40,7 @@
->  #define AXP209_FG_PERCENT              GENMASK(6, 0)
->  #define AXP22X_FG_VALID                        BIT(7)
->
-> +#define AXP20X_CHRG_CTRL1_ENABLE       BIT(7)
->  #define AXP20X_CHRG_CTRL1_TGT_VOLT     GENMASK(6, 5)
->  #define AXP20X_CHRG_CTRL1_TGT_4_1V     (0 << 5)
->  #define AXP20X_CHRG_CTRL1_TGT_4_15V    (1 << 5)
-> @@ -468,7 +469,17 @@
->         case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
->                 return axp20x_set_max_constant_charge_current(axp20x_batt,
->                                                               val->intval);
-> +       case POWER_SUPPLY_PROP_STATUS:
-> +               switch (val->intval) {
-> +               case POWER_SUPPLY_STATUS_CHARGING:
-> +                       return regmap_update_bits(axp20x_batt->regmap, AXP20X_CHRG_CTRL1,
-> +                               AXP20X_CHRG_CTRL1_ENABLE, AXP20X_CHRG_CTRL1_ENABLE);
->
-> +               case POWER_SUPPLY_STATUS_DISCHARGING:
-> +               case POWER_SUPPLY_STATUS_NOT_CHARGING:
-> +                       return regmap_update_bits(axp20x_batt->regmap, AXP20X_CHRG_CTRL1,
-> +                               AXP20X_CHRG_CTRL1_ENABLE, 0);
-> +       }
->         default:
->                 return -EINVAL;
->         }
-> @@ -491,7 +502,8 @@
->  static int axp20x_battery_prop_writeable(struct power_supply *psy,
->                                          enum power_supply_property psp)
->  {
-> -       return psp == POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN ||
-> +       return psp == POWER_SUPPLY_PROP_STATUS ||
-> +              psp == POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN ||
->                psp == POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN ||
->                psp == POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT ||
->                psp == POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX;
+	Ingo
