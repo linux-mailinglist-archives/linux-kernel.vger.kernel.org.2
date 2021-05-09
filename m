@@ -2,60 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A43437788C
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 22:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CC4377896
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 23:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhEIUvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 16:51:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229699AbhEIUvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 16:51:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B1160611F1;
-        Sun,  9 May 2021 20:49:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620593399;
-        bh=Or2wtFw29TMPQHK396LbfoTr1B0IMGRhF3w9vb5ms0o=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ZSjRiYYa6FrihjdgKXn551Fy1BO8K39Bnxf+vi3WN3jZ1kxhDiokF2IkZPDXYduXy
-         D1cwK7IXy6gqUYzRvIFIh8lpmuMh3ezVVPzkdsQ8JGqY9uPJ/k9J7Ha92/9/1EkZBl
-         slO7sYZEZt6ulBIVHlVteWCOD5q7dS11YSA/q322A38UlDPtgeGJQX8KbOQAX5Etz9
-         +STVFtUWIH4ZS5BL5AGYXHhvjRDBvO8QbuyBDdh+uRT4xC2ilBmqojwF9V6sEXruTu
-         //2KpmkNT8i6Z0ScHWntabhHRdfukCBhwHwFkYZb3BAb8aDLfDNpQKYWdNUWs8V0sP
-         RWkx6XvItEcNg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AB5BA60A0B;
-        Sun,  9 May 2021 20:49:59 +0000 (UTC)
-Subject: Re: [GIT PULL] SMB3 Fixes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAH2r5mspgQ7Xh22vuiSVbfJ00QGeQNJL_J1V4u+Mt=-U5jK+Pw@mail.gmail.com>
-References: <CAH2r5mspgQ7Xh22vuiSVbfJ00QGeQNJL_J1V4u+Mt=-U5jK+Pw@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-cifs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAH2r5mspgQ7Xh22vuiSVbfJ00QGeQNJL_J1V4u+Mt=-U5jK+Pw@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/5.13-rc-smb3-part3
-X-PR-Tracked-Commit-Id: c1f8a398b6d661b594556a91224b096d92293061
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0a55a1fbed0b65ed52491caada7d2e936573d464
-Message-Id: <162059339969.8686.13569292928881369544.pr-tracker-bot@kernel.org>
-Date:   Sun, 09 May 2021 20:49:59 +0000
-To:     Steve French <smfrench@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        id S229936AbhEIVHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 17:07:32 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:55437 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229840AbhEIVHb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 17:07:31 -0400
+X-Originating-IP: 90.65.108.55
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 1863D1BF207;
+        Sun,  9 May 2021 21:06:26 +0000 (UTC)
+Date:   Sun, 9 May 2021 23:06:25 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Edmundo Carmona Antoranz <eantoranz@gmail.com>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        cw00.choi@samsung.com, krzysztof.kozlowski@canonical.com,
+        b.zolnierkie@samsung.com, a.zummo@towertech.it,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] rtc: max77686: Remove some dead code
+Message-ID: <YJhO0cEqpbJAdv7s@piout.net>
+References: <a6b23ee8d3ea78f62d3fda0b53aa273718f14c6d.1620452523.git.christophe.jaillet@wanadoo.fr>
+ <CAOc6etaUPtJqoH9DBDE72nDW7s7iEZHnaJRpKx9zFow02WOZig@mail.gmail.com>
+ <9f34ebcd-0c17-cd7f-eb08-52c6c3dc7b03@wanadoo.fr>
+ <CAOc6etYwTvVPnoB3BQfuQEikvsCwSs9AqBWnLFrs9zQ0pJGp1A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOc6etYwTvVPnoB3BQfuQEikvsCwSs9AqBWnLFrs9zQ0pJGp1A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 9 May 2021 09:37:17 -0500:
+On 08/05/2021 18:06:03-0600, Edmundo Carmona Antoranz wrote:
+> On Sat, May 8, 2021 at 10:59 AM Christophe JAILLET
+> <christophe.jaillet@wanadoo.fr> wrote:
+> >
+> > >
+> > > Following the recent conversations, I think it might make sense to do
+> > > dev_err(&pdev->dev, "Failed to register RTC device: %pe\n", info->rtc_dev);
+> > >
+> > > Is that right?
+> > >
+> >
+> > Yes, it is right, but it should be done in another patch.
+> >
+> > Would you like to give it a try?
+> >
+> Sure, I'll have the patch ready to send it when I see yours on next.
 
-> git://git.samba.org/sfrench/cifs-2.6.git tags/5.13-rc-smb3-part3
+Does it make sense to print anything at all? Who would use the output?
+Is anyone actually going to read it?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0a55a1fbed0b65ed52491caada7d2e936573d464
-
-Thank you!
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
