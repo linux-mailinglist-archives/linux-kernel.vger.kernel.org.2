@@ -2,74 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3880377760
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79CAE377769
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbhEIPkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 11:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45406 "EHLO
+        id S229863AbhEIPnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 11:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhEIPkN (ORCPT
+        with ESMTP id S229640AbhEIPni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 11:40:13 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC56C061573
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 08:39:10 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id 69so3320810plc.5
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 08:39:10 -0700 (PDT)
+        Sun, 9 May 2021 11:43:38 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BF3C061573
+        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 08:42:35 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id s25so17733448lji.0
+        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 08:42:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fex-emu.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=oj0cxtHt4k2QsOXZJ1mqPuS+LtZjL33yvcuTzOU4i9s=;
-        b=iPAkYy0A4N8s4fD0pZoq7FzyT0D+8DjZXwCk6RYtKFLK7vSjHvVnOIk+ObDRKyOj50
-         tSp4hbp0MFDRo4U5V5RjC0lJEhqmUhidM34nw1H7TTDHJR3lsbgzdrb86iUWYsekbGoA
-         IjlqnNTtyNj3z2m3qndB7GPdKpB6Uirek398l58yxQdH667l3ySPwwKs+ER37NXLZtqC
-         f2Xyzakp4dd+55nb7onMffwEfH1/NxuCWefIj3hJ+u6HLcVBWxZKEuHI+/5txKXomSz4
-         wo3ORaUiHQ/DnKM8g+YJfNB0mQx3KRG9yKYxbgcP3Z4l2e75E5edYfzZyz6SyM8G5RmA
-         Pj6g==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=PXgXNpSb7vjgteIty9OCQxIuvvV/8IokdELG1uqHUhs=;
+        b=cg46VEhE4vmQ60m8FygJZ+YaG1Jkb9uYbOwlT0FXyAtqzmQCDMVHOLXnmoBvYR5CO9
+         1NvqVJLU5VLkME+/eaQr8LkEP1f/A9Tkz5wbK+qa1nznkS9dWEK4XTc3lfjRDlYIbmr3
+         GToMzufdkJfDmgbp1Oekreu+oJGOWlvu7fIQQDxIqdy9QFUlEWpbVdu0pCNhfrKMq3tL
+         QDR9uevhNEC49kY4e5xmbOziha1AECleTMEssJJAI6ez+cEb5M0lVCgZPT+JmKdWgesa
+         lOXt/EdHQcR4SXoXA8N5jAZBPkKjYZQx27oW5w+nKZ8kDcPJn5Ve3IxfuGjpQGq57VPe
+         xg3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oj0cxtHt4k2QsOXZJ1mqPuS+LtZjL33yvcuTzOU4i9s=;
-        b=TMeDA9t7GR+OW+S08KvGznSfJ+71xsivUV/JEFrpYJAap6g1HZWhBUHvwaLrduUlTx
-         ZH1rw9PZRUvreQmxRCyWtv1srexzDyE8cCK1duhsEt23FXK42ajH70UU2fn8ICZ827r3
-         8cks/lpOppctVc05RvgRqZSQ/9Ogi3KyKVnc9RcRdPil/w50EzNLQA2bcL3Bkxd/47nD
-         LvS55ougg7bPB3DLPnvstZjQqJFdxBwySl4gI+cqd9/avWOuQXHcUpnyluy7LqxaC48h
-         5y0mhUciwm1i8YEd3gQv99XK/GjksmrdSJt7XNkx/XNOLhCMC2R+R495D04EibqHZFO/
-         rgXA==
-X-Gm-Message-State: AOAM533KoAWz2/8NdI4N6rHoacuviaWZQnqg1m1b9oHSfinZEnzcCrEF
-        oD2989H0QlYkScK1etYhQ/doDg==
-X-Google-Smtp-Source: ABdhPJzuLvXgVXIw+/LHFTPK/5u6YP6h1gj2+taNgTrrzE8i9b7+EhMUEJXEeJqGgSCKFtZKjzuPGg==
-X-Received: by 2002:a17:902:7c94:b029:e6:e1d7:62b7 with SMTP id y20-20020a1709027c94b02900e6e1d762b7mr20240359pll.29.1620574750226;
-        Sun, 09 May 2021 08:39:10 -0700 (PDT)
-Received: from localhost.localdomain (76-242-91-105.lightspeed.sntcca.sbcglobal.net. [76.242.91.105])
-        by smtp.gmail.com with ESMTPSA id x27sm9505403pfo.216.2021.05.09.08.39.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 08:39:09 -0700 (PDT)
-From:   houdek.ryan@fex-emu.org
-X-Google-Original-From: Houdek.Ryan@fex-emu.org
-To:     robdclark@gmail.com
-Cc:     abhinavk@codeaurora.org, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        kalyan_t@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, maxime@cerno.tech,
-        miaoqinglang@huawei.com, robdclark@chromium.org, sean@poorly.run,
-        swboyd@chromium.org, yaohongbo@huawei.com,
-        Ryan Houdek <Houdek.Ryan@fex-emu.org>
-Subject: Tested
-Date:   Sun,  9 May 2021 08:38:42 -0700
-Message-Id: <20210509153842.124974-1-Houdek.Ryan@fex-emu.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210508195641.397198-3-robdclark@gmail.com>
-References: <20210508195641.397198-3-robdclark@gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=PXgXNpSb7vjgteIty9OCQxIuvvV/8IokdELG1uqHUhs=;
+        b=m7apT91QEPkj9yKpV8T6asaaEsB23TjokeEoHbi7bW7BND34MUMhHvvz27z1cmx5Is
+         wtyFh/CsQ/aNbF1AG6rJc6uqjSsQIk9tVOXFggXXjV0/0bRwwMw87nhMlTUAYhfpe98e
+         QGKUyQ2jQzM/J/ehnOrB0lm78aAoomjlzaY2+GybiGH46yM3w3juE10EIzSzNlICUmHH
+         vlvlaXAbsKKb6CWn9Xqci9Wkp4c92D3Cw5cvdwIJVjG/VS5en9H2Z90EoZ3GrwLJXRxZ
+         kOP7Fwg7pVRisyR/asbBSZLIPVXC9WC74SFSIzQPI/oE+yB5UulQGx3y/0dJM7RTGt1U
+         EeBw==
+X-Gm-Message-State: AOAM533rwXFGrH5oISCooML5CXb806xhrEue8MrWpk+0EU+R26lV5CG/
+        0knbKzmxCnm+fB23Ua6vgzftotrqMtll+gC3L1WC43Y1QZRDCoj1
+X-Google-Smtp-Source: ABdhPJx+juNBJa1Z9PloK2Mz0fuQbGypxZnhZxUFVUtiUKVkR8QCRoxFddt4r2fFv9QHNS14Jqjajg2eeIWpES91vzg=
+X-Received: by 2002:a2e:b4b1:: with SMTP id q17mr9235345ljm.40.1620574953684;
+ Sun, 09 May 2021 08:42:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Sun, 9 May 2021 21:12:22 +0530
+Message-ID: <CABJPP5BExfW+xre-3E-9EysYMhLGRzNrkPbTW3qomOKqc31PSQ@mail.gmail.com>
+Subject: Codespell dictionary path is no longer absolute
+To:     Joe Perches <joe@perches.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have tested this on my end and it resolves the 120hz problem.
+A year ago, the codespell dictionary was moved from
+/usr/share/codespell/dictionary.txt to data/dictionary.txt under
+the codespell_lib installation directory.
 
-Tested-By: Ryan Houdek <Houdek.Ryan@fex-emu.org>
+checkpatch.pl still has the default codespell path as
+/usr/share/codespell/dictionary.txt.
+Any new installations will now also need to specify --codespellfile
+option along with --codespell.
+
+Can auto detection of the dictionary path be enabled with something
+like this?
+
+-----
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 23697a6b1eaa..28ca5cfff2d5 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -889,6 +889,9 @@ if (open(my $spelling, '<', $spelling_file)) {
+}
+
+if ($codespell) {
++       if (! -e "$codespellfile" && which("python") ne "") {
++               $codespellfile = `python -c "import os.path as op; import code
+spell_lib; print(op.join(op.dirname(codespell_lib.__file__), 'data', 'dictiona
+ry.txt'), end='')"`;
++       }
+       if (open(my $spelling, '<', $codespellfile)) {
+               while (<$spelling>) {
+                       my $line = $_;
+-----
+
+Thanks,
+Dwaipayan.
