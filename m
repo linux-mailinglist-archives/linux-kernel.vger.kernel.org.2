@@ -2,87 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C04A3777B4
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 19:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22AD83777C0
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 19:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhEIRPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 13:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37676 "EHLO
+        id S230047AbhEIRQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 13:16:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbhEIRPi (ORCPT
+        with ESMTP id S229969AbhEIRQA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 13:15:38 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CAA1C061573
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 10:14:35 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id c21so11647774pgg.3
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 10:14:35 -0700 (PDT)
+        Sun, 9 May 2021 13:16:00 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60D2C06175F;
+        Sun,  9 May 2021 10:14:55 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id k19so12015834pfu.5;
+        Sun, 09 May 2021 10:14:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=dT5OkAYCALyixcxFHYYKTuu0iIYm2fnzdCuDeHhhfJw=;
-        b=Feg+YLNPEoJySXrfgZ14g85XpumBmBR8d0SXdMNJhUWLpSR7rXzYd+BXYJ1dvxTsQp
-         6V2nVvCDszeaA5iMGn7HJji93qJyUsKs6WaNzGAnK5rDVEOI3mTdLBJApVYS5R2nu7OU
-         iLKX3FKtXADm5vG2i2/9hFQoemCoEv0/d2bItN2Ru/tFbZTdtbX0N9ve/a9iAi2SY6R7
-         dvF4wNvi1xaqofYAbMd10KeVSpeQfI5qUOD627vXNXR+pL/2A0dxkYlcHjr7Uckq2FEG
-         AAchoiZjygbIidCUYvrePODMwVACaHgDqQARlsdxGvqF455/HSO4XmSU9ICLrXLfHttS
-         HKXQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=GdEsPts6/FPz2ykV0GJlUYI1XtzHN0Ot6bY7JwXZfAw=;
+        b=r5pfr6Y/hYoLMuYvvRNNHKA64Ok3+jbrkRkIszOPN61ZMQratGRruFgiyxq+ooCaI1
+         qjJD3bMHqmLnCNPAT8Q4VzngjBl7cBes7NxpCzNAYiECpk8VZkW7tiQNwciyHysSs2vP
+         27lzLYJDmsCTe6h61tGPO1fGq7xaBGJe8Ieho7MgAAp+R6uhIHhv2hQMvdoDcqbpec7+
+         CI2hD/3GkAKxgBIjSlkpKL9C/Es3OLaR73/pDvqcp7DEb0s+mBJje2VOilQJcnRySRU9
+         1Yw89sSccgd/xSa8Ac3IzCS2wXYSWneX33H5O6W7nNeg7+Q4UYRP5bV85e/zB+5IEd5K
+         jqYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=dT5OkAYCALyixcxFHYYKTuu0iIYm2fnzdCuDeHhhfJw=;
-        b=VDSY5SS6AT18rDdyWx52VLnUtStY0xjd76YS2ZjkVExM8WtvRxTxcjOLAfxnc2qmpz
-         8ghLYkugp30TeaWOCrP9slecDtnWwdlQ/GD9KRsyJzwDRMbzTdQa2IfekK+meshCaAn9
-         JHVQS0O4v1K75F42BDqZPtMvxq6xkBCeSD61bwb9wUtnXt+bH3kwSWD+4kMc8Xb87sl2
-         89AyWB2BpxHoF7SsgTZC5rhW/OnBh17MFHV0dO6xPHiWUj2zucPTnCxM1hNivitLO98r
-         TT4FFyQEiT3ME5Li5mke4/piNu5T+Ys5xHtm2HaQMRqdaHiWqXar4Ymue+yN7qB/8ivq
-         FSyg==
-X-Gm-Message-State: AOAM5338ER8g2UaAksx41zdTGQRbC9QL4F0tfpVHZqr1CWI5jWebqBc+
-        TM+4KBgfuIq6phf9T8NNmAo=
-X-Google-Smtp-Source: ABdhPJykw3FWTgTEI5/kBjsLomeWUheNQoTyz/VcsBdPm8L50AFxfj0DHw2M0RtpsDXFBqUKZa3UQQ==
-X-Received: by 2002:a05:6a00:895:b029:27f:96bb:915e with SMTP id q21-20020a056a000895b029027f96bb915emr21437655pfj.77.1620580474655;
-        Sun, 09 May 2021 10:14:34 -0700 (PDT)
-Received: from user ([2001:4490:4409:3b7b:b3a2:efed:aeca:89f9])
-        by smtp.gmail.com with ESMTPSA id a20sm9214970pfn.23.2021.05.09.10.14.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=GdEsPts6/FPz2ykV0GJlUYI1XtzHN0Ot6bY7JwXZfAw=;
+        b=Pq/85R91iFE+9dslZToAMoznqC9T7aJuuQZjfbSBpq6KdaIy9bz4LwReLA02VACpLh
+         qCzh7icm1KQs4eUwu6/iWQBmT1HOiuVbumPIiPiR8Q3TzJyBk/UTV9FWnGRPT80v4FgJ
+         fpyl6QaryXBTEP/1oEIqs5Oc98Pn6O0QXeVvOsVKUjJ22JYVVLFAS4BL8a1PRpg5Z0hi
+         dwt188UkvO0/pNIYyMvDlE+kF6mxRusZtMIz5G7Lmrr7HP1rvjt72PelT5zLxuiNryG7
+         REtSeOKojyAz/KM0v36aKAIqopdT+rxAKYRqpF85KUorN5xmyLimojQDXMb5dSt/qV2Z
+         8H2Q==
+X-Gm-Message-State: AOAM530XecfXjzhZkWCztdCxcxdD3lflCI/yybNav/2MHX13uwzlKGG+
+        7r6xmlVk4H8GmGjLH63tDSGQ80BRZlg=
+X-Google-Smtp-Source: ABdhPJyfTyhcaqaBiwtRrVzVgLHofeVtiicyzC7gqEaLV2wOpnXUqyRn4cBID+JEwF4g1xHRSnV6fQ==
+X-Received: by 2002:aa7:9885:0:b029:28e:9f7f:f23 with SMTP id r5-20020aa798850000b029028e9f7f0f23mr21585188pfl.75.1620580495157;
+        Sun, 09 May 2021 10:14:55 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id w12sm2121834pff.42.2021.05.09.10.14.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 10:14:34 -0700 (PDT)
-Date:   Sun, 9 May 2021 22:44:27 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     gregkh@linuxfoundation.org, atulgopinathan@gmail.com,
-        saurav.girepunje@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] staging: rtl8192e: Remove duplicate declartion
-Message-ID: <20210509171427.GA9937@user>
+        Sun, 09 May 2021 10:14:54 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     stable@vger.kernel.org
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+        linux-kernel@vger.kernel.org (open list),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH stable 5.4 3/3] ARM: 9020/1: mm: use correct section size macro to describe the FDT virtual address
+Date:   Sun,  9 May 2021 10:14:28 -0700
+Message-Id: <20210509171428.1537572-4-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210509171428.1537572-1-f.fainelli@gmail.com>
+References: <20210509171428.1537572-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove dupilcate declartion of function rtllib_stop_send_beaconsi()
-notify_wx_assoc_event() in rtl8192e/rtllib.h file.
+From: Ard Biesheuvel <ardb@kernel.org>
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+commit fc2933c133744305236793025b00c2f7d258b687 upstream
+
+Commit
+
+  149a3ffe62b9dbc3 ("9012/1: move device tree mapping out of linear region")
+
+created a permanent, read-only section mapping of the device tree blob
+provided by the firmware, and added a set of macros to get the base and
+size of the virtually mapped FDT based on the physical address. However,
+while the mapping code uses the SECTION_SIZE macro correctly, the macros
+use PMD_SIZE instead, which means something entirely different on ARM when
+using short descriptors, and is therefore not the right quantity to use
+here. So replace PMD_SIZE with SECTION_SIZE. While at it, change the names
+of the macro and its parameter to clarify that it returns the virtual
+address of the start of the FDT, based on the physical address in memory.
+
+Tested-by: Joel Stanley <joel@jms.id.au>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- drivers/staging/rtl8192e/rtllib.h | 2 --
- 1 file changed, 2 deletions(-)
+ arch/arm/include/asm/memory.h | 6 +++---
+ arch/arm/kernel/setup.c       | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index 4cabaf21c1ca..c6f8b772335c 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -1979,8 +1979,6 @@ void rtllib_softmac_new_net(struct rtllib_device *ieee,
- void SendDisassociation(struct rtllib_device *ieee, bool deauth, u16 asRsn);
- void rtllib_softmac_xmit(struct rtllib_txb *txb, struct rtllib_device *ieee);
-
--void rtllib_stop_send_beacons(struct rtllib_device *ieee);
--void notify_wx_assoc_event(struct rtllib_device *ieee);
- void rtllib_start_ibss(struct rtllib_device *ieee);
- void rtllib_softmac_init(struct rtllib_device *ieee);
- void rtllib_softmac_free(struct rtllib_device *ieee);
---
+diff --git a/arch/arm/include/asm/memory.h b/arch/arm/include/asm/memory.h
+index bb79e52aeb90..f717d7122d9d 100644
+--- a/arch/arm/include/asm/memory.h
++++ b/arch/arm/include/asm/memory.h
+@@ -68,8 +68,8 @@
+ #define XIP_VIRT_ADDR(physaddr)  (MODULES_VADDR + ((physaddr) & 0x000fffff))
+ 
+ #define FDT_FIXED_BASE		UL(0xff800000)
+-#define FDT_FIXED_SIZE		(2 * PMD_SIZE)
+-#define FDT_VIRT_ADDR(physaddr)	((void *)(FDT_FIXED_BASE | (physaddr) % PMD_SIZE))
++#define FDT_FIXED_SIZE		(2 * SECTION_SIZE)
++#define FDT_VIRT_BASE(physbase)	((void *)(FDT_FIXED_BASE | (physbase) % SECTION_SIZE))
+ 
+ #if !defined(CONFIG_SMP) && !defined(CONFIG_ARM_LPAE)
+ /*
+@@ -111,7 +111,7 @@ extern unsigned long vectors_base;
+ #define MODULES_VADDR		PAGE_OFFSET
+ 
+ #define XIP_VIRT_ADDR(physaddr)  (physaddr)
+-#define FDT_VIRT_ADDR(physaddr)  ((void *)(physaddr))
++#define FDT_VIRT_BASE(physbase)  ((void *)(physbase))
+ 
+ #endif /* !CONFIG_MMU */
+ 
+diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
+index d9bc70f25728..924285d0bccd 100644
+--- a/arch/arm/kernel/setup.c
++++ b/arch/arm/kernel/setup.c
+@@ -1080,7 +1080,7 @@ void __init setup_arch(char **cmdline_p)
+ 	void *atags_vaddr = NULL;
+ 
+ 	if (__atags_pointer)
+-		atags_vaddr = FDT_VIRT_ADDR(__atags_pointer);
++		atags_vaddr = FDT_VIRT_BASE(__atags_pointer);
+ 
+ 	setup_processor();
+ 	if (atags_vaddr) {
+-- 
 2.25.1
 
