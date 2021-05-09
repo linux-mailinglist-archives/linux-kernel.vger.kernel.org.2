@@ -2,176 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94503377599
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 07:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9592437759E
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 07:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhEIFNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 01:13:49 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:32241 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhEIFNs (ORCPT
+        id S229618AbhEIFez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 01:34:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229585AbhEIFex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 01:13:48 -0400
+        Sun, 9 May 2021 01:34:53 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803A3C061573
+        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 22:33:50 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id j12so4953374pgh.7
+        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 22:33:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1620537165; x=1652073165;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=XVtQRWhA4CuXLzObdTcbpeSXr8ZueHXWK6PH9f+p+0w=;
-  b=v1WPo1YHYOKGrHFhZjvvAWMzbEDpvW1UOzGpiw4sJHHElau0nbELpCbG
-   o4mg3/gFXyC8+nYa8Dxhjc7IrLPzLqW5QxtSdX3JBWds7y2cub0iSgwqs
-   hR3C/Vl0uT2tb68ja6H9+d4CC4GVlK0/WTt27aPFHf4zvO+D16locrgkV
-   M=;
-X-IronPort-AV: E=Sophos;i="5.82,284,1613433600"; 
-   d="scan'208";a="134015522"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2b-c300ac87.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 09 May 2021 05:12:39 +0000
-Received: from EX13D28EUC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-c300ac87.us-west-2.amazon.com (Postfix) with ESMTPS id 51476A17D3;
-        Sun,  9 May 2021 05:12:22 +0000 (UTC)
-Received: from u570694869fb251.ant.amazon.com.amazon.com (10.43.160.119) by
- EX13D28EUC001.ant.amazon.com (10.43.164.4) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sun, 9 May 2021 05:11:57 +0000
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
- <YIsAIzecktXXBlxn@apalos.home>
- <9bf7c5b3-c3cf-e669-051f-247aa8df5c5a@huawei.com>
- <YIwvI5/ygBvZG5sy@apalos.home>
- <33b02220-cc50-f6b2-c436-f4ec041d6bc4@huawei.com>
- <YJPn5t2mdZKC//dp@apalos.home>
- <75a332fa-74e4-7b7b-553e-3a1a6cb85dff@huawei.com>
- <YJTm4uhvqCy2lJH8@apalos.home>
- <bdd97ac5-f932-beec-109e-ace9cd62f661@huawei.com>
- <20210507121953.59e22aa8@carbon>
-User-agent: mu4e 1.4.15; emacs 27.1
-From:   Shay Agroskin <shayagr@amazon.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-CC:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        "Russell King" <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        "Jonathan Lemon" <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        "Cong Wang" <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
-In-Reply-To: <20210507121953.59e22aa8@carbon>
-Date:   Sun, 9 May 2021 08:11:35 +0300
-Message-ID: <pj41zl4kfclce0.fsf@u570694869fb251.ant.amazon.com>
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cFKDQU5DS343y/NTnTj8Fq7mQFzFjXVMKxe4AC0cmXg=;
+        b=N3E5Q68Hvi05h4SbeHN76QpPrhI054UiuR8kJhbjIHyEuoqPUGVy9od/ArqtgFwjPR
+         9VMknSlloTTmOC4bOeeUCbNyKqXv4qwkALG7POWBWn9Fhvp733XQWxsgInHHpQ0quc0v
+         nSVX0KG2NmHlrSSGOCTXwkRRl//9ouNsddQsxsfgSyyTYaQdP9/ltOz36fb7V9+vebuT
+         VZIYvD6mdN/7jTpK9/GMuLT3GHgmqsfLxuQqfzA+eR+RVa5gQY188Xfz+pnppeQ/nb6U
+         nUAdkMYp9GDh+P45S3iewsA2iGEIrpR2wzEjU6IS9w4UjsIHgpcz9oTW8/k/7m3dCNW3
+         rzmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cFKDQU5DS343y/NTnTj8Fq7mQFzFjXVMKxe4AC0cmXg=;
+        b=acjn5DoE3mhDBB87dIelCgNuuwCPaFc/GPOtdWSUqX55mYzql0HJ2niMGaJJNRkQ9x
+         tWfOR3Hkv8AgNLgbMaPB8YeywOMAgUV3GOSX9476jO0mzbgKdRU47fN/sCkmeeZ/4HiQ
+         1cbCuCuPTSqQ6DkDoO/GMbbQr4cWQ2J5J+ghyqNSYAx93odFxLOSCpy/ksj4liTPveVm
+         K+M6yN7BNQmTuRafh8JogPGqypRrGWf7qnzsoMcj94HM5xW+37gHE/a4uHbfyCUOwbUf
+         Def96L+b3M6t1sTLT+QNn7LMdY0vrefWh77gm6s2ahGsQaNzX+8GBSuDPXeLsRVObCqy
+         mbhw==
+X-Gm-Message-State: AOAM533YdfXh1GaDs1tfMR1NTt48XkRM+CxA8O0HRfKZz9230ABGK3rg
+        5HD5cQuuDlEWoGNu1u8Qhf8cJkaIC0A/rSwqqgY=
+X-Google-Smtp-Source: ABdhPJycf4ua0//MJBiTPY7efm8rJOJyoy+Y9IaTvvE8yfQPQ47AJMQ458VUk2bryzWtNfy9GGnqyG9D+QENDQ9vfA4=
+X-Received: by 2002:aa7:954d:0:b029:29f:d9a6:63d7 with SMTP id
+ w13-20020aa7954d0000b029029fd9a663d7mr15739543pfq.58.1620538430058; Sat, 08
+ May 2021 22:33:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Originating-IP: [10.43.160.119]
-X-ClientProxiedBy: EX13D13UWB002.ant.amazon.com (10.43.161.21) To
- EX13D28EUC001.ant.amazon.com (10.43.164.4)
+References: <20210508221328.7338-1-42.hyeyoo@gmail.com> <YJccjBMBiwLqFrB8@casper.infradead.org>
+In-Reply-To: <YJccjBMBiwLqFrB8@casper.infradead.org>
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Date:   Sun, 9 May 2021 14:33:38 +0900
+Message-ID: <CAB=+i9QyxOu_1QDfX5QA=pOxxnRURPnwd2Y0EbhoO1u0e=irBA@mail.gmail.com>
+Subject: Re: [PATCH] mm: kmalloc_index: remove case when size is more than 32MB
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, vbabka@suse.cz, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Jesper Dangaard Brouer <brouer@redhat.com> writes:
-
-> On Fri, 7 May 2021 16:28:30 +0800
-> Yunsheng Lin <linyunsheng@huawei.com> wrote:
+On Sun, May 09, 2021 at 12:19:40AM +0100, Matthew Wilcox wrote:
+> On Sun, May 09, 2021 at 07:13:28AM +0900, Hyeonggon Yoo wrote:
+> > the return value of kmalloc_index is used as index of kmalloc_caches,
 >
->> On 2021/5/7 15:06, Ilias Apalodimas wrote:
->> > On Fri, May 07, 2021 at 11:23:28AM +0800, Yunsheng Lin wrote:  
->> >> On 2021/5/6 20:58, Ilias Apalodimas wrote:  
->> >>>>>>  
->> >>>>>
-> ...
->> > 
->> > 
->> > I think both choices are sane.  What I am trying to explain 
->> > here, is
->> > regardless of what we choose now, we can change it in the 
->> > future without
->> > affecting the API consumers at all.  What will change 
->> > internally is the way we
->> > lookup the page pool pointer we are trying to recycle.  
->> 
->> It seems the below API need changing?
->> +static inline void skb_mark_for_recycle(struct sk_buff *skb, 
->> struct page *page,
->> +					struct xdp_mem_info *mem)
->
-> I don't think we need to change this API, to support future 
-> memory
-> models.  Notice that xdp_mem_info have a 'type' member.
+> it doesn't matter.  every few weeks somebody posts a patch to "optimise"
+> kmalloc_index, failing to appreciate that it's only ever run at compile
+> time because it's all under __builtin_constant_p().
 
-Hi,
-Providing that we will (possibly as a future optimization) store 
-the pointer to the page pool in struct page instead of strcut 
-xdp_mem_info, passing
-xdp_mem_info * instead of struct page_pool * would mean that for 
-every packet we'll need to call
-             xa = rhashtable_lookup(mem_id_ht, &mem->id, 
-             mem_id_rht_params);
-             xa->page_pool;
+Oh thanks, I didn't know about __builtin_constant_p.
 
-which might pressure the Dcache to fetch a pointer that might be 
-present already in cache as part of driver's data-structures.
+But I was not optimizing kmalloc_index. isn't it confusing that
+kmalloc_caches alllows maximum size of 32MB, and kmalloc_index allows
+maximum size of 64MB?
 
-I tend to agree with Yunsheng that it makes more sense to adjust 
-the API for the clear use-case now rather than using xdp_mem_info 
-indirection. It seems to me like
-the page signature provides the same information anyway and allows 
-to support different memory types.
-
-Shay
-
->
-> Naming in Computer Science is a hard problem ;-). Something that 
-> seems
-> to confuse a lot of people is the naming of the struct 
-> "xdp_mem_info".  
-> Maybe we should have named it "mem_info" instead or 
-> "net_mem_info", as
-> it doesn't indicate that the device is running XDP.
->
-> I see XDP as the RX-layer before the network stack, that helps 
-> drivers
-> to support different memory models, also for handling normal 
-> packets
-> that doesn't get process by XDP, and the drivers doesn't even 
-> need to
-> support XDP to use the "xdp_mem_info" type.
-
+and even if the code I removed is never reached because 64MB is always
+bigger than KMALLOC_MAX_CACHE_SIZE, it will cause an error if reached.
