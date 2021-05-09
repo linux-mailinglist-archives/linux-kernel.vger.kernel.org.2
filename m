@@ -2,115 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B639377882
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 22:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D601377884
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 22:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhEIUki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 16:40:38 -0400
-Received: from smtprelay0166.hostedemail.com ([216.40.44.166]:50410 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229840AbhEIUkh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 16:40:37 -0400
-Received: from omf10.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id C72281803EB48;
-        Sun,  9 May 2021 20:39:32 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf10.hostedemail.com (Postfix) with ESMTPA id 716322351F4;
-        Sun,  9 May 2021 20:39:31 +0000 (UTC)
-Message-ID: <26e1929386babea33d4a320b506c5247caacde77.camel@perches.com>
-Subject: Re: [PATCH] HID: ft260: fix format type warning in ft260_word_show()
-From:   Joe Perches <joe@perches.com>
-To:     Michael Zaidman <michael.zaidman@gmail.com>, lkp@intel.com
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org, jikos@kernel.org,
-        dan.carpenter@oracle.com, linux-input@vger.kernel.org
-Date:   Sun, 09 May 2021 13:39:29 -0700
-In-Reply-To: <20210509193213.5974-1-michael.zaidman@gmail.com>
-References: <202105060637.LeEC6ztp-lkp@intel.com>
-         <20210509193213.5974-1-michael.zaidman@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S229954AbhEIUmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 16:42:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229699AbhEIUmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 16:42:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4722F601FD;
+        Sun,  9 May 2021 20:41:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620592892;
+        bh=3kC7q5RnWbRfm2DiPPx2BVy1tt7w9Jy959UFIAMipqg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iXv3OuzgIyjjEa7FOG7YpTbrJQ3OfhhhSCU3/lMHAG/k5oMUCl9peaVP/y936UmYH
+         RayYQxw229KyZA09DUX2bTxwrYOV/J5+B3SRrMwm2GwWXw5vsns53sPEc58cVSNK0N
+         FfiU8YbhmvqkCqk0blTETMXg8v9yXYcDz5qp0di17yadIttX/c3+PJGnL7pLwlqd4i
+         0g7/VAtEv7KZhDHptUdjhp17jhTRr8DUz57r8kPN9ZzYmh27YUmtE9GNF4nnumXWHi
+         S/TzKkp+0+BiP3zzta3HXdxYn3TvWJdCUMvoLz49LyMLrPsuTqog5HfPCT3dQHjFBI
+         DYqredzVAcLig==
+Date:   Sun, 9 May 2021 23:41:30 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] tpm: fix error return code in tpm2_get_cc_attrs_tbl()
+Message-ID: <YJhI+lIt4devpAoS@kernel.org>
+References: <20210508025444.1977-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 716322351F4
-X-Spam-Status: No, score=-1.39
-X-Stat-Signature: ej3kn3hz1a616w4iphgdqbkydg44xq9z
-X-Rspamd-Server: rspamout01
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18+mGqGafvpLnySgOkl4ipBmKaijyWq5nc=
-X-HE-Tag: 1620592771-976842
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210508025444.1977-1-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-05-09 at 22:32 +0300, Michael Zaidman wrote:
-> Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
+On Sat, May 08, 2021 at 10:54:44AM +0800, Zhen Lei wrote:
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
 > 
-> Fix warning reported by static analysis when built with W=1 for arm64 by
-> clang version 13.0.0
-> 
-> > > drivers/hid/hid-ft260.c:794:44: warning: format specifies type 'short' but
->    the argument has type 'int' [-Wformat]
->            return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
->                                              ~~~     ^~~~~~~~~~~~~~~~~~~
->                                              %i
->    include/linux/byteorder/generic.h:91:21: note: expanded from
->                                             macro 'le16_to_cpu'
->    #define le16_to_cpu __le16_to_cpu
->                        ^
->    include/uapi/linux/byteorder/big_endian.h:36:26: note: expanded from
->                                                     macro '__le16_to_cpu'
->    #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
->                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    include/uapi/linux/swab.h:105:2: note: expanded from macro '__swab16'
->            (__builtin_constant_p((__u16)(x)) ?     \
->            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
-> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: 58472f5cd4f6("tpm: validate TPM 2.0 commands")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+
+In the commit message:
+
+1. Instead of writing "a negative error code", write -EFAULT.
+2. Some explanation of the choice.
+
 > ---
->  drivers/hid/hid-ft260.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/char/tpm/tpm2-cmd.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
-> index 047aa85a7c83..38794a29599c 100644
-> --- a/drivers/hid/hid-ft260.c
-> +++ b/drivers/hid/hid-ft260.c
-> @@ -791,7 +791,7 @@ static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
->  	if (ret != len && ret >= 0)
->  		return -EIO;
->  
+> diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
+> index eff1f12d981a..c84d23951219 100644
+> --- a/drivers/char/tpm/tpm2-cmd.c
+> +++ b/drivers/char/tpm/tpm2-cmd.c
+> @@ -656,6 +656,7 @@ int tpm2_get_cc_attrs_tbl(struct tpm_chip *chip)
+>  
+>  	if (nr_commands !=
+>  	    be32_to_cpup((__be32 *)&buf.data[TPM_HEADER_SIZE + 5])) {
+> +		rc = -EFAULT;
+>  		tpm_buf_destroy(&buf);
+>  		goto out;
+>  	}
+> -- 
+> 2.25.1
 > 
-> -	return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
-> +	return scnprintf(buf, PAGE_SIZE, "%d\n", le16_to_cpu(*field));
->  }
+> 
+>
 
-There are 2 of these so I wonder about the static analysis.
-It's probably better to use sysfs_emit as well.
----
- drivers/hid/hid-ft260.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Other than that looks good.
 
-diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
-index 7a9ba984a75a..475641682fff 100644
---- a/drivers/hid/hid-ft260.c
-+++ b/drivers/hid/hid-ft260.c
-@@ -783,7 +783,7 @@ static int ft260_byte_show(struct hid_device *hdev, int id, u8 *cfg, int len,
- 	if (ret != len && ret >= 0)
- 		return -EIO;
- 
--	return scnprintf(buf, PAGE_SIZE, "%hi\n", *field);
-+	return sysfs_emit(buf, "%d\n", *field);
- }
- 
- static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
-@@ -795,7 +795,7 @@ static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
- 	if (ret != len && ret >= 0)
- 		return -EIO;
- 
--	return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
-+	return sysfs_emit(buf, "%d\n", le16_to_cpu(*field));
- }
- 
- #define FT260_ATTR_SHOW(name, reptype, id, type, func)			       \
-
+/Jarkko
