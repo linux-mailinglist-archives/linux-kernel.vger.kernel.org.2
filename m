@@ -2,192 +2,504 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA36E3778CE
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 23:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB653778C2
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 23:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhEIVpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 17:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39556 "EHLO
+        id S229955AbhEIVpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 17:45:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbhEIVpK (ORCPT
+        with ESMTP id S229953AbhEIVpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 17:45:10 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 439D0C06175F;
-        Sun,  9 May 2021 14:44:06 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id h4so14536147wrt.12;
-        Sun, 09 May 2021 14:44:06 -0700 (PDT)
+        Sun, 9 May 2021 17:45:03 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A31C061574
+        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 14:43:59 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id m11so3990504lfg.3
+        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 14:43:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DBusF/KbjHCWghHBMnMPpKehqCL6Xa7jSi7F9W8BPnw=;
-        b=NquJH4ELcrfZ2CwqHRFyicsGjSC/dPUMr2Ze4RjmfN9UV3IuIYC/wTeu3VUXiJc0k4
-         eRYV/Tia9lgtkPZar7Jchn2M8DbxiW4m8VU+lYi3bTm8yEJRXyGM26o+r7Qqq9v4KjIY
-         86hPtSo1qPmNBySrGzJtvpvw2iOYQMlSuB5nGbAYsCxaya+iLxPWR6lZP+GrBfqtGqXY
-         LIspv5q48vmDsY3biUOXnNteFTYsspNhIJisj5I4zmibBXpZqR+JDTtmlPuhyHGIK7jL
-         iH/E9TH7q1bl/WV94KzbN0pY10zRDDt3CBuqTCIH1Sk+lGlnype2XnSdwdehOT02hvtE
-         9bgw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=fY/XE9tgjul8nk0WoKBx/J+HS0NPV8TIyAWHx1Xy6qA=;
+        b=eGdcvaoyPtee/cpnigfgISdGjLae8sByw4JyGTkYObv1HvPx3YyzFpjtoCNe0cSomy
+         ZEng0IGQg8XnY98URXU+6v94UMkSvc7mg1Aa9YC9srlpU4cnoR9GpcRd6mN3QeQVk9D0
+         W4BR1ks25LQVf7AOHSbMceKz6UAYrs5icOS3Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DBusF/KbjHCWghHBMnMPpKehqCL6Xa7jSi7F9W8BPnw=;
-        b=cdu2bnIB1euN/z2X0q9UbaURrHCAu7R6mBHdfd6V5YQrcU/5Enap7JDFST8HKcC2H0
-         5gVy/8V/Dy2XwK9WtbXAyH7wE/maDZrsToSPwzd7Cf9XUaeP8Tg18EkJZFIPUZmDuZAN
-         9DCu06cTEJcVgmdJKyvqU4ctpLx89NiIztU2s7uPjwLZ75YNTeU0tRznaXsBt3LLReQW
-         H45Z5ngPc24Ci1vcSyPc2e86lrubDbCA4movexpZeJHjxY+E9nvSoF6HeTo5/EYX+wGY
-         ZDxuPf2BgVIA1W3mG2aixhe4SoVjBKBdP0GoxIZAhtcLRA5X3NLpjVxMINmjs/cKnnpc
-         6tRQ==
-X-Gm-Message-State: AOAM531CJbH0o0fr6dN9GobxBFPeYt4cF/pragFn6FUa5OMV669pUobs
-        c6AfEHTbM8cHmOxaSaJirgUt7Mw9fu/rWA==
-X-Google-Smtp-Source: ABdhPJzvo/vbcHXbIH58HJbFF3QSN4voQDezYqeXyuqC8KbYNbm3j7DNhei/2xk3i0xTQLH+8Z/R6w==
-X-Received: by 2002:adf:a316:: with SMTP id c22mr26126159wrb.202.1620596645039;
-        Sun, 09 May 2021 14:44:05 -0700 (PDT)
-Received: from localhost.localdomain ([170.253.36.171])
-        by smtp.googlemail.com with ESMTPSA id u6sm16495530wml.6.2021.05.09.14.44.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 14:44:04 -0700 (PDT)
-From:   Alejandro Colomar <alx.manpages@gmail.com>
-To:     mtk.manpages@gmail.com
-Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
-        linux-man@vger.kernel.org, Luis Henriques <lhenriques@suse.de>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Christoph Hellwig <hch@infradead.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Walter Harms <wharms@bfs.de>
-Subject: [PATCH] copy_file_range.2: Update cross-filesystem support for 5.12
-Date:   Sun,  9 May 2021 23:39:06 +0200
-Message-Id: <20210509213930.94120-12-alx.manpages@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210509213930.94120-1-alx.manpages@gmail.com>
-References: <20210509213930.94120-1-alx.manpages@gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=fY/XE9tgjul8nk0WoKBx/J+HS0NPV8TIyAWHx1Xy6qA=;
+        b=L2taaVNhgtWGdSsuWNFOwZWF7980Q+AaJ5kVpuehNGDdk+mPqvf5N07/0wCDQJMuYz
+         zMpwRkOgwH0F0b3xwkova0I42nkd8+yaGv1N821sCXZovVvzbwpcV2AGw+T/yXNBPHCl
+         TYTJaeJhCT/ugKnApjNPc6z0BKykbEIXXtWP1iXfj5I17HuinTtya7wUUpSVnXzY966f
+         z8lPeaKVLz5qNMw8ZJdrNIaluySB09pZh+9Ulz9iw9EEfwiE2ukYRUfx59A8nDVhggoT
+         F6mgYT4KI8kV2/ALOjF6BO/SvYxLrqEtzrBsHG3XXYzXhqx1hTFJTNtMCEJhLZIsSigh
+         DXZw==
+X-Gm-Message-State: AOAM530HvydAzxJpMWEPF+AGW7DHO1tLIbesFxBeoOyHwgc2ZXPF87UH
+        Zpan1odUtiNMny8MR7LGQ1LF/XPd5koB+gJViKI=
+X-Google-Smtp-Source: ABdhPJw3lKjZwvRD4HpmXG+pxj7RMcSh+9Wa3rybGZsZXCnjTvfhd85aZJrw50TjAsdV9U+43A1sJg==
+X-Received: by 2002:a19:85d6:: with SMTP id h205mr14825954lfd.64.1620596637325;
+        Sun, 09 May 2021 14:43:57 -0700 (PDT)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id w6sm371157lfl.306.2021.05.09.14.43.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 09 May 2021 14:43:56 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id h4so20503132lfv.0
+        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 14:43:56 -0700 (PDT)
+X-Received: by 2002:a19:7504:: with SMTP id y4mr14006754lfe.41.1620596636444;
+ Sun, 09 May 2021 14:43:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 9 May 2021 14:43:40 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiWTU+=wK9pv_YG01rXSqApCS_oY+78Ztz5-ORH5a-kvg@mail.gmail.com>
+Message-ID: <CAHk-=wiWTU+=wK9pv_YG01rXSqApCS_oY+78Ztz5-ORH5a-kvg@mail.gmail.com>
+Subject: Linux 5.13-rc1
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux 5.12 fixes a regression.
+So two weeks are over, and the merge window is closed.
 
-Cross-filesystem (introduced in 5.3) copies were buggy.
+This was - as expected - a fairly big merge window, but things seem to
+have proceeded fairly smoothly. Famous last words.
 
-Move the statements documenting cross-fs to BUGS.
-Kernels 5.3..5.11 should be patched soon.
+There's a lot in there, although the diffstat looks pretty skewed -
+once again due to some amdgpu header files. Those things are huge, and
+autogenerated from hardware descriptions, and the end result is that
+they often end up overshadowing all the other changes if you only look
+at the diffs.  In fact, over a third of the diff for 5.13-rc1 is just
+from those kinds of header files.
 
-State version information for some errors related to this.
+So ignore that part if you want to look at what changed. That will
+still show driver changes at 60% of the diff, which is all normal.
+It's all over the place, although gpu and networking stands out (yes,
+the gpu updates are noticeable even when ignoring the amd header
+files).
 
-Reported-by: Luis Henriques <lhenriques@suse.de>
-Reported-by: Amir Goldstein <amir73il@gmail.com>
-Related: <https://lwn.net/Articles/846403/>
-Cc: Greg KH <gregkh@linuxfoundation.org>
-Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-Cc: Anna Schumaker <anna.schumaker@netapp.com>
-Cc: Jeff Layton <jlayton@kernel.org>
-Cc: Steve French <sfrench@samba.org>
-Cc: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc: Dave Chinner <dchinner@redhat.com>
-Cc: Nicolas Boichat <drinkcat@chromium.org>
-Cc: Ian Lance Taylor <iant@google.com>
-Cc: Luis Lozano <llozano@chromium.org>
-Cc: Andreas Dilger <adilger@dilger.ca>
-Cc: Olga Kornievskaia <aglo@umich.edu>
-Cc: Christoph Hellwig <hch@infradead.org>
-Cc: ceph-devel <ceph-devel@vger.kernel.org>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>
-Cc: CIFS <linux-cifs@vger.kernel.org>
-Cc: samba-technical <samba-technical@lists.samba.org>
-Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Cc: Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Cc: Walter Harms <wharms@bfs.de>
-Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+Outside of drivers, it's a bit of everything: arch updates (arm, x86
+and powerpc dominate), documentation (devicetree bindings dominate -
+I'm not sure it should count as documentation, but there's also a fair
+amount of translation work), tooling,  and obviously all the expected
+core kernel stuff: filesystems, process handling, VM and core
+networking.
+
+The shortlog would be even bigger than usual, with 1800+ developers
+and 14k+ non-merge commits (over 15k commits counting merges). So
+appended is my usual rc1 "merge shortlog". And as always, this credits
+the people I merge from - if you want to see details about authorship
+and exact commits, you will need to go to the git tree itself.
+
+The merge log is obviously woefully inadequate, with the diffstat
+summary kind of showing why:
+
+  12015 files changed, 631309 insertions(+), 246239 deletions(-)
+
+it really is a fair amount of stuff, all over the place.
+
+Go test,
+                     Linus
+
 ---
- man2/copy_file_range.2 | 27 +++++++++++++++++++++++----
- 1 file changed, 23 insertions(+), 4 deletions(-)
 
-diff --git a/man2/copy_file_range.2 b/man2/copy_file_range.2
-index 467a16300..843e02241 100644
---- a/man2/copy_file_range.2
-+++ b/man2/copy_file_range.2
-@@ -169,6 +169,9 @@ Out of memory.
- .B ENOSPC
- There is not enough space on the target filesystem to complete the copy.
- .TP
-+.BR EOPNOTSUPP " (since Linux 5.12)"
-+The filesystem does not support this operation.
-+.TP
- .B EOVERFLOW
- The requested source or destination range is too large to represent in the
- specified data types.
-@@ -184,10 +187,17 @@ or
- .I fd_out
- refers to an active swap file.
- .TP
--.B EXDEV
-+.BR EXDEV " (before Linux 5.3)"
-+The files referred to by
-+.IR fd_in " and " fd_out
-+are not on the same filesystem.
-+.TP
-+.BR EXDEV " (since Linux 5.12)"
- The files referred to by
- .IR fd_in " and " fd_out
--are not on the same mounted filesystem (pre Linux 5.3).
-+are not on the same filesystem,
-+and the source and target filesystems are not of the same type,
-+or do not support cross-filesystem copy.
- .SH VERSIONS
- The
- .BR copy_file_range ()
-@@ -200,8 +210,11 @@ Areas of the API that weren't clearly defined were clarified and the API bounds
- are much more strictly checked than on earlier kernels.
- Applications should target the behaviour and requirements of 5.3 kernels.
- .PP
--First support for cross-filesystem copies was introduced in Linux 5.3.
--Older kernels will return -EXDEV when cross-filesystem copies are attempted.
-+Since Linux 5.12,
-+cross-filesystem copies can be achieved
-+when both filesystems are of the same type,
-+and that filesystem implements support for it.
-+See BUGS for behavior prior to 5.12.
- .SH CONFORMING TO
- The
- .BR copy_file_range ()
-@@ -226,6 +239,12 @@ gives filesystems an opportunity to implement "copy acceleration" techniques,
- such as the use of reflinks (i.e., two or more inodes that share
- pointers to the same copy-on-write disk blocks)
- or server-side-copy (in the case of NFS).
-+.SH BUGS
-+In Linux kernels 5.3 to 5.11,
-+cross-filesystem copies were implemented by the kernel,
-+if the operation was not supported by individual filesystems.
-+However, on some virtual filesystems,
-+the call failed to copy, while still reporting success.
- .SH EXAMPLES
- .EX
- #define _GNU_SOURCE
--- 
-2.31.1
+Al Viro (6):
+    vfs inode type handling updates
+    coredump updates
+    exryptfs updates
+    misc vfs updates
+    receive_fd update
+    another simple_recursive_removal() update
 
+Alex Williamson (2):
+    VFIO updates
+    more VFIO updates
+
+Alexandre Belloni (2):
+    RTC updates
+    i3cupdates
+
+Andreas Gruenbacher (1):
+    gfs2 updates
+
+Andrew Morton (3):
+    misc updates
+    more updates
+    yet more updates
+
+Arnaldo Carvalho de Melo (1):
+    perf tool updates
+
+Arnd Bergmann (6):
+    ARM SoC updates
+    ARM defconfig updates
+    ARM SoC driver updates
+    ARM devicetree updates
+    ARM Nuvoton WPCM450 platform support
+    ARM Apple M1 platform support
+
+Bartosz Golaszewski (1):
+    gpio updates
+
+Benson Leung (1):
+    chrome platform updates
+
+Bjorn Andersson (3):
+    hwspinlock udpates
+    rpmsg updates
+    remoteproc updates
+
+Bjorn Helgaas (1):
+    pci updates
+
+Borislav Petkov (14):
+    x86 microcode update
+    x86 RAS update
+    x86 alternatives/paravirt updates
+    x86 tool update
+    x86 AMD secure virtualization (SEV-ES) updates
+    x86 vmware guest update
+    x86 SGX updates
+    x86 boot updates
+    misc x86 cleanups
+    x86 build updates
+    x86 platform updates
+    x86 updates
+    x86 fixes
+    x86 perf fix
+
+Brian Cain (1):
+    Hexagon updates
+
+Catalin Marinas (2):
+    arm64 updates
+    more arm64 updates
+
+Christian Brauner (2):
+    fs helper kernel-doc updates
+    fs mapping helper updates
+
+Christoph Hellwig (1):
+    dma-mapping updates
+
+Chuck Lever (2):
+    nfsd updates
+    more nfsd updates
+
+Corey Minyard (1):
+    IPMI updates
+
+Daniel Lezcano (1):
+    thermal updates
+
+Daniel Thompson (1):
+    kgdb updates
+
+Darrick Wong (4):
+    iomap update
+    xfs updates
+    more xfs updates
+    more iomap updates
+
+Dave Airlie (3):
+    drm updates
+    more drm updates
+    drm fixes
+
+David Howells (3):
+    x509 dbx/mokx UEFI support
+    network filesystem helper library updates
+    AFS updates
+
+David Sterba (1):
+    btrfs updates
+
+David Teigland (1):
+    dlm updates
+
+Dmitry Torokhov (1):
+    input updates
+
+Dominik Brodowski (1):
+    pcmcia updates
+
+Dominique Martinet (1):
+    9p updates
+
+Gao Xiang (1):
+    erofs updates
+
+Geert Uytterhoeven (1):
+    m68k updates
+
+Greg KH (6):
+    char/misc driver updates
+    driver core updates
+    staging/IIO driver updates
+    tty and serial driver updates
+    USB and Thunderbolt updates
+    char/misc driver fixes
+
+Greg Ungerer (1):
+    m68knommu updates
+
+Guenter Roeck (1):
+    hwmon updates
+
+Guo Ren (1):
+    arch/csky updates
+
+Heiko Carstens (2):
+    s390 updates
+    more s390 updates
+
+Helge Deller (1):
+    parisc architecture updates
+
+Herbert Xu (1):
+    crypto updates
+
+Ilya Dryomov (1):
+    ceph updates
+
+Ingo Molnar (6):
+    RCU updates
+    locking updates
+    objtool updates
+    perf event updates
+    scheduler updates
+    x86 tlb updates
+
+Jaegeuk Kim (1):
+    f2fs updates
+
+Jakub Kicinski (2):
+    networking updates
+    networking fixes
+
+James Bottomley (3):
+    tpm fixes
+    SCSI updates
+    more SCSI updates
+
+James Morris (2):
+    security layer fixes
+    Landlock LSM
+
+Jan Kara (2):
+    quota, ext2, reiserfs updates
+    fsnotify updates
+
+Jarkko Sakkinen (1):
+    tpm updates
+
+Jason Gunthorpe (1):
+    rdma updates
+
+Jassi Brar (1):
+    mailbox updates
+
+Jean Delvare (1):
+    dmi update
+
+Jeff Layton (1):
+    file locking updates
+
+Jens Axboe (7):
+    block updates
+    block driver updates
+    libata updates
+    io_uring updates
+    io_uring fixes
+    block fixes
+    block fix
+
+Jessica Yu (1):
+    module updates
+
+Jiri Kosina (1):
+    HID updates
+
+Joerg Roedel (1):
+    iommu updates
+
+Jonathan Corbet (2):
+    documentation updates
+    documentation fixes
+
+Juergen Gross (1):
+    xen updates
+
+Kees Cook (4):
+    seccomp updates
+    pstore update
+    overflow update
+    CFI on arm64 support
+
+Konrad Rzeszutek Wilk (1):
+    swiotlb updates
+
+Lee Jones (2):
+    MFD updates
+    backlight updates
+
+Len Brown (1):
+    turbostat updates
+
+Linus Walleij (1):
+    pin control updates
+
+Mark Brown (3):
+    regmap updates
+    regulator updates
+    spi updates
+
+Masahiro Yamada (3):
+    Kbuild updates
+    Kconfig updates
+    more Kbuild updates
+
+Mauro Carvalho Chehab (1):
+    media updates
+
+Max Filippov (1):
+    Xtensa updates
+
+Micah Morton (1):
+    SafeSetID update
+
+Michael Ellerman (2):
+    powerpc updates
+    powerpc updates and fixes
+
+Michael Tsirkin (1):
+    virtio updates
+
+Michal Simek (1):
+    Microblaze updates
+
+Mike Marshall (1):
+    orangefs updates
+
+Mike Snitzer (1):
+    device mapper updates
+
+Miklos Szeredi (2):
+    overlayfs update
+    fuse updates
+
+Miklos Szeredi via Al Viro (1):
+    fileattr conversion updates
+
+Mimi Zohar (1):
+    IMA updates
+
+Miquel Raynal (1):
+    mtd updates
+
+Namjae Jeon (1):
+    exfat updates
+
+Palmer Dabbelt (2):
+    RISC-V updates
+    RISC-V fixes
+
+Paolo Bonzini (1):
+    kvm updates
+
+Paul Moore (2):
+    selinux updates
+    audit updates
+
+Pavel Machek (1):
+    LED updates
+
+Petr Mladek (2):
+    printk updates
+    livepatching update
+
+Rafael Wysocki (4):
+    ACPI updates
+    power management updates
+    device properties framework update
+    ACPI fixes
+
+Richard Weinberger (2):
+    JFFS2, UBI and UBIFS updates
+    UML updates
+
+Rob Herring (2):
+    devicetree updates
+    devicetree fixes
+
+Russell King (1):
+    ARM updates
+
+Sebastian Reichel (2):
+    HSI update
+    power supply and reset updates
+
+Shuah Khan (2):
+    Kselftest updates
+    KUnit updates
+
+Stephen Boyd (1):
+    clk updates
+
+Steve French (3):
+    cifs updates
+    cifs updates
+    cifs fixes
+
+Steven Rostedt (3):
+    tracing updates
+    ktest updates
+    tracing fix
+
+Takashi Iwai (2):
+    sound updates
+    sound fixes
+
+Ted Ts'o (1):
+    ext4 updates
+
+Tejun Heo (1):
+    cgroup changes
+
+Tetsuo Handa (1):
+    lockdep capacity limit updates
+
+Thierry Reding (1):
+    pwm updates
+
+Thomas Bogendoerfer (1):
+    MIPS updates
+
+Thomas Gleixner (9):
+    core entry updates
+    irq updates
+    timer updates
+    x86 apic update
+    entry code update
+    x86 bus lock detection updates
+    x86 vdso update
+    locking fixes
+    scheduler fixes
+
+Trond Myklebust (1):
+    NFS client updates
+
+Tyler Hicks (1):
+    ecryptfs updates
+
+Ulf Hansson (1):
+    MMC and MEMSTICK updates
+
+Vinod Koul (1):
+    dmaengine updates
+
+Wei Liu (1):
+    Hyper-V updates
+
+Wolfram Sang (1):
+    i2c updates
