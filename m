@@ -2,100 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B81377772
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0832377789
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 18:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbhEIPxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 11:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48268 "EHLO
+        id S229876AbhEIQUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 12:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhEIPxe (ORCPT
+        with ESMTP id S229675AbhEIQUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 11:53:34 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E80C061573;
-        Sun,  9 May 2021 08:52:30 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id s82so7793311wmf.3;
-        Sun, 09 May 2021 08:52:30 -0700 (PDT)
+        Sun, 9 May 2021 12:20:22 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1983C061573;
+        Sun,  9 May 2021 09:19:18 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id g14so15918462edy.6;
+        Sun, 09 May 2021 09:19:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/ypDkbMZaKPK8sfgDZCv9j21HgYlr75ecNlXl40Qqfc=;
-        b=EoPa8bUdKFyBjVbsoqioR3RF8WK0eQBFtO6JeAJjjMKaT3ZyunKakwUcpUEE5LeJ73
-         D0we/k8vulIchkHVu9VFjO0jBYpZoiXe/D1bZygKujfQAbPNxhPIh/DVzYayB0uAFq7f
-         tWBlYJNdWaIUYAVnvJiRE+Q6K7Wt13sns47QTujP2+5jf4SlL5RGXESRgytBDDdij3o8
-         LsXR9Py4gxjHyqOCEjxJDkDhKWetUfDo/2k2nNCAlPyePPtco5Oa1PTFKS4zPOAs1UTO
-         NEqXPSxPN3gMVXuUtkpTc18lD4pCZKDhIgCMUwrML034BK8WRVWKbc+TQpasJmTT2U+k
-         F35A==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DO5zOhliRnBqxM33iMyfdyDpj+YfVYcGobHK6sCAbck=;
+        b=jH1aCNgdimaE/ftmf59J0k25Wp+5ldYJcgVWEASelAo4kw2rsrf4LNEetjvxUnwEmj
+         DVdjp/gX3REnGP3TT64893sYCurxVwkHm5FAinZv2wc8tiOuZFKfPuZFzzDpBfNxIYzH
+         XDkATEg1EFLw/Bi1rnUEPy52P3VLAI+njai1I8G/S7J+VRBLyzCQfFcgfN2/6xI1RO2m
+         4ofe5ScEMdYUrVAd24uoIFXgLKTZgkkypFtG60QPNR6JlTfqCx4n69VKH6pmgy5sSh5V
+         teFIlXsnwyHd+urzFEQ1/1g0GdN2Ao8QnczzShGWjt6ZPBMPfANSphXoa7WJIXVsuPj9
+         07lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/ypDkbMZaKPK8sfgDZCv9j21HgYlr75ecNlXl40Qqfc=;
-        b=S2IaT79w44GjaSTzt6IWd5tqZXu93XMnDT3glFpCSfOBfZOJ7Mtt0uLRZ1w1DlTgkq
-         wQzf5K4InZwOyeSGrVOz57xMQ1aDYxNl9vl4cZlhPOoi8qWqQ6+wdi5OrC0HQqUeqLSg
-         /MTB1o6iIm2ekUTrab2kTaMrkWIFNu2vDKNBqrIuNvOhvJY/9lRTz6urRqxkTlK+G06c
-         G6z3G2pVQ7ZQDw9y0k0n11na5y4siBGixUjaf3KcI9IK7QL28auZzgsXlAZWMfzBnUsz
-         mUh74k6pIudcHCuYeqVVMrxmDjunCxxAt//HCpE4VA577uCqSzWsMPnHG042Ny3j8QfI
-         yuOA==
-X-Gm-Message-State: AOAM533NiBDyU58andPfDjYZPUJX5AwXnzNCZDyqf2tcORqQVcPRtx9Y
-        +wM8+r89cyTLiyrsmV/K29PGJBL898bCYKR1
-X-Google-Smtp-Source: ABdhPJwJYntq3Tn5Ue0vG01f4EXq0m3ObkAuA36mJMvQSRj6jrBm1DvonCOH8ATTF31Z8RKMjmrmgQ==
-X-Received: by 2002:a1c:9a95:: with SMTP id c143mr22019705wme.143.1620575548969;
-        Sun, 09 May 2021 08:52:28 -0700 (PDT)
-Received: from localhost.localdomain ([94.73.38.147])
-        by smtp.gmail.com with ESMTPSA id i3sm13591172wmq.28.2021.05.09.08.52.26
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=DO5zOhliRnBqxM33iMyfdyDpj+YfVYcGobHK6sCAbck=;
+        b=OTtfFuAWKU6MHPNNST8/yYd77Egy3oJqnE+rCNsG1Maah3t6bwbtHZTyBsrAhaEDEb
+         jdPaaae4d3umIXoqbITP3V4U4WxjUdi4i26TV9LnYKs9LcHlM6QfEKcv7LiIvifq+Pcv
+         Ftm0WuO/eekRo1RjFX2DiRIJBOdxp7oOPCc+woQkSTh306bAkxDeZGUP5RueIwW8Ph5m
+         BBwnaIPq8Sr9NGQaVwaTJzE5FOgQU9OVvIjGRELZprLsY4AhpDt90juFbeKnFPPYyrZC
+         9qYDXkP6n2WIn/v6MBP5Jb+MmGdFyFl8jWH3P1wChRMXDXSLc+JioXbiSPHLErJvReqn
+         7QSw==
+X-Gm-Message-State: AOAM5332xWDkWXOSR0Y5r4lj6cjzXyB8Twl3hi7ghIuURoJ6bpuQoGti
+        OhFrog2+DaHKT/T1m0cU3Iw=
+X-Google-Smtp-Source: ABdhPJzIMRzJ5t0YFk3VzbCAOTLHIvvzaKZF4miCRQhE+HrtaEEJ+wBMh8+JcJWcFD10u6K+F+AX0g==
+X-Received: by 2002:a05:6402:16db:: with SMTP id r27mr23673341edx.375.1620577156694;
+        Sun, 09 May 2021 09:19:16 -0700 (PDT)
+Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
+        by smtp.gmail.com with ESMTPSA id j1sm7082457ejv.40.2021.05.09.09.19.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 08:52:28 -0700 (PDT)
-From:   =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
-To:     jikos@kernel.org
-Cc:     benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
-Subject: [PATCH] HID: magicmouse: fix crash when disconnecting Magic Trackpad 2
-Date:   Sun,  9 May 2021 17:51:38 +0200
-Message-Id: <20210509155138.39601-1-jose.exposito89@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 09 May 2021 09:19:16 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sun, 9 May 2021 18:19:14 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: 'make O=' indigestion with module signing
+Message-ID: <20210509161914.GB839293@gmail.com>
+References: <134696.1615510534@turing-police>
+ <109018.1615463088@turing-police>
+ <91190.1615444370@turing-police>
+ <972381.1615459754@warthog.procyon.org.uk>
+ <1486567.1615464259@warthog.procyon.org.uk>
+ <2026575.1615539696@warthog.procyon.org.uk>
+ <20210509151112.GA839293@gmail.com>
+ <20210509151556.GA842014@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210509151556.GA842014@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the Apple Magic Trackpad 2 is connected over USB it registers four
-hid_device interfaces, however, the driver only handles the one with
-type HID_TYPE_USBMOUSE and ignores the other three, thus, no driver
-data is attached to them.
 
-When the device is disconnected, the remove method is called for the
-four hid_device interfaces, crashing when the driver data is NULL.
+* Ingo Molnar <mingo@kernel.org> wrote:
 
-Check that the driver data is not NULL before using it on the remove
-callback.
+> Correction - there appears to be something else going on, but the
+> error messages are similar:
+> 
+>   At main.c:291:
+>   - SSL error:02001002:system library:fopen:No such file or directory: ../crypto/bio/bss_file.c:69
+>   - SSL error:2006D080:BIO routines:BIO_new_file:no such file: ../crypto/bio/bss_file.c:76
+>   sign-file: debian/linux-image/lib/modules/5.12.0-custom/kernel/arch/x86/crypto/aegis128-aesni.ko: No such file or directory
+>   At main.c:291:
+> 
+> The error messages look pretty obscure to me. :-/
 
-Signed-off-by: José Expósito <jose.exposito89@gmail.com>
----
- linux/drivers/hid/hid-magicmouse.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+I didn't find any stray build files left in the tree, so 'make mrproper'
+is innocent I believe.
 
-diff --git a/linux/drivers/hid/hid-magicmouse.c b/linux/drivers/hid/hid-magicmouse.c
-index 2bb473d..097870e 100644
---- a/linux/drivers/hid/hid-magicmouse.c
-+++ b/linux/drivers/hid/hid-magicmouse.c
-@@ -779,7 +779,10 @@ err_stop_hw:
- static void magicmouse_remove(struct hid_device *hdev)
- {
- 	struct magicmouse_sc *msc = hid_get_drvdata(hdev);
--	cancel_delayed_work_sync(&msc->work);
-+
-+	if (msc)
-+		cancel_delayed_work_sync(&msc->work);
-+
- 	hid_hw_stop(hdev);
- }
- 
--- 
-2.25.1
+I ended up with the config tweak below to get the kernel package to build,
+which is not an ideal solution. :-/
+
+Let me know if you'd like me to send you the .config and/or any diagnostic
+messages or other details.
+
+Thanks,
+
+	Ingo
+
+diff --git a/.config.kepler.ubuntu b/.config.kepler.ubuntu
+index 01347a220e54..846a956fcdbd 100644
+--- a/.config.kepler.ubuntu
++++ b/.config.kepler.ubuntu
+@@ -880,9 +880,8 @@ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_MODULE_FORCE_UNLOAD is not set
+ # CONFIG_MODVERSIONS is not set
+ CONFIG_MODULE_SRCVERSION_ALL=y
+-CONFIG_MODULE_SIG=y
+-# CONFIG_MODULE_SIG_FORCE is not set
+-CONFIG_MODULE_SIG_ALL=y
++# CONFIG_MODULE_SIG is not set
++# CONFIG_MODULE_SIG_ALL is not set
+ # CONFIG_MODULE_SIG_SHA1 is not set
+ # CONFIG_MODULE_SIG_SHA224 is not set
+ # CONFIG_MODULE_SIG_SHA256 is not set
+@@ -10177,11 +10176,7 @@ CONFIG_SECURITY_APPARMOR_HASH_DEFAULT=y
+ # CONFIG_SECURITY_LOADPIN is not set
+ CONFIG_SECURITY_YAMA=y
+ CONFIG_SECURITY_SAFESETID=y
+-CONFIG_SECURITY_LOCKDOWN_LSM=y
+-CONFIG_SECURITY_LOCKDOWN_LSM_EARLY=y
+-CONFIG_LOCK_DOWN_KERNEL_FORCE_NONE=y
+-# CONFIG_LOCK_DOWN_KERNEL_FORCE_INTEGRITY is not set
+-# CONFIG_LOCK_DOWN_KERNEL_FORCE_CONFIDENTIALITY is not set
++# CONFIG_SECURITY_LOCKDOWN_LSM is not set
+ # CONFIG_SECURITY_LANDLOCK is not set
+ CONFIG_INTEGRITY=y
+ CONFIG_INTEGRITY_SIGNATURE=y
 
