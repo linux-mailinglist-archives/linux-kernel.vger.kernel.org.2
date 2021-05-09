@@ -2,150 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62093777D4
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 19:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D75D3777E0
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 19:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhEIRcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 13:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41222 "EHLO
+        id S229815AbhEIR5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 13:57:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhEIRcE (ORCPT
+        with ESMTP id S229650AbhEIR5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 13:32:04 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAFBC061573;
-        Sun,  9 May 2021 10:31:01 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id j12so5584892pgh.7;
-        Sun, 09 May 2021 10:31:01 -0700 (PDT)
+        Sun, 9 May 2021 13:57:50 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B611C061573
+        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 10:56:47 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id p4so12086248pfo.3
+        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 10:56:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aNMN409vhgmIJzMSgLO/z7XdlSTjFBeziZjCWQllPk4=;
-        b=P+OMkYQ7A+sLfxZZmzEuMGJxRlvGVCuZbkjdTScwF8J7B5pwMK0Mk1B+IfeRFgfySG
-         wbZWbu6PvqIe01dViRENocFkhT6KjxQ9vPMKzLVztgUHAbQc8YEJ/cdHpjBDrQ1t74kt
-         oBAeKGTimWUuHSAedCR8++7/PIpttMvxpxBZ32RqYGsjN0vgj4fmXsIi0/QSm61tzYTK
-         J8erTgUpFncH71EUOSa1xgtr3TPPzbAaAnE0+KH2VtWKv9s/a9yRGjs4kGAoptax26Jt
-         NoOcfDg9EzM6UipOdZ7tcla74LkUrfuYIUWnQkAwJUA3dAnlF+X7ZM02e2lxUPwStk5m
-         0Daw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=udo6/j0jGdw95A7jASH0giURmHp5K6dK+lFQZ5YaJMI=;
+        b=JL29Vnge3Oaut+Mk+DbWy1HapeD5i6UanRapnwwkg54ztn8Vit/4Dxp2kMMJ5cDWtE
+         yBSeh4/vgg0UvwW1y9yK4W8krJSaAalA0tKPl6tZFHDB4ztYKvmL16YpcZpASSmpobkL
+         QAuVNPfiVzgZ3vs0LQIQggAcplTXwxW2ZGXgU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aNMN409vhgmIJzMSgLO/z7XdlSTjFBeziZjCWQllPk4=;
-        b=YOe8KpS+b8Z7h90EfYHRk5hkuI/l/135f/AtBO1kT/quIyU4rGBdT1sxt8X7PKo22H
-         R60SU33j1zAXTk1WbHrV5KTJBby+tzZnPSXSOVZpqG1lB3jrj0iPH7DYCSApnO4Yalvg
-         BdR5TRbi120UNX16B1KB8DAtuylr0NTUnCy305UqB+A/aaDdZVZmjNhCtBhnJiASbpNo
-         jOv9EIXn1tGXKbndrmaSKTmR2hTajdbaglPWUp0bZfiyQ9DnImpqYqcL9S/ozAoRUBJP
-         lXeeGIkp6DKCvDBedqCI5/es2BV5bDeJeg9pIY2DFElcp9Graiy4gMqQy6tV18KChjHb
-         O/5A==
-X-Gm-Message-State: AOAM533XiHJWYhHfrIfdzTNgnjrhta6j0edb599d+f8Cfn37z5LaPYPO
-        BauoFWCUH3BiHIBrpmsYWsViiSiKhAQ=
-X-Google-Smtp-Source: ABdhPJy24QQy2Q++3mjtv0Ha+BD4/fNVUFleMBiLcP1fKnKXsC7A1rDCVIZRJF6XJDHO0A6HihMWDg==
-X-Received: by 2002:a63:3d87:: with SMTP id k129mr21102328pga.57.1620581460390;
-        Sun, 09 May 2021 10:31:00 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id d129sm2637918pfa.6.2021.05.09.10.30.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=udo6/j0jGdw95A7jASH0giURmHp5K6dK+lFQZ5YaJMI=;
+        b=Apc0B9rb60dU2IwlJC1U6An9ESPvk0qqZ5h1lniCd5qPC3MY+HdOm9VBeeZzjJnPYx
+         eI0crGuSmL1nSoX75CDUHRi/o2/Tgvi3ZQkJCEmZ2Dv6KBN/7hfrYXF9EYw+iYRCozCn
+         x69NzpQmjHvErnGClnqei0q7IRp7LPd1JaQWsSVjl+N64MSHXKrU2QDF3zECeK8lYV2L
+         91Rv9PlNHUugUKUTgFk5NapeRSFU3EO/YsY0uVcrP9Qk6JMg1vfbiiD0/1eV8snKsmUr
+         sy1o+M/MR3HTycdQ1SeTZF8K+L1U36o7mJ+nj3VpZuSXYmvd47s4yzYJ+b9StNyQWiWu
+         nZPg==
+X-Gm-Message-State: AOAM532LroSeoo+PJ5kfgwiNgHUoweg2EhwnzFDhG/HIYLzv+ohVwVLa
+        ZhN350yj5gY+zf0nTNJr9HgAyg==
+X-Google-Smtp-Source: ABdhPJweaCKlqas5FhJrre3dey3Iam7lvjB+buaz/gToGtX0ZBZ6DqV4yk4whhFW30HYyHLVV1JB1A==
+X-Received: by 2002:a63:34c:: with SMTP id 73mr21282190pgd.431.1620583006145;
+        Sun, 09 May 2021 10:56:46 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a20sm9291461pfc.186.2021.05.09.10.56.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 10:30:59 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     stable@vger.kernel.org
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@gooogle.com>,
-        Joe Perches <joe@perches.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-        linux-kernel@vger.kernel.org (open list),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH stable 5.10 3/3] ARM: 9020/1: mm: use correct section size macro to describe the FDT virtual address
-Date:   Sun,  9 May 2021 10:30:29 -0700
-Message-Id: <20210509173029.1653182-4-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210509173029.1653182-1-f.fainelli@gmail.com>
-References: <20210509173029.1653182-1-f.fainelli@gmail.com>
+        Sun, 09 May 2021 10:56:45 -0700 (PDT)
+Date:   Sun, 9 May 2021 10:56:43 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Kangjie Lu <kjlu@umn.edu>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        tech-board@lists.linux-foundation.org
+Subject: Re: Report on University of Minnesota Breach-of-Trust Incident
+Message-ID: <202105090945.2B5129E9@keescook>
+References: <202105051005.49BFABCE@keescook>
+ <CAK8Kejr8bggXruciJT=JW3mk2z=WxYrtN+HBouPq4E2FU=6GrQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK8Kejr8bggXruciJT=JW3mk2z=WxYrtN+HBouPq4E2FU=6GrQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+On Fri, May 07, 2021 at 08:30:21PM -0500, Kangjie Lu wrote:
+> We again extend our apologies to the Linux Kernel Community for the
+> concerns and extra work caused by our inappropriately designed
+> "hypocrite commits" project. We also want to express our appreciation
+> for the thoughtful report released by the Linux Technical Advisory
+> Board (TAB)  on May 5, 2021
+> (https://lore.kernel.org/lkml/202105051005.49BFABCE@keescook/ ), and
+> the willingness of the Linux Foundation to meet with us on May 6,
+> 2021.
 
-commit fc2933c133744305236793025b00c2f7d258b687 upstream
+Awesome; thank you for the apology, and thanks for working with us on
+sorting this all out.
 
-Commit
+> The University of Minnesota team has reviewed the TAB findings and
+> want to confirm that the findings are comprehensive with an exception
+> discussed below.
+> 
+> One email address missing is a visiting student in the team who used
+> the account “Wenjia Zhao <driverfuzzing@gmail.com>” to send four
+> patches for bugs found by a tool:
+> https://lore.kernel.org/patchwork/project/lkml/list/?series=&submitter=29945&state=*&q=&archive=both&delegate=.
+> None of those patches were accepted or merged.
 
-  149a3ffe62b9dbc3 ("9012/1: move device tree mapping out of linear region")
+Ah-ha; thanks for pointing this out!
 
-created a permanent, read-only section mapping of the device tree blob
-provided by the firmware, and added a set of macros to get the base and
-size of the virtually mapped FDT based on the physical address. However,
-while the mapping code uses the SECTION_SIZE macro correctly, the macros
-use PMD_SIZE instead, which means something entirely different on ARM when
-using short descriptors, and is therefore not the right quantity to use
-here. So replace PMD_SIZE with SECTION_SIZE. While at it, change the names
-of the macro and its parameter to clarify that it returns the virtual
-address of the start of the FDT, based on the physical address in memory.
+For my own reference, here's the public-inbox search:
+https://lore.kernel.org/lkml/?q=f%3A%22Wenjia+Zhao%22
 
-Tested-by: Joel Stanley <joel@jms.id.au>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/arm/include/asm/memory.h | 6 +++---
- arch/arm/kernel/setup.c       | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+> All Minnesota patches submitted before August 9, 2020 were part of
+> previous bug-finding research projects and submitted in good faith and
+> intended to address bugs in the Linux Kernel. The four patches
 
-diff --git a/arch/arm/include/asm/memory.h b/arch/arm/include/asm/memory.h
-index bb79e52aeb90..f717d7122d9d 100644
---- a/arch/arm/include/asm/memory.h
-+++ b/arch/arm/include/asm/memory.h
-@@ -68,8 +68,8 @@
- #define XIP_VIRT_ADDR(physaddr)  (MODULES_VADDR + ((physaddr) & 0x000fffff))
- 
- #define FDT_FIXED_BASE		UL(0xff800000)
--#define FDT_FIXED_SIZE		(2 * PMD_SIZE)
--#define FDT_VIRT_ADDR(physaddr)	((void *)(FDT_FIXED_BASE | (physaddr) % PMD_SIZE))
-+#define FDT_FIXED_SIZE		(2 * SECTION_SIZE)
-+#define FDT_VIRT_BASE(physbase)	((void *)(FDT_FIXED_BASE | (physbase) % SECTION_SIZE))
- 
- #if !defined(CONFIG_SMP) && !defined(CONFIG_ARM_LPAE)
- /*
-@@ -111,7 +111,7 @@ extern unsigned long vectors_base;
- #define MODULES_VADDR		PAGE_OFFSET
- 
- #define XIP_VIRT_ADDR(physaddr)  (physaddr)
--#define FDT_VIRT_ADDR(physaddr)  ((void *)(physaddr))
-+#define FDT_VIRT_BASE(physbase)  ((void *)(physbase))
- 
- #endif /* !CONFIG_MMU */
- 
-diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
-index 694aa6b4bd03..f90479d8b50c 100644
---- a/arch/arm/kernel/setup.c
-+++ b/arch/arm/kernel/setup.c
-@@ -1086,7 +1086,7 @@ void __init setup_arch(char **cmdline_p)
- 	void *atags_vaddr = NULL;
- 
- 	if (__atags_pointer)
--		atags_vaddr = FDT_VIRT_ADDR(__atags_pointer);
-+		atags_vaddr = FDT_VIRT_BASE(__atags_pointer);
- 
- 	setup_processor();
- 	if (atags_vaddr) {
+Yes, and speaking for myself and the larger community: thank you for
+this work! There are a lot of bugs, and while exploring new ways to
+find bugs is certainly useful, it's the _fixing_ of them that is the
+most important thing for Linux. (Best, of course, is discovering and
+removing entire bug _classes_, of course.)
+
+There is a lot of research done on the Linux code base, but only a
+small set of researchers actually take the extra time and effort to
+send patches. So, thank you (and them) for doing that.
+
+It sounds like we're now all on the same page about creating spaces
+to further support mentoring (both internally within your group and
+externally in public for all interested researchers) to help with both
+patch submission process and technical improvements. This will be an
+ongoing process, and as plans solidify on our side in the coming weeks
+we'll keep you in the loop.
+
+> Furthermore, we want to state unequivocally that no other Linux
+> components or any other open software systems were affected by the
+> 'hypocrite commits' case study or by any of our other research
+> projects. Our “hypocrite commit” work was limited to the Linux Kernel
+> only and consisted of only the four patches (one is valid) submitted
+> between August 9, 2020 and August 21, 2020.
+
+Thanks for this clarification, too. We had fielded several questions
+about this, and I'm sure they weren't the only folks wondering. :)
+
+> We reiterate our apology, and we rededicate ourselves to educating our
+> faculty and students in conducting research that is not only of the
+> highest technical quality, but also follows the highest ethical
+> standards.
+
+Thank you again. I think we all have a good opportunity here to make
+the best of the situation and come out the other side for the better.
+
+-Kees
+
 -- 
-2.25.1
-
+Kees Cook
