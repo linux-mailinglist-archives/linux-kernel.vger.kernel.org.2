@@ -2,129 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEB43777EF
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 20:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82A13777F3
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 20:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbhEIS1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 14:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhEIS1G (ORCPT
+        id S229847AbhEISef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 14:34:35 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:59787 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229662AbhEISee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 14:27:06 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B316CC061573
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 11:26:02 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id s82so7914133wmf.3
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 11:26:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rOrxa6aSiXbwul0GfHks5tuaylucNUuVWRXguFZdR+A=;
-        b=VAVGukZZggRN1Hg4BJmMwnMVgjAXe7CXQQOb/ICiFbeFn016ZbG64fLwId3Y1lIuKH
-         OLl8EDcXUX1u/sXXPgLooroZkAsX73mXT2uEVkLYcDiKXhBFQrlgLTJnOLghmhw8n9rK
-         Q7dBek29kptQOxz6X4avo2pEr6w5xBGyCtu3yMikebfwcCtayfCcHLhnb+PIqH7VLgSh
-         4FHCCfx4qRTHNqMkVROt9xuriV/JO9vXLNuJhzG+1OyWypunyiq2jxoia67/NI+bg+s4
-         vNlPKxe/RDMUYsKOMjZooEozdocklw0j04xQjc3sj2mO8ZR2XdPELsp+QrByb5m23ugZ
-         UTOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rOrxa6aSiXbwul0GfHks5tuaylucNUuVWRXguFZdR+A=;
-        b=EOMsbIlouKr8VVWGssBv8Hfh/lfdIHJ8BWWgB9gAjU8YDea0nO+Ev3ENHp2pSuqLjs
-         /3q4mXirq7Z2YL+wB9/R98B4yBGh2wL8zG55QVYpe8jIGKnO0waardxjL6htiRUrGuKV
-         3uC8HDfzfZFtWS9cHk7WH+aDLDYce3+v3sorDmim54T7HKlOtB9UMLdOo9cjaM+p37Y8
-         cW6yNuzt+SfWo80EA0kExe9HMlB6izdcWwg3us5uhgOiC4+5BIAM5gzXBV3DEz99NeTq
-         MSubsdLmOMUZhz31L8Xbn8bV0Q9asxiQMCgz5WTjjx8XcD4iNClJ7jfC3j83MLokJyO5
-         X+XQ==
-X-Gm-Message-State: AOAM53324Ing5frQ7YsTJjyQEJWtS/roWG4n5J1GslSzcjCpSwGgRL+P
-        J+I6CWlfT1uwrTQoNACqwGg=
-X-Google-Smtp-Source: ABdhPJwBfBEcUc219PTxGPorMh8d8ehCPU7hrqsADD1rCJoczUBT+hoyrA7YDXpcR5hakYkr1wh4jg==
-X-Received: by 2002:a05:600c:220e:: with SMTP id z14mr22464068wml.0.1620584761398;
-        Sun, 09 May 2021 11:26:01 -0700 (PDT)
-Received: from michael-VirtualBox (cbl217-132-244-50.bb.netvision.net.il. [217.132.244.50])
-        by smtp.gmail.com with ESMTPSA id j10sm19120864wrt.32.2021.05.09.11.25.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 11:26:00 -0700 (PDT)
-Date:   Sun, 9 May 2021 21:25:58 +0300
-From:   Michael Zaidman <michael.zaidman@gmail.com>
-To:     "Chen, Rong A" <rong.a.chen@intel.com>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        Jiri Kosina <jkosina@suse.cz>, Jiri Kosina <jikos@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        michael.zaidman@gmail.com
-Subject: Re: [kbuild-all] Re: drivers/hid/hid-ft260.c:794:44: warning: format
- specifies type 'short' but the argument has type 'int'
-Message-ID: <20210509182558.GA4940@michael-VirtualBox>
-References: <202105060637.LeEC6ztp-lkp@intel.com>
- <20210506115546.GA1745@michael-VirtualBox>
- <0102b8fe-3edf-3d4f-2622-d1fefb36274f@intel.com>
+        Sun, 9 May 2021 14:34:34 -0400
+Received: from weisslap.aisec.fraunhofer.de ([188.192.220.174]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis)
+ id 1MsIbU-1lMktK3yzi-00tn3a; Sun, 09 May 2021 20:33:25 +0200
+From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+To:     michael.weiss@aisec.fraunhofer.de
+Cc:     Richard Guy Briggs <rgb@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] audit: allow logging of user events in non-initial namespace.
+Date:   Sun,  9 May 2021 20:33:19 +0200
+Message-Id: <20210509183319.20298-1-michael.weiss@aisec.fraunhofer.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0102b8fe-3edf-3d4f-2622-d1fefb36274f@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:8va1dg/3tYY7pypvupQ73KUAzH7sZmkxm64W1+FeOAoi2q0M6Is
+ j2r1y4RJIF19JrCe+IWjWaie47e3Pw0a/rgqmXXip5wsGLaDCBEaoPdUXtCB/yoOkx55ZYN
+ 0ATIoKx5yClRMBxIQ34q/XF0TLcH4mQF1IdyWH7OdnMhAz0GRMKxX4Lc43MQYQwA5C4d/xz
+ yV6h+ElMsPbVmG/7C8e9g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:84PiVkLWRQY=:Y1OTmnl/Ok71BZeNKOEQ/R
+ GBe9IN2Y7DFQOJMBK46lMmGBidUNs8v7el8EEt7zCP6qQ9Rmf0YagZFeVGoW9SQPD/P8nOJHr
+ YAdGAljV4JUbSH4bk1caIT+SVbotZikvH6TRAHiNnAqnE331WVBT2XGabbQ/Z43y7N7jWCBFU
+ 2kyYONtCqHbwTfclb6dPXbmfI+KgJ4PjM/LdBVujwxn/NIoxzdFZQt1leL5mVNS6c+zUrYfpB
+ MELf+gFTvw+vQAYdDo4BUPQnch0lxmYTkH2UwlAvzFxt46sWverQPltPSKE3zSeeYGunUOD/p
+ +udLuLFp5JEYqADkRGSCn1wVgtdA4oL+iXYcHs+3cFMUFGCKssZ9wXQ8UivPehak8hILQnAgr
+ fLFha60U2JqotCDZFVo0M1eKI2DNNIgIphjJwU0QWacOwZyViC5MBg2TsYSphnfErzlz9ds+x
+ BwC2MA4GsqTuSsuG0cs8eP/JruleX+JjuKyIkTtbfLRxS1j6rZ4HZtR1FEvQgCuUpqB4Mv0Ji
+ 0zmvLFdP8h/J9Kmxf1YYk0QSuExBWWt5zucyWAw/fhr
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 06:00:31PM +0800, Chen, Rong A wrote:
-> 
-> 
-> On 5/6/2021 7:55 PM, Michael Zaidman wrote:
-> > On Thu, May 06, 2021 at 06:47:46AM +0800, kernel test robot wrote:
-> > > 
-> > >     drivers/hid/hid-ft260.c:515:59: warning: variable 'len' is uninitialized when used here [-Wuninitialized]
-> > >                     hid_err(hdev, "%s: unsupported wr len: %d\n", __func__, len);
-> > >                                                                             ^~~
-> > >     include/linux/hid.h:1190:30: note: expanded from macro 'hid_err'
-> > >             dev_err(&(hid)->dev, fmt, ##__VA_ARGS__)
-> > >                                         ^~~~~~~~~~~
-> > >     include/linux/dev_printk.h:112:32: note: expanded from macro 'dev_err'
-> > >             _dev_err(dev, dev_fmt(fmt), ##__VA_ARGS__)
-> > >                                           ^~~~~~~~~~~
-> > >     drivers/hid/hid-ft260.c:507:9: note: initialize the variable 'len' to silence this warning
-> > >             int len, ret;
-> > >                    ^
-> > >                     = 0
-> > 
-> > This warning has already been found and fixed by Dan Carpenter in
-> > the "HID: ft260: fix an error message in ft260_i2c_write_read()" commit
-> > on March 18, 2021.
-> 
-> Hi Michael,
-> 
-> This report is about the below warning prefixed by '>>', it's still in
-> mainline:
-> 
-> >> drivers/hid/hid-ft260.c:794:44: warning: format specifies type 'short'
-> but the argument has type 'int' [-Wformat]
->            return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
->                                              ~~~     ^~~~~~~~~~~~~~~~~~~
->                                              %i
-> 
-> Best Regards,
-> Rong Chen
+Audit subsystem was disabled in total for user namespaces other than
+the initial namespace.
 
-Hi Rong,
+If audit is enabled by kernel command line or audtid in initial namespace,
+it is now possible to allow at least logging of userspace applications
+inside of non-initial namespaces if CAP_AUDIT_WRITE in the corresponding
+namespace is held.
 
-Sure, but since the report states - "2 warnings generated", I addressed
-the first one for which we already have a commit with the fix.
+This allows logging of, e.g., PAM or opensshd inside user namespaced
+system containers.
 
-I tried to reproduce the second warning you referred to in this e-mail,
-but make.cross script failed since the "clang-latest" directory does not
-exist under the "0day". As a workaround, I modified the make command
-generated by the script replacing all "clang-latest" occurrences with
-"clang" and run it manually.
+Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
+---
+ kernel/audit.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-Another workaround could be to use the symbolic link as reported in the
-https://groups.google.com/g/clang-built-linux/c/qCjZblHi8lY/m/eBEEl2JxBgAJ
-on March 27, 2021.
-
-Anyway, I reproduced this warning and am going to submit a fix shortly.
-
-Thanks,
-Michael
+diff --git a/kernel/audit.c b/kernel/audit.c
+index 121d37e700a6..b5cc0669c3d7 100644
+--- a/kernel/audit.c
++++ b/kernel/audit.c
+@@ -1012,7 +1012,13 @@ static int audit_netlink_ok(struct sk_buff *skb, u16 msg_type)
+ 	 * userspace will reject all logins.  This should be removed when we
+ 	 * support non init namespaces!!
+ 	 */
+-	if (current_user_ns() != &init_user_ns)
++	/*
++	 * If audit is enabled by kernel command line or audtid in the initial
++	 * namespace allow at least logging of userspace applications inside of
++	 * non-initial namespaces according to CAP_AUDIT_WRITE is held in the
++	 * corresponding namespace.
++	 */
++	if ((current_user_ns() != &init_user_ns) && !audit_enabled)
+ 		return -ECONNREFUSED;
+ 
+ 	switch (msg_type) {
+@@ -1043,7 +1049,7 @@ static int audit_netlink_ok(struct sk_buff *skb, u16 msg_type)
+ 	case AUDIT_USER:
+ 	case AUDIT_FIRST_USER_MSG ... AUDIT_LAST_USER_MSG:
+ 	case AUDIT_FIRST_USER_MSG2 ... AUDIT_LAST_USER_MSG2:
+-		if (!netlink_capable(skb, CAP_AUDIT_WRITE))
++		if (!netlink_ns_capable(skb, current_user_ns(), CAP_AUDIT_WRITE))
+ 			err = -EPERM;
+ 		break;
+ 	default:  /* bad msg */
+-- 
+2.20.1
 
