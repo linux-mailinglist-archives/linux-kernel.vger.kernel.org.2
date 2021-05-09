@@ -2,93 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3A637787F
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 22:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B639377882
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 22:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbhEIUkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 16:40:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54462 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229840AbhEIUkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 16:40:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABD6A613CD;
-        Sun,  9 May 2021 20:39:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620592756;
-        bh=vRLvHTJ7c/kDMhq7zRaMkRhfEVoym4NQkeeAZlTPBiU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IhZXKM7ZfJnlicrQUDivP0G+1tfyKsZ4kc0oBHKYeJ4SZGUWOk6sIs6UsyTzV6Y9L
-         p97/swEXYmNr4h4TbLPuXl2SYExSfmH9NJpXr3b+nSAZ+DBGtly4U7tM0e9L9hFJpJ
-         Jn2KbB+3tv1RpXM2YfMKZ/qGnvmY3/8Jrivz7l42RKJvSe5waM5wIj8m4wEOxUOghu
-         bWCZNzKfQuO27mswIeM6V9drU/xMz7pI/hFId8Hw8n6y79oZEObwlI4Ee27OKE594b
-         yNz1mKguu75owFfnyUEflSY1djJ6W4CKIO7jL9nEiaErlO/EgJssHG/WoTJ0yRGFfa
-         yqWVOsKfpcEBw==
-Date:   Sun, 9 May 2021 23:39:12 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     =?utf-8?B?5Lmx55+z?= <zhangliguang@linux.alibaba.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tpm_tis_spi: set default probe function if device id not
- match
-Message-ID: <YJhIcIXMFj/LcYwu@kernel.org>
-References: <20210507145255.44033-1-zhangliguang@linux.alibaba.com>
- <YJXxDzougt3ZC01q@kernel.org>
- <e74fd54f-1700-4b06-a320-c0e257666565@linux.alibaba.com>
+        id S229952AbhEIUki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 16:40:38 -0400
+Received: from smtprelay0166.hostedemail.com ([216.40.44.166]:50410 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229840AbhEIUkh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 16:40:37 -0400
+Received: from omf10.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id C72281803EB48;
+        Sun,  9 May 2021 20:39:32 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf10.hostedemail.com (Postfix) with ESMTPA id 716322351F4;
+        Sun,  9 May 2021 20:39:31 +0000 (UTC)
+Message-ID: <26e1929386babea33d4a320b506c5247caacde77.camel@perches.com>
+Subject: Re: [PATCH] HID: ft260: fix format type warning in ft260_word_show()
+From:   Joe Perches <joe@perches.com>
+To:     Michael Zaidman <michael.zaidman@gmail.com>, lkp@intel.com
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, jikos@kernel.org,
+        dan.carpenter@oracle.com, linux-input@vger.kernel.org
+Date:   Sun, 09 May 2021 13:39:29 -0700
+In-Reply-To: <20210509193213.5974-1-michael.zaidman@gmail.com>
+References: <202105060637.LeEC6ztp-lkp@intel.com>
+         <20210509193213.5974-1-michael.zaidman@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <e74fd54f-1700-4b06-a320-c0e257666565@linux.alibaba.com>
+X-Rspamd-Queue-Id: 716322351F4
+X-Spam-Status: No, score=-1.39
+X-Stat-Signature: ej3kn3hz1a616w4iphgdqbkydg44xq9z
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18+mGqGafvpLnySgOkl4ipBmKaijyWq5nc=
+X-HE-Tag: 1620592771-976842
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 10:46:57AM +0800, ä¹±çŸ³ wrote:
-> Hi,
+On Sun, 2021-05-09 at 22:32 +0300, Michael Zaidman wrote:
+> Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
 > 
-> åœ¨ 2021/5/8 10:01, Jarkko Sakkinen å†™é“:
-> > On Fri, May 07, 2021 at 10:52:55PM +0800, Liguang Zhang wrote:
-> > > In DSDT table, TPM _CID was SMO0768, and no _HID definition. After a
-> > > kernel upgrade from 4.19 to 5.10, TPM probe function was changed which
-> > > causes device probe fails. In order to make newer kernel to be
-> > > compatible with the older acpi definition, it would be best set default
-> > > probe function.
-> > > 
-> > > Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
-> > > ---
-> > >   drivers/char/tpm/tpm_tis_spi_main.c | 12 ++++++++----
-> > >   1 file changed, 8 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/char/tpm/tpm_tis_spi_main.c b/drivers/char/tpm/tpm_tis_spi_main.c
-> > > index 3856f6ebcb34..da632a582621 100644
-> > > --- a/drivers/char/tpm/tpm_tis_spi_main.c
-> > > +++ b/drivers/char/tpm/tpm_tis_spi_main.c
-> > > @@ -240,10 +240,14 @@ static int tpm_tis_spi_driver_probe(struct spi_device *spi)
-> > >   	tpm_tis_spi_probe_func probe_func;
-> > >   	probe_func = of_device_get_match_data(&spi->dev);
-> > > -	if (!probe_func && spi_dev_id)
-> > > -		probe_func = (tpm_tis_spi_probe_func)spi_dev_id->driver_data;
-> > > -	if (!probe_func)
-> > > -		return -ENODEV;
-> > > +	if (!probe_func) {
-> > > +		if (spi_dev_id) {
-> > > +			probe_func = (tpm_tis_spi_probe_func)spi_dev_id->driver_data;
-> > > +			if (!probe_func)
-> > > +				return -ENODEV;
-> > Perhaps also hear fallback to tpm_tis_spi_probe?
+> Fix warning reported by static analysis when built with W=1 for arm64 by
+> clang version 13.0.0
 > 
+> > > drivers/hid/hid-ft260.c:794:44: warning: format specifies type 'short' but
+>    the argument has type 'int' [-Wformat]
+>            return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
+>                                              ~~~     ^~~~~~~~~~~~~~~~~~~
+>                                              %i
+>    include/linux/byteorder/generic.h:91:21: note: expanded from
+>                                             macro 'le16_to_cpu'
+>    #define le16_to_cpu __le16_to_cpu
+>                        ^
+>    include/uapi/linux/byteorder/big_endian.h:36:26: note: expanded from
+>                                                     macro '__le16_to_cpu'
+>    #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
+>                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    include/uapi/linux/swab.h:105:2: note: expanded from macro '__swab16'
+>            (__builtin_constant_p((__u16)(x)) ?     \
+>            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
-> Yes, I do not think of a good way. Do you have any suggestions?
+> Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+>  drivers/hid/hid-ft260.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
+> index 047aa85a7c83..38794a29599c 100644
+> --- a/drivers/hid/hid-ft260.c
+> +++ b/drivers/hid/hid-ft260.c
+> @@ -791,7 +791,7 @@ static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
+>  	if (ret != len && ret >= 0)
+>  		return -EIO;
+>  
+> 
+> -	return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
+> +	return scnprintf(buf, PAGE_SIZE, "%d\n", le16_to_cpu(*field));
+>  }
 
-So, I just think that when you have this part:
+There are 2 of these so I wonder about the static analysis.
+It's probably better to use sysfs_emit as well.
+---
+ drivers/hid/hid-ft260.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
+index 7a9ba984a75a..475641682fff 100644
+--- a/drivers/hid/hid-ft260.c
++++ b/drivers/hid/hid-ft260.c
+@@ -783,7 +783,7 @@ static int ft260_byte_show(struct hid_device *hdev, int id, u8 *cfg, int len,
+ 	if (ret != len && ret >= 0)
+ 		return -EIO;
+ 
+-	return scnprintf(buf, PAGE_SIZE, "%hi\n", *field);
++	return sysfs_emit(buf, "%d\n", *field);
+ }
+ 
+ static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
+@@ -795,7 +795,7 @@ static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
+ 	if (ret != len && ret >= 0)
+ 		return -EIO;
+ 
+-	return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
++	return sysfs_emit(buf, "%d\n", le16_to_cpu(*field));
+ }
+ 
+ #define FT260_ATTR_SHOW(name, reptype, id, type, func)			       \
 
-if (!probe_func) {
-	if (spi_dev_id) {
-                probe_func = (tpm_tis_spi_probe_func)spi_dev_id->driver_data;
-                if (!probe_func)
-                        return -ENODEV;
-
-Why in here would not you also want to fallback to tpm_tis_spi_probe?
-
-/Jarkko
