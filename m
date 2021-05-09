@@ -2,124 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D948B377641
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 12:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81169377643
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 12:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229635AbhEIKuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 06:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhEIKuu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 06:50:50 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8066C06175F
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 03:49:46 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id c15so2675974ljr.7
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 03:49:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mQafJtBEfmRTcgozALwkE9M1nF4kym6hXG0iG0sUNgY=;
-        b=W2SlqBumDyfZmBDebluEBm0aD61vrqdgA+9lfx0m+eDN2ySYr4WoOetQRyABotFRmV
-         ukH8eRgS+44+3xw1sWPdQxS045PpSc74KRsKhyLCwb1Y0nbmZsdvzLEKp/GSwLWNn1Ce
-         Q9WlXY56TT/vi/Qh8or36sgc9agzph6RuzoFWWTrIyxmplxTmPJZh5zMvMymB0CHNMwQ
-         sSZPi07BLZwtndKImXPv6nWBacfC+9wvWKIuHF/IHgL2PujYQGvJRpMR2o7xT/yHx9So
-         et4j0uw2pJveVSzAN2k3dHlFFDwv+/tbUm228lL1gRyoRM52utJ5soaXK1LQqdtR97ws
-         PzqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mQafJtBEfmRTcgozALwkE9M1nF4kym6hXG0iG0sUNgY=;
-        b=TdCSvcCU6d09MHLVG+2VcFnTVTi5gFnvLxZy886w4YxShPC+if0ddOg294sLY7LKP5
-         AaAQE14cvSRpamN5/QFzuQe4qp8OLS3nhc79p+nyEhHRCYpiGjY7ZVwkT1yV0N0VwI9r
-         YGlEAvuSC8HlQJ5CkmxAtiAWB/UPphLpRVNUlZAonAT315SAuE0hqeM5l6VyjrV5VtgB
-         sBnwIFX45twVyzJ9xhkU6kJENzA81VTsDhfSb536PV98ZNQkMLOPNoGglVqXpUS1/hsB
-         eehNnNaBLDkR5vv8ll4Tk0kpE7XnJra3WddckInqJHCGWYOoJoDNq+9o4UNUkohKJ7ih
-         W1Mg==
-X-Gm-Message-State: AOAM531398wsXf9XujLpGbrmPCU2Fi3uMm6lOBKpnqxZx7pgUobq/piJ
-        MsmYaxnAbKrmQmupTPuyKPIYZtIWi2XIxpkoVMePBQ==
-X-Google-Smtp-Source: ABdhPJw48ytLdN9bKt+Jcnukhvew4xZlQCf6DsNPReSjSfwt96BlLgFJ83xaiLx57shTh2pGawA/4lu8FX6M0NiPqnw=
-X-Received: by 2002:a2e:889a:: with SMTP id k26mr15716886lji.438.1620557385112;
- Sun, 09 May 2021 03:49:45 -0700 (PDT)
+        id S229661AbhEIKvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 06:51:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229602AbhEIKvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 06:51:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0653461424;
+        Sun,  9 May 2021 10:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620557408;
+        bh=GngOjC6k8lCrzwT8wRaDWgh3sX8bZvsp0XPX4FZfRwo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ullut+s0iLthN42nUHHKrYyZX5dOhD54zy6JuX4/ylmlKkwbfBiNEJ9Naasw3KW4U
+         j7C+uxZGpjRNoMfeeBRaCKvZSmZIFcVlwbcYZfaANMn2j4NLNU7dV5op5w1PqW+N47
+         9m0T7WE0FzgMd1iExBlIGHPE2t9yPnpJsO3JGfdUsPo8wm2B/X9YvKMuYt83PwCidL
+         35N99+h9mzJnf0A6HBBvPytOCEsfU39pBXBmNpiTGz49DHWx88WtmCF6GQTkS0dVnf
+         Ql38tD580+v96lNvBYKKeBZGgkBc9SVKGhjV+QnjF7Xb067OS+4Okt2CkB+Zv1t0/r
+         csoO9HwVYzunw==
+Date:   Sun, 9 May 2021 13:50:04 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Wei Ming Chen <jj251510319013@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] i40iw: Use fallthrough pseudo-keyword
+Message-ID: <YJe+XDO5PEr4SF0l@unreal>
+References: <20210509083135.14575-1-jj251510319013@gmail.com>
 MIME-Version: 1.0
-References: <20210508142000.85116-1-kettenis@openbsd.org> <20210508142000.85116-2-kettenis@openbsd.org>
- <CACRpkdbexpwu9hDWFYe38-+issVw051YfJ-_hatZVmWzkh4M+w@mail.gmail.com> <c1bd67fcc0390275@bloch.sibelius.xs4all.nl>
-In-Reply-To: <c1bd67fcc0390275@bloch.sibelius.xs4all.nl>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 9 May 2021 12:49:33 +0200
-Message-ID: <CACRpkdZYD3Nq7ZmdXsk_j0CAktvx6Sbqga5B1wbwtL-5T_=vkQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: Add DT bindings for apple,pinctrl
-To:     Mark Kettenis <mark.kettenis@xs4all.nl>
-Cc:     kettenis@openbsd.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Hector Martin <marcan@marcan.st>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210509083135.14575-1-jj251510319013@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+On Sun, May 09, 2021 at 04:31:35PM +0800, Wei Ming Chen wrote:
+> Add pseudo-keyword macro fallthrough[1]
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> 
+> Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
+> ---
+>  drivers/infiniband/hw/i40iw/i40iw_ctrl.c | 1 +
+>  drivers/infiniband/hw/i40iw/i40iw_uk.c   | 1 +
+>  2 files changed, 2 insertions(+)
 
-I think we settle with this scheme you choose, so the following
-is just some hints for the future.
+What exactly are you fixing?
+"case" without any code doesn't need "fallthrough".
 
-On Sun, May 9, 2021 at 11:46 AM Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
+Thanks
 
-> Right.  So far it seems we don't need to set the electrical config on
-> any of the pins and I don't think we've identified any bits in the
-> register that change the electrical configuration.  Although there are
-> some hints in the Apple device tree that there are pins that need some
-> additional configuration.  But I also see some evidence that the Apple
-> firmware on these devices already sets up most of the pins for us.
-
-This is something I think you want to look closer at soon.
-
-It will *probably* be necessary to obtain optimal power management
-for the devices, but I am not sure.
-
-What operating systems (especially Android devices under Linux)
-tend to do is to reconfigure pins at runtime in order to conserve
-power. When the device goes to deep sleep just waiting for an
-external interrupt (such as opening the lid on a laptop or pressing
-the power button on a phone) the OS tend to reconfigure the
-pins into a low power state for the duration of the sleep.
-
-A typical example is to set a bunch of lines as "floating" (tristate)
-in pin control terminology "bias-high-impedance". In some cases
-pins may be connected to ground depending on use case,
-but in each case this is done to avoid leak currents when
-sleeping.
-
-I don't know how noticeable impact this will have on standby times,
-but the lower micron silicon technology, the bigger the impact.
-
-If possible I'd recommend that you try to intercept what MacOS
-is doing with these registers when the system goes in/out of
-sleep mode. I think it could be key to some power savings you
-would otherwise miss.
-
-These two modes are standardized in pin control terms as
-"default" and "sleep" and each affected device driver need
-to actively put the pin control state to "sleep" when the
-device is going to sleep, so the philosophy is entirely
-distributed, in difference from some more sledgehammer-type
-OS approaches where the OS is just slamming a number
-of values into the pin registers at sleep (suspend) time.
-
-The upside to doing this fine-grained and per device is that
-the sleep modes can in best case be used at runtime
-to e.g. save power on an unused USB port that isn't plugged
-to anything (I don't know if this is a good example).
-In Linux we have the runtime PM concept to deal with
-this and there are some drivers actively saving power in
-this way.
-
-Yours,
-Linus Walleij
+> 
+> diff --git a/drivers/infiniband/hw/i40iw/i40iw_ctrl.c b/drivers/infiniband/hw/i40iw/i40iw_ctrl.c
+> index eaea5d545eb8..c6081283217c 100644
+> --- a/drivers/infiniband/hw/i40iw/i40iw_ctrl.c
+> +++ b/drivers/infiniband/hw/i40iw/i40iw_ctrl.c
+> @@ -2454,6 +2454,7 @@ static enum i40iw_status_code i40iw_sc_qp_init(struct i40iw_sc_qp *qp,
+>  			return ret_code;
+>  		break;
+>  	case 5: /* fallthrough until next ABI version */
+> +		fallthrough;
+>  	default:
+>  		if (qp->qp_uk.max_rq_frag_cnt > I40IW_MAX_WQ_FRAGMENT_COUNT)
+>  			return I40IW_ERR_INVALID_FRAG_COUNT;
+> diff --git a/drivers/infiniband/hw/i40iw/i40iw_uk.c b/drivers/infiniband/hw/i40iw/i40iw_uk.c
+> index f521be16bf31..e1c318c291c0 100644
+> --- a/drivers/infiniband/hw/i40iw/i40iw_uk.c
+> +++ b/drivers/infiniband/hw/i40iw/i40iw_uk.c
+> @@ -1004,6 +1004,7 @@ enum i40iw_status_code i40iw_qp_uk_init(struct i40iw_qp_uk *qp,
+>  			i40iw_get_wqe_shift(info->max_rq_frag_cnt, 0, &rqshift);
+>  			break;
+>  		case 5: /* fallthrough until next ABI version */
+> +			fallthrough;
+>  		default:
+>  			rqshift = I40IW_MAX_RQ_WQE_SHIFT;
+>  			break;
+> -- 
+> 2.25.1
+> 
