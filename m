@@ -2,114 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68EB33776B9
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 15:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16253776BF
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 15:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbhEINHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 09:07:45 -0400
-Received: from smtp-18-i2.italiaonline.it ([213.209.12.18]:46951 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229620AbhEINHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 09:07:43 -0400
-Received: from oxapps-31-138.iol.local ([10.101.8.184])
-        by smtp-18.iol.local with ESMTPA
-        id fj8mlSlt1gCmjfj8mlX7w1; Sun, 09 May 2021 15:06:37 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1620565597; bh=LI1EWWQ3YXRDXMn9xnQOuvXpJUlF/VXkWjyGguHRlqQ=;
-        h=From;
-        b=MgSaZ5IGEUsby9GMmihGm1lkw5paHxrm5JpZLGyOYwcXjnEHtbkGkEFiuh3NcwX9u
-         QbTDfqprZk6PAz8KPaxdkMZIq7u4vBTg0zxURa6i2TJy8xZJn8cuJe3gvLf0uMNQHX
-         kgh/MjuCqAJwmzDCi+rT1Sf+hkpMhPY7fX25ezK5xg6dgMrlvInCYIGGVJp7bFGuKi
-         8wqsRCkz3jtBgwH5h1A8A0bGA3GwXOIux/JFuiFBzK6H3YFFNlh/rkfLZL6HwyNq5f
-         HaAglxVf9ZWZ7cyhjeck8npYabM6aXJC9HmC/nhGdTi28ZLPnwb2RxR9atXc/l4E7b
-         NX5JOGYMMKeeA==
-X-CNFS-Analysis: v=2.4 cv=X5uXlEfe c=1 sm=1 tr=0 ts=6097de5d cx=a_exe
- a=SkAuTGSu9wVn7tcq8ZjrZA==:117 a=VYA5D5F8Gk0A:10 a=IkcTkHD0fZMA:10
- a=4ehuGOvBq5EA:10 a=VwQbUJbxAAAA:8 a=inwdKGJjCKPWPO92qNgA:9 a=QEXdDO2ut3YA:10
- a=5yUOnwQy5QICz8m5uxDm:22 a=AjGcO6oz07-iQ99wixmX:22
-Date:   Sun, 9 May 2021 15:06:36 +0200 (CEST)
-From:   Dario Binacchi <dariobin@libero.it>
-To:     Stephen Boyd <sboyd@kernel.org>, Tony Lindgren <tony@atomide.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <kristo@kernel.org>, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-omap@vger.kernel.org
-Message-ID: <1870803595.135812.1620565596917@mail1.libero.it>
-In-Reply-To: <161724167065.2260335.15543151418752525635@swboyd.mtv.corp.google.com>
-References: <20210329164222.26794-1-dariobin@libero.it>
- <161707108197.3012082.13148389244272034996@swboyd.mtv.corp.google.com>
- <YGQNyGDkAbUXRYtA@atomide.com>
- <161724167065.2260335.15543151418752525635@swboyd.mtv.corp.google.com>
-Subject: Re: [PATCH v3 0/4] clk: ti: add am33xx spread spectrum clock
- support
+        id S229649AbhEINLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 09:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229590AbhEINLC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 09:11:02 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10787C061573;
+        Sun,  9 May 2021 06:09:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=jmMlMrReug8dSG3qMgbDjrwA6zFS6KOYzBiUrMYLurI=; b=cNvbXvPjSI+Vkyp34Q1pYieCF
+        DMTf/bm9yJ3Nao7+sGIoIAs+4g4EKyThDYzxI41glhBzBSqN9FqgmTtkChW05uHo2MLMAotv2mBIn
+        Vu22decVhvbON5QdKBb2ORDsbT2wubaeRrq4hL8jueKSsJTOYgCPAqKytiikARd+tAHj5VqAiCYJr
+        +XzykKeew2SKNrR/ZmKDNCKxQ6CA1BwAnU+imRMpZSlw3aO7H04avilESyyYTUuhaLYBKScJd1NPR
+        ivKCS3iQjAF58z5XAlr5R+XvI0Gis3vNeOuNezYrGisoE+PbI1oH9iG2eWzAPgmJx8nuhnMLUZ8wC
+        j9ic4idew==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43814)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lfjC1-0007H1-FH; Sun, 09 May 2021 14:09:57 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lfjC0-0007f1-Sx; Sun, 09 May 2021 14:09:56 +0100
+Date:   Sun, 9 May 2021 14:09:56 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     stable@vger.kernel.org, Palmer Dabbelt <palmerdabbelt@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] arm: Enlarge IO_SPACE_LIMIT needed for some SoC
+Message-ID: <20210509130956.GI1336@shell.armlinux.org.uk>
+References: <20210508175537.202-1-ansuelsmth@gmail.com>
+ <20210508185043.GF1336@shell.armlinux.org.uk>
+ <YJcV6I6yYt5zIsXQ@Ansuel-xps.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
-X-Originating-IP: 95.244.94.151
-X-Originating-Client: open-xchange-appsuite
-x-libjamsun: 70Pb3JSJkMjw5JvbakU3Wh7D4w5S68w2
-x-libjamv: dvoWA22thEM=
-X-CMAE-Envelope: MS4xfIH95fOfdA6rNtVjj/ofgnk4DRxWUlcrXrOqNDwFhhDQr3MeNFf0hYJ4Dtm/vRGkCkXLvHriNKTexv5Xn0Nkst52KU+Wsr0wzDkgK8n1AzXn5U+Wog/9
- f85Nkzfl/SDDpnVbGch7pcxJX0g5UCorPxQtVW3zANy+j9vUCklfQeasIPUboJZq1REgR/ALtnT19X2UyX8ZAc5NUPKikfYdUG2zcaPqxOC+g2jl1A9+JBNh
- 31va2+j2JDvjGmKos0ch+dLqCbQjtzdZWVUydBGOMVxFFFzOCHUqYp22jNYtTK0H6O3TfYZbfoA4qWcfpoJuQIDNKKejDGA/SEBjVh4MD6w4nDRl8ItckCZ8
- KpGMI0lw9t+yjdanalzMHnBCncYltMlJRWuhG2gl4oI2mfu40YsqYjsg7JEfOU1IcFmFD15cKq/3w7WY582t96tdxV0xBt4xN85+4S4LfbvOpBYX+dMelX+H
- wlsgGDQhUUwYwc44osQATdqQeYKBeGOrWsm/i4Q6Wg/dF0IY+qqL+vmx6nnCyLEM0UXXHgp+/15fl1GEGaF8ma67eoSv1miZeNjtWQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJcV6I6yYt5zIsXQ@Ansuel-xps.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen, Hi Tony
+On Sun, May 09, 2021 at 12:51:20AM +0200, Ansuel Smith wrote:
+> On Sat, May 08, 2021 at 07:50:44PM +0100, Russell King - ARM Linux admin wrote:
+> > On Sat, May 08, 2021 at 07:55:35PM +0200, Ansuel Smith wrote:
+> > > Ipq8064 SoC requires larger IO_SPACE_LIMIT or second and third pci port
+> > > fails to register the IO addresses and connected device doesn't work.
+> > > 
+> > > Cc: <stable@vger.kernel.org> # 4.9+
+> > > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > 
+> > I don't see any consideration of whether this increase results in any
+> > clashes with any other related areas. Also, there is no update of the
+> > memory layout documentation.
+> > 
+> > The memory layout documentation says:
+> > 
+> > =============== =============== ===============================================
+> > Start           End             Use
+> > =============== =============== ===============================================
+> > fee00000        feffffff        Mapping of PCI I/O space. This is a static
+> >                                 mapping within the vmalloc space.
+> > 
+> > which means there's a maximum of 0x001fffff available. You are
+> > increasing it's size from 0x000fffff to 0x00ffffff. This means it
+> > expands from 0xfee00000 through to 0xffdfffff.
+> > 
+> > This conflicts with these entries:
+> > 
+> > ffc80000        ffefffff        Fixmap mapping region.  Addresses provided
+> >                                 by fix_to_virt() will be located here.
+> > 
+> > ffc00000        ffc7ffff        Guard region
+> > 
+> > ff800000        ffbfffff        Permanent, fixed read-only mapping of the
+> >                                 firmware provided DT blob
+> > 
+> > So, I have no option but to NAK this change. Sorry.
+> > 
+> > You can find this documentation in the "Documentation" subdirectory.
+> > 
+> > -- 
+> > RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> > FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+> 
+> Hi,
+> Thanks a lot for the review and sorry for the mess. Just to make sure I
+> don't push a very wrong patch another time. ipq8064 require 0x300000 of
+> IO space if all 3 lines are used. From what I can read in the
+> documentation, the PCI I/O mapping section does have space and can be
+> expanded to ff0fffff without causing collision. So I have to update that
+> part and the IO_LIMIT to 0x2fffff. Tell me if I'm completely wrong and
+> again, thanks for the review.
 
-> Il 01/04/2021 03:47 Stephen Boyd <sboyd@kernel.org> ha scritto:
->=20
-> =20
-> Quoting Tony Lindgren (2021-03-30 22:51:04)
-> > * Stephen Boyd <sboyd@kernel.org> [210330 02:25]:
-> > > Quoting Dario Binacchi (2021-03-29 09:42:17)
-> > > >=20
-> > > > As reported by the TI spruh73x RM, MPU and LCD modules support spre=
-ad
-> > > > spectrum clocking (SSC) on their output clocks. SSC is used to spre=
-ad
-> > > > the spectral peaking of the clock to reduce any electromagnetic
-> > > > interference (EMI) that may be caused due to the clock=E2=80=99s fu=
-ndamental
-> > > > or any of its harmonics.
-> > > > The series allows you to enable and adjust the spread spectrum cloc=
-king
-> > > > for all am33xx PLLs for which it is supported.
-> > > >=20
-> > >=20
-> > > What is your merge strategy? Should all the patches go through clk tr=
-ee?
-> > > Or you'll send via arm-soc?
-> >=20
-> > Probably best to just merge all via the clk tree as that's where most o=
-f
-> > the changes are.
-> >=20
->=20
-> Ok. If nobody reviews/acks the last patch in a few days I'll merge the
-> pile through clk tree.
+Well, an obvious question would be: do you really need that much IO
+space? PCs have got away with 64K of IO space without having a problem
+for years, so 64K per bus should be fine. If you have 3 buses, that
+should be 3 * 64K or 192K.
 
-It's been over a month since I submitted the patches. Meanwhile Tero Kristo=
- has=20
-reviewed the most important patch of the series. However, I have not seen a=
-ny=20
-progress in the state of the series. Furthermore, I don't see the DTS patch=
-es=20
-in the clk tree. Am I missing something? Or do I have to do something? Sorr=
-y=20
-for the questions but I don't have much experience with patch merge strateg=
-ies.
+I would bet in the normal circumstance that the IO space on every PCI
+bus is very sparsely used, so using 1MiB per bus seems over the top.
 
-Thanks and regards,
-Dario
+That said, using 1MB each for three buses takes the top of the IO space
+to 0xff100000, which shouldn't be a problem, assuming memory.rst is up
+to date.
+
+In any case, I really don't think such a change has anything to do with
+stable kernels, so please drop that for your next submission.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
