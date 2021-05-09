@@ -2,67 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15E5377678
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 13:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1B237768C
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 14:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhEILms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 07:42:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229585AbhEILmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 07:42:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8DB2610A0;
-        Sun,  9 May 2021 11:41:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620560503;
-        bh=ZS3YEvtc2pR0lhtS1vLZ7khrYTL9Kd4ze0vI/bUnaCk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HA1tW33FkDopR1x122eN0p6+4VSRxXxE8yeGnuOiioitQ6/0hsg7nO0xIMj9Sr/zl
-         JXNA9TkQDmGPQ8yh3URWq7CcrscQBT2n5ZwVwrt9ZBUVbz2XiKKvjV8xwRmpwvb8PO
-         3idFGHGyg57SGZYuxhQAz3pFV9TbvlZirbxmUDFeA9zvMFBtxmGe3xUYGj0EV2DLe7
-         cOlwKHXBGG83VUVUox1EW0CogZmxrMz80PDfteadA2Jheb5k0wsHKBIKd1Jr9aujUc
-         6RlDMDLwLjY19N5Hbs5cG7ZEgBJ1ECkYKLhtLqGiyw+0W2FrlCya25OtOgY+4ChG5e
-         64VOUEuoHanUg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-rc] RDMA/siw: Release xarray entry
-Date:   Sun,  9 May 2021 14:41:38 +0300
-Message-Id: <f070b59d5a1114d5a4e830346755c2b3f141cde5.1620560472.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S229615AbhEIMBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 08:01:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229563AbhEIMBZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 08:01:25 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB5AC061573;
+        Sun,  9 May 2021 05:00:22 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id e14so11656275ils.12;
+        Sun, 09 May 2021 05:00:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=kTx7GsVUFbgNj4CE0ebZKgVk3lgKoqAHGQKzwKjpOTo=;
+        b=o1U7LHIoILUMAKsu3Ff3u1/xNS1wn1G0pYDZnS8MFQxnPBmV6xnAJrwAYYsg8j7asq
+         SD2hchkVH4BiazilUD8Uv3VHCVVLgKplOZ6IizO2/VicDHODdjTF9gEhaHhS0yXO8hlm
+         fho+krDPMQFAPJJ+SlHhyyS6PbNpEoDSGTVksa5YeUaTc9IASJoQvAyaSXsCTugHNVEp
+         PjeojXRE+ISwXshc/Ah7ngTBVgnll/17CRb/FV43maq56TDiUQziZThShSGrxcwnrXoU
+         bV41slefQTRltwI6SfmFm4Z5zpgn0geIhyvZlzHEHajqtUK8+3c1YUJ0ukB2Hm6d1HS4
+         sG4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=kTx7GsVUFbgNj4CE0ebZKgVk3lgKoqAHGQKzwKjpOTo=;
+        b=rb9y13RvkMNQr19Oz1KABCwLS7Qb1CMPlxqN1RSNq5moJxFGXMNCibgaNEbglqDH9f
+         135Dz3FIrYGchtym+CPWYXTQx1Fsn8dijDBnDl1JzZi03XTzE9uVr8eLg1rzsILXx9y9
+         7bRRP1C3L54OZBEYI5bDduXQ2aO6Sa5cFOLbUsH8qlgTkSEFPjwPpdzVX/YUArNrJ1Qb
+         asDAQ8RKpeybHjTFdGzw+TdZy17gBFolMnFJz8DFIV2GiyZj8HPLaVmObKzk0qPTbXe7
+         dU5Qz/I2/glkKscrtGKv6ARF7LIvz8yHtEV+fWFLYp/82khZy0a4O5Kg1DQ+azffnC4F
+         9Nrw==
+X-Gm-Message-State: AOAM5306ri260lcaJ1l6bpk31Y8yJLg28V17CxsBYkvx6EYspsQxG4ac
+        H/nJX/HtRy/EvHIKNncxQF6fvRla+rCt2OL86VCXk5lQywJNiw==
+X-Google-Smtp-Source: ABdhPJxHWZ09Z3PyFi+Vxhf1zbM0wtuvfiwJ26dMwg1qAhPy7R05jGaIUlv+ZLXQXeRAllHhAF8Gkn7AEe12UokWC2E=
+X-Received: by 2002:a05:6e02:1212:: with SMTP id a18mr17861723ilq.2.1620561621669;
+ Sun, 09 May 2021 05:00:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Nour-eddine Taleb <1337.noureddine@gmail.com>
+Date:   Sun, 9 May 2021 12:00:10 +0000
+Message-ID: <CAJO4vZwtVrYoMPZ9XoEAUJYgo-rND21eGorPrRF5m6rW4WT76w@mail.gmail.com>
+Subject: [PATCH] arch: powerpc: kvm: remove unnecessary casting
+To:     paulus@ozlabs.org, mpe@ellerman.id.au, benh@kernel.crashing.org
+Cc:     kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+remove unnecessary castings, from "void *" to "struct kvmppc_xics *"
 
-The xarray entry is allocated in siw_qp_add(), but release was
-missed in case zero-sized SQ was discovered.
-
-Fixes: 661f385961f0 ("RDMA/siw: Fix handling of zero-sized Read and Receive Queues.")
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Nour-eddine Taleb <1337.noureddine@gmail.com>
 ---
- drivers/infiniband/sw/siw/siw_verbs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/kvm/book3s_xics.c        | 2 +-
+ arch/powerpc/kvm/book3s_xive.c        | 2 +-
+ arch/powerpc/kvm/book3s_xive_native.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-index 917c8a919f38..3f175f220a22 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.c
-+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-@@ -375,7 +375,7 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
- 	else {
- 		/* Zero sized SQ is not supported */
- 		rv = -EINVAL;
--		goto err_out;
-+		goto err_out_xa;
- 	}
- 	if (num_rqe)
- 		num_rqe = roundup_pow_of_two(num_rqe);
+diff --git a/arch/powerpc/kvm/book3s_xics.c b/arch/powerpc/kvm/book3s_xics.c
+index 303e3cb096db..9ae74fa551a6 100644
+--- a/arch/powerpc/kvm/book3s_xics.c
++++ b/arch/powerpc/kvm/book3s_xics.c
+@@ -1440,7 +1440,7 @@ static int kvmppc_xics_create(struct kvm_device
+*dev, u32 type)
+
+ static void kvmppc_xics_init(struct kvm_device *dev)
+ {
+-    struct kvmppc_xics *xics = (struct kvmppc_xics *)dev->private;
++    struct kvmppc_xics *xics = dev->private;
+
+     xics_debugfs_init(xics);
+ }
+diff --git a/arch/powerpc/kvm/book3s_xive.c b/arch/powerpc/kvm/book3s_xive.c
+index e7219b6f5f9a..05bcaf81a90a 100644
+--- a/arch/powerpc/kvm/book3s_xive.c
++++ b/arch/powerpc/kvm/book3s_xive.c
+@@ -2242,7 +2242,7 @@ static void xive_debugfs_init(struct kvmppc_xive *xive)
+
+ static void kvmppc_xive_init(struct kvm_device *dev)
+ {
+-    struct kvmppc_xive *xive = (struct kvmppc_xive *)dev->private;
++    struct kvmppc_xive *xive = dev->private;
+
+     /* Register some debug interfaces */
+     xive_debugfs_init(xive);
+diff --git a/arch/powerpc/kvm/book3s_xive_native.c
+b/arch/powerpc/kvm/book3s_xive_native.c
+index 76800c84f2a3..2703432cea78 100644
+--- a/arch/powerpc/kvm/book3s_xive_native.c
++++ b/arch/powerpc/kvm/book3s_xive_native.c
+@@ -1265,7 +1265,7 @@ static void xive_native_debugfs_init(struct
+kvmppc_xive *xive)
+
+ static void kvmppc_xive_native_init(struct kvm_device *dev)
+ {
+-    struct kvmppc_xive *xive = (struct kvmppc_xive *)dev->private;
++    struct kvmppc_xive *xive = dev->private;
+
+     /* Register some debug interfaces */
+     xive_native_debugfs_init(xive);
 -- 
-2.31.1
-
+2.30.2
