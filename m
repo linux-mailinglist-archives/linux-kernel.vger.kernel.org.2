@@ -2,50 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50268377967
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 01:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A945F377970
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 02:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbhEIX4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 19:56:24 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:55670 "EHLO gloria.sntech.de"
+        id S230039AbhEJABB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 20:01:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230004AbhEIX4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 19:56:21 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.fritz.box)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lftGV-0007y6-Rg; Mon, 10 May 2021 01:55:15 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Chen-Yu Tsai <wens@kernel.org>
-Cc:     Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        Chen-Yu Tsai <wens@csie.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: dts: rockchip: rk3328: rock-pi-e: Drop fephy pinctrl from gmac2phy
-Date:   Mon, 10 May 2021 01:55:10 +0200
-Message-Id: <162060449717.1266480.17694664157569213328.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210426095916.14574-1-wens@kernel.org>
-References: <20210426095916.14574-1-wens@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S229853AbhEJABA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 20:01:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C4EC61055;
+        Sun,  9 May 2021 23:59:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1620604795;
+        bh=EaSzfc7lZ7OaPdMxSs94vjWb7HX+0UW9m/tgEeudR8Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HQ8xCiWE1anFnQ2j9qSE+l1Epz3zTnz6snHgRJ8tPZsqDoQazgXLr9QmfKs400Xsf
+         2SYJ/OO4tgX+gORYo1zlu+b0EcLCiC61caVpoxTSibsPAFWtox9o8LmOliz8L6vgs1
+         wyBsq7b2YDLC59QUrLZUJKo8FYEQOcAGoHHA5x5Y=
+Date:   Sun, 9 May 2021 16:59:54 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michal Hocko <mhocko@suse.com>, Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH v1 4/5] kvfree_rcu: Refactor kfree_rcu_monitor()
+ function
+Message-Id: <20210509165954.347dd3cd8e8815b9dce67cfb@linux-foundation.org>
+In-Reply-To: <20210428134422.1894-4-urezki@gmail.com>
+References: <20210428134422.1894-1-urezki@gmail.com>
+        <20210428134422.1894-4-urezki@gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Apr 2021 17:59:16 +0800, Chen-Yu Tsai wrote:
-> Turns out the fephy pins are already claimed in the phy node, which is
-> rightfully where they should be claimed.
-> 
-> Drop the pinctrl properties from the gmac2phy node for the ROCK Pi E.
+On Wed, 28 Apr 2021 15:44:21 +0200 "Uladzislau Rezki (Sony)" <urezki@gmail.com> wrote:
 
-Applied, thanks!
+> Rearm the monitor work directly from its own function that
+> is kfree_rcu_monitor(). So this patch puts the invocation
+> timing control in one place.
+>
+> ...
+>
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3415,37 +3415,44 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+>  	return !repeat;
+>  }
+>  
+> -static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+> -					  unsigned long flags)
+> +/*
+> + * This function queues a new batch. If success or nothing to
+> + * drain it returns 1. Otherwise 0 is returned indicating that
+> + * a reclaim kthread has not processed a previous batch.
+> + */
+> +static inline int kfree_rcu_drain(struct kfree_rcu_cpu *krcp)
+>  {
+> +	unsigned long flags;
+> +	int ret;
+> +
+> +	raw_spin_lock_irqsave(&krcp->lock, flags);
+> +
+>  	// Attempt to start a new batch.
+> -	if (queue_kfree_rcu_work(krcp)) {
+> +	ret = queue_kfree_rcu_work(krcp);
 
-[1/1] arm64: dts: rockchip: rk3328: rock-pi-e: Drop fephy pinctrl from gmac2phy
-      commit: e6526f90696e6a7d722d04b958f15b97d6fd9ce6
+This code has changed slightly in mainline.  Can you please redo,
+retest and resend?
 
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+> +	if (ret)
+>  		// Success! Our job is done here.
+>  		krcp->monitor_todo = false;
+> -		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> -		return;
+> -	}
+
+It's conventional to retain the braces here, otherwise the code looks
+weird.  Unless you're a python programmer ;)
+
+
