@@ -2,139 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183193774B5
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 02:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB403774BB
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 02:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbhEIA27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 20:28:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47782 "EHLO
+        id S229680AbhEIAfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 20:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbhEIA25 (ORCPT
+        with ESMTP id S229616AbhEIAfd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 20:28:57 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1602C061573
-        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 17:27:52 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id o16so16339296ljp.3
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 17:27:52 -0700 (PDT)
+        Sat, 8 May 2021 20:35:33 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D7DDC061574
+        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 17:34:30 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id m11so1681775lfg.3
+        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 17:34:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sOG7GoczpFfze5AyMT4RluOASRTehzGf0LNWttOKk5c=;
-        b=fd/VQghyl1il11WcKIahjTpti38ABPOV+dWJY++N6qi+RgRaK1GW8Sk7C+ltz/7Xga
-         z0doL14X6Ldz+/jney8rR8LcRGt+D2mcXm9tdfOGM6mOugc45rNXotg+pcpI6ZU/Tuex
-         uG4xC2vISLas1g8vYAfDvc/8Vwhd6Rdc/JSw5APFXzlTg+j3aXEKzb2YGGeHPcTbK+Zz
-         qaDpZ7G34rsLW5ylHIuAe5pKPqjvDpmVNXKM8lnDzNkxYjZWOua/S1Cml+oCCo6j343y
-         cKeiz60axq1J9KfnYqCtYJfJxfVXxyJ1JA0Pl6fAzDQdiOBkEMgO3cW4jlJ4Mn16HamA
-         RMng==
+        bh=nioUacGgmn1npsnF7UjH/G9jEKx4GaZezabtRTdAHNQ=;
+        b=yYcpD96kUzepSQpuQfBGevivuidrKiXsh8ogT+mWIOv1Qcmls5U6isOVtJAS74kOFF
+         2/RRdzcW8gis5NsZy5QJZrw2RPGepBediQrFxIDn+Ois12Ne/Q6wwt3WLnl4bq+r8eEo
+         Say48A9hZMOjaWV5Iy/A73cfhSeGkz3nGoo1avWJcqw2OavtfZNdYpBcicZUITIVp2UF
+         0/QWkWxBl1M3l67KnFoYSDpYeDSHjRwP+h2eZt/9RClBnpfJClfLU1+OLWk9iMsMSs+Q
+         vST+tnS90331h/ZuPy+6edYsE9FYCvN1WBbkjGtxEs2zXpyiNISxkZtivUrXni+jS4it
+         LlpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sOG7GoczpFfze5AyMT4RluOASRTehzGf0LNWttOKk5c=;
-        b=El3MLm7zI8toZC3woiH6pv/h6+Ti/Z5ysBRuj+YJwEvudY+dc+E95WBHAiyv7/jNpH
-         ToWl9UG02zkgccpHpRSf0OicO6VBgemNm8XYMzSdP3F3kMLB8gNEKh8P6TTqFt9SjORR
-         aSSTjSW0CwYynG67/ECOxsoE3NRHp+L5N0AvJjk7imiB9/ofqCPyDkdlNEIFOWptDM3k
-         nGFG3pK1HQXwxZPpaGgJkzz5Ho1qL3TUlbnNXACj6w1vbok0U2xJrCZJj4UiibQOJk1k
-         pGzh4tyVorHmIuvaChlEDQBAibxX1+BySdmcZbcWBuVFLsFck3KGwv5l5NQ19DoeOnNW
-         A/Iw==
-X-Gm-Message-State: AOAM533mHUaBSAhIOpx3O6IBczx4zZfLEoOayTIqxkv1i7PNNfpImAEX
-        bBVQokBlny0eFFz+AOXATlEaHfeiDvlRoDk5+u1ttA==
-X-Google-Smtp-Source: ABdhPJytxvCNL0+i08ru81BLLE5rAKxOEzAlmjHrXOhOGfZ4saKKLNoNxxgTYNohihYYlBVogll59unffk6oK9h0E/k=
-X-Received: by 2002:a2e:22c3:: with SMTP id i186mr5939134lji.273.1620520071392;
- Sat, 08 May 2021 17:27:51 -0700 (PDT)
+        bh=nioUacGgmn1npsnF7UjH/G9jEKx4GaZezabtRTdAHNQ=;
+        b=cl3kSbgEU6bKGU+VE6EFf8b7tgm9fsizQKmmbKITla6fVqltkFa0fNZQXWZmjdCpkP
+         pg/qxbiq6+yVgU9B/KYBNO/q8o1vuWtoKN/mDe+yu16AfNxyoZCc3XEYSwFlcNT9xgim
+         RpmEmxVm2Suasxbxze7IhUw4iBfnruILtHXLpIEnOTrGqFJcNeZbwPnQ0/iv6q5x7FMp
+         DIo7YWFNBqAqqK70G8w8i3kqXlzB4couZgihv0OnD1RCaqEeTT00BeZomb7EJpKnSXxS
+         kX+wiukX9UkrZRPaYoV4C4kMsIDm4ia9yqnAJycaBQAQLTLoFSbiXNRPbE1jn2Iw26Ze
+         wIYA==
+X-Gm-Message-State: AOAM531nlWzJAhPmNkzpT4IUx8CkPv0uC2u4Xkpf2WsaC0R5FJLbWMWs
+        azLTz3KjCHkPCkMV39gk4p8RM76B9qi3iQ3WXsdc3MrTLhc=
+X-Google-Smtp-Source: ABdhPJxbPU5qQoWYfS6KGidcbReW4q83/88i0j0ikF/ehy9FP8scZoynk/akVfH99CeiCQ+yfmKsQDO+/cOQgzfatdk=
+X-Received: by 2002:a19:b0b:: with SMTP id 11mr11191818lfl.291.1620520469033;
+ Sat, 08 May 2021 17:34:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210508142000.85116-1-kettenis@openbsd.org> <20210508142000.85116-2-kettenis@openbsd.org>
- <CACRpkdbUNs_FFv9RteWKUrxBdRuiXU2Fkt-oY4=Phke4gNBoaQ@mail.gmail.com> <c1bd678c5dc81db8@bloch.sibelius.xs4all.nl>
-In-Reply-To: <c1bd678c5dc81db8@bloch.sibelius.xs4all.nl>
+References: <20210508070049.2674-1-thunder.leizhen@huawei.com>
+In-Reply-To: <20210508070049.2674-1-thunder.leizhen@huawei.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 9 May 2021 02:27:40 +0200
-Message-ID: <CACRpkdb=0EQN=CJqfjKS-iuAiKCvU38fw5krzEY5LvhNpyFd3w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: Add DT bindings for apple,pinctrl
-To:     Mark Kettenis <mark.kettenis@xs4all.nl>
-Cc:     kettenis@openbsd.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Hector Martin <marcan@marcan.st>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        sven@svenpeter.dev
+Date:   Sun, 9 May 2021 02:34:18 +0200
+Message-ID: <CACRpkdY9wPVE+mDzLbjxp-=Au6jHn6g378Dc24=fpG50T23qRA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] crypto: ux500 - Fix error return code in hash_hw_final()
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Andreas Westin <andreas.westin@stericsson.com>,
+        linux-crypto <linux-crypto@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 9, 2021 at 1:02 AM Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
-> [Me]
-> > On Sat, May 8, 2021 at 4:20 PM Mark Kettenis <kettenis@openbsd.org> wrote:
+On Sat, May 8, 2021 at 9:01 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
 
-> My U-Boot driver is here:
-
-Thanks! Looks nice.
-
-> > > +description: |
-> > > +  The Apple GPIO controller is a simple combined pin and GPIO controller
-> >
-> > spelling
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
 >
-> Not sure I'm seeing a spelling mistake here.  Do you want a comma
-> inserted somewhere?
+> Fixes: 8a63b1994c50 ("crypto: ux500 - Add driver for HASH hardware")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-Your original mail says "conroller" but the helpful google mail
-editor autocorrected the mistake when I hit enter after it.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-> > So is this an entirely Apple thing now, and not based on some Samsung
-> > block from S3C like what we have seen before?
->
-> As far as I can tell, yes.  This Apple controller has a single
-> register per pin that controls the muxing and gpio functions, whereas
-> the S3C controller seems to have 4 registers per pin.
-
-Fair enough.
-
-> > What I am really wondering is if these interrupts are hierarchical,
-> > i.e. that they match 1-to-1 to a GPIO line.
->
-> They don't match 1-1.  The GPIOs can be assigned to one of
-> (apparently) 7 interrupt groups.
-
-Aha so it is a 1-to-1..* thing. How delicate.
-
->  I haven't looked to closely at this
-> yet since U-Boot doesn't need/use the interrupt capability.  But I
-> suspect that pins don't have to be assigned to a interrupt group and
-> that explains why there are only 7 interrupt groups as the 8th state
-> is reserved for "unasigned".  The number of pins per controller
-> varies, but one of them has 212 pins.
-
-Wow.
-
-> Multiple pins can be assigned to the same interrupt group as far as I
-> can tell.  So in that case the driver will have to look at status
-> bits.
-
-OK then this is not hierarchical.
-
-> > Marc Zyngier can probably tell the story of why it is handled
-> > like this,
->
-> Ok, hopefully Marc can say something sensible here, but I'd say the
-> interrupts on this hardware are cascaded.
-
-Yes looks like so, it will be an interesting interrupt driver when
-you get to that.
-
-I have only the question in my second mail (just sent) but in any
-case you are not doing anything out of the ordinary (it looks very
-similar to the STM32) so I'm pleased with this binding.
-
-I wanna give the DT reviewers some time to look at it as well
-but I imagine we can soon merge this.
-
-Yours.
+Yours,
 Linus Walleij
