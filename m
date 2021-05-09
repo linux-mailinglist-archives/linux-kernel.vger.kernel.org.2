@@ -2,504 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB653778C2
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 23:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 158373778ED
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 23:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhEIVpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 17:45:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
+        id S229958AbhEIVzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 17:55:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbhEIVpD (ORCPT
+        with ESMTP id S229662AbhEIVzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 17:45:03 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A31C061574
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 14:43:59 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id m11so3990504lfg.3
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 14:43:59 -0700 (PDT)
+        Sun, 9 May 2021 17:55:49 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29247C061573;
+        Sun,  9 May 2021 14:54:46 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id m124so11874216pgm.13;
+        Sun, 09 May 2021 14:54:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=fY/XE9tgjul8nk0WoKBx/J+HS0NPV8TIyAWHx1Xy6qA=;
-        b=eGdcvaoyPtee/cpnigfgISdGjLae8sByw4JyGTkYObv1HvPx3YyzFpjtoCNe0cSomy
-         ZEng0IGQg8XnY98URXU+6v94UMkSvc7mg1Aa9YC9srlpU4cnoR9GpcRd6mN3QeQVk9D0
-         W4BR1ks25LQVf7AOHSbMceKz6UAYrs5icOS3Q=
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6NGZNDXjQL+muSyzj7U9/zaOUo2jeB+uihkrcejFFks=;
+        b=Ey1YI8NSGJiM++MiPWJX82SDjc3T0sX6aV0gSg38rRA2Bvob/gy7/GtSC3bXsbJvPK
+         l3QBAS8geCEGY0UaxTZBMXAi5fRrVlEKaMcuGNxIt5hHNhNVCbqPvwp/wZ0bprZa2aCU
+         S28hxWXPb7XkWDBhy6bcxM0UzXkB3PC3SHT36djMetJQqZ2QyRaeV+f2NW/RgHBiSrKT
+         HeBiuk1HWV0iqgDEOm7kg8LPuIO59lZBxY1nRyFTtaXxpXDtb+001pmfsgeyOjunBEli
+         1S+fom3zKoT2EPdMhXdU81Y+4LbFWkju4yImWkFriptGupG2fV3peLMUsiN9Oz+1C0Na
+         3kXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=fY/XE9tgjul8nk0WoKBx/J+HS0NPV8TIyAWHx1Xy6qA=;
-        b=L2taaVNhgtWGdSsuWNFOwZWF7980Q+AaJ5kVpuehNGDdk+mPqvf5N07/0wCDQJMuYz
-         zMpwRkOgwH0F0b3xwkova0I42nkd8+yaGv1N821sCXZovVvzbwpcV2AGw+T/yXNBPHCl
-         TYTJaeJhCT/ugKnApjNPc6z0BKykbEIXXtWP1iXfj5I17HuinTtya7wUUpSVnXzY966f
-         z8lPeaKVLz5qNMw8ZJdrNIaluySB09pZh+9Ulz9iw9EEfwiE2ukYRUfx59A8nDVhggoT
-         F6mgYT4KI8kV2/ALOjF6BO/SvYxLrqEtzrBsHG3XXYzXhqx1hTFJTNtMCEJhLZIsSigh
-         DXZw==
-X-Gm-Message-State: AOAM530HvydAzxJpMWEPF+AGW7DHO1tLIbesFxBeoOyHwgc2ZXPF87UH
-        Zpan1odUtiNMny8MR7LGQ1LF/XPd5koB+gJViKI=
-X-Google-Smtp-Source: ABdhPJw3lKjZwvRD4HpmXG+pxj7RMcSh+9Wa3rybGZsZXCnjTvfhd85aZJrw50TjAsdV9U+43A1sJg==
-X-Received: by 2002:a19:85d6:: with SMTP id h205mr14825954lfd.64.1620596637325;
-        Sun, 09 May 2021 14:43:57 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id w6sm371157lfl.306.2021.05.09.14.43.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 09 May 2021 14:43:56 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id h4so20503132lfv.0
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 14:43:56 -0700 (PDT)
-X-Received: by 2002:a19:7504:: with SMTP id y4mr14006754lfe.41.1620596636444;
- Sun, 09 May 2021 14:43:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6NGZNDXjQL+muSyzj7U9/zaOUo2jeB+uihkrcejFFks=;
+        b=GesScBFfY40+ECaQeYJY3VMGjrOM+2pjJlMHKIsQYmvO3GaHXy1Fy9PIb7+DqiuKPA
+         9qchzmVDezsxIoh5rxnfwaJMbYPJkChzAOs4rzOaOGPecmNXyCht+ogtv1dD5WfvBSV7
+         Hm/iGoMF35VbT/GL4SXq9Yz1GOSUzHU4XhG6p2BHwA0YohtE9yo3tBBuDOc01/wo50qU
+         mtgD/7D/WoJqfRslTOFklUjD1HtBc10FsQenTalsn9T72miaqUqn9Swqyt8ejGiNzzh9
+         xn9zVEbzSEchcfDgzAjgHvDCWhQb5jR8k3xeEEW/Unyqt5Bu7NUudXA3VtEHg5ZHKY/V
+         zedQ==
+X-Gm-Message-State: AOAM530F5fu5yPm4ZGvvW/y9WpH25Q0axmj4EM6hSpwSCDutDz+6Yrve
+        2QHdiNG7AppgbCzV7bzxIpfgiQImAZV0d7We
+X-Google-Smtp-Source: ABdhPJwfdTl0DTeerlW7AtkhO6PFzt7sSRmPovjkDNawfc1OOO7pMip+13y1wCgCcUcd773cbN0VLw==
+X-Received: by 2002:a62:3815:0:b029:28e:8c94:e1ad with SMTP id f21-20020a6238150000b029028e8c94e1admr22030836pfa.56.1620597285489;
+        Sun, 09 May 2021 14:54:45 -0700 (PDT)
+Received: from tong-desktop.local ([2601:647:4200:13:8589:d56e:ef4e:6a])
+        by smtp.googlemail.com with ESMTPSA id k7sm9561263pfc.16.2021.05.09.14.54.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 May 2021 14:54:45 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Tong Zhang <ztong0001@gmail.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] memstick: rtsx_usb_ms: fix UAF
+Date:   Sun,  9 May 2021 17:54:15 -0400
+Message-Id: <20210509215416.950337-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 9 May 2021 14:43:40 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiWTU+=wK9pv_YG01rXSqApCS_oY+78Ztz5-ORH5a-kvg@mail.gmail.com>
-Message-ID: <CAHk-=wiWTU+=wK9pv_YG01rXSqApCS_oY+78Ztz5-ORH5a-kvg@mail.gmail.com>
-Subject: Linux 5.13-rc1
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So two weeks are over, and the merge window is closed.
+This patch fixes the following issues:
+1. memstick_free_host() will free the host, so the use of ms_dev(host) after
+it will be a problem. To fix this, move memstick_free_host() after when we
+are done with ms_dev(host).
+2. if something bad happens in memstick_add_host() and we end up taking
+err_out in rtsx_usb_ms_drv_probe(), we'd better avoid running rtsx_usb_ms_drv_remove()
+3. In rtsx_usb_ms_drv_remove(), pm need to be disabled before we remove
+and free host otherwise memstick_check will be called and UAF will
+happen.
 
-This was - as expected - a fairly big merge window, but things seem to
-have proceeded fairly smoothly. Famous last words.
+[   11.351173] BUG: KASAN: use-after-free in rtsx_usb_ms_drv_remove+0x94/0x140 [rtsx_usb_ms]
+[   11.357077]  rtsx_usb_ms_drv_remove+0x94/0x140 [rtsx_usb_ms]
+[   11.357376]  platform_remove+0x2a/0x50
+[   11.367531] Freed by task 298:
+[   11.368537]  kfree+0xa4/0x2a0
+[   11.368711]  device_release+0x51/0xe0
+[   11.368905]  kobject_put+0xa2/0x120
+[   11.369090]  rtsx_usb_ms_drv_remove+0x8c/0x140 [rtsx_usb_ms]
+[   11.369386]  platform_remove+0x2a/0x50
 
-There's a lot in there, although the diffstat looks pretty skewed -
-once again due to some amdgpu header files. Those things are huge, and
-autogenerated from hardware descriptions, and the end result is that
-they often end up overshadowing all the other changes if you only look
-at the diffs.  In fact, over a third of the diff for 5.13-rc1 is just
-from those kinds of header files.
+[   12.038408] BUG: KASAN: use-after-free in __mutex_lock.isra.0+0x3ec/0x7c0
+[   12.045432]  mutex_lock+0xc9/0xd0
+[   12.046080]  memstick_check+0x6a/0x578 [memstick]
+[   12.046509]  process_one_work+0x46d/0x750
+[   12.052107] Freed by task 297:
+[   12.053115]  kfree+0xa4/0x2a0
+[   12.053272]  device_release+0x51/0xe0
+[   12.053463]  kobject_put+0xa2/0x120
+[   12.053647]  rtsx_usb_ms_drv_remove+0xc4/0x140 [rtsx_usb_ms]
+[   12.053939]  platform_remove+0x2a/0x50
 
-So ignore that part if you want to look at what changed. That will
-still show driver changes at 60% of the diff, which is all normal.
-It's all over the place, although gpu and networking stands out (yes,
-the gpu updates are noticeable even when ignoring the amd header
-files).
-
-Outside of drivers, it's a bit of everything: arch updates (arm, x86
-and powerpc dominate), documentation (devicetree bindings dominate -
-I'm not sure it should count as documentation, but there's also a fair
-amount of translation work), tooling,  and obviously all the expected
-core kernel stuff: filesystems, process handling, VM and core
-networking.
-
-The shortlog would be even bigger than usual, with 1800+ developers
-and 14k+ non-merge commits (over 15k commits counting merges). So
-appended is my usual rc1 "merge shortlog". And as always, this credits
-the people I merge from - if you want to see details about authorship
-and exact commits, you will need to go to the git tree itself.
-
-The merge log is obviously woefully inadequate, with the diffstat
-summary kind of showing why:
-
-  12015 files changed, 631309 insertions(+), 246239 deletions(-)
-
-it really is a fair amount of stuff, all over the place.
-
-Go test,
-                     Linus
-
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
 ---
+ drivers/memstick/host/rtsx_usb_ms.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/memstick/host/rtsx_usb_ms.c b/drivers/memstick/host/rtsx_usb_ms.c
+index 102dbb8080da..851643d007b7 100644
+--- a/drivers/memstick/host/rtsx_usb_ms.c
++++ b/drivers/memstick/host/rtsx_usb_ms.c
+@@ -799,9 +799,10 @@ static int rtsx_usb_ms_drv_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ err_out:
+-	memstick_free_host(msh);
+ 	pm_runtime_disable(ms_dev(host));
+ 	pm_runtime_put_noidle(ms_dev(host));
++	memstick_free_host(msh);
++	platform_set_drvdata(pdev, NULL);
+ 	return err;
+ }
+ 
+@@ -811,6 +812,8 @@ static int rtsx_usb_ms_drv_remove(struct platform_device *pdev)
+ 	struct memstick_host *msh = host->msh;
+ 	int err;
+ 
++	if (!host)
++		return 0;
+ 	host->eject = true;
+ 	cancel_work_sync(&host->handle_req);
+ 
+@@ -828,9 +831,6 @@ static int rtsx_usb_ms_drv_remove(struct platform_device *pdev)
+ 	}
+ 	mutex_unlock(&host->host_mutex);
+ 
+-	memstick_remove_host(msh);
+-	memstick_free_host(msh);
+-
+ 	/* Balance possible unbalanced usage count
+ 	 * e.g. unconditional module removal
+ 	 */
+@@ -838,10 +838,11 @@ static int rtsx_usb_ms_drv_remove(struct platform_device *pdev)
+ 		pm_runtime_put(ms_dev(host));
+ 
+ 	pm_runtime_disable(ms_dev(host));
+-	platform_set_drvdata(pdev, NULL);
+-
++	memstick_remove_host(msh);
+ 	dev_dbg(ms_dev(host),
+ 		": Realtek USB Memstick controller has been removed\n");
++	memstick_free_host(msh);
++	platform_set_drvdata(pdev, NULL);
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
 
-Al Viro (6):
-    vfs inode type handling updates
-    coredump updates
-    exryptfs updates
-    misc vfs updates
-    receive_fd update
-    another simple_recursive_removal() update
-
-Alex Williamson (2):
-    VFIO updates
-    more VFIO updates
-
-Alexandre Belloni (2):
-    RTC updates
-    i3cupdates
-
-Andreas Gruenbacher (1):
-    gfs2 updates
-
-Andrew Morton (3):
-    misc updates
-    more updates
-    yet more updates
-
-Arnaldo Carvalho de Melo (1):
-    perf tool updates
-
-Arnd Bergmann (6):
-    ARM SoC updates
-    ARM defconfig updates
-    ARM SoC driver updates
-    ARM devicetree updates
-    ARM Nuvoton WPCM450 platform support
-    ARM Apple M1 platform support
-
-Bartosz Golaszewski (1):
-    gpio updates
-
-Benson Leung (1):
-    chrome platform updates
-
-Bjorn Andersson (3):
-    hwspinlock udpates
-    rpmsg updates
-    remoteproc updates
-
-Bjorn Helgaas (1):
-    pci updates
-
-Borislav Petkov (14):
-    x86 microcode update
-    x86 RAS update
-    x86 alternatives/paravirt updates
-    x86 tool update
-    x86 AMD secure virtualization (SEV-ES) updates
-    x86 vmware guest update
-    x86 SGX updates
-    x86 boot updates
-    misc x86 cleanups
-    x86 build updates
-    x86 platform updates
-    x86 updates
-    x86 fixes
-    x86 perf fix
-
-Brian Cain (1):
-    Hexagon updates
-
-Catalin Marinas (2):
-    arm64 updates
-    more arm64 updates
-
-Christian Brauner (2):
-    fs helper kernel-doc updates
-    fs mapping helper updates
-
-Christoph Hellwig (1):
-    dma-mapping updates
-
-Chuck Lever (2):
-    nfsd updates
-    more nfsd updates
-
-Corey Minyard (1):
-    IPMI updates
-
-Daniel Lezcano (1):
-    thermal updates
-
-Daniel Thompson (1):
-    kgdb updates
-
-Darrick Wong (4):
-    iomap update
-    xfs updates
-    more xfs updates
-    more iomap updates
-
-Dave Airlie (3):
-    drm updates
-    more drm updates
-    drm fixes
-
-David Howells (3):
-    x509 dbx/mokx UEFI support
-    network filesystem helper library updates
-    AFS updates
-
-David Sterba (1):
-    btrfs updates
-
-David Teigland (1):
-    dlm updates
-
-Dmitry Torokhov (1):
-    input updates
-
-Dominik Brodowski (1):
-    pcmcia updates
-
-Dominique Martinet (1):
-    9p updates
-
-Gao Xiang (1):
-    erofs updates
-
-Geert Uytterhoeven (1):
-    m68k updates
-
-Greg KH (6):
-    char/misc driver updates
-    driver core updates
-    staging/IIO driver updates
-    tty and serial driver updates
-    USB and Thunderbolt updates
-    char/misc driver fixes
-
-Greg Ungerer (1):
-    m68knommu updates
-
-Guenter Roeck (1):
-    hwmon updates
-
-Guo Ren (1):
-    arch/csky updates
-
-Heiko Carstens (2):
-    s390 updates
-    more s390 updates
-
-Helge Deller (1):
-    parisc architecture updates
-
-Herbert Xu (1):
-    crypto updates
-
-Ilya Dryomov (1):
-    ceph updates
-
-Ingo Molnar (6):
-    RCU updates
-    locking updates
-    objtool updates
-    perf event updates
-    scheduler updates
-    x86 tlb updates
-
-Jaegeuk Kim (1):
-    f2fs updates
-
-Jakub Kicinski (2):
-    networking updates
-    networking fixes
-
-James Bottomley (3):
-    tpm fixes
-    SCSI updates
-    more SCSI updates
-
-James Morris (2):
-    security layer fixes
-    Landlock LSM
-
-Jan Kara (2):
-    quota, ext2, reiserfs updates
-    fsnotify updates
-
-Jarkko Sakkinen (1):
-    tpm updates
-
-Jason Gunthorpe (1):
-    rdma updates
-
-Jassi Brar (1):
-    mailbox updates
-
-Jean Delvare (1):
-    dmi update
-
-Jeff Layton (1):
-    file locking updates
-
-Jens Axboe (7):
-    block updates
-    block driver updates
-    libata updates
-    io_uring updates
-    io_uring fixes
-    block fixes
-    block fix
-
-Jessica Yu (1):
-    module updates
-
-Jiri Kosina (1):
-    HID updates
-
-Joerg Roedel (1):
-    iommu updates
-
-Jonathan Corbet (2):
-    documentation updates
-    documentation fixes
-
-Juergen Gross (1):
-    xen updates
-
-Kees Cook (4):
-    seccomp updates
-    pstore update
-    overflow update
-    CFI on arm64 support
-
-Konrad Rzeszutek Wilk (1):
-    swiotlb updates
-
-Lee Jones (2):
-    MFD updates
-    backlight updates
-
-Len Brown (1):
-    turbostat updates
-
-Linus Walleij (1):
-    pin control updates
-
-Mark Brown (3):
-    regmap updates
-    regulator updates
-    spi updates
-
-Masahiro Yamada (3):
-    Kbuild updates
-    Kconfig updates
-    more Kbuild updates
-
-Mauro Carvalho Chehab (1):
-    media updates
-
-Max Filippov (1):
-    Xtensa updates
-
-Micah Morton (1):
-    SafeSetID update
-
-Michael Ellerman (2):
-    powerpc updates
-    powerpc updates and fixes
-
-Michael Tsirkin (1):
-    virtio updates
-
-Michal Simek (1):
-    Microblaze updates
-
-Mike Marshall (1):
-    orangefs updates
-
-Mike Snitzer (1):
-    device mapper updates
-
-Miklos Szeredi (2):
-    overlayfs update
-    fuse updates
-
-Miklos Szeredi via Al Viro (1):
-    fileattr conversion updates
-
-Mimi Zohar (1):
-    IMA updates
-
-Miquel Raynal (1):
-    mtd updates
-
-Namjae Jeon (1):
-    exfat updates
-
-Palmer Dabbelt (2):
-    RISC-V updates
-    RISC-V fixes
-
-Paolo Bonzini (1):
-    kvm updates
-
-Paul Moore (2):
-    selinux updates
-    audit updates
-
-Pavel Machek (1):
-    LED updates
-
-Petr Mladek (2):
-    printk updates
-    livepatching update
-
-Rafael Wysocki (4):
-    ACPI updates
-    power management updates
-    device properties framework update
-    ACPI fixes
-
-Richard Weinberger (2):
-    JFFS2, UBI and UBIFS updates
-    UML updates
-
-Rob Herring (2):
-    devicetree updates
-    devicetree fixes
-
-Russell King (1):
-    ARM updates
-
-Sebastian Reichel (2):
-    HSI update
-    power supply and reset updates
-
-Shuah Khan (2):
-    Kselftest updates
-    KUnit updates
-
-Stephen Boyd (1):
-    clk updates
-
-Steve French (3):
-    cifs updates
-    cifs updates
-    cifs fixes
-
-Steven Rostedt (3):
-    tracing updates
-    ktest updates
-    tracing fix
-
-Takashi Iwai (2):
-    sound updates
-    sound fixes
-
-Ted Ts'o (1):
-    ext4 updates
-
-Tejun Heo (1):
-    cgroup changes
-
-Tetsuo Handa (1):
-    lockdep capacity limit updates
-
-Thierry Reding (1):
-    pwm updates
-
-Thomas Bogendoerfer (1):
-    MIPS updates
-
-Thomas Gleixner (9):
-    core entry updates
-    irq updates
-    timer updates
-    x86 apic update
-    entry code update
-    x86 bus lock detection updates
-    x86 vdso update
-    locking fixes
-    scheduler fixes
-
-Trond Myklebust (1):
-    NFS client updates
-
-Tyler Hicks (1):
-    ecryptfs updates
-
-Ulf Hansson (1):
-    MMC and MEMSTICK updates
-
-Vinod Koul (1):
-    dmaengine updates
-
-Wei Liu (1):
-    Hyper-V updates
-
-Wolfram Sang (1):
-    i2c updates
