@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C35D377715
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 16:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49824377719
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbhEIOvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 10:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
+        id S229650AbhEIPCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 11:02:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbhEIOvp (ORCPT
+        with ESMTP id S229618AbhEIPCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 10:51:45 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7D2C061573;
-        Sun,  9 May 2021 07:50:40 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id k19so11879395pfu.5;
-        Sun, 09 May 2021 07:50:40 -0700 (PDT)
+        Sun, 9 May 2021 11:02:07 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD62CC061573
+        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 08:01:03 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id h20so7915097plr.4
+        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 08:01:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=bz8P1nZoUMT1v+PZjFbkPen/qOCExDvSHfDWKtBldgY=;
-        b=k/Efj0VxOLnEitzgW/jLeQUTvNCDM1rnJkA1jWgkvJx+ic7PPM1mFNamQy/29LQiBb
-         6S0WQjY5cEvp0fgqqFNO5Xpj30M0Sl1MQL2do3pekttEaR62JYdXpxCYiS/ZjZSl0gnC
-         Wa+Ykz/2O1A1wedeTI5ql780tHgdegHObqerCSdMkFh8PN4VyLpz4dZ/IbfuM72YXrl+
-         1KVSnSURz8NGBy/sbZYFxbXm7/99Yl37EjYrPpFEcgjzbZpup8acOatrRmVBeq2D7odX
-         mmBt6WjjHOQI9Yl1wKYRwGDZYOHPOUnIBp1rp3EzW1ydhKw+5QrQ82y20XDBh3/ZB1V8
-         WldQ==
+        bh=YWggVXdnRquifL9/XQ7A1rwSATVVaZDpBuuzR8KgOIA=;
+        b=QyPVlGeznb4Timxlcr3NnZoGOeZsHAk5KhNKlmoslgY+Llmm0GywfkSAxqZAH16aZX
+         FROK4h1pm3XJH5AHleAIo5OTVmvEsMWToYsTDIe7oOSWkXzptivogxoHoe/15qnLkE4b
+         R/kS7ZCQSeXbNJr1wapSA4T+wBBKMLSmrNwvB0ocXqbxMbJJGkwvEdmMST6K5OZZA5yy
+         036tbjurJRIxbj+mSnSHg4VV9KHORIcs3HJwrbVI6NWGdFS4BvoXcenCm6scvxF4BQn0
+         RTxDfzG7v/lsjhe1x8omZhXPJG7VTsOBV7Qow0B85WEH6NkdCa6v59thlZCohDHshKjL
+         yVxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=bz8P1nZoUMT1v+PZjFbkPen/qOCExDvSHfDWKtBldgY=;
-        b=CmJUboHT8VNqRXTPELPA1XhE2yRQlEob06NU6FXwoMLl2QUE+rn21DWzaDxrjMVH5j
-         W/IUTz0hZuLqc06yDeAUYzKv11Q6x/kpe19Z0hpvKf62/t+9+k42ONeFKPKkG7X4amN3
-         199RlLQWdOqlEwJKMHRo/gKGd7dFhdFj52+rEGf5GWM7xFmjp4HD/OFVQ9gZCNmyyD/f
-         nthnQBbgG/+r0O8jhWxlZkbfnxQ/beKw32/eEJy6Iin3U9HjhVWjVLN9Trv6X6wDYuSQ
-         5/L4WU7FifVELWTwXjcyAmYOrBCfW8Z2WUFg9nBDYx0kAkRK0OvwDVnTpZ3SQkj186R+
-         s4qw==
-X-Gm-Message-State: AOAM530+H5hrSZ2add9kffmjA9S7T/9fm74RVu/VsMmjWHHO+IJWCzQF
-        KBHrY2cD+/xpdeaO4hyXjLc=
-X-Google-Smtp-Source: ABdhPJxtOy3inc148leudhozlWQYkcstye2E7St5sE+gvTakogQlfT5Ml/TJK5sfdIi/CscHWhigQg==
-X-Received: by 2002:a63:9612:: with SMTP id c18mr1553295pge.29.1620571840169;
-        Sun, 09 May 2021 07:50:40 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:9004:6c18:2a60:b7b4:ea0e:f455])
-        by smtp.gmail.com with ESMTPSA id r63sm17043720pjg.46.2021.05.09.07.50.36
+        bh=YWggVXdnRquifL9/XQ7A1rwSATVVaZDpBuuzR8KgOIA=;
+        b=UpXtULzC1oqSmk+V0pFtVDH758VjMenA31MRgWoMx9MyOVccZ4WpwBEDVaXXgTHjU0
+         kwowldnnX6LksmQ0zBw26hLKkCMkFjD2lmhMoreDjWeLKW0h8T8VhaMrWVVKxhEgmXSs
+         isIo53SwwIS0lk7su/py1QA84K+czeP7y2LXAI00U7+UvTXifKqMqNJboe91u674adVj
+         PUy2+StUZoXcAukwL3ZMumppZBzva50WuB8C3XqxUu0F60T3x9T1JM5lpfu7uEm4aEGv
+         kJzjiXd1tGeSfG2IAqDQBvAYlpChKOiJNHi8fny81K6QVwOmw3H/hkp8Xl9jJZBoNb0W
+         fCJg==
+X-Gm-Message-State: AOAM532PDFZqdJFPoxTu+T3BWNfKGYffSowAjYwsuFbdXRIV2YZyT/HK
+        c+0dQ1UD7NTv0/URisLfnUj5DbNxM9Avi8up6vE=
+X-Google-Smtp-Source: ABdhPJyQB+aOSYqUog7CKxqOhnUBq8QNYbbYVPBkwY/On1NIFLZgFZVOY9W2205bADdwGieVZdMFXw==
+X-Received: by 2002:a17:902:fe94:b029:ee:ba90:a27a with SMTP id x20-20020a170902fe94b02900eeba90a27amr20079450plm.53.1620572462019;
+        Sun, 09 May 2021 08:01:02 -0700 (PDT)
+Received: from localhost.localdomain (host-219-71-67-82.dynamic.kbtelecom.net. [219.71.67.82])
+        by smtp.gmail.com with ESMTPSA id y64sm9201718pfy.204.2021.05.09.08.01.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 07:50:39 -0700 (PDT)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch
-Cc:     lukas.bulwahn@gmail.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>
-Subject: [PATCH] drm/amd/amdgpu: Fix errors in function documentation
-Date:   Sun,  9 May 2021 20:19:23 +0530
-Message-Id: <20210509144923.6316-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Sun, 09 May 2021 08:01:01 -0700 (PDT)
+From:   Wei Ming Chen <jj251510319013@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        Wei Ming Chen <jj251510319013@gmail.com>
+Subject: [PATCH] scsi: libsas: Use fallthrough pseudo-keyword
+Date:   Sun,  9 May 2021 23:00:52 +0800
+Message-Id: <20210509150052.15828-1-jj251510319013@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a couple of syntax errors and removed one excess
-parameter in the function documentations which lead
-to kernel docs build warning.
+Replace /* Fall through */ comment with pseudo-keyword macro fallthrough[1]
 
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+
+Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 3 +++
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c  | 1 -
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/scsi/libsas/sas_discover.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-index ae9fb2025259..312f24004413 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-@@ -320,11 +320,14 @@ static int amdgpu_ras_debugfs_ctrl_parse_data(struct file *f,
-  * "disable" requires only the block.
-  * "enable" requires the block and error type.
-  * "inject" requires the block, error type, address, and value.
-+ *
-  * The block is one of: umc, sdma, gfx, etc.
-  *	see ras_block_string[] for details
-+ *
-  * The error type is one of: ue, ce, where,
-  *	ue is multi-uncorrectable
-  *	ce is single-correctable
-+ *
-  * The sub-block is a the sub-block index, pass 0 if there is no sub-block.
-  * The address and value are hexadecimal numbers, leading 0x is optional.
-  *
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-index 16252d48e5a4..7e1a67295106 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-@@ -2796,7 +2796,6 @@ long amdgpu_vm_wait_idle(struct amdgpu_vm *vm, long timeout)
-  *
-  * @adev: amdgpu_device pointer
-  * @vm: requested vm
-- * @vm_context: Indicates if it GFX or Compute context
-  * @pasid: Process address space identifier
-  *
-  * Init @vm fields.
+diff --git a/drivers/scsi/libsas/sas_discover.c b/drivers/scsi/libsas/sas_discover.c
+index 9f5068f3bcfb..dd205414e505 100644
+--- a/drivers/scsi/libsas/sas_discover.c
++++ b/drivers/scsi/libsas/sas_discover.c
+@@ -461,7 +461,7 @@ static void sas_discover_domain(struct work_struct *work)
+ 		break;
+ #else
+ 		pr_notice("ATA device seen but CONFIG_SCSI_SAS_ATA=N so cannot attach\n");
+-		/* Fall through */
++		fallthrough;
+ #endif
+ 		/* Fall through - only for the #else condition above. */
+ 	default:
 -- 
-2.30.2
+2.25.1
 
