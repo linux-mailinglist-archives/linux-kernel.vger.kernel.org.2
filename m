@@ -2,125 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE58437772B
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED18E37772F
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbhEIPRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 11:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhEIPRE (ORCPT
+        id S229726AbhEIPRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 11:17:14 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:55234 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229673AbhEIPRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 11:17:04 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980E2C061573;
-        Sun,  9 May 2021 08:16:00 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id r11so955745edt.13;
-        Sun, 09 May 2021 08:16:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=aJpJIcXCzWu61l0m/xqY2AIdzna871+EaXDpRitckHw=;
-        b=bLROLJF/frefzkRd6UVNwteq71PqNc5gANb/FrHPkC4sDVGligolJjrEbiLMyq0qXc
-         Ji0/utSKQbTW21/c4+ACg+NnauDABsy/5Xeyns1Q6ArwSXWkR2CEfc5EOZWGzJIVacew
-         8VtfIpwN8AFHHPdjYjCrxMBl0fGXnaYLvT9Epc8tdsjAewuLOeM61iRKcUGLGC06d5Qa
-         Sg4W54Upwn7pL4mKyvlYRMn3fbC5JXfW4W8COwK+egp09lOhfh0aV/Z3snnChaiCeMql
-         2KU1Th38MQ8eCXy9yt2yCf2uLKflcxCFSlH7Jp5eKcKqg376qy0YfxCrEASmbUAnX5oY
-         iTiA==
+        Sun, 9 May 2021 11:17:11 -0400
+Received: by mail-io1-f72.google.com with SMTP id m7-20020a0566023147b02903c31e071e26so8901412ioy.21
+        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 08:16:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=aJpJIcXCzWu61l0m/xqY2AIdzna871+EaXDpRitckHw=;
-        b=lSLVTbjM5FaMB+oH4L2h8sIWrA/NRi77JyiX+jOuCXxDdhGA1cNQj+UVX38TkzKOIe
-         xORDoh56Qj2MD3tNLjREQlm7vGLx43G/3oRhl4E3PYfRD3lU7UpE1ZGF8LNsCJMZiffl
-         0HejY1JqI7XPjOJOF4l0nxz+UKjMJxVcDYZ3P7iuqX/qkg1lK9CoNJM22fCGz0VtVHYA
-         EVLWyOII5H+ptA66Mb/4eBGkuCrqCuOiHJ99F3uDja7ILS5OWd2sdALaQlqRZMXkjToz
-         mhArItVpM0PhCVutz/I3mKhKt3PGZUoHhgi7efeBWd98nyP2dVYjB9YNtaTrqgI4JOsG
-         6QRQ==
-X-Gm-Message-State: AOAM5336xnaqgCMxqmM41RNMyC2wlYg3VyLTh+WL7DfhJakBmXbcORnh
-        gIiwydH4YJ2EAXSmcJlZgHs=
-X-Google-Smtp-Source: ABdhPJxzZJ8Ylek5+AJ7tZJFhfzskNDNJxeExgadKQI39Og3zK2xJyDlajxJ3vhv6E8hyPootjzkAQ==
-X-Received: by 2002:aa7:cd50:: with SMTP id v16mr25666355edw.175.1620573359244;
-        Sun, 09 May 2021 08:15:59 -0700 (PDT)
-Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
-        by smtp.gmail.com with ESMTPSA id c8sm8813412edy.63.2021.05.09.08.15.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 08:15:58 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sun, 9 May 2021 17:15:56 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        David Woodhouse <dwmw2@infradead.org>,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: 'make O=' indigestion with module signing
-Message-ID: <20210509151556.GA842014@gmail.com>
-References: <134696.1615510534@turing-police>
- <109018.1615463088@turing-police>
- <91190.1615444370@turing-police>
- <972381.1615459754@warthog.procyon.org.uk>
- <1486567.1615464259@warthog.procyon.org.uk>
- <2026575.1615539696@warthog.procyon.org.uk>
- <20210509151112.GA839293@gmail.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=ptj/dJVyElDcDR4dlhXEYGbK7nkar7mLZG2Y7a4j/mk=;
+        b=Fe4rZEGSmdDhrS/hVTANI3JE1GpB50c+xs6+drLLOnZoDnXscefxb7gub+IdCLCSc5
+         kmHKQ5zyhYnxDCzIJ0ZD+GBxIqBRLLCi6UoopWwtNzCZMvbVs1GHyJ/ruoDEfxg2LM+m
+         X1rlataf5pUfOVMs0RJUWmdoph39s3Ax5nuzx873V8fpdmdKwsVkptgT6ru94Md/n3Re
+         Hb5fM725DfXA0iHmXPYBh9k7x53Pte/bg+1Qs6zwfaY9KO+GVTNs85CsFfow8g1W+GcY
+         LKp3qdl1BxqZWCVP/I/jDUNh8CVt2dFBSksbDwTQ7d3hQDU9nAim/Pbwo5FRDX/YKLPh
+         fnog==
+X-Gm-Message-State: AOAM533xb3h7DnLJpgynxRZbmhz8BcoehzQvoH6MEcnk2p5QsEFIWfN0
+        z9V9fZxv6V2NRPpw6eaSgBboyTsKfmzjrGyjZG10SPekXoV9
+X-Google-Smtp-Source: ABdhPJyJwGwIL1loYhchZjvnNXd4eyMCeUirhmBOuDgssB8pUDt9169y2A7L98/9mTHVSC/CagAOsT8bOf+hALkYwWJBC7G5uvBO
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210509151112.GA839293@gmail.com>
+X-Received: by 2002:a6b:dc16:: with SMTP id s22mr14878581ioc.170.1620573367415;
+ Sun, 09 May 2021 08:16:07 -0700 (PDT)
+Date:   Sun, 09 May 2021 08:16:07 -0700
+In-Reply-To: <0000000000009f94c1057e772431@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e5b92105c1e723d5@google.com>
+Subject: Re: [syzbot] WARNING in hsr_forward_skb
+From:   syzbot <syzbot+fdce8f2a8903f3ba0e6b@syzkaller.appspotmail.com>
+To:     arvid.brodin@alten.se, axboe@fb.com, axboe@kernel.dk,
+        davem@davemloft.net, dvyukov@google.com, edumazet@google.com,
+        hch@lst.de, kuba@kernel.org, kurt@linutronix.de,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-kernel@vger.kernel.org, m-karicheri2@ti.com,
+        ming.lei@redhat.com, mkl@pengutronix.de, netdev@vger.kernel.org,
+        socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot suspects this issue was fixed by commit:
 
-* Ingo Molnar <mingo@kernel.org> wrote:
+commit 9d6803921a16f4d768dc41a75375629828f4d91e
+Author: Kurt Kanzenbach <kurt@linutronix.de>
+Date:   Tue Apr 6 07:35:09 2021 +0000
 
-> 
-> * David Howells <dhowells@redhat.com> wrote:
-> 
-> > Valdis Klētnieks <valdis.kletnieks@vt.edu> wrote:
-> > 
-> > > So the root cause was: 'make mrproper doesn't clean certs/' out enough,
-> > > and this chunk of certs/Makefile
-> > > ...
-> > > I admit not being sure how (or if) this should be fixed
-> > 
-> > It's tricky because CONFIG_MODULE_SIG_KEY may not point to a file, let alone a
-> > file that was autogenerated - it can be given a PKCS#11 URI, for instance.  I
-> > had to put in the autogeneration based on a magic config string value to stop
-> > randconfig blowing up - but it only does the autogeneration if you don't put
-> > in your own file there before building.
-> > 
-> > Possibly I can add something like:
-> > 
-> > 	clean-files := signing_key.pem x509.genkey
-> > 
-> > inside the
-> > 
-> > 	ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
-> > 	...
-> > 	endif
-> > 
-> > section.
-> 
-> Note that this bug is now upstream in Linus's tree and has broken
-> the deb-pkg distro kernel build method.
-> 
-> Would be nice to make 'make mrproper' work again.
+    net: hsr: Reset MAC header for Tx path
 
-Correction - there appears to be something else going on, but the
-error messages are similar:
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=119c7fedd00000
+start commit:   3af409ca net: enetc: fix destroyed phylink dereference dur..
+git tree:       net
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8cb23303ddb9411f
+dashboard link: https://syzkaller.appspot.com/bug?extid=fdce8f2a8903f3ba0e6b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1525467ad00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=114c0b12d00000
 
-  At main.c:291:
-  - SSL error:02001002:system library:fopen:No such file or directory: ../crypto/bio/bss_file.c:69
-  - SSL error:2006D080:BIO routines:BIO_new_file:no such file: ../crypto/bio/bss_file.c:76
-  sign-file: debian/linux-image/lib/modules/5.12.0-custom/kernel/arch/x86/crypto/aegis128-aesni.ko: No such file or directory
-  At main.c:291:
+If the result looks correct, please mark the issue as fixed by replying with:
 
-The error messages look pretty obscure to me. :-/
+#syz fix: net: hsr: Reset MAC header for Tx path
 
-Thanks,
-
-	Ingo
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
