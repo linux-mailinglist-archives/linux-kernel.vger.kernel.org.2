@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D601377884
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 22:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3B4377888
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 22:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbhEIUmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 16:42:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55212 "EHLO mail.kernel.org"
+        id S229961AbhEIUoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 16:44:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229699AbhEIUmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 16:42:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4722F601FD;
-        Sun,  9 May 2021 20:41:32 +0000 (UTC)
+        id S229683AbhEIUoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 16:44:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31AEF6135A;
+        Sun,  9 May 2021 20:43:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620592892;
-        bh=3kC7q5RnWbRfm2DiPPx2BVy1tt7w9Jy959UFIAMipqg=;
+        s=k20201202; t=1620592982;
+        bh=G41KEdxV3XjgEswKLtAWvMoiJCLY4uFLJkmlJagnPf4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iXv3OuzgIyjjEa7FOG7YpTbrJQ3OfhhhSCU3/lMHAG/k5oMUCl9peaVP/y936UmYH
-         RayYQxw229KyZA09DUX2bTxwrYOV/J5+B3SRrMwm2GwWXw5vsns53sPEc58cVSNK0N
-         FfiU8YbhmvqkCqk0blTETMXg8v9yXYcDz5qp0di17yadIttX/c3+PJGnL7pLwlqd4i
-         0g7/VAtEv7KZhDHptUdjhp17jhTRr8DUz57r8kPN9ZzYmh27YUmtE9GNF4nnumXWHi
-         S/TzKkp+0+BiP3zzta3HXdxYn3TvWJdCUMvoLz49LyMLrPsuTqog5HfPCT3dQHjFBI
-         DYqredzVAcLig==
-Date:   Sun, 9 May 2021 23:41:30 +0300
+        b=rdTV/Oz4W9n2ePMqeech3RIBt4A3KtWVSjwBD7rNJOVMR3QUpdGIicvnlL/Q0pSX6
+         ng7spUqXQKRFbfnBapwujPyE8WjlxQrnXV76LI9o5WeECRBYs5+y51Zpgu2IJIWt7Y
+         vd5ctruu/n/h5IQtofkgIld5r/p+/0Qp6WycO1H4VdSIyV+TpEQ/2/rioKHc4lwxAD
+         b6J8/tZuipLv6hgzkNZDsYlyrcb06s3nILanAD7ZD/HQGnhbNx9aZzGoX4EqWkWVlb
+         0Q3g299leyVtF8S3Cgy14+l1UbfnPl1YsYVP7gireSLYQhaBq4tqsFbj7WH0BPKP1w
+         dZt3oex9PMODw==
+Date:   Sun, 9 May 2021 23:43:00 +0300
 From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] tpm: fix error return code in tpm2_get_cc_attrs_tbl()
-Message-ID: <YJhI+lIt4devpAoS@kernel.org>
-References: <20210508025444.1977-1-thunder.leizhen@huawei.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     dhowells@redhat.com, jmorris@namei.org, serge@hallyn.com,
+        nathan@kernel.org, ndesaulniers@google.com,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] Keys: Remove redundant initialization of cred
+Message-ID: <YJhJVEqIZAkU9xzp@kernel.org>
+References: <1620467481-110575-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210508025444.1977-1-thunder.leizhen@huawei.com>
+In-Reply-To: <1620467481-110575-1-git-send-email-yang.lee@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 10:54:44AM +0800, Zhen Lei wrote:
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
+On Sat, May 08, 2021 at 05:51:21PM +0800, Yang Li wrote:
+> Pointer cred is being initialized however this value is never
+> read as cred is assigned an updated value from the returned
+> call to get_current_cred(). Remove the redundant initialization.
 > 
-> Fixes: 58472f5cd4f6("tpm: validate TPM 2.0 commands")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-
-In the commit message:
-
-1. Instead of writing "a negative error code", write -EFAULT.
-2. Some explanation of the choice.
-
+> Cleans up clang warning:
+> 
+> security/keys/request_key.c:119:21: warning: Value stored to 'cred'
+> during its initialization is never read
+> [clang-analyzer-deadcode.DeadStores]
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Fixes: 'commit bb952bb98a7e ("CRED: Separate per-task-group keyrings from signal_struct")'
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > ---
->  drivers/char/tpm/tpm2-cmd.c | 1 +
->  1 file changed, 1 insertion(+)
+>  security/keys/request_key.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
-> index eff1f12d981a..c84d23951219 100644
-> --- a/drivers/char/tpm/tpm2-cmd.c
-> +++ b/drivers/char/tpm/tpm2-cmd.c
-> @@ -656,6 +656,7 @@ int tpm2_get_cc_attrs_tbl(struct tpm_chip *chip)
->  
->  	if (nr_commands !=
->  	    be32_to_cpup((__be32 *)&buf.data[TPM_HEADER_SIZE + 5])) {
-> +		rc = -EFAULT;
->  		tpm_buf_destroy(&buf);
->  		goto out;
->  	}
+> diff --git a/security/keys/request_key.c b/security/keys/request_key.c
+> index 2da4404..873c31f 100644
+> --- a/security/keys/request_key.c
+> +++ b/security/keys/request_key.c
+> @@ -116,7 +116,7 @@ static int call_sbin_request_key(struct key *authkey, void *aux)
+>  {
+>  	static char const request_key[] = "/sbin/request-key";
+>  	struct request_key_auth *rka = get_request_key_auth(authkey);
+> -	const struct cred *cred = current_cred();
+> +	const struct cred *cred;
+>  	key_serial_t prkey, sskey;
+>  	struct key *key = rka->target_key, *keyring, *session, *user_session;
+>  	char *argv[9], *envp[3], uid_str[12], gid_str[12];
 > -- 
-> 2.25.1
+> 1.8.3.1
 > 
 > 
->
 
-Other than that looks good.
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
 /Jarkko
+
