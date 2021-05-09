@@ -2,162 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B6B37773F
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B82377755
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 17:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbhEIPTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 11:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40894 "EHLO
+        id S229683AbhEIPa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 11:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbhEIPTG (ORCPT
+        with ESMTP id S229658AbhEIPa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 11:19:06 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6789C061573
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 08:18:02 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id c3so19666034lfs.7
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 08:18:02 -0700 (PDT)
+        Sun, 9 May 2021 11:30:26 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7552DC061574
+        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 08:29:23 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id t11so19641287lfl.11
+        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 08:29:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=T2n/1WwJTS3CsHkemEMlwQOIwzDpqt4PBSfYeUOZJbs=;
-        b=gHXnKu7AoVw8HAQcszuZVIbiM0KOdy8Bt4l0fv4gb+yw293XqGKvnGXy/6iO/Oc07L
-         BWX14NaHxuc/Z5T6DHuE95iHXWKOmQwbsQcxJT7LQ9rJHDcQbJcGQpgZYLKquBl70J/j
-         e4hxAyuxjUjYUVsMgr8yHnwqzeCVYQshIiI/WMfFuDbi2unC/1YLqrd2jcxRoW/iAUpF
-         B7+jFWLSDDco1umGCVtGJyXoBKX8iP7GiJ+HOYLDGpJMKj9cezxk4GQyNBREWhdN8Tvx
-         1ZjPS26zTtxOVMAPKdBXOeykbtFrbAw0z0XayFRROPoW7Dj5pQMTmSyaiinkv17r26A+
-         6X8Q==
+        bh=RfytLqDiupqOX141fLSL5xEwQRMVrqKR8ufOfjP5OyA=;
+        b=Ktds/ZaQeE5yB1wDXiD5N5gvkojsmePb+JwhTjC9LepAwBxMhNer2JQfvxPn6D2I5c
+         GjuoVORhoE1YlrqXe4XFQooOGPkmgIgjFbO7okAVLp05Rn9q55IV1SxGasgPvX0SPwMb
+         tEkRU9phTqgpHUJngUYXdG4H7Xj7SyiYuLCykRJ+kbEPfDV7zakynUgNZn94lvF8vb69
+         mB1wzSG06iyK/0bkWOdFuRw0nrNArksEN6tlC7QPafZwXvqxBW88SRKGF5U68aErubmV
+         Wp3/eomuX3rqFTUx93CNgCIB7VA/H2/tBSOiTFqaeLwQwluYNEzO4jBM2eyid+jgFEd+
+         vgLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=T2n/1WwJTS3CsHkemEMlwQOIwzDpqt4PBSfYeUOZJbs=;
-        b=F40nosUqm3HqnOm7rzgTCUdg61Nc5zQ+W/S7ZzysS7CF96vuE2hRsJoAA33/xHAFTI
-         kHiK0jHqu9wpKWZDsHy3bGM+bTeZ8GL54k+JCGaPIqXDKWqtWZA1Tx78tiO+VuiouBbc
-         yYaILAaJkAf3Ym94IYXZcZljMbbbJ9EnyC2EiTScBkT444ptfzCtMkiQsArHwuloI3rD
-         +8czgzOm+l6dAyHD4lhP1gASrUZ+JN5zfv7f4v1dLa4+b1dnOmBZz6OW7ijKRteMtvid
-         QAwAsNHTyPAEQse5mCc1HVauufpZkxN6827ykYxWHIIG5w1S5tffN7JM7Ria3M3U/FoT
-         cRMw==
-X-Gm-Message-State: AOAM531matFHT0heKlcOA4S9+nsGZ8kV94iteXch3kBy/jm4aWWv/Mmn
-        iSNRmX/gVVkqRZQp6NQBe+N3yBDsQ9oIIAio+ic+kg==
-X-Google-Smtp-Source: ABdhPJyU7I7ni98Gix8nWiQccpsnGbFJnHUz46IUjRlDLuApdsX85VgJoM4pIEAveiPbfqQjn4jYQYBubxfYplReQSg=
-X-Received: by 2002:a19:6755:: with SMTP id e21mr14308817lfj.29.1620573481273;
- Sun, 09 May 2021 08:18:01 -0700 (PDT)
+        bh=RfytLqDiupqOX141fLSL5xEwQRMVrqKR8ufOfjP5OyA=;
+        b=TUhNFcFPwFpJzHGFqHuqpIJosGqOdhYntX4mRpufbfZCKcgPRJfdfrSewEwkZorcAC
+         ZggRjnt098EJIQGu5XoQcMDll5pymtQz01YjaWm3vYHncQ4E6d4INS5vRgbxneucdZE8
+         6Tec8EWopxMDEe7q+uhEQ9XHOZPvwUnpEGVH5G3IbInzoJk39gW/OMnp5+L2VYv4a692
+         7d4GR3ZYfm4NvHVCn/LVPTklTxRoeaOtt95cRZQDCGTqR4sjS/tVDECpT04ixOXzTgj8
+         WEztWxTwcRowGrfBLDREPwBjkigkcD04xegDKqu/tJVz/18q0nQhA300akB9VxGW28Sl
+         41ZQ==
+X-Gm-Message-State: AOAM532Rj4AiAAdUO3ypar/G5c6N88Z3X8iY9b6xJcF5hoDe4Q2XBoRd
+        2Hw8eT2pZG/3RQuZ7dG94IEdNK0ZD0VPGa79yP53og==
+X-Google-Smtp-Source: ABdhPJwduQTbLLBzaZ6ljrIubI2SeSOyYd8nExbkfVznc6U3Xu9stSuhqtNubx9O6xTJeH+5A/gdVoso1OHYnDxk5lY=
+X-Received: by 2002:a19:b0b:: with SMTP id 11mr13534649lfl.291.1620574161920;
+ Sun, 09 May 2021 08:29:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <202105091112.F5rmd4By-lkp@intel.com> <20210509122227.GH1336@shell.armlinux.org.uk>
-In-Reply-To: <20210509122227.GH1336@shell.armlinux.org.uk>
+References: <20210503144350.7496-1-aardelean@deviqon.com> <20210508161643.5990ec15@jic23-huawei>
+ <CACRpkdaK6AMVUC+B7JW3y28nNeAYHAS9UjC40KfShZNrHLD7rQ@mail.gmail.com> <20210509111925.52f3f4e3@jic23-huawei>
+In-Reply-To: <20210509111925.52f3f4e3@jic23-huawei>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 9 May 2021 17:17:49 +0200
-Message-ID: <CACRpkdaNVg9zgaDN0JG+Z8dMMk+0fdpYHwGMHS-FKUG9MZAb4w@mail.gmail.com>
-Subject: Re: arch/arm/boot/compressed/decompress.c:50: warning: "memmove" redefined
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Sun, 9 May 2021 17:29:10 +0200
+Message-ID: <CACRpkdZ2mC5V6PdphmtmtQKHZwPfc7mVgZ-FH3io2ihB8foA4g@mail.gmail.com>
+Subject: Re: [PATCH] iio: core: return ENODEV if ioctl is unknown
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Nuno Sa <nuno.sa@analog.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-OK, paging in the KSan mailing list and key people.
+On Sun, May 9, 2021 at 12:18 PM Jonathan Cameron <jic23@kernel.org> wrote:
+> On Sat, 8 May 2021 20:21:08 +0200
+> Linus Walleij <linus.walleij@linaro.org> wrote:
 
-Certainly this problem must be the same on all platforms
-using an XZ-compressed kernel and not just Arm?
+> > Unless you really like to base your work on Gregs tree for
+> > some reason or other, that is.
+>
+> Definitely appreciate Greg's help (and patience), but no
+> particularly strong reason to waste his time dealing with my
+> mess ups. Hopefully they'll reduce now IIO trees are going directly
+> into linux-next though.
 
-What I wonder is why the other platforms that use
-XZ compression don't redefine memmove and
-memcpy in their decompress.c clause for XZ?
+I'd suggest to move to sending pulls to Torvalds directly
+for IIO to cut the intermediary staging tree step, since
+now the subsystem is pretty large and see a bunch of
+frequent fixes that need an express path to Torvalds.
 
-Can we just delete these two lines?
-#define memmove memmove
-#define memcpy memcpy
+Pushing through Greg per se isn't really the problem,
+I think the problem is that IIO is going through the
+staging tree which (I guess) isn't a high priority activity
+and not expected to carry any serious critical fixes and
+I guess this can cause lags.
 
-Imre?
+Maybe Greg has some other branch to take in IIO
+fixes and for-next but I don't really see the point.
 
-I can test some platforms without these defines later
-tonight and see what happens.
+The IIO left in the staging tree is just regular staging
+business at this point, the main IIO is much more
+important.
+
+Linus 2: would pulling the IIO tree directly work for
+you if Jonathan makes up his mind in favor for that?
 
 Yours,
 Linus Walleij
-
-On Sun, May 9, 2021 at 2:22 PM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> Maybe the KASan folk can look into this, it isn't obvious how to fix
-> this, since XZ needs memcpy/memmove #defined to avoid using its own
-> version. Having KASan override these with a #define is all very well,
-> but it makes the behaviour of lib/decompress_unxz.c indeterminant if
-> we get rid of the definitions the XZ support added.
->
-> On Sun, May 09, 2021 at 11:32:17AM +0800, kernel test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   b741596468b010af2846b75f5e75a842ce344a6e
-> > commit: 421015713b306e47af95d4d61cdfbd96d462e4cb ARM: 9017/2: Enable KASan for ARM
-> > date:   6 months ago
-> > config: arm-randconfig-r015-20210509 (attached as .config)
-> > compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=421015713b306e47af95d4d61cdfbd96d462e4cb
-> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >         git fetch --no-tags linus master
-> >         git checkout 421015713b306e47af95d4d61cdfbd96d462e4cb
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross W=1 ARCH=arm
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All warnings (new ones prefixed by >>):
-> >
-> > >> arch/arm/boot/compressed/decompress.c:50: warning: "memmove" redefined
-> >       50 | #define memmove memmove
-> >          |
-> >    In file included from arch/arm/boot/compressed/decompress.c:8:
-> >    arch/arm/include/asm/string.h:59: note: this is the location of the previous definition
-> >       59 | #define memmove(dst, src, len) __memmove(dst, src, len)
-> >          |
-> >    arch/arm/boot/compressed/decompress.c:51: warning: "memcpy" redefined
-> >       51 | #define memcpy memcpy
-> >          |
-> >    In file included from arch/arm/boot/compressed/decompress.c:8:
-> >    arch/arm/include/asm/string.h:58: note: this is the location of the previous definition
-> >       58 | #define memcpy(dst, src, len) __memcpy(dst, src, len)
-> >          |
-> >    arch/arm/boot/compressed/decompress.c:59:5: warning: no previous prototype for 'do_decompress' [-Wmissing-prototypes]
-> >       59 | int do_decompress(u8 *input, int len, u8 *output, void (*error)(char *x))
-> >          |     ^~~~~~~~~~~~~
-> >
-> >
-> > vim +/memmove +50 arch/arm/boot/compressed/decompress.c
-> >
-> > 6e8699f7d68589 Albin Tonnerre 2010-04-03  48
-> > a7f464f3db93ae Imre Kaloz     2012-01-26  49  #ifdef CONFIG_KERNEL_XZ
-> > a7f464f3db93ae Imre Kaloz     2012-01-26 @50  #define memmove memmove
-> > a7f464f3db93ae Imre Kaloz     2012-01-26  51  #define memcpy memcpy
-> > a7f464f3db93ae Imre Kaloz     2012-01-26  52  #include "../../../../lib/decompress_unxz.c"
-> > a7f464f3db93ae Imre Kaloz     2012-01-26  53  #endif
-> > a7f464f3db93ae Imre Kaloz     2012-01-26  54
-> >
-> > :::::: The code at line 50 was first introduced by commit
-> > :::::: a7f464f3db93ae5492bee6f6e48939fd8a45fa99 ARM: 7001/2: Wire up support for the XZ decompressor
-> >
-> > :::::: TO: Imre Kaloz <kaloz@openwrt.org>
-> > :::::: CC: Russell King <rmk+kernel@arm.linux.org.uk>
-> >
-> > ---
-> > 0-DAY CI Kernel Test Service, Intel Corporation
-> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->
->
->
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
