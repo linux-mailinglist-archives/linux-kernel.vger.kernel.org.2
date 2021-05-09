@@ -2,131 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0832377789
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 18:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB86377791
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 18:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhEIQUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 12:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
+        id S229898AbhEIQ0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 12:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhEIQUW (ORCPT
+        with ESMTP id S229883AbhEIQ0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 12:20:22 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1983C061573;
-        Sun,  9 May 2021 09:19:18 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id g14so15918462edy.6;
-        Sun, 09 May 2021 09:19:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DO5zOhliRnBqxM33iMyfdyDpj+YfVYcGobHK6sCAbck=;
-        b=jH1aCNgdimaE/ftmf59J0k25Wp+5ldYJcgVWEASelAo4kw2rsrf4LNEetjvxUnwEmj
-         DVdjp/gX3REnGP3TT64893sYCurxVwkHm5FAinZv2wc8tiOuZFKfPuZFzzDpBfNxIYzH
-         XDkATEg1EFLw/Bi1rnUEPy52P3VLAI+njai1I8G/S7J+VRBLyzCQfFcgfN2/6xI1RO2m
-         4ofe5ScEMdYUrVAd24uoIFXgLKTZgkkypFtG60QPNR6JlTfqCx4n69VKH6pmgy5sSh5V
-         teFIlXsnwyHd+urzFEQ1/1g0GdN2Ao8QnczzShGWjt6ZPBMPfANSphXoa7WJIXVsuPj9
-         07lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=DO5zOhliRnBqxM33iMyfdyDpj+YfVYcGobHK6sCAbck=;
-        b=OTtfFuAWKU6MHPNNST8/yYd77Egy3oJqnE+rCNsG1Maah3t6bwbtHZTyBsrAhaEDEb
-         jdPaaae4d3umIXoqbITP3V4U4WxjUdi4i26TV9LnYKs9LcHlM6QfEKcv7LiIvifq+Pcv
-         Ftm0WuO/eekRo1RjFX2DiRIJBOdxp7oOPCc+woQkSTh306bAkxDeZGUP5RueIwW8Ph5m
-         BBwnaIPq8Sr9NGQaVwaTJzE5FOgQU9OVvIjGRELZprLsY4AhpDt90juFbeKnFPPYyrZC
-         9qYDXkP6n2WIn/v6MBP5Jb+MmGdFyFl8jWH3P1wChRMXDXSLc+JioXbiSPHLErJvReqn
-         7QSw==
-X-Gm-Message-State: AOAM5332xWDkWXOSR0Y5r4lj6cjzXyB8Twl3hi7ghIuURoJ6bpuQoGti
-        OhFrog2+DaHKT/T1m0cU3Iw=
-X-Google-Smtp-Source: ABdhPJzIMRzJ5t0YFk3VzbCAOTLHIvvzaKZF4miCRQhE+HrtaEEJ+wBMh8+JcJWcFD10u6K+F+AX0g==
-X-Received: by 2002:a05:6402:16db:: with SMTP id r27mr23673341edx.375.1620577156694;
-        Sun, 09 May 2021 09:19:16 -0700 (PDT)
-Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
-        by smtp.gmail.com with ESMTPSA id j1sm7082457ejv.40.2021.05.09.09.19.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 09:19:16 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sun, 9 May 2021 18:19:14 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        David Woodhouse <dwmw2@infradead.org>,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: 'make O=' indigestion with module signing
-Message-ID: <20210509161914.GB839293@gmail.com>
-References: <134696.1615510534@turing-police>
- <109018.1615463088@turing-police>
- <91190.1615444370@turing-police>
- <972381.1615459754@warthog.procyon.org.uk>
- <1486567.1615464259@warthog.procyon.org.uk>
- <2026575.1615539696@warthog.procyon.org.uk>
- <20210509151112.GA839293@gmail.com>
- <20210509151556.GA842014@gmail.com>
+        Sun, 9 May 2021 12:26:42 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3303AC061573
+        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 09:25:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=KRn3B1NtIl+yLDWbQMHjQsRz0WhuDJp2AzBSzKYNPXs=; b=imv9hB2TML0JeBx7j2mQHrO5O
+        AYFcyIq8/VbdQSDB+BQ1hpunSQhkNLg2Jw43jXsOW7ESZD0IVP8LPDpwoHKfsYAwXTIxt+jqPsX9n
+        /UrPmvtvfWdL/VmruDwTG+BUgYZKdmfcuEdVvyNIuDW/CPEW/2Cs5F66iB08GxQLA8Fxhs7BvuW87
+        Dgar8liqt2WxxhWgkB0i31ObqbFhlzEaLKfidGIWQnfYdjOrzJlJc47jPtLB1dLNIHp5ekmoJyS6E
+        6WI2rCMdMB06aeowGM8vvPTkfJ4mbAIdAiqtSCVl4UVhbct5v1nWA93Wgkot/cHiD5Qh8txqZ+DN5
+        JtSlq0niw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43816)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lfmF0-0007R1-3t; Sun, 09 May 2021 17:25:14 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lfmEn-0007ky-JK; Sun, 09 May 2021 17:25:01 +0100
+Date:   Sun, 9 May 2021 17:25:01 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: arch/arm/boot/compressed/decompress.c:50: warning: "memmove"
+ redefined
+Message-ID: <20210509162501.GJ1336@shell.armlinux.org.uk>
+References: <202105091112.F5rmd4By-lkp@intel.com>
+ <20210509122227.GH1336@shell.armlinux.org.uk>
+ <CACRpkdaNVg9zgaDN0JG+Z8dMMk+0fdpYHwGMHS-FKUG9MZAb4w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210509151556.GA842014@gmail.com>
+In-Reply-To: <CACRpkdaNVg9zgaDN0JG+Z8dMMk+0fdpYHwGMHS-FKUG9MZAb4w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Ingo Molnar <mingo@kernel.org> wrote:
-
-> Correction - there appears to be something else going on, but the
-> error messages are similar:
+On Sun, May 09, 2021 at 05:17:49PM +0200, Linus Walleij wrote:
+> OK, paging in the KSan mailing list and key people.
 > 
->   At main.c:291:
->   - SSL error:02001002:system library:fopen:No such file or directory: ../crypto/bio/bss_file.c:69
->   - SSL error:2006D080:BIO routines:BIO_new_file:no such file: ../crypto/bio/bss_file.c:76
->   sign-file: debian/linux-image/lib/modules/5.12.0-custom/kernel/arch/x86/crypto/aegis128-aesni.ko: No such file or directory
->   At main.c:291:
+> Certainly this problem must be the same on all platforms
+> using an XZ-compressed kernel and not just Arm?
 > 
-> The error messages look pretty obscure to me. :-/
+> What I wonder is why the other platforms that use
+> XZ compression don't redefine memmove and
+> memcpy in their decompress.c clause for XZ?
+> 
+> Can we just delete these two lines?
+> #define memmove memmove
+> #define memcpy memcpy
 
-I didn't find any stray build files left in the tree, so 'make mrproper'
-is innocent I believe.
+We can't. XZ has:
 
-I ended up with the config tweak below to get the kernel package to build,
-which is not an ideal solution. :-/
+#ifndef memmove
+/* Not static to avoid a conflict with the prototype in the Linux
+ * headers. */
+void *memmove(void *dest, const void *src, size_t size)
+{
+...
+}
+#endif
 
-Let me know if you'd like me to send you the .config and/or any diagnostic
-messages or other details.
+So, if memmove is not defined in the preprocessor, the code will create
+its own implementation. memmove() is also defined in
+arch/arm/boot/compressed/string.c for use with other decompressors, so
+the local version in lib/decompress_unxz.c will conflict and cause a
+link time error.
 
-Thanks,
+The addition of KASan added this to arch/arm/include/asm/string.h:
 
-	Ingo
+#if defined(CONFIG_KASAN) && !defined(__SANITIZE_ADDRESS__)
+#define memcpy(dst, src, len) __memcpy(dst, src, len)
+#define memmove(dst, src, len) __memmove(dst, src, len)
+#define memset(s, c, n) __memset(s, c, n)
 
-diff --git a/.config.kepler.ubuntu b/.config.kepler.ubuntu
-index 01347a220e54..846a956fcdbd 100644
---- a/.config.kepler.ubuntu
-+++ b/.config.kepler.ubuntu
-@@ -880,9 +880,8 @@ CONFIG_MODULE_UNLOAD=y
- # CONFIG_MODULE_FORCE_UNLOAD is not set
- # CONFIG_MODVERSIONS is not set
- CONFIG_MODULE_SRCVERSION_ALL=y
--CONFIG_MODULE_SIG=y
--# CONFIG_MODULE_SIG_FORCE is not set
--CONFIG_MODULE_SIG_ALL=y
-+# CONFIG_MODULE_SIG is not set
-+# CONFIG_MODULE_SIG_ALL is not set
- # CONFIG_MODULE_SIG_SHA1 is not set
- # CONFIG_MODULE_SIG_SHA224 is not set
- # CONFIG_MODULE_SIG_SHA256 is not set
-@@ -10177,11 +10176,7 @@ CONFIG_SECURITY_APPARMOR_HASH_DEFAULT=y
- # CONFIG_SECURITY_LOADPIN is not set
- CONFIG_SECURITY_YAMA=y
- CONFIG_SECURITY_SAFESETID=y
--CONFIG_SECURITY_LOCKDOWN_LSM=y
--CONFIG_SECURITY_LOCKDOWN_LSM_EARLY=y
--CONFIG_LOCK_DOWN_KERNEL_FORCE_NONE=y
--# CONFIG_LOCK_DOWN_KERNEL_FORCE_INTEGRITY is not set
--# CONFIG_LOCK_DOWN_KERNEL_FORCE_CONFIDENTIALITY is not set
-+# CONFIG_SECURITY_LOCKDOWN_LSM is not set
- # CONFIG_SECURITY_LANDLOCK is not set
- CONFIG_INTEGRITY=y
- CONFIG_INTEGRITY_SIGNATURE=y
+#ifndef __NO_FORTIFY
+#define __NO_FORTIFY /* FORTIFY_SOURCE uses __builtin_memcpy, etc. */
+#endif
 
+#endif
+
+created a conditional definition of memmove in the preprocessor, which
+ultimately caused this problem. lib/decompress_unxz.c wants it defined
+in the preprocessor _if_ one has a local implementation (we do.)
+
+Given that KASan should be disabled in the decompressor, maybe the
+conditional added by KASan to asm/string.h is insufficient? The
+makefile has:
+
+KASAN_SANITIZE          := n
+
+So really we should not be playing _any_ KASan games in the
+decompressor code.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
