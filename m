@@ -2,79 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571FD377813
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 21:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0934537781A
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 21:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhEIT1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 15:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37826 "EHLO
+        id S229941AbhEITfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 15:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbhEIT1j (ORCPT
+        with ESMTP id S229867AbhEITe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 15:27:39 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D0AC061573;
-        Sun,  9 May 2021 12:26:35 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id l24-20020a7bc4580000b029014ac3b80020so9948206wmi.1;
-        Sun, 09 May 2021 12:26:35 -0700 (PDT)
+        Sun, 9 May 2021 15:34:58 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39B7C061573;
+        Sun,  9 May 2021 12:33:54 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso8705598wmc.1;
+        Sun, 09 May 2021 12:33:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=r2dEu4hvQezgg+nEKJ+VJ/vBdC0xX4twJSBrlDmPz9g=;
-        b=G/KL0GMi8jlxQvskJcAJpLMVgkkRInd/fz5i0z+p0mE+1pAMVNLchRxBNJuFtvEGqT
-         S0/auBsfA+rb1D9KysOl+9o26ITBn10gu4jWCgHHGf7bNY4eKrKJWa6qp5Z8V2y5JMcc
-         aGeu02f85d2ON87lBYZAhzKaWxKKeYn8N69nhGT+UFbqKJVmC/n3fM6Sl4rG2tkPU0EB
-         nKMlYqqcwXUBGCvAI+4G99gOG4Fxax23KM/y6hyGYYjxavfix+2b6RTDd9W040MGi4TB
-         DoE4YQqcO/Puqq7BSRpgqAmauieoEDpH6yw8PjGTecyMIORdKKhKyhWESufyet8gbpLh
-         Ifqw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=pwB6mElenYhBSU4aRvtAJPhfJNuyfv9xAVTG9qry76s=;
+        b=jl/qaGJ6DA1tGtP4TY1bPVQiBb9lZErRS0VBuhkwYBUbykbTkHYU4pbnlrGbGAkB80
+         Fk6LSkfpAtsGG2eGTsHWHYkzJzhkHio/EtIaXx6feE4wEhk1+JHIx/+A5NGWAhRJOkKD
+         UnoANa0IGaWP4+jGg8+Y4KK2+FbQEPKRG8VhXLpovNQmtruy96sHzrhf0CABlKp50kz6
+         ce4BoGyPDsaHHelzsmg2HXCCLmCAc/MuTb/gr2bsTmSG+gvyOiYfmuHUuKO4H/E7kwuz
+         5YEGL6AaOaVDLw0AjcPjzslHV0QDd8ReB84nVs9L2QsXV5w9jGJycKIFhmNiPDG+3tZz
+         52Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r2dEu4hvQezgg+nEKJ+VJ/vBdC0xX4twJSBrlDmPz9g=;
-        b=O7jkqrqlfywBDpU2Xb+aZvoq4H4mZNUJLJY+x5evXNdDh7fAAM0F2HzfT0cmCh3oHl
-         jGFw8bfc7ZXbTDfpWL7iDLCt9RlEZ4tNSjiXP4d/U+FqHeOLyKzSZpbXVd0uAUUCiXZv
-         VUgmC2ZQV9t1Ix8atclPJah3Ojkr5stTQcot7HycKvDbM04QAbQaG+SWDvRsQ+5BuSwQ
-         kJp6MjHx/LQMVIJpUsUKqbBz2vxVHE6ZVOIww3wj6LfsdUMrAmQFSaAw5GjVKyiKrDUP
-         qM+9B8Liuei0BhfgWRd9QJnWDaEiNg6NUbjcbOHO79pUQuVw+UZD4v1Mo7DMZgsDDjWn
-         vsWw==
-X-Gm-Message-State: AOAM533gOClG0p9UJs388Ox8gb2yiv7jpAmnpmR5+LTTJpEdo4r/6sxw
-        G/UvBwgH3QjefT/Tkpp2854=
-X-Google-Smtp-Source: ABdhPJy4dAUOVwJ7oBJqhKNx2n2E67kQzpf67S5Qs3BntkX8sTKk+BrfWnF00uYW3mHw28j0dG6zNA==
-X-Received: by 2002:a1c:4c07:: with SMTP id z7mr22592916wmf.96.1620588394388;
-        Sun, 09 May 2021 12:26:34 -0700 (PDT)
-Received: from skbuf ([86.127.41.210])
-        by smtp.gmail.com with ESMTPSA id d15sm19175233wrw.71.2021.05.09.12.26.33
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pwB6mElenYhBSU4aRvtAJPhfJNuyfv9xAVTG9qry76s=;
+        b=IpQhp2X0O6897Gr3ySJGsxMmTiPMSC+UcUPWUQ0nK124q2T2yO3G4Xh+vDiwm0QWfq
+         IJijdOEVS263Z+bjNWuw+Q4DXazjOe8nXtHkSMmEM5sTYRYXuM7JyAlBBrtLOJ5Ctl5y
+         i+q9TEA+O2+Wy3Gs6bPGGkWDlloec1vbckwYF8A/H8ziccUfU+NIexRTv2TrHCewHnHi
+         N/mN57ZW0ThHwK/kWaV/0434S+gsMUV5inxN727lkGwvHaI7stBRL6ARxPa3oDyQUCJo
+         3wOzP5PRkO+rjQs6NPzdlpjK7nHFKNlMoxOpq2ShaP1LgI3FfDSzGtpMblGeje/X9Vt6
+         Pm2w==
+X-Gm-Message-State: AOAM5314J418UbgQRBjxcZQp285n4MgT6Gt1q0++NHALEwpR8cv8dKqM
+        sMwsQLXunbbf9SFhdn8bMS4=
+X-Google-Smtp-Source: ABdhPJy+FzrYLL77UmWpjLMmDX7CH1Id+LoNfk37WRoYlCxv7B8Bx/uqvxjw6PRE2KFs+JVq0q9KmA==
+X-Received: by 2002:a05:600c:26c9:: with SMTP id 9mr206497wmv.176.1620588832793;
+        Sun, 09 May 2021 12:33:52 -0700 (PDT)
+Received: from michael-VirtualBox.xsight.ent (cbl217-132-244-50.bb.netvision.net.il. [217.132.244.50])
+        by smtp.googlemail.com with ESMTPSA id n124sm23502655wmn.40.2021.05.09.12.33.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 12:26:33 -0700 (PDT)
-Date:   Sun, 9 May 2021 22:26:32 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     broonie@kernel.org, maitysanchayan@gmail.com,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] spi: spi-fsl-dspi: Fix a resource leak in an error
- handling path
-Message-ID: <20210509192632.2nzgwckpai34hgnr@skbuf>
-References: <d51caaac747277a1099ba8dea07acd85435b857e.1620587472.git.christophe.jaillet@wanadoo.fr>
+        Sun, 09 May 2021 12:33:52 -0700 (PDT)
+From:   Michael Zaidman <michael.zaidman@gmail.com>
+To:     lkp@intel.com
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, jikos@kernel.org,
+        dan.carpenter@oracle.com, linux-input@vger.kernel.org,
+        Michael Zaidman <michael.zaidman@gmail.com>
+Subject: [PATCH] HID: ft260: fix format type warning in ft260_word_show()
+Date:   Sun,  9 May 2021 22:32:13 +0300
+Message-Id: <20210509193213.5974-1-michael.zaidman@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <202105060637.LeEC6ztp-lkp@intel.com>
+References: <202105060637.LeEC6ztp-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d51caaac747277a1099ba8dea07acd85435b857e.1620587472.git.christophe.jaillet@wanadoo.fr>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 09, 2021 at 09:12:27PM +0200, Christophe JAILLET wrote:
-> 'dspi_request_dma()' should be undone by a 'dspi_release_dma()' call in the
-> error handling path of the probe function, as already done in the remove
-> function
-> 
-> Fixes: 90ba37033cb9 ("spi: spi-fsl-dspi: Add DMA support for Vybrid")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
+Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Fix warning reported by static analysis when built with W=1 for arm64 by
+clang version 13.0.0
 
-Thanks!
+>> drivers/hid/hid-ft260.c:794:44: warning: format specifies type 'short' but
+   the argument has type 'int' [-Wformat]
+           return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
+                                             ~~~     ^~~~~~~~~~~~~~~~~~~
+                                             %i
+   include/linux/byteorder/generic.h:91:21: note: expanded from
+                                            macro 'le16_to_cpu'
+   #define le16_to_cpu __le16_to_cpu
+                       ^
+   include/uapi/linux/byteorder/big_endian.h:36:26: note: expanded from
+                                                    macro '__le16_to_cpu'
+   #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
+                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/uapi/linux/swab.h:105:2: note: expanded from macro '__swab16'
+           (__builtin_constant_p((__u16)(x)) ?     \
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
+---
+ drivers/hid/hid-ft260.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
+index 047aa85a7c83..38794a29599c 100644
+--- a/drivers/hid/hid-ft260.c
++++ b/drivers/hid/hid-ft260.c
+@@ -791,7 +791,7 @@ static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
+ 	if (ret != len && ret >= 0)
+ 		return -EIO;
+ 
+-	return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
++	return scnprintf(buf, PAGE_SIZE, "%d\n", le16_to_cpu(*field));
+ }
+ 
+ #define FT260_ATTR_SHOW(name, reptype, id, type, func)			       \
+-- 
+2.25.1
+
