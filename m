@@ -2,111 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0934537781A
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 21:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5B137781E
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 21:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbhEITfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 15:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39414 "EHLO
+        id S229934AbhEITkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 15:40:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229867AbhEITe6 (ORCPT
+        with ESMTP id S229666AbhEITkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 15:34:58 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39B7C061573;
-        Sun,  9 May 2021 12:33:54 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso8705598wmc.1;
-        Sun, 09 May 2021 12:33:54 -0700 (PDT)
+        Sun, 9 May 2021 15:40:00 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A283BC061573
+        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 12:38:56 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id p12so18183704ljg.1
+        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 12:38:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pwB6mElenYhBSU4aRvtAJPhfJNuyfv9xAVTG9qry76s=;
-        b=jl/qaGJ6DA1tGtP4TY1bPVQiBb9lZErRS0VBuhkwYBUbykbTkHYU4pbnlrGbGAkB80
-         Fk6LSkfpAtsGG2eGTsHWHYkzJzhkHio/EtIaXx6feE4wEhk1+JHIx/+A5NGWAhRJOkKD
-         UnoANa0IGaWP4+jGg8+Y4KK2+FbQEPKRG8VhXLpovNQmtruy96sHzrhf0CABlKp50kz6
-         ce4BoGyPDsaHHelzsmg2HXCCLmCAc/MuTb/gr2bsTmSG+gvyOiYfmuHUuKO4H/E7kwuz
-         5YEGL6AaOaVDLw0AjcPjzslHV0QDd8ReB84nVs9L2QsXV5w9jGJycKIFhmNiPDG+3tZz
-         52Zw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P9KHoUwqxbexOhqNv8F1Ywyb8vsO2FBF8NuW/VNOiPo=;
+        b=VaZ5jstwwQCops8VcXABpwtZedX2N9xGSqxNt94hO02IGPASRBxnIMwnDKVET16xIi
+         qrW9cC7TB3wiCLgTDnnj9R1JMDHfvUU/N7jVA/46hjEV8jZkc9PdX4CtqaPZejlKJVUp
+         ETz4JyWiit7zgBhH8pkTWPAL3OW++bggSY7s8K7R3cKRt8KBX9HqpHsIyJAxbyptwYUp
+         7tHEmMuazGZlkq8s1AxphPfoqkf71QP0FICuzJbptiSV+NoAzL5W24z1O5RNM3BfOrRn
+         HXLZI4BQBCnWlqdDzHonZEbrNU7Wg+GhQBCjZar4gDpxl+NrGpuGnfuR35q+q74fSAVk
+         6hEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pwB6mElenYhBSU4aRvtAJPhfJNuyfv9xAVTG9qry76s=;
-        b=IpQhp2X0O6897Gr3ySJGsxMmTiPMSC+UcUPWUQ0nK124q2T2yO3G4Xh+vDiwm0QWfq
-         IJijdOEVS263Z+bjNWuw+Q4DXazjOe8nXtHkSMmEM5sTYRYXuM7JyAlBBrtLOJ5Ctl5y
-         i+q9TEA+O2+Wy3Gs6bPGGkWDlloec1vbckwYF8A/H8ziccUfU+NIexRTv2TrHCewHnHi
-         N/mN57ZW0ThHwK/kWaV/0434S+gsMUV5inxN727lkGwvHaI7stBRL6ARxPa3oDyQUCJo
-         3wOzP5PRkO+rjQs6NPzdlpjK7nHFKNlMoxOpq2ShaP1LgI3FfDSzGtpMblGeje/X9Vt6
-         Pm2w==
-X-Gm-Message-State: AOAM5314J418UbgQRBjxcZQp285n4MgT6Gt1q0++NHALEwpR8cv8dKqM
-        sMwsQLXunbbf9SFhdn8bMS4=
-X-Google-Smtp-Source: ABdhPJy+FzrYLL77UmWpjLMmDX7CH1Id+LoNfk37WRoYlCxv7B8Bx/uqvxjw6PRE2KFs+JVq0q9KmA==
-X-Received: by 2002:a05:600c:26c9:: with SMTP id 9mr206497wmv.176.1620588832793;
-        Sun, 09 May 2021 12:33:52 -0700 (PDT)
-Received: from michael-VirtualBox.xsight.ent (cbl217-132-244-50.bb.netvision.net.il. [217.132.244.50])
-        by smtp.googlemail.com with ESMTPSA id n124sm23502655wmn.40.2021.05.09.12.33.51
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P9KHoUwqxbexOhqNv8F1Ywyb8vsO2FBF8NuW/VNOiPo=;
+        b=dnCSiD1OXE8NA7PVR4o+ZwO5vD5EAAT9Ckj3D1RsGUzRtWzwWN65i28Cxn5OrVtLfK
+         voIJKgg2lIVNVnq46gNd9mSIoVRo9nmEKxJvyg9/I15G0KkQNvBVJ0F+F7M31xHSCNkc
+         4xjMdNG+mcIIOvzZ5o4zUDK96YNUgZPJi7QToD2/t1GqHkETA6dE1j80Ce3c21cyrOhx
+         x5TRMRQo8bKZ/9JPs9cGVj1A8XMvsFXbOJSQUZeqZfjfYJLuq05vGDvmpmg9Nu6kAmbw
+         Ge4AEa3aA4cHu67YXkUwbFw/A1QeXRGNBxBBOVJ+EVCW6p2bh20c77BQ86/tHft6SqzW
+         zbTA==
+X-Gm-Message-State: AOAM530irkVx5bOObBko8WhOrzE0dY+hFC5rh1yV1W0FABhnhU5X/9kZ
+        PBEoasr09WlNy8j2ErQzTH8=
+X-Google-Smtp-Source: ABdhPJwoKB66eyiScOwS2EQBs77oKT0vsxLrKNhx3uXTnls4aHYUOxRXMZAoxnrRucSwVYo2UlrlIw==
+X-Received: by 2002:a2e:b5cd:: with SMTP id g13mr17743675ljn.0.1620589135179;
+        Sun, 09 May 2021 12:38:55 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id m17sm1999269lfh.146.2021.05.09.12.38.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 12:33:52 -0700 (PDT)
-From:   Michael Zaidman <michael.zaidman@gmail.com>
-To:     lkp@intel.com
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org, jikos@kernel.org,
-        dan.carpenter@oracle.com, linux-input@vger.kernel.org,
-        Michael Zaidman <michael.zaidman@gmail.com>
-Subject: [PATCH] HID: ft260: fix format type warning in ft260_word_show()
-Date:   Sun,  9 May 2021 22:32:13 +0300
-Message-Id: <20210509193213.5974-1-michael.zaidman@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <202105060637.LeEC6ztp-lkp@intel.com>
-References: <202105060637.LeEC6ztp-lkp@intel.com>
+        Sun, 09 May 2021 12:38:54 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH v2 1/2] mm/vmalloc: Switch to bulk allocator in __vmalloc_area_node()
+Date:   Sun,  9 May 2021 21:38:43 +0200
+Message-Id: <20210509193844.2562-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
+Recently there has been introduced a page bulk allocator for
+users which need to get number of pages per one call request.
 
-Fix warning reported by static analysis when built with W=1 for arm64 by
-clang version 13.0.0
+For order-0 pages switch to __alloc_pages_bulk() instead of
+alloc_pages_node(), the reason is the former is not capable
+of allocating set of pages, thus a one call is per one page.
 
->> drivers/hid/hid-ft260.c:794:44: warning: format specifies type 'short' but
-   the argument has type 'int' [-Wformat]
-           return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
-                                             ~~~     ^~~~~~~~~~~~~~~~~~~
-                                             %i
-   include/linux/byteorder/generic.h:91:21: note: expanded from
-                                            macro 'le16_to_cpu'
-   #define le16_to_cpu __le16_to_cpu
-                       ^
-   include/uapi/linux/byteorder/big_endian.h:36:26: note: expanded from
-                                                    macro '__le16_to_cpu'
-   #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
-                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/uapi/linux/swab.h:105:2: note: expanded from macro '__swab16'
-           (__builtin_constant_p((__u16)(x)) ?     \
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Second, according to my tests the bulk allocator uses less
+cycles even for scenarios when only one page is requested.
+Running the "perf" on same test case shows below difference:
 
-Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
-Reported-by: kernel test robot <lkp@intel.com>
+<default>
+  - 45.18% __vmalloc_node
+     - __vmalloc_node_range
+        - 35.60% __alloc_pages
+           - get_page_from_freelist
+                3.36% __list_del_entry_valid
+                3.00% check_preemption_disabled
+                1.42% prep_new_page
+<default>
+
+<patch>
+  - 31.00% __vmalloc_node
+     - __vmalloc_node_range
+        - 14.48% __alloc_pages_bulk
+             3.22% __list_del_entry_valid
+           - 0.83% __alloc_pages
+                get_page_from_freelist
+<patch>
+
+The "test_vmalloc.sh" also shows performance improvements:
+
+fix_size_alloc_test_4MB   loops: 1000000 avg: 89105095 usec
+fix_size_alloc_test       loops: 1000000 avg: 513672   usec
+full_fit_alloc_test       loops: 1000000 avg: 748900   usec
+long_busy_list_alloc_test loops: 1000000 avg: 8043038  usec
+random_size_alloc_test    loops: 1000000 avg: 4028582  usec
+fix_align_alloc_test      loops: 1000000 avg: 1457671  usec
+
+fix_size_alloc_test_4MB   loops: 1000000 avg: 62083711 usec
+fix_size_alloc_test       loops: 1000000 avg: 449207   usec
+full_fit_alloc_test       loops: 1000000 avg: 735985   usec
+long_busy_list_alloc_test loops: 1000000 avg: 5176052  usec
+random_size_alloc_test    loops: 1000000 avg: 2589252  usec
+fix_align_alloc_test      loops: 1000000 avg: 1365009  usec
+
+For example 4MB allocations illustrates ~30% gain, all the
+rest is also better.
+
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- drivers/hid/hid-ft260.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/vmalloc.c | 74 ++++++++++++++++++++++++++++------------------------
+ 1 file changed, 40 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
-index 047aa85a7c83..38794a29599c 100644
---- a/drivers/hid/hid-ft260.c
-+++ b/drivers/hid/hid-ft260.c
-@@ -791,7 +791,7 @@ static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
- 	if (ret != len && ret >= 0)
- 		return -EIO;
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 5d96fee17226..dbc6744400d5 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2766,8 +2766,6 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+ 	unsigned long array_size;
+ 	unsigned int nr_small_pages = size >> PAGE_SHIFT;
+ 	unsigned int page_order;
+-	struct page **pages;
+-	unsigned int i;
  
--	return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
-+	return scnprintf(buf, PAGE_SIZE, "%d\n", le16_to_cpu(*field));
- }
+ 	array_size = (unsigned long)nr_small_pages * sizeof(struct page *);
+ 	gfp_mask |= __GFP_NOWARN;
+@@ -2776,13 +2774,13 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
  
- #define FT260_ATTR_SHOW(name, reptype, id, type, func)			       \
+ 	/* Please note that the recursion is strictly bounded. */
+ 	if (array_size > PAGE_SIZE) {
+-		pages = __vmalloc_node(array_size, 1, nested_gfp, node,
++		area->pages = __vmalloc_node(array_size, 1, nested_gfp, node,
+ 					area->caller);
+ 	} else {
+-		pages = kmalloc_node(array_size, nested_gfp, node);
++		area->pages = kmalloc_node(array_size, nested_gfp, node);
+ 	}
+ 
+-	if (!pages) {
++	if (!area->pages) {
+ 		free_vm_area(area);
+ 		warn_alloc(gfp_mask, NULL,
+ 			   "vmalloc size %lu allocation failure: "
+@@ -2791,43 +2789,51 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+ 		return NULL;
+ 	}
+ 
+-	area->pages = pages;
+-	area->nr_pages = nr_small_pages;
+ 	set_vm_area_page_order(area, page_shift - PAGE_SHIFT);
+-
+ 	page_order = vm_area_page_order(area);
+ 
+-	/*
+-	 * Careful, we allocate and map page_order pages, but tracking is done
+-	 * per PAGE_SIZE page so as to keep the vm_struct APIs independent of
+-	 * the physical/mapped size.
+-	 */
+-	for (i = 0; i < area->nr_pages; i += 1U << page_order) {
+-		struct page *page;
+-		int p;
+-
+-		/* Compound pages required for remap_vmalloc_page */
+-		page = alloc_pages_node(node, gfp_mask | __GFP_COMP, page_order);
+-		if (unlikely(!page)) {
+-			/* Successfully allocated i pages, free them in __vfree() */
+-			area->nr_pages = i;
+-			atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
+-			warn_alloc(gfp_mask, NULL,
+-				   "vmalloc size %lu allocation failure: "
+-				   "page order %u allocation failed",
+-				   area->nr_pages * PAGE_SIZE, page_order);
+-			goto fail;
+-		}
++	if (!page_order) {
++		area->nr_pages = __alloc_pages_bulk(gfp_mask, node,
++			NULL, nr_small_pages, NULL, area->pages);
++	} else {
++		/*
++		 * Careful, we allocate and map page_order pages, but tracking is done
++		 * per PAGE_SIZE page so as to keep the vm_struct APIs independent of
++		 * the physical/mapped size.
++		 */
++		for (area->nr_pages = 0; area->nr_pages < nr_small_pages;
++				area->nr_pages += 1U << page_order) {
++			struct page *page;
++			int i;
++
++			/* Compound pages required for remap_vmalloc_page */
++			page = alloc_pages_node(node, gfp_mask | __GFP_COMP, page_order);
++			if (unlikely(!page))
++				break;
+ 
+-		for (p = 0; p < (1U << page_order); p++)
+-			area->pages[i + p] = page + p;
++			for (i = 0; i < (1U << page_order); i++)
++				area->pages[area->nr_pages + i] = page + i;
+ 
+-		if (gfpflags_allow_blocking(gfp_mask))
+-			cond_resched();
++			if (gfpflags_allow_blocking(gfp_mask))
++				cond_resched();
++		}
+ 	}
++
+ 	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
+ 
+-	if (vmap_pages_range(addr, addr + size, prot, pages, page_shift) < 0) {
++	/*
++	 * If not enough pages were obtained to accomplish an
++	 * allocation request, free them via __vfree() if any.
++	 */
++	if (area->nr_pages != nr_small_pages) {
++		warn_alloc(gfp_mask, NULL,
++			"vmalloc size %lu allocation failure: "
++			"page order %u allocation failed",
++			area->nr_pages * PAGE_SIZE, page_order);
++		goto fail;
++	}
++
++	if (vmap_pages_range(addr, addr + size, prot, area->pages, page_shift) < 0) {
+ 		warn_alloc(gfp_mask, NULL,
+ 			   "vmalloc size %lu allocation failure: "
+ 			   "failed to map pages",
 -- 
-2.25.1
+2.20.1
 
