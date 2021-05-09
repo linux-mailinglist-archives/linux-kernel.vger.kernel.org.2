@@ -2,39 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812AC37796C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 01:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552DA377964
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 01:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhEIX42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 19:56:28 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:55724 "EHLO gloria.sntech.de"
+        id S230025AbhEIX4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 19:56:21 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:55636 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230071AbhEIX41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 19:56:27 -0400
+        id S229898AbhEIX4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 19:56:19 -0400
 Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.fritz.box)
         by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <heiko@sntech.de>)
-        id 1lftGT-0007y6-2C; Mon, 10 May 2021 01:55:13 +0200
+        id 1lftGU-0007y6-Cu; Mon, 10 May 2021 01:55:14 +0200
 From:   Heiko Stuebner <heiko@sntech.de>
-To:     Marty Jones <mj8263788@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Jensen Huang <jensenhuang@friendlyarm.com>,
-        Tianling Shen <cnsztl@gmail.com>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH] arm64: dts: rockchip: rename LED label for NanoPi R4S
-Date:   Mon, 10 May 2021 01:55:04 +0200
-Message-Id: <162060449717.1266480.15512364220563668562.b4-ty@sntech.de>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] ARM: dts: rockchip: fix pinctrl sleep nodename for rk3036-kylin and rk3288
+Date:   Mon, 10 May 2021 01:55:07 +0200
+Message-Id: <162060449718.1266480.9605079619831759008.b4-ty@sntech.de>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210426114652.29542-1-cnsztl@gmail.com>
-References: <20210426114652.29542-1-cnsztl@gmail.com>
+In-Reply-To: <20210126110221.10815-1-jbx6244@gmail.com>
+References: <20210126110221.10815-1-jbx6244@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,16 +35,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Apr 2021 19:46:52 +0800, Tianling Shen wrote:
-> However "sys" is not a valid function, and it is always on.
-> Let's keep existing functions.
+On Tue, 26 Jan 2021 12:02:20 +0100, Johan Jonker wrote:
+> A test with the command below aimed at powerpc generates
+> notifications in the Rockchip ARM tree.
 > 
-> Fixes: db792e9adbf85f ("rockchip: rk3399: Add support for FriendlyARM NanoPi R4S")
+> Fix pinctrl "sleep" nodename by renaming it to "suspend"
+> for rk3036-kylin and rk3288
+> 
+> make ARCH=arm dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/powerpc/sleep.yaml
 
 Applied, thanks!
 
-[1/1] arm64: dts: rockchip: rename LED label for NanoPi R4S
-      commit: 6a11ffc2cc54d89719d5b2f3ca44244cebd7ed2e
+[1/2] ARM: dts: rockchip: fix pinctrl sleep nodename for rk3036-kylin and rk3288
+      commit: dfbfb86a43f9a5bbd166d88bca9e07ee4e1bff31
+[2/2] arm64: dts: rockchip: fix pinctrl sleep nodename for rk3399.dtsi
+      commit: a7ecfad495f8af63a5cb332c91f60ab2018897f5
 
 Best regards,
 -- 
