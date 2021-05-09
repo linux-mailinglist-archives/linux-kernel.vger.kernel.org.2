@@ -2,94 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82A13777F3
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 20:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7DC3777F8
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 20:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbhEISef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 14:34:35 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:59787 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhEISee (ORCPT
+        id S229924AbhEISuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 14:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229693AbhEISuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 14:34:34 -0400
-Received: from weisslap.aisec.fraunhofer.de ([188.192.220.174]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis)
- id 1MsIbU-1lMktK3yzi-00tn3a; Sun, 09 May 2021 20:33:25 +0200
-From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-To:     michael.weiss@aisec.fraunhofer.de
-Cc:     Richard Guy Briggs <rgb@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] audit: allow logging of user events in non-initial namespace.
-Date:   Sun,  9 May 2021 20:33:19 +0200
-Message-Id: <20210509183319.20298-1-michael.weiss@aisec.fraunhofer.de>
-X-Mailer: git-send-email 2.20.1
+        Sun, 9 May 2021 14:50:13 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F37C061574
+        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 11:49:09 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id y9so18066639ljn.6
+        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 11:49:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lMJvx5UVUSxWfxal6KmjDPL7AuvEAZJvWWHWo4hAYoo=;
+        b=bPH0qO6fe7UoMIwaSSiLTVdTGdPG8Qq8pmPecFEYO8u1EtSnnoARg6IFh6TVjnG/Vo
+         UC5kiD2S1FB4SSVHancR/Tfbn/4BeP3rSWIISAwLDVfdLqRQA7GTPIqyR8jxsSXN2Mef
+         oCHy7ib2z0Qp+RHR5IddW0zG4FmRCKD5z4EpHMzBxJxorsnBM0TlNUrS3ivW3v/NK7HI
+         cMJjc9HJVbyRAERobvQGpHiMPceqBR9f7EnwPXCffob0sYc+71UsYcKHNjy0zuUJY87c
+         J3Lq6ROvTJTrRs9E39ivSzG41oN5IkLRB2gGD0FvuU4kVcok43gCxNWOcCfoI41sfgZN
+         5pqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lMJvx5UVUSxWfxal6KmjDPL7AuvEAZJvWWHWo4hAYoo=;
+        b=IuAgo30MUFYfmOivW7/vbAu1JZj19u/Vf2waj0vsDeEVhmtkbGL0hi8Fl7+o4lb2F8
+         wo/ALNg14ROS6C4TaViYSgXJiSPGhEFYk4eZPMapVVQhqipqLZYTlDf8ZPL19A4Dycr0
+         9OTyylutC/vE96jrBwBu/X+4/TGwuULaSI0jVk3DhqBvHPdz98j2hK+56wBvP9z7rIXq
+         TOk+67FVDmhP5ViOyVpi78zRCZQFIQO3Qq2C/81WHnrHzrTNZ90rpacggb/fnYamN3Gg
+         o7HJdPVcBm+ul1uIfxxsnL7s5vUQspibSbghqnRXqNS6FSyyGT7X9woJ9ti0bJ3qN4U4
+         6uoQ==
+X-Gm-Message-State: AOAM53134RIm/2YcQo+E0JxYq9arc/zJZm2fH1DFeziVf5uKueRQGf7R
+        S+oXID1GT6Zuh3TTG8Ey4o6v1MJLMmtfoQmpPD13QA==
+X-Google-Smtp-Source: ABdhPJxFikBt8NEEjavRogVdk7f3yUsdtfJw1Nh5UYxdACqLuIxR2l2Nd4M9r0XGfUMWcsApRPZBl27Zb1VaeLEWIbQ=
+X-Received: by 2002:a2e:2e12:: with SMTP id u18mr17146118lju.200.1620586146550;
+ Sun, 09 May 2021 11:49:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:8va1dg/3tYY7pypvupQ73KUAzH7sZmkxm64W1+FeOAoi2q0M6Is
- j2r1y4RJIF19JrCe+IWjWaie47e3Pw0a/rgqmXXip5wsGLaDCBEaoPdUXtCB/yoOkx55ZYN
- 0ATIoKx5yClRMBxIQ34q/XF0TLcH4mQF1IdyWH7OdnMhAz0GRMKxX4Lc43MQYQwA5C4d/xz
- yV6h+ElMsPbVmG/7C8e9g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:84PiVkLWRQY=:Y1OTmnl/Ok71BZeNKOEQ/R
- GBe9IN2Y7DFQOJMBK46lMmGBidUNs8v7el8EEt7zCP6qQ9Rmf0YagZFeVGoW9SQPD/P8nOJHr
- YAdGAljV4JUbSH4bk1caIT+SVbotZikvH6TRAHiNnAqnE331WVBT2XGabbQ/Z43y7N7jWCBFU
- 2kyYONtCqHbwTfclb6dPXbmfI+KgJ4PjM/LdBVujwxn/NIoxzdFZQt1leL5mVNS6c+zUrYfpB
- MELf+gFTvw+vQAYdDo4BUPQnch0lxmYTkH2UwlAvzFxt46sWverQPltPSKE3zSeeYGunUOD/p
- +udLuLFp5JEYqADkRGSCn1wVgtdA4oL+iXYcHs+3cFMUFGCKssZ9wXQ8UivPehak8hILQnAgr
- fLFha60U2JqotCDZFVo0M1eKI2DNNIgIphjJwU0QWacOwZyViC5MBg2TsYSphnfErzlz9ds+x
- BwC2MA4GsqTuSsuG0cs8eP/JruleX+JjuKyIkTtbfLRxS1j6rZ4HZtR1FEvQgCuUpqB4Mv0Ji
- 0zmvLFdP8h/J9Kmxf1YYk0QSuExBWWt5zucyWAw/fhr
+References: <20210506145829.198823-1-ulf.hansson@linaro.org> <20210506145829.198823-2-ulf.hansson@linaro.org>
+In-Reply-To: <20210506145829.198823-2-ulf.hansson@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 9 May 2021 20:48:54 +0200
+Message-ID: <CACRpkdYjwGA+kOdBAg3Yc2VdZ5rPEHNe5PdDSxwBDwd9Y02mWg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mmc: core: Move eMMC cache flushing to a new bus_ops callback
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Audit subsystem was disabled in total for user namespaces other than
-the initial namespace.
+On Thu, May 6, 2021 at 4:58 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
 
-If audit is enabled by kernel command line or audtid in initial namespace,
-it is now possible to allow at least logging of userspace applications
-inside of non-initial namespaces if CAP_AUDIT_WRITE in the corresponding
-namespace is held.
+> To prepare to add internal cache management for SD cards, let's start by
+> moving the eMMC specific code into a new ->flush_cache() bus_ops callback.
+>
+> In this way, it becomes straight forward to add the SD specific parts,
+> as subsequent changes are about to show.
+>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-This allows logging of, e.g., PAM or opensshd inside user namespaced
-system containers.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
----
- kernel/audit.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/audit.c b/kernel/audit.c
-index 121d37e700a6..b5cc0669c3d7 100644
---- a/kernel/audit.c
-+++ b/kernel/audit.c
-@@ -1012,7 +1012,13 @@ static int audit_netlink_ok(struct sk_buff *skb, u16 msg_type)
- 	 * userspace will reject all logins.  This should be removed when we
- 	 * support non init namespaces!!
- 	 */
--	if (current_user_ns() != &init_user_ns)
-+	/*
-+	 * If audit is enabled by kernel command line or audtid in the initial
-+	 * namespace allow at least logging of userspace applications inside of
-+	 * non-initial namespaces according to CAP_AUDIT_WRITE is held in the
-+	 * corresponding namespace.
-+	 */
-+	if ((current_user_ns() != &init_user_ns) && !audit_enabled)
- 		return -ECONNREFUSED;
- 
- 	switch (msg_type) {
-@@ -1043,7 +1049,7 @@ static int audit_netlink_ok(struct sk_buff *skb, u16 msg_type)
- 	case AUDIT_USER:
- 	case AUDIT_FIRST_USER_MSG ... AUDIT_LAST_USER_MSG:
- 	case AUDIT_FIRST_USER_MSG2 ... AUDIT_LAST_USER_MSG2:
--		if (!netlink_capable(skb, CAP_AUDIT_WRITE))
-+		if (!netlink_ns_capable(skb, current_user_ns(), CAP_AUDIT_WRITE))
- 			err = -EPERM;
- 		break;
- 	default:  /* bad msg */
--- 
-2.20.1
-
+Yours,
+Linus Walleij
