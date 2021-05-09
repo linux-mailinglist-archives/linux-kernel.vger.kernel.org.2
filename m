@@ -2,97 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2339377693
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 14:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBB9377695
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 14:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbhEIMUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 08:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58866 "EHLO
+        id S229641AbhEIMXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 08:23:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbhEIMUE (ORCPT
+        with ESMTP id S229563AbhEIMXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 08:20:04 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94CC8C061573
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 05:19:01 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id a10-20020a05600c068ab029014dcda1971aso7489365wmn.3
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 05:19:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YqSSl0qicw8S1ed4pNsXBhSgZaQS6HCAXzNACgXQNog=;
-        b=TOV4S5s0G6u9v9R1FK1rsk1u891PtTqDM59/a0ROMpk+jtnLetiGRleDAxrAKPaqCS
-         HtMzWlcyiMjkWQAcrv+TTxsjPQUY9pe9OplQqo3r2iTQqz3tXsaAWmWBdYLvb8FcuaJR
-         dh4IZ9xTqQbsdEQPgEzlgjlt763h+MYGCWanDIIRF4QKBGgEI/Ky5xifsNYmFYxzxuoM
-         T0PDkjLnYeak3U7DPXZH36DEtxaxPx1KGpJqPfBrXKA3q9ifCROLgiIrzmwfljLFOP5V
-         msDzs0ObROqD9Dj/oCb0FQ9nTPrDFpBFZBzNbHgl8r6YVNX4iPnkAUNUmKngwjXLY8oa
-         N0sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YqSSl0qicw8S1ed4pNsXBhSgZaQS6HCAXzNACgXQNog=;
-        b=ovzAF1s2TPx9QinBUSi5OL/XU5fNXbhlzYxpl+uAzn9PbCunxqXU7Oc77fjbwwGdOn
-         kG1tQmU/yXwrCpvjk48sx5/BwH9X7bersri+yyCcNojZAZgvaKYlge7ElzpLb1N0xs75
-         kU6XYPdm25+SAvpUfEzD3ZvTono1jjxqnuN52A3ewIhYsPN9EP9jEdIclpAY2dGpY8wR
-         T39darRg+ZrfjVE75wfkLxcri09c8e6oL7Owmo6TNdmqkZJT/0dmRF7dVYdgwpwsoroX
-         MJ2N0S0YE6/oKEIsfhrSh7h8Iq+vYT48CkVis+MphmIgvebc4Gnxuk2fLZch83jqBR3K
-         KsnA==
-X-Gm-Message-State: AOAM530Xd3PG/p1qIy4aRTsxMy7dGHTOK5Bqz5SOs0K2pcEODPdvckEm
-        aCE2SAfDpahY9RoZ5p4XKWPsMg==
-X-Google-Smtp-Source: ABdhPJzqyERM42xv3k0v3/mJEy4FwHnNStDcZqDn8swknsVhbFkb4DErcx5RuxDGmuA82atG+raK/w==
-X-Received: by 2002:a1c:7fd0:: with SMTP id a199mr20861840wmd.161.1620562740099;
-        Sun, 09 May 2021 05:19:00 -0700 (PDT)
-Received: from localhost.localdomain (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id p10sm19158223wre.84.2021.05.09.05.18.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 05:18:59 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, yhs@fb.com, ast@kernel.org,
-        johannes.berg@intel.com, rdunlap@infradead.org,
-        0x7f454c46@gmail.com, yangyingliang@huawei.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] netlink: netlink_sendmsg: memset unused tail bytes in skb
-Date:   Sun,  9 May 2021 13:18:58 +0100
-Message-Id: <20210509121858.1232583-1-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.30.2
+        Sun, 9 May 2021 08:23:54 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4208C061573
+        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 05:22:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=Ca7Q0yF7MgdSOw+QM60ddq/Bz3TgCD7QmIaDsLYoye8=; b=baGRhoa0Cl8dBfKlARkemcnbm
+        EuHScPEJXTY/PD6OubOV386PmkXr98Lq5IdlOGxdCkOw5q80Y58xn4R/HFUDNYRE3yw7LyZej2U/8
+        gh5flp8IlvIxAqFPRzKL0rgTf8AAmgp4qbSyP5B2bMOEUBvGgYPROLSmPPYPWXSHlDL3EYv88G2+o
+        4hwH3LQM5H6LElTks7L8d3bv/lF+Nruu6UABYU+dqNH9rpL82/pj5Huxnma7o7wwmdtzGfW0JMYJg
+        mpGyFXDkiQ0yt5bkPqxbCzqDIZiepNRoYacYCHmmCd9l0vZEVhRpmMcf1MRhkb2oTYPz5xIkZlO/g
+        /fgV/HOUg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43812)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lfiSC-0007Ed-9e; Sun, 09 May 2021 13:22:36 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lfiS3-0007cy-Lb; Sun, 09 May 2021 13:22:27 +0100
+Date:   Sun, 9 May 2021 13:22:27 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: arch/arm/boot/compressed/decompress.c:50: warning: "memmove"
+ redefined
+Message-ID: <20210509122227.GH1336@shell.armlinux.org.uk>
+References: <202105091112.F5rmd4By-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202105091112.F5rmd4By-lkp@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When allocating the skb within netlink_sendmsg, with certain supplied
-len arguments, extra bytes are allocated at the end of the data buffer,
-due to SKB_DATA_ALIGN giving a larger size within __alloc_skb for
-alignment reasons. This means that after using skb_put with the same
-len value and then copying data into the skb, the skb tail area is
-non-zero in size and contains uninitialised bytes. Wiping this area
-(if it exists) fixes a KMSAN-found uninit-value bug reported by syzbot at:
-https://syzkaller.appspot.com/bug?id=3e63bcec536b7136b54c72e06adeb87dc6519f69
+Maybe the KASan folk can look into this, it isn't obvious how to fix
+this, since XZ needs memcpy/memmove #defined to avoid using its own
+version. Having KASan override these with a #define is all very well,
+but it makes the behaviour of lib/decompress_unxz.c indeterminant if
+we get rid of the definitions the XZ support added.
 
-Reported-by: syzbot+a73d24a22eeeebe5f244@syzkaller.appspotmail.com
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- net/netlink/af_netlink.c | 3 +++
- 1 file changed, 3 insertions(+)
+On Sun, May 09, 2021 at 11:32:17AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   b741596468b010af2846b75f5e75a842ce344a6e
+> commit: 421015713b306e47af95d4d61cdfbd96d462e4cb ARM: 9017/2: Enable KASan for ARM
+> date:   6 months ago
+> config: arm-randconfig-r015-20210509 (attached as .config)
+> compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=421015713b306e47af95d4d61cdfbd96d462e4cb
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 421015713b306e47af95d4d61cdfbd96d462e4cb
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross W=1 ARCH=arm 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> arch/arm/boot/compressed/decompress.c:50: warning: "memmove" redefined
+>       50 | #define memmove memmove
+>          | 
+>    In file included from arch/arm/boot/compressed/decompress.c:8:
+>    arch/arm/include/asm/string.h:59: note: this is the location of the previous definition
+>       59 | #define memmove(dst, src, len) __memmove(dst, src, len)
+>          | 
+>    arch/arm/boot/compressed/decompress.c:51: warning: "memcpy" redefined
+>       51 | #define memcpy memcpy
+>          | 
+>    In file included from arch/arm/boot/compressed/decompress.c:8:
+>    arch/arm/include/asm/string.h:58: note: this is the location of the previous definition
+>       58 | #define memcpy(dst, src, len) __memcpy(dst, src, len)
+>          | 
+>    arch/arm/boot/compressed/decompress.c:59:5: warning: no previous prototype for 'do_decompress' [-Wmissing-prototypes]
+>       59 | int do_decompress(u8 *input, int len, u8 *output, void (*error)(char *x))
+>          |     ^~~~~~~~~~~~~
+> 
+> 
+> vim +/memmove +50 arch/arm/boot/compressed/decompress.c
+> 
+> 6e8699f7d68589 Albin Tonnerre 2010-04-03  48  
+> a7f464f3db93ae Imre Kaloz     2012-01-26  49  #ifdef CONFIG_KERNEL_XZ
+> a7f464f3db93ae Imre Kaloz     2012-01-26 @50  #define memmove memmove
+> a7f464f3db93ae Imre Kaloz     2012-01-26  51  #define memcpy memcpy
+> a7f464f3db93ae Imre Kaloz     2012-01-26  52  #include "../../../../lib/decompress_unxz.c"
+> a7f464f3db93ae Imre Kaloz     2012-01-26  53  #endif
+> a7f464f3db93ae Imre Kaloz     2012-01-26  54  
+> 
+> :::::: The code at line 50 was first introduced by commit
+> :::::: a7f464f3db93ae5492bee6f6e48939fd8a45fa99 ARM: 7001/2: Wire up support for the XZ decompressor
+> 
+> :::::: TO: Imre Kaloz <kaloz@openwrt.org>
+> :::::: CC: Russell King <rmk+kernel@arm.linux.org.uk>
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
-index 3a62f97acf39..e54321b63f98 100644
---- a/net/netlink/af_netlink.c
-+++ b/net/netlink/af_netlink.c
-@@ -1914,6 +1914,9 @@ static int netlink_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- 		goto out;
- 	}
- 
-+	if (skb->end - skb->tail)
-+		memset(skb_tail_pointer(skb), 0, skb->end - skb->tail);
-+
- 	err = security_netlink_send(sk, skb);
- 	if (err) {
- 		kfree_skb(skb);
+
+
 -- 
-2.30.2
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
