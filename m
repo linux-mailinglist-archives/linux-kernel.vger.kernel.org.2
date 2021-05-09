@@ -2,59 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0B53774C4
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 02:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764C63774CC
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 03:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbhEIAx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 20:53:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39998 "EHLO mail.kernel.org"
+        id S229700AbhEIBIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 21:08:35 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:59754 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229620AbhEIAxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 20:53:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC323613CE;
-        Sun,  9 May 2021 00:52:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1620521571;
-        bh=I+ULvUA2SVwFHZH9HWeMYfUMaA+O9efbhdprZAZ8ljU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AsHaHyqlwUrUE2VrlrVGxgNSyj2yKaxncBP/jvOLQhAHJI8HINCtirtWEGY4ngAXF
-         ihusQAyNUgXVmaHuoQ9r0a0P/KQpMvux1ViKhlr1+yt3+ZluDMFlbFweeRrvdfG6L5
-         SUP5VLdSwuaU+OJZprxXJz2LAYX/nwc500eYyRL4=
-Date:   Sat, 8 May 2021 17:52:50 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     pmladek@suse.com, mingo@kernel.org, bo.he@intel.com,
-        yanmin_zhang@linux.intel.com, psodagud@quicinc.com,
-        dvyukov@google.com, elver@google.com, linux-kernel@vger.kernel.org,
-        ryabinin.a.a@gmail.com, he@google.com
-Subject: Re: [PATCH v2 1/2] printk: introduce dump_stack_lvl()
-Message-Id: <20210508175250.d28548e312bfae4c8d779e2d@linux-foundation.org>
-In-Reply-To: <20210506105405.3535023-1-glider@google.com>
-References: <20210506105405.3535023-1-glider@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229601AbhEIBIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 21:08:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=Dz3THjNc/hy4xJDJZNJeu/zoWAbn2LAuayWuBUNNRE0=; b=UTe51yoGXOVfLA3xqXKRLGzWpj
+        BjeSCwjAXMAFGwq8+sPSjDtSMWmo8lGYnsTBcL43fNeYEtRVbVWaVU+ykYsQif2U5qivDHOC1e3ZI
+        7sDsFcd3PEd873qdXrM1rdZn8oiXKK5scRAp1TFkOUWGmzvHQzNuOsgYfCn8wlGtYWVc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lfXud-003KRL-MP; Sun, 09 May 2021 03:07:15 +0200
+Date:   Sun, 9 May 2021 03:07:15 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH net-next v4 19/28] net: dsa: qca8k: make rgmii delay
+ configurable
+Message-ID: <YJc1w9Mndqbdb71Z@lunn.ch>
+References: <20210508002920.19945-1-ansuelsmth@gmail.com>
+ <20210508002920.19945-19-ansuelsmth@gmail.com>
+ <YJbUignEbuthTguo@lunn.ch>
+ <YJclj7wLsR3CK3KQ@Ansuel-xps.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJclj7wLsR3CK3KQ@Ansuel-xps.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  6 May 2021 12:54:04 +0200 Alexander Potapenko <glider@google.com> wrote:
-
-> dump_stack() is used for many different cases, which may require a log
-> level consistent with other kernel messages surrounding the dump_stack()
-> call.
-> Without that, certain systems that are configured to ignore the default
-> level messages will miss stack traces in critical error reports.
+On Sun, May 09, 2021 at 01:58:07AM +0200, Ansuel Smith wrote:
+> On Sat, May 08, 2021 at 08:12:26PM +0200, Andrew Lunn wrote:
+> > > +
+> > > +	/* Assume only one port with rgmii-id mode */
+> > 
+> > Since this is only valid for the RGMII port, please look in that
+> > specific node for these properties.
+> > 
+> > 	 Andrew
 > 
-> This patch introduces dump_stack_lvl() that behaves similarly to
-> dump_stack(), but accepts a custom log level.
-> The old dump_stack() becomes equal to dump_stack_lvl(KERN_DEFAULT).
-> 
-> A somewhat similar patch has been proposed in 2012:
-> https://lore.kernel.org/lkml/1332493269.2359.9.camel@hebo/
-> , but wasn't merged.
+> Sorry, can you clarify this? You mean that I should check in the phandle
+> pointed by the phy-handle or that I should modify the logic to only
+> check for one (and the unique in this case) rgmii port?
 
-Um yeah, I dropped the ball on that one, didn't I?  I suspect pretty
-much all dump_stack() callsites should be using this.
+Despite there only being one register, it should be a property of the
+port. If future chips have multiple RGMII ports, i expect there will
+be multiple registers. To avoid confusion in the future, we should
+make this a proper to the port it applies to. So assuming the RGMII
+port is port 0:
 
+                                #address-cells = <1>;
+                                #size-cells = <0>;
+                                port@0 {
+                                        reg = <0>;
+                                        label = "cpu";
+                                        ethernet = <&gmac1>;
+                                        phy-mode = "rgmii";
+                                        fixed-link {
+                                                speed = 1000;
+                                                full-duplex;
+                                        };
+					rx-internal-delay-ps = <2000>;
+					tx-internal-delay-ps = <2000>;
+                                };
+
+                                port@1 {
+                                        reg = <1>;
+                                        label = "lan1";
+                                        phy-handle = <&phy_port1>;
+                                };
+
+                                port@2 {
+                                        reg = <2>;
+                                        label = "lan2";
+                                        phy-handle = <&phy_port2>;
+                                };
+
+                                port@3 {
+                                        reg = <3>;
+                                        label = "lan3";
+                                        phy-handle = <&phy_port3>;
+                                };
+
+                                port@4 {
+                                        reg = <4>;
+                                        label = "lan4";
+                                        phy-handle = <&phy_port4>;
+                                };
+
+                                port@5 {
+                                        reg = <5>;
+                                        label = "wan";
+                                        phy-handle = <&phy_port5>;
+                                };
+                        };
+                };
+        };
+
+You also should validate that phy-mode is rgmii and only rgmii. You
+get into odd situations if it is any of the other three rgmii modes.
+
+    Andrew
