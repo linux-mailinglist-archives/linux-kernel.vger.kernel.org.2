@@ -2,135 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E88377634
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 12:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D948B377641
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 12:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbhEIKUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 06:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33168 "EHLO
+        id S229635AbhEIKuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 06:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhEIKUr (ORCPT
+        with ESMTP id S229602AbhEIKuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 06:20:47 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD58C061573
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 03:19:43 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id n205so7568054wmf.1
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 03:19:43 -0700 (PDT)
+        Sun, 9 May 2021 06:50:50 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8066C06175F
+        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 03:49:46 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id c15so2675974ljr.7
+        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 03:49:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=M0bkUeXYPhnIUVhNGq+tOx9WjWx9RYLlW738sWjVtpY=;
-        b=CXivvTV1OFjggjNeH5cTybc7YMn1hMqwt6i2wEDPUK9t+CQym+vgynzBtrN0nHgkZy
-         wcEo992HBaa+hb45stE2Jxh1/0/3sasqPp+/4cd4OG3AkdiIveceBVhm7da3KoXE2Ydf
-         exbvp7Otq7dC9Au1se66sSXJd82VwjksRTYiam3SFFL+ehYTBdzH6vms4FJ+6I8+f3TV
-         3m7FsLhMOVDgx61p7lvRoa3evVfH8RdNzv0fFiJpvRw5/9JRFCKHfMc9hCd3R9Pd78Tb
-         pQhIVsAQY0XLRxm+U7zhC3+nB4c7q4nTYULALx8hIpzWFaMhqo+SkQ1X9FQQVnkZ4BJg
-         eD6Q==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mQafJtBEfmRTcgozALwkE9M1nF4kym6hXG0iG0sUNgY=;
+        b=W2SlqBumDyfZmBDebluEBm0aD61vrqdgA+9lfx0m+eDN2ySYr4WoOetQRyABotFRmV
+         ukH8eRgS+44+3xw1sWPdQxS045PpSc74KRsKhyLCwb1Y0nbmZsdvzLEKp/GSwLWNn1Ce
+         Q9WlXY56TT/vi/Qh8or36sgc9agzph6RuzoFWWTrIyxmplxTmPJZh5zMvMymB0CHNMwQ
+         sSZPi07BLZwtndKImXPv6nWBacfC+9wvWKIuHF/IHgL2PujYQGvJRpMR2o7xT/yHx9So
+         et4j0uw2pJveVSzAN2k3dHlFFDwv+/tbUm228lL1gRyoRM52utJ5soaXK1LQqdtR97ws
+         PzqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M0bkUeXYPhnIUVhNGq+tOx9WjWx9RYLlW738sWjVtpY=;
-        b=sBpW84FS4U8P9iY6For2bft9+Rr11dBrO8wB6yjwt4D20RFKeUc04lrnKmccgCd1B/
-         c6umIXBeybYaDWn5Dykkukr+7I8EfkB6SKTqhaLdOI0dPm9rneg1/AnZ+ItAwqPPzQqO
-         liPSHywktSvIwRua3LRA6JGAAhF2o9sLLB3scJIFzbNucDu5ESUxOz7ye0nRGmzNWQkh
-         HW/67M73LkIoOYvci+wrAamk04T1/WPWX7Eog471e4c4d9DZSTHHa4X9vSRF9+L2UdYH
-         +wLSPD+w7mCwihRmNdovTOSwCoPl+OMpV4FqMzGiMeGYWVcoVw29Lzx6IfH9nDdODdBg
-         ohYg==
-X-Gm-Message-State: AOAM532drXm6Xq/n6pefOP0TyI4VfMr3JR9f/rwIZRSfONUMvjtX6vhd
-        PrQrIAWuhUp7ikXF8nogblE=
-X-Google-Smtp-Source: ABdhPJwCynxQ7r6sJCveGge5h+pxbIEFHJFhfcM1fNQ+STs3RlYvBb+WNOjZICcYOunr1/mcYILScA==
-X-Received: by 2002:a1c:7419:: with SMTP id p25mr32030622wmc.79.1620555581994;
-        Sun, 09 May 2021 03:19:41 -0700 (PDT)
-Received: from [10.21.182.168] ([212.23.236.67])
-        by smtp.gmail.com with ESMTPSA id w7sm17238435wru.51.2021.05.09.03.19.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 09 May 2021 03:19:41 -0700 (PDT)
-Subject: Re: [PATCH 046/190] Revert "net/mlx4_core: fix a memory leak bug."
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-47-gregkh@linuxfoundation.org>
- <1027d8d1-5cea-0a04-4974-3f9672ff7d4e@gmail.com> <YIgK2Hbnmxz2dPCe@kroah.com>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-Message-ID: <fb1d28e2-f715-9053-7c77-d618a92fa729@gmail.com>
-Date:   Sun, 9 May 2021 13:19:37 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mQafJtBEfmRTcgozALwkE9M1nF4kym6hXG0iG0sUNgY=;
+        b=TdCSvcCU6d09MHLVG+2VcFnTVTi5gFnvLxZy886w4YxShPC+if0ddOg294sLY7LKP5
+         AaAQE14cvSRpamN5/QFzuQe4qp8OLS3nhc79p+nyEhHRCYpiGjY7ZVwkT1yV0N0VwI9r
+         YGlEAvuSC8HlQJ5CkmxAtiAWB/UPphLpRVNUlZAonAT315SAuE0hqeM5l6VyjrV5VtgB
+         sBnwIFX45twVyzJ9xhkU6kJENzA81VTsDhfSb536PV98ZNQkMLOPNoGglVqXpUS1/hsB
+         eehNnNaBLDkR5vv8ll4Tk0kpE7XnJra3WddckInqJHCGWYOoJoDNq+9o4UNUkohKJ7ih
+         W1Mg==
+X-Gm-Message-State: AOAM531398wsXf9XujLpGbrmPCU2Fi3uMm6lOBKpnqxZx7pgUobq/piJ
+        MsmYaxnAbKrmQmupTPuyKPIYZtIWi2XIxpkoVMePBQ==
+X-Google-Smtp-Source: ABdhPJw48ytLdN9bKt+Jcnukhvew4xZlQCf6DsNPReSjSfwt96BlLgFJ83xaiLx57shTh2pGawA/4lu8FX6M0NiPqnw=
+X-Received: by 2002:a2e:889a:: with SMTP id k26mr15716886lji.438.1620557385112;
+ Sun, 09 May 2021 03:49:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YIgK2Hbnmxz2dPCe@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210508142000.85116-1-kettenis@openbsd.org> <20210508142000.85116-2-kettenis@openbsd.org>
+ <CACRpkdbexpwu9hDWFYe38-+issVw051YfJ-_hatZVmWzkh4M+w@mail.gmail.com> <c1bd67fcc0390275@bloch.sibelius.xs4all.nl>
+In-Reply-To: <c1bd67fcc0390275@bloch.sibelius.xs4all.nl>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 9 May 2021 12:49:33 +0200
+Message-ID: <CACRpkdZYD3Nq7ZmdXsk_j0CAktvx6Sbqga5B1wbwtL-5T_=vkQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: Add DT bindings for apple,pinctrl
+To:     Mark Kettenis <mark.kettenis@xs4all.nl>
+Cc:     kettenis@openbsd.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Hector Martin <marcan@marcan.st>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mark,
 
+I think we settle with this scheme you choose, so the following
+is just some hints for the future.
 
-On 4/27/2021 4:00 PM, Greg Kroah-Hartman wrote:
-> On Mon, Apr 26, 2021 at 02:18:37PM +0300, Tariq Toukan wrote:
->>
->>
->> On 4/21/2021 3:58 PM, Greg Kroah-Hartman wrote:
->>> This reverts commit febfd9d3c7f74063e8e630b15413ca91b567f963.
->>>
->>> Commits from @umn.edu addresses have been found to be submitted in "bad
->>> faith" to try to test the kernel community's ability to review "known
->>> malicious" changes.  The result of these submissions can be found in a
->>> paper published at the 42nd IEEE Symposium on Security and Privacy
->>> entitled, "Open Source Insecurity: Stealthily Introducing
->>> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
->>> of Minnesota) and Kangjie Lu (University of Minnesota).
->>>
->>> Because of this, all submissions from this group must be reverted from
->>> the kernel tree and will need to be re-reviewed again to determine if
->>> they actually are a valid fix.  Until that work is complete, remove this
->>> change to ensure that no problems are being introduced into the
->>> codebase.
->>>
->>> Cc: Qiushi Wu <wu000273@umn.edu>
->>> Cc: David S. Miller <davem@davemloft.net>
->>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>> ---
->>>    drivers/net/ethernet/mellanox/mlx4/fw.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/ethernet/mellanox/mlx4/fw.c b/drivers/net/ethernet/mellanox/mlx4/fw.c
->>> index f6cfec81ccc3..380e027ba5df 100644
->>> --- a/drivers/net/ethernet/mellanox/mlx4/fw.c
->>> +++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
->>> @@ -2734,7 +2734,7 @@ void mlx4_opreq_action(struct work_struct *work)
->>>    		if (err) {
->>>    			mlx4_err(dev, "Failed to retrieve required operation: %d\n",
->>>    				 err);
->>> -			goto out;
->>> +			return;
->>>    		}
->>>    		MLX4_GET(modifier, outbox, GET_OP_REQ_MODIFIER_OFFSET);
->>>    		MLX4_GET(token, outbox, GET_OP_REQ_TOKEN_OFFSET);
->>>
->>
->> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
->>
->> The original commit febfd9d3c7f74063e8e630b15413ca91b567f963 is a bad
->> commit. Not to be re-submitted.
-> 
-> Thanks for the review, will keep!
-> 
-> greg k-h
-> 
+On Sun, May 9, 2021 at 11:46 AM Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
 
-Hi Greg,
+> Right.  So far it seems we don't need to set the electrical config on
+> any of the pins and I don't think we've identified any bits in the
+> register that change the electrical configuration.  Although there are
+> some hints in the Apple device tree that there are pins that need some
+> additional configuration.  But I also see some evidence that the Apple
+> firmware on these devices already sets up most of the pins for us.
 
-I got confused with another error handling code in same function.
+This is something I think you want to look closer at soon.
 
-After a second look, original commit 
-febfd9d3c7f74063e8e630b15413ca91b567f963 looks fine to me.
+It will *probably* be necessary to obtain optimal power management
+for the devices, but I am not sure.
 
-Regards,
-Tariq
+What operating systems (especially Android devices under Linux)
+tend to do is to reconfigure pins at runtime in order to conserve
+power. When the device goes to deep sleep just waiting for an
+external interrupt (such as opening the lid on a laptop or pressing
+the power button on a phone) the OS tend to reconfigure the
+pins into a low power state for the duration of the sleep.
+
+A typical example is to set a bunch of lines as "floating" (tristate)
+in pin control terminology "bias-high-impedance". In some cases
+pins may be connected to ground depending on use case,
+but in each case this is done to avoid leak currents when
+sleeping.
+
+I don't know how noticeable impact this will have on standby times,
+but the lower micron silicon technology, the bigger the impact.
+
+If possible I'd recommend that you try to intercept what MacOS
+is doing with these registers when the system goes in/out of
+sleep mode. I think it could be key to some power savings you
+would otherwise miss.
+
+These two modes are standardized in pin control terms as
+"default" and "sleep" and each affected device driver need
+to actively put the pin control state to "sleep" when the
+device is going to sleep, so the philosophy is entirely
+distributed, in difference from some more sledgehammer-type
+OS approaches where the OS is just slamming a number
+of values into the pin registers at sleep (suspend) time.
+
+The upside to doing this fine-grained and per device is that
+the sleep modes can in best case be used at runtime
+to e.g. save power on an unused USB port that isn't plugged
+to anything (I don't know if this is a good example).
+In Linux we have the runtime PM concept to deal with
+this and there are some drivers actively saving power in
+this way.
+
+Yours,
+Linus Walleij
