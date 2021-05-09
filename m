@@ -2,90 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E3E3776E1
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 15:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5283776FC
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 16:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbhEIN7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 09:59:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229602AbhEIN7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 09:59:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5462761352;
-        Sun,  9 May 2021 13:58:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620568727;
-        bh=jy+c/MRGNZzgQtvHeGWu7ND4F9yRMF4b7fI/CJwYVns=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nD1bNRPFbBq+ZolvfhDr6AiLY5D7wGlRM577dux5QDuU8g44Mp69o8BD5tDu5ev+L
-         j1ryqq+2usS2Lv6b0mFCAS27tsoxXYgxu+231Nxcq0gcD8KlRby4zV5S7CKZ3qtiFx
-         10b+DJ31rJ8SdYsYq5bA4lkwCG97xxhho+6HDaUpDDTpzZftAF3ASUnihX7EdL0CcJ
-         s8Iiz8apBa/CFa1dlmObQtMnKF7GzKY6pqoBKmoLBKIodaNgl4qSsSyb8jVLu6kwRp
-         ZvAW9TymeAgzpU9xipIopW4dMLnySrWFtLzHym0i727I3W+TCT+Rv4YORlO0NpbQeV
-         bkMdU0cZzSNtQ==
-Date:   Sun, 9 May 2021 19:28:43 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        dmaengine@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bhupesh.linux@gmail.com
-Subject: Re: [PATCH v2 14/17] dma: qcom: bam_dma: Create a new header file
- for BAM DMA driver
-Message-ID: <YJfqk/0Whr2Qfxjb@vkoul-mobl.Dlink>
-References: <20210505213731.538612-1-bhupesh.sharma@linaro.org>
- <20210505213731.538612-15-bhupesh.sharma@linaro.org>
+        id S229662AbhEIOdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 10:33:13 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:45437 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229616AbhEIOdM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 10:33:12 -0400
+Received: from grover.RMN.KIBA.LAB.jp (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 149EVSmU017769;
+        Sun, 9 May 2021 23:31:28 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 149EVSmU017769
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1620570688;
+        bh=G3dhZI2nEP2lqV1Crk/J+8JZ6EDNlHY8x4P5T08t35A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=edFxT94kKcgAscGEQryn+T5qC5Q1nElQ7G2rEZ7SU0PBzcE47xTIrpObphuL8OXRS
+         hpRTDYOoXRYG5ZmegWYyAnFA/eY0mNiT0BM2NOASi29CgrVrqdEurZkdSstnVB1gqT
+         SV1lC/8ewZgsEhHC47xCtz/r6BVzZWuZ05zTl8MMyU6K5UiVs+Jlyw+7VJkEdzrfyI
+         Pmrn1/ollru0iw80vI2Xfb77jVnxsxfykWjhiotj/rijgEZKPdI1lnr9bbxvet5cKk
+         yazmlEyPsIFqOHaOFKeOU1AMLo3T/09zcaaiSkiiRbbGrVh8oEtNqiBy/SVb32d3SR
+         kRqwcB9/02vXQ==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] nds32: add arch/nds32/boot/.gitignore
+Date:   Sun,  9 May 2021 23:31:24 +0900
+Message-Id: <20210509143124.259483-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505213731.538612-15-bhupesh.sharma@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06-05-21, 03:07, Bhupesh Sharma wrote:
-> Create a new header file for BAM DMA driver to make sure
-> that it can be included in the follow-up patch to defer probing
-> drivers which require BAM DMA driver to be first probed successfully.
-> 
-> Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-clk@vger.kernel.org
-> Cc: linux-crypto@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: bhupesh.linux@gmail.com
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->  drivers/dma/qcom/bam_dma.c | 283 +-----------------------------------
->  include/soc/qcom/bam_dma.h | 290 +++++++++++++++++++++++++++++++++++++
+Ignore arch/nds32/boot/Image.
 
-1. Please use -M with move patches...
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-2. susbsytem is dmaengine
+ arch/nds32/boot/.gitignore | 2 ++
+ 1 file changed, 2 insertions(+)
+ create mode 100644 arch/nds32/boot/.gitignore
 
-3. Why move..? These things are internal to the driver and I dont think
-it is wise for clients to use everything here... If the client needs to
-know defer probe, it should request a channel and check the status
-returned for EPROBE_DEFER
-
-Thanks
-
+diff --git a/arch/nds32/boot/.gitignore b/arch/nds32/boot/.gitignore
+new file mode 100644
+index 000000000000..9182a3a1ea0a
+--- /dev/null
++++ b/arch/nds32/boot/.gitignore
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0-only
++/Image
 -- 
-~Vinod
+2.27.0
+
