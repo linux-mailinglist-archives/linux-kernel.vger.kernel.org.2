@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C83F3793F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C80B3793FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbhEJQfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 12:35:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46973 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231636AbhEJQeu (ORCPT
+        id S231717AbhEJQga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 12:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230300AbhEJQg3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 12:34:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620664425;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qdODaN2OuNSEexqz+L9Iw9HnmwvY9206zRfzY1Y1re8=;
-        b=ivxFj92DB3jzHJxbgU/64WrZI171SXPBOQ4D3QY+JG3BrlXk5z1nN23CsqdAEBks94IV1h
-        y6dhrDnZgsUn0QBNXsnW6N23iYIS1VuiyTmsXI9yuIo/mwnDb3TiosxIwC2fyllUnZ+TZM
-        egxiFbstvEOqyFsDg11UQ4eo6yJsbrs=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-TxqCBTqPOb-jNX-tJcEiuw-1; Mon, 10 May 2021 12:33:41 -0400
-X-MC-Unique: TxqCBTqPOb-jNX-tJcEiuw-1
-Received: by mail-wr1-f72.google.com with SMTP id l2-20020adf9f020000b029010d6bb7f1cbso7686081wrf.7
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 09:33:41 -0700 (PDT)
+        Mon, 10 May 2021 12:36:29 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5EBC061574;
+        Mon, 10 May 2021 09:35:23 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id y124-20020a1c32820000b029010c93864955so11525826wmy.5;
+        Mon, 10 May 2021 09:35:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=7CyBniwOPY8tdUbpu/vyod1IQczw+Lx7Gt7hD7CHSiE=;
+        b=edmVc4vEoj+vVu6hrbDgVhufb4geSAjDgThsIGQTVMT5HZ4GJ8L5LpgigU08uhuHoJ
+         +6rNnBuq4i2YtIKnGtl4u5fTY+FHfBUBnJ8dUSEyL/pfKbw+jjyvGJ3i/0YlGVXbSkCt
+         4W+qYf5ou+e5z812qHpg3d4x4HOyQ6qxdUWY5W79xiyeT6wf5+58wDKW0XmUts1v9+wU
+         0KWGZQmKHIupsDD8+4Agp5dWaDTiOM5FW37yk5+YrD3zvAiaTufb5z7arCGDWNx0jlMs
+         BVJkrYKeneo1VWH4z39mxxgIgPsnlfizai0vm5xDA49llDB8uwT+1VQO3ok08wovJZFc
+         QsLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qdODaN2OuNSEexqz+L9Iw9HnmwvY9206zRfzY1Y1re8=;
-        b=MuTHFXaZ9OgksV5wHxMYZf/EYJrOBFsCWTgiO6SMEu93tVIUuctLCzmBPBMvwTLjw/
-         1hkYsNjZtjnRGaTiCn1+AWr72pMa0BKemUmFt4kvqgQE7ylIP8REnvXxVs0U9R22N0lE
-         G1b/+Pyzo3a3JDpOv9XnVhsb4h8cpOkP/iE5EpH0/2wMEOG3ZACuU0NO77QQcWWUCovg
-         mg1Cfc0lyS82iNZfs6xuL9/go1YJfvPwhBtjHuWOg3bdeRlClteZ4wrfmlDmJwNXNAxi
-         aNHLhbjeg5+fHI27ISbb3ZyHQBXuUNt+rxaPNuiBcuWt3804LbkpCEM9eUUHPf+bdDqg
-         JDAw==
-X-Gm-Message-State: AOAM530zf9exHlDkyyQYe/G6ncxGlkEx5oyp+6ql+Il+Rex35yjKiD1F
-        y3J+DGlqhK/1y+l0FrmXhhr3pttAh0KwuPCBSWUBV7SnBMPtDoR6nruqGzgecvI0Z0SKbFF+ClJ
-        HGFC2FeDYStdLcP1enc349LEl
-X-Received: by 2002:a5d:4acd:: with SMTP id y13mr31236156wrs.185.1620664420466;
-        Mon, 10 May 2021 09:33:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzEuMcVvwepkIW8kBENdv7Ek4C4HWRYfJRgWlPpdHVtYoJM2zVP457NBhPvPMR/41vsF70XQA==
-X-Received: by 2002:a5d:4acd:: with SMTP id y13mr31236133wrs.185.1620664420237;
-        Mon, 10 May 2021 09:33:40 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id c15sm2310454wml.38.2021.05.10.09.33.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 09:33:39 -0700 (PDT)
-Subject: Re: [PATCH v3 5/8] KVM: x86/mmu: Add a field to control memslot rmap
- allocation
-To:     Ben Gardon <bgardon@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-References: <20210506184241.618958-1-bgardon@google.com>
- <20210506184241.618958-6-bgardon@google.com>
- <CANgfPd-eJsHRYARTa0tm4EUVQyXvdQxGQfGfj=qLi5vkLTG6pw@mail.gmail.com>
- <a12eaa7e-f422-d8f4-e024-492aa038a398@redhat.com>
- <CANgfPd8BNtsSwujZnk9GAfP8Xmjy7B3yHdTOnh45wbmNU_yOQw@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <03e66630-b967-b91c-b74e-6944bdcaf2d7@redhat.com>
-Date:   Mon, 10 May 2021 18:33:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7CyBniwOPY8tdUbpu/vyod1IQczw+Lx7Gt7hD7CHSiE=;
+        b=PcW9ymxKTlBMVEzkGi/XCNORVwPihD2OOGKgp09/rfwcaZOKZzVNwo0Uu+i6bfRVyd
+         amNzArhEel6f3Z1FCMeCiUp/tSiQHSYSyfrb0cT0NmcF1ZxiVFoiHlVfvwhHAYhH4kD6
+         UNxOVGjkhI9mrYUKUgyD2T5WnB87Z64buMrAvaRFGmPw5xjSXmuhb0f98bbn2VDHqvSi
+         efYu7YOtN6TNJjYK+BJU0qOUn/9NhL1+m8LYf6P1mdKI33gqSoZJPJ6QWzSHHctoxiYl
+         I/n6IC+fWE4VsfLERG4duhkmLMNKexkRCJ2oxCarEYQktrCP8c+bL2rNFoGP1f22RRnY
+         uRkg==
+X-Gm-Message-State: AOAM533UY23RgRIFMVkNXFTV2rU+7fc8TxTLl7nLzcV0xlCgV2h2NPjr
+        KKXvKYFiBuh8awyKlSSkrkmDom3Xs8Gqag==
+X-Google-Smtp-Source: ABdhPJz66QGT0ifBmhFa1w9697xJVRFm8QvqW7gLBKuDL8Zum1vbolRCnb6urNgNONhkB21fe5RX8w==
+X-Received: by 2002:a1c:f20d:: with SMTP id s13mr27169110wmc.92.1620664522711;
+        Mon, 10 May 2021 09:35:22 -0700 (PDT)
+Received: from michael-VirtualBox.xsight.ent ([31.168.255.170])
+        by smtp.googlemail.com with ESMTPSA id c14sm23944991wrt.77.2021.05.10.09.35.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 09:35:22 -0700 (PDT)
+From:   Michael Zaidman <michael.zaidman@gmail.com>
+To:     lkp@intel.com
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, jikos@kernel.org, joe@perches.com,
+        dan.carpenter@oracle.com, linux-input@vger.kernel.org,
+        Michael Zaidman <michael.zaidman@gmail.com>
+Subject: [PATCH v3] HID: ft260: fix format type warning in ft260_word_show()
+Date:   Mon, 10 May 2021 19:34:28 +0300
+Message-Id: <20210510163428.2415-1-michael.zaidman@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <202105060637.LeEC6ztp-lkp@intel.com>
+References: <202105060637.LeEC6ztp-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CANgfPd8BNtsSwujZnk9GAfP8Xmjy7B3yHdTOnh45wbmNU_yOQw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/05/21 18:14, Ben Gardon wrote:
->> Possibly stupid (or at least lazy) question: why can't it be a "normal"
->> static inline function?
-> That was my initial approach (hence the leftover inline) but I got
-> some warnings about a forward declaration of struct kvm because
-> arch/x86/include/asm/kvm_host.h doesn't include virt/kvm/kvm_host.h.
-> Maybe there's a way to fix that, but I didn't want to mess with it.
-> 
+Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
 
-Let's just use the field directly.
+Fix warning reported by static analysis when built with W=1 for arm64 by
+clang version 13.0.0
 
-Paolo
+>> drivers/hid/hid-ft260.c:794:44: warning: format specifies type 'short' but
+   the argument has type 'int' [-Wformat]
+           return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
+                                             ~~~     ^~~~~~~~~~~~~~~~~~~
+                                             %i
+   include/linux/byteorder/generic.h:91:21: note: expanded from
+                                            macro 'le16_to_cpu'
+   #define le16_to_cpu __le16_to_cpu
+                       ^
+   include/uapi/linux/byteorder/big_endian.h:36:26: note: expanded from
+                                                    macro '__le16_to_cpu'
+   #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
+                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/uapi/linux/swab.h:105:2: note: expanded from macro '__swab16'
+           (__builtin_constant_p((__u16)(x)) ?     \
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Any sprintf style use of %h or %hi for a sub-int sized value isn't useful
+since integer promotion is done on the value anyway. So, use %d instead.
+
+https://lore.kernel.org/lkml/CAHk-=wgoxnmsj8GEVFJSvTwdnWm8wVJthefNk2n6+4TC=20e0Q@mail.gmail.com/
+
+Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
+Suggested-by: Joe Perches <joe@perches.com>
+Reported-by: kernel test robot <lkp@intel.com>
+---
+ drivers/hid/hid-ft260.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
+index 047aa85a7c83..ff2a49b5cac5 100644
+--- a/drivers/hid/hid-ft260.c
++++ b/drivers/hid/hid-ft260.c
+@@ -779,7 +779,7 @@ static int ft260_byte_show(struct hid_device *hdev, int id, u8 *cfg, int len,
+ 	if (ret != len && ret >= 0)
+ 		return -EIO;
+ 
+-	return scnprintf(buf, PAGE_SIZE, "%hi\n", *field);
++	return scnprintf(buf, PAGE_SIZE, "%d\n", *field);
+ }
+ 
+ static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
+@@ -791,7 +791,7 @@ static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
+ 	if (ret != len && ret >= 0)
+ 		return -EIO;
+ 
+-	return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
++	return scnprintf(buf, PAGE_SIZE, "%d\n", le16_to_cpu(*field));
+ }
+ 
+ #define FT260_ATTR_SHOW(name, reptype, id, type, func)			       \
+-- 
+2.25.1
 
