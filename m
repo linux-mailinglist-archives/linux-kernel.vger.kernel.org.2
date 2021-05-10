@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88323782D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 445BB3782DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231926AbhEJKih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:38:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41148 "EHLO mail.kernel.org"
+        id S232003AbhEJKio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:38:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231244AbhEJKeK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:34:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7205661582;
-        Mon, 10 May 2021 10:27:52 +0000 (UTC)
+        id S232285AbhEJKeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:34:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEC7E6147D;
+        Mon, 10 May 2021 10:27:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642472;
-        bh=4KlBC0WUa0ro5p4CMyIxeEkz8qtxpYGBJcTcLS8FXA0=;
+        s=korg; t=1620642475;
+        bh=xseuWw6JTctMg95ZrT7pyFQc/T1B8tchwseyoJPfux8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OjYFUbRrkudD4USWdV+3dwRQgyM22mCwHWoTbhuxW4EGbxE4wrmNR/XhlO+im6Yfk
-         aR5rTO53BTM8PaOP7F/J+GmwqNDul12az/u4dfg6l8lJz0GFf4aoRMvv/G6YGZ87nH
-         0IJZjoIXd/mHf2V50oBnFmXMyUt7xvpLyXQ51ndU=
+        b=D52og8rNpIF90hQFZsSt4vYOHCvOyta6oueo/ZMp0gLtKoSoGbPEaAdTqymty0HI3
+         EqS4i0a0A3hzsK3uY0xa4RF61KTCrAZYI9K3bAzlINBiFs20myp8OqfsIpjm0HNJTx
+         ml3GsWLcCcxpNjVxhGW/vaMWnnIcr+PfW1jVI8pQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,9 +28,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 108/184] media: i2c: tda1997: Fix possible use-after-free in tda1997x_remove()
-Date:   Mon, 10 May 2021 12:20:02 +0200
-Message-Id: <20210510101953.730186051@linuxfoundation.org>
+Subject: [PATCH 5.4 109/184] media: i2c: adv7842: fix possible use-after-free in adv7842_remove()
+Date:   Mon, 10 May 2021 12:20:03 +0200
+Message-Id: <20210510101953.761553000@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510101950.200777181@linuxfoundation.org>
 References: <20210510101950.200777181@linuxfoundation.org>
@@ -44,7 +44,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 7f820ab5d4eebfe2d970d32a76ae496a6c286f0f ]
+[ Upstream commit 4a15275b6a18597079f18241c87511406575179a ]
 
 This driver's remove path calls cancel_delayed_work(). However, that
 function does not wait until the work function finishes. This means
@@ -61,22 +61,22 @@ Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/tda1997x.c | 2 +-
+ drivers/media/i2c/adv7842.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
-index 5e68182001ec..e43d8327b810 100644
---- a/drivers/media/i2c/tda1997x.c
-+++ b/drivers/media/i2c/tda1997x.c
-@@ -2804,7 +2804,7 @@ static int tda1997x_remove(struct i2c_client *client)
- 	media_entity_cleanup(&sd->entity);
- 	v4l2_ctrl_handler_free(&state->hdl);
- 	regulator_bulk_disable(TDA1997X_NUM_SUPPLIES, state->supplies);
--	cancel_delayed_work(&state->delayed_work_enable_hpd);
-+	cancel_delayed_work_sync(&state->delayed_work_enable_hpd);
- 	mutex_destroy(&state->page_lock);
- 	mutex_destroy(&state->lock);
+diff --git a/drivers/media/i2c/adv7842.c b/drivers/media/i2c/adv7842.c
+index 885619841719..02cbab826d0b 100644
+--- a/drivers/media/i2c/adv7842.c
++++ b/drivers/media/i2c/adv7842.c
+@@ -3586,7 +3586,7 @@ static int adv7842_remove(struct i2c_client *client)
+ 	struct adv7842_state *state = to_state(sd);
  
+ 	adv7842_irq_enable(sd, false);
+-	cancel_delayed_work(&state->delayed_work_enable_hotplug);
++	cancel_delayed_work_sync(&state->delayed_work_enable_hotplug);
+ 	v4l2_device_unregister_subdev(sd);
+ 	media_entity_cleanup(&sd->entity);
+ 	adv7842_unregister_clients(sd);
 -- 
 2.30.2
 
