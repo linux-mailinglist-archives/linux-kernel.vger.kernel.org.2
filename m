@@ -2,91 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E54B3797B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 21:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E333797C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 21:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbhEJTau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 15:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46972 "EHLO
+        id S231290AbhEJTh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 15:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231651AbhEJTat (ORCPT
+        with ESMTP id S230002AbhEJThx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 15:30:49 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4541CC061574;
-        Mon, 10 May 2021 12:29:44 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so10955506pjv.1;
-        Mon, 10 May 2021 12:29:44 -0700 (PDT)
+        Mon, 10 May 2021 15:37:53 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72466C061574;
+        Mon, 10 May 2021 12:36:48 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id l6so16876867oii.1;
+        Mon, 10 May 2021 12:36:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=TimIegD9bo/1/rxa4xiNPvMI0cG64gd1Y2PHAJLQe2M=;
-        b=XAS7/bsHM8uNuJQ/d/vZ3J4IRzxcFtOpCxyMcNEyznxgSUfhusASZXL/tS8yX6Lirv
-         Bn6j0qMobSfAeEWLgaU6AtIbxDKbNClLmxDO9J45yXFfVSDy2ndQN+vGspFL4kxeG1vu
-         Rx1DXmxL/Yz8ispj9PgHJ3FCE/Cv4LDBlGO+wxriymdffnlF2s3Fvjb51L71B+WvYywb
-         We5Pz2JyxSLYnqkyWL3JDNXk7CWuVYDY3nr0Gkx73icGqBIRgdozZH29bg+9AAD/66M4
-         HMSpCiHvtwubknZuDjEC0y15tkWH6+NpsCCGrQCNpLDDr4OllcI9+cE9XnaQlXv10hEp
-         8LbQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rfwM6aeV64dlStCtynVwqpYhrKx+20fvdPRxkUUNoPk=;
+        b=mxmiFt5qvY4oygWWBZxPyrzPAzIDNPiRcZSHCSYNuvlWGg8DdQseRAuHq9FSY4Tulj
+         rTPDmvc2kJn1gm/Rc5Oyhvk22cnWgQ6DwjLFryi8ks3TwScNLTffiDchRZYJGv7cU0Ho
+         3cQ/72SWBHLm95nxpzNwLYuBEnTRnMg7Wjx7k1FQcwJ+yXpiErHlCMIU/wENp432qolY
+         XsgfAxICnVrKS2y6S44pXIiBJoJZ+F13bL9LW3esNjjfCmViHQj55iiCYPRwZswAF4EO
+         gIG6z/C2KJGqNXH2ElAzW9TWhgwYULSpttiV0EBleBsYBCgEjnYYioHiwotB8K0Rb37c
+         uzJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=TimIegD9bo/1/rxa4xiNPvMI0cG64gd1Y2PHAJLQe2M=;
-        b=eNTsMKHWbqxS3aTv9eftDwEESvJWrYjWRjhUA+5gNRwnFALGs9B3xutzxup6VFFeq2
-         H5g4ctEC7X8z92ZVvZKM95ak9n1O9MPP8Lg+niry2Q+yTArLZjTEEEi4QNIt4zIUownS
-         QwyBveRFRAC2RLcAzhvBsuLXuXEvY8LhJUBnMrr/6nZeET8VwiO/egccdmQ+TE3s/8J5
-         gpJGCDIdD6SvYxmTGFOFlhJ9LFqgUu3nFMaElbstiDEEXxkKKBDlDilc4auimUIAugIP
-         0raT+XuNUuL0Hk+ebbLcdgnc+RxiIiazDvApny7Cuop4KskiQJM+Xo5Q0CsEMuSNBKZ/
-         USmw==
-X-Gm-Message-State: AOAM531mZ9dLv4QvamoKcCDNa+AFoZemxQzLHL8NGpALZANyzSJoBS9h
-        zSwRqOT6RXiFFdxNkosPh2mdNMA2RNQE/LabEJW1Vg==
-X-Google-Smtp-Source: ABdhPJzAbQ85iL81S5UD9jZOXC6O7KJB5FQqt68QyEka1MCJs3FOwZIU5/c/7nMQGMC+Z6T/lXgFWA==
-X-Received: by 2002:a17:902:44:b029:ee:9107:4242 with SMTP id 62-20020a1709020044b02900ee91074242mr26320026pla.18.1620674983413;
-        Mon, 10 May 2021 12:29:43 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id y23sm11432527pfb.83.2021.05.10.12.29.42
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=rfwM6aeV64dlStCtynVwqpYhrKx+20fvdPRxkUUNoPk=;
+        b=hE0ItELCGgYlU4JX0txKaZQElbOT+i+fYQnIeX18Wg5rEdUdU08YNWCrNoV1BUT1Fz
+         poZi8O6HsJVGYA90f0Ijh0ssHGpuK9S2LhgLriUD3SM6Cn7C7hhiTfseSVuei+VeEFe1
+         w2URoWGAfO4SPPoj4VZtbk30jlMQMyjrnxfUUYvfUFqaP/peHOPbAT1XXeOprsZMzMRn
+         Vxfp+HaDtYmVvaqzBdpsVikXjSYBOoCbjv+dSqSSdK52n2RNvoY8+hioUf7oQ563Zevl
+         KEHCLP/cdmDNLbNkZp9jJKKYRkCwiwRmkHjK23BOLVVZmy1XX6DCeK9DyDjj31jUce5A
+         AV4w==
+X-Gm-Message-State: AOAM530OwcOcXZrZJPXLvVzEzQ8yj4ljIxkXQm+uKs4V0EqClhVATGdU
+        CW2rHROXaTPnYPf6Vq000Yw=
+X-Google-Smtp-Source: ABdhPJz99SSWF74iI7aVgrfSha6fpI7t5Ox7OPhvT9ZInZpyUwZvMG07nJMrZkS9zEDf/bXgZ7WPdQ==
+X-Received: by 2002:aca:4004:: with SMTP id n4mr19028827oia.89.1620675407817;
+        Mon, 10 May 2021 12:36:47 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g11sm288735oif.27.2021.05.10.12.36.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 12:29:43 -0700 (PDT)
-Message-ID: <609989a7.1c69fb81.36799.2c5e@mx.google.com>
-Date:   Mon, 10 May 2021 12:29:43 -0700 (PDT)
-X-Google-Original-Date: Mon, 10 May 2021 19:29:42 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
-Subject: RE: [PATCH 5.12 000/384] 5.12.3-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Mon, 10 May 2021 12:36:47 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 10 May 2021 12:36:45 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org, nsaenz@kernel.org,
+        maxime@cerno.tech, khilman@kernel.org, ulf.hansson@linaro.org,
+        len.brown@intel.com, pavel@ucw.cz, robh+dt@kernel.org,
+        frowand.list@gmail.com, maz@kernel.org, tglx@linutronix.de,
+        saravanak@google.com, geert@linux-m68k.org, nsaenzjulienne@suse.de,
+        guillaume.tucker@collabora.com, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, corbet@lwn.net,
+        nicolas.ferre@microchip.com, claudiu.beznea@microchip.com,
+        linux-doc@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-acpi@vger.kernel.org,
+        kernel-team@android.com, linux-rpi-kernel@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v2] clk: Skip clk provider registration when np is NULL
+Message-ID: <20210510193645.GA3920948@roeck-us.net>
+References: <20210426065618.588144-1-tudor.ambarus@microchip.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426065618.588144-1-tudor.ambarus@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021 12:16:29 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.12.3 release.
-> There are 384 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Apr 26, 2021 at 09:56:18AM +0300, Tudor Ambarus wrote:
+> commit 6579c8d97ad7 ("clk: Mark fwnodes when their clock provider is added")
+> revealed that clk/bcm/clk-raspberrypi.c driver calls
+> devm_of_clk_add_hw_provider(), with a NULL dev->of_node, which resulted in a
+> NULL pointer dereference in of_clk_add_hw_provider() when calling
+> fwnode_dev_initialized().
 > 
-> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
-> Anything received after that time might be too late.
+> Returning 0 is reducing the if conditions in driver code and is being
+> consistent with the CONFIG_OF=n inline stub that returns 0 when CONFIG_OF
+> is disabled. The downside is that drivers will maybe register clkdev lookups
+> when they don't need to and waste some memory.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.3-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Fixes: 6579c8d97ad7 ("clk: Mark fwnodes when their clock provider is added")
+> Fixes: 3c9ea42802a1 ("clk: Mark fwnodes when their clock provider is added/removed")
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 
-5.12.3-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
+> ---
+> v2:
+> - s/return 0;/return; in void of_clk_del_provider()
+> - add second fixes tag and Stephen's R-b tag
+> The opinions on whether to return an error or zero were split. Returning 0
+> and skipping the logic was considered safer as we don't know for sure if
+> other drivers are affected. See:
+> https://lore.kernel.org/lkml/d24bebc5-0f78-021f-293f-e58defa32531@samsung.com/
+> https://lore.kernel.org/lkml/20210423171335.262316-1-tudor.ambarus@microchip.com/
+> 
+>  drivers/clk/clk.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+> index a3b30f7de2ef..b47460b40d14 100644
+> --- a/drivers/clk/clk.c
+> +++ b/drivers/clk/clk.c
+> @@ -4552,6 +4552,9 @@ int of_clk_add_provider(struct device_node *np,
+>  	struct of_clk_provider *cp;
+>  	int ret;
+>  
+> +	if (!np)
+> +		return 0;
+> +
+>  	cp = kzalloc(sizeof(*cp), GFP_KERNEL);
+>  	if (!cp)
+>  		return -ENOMEM;
+> @@ -4591,6 +4594,9 @@ int of_clk_add_hw_provider(struct device_node *np,
+>  	struct of_clk_provider *cp;
+>  	int ret;
+>  
+> +	if (!np)
+> +		return 0;
+> +
+>  	cp = kzalloc(sizeof(*cp), GFP_KERNEL);
+>  	if (!cp)
+>  		return -ENOMEM;
+> @@ -4688,6 +4694,9 @@ void of_clk_del_provider(struct device_node *np)
+>  {
+>  	struct of_clk_provider *cp;
+>  
+> +	if (!np)
+> +		return;
+> +
+>  	mutex_lock(&of_clk_mutex);
+>  	list_for_each_entry(cp, &of_clk_providers, link) {
+>  		if (cp->node == np) {
+> -- 
+> 2.25.1
+> 
