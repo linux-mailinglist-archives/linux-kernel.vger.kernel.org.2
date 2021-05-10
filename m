@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F57378B17
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A67378AF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243750AbhEJL45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:56:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35596 "EHLO mail.kernel.org"
+        id S243773AbhEJL5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:57:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235732AbhEJLF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235737AbhEJLF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 07:05:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80A3061482;
-        Mon, 10 May 2021 10:55:56 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EDD561490;
+        Mon, 10 May 2021 10:55:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644157;
-        bh=jcQY+hQeCyRaAiIN0ruuZAsRzx2KPQ2e15Vdb/KsaFw=;
+        s=korg; t=1620644159;
+        bh=Et9ybeFG/T13ZeHpjvXLj3rtpFizC+VnvgdSddpH7b0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wkzRmOc4iZ1PHr6nNNr2hOb2gmGeW2B4mEUV3IWOzMHqVjwiV41V69Tk66ebcL6dE
-         yTnkk0fAcphprWkruOFKjaxIDHFXNMeViQNb6k+NmD+U6NB1RiDXuV3hGNnPmrdnOf
-         iWGE+HvaoazPDite4A3iX5zfttmDVOu4te/PDA6w=
+        b=pZm69vjNdAH14uwLHkCUEn4m7mP4JeYukNRahXF2KxNaENwg1WydwqCU9PW5j8Vt0
+         Kefm0LeetfQXOBiCDml92k8NOKq5IrohRjfDj7fCpnhhC1w7vqv0ZoNhLanzTzIyhU
+         2Cv8Xo+rpP67HRx0uulgvEfhdqSMi4j/SmrDqfis=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, stable@kernel.org,
-        Hulk Robot <hulkci@huawei.com>,
-        Xu Yihang <xuyihang@huawei.com>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
         Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.11 310/342] ext4: fix error return code in ext4_fc_perform_commit()
-Date:   Mon, 10 May 2021 12:21:40 +0200
-Message-Id: <20210510102020.348824950@linuxfoundation.org>
+Subject: [PATCH 5.11 311/342] ext4: allow the dax flag to be set and cleared on inline directories
+Date:   Mon, 10 May 2021 12:21:41 +0200
+Message-Id: <20210510102020.379721452@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
 References: <20210510102010.096403571@linuxfoundation.org>
@@ -42,37 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xu Yihang <xuyihang@huawei.com>
+From: Theodore Ts'o <tytso@mit.edu>
 
-commit e1262cd2e68a0870fb9fc95eb202d22e8f0074b7 upstream.
+commit 4811d9929cdae4238baf5b2522247bd2f9fa7b50 upstream.
 
-In case of if not ext4_fc_add_tlv branch, an error return code is missing.
+This is needed to allow generic/607 to pass for file systems with the
+inline data_feature enabled, and it allows the use of file systems
+where the directories use inline_data, while the files are accessed
+via DAX.
 
 Cc: stable@kernel.org
-Fixes: aa75f4d3daae ("ext4: main fast-commit commit path")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Xu Yihang <xuyihang@huawei.com>
-Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Link: https://lore.kernel.org/r/20210408070033.123047-1-xuyihang@huawei.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/fast_commit.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/ext4/ialloc.c |    3 ++-
+ fs/ext4/ioctl.c  |    6 ++++++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -1093,8 +1093,10 @@ static int ext4_fc_perform_commit(journa
- 		head.fc_tid = cpu_to_le32(
- 			sbi->s_journal->j_running_transaction->t_tid);
- 		if (!ext4_fc_add_tlv(sb, EXT4_FC_TAG_HEAD, sizeof(head),
--			(u8 *)&head, &crc))
-+			(u8 *)&head, &crc)) {
-+			ret = -ENOSPC;
- 			goto out;
-+		}
- 	}
+--- a/fs/ext4/ialloc.c
++++ b/fs/ext4/ialloc.c
+@@ -1291,7 +1291,8 @@ got:
  
- 	spin_lock(&sbi->s_fc_lock);
+ 	ei->i_extra_isize = sbi->s_want_extra_isize;
+ 	ei->i_inline_off = 0;
+-	if (ext4_has_feature_inline_data(sb))
++	if (ext4_has_feature_inline_data(sb) &&
++	    (!(ei->i_flags & EXT4_DAX_FL) || S_ISDIR(mode)))
+ 		ext4_set_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+ 	ret = inode;
+ 	err = dquot_alloc_inode(inode);
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -312,6 +312,12 @@ static void ext4_dax_dontcache(struct in
+ static bool dax_compatible(struct inode *inode, unsigned int oldflags,
+ 			   unsigned int flags)
+ {
++	/* Allow the DAX flag to be changed on inline directories */
++	if (S_ISDIR(inode->i_mode)) {
++		flags &= ~EXT4_INLINE_DATA_FL;
++		oldflags &= ~EXT4_INLINE_DATA_FL;
++	}
++
+ 	if (flags & EXT4_DAX_FL) {
+ 		if ((oldflags & EXT4_DAX_MUT_EXCL) ||
+ 		     ext4_test_inode_state(inode,
 
 
