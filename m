@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B4E378A8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A89C7378A93
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242589AbhEJLrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:47:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55456 "EHLO mail.kernel.org"
+        id S242748AbhEJLrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:47:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233766AbhEJK7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:59:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8021C61C4C;
-        Mon, 10 May 2021 10:53:03 +0000 (UTC)
+        id S235085AbhEJK77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:59:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E94C961C4B;
+        Mon, 10 May 2021 10:53:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643984;
-        bh=Xf+puenA/PUhO6WkOQj7oPaNgZ6nEmCspFlKaCdmti0=;
+        s=korg; t=1620643986;
+        bh=2x17qympeKNR+HljtLITMAh+gayFVjXH0nYXirtyFrw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=roVH/1HAqlGFQ904gkCMtye1I1MWD9Va49ac8giZEG3tqz+xGHT45m49yQivfRw0e
-         GtOrV3lPXBO1AR27B0fFqFwFUWm4W3HYJ7fypGEL34XRgBVbL8y6Xg/iBNhpvxuGJg
-         vmUsUzZYXNNugPiedD07iE75/EonBhiuDRQE+ZnQ=
+        b=oshxJyfMmpaUl0YsikBtyyTpXKGeZDEJqQZQi27+WjjHMT2E7gUoGFtk5yGkfllxX
+         Tz+mUd6CGT1YxaoxGCrlUO5wsJK6v62Y75LFmDbnDPuIuSbiOO/AwgyT+AcL4/sZJn
+         rTSaSkzUU/rRMFGBooT+y2hKJjpgDegZ8tJfGhr8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guangqing Zhu <zhuguangqing83@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Carl Philipp Klemm <philipp@uvos.xyz>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 239/342] power: supply: cpcap-battery: fix invalid usage of list cursor
-Date:   Mon, 10 May 2021 12:20:29 +0200
-Message-Id: <20210510102017.985555309@linuxfoundation.org>
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.11 240/342] ALSA: emu8000: Fix a use after free in snd_emu8000_create_mixer
+Date:   Mon, 10 May 2021 12:20:30 +0200
+Message-Id: <20210510102018.018231816@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
 References: <20210510102010.096403571@linuxfoundation.org>
@@ -42,39 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangqing Zhu <zhuguangqing83@gmail.com>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit d0a43c12ee9f57ddb284272187bd18726c2c2c98 ]
+commit 1c98f574403dbcf2eb832d5535a10d967333ef2d upstream.
 
-Fix invalid usage of a list_for_each_entry in cpcap_battery_irq_thread().
-Empty list or fully traversed list points to list head, which is not
-NULL (and before the first element containing real data).
+Our code analyzer reported a uaf.
 
-Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
-Reviewed-by: Tony Lindgren <tony@atomide.com>
-Reviewed-by: Carl Philipp Klemm <philipp@uvos.xyz>
-Tested-by: Carl Philipp Klemm <philipp@uvos.xyz>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+In snd_emu8000_create_mixer, the callee snd_ctl_add(..,emu->controls[i])
+calls snd_ctl_add_replace(.., kcontrol,..). Inside snd_ctl_add_replace(),
+if error happens, kcontrol will be freed by snd_ctl_free_one(kcontrol).
+Then emu->controls[i] points to a freed memory, and the execution comes
+to __error branch of snd_emu8000_create_mixer. The freed emu->controls[i]
+is used in snd_ctl_remove(card, emu->controls[i]).
+
+My patch set emu->controls[i] to NULL if snd_ctl_add() failed to avoid
+the uaf.
+
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210426131129.4796-1-lyl2019@mail.ustc.edu.cn
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/power/supply/cpcap-battery.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/isa/sb/emu8000.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/power/supply/cpcap-battery.c b/drivers/power/supply/cpcap-battery.c
-index cebc5c8fda1b..793d4ca52f8a 100644
---- a/drivers/power/supply/cpcap-battery.c
-+++ b/drivers/power/supply/cpcap-battery.c
-@@ -626,7 +626,7 @@ static irqreturn_t cpcap_battery_irq_thread(int irq, void *data)
- 			break;
+--- a/sound/isa/sb/emu8000.c
++++ b/sound/isa/sb/emu8000.c
+@@ -1029,8 +1029,10 @@ snd_emu8000_create_mixer(struct snd_card
+ 
+ 	memset(emu->controls, 0, sizeof(emu->controls));
+ 	for (i = 0; i < EMU8000_NUM_CONTROLS; i++) {
+-		if ((err = snd_ctl_add(card, emu->controls[i] = snd_ctl_new1(mixer_defs[i], emu))) < 0)
++		if ((err = snd_ctl_add(card, emu->controls[i] = snd_ctl_new1(mixer_defs[i], emu))) < 0) {
++			emu->controls[i] = NULL;
+ 			goto __error;
++		}
  	}
+ 	return 0;
  
--	if (!d)
-+	if (list_entry_is_head(d, &ddata->irq_list, node))
- 		return IRQ_NONE;
- 
- 	latest = cpcap_battery_latest(ddata);
--- 
-2.30.2
-
 
 
