@@ -2,130 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F8E377B8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 07:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E18C7377B8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 07:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230154AbhEJFcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 01:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhEJFcu (ORCPT
+        id S230138AbhEJFcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 01:32:46 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:55060 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229608AbhEJFcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 01:32:50 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C90C061573
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 22:31:46 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id s20so8543725plr.13
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 22:31:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=s3uZlkdD1HWKgRch2ttjuGoW2tvlVxTNtmyNQyMfx3E=;
-        b=FFXr2jSenbxpqxMUI4nePQ7AdoB+B00Bp3IF+EaQmvS7YhIBktmcgcDSkpRCb6wHnJ
-         yDpnvfJ5EbJg3BAiMn+epraOwT0GuwRnVlEjSuWVWProC7mcXBcUjeXKRuaZbESOm12a
-         d4Cdk0yu5paVLskbeoCwautAqGT23OkKTINjs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=s3uZlkdD1HWKgRch2ttjuGoW2tvlVxTNtmyNQyMfx3E=;
-        b=tXwD8ToZCpfOVKzz/JZuNNc4gXQnvZ9QqeBMbHDxpoaS9fDpmYpze0KMg6/T2dIowE
-         swH4B4jxcNSGSClW3PirHFCOHkw6e7sfYGzZLHIleWLu760/jmRbK1XSkuPimuGeGETi
-         bwAXvOwvnMyAx7g24QWe9o6D6eD8cAESqYhCn6PzOgNIXxoMWaBShArDvIwNRSwrUUaF
-         72PTHv+8aOk93rKrhz8WBoiPhiy4JUOIC7P32yUXgaBezaeH6L7rVBh1Ks8qC9JHhzyM
-         yaf+zaEP6nTEUr7rfZeMwx7SgzAemH9eh20yI9SeW6ghdrj19oMjTSTR37RJ+w4pcE4J
-         1uhw==
-X-Gm-Message-State: AOAM5333B0JEyyRZooi/RPye0Vy16775KuIAkt4RIMXdDEX+GPaS9Qz6
-        erLy7AWj+IesmGAkfFd/GUc50Q==
-X-Google-Smtp-Source: ABdhPJyClYsefcDI4WYWbIMRt4/1/G6Zslx9GrWyEsEGJiL5t27r81d3t1J/kW4j2r+Kyt/FSZgNJw==
-X-Received: by 2002:a17:902:7c94:b029:e6:e1d7:62b7 with SMTP id y20-20020a1709027c94b02900e6e1d762b7mr22651481pll.29.1620624706378;
-        Sun, 09 May 2021 22:31:46 -0700 (PDT)
-Received: from kafuu-chino.c.googlers.com.com (105.219.229.35.bc.googleusercontent.com. [35.229.219.105])
-        by smtp.googlemail.com with ESMTPSA id w2sm10485834pfb.174.2021.05.09.22.31.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 22:31:45 -0700 (PDT)
-From:   Pi-Hsun Shih <pihsun@chromium.org>
-Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Xin Ji <xji@analogixsemi.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 2/2] drm/bridge: anx7625: add suspend / resume hooks
-Date:   Mon, 10 May 2021 13:30:52 +0800
-Message-Id: <20210510053125.1595659-2-pihsun@chromium.org>
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-In-Reply-To: <20210510053125.1595659-1-pihsun@chromium.org>
-References: <20210510053125.1595659-1-pihsun@chromium.org>
+        Mon, 10 May 2021 01:32:43 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14A5VU8Z081177;
+        Mon, 10 May 2021 00:31:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620624690;
+        bh=CdW+YRXLk3uk5cWZMxSMVSm607ddrQRwN9EUo67GHoU=;
+        h=Subject:CC:References:From:Date:In-Reply-To;
+        b=pZw4ZfNGu/LI6x30dgWiJozhK3BJ/kQct6DXHqouVnCRQGw3nX9sEegZzTBXe9KZe
+         tx4sCda87g3Gn4y50rC2Wq33JVlWSQi0uJ7fT+Yuczj/ZKHG0Cdb4PrUbmGf09OxQ0
+         OgfYCK8ReLYiTeY8A01veuU8LMG9YF6tkGrMOGE4=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14A5VT4r093051
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 10 May 2021 00:31:29 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 10
+ May 2021 00:31:29 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 10 May 2021 00:31:29 -0500
+Received: from [10.250.235.117] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14A5VM3U057050;
+        Mon, 10 May 2021 00:31:24 -0500
+Subject: Re: [PATCH v3 0/2] MCAN: Add support for implementing transceiver as
+ a phy
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>
+References: <20210416114245.24829-1-a-govindraju@ti.com>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <2ac62e0b-58e0-0a5c-06c9-c2d5052c7a5d@ti.com>
+Date:   Mon, 10 May 2021 11:01:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210416114245.24829-1-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add suspend / resume hooks for anx7625 driver, that power off the device
-on suspend and power on the device on resume if it was previously
-powered.
+Hi all,
 
-Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
----
+On 16/04/21 5:12 pm, Aswath Govindraju wrote:
+> The following series of patches add support for implementing the
+> transceiver as a phy of m_can_platform driver.
+> 
+> TCAN1042 has a standby signal that needs to be pulled high for
+> sending/receiving messages[1]. TCAN1043 has a enable signal along with
+> standby signal that needs to be pulled up for sending/receiving
+> messages[2], and other combinations of the two lines can be used to put the
+> transceiver in different states to reduce power consumption. On boards
+> like the AM654-idk and J721e-evm these signals are controlled using gpios.
+> 
+> These gpios are set in phy driver, and the transceiver can be put in
+> different states using phy API. The phy driver is added in the series [3].
+> 
+> This patch series is dependent on [4].
+> 
+> changes since v2:
+> - changed dev_err to dev_err_probe in patch 2
+> - used mcan_class instead of priv to assign max bit rate
+> - Picked up  Rob Herring's acked-by for patch 1
+> 
+> changes since v1:
+> - Used the API devm_phy_get_optional() instead of 
+>   devm_of_phy_get_optional_by_index()
+> > [1] - https://www.ti.com/lit/ds/symlink/tcan1042h.pdf
+> [2] - https://www.ti.com/lit/ds/symlink/tcan1043-q1.pdf
+> [3] - https://lore.kernel.org/patchwork/project/lkml/list/?series=495511
+> [4] - https://lore.kernel.org/patchwork/patch/1413286/
+> 
 
-Changes from v2:
-* No change.
+Posted v4 for this series after adding phy_power_off in the path when
+there is an error.
 
----
- drivers/gpu/drm/bridge/analogix/anx7625.c | 27 +++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+Thanks,
+Aswath
 
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index e1bf31eafe22..b165ef71e00f 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -1705,7 +1705,34 @@ static int __maybe_unused anx7625_runtime_pm_resume(struct device *dev)
- 	return 0;
- }
- 
-+static int __maybe_unused anx7625_resume(struct device *dev)
-+{
-+	struct anx7625_data *ctx = dev_get_drvdata(dev);
-+
-+	if (!ctx->pdata.intp_irq)
-+		return 0;
-+
-+	if (!pm_runtime_enabled(dev) || !pm_runtime_suspended(dev))
-+		anx7625_runtime_pm_resume(dev);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused anx7625_suspend(struct device *dev)
-+{
-+	struct anx7625_data *ctx = dev_get_drvdata(dev);
-+
-+	if (!ctx->pdata.intp_irq)
-+		return 0;
-+
-+	if (!pm_runtime_enabled(dev) || !pm_runtime_suspended(dev))
-+		anx7625_runtime_pm_suspend(dev);
-+
-+	return 0;
-+}
-+
- static const struct dev_pm_ops anx7625_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(anx7625_suspend, anx7625_resume)
- 	SET_RUNTIME_PM_OPS(anx7625_runtime_pm_suspend,
- 			   anx7625_runtime_pm_resume, NULL)
- };
--- 
-2.31.1.607.g51e8a6a459-goog
+> Faiz Abbas (2):
+>   dt-bindings: net: can: Document transceiver implementation as phy
+>   can: m_can: Add support for transceiver as phy
+> 
+>  .../devicetree/bindings/net/can/bosch,m_can.yaml    |  3 +++
+>  drivers/net/can/m_can/m_can.c                       | 10 ++++++++++
+>  drivers/net/can/m_can/m_can.h                       |  2 ++
+>  drivers/net/can/m_can/m_can_platform.c              | 13 +++++++++++++
+>  4 files changed, 28 insertions(+)
+> 
 
