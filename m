@@ -2,131 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1998379031
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8666E379052
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233320AbhEJOI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:08:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37026 "EHLO mail.kernel.org"
+        id S237623AbhEJOKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:10:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42566 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231672AbhEJOCt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:02:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E2C36101B;
-        Mon, 10 May 2021 14:01:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620655304;
-        bh=F7dbRtEIaaThwBLKKfEpeXJ/mhUzWheRAgnCoFAyEwM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lUuYc6yk7D1Y57pKfM61xU70A/ZwBKnBFIIF5lm0vkdMLhBIHWcT6UqBDD89l4dUl
-         vjZ/mlvuO5ZR6z2LKgsBvjZrDWXtuuwxnBYK6EJMHfrtb9O5vGrq4hSF804WvEkZF/
-         01ocGttJbpbTIhWW2XD5XQ6anS0BGPC4oAGlYd0BHpwgqRtA6yHoKiAPl7/iEcGvBT
-         R359LZvxxTBsqvpOIue3LUbhps0b+8nJaZqEkD1Q+sJ93/4EgeXIf0ol8Obiv+EGlN
-         qgwH/jpI5JRQLSHX7CEsJ/mQzeU/PToVcHSNARWkLMXNge/2izTBtdzbbAK48T7+iE
-         n3aj7myzAbHcg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DEEE65C00D5; Mon, 10 May 2021 07:01:43 -0700 (PDT)
-Date:   Mon, 10 May 2021 07:01:43 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>, Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH v1 4/5] kvfree_rcu: Refactor kfree_rcu_monitor() function
-Message-ID: <20210510140143.GD975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210428134422.1894-1-urezki@gmail.com>
- <20210428134422.1894-4-urezki@gmail.com>
- <20210509165954.347dd3cd8e8815b9dce67cfb@linux-foundation.org>
- <20210510100901.GA2019@pc638.lan>
+        id S244749AbhEJOFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 10:05:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4EA16AFE6;
+        Mon, 10 May 2021 14:04:08 +0000 (UTC)
+Subject: Re: [PATCH] mm: kmalloc_index: remove case when size is more than
+ 32MB
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210508221328.7338-1-42.hyeyoo@gmail.com>
+ <YJccjBMBiwLqFrB8@casper.infradead.org>
+ <CAB=+i9QyxOu_1QDfX5QA=pOxxnRURPnwd2Y0EbhoO1u0e=irBA@mail.gmail.com>
+ <c305ec02-a7d6-dd0c-bfee-e5b571d9ca9a@suse.cz> <20210510135857.GA3594@hyeyoo>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <9d0ffe49-a2e2-6c81-377b-4c8d2147dff8@suse.cz>
+Date:   Mon, 10 May 2021 16:04:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210510100901.GA2019@pc638.lan>
+In-Reply-To: <20210510135857.GA3594@hyeyoo>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 12:09:01PM +0200, Uladzislau Rezki wrote:
-> On Sun, May 09, 2021 at 04:59:54PM -0700, Andrew Morton wrote:
-> > On Wed, 28 Apr 2021 15:44:21 +0200 "Uladzislau Rezki (Sony)" <urezki@gmail.com> wrote:
-> > 
-> > > Rearm the monitor work directly from its own function that
-> > > is kfree_rcu_monitor(). So this patch puts the invocation
-> > > timing control in one place.
-> > >
-> > > ...
-> > >
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -3415,37 +3415,44 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
-> > >  	return !repeat;
-> > >  }
-> > >  
-> > > -static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
-> > > -					  unsigned long flags)
-> > > +/*
-> > > + * This function queues a new batch. If success or nothing to
-> > > + * drain it returns 1. Otherwise 0 is returned indicating that
-> > > + * a reclaim kthread has not processed a previous batch.
-> > > + */
-> > > +static inline int kfree_rcu_drain(struct kfree_rcu_cpu *krcp)
-> > >  {
-> > > +	unsigned long flags;
-> > > +	int ret;
-> > > +
-> > > +	raw_spin_lock_irqsave(&krcp->lock, flags);
-> > > +
-> > >  	// Attempt to start a new batch.
-> > > -	if (queue_kfree_rcu_work(krcp)) {
-> > > +	ret = queue_kfree_rcu_work(krcp);
-> > 
-> > This code has changed slightly in mainline.  Can you please redo,
-> > retest and resend?
-> > 
-> > > +	if (ret)
-> > >  		// Success! Our job is done here.
-> > >  		krcp->monitor_todo = false;
-> > > -		raw_spin_unlock_irqrestore(&krcp->lock, flags);
-> > > -		return;
-> > > -	}
-> > 
-> > It's conventional to retain the braces here, otherwise the code looks
-> > weird.  Unless you're a python programmer ;)
-> > 
-> > 
-> Hello, Anrew.
+On 5/10/21 3:58 PM, Hyeonggon Yoo wrote:
+> On Mon, May 10, 2021 at 12:09:55PM +0200, Vlastimil Babka wrote:
+>> On 5/9/21 7:33 AM, Hyeonggon Yoo wrote:
+>> > On Sun, May 09, 2021 at 12:19:40AM +0100, Matthew Wilcox wrote:
+>> >> On Sun, May 09, 2021 at 07:13:28AM +0900, Hyeonggon Yoo wrote:
+>> >> > the return value of kmalloc_index is used as index of kmalloc_caches,
+>> >>
+>> >> it doesn't matter.  every few weeks somebody posts a patch to "optimise"
+>> >> kmalloc_index, failing to appreciate that it's only ever run at compile
+>> >> time because it's all under __builtin_constant_p().
+>> > 
+>> > Oh thanks, I didn't know about __builtin_constant_p.
+>> > 
+>> > But I was not optimizing kmalloc_index. isn't it confusing that
+>> > kmalloc_caches alllows maximum size of 32MB, and kmalloc_index allows
+>> > maximum size of 64MB?
+>> > 
+>> > and even if the code I removed is never reached because 64MB is always
+>> > bigger than KMALLOC_MAX_CACHE_SIZE, it will cause an error if reached.
+>> 
+>> KMALLOC_MAX_CACHE_SIZE depends on KMALLOC_SHIFT_HIGH
+>> size of kmalloc_caches array depends on KMALLOC_SHIFT_HIGH
+>> 
+>> So I don't an easy way how it could become reachable while causing the index to
+>> overflow - if someone increased KMALLOC_SHIFT_HIGH from 25 to 26, all should be
+>> fine, AFAICS.
+>> 
+>> The problem would be if someone increased it to 27, then we might suddenly get a
+>> BUG() in kmalloc_index(). We should probably replace that BUG() with
+>> BUILD_BUG_ON(1) to catch that at compile time. Hopefully no supported compiler
+>> will break because it's not able to do the proper compile-time evaluation - but
+>> if it does, at least we would know.
+>> 
+>> So I would accept the patch if it also changed BUG() to e.g. BUILD_BUG_ON_MSG(1,
+>> "unexpected size in kmalloc_index()");
+>> and expanded the function's comment that this is always compile-time evaluated
+>> and thus no attempts at "optimizing" the code should be made.
+>> 
 > 
-> This refactoring is not up to date and is obsolete, instead we have done 
-> bigger rework of kfree_rcu_monitor(). It is located here:
+> Thank you so much reviewing and replying to my patch.
+> plecase check if I understood well.
 > 
-> https://kernel.googlesource.com/pub/scm/linux/kernel/git/paulmck/linux-rcu/+/2349a35d39e7af5eef9064cbd0e42309040551da%5E%21/#F0
+> Okay, I'll do that work. then the following patch will:
+> 	- remove case when size is more than 32MB
+> 	- change "BUG to BUILD_BUG_ON to let compiler know when the size is not supported"
+> 	- add comment that there's no need to optimize it
+> 
+> is it what you mean. right?
 
-If Andrew would like to start taking these kvfree_rcu() patches,
-that would be all to the good.  For example, there is likely much
-more opportunity for optimization by bringing them closer to the
-sl*b allocators.  Yes, they will need some privileged access to RCU
-internals, but not that much.  And at some point, they should move from
-their current home in kernel/rcu/tree.c to somewhere in mm.
+Exactly.
 
-To that end, here is the list in -rcu against current mainline, from
-youngest to oldest:
+> and I have a question. in the lin 751 of mm/slab_common.c,
+> thre's struct kmalloc_info_struct kmalloc_info. and it initializes kmalloc info
+> up to 64MB, which is currently not supported. should I change it too? in a separate patch?
 
-b5691dd1cd7a kvfree_rcu: Fix comments according to current code
-2349a35d39e7 kvfree_rcu: Refactor kfree_rcu_monitor()
-bfa15885893f kvfree_rcu: Release a page cache under memory pressure
-de9d86c3b0b7 kvfree_rcu: Use [READ/WRITE]_ONCE() macros to access to nr_bkv_objs
-54a0393340f7 kvfree_rcu: Add a bulk-list check when a scheduler is run
-7490789de1ac kvfree_rcu: Update "monitor_todo" once a batch is started
-28e690ce0347 kvfree_rcu: Use kfree_rcu_monitor() instead of open-coded variant
-
-Please let me know how you would like to proceed.
-
-							Thanx, Paul
+Yeah that could be also changed, in the same patch.
