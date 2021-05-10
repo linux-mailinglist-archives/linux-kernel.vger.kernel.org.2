@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8007379852
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 22:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159C137985A
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 22:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232313AbhEJU3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 16:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59966 "EHLO
+        id S232484AbhEJU3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 16:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbhEJU3L (ORCPT
+        with ESMTP id S231518AbhEJU3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 16:29:11 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C17FC06175F;
+        Mon, 10 May 2021 16:29:12 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52C0C061760;
         Mon, 10 May 2021 13:28:06 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id s25so22427726lji.0;
+Received: by mail-lf1-x132.google.com with SMTP id z9so25279375lfu.8;
         Mon, 10 May 2021 13:28:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vvCKDuoh7Ut5LViCmioeh1xP+tKlLaTTAz7jCis1p0k=;
-        b=fGfhgg45MW7Qf5/0gjCOwEnfIW9xhHj+iADjp17D8RoiXdGtnammMqBccDHPFe8qZf
-         Q9nME9uEBATKiJANk/K4/+VLb/aMBItVaZGRoHLasrHMFUsgTYVhsTfNqcMzTkry+bdX
-         3DRPhWDiY8uNPXOGzUF4H0qATD4duMKpzoH9PTL7GJ8iyGlK3NRoz1E0BjLo18TAEiqH
-         tvAScgt/7QIjK7+YazF/sKfpucnr4KgX88HxlyZRuwP36cfmU5AYO1tIZVZhghWrC6h/
-         9brpP/xmqMbsduBmGqe48De/TDRNziVPDbU/X7rtc+L5WmsBF5aSKgZHQuNweSajTGNj
-         /i5g==
+        bh=QzSDSsYVLWx4cGGNYAhBY9AP+8XYtLc+owqpUZsYqN8=;
+        b=C7/ddeYTBjUVzdQd/5oKcpt/4+T0QwpcMc49V1xEnOxnBG6EiJLyysN1dWBu1bLfR3
+         fzg//NLmkEdPPVXSsmwg9BQ3X+3cqgUbMk0gByizf2DmfYH+9AW2vbcSw6gpZwDvcVtJ
+         QAnawIgcKMy7Mla4HjaZQLd2whbSX9049sfFg3jFT1CsvdMdjxt5Vvmk76pED2Ykqk/6
+         /5I8yWWEAtEB/xH9kuJqlk9nA7gaqbQwfUY3KP8fQQvoSwXtpMWsc8D0OrQjHFtcNinu
+         LOk8bSDITw+vkCmm3kZC3uZHUNmhVA8CmerrkRrDSE68yMn/I3p/JTl2NzjjMdjo9qFw
+         eekw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vvCKDuoh7Ut5LViCmioeh1xP+tKlLaTTAz7jCis1p0k=;
-        b=Lpn6YvD59Y/wqM3s7mhzq1VmjnCIW8n/IAI6jTYmGa5ORqHMF8lITSCSkqmtGaOZ37
-         t2hEF+4b77pgc9scCkXZxlSmeyFmA7iFsQKdIFAQGZX52ekuqQ/yUeyVjA//OfQfYux/
-         lIxe+dU5iHlfNOzioP4r+X4Uj1rjPhl9KW+ARqCLofIBN/pBYlLg1KJc+cAUMQ9FfcoT
-         MBdzdQM4DySUh91cp42AkobQ+CRIotynCsLzShj+/tZ1xgURd3l6R1kB2bjHMSN09Ao9
-         1KI3deKDa1LwoLWcXNoMV3pTcEkL3jwozArRCqROjqsJa5U4bA4F5AJjSy1EsQqb2juZ
-         PQVg==
-X-Gm-Message-State: AOAM530QVQ1amr1+cPoPlJ3+vrRQ0aCIA9y2sv9KCQowb1TWWOwrlZuL
-        HY685RykyyYP9oUiS0FyC83cEpUdzME=
-X-Google-Smtp-Source: ABdhPJxe8Qy8kEhv6DdjklUPIMT4qRI23gQWg9Yh4x4nNPQD4bQ5ca9joFAAddUM4notE/59TiUR+w==
-X-Received: by 2002:a2e:8015:: with SMTP id j21mr21678749ljg.425.1620678484759;
-        Mon, 10 May 2021 13:28:04 -0700 (PDT)
+        bh=QzSDSsYVLWx4cGGNYAhBY9AP+8XYtLc+owqpUZsYqN8=;
+        b=d30MVuO0ctkzdZq9HR0aR2ytNxrFavYgiJ3hrREtbvUbypHrIUohRCmgrcAcs+r9D+
+         kS9waePR28VmOF2VLvFQYyDXe/1VePAIRO9hm54Ypxxvie2VXWqnDJ6vjbmwILQThmxu
+         xlvngU27Wc3LOcjmWn0/v/6ulzOaU3LuxgEpA96uBw43AMfudf4poqw3XPb/5DXcKXn3
+         qRjAFpx4L78lYOwO/7io4pyCxI/GMvXStSLIERw1+zSIR4yLwjN5TWcr+zWQyYep+6a5
+         DoaoLJ0Rqd63WFDPkbkE54Rd+02zBGdzodWLXbDQxcHESzhYmCiAYAP+G/mWwCqqyjPV
+         pfkA==
+X-Gm-Message-State: AOAM533QylonVFVv5UAvGaNi2FZtzq4nKqAO4R0uQJGirt4UZ4Aqusmh
+        14z+lfn2E+sURrw0/Xa5dAs=
+X-Google-Smtp-Source: ABdhPJxbl0aRe+Z0RRQUrWK1K+uobWYX1Rp4Uiw6Wz9L8m+wGCJ1g62ZyiT3A94JkoJni2/MyJ0acQ==
+X-Received: by 2002:ac2:5d4c:: with SMTP id w12mr8802665lfd.494.1620678485362;
+        Mon, 10 May 2021 13:28:05 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
         by smtp.gmail.com with ESMTPSA id z23sm2360662lfq.241.2021.05.10.13.28.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 13:28:04 -0700 (PDT)
+        Mon, 10 May 2021 13:28:05 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Agneli <poczt@protonmail.ch>, Paul Fertser <fercerpav@gmail.com>,
         Svyatoslav Ryhel <clamor95@gmail.com>
 Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 01/10] ARM: tegra: acer-a500: Improve microphone detection
-Date:   Mon, 10 May 2021 23:25:51 +0300
-Message-Id: <20210510202600.12156-2-digetx@gmail.com>
+Subject: [PATCH v1 02/10] ARM: tegra: acer-a500: Specify proper voltage for WiFi SDIO bus
+Date:   Mon, 10 May 2021 23:25:52 +0300
+Message-Id: <20210510202600.12156-3-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210510202600.12156-1-digetx@gmail.com>
 References: <20210510202600.12156-1-digetx@gmail.com>
@@ -66,36 +66,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use edge-triggered interrupt and set delay to 100ms for microphone hook
-detection. This doesn't fix any known problems, but there is a smaller
-chance to miss insertion of the microphone now, which previously happened
-rarely.
+Tegra20 has v2.00 SDMMC controller which doesn't support voltage
+switching and the WiFi SDIO bus voltage is fixed to 1.8v in accordance
+to the board's schematics, while MMC core confusingly saying that it's
+3.3v because of the v2.00. Let's correct the voltage in the device-tree
+just for consistency. This is a minor improvement which doesn't fix any
+problems.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-index 2298fc034183..d7d97b7e4794 100644
+index d7d97b7e4794..eff9bfb2d442 100644
 --- a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
 +++ b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-@@ -420,11 +420,14 @@ wm8903: audio-codec@1a {
- 			reg = <0x1a>;
+@@ -762,7 +762,7 @@ sdmmc1: mmc@c8000000 {
  
- 			interrupt-parent = <&gpio>;
--			interrupts = <TEGRA_GPIO(X, 3) IRQ_TYPE_LEVEL_HIGH>;
-+			interrupts = <TEGRA_GPIO(X, 3) IRQ_TYPE_EDGE_BOTH>;
+ 		mmc-pwrseq = <&brcm_wifi_pwrseq>;
+ 		vmmc-supply = <&vdd_3v3_sys>;
+-		vqmmc-supply = <&vdd_3v3_sys>;
++		vqmmc-supply = <&vdd_1v8_sys>;
  
- 			gpio-controller;
- 			#gpio-cells = <2>;
- 
-+			micdet-cfg = <0>;
-+			micdet-delay = <100>;
-+
- 			gpio-cfg = <
- 				0x0000 /* MIC_LR_OUT#    GPIO, output, low */
- 				0x0000 /* FM2018-enable  GPIO, output, low */
+ 		/* Azurewave AW-NH611 BCM4329 */
+ 		wifi@1 {
 -- 
 2.30.2
 
