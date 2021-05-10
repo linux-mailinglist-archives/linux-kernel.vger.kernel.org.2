@@ -2,83 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753263791C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC3E3791C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242043AbhEJPBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 11:01:09 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:47071 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231183AbhEJO6x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:58:53 -0400
-Received: by mail-ot1-f53.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso14620026otb.13
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:57:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QS25KxaAmrmE71ETQUlr3bP16oKKQZ2rMVy5vz0jD/0=;
-        b=WdLWuqXBE2g9Wx/8jmp8fyTknaKKZp3IIMPZ4s83W6+HhBdR9B5bPbx9BASonP9ObL
-         AK+nxEgFTrG1ZlQNRtPW9Iis+VGrsvejRH8GT0wxt1nUbo+KHfkdJJ1NzaQhD4pfTAlW
-         ByE3GAF+joFWsgYizJ0pP7NjEvg7wW/kgr+Pjqe4zQeoejSKsSwmT6xicuWCOh6iIvKc
-         9fG6nLJPf9Fmnr/I6CXUEJ+SrWdYDN72kpnGXTxEQ1zzCzUnucwwY5zWtTwpQGJ79ls+
-         a40aBHntJuTMGMpELMRbyLQnj93+WVg6mpWv96zIzfa8oI/ATuIdqfbUaOj62MWUDtdS
-         J/lw==
-X-Gm-Message-State: AOAM532mhehXNnkRxPLmFf2Vtve6EsA2JhugGVl7CqnY/GwMPhRdhHGP
-        /GAvO3AmzAuzBQCEXeNSrVf55B6xeFIcXJXbh+E=
-X-Google-Smtp-Source: ABdhPJyJPwqCwQJmy9QcJFla5rgoIrwzYuUBvkxpzajL3MY4cdW5B35zOFxrhlb5y1BxdpxZIefveNNquNaGoBMJn2w=
-X-Received: by 2002:a05:6830:55b:: with SMTP id l27mr21422234otb.260.1620658668207;
- Mon, 10 May 2021 07:57:48 -0700 (PDT)
+        id S235888AbhEJPBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 11:01:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:60390 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237108AbhEJO73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 10:59:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5FFBA15BE;
+        Mon, 10 May 2021 07:58:24 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.4.9])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B8743F719;
+        Mon, 10 May 2021 07:58:07 -0700 (PDT)
+Date:   Mon, 10 May 2021 15:57:59 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-kernel@vger.kernel.org, will@kernel.org,
+        boqun.feng@gmail.com, peterz@infradead.org
+Cc:     aou@eecs.berkeley.edu, arnd@arndb.de, bcain@codeaurora.org,
+        benh@kernel.crashing.org, chris@zankel.net, dalias@libc.org,
+        davem@davemloft.net, deanbo422@gmail.com, deller@gmx.de,
+        geert@linux-m68k.org, green.hu@gmail.com, guoren@kernel.org,
+        ink@jurassic.park.msu.ru, James.Bottomley@HansenPartnership.com,
+        jcmvbkbc@gmail.com, jonas@southpole.se, ley.foon.tan@intel.com,
+        linux@armlinux.org.uk, mattst88@gmail.com, monstr@monstr.eu,
+        mpe@ellerman.id.au, nickhu@andestech.com, palmer@dabbelt.com,
+        paulus@samba.org, paul.walmsley@sifive.com, rth@twiddle.net,
+        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
+        tsbogend@alpha.franken.de, vgupta@synopsys.com,
+        ysato@users.sourceforge.jp
+Subject: Re: [PATCH 14/33] locking/atomic: arc: move to ARCH_ATOMIC
+Message-ID: <20210510145759.GB92897@C02TD0UTHF1T.local>
+References: <20210510093753.40683-1-mark.rutland@arm.com>
+ <20210510093753.40683-15-mark.rutland@arm.com>
 MIME-Version: 1.0
-References: <20210510095613.3302755-1-andy.shevchenko@gmail.com>
-In-Reply-To: <20210510095613.3302755-1-andy.shevchenko@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 10 May 2021 16:57:37 +0200
-Message-ID: <CAJZ5v0hLYHOSvh+695XbZZgqk=mt7gFHwPMi3Bfviq5sWcOs_w@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] device property: Retrieve fwnode from of_node via accessor
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510093753.40683-15-mark.rutland@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 11:57 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> OF provides a specific accessor to retrieve fwnode handle.
-> Use it instead of direct dereferencing.
->
-> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+On Mon, May 10, 2021 at 10:37:34AM +0100, Mark Rutland wrote:
+> We'd like all architectures to convert to ARCH_ATOMIC, as once all
+> architectures are converted it will be possible to make significant
+> cleanups to the atomics headers, and this will make it much easier to
+> generically enable atomic functionality (e.g. debug logic in the
+> instrumented wrappers).
+> 
+> As a step towards that, this patch migrates arc to ARCH_ATOMIC. The arch
+> code provides arch_{atomic,atomic64,xchg,cmpxchg}*(), and common code
+> wraps these with optional instrumentation to provide the regular
+> functions.
+> 
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Vineet Gupta <vgupta@synopsys.com>
+> Cc: Will Deacon <will@kernel.org>
 > ---
->  drivers/base/property.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/base/property.c b/drivers/base/property.c
-> index 1421e9548857..dd98759d688b 100644
-> --- a/drivers/base/property.c
-> +++ b/drivers/base/property.c
-> @@ -21,7 +21,7 @@
->  struct fwnode_handle *dev_fwnode(struct device *dev)
->  {
->         return IS_ENABLED(CONFIG_OF) && dev->of_node ?
-> -               &dev->of_node->fwnode : dev->fwnode;
-> +               of_fwnode_handle(dev->of_node) : dev->fwnode;
->  }
->  EXPORT_SYMBOL_GPL(dev_fwnode);
->
-> @@ -763,7 +763,7 @@ struct fwnode_handle *device_get_next_child_node(struct device *dev,
->         struct fwnode_handle *fwnode = NULL, *next;
->
->         if (dev->of_node)
-> -               fwnode = &dev->of_node->fwnode;
-> +               fwnode = of_fwnode_handle(dev->of_node);
->         else if (adev)
->                 fwnode = acpi_fwnode_handle(adev);
->
-> --
+>  arch/arc/Kconfig               |  1 +
+>  arch/arc/include/asm/atomic.h  | 56 +++++++++++++++++++++---------------------
+>  arch/arc/include/asm/cmpxchg.h |  8 +++---
+>  3 files changed, 33 insertions(+), 32 deletions(-)
 
-Applied as 5.14 material, thanks!
+I evidently missed atomic_xchg() in asm/cmpxchg.h, so the fixup below is
+needed. I've pushed that to my branch on kernel.org for now.
+
+Mark.
+
+---->8----
+diff --git a/arch/arc/include/asm/cmpxchg.h b/arch/arc/include/asm/cmpxchg.h
+index 87666980b78a..d1781bdf6527 100644
+--- a/arch/arc/include/asm/cmpxchg.h
++++ b/arch/arc/include/asm/cmpxchg.h
+@@ -153,6 +153,6 @@ static inline unsigned long __xchg(unsigned long val, volatile void *ptr,
+  *         can't be clobbered by others. Thus no serialization required when
+  *         atomic_xchg is involved.
+  */
+-#define atomic_xchg(v, new) (xchg(&((v)->counter), new))
++#define arch_atomic_xchg(v, new) (arch_xchg(&((v)->counter), new))
+ 
+ #endif
