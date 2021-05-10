@@ -2,145 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6911377B96
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 07:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A83CB377B9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 07:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbhEJFkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 01:40:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbhEJFkQ (ORCPT
+        id S230059AbhEJFoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 01:44:22 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:33741 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229608AbhEJFoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 01:40:16 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25554C061574
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 22:39:12 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id m190so12541311pga.2
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 22:39:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9QjThyFdbfEEV7YSdHD2NDT9j0pnbAN4OFRmYnpNSIo=;
-        b=DKMxWczXLRPdyDMhH+2pAoS1NdrO047RvAa8WncZUx2FUyJuMKjct6U1MGuwcKf7cr
-         VauDMDqhf9NmEQWm/wEECCvM0nJ6eWzC4eQW/JCOEbe/5z9wPzf8O4tpoHyNqS77XW3Q
-         SXK2fmtlAJP9gZ1PSj6n9xgvxdJNy3ZQGBPpP9CP9kfFaLvIloQlrCviSCBR303IlpSb
-         KAuQZpfBuBLzPQQ3zhW9s9gN9NzVcC767e8xv4kOG9Ef56xbU6cFnmznaN3GQ2H1IJJv
-         GDDtlOxpsWr8tfspvWLM25f2JO2oi0KTKfnNvTZrRCaPBOKt1m7J4+bZ6sWs/MwkAGPn
-         i6sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9QjThyFdbfEEV7YSdHD2NDT9j0pnbAN4OFRmYnpNSIo=;
-        b=oJ3dnCyQR9D/znAkjW4wm3T23bJ9AX3tqf9MUzh+1xrhRAuoFwDEuCdivTfSooU6eM
-         +KkQ+WNjtwiCfrE8eT46zxwy0HxeOD3YEnPkf10SkfOt7WqkJtaBA044GTqpmdP3PF2k
-         1Y2Scmj8aVEqtO/y0kfmyLUYbuoITJkacro85qFwQ6+TrS/6Io1AebjXhZJkDdBV9OMh
-         vktL85LrAl1E8Ti3vg/PL7146xv9bb29DjTDfyK+iWavv5+lbLZ4oDt+yDCdBs05Fm0i
-         xCgOcwIR1NmZet+WpTRaYiqWsAg/VrB+ddiwTGLsdaYzrzdzv4h7A/YUmENy+Qv4MFHT
-         Kgmw==
-X-Gm-Message-State: AOAM531EbZC9U5vHjeoIrQdwcBYsBo3Dkwz5jB3zqwIGKkq7XB4Ex1MJ
-        A/49Itnlt84zBnK2C3w3t37XVA==
-X-Google-Smtp-Source: ABdhPJxL55uYLzlLBONLZRKY3c1FonDeJ3FtOdbAxVYVL+2eHBP7EPjqAldCxGZF7Kptg6CqOMgSAA==
-X-Received: by 2002:a63:175e:: with SMTP id 30mr23397809pgx.48.1620625151365;
-        Sun, 09 May 2021 22:39:11 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([103.207.71.35])
-        by smtp.gmail.com with ESMTPSA id gw7sm10270030pjb.57.2021.05.09.22.39.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 22:39:10 -0700 (PDT)
-Date:   Mon, 10 May 2021 13:39:04 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     coresight@lists.linaro.org, mathieu.poirier@linaro.org,
-        al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
-        Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] perf cs-etm: Handle valid-but-zero timestamps
-Message-ID: <20210510053904.GB4835@leoy-ThinkPad-X240s>
-References: <20210507095814.17933-1-james.clark@arm.com>
- <3926c523-3fdb-66de-8b9c-b68290a5053e@arm.com>
+        Mon, 10 May 2021 01:44:21 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4C4C95803ED;
+        Mon, 10 May 2021 01:43:10 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Mon, 10 May 2021 01:43:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=RcCO656jU7ucYxLuOLJKJiPZqI
+        WSdBT+CNf+tWSSbYQ=; b=h/hwVKL2VC6XO+f52OiwYys+JHbN5N8qA/hq8u8LcS
+        zHyl4J8bFhN5ezd6jUjRx7QV4OEaCjbpaWV0oIxfD6u9Pm5OdeUzYhMp7rFLPl+r
+        xBE0/hAnkUqZAnvT0hUBDDNYQGVSnp7lq+M+YKKBGx14Qdmz0w/qRDNv/XDJZrps
+        Azs+nIaR1/28KacqHzku42TzNSrzcSrBVKGnUhacpXmY5ucrCbuaFLaEx7sAou1X
+        8A86iKNvvmNM6lPwr5PkRcBYOJd7/KElhZlcs6CfCGTVj+dAuhKWRekeF76RuQP0
+        MqKueTIKZ7lWGmOREib9a7sTxHdgPHxCFM6OXk4pkCBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=RcCO656jU7ucYxLuO
+        LJKJiPZqIWSdBT+CNf+tWSSbYQ=; b=ZsKMHU58xlWay9yBeZUax8VCxxL5tgXJI
+        slb23LF3Uzi/y23orXwfWd3TBmd9Ks7uc5PqIC6xDspfIHEh/cz+fmk238xR8TWp
+        zf1p/CxCPUMAc6bSSOzSupAhbIfkfUG0gT4fcXmLPXRXbxS9WbYUT/4oeFYG0uvK
+        MLqP6EjECYotnEbN6SjdDR/6+7J7DVZtEWhPzdbBpGxTZf5I0ff0MXMlSUZ/R3cy
+        1uJWZlriAmB4EWgAkOol2m4jNrQ8sDmdDfyL6xDiudoGNNfZ/zmwJr3mqDiq671Z
+        mWa6d/tBrb5M8AvQHPIfcmQIeQd9W9HXeivZJTL2trS4kR6qPXXHQ==
+X-ME-Sender: <xms:7MeYYJbOhjX1m2jw_ByGv-TFsMcReD2hTo8gSBako3gZ45gjW1aXGA>
+    <xme:7MeYYAbWPrY7Jt9IXVbpKetAZcXf5N6MRv8Aw5ix3-58uP-LiiQfWwHDPMUjBfbcF
+    Irh3_uerflSHSbC7w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdegjedgleehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegrjhdr
+    ihgurdgruheqnecuggftrfgrthhtvghrnhepieetheduveelhfdvvdejleeuhfelteevhe
+    ffgfeitdefgeekjeefieevgfehhefgnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghen
+    ucfkphepvddtfedrheejrddvudehrdeknecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomheprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:7MeYYL_c8oXcWD8u1q3o7YJADyphClvGyTqmceeSfGFC6160QXa7Rw>
+    <xmx:7MeYYHoDs6Glsadar25fIGi0QyPPZLHD0CkzQnnhU_Fn8yVesE-SqA>
+    <xmx:7MeYYErbE-utNe71ZZe8UDf7DzyIdA61FCxS4hNpq2-Bla9BAjFMqA>
+    <xmx:7seYYB47OXnQXN4MbOY7y_ejU63IBAh8ruQg8HRvTQvUSPKHxLvXyw>
+Received: from localhost.localdomain (unknown [203.57.215.8])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Mon, 10 May 2021 01:43:03 -0400 (EDT)
+From:   Andrew Jeffery <andrew@aj.id.au>
+To:     openipmi-developer@lists.sourceforge.net, openbmc@lists.ozlabs.org,
+        minyard@acm.org
+Cc:     devicetree@vger.kernel.org, tmaimon77@gmail.com,
+        linux-aspeed@lists.ozlabs.org, avifishman70@gmail.com,
+        venture@google.com, linux-kernel@vger.kernel.org,
+        tali.perry1@gmail.com, robh+dt@kernel.org,
+        chiawei_wang@aspeedtech.com, linux-arm-kernel@lists.infradead.org,
+        benjaminfair@google.com, arnd@arndb.de, zweiss@equinix.com
+Subject: [PATCH v3 00/16] ipmi: Allow raw access to KCS devices
+Date:   Mon, 10 May 2021 15:11:57 +0930
+Message-Id: <20210510054213.1610760-1-andrew@aj.id.au>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3926c523-3fdb-66de-8b9c-b68290a5053e@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+Hello,
 
-On Fri, May 07, 2021 at 01:02:35PM +0300, James Clark wrote:
-> 
-> 
-> On 07/05/2021 12:58, James Clark wrote:
-> > There is an intermittent issue on Trogdor devices that
-> > results in all Coresight timestamps having a value of zero.
-> 
-> I've attached a file here that has the issue. From the dump you 
-> can see the zero timestamps:
-> 
->         Idx:69; ID:10;  I_TIMESTAMP : Timestamp.; Updated val = 0x0
->         Idx:71; ID:10;  I_ATOM_F1 : Atom format 1.; E
->         Idx:72; ID:10;  I_ADDR_S_IS0 : Address, Short, IS0.; Addr=0xFFFFFFE723C65824 ~[0x5824]
-> 
-> This doesn't have an impact on decoding as they end up being
-> decoded in file order as in with timeless mode.
+This is the 3rd spin of the series refactoring the keyboard-controller-style
+device drivers in the IPMI subsystem.
 
-Just remind, as Mike has mentioned that if the timestamp is zero, it
-means the hardware setting for timestamp is not enabled properly.  So
-for system wide or per CPU mode tracing, it's better to double check
-what's the reason the timestamp is not enabled properly.
+v2 can be found (in two parts because yay patch workflow mistakes) at:
 
-IIUC, this patch breaks the existed rational in the code.  Let's think
-about there have 4 CPUs, every CPU has its own AUX trace buffer, and
-when decode the trace data, it will use 4 queues to track the packets
-and every queue has its timestamp.
+Cover letter:
+https://lore.kernel.org/linux-arm-kernel/20210319061952.145040-1-andrew@aj.id.au/
 
-  CPU0: cs_etm_queue -> ... -> packet_queue->timestamp
-  CPU1: cs_etm_queue -> ... -> packet_queue->timestamp
-  CPU2: cs_etm_queue -> ... -> packet_queue->timestamp
-  CPU3: cs_etm_queue -> ... -> packet_queue->timestamp
+Patches:
+https://lore.kernel.org/linux-arm-kernel/20210319062752.145730-1-andrew@aj.id.au/
 
-The issue is if all CPUs' timestamp are zero, it's impossible to find
-a way to synthesize samples in the right time order.
+Several significant changes in v3:
 
-[...]
+1. The series is rebased onto v5.13-rc1
 
-> > diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> > index b01d363b9301..947e44413c6e 100644
-> > --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> > +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> > @@ -320,7 +320,10 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
-> >  	 * which instructions started by subtracting the number of instructions
-> >  	 * executed to the timestamp.
-> >  	 */
-> > -	packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
-> > +	if (packet_queue->instr_count >= elem->timestamp)
-> > +		packet_queue->cs_timestamp = 0;
-> > +	else
-> > +		packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
+2. v5.13-rc1 includes Chiawei's patches reworking the LPC devicetree bindings,
+   so they're no-longer required in the series.
 
-Actually here have two situations: one case is "elem->timestamp" is zero,
-another case is the overflow for "elem->timestamp".
+3. After some discussion with Arnd[1] and investigating the serio subsystem,
+   I've replaced the "raw" KCS driver (patch 16/21 in v2) with a serio adaptor
+   (patch 11/16 in this series). The adaptor allows us to take advantage of the
+   existing chardevs provided by serio.
 
-So the change should be like:
+[1] https://lore.kernel.org/linux-arm-kernel/37e75b07-a5c6-422f-84b3-54f2bea0b917@www.fastmail.com/
 
-   if (!elem->timestamp)
-       packet_queue->cs_timestamp = 0;
-   else if (packet_queue->instr_count >= elem->timestamp)
-       /* handle overflow? */
-   else
-      packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
+Finally, I've also addressed Zev Weiss' review comments where I thought it was
+required. These comments covered a lot of minor issues across (almost) all the
+patches, so it's best to review from a clean slate rather than attempt to review
+the differences between spins.
 
-It's better to think about how to handle the overflow in this case.
+Previously:
 
-Thanks,
-Leo
+Changes in v2 include:
+
+* A rebase onto v5.12-rc2
+* Incorporation of off-list feedback on SerIRQ configuration from
+  Chiawei
+* Further validation on hardware for ASPEED KCS devices 2, 3 and 4
+* Lifting the existing single-open constraint of the IPMI chardev
+* Fixes addressing Rob's feedback on the conversion of the ASPEED KCS
+  binding to dt-schema
+* Fixes addressing Rob's feedback on the new aspeed,lpc-interrupts
+  property definition for the ASPEED KCS binding
+
+Please test and review!
+
+Andrew
+
+Andrew Jeffery (16):
+  ipmi: kcs_bmc_aspeed: Use of match data to extract KCS properties
+  ipmi: kcs_bmc: Make status update atomic
+  ipmi: kcs_bmc: Rename {read,write}_{status,data}() functions
+  ipmi: kcs_bmc: Split out kcs_bmc_cdev_ipmi
+  ipmi: kcs_bmc: Turn the driver data-structures inside-out
+  ipmi: kcs_bmc: Split headers into device and client
+  ipmi: kcs_bmc: Strip private client data from struct kcs_bmc
+  ipmi: kcs_bmc: Decouple the IPMI chardev from the core
+  ipmi: kcs_bmc: Allow clients to control KCS IRQ state
+  ipmi: kcs_bmc: Don't enforce single-open policy in the kernel
+  ipmi: kcs_bmc: Add serio adaptor
+  dt-bindings: ipmi: Convert ASPEED KCS binding to schema
+  dt-bindings: ipmi: Add optional SerIRQ property to ASPEED KCS devices
+  ipmi: kcs_bmc_aspeed: Implement KCS SerIRQ configuration
+  ipmi: kcs_bmc_aspeed: Fix IBFIE typo from datasheet
+  ipmi: kcs_bmc_aspeed: Optionally apply status address
+
+ .../bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml | 106 +++
+ .../bindings/ipmi/aspeed-kcs-bmc.txt          |  33 -
+ drivers/char/ipmi/Kconfig                     |  27 +
+ drivers/char/ipmi/Makefile                    |   2 +
+ drivers/char/ipmi/kcs_bmc.c                   | 526 ++++-----------
+ drivers/char/ipmi/kcs_bmc.h                   |  92 +--
+ drivers/char/ipmi/kcs_bmc_aspeed.c            | 635 +++++++++++++-----
+ drivers/char/ipmi/kcs_bmc_cdev_ipmi.c         | 568 ++++++++++++++++
+ drivers/char/ipmi/kcs_bmc_client.h            |  48 ++
+ drivers/char/ipmi/kcs_bmc_device.h            |  22 +
+ drivers/char/ipmi/kcs_bmc_npcm7xx.c           |  94 ++-
+ drivers/char/ipmi/kcs_bmc_serio.c             | 151 +++++
+ 12 files changed, 1582 insertions(+), 722 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/ipmi/aspeed-kcs-bmc.txt
+ create mode 100644 drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
+ create mode 100644 drivers/char/ipmi/kcs_bmc_client.h
+ create mode 100644 drivers/char/ipmi/kcs_bmc_device.h
+ create mode 100644 drivers/char/ipmi/kcs_bmc_serio.c
+
+-- 
+2.27.0
+
