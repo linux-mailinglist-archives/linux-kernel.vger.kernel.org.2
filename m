@@ -2,120 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FAD379ADF
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 01:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A5C379AE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 01:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhEJXoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 19:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbhEJXoN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 19:44:13 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC9AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 16:43:08 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso15994670otg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 16:43:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=nI6OyGK/NDS5KWwyMcxjHYV++Bw+P/38diaFjV4zBiw=;
-        b=XkLmCEA2tZEsOS/on3p917VhWFUcl7NKtWoH8X+5ICOWQA9u6LahaURWjQ9oOX7lQs
-         nZ4hLFWGHFpyLxjIo5yX1Cl/shVaT50CuVuZoAU282yqDKC0ENPL2X8mCH/PmhLWatm4
-         73PtM05PUCWd+CFi2fqAg94B9RoBKdViq10QhRWMxkCuWc3Z/iVsKLG+J8IIUetA+6QL
-         0yBKuttVB/+qHl2Nl/1ghdNfRDN3D9BaObcHMn4HSKndwBx4t/SwllWik37yjCJZgeUa
-         W2QyvCdI82v7AGB9qAlntdxswXFb40aSMghDoxeq4EwFTMmrJ4iKjx5c9BC+k9Su8/qM
-         8VLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=nI6OyGK/NDS5KWwyMcxjHYV++Bw+P/38diaFjV4zBiw=;
-        b=jtb7rSnooVA51JXoO53JrU0a4WxJ6QC1QeNAaJvYp8r2m6hyd1YpSAyLoygLSaI24s
-         JQWmThk0mU9vnySr5f9KBwW+/YICCd05CWNTkrrdhPk7gy8Aw1pZ0I59AW4KI5LL3xN4
-         Sk4m/BOLMTgEX0pAi4PXlMWD8NK0QoXG/DM88NBbH56AE8Yj9sdmqx4l8clN04sL7Trp
-         H5utvKyPradT64j1hhvVQvLMh2yWnUusrzUckgmSeDjZvzkOx+XQ3cqqJk4vi6wCo9N1
-         Qv18kljj5PrQY92oPtjSpOfPJeLO9gbcNr9XRI/MquONm9PTilDovPiTnadp82vufi9J
-         WrjQ==
-X-Gm-Message-State: AOAM532jTazhxvQgS2jaCqlM+CuzzbphVCwVcXCpg1B9mlVojiW0TEAq
-        TZWKH6GBQY2e/0KhKPBIAJJCgQ==
-X-Google-Smtp-Source: ABdhPJwc7k8WryWRBA8BZ3WaBx9TJKkdH+Q2Mb1JowR0hD3dnCw13CNL/cexiLI7pDcx9SPE7hQxlw==
-X-Received: by 2002:a05:6830:1b6e:: with SMTP id d14mr6931963ote.65.1620690187161;
-        Mon, 10 May 2021 16:43:07 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id n98sm3446769ota.24.2021.05.10.16.43.05
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 10 May 2021 16:43:06 -0700 (PDT)
-Date:   Mon, 10 May 2021 16:42:48 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Miaohe Lin <linmiaohe@huawei.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] ksm: Revert "use GET_KSM_PAGE_NOLOCK to get ksm page in
- remove_rmap_item_from_tree()"
-In-Reply-To: <0e04877c-5b2d-b810-7464-108e793b84d3@huawei.com>
-Message-ID: <alpine.LSU.2.11.2105101615570.1127@eggly.anvils>
-References: <alpine.LSU.2.11.2105092253500.1127@eggly.anvils> <0e04877c-5b2d-b810-7464-108e793b84d3@huawei.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S230089AbhEJXqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 19:46:11 -0400
+Received: from mail-bn8nam12on2074.outbound.protection.outlook.com ([40.107.237.74]:61236
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229925AbhEJXqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 19:46:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fChj2XsbUI5A53OiEq0v1UCsCOCICwB5OUpQvJhrz09zABzCnI0/0AcUfAQTJ2ZCJPzxk/n5cQSppVS0XoAfFDoEb7vxCg+Lpjwlnp0AbKrOPsYcCEIHse+UWN2yzN+bIWUd8YlAb7w9Bj9cV0M1uWoRGPSv+TH3o4CfSMIToGqs2O1Ilgjk9nq9y7l6NnsojSVPmtLQAsqYU6m85W4n7Rn7fQ20M4+gRQok/rTuc+EyqGbPzWoXx1hc/TyH0B0vARmX2sXBhc+RXHXqTFX+knlUpuk6kubaBpb70RJ8DSz0cPCvzLELK1o2jUZ1xchrx2dDdeluTOjy/5Rbv2rH2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x7YvY3ghFZVy/MxSq55DpMslbyjZ5dtdU4r62kwxoiA=;
+ b=DiksCGr+vh+f8hJg8SdxNvN2Mt2Uu+WT0JdGV4o3gNMvRcPw+v+eH64RwEcx8Jd5WTlkWgcS+uQZQRs6MvdVqHp1a2ZFEIPCsYgdM//6LStWQeE4hGTn5iJOb2pUnrb8DObUn9th2tIMTFRtlQU5VzlYp3qtqkbme5fZ5nHK3ZgatdWGK31DEgF9SGaD6oy3YMyDUMmgGVU9o0ygMIDP0h1Sx6EqnDja7ev08XwzeKDm1cAuClvGu8j76K1A62x/UIhoxYXlK+Ig5ORPH1iWPiCgrRLY9lqPLUvz3527w9AzBwBaa1ewQkpT17dXX6GS7po7peD36B+BFumoLbL/1Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x7YvY3ghFZVy/MxSq55DpMslbyjZ5dtdU4r62kwxoiA=;
+ b=Yq7gr1UXvocILLOd/cAZX/SeIuPRzT2nlY8iA2gHlK+T+O8REUIqM67sUydNMVMQ1W2hCWb6JmMxghjM0z54FI4m7H1TN+MmpPrZuvc91T3D7OUUM/YSBkQK3Y3wc0NYxo371BOxHUkl1GX4ETN277n93RAqLwYT8EPrjuu4MdizO7soom8G1mFQbnWh7tHbmCMR6ekWFwFKOS+Rtgsi49w+nbw8SjtLnbrFzd4uil/1SJn8Ccig0q76mz9Fdqk8oi2s+WZg1RqRmFMUIBZAAt/J3diEuPzIQ0enSyKYgVSDuwjQLLg5zOgSPRN28KS+C8q54Zc2sR06Dc5XL5kWYg==
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2810.namprd12.prod.outlook.com (2603:10b6:5:41::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.26; Mon, 10 May
+ 2021 23:45:02 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4108.031; Mon, 10 May 2021
+ 23:45:01 +0000
+Date:   Mon, 10 May 2021 20:45:00 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210510234500.GI1002214@nvidia.com>
+References: <YJOZhPGheTSlHtQc@myrica>
+ <20210506122730.GQ1370958@nvidia.com>
+ <20210506163240.GA9058@otc-nc-03>
+ <MWHPR11MB188698FBEE62AF1313E0F7AC8C569@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210510123729.GA1002214@nvidia.com>
+ <20210510152502.GA90095@otc-nc-03>
+ <20210510153111.GB1002214@nvidia.com>
+ <20210510162212.GB90095@otc-nc-03>
+ <20210510163956.GD1002214@nvidia.com>
+ <20210510152854.793ee594@jacob-builder>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510152854.793ee594@jacob-builder>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR13CA0027.namprd13.prod.outlook.com
+ (2603:10b6:208:160::40) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR13CA0027.namprd13.prod.outlook.com (2603:10b6:208:160::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.11 via Frontend Transport; Mon, 10 May 2021 23:45:01 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lgFa8-004ynM-DO; Mon, 10 May 2021 20:45:00 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 447649ce-59bf-4c95-5af4-08d9140da0e5
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2810:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB2810B2115250C3B78CBC0E6AC2549@DM6PR12MB2810.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5iEiZ520upX09gKKQjoChrV3BJ0BV0SaVBKVXQzB4BSHTf/W4jOg1Kk+O9OMMzP1gvYkM7NaTFfADZNE6zIGQNlVbm3newncEQItNmTdQstATKavVGI5iaDuXrR7eG1Y4cxd1LEv+KNI8btagNyrzqL1gECfnev4IVT6kaSae/K/hpNXs5I61gFxjJX7cBsO0s+DnuIV2B3FXzcufDQLeTBX4HcBrJpPa6/s5gZWrr7xg/8T9Ys0I2yjJ7uXAbNtslwTSSUMWstzWo8E669yeQa+CFqIP3gIpCKyiJFdFHD0stZPNcNhaWf26DJ/BHtnUXx4gWEPnlqeUBsxZooKZQ+cTGPhKGDgKtCE6/8PqDdjDmANR+9lXQaBvy0nCfCUJeAcYoyW/fvFvt3T0byaB09azj5Rc3BQT18YprgvajouzKZTjwghfj1+YEm2mN/chGHJdfsmWB0uw2RAsl4m94Y/C217k2dEUE3+PgOXhySO56WlZyjs5w9MqTdWBIb8Bos6OHQzIbtwsga4YSC7lnm230cIhZoP1JeTSaBJH+kLEz47g+uM+7BkVeZwkUzve+7LSKoFFE1v9yV1PUosXXkPsE4iwxQHBmBOyUjRMWI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(136003)(39860400002)(366004)(426003)(9746002)(9786002)(26005)(66556008)(186003)(2906002)(7416002)(66476007)(8936002)(38100700002)(66946007)(6916009)(5660300002)(1076003)(478600001)(33656002)(4326008)(54906003)(36756003)(86362001)(8676002)(4744005)(2616005)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?BUp0s5BeV2Fu7aan6cme8pJEjLjmizN1izrXIo0wVMfIZNaAh6CIxsStMMhF?=
+ =?us-ascii?Q?OwKSZz4yMD5VkbrIdogs9sq07BYP70zCsACd3eDWF0n1u9Puzrh8MsbGXoVQ?=
+ =?us-ascii?Q?hUYhHwkYRrVwBE88kxwbechK6OqhwJiLQSbbpSyHv3gliLG4wxtDx8QpOaE1?=
+ =?us-ascii?Q?xC9MY2L2oNTmOyVIKyZyl+vys29cPGM/2fWdNuoAt8bRe2oaeOLV8esH/1Xm?=
+ =?us-ascii?Q?4Z2A0rUmjYVm8UQU6M14qL1xR6JEbl6+pK17gDP1+ASebzGvXqyGTlV7oZ10?=
+ =?us-ascii?Q?1FxwqYb9qqbYBb8yUShrNoDRPI+UfIs6n+CP+gpXW140EbGfDYMX5H/Sfkzy?=
+ =?us-ascii?Q?N8jBCLUn/Ckw9SZ+jq5LDSQBU+nxnmmYZVnWcV4wTv0QZMSU0l8kZz2TJQSz?=
+ =?us-ascii?Q?NlGsRX9RIEYRVtTsdyFKq7EqLkYBYKGV6BPf88hcJwCNpALd8OPUObxzRzQ2?=
+ =?us-ascii?Q?2iqNrgJnjo0HVLFjeV2alAHrAAA4qapfnLDfHg0wxdhlGWMsYh0mR46Dgfko?=
+ =?us-ascii?Q?WIqTEeLKwEb/6Ot62yGw4PJ0jVCO5EpALz/IDTT9uX/O05v9sWfQO3JNnEW7?=
+ =?us-ascii?Q?PjsuKvIAJpVX/raU8C31WSCmUkeP6tEP0E15XbRH6YLRJxVYL4qCm5VA1Z8S?=
+ =?us-ascii?Q?e74x4tfMo3yBQ9isVplszufYeewnpwsKsdtTNuy2syuoeoraDiWS1+cNywEU?=
+ =?us-ascii?Q?zAuvaIprnDke74EZdhyf0mlPJibMBGugysf5HJ96Ij5Dw243i6Il7FXfJMzV?=
+ =?us-ascii?Q?1g4U09U2qV6FDBxSiHZd8rkzrwVvTaS6uWha1QqUn53UPbMoGMuWyHlKKQ35?=
+ =?us-ascii?Q?9nSbtEx5vMrU5EtsufkXGg1jNx6n4xqDWGvp1TtHcAbuoXAYoXIHiDbNZhut?=
+ =?us-ascii?Q?9nNj3+FK4DVkVk8bKXbDKgyJ+/CC6jjqGatHKPMqCgsOKnuWfKfR9BO2gA7h?=
+ =?us-ascii?Q?6cmIDfkgtnyLO8+ayO6JUu+FvNVmkNHjk3UAWyrRuqgFSLtqByKFNIEU+gRw?=
+ =?us-ascii?Q?EdMoYG/JLmRWxuA+LEZBMfltTEPB0jQEzh2psPDJWSLV8FJ9LYBkmZuunbDn?=
+ =?us-ascii?Q?SH1jrS1POGSOklUtq/cJiy6KP62pJXkaSYkjqq5pI1Vp3//iZBCJiIOkZJRg?=
+ =?us-ascii?Q?OryD0Gbe2DTIR6SqDxi5BqAH6wM6yItOR/Cdj5MBhHAkn3zCDAPw1o4PGTik?=
+ =?us-ascii?Q?mtUg71gCLltiXWtWYEMXAfHNeF16WiBk9WPV/XfaI9euOIdjljGT8Ib9sVkX?=
+ =?us-ascii?Q?TZ9SHcBPesUJV2Fptxl1DudkeR1FzuDHOM5bvmpkjO9o3za0kGJVmVO2ZyXr?=
+ =?us-ascii?Q?7egJhqdz70+joWcrFrvhBy2x?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 447649ce-59bf-4c95-5af4-08d9140da0e5
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 May 2021 23:45:01.8080
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3XhNRUt8mzrbVQl0PbldETwrxrvBuAkqSYmK5e2keHnU+/EHyXuCVzu3MbABNGhO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2810
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021, Miaohe Lin wrote:
-> On 2021/5/10 13:59, Hugh Dickins wrote:
-> > This reverts commit 3e96b6a2e9ad929a3230a22f4d64a74671a0720b.
-> > General Protection Fault in rmap_walk_ksm() under memory pressure:
-> > remove_rmap_item_from_tree() needs to take page lock, of course.
-> > 
-> 
-> I'am really sorry about it! And many thanks for this bugfix!
-> It seems rmap_walk_ksm() relies on the page lock to protect against
-> concurrent modifications to that page's node of the stable tree.
-> Could you please add a comment in remove_rmap_item_from_tree() to
-> clarify this in case similar trouble again? Many thanks!
+On Mon, May 10, 2021 at 03:28:54PM -0700, Jacob Pan wrote:
 
-Sorry, no.  Page lock is held by callers of stable_tree_append() when
-adding an rmap_item to the tree, and held by callers of rmap_walk_ksm()
-(see VM_BUG_ON_PAGE there) when walking the tree: you would surely
-expect some kind of locking when removing an rmap_item from the tree,
-and the appropriate page lock is what GET_KSM_PAGE_LOCK provided.
+> To satisfy your "give me a PASID for this RID" proposal, can we just use
+> the RID's struct device as the token? Also add a type field to explicitly
+> indicate global vs per-set(per-RID). i.e.
 
-I do not want us to go through the kernel source adding a comment
-/* We really mean to take this lock: it protects against concurrency */
-every time we take a lock in the kernel: you should generally assume
-that if a lock is taken, then the writer intended it to be taken.
+You've got it backwards, the main behavior should be to allocate PASID
+per RID.
 
-There are sure to be some exceptions, where a lock is taken pointlessly:
-but please look deeper before assuming that is the case.
+The special behavior is to bundle a bunch of PASIDs into a grouping
+and then say the PASID number space is shared between all the group
+members. 
 
-Hugh
+/dev/ioasid should create and own this grouping either implicitly or
+explicitly. Jumping ahead to in-kernel APIs has missed the critical
+step of defining the uAPI and all the behaviors together in a
+completed RFC proposal.
 
-> 
-> > Signed-off-by: Hugh Dickins <hughd@google.com>
-> > ---
-> > 
-> >  mm/ksm.c |    3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > --- 5.13-rc1/mm/ksm.c	2021-05-09 17:03:44.010422188 -0700
-> > +++ linux/mm/ksm.c	2021-05-09 22:12:39.403008350 -0700
-> > @@ -776,11 +776,12 @@ static void remove_rmap_item_from_tree(s
-> >  		struct page *page;
-> >  
-> >  		stable_node = rmap_item->head;
-> > -		page = get_ksm_page(stable_node, GET_KSM_PAGE_NOLOCK);
-> > +		page = get_ksm_page(stable_node, GET_KSM_PAGE_LOCK);
-> >  		if (!page)
-> >  			goto out;
-> >  
-> >  		hlist_del(&rmap_item->hlist);
-> > +		unlock_page(page);
-> >  		put_page(page);
-> >  
-> >  		if (!hlist_empty(&stable_node->hlist))
+Jason
