@@ -2,169 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ACDE377D10
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 09:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F998377CE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 09:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhEJHZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 03:25:09 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:34018 "EHLO inva021.nxp.com"
+        id S230153AbhEJHIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 03:08:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229863AbhEJHZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 03:25:07 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D6AE7200121;
-        Mon, 10 May 2021 09:24:01 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C939F203C37;
-        Mon, 10 May 2021 09:23:51 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 405384030C;
-        Mon, 10 May 2021 15:23:40 +0800 (+08)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, timur@kernel.org, nicoleotsuka@gmail.com,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v2 2/2] ASoC: dt-bindings: imx-akcodec: Add binding doc for akcodec machine driver
-Date:   Mon, 10 May 2021 15:07:21 +0800
-Message-Id: <1620630441-14358-2-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620630441-14358-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1620630441-14358-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S230023AbhEJHIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 03:08:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7618D6101B;
+        Mon, 10 May 2021 07:07:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620630452;
+        bh=N23M13Ne0KNJ0ahWWAcmuUD4JrqoALKpnUjmFzapsKA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gCbf/R/FNsM42LJ//O1rhsQpXbJMCfF9myiGjZOVHM35sAuuH42hJ52Ia/1eFlicT
+         zrtmtK4p8eN49mUXukdwS5s128xRZNgm+zS6YpFLaDppTTaHNB7iv13oSPFbJuD/2R
+         bpw9CZRdhhgnm9lRHSk8BinUukuPKI5am22leW35j2nK2BL8Y6IsfG2Sh8PBcqwbH0
+         VNGeST2QgRFeZ+dY4qp76dBngLdSiZv7dYuCVoIoXHL/xpG9FdNBf4nDQPWihe+4T2
+         BRyI3tGIpps17eA0nuFfCI+WpSgmU+sFb4NIhFt0uYYtCq2AccrU4c+jxm4mkKqpri
+         EXXskWHqtFhGQ==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: defconfig: qcom: enable interconnect for SM8350
+Date:   Mon, 10 May 2021 12:37:25 +0530
+Message-Id: <20210510070725.3839459-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Imx-akcodec is a new added machine driver for supporting
-ak4458/ak5558/ak5552/ak4497 codec on i.MX platforms.
+Enable the interconnect for SM8350 as a module
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
-changes in v2:
-- update doc accoring to Rob's comment, use the common porperties.
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
- .../bindings/sound/imx-audio-akcodec.yaml     | 107 ++++++++++++++++++
- 1 file changed, 107 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml b/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
-new file mode 100644
-index 000000000000..0812c4779b59
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
-@@ -0,0 +1,107 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/imx-audio-akcodec.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP i.MX audio complex with AK4458/AK5558/AK5552/AK4497 codec
-+
-+maintainers:
-+  - Shengjiu Wang <shengjiu.wang@nxp.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx8mq-audio-akcodec
-+      - fsl,imx-audio-akcodec
-+
-+  model:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: User specified audio sound card name
-+
-+  audio-routing:
-+    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-+    description:
-+      A list of the connections between audio components. Each entry is a
-+      pair of strings, the first being the connection's sink, the second
-+      being the connection's source. Valid names could be power supplies,
-+      MicBias of codec and the jacks on the board.
-+
-+patternProperties:
-+  ".*-dai-link$":
-+    description:
-+      Each subnode represents a dai link. Subnodes of each dai links would be
-+      cpu/codec dais.
-+
-+    type: object
-+
-+    properties:
-+      link-name:
-+        description: Indicates dai-link name and PCM stream name.
-+        $ref: /schemas/types.yaml#/definitions/string
-+        maxItems: 1
-+
-+      format:
-+        description: audio format.
-+        items:
-+          enum:
-+            - i2s
-+            - dsp_b
-+
-+      cpu:
-+        description: Holds subnode which indicates cpu dai.
-+        type: object
-+        properties:
-+          sound-dai: true
-+
-+      codec:
-+        description: Holds subnode which indicates codec dai.
-+        type: object
-+        properties:
-+          sound-dai: true
-+
-+    required:
-+      - link-name
-+      - cpu
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - model
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    sound-ak4458 {
-+        compatible = "fsl,imx-audio-akcodec";
-+        model = "ak4458-audio";
-+        pri-dai-link {
-+            link-name = "akcodec";
-+            format = "i2s";
-+            cpu {
-+                 sound-dai = <&sai1>;
-+            };
-+            codec {
-+                 sound-dai = <&ak4458_1>, <&ak4458_2>;
-+            };
-+        };
-+        fe-dai-link {
-+            link-name = "HiFi-ASRC-FE";
-+            format = "i2s";
-+            cpu {
-+                sound-dai = <&easrc>;
-+            };
-+        };
-+        be-dai-link {
-+            link-name = "HiFi-ASRC-BE";
-+            format = "dsp_b";
-+            cpu {
-+                sound-dai = <&sai1>;
-+            };
-+            codec {
-+                sound-dai = <&ak4458_1>, <&ak4458_2>;
-+            };
-+        };
-+    };
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 08c6f769df9a..a382d85c9434 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -1148,6 +1148,7 @@ CONFIG_INTERCONNECT_QCOM_OSM_L3=m
+ CONFIG_INTERCONNECT_QCOM_SDM845=y
+ CONFIG_INTERCONNECT_QCOM_SM8150=m
+ CONFIG_INTERCONNECT_QCOM_SM8250=m
++CONFIG_INTERCONNECT_QCOM_SM8350=m
+ CONFIG_EXT2_FS=y
+ CONFIG_EXT3_FS=y
+ CONFIG_EXT4_FS_POSIX_ACL=y
 -- 
-2.27.0
+2.26.3
 
