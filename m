@@ -2,165 +2,600 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7BC2378093
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3AE378099
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbhEJJz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:55:56 -0400
-Received: from smtprelay0211.hostedemail.com ([216.40.44.211]:50288 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230497AbhEJJxX (ORCPT
+        id S231343AbhEJJ4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:56:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231501AbhEJJyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:53:23 -0400
-Received: from omf15.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 21A4C100E7B42;
-        Mon, 10 May 2021 09:52:17 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id C6992C4184;
-        Mon, 10 May 2021 09:52:15 +0000 (UTC)
-Message-ID: <7c0f57c1208b09742c839b1c1e54e2b79c83b8af.camel@perches.com>
-Subject: Re: [PATCH] HID: ft260: fix format type warning in ft260_word_show()
-From:   Joe Perches <joe@perches.com>
-To:     Michael Zaidman <michael.zaidman@gmail.com>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        jikos@kernel.org, dan.carpenter@oracle.com,
-        linux-input@vger.kernel.org
-Date:   Mon, 10 May 2021 02:52:14 -0700
-In-Reply-To: <20210510091730.GA2276@michael-VirtualBox>
-References: <202105060637.LeEC6ztp-lkp@intel.com>
-         <20210509193213.5974-1-michael.zaidman@gmail.com>
-         <26e1929386babea33d4a320b506c5247caacde77.camel@perches.com>
-         <20210510091730.GA2276@michael-VirtualBox>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Mon, 10 May 2021 05:54:23 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C58DC061353
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 02:53:07 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:f937:4595:45ff:bcbf])
+        by xavier.telenet-ops.be with bizsmtp
+        id 2xt5250054jQ7kl01xt5l7; Mon, 10 May 2021 11:53:05 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lg2b2-004Oos-T5; Mon, 10 May 2021 11:53:04 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lg2b2-00HJG4-3L; Mon, 10 May 2021 11:53:04 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v5.13-rc1
+Date:   Mon, 10 May 2021 11:53:02 +0200
+Message-Id: <20210510095302.4125561-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.40
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: C6992C4184
-X-Stat-Signature: 6ttn4yrgzpd86o1w8ng177yj47jjhw4t
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+pan58tWSx0z0CVolnNbeqmvoWkh/6unM=
-X-HE-Tag: 1620640335-659357
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-10 at 12:17 +0300, Michael Zaidman wrote:
-> On Sun, May 09, 2021 at 01:39:29PM -0700, Joe Perches wrote:
-> > On Sun, 2021-05-09 at 22:32 +0300, Michael Zaidman wrote:
-> > > Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
-> > > 
-> > > Fix warning reported by static analysis when built with W=1 for arm64 by
-> > > clang version 13.0.0
-> > > 
-> > > > > drivers/hid/hid-ft260.c:794:44: warning: format specifies type 'short' but
-> > >    the argument has type 'int' [-Wformat]
-> > >            return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
-> > >                                              ~~~     ^~~~~~~~~~~~~~~~~~~
-> > >                                              %i
-> > >    include/linux/byteorder/generic.h:91:21: note: expanded from
-> > >                                             macro 'le16_to_cpu'
-> > >    #define le16_to_cpu __le16_to_cpu
-> > >                        ^
-> > >    include/uapi/linux/byteorder/big_endian.h:36:26: note: expanded from
-> > >                                                     macro '__le16_to_cpu'
-> > >    #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
-> > >                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >    include/uapi/linux/swab.h:105:2: note: expanded from macro '__swab16'
-> > >            (__builtin_constant_p((__u16)(x)) ?     \
-> > >            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > 
-> > > Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > ---
-> > >  drivers/hid/hid-ft260.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
-> > > index 047aa85a7c83..38794a29599c 100644
-> > > --- a/drivers/hid/hid-ft260.c
-> > > +++ b/drivers/hid/hid-ft260.c
-> > > @@ -791,7 +791,7 @@ static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
-> > >  	if (ret != len && ret >= 0)
-> > >  		return -EIO;
-> > >  
-> > > 
-> > > -	return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
-> > > +	return scnprintf(buf, PAGE_SIZE, "%d\n", le16_to_cpu(*field));
-> > >  }
-> > 
-> > There are 2 of these so I wonder about the static analysis.
-> 
-> There is nothing wrong with the static analysis. The first scnprintf format
-> type is perfectly valid as far as its size is greater than the size of the
-> data pointed by the *field pointer, which is a one byte size in our case.
-> The static analysis warned about the second scnprintf case, where the format
-> type was shorter than the integer returned by the __builtin_constant_p.
-> This warning can be considered as a false positive since the le16_to_cpu is
-> all about the 16 bits numbers, but to silence it, I submitted the above fix.
+  - Drop CONFIG_NF_LOG_NETDEV=m (removed in commit 1510618e45cb9fb7
+    ("netfilter: nf_log_netdev: merge with nf_log_syslog")),
+  - Enable modular build of IPv4 packet logging (no longer auto-enabled
+    since commit db3187ae21bb0cff ("netfilter: nf_log_ipv4: rename to
+    nf_log_syslog")),
+  - Drop CONFIG_NF_LOG_BRIDGE=m (removed in commit 77ccee96a67422ac
+    ("netfilter: nf_log_bridge: merge with nf_log_syslog")),
+  - Enable modular build of ECDSA crypto algorithm,
+  - Enable modular build of 64bit/32bit division and modulo test.
 
-$ git grep __arch_swab16 arch/arm*/
-arch/arm/include/asm/swab.h:#define __arch_swab16(x) ((__u16)__arch_swahb32(x))
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be queued in the m68k tree for v5.14.
 
-otherwise:
+ arch/m68k/configs/amiga_defconfig    | 5 +++--
+ arch/m68k/configs/apollo_defconfig   | 5 +++--
+ arch/m68k/configs/atari_defconfig    | 5 +++--
+ arch/m68k/configs/bvme6000_defconfig | 5 +++--
+ arch/m68k/configs/hp300_defconfig    | 5 +++--
+ arch/m68k/configs/mac_defconfig      | 5 +++--
+ arch/m68k/configs/multi_defconfig    | 5 +++--
+ arch/m68k/configs/mvme147_defconfig  | 5 +++--
+ arch/m68k/configs/mvme16x_defconfig  | 5 +++--
+ arch/m68k/configs/q40_defconfig      | 5 +++--
+ arch/m68k/configs/sun3_defconfig     | 5 +++--
+ arch/m68k/configs/sun3x_defconfig    | 5 +++--
+ 12 files changed, 36 insertions(+), 24 deletions(-)
 
-static inline __attribute_const__ __u16 __fswab16(__u16 val)
-{
-#if defined (__arch_swab16)
-	return __arch_swab16(val);
-#else
-	return ___constant_swab16(val);
-#endif
-}
-
-#define ___constant_swab16(x) ((__u16)(				\
-	(((__u16)(x) & (__u16)0x00ffU) << 8) |			\
-	(((__u16)(x) & (__u16)0xff00U) >> 8)))
-
-/**
- * __swab16 - return a byteswapped 16-bit value
- * @x: value to byteswap
- */
-#ifdef __HAVE_BUILTIN_BSWAP16__
-#define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
-#else
-#define __swab16(x)				\
-	(__builtin_constant_p((__u16)(x)) ?	\
-	___constant_swab16(x) :			\
-	__fswab16(x))
-#endif
-
-Under what condition does the ?: return an int sized value
-rather than a u16 sized value?  I fail to see a path where
-the compiler should promote the returned value to int _before_
-the promotion done for the varargs use.
-
-If it's for the varargs use, then both instances are promoted.
-
-> > It's probably better to use sysfs_emit as well.
-> 
-> The sysfs_emit was introduced in the 5.10 kernel:
-> 2efc459d06f16 (Joe Perches 2020-09-16 13:40:38 -0700 335) int sysfs_emit(...)
-> 
-> But, the hid-ft260 driver will be used mostly with older kernels, at least,
-> for the next couple of years. Since older kernel versions do not have this API,
-> it will require patching the driver or kernel that I would like to avoid.
-> Nevertheless, we can reconsider the sysfs_emit usage in this driver in the
-> future, upon wider 5.10+ kernels' adoption.
-
-If this is only for older kernels, then it's not really useful
-upstream IMO.
-
-any sprintf style use of %h or %hh for a sub int sized value isn't
-particularly useful as integer promotion is done on the value so it
-should use %d (or %i, but %i is atypical) anyway.
-
-https://lore.kernel.org/lkml/CAHk-=wgoxnmsj8GEVFJSvTwdnWm8wVJthefNk2n6+4TC=20e0Q@mail.gmail.com/
-
-$ git grep '%d\b' | wc -l
-109922
-$ git grep '%i\b' | wc -l
-3508
-
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 59b727b693575eb3..75e8e9b6551dd125 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -85,7 +85,6 @@ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
+ CONFIG_NF_CONNTRACK=m
+-CONFIG_NF_LOG_NETDEV=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+@@ -207,6 +206,7 @@ CONFIG_NFT_FIB_IPV4=m
+ CONFIG_NF_TABLES_ARP=y
+ CONFIG_NF_FLOW_TABLE_IPV4=m
+ CONFIG_NF_LOG_ARP=m
++CONFIG_NF_LOG_IPV4=m
+ CONFIG_IP_NF_IPTABLES=m
+ CONFIG_IP_NF_MATCH_AH=m
+ CONFIG_IP_NF_MATCH_ECN=m
+@@ -253,7 +253,6 @@ CONFIG_IP6_NF_TARGET_NPT=m
+ CONFIG_NF_TABLES_BRIDGE=m
+ CONFIG_NFT_BRIDGE_META=m
+ CONFIG_NFT_BRIDGE_REJECT=m
+-CONFIG_NF_LOG_BRIDGE=m
+ CONFIG_NF_CONNTRACK_BRIDGE=m
+ CONFIG_BRIDGE_NF_EBTABLES=m
+ CONFIG_BRIDGE_EBT_BROUTE=m
+@@ -563,6 +562,7 @@ CONFIG_CRYPTO_TEST=m
+ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
++CONFIG_CRYPTO_ECDSA=m
+ CONFIG_CRYPTO_ECRDSA=m
+ CONFIG_CRYPTO_SM2=m
+ CONFIG_CRYPTO_CURVE25519=m
+@@ -627,6 +627,7 @@ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
++CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 8d4ddcebe7b8d2e5..4dc6dcfaf28ab323 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -81,7 +81,6 @@ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
+ CONFIG_NF_CONNTRACK=m
+-CONFIG_NF_LOG_NETDEV=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+@@ -203,6 +202,7 @@ CONFIG_NFT_FIB_IPV4=m
+ CONFIG_NF_TABLES_ARP=y
+ CONFIG_NF_FLOW_TABLE_IPV4=m
+ CONFIG_NF_LOG_ARP=m
++CONFIG_NF_LOG_IPV4=m
+ CONFIG_IP_NF_IPTABLES=m
+ CONFIG_IP_NF_MATCH_AH=m
+ CONFIG_IP_NF_MATCH_ECN=m
+@@ -249,7 +249,6 @@ CONFIG_IP6_NF_TARGET_NPT=m
+ CONFIG_NF_TABLES_BRIDGE=m
+ CONFIG_NFT_BRIDGE_META=m
+ CONFIG_NFT_BRIDGE_REJECT=m
+-CONFIG_NF_LOG_BRIDGE=m
+ CONFIG_NF_CONNTRACK_BRIDGE=m
+ CONFIG_BRIDGE_NF_EBTABLES=m
+ CONFIG_BRIDGE_EBT_BROUTE=m
+@@ -519,6 +518,7 @@ CONFIG_CRYPTO_TEST=m
+ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
++CONFIG_CRYPTO_ECDSA=m
+ CONFIG_CRYPTO_ECRDSA=m
+ CONFIG_CRYPTO_SM2=m
+ CONFIG_CRYPTO_CURVE25519=m
+@@ -583,6 +583,7 @@ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
++CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index b0afb5a4270a230d..2243211c4d778d0d 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -88,7 +88,6 @@ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
+ CONFIG_NF_CONNTRACK=m
+-CONFIG_NF_LOG_NETDEV=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+@@ -210,6 +209,7 @@ CONFIG_NFT_FIB_IPV4=m
+ CONFIG_NF_TABLES_ARP=y
+ CONFIG_NF_FLOW_TABLE_IPV4=m
+ CONFIG_NF_LOG_ARP=m
++CONFIG_NF_LOG_IPV4=m
+ CONFIG_IP_NF_IPTABLES=m
+ CONFIG_IP_NF_MATCH_AH=m
+ CONFIG_IP_NF_MATCH_ECN=m
+@@ -256,7 +256,6 @@ CONFIG_IP6_NF_TARGET_NPT=m
+ CONFIG_NF_TABLES_BRIDGE=m
+ CONFIG_NFT_BRIDGE_META=m
+ CONFIG_NFT_BRIDGE_REJECT=m
+-CONFIG_NF_LOG_BRIDGE=m
+ CONFIG_NF_CONNTRACK_BRIDGE=m
+ CONFIG_BRIDGE_NF_EBTABLES=m
+ CONFIG_BRIDGE_EBT_BROUTE=m
+@@ -551,6 +550,7 @@ CONFIG_CRYPTO_TEST=m
+ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
++CONFIG_CRYPTO_ECDSA=m
+ CONFIG_CRYPTO_ECRDSA=m
+ CONFIG_CRYPTO_SM2=m
+ CONFIG_CRYPTO_CURVE25519=m
+@@ -616,6 +616,7 @@ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
++CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index c3f3f462e6ce6fa5..2c3f428338469686 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -78,7 +78,6 @@ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
+ CONFIG_NF_CONNTRACK=m
+-CONFIG_NF_LOG_NETDEV=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+@@ -200,6 +199,7 @@ CONFIG_NFT_FIB_IPV4=m
+ CONFIG_NF_TABLES_ARP=y
+ CONFIG_NF_FLOW_TABLE_IPV4=m
+ CONFIG_NF_LOG_ARP=m
++CONFIG_NF_LOG_IPV4=m
+ CONFIG_IP_NF_IPTABLES=m
+ CONFIG_IP_NF_MATCH_AH=m
+ CONFIG_IP_NF_MATCH_ECN=m
+@@ -246,7 +246,6 @@ CONFIG_IP6_NF_TARGET_NPT=m
+ CONFIG_NF_TABLES_BRIDGE=m
+ CONFIG_NFT_BRIDGE_META=m
+ CONFIG_NFT_BRIDGE_REJECT=m
+-CONFIG_NF_LOG_BRIDGE=m
+ CONFIG_NF_CONNTRACK_BRIDGE=m
+ CONFIG_BRIDGE_NF_EBTABLES=m
+ CONFIG_BRIDGE_EBT_BROUTE=m
+@@ -512,6 +511,7 @@ CONFIG_CRYPTO_TEST=m
+ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
++CONFIG_CRYPTO_ECDSA=m
+ CONFIG_CRYPTO_ECRDSA=m
+ CONFIG_CRYPTO_SM2=m
+ CONFIG_CRYPTO_CURVE25519=m
+@@ -576,6 +576,7 @@ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
++CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 8c908fc5c1910aa0..5b1898d4b249a467 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -80,7 +80,6 @@ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
+ CONFIG_NF_CONNTRACK=m
+-CONFIG_NF_LOG_NETDEV=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+@@ -202,6 +201,7 @@ CONFIG_NFT_FIB_IPV4=m
+ CONFIG_NF_TABLES_ARP=y
+ CONFIG_NF_FLOW_TABLE_IPV4=m
+ CONFIG_NF_LOG_ARP=m
++CONFIG_NF_LOG_IPV4=m
+ CONFIG_IP_NF_IPTABLES=m
+ CONFIG_IP_NF_MATCH_AH=m
+ CONFIG_IP_NF_MATCH_ECN=m
+@@ -248,7 +248,6 @@ CONFIG_IP6_NF_TARGET_NPT=m
+ CONFIG_NF_TABLES_BRIDGE=m
+ CONFIG_NFT_BRIDGE_META=m
+ CONFIG_NFT_BRIDGE_REJECT=m
+-CONFIG_NF_LOG_BRIDGE=m
+ CONFIG_NF_CONNTRACK_BRIDGE=m
+ CONFIG_BRIDGE_NF_EBTABLES=m
+ CONFIG_BRIDGE_EBT_BROUTE=m
+@@ -521,6 +520,7 @@ CONFIG_CRYPTO_TEST=m
+ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
++CONFIG_CRYPTO_ECDSA=m
+ CONFIG_CRYPTO_ECRDSA=m
+ CONFIG_CRYPTO_SM2=m
+ CONFIG_CRYPTO_CURVE25519=m
+@@ -585,6 +585,7 @@ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
++CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 4e68b72d9c50f15b..30c61f518c1813fd 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -79,7 +79,6 @@ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
+ CONFIG_NF_CONNTRACK=m
+-CONFIG_NF_LOG_NETDEV=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+@@ -201,6 +200,7 @@ CONFIG_NFT_FIB_IPV4=m
+ CONFIG_NF_TABLES_ARP=y
+ CONFIG_NF_FLOW_TABLE_IPV4=m
+ CONFIG_NF_LOG_ARP=m
++CONFIG_NF_LOG_IPV4=m
+ CONFIG_IP_NF_IPTABLES=m
+ CONFIG_IP_NF_MATCH_AH=m
+ CONFIG_IP_NF_MATCH_ECN=m
+@@ -247,7 +247,6 @@ CONFIG_IP6_NF_TARGET_NPT=m
+ CONFIG_NF_TABLES_BRIDGE=m
+ CONFIG_NFT_BRIDGE_META=m
+ CONFIG_NFT_BRIDGE_REJECT=m
+-CONFIG_NF_LOG_BRIDGE=m
+ CONFIG_NF_CONNTRACK_BRIDGE=m
+ CONFIG_BRIDGE_NF_EBTABLES=m
+ CONFIG_BRIDGE_EBT_BROUTE=m
+@@ -544,6 +543,7 @@ CONFIG_CRYPTO_TEST=m
+ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
++CONFIG_CRYPTO_ECDSA=m
+ CONFIG_CRYPTO_ECRDSA=m
+ CONFIG_CRYPTO_SM2=m
+ CONFIG_CRYPTO_CURVE25519=m
+@@ -608,6 +608,7 @@ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
++CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index d31896293c394c21..0ee0e6128905628f 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -99,7 +99,6 @@ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
+ CONFIG_NF_CONNTRACK=m
+-CONFIG_NF_LOG_NETDEV=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+@@ -221,6 +220,7 @@ CONFIG_NFT_FIB_IPV4=m
+ CONFIG_NF_TABLES_ARP=y
+ CONFIG_NF_FLOW_TABLE_IPV4=m
+ CONFIG_NF_LOG_ARP=m
++CONFIG_NF_LOG_IPV4=m
+ CONFIG_IP_NF_IPTABLES=m
+ CONFIG_IP_NF_MATCH_AH=m
+ CONFIG_IP_NF_MATCH_ECN=m
+@@ -267,7 +267,6 @@ CONFIG_IP6_NF_TARGET_NPT=m
+ CONFIG_NF_TABLES_BRIDGE=m
+ CONFIG_NFT_BRIDGE_META=m
+ CONFIG_NFT_BRIDGE_REJECT=m
+-CONFIG_NF_LOG_BRIDGE=m
+ CONFIG_NF_CONNTRACK_BRIDGE=m
+ CONFIG_BRIDGE_NF_EBTABLES=m
+ CONFIG_BRIDGE_EBT_BROUTE=m
+@@ -630,6 +629,7 @@ CONFIG_CRYPTO_TEST=m
+ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
++CONFIG_CRYPTO_ECDSA=m
+ CONFIG_CRYPTO_ECRDSA=m
+ CONFIG_CRYPTO_SM2=m
+ CONFIG_CRYPTO_CURVE25519=m
+@@ -694,6 +694,7 @@ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
++CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index c7442f9dd469a19e..793085f00c99f551 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -77,7 +77,6 @@ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
+ CONFIG_NF_CONNTRACK=m
+-CONFIG_NF_LOG_NETDEV=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+@@ -199,6 +198,7 @@ CONFIG_NFT_FIB_IPV4=m
+ CONFIG_NF_TABLES_ARP=y
+ CONFIG_NF_FLOW_TABLE_IPV4=m
+ CONFIG_NF_LOG_ARP=m
++CONFIG_NF_LOG_IPV4=m
+ CONFIG_IP_NF_IPTABLES=m
+ CONFIG_IP_NF_MATCH_AH=m
+ CONFIG_IP_NF_MATCH_ECN=m
+@@ -245,7 +245,6 @@ CONFIG_IP6_NF_TARGET_NPT=m
+ CONFIG_NF_TABLES_BRIDGE=m
+ CONFIG_NFT_BRIDGE_META=m
+ CONFIG_NFT_BRIDGE_REJECT=m
+-CONFIG_NF_LOG_BRIDGE=m
+ CONFIG_NF_CONNTRACK_BRIDGE=m
+ CONFIG_BRIDGE_NF_EBTABLES=m
+ CONFIG_BRIDGE_EBT_BROUTE=m
+@@ -511,6 +510,7 @@ CONFIG_CRYPTO_TEST=m
+ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
++CONFIG_CRYPTO_ECDSA=m
+ CONFIG_CRYPTO_ECRDSA=m
+ CONFIG_CRYPTO_SM2=m
+ CONFIG_CRYPTO_CURVE25519=m
+@@ -575,6 +575,7 @@ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
++CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 233b82ea103a448b..56fbac7943b2ee8c 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -78,7 +78,6 @@ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
+ CONFIG_NF_CONNTRACK=m
+-CONFIG_NF_LOG_NETDEV=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+@@ -200,6 +199,7 @@ CONFIG_NFT_FIB_IPV4=m
+ CONFIG_NF_TABLES_ARP=y
+ CONFIG_NF_FLOW_TABLE_IPV4=m
+ CONFIG_NF_LOG_ARP=m
++CONFIG_NF_LOG_IPV4=m
+ CONFIG_IP_NF_IPTABLES=m
+ CONFIG_IP_NF_MATCH_AH=m
+ CONFIG_IP_NF_MATCH_ECN=m
+@@ -246,7 +246,6 @@ CONFIG_IP6_NF_TARGET_NPT=m
+ CONFIG_NF_TABLES_BRIDGE=m
+ CONFIG_NFT_BRIDGE_META=m
+ CONFIG_NFT_BRIDGE_REJECT=m
+-CONFIG_NF_LOG_BRIDGE=m
+ CONFIG_NF_CONNTRACK_BRIDGE=m
+ CONFIG_BRIDGE_NF_EBTABLES=m
+ CONFIG_BRIDGE_EBT_BROUTE=m
+@@ -512,6 +511,7 @@ CONFIG_CRYPTO_TEST=m
+ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
++CONFIG_CRYPTO_ECDSA=m
+ CONFIG_CRYPTO_ECRDSA=m
+ CONFIG_CRYPTO_SM2=m
+ CONFIG_CRYPTO_CURVE25519=m
+@@ -576,6 +576,7 @@ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
++CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 664025a0f6a4173e..ebfd1cb3a9b6f2a4 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -79,7 +79,6 @@ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
+ CONFIG_NF_CONNTRACK=m
+-CONFIG_NF_LOG_NETDEV=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+@@ -201,6 +200,7 @@ CONFIG_NFT_FIB_IPV4=m
+ CONFIG_NF_TABLES_ARP=y
+ CONFIG_NF_FLOW_TABLE_IPV4=m
+ CONFIG_NF_LOG_ARP=m
++CONFIG_NF_LOG_IPV4=m
+ CONFIG_IP_NF_IPTABLES=m
+ CONFIG_IP_NF_MATCH_AH=m
+ CONFIG_IP_NF_MATCH_ECN=m
+@@ -247,7 +247,6 @@ CONFIG_IP6_NF_TARGET_NPT=m
+ CONFIG_NF_TABLES_BRIDGE=m
+ CONFIG_NFT_BRIDGE_META=m
+ CONFIG_NFT_BRIDGE_REJECT=m
+-CONFIG_NF_LOG_BRIDGE=m
+ CONFIG_NF_CONNTRACK_BRIDGE=m
+ CONFIG_BRIDGE_NF_EBTABLES=m
+ CONFIG_BRIDGE_EBT_BROUTE=m
+@@ -530,6 +529,7 @@ CONFIG_CRYPTO_TEST=m
+ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
++CONFIG_CRYPTO_ECDSA=m
+ CONFIG_CRYPTO_ECRDSA=m
+ CONFIG_CRYPTO_SM2=m
+ CONFIG_CRYPTO_CURVE25519=m
+@@ -594,6 +594,7 @@ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
++CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 73293a0b3dc86e58..3490a05f29b82d40 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -75,7 +75,6 @@ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
+ CONFIG_NF_CONNTRACK=m
+-CONFIG_NF_LOG_NETDEV=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+@@ -197,6 +196,7 @@ CONFIG_NFT_FIB_IPV4=m
+ CONFIG_NF_TABLES_ARP=y
+ CONFIG_NF_FLOW_TABLE_IPV4=m
+ CONFIG_NF_LOG_ARP=m
++CONFIG_NF_LOG_IPV4=m
+ CONFIG_IP_NF_IPTABLES=m
+ CONFIG_IP_NF_MATCH_AH=m
+ CONFIG_IP_NF_MATCH_ECN=m
+@@ -243,7 +243,6 @@ CONFIG_IP6_NF_TARGET_NPT=m
+ CONFIG_NF_TABLES_BRIDGE=m
+ CONFIG_NFT_BRIDGE_META=m
+ CONFIG_NFT_BRIDGE_REJECT=m
+-CONFIG_NF_LOG_BRIDGE=m
+ CONFIG_NF_CONNTRACK_BRIDGE=m
+ CONFIG_BRIDGE_NF_EBTABLES=m
+ CONFIG_BRIDGE_EBT_BROUTE=m
+@@ -514,6 +513,7 @@ CONFIG_CRYPTO_TEST=m
+ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
++CONFIG_CRYPTO_ECDSA=m
+ CONFIG_CRYPTO_ECRDSA=m
+ CONFIG_CRYPTO_SM2=m
+ CONFIG_CRYPTO_CURVE25519=m
+@@ -577,6 +577,7 @@ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
++CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index bca8a6f3e92f55a8..4e92c8c332fc5f97 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -75,7 +75,6 @@ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
+ CONFIG_NF_CONNTRACK=m
+-CONFIG_NF_LOG_NETDEV=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+@@ -197,6 +196,7 @@ CONFIG_NFT_FIB_IPV4=m
+ CONFIG_NF_TABLES_ARP=y
+ CONFIG_NF_FLOW_TABLE_IPV4=m
+ CONFIG_NF_LOG_ARP=m
++CONFIG_NF_LOG_IPV4=m
+ CONFIG_IP_NF_IPTABLES=m
+ CONFIG_IP_NF_MATCH_AH=m
+ CONFIG_IP_NF_MATCH_ECN=m
+@@ -243,7 +243,6 @@ CONFIG_IP6_NF_TARGET_NPT=m
+ CONFIG_NF_TABLES_BRIDGE=m
+ CONFIG_NFT_BRIDGE_META=m
+ CONFIG_NFT_BRIDGE_REJECT=m
+-CONFIG_NF_LOG_BRIDGE=m
+ CONFIG_NF_CONNTRACK_BRIDGE=m
+ CONFIG_BRIDGE_NF_EBTABLES=m
+ CONFIG_BRIDGE_EBT_BROUTE=m
+@@ -513,6 +512,7 @@ CONFIG_CRYPTO_TEST=m
+ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
++CONFIG_CRYPTO_ECDSA=m
+ CONFIG_CRYPTO_ECRDSA=m
+ CONFIG_CRYPTO_SM2=m
+ CONFIG_CRYPTO_CURVE25519=m
+@@ -577,6 +577,7 @@ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
++CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+-- 
+2.25.1
 
