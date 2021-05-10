@@ -2,169 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D78379715
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6369C379719
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232282AbhEJSgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 14:36:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59926 "EHLO mail.kernel.org"
+        id S232850AbhEJSgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 14:36:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230186AbhEJSgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 14:36:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06E6C61424;
-        Mon, 10 May 2021 18:35:09 +0000 (UTC)
-Date:   Mon, 10 May 2021 19:35:07 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v11 2/6] arm64: kvm: Introduce MTE VM feature
-Message-ID: <20210510183506.GA10910@arm.com>
-References: <20210416154309.22129-1-steven.price@arm.com>
- <20210416154309.22129-3-steven.price@arm.com>
- <20210428170705.GB4022@arm.com>
- <c3293d47-a5f2-ea4a-6730-f5cae26d8a7e@arm.com>
- <YJGHApOCXl811VK3@arm.com>
- <329286e8-a8f3-ea1a-1802-58813255a4a5@arm.com>
- <20210507182538.GF26528@arm.com>
+        id S230186AbhEJSgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 14:36:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF75D61483;
+        Mon, 10 May 2021 18:35:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620671736;
+        bh=B9SXyeC+hysLQ0q10lFZazvUoImWnEYseqN99FaOPq4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=G+UO8N2jvQH03gPeXoaM3Qsqo1k+W0p0ZTu4enq4CfX60YFMGXMtYHhgg7ZedukxU
+         JvLD4na+1Z7SrnUOZOQQgo9K3OYPOitN6v+gk7gt0ZBBRiEf9NM1TO5+QvAlLkqfH6
+         MPr6rzTcZH7npPdpGjjXx9AJ9eQnNCLlGG6AYwAcmFLTmp7yEvfT4nO7mFAhhLJZzD
+         RAGKmo50zoZuzd8OAGGPBTKkiwg5022DcP0gXvgMOSpF/4m0gb1ypyAzNTL9oWCCNs
+         LZG9pRTFT7+00duB5kvlxLN9ltw4T7rEEBP46ueZW3zFRWgt/Th+i4egTjJGEus81R
+         wqByp652Fdi0Q==
+Date:   Mon, 10 May 2021 13:35:29 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Corentin Labbe <clabbe@baylibre.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: pci: convert faraday,ftpci100 to yaml
+Message-ID: <20210510183529.GA2289311@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210507182538.GF26528@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CACRpkdbQvvcyrXP9fFwvppDRiJOxxESRVkodqSKc7CoO3Bm00Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 07:25:39PM +0100, Catalin Marinas wrote:
-> On Thu, May 06, 2021 at 05:15:25PM +0100, Steven Price wrote:
-> > On 04/05/2021 18:40, Catalin Marinas wrote:
-> > > On Thu, Apr 29, 2021 at 05:06:41PM +0100, Steven Price wrote:
-> > > > Given the changes to set_pte_at() which means that tags are restored from
-> > > > swap even if !PROT_MTE, the only race I can see remaining is the creation of
-> > > > new PROT_MTE mappings. As you mention an attempt to change mappings in the
-> > > > VMM memory space should involve a mmu notifier call which I think serialises
-> > > > this. So the remaining issue is doing this in a separate address space.
-> > > > 
-> > > > So I guess the potential problem is:
-> > > > 
-> > > >   * allocate memory MAP_SHARED but !PROT_MTE
-> > > >   * fork()
-> > > >   * VM causes a fault in parent address space
-> > > >   * child does a mprotect(PROT_MTE)
-> > > > 
-> > > > With the last two potentially racing. Sadly I can't see a good way of
-> > > > handling that.
-> > > 
-> > > Ah, the mmap lock doesn't help as they are different processes
-> > > (mprotect() acquires it as a writer).
-> > > 
-> > > I wonder whether this is racy even in the absence of KVM. If both parent
-> > > and child do an mprotect(PROT_MTE), one of them may be reading stale
-> > > tags for a brief period.
-> > > 
-> > > Maybe we should revisit whether shared MTE pages are of any use, though
-> > > it's an ABI change (not bad if no-one is relying on this). However...
-[...]
-> > > Thinking about this, we have a similar problem with the PG_dcache_clean
-> > > and two processes doing mprotect(PROT_EXEC). One of them could see the
-> > > flag set and skip the I-cache maintenance while the other executes
-> > > stale instructions. change_pte_range() could acquire the page lock if
-> > > the page is VM_SHARED (my preferred core mm fix). It doesn't immediately
-> > > solve the MTE/KVM case but we could at least take the page lock via
-> > > user_mem_abort().
-[...]
-> > This is the real issue I see - the race in PROT_MTE case is either a data
-> > leak (syncing after setting the bit) or data loss (syncing before setting
-> > the bit).
-[...]
-> > But without serialising through a spinlock (in mte_sync_tags()) I haven't
-> > been able to come up with any way of closing the race. But with the change
-> > to set_pte_at() to call mte_sync_tags() even if the PTE isn't PROT_MTE that
-> > is likely to seriously hurt performance.
+On Fri, May 07, 2021 at 12:51:39PM +0200, Linus Walleij wrote:
+> On Thu, May 6, 2021 at 10:34 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
 > 
-> Yeah. We could add another page flag as a lock though I think it should
-> be the core code that prevents the race.
+> > I think it's nicer when content changes are in a separate patch from
+> > format conversion patches.  Otherwise it's really hard to see the
+> > content changes in the patch.
+> >
+> > Maybe a preliminary patch could fix whatever is actually broken?
+> >
+> > Rob suggested a bunch of things that could be dropped.  Maybe those
+> > could be removed in a second preliminary patch before the conversion?
+> > Or maybe the removals are only possible *because* of the conversion?
+> > I'm not a yaml expert.
 > 
-> If we are to do it in the arch code, maybe easier with a custom
-> ptep_modify_prot_start/end() where we check if it's VM_SHARED and
-> VM_MTE, take a (big) lock.
-
-I think in the general case we don't even need VM_SHARED. For example,
-we have two processes mapping a file, read-only. An mprotect() call in
-both processes will race on the page->flags via the corresponding
-set_pte_at(). I think an mprotect() with a page fault in different
-processes can also race.
-
-The PROT_EXEC case can be easily fixed, as you said already. The
-PROT_MTE with MAP_PRIVATE I think can be made safe by a similar
-approach: test flag, clear tags, set flag. A subsequent write would
-trigger a CoW, so different page anyway.
-
-Anyway, I don't think ptep_modify_prot_start/end would buy us much, it
-probably makes the code even harder to read.
-
-> In the core code, something like below (well, a partial hack, not tested
-> and it doesn't handle huge pages but just to give an idea):
+> A bit of taste is involved. The old .txt bindings are for processing
+> by human brain power. Those lack regular syntax and strictness
+> because brains are designed for evolved natural languages.
 > 
-> diff --git a/mm/mprotect.c b/mm/mprotect.c
-> index 94188df1ee55..6ba96ff141a6 100644
-> --- a/mm/mprotect.c
-> +++ b/mm/mprotect.c
-> @@ -114,6 +113,10 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
->  			}
->  
->  			oldpte = ptep_modify_prot_start(vma, addr, pte);
-> +			if (vma->vm_flags & VM_SHARED) {
-> +				page = vm_normal_page(vma, addr, oldpte);
-> +				lock_page(page);
-> +			}
->  			ptent = pte_modify(oldpte, newprot);
->  			if (preserve_write)
->  				ptent = pte_mk_savedwrite(ptent);
-> @@ -138,6 +141,8 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
->  				ptent = pte_mkwrite(ptent);
->  			}
->  			ptep_modify_prot_commit(vma, addr, pte, oldpte, ptent);
-> +			if (page)
-> +				unlock_page(page);
->  			pages++;
->  		} else if (is_swap_pte(oldpte)) {
->  			swp_entry_t entry = pte_to_swp_entry(oldpte);
+> The YAML on the other hand is a chomsky type-3 strict regular
+> language and the .yaml file (and includes) defines this strict regular
+> grammar and as such admits less mistakes. The upside is that
+> it enforces some order.
+> 
+> In the process of moving to YAML we often discover a slew of
+> mistakes and the initiative often comes with the ambition to add
+> or modernize something.
+> 
+> In this case I wouldn't care with stepwise fixing because the
+> platform is modernized by a handful of people who all know
+> what is going on, so there is noone to confuse other than the
+> subsystem maintainer and the result will end up in the same
+> kernel release anyway.
 
-That's bogus: lock_page() might sleep but this whole code sequence is
-under the ptl spinlock. There are some lock_page_* variants but that
-would involve either a busy loop on this path or some bailing out,
-waiting for a release.
+Haha, I'm in that large majority of people who lack deep knowledge
+of what's going on, so it definitely confuses me :)
 
-Options:
+I think the stepwise fix would be helpful in making the patches more
+accessible to us non-experts, and I know it would save me time in
+reviewing.
 
-1. Change the mte_sync_tags() code path to set the flag after clearing
-   and avoid reading stale tags. We document that mprotect() on
-   MAP_SHARED may lead to tag loss. Maybe we can intercept this in the
-   arch code and return an error.
+It may also be useful to people converting other bindings to YAML
+because it's more obvious what mistakes need to be fixed in the
+process.
 
-2. Figure out some other locking in the core code. However, if
-   mprotect() in one process can race with a handle_pte_fault() in
-   another, on the same shared mapping, it's not trivial.
-   filemap_map_pages() would take the page lock before calling
-   do_set_pte(), so mprotect() would need the same page lock.
+Also helpful: changing the subject line to match the existing
+convention, e.g.,
 
-3. Use another PG_arch_3 bit as a lock to spin on in the arch code (i.e.
-   set it around the other PG_arch_* bit setting).
+  dt-bindings: PCI: ftpci100: Convert faraday,ftpci100 to YAML
 
-I ran out of ideas.
-
--- 
-Catalin
+Bjorn
