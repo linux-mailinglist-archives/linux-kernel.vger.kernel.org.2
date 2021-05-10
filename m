@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EC737825C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1670378258
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbhEJKeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:34:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32832 "EHLO mail.kernel.org"
+        id S232369AbhEJKe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:34:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231859AbhEJKap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:30:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3B8461926;
+        id S231735AbhEJKai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:30:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB72061921;
         Mon, 10 May 2021 10:27:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620642444;
-        bh=/5KMYe58DrtVU6l39giXpj+U2gVE007fTByxX+3Tg3c=;
+        s=k20201202; t=1620642443;
+        bh=K81lP2IJe6F92g35GyK7GwsLSYxXRw45oY6NL6QPjkg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ouvWHnUkWNIek6ysDZyOLr0orzQJUsSM8F8wrl+uiRMvNbKSPC7MeEXnDeDqjHe0p
-         5uiQ56iJ+5zDgQOB5CDlcR4Ujp8RWoJUrBWtB6pFI+R294nrQNinF15XHAgxs0fMGY
-         peTHkiJqz+lotfT9CzM0o+Ykfrb53WF8tQ6VJRhvQa+edVR4IdJRHRmAvrZ5MiKjV/
-         gy+NxdTtxOCYNcMAknc7K9huM+yAQD60dG0yQY5Fxr0ZJ1hodjRR6RBwZJM7lPEf04
-         nzOsfCRTxilgDc1TXHfWHXrhoDlmo/skvw+JApgekIcVml9K91BflNXE2tANCztzt7
-         EYf43lP2VZ70A==
+        b=rI5riaooeiAr6Tan6MBCXeDXppiFLTpbr6phfxBXQ3xckImegzuVDIZxiZRLmx995
+         iFLkdswS9j8F12kFoBEcdM8gEXS03BeTZmGmxgWI/8OpXI/BNOTkXlVP+qtvFvRU86
+         9hDAKQIuNcadWuLV6Mx+AYTiY/Nc0Tkvd5M5+NZwiXD7QLQAvzpzhxGtu05wOtNcvk
+         2G0BU/Dhz767GnnXy2gwH2GHKskx1yTwi2fjn+Qt9xXN1VIA0poDhqd9pZuZwqyp1m
+         kighftvKiJJet0se08fLLtnj8MGpqmUwBgPKQDSCxMSHOlJPrDvgrNvZcaxVL84eGU
+         xTwMGPhkpm8KA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lg38D-000UPM-3K; Mon, 10 May 2021 12:27:21 +0200
+        id 1lg38D-000UPQ-54; Mon, 10 May 2021 12:27:21 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        mjpeg-users@lists.sourceforge.net
-Subject: [PATCH 16/53] docs: driver-api: media: drivers: avoid using UTF-8 chars
-Date:   Mon, 10 May 2021 12:26:28 +0200
-Message-Id: <572748e2c82217ca8e7ffb8417389365b526b947.1620641727.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: [PATCH 17/53] docs: driver-api: firmware: other_interfaces.rst: avoid using UTF-8 chars
+Date:   Mon, 10 May 2021 12:26:29 +0200
+Message-Id: <df85ad0207e3d91b6f30d274ea8968f626f7080e.1620641727.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620641727.git.mchehab+huawei@kernel.org>
 References: <cover.1620641727.git.mchehab+huawei@kernel.org>
@@ -53,64 +48,26 @@ While UTF-8 characters can be used at the Linux documentation,
 the best is to use them only when ASCII doesn't offer a good replacement.
 So, replace the occurences of the following UTF-8 characters:
 
-	- U+00ad ('­'): SOFT HYPHEN
-	- U+00b4 ('´'): ACUTE ACCENT
-	- U+2014 ('—'): EM DASH
+	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../driver-api/media/drivers/sh_mobile_ceu_camera.rst     | 8 ++++----
- Documentation/driver-api/media/drivers/vidtv.rst          | 4 ++--
- Documentation/driver-api/media/drivers/zoran.rst          | 2 +-
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ Documentation/driver-api/firmware/other_interfaces.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/driver-api/media/drivers/sh_mobile_ceu_camera.rst b/Documentation/driver-api/media/drivers/sh_mobile_ceu_camera.rst
-index 822fcb8368ae..280a322c34c6 100644
---- a/Documentation/driver-api/media/drivers/sh_mobile_ceu_camera.rst
-+++ b/Documentation/driver-api/media/drivers/sh_mobile_ceu_camera.rst
-@@ -30,10 +30,10 @@ Generic scaling / cropping scheme
- 	|                       `. .6--
- 	|
- 	|                        . .6'-
--	|                      .´
--	|           ... -4'- .´
--	|       ...´             - -7'.
--	+-5'- .´               -/
-+	|                      .'
-+	|           ... -4'- .'
-+	|       ...'             - -7'.
-+	+-5'- .'               -/
- 	|            -- -3'- -/
- 	|         --/
- 	|      --/
-diff --git a/Documentation/driver-api/media/drivers/vidtv.rst b/Documentation/driver-api/media/drivers/vidtv.rst
-index 673bdff919ea..abb454302ac5 100644
---- a/Documentation/driver-api/media/drivers/vidtv.rst
-+++ b/Documentation/driver-api/media/drivers/vidtv.rst
-@@ -458,8 +458,8 @@ Add a way to test video
+diff --git a/Documentation/driver-api/firmware/other_interfaces.rst b/Documentation/driver-api/firmware/other_interfaces.rst
+index b81794e0cfbb..6711b3572408 100644
+--- a/Documentation/driver-api/firmware/other_interfaces.rst
++++ b/Documentation/driver-api/firmware/other_interfaces.rst
+@@ -23,7 +23,7 @@ Exception Level 3 (EL3).
  
- Currently, vidtv can only encode PCM audio. It would be great to implement
- a barebones version of MPEG-2 video encoding so we can also test video. The
--first place to look into is *ISO 13818-2: Information technology — Generic
--coding of moving pictures and associated audio information — Part 2: Video*,
-+first place to look into is *ISO 13818-2: Information technology - Generic
-+coding of moving pictures and associated audio information - Part 2: Video*,
- which covers the encoding of compressed video in MPEG Transport Streams.
+ The Intel Stratix10 SoC service layer provides an in kernel API for
+ drivers to request access to the secure features. The requests are queued
+-and processed one by one. ARM’s SMCCC is used to pass the execution
++and processed one by one. ARM's SMCCC is used to pass the execution
+ of the requests on to a secure monitor (EL3).
  
- This might optionally use the Video4Linux2 Test Pattern Generator, v4l2-tpg,
-diff --git a/Documentation/driver-api/media/drivers/zoran.rst b/Documentation/driver-api/media/drivers/zoran.rst
-index 83cbae9cedef..b205e10c3154 100644
---- a/Documentation/driver-api/media/drivers/zoran.rst
-+++ b/Documentation/driver-api/media/drivers/zoran.rst
-@@ -319,7 +319,7 @@ Conexant bt866 TV encoder
- ~~~~~~~~~~~~~~~~~~~~~~~~~
- 
- - is used in AVS6EYES, and
--- can generate: NTSC/PAL, PAL­M, PAL­N
-+- can generate: NTSC/PAL, PAL-M, PAL-N
- 
- The adv717x, should be able to produce PAL N. But you find nothing PAL N
- specific in the registers. Seem that you have to reuse a other standard
+ .. kernel-doc:: include/linux/firmware/intel/stratix10-svc-client.h
 -- 
 2.30.2
 
