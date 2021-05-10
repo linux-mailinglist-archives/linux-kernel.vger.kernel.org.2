@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E267D378AEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F57378B17
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243729AbhEJL4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:56:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35242 "EHLO mail.kernel.org"
+        id S243750AbhEJL45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:56:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235711AbhEJLFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:05:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9117A61458;
-        Mon, 10 May 2021 10:55:53 +0000 (UTC)
+        id S235732AbhEJLF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:05:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80A3061482;
+        Mon, 10 May 2021 10:55:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644154;
-        bh=9UxqKxbzLJfVW1nRZBSiPPEQqqBLd5TtF5qWnJvu8aU=;
+        s=korg; t=1620644157;
+        bh=jcQY+hQeCyRaAiIN0ruuZAsRzx2KPQ2e15Vdb/KsaFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DLjQrsoYoUrHDW4106h5ki4Nu7lgyCxAn/hsX7+FRBUGKFiGuFvHkcRhQBSSOIGyM
-         3Ayo5x1aAYdRBQBM3bZM6+nffR3gvlYrSPeHt65MCeKIle18v6F1oIsYWRMmv153jb
-         lonpU9kK03EIexZaVS0dVjYbMNdTM2eP6bcaJEcY=
+        b=wkzRmOc4iZ1PHr6nNNr2hOb2gmGeW2B4mEUV3IWOzMHqVjwiV41V69Tk66ebcL6dE
+         yTnkk0fAcphprWkruOFKjaxIDHFXNMeViQNb6k+NmD+U6NB1RiDXuV3hGNnPmrdnOf
+         iWGE+HvaoazPDite4A3iX5zfttmDVOu4te/PDA6w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, stable@kernel.org,
-        Liu Zhi Qiang <liuzhiqiang26@huawei.com>,
-        Ye Bin <yebin10@huawei.com>,
-        Andreas Dilger <adilger@dilger.ca>,
+        Hulk Robot <hulkci@huawei.com>,
+        Xu Yihang <xuyihang@huawei.com>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
         Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.11 309/342] ext4: fix ext4_error_err save negative errno into superblock
-Date:   Mon, 10 May 2021 12:21:39 +0200
-Message-Id: <20210510102020.313946561@linuxfoundation.org>
+Subject: [PATCH 5.11 310/342] ext4: fix error return code in ext4_fc_perform_commit()
+Date:   Mon, 10 May 2021 12:21:40 +0200
+Message-Id: <20210510102020.348824950@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
 References: <20210510102010.096403571@linuxfoundation.org>
@@ -42,35 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Bin <yebin10@huawei.com>
+From: Xu Yihang <xuyihang@huawei.com>
 
-commit 6810fad956df9e5467e8e8a5ac66fda0836c71fa upstream.
+commit e1262cd2e68a0870fb9fc95eb202d22e8f0074b7 upstream.
 
-Fix As write_mmp_block() so that it returns -EIO instead of 1, so that
-the correct error gets saved into the superblock.
+In case of if not ext4_fc_add_tlv branch, an error return code is missing.
 
 Cc: stable@kernel.org
-Fixes: 54d3adbc29f0 ("ext4: save all error info in save_error_info() and drop ext4_set_errno()")
-Reported-by: Liu Zhi Qiang <liuzhiqiang26@huawei.com>
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Link: https://lore.kernel.org/r/20210406025331.148343-1-yebin10@huawei.com
+Fixes: aa75f4d3daae ("ext4: main fast-commit commit path")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Xu Yihang <xuyihang@huawei.com>
+Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Link: https://lore.kernel.org/r/20210408070033.123047-1-xuyihang@huawei.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/mmp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/fast_commit.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/fs/ext4/mmp.c
-+++ b/fs/ext4/mmp.c
-@@ -56,7 +56,7 @@ static int write_mmp_block(struct super_
- 	wait_on_buffer(bh);
- 	sb_end_write(sb);
- 	if (unlikely(!buffer_uptodate(bh)))
--		return 1;
-+		return -EIO;
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -1093,8 +1093,10 @@ static int ext4_fc_perform_commit(journa
+ 		head.fc_tid = cpu_to_le32(
+ 			sbi->s_journal->j_running_transaction->t_tid);
+ 		if (!ext4_fc_add_tlv(sb, EXT4_FC_TAG_HEAD, sizeof(head),
+-			(u8 *)&head, &crc))
++			(u8 *)&head, &crc)) {
++			ret = -ENOSPC;
+ 			goto out;
++		}
+ 	}
  
- 	return 0;
- }
+ 	spin_lock(&sbi->s_fc_lock);
 
 
