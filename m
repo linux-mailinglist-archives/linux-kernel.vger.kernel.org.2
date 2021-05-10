@@ -2,242 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF81E379380
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77791379381
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhEJQQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 12:16:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38320 "EHLO
+        id S231402AbhEJQQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 12:16:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57799 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231355AbhEJQQf (ORCPT
+        by vger.kernel.org with ESMTP id S231246AbhEJQQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 12:16:35 -0400
+        Mon, 10 May 2021 12:16:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620663328;
+        s=mimecast20190719; t=1620663331;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=86rcIshw9cDmoW+VtXKAITdjVKRMuJkwFzrDaNXTYfk=;
-        b=fnKY7/ZZOFgY76HTZGSbCoqh0kr8AgmNVSZkvM53SP2drPrBphmUvoEGO43GwYj8RudF7W
-        1LppZqRE+rsgdY6ufpyjQ0BsPof7aDYtVZBXH0Rk1+RzpFXOEw1km7Uv9KUOyK5x4i8pDn
-        2w8rP5QyOKubqcmG64cE1ga1ferETUw=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-230-Sa8CZyNyOEezSqMfF8iQyg-1; Mon, 10 May 2021 12:15:27 -0400
-X-MC-Unique: Sa8CZyNyOEezSqMfF8iQyg-1
-Received: by mail-oi1-f197.google.com with SMTP id w4-20020a0568081404b0290102a1fd05b2so9610843oiv.6
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 09:15:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=86rcIshw9cDmoW+VtXKAITdjVKRMuJkwFzrDaNXTYfk=;
-        b=eDa8bBtrDgvOXqetPh1OwSpA9+ymPrlyxU6ovUR7V5cBG+EKlq/tnv1+d0ApAkZkK3
-         CKFr8GJzoIKxnJzgkSkR2CgZgwMoiplPXoBXW60GgozxwizwVOxsJtxqKCbxmlf93ryV
-         yCnDBx+0whPk/cO6320UtdqQL7Yf7Ti1zB5+a4v6yMfrLK2NfeHiVUAC5sI0zWRju2xF
-         JLt4PXANOTEXmlMFOogiIxpW3jvnu0FuUSWMDmfgSU9SwgCw7Br9vH7El/qCSDbPNLqo
-         lVw0FDmipijCNeaIlVNbrk/DLPGRVS4nRa0inxjSDKfU+WZIWbQ4cq2IXeTlLcbJC5gZ
-         QESg==
-X-Gm-Message-State: AOAM530WlHgPEBGZ3/VRlsaDvhkbLcehqu8C7xr9pt3OAWWPnW1YZ0vJ
-        uA9w9wDLGubQNJL0wDD7AMWUTq7gxftkQSogm4Bf6W7ohyZoQStOXDTK63XhKazZDvOaa5uFtpc
-        f70D3hAX5uwz7/M4ZV6uXGSit
-X-Received: by 2002:a4a:b102:: with SMTP id a2mr19581171ooo.30.1620663323250;
-        Mon, 10 May 2021 09:15:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxXn4dxJwD2+F37cdWtrOVB82OjneuN53qJUKHPKYoEcezSuJ9WvB4HOVkybYV991ZFC2n5gg==
-X-Received: by 2002:a4a:b102:: with SMTP id a2mr19581149ooo.30.1620663322958;
-        Mon, 10 May 2021 09:15:22 -0700 (PDT)
-Received: from [192.168.0.173] (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
-        by smtp.gmail.com with ESMTPSA id s6sm1245478otk.71.2021.05.10.09.15.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 09:15:22 -0700 (PDT)
-Subject: Re: [PATCH] virtiofs: Enable multiple request queues
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Stefan Hajnoczi <stefanha@redhat.com>
-References: <20210507221527.699516-1-ckuehl@redhat.com>
- <20210510152506.GC150402@horse>
-From:   Connor Kuehl <ckuehl@redhat.com>
-Message-ID: <ddbc96c7-655c-e563-e26e-6550a0cdd7c1@redhat.com>
-Date:   Mon, 10 May 2021 11:15:21 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=/I69q7HiZoit2OObK95SvLKEjN8YdPjb7FgV80ugf+k=;
+        b=bF70TG42qsr9xMKcs/wmqQDdARB3JnceAMpZLowOLzeKkZrlAXeau/a15uPhKpTlg0ZHt/
+        a9jjoHGBJUBh0dDsldW85wh8GGxaSOf2qMP9egZh4+iRI3yPZe/d4hyf5Qs3mbTJnkwdXS
+        IuyItBylb+kRe9KWL/xjsu4ePc5ReZI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-584-QTn26Y4xOfCBw73am4k6hw-1; Mon, 10 May 2021 12:15:26 -0400
+X-MC-Unique: QTn26Y4xOfCBw73am4k6hw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D782C8049D6;
+        Mon, 10 May 2021 16:15:24 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.196.4])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B2BE960DBA;
+        Mon, 10 May 2021 16:15:23 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 10 May 2021 18:15:24 +0200 (CEST)
+Date:   Mon, 10 May 2021 18:15:22 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] remove the pointless BUG_ON(!task) from wake_up_q()
+Message-ID: <20210510161522.GA32644@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210510152506.GC150402@horse>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/21 10:25 AM, Vivek Goyal wrote:
-> On Fri, May 07, 2021 at 03:15:27PM -0700, Connor Kuehl wrote:
->> Distribute requests across the multiqueue complex automatically based
->> on the IRQ affinity.
-> 
-> Hi Connor,
-> 
-> Thanks for the patch. I will look into it and also test it.
-> 
-> How did you test it? Did you modify vitiofsd to support multiqueue. Did
-> you also run some performance numbers. Does it provide better/worse
-> performance as compared to single queue.
+because it looks very confusing (to me at least). It is equivalent to
+BUG_ON(node == offsetof(struct task_struct, wake_q)), unlikely this is
+what we actually want to check.
 
-Thanks, Vivek! I need to NACK this version of the patch for inclusion
-though since I think the way I did per-CPU state will not work for
-multiple virtio-fs mounts because it will be overwritten with each new
-mount, but for testing purposes this should be OK with just one mount.
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ kernel/sched/core.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-I need to do more benchmarking on this.
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 5226cc26a095..61d1d85bb93d 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -585,7 +585,6 @@ void wake_up_q(struct wake_q_head *head)
+ 		struct task_struct *task;
+ 
+ 		task = container_of(node, struct task_struct, wake_q);
+-		BUG_ON(!task);
+ 		/* Task can safely be re-inserted now: */
+ 		node = node->next;
+ 		task->wake_q.next = NULL;
+-- 
+2.25.1.362.g51ebf55
 
-I had to hack multiqueue support into virtiofsd, which runs against the
-warning in the virtiofsd source code that instructs people to *not*
-enable multiqueue due to thread-safety concerns. I didn't audit
-virtiofsd for correctness, so I also worry this has the potential of
-affecting benchmarks if there are races.
-
-For testing, QEMU needs to be invoked with `num-request-queues` like
-this:
-
-	-device vhost-user-fs-pci,chardev=char0,tag=myfs,num-request-queues=2 
-
-And obviously you can choose any value >= 1 for num-request-queues.
-
-and I also made a quick-and-dirty hack to let me pass in the number of
-total queues to virtiofsd on the command line:
-
-diff --git a/tools/virtiofsd/fuse_lowlevel.c b/tools/virtiofsd/fuse_lowlevel.c
-index 58e32fc963..cf8f132efd 100644
---- a/tools/virtiofsd/fuse_lowlevel.c
-+++ b/tools/virtiofsd/fuse_lowlevel.c
-@@ -2565,9 +2565,9 @@ out1:
-     return NULL;
- }
- 
--int fuse_session_mount(struct fuse_session *se)
-+int fuse_session_mount(struct fuse_session *se, unsigned int num_queues)
- {
--    return virtio_session_mount(se);
-+    return virtio_session_mount(se, num_queues);
- }
- 
- int fuse_session_fd(struct fuse_session *se)
-diff --git a/tools/virtiofsd/fuse_lowlevel.h b/tools/virtiofsd/fuse_lowlevel.h
-index 3bf786b034..50bf86113d 100644
---- a/tools/virtiofsd/fuse_lowlevel.h
-+++ b/tools/virtiofsd/fuse_lowlevel.h
-@@ -1842,7 +1842,7 @@ struct fuse_session *fuse_session_new(struct fuse_args *args,
-  *
-  * @return 0 on success, -1 on failure.
-  **/
--int fuse_session_mount(struct fuse_session *se);
-+int fuse_session_mount(struct fuse_session *se, unsigned int num_queues);
- 
- /**
-  * Enter a single threaded, blocking event loop.
-diff --git a/tools/virtiofsd/fuse_virtio.c b/tools/virtiofsd/fuse_virtio.c
-index 3e13997406..8622c3dce6 100644
---- a/tools/virtiofsd/fuse_virtio.c
-+++ b/tools/virtiofsd/fuse_virtio.c
-@@ -747,20 +747,6 @@ static void fv_queue_set_started(VuDev *dev, int qidx, bool started)
-              started);
-     assert(qidx >= 0);
- 
--    /*
--     * Ignore additional request queues for now.  passthrough_ll.c must be
--     * audited for thread-safety issues first.  It was written with a
--     * well-behaved client in mind and may not protect against all types of
--     * races yet.
--     */
--    if (qidx > 1) {
--        fuse_log(FUSE_LOG_ERR,
--                 "%s: multiple request queues not yet implemented, please only "
--                 "configure 1 request queue\n",
--                 __func__);
--        exit(EXIT_FAILURE);
--    }
--
-     if (started) {
-         /* Fire up a thread to watch this queue */
-         if (qidx >= vud->nqueues) {
-@@ -997,7 +983,7 @@ static int fv_create_listen_socket(struct fuse_session *se)
-     return 0;
- }
- 
--int virtio_session_mount(struct fuse_session *se)
-+int virtio_session_mount(struct fuse_session *se, unsigned int num_queues)
- {
-     int ret;
- 
-@@ -1048,8 +1034,8 @@ int virtio_session_mount(struct fuse_session *se)
-     se->vu_socketfd = data_sock;
-     se->virtio_dev->se = se;
-     pthread_rwlock_init(&se->virtio_dev->vu_dispatch_rwlock, NULL);
--    if (!vu_init(&se->virtio_dev->dev, 2, se->vu_socketfd, fv_panic, NULL,
--                 fv_set_watch, fv_remove_watch, &fv_iface)) {
-+    if (!vu_init(&se->virtio_dev->dev, num_queues, se->vu_socketfd,
-+		 fv_panic, NULL, fv_set_watch, fv_remove_watch, &fv_iface)) {
-         fuse_log(FUSE_LOG_ERR, "%s: vu_init failed\n", __func__);
-         return -1;
-     }
-diff --git a/tools/virtiofsd/fuse_virtio.h b/tools/virtiofsd/fuse_virtio.h
-index 111684032c..a0e78b9b84 100644
---- a/tools/virtiofsd/fuse_virtio.h
-+++ b/tools/virtiofsd/fuse_virtio.h
-@@ -18,7 +18,7 @@
- 
- struct fuse_session;
- 
--int virtio_session_mount(struct fuse_session *se);
-+int virtio_session_mount(struct fuse_session *se, unsigned int num_queues);
- void virtio_session_close(struct fuse_session *se);
- int virtio_loop(struct fuse_session *se);
- 
-diff --git a/tools/virtiofsd/passthrough_ll.c b/tools/virtiofsd/passthrough_ll.c
-index 1553d2ef45..9fd4e34980 100644
---- a/tools/virtiofsd/passthrough_ll.c
-+++ b/tools/virtiofsd/passthrough_ll.c
-@@ -161,6 +161,7 @@ struct lo_data {
-     int allow_direct_io;
-     int announce_submounts;
-     bool use_statx;
-+    int num_vqs;
-     struct lo_inode root;
-     GHashTable *inodes; /* protected by lo->mutex */
-     struct lo_map ino_map; /* protected by lo->mutex */
-@@ -204,6 +205,7 @@ static const struct fuse_opt lo_opts[] = {
-     { "announce_submounts", offsetof(struct lo_data, announce_submounts), 1 },
-     { "killpriv_v2", offsetof(struct lo_data, user_killpriv_v2), 1 },
-     { "no_killpriv_v2", offsetof(struct lo_data, user_killpriv_v2), 0 },
-+    { "num_queues=%d", offsetof(struct lo_data, num_vqs), 2 },
-     FUSE_OPT_END
- };
- static bool use_syslog = false;
-@@ -3848,6 +3850,12 @@ int main(int argc, char *argv[])
-         exit(1);
-     }
- 
-+    if (lo.num_vqs < 2) {
-+        fuse_log(FUSE_LOG_ERR, "num_queues must be at least 2 (got %d)\n",
-+                 lo.num_vqs);
-+        exit(1);
-+    }
-+
-     lo.use_statx = true;
- 
-     se = fuse_session_new(&args, &lo_oper, sizeof(lo_oper), &lo);
-@@ -3859,7 +3867,7 @@ int main(int argc, char *argv[])
-         goto err_out2;
-     }
- 
--    if (fuse_session_mount(se) != 0) {
-+    if (fuse_session_mount(se, lo.num_vqs) != 0) {
-         goto err_out3;
-     }
- 
 
