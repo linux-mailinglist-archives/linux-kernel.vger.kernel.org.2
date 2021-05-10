@@ -2,218 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDA6377DE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0611D377DE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbhEJISO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 04:18:14 -0400
-Received: from mga12.intel.com ([192.55.52.136]:42733 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230331AbhEJISF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 04:18:05 -0400
-IronPort-SDR: /XGzkQGVQV2BJNpY165EhKlNdY/wwdnxxAg7RyFYyTdrm3tLt1mFfCgDBtxedoNug5eaSHkuR4
- Mj11kG0G8BLA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="178727881"
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="178727881"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 01:16:45 -0700
-IronPort-SDR: P2M3+YHXwHkX5cD1X+feZBZomgYx+G/uOKZDGLhArqa13V51r1biWQ88bXUYHTvzz1/75N6ZGq
- g8xqjFxo/wAg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="408250982"
-Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
-  by orsmga002.jf.intel.com with ESMTP; 10 May 2021 01:16:41 -0700
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
-        wei.w.wang@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND kvm-unit-tests PATCH v2] x86: Update guest LBR tests for Architectural LBR
-Date:   Mon, 10 May 2021 16:15:35 +0800
-Message-Id: <20210510081535.94184-12-like.xu@linux.intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510081535.94184-1-like.xu@linux.intel.com>
-References: <20210510081535.94184-1-like.xu@linux.intel.com>
+        id S230205AbhEJISh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 04:18:37 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:37274 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230331AbhEJISe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 04:18:34 -0400
+Received: from [50.53.41.238] (helo=[192.168.192.153])
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <john.johansen@canonical.com>)
+        id 1lg16V-0004Ab-0S; Mon, 10 May 2021 08:17:27 +0000
+Subject: Re: [RFC 09/12] apparmor: use get_unaligned() only for multi-byte
+ words
+To:     Arnd Bergmann <arnd@kernel.org>, linux-arch@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210507220813.365382-1-arnd@kernel.org>
+ <20210507220813.365382-10-arnd@kernel.org>
+From:   John Johansen <john.johansen@canonical.com>
+Autocrypt: addr=john.johansen@canonical.com; prefer-encrypt=mutual; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgptUUlOQkU1bXJQb0JFQURB
+ azE5UHNnVmdCS2tJbW1SMmlzUFE2bzdLSmhUVEtqSmR3VmJrV1NuTm4rbzZVcDVrCm5LUDFm
+ NDlFQlFsY2VXZzF5cC9Od2JSOGFkK2VTRU8vdW1hL0srUHFXdkJwdEtDOVNXRDk3Rkc0dUI0
+ L2Nhb20KTEVVOTdzTFFNdG52R1dkeHJ4VlJHTTRhbnpXWU1neno1VFptSWlWVFo0M091NVZw
+ YVMxVnoxWlN4UDNoL3hLTgpaci9UY1c1V1FhaTh1M1BXVm5ia2poU1pQSHYxQmdoTjY5cXhF
+ UG9tckpCbTFnbXR4M1ppVm1GWGx1d1RtVGdKCk9rcEZvbDduYkowaWxuWUhyQTdTWDNDdFIx
+ dXBlVXBNYS9XSWFuVk85NldkVGpISElhNDNmYmhtUXViZTR0eFMKM0ZjUUxPSlZxUXN4NmxF
+ OUI3cUFwcG05aFExMHFQV3dkZlB5LyswVzZBV3ROdTVBU2lHVkNJbld6bDJIQnFZZAovWmxs
+ OTN6VXErTklvQ244c0RBTTlpSCt3dGFHRGNKeXdJR0luK2VkS050SzcyQU1nQ2hUZy9qMVpv
+ V0g2WmVXClBqdVVmdWJWelp0bzFGTW9HSi9TRjRNbWRRRzFpUU50ZjRzRlpiRWdYdXk5Y0dp
+ MmJvbUYwenZ5QkpTQU5weGwKS05CRFlLek42S3owOUhVQWtqbEZNTmdvbUwvY2pxZ0FCdEF4
+ NTlMK2RWSVpmYUYyODFwSWNVWnp3dmg1K0pvRwplT1c1dUJTTWJFN0wzOG5zem9veWtJSjVY
+ ckFjaGtKeE5mejdrK0ZuUWVLRWtOekVkMkxXYzNRRjRCUVpZUlQ2ClBISGdhM1JneWtXNSsx
+ d1RNcUpJTGRtdGFQYlhyRjNGdm5WMExSUGN2NHhLeDdCM2ZHbTd5Z2Rvb3dBUkFRQUIKdEIx
+ S2IyaHVJRXB2YUdGdWMyVnVJRHhxYjJodVFHcHFiWGd1Ym1WMFBva0NPZ1FUQVFvQUpBSWJB
+ d1VMQ1FnSApBd1VWQ2drSUN3VVdBZ01CQUFJZUFRSVhnQVVDVG8wWVZ3SVpBUUFLQ1JBRkx6
+ WndHTlhEMkx4SkQvOVRKWkNwCndsbmNUZ1llcmFFTWVEZmtXdjhjMUlzTTFqMEFtRTRWdEwr
+ ZkU3ODBaVlA5Z2tqZ2tkWVN4dDdlY0VUUFRLTWEKWlNpc3JsMVJ3cVUwb29nWGRYUVNweHJH
+ SDAxaWN1LzJuMGpjWVNxWUtnZ1B4eTc4QkdzMkxacTRYUGZKVFptSApaR25YR3EvZURyL21T
+ bmowYWF2QkptTVo2amJpUHo2eUh0QllQWjlmZG84YnRjendQNDFZZVdvSXUyNi84SUk2CmYw
+ WG0zVkM1b0FhOHY3UmQrUldaYThUTXdsaHpIRXh4ZWwzanRJN0l6ek9zbm1FOS84RG0wQVJE
+ NWlUTENYd1IKMWN3SS9KOUJGL1MxWHY4UE4xaHVUM0l0Q05kYXRncDh6cW9Ka2dQVmptdnlM
+ NjRRM2ZFa1liZkhPV3NhYmE5LwprQVZ0Qk56OVJURmg3SUhEZkVDVmFUb3VqQmQ3QnRQcXIr
+ cUlqV0ZhZEpEM0k1ZUxDVkp2VnJyb2xyQ0FUbEZ0Ck4zWWtRczZKbjFBaUlWSVUzYkhSOEdq
+ ZXZnejVMbDZTQ0dIZ1Jya3lScG5TWWFVL3VMZ24zN042QVl4aS9RQUwKK2J5M0N5RUZManpX
+ QUV2eVE4YnEzSXVjbjdKRWJoUy9KLy9kVXFMb2VVZjh0c0dpMDB6bXJJVFpZZUZZQVJoUQpN
+ dHNmaXpJclZEdHoxaVBmL1pNcDVnUkJuaXlqcFhuMTMxY20zTTNndjZIclFzQUdubjhBSnJ1
+ OEdEaTVYSllJCmNvLzEreC9xRWlOMm5DbGFBT3BiaHpOMmVVdlBEWTVXMHEzYkEvWnAybWZH
+ NTJ2YlJJK3RRMEJyMUhkL3ZzbnQKVUhPOTAzbU1aZXAyTnpOM0JaNXFFdlB2RzRyVzVacTJE
+ cHliV2JRclNtOW9iaUJLYjJoaGJuTmxiaUE4YW05bwpiaTVxYjJoaGJuTmxia0JqWVc1dmJt
+ bGpZV3d1WTI5dFBva0NOd1FUQVFvQUlRVUNUbzBYV2dJYkF3VUxDUWdICkF3VVZDZ2tJQ3dV
+ V0FnTUJBQUllQVFJWGdBQUtDUkFGTHpad0dOWEQySXRNRC85anliYzg3ZE00dUFIazZ5Tk0K
+ TjBZL0JGbW10VFdWc09CaHFPbm9iNGkzOEJyRE8yQzFoUUNQQ1FlNExMczEvNHB0ZW92UXQ4
+ QjJGeXJQVmp3Zwo3alpUSE5LNzRyNmxDQ1Z4eDN5dTFCN1U5UG80VlRrY3NsVmIxL3FtV3V4
+ OFhXY040eXZrVHFsTCtHeHB5Sm45CjlaWmZmWEpjNk9oNlRtT2ZiS0d2TXV1djVhclNJQTNK
+ SEZMZjlhTHZadEExaXNKVXI3cFM5YXBnOXVUVUdVcDcKd2ZWMFdUNlQzZUczbXRVVTJ1cDVK
+ VjQ4NTBMMDVqSFM2dVdpZS9ZK3lmSk9iaXlyeE4vNlpxVzVHb25oTEJxLwptc3pjVjV2QlQz
+ QkRWZTNSdkY2WGRNOU9oUG4xK1k4MXg1NCt2UTExM044aUx3RjdHR2ExNFp5SVZBTlpEMEkw
+ CkhqUnZhMmsvUnFJUlR6S3l1UEg1cGtsY0tIVlBFRk1tT3pNVCtGT294Tmp2Uys3K3dHMktN
+ RFlFbUhQcjFQSkIKWlNaZUh6SzE5dGZhbFBNcHBGeGkrc3lZTGFnTjBtQjdKSFF3WTdjclV1
+ T0RoeWNxNjBZVnoxdGFFeWd1M1l2MgoyL0kxRUNHSHZLSEc2d2M5MG80M0MvZWxIRUNYbkVo
+ N3RLcGxEY3BJQytPQ21NeEtIaFI0NitYY1p2Z3c0RGdiCjdjYTgzZVFSM0NHODlMdlFwVzJM
+ TEtFRUJEajdoWmhrTGJra1BSWm0zdzhKWTQ0YXc4VnRneFdkblNFTUNMeEwKSU9OaDZ1Wjcv
+ L0RZVnRjSWFNSllrZWJhWnRHZENwMElnVVpiMjQvVmR2WkNZYk82MkhrLzNWbzFuWHdIVUVz
+ Mwo2RC92MWJUMFJaRmk2OUxnc0NjT2N4NGdZTGtDRFFST1pxejZBUkFBb3F3NmtrQmhXeU0x
+ ZnZnYW1BVmplWjZuCktFZm5SV2JrQzk0TDFFc0pMdXAzV2IyWDBBQk5PSFNrYlNENHBBdUMy
+ dEtGL0VHQnQ1Q1A3UWRWS1JHY1F6QWQKNmIyYzFJZHk5Ukx3Nnc0Z2krbm4vZDFQbTFra1lo
+ a1NpNXpXYUlnMG01UlFVaytFbDh6a2Y1dGNFLzFOMFo1TwpLMkpoandGdTViWDBhMGw0Y0ZH
+ V1ZRRWNpVk1ES1J0eE1qRXRrM1N4RmFsbTZaZFEycHAyODIyY2xucTR6WjltCld1MWQyd2F4
+ aXorYjVJYTR3ZURZYTduNDFVUmNCRVViSkFnbmljSmtKdENUd3lJeElXMktuVnlPcmp2a1F6
+ SUIKdmFQMEZkUDJ2dlpvUE1kbENJek9sSWtQTGd4RTBJV3VlVFhlQkpoTnMwMXBiOGJMcW1U
+ SU1sdTRMdkJFTEEvdgplaWFqajVzOHk1NDJIL2FIc2ZCZjRNUVVoSHhPL0JaVjdoMDZLU1Vm
+ SWFZN09nQWdLdUdOQjNVaWFJVVM1K2E5CmduRU9RTER4S1J5L2E3UTF2OVMrTnZ4KzdqOGlI
+ M2prUUpoeFQ2WkJoWkdSeDBna0gzVCtGMG5ORG01TmFKVXMKYXN3Z0pycUZaa1VHZDJNcm0x
+ cW5Ld1hpQXQ4U0ljRU5kcTMzUjBLS0tSQzgwWGd3ajhKbjMwdlhMU0crTk8xRwpIMFVNY0F4
+ TXd5L3B2azZMVTVKR2paUjczSjVVTFZoSDRNTGJEZ2dEM21QYWlHOCtmb3RUckpVUHFxaGc5
+ aHlVCkVQcFlHN3NxdDc0WG43OStDRVpjakxIenlsNnZBRkUyVzBreGxMdFF0VVpVSE8zNmFm
+ RnY4cUdwTzNacVB2akIKVXVhdFhGNnR2VVFDd2YzSDZYTUFFUUVBQVlrQ0h3UVlBUW9BQ1FV
+ Q1RtYXMrZ0liREFBS0NSQUZMelp3R05YRAoyRC9YRC8wZGRNLzRhaTFiK1RsMWp6bkthalgz
+ a0crTWVFWWVJNGY0MHZjbzNyT0xyblJHRk9jYnl5ZlZGNjlNCktlcGllNE93b0kxamNUVTBB
+ RGVjbmJXbkROSHByMFNjenhCTXJvM2Juckxoc212anVuVFlJdnNzQlp0QjRhVkoKanVMSUxQ
+ VWxuaEZxYTdmYlZxMFpRamJpVi9ydDJqQkVOZG05cGJKWjZHam5wWUljQWJQQ0NhL2ZmTDQv
+ U1FSUwpZSFhvaEdpaVM0eTVqQlRtSzVsdGZld0xPdzAyZmtleEgrSUpGcnJHQlhEU2c2bjJT
+ Z3hubisrTkYzNGZYY205CnBpYXczbUtzSUNtKzBoZE5oNGFmR1o2SVdWOFBHMnRlb29WRHA0
+ ZFlpaCsreFgvWFM4ekJDYzFPOXc0bnpsUDIKZ0t6bHFTV2JoaVdwaWZSSkJGYTRXdEFlSlRk
+ WFlkMzdqL0JJNFJXV2hueXc3YUFQTkdqMzN5dEdITlVmNlJvMgovanRqNHRGMXkvUUZYcWpK
+ Ry93R2pwZHRSZmJ0VWpxTEhJc3ZmUE5OSnEvOTU4cDc0bmRBQ2lkbFdTSHpqK09wCjI2S3Bi
+ Rm5td05PMHBzaVVzbmh2SEZ3UE8vdkFibDNSc1I1KzBSbytodnMyY0VtUXV2OXIvYkRsQ2Zw
+ enAydDMKY0srcmh4VXFpc094OERaZnoxQm5rYW9DUkZidnZ2ays3TC9mb21QbnRHUGtxSmNp
+ WUU4VEdIa1p3MWhPa3UrNApPb00yR0I1bkVEbGorMlRGL2pMUStFaXBYOVBrUEpZdnhmUmxD
+ NmRLOFBLS2ZYOUtkZm1BSWNnSGZuVjFqU24rCjh5SDJkakJQdEtpcVcwSjY5YUlzeXg3aVYv
+ MDNwYVBDakpoN1hxOXZBenlkTjVVL1VBPT0KPTZQL2IKLS0tLS1FTkQgUEdQIFBVQkxJQyBL
+ RVkgQkxPQ0stLS0tLQo=
+Organization: Canonical
+Message-ID: <a301b47e-dc27-cdc8-ab93-07816e5dc2e1@canonical.com>
+Date:   Mon, 10 May 2021 01:17:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210507220813.365382-10-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This unit-test is intended to test the basic KVM's support for
-Architectural LBRs which is a Architectural performance monitor
-unit (PMU) feature on Intel processors including negative testing
-on the MSR LBR_DEPTH values.
+On 5/7/21 3:07 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Using get_unaligned() on a u8 pointer is pointless, and will
+> result in a compiler warning after a planned cleanup:
+> 
+> In file included from arch/x86/include/generated/asm/unaligned.h:1,
+>                  from security/apparmor/policy_unpack.c:16:
+> security/apparmor/policy_unpack.c: In function 'unpack_u8':
+> include/asm-generic/unaligned.h:13:15: error: 'packed' attribute ignored for field of type 'u8' {aka 'unsigned char'} [-Werror=attributes]
+>    13 |  const struct { type x __packed; } *__pptr = (typeof(__pptr))(ptr); \
+>       |               ^
+> 
+> Simply dereference this pointer directly.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: John Johansen <john.johansen@canonical.com>
 
-If the LBR bit is set to 1 in the MSR_ARCH_LBR_CTL, the processor
-will record a running trace of the most recent branches guest
-taken in the LBR entries for guest to read.
-
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Thomas Huth <thuth@redhat.com>
-Cc: Andrew Jones <drjones@redhat.com>
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
----
- x86/pmu_lbr.c | 88 +++++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 79 insertions(+), 9 deletions(-)
-
-diff --git a/x86/pmu_lbr.c b/x86/pmu_lbr.c
-index 3bd9e9f..5257f76 100644
---- a/x86/pmu_lbr.c
-+++ b/x86/pmu_lbr.c
-@@ -6,6 +6,7 @@
- #define MAX_NUM_LBR_ENTRY	  32
- #define DEBUGCTLMSR_LBR	  (1UL <<  0)
- #define PMU_CAP_LBR_FMT	  0x3f
-+#define KVM_ARCH_LBR_CTL_MASK	  0x7f000f
- 
- #define MSR_LBR_NHM_FROM	0x00000680
- #define MSR_LBR_NHM_TO		0x000006c0
-@@ -13,6 +14,10 @@
- #define MSR_LBR_CORE_TO	0x00000060
- #define MSR_LBR_TOS		0x000001c9
- #define MSR_LBR_SELECT		0x000001c8
-+#define MSR_ARCH_LBR_CTL	0x000014ce
-+#define MSR_ARCH_LBR_DEPTH	0x000014cf
-+#define MSR_ARCH_LBR_FROM_0	0x00001500
-+#define MSR_ARCH_LBR_TO_0	0x00001600
- 
- volatile int count;
- 
-@@ -61,11 +66,26 @@ static bool test_init_lbr_from_exception(u64 index)
- 	return test_for_exception(GP_VECTOR, init_lbr, &index);
- }
- 
-+static void change_archlbr_depth(void *depth)
-+{
-+	wrmsr(MSR_ARCH_LBR_DEPTH, *(u64 *)depth);
-+}
-+
-+static bool test_change_archlbr_depth_from_exception(u64 depth)
-+{
-+	return test_for_exception(GP_VECTOR, change_archlbr_depth, &depth);
-+}
-+
- int main(int ac, char **av)
- {
- 	struct cpuid id = cpuid(10);
-+	struct cpuid id_7 = cpuid(7);
-+	struct cpuid id_1c;
- 	u64 perf_cap;
- 	int max, i;
-+	bool arch_lbr = false;
-+	u32 ctl_msr = MSR_IA32_DEBUGCTLMSR;
-+	u64 ctl_value = DEBUGCTLMSR_LBR;
- 
- 	setup_vm();
- 	perf_cap = rdmsr(MSR_IA32_PERF_CAPABILITIES);
-@@ -80,8 +100,19 @@ int main(int ac, char **av)
- 		return report_summary();
- 	}
- 
-+	if (id_7.d & (1UL << 19)) {
-+		arch_lbr = true;
-+		ctl_msr = MSR_ARCH_LBR_CTL;
-+		/* DEPTH defaults to the maximum number of LBRs entries. */
-+		max = rdmsr(MSR_ARCH_LBR_DEPTH) - 1;
-+		ctl_value = KVM_ARCH_LBR_CTL_MASK;
-+	}
-+
- 	printf("PMU version:		 %d\n", eax.split.version_id);
--	printf("LBR version:		 %ld\n", perf_cap & PMU_CAP_LBR_FMT);
-+	if (!arch_lbr)
-+		printf("LBR version:		 %ld\n", perf_cap & PMU_CAP_LBR_FMT);
-+	else
-+		printf("Architectural LBR depth:		 %d\n", max + 1);
- 
- 	/* Look for LBR from and to MSRs */
- 	lbr_from = MSR_LBR_CORE_FROM;
-@@ -90,32 +121,71 @@ int main(int ac, char **av)
- 		lbr_from = MSR_LBR_NHM_FROM;
- 		lbr_to = MSR_LBR_NHM_TO;
- 	}
-+	if (test_init_lbr_from_exception(0)) {
-+		lbr_from = MSR_ARCH_LBR_FROM_0;
-+		lbr_to = MSR_ARCH_LBR_TO_0;
-+	}
- 
- 	if (test_init_lbr_from_exception(0)) {
- 		printf("LBR on this platform is not supported!\n");
- 		return report_summary();
- 	}
- 
--	wrmsr(MSR_LBR_SELECT, 0);
--	wrmsr(MSR_LBR_TOS, 0);
--	for (max = 0; max < MAX_NUM_LBR_ENTRY; max++) {
--		if (test_init_lbr_from_exception(max))
--			break;
-+	if (arch_lbr) {
-+		/*
-+		 * On processors that support Architectural LBRs,
-+		 * IA32_PERF_CAPABILITIES.LBR_FMT will have the value 03FH.
-+		 */
-+		report(0x3f == (perf_cap & PMU_CAP_LBR_FMT), "The guest LBR_FMT value is good.");
- 	}
- 
-+	/* Reset the guest LBR entries. */
-+	if (arch_lbr) {
-+		/* On a software write to IA32_LBR_DEPTH, all LBR entries are reset to 0.*/
-+		wrmsr(MSR_ARCH_LBR_DEPTH, max + 1);
-+	} else {
-+		wrmsr(MSR_LBR_SELECT, 0);
-+		wrmsr(MSR_LBR_TOS, 0);
-+		for (max = 0; max < MAX_NUM_LBR_ENTRY; max++) {
-+			if (test_init_lbr_from_exception(max))
-+				break;
-+		}
-+	}
- 	report(max > 0, "The number of guest LBR entries is good.");
- 
-+	/* Check the guest LBR entries are initialized. */
-+	for (i = 0; i < max; ++i) {
-+		if (rdmsr(lbr_to + i) || rdmsr(lbr_from + i))
-+			break;
-+	}
-+	report(i == max, "The guest LBR initialized FROM_IP/TO_IP values are good.");
-+
- 	/* Do some branch instructions. */
--	wrmsr(MSR_IA32_DEBUGCTLMSR, DEBUGCTLMSR_LBR);
-+	wrmsr(ctl_msr, ctl_value);
- 	lbr_test();
--	wrmsr(MSR_IA32_DEBUGCTLMSR, 0);
-+	wrmsr(ctl_msr, 0);
- 
--	report(rdmsr(MSR_LBR_TOS) != 0, "The guest LBR MSR_LBR_TOS value is good.");
-+	/* Check if the guest LBR has recorded some branches. */
-+	if (!arch_lbr) {
-+		report(rdmsr(MSR_LBR_TOS) != 0, "The guest LBR MSR_LBR_TOS value is good.");
-+	}
- 	for (i = 0; i < max; ++i) {
- 		if (!rdmsr(lbr_to + i) || !rdmsr(lbr_from + i))
- 			break;
- 	}
- 	report(i == max, "The guest LBR FROM_IP/TO_IP values are good.");
- 
-+	if (!arch_lbr)
-+		return report_summary();
-+
-+	/* Negative testing on the LBR_DEPTH MSR values */
-+	id_1c = cpuid(0x1c);
-+	for (i = 0; i < 8; i++) {
-+		if (id_1c.a & (1UL << i))
-+			continue;
-+		report(test_change_archlbr_depth_from_exception(8*(i+1)) == 1,
-+			"Negative test: guest LBR depth %d is unsupported.", 8*(i+1));
-+	}
-+
- 	return report_summary();
- }
--- 
-2.31.1
+> ---
+>  security/apparmor/policy_unpack.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/security/apparmor/policy_unpack.c b/security/apparmor/policy_unpack.c
+> index b8efbda545cb..0acca6f2a93f 100644
+> --- a/security/apparmor/policy_unpack.c
+> +++ b/security/apparmor/policy_unpack.c
+> @@ -304,7 +304,7 @@ static bool unpack_u8(struct aa_ext *e, u8 *data, const char *name)
+>  		if (!inbounds(e, sizeof(u8)))
+>  			goto fail;
+>  		if (data)
+> -			*data = get_unaligned((u8 *)e->pos);
+> +			*data = *((u8 *)e->pos);
+>  		e->pos += sizeof(u8);
+>  		return true;
+>  	}
+> 
 
