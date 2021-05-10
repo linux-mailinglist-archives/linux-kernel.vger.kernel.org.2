@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A67378AF0
+	by mail.lfdr.de (Postfix) with ESMTP id DCE66378AF2
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243773AbhEJL5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:57:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39736 "EHLO mail.kernel.org"
+        id S243842AbhEJL51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:57:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235737AbhEJLF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:05:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EDD561490;
-        Mon, 10 May 2021 10:55:58 +0000 (UTC)
+        id S235744AbhEJLF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:05:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 731FC61483;
+        Mon, 10 May 2021 10:56:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644159;
-        bh=Et9ybeFG/T13ZeHpjvXLj3rtpFizC+VnvgdSddpH7b0=;
+        s=korg; t=1620644161;
+        bh=DXx2Ls0t2fcGvRGK/ur0/utpc2YNDO5Cp0VN0+2jXc8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pZm69vjNdAH14uwLHkCUEn4m7mP4JeYukNRahXF2KxNaENwg1WydwqCU9PW5j8Vt0
-         Kefm0LeetfQXOBiCDml92k8NOKq5IrohRjfDj7fCpnhhC1w7vqv0ZoNhLanzTzIyhU
-         2Cv8Xo+rpP67HRx0uulgvEfhdqSMi4j/SmrDqfis=
+        b=0CCfCN0nEHw0J9IbUTc1UQAv6p1u73uITrBmeDiihWvom1NAN1BbubhxaA4L8+GMf
+         CcnSrqHSZF4x/0Xrgb0K63Ln9KA/hSJtTMDQRQZbNrOngzy9hvB/mvCO9VxUpCmXDO
+         v0i4vjmNwTW+WtEb+KhlGuNFnC7rjC0KyvMg7pU4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.11 311/342] ext4: allow the dax flag to be set and cleared on inline directories
-Date:   Mon, 10 May 2021 12:21:41 +0200
-Message-Id: <20210510102020.379721452@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Dave Chinner <dchinner@redhat.com>,
+        Theodore Tso <tytso@mit.edu>, Eric Whitney <enwlinux@gmail.com>
+Subject: [PATCH 5.11 312/342] ext4: Fix occasional generic/418 failure
+Date:   Mon, 10 May 2021 12:21:42 +0200
+Message-Id: <20210510102020.417240571@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
 References: <20210510102010.096403571@linuxfoundation.org>
@@ -39,49 +40,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+From: Jan Kara <jack@suse.cz>
 
-commit 4811d9929cdae4238baf5b2522247bd2f9fa7b50 upstream.
+commit 5899593f51e63dde2f07c67358bd65a641585abb upstream.
 
-This is needed to allow generic/607 to pass for file systems with the
-inline data_feature enabled, and it allows the use of file systems
-where the directories use inline_data, while the files are accessed
-via DAX.
+Eric has noticed that after pagecache read rework, generic/418 is
+occasionally failing for ext4 when blocksize < pagesize. In fact, the
+pagecache rework just made hard to hit race in ext4 more likely. The
+problem is that since ext4 conversion of direct IO writes to iomap
+framework (commit 378f32bab371), we update inode size after direct IO
+write only after invalidating page cache. Thus if buffered read sneaks
+at unfortunate moment like:
 
-Cc: stable@kernel.org
+CPU1 - write at offset 1k                       CPU2 - read from offset 0
+iomap_dio_rw(..., IOMAP_DIO_FORCE_WAIT);
+                                                ext4_readpage();
+ext4_handle_inode_extension()
+
+the read will zero out tail of the page as it still sees smaller inode
+size and thus page cache becomes inconsistent with on-disk contents with
+all the consequences.
+
+Fix the problem by moving inode size update into end_io handler which
+gets called before the page cache is invalidated.
+
+Reported-and-tested-by: Eric Whitney <enwlinux@gmail.com>
+Fixes: 378f32bab371 ("ext4: introduce direct I/O write using iomap infrastructure")
+CC: stable@vger.kernel.org
+Signed-off-by: Jan Kara <jack@suse.cz>
+Acked-by: Dave Chinner <dchinner@redhat.com>
+Link: https://lore.kernel.org/r/20210415155417.4734-1-jack@suse.cz
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/ialloc.c |    3 ++-
- fs/ext4/ioctl.c  |    6 ++++++
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ fs/ext4/file.c |   25 +++++++++++++++++++++----
+ 1 file changed, 21 insertions(+), 4 deletions(-)
 
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -1291,7 +1291,8 @@ got:
- 
- 	ei->i_extra_isize = sbi->s_want_extra_isize;
- 	ei->i_inline_off = 0;
--	if (ext4_has_feature_inline_data(sb))
-+	if (ext4_has_feature_inline_data(sb) &&
-+	    (!(ei->i_flags & EXT4_DAX_FL) || S_ISDIR(mode)))
- 		ext4_set_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
- 	ret = inode;
- 	err = dquot_alloc_inode(inode);
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -312,6 +312,12 @@ static void ext4_dax_dontcache(struct in
- static bool dax_compatible(struct inode *inode, unsigned int oldflags,
- 			   unsigned int flags)
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -372,15 +372,32 @@ truncate:
+ static int ext4_dio_write_end_io(struct kiocb *iocb, ssize_t size,
+ 				 int error, unsigned int flags)
  {
-+	/* Allow the DAX flag to be changed on inline directories */
-+	if (S_ISDIR(inode->i_mode)) {
-+		flags &= ~EXT4_INLINE_DATA_FL;
-+		oldflags &= ~EXT4_INLINE_DATA_FL;
+-	loff_t offset = iocb->ki_pos;
++	loff_t pos = iocb->ki_pos;
+ 	struct inode *inode = file_inode(iocb->ki_filp);
+ 
+ 	if (error)
+ 		return error;
+ 
+-	if (size && flags & IOMAP_DIO_UNWRITTEN)
+-		return ext4_convert_unwritten_extents(NULL, inode,
+-						      offset, size);
++	if (size && flags & IOMAP_DIO_UNWRITTEN) {
++		error = ext4_convert_unwritten_extents(NULL, inode, pos, size);
++		if (error < 0)
++			return error;
 +	}
-+
- 	if (flags & EXT4_DAX_FL) {
- 		if ((oldflags & EXT4_DAX_MUT_EXCL) ||
- 		     ext4_test_inode_state(inode,
++	/*
++	 * If we are extending the file, we have to update i_size here before
++	 * page cache gets invalidated in iomap_dio_rw(). Otherwise racing
++	 * buffered reads could zero out too much from page cache pages. Update
++	 * of on-disk size will happen later in ext4_dio_write_iter() where
++	 * we have enough information to also perform orphan list handling etc.
++	 * Note that we perform all extending writes synchronously under
++	 * i_rwsem held exclusively so i_size update is safe here in that case.
++	 * If the write was not extending, we cannot see pos > i_size here
++	 * because operations reducing i_size like truncate wait for all
++	 * outstanding DIO before updating i_size.
++	 */
++	pos += size;
++	if (pos > i_size_read(inode))
++		i_size_write(inode, pos);
+ 
+ 	return 0;
+ }
 
 
