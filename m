@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF876378218
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AF0378219
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhEJKcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:32:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60610 "EHLO mail.kernel.org"
+        id S232054AbhEJKc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:32:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231189AbhEJK2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:28:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2F6D61432;
-        Mon, 10 May 2021 10:27:15 +0000 (UTC)
+        id S231621AbhEJK2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:28:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BD3D613D3;
+        Mon, 10 May 2021 10:27:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642436;
-        bh=V6IcefS3Qw2+t7XZ7CSQUKs6/0wm+jf+MuAfSO+MeqY=;
+        s=korg; t=1620642440;
+        bh=tDBr1YL/om3BA+QjbMhSLmv9DZ+RSwDryarvMp7Ab2I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zIQPWxeyaCuVONfodB5NzV9yj7AOcTx7SwKEN2LCV2A0vb5bxPVpAYUDEKRwngqOL
-         IfIuMn8lWKVJuvnXWOok4bWzvl01EmTICB402cs3Kxq0yYmaDzTWTDWkBiIqmVFc4f
-         cerrXjLJsSD0iO+EhOWOWAGL38AXEPPBenQEtcAU=
+        b=0hJYGnWnAkya8pVqMHgnqPAVl6xqvK2pH7ykr1kK9KG4LxOJzoI//2s064W1O0UUq
+         6yFpkaz2fprKRuMHiY6SesVaMYOmDCrlbP/K2btkLUI+AjY33lQVRV8P2mj8WAOfub
+         n7pOmEpXf5ggSaWqtEmf6zP86qWbjWiX+tL7BsnU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Quinn Tran <qutran@marvell.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 094/184] scsi: qla2xxx: Fix use after free in bsg
-Date:   Mon, 10 May 2021 12:19:48 +0200
-Message-Id: <20210510101953.269223575@linuxfoundation.org>
+        stable@vger.kernel.org, Xingui Yang <yangxingui@huawei.com>,
+        Luo Jiaxing <luojiaxing@huawei.com>,
+        John Garry <john.garry@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 096/184] ata: ahci: Disable SXS for Hisilicon Kunpeng920
+Date:   Mon, 10 May 2021 12:19:50 +0200
+Message-Id: <20210510101953.339791920@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510101950.200777181@linuxfoundation.org>
 References: <20210510101950.200777181@linuxfoundation.org>
@@ -44,59 +41,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quinn Tran <qutran@marvell.com>
+From: Xingui Yang <yangxingui@huawei.com>
 
-[ Upstream commit 2ce35c0821afc2acd5ee1c3f60d149f8b2520ce8 ]
+[ Upstream commit 234e6d2c18f5b080cde874483c4c361f3ae7cffe ]
 
-On bsg command completion, bsg_job_done() was called while qla driver
-continued to access the bsg_job buffer. bsg_job_done() would free up
-resources that ended up being reused by other task while the driver
-continued to access the buffers. As a result, driver was reading garbage
-data.
+On Hisilicon Kunpeng920, ESP is set to 1 by default for all ports of
+SATA controller. In some scenarios, some ports are not external SATA ports,
+and it cause disks connected to these ports to be identified as removable
+disks. So disable the SXS capability on the software side to prevent users
+from mistakenly considering non-removable disks as removable disks and
+performing related operations.
 
-localhost kernel: BUG: KASAN: use-after-free in sg_next+0x64/0x80
-localhost kernel: Read of size 8 at addr ffff8883228a3330 by task swapper/26/0
-localhost kernel:
-localhost kernel: CPU: 26 PID: 0 Comm: swapper/26 Kdump:
-loaded Tainted: G          OE    --------- -  - 4.18.0-193.el8.x86_64+debug #1
-localhost kernel: Hardware name: HP ProLiant DL360
-Gen9/ProLiant DL360 Gen9, BIOS P89 08/12/2016
-localhost kernel: Call Trace:
-localhost kernel: <IRQ>
-localhost kernel: dump_stack+0x9a/0xf0
-localhost kernel: print_address_description.cold.3+0x9/0x23b
-localhost kernel: kasan_report.cold.4+0x65/0x95
-localhost kernel: debug_dma_unmap_sg.part.12+0x10d/0x2d0
-localhost kernel: qla2x00_bsg_sp_free+0xaf6/0x1010 [qla2xxx]
-
-Link: https://lore.kernel.org/r/20210329085229.4367-6-njavali@marvell.com
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Quinn Tran <qutran@marvell.com>
-Signed-off-by: Saurav Kashyap <skashyap@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Xingui Yang <yangxingui@huawei.com>
+Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+Reviewed-by: John Garry <john.garry@huawei.com>
+Link: https://lore.kernel.org/r/1615544676-61926-1-git-send-email-luojiaxing@huawei.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_bsg.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/ata/ahci.c    | 5 +++++
+ drivers/ata/ahci.h    | 1 +
+ drivers/ata/libahci.c | 5 +++++
+ 3 files changed, 11 insertions(+)
 
-diff --git a/drivers/scsi/qla2xxx/qla_bsg.c b/drivers/scsi/qla2xxx/qla_bsg.c
-index cbaf178fc979..ce55121910e8 100644
---- a/drivers/scsi/qla2xxx/qla_bsg.c
-+++ b/drivers/scsi/qla2xxx/qla_bsg.c
-@@ -17,10 +17,11 @@ void qla2x00_bsg_job_done(srb_t *sp, int res)
- 	struct bsg_job *bsg_job = sp->u.bsg_job;
- 	struct fc_bsg_reply *bsg_reply = bsg_job->reply;
+diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+index d33528033042..8beb418ce167 100644
+--- a/drivers/ata/ahci.c
++++ b/drivers/ata/ahci.c
+@@ -1728,6 +1728,11 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		hpriv->flags |= AHCI_HFLAG_NO_DEVSLP;
  
-+	sp->free(sp);
+ #ifdef CONFIG_ARM64
++	if (pdev->vendor == PCI_VENDOR_ID_HUAWEI &&
++	    pdev->device == 0xa235 &&
++	    pdev->revision < 0x30)
++		hpriv->flags |= AHCI_HFLAG_NO_SXS;
 +
- 	bsg_reply->result = res;
- 	bsg_job_done(bsg_job, bsg_reply->result,
- 		       bsg_reply->reply_payload_rcv_len);
--	sp->free(sp);
- }
+ 	if (pdev->vendor == 0x177d && pdev->device == 0xa01c)
+ 		hpriv->irq_handler = ahci_thunderx_irq_handler;
+ #endif
+diff --git a/drivers/ata/ahci.h b/drivers/ata/ahci.h
+index 9ef62e647cd2..732912cd4e08 100644
+--- a/drivers/ata/ahci.h
++++ b/drivers/ata/ahci.h
+@@ -242,6 +242,7 @@ enum {
+ 							suspend/resume */
+ 	AHCI_HFLAG_IGN_NOTSUPP_POWER_ON	= (1 << 27), /* ignore -EOPNOTSUPP
+ 							from phy_power_on() */
++	AHCI_HFLAG_NO_SXS		= (1 << 28), /* SXS not supported */
  
- void qla2x00_bsg_sp_free(srb_t *sp)
+ 	/* ap->flags bits */
+ 
+diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
+index ea5bf5f4cbed..fec2e9754aed 100644
+--- a/drivers/ata/libahci.c
++++ b/drivers/ata/libahci.c
+@@ -493,6 +493,11 @@ void ahci_save_initial_config(struct device *dev, struct ahci_host_priv *hpriv)
+ 		cap |= HOST_CAP_ALPM;
+ 	}
+ 
++	if ((cap & HOST_CAP_SXS) && (hpriv->flags & AHCI_HFLAG_NO_SXS)) {
++		dev_info(dev, "controller does not support SXS, disabling CAP_SXS\n");
++		cap &= ~HOST_CAP_SXS;
++	}
++
+ 	if (hpriv->force_port_map && port_map != hpriv->force_port_map) {
+ 		dev_info(dev, "forcing port_map 0x%x -> 0x%x\n",
+ 			 port_map, hpriv->force_port_map);
 -- 
 2.30.2
 
