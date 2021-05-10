@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39217378243
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1067037823D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhEJKdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:33:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60258 "EHLO mail.kernel.org"
+        id S232161AbhEJKd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:33:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231822AbhEJKaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:30:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC3D76191C;
+        id S231803AbhEJKaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:30:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A20B36162E;
         Mon, 10 May 2021 10:27:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620642443;
-        bh=z9PrVdVXAHvCaRn+C1s2vWYKe0TVKExCVwxvWswapsc=;
+        bh=iXeyTUXAdlgg0SuSf6hKwYNiPGAjzoVAH1M8YwWp+8g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=msPW4EIcjQKYLlClKbhfMCeBqk2XriApF00XoMZFnSiB6Z7yGFGDA7NQmrbNTDXnT
-         fqv4mQDpkzdbcLmKkN30pCdvr72FY2gDV5IwoXbFMQQidp2bVilosmURccyvPmycoN
-         1LXdnb0vFUUAfnp/tmZowzECULrF6qPqkyA75jdK09rIQz/Y81n7ph3wOgh3pEewcN
-         loBlHx7ORo+c/qSuN6uPMbAPvBbYuFfOxIqHluGp981/esW6+kBBiDjKuQXkjrwIQO
-         hxvYQHoT6ZWWrBg4Cg+4WwcjeJYkAo1K6YvLUxW7AjoeOvw01GcxWarFaaf2G/zHuL
-         RMIr1rKVl1HOA==
+        b=cgpArYRrukcr6HidtXoNZ8Hc9B/QW9l5vaWquFbMyCPYcNl48WViJSfe8VgW8Lf0y
+         ltJlqplbQrsexGqHaxrnIzaO6yzTXSR0SByfr+47jjF6tneCVp8o9NOmGjaMSATNlt
+         xJoZKUpW8nwS2wFJPCyL5d76O4hD2R2L0kMQ94VaKN4oOYkl6O715jrX+dpW8nxaCe
+         MZvrDbvD8Vtq//5SU6OtYYDGNsQlg/d1+R1UeZxEllsEt5Fsd6+Sp8CJTleamMdYO7
+         ESI7C6mjWtOYofE2DM61vOaRdNJy/Zyekqr0q3LPVgwFwiG5gvXq4afNlZgMcMQ9Ak
+         bT9PHEfyPzozg==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lg38D-000UPk-Ck; Mon, 10 May 2021 12:27:21 +0200
+        id 1lg38D-000UPo-El; Mon, 10 May 2021 12:27:21 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 22/53] docs: block: data-integrity.rst: avoid using UTF-8 chars
-Date:   Mon, 10 May 2021 12:26:34 +0200
-Message-Id: <ddc1ab317831fe660f74ee9a6a5728e794ae636a.1620641727.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH 23/53] docs: userspace-api: media: fdl-appendix.rst: avoid using UTF-8 chars
+Date:   Mon, 10 May 2021 12:26:35 +0200
+Message-Id: <7d38be007f5dd0495e254a7a6c6bd3e74665723d.1620641727.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620641727.git.mchehab+huawei@kernel.org>
 References: <cover.1620641727.git.mchehab+huawei@kernel.org>
@@ -48,23 +50,217 @@ While UTF-8 characters can be used at the Linux documentation,
 the best is to use them only when ASCII doesn't offer a good replacement.
 So, replace the occurences of the following UTF-8 characters:
 
-	- U+feff ('﻿'): ZERO WIDTH NO-BREAK SPACE
+	- U+201c ('“'): LEFT DOUBLE QUOTATION MARK
+	- U+201d ('”'): RIGHT DOUBLE QUOTATION MARK
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/block/data-integrity.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../userspace-api/media/fdl-appendix.rst      | 64 +++++++++----------
+ 1 file changed, 32 insertions(+), 32 deletions(-)
 
-diff --git a/Documentation/block/data-integrity.rst b/Documentation/block/data-integrity.rst
-index 4f2452a95c43..07a97aa26668 100644
---- a/Documentation/block/data-integrity.rst
-+++ b/Documentation/block/data-integrity.rst
-@@ -1,4 +1,4 @@
--﻿==============
-+==============
- Data Integrity
- ==============
+diff --git a/Documentation/userspace-api/media/fdl-appendix.rst b/Documentation/userspace-api/media/fdl-appendix.rst
+index 683ebed87017..b1bc725b4ec7 100644
+--- a/Documentation/userspace-api/media/fdl-appendix.rst
++++ b/Documentation/userspace-api/media/fdl-appendix.rst
+@@ -13,14 +13,14 @@ GNU Free Documentation License
+ ===========
  
+ The purpose of this License is to make a manual, textbook, or other
+-written document “free” in the sense of freedom: to assure everyone the
++written document "free" in the sense of freedom: to assure everyone the
+ effective freedom to copy and redistribute it, with or without modifying
+ it, either commercially or noncommercially. Secondarily, this License
+ preserves for the author and publisher a way to get credit for their
+ work, while not being considered responsible for modifications made by
+ others.
+ 
+-This License is a kind of “copyleft”, which means that derivative works
++This License is a kind of "copyleft", which means that derivative works
+ of the document must themselves be free in the same sense. It
+ complements the GNU General Public License, which is a copyleft license
+ designed for free software.
+@@ -44,21 +44,21 @@ works whose purpose is instruction or reference.
+ 
+ This License applies to any manual or other work that contains a notice
+ placed by the copyright holder saying it can be distributed under the
+-terms of this License. The “Document”, below, refers to any such manual
++terms of this License. The "Document", below, refers to any such manual
+ or work. Any member of the public is a licensee, and is addressed as
+-“you”.
++"you".
+ 
+ 
+ .. _fdl-modified:
+ 
+-A “Modified Version” of the Document means any work containing the
++A "Modified Version" of the Document means any work containing the
+ Document or a portion of it, either copied verbatim, or with
+ modifications and/or translated into another language.
+ 
+ 
+ .. _fdl-secondary:
+ 
+-A “Secondary Section” is a named appendix or a front-matter section of
++A "Secondary Section" is a named appendix or a front-matter section of
+ the :ref:`Document <fdl-document>` that deals exclusively with the
+ relationship of the publishers or authors of the Document to the
+ Document's overall subject (or to related matters) and contains nothing
+@@ -72,7 +72,7 @@ regarding them.
+ 
+ .. _fdl-invariant:
+ 
+-The “Invariant Sections” are certain
++The "Invariant Sections" are certain
+ :ref:`Secondary Sections <fdl-secondary>` whose titles are designated,
+ as being those of Invariant Sections, in the notice that says that the
+ :ref:`Document <fdl-document>` is released under this License.
+@@ -80,14 +80,14 @@ as being those of Invariant Sections, in the notice that says that the
+ 
+ .. _fdl-cover-texts:
+ 
+-The “Cover Texts” are certain short passages of text that are listed, as
++The "Cover Texts" are certain short passages of text that are listed, as
+ Front-Cover Texts or Back-Cover Texts, in the notice that says that the
+ :ref:`Document <fdl-document>` is released under this License.
+ 
+ 
+ .. _fdl-transparent:
+ 
+-A “Transparent” copy of the :ref:`Document <fdl-document>` means a
++A "Transparent" copy of the :ref:`Document <fdl-document>` means a
+ machine-readable copy, represented in a format whose specification is
+ available to the general public, whose contents can be viewed and edited
+ directly and straightforwardly with generic text editors or (for images
+@@ -97,7 +97,7 @@ formatters or for automatic translation to a variety of formats suitable
+ for input to text formatters. A copy made in an otherwise Transparent
+ file format whose markup has been designed to thwart or discourage
+ subsequent modification by readers is not Transparent. A copy that is
+-not “Transparent” is called “Opaque”.
++not "Transparent" is called "Opaque".
+ 
+ Examples of suitable formats for Transparent copies include plain ASCII
+ without markup, Texinfo input format, LaTeX input format, SGML or XML
+@@ -111,10 +111,10 @@ word processors for output purposes only.
+ 
+ .. _fdl-title-page:
+ 
+-The “Title Page” means, for a printed book, the title page itself, plus
++The "Title Page" means, for a printed book, the title page itself, plus
+ such following pages as are needed to hold, legibly, the material this
+ License requires to appear in the title page. For works in formats which
+-do not have any title page as such, “Title Page” means the text near the
++do not have any title page as such, "Title Page" means the text near the
+ most prominent appearance of the work's title, preceding the beginning
+ of the body of the text.
+ 
+@@ -242,11 +242,11 @@ Modified Version:
+    Include an unaltered copy of this License.
+ 
+ -  **I.**
+-   Preserve the section entitled “History”, and its title, and add to it
++   Preserve the section entitled "History", and its title, and add to it
+    an item stating at least the title, year, new authors, and publisher
+    of the :ref:`Modified Version <fdl-modified>` as given on the
+    :ref:`Title Page <fdl-title-page>`. If there is no section entitled
+-   “History” in the :ref:`Document <fdl-document>`, create one stating
++   "History" in the :ref:`Document <fdl-document>`, create one stating
+    the title, year, authors, and publisher of the Document as given on
+    its Title Page, then add an item describing the Modified Version as
+    stated in the previous sentence.
+@@ -256,13 +256,13 @@ Modified Version:
+    :ref:`Document <fdl-document>` for public access to a
+    :ref:`Transparent <fdl-transparent>` copy of the Document, and
+    likewise the network locations given in the Document for previous
+-   versions it was based on. These may be placed in the “History”
++   versions it was based on. These may be placed in the "History"
+    section. You may omit a network location for a work that was
+    published at least four years before the Document itself, or if the
+    original publisher of the version it refers to gives permission.
+ 
+ -  **K.**
+-   In any section entitled “Acknowledgements” or “Dedications”, preserve
++   In any section entitled "Acknowledgements" or "Dedications", preserve
+    the section's title, and preserve in the section all the substance
+    and tone of each of the contributor acknowledgements and/or
+    dedications given therein.
+@@ -274,11 +274,11 @@ Modified Version:
+    part of the section titles.
+ 
+ -  **M.**
+-   Delete any section entitled “Endorsements”. Such a section may not be
++   Delete any section entitled "Endorsements". Such a section may not be
+    included in the :ref:`Modified Version <fdl-modified>`.
+ 
+ -  **N.**
+-   Do not retitle any existing section as “Endorsements” or to conflict
++   Do not retitle any existing section as "Endorsements" or to conflict
+    in title with any :ref:`Invariant Section <fdl-invariant>`.
+ 
+ If the :ref:`Modified Version <fdl-modified>` includes new
+@@ -290,7 +290,7 @@ of :ref:`Invariant Sections <fdl-invariant>` in the Modified Version's
+ license notice. These titles must be distinct from any other section
+ titles.
+ 
+-You may add a section entitled “Endorsements”, provided it contains
++You may add a section entitled "Endorsements", provided it contains
+ nothing but endorsements of your
+ :ref:`Modified Version <fdl-modified>` by various parties--for
+ example, statements of peer review or that the text has been approved by
+@@ -337,11 +337,11 @@ the original author or publisher of that section if known, or else a
+ unique number. Make the same adjustment to the section titles in the
+ list of Invariant Sections in the license notice of the combined work.
+ 
+-In the combination, you must combine any sections entitled “History” in
+-the various original documents, forming one section entitled “History”;
+-likewise combine any sections entitled “Acknowledgements”, and any
+-sections entitled “Dedications”. You must delete all sections entitled
+-“Endorsements.”
++In the combination, you must combine any sections entitled "History" in
++the various original documents, forming one section entitled "History";
++likewise combine any sections entitled "Acknowledgements", and any
++sections entitled "Dedications". You must delete all sections entitled
++"Endorsements."
+ 
+ 
+ .. _fdl-section6:
+@@ -372,7 +372,7 @@ with other separate and independent documents or works, in or on a
+ volume of a storage or distribution medium, does not as a whole count as
+ a :ref:`Modified Version <fdl-modified>` of the Document, provided no
+ compilation copyright is claimed for the compilation. Such a compilation
+-is called an “aggregate”, and this License does not apply to the other
++is called an "aggregate", and this License does not apply to the other
+ self-contained works thus compiled with the Document , on account of
+ their being thus compiled, if they are not themselves derivative works
+ of the Document. If the :ref:`Cover Text <fdl-cover-texts>`
+@@ -429,7 +429,7 @@ concerns. See
+ 
+ Each version of the License is given a distinguishing version number. If
+ the :ref:`Document <fdl-document>` specifies that a particular
+-numbered version of this License “or any later version” applies to it,
++numbered version of this License "or any later version" applies to it,
+ you have the option of following the terms and conditions either of that
+ specified version or of any later version that has been published (not
+ as a draft) by the Free Software Foundation. If the Document does not
+@@ -455,13 +455,13 @@ notices just after the title page:
+     being LIST THEIR TITLES, with the
+     :ref:`Front-Cover Texts <fdl-cover-texts>` being LIST, and with
+     the :ref:`Back-Cover Texts <fdl-cover-texts>` being LIST. A copy
+-    of the license is included in the section entitled “GNU Free
+-    Documentation License”.
++    of the license is included in the section entitled "GNU Free
++    Documentation License".
+ 
+-If you have no :ref:`Invariant Sections <fdl-invariant>`, write “with
+-no Invariant Sections” instead of saying which ones are invariant. If
+-you have no :ref:`Front-Cover Texts <fdl-cover-texts>`, write “no
+-Front-Cover Texts” instead of “Front-Cover Texts being LIST”; likewise
++If you have no :ref:`Invariant Sections <fdl-invariant>`, write "with
++no Invariant Sections" instead of saying which ones are invariant. If
++you have no :ref:`Front-Cover Texts <fdl-cover-texts>`, write "no
++Front-Cover Texts" instead of "Front-Cover Texts being LIST"; likewise
+ for :ref:`Back-Cover Texts <fdl-cover-texts>`.
+ 
+ If your document contains nontrivial examples of program code, we
 -- 
 2.30.2
 
