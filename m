@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BF737876E
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E0137878D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237562AbhEJLPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:15:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41454 "EHLO mail.kernel.org"
+        id S237682AbhEJLP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:15:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233733AbhEJKud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233748AbhEJKud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 06:50:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F01961874;
-        Mon, 10 May 2021 10:39:59 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06A2261954;
+        Mon, 10 May 2021 10:40:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643200;
-        bh=dRcBh40usbpUAMrJQwi6LYe34sL2xU+NSNEIES2cWn4=;
+        s=korg; t=1620643202;
+        bh=sFNkAUFqPkld7N7J8ph5F7w+KUBRpZjz87UnLlxrk8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dnJTHkMlV1QWM5FQpnipRK6XEREogw5aYSFZEj3YIaO6hw7SDpb8e+o30HJQA/wjd
-         2Ez0utV5utx5i8L3Px44B0RyEveJ5UaVYxMKkQ7TuIP38MoDPUygCChuOtbWsKVZzE
-         4Zfy1+wnbpz5G1q5x7HNFQgz1sYE6Xpu77UCH5yM=
+        b=ahnpDcixIkiCuxD5KZ9o3Lc/pVG/+RXXI9c/hddS2pNAFpn4Vol+kmAmrn78WsJT5
+         PoaQXbwkBW6pv+tXrQe7KeNHPbtH/NkPNBsKr3UR+lljrvl8PDEFcpUyt/3T1dr+w7
+         LZW5cWi1tEB8M1ToDIi9pggq1W00bapY3Yibum2Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sami Loone <sami@loone.fi>,
+        stable@vger.kernel.org, Eckhart Mohr <e.mohr@tuxedocomputers.com>,
+        Werner Sembach <wse@tuxedocomputers.com>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 218/299] ALSA: hda/realtek: fix static noise on ALC285 Lenovo laptops
-Date:   Mon, 10 May 2021 12:20:15 +0200
-Message-Id: <20210510102012.140455715@linuxfoundation.org>
+Subject: [PATCH 5.10 219/299] ALSA: hda/realtek: Add quirk for Intel Clevo PCx0Dx
+Date:   Mon, 10 May 2021 12:20:16 +0200
+Message-Id: <20210510102012.169103035@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
 References: <20210510102004.821838356@linuxfoundation.org>
@@ -39,53 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sami Loone <sami@loone.fi>
+From: Eckhart Mohr <e.mohr@tuxedocomputers.com>
 
-commit 9bbb94e57df135ef61bef075d9c99b8d9e89e246 upstream.
+commit 970e3012c04c96351c413f193a9c909e6d871ce2 upstream.
 
-Remove a duplicate vendor+subvendor pin fixup entry as one is masking
-the other and making it unreachable. Consider the more specific newcomer
-as a second chance instead.
+This applies a SND_PCI_QUIRK(...) to the Clevo PCx0Dx barebones. This
+fix enables audio output over the headset jack and ensures that a
+microphone connected via the headset combo jack is correctly recognized
+when pluged in.
 
-The generic entry is made less strict to also match for laptops with
-slightly different 0x12 pin configuration. Tested on Lenovo Yoga 6 (AMD)
-where 0x12 is 0x40000000.
+[ Rearranged the list entries in a sorted order -- tiwai ]
 
-Fixes: 607184cb1635 ("ALSA: hda/realtek - Add supported for more Lenovo ALC285 Headset Button")
-Signed-off-by: Sami Loone <sami@loone.fi>
+Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+Co-developed-by: Werner Sembach <wse@tuxedocomputers.com>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/YIXS+GT/dGI/LtK6@yoga
+Link: https://lore.kernel.org/r/20210427153025.451118-1-wse@tuxedocomputers.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ sound/pci/hda/patch_realtek.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -8774,12 +8774,7 @@ static const struct snd_hda_pin_quirk al
- 		{0x12, 0x90a60130},
- 		{0x19, 0x03a11020},
- 		{0x21, 0x0321101f}),
--	SND_HDA_PIN_QUIRK(0x10ec0285, 0x17aa, "Lenovo", ALC285_FIXUP_THINKPAD_NO_BASS_SPK_HEADSET_JACK,
--		{0x14, 0x90170110},
--		{0x19, 0x04a11040},
--		{0x21, 0x04211020}),
- 	SND_HDA_PIN_QUIRK(0x10ec0285, 0x17aa, "Lenovo", ALC285_FIXUP_LENOVO_PC_BEEP_IN_NOISE,
--		{0x12, 0x90a60130},
- 		{0x14, 0x90170110},
- 		{0x19, 0x04a11040},
- 		{0x21, 0x04211020}),
-@@ -8950,6 +8945,10 @@ static const struct snd_hda_pin_quirk al
- 	SND_HDA_PIN_QUIRK(0x10ec0274, 0x1028, "Dell", ALC274_FIXUP_DELL_AIO_LINEOUT_VERB,
- 		{0x19, 0x40000000},
- 		{0x1a, 0x40000000}),
-+	SND_HDA_PIN_QUIRK(0x10ec0285, 0x17aa, "Lenovo", ALC285_FIXUP_THINKPAD_NO_BASS_SPK_HEADSET_JACK,
-+		{0x14, 0x90170110},
-+		{0x19, 0x04a11040},
-+		{0x21, 0x04211020}),
- 	{}
- };
- 
+@@ -2552,8 +2552,10 @@ static const struct snd_pci_quirk alc882
+ 	SND_PCI_QUIRK(0x1558, 0x65d1, "Clevo PB51[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x65d2, "Clevo PB51R[CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x65e1, "Clevo PB51[ED][DF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
++	SND_PCI_QUIRK(0x1558, 0x65e5, "Clevo PC50D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67d1, "Clevo PB71[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67e1, "Clevo PB71[DE][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
++	SND_PCI_QUIRK(0x1558, 0x67e5, "Clevo PC70D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x70d1, "Clevo PC70[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo laptop", ALC882_FIXUP_EAPD),
 
 
