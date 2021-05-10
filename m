@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335C6378AF3
+	by mail.lfdr.de (Postfix) with ESMTP id D52C2378AF5
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243865AbhEJL5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:57:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36380 "EHLO mail.kernel.org"
+        id S243904AbhEJL5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:57:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235754AbhEJLGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:06:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E0FA613D6;
-        Mon, 10 May 2021 10:56:04 +0000 (UTC)
+        id S235768AbhEJLGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:06:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B536613D3;
+        Mon, 10 May 2021 10:56:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644164;
-        bh=L4Z/lavsAkh015cOpILC8zaDta2Yugo6DqHJ9fBvJK8=;
+        s=korg; t=1620644169;
+        bh=vmRwiyypgVbsZ/+3FOlU9DN916jLITD/t3fXolfSu7k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nVLIGPFLL8CDT8q7b4z6za3BfOcKocFHOTy90jAxKpmFJ90zM900dOQvNUgt1MufF
-         ZeH5uRHmQs08xUQaH8EPybTm9fk5hHWB/L7bQbUU8fn3ZyKMAuFxoQp4ygB/1g04EJ
-         7FE692UQY3CkCNfwTLQ+Doq6vDBuZAtP6fymOI/A=
+        b=OLsZ1KAokE8yAH498jokP9E3NdLxh730g7PSrPAy8FUtEo+EAsTSz70moNQd8jEF/
+         F1X9v9QgRI+3AxEW2ebbqzlmiKE99ZDdfdRMPeYACaloNbETThOVpn7LFRiTG5CT7v
+         I28peqptxfNP3Pm1lusfajxrwGLAvxuDfI+4jw5M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+7f09440acc069a0d38ac@syzkaller.appspotmail.com,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.11 313/342] media: dvbdev: Fix memory leak in dvb_media_device_free()
-Date:   Mon, 10 May 2021 12:21:43 +0200
-Message-Id: <20210510102020.448906056@linuxfoundation.org>
+        stable@vger.kernel.org, Robert Foss <robert.foss@linaro.org>,
+        Takashi Iwai <tiwai@suse.de>, Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Stefan Seyfried <seife+kernel@b1-systems.com>
+Subject: [PATCH 5.11 314/342] media: dvb-usb: Fix use-after-free access
+Date:   Mon, 10 May 2021 12:21:44 +0200
+Message-Id: <20210510102020.488034321@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
 References: <20210510102010.096403571@linuxfoundation.org>
@@ -41,37 +41,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <yepeilin.cs@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit bf9a40ae8d722f281a2721779595d6df1c33a0bf upstream.
+commit c49206786ee252f28b7d4d155d1fff96f145a05d upstream.
 
-dvb_media_device_free() is leaking memory. Free `dvbdev->adapter->conn`
-before setting it to NULL, as documented in include/media/media-device.h:
-"The media_entity instance itself must be freed explicitly by the driver
-if required."
+dvb_usb_device_init() copies the properties to the own data, so that
+the callers can release the original properties later (as done in the
+commit 299c7007e936 ("media: dw2102: Fix memleak on sequence of
+probes")).  However, it also stores dev->desc pointer that is a
+reference to the original properties data.  Since dev->desc is
+referred later, it may result in use-after-free, in the worst case,
+leading to a kernel Oops as reported.
 
-Link: https://syzkaller.appspot.com/bug?id=9bbe4b842c98f0ed05c5eed77a226e9de33bf298
+This patch addresses the problem by allocating and copying the
+properties at first, then get the desc from the copied properties.
 
-Link: https://lore.kernel.org/linux-media/20201211083039.521617-1-yepeilin.cs@gmail.com
-Cc: stable@vger.kernel.org
-Fixes: 0230d60e4661 ("[media] dvbdev: Add RF connector if needed")
-Reported-by: syzbot+7f09440acc069a0d38ac@syzkaller.appspotmail.com
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Reported-and-tested-by: Stefan Seyfried <seife+kernel@b1-systems.com>
+BugLink: http://bugzilla.opensuse.org/show_bug.cgi?id=1181104
+
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sean Young <sean@mess.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/dvb-core/dvbdev.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/usb/dvb-usb/dvb-usb-init.c |   23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
---- a/drivers/media/dvb-core/dvbdev.c
-+++ b/drivers/media/dvb-core/dvbdev.c
-@@ -241,6 +241,7 @@ static void dvb_media_device_free(struct
+--- a/drivers/media/usb/dvb-usb/dvb-usb-init.c
++++ b/drivers/media/usb/dvb-usb/dvb-usb-init.c
+@@ -267,27 +267,30 @@ int dvb_usb_device_init(struct usb_inter
+ 	if (du != NULL)
+ 		*du = NULL;
  
- 	if (dvbdev->adapter->conn) {
- 		media_device_unregister_entity(dvbdev->adapter->conn);
-+		kfree(dvbdev->adapter->conn);
- 		dvbdev->adapter->conn = NULL;
- 		kfree(dvbdev->adapter->conn_pads);
- 		dvbdev->adapter->conn_pads = NULL;
+-	if ((desc = dvb_usb_find_device(udev, props, &cold)) == NULL) {
++	d = kzalloc(sizeof(*d), GFP_KERNEL);
++	if (!d) {
++		err("no memory for 'struct dvb_usb_device'");
++		return -ENOMEM;
++	}
++
++	memcpy(&d->props, props, sizeof(struct dvb_usb_device_properties));
++
++	desc = dvb_usb_find_device(udev, &d->props, &cold);
++	if (!desc) {
+ 		deb_err("something went very wrong, device was not found in current device list - let's see what comes next.\n");
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto error;
+ 	}
+ 
+ 	if (cold) {
+ 		info("found a '%s' in cold state, will try to load a firmware", desc->name);
+ 		ret = dvb_usb_download_firmware(udev, props);
+ 		if (!props->no_reconnect || ret != 0)
+-			return ret;
++			goto error;
+ 	}
+ 
+ 	info("found a '%s' in warm state.", desc->name);
+-	d = kzalloc(sizeof(struct dvb_usb_device), GFP_KERNEL);
+-	if (d == NULL) {
+-		err("no memory for 'struct dvb_usb_device'");
+-		return -ENOMEM;
+-	}
+-
+ 	d->udev = udev;
+-	memcpy(&d->props, props, sizeof(struct dvb_usb_device_properties));
+ 	d->desc = desc;
+ 	d->owner = owner;
+ 
 
 
