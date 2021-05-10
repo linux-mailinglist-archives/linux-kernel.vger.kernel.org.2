@@ -2,67 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BE3378F94
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608E9378F98
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238129AbhEJNt1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 10 May 2021 09:49:27 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:43517 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233973AbhEJNkT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 09:40:19 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-27-bBycmq91M5C3TfJHA3srvw-1; Mon, 10 May 2021 14:38:53 +0100
-X-MC-Unique: bBycmq91M5C3TfJHA3srvw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Mon, 10 May 2021 14:38:50 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Mon, 10 May 2021 14:38:49 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Fabio Aiuto' <fabioaiuto83@gmail.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 1/2] staging: rtl8723bs: replace private CRC-32
- routines with in-kernel ones
-Thread-Topic: [PATCH v2 1/2] staging: rtl8723bs: replace private CRC-32
- routines with in-kernel ones
-Thread-Index: AQHXRaBE0Vec4dAP60OcHOZcBIBf86rcuAwA
-Date:   Mon, 10 May 2021 13:38:49 +0000
-Message-ID: <29938747c82e4cf1837be5f1cdb803b7@AcuMS.aculab.com>
-References: <cover.1620652505.git.fabioaiuto83@gmail.com>
- <cdd9bc521b7119a9c2787b46109eb76f94bd295a.1620652505.git.fabioaiuto83@gmail.com>
-In-Reply-To: <cdd9bc521b7119a9c2787b46109eb76f94bd295a.1620652505.git.fabioaiuto83@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S240639AbhEJNuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:50:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51552 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241357AbhEJNor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 09:44:47 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1CEF1AF33;
+        Mon, 10 May 2021 13:43:31 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 49BE9DB226; Mon, 10 May 2021 15:41:02 +0200 (CEST)
+Date:   Mon, 10 May 2021 15:41:02 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Remove redundant assignment to ret
+Message-ID: <20210510134102.GV7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1620470329-27792-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620470329-27792-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> replace private CRC-32 routines with in-kernel ones.
+On Sat, May 08, 2021 at 06:38:49PM +0800, Jiapeng Chong wrote:
+> Variable ret is set to zero, but this value is never read as it is
+> overwritten or not used later on, hence it is a redundant assignment
+> and can be removed.
+> 
+> Clean up the following clang-analyzer warning:
+> 
+> fs/btrfs/extent_io.c:5357:4: warning: Value stored to 'ret' is never
+> read [clang-analyzer-deadcode.DeadStores].
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  fs/btrfs/extent_io.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 074a78a..cea58be 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -5354,7 +5354,6 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+>  				goto out_free;
+>  			if (ret)
+>  				flags |= FIEMAP_EXTENT_SHARED;
+> -			ret = 0;
 
-Have you verified that they compute the same CRC?
-
-There are all sorts of subtle reasons why the outputs can differ.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+This leaves the scope where the value of 'ret' has been used for
+something and it's reset to 0 for clarity. This is a pattern that we use
+and will not change it just to silence clang analyzer.
