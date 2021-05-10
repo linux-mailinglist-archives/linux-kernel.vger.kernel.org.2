@@ -2,323 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE9C377E84
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F785377E8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbhEJItF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 04:49:05 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3894 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229566AbhEJItF (ORCPT
+        id S230189AbhEJItq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 04:49:46 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:2427 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230049AbhEJIto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 04:49:05 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14A8Xxl8192072;
-        Mon, 10 May 2021 04:47:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-transfer-encoding
- : mime-version; s=pp1; bh=KTQxO0IWEBnipVyxp6Fd/H0bA828QsZiHmmsIJMhYdA=;
- b=jLzG2rGtACeEoK139T5ho4elQTOXjUTGYYKWuxonbHJWXF77RCJrbAqwXx+uJbK6uZ6U
- 40aivppGHClTcgMx0SlZxRKRwIq3bbHhgJ0UxE6UGwCrAS+Q/wfVj9gXEqt2TrSov8A0
- 90buWAW5NbTmB5gNBz6VpEJKYtpiGHIAJ0ACZIREGs++8mL5up1zhzZrvpqWOJETfejX
- FKZ+B8Pilv/L4hKavZSRikY8hLFf/CgHTi33uIrs54hdjVNZkzMeEZVn5uIOaMC1jJx9
- cARgmQ56FXQYv/bTDsRER81k0azLmYRriSP56Cb8nzQHqGj8yLn75K0jboGhVaySoQyb Ww== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38f19a0jfg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 May 2021 04:47:50 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14A8ZbP7008512;
-        Mon, 10 May 2021 04:47:49 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38f19a0jev-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 May 2021 04:47:49 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14A8gohJ023630;
-        Mon, 10 May 2021 08:47:48 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 38dj988sg1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 May 2021 08:47:47 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14A8ljpV16581018
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 May 2021 08:47:45 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A07314C050;
-        Mon, 10 May 2021 08:47:45 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4729E4C052;
-        Mon, 10 May 2021 08:47:45 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 10 May 2021 08:47:45 +0000 (GMT)
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, sparclinux@vger.kernel.org
-Subject: [PATCH v5--cover-letter 3/3] asm-generic/io.h: warn in inb() and friends with undefined PCI_IOBASE
-Date:   Mon, 10 May 2021 10:47:43 +0200
-Message-Id: <20210510084743.1850777-4-schnelle@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210510084743.1850777-1-schnelle@linux.ibm.com>
-References: <20210510084743.1850777-1-schnelle@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: y6A-vOpbDjPS-w1cYvAYxPhaxfXqjWCF
-X-Proofpoint-ORIG-GUID: AzhZuuaJFfarROUONmooVLD0mynIak1f
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 10 May 2021 04:49:44 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fdvlq5P1yzCr9l;
+        Mon, 10 May 2021 16:45:59 +0800 (CST)
+Received: from [10.67.110.238] (10.67.110.238) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 10 May 2021 16:48:31 +0800
+Subject: Re: Virtio-scsi multiqueue irq affinity
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ming Lei <ming.lei@redhat.com>
+CC:     Peter Xu <peterx@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Jason Wang <jasowang@redhat.com>,
+        Luiz Capitulino <lcapitulino@redhat.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>, <minlei@redhat.com>,
+        <liaochang1@huawei.com>
+References: <20190318062150.GC6654@xz-x1>
+ <alpine.DEB.2.21.1903231805310.1798@nanos.tec.linutronix.de>
+ <20190325050213.GH9149@xz-x1> <20190325070616.GA9642@ming.t460p>
+ <alpine.DEB.2.21.1903250948490.1798@nanos.tec.linutronix.de>
+ <20190325095011.GA23225@ming.t460p>
+ <0f6c8a5f-ad33-1199-f313-53fe9187a672@huawei.com>
+ <87zgx5l8ck.ffs@nanos.tec.linutronix.de>
+From:   xuyihang <xuyihang@huawei.com>
+Message-ID: <963e38b0-a7d6-0b13-af89-81b03028d1ae@huawei.com>
+Date:   Mon, 10 May 2021 16:48:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-10_04:2021-05-10,2021-05-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 impostorscore=0 spamscore=0 bulkscore=0
- mlxlogscore=999 adultscore=0 lowpriorityscore=0 clxscore=1011
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105100061
+In-Reply-To: <87zgx5l8ck.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.238]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When PCI_IOBASE is not defined, it is set to 0 such that it is ignored
-in calls to the readX/writeX primitives. This triggers clang's
--Wnull-pointer-arithmetic warning and will result in illegal accesses on
-platforms that do not support I/O ports.
+Thomas,
 
-Make things explicit and silence the warning by letting inb() and
-friends fail with WARN_ONCE() and a 0xff... return in case PCI_IOBASE is
-not defined.
+在 2021/5/8 20:26, Thomas Gleixner 写道:
+> Yihang,
+>
+> On Sat, May 08 2021 at 15:52, xuyihang wrote:
+>> We are dealing with a scenario which may need to assign a default
+>> irqaffinity for managed IRQ.
+>>
+>> Assume we have a full CPU usage RT thread running binded to a specific
+>> CPU.
+>>
+>> In the mean while, interrupt handler registered by a device which is
+>> ksoftirqd may never have a chance to run. (And we don't want to use
+>> isolate CPU)
+> A device cannot register and interrupt handler in ksoftirqd.
+>
+>> There could be a couple way to deal with this problem:
+>>
+>> 1. Adjust priority of ksoftirqd or RT thread, so the interrupt handler
+>> could preempt
+>>
+>> RT thread. However, I am not sure whether it could have some side
+>> effects or not.
+>>
+>> 2. Adjust interrupt CPU affinity or RT thread affinity. But managed IRQ
+>> seems design to forbid user from manipulating interrupt affinity.
+>>
+>> It seems managed IRQ is coupled with user side application to me.
+>>
+>> Would you share your thoughts about this issue please?
+> Can you please provide a more detailed description of your system?
+>
+>      - Number of CPUs
+It's a 4 CPU x86 VM.
+>      - Kernel version
+This experiment run on linux-4.19
+>      - Is NOHZ full enabled?
+nohz=off
+>      - Any isolation mechanisms enabled, and if so how are they
+>        configured (e.g. on the kernel command line)?
 
-Link: https://lore.kernel.org/lkml/20210421111759.2059976-1-schnelle@linux.ibm.com/
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
----
- include/asm-generic/io.h | 65 +++++++++++++++++++++++++++++++++++++---
- 1 file changed, 61 insertions(+), 4 deletions(-)
+Some core is isolated by command line (such as : isolcpus=3), and bind
 
-diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-index e93375c710b9..7b523683c241 100644
---- a/include/asm-generic/io.h
-+++ b/include/asm-generic/io.h
-@@ -8,6 +8,7 @@
- #define __ASM_GENERIC_IO_H
- 
- #include <asm/page.h> /* I/O is all done through memory accesses */
-+#include <linux/bug.h>
- #include <linux/string.h> /* for memset() and memcpy() */
- #include <linux/types.h>
- 
-@@ -440,10 +441,6 @@ static inline void writesq(volatile void __iomem *addr, const void *buffer,
- #endif
- #endif /* CONFIG_64BIT */
- 
--#ifndef PCI_IOBASE
--#define PCI_IOBASE ((void __iomem *)0)
--#endif
--
- #ifndef IO_SPACE_LIMIT
- #define IO_SPACE_LIMIT 0xffff
- #endif
-@@ -458,12 +455,17 @@ static inline void writesq(volatile void __iomem *addr, const void *buffer,
- #define _inb _inb
- static inline u8 _inb(unsigned long addr)
- {
-+#ifdef PCI_IOBASE
- 	u8 val;
- 
- 	__io_pbr();
- 	val = __raw_readb(PCI_IOBASE + addr);
- 	__io_par(val);
- 	return val;
-+#else
-+	WARN_ONCE(1, "No I/O port support\n");
-+	return ~0;
-+#endif
- }
- #endif
- 
-@@ -471,12 +473,17 @@ static inline u8 _inb(unsigned long addr)
- #define _inw _inw
- static inline u16 _inw(unsigned long addr)
- {
-+#ifdef PCI_IOBASE
- 	u16 val;
- 
- 	__io_pbr();
- 	val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
- 	__io_par(val);
- 	return val;
-+#else
-+	WARN_ONCE(1, "No I/O port support\n");
-+	return ~0;
-+#endif
- }
- #endif
- 
-@@ -484,12 +491,17 @@ static inline u16 _inw(unsigned long addr)
- #define _inl _inl
- static inline u32 _inl(unsigned long addr)
- {
-+#ifdef PCI_IOBASE
- 	u32 val;
- 
- 	__io_pbr();
- 	val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
- 	__io_par(val);
- 	return val;
-+#else
-+	WARN_ONCE(1, "No I/O port support\n");
-+	return ~0;
-+#endif
- }
- #endif
- 
-@@ -497,9 +509,13 @@ static inline u32 _inl(unsigned long addr)
- #define _outb _outb
- static inline void _outb(u8 value, unsigned long addr)
- {
-+#ifdef PCI_IOBASE
- 	__io_pbw();
- 	__raw_writeb(value, PCI_IOBASE + addr);
- 	__io_paw();
-+#else
-+	WARN_ONCE(1, "No I/O port support\n");
-+#endif
- }
- #endif
- 
-@@ -507,9 +523,13 @@ static inline void _outb(u8 value, unsigned long addr)
- #define _outw _outw
- static inline void _outw(u16 value, unsigned long addr)
- {
-+#ifdef PCI_IOBASE
- 	__io_pbw();
- 	__raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
- 	__io_paw();
-+#else
-+	WARN_ONCE(1, "No I/O port support\n");
-+#endif
- }
- #endif
- 
-@@ -517,9 +537,13 @@ static inline void _outw(u16 value, unsigned long addr)
- #define _outl _outl
- static inline void _outl(u32 value, unsigned long addr)
- {
-+#ifdef PCI_IOBASE
- 	__io_pbw();
- 	__raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
- 	__io_paw();
-+#else
-+	WARN_ONCE(1, "No I/O port support\n");
-+#endif
- }
- #endif
- 
-@@ -606,7 +630,11 @@ static inline void outl_p(u32 value, unsigned long addr)
- #define insb insb
- static inline void insb(unsigned long addr, void *buffer, unsigned int count)
- {
-+#ifdef PCI_IOBASE
- 	readsb(PCI_IOBASE + addr, buffer, count);
-+#else
-+	WARN_ONCE(1, "No I/O port support\n");
-+#endif
- }
- #endif
- 
-@@ -614,7 +642,11 @@ static inline void insb(unsigned long addr, void *buffer, unsigned int count)
- #define insw insw
- static inline void insw(unsigned long addr, void *buffer, unsigned int count)
- {
-+#ifdef PCI_IOBASE
- 	readsw(PCI_IOBASE + addr, buffer, count);
-+#else
-+	WARN_ONCE(1, "No I/O port support\n");
-+#endif
- }
- #endif
- 
-@@ -622,7 +654,11 @@ static inline void insw(unsigned long addr, void *buffer, unsigned int count)
- #define insl insl
- static inline void insl(unsigned long addr, void *buffer, unsigned int count)
- {
-+#ifdef PCI_IOBASE
- 	readsl(PCI_IOBASE + addr, buffer, count);
-+#else
-+	WARN_ONCE(1, "No I/O port support\n");
-+#endif
- }
- #endif
- 
-@@ -631,7 +667,11 @@ static inline void insl(unsigned long addr, void *buffer, unsigned int count)
- static inline void outsb(unsigned long addr, const void *buffer,
- 			 unsigned int count)
- {
-+#ifdef PCI_IOBASE
- 	writesb(PCI_IOBASE + addr, buffer, count);
-+#else
-+	WARN_ONCE(1, "No I/O port support\n");
-+#endif
- }
- #endif
- 
-@@ -640,7 +680,11 @@ static inline void outsb(unsigned long addr, const void *buffer,
- static inline void outsw(unsigned long addr, const void *buffer,
- 			 unsigned int count)
- {
-+#ifdef PCI_IOBASE
- 	writesw(PCI_IOBASE + addr, buffer, count);
-+#else
-+	WARN_ONCE(1, "No I/O port support\n");
-+#endif
- }
- #endif
- 
-@@ -649,7 +693,11 @@ static inline void outsw(unsigned long addr, const void *buffer,
- static inline void outsl(unsigned long addr, const void *buffer,
- 			 unsigned int count)
- {
-+#ifdef PCI_IOBASE
- 	writesl(PCI_IOBASE + addr, buffer, count);
-+#else
-+	WARN_ONCE(1, "No I/O port support\n");
-+#endif
- }
- #endif
- 
-@@ -1020,18 +1068,27 @@ static inline void __iomem *ioremap_np(phys_addr_t offset, size_t size)
- #define ioport_map ioport_map
- static inline void __iomem *ioport_map(unsigned long port, unsigned int nr)
- {
-+#ifdef PCI_IOBASE
- 	port &= IO_SPACE_LIMIT;
- 	return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
-+#else
-+	WARN_ONCE(1, "No I/O port support\n");
-+	return NULL;
-+#endif
- }
- #define __pci_ioport_unmap __pci_ioport_unmap
- static inline void __pci_ioport_unmap(void __iomem *p)
- {
-+#ifdef PCI_IOBASE
- 	uintptr_t start = (uintptr_t) PCI_IOBASE;
- 	uintptr_t addr = (uintptr_t) p;
- 
- 	if (addr >= start && addr < start + IO_SPACE_LIMIT)
- 		return;
- 	iounmap(p);
-+#else
-+	WARN_ONCE(1, "No I/O port support\n");
-+#endif
- }
- #endif
- 
--- 
-2.25.1
+with RT thread, and no other isolation configure.
+
+>      - Number of queues in the multiqueue device
+
+Only one queue.
+
+[root@localhost ~]# cat /proc/interrupts | grep request
+  27:       5499          0          0          0   PCI-MSI 
+65539-edge      virtio1-request
+
+This environment is a virtual machine and it's a virtio device, I guess it
+
+should not make any difference in this case.
+
+>      - Is the RT thread issuing I/O to the multiqueue device?
+
+The RT thread doesn't issue IO.
+
+
+
+We simplified the reproduce procedure:
+
+1. Start a busy loopping program that have near 100% cpu usage, named print
+
+./print 1 1 &
+
+
+2. Make the program become realtime application
+
+chrt -f -p 1 11514
+
+
+3. Bind the RT process to the **managed irq** core
+
+taskset -cpa 0 11514
+
+
+4. Use dd to write to hard drive, and dd could not finish and return.
+
+dd if=/dev/zero of=/test.img bs=1K count=1 oflag=direct,sync &
+
+
+Since CPU is fully utilized by RT application, and hard drive driver choose
+
+CPU0 to handle it's softirq, there is no chance for dd to run.
+
+     PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM TIME+ COMMAND
+   11514 root      -2   0    2228    740    676 R 100.0   0.0 3:26.70 print
+
+
+If we make some change on this experiment:
+
+1.  Make this RT application use less CPU time instead of 100%, the problem
+
+disappear.
+
+2, If we change rq_affinity to 2, in order to avoid handle softirq on 
+the same
+
+core of RT thread, the problem also disappear. However, this approach
+
+result in about 10%-30% random write proformance deduction comparing
+
+to rq_affinity = 1, since it may has better cache utilization.
+
+echo 2 > /sys/block/sda/queue/rq_affinity
+
+
+Therefore, I want to exclude some CPU from managed irq on boot parameter,
+
+which has simliar approach to 11ea68f553e2 ("genirq, sched/isolation: 
+Isolate
+
+from handling managed interrupts").
+
+
+Thanks,
+
+Yihang
 
