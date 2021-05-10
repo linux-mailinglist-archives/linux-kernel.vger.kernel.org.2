@@ -2,54 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271863780D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B973780D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhEJKHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:07:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:53376 "EHLO foss.arm.com"
+        id S230286AbhEJKJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:09:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51522 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230103AbhEJKHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:07:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D657915BE;
-        Mon, 10 May 2021 03:06:05 -0700 (PDT)
-Received: from [10.163.77.48] (unknown [10.163.77.48])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FB2A3F719;
-        Mon, 10 May 2021 03:06:02 -0700 (PDT)
-Subject: Re: [PATCH] mm/thp: Make ARCH_ENABLE_SPLIT_PMD_PTLOCK dependent on
- PGTABLE_LEVELS > 2
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1620621345-29176-1-git-send-email-anshuman.khandual@arm.com>
- <20210510085313.GB5618@worktop.programming.kicks-ass.net>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <843e545a-ca0c-6a1e-2ab0-28ccca182400@arm.com>
-Date:   Mon, 10 May 2021 15:36:29 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230002AbhEJKJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:09:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A9CFCB034;
+        Mon, 10 May 2021 10:08:19 +0000 (UTC)
+Date:   Mon, 10 May 2021 12:08:14 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        willy@infradead.org, mhocko@suse.com, song.bao.hua@hisilicon.com,
+        david@redhat.com, naoya.horiguchi@nec.com,
+        joao.m.martins@oracle.com, duanxiongchun@bytedance.com,
+        fam.zheng@bytedance.com, zhengqi.arch@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v23 8/9] mm: memory_hotplug: disable memmap_on_memory
+ when hugetlb_free_vmemmap enabled
+Message-ID: <20210510100809.GA22664@linux>
+References: <20210510030027.56044-1-songmuchun@bytedance.com>
+ <20210510030027.56044-9-songmuchun@bytedance.com>
 MIME-Version: 1.0
-In-Reply-To: <20210510085313.GB5618@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510030027.56044-9-songmuchun@bytedance.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 10, 2021 at 11:00:26AM +0800, Muchun Song wrote:
+> diff --git a/drivers/acpi/acpi_memhotplug.c b/drivers/acpi/acpi_memhotplug.c
+> index 8cc195c4c861..0d7f595ee441 100644
+> --- a/drivers/acpi/acpi_memhotplug.c
+> +++ b/drivers/acpi/acpi_memhotplug.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/acpi.h>
+>  #include <linux/memory.h>
+>  #include <linux/memory_hotplug.h>
+> +#include <linux/hugetlb.h>
+>  
+>  #include "internal.h"
+
+Uhm, I am confused.
+Why do we need this here? AFAICS, we do not.
+
+The function is in memory_hotplug.c, and that alrady has that include.
+What am I missing?
 
 
-On 5/10/21 2:23 PM, Peter Zijlstra wrote:
-> On Mon, May 10, 2021 at 10:05:45AM +0530, Anshuman Khandual wrote:
->> -	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if X86_64 || X86_PAE
->> +	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if (PGTABLE_LEVELS > 2) && (X86_64 || X86_PAE)
-> 
-> It's still very early on a Monday, but IIRC this new condition is
-> identical to the pre-existing one.
-
-Did not get it, could you please elaborate ?
+-- 
+Oscar Salvador
+SUSE L3
