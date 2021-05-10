@@ -2,160 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8DE379ADE
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 01:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7FAD379ADF
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 01:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbhEJXls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 19:41:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46948 "EHLO
+        id S230057AbhEJXoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 19:44:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbhEJXlp (ORCPT
+        with ESMTP id S229973AbhEJXoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 19:41:45 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247E0C061574;
-        Mon, 10 May 2021 16:40:40 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id w15so22856105ljo.10;
-        Mon, 10 May 2021 16:40:40 -0700 (PDT)
+        Mon, 10 May 2021 19:44:13 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC9AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 16:43:08 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso15994670otg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 16:43:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4x0vN9DJqs7gJDwDfxyEg064VHqNhSWYWI838BdyA6Y=;
-        b=bv+qY0q2mO9tHNg79PZMj8hkZ9C8rxnsgQTKmo/G7H1nlKCoAMKWz7Bw0X25Cou4jU
-         IknSAu6Jq8pZ0M5/91i+w6wG4XX8btm6dMQ4QFmGR0GTRhQmZhLliRXUAc68CBtoLBMI
-         ZLLX7kJV2Ld+if87BOnwOGqel6FQy3k1Knai6gSjVXUWyvNVwKauZp1dvovV0JEEoyP4
-         mhjO8CFhNjZcmPzwVRv/e7dLqnoxbrqGKHCwXpJQFAX+vMR6ajjmjV5EVsLMhxyVDc+d
-         5LxZ/932j4mszXXmeMlynvNsST6XOZQer9Fkk/r4ycNUG4aa4q957Zd9eyp6g63OCS/C
-         6LoA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=nI6OyGK/NDS5KWwyMcxjHYV++Bw+P/38diaFjV4zBiw=;
+        b=XkLmCEA2tZEsOS/on3p917VhWFUcl7NKtWoH8X+5ICOWQA9u6LahaURWjQ9oOX7lQs
+         nZ4hLFWGHFpyLxjIo5yX1Cl/shVaT50CuVuZoAU282yqDKC0ENPL2X8mCH/PmhLWatm4
+         73PtM05PUCWd+CFi2fqAg94B9RoBKdViq10QhRWMxkCuWc3Z/iVsKLG+J8IIUetA+6QL
+         0yBKuttVB/+qHl2Nl/1ghdNfRDN3D9BaObcHMn4HSKndwBx4t/SwllWik37yjCJZgeUa
+         W2QyvCdI82v7AGB9qAlntdxswXFb40aSMghDoxeq4EwFTMmrJ4iKjx5c9BC+k9Su8/qM
+         8VLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4x0vN9DJqs7gJDwDfxyEg064VHqNhSWYWI838BdyA6Y=;
-        b=QcPkAQMYd7tM5t30Mda+qYjjFvq3l7UqPnG37y7pb4+Eymz7FpSfglS08tCGMybkvx
-         XsqPGT+3ktnhAwVrxnb0VDh4EwoteapVa4+DtjeI6dE2+rSDfy16z0Gp1PVSCg1Qgo0P
-         /8tKn55X7csDXxx7BzacxhXrz7RzSANu6IoSVOkhxkbUcI0oYL0gUp9lvRZNf0WiVnIC
-         t1sYzv3FOPeI14tJzuPvDJjJDzBe0R7SrAVGpyeFMBAC3O1LQVHe6pzHfr5YiE3thdjd
-         CvWg2JQyQSq8gvHg0ZYQpAp/MNOuDTZ2dnFjH8Jihv9T3gLoZXDCpzsnYsd0eLq5ijsR
-         y9eQ==
-X-Gm-Message-State: AOAM532a11OoF5pjN2dar8Mjhw0p1yhD08FYCI0CBjH4ST0DgPYiFIrh
-        uqFOrVC1Gv15drRpeNeuOqU=
-X-Google-Smtp-Source: ABdhPJzQrUm5bDZEPSU5ieS3hk7r8BouKV4qqzcZDrrRCosV82J5oK0C5TjXP9oalqSbpSSxLWqE+Q==
-X-Received: by 2002:a2e:9b82:: with SMTP id z2mr19980857lji.366.1620690038713;
-        Mon, 10 May 2021 16:40:38 -0700 (PDT)
-Received: from xws.localdomain ([37.58.58.229])
-        by smtp.gmail.com with ESMTPSA id z12sm2398926lfe.195.2021.05.10.16.40.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 16:40:38 -0700 (PDT)
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] Revert "arm64: PCI: Exclude ACPI "consumer" resources from host bridge windows"
-Date:   Tue, 11 May 2021 01:40:20 +0200
-Message-Id: <20210510234020.1330087-1-luzmaximilian@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=nI6OyGK/NDS5KWwyMcxjHYV++Bw+P/38diaFjV4zBiw=;
+        b=jtb7rSnooVA51JXoO53JrU0a4WxJ6QC1QeNAaJvYp8r2m6hyd1YpSAyLoygLSaI24s
+         JQWmThk0mU9vnySr5f9KBwW+/YICCd05CWNTkrrdhPk7gy8Aw1pZ0I59AW4KI5LL3xN4
+         Sk4m/BOLMTgEX0pAi4PXlMWD8NK0QoXG/DM88NBbH56AE8Yj9sdmqx4l8clN04sL7Trp
+         H5utvKyPradT64j1hhvVQvLMh2yWnUusrzUckgmSeDjZvzkOx+XQ3cqqJk4vi6wCo9N1
+         Qv18kljj5PrQY92oPtjSpOfPJeLO9gbcNr9XRI/MquONm9PTilDovPiTnadp82vufi9J
+         WrjQ==
+X-Gm-Message-State: AOAM532jTazhxvQgS2jaCqlM+CuzzbphVCwVcXCpg1B9mlVojiW0TEAq
+        TZWKH6GBQY2e/0KhKPBIAJJCgQ==
+X-Google-Smtp-Source: ABdhPJwc7k8WryWRBA8BZ3WaBx9TJKkdH+Q2Mb1JowR0hD3dnCw13CNL/cexiLI7pDcx9SPE7hQxlw==
+X-Received: by 2002:a05:6830:1b6e:: with SMTP id d14mr6931963ote.65.1620690187161;
+        Mon, 10 May 2021 16:43:07 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id n98sm3446769ota.24.2021.05.10.16.43.05
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 10 May 2021 16:43:06 -0700 (PDT)
+Date:   Mon, 10 May 2021 16:42:48 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Miaohe Lin <linmiaohe@huawei.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] ksm: Revert "use GET_KSM_PAGE_NOLOCK to get ksm page in
+ remove_rmap_item_from_tree()"
+In-Reply-To: <0e04877c-5b2d-b810-7464-108e793b84d3@huawei.com>
+Message-ID: <alpine.LSU.2.11.2105101615570.1127@eggly.anvils>
+References: <alpine.LSU.2.11.2105092253500.1127@eggly.anvils> <0e04877c-5b2d-b810-7464-108e793b84d3@huawei.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Microsoft Surface Pro X has host bridges defined as
+On Mon, 10 May 2021, Miaohe Lin wrote:
+> On 2021/5/10 13:59, Hugh Dickins wrote:
+> > This reverts commit 3e96b6a2e9ad929a3230a22f4d64a74671a0720b.
+> > General Protection Fault in rmap_walk_ksm() under memory pressure:
+> > remove_rmap_item_from_tree() needs to take page lock, of course.
+> > 
+> 
+> I'am really sorry about it! And many thanks for this bugfix!
+> It seems rmap_walk_ksm() relies on the page lock to protect against
+> concurrent modifications to that page's node of the stable tree.
+> Could you please add a comment in remove_rmap_item_from_tree() to
+> clarify this in case similar trouble again? Many thanks!
 
-    Name (_HID, EisaId ("PNP0A08") /* PCI Express Bus */)  // _HID: Hardware ID
-    Name (_CID, EisaId ("PNP0A03") /* PCI Bus */)  // _CID: Compatible ID
+Sorry, no.  Page lock is held by callers of stable_tree_append() when
+adding an rmap_item to the tree, and held by callers of rmap_walk_ksm()
+(see VM_BUG_ON_PAGE there) when walking the tree: you would surely
+expect some kind of locking when removing an rmap_item from the tree,
+and the appropriate page lock is what GET_KSM_PAGE_LOCK provided.
 
-    Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-    {
-        Name (RBUF, ResourceTemplate ()
-        {
-            Memory32Fixed (ReadWrite,
-                0x60200000,         // Address Base
-                0x01DF0000,         // Address Length
-                )
-            WordBusNumber (ResourceProducer, MinFixed, MaxFixed, PosDecode,
-                0x0000,             // Granularity
-                0x0000,             // Range Minimum
-                0x0001,             // Range Maximum
-                0x0000,             // Translation Offset
-                0x0002,             // Length
-                ,, )
-        })
-        Return (RBUF) /* \_SB_.PCI0._CRS.RBUF */
-    }
+I do not want us to go through the kernel source adding a comment
+/* We really mean to take this lock: it protects against concurrency */
+every time we take a lock in the kernel: you should generally assume
+that if a lock is taken, then the writer intended it to be taken.
 
-meaning that the memory resources aren't (explicitly) defined as
-"producers", i.e. host bridge windows.
+There are sure to be some exceptions, where a lock is taken pointlessly:
+but please look deeper before assuming that is the case.
 
-Commit 8fd4391ee717 ("arm64: PCI: Exclude ACPI "consumer" resources from
-host bridge windows") introduced a check that removes such resources,
-causing BAR allocation failures later on:
+Hugh
 
-    [ 0.150731] pci 0002:00:00.0: BAR 14: no space for [mem size 0x00100000]
-    [ 0.150744] pci 0002:00:00.0: BAR 14: failed to assign [mem size 0x00100000]
-    [ 0.150758] pci 0002:01:00.0: BAR 0: no space for [mem size 0x00004000 64bit]
-    [ 0.150769] pci 0002:01:00.0: BAR 0: failed to assign [mem size 0x00004000 64bit]
-
-This eventually prevents the PCIe NVME drive from being accessible.
-
-On x86 we already skip the check for producer/window due to some history
-with negligent firmware. It seems that Microsoft is intent on continuing
-that history on their ARM devices, so let's drop that check here too.
-
-Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
----
-
-Please note: I am not sure if this is the right way to fix that, e.g. I
-don't know if any additional checks like on IA64 or x86 might be
-required instead, or if this might break things on other devices. So
-please consider this more as a bug report rather than a fix.
-
-Apologies for the re-send, I seem to have unintentionally added a blank
-line before the subject.
-
----
- arch/arm64/kernel/pci.c | 14 --------------
- 1 file changed, 14 deletions(-)
-
-diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
-index 1006ed2d7c60..80f87fe0a2b8 100644
---- a/arch/arm64/kernel/pci.c
-+++ b/arch/arm64/kernel/pci.c
-@@ -94,19 +94,6 @@ int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge)
- 	return 0;
- }
- 
--static int pci_acpi_root_prepare_resources(struct acpi_pci_root_info *ci)
--{
--	struct resource_entry *entry, *tmp;
--	int status;
--
--	status = acpi_pci_probe_root_resources(ci);
--	resource_list_for_each_entry_safe(entry, tmp, &ci->resources) {
--		if (!(entry->res->flags & IORESOURCE_WINDOW))
--			resource_list_destroy_entry(entry);
--	}
--	return status;
--}
--
- /*
-  * Lookup the bus range for the domain in MCFG, and set up config space
-  * mapping.
-@@ -184,7 +171,6 @@ struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
- 	}
- 
- 	root_ops->release_info = pci_acpi_generic_release_info;
--	root_ops->prepare_resources = pci_acpi_root_prepare_resources;
- 	root_ops->pci_ops = (struct pci_ops *)&ri->cfg->ops->pci_ops;
- 	bus = acpi_pci_root_create(root, root_ops, &ri->common, ri->cfg);
- 	if (!bus)
--- 
-2.31.1
-
+> 
+> > Signed-off-by: Hugh Dickins <hughd@google.com>
+> > ---
+> > 
+> >  mm/ksm.c |    3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > --- 5.13-rc1/mm/ksm.c	2021-05-09 17:03:44.010422188 -0700
+> > +++ linux/mm/ksm.c	2021-05-09 22:12:39.403008350 -0700
+> > @@ -776,11 +776,12 @@ static void remove_rmap_item_from_tree(s
+> >  		struct page *page;
+> >  
+> >  		stable_node = rmap_item->head;
+> > -		page = get_ksm_page(stable_node, GET_KSM_PAGE_NOLOCK);
+> > +		page = get_ksm_page(stable_node, GET_KSM_PAGE_LOCK);
+> >  		if (!page)
+> >  			goto out;
+> >  
+> >  		hlist_del(&rmap_item->hlist);
+> > +		unlock_page(page);
+> >  		put_page(page);
+> >  
+> >  		if (!hlist_empty(&stable_node->hlist))
