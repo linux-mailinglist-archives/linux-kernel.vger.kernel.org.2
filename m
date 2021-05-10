@@ -2,175 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E799377E29
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F0C377E32
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbhEJI2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 04:28:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32330 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230243AbhEJI2Q (ORCPT
+        id S230261AbhEJIal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 04:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230170AbhEJIak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 04:28:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620635232;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8yWz/56H24m+Rwv/XNZpgOF6AS+kBigZhTf8M/eMyKE=;
-        b=g8VXzkzCnrul/2jV+9upDMCRWJYgivhoglXRCa4BCb/hYCA0/yg+9c/fWX+xF4gmUHeol+
-        YB+lAT6jsUv6gMSFqBF6lcY3Xhebu6JsbqlGL7kyhVNrZjqmrGN9xDt+XN1uOfs+6qlAR7
-        ZFIRi4ac0gJZP3rdXU2OZ1hohwxgQ90=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-404-e2Uu-8UAPd2--03jhoQNUw-1; Mon, 10 May 2021 04:27:07 -0400
-X-MC-Unique: e2Uu-8UAPd2--03jhoQNUw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 55AA4801817;
-        Mon, 10 May 2021 08:27:06 +0000 (UTC)
-Received: from starship (unknown [10.40.194.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3DD7F5D9CA;
-        Mon, 10 May 2021 08:27:03 +0000 (UTC)
-Message-ID: <e1a46c206cedf836c41de01e9af7fb5160c3b083.camel@redhat.com>
-Subject: Re: [PATCH 12/15] KVM: x86: Export the number of uret MSRs to
- vendor modules
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Reiji Watanabe <reijiw@google.com>
-Date:   Mon, 10 May 2021 11:27:01 +0300
-In-Reply-To: <20210504171734.1434054-13-seanjc@google.com>
-References: <20210504171734.1434054-1-seanjc@google.com>
-         <20210504171734.1434054-13-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Mon, 10 May 2021 04:30:40 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3123C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 01:29:35 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id h14-20020a17090aea8eb02901553e1cc649so9624055pjz.0
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 01:29:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raydium-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nti7k0aWmxKKtAKgFMSnvSLPYcjIi1zTilsQciHI1RE=;
+        b=JQQ85+wK04UnJ+t/Fsh0eQzUazMsnG6ZikOBKRF4hOdbbaDcxfJDjBAV1ggI1/wIAL
+         twbH/ZZ949LO1fHhUFt2/Wvp1lshyw6xQ3aIqeFgyJXhmpFR8vB0fQyqObI21+435AP+
+         +D79Fz6Pxnfqbe/OxSLSJnVY/OZq0gV95NvuVFCqlRWgZIvoG8/Kd8KhsGt/pWE8o0pX
+         C9zo9ZigI+qomKDAa+QPSFIW5BEWfe5hdUQrPwsF/6Ok5Hirlq+20rgea0yjsMxDbDXZ
+         Qsa5SVBzRzck5f04da4ERSPQXVG9okEfYiljm7WMQEtCrCeq1tPgMuOr6XD/U5ArDUau
+         +ABQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nti7k0aWmxKKtAKgFMSnvSLPYcjIi1zTilsQciHI1RE=;
+        b=m76Ij7BxJOelJVjs4tPGrElGV3WQiz1++Ij3am1Kz0+G0sz+dg2bDKgSgBJ9BcNqdq
+         wXNlpx/6mg5AuF6mZqnhlQsPFNUOXF97+n0HdlZ98GyIfWRdJDqJHmtz+yXI0yhEDpmE
+         XfkYlhLZqSi67MWRYJDPcd480iofktmzt+r2aZl/UwplhpiQ3w5YuxwJSiqOT+6vOovb
+         8aVLiNbG0ENaVLc5/qp2SsKmBf03lx1e7dhJDyd7sxqJNVVVhH8H0DtD+HTPe4XsdXXR
+         GD2Gvutxykz8b7o8tOxcFvPlDVeufdaWN9Ku5NDxpOIjdp8OlcmNKmfGgU8vKQuO7RIq
+         9lPA==
+X-Gm-Message-State: AOAM531JSJMDcEdZ2vgAt2sVjZyx39FfABrFxGlWG9zbLfb/kBrBeZ55
+        kA/0B+bs5tZfJJtakpCR1kk4vw==
+X-Google-Smtp-Source: ABdhPJyRJkxsjD55cX9CgdaAkxuFt8akxHSTSjfCDpWDYMQcVQklWjgQi3qKpx4t1rG1+7hVcH7ODw==
+X-Received: by 2002:a17:90b:19c4:: with SMTP id nm4mr16844674pjb.102.1620635375332;
+        Mon, 10 May 2021 01:29:35 -0700 (PDT)
+Received: from localhost.localdomain ([2402:7500:590:a0b:68e6:4109:c7b2:3cc])
+        by smtp.gmail.com with ESMTPSA id ge4sm18791463pjb.49.2021.05.10.01.29.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 01:29:34 -0700 (PDT)
+From:   "simba.hsu" <simba.hsu@raydium.corp-partner.google.com>
+X-Google-Original-From: "simba.hsu" <simba.hsu@rad-ic.com>
+To:     dmitry.torokhov@gmail.com, simba.hsu@rad-ic.com,
+        furquan@google.com, seanpaul@chromium.org, rrangle@chromium.org
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        KP.li@rad-ic.com, jeffrey.lin@rad-ic.com,
+        "simba.hsu" <simba.hsu@raydium.corp-partner.google.com>
+Subject: [PATCH] driver:input:touchscreen: improve the mechanism of auto-update
+Date:   Mon, 10 May 2021 16:27:08 +0800
+Message-Id: <20210510082708.41844-1-simba.hsu@rad-ic.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-05-04 at 10:17 -0700, Sean Christopherson wrote:
-> Split out and export the number of configured user return MSRs so that
-> VMX can iterate over the set of MSRs without having to do its own tracking.
-> Keep the list itself internal to x86 so that vendor code still has to go
-> through the "official" APIs to add/modify entries.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/include/asm/kvm_host.h |  1 +
->  arch/x86/kvm/x86.c              | 29 +++++++++++++----------------
->  2 files changed, 14 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index c9452472ed55..10663610f105 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1419,6 +1419,7 @@ struct kvm_arch_async_pf {
->  	bool direct_map;
->  };
->  
-> +extern u32 __read_mostly kvm_nr_uret_msrs;
->  extern u64 __read_mostly host_efer;
->  extern bool __read_mostly allow_smaller_maxphyaddr;
->  extern struct kvm_x86_ops kvm_x86_ops;
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 90ef340565a4..2fd46e917666 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -184,11 +184,6 @@ module_param(pi_inject_timer, bint, S_IRUGO | S_IWUSR);
->   */
->  #define KVM_MAX_NR_USER_RETURN_MSRS 16
->  
-> -struct kvm_user_return_msrs_global {
-> -	int nr;
-> -	u32 msrs[KVM_MAX_NR_USER_RETURN_MSRS];
-> -};
-> -
->  struct kvm_user_return_msrs {
->  	struct user_return_notifier urn;
->  	bool registered;
-> @@ -198,7 +193,9 @@ struct kvm_user_return_msrs {
->  	} values[KVM_MAX_NR_USER_RETURN_MSRS];
->  };
->  
-> -static struct kvm_user_return_msrs_global __read_mostly user_return_msrs_global;
-> +u32 __read_mostly kvm_nr_uret_msrs;
-> +EXPORT_SYMBOL_GPL(kvm_nr_uret_msrs);
-> +static u32 __read_mostly kvm_uret_msrs_list[KVM_MAX_NR_USER_RETURN_MSRS];
->  static struct kvm_user_return_msrs __percpu *user_return_msrs;
->  
->  #define KVM_SUPPORTED_XCR0     (XFEATURE_MASK_FP | XFEATURE_MASK_SSE \
-> @@ -330,10 +327,10 @@ static void kvm_on_user_return(struct user_return_notifier *urn)
->  		user_return_notifier_unregister(urn);
->  	}
->  	local_irq_restore(flags);
-> -	for (slot = 0; slot < user_return_msrs_global.nr; ++slot) {
-> +	for (slot = 0; slot < kvm_nr_uret_msrs; ++slot) {
->  		values = &msrs->values[slot];
->  		if (values->host != values->curr) {
-> -			wrmsrl(user_return_msrs_global.msrs[slot], values->host);
-> +			wrmsrl(kvm_uret_msrs_list[slot], values->host);
->  			values->curr = values->host;
->  		}
->  	}
-> @@ -358,9 +355,9 @@ EXPORT_SYMBOL_GPL(kvm_probe_user_return_msr);
->  void kvm_define_user_return_msr(unsigned slot, u32 msr)
->  {
->  	BUG_ON(slot >= KVM_MAX_NR_USER_RETURN_MSRS);
-> -	user_return_msrs_global.msrs[slot] = msr;
-> -	if (slot >= user_return_msrs_global.nr)
-> -		user_return_msrs_global.nr = slot + 1;
-> +	kvm_uret_msrs_list[slot] = msr;
-> +	if (slot >= kvm_nr_uret_msrs)
-> +		kvm_nr_uret_msrs = slot + 1;
->  }
->  EXPORT_SYMBOL_GPL(kvm_define_user_return_msr);
->  
-> @@ -368,8 +365,8 @@ int kvm_find_user_return_msr(u32 msr)
->  {
->  	int i;
->  
-> -	for (i = 0; i < user_return_msrs_global.nr; ++i) {
-> -		if (user_return_msrs_global.msrs[i] == msr)
-> +	for (i = 0; i < kvm_nr_uret_msrs; ++i) {
-> +		if (kvm_uret_msrs_list[i] == msr)
->  			return i;
->  	}
->  	return -1;
-> @@ -383,8 +380,8 @@ static void kvm_user_return_msr_cpu_online(void)
->  	u64 value;
->  	int i;
->  
-> -	for (i = 0; i < user_return_msrs_global.nr; ++i) {
-> -		rdmsrl_safe(user_return_msrs_global.msrs[i], &value);
-> +	for (i = 0; i < kvm_nr_uret_msrs; ++i) {
-> +		rdmsrl_safe(kvm_uret_msrs_list[i], &value);
->  		msrs->values[i].host = value;
->  		msrs->values[i].curr = value;
->  	}
-> @@ -399,7 +396,7 @@ int kvm_set_user_return_msr(unsigned slot, u64 value, u64 mask)
->  	value = (value & mask) | (msrs->values[slot].host & ~mask);
->  	if (value == msrs->values[slot].curr)
->  		return 0;
-> -	err = wrmsrl_safe(user_return_msrs_global.msrs[slot], value);
-> +	err = wrmsrl_safe(kvm_uret_msrs_list[slot], value);
->  	if (err)
->  		return 1;
->  
+From: "simba.hsu" <simba.hsu@raydium.corp-partner.google.com>
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+Once auto-update has been interrupted, touch IC will be stuck in
+recovery mode forever and it will lead to touch malfunction.
+This patch makes auto-update available when touch IC is in
+recovery mode to avoid touch malfunction.
 
-Best regards,
-	Maxim Levitsky
+Signed-off-by: simba.hsu <simba.hsu@rad-ic.com>
+---
+ drivers/input/touchscreen/raydium_i2c_ts.c | 53 ++++++++++++++++++----
+ 1 file changed, 45 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/input/touchscreen/raydium_i2c_ts.c b/drivers/input/touchscreen/raydium_i2c_ts.c
+index 4d2d22a86977..50f6fbbe4775 100644
+--- a/drivers/input/touchscreen/raydium_i2c_ts.c
++++ b/drivers/input/touchscreen/raydium_i2c_ts.c
+@@ -36,7 +36,8 @@
+ #define RM_CMD_BOOT_CHK		0x33		/* send data check */
+ #define RM_CMD_BOOT_READ	0x44		/* send wait bl data ready*/
+ 
+-#define RM_BOOT_RDY		0xFF		/* bl data ready */
++#define RM_BOOT_RDY		0xFF			/* bl data ready */
++#define RM_BOOT_CMD_READHWID	0x0E	/* read hwid */
+ 
+ /* I2C main commands */
+ #define RM_CMD_QUERY_BANK	0x2B
+@@ -155,6 +156,7 @@ static int raydium_i2c_xfer(struct i2c_client *client, u32 addr,
+ 	 * sent first. Else, skip the header i.e. xfer[0].
+ 	 */
+ 	int xfer_start_idx = (addr > 0xff) ? 0 : 1;
++
+ 	xfer_count -= xfer_start_idx;
+ 
+ 	ret = i2c_transfer(client->adapter, &xfer[xfer_start_idx], xfer_count);
+@@ -289,6 +291,44 @@ static int raydium_i2c_sw_reset(struct i2c_client *client)
+ 
+ 	return 0;
+ }
++static int raydium_i2c_query_ts_BL_info(struct raydium_data *ts)
++{
++	struct i2c_client *client = ts->client;
++	static const u8 get_hwid[7] = {RM_BOOT_CMD_READHWID,
++					 0x10, 0xc0, 0x01, 0x00, 0x04, 0x00};
++	int error;
++	u8 rbuf[5] = {0, 0, 0, 0, 0};
++	u32 tmpdata = 0;
++
++	error = raydium_i2c_send(client,
++				 RM_CMD_BOOT_WRT, get_hwid, sizeof(get_hwid));
++	if (error) {
++		dev_err(&client->dev, "WRT HWID command failed: %d\n", error);
++		return error;
++	}
++
++	error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, rbuf, 1);
++	if (error) {
++		dev_err(&client->dev, "Ack HWID command failed: %d\n", error);
++		return error;
++	}
++
++	error = raydium_i2c_read(client,
++				 RM_CMD_BOOT_CHK, rbuf, sizeof(rbuf));
++	if (!error) {
++		tmpdata = (rbuf[1]<<24|rbuf[2]<<16|rbuf[3]<<8|rbuf[4]);
++		ts->info.hw_ver = tmpdata;
++		dev_err(&client->dev, "HWID %08X\n", ts->info.hw_ver);
++	} else {
++		ts->info.hw_ver = cpu_to_le32(0xffffffffUL);
++		dev_err(&client->dev, "raydium_i2c_read HWID failed, %X, %X, %X, %X\n",
++					 rbuf[1], rbuf[2], rbuf[3], rbuf[4]);
++	}
++	ts->info.main_ver = 0xff;
++	ts->info.sub_ver = 0xff;
++
++	return error;
++}
+ 
+ static int raydium_i2c_query_ts_info(struct raydium_data *ts)
+ {
+@@ -388,13 +428,10 @@ static int raydium_i2c_initialize(struct raydium_data *ts)
+ 	if (error)
+ 		ts->boot_mode = RAYDIUM_TS_BLDR;
+ 
+-	if (ts->boot_mode == RAYDIUM_TS_BLDR) {
+-		ts->info.hw_ver = cpu_to_le32(0xffffffffUL);
+-		ts->info.main_ver = 0xff;
+-		ts->info.sub_ver = 0xff;
+-	} else {
++	if (ts->boot_mode == RAYDIUM_TS_BLDR)
++		raydium_i2c_query_ts_BL_info(ts);
++	else
+ 		raydium_i2c_query_ts_info(ts);
+-	}
+ 
+ 	return error;
+ }
+@@ -1218,7 +1255,7 @@ static SIMPLE_DEV_PM_OPS(raydium_i2c_pm_ops,
+ 			 raydium_i2c_suspend, raydium_i2c_resume);
+ 
+ static const struct i2c_device_id raydium_i2c_id[] = {
+-	{ "raydium_i2c" , 0 },
++	{ "raydium_i2c", 0 },
+ 	{ "rm32380", 0 },
+ 	{ /* sentinel */ }
+ };
+-- 
+2.25.1
 
