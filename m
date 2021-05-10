@@ -2,205 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A953937967B
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0436D37967E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233113AbhEJRxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 13:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231827AbhEJRxb (ORCPT
+        id S233135AbhEJRy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 13:54:27 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:53704 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231827AbhEJRyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 13:53:31 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B138C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:52:26 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id w6-20020a4a9d060000b02901f9175244e7so3641335ooj.9
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:52:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=j1xfxTlB6kdvw4Qq6xxoQ5zEc5YpLfaQSChecCnRyDU=;
-        b=P292ufd09w3DBDcmC8PvXAvF4oPfWZvc9j+O4JeOtt5XP6ykvMElAHyt7lawJnKVo7
-         Llc+r0kk6pBPRaJ+r/xZc+XJpKXaYxYdodVx2EKRcL3a3/urZ4GrfCbSXNm9TueWF6Pf
-         eUExHQo+rfTsNOLQaerPFRA00qvTKztE3CBBA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=j1xfxTlB6kdvw4Qq6xxoQ5zEc5YpLfaQSChecCnRyDU=;
-        b=mUqLLImvzGoGJN9rAOss7wnUTF31BpOBAKvXjDl2371153Jr2Ncmv8KO8JnXixaHVO
-         GGFeYTFVehVNhzvnQsHwbL2PnDozmhmtQETqG9/fDQDNUIeC0ABaSM4MXfeBUxkyMmrc
-         0jspDtPGiWGQlYXffcDTDdo+XXPow8IxtPyZf81sHCVHOD7Q1QsDKIbv+fMjB9pjjZJo
-         oy/mgsH9hGmSHylh9N7cjFmwqN+WQYlwNSavWwSu7mXvxxcEBMiVoJWLXB3tAY9vpo2P
-         jQn2VsHs/lv35vZw0NrcyTNeTMUcxmeAapNJmX5Mb0sgHv8b1wm6ZoSwNBj8ksuPeWk+
-         eUfw==
-X-Gm-Message-State: AOAM5305fS7NCu1nW1gDKzwq0WadhKnt5KSXTEky4FttDxEQ8Mm5ZlfO
-        n5SFrR/2FV7wyPm6sWJbUhjUrsCiOGtoPqJi8HL87Q==
-X-Google-Smtp-Source: ABdhPJw1IDaRdP6RASMoXX2NdYKzZNWDeGssQdVmIuu7WQlsq4z76pAlpb4lgd0DVAWGxaxUjej01HSgXagSojWzERI=
-X-Received: by 2002:a4a:1703:: with SMTP id 3mr19977335ooe.92.1620669145625;
- Mon, 10 May 2021 10:52:25 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 10 May 2021 10:52:25 -0700
+        Mon, 10 May 2021 13:54:25 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.5)
+ id 379239d53aab3172; Mon, 10 May 2021 19:53:19 +0200
+Received: from kreacher.localnet (89-64-81-75.dynamic.chello.pl [89.64.81.75])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id A2E7A669592;
+        Mon, 10 May 2021 19:53:18 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH] ACPI: scan: Rearrange dep_unmet initialization
+Date:   Mon, 10 May 2021 19:53:18 +0200
+Message-ID: <2607573.mvXUDI8C0e@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <YJlZwYS+oH7W5WjO@phenom.ffwll.local>
-References: <20210508074118.1621729-1-swboyd@chromium.org> <YJlZwYS+oH7W5WjO@phenom.ffwll.local>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 10 May 2021 10:52:25 -0700
-Message-ID: <CAE-0n52S=LFRx93qVyWBpF5PmdCEbWH_+HnN0Do9W45kiJLCbQ@mail.gmail.com>
-Subject: Re: [PATCH] component: Move host device to end of device lists on binding
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Russell King <rmk+kernel@arm.linux.org.uk>,
-        Rob Clark <robdclark@gmail.com>,
-        dri-devel@lists.freedesktop.org
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.81.75
+X-CLIENT-HOSTNAME: 89-64-81-75.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvdegkedguddukecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhephfegtdffjeehkeegleejveevtdeugfffieeijeduuddtkefgjedvheeujeejtedvnecukfhppeekledrieegrdekuddrjeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedurdejhedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehhuggvghhovgguvgesrhgvughhrghtrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Daniel Vetter (2021-05-10 09:05:21)
-> On Sat, May 08, 2021 at 12:41:18AM -0700, Stephen Boyd wrote:
-> > The device lists are poorly ordered when the component device code is
-> > used. This is because component_master_add_with_match() returns 0
-> > regardless of component devices calling component_add() first. It can
-> > really only fail if an allocation fails, in which case everything is
-> > going bad and we're out of memory. The host device (called master_dev in
-> > the code), can succeed at probe and be put on the device lists before
-> > any of the component devices are probed and put on the lists.
-> >
-> > Within the component device framework this usually isn't that bad
-> > because the real driver work is done at bind time via
-> > component{,master}_ops::bind(). It becomes a problem when the driver
-> > core, or host driver, wants to operate on the component device outside
-> > of the bind/unbind functions, e.g. via 'remove' or 'shutdown'. The
-> > driver core doesn't understand the relationship between the host device
-> > and the component devices and could possibly try to operate on component
-> > devices when they're already removed from the system or shut down.
-> >
-> > Normally, device links or probe defer would reorder the lists and put
-> > devices that depend on other devices in the lists at the correct
-> > location, but with component devices this doesn't happen because this
-> > information isn't expressed anywhere. Drivers simply succeed at
-> > registering their component or host with the component framework and
-> > wait for their bind() callback to be called once the other components
-> > are ready. We could make various device links between 'master_dev' and
-> > 'component->dev' but it's not necessary. Let's simply move the hosting
-> > device to the end of the device lists when the component device fully
-> > binds. This way we know that all components are present and have probed
-> > properly and now the host device has really probed so it's safe to
-> > assume the host driver ops can operate on any component device.
-> >
-> > This fixes the msm display driver shutdown path when the DSI controller
-> > is connected to a DSI bridge that is controlled via i2c. In this case,
-> > the msm display driver wants to tear down the display pipeline on
-> > shutdown at msm_pdev_shutdown() by calling drm_atomic_helper_shutdown(),
-> > and it can't do that unless the whole display chain is still probed and
-> > active in the system. When a display bridge is on i2c, the i2c device
-> > for the bridge will be created whenever the i2c controller probes, which
-> > could be before or after the msm display driver probes. If the i2c
-> > controller probes after the display driver, then the i2c controller will
-> > be shutdown before the display controller during system wide shutdown
-> > and thus i2c transactions will stop working before the display pipeline
-> > is shut down. This means we'll have the display bridge trying to access
-> > an i2c bus that's shut down because drm_atomic_helper_shutdown() is
-> > trying to disable the bridge after the bridge is off.
-> >
-> > Moving the host device to the end of the lists at bind time moves the
-> > drm_atomic_helper_shutdown() call before the i2c bus is shutdown.
-> > This fixes the immediate problem, but we could improve it a bit by
-> > modeling device links from the component devices to the host device
-> > indicating that they supply something, although it is slightly different
-> > because the consumer doesn't need the suppliers to probe to succeed.
-> >
-> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > Cc: Russell King <rmk+kernel@arm.linux.org.uk>
-> > Cc: Rob Clark <robdclark@gmail.com>
-> > Cc: <dri-devel@lists.freedesktop.org>
-> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
->
-> Entirely aside, but an s/master/aggregate/ or similar over the entire
-> component.c codebase would help a pile in making it easier to understand
-> which part does what. Or at least I'm always terribly confused about which
-> bind binds what and all that, so maybe an additional review whether we
-> have a clear split into aggregate and individual components after that
-> initial fix is needed.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Agreed.
+The dep_unmet field in struct acpi_device is used to store the
+number of unresolved _DEP dependencies (that is, operation region
+dependencies for which there are no drivers present) for the ACPI
+device object represented by it.
 
->
-> On the actual topic: I agree there's a problem here, but I'm honestly not
-> sure how it should be fixed. That's way over my understanding of all the
-> device probe and pm interactions. Of which there are plenty.
->
-> One question I have: Why is the bridge component driver not correctly
-> ordered wrt the i2c driver it needs? The idea is that the aggregate driver
-> doesn't access any hw itself, but entirely relies on all its components.
-> So as long as all the component drivers are sorted correctly in the device
-> list, things /should/ work. And as soon as we drop out a single component,
-> the aggregate gets unbound (and then does all the
-> drm_atomic_helper_shutdown and all the other drm teardown). So is the bug
-> perhaps that msm does the drm teardown in the wrong callback?
+That field is initialized to 1 for all ACPI device objects in
+acpi_add_single_object(), via acpi_init_device_object(), so as to
+avoid evaluating _STA prematurely for battery device objects in
+acpi_scan_init_status(), and it is "fixed up" in acpi_bus_check_add()
+after the acpi_add_single_object() called by it has returned.
 
-I see my explanation of the problem wasn't sufficient :|
+This is not particularly straightforward and causes dep_unmet to
+remain 1 for device objects without dependencies created by invoking
+acpi_add_single_object() directly, outside acpi_bus_check_add().
 
-The bridge driver is not a component device. It is connected to the
-aggregate device via the DSI device, where the DSI device is a component
-device. The i2c bus/controller must probe before the i2c bridge probes,
-so the device list is already ordered correctly for those two devices
-(i2c controller and i2c bridge). The problem is the aggregate device
-doesn't know that the bridge is part of the display pipeline/encoder
-chain.
+For this reason, rearrange acpi_add_single_object() to initialize
+dep_unmet completely before calling acpi_scan_init_status(), which
+requires passing one extra bool argument to it, and update all of
+its callers accordingly.
 
-I thought that this design was intentional. Bridge devices can be mixed
-and matched with display drivers because they're (always?) off the SoC
-and so the aggregate device can't know which components it needs. I see
-that the msm driver has some logic to traverse from the display
-controller to the display phy, like DSI or HDMI, but it doesn't go
-beyond that.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/scan.c |   62 +++++++++++++++++++++++++---------------------------
+ 1 file changed, 30 insertions(+), 32 deletions(-)
 
-The crucially important part is that the DSI encoder will fail probe
-until the end of the encoder chain is probed, see
-msm_dsi_host_register() and how it checks for a panel and a bridge.
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -1670,8 +1670,22 @@ void acpi_init_device_object(struct acpi
+ 	device_initialize(&device->dev);
+ 	dev_set_uevent_suppress(&device->dev, true);
+ 	acpi_init_coherency(device);
+-	/* Assume there are unmet deps to start with. */
+-	device->dep_unmet = 1;
++}
++
++static void acpi_scan_dep_init(struct acpi_device *adev)
++{
++	struct acpi_dep_data *dep;
++
++	adev->dep_unmet = 0;
++
++	mutex_lock(&acpi_dep_list_lock);
++
++	list_for_each_entry(dep, &acpi_dep_list, node) {
++		if (dep->consumer == adev->handle)
++			adev->dep_unmet++;
++	}
++
++	mutex_unlock(&acpi_dep_list_lock);
+ }
+ 
+ void acpi_device_add_finalize(struct acpi_device *device)
+@@ -1687,7 +1701,7 @@ static void acpi_scan_init_status(struct
+ }
+ 
+ static int acpi_add_single_object(struct acpi_device **child,
+-				  acpi_handle handle, int type)
++				  acpi_handle handle, int type, bool dep_init)
+ {
+ 	struct acpi_device *device;
+ 	int result;
+@@ -1702,8 +1716,12 @@ static int acpi_add_single_object(struct
+ 	 * acpi_bus_get_status() and use its quirk handling.  Note that
+ 	 * this must be done before the get power-/wakeup_dev-flags calls.
+ 	 */
+-	if (type == ACPI_BUS_TYPE_DEVICE || type == ACPI_BUS_TYPE_PROCESSOR)
++	if (type == ACPI_BUS_TYPE_DEVICE || type == ACPI_BUS_TYPE_PROCESSOR) {
++		if (dep_init)
++			acpi_scan_dep_init(device);
++
+ 		acpi_scan_init_status(device);
++	}
+ 
+ 	acpi_bus_get_power_flags(device);
+ 	acpi_bus_get_wakeup_device_flags(device);
+@@ -1885,22 +1903,6 @@ static u32 acpi_scan_check_dep(acpi_hand
+ 	return count;
+ }
+ 
+-static void acpi_scan_dep_init(struct acpi_device *adev)
+-{
+-	struct acpi_dep_data *dep;
+-
+-	adev->dep_unmet = 0;
+-
+-	mutex_lock(&acpi_dep_list_lock);
+-
+-	list_for_each_entry(dep, &acpi_dep_list, node) {
+-		if (dep->consumer == adev->handle)
+-			adev->dep_unmet++;
+-	}
+-
+-	mutex_unlock(&acpi_dep_list_lock);
+-}
+-
+ static bool acpi_bus_scan_second_pass;
+ 
+ static acpi_status acpi_bus_check_add(acpi_handle handle, bool check_dep,
+@@ -1948,19 +1950,15 @@ static acpi_status acpi_bus_check_add(ac
+ 		return AE_OK;
+ 	}
+ 
+-	acpi_add_single_object(&device, handle, type);
+-	if (!device)
+-		return AE_CTRL_DEPTH;
+-
+-	acpi_scan_init_hotplug(device);
+ 	/*
+ 	 * If check_dep is true at this point, the device has no dependencies,
+ 	 * or the creation of the device object would have been postponed above.
+ 	 */
+-	if (check_dep)
+-		device->dep_unmet = 0;
+-	else
+-		acpi_scan_dep_init(device);
++	acpi_add_single_object(&device, handle, type, !check_dep);
++	if (!device)
++		return AE_CTRL_DEPTH;
++
++	acpi_scan_init_hotplug(device);
+ 
+ out:
+ 	if (!*adev_p)
+@@ -2222,7 +2220,7 @@ int acpi_bus_register_early_device(int t
+ 	struct acpi_device *device = NULL;
+ 	int result;
+ 
+-	result = acpi_add_single_object(&device, NULL, type);
++	result = acpi_add_single_object(&device, NULL, type, false);
+ 	if (result)
+ 		return result;
+ 
+@@ -2242,7 +2240,7 @@ static int acpi_bus_scan_fixed(void)
+ 		struct acpi_device *device = NULL;
+ 
+ 		result = acpi_add_single_object(&device, NULL,
+-						ACPI_BUS_TYPE_POWER_BUTTON);
++						ACPI_BUS_TYPE_POWER_BUTTON, false);
+ 		if (result)
+ 			return result;
+ 
+@@ -2258,7 +2256,7 @@ static int acpi_bus_scan_fixed(void)
+ 		struct acpi_device *device = NULL;
+ 
+ 		result = acpi_add_single_object(&device, NULL,
+-						ACPI_BUS_TYPE_SLEEP_BUTTON);
++						ACPI_BUS_TYPE_SLEEP_BUTTON, false);
+ 		if (result)
+ 			return result;
+ 
 
-The order of operations is like this
 
- 1. msm driver probes, creates aggregate device driver
- 2. i2c controller probes, creates i2c bus
- 3. i2c bridge probes, creates drm bridge and adds to drm
- 4. rest of component devices probe and aggregate device is bound
 
-The device list now has msm, i2c, bridge in that order. When we go to
-system wide shutdown the bridge is shutdown first, then the i2c bus, and
-then msm calls drm_atomic_helper_shutdown(). That tries to call the i2c
-bridge ops because it's attached to the end of the DSI encoder and
-things don't go well because i2c is gone. This patch fixes the order of
-the list so that msm is moved on the device list after all the
-components that make up the aggregate device have probed. This only
-works to move the aggregate device after the i2c bridge because the
-msm_dsi_host_register() function won't return success until the bridge
-device is probed.
-
-It's an interesting idea to trigger shutdown when the component device
-is unbound. Are you suggesting that the i2c bridge device have a
-'shutdown' callback, that essentially removes the bridge from the
-encoder chain via mipi_dsi_detach() and then drm_bridge_remove()?
-Presumably that would somehow tell the DSI encoder that it should stop
-trying to use the i2c bridge and then drm_atomic_helper_shutdown()
-wouldn't try to traverse beyond the DSI to shut things down.
-
-I will try it, but then I wonder about things like system wide
-suspend/resume too. The drm encoder chain would need to reimplement the
-logic for system wide suspend/resume so that any PM ops attached to the
-msm device run in the correct order. Right now the bridge PM ops will
-run, the i2c bus PM ops will run, and then the msm PM ops will run.
-After this change, the msm PM ops will run, the bridge PM ops will run,
-and then the i2c bus PM ops will run. It feels like that could be a
-problem if we're suspending the DSI encoder while the bridge is still
-active.
