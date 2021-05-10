@@ -2,134 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CEC37918B
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 686C1379195
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234634AbhEJOzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:55:53 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46034 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240282AbhEJOx4 (ORCPT
+        id S233335AbhEJO4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:56:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33575 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237999AbhEJOyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:53:56 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14AEYGDN152049;
-        Mon, 10 May 2021 10:52:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=evXVASPNHYxBuNpGpwUb76ljx34WoISjJiXB/0dEjGk=;
- b=CywxahPHK6CwJAc55y2/j8o1AccGmXxX+LDgGt1XWq1HpjAR4uFuxH6qbBlpFhq91e20
- RCOinAhVE3aq/s22AzyKjP8Z2ERPLAOE3BhOuw9IbCvZgGJp5mCiF2aaH9PEidJ66ptP
- /HT52v5qb8JKc8szMmz/X3bsEfju4oLwouVrm9FEtvmlR/qDk4oX8NoMonB4V6TfbVQg
- Mplcl2BD4SOAvnEstHtMgnpb3ZgJd2sOkEopY+KUYyyQFdByVUlvvoXAswXOaNRU/Z8e
- wPsBu0XzFM7icQi2co13hSwVeTDLgsuFEDO9ZSlAhPLSPs9Yo0pPkZfZJpkcRVua5uMM xg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38f5hrkgxm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 May 2021 10:52:41 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14AEZTCn160549;
-        Mon, 10 May 2021 10:52:40 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38f5hrkgwg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 May 2021 10:52:40 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14AEqcsf008088;
-        Mon, 10 May 2021 14:52:38 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06fra.de.ibm.com with ESMTP id 38dhwh0jj9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 May 2021 14:52:38 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14AEqZb637814716
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 May 2021 14:52:35 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7315B52050;
-        Mon, 10 May 2021 14:52:35 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 1A86352052;
-        Mon, 10 May 2021 14:52:35 +0000 (GMT)
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, sparclinux@vger.kernel.org
-Subject: [PATCH v6 2/3] risc-v: Use generic io.h helpers for nommu
+        Mon, 10 May 2021 10:54:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620658380;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=r3F85XZzjNHLRburwhBXkleEvJxBouqVwWLwoQqGQIQ=;
+        b=dI1E2SzRWKpehGTtOXQsTs22YXLrLtT3CFiJQTXKbYPFf3JbAHOkXk0gc4knhgTbbNgM9a
+        en0eMNyFBV5N7tAm9/0onb7Q6WpnDR8b1NL8hTfiWXb+WbgXo6T7Q7UxU4gASPdA4Q+tvZ
+        k3cTM0O9+Ka8TlGA2Cm1vEcb1CfCyRY=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-54-Vkl04R8uNHSXMgpEKnjl3Q-1; Mon, 10 May 2021 10:52:59 -0400
+X-MC-Unique: Vkl04R8uNHSXMgpEKnjl3Q-1
+Received: by mail-ej1-f71.google.com with SMTP id p25-20020a1709061419b0290378364a6464so4856437ejc.15
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:52:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=r3F85XZzjNHLRburwhBXkleEvJxBouqVwWLwoQqGQIQ=;
+        b=m7TchnklWiQqPpZCHfzGtylTWr+k/dUuZjtIoPXyW/0kGNHtlASXaE+i/NHVYA0LO3
+         0jf+d+zxPBzBf+q282+VUvhqMhod9RPEtUKexaFRbHDExtTIsngF01TMTIgmb9T5ECTj
+         /UNuE+DzcHkzl2KVwjKqRkvs0BTULFp0jwwGLSwj4wvtNrY2wNpbLJp/w4qKh0f0KYDB
+         jgsdsRSFctRS0tuunk3DmyXyT8rjKCwSAEBZFfWxaX4Zi0+tlApO7U/xsfsExU10S66o
+         couSSljQABZWe6Ox6BTL68z6XNsJEFmSfRV+lWaSmAkUjfLYpJshlSeV88VogDHziB+4
+         kMpg==
+X-Gm-Message-State: AOAM531x4IvmDMvWX+hjSXnrW2HxWqStnYZRoKtLlDWInR1uU50ad3P7
+        FZu+1IaFJkrArX0Sf/vpU1YHN5gUrxGO+Q6oo3A9kMmq6B16684ONuir0UdVUCKX9KcA8OsV4KT
+        Qrz60ed5M7DiBHOnH0GQGNB0a
+X-Received: by 2002:a17:906:4c5a:: with SMTP id d26mr26911029ejw.353.1620658378039;
+        Mon, 10 May 2021 07:52:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzufxfdZUWjdIZ/nOsKy6x6eC3yTNUojQQY26UL0d5i1D2Ys7+JmehWAMQcO1ct85KkfBxw3A==
+X-Received: by 2002:a17:906:4c5a:: with SMTP id d26mr26911000ejw.353.1620658377805;
+        Mon, 10 May 2021 07:52:57 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c676a.dip0.t-ipconnect.de. [91.12.103.106])
+        by smtp.gmail.com with ESMTPSA id k5sm13003545edk.46.2021.05.10.07.52.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 07:52:57 -0700 (PDT)
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chris Zankel <chris@zankel.net>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Helge Deller <deller@gmx.de>, Hugh Dickins <hughd@google.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Jann Horn <jannh@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Xu <peterx@redhat.com>, Ram Pai <linuxram@us.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Rik van Riel <riel@surriel.com>,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vlastimil Babka <vbabka@suse.cz>
+References: <20210419135443.12822-1-david@redhat.com>
+ <20210509212105.d741b7026ca6dca86bdb56d2@linux-foundation.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v2 0/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE)
+ to prefault page tables
+Message-ID: <79bb75e1-4ee9-5fe2-e495-577518956e1f@redhat.com>
 Date:   Mon, 10 May 2021 16:52:33 +0200
-Message-Id: <20210510145234.594814-3-schnelle@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210510145234.594814-1-schnelle@linux.ibm.com>
-References: <20210510145234.594814-1-schnelle@linux.ibm.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210509212105.d741b7026ca6dca86bdb56d2@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Mwid2JslVMLWhMy2iW_LfXXFE8xVgGtV
-X-Proofpoint-ORIG-GUID: v5r8zPtPwPe47b1Uz3I9CxVtJTlTZyPu
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-10_09:2021-05-10,2021-05-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- mlxscore=0 malwarescore=0 priorityscore=1501 spamscore=0 impostorscore=0
- suspectscore=0 bulkscore=0 clxscore=1015 mlxlogscore=861
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105100105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Schnelle <niklas@komani.de>
+On 10.05.21 06:21, Andrew Morton wrote:
+> On Mon, 19 Apr 2021 15:54:38 +0200 David Hildenbrand <david@redhat.com> wrote:
+> 
+>> Excessive details on MADV_POPULATE_(READ|WRITE) can be found in patch #2.
+> 
+> I grabbed the series, but some additional review would help things
+> along here..
 
-Without MMU support PCI_IOBASE is left undefined because PCI_IO_END is
-VMEMMAP_START. Nevertheless the in*()/out*() helper macros are left
-defined with uses of PCI_IOBASE.
+Thanks -- indeed, while there have been some comments to previous 
+versions that improved the series as a whole, there are no explicit acks 
+or rbs. Fortunately, we still have some time until the next merge window 
+opens :)
 
-At the moment this only compiles because asm-generic/io.h defines
-PCI_IOBASE as 0 if it is undefined and so at macro expansion PCI_IOBASE
-is defined. This leads to compilation errors when asm-generic/io.h is
-changed to leave PCI_IOBASE undefined.  More importantly it is currently
-broken at runtime, as accessing a fixed I/O port number of an ISA device
-on NOMMU RISC-V would turn into a NULL pointer dereference.
+> 
+> Did patch #2 actually make it to linux-mm?  It's missing from my
+> archive.
 
-Instead only define the in*()/out*() helper macros with MMU support and
-fall back to the asm-generic/io.h helper stubs otherwise.
+Ehm, good point. I punch out everything via " git send-email  --to 
+linux-kernel@vger.kernel.org  --cc "linux-mm@kvack.org" ..." and don't 
+remember any bounces.
 
-Signed-off-by: Niklas Schnelle <niklas@komani.de>
----
- arch/riscv/include/asm/io.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Doesn't seem to appear on linux-mm:
 
-diff --git a/arch/riscv/include/asm/io.h b/arch/riscv/include/asm/io.h
-index c025a746a148..31a8b98c0f13 100644
---- a/arch/riscv/include/asm/io.h
-+++ b/arch/riscv/include/asm/io.h
-@@ -23,12 +23,12 @@
- #include <asm/mmio.h>
- 
- /*
-- *  I/O port access constants.
-+ *  I/O port access constants. Without MMU support leave PCI_IOBASE undefined
-+ *  and fall back to generic stubs for I/O access routines.
-  */
- #ifdef CONFIG_MMU
- #define IO_SPACE_LIMIT		(PCI_IO_SIZE - 1)
- #define PCI_IOBASE		((void __iomem *)PCI_IO_START)
--#endif /* CONFIG_MMU */
- 
- /*
-  * Emulation routines for the port-mapped IO space used by some PCI drivers.
-@@ -145,6 +145,7 @@ __io_writes_outs(writes, u64, q, __io_bw(), __io_aw())
- __io_writes_outs(outs, u64, q, __io_pbr(), __io_paw())
- #define outsq(addr, buffer, count) __outsq((void __iomem *)addr, buffer, count)
- #endif
-+#endif /* CONFIG_MMU */
- 
- #include <asm-generic/io.h>
- 
+https://lore.kernel.org/linux-mm/20210419135443.12822-1-david@redhat.com/
+
+But it did make it to lkml as well:
+
+https://lore.kernel.org/lkml/20210419135443.12822-3-david@redhat.com/
+
+> https://lkml.kernel.org/r/20210419135443.12822-3-david@redhat.com lands
+> on the linux-api@vger copy.
+
+Weird, looks like linux-mm is swallowing mails.
+
+I can just resend the series, thoughts?
+
 -- 
-2.25.1
+Thanks,
+
+David / dhildenb
 
