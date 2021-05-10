@@ -2,111 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD43379773
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 21:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4286A379786
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 21:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233020AbhEJTK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 15:10:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42554 "EHLO
+        id S232738AbhEJTTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 15:19:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232133AbhEJTKz (ORCPT
+        with ESMTP id S230466AbhEJTTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 15:10:55 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C254AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 12:09:49 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id t193so1467696pgb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 12:09:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mgdZMcvNYkjsPLV9hPmFw01fQwD6bWf6+x+1xi3tISM=;
-        b=IfKnIJ2VyxRci+J3kp/Ql6Eo/hXM5QZS9Ez8aaAfuPw2VqWGOlPvLChA+WTXTku1WF
-         to8/CPTQ/4FjOZGWfJGVg+pFCncRzBM1G/+CkT9P6wkD+rH8Qwg/F9l7bSZ9Q+JKV9FU
-         3Zl4YsKDWBHNtWKIRLAf3PRd2zJs+Swv1lsyZPjFoR5RHQdrM7H/4IHScEI9Ty/PqCNG
-         iVBA7HczDKmpe+LJN3OkoUoT0t9tF8dpziH/R3CDyiF46F1qQCqSczMju563Wbup8Fgd
-         W0J1NzCp38TK50mWTieOhtjgR9qLaACLQcMOvAfHIle9rpvgX25nr7ZafJ3/wApV4Q0W
-         nNAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mgdZMcvNYkjsPLV9hPmFw01fQwD6bWf6+x+1xi3tISM=;
-        b=k5wWBUVN/D+p31rxfQIfQ/my39lxNj/gqFc56xa9Bwedy5EjBgioHTwCF9IQ8NCSHg
-         z94y6CwNAaI2eH9unrtwnznDqHOsWmux+tkPjNTViiow+Khst4l1yGKjX3pyTycwTCPb
-         FEaCSarmSLYZ+jfDmPz1N6sEpzjubHe2OtP//EbSw+69yTaBLVHAVkVtlbmzEg+Kmnq/
-         k8lpqcNrReyn8FxLjXN127TOwlPdfBhZf7gmpqMv58y2Vo9DacTNuUsrFoD+UJvazi5k
-         nA8gznVZy67kLUyx2duumVvxjBG37piRFzV7W7saH5RyM6kS+DBVqNanyeQM9Kd+lyqk
-         n5ig==
-X-Gm-Message-State: AOAM533CmOzvv6hfIFIdouvhvlLKD6E6+QurqOAOow38ehncMCUzPOET
-        0rJx6Q/kJ71rEFEuUGSKRYUnFg==
-X-Google-Smtp-Source: ABdhPJw12h8+tFsY3t4ukeyKuMFQPy8tkkLsjsvVjJVLAzv6rMc55IvUbCU6a4WkCrbyUljO9MEpyA==
-X-Received: by 2002:a62:e203:0:b029:28e:8267:e02e with SMTP id a3-20020a62e2030000b029028e8267e02emr26746639pfi.75.1620673789134;
-        Mon, 10 May 2021 12:09:49 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id z25sm12528938pgu.89.2021.05.10.12.09.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 12:09:48 -0700 (PDT)
-Date:   Mon, 10 May 2021 19:09:44 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [GIT PULL] KVM updates for Linux 5.13-rc2
-Message-ID: <YJmE+NpAt4GTw/ZK@google.com>
-References: <20210510181441.351452-1-pbonzini@redhat.com>
+        Mon, 10 May 2021 15:19:30 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B80BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 12:18:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Uj4T461Q6i15FffkobP1bXgUv4vtpvercuMlehVfQn0=; b=ALam15ctQ28+Lq3xKot952LWR3
+        VQD+0e31x3fXKdYUIScFe/yfByQDoFAKpvOCOHfsXPrf4grAfEJEe4XjMby69XlV5Bq5c40vK7/PU
+        iKYjoSOgmfxUzt7YlsX5xG8TmuckQkaVLvuiq6VWzLzs2TfibPKgA3ZRMa+zjTMRe7NF046Ch8z4F
+        hoRA2m/4blSNf5NQif9IfWsfooSYLrUCUkOs0jKUjqIbtt4UwgGMeNN0gdE95gmRk/tnvN9kPApRs
+        hvn9G6a64cz30SIfQbx1ZuVkRtr/0wYsMdbaO/I4JWfKF3qVa8ZdfykbVvn8oLNHVfCaSY/6jMjzt
+        kZOAd3dQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgBPw-00FWvj-29; Mon, 10 May 2021 19:18:12 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7A9029871B5; Mon, 10 May 2021 21:18:11 +0200 (CEST)
+Date:   Mon, 10 May 2021 21:18:11 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        acme@kernel.org, mark.rutland@arm.com, luto@amacapital.net,
+        eranian@google.com, namhyung@kernel.org, robh@kernel.org
+Subject: Re: [PATCH V6] perf: Reset the dirty counter to prevent the leak for
+ an RDPMC task
+Message-ID: <20210510191811.GA21560@worktop.programming.kicks-ass.net>
+References: <1619115952-155809-1-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510181441.351452-1-pbonzini@redhat.com>
+In-Reply-To: <1619115952-155809-1-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021, Paolo Bonzini wrote:
-> Linus,
-> 
-> The following changes since commit 9ccce092fc64d19504fa54de4fd659e279cc92e7:
-> 
->   Merge tag 'for-linus-5.13-ofs-1' of git://git.kernel.org/pub/scm/linux/kernel/git/hubcap/linux (2021-05-02 14:13:46 -0700)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-> 
-> for you to fetch changes up to ce7ea0cfdc2e9ff31d12da31c3226deddb9644f5:
-> 
->   KVM: SVM: Move GHCB unmapping to fix RCU warning (2021-05-07 06:06:23 -0400)
-> 
-> Thomas Gleixner and Michael Ellerman had some KVM changes in their
-> late merge window pull requests, but there are no conflicts.
-> 
-> ----------------------------------------------------------------
-> Sean Christopherson (17):
->       KVM: VMX: Do not advertise RDPID if ENABLE_RDTSCP control is unsupported
->       KVM: x86: Emulate RDPID only if RDTSCP is supported
->       KVM: SVM: Inject #UD on RDTSCP when it should be disabled in the guest
->       KVM: x86: Move RDPID emulation intercept to its own enum
->       KVM: VMX: Disable preemption when probing user return MSRs
->       KVM: SVM: Probe and load MSR_TSC_AUX regardless of RDTSCP support in host
->       KVM: x86: Add support for RDPID without RDTSCP
->       KVM: VMX: Configure list of user return MSRs at module init
+On Thu, Apr 22, 2021 at 11:25:52AM -0700, kan.liang@linux.intel.com wrote:
 
-I'm guessing I'm too late as usual and the hashes are set in stone, but just in
-case I'm not...
+> - Add a new method check_leakage() to check and clear dirty counters
+>   to prevent potential leakage.
 
-This patch (commit b6194b94a2ca, "KVM: VMX: Configure...) has a bug that Maxim
-found during code review.  The bug is eliminated by the very next patch (commit
-e7f5ab87841c), but it will break bisection if bisection involves running a KVM
-guest.  At a glance, even syzkaller will be affected :-(
+I really dislike adding spurious callbacks, also because indirect calls
+are teh suck, but also because it pollutes the interface so.
 
->       KVM: VMX: Use flag to indicate "active" uret MSRs instead of sorting list
->       KVM: VMX: Use common x86's uret MSR list as the one true list
->       KVM: VMX: Disable loading of TSX_CTRL MSR the more conventional way
->       KVM: x86: Export the number of uret MSRs to vendor modules
->       KVM: x86: Move uret MSR slot management to common x86
->       KVM: x86: Tie Intel and AMD behavior for MSR_TSC_AUX to guest CPU model
->       KVM: x86: Hide RDTSCP and RDPID if MSR_TSC_AUX probing failed
->       KVM: x86: Prevent KVM SVM from loading on kernels with 5-level paging
->       KVM: SVM: Invert user pointer casting in SEV {en,de}crypt helpers
+That said, I'm not sure I actually like the below any better :/
+
+---
+
+ arch/x86/events/core.c       | 58 +++++++++++++++++++++++++++++++++++++++++---
+ arch/x86/events/perf_event.h |  1 +
+ include/linux/perf_event.h   |  2 ++
+ kernel/events/core.c         |  7 +++++-
+ 4 files changed, 63 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index 8e509325c2c3..e650c4ab603a 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -740,21 +740,26 @@ void x86_pmu_enable_all(int added)
+ 	}
+ }
+ 
+-static inline int is_x86_event(struct perf_event *event)
++static inline bool is_x86_pmu(struct pmu *_pmu)
+ {
+ 	int i;
+ 
+ 	if (!is_hybrid())
+-		return event->pmu == &pmu;
++		return _pmu == &pmu;
+ 
+ 	for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
+-		if (event->pmu == &x86_pmu.hybrid_pmu[i].pmu)
++		if (_pmu == &x86_pmu.hybrid_pmu[i].pmu)
+ 			return true;
+ 	}
+ 
+ 	return false;
+ }
+ 
++static inline int is_x86_event(struct perf_event *event)
++{
++	return is_x86_pmu(event->pmu);
++}
++
+ struct pmu *x86_get_pmu(unsigned int cpu)
+ {
+ 	struct cpu_hw_events *cpuc = &per_cpu(cpu_hw_events, cpu);
+@@ -1624,6 +1629,8 @@ static void x86_pmu_del(struct perf_event *event, int flags)
+ 	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
+ 		goto do_del;
+ 
++	__set_bit(event->hw.idx, cpuc->dirty);
++
+ 	/*
+ 	 * Not a TXN, therefore cleanup properly.
+ 	 */
+@@ -2472,6 +2479,31 @@ static int x86_pmu_event_init(struct perf_event *event)
+ 	return err;
+ }
+ 
++static void x86_pmu_clear_dirty_counters(void)
++{
++	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
++	int i;
++
++	 /* Don't need to clear the assigned counter. */
++	for (i = 0; i < cpuc->n_events; i++)
++		__clear_bit(cpuc->assign[i], cpuc->dirty);
++
++	if (bitmap_empty(cpuc->dirty, X86_PMC_IDX_MAX))
++		return;
++
++	for_each_set_bit(i, cpuc->dirty, X86_PMC_IDX_MAX) {
++		/* Metrics and fake events don't have corresponding HW counters. */
++		if (is_metric_idx(i) || (i == INTEL_PMC_IDX_FIXED_VLBR))
++			continue;
++		else if (i >= INTEL_PMC_IDX_FIXED)
++			wrmsrl(MSR_ARCH_PERFMON_FIXED_CTR0 + (i - INTEL_PMC_IDX_FIXED), 0);
++		else
++			wrmsrl(x86_pmu_event_addr(i), 0);
++	}
++
++	bitmap_zero(cpuc->dirty, X86_PMC_IDX_MAX);
++}
++
+ static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+ {
+ 	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+@@ -2495,7 +2527,6 @@ static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+ 
+ static void x86_pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
+ {
+-
+ 	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+ 		return;
+ 
+@@ -2604,6 +2635,25 @@ static const struct attribute_group *x86_pmu_attr_groups[] = {
+ static void x86_pmu_sched_task(struct perf_event_context *ctx, bool sched_in)
+ {
+ 	static_call_cond(x86_pmu_sched_task)(ctx, sched_in);
++
++	/*
++	 * If a new task has the RDPMC enabled, clear the dirty counters
++	 * to prevent the potential leak.
++	 */
++	if (sched_in && ctx && READ_ONCE(x86_pmu.attr_rdpmc) &&
++	    current->mm && atomic_read(&current->mm->context.perf_rdpmc_allowed))
++		x86_pmu_clear_dirty_counters();
++}
++
++bool arch_perf_needs_sched_in(struct pmu *pmu)
++{
++	if (!READ_ONCE(x86_pmu.attr_rdpmc))
++		return false;
++
++	if (!is_x86_pmu(pmu))
++		return  false;
++
++	return current->mm && atomic_read(&current->mm->context.perf_rdpmc_allowed);
+ }
+ 
+ static void x86_pmu_swap_task_ctx(struct perf_event_context *prev,
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index 27fa85e7d4fd..d6003e08b055 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -229,6 +229,7 @@ struct cpu_hw_events {
+ 	 */
+ 	struct perf_event	*events[X86_PMC_IDX_MAX]; /* in counter order */
+ 	unsigned long		active_mask[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
++	unsigned long		dirty[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
+ 	int			enabled;
+ 
+ 	int			n_events; /* the # of events in the below arrays */
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index f5a6a2f069ed..8b5a88e93e3c 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -1597,6 +1597,8 @@ int perf_event_exit_cpu(unsigned int cpu);
+ #define perf_event_exit_cpu	NULL
+ #endif
+ 
++extern bool __weak arch_perf_needs_sched_in(struct pmu *_pmu);
++
+ extern void __weak arch_perf_update_userpage(struct perf_event *event,
+ 					     struct perf_event_mmap_page *userpg,
+ 					     u64 now);
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 8c3abccaa612..9ae292c09cb0 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -3817,6 +3817,11 @@ static void cpu_ctx_sched_in(struct perf_cpu_context *cpuctx,
+ 	ctx_sched_in(ctx, cpuctx, event_type, task);
+ }
+ 
++bool __weak arch_perf_needs_sched_in(struct pmu *pmu)
++{
++	return false;
++}
++
+ static void perf_event_context_sched_in(struct perf_event_context *ctx,
+ 					struct task_struct *task)
+ {
+@@ -3851,7 +3856,7 @@ static void perf_event_context_sched_in(struct perf_event_context *ctx,
+ 		cpu_ctx_sched_out(cpuctx, EVENT_FLEXIBLE);
+ 	perf_event_sched_in(cpuctx, ctx, task);
+ 
+-	if (cpuctx->sched_cb_usage && pmu->sched_task)
++	if (pmu->sched_task && (cpuctx->sched_cb_usage || arch_perf_needs_sched_in(pmu)))
+ 		pmu->sched_task(cpuctx->task_ctx, true);
+ 
+ 	perf_pmu_enable(pmu);
