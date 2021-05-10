@@ -2,181 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B0E379AB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 01:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A28E379AB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 01:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbhEJX0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 19:26:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43518 "EHLO
+        id S230011AbhEJX2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 19:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbhEJX0N (ORCPT
+        with ESMTP id S229561AbhEJX2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 19:26:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C8EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 16:25:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=TeUuXq9To8lgcl1o5k4sCzqTpRU5GNmM8WZRtq2XAHM=; b=i7uMGqhjU70AcV3rLCnq7FFUGZ
-        Xaas7OmrkB8xq7IRzd5gsQXfdaop46lQO1e+iWm84pCZsW/JAxRLTbOZYIVvfadTMGJ3BWGps0AZC
-        JxH6zk/zdtQF4fnctsrEw+hQmEZjM1XTRy0pDjJXwwDQG2cR6REdmIbdoE1w3ZNUuyGZxs7UQ6zVW
-        ldWxgUcAN7z9CNHSsc3yw3E7IHsomSOi2ardBJ1+RMnm36srL6GaIru8abEGso82zISVoMuUdGpQE
-        9eKlzCzbHLxV/squSMK3iYBK7HhQPgpQDya+D87qFKhki5y/Vdoy55lW1VpPtfIE+QvCY6iCO6RY8
-        9drN44qw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgFFf-006gOK-8T; Mon, 10 May 2021 23:24:06 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 3/3] mm/migrate: Add folio_migrate_copy
-Date:   Tue, 11 May 2021 00:23:08 +0100
-Message-Id: <20210510232308.1592750-4-willy@infradead.org>
+        Mon, 10 May 2021 19:28:37 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E617C061574;
+        Mon, 10 May 2021 16:27:32 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id x20so25885300lfu.6;
+        Mon, 10 May 2021 16:27:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p/hD7X1jxbNKIMZLjI4qd/QOlc+AoEvIWQQDsxFLaMg=;
+        b=cFPpmm7z9+guC3U9hNO0K8s3a3FQtexzt4LAU0q9bPIj70X9tuPzKfDC29dVTQY2yc
+         8axyeOCZjjo2kZeXCTocHWmx+QBcze6pZw94+0oGnFl9VMMnmHiILRsGeJ/cuvN2PYd/
+         871X2X2AI8DEe4JOkuYdHq/76l50ftCWqzQXc1YPyPONnuJGi2yyybw73mxgKZtgKeOX
+         vmiNBedWR++LHHqZ58tyiJA2VUrcwHmCeSjS7YtUv3gdUFfVCz95RkDCZYkWbvg+L4oN
+         2nhKO0Wfb+SVxYYYBBENyHbs/HtIeF4XHQl28zfzmPNTVYIEvt6C+TyeTKWNzublzO+x
+         qtRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p/hD7X1jxbNKIMZLjI4qd/QOlc+AoEvIWQQDsxFLaMg=;
+        b=txf7ZqQ9uy0Dnl0XudgSGUxTEg+niF5E7vr4jXivR6BqoSK59IJLJ0NnVYUihE21T2
+         5o7VdKDEHuchk691wIhvjCR4z+KjxNQtRH7X4UyjxMXr6MZDR7+fj14c49YXGmdwsvgM
+         rtTiSpsrzM3N+TEbLi2TJHJNmzn66tUe6vCyNqpHVmy8avp07nM+wGeaooOzlKMCTyfc
+         E6JsQbJrRRYk6OZYm5w77xCXlXEWAEG+T9b8REFWk36k94wm341Mvo5xgcWMUxALDjf9
+         wjythXxUjLrzilCw1GzQGxBcvwz//Se6Zy5tjzrW6pbb7W/F+gKwA2lAkgtsK9pYSNts
+         9Ecw==
+X-Gm-Message-State: AOAM5332SEZY4hBF6TL+2R07PCuk/yD3W8Ww5VVLDBBAI2928fqCXikd
+        JDjizUaTd4sifZbM81evmxc=
+X-Google-Smtp-Source: ABdhPJx+Hhr9CpWnsQQ9nxO7xiBcgt0Ru42RZfBUAag3gPYRlwtdIOoT/EQHr68t1le+iAJi/lZjlg==
+X-Received: by 2002:a19:4cd7:: with SMTP id z206mr4510093lfa.487.1620689250586;
+        Mon, 10 May 2021 16:27:30 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.gmail.com with ESMTPSA id f29sm3354203ljo.69.2021.05.10.16.27.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 16:27:30 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH v17 0/2] Add memory bandwidth management to NVIDIA Tegra DRM driver
+Date:   Tue, 11 May 2021 02:27:07 +0300
+Message-Id: <20210510232709.1349-1-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210510232308.1592750-1-willy@infradead.org>
-References: <20210510232308.1592750-1-willy@infradead.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Combine the THP, hugetlb and base page routines together into a simple
-loop.  It does iterate the pages backwards, but real CPUs can prefetch
-a backwards walk.
+This series adds memory bandwidth management to the NVIDIA Tegra DRM driver,
+which is done using interconnect framework. It fixes display corruption that
+happens due to insufficient memory bandwidth.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- include/linux/migrate.h |  1 +
- mm/folio-compat.c       |  6 ++++
- mm/migrate.c            | 68 ++++++++---------------------------------
- 3 files changed, 19 insertions(+), 56 deletions(-)
+Changelog:
 
-diff --git a/include/linux/migrate.h b/include/linux/migrate.h
-index 7993faffa46d..cb67692e659a 100644
---- a/include/linux/migrate.h
-+++ b/include/linux/migrate.h
-@@ -52,6 +52,7 @@ extern int migrate_huge_page_move_mapping(struct address_space *mapping,
- extern int migrate_page_move_mapping(struct address_space *mapping,
- 		struct page *newpage, struct page *page, int extra_count);
- void folio_migrate_flags(struct folio *newfolio, struct folio *folio);
-+void folio_migrate_copy(struct folio *newfolio, struct folio *folio);
- int folio_migrate_mapping(struct address_space *mapping,
- 		struct folio *newfolio, struct folio *folio, int extra_count);
- #else
-diff --git a/mm/folio-compat.c b/mm/folio-compat.c
-index f0ac904d396f..316c912e49e0 100644
---- a/mm/folio-compat.c
-+++ b/mm/folio-compat.c
-@@ -76,4 +76,10 @@ void migrate_page_states(struct page *newpage, struct page *page)
- 	folio_migrate_flags(page_folio(newpage), page_folio(page));
- }
- EXPORT_SYMBOL(migrate_page_states);
-+
-+void migrate_page_copy(struct page *newpage, struct page *page)
-+{
-+	folio_migrate_copy(page_folio(newpage), page_folio(page));
-+}
-+EXPORT_SYMBOL(migrate_page_copy);
- #endif
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 38006cdece60..ee1220d6b40a 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -529,54 +529,6 @@ int migrate_huge_page_move_mapping(struct address_space *mapping,
- 	return MIGRATEPAGE_SUCCESS;
- }
- 
--/*
-- * Gigantic pages are so large that we do not guarantee that page++ pointer
-- * arithmetic will work across the entire page.  We need something more
-- * specialized.
-- */
--static void __copy_gigantic_page(struct page *dst, struct page *src,
--				int nr_pages)
--{
--	int i;
--	struct page *dst_base = dst;
--	struct page *src_base = src;
--
--	for (i = 0; i < nr_pages; ) {
--		cond_resched();
--		copy_highpage(dst, src);
--
--		i++;
--		dst = mem_map_next(dst, dst_base, i);
--		src = mem_map_next(src, src_base, i);
--	}
--}
--
--static void copy_huge_page(struct page *dst, struct page *src)
--{
--	int i;
--	int nr_pages;
--
--	if (PageHuge(src)) {
--		/* hugetlbfs page */
--		struct hstate *h = page_hstate(src);
--		nr_pages = pages_per_huge_page(h);
--
--		if (unlikely(nr_pages > MAX_ORDER_NR_PAGES)) {
--			__copy_gigantic_page(dst, src, nr_pages);
--			return;
--		}
--	} else {
--		/* thp page */
--		BUG_ON(!PageTransHuge(src));
--		nr_pages = thp_nr_pages(src);
--	}
--
--	for (i = 0; i < nr_pages; i++) {
--		cond_resched();
--		copy_highpage(dst + i, src + i);
--	}
--}
--
- /*
-  * Copy the flags and some other ancillary information
-  */
-@@ -650,16 +602,20 @@ void folio_migrate_flags(struct folio *newfolio, struct folio *folio)
- }
- EXPORT_SYMBOL(folio_migrate_flags);
- 
--void migrate_page_copy(struct page *newpage, struct page *page)
-+void folio_migrate_copy(struct folio *newfolio, struct folio *folio)
- {
--	if (PageHuge(page) || PageTransHuge(page))
--		copy_huge_page(newpage, page);
--	else
--		copy_highpage(newpage, page);
-+	unsigned int i = folio_nr_pages(folio) - 1;
- 
--	migrate_page_states(newpage, page);
-+	copy_highpage(folio_page(newfolio, i), folio_page(folio, i));
-+	while (i-- > 0) {
-+		cond_resched();
-+		/* folio_page() handles discontinuities in memmap */
-+		copy_highpage(folio_page(newfolio, i), folio_page(folio, i));
-+	}
-+
-+	folio_migrate_flags(newfolio, folio);
- }
--EXPORT_SYMBOL(migrate_page_copy);
-+EXPORT_SYMBOL(folio_migrate_copy);
- 
- /************************************************************
-  *                    Migration functions
-@@ -687,7 +643,7 @@ int migrate_page(struct address_space *mapping,
- 		return rc;
- 
- 	if (mode != MIGRATE_SYNC_NO_COPY)
--		migrate_page_copy(newpage, page);
-+		folio_migrate_copy(newfolio, folio);
- 	else
- 		folio_migrate_flags(newfolio, folio);
- 	return MIGRATEPAGE_SUCCESS;
+v17: - No changes, re-sending for v5.14.
+
+v16: - Implemented suggestions that were given by Michał Mirosław to v15.
+
+     - Added r-b from Michał Mirosław to the debug-stats patch.
+
+     - Rebased on top of a recent linux-next.
+
+     - Removed bandwidth scaling based on width difference of src/dst
+       windows since it's not actual anymore. Apparently the recent memory
+       driver changes fixed problems that I witnessed before.
+
+     - Average bandwidth calculation now won't overflow for 4k resolutions.
+
+     - Average bandwidth calculation now uses the size of the visible
+       area instead of the src area since debug stats of the memory
+       controller clearly show that downscaled window takes less bandwidth,
+       proportionally to the scaled size.
+
+     - Bandwidth calculation now uses "adjusted mode" of the CRTC, which
+       is what used for h/w programming, instead of the mode that was
+       requested by userspace, although the two usually match in practice.
+
+v15: - Corrected tegra_plane_icc_names[] NULL-check that was partially lost
+       by accident in v14 after unsuccessful rebase.
+
+v14: - Made improvements that were suggested by Michał Mirosław to v13:
+
+       - Changed 'unsigned int' to 'bool'.
+       - Renamed functions which calculate bandwidth state.
+       - Reworked comment in the code that explains why downscaled plane
+         require higher bandwidth.
+       - Added round-up to bandwidth calculation.
+       - Added sanity checks of the plane index and fixed out-of-bounds
+         access which happened on T124 due to the cursor plane index.
+
+v13: - No code changes. Patches missed v5.12, re-sending them for v5.13.
+
+Dmitry Osipenko (2):
+  drm/tegra: dc: Support memory bandwidth management
+  drm/tegra: dc: Extend debug stats with total number of events
+
+ drivers/gpu/drm/tegra/Kconfig |   1 +
+ drivers/gpu/drm/tegra/dc.c    | 362 ++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/tegra/dc.h    |  19 ++
+ drivers/gpu/drm/tegra/drm.c   |  14 ++
+ drivers/gpu/drm/tegra/hub.c   |   3 +
+ drivers/gpu/drm/tegra/plane.c | 116 +++++++++++
+ drivers/gpu/drm/tegra/plane.h |  15 ++
+ 7 files changed, 530 insertions(+)
+
 -- 
 2.30.2
 
