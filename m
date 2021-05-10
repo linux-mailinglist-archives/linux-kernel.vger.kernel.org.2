@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEE5378A05
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6780D3786B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240680AbhEJLgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:36:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52778 "EHLO mail.kernel.org"
+        id S235588AbhEJLKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:10:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235024AbhEJK5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E929616EB;
-        Mon, 10 May 2021 10:51:09 +0000 (UTC)
+        id S233365AbhEJKt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:49:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5DF561432;
+        Mon, 10 May 2021 10:38:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643870;
-        bh=njMlaKgEdYEuAJ20yXYEwbSILrD2jeEs440hPpsivlI=;
+        s=korg; t=1620643125;
+        bh=iP8Xl5cIV0qr7oBh+yfEjl1AhKiBKCLTrvuWfKZd+bY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yDvacCdcnYTO5bxhiPyc7npW3He1jTJ+loY9spZ7GEmxEaqIBnrXHlX+XekerZhaU
-         JQpZB8aMm6ZD6iKHuPMXEFM4ZxIKanPdyJsJ+7aMgkFtR2O3cnv23PHJ3YRWzfvWjX
-         wsI6kcU3ZQyyClIKQDuqVK1LsmB0JWfz/lZvjAyU=
+        b=pJ4KOKk3MHFTNpPyx5555E8uT0QWP0LWR64NwlGL3EU1cNT9Qn3c3fFjHTGkvFlRP
+         C4euFW6l9HMD0BJZZAp90EwFjTE8uFTTM2pIevs2j9wea05P+fCFe+d+eu20oJbylE
+         MKHv4jglI7zodPjiaLjDcAYKkrHPXuedn2ZIWsOg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        John Garry <john.garry@huawei.com>,
-        Scott Benesh <scott.benesh@microchip.com>,
-        Scott Teel <scott.teel@microchip.com>,
-        Mike McGowen <mike.mcgowen@microchip.com>,
-        Kevin Barnett <kevin.barnett@microchip.com>,
-        Don Brace <don.brace@microchip.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 193/342] scsi: smartpqi: Use host-wide tag space
-Date:   Mon, 10 May 2021 12:19:43 +0200
-Message-Id: <20210510102016.468176284@linuxfoundation.org>
+Subject: [PATCH 5.10 187/299] drm/msm/mdp5: Do not multiply vclk line count by 100
+Date:   Mon, 10 May 2021 12:19:44 +0200
+Message-Id: <20210510102011.129338837@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,41 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Don Brace <don.brace@microchip.com>
+From: Marijn Suijten <marijn.suijten@somainline.org>
 
-[ Upstream commit c6d3ee209b9e863c6251f72101511340451ca324 ]
+[ Upstream commit 377569f82ea8228c421cef4da33e056a900b58ca ]
 
-Correct SCSI midlayer sending more requests than exposed host queue depth
-causing firmware ASSERT and lockup issues by enabling host-wide tags.
+Neither vtotal nor drm_mode_vrefresh contain a value that is
+premultiplied by 100 making the x100 variable name incorrect and
+resulting in vclks_line to become 100 times larger than it is supposed
+to be.  The hardware counts 100 clockticks too many before tearcheck,
+leading to severe panel issues on at least the Sony Xperia lineup.
 
-Note: This also results in better performance.
+This is likely an artifact from the original MDSS DSI panel driver where
+the calculation [1] corrected for a premultiplied reference framerate by
+100 [2].  It does not appear that the above values were ever
+premultiplied in the history of the DRM MDP5 driver.
 
-Link: https://lore.kernel.org/r/161549369787.25025.8975999483518581619.stgit@brunhilda
-Suggested-by: Ming Lei <ming.lei@redhat.com>
-Suggested-by: John Garry <john.garry@huawei.com>
-Reviewed-by: Scott Benesh <scott.benesh@microchip.com>
-Reviewed-by: Scott Teel <scott.teel@microchip.com>
-Reviewed-by: Mike McGowen <mike.mcgowen@microchip.com>
-Reviewed-by: Kevin Barnett <kevin.barnett@microchip.com>
-Signed-off-by: Don Brace <don.brace@microchip.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+With this change applied the value written to the SYNC_CONFIG_VSYNC
+register is now identical to downstream kernels.
+
+[1]: https://source.codeaurora.org/quic/la/kernel/msm-3.18/tree/drivers/video/msm/mdss/mdss_mdp_intf_cmd.c?h=LA.UM.8.6.c26-02400-89xx.0#n288
+[2]: https://source.codeaurora.org/quic/la/kernel/msm-3.18/tree/drivers/video/msm/mdss/mdss_dsi_panel.c?h=LA.UM.8.6.c26-02400-89xx.0#n1648
+
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+Link: https://lore.kernel.org/r/20210406214726.131534-3-marijn.suijten@somainline.org
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/smartpqi/smartpqi_init.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_cmd_encoder.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
-index c53f456fbd09..61e3a5afaf07 100644
---- a/drivers/scsi/smartpqi/smartpqi_init.c
-+++ b/drivers/scsi/smartpqi/smartpqi_init.c
-@@ -6599,6 +6599,7 @@ static int pqi_register_scsi(struct pqi_ctrl_info *ctrl_info)
- 	shost->irq = pci_irq_vector(ctrl_info->pci_dev, 0);
- 	shost->unique_id = shost->irq;
- 	shost->nr_hw_queues = ctrl_info->num_queue_groups;
-+	shost->host_tagset = 1;
- 	shost->hostdata[0] = (unsigned long)ctrl_info;
+diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_cmd_encoder.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_cmd_encoder.c
+index f6df4d3b1406..0392d4dfe270 100644
+--- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_cmd_encoder.c
++++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_cmd_encoder.c
+@@ -20,7 +20,7 @@ static int pingpong_tearcheck_setup(struct drm_encoder *encoder,
+ {
+ 	struct mdp5_kms *mdp5_kms = get_kms(encoder);
+ 	struct device *dev = encoder->dev->dev;
+-	u32 total_lines_x100, vclks_line, cfg;
++	u32 total_lines, vclks_line, cfg;
+ 	long vsync_clk_speed;
+ 	struct mdp5_hw_mixer *mixer = mdp5_crtc_get_mixer(encoder->crtc);
+ 	int pp_id = mixer->pp;
+@@ -30,8 +30,8 @@ static int pingpong_tearcheck_setup(struct drm_encoder *encoder,
+ 		return -EINVAL;
+ 	}
  
- 	rc = scsi_add_host(shost, &ctrl_info->pci_dev->dev);
+-	total_lines_x100 = mode->vtotal * drm_mode_vrefresh(mode);
+-	if (!total_lines_x100) {
++	total_lines = mode->vtotal * drm_mode_vrefresh(mode);
++	if (!total_lines) {
+ 		DRM_DEV_ERROR(dev, "%s: vtotal(%d) or vrefresh(%d) is 0\n",
+ 			      __func__, mode->vtotal, drm_mode_vrefresh(mode));
+ 		return -EINVAL;
+@@ -43,7 +43,7 @@ static int pingpong_tearcheck_setup(struct drm_encoder *encoder,
+ 							vsync_clk_speed);
+ 		return -EINVAL;
+ 	}
+-	vclks_line = vsync_clk_speed * 100 / total_lines_x100;
++	vclks_line = vsync_clk_speed / total_lines;
+ 
+ 	cfg = MDP5_PP_SYNC_CONFIG_VSYNC_COUNTER_EN
+ 		| MDP5_PP_SYNC_CONFIG_VSYNC_IN_EN;
 -- 
 2.30.2
 
