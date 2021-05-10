@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39EE9378A9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF34378C3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233437AbhEJLsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:48:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36658 "EHLO mail.kernel.org"
+        id S236916AbhEJM1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:27:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233732AbhEJLBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:01:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 957A46101A;
-        Mon, 10 May 2021 10:53:52 +0000 (UTC)
+        id S237227AbhEJLLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:11:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4D4561923;
+        Mon, 10 May 2021 11:08:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644033;
-        bh=5fuRqTcKIiPzxbE9ZPKDhNPvkmZlbtvNlweGkPwV8cQ=;
+        s=korg; t=1620644901;
+        bh=46dDPIUcHdAge07sTTt6Ge+ELHpEmttpkPKsRaehUMc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J1kyQaC/LTJ9Sqy7+N0+/f8LmvGf9FHhpRJWmU3H+nqIQR47QdgvhZGA0i7zk9CLz
-         d2TTeQLlgUkcpLyJBkNmXSVCI7JwtT5sNRcTmL84mQnUFzB3lJjnqOmbep+dR5gp4Y
-         0cQlX3iFbrAxh955V1/M+G/0P1ByqRWUouBip3CU=
+        b=N+mkNh8V9cbehnVh5n+Gp2qEqApzEiFKmrqSMs52UjQ645VmHw8cED2K7xepVV3Qj
+         uPxgx+WlZ7PYd8EPWQVbDOTpXW0b2Pt+s7mYG8r6Ri18Kpy39xYGnQ55PF7IyeXevQ
+         WOoV4FImnUWLDZBvo+I7hse7WkXIXWjD+wH5eMZM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.11 261/342] mlxsw: spectrum_mr: Update egress RIF list before routes action
-Date:   Mon, 10 May 2021 12:20:51 +0200
-Message-Id: <20210510102018.719559548@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 263/384] sched,fair: Alternative sched_slice()
+Date:   Mon, 10 May 2021 12:20:52 +0200
+Message-Id: <20210510102023.526463927@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
+References: <20210510102014.849075526@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,99 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@nvidia.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-commit cbaf3f6af9c268caf558c8e7ec52bcb35c5455dd upstream.
+[ Upstream commit 0c2de3f054a59f15e01804b75a04355c48de628c ]
 
-Each multicast route that is forwarding packets (as opposed to trapping
-them) points to a list of egress router interfaces (RIFs) through which
-packets are replicated.
+The current sched_slice() seems to have issues; there's two possible
+things that could be improved:
 
-A route's action can transition from trap to forward when a RIF is
-created for one of the route's egress virtual interfaces (eVIF). When
-this happens, the route's action is first updated and only later the
-list of egress RIFs is committed to the device.
+ - the 'nr_running' used for __sched_period() is daft when cgroups are
+   considered. Using the RQ wide h_nr_running seems like a much more
+   consistent number.
 
-This results in the route pointing to an invalid list. In case the list
-pointer is out of range (due to uninitialized memory), the device will
-complain:
+ - (esp) cgroups can slice it real fine, which makes for easy
+   over-scheduling, ensure min_gran is what the name says.
 
-mlxsw_spectrum2 0000:06:00.0: EMAD reg access failed (tid=5733bf490000905c,reg_id=300f(pefa),type=write,status=7(bad parameter))
-
-Fix this by first committing the list of egress RIFs to the device and
-only later update the route's action.
-
-Note that a fix is not needed in the reverse function (i.e.,
-mlxsw_sp_mr_route_evif_unresolve()), as there the route's action is
-first updated and only later the RIF is removed from the list.
-
-Cc: stable@vger.kernel.org
-Fixes: c011ec1bbfd6 ("mlxsw: spectrum: Add the multicast routing offloading logic")
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
-Reviewed-by: Petr Machata <petrm@nvidia.com>
-Link: https://lore.kernel.org/r/20210506072308.3834303-1-idosch@idosch.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Valentin Schneider <valentin.schneider@arm.com>
+Link: https://lkml.kernel.org/r/20210412102001.611897312@infradead.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlxsw/spectrum_mr.c |   30 +++++++++++-----------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ kernel/sched/fair.c     | 12 +++++++++++-
+ kernel/sched/features.h |  3 +++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_mr.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_mr.c
-@@ -535,6 +535,16 @@ mlxsw_sp_mr_route_evif_resolve(struct ml
- 	u16 erif_index = 0;
- 	int err;
- 
-+	/* Add the eRIF */
-+	if (mlxsw_sp_mr_vif_valid(rve->mr_vif)) {
-+		erif_index = mlxsw_sp_rif_index(rve->mr_vif->rif);
-+		err = mr->mr_ops->route_erif_add(mlxsw_sp,
-+						 rve->mr_route->route_priv,
-+						 erif_index);
-+		if (err)
-+			return err;
-+	}
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index d89ddacc1148..0eeeeeb66f33 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -682,7 +682,13 @@ static u64 __sched_period(unsigned long nr_running)
+  */
+ static u64 sched_slice(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ {
+-	u64 slice = __sched_period(cfs_rq->nr_running + !se->on_rq);
++	unsigned int nr_running = cfs_rq->nr_running;
++	u64 slice;
 +
- 	/* Update the route action, as the new eVIF can be a tunnel or a pimreg
- 	 * device which will require updating the action.
- 	 */
-@@ -544,17 +554,7 @@ mlxsw_sp_mr_route_evif_resolve(struct ml
- 						      rve->mr_route->route_priv,
- 						      route_action);
- 		if (err)
--			return err;
--	}
--
--	/* Add the eRIF */
--	if (mlxsw_sp_mr_vif_valid(rve->mr_vif)) {
--		erif_index = mlxsw_sp_rif_index(rve->mr_vif->rif);
--		err = mr->mr_ops->route_erif_add(mlxsw_sp,
--						 rve->mr_route->route_priv,
--						 erif_index);
--		if (err)
--			goto err_route_erif_add;
-+			goto err_route_action_update;
++	if (sched_feat(ALT_PERIOD))
++		nr_running = rq_of(cfs_rq)->cfs.h_nr_running;
++
++	slice = __sched_period(nr_running + !se->on_rq);
+ 
+ 	for_each_sched_entity(se) {
+ 		struct load_weight *load;
+@@ -699,6 +705,10 @@ static u64 sched_slice(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ 		}
+ 		slice = __calc_delta(slice, se->load.weight, load);
  	}
- 
- 	/* Update the minimum MTU */
-@@ -572,14 +572,14 @@ mlxsw_sp_mr_route_evif_resolve(struct ml
- 	return 0;
- 
- err_route_min_mtu_update:
--	if (mlxsw_sp_mr_vif_valid(rve->mr_vif))
--		mr->mr_ops->route_erif_del(mlxsw_sp, rve->mr_route->route_priv,
--					   erif_index);
--err_route_erif_add:
- 	if (route_action != rve->mr_route->route_action)
- 		mr->mr_ops->route_action_update(mlxsw_sp,
- 						rve->mr_route->route_priv,
- 						rve->mr_route->route_action);
-+err_route_action_update:
-+	if (mlxsw_sp_mr_vif_valid(rve->mr_vif))
-+		mr->mr_ops->route_erif_del(mlxsw_sp, rve->mr_route->route_priv,
-+					   erif_index);
- 	return err;
++
++	if (sched_feat(BASE_SLICE))
++		slice = max(slice, (u64)sysctl_sched_min_granularity);
++
+ 	return slice;
  }
  
+diff --git a/kernel/sched/features.h b/kernel/sched/features.h
+index 1bc2b158fc51..e911111df83a 100644
+--- a/kernel/sched/features.h
++++ b/kernel/sched/features.h
+@@ -90,3 +90,6 @@ SCHED_FEAT(WA_BIAS, true)
+  */
+ SCHED_FEAT(UTIL_EST, true)
+ SCHED_FEAT(UTIL_EST_FASTUP, true)
++
++SCHED_FEAT(ALT_PERIOD, true)
++SCHED_FEAT(BASE_SLICE, true)
+-- 
+2.30.2
+
 
 
