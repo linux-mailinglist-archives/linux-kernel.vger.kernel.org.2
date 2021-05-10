@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90097378CFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6849378CF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346556AbhEJMby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:31:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46148 "EHLO mail.kernel.org"
+        id S1346483AbhEJMbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:31:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237179AbhEJLLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:11:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 051E461919;
-        Mon, 10 May 2021 11:07:43 +0000 (UTC)
+        id S237195AbhEJLLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:11:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0B1061288;
+        Mon, 10 May 2021 11:08:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644864;
-        bh=/PZsmNOAHWc+djAPVac4wuQz4zH8jRh/xYnwOEZUpFc=;
+        s=korg; t=1620644884;
+        bh=j5njG6kfjfeKS8Pe74lDvSoVoXEqAO/FDdLBo589vLg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bHMEmXWVATF2N3afCOGk7OAlTir5u7YH7EDqiYCO3u7Slht8FI4u+oY/gQ5ja2w+M
-         ZVIPcezCg4qZLLZ6gG8yyBgPDvZnQeg63F1R2KiFEZWGXMc0BZJaanzNS8PjYXNbry
-         dj1SjjNQvPDBazO0fXh2pqG/Ut8WZ/JeSIuBD8Us=
+        b=Izs6yfnQ0BfreIG3n3V9tsB98IPl9Cl1hNN5tIhP6q1ZyDeTtsRb+fnCEtEj1qDhB
+         Re0w4lopcPL6meUeFcX6u7YatSn9E1MYhtIHvKJqulZ8l09bMQTEe3gMmZA2Mn2BiP
+         4WzgzIGjuL7clVzarvCbme8WLB5WPN5OcVmixCcw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
         Yang Yingliang <yangyingliang@huawei.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 228/384] power: supply: s3c_adc_battery: fix possible use-after-free in s3c_adc_bat_remove()
-Date:   Mon, 10 May 2021 12:20:17 +0200
-Message-Id: <20210510102022.416886661@linuxfoundation.org>
+Subject: [PATCH 5.12 229/384] media: tc358743: fix possible use-after-free in tc358743_remove()
+Date:   Mon, 10 May 2021 12:20:18 +0200
+Message-Id: <20210510102022.446972619@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -44,7 +44,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 68ae256945d2abe9036a7b68af4cc65aff79d5b7 ]
+[ Upstream commit 6107a4fdf8554a7aa9488bdc835bb010062fa8a9 ]
 
 This driver's remove path calls cancel_delayed_work(). However, that
 function does not wait until the work function finishes. This means
@@ -57,26 +57,26 @@ to re-schedule itself.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/s3c_adc_battery.c | 2 +-
+ drivers/media/i2c/tc358743.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/power/supply/s3c_adc_battery.c b/drivers/power/supply/s3c_adc_battery.c
-index a2addc24ee8b..3e3a598f114d 100644
---- a/drivers/power/supply/s3c_adc_battery.c
-+++ b/drivers/power/supply/s3c_adc_battery.c
-@@ -395,7 +395,7 @@ static int s3c_adc_bat_remove(struct platform_device *pdev)
- 	if (main_bat.charge_finished)
- 		free_irq(gpiod_to_irq(main_bat.charge_finished), NULL);
- 
--	cancel_delayed_work(&bat_work);
-+	cancel_delayed_work_sync(&bat_work);
- 
- 	if (pdata->exit)
- 		pdata->exit();
+diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
+index 831b5b54fd78..1b309bb743c7 100644
+--- a/drivers/media/i2c/tc358743.c
++++ b/drivers/media/i2c/tc358743.c
+@@ -2193,7 +2193,7 @@ static int tc358743_remove(struct i2c_client *client)
+ 		del_timer_sync(&state->timer);
+ 		flush_work(&state->work_i2c_poll);
+ 	}
+-	cancel_delayed_work(&state->delayed_work_enable_hotplug);
++	cancel_delayed_work_sync(&state->delayed_work_enable_hotplug);
+ 	cec_unregister_adapter(state->cec_adap);
+ 	v4l2_async_unregister_subdev(sd);
+ 	v4l2_device_unregister_subdev(sd);
 -- 
 2.30.2
 
