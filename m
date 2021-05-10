@@ -2,92 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8B3379377
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A2137937B
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhEJQPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 12:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
+        id S231311AbhEJQQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 12:16:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230218AbhEJQPV (ORCPT
+        with ESMTP id S230510AbhEJQPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 12:15:21 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643C6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 09:14:15 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id o21so14907093iow.13
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 09:14:15 -0700 (PDT)
+        Mon, 10 May 2021 12:15:32 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF80C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 09:14:23 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id b19-20020a05600c06d3b029014258a636e8so9231549wmn.2
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 09:14:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bc+/YaXdYVj2iNJOnaudg2do3DCpftO86ryOW+uvQ8k=;
-        b=FG6vMMYgTNO94+ZMRrdXrHJRBI6esdsXr50/kWwXMHn0wa+JmXHKfhMtOg8crtd5ur
-         N2bv7TrXiy0X4g1fQCh1Nfi3KPoKW7Lxaw0g3ucWADjE2JiLv37K7Tj4ZnDeJh+ad0xS
-         aViyAmCITcKc9uEGQpsikE6/1noKWDgh+Il5p4ydcIM/eZpGPZQ5xbiep6PPC9Drnckq
-         gHF3EZyqMi0M+j7D6seCMJA1uKbXEhuUsdmwg5n9OIdy7ENxmxSvNHx5ZDsYdz/YqJJ3
-         ep1yc+f6kxhxwloK0i2snqMVYAI9G5amkjG+7SvwyiEQjYMPFYhdurbfygIpLbPgzw6Z
-         Q6SA==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/u989ZzQlUZcKtlarwp4DjPGMy3VRc1qd02puXmUDYM=;
+        b=TI3yKKEy6BV0ogVLfZGlGlAeIKd33OfRHPZbklOjagZvlIf2/XXmjZwRD0tQNSBRm9
+         603YgESeeZnfuILYFPPURhqsngvI/ER85ZqGuibFtEJ4j4ZYuU0uvgs+3iTeLLe/cgQj
+         JyPLsBKU7ZhMYq1Yp3LMlYGNUQTvhtzdkhuao=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bc+/YaXdYVj2iNJOnaudg2do3DCpftO86ryOW+uvQ8k=;
-        b=V6HXH190jbx3+ygEda0GzK+2rLPGRHEHizLAh6Q8g2RcnqOAQbcHWa3aKKM9v4aETE
-         iKq+q5KU92srhqRtNLD+nWNOaPqLSUJYXcLL73nfR4MmgVGMBtR0yNjlv5CQtyRXxzVx
-         ee9qqHPDSI6IoWiSu5+3geu+O0niwLAuM+Vl+EwMhKaBScn0LreLUbwmGfAfpDZ+ai0X
-         4CZhDNpdJcyw5QntQD7NNQjqdYZ6iRsJr/RibikmFZ+H6tSTjoeD6gIxO6WwQZpfwPz6
-         W07ItPC20l5VglN21cgtCQhvuSriw9/IOSj1jJJvScELo9KZ6baQfnWQiPqSuPq5q0Rw
-         G0tA==
-X-Gm-Message-State: AOAM532kluJru2opM0+exNmSn0RMEDNkCPzfPl/gAoUAhp2EmJpJnSo2
-        BS2/DS5+eNNXkJHOgUDUDt+FmzYWUPgec7IroZlr69jG/0s=
-X-Google-Smtp-Source: ABdhPJxieX3YetvW8orAdXD48Nhce0jo3g03zx2u7DF5hKZFtlQv1wdNV/qv20T8aeuKXzh5HLXiiqGdNTERlxnr+Q8=
-X-Received: by 2002:a5d:850c:: with SMTP id q12mr19059527ion.189.1620663254567;
- Mon, 10 May 2021 09:14:14 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=/u989ZzQlUZcKtlarwp4DjPGMy3VRc1qd02puXmUDYM=;
+        b=SriVxEbB/a2NuAQ0rhtXWNyRVYoZ5mMyR84cBug0799fHLxI5iV1L0x41t6SzGJ9aK
+         3jh3rvEfXTtvf3QyPmye2F/y0dm9GPIF655baMXMv3QXS+QLmd4jglKB3xCl/NHn7+Ky
+         VoDz1l+la9GHOBGz1AvIyyEGh7ZRPUhmBxQ78IOhQpEkwN1BEm+zb+EsswEnH95kdHX3
+         zUm4F5+wYqYRN0GWwLTUHbWyLNoU/IjkhCk6TsyZ0minA5DyxwbJiZbmss52z0iqr2L6
+         +5YPT/vrHVuMuQFsxbJLOkGGtAnZlYcnVr5TOb87GDyEEnWKZPNlZEmggwRtzumOBMg3
+         HKRQ==
+X-Gm-Message-State: AOAM531qOzbj5ywybBAhvMs8sniduCpc512gmBueG9IZ++UChp7VoIuD
+        /cIDMfKbLPVRrG8WeafxeQvXEQ==
+X-Google-Smtp-Source: ABdhPJyheVMLPROAhXkbBLr6ibUsP+9urLYBoCZ+gu+epj/ILixd+q8lymtpjKrX3ZFEtm6p4Mea1A==
+X-Received: by 2002:a7b:c217:: with SMTP id x23mr37245491wmi.26.1620663262629;
+        Mon, 10 May 2021 09:14:22 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id c15sm2235879wml.38.2021.05.10.09.14.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 09:14:21 -0700 (PDT)
+Date:   Mon, 10 May 2021 18:14:20 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] drm: Fix dirtyfb stalls
+Message-ID: <YJlb3GO41hiu4pWw@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210508195641.397198-1-robdclark@gmail.com>
+ <20210508195641.397198-2-robdclark@gmail.com>
 MIME-Version: 1.0
-References: <20210506184241.618958-1-bgardon@google.com> <20210506184241.618958-6-bgardon@google.com>
- <CANgfPd-eJsHRYARTa0tm4EUVQyXvdQxGQfGfj=qLi5vkLTG6pw@mail.gmail.com> <a12eaa7e-f422-d8f4-e024-492aa038a398@redhat.com>
-In-Reply-To: <a12eaa7e-f422-d8f4-e024-492aa038a398@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Mon, 10 May 2021 09:14:04 -0700
-Message-ID: <CANgfPd8BNtsSwujZnk9GAfP8Xmjy7B3yHdTOnh45wbmNU_yOQw@mail.gmail.com>
-Subject: Re: [PATCH v3 5/8] KVM: x86/mmu: Add a field to control memslot rmap allocation
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210508195641.397198-2-robdclark@gmail.com>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 7, 2021 at 1:28 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 07/05/21 01:44, Ben Gardon wrote:
-> >>   struct kvm_vm_stat {
-> >> @@ -1853,4 +1859,6 @@ static inline int kvm_cpu_get_apicid(int mps_cpu)
-> >>
-> >>   int kvm_cpu_dirty_log_size(void);
-> >>
-> >> +inline bool kvm_memslots_have_rmaps(struct kvm *kvm);
-> > Woops, this shouldn't be marked inline as it creates build problems
-> > for the next patch with some configs.
-> >
->
-> Possibly stupid (or at least lazy) question: why can't it be a "normal"
-> static inline function?
+On Sat, May 08, 2021 at 12:56:38PM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> drm_atomic_helper_dirtyfb() will end up stalling for vblank on "video
+> mode" type displays, which is pointless and unnecessary.  Add an
+> optional helper vfunc to determine if a plane is attached to a CRTC
+> that actually needs dirtyfb, and skip over them.
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 
-That was my initial approach (hence the leftover inline) but I got
-some warnings about a forward declaration of struct kvm because
-arch/x86/include/asm/kvm_host.h doesn't include virt/kvm/kvm_host.h.
-Maybe there's a way to fix that, but I didn't want to mess with it.
+So this is a bit annoying because the idea of all these "remap legacy uapi
+to atomic constructs" helpers is that they shouldn't need/use anything
+beyond what userspace also has available. So adding hacks for them feels
+really bad.
 
->
-> Paolo
->
+Also I feel like it's not entirely the right thing to do here either.
+We've had this problem already on the fbcon emulation side (which also
+shouldn't be able to peek behind the atomic kms uapi curtain), and the fix
+there was to have a worker which batches up all the updates and avoids any
+stalls in bad places.
+
+Since this is for frontbuffer rendering userspace only we can probably get
+away with assuming there's only a single fb, so the implementation becomes
+pretty simple:
+
+- 1 worker, and we keep track of a single pending fb
+- if there's already a dirty fb pending on a different fb, we stall for
+  the worker to start processing that one already (i.e. the fb we track is
+  reset to NULL)
+- if it's pending on the same fb we just toss away all the updates and go
+  with a full update, since merging the clip rects is too much work :-) I
+  think there's helpers so you could be slightly more clever and just have
+  an overall bounding box
+
+Could probably steal most of the implementation.
+
+This approach here feels a tad too much in the hacky area ...
+
+Thoughts?
+-Daniel
+
+> ---
+>  drivers/gpu/drm/drm_damage_helper.c      |  8 ++++++++
+>  include/drm/drm_modeset_helper_vtables.h | 14 ++++++++++++++
+>  2 files changed, 22 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_damage_helper.c b/drivers/gpu/drm/drm_damage_helper.c
+> index 3a4126dc2520..a0bed1a2c2dc 100644
+> --- a/drivers/gpu/drm/drm_damage_helper.c
+> +++ b/drivers/gpu/drm/drm_damage_helper.c
+> @@ -211,6 +211,7 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
+>  retry:
+>  	drm_for_each_plane(plane, fb->dev) {
+>  		struct drm_plane_state *plane_state;
+> +		struct drm_crtc *crtc;
+>  
+>  		ret = drm_modeset_lock(&plane->mutex, state->acquire_ctx);
+>  		if (ret)
+> @@ -221,6 +222,13 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
+>  			continue;
+>  		}
+>  
+> +		crtc = plane->state->crtc;
+> +		if (crtc->helper_private->needs_dirtyfb &&
+> +				!crtc->helper_private->needs_dirtyfb(crtc)) {
+> +			drm_modeset_unlock(&plane->mutex);
+> +			continue;
+> +		}
+> +
+>  		plane_state = drm_atomic_get_plane_state(state, plane);
+>  		if (IS_ERR(plane_state)) {
+>  			ret = PTR_ERR(plane_state);
+> diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
+> index eb706342861d..afa8ec5754e7 100644
+> --- a/include/drm/drm_modeset_helper_vtables.h
+> +++ b/include/drm/drm_modeset_helper_vtables.h
+> @@ -487,6 +487,20 @@ struct drm_crtc_helper_funcs {
+>  				     bool in_vblank_irq, int *vpos, int *hpos,
+>  				     ktime_t *stime, ktime_t *etime,
+>  				     const struct drm_display_mode *mode);
+> +
+> +	/**
+> +	 * @needs_dirtyfb
+> +	 *
+> +	 * Optional callback used by damage helpers to determine if fb_damage_clips
+> +	 * update is needed.
+> +	 *
+> +	 * Returns:
+> +	 *
+> +	 * True if fb_damage_clips update is needed to handle DIRTYFB, False
+> +	 * otherwise.  If this callback is not implemented, then True is
+> +	 * assumed.
+> +	 */
+> +	bool (*needs_dirtyfb)(struct drm_crtc *crtc);
+>  };
+>  
+>  /**
+> -- 
+> 2.30.2
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
