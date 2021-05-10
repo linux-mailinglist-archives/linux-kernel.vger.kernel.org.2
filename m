@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10385378263
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FFF2378267
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbhEJKfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:35:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40468 "EHLO mail.kernel.org"
+        id S231703AbhEJKfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:35:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231219AbhEJKbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:31:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10EAE61934;
+        id S231812AbhEJKbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:31:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 125AF61936;
         Mon, 10 May 2021 10:27:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620642444;
-        bh=XV3BlLVsbLXy8P+v3fW8y64kD1zGLO02X8eZISsJWyI=;
+        bh=5giq++LuKCXxL/BQ/69vufLPCq9f3cyBXLlXE0kLETU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qDMIrvawz0L+ZZxAdOVIpuDu592EBudvr1R7jbb/Fcf4PisF9UwIfu+FnTlP1+j4O
-         grtIFKw5HVuN5Yvg2yApfV4hnd70yUBg5hK104aFeyJQ06I0TSZ0iilKkgokTz2hG0
-         027fJSalD9WNjE4/ZNmcM2RE0HG3p4qeYZc8LJnBW8fhMDov284fBQqLcoJSSiQTNG
-         0as7Nvu+3wvkmbXFXzQcbbEisy3FtXZYbnujsl9vHewXrBxORJl46ODRganHqHeKOj
-         33KdrDMGLdhz19OwgJpGvvow3v/FgsCd5gqceasSvACECPkVEnw4TYYHvk+d7WNsCp
-         PZTxmzf3n7ReQ==
+        b=YAu58lxF7wN9fYjM1tMOj2ym3ygTuADYwLlenOFj3yJACRloMHDzUSHdvreErnZz3
+         jw59TQ3/Mb0UyaVaiH38+AXps1BivXWg2BE9i/oJ+vBafnQSJWcZjZObb2csMrL11z
+         oGhNWjyiCESxQ0Izbbd88T3krbW6scEVhFAX6u9S8dNdiyTgMP8bsSwe/rijHo/zBE
+         lZRfRxmUOLiEYLcxthB1shSraGfxymY041dYGDA9fIgP414eT/DGqIpiY+/maoI16E
+         6VD9bZNlckylKM3N14+RqKcm/+eewMXUlxgC+kdUpMGSr/11SlLI+fpa2h9ezqRIZy
+         bLgzuQ0LnhODQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lg38E-000UQm-67; Mon, 10 May 2021 12:27:22 +0200
+        id 1lg38E-000UQq-7E; Mon, 10 May 2021 12:27:22 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, Joe Perches <joe@perches.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 38/53] docs: scheduler: sched-deadline.rst: avoid using UTF-8 chars
-Date:   Mon, 10 May 2021 12:26:50 +0200
-Message-Id: <b61e003ec84ecc1ee3216e9bed2471d43dae05d0.1620641727.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Daniel Latypov <dlatypov@google.com>,
+        David Gow <davidgow@google.com>,
+        Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 39/53] docs: dev-tools: testing-overview.rst: avoid using UTF-8 chars
+Date:   Mon, 10 May 2021 12:26:51 +0200
+Message-Id: <1591224255d095d14ff3bc2bf4e7796dcc55c77d.1620641727.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620641727.git.mchehab+huawei@kernel.org>
 References: <cover.1620641727.git.mchehab+huawei@kernel.org>
@@ -49,36 +51,28 @@ While UTF-8 characters can be used at the Linux documentation,
 the best is to use them only when ASCII doesn't offer a good replacement.
 So, replace the occurences of the following UTF-8 characters:
 
-	- U+2013 ('–'): EN DASH
-	- U+2212 ('−'): MINUS SIGN
+	- U+2014 ('—'): EM DASH
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/scheduler/sched-deadline.rst | 4 ++--
+ Documentation/dev-tools/testing-overview.rst | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/scheduler/sched-deadline.rst b/Documentation/scheduler/sched-deadline.rst
-index 9d9be52f221a..0ff353ecf24e 100644
---- a/Documentation/scheduler/sched-deadline.rst
-+++ b/Documentation/scheduler/sched-deadline.rst
-@@ -359,7 +359,7 @@ Deadline Task Scheduling
-  More precisely, it can be proven that using a global EDF scheduler the
-  maximum tardiness of each task is smaller or equal than
+diff --git a/Documentation/dev-tools/testing-overview.rst b/Documentation/dev-tools/testing-overview.rst
+index b5b46709969c..8adffc26a2ec 100644
+--- a/Documentation/dev-tools/testing-overview.rst
++++ b/Documentation/dev-tools/testing-overview.rst
+@@ -18,8 +18,8 @@ frameworks. These both provide infrastructure to help make running tests and
+ groups of tests easier, as well as providing helpers to aid in writing new
+ tests.
  
--	((M − 1) · WCET_max − WCET_min)/(M − (M − 2) · U_max) + WCET_max
-+	((M - 1) · WCET_max - WCET_min)/(M - (M - 2) · U_max) + WCET_max
+-If you're looking to verify the behaviour of the Kernel — particularly specific
+-parts of the kernel — then you'll want to use KUnit or kselftest.
++If you're looking to verify the behaviour of the Kernel - particularly specific
++parts of the kernel - then you'll want to use KUnit or kselftest.
  
-  where WCET_max = max{WCET_i} is the maximum WCET, WCET_min=min{WCET_i}
-  is the minimum WCET, and U_max = max{WCET_i/P_i} is the maximum
-@@ -515,7 +515,7 @@ Deadline Task Scheduling
-       pp 760-768, 2005.
-   10 - J. Goossens, S. Funk and S. Baruah, Priority-Driven Scheduling of
-        Periodic Task Systems on Multiprocessors. Real-Time Systems Journal,
--       vol. 25, no. 2–3, pp. 187–205, 2003.
-+       vol. 25, no. 2-3, pp. 187-205, 2003.
-   11 - R. Davis and A. Burns. A Survey of Hard Real-Time Scheduling for
-        Multiprocessor Systems. ACM Computing Surveys, vol. 43, no. 4, 2011.
-        http://www-users.cs.york.ac.uk/~robdavis/papers/MPSurveyv5.0.pdf
+ 
+ The Difference Between KUnit and kselftest
 -- 
 2.30.2
 
