@@ -2,33 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E0137878D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0A8378760
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237682AbhEJLP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:15:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41732 "EHLO mail.kernel.org"
+        id S237498AbhEJLPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:15:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233748AbhEJKud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:50:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06A2261954;
-        Mon, 10 May 2021 10:40:01 +0000 (UTC)
+        id S233720AbhEJKuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:50:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C1B261959;
+        Mon, 10 May 2021 10:40:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643202;
-        bh=sFNkAUFqPkld7N7J8ph5F7w+KUBRpZjz87UnLlxrk8c=;
+        s=korg; t=1620643205;
+        bh=C6LzDeT77xCN7lbU3u03G5Ls4LwvgmbO3cY/DTI8pvE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ahnpDcixIkiCuxD5KZ9o3Lc/pVG/+RXXI9c/hddS2pNAFpn4Vol+kmAmrn78WsJT5
-         PoaQXbwkBW6pv+tXrQe7KeNHPbtH/NkPNBsKr3UR+lljrvl8PDEFcpUyt/3T1dr+w7
-         LZW5cWi1tEB8M1ToDIi9pggq1W00bapY3Yibum2Q=
+        b=pCSfpDBm2s+OJdDhuBhQWdPfpr7XVWCMwZ7JVGr8yMATYiNVAQ4XckHj9yxvzP7EG
+         MNhilyjJIa5QEOUdQl6wz3me07vyBoJuIhwbYiG/4bfqe08SfGnAUjOszJr/sfVh9Y
+         bOs1FMUa/N1TirWZqEcsC5LU3PVYIm+cY1G2kS5c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eckhart Mohr <e.mohr@tuxedocomputers.com>,
-        Werner Sembach <wse@tuxedocomputers.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 219/299] ALSA: hda/realtek: Add quirk for Intel Clevo PCx0Dx
-Date:   Mon, 10 May 2021 12:20:16 +0200
-Message-Id: <20210510102012.169103035@linuxfoundation.org>
+        stable@vger.kernel.org, youling257 <youling257@gmail.com>,
+        Kurt Garloff <kurt@garloff.de>,
+        Bingsong Si <owen.si@ucloud.cn>,
+        "Artem S. Tashkinov" <aros@gmx.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        Chen Yu <yu.c.chen@intel.com>, Len Brown <len.brown@intel.com>,
+        Salvatore Bonaccorso <carnil@debian.org>,
+        Terry Bowman <terry.bowman@amd.com>
+Subject: [PATCH 5.10 220/299] tools/power/turbostat: Fix turbostat for AMD Zen CPUs
+Date:   Mon, 10 May 2021 12:20:17 +0200
+Message-Id: <20210510102012.205604433@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
 References: <20210510102004.821838356@linuxfoundation.org>
@@ -40,40 +45,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+From: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
 
-commit 970e3012c04c96351c413f193a9c909e6d871ce2 upstream.
+commit 301b1d3a9104f4f3a8ab4171cf88d0f55d632b41 upstream.
 
-This applies a SND_PCI_QUIRK(...) to the Clevo PCx0Dx barebones. This
-fix enables audio output over the headset jack and ensures that a
-microphone connected via the headset combo jack is correctly recognized
-when pluged in.
+It was reported that on Zen+ system turbostat started exiting,
+which was tracked down to the MSR_PKG_ENERGY_STAT read failing because
+offset_to_idx wasn't returning a non-negative index.
 
-[ Rearranged the list entries in a sorted order -- tiwai ]
+This patch combined the modification from Bingsong Si and
+Bas Nieuwenhuizen and addd the MSR to the index system as alternative for
+MSR_PKG_ENERGY_STATUS.
 
-Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
-Co-developed-by: Werner Sembach <wse@tuxedocomputers.com>
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210427153025.451118-1-wse@tuxedocomputers.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL display")
+Reported-by: youling257 <youling257@gmail.com>
+Tested-by: youling257 <youling257@gmail.com>
+Tested-by: Kurt Garloff <kurt@garloff.de>
+Tested-by: Bingsong Si <owen.si@ucloud.cn>
+Tested-by: Artem S. Tashkinov <aros@gmx.com>
+Co-developed-by: Bingsong Si <owen.si@ucloud.cn>
+Co-developed-by: Terry Bowman <terry.bowman@amd.com>
+Signed-off-by: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
+Reviewed-by: Chen Yu <yu.c.chen@intel.com>
+Signed-off-by: Len Brown <len.brown@intel.com>
+Cc: Salvatore Bonaccorso <carnil@debian.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    2 ++
- 1 file changed, 2 insertions(+)
+ tools/power/x86/turbostat/turbostat.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2552,8 +2552,10 @@ static const struct snd_pci_quirk alc882
- 	SND_PCI_QUIRK(0x1558, 0x65d1, "Clevo PB51[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x65d2, "Clevo PB51R[CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x65e1, "Clevo PB51[ED][DF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-+	SND_PCI_QUIRK(0x1558, 0x65e5, "Clevo PC50D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x67d1, "Clevo PB71[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x67e1, "Clevo PB71[DE][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-+	SND_PCI_QUIRK(0x1558, 0x67e5, "Clevo PC70D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x70d1, "Clevo PC70[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo laptop", ALC882_FIXUP_EAPD),
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -297,7 +297,10 @@ int idx_to_offset(int idx)
+ 
+ 	switch (idx) {
+ 	case IDX_PKG_ENERGY:
+-		offset = MSR_PKG_ENERGY_STATUS;
++		if (do_rapl & RAPL_AMD_F17H)
++			offset = MSR_PKG_ENERGY_STAT;
++		else
++			offset = MSR_PKG_ENERGY_STATUS;
+ 		break;
+ 	case IDX_DRAM_ENERGY:
+ 		offset = MSR_DRAM_ENERGY_STATUS;
+@@ -326,6 +329,7 @@ int offset_to_idx(int offset)
+ 
+ 	switch (offset) {
+ 	case MSR_PKG_ENERGY_STATUS:
++	case MSR_PKG_ENERGY_STAT:
+ 		idx = IDX_PKG_ENERGY;
+ 		break;
+ 	case MSR_DRAM_ENERGY_STATUS:
+@@ -353,7 +357,7 @@ int idx_valid(int idx)
+ {
+ 	switch (idx) {
+ 	case IDX_PKG_ENERGY:
+-		return do_rapl & RAPL_PKG;
++		return do_rapl & (RAPL_PKG | RAPL_AMD_F17H);
+ 	case IDX_DRAM_ENERGY:
+ 		return do_rapl & RAPL_DRAM;
+ 	case IDX_PP0_ENERGY:
 
 
