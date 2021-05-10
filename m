@@ -2,96 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6369C379719
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 635A6379722
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232850AbhEJSgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 14:36:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230186AbhEJSgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 14:36:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF75D61483;
-        Mon, 10 May 2021 18:35:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620671736;
-        bh=B9SXyeC+hysLQ0q10lFZazvUoImWnEYseqN99FaOPq4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=G+UO8N2jvQH03gPeXoaM3Qsqo1k+W0p0ZTu4enq4CfX60YFMGXMtYHhgg7ZedukxU
-         JvLD4na+1Z7SrnUOZOQQgo9K3OYPOitN6v+gk7gt0ZBBRiEf9NM1TO5+QvAlLkqfH6
-         MPr6rzTcZH7npPdpGjjXx9AJ9eQnNCLlGG6AYwAcmFLTmp7yEvfT4nO7mFAhhLJZzD
-         RAGKmo50zoZuzd8OAGGPBTKkiwg5022DcP0gXvgMOSpF/4m0gb1ypyAzNTL9oWCCNs
-         LZG9pRTFT7+00duB5kvlxLN9ltw4T7rEEBP46ueZW3zFRWgt/Th+i4egTjJGEus81R
-         wqByp652Fdi0Q==
-Date:   Mon, 10 May 2021 13:35:29 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Corentin Labbe <clabbe@baylibre.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: pci: convert faraday,ftpci100 to yaml
-Message-ID: <20210510183529.GA2289311@bjorn-Precision-5520>
+        id S232842AbhEJSlU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 10 May 2021 14:41:20 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:60396 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230186AbhEJSlT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 14:41:19 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id DC9DC1F41D73
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        "Jonathan Corbet" <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>,
+        Borislav Petkov <bp@alien8.de>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        James Morse <james.morse@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Richter <rric@kernel.org>,
+        Thorsten Leemhuis <linux@leemhuis.info>,
+        Tony Luck <tony.luck@intel.com>, keyrings@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/53] docs: admin-guide: avoid using UTF-8 chars
+Organization: Collabora
+References: <cover.1620641727.git.mchehab+huawei@kernel.org>
+        <4b372b47487992fa0b4036b4bfbb6c879f497786.1620641727.git.mchehab+huawei@kernel.org>
+Date:   Mon, 10 May 2021 14:40:09 -0400
+In-Reply-To: <4b372b47487992fa0b4036b4bfbb6c879f497786.1620641727.git.mchehab+huawei@kernel.org>
+        (Mauro Carvalho Chehab's message of "Mon, 10 May 2021 12:26:18 +0200")
+Message-ID: <878s4m301i.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdbQvvcyrXP9fFwvppDRiJOxxESRVkodqSKc7CoO3Bm00Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 12:51:39PM +0200, Linus Walleij wrote:
-> On Thu, May 6, 2021 at 10:34 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> 
-> > I think it's nicer when content changes are in a separate patch from
-> > format conversion patches.  Otherwise it's really hard to see the
-> > content changes in the patch.
-> >
-> > Maybe a preliminary patch could fix whatever is actually broken?
-> >
-> > Rob suggested a bunch of things that could be dropped.  Maybe those
-> > could be removed in a second preliminary patch before the conversion?
-> > Or maybe the removals are only possible *because* of the conversion?
-> > I'm not a yaml expert.
-> 
-> A bit of taste is involved. The old .txt bindings are for processing
-> by human brain power. Those lack regular syntax and strictness
-> because brains are designed for evolved natural languages.
-> 
-> The YAML on the other hand is a chomsky type-3 strict regular
-> language and the .yaml file (and includes) defines this strict regular
-> grammar and as such admits less mistakes. The upside is that
-> it enforces some order.
-> 
-> In the process of moving to YAML we often discover a slew of
-> mistakes and the initiative often comes with the ambition to add
-> or modernize something.
-> 
-> In this case I wouldn't care with stepwise fixing because the
-> platform is modernized by a handful of people who all know
-> what is going on, so there is noone to confuse other than the
-> subsystem maintainer and the result will end up in the same
-> kernel release anyway.
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
 
-Haha, I'm in that large majority of people who lack deep knowledge
-of what's going on, so it definitely confuses me :)
+> While UTF-8 characters can be used at the Linux documentation,
+> the best is to use them only when ASCII doesn't offer a good replacement.
+> So, replace the occurences of the following UTF-8 characters:
+>
+> 	- U+00a0 (' '): NO-BREAK SPACE
+> 	- U+2013 ('–'): EN DASH
+> 	- U+2014 ('—'): EM DASH
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/admin-guide/index.rst           |  2 +-
+>  Documentation/admin-guide/module-signing.rst  |  4 +-
+>  Documentation/admin-guide/ras.rst             | 94 +++++++++----------
+>  .../admin-guide/reporting-issues.rst          | 12 +--
+>  4 files changed, 56 insertions(+), 56 deletions(-)
 
-I think the stepwise fix would be helpful in making the patches more
-accessible to us non-experts, and I know it would save me time in
-reviewing.
+Hi Mauro,
 
-It may also be useful to people converting other bindings to YAML
-because it's more obvious what mistakes need to be fixed in the
-process.
+This patch misses one occurrence of U+2014 in
+Documentation/admin-guide/sysctl/kernel.rst:1288.
 
-Also helpful: changing the subject line to match the existing
-convention, e.g.,
+There are also countless occurrences in Documentation/, outside of
+Documentation/admin-guide.  I suppose another patch in the series, which
+I didn't receive, will fix them?
 
-  dt-bindings: PCI: ftpci100: Convert faraday,ftpci100 to YAML
+These characters will just reappear elsewhere, eventually. I'm not sure
+what is the gain here, other than minor consistence improvements. But we
+should add a Warning during documentation generation (if there isn't one
+already), to prevent them from spreading again.
 
-Bjorn
+-- 
+Gabriel Krisman Bertazi
