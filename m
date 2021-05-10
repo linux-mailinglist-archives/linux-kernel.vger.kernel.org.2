@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C095D3789D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5AD37867A
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236544AbhEJLc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:32:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52738 "EHLO mail.kernel.org"
+        id S236609AbhEJLIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:08:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234872AbhEJK5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEF8661950;
-        Mon, 10 May 2021 10:50:05 +0000 (UTC)
+        id S231437AbhEJKrx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:47:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 372DA61480;
+        Mon, 10 May 2021 10:37:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643806;
-        bh=+8Ak/gQ7R3xd2xD7Jm1k0nim9o8CSWY+VD9ZmUUgU00=;
+        s=korg; t=1620643069;
+        bh=tUIDDDqeNXJUgmAPa6kLdcp9Jo0AeRYDEfVFI6u/9XQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sIVjfrajEQZDpE03Ss4etAQoLmONV+VJ67BCv6BwQSkNwmvHF0OsNqeY4Dp5Z084i
-         2sU4PJxfdreP3iPpn4knWKmOHqoVxXi8s0HPgnqtr7cYQ/yy8nKI41HD/HltbMN8MP
-         T23FJI1HsfRQAjZcMXszxfRXhbCBLt+eJxPpnf38=
+        b=yld5jtnHkM93djUVDuSSP1wkqF/Qmh3z3g+2c243w8Q8owRyHCK/XaLvbDmUIfL7h
+         lbOhoPgWVrqlxGq5ZCvuYQU41MWXege2ycIFAaFMMXSguimJumkkpu9OKunKEIovsg
+         ZrC+JniruA4UMyFo9IN5+Rm85A4OMCVeGbKPLSos=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Obeida Shamoun <oshmoun100@googlemail.com>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 165/342] backlight: qcom-wled: Use sink_addr for sync toggle
+Subject: [PATCH 5.10 158/299] selftests/resctrl: Fix compilation issues for global variables
 Date:   Mon, 10 May 2021 12:19:15 +0200
-Message-Id: <20210510102015.542366334@linuxfoundation.org>
+Message-Id: <20210510102010.179095878@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +43,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Obeida Shamoun <oshmoun100@googlemail.com>
+From: Fenghua Yu <fenghua.yu@intel.com>
 
-[ Upstream commit cdfd4c689e2a52c313b35ddfc1852ff274f91acb ]
+[ Upstream commit 8236c51d85a64643588505a6791e022cc8d84864 ]
 
-WLED3_SINK_REG_SYNC is, as the name implies, a sink register offset.
-Therefore, use the sink address as base instead of the ctrl address.
+Reinette reported following compilation issue on Fedora 32, gcc version
+10.1.1
 
-This fixes the sync toggle on wled4, which can be observed by the fact
-that adjusting brightness now works.
+/usr/bin/ld: cqm_test.o:<src_dir>/cqm_test.c:22: multiple definition of
+`cache_size'; cat_test.o:<src_dir>/cat_test.c:23: first defined here
 
-It has no effect on wled3 because sink and ctrl base addresses are the
-same.  This allows adjusting the brightness without having to disable
-then reenable the module.
+The same issue is reported for long_mask, cbm_mask, count_of_bits etc
+variables as well. Compiler isn't happy because these variables are
+defined globally in two .c files namely cqm_test.c and cat_test.c and
+the compiler during compilation finds that the variable is already
+defined (multiple definition error).
 
-Signed-off-by: Obeida Shamoun <oshmoun100@googlemail.com>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Acked-by: Kiran Gunda <kgunda@codeaurora.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Taking a closer look at the usage of these variables reveals that these
+variables are used only locally in functions such as cqm_resctrl_val()
+(defined in cqm_test.c) and cat_perf_miss_val() (defined in cat_test.c).
+These variables are not shared between those functions. So, there is no
+need for these variables to be global. Hence, fix this issue by making
+them static variables.
+
+Reported-by: Reinette Chatre <reinette.chatre@intel.com>
+Tested-by: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/backlight/qcom-wled.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/resctrl/cat_test.c  | 10 +++++-----
+ tools/testing/selftests/resctrl/cqm_test.c  | 10 +++++-----
+ tools/testing/selftests/resctrl/resctrl.h   |  2 +-
+ tools/testing/selftests/resctrl/resctrlfs.c | 10 +++++-----
+ 4 files changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-index 3bc7800eb0a9..83a187fdaa1d 100644
---- a/drivers/video/backlight/qcom-wled.c
-+++ b/drivers/video/backlight/qcom-wled.c
-@@ -336,13 +336,13 @@ static int wled3_sync_toggle(struct wled *wled)
- 	unsigned int mask = GENMASK(wled->max_string_count - 1, 0);
+diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
+index 5da43767b973..bdeeb5772592 100644
+--- a/tools/testing/selftests/resctrl/cat_test.c
++++ b/tools/testing/selftests/resctrl/cat_test.c
+@@ -17,10 +17,10 @@
+ #define MAX_DIFF_PERCENT	4
+ #define MAX_DIFF		1000000
  
- 	rc = regmap_update_bits(wled->regmap,
--				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
-+				wled->sink_addr + WLED3_SINK_REG_SYNC,
- 				mask, mask);
- 	if (rc < 0)
- 		return rc;
+-int count_of_bits;
+-char cbm_mask[256];
+-unsigned long long_mask;
+-unsigned long cache_size;
++static int count_of_bits;
++static char cbm_mask[256];
++static unsigned long long_mask;
++static unsigned long cache_size;
  
- 	rc = regmap_update_bits(wled->regmap,
--				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
-+				wled->sink_addr + WLED3_SINK_REG_SYNC,
- 				mask, WLED3_SINK_REG_SYNC_CLEAR);
+ /*
+  * Change schemata. Write schemata to specified
+@@ -136,7 +136,7 @@ int cat_perf_miss_val(int cpu_no, int n, char *cache_type)
+ 		return -1;
  
- 	return rc;
+ 	/* Get default cbm mask for L3/L2 cache */
+-	ret = get_cbm_mask(cache_type);
++	ret = get_cbm_mask(cache_type, cbm_mask);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/tools/testing/selftests/resctrl/cqm_test.c b/tools/testing/selftests/resctrl/cqm_test.c
+index 5e7308ac63be..de33d1c0466e 100644
+--- a/tools/testing/selftests/resctrl/cqm_test.c
++++ b/tools/testing/selftests/resctrl/cqm_test.c
+@@ -16,10 +16,10 @@
+ #define MAX_DIFF		2000000
+ #define MAX_DIFF_PERCENT	15
+ 
+-int count_of_bits;
+-char cbm_mask[256];
+-unsigned long long_mask;
+-unsigned long cache_size;
++static int count_of_bits;
++static char cbm_mask[256];
++static unsigned long long_mask;
++static unsigned long cache_size;
+ 
+ static int cqm_setup(int num, ...)
+ {
+@@ -125,7 +125,7 @@ int cqm_resctrl_val(int cpu_no, int n, char **benchmark_cmd)
+ 	if (!validate_resctrl_feature_request("cqm"))
+ 		return -1;
+ 
+-	ret = get_cbm_mask("L3");
++	ret = get_cbm_mask("L3", cbm_mask);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
+index 39bf59c6b9c5..959c71e39bdc 100644
+--- a/tools/testing/selftests/resctrl/resctrl.h
++++ b/tools/testing/selftests/resctrl/resctrl.h
+@@ -92,7 +92,7 @@ void tests_cleanup(void);
+ void mbm_test_cleanup(void);
+ int mba_schemata_change(int cpu_no, char *bw_report, char **benchmark_cmd);
+ void mba_test_cleanup(void);
+-int get_cbm_mask(char *cache_type);
++int get_cbm_mask(char *cache_type, char *cbm_mask);
+ int get_cache_size(int cpu_no, char *cache_type, unsigned long *cache_size);
+ void ctrlc_handler(int signum, siginfo_t *info, void *ptr);
+ int cat_val(struct resctrl_val_param *param);
+diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
+index 19c0ec4045a4..2a16100c9c3f 100644
+--- a/tools/testing/selftests/resctrl/resctrlfs.c
++++ b/tools/testing/selftests/resctrl/resctrlfs.c
+@@ -49,8 +49,6 @@ static int find_resctrl_mount(char *buffer)
+ 	return -ENOENT;
+ }
+ 
+-char cbm_mask[256];
+-
+ /*
+  * remount_resctrlfs - Remount resctrl FS at /sys/fs/resctrl
+  * @mum_resctrlfs:	Should the resctrl FS be remounted?
+@@ -205,16 +203,18 @@ int get_cache_size(int cpu_no, char *cache_type, unsigned long *cache_size)
+ /*
+  * get_cbm_mask - Get cbm mask for given cache
+  * @cache_type:	Cache level L2/L3
+- *
+- * Mask is stored in cbm_mask which is global variable.
++ * @cbm_mask:	cbm_mask returned as a string
+  *
+  * Return: = 0 on success, < 0 on failure.
+  */
+-int get_cbm_mask(char *cache_type)
++int get_cbm_mask(char *cache_type, char *cbm_mask)
+ {
+ 	char cbm_mask_path[1024];
+ 	FILE *fp;
+ 
++	if (!cbm_mask)
++		return -1;
++
+ 	sprintf(cbm_mask_path, "%s/%s/cbm_mask", CBM_MASK_PATH, cache_type);
+ 
+ 	fp = fopen(cbm_mask_path, "r");
 -- 
 2.30.2
 
