@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A58378AB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148D4378ADA
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237108AbhEJLto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:49:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34426 "EHLO mail.kernel.org"
+        id S237940AbhEJLyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:54:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234230AbhEJLCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:02:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C003561288;
-        Mon, 10 May 2021 10:54:05 +0000 (UTC)
+        id S232147AbhEJLDw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:03:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 806BA6191C;
+        Mon, 10 May 2021 10:54:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644046;
-        bh=zC6YJKNDJdW+K9zgC+rjKb0fuToZTU0nQsTNB/c8WyA=;
+        s=korg; t=1620644073;
+        bh=dRcBh40usbpUAMrJQwi6LYe34sL2xU+NSNEIES2cWn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BM3UpEVAHvimhLZ1zs8HgFRcDzMQFPLQ9zy/F22d02ky+ouW3jsGFZdCdKAJo/Syl
-         4ECjUSFOkBhJogPd2q1eiSVJNpKrkBe6w62Lp+zm7+k/8VT/X3+MSyStpHXTnnWiCJ
-         8X6lqRsnaQ302MzhHyznJYXCYlgZOEDDpvo2furk=
+        b=haZGVBd61gASpl0lFTqbOVdtqryg5Rs5tB55O53uH3pKgspfgG4kwWe1cOeN963c1
+         76mRNgj5ej3DHHbbftTIh7dxbZbmSazjKTjAhlkpG5zNOk1MM190DRPNeSTw4z7ytf
+         J6NzBCuSua5eRMxdrv6Tl22QH0vUvvDPaPYwtwQs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
+        stable@vger.kernel.org, Sami Loone <sami@loone.fi>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.11 248/342] ALSA: hda/realtek - Headset Mic issue on HP platform
-Date:   Mon, 10 May 2021 12:20:38 +0200
-Message-Id: <20210510102018.279351937@linuxfoundation.org>
+Subject: [PATCH 5.11 249/342] ALSA: hda/realtek: fix static noise on ALC285 Lenovo laptops
+Date:   Mon, 10 May 2021 12:20:39 +0200
+Message-Id: <20210510102018.315475197@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
 References: <20210510102010.096403571@linuxfoundation.org>
@@ -39,31 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kailang Yang <kailang@realtek.com>
+From: Sami Loone <sami@loone.fi>
 
-commit 1c9d9dfd2d254211cb37b1513b1da3e6835b8f00 upstream.
+commit 9bbb94e57df135ef61bef075d9c99b8d9e89e246 upstream.
 
-Boot with plugged headset, the Headset Mic will be gone.
+Remove a duplicate vendor+subvendor pin fixup entry as one is masking
+the other and making it unreachable. Consider the more specific newcomer
+as a second chance instead.
 
-Signed-off-by: Kailang Yang <kailang@realtek.com>
+The generic entry is made less strict to also match for laptops with
+slightly different 0x12 pin configuration. Tested on Lenovo Yoga 6 (AMD)
+where 0x12 is 0x40000000.
+
+Fixes: 607184cb1635 ("ALSA: hda/realtek - Add supported for more Lenovo ALC285 Headset Button")
+Signed-off-by: Sami Loone <sami@loone.fi>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/207eecfc3189466a820720bc0c409ea9@realtek.com
+Link: https://lore.kernel.org/r/YIXS+GT/dGI/LtK6@yoga
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    2 ++
- 1 file changed, 2 insertions(+)
+ sound/pci/hda/patch_realtek.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -8087,6 +8087,8 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x103c, 0x221c, "HP EliteBook 755 G2", ALC280_FIXUP_HP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x103c, 0x802e, "HP Z240 SFF", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x802f, "HP Z240", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x103c, 0x8077, "HP", ALC256_FIXUP_HP_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x103c, 0x8158, "HP", ALC256_FIXUP_HP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x103c, 0x820d, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
- 	SND_PCI_QUIRK(0x103c, 0x8256, "HP", ALC221_FIXUP_HP_FRONT_MIC),
- 	SND_PCI_QUIRK(0x103c, 0x827e, "HP x360", ALC295_FIXUP_HP_X360),
+@@ -8774,12 +8774,7 @@ static const struct snd_hda_pin_quirk al
+ 		{0x12, 0x90a60130},
+ 		{0x19, 0x03a11020},
+ 		{0x21, 0x0321101f}),
+-	SND_HDA_PIN_QUIRK(0x10ec0285, 0x17aa, "Lenovo", ALC285_FIXUP_THINKPAD_NO_BASS_SPK_HEADSET_JACK,
+-		{0x14, 0x90170110},
+-		{0x19, 0x04a11040},
+-		{0x21, 0x04211020}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0285, 0x17aa, "Lenovo", ALC285_FIXUP_LENOVO_PC_BEEP_IN_NOISE,
+-		{0x12, 0x90a60130},
+ 		{0x14, 0x90170110},
+ 		{0x19, 0x04a11040},
+ 		{0x21, 0x04211020}),
+@@ -8950,6 +8945,10 @@ static const struct snd_hda_pin_quirk al
+ 	SND_HDA_PIN_QUIRK(0x10ec0274, 0x1028, "Dell", ALC274_FIXUP_DELL_AIO_LINEOUT_VERB,
+ 		{0x19, 0x40000000},
+ 		{0x1a, 0x40000000}),
++	SND_HDA_PIN_QUIRK(0x10ec0285, 0x17aa, "Lenovo", ALC285_FIXUP_THINKPAD_NO_BASS_SPK_HEADSET_JACK,
++		{0x14, 0x90170110},
++		{0x19, 0x04a11040},
++		{0x21, 0x04211020}),
+ 	{}
+ };
+ 
 
 
