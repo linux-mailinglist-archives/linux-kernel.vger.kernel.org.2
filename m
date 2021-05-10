@@ -2,77 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41A5378189
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF1737811A
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhEJK1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:27:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231404AbhEJK0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:26:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 494FE6143B;
-        Mon, 10 May 2021 10:25:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642306;
-        bh=pgd1252rTW4FmboBZqeKmdDft2iOwqQhjAW9jP4Q6SE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ht5jspct6Wx5EURIfH2tw+87l6JMjJoYSCLWjiPPJHtIs3xpc+gDu3AfUPdDvWyrQ
-         J/a9MKr6Aajoao9yYFQ+9MnQIdAlSkeUfCfymuN0jAAFb+lU8c9hzL4s+YNbPo61Yr
-         l+LaBxf+mSWOzP4pSlPG0lbiKoPdc6664tCCv3D0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Bauer <mail@david-bauer.net>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 040/184] spi: ath79: always call chipselect function
-Date:   Mon, 10 May 2021 12:18:54 +0200
-Message-Id: <20210510101951.525284910@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510101950.200777181@linuxfoundation.org>
-References: <20210510101950.200777181@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S230158AbhEJKU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:20:28 -0400
+Received: from mail-vk1-f181.google.com ([209.85.221.181]:34514 "EHLO
+        mail-vk1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230145AbhEJKUL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:20:11 -0400
+Received: by mail-vk1-f181.google.com with SMTP id q135so3256777vke.1;
+        Mon, 10 May 2021 03:19:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KdRd6/gKBJmSyWKHkTLo2vWOf1KaAzTkqqnkH637tvE=;
+        b=LmPF7zFkb7uf5dzLJfo26JKe+3M/Ykym5U5jIeFh66lJnb4sda9jjDjYqfiRuMWK1+
+         QiRD49fmnkOn4DDqv0sRp6/Oex5eMV5mjhoUVRqY0Hc4BaFdgvmReBuxtyroAzNxz+fs
+         o2XxadUR5bKBqtrkzjHS/mxiMNi1eTf+7vZev5KTlHePRCWCk3I089HMJlCJWOlwkMeI
+         Z7D/Gw8M/ATXr6ExWM0jh64q/666Medw+cNMElEDMKGcWNlGZch3VpU2b6cC6sQ1mv95
+         z2UFYv8p5t7+002tvo4VYBnhpO+3QToyuEUGHx3dOsIASblUw878bezNQp4cScX4D813
+         mPiQ==
+X-Gm-Message-State: AOAM5325biKBcSKDjPSUPaoKpomxyP2E0jz+aw6Si/KS8HmPXIlq/8je
+        7lS9dG260bbOBfGDIuO5Rg8vjhDdIpn7BAUNC0s=
+X-Google-Smtp-Source: ABdhPJyaOXi+XArkeKM210IRY8QcEM26/c7KnI/L43ooxhYTjbJbpZlbZUWioVOj4c1tWLX5jGBLlpRzufl3a7TwMsc=
+X-Received: by 2002:a1f:1f81:: with SMTP id f123mr16115181vkf.6.1620641946301;
+ Mon, 10 May 2021 03:19:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210507220813.365382-1-arnd@kernel.org> <20210507220813.365382-5-arnd@kernel.org>
+In-Reply-To: <20210507220813.365382-5-arnd@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 10 May 2021 12:18:55 +0200
+Message-ID: <CAMuHMdWYoGfDafgcObE4Cb4spZ4vAAEDfWPt-4+1pmEebjM6Ow@mail.gmail.com>
+Subject: Re: [RFC 04/12] m68k: select CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux-Arch <linux-arch@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Bauer <mail@david-bauer.net>
+Hi Arnd,
 
-[ Upstream commit 19e2132174583beb90c1bd3e9c842bc6d5c944d1 ]
+On Sat, May 8, 2021 at 12:10 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> All supported CPUs other than the old dragonball use the
 
-spi-bitbang has to call the chipselect function on the ath79 SPI driver
-in order to communicate with the SPI slave device, as the ath79 SPI
-driver has three dedicated chipselect lines but can also be used with
-GPIOs for the CS lines.
+Same comment about dragonball as for patch 01/12.
 
-Fixes commit 4a07b8bcd503 ("spi: bitbang: Make chipselect callback optional")
+> include/linux/unaligned/access_ok.h implementation for accessing unaligned
+> variables, so presumably this works everywhere.
+>
+> However, m68k never selects CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS,
+> so none of the other conditionals in the kernel get the optimized
+> implementation.
+>
+> Select this based on CPU_HAS_NO_UNALIGNED to make the two settings
+> always match, and then use the generic version of the header.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: David Bauer <mail@david-bauer.net>
-Link: https://lore.kernel.org/r/20210303160837.165771-1-mail@david-bauer.net
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/spi/spi-ath79.c | 1 +
- 1 file changed, 1 insertion(+)
+> --- a/arch/m68k/Kconfig
+> +++ b/arch/m68k/Kconfig
+> @@ -22,6 +22,7 @@ config M68K
+>         select HAVE_AOUT if MMU
+>         select HAVE_ASM_MODVERSIONS
+>         select HAVE_DEBUG_BUGVERBOSE
+> +       select HAVE_EFFICIENT_UNALIGNED_ACCESS if !CPU_HAS_NO_UNALIGNED
 
-diff --git a/drivers/spi/spi-ath79.c b/drivers/spi/spi-ath79.c
-index eb9a243e9526..436327fb58de 100644
---- a/drivers/spi/spi-ath79.c
-+++ b/drivers/spi/spi-ath79.c
-@@ -158,6 +158,7 @@ static int ath79_spi_probe(struct platform_device *pdev)
- 	master->bits_per_word_mask = SPI_BPW_RANGE_MASK(1, 32);
- 	master->setup = spi_bitbang_setup;
- 	master->cleanup = spi_bitbang_cleanup;
-+	master->flags = SPI_MASTER_GPIO_SS;
- 	if (pdata) {
- 		master->bus_num = pdata->bus_num;
- 		master->num_chipselect = pdata->num_chipselect;
+This was clearly forgotten in commit 58340a07c194e0ae ("introduce
+HAVE_EFFICIENT_UNALIGNED_ACCESS Kconfig symbol"), which predates the
+existence of CPU_HAS_NO_UNALIGNED.
+
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.30.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
