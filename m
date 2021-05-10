@@ -2,59 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48F2379A10
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC862379A08
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhEJW37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:29:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41708 "EHLO mail.kernel.org"
+        id S231425AbhEJW1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:27:51 -0400
+Received: from mga09.intel.com ([134.134.136.24]:65501 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230186AbhEJW3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:29:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96BD561581;
-        Mon, 10 May 2021 22:28:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620685727;
-        bh=3C3Zjb9pNSFpD04fv+dCc1YcggEBha54szgnBBnl+sA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MVu+bRWUCCiGCkhtEwhjniehelzKgsO5DO9wTktyaKAaB6ZGZlG6ZMUk5FHazKbBu
-         QzRQ1J+TxhAjZS9/XYTDZDcKuctPcJqOQzlBwtHOMg9EpTE/YAu1RGC4Lx88UW+3mf
-         6jXkdU7ocwMyPDdbIR7kb1aAtUflbosTqrRZxU6pc6+COgxU0TgV32khFfxo8WRyQ8
-         iHiKY3sx7ItIslpie4C9LkCXPxGRtCR/vvFG70Bt1nf86KbK0INzc/Va9J/+GqWUqA
-         1RpqgtryD+MDg3ZS1rykyjvATjKpfNMeWbl/hBBMq1j/mLnS6MMF3U3OhQhhROIZVY
-         g0E/xiU+jw+GA==
-Date:   Mon, 10 May 2021 15:28:44 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: support iflag change given the mask
-Message-ID: <YJmznEhGCZTaER0+@gmail.com>
-References: <20210506191347.1242802-1-jaegeuk@kernel.org>
- <YJlGU+STYD5geyIc@google.com>
+        id S231368AbhEJW1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 18:27:35 -0400
+IronPort-SDR: ACj4mbbfIcAwS4u1dCJGNoEOCL41bCs1O8kcJy1hngtYf7Q95vMzHM5U2u07QRsooR43Xi0zQB
+ lj8bM/YwYZ9w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="199370758"
+X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
+   d="scan'208";a="199370758"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 15:26:29 -0700
+IronPort-SDR: yCwHeJ6rRkGtKNof8GEjqbaKxAz/e7UvMdOJ0H5gQ+/vROArz2qCNRf+ThKjmZy9CsF3QLI59T
+ YjeHavqKiVRA==
+X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
+   d="scan'208";a="430065112"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 15:26:29 -0700
+Date:   Mon, 10 May 2021 15:28:54 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210510152854.793ee594@jacob-builder>
+In-Reply-To: <20210510163956.GD1002214@nvidia.com>
+References: <20210505180023.GJ1370958@nvidia.com>
+        <20210505130446.3ee2fccd@jacob-builder>
+        <YJOZhPGheTSlHtQc@myrica>
+        <20210506122730.GQ1370958@nvidia.com>
+        <20210506163240.GA9058@otc-nc-03>
+        <MWHPR11MB188698FBEE62AF1313E0F7AC8C569@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210510123729.GA1002214@nvidia.com>
+        <20210510152502.GA90095@otc-nc-03>
+        <20210510153111.GB1002214@nvidia.com>
+        <20210510162212.GB90095@otc-nc-03>
+        <20210510163956.GD1002214@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJlGU+STYD5geyIc@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 07:42:27AM -0700, Jaegeuk Kim wrote:
-> In f2fs_fileattr_set(),
-> 
-> 	if (!fa->flags_valid)
-> 		mask &= FS_COMMON_FL;
-> 
-> In this case, we can set supported flags by mask only instead of BUG_ON.
-> 
-> /* Flags shared betwen flags/xflags */
-> 	(FS_SYNC_FL | FS_IMMUTABLE_FL | FS_APPEND_FL | \
-> 	 FS_NODUMP_FL |	FS_NOATIME_FL | FS_DAX_FL | \
-> 	 FS_PROJINHERIT_FL)
-> 
-> Fixes: 4c5b47997521 ("vfs: add fileattr ops")
+Hi Jason,
 
-Shouldn't it be:
+On Mon, 10 May 2021 13:39:56 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-Fixes: 9b1bb01c8ae7 ("f2fs: convert to fileattr")
+> I still think it is smarter to push a group of RID's into a global
+> allocation group and accept there are potential downsides with that
+> than to try to force a global allocation group on every RID and then
+> try to fix the mess that makes for non-ENQCMD devices.
+The proposed ioasid_set change in this set has a token for each set of
+IOASIDs.
+
+/**
+ * struct ioasid_set - Meta data about ioasid_set
+ * @nh:		List of notifiers private to that set
+ * @xa:		XArray to store ioasid_set private IDs, can be used for
+ *		guest-host IOASID mapping, or just a private IOASID namespace.
+ * @token:	Unique to identify an IOASID set
+ * @type:	Token types
+ * @quota:	Max number of IOASIDs can be allocated within the set
+ * @nr_ioasids:	Number of IOASIDs currently allocated in the set
+ * @id:		ID of the set
+ */
+struct ioasid_set {
+	struct atomic_notifier_head nh;
+	struct xarray xa;
+	void *token;
+	int type;
+	int quota;
+	atomic_t nr_ioasids;
+	int id;
+	struct rcu_head rcu;
+	struct misc_cg *misc_cg; /* For misc cgroup accounting */
+};
+
+To satisfy your "give me a PASID for this RID" proposal, can we just use
+the RID's struct device as the token? Also add a type field to explicitly
+indicate global vs per-set(per-RID). i.e.
+
+ioasid_t ioasid_alloc(struct ioasid_set *set, ioasid_t min, ioasid_t max,
+		       int type, void *private)
+Where flags can be:
+enum ioasid_hwid_type {
+	IOASID_HWID_GLOBAL,
+	IOASID_HWID_PER_SET,
+};
+
+We are really talking about the HW IOASID, just a reminder.
+
+Thanks,
+
+Jacob
