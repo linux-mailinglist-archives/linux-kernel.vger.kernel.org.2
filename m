@@ -2,97 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9BF377D98
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65AA3377D9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhEJIE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 04:04:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47558 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229852AbhEJIE0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 04:04:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620633801;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yTnjHtJM9cM9/CNRU7MdS6zqnbDhW6KdwOPWG8fu3lE=;
-        b=JBBGuKUsnTeq9fW1v5LjvcEC9wOeYYIOHW9eHc/Gb6Y26cz4OS8UCUT7O2HTAviGYW1DKO
-        nCb5lrOArUFfpFJPD/SO+mLX30klzJ47wz0fU4nICoUqrQEoJkTBc0ykR6TB7h+1rRHt9c
-        ybWRJzSC8dMlwZSW4673Tvg5HnWzlkk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-329-92GvdBxGNIm505JoPPZ2VA-1; Mon, 10 May 2021 04:03:18 -0400
-X-MC-Unique: 92GvdBxGNIm505JoPPZ2VA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49C721006C81;
-        Mon, 10 May 2021 08:03:16 +0000 (UTC)
-Received: from starship (unknown [10.40.194.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 44EFE19C45;
-        Mon, 10 May 2021 08:03:11 +0000 (UTC)
-Message-ID: <666b1f0a597383bf0c838d9bfde5f07d6d0828c6.camel@redhat.com>
-Subject: Re: [PATCH 01/15] KVM: VMX: Do not adverise RDPID if ENABLE_RDTSCP
- control is unsupported
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Reiji Watanabe <reijiw@google.com>
-Date:   Mon, 10 May 2021 11:03:10 +0300
-In-Reply-To: <20210504171734.1434054-2-seanjc@google.com>
-References: <20210504171734.1434054-1-seanjc@google.com>
-         <20210504171734.1434054-2-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S230196AbhEJIE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 04:04:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229852AbhEJIE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 04:04:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D41DD61108;
+        Mon, 10 May 2021 08:03:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620633833;
+        bh=3pVlZd3endQBC1asJ5OJ1LBt8LcXCHuSEw4u58gmNgg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1BOnYO8kW6IDQ469LmdKmEzDvbwEK+bfcPtTBh/BbPZEWMwQjN0Eq7HZ2gz9MhDVU
+         yPB0Mu8ysv1TFX2tDJw851gUD0GyVaF64BxB5UN0oR4keLu66BtGJPkmUOFOn41L7j
+         k+rI4b+W/6awXs88loMN0gYfqvj9AFZfFRAtiBOs=
+Date:   Mon, 10 May 2021 10:03:51 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Jian Cai <jiancai@google.com>, sashal@kernel.org, will@kernel.org,
+        catalin.marinas@arm.com, stable@vger.kernel.org,
+        ndesaulniers@google.com, manojgupta@google.com, llozano@google.com,
+        clang-built-linux@googlegroups.com,
+        Will Deacon <will.deacon@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4.19 ONLY v4] arm64: vdso: remove commas between macro
+ name and arguments
+Message-ID: <YJjo5xRF9zZnVouN@kroah.com>
+References: <20210506012508.3822221-1-jiancai@google.com>
+ <fd08dce2-71c0-3414-d661-d065480c04ff@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fd08dce2-71c0-3414-d661-d065480c04ff@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-05-04 at 10:17 -0700, Sean Christopherson wrote:
-> Clear KVM's RDPID capability if the ENABLE_RDTSCP secondary exec control is
-> unsupported.  Despite being enumerated in a separate CPUID flag, RDPID is
-> bundled under the same VMCS control as RDTSCP and will #UD in VMX non-root
-> if ENABLE_RDTSCP is not enabled.
+On Thu, May 06, 2021 at 10:43:33AM -0700, Nathan Chancellor wrote:
+> On 5/5/2021 6:25 PM, Jian Cai wrote:
+> > LLVM's integrated assembler appears to assume an argument with default
+> > value is passed whenever it sees a comma right after the macro name.
+> > It will be fine if the number of following arguments is one less than
+> > the number of parameters specified in the macro definition. Otherwise,
+> > it fails. For example, the following code works:
+> > 
+> > $ cat foo.s
+> > .macro  foo arg1=2, arg2=4
+> >          ldr r0, [r1, #\arg1]
+> >          ldr r0, [r1, #\arg2]
+> > .endm
+> > 
+> > foo, arg2=8
+> > 
+> > $ llvm-mc -triple=armv7a -filetype=obj foo.s -o ias.o
+> > arm-linux-gnueabihf-objdump -dr ias.o
+> > 
+> > ias.o:     file format elf32-littlearm
+> > 
+> > Disassembly of section .text:
+> > 
+> > 00000000 <.text>:
+> >     0: e5910001 ldr r0, [r1, #2]
+> >     4: e5910003 ldr r0, [r1, #8]
+> > 
+> > While the the following code would fail:
+> > 
+> > $ cat foo.s
+> > .macro  foo arg1=2, arg2=4
+> >          ldr r0, [r1, #\arg1]
+> >          ldr r0, [r1, #\arg2]
+> > .endm
+> > 
+> > foo, arg1=2, arg2=8
+> > 
+> > $ llvm-mc -triple=armv7a -filetype=obj foo.s -o ias.o
+> > foo.s:6:14: error: too many positional arguments
+> > foo, arg1=2, arg2=8
+> > 
+> > This causes build failures as follows:
+> > 
+> > arch/arm64/kernel/vdso/gettimeofday.S:230:24: error: too many positional
+> > arguments
+> >   clock_gettime_return, shift=1
+> >                         ^
+> > arch/arm64/kernel/vdso/gettimeofday.S:253:24: error: too many positional
+> > arguments
+> >   clock_gettime_return, shift=1
+> >                         ^
+> > arch/arm64/kernel/vdso/gettimeofday.S:274:24: error: too many positional
+> > arguments
+> >   clock_gettime_return, shift=1
+> > 
+> > This error is not in mainline because commit 28b1a824a4f4 ("arm64: vdso:
+> > Substitute gettimeofday() with C implementation") rewrote this assembler
+> > file in C as part of a 25 patch series that is unsuitable for stable.
+> > Just remove the comma in the clock_gettime_return invocations in 4.19 so
+> > that GNU as and LLVM's integrated assembler work the same.
+> > 
+> > Link:
+> > https://github.com/ClangBuiltLinux/linux/issues/1349
+> > 
+> > Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> > Signed-off-by: Jian Cai <jiancai@google.com>
 > 
-> Fixes: 41cd02c6f7f6 ("kvm: x86: Expose RDPID in KVM_GET_SUPPORTED_CPUID")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> Thanks for the updated example and explanation, this looks good to me now.
 > 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 10b610fc7bbc..82404ee2520e 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7377,9 +7377,11 @@ static __init void vmx_set_cpu_caps(void)
->  	if (!cpu_has_vmx_xsaves())
->  		kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
->  
-> -	/* CPUID 0x80000001 */
-> -	if (!cpu_has_vmx_rdtscp())
-> +	/* CPUID 0x80000001 and 0x7 (RDPID) */
-> +	if (!cpu_has_vmx_rdtscp()) {
->  		kvm_cpu_cap_clear(X86_FEATURE_RDTSCP);
-> +		kvm_cpu_cap_clear(X86_FEATURE_RDPID);
-> +	}
->  
->  	if (cpu_has_vmx_waitpkg())
->  		kvm_cpu_cap_check_and_set(X86_FEATURE_WAITPKG);
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+Now queued up, thanks.
 
-Best regards,
-	Maxim Levitsky
-
+greg k-h
