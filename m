@@ -2,187 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E3E377CFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 09:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A259377D02
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 09:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhEJHSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 03:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51462 "EHLO
+        id S230122AbhEJHTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 03:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhEJHSR (ORCPT
+        with ESMTP id S229863AbhEJHTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 03:18:17 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E21C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 00:17:11 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso13550653otb.13
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 00:17:11 -0700 (PDT)
+        Mon, 10 May 2021 03:19:50 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE75C061573;
+        Mon, 10 May 2021 00:18:45 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id y124-20020a1c32820000b029010c93864955so10513947wmy.5;
+        Mon, 10 May 2021 00:18:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IhB0bIAA6mNgVJcfwc6pFjtsYpHcwnidnUaVEALfzAI=;
-        b=DcFxeuviLqMJK1VOxpDP7iKBaegJNE1XYPxwsKMaFGAj2NpdrLkRhT55H9GQaygVNx
-         1SeTBY16BF7gKnMhIIf5DxtvTinhP3GCxq0PqcebcKDPInrlBoPk1ZZ7Fb2/tF6E/Tfo
-         sWFhuo66q0s83TApmLbvzpQXU+w4YFKi9Wxwg=
+        bh=oQi+bRBMv4fOOAJ235DSC4hwnnlkf5xGo58Xk+7PACU=;
+        b=YL/EdIRIYOkEXfGuBjjYNtziDmn2ouTprFKLzs5EjGDSabi8i4a3IELHgzcyC6wfau
+         ZUHIRkZ/shYrGTRVrsUlF5Z3XNAmhsGrhnHJgimkRa0viPRaMnU+UN1sekmgMDNL3DMa
+         FlCMfjor4rWZb6GEA1VZNjLpeikmtXY9kHBfHfGIuPcq5CyS0kBxLLLBjkK/T8zfljA1
+         WgVV48BM7gMT8Co5VdLpvV38tjoH86m8737GEJgXqU3lCiMpPGpXKau8Dvu6PWKQBIsD
+         IVFnLY4Tcyo3ETLmqkNGXhI/eEMTGCt7KNNuVbmMnFJA6+LLmn71N+x3MRLlug+SFkrI
+         7Y/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IhB0bIAA6mNgVJcfwc6pFjtsYpHcwnidnUaVEALfzAI=;
-        b=LAc211nyktNEWUqwT1MZ8CY7gp6ff3PRQ7iw77CaEs+sUQaGtb0MEMI9GRim0von9t
-         3vQgStsiYYJMAjSIF8QAMfB7IrZQgCR6jLgdiXphL3L5DBMfJM4uGiXNgNWqT6rqrucH
-         ZEpNEbs1wyFElyTsAIA0aoZtuWWxMoYTfA+fQjc+OajtQPfenkcC8Z/UAbglO9J6cddO
-         0JEPqeZ5MDvRqyR1pNSan0WLrpRFqq24TJB6hobpg12T9VhNWXR/A0ZKB9WrdGvZhHm7
-         ppYiJ0umQpj+UKw3VdlXHjaPmx2xSXet7lTnO1qDyTggC/rjddY5sAwnmaM+4yTixReW
-         OaZA==
-X-Gm-Message-State: AOAM532XUSTVxx5L5HKUutx+Dh/YvLRfJ7iYBt7yxyM0BbpPP61msvD3
-        DAYo33vY25qNqBaKmnG5QJ4X7fDsMRL3UbDeZPk2bwBh4j0=
-X-Google-Smtp-Source: ABdhPJy/Xn4t/rhcrM6b4Fmi2Q5ua128it2ybIXLDlJVUoo+FC6OFAIP58ZQupclu11lfKm/OHcj6XvNHUBJyL5LVmA=
-X-Received: by 2002:a05:6830:1398:: with SMTP id d24mr20409398otq.281.1620631030232;
- Mon, 10 May 2021 00:17:10 -0700 (PDT)
+        bh=oQi+bRBMv4fOOAJ235DSC4hwnnlkf5xGo58Xk+7PACU=;
+        b=jNNFonVtSzksuSGYLKszK62l4XYIgXlq3NMboy4koFxMKqSdD50a0A+ygS3VzLqDNM
+         Km3GzB5MzGEPTAgLjt+Z3U/SovmL6ohq64oMXo7V6iK0GLMGqhj4DXfr7m0k2/J/m6i9
+         P/OQTVMkRz+dZQh0se0KsdOCQwqEWUmuvqPLwJWCYuPXAbHWpL8OyiHnvrEkX/179KDV
+         UKisKuPv4AjJGWbp2VAM0Rcr0lImW0p2gLWxNSe8vFA+fj8ZMGTc/VagoHrXsbLxTUSC
+         JF9SwFytdV3/en3pSMZgK8AkGHQq4ZSIukp5iux2uyTwDWES0ib21KJDhBbH645+ZuPS
+         +cOw==
+X-Gm-Message-State: AOAM533KwYbkG7f7TIBlM3SuKnr0beGnXAXwOzJGKBBvURNIOauMuoqJ
+        kGofsgeywLAbIwK7BuPKlMtr1Wiao630eBHCuIs=
+X-Google-Smtp-Source: ABdhPJyAft8oEdwcpUU4jeAq1mi8jafO5mM6ccrJHn089XvwF5iNQODf2vlcI11L4c+FfjO+yVsboVVIy8hhmjj8ChY=
+X-Received: by 2002:a1c:b002:: with SMTP id z2mr24635672wme.26.1620631124118;
+ Mon, 10 May 2021 00:18:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <YJBHiRiCGzojk25U@phenom.ffwll.local> <CAHk-=wiwgOPQ+4Eaf0GD5P_GveE6vUHsKxAT=pMsjk1v_kh4ig@mail.gmail.com>
- <YJVijmznt1xnsCxc@phenom.ffwll.local> <CAHk-=wgjO8-f1bUwQB=5HGzkvSS+aGACR9+H5CkkDhRgud+3MA@mail.gmail.com>
-In-Reply-To: <CAHk-=wgjO8-f1bUwQB=5HGzkvSS+aGACR9+H5CkkDhRgud+3MA@mail.gmail.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Mon, 10 May 2021 09:16:58 +0200
-Message-ID: <CAKMK7uELBbkhFBQoSfvMx+AKnbk-fgbamBm3sC20-dJwMq3Xmg@mail.gmail.com>
-Subject: Re: [PULL] topic/iomem-mmap-vs-gup
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>
+References: <5bc44aace2fe7e1c91d8b35c8fe31e7134ceab2c.1620406852.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <5bc44aace2fe7e1c91d8b35c8fe31e7134ceab2c.1620406852.git.christophe.jaillet@wanadoo.fr>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Mon, 10 May 2021 15:18:07 +0800
+Message-ID: <CAAfSe-srh_3S-AStLe7f+KuKQ2MY07OyhZ22nnEumE+uE8gUyA@mail.gmail.com>
+Subject: Re: [PATCH] nvmem: sprd: Fix an error message
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Freeman Liu <freeman.liu@unisoc.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 8, 2021 at 6:47 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Sat, 8 May 2021 at 01:02, Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
 >
-> [ Daniel, please fix your broken email setup. You have this insane
-> "Reply-to" list that just duplicates all the participants. Very
-> broken, very annoying ]
+> 'ret' is known to be 0 here.
+> The expected error status is stored in 'status', so use it instead.
 >
-> On Fri, May 7, 2021 at 8:53 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > So personally I think the entire thing should just be thrown out, it's all
-> > levels of scary and we have zero-copy buffer sharing done properly with
-> > dma-buf since years in v4l.
+> Also change %d in %u, because status is an u32, not a int.
 >
-> So I've been looking at this more, and the more I look at it, the less
-> I like this series.
->
-> I think the proper fix is to just fix things.
->
-> For example, I'm looking at the v4l users of follow_pfn(), and I find
-> get_vaddr_frames(), which is just broken.
->
-> Fine, we know users are broken, but look at what appears to be the
-> main user of get_vaddr_frames(): vb2_dc_get_userptr().
->
-> What does that function do? Immediately after doing
-> get_vaddr_frames(), it tries to turn those pfn's into page pointers,
-> and then do sg_alloc_table_from_pages() on the end result.
->
-> Yes, yes, it also has that "ok, that failed, let's try to see if it's
-> some physically contiguous mapping" and do DMA directly to those
-> physical pages, but the point there is that that only happens when
-> they weren't normal pages to begin with.
->
-> So thew *fix* for at least that path is to
->
->  (a) just use the regular pin_user_pages() for normal pages
+> Fixes: 096030e7f449 ("nvmem: sprd: Add Spreadtrum SoCs eFuse support")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Yup, the "rip it all out" solution amounts to replacing this all,
-including frame_vector helper code, with pin_user_pages.
-
->  (b) perhaps keep the follow_pfn() case, but then limit it to that "no
-> page backing" and that physical pages case.
->
-> And honestly, the "struct frame_vector" thing already *has* support
-> for this, and the problem is simply that the v4l code has decided to
-> have the callers ask for pfn's rather than have the callers just ask
-> for a frame-vector that is either "pfn's with no paeg backing" _or_
-> "page list with proper page reference counting".
->
-> So this series of yours that just disables follow_pfn() actually seems
-> very wrong.
->
-> I think follow_pfn() is ok for the actual "this is not a 'struct page'
-> backed area", and disabling that case is wrong even going forward.
-
-I think this is where you miss a bit: We very much also want to stop
-pinned userptr to physcial addresses that aren't page backed. This
-might very well be some gpu pci bar, backed by vram, and vram is
-managed as dynamically as struct page backed stuff (and there's all
-the hmm dreams to make it actually use struct page, but that's another
-story).
-
-So by the time the media hw access that vb2 userptr buffer there's
-good chances someone else's data is now there. If vb2 would have a
-mmu_notifier subscription or similar to follow pte updates the gpu
-driver does, then it would be all fine. But this vb2 model is a pinned
-one, hence not fixable.
-
-The other more practical issue is that peer2peer dma on modern hw
-needs quite some setup. Just taking a cpu pfn and hoping that matches
-the bus addr your device would need is a bit optimistic.
-
-One theoretical & proper fix I discussed with Jason Gunthrope would be
-to replace the pfn lookup with a lookup for a struct dma_buf. Which
-has proper interfaces for pinning gpu buffers, figuring out p2p dma or
-just figuring out the right dma mapping and all that. Idea was to make
-a direct vma->dma_buf lookup or something like that. But consensus is
-also that outside of gpus and very closely related things using
-dma_buf is not a great idea, because there's a few too many silly
-rules involved. For everyone else it's better to make the struct page
-managed device memory stuff work most likely.
-
-> End result, I think the proper model is:
->
->  - keep follow_pfn(), but limit it to the "not vm_normal_page()" case,
-> and return error for some real page mapping
->
->  - make the get_vaddr_frames() first try "pin_user_pages()" (and
-> create a page array) and fall back to "follow_pfn()" if that fails (or
-> the other way around). Set the
->
-> IOW, get_vaddr_frames() would just do
->
->         vec->got_ref = is_pages;
->         vec->is_pfns = !is_pages;
->
-> and everything would just work out - the v4l code seems to already
-> have all the support for "it's a ofn array" vs "it's properly
-> refcounted pages".
->
-> So the only case we should disallow is the mixed case, that the v4l
-> code already seems to not be able to handle anyway (and honestly, it
-> looks like "got_ref/is_pfns" should be just one flag - they always
-> have to have the opposite values).
->
-> So I think this "unsafe_follow_pfn()" halfway step is actively wrong.
-> It doesn't move us forward. Quite the reverse. It just makes the
-> proper fix harder.
->
-> End result: not pulling it, unless somebody can explain to me in small
-> words why I'm wrong and have the mental capacity of a damaged rodent.
-
-No rodents I think, just more backstory of how this all fits. tldr;
-pin_user_pages is the only safe use of this vb2 userptr thing.
--Daniel
+Thanks.
+Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
 
 
-Cheers, Daniel
---
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> ---
+>  drivers/nvmem/sprd-efuse.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
+> index 5d394559edf2..e3e721d4c205 100644
+> --- a/drivers/nvmem/sprd-efuse.c
+> +++ b/drivers/nvmem/sprd-efuse.c
+> @@ -234,7 +234,7 @@ static int sprd_efuse_raw_prog(struct sprd_efuse *efuse, u32 blk, bool doub,
+>         status = readl(efuse->base + SPRD_EFUSE_ERR_FLAG);
+>         if (status) {
+>                 dev_err(efuse->dev,
+> -                       "write error status %d of block %d\n", ret, blk);
+> +                       "write error status %u of block %d\n", status, blk);
+>
+>                 writel(SPRD_EFUSE_ERR_CLR_MASK,
+>                        efuse->base + SPRD_EFUSE_ERR_CLR);
+> --
+> 2.30.2
+>
