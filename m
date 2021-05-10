@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BB837822E
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A618B378256
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231888AbhEJKcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:32:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59860 "EHLO mail.kernel.org"
+        id S232305AbhEJKeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:34:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231755AbhEJK3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:29:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96E7461628;
+        id S231635AbhEJKah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:30:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC1936191A;
         Mon, 10 May 2021 10:27:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620642443;
-        bh=xJ1AF2vGTwChxJzqJvQieroJtpm+Zdy3DSZGcT7Fjys=;
+        bh=EU2r5/qQuL1o99O82KhZSnDOsgNg5571ceroSUVJZiY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=trfUzKjpjW5AMGZ5zQsNzZnxY7KSt2R1sGgiHdmCg58KLbcwp8Qg3qyaLQXvVb78R
-         S0vRixj11Tbl9vgrYdYCfTc4FKCt88y3jmXTnllF8J7LoWlMytumNayPdPhcCQ/xZO
-         43GMNpkmpZdl9YPKIyyNkwSauY4RX+IhfG1hW2BeGc55WqWMPwCPXuMiZrNLcEab31
-         rgGYk6BrQ9DaW+sS8askcEKiFS/R+PPISIDNyrpaVHagVDPUiTYNFF9GWlzveFVPhu
-         TFcm8Gax2tbtwvoBt1DvYq+/qfKrtR4QIvApCwrwNHEh3bDWhMLFGbOVF3CY4Xf+uv
-         FL96Slq92qLOg==
+        b=G9ltI7mA23iDZx3X4S7668m4sgK93aCcGX+u2aYe+Nh+zkBRX7EwPOxbNtLwkVgxe
+         o+F9aoYAOFQtHJPWJh233eFQkDxkghfAs/ycG6hp+JXUBkiGu6dw6qAsyydTmVzoUP
+         3i7eoqNQ5D/eJuE3zxR+yMs+b47Oy/2pAxj/X38R+/otw4DKmDdJBs++/0DHe77ci/
+         aYLa1biXpVj92c/oo+C2hQyVb0u3ETyBDNdJaTwq5AzQTcx5kZMlYUNkQ68LlUUk5g
+         nXB45cPS9y1h2gsf7shU+mw1T/UxdbuLcHs6fWogMJPUB3js9aSbRDSwM5c+A2qFXB
+         uxgKzabP0Z5OA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lg38D-000UPE-0J; Mon, 10 May 2021 12:27:21 +0200
+        id 1lg38D-000UPI-29; Mon, 10 May 2021 12:27:21 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        Mike Rapoport <rppt@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
-Subject: [PATCH 14/53] docs: driver-api: iio: avoid using UTF-8 chars
-Date:   Mon, 10 May 2021 12:26:26 +0200
-Message-Id: <2e88cb1503a67b617e47870ebe16cf4f86b48be0.1620641727.git.mchehab+huawei@kernel.org>
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: [PATCH 15/53] docs: driver-api: thermal: avoid using UTF-8 chars
+Date:   Mon, 10 May 2021 12:26:27 +0200
+Message-Id: <211acd2166c5ede7b50ebb90225c11386a48cadf.1620641727.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620641727.git.mchehab+huawei@kernel.org>
 References: <cover.1620641727.git.mchehab+huawei@kernel.org>
@@ -55,104 +53,99 @@ While UTF-8 characters can be used at the Linux documentation,
 the best is to use them only when ASCII doesn't offer a good replacement.
 So, replace the occurences of the following UTF-8 characters:
 
-	- U+2014 ('—'): EM DASH
+	- U+2018 ('‘'): LEFT SINGLE QUOTATION MARK
+	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/driver-api/iio/buffers.rst           |  8 ++++----
- Documentation/driver-api/iio/hw-consumer.rst       | 10 +++++-----
- Documentation/driver-api/iio/triggered-buffers.rst |  6 +++---
- Documentation/driver-api/iio/triggers.rst          | 10 +++++-----
- 4 files changed, 17 insertions(+), 17 deletions(-)
+ .../driver-api/thermal/cpu-idle-cooling.rst        | 14 +++++++-------
+ .../driver-api/thermal/intel_powerclamp.rst        |  6 +++---
+ .../thermal/x86_pkg_temperature_thermal.rst        |  2 +-
+ 3 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/driver-api/iio/buffers.rst b/Documentation/driver-api/iio/buffers.rst
-index e83026aebe97..24569ff0cf79 100644
---- a/Documentation/driver-api/iio/buffers.rst
-+++ b/Documentation/driver-api/iio/buffers.rst
-@@ -2,11 +2,11 @@
- Buffers
- =======
+diff --git a/Documentation/driver-api/thermal/cpu-idle-cooling.rst b/Documentation/driver-api/thermal/cpu-idle-cooling.rst
+index c2a7ca676853..60934a518560 100644
+--- a/Documentation/driver-api/thermal/cpu-idle-cooling.rst
++++ b/Documentation/driver-api/thermal/cpu-idle-cooling.rst
+@@ -49,7 +49,7 @@ belong to the same cluster, with a duration greater than the cluster
+ idle state target residency, we lead to dropping the static and the
+ dynamic leakage for this period (modulo the energy needed to enter
+ this state). So the sustainable power with idle cycles has a linear
+-relation with the OPP’s sustainable power and can be computed with a
++relation with the OPP's sustainable power and can be computed with a
+ coefficient similar to::
  
--* struct iio_buffer — general buffer structure
--* :c:func:`iio_validate_scan_mask_onehot` — Validates that exactly one channel
-+* struct iio_buffer - general buffer structure
-+* :c:func:`iio_validate_scan_mask_onehot` - Validates that exactly one channel
-   is selected
--* :c:func:`iio_buffer_get` — Grab a reference to the buffer
--* :c:func:`iio_buffer_put` — Release the reference to the buffer
-+* :c:func:`iio_buffer_get` - Grab a reference to the buffer
-+* :c:func:`iio_buffer_put` - Release the reference to the buffer
+ 	    Power(IdleCycle) = Coef x Power(OPP)
+@@ -134,7 +134,7 @@ The idle injection duration value must comply with the constraints:
+   user experience, reactivity vs performance trade off we want. This
+   value should be specified.
  
- The Industrial I/O core offers a way for continuous data capture based on a
- trigger source. Multiple data channels can be read at once from
-diff --git a/Documentation/driver-api/iio/hw-consumer.rst b/Documentation/driver-api/iio/hw-consumer.rst
-index 76133a3796f2..75986358fc02 100644
---- a/Documentation/driver-api/iio/hw-consumer.rst
-+++ b/Documentation/driver-api/iio/hw-consumer.rst
-@@ -8,11 +8,11 @@ software buffer for data. The implementation can be found under
- :file:`drivers/iio/buffer/hw-consumer.c`
+-- It is greater than the idle state’s target residency we want to go
++- It is greater than the idle state's target residency we want to go
+   for thermal mitigation, otherwise we end up consuming more energy.
  
+ Power considerations
+@@ -146,11 +146,11 @@ power for a specific temperature but at this time we consume::
+  Power = Capacitance x Voltage^2 x Frequency x Utilisation
  
--* struct iio_hw_consumer — Hardware consumer structure
--* :c:func:`iio_hw_consumer_alloc` — Allocate IIO hardware consumer
--* :c:func:`iio_hw_consumer_free` — Free IIO hardware consumer
--* :c:func:`iio_hw_consumer_enable` — Enable IIO hardware consumer
--* :c:func:`iio_hw_consumer_disable` — Disable IIO hardware consumer
-+* struct iio_hw_consumer - Hardware consumer structure
-+* :c:func:`iio_hw_consumer_alloc` - Allocate IIO hardware consumer
-+* :c:func:`iio_hw_consumer_free` - Free IIO hardware consumer
-+* :c:func:`iio_hw_consumer_enable` - Enable IIO hardware consumer
-+* :c:func:`iio_hw_consumer_disable` - Disable IIO hardware consumer
+ ... which is more than the sustainable power (or there is something
+-wrong in the system setup). The ‘Capacitance’ and ‘Utilisation’ are a
+-fixed value, ‘Voltage’ and the ‘Frequency’ are fixed artificially
+-because we don’t want to change the OPP. We can group the
+-‘Capacitance’ and the ‘Utilisation’ into a single term which is the
+-‘Dynamic Power Coefficient (Cdyn)’ Simplifying the above, we have::
++wrong in the system setup). The 'Capacitance' and 'Utilisation' are a
++fixed value, 'Voltage' and the 'Frequency' are fixed artificially
++because we don't want to change the OPP. We can group the
++'Capacitance' and the 'Utilisation' into a single term which is the
++'Dynamic Power Coefficient (Cdyn)' Simplifying the above, we have::
  
+  Pdyn = Cdyn x Voltage^2 x Frequency
  
- HW consumer setup
-diff --git a/Documentation/driver-api/iio/triggered-buffers.rst b/Documentation/driver-api/iio/triggered-buffers.rst
-index 417555dbbdf4..7c37b2afa1ad 100644
---- a/Documentation/driver-api/iio/triggered-buffers.rst
-+++ b/Documentation/driver-api/iio/triggered-buffers.rst
-@@ -7,10 +7,10 @@ Now that we know what buffers and triggers are let's see how they work together.
- IIO triggered buffer setup
- ==========================
+diff --git a/Documentation/driver-api/thermal/intel_powerclamp.rst b/Documentation/driver-api/thermal/intel_powerclamp.rst
+index 3f6dfb0b3ea6..d349c1b64281 100644
+--- a/Documentation/driver-api/thermal/intel_powerclamp.rst
++++ b/Documentation/driver-api/thermal/intel_powerclamp.rst
+@@ -29,7 +29,7 @@ By:
+ INTRODUCTION
+ ============
  
--* :c:func:`iio_triggered_buffer_setup` — Setup triggered buffer and pollfunc
--* :c:func:`iio_triggered_buffer_cleanup` — Free resources allocated by
-+* :c:func:`iio_triggered_buffer_setup` - Setup triggered buffer and pollfunc
-+* :c:func:`iio_triggered_buffer_cleanup` - Free resources allocated by
-   :c:func:`iio_triggered_buffer_setup`
--* struct iio_buffer_setup_ops — buffer setup related callbacks
-+* struct iio_buffer_setup_ops - buffer setup related callbacks
+-Consider the situation where a system’s power consumption must be
++Consider the situation where a system's power consumption must be
+ reduced at runtime, due to power budget, thermal constraint, or noise
+ level, and where active cooling is not preferred. Software managed
+ passive power reduction must be performed to prevent the hardware
+@@ -39,7 +39,7 @@ Currently, P-states, T-states (clock modulation), and CPU offlining
+ are used for CPU throttling.
  
- A typical triggered buffer setup looks like this::
+ On Intel CPUs, C-states provide effective power reduction, but so far
+-they’re only used opportunistically, based on workload. With the
++they're only used opportunistically, based on workload. With the
+ development of intel_powerclamp driver, the method of synchronizing
+ idle injection across all online CPU threads was introduced. The goal
+ is to achieve forced and controllable C-state residency.
+@@ -264,7 +264,7 @@ CPUs).
+ Usage and Interfaces
+ ====================
+ The powerclamp driver is registered to the generic thermal layer as a
+-cooling device. Currently, it’s not bound to any thermal zones::
++cooling device. Currently, it's not bound to any thermal zones::
  
-diff --git a/Documentation/driver-api/iio/triggers.rst b/Documentation/driver-api/iio/triggers.rst
-index 288625e40672..a5d1fc15747c 100644
---- a/Documentation/driver-api/iio/triggers.rst
-+++ b/Documentation/driver-api/iio/triggers.rst
-@@ -2,11 +2,11 @@
- Triggers
- ========
+   jacob@chromoly:/sys/class/thermal/cooling_device14$ grep . *
+   cur_state:0
+diff --git a/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst b/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst
+index 2ac42ccd236f..5b95af96e40f 100644
+--- a/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst
++++ b/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst
+@@ -13,7 +13,7 @@ Authors: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+ Reference
+ ---------
  
--* struct iio_trigger — industrial I/O trigger device
--* :c:func:`devm_iio_trigger_alloc` — Resource-managed iio_trigger_alloc
--* :c:func:`devm_iio_trigger_register` — Resource-managed iio_trigger_register
-+* struct iio_trigger - industrial I/O trigger device
-+* :c:func:`devm_iio_trigger_alloc` - Resource-managed iio_trigger_alloc
-+* :c:func:`devm_iio_trigger_register` - Resource-managed iio_trigger_register
-   iio_trigger_unregister
--* :c:func:`iio_trigger_validate_own_device` — Check if a trigger and IIO
-+* :c:func:`iio_trigger_validate_own_device` - Check if a trigger and IIO
-   device belong to the same device
+-Intel® 64 and IA-32 Architectures Software Developer’s Manual (Jan, 2013):
++Intel® 64 and IA-32 Architectures Software Developer's Manual (Jan, 2013):
+ Chapter 14.6: PACKAGE LEVEL THERMAL MANAGEMENT
  
- In many situations it is useful for a driver to be able to capture data based
-@@ -63,7 +63,7 @@ Let's see a simple example of how to setup a trigger to be used by a driver::
- IIO trigger ops
- ===============
- 
--* struct iio_trigger_ops — operations structure for an iio_trigger.
-+* struct iio_trigger_ops - operations structure for an iio_trigger.
- 
- Notice that a trigger has a set of operations attached:
- 
+ Description
 -- 
 2.30.2
 
