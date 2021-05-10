@@ -2,124 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F56B377F26
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B69377F29
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhEJJMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48884 "EHLO
+        id S230170AbhEJJOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:14:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbhEJJMM (ORCPT
+        with ESMTP id S229566AbhEJJOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:12:12 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7149CC061761
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 02:11:07 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lg1wK-0003Lz-7I; Mon, 10 May 2021 11:11:00 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lg1wJ-0004iW-PC; Mon, 10 May 2021 11:10:59 +0200
-Date:   Mon, 10 May 2021 11:10:59 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>
-Subject: Re: [RFC PATCH v1 5/9] net: phy: micrel: ksz886x add MDI-X support
-Message-ID: <20210510091059.de2ahmmoyzggzqaq@pengutronix.de>
-References: <20210505092025.8785-1-o.rempel@pengutronix.de>
- <20210505092025.8785-6-o.rempel@pengutronix.de>
- <YJKRj2tD0rPd+S0j@lunn.ch>
+        Mon, 10 May 2021 05:14:15 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DED2C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 02:13:10 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id l14so15791085wrx.5
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 02:13:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ca1hFTYQqONxjpjSelmNqH8WT2mDhiZTvqWqe+QIj8k=;
+        b=FaCsxFSSWlHe8SXp9oxbF6c+80zFYppwPlY7t8w3mo2V+w1doErKIBYW+QSssWIEyd
+         CwWskEtC07nDle7UKodp2GD0iVNqslRhrOm2A+GEfFIlaxnIcMJgUpRp6fj1lg2+6xNK
+         HmgTn8Wtba/gnfvX4+vlSovoPWEuD8fhRZpQpbJeoRvZ3pPw0z4sWXkrQftni6ec5flX
+         UgQd8svUZ41DWDXmG0uWDfnGzlBdwApG2+EQny+zfTfgVbPGcGaHlwUxP37KBJ7Z861H
+         +DdIlKkSMFZ5IKRdyj44PIh4u/muCv7+rw2tCAchjlzUPIHvdNZFd9TU5MNatJ9GawPp
+         j4ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ca1hFTYQqONxjpjSelmNqH8WT2mDhiZTvqWqe+QIj8k=;
+        b=lf8GEw4Hp/DMHsU0llHj4V6eTDfYU2lf/HqPwfPBbdqZ5TWwA93jZnftOpv3KWzF7H
+         nDI99NCgd+z74BjdLQqp8Doq6Y3EaxgydSkAaoVi7Lo9N6jmQr9FYKT87K8uxoi8l9u7
+         1QW/0GlhUsKkmos3nEzlN86btPCQK9Zc+LfG1uuY0XI+LNHFJ33vE0U/fuMsdcVS9pre
+         gcgCmsByuXuiP5XiWT8yTwc7VvDyMGic91UYVA8Oy71RMsbDVekNnU+uF4n2Hvfsku5P
+         rd1Spz5cHV6sftiHFD8f6LaO4OcHAHVuhs/nadXg/ynDOfO51Zm/v01Vr7opQHf7qk5P
+         yrbA==
+X-Gm-Message-State: AOAM531wXRZZ7f0TUA11Tc5syQLvZjowB1mtPyO5Ntpyicog8zI7DMUi
+        NXrC/7Lxm+Dn3+q2itdxxSUtajmnuXFfL2Uy
+X-Google-Smtp-Source: ABdhPJyxE+YaeeKknh+YwcJKukDjSKCysy5C/GfuRTuc6XEZcKF/7fAeDY/j3+0C4f7ngDG0uk7b/Q==
+X-Received: by 2002:a5d:40c9:: with SMTP id b9mr29112647wrq.59.1620637989398;
+        Mon, 10 May 2021 02:13:09 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id s5sm19040575wmh.37.2021.05.10.02.13.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 02:13:08 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/2] mfd: wcd934x: add mbhc interrupts
+Date:   Mon, 10 May 2021 10:12:37 +0100
+Message-Id: <20210510091239.2442-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YJKRj2tD0rPd+S0j@lunn.ch>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 11:07:30 up 158 days, 23:13, 47 users,  load average: 0.08, 0.07,
- 0.04
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 02:37:35PM +0200, Andrew Lunn wrote:
-> > +/* Device specific MII_BMCR (Reg 0) bits */
-> > +/* 1 = HP Auto MDI/MDI-X mode, 0 = Microchip Auto MDI/MDI-X mode */
-> > +#define KSZ886X_BMCR_HP_MDIX			BIT(5)
-> > +/* 1 = Force MDI (transmit on RXP/RXM pins), 0 = Normal operation
-> > + * (transmit on TXP/TXM pins)
-> > + */
-> > +#define KSZ886X_BMCR_FORCE_MDI			BIT(4)
-> > +/* 1 = Disable auto MDI-X */
-> > +#define KSZ886X_BMCR_DISABLE_AUTO_MDIX		BIT(3)
-> > +#define KSZ886X_BMCR_DISABLE_FAR_END_FAULT	BIT(2)
-> > +#define KSZ886X_BMCR_DISABLE_TRANSMIT		BIT(1)
-> > +#define KSZ886X_BMCR_DISABLE_LED		BIT(0)
-> 
-> Do these have the same values as what you added in patch 1?
+This patchset adds interrupts required to enable MBHC (Mulit Button
+Headset Control) support for Jack and headset button detection
+in WCD938x Codec.
 
-ACK, i'll move it
+Codec side patches are sent in a separate patch set.
 
-> > +static int ksz886x_config_mdix(struct phy_device *phydev, u8 ctrl)
-> > +{
-> > +	u16 val;
-> > +
-> > +	switch (ctrl) {
-> > +	case ETH_TP_MDI:
-> > +		val = KSZ886X_BMCR_DISABLE_AUTO_MDIX;
-> > +		break;
-> > +	case ETH_TP_MDI_X:
-> > +		/* Note: The naming of the bit KSZ886X_BMCR_FORCE_MDI is bit
-> > +		 * counter intuitive, the "-X" in "1 = Force MDI" in the data
-> > +		 * sheet seems to be missing:
-> > +		 * 1 = Force MDI (sic!) (transmit on RX+/RX- pins)
-> > +		 * 0 = Normal operation (transmit on TX+/TX- pins)
-> > +		 */
-> > +		val = KSZ886X_BMCR_DISABLE_AUTO_MDIX | KSZ886X_BMCR_FORCE_MDI;
-> > +		break;
-> > +	case ETH_TP_MDI_AUTO:
-> > +		val = 0;
-> > +		break;
-> > +	default:
-> > +		return 0;
-> > +	}
-> > +
-> > +	return phy_modify(phydev, MII_BMCR,
-> > +			  KSZ886X_BMCR_HP_MDIX | KSZ886X_BMCR_FORCE_MDI |
-> > +			  KSZ886X_BMCR_DISABLE_AUTO_MDIX,
-> > +			  KSZ886X_BMCR_HP_MDIX | val);
-> > +}
-> 
-> Maybe this will also work for the PHY driver embedded in ksz8795.c?
-> Maybe as another patchset, see if that PHY driver can be moved out of the DSA driver,
-> and share some code with this driver?
+Tested it on Lenovo Yoga C630.
 
-Hm, i'm sure it can be done, but right now i have no access to ksz8795
-hardware. I'll keep it in mind.
+--srini
 
-Regards,
-Oleksij
+Srinivas Kandagatla (2):
+  mfd: wcd934x: add macro for adding new interrupts
+  mfd: wcd934x: add additional interrupts required for MBHC support
+
+ drivers/mfd/wcd934x.c | 50 +++++++++++++++++++++----------------------
+ 1 file changed, 24 insertions(+), 26 deletions(-)
+
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.21.0
+
