@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC013783A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E443783AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbhEJKqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:46:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44008 "EHLO mail.kernel.org"
+        id S232569AbhEJKq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:46:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231840AbhEJKib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:38:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47F416194C;
-        Mon, 10 May 2021 10:30:09 +0000 (UTC)
+        id S230501AbhEJKiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:38:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B995D61948;
+        Mon, 10 May 2021 10:30:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642609;
-        bh=m10cIxY+4SWpkum6AGs48KM4e9B4JMQ9VBW1xAc1+Dc=;
+        s=korg; t=1620642612;
+        bh=wdbCHKdUvK32gg7LPa2Wwc9jzT2t0sh0ThTdvKoP5u4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MryKzrJJN3XUN5Qs6uJ1pA80UtCSK61UL663VEZeEhRCAcHnOmjp2UjG1WF8GEgD8
-         Cj1EF/uLSowzDEnaLJFwO+9xln2Zdovj0ZgJudYFRYq7kCyseilF7Y1qxMEyWQIqvG
-         5pk7y6p0vowxrQ+itUfOxTDbHwOZ/Tqf4EsAH+SQ=
+        b=yGAjYGpOCv+LNIbCYRlNMy1HA1tmAnv8iUKmiFNzBxbWoejZSYn6k+lRo54poMkup
+         gSndw/UKKxeVMAJ5w44Tug7assrPQaEeZlfEgHSLCopItFAVi28325p/I2ILdyBwIN
+         JGlu1x8PYuxfx8J2A+S6d+ZLU0i8abr7YunDgnJg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Timo Gurr <timo.gurr@gmail.com>,
+        stable@vger.kernel.org, Luke D Jones <luke@ljones.dev>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 130/184] ALSA: usb-audio: Add dB range mapping for Sennheiser Communications Headset PC 8
-Date:   Mon, 10 May 2021 12:20:24 +0200
-Message-Id: <20210510101954.427068056@linuxfoundation.org>
+Subject: [PATCH 5.4 131/184] ALSA: hda/realtek: GA503 use same quirks as GA401
+Date:   Mon, 10 May 2021 12:20:25 +0200
+Message-Id: <20210510101954.458213075@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510101950.200777181@linuxfoundation.org>
 References: <20210510101950.200777181@linuxfoundation.org>
@@ -39,53 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Timo Gurr <timo.gurr@gmail.com>
+From: Luke D Jones <luke@ljones.dev>
 
-commit ab2165e2e6ed17345ffa8ee88ca764e8788ebcd7 upstream.
+commit 76fae6185f5456865ff1bcb647709d44fd987eb6 upstream.
 
-The decibel volume range contains a negative maximum value resulting in
-pipewire complaining about the device and effectivly having no sound
-output. The wrong values also resulted in the headset sounding muted
-already at a mixer level of about ~25%.
+The GA503 has almost exactly the same default setup as the GA401
+model with the same issues. The GA401 quirks solve all the issues
+so we will use the full quirk chain.
 
-PipeWire BugLink: https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1049
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=212897
-Signed-off-by: Timo Gurr <timo.gurr@gmail.com>
+Signed-off-by: Luke D Jones <luke@ljones.dev>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503110822.10222-1-tiwai@suse.de
+Link: https://lore.kernel.org/r/20210419030411.28304-1-luke@ljones.dev
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/mixer_maps.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/usb/mixer_maps.c
-+++ b/sound/usb/mixer_maps.c
-@@ -337,6 +337,13 @@ static struct usbmix_name_map bose_compa
- 	{ 0 }	/* terminator */
- };
- 
-+/* Sennheiser Communications Headset [PC 8], the dB value is reported as -6 negative maximum  */
-+static const struct usbmix_dB_map sennheiser_pc8_dB = {-9500, 0};
-+static const struct usbmix_name_map sennheiser_pc8_map[] = {
-+	{ 9, NULL, .dB = &sennheiser_pc8_dB },
-+	{ 0 }   /* terminator */
-+};
-+
- /*
-  * Dell usb dock with ALC4020 codec had a firmware problem where it got
-  * screwed up when zero volume is passed; just skip it as a workaround
-@@ -619,5 +626,10 @@ static struct usbmix_ctl_map uac3_badd_u
- 		.id = UAC3_FUNCTION_SUBCLASS_SPEAKERPHONE,
- 		.map = uac3_badd_speakerphone_map,
- 	},
-+	{
-+		/* Sennheiser Communications Headset [PC 8] */
-+		.id = USB_ID(0x1395, 0x0025),
-+		.map = sennheiser_pc8_map,
-+	},
- 	{ 0 } /* terminator */
- };
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7958,6 +7958,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1043, 0x1ccd, "ASUS X555UB", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1d4e, "ASUS TM420", ALC256_FIXUP_ASUS_HPE),
+ 	SND_PCI_QUIRK(0x1043, 0x1e11, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA502),
++	SND_PCI_QUIRK(0x1043, 0x1e8e, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA401),
+ 	SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", ALC289_FIXUP_ASUS_GA401),
+ 	SND_PCI_QUIRK(0x1043, 0x1881, "ASUS Zephyrus S/M", ALC294_FIXUP_ASUS_GX502_PINS),
+ 	SND_PCI_QUIRK(0x1043, 0x3030, "ASUS ZN270IE", ALC256_FIXUP_ASUS_AIO_GPIO2),
 
 
