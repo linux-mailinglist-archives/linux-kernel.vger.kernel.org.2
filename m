@@ -2,70 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD94379A05
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48F2379A10
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhEJW1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:27:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38682 "EHLO mail.kernel.org"
+        id S230463AbhEJW37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:29:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230477AbhEJW1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:27:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2141D611C9;
-        Mon, 10 May 2021 22:26:13 +0000 (UTC)
+        id S230186AbhEJW3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 18:29:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96BD561581;
+        Mon, 10 May 2021 22:28:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620685573;
-        bh=6y5nw+b7s7UKVVGidUGsvGr2/SyzQlflf97AOq/puu4=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=X76hfo9g6WZwGSMgVcwGgxlK+pXxbF+vnMBBKL+gJPKprQTPdR0hBuaHd+UMqnHuH
-         sLvkm/FUE97J2v3f6hlMBy2VJ8ATzttStDTfxwRYOmD5DHLpPRs0jG3bjm5gMzSqU8
-         ARBXh4oRubwRE7JHSidGOEdKsxRsOjaA5/ESqY31CryJqqMjl8+yl8orU3SAsxCC3Q
-         iHifCMdJLz+MOv85q0DpHc4Lv03wM5SQCNPnz6RoBacUakrcZ7FTiD2sWSAElUOU3+
-         XYqR0gjQSMW8xY2EdSS+q5rMvhjioiiRljGZ+z562XdJx7Z0dzB7lRzAzbSiV6XTb6
-         Mc+7hgrl2osvg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0E13060A0B;
-        Mon, 10 May 2021 22:26:13 +0000 (UTC)
-Subject: Re: [GIT PULL] perf tools fixes for v5.13: 1st batch
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210510173227.3644165-1-acme@kernel.org>
-References: <20210510173227.3644165-1-acme@kernel.org>
-X-PR-Tracked-List-Id: <linux-perf-users.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210510173227.3644165-1-acme@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.13-2021-05-10
-X-PR-Tracked-Commit-Id: 71d7924b3e8acaca6a3b0fc3261170031ada3b70
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 1140ab592e2ebf8153d2b322604031a8868ce7a5
-Message-Id: <162068557299.19579.15583657279839997037.pr-tracker-bot@kernel.org>
-Date:   Mon, 10 May 2021 22:26:12 +0000
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexey Alexandrov <aalexand@google.com>,
-        Dmitry Koshelev <karaghiozis@gmail.com>,
-        Ian Rogers <irogers@google.com>,
-        "Justin M . Forbes" <jforbes@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
+        s=k20201202; t=1620685727;
+        bh=3C3Zjb9pNSFpD04fv+dCc1YcggEBha54szgnBBnl+sA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MVu+bRWUCCiGCkhtEwhjniehelzKgsO5DO9wTktyaKAaB6ZGZlG6ZMUk5FHazKbBu
+         QzRQ1J+TxhAjZS9/XYTDZDcKuctPcJqOQzlBwtHOMg9EpTE/YAu1RGC4Lx88UW+3mf
+         6jXkdU7ocwMyPDdbIR7kb1aAtUflbosTqrRZxU6pc6+COgxU0TgV32khFfxo8WRyQ8
+         iHiKY3sx7ItIslpie4C9LkCXPxGRtCR/vvFG70Bt1nf86KbK0INzc/Va9J/+GqWUqA
+         1RpqgtryD+MDg3ZS1rykyjvATjKpfNMeWbl/hBBMq1j/mLnS6MMF3U3OhQhhROIZVY
+         g0E/xiU+jw+GA==
+Date:   Mon, 10 May 2021 15:28:44 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: support iflag change given the mask
+Message-ID: <YJmznEhGCZTaER0+@gmail.com>
+References: <20210506191347.1242802-1-jaegeuk@kernel.org>
+ <YJlGU+STYD5geyIc@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJlGU+STYD5geyIc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 10 May 2021 14:32:27 -0300:
+On Mon, May 10, 2021 at 07:42:27AM -0700, Jaegeuk Kim wrote:
+> In f2fs_fileattr_set(),
+> 
+> 	if (!fa->flags_valid)
+> 		mask &= FS_COMMON_FL;
+> 
+> In this case, we can set supported flags by mask only instead of BUG_ON.
+> 
+> /* Flags shared betwen flags/xflags */
+> 	(FS_SYNC_FL | FS_IMMUTABLE_FL | FS_APPEND_FL | \
+> 	 FS_NODUMP_FL |	FS_NOATIME_FL | FS_DAX_FL | \
+> 	 FS_PROJINHERIT_FL)
+> 
+> Fixes: 4c5b47997521 ("vfs: add fileattr ops")
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.13-2021-05-10
+Shouldn't it be:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/1140ab592e2ebf8153d2b322604031a8868ce7a5
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Fixes: 9b1bb01c8ae7 ("f2fs: convert to fileattr")
