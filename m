@@ -2,74 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BB3379210
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB491379217
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233137AbhEJPHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 11:07:03 -0400
-Received: from verein.lst.de ([213.95.11.211]:60437 "EHLO verein.lst.de"
+        id S233562AbhEJPHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 11:07:46 -0400
+Received: from mga03.intel.com ([134.134.136.65]:19307 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234892AbhEJPEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 11:04:53 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3764D68AFE; Mon, 10 May 2021 17:03:43 +0200 (CEST)
-Date:   Mon, 10 May 2021 17:03:42 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
+        id S235904AbhEJPFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 11:05:32 -0400
+IronPort-SDR: muOn85VgRPyPHUb7+/qNvE635H04T4YfW5X0gUs7bCf5FyiHqjmF3CsrGlaUrpInZdoUxsaKnF
+ O+WvJjHLtBGA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="199266433"
+X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
+   d="scan'208";a="199266433"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 08:04:27 -0700
+IronPort-SDR: 5HtizJ1vAOQZfmDWuujDPkjkF4zn0yMx9a+JK8MEiXghp0HskM5L/WkqyoCEer5wcgyVmNat77
+ 67u0ynZXBGMg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
+   d="scan'208";a="470818104"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga001.jf.intel.com with ESMTP; 10 May 2021 08:03:57 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 6A7D812A; Mon, 10 May 2021 18:04:16 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Petr Mladek <pmladek@suse.com>, JC Kuo <jckuo@nvidia.com>,
+        Joe Perches <joe@perches.com>,
+        Sumit Garg <sumit.garg@linaro.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        kgdb-bugreport@lists.sourceforge.net
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, nouveau@lists.freedesktop.org,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
-Subject: Re: [PATCH v6 05/15] swiotlb: Add a new get_io_tlb_mem getter
-Message-ID: <20210510150342.GD28066@lst.de>
-References: <20210510095026.3477496-1-tientzu@chromium.org> <20210510095026.3477496-6-tientzu@chromium.org>
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>
+Subject: [PATCH v1 1/4] lib/vsprintf: Allow to override date and time separator
+Date:   Mon, 10 May 2021 18:04:10 +0300
+Message-Id: <20210510150413.59356-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210510095026.3477496-6-tientzu@chromium.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static inline struct io_tlb_mem *get_io_tlb_mem(struct device *dev)
-> +{
-> +#ifdef CONFIG_DMA_RESTRICTED_POOL
-> +	if (dev && dev->dma_io_tlb_mem)
-> +		return dev->dma_io_tlb_mem;
-> +#endif /* CONFIG_DMA_RESTRICTED_POOL */
-> +
-> +	return io_tlb_default_mem;
+ISO 8601 defines 'T' as a separator between date and time. Though,
+some ABIs use time and date with ' ' separator instead.
 
-Given that we're also looking into a not addressing restricted pool
-I'd rather always assign the active pool to dev->dma_io_tlb_mem and
-do away with this helper.
+Add a flavour to the %pt specifier to override default separator.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ Documentation/core-api/printk-formats.rst |  6 +++++-
+ lib/test_printf.c                         |  5 +++++
+ lib/vsprintf.c                            | 19 ++++++++++++++++---
+ 3 files changed, 26 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
+index f063a384c7c8..bc85fd4685e7 100644
+--- a/Documentation/core-api/printk-formats.rst
++++ b/Documentation/core-api/printk-formats.rst
+@@ -514,9 +514,10 @@ Time and date
+ ::
+ 
+ 	%pt[RT]			YYYY-mm-ddTHH:MM:SS
++	%pt[RT]s		YYYY-mm-dd HH:MM:SS
+ 	%pt[RT]d		YYYY-mm-dd
+ 	%pt[RT]t		HH:MM:SS
+-	%pt[RT][dt][r]
++	%pt[RT][dt][rs]
+ 
+ For printing date and time as represented by::
+ 
+@@ -528,6 +529,9 @@ in human readable format.
+ By default year will be incremented by 1900 and month by 1.
+ Use %pt[RT]r (raw) to suppress this behaviour.
+ 
++The %pt[RT]s (space) will override ISO 8601 by using ' ' instead of 'T'
++between date and time. It won't have any effect when date or time is omitted.
++
+ Passed by reference.
+ 
+ struct clk
+diff --git a/lib/test_printf.c b/lib/test_printf.c
+index ec0d5976bb69..8ac71aee46af 100644
+--- a/lib/test_printf.c
++++ b/lib/test_printf.c
+@@ -528,6 +528,11 @@ time_and_date(void)
+ 	test("0119-00-04T15:32:23", "%ptTr", &t);
+ 	test("15:32:23|2019-01-04", "%ptTt|%ptTd", &t, &t);
+ 	test("15:32:23|0119-00-04", "%ptTtr|%ptTdr", &t, &t);
++
++	test("2019-01-04 15:32:23", "%ptTs", &t);
++	test("0119-00-04 15:32:23", "%ptTsr", &t);
++	test("15:32:23|2019-01-04", "%ptTts|%ptTds", &t, &t);
++	test("15:32:23|0119-00-04", "%ptTtrs|%ptTdrs", &t, &t);
+ }
+ 
+ static void __init
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index f0c35d9b65bf..5f36c7a43cdc 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -1834,7 +1834,8 @@ char *rtc_str(char *buf, char *end, const struct rtc_time *tm,
+ 	      struct printf_spec spec, const char *fmt)
+ {
+ 	bool have_t = true, have_d = true;
+-	bool raw = false;
++	bool raw = false, space = false;
++	bool found = true;
+ 	int count = 2;
+ 
+ 	if (check_pointer(&buf, end, tm, spec))
+@@ -1851,14 +1852,26 @@ char *rtc_str(char *buf, char *end, const struct rtc_time *tm,
+ 		break;
+ 	}
+ 
+-	raw = fmt[count] == 'r';
++	do {
++		switch (fmt[count++]) {
++		case 'r':
++			raw = true;
++			break;
++		case 's':
++			space = true;
++			break;
++		default:
++			found = false;
++			break;
++		}
++	} while (found);
+ 
+ 	if (have_d)
+ 		buf = date_str(buf, end, tm, raw);
+ 	if (have_d && have_t) {
+ 		/* Respect ISO 8601 */
+ 		if (buf < end)
+-			*buf = 'T';
++			*buf = space ? ' ' : 'T';
+ 		buf++;
+ 	}
+ 	if (have_t)
+-- 
+2.30.2
+
