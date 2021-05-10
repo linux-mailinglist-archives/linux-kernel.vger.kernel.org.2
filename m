@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAEF378DD9
+	by mail.lfdr.de (Postfix) with ESMTP id 27BD8378DD8
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349905AbhEJMzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:55:23 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:50138 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344809AbhEJMUX (ORCPT
+        id S1349888AbhEJMzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:55:22 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:47674 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344803AbhEJMUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 08:20:23 -0400
-Received: by mail-io1-f70.google.com with SMTP id z14-20020a6be20e0000b029043a04a24070so565434ioc.16
+Received: by mail-il1-f200.google.com with SMTP id m18-20020a056e020df2b02901a467726f49so13555152ilj.14
         for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:19:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=hbAZFBKi/91vle8IM936jH+bKaKyU5eiz4qnNx9xk7g=;
-        b=mVS172XfPsHlSqAzEToZtQ2tnbQLHf8+GkrDoS9s1LotFEuakBPh2/7KiM7Dj+Hixp
-         2DhU7m54EP1aeuFA1Ql6p67Fd9O0qMrCY0/Zlu0+3fKQ0sJUHw0r+5s1ER96aDmxvqpn
-         BlG/G1tSuOmnO1hUIyBumDsaj3GHSJztxLTTlIWsFJzU/gwWdHz7hkKXVr6qkUprZZS0
-         pfqJG3nZypYzsHYp1zWKx71DzeIBN5hixU7Wv9dFkxfnF15t7VjsQXi/xNugj2P/DG6d
-         BJciU8BEK64RYOGe6KOQ1qczDrE2Km3yQi2ABVC8kNmSWN/2IiORrgB9/XOyW+YPRvE0
-         zKwA==
-X-Gm-Message-State: AOAM532twwXtGY3L4uHpfVpN1XBe/PFrzKu/ku7JTmtD9ow3O1S1Z247
-        /OcsI8ilwTCWejwlx453sQM5TYqFxcseVACS7KoYk/kyGHY0
-X-Google-Smtp-Source: ABdhPJwXpj8S5GjUILMl0R62juQ4GkZOBmbuUP6T2/BxzMk1kLOxXpNZKMaqIMpNpwZqvCNgU8dxvr/feSSFm47SVVLH/8q4tor9
+        bh=LIsysw+22kJoVtdEn0ARG+JVEdMdBtBx51RjL3I2/Tk=;
+        b=AhnqCQIrUhsmrydVUu8D/c8ahY7TcZanjkhxNCbyByxK0smiLJKwDCE0MtdwPNpMkv
+         mN6HptffPPmRLZyoJul4BUxovOsI164fYCqYxz57QNMaiAKmWO+od1zI79a5M/kzZ3dS
+         2FkAUMtfHctjwjgpjVe4sYFMrnd6o8mPdVfmNyBpU0EZH6VdHNFycWVIz+4hxGQXl3Za
+         Ej9WuDMKePETiVEA3g8JE1C4GXA7MKvMwb9bWKBxMe4iY+2SATbjS9NwsoazMUQRlTPQ
+         cU98ie1DWzyyo+g0SjVtNY9xocA82Vk3HB/+tQs1UMGygcwzAV04oAF0ypu4BMVKpx7K
+         pa4Q==
+X-Gm-Message-State: AOAM532HSjapoX0LqTVEdwHH8C/Ysu9I47RsGGhBgzk02fGhCXops1xP
+        RGKnWeYDgZ4r44MAnLGr1molosC+dS1+9cb9rm3Jrp2o1PQk
+X-Google-Smtp-Source: ABdhPJwiqnW7Qb1We7cNl8N28tyshNYYabZIjlibGO6iNBPyJmQU/lUn76wY7epMNeYvZ48V9/OSJgb7NToOHS37ma24vqhZuAHn
 MIME-Version: 1.0
-X-Received: by 2002:a5d:8c84:: with SMTP id g4mr1713784ion.32.1620649158559;
+X-Received: by 2002:a92:2a0a:: with SMTP id r10mr21447954ile.274.1620649158133;
  Mon, 10 May 2021 05:19:18 -0700 (PDT)
 Date:   Mon, 10 May 2021 05:19:18 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000066cad205c1f8c94f@google.com>
-Subject: [syzbot] KASAN: slab-out-of-bounds Read in snd_usbmidi_get_ms_info
-From:   syzbot <syzbot+6bb23a5d5548b93c94aa@syzkaller.appspotmail.com>
-To:     alsa-devel@alsa-project.org, clemens@ladisch.de,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Message-ID: <000000000000604ea605c1f8c9af@google.com>
+Subject: [syzbot] possible deadlock in process_measurement (3)
+From:   syzbot <syzbot+ccfcdc8958f74084f16d@syzkaller.appspotmail.com>
+To:     dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, serge@hallyn.com,
+        syzkaller-bugs@googlegroups.com, zohar@linux.ibm.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,133 +49,132 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    31a85035 usb: gadget: fsl_qe_udc: fix implicit-fallthrough..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=109f5a63d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fbebe41cc7d12c56
-dashboard link: https://syzkaller.appspot.com/bug?extid=6bb23a5d5548b93c94aa
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10693995d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10e23c65d00000
+HEAD commit:    d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15f425b3d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=65c207250bba4efe
+dashboard link: https://syzkaller.appspot.com/bug?extid=ccfcdc8958f74084f16d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16079d1ed00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12280d95d00000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6bb23a5d5548b93c94aa@syzkaller.appspotmail.com
+Reported-by: syzbot+ccfcdc8958f74084f16d@syzkaller.appspotmail.com
 
-usb 1-1: config 199 interface 0 altsetting 0 endpoint 0x5 has an invalid bInterval 0, changing to 7
-usb 1-1: New USB device found, idVendor=7300, idProduct=128c, bcdDevice=ed.06
-usb 1-1: New USB device strings: Mfr=0, Product=0, SerialNumber=0
-usb 1-1: string descriptor 0 read error: -71
-usb 1-1: MIDIStreaming interface descriptor not found
-==================================================================
-BUG: KASAN: slab-out-of-bounds in snd_usbmidi_get_ms_info+0xeaf/0x10e0 sound/usb/midi.c:1982
-Read of size 1 at addr ffff888119b80722 by task kworker/0:1/7
+======================================================
+WARNING: possible circular locking dependency detected
+5.12.0-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor167/10873 is trying to acquire lock:
+ffff8880162d0bc0 (&iint->mutex){+.+.}-{3:3}, at: process_measurement+0x3a8/0x17e0 security/integrity/ima/ima_main.c:253
 
-CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.12.0-syzkaller #0
+but task is already holding lock:
+ffff888147e2e460 (sb_writers#5){.+.+}-{0:0}, at: do_open fs/namei.c:3354 [inline]
+ffff888147e2e460 (sb_writers#5){.+.+}-{0:0}, at: path_openat+0x1ad9/0x27e0 fs/namei.c:3494
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (sb_writers#5){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1765 [inline]
+       sb_start_write include/linux/fs.h:1835 [inline]
+       mnt_want_write+0x6e/0x3e0 fs/namespace.c:375
+       ovl_maybe_copy_up+0x11f/0x190 fs/overlayfs/copy_up.c:995
+       ovl_open+0xba/0x270 fs/overlayfs/file.c:149
+       do_dentry_open+0x4b9/0x11b0 fs/open.c:826
+       vfs_open fs/open.c:940 [inline]
+       dentry_open+0x132/0x1d0 fs/open.c:956
+       ima_calc_file_hash+0x2d2/0x4b0 security/integrity/ima/ima_crypto.c:557
+       ima_collect_measurement+0x4ca/0x570 security/integrity/ima/ima_api.c:252
+       process_measurement+0xd1c/0x17e0 security/integrity/ima/ima_main.c:330
+       ima_file_check+0xb9/0x100 security/integrity/ima/ima_main.c:499
+       do_open fs/namei.c:3363 [inline]
+       path_openat+0x15b5/0x27e0 fs/namei.c:3494
+       do_filp_open+0x190/0x3d0 fs/namei.c:3521
+       do_sys_openat2+0x16d/0x420 fs/open.c:1187
+       do_sys_open fs/open.c:1203 [inline]
+       __do_sys_open fs/open.c:1211 [inline]
+       __se_sys_open fs/open.c:1207 [inline]
+       __x64_sys_open+0x119/0x1c0 fs/open.c:1207
+       do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #0 (&iint->mutex){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:2938 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3061 [inline]
+       validate_chain kernel/locking/lockdep.c:3676 [inline]
+       __lock_acquire+0x2a17/0x5230 kernel/locking/lockdep.c:4902
+       lock_acquire kernel/locking/lockdep.c:5512 [inline]
+       lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
+       __mutex_lock_common kernel/locking/mutex.c:949 [inline]
+       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
+       process_measurement+0x3a8/0x17e0 security/integrity/ima/ima_main.c:253
+       ima_file_check+0xb9/0x100 security/integrity/ima/ima_main.c:499
+       do_open fs/namei.c:3363 [inline]
+       path_openat+0x15b5/0x27e0 fs/namei.c:3494
+       do_filp_open+0x190/0x3d0 fs/namei.c:3521
+       do_sys_openat2+0x16d/0x420 fs/open.c:1187
+       do_sys_open fs/open.c:1203 [inline]
+       __do_sys_open fs/open.c:1211 [inline]
+       __se_sys_open fs/open.c:1207 [inline]
+       __x64_sys_open+0x119/0x1c0 fs/open.c:1207
+       do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(sb_writers#5);
+                               lock(&iint->mutex);
+                               lock(sb_writers#5);
+  lock(&iint->mutex);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor167/10873:
+ #0: ffff888147e2e460 (sb_writers#5){.+.+}-{0:0}, at: do_open fs/namei.c:3354 [inline]
+ #0: ffff888147e2e460 (sb_writers#5){.+.+}-{0:0}, at: path_openat+0x1ad9/0x27e0 fs/namei.c:3494
+
+stack backtrace:
+CPU: 1 PID: 10873 Comm: syz-executor167 Not tainted 5.12.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
 Call Trace:
  __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x143/0x1db lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
- __kasan_report mm/kasan/report.c:419 [inline]
- kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
- snd_usbmidi_get_ms_info+0xeaf/0x10e0 sound/usb/midi.c:1982
- __snd_usbmidi_create+0x393/0x1ba0 sound/usb/midi.c:2485
- snd_usb_create_quirk+0xa5/0xe0 sound/usb/quirks.c:604
- usb_audio_probe+0xcf0/0x2c90 sound/usb/card.c:796
- usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
- really_probe+0x291/0xf60 drivers/base/dd.c:576
- driver_probe_device+0x298/0x410 drivers/base/dd.c:763
- __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4b0 drivers/base/dd.c:938
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbe0/0x2100 drivers/base/core.c:3319
- usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2164
- usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
- usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
- really_probe+0x291/0xf60 drivers/base/dd.c:576
- driver_probe_device+0x298/0x410 drivers/base/dd.c:763
- __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4b0 drivers/base/dd.c:938
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbe0/0x2100 drivers/base/core.c:3319
- usb_new_device.cold+0x721/0x1058 drivers/usb/core/hub.c:2556
- hub_port_connect drivers/usb/core/hub.c:5276 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5416 [inline]
- port_event drivers/usb/core/hub.c:5562 [inline]
- hub_event+0x2357/0x4330 drivers/usb/core/hub.c:5644
- process_one_work+0x98d/0x1580 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x38c/0x460 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Allocated by task 7:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:428 [inline]
- ____kasan_kmalloc mm/kasan/common.c:507 [inline]
- __kasan_kmalloc+0x7c/0x90 mm/kasan/common.c:516
- kmalloc include/linux/slab.h:561 [inline]
- usb_get_configuration+0x321/0x3d60 drivers/usb/core/config.c:919
- usb_enumerate_device drivers/usb/core/hub.c:2389 [inline]
- usb_new_device+0x42c/0x7a0 drivers/usb/core/hub.c:2525
- hub_port_connect drivers/usb/core/hub.c:5276 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5416 [inline]
- port_event drivers/usb/core/hub.c:5562 [inline]
- hub_event+0x2357/0x4330 drivers/usb/core/hub.c:5644
- process_one_work+0x98d/0x1580 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x38c/0x460 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-The buggy address belongs to the object at ffff888119b80700
- which belongs to the cache kmalloc-64 of size 64
-The buggy address is located 34 bytes inside of
- 64-byte region [ffff888119b80700, ffff888119b80740)
-The buggy address belongs to the page:
-page:ffffea000466e000 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888119b80680 pfn:0x119b80
-flags: 0x200000000000200(slab|node=0|zone=2)
-raw: 0200000000000200 ffffea0004206f00 0000000900000009 ffff888100041640
-raw: ffff888119b80680 000000008020001d 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 2653, ts 10410979522, free_ts 0
- prep_new_page mm/page_alloc.c:2358 [inline]
- get_page_from_freelist+0xc97/0x26a0 mm/page_alloc.c:3994
- __alloc_pages+0x1b2/0x4f0 mm/page_alloc.c:5200
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
- alloc_slab_page mm/slub.c:1644 [inline]
- allocate_slab+0x2c5/0x4c0 mm/slub.c:1784
- new_slab mm/slub.c:1847 [inline]
- new_slab_objects mm/slub.c:2593 [inline]
- ___slab_alloc+0x476/0x7b0 mm/slub.c:2756
- __slab_alloc+0x68/0x80 mm/slub.c:2796
- slab_alloc_node mm/slub.c:2878 [inline]
- slab_alloc mm/slub.c:2920 [inline]
- kmem_cache_alloc_trace+0x27e/0x2a0 mm/slub.c:2937
- kmalloc include/linux/slab.h:556 [inline]
- kzalloc include/linux/slab.h:686 [inline]
- allocate_cgrp_cset_links+0x19c/0x240 kernel/cgroup/cgroup.c:1119
- find_css_set+0x6d3/0x1a40 kernel/cgroup/cgroup.c:1197
- cgroup_migrate_prepare_dst+0x105/0x830 kernel/cgroup/cgroup.c:2641
- cgroup_attach_task+0x39f/0x760 kernel/cgroup/cgroup.c:2747
- __cgroup1_procs_write.constprop.0+0x3a9/0x490 kernel/cgroup/cgroup-v1.c:519
- cgroup_file_write+0x1ec/0x780 kernel/cgroup/cgroup.c:3711
- kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
- call_write_iter include/linux/fs.h:2114 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x743/0x9e0 fs/read_write.c:605
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff888119b80600: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
- ffff888119b80680: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
->ffff888119b80700: 00 00 00 00 02 fc fc fc fc fc fc fc fc fc fc fc
-                               ^
- ffff888119b80780: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
- ffff888119b80800: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-==================================================================
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2129
+ check_prev_add kernel/locking/lockdep.c:2938 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3061 [inline]
+ validate_chain kernel/locking/lockdep.c:3676 [inline]
+ __lock_acquire+0x2a17/0x5230 kernel/locking/lockdep.c:4902
+ lock_acquire kernel/locking/lockdep.c:5512 [inline]
+ lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
+ __mutex_lock_common kernel/locking/mutex.c:949 [inline]
+ __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
+ process_measurement+0x3a8/0x17e0 security/integrity/ima/ima_main.c:253
+ ima_file_check+0xb9/0x100 security/integrity/ima/ima_main.c:499
+ do_open fs/namei.c:3363 [inline]
+ path_openat+0x15b5/0x27e0 fs/namei.c:3494
+ do_filp_open+0x190/0x3d0 fs/namei.c:3521
+ do_sys_openat2+0x16d/0x420 fs/open.c:1187
+ do_sys_open fs/open.c:1203 [inline]
+ __do_sys_open fs/open.c:1211 [inline]
+ __se_sys_open fs/open.c:1207 [inline]
+ __x64_sys_open+0x119/0x1c0 fs/open.c:1207
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x446119
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 41 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff688b472f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 00000000004cb4c0 RCX: 0000000000446119
+RDX: 0000000000000000 RSI: 0000000000000300 RDI: 0000000020000040
+RBP: 000000000049b06c R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0030656c69662f2e
+R13: 3d72696472657070 R14: 0079616c7265766f R15: 00000000004cb4c8
 
 
 ---
