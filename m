@@ -2,425 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AFE379291
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07CD379280
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236511AbhEJPZT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 10 May 2021 11:25:19 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3050 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237716AbhEJPYL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 11:24:11 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Ff4NV5pr7z6wjnR;
-        Mon, 10 May 2021 23:14:50 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 10 May 2021 17:23:04 +0200
-Received: from localhost (10.52.123.16) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 10 May
- 2021 16:23:03 +0100
-Date:   Mon, 10 May 2021 16:21:21 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>
-Subject: Re: [PATCH 7/8] cxl/port: Introduce cxl_port objects
-Message-ID: <20210510162121.000042be@Huawei.com>
-In-Reply-To: <162042791852.1202325.8197739881935753009.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <162042787450.1202325.5718541949681409566.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <162042791852.1202325.8197739881935753009.stgit@dwillia2-desk3.amr.corp.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S231759AbhEJPXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 11:23:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58618 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237620AbhEJPXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 11:23:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5292AAD5C;
+        Mon, 10 May 2021 15:21:54 +0000 (UTC)
+Subject: Re: [PATCH v2] mm: kmalloc_index: make compiler break when size is
+ not supported
+To:     Christoph Lameter <cl@gentwo.de>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210508221328.7338-1-42.hyeyoo@gmail.com>
+ <YJccjBMBiwLqFrB8@casper.infradead.org>
+ <CAB=+i9QyxOu_1QDfX5QA=pOxxnRURPnwd2Y0EbhoO1u0e=irBA@mail.gmail.com>
+ <c305ec02-a7d6-dd0c-bfee-e5b571d9ca9a@suse.cz> <20210510135857.GA3594@hyeyoo>
+ <9d0ffe49-a2e2-6c81-377b-4c8d2147dff8@suse.cz>
+ <20210510150230.GA74915@hyeyoo>
+ <alpine.DEB.2.22.394.2105101714170.749526@gentwo.de>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <409cdbf2-7574-b7ed-b456-b8388b53ef10@suse.cz>
+Date:   Mon, 10 May 2021 17:21:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.52.123.16]
-X-ClientProxiedBy: lhreml720-chm.china.huawei.com (10.201.108.71) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+In-Reply-To: <alpine.DEB.2.22.394.2105101714170.749526@gentwo.de>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 7 May 2021 15:51:58 -0700
-Dan Williams <dan.j.williams@intel.com> wrote:
+On 5/10/21 5:15 PM, Christoph Lameter wrote:
+> I guess this needs to be reviewed and tested by the users of architectures
+> that can use large MAXORDER pages such as powerpc and Itanium.
 
-> Once the cxl_root is established then other ports in the hierarchy can
-> be attached. The cxl_port object, unlike cxl_root that is associated
-> with host bridges, is associated with PCIe Root Ports or PCIe Switch
-> Ports. Add cxl_port instances for all PCIe Root Ports in an ACPI0016
-> host bridge. The cxl_port instances for PCIe Switch Ports are not
-> included here as those are to be modeled as another service device
-> registered on the pcie_port_bus_type.
+AFAICS large MAX_ORDER should matter as KMALLOC_SHIFT_HIGH will be always capped
+to 25. But sure, let the bots complain if something is wrong. I'm more
+interested if we shake out some compiler that can't do the compile-time
+evaluation properly and we didn't know until now.
+
+> On Tue, 11 May 2021, Hyeonggon Yoo wrote:
 > 
-> A sample sysfs topology for a single-host-bridge with
-> single-PCIe/CXL-port follows:
+>> updated patch. let me know if something is wrong!
+>>
 > 
-> /sys/bus/cxl/devices/root0
-> ├── address_space0
-> │   ├── devtype
-> │   ├── end
-> │   ├── start
-> │   ├── supports_ram
-> │   ├── supports_type2
-> │   ├── supports_type3
-> │   └── uevent
-> ├── address_space1
-> │   ├── devtype
-> │   ├── end
-> │   ├── start
-> │   ├── supports_pmem
-> │   ├── supports_type2
-> │   ├── supports_type3
-> │   └── uevent
-> ├── devtype
-> ├── port1
-> │   ├── devtype
-> │   ├── host -> ../../../../LNXSYSTM:00/LNXSYBUS:00/ACPI0016:00
-> │   ├── port2
-> │   │   ├── devtype
-> │   │   ├── host -> ../../../../../pci0000:34/0000:34:00.0
-> │   │   ├── subsystem -> ../../../../../../bus/cxl
-> │   │   ├── target_id
-> │   │   └── uevent
-> │   ├── subsystem -> ../../../../../bus/cxl
-> │   ├── target_id
-> │   └── uevent
-> ├── subsystem -> ../../../../bus/cxl
-> ├── target_id
-> └── uevent
 > 
-> In this listing the system-wide-singleton root0 has 2 address spaces, 1
-> PMEM and 1 RAM. Those address spaces are accessed through port1 which
-> represents the upstream port of an ACPI0016 host-bridge. A
-> multi-host-bridge system would have other ports as peers to port1 to
-> additionally decode root level address spaces. Port2 in this diagram
-> represents the single downstream port of the host-bridge. Were it to be
-> a multi-ported-host-bridge there would be peers / siblings of port2 with
-> port1 as their common ancestor.
-
-I guess it would be a pain to emulate a system that actually had
-multiple ports at the last level. Pity as would have made your
-explanation here a little easier to follow.
-
+> 0001-mm-kmalloc_index-make-compiler-break-when-size-is-no.patch
 > 
-> The rationale for this port hierarchy is to be able to walk the HDM
-> decoder register sets that each port implements. Additionally it
-> provides a representation of host-bridge interleave which will be
-> necessary for follow-on work that adds CXL region devices.
+>>From 8fe7ecdfb0f5bd5b08771512303d72f1c6447362 Mon Sep 17 00:00:00 2001
+> From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+> Date: Mon, 10 May 2021 23:57:34 +0900
+> Subject: [PATCH] mm: kmalloc_index: make compiler break when size is not
+>  supported
 > 
-> The details in the /sys/bus/cxl hierarchy that are not suitable to be
-> represented in the /sys/bus/pci hierarchy are:
-> - memory address spaces that are interleaved across host bridges
-> - common sub-device functionality represented by CXL component + device
->   registers (enumerated via DVSEC or platform firmware (ACPI CEDT)).
-
-I'm sold :)
-
+> currently when size is not supported by kmalloc_index, compiler will not
+> break. so changed BUG to BUILD_BUG_ON_MSG to make compiler break if size is
+> wrong. this is done in compile time.
 > 
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
+> also removed code that allocates more than 32MB because current
+> implementation supports only up to 32MB.
+> 
+> Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 > ---
->  drivers/cxl/acpi.c |   99 +++++++++++++++++++++++++++++++++++++++++++
->  drivers/cxl/core.c |  121 ++++++++++++++++++++++++++++++++++++++++++++++++++++
->  drivers/cxl/cxl.h  |    5 ++
->  3 files changed, 224 insertions(+), 1 deletion(-)
+>  include/linux/slab.h | 7 +++++--
+>  mm/slab_common.c     | 7 +++----
+>  2 files changed, 8 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
-> index d54c2d5de730..bc2a35ae880b 100644
-> --- a/drivers/cxl/acpi.c
-> +++ b/drivers/cxl/acpi.c
-> @@ -5,18 +5,117 @@
->  #include <linux/device.h>
->  #include <linux/kernel.h>
->  #include <linux/acpi.h>
-> +#include <linux/pci.h>
->  #include "cxl.h"
->  
-> +static int match_ACPI0016(struct device *dev, const void *host)
-> +{
-> +	struct acpi_device *adev = to_acpi_device(dev);
-> +	const char *hid = acpi_device_hid(adev);
-> +
-> +	return strcmp(hid, "ACPI0016") == 0;
-> +}
-> +
-> +struct cxl_walk_context {
-> +	struct device *dev;
-> +	struct pci_bus *root;
-> +	struct cxl_port *port;
-> +	int error;
-> +	int count;
-> +};
-> +
-> +static int match_add_root_ports(struct pci_dev *pdev, void *data)
-> +{
-> +	struct cxl_walk_context *ctx = data;
-> +	struct pci_bus *root_bus = ctx->root;
-> +	struct cxl_port *port = ctx->port;
-> +	int type = pci_pcie_type(pdev);
-> +	struct device *dev = ctx->dev;
-> +	resource_size_t cxl_regs_phys;
-> +	int target_id = ctx->count;
-> +
-> +	if (pdev->bus != root_bus)
-> +		return 0;
-> +	if (!pci_is_pcie(pdev))
-> +		return 0;
-> +	if (type != PCI_EXP_TYPE_ROOT_PORT)
-> +		return 0;
-> +
-> +	ctx->count++;
-> +
-> +	/* TODO walk DVSEC to find component register base */
-> +	cxl_regs_phys = -1;
-> +
-> +	port = devm_cxl_add_port(dev, port, &pdev->dev, target_id,
-> +				 cxl_regs_phys);
-> +	if (IS_ERR(port)) {
-> +		ctx->error = PTR_ERR(port);
-> +		return ctx->error;
-> +	}
-> +
-> +	dev_dbg(dev, "%s: register: %s\n", dev_name(&pdev->dev),
-> +		dev_name(&port->dev));
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * A host bridge may contain one or more root ports.  Register each port
-> + * as a child of the cxl_root.
-> + */
-> +static int cxl_acpi_register_ports(struct device *dev, struct acpi_device *root,
-> +				   struct cxl_port *port, int idx)
-> +{
-> +	struct acpi_pci_root *pci_root = acpi_pci_find_root(root->handle);
-> +	struct cxl_walk_context ctx;
-> +
-> +	if (!pci_root)
-> +		return -ENXIO;
-> +
-> +	/* TODO: fold in CEDT.CHBS retrieval */
-> +	port = devm_cxl_add_port(dev, port, &root->dev, idx, ~0ULL);
-> +	if (IS_ERR(port))
-> +		return PTR_ERR(port);
-> +	dev_dbg(dev, "%s: register: %s\n", dev_name(&root->dev),
-> +		dev_name(&port->dev));
-> +
-> +	ctx = (struct cxl_walk_context) {
-> +		.dev = dev,
-> +		.root = pci_root->bus,
-> +		.port = port,
-> +	};
-> +	pci_walk_bus(pci_root->bus, match_add_root_ports, &ctx);
-> +
-> +	if (ctx.count == 0)
-> +		return -ENODEV;
-> +	return ctx.error;
-> +}
-> +
->  static int cxl_acpi_probe(struct platform_device *pdev)
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index 0c97d788762c..fd0c7229d105 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -346,6 +346,9 @@ static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
+>   * 1 =  65 .. 96 bytes
+>   * 2 = 129 .. 192 bytes
+>   * n = 2^(n-1)+1 .. 2^n
+> + *
+> + * Note: you don't need to optimize kmalloc_index because it's evaluated
+> + * in compile-time.
+>   */
+>  static __always_inline unsigned int kmalloc_index(size_t size)
 >  {
->  	struct device *dev = &pdev->dev;
-> +	struct acpi_device *adev = ACPI_COMPANION(dev);
-> +	struct device *bridge = NULL;
->  	struct cxl_root *cxl_root;
-> +	int rc, i = 0;
->  
->  	cxl_root = devm_cxl_add_root(dev, NULL, 0);
->  	if (IS_ERR(cxl_root))
->  		return PTR_ERR(cxl_root);
->  	dev_dbg(dev, "register: %s\n", dev_name(&cxl_root->port.dev));
->  
-> +	while (true) {
-> +		bridge = bus_find_device(adev->dev.bus, bridge, dev,
-> +					 match_ACPI0016);
-> +		if (!bridge)
-> +			break;
+> @@ -382,8 +385,8 @@ static __always_inline unsigned int kmalloc_index(size_t size)
+>  	if (size <=  8 * 1024 * 1024) return 23;
+>  	if (size <=  16 * 1024 * 1024) return 24;
+>  	if (size <=  32 * 1024 * 1024) return 25;
+> -	if (size <=  64 * 1024 * 1024) return 26;
+> -	BUG();
 > +
-> +		rc = cxl_acpi_register_ports(dev, to_acpi_device(bridge),
-> +					     &cxl_root->port, i++);
-> +		if (rc)
-> +			return rc;
-> +	}
-> +
->  	return 0;
->  }
+> +	BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
 >  
-> diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
-> index 347824a62a66..cc9af9033292 100644
-> --- a/drivers/cxl/core.c
-> +++ b/drivers/cxl/core.c
-> @@ -148,6 +148,15 @@ static void cxl_root_release(struct device *dev)
->  	kfree(cxl_root);
->  }
+>  	/* Will never be reached. Needed because the compiler may complain */
+>  	return -1;
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index f8833d3e5d47..39d4eca8cf9b 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -745,8 +745,8 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
 >  
-> +static void cxl_port_release(struct device *dev)
-> +{
-> +	struct cxl_port *port = to_cxl_port(dev);
-> +
-> +	ida_free(&cxl_port_ida, port->id);
-> +	put_device(port->port_host);
-> +	kfree(port);
-> +}
-> +
->  static ssize_t target_id_show(struct device *dev, struct device_attribute *attr,
->  			      char *buf)
->  {
-> @@ -178,6 +187,12 @@ static const struct device_type cxl_root_type = {
->  	.groups = cxl_port_attribute_groups,
+>  /*
+>   * kmalloc_info[] is to make slub_debug=,kmalloc-xx option work at boot time.
+> - * kmalloc_index() supports up to 2^26=64MB, so the final entry of the table is
+> - * kmalloc-67108864.
+> + * kmalloc_index() supports up to 2^25=32MB, so the final entry of the table is
+> + * kmalloc-33554432.
+>   */
+>  const struct kmalloc_info_struct kmalloc_info[] __initconst = {
+>  	INIT_KMALLOC_INFO(0, 0),
+> @@ -774,8 +774,7 @@ const struct kmalloc_info_struct kmalloc_info[] __initconst = {
+>  	INIT_KMALLOC_INFO(4194304, 4M),
+>  	INIT_KMALLOC_INFO(8388608, 8M),
+>  	INIT_KMALLOC_INFO(16777216, 16M),
+> -	INIT_KMALLOC_INFO(33554432, 32M),
+> -	INIT_KMALLOC_INFO(67108864, 64M)
+> +	INIT_KMALLOC_INFO(33554432, 32M)
 >  };
 >  
-> +static const struct device_type cxl_port_type = {
-> +	.name = "cxl_port",
-> +	.release = cxl_port_release,
-> +	.groups = cxl_port_attribute_groups,
-> +};
-> +
->  struct cxl_root *to_cxl_root(struct device *dev)
->  {
->  	if (dev_WARN_ONCE(dev, dev->type != &cxl_root_type,
-> @@ -188,7 +203,9 @@ struct cxl_root *to_cxl_root(struct device *dev)
->  
->  struct cxl_port *to_cxl_port(struct device *dev)
->  {
-> -	if (dev_WARN_ONCE(dev, dev->type != &cxl_root_type,
-> +	if (dev_WARN_ONCE(dev,
-> +			  dev->type != &cxl_root_type &&
-> +			  dev->type != &cxl_port_type,
->  			  "not a cxl_port device\n"))
->  		return NULL;
->  	return container_of(dev, struct cxl_port, dev);
-> @@ -367,6 +384,108 @@ struct cxl_root *devm_cxl_add_root(struct device *host,
->  }
->  EXPORT_SYMBOL_GPL(devm_cxl_add_root);
->  
-> +static void cxl_unlink_port(void *_port)
-> +{
-> +	struct cxl_port *port = _port;
-> +
-> +	sysfs_remove_link(&port->dev.kobj, "host");
-> +}
-> +
-> +static int devm_cxl_link_port(struct device *dev, struct cxl_port *port)
-> +{
-> +	int rc;
-> +
-> +	rc = sysfs_create_link(&port->dev.kobj, &port->port_host->kobj, "host");
-> +	if (rc)
-> +		return rc;
-> +	return devm_add_action_or_reset(dev, cxl_unlink_port, port);
-> +}
-> +
-> +static struct cxl_port *cxl_port_alloc(struct cxl_port *parent_port,
-> +				       struct device *port_dev, int target_id,
-> +				       resource_size_t component_regs_phys)
-> +{
-> +	struct cxl_port *port;
-> +	struct device *dev;
-> +	int rc;
-> +
-> +	if (!port_dev)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	port = kzalloc(sizeof(*port), GFP_KERNEL);
-> +	if (!port)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	rc = ida_alloc(&cxl_port_ida, GFP_KERNEL);
-> +	if (rc < 0)
-> +		goto err;
-> +
-> +	port->id = rc;
-> +	port->target_id = target_id;
-> +	port->port_host = get_device(port_dev);
-> +	port->component_regs_phys = component_regs_phys;
-> +
-> +	dev = &port->dev;
-> +	device_initialize(dev);
-> +	device_set_pm_not_required(dev);
-> +	dev->parent = &parent_port->dev;
-> +	dev->bus = &cxl_bus_type;
-> +	dev->type = &cxl_port_type;
-> +
-> +	return port;
-> +
-> +err:
-> +	kfree(port);
-> +	return ERR_PTR(rc);
-> +}
-> +
-> +/**
-> + * devm_cxl_add_port() - add a cxl_port to the topology
-> + * @host: devm context / discovery agent
-> + * @parent_port: immediate ancestor towards cxl_root
-> + * @port_host: PCI or platform-firmware device hosting this port
-> + * @target_id: ordinal id relative to other siblings under @parent_port
-> + * @component_regs_phys: CXL component register base address
-> + */
-> +struct cxl_port *devm_cxl_add_port(struct device *host,
-> +				   struct cxl_port *parent_port,
-> +				   struct device *port_host, int target_id,
-> +				   resource_size_t component_regs_phys)
-> +{
-> +	struct cxl_port *port;
-> +	struct device *dev;
-> +	int rc;
-> +
-> +	port = cxl_port_alloc(parent_port, port_host, target_id,
-> +			      component_regs_phys);
-> +	if (IS_ERR(port))
-> +		return port;
-> +
-> +	dev = &port->dev;
-> +	rc = dev_set_name(dev, "port%d", port->id);
-> +	if (rc)
-> +		goto err;
-> +
-> +	rc = device_add(dev);
-> +	if (rc)
-> +		goto err;
-> +
-> +	rc = devm_add_action_or_reset(host, unregister_dev, dev);
-> +	if (rc)
-> +		return ERR_PTR(rc);
-> +
-> +	rc = devm_cxl_link_port(host, port);
-> +	if (rc)
-> +		return ERR_PTR(rc);
-> +
-> +	return port;
-> +
-> +err:
-> +	put_device(dev);
-> +	return ERR_PTR(rc);
-> +}
-> +EXPORT_SYMBOL_GPL(devm_cxl_add_port);
-> +
->  /**
->   * cxl_setup_device_regs() - Detect CXL Device register blocks
->   * @dev: Host device of the @base mapping
-> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> index 5cd1173151e5..71a991bdacb7 100644
-> --- a/drivers/cxl/cxl.h
-> +++ b/drivers/cxl/cxl.h
-> @@ -134,5 +134,10 @@ struct cxl_address_space_dev *to_cxl_address_space(struct device *dev);
->  struct cxl_root *devm_cxl_add_root(struct device *parent,
->  				   struct cxl_address_space *cxl_space,
->  				   int nr_spaces);
-> +struct cxl_port *devm_cxl_add_port(struct device *host,
-> +				   struct cxl_port *parent_port,
-> +				   struct device *port_host, int target_id,
-> +				   resource_size_t component_regs_phys);
-> +
->  extern struct bus_type cxl_bus_type;
->  #endif /* __CXL_H__ */
+>  /*
 > 
 
