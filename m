@@ -2,111 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F61379825
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 22:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D37D379827
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 22:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbhEJUM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 16:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbhEJUM4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 16:12:56 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B568BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 13:11:50 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id s8so17898349wrw.10
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 13:11:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SFFScdXUnXeNxX6UTE2vTs1Rks2gDQO6jMYbHASQ1Ik=;
-        b=rhYLI4KFFwD2Ogb3MlXxVEx6ufbOI9xx+fuK7wo4XETmb3/L41/RKvw/wlTw0U7YID
-         ovwqMOaUSbp1dfm4CXUHzhNZI0eBkZMmc12xuE3XXRLKon6pZzO16mgr+x3Ib5WYVZaw
-         dVUBlRRlmBKhR0GSYIiaSBliYBo8d5wmkxQPksQ/xP6wqYtfhr/lyxVdBBPMjElygcYh
-         7fNcW68rwIfiXu1gBYasMT8WTxYUqQy4YwTwLWkNK6ZHKtQ7qyFRGLufBtIT/n3rKO2c
-         dkBRmXjGL5oluiDlKBp8ADwpQe2KDu3N2sbDeBoeB96S9e2aaWEF2bTzDfOS7eOzEYW0
-         WR/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SFFScdXUnXeNxX6UTE2vTs1Rks2gDQO6jMYbHASQ1Ik=;
-        b=UXBSOeUorkhgoDI9GOjdmWgROC4XcOzvKMICarijFXHmEzW19AQ2DuuLyFLW9FV8RE
-         TzNoHGsCzUdfG4JFTF6NynKqjraT2j51bQwUokJffuBB24S9mqBbu9aIPXeWGxLhCNPD
-         kxGp+oTm1+fbhqf9UjotEsisF7g7PjHBJ1XTpR06iDU5Zc0gXTvBC6lwi0FRKN2KUIZO
-         Zq1Y7pvdTVOCALRVxCRihyrfk0tFfA1+X7W/GQQRio4IPJM3wevTjd+lBfnXJw9LxRb2
-         T1JfP/8MP/XDMayAyR1qO0pe3EczJ/Q3VWMlUaw1WhBg3lvwfokw9UnHv0jDMAstsBIR
-         a81Q==
-X-Gm-Message-State: AOAM532Nv4A8BQdVivYYW20BB0U9ATZ95RONS9Kz9i55dT5EzcOxqsq5
-        3CnBP6J+AMqNNaC7X+o/mKs=
-X-Google-Smtp-Source: ABdhPJzM4FnCqxeT+cWMGzc6fz3O3o+SlhSFA5eyj6XaMDtyML6p2megkHiiuS4dumIfKdPVWrg4Ig==
-X-Received: by 2002:a5d:6a52:: with SMTP id t18mr34181628wrw.361.1620677509457;
-        Mon, 10 May 2021 13:11:49 -0700 (PDT)
-Received: from [10.0.0.2] ([37.170.167.43])
-        by smtp.gmail.com with ESMTPSA id t7sm23943858wrw.60.2021.05.10.13.11.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 13:11:48 -0700 (PDT)
-Subject: Re: [PATCH] sh: remove unused variable
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-References: <20210414170517.1205430-1-eric.dumazet@gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <c4ec09f0-8742-06ba-a213-063c40d2f98a@gmail.com>
-Date:   Mon, 10 May 2021 22:11:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210414170517.1205430-1-eric.dumazet@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S231840AbhEJUNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 16:13:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229566AbhEJUNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 16:13:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2FB03610F8;
+        Mon, 10 May 2021 20:12:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620677533;
+        bh=xN6f/l9ZLXmsrZ8qOdxNy8Tw6yolQ8Gf55ZxCnAySGE=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=BQfInEClRXFtpr3wigVKLT6X+OerJEBQHW9oO/RAe9/XMXoMmtyWXwmx7hgPQRry+
+         wrYXAcrhKwFnZA9ItjN66+sIBELy4jWspLm7LSHrEkZzInPeYJTO1COUCPpyUpGUNg
+         dL2poPE4Shc/OejZix2FeCQkpJy5R4323/VAsqzkHdMGdpat/aYz+gsl2v3cB8UmHU
+         ZCtAUf9cUoexDxiotLLvhObHBnhUml9udeAcj9Q2QAWYhO/066kfwAxteRf5SnrQrb
+         mtPuQVr4Yb3IgSZZCV8AIWQVnmlFH9XbNq8IROvXN/PZM6E90BC1O9e6yXFfIx9Ud7
+         /lcvpq7EQGT/w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1B034609B6;
+        Mon, 10 May 2021 20:12:13 +0000 (UTC)
+Subject: Re: [GIT PULL] KVM updates for Linux 5.13-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210510181441.351452-1-pbonzini@redhat.com>
+References: <20210510181441.351452-1-pbonzini@redhat.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210510181441.351452-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+X-PR-Tracked-Commit-Id: ce7ea0cfdc2e9ff31d12da31c3226deddb9644f5
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 0aa099a312b6323495a23d758009eb7fc04a7617
+Message-Id: <162067753305.25270.11623992623087230005.pr-tracker-bot@kernel.org>
+Date:   Mon, 10 May 2021 20:12:13 +0000
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Mon, 10 May 2021 14:14:41 -0400:
 
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
-On 4/14/21 7:05 PM, Eric Dumazet wrote:
-> From: Eric Dumazet <edumazet@google.com>
-> 
-> Removes this annoying warning:
-> 
-> arch/sh/kernel/traps.c: In function ‘nmi_trap_handler’:
-> arch/sh/kernel/traps.c:183:15: warning: unused variable ‘cpu’ [-Wunused-variable]
->   183 |  unsigned int cpu = smp_processor_id();
-> 
-> Fixes: fe3f1d5d7cd3 ("sh: Get rid of nmi_count()")
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> ---
->  arch/sh/kernel/traps.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/sh/kernel/traps.c b/arch/sh/kernel/traps.c
-> index f5beecdac69382f2d719fa33d50b9d58e22f6ff8..e76b221570999776e3bc9276d6b2fd60b9132e94 100644
-> --- a/arch/sh/kernel/traps.c
-> +++ b/arch/sh/kernel/traps.c
-> @@ -180,7 +180,6 @@ static inline void arch_ftrace_nmi_exit(void) { }
->  
->  BUILD_TRAP_HANDLER(nmi)
->  {
-> -	unsigned int cpu = smp_processor_id();
->  	TRAP_HANDLER_DECL;
->  
->  	arch_ftrace_nmi_enter();
-> 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/0aa099a312b6323495a23d758009eb7fc04a7617
 
-Is there anything wrong with this patch ?
+Thank you!
 
-Thanks !
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
