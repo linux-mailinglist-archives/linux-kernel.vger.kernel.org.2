@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7FC37866B
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F1F3789A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236126AbhEJLHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:07:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58338 "EHLO mail.kernel.org"
+        id S240456AbhEJLal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:30:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232343AbhEJKqi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:46:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11815619AD;
-        Mon, 10 May 2021 10:37:14 +0000 (UTC)
+        id S234834AbhEJK5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9881F619CE;
+        Mon, 10 May 2021 10:49:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643035;
-        bh=P1406Jpr8eiCFe4E8OCTMSlIbNSDkAouqN75tcgzYgc=;
+        s=korg; t=1620643785;
+        bh=XCtJfkGFbC2VRs0fahHq2Xv98B7QeAWABesY4G/UWe4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P4b2GlvzwcQ0VDNtSUsAWyBXKS4iR1Owp4NwjKQ/T0rgVP0jXwpvDV6WnNfZjXJdh
-         wLqm9bDBxGViKHgXyTbIgxf7P2OwG7T6Src+17Z03mMS/SiudLSqioKu15egw6fWk0
-         MAvDtDCB+CSqXq/uYoOKeM1E2VvTWTIJ6ZHuZYOI=
+        b=BvOvOUBq+gbzuMEgVt6c0DTFk7nYmMMVwBDX9/VHXG4x6fdKMywi7DIHgtBNNL+GE
+         rPKy4QMjG89+rBow5AABnD3GNL9A8iep7e07FoiSsEsCRdqjslQLv3t2Md4alCpsXN
+         V9p2fbZBelii4Q1sWVbnT5wsoixeYzzA/Wb4+0zo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Quinn Tran <qutran@marvell.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 150/299] scsi: qla2xxx: Fix use after free in bsg
+Subject: [PATCH 5.11 157/342] atomisp: dont let it go past pipes array
 Date:   Mon, 10 May 2021 12:19:07 +0200
-Message-Id: <20210510102009.911368717@linuxfoundation.org>
+Message-Id: <20210510102015.289331927@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,59 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quinn Tran <qutran@marvell.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit 2ce35c0821afc2acd5ee1c3f60d149f8b2520ce8 ]
+[ Upstream commit 1f6c45ac5fd70ab59136ab5babc7def269f3f509 ]
 
-On bsg command completion, bsg_job_done() was called while qla driver
-continued to access the bsg_job buffer. bsg_job_done() would free up
-resources that ended up being reused by other task while the driver
-continued to access the buffers. As a result, driver was reading garbage
-data.
+In practice, IA_CSS_PIPE_ID_NUM should never be used when
+calling atomisp_q_video_buffers_to_css(), as the driver should
+discover the right pipe before calling it.
 
-localhost kernel: BUG: KASAN: use-after-free in sg_next+0x64/0x80
-localhost kernel: Read of size 8 at addr ffff8883228a3330 by task swapper/26/0
-localhost kernel:
-localhost kernel: CPU: 26 PID: 0 Comm: swapper/26 Kdump:
-loaded Tainted: G          OE    --------- -  - 4.18.0-193.el8.x86_64+debug #1
-localhost kernel: Hardware name: HP ProLiant DL360
-Gen9/ProLiant DL360 Gen9, BIOS P89 08/12/2016
-localhost kernel: Call Trace:
-localhost kernel: <IRQ>
-localhost kernel: dump_stack+0x9a/0xf0
-localhost kernel: print_address_description.cold.3+0x9/0x23b
-localhost kernel: kasan_report.cold.4+0x65/0x95
-localhost kernel: debug_dma_unmap_sg.part.12+0x10d/0x2d0
-localhost kernel: qla2x00_bsg_sp_free+0xaf6/0x1010 [qla2xxx]
+Yet, if some pipe parsing issue happens, it could end using
+it.
 
-Link: https://lore.kernel.org/r/20210329085229.4367-6-njavali@marvell.com
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Quinn Tran <qutran@marvell.com>
-Signed-off-by: Saurav Kashyap <skashyap@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+So, add a WARN_ON() to prevent such case.
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_bsg.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/staging/media/atomisp/pci/atomisp_fops.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/scsi/qla2xxx/qla_bsg.c b/drivers/scsi/qla2xxx/qla_bsg.c
-index 23b604832a54..7fa085969a63 100644
---- a/drivers/scsi/qla2xxx/qla_bsg.c
-+++ b/drivers/scsi/qla2xxx/qla_bsg.c
-@@ -24,10 +24,11 @@ void qla2x00_bsg_job_done(srb_t *sp, int res)
- 	struct bsg_job *bsg_job = sp->u.bsg_job;
- 	struct fc_bsg_reply *bsg_reply = bsg_job->reply;
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_fops.c b/drivers/staging/media/atomisp/pci/atomisp_fops.c
+index 453bb6913550..f1e6b2597853 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_fops.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_fops.c
+@@ -221,6 +221,9 @@ int atomisp_q_video_buffers_to_css(struct atomisp_sub_device *asd,
+ 	unsigned long irqflags;
+ 	int err = 0;
  
-+	sp->free(sp);
++	if (WARN_ON(css_pipe_id >= IA_CSS_PIPE_ID_NUM))
++		return -EINVAL;
 +
- 	bsg_reply->result = res;
- 	bsg_job_done(bsg_job, bsg_reply->result,
- 		       bsg_reply->reply_payload_rcv_len);
--	sp->free(sp);
- }
+ 	while (pipe->buffers_in_css < ATOMISP_CSS_Q_DEPTH) {
+ 		struct videobuf_buffer *vb;
  
- void qla2x00_bsg_sp_free(srb_t *sp)
 -- 
 2.30.2
 
