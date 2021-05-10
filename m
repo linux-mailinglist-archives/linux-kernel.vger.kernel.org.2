@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A798A378B07
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F8E378B09
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244561AbhEJL7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:59:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46208 "EHLO mail.kernel.org"
+        id S244599AbhEJL7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:59:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235941AbhEJLHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:07:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C18561878;
-        Mon, 10 May 2021 10:57:05 +0000 (UTC)
+        id S235947AbhEJLHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:07:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D98A26190A;
+        Mon, 10 May 2021 10:57:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644225;
-        bh=hiZcWMCdWSw6/FErK8cQnJktIXVnvcHwqbLoqb+Di6g=;
+        s=korg; t=1620644228;
+        bh=ahQev9HGYs11+GX2q1VKcRSLanEQ+OQUkZvga66ODYk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sy4wqwAcfjxw49oMj5mrPegkQIIXUflP9gMV69nNnGYVhVPnK9tH1WQOwjZ1/g/DW
-         wrXQ426lMQctyW/EwXazIdNUoYuRqQL6efaRfTMDET6U64Cbleytno04hPnUs/J8YR
-         310H4ET51w2FKG8WSXKrhv4DDjGiSjMLSLUV90jE=
+        b=oERnNQF/iqxytmbsuTfePtD5uLpijk7cY52Mv8mLz2esXUchtyxzXxMIulUrKy2i+
+         +KIvCu7PNHM5sjLMWwZR6LFN09jGYSrpaZo0DxEkSwkagSklrrv8BYUpdI44BTtBcm
+         wtzwVTRCQJSjzB0SDb/FxHIL8qBGUktzS13QGDe0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20 ?= 
-        <zhouyanjie@wanyeetech.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.11 339/342] pinctrl: Ingenic: Add support for read the pin configuration of X1830.
-Date:   Mon, 10 May 2021 12:22:09 +0200
-Message-Id: <20210510102021.308541433@linuxfoundation.org>
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>
+Subject: [PATCH 5.11 340/342] lib/vsprintf.c: remove leftover f and F cases from bstr_printf()
+Date:   Mon, 10 May 2021 12:22:10 +0200
+Message-Id: <20210510102021.343919869@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
 References: <20210510102010.096403571@linuxfoundation.org>
@@ -43,92 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 
-commit 1d0bd580ef83b78a10c0b37f3313eaa59d8c80db upstream.
+commit 84696cfaf4d90945eb2a8302edc6cf627db56b84 upstream.
 
-Add X1830 support in "ingenic_pinconf_get()", so that it can read the
-configuration of X1830 SoC correctly.
+Commit 9af7706492f9 ("lib/vsprintf: Remove support for %pF and %pf in
+favour of %pS and %ps") removed support for %pF and %pf, and correctly
+removed the handling of those cases in vbin_printf(). However, the
+corresponding cases in bstr_printf() were left behind.
 
-Fixes: d7da2a1e4e08 ("pinctrl: Ingenic: Add pinctrl driver for X1830.")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-Link: https://lore.kernel.org/r/1618757073-1724-3-git-send-email-zhouyanjie@wanyeetech.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+In the same series, %pf was re-purposed for dealing with
+fwnodes (3bd32d6a2ee6, "lib/vsprintf: Add %pfw conversion specifier
+for printing fwnode names").
+
+So should anyone use %pf with the binary printf routines,
+vbin_printf() would (correctly, as it involves dereferencing the
+pointer) do the string formatting to the u32 array, but bstr_printf()
+would not copy the string from the u32 array, but instead interpret
+the first sizeof(void*) bytes of the formatted string as a pointer -
+which generally won't end well (also, all subsequent get_args would be
+out of sync).
+
+Fixes: 9af7706492f9 ("lib/vsprintf: Remove support for %pF and %pf in favour of %pS and %ps")
+Cc: stable@vger.kernel.org
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+Link: https://lore.kernel.org/r/20210423094529.1862521-1-linux@rasmusvillemoes.dk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pinctrl/pinctrl-ingenic.c |   40 +++++++++++++++++++++++++++++---------
- 1 file changed, 31 insertions(+), 9 deletions(-)
+ lib/vsprintf.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/drivers/pinctrl/pinctrl-ingenic.c
-+++ b/drivers/pinctrl/pinctrl-ingenic.c
-@@ -2089,26 +2089,48 @@ static int ingenic_pinconf_get(struct pi
- 	enum pin_config_param param = pinconf_to_config_param(*config);
- 	unsigned int idx = pin % PINS_PER_GPIO_CHIP;
- 	unsigned int offt = pin / PINS_PER_GPIO_CHIP;
--	bool pull;
-+	unsigned int bias;
-+	bool pull, pullup, pulldown;
- 
--	if (jzpc->info->version >= ID_JZ4770)
--		pull = !ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PEN);
--	else
--		pull = !ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_PULL_DIS);
-+	if (jzpc->info->version >= ID_X1830) {
-+		unsigned int half = PINS_PER_GPIO_CHIP / 2;
-+		unsigned int idxh = (pin % half) * 2;
-+
-+		if (idx < half)
-+			regmap_read(jzpc->map, offt * jzpc->info->reg_offset +
-+					X1830_GPIO_PEL, &bias);
-+		else
-+			regmap_read(jzpc->map, offt * jzpc->info->reg_offset +
-+					X1830_GPIO_PEH, &bias);
-+
-+		bias = (bias >> idxh) & (GPIO_PULL_UP | GPIO_PULL_DOWN);
-+
-+		pullup = (bias == GPIO_PULL_UP) && (jzpc->info->pull_ups[offt] & BIT(idx));
-+		pulldown = (bias == GPIO_PULL_DOWN) && (jzpc->info->pull_downs[offt] & BIT(idx));
-+
-+	} else {
-+		if (jzpc->info->version >= ID_JZ4770)
-+			pull = !ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PEN);
-+		else
-+			pull = !ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_PULL_DIS);
-+
-+		pullup = pull && (jzpc->info->pull_ups[offt] & BIT(idx));
-+		pulldown = pull && (jzpc->info->pull_downs[offt] & BIT(idx));
-+	}
- 
- 	switch (param) {
- 	case PIN_CONFIG_BIAS_DISABLE:
--		if (pull)
-+		if (pullup || pulldown)
- 			return -EINVAL;
- 		break;
- 
- 	case PIN_CONFIG_BIAS_PULL_UP:
--		if (!pull || !(jzpc->info->pull_ups[offt] & BIT(idx)))
-+		if (!pullup)
- 			return -EINVAL;
- 		break;
- 
- 	case PIN_CONFIG_BIAS_PULL_DOWN:
--		if (!pull || !(jzpc->info->pull_downs[offt] & BIT(idx)))
-+		if (!pulldown)
- 			return -EINVAL;
- 		break;
- 
-@@ -2126,7 +2148,7 @@ static void ingenic_set_bias(struct inge
- 	if (jzpc->info->version >= ID_X1830) {
- 		unsigned int idx = pin % PINS_PER_GPIO_CHIP;
- 		unsigned int half = PINS_PER_GPIO_CHIP / 2;
--		unsigned int idxh = pin % half * 2;
-+		unsigned int idxh = (pin % half) * 2;
- 		unsigned int offt = pin / PINS_PER_GPIO_CHIP;
- 
- 		if (idx < half) {
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -3103,8 +3103,6 @@ int bstr_printf(char *buf, size_t size,
+ 			switch (*fmt) {
+ 			case 'S':
+ 			case 's':
+-			case 'F':
+-			case 'f':
+ 			case 'x':
+ 			case 'K':
+ 			case 'e':
 
 
