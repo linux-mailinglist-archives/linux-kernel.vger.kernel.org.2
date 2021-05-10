@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D78378D3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7326C378D20
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347842AbhEJMhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:37:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34066 "EHLO mail.kernel.org"
+        id S1347436AbhEJMeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:34:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237723AbhEJLQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:16:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0A5D6145C;
-        Mon, 10 May 2021 11:11:23 +0000 (UTC)
+        id S233530AbhEJLMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:12:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DFBA610A7;
+        Mon, 10 May 2021 11:09:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620645084;
-        bh=Z3l4YmwAXxTeVKaGMy/bTcNl0d4GDdy4twdeXag1rbg=;
+        s=korg; t=1620644994;
+        bh=YucLfOKQ5QiviNoTGIjV6vunvvQ44u9yba2IfMpEblU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MonjUAQEg+Gb28LC9Wwu2CvtrMJ3epfckL3XjBINydOV9me/eLjo7EUXAiLk5nMvU
-         QHuR/43SbrbX4KqVzJVB+XmcxClrlO5yDBAF780wU2LXRSoirOPkGXzmAzkaXB1DZY
-         UdJyCbsfIiddcc9utxFbMi8DeAC5j2HLRaGc03XM=
+        b=lu8zQItxPGVt4gfG1NFshkYr9ly5xVNuRiDCwC9L2QkqUdCuSFXawOTBTzzpgWSuf
+         A9Tzp+xJaKI0eQ2IZt0XtTb6VgMOqQ25/SfOSHaNqmz9aMwXZqhdFiP3noNYBTw32U
+         LDXel1ytmtxqspPCovQGRTMYSPwHyLeDdVvz3MEs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.12 300/384] NFSv4: Dont discard segments marked for return in _pnfs_return_layout()
-Date:   Mon, 10 May 2021 12:21:29 +0200
-Message-Id: <20210510102024.698036932@linuxfoundation.org>
+        stable@vger.kernel.org, Hansem Ro <hansemro@outlook.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 5.12 301/384] Input: ili210x - add missing negation for touch indication on ili210x
+Date:   Mon, 10 May 2021 12:21:30 +0200
+Message-Id: <20210510102024.728948284@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -39,33 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Hansem Ro <hansemro@outlook.com>
 
-commit de144ff4234f935bd2150108019b5d87a90a8a96 upstream.
+commit ac05a8a927e5a1027592d8f98510a511dadeed14 upstream.
 
-If the pNFS layout segment is marked with the NFS_LSEG_LAYOUTRETURN
-flag, then the assumption is that it has some reporting requirement
-to perform through a layoutreturn (e.g. flexfiles layout stats or error
-information).
+This adds the negation needed for proper finger detection on Ilitek
+ili2107/ili210x. This fixes polling issues (on Amazon Kindle Fire)
+caused by returning false for the cooresponding finger on the touchscreen.
 
-Fixes: 6d597e175012 ("pnfs: only tear down lsegs that precede seqid in LAYOUTRETURN args")
+Signed-off-by: Hansem Ro <hansemro@outlook.com>
+Fixes: e3559442afd2a ("ili210x - rework the touchscreen sample processing")
 Cc: stable@vger.kernel.org
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/pnfs.c |    2 +-
+ drivers/input/touchscreen/ili210x.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/nfs/pnfs.c
-+++ b/fs/nfs/pnfs.c
-@@ -1344,7 +1344,7 @@ _pnfs_return_layout(struct inode *ino)
- 	}
- 	valid_layout = pnfs_layout_is_valid(lo);
- 	pnfs_clear_layoutcommit(ino, &tmp_list);
--	pnfs_mark_matching_lsegs_invalid(lo, &tmp_list, NULL, 0);
-+	pnfs_mark_matching_lsegs_return(lo, &tmp_list, NULL, 0);
+--- a/drivers/input/touchscreen/ili210x.c
++++ b/drivers/input/touchscreen/ili210x.c
+@@ -87,7 +87,7 @@ static bool ili210x_touchdata_to_coords(
+ 					unsigned int *x, unsigned int *y,
+ 					unsigned int *z)
+ {
+-	if (touchdata[0] & BIT(finger))
++	if (!(touchdata[0] & BIT(finger)))
+ 		return false;
  
- 	if (NFS_SERVER(ino)->pnfs_curr_ld->return_range) {
- 		struct pnfs_layout_range range = {
+ 	*x = get_unaligned_be16(touchdata + 1 + (finger * 4) + 0);
 
 
