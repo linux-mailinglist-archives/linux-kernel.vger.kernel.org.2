@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BCC377F92
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A13A377F93
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhEJJk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:40:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:50644 "EHLO foss.arm.com"
+        id S230399AbhEJJlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:41:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:50712 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230360AbhEJJkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:40:53 -0400
+        id S230383AbhEJJlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 05:41:02 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5AC3713A1;
-        Mon, 10 May 2021 02:39:49 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81F871424;
+        Mon, 10 May 2021 02:39:57 -0700 (PDT)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2E24C3F7D8;
-        Mon, 10 May 2021 02:39:45 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2C9CE3F73B;
+        Mon, 10 May 2021 02:39:53 -0700 (PDT)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-kernel@vger.kernel.org, will@kernel.org,
         boqun.feng@gmail.com, peterz@infradead.org
@@ -32,9 +32,9 @@ Cc:     aou@eecs.berkeley.edu, arnd@arndb.de, bcain@codeaurora.org,
         rth@twiddle.net, shorne@gmail.com,
         stefan.kristiansson@saunalahti.fi, tsbogend@alpha.franken.de,
         vgupta@synopsys.com, ysato@users.sourceforge.jp
-Subject: [PATCH 05/33] locking/atomic: openrisc: avoid asm-generic/atomic.h
-Date:   Mon, 10 May 2021 10:37:25 +0100
-Message-Id: <20210510093753.40683-6-mark.rutland@arm.com>
+Subject: [PATCH 06/33] locking/atomic: atomic: remove stale comments
+Date:   Mon, 10 May 2021 10:37:26 +0100
+Message-Id: <20210510093753.40683-7-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210510093753.40683-1-mark.rutland@arm.com>
 References: <20210510093753.40683-1-mark.rutland@arm.com>
@@ -42,46 +42,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-OpenRISC is the only architecture which uses asm-generic/atomic.h and
-also provides its own implementation of some functions, requiring
-ifdeferry in the asm-generic header. As OpenRISC provides the vast
-majority of functions itself, it would be simpler overall if it also
-provided the few functions it cribs from asm-generic.
+The commentary in asm-generic/atomic.h is stale; let's bring it up-to
+date:
 
-This patch decouples OpenRISC from asm-generic/atomic.h. Subsequent
-patches will simplify the asm-generic implementation.
+* The block comment at the start of the file mentions this is only
+  usable on UP systems, but is immediately followed by an SMP
+  implementation using cmpxchg. Let's delete the misleading statement.
 
-There should be no functional change as a result of this patch.
+* A comment near the end of the file was originally at the top of the
+  file, but over time rework has shuffled it near the end, and it's long
+  been superceded by the block comment at the top of the file. Let's
+  remove it.
+
+* Since asm-generic/atomic.h isn't the canonical documentation for the
+  atomic ops, and since the existing comments are not in kerneldoc
+  format, we don't need to document the semantics of each operation here
+  (and this would be better done in a centralised document). Let's
+  remove these comments.
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Jonas Bonn <jonas@southpole.se>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stafford Horne <shorne@gmail.com>
-Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
 Cc: Will Deacon <will@kernel.org>
 ---
- arch/openrisc/include/asm/atomic.h | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ include/asm-generic/atomic.h | 39 ++-------------------------------------
+ 1 file changed, 2 insertions(+), 37 deletions(-)
 
-diff --git a/arch/openrisc/include/asm/atomic.h b/arch/openrisc/include/asm/atomic.h
-index b589fac39b92..cb86970d3859 100644
---- a/arch/openrisc/include/asm/atomic.h
-+++ b/arch/openrisc/include/asm/atomic.h
-@@ -121,6 +121,12 @@ static inline int atomic_fetch_add_unless(atomic_t *v, int a, int u)
- }
- #define atomic_fetch_add_unless	atomic_fetch_add_unless
+diff --git a/include/asm-generic/atomic.h b/include/asm-generic/atomic.h
+index 11f96f40f4a7..ebacbc6b363b 100644
+--- a/include/asm-generic/atomic.h
++++ b/include/asm-generic/atomic.h
+@@ -1,7 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0-or-later */
+ /*
+- * Generic C implementation of atomic counter operations. Usable on
+- * UP systems only. Do not include in machine independent code.
++ * Generic C implementation of atomic counter operations. Do not include in
++ * machine independent code.
+  *
+  * Copyright (C) 2007 Red Hat, Inc. All Rights Reserved.
+  * Written by David Howells (dhowells@redhat.com)
+@@ -12,23 +12,6 @@
+ #include <asm/cmpxchg.h>
+ #include <asm/barrier.h>
  
--#include <asm-generic/atomic.h>
-+#define atomic_read(v)			READ_ONCE((v)->counter)
-+#define atomic_set(v,i)			WRITE_ONCE((v)->counter, (i))
-+
-+#include <asm/cmpxchg.h>
-+
-+#define atomic_xchg(ptr, v)		(xchg(&(ptr)->counter, (v)))
-+#define atomic_cmpxchg(v, old, new)	(cmpxchg(&((v)->counter), (old), (new)))
+-/*
+- * atomic_$op() - $op integer to atomic variable
+- * @i: integer value to $op
+- * @v: pointer to the atomic variable
+- *
+- * Atomically $ops @i to @v. Does not strictly guarantee a memory-barrier, use
+- * smp_mb__{before,after}_atomic().
+- */
+-
+-/*
+- * atomic_$op_return() - $op interer to atomic variable and returns the result
+- * @i: integer value to $op
+- * @v: pointer to the atomic variable
+- *
+- * Atomically $ops @i to @v. Does imply a full memory barrier.
+- */
+-
+ #ifdef CONFIG_SMP
  
- #endif /* __ASM_OPENRISC_ATOMIC_H */
+ /* we can build all atomic primitives from cmpxchg */
+@@ -154,28 +137,10 @@ ATOMIC_OP(xor, ^)
+ #undef ATOMIC_OP_RETURN
+ #undef ATOMIC_OP
+ 
+-/*
+- * Atomic operations that C can't guarantee us.  Useful for
+- * resource counting etc..
+- */
+-
+-/**
+- * atomic_read - read atomic variable
+- * @v: pointer of type atomic_t
+- *
+- * Atomically reads the value of @v.
+- */
+ #ifndef atomic_read
+ #define atomic_read(v)	READ_ONCE((v)->counter)
+ #endif
+ 
+-/**
+- * atomic_set - set atomic variable
+- * @v: pointer of type atomic_t
+- * @i: required value
+- *
+- * Atomically sets the value of @v to @i.
+- */
+ #define atomic_set(v, i) WRITE_ONCE(((v)->counter), (i))
+ 
+ #include <linux/irqflags.h>
 -- 
 2.11.0
 
