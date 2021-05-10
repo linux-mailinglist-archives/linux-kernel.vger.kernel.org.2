@@ -2,262 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4220E379A55
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C605379A3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbhEJWmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33604 "EHLO
+        id S231162AbhEJWkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231451AbhEJWl4 (ORCPT
+        with ESMTP id S229944AbhEJWkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:41:56 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B5BC061574;
-        Mon, 10 May 2021 15:40:50 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id z9so25721536lfu.8;
-        Mon, 10 May 2021 15:40:50 -0700 (PDT)
+        Mon, 10 May 2021 18:40:11 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E15C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:39:05 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id l4so26858574ejc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:39:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tdhxEVn/ApgXUS3G+03myNB4Fqv3j3XN+RFKP4M2N/E=;
-        b=RsbL915Fu3Y2xNkXKX9JU3SsNypKl6RXkXtnRiIChU+o0az3SWAmoffX/z3OEfmK8Z
-         NYM9u/Gb8KBF+27QBcAa/Zw9oLnFc2ylp4SQhuOOmKzx7i0RxfwMoJkOMM0oVgP4jJLa
-         zGhTtv4XzugHTA89Yj744v9hRpI7bYGQTpDZMdpBs9GAz4GUqb+9cLlhL1bOhnYt3gcE
-         MOx6mkqks1JqsUfTamjUPQADx5DTkd2fGCjam5iqlNdt2IeW5CEZo2HmqxkOYOZ15aNl
-         CrOmYV9pm32yzDdrXeTF3AxMKTfR0c9i4nmEZ32SHGuD0f6rv3YNVm3VuopOtFCDszDH
-         Te+A==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kH1/lqZ2NQP1a9fznT6J9FoyYxZoXrz6MnF/IsF/LD8=;
+        b=OIU8Pc6oDAnDeHaRZizpqtco+PESrEQcRKrfoct3xvNNzamiviTvQXnXZnu1/0a1qL
+         qtwI6P+gZoHEGCl3lVFz4EszzhXNfaReWGEfg1OHrtMbfx3Z/6ssKMUSn58LtasxgzPg
+         lYlRVUI/zl6SMsTQ6BvQHFcfn/eK0Sgf//CNz3vnuQZih/oPmwhwuKV3gZklxmGpANOv
+         4mQqnvdTn0mctcyeAu65LExOZMzBdOlcFPHlF6D5WpC0slUZZM561kfGXPzv4bd3CBvC
+         OosiQYZy2sRNc4eJzLC80kYejb+UR+jiVFTIV/hoORV/TDixQC75n1X07MfRPIAm14F8
+         PyIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tdhxEVn/ApgXUS3G+03myNB4Fqv3j3XN+RFKP4M2N/E=;
-        b=M3P3wAGZYwG3i0jdAUHFaUkucUmTpV8KrQIo9oAna28UKFy6DxKHyU9UU4Pe+oYf7q
-         XADmeVJYtzJRdk9gZz7RmXFyx2mqPETv9AyygGiAVWCySsHM/emFcNruR/pxJT0/jFy2
-         rK1Qnx9G2U7IN59WUoih09BPoEWJ+NBm56HHiIzA8tl1tjdN3PG9nvxxVnmvMBqnNYfo
-         56Vwj2Ww979/Ax6sZ8YpTdgVz9UfLEDa+DG6UY/qFu4iohpoVuidrFe0cuyIlXs4d4i+
-         gqBxzq4vrmkrgM8dfML5RZ9mB0FNVI4sOlS27iYuzgPI83+1OJyWx26aeGx6B4KnXTaE
-         NLrw==
-X-Gm-Message-State: AOAM531StHoh+LmqhQShECZmY0oqeL88Gekxb8UNfqi6Fjb7L2E7+hRf
-        ixG04yJrlpj/yrWUvbuor8I=
-X-Google-Smtp-Source: ABdhPJzz6fepG+GOMZhdHZxCQ+3aYLSrzsog/VZEUaWf70lRQBPXOCIyrLIyWXkrDw6QPJAZS5T4Lg==
-X-Received: by 2002:a05:6512:1388:: with SMTP id p8mr19368721lfa.269.1620686448932;
-        Mon, 10 May 2021 15:40:48 -0700 (PDT)
-Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.gmail.com with ESMTPSA id g24sm2780698lja.63.2021.05.10.15.40.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 15:40:48 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Ihor Didenko <tailormoon@rambler.ru>,
-        Ion Agorria <ion@agorria.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v1 7/7] ARM: tegra: Add SoC thermal sensor to Tegra30 device-trees
-Date:   Tue, 11 May 2021 01:38:16 +0300
-Message-Id: <20210510223816.18565-8-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210510223816.18565-1-digetx@gmail.com>
-References: <20210510223816.18565-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kH1/lqZ2NQP1a9fznT6J9FoyYxZoXrz6MnF/IsF/LD8=;
+        b=EUN7F6HcrSX1eYyGc4UrXy1Ef5rSMS9ZwT+/SQJlG7Lk3lo9aKMd+HqD1QLcUOW47m
+         EJ8IlebGAkTsfyl/OUY7KPyH0wGvFRZ0eANUEf7mVKlpQDWxJbVwdmcveeTQrav3HRab
+         EOtfr0Mh50Chz1OSGLxCyI/eyNTTZqehKsCnlR0R118hdbOqe/uqHB/J/DxMoeK301uc
+         6WCmH88uwhgMpXp0FSLMj+nN9/vPgvbh+EanZwzXEsXWIaQQy7Qwxs9kBJVQVfPlSmpO
+         HlGWKlutrEtwHldLGNymVqkrWvZpEtPbLM9nfysGWVfMMu9SXoF1QJnKFud2DJT/CRPO
+         FAkA==
+X-Gm-Message-State: AOAM530EWfJq9ukoQdkA3MFpHXyJOg98ufuca9VIoozNNxFXQii2gNOQ
+        PXcaYok1WIJvKwWOCPi+DdddXtgC14/tlxfzjCEh
+X-Google-Smtp-Source: ABdhPJxlvCV7PFOsLnBX3Na+g8t7Ve4oLOc7zDm2RO/5Nqb08hUq9UvLY1JOFhRgKMR4J+srbEqkAyyjCKBHNlK/AfA=
+X-Received: by 2002:a17:906:2510:: with SMTP id i16mr28108053ejb.488.1620686344212;
+ Mon, 10 May 2021 15:39:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210423103533.30121-1-zhe.he@windriver.com> <20210423103533.30121-3-zhe.he@windriver.com>
+In-Reply-To: <20210423103533.30121-3-zhe.he@windriver.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 10 May 2021 18:38:53 -0400
+Message-ID: <CAHC9VhQXawubMsKg2F282k-bJqZFT=vNurZAeAPKLU1ZZpYKeg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] audit: Use syscall_get_return_value to get syscall
+ return code in audit_syscall_exit
+To:     He Zhe <zhe.he@windriver.com>
+Cc:     oleg@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the on-chip SoC thermal sensor to Tegra30 device-trees. Now CPU
-temperature reporting and thermal throttling is available on all Tegra30
-devices universally.
+On Fri, Apr 23, 2021 at 6:36 AM He Zhe <zhe.he@windriver.com> wrote:
+>
+> regs_return_value for some architectures like arm64 simply retrieve
+> register value from pt_regs without sign extension in 32-bit compatible
+> case and cause audit to have false syscall return code. For example,
+> 32-bit -13 would be treated as 4294967283 below.
+>
+> type=SYSCALL msg=audit(1611110715.887:582): arch=40000028 syscall=322
+> success=yes exit=4294967283
+>
+> We just added proper sign extension in syscall_get_return_value which
+> should be used instead.
+>
+> Signed-off-by: He Zhe <zhe.he@windriver.com>
+> ---
+> v1 to v2: No change
+>
+>  include/linux/audit.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/boot/dts/tegra30-ouya.dts | 16 +++++
- arch/arm/boot/dts/tegra30.dtsi     | 93 ++++++++++++++++++++++++++++--
- 2 files changed, 105 insertions(+), 4 deletions(-)
+Perhaps I missed it but did you address the compile error that was
+found by the kernel test robot?
 
-diff --git a/arch/arm/boot/dts/tegra30-ouya.dts b/arch/arm/boot/dts/tegra30-ouya.dts
-index f008653d843b..619a4df3f4cd 100644
---- a/arch/arm/boot/dts/tegra30-ouya.dts
-+++ b/arch/arm/boot/dts/tegra30-ouya.dts
-@@ -469,6 +469,22 @@ map1 {
- 				};
- 			};
- 		};
-+
-+		tsensor-channel0 {
-+			trips {
-+				dvfs-alert {
-+					temperature = <70000>;
-+				};
-+
-+				cpu-div2-throttle {
-+					temperature = <75000>;
-+				};
-+
-+				soc-critical {
-+					temperature = <90000>;
-+				};
-+			};
-+		};
- 	};
- 
- 	vdd_12v_in: vdd_12v_in {
-diff --git a/arch/arm/boot/dts/tegra30.dtsi b/arch/arm/boot/dts/tegra30.dtsi
-index 576dffdbd0a1..3fe24b6c340d 100644
---- a/arch/arm/boot/dts/tegra30.dtsi
-+++ b/arch/arm/boot/dts/tegra30.dtsi
-@@ -5,6 +5,7 @@
- #include <dt-bindings/pinctrl/pinctrl-tegra.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/soc/tegra-pmc.h>
-+#include <dt-bindings/thermal/thermal.h>
- 
- #include "tegra30-peripherals-opp.dtsi"
- 
-@@ -1155,6 +1156,21 @@ fuse@7000f800 {
- 		reset-names = "fuse";
- 	};
- 
-+	tsensor: tsensor@70014000 {
-+		compatible = "nvidia,tegra30-tsensor";
-+		reg = <0x70014000 0x500>;
-+		interrupts = <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&tegra_car TEGRA30_CLK_TSENSOR>;
-+		resets = <&tegra_car TEGRA30_CLK_TSENSOR>;
-+
-+		assigned-clocks = <&tegra_car TEGRA30_CLK_TSENSOR>;
-+		assigned-clock-parents = <&tegra_car TEGRA30_CLK_CLK_M>;
-+		assigned-clock-rates = <500000>;
-+
-+		#thermal-sensor-cells = <1>;
-+		#cooling-cells = <2>;
-+	};
-+
- 	hda@70030000 {
- 		compatible = "nvidia,tegra30-hda";
- 		reg = <0x70030000 0x10000>;
-@@ -1417,32 +1433,36 @@ cpus {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		cpu@0 {
-+		cpu0: cpu@0 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a9";
- 			reg = <0>;
- 			clocks = <&tegra_car TEGRA30_CLK_CCLK_G>;
-+			#cooling-cells = <2>;
- 		};
- 
--		cpu@1 {
-+		cpu1: cpu@1 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a9";
- 			reg = <1>;
- 			clocks = <&tegra_car TEGRA30_CLK_CCLK_G>;
-+			#cooling-cells = <2>;
- 		};
- 
--		cpu@2 {
-+		cpu2: cpu@2 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a9";
- 			reg = <2>;
- 			clocks = <&tegra_car TEGRA30_CLK_CCLK_G>;
-+			#cooling-cells = <2>;
- 		};
- 
--		cpu@3 {
-+		cpu3: cpu@3 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a9";
- 			reg = <3>;
- 			clocks = <&tegra_car TEGRA30_CLK_CCLK_G>;
-+			#cooling-cells = <2>;
- 		};
- 	};
- 
-@@ -1457,4 +1477,69 @@ pmu {
- 				     <&{/cpus/cpu@2}>,
- 				     <&{/cpus/cpu@3}>;
- 	};
-+
-+	thermal-zones {
-+		tsensor-channel0 {
-+			polling-delay-passive = <1000>; /* milliseconds */
-+			polling-delay = <5000>; /* milliseconds */
-+
-+			thermal-sensors = <&tsensor 0>;
-+
-+			trips {
-+				level1_trip: dvfs-alert {
-+					/* throttle at 67C until temperature drops to 66.8C */
-+					temperature = <67000>;
-+					hysteresis = <200>;
-+					type = "passive";
-+				};
-+
-+				level2_trip: cpu-div2-throttle {
-+					/* hardware CPU x2 freq throttle at 70C */
-+					temperature = <70000>;
-+					hysteresis = <200>;
-+					type = "hot";
-+				};
-+
-+				soc-critical {
-+					/* hardware shut down at 80C */
-+					temperature = <80000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+			};
-+
-+			cooling-maps {
-+				map0 {
-+					trip = <&level1_trip>;
-+					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&actmon THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+
-+				map1 {
-+					trip = <&level2_trip>;
-+					cooling-device = <&tsensor THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+			};
-+		};
-+
-+		tsensor-channel1 {
-+			status = "disabled";
-+
-+			polling-delay-passive = <1000>; /* milliseconds */
-+			polling-delay = <0>; /* milliseconds */
-+
-+			thermal-sensors = <&tsensor 1>;
-+
-+			trips {
-+				dvfs-alert {
-+					temperature = <80000>;
-+					hysteresis = <200>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+	};
- };
+Regardless, one comment inline below ...
+
+> diff --git a/include/linux/audit.h b/include/linux/audit.h
+> index 82b7c1116a85..135adbe22c19 100644
+> --- a/include/linux/audit.h
+> +++ b/include/linux/audit.h
+> @@ -334,7 +334,7 @@ static inline void audit_syscall_exit(void *pt_regs)
+>  {
+>         if (unlikely(audit_context())) {
+>                 int success = is_syscall_success(pt_regs);
+
+Since we are shifting to use syscall_get_return_value() below, would
+it also make sense to shift to using syscall_get_error() here instead
+of is_syscall_success()?
+
+> -               long return_code = regs_return_value(pt_regs);
+> +               long return_code = syscall_get_return_value(current, pt_regs);
+>
+>                 __audit_syscall_exit(success, return_code);
+>         }
+
 -- 
-2.30.2
-
+paul moore
+www.paul-moore.com
