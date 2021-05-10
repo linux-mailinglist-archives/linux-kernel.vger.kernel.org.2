@@ -2,96 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BBE37999E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6FC379996
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231577AbhEJWEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:04:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231807AbhEJWEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:04:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E56C61040;
-        Mon, 10 May 2021 22:03:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620684223;
-        bh=Ga4I0r8tVy2u+77ySaPHZRkDyjttK1GlRQ45qAXDDGY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OBnLFf64VUW275JQ0ZhIP22IwN/b0kZCT9quLN+tqcOdv4Ji0t/uBMC18p9FCSYYz
-         AKMdtSxYC8D+0WX6S2kKBFWyOnmIyxJ1vaNflNJKpFlSwIBd9ebI/cwdyl9w5WU9Vu
-         ZrD0pSaeuTuAqqSyUuFqCcyBYOwXOHul0hkVYa0H5lQypznYIHmVm1hFqtL4JmML5g
-         UhFHIuz1ov6FNaSsMZBjsKDiUHoZR0EkLlHn2HVL+9YvK05EufxqC3jgZawGy7Qo2R
-         yb+mswfRltVOc5vIAsglBnZNjFQOK4vhPQtfpsIquvpkZQ8ht4u86FCESEDM78DKOo
-         a6/m57Hf/9SbA==
-Date:   Mon, 10 May 2021 23:03:03 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Odelu Kukatla <okukatla@codeaurora.org>,
-        Alex Elder <elder@kernel.org>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        linux-clk@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: More removals of type references on common
- properties
-Message-ID: <20210510220303.GE4496@sirena.org.uk>
-References: <20210510204524.617390-1-robh@kernel.org>
+        id S231186AbhEJWEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230295AbhEJWEj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 18:04:39 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70253C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:03:32 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2so25643576lft.4
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:03:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eF6mHXnyQO/5Hgp+d/GWBsHQqZJ5DW8+q46yqFcmkgU=;
+        b=dIK3ZtfyVSK/2JyhHVbLHvpO175CBFwmAuHrOWRfTZFvJNS7aVPDYfvS8vsgzreQfo
+         Tk8wzdEV9Ofvm+h6RH+61Aq2wfnsqh2F8uVLezaNiu4FQ1b4TErhFnznIrA/p4zCRTqu
+         xEOpxTLeh6QuhQhHeYjI8rBnLkVmtcbpzioz0OAdKfaRLKau49CYRc3w1tkRITK0l37s
+         ukasPeDm2Ycqv5nz4Ch8YoHUx87x0PlcbmoCH79UaeYz2qaDnqBU87H/87FrI4bwFBii
+         Mhzxr93A8of7z71kPsEhBsucuYQXcWOXE/FHmcgO3muv2dsSvihJmlGDVhe2QokLfofZ
+         j78g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eF6mHXnyQO/5Hgp+d/GWBsHQqZJ5DW8+q46yqFcmkgU=;
+        b=YJ82HbiS2ze3QXK8maQv5sI2cGdOSUWs8u2/Ja26dbvEOJwG+daVDZLp3Ctf/dBzzy
+         JOVo/i+PzA5n6prPSMw5mC3sooc3pp9ZTPchANMhsK63p/5uEHRQ2OZUJ6re04uujw/v
+         sr4ST8o99aIRTepl8zTdimh6M2rRWSG/8cVC+AkuiFVUelm5/khHWltpqxos9XosYx5o
+         DGHEE+Il/6a12yJSL+SiprdYHKkfM07WmMUiSj18IsDQN1Cs50c1QZN+koFRBmCJc1S7
+         kn4iKnP5/uC+kkNyYMr/NFTeVSw8dSPxL2yIpmjL4oD1HeynHx0lr/9pdOydI2grlrlq
+         I1Yg==
+X-Gm-Message-State: AOAM530XCVg4rZx+HcmzESY2O5onDkE6fDJ2/oFunXJeUrNgEeXGcej7
+        eT+YuFvS7w13ert5KZFXNdhM3z8qDNjxQDr/U0n2Iw==
+X-Google-Smtp-Source: ABdhPJwH9NDUEbITCLratMangmuSCZMAh8LBZRXFn6wipm1zvjC0orG5FJLtySwdzp9n/A6mdx/l6tsaKUQ1eDizbPc=
+X-Received: by 2002:a05:6512:1182:: with SMTP id g2mr18581406lfr.117.1620684210724;
+ Mon, 10 May 2021 15:03:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OZkY3AIuv2LYvjdk"
-Content-Disposition: inline
-In-Reply-To: <20210510204524.617390-1-robh@kernel.org>
-X-Cookie: Beam me up, Scotty!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210510213946.1667103-1-guro@fb.com>
+In-Reply-To: <20210510213946.1667103-1-guro@fb.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 10 May 2021 15:03:19 -0700
+Message-ID: <CALvZod6VaGu3CDSamCpjsj7m2uz9KSefjiaF8Ni4=wPY_6ewnQ@mail.gmail.com>
+Subject: Re: [PATCH v2] cgroup: inline cgroup_task_freeze()
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Tejun Heo <tj@kernel.org>, Cgroups <cgroups@vger.kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 10, 2021 at 2:40 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> After the introduction of the cgroup.kill there is only one call site
+> of cgroup_task_freeze() left: cgroup_exit(). cgroup_task_freeze() is
+> currently taking rcu_read_lock() to read task's cgroup flags, but
+> because it's always called with css_set_lock locked, the rcu protection
+> is excessive.
+>
+> Simplify the code by inlining cgroup_task_freeze().
+>
+> v2: fix build
+>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
---OZkY3AIuv2LYvjdk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, May 10, 2021 at 03:45:24PM -0500, Rob Herring wrote:
-> Users of common properties shouldn't have a type definition as the
-> common schemas already have one. A few new ones slipped in and
-> *-names was missed in the last clean-up pass. Drop all the unnecessary
-> type references in the tree.
-
-Acked-by: Mark Brown <broonie@kernel.org>
-
---OZkY3AIuv2LYvjdk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCZrZYACgkQJNaLcl1U
-h9BnKwf/Z134oVRMYcotQgN8s5J/xgwf2QImV1mvL+RIHKYjJlyARPtcQni65ppK
-kBXjEC4LHxqFVlIrlrJfEST6iFTyPm1loKXZJcVvWY6vytNmswI2I4CdEJ1ni6Tc
-EbsF3hoyBU3llDDoOwwj/RdeQPaoSR3x608OaWFPOaNUW+Z8IL38hmQCIQKzOAkh
-qSD4lvREiasStstHcWZP4n1zy6VoNrRyGJ7Lk8lLY+VrgnBep/moN+3IbpomPjow
-VqvyYkr15OhzegEJ0n88HvNWv1SHSy3+7O5GiABguaOYx2waWTD1FffrfxDcts8c
-3ipGtVLahbT+uQ3Lo4HLskPQmk3abQ==
-=0dIA
------END PGP SIGNATURE-----
-
---OZkY3AIuv2LYvjdk--
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
