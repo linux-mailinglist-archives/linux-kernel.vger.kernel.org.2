@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B25F379736
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45D8379733
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233315AbhEJSy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 14:54:59 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:37909 "EHLO
+        id S233079AbhEJSyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 14:54:49 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:48999 "EHLO
         mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232929AbhEJSyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 14:54:46 -0400
+        id S231817AbhEJSyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 14:54:45 -0400
 Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
         (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14AIrNlg2459085
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14AIrNlh2459085
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
         Mon, 10 May 2021 11:53:32 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14AIrNlg2459085
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14AIrNlh2459085
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1620672812;
-        bh=XW2xI9mQyvmteVzirDc4pCwKf03ZI3QdAzMh8DgfPMU=;
+        s=2021042801; t=1620672813;
+        bh=7zzEAq64ESXNZfItBhsP50MWC9r1d0W8O+dRebRph+s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r/toyUaT3PGFUpMbk59NsiWK1PJDtKwGkdR4MmH7BzJF7A322GUNje9ExkBWI5RHn
-         WL8uCdtNtwzPdE9Twz90WcnnOwA6/1c5kDHUvIz6rgHig9ZN6O4QBon62hqWgrfCsK
-         /jb4mQaKBuMwmakCi+m+RfJpUWF/c5AQy6Ex1dHycfxM0PkBXjQdmdsICj9VQfYX/L
-         Fs5miRmLXUKURgXhlI1Wt+PjaHIZwcZXd6zdbr+QQ1WY7MBvdRTKL0eX7JNu/x7cTE
-         k6KROoiKqrDENvbTvr9ph8uStIhVMd2Dht+GkNCR7RcK4JOC37xhc7s1Eg/zcwY64w
-         qH6vVf6jIuxYw==
+        b=ZeoiRRl+6P7oiCCIaSrV6dZBlRCIdE1JGNKUn2AvIZtKIhPNtJDMIX0gV/hL0Hxyk
+         bTLPpY0nzTl4sS2DCpsMoDVxRd1Km6S/7V1KfC56U2/xvgKylR60TQt0U2FUOiWGnW
+         EAYUcLp+A1EJKC+DXM0kt1vdmVI9YONSjYWTX64RQ6RhyNK7Imh1Ks9tfIlAETZyZs
+         btc2SUZ4tSbC3k5IzmKkPLHb62XZl1fziTMg9ouoHejfFsHJEWAFisbdOiWe2Hytsz
+         YNxsaDHdQNhbk2yvtEulHAjei/v1V0EdEq4kz9DYqQMUEZkHDNf6ND+nd+rhT2TYvA
+         bcgoEW9wh2LGg==
 From:   "H. Peter Anvin" <hpa@zytor.com>
 To:     Ingo Molnar <mingo@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -34,9 +34,9 @@ To:     Ingo Molnar <mingo@redhat.com>,
         Andy Lutomirski <luto@kernel.org>
 Cc:     "H. Peter Anvin" <hpa@zytor.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [RFC v2 PATCH 4/7] x86/syscall: maximize MSR_SYSCALL_MASK
-Date:   Mon, 10 May 2021 11:53:13 -0700
-Message-Id: <20210510185316.3307264-5-hpa@zytor.com>
+Subject: [RFC v2 PATCH 5/7] x86/entry: split PUSH_AND_CLEAR_REGS into two submacros
+Date:   Mon, 10 May 2021 11:53:14 -0700
+Message-Id: <20210510185316.3307264-6-hpa@zytor.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510185316.3307264-1-hpa@zytor.com>
 References: <20210510185316.3307264-1-hpa@zytor.com>
@@ -48,57 +48,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
 
-It is better to clear as many flags as possible when we do a system
-call entry, as opposed to the other way around. The fewer flags we
-keep, the lesser the possible interference between the kernel and user
-space.
-
-The flags changed are:
-
-CF, PF, AF, ZF, SF, OF: these are arithmetic flags which affect
-branches, possibly speculatively. They should be cleared for the same
-reasons we now clear all GPRs on entry.
-
-RF: suppresses a code breakpoint on the subsequent instruction. It is
-probably impossible to enter the kernel with RF set, but if it is
-somehow not, it would break a kernel debugger setting a breakpoint on
-the entry point. Either way, user space should not be able to control
-kernel behavior here.
-
-ID: this flag has no direct effect (it is a scratch bit only.)
-However, there is no reason to retain the user space value in the
-kernel, and the standard should be to clear unless needed, not the
-other way around.
+PUSH_AND_CLEAR_REGS, as the name implies, performs two functions:
+pushing registers and clearing registers. They don't necessarily have
+to be performed in immediate sequence, although all current users
+do. Split it into two macros for the case where that isn't desired;
+the FRED enabling patchset will eventually make use of this.
 
 Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
 ---
- arch/x86/kernel/cpu/common.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ arch/x86/entry/calling.h | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index a1b756c49a93..6cf697574661 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1773,10 +1773,16 @@ void syscall_init(void)
- 	wrmsrl_safe(MSR_IA32_SYSENTER_EIP, 0ULL);
- #endif
+diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
+index 7436d4a74ecb..a4c061fb7c6e 100644
+--- a/arch/x86/entry/calling.h
++++ b/arch/x86/entry/calling.h
+@@ -63,7 +63,7 @@ For 32-bit we have the following conventions - kernel is built with
+  * for assembly code:
+  */
  
--	/* Flags to clear on syscall */
-+	/*
-+	 * Flags to clear on syscall; clear as much as possible
-+	 * to minimize user space-kernel interference.
-+	 */
- 	wrmsrl(MSR_SYSCALL_MASK,
--	       X86_EFLAGS_TF|X86_EFLAGS_DF|X86_EFLAGS_IF|
--	       X86_EFLAGS_IOPL|X86_EFLAGS_AC|X86_EFLAGS_NT);
-+	       X86_EFLAGS_CF|X86_EFLAGS_PF|X86_EFLAGS_AF|
-+	       X86_EFLAGS_ZF|X86_EFLAGS_SF|X86_EFLAGS_TF|
-+	       X86_EFLAGS_IF|X86_EFLAGS_DF|X86_EFLAGS_OF|
-+	       X86_EFLAGS_IOPL|X86_EFLAGS_NT|X86_EFLAGS_RF|
-+	       X86_EFLAGS_AC|X86_EFLAGS_ID);
- }
+-.macro PUSH_AND_CLEAR_REGS rdx=%rdx rax=%rax save_ret=0
++.macro PUSH_REGS rdx=%rdx rax=%rax save_ret=0
+ 	.if \save_ret
+ 	pushq	%rsi		/* pt_regs->si */
+ 	movq	8(%rsp), %rsi	/* temporarily store the return address in %rsi */
+@@ -90,7 +90,9 @@ For 32-bit we have the following conventions - kernel is built with
+ 	.if \save_ret
+ 	pushq	%rsi		/* return address on top of stack */
+ 	.endif
++.endm
  
- #else	/* CONFIG_X86_64 */
++.macro CLEAR_REGS
+ 	/*
+ 	 * Sanitize registers of values that a speculation attack might
+ 	 * otherwise want to exploit. The lower registers are likely clobbered
+@@ -112,6 +114,11 @@ For 32-bit we have the following conventions - kernel is built with
+ 
+ .endm
+ 
++.macro PUSH_AND_CLEAR_REGS rdx=%rdx rax=%rax save_ret=0
++	PUSH_REGS rdx=\rdx, rax=\rax, save_ret=\save_ret
++	CLEAR_REGS
++.endm
++
+ .macro POP_REGS pop_rdi=1 skip_r11rcx=0
+ 	popq %r15
+ 	popq %r14
 -- 
 2.31.1
 
