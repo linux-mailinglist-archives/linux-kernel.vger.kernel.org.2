@@ -2,168 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B46379488
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF9F37948E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhEJQsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 12:48:13 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:33432 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232090AbhEJQqo (ORCPT
+        id S231860AbhEJQvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 12:51:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230337AbhEJQvf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 12:46:44 -0400
-Received: by mail-oi1-f171.google.com with SMTP id b25so11120848oic.0;
-        Mon, 10 May 2021 09:45:39 -0700 (PDT)
+        Mon, 10 May 2021 12:51:35 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9762CC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 09:50:28 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id s22so13718681pgk.6
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 09:50:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=olHLGZ48niXGut0XbbxLsqr0rbv3H8VjFmjxIqL68wU=;
+        b=brCt+CBq+MmsYtOo49UoEAd8XbftfZYRocY+H8ceTF3EwDGCN2CeI1WQ9eIy3UfxdW
+         XyVfkCJcNVJVKj12/M02BdtLR4a1OqoaYg8VFD4AUV8H4YpQQue8q/ib29WgJYgMKbSy
+         Je7H5aynTFvuPadhnyzh/dg06wu2Bajchu46UjJxxFmAOm0XGtPbiJCyciWF431x9siw
+         j1h9BOIk0ZL2QVW1AfgwxN+E4r5eKw7YZ/KFrj3WPAN50AHbGDp/4x9gWuBICi2ScZFJ
+         vJIkAKMXRM5CIdzwa1RoLiQNETmENm8QV3oi7d8GD2BYUzLK8Cao3VcKXD+FGmyoBZsy
+         fpGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=9higqPKGrnY1IY6VuqVyaPGF4tW6YAqMC+KWAKz/f2M=;
-        b=rq32SXBXW8fjKHsOr65AFdnn9c3HYKtDb7OrgNkQCsIFZi5OGzyFeGKhwKHZzL3rGq
-         wjlOe0fAubW33SKQ9LGwR5gMZ8Vqc+JQ3tkbhEO85XLmJ0YjKRfXCree9q6rp0Jz7pCU
-         8HPk+qMQXu52aFE9KuGCk7ZlLmDjUntRxj2uM7v/Y6llzigkqDO4r0FOIDql8d7Ruyd3
-         uRG0UEcgg3RmnIS5k5LZBFK0Jibjl/janAAULx9Eq/BD0N7IfV/s5XO1Ba2M4Msq20gZ
-         JE6RvF/QjAGzVDgfTxJ4Vq4JZALawin40VxKZwsh8a4WCn46ALmo1SIl3uwrsEvN1qe+
-         tYdQ==
-X-Gm-Message-State: AOAM530hG4RH+BxCCU5KJckC6xwbB+jORX6KrS2TTETA8xuRJXkUZ/wT
-        ETVKS4DIgdgyZKYLRBkxrA==
-X-Google-Smtp-Source: ABdhPJzrDpekbN2l5TxSPDuiWfP8/sG/3dI4sWv+MXhY2apRC5QC50Nmv8BeU/9jsn21sgB3Fmknfw==
-X-Received: by 2002:a05:6808:13ca:: with SMTP id d10mr10913461oiw.24.1620665139210;
-        Mon, 10 May 2021 09:45:39 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q130sm2629826oif.40.2021.05.10.09.45.32
+        bh=olHLGZ48niXGut0XbbxLsqr0rbv3H8VjFmjxIqL68wU=;
+        b=FPWj+RJEar1FA8Qwhq1ZWNaW1eTJuICue4gDBsrZMVRGj5GMl1Wa2tEpC3YX/FkZzD
+         gS8XegXJubX0dYVxtIwl3KTNN+uolUNGHCLP65SDA12KODrvioXGd/TJpMpxz6DGiJ/7
+         09toepZFx6IzaBnN5BDPU1pZ8Gw6P12YX0Ena9eUMiVLYlv3hQXUXmVQRzzViwFx5jYC
+         CQbJhtiym159FUgyRKxdef+u7Qax/c5qkW2N8R32ZfoXRa3aByUebiFAlbEO3KniJpFQ
+         OpbSgOIgdeGLGoDmhMMBwvNYOlsPARB4TDCD5yTF6MxBsAtoWl5LqFMzrqeu4TBo5mHj
+         AbCA==
+X-Gm-Message-State: AOAM533vm386fe68AIlhzKtDotKaTuN0YbFFylvOQajYGq4NxNgcvuQ7
+        86UlgHo35UlzxakhrT5oJ8f9PA==
+X-Google-Smtp-Source: ABdhPJw234xk7Bm+twfROI+POMcEoLhFF5jcgYbuwBXgF1NjudkN/ojQY/hp0T/liBO1/h47of8KLg==
+X-Received: by 2002:a63:5602:: with SMTP id k2mr25493231pgb.127.1620665427664;
+        Mon, 10 May 2021 09:50:27 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id k69sm11859203pgc.45.2021.05.10.09.50.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 09:45:35 -0700 (PDT)
-Received: (nullmailer pid 260896 invoked by uid 1000);
-        Mon, 10 May 2021 16:45:32 -0000
-Date:   Mon, 10 May 2021 11:45:32 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     broonie@kernel.org, devicetree@vger.kernel.org, perex@perex.cz,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com, lee.jones@linaro.org
-Subject: Re: [PATCH 1/4] ASoC: dt-bindings: wcd934x: add bindings for Headset
- Button detection
-Message-ID: <20210510164532.GA241925@robh.at.kernel.org>
-References: <20210510101201.7281-1-srinivas.kandagatla@linaro.org>
- <20210510101201.7281-2-srinivas.kandagatla@linaro.org>
+        Mon, 10 May 2021 09:50:26 -0700 (PDT)
+Date:   Mon, 10 May 2021 16:50:23 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Reiji Watanabe <reijiw@google.com>
+Subject: Re: [PATCH 14/15] KVM: x86: Tie Intel and AMD behavior for
+ MSR_TSC_AUX to guest CPU model
+Message-ID: <YJlkT0kJ241gYgVw@google.com>
+References: <20210504171734.1434054-1-seanjc@google.com>
+ <20210504171734.1434054-15-seanjc@google.com>
+ <7e75b44c0477a7fb87f83962e4ea2ed7337c37e5.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510101201.7281-2-srinivas.kandagatla@linaro.org>
+In-Reply-To: <7e75b44c0477a7fb87f83962e4ea2ed7337c37e5.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 11:11:58AM +0100, Srinivas Kandagatla wrote:
-> Add bindings required for Multi Button Headset detection.
-> WCD934x support Headsets with upto 8 buttons including, impedance measurement
-> on both L/R Headset speakers and cross connection detection.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  .../bindings/sound/qcom,wcd934x.yaml          | 65 +++++++++++++++++++
->  1 file changed, 65 insertions(+)
+On Mon, May 10, 2021, Maxim Levitsky wrote:
+> On Tue, 2021-05-04 at 10:17 -0700, Sean Christopherson wrote:
+> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> > index de921935e8de..6c7c6a303cc5 100644
+> > --- a/arch/x86/kvm/svm/svm.c
+> > +++ b/arch/x86/kvm/svm/svm.c
+> > @@ -2663,12 +2663,6 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+> >  			msr_info->data |= (u64)svm->sysenter_esp_hi << 32;
+> >  		break;
+> >  	case MSR_TSC_AUX:
+> > -		if (tsc_aux_uret_slot < 0)
+> > -			return 1;
+> > -		if (!msr_info->host_initiated &&
+> Not related to this patch, but I do wonder why do we need
+> to always allow writing this msr if done by the host,
+> since if neither RDTSPC nor RDPID are supported, the guest
+> won't be able to read this msr at all.
 
-A search tells me this is not v1... 
+It's an ordering thing and not specific to MSR_TSC_AUX.  Exempting host userspace
+from guest CPUID checks allows userspace to set MSR state, e.g. during migration,
+before setting the guest CPUID model.
 
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml
-> index e8f716b5f875..b25c6ca4e97c 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml
-> @@ -77,6 +77,64 @@ properties:
->      minimum: 1800000
->      maximum: 2850000
->  
-> +  qcom,hphl-jack-type-normally-closed:
-> +    description: Indicates that HPHL jack switch type is normally closed
-> +    type: boolean
-> +
-> +  qcom,ground-jack-type-normally-closed:
-> +    description: Indicates that Headset Ground switch type is normally closed
-> +    type: boolean
-
-I asked before if 'normally closed' was the more common case and you 
-said yes. So I'd expect 'open' here, but now you've changed the 
-polarity of the property. And now not present is not described at all. 
-
-> +
-> +  qcom,mbhc-headset-vthreshold-microvolt:
-> +    description: Voltage threshold value for headset detection
-> +    minimum: 0
-> +    maximum: 2850000
-> +
-> +  qcom,mbhc-headphone-vthreshold-microvolt:
-> +    description: Voltage threshold value for headphone detection
-> +    minimum: 0
-> +    maximum: 2850000
-> +
-> +  qcom,mbhc-button0-vthreshold-microvolt:
-> +    description: Voltage threshold value for headset button0
-> +    minimum: 0
-> +    maximum: 500000
-> +
-> +  qcom,mbhc-button1-vthreshold-microvolt:
-> +    description: Voltage threshold value for headset button1
-> +    minimum: 0
-> +    maximum: 500000
-> +
-> +  qcom,mbhc-button2-vthreshold-microvolt:
-> +    description: Voltage threshold value for headset button2
-> +    minimum: 0
-> +    maximum: 500000
-> +
-> +  qcom,mbhc-button3-vthreshold-microvolt:
-> +    description: Voltage threshold value for headset button3
-> +    minimum: 0
-> +    maximum: 500000
-> +
-> +  qcom,mbhc-button4-vthreshold-microvolt:
-> +    description: Voltage threshold value for headset button4
-> +    minimum: 0
-> +    maximum: 500000
-> +
-> +  qcom,mbhc-button5-vthreshold-microvolt:
-> +    description: Voltage threshold value for headset button5
-> +    minimum: 0
-> +    maximum: 500000
-> +
-> +  qcom,mbhc-button6-vthreshold-microvolt:
-> +    description: Voltage threshold value for headset button6
-> +    minimum: 0
-> +    maximum: 500000
-> +
-> +  qcom,mbhc-button7-vthreshold-microvolt:
-> +    description: Voltage threshold value headset button7
-> +    minimum: 0
-> +    maximum: 500000
-
-These can all be a single pattern property: 
-'^qcom,mbhc-button[0-7]-vthreshold-microvolt$'
-
-Are there inter-dependencies between these properties? Are 0-7 
-meaningful or just an index? For the latter case, why not just make this 
-an array?
-
-> +
->    clock-output-names:
->      const: mclk
->  
-> @@ -159,6 +217,13 @@ examples:
->          qcom,micbias2-microvolt = <1800000>;
->          qcom,micbias3-microvolt = <1800000>;
->          qcom,micbias4-microvolt = <1800000>;
-> +        qcom,hphl-jack-type-normally-closed;
-> +        qcom,ground-jack-type-normally-closed;
-> +        qcom,mbhc-button0-vthreshold-microvolt = <75000>;
-> +        qcom,mbhc-button1-vthreshold-microvolt = <150000>;
-> +        qcom,mbhc-button2-vthreshold-microvolt = <237000>;
-> +        qcom,mbhc-headset-vthreshold-microvolt = <1700000>;
-> +        qcom,mbhc-headphone-vthreshold-microvolt = <50000>;
->          clock-names = "extclk";
->          clocks = <&rpmhcc 2>;
->  
-> -- 
-> 2.21.0
-> 
+> > -		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
+> > -		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
+> > -			return 1;
+> >  		msr_info->data = svm->tsc_aux;
+> >  		break;
+> >  	/*
