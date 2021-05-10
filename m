@@ -2,104 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564BD3793EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6540C3793F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhEJQfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 12:35:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:34076 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231696AbhEJQep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 12:34:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1BC10168F;
-        Mon, 10 May 2021 09:33:40 -0700 (PDT)
-Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C655B3F73B;
-        Mon, 10 May 2021 09:33:37 -0700 (PDT)
-Date:   Mon, 10 May 2021 17:33:29 +0100
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, valentin.schneider@arm.com,
-        dietmar.eggemann@arm.com, corbet@lwn.net, linux-doc@vger.kernel.org
-Subject: Re: [RFC PATCH v2 3/3] sched/doc: Update the CPU capacity asymmetry
- bits
-Message-ID: <20210510163329.GA8567@e120325.cambridge.arm.com>
-References: <1619602363-1305-1-git-send-email-beata.michalska@arm.com>
- <1619602363-1305-4-git-send-email-beata.michalska@arm.com>
- <79223641-6b3e-6b48-50df-3a9c73c003cd@infradead.org>
+        id S231797AbhEJQfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 12:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231733AbhEJQey (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 12:34:54 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FF6C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 09:33:47 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso11507658wmh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 09:33:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PzsapzwQo1sU7vk4C9wVe0nWjAV2j6bYomVQNz4HZ6o=;
+        b=a3Tje2HB5U0LxEiIer9Axrl9nUx26z16do6RZnwmOMPDH1tRxiuF3XF+ooSQNScYl4
+         noS7jchno6+selZ+vSze5DkeArY3lI3ZJR/VgUv5yEFUmgfrd6b/qILQcwdCDR5yeGmQ
+         oaSdNhEhA94YvjB+SjKpJCNc0s4SEompJ2mjghh7rLnOsF8qAzBR9c4UWIhg/jFoePw6
+         VHSQgo0mw/0M1llULFsF9DCvBWwpwdw6pQWQ5JzafR01Ow0k5wqAYC+L25M2EBXshKbK
+         5/B8BYAjBjUdG/Ud30REvEsziKdWyyinOskx0qoZG3PAODbdsfMwofPD08aT0VMcG7cO
+         O7sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PzsapzwQo1sU7vk4C9wVe0nWjAV2j6bYomVQNz4HZ6o=;
+        b=sJRrsO7JDBQrYS7jAt5iIgJ92Cljaq+1vSDpiDVEexPwWcZ021IbBC4Dw2PgKksX9b
+         9NvYhV21eT9XsgG2TNcORsZWS/ti3J553IQnO+eIWYRs/yAd3T6Fnm8EWR75bwV72+F3
+         9faav5JxB8ojGj7DwaTAMev/azd1goVA9arYkRr7wq7jeArqx6V1BI76QCRqwQmE+4Kw
+         /PICDmBLeNg/b5oKrA4r+6mJLp+ZGFRttBVeyna3dki9BFGi307go42cesgNgJFDuJ13
+         +Byq2dnDqa+qHc6ZMU5PpL6wgaLKX+9u+EeOqmNgaTHa2yyeTCLMxRMyk77VTe24C37T
+         GCQw==
+X-Gm-Message-State: AOAM53313XuBl+z1bbrRMuJr49Da56VQYEmPbcIHwtY9CAk2v8iqrTOi
+        1fnt47yVeI41EM1JqYewp/4+E/qh/jXgrZS6s7QhMQ==
+X-Google-Smtp-Source: ABdhPJyBqiWlS5Tm5D2XOPtY2dsb1DWHUvY+42X1bfmqrG0F/94UluqLtViC1N78Y8pkK9TE4dlTPaVRq8M13iUqpsM=
+X-Received: by 2002:a1c:55ca:: with SMTP id j193mr4438wmb.58.1620664425650;
+ Mon, 10 May 2021 09:33:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <79223641-6b3e-6b48-50df-3a9c73c003cd@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210504194329.840964-1-irogers@google.com> <CAL_JsqLUxMOF_AhtDj7KuPmBzax-ZejSC76HNOOTr-Pq5fdj7Q@mail.gmail.com>
+In-Reply-To: <CAL_JsqLUxMOF_AhtDj7KuPmBzax-ZejSC76HNOOTr-Pq5fdj7Q@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 10 May 2021 09:33:33 -0700
+Message-ID: <CAP-5=fWfZXS57aQ2Sf+ycmDnvRpUf_oJfkv1sNzVdpY4PVcOdA@mail.gmail.com>
+Subject: Re: [PATCH] libperf test: Silence printf flag warning
+To:     Rob Herring <robh@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 10:19:10AM -0700, Randy Dunlap wrote:
-> On 4/28/21 2:32 AM, Beata Michalska wrote:
-> > Update the documentation bits referring to capacity aware scheduling
-> > with regards to newly introduced SD_ASYM_CPUCAPACITY_FULL shed_domain
-> 
->                                                             sched_domain
-> I guess.
-> 
-> > flag.
-> > 
-> > Signed-off-by: Beata Michalska <beata.michalska@arm.com>
-> > ---
-> >  Documentation/scheduler/sched-capacity.rst | 6 ++++--
-> >  Documentation/scheduler/sched-energy.rst   | 2 +-
-> >  2 files changed, 5 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/Documentation/scheduler/sched-capacity.rst b/Documentation/scheduler/sched-capacity.rst
-> > index 9b7cbe4..92d16e7 100644
-> > --- a/Documentation/scheduler/sched-capacity.rst
-> > +++ b/Documentation/scheduler/sched-capacity.rst
-> > @@ -284,8 +284,10 @@ whether the system exhibits asymmetric CPU capacities. Should that be the
-> >  case:
-> >  
-> >  - The sched_asym_cpucapacity static key will be enabled.
-> > -- The SD_ASYM_CPUCAPACITY flag will be set at the lowest sched_domain level that
-> > -  spans all unique CPU capacity values.
-> > +- The SD_ASYM_CPUCAPACITY_FULL flag will be set at the lowest sched_domain
-> > +  level that spans all unique CPU capacity values.
-> > +- The SD_ASYM_CPUCAPACITY flag will be set for any sched_domain that spans
-> > +  cpus with any range of asymmetry.
-> 
->      CPUs
-> please.
-> 
-> >  
-> >  The sched_asym_cpucapacity static key is intended to guard sections of code that
-> >  cater to asymmetric CPU capacity systems. Do note however that said key is
-> > diff --git a/Documentation/scheduler/sched-energy.rst b/Documentation/scheduler/sched-energy.rst
-> > index afe02d3..8fbce5e 100644
-> > --- a/Documentation/scheduler/sched-energy.rst
-> > +++ b/Documentation/scheduler/sched-energy.rst
-> > @@ -328,7 +328,7 @@ section lists these dependencies and provides hints as to how they can be met.
-> >  
-> >  As mentioned in the introduction, EAS is only supported on platforms with
-> >  asymmetric CPU topologies for now. This requirement is checked at run-time by
-> > -looking for the presence of the SD_ASYM_CPUCAPACITY flag when the scheduling
-> > +looking for the presence of the SD_ASYM_CPUCAPACITY_FULL flag when the scheduling
-> >  domains are built.
-> >  
-> >  See Documentation/scheduler/sched-capacity.rst for requirements to be met for this
-> > 
+On Tue, May 4, 2021 at 6:53 PM Rob Herring <robh@kernel.org> wrote:
 >
+> On Tue, May 4, 2021 at 2:43 PM Ian Rogers <irogers@google.com> wrote:
+> >
+> > __u64 maybe an unsigned long, it may also differ from the format
+> > expected by PRIu64. Add a cast to silence the warning:
+> >
+> > tools/lib/perf/tests/test-evsel.c:176:33: error: format specifies type 'unsigned long long' but the argument has type 'unsigned long' [-Werror,-Wformat]
+> >                 __T_VERBOSE("count = %llu\n", end - start);
+> >                                      ~~~~     ^~~~~~~~~~~
+> >                                      %lu
+>
+> Which arch/compiler did you hit this? LLVM? Would have been 64-bit
+> presumably. I'm wondering how I didn't...
+>
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/lib/perf/tests/test-evsel.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/tools/lib/perf/tests/test-evsel.c b/tools/lib/perf/tests/test-evsel.c
+> > index 288b5feaefe2..558097bbbfd0 100644
+> > --- a/tools/lib/perf/tests/test-evsel.c
+> > +++ b/tools/lib/perf/tests/test-evsel.c
+> > @@ -173,7 +173,7 @@ static int test_stat_user_read(int event)
+> >
+> >                 __T("invalid counter data", (end - start) > last);
+> >                 last = end - start;
+> > -               __T_VERBOSE("count = %llu\n", end - start);
+> > +               __T_VERBOSE("count = %llu\n", (unsigned long long)(end - start));
+>
+> I think I'd either change end/start to uint64_t which matches the
+> count struct and use PRIu64, or change them to unsigned long long.
 
-Thank you for having a look!
-Fixes applied to v3.
+Thanks! I need to dig into this again, I suspect there was a problem
+on PowerPC defining s64/u64 to be long int. Perhaps this is happening
+by way of a typedef using int64_t but more likely defining
+__SANE_USERSPACE_TYPES__ is my fix. The guidance in the kernel on
+formatters is pretty clear:
+https://www.kernel.org/doc/Documentation/printk-formats.txt
+And so I think it is better to fix the type for overall sanity and to drop this.
 
----
-BR
-B.
+Thanks,
+Ian
 
-> thanks.
-> -- 
-> ~Randy
-> 
+
+> >         }
+> >
+> >         perf_evsel__munmap(evsel);
+> > --
+> > 2.31.1.607.g51e8a6a459-goog
+> >
