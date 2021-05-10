@@ -2,100 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAEE377C70
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 08:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96ED8377C74
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 08:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhEJGjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 02:39:42 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2546 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbhEJGjk (ORCPT
+        id S230155AbhEJGkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 02:40:52 -0400
+Received: from mail-ua1-f46.google.com ([209.85.222.46]:36515 "EHLO
+        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230009AbhEJGkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 02:39:40 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fdrsl4mztzkYNj;
-        Mon, 10 May 2021 14:35:55 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 10 May 2021 14:38:23 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 1/1] drm/msm/dpu: Fix error return code in dpu_mdss_init()
-Date:   Mon, 10 May 2021 14:38:05 +0800
-Message-ID: <20210510063805.3262-2-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210510063805.3262-1-thunder.leizhen@huawei.com>
-References: <20210510063805.3262-1-thunder.leizhen@huawei.com>
+        Mon, 10 May 2021 02:40:51 -0400
+Received: by mail-ua1-f46.google.com with SMTP id x9so4898906uao.3;
+        Sun, 09 May 2021 23:39:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=88Ilm7Flv2wT81QtnUpmPqsLyEiLP/hNQ6e6DIypvF8=;
+        b=K6W8HKJx59RQTDZYtfrpD9TBufFbMwSPx0C/z/2FXOrNYvEbP1Y3eWc0PESju2+nHL
+         sYngEOrwI2uyxaM1NU4fEiqvgIMUXqa4MYH9OagdfBskKBQ0OxpMGRHRe45zIyBpr2Gc
+         lFXJk608wipaCR+2Jx8X+7k0zevZ4gMQfGFQbh7W2xkEMI34gxcuqbXR8f7oUe+mjCz3
+         F5sQWFLBZZL7fAJ1oJieYaEM3S58SIbHpHMO/oISvWJQqMYeiMm9MlSbCF8bnkeldn0q
+         1KuHgSY7LZxdcJrWf1ZayZwESeX9sjUUPw53tIGW99dhjC1iQXocnzdqrJQeFZnhDHow
+         aRmQ==
+X-Gm-Message-State: AOAM533KVsSdrkbKzQwLe4s4TxjZpN2lIXhUAgQPyhdYsJqe/4+51xDM
+        BRQba4/Z7/xbDxK50JWObv1UxrywCSLTQsdbkvgdRJgO
+X-Google-Smtp-Source: ABdhPJx9aX2w0srOx4Ut30nBYM1wWKO8fDI93D0cYhc7YNORjnnYGTtPGGZLM+lrSx0up2luWduXp+HPTWfTLyC13lU=
+X-Received: by 2002:ab0:59cb:: with SMTP id k11mr3832034uad.100.1620628786270;
+ Sun, 09 May 2021 23:39:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-CFilter-Loop: Reflected
+References: <20210507220813.365382-1-arnd@kernel.org> <20210507220813.365382-13-arnd@kernel.org>
+In-Reply-To: <20210507220813.365382-13-arnd@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 10 May 2021 08:39:35 +0200
+Message-ID: <CAMuHMdUuFPy8F8xwuZys7zdH_nRGQcrjgTSC0UTdcGMv+wEwRg@mail.gmail.com>
+Subject: Re: [RFC 12/12] asm-generic: simplify asm/unaligned.h
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux-Arch <linux-arch@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The error code returned by platform_get_irq() is stored in 'irq', it's
-forgotten to be copied to 'ret' before being returned. As a result, the
-value 0 of 'ret' is returned incorrectly.
+Hi Arnd,
 
-After the above fix is completed, initializing the local variable 'ret'
-to 0 is no longer needed, remove it.
+On Sat, May 8, 2021 at 12:12 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> The get_unaligned()/put_unaligned() implementations are much more complex
+> than necessary, now that all architectures use the same code.
+>
+> Move everything into one file and use a much more compact way to express
+> the same logic.
+>
+> I've compared the binary output using gcc-11 across defconfig builds for
+> all architectures and found this patch to make no difference, except for
+> a single function on powerpc that needs two additional register moves
+> because of random differences in register allocation.
+>
+> There are a handful of callers of the low-level __get_unaligned_cpu32,
+> so leave that in place for the time being even though the common code
+> no longer uses it.
+>
+> This adds a warning for any caller of get_unaligned()/put_unaligned()
+> that passes in a single-byte pointer, but I've sent patches for all
+> instances that show up in x86 and randconfig builds. It would be nice
+> to change the arguments of the endian-specific accessors to take the
+> matching __be16/__be32/__be64/__le16/__le32/__le64 arguments instead of
+> a void pointer, but that requires more changes to the rest of the kernel.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-In addition, when dpu_mdss_init() is successfully returned, the value of
-'ret' is always 0. Therefore, replace "return ret" with "return 0" to make
-the code clearer.
+Thanks for your patch!
 
-Fixes: 070e64dc1bbc ("drm/msm/dpu: Convert to a chained irq chip")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+> @@ -6,20 +6,132 @@
+>   * This is the most generic implementation of unaligned accesses
+>   * and should work almost anywhere.
+>   */
+> +#include <linux/unaligned/packed_struct.h>
+>  #include <asm/byteorder.h>
+>
+> -#if defined(__LITTLE_ENDIAN)
+> -# include <linux/unaligned/le_struct.h>
+> -# include <linux/unaligned/generic.h>
+> -# define get_unaligned __get_unaligned_le
+> -# define put_unaligned __put_unaligned_le
+> -#elif defined(__BIG_ENDIAN)
+> -# include <linux/unaligned/be_struct.h>
+> -# include <linux/unaligned/generic.h>
+> -# define get_unaligned __get_unaligned_be
+> -# define put_unaligned __put_unaligned_be
+> -#else
+> -# error need to define endianess
+> -#endif
+> +#define __get_unaligned_t(type, ptr) ({                                                \
+> +       const struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr);      \
+> +       __pptr->x;                                                              \
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-index 06b56fec04e047a..6b0a7bc87eb75b8 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-@@ -225,7 +225,7 @@ int dpu_mdss_init(struct drm_device *dev)
- 	struct msm_drm_private *priv = dev->dev_private;
- 	struct dpu_mdss *dpu_mdss;
- 	struct dss_module_power *mp;
--	int ret = 0;
-+	int ret;
- 	int irq;
- 
- 	dpu_mdss = devm_kzalloc(dev->dev, sizeof(*dpu_mdss), GFP_KERNEL);
-@@ -253,8 +253,10 @@ int dpu_mdss_init(struct drm_device *dev)
- 		goto irq_domain_error;
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0)
-+	if (irq < 0) {
-+		ret = irq;
- 		goto irq_error;
-+	}
- 
- 	irq_set_chained_handler_and_data(irq, dpu_mdss_irq,
- 					 dpu_mdss);
-@@ -263,7 +265,7 @@ int dpu_mdss_init(struct drm_device *dev)
- 
- 	pm_runtime_enable(dev->dev);
- 
--	return ret;
-+	return 0;
- 
- irq_error:
- 	_dpu_mdss_irq_domain_fini(dpu_mdss);
+Space before tab (cfr. checkpatch).
+
+> +})
+> +
+> +#define get_unaligned(ptr) ({                                                  \
+> +       __auto_type __ptr = (ptr);                                              \
+> +       __get_unaligned_t(typeof(*__ptr), __ptr);                               \
+> +})
+> +
+> +#define __put_unaligned_t(type, val, ptr) ({                                   \
+> +       struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr);            \
+> +       __pptr->x = (val);                                                      \
+
+Likewise
+
+> +})
+>
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.26.0.106.g9fadedd
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
