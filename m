@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD3B378A58
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AB5378C12
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242262AbhEJLlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:41:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52714 "EHLO mail.kernel.org"
+        id S1345191AbhEJMWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:22:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235067AbhEJK5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3325F6195E;
-        Mon, 10 May 2021 10:51:43 +0000 (UTC)
+        id S236891AbhEJLK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:10:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 437126145C;
+        Mon, 10 May 2021 11:05:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643903;
-        bh=jSFnpPCMOcIv5/ncZmQy4KGPp60iGDNp1gQ4t8bTZgo=;
+        s=korg; t=1620644748;
+        bh=zCIXw1C/sFH1de0h7EkCdQbVW7yzWhOzPy7vGicll/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vNVILZ5r3xw/nQiGSZnJn3Xz2AFIREEre+EplSDua+D7eeCw9F0IqJZTl279FY1i4
-         kH3zHAWICm2tIWSb92k9V40XtOENhtStz0mFW5Abf3BANcMkybiwOWz4xpY63I17yg
-         OD4eMX/Guh6pVhjPP5ZvjdFfwNFGK4nIUxkwwOx0=
+        b=iwHgPS5chGoHlSpXqxW1fficWe1WBed1HJoDhgz6N+T9S/4/g/m+LgU4ifGi93oWS
+         NKPiNg/9UFr7qRpIBXiKPjMSsT7uJQ/Qew+NKq9tkz1sDOdu3x+GWAsrb1nNtUTaJa
+         KP3LqQT63R8mHej40Z1u9Bc5g1KNudpokoU+1zlo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 206/342] media: i2c: tda1997: Fix possible use-after-free in tda1997x_remove()
-Date:   Mon, 10 May 2021 12:19:56 +0200
-Message-Id: <20210510102016.897368645@linuxfoundation.org>
+Subject: [PATCH 5.12 208/384] selftests/resctrl: Fix compilation issues for other global variables
+Date:   Mon, 10 May 2021 12:19:57 +0200
+Message-Id: <20210510102021.751587601@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
+References: <20210510102014.849075526@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Fenghua Yu <fenghua.yu@intel.com>
 
-[ Upstream commit 7f820ab5d4eebfe2d970d32a76ae496a6c286f0f ]
+[ Upstream commit 896016d2ad051811ff9c9c087393adc063322fbc ]
 
-This driver's remove path calls cancel_delayed_work(). However, that
-function does not wait until the work function finishes. This means
-that the callback function may still be running after the driver's
-remove function has finished, which would result in a use-after-free.
+Reinette reported following compilation issue on Fedora 32, gcc version
+10.1.1
 
-Fix by calling cancel_delayed_work_sync(), which ensures that
-the work is properly cancelled, no longer running, and unable
-to re-schedule itself.
+/usr/bin/ld: resctrl_tests.o:<src_dir>/resctrl.h:65: multiple definition
+of `bm_pid'; cache.o:<src_dir>/resctrl.h:65: first defined here
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Other variables are ppid, tests_run, llc_occup_path, is_amd. Compiler
+isn't happy because these variables are defined globally in two .c files
+but are not declared as extern.
+
+To fix issues for the global variables, declare them as extern.
+
+Chang Log:
+- Split this patch from v4's patch 1 (Shuah).
+
+Reported-by: Reinette Chatre <reinette.chatre@intel.com>
+Tested-by: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/tda1997x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/resctrl/resctrl.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
-index a09bf0a39d05..89bb7e6dc7a4 100644
---- a/drivers/media/i2c/tda1997x.c
-+++ b/drivers/media/i2c/tda1997x.c
-@@ -2804,7 +2804,7 @@ static int tda1997x_remove(struct i2c_client *client)
- 	media_entity_cleanup(&sd->entity);
- 	v4l2_ctrl_handler_free(&state->hdl);
- 	regulator_bulk_disable(TDA1997X_NUM_SUPPLIES, state->supplies);
--	cancel_delayed_work(&state->delayed_work_enable_hpd);
-+	cancel_delayed_work_sync(&state->delayed_work_enable_hpd);
- 	mutex_destroy(&state->page_lock);
- 	mutex_destroy(&state->lock);
+diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
+index 959c71e39bdc..12b77182cb44 100644
+--- a/tools/testing/selftests/resctrl/resctrl.h
++++ b/tools/testing/selftests/resctrl/resctrl.h
+@@ -62,11 +62,11 @@ struct resctrl_val_param {
+ 	int		(*setup)(int num, ...);
+ };
  
+-pid_t bm_pid, ppid;
+-int tests_run;
++extern pid_t bm_pid, ppid;
++extern int tests_run;
+ 
+-char llc_occup_path[1024];
+-bool is_amd;
++extern char llc_occup_path[1024];
++extern bool is_amd;
+ 
+ bool check_resctrlfs_support(void);
+ int filter_dmesg(void);
 -- 
 2.30.2
 
