@@ -2,205 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A833379A6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 510D4379A76
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 01:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbhEJW7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:59:14 -0400
-Received: from mga02.intel.com ([134.134.136.20]:14343 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229502AbhEJW7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:59:12 -0400
-IronPort-SDR: 5CCxM31DrQ8NpRCc57zhv8RqDO51fL6JXRIul4MJVkw5VTUsKQCY8WFY9rtcImWpqRy2Aq/LHQ
- EakplwnAGuvQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="186440128"
-X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
-   d="scan'208";a="186440128"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 15:58:06 -0700
-IronPort-SDR: QsXO/4wRx+z3mdOQUqRrWo77zUAK8pyl2+PvaaF/SdE5zZB8LiimPlTFQZZ4cYaXz9oRpRzdWf
- iJ15TiTGHg8g==
-X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
-   d="scan'208";a="434014879"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.251.144.113]) ([10.251.144.113])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 15:58:00 -0700
-Subject: Re: [PATCH v26 23/30] x86/cet/shstk: Handle thread shadow stack
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-24-yu-cheng.yu@intel.com> <YJlADyc/9pn8Sjkn@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <89598d32-4bf8-b989-ee77-5b4b55a138a9@intel.com>
-Date:   Mon, 10 May 2021 15:57:56 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S229925AbhEJXDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 19:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229502AbhEJXDS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 19:03:18 -0400
+Received: from gimli.rothwell.id.au (gimli.rothwell.id.au [IPv6:2404:9400:2:0:216:3eff:fee1:997a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4789DC061574;
+        Mon, 10 May 2021 16:02:13 -0700 (PDT)
+Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4FfGld397DzyNq;
+        Tue, 11 May 2021 09:02:05 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rothwell.id.au;
+        s=201702; t=1620687727;
+        bh=vvJYrLdSKdPDp5n6MdBMG8Ejl6tfMoxG/EL7Uwg+zvw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gFrB4UZNdxUdZih5ls+hfIeDN7bpdpCvvwe+hP8iizCA5Hordev1dtY6N59CUx7Um
+         AxzKOp2dURoHKDFIwSRypLjex51F7G3VIDdt9W8HsHJu4DGJBVHE4SaediiBPFEQKm
+         gUHkfNN9gZiLTPMHccbt6d1Izm8xDmvSSMpA/fumNbQ3h0pX3jLNak30J9Ww18dkZn
+         NIN6JvdvT9k4VU4HgeJgpWc4mBffHEtIN+2HYxhTOWw6BoVdsgwzMgkib4py/SWgH3
+         AfwwNjBNS7Bf+GiDRnrBWxNv2/GpfcA8qL++mDCAztNTbtmWZCr/0uc+IJraRPCKlj
+         I7EbhF0cXI6jQ==
+Date:   Tue, 11 May 2021 09:02:04 +1000
+From:   Stephen Rothwell <sfr@rothwell.id.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Jude Shih <shenshih@amd.com>,
+        Hanghong Ma <Hanghong.Ma@amd.com>,
+        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Dave Airlie <airlied@linux.ie>
+Subject: Re: linux-next: build failure after merge of the amdgpu tree
+Message-ID: <20210511090204.6cc161e7@elm.ozlabs.ibm.com>
+In-Reply-To: <CADnq5_PgHV07dXabX9kiJzqW13W2YeYJ146=BJ-uGCxTt6-_pQ@mail.gmail.com>
+References: <20210505093458.23efd0ee@canb.auug.org.au>
+        <20210510084628.0d4bbd6c@canb.auug.org.au>
+        <CADnq5_OqX6EBWyt5TR1N2Fcwdq-0hWBzcRFnBSej=vCoPmZCrg@mail.gmail.com>
+        <20210511081849.59d41322@elm.ozlabs.ibm.com>
+        <CADnq5_PgHV07dXabX9kiJzqW13W2YeYJ146=BJ-uGCxTt6-_pQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YJlADyc/9pn8Sjkn@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/tsCNGkkeO.P0bSwqgwUKwAC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/2021 7:15 AM, Borislav Petkov wrote:
-> On Tue, Apr 27, 2021 at 01:43:08PM -0700, Yu-cheng Yu wrote:
+--Sig_/tsCNGkkeO.P0bSwqgwUKwAC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-[...]
+Hi Alex,
 
->> diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
->> index c815c7507830..d387df84b7f1 100644
->> --- a/arch/x86/kernel/shstk.c
->> +++ b/arch/x86/kernel/shstk.c
->> @@ -70,6 +70,55 @@ int shstk_setup(void)
->>   	return 0;
->>   }
-> 
->> +int shstk_setup_thread(struct task_struct *tsk, unsigned long clone_flags,
-> 
-> Judging by what this function does, its name wants to be
-> 
-> shstk_alloc_thread_stack()
-> 
-> or so?
-> 
->> +		       unsigned long stack_size)
->> +{
->> +	unsigned long addr, size;
->> +	struct cet_user_state *state;
->> +	struct cet_status *cet = &tsk->thread.cet;
-> 
-> The tip-tree preferred ordering of variable declarations at the
-> beginning of a function is reverse fir tree order::
-> 
-> 	struct long_struct_name *descriptive_name;
-> 	unsigned long foo, bar;
-> 	unsigned int tmp;
-> 	int ret;
-> 
-> The above is faster to parse than the reverse ordering::
-> 
-> 	int ret;
-> 	unsigned int tmp;
-> 	unsigned long foo, bar;
-> 	struct long_struct_name *descriptive_name;
-> 
-> And even more so than random ordering::
-> 
-> 	unsigned long foo, bar;
-> 	int ret;
-> 	struct long_struct_name *descriptive_name;
-> 	unsigned int tmp;
-> 
->> +
->> +	if (!cet->shstk_size)
->> +		return 0;
->> +
-> 
-> This check needs a comment.
-> 
->> +	if ((clone_flags & (CLONE_VFORK | CLONE_VM)) != CLONE_VM)
->> +		return 0;
->> +
->> +	state = get_xsave_addr(&tsk->thread.fpu.state.xsave,
->> +			       XFEATURE_CET_USER);
-> 
-> Let that line stick out.
-> 
->> +
->> +	if (!state)
->> +		return -EINVAL;
->> +
->> +	if (stack_size == 0)
-> 
-> 	if (!stack_size)
-> 
->> +		return -EINVAL;
-> 
-> and that test needs to be done first in the function.
-> 
->> +
->> +	/* Cap shadow stack size to 4 GB */
-> 
-> Why?
-> 
+On Mon, 10 May 2021 18:23:35 -0400 Alex Deucher <alexdeucher@gmail.com> wro=
+te:
+>
+> On Mon, May 10, 2021 at 6:18 PM Stephen Rothwell <sfr@rothwell.id.au> wro=
+te:
+> >
+> > On Mon, 10 May 2021 10:24:58 -0400 Alex Deucher <alexdeucher@gmail.com>=
+ wrote: =20
+> > >
+> > > Fixed in this patch set:
+> > > https://patchwork.freedesktop.org/series/89890/ =20
+> >
+> > Sure, but that is not in the amdgpu tree that linux-next includes
+> > (https://gitlab.freedesktop.org/agd5f/linux#drm-next).  Did you forget
+> > to push it out, or is it still being reviewed/tested? =20
+>=20
+> Was still being reviewed.  I just pushed out the tree with it included.
 
-This is not necessary.  I will make it just stack_size, which is passed 
-in from copy_thread().
+Excellent, thanks.
 
->> +	size = min_t(unsigned long long, rlimit(RLIMIT_STACK), SZ_4G);
->> +	size = min(size, stack_size);
->> +
->> +	/*
->> +	 * Compat-mode pthreads share a limited address space.
->> +	 * If each function call takes an average of four slots
->> +	 * stack space, allocate 1/4 of stack size for shadow stack.
->> +	 */
->> +	if (in_compat_syscall())
->> +		size /= 4;
-> 
-> <---- newline here.
-> 
->> +	size = round_up(size, PAGE_SIZE);
->> +	addr = alloc_shstk(size);
->> +
-> 
-> ^ Superfluous newline.
-> 
->> +	if (IS_ERR_VALUE(addr)) {
->> +		cet->shstk_base = 0;
->> +		cet->shstk_size = 0;
->> +		return PTR_ERR((void *)addr);
->> +	}
->> +
->> +	fpu__prepare_write(&tsk->thread.fpu);
->> +	state->user_ssp = (u64)(addr + size);
-> 
-> cet_user_state has u64, cet_status has unsigned longs. Make them all u64.
-> 
-> And since cet_status is per thread, but I had suggested struct
-> shstk_desc, I think now that that should be called
-> 
-> struct thread_shstk
-> 
-> or so to denote *exactly* what it is.
-> 
+--=20
+Cheers,
+Stephen Rothwell
 
-So this struct will be:
+--Sig_/tsCNGkkeO.P0bSwqgwUKwAC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-struct thread_shstk {
-	u64 shstk_base;
-	u64 shstk_size;
-	u64 locked:1;
-	u64 ibt:1;
-};
+-----BEGIN PGP SIGNATURE-----
 
-Ok?
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCZu2wACgkQAVBC80lX
+0Gwmlwf/UgBs+GWe3+mlcmaQjy7XaGMLdPyo7mDylZGIc7VYzJp3W11F0tDC6ct6
+WGLQ1j5GuRGmB5nHNRM21wSfP6HomYkG+2lTkRg+e7k83JfRbSFrh+FZhS65pIBt
+fCotPZy2IwoBsDpducBvmmS+scCUumLp+QGx/Ipc2Q3p2hZvr2g8z+zwb28ha2+m
+vxteOZR4chDbuF4KsVtn1/FRlRqY+LbdlU64QL3uAcGleYRoZQ0O74laYsG1j/U3
+t/SnnwAfmOa8jCxawKikJuB3+2YndC7KGJr7gvVrGjz63fskeCvTbOqcqEnhIDiy
+1wVIuPSiU7Wag4x+eK8Z6tEqkU9FEA==
+=idV+
+-----END PGP SIGNATURE-----
 
-Thanks,
-Yu-cheng
+--Sig_/tsCNGkkeO.P0bSwqgwUKwAC--
