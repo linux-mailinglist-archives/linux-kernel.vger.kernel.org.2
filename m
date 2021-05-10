@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFB7378675
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7E5378977
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236464AbhEJLIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:08:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59364 "EHLO mail.kernel.org"
+        id S240361AbhEJL24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:28:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232544AbhEJKrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:47:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8DE76193F;
-        Mon, 10 May 2021 10:37:46 +0000 (UTC)
+        id S234722AbhEJK4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:56:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99FDD61C28;
+        Mon, 10 May 2021 10:48:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643067;
-        bh=eTN+de3NHgpVDaYMabz2GfZkvrhhJsTxTr5eGN63y5k=;
+        s=korg; t=1620643715;
+        bh=Bi4AUe/NOMETypyFJ+dhWbsxha3tEgPZJ+RfZ5dLWbs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LAgh6IsOBt0c9R3DqF3CYWSoEhjc5/mRLJjzCWWXJe4t2rbT5Nglqv+ek1mQPJhkC
-         Mruyij5lYY0Kq9vV23B8c73rnG8uJe3f2bi74J+Yyt0L5WvY/g1H6ORYExRAe6PChr
-         tkP7HQbosyrPsQvzITyONZaegH5IYc11CvK1W3Q8=
+        b=Spzq9GIreox+99py3otr6gHkQzkD2HwHPpPwazvfK8PUNPcqRkPjwOIQ1MHU+L8ke
+         bkoIMFgAqWDYKoEIZHh4PMBrQrT8X7h3snIc4HvQ7EvrtLeKktXqE0Ihy9H71Sz6BM
+         0c98x0E6pqi2JizwsI8x2M4TyQbmBy4go9qAx290=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eryk Brol <eryk.brol@amd.com>,
-        Bindu Ramamurthy <bindu.r@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 119/299] drm/amd/display: Check for DSC support instead of ASIC revision
-Date:   Mon, 10 May 2021 12:18:36 +0200
-Message-Id: <20210510102008.904924849@linuxfoundation.org>
+Subject: [PATCH 5.11 127/342] btrfs: convert logic BUG_ON()s in replace_path to ASSERT()s
+Date:   Mon, 10 May 2021 12:18:37 +0200
+Message-Id: <20210510102014.276378446@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eryk Brol <eryk.brol@amd.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit 349a19b2f1b01e713268c7de9944ad669ccdf369 ]
+[ Upstream commit 7a9213a93546e7eaef90e6e153af6b8fc7553f10 ]
 
-[why]
-This check for ASIC revision is no longer useful and causes
-lightup issues after a topology change in MST DSC scenario.
-In this case, DSC configs should be recalculated for the new
-topology. This check prevented that from happening on certain
-ASICs that do, in fact, support DSC.
+A few BUG_ON()'s in replace_path are purely to keep us from making
+logical mistakes, so replace them with ASSERT()'s.
 
-[how]
-Change the ASIC revision to instead check if DSC is supported.
-
-Signed-off-by: Eryk Brol <eryk.brol@amd.com>
-Acked-by: Bindu Ramamurthy <bindu.r@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/relocation.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index c07737c45677..830d302be045 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -8659,7 +8659,7 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
- 	}
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 73dcfe6e18f2..efe3ce88b8ef 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -1204,8 +1204,8 @@ int replace_path(struct btrfs_trans_handle *trans, struct reloc_control *rc,
+ 	int ret;
+ 	int slot;
  
- #if defined(CONFIG_DRM_AMD_DC_DCN)
--	if (adev->asic_type >= CHIP_NAVI10) {
-+	if (dc_resource_is_dsc_encoding_supported(dc)) {
- 		for_each_oldnew_crtc_in_state(state, crtc, old_crtc_state, new_crtc_state, i) {
- 			if (drm_atomic_crtc_needs_modeset(new_crtc_state)) {
- 				ret = add_affected_mst_dsc_crtcs(state, crtc);
+-	BUG_ON(src->root_key.objectid != BTRFS_TREE_RELOC_OBJECTID);
+-	BUG_ON(dest->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID);
++	ASSERT(src->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID);
++	ASSERT(dest->root_key.objectid != BTRFS_TREE_RELOC_OBJECTID);
+ 
+ 	last_snapshot = btrfs_root_last_snapshot(&src->root_item);
+ again:
+@@ -1236,7 +1236,7 @@ again:
+ 	parent = eb;
+ 	while (1) {
+ 		level = btrfs_header_level(parent);
+-		BUG_ON(level < lowest_level);
++		ASSERT(level >= lowest_level);
+ 
+ 		ret = btrfs_bin_search(parent, &key, &slot);
+ 		if (ret < 0)
 -- 
 2.30.2
 
