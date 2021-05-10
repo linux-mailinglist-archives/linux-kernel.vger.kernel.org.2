@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75653789A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8476F378678
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236043AbhEJLae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:30:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52812 "EHLO mail.kernel.org"
+        id S236549AbhEJLIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:08:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234817AbhEJK5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 449AF6162D;
-        Mon, 10 May 2021 10:49:30 +0000 (UTC)
+        id S230430AbhEJKrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:47:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE818619C0;
+        Mon, 10 May 2021 10:37:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643770;
-        bh=9PNRs/NqtnqsZodPRpjt5A1cV1aiyd4RkqOemCQ4w8c=;
+        s=korg; t=1620643062;
+        bh=3kj4PJO8ex25VlM44hatwOl/Lp8XInGFtr40JCTQWx0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XkNYxB88IK6GVMjmN96fln6Ghkixs3sthBS7KUwTFnok5waVG0+szYe265Ole1OqW
-         Lch3D3JUi9udzLXBbZDWqzdEsYaP3Q7POhHYO2N7VdJo5f91PXrtW3w5SdfZG4YwUW
-         avSWcG/VV4upQhyg+Sb7MqQ7b42JGucWVmwYgm0g=
+        b=olm1l8rHvemgo8sNmU792jqahGNc68gFGyVmC4+SDYoerVHwOhx9Ajpv2iUPvD484
+         ZzVwjso2FTVsgvTof4N1rUL4ADZVzS2k20VKBI41bGRRDfBk7AzSYAviIFt0u0VMxp
+         C7PtOm+BOcmnQycOty3i7NsbpjRYwBD1r+klEWEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Eric Yang <eric.yang2@amd.com>,
-        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 134/342] drm/amd/display: Fix MPC OGAM power on/off sequence
+Subject: [PATCH 5.10 127/299] kvfree_rcu: Use same set of GFP flags as does single-argument
 Date:   Mon, 10 May 2021 12:18:44 +0200
-Message-Id: <20210510102014.503058966@linuxfoundation.org>
+Message-Id: <20210510102009.172462871@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,132 +41,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+From: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-[ Upstream commit 737b2b536a30a467c405d75f2287e17828838a13 ]
+[ Upstream commit ee6ddf58475cce8a3d3697614679cd8cb4a6f583 ]
 
-[Why]
-Color corruption can occur on bootup into a login
-manager that applies a non-linear gamma LUT because
-the LUT may not actually be powered on before writing.
+Running an rcuscale stress-suite can lead to "Out of memory" of a
+system. This can happen under high memory pressure with a small amount
+of physical memory.
 
-It's cleared on the next full pipe reprogramming as
-we switch to LUTB from LUTA and the pipe accessing
-the LUT has taken it out of light sleep mode.
+For example, a KVM test configuration with 64 CPUs and 512 megabytes
+can result in OOM when running rcuscale with below parameters:
 
-[How]
-The MPCC_OGAM_MEM_PWR_FORCE register does not force
-the current power mode when set to 0. It only forces
-when set light sleep, deep sleep or shutdown.
+../kvm.sh --torture rcuscale --allcpus --duration 10 --kconfig CONFIG_NR_CPUS=64 \
+--bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 \
+  rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot" --trust-make
 
-The register to actually force power on and ignore
-sleep modes is MPCC_OGAM_MEM_PWR_DIS - a value of 0
-will enable power requests and a value of 1 will
-disable them.
+<snip>
+[   12.054448] kworker/1:1H invoked oom-killer: gfp_mask=0x2cc0(GFP_KERNEL|__GFP_NOWARN), order=0, oom_score_adj=0
+[   12.055303] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
+[   12.055416] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
+[   12.056485] Workqueue: events_highpri fill_page_cache_func
+[   12.056485] Call Trace:
+[   12.056485]  dump_stack+0x57/0x6a
+[   12.056485]  dump_header+0x4c/0x30a
+[   12.056485]  ? del_timer_sync+0x20/0x30
+[   12.056485]  out_of_memory.cold.47+0xa/0x7e
+[   12.056485]  __alloc_pages_slowpath.constprop.123+0x82f/0xc00
+[   12.056485]  __alloc_pages_nodemask+0x289/0x2c0
+[   12.056485]  __get_free_pages+0x8/0x30
+[   12.056485]  fill_page_cache_func+0x39/0xb0
+[   12.056485]  process_one_work+0x1ed/0x3b0
+[   12.056485]  ? process_one_work+0x3b0/0x3b0
+[   12.060485]  worker_thread+0x28/0x3c0
+[   12.060485]  ? process_one_work+0x3b0/0x3b0
+[   12.060485]  kthread+0x138/0x160
+[   12.060485]  ? kthread_park+0x80/0x80
+[   12.060485]  ret_from_fork+0x22/0x30
+[   12.062156] Mem-Info:
+[   12.062350] active_anon:0 inactive_anon:0 isolated_anon:0
+[   12.062350]  active_file:0 inactive_file:0 isolated_file:0
+[   12.062350]  unevictable:0 dirty:0 writeback:0
+[   12.062350]  slab_reclaimable:2797 slab_unreclaimable:80920
+[   12.062350]  mapped:1 shmem:2 pagetables:8 bounce:0
+[   12.062350]  free:10488 free_pcp:1227 free_cma:0
+...
+[   12.101610] Out of memory and no killable processes...
+[   12.102042] Kernel panic - not syncing: System is deadlocked on memory
+[   12.102583] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
+[   12.102600] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
+<snip>
 
-When PWR_FORCE!=0 is combined with PWR_DIS=0 then
-MPCC OGAM memory is forced into the state specified
-by the force bits.
+Because kvfree_rcu() has a fallback path, memory allocation failure is
+not the end of the world.  Furthermore, the added overhead of aggressive
+GFP settings must be balanced against the overhead of the fallback path,
+which is a cache miss for double-argument kvfree_rcu() and a call to
+synchronize_rcu() for single-argument kvfree_rcu().  The current choice
+of GFP_KERNEL|__GFP_NOWARN can result in longer latencies than a call
+to synchronize_rcu(), so less-tenacious GFP flags would be helpful.
 
-If PWR_FORCE is 0 then it respects the mode specified
-by MPCC_OGAM_MEM_LOW_PWR_MODE if the RAM LUT is not
-in use.
+Here is the tradeoff that must be balanced:
+    a) Minimize use of the fallback path,
+    b) Avoid pushing the system into OOM,
+    c) Bound allocation latency to that of synchronize_rcu(), and
+    d) Leave the emergency reserves to use cases lacking fallbacks.
 
-We set that bit to shutdown on low power, but otherwise
-it inherits from bootup defaults.
+This commit therefore changes GFP flags from GFP_KERNEL|__GFP_NOWARN to
+GFP_KERNEL|__GFP_NORETRY|__GFP_NOMEMALLOC|__GFP_NOWARN.  This combination
+leaves the emergency reserves alone and can initiate reclaim, but will
+not invoke the OOM killer.
 
-So for the fix:
-
-1. Update the sequence to "force" power on when needed
-
-We can use MPCC_OGAM_MEM_PWR_DIS for this to turn on the
-memory even when the block is in bypass and pending to be
-enabled for the next frame.
-
-We need this for both low power enabled or disabled.
-
-If we don't set this then we can run into issues when we
-first program the LUT from bootup.
-
-2. Don't apply FORCE_SEL
-
-Once we enable power requests with DIS=0 we run into the
-issue of the RAM being forced into light sleep and being
-unusable for display output. Leave this 0 like we used to
-for DCN20.
-
-3. Rely on MPCC OGAM init to determine light sleep/deep sleep
-
-MPC low power debug mode isn't enabled on any ASIC currently
-but we'll respect the setting determined during init if it
-is.
-
-Lightly tested as working with IGT tests and desktop color
-adjustment.
-
-4. Change the MPC resource default for DCN30
-
-It was interleaving the dcn20 and dcn30 versions before
-depending on the sequence.
-
-5. REG_WAIT for it to be on whenever we're powering up the
-memory
-
-Otherwise we can write register values too early and we'll
-get corruption.
-
-Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Reviewed-by: Eric Yang <eric.yang2@amd.com>
-Acked-by: Qingqing Zhuo <Qingqing.Zhuo@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c  | 24 ++++++++++---------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c
-index 3e6f76096119..a7598356f37d 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c
-@@ -143,16 +143,18 @@ static void mpc3_power_on_ogam_lut(
- {
- 	struct dcn30_mpc *mpc30 = TO_DCN30_MPC(mpc);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 5dc36c6e80fd..8a5cc76ecac9 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3386,7 +3386,7 @@ static void fill_page_cache_func(struct work_struct *work)
  
--	if (mpc->ctx->dc->debug.enable_mem_low_power.bits.mpc) {
--		// Force power on
--		REG_UPDATE(MPCC_MEM_PWR_CTRL[mpcc_id], MPCC_OGAM_MEM_PWR_DIS, power_on == true ? 1:0);
--		// Wait for confirmation when powering on
--		if (power_on)
--			REG_WAIT(MPCC_MEM_PWR_CTRL[mpcc_id], MPCC_OGAM_MEM_PWR_STATE, 0, 10, 10);
--	} else {
--		REG_SET(MPCC_MEM_PWR_CTRL[mpcc_id], 0,
--				MPCC_OGAM_MEM_PWR_FORCE, power_on == true ? 0 : 1);
--	}
-+	/*
-+	 * Powering on: force memory active so the LUT can be updated.
-+	 * Powering off: allow entering memory low power mode
-+	 *
-+	 * Memory low power mode is controlled during MPC OGAM LUT init.
-+	 */
-+	REG_UPDATE(MPCC_MEM_PWR_CTRL[mpcc_id],
-+		   MPCC_OGAM_MEM_PWR_DIS, power_on != 0);
-+
-+	/* Wait for memory to be powered on - we won't be able to write to it otherwise. */
-+	if (power_on)
-+		REG_WAIT(MPCC_MEM_PWR_CTRL[mpcc_id], MPCC_OGAM_MEM_PWR_STATE, 0, 10, 10);
- }
+ 	for (i = 0; i < rcu_min_cached_objs; i++) {
+ 		bnode = (struct kvfree_rcu_bulk_data *)
+-			__get_free_page(GFP_KERNEL | __GFP_NOWARN);
++			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
  
- static void mpc3_configure_ogam_lut(
-@@ -1427,7 +1429,7 @@ const struct mpc_funcs dcn30_mpc_funcs = {
- 	.acquire_rmu = mpcc3_acquire_rmu,
- 	.program_3dlut = mpc3_program_3dlut,
- 	.release_rmu = mpcc3_release_rmu,
--	.power_on_mpc_mem_pwr = mpc20_power_on_ogam_lut,
-+	.power_on_mpc_mem_pwr = mpc3_power_on_ogam_lut,
- 	.get_mpc_out_mux = mpc1_get_mpc_out_mux,
- 
- };
+ 		if (bnode) {
+ 			raw_spin_lock_irqsave(&krcp->lock, flags);
 -- 
 2.30.2
 
