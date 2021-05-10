@@ -2,132 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2084D377AE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 06:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D04377AFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 06:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhEJENa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 00:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbhEJEN2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 00:13:28 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCD2C061573;
-        Sun,  9 May 2021 21:12:14 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so9308405oto.0;
-        Sun, 09 May 2021 21:12:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dPstqEklPpZa3UgyUnrSIzFfCZyfYs0ZBJQCh0WA7Ss=;
-        b=McMwvi48AdJ0kezV7SkQP7nEWrLrXdNXhvMFZhJo93eirJrzFIq9DAEmgu2d/5N0H4
-         EmvHQZv1XxsqKOPv62/S1UmvQjGNkQvvcPxyIgxdzS0cYRDsbGjgd4bb0YKlkP481IRe
-         cS89Ys1t06vW1WbneYNt0IEMc7PZARk3uWoPfhIDYZFcfdlQsw9hZ0tg7w1eBCzu77PI
-         NZcT/aGkwYP5zq+g8VW9xR5yLNcPw92BBMtvO1pKH12XW3h0qd2QCYKk78TG0TesD5UR
-         rP8g8AR9/H0KTOIiYM1vIQtkPbbeRp1MxP9GRNY2WvxXEeQu/YIJc/FyjiZz2z0at9Fl
-         Q/Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=dPstqEklPpZa3UgyUnrSIzFfCZyfYs0ZBJQCh0WA7Ss=;
-        b=rnSQYKTImkUFSKwQab0pxNULHW/GVHQVau+JdGTfFzkx4NjQbQjL/arBaXm7eAw3mD
-         +xxnIVJtwkPGf8eNsyJquS9fL0bFW0s+oOa0ltK8Wuh4G177vpAy1b3jvbygmcogtgpV
-         yNmfVwxDcbkry+Ipz27HuJWjjD2712dFttEyFxdwRxYNWPpqsXhWRgYmotzxdh1YT5oy
-         P1eaKE63eQ0b1StRZUd0V9yp3OStRM9AhGSZK98DVo+OQeIeqtt/Onp65PaIaiccZz5n
-         ewi6qkTOy5/shubEdFJgK0IygLgZCHJesgNla7K9vYgzPRRL43wrUIMsxQUGmU68JmgO
-         ZfIA==
-X-Gm-Message-State: AOAM533A9LH79MmbNBzGVoGJVB3LJMie+2Oui7ygiKnWjuKaotD09jsK
-        Ov1SxFBqeXcHh1wIb5jY+wVVMuNB+Po=
-X-Google-Smtp-Source: ABdhPJy0cCkX4WtZ403SR5/QQYCQCnJudb9FDnBUfwiqT89cncFKuS9FjhPYoHpUe+zvVS9yZ+6E1A==
-X-Received: by 2002:a9d:5e0a:: with SMTP id d10mr18957698oti.44.1620619934208;
-        Sun, 09 May 2021 21:12:14 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f13sm2974152ote.46.2021.05.09.21.12.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 21:12:13 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Saurav Kashyap <skashyap@marvell.com>
-Cc:     Javed Hasan <jhasan@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] scsi: qedf: Drop unnecessary NULL checks after container_of
-Date:   Sun,  9 May 2021 21:12:11 -0700
-Message-Id: <20210510041211.2051325-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229876AbhEJEWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 00:22:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229483AbhEJEWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 00:22:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6EA8613C0;
+        Mon, 10 May 2021 04:21:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1620620466;
+        bh=Xm87W7GOJAQ6qAgNGiejOmK3PNImKl3B2EE3JRitsjw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=U4QUz9B5tMeM4GCXhtq6MXD2U2fnFhv7juUfBCMb9bf9t3dT5NDu2diP4kHcggd0O
+         K2LCo/XtfTueBotIk3WrbnYv+CDfGD9WTDuR56r181+qldhg+jiQPFYDICOwzpC4Gz
+         gqtUI4xX2JMq8nWCjCQeqU9xFqyY+j11Ih/S/MpM=
+Date:   Sun, 9 May 2021 21:21:05 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chris Zankel <chris@zankel.net>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Helge Deller <deller@gmx.de>, Hugh Dickins <hughd@google.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Jann Horn <jannh@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Xu <peterx@redhat.com>, Ram Pai <linuxram@us.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Rik van Riel <riel@surriel.com>,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v2 0/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE)
+ to prefault page tables
+Message-Id: <20210509212105.d741b7026ca6dca86bdb56d2@linux-foundation.org>
+In-Reply-To: <20210419135443.12822-1-david@redhat.com>
+References: <20210419135443.12822-1-david@redhat.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The result of container_of() operations is never NULL unless the embedded
-element is the first element of the structure, which is not the case here.
-The NULL checks are therefore unnecessary and misleading. Remove them.
+On Mon, 19 Apr 2021 15:54:38 +0200 David Hildenbrand <david@redhat.com> wrote:
 
-The changes in this patch were made automatically using the following
-Coccinelle script.
+> Excessive details on MADV_POPULATE_(READ|WRITE) can be found in patch #2.
 
-@@
-type t;
-identifier v;
-statement s;
-@@
+I grabbed the series, but some additional review would help things
+along here..
 
-<+...
-(
-  t v = container_of(...);
-|
-  v = container_of(...);
-)
-  ...
-  when != v
-- if (\( !v \| v == NULL \) ) s
-...+>
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/scsi/qedf/qedf_io.c   | 5 -----
- drivers/scsi/qedf/qedf_main.c | 4 ----
- 2 files changed, 9 deletions(-)
-
-diff --git a/drivers/scsi/qedf/qedf_io.c b/drivers/scsi/qedf/qedf_io.c
-index 4869ef813dc4..6184bc485811 100644
---- a/drivers/scsi/qedf/qedf_io.c
-+++ b/drivers/scsi/qedf/qedf_io.c
-@@ -23,11 +23,6 @@ static void qedf_cmd_timeout(struct work_struct *work)
- 	struct qedf_ctx *qedf;
- 	struct qedf_rport *fcport;
- 
--	if (io_req == NULL) {
--		QEDF_INFO(NULL, QEDF_LOG_IO, "io_req is NULL.\n");
--		return;
--	}
--
- 	fcport = io_req->fcport;
- 	if (io_req->fcport == NULL) {
- 		QEDF_INFO(NULL, QEDF_LOG_IO,  "fcport is NULL.\n");
-diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
-index 69f7784233f9..9c7efdf40dd5 100644
---- a/drivers/scsi/qedf/qedf_main.c
-+++ b/drivers/scsi/qedf/qedf_main.c
-@@ -3971,10 +3971,6 @@ void qedf_stag_change_work(struct work_struct *work)
- 	struct qedf_ctx *qedf =
- 	    container_of(work, struct qedf_ctx, stag_work.work);
- 
--	if (!qedf) {
--		QEDF_ERR(NULL, "qedf is NULL");
--		return;
--	}
- 	QEDF_ERR(&qedf->dbg_ctx, "Performing software context reset.\n");
- 	qedf_ctx_soft_reset(qedf->lport);
- }
--- 
-2.25.1
-
+Did patch #2 actually make it to linux-mm?  It's missing from my
+archive. 
+https://lkml.kernel.org/r/20210419135443.12822-3-david@redhat.com lands
+on the linux-api@vger copy.
