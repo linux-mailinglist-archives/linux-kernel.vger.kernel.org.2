@@ -2,99 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C01379740
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3883379742
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbhEJS5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 14:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbhEJS5J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 14:57:09 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55490C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:56:04 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id a2so3932924lfc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:56:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=otea4Q7cWX6hm03ky2Mnx+bXFJyYGiw/7obbMp2/aV8=;
-        b=fwMgO4JNoez7QEIZwCp9nFD0cCGUMmWS1UpaxwDtsv9sTyllUTrcTRLDC/LGIn0pER
-         PCh4/PIALMhH9IBE3PFklXV65Nh0naCAgHorTkZvIJDNAC2A9QvirrZLHD2sXlRtIDKN
-         RQ6bQRrstKRHvsVUxHNygn0KOE8bTEjUeXia8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=otea4Q7cWX6hm03ky2Mnx+bXFJyYGiw/7obbMp2/aV8=;
-        b=samIfAlARzYiq275IgYxbKiaMXD9lfN5kiSvyhsLA8yIaGTkPblbXxkBg+y7xH5hqF
-         WBRvulti37GzDiHB1+FYU/peJjiWW1a8qlVcPMh+fvO1/ENtMvHTlnfDBW2UACevRFXy
-         7XVnOC//ZdCBaNXx9cwCVNGLYholYbljKL4vGwY76QqRm3jFjE0EKG76b9H9cVmn5Rfi
-         dqbulA1ynZhbe+2giF5k3l45/PLWBrxdpU74joPpSMhY+xkKlBt9YmhA2DsONzm+Jjqa
-         MnH9rFJFLC0rJyJYm4KyrczMrZHFXqFEqj/UtfREmfX/5JwdnqTpIOlCFdawSJrTeeX9
-         p8xA==
-X-Gm-Message-State: AOAM531bCEFEchIdmZFDxDfknj8hWTrXrk+L6pWiyIe8kgoWwMAEy9cj
-        0Rd+wi/MR15XO2EE7RVJg3NDH9uBlZjanzhYS5I=
-X-Google-Smtp-Source: ABdhPJxdQvPjXngTCtecaquEKX3qvP3WxbkCF+6EhrepOSn/uBnrnMKPH2ToYpX7aWCPakja5M2zdQ==
-X-Received: by 2002:a05:6512:3a8:: with SMTP id v8mr18392608lfp.552.1620672962551;
-        Mon, 10 May 2021 11:56:02 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id y20sm2345263lfe.162.2021.05.10.11.56.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 11:56:02 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id o16so22109998ljp.3
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:56:02 -0700 (PDT)
-X-Received: by 2002:a05:651c:33a:: with SMTP id b26mr21797493ljp.220.1620672961842;
- Mon, 10 May 2021 11:56:01 -0700 (PDT)
+        id S232241AbhEJS6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 14:58:24 -0400
+Received: from mail.hallyn.com ([178.63.66.53]:57048 "EHLO mail.hallyn.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230300AbhEJS6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 14:58:21 -0400
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id 4995799D; Mon, 10 May 2021 13:57:15 -0500 (CDT)
+Date:   Mon, 10 May 2021 13:57:15 -0500
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     Giuseppe Scrivano <gscrivan@redhat.com>,
+        linux-kernel@vger.kernel.org, ebiederm@xmission.com,
+        christian.brauner@ubuntu.com
+Subject: Re: [PATCH v2] userns: automatically split user namespace extent
+Message-ID: <20210510185715.GA20897@mail.hallyn.com>
+References: <20201203150252.1229077-1-gscrivan@redhat.com>
+ <20210510172351.GA19918@mail.hallyn.com>
 MIME-Version: 1.0
-References: <CAHk-=wiWTU+=wK9pv_YG01rXSqApCS_oY+78Ztz5-ORH5a-kvg@mail.gmail.com>
- <CA+G9fYvnM6rd2Sd7WdQmb-GFRF8y+QG1J3ocJOQKV0V0g=PofQ@mail.gmail.com>
-In-Reply-To: <CA+G9fYvnM6rd2Sd7WdQmb-GFRF8y+QG1J3ocJOQKV0V0g=PofQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 10 May 2021 11:55:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgj4TvmMRV4CYeXuVh15d+wDPw0LyY4Ov4Og4XP6EH7nw@mail.gmail.com>
-Message-ID: <CAHk-=wgj4TvmMRV4CYeXuVh15d+wDPw0LyY4Ov4Og4XP6EH7nw@mail.gmail.com>
-Subject: Re: Linux 5.13-rc1
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510172351.GA19918@mail.hallyn.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 10:54 AM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
->
-> Regressions (compared to build v5.12)
-> ------------------------------------
->
-> Regression on TI BeagleBoard-X15 arm32 bit platform as the device was not able
-> to detect SATA drive.
->
-> Which is fixed by Tony Lindgren but this is yet to get into the mainline tree.
->
-> "
-> Naresh Kamboju <naresh.kamboju@linaro.org> reported that Beaglebone-X15
-> does not detect sata drives any longer after dra7 was flipped to boot with
-> device tree data only. Turns out we are now missing the sata related quirk
-> flags in ti-sysc that we used to have earlier.
->
-> Fixes: 98feab31ac49 ("ARM: OMAP2+: Drop legacy platform data for dra7 sata")
-> Fixes: 21206c8f2cb5 ("ARM: OMAP2+: Drop legacy platform data for omap5 sata")
-> Link: https://lore.kernel.org/regressions/CA+G9fYtTN6ug3eBAW3wMcDeESUo+ebj7L5HBe5_fj4uqDExFQg@mail.gmail.com/
-> "
-> ref:
-> https://lore.kernel.org/linux-arm-kernel/20210507112857.12753-1-tony@atomide.com/
+On Mon, May 10, 2021 at 12:23:51PM -0500, Serge E. Hallyn wrote:
+> On Thu, Dec 03, 2020 at 04:02:52PM +0100, Giuseppe Scrivano wrote:
+> > writing to the id map fails when an extent overlaps multiple mappings
+> > in the parent user namespace, e.g.:
+> > 
+> > $ cat /proc/self/uid_map
+> >          0       1000          1
+> >          1     100000      65536
+> > $ unshare -U sleep 100 &
+> > [1] 1029703
+> > $ printf "0 0 100\n" | tee /proc/$!/uid_map
+> > 0 0 100
+> > tee: /proc/1029703/uid_map: Operation not permitted
+> > 
+> > To prevent it from happening, automatically split an extent so that
+> > each portion fits in one extent in the parent user namespace.
+> > 
+> > $ cat /proc/self/uid_map
+> >          0       1000          1
+> >          1     110000      65536
+> > $ unshare -U sleep 100 &
+> > [1] 1552
+> > $ printf "0 0 100\n" | tee /proc/$!/uid_map
+> > 0 0 100
+> > $ cat /proc/$!/uid_map
+> >          0          0          1
+> >          1          1         99
+> > 
+> > Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+> 
+> The patch on the whole looks great, easy to reason about.  But I have
+> one question below:
 
-Ok, thanks, looks good.
+As you pointed out, I was misreading the variable name, thank you :)
 
-I'm assuming I'll be getting that fix through the usual ARM SoC trees,
-so it will hopefully be all good by rc2.
+Reviewed-by: Serge Hallyn <serge@hallyn.com>
 
-Thanks,
-
-              Linus
+> 
+> > ---
+> > v2:
+> > - move the split logic when the extent are mapped to the parent map to
+> >   reduce lookup complexity.
+> > 
+> > v1: https://lkml.kernel.org/lkml/20201126100839.381415-1-gscrivan@redhat.com
+> > 
+> >  kernel/user_namespace.c | 79 +++++++++++++++++++++++++++++++++++------
+> >  1 file changed, 68 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+> > index 87804e0371fe..550612c6e794 100644
+> > --- a/kernel/user_namespace.c
+> > +++ b/kernel/user_namespace.c
+> > @@ -312,6 +312,55 @@ static u32 map_id_down(struct uid_gid_map *map, u32 id)
+> >  	return map_id_range_down(map, id, 1);
+> >  }
+> >  
+> > +/**
+> > + * find_and_split_extent_down - Find lower_first for the target extent
+> > + * using the specified map.
+> > + * If the extent doesn't fit in a single lower extent, split target and
+> > + * write the remaining IDs (first and count) to the overflow extent.
+> > + * If no overflow happens, overflow->count is set to 0.
+> > + */
+> > +static int find_and_split_extent_down(struct uid_gid_map *map,
+> > +				       struct uid_gid_extent *target,
+> > +				       struct uid_gid_extent *overflow)
+> > +{
+> > +	unsigned int extents = map->nr_extents;
+> > +	u32 lower_first = target->lower_first;
+> > +	struct uid_gid_extent *extent;
+> > +	u32 off, available;
+> > +
+> > +	overflow->count = 0;
+> > +
+> > +	/* Find the lower extent that includes the first ID.  */
+> > +	if (extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
+> > +		extent = map_id_range_down_base(extents, map, lower_first, 1);
+> > +	else
+> > +		extent = map_id_range_down_max(extents, map, lower_first, 1);
+> > +
+> > +	/* Could not map the first ID in the extent.  */
+> > +	if (extent == NULL)
+> > +		return -EPERM;
+> > +
+> > +	/* Offset of lower_first in the lower extent.  */
+> > +	off = target->lower_first - extent->first;
+> > +
+> > +	/* How many IDs are available in the lower extent?  */
+> > +	available = extent->count - off;
+> > +
+> > +	/* Requesting more IDs than available in the lower extent.  */
+> > +	if (target->count > available) {
+> > +		/* Move the remaining IDs to the overflow extent.  */
+> > +		overflow->first = target->first + available;
+> > +		overflow->lower_first = target->lower_first + available;
+> > +		overflow->count = target->count - available;
+> > +
+> > +		/* Shrink the initial extent to what is available.  */
+> > +		target->count = available;
+> > +	}
+> > +
+> > +	target->lower_first = extent->lower_first + off;
+> > +	return 0;
+> > +}
+> > +
+> >  /**
+> >   * map_id_up_base - Find idmap via binary search in static extent array.
+> >   * Can only be called if number of mappings is equal or less than
+> > @@ -749,6 +798,7 @@ static bool mappings_overlap(struct uid_gid_map *new_map,
+> >   * insert_extent - Safely insert a new idmap extent into struct uid_gid_map.
+> >   * Takes care to allocate a 4K block of memory if the number of mappings exceeds
+> >   * UID_GID_MAP_MAX_BASE_EXTENTS.
+> > + * The extent is appended at the position map->nr_extents.
+> >   */
+> >  static int insert_extent(struct uid_gid_map *map, struct uid_gid_extent *extent)
+> >  {
+> > @@ -968,30 +1018,37 @@ static ssize_t map_write(struct file *file, const char __user *buf,
+> >  	if (!new_idmap_permitted(file, ns, cap_setid, &new_map))
+> >  		goto out;
+> >  
+> > -	ret = -EPERM;
+> >  	/* Map the lower ids from the parent user namespace to the
+> >  	 * kernel global id space.
+> >  	 */
+> >  	for (idx = 0; idx < new_map.nr_extents; idx++) {
+> > +		struct uid_gid_extent overflow;
+> >  		struct uid_gid_extent *e;
+> > -		u32 lower_first;
+> >  
+> >  		if (new_map.nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
+> >  			e = &new_map.extent[idx];
+> >  		else
+> >  			e = &new_map.forward[idx];
+> >  
+> > -		lower_first = map_id_range_down(parent_map,
+> > -						e->lower_first,
+> > -						e->count);
+> > -
+> > -		/* Fail if we can not map the specified extent to
+> > -		 * the kernel global id space.
+> > -		 */
+> > -		if (lower_first == (u32) -1)
+> > +		ret = find_and_split_extent_down(parent_map, e, &overflow);
+> > +		if (ret < 0)
+> >  			goto out;
+> >  
+> > -		e->lower_first = lower_first;
+> > +		/* If the extent doesn't fit in a single lower extent,
+> > +		 * move what could not be mapped to a new extent.
+> > +		 * The new extent is appended to the existing ones in
+> > +		 * new_map, it will be checked again and if necessary it
+> > +		 * is split further.
+> > +		 */
+> > +		if (overflow.count > 0) {
+> > +			if (new_map.nr_extents == UID_GID_MAP_MAX_EXTENTS) {
+> 
+> Why are you doing this?  The insert_extent() will automatically extend it
+> if needed, right?  So this condition should be fine?
+> 
+> > +				ret = -EINVAL;
+> > +				goto out;
+> > +			}
+> > +			ret = insert_extent(&new_map, &overflow);
+> > +			if (ret < 0)
+> > +				goto out;
+> > +		}
+> >  	}
+> >  
+> >  	/*
+> > -- 
+> > 2.28.0
+> 
+> Cheers,
+> Balint
+> 
+> >
+> > -serge
+> 
+> 
+> 
+> -- 
+> Balint Reczey
+> Ubuntu & Debian Developer
+> > 
