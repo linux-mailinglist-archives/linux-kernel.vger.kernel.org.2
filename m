@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0D6379986
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A955379989
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233134AbhEJWB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:01:28 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:58113 "EHLO ozlabs.org"
+        id S232941AbhEJWCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:02:40 -0400
+Received: from mga14.intel.com ([192.55.52.115]:48735 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233111AbhEJWBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:01:25 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FfFNK5xVcz9sWl;
-        Tue, 11 May 2021 08:00:16 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1620684018;
-        bh=Z8z72DKbslAEqxg4TkLx7lCYcIB0xK3V9odaq/CiWv4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=BJVvjdqFy+9NgxI2dJDC5g+unLYQQwXUega/FXLC9KdLI8QsQEY1CE8xWNeAXoPTx
-         XS0UxDBuf86/oqqKqQvCc8Kw29xbdouOGCMiWLD5N2qy3eK0u9199Sm7+jx6cI0W91
-         HSF0/fPHMOFkO9bH2hEjVzkRWmEzR6BejC5006dgNfUXv4Jwrwja/n/sbflig98t51
-         NWbjJ2nn8Okrv0NxbLZmKKNyhcqBYGWKQtDu+G3FhwGezO97FxDtKerTHA6NAWrmyM
-         2N5iU5EaIKCdbKg5kkEqypVWZ3bSOy7JIQxyrxXQY1LdEDwYd6MYdAudCkCfJ6UcSh
-         B0/KBPU9EYLuA==
-Date:   Tue, 11 May 2021 08:00:15 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the mtd-fixes tree
-Message-ID: <20210511080015.30e3aafa@canb.auug.org.au>
+        id S229807AbhEJWCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 18:02:33 -0400
+IronPort-SDR: jkdw8oufwIDc6MOVnNfCIwFLPP1vNhXUy5tPMQA4Z2MHl+gmKyqFfLx7a9+kFrNR45GSgvBj1K
+ aFKRlaaOoSAg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="198974914"
+X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
+   d="scan'208";a="198974914"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 15:01:26 -0700
+IronPort-SDR: 34fe2CGszeCS3BAyVqDPJsQkBaf6yJsuPUza8a16YEQ4vZRKi6mhrivJmwyf9a65Iiat0PWD9S
+ wz4Q/uIj3ICw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
+   d="scan'208";a="470918936"
+Received: from otc-wp-03.jf.intel.com ([10.54.39.79])
+  by orsmga001.jf.intel.com with ESMTP; 10 May 2021 15:00:52 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>
+Cc:     "Christoph Hellwig" <hch@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
+        zhangfei.gao@linaro.org, vkoul@kernel.org,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: [PATCH v4 0/2] Simplify and restrict IOMMU SVA APIs
+Date:   Mon, 10 May 2021 06:25:06 -0700
+Message-Id: <1620653108-44901-1-git-send-email-jacob.jun.pan@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0oaf0_.6MOME2Gt=c_0quVg";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0oaf0_.6MOME2Gt=c_0quVg
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+A couple of small changes to simplify and restrict SVA APIs. The motivation
+is to make PASID allocation palatable for cgroup consumptions. Misc cgroup
+is merged for v5.13, it can be extended for IOASID as another scalar
+resource.
 
-Hi all,
+I have not tested on ARM platforms due to availability. Would appreciate
+if someone could help with the testing on uacce based SVA usages.
 
-In commit
+Thanks,
 
-  562b4e91d3b2 ("mtd: parsers: ofpart: fix parsing subpartitions")
+Jacob
 
-Fixes tag
+ChangeLog:
+V4	- fixed a cross-compile error
+	- rebased to v5.13-rc1 resolved a conflict in intel-svm code
 
-  Fixes: 2d751203aacf ("mtd: parsers: ofpart: limit parsing of deprecated D=
-T syntax
+V3	- stop passing mm to sva_bind IOMMU ops, no need to take mm refcount
+	in the common SVA code.
+	- deleted flag variable in idxd driver
 
-has these problem(s):
+V2
+	- retained mm argument in iommu_sva_alloc_pasid()
+	- keep generic supervisor flag separated from vt-d's SRE
+	- move flag declaration out of CONFIG_IOMMU_API
 
-  - Subject has leading but no trailing parentheses
-  - Subject has leading but no trailing quotes
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/0oaf0_.6MOME2Gt=c_0quVg
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Jacob Pan (2):
+  iommu/sva: Tighten SVA bind API with explicit flags
+  iommu/sva: Remove mm parameter from SVA bind API
 
------BEGIN PGP SIGNATURE-----
+ drivers/dma/idxd/cdev.c                       |  2 +-
+ drivers/dma/idxd/init.c                       |  7 ++----
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   | 12 ++++++----
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |  5 ++--
+ drivers/iommu/intel/svm.c                     | 19 ++++++++-------
+ drivers/iommu/iommu-sva-lib.c                 | 11 +++++----
+ drivers/iommu/iommu-sva-lib.h                 |  2 +-
+ drivers/iommu/iommu.c                         | 13 +++++------
+ drivers/misc/uacce/uacce.c                    |  2 +-
+ include/linux/intel-iommu.h                   |  3 +--
+ include/linux/intel-svm.h                     | 12 ----------
+ include/linux/iommu.h                         | 23 ++++++++++++++-----
+ 12 files changed, 54 insertions(+), 57 deletions(-)
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCZrO8ACgkQAVBC80lX
-0GyRFwf9EALwfXhPCWGfTMsLYOjJlUykpnORzJshEvNDcjKk7Ur12QQjqhy+BODW
-qJN+dPDThSnIlg+mttqw8aftXvGaoE+Ew8GgEKaCj5zgsCwwYowj3v234As2W1Me
-UeWj6msiwqy+Uw6a++lwmXZRiG6e7sP4sxZuEeoVvkb4Y8ypX5J3sWgplTmLOpzw
-1LHdKOIyuOiJs/GImwsGjwO6NCm33iKyUrQvF9LwtkV1+MAumluIzl+F9Mi8PcDq
-L63nJcCOXb28iE8XjQ/IDoj5+Y3Nx1XJ5Kt0bPDYVgMC54xzFtEyG7BCs+09glYV
-h7tLrbBrteqUoRJhFU61xBDmsGsZow==
-=8zsQ
------END PGP SIGNATURE-----
+-- 
+2.25.1
 
---Sig_/0oaf0_.6MOME2Gt=c_0quVg--
