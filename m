@@ -2,245 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB5E379626
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A74D7379644
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232878AbhEJRmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 13:42:13 -0400
-Received: from mail-pf1-f172.google.com ([209.85.210.172]:34383 "EHLO
-        mail-pf1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbhEJRmM (ORCPT
+        id S232790AbhEJRnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 13:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232139AbhEJRnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 13:42:12 -0400
-Received: by mail-pf1-f172.google.com with SMTP id 10so14262208pfl.1;
-        Mon, 10 May 2021 10:41:06 -0700 (PDT)
+        Mon, 10 May 2021 13:43:25 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40ADCC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:42:19 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id q127so16183444qkb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:42:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:from:to:cc:subject;
+        bh=n5gxQcJcWf8uN8nViJiC2oY2o4qpc3D4xM0tKR6YYWA=;
+        b=IWPeC1KeCJWcRYiMi/iOkteNjl3MP0cQx6RWg3IG/lTEXG+OBFqZJ84ZKty0x0V1hA
+         wWO4vZplz7tfGCQg2OV6cRT9D03LcQnDGInItUJ4R/NYr5RJY0QI0bdszTf6qKkkqmOd
+         1FQRKCKPAl8QMuzpFRSg48xlfhpQZpTIn6LIuK5Aq4lKpQwysWDGQ0/UmFsPQY7/dhZ3
+         5CpfDXUDx7eDnAHO3sKNFZJ/xSRpZSVO6nWf0LwZ1DH9rk2V9jdLBAm1mbcl9qMeLeGP
+         3OhD1lZ8+lKsbnJZjS62/KlPRlCzHUt/lHTnk/S4rjJQjyFjLwdIYFrLUFpmLfO/tthm
+         WHhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TtC2/PC3whRQKetIsmZTwC4pn8EfBCLL0ecqsUxZkNg=;
-        b=M0jiohpyEFZBnv1PcE9M7+hdFF6T8tdiZw8PV3OpzVhD22rxIxQA5tH40pl7LiA8jc
-         /9diPjnCMmASvz5loTx1GFaMGK73q6Y6ybLMcnwvPua3zZ+rcL2yhVHnsQ5eO55khDcp
-         wIAe4exeqKsi9eDMWhdnZixesaJhZ9PfWytGlfSIdAOGyVKm87Yf4cVjghqFST4/VBiO
-         7s9wVPIUvrFSgRwEg02tb4PJyVP4/gc7SSZA+edv/MnTgX09SPUFXSALzAtDdXuwnJS/
-         iBkB6BDSBfsiJujrbHeC7FNOF3N3fgjuaUGvPkG5SMDLRHaZF5CIWhw6gPzpiJ2ZjUwy
-         SXbg==
-X-Gm-Message-State: AOAM531g9s01aloOw0+0Oe4AF7+t02ny6mLZ3Dup6YKeby4icI+imeiw
-        MnQfK7Hxk0cyWYMHazUR3JQ=
-X-Google-Smtp-Source: ABdhPJwuRVPJvXv/8EIvqnvkFYD66awMYxyWKpnRBhVQ/M8KT2nqjTKIBsGWQbyBC+NvXZ0/yDuWPQ==
-X-Received: by 2002:a05:6a00:be5:b029:28e:d71b:5b5f with SMTP id x37-20020a056a000be5b029028ed71b5b5fmr25795691pfu.34.1620668466569;
-        Mon, 10 May 2021 10:41:06 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id g84sm11684600pfb.198.2021.05.10.10.41.05
+        h=x-gm-message-state:message-id:date:from:to:cc:subject;
+        bh=n5gxQcJcWf8uN8nViJiC2oY2o4qpc3D4xM0tKR6YYWA=;
+        b=jwXMK1d4T3HZ4QXii9wqu2qGJ9aMFC8zcbKT0uwRlSrmQM+vtqQiHx6/K8qUgklXaf
+         kRaHap04KWwqhzDfd7uYWjjCAVK8lG9zItamB99Y4AQmgrMkp8Wqgo7R5dD6tiVl41Q2
+         lt0BWURZc/V7MPqSvApHmNH2icmUOFjGf9xyUEHff+DgDrllvUD9r9zfev+tOOi0sCCr
+         YJHF+KKTLHajPidyr2QnsmhHw1G3zwgDOfapefo4ALSHmhkCBSirSalt2LH+OOWhVGKl
+         +Hi/z5JfGBVr3kF6/fjPxp3+oQ3icN5odM8MTppM+b/w7vSsrfFCFLkUu2elUpnzL4bo
+         cjaA==
+X-Gm-Message-State: AOAM530awSUIIS3TGwAFzkxd2EX/diYiJRhYus5nrWk5Mbbtdn37KO8b
+        geRyWkxaJWnpK+kN888aAATWZw==
+X-Google-Smtp-Source: ABdhPJxQFETD6GAmxPhza4gO2s5UxBFf1tocdyjImVzCAogXWQ07nVOtv38yIho+4lIEBuKwJZC63w==
+X-Received: by 2002:a37:a2d5:: with SMTP id l204mr22524422qke.331.1620668538377;
+        Mon, 10 May 2021 10:42:18 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id z30sm12740561qtm.11.2021.05.10.10.42.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 10:41:06 -0700 (PDT)
-Date:   Mon, 10 May 2021 10:41:05 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com,
-        richard.gong@intel.com
-Subject: Re: [PATCH v12 7/7] fpga: sec-mgr: expose hardware error info
-Message-ID: <YJlwMfyORHT1DDDF@epycbox.lan>
-References: <20210503213546.316439-1-russell.h.weight@intel.com>
- <20210503213546.316439-8-russell.h.weight@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210503213546.316439-8-russell.h.weight@intel.com>
+        Mon, 10 May 2021 10:42:17 -0700 (PDT)
+Message-ID: <60997079.1c69fb81.77f3f.a045@mx.google.com>
+Date:   Mon, 10 May 2021 13:42:16 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     lsf-pc@lists.linuxfoundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvme@lists.infradead.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RESEND] LSF/MM/BPF: 2021: Call for Proposals
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 02:35:46PM -0700, Russ Weight wrote:
-> Extend the FPGA Security Manager class driver to include
-> an optional update/hw_errinfo sysfs node that can be used
-> to retrieve 64 bits of device specific error information
-> following a secure update failure.
-> 
-> The underlying driver must provide a get_hw_errinfo() callback
-> function to enable this feature. This data is treated as
-> opaque by the class driver. It is left to user-space software
-> or support personnel to interpret this data.
-> 
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> Reviewed-by: Tom Rix <trix@redhat.com>
-> ---
-> v12:
->   - Updated Date and KernelVersion fields in ABI documentation
-> v11:
->   - No change
-> v10:
->   - Rebased to 5.12-rc2 next
->   - Updated Date and KernelVersion in ABI documentation
-> v9:
->   - Updated Date and KernelVersion in ABI documentation
-> v8:
->   - No change
-> v7:
->   - Changed Date in documentation file to December 2020
-> v6:
->   - No change
-> v5:
->   - No change
-> v4:
->   - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
->     and removed unnecessary references to "Intel".
->   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
-> v3:
->   - No change
-> v2:
->   - Bumped documentation date and version
-> ---
->  .../ABI/testing/sysfs-class-fpga-sec-mgr      | 14 +++++++
->  drivers/fpga/fpga-sec-mgr.c                   | 38 +++++++++++++++++++
->  include/linux/fpga/fpga-sec-mgr.h             |  5 +++
->  3 files changed, 57 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr b/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
-> index 749f2d4c78d3..f1881ce39c63 100644
-> --- a/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
-> +++ b/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
-> @@ -65,3 +65,17 @@ Description:	Read-only. Returns a string describing the failure
->  		idle state. If this file is read while a secure
->  		update is in progress, then the read will fail with
->  		EBUSY.
-> +
-> +What: 		/sys/class/fpga_sec_mgr/fpga_secX/update/hw_errinfo
-> +Date:		June 2021
-> +KernelVersion:	5.14
-> +Contact:	Russ Weight <russell.h.weight@intel.com>
-> +Description:	Read-only. Returns a 64 bit error value providing
-> +		hardware specific information that may be useful in
-> +		debugging errors that occur during FPGA image updates.
-> +		This file is only visible if the underlying device
-> +		supports it. The hw_errinfo value is only accessible
-> +		when the secure update engine is in the idle state.
-> +		If this file is read while a secure update is in
-> +		progress, then the read will fail with EBUSY.
-> +		Format: "0x%llx".
-> diff --git a/drivers/fpga/fpga-sec-mgr.c b/drivers/fpga/fpga-sec-mgr.c
-> index 35bd419bd3b9..3c59b142291d 100644
-> --- a/drivers/fpga/fpga-sec-mgr.c
-> +++ b/drivers/fpga/fpga-sec-mgr.c
-> @@ -36,10 +36,17 @@ static void set_error(struct fpga_sec_mgr *smgr, enum fpga_sec_err err_code)
->  	smgr->err_code = err_code;
->  }
->  
-> +static void set_hw_errinfo(struct fpga_sec_mgr *smgr)
-> +{
-> +	if (smgr->sops->get_hw_errinfo)
-> +		smgr->hw_errinfo = smgr->sops->get_hw_errinfo(smgr);
-> +}
+[apologies, 2021 and email is still my nemesis]
 
-Nit: fpga_sec_set_hw_errinfo() maybe?
-> +
->  static void fpga_sec_dev_error(struct fpga_sec_mgr *smgr,
->  			       enum fpga_sec_err err_code)
->  {
->  	set_error(smgr, err_code);
-> +	set_hw_errinfo(smgr);
->  	smgr->sops->cancel(smgr);
->  }
->  
-> @@ -221,6 +228,23 @@ error_show(struct device *dev, struct device_attribute *attr, char *buf)
->  }
->  static DEVICE_ATTR_RO(error);
->  
-> +static ssize_t
-> +hw_errinfo_show(struct device *dev, struct device_attribute *attr, char *buf)
-> +{
-> +	struct fpga_sec_mgr *smgr = to_sec_mgr(dev);
-> +	int ret;
-> +
-> +	mutex_lock(&smgr->lock);
-> +	if (smgr->progress != FPGA_SEC_PROG_IDLE)
-> +		ret = -EBUSY;
-> +	else
-> +		ret = sysfs_emit(buf, "0x%llx\n", smgr->hw_errinfo);
-> +	mutex_unlock(&smgr->lock);
-> +
-> +	return ret;
-> +}
-> +static DEVICE_ATTR_RO(hw_errinfo);
-> +
->  static ssize_t remaining_size_show(struct device *dev,
->  				   struct device_attribute *attr, char *buf)
->  {
-> @@ -252,6 +276,7 @@ static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
->  	}
->  
->  	smgr->err_code = FPGA_SEC_ERR_NONE;
-> +	smgr->hw_errinfo = 0;
->  	smgr->request_cancel = false;
->  	smgr->progress = FPGA_SEC_PROG_READING;
->  	reinit_completion(&smgr->update_done);
-> @@ -286,18 +311,31 @@ static ssize_t cancel_store(struct device *dev, struct device_attribute *attr,
->  }
->  static DEVICE_ATTR_WO(cancel);
->  
-> +static umode_t
-> +sec_mgr_update_visible(struct kobject *kobj, struct attribute *attr, int n)
-> +{
-> +	struct fpga_sec_mgr *smgr = to_sec_mgr(kobj_to_dev(kobj));
-> +
-> +	if (attr == &dev_attr_hw_errinfo.attr && !smgr->sops->get_hw_errinfo)
-> +		return 0;
-> +
-> +	return attr->mode;
-> +}
-> +
->  static struct attribute *sec_mgr_update_attrs[] = {
->  	&dev_attr_filename.attr,
->  	&dev_attr_cancel.attr,
->  	&dev_attr_status.attr,
->  	&dev_attr_error.attr,
->  	&dev_attr_remaining_size.attr,
-> +	&dev_attr_hw_errinfo.attr,
->  	NULL,
->  };
->  
->  static struct attribute_group sec_mgr_update_attr_group = {
->  	.name = "update",
->  	.attrs = sec_mgr_update_attrs,
-> +	.is_visible = sec_mgr_update_visible,
->  };
->  
->  static ssize_t name_show(struct device *dev,
-> diff --git a/include/linux/fpga/fpga-sec-mgr.h b/include/linux/fpga/fpga-sec-mgr.h
-> index 0e1f50434024..a99bfd28f38c 100644
-> --- a/include/linux/fpga/fpga-sec-mgr.h
-> +++ b/include/linux/fpga/fpga-sec-mgr.h
-> @@ -40,6 +40,9 @@ enum fpga_sec_err {
->   *			    function and is called at the completion
->   *			    of the update, whether success or failure,
->   *			    if the prepare function succeeded.
-> + * @get_hw_errinfo:	    Optional: Return u64 hw specific error info.
-> + *			    The software err_code may used to determine
-> + *			    whether the hw error info is applicable.
->   */
->  struct fpga_sec_mgr_ops {
->  	enum fpga_sec_err (*prepare)(struct fpga_sec_mgr *smgr);
-> @@ -47,6 +50,7 @@ struct fpga_sec_mgr_ops {
->  	enum fpga_sec_err (*poll_complete)(struct fpga_sec_mgr *smgr);
->  	enum fpga_sec_err (*cancel)(struct fpga_sec_mgr *smgr);
->  	void (*cleanup)(struct fpga_sec_mgr *smgr);
-> +	u64 (*get_hw_errinfo)(struct fpga_sec_mgr *smgr);
->  };
->  
->  /* Update progress codes */
-> @@ -72,6 +76,7 @@ struct fpga_sec_mgr {
->  	enum fpga_sec_prog progress;
->  	enum fpga_sec_prog err_state;	/* progress state at time of failure */
->  	enum fpga_sec_err err_code;	/* security manager error code */
-> +	u64 hw_errinfo;			/* 64 bits of HW specific error info */
->  	bool request_cancel;
->  	bool driver_unload;
->  	void *priv;
-> -- 
-> 2.25.1
-> 
+The annual Linux Storage, Filesystem, Memory Management, and BPF
+(LSF/MM/BPF) Summit for 2021 will be held from December 6 to December 8
+at The Margaritaville Resort Palm Springs in Palm Springs, California.
+LSF/MM/BPF is an invitation-only technical workshop to map out
+improvements to the Linux storage, filesystem, BPF, and memory
+management subsystems that will make their way into the mainline kernel
+within the coming years.
 
-Thanks,
-Moritz
+COVID is at the front of our minds as we attempt to put together the
+best and safest conference we can arrange.  The logistics of how to hold
+an in person event will change and evolve as we get closer to the actual
+date, but rest assured we will do everything recommended by public
+health officials.
+
+LSF/MM/BPF 2021 will be a three day, stand-alone conference with four
+subsystem-specific tracks, cross-track discussions, as well as BoF and
+hacking sessions.
+
+On behalf of the committee I am issuing a call for agenda proposals
+that are suitable for cross-track discussion as well as technical
+subjects for the breakout sessions.
+
+If advance notice is required for visa applications then please point
+that out in your proposal or request to attend, and submit the topic as
+soon as possible.
+
+This years instructions are similar to our 2020 attempt.  We're asking
+that you please let us know you want to be invited by June 15th, 2021.
+We realize that travel is an ever changing target, but it helps us get
+an idea of possible attendance numbers.  Clearly things can and will, so
+consider the request to attend deadline more about planning and less
+about concrete plans.
+
+1) Fill out the following Google form to request attendance and
+suggest any topics
+
+	https://forms.gle/Dms7xYPXLrriFkcXA
+
+In previous years we have accidentally missed people's attendance
+requests because they either didn't cc lsf-pc@ or we simply missed them
+in the flurry of emails we get.  Our community is large and our
+volunteers are busy, filling this out will help us make sure we don't
+miss anybody.
+
+2) Proposals for agenda topics should still be sent to the following
+lists to allow for discussion among your peers.  This will help us
+figure out which topics are important for the agenda.
+
+        lsf-pc@lists.linux-foundation.org
+
+and CC the mailing lists that are relevant for the topic in question:
+
+        FS:     linux-fsdevel@vger.kernel.org
+        MM:     linux-mm@kvack.org
+        Block:  linux-block@vger.kernel.org
+        ATA:    linux-ide@vger.kernel.org
+        SCSI:   linux-scsi@vger.kernel.org
+        NVMe:   linux-nvme@lists.infradead.org
+        BPF:    bpf@vger.kernel.org
+
+Please tag your proposal with [LSF/MM/BPF TOPIC] to make it easier to
+track. In addition, please make sure to start a new thread for each
+topic rather than following up to an existing one. Agenda topics and
+attendees will be selected by the program committee, but the final
+agenda will be formed by consensus of the attendees on the day.
+
+We will try to cap attendance at around 25-30 per track to facilitate
+discussions although the final numbers will depend on the room sizes
+at the venue.
+
+For discussion leaders, slides and visualizations are encouraged to
+outline the subject matter and focus the discussions. Please refrain
+from lengthy presentations and talks; the sessions are supposed to be
+interactive, inclusive discussions.
+
+There will be no recording or audio bridge. However, we expect that
+written minutes will be published as we did in previous years:
+
+2019: https://lwn.net/Articles/lsfmm2019/
+
+2018: https://lwn.net/Articles/lsfmm2018/
+
+2017: https://lwn.net/Articles/lsfmm2017/
+
+2016: https://lwn.net/Articles/lsfmm2016/
+
+2015: https://lwn.net/Articles/lsfmm2015/
+
+2014: http://lwn.net/Articles/LSFMM2014/
+
+3) If you have feedback on last year's meeting that we can use to
+improve this year's, please also send that to:
+
+        lsf-pc@lists.linux-foundation.org
+
+Thank you on behalf of the program committee:
+
+        Josef Bacik (Filesystems)
+        Amir Goldstein (Filesystems)
+        Martin K. Petersen (Storage)
+        Omar Sandoval (Storage)
+        Michal Hocko (MM)
+        Dan Williams (MM)
+        Alexei Starovoitov (BPF)
+        Daniel Borkmann (BPF)
