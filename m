@@ -2,111 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F441379682
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36224379684
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbhEJRz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 13:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53758 "EHLO
+        id S233281AbhEJRzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 13:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231512AbhEJRzV (ORCPT
+        with ESMTP id S233244AbhEJRzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 13:55:21 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E356CC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:54:15 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2so24669411lft.4
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:54:15 -0700 (PDT)
+        Mon, 10 May 2021 13:55:31 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FB6C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:54:24 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id w3so25855481ejc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:54:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7DBXjIiwreoSMBulhj9z8uemdOR1wtk9OGoK/dlXrlw=;
-        b=kI1VsBmqooHdHR2wK2FW9Ig7MpJ6Jnv+jFiPsF6HkNbF+b8VVl8DmxTNTfP5pPtQ0j
-         C8zlDuqgm/LpY1XPq7E4zUQF+oP7CNQOxUuqeu7z0rmWPZFLICPCptijhGZoFoUI0z1P
-         HkpbxputLmAYvIty3BfaS3q9IUM57VE3AEcSHFdM7BZNoA74uJVuzUNAtKNxZQqzdWyK
-         GRmIvjRxARlykjpWe3DKrjUD64qa1fEpTEaTDBpLus1aQawDnXIulbOhihD+9zVBG0MQ
-         w//+PNR8qjOB9U2QX/JPuKXPlZS33XkTNz5VBENgXSJKkcJuCmhPnAb72HMK9sDuocaZ
-         EMyA==
+         :cc:content-transfer-encoding;
+        bh=uxDDskVd8yPhLUA4OUYRxmOdB7NJo1UMRxyXj9tE2ew=;
+        b=v79g2WeOkfQYHp0bxTaxMsFXm0XCHRQ+lfeIZ8Pfljo/jKJhJW9MXCacOxpPAmc14K
+         seD+PpsJshYT7b79rXCfa+1VxenehA1RcWgTNNeL7PrVQ6C//EVG9iqyYDQCLetefort
+         f3P5XYv+TChBXE0i/wUuefi3pRFE+Wd4u0cCI9ZM15wJjMoTf+8xASeMxL4j1as7Yw7z
+         QV8TL7uh2zw+qL8Q1bqY2AQnwSAADW9aLL6DddDB0PjhE83kEEbNVHXjWbOz+BGkCDv4
+         MEqO22Kleg+Ab5tWJ+05PTGgy7xOZvUtMjc+3Mx+WjH/eA43eagcQfUIhrYsCDuwa/F1
+         FR4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7DBXjIiwreoSMBulhj9z8uemdOR1wtk9OGoK/dlXrlw=;
-        b=op4dXPJMWH52dtBDZXMUF/nSiaa7N5poEUf5XcuLE6DRxTOF8w9QZsHyRNhYZ8pNCj
-         l/YPHPvN49LVq1Vo2yQr9qF5Q28V1tsLatqEVp+KeJy0nN8N6+x2mrBbUWgc2A3ltAvt
-         M5YZKP4W40QsiPbEJX+kZstoiYYZTsPYcxxwGDTEf8g/We+ssrCJpssLSC92MZiExCHW
-         LETYk4vMGipkr9nJ+77EcjljqqCmVVGIC0pAlFcq8BGC7mRwfJcy5qY+WEUJgmN8Ae3w
-         WIy1PXQwICyzUIOsss8rTM/FeATMTr/vDifAwJS7YzOhHzBXZDeCAiPWHaS+2fJqKVQ3
-         1WyQ==
-X-Gm-Message-State: AOAM530sOD/FmcJGVb27UdVSbqZ46PLZdZbL106SsDmq07xpZRBfGw72
-        UMf0iy0isJhgF8Oz2KJjVSpoisO47wkFHFLjJdMlF5nJiMNFkw==
-X-Google-Smtp-Source: ABdhPJwo5TWc/WJMj1S2Zoc4U+lAbTeIU0HdWWA4HSEX93HD9gsFS/u34fNra0aplKIpc2fLmFcM3hmrUd20VVcAoPc=
-X-Received: by 2002:a05:6512:1190:: with SMTP id g16mr18626589lfr.342.1620669254344;
- Mon, 10 May 2021 10:54:14 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uxDDskVd8yPhLUA4OUYRxmOdB7NJo1UMRxyXj9tE2ew=;
+        b=hqLRtFxsnFO4/fdwFaRoXUY/mCWNAX4yzcu6wFkkBaidF8ZIVQMdmDqZJcmwyY/FBx
+         JyG0UOBfuGv+iFhLTZ5Ley0PfdshgYEXwV3aoWFCtp0fP4ww1/2hI7zEx3+P7b0S5HCS
+         Zq0Q4rWpAYmYuKT4MNzBktk+Fj5hwMEQvYr7gZyAoZPAS3UbjNUrLAWGwMxnRYvRt2R3
+         8d5OaUcjjgl85tq6VK8OjNZbX2w172HOjXBcglXo557aNOXj3nHa2QBAGiYy+KzIIvDc
+         ioQUeNVJn/wH1fXdFHn/5FuMgWEYx3Rl3pwd97N02KTYLaXn5397J8s2JgOtdhDJ0YI9
+         3DmQ==
+X-Gm-Message-State: AOAM531SJAURhQ0MZ78Ut97N/Pz9ysHUlTgomEfhq7rQ4KMWyRJF2Qtj
+        UTPEfx1QcWsL9wRlKkeCNerdzn2CD0GeHAWzaSmoRHuha1UEKGoT
+X-Google-Smtp-Source: ABdhPJyVT4av+Gitz6piMDlZi4RtW4oM8c9kehsLsgZIDmz3LEzUseffiyD4Wav4feeeiI24kObuY1nea7i1+s45wH4=
+X-Received: by 2002:a17:906:17cc:: with SMTP id u12mr26777505eje.170.1620669262641;
+ Mon, 10 May 2021 10:54:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210510171127.15056-1-dwaipayanray1@gmail.com> <630fc44bfb88f8d3d542c084c2d9f7c0a6d8aea7.camel@perches.com>
-In-Reply-To: <630fc44bfb88f8d3d542c084c2d9f7c0a6d8aea7.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Mon, 10 May 2021 23:24:02 +0530
-Message-ID: <CABJPP5BsSCH6ZX0M8_p2_QoSUZeq29e0VNFB8M2xkvafKZ6BGw@mail.gmail.com>
-Subject: Re: [PATCH] checkpatch: auto detect codespell dictionary path
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+References: <CAHk-=wiWTU+=wK9pv_YG01rXSqApCS_oY+78Ztz5-ORH5a-kvg@mail.gmail.com>
+In-Reply-To: <CAHk-=wiWTU+=wK9pv_YG01rXSqApCS_oY+78Ztz5-ORH5a-kvg@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 10 May 2021 23:24:11 +0530
+Message-ID: <CA+G9fYvnM6rd2Sd7WdQmb-GFRF8y+QG1J3ocJOQKV0V0g=PofQ@mail.gmail.com>
+Subject: Re: Linux 5.13-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 11:09 PM Joe Perches <joe@perches.com> wrote:
+On Mon, 10 May 2021 at 03:14, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> On Mon, 2021-05-10 at 22:41 +0530, Dwaipayan Ray wrote:
-> > The codespell dictionary was moved from
-> > `/usr/share/codespell/dictionary.txt` to data/dictionary.txt
-> > under the codespell_lib installation directory.
-> >
-> > Checkpatch still uses a default absolute path for it which will
-> > no longer work on new codespell installations unless the path
-> > is specified through --codespellfile.
-> >
-> > Detect the codespell dictionary path dynamically during
-> > runtime if the default path or the user provided dictionary
-> > path does not exist.
-> []
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
-> > @@ -889,6 +889,13 @@ if (open(my $spelling, '<', $spelling_file)) {
-> >  }
-> >
-> >
-> >  if ($codespell) {
-> > +     if (! -e "$codespellfile" && which("python3") ne "") {
-> > +             my $output = `python3 -c "import codespell_lib; print(codespell_lib.__file__, end='');" 2>/dev/null`;
+> So two weeks are over, and the merge window is closed.
+< trim >
+> The merge log is obviously woefully inadequate, with the diffstat
+> summary kind of showing why:
 >
-> It doesn't seem to me that using python3 is a great way to invoke python.
-> Maybe test the external command return $? when codespell isn't installed.
+>   12015 files changed, 631309 insertions(+), 246239 deletions(-)
+>
+> it really is a fair amount of stuff, all over the place.
+>
+> Go test,
 
-Sure, I will add that.
->
-> > +             my $dictionary_path = dirname($output) . "/data/dictionary.txt";
->
-> Unlikely, but this could still end up with a existing file of /data/dictionary.txt
-> that is not a codespell file.
->
+Results from Linaro=E2=80=99s test farm.
+Regressions detected.
 
-So does testing for the return status give us some guarantee here? The
-dictionary
-path should be relative to the codespell_lib directory, that's what
-the codespell
-people writes.
+Summary
+------------------------------------------------------------------------
+kernel: 5.13.0-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t
+git branch: master
+git commit: 6efb943b8616ec53a5e444193dccf1af9ad627b5
+git describe: v5.13-rc1
+Test details: https://qa-reports.linaro.org/lkft/linux-mainline-master/buil=
+d/v5.13-rc1
 
-> > +             if (-e "$dictionary_path") {
-> > +                     $codespellfile = $dictionary_path;
-> > +             }
-> > +     }
-> >       if (open(my $spelling, '<', $codespellfile)) {
-> >               while (<$spelling>) {
-> >                       my $line = $_;
->
->
+Regressions (compared to build v5.12)
+------------------------------------
+
+Regression on TI BeagleBoard-X15 arm32 bit platform as the device was not a=
+ble
+to detect SATA drive.
+
+Which is fixed by Tony Lindgren but this is yet to get into the mainline tr=
+ee.
+
+"
+Naresh Kamboju <naresh.kamboju@linaro.org> reported that Beaglebone-X15
+does not detect sata drives any longer after dra7 was flipped to boot with
+device tree data only. Turns out we are now missing the sata related quirk
+flags in ti-sysc that we used to have earlier.
+
+Fixes: 98feab31ac49 ("ARM: OMAP2+: Drop legacy platform data for dra7 sata"=
+)
+Fixes: 21206c8f2cb5 ("ARM: OMAP2+: Drop legacy platform data for omap5 sata=
+")
+Link: https://lore.kernel.org/regressions/CA+G9fYtTN6ug3eBAW3wMcDeESUo+ebj7=
+L5HBe5_fj4uqDExFQg@mail.gmail.com/
+"
+ref:
+https://lore.kernel.org/linux-arm-kernel/20210507112857.12753-1-tony@atomid=
+e.com/
+
+
+## Test result summary
+ total: 63780, pass: 53717, fail: 1047, skip: 8782, xfail: 234,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 194 total, 194 passed, 0 failed
+* arm64: 28 total, 28 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 27 total, 27 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x86_64: 28 total, 28 passed, 0 failed
+
+## Test suites summary
+* fwts
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
