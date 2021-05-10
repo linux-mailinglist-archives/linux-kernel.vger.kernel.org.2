@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B41D3782E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210383782BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhEJKlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:41:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41804 "EHLO mail.kernel.org"
+        id S232439AbhEJKhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:37:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231178AbhEJKcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:32:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEAF361965;
-        Mon, 10 May 2021 10:27:24 +0000 (UTC)
+        id S232052AbhEJKcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:32:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBCF66192B;
+        Mon, 10 May 2021 10:27:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620642444;
-        bh=HMuEeamWkEOzbII9kC7GXZuYB/aImVAw7I4Ml7ib+1U=;
+        bh=a/lHErjxeq8Px/VYkN0n+YdbY/CWB8GjcIQuglK7QWg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gZikLCbaoG0FlaXiH0nka7Z9ArHhPVu0RFubQ7saUAgascpbiro4W0wf/xvXtp6cZ
-         EfutuTcCy+DuSvt9vXCeHev7f2OE18SCs0TTTTEqQX/eSkaGwTWh4nxbdXHQFd0SCe
-         AGa5550YiLeUea+GPd0PAcJ8/UaGJQqrev2wW4XSHde0wP0ATWkQA6Fs7rk0IIDZFu
-         hSNpgWQsQzbhtS8MxYEgly+8C8sWhxoT4iVxk388t6Pjnzo0iD0I1NDly0NSoovKf7
-         ZVQUm4z9pOyw3c/du+W0dVx78N1rFjXnJO8pFmHOQ1x77VePL3AV7PIKm3i4GlINBr
-         hW6DmmdySO7+g==
+        b=LZnWzXJrkHuG+yU9PYes9q1+5s/2e5Xyn6tkDeHreXPEftgwqghhmhsDb+c73Yhoc
+         eCf8TPvbNZCR1aWKHy3/FNaiHambNIk5MPES2VOwVN2fzMO2hHeHDcBKzNbZV0MlhS
+         gJ8EY8qicuv/m385ErxgkqXLdKb9AJdiD2+K2wgEX4UmF3JqqmFf6SvHzyGPIvh/3n
+         AzlWVEK0ypbY1zS1XxDgoWpFKoQxPniOBFKPtJsrp869+SOV3Iz7hchM+qdn3vkRmV
+         iDOaW1qwIXZx8lmTxeIIvwsbHeC0IHG8dWe3wMu727JXiWpKON8EnR4JazWpXdK3Xd
+         a/DtpLT7Y2nUg==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lg38D-000UQC-Nn; Mon, 10 May 2021 12:27:21 +0200
+        id 1lg38D-000UQG-Pe; Mon, 10 May 2021 12:27:21 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@protonmail.com>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Joe Pater <02joepater06@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
-Subject: [PATCH 29/53] docs: kernel-hacking: avoid using UTF-8 chars
-Date:   Mon, 10 May 2021 12:26:41 +0200
-Message-Id: <07079c7721c3dda39b23527b6ece8b0f9746e3e7.1620641727.git.mchehab+huawei@kernel.org>
+        "Mark O'Donovan" <shiftee@posteo.net>,
+        Jiri Kosina <jikos@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 30/53] docs: hid: avoid using UTF-8 chars
+Date:   Mon, 10 May 2021 12:26:42 +0200
+Message-Id: <a978fba250cb40dcf764eac79a939ea48b816e9a.1620641727.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620641727.git.mchehab+huawei@kernel.org>
 References: <cover.1620641727.git.mchehab+huawei@kernel.org>
@@ -53,41 +55,363 @@ While UTF-8 characters can be used at the Linux documentation,
 the best is to use them only when ASCII doesn't offer a good replacement.
 So, replace the occurences of the following UTF-8 characters:
 
-	- U+201c ('“'): LEFT DOUBLE QUOTATION MARK
-	- U+201d ('”'): RIGHT DOUBLE QUOTATION MARK
+	- U+00a0 (' '): NO-BREAK SPACE
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/kernel-hacking/hacking.rst | 2 +-
- Documentation/kernel-hacking/locking.rst | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ Documentation/hid/hid-sensor.rst    |  70 ++++----
+ Documentation/hid/intel-ish-hid.rst | 246 ++++++++++++++--------------
+ 2 files changed, 158 insertions(+), 158 deletions(-)
 
-diff --git a/Documentation/kernel-hacking/hacking.rst b/Documentation/kernel-hacking/hacking.rst
-index 451523424942..e8f9cff4b016 100644
---- a/Documentation/kernel-hacking/hacking.rst
-+++ b/Documentation/kernel-hacking/hacking.rst
-@@ -741,7 +741,7 @@ make a neat patch, there's administrative work to be done:
-    In your description of the option, make sure you address both the
-    expert user and the user who knows nothing about your feature.
-    Mention incompatibilities and issues here. **Definitely** end your
--   description with “if in doubt, say N” (or, occasionally, \`Y'); this
-+   description with "if in doubt, say N" (or, occasionally, \`Y'); this
-    is for people who have no idea what you are talking about.
+diff --git a/Documentation/hid/hid-sensor.rst b/Documentation/hid/hid-sensor.rst
+index c1c9b8d8dca6..b98d7a415cda 100644
+--- a/Documentation/hid/hid-sensor.rst
++++ b/Documentation/hid/hid-sensor.rst
+@@ -173,39 +173,39 @@ An example of this representation on sysfs::
  
- -  Edit the ``Makefile``: the CONFIG variables are exported here so you
-diff --git a/Documentation/kernel-hacking/locking.rst b/Documentation/kernel-hacking/locking.rst
-index ed1284c6f078..f8ab299314b4 100644
---- a/Documentation/kernel-hacking/locking.rst
-+++ b/Documentation/kernel-hacking/locking.rst
-@@ -872,7 +872,7 @@ the name field.
- Note also that I added a comment describing what data was protected by
- which locks. This is extremely important, as it describes the runtime
- behavior of the code, and can be hard to gain from just reading. And as
--Alan Cox says, “Lock data, not code”.
-+Alan Cox says, "Lock data, not code".
+   /sys/devices/pci0000:00/INT33C2:00/i2c-0/i2c-INT33D1:00/0018:8086:09FA.0001/HID-SENSOR-2000e1.6.auto$ tree -R
+   .
+-  │   ├──  enable_sensor
+-  │   │   ├── feature-0-200316
+-  │   │   │   ├── feature-0-200316-maximum
+-  │   │   │   ├── feature-0-200316-minimum
+-  │   │   │   ├── feature-0-200316-name
+-  │   │   │   ├── feature-0-200316-size
+-  │   │   │   ├── feature-0-200316-unit-expo
+-  │   │   │   ├── feature-0-200316-units
+-  │   │   │   ├── feature-0-200316-value
+-  │   │   ├── feature-1-200201
+-  │   │   │   ├── feature-1-200201-maximum
+-  │   │   │   ├── feature-1-200201-minimum
+-  │   │   │   ├── feature-1-200201-name
+-  │   │   │   ├── feature-1-200201-size
+-  │   │   │   ├── feature-1-200201-unit-expo
+-  │   │   │   ├── feature-1-200201-units
+-  │   │   │   ├── feature-1-200201-value
+-  │   │   ├── input-0-200201
+-  │   │   │   ├── input-0-200201-maximum
+-  │   │   │   ├── input-0-200201-minimum
+-  │   │   │   ├── input-0-200201-name
+-  │   │   │   ├── input-0-200201-size
+-  │   │   │   ├── input-0-200201-unit-expo
+-  │   │   │   ├── input-0-200201-units
+-  │   │   │   ├── input-0-200201-value
+-  │   │   ├── input-1-200202
+-  │   │   │   ├── input-1-200202-maximum
+-  │   │   │   ├── input-1-200202-minimum
+-  │   │   │   ├── input-1-200202-name
+-  │   │   │   ├── input-1-200202-size
+-  │   │   │   ├── input-1-200202-unit-expo
+-  │   │   │   ├── input-1-200202-units
+-  │   │   │   ├── input-1-200202-value
++  │   ├──  enable_sensor
++  │   │   ├── feature-0-200316
++  │   │   │   ├── feature-0-200316-maximum
++  │   │   │   ├── feature-0-200316-minimum
++  │   │   │   ├── feature-0-200316-name
++  │   │   │   ├── feature-0-200316-size
++  │   │   │   ├── feature-0-200316-unit-expo
++  │   │   │   ├── feature-0-200316-units
++  │   │   │   ├── feature-0-200316-value
++  │   │   ├── feature-1-200201
++  │   │   │   ├── feature-1-200201-maximum
++  │   │   │   ├── feature-1-200201-minimum
++  │   │   │   ├── feature-1-200201-name
++  │   │   │   ├── feature-1-200201-size
++  │   │   │   ├── feature-1-200201-unit-expo
++  │   │   │   ├── feature-1-200201-units
++  │   │   │   ├── feature-1-200201-value
++  │   │   ├── input-0-200201
++  │   │   │   ├── input-0-200201-maximum
++  │   │   │   ├── input-0-200201-minimum
++  │   │   │   ├── input-0-200201-name
++  │   │   │   ├── input-0-200201-size
++  │   │   │   ├── input-0-200201-unit-expo
++  │   │   │   ├── input-0-200201-units
++  │   │   │   ├── input-0-200201-value
++  │   │   ├── input-1-200202
++  │   │   │   ├── input-1-200202-maximum
++  │   │   │   ├── input-1-200202-minimum
++  │   │   │   ├── input-1-200202-name
++  │   │   │   ├── input-1-200202-size
++  │   │   │   ├── input-1-200202-unit-expo
++  │   │   │   ├── input-1-200202-units
++  │   │   │   ├── input-1-200202-value
  
- Common Problems
- ===============
+ Here there is a custom sensor with four fields: two feature and two inputs.
+ Each field is represented by a set of attributes. All fields except the "value"
+@@ -234,8 +234,8 @@ Once enabled and powered on, sensor can report value using HID reports.
+ These reports are pushed using misc device interface in a FIFO order::
+ 
+ 	/dev$ tree | grep HID-SENSOR-2000e1.6.auto
+-	│   │   │   ├── 10:53 -> ../HID-SENSOR-2000e1.6.auto
+-	│   ├──  HID-SENSOR-2000e1.6.auto
++	│   │   │   ├── 10:53 -> ../HID-SENSOR-2000e1.6.auto
++	│   ├──  HID-SENSOR-2000e1.6.auto
+ 
+ Each report can be of variable length preceded by a header. This header
+ consists of a 32-bit usage id, 64-bit time stamp and 32-bit length field of raw
+diff --git a/Documentation/hid/intel-ish-hid.rst b/Documentation/hid/intel-ish-hid.rst
+index 7a851252267a..a525cdefc937 100644
+--- a/Documentation/hid/intel-ish-hid.rst
++++ b/Documentation/hid/intel-ish-hid.rst
+@@ -355,133 +355,133 @@ To debug ISH, event tracing mechanism is used. To enable debug logs::
+   root@otcpl-ThinkPad-Yoga-260:~# tree -l /sys/bus/iio/devices/
+   /sys/bus/iio/devices/
+   ├── iio:device0 -> ../../../devices/0044:8086:22D8.0001/HID-SENSOR-200073.9.auto/iio:device0
+-  │   ├── buffer
+-  │   │   ├── enable
+-  │   │   ├── length
+-  │   │   └── watermark
++  │   ├── buffer
++  │   │   ├── enable
++  │   │   ├── length
++  │   │   └── watermark
+   ...
+-  │   ├── in_accel_hysteresis
+-  │   ├── in_accel_offset
+-  │   ├── in_accel_sampling_frequency
+-  │   ├── in_accel_scale
+-  │   ├── in_accel_x_raw
+-  │   ├── in_accel_y_raw
+-  │   ├── in_accel_z_raw
+-  │   ├── name
+-  │   ├── scan_elements
+-  │   │   ├── in_accel_x_en
+-  │   │   ├── in_accel_x_index
+-  │   │   ├── in_accel_x_type
+-  │   │   ├── in_accel_y_en
+-  │   │   ├── in_accel_y_index
+-  │   │   ├── in_accel_y_type
+-  │   │   ├── in_accel_z_en
+-  │   │   ├── in_accel_z_index
+-  │   │   └── in_accel_z_type
++  │   ├── in_accel_hysteresis
++  │   ├── in_accel_offset
++  │   ├── in_accel_sampling_frequency
++  │   ├── in_accel_scale
++  │   ├── in_accel_x_raw
++  │   ├── in_accel_y_raw
++  │   ├── in_accel_z_raw
++  │   ├── name
++  │   ├── scan_elements
++  │   │   ├── in_accel_x_en
++  │   │   ├── in_accel_x_index
++  │   │   ├── in_accel_x_type
++  │   │   ├── in_accel_y_en
++  │   │   ├── in_accel_y_index
++  │   │   ├── in_accel_y_type
++  │   │   ├── in_accel_z_en
++  │   │   ├── in_accel_z_index
++  │   │   └── in_accel_z_type
+   ...
+-  │   │   ├── devices
+-  │   │   │   │   ├── buffer
+-  │   │   │   │   │   ├── enable
+-  │   │   │   │   │   ├── length
+-  │   │   │   │   │   └── watermark
+-  │   │   │   │   ├── dev
+-  │   │   │   │   ├── in_intensity_both_raw
+-  │   │   │   │   ├── in_intensity_hysteresis
+-  │   │   │   │   ├── in_intensity_offset
+-  │   │   │   │   ├── in_intensity_sampling_frequency
+-  │   │   │   │   ├── in_intensity_scale
+-  │   │   │   │   ├── name
+-  │   │   │   │   ├── scan_elements
+-  │   │   │   │   │   ├── in_intensity_both_en
+-  │   │   │   │   │   ├── in_intensity_both_index
+-  │   │   │   │   │   └── in_intensity_both_type
+-  │   │   │   │   ├── trigger
+-  │   │   │   │   │   └── current_trigger
++  │   │   ├── devices
++  │   │   │   │   ├── buffer
++  │   │   │   │   │   ├── enable
++  │   │   │   │   │   ├── length
++  │   │   │   │   │   └── watermark
++  │   │   │   │   ├── dev
++  │   │   │   │   ├── in_intensity_both_raw
++  │   │   │   │   ├── in_intensity_hysteresis
++  │   │   │   │   ├── in_intensity_offset
++  │   │   │   │   ├── in_intensity_sampling_frequency
++  │   │   │   │   ├── in_intensity_scale
++  │   │   │   │   ├── name
++  │   │   │   │   ├── scan_elements
++  │   │   │   │   │   ├── in_intensity_both_en
++  │   │   │   │   │   ├── in_intensity_both_index
++  │   │   │   │   │   └── in_intensity_both_type
++  │   │   │   │   ├── trigger
++  │   │   │   │   │   └── current_trigger
+   ...
+-  │   │   │   │   ├── buffer
+-  │   │   │   │   │   ├── enable
+-  │   │   │   │   │   ├── length
+-  │   │   │   │   │   └── watermark
+-  │   │   │   │   ├── dev
+-  │   │   │   │   ├── in_magn_hysteresis
+-  │   │   │   │   ├── in_magn_offset
+-  │   │   │   │   ├── in_magn_sampling_frequency
+-  │   │   │   │   ├── in_magn_scale
+-  │   │   │   │   ├── in_magn_x_raw
+-  │   │   │   │   ├── in_magn_y_raw
+-  │   │   │   │   ├── in_magn_z_raw
+-  │   │   │   │   ├── in_rot_from_north_magnetic_tilt_comp_raw
+-  │   │   │   │   ├── in_rot_hysteresis
+-  │   │   │   │   ├── in_rot_offset
+-  │   │   │   │   ├── in_rot_sampling_frequency
+-  │   │   │   │   ├── in_rot_scale
+-  │   │   │   │   ├── name
++  │   │   │   │   ├── buffer
++  │   │   │   │   │   ├── enable
++  │   │   │   │   │   ├── length
++  │   │   │   │   │   └── watermark
++  │   │   │   │   ├── dev
++  │   │   │   │   ├── in_magn_hysteresis
++  │   │   │   │   ├── in_magn_offset
++  │   │   │   │   ├── in_magn_sampling_frequency
++  │   │   │   │   ├── in_magn_scale
++  │   │   │   │   ├── in_magn_x_raw
++  │   │   │   │   ├── in_magn_y_raw
++  │   │   │   │   ├── in_magn_z_raw
++  │   │   │   │   ├── in_rot_from_north_magnetic_tilt_comp_raw
++  │   │   │   │   ├── in_rot_hysteresis
++  │   │   │   │   ├── in_rot_offset
++  │   │   │   │   ├── in_rot_sampling_frequency
++  │   │   │   │   ├── in_rot_scale
++  │   │   │   │   ├── name
+   ...
+-  │   │   │   │   ├── scan_elements
+-  │   │   │   │   │   ├── in_magn_x_en
+-  │   │   │   │   │   ├── in_magn_x_index
+-  │   │   │   │   │   ├── in_magn_x_type
+-  │   │   │   │   │   ├── in_magn_y_en
+-  │   │   │   │   │   ├── in_magn_y_index
+-  │   │   │   │   │   ├── in_magn_y_type
+-  │   │   │   │   │   ├── in_magn_z_en
+-  │   │   │   │   │   ├── in_magn_z_index
+-  │   │   │   │   │   ├── in_magn_z_type
+-  │   │   │   │   │   ├── in_rot_from_north_magnetic_tilt_comp_en
+-  │   │   │   │   │   ├── in_rot_from_north_magnetic_tilt_comp_index
+-  │   │   │   │   │   └── in_rot_from_north_magnetic_tilt_comp_type
+-  │   │   │   │   ├── trigger
+-  │   │   │   │   │   └── current_trigger
++  │   │   │   │   ├── scan_elements
++  │   │   │   │   │   ├── in_magn_x_en
++  │   │   │   │   │   ├── in_magn_x_index
++  │   │   │   │   │   ├── in_magn_x_type
++  │   │   │   │   │   ├── in_magn_y_en
++  │   │   │   │   │   ├── in_magn_y_index
++  │   │   │   │   │   ├── in_magn_y_type
++  │   │   │   │   │   ├── in_magn_z_en
++  │   │   │   │   │   ├── in_magn_z_index
++  │   │   │   │   │   ├── in_magn_z_type
++  │   │   │   │   │   ├── in_rot_from_north_magnetic_tilt_comp_en
++  │   │   │   │   │   ├── in_rot_from_north_magnetic_tilt_comp_index
++  │   │   │   │   │   └── in_rot_from_north_magnetic_tilt_comp_type
++  │   │   │   │   ├── trigger
++  │   │   │   │   │   └── current_trigger
+   ...
+-  │   │   │   │   ├── buffer
+-  │   │   │   │   │   ├── enable
+-  │   │   │   │   │   ├── length
+-  │   │   │   │   │   └── watermark
+-  │   │   │   │   ├── dev
+-  │   │   │   │   ├── in_anglvel_hysteresis
+-  │   │   │   │   ├── in_anglvel_offset
+-  │   │   │   │   ├── in_anglvel_sampling_frequency
+-  │   │   │   │   ├── in_anglvel_scale
+-  │   │   │   │   ├── in_anglvel_x_raw
+-  │   │   │   │   ├── in_anglvel_y_raw
+-  │   │   │   │   ├── in_anglvel_z_raw
+-  │   │   │   │   ├── name
+-  │   │   │   │   ├── scan_elements
+-  │   │   │   │   │   ├── in_anglvel_x_en
+-  │   │   │   │   │   ├── in_anglvel_x_index
+-  │   │   │   │   │   ├── in_anglvel_x_type
+-  │   │   │   │   │   ├── in_anglvel_y_en
+-  │   │   │   │   │   ├── in_anglvel_y_index
+-  │   │   │   │   │   ├── in_anglvel_y_type
+-  │   │   │   │   │   ├── in_anglvel_z_en
+-  │   │   │   │   │   ├── in_anglvel_z_index
+-  │   │   │   │   │   └── in_anglvel_z_type
+-  │   │   │   │   ├── trigger
+-  │   │   │   │   │   └── current_trigger
++  │   │   │   │   ├── buffer
++  │   │   │   │   │   ├── enable
++  │   │   │   │   │   ├── length
++  │   │   │   │   │   └── watermark
++  │   │   │   │   ├── dev
++  │   │   │   │   ├── in_anglvel_hysteresis
++  │   │   │   │   ├── in_anglvel_offset
++  │   │   │   │   ├── in_anglvel_sampling_frequency
++  │   │   │   │   ├── in_anglvel_scale
++  │   │   │   │   ├── in_anglvel_x_raw
++  │   │   │   │   ├── in_anglvel_y_raw
++  │   │   │   │   ├── in_anglvel_z_raw
++  │   │   │   │   ├── name
++  │   │   │   │   ├── scan_elements
++  │   │   │   │   │   ├── in_anglvel_x_en
++  │   │   │   │   │   ├── in_anglvel_x_index
++  │   │   │   │   │   ├── in_anglvel_x_type
++  │   │   │   │   │   ├── in_anglvel_y_en
++  │   │   │   │   │   ├── in_anglvel_y_index
++  │   │   │   │   │   ├── in_anglvel_y_type
++  │   │   │   │   │   ├── in_anglvel_z_en
++  │   │   │   │   │   ├── in_anglvel_z_index
++  │   │   │   │   │   └── in_anglvel_z_type
++  │   │   │   │   ├── trigger
++  │   │   │   │   │   └── current_trigger
+   ...
+-  │   │   │   │   ├── buffer
+-  │   │   │   │   │   ├── enable
+-  │   │   │   │   │   ├── length
+-  │   │   │   │   │   └── watermark
+-  │   │   │   │   ├── dev
+-  │   │   │   │   ├── in_anglvel_hysteresis
+-  │   │   │   │   ├── in_anglvel_offset
+-  │   │   │   │   ├── in_anglvel_sampling_frequency
+-  │   │   │   │   ├── in_anglvel_scale
+-  │   │   │   │   ├── in_anglvel_x_raw
+-  │   │   │   │   ├── in_anglvel_y_raw
+-  │   │   │   │   ├── in_anglvel_z_raw
+-  │   │   │   │   ├── name
+-  │   │   │   │   ├── scan_elements
+-  │   │   │   │   │   ├── in_anglvel_x_en
+-  │   │   │   │   │   ├── in_anglvel_x_index
+-  │   │   │   │   │   ├── in_anglvel_x_type
+-  │   │   │   │   │   ├── in_anglvel_y_en
+-  │   │   │   │   │   ├── in_anglvel_y_index
+-  │   │   │   │   │   ├── in_anglvel_y_type
+-  │   │   │   │   │   ├── in_anglvel_z_en
+-  │   │   │   │   │   ├── in_anglvel_z_index
+-  │   │   │   │   │   └── in_anglvel_z_type
+-  │   │   │   │   ├── trigger
+-  │   │   │   │   │   └── current_trigger
++  │   │   │   │   ├── buffer
++  │   │   │   │   │   ├── enable
++  │   │   │   │   │   ├── length
++  │   │   │   │   │   └── watermark
++  │   │   │   │   ├── dev
++  │   │   │   │   ├── in_anglvel_hysteresis
++  │   │   │   │   ├── in_anglvel_offset
++  │   │   │   │   ├── in_anglvel_sampling_frequency
++  │   │   │   │   ├── in_anglvel_scale
++  │   │   │   │   ├── in_anglvel_x_raw
++  │   │   │   │   ├── in_anglvel_y_raw
++  │   │   │   │   ├── in_anglvel_z_raw
++  │   │   │   │   ├── name
++  │   │   │   │   ├── scan_elements
++  │   │   │   │   │   ├── in_anglvel_x_en
++  │   │   │   │   │   ├── in_anglvel_x_index
++  │   │   │   │   │   ├── in_anglvel_x_type
++  │   │   │   │   │   ├── in_anglvel_y_en
++  │   │   │   │   │   ├── in_anglvel_y_index
++  │   │   │   │   │   ├── in_anglvel_y_type
++  │   │   │   │   │   ├── in_anglvel_z_en
++  │   │   │   │   │   ├── in_anglvel_z_index
++  │   │   │   │   │   └── in_anglvel_z_type
++  │   │   │   │   ├── trigger
++  │   │   │   │   │   └── current_trigger
+   ...
 -- 
 2.30.2
 
