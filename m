@@ -2,197 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB73F37956F
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481B8379577
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbhEJRZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 13:25:16 -0400
-Received: from mail.hallyn.com ([178.63.66.53]:55856 "EHLO mail.hallyn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230348AbhEJRY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 13:24:58 -0400
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id D8F95B57; Mon, 10 May 2021 12:23:51 -0500 (CDT)
-Date:   Mon, 10 May 2021 12:23:51 -0500
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     Giuseppe Scrivano <gscrivan@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, ebiederm@xmission.com,
-        christian.brauner@ubuntu.com, serge@hallyn.com
-Subject: Re: [PATCH v2] userns: automatically split user namespace extent
-Message-ID: <20210510172351.GA19918@mail.hallyn.com>
-References: <20201203150252.1229077-1-gscrivan@redhat.com>
+        id S232835AbhEJRZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 13:25:59 -0400
+Received: from mail-oo1-f49.google.com ([209.85.161.49]:42809 "EHLO
+        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232812AbhEJRZz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 13:25:55 -0400
+Received: by mail-oo1-f49.google.com with SMTP id w6-20020a4a9d060000b02901f9175244e7so3623255ooj.9;
+        Mon, 10 May 2021 10:24:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9SXuLvWg3KjN+JqmbvmLSLywnYwrjuAJqCkQskXCj0c=;
+        b=aR/9/s78mR5UrX+gr0APivX7j3pL1Yg4d20QWgnXxLge7UpwhKXOHBgPpYJUerhbXP
+         nsDi8ugvHIHftDAzkztdg+ybgqxH40asdbNPZsQOeyw5uba+kZUJVGEHo625bQrhyF7A
+         PseN6L9FxA9ou7G+z9DNDCHiXplUKcmK89LIu81nm2GcxgYze/xwTucB9WyaVy6TX/0k
+         VTHpsRCq2NLpW6zLYW7Duny4NqmiYI3OFWLoddfAMOigAWx/IrzdmqzvytNIQBaZNdr+
+         fjLuNFNHRGFqC6W2ddz0b0LLrp/OA71gXSrvQ53trwH5PmUD4j37IBji2GxVpJpWydCd
+         rO+w==
+X-Gm-Message-State: AOAM532P5QhTWjMaPzN74AjsfDuRLiFDP5b7BRShUQ2F98lalIu8d5Md
+        scLZz2duDBHkuogX6yRAD0taNliBn5Z8m+lZxNc=
+X-Google-Smtp-Source: ABdhPJzwswJbWq9pBS/asjw2XXIwyKlMuYXJI2Y1gk1Yxte0zCZydzcU2dUf5kBLVvZdwuYdtU6sWEV1HxZ0wSIlbUc=
+X-Received: by 2002:a4a:ab83:: with SMTP id m3mr6209836oon.2.1620667489272;
+ Mon, 10 May 2021 10:24:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203150252.1229077-1-gscrivan@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210426023941.729334-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210426023941.729334-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <97e14cdc-ea98-18b8-0c89-db52440a7716@linux.intel.com> <CAJZ5v0gsqyXSr+Kw603333PZ=gnsBizNhyLAcu588OChEHT=AQ@mail.gmail.com>
+ <4fa40e7a-bcb2-db0f-8dc5-28728b14377d@linux.intel.com> <20210510172237.GU4032392@tassilo.jf.intel.com>
+In-Reply-To: <20210510172237.GU4032392@tassilo.jf.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 10 May 2021 19:24:38 +0200
+Message-ID: <CAJZ5v0iFsBWwXhqtLbTMicBSFme0HCvg+2xgtMgpkFMupk_Rkw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] x86/acpi, x86/boot: Add multiprocessor wake-up support
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rafael J Wysocki <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 04:02:52PM +0100, Giuseppe Scrivano wrote:
-> writing to the id map fails when an extent overlaps multiple mappings
-> in the parent user namespace, e.g.:
-> 
-> $ cat /proc/self/uid_map
->          0       1000          1
->          1     100000      65536
-> $ unshare -U sleep 100 &
-> [1] 1029703
-> $ printf "0 0 100\n" | tee /proc/$!/uid_map
-> 0 0 100
-> tee: /proc/1029703/uid_map: Operation not permitted
-> 
-> To prevent it from happening, automatically split an extent so that
-> each portion fits in one extent in the parent user namespace.
-> 
-> $ cat /proc/self/uid_map
->          0       1000          1
->          1     110000      65536
-> $ unshare -U sleep 100 &
-> [1] 1552
-> $ printf "0 0 100\n" | tee /proc/$!/uid_map
-> 0 0 100
-> $ cat /proc/$!/uid_map
->          0          0          1
->          1          1         99
-> 
-> Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+On Mon, May 10, 2021 at 7:22 PM Andi Kleen <ak@linux.intel.com> wrote:
+>
+> On Mon, May 10, 2021 at 10:10:24AM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> >
+> >
+> > On 5/10/21 9:55 AM, Rafael J. Wysocki wrote:
+> > > I'm not sure how my comment regarding the fact that for a given CPU
+> > > this function is only usable once has been addressed.
+> > >
+> > > While it may not be a practical concern in the use case that you are
+> > > after (TDX), this is a generic mechanism and it needs to cover other
+> > > possible usage scenarios.
+> >
+> > For the same CPU, if we try to use mailbox again, firmware will not
+> > respond to it. So the command will timeout and return error.
+>
+> Right because the firmware code doesn't run anymore.
+>
+> The only possibility would be for Linux to put back some code that spins
+> and waits again, but that would be quite pointless and wasteful.
 
-The patch on the whole looks great, easy to reason about.  But I have
-one question below:
-
-> ---
-> v2:
-> - move the split logic when the extent are mapped to the parent map to
->   reduce lookup complexity.
-> 
-> v1: https://lkml.kernel.org/lkml/20201126100839.381415-1-gscrivan@redhat.com
-> 
->  kernel/user_namespace.c | 79 +++++++++++++++++++++++++++++++++++------
->  1 file changed, 68 insertions(+), 11 deletions(-)
-> 
-> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
-> index 87804e0371fe..550612c6e794 100644
-> --- a/kernel/user_namespace.c
-> +++ b/kernel/user_namespace.c
-> @@ -312,6 +312,55 @@ static u32 map_id_down(struct uid_gid_map *map, u32 id)
->  	return map_id_range_down(map, id, 1);
->  }
->  
-> +/**
-> + * find_and_split_extent_down - Find lower_first for the target extent
-> + * using the specified map.
-> + * If the extent doesn't fit in a single lower extent, split target and
-> + * write the remaining IDs (first and count) to the overflow extent.
-> + * If no overflow happens, overflow->count is set to 0.
-> + */
-> +static int find_and_split_extent_down(struct uid_gid_map *map,
-> +				       struct uid_gid_extent *target,
-> +				       struct uid_gid_extent *overflow)
-> +{
-> +	unsigned int extents = map->nr_extents;
-> +	u32 lower_first = target->lower_first;
-> +	struct uid_gid_extent *extent;
-> +	u32 off, available;
-> +
-> +	overflow->count = 0;
-> +
-> +	/* Find the lower extent that includes the first ID.  */
-> +	if (extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
-> +		extent = map_id_range_down_base(extents, map, lower_first, 1);
-> +	else
-> +		extent = map_id_range_down_max(extents, map, lower_first, 1);
-> +
-> +	/* Could not map the first ID in the extent.  */
-> +	if (extent == NULL)
-> +		return -EPERM;
-> +
-> +	/* Offset of lower_first in the lower extent.  */
-> +	off = target->lower_first - extent->first;
-> +
-> +	/* How many IDs are available in the lower extent?  */
-> +	available = extent->count - off;
-> +
-> +	/* Requesting more IDs than available in the lower extent.  */
-> +	if (target->count > available) {
-> +		/* Move the remaining IDs to the overflow extent.  */
-> +		overflow->first = target->first + available;
-> +		overflow->lower_first = target->lower_first + available;
-> +		overflow->count = target->count - available;
-> +
-> +		/* Shrink the initial extent to what is available.  */
-> +		target->count = available;
-> +	}
-> +
-> +	target->lower_first = extent->lower_first + off;
-> +	return 0;
-> +}
-> +
->  /**
->   * map_id_up_base - Find idmap via binary search in static extent array.
->   * Can only be called if number of mappings is equal or less than
-> @@ -749,6 +798,7 @@ static bool mappings_overlap(struct uid_gid_map *new_map,
->   * insert_extent - Safely insert a new idmap extent into struct uid_gid_map.
->   * Takes care to allocate a 4K block of memory if the number of mappings exceeds
->   * UID_GID_MAP_MAX_BASE_EXTENTS.
-> + * The extent is appended at the position map->nr_extents.
->   */
->  static int insert_extent(struct uid_gid_map *map, struct uid_gid_extent *extent)
->  {
-> @@ -968,30 +1018,37 @@ static ssize_t map_write(struct file *file, const char __user *buf,
->  	if (!new_idmap_permitted(file, ns, cap_setid, &new_map))
->  		goto out;
->  
-> -	ret = -EPERM;
->  	/* Map the lower ids from the parent user namespace to the
->  	 * kernel global id space.
->  	 */
->  	for (idx = 0; idx < new_map.nr_extents; idx++) {
-> +		struct uid_gid_extent overflow;
->  		struct uid_gid_extent *e;
-> -		u32 lower_first;
->  
->  		if (new_map.nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
->  			e = &new_map.extent[idx];
->  		else
->  			e = &new_map.forward[idx];
->  
-> -		lower_first = map_id_range_down(parent_map,
-> -						e->lower_first,
-> -						e->count);
-> -
-> -		/* Fail if we can not map the specified extent to
-> -		 * the kernel global id space.
-> -		 */
-> -		if (lower_first == (u32) -1)
-> +		ret = find_and_split_extent_down(parent_map, e, &overflow);
-> +		if (ret < 0)
->  			goto out;
->  
-> -		e->lower_first = lower_first;
-> +		/* If the extent doesn't fit in a single lower extent,
-> +		 * move what could not be mapped to a new extent.
-> +		 * The new extent is appended to the existing ones in
-> +		 * new_map, it will be checked again and if necessary it
-> +		 * is split further.
-> +		 */
-> +		if (overflow.count > 0) {
-> +			if (new_map.nr_extents == UID_GID_MAP_MAX_EXTENTS) {
-
-Why are you doing this?  The insert_extent() will automatically extend it
-if needed, right?  So this condition should be fine?
-
-> +				ret = -EINVAL;
-> +				goto out;
-> +			}
-> +			ret = insert_extent(&new_map, &overflow);
-> +			if (ret < 0)
-> +				goto out;
-> +		}
->  	}
->  
->  	/*
-> -- 
-> 2.28.0
-> 
+The wakeup function can return an error when it is called for the
+second time on the same CPU.
