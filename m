@@ -2,176 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37152378E1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DB5378E3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350695AbhEJNFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:05:31 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57760 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351036AbhEJNCi (ORCPT
+        id S236305AbhEJNH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:07:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20727 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236000AbhEJNEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 09:02:38 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14ACY4lv035857;
-        Mon, 10 May 2021 09:01:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=JKevJ24GbocfghegZ4JHnukiJZdjdLq2k563NxcWWeI=;
- b=tCvMjw3PSaPSTkw09rCM69rRXfzCUvA1LWRBdH7TOxcRJX7s0Z62yGPzMCjZFSXDkugs
- XRLX4A+9OdowwaxniXBOiE7/Ni/qO4YD1OX8BHVgJIbbqCE+3IOvRvDJNCVGrCIJ06pi
- Ir1e1PZmBLZMUcmH+MSAN5JOBbSRVGPpUfSD31ODwNxC5c79NCar/cxDqhLSFrIvp/kb
- 7sHIeoo+ytaqxLDTZ7Eicwx5p+GDh7e/8V+05xS8IFBobe13LGedYW3b0SLx938oXQGJ
- daDXit8oB+FwqlypH9h2uQSqxQf98WQaCxM1lg7RETw8BfwtGDeFXZtP5j2KtqWohpcu jw== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38f30bmgrc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 May 2021 09:01:10 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14ACimxU009453;
-        Mon, 10 May 2021 13:01:05 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04fra.de.ibm.com with ESMTP id 38ef37ganr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 May 2021 13:01:05 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14AD12Lj30671318
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 May 2021 13:01:02 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4FDF8A4054;
-        Mon, 10 May 2021 13:01:02 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DBA3FA4065;
-        Mon, 10 May 2021 13:01:01 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.174.43])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 10 May 2021 13:01:01 +0000 (GMT)
-Subject: Re: [PATCH] ppc64/numa: consider the max numa node for migratable
- LPAR
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        nathanl@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20210429181901.17674-1-ldufour@linux.ibm.com>
- <20210510102107.GR2633526@linux.vnet.ibm.com>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <97b19b51-783c-ba64-bb21-5ebedeebc4f0@linux.ibm.com>
-Date:   Mon, 10 May 2021 15:01:01 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        Mon, 10 May 2021 09:04:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620651782;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yNWhrPlkJKK5ocPGOthWztDmW7h7bO5ggRQNH2LmKSE=;
+        b=eHHmzGaboG3ViUkXIxydd68GYxJYX0olVQ7sdQbmUYJl1Iymcj+ZVS206zKLnUMEXgHWH2
+        ytZvwGyyOG8yXVotyfPjH7NswjjCa25gZHHPxObaQQK3NeiiQzfjPoBcq5r4Np3zof/jhE
+        4uMdyNNFw48eUtBwq2rKvOYhwZRdbCY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-101-u1JenIKgOJCBWzps-7kMaA-1; Mon, 10 May 2021 09:03:00 -0400
+X-MC-Unique: u1JenIKgOJCBWzps-7kMaA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9927B107ACF5;
+        Mon, 10 May 2021 13:02:55 +0000 (UTC)
+Received: from localhost (ovpn-115-83.ams2.redhat.com [10.36.115.83])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8983D61094;
+        Mon, 10 May 2021 13:02:53 +0000 (UTC)
+From:   Giuseppe Scrivano <gscrivan@redhat.com>
+To:     "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     Snaipe <snaipe@arista.com>, alexander@mihalicyn.com,
+        christian.brauner@ubuntu.com,
+        Linux Containers <containers@lists.linux.dev>,
+        cyphar@cyphar.com, ebiederm@xmission.com, geofft@ldpreload.com,
+        jcsible@cert.org, josh@joshtriplett.org, keescook@chromium.org,
+        linux-kernel@vger.kernel.org, luto@amacapital.net, mic@digikod.net,
+        mpatel@redhat.com, ptikhomirov@virtuozzo.com, sargun@sargun.me,
+        stgraber@ubuntu.com, vgoyal@redhat.com, watl@google.com
+Subject: Re: LPC 2020 Hackroom Session: summary and next steps for isolated
+ user namespaces
+References: <87ft6act3c.fsf@redhat.com>
+        <20210421172714.912119-1-snaipe@arista.com>
+        <87h7jyvfsm.fsf@redhat.com> <20210507133703.GB22450@mail.hallyn.com>
+Date:   Mon, 10 May 2021 15:02:51 +0200
+In-Reply-To: <20210507133703.GB22450@mail.hallyn.com> (Serge E. Hallyn's
+        message of "Fri, 7 May 2021 08:37:03 -0500")
+Message-ID: <87cztyhhc4.fsf@redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20210510102107.GR2633526@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: wKE8B6PLpZTCzA5MjXwJNq6MDO5xMmUf
-X-Proofpoint-ORIG-GUID: wKE8B6PLpZTCzA5MjXwJNq6MDO5xMmUf
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-10_07:2021-05-10,2021-05-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 spamscore=0 lowpriorityscore=0 mlxscore=0 phishscore=0
- adultscore=0 clxscore=1015 suspectscore=0 bulkscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105100090
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 10/05/2021 à 12:21, Srikar Dronamraju a écrit :
-> * Laurent Dufour <ldufour@linux.ibm.com> [2021-04-29 20:19:01]:
-> 
->> When a LPAR is migratable, we should consider the maximum possible NUMA
->> node instead the number of NUMA node from the actual system.
->>
->> The DT property 'ibm,current-associativity-domains' is defining the maximum
->> number of nodes the LPAR can see when running on that box. But if the LPAR
->> is being migrated on another box, it may seen up to the nodes defined by
->> 'ibm,max-associativity-domains'. So if a LPAR is migratable, that value
->> should be used.
->>
->> Unfortunately, there is no easy way to know if a LPAR is migratable or
->> not. The hypervisor is exporting the property 'ibm,migratable-partition' in
->> the case it set to migrate partition, but that would not mean that the
->> current partition is migratable.
->>
->> Without that patch, when a LPAR is started on a 2 nodes box and then
->> migrated to a 3 nodes box, the hypervisor may spread the LPAR's CPUs on the
->> 3rd node. In that case if a CPU from that 3rd node is added to the LPAR, it
->> will be wrongly assigned to the node because the kernel has been set to use
-> 
-> 
->> up to 2 nodes (the configuration of the departure node). With that patch
->> applies, the CPU is correctly added to the 3rd node.
-> 
-> You probably meant, "With this patch applied"
-> 
-> Also you may want to add a fixes tag:
+Hi Serge,
 
-I'll fix "that" and add the fixes tag.
+"Serge E. Hallyn" <serge@hallyn.com> writes:
 
->> Cc: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
->> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
->> ---
->>   arch/powerpc/mm/numa.c | 14 +++++++++++---
->>   1 file changed, 11 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
->> index f2bf98bdcea2..673fa6e47850 100644
->> --- a/arch/powerpc/mm/numa.c
->> +++ b/arch/powerpc/mm/numa.c
->> @@ -893,7 +893,7 @@ static void __init setup_node_data(int nid, u64 start_pfn, u64 end_pfn)
->>   static void __init find_possible_nodes(void)
->>   {
->>   	struct device_node *rtas;
->> -	const __be32 *domains;
->> +	const __be32 *domains = NULL;
->>   	int prop_length, max_nodes;
->>   	u32 i;
->>
->> @@ -909,9 +909,14 @@ static void __init find_possible_nodes(void)
->>   	 * it doesn't exist, then fallback on ibm,max-associativity-domains.
->>   	 * Current denotes what the platform can support compared to max
->>   	 * which denotes what the Hypervisor can support.
->> +	 *
->> +	 * If the LPAR is migratable, new nodes might be activated after a LPM,
->> +	 * so we should consider the max number in that case.
->>   	 */
->> -	domains = of_get_property(rtas, "ibm,current-associativity-domains",
->> -					&prop_length);
->> +	if (!of_get_property(of_root, "ibm,migratable-partition", NULL))
->> +		domains = of_get_property(rtas,
->> +					  "ibm,current-associativity-domains",
->> +					  &prop_length);
->>   	if (!domains) {
->>   		domains = of_get_property(rtas, "ibm,max-associativity-domains",
->>   					&prop_length);
->> @@ -920,6 +925,9 @@ static void __init find_possible_nodes(void)
->>   	}
->>
->>   	max_nodes = of_read_number(&domains[min_common_depth], 1);
->> +	printk(KERN_INFO "Partition configured for %d NUMA nodes.\n",
->> +	       max_nodes);
->> +
-> 
-> Another nit:
-> you may want to make this pr_info instead of printk
+> On Thu, Apr 22, 2021 at 11:18:01AM +0200, Giuseppe Scrivano wrote:
+>> Snaipe <snaipe@arista.com> writes:
+>> 
+>> > "Giuseppe Scrivano" <gscrivan@redhat.com> writes:
+>> >>>> >> instead of a prctl, I've added a new mode to /proc/PID/setgroups that
+>> >>>> >> allows setgroups in a userns locking the current gids.
+>> >>>> >> 
+>> >>>> >> What do you think about using /proc/PID/setgroups instead of a new
+>> >>>> >> prctl()?
+>> >>>> >
+>> >>>> > It's better than not having it, but two concerns -
+>> >>>> >
+>> >>>> > 1. some userspace, especially testsuites, could become confused by the fact
+>> >>>> > that they can't drop groups no matter how hard they try, since these will all
+>> >>>> > still show up as regular groups.
+>> >>>> 
+>> >>>> I forgot to send a link to a second patch :-) that completes the feature:
+>> >>>> https://github.com/giuseppe/linux/commit/1c5fe726346b216293a527719e64f34e6297f0c2
+>> >>>> 
+>> >>>> When the new mode is used, the gids that are not known in the userns do
+>> >>>> not show up in userspace.
+>> >>>
+>> >>> Ah, right - and of course those gids better not be mapped into the namespace :)
+>> >>>
+>> >>> But so, this is the patch you said you agreed was not worth the extra
+>> >>> complexity?
+>> >>
+>> >> yes, these two patches are what looked too complex at that time.  The
+>> >> problem still exists though, we could perhaps reconsider if the
+>> >> extra-complexity is acceptable to address it.
+>> >
+>> > Hey Folks, sorry for necro-bumping, but I've found this discussion
+>> > while searching for this specific issue, and it seems like the most
+>> > recent relevant discussion on the matter. I'd like to chime in with
+>> > our personal experience.
+>> >
+>> > We have a tool[1] that allows unprivileged use of namespaces
+>> > (when using a userns, which is the default).
+>> >
+>> > The primary use-case of said tool is lightweight containerization,
+>> > but we're also using it for other mundane usages, like a better
+>> > substitute for fakeroot to build and package privileged software
+>> > (e.g. sudo or ping, which needs to be installed with special
+>> > capabilities) unprivileged, or to copy file trees that are owned by
+>> > the user or sub-ids.
+>> >
+>> > For the first use-case, it's always safe to drop unmapped groups,
+>> > because the target rootfs is always owned by the user or its sub-ids.
+>> >
+>> > For the other use-cases, this is more problematic, as you're all
+>> > well-aware of. Our position right now is that the tool will always
+>> > allow setgroups in user namespace, and that it's not safe to use on
+>> > systems that rely on negative access groups.
+>> >
+>> > I think that something that's not mentioned is that if a user setgroups
+>> > to a fixed list of subgids, dropping all unmapped gids, they don't just
+>> > gain the ability to access these negative-access files, they also lose
+>> > legitimate access to files that their unmapped groups allow them to
+>> > access. This is fine for our first use-case, but a bit surprising for
+>> > the second one -- and since setgroups never lets us keep unmapped gids,
+>> > we have no way to keep these desired groups.
+>> >
+>> > From a first glance, a sysctl that explicitly controls that would not
+>> > address the above problem, but keeping around the original group list
+>> > of the owner of the user ns would have the desired semantics.
+>> >
+>> > Giuseppe's patch seems to address this use case, which would personally
+>> > make me very happy.
+>> >
+>> > [1]: https://github.com/aristanetworks/bst
+>> 
+>> thanks for the feedback.  We are still facing the issue with rootless
+>> Podman, and these patches (listed here so you won't need to dig into archives):
+>> 
+>> https://github.com/giuseppe/linux/commit/7e0701b389c497472d11fab8570c153a414050af
+>> https://github.com/giuseppe/linux/commit/1c5fe726346b216293a527719e64f34e6297f0c2
+>> 
+>> would solve the issue for us as well and we can use setgroups within a
+>> user namespace in a safe way.
+>> 
+>> Any comments on this approach?  Could we move forward with it?
+>
+> Can you send these to lkml?  I'll have to go back through our previous
+> discussions, but offhand this looks good to me.
 
-Sure !
+I've just sent them to lkml.
 
->>   	for (i = 0; i < max_nodes; i++) {
->>   		if (!node_possible(i))
->>   			node_set(i, node_possible_map);
->> -- 
->> 2.31.1
->>
-> 
-> Otherwise looks good to me.
-> 
-> Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-
-Thanks Srikar, I'll add you review tag in the v2.
-
+Regards,
+Giuseppe
 
