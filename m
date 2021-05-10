@@ -2,111 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C11C37903E
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBEB379046
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348525AbhEJOJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57866 "EHLO
+        id S234499AbhEJOKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235361AbhEJOEC (ORCPT
+        with ESMTP id S243049AbhEJOEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:04:02 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28753C0611A7
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:44:18 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id y32so13304393pga.11
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:44:18 -0700 (PDT)
+        Mon, 10 May 2021 10:04:14 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A09C0611AB;
+        Mon, 10 May 2021 06:45:48 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id y12so11894900qtx.11;
+        Mon, 10 May 2021 06:45:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=v+DW+5IyKCx+0DFPwK3g1lZXBK5W5GsagNNGu0cU0o4=;
-        b=mLl6CJXDKzJ+cWFwGrmrH3t5RFGyzmadBvIIQWjBpCgu40enf7fG9N1e/hxUC24mtH
-         tFIUVd2jPEwZNqZdOpVXdRcruwqVEetwetGGkd5N3AJ3Y/bU+SBhA8ddoQvEo5/Pp+bR
-         SVhn/NJRzM6Ox6lD6P0kPz41EKs35ueu4EQRmmF483BAspCU0oBiD3Ud9pqH8h0Vk8Gu
-         Kw1lSNDD2YukgL3YqE4tH6ACBUe4ulBUm9TLDnL+fqoc1tdId/vUe9qIIFLgbE4kClSC
-         dLQYWHjmDx0KpK8ACbt7r7Q49Qcb/0/FMIgbOsiFb+/9TmxC0rYk21kRsxKS70fiJFuQ
-         vxnQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7gTa/KU61SCbpawixr56ADN3pbVcG3JzGmoebhrvpHw=;
+        b=aEisdBkO8Ejg+1aLd4Ky8GD3gyudMa4hmww6eAy6V1IU9vWdAEoeI+YDNHyNqd6ffL
+         NPd7ugA8EAIEC2ksc9TgNLhP/kn1im//7/QmSEYU+5cBc8f3AGYR69JT4bMHxGgTix0d
+         Xjwhf7prn26/bUQkjOY2JPiU4BjEzm3utPnYFUK3XdqJypgJs1WUfHxaiXsRZP4YkICI
+         ucS9BqBGHK2gvEfhUABhqu9tZ2z5sxqHCeEt8jAb5VM1gYCDkJPeROw5OSa2M1DuxrF/
+         AO33LCCCoLbb2MD9FNVfpFZO9yZxUz9AuiLPZfbPsgUmVGsvF9TtjL3+8eSdCWg9aoUa
+         Sxlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=v+DW+5IyKCx+0DFPwK3g1lZXBK5W5GsagNNGu0cU0o4=;
-        b=RNjbXfQtb25+uKE6Ffaf02RoaRq5Z7Uc53Pc/MuE5uQf+f1d4j+1p/0QR93Bz81n+V
-         soIWkF99nqmFQb4Ae3x/udKun+usyRIknN4QqVEzq6KtcY+4+f1iGo6hr4p3plSD+D5y
-         plQFq35KXeznXviIFbXjkdCjNagbVkiGXlISbbfg7U+7WntfIu8Do+VnIBMKjG1RzkPX
-         pqu7f8Zuti5mGgRAAKM5i/zkm6bu3Q/O4Xhv45CIqmq4Aq7BzltLHGkR8EnseFSQz8zs
-         GOKd7AEG6PdW6RmrzRlK7JNvmTOlMzgzvo5k+sQPCu3g2f8ktxvSwcZp1Y/CB1EJRXjk
-         tu7A==
-X-Gm-Message-State: AOAM533Bdp0OyL2+tDLGmdwF5tizQsZYJIfRnaepOUwMb6znMUk/wA8I
-        pAuL9dMEaZfrnMd3l430zV8=
-X-Google-Smtp-Source: ABdhPJxQM9uCU/vlQyf5u7nXcNffDE6ZvkFneMrPR24WnrG3ID1ryCPaG4ncmqlo50lL5Y8uNqFimA==
-X-Received: by 2002:a63:cc43:: with SMTP id q3mr25270829pgi.50.1620654257766;
-        Mon, 10 May 2021 06:44:17 -0700 (PDT)
-Received: from sz-dl-056.autox.sz ([45.67.53.159])
-        by smtp.gmail.com with ESMTPSA id n203sm11537432pfd.31.2021.05.10.06.44.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 10 May 2021 06:44:17 -0700 (PDT)
-From:   Yejune Deng <yejune.deng@gmail.com>
-X-Google-Original-From: Yejune Deng <yejunedeng@gmail.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, tglx@linutronix.de, valentin.schneider@arm.com
-Cc:     linux-kernel@vger.kernel.org, Yejune Deng <yejunedeng@gmail.com>
-Subject: [PATCH v2] lib/smp_processor_id: Use is_percpu_thread() check affinity
-Date:   Mon, 10 May 2021 21:43:58 +0800
-Message-Id: <1620654238-1410-1-git-send-email-yejunedeng@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <87pmxyj1tr.mognet@arm.com>
-References: <87pmxyj1tr.mognet@arm.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7gTa/KU61SCbpawixr56ADN3pbVcG3JzGmoebhrvpHw=;
+        b=MuD1ku2z1WH2zL7Pg9h0qXCCPe66xwfau0CPjzQk/hahhPTjSnmwWFlmtYn9grHGVL
+         ODqvAMeGlcsbBDta2KmpWMBXpR7sz2fsAktPfdM0fFkJCo9dKPyaOzBWN50pMrrYtS6e
+         1PZw7U7apa7o0gwKd0VJ3xxKCGFq+ReStChHvu9ZmgDcP3Jz5cQqo38MjobbaXRQk8F+
+         iQVmOhUrbaVTPHQ+ZNhpfWsaFZEJFY2b8HNTqa3SumOmQMmsCP06NamQS93ZUTG6D7Im
+         JQZl6J16lFyB3zWFE7TMgTjGahu9h3v9HZebt4FPaUNsI80uwq8gNdLASOhASEb8/wgS
+         7XWQ==
+X-Gm-Message-State: AOAM532DTVelmPkcSjYRO3ZaiKg5f5hF6HBrqfAjYAUSAXQR0hh9lCjp
+        yZYprWaCiWlqTsHHrqrjW4w=
+X-Google-Smtp-Source: ABdhPJxgDG01K5Wuy2Yemuvp4LqfaEyDNljtjpiUJQDvwef5QrL2uAnbsAY1zhBmbHjffOs7Qf8KUQ==
+X-Received: by 2002:ac8:5751:: with SMTP id 17mr5781697qtx.389.1620654347496;
+        Mon, 10 May 2021 06:45:47 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id 28sm6499608qkr.36.2021.05.10.06.45.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 06:45:46 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id EF69B27C0054;
+        Mon, 10 May 2021 09:45:45 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 10 May 2021 09:45:45 -0400
+X-ME-Sender: <xms:BzmZYEx2giazz1RApWzdF9h29AbZi4T_NKXKY2e0tNnucYWuR-JaaQ>
+    <xme:BzmZYITC2tlDSOeq6NTuZQb02ew9q3nVQW3qxfhlLstzsAIpIekA3k6-1_lakhxi6
+    5FmWkqun5JKds8SSg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdegkedgieelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepffeiteevgefgueduuedvtefgvddvtdegkeeuvdehfeeuvefhleehhfejffeu
+    tdeknecuffhomhgrihhnpehoshguvghvrdhorhhgnecukfhppedufedurddutdejrdduge
+    ejrdduvdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
+    mhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghe
+    dtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhes
+    fhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:BzmZYGXC9w20ZqKxWk1wi1h6Gar17smPpKFaVMDpZFDxd9acTdXR9g>
+    <xmx:BzmZYCjvI5vaHf9q8CKINDZnWA582gBGlh8ckMFlXvIWBOR43XiqwQ>
+    <xmx:BzmZYGCITryQS7ec-lgkQsfZtZNPyKHdGWPzeDSgHx_CzoiHwsxQAg>
+    <xmx:CTmZYBYpMiIsQKFQq4Na7TihMz17uoOUiaizfFUketxUBHWajH5N9jqzk-GN99fs>
+Received: from localhost (unknown [131.107.147.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Mon, 10 May 2021 09:45:43 -0400 (EDT)
+Date:   Mon, 10 May 2021 21:44:29 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jon Derrick <jonathan.derrick@intel.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+Subject: Re: [RFC v2 1/7] PCI: Introduce pci_host_bridge::domain_nr
+Message-ID: <YJk4vdJnOxHvlFLT@boqun-archlinux>
+References: <20210503144635.2297386-1-boqun.feng@gmail.com>
+ <20210503144635.2297386-2-boqun.feng@gmail.com>
+ <YJDYrn7Nt+xyHbyr@kernel.org>
+ <20210506105245.GA26351@lpieralisi>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210506105245.GA26351@lpieralisi>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use is_percpu_thread() instead of 'current->nr_cpus_allowed == 1',
-and add PF_NO_SETAFFINITY flag in init_idle().This would be nice to
-the sched_setaffinity(), and it also more readable.
+[Copy Rob]
 
-v1->v2:
-  - add PF_NO_SETAFFINITY flag in init_idle().
+On Thu, May 06, 2021 at 11:52:45AM +0100, Lorenzo Pieralisi wrote:
+> On Tue, May 04, 2021 at 08:16:30AM +0300, Mike Rapoport wrote:
+> > On Mon, May 03, 2021 at 10:46:29PM +0800, Boqun Feng wrote:
+> > > Currently we retrieve the PCI domain number of the host bridge from the
+> > > bus sysdata (or pci_config_window if PCI_DOMAINS_GENERIC=y). Actually
+> > > we have the information at PCI host bridge probing time, and it makes
+> > > sense that we store it into pci_host_bridge. One benefit of doing so is
+> > > the requirement for supporting PCI on Hyper-V for ARM64, because the
+> > > host bridge of Hyper-V doesnt' have pci_config_window, whereas ARM64 is
+> > > a PCI_DOMAINS_GENERIC=y arch, so we cannot retrieve the PCI domain
+> > > number from pci_config_window on ARM64 Hyper-V guest.
+> > > 
+> > > As the preparation for ARM64 Hyper-V PCI support, we introduce the
+> > > domain_nr in pci_host_bridge, and set it properly at probing time, then
+> > > for PCI_DOMAINS_GENERIC=y archs, bus domain numbers are set by the
+> > > bridge domain_nr.
+> > > 
+> > > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> > > ---
+> > >  arch/arm/kernel/bios32.c              |  2 ++
+> > >  arch/arm/mach-dove/pcie.c             |  2 ++
+> > >  arch/arm/mach-mv78xx0/pcie.c          |  2 ++
+> > >  arch/arm/mach-orion5x/pci.c           |  2 ++
+> > >  arch/arm64/kernel/pci.c               |  3 +--
+> > >  arch/mips/pci/pci-legacy.c            |  2 ++
+> > >  arch/mips/pci/pci-xtalk-bridge.c      |  2 ++
+> > >  drivers/pci/controller/pci-ftpci100.c |  2 ++
+> > >  drivers/pci/controller/pci-mvebu.c    |  2 ++
+> > >  drivers/pci/pci.c                     |  4 ++--
+> > >  drivers/pci/probe.c                   |  7 ++++++-
+> > >  include/linux/pci.h                   | 11 ++++++++---
+> > >  12 files changed, 33 insertions(+), 8 deletions(-)
+> > > 
+> > > diff --git a/arch/arm/kernel/bios32.c b/arch/arm/kernel/bios32.c
+> > > index e7ef2b5bea9c..4942cd681e41 100644
+> > > --- a/arch/arm/kernel/bios32.c
+> > > +++ b/arch/arm/kernel/bios32.c
+> > > @@ -471,6 +471,8 @@ static void pcibios_init_hw(struct device *parent, struct hw_pci *hw,
+> > >  				bridge->sysdata = sys;
+> > >  				bridge->busnr = sys->busnr;
+> > >  				bridge->ops = hw->ops;
+> > > +				if (IS_ENABLED(CONFIG_PCI_DOMAINS_GENERIC))
+> > > +					bridge->domain_nr = pci_bus_find_domain_nr(sys, parent);
+> > >  
+> > >  				ret = pci_scan_root_bus_bridge(bridge);
+> > >  			}
+> > > diff --git a/arch/arm/mach-dove/pcie.c b/arch/arm/mach-dove/pcie.c
+> > > index ee91ac6b5ebf..92eb8484b49b 100644
+> > > --- a/arch/arm/mach-dove/pcie.c
+> > > +++ b/arch/arm/mach-dove/pcie.c
+> > > @@ -167,6 +167,8 @@ dove_pcie_scan_bus(int nr, struct pci_host_bridge *bridge)
+> > >  	bridge->sysdata = sys;
+> > >  	bridge->busnr = sys->busnr;
+> > >  	bridge->ops = &pcie_ops;
+> > > +	if (IS_ENABLED(CONFIG_PCI_DOMAINS_GENERIC))
+> > > +		bridge->domain_nr = pci_bus_find_domain_nr(sys, NULL);
+> > 
+> > The check for CONFIG_PCI_DOMAINS_GENERIC is excessive because there is a
+> > stub for pci_bus_find_domain_nr().
+> > 
+> > I'm not an expert in PCI, but maybe the repeated assignment of
+> > bridge->domain_nr can live in the generic code, say, in
+> > pci_scan_root_bus_bridge(). E.g. it will set the domain_nr when it is zero.
+> > 
+> > >  
+> 
+> Yes, this churn should be avoided. We need a sentinel value to detect
+> whether the domain_nr is invalid (0 is a valid domain) so generic code
+> (ie pci_scan_root_bus_bridge() and friends) has to call generic
+> functions to get it (pci_bus_find_domain_nr()).
+> 
 
-Signed-off-by: Yejune Deng <yejunedeng@gmail.com>
----
- kernel/sched/core.c    | 2 +-
- lib/smp_processor_id.c | 6 +-----
- 2 files changed, 2 insertions(+), 6 deletions(-)
+Agreed. Thank you all for the inputs.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 9143163..82e21ea 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7446,7 +7446,7 @@ void init_idle(struct task_struct *idle, int cpu)
- 
- 	idle->state = TASK_RUNNING;
- 	idle->se.exec_start = sched_clock();
--	idle->flags |= PF_IDLE;
-+	idle->flags |= PF_IDLE | PF_NO_SETAFFINITY;
- 
- 	scs_task_reset(idle);
- 	kasan_unpoison_task_stack(idle);
-diff --git a/lib/smp_processor_id.c b/lib/smp_processor_id.c
-index 1c1dbd3..046ac62 100644
---- a/lib/smp_processor_id.c
-+++ b/lib/smp_processor_id.c
-@@ -19,11 +19,7 @@ unsigned int check_preemption_disabled(const char *what1, const char *what2)
- 	if (irqs_disabled())
- 		goto out;
- 
--	/*
--	 * Kernel threads bound to a single CPU can safely use
--	 * smp_processor_id():
--	 */
--	if (current->nr_cpus_allowed == 1)
-+	if (is_percpu_thread())
- 		goto out;
- 
- #ifdef CONFIG_SMP
--- 
-2.7.4
+According to [1], "PCI Conventional" has at most 256 PCI bus segments
+and "PCI Express" has at most 65536 "PCI Segments Groups", so any value
+outside [0, 65536] can be used as a sentinel. I'm planning to use -1
+like:
 
+	#define PCI_DOMAIN_NR_NOT_SET (-1)
+
+	(in pci_alloc_host_bridge())
+	bridge->domain_nr = PCI_DOMAIN_NR_NOT_SET;
+
+	(in pci_register_host_bridge())
+	if (bridge->domain_nr == PCI_DOMAIN_NR_NOT_SET)
+		bridge->domain_nr = pci_bus_find_domain_nr(...);
+
+Thoughts?
+
+Regards,
+Boqun
+
+[1]: https://wiki.osdev.org/PCI_Express
+
+> We can implement it as a flag or function pointer in the struct
+> pci_host_bridge, if the flag or function pointer is not set the
+> generic pci_bus_find_domain_nr() should be called.
+> 
+> Lorenzo
