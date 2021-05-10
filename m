@@ -2,244 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8CE377D8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 09:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F26DB377D92
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhEJIAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 04:00:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49690 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229852AbhEJIAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 04:00:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1620633546; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TuZVZ/TZC+amwC+uSPzlrvCbYklxbsfl2Zo4uow0QtM=;
-        b=MZBcmLBBHrZ1wfDmTie51ynVN+p9kalGIgPfxsMqHhSJmp4MYuDWgAgnR9/CHGq5YbBeOc
-        XT7/1TA7xKwDsQpPQbTmP4jQzLcNh7/CMpnUY3deZWvw6rUNHWt74ljco5yKZ8copvcdd1
-        aVCuEaZGmHXdJS5RbaR37aXxP5YEVY0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DF29DAE57;
-        Mon, 10 May 2021 07:59:05 +0000 (UTC)
-Subject: Re: [PATCH 1/4] x86/xen/entry: Rename xenpv_exc_nmi to noist_exc_nmi
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Joerg Roedel <jroedel@suse.de>, Jian Cai <caij2003@gmail.com>,
-        xen-devel@lists.xenproject.org
-References: <20210426230949.3561-1-jiangshanlai@gmail.com>
- <20210426230949.3561-2-jiangshanlai@gmail.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <76c9d530-6a55-927b-9727-7875bc8101bb@suse.com>
-Date:   Mon, 10 May 2021 09:59:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230152AbhEJIBi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 10 May 2021 04:01:38 -0400
+Received: from mail.kingsoft.com ([114.255.44.146]:3575 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230049AbhEJIBa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 04:01:30 -0400
+X-AuditID: 0a580157-bebff70000027901-3d-6098e8167e7f
+Received: from mail.kingsoft.com (localhost [10.88.1.79])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id 59.16.30977.618E8906; Mon, 10 May 2021 16:00:22 +0800 (HKT)
+Received: from alex-virtual-machine (10.88.1.103) by KSBJMAIL4.kingsoft.cn
+ (10.88.1.79) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 10 May
+ 2021 16:00:22 +0800
+Date:   Mon, 10 May 2021 16:00:21 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
+        <naoya.horiguchi@nec.com>
+CC:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "David Hildenbrand" <david@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "Andy Lutomirski" <luto@kernel.org>, Jue Wang <juew@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "yaoaili126@gmail.com" <yaoaili126@gmail.com>
+Subject: Re: [PATCH v4 2/2] mm,hwpoison: send SIGBUS when the page has
+ already been poisoned
+Message-ID: <20210510160021.648b41db@alex-virtual-machine>
+In-Reply-To: <20210510072128.GA3504859@hori.linux.bs1.fc.nec.co.jp>
+References: <20210427062953.2080293-1-nao.horiguchi@gmail.com>
+        <20210427062953.2080293-3-nao.horiguchi@gmail.com>
+        <20210507173852.0adc5cc4@alex-virtual-machine>
+        <20210510072128.GA3504859@hori.linux.bs1.fc.nec.co.jp>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210426230949.3561-2-jiangshanlai@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="mQbbA6hZIMq2ZCFvc5HSGnGiqncPrGTud"
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.88.1.103]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL4.kingsoft.cn
+ (10.88.1.79)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKIsWRmVeSWpSXmKPExsXCFcHoryv2YkaCwaTHOhZz1q9hs/i84R+b
+        xdf1v5gtbt4ysbi8aw6bxb01/1ktzu9ay2qxat4dZouLjQcYLc5MK7J4c+Eei8Wz1qssDjwe
+        31v7WDx2zrrL7rFgU6nH4j0vmTw2repk89j0aRK7x4kZv1k8XlzdyOLxft9VNo/Np6s9Pm+S
+        C+CO4rJJSc3JLEst0rdL4MpYuew6W8Eq44onMx6wNjDO0+hi5OSQEDCRmD6zn6WLkYtDSGA6
+        k8Sx2y9YIZznjBLT191hA6liEVCV2D9vITOIzQZk77o3ixXEFhFIklg8+ysTSAOzwGlmiYtN
+        PUwgCWGBOIlHa36zdzFycPAKWElMmu8GEuYUcJboO7GbHWLBXUaJqRuvgdXzC4hJ9F75zwRS
+        LyFgL/F4vSJImFdAUOLkzCcsIDazgKZE63aQkSC2tsSyha/B7hESUJQ4vOQXO8Q38hJ3f09n
+        hLBjJZoO3GKbwCg8C8moWUhGzUIyagEj8ypGluLcdMNNjJCYC9/BOK/po94hRiYOxkOMEhzM
+        SiK8oh3TEoR4UxIrq1KL8uOLSnNSiw8xSnOwKInzKm2ZkSAkkJ5YkpqdmlqQWgSTZeLglGpg
+        cpq1Vvh//PM7Ke6Wob6m3+89XenyOcyiZB9PcqB84oFPXDuDai/EfQ8rvtAZrJccnim5+47o
+        /gspbWHZa6054jfO15Zr+Nn5vPLdD9sj1y/Ytc2aqzFx5trbPIv6+Ct1HN8HH/bW3638f09R
+        VMh5tVX8gs/fWWRFxaVMLp9z2GIGD4/SFE5znsiGtxO5z26LXMZme9H6zX2vB5ITGJTEHzvu
+        WbyEU8689u+/+zeDZ3p3XXm8jLO5NbtT821SieRUDjbWDf4Zh7IOL7Rcfa50ovoOse8/M7b7
+        7rqRsyh49gHZHP5M3dZdnMtLrXeyls5inB60zfx1p5OCodXCha0PN8oUlEXp/ml/vGK/9JwY
+        JZbijERDLeai4kQA5OcA2igDAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---mQbbA6hZIMq2ZCFvc5HSGnGiqncPrGTud
-Content-Type: multipart/mixed; boundary="IGLvBXepGr91Ct8EfRs0yAnZoEVaWAbXG";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org
-Cc: Lai Jiangshan <laijs@linux.alibaba.com>,
- Thomas Gleixner <tglx@linutronix.de>, Paolo Bonzini <pbonzini@redhat.com>,
- Sean Christopherson <seanjc@google.com>, Steven Rostedt
- <rostedt@goodmis.org>, Andi Kleen <ak@linux.intel.com>,
- Andy Lutomirski <luto@kernel.org>, Vitaly Kuznetsov <vkuznets@redhat.com>,
- Wanpeng Li <wanpengli@tencent.com>, Jim Mattson <jmattson@google.com>,
- Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
- Josh Poimboeuf <jpoimboe@redhat.com>, Uros Bizjak <ubizjak@gmail.com>,
- Maxim Levitsky <mlevitsk@redhat.com>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Alexandre Chartre <alexandre.chartre@oracle.com>,
- Joerg Roedel <jroedel@suse.de>, Jian Cai <caij2003@gmail.com>,
- xen-devel@lists.xenproject.org
-Message-ID: <76c9d530-6a55-927b-9727-7875bc8101bb@suse.com>
-Subject: Re: [PATCH 1/4] x86/xen/entry: Rename xenpv_exc_nmi to noist_exc_nmi
-References: <20210426230949.3561-1-jiangshanlai@gmail.com>
- <20210426230949.3561-2-jiangshanlai@gmail.com>
-In-Reply-To: <20210426230949.3561-2-jiangshanlai@gmail.com>
+On Mon, 10 May 2021 07:21:28 +0000
+HORIGUCHI NAOYA(堀口　直也) <naoya.horiguchi@nec.com> wrote:
 
---IGLvBXepGr91Ct8EfRs0yAnZoEVaWAbXG
-Content-Type: multipart/mixed;
- boundary="------------B3541311547641A2A2D99FD5"
-Content-Language: en-US
+> On Fri, May 07, 2021 at 05:38:52PM +0800, Aili Yao wrote:
+> > On Tue, 27 Apr 2021 15:29:53 +0900
+> > Naoya Horiguchi <nao.horiguchi@gmail.com> wrote:
+> >   
+> > > From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> > > 
+> > > When memory_failure() is called with MF_ACTION_REQUIRED on the
+> > > page that has already been hwpoisoned, memory_failure() could fail
+> > > to send SIGBUS to the affected process, which results in infinite
+> > > loop of MCEs.
+> > > 
+> > > Currently memory_failure() returns 0 if it's called for already
+> > > hwpoisoned page, then the caller, kill_me_maybe(), could return
+> > > without sending SIGBUS to current process.  An action required MCE
+> > > is raised when the current process accesses to the broken memory,
+> > > so no SIGBUS means that the current process continues to run and
+> > > access to the error page again soon, so running into MCE loop.
+> > > 
+> > > This issue can arise for example in the following scenarios:
+> > > 
+> > >   - Two or more threads access to the poisoned page concurrently.
+> > >     If local MCE is enabled, MCE handler independently handles the
+> > >     MCE events.  So there's a race among MCE events, and the
+> > >     second or latter threads fall into the situation in question.
+> > > 
+> > >   - If there was a precedent memory error event and memory_failure()
+> > >     for the event failed to unmap the error page for some reason,
+> > >     the subsequent memory access to the error page triggers the
+> > >     MCE loop situation.
+> > > 
+> > > To fix the issue, make memory_failure() return some error code when the
+> > > error page has already been hwpoisoned.  This allows memory error
+> > > handler to control how it sends signals to userspace.  And make sure
+> > > that any process touching a hwpoisoned page should get a SIGBUS (if
+> > > possible) with the error virtual address, even in "already hwpoisoned"
+> > > path of memory_failure() as is done in page fault path.
+> > > 
+> > > kill_accessing_process() does pagetable walk to find the error virtual
+> > > address.  If multiple virtual addresses are found in the pagetable walk,
+> > > no one knows which address is the correct one, so we fall back to sending
+> > > SIGBUS in kill_me_maybe() without error address info as we do now.
+> > > This corner case is left to be solved in the future.
+> > > 
+> > > Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>  
+> > 
+> > Sorry for my late response, I just get time to rethink the pagewalk patch. Please let me share my thoughts, 
+> > If anything wrong, just point out, thanks!  
+> 
+> Thank you for the feedback.
+> 
+> > 
+> > This whole pagewalk patch is meant to fix invalid virtual address along SIGBUS, For this invalid virtual address issue,
+> > It seems this is one existing issue before this race issue is posted. while the issue is not fixed for a long time.
+> > 
+> > Then I think why this issue is not fixed, maybe just no process will care this virtual address as it will be killed.
+> > Maybe virtual guest will need this address to forward it to vCPU, but untill now the memory recovery function in the VM doesn't
+> > work at all, and without this address, It seems not a big impact though.
+> > 
+> > Maybe there are some other cases will care the virtual address, if anyone knows, just point out.
+> > 
+> > But invalid virtual address is still no good.
+> > 
+> > Before this, I post one RFC patch try to fix this issue with one knowing issue:it failed for mutiple pte entry;
+> > Then this patch is posted trying to address this.
+> > 
+> > First I read this patch, I think this method is good and right and i test it. But now I think it again, I am wondering even the process
+> > have multi pte entry and wrong virtuall address, but it still pointing to the same page, right?  
+> 
+> Yes, it is.
+> 
+> > If the process won't exit and get the wrong virtual address, what wrong action will it do?  
+> 
+> I have no clear idea.  Typical action for the SIGBUS is to kill the process with
+> some logging, so the obviously wrong action like killing wrong process never happens.
+> A possible wrong result is invalid address in log, which might not be critical.
+> 
+> > while I can just think the virtual machine example, but the qemu will translate the wrong virtual address to right guest physical address? 
+> > I am not sure VM will have multi pte entry?  
+> 
+> As long as I know, qemu maintains one-to-one mapping between host virtual address
+> and guest physical address, so no multi entry issue should happen around qemu.
+> 
+> > 
+> > And I think the virtual address along SIGBUS is not mean to backtrace the code, it just want to tell where the error memory is, for multi pte
+> > entry, one virtual address for the same physical page is not enough?
+> > 
+> > Compare this patch with my RFC patch, difference:
+> > 1.This patch will just fix the race issue's invalid virtual address. while my RFC patch will cover all the error case for recovery;
+> > 2.For multi entry, this patch will do one force_sig with no other infomation, But the RFC patch will take one possible right address, I don't know which one is better.
+> > 
+> > And if this multi pte entry is one real issue, it seems the normal recovey work will aslo trigger this, would it be better to fix that first?  
+> 
+> Assuming that your RFC is https://lore.kernel.org/lkml/20210317162304.58ff188c@alex-virtual-machine/,
+> it simply uses the first-found virtual address.  I start thinking that this
+> approach could be fine.  And it's easy to change the patch with this approach.
+> I have no preference, so if you like, I switch to the "first-found" approach.
 
-This is a multi-part message in MIME format.
---------------B3541311547641A2A2D99FD5
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Hi Naoya:
+  Thanks for your reply!
+  Yes, you can change to that RFC approach, but there may be some un-indentified issuees, and need more considerations though.
+  And there may be other method to address this, you can also dig into that, get it realized and posted.
+  I am OK with any option.
+  But for here, From the beginning, I thinks the invalid address issue and race issue are two different issues, may have some
+relationship but still two issues in my mind.
+  whould you please seperate this series patches into three again?
+  Great Thanks!
 
-On 27.04.21 01:09, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
->=20
-> There is no any functionality change intended.  Just rename it and
-> move it to arch/x86/kernel/nmi.c so that we can resue it later in
-> next patch for early NMI and kvm.
->=20
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Cc: Wanpeng Li <wanpengli@tencent.com>
-> Cc: Jim Mattson <jmattson@google.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: kvm@vger.kernel.org
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Uros Bizjak <ubizjak@gmail.com>
-> Cc: Maxim Levitsky <mlevitsk@redhat.com>
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-
-Acked-by: Juergen Gross <jgross@suse.com>
-
-
-Juergen
-
---------------B3541311547641A2A2D99FD5
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------B3541311547641A2A2D99FD5--
-
---IGLvBXepGr91Ct8EfRs0yAnZoEVaWAbXG--
-
---mQbbA6hZIMq2ZCFvc5HSGnGiqncPrGTud
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmCY58cFAwAAAAAACgkQsN6d1ii/Ey9t
-LwgAhGh3kiEytpFwdlrXX4nrGqwyp+dgw7V8JtwPEAbGMsJoY/p8Ii1SYqsirhnhbqZBhTJthDoK
-X9fhFPxUejj1QZf+/1V0D9xMUGRyqCGE/m8eVj4BZiJLf0Rf6zVe1u7dVSnhiZpwRTOC4xCgIVVy
-xsc+Xshq4VfG4L+4kfPuPcDOLhbNUCXFijLYIDUpfBInsFNS5iInJ9IjiNJSb2iIdb3ggIWtOdqI
-D3ua2HDxita+PD39wzrKeBzLOqM9KRgkB6X4eUvKDSw1nx8+g7S0sUgdEoZmUlYTupLDvH9fL+fl
-zliVI0HYzTAhhxS6J1uTP91IMat6HFhV4i79cxHIfQ==
-=RO4B
------END PGP SIGNATURE-----
-
---mQbbA6hZIMq2ZCFvc5HSGnGiqncPrGTud--
+Aili Yao!
