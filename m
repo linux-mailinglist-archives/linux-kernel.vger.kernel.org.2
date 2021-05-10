@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08AE378260
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BB837822E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232674AbhEJKfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:35:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40094 "EHLO mail.kernel.org"
+        id S231888AbhEJKcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:32:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231667AbhEJKb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:31:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E646361927;
+        id S231755AbhEJK3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:29:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96E7461628;
         Mon, 10 May 2021 10:27:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620642444;
-        bh=ibnYU52/Ok3HMAEpJWtkYUwqaS8GzBoBFKt6UMTtInY=;
+        s=k20201202; t=1620642443;
+        bh=xJ1AF2vGTwChxJzqJvQieroJtpm+Zdy3DSZGcT7Fjys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z7fs/2XSnGLW7IOnW6P9hfgnuq6pHygvvEeSjzOy0c4SFFTf/Is4t64ZRCvRXpFdy
-         UJEESNTv2NgmU9l+5ZUwL/6PxcaGGBSq8dMwEdeMtXhyaf+7oNKnefey4mnuv0CcSr
-         pAIsjlKRfm7SbNGHd8TKYOK2W1LPzQzABnUZvsCyoXEx0dLBtYYn7/YvF0D0ee0M/e
-         0+ZKPLlx1nGBv8UVvhgb7MfeOYFizinTji941wcoSROiXkJM+gY9ftHMbEh6u/5E+N
-         I+417dDghb3btMHUic4ZftSL8gm0MELXV+SIKnTQ40Ts6Igl0ehAsjjGaRQirkp8pd
-         HlA8oXMCMlbEQ==
+        b=trfUzKjpjW5AMGZ5zQsNzZnxY7KSt2R1sGgiHdmCg58KLbcwp8Qg3qyaLQXvVb78R
+         S0vRixj11Tbl9vgrYdYCfTc4FKCt88y3jmXTnllF8J7LoWlMytumNayPdPhcCQ/xZO
+         43GMNpkmpZdl9YPKIyyNkwSauY4RX+IhfG1hW2BeGc55WqWMPwCPXuMiZrNLcEab31
+         rgGYk6BrQ9DaW+sS8askcEKiFS/R+PPISIDNyrpaVHagVDPUiTYNFF9GWlzveFVPhu
+         TFcm8Gax2tbtwvoBt1DvYq+/qfKrtR4QIvApCwrwNHEh3bDWhMLFGbOVF3CY4Xf+uv
+         FL96Slq92qLOg==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lg38C-000UPA-Uk; Mon, 10 May 2021 12:27:20 +0200
+        id 1lg38D-000UPE-0J; Mon, 10 May 2021 12:27:21 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 13/53] docs: driver-api: fpga: avoid using UTF-8 chars
-Date:   Mon, 10 May 2021 12:26:25 +0200
-Message-Id: <10fced4bcc033f4683fae41db0c494c1d3503ccb.1620641727.git.mchehab+huawei@kernel.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Mike Rapoport <rppt@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+Subject: [PATCH 14/53] docs: driver-api: iio: avoid using UTF-8 chars
+Date:   Mon, 10 May 2021 12:26:26 +0200
+Message-Id: <2e88cb1503a67b617e47870ebe16cf4f86b48be0.1620641727.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620641727.git.mchehab+huawei@kernel.org>
 References: <cover.1620641727.git.mchehab+huawei@kernel.org>
@@ -54,121 +59,100 @@ So, replace the occurences of the following UTF-8 characters:
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/driver-api/fpga/fpga-bridge.rst | 10 +++++-----
- Documentation/driver-api/fpga/fpga-mgr.rst    | 12 +++++------
- .../driver-api/fpga/fpga-programming.rst      |  8 ++++----
- Documentation/driver-api/fpga/fpga-region.rst | 20 +++++++++----------
- 4 files changed, 25 insertions(+), 25 deletions(-)
+ Documentation/driver-api/iio/buffers.rst           |  8 ++++----
+ Documentation/driver-api/iio/hw-consumer.rst       | 10 +++++-----
+ Documentation/driver-api/iio/triggered-buffers.rst |  6 +++---
+ Documentation/driver-api/iio/triggers.rst          | 10 +++++-----
+ 4 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/Documentation/driver-api/fpga/fpga-bridge.rst b/Documentation/driver-api/fpga/fpga-bridge.rst
-index 198aadafd3e7..8d650b4e2ce6 100644
---- a/Documentation/driver-api/fpga/fpga-bridge.rst
-+++ b/Documentation/driver-api/fpga/fpga-bridge.rst
-@@ -4,11 +4,11 @@ FPGA Bridge
- API to implement a new FPGA bridge
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+diff --git a/Documentation/driver-api/iio/buffers.rst b/Documentation/driver-api/iio/buffers.rst
+index e83026aebe97..24569ff0cf79 100644
+--- a/Documentation/driver-api/iio/buffers.rst
++++ b/Documentation/driver-api/iio/buffers.rst
+@@ -2,11 +2,11 @@
+ Buffers
+ =======
  
--* struct fpga_bridge — The FPGA Bridge structure
--* struct fpga_bridge_ops — Low level Bridge driver ops
--* devm_fpga_bridge_create() — Allocate and init a bridge struct
--* fpga_bridge_register() — Register a bridge
--* fpga_bridge_unregister() — Unregister a bridge
-+* struct fpga_bridge - The FPGA Bridge structure
-+* struct fpga_bridge_ops - Low level Bridge driver ops
-+* devm_fpga_bridge_create() - Allocate and init a bridge struct
-+* fpga_bridge_register() - Register a bridge
-+* fpga_bridge_unregister() - Unregister a bridge
+-* struct iio_buffer — general buffer structure
+-* :c:func:`iio_validate_scan_mask_onehot` — Validates that exactly one channel
++* struct iio_buffer - general buffer structure
++* :c:func:`iio_validate_scan_mask_onehot` - Validates that exactly one channel
+   is selected
+-* :c:func:`iio_buffer_get` — Grab a reference to the buffer
+-* :c:func:`iio_buffer_put` — Release the reference to the buffer
++* :c:func:`iio_buffer_get` - Grab a reference to the buffer
++* :c:func:`iio_buffer_put` - Release the reference to the buffer
  
- .. kernel-doc:: include/linux/fpga/fpga-bridge.h
-    :functions: fpga_bridge
-diff --git a/Documentation/driver-api/fpga/fpga-mgr.rst b/Documentation/driver-api/fpga/fpga-mgr.rst
-index 917ee22db429..4d926b452cb3 100644
---- a/Documentation/driver-api/fpga/fpga-mgr.rst
-+++ b/Documentation/driver-api/fpga/fpga-mgr.rst
-@@ -101,12 +101,12 @@ in state.
- API for implementing a new FPGA Manager driver
- ----------------------------------------------
+ The Industrial I/O core offers a way for continuous data capture based on a
+ trigger source. Multiple data channels can be read at once from
+diff --git a/Documentation/driver-api/iio/hw-consumer.rst b/Documentation/driver-api/iio/hw-consumer.rst
+index 76133a3796f2..75986358fc02 100644
+--- a/Documentation/driver-api/iio/hw-consumer.rst
++++ b/Documentation/driver-api/iio/hw-consumer.rst
+@@ -8,11 +8,11 @@ software buffer for data. The implementation can be found under
+ :file:`drivers/iio/buffer/hw-consumer.c`
  
--* ``fpga_mgr_states`` —  Values for :c:expr:`fpga_manager->state`.
--* struct fpga_manager —  the FPGA manager struct
--* struct fpga_manager_ops —  Low level FPGA manager driver ops
--* devm_fpga_mgr_create() —  Allocate and init a manager struct
--* fpga_mgr_register() —  Register an FPGA manager
--* fpga_mgr_unregister() —  Unregister an FPGA manager
-+* ``fpga_mgr_states`` -  Values for :c:expr:`fpga_manager->state`.
-+* struct fpga_manager -  the FPGA manager struct
-+* struct fpga_manager_ops -  Low level FPGA manager driver ops
-+* devm_fpga_mgr_create() -  Allocate and init a manager struct
-+* fpga_mgr_register() -  Register an FPGA manager
-+* fpga_mgr_unregister() -  Unregister an FPGA manager
  
- .. kernel-doc:: include/linux/fpga/fpga-mgr.h
-    :functions: fpga_mgr_states
-diff --git a/Documentation/driver-api/fpga/fpga-programming.rst b/Documentation/driver-api/fpga/fpga-programming.rst
-index 002392dab04f..fb4da4240e96 100644
---- a/Documentation/driver-api/fpga/fpga-programming.rst
-+++ b/Documentation/driver-api/fpga/fpga-programming.rst
-@@ -84,10 +84,10 @@ will generate that list.  Here's some sample code of what to do next::
- API for programming an FPGA
- ---------------------------
+-* struct iio_hw_consumer — Hardware consumer structure
+-* :c:func:`iio_hw_consumer_alloc` — Allocate IIO hardware consumer
+-* :c:func:`iio_hw_consumer_free` — Free IIO hardware consumer
+-* :c:func:`iio_hw_consumer_enable` — Enable IIO hardware consumer
+-* :c:func:`iio_hw_consumer_disable` — Disable IIO hardware consumer
++* struct iio_hw_consumer - Hardware consumer structure
++* :c:func:`iio_hw_consumer_alloc` - Allocate IIO hardware consumer
++* :c:func:`iio_hw_consumer_free` - Free IIO hardware consumer
++* :c:func:`iio_hw_consumer_enable` - Enable IIO hardware consumer
++* :c:func:`iio_hw_consumer_disable` - Disable IIO hardware consumer
  
--* fpga_region_program_fpga() —  Program an FPGA
--* fpga_image_info() —  Specifies what FPGA image to program
--* fpga_image_info_alloc() —  Allocate an FPGA image info struct
--* fpga_image_info_free() —  Free an FPGA image info struct
-+* fpga_region_program_fpga() -  Program an FPGA
-+* fpga_image_info() -  Specifies what FPGA image to program
-+* fpga_image_info_alloc() -  Allocate an FPGA image info struct
-+* fpga_image_info_free() -  Free an FPGA image info struct
  
- .. kernel-doc:: drivers/fpga/fpga-region.c
-    :functions: fpga_region_program_fpga
-diff --git a/Documentation/driver-api/fpga/fpga-region.rst b/Documentation/driver-api/fpga/fpga-region.rst
-index 363a8171ab0a..2636a27c11b2 100644
---- a/Documentation/driver-api/fpga/fpga-region.rst
-+++ b/Documentation/driver-api/fpga/fpga-region.rst
-@@ -45,19 +45,19 @@ An example of usage can be seen in the probe function of [#f2]_.
- API to add a new FPGA region
- ----------------------------
+ HW consumer setup
+diff --git a/Documentation/driver-api/iio/triggered-buffers.rst b/Documentation/driver-api/iio/triggered-buffers.rst
+index 417555dbbdf4..7c37b2afa1ad 100644
+--- a/Documentation/driver-api/iio/triggered-buffers.rst
++++ b/Documentation/driver-api/iio/triggered-buffers.rst
+@@ -7,10 +7,10 @@ Now that we know what buffers and triggers are let's see how they work together.
+ IIO triggered buffer setup
+ ==========================
  
--* struct fpga_region — The FPGA region struct
--* devm_fpga_region_create() — Allocate and init a region struct
--* fpga_region_register() —  Register an FPGA region
--* fpga_region_unregister() —  Unregister an FPGA region
-+* struct fpga_region - The FPGA region struct
-+* devm_fpga_region_create() - Allocate and init a region struct
-+* fpga_region_register() -  Register an FPGA region
-+* fpga_region_unregister() -  Unregister an FPGA region
+-* :c:func:`iio_triggered_buffer_setup` — Setup triggered buffer and pollfunc
+-* :c:func:`iio_triggered_buffer_cleanup` — Free resources allocated by
++* :c:func:`iio_triggered_buffer_setup` - Setup triggered buffer and pollfunc
++* :c:func:`iio_triggered_buffer_cleanup` - Free resources allocated by
+   :c:func:`iio_triggered_buffer_setup`
+-* struct iio_buffer_setup_ops — buffer setup related callbacks
++* struct iio_buffer_setup_ops - buffer setup related callbacks
  
- The FPGA region's probe function will need to get a reference to the FPGA
- Manager it will be using to do the programming.  This usually would happen
- during the region's probe function.
+ A typical triggered buffer setup looks like this::
  
--* fpga_mgr_get() — Get a reference to an FPGA manager, raise ref count
--* of_fpga_mgr_get() —  Get a reference to an FPGA manager, raise ref count,
-+* fpga_mgr_get() - Get a reference to an FPGA manager, raise ref count
-+* of_fpga_mgr_get() -  Get a reference to an FPGA manager, raise ref count,
-   given a device node.
--* fpga_mgr_put() — Put an FPGA manager
-+* fpga_mgr_put() - Put an FPGA manager
+diff --git a/Documentation/driver-api/iio/triggers.rst b/Documentation/driver-api/iio/triggers.rst
+index 288625e40672..a5d1fc15747c 100644
+--- a/Documentation/driver-api/iio/triggers.rst
++++ b/Documentation/driver-api/iio/triggers.rst
+@@ -2,11 +2,11 @@
+ Triggers
+ ========
  
- The FPGA region will need to specify which bridges to control while programming
- the FPGA.  The region driver can build a list of bridges during probe time
-@@ -66,11 +66,11 @@ the list of bridges to program just before programming
- (:c:expr:`fpga_region->get_bridges`).  The FPGA bridge framework supplies the
- following APIs to handle building or tearing down that list.
+-* struct iio_trigger — industrial I/O trigger device
+-* :c:func:`devm_iio_trigger_alloc` — Resource-managed iio_trigger_alloc
+-* :c:func:`devm_iio_trigger_register` — Resource-managed iio_trigger_register
++* struct iio_trigger - industrial I/O trigger device
++* :c:func:`devm_iio_trigger_alloc` - Resource-managed iio_trigger_alloc
++* :c:func:`devm_iio_trigger_register` - Resource-managed iio_trigger_register
+   iio_trigger_unregister
+-* :c:func:`iio_trigger_validate_own_device` — Check if a trigger and IIO
++* :c:func:`iio_trigger_validate_own_device` - Check if a trigger and IIO
+   device belong to the same device
  
--* fpga_bridge_get_to_list() — Get a ref of an FPGA bridge, add it to a
-+* fpga_bridge_get_to_list() - Get a ref of an FPGA bridge, add it to a
-   list
--* of_fpga_bridge_get_to_list() — Get a ref of an FPGA bridge, add it to a
-+* of_fpga_bridge_get_to_list() - Get a ref of an FPGA bridge, add it to a
-   list, given a device node
--* fpga_bridges_put() — Given a list of bridges, put them
-+* fpga_bridges_put() - Given a list of bridges, put them
+ In many situations it is useful for a driver to be able to capture data based
+@@ -63,7 +63,7 @@ Let's see a simple example of how to setup a trigger to be used by a driver::
+ IIO trigger ops
+ ===============
  
- .. kernel-doc:: include/linux/fpga/fpga-region.h
-    :functions: fpga_region
+-* struct iio_trigger_ops — operations structure for an iio_trigger.
++* struct iio_trigger_ops - operations structure for an iio_trigger.
+ 
+ Notice that a trigger has a set of operations attached:
+ 
 -- 
 2.30.2
 
