@@ -2,167 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFC0378E54
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F08378E58
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241967AbhEJNJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:09:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54872 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351299AbhEJNGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 09:06:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1620651899; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r+dkjtuAgModTRQouMOB5Z+3WY5XlrN+33t9O5HaW10=;
-        b=hlDpLi5JEUYkAF7+AsBE9LixfIfDYb2xEnkF9UD1Qpc6U9arlt5UbWV1fpat+lrE0QWdVC
-        ewmtHRqOWHcZomMoifZdBCJ9iNWgP58yQvN+tz2IoKYsZ1z3fCysuhWzhnbjnLGTKr0FLi
-        LN8AzmiflWsIhz6lezxNuDXmXRH//cs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D404DB034;
-        Mon, 10 May 2021 13:04:58 +0000 (UTC)
-Date:   Mon, 10 May 2021 15:04:57 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Jia He <justin.he@arm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@ftp.linux.org.uk>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 2/3] lib/vsprintf.c: make %pD print full path for file
-Message-ID: <YJkveb46BoFbXi0q@alley>
-References: <20210508122530.1971-1-justin.he@arm.com>
- <20210508122530.1971-3-justin.he@arm.com>
+        id S233214AbhEJNOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:14:44 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44429 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348857AbhEJNKK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 09:10:10 -0400
+Received: from mail-qt1-f199.google.com ([209.85.160.199])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lg5ei-0007hn-AH
+        for linux-kernel@vger.kernel.org; Mon, 10 May 2021 13:09:04 +0000
+Received: by mail-qt1-f199.google.com with SMTP id d13-20020a05622a05cdb02901c2cffd946bso10353318qtb.23
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:09:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3EZlfL7z84grZikXYl9bmKb5sE14hGf3dWPqG5s9Xqg=;
+        b=b7EfMzsPTt8JKHijgaumd98oE+fo/0rID95htCRNwzhEy/zUaKH4iX7g2tdeKjnTCw
+         h+a0PCnYtxLosIMAc03W6AYV7uY8Q3cNCbf+AMFT8tU/7ohSYf1k83S93x9k8PaKM0FY
+         bnKjlDbg5zRybaVfsQALSxQus6AUTZwfTE0kJF8F9GeiRo7TXT2r8JPRY8AKqyGwhyzh
+         u8ALHY5NR+5NdT3EoPY/JvT1xQP/mbzoSgcp7vkk4ER1u4gDbGxfGU2HWG7l33UEuRNO
+         syNpV/B7B54Lf01x5hAPWqdEEQtny3fnAX1SezweoGFqplYxG/ivCOIXkGjeagQOoTbP
+         30Ag==
+X-Gm-Message-State: AOAM533rvtLnDQq598FgqYwTEGLVPurJbwaTu+wglF3/H6GHj0/RZxCZ
+        vXDBIetIichhgttlbJeiicbldw4bIM/dzoo+802slrOAIc3OYb9YdCf1qiWNMJx9ZJIOZKBn9JN
+        daEVPzKRiA+cVdwxKd9Eg59AAzDFocaRM9RU65UhKzA==
+X-Received: by 2002:a37:e50e:: with SMTP id e14mr22088280qkg.117.1620652143174;
+        Mon, 10 May 2021 06:09:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwwLP9GlKtI1WyA/nxy7DLVZK7IgyXSKBIhEvh2JTEwD5ovaV0XsMxwD2P69LAwyJBXGELSqA==
+X-Received: by 2002:a37:e50e:: with SMTP id e14mr22088259qkg.117.1620652143029;
+        Mon, 10 May 2021 06:09:03 -0700 (PDT)
+Received: from [192.168.1.4] ([45.237.49.6])
+        by smtp.gmail.com with ESMTPSA id u27sm3847415qku.33.2021.05.10.06.09.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 06:09:02 -0700 (PDT)
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: Add DT bindings for
+ apple,pinctrl
+To:     Tomasz Figa <tomasz.figa@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>, kettenis@openbsd.org,
+        Marc Zyngier <maz@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Hector Martin <marcan@marcan.st>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        sven@svenpeter.dev
+References: <20210508142000.85116-1-kettenis@openbsd.org>
+ <20210508142000.85116-2-kettenis@openbsd.org>
+ <CACRpkdbUNs_FFv9RteWKUrxBdRuiXU2Fkt-oY4=Phke4gNBoaQ@mail.gmail.com>
+ <c1bd678c5dc81db8@bloch.sibelius.xs4all.nl>
+ <CACRpkdb=0EQN=CJqfjKS-iuAiKCvU38fw5krzEY5LvhNpyFd3w@mail.gmail.com>
+ <CA+Ln22GnbTnxoAy0CWXVxAUUV-LBRHyLqDc2u0fpH5=FdHoWcg@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <d332f69c-33a1-b1c9-e1c9-3c8d756594ef@canonical.com>
+Date:   Mon, 10 May 2021 09:09:00 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210508122530.1971-3-justin.he@arm.com>
+In-Reply-To: <CA+Ln22GnbTnxoAy0CWXVxAUUV-LBRHyLqDc2u0fpH5=FdHoWcg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 2021-05-08 20:25:29, Jia He wrote:
-> We have '%pD' for printing a filename. It may not be perfect (by
-> default it only prints one component.)
+On 09/05/2021 05:50, Tomasz Figa wrote:
+>>>> So is this an entirely Apple thing now, and not based on some Samsung
+>>>> block from S3C like what we have seen before?
+>>>
+>>> As far as I can tell, yes.  This Apple controller has a single
+>>> register per pin that controls the muxing and gpio functions, whereas
+>>> the S3C controller seems to have 4 registers per pin.
+>>
+>> Fair enough.
+>>
 > 
-> As suggested by Linus at [1]:
-> A dentry has a parent, but at the same time, a dentry really does
-> inherently have "one name" (and given just the dentry pointers, you
-> can't show mount-related parenthood, so in many ways the "show just
-> one name" makes sense for "%pd" in ways it doesn't necessarily for
-> "%pD"). But while a dentry arguably has that "one primary component",
-> a _file_ is certainly not exclusively about that last component.
-> 
-> Hence "file_dentry_name()" simply shouldn't use "dentry_name()" at all.
-> Despite that shared code origin, and despite that similar letter
-> choice (lower-vs-upper case), a dentry and a file really are very
-> different from a name standpoint.
-> 
-> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> index f0c35d9b65bf..8220ab1411c5 100644
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -27,6 +27,7 @@
->  #include <linux/string.h>
->  #include <linux/ctype.h>
->  #include <linux/kernel.h>
-> +#include <linux/dcache.h>
->  #include <linux/kallsyms.h>
->  #include <linux/math64.h>
->  #include <linux/uaccess.h>
-> @@ -923,10 +924,17 @@ static noinline_for_stack
->  char *file_dentry_name(char *buf, char *end, const struct file *f,
->  			struct printf_spec spec, const char *fmt)
->  {
-> +	const struct path *path = &f->f_path;
+> Right, doesn't sound like any Samsung pin controller I'm familiar
+> with, although I haven't followed new hardware developments since I
+> left Samsung a few years ago. I've stayed as a maintainer mostly to
+> help with the legacy SoCs I had worked with, e.g. s3c6410. :)
 
-This dereferences @f before it is checked by check_pointer().
+I can confirm that it looks different than Samsung designs.
 
-> +	char *p;
-> +	char tmp[128];
-> +
->  	if (check_pointer(&buf, end, f, spec))
->  		return buf;
->  
-> -	return dentry_name(buf, end, f->f_path.dentry, spec, fmt);
-> +	p = d_path_fast(path, (char *)tmp, 128);
-> +	buf = string(buf, end, p, spec);
 
-Is 128 a limit of the path or just a compromise, please?
-
-d_path_fast() limits the size of the buffer so we could use @buf
-directly. We basically need to imitate what string_nocheck() does:
-
-     + the length is limited by min(spec.precision, end-buf);
-     + the string need to get shifted by widen_string()
-
-We already do similar thing in dentry_name(). It might look like:
-
-char *file_dentry_name(char *buf, char *end, const struct file *f,
-			struct printf_spec spec, const char *fmt)
-{
-	const struct path *path;
-	int lim, len;
-	char *p;
-
-	if (check_pointer(&buf, end, f, spec))
-		return buf;
-
-	path = &f->f_path;
-	if (check_pointer(&buf, end, path, spec))
-		return buf;
-
-	lim = min(spec.precision, end - buf);
-	p = d_path_fast(path, buf, lim);
-	if (IS_ERR(p))
-		return err_ptr(buf, end, p, spec);
-
-	len = strlen(buf);
-	return widen_string(buf + len, len, end, spec);
-}
-
-Note that the code is _not_ even compile tested. It might include
-some ugly mistake.
-
-> +
-> +	return buf;
->  }
->  #ifdef CONFIG_BLOCK
->  static noinline_for_stack
-> @@ -2296,7 +2304,7 @@ early_param("no_hash_pointers", no_hash_pointers_enable);
->   * - 'a[pd]' For address types [p] phys_addr_t, [d] dma_addr_t and derivatives
->   *           (default assumed to be phys_addr_t, passed by reference)
->   * - 'd[234]' For a dentry name (optionally 2-4 last components)
-> - * - 'D[234]' Same as 'd' but for a struct file
-> + * - 'D' Same as 'd' but for a struct file
-
-It is not really the same. We should make it clear that it prints
-the full path:
-
-+   * - 'D' Same as 'd' but for a struct file; prints full path with
-+       the mount-related parenthood
-
->   * - 'g' For block_device name (gendisk + partition number)
->   * - 't[RT][dt][r]' For time and date as represented by:
->   *      R    struct rtc_time
-> -- 
-> 2.17.1
-
-Best Regards,
-Petr
+Best regards,
+Krzysztof
