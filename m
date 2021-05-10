@@ -2,33 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5CF378B1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59760378B10
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234994AbhEJMAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:00:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44332 "EHLO mail.kernel.org"
+        id S231774AbhEJL7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:59:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236021AbhEJLHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:07:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D55E61364;
-        Mon, 10 May 2021 10:57:27 +0000 (UTC)
+        id S236025AbhEJLHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:07:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF6B961944;
+        Mon, 10 May 2021 10:57:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644248;
-        bh=3Ufg7xo03ya1yrgPAz1RlfrVuRck0My3z2pCiLPXPmo=;
+        s=korg; t=1620644250;
+        bh=mrxv9A38FANIUx0s566WXspDiCL3kAfq/zU5fvwKeN0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BV2hbc/by7l6NeI5OVUnNuJtWBFbVpztVLpUAYBzK9YOl6wZL4528e73D11kbpVnv
-         EEFiL0rrL316t+EovJ+qXqY177d+0EuMfVe2AHQz1i92p34mOgrBOihY+q2BdILubS
-         +oyDlWYa/fYjAoMR+D5tI7Y0O/5pp+J5bRShUfuU=
+        b=hrqB3t/28EcwntA7+WUPaUtZvqs8Mv8zqI8YLcNoKDPHmT0h20bpIVUD9BvwYffcq
+         M4MaFomV3TC9/F0p8mKZKJLRPRy2tOeOTMNxQJroAPfKewdwjd+KYggGMk3KTtgB+E
+         su+m8uxHJ5bPJoY7NUHyP/hoep/FeyXwBNx2s6Ak=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
-        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Subject: [PATCH 5.11 328/342] usb: dwc2: Fix session request interrupt handler
-Date:   Mon, 10 May 2021 12:21:58 +0200
-Message-Id: <20210510102020.940357584@linuxfoundation.org>
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH 5.11 329/342] PCI: dwc: Move iATU detection earlier
+Date:   Mon, 10 May 2021 12:21:59 +0200
+Message-Id: <20210510102020.973975164@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
 References: <20210510102010.096403571@linuxfoundation.org>
@@ -40,47 +45,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 
-commit 42b32b164acecd850edef010915a02418345a033 upstream.
+commit 8bcca26585585ae4b44d25d30f351ad0afa4976b upstream.
 
-According to programming guide in host mode, port
-power must be turned on in session request
-interrupt handlers.
+dw_pcie_ep_init() depends on the detected iATU region numbers to allocate
+the in/outbound window management bitmap.  It fails after 281f1f99cf3a
+("PCI: dwc: Detect number of iATU windows").
 
-Fixes: 21795c826a45 ("usb: dwc2: exit hibernation on session request")
-Cc: <stable@vger.kernel.org>
-Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Link: https://lore.kernel.org/r/20210408094550.75484A0094@mailhost.synopsys.com
+Move the iATU region detection into a new function, move the detection to
+the very beginning of dw_pcie_host_init() and dw_pcie_ep_init().  Also
+remove it from the dw_pcie_setup(), since it's more like a software
+initialization step than hardware setup.
+
+Link: https://lore.kernel.org/r/20210125044803.4310-1-Zhiqiang.Hou@nxp.com
+Link: https://lore.kernel.org/linux-pci/20210407131255.702054-1-dmitry.baryshkov@linaro.org
+Link: https://lore.kernel.org/r/20210413142219.2301430-1-dmitry.baryshkov@linaro.org
+Fixes: 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows")
+Tested-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Tested-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+[DB: moved dw_pcie_iatu_detect to happen after host_init callback]
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Cc: stable@vger.kernel.org	# v5.11+
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc2/core_intr.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/pci/controller/dwc/pcie-designware-ep.c   |    2 ++
+ drivers/pci/controller/dwc/pcie-designware-host.c |    1 +
+ drivers/pci/controller/dwc/pcie-designware.c      |   11 ++++++++---
+ drivers/pci/controller/dwc/pcie-designware.h      |    1 +
+ 4 files changed, 12 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/dwc2/core_intr.c
-+++ b/drivers/usb/dwc2/core_intr.c
-@@ -307,6 +307,7 @@ static void dwc2_handle_conn_id_status_c
- static void dwc2_handle_session_req_intr(struct dwc2_hsotg *hsotg)
- {
- 	int ret;
-+	u32 hprt0;
- 
- 	/* Clear interrupt */
- 	dwc2_writel(hsotg, GINTSTS_SESSREQINT, GINTSTS);
-@@ -327,6 +328,13 @@ static void dwc2_handle_session_req_intr
- 		 * established
- 		 */
- 		dwc2_hsotg_disconnect(hsotg);
-+	} else {
-+		/* Turn on the port power bit. */
-+		hprt0 = dwc2_read_hprt0(hsotg);
-+		hprt0 |= HPRT0_PWR;
-+		dwc2_writel(hsotg, hprt0, HPRT0);
-+		/* Connect hcd after port power is set. */
-+		dwc2_hcd_connect(hsotg);
+--- a/drivers/pci/controller/dwc/pcie-designware-ep.c
++++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+@@ -707,6 +707,8 @@ int dw_pcie_ep_init(struct dw_pcie_ep *e
+ 		}
  	}
+ 
++	dw_pcie_iatu_detect(pci);
++
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "addr_space");
+ 	if (!res)
+ 		return -EINVAL;
+--- a/drivers/pci/controller/dwc/pcie-designware-host.c
++++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+@@ -421,6 +421,7 @@ int dw_pcie_host_init(struct pcie_port *
+ 		if (ret)
+ 			goto err_free_msi;
+ 	}
++	dw_pcie_iatu_detect(pci);
+ 
+ 	dw_pcie_setup_rc(pp);
+ 	dw_pcie_msi_init(pp);
+--- a/drivers/pci/controller/dwc/pcie-designware.c
++++ b/drivers/pci/controller/dwc/pcie-designware.c
+@@ -610,11 +610,9 @@ static void dw_pcie_iatu_detect_regions(
+ 	pci->num_ob_windows = ob;
  }
  
+-void dw_pcie_setup(struct dw_pcie *pci)
++void dw_pcie_iatu_detect(struct dw_pcie *pci)
+ {
+-	u32 val;
+ 	struct device *dev = pci->dev;
+-	struct device_node *np = dev->of_node;
+ 	struct platform_device *pdev = to_platform_device(dev);
+ 
+ 	if (pci->version >= 0x480A || (!pci->version &&
+@@ -643,6 +641,13 @@ void dw_pcie_setup(struct dw_pcie *pci)
+ 
+ 	dev_info(pci->dev, "Detected iATU regions: %u outbound, %u inbound",
+ 		 pci->num_ob_windows, pci->num_ib_windows);
++}
++
++void dw_pcie_setup(struct dw_pcie *pci)
++{
++	u32 val;
++	struct device *dev = pci->dev;
++	struct device_node *np = dev->of_node;
+ 
+ 	if (pci->link_gen > 0)
+ 		dw_pcie_link_set_max_speed(pci, pci->link_gen);
+--- a/drivers/pci/controller/dwc/pcie-designware.h
++++ b/drivers/pci/controller/dwc/pcie-designware.h
+@@ -304,6 +304,7 @@ int dw_pcie_prog_inbound_atu(struct dw_p
+ void dw_pcie_disable_atu(struct dw_pcie *pci, int index,
+ 			 enum dw_pcie_region_type type);
+ void dw_pcie_setup(struct dw_pcie *pci);
++void dw_pcie_iatu_detect(struct dw_pcie *pci);
+ 
+ static inline void dw_pcie_writel_dbi(struct dw_pcie *pci, u32 reg, u32 val)
+ {
 
 
