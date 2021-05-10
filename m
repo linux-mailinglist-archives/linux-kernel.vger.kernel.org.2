@@ -2,105 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7295378B9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3157378BD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343720AbhEJMOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:14:15 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:52703 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236627AbhEJLIW (ORCPT
+        id S236061AbhEJMQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:16:35 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2672 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232250AbhEJLIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:08:22 -0400
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 757B022239;
-        Mon, 10 May 2021 13:07:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1620644836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=UvqLle58hbQrYS8D+Qw3M/VyRDyS9/kql1bKzFA9u7k=;
-        b=fARMSm9TNGEW00ePDePRuLEWD6meuhM4gNJBexH8X5WahVhkjcmFtIsh/DkiZ1PZadJdlT
-        l3/Z/XBwt3yGoJUb3z5w+Uw2QS8BKKV+qPLzxcQb5TNaW/2096auE7k6llCniolwJprYq+
-        ygS8YDrQqBviVGNwEKsF4vjWMF4yaD4=
-From:   Michael Walle <michael@walle.cc>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH net] net: dsa: felix: re-enable TAS guard band mode
-Date:   Mon, 10 May 2021 13:07:08 +0200
-Message-Id: <20210510110708.11504-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
+        Mon, 10 May 2021 07:08:50 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FdyrG4tK6z1BKRQ;
+        Mon, 10 May 2021 19:05:02 +0800 (CST)
+Received: from [10.174.187.224] (10.174.187.224) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 10 May 2021 19:07:34 +0800
+Subject: Re: [RFC PATCH v4 01/13] iommu: Introduce dirty log tracking
+ framework
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yi Sun <yi.y.sun@linux.intel.com>,
+        Tian Kevin <kevin.tian@intel.com>
+References: <20210507102211.8836-1-zhukeqian1@huawei.com>
+ <20210507102211.8836-2-zhukeqian1@huawei.com>
+ <efc2d868-28ba-8ed9-1d6b-610b67d671b5@linux.intel.com>
+ <18ac787a-179e-71f7-728b-c43feda80a16@huawei.com>
+ <55fda826-9ab6-a3a0-b17e-a4d4879f00bc@linux.intel.com>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
+        <yuzenghui@huawei.com>, <lushenming@huawei.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <a8df289a-47c2-c193-cd6f-8415f68b900f@huawei.com>
+Date:   Mon, 10 May 2021 19:07:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+In-Reply-To: <55fda826-9ab6-a3a0-b17e-a4d4879f00bc@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.224]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 316bcffe4479 ("net: dsa: felix: disable always guard band bit for
-TAS config") disabled the guard band and broke 802.3Qbv compliance.
+Hi Baolu,
 
-There are two issues here:
- (1) Without the guard band the end of the scheduling window could be
-     overrun by a frame in transit.
- (2) Frames that don't fit into a configured window will still be sent.
+On 2021/5/10 9:08, Lu Baolu wrote:
+> Hi Keqian,
+> 
+> On 5/8/21 3:35 PM, Keqian Zhu wrote:
+>> Hi Baolu,
+>>
+>> On 2021/5/8 11:46, Lu Baolu wrote:
+>>> Hi Keqian,
+>>>
+>>> On 5/7/21 6:21 PM, Keqian Zhu wrote:
+>>>> Some types of IOMMU are capable of tracking DMA dirty log, such as
+>>>> ARM SMMU with HTTU or Intel IOMMU with SLADE. This introduces the
+>>>> dirty log tracking framework in the IOMMU base layer.
+>>>>
+>>>> Four new essential interfaces are added, and we maintaince the status
+>>>> of dirty log tracking in iommu_domain.
+>>>> 1. iommu_support_dirty_log: Check whether domain supports dirty log tracking
+>>>> 2. iommu_switch_dirty_log: Perform actions to start|stop dirty log tracking
+>>>> 3. iommu_sync_dirty_log: Sync dirty log from IOMMU into a dirty bitmap
+>>>> 4. iommu_clear_dirty_log: Clear dirty log of IOMMU by a mask bitmap
+>>>>
+>>>> Note: Don't concurrently call these interfaces with other ops that
+>>>> access underlying page table.
+>>>>
+>>>> Signed-off-by: Keqian Zhu<zhukeqian1@huawei.com>
+>>>> Signed-off-by: Kunkun Jiang<jiangkunkun@huawei.com>
+>>>> ---
+>>>>    drivers/iommu/iommu.c        | 201 +++++++++++++++++++++++++++++++++++
+>>>>    include/linux/iommu.h        |  63 +++++++++++
+>>>>    include/trace/events/iommu.h |  63 +++++++++++
+>>>>    3 files changed, 327 insertions(+)
+>>>>
+>>>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>>>> index 808ab70d5df5..0d15620d1e90 100644
+>>>> --- a/drivers/iommu/iommu.c
+>>>> +++ b/drivers/iommu/iommu.c
+>>>> @@ -1940,6 +1940,7 @@ static struct iommu_domain *__iommu_domain_alloc(struct bus_type *bus,
+>>>>        domain->type = type;
+>>>>        /* Assume all sizes by default; the driver may override this later */
+>>>>        domain->pgsize_bitmap  = bus->iommu_ops->pgsize_bitmap;
+>>>> +    mutex_init(&domain->switch_log_lock);
+>>>>          return domain;
+>>>>    }
+>>>> @@ -2703,6 +2704,206 @@ int iommu_set_pgtable_quirks(struct iommu_domain *domain,
+>>>>    }
+>>>>    EXPORT_SYMBOL_GPL(iommu_set_pgtable_quirks);
+>>>>    +bool iommu_support_dirty_log(struct iommu_domain *domain)
+>>>> +{
+>>>> +    const struct iommu_ops *ops = domain->ops;
+>>>> +
+>>>> +    return ops->support_dirty_log && ops->support_dirty_log(domain);
+>>>> +}
+>>>> +EXPORT_SYMBOL_GPL(iommu_support_dirty_log);
+>>> I suppose this interface is to ask the vendor IOMMU driver to check
+>>> whether each device/iommu in the domain supports dirty bit tracking.
+>>> But what will happen if new devices with different tracking capability
+>>> are added afterward?
+>> Yep, this is considered in the vfio part. We will query again after attaching or
+>> detaching devices from the domain.  When the domain becomes capable, we enable
+>> dirty log for it. When it becomes not capable, we disable dirty log for it.
+> 
+> If that's the case, why not putting this logic in the iommu subsystem so
+> that it doesn't need to be duplicate in different upper layers?
+> 
+> For example, add something like dirty_page_trackable in the struct of
+> iommu_domain and ask the vendor iommu driver to update it once any
+> device is added/removed to/from the domain. It's also better to disallow
+If we do it, the upper layer still needs to query the capability from domain and switch
+dirty log tracking for it. Or do you mean the domain can switch dirty log tracking automatically
+when its capability change? If so, I think we're lack of some flexibility. The upper layer
+may have it's own policy, such as only enable dirty log tracking when all domains are capable,
+and disable dirty log tracking when just one domain is not capable.
 
-The reason for both issues is that the switch will schedule the _start_
-of a frame transmission inside the predefined window without taking the
-length of the frame into account. Thus, we'll need the guard band which
-will close the gate early, so that a complete frame can still be sent.
-Revert the commit and add a note.
+> any domain attach/detach once the dirty page tracking is on.
+Yep, this can greatly simplify our code logic, but I don't know whether our maintainers
+agree that, as they may think that IOMMU dirty logging should not change original domain
+behaviors.
 
-For a lengthy discussion see [1].
 
-[1] https://lore.kernel.org/netdev/c7618025da6723418c56a54fe4683bd7@walle.cc/
-
-Fixes: 316bcffe4479 ("net: dsa: felix: disable always guard band bit for TAS config")
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/net/dsa/ocelot/felix_vsc9959.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
-index 2473bebe48e6..f966a253d1c7 100644
---- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-+++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-@@ -1227,12 +1227,17 @@ static int vsc9959_qos_port_tas_set(struct ocelot *ocelot, int port,
- 	if (taprio->num_entries > VSC9959_TAS_GCL_ENTRY_MAX)
- 		return -ERANGE;
- 
--	/* Set port num and disable ALWAYS_GUARD_BAND_SCH_Q, which means set
--	 * guard band to be implemented for nonschedule queues to schedule
--	 * queues transition.
-+	/* Enable guard band. The switch will schedule frames without taking
-+	 * their length into account. Thus we'll always need to enable the
-+	 * guard band which reserves the time of a maximum sized frame at the
-+	 * end of the time window.
-+	 *
-+	 * Although the ALWAYS_GUARD_BAND_SCH_Q bit is global for all ports, we
-+	 * need to set PORT_NUM, because subsequent writes to PARAM_CFG_REG_n
-+	 * operate on the port number.
- 	 */
--	ocelot_rmw(ocelot,
--		   QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM(port),
-+	ocelot_rmw(ocelot, QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM(port) |
-+		   QSYS_TAS_PARAM_CFG_CTRL_ALWAYS_GUARD_BAND_SCH_Q,
- 		   QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM_M |
- 		   QSYS_TAS_PARAM_CFG_CTRL_ALWAYS_GUARD_BAND_SCH_Q,
- 		   QSYS_TAS_PARAM_CFG_CTRL);
--- 
-2.20.1
-
+Thanks,
+Keqian
