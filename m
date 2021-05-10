@@ -2,134 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24709379610
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 125DB3795FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233030AbhEJRhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 13:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233020AbhEJRg2 (ORCPT
+        id S233002AbhEJRdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 13:33:32 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25990 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233437AbhEJRbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 13:36:28 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F56C061231
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:30:27 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2so24560990lft.4
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:30:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VWGUpuUFEiRwS6iEGwvYVeEnSLAfGX83FWm14bOadMQ=;
-        b=TryB5+5sCOw2p2JHDUFly6UFDPRMsWS1H2xS5cgcZ3qF4inIUjDfTRahdlci8khE8A
-         vz8vU7LSssup2VmHDa2WFLFTGuHSbuijyjDAvp9Ca9d5m/O0j9UlcXbz9/2ZkB47E0zG
-         LkUk86g5q0FucZtowbq6B8WA4FvdWESEyTHtJEpPil541JKffXO58kIuaml1l/9WuZQb
-         f3Zaf8f9ds4hMRjdFLmdZ8bgP2a8Ne3ZrEKEPh4MxfODfSsEhNsD6jieZs/krJhjylKx
-         86aTdMKJIxQuioORt2Z8NwNFZoZP0s6M4LQ5iN929RYBfzYz7pGa0IBQw40NrgYA8up7
-         /ZJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VWGUpuUFEiRwS6iEGwvYVeEnSLAfGX83FWm14bOadMQ=;
-        b=AQNAu/RbYOEHCMvM9XfRo1KHbwoenAd6Lp7V9FAdGAzKiJLKBCa2tzPOfupxEIKVLH
-         5SS7Hc/47EBYYHHECWB2dt5hWX4bYmjWVP+jBQBPEUjuQ3RXmkrhOq8N2exXxE2v8BsX
-         TCAvN4kbwoRTGRdn3dkqRujVQ+s7U3IkC04ZJoKe8+2meEKXFbO701N5FKgWkK/G5SaX
-         WN2o/ns3tr8XzA7CwzfU1UF/AtPhfpPJwVTZ7Jf3PikF4qRLF32E0PAwrjBtbx+WJloO
-         WW/9jl5HctdL2ZHKeQhE/kVHwxQ6NXpvQhUyxoWiDTRDq9EEGarBLaPtrz2EcMAmO8ZB
-         hVBg==
-X-Gm-Message-State: AOAM533JlBzMOPF2LdYW+yj6IZUeI3UiCNlZQwEasGVO5XXFRJmpH/fh
-        RwkawDqizUuk2QJhHJaaDGt8C7FYI6M/prv6Yy6n3g==
-X-Google-Smtp-Source: ABdhPJxiX95gH4ekENcRKooOjRHwORcRSYGwvXl6F0iPJKYVM1J+AG3el7/DWgEhG9Uo793ClAuoc+XxKze/1Gre5qE=
-X-Received: by 2002:a05:6512:1084:: with SMTP id j4mr3698207lfg.423.1620667826078;
- Mon, 10 May 2021 10:30:26 -0700 (PDT)
+        Mon, 10 May 2021 13:31:53 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14AH3OFm180203
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 13:30:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
+ from : to : cc : date : mime-version : references :
+ content-transfer-encoding : content-type : message-id; s=pp1;
+ bh=O7t3E8f6afvRrEIHpBcgV+tX3m8XCdkTaVANeHqT4Lc=;
+ b=Xv1zwF4+MNoh6lre5n57U/zqTNgI8X1JUXd3bTKajMF5I3l54SE4vCkjf2OPtG2xhRYD
+ dvQIqBkY2rJw2DDlEuQIZB7eyXhojgfMqQD5pdA+OZ+G9IW61l+BlGfXQ3M32ZTGx5VD
+ 7a8nS0qr10c4uyY9cKANDle1UHou9ppy95+PNyFe4/7DEy/Q4yW0FVZFG57uq/ZTwl04
+ rC2ySy4IwU+LCH7bMJ8TlDOgqQwQTybLU2LGKaULfa/o4ECDrxh0zt3hVLclghjD1kdR
+ JGZeJsKeGho54HzqvNaZxaKSrUfVMcKgxD0ilwogORVC7QVNrxEGpp6crzyI782dylZV qA== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.73])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38f8vvrr3d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 13:30:48 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-kernel@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Mon, 10 May 2021 17:30:47 -0000
+Received: from us1a3-smtp02.a3.dal06.isc4sb.com (10.106.154.159)
+        by smtp.notes.na.collabserv.com (10.106.227.90) with smtp.notes.na.collabserv.com ESMTP;
+        Mon, 10 May 2021 17:30:46 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp02.a3.dal06.isc4sb.com
+          with ESMTP id 2021051017304543-607398 ;
+          Mon, 10 May 2021 17:30:45 +0000 
+In-Reply-To: <a7535a82925f6f4c1f062abaa294f3ae6e54bdd2.1620560310.git.leonro@nvidia.com>
+Subject: Re: [PATCH rdma-rc] RDMA/siw: Properly check send and receive CQ pointers
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Leon Romanovsky" <leon@kernel.org>
+Cc:     "Doug Ledford" <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@nvidia.com>,
+        "Leon Romanovsky" <leonro@nvidia.com>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "linux-rdma" <linux-rdma@vger.kernel.org>
+Date:   Mon, 10 May 2021 17:30:45 +0000
 MIME-Version: 1.0
-References: <20210430123822.13825-1-brijesh.singh@amd.com> <20210430123822.13825-33-brijesh.singh@amd.com>
-In-Reply-To: <20210430123822.13825-33-brijesh.singh@amd.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Mon, 10 May 2021 11:30:14 -0600
-Message-ID: <CAMkAt6oYhRmqsKzDev3V5yMMePAR7ZzpEDRLadKhhCrb9Fq2=g@mail.gmail.com>
-Subject: Re: [PATCH Part2 RFC v2 32/37] KVM: SVM: Add support to handle MSR
- based Page State Change VMGEXIT
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        kvm list <kvm@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, jroedel@suse.de,
-        "Lendacky, Thomas" <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>, peterz@infradead.org,
-        "H. Peter Anvin" <hpa@zytor.com>, tony.luck@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <a7535a82925f6f4c1f062abaa294f3ae6e54bdd2.1620560310.git.leonro@nvidia.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
+X-LLNOutbound: False
+X-Disclaimed: 52419
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 21051017-8877-0000-0000-00000600758B
+X-IBM-SpamModules-Scores: BY=0.057814; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0; ST=0; TS=0; UL=0; ISC=; MB=0.001860
+X-IBM-SpamModules-Versions: BY=3.00015193; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000296; SDB=6.01548292; UDB=6.00838382; IPR=6.01330253;
+ MB=3.00036958; MTD=3.00000008; XFM=3.00000015; UTC=2021-05-10 17:30:47
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2021-03-25 10:42:53 - 6.00012377
+x-cbparentid: 21051017-8878-0000-0000-0000F6227B5A
+Message-Id: <OF52748745.A17A3172-ON002586D1.0060334D-002586D1.00603353@notes.na.collabserv.com>
+X-Proofpoint-ORIG-GUID: bRw1sEty9KYDHfOlYD67e7iQGA8OVYMi
+X-Proofpoint-GUID: bRw1sEty9KYDHfOlYD67e7iQGA8OVYMi
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-10_11:2021-05-10,2021-05-10 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static int snp_make_page_shared(struct kvm_vcpu *vcpu, gpa_t gpa, kvm_pfn_t pfn, int level)
-> +{
-> +       struct rmpupdate val;
-> +       int rc, rmp_level;
-> +       struct rmpentry *e;
-> +
-> +       e = snp_lookup_page_in_rmptable(pfn_to_page(pfn), &rmp_level);
-> +       if (!e)
-> +               return -EINVAL;
-> +
-> +       if (!rmpentry_assigned(e))
-> +               return 0;
-> +
-> +       /* Log if the entry is validated */
-> +       if (rmpentry_validated(e))
-> +               pr_debug_ratelimited("Remove RMP entry for a validated gpa 0x%llx\n", gpa);
-> +
-> +       /*
-> +        * Is the page part of an existing 2M RMP entry ? Split the 2MB into multiple
-> +        * of 4K-page before making the memory shared.
-> +        */
-> +       if ((level == PG_LEVEL_4K) && (rmp_level == PG_LEVEL_2M)) {
-> +               rc = snp_rmptable_psmash(vcpu, pfn);
-> +               if (rc)
-> +                       return rc;
-> +       }
-> +
-> +       memset(&val, 0, sizeof(val));
-> +       val.pagesize = X86_TO_RMP_PG_LEVEL(level);
+-----"Leon Romanovsky" <leon@kernel.org> wrote: -----
 
-This is slightly different from Rev 2.00 of the GHCB spec. This
-defaults to 2MB page sizes, when the spec says the only valid settings
-for level are 0 -> 4k pages or 1 -> 2MB pages. Should this enforce the
-same strictness as the spec?
+>To: "Doug Ledford" <dledford@redhat.com>, "Jason Gunthorpe"
+><jgg@nvidia.com>
+>From: "Leon Romanovsky" <leon@kernel.org>
+>Date: 05/09/2021 01:39PM
+>Cc: "Leon Romanovsky" <leonro@nvidia.com>, "Bernard Metzler"
+><bmt@zurich.ibm.com>, linux-kernel@vger.kernel.org,
+>linux-rdma@vger.kernel.org
+>Subject: [EXTERNAL] [PATCH rdma-rc] RDMA/siw: Properly check send and
+>receive CQ pointers
+>
+>From: Leon Romanovsky <leonro@nvidia.com>
+>
+>The check for the NULL of pointer received from container=5Fof is
+>incorrect by definition as it points to some random memory.
+>
+>Change such check with proper NULL check of SIW QP attributes.
+>
+>Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
+>Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+>---
+> drivers/infiniband/sw/siw/siw=5Fverbs.c | 9 +++------
+> 1 file changed, 3 insertions(+), 6 deletions(-)
+>
+>diff --git a/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>b/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>index d2313efb26db..917c8a919f38 100644
+>--- a/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>+++ b/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>@@ -300,7 +300,6 @@ struct ib=5Fqp *siw=5Fcreate=5Fqp(struct ib=5Fpd *pd,
+> 	struct siw=5Fucontext *uctx =3D
+> 		rdma=5Fudata=5Fto=5Fdrv=5Fcontext(udata, struct siw=5Fucontext,
+> 					  base=5Fucontext);
+>-	struct siw=5Fcq *scq =3D NULL, *rcq =3D NULL;
+> 	unsigned long flags;
+> 	int num=5Fsqe, num=5Frqe, rv =3D 0;
+> 	size=5Ft length;
+>@@ -343,10 +342,8 @@ struct ib=5Fqp *siw=5Fcreate=5Fqp(struct ib=5Fpd *pd,
+> 		rv =3D -EINVAL;
+> 		goto err=5Fout;
+> 	}
+>-	scq =3D to=5Fsiw=5Fcq(attrs->send=5Fcq);
+>-	rcq =3D to=5Fsiw=5Fcq(attrs->recv=5Fcq);
+>=20
+>-	if (!scq || (!rcq && !attrs->srq)) {
+>+	if (!attrs->send=5Fcq || (!attrs->recv=5Fcq && !attrs->srq)) {
+> 		siw=5Fdbg(base=5Fdev, "send CQ or receive CQ invalid\n");
+> 		rv =3D -EINVAL;
+> 		goto err=5Fout;
+>@@ -401,8 +398,8 @@ struct ib=5Fqp *siw=5Fcreate=5Fqp(struct ib=5Fpd *pd,
+> 		}
+> 	}
+> 	qp->pd =3D pd;
+>-	qp->scq =3D scq;
+>-	qp->rcq =3D rcq;
+>+	qp->scq =3D to=5Fsiw=5Fcq(attrs->send=5Fcq);
+>+	qp->rcq =3D to=5Fsiw=5Fcq(attrs->recv=5Fcq);
+>=20
+> 	if (attrs->srq) {
+> 		/*
+>--=20
+>2.31.1
+>
+>
 
-> +       return rmpupdate(pfn_to_page(pfn), &val);
-> +}
-> +
-> +static int snp_make_page_private(struct kvm_vcpu *vcpu, gpa_t gpa, kvm_pfn_t pfn, int level)
-> +{
-> +       struct kvm_sev_info *sev = &to_kvm_svm(vcpu->kvm)->sev_info;
-> +       struct rmpupdate val;
-> +       struct rmpentry *e;
-> +       int rmp_level;
-> +
-> +       e = snp_lookup_page_in_rmptable(pfn_to_page(pfn), &rmp_level);
-> +       if (!e)
-> +               return -EINVAL;
-> +
-> +       /* Log if the entry is validated */
-> +       if (rmpentry_validated(e))
-> +               pr_err_ratelimited("Asked to make a pre-validated gpa %llx private\n", gpa);
-> +
-> +       memset(&val, 0, sizeof(val));
-> +       val.gpa = gpa;
-> +       val.asid = sev->asid;
-> +       val.pagesize = X86_TO_RMP_PG_LEVEL(level);
+Many thanks Leon!
 
-Same comment as above.
+Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
 
-> +       val.assigned = true;
-> +
-> +       return rmpupdate(pfn_to_page(pfn), &val);
-> +}
