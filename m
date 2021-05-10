@@ -2,72 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C503790C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0B237906F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235763AbhEJOaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:30:04 -0400
-Received: from mga09.intel.com ([134.134.136.24]:23270 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238879AbhEJOZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:25:34 -0400
-IronPort-SDR: vpMqDYCCXk3v1WDiD5HkJPlxp7iHuAcB+438ihgH1nOdVtYSUnedjgWgyj9FuOaK7I3oqph0K3
- IKDvsc3A06rQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="199274797"
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="199274797"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 07:13:35 -0700
-IronPort-SDR: ltyKADyv74sqKrk8pGvheocmbjUB7aNZEfOIcMJovcY7sl2QrkPQT5cbebQDDxNRdIFUOA6ePH
- UDkpw80MBNEA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="541231325"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 10 May 2021 07:13:33 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 628D0142; Mon, 10 May 2021 17:13:53 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Vladimir Zapolskiy <vz@mleia.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Michael Walle <michael@walle.cc>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] mtd: spi-nor: Use SPI_MODE_X_MASK
-Date:   Mon, 10 May 2021 17:13:43 +0300
-Message-Id: <20210510141343.56805-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S230430AbhEJORq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:17:46 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:46480 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245089AbhEJOPO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 10:15:14 -0400
+Received: from mail-ed1-f70.google.com ([209.85.208.70])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <juerg.haefliger@canonical.com>)
+        id 1lg6fg-0004Ft-QQ
+        for linux-kernel@vger.kernel.org; Mon, 10 May 2021 14:14:08 +0000
+Received: by mail-ed1-f70.google.com with SMTP id c21-20020a0564021015b029038c3f08ce5aso3618485edu.18
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:14:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version;
+        bh=fbZHevFPK4kJ3Oy/1nhCAJSC3PFsFtZgI6Obl9f93YE=;
+        b=dibgx2Ek2oDXxuGAQl9vpOyvQAQjwBQIdBoBR8ORUzULYw4mnAJfDad/rfo4y5SB9M
+         pfF/A64HNh6wpch4aHBptBAy36aoEo6mnWnHnnNmO2Bu6JMMIgwo2R375pBtvXfpd845
+         bcAo443wfaP/4EZ4UJxp/hZwGL2WCRMU5YaASFr7JfB/+vWqe6LHk8KV56jf+QikRnrR
+         +vFBJaq2vdG0s7LSy3NOcEWHKuO5SPx+4WVbA9vnNck9p5wZq7aPSB2mvau4NjpFeq4N
+         Vyn8QJnZxMCdmgdcj5X2K75n0SDR4GDIIvtZTE7ko+a5KELeVolAKNMwk3p+mMBcukVk
+         KL3w==
+X-Gm-Message-State: AOAM531Scf3LiFrlcqbAfDOUeb290g9fMKtkvorKARIjsCex/Gylheyk
+        NN7X9x+rsd3FdAYlWbqL+dqb0iMumWgTDlIYgPSsUNZeid+4vhBG6Y7ETIxv89KVMoWZ1V6KWSD
+        QrfAmud/pwZZI+cPstOhNE1mXxxiNiT/aRKYshXPR4Q==
+X-Received: by 2002:a17:906:5a83:: with SMTP id l3mr26000940ejq.50.1620656048554;
+        Mon, 10 May 2021 07:14:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJziN7V8IF+eETtey6eCBiXKyTYKjZfq7RMKqvrr5GQJnMf4337zoLzjpbQG+k7mxZa1ZX8iZA==
+X-Received: by 2002:a17:906:5a83:: with SMTP id l3mr26000915ejq.50.1620656048370;
+        Mon, 10 May 2021 07:14:08 -0700 (PDT)
+Received: from gollum ([194.191.244.86])
+        by smtp.gmail.com with ESMTPSA id l11sm11223540eds.75.2021.05.10.07.14.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 07:14:07 -0700 (PDT)
+From:   Juerg Haefliger <juerg.haefliger@canonical.com>
+X-Google-Original-From: Juerg Haefliger <juergh@canonical.com>
+Date:   Mon, 10 May 2021 16:14:06 +0200
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Juerg Haefliger <juerg.haefliger@canonical.com>,
+        wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] watchdog: Add {min,max}_timeout sysfs nodes
+Message-ID: <20210510161406.1b32debd@gollum>
+In-Reply-To: <695dfd0f-f090-653e-7580-e45484228781@roeck-us.net>
+References: <20210510131625.21506-1-juergh@canonical.com>
+        <695dfd0f-f090-653e-7580-e45484228781@roeck-us.net>
+Organization: Canonical Ltd
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/ryNewuZSjVJeL.p+oeOWUl2";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use SPI_MODE_X_MASK instead of open coded variant.
+--Sig_/ryNewuZSjVJeL.p+oeOWUl2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/mtd/spi-nor/controllers/nxp-spifi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, 10 May 2021 06:45:15 -0700
+Guenter Roeck <linux@roeck-us.net> wrote:
 
-diff --git a/drivers/mtd/spi-nor/controllers/nxp-spifi.c b/drivers/mtd/spi-nor/controllers/nxp-spifi.c
-index 5703e8313980..2635c80231bb 100644
---- a/drivers/mtd/spi-nor/controllers/nxp-spifi.c
-+++ b/drivers/mtd/spi-nor/controllers/nxp-spifi.c
-@@ -326,7 +326,7 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
- 		ctrl |= SPIFI_CTRL_DUAL;
- 	}
- 
--	switch (mode & (SPI_CPHA | SPI_CPOL)) {
-+	switch (mode & SPI_MODE_X_MASK) {
- 	case SPI_MODE_0:
- 		ctrl &= ~SPIFI_CTRL_MODE3;
- 		break;
--- 
-2.30.2
+> On 5/10/21 6:16 AM, Juerg Haefliger wrote:
+> > The valid range for the 'timeout' value is useful information so expose
+> > the min and max timeout values via sysfs.
+> >=20
+> > Signed-off-by: Juerg Haefliger <juergh@canonical.com>
+> > ---
+> >   drivers/watchdog/watchdog_dev.c | 20 ++++++++++++++++++++
+> >   1 file changed, 20 insertions(+)
+> >=20
+> > diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdo=
+g_dev.c
+> > index 2946f3a63110..b84d53a79618 100644
+> > --- a/drivers/watchdog/watchdog_dev.c
+> > +++ b/drivers/watchdog/watchdog_dev.c
+> > @@ -525,6 +525,24 @@ static ssize_t timeout_show(struct device *dev, st=
+ruct device_attribute *attr,
+> >   }
+> >   static DEVICE_ATTR_RO(timeout);
+> >  =20
+> > +static ssize_t min_timeout_show(struct device *dev,
+> > +				struct device_attribute *attr, char *buf)
+> > +{
+> > +	struct watchdog_device *wdd =3D dev_get_drvdata(dev);
+> > +
+> > +	return sprintf(buf, "%u\n", wdd->min_timeout);
+> > +}
+> > +static DEVICE_ATTR_RO(min_timeout);
+> > +
+> > +static ssize_t max_timeout_show(struct device *dev,
+> > +				struct device_attribute *attr, char *buf)
+> > +{
+> > +	struct watchdog_device *wdd =3D dev_get_drvdata(dev);
+> > +
+> > +	return sprintf(buf, "%u\n", wdd->max_timeout); =20
+>=20
+> Makes sense, but please use sysfs_emit().
 
+OK. And maybe I should send a patch to convert the other occurrences of
+sprintf as well?
+
+...Juerg
+
+
+> Guenter
+>=20
+> > +}
+> > +static DEVICE_ATTR_RO(max_timeout);
+> > +
+> >   static ssize_t pretimeout_show(struct device *dev,
+> >   			       struct device_attribute *attr, char *buf)
+> >   {
+> > @@ -609,6 +627,8 @@ static struct attribute *wdt_attrs[] =3D {
+> >   	&dev_attr_state.attr,
+> >   	&dev_attr_identity.attr,
+> >   	&dev_attr_timeout.attr,
+> > +	&dev_attr_min_timeout.attr,
+> > +	&dev_attr_max_timeout.attr,
+> >   	&dev_attr_pretimeout.attr,
+> >   	&dev_attr_timeleft.attr,
+> >   	&dev_attr_bootstatus.attr,
+> >  =20
+>=20
+
+
+--Sig_/ryNewuZSjVJeL.p+oeOWUl2
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEhZfU96IuprviLdeLD9OLCQumQrcFAmCZP64ACgkQD9OLCQum
+QreCZA//WV4QDVPBwEjUkBJk1mhwNSpVnnXN+KP9wLFeHqf6zIBu+LFdULXUNvc5
+lJKoGEXdouTk7Zp7Tfa4GMNJ+sL3AfCuToUpQmKDJaR9Hq27HF1BptBtRAPhP5rQ
+hkQFc00bRyD7aG/MC1xh53R4AGIu97Wn40ZocCZh3EZk0jJnInlhR/gGqUmvqxyX
+ZimWBAFP6gQt9P2HXanB5488tenH9FbbTXjPUzOJY3QcKLTh5rXmF8l2HMqE+B8K
+meM43PFGuDyWK4+2O4VRkY725wrWxqpbNa9VhxYK1gjutteAaCI829ePAOt/fMG3
+Wir2uH8QP7eN4Hc1AaAaPq2QEXIjW9PlMWDTfsCN9FtXMWA1nVr5hx345M0TCaN5
+FQe+w2gD4yvi2aBo29xg93yHO2HXwDhHxDAq+KvHm2raf4OO/17R5KSFDy9ZTdq6
+e63SSs0o1fId9TA0GE5+7x12Wlr6sQyt4HtejGqoC/NQW7u13dakwjdt23Wb2g97
+S89wl5guRHVcheTtDTrmFWoVx4qOKMZfxCI8Ybp4EDPS/L9pqqQupl2P69Flpevn
+p57VQG1dMLIfO8g2P2+vokrqOy3+wRVkml9W9ol6HGkQgghXGDDnRSr0T2ebEZBW
+I/RfTeV9XyQ8xB2LWwpoNmNgVldjfzFJgf6lDImZSnaxXmn37Tc=
+=0plC
+-----END PGP SIGNATURE-----
+
+--Sig_/ryNewuZSjVJeL.p+oeOWUl2--
