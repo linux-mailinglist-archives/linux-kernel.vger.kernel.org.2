@@ -2,183 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 479CE377F43
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09DCC377F70
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhEJJW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:22:56 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2608 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhEJJWx (ORCPT
+        id S230213AbhEJJeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:34:50 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50930 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229566AbhEJJet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:22:53 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FdwTG3XDJzQlgc;
-        Mon, 10 May 2021 17:18:26 +0800 (CST)
-Received: from localhost.localdomain (10.175.101.6) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Mon, 10 May 2021 17:21:39 +0800
-Date:   Tue, 11 May 2021 09:33:10 +0800
-From:   Lv Ying <lvying6@huawei.com>
-To:     Borislav Petkov <bp@alien8.de>
-CC:     <linux-kernel@vger.kernel.org>, <linux-edac@vger.kernel.org>,
-        <tony.luck@intel.com>, <fanwentao@huawei.com>,
-        <xujing99@huawei.com>
-Subject: Re: [RFC PATCH] x86/mce/inject: Fix printk deadlock causing
- mce_timed_out panic
-Message-ID: <20210510200424.GA4056660@localhost.localdomain>
-References: <20210509053229.GA2477949@localhost.localdomain>
- <YJahM9PaZ7Jefkbi@zn.tnic>
+        Mon, 10 May 2021 05:34:49 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14A9Whp0058055
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:33:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
+ from : to : cc : date : mime-version : references :
+ content-transfer-encoding : content-type : message-id; s=pp1;
+ bh=JcpoMnIRkTOkvZvjAuMBKUtTrT4EQeLnaMMW2qU1SYU=;
+ b=AHQ0Y5BY7GyJJEXf+71kXcG1IM10zatNvaSnlNnwyU4S93tARkoTJQgReGptbANdz4Yw
+ TlQ0DmAH/SQswgfbbsmc5L26WGeFFEg6TjJ599nYCz5EyuBoUxfOnVG/SRMtvh6rL5qp
+ 4yYvFf/U8IpDOZ2xKbMySEFNJWLvvm6n5z9XM8MvO/XRhGVoCRQke9U6pFPgSRtRmoeP
+ g85587LZYZxtP2vawcX616DDsI2qdt1662pCNmUElGIK07DNK1vXgQEt+E3lON0edkof
+ qhsQOVdJcXQ+q6EsbPgVvQEnv0GvyHPsnRtwWQvZXGH1vh6/L1TBSdFemP9gBeSki7ko Fg== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38f0qhav9h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:33:44 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-kernel@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Mon, 10 May 2021 09:33:44 -0000
+Received: from us1a3-smtp01.a3.dal06.isc4sb.com (10.106.154.95)
+        by smtp.notes.na.collabserv.com (10.106.227.158) with smtp.notes.na.collabserv.com ESMTP;
+        Mon, 10 May 2021 09:33:42 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp01.a3.dal06.isc4sb.com
+          with ESMTP id 2021051009334187-213731 ;
+          Mon, 10 May 2021 09:33:41 +0000 
+In-Reply-To: <a7535a82925f6f4c1f062abaa294f3ae6e54bdd2.1620560310.git.leonro@nvidia.com>
+Subject: Re: [PATCH rdma-rc] RDMA/siw: Properly check send and receive CQ pointers
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Leon Romanovsky" <leon@kernel.org>
+Cc:     "Doug Ledford" <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@nvidia.com>,
+        "Leon Romanovsky" <leonro@nvidia.com>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "linux-rdma" <linux-rdma@vger.kernel.org>
+Date:   Mon, 10 May 2021 09:33:42 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YJahM9PaZ7Jefkbi@zn.tnic>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <a7535a82925f6f4c1f062abaa294f3ae6e54bdd2.1620560310.git.leonro@nvidia.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
+X-LLNOutbound: False
+X-Disclaimed: 36103
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 21051009-1335-0000-0000-0000066E777D
+X-IBM-SpamModules-Scores: BY=0.057812; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0; ST=0; TS=0; UL=0; ISC=; MB=0.001860
+X-IBM-SpamModules-Versions: BY=3.00015164; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000296; SDB=6.01526391; UDB=6.00825163; IPR=6.01326296;
+ MB=3.00036913; MTD=3.00000008; XFM=3.00000015; UTC=2021-05-10 09:33:43
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2021-03-25 10:37:47 - 6.00012377
+x-cbparentid: 21051009-1336-0000-0000-00004291841A
+Message-Id: <OF3A0AA228.38D2DA2D-ON002586D1.0034863E-002586D1.00348647@notes.na.collabserv.com>
+X-Proofpoint-GUID: sgBIpe71Z_UuvY80lgSPba3LpNelNgZk
+X-Proofpoint-ORIG-GUID: sgBIpe71Z_UuvY80lgSPba3LpNelNgZk
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-10_04:2021-05-10,2021-05-10 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 04:33:23PM +0200, Borislav Petkov wrote:
-> On Sun, May 09, 2021 at 01:32:29PM +0800, Lv Ying wrote:
-> > The mce-inject SRAO broadcast error injection on 4-core CPU caused mce_timed_out
-> > panic as following:
-> > Kernel panic - not syncing: Timeout: Not all CPUs entered broadcast exception handler
-> 
-> A couple of things:
-> 
-> - how exactly do you do that injection, please give exact steps
+-----"Leon Romanovsky" <leon@kernel.org> wrote: -----
+
+>To: "Doug Ledford" <dledford@redhat.com>, "Jason Gunthorpe"
+><jgg@nvidia.com>
+>From: "Leon Romanovsky" <leon@kernel.org>
+>Date: 05/09/2021 01:39PM
+>Cc: "Leon Romanovsky" <leonro@nvidia.com>, "Bernard Metzler"
+><bmt@zurich.ibm.com>, linux-kernel@vger.kernel.org,
+>linux-rdma@vger.kernel.org
+>Subject: [EXTERNAL] [PATCH rdma-rc] RDMA/siw: Properly check send and
+>receive CQ pointers
 >
-1. use mca-recover to get error injection physical address
-
-2. use mce-inject inject SRAO error in a for-loop, SRAO error injection file:
-CPU 3 BANK 9
-STATUS 0xbd000000000000c0
-MISC 0x8c
-ADDR 0x${test_address}
-MCGSTATUS 0x5
-MCGCAP 0x000000000F000C14
-EXCP
-
-3. after each time SRAO error injection, echo $test_pfn > /sys/kernel/debug/hwpoison/unpoison-pfn
-to unpoison the software-unpoisoned page
-
-> - on which kernel, dmesg, .config etc
+>From: Leon Romanovsky <leonro@nvidia.com>
 >
-The complete .config file may contain a lot of irrelevant information.
-What config items need to be paid attention to?
-
-This panic happend on 4.18 kernel
-
-dmesg before panic:
-[ 1349.358753] Memory failure: 0x121f08: already hardware poisoned              
-[ 1352.416984] Begin to unregister                                              
-[ 1352.416985] Unregister finished                                              
-[ 1352.436498] Unpoison: Software-unpoisoned page 0x121f08                      
-[ 1353.830712] Begin to register:                                               
-[ 1353.830713] ==============================                                   
-[ 1354.101088] Triggering MCE exception on CPU 3                                
-[ 1354.101112] MCE exception done on CPU 3                                      
-[ 1354.101154] mce_notify_irq: 22 callbacks suppressed                          
-[ 1354.101154] core: [Hardware Error]: Machine check events logged              
-[ 1354.101157] RAS: In fma_memory_offline_notify, ready to call notify chain to isolate page: 0x1252a7, notify type: FMA_MEM_OFFLINE_NOTIFY_SRAO
-[ 1354.101159] notify completed true! In Event: Event Number is 2 page is  0x1252a7
-..                                                                              
-[ 1354.115126] MCE: Killing mca-recover:84546 due to hardware memory corruption fault at 7fb8f7e410dc
-[ 1354.115127] Memory failure: 0x1252a7: recovery action for dirty LRU page: Recovered
-[ 1354.117751] Triggering MCE exception on CPU 3                                
-[ 1354.117771] MCE exception done on CPU 3                                      
-[ 1354.117797] core: [Hardware Error]: Machine check events logged              
-[ 1354.117799] RAS: In fma_memory_offline_notify, ready to call notify chain to isolate page: 0x1252a7, notify type: FMA_MEM_OFFLINE_NOTIFY_SRAO
-[ 1354.117800] notify completed true! In Event: Event Number is 2 page is  0x1252a7
-..                                                                              
-[ 1354.117801] Memory failure: 0x1252a7: already hardware poisoned              
-[ 1357.178800] Begin to unregister                                              
-[ 1357.178802] Unregister finished                                              
-[ 1357.202572] Unpoison: Software-unpoisoned page 0x1252a7                      
-[ 1358.578175] Begin to register:                                               
-[ 1358.578176] ==============================                                   
-[ 1358.844078] Triggering MCE exception on CPU 3                                
-[ 1358.844104] MCE exception done on CPU 3                                      
-[ 1358.844141] RAS: In fma_memory_offline_notify, ready to call notify chain to isolate page: 0x12573d, notify type: FMA_MEM_OFFLINE_NOTIFY_SRAO
-[ 1358.844143] notify completed true! In Event: Event Number is 2 page is  0x12573d
-..                                                                              
-[ 1358.856124] MCE: Killing mca-recover:84946 due to hardware memory corruption fault at 7fe11a1102ac
-[ 1358.856125] Memory failure: 0x12573d: recovery action for dirty LRU page: Recovered
-[ 1358.857741] Triggering MCE exception on CPU 3                                
-[ 1360.755011] WARNING: stack recursion on stack type 6                         
-[ 1360.755027] ------------[ cut here ]------------  
-[ 1360.755028] do_IRQ(): mca-recover has overflown the kernel stack (cur:ffffbc2940a98000,sp:fffffe0000007c50,irq stk top-bottom:ffff9efafac00080-ffff9efafac04000,exception stk top-bottom:fffffe0000009080-fffffe000000b000,ip:wait_for_panic+0xd/0x60)
-[ 1360.755028] WARNING: CPU: 0 PID: 84946 at arch/x86/kernel/irq_64.c:73 handle_irq+0x102/0x110[ 1360.755029] Modules linked in: notify_chain_mem(OE) mce_inject ip6t_rpfilter ip6t_REJECT nf_reject_ipv6 ipt_REJECT nf_reject_ipv4 xt_conntrack ebtable_filter ebtable_nat ebtable_broute bridge stp llc ebtables ip6table_nat nf_conntrack_ipv6 nf_defrag_ipv6 nf_nat_ipv6 ip6table_mangle ip6table_raw ip6table_security iptable_nat nf_conntrack_ipv4 nf_defrag_ipv4 nf_nat_ipv4 nf_nat iptable_mangle iptable_raw iptable_security nf_conntrack libcrc32c ip_set nfnetlink ip6table_filter ip6_tables iptable_filter ip_tables kbox(O) sysmonitor(O) kboxdriver(O) sunrpc cirrus drm_kms_helper sb_edac syscopyarea crct10dif_pclmul crc32_pclmul sysfillrect ipmi_ssif sysimgblt ghash_clmulni_intel fb_sys_fops sg virtio_balloon ttm joydev ipmi_si i2c_piix4 ipmi_devintf pcspkr ipmi_msghandler intel_rapl_perf drm ksecurec(O)
-[ 1360.755049]  ext4 mbcache jbd2 sd_mod ata_generic crc32c_intel virtio_console virtio_net net_failover failover virtio_scsi ata_piix libata dm_mirror dm_region_hash dm_log dm_mod [last unloaded: hwpoison_inject]
-[ 1360.755054] CPU: 0 PID: 84946 Comm: mca-recover Kdump: loaded Tainted: G   M       OE    --------- -  - 4.18.0-147.5.1.6.h429.eulerosv2r10.x86_64 #1
-[ 1360.755055] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.10.2-0-g5f4c7b1-20181023_181404-build10b184b172b128 04/01/2014
-[ 1360.755055] RIP: 0010:handle_irq+0x102/0x110                                 [ 1360.755056] Code: 00 00 50 65 4c 8b 14 25 80 5c 01 00 57 49 81 c2 e0 0a 00 00 48 c7 c7 f0 b4 a6 a3 4c 89 d6 c6 05 7f 30 3a 01 01 e8 2e 6c 09 00 <0f> 0b 48 83 c4 18 e9 77 ff ff ff 90 90 90 0f 1f 44 00 00 83 ff 02
-[ 1360.755056] RSP: 0000:ffff9efafac03fa0 EFLAGS: 00010086                      
-[ 1360.755057] RAX: 0000000000000000 RBX: ffff9efaf40a2400 RCX: 0000000000000000
-[ 1360.755057] RDX: 0000000000000003 RSI: 0000000000000000 RDI: ffff9efafac16a28
-[ 1360.755058] RBP: 0000000000000027 R08: ffff9efafac03d10 R09: ffff9efafac16b39
-[ 1360.755058] R10: ffff9ef9f6785220 R11: ffff9efafac03d28 R12: fffffe0000007ba8
-[ 1360.755058] R13: 0000000000000027 R14: 0000000000000000 R15: 0000000000000000
-[ 1360.755059] FS:  00007fe11a103500(0000) GS:ffff9efafac00000(0000) knlGS:0000000000000000
-[ 1360.755059] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033                
-[ 1360.755059] CR2: 00007fe11a1102ac CR3: 00000000643f8006 CR4: 00000000003606f0
-[ 1360.755060] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 1360.755060] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 1360.755060] Call Trace:                                                      
-[ 1360.755061]  <IRQ>                                                           
-[ 1360.755061]  ? wait_for_panic+0xd/0x60                                       
-[ 1360.755061]  do_IRQ+0x49/0xe0                                                
-[ 1360.755061]  common_interrupt+0xf/0xf                                        
-[ 1360.755062]  </IRQ>                                                          
-[ 1360.755062]  <NMI>                                                           
-[ 1360.755062] RIP: 0010:wait_for_panic+0xd/0x60                                
-[ 1360.755063] Code: c7 c6 e0 a5 a3 a2 e8 92 53 10 00 48 89 df 5b eb 9c 66 66 2e 0f 1f 84 00 00 00 00 00 90 0f 1f 44 00 00 53 fb 66 0f 1f 44 00 00 <bb> 40 4b 4c 00 bf c7 10 00 00 e8 b4 2a 84 00 48 83 eb 01 75 f0 e8
-[ 1360.755063] RSP: 0000:fffffe0000007c50 EFLAGS: 00000202 ORIG_RAX: ffffffffffffffd8
-[ 1360.755064] RAX: 0000000000000001 RBX: ffffffffa3a70980 RCX: 0000000000000000
-[ 1360.755065] RDX: 0000000000000174 RSI: ffffffffa3a70980 RDI: fffffe0000007cb8
-[ 1360.755065] RBP: fffffe0000007cc0 R08: 0000033bd25f6f78 R09: 0000000000000000
-[ 1360.755066] R10: ffffffffa3e099e0 R11: 0000000000000000 R12: fffffe0000007cb8
-[ 1360.755066] R13: 0000000000000000 R14: fffffe0000007ef8 R15: 0000000000000004
-[ 1360.755066]  mce_timed_out+0x6d/0x90                                         
-[ 1360.755067]  do_machine_check+0x734/0xdb0                                    
-[ 1360.755067]  ? io_serial_out+0x16/0x20                                       
-[ 1360.755067]  raise_exception+0x47/0xb0 [mce_inject]                          
-[ 1360.755067]  ? __intel_pmu_enable_all+0x47/0x80                              
-[ 1360.755068]  ? native_apic_msr_write+0x27/0x30                               
-[ 1360.755068]  ? intel_pmu_handle_irq+0x10d/0x160                              
-[ 1360.755068]  mce_raise_notify+0x62/0x70 [mce_inject]                         
-[ 1360.755069]  ? raise_local+0xc0/0xc0 [mce_inject]                            
-[ 1360.755069]  nmi_handle+0x63/0x110                                           
-[ 1360.755069]  default_do_nmi+0x4e/0x100                                       
-[ 1360.755069]  do_nmi+0x12c/0x190                                              
-[ 1360.755070]  end_repeat_nmi+0x16/0x6a                                        
-[ 1360.755070] RIP: 0010:io_serial_out+0x16/0x20                                
-[ 1360.755070] Code: 8b 57 08 d3 e6 01 f2 ec 0f b6 c0 c3 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 0f b6 8f a1 00 00 00 89 d0 8b 57 08 d3 e6 01 f2 ee <c3> 66 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 0f b6 87 a2 00 00 00
-[ 1360.755071] RSP: 0000:ffffbc2940a9bd50 EFLAGS: 00000002                      
-[ 1360.755071] RAX: 0000000000000020 RBX: ffffffffa446ffc2 RCX: 0000000000000000
-[ 1360.755072] RDX: 00000000000003f8 RSI: 0000000000000000 RDI: ffffffffa46e8600
-[ 1360.755072] RBP: ffffffffa46e8600 R08: 0000000000000000 R09: ffffffffa3c5b6a0
-[ 1360.755072] R10: 0000000000000000 R11: ffffffffa446ffcd R12: ffffffffa2f4d280
-[ 1360.755073] R13: ffffffffa4470017 R14: 0000000000000057 R15: 0000000000000000
-[ 1360.755073]  ? wait_for_xmitr+0xa0/0xa0                                      
-[ 1360.755073]  ? first_nmi+0x1e/0x1e                                           
-[ 1360.755073]  ? wait_for_panic+0xd/0x60                                       
-[ 1360.755074]  </NMI>                                                          
-[ 1360.755074] ---[ end trace 70cfa9c1a0551b65 ]---                             
-[ 1361.789936] Kernel panic - not syncing: Timeout: Not all CPUs entered broadcast exception handler
-[ 1361.789937] kernel fault(0x5) notification starting on CPU 1                 
-[ 1361.789937] kernel fault(0x5) notification finished on CPU 1  
- 
-> - anything specific about the hardware you're using
+>The check for the NULL of pointer received from container=5Fof is
+>incorrect by definition as it points to some random memory.
 >
-The test runs in the Qemu virtual machine.
- 
-> - always Cc lkml on patches.
-> 
-Thanks for your suggestion, I have read notes-about-netiquette, and I will add
-linux-kernel@vger.kernel.org into Cc list.
+>Change such check with proper NULL check of SIW QP attributes.
+>
+>Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
+>Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+>---
+> drivers/infiniband/sw/siw/siw=5Fverbs.c | 9 +++------
+> 1 file changed, 3 insertions(+), 6 deletions(-)
+>
+>diff --git a/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>b/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>index d2313efb26db..917c8a919f38 100644
+>--- a/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>+++ b/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>@@ -300,7 +300,6 @@ struct ib=5Fqp *siw=5Fcreate=5Fqp(struct ib=5Fpd *pd,
+> 	struct siw=5Fucontext *uctx =3D
+> 		rdma=5Fudata=5Fto=5Fdrv=5Fcontext(udata, struct siw=5Fucontext,
+> 					  base=5Fucontext);
+>-	struct siw=5Fcq *scq =3D NULL, *rcq =3D NULL;
+> 	unsigned long flags;
+> 	int num=5Fsqe, num=5Frqe, rv =3D 0;
+> 	size=5Ft length;
+>@@ -343,10 +342,8 @@ struct ib=5Fqp *siw=5Fcreate=5Fqp(struct ib=5Fpd *pd,
+> 		rv =3D -EINVAL;
+> 		goto err=5Fout;
+> 	}
+>-	scq =3D to=5Fsiw=5Fcq(attrs->send=5Fcq);
+>-	rcq =3D to=5Fsiw=5Fcq(attrs->recv=5Fcq);
+>=20
+>-	if (!scq || (!rcq && !attrs->srq)) {
+>+	if (!attrs->send=5Fcq || (!attrs->recv=5Fcq && !attrs->srq)) {
+> 		siw=5Fdbg(base=5Fdev, "send CQ or receive CQ invalid\n");
+> 		rv =3D -EINVAL;
+> 		goto err=5Fout;
+>@@ -401,8 +398,8 @@ struct ib=5Fqp *siw=5Fcreate=5Fqp(struct ib=5Fpd *pd,
+> 		}
+> 	}
+> 	qp->pd =3D pd;
+>-	qp->scq =3D scq;
+>-	qp->rcq =3D rcq;
+>+	qp->scq =3D to=5Fsiw=5Fcq(attrs->send=5Fcq);
+>+	qp->rcq =3D to=5Fsiw=5Fcq(attrs->recv=5Fcq);
+>=20
+> 	if (attrs->srq) {
+> 		/*
+>--=20
+>2.31.1
+>
+>
+Thanks Leon!
 
-Thanks
-Lv Ying
+Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
+
