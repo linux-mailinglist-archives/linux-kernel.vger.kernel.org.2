@@ -2,141 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A0A37935B
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A59D8379365
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhEJQIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 12:08:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbhEJQHy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 12:07:54 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B68C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 09:06:49 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e14so14492783ils.12
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 09:06:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PxqqCer+IeeRJCDgAJrrfihL9cwfN8A17gdEuU6rndo=;
-        b=NZB2HAyywpOw1hApX6D0uLR9obHIePdesjgP+pedZ3eDZ6ta14b4yy+yMCI+oYoCzE
-         GlkLDmhprJJGZ/qrd4LyKv74BYcG+RxMqdH1l4M/PBiAIrmbLDwwAgUUwrrYrHsM8OdX
-         JPCbgbJrAq2WCYECeLFipTZAsE6OmSAond9mI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PxqqCer+IeeRJCDgAJrrfihL9cwfN8A17gdEuU6rndo=;
-        b=G84tHl0uu/s/xR+mHYrvmmuajG/rvEa0sZI/ON/N0mSGo/dq/BJjpN5UsKxRaJZEAj
-         k263Y3qtQC/o0lEnqwaAx/Ya+cqO1E0Q/FJk1SfaWuZcYSLTTLzGkMxs0Fg5B6FMiH46
-         JW/TIONHzh6ZI9Arh3kkYxuG+2dhxrnQCl4SvapqvnCjuuez/Lo5LMLdW36i+f/dKy9H
-         PdkMA3Mk9eH6chF2qXU3jenhNTuC6MEFVCRs/d0tUxUs/VPv44ROcYDLNd5b4VW2XIsQ
-         jkvHRBHNMcq3kn+qup0WGqJxdOC6PxO0nmG7ovS7IDoEBc2Rm4t80Mm9+d+QeCzkV8II
-         +auw==
-X-Gm-Message-State: AOAM531HaCp+FFYFLZ/HXzn7QdHLhdhgK2aper7cB9WBJEPvsalo74to
-        Yzx3nmTnahR4Bo7E8lCRT4Hidb2h1VF3crY4SVkLhA==
-X-Google-Smtp-Source: ABdhPJwLMfeXcykAspytM/j8lddGRWSVMxS9Vyc2ympHv1gv3+Gku++l3buA/6fYe+uJtazAnb0JWY1X90K/OI133i0=
-X-Received: by 2002:a92:6406:: with SMTP id y6mr22339949ilb.262.1620662809161;
- Mon, 10 May 2021 09:06:49 -0700 (PDT)
+        id S230346AbhEJQLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 12:11:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230145AbhEJQK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 12:10:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78ED96108B;
+        Mon, 10 May 2021 16:09:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620662993;
+        bh=OeMcOYr8TZ/o6MhIlP2/j3/CcS6n961yxSdIDXmvodI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u+0D1TxUJGcewnlne7UdPyqxTkt+b4C6AX9EoG0X22OZvUHeaD3lh84zEHdt1dLkj
+         545rmDbAAeHQCSl8/J/HvuBD54SFgIw+3t5pW1CdbIW3PK0xC+b/peCgTgfCyyh+mo
+         N1bXUF1c2x3FEj76lGhK87BIFOWHbWn7a+diyBtz+4J3qzBsXew+OV7gmV2BpNeH/j
+         4oPAQXlWgMszQJ5N2mMSGKUXwk3YX8aSNfhQ3bkVgv/x6GJVGQ6KycfStolZ3isX6O
+         HppxZH5bznmqvzZNWhH+tmCZyPlAmV4kDxyqze2prsMT4qa90vViPYxp83dIC7lFlh
+         Sc1weUMravF6g==
+Date:   Mon, 10 May 2021 09:09:51 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org
+Subject: Re: [PATCH 3/3] f2fs: compress: fix to assign cc.cluster_idx
+ correctly
+Message-ID: <YJlaz20Atq+TUnHu@google.com>
+References: <20210510093032.35466-1-yuchao0@huawei.com>
+ <20210510093032.35466-3-yuchao0@huawei.com>
 MIME-Version: 1.0
-References: <20210422120459.447350175@infradead.org> <20210422123308.980003687@infradead.org>
-In-Reply-To: <20210422123308.980003687@infradead.org>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 10 May 2021 12:06:38 -0400
-Message-ID: <CAEXW_YTHZF69YHD-r=ST97sagjnxEDy6492nDKaaJtkKMoQN9Q@mail.gmail.com>
-Subject: Re: [PATCH 17/19] sched: Inherit task cookie on fork()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Hyser,Chris" <chris.hyser@oracle.com>,
-        Josh Don <joshdon@google.com>, Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Glexiner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510093032.35466-3-yuchao0@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
-
-On Thu, Apr 22, 2021 at 8:36 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> Note that sched_core_fork() is called from under tasklist_lock, and
-> not from sched_fork() earlier. This avoids a few races later.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+On 05/10, Chao Yu wrote:
+> In f2fs_destroy_compress_ctx(), after f2fs_destroy_compress_ctx(),
+> cc.cluster_idx will be cleared w/ NULL_CLUSTER, f2fs_cluster_blocks()
+> may check wrong cluster metadata, fix it.
+> 
+> Fixes: 4c8ff7095bef ("f2fs: support data compression")
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
 > ---
->  include/linux/sched.h     |    2 ++
->  kernel/fork.c             |    3 +++
->  kernel/sched/core_sched.c |    6 ++++++
->  3 files changed, 11 insertions(+)
->
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -2172,8 +2172,10 @@ const struct cpumask *sched_trace_rd_spa
->
->  #ifdef CONFIG_SCHED_CORE
->  extern void sched_core_free(struct task_struct *tsk);
-> +extern void sched_core_fork(struct task_struct *p);
->  #else
->  static inline void sched_core_free(struct task_struct *tsk) { }
-> +static inline void sched_core_fork(struct task_struct *p) { }
->  #endif
->
->  #endif
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -2249,6 +2249,8 @@ static __latent_entropy struct task_stru
->
->         klp_copy_process(p);
->
-> +       sched_core_fork(p);
-> +
->         spin_lock(&current->sighand->siglock);
->
->         /*
-> @@ -2336,6 +2338,7 @@ static __latent_entropy struct task_stru
->         return p;
->
->  bad_fork_cancel_cgroup:
-> +       sched_core_free(p);
->         spin_unlock(&current->sighand->siglock);
->         write_unlock_irq(&tasklist_lock);
->         cgroup_cancel_fork(p, args);
-> --- a/kernel/sched/core_sched.c
-> +++ b/kernel/sched/core_sched.c
-> @@ -100,6 +100,12 @@ static unsigned long sched_core_clone_co
->         return cookie;
->  }
->
-> +void sched_core_fork(struct task_struct *p)
-> +{
-> +       RB_CLEAR_NODE(&p->core_node);
-> +       p->core_cookie = sched_core_clone_cookie(current);
+>  fs/f2fs/compress.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> index 340815cd0887..30b003447510 100644
+> --- a/fs/f2fs/compress.c
+> +++ b/fs/f2fs/compress.c
+> @@ -1066,6 +1066,8 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
+>  			f2fs_put_rpages(cc);
+>  			f2fs_unlock_rpages(cc, i + 1);
+>  			f2fs_destroy_compress_ctx(cc);
+> +			cc->cluster_idx = index >>
+> +					F2FS_I(cc->inode)->i_log_cluster_size;
 
-Does this make sense also for !CLONE_THREAD forks?
+I didn't test tho, how about this?
 
-With earlier versions of core scheduling, we have done the following
-on ChromeOS. Basically, if it is a "thread clone", share the cookie
-since memory is shared within a process (same address space within a
-process). Otherwise, set the cookie to a new unique cookie so that the
-new process does not share core with parent initially (since their
-address space will be different).
+From 904abb77e82ea982f68960148b75d0a12f771c2e Mon Sep 17 00:00:00 2001
+From: Chao Yu <yuchao0@huawei.com>
+Date: Mon, 10 May 2021 17:30:32 +0800
+Subject: [PATCH] f2fs: compress: fix to assign cc.cluster_idx correctly
 
-Example Psedu-ocode in sched_fork():
+In f2fs_destroy_compress_ctx(), after f2fs_destroy_compress_ctx(),
+cc.cluster_idx will be cleared w/ NULL_CLUSTER, f2fs_cluster_blocks()
+may check wrong cluster metadata, fix it.
 
-        if (current->core_cookie && (clone_flags & CLONE_THREAD)) {
-                    p->core_cookie = clone_cookie(current);
-        } else {
-                     p->core_cookie = create_new_cookie();
-       }
+Fixes: 4c8ff7095bef ("f2fs: support data compression")
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ fs/f2fs/compress.c | 17 +++++++++--------
+ fs/f2fs/data.c     |  6 +++---
+ 2 files changed, 12 insertions(+), 11 deletions(-)
 
-In your version though, I don't see that it always clones the cookie
-whether it is a CLONE_THREAD clone or not. Is that correct? I feel
-that's a security issue.
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 79348bc56e35..925a5ca3744a 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -145,13 +145,14 @@ int f2fs_init_compress_ctx(struct compress_ctx *cc)
+ 	return cc->rpages ? 0 : -ENOMEM;
+ }
+ 
+-void f2fs_destroy_compress_ctx(struct compress_ctx *cc)
++void f2fs_destroy_compress_ctx(struct compress_ctx *cc, bool reuse)
+ {
+ 	page_array_free(cc->inode, cc->rpages, cc->cluster_size);
+ 	cc->rpages = NULL;
+ 	cc->nr_rpages = 0;
+ 	cc->nr_cpages = 0;
+-	cc->cluster_idx = NULL_CLUSTER;
++	if (!reuse)
++		cc->cluster_idx = NULL_CLUSTER;
+ }
+ 
+ void f2fs_compress_ctx_add_page(struct compress_ctx *cc, struct page *page)
+@@ -1034,7 +1035,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
+ 		ret = f2fs_read_multi_pages(cc, &bio, cc->cluster_size,
+ 					&last_block_in_bio, false, true);
+ 		f2fs_put_rpages(cc);
+-		f2fs_destroy_compress_ctx(cc);
++		f2fs_destroy_compress_ctx(cc, true);
+ 		if (ret)
+ 			goto out;
+ 		if (bio)
+@@ -1061,7 +1062,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
+ release_and_retry:
+ 			f2fs_put_rpages(cc);
+ 			f2fs_unlock_rpages(cc, i + 1);
+-			f2fs_destroy_compress_ctx(cc);
++			f2fs_destroy_compress_ctx(cc, true);
+ 			goto retry;
+ 		}
+ 	}
+@@ -1094,7 +1095,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
+ unlock_pages:
+ 	f2fs_put_rpages(cc);
+ 	f2fs_unlock_rpages(cc, i);
+-	f2fs_destroy_compress_ctx(cc);
++	f2fs_destroy_compress_ctx(cc, true);
+ out:
+ 	return ret;
+ }
+@@ -1130,7 +1131,7 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
+ 		set_cluster_dirty(&cc);
+ 
+ 	f2fs_put_rpages_wbc(&cc, NULL, false, 1);
+-	f2fs_destroy_compress_ctx(&cc);
++	f2fs_destroy_compress_ctx(&cc, false);
+ 
+ 	return first_index;
+ }
+@@ -1350,7 +1351,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+ 	f2fs_put_rpages(cc);
+ 	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
+ 	cc->cpages = NULL;
+-	f2fs_destroy_compress_ctx(cc);
++	f2fs_destroy_compress_ctx(cc, false);
+ 	return 0;
+ 
+ out_destroy_crypt:
+@@ -1512,7 +1513,7 @@ int f2fs_write_multi_pages(struct compress_ctx *cc,
+ 	err = f2fs_write_raw_pages(cc, submitted, wbc, io_type);
+ 	f2fs_put_rpages_wbc(cc, wbc, false, 0);
+ destroy_out:
+-	f2fs_destroy_compress_ctx(cc);
++	f2fs_destroy_compress_ctx(cc, false);
+ 	return err;
+ }
+ 
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 96f1a354f89f..33e56ae84e35 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -2287,7 +2287,7 @@ static int f2fs_mpage_readpages(struct inode *inode,
+ 							max_nr_pages,
+ 							&last_block_in_bio,
+ 							rac != NULL, false);
+-				f2fs_destroy_compress_ctx(&cc);
++				f2fs_destroy_compress_ctx(&cc, false);
+ 				if (ret)
+ 					goto set_error_page;
+ 			}
+@@ -2332,7 +2332,7 @@ static int f2fs_mpage_readpages(struct inode *inode,
+ 							max_nr_pages,
+ 							&last_block_in_bio,
+ 							rac != NULL, false);
+-				f2fs_destroy_compress_ctx(&cc);
++				f2fs_destroy_compress_ctx(&cc, false);
+ 			}
+ 		}
+ #endif
+@@ -3033,7 +3033,7 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
+ 		}
+ 	}
+ 	if (f2fs_compressed_file(inode))
+-		f2fs_destroy_compress_ctx(&cc);
++		f2fs_destroy_compress_ctx(&cc, false);
+ #endif
+ 	if (retry) {
+ 		index = 0;
+-- 
+2.31.1.607.g51e8a6a459-goog
 
--Joel
+
+>  			goto retry;
+>  		}
+>  	}
+> -- 
+> 2.29.2
