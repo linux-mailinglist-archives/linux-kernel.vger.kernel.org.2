@@ -2,132 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C033798B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F9E3798BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbhEJVDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 17:03:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbhEJVDu (ORCPT
+        id S231230AbhEJVFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 17:05:47 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:44985 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230165AbhEJVFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 17:03:50 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE96C061574;
-        Mon, 10 May 2021 14:02:44 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so2262801otc.6;
-        Mon, 10 May 2021 14:02:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3cBBZkePd5gfKATN60V4QwGBhUGNtLUNcw+1xoOiiZs=;
-        b=S2lsNjatPX3UKOV5pkxnIgd2tRdEDE1F/mJYBW1mBH0XTLW23kTgYMfvEuqFgWgCcG
-         GpeN7skQ8HRDLyzonMznUF4k4KFu9cRWv9zQBbCtBdxybb7lS7+cyIM8ceLQvVpqebto
-         Ta+XIA3rtvSzNn4QMP/U5sGbl11s41Entls7NMUUyS7wgK8ENv7EKgBBvrS2SLGEeu/q
-         d1IQpmZRoZCDXEKRI0odbDo0kwhcdmT8MQOmT+KdCYBwpXFOZgoUV4JgLhmcnri/7V1S
-         Spb/pP0HPKxZnPu9b/Ufuha9NG2NpU2UJiquIBsEYYnlWwNWoBWkSs0Wbz2Mx2SUicRq
-         3rdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3cBBZkePd5gfKATN60V4QwGBhUGNtLUNcw+1xoOiiZs=;
-        b=fi9BjZjl/jtrlaMzz5n9jkJsTfAUfLmbn0nEQ05awh0fwXS/qxudJo8z2jYqs9XZAH
-         Jg9aUM+Q/szIJkPAy7Q3rwp8nYBDvXq0PI7EnX8o/iObDZCnJHVnuGVUN28behUE3au8
-         a5SBIv2orWxXPokt50Yg/SsLC9LKjubnRZ9QjaYqv3OQL+Cyg/5aR1XG8PGfhUsvGGLD
-         f10ggyC99JdcC9KtGX5IcgLqKnyMe6o465GT4rc+rYXWvOGdx5pPT/lSDaJNWRM55k3H
-         9BTr0fvHsVnBiS6s7DrwUjLbLbB0MD07UZTqzio3GMu1zCJnBUZmebOZcP+Lq02euB1+
-         Yuhg==
-X-Gm-Message-State: AOAM531RN8pgElKcC4s7QuTf1TtNZLeAtyt18K0w4oZ/BdUt0zVCI5IY
-        8OL+Mszo3Oo+obpqy+2REcw4G9pFnbkLuwCuz2g=
-X-Google-Smtp-Source: ABdhPJw7DyKD1Lyyq9S41EMv+Yyu/ErA9AViQoXtkzjglGNF7HKdlfnp86mEla//UDe5eTZlAP0X/kMW5Kco3byONpk=
-X-Received: by 2002:a9d:51c6:: with SMTP id d6mr16637610oth.311.1620680564170;
- Mon, 10 May 2021 14:02:44 -0700 (PDT)
+        Mon, 10 May 2021 17:05:46 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 463445C004F;
+        Mon, 10 May 2021 17:04:36 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 10 May 2021 17:04:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
+         h=date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=b+B/Ao5TBLbn8YtT21sbRFDG8ts
+        Ssyhgsy6rowzSCO8=; b=iFZ2Hrvxjx+zZkLTKCjSMtsUAvMgvSOiqGpIyAMCdCn
+        7//m6GaTjkoIdvzqZDdIpAVkcQMlvCIAzK3yu/Dk2FMasgkr8BCV+edU6hkjXtsY
+        aTf7Dw7PV3epQNz9PES8WumbNqFIVxtmvc9Q02ZbiNPTPZd19BtAKK7kGRP2PPsU
+        F4r2svNX59SQu2Iz/pMrbYfjMK9yZPNcPq274JbGkjxI3bHqjigbDvO6/yIIf52v
+        /HhCIMuJVBPhI3i9lgHIsLvjEeQq/GmY/MwWuRgR5PGgBt0mQ4Kt1b5ogsdPVZQZ
+        s549O5y35DEHrPbz7PF92M5kxBrJMmVdkwAr9TqmiSg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=b+B/Ao
+        5TBLbn8YtT21sbRFDG8tsSsyhgsy6rowzSCO8=; b=Uci6YFmok17WNk7jqxrnKX
+        KXS9dQeGedD0sYZJazlhh3LbN3dvi/j5QecsUh7Y+OBjHI9WmK4tjgN52D+0hWY+
+        AgYvISA7Rhpq4evPc831YZz9xEUGnDt+jBPmullaHqgSZCTMA/VG9TkCgTsCKZvI
+        VqvG9L4fJB2yT9+WxNib7wM2VUZ/asDy20PU5h+q60oInIk3A0CMU+U29mtEgr5O
+        yWmjjPDu3i3BXHMY34lM2HPB5PS8JsCP540SnGD8RCUwZ6bKNZ0wkuQ1WOVHLQjF
+        e09AH4UJW7ypLFz06pyyxl8IDj/7s10Ln7bFw/0mz3BsPHCru0caaOGiDmQJm93g
+        ==
+X-ME-Sender: <xms:45-ZYE1KqrRSWHuBSacsn2R2KmU8jnwNQWXkldS22XwxqRl0OKY68A>
+    <xme:45-ZYPHsNHh7J5waVoc9wpH9Twbv3BYPHQsEQsnPwmUJG3Id-j_XJz9XU8VIHA9oh
+    AgSOXwl2o5yPQL8oOk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdegkedgudehkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujggfsehttdertddtreejnecuhfhrohhmpeeuvghn
+    uceuohgvtghkvghluceomhgvsegsvghnsghovggtkhgvlhdrnhgvtheqnecuggftrfgrth
+    htvghrnhepvefftdettefgtddtkeeufeegtddttdeuueegkeegteffueetffejudeihefh
+    kedtnecukfhppedvgedrudeiledrvddtrddvheehnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepmhgvsegsvghnsghovggtkhgvlhdrnhgvth
+X-ME-Proxy: <xmx:45-ZYM7A9R5Jt2884Wp-wnpKOdJ7Twu5t9g8IG7DuYKUg3n8lu3uHA>
+    <xmx:45-ZYN2Xp6CeEy5PSwod02rub18zFMmwz7RbKIuvGS54fey7QdUvGA>
+    <xmx:45-ZYHH7y9uu0mR82EeCRA906xVt8_91KEgHNO1kcJaBJmKodtrzgw>
+    <xmx:5J-ZYLi2w64bLuN-O1vT7gak7sK-d9Kfpx36F0KpvufnaZo_O4-JmA>
+Received: from localhost (unknown [24.169.20.255])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Mon, 10 May 2021 17:04:35 -0400 (EDT)
+Date:   Mon, 10 May 2021 17:04:33 -0400
+From:   Ben Boeckel <me@benboeckel.net>
+To:     keyrings@vger.kernel.org
+Cc:     Ben Boeckel <mathstuf@gmail.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v2 1/1] trusted-keys: match tpm_get_ops on all return
+ paths
+Message-ID: <YJmf4Q0l+MTFEaEo@erythro.dev.benboeckel.internal>
+References: <20210429192156.770145-1-list.lkml.keyrings@me.benboeckel.net>
+ <20210429192156.770145-2-list.lkml.keyrings@me.benboeckel.net>
 MIME-Version: 1.0
-References: <20210509144923.6316-1-dwaipayanray1@gmail.com> <2c5387b7-2fa1-9b5a-c671-806429b463aa@amd.com>
-In-Reply-To: <2c5387b7-2fa1-9b5a-c671-806429b463aa@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 10 May 2021 17:02:32 -0400
-Message-ID: <CADnq5_NXXD1K6kb0Jr8P5DPGcHRMo0jQTC+y2n4-4sfZY12pyA@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/amdgpu: Fix errors in function documentation
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210429192156.770145-2-list.lkml.keyrings@me.benboeckel.net>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Thu, Apr 29, 2021 at 15:21:56 -0400, Ben Boeckel wrote:
+> From: Ben Boeckel <mathstuf@gmail.com>
+> 
+> The `tpm_get_ops` call at the beginning of the function is not paired
+> with a `tpm_put_ops` on this return path.
+> 
+> Fixes: f2219745250f ("security: keys: trusted: use ASN.1 TPM2 key format for the blobs")
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Ben Boeckel <mathstuf@gmail.com>
+> ---
+>  security/keys/trusted-keys/trusted_tpm2.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
+> index 617fabd4d913..0165da386289 100644
+> --- a/security/keys/trusted-keys/trusted_tpm2.c
+> +++ b/security/keys/trusted-keys/trusted_tpm2.c
+> @@ -336,9 +336,9 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
+>  			rc = -EPERM;
+>  	}
+>  	if (blob_len < 0)
+> -		return blob_len;
+> -
+> -	payload->blob_len = blob_len;
+> +		rc = blob_len;
+> +	else
+> +		payload->blob_len = blob_len;
+>  
+>  	tpm_put_ops(chip);
+>  	return rc;
 
-Alex
+Ping? Is this going to make 5.13? This fixes an issue that is in
+5.13-rc1.
 
-On Sun, May 9, 2021 at 12:30 PM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 09.05.21 um 16:49 schrieb Dwaipayan Ray:
-> > Fix a couple of syntax errors and removed one excess
-> > parameter in the function documentations which lead
-> > to kernel docs build warning.
-> >
-> > Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
->
-> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
->
-> > ---
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 3 +++
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c  | 1 -
-> >   2 files changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/=
-amd/amdgpu/amdgpu_ras.c
-> > index ae9fb2025259..312f24004413 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-> > @@ -320,11 +320,14 @@ static int amdgpu_ras_debugfs_ctrl_parse_data(str=
-uct file *f,
-> >    * "disable" requires only the block.
-> >    * "enable" requires the block and error type.
-> >    * "inject" requires the block, error type, address, and value.
-> > + *
-> >    * The block is one of: umc, sdma, gfx, etc.
-> >    *  see ras_block_string[] for details
-> > + *
-> >    * The error type is one of: ue, ce, where,
-> >    *  ue is multi-uncorrectable
-> >    *  ce is single-correctable
-> > + *
-> >    * The sub-block is a the sub-block index, pass 0 if there is no sub-=
-block.
-> >    * The address and value are hexadecimal numbers, leading 0x is optio=
-nal.
-> >    *
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/a=
-md/amdgpu/amdgpu_vm.c
-> > index 16252d48e5a4..7e1a67295106 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> > @@ -2796,7 +2796,6 @@ long amdgpu_vm_wait_idle(struct amdgpu_vm *vm, lo=
-ng timeout)
-> >    *
-> >    * @adev: amdgpu_device pointer
-> >    * @vm: requested vm
-> > - * @vm_context: Indicates if it GFX or Compute context
-> >    * @pasid: Process address space identifier
-> >    *
-> >    * Init @vm fields.
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+--Ben
