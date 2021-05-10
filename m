@@ -2,100 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D345379A5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581B4379A60
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbhEJWtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
+        id S229931AbhEJWtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbhEJWtL (ORCPT
+        with ESMTP id S229840AbhEJWtf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:49:11 -0400
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA09C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:48:04 -0700 (PDT)
-Received: by mail-oo1-xc36.google.com with SMTP id i8-20020a4aa1080000b0290201edd785e7so3823411ool.1
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:48:04 -0700 (PDT)
+        Mon, 10 May 2021 18:49:35 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D752FC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:48:29 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id t4so26973068ejo.0
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:48:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nXDiOD6FS2QgUBLRfCpt2/uv9F17SdmkBwWNRwmru5Y=;
-        b=BPmR2yHSGG/nLuv402u0vKb0JU2qqSNNX3PhvngJo0IpvPc9n8GCieuO7tf2JdXB88
-         sBtuWmFMGhXg8iogd+KS11T4Pzkx88fCj0f+rAm0Cck5iV87/N7mANFULMD2BDXVQATM
-         2i36wm5xBwoVwLMhwx+hYY3qtpKqyrG+UfjHw=
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YJHukdhsz2R5XGvodf4K0HCj8ed5JNJ4TIuOxOAr6u8=;
+        b=Uvf9szO4Hdhhn8UAwzjT97j7lNwOicqItbif8JcYaIRxSbna7FHJL/t6jGKKQeJj66
+         9W0XlOmf/apXcav3C3oZiSgLrbwmqR8MhycTfmjAvlQMZB6o9ghgdst2bBdjP0inobOT
+         1STlhPwhbnEJITnZWP/R66o90hub7DSbwM8pT3/Ohv4DgohvX8jYJ5P08alqbFNob7df
+         wp713IQsnFPW/nrYleyGwtWLMEs7WtfDvlDl3qKXd1rtgnUIarGe9p5leTnt/S8AgUPF
+         WIdfvrHi4+cXtvEwuE7Jyks103oTZwUsK2ZRWpd2fCaknYNSD6JgvnHz0C83O0435Rye
+         qBRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nXDiOD6FS2QgUBLRfCpt2/uv9F17SdmkBwWNRwmru5Y=;
-        b=ChRbF6bxwTpznDBqQmD8YTIgagy0thuisMcysNTEAmBpmxvDFrGpB8/twuyy3u6XgK
-         t9kKfXsLnag0zKrEBstifmxM0/tpGKbiPKdqw+789Jb1H6uiSILaaD7f1vXOTJU248+L
-         GHIZlfi3gvi6YgwVDdP28lKSJqk3gzBF5MXuX1RGtGC5PVAL1WCcXlbtz/ETQX/SaCB7
-         CAMAo888Z9S/fKITrBFu/vUGIrLRnpwF5Sx6D7dqq1nrTfbO5QOIjU+6kf1Of3KntIln
-         +TqF2HVbF9YK5nb24lbDdkiUXRCJwxKtK6hHLcsCtlvyRHRMqSbFw62SsjScDMvwb1GE
-         3OCA==
-X-Gm-Message-State: AOAM533RrqsWe/j+UmN2GHzLStaEjhVvTMtDOVl87uHeRn6ADuvstfl3
-        FXpRHmGdOliU4aX+e25QYbK95A==
-X-Google-Smtp-Source: ABdhPJygFW5jPZZbuqmbpeV4pT6I/uC1MkJ52VitIdzh4m/oQ05mpI5eGlRRJOP3fGBowrRg6ePM7g==
-X-Received: by 2002:a4a:e548:: with SMTP id s8mr20898592oot.63.1620686883535;
-        Mon, 10 May 2021 15:48:03 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 7sm722530oti.30.2021.05.10.15.48.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 15:48:03 -0700 (PDT)
-Subject: Re: [PATCH 5.11 000/342] 5.11.20-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <396382a7-9a50-7ea1-53a9-8898bf640c46@linuxfoundation.org>
-Date:   Mon, 10 May 2021 16:48:01 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YJHukdhsz2R5XGvodf4K0HCj8ed5JNJ4TIuOxOAr6u8=;
+        b=kDpquB15O+jI6S79/g7deRmIbqTQME1ukGxgMfNmK6jO2MvchhjugBi49BJHTQD4f7
+         nTlUvxhL/9tf3+dtb7/mV9JWQkzCW4PcvJI/pUXWGfFd1ZpNmIV3fA5EcWN/702lgrEe
+         MbBRCnRt4jwXiOcbSjxZDSGfsE8oS7m8Jc50EVbq/59EzXwQjrHpKKB1yClYne4i9vpx
+         j20HNPZtDNSK3Kv4UiVbpe4+WzEaj22794tAR45Z5HsDOvAj7G8UgSAVA7DOwZ0LDOas
+         KcI6RPGGVglPyVuxvm1gXsURwVzt8gLUqUHcc+NQSQNM12qNkhhXunCHAYTpjzrn60Tc
+         TZBQ==
+X-Gm-Message-State: AOAM532exqz1Z6Q5yy+SBAbpweD5gokCW1tQdKcpDczr1ALNrElgtU9q
+        m6PINsAt+oXD6gkiaZ54cOBeaF9nay1RFUSQ5R4GJJUdtA==
+X-Google-Smtp-Source: ABdhPJzgdlrX7gX2KnDE1PTWs5652eCIfz19L2ILlevRe7jywoMQEf0eRd9hPje5FbLIRT58/D/Ayild11nCjlAXMWk=
+X-Received: by 2002:a17:906:134c:: with SMTP id x12mr859446ejb.178.1620686907520;
+ Mon, 10 May 2021 15:48:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210509183319.20298-1-michael.weiss@aisec.fraunhofer.de>
+In-Reply-To: <20210509183319.20298-1-michael.weiss@aisec.fraunhofer.de>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 10 May 2021 18:48:16 -0400
+Message-ID: <CAHC9VhRkh3uySjZ1qg07Fgky+R3jSmfJ80BLCFOK+LCPvZVrOA@mail.gmail.com>
+Subject: Re: [PATCH] audit: allow logging of user events in non-initial namespace.
+To:     =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+Cc:     Richard Guy Briggs <rgb@redhat.com>,
+        Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/21 4:16 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.11.20 release.
-> There are 342 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.20-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Sun, May 9, 2021 at 2:33 PM Michael Wei=C3=9F
+<michael.weiss@aisec.fraunhofer.de> wrote:
+>
+> Audit subsystem was disabled in total for user namespaces other than
+> the initial namespace.
+>
+> If audit is enabled by kernel command line or audtid in initial namespace=
+,
+> it is now possible to allow at least logging of userspace applications
+> inside of non-initial namespaces if CAP_AUDIT_WRITE in the corresponding
+> namespace is held.
+>
+> This allows logging of, e.g., PAM or opensshd inside user namespaced
+> system containers.
+>
+> Signed-off-by: Michael Wei=C3=9F <michael.weiss@aisec.fraunhofer.de>
+> ---
+>  kernel/audit.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
 
-Compiled and doesn't boot. Dies in kmem_cache_alloc_node() called
-from alloc_skb_with_frags()
+I think this needs to wait on the audit container ID patchset to land.
 
-I will start bisect.
+> diff --git a/kernel/audit.c b/kernel/audit.c
+> index 121d37e700a6..b5cc0669c3d7 100644
+> --- a/kernel/audit.c
+> +++ b/kernel/audit.c
+> @@ -1012,7 +1012,13 @@ static int audit_netlink_ok(struct sk_buff *skb, u=
+16 msg_type)
+>          * userspace will reject all logins.  This should be removed when=
+ we
+>          * support non init namespaces!!
+>          */
+> -       if (current_user_ns() !=3D &init_user_ns)
+> +       /*
+> +        * If audit is enabled by kernel command line or audtid in the in=
+itial
+> +        * namespace allow at least logging of userspace applications ins=
+ide of
+> +        * non-initial namespaces according to CAP_AUDIT_WRITE is held in=
+ the
+> +        * corresponding namespace.
+> +        */
+> +       if ((current_user_ns() !=3D &init_user_ns) && !audit_enabled)
+>                 return -ECONNREFUSED;
+>
+>         switch (msg_type) {
+> @@ -1043,7 +1049,7 @@ static int audit_netlink_ok(struct sk_buff *skb, u1=
+6 msg_type)
+>         case AUDIT_USER:
+>         case AUDIT_FIRST_USER_MSG ... AUDIT_LAST_USER_MSG:
+>         case AUDIT_FIRST_USER_MSG2 ... AUDIT_LAST_USER_MSG2:
+> -               if (!netlink_capable(skb, CAP_AUDIT_WRITE))
+> +               if (!netlink_ns_capable(skb, current_user_ns(), CAP_AUDIT=
+_WRITE))
+>                         err =3D -EPERM;
+>                 break;
+>         default:  /* bad msg */
+> --
+> 2.20.1
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
-
+--=20
+paul moore
+www.paul-moore.com
