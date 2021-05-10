@@ -2,187 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC49379663
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A870379675
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233081AbhEJRts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 13:49:48 -0400
-Received: from mail-pj1-f44.google.com ([209.85.216.44]:39893 "EHLO
-        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbhEJRtq (ORCPT
+        id S233200AbhEJRwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 13:52:18 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3057 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233191AbhEJRwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 13:49:46 -0400
-Received: by mail-pj1-f44.google.com with SMTP id z6-20020a17090a1706b0290155e8a752d8so10506315pjd.4;
-        Mon, 10 May 2021 10:48:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=HDzjl09PFmzZNoD1Zf7/Ui+XEMBguLIbUNelx9dOrmU=;
-        b=RYSM5VSqWyJvJAqryqzo8hK3+GySp49hr6gKl05X9kn1f3Z2Z5POLx+4PthvQcKer1
-         MsbLIJ4LUCn46GcWSsDjQWyD41Dgwa9PZEsrdXFT8ZdXYoluA3Dd6TqW8lghC7otjGzx
-         EV/NjhjWuD66OYMTzbCQZxDEVczBhSeXFOdMtcg0aX4lq6do6myfRzxNK+gonqdQLtBG
-         D64OTfk0YUMgPb/kmwI6e5f/xDt3NSgQsIU5StnvhxWBw0bliUMSKDXKYzlN2m3D8O57
-         qigVh1Bz101Ro3obddPCTB83cvLjPtTONNfPylYJgF0N9rgtxIcyUXz2waR7JKHPWG0s
-         gRpA==
-X-Gm-Message-State: AOAM531TCFahrYZ1d+GRwdiDFgJfurhZ655DERea4jnk7ik8oEdoAkVZ
-        IpcCf4JWgQqVPA3uLhH5kloaSY5Sq9Z5CQ==
-X-Google-Smtp-Source: ABdhPJwk5+EXIrC7BR54P3ComKj77R/Osy3QeJwej+096Kq8agrA7ZWJks/riDjEv8LJRParSnS6Aw==
-X-Received: by 2002:a17:902:9a87:b029:ed:ea18:b2f3 with SMTP id w7-20020a1709029a87b02900edea18b2f3mr25096887plp.69.1620668920722;
-        Mon, 10 May 2021 10:48:40 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id 1sm11391023pfv.159.2021.05.10.10.48.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 10:48:40 -0700 (PDT)
-Date:   Mon, 10 May 2021 10:48:38 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/53] docs: driver-api: fpga: avoid using UTF-8 chars
-Message-ID: <YJlx9vLCleEMg+Hg@epycbox.lan>
-References: <cover.1620641727.git.mchehab+huawei@kernel.org>
- <10fced4bcc033f4683fae41db0c494c1d3503ccb.1620641727.git.mchehab+huawei@kernel.org>
+        Mon, 10 May 2021 13:52:16 -0400
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Ff7k155mbz6rnT8;
+        Tue, 11 May 2021 01:45:13 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 10 May 2021 19:51:10 +0200
+Received: from localhost (10.52.123.16) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 10 May
+ 2021 18:51:09 +0100
+Date:   Mon, 10 May 2021 18:49:27 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+CC:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jic23@kernel.org>, <alexandru.tachici@analog.com>,
+        <linux@deviqon.com>
+Subject: Re: [PATCH 00/11] ad_sigma_delta: convert all drivers to
+ device-managed
+Message-ID: <20210510184927.00000e6d@Huawei.com>
+In-Reply-To: <20210510125523.1271237-1-aardelean@deviqon.com>
+References: <20210510125523.1271237-1-aardelean@deviqon.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <10fced4bcc033f4683fae41db0c494c1d3503ccb.1620641727.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.123.16]
+X-ClientProxiedBy: lhreml720-chm.china.huawei.com (10.201.108.71) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 12:26:25PM +0200, Mauro Carvalho Chehab wrote:
-> While UTF-8 characters can be used at the Linux documentation,
-> the best is to use them only when ASCII doesn't offer a good replacement.
-> So, replace the occurences of the following UTF-8 characters:
+On Mon, 10 May 2021 15:55:12 +0300
+Alexandru Ardelean <aardelean@deviqon.com> wrote:
+
+> Well, for lack of a better title that's what this series does.
+> It merges Jonathan's patches from:
+>   * https://lore.kernel.org/linux-iio/20210508182319.488551-1-jic23@kernel.org/
+>     Patch 3/3 was a polished a bit with my comments from that review and also
+>     to use the devm_ad_sd_setup_buffer_and_trigger() function.
+>   * https://lore.kernel.org/linux-iio/20210509114118.660422-1-jic23@kernel.org/
+>     Added only to base the conversion to devm_
 > 
-> 	- U+2014 ('—'): EM DASH
+> The AD Sigma Delta family of ADC drivers share a lot of the logic in the
+> ad_sigma_delta lib-driver.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/driver-api/fpga/fpga-bridge.rst | 10 +++++-----
->  Documentation/driver-api/fpga/fpga-mgr.rst    | 12 +++++------
->  .../driver-api/fpga/fpga-programming.rst      |  8 ++++----
->  Documentation/driver-api/fpga/fpga-region.rst | 20 +++++++++----------
->  4 files changed, 25 insertions(+), 25 deletions(-)
+> This set introduces a devm_ad_sd_setup_buffer_and_trigger() call, which
+> aims to replace the 'ad_sd_{setup,cleanup}_buffer_and_trigger()' pair.
 > 
-> diff --git a/Documentation/driver-api/fpga/fpga-bridge.rst b/Documentation/driver-api/fpga/fpga-bridge.rst
-> index 198aadafd3e7..8d650b4e2ce6 100644
-> --- a/Documentation/driver-api/fpga/fpga-bridge.rst
-> +++ b/Documentation/driver-api/fpga/fpga-bridge.rst
-> @@ -4,11 +4,11 @@ FPGA Bridge
->  API to implement a new FPGA bridge
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->  
-> -* struct fpga_bridge — The FPGA Bridge structure
-> -* struct fpga_bridge_ops — Low level Bridge driver ops
-> -* devm_fpga_bridge_create() — Allocate and init a bridge struct
-> -* fpga_bridge_register() — Register a bridge
-> -* fpga_bridge_unregister() — Unregister a bridge
-> +* struct fpga_bridge - The FPGA Bridge structure
-> +* struct fpga_bridge_ops - Low level Bridge driver ops
-> +* devm_fpga_bridge_create() - Allocate and init a bridge struct
-> +* fpga_bridge_register() - Register a bridge
-> +* fpga_bridge_unregister() - Unregister a bridge
->  
->  .. kernel-doc:: include/linux/fpga/fpga-bridge.h
->     :functions: fpga_bridge
-> diff --git a/Documentation/driver-api/fpga/fpga-mgr.rst b/Documentation/driver-api/fpga/fpga-mgr.rst
-> index 917ee22db429..4d926b452cb3 100644
-> --- a/Documentation/driver-api/fpga/fpga-mgr.rst
-> +++ b/Documentation/driver-api/fpga/fpga-mgr.rst
-> @@ -101,12 +101,12 @@ in state.
->  API for implementing a new FPGA Manager driver
->  ----------------------------------------------
->  
-> -* ``fpga_mgr_states`` —  Values for :c:expr:`fpga_manager->state`.
-> -* struct fpga_manager —  the FPGA manager struct
-> -* struct fpga_manager_ops —  Low level FPGA manager driver ops
-> -* devm_fpga_mgr_create() —  Allocate and init a manager struct
-> -* fpga_mgr_register() —  Register an FPGA manager
-> -* fpga_mgr_unregister() —  Unregister an FPGA manager
-> +* ``fpga_mgr_states`` -  Values for :c:expr:`fpga_manager->state`.
-> +* struct fpga_manager -  the FPGA manager struct
-> +* struct fpga_manager_ops -  Low level FPGA manager driver ops
-> +* devm_fpga_mgr_create() -  Allocate and init a manager struct
-> +* fpga_mgr_register() -  Register an FPGA manager
-> +* fpga_mgr_unregister() -  Unregister an FPGA manager
->  
->  .. kernel-doc:: include/linux/fpga/fpga-mgr.h
->     :functions: fpga_mgr_states
-> diff --git a/Documentation/driver-api/fpga/fpga-programming.rst b/Documentation/driver-api/fpga/fpga-programming.rst
-> index 002392dab04f..fb4da4240e96 100644
-> --- a/Documentation/driver-api/fpga/fpga-programming.rst
-> +++ b/Documentation/driver-api/fpga/fpga-programming.rst
-> @@ -84,10 +84,10 @@ will generate that list.  Here's some sample code of what to do next::
->  API for programming an FPGA
->  ---------------------------
->  
-> -* fpga_region_program_fpga() —  Program an FPGA
-> -* fpga_image_info() —  Specifies what FPGA image to program
-> -* fpga_image_info_alloc() —  Allocate an FPGA image info struct
-> -* fpga_image_info_free() —  Free an FPGA image info struct
-> +* fpga_region_program_fpga() -  Program an FPGA
-> +* fpga_image_info() -  Specifies what FPGA image to program
-> +* fpga_image_info_alloc() -  Allocate an FPGA image info struct
-> +* fpga_image_info_free() -  Free an FPGA image info struct
->  
->  .. kernel-doc:: drivers/fpga/fpga-region.c
->     :functions: fpga_region_program_fpga
-> diff --git a/Documentation/driver-api/fpga/fpga-region.rst b/Documentation/driver-api/fpga/fpga-region.rst
-> index 363a8171ab0a..2636a27c11b2 100644
-> --- a/Documentation/driver-api/fpga/fpga-region.rst
-> +++ b/Documentation/driver-api/fpga/fpga-region.rst
-> @@ -45,19 +45,19 @@ An example of usage can be seen in the probe function of [#f2]_.
->  API to add a new FPGA region
->  ----------------------------
->  
-> -* struct fpga_region — The FPGA region struct
-> -* devm_fpga_region_create() — Allocate and init a region struct
-> -* fpga_region_register() —  Register an FPGA region
-> -* fpga_region_unregister() —  Unregister an FPGA region
-> +* struct fpga_region - The FPGA region struct
-> +* devm_fpga_region_create() - Allocate and init a region struct
-> +* fpga_region_register() -  Register an FPGA region
-> +* fpga_region_unregister() -  Unregister an FPGA region
->  
->  The FPGA region's probe function will need to get a reference to the FPGA
->  Manager it will be using to do the programming.  This usually would happen
->  during the region's probe function.
->  
-> -* fpga_mgr_get() — Get a reference to an FPGA manager, raise ref count
-> -* of_fpga_mgr_get() —  Get a reference to an FPGA manager, raise ref count,
-> +* fpga_mgr_get() - Get a reference to an FPGA manager, raise ref count
-> +* of_fpga_mgr_get() -  Get a reference to an FPGA manager, raise ref count,
->    given a device node.
-> -* fpga_mgr_put() — Put an FPGA manager
-> +* fpga_mgr_put() - Put an FPGA manager
->  
->  The FPGA region will need to specify which bridges to control while programming
->  the FPGA.  The region driver can build a list of bridges during probe time
-> @@ -66,11 +66,11 @@ the list of bridges to program just before programming
->  (:c:expr:`fpga_region->get_bridges`).  The FPGA bridge framework supplies the
->  following APIs to handle building or tearing down that list.
->  
-> -* fpga_bridge_get_to_list() — Get a ref of an FPGA bridge, add it to a
-> +* fpga_bridge_get_to_list() - Get a ref of an FPGA bridge, add it to a
->    list
-> -* of_fpga_bridge_get_to_list() — Get a ref of an FPGA bridge, add it to a
-> +* of_fpga_bridge_get_to_list() - Get a ref of an FPGA bridge, add it to a
->    list, given a device node
-> -* fpga_bridges_put() — Given a list of bridges, put them
-> +* fpga_bridges_put() - Given a list of bridges, put them
->  
->  .. kernel-doc:: include/linux/fpga/fpga-region.h
->     :functions: fpga_region
-> -- 
-> 2.30.2
+> This helps with converting the AD7780, AD7791, AD7793 and AD7192
+> drivers use be fully converted to device-managed functions.
+
+Almost perfect code wise (just the one bug that predates this series I think).
+
+Couple of notes on series from process point of view.
+
+1) Fixes at the front. Makes for uglier series but nicer backporting.
+2) Sign-off on everything - even the ones from me that you didn't change. From DCO
+   point of view you handled them (passed them back to me ;) so need your
+   sign off.  I have occasionally wondered if I should sign off again when this
+   happens :)
+
+If you don't do a v2, just reply to say you are fine with me fixing the sign offs
+and I can do it whilst applying.
+
+Thanks,
+
+Jonathan
+
+> 
+> Alexandru Ardelean (7):
+>   iio: adc: ad_sigma_delta: introduct
+>     devm_ad_sd_setup_buffer_and_trigger()
+>   iio: adc: ad7793: convert to device-managed functions
+>   iio: adc: ad7791: convert to device-managed functions
+>   iio: adc: ad7780: convert to device-managed functions
+>   iio: adc: ad7192: use devm_clk_get_optional() for mclk
+>   iio: adc: ad7192: convert to device-managed functions
+>   iio: adc: ad_sigma_delta: remove
+>     ad_sd_{setup,cleanup}_buffer_and_trigger()
+> 
+> Jonathan Cameron (4):
+>   iio: adc: ad7192: Avoid disabling a clock that was never enabled.
+>   iio: adc: ad7124: Fix missbalanced regulator enable / disable on
+>     error.
+>   iio: adc: ad7124: Fix potential overflow due to non sequential channel
+>     numbers
+>   iio: adc: ad7124: Use devm_ managed calls for all of probe() + drop
+>     remove()
+> 
+>  drivers/iio/adc/ad7124.c               | 84 ++++++++++--------------
+>  drivers/iio/adc/ad7192.c               | 90 +++++++++++---------------
+>  drivers/iio/adc/ad7780.c               | 38 +++--------
+>  drivers/iio/adc/ad7791.c               | 44 ++++---------
+>  drivers/iio/adc/ad7793.c               | 53 +++++----------
+>  drivers/iio/adc/ad_sigma_delta.c       | 82 ++++++++---------------
+>  include/linux/iio/adc/ad_sigma_delta.h |  4 +-
+>  7 files changed, 141 insertions(+), 254 deletions(-)
 > 
 
-Applied to for-next,
-
-Thanks
