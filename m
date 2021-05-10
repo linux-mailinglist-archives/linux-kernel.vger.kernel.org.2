@@ -2,88 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7452D378E10
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16DD378E38
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235848AbhEJNDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:03:43 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:56454 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241723AbhEJMx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 08:53:28 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxH+9wLJlguH4UAA--.15168S2;
-        Mon, 10 May 2021 20:52:00 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] bpf: arm64: Replace STACK_ALIGN() with round_up() to align stack size
-Date:   Mon, 10 May 2021 20:51:59 +0800
-Message-Id: <1620651119-5663-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxH+9wLJlguH4UAA--.15168S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xr4UCF1UAFy3WF4rAFWfGrg_yoWkWwb_tw
-        1SkF97Gwn8CrsY9r18Ca15JryIk3ykGa4kXryagr12y343Xw4fAry09ryxur1UXr4DKFWr
-        ZFs7GFy2vw42gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbsxYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z2
-        80aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
-        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx
-        8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7
-        MxkIecxEwVAFwVW5JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
-        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
-        Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
-        vEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2
-        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
-        ZFpf9x07j7sqXUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S237210AbhEJNHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351116AbhEJNC6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 09:02:58 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4569C06134D
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:55:50 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id n84so9161147wma.0
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:55:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JLAkJk2XYN3zpNZJSBihL1QIdDzW0qzyrz5YHmbRkas=;
+        b=IyhxI8zBkWsO3F1VgIXC301oSbWCidyan9jWmrAHh5gVQ9JuDRRMiYpGXUsgI1DYqk
+         C7JG9Lpc9uf9SZN5f+nHNumtkQ343zpgRt3k3fsJ7Hii+D9m/0JOYsJQRNXr+Cf/qU33
+         XLKoOgjwaxmybPsAaXk+GU70hCGQWRC29+XDNRnVMnHxL1EzLNL7kJrHAV7jPQlUUPhr
+         qpyVSgia22Z4keGQ06wpvMmDLbBgE/LZEe48FyrvT+KaNKJX0FkeJpmuRg0PUZtHSIgP
+         lCnUqI7TNjGLTTYKp18jU5Z6U8vbPBQVK6RdiFjOClyTK6jgY5xphSfzJn7kDpWDZm5G
+         m80w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JLAkJk2XYN3zpNZJSBihL1QIdDzW0qzyrz5YHmbRkas=;
+        b=JSp9L8buKSx/0ylunKWoVVHOwUR7kxzgt5uuPA+sPIGBQaUHZyMKY6VgI3JnfhJyqZ
+         UTyITPCr0s/0OvlETD1/wOgQ9gb/AugG8C+xQnirLJ60jqc59HhOQPS+Nf+VBzVTlqGh
+         DS9p2Rm548zBhvI62afr/mwzKoxGvZ+/tijYYIs67NHdK143gZQyn9wvCKFaTC9E6HaR
+         NTlhzSA/fmG3l7SkvaepNG8nJM1CYjPVfvGUIzIJApln6YAhXJtT4fTNTPKVrmqS8z6f
+         YjDfOYR7BHqGyjIdm05RvFc1mlaQGR49xIhi2TJpHbdHCH7BK4Q6DbFrqK6NM6D/X7wH
+         te4g==
+X-Gm-Message-State: AOAM531fcuglAnV3DXYPX3oHoReOx4n+ZXgx82zCjuyz7iElrovE/mDc
+        1OQWK78g4x+wZgv/BB2tpEwJoQ==
+X-Google-Smtp-Source: ABdhPJyZZuBSFJRPGg1reGsrnx5QvrgC1PJt4m9buGdkVfyVVKlcuOiawyOCrVJJyY+pRrWLsMVxFQ==
+X-Received: by 2002:a1c:740c:: with SMTP id p12mr25571375wmc.112.1620651349267;
+        Mon, 10 May 2021 05:55:49 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id n2sm23134329wmb.32.2021.05.10.05.55.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 05:55:48 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, Jonathan.Cameron@huawei.com,
+        alexandru.tachici@analog.com, linux@deviqon.com,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH 00/11] ad_sigma_delta: convert all drivers to device-managed
+Date:   Mon, 10 May 2021 15:55:12 +0300
+Message-Id: <20210510125523.1271237-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the common function round_up() directly to show the align size
-explicitly, the function STACK_ALIGN() is needless, remove it.
+Well, for lack of a better title that's what this series does.
+It merges Jonathan's patches from:
+  * https://lore.kernel.org/linux-iio/20210508182319.488551-1-jic23@kernel.org/
+    Patch 3/3 was a polished a bit with my comments from that review and also
+    to use the devm_ad_sd_setup_buffer_and_trigger() function.
+  * https://lore.kernel.org/linux-iio/20210509114118.660422-1-jic23@kernel.org/
+    Added only to base the conversion to devm_
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/arm64/net/bpf_jit_comp.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+The AD Sigma Delta family of ADC drivers share a lot of the logic in the
+ad_sigma_delta lib-driver.
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index f7b1948..81c380f 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -178,9 +178,6 @@ static bool is_addsub_imm(u32 imm)
- 	return !(imm & ~0xfff) || !(imm & ~0xfff000);
- }
- 
--/* Stack must be multiples of 16B */
--#define STACK_ALIGN(sz) (((sz) + 15) & ~15)
--
- /* Tail call offset to jump into */
- #if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL)
- #define PROLOGUE_OFFSET 8
-@@ -255,7 +252,7 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 			emit(A64_BTI_J, ctx);
- 	}
- 
--	ctx->stack_size = STACK_ALIGN(prog->aux->stack_depth);
-+	ctx->stack_size = round_up(prog->aux->stack_depth, 16);
- 
- 	/* Set up function call stack */
- 	emit(A64_SUB_I(1, A64_SP, A64_SP, ctx->stack_size), ctx);
+This set introduces a devm_ad_sd_setup_buffer_and_trigger() call, which
+aims to replace the 'ad_sd_{setup,cleanup}_buffer_and_trigger()' pair.
+
+This helps with converting the AD7780, AD7791, AD7793 and AD7192
+drivers use be fully converted to device-managed functions.
+
+Alexandru Ardelean (7):
+  iio: adc: ad_sigma_delta: introduct
+    devm_ad_sd_setup_buffer_and_trigger()
+  iio: adc: ad7793: convert to device-managed functions
+  iio: adc: ad7791: convert to device-managed functions
+  iio: adc: ad7780: convert to device-managed functions
+  iio: adc: ad7192: use devm_clk_get_optional() for mclk
+  iio: adc: ad7192: convert to device-managed functions
+  iio: adc: ad_sigma_delta: remove
+    ad_sd_{setup,cleanup}_buffer_and_trigger()
+
+Jonathan Cameron (4):
+  iio: adc: ad7192: Avoid disabling a clock that was never enabled.
+  iio: adc: ad7124: Fix missbalanced regulator enable / disable on
+    error.
+  iio: adc: ad7124: Fix potential overflow due to non sequential channel
+    numbers
+  iio: adc: ad7124: Use devm_ managed calls for all of probe() + drop
+    remove()
+
+ drivers/iio/adc/ad7124.c               | 84 ++++++++++--------------
+ drivers/iio/adc/ad7192.c               | 90 +++++++++++---------------
+ drivers/iio/adc/ad7780.c               | 38 +++--------
+ drivers/iio/adc/ad7791.c               | 44 ++++---------
+ drivers/iio/adc/ad7793.c               | 53 +++++----------
+ drivers/iio/adc/ad_sigma_delta.c       | 82 ++++++++---------------
+ include/linux/iio/adc/ad_sigma_delta.h |  4 +-
+ 7 files changed, 141 insertions(+), 254 deletions(-)
+
 -- 
-2.1.0
+2.31.1
 
