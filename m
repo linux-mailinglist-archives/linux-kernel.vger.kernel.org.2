@@ -2,247 +2,602 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2ED37950F
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A875A3795DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232137AbhEJRLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 13:11:30 -0400
-Received: from mail-bn8nam11on2065.outbound.protection.outlook.com ([40.107.236.65]:29440
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231434AbhEJRLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 13:11:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B1+vDs2ovs60ZgRKukuaVz2ewPAbRIO3dVQ1VOMofRGKj8Y4lOaQ1wj46PjtjWv0gD7aUvhjjgTaRnKTheS8K0rbdZEQWuDGd+iJ1g+3+fLcEhyKOoiRZg2ohJLgPazvD8RiMJMJd9BSRwxIhkLwMC7P2e0wPTDmQIltcatigGYaZz+4/6Ht7IrYbW5zuZemsvPRjN3mSGUAJwCauXvvJ7YDS+Mt0qVpY1ew3suovKGzrJL+X7UkBZgQ9OcNgU4SE4FN/kb9Ukub0x0OUth7wK3pJOqoUl0JnQW67oUrXlLjtMo5iAx90AJ6zm3EKJsky/dynGkJMXwbfgitHdr1Bg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W3wKgOKwm5+Bsh/GnCBU1jNcmSE/qYFe5SvMzGeo+C4=;
- b=dyf9V879a3WzjT0VfZCtRO8oGnYz+qC+rS21Q/WSXrOD7Gq9/d9It3VvBvVfj91sf0Ki73NAFOZ9S4H2vPMZOOiOp41vO8N8hraqX7iEunX987RFwN+rjVaYYYzkZHa7ldhV5cVEboXVYCmtigkhNNMxCED/o2iSGU3ibRcICGwM0h9YOpyLq84ge39AmP7AMXsnikf18K3fy9jzUbCkllxPPkW6L0tXV8k0YW0mIiCzpClAVfjnYB3byVzzr/kTov/Tc3Q8R82CmytV7YaDn5dKZ5HPdKRlDfkpkeEfJUbfxXcJn3Nh59MTixqgqsu1XhNK/rHg4IzC/aK1a/xFnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W3wKgOKwm5+Bsh/GnCBU1jNcmSE/qYFe5SvMzGeo+C4=;
- b=NQ16Yj+L8kg4H5QoeiVOVDw0cCWPDoOrtB8530spj2Wm5zHQp338sYqW+iVa35jAoJJwl0Y+OFceN5u3hIHXHlSVfJpNRxlQPRrel0RLMkp5cWG3J5YZ8yXzsWyri2BXXKtVFhGbAf660M8tPTt6BguBWzlsF/CNLTTaZgPxvZM=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23) by MWHPR1201MB0272.namprd12.prod.outlook.com
- (2603:10b6:301:52::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24; Mon, 10 May
- 2021 17:10:10 +0000
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::cd83:259e:74d3:2507]) by MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::cd83:259e:74d3:2507%11]) with mapi id 15.20.4108.031; Mon, 10 May
- 2021 17:10:10 +0000
-Subject: Re: [PATCH 1/2] ASoC: dwc: add a quirk DW_I2S_QUIRK_STOP_ON_SHUTDOWN
- to dwc driver
-From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-To:     =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     alsa-devel@alsa-project.org, amistry@google.com,
-        nartemiev@google.com, Alexander.Deucher@amd.com,
-        Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1619195089-29710-1-git-send-email-Vijendar.Mukunda@amd.com>
- <20210423164617.GG5507@sirena.org.uk>
- <e1268120-7a91-da49-0bb6-89d5cb4e2cce@gmail.com>
- <b32fcc42-d67e-bfbd-ed83-7f7274fb2f79@amd.com>
- <ac5244d1-643d-6577-80cd-bf6867e75ca2@gmail.com>
- <b86ad586-9513-8fa9-54e3-a0b4a3a7fd92@amd.com>
- <070b4e5b-b7bd-b8a6-beea-593a94ec3078@gmail.com>
- <26c79eec-5e74-38bc-465b-0ca2b2d9a6f5@amd.com>
-Message-ID: <9b689495-e956-6242-0784-af3ccf7c3238@amd.com>
-Date:   Mon, 10 May 2021 22:57:25 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <26c79eec-5e74-38bc-465b-0ca2b2d9a6f5@amd.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [165.204.80.7]
-X-ClientProxiedBy: KL1P15301CA0015.APCP153.PROD.OUTLOOK.COM
- (2603:1096:802:2::25) To MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23)
+        id S232896AbhEJRaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 13:30:14 -0400
+Received: from mail-pf1-f177.google.com ([209.85.210.177]:45802 "EHLO
+        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233085AbhEJR3j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 13:29:39 -0400
+Received: by mail-pf1-f177.google.com with SMTP id i190so14044855pfc.12;
+        Mon, 10 May 2021 10:28:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C+jq+raRiIKpqbPDo+tN+N2gQo4lQJ7AUs78iLKwNTU=;
+        b=GMS+Qgtdnt8b0AJzLZClFpkLaYe/AZ5HQPZLONkGMY1Y1mQmdWE7v09O67Qd6nJHXL
+         xI4NMhphprQ0HvCPDZtX8vVF29mclRruDm1C6Tz9vxMjQH63fuzkwQ8SvWd/Jh3DnAEU
+         ciPWkt7BNF631AbT1YwaglEpRiAjMTLlxRBiHGUdlIkiI8KhAC7REhJbe0lK/wLNA07u
+         /GT78GcjFGcZvcv0GTiCUzuurcPnKlgfOENe1iC0oseToDH6cwLMm5h8mFx7YGH1D0yM
+         fSbhdFeba4lnb1f5mDJPA/xKkAw6Y/s1FgcYGYDErZCr8ksPTnL+arEEI0BEbQtGeUeY
+         65+Q==
+X-Gm-Message-State: AOAM531lMW4QFE3tOeZDRs5DQK30UGPDK4A/N/dHuYuMx9AIaSiOjleI
+        6ei6/0Pp1puaqYAWI4fdgV4=
+X-Google-Smtp-Source: ABdhPJzprM6w30VWNWqSfasnW+MoEb+ZgV15XrAqtM3xEPe82y0VCr0VpgKKnryw6wOwT9mktyT1mw==
+X-Received: by 2002:a63:f252:: with SMTP id d18mr26279722pgk.20.1620667714131;
+        Mon, 10 May 2021 10:28:34 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id q19sm12896695pfl.171.2021.05.10.10.28.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 10:28:32 -0700 (PDT)
+Date:   Mon, 10 May 2021 10:28:31 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Russ Weight <russell.h.weight@intel.com>
+Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com,
+        richard.gong@intel.com
+Subject: Re: [PATCH v12 1/7] fpga: sec-mgr: fpga security manager class driver
+Message-ID: <YJltP1Vff9jLJnLE@epycbox.lan>
+References: <20210503213546.316439-1-russell.h.weight@intel.com>
+ <20210503213546.316439-2-russell.h.weight@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.31.31.162] (165.204.80.7) by KL1P15301CA0015.APCP153.PROD.OUTLOOK.COM (2603:1096:802:2::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.2 via Frontend Transport; Mon, 10 May 2021 17:10:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 48d05afd-5d1e-41e4-984e-08d913d6779d
-X-MS-TrafficTypeDiagnostic: MWHPR1201MB0272:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR1201MB027224637F03B053F609C30597549@MWHPR1201MB0272.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vFw/0t524tOC55Fib8xAsT5FaWdS8JMwd5bGdkrh9BGso32nkSlGSSAi7cgFkQB3s4VdmeT+ssAYa6/006xMhQpSi4RsnDTXQrjmhG/AiA3F5wheycVbTcsdjU0ow27dWerOrD4R3OOXNdneFSI9MjTmpgqZjFAMgyK5V2A8vm+99n2HIjxK/jc+rLEX8JKt67ptBloO1kN3csm1VGJkZzIXS6uzTSjGGQ7VHedV+/h4RHoNmxQ1ZbX6FWM4IyirWlsTPn+E9E3Y8jWBQ7Aj3q/hJRkT8QZ5rbnK8m0AvsIVtAVrLvbtHhG3TP9Ijf4yZox/VPU4xSVg24BW/+HA1tgWXY9Q+Gg4Jeh0yEK8+a9H/o0wkZq+9cYxf+iGzRRaVCb1M/z6QRVhQnEZpceSIyniqaD9reUcDwcrgOa6Tw7M0RluCshnGlKsDnePwA3EFOOoxqmrxZj2qINuXNuZgzsNoTdOzMdyx4b+OatnGNjlqHdPSoyebP3GyqbrF7uqZnh7y/uqoP7VCL0MjPHitL0SpQtZOie01Q6zRjLkiKhmAhLx5ZhmUozkamu4s24dIGNEJBN9eBee6s0ixcTJz61FCwYleAQN4iRip7DUG/UKpAzJhL/uwwI+PGq+TMei7Y9OK9yEq0r576UtisDGdgBumvOXhTtD7Aer/xmnopA9RV2V0w3ftR1R/7TtFpAOpLAxtFyBidnR9PH87X+XtuBByOKyIhjpEu4KYrYoaAXfTe1ZioMAutBved4youQn
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(136003)(39860400002)(376002)(66556008)(66946007)(478600001)(36756003)(6666004)(66476007)(38350700002)(83380400001)(6486002)(8676002)(26005)(38100700002)(8936002)(7416002)(86362001)(2906002)(956004)(186003)(66574015)(16576012)(53546011)(316002)(4326008)(31696002)(52116002)(54906003)(2616005)(110136005)(16526019)(5660300002)(31686004)(70780200001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?fIF7Zxb1WvceqdFhz5WXYj9t34TN31iBtx/KT7/4u81z8VNYV8IZf3PS?=
- =?Windows-1252?Q?yWw+1gvUhIQgpwynLUL3w/l2JsS0K5nKB2Tz2sisjTK9abuGl2MOopeh?=
- =?Windows-1252?Q?MWZWmt9gpqi0w3AlC8yhvMRFTHYCIaFVrs0Ncxe5oqMzKK50wriyyG+C?=
- =?Windows-1252?Q?qpLgfe5cs12FaE3XpA2+8HltM+M5WC2KVYPlanPm89WXMWIw+u1cFt4p?=
- =?Windows-1252?Q?kDYfcddsaPRmPf6RSw+Rg02jMlfWwsNkluf56NLtdA2lFjwz0j1XbdBy?=
- =?Windows-1252?Q?rsu23UVSG7ma2S17jKkN8Vx8qj/fkMdCh4SB0e7xbg9SYvGy0/R8RTK1?=
- =?Windows-1252?Q?ptD85fsZIoxjAEJh5VGr4XJBKsMcILEYgyg1G7yS+dUMv/3Dwt5kBAnB?=
- =?Windows-1252?Q?SaVu0Qc3Gmq3NNAsiYHLE22SOsMTsa3W0JxsN2KqzXSb6G1Ebl7/vbPW?=
- =?Windows-1252?Q?6siPL2VtaUpPZuGnhzzSH9IVpMChDne8AoO3dVyosAsKz4HpHGe+WATr?=
- =?Windows-1252?Q?9pg8iRdcbG+1kvxhsazXBPZcy8wUuqPnSD3nenA8FxVuWk+L0ao9L2Ju?=
- =?Windows-1252?Q?v3gJXWrt5mOF6G8hy0dJuaFTDSPg82l7f3yR3FLwJl4ZFuH8Ofwq7ohK?=
- =?Windows-1252?Q?zGKRHIRr9QcOs/j2wB4f+qlXMcfayqbIJxGcLXZpYO5GiEqREY8R73Us?=
- =?Windows-1252?Q?wK7JP3p+4OoOZuC1YFmblekZy/hXOAt3xMzaWf5tDPJ4A7Tq9hzxpfQF?=
- =?Windows-1252?Q?QSJR58cCxx3qCVN8VPjjCYjNoqS9MJ6LV2FD0GN27wDVKm7dEI4ReeaH?=
- =?Windows-1252?Q?VqZYaq50tP0m+sPaglowlWez+Dgiqbbr9ffU7+ojtZ2RRM/tBownD7L8?=
- =?Windows-1252?Q?OrdTWGubkKcFOpMy4DgRqEDbphAneyQAG/Um3D8UW4xdNsK2wskQgSkz?=
- =?Windows-1252?Q?xReNCpu9QkCCnhtM8BTo1Cj3IZcYTkvVrAm6Upljup5Zf0q29I1dA+hM?=
- =?Windows-1252?Q?+6aKW1/RCq/2CHXiOKa4LRlqqotn0+9wOARnAq9d+iE841mr1ACUOxxm?=
- =?Windows-1252?Q?BJ/R2CoqgzlQed5P81A3FMAaExHZ8aWp3eIoOkk9k1Mhj+krauNnIZ4g?=
- =?Windows-1252?Q?5YSBM13CSSjryb4YQ/eHKiHN4inMbZWAIP3QZaPeTWd8LHQHCJOhcOyQ?=
- =?Windows-1252?Q?9BD11I/mwhO2brr+xSF6bWzWr3nK3ws4ptZqCF006GlGF8gaZnIiZcw2?=
- =?Windows-1252?Q?u7QlmbNHYXY/HIJilw0cx1gANhfGd6kPgLSshx+45JA59LbnzR3ZITHi?=
- =?Windows-1252?Q?8kNcqnVLwLIeSMm8OXHuquJ7hsDKAhWT7TfYZZ2ALIdQPiuwFhDThy1l?=
- =?Windows-1252?Q?QuN5NCoK4iP7ZdH+YmZO1fxX1jheb0NteL/aXSILs3wy6eIWuiiHhbM0?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48d05afd-5d1e-41e4-984e-08d913d6779d
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 May 2021 17:10:10.2910
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JIVxzl7TQTgczN2kUBHFZtBZjbqXkp6T++kEcXcuJhg9xNChyx7736zhaWKTAby3hDgfsPxvoU/CaozZzmG5mw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0272
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210503213546.316439-2-russell.h.weight@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On 5/1/21 12:05 AM, Mukunda,Vijendar wrote:
+On Mon, May 03, 2021 at 02:35:40PM -0700, Russ Weight wrote:
+> Create the FPGA Security Manager class driver. The security
+> manager provides interfaces to manage secure updates for the
+> FPGA and BMC images that are stored in FLASH. The driver can
+> also be used to update root entry hashes and to cancel code
+> signing keys. The image type is encoded in the image file
+> and is decoded by the HW/FW secure update engine.
 > 
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> Reviewed-by: Tom Rix <trix@redhat.com>
+> ---
+> v12:
+>   - Updated Date and KernelVersion fields in ABI documentation
+> v11:
+>   - No change
+> v10:
+>   - Rebased to 5.12-rc2 next
+>   - Updated Date and KernelVersion in ABI documentation
+> v9:
+>   - Updated Date and KernelVersion in ABI documentation
+> v8:
+>   - Fixed grammatical error in Documentation/fpga/fpga-sec-mgr.rst
+> v7:
+>   - Changed Date in documentation file to December 2020
+> v6:
+>   - Removed sysfs support and documentation for the display of the
+>     flash count, root entry hashes, and code-signing-key cancelation
+>     vectors.
+> v5:
+>   - Added the devm_fpga_sec_mgr_unregister() function, following recent
+>     changes to the fpga_manager() implementation.
+>   - Changed some *_show() functions to use sysfs_emit() instead of sprintf(
+> v4:
+>   - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
+>     and removed unnecessary references to "Intel".
+>   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+> v3:
+>   - Modified sysfs handler check in check_sysfs_handler() to make
+>     it more readable.
+> v2:
+>   - Bumped documentation dates and versions
+>   - Added Documentation/fpga/ifpga-sec-mgr.rst 
+>   - Removed references to bmc_flash_count & smbus_flash_count (not supported)
+>   - Split ifpga_sec_mgr_register() into create() and register() functions
+>   - Added devm_ifpga_sec_mgr_create()
+>   - Removed typedefs for imgr ops
+> ---
+>  .../ABI/testing/sysfs-class-fpga-sec-mgr      |   5 +
+>  Documentation/fpga/fpga-sec-mgr.rst           |  44 +++
+>  Documentation/fpga/index.rst                  |   1 +
+>  MAINTAINERS                                   |   9 +
+>  drivers/fpga/Kconfig                          |   9 +
+>  drivers/fpga/Makefile                         |   3 +
+>  drivers/fpga/fpga-sec-mgr.c                   | 296 ++++++++++++++++++
+>  include/linux/fpga/fpga-sec-mgr.h             |  44 +++
+>  8 files changed, 411 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+>  create mode 100644 Documentation/fpga/fpga-sec-mgr.rst
+>  create mode 100644 drivers/fpga/fpga-sec-mgr.c
+>  create mode 100644 include/linux/fpga/fpga-sec-mgr.h
 > 
-> On 4/30/21 11:12 AM, Péter Ujfalusi wrote:
->>
->>
->> On 28.4.2021 18.35, Mukunda,Vijendar wrote:
->>>> Thanks for the explanation.
->>>> This is not upstream, right?
->>>
->>> Driver is already upstreamed.
->>> Stoneyridge platform based products already into market and working fine
->>> with 4.14 kernel version.
->>> Currently Kernel migration from v4.14 to v5.10 is in progress for
->>> Stoneyridge platform and release got blocked due to Audio use cases
->>> failures.
->>> In v5.10 kernel base, re-ordering of stop trigger sequence is causing
->>> DMA channel stop failure for both playback & capture use cases.
->>
->> The dai - pcm start/stop ordering has changed in v5.5, more than a year
->> ago. If the support is upstream it should have been noticed by users.
+> diff --git a/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr b/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+> new file mode 100644
+> index 000000000000..2498aef0ac51
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+> @@ -0,0 +1,5 @@
+> +What: 		/sys/class/fpga_sec_mgr/fpga_secX/name
+> +Date:		June 2021
+> +KernelVersion:	5.14
+> +Contact:	Russ Weight <russell.h.weight@intel.com>
+> +Description:	Name of low level fpga security manager driver.
+> diff --git a/Documentation/fpga/fpga-sec-mgr.rst b/Documentation/fpga/fpga-sec-mgr.rst
+> new file mode 100644
+> index 000000000000..9f74c29fe63d
+> --- /dev/null
+> +++ b/Documentation/fpga/fpga-sec-mgr.rst
+> @@ -0,0 +1,44 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +========================================
+> +FPGA Security Manager Class Driver
+> +========================================
+> +
+> +The FPGA Security Manager class driver provides a common
+> +API for user-space tools to manage updates for secure FPGA
+> +devices. Device drivers that instantiate the Security
+> +Manager class driver will interact with a HW secure update
+> +engine in order to transfer new FPGA and BMC images to FLASH so
+> +that they will be automatically loaded when the FPGA card reboots.
+> +
+> +A significant difference between the FPGA Manager and the FPGA
+> +Security Manager is that the FPGA Manager does a live update (Partial
+> +Reconfiguration) to a device, whereas the FPGA Security Manager
+> +updates the FLASH images for the Static Region and the BMC so that
+> +they will be loaded the next time the FPGA card boots. Security is
+> +enforced by hardware and firmware. The security manager interacts
+> +with the firmware to initiate an update, pass in the necessary data,
+> +and collect status on the update.
+> +
+> +In addition to managing secure updates of the FPGA and BMC images,
+> +the FPGA Security Manager update process may also be used to
+> +program root entry hashes and cancellation keys for the FPGA static
+> +region, the FPGA partial reconfiguration region, and the BMC.
+> +
+> +Secure updates make use of the request_firmware framework, which
+> +requires that image files are accessible under /lib/firmware. A request
+> +for a secure update returns immediately, while the update itself
+> +proceeds in the context of a kernel worker thread. Sysfs files provide
+> +a means for monitoring the progress of a secure update and for
+> +retrieving error information in the event of a failure.
+> +
+> +Sysfs Attributes
+> +================
+> +
+> +The API includes a sysfs entry *name* to export the name of the parent
+> +driver. It also includes an *update* sub-directory that can be used to
+> +instantiate and monitor a secure update.
+> +
+> +See `<../ABI/testing/sysfs-class-fpga-sec-mgr>`__ for a full
+> +description of the sysfs attributes for the FPGA Security
+> +Manager.
+> diff --git a/Documentation/fpga/index.rst b/Documentation/fpga/index.rst
+> index f80f95667ca2..0b2f427042af 100644
+> --- a/Documentation/fpga/index.rst
+> +++ b/Documentation/fpga/index.rst
+> @@ -8,6 +8,7 @@ fpga
+>      :maxdepth: 1
+>  
+>      dfl
+> +    fpga-sec-mgr
+>  
+>  .. only::  subproject and html
+>  
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 1783372a608a..3b1dc0376b52 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -7146,6 +7146,15 @@ F:	Documentation/fpga/
+>  F:	drivers/fpga/
+>  F:	include/linux/fpga/
+>  
+> +FPGA SECURITY MANAGER DRIVERS
+> +M:	Russ Weight <russell.h.weight@intel.com>
+> +L:	linux-fpga@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+> +F:	Documentation/fpga/fpga-sec-mgr.rst
+> +F:	drivers/fpga/fpga-sec-mgr.c
+> +F:	include/linux/fpga/fpga-sec-mgr.h
+> +
+>  FPU EMULATOR
+>  M:	Bill Metzenthen <billm@melbpc.org.au>
+>  S:	Maintained
+> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+> index 33e15058d0dc..09a8d915db26 100644
+> --- a/drivers/fpga/Kconfig
+> +++ b/drivers/fpga/Kconfig
+> @@ -234,4 +234,13 @@ config FPGA_MGR_ZYNQMP_FPGA
+>  	  to configure the programmable logic(PL) through PS
+>  	  on ZynqMP SoC.
+>  
+> +config FPGA_SEC_MGR
+> +	tristate "FPGA Security Manager"
+> +	help
+> +	  The Security Manager class driver presents a common
+> +	  user API for managing secure updates for FPGA
+> +	  devices, including flash images for the FPGA static
+> +	  region and for the BMC. Select this option to enable
+> +	  updates for secure FPGA devices.
+> +
+>  endif # FPGA
+> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+> index 18dc9885883a..22576d1a3996 100644
+> --- a/drivers/fpga/Makefile
+> +++ b/drivers/fpga/Makefile
+> @@ -21,6 +21,9 @@ obj-$(CONFIG_FPGA_MGR_ZYNQMP_FPGA)	+= zynqmp-fpga.o
+>  obj-$(CONFIG_ALTERA_PR_IP_CORE)         += altera-pr-ip-core.o
+>  obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
+>  
+> +# FPGA Security Manager Framework
+> +obj-$(CONFIG_FPGA_SEC_MGR)		+= fpga-sec-mgr.o
+> +
+>  # FPGA Bridge Drivers
+>  obj-$(CONFIG_FPGA_BRIDGE)		+= fpga-bridge.o
+>  obj-$(CONFIG_SOCFPGA_FPGA_BRIDGE)	+= altera-hps2fpga.o altera-fpga2sdram.o
+> diff --git a/drivers/fpga/fpga-sec-mgr.c b/drivers/fpga/fpga-sec-mgr.c
+> new file mode 100644
+> index 000000000000..468379e0c825
+> --- /dev/null
+> +++ b/drivers/fpga/fpga-sec-mgr.c
+> @@ -0,0 +1,296 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * FPGA Security Manager
+> + *
+> + * Copyright (C) 2019-2020 Intel Corporation, Inc.
+> + */
+> +
+> +#include <linux/fpga/fpga-sec-mgr.h>
+> +#include <linux/idr.h>
+> +#include <linux/module.h>
+> +#include <linux/slab.h>
+> +#include <linux/vmalloc.h>
+> +
+> +static DEFINE_IDA(fpga_sec_mgr_ida);
+> +static struct class *fpga_sec_mgr_class;
+> +
+> +struct fpga_sec_mgr_devres {
+> +	struct fpga_sec_mgr *smgr;
+> +};
+> +
+> +#define to_sec_mgr(d) container_of(d, struct fpga_sec_mgr, dev)
+> +
+> +static ssize_t name_show(struct device *dev,
+> +			 struct device_attribute *attr, char *buf)
+> +{
+> +	struct fpga_sec_mgr *smgr = to_sec_mgr(dev);
+> +
+> +	return sysfs_emit(buf, "%s\n", smgr->name);
+> +}
+> +static DEVICE_ATTR_RO(name);
+> +
+> +static struct attribute *sec_mgr_attrs[] = {
+> +	&dev_attr_name.attr,
+> +	NULL,
+> +};
+> +
+> +static struct attribute_group sec_mgr_attr_group = {
+> +	.attrs = sec_mgr_attrs,
+> +};
+> +
+> +static const struct attribute_group *fpga_sec_mgr_attr_groups[] = {
+> +	&sec_mgr_attr_group,
+> +	NULL,
+> +};
+> +
+> +/**
+> + * fpga_sec_mgr_create - create and initialize an FPGA
+> + *			  security manager struct
+> + *
+> + * @dev:  fpga security manager device from pdev
+> + * @name: fpga security manager name
+> + * @sops: pointer to a structure of fpga callback functions
+> + * @priv: fpga security manager private data
+> + *
+> + * The caller of this function is responsible for freeing the struct
+> + * with ifpg_sec_mgr_free(). Using devm_fpga_sec_mgr_create() instead
+> + * is recommended.
+> + *
+> + * Return: pointer to struct fpga_sec_mgr or NULL
+> + */
+> +struct fpga_sec_mgr *
+> +fpga_sec_mgr_create(struct device *dev, const char *name,
+> +		    const struct fpga_sec_mgr_ops *sops, void *priv)
+> +{
+> +	struct fpga_sec_mgr *smgr;
+> +	int id, ret;
+> +
+> +	if (!name || !strlen(name)) {
+> +		dev_err(dev, "Attempt to register with no name!\n");
+> +		return NULL;
+> +	}
+> +
+> +	smgr = kzalloc(sizeof(*smgr), GFP_KERNEL);
+> +	if (!smgr)
+> +		return NULL;
+> +
+> +	id = ida_simple_get(&fpga_sec_mgr_ida, 0, 0, GFP_KERNEL);
+> +	if (id < 0)
+> +		goto error_kfree;
+> +
+> +	mutex_init(&smgr->lock);
+> +
+> +	smgr->name = name;
+> +	smgr->priv = priv;
+> +	smgr->sops = sops;
+> +
+> +	device_initialize(&smgr->dev);
+> +	smgr->dev.class = fpga_sec_mgr_class;
+> +	smgr->dev.parent = dev;
+> +	smgr->dev.id = id;
+> +
+> +	ret = dev_set_name(&smgr->dev, "fpga_sec%d", id);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to set device name: fpga_sec%d\n", id);
+> +		goto error_device;
+> +	}
+> +
+> +	return smgr;
+> +
+> +error_device:
+> +	ida_simple_remove(&fpga_sec_mgr_ida, id);
+> +
+> +error_kfree:
+> +	kfree(smgr);
+> +
+> +	return NULL;
+> +}
+> +EXPORT_SYMBOL_GPL(fpga_sec_mgr_create);
+> +
+> +/**
+> + * fpga_sec_mgr_free - free an FPGA security manager created
+> + *			with fpga_sec_mgr_create()
+> + *
+> + * @smgr:	FPGA security manager structure
+> + */
+> +void fpga_sec_mgr_free(struct fpga_sec_mgr *smgr)
+> +{
+> +	ida_simple_remove(&fpga_sec_mgr_ida, smgr->dev.id);
+> +	kfree(smgr);
+> +}
+> +EXPORT_SYMBOL_GPL(fpga_sec_mgr_free);
+> +
+> +static void devm_fpga_sec_mgr_release(struct device *dev, void *res)
+> +{
+> +	struct fpga_sec_mgr_devres *dr = res;
+> +
+> +	fpga_sec_mgr_free(dr->smgr);
+> +}
+> +
+> +/**
+> + * devm_fpga_sec_mgr_create - create and initialize an FPGA
+> + *			       security manager struct
+> + *
+> + * @dev:  fpga security manager device from pdev
+> + * @name: fpga security manager name
+> + * @sops: pointer to a structure of fpga callback functions
+> + * @priv: fpga security manager private data
+> + *
+> + * This function is intended for use in a FPGA Security manager
+> + * driver's probe function.  After the security manager driver creates
+> + * the fpga_sec_mgr struct with devm_fpga_sec_mgr_create(), it should
+> + * register it with devm_fpga_sec_mgr_register().
+> + * The fpga_sec_mgr struct allocated with this function will be freed
+> + * automatically on driver detach.
+> + *
+> + * Return: pointer to struct fpga_sec_mgr or NULL
+> + */
+> +struct fpga_sec_mgr *
+> +devm_fpga_sec_mgr_create(struct device *dev, const char *name,
+> +			 const struct fpga_sec_mgr_ops *sops, void *priv)
+> +{
+> +	struct fpga_sec_mgr_devres *dr;
+> +
+> +	dr = devres_alloc(devm_fpga_sec_mgr_release, sizeof(*dr), GFP_KERNEL);
+> +	if (!dr)
+> +		return NULL;
+> +
+> +	dr->smgr = fpga_sec_mgr_create(dev, name, sops, priv);
+> +	if (!dr->smgr) {
+> +		devres_free(dr);
+> +		return NULL;
+> +	}
+> +
+> +	devres_add(dev, dr);
+> +
+> +	return dr->smgr;
+> +}
+> +EXPORT_SYMBOL_GPL(devm_fpga_sec_mgr_create);
+> +
+> +/**
+> + * fpga_sec_mgr_register - register an FPGA security manager
+> + *
+> + * @smgr: fpga security manager struct
+> + *
+> + * Return: 0 on success, negative error code otherwise.
+> + */
+> +int fpga_sec_mgr_register(struct fpga_sec_mgr *smgr)
+> +{
+> +	int ret;
+> +
+> +	ret = device_add(&smgr->dev);
+> +	if (ret)
+> +		goto error_device;
+> +
+> +	dev_info(&smgr->dev, "%s registered\n", smgr->name);
+> +
+> +	return 0;
+> +
+> +error_device:
+> +	ida_simple_remove(&fpga_sec_mgr_ida, smgr->dev.id);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(fpga_sec_mgr_register);
+> +
+> +/**
+> + * fpga_sec_mgr_unregister - unregister an FPGA security manager
+> + *
+> + * @mgr: fpga manager struct
+> + *
+> + * This function is intended for use in an FPGA security manager
+> + * driver's remove() function.
+> + */
+> +void fpga_sec_mgr_unregister(struct fpga_sec_mgr *smgr)
+> +{
+> +	dev_info(&smgr->dev, "%s %s\n", __func__, smgr->name);
+> +
+> +	device_unregister(&smgr->dev);
+> +}
+> +EXPORT_SYMBOL_GPL(fpga_sec_mgr_unregister);
+> +
+> +static int fpga_sec_mgr_devres_match(struct device *dev, void *res,
+> +				     void *match_data)
+> +{
+> +	struct fpga_sec_mgr_devres *dr = res;
+> +
+> +	return match_data == dr->smgr;
+> +}
+> +
+> +static void devm_fpga_sec_mgr_unregister(struct device *dev, void *res)
+> +{
+> +	struct fpga_sec_mgr_devres *dr = res;
+> +
+> +	fpga_sec_mgr_unregister(dr->smgr);
+> +}
+> +
+> +/**
+> + * devm_fpga_sec_mgr_register - resource managed variant of
+> + *				fpga_sec_mgr_register()
+> + *
+> + * @dev: managing device for this FPGA security manager
+> + * @smgr: fpga security manager struct
+> + *
+> + * This is the devres variant of fpga_sec_mgr_register() for which the
+> + * unregister function will be called automatically when the managing
+> + * device is detached.
+> + */
+> +int devm_fpga_sec_mgr_register(struct device *dev, struct fpga_sec_mgr *smgr)
+> +{
+> +	struct fpga_sec_mgr_devres *dr;
+> +	int ret;
+> +
+> +	/*
+> +	 * Make sure that the struct fpga_sec_mgr * that is passed in is
+> +	 * managed itself.
+> +	 */
+> +	if (WARN_ON(!devres_find(dev, devm_fpga_sec_mgr_release,
+> +				 fpga_sec_mgr_devres_match, smgr)))
+> +		return -EINVAL;
+> +
+> +	dr = devres_alloc(devm_fpga_sec_mgr_unregister, sizeof(*dr), GFP_KERNEL);
+> +	if (!dr)
+> +		return -ENOMEM;
+> +
+> +	ret = fpga_sec_mgr_register(smgr);
+> +	if (ret) {
+> +		devres_free(dr);
+> +		return ret;
+> +	}
+> +
+> +	dr->smgr = smgr;
+> +	devres_add(dev, dr);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(devm_fpga_sec_mgr_register);
+> +
+> +static void fpga_sec_mgr_dev_release(struct device *dev)
+> +{
+> +}
+> +
+> +static int __init fpga_sec_mgr_class_init(void)
+> +{
+> +	pr_info("FPGA Security Manager\n");
+> +
+> +	fpga_sec_mgr_class = class_create(THIS_MODULE, "fpga_sec_mgr");
+> +	if (IS_ERR(fpga_sec_mgr_class))
+> +		return PTR_ERR(fpga_sec_mgr_class);
+> +
+> +	fpga_sec_mgr_class->dev_groups = fpga_sec_mgr_attr_groups;
+> +	fpga_sec_mgr_class->dev_release = fpga_sec_mgr_dev_release;
+> +
+> +	return 0;
+> +}
+> +
+> +static void __exit fpga_sec_mgr_class_exit(void)
+> +{
+> +	class_destroy(fpga_sec_mgr_class);
+> +	ida_destroy(&fpga_sec_mgr_ida);
+> +}
+> +
+> +MODULE_DESCRIPTION("FPGA Security Manager Driver");
+> +MODULE_LICENSE("GPL v2");
+> +
+> +subsys_initcall(fpga_sec_mgr_class_init);
+> +module_exit(fpga_sec_mgr_class_exit)
+> diff --git a/include/linux/fpga/fpga-sec-mgr.h b/include/linux/fpga/fpga-sec-mgr.h
+> new file mode 100644
+> index 000000000000..f85665b79b9d
+> --- /dev/null
+> +++ b/include/linux/fpga/fpga-sec-mgr.h
+> @@ -0,0 +1,44 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Header file for FPGA Security Manager
+> + *
+> + * Copyright (C) 2019-2020 Intel Corporation, Inc.
+> + */
+> +#ifndef _LINUX_FPGA_SEC_MGR_H
+> +#define _LINUX_FPGA_SEC_MGR_H
+> +
+> +#include <linux/device.h>
+> +#include <linux/mutex.h>
+> +#include <linux/types.h>
+> +
+> +struct fpga_sec_mgr;
+> +
+> +/**
+> + * struct fpga_sec_mgr_ops - device specific operations
+> + */
+> +struct fpga_sec_mgr_ops {
+> +};
+> +
+> +struct fpga_sec_mgr {
+> +	const char *name;
+> +	struct device dev;
+> +	const struct fpga_sec_mgr_ops *sops;
+> +	struct mutex lock;		/* protect data structure contents */
+> +	void *priv;
+> +};
+> +
+> +struct fpga_sec_mgr *
+> +fpga_sec_mgr_create(struct device *dev, const char *name,
+> +		    const struct fpga_sec_mgr_ops *sops, void *priv);
+> +
+> +struct fpga_sec_mgr *
+> +devm_fpga_sec_mgr_create(struct device *dev, const char *name,
+> +			 const struct fpga_sec_mgr_ops *sops, void *priv);
+> +
+> +int fpga_sec_mgr_register(struct fpga_sec_mgr *smgr);
+> +int devm_fpga_sec_mgr_register(struct device *dev,
+> +			       struct fpga_sec_mgr *smgr);
+> +void fpga_sec_mgr_unregister(struct fpga_sec_mgr *smgr);
+> +void fpga_sec_mgr_free(struct fpga_sec_mgr *smgr);
+> +
+> +#endif
+> -- 
+> 2.25.1
 > 
-> AMD partner using their own repositories where kernel is not migrated to 
-> 5.10. Still products are running with v4.14 kernel only.
-> That's why users hasn't faced this issue.
->>
->>>> What is still not clear to me is which channel fails?
->>>> A) the DMA between ACP FIFO and the I2S
->>>> B) the DMA between ACP FIFO and system memory
->>>
->>> There is difference for playback and Capture use cases.
->>>
->>> Playback:
->>>
->>> channel 1 : DMA transfer from System memory -> ACP memory
->>> channel 2 : DMA transfer from ACP memory -> I2S memory
->>>
->>> Capture:
->>>
->>> channel 1: DMA transfer from I2S memory to ACP memory
->>> channel 2: DMA transfer from ACP memory to System memory
->>
->> Yes, this is why I used A and B to refer to the DMA channels.
->>
->>> In case of playback, Channel 2 is failing where as in case of
->>> capture channel 1 is failing.
->>
->> So channel A is failing.
->>
->>>> in acp-pcm-dma.c on stop you have a busy loop (10000 iterations) to
->>>> check if the channel is in fact stopped in response to the cleared run,
->>>> IOCEn bits and the set Rst bit.
->>>
->>> DMA channel run bit is cleared and Ioc bit also cleared for channel 2 in
->>> case of playback .
->>> After that as part of DMA stop sequence, DMA channel reset is applied.
->>> When DMA channel status is polled for stop, its failed to stop.
->>>>
->>>> Channel closer to the destination is stopped first which sounds
->>>> reasonable, but on playback you ignore timeout from A, on capture you
->>>> ignore the timeout from B.
->>>
->>> Please refer above explanation.
->>>
->>>> Still the issue sounds like exactly what I have described. One of the
->>>> DMA is failing to drain because the IP is stopped?
->>>
->>> As per our understanding, failing to stop the DMA by hardware is causing
->>> the issue.
->>>
->>>>
->>>>> Need find a right place to implement a work around only for AMD
->>>>> stoneyridge platform.
->>>>
->>>> Is this really only affecting stoneyridge platform? Are there other
->>>> platforms using drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c ?
->>>>
->>> This design is being used only in stoneyridge and Carrizo platforms.
->>> But only stoneyridge platform is productized.
->>> New design is implemented for later generations of APU series.
->>
->> Right.
->>
->> This version of ACP is only used with the designware I2S IP?
-> Yes this version of ACP only uses designware I2S controller.
->>
->> I would try to find a way to force stop the DMA in case the DAI has been
->> already stopped.
->>
->> If this is not possible than the only solution is to do this in core, 
->> imho.
->>
->> For that you would need a flag to say that the platform (DMA) needs the
->> DAI to be active when stopping it.
->>
->> If the same ACP have problems with different DAIs, then it is a property
->> of the platform driver.
->> If the ACP only have problem against the designware I2S then it is a
->> link property.
->> If this ACP only used with the designware I2S then it is again, most
->> likely the property of the platform driver.
->>
-> Hardware signal broken between ACP and Designware I2S controller with 
-> re-ordering the sequence.
->   > It is surely not a designware IP issue, trying to solve it there is 
-> wrong.
->>
-> As it's not a designware IP issue, initially we started idea with 
-> introducing quirk that applies for this ACP version based AMD platforms.
-> 
 
-Hi Peter,
+Looks good to me.
 
-Any suggestion on the work around for this issue?
-How about declaring a flag in sound card structure and this flag will be 
-set in stoneyridge machine driver.
-
-Based on flag check trigger stop sequence will be re-ordered.
-
-Thanks,
-Vijendar
+- Moritz
