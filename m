@@ -2,123 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307B73799DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B472D3799DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231489AbhEJWSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56326 "EHLO
+        id S232723AbhEJWRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbhEJWRy (ORCPT
+        with ESMTP id S232753AbhEJWRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:17:54 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986A2C061761
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:16:48 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id r11so5678951edt.13
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:16:48 -0700 (PDT)
+        Mon, 10 May 2021 18:17:48 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 317D2C061574;
+        Mon, 10 May 2021 15:16:42 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id n32-20020a9d1ea30000b02902a53d6ad4bdso15845217otn.3;
+        Mon, 10 May 2021 15:16:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9FT7OOp2mNRaZwmV8uqw34o87uK18modrlSvUxsdB2g=;
-        b=jqGgixAXgAqIPbBvpRxTE0B2SlH4qGvYnHvbeYPN/kRHlQqGSBBfX9yn9bUGfWN+56
-         S/LHcpb/NV3RIWvKptaEXETeRju5nZ+JbogaZSpdLtuTeB1MBBVRpS9h3vCTJTa6nmRh
-         nvc6HG6kyCWF/iy3yLWMKDlj4YApgcfb3J9G57lERFSZmnVc47Fe4ryl0jdviATmnZyA
-         n2i9hZT6RAdVI4AdBTL78dHKc1keFH1nlmmi+1VI8twSvVclUKLG2sulUIekeiHB4B3M
-         kJFVwHydwel10Ggy4sWK7qAvmnKtgh5wQgEJwnnANm4dOzPoUw6QHoWlJqHzyoobIZ4n
-         nwMA==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QYRzooxQM78V6aVVWFEgwKklL95CEktc5LfOp3LiZUU=;
+        b=m2fgdWlJ8iyrcu96Yr+Rt1/e5YqmzxOG8f5fLO0yfvc+GZ5413gIvlFUKHmhbOt7h7
+         ++U2j9kUA78nyIIDlQ2qgdRnpgZ9M19gV0JO6ysbED8tIQQAw+w3JhbCc6LwxbstivG9
+         4mz3F0REISqDN2t7QE4tdl0kKzYD4eZmwwZPYJ5klmG5vfuSXpd6v6tj2PxvNZzCQYW0
+         GavaZyqqZaJ5uRYJZZuCrp8nghqdfpGynvDExXkRYjdfO0+vpOARMa+3Zn2okrWe2dfK
+         IuL2HVCEuUeqh1Mnw6oeOw7lz1q6U61+rXH5gXYuHgUY+TgFO94sWTCEu9JserVE0kdn
+         esEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9FT7OOp2mNRaZwmV8uqw34o87uK18modrlSvUxsdB2g=;
-        b=QRajVvSuU/IvXZjxQ+98wMjfWBH0gJx/RiaVbs37MvPFQB/9FLz5Hx9etcRGhALud4
-         H9WEnDZY4Fssau5GeGWnGk4OogA6axhsNVKPUSCX01czHQxKvKzHPfUcJInFWc/B6K08
-         Jwn4pT8/QnqMG/Q9krK0l1vN0Jn3+llZF6BbYMlKHrP6kXi9IiO5t5uIxiyM8DTdorv6
-         KRMU+jMN+MnJoV88iTEzLbNrek7VfGQevKlRzUWuEgBilfaIFnnqO5Vv2y1FjYoKihme
-         iYfEf/pmR6iT8Sp0MaBnvWbjXv3CyotQ9ZPWEJr0YRwXdpFcT3VtbQrHKF5Ptv4aEC4p
-         11Uw==
-X-Gm-Message-State: AOAM533wkYP/GFYzFTRkFHDeeaPVWtFqHsaorckzC20kS6B7GQUr1JLR
-        RPC34L/hhMu4MtBJQYwEd9FU1Vw2KD9EHz1rMQyDAV1p8SeJXw==
-X-Google-Smtp-Source: ABdhPJwPdqIKi2LpjqLfCEP5A3HFu4dYZ0gssJOP1M+PS8nuRTfDoMDWXLhxTA28S0a/8WBh01bU0OskwUCj7+oV06k=
-X-Received: by 2002:aa7:c9c9:: with SMTP id i9mr32256185edt.17.1620685007258;
- Mon, 10 May 2021 15:16:47 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=QYRzooxQM78V6aVVWFEgwKklL95CEktc5LfOp3LiZUU=;
+        b=iNnnlhlcDf0Awrl2y2JT+qFmQWqPpneQN7FTOX+0xWQ0jf8+i2VjOKE+jN4AfuC5CV
+         49yPEePJrimwLhR+Vp+LB3YwYb0xo7Hq84QuJKWN+za2UidnUMjGjQzHmN7lH/kzTQ4k
+         iQpd1sdRoqYB8uKV35mAm2hEux9CUqRqvPWDlOS2fsNx0rhd4g4xp7PlFyrpnt+zuanD
+         miApxSVnuS47kVQg4Cm4Gm6R+KsaaMfz0aJ21gUPgsss2iHgX7eFQ7ll6BGtwvcW/sIp
+         HuygJmsKfO2JyJwfXO0WiSArcfzqdhUD6zTfVAOT+nZLKLKxcd0MU1h74uKQXzxP+9+I
+         6ilQ==
+X-Gm-Message-State: AOAM532JEGDQuBEdR/QFtoG0PfvYXeMewwNO4Y8rFfmFBdxRjNAoGApd
+        Klpby2KpMq84r6w7HSf1KOA=
+X-Google-Smtp-Source: ABdhPJwaVv8tV4QT5tzdDRVo1VaxYs1msMnqbeSJx/HPd1SaDaNfoxPllungUBexQ6PZ5Ta3TPRMPA==
+X-Received: by 2002:a05:6830:17cb:: with SMTP id p11mr24296519ota.283.1620685001643;
+        Mon, 10 May 2021 15:16:41 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d19sm3017440oti.57.2021.05.10.15.16.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 15:16:41 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 10 May 2021 15:16:40 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.12 000/384] 5.12.3-rc1 review
+Message-ID: <20210510221640.GD2334827@roeck-us.net>
+References: <20210510102014.849075526@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210510063602.505829-1-jay.xu@rock-chips.com>
-In-Reply-To: <20210510063602.505829-1-jay.xu@rock-chips.com>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Mon, 10 May 2021 19:16:36 -0300
-Message-ID: <CAAEAJfALROYg5awL88Uux0yXyMxBthbFjRgJCyhvu4hWioSO2w@mail.gmail.com>
-Subject: Re: [PATCH v4 0/7] gpio-rockchip driver
-To:     Jianqun Xu <jay.xu@rock-chips.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jianqun,
+On Mon, May 10, 2021 at 12:16:29PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.3 release.
+> There are 384 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
+> Anything received after that time might be too late.
+> 
 
-Thanks a lot for the patch, and for pushing this work forward.
+Build results:
+	total: 151 pass: 151 fail: 0
+Qemu test results:
+	total: 462 pass: 462 fail: 0
 
-On Mon, 10 May 2021 at 03:36, Jianqun Xu <jay.xu@rock-chips.com> wrote:
->
-> Separate gpio driver from pinctrl driver, and support v2 controller.
->
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Usually, we expect to see a changelog here, with some information
-about the changes from in v2, v3, etc. Also, note that only the cover
-letter says "v4", and the individual patches are missing that. You can
-use git-format-patch --subject-prefix="PATCH v4", and then all the patches
-will get the same prefix.
-
-However, the last patchset I can find in lore.kernel.org (or my
-mailbox) is a v2:
-
-https://lore.kernel.org/linux-gpio/20210411133030.1663936-1-pgwipeout@gmail.com/
-
-.. which was sent by Peter Geis (so you should have Cced him).
-
-These are just some friendly tips on the submission process,
-for you to keep in mind,  you don't really need to resend the
-series or do anything else.
-
-Also, I added Bartosz the GPIO maintainer in Cc.
-
-Thanks!
-Ezequiel
-
-> Jianqun Xu (7):
->   pinctrl/rockchip: separate struct rockchip_pin_bank to a head file
->   pinctrl/pinctrl-rockchip.h: add pinctrl device to gpio bank struct
->   gpio: separate gpio driver from pinctrl-rockchip driver
->   gpio/rockchip: use struct rockchip_gpio_regs for gpio controller
->   gpio/rockchip: support next version gpio controller
->   gpio/rockchip: always enable clock for gpio controller
->   gpio/rockchip: drop irq_gc_lock/irq_gc_unlock for irq set type
->
->  drivers/gpio/Kconfig               |   8 +
->  drivers/gpio/Makefile              |   1 +
->  drivers/gpio/gpio-rockchip.c       | 758 ++++++++++++++++++++++++
->  drivers/pinctrl/pinctrl-rockchip.c | 910 +----------------------------
->  drivers/pinctrl/pinctrl-rockchip.h | 287 +++++++++
->  5 files changed, 1073 insertions(+), 891 deletions(-)
->  create mode 100644 drivers/gpio/gpio-rockchip.c
->  create mode 100644 drivers/pinctrl/pinctrl-rockchip.h
->
-> --
-> v5:
->  - change to devel branch
->
-> 2.25.1
->
->
->
+Guenter
