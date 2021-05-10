@@ -2,211 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E77C37808C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2159B378028
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230477AbhEJJzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:55:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231380AbhEJJxw (ORCPT
+        id S230484AbhEJJwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:52:46 -0400
+Received: from fgw20-7.mail.saunalahti.fi ([62.142.5.81]:63851 "EHLO
+        fgw20-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230506AbhEJJwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:53:52 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB36C06135A
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 02:52:32 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id t4so8866208plc.6
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 02:52:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fO4/BDgOqSIweTkVlBXlAFU55A/tHyh8EFQ3OCJ0164=;
-        b=a/WuPnT5SWKEIKaQCzsTYV8esrJXULCD+Pttku/Hjp9UGsEHrBcpr4K60CJSleWPaJ
-         Cs+rhFZCjeyPwMUFq4cNS3B54eAb1lfhIoXu9ETsYSgcWLTxNsI5jc7/9Z5SKKogzIJd
-         OHxCjg4x9FxeJXA4ZyVgnBWzyFvoWoATrwxIg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fO4/BDgOqSIweTkVlBXlAFU55A/tHyh8EFQ3OCJ0164=;
-        b=M+RHDTDsXIqVcMtgEIOy2y3PD+ws7qk1PSyDik8hnS/QTncldVo0fJkEx/iVYI6ZCh
-         sJlxZ1+ggBiRrJxLA0E5YDTLVFq1VCVIsk82S3Fm6tNQCob8tgV+UHoWsuDuqHvkRn5+
-         6qAd4U/4LB7ZHmGIQI4mdIv2A1+hYMiEYmo/uA6dcu4nY/m6ON6ndAl9nJ1oLLMDgIMA
-         FZb+GXqX0Y+kTG1mlH7cNnOouo5cGYjwdAJzv1jUlPWRRZTezgatiDbAr5WLaDS2Ky+O
-         ESoZN74IJGza+j3U0tTAvR/b1qlHTe9btmJ0IkudoAsqWjluVaB4vh8B1ggP94ZWJew0
-         b8DQ==
-X-Gm-Message-State: AOAM531jGfKEv0W0EW06fpWNQXtm0FiH4kPzjKS6HVCotVe7Yz5BbYWO
-        Ao15ZSGzlWiHkv45dsmHJzX9nw==
-X-Google-Smtp-Source: ABdhPJwxBoZD0WeI9zQ0gddyfu3vgr7xM+940pwyPaN5j/qpuJotOQIMQPfObl9zFPGpUQ2nKcqGBw==
-X-Received: by 2002:a17:90a:1d44:: with SMTP id u4mr40914071pju.46.1620640352294;
-        Mon, 10 May 2021 02:52:32 -0700 (PDT)
-Received: from localhost ([2401:fa00:95:205:a524:abe8:94e3:5601])
-        by smtp.gmail.com with UTF8SMTPSA id 15sm10199759pjt.17.2021.05.10.02.52.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 02:52:31 -0700 (PDT)
-From:   Claire Chang <tientzu@chromium.org>
-To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
+        Mon, 10 May 2021 05:52:15 -0400
+Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
+        by fgw20.mail.saunalahti.fi (Halon) with ESMTP
+        id 3cb47c1a-b175-11eb-ba24-005056bd6ce9;
+        Mon, 10 May 2021 12:51:05 +0300 (EEST)
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Pavel Machek <pavel@ucw.cz>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        tientzu@chromium.org, daniel@ffwll.ch, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, jxgao@google.com,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        nouveau@lists.freedesktop.org, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com
-Subject: [PATCH v6 13/15] dma-direct: Allocate memory from restricted DMA pool if available
-Date:   Mon, 10 May 2021 17:50:24 +0800
-Message-Id: <20210510095026.3477496-14-tientzu@chromium.org>
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-In-Reply-To: <20210510095026.3477496-1-tientzu@chromium.org>
-References: <20210510095026.3477496-1-tientzu@chromium.org>
+        Amireddy Mallikarjuna reddy 
+        <mallikarjunax.reddy@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
+        Abanoub Sameh <abanoubsameh8@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v1 08/28] leds: lgm-sso: Put fwnode in any case during ->probe()
+Date:   Mon, 10 May 2021 12:50:25 +0300
+Message-Id: <20210510095045.3299382-9-andy.shevchenko@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210510095045.3299382-1-andy.shevchenko@gmail.com>
+References: <20210510095045.3299382-1-andy.shevchenko@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The restricted DMA pool is preferred if available.
+fwnode_get_next_child_node() bumps a reference counting of a returned variable.
+We have to balance it whenever we return to the caller.
 
-The restricted DMA pools provide a basic level of protection against the
-DMA overwriting buffer contents at unexpected times. However, to protect
-against general data leakage and system memory corruption, the system
-needs to provide a way to lock down the memory access, e.g., MPU.
+All the same in fwnode_for_each_child_node() case.
 
-Note that since coherent allocation needs remapping, one must set up
-another device coherent pool by shared-dma-pool and use
-dma_alloc_from_dev_coherent instead for atomic coherent allocation.
-
-Signed-off-by: Claire Chang <tientzu@chromium.org>
+Fixes: c3987cd2bca3 ("leds: lgm: Add LED controller driver for LGM SoC")
+Cc: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- kernel/dma/direct.c | 38 +++++++++++++++++++++++++++++---------
- 1 file changed, 29 insertions(+), 9 deletions(-)
+ drivers/leds/blink/leds-lgm-sso.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index eb4098323bbc..0d521f78c7b9 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -78,6 +78,10 @@ static bool dma_coherent_ok(struct device *dev, phys_addr_t phys, size_t size)
- static void __dma_direct_free_pages(struct device *dev, struct page *page,
- 				    size_t size)
- {
-+#ifdef CONFIG_DMA_RESTRICTED_POOL
-+	if (swiotlb_free(dev, page, size))
-+		return;
-+#endif
- 	dma_free_contiguous(dev, page, size);
+diff --git a/drivers/leds/blink/leds-lgm-sso.c b/drivers/leds/blink/leds-lgm-sso.c
+index 6a6d75f07af0..f6c7a5d0c2f7 100644
+--- a/drivers/leds/blink/leds-lgm-sso.c
++++ b/drivers/leds/blink/leds-lgm-sso.c
+@@ -633,8 +633,10 @@ __sso_led_dt_parse(struct sso_led_priv *priv, struct fwnode_handle *fw_ssoled)
+ 
+ 	fwnode_for_each_child_node(fw_ssoled, fwnode_child) {
+ 		led = devm_kzalloc(dev, sizeof(*led), GFP_KERNEL);
+-		if (!led)
+-			return -ENOMEM;
++		if (!led) {
++			ret = -ENOMEM;
++			goto __dt_err;
++		}
+ 
+ 		INIT_LIST_HEAD(&led->list);
+ 		led->priv = priv;
+@@ -704,11 +706,11 @@ __sso_led_dt_parse(struct sso_led_priv *priv, struct fwnode_handle *fw_ssoled)
+ 		if (sso_create_led(priv, led, fwnode_child))
+ 			goto __dt_err;
+ 	}
+-	fwnode_handle_put(fw_ssoled);
+ 
+ 	return 0;
++
+ __dt_err:
+-	fwnode_handle_put(fw_ssoled);
++	fwnode_handle_put(fwnode_child);
+ 	/* unregister leds */
+ 	list_for_each(p, &priv->led_list) {
+ 		led = list_entry(p, struct sso_led, list);
+@@ -734,10 +736,15 @@ static int sso_led_dt_parse(struct sso_led_priv *priv)
+ 	if (fw_ssoled) {
+ 		ret = __sso_led_dt_parse(priv, fw_ssoled);
+ 		if (ret)
+-			return ret;
++			goto err_child_out;
+ 	}
+ 
++	fwnode_handle_put(fw_ssoled);
+ 	return 0;
++
++err_child_out:
++	fwnode_handle_put(fw_ssoled);
++	return ret;
  }
  
-@@ -92,7 +96,17 @@ static struct page *__dma_direct_alloc_pages(struct device *dev, size_t size,
- 
- 	gfp |= dma_direct_optimal_gfp_mask(dev, dev->coherent_dma_mask,
- 					   &phys_limit);
--	page = dma_alloc_contiguous(dev, size, gfp);
-+
-+#ifdef CONFIG_DMA_RESTRICTED_POOL
-+	page = swiotlb_alloc(dev, size);
-+	if (page && !dma_coherent_ok(dev, page_to_phys(page), size)) {
-+		__dma_direct_free_pages(dev, page, size);
-+		page = NULL;
-+	}
-+#endif
-+
-+	if (!page)
-+		page = dma_alloc_contiguous(dev, size, gfp);
- 	if (page && !dma_coherent_ok(dev, page_to_phys(page), size)) {
- 		dma_free_contiguous(dev, page, size);
- 		page = NULL;
-@@ -148,7 +162,7 @@ void *dma_direct_alloc(struct device *dev, size_t size,
- 		gfp |= __GFP_NOWARN;
- 
- 	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
--	    !force_dma_unencrypted(dev)) {
-+	    !force_dma_unencrypted(dev) && !is_dev_swiotlb_force(dev)) {
- 		page = __dma_direct_alloc_pages(dev, size, gfp & ~__GFP_ZERO);
- 		if (!page)
- 			return NULL;
-@@ -161,18 +175,23 @@ void *dma_direct_alloc(struct device *dev, size_t size,
- 	}
- 
- 	if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
--	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
--	    !dev_is_dma_coherent(dev))
-+	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) && !dev_is_dma_coherent(dev) &&
-+	    !is_dev_swiotlb_force(dev))
- 		return arch_dma_alloc(dev, size, dma_handle, gfp, attrs);
- 
- 	/*
- 	 * Remapping or decrypting memory may block. If either is required and
- 	 * we can't block, allocate the memory from the atomic pools.
-+	 * If restricted DMA (i.e., is_dev_swiotlb_force) is required, one must
-+	 * set up another device coherent pool by shared-dma-pool and use
-+	 * dma_alloc_from_dev_coherent instead.
- 	 */
- 	if (IS_ENABLED(CONFIG_DMA_COHERENT_POOL) &&
- 	    !gfpflags_allow_blocking(gfp) &&
- 	    (force_dma_unencrypted(dev) ||
--	     (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) && !dev_is_dma_coherent(dev))))
-+	     (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
-+	      !dev_is_dma_coherent(dev))) &&
-+	    !is_dev_swiotlb_force(dev))
- 		return dma_direct_alloc_from_pool(dev, size, dma_handle, gfp);
- 
- 	/* we always manually zero the memory once we are done */
-@@ -253,15 +272,15 @@ void dma_direct_free(struct device *dev, size_t size,
- 	unsigned int page_order = get_order(size);
- 
- 	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
--	    !force_dma_unencrypted(dev)) {
-+	    !force_dma_unencrypted(dev) && !is_dev_swiotlb_force(dev)) {
- 		/* cpu_addr is a struct page cookie, not a kernel address */
- 		dma_free_contiguous(dev, cpu_addr, size);
- 		return;
- 	}
- 
- 	if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
--	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
--	    !dev_is_dma_coherent(dev)) {
-+	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) && !dev_is_dma_coherent(dev) &&
-+	    !is_dev_swiotlb_force(dev)) {
- 		arch_dma_free(dev, size, cpu_addr, dma_addr, attrs);
- 		return;
- 	}
-@@ -289,7 +308,8 @@ struct page *dma_direct_alloc_pages(struct device *dev, size_t size,
- 	void *ret;
- 
- 	if (IS_ENABLED(CONFIG_DMA_COHERENT_POOL) &&
--	    force_dma_unencrypted(dev) && !gfpflags_allow_blocking(gfp))
-+	    force_dma_unencrypted(dev) && !gfpflags_allow_blocking(gfp) &&
-+	    !is_dev_swiotlb_force(dev))
- 		return dma_direct_alloc_from_pool(dev, size, dma_handle, gfp);
- 
- 	page = __dma_direct_alloc_pages(dev, size, gfp);
+ static int sso_probe_gpios(struct sso_led_priv *priv)
 -- 
-2.31.1.607.g51e8a6a459-goog
+2.31.1
 
