@@ -2,73 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68538378DEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86143378DF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350321AbhEJM5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:57:10 -0400
-Received: from mga18.intel.com ([134.134.136.126]:62648 "EHLO mga18.intel.com"
+        id S234459AbhEJM7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:59:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348133AbhEJMkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 08:40:16 -0400
-IronPort-SDR: /F+7haN7w14ep2tcd6GrwJ4ObO1r0XvmEHJuEQAt/Lm6cPAwEdvcvnPsdsodpdr5MERlIlWhYR
- JwvLzMI3BvLA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="186630435"
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="186630435"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 05:39:11 -0700
-IronPort-SDR: qr+vKfhFFOxuAriRn/h1VWiMb0tXm1Qu5IZa5twkTj1uqIaFfwLl8EDw5CS3NBEwX2Poquub4Y
- Pgla+J4ZgJjA==
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="470782756"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 05:39:00 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lg5BY-00BAPk-PH; Mon, 10 May 2021 15:38:56 +0300
-Date:   Mon, 10 May 2021 15:38:56 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH v2 07/14] spi: pxa2xx: Introduce int_stop_and_reset()
- helper
-Message-ID: <YJkpYDfoUg04UEMy@smile.fi.intel.com>
-References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
- <20210423182441.50272-8-andriy.shevchenko@linux.intel.com>
- <20210510120953.GA15173@sirena.org.uk>
+        id S1348504AbhEJMmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 08:42:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2814061075;
+        Mon, 10 May 2021 12:40:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620650459;
+        bh=IFUIQLT4ckcRv4nIp14Tw+hshyc6udmW0RapcuUSdmo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vq5nD8M+MzlLGt3AMxKIMB6HJH9BBqGtYHj1Ofe+F+OhulRpH1A9rdQzo4NX0q7dx
+         bRLBd9LOsyHENVMvbooeoG4n69uar09KSzvEu2uqMNFgmLYFYTvyM0EB3bftKSp8pv
+         COcKb8lsyehvR3PdUPiM6g59+a4jPkTaZr/11tSE=
+Date:   Mon, 10 May 2021 14:40:57 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ferry Toth <ftoth@exalondelft.nl>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Felipe Balbi <balbi@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v2 1/1] usb: dwc3: pci: Enable usb2-gadget-lpm-disable
+ for Intel Merrifield
+Message-ID: <YJkp2ZfhB717CmT7@kroah.com>
+References: <20210425195452.94143-1-ftoth@exalondelft.nl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510120953.GA15173@sirena.org.uk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210425195452.94143-1-ftoth@exalondelft.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 01:09:53PM +0100, Mark Brown wrote:
-> On Fri, Apr 23, 2021 at 09:24:34PM +0300, Andy Shevchenko wrote:
-> > Currently we have three times the same few lines repeated in the code.
-> > Deduplicate them by newly introduced int_stop_and_reset() helper.
+On Sun, Apr 25, 2021 at 09:54:52PM +0200, Ferry Toth wrote:
+> On Intel Merrifield LPM is causing the host to reset port after a timeout.
+> By disabling LPM entirely this is prevented.
 > 
-> This doesn't apply against current code, please check and resend.
+> Fixes: 066c09593454 ("usb: dwc3: pci: Enable extcon driver for Intel Merrifield")
+> Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> ---
+>  drivers/usb/dwc3/dwc3-pci.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-Hmm...
-
-Can you, please, point out, what branch should I use?
-It seems good against v5.13-rc1 and spi/for-5.14.
-
-Okay, I will resend against spi/for-5.14, but I don't see the issue here.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+What changed from v1?  Always put that below the --- line.
 
