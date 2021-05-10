@@ -2,108 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538AF37972D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44397379738
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232117AbhEJSx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 14:53:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47352 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230186AbhEJSx1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 14:53:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620672742;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g7j+izsokRqpT308sJPWfxVQOB87GOP9BtFazVppLoQ=;
-        b=JHZkCTl9S7E9Q64u7dqEEJyzhvgUoT/t5/iUQPDnElNlt3ORpL15iz7sloP7M6IOnzM7CK
-        roNTysVtV8/GsTH3DjBNb95DwL15q/t5CLOxt1vb29ZVaGlJD0fKgllkwQdbHpkFSfzY4s
-        txGYYD7jJVr5UMzITeK1DREeig9J8ok=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-564-z31LuRnTOEm6OyHadIYgrg-1; Mon, 10 May 2021 14:52:18 -0400
-X-MC-Unique: z31LuRnTOEm6OyHadIYgrg-1
-Received: by mail-qk1-f199.google.com with SMTP id d201-20020ae9efd20000b02902e9e9d8d9dcso12353773qkg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:52:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=g7j+izsokRqpT308sJPWfxVQOB87GOP9BtFazVppLoQ=;
-        b=YGbgCJuS2HruPTXo0IGSbHK+XPjH+hjmLQdZrVhPkRhBsBiO/LtHh1dk/Dv+z7F9LY
-         BxO2A/oxA4L2ArwE8pJXodi2jHIW8LjWBL0Kw163M0fAGTpTTHjKBJDFczBU3Ks2RAFU
-         rRhIsnFU9P7EaUKuJRoDp1bpUJUoHT/Qc7TRVZ6anaWYvEFCiUmPxd2DUSsh1FwLXiaD
-         oz5y/PU6pWwOhpWgT63tu8qUaG9yn7je8PZEfm5rAZAOTYkMuOsjfGSsF+21gG1uC+Kj
-         kX4zyKNC6TGpVHSIyu/K75mAwVhB1FQkefAKg0jDdRhJqR873Je99P2zD4tLTAYNMbzq
-         gTwg==
-X-Gm-Message-State: AOAM532zGGyAJsuqNuJqSWwVyEVF0fwHuWngSf4fdWYKlDspqgHwtUb9
-        6OJ/NNrU16x8Rt2Iu5EZPaKKQei3m7C6TXqK00BSaeRwTGAyQmXSVa8PuAXZyOEYH0/hES8FIXc
-        mZIvSt67UP0HGvX0Z3aupPuCw
-X-Received: by 2002:a05:620a:2912:: with SMTP id m18mr24874752qkp.475.1620672737973;
-        Mon, 10 May 2021 11:52:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzslxJCI13N/HGEQf/0CdbPdBfh/ACVbIw9n9wIQ9PcwW2U4mKsFsbmO04LbWfLWQIMFWZd5A==
-X-Received: by 2002:a05:620a:2912:: with SMTP id m18mr24874733qkp.475.1620672737751;
-        Mon, 10 May 2021 11:52:17 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id u9sm12338360qtf.76.2021.05.10.11.52.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 11:52:17 -0700 (PDT)
-Subject: Re: [PATCH v12 0/7] FPGA Security Manager Class Driver
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     Russ Weight <russell.h.weight@intel.com>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com, richard.gong@intel.com
-References: <20210503213546.316439-1-russell.h.weight@intel.com>
- <6f3ce0db-883e-2c5b-e671-9ccc363ee532@redhat.com>
- <YJlvYNXUcwrBFGey@epycbox.lan>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <91d29fc4-ac04-270a-f73a-e1dd3ba2965f@redhat.com>
-Date:   Mon, 10 May 2021 11:52:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233325AbhEJSzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 14:55:02 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:45441 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232977AbhEJSyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 14:54:47 -0400
+Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14AIrNlc2459085
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Mon, 10 May 2021 11:53:29 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14AIrNlc2459085
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021042801; t=1620672810;
+        bh=QkaTTiwvtH2PVWgSD8V19SdiOHceCecPmtWF6NhrBQU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HGmFFKvPiD3EIBGL4wW0O6x1YTbmLxP75Ggbe42U/gH3DKA70Q0O8XR/EhDEHuJhq
+         FAf+dkwWcqCdIglniUZg32hvekZBjhvhR75AqPi+nG15oaJ6sZ+yo2bjpmEnYUAASw
+         MSwKzaUMwB8VasQDXdIY/lES0Qw38jo6Yry/rRp6Lo5GLMb1mEj81oVLpbXt2BsXnn
+         SXYL+iI5LSxbCEulAD+RXW8LWnRhvWFb/rC5dIlLaEBAf5LhQa0cLUoW3fc9Wciy2B
+         XngH0oJdq4ZhWCNQviWvIomGn+FVTaNdhvRokJSZtRNU9+ySgW73OxWQAWcsEgTjt0
+         GkQ62Se9dmJHA==
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [RFC v2 PATCH 0/6] x86/entry: cleanups and consistent syscall number handling
+Date:   Mon, 10 May 2021 11:53:09 -0700
+Message-Id: <20210510185316.3307264-1-hpa@zytor.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <YJlvYNXUcwrBFGey@epycbox.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
 
-On 5/10/21 10:37 AM, Moritz Fischer wrote:
-> On Mon, May 10, 2021 at 07:12:57AM -0700, Tom Rix wrote:
->> On 5/3/21 2:35 PM, Russ Weight wrote:
->>> The FPGA Security Manager class driver provides a common
->>> API for user-space tools to manage updates for secure FPGA
->>> devices. Device drivers that instantiate the FPGA Security
->>> Manager class driver will interact with a HW secure update
->>> engine in order to transfer new FPGA and BMC images to FLASH so
->>> that they will be automatically loaded when the FPGA card reboots.
->> Russ,
->>
->> These have my Reviewed-by, but since it has been a while, I am looking these
->> over again.
->>
->> If you do not hear anything from me in the next couple of days, please
->> assume everything is fine.
->>
->> Tom
->>
-> I'll do one more one-over, if it looks good will apply end of the week,
+This patchset:
 
-FWIW, my pass was fine.
+1. Cleans up some duplications between <entry/calling.h> and <asm/ptrace-abi.h>.
 
-Thanks,
+2. Swaps the arguments to do_syscall_64() for consistency *and* speed.
 
-Tom
+3. Adds the maximum number of flags to MSR_SYSCALL_MASK; the previous
+   is more of a minimum. The more flags that are masked, the less the
+   likelihood of a control leak into the kernel.
 
->
-> - Moritz
->
+4. Consistently treat the system call number as a signed int. This is
+   what syscall_get_nr() already does, and therefore what all
+   architecture-independent code (e.g. seccomp) already expects.
 
+5. As per the defined semantics of syscall_get_nr(), only the value -1
+   is defined as a non-system call, so comparing >= 0 is
+   incorrect. Change to != -1.
+
+6. Call sys_ni_syscall() for system calls which are out of range
+   except for -1, which is used by ptrace and seccomp as a "skip
+   system call" marker) just as for system call numbers that
+   correspond to holes in the table.
+
+7. In <entry/calling.h>, factor the PUSH_AND_CLEAR_REGS macro into
+   separate PUSH_REGS and CLEAR_REGS macros which can be used
+   separately if desired. This will be used by the FRED entry code at
+   a later date.
+
+Changes from v1:
+
+* Only -1 should be a non-system call per the cross-architectural
+  definition of sys_ni_syscall().
+* Fix/improve patch descriptions.
+
+--- 
+ arch/x86/entry/calling.h       | 45 ++++++--------------------
+ arch/x86/entry/common.c        | 71 ++++++++++++++++++++++++++++--------------
+ arch/x86/entry/entry_64.S      |  4 +--
+ arch/x86/include/asm/syscall.h | 13 ++++----
+ arch/x86/kernel/cpu/common.c   | 12 +++++--
+ arch/x86/kernel/head_64.S      |  6 ++--
+ 6 files changed, 77 insertions(+), 74 deletions(-)
