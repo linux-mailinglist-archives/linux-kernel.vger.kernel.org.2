@@ -2,73 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A40379957
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA39379962
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232949AbhEJVlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 17:41:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232839AbhEJVlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 17:41:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9B3E361621;
-        Mon, 10 May 2021 21:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620682810;
-        bh=To2BxNRIqbdEhksK8f+TTTzf4j3Mov1uJOVRXztmRuk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JIgQ0Wr3s7j1CytDqomj0bgFGgwOJXthXBRu2jQHBFXDeYl2gPZHfzakEnqXBnYfO
-         IkrWAb8azRHNh21v66wACi05ogUOn7/AG56uHRD63cZLlC/f67e9gEGg2+p+luc3+t
-         ek13pi9MHGkCd+knE/20WqUKjHijst8zs8d6a9lJvxQl3EocYkhwdZ8QRODdG5hOXM
-         +7JAIR97qfQMunQFHuddR/p0EVGS05PwHRUarjiZwSsSMeqm4Lan8oD5tShoYJHofl
-         q88ta/kKlGnJqmAsEP4XIJ+JtyFs6E2CaOXuVLZBZxWedKaf+03EnJnLe4wM6jzIBa
-         bchOjvMMSVFaA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 95ABA60A48;
-        Mon, 10 May 2021 21:40:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232542AbhEJVpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 17:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231434AbhEJVpM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 17:45:12 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF621C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 14:44:06 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620683043;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lpZHZILIVURBA4uZge0VeiF3/MxcG74g/FLqlaAURhc=;
+        b=YxBeXXWEQgJ5X2nX0hY5xOeOa3vM2NwSDUlf24gr0P2uW0IVZj7jbroySMJALdl1aB+GgU
+        yMje+laDS5hdkKtebyV2b/0n8S0slU+nvIPz+uqLHAoKHjyatn9jDj140h78nlVT/pFm7F
+        OhzUi3EZ0R2nz09WVlq7/Afy0zNoQ/8WRVvBxrsHF1T58uk/a0sJK8USA4mslBDM++/0zU
+        Vw7rYPQbrlux3UuQal3XHl6IyDQ0kThJRKkuACtr5g374Kq3dN8gP9hG1QwguV6ZWKev/N
+        2SaLetL0SWWrxP5D580sfEQ3411R3wnrEbLHfw3jvNyx/6UFpROuIKQToaz9gw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620683043;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lpZHZILIVURBA4uZge0VeiF3/MxcG74g/FLqlaAURhc=;
+        b=3t+psbvTUJjOUoaFVqIThGokCXoG0I38L+HBKfPA1LyRnCAoIZa0bVRAsVnwK9Iqv94ZUp
+        CCb1MJOFYPbOTtCA==
+To:     "Saripalli\, RK" <rsaripal@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, Jonathan Corbet <corbet@lwn.net>,
+        bsd@redhat.com, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v5 1/1] x86/cpufeatures: Implement Predictive Store Forwarding control.
+In-Reply-To: <d134cbb1-a8a5-161a-1927-2a04df6b4b4a@amd.com>
+References: <20210505190923.276051-1-rsaripal@amd.com> <20210505190923.276051-2-rsaripal@amd.com> <87wnsamvaa.ffs@nanos.tec.linutronix.de> <d134cbb1-a8a5-161a-1927-2a04df6b4b4a@amd.com>
+Date:   Mon, 10 May 2021 23:44:03 +0200
+Message-ID: <87h7jagt7g.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/3 net-next] net: qca_spi: Improve sync handling
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162068281060.31911.13009428589213016326.git-patchwork-notify@kernel.org>
-Date:   Mon, 10 May 2021 21:40:10 +0000
-References: <1620477395-12740-1-git-send-email-stefan.wahren@i2se.com>
-In-Reply-To: <1620477395-12740-1-git-send-email-stefan.wahren@i2se.com>
-To:     Stefan Wahren <stefan.wahren@i2se.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Mon, May 10 2021 at 06:10, RK Saripalli wrote:
+> On 5/7/2021 10:13 AM, Thomas Gleixner wrote:
+>> What's wrong with just treating this in the same way in which we treat
+>> all other speculative vulnerabilities and provide a consistent picture
+>> to the user?
+>> 
+>> Something like the below. You get the idea.
+>
+> Thomas, thank you very much for the comments.
+>
+> I provided the links to the original patches which treat PSF similar to other
+> speculative vulnerabilities.
+>
+> Could you review them please?. The first patch is the cover letter.
+>
+> https://lore.kernel.org/lkml/20210406155004.230790-1-rsaripal@amd.com/
+> https://lore.kernel.org/lkml/20210406155004.230790-2-rsaripal@amd.com/
+> https://lore.kernel.org/lkml/20210406155004.230790-3-rsaripal@amd.com/
+> https://lore.kernel.org/lkml/20210406155004.230790-4-rsaripal@amd.com/
+> https://lore.kernel.org/lkml/20210406155004.230790-5-rsaripal@amd.com/
+> https://lore.kernel.org/lkml/20210406155004.230790-6-rsaripal@amd.com/
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+They are going into the right direction, i.e. detection and reporting.
 
-On Sat,  8 May 2021 14:36:32 +0200 you wrote:
-> This small patch series contains some improvements of the sync
-> handling. This was discovered while the QCA7000 was doing SLAC
-> (Signal Level Attenuation Characterization).
-> 
-> Stefan Wahren (3):
->   net: qca_spi: Avoid reading signature three times in a row
->   net: qca_spi: Avoid re-sync for single signature error
->   net: qca_spi: Introduce stat about bad signature
-> 
-> [...]
+Vs. mitigation control the question is whether we need the full
+machinery of prctl/seccomp and so forth especially under the aspect that
+the SSBD mitigation already covers the PSF issue.
 
-Here is the summary with links:
-  - [1/3,net-next] net: qca_spi: Avoid reading signature three times in a row
-    https://git.kernel.org/netdev/net-next/c/b76078df1593
-  - [2/3,net-next] net: qca_spi: Avoid re-sync for single signature error
-    https://git.kernel.org/netdev/net-next/c/6e03f3ff29c1
-  - [3/3,net-next] net: qca_spi: Introduce stat about bad signature
-    https://git.kernel.org/netdev/net-next/c/a53935674563
+So for the start a simple on/off might be good enough.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Kees, any opinions?
 
+Thanks,
+
+        tglx
 
