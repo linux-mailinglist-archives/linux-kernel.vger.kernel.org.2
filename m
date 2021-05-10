@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DEC6378D35
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3966378D37
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347666AbhEJMgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:36:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58324 "EHLO mail.kernel.org"
+        id S1347704AbhEJMgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:36:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237438AbhEJLPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:15:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7B4F61108;
-        Mon, 10 May 2021 11:10:57 +0000 (UTC)
+        id S237455AbhEJLPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:15:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38D986142D;
+        Mon, 10 May 2021 11:11:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620645058;
-        bh=rAGappilp1e9ZWphv4CQintWd2/j0kzuJ2+3dx1DlRQ=;
+        s=korg; t=1620645060;
+        bh=VZ7Xa/rrxmVdvhutqb98FN7+DIyFZ9FsRb3MS3SW7bY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Id4VGtSE3FAwdvgJEh1lzj4B90BILiOfzBm59KAkys0n5L6aNu7cXrqRdq4d2o9My
-         3pn1meq1dWAXZF2O+kDfXOT9UnW1A4Rb4c4u/pUI4U9wmULt9jtNBem5sRfd7J6D1Y
-         u7RiDgcMDK7uOeTm3PAwZDZ2cZ3PbXdUf74TCyIM=
+        b=ws4lI0dISR49my2rqi8T3m1yY2pG0QBq7IhIjGp4Fo+u7vsIcsOCnweLuiuRaxMbl
+         GPM8dC/v7P2Esmqryuq3iOEYMZLfRmLe6Xr/2gtEVN2GlTSlp3RJ5R59xsAQ/YLFkd
+         L0qH+h3RgQyA7JsPWD5ojbYdbDRXpAeW0+Ybq7Eo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.12 333/384] futex: Do not apply time namespace adjustment on FUTEX_LOCK_PI
-Date:   Mon, 10 May 2021 12:22:02 +0200
-Message-Id: <20210510102025.766946593@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.12 334/384] x86/cpu: Initialize MSR_TSC_AUX if RDTSCP *or* RDPID is supported
+Date:   Mon, 10 May 2021 12:22:03 +0200
+Message-Id: <20210510102025.800476465@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -39,47 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Sean Christopherson <seanjc@google.com>
 
-commit cdf78db4070967869e4d027c11f4dd825d8f815a upstream.
+commit b6b4fbd90b155a0025223df2c137af8a701d53b3 upstream.
 
-FUTEX_LOCK_PI does not require to have the FUTEX_CLOCK_REALTIME bit set
-because it has been using CLOCK_REALTIME based absolute timeouts
-forever. Due to that, the time namespace adjustment which is applied when
-FUTEX_CLOCK_REALTIME is not set, will wrongly take place for FUTEX_LOCK_PI
-and wreckage the timeout.
+Initialize MSR_TSC_AUX with CPU node information if RDTSCP or RDPID is
+supported.  This fixes a bug where vdso_read_cpunode() will read garbage
+via RDPID if RDPID is supported but RDTSCP is not.  While no known CPU
+supports RDPID but not RDTSCP, both Intel's SDM and AMD's APM allow for
+RDPID to exist without RDTSCP, e.g. it's technically a legal CPU model
+for a virtual machine.
 
-Exclude it from that procedure.
+Note, technically MSR_TSC_AUX could be initialized if and only if RDPID
+is supported since RDTSCP is currently not used to retrieve the CPU node.
+But, the cost of the superfluous WRMSR is negigible, whereas leaving
+MSR_TSC_AUX uninitialized is just asking for future breakage if someone
+decides to utilize RDTSCP.
 
-Fixes: c2f7d08cccf4 ("futex: Adjust absolute futex timeouts with per time namespace offset")
+Fixes: a582c540ac1b ("x86/vdso: Use RDPID in preference to LSL when available")
+Signed-off-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210422194704.984540159@linutronix.de
+Link: https://lore.kernel.org/r/20210504225632.1532621-2-seanjc@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/futex.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/kernel/cpu/common.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -3781,7 +3781,7 @@ SYSCALL_DEFINE6(futex, u32 __user *, uad
- 		t = timespec64_to_ktime(ts);
- 		if (cmd == FUTEX_WAIT)
- 			t = ktime_add_safe(ktime_get(), t);
--		else if (!(op & FUTEX_CLOCK_REALTIME))
-+		else if (cmd != FUTEX_LOCK_PI && !(op & FUTEX_CLOCK_REALTIME))
- 			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
- 		tp = &t;
- 	}
-@@ -3975,7 +3975,7 @@ SYSCALL_DEFINE6(futex_time32, u32 __user
- 		t = timespec64_to_ktime(ts);
- 		if (cmd == FUTEX_WAIT)
- 			t = ktime_add_safe(ktime_get(), t);
--		else if (!(op & FUTEX_CLOCK_REALTIME))
-+		else if (cmd != FUTEX_LOCK_PI && !(op & FUTEX_CLOCK_REALTIME))
- 			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
- 		tp = &t;
- 	}
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1850,7 +1850,7 @@ static inline void setup_getcpu(int cpu)
+ 	unsigned long cpudata = vdso_encode_cpunode(cpu, early_cpu_to_node(cpu));
+ 	struct desc_struct d = { };
+ 
+-	if (boot_cpu_has(X86_FEATURE_RDTSCP))
++	if (boot_cpu_has(X86_FEATURE_RDTSCP) || boot_cpu_has(X86_FEATURE_RDPID))
+ 		write_rdtscp_aux(cpudata);
+ 
+ 	/* Store CPU and node number in limit. */
 
 
