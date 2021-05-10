@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918233782CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D611E3782FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhEJKiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:38:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40406 "EHLO mail.kernel.org"
+        id S231243AbhEJKl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:41:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231569AbhEJKdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:33:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 617C76147F;
-        Mon, 10 May 2021 10:27:40 +0000 (UTC)
+        id S232359AbhEJKe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:34:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBBD3610A7;
+        Mon, 10 May 2021 10:28:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642460;
-        bh=Uz6pSn0OahnFxDtAvlu/orHdqvVlgWzmt0UFYg52VB8=;
+        s=korg; t=1620642487;
+        bh=U0vtZbOtbv/37FXM9sZyIvdfbCrAXZDCzwUYtGaShgQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QDcT+NHVVDDWStUPu+il8aaFrYAIUgb7hu9uCL8/zl5P8VnM8zOJf+8L0XSpiXiM6
-         H5ARfPRU/rH9xsHV59khyIrXYIYGrnBBJrft7fr3g47mM5fxZ+iem7vrlQEWLPnuCG
-         ecu0HdgqJuumIt1JLTun8bryluaNA9VoqQ5yNFPU=
+        b=zWq6/ZSepJQDCZco7E0ZAc1KPh5GD/CuG/qfDZv5y8a3jH+W5wKknovqeXVKD+z8M
+         7Dlo5DaWVUw+1CjTEw69yR2SPQ6m7lyimdGKXZk5IW1i92Sf3fak9Jd8frcDIEliPg
+         8D4mBcb9SMNHiMm2BLLbY87sFlMo6IgoZd7xtrT0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, dongjian <dongjian@yulong.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Jonathan Kim <jonathan.kim@amd.com>,
+        Amber Lin <amber.lin@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 086/184] power: supply: Use IRQF_ONESHOT
-Date:   Mon, 10 May 2021 12:19:40 +0200
-Message-Id: <20210510101952.998207447@linuxfoundation.org>
+Subject: [PATCH 5.4 087/184] drm/amdgpu: mask the xgmi number of hops reported from psp to kfd
+Date:   Mon, 10 May 2021 12:19:41 +0200
+Message-Id: <20210510101953.029576436@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510101950.200777181@linuxfoundation.org>
 References: <20210510101950.200777181@linuxfoundation.org>
@@ -40,81 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dongjian <dongjian@yulong.com>
+From: Jonathan Kim <jonathan.kim@amd.com>
 
-[ Upstream commit 2469b836fa835c67648acad17d62bc805236a6ea ]
+[ Upstream commit 4ac5617c4b7d0f0a8f879997f8ceaa14636d7554 ]
 
-Fixes coccicheck error:
+The psp supplies the link type in the upper 2 bits of the psp xgmi node
+information num_hops field.  With a new link type, Aldebaran has these
+bits set to a non-zero value (1 = xGMI3) so the KFD topology will report
+the incorrect IO link weights without proper masking.
+The actual number of hops is located in the 3 least significant bits of
+this field so mask if off accordingly before passing it to the KFD.
 
-drivers/power/supply/pm2301_charger.c:1089:7-27: ERROR:
-drivers/power/supply/lp8788-charger.c:502:8-28: ERROR:
-drivers/power/supply/tps65217_charger.c:239:8-33: ERROR:
-drivers/power/supply/tps65090-charger.c:303:8-33: ERROR:
-
-Threaded IRQ with no primary handler requested without IRQF_ONESHOT
-
-Signed-off-by: dongjian <dongjian@yulong.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Jonathan Kim <jonathan.kim@amd.com>
+Reviewed-by: Amber Lin <amber.lin@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/lp8788-charger.c   | 2 +-
- drivers/power/supply/pm2301_charger.c   | 2 +-
- drivers/power/supply/tps65090-charger.c | 2 +-
- drivers/power/supply/tps65217_charger.c | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/power/supply/lp8788-charger.c b/drivers/power/supply/lp8788-charger.c
-index e7931ffb7151..397e5a03b7d9 100644
---- a/drivers/power/supply/lp8788-charger.c
-+++ b/drivers/power/supply/lp8788-charger.c
-@@ -501,7 +501,7 @@ static int lp8788_set_irqs(struct platform_device *pdev,
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
+index 65aae75f80fd..ce1048bad158 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
+@@ -311,15 +311,22 @@ int amdgpu_xgmi_update_topology(struct amdgpu_hive_info *hive, struct amdgpu_dev
+ }
  
- 		ret = request_threaded_irq(virq, NULL,
- 					lp8788_charger_irq_thread,
--					0, name, pchg);
-+					IRQF_ONESHOT, name, pchg);
- 		if (ret)
- 			break;
- 	}
-diff --git a/drivers/power/supply/pm2301_charger.c b/drivers/power/supply/pm2301_charger.c
-index 17749fc90e16..d2aff1cf4f79 100644
---- a/drivers/power/supply/pm2301_charger.c
-+++ b/drivers/power/supply/pm2301_charger.c
-@@ -1095,7 +1095,7 @@ static int pm2xxx_wall_charger_probe(struct i2c_client *i2c_client,
- 	ret = request_threaded_irq(gpio_to_irq(pm2->pdata->gpio_irq_number),
- 				NULL,
- 				pm2xxx_charger_irq[0].isr,
--				pm2->pdata->irq_type,
-+				pm2->pdata->irq_type | IRQF_ONESHOT,
- 				pm2xxx_charger_irq[0].name, pm2);
  
- 	if (ret != 0) {
-diff --git a/drivers/power/supply/tps65090-charger.c b/drivers/power/supply/tps65090-charger.c
-index 6b0098e5a88b..0990b2fa6cd8 100644
---- a/drivers/power/supply/tps65090-charger.c
-+++ b/drivers/power/supply/tps65090-charger.c
-@@ -301,7 +301,7 @@ static int tps65090_charger_probe(struct platform_device *pdev)
++/*
++ * NOTE psp_xgmi_node_info.num_hops layout is as follows:
++ * num_hops[7:6] = link type (0 = xGMI2, 1 = xGMI3, 2/3 = reserved)
++ * num_hops[5:3] = reserved
++ * num_hops[2:0] = number of hops
++ */
+ int amdgpu_xgmi_get_hops_count(struct amdgpu_device *adev,
+ 		struct amdgpu_device *peer_adev)
+ {
+ 	struct psp_xgmi_topology_info *top = &adev->psp.xgmi_context.top_info;
++	uint8_t num_hops_mask = 0x7;
+ 	int i;
  
- 	if (irq != -ENXIO) {
- 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
--			tps65090_charger_isr, 0, "tps65090-charger", cdata);
-+			tps65090_charger_isr, IRQF_ONESHOT, "tps65090-charger", cdata);
- 		if (ret) {
- 			dev_err(cdata->dev,
- 				"Unable to register irq %d err %d\n", irq,
-diff --git a/drivers/power/supply/tps65217_charger.c b/drivers/power/supply/tps65217_charger.c
-index 814c2b81fdfe..ba33d1617e0b 100644
---- a/drivers/power/supply/tps65217_charger.c
-+++ b/drivers/power/supply/tps65217_charger.c
-@@ -238,7 +238,7 @@ static int tps65217_charger_probe(struct platform_device *pdev)
- 	for (i = 0; i < NUM_CHARGER_IRQS; i++) {
- 		ret = devm_request_threaded_irq(&pdev->dev, irq[i], NULL,
- 						tps65217_charger_irq,
--						0, "tps65217-charger",
-+						IRQF_ONESHOT, "tps65217-charger",
- 						charger);
- 		if (ret) {
- 			dev_err(charger->dev,
+ 	for (i = 0 ; i < top->num_nodes; ++i)
+ 		if (top->nodes[i].node_id == peer_adev->gmc.xgmi.node_id)
+-			return top->nodes[i].num_hops;
++			return top->nodes[i].num_hops & num_hops_mask;
+ 	return	-EINVAL;
+ }
+ 
 -- 
 2.30.2
 
