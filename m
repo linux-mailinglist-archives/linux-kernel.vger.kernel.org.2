@@ -2,147 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E65377D96
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9BF377D98
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbhEJIER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 04:04:17 -0400
-Received: from mga11.intel.com ([192.55.52.93]:21280 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229852AbhEJIER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 04:04:17 -0400
-IronPort-SDR: lhL791BgKZA9wrFKbNQPFDAh86yKZhCFP3GPXT+rxWaWdRDAzwNxrxEyEnd5S1+3wzsfdo+bo6
- 6j+L2L4NFWZQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="196042810"
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="196042810"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 01:03:12 -0700
-IronPort-SDR: AN/y3RejuPlCqM6tUe4aYI6QY++WmxRRK9R505lkXc1IHP4TrsL3gOYKKXisCHC3CygmspOFLi
- GLFHwYqOCDXA==
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="433704819"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.87]) ([10.238.4.87])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 01:03:08 -0700
-Subject: Re: [RFC] mm/vmscan.c: avoid possible long latency caused by
- too_many_isolated()
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, ying.huang@intel.com,
-        tim.c.chen@linux.intel.com, Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>, yuzhao@google.com,
-        wfg@mail.ustc.edu.cn
-References: <20210416023536.168632-1-zhengjun.xing@linux.intel.com>
- <20210422102325.1332-1-hdanton@sina.com>
- <20210430064319.2189-1-hdanton@sina.com>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <e6dc0c7b-47eb-bad6-016b-73642930a68d@linux.intel.com>
-Date:   Mon, 10 May 2021 16:03:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230169AbhEJIE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 04:04:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47558 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229852AbhEJIE0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 04:04:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620633801;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yTnjHtJM9cM9/CNRU7MdS6zqnbDhW6KdwOPWG8fu3lE=;
+        b=JBBGuKUsnTeq9fW1v5LjvcEC9wOeYYIOHW9eHc/Gb6Y26cz4OS8UCUT7O2HTAviGYW1DKO
+        nCb5lrOArUFfpFJPD/SO+mLX30klzJ47wz0fU4nICoUqrQEoJkTBc0ykR6TB7h+1rRHt9c
+        ybWRJzSC8dMlwZSW4673Tvg5HnWzlkk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-329-92GvdBxGNIm505JoPPZ2VA-1; Mon, 10 May 2021 04:03:18 -0400
+X-MC-Unique: 92GvdBxGNIm505JoPPZ2VA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49C721006C81;
+        Mon, 10 May 2021 08:03:16 +0000 (UTC)
+Received: from starship (unknown [10.40.194.86])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 44EFE19C45;
+        Mon, 10 May 2021 08:03:11 +0000 (UTC)
+Message-ID: <666b1f0a597383bf0c838d9bfde5f07d6d0828c6.camel@redhat.com>
+Subject: Re: [PATCH 01/15] KVM: VMX: Do not adverise RDPID if ENABLE_RDTSCP
+ control is unsupported
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Reiji Watanabe <reijiw@google.com>
+Date:   Mon, 10 May 2021 11:03:10 +0300
+In-Reply-To: <20210504171734.1434054-2-seanjc@google.com>
+References: <20210504171734.1434054-1-seanjc@google.com>
+         <20210504171734.1434054-2-seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20210430064319.2189-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hillf,
+On Tue, 2021-05-04 at 10:17 -0700, Sean Christopherson wrote:
+> Clear KVM's RDPID capability if the ENABLE_RDTSCP secondary exec control is
+> unsupported.  Despite being enumerated in a separate CPUID flag, RDPID is
+> bundled under the same VMCS control as RDTSCP and will #UD in VMX non-root
+> if ENABLE_RDTSCP is not enabled.
+> 
+> Fixes: 41cd02c6f7f6 ("kvm: x86: Expose RDPID in KVM_GET_SUPPORTED_CPUID")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 10b610fc7bbc..82404ee2520e 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7377,9 +7377,11 @@ static __init void vmx_set_cpu_caps(void)
+>  	if (!cpu_has_vmx_xsaves())
+>  		kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
+>  
+> -	/* CPUID 0x80000001 */
+> -	if (!cpu_has_vmx_rdtscp())
+> +	/* CPUID 0x80000001 and 0x7 (RDPID) */
+> +	if (!cpu_has_vmx_rdtscp()) {
+>  		kvm_cpu_cap_clear(X86_FEATURE_RDTSCP);
+> +		kvm_cpu_cap_clear(X86_FEATURE_RDPID);
+> +	}
+>  
+>  	if (cpu_has_vmx_waitpkg())
+>  		kvm_cpu_cap_check_and_set(X86_FEATURE_WAITPKG);
 
-On 4/30/2021 2:43 PM, Hillf Danton wrote:
-> On Fri, 30 Apr 2021 13:33:57 +0800 Xing Zhengjun wrote:
->>
->> I use my compaction test case to test it, 1/10 ratio can reproduce 100ms
->> sleep.
->>
->>   60) @ 103942.6 us |      shrink_node();
->>
->>   60) @ 103795.8 us |      shrink_node();
-> 
-> Thanks for your test.
-> 
-> In bid to cut the number of 100ms sleepers further down, add another place
-> for them to nap by flushing lru cache before falling in sleep, instead of
-> mulling why 50ms or 10ms is more adequate.
-> 
-> Alternatively, and simpler IMHO, take a 5ms nap one time until !tmi.
-> 
-> --- y/mm/vmscan.c
-> +++ x/mm/vmscan.c
-> @@ -118,6 +118,9 @@ struct scan_control {
->   	/* The file pages on the current node are dangerously low */
->   	unsigned int file_is_tiny:1;
->   
-> +	unsigned int file_tmi:1; /* too many isolated */
-> +	unsigned int anon_tmi:1;
-> +
->   	/* Allocation order */
->   	s8 order;
->   
-> @@ -2092,6 +2095,22 @@ static int current_may_throttle(void)
->   		bdi_write_congested(current->backing_dev_info);
->   }
->   
-> +static void set_sc_tmi(struct scan_control *sc, bool file, int tmi)
-> +{
-> +	if (file)
-> +		sc->file_tmi = tmi;
-> +	else
-> +		sc->anon_tmi = tmi;
-> +}
-> +
-> +static bool is_sc_tmi(struct scan_control *sc, bool file)
-> +{
-> +	if (file)
-> +		return sc->file_tmi != 0;
-> +	else
-> +		return sc->anon_tmi != 0;
-> +}
-> +
->   /*
->    * shrink_inactive_list() is a helper for shrink_node().  It returns the number
->    * of reclaimed pages
-> @@ -2109,11 +2128,23 @@ shrink_inactive_list(unsigned long nr_to
->   	enum vm_event_item item;
->   	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->   	bool stalled = false;
-> +	bool drained = false;
->   
->   	while (unlikely(too_many_isolated(pgdat, file, sc))) {
->   		if (stalled)
->   			return 0;
->   
-> +		if (!is_sc_tmi(sc, file)) {
-> +			set_sc_tmi(sc, file, 1);
-> +			return 0;
-> +		}
-> +
-> +		if (!drained) {
-> +			drained = true;
-> +			lru_add_drain_all();
-> +			continue;
-> +		}
-> +
->   		/* wait a bit for the reclaimer. */
->   		msleep(100);
->   		stalled = true;
-> @@ -2123,6 +2154,9 @@ shrink_inactive_list(unsigned long nr_to
->   			return SWAP_CLUSTER_MAX;
->   	}
->   
-> +	if (is_sc_tmi(sc, file))
-> +		set_sc_tmi(sc, file, 0);
-> +
->   	lru_add_drain();
->   
->   	spin_lock_irq(&lruvec->lru_lock);
-> 
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
-I tried the patch, it still can reproduce the 100ms sleep.
+Best regards,
+	Maxim Levitsky
 
-52) @ 103829.8 us |      shrink_lruvec();
-
--- 
-Zhengjun Xing
