@@ -2,174 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F785377E8E
+	by mail.lfdr.de (Postfix) with ESMTP id 341EF377E8D
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhEJItq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 04:49:46 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:2427 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbhEJIto (ORCPT
+        id S230167AbhEJIto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 04:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230098AbhEJIto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 04:49:44 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fdvlq5P1yzCr9l;
-        Mon, 10 May 2021 16:45:59 +0800 (CST)
-Received: from [10.67.110.238] (10.67.110.238) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 10 May 2021 16:48:31 +0800
-Subject: Re: Virtio-scsi multiqueue irq affinity
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ming Lei <ming.lei@redhat.com>
-CC:     Peter Xu <peterx@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        Jason Wang <jasowang@redhat.com>,
-        Luiz Capitulino <lcapitulino@redhat.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>, <minlei@redhat.com>,
-        <liaochang1@huawei.com>
-References: <20190318062150.GC6654@xz-x1>
- <alpine.DEB.2.21.1903231805310.1798@nanos.tec.linutronix.de>
- <20190325050213.GH9149@xz-x1> <20190325070616.GA9642@ming.t460p>
- <alpine.DEB.2.21.1903250948490.1798@nanos.tec.linutronix.de>
- <20190325095011.GA23225@ming.t460p>
- <0f6c8a5f-ad33-1199-f313-53fe9187a672@huawei.com>
- <87zgx5l8ck.ffs@nanos.tec.linutronix.de>
-From:   xuyihang <xuyihang@huawei.com>
-Message-ID: <963e38b0-a7d6-0b13-af89-81b03028d1ae@huawei.com>
-Date:   Mon, 10 May 2021 16:48:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE3BC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 01:48:39 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id gq14-20020a17090b104eb029015be008ab0fso9653242pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 01:48:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+UcqOe4LhkyGzOZfB3XomBHQSeGqf3Yt+3h243pzOtU=;
+        b=SkBJRHZsD9rIMqfx5UwbwNKDHjA8/TZOTocf6Yog28p+962M6IzOLorlfQOuXdZWPs
+         Zr00rlok2VjQsKD8Q3y2zx9Ci22jwIPy0qpjGQw4wQ9bHl0PPJWvh/G+ptEwov6aQOox
+         XhUmBgdr2EvZqjKcMQKPmceDDwqVuRCEbKMSGh8B0KAYXEk3Ur9++mdq3eUOSAP8iIXy
+         HOVZTKfaMYHXA4CrmerdrYdgT47kC3ZD8nj/tiGA3dSqzC/rCZx588KaqdkpqhBkX6eF
+         G1jETc0bl/YmtOaW6uMC6gnUl10h6vCAECrDJbpisJV8JIlKJpnL/ndYJPU6n+hhy5cF
+         5ENw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+UcqOe4LhkyGzOZfB3XomBHQSeGqf3Yt+3h243pzOtU=;
+        b=FAJ2Bj2AYQklyhr5e2d9ihqU2GIUjaNyQdIfc1s7HN/jprcBsGzY60K/uBBzn2UjV5
+         rseN830uf8JIzOiJWoCMstgGdCJ0d2jbfu/usCHFp0XKSkW9mMdCm6CMK37wTOD/M+ef
+         BtKqvQFaSX+quJ7s6BTksdU0aJOwIa9h8nc5F+63XghfD27XDO8yyiZi5XHXvp7vl3lj
+         Q8l7YMusY+Lw4LNrisESTmjo5hH35s3wmJa1bx8DsY9jj4AYOmeOEGiwDbt1JRFt48Q+
+         C2EWnPSbiC2nUlWnpsyzoS/ay/6f8SbNdX0/dg0B8ftdo2zsZyW7Abj3m3gH4X+kpRd4
+         Ozxg==
+X-Gm-Message-State: AOAM530kG0ZOmIE/hOC1nnd7PvbBh8pMMnM7AMtDnGXEajJRbKk4VR5+
+        V1KEDgsl3wwJAaFVDRSO7M4=
+X-Google-Smtp-Source: ABdhPJxv8LKOS78i5TlawtIOw8QbKd9iV771RXqAK8qpLAp7w6bZsh5gyB5xOEweT9E+L+pVkaWOWg==
+X-Received: by 2002:a17:902:7888:b029:ee:cea7:6ff0 with SMTP id q8-20020a1709027888b02900eecea76ff0mr23746205pll.16.1620636519503;
+        Mon, 10 May 2021 01:48:39 -0700 (PDT)
+Received: from localhost ([203.87.99.126])
+        by smtp.gmail.com with ESMTPSA id bx12sm18984691pjb.1.2021.05.10.01.48.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 01:48:38 -0700 (PDT)
+Date:   Mon, 10 May 2021 18:48:35 +1000
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     brookxu <brookxu.cn@gmail.com>, adobriyan@gmail.com,
+        ebiederm@xmission.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] delayacct: add a proc file to dump the delay info
+Message-ID: <20210510084835.GG4236@balbir-desktop>
+References: <8ac9f35074326cb36e3cdbf0ad70b36dc3412e86.1618841970.git.brookxu@tencent.com>
+ <3da76d1d565c423c6cbf92b02cbae9f86cd5accd.1618841970.git.brookxu@tencent.com>
+ <20210509205853.42a3a06f9c5b70b52bdf8509@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <87zgx5l8ck.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.110.238]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210509205853.42a3a06f9c5b70b52bdf8509@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas,
+On Sun, May 09, 2021 at 08:58:53PM -0700, Andrew Morton wrote:
+> On Mon, 19 Apr 2021 22:37:07 +0800 brookxu <brookxu.cn@gmail.com> wrote:
+> 
+> > Many distributions do not install the getdelay tool by
+> > default, similar to task_io_accounting, adding a proc
+> > file to make access easier.
+> 
+> Well, we developed and maintain getdelays.c for a reason.  Why should
+> we add (and maintain) kernel code because some people are too
+> lame to install the tool we provided?
 
-在 2021/5/8 20:26, Thomas Gleixner 写道:
-> Yihang,
->
-> On Sat, May 08 2021 at 15:52, xuyihang wrote:
->> We are dealing with a scenario which may need to assign a default
->> irqaffinity for managed IRQ.
->>
->> Assume we have a full CPU usage RT thread running binded to a specific
->> CPU.
->>
->> In the mean while, interrupt handler registered by a device which is
->> ksoftirqd may never have a chance to run. (And we don't want to use
->> isolate CPU)
-> A device cannot register and interrupt handler in ksoftirqd.
->
->> There could be a couple way to deal with this problem:
->>
->> 1. Adjust priority of ksoftirqd or RT thread, so the interrupt handler
->> could preempt
->>
->> RT thread. However, I am not sure whether it could have some side
->> effects or not.
->>
->> 2. Adjust interrupt CPU affinity or RT thread affinity. But managed IRQ
->> seems design to forbid user from manipulating interrupt affinity.
->>
->> It seems managed IRQ is coupled with user side application to me.
->>
->> Would you share your thoughts about this issue please?
-> Can you please provide a more detailed description of your system?
->
->      - Number of CPUs
-It's a 4 CPU x86 VM.
->      - Kernel version
-This experiment run on linux-4.19
->      - Is NOHZ full enabled?
-nohz=off
->      - Any isolation mechanisms enabled, and if so how are they
->        configured (e.g. on the kernel command line)?
++1
 
-Some core is isolated by command line (such as : isolcpus=3), and bind
+I think we should find a way to repackage the tool into distributions again.
 
-with RT thread, and no other isolation configure.
-
->      - Number of queues in the multiqueue device
-
-Only one queue.
-
-[root@localhost ~]# cat /proc/interrupts | grep request
-  27:       5499          0          0          0   PCI-MSI 
-65539-edge      virtio1-request
-
-This environment is a virtual machine and it's a virtio device, I guess it
-
-should not make any difference in this case.
-
->      - Is the RT thread issuing I/O to the multiqueue device?
-
-The RT thread doesn't issue IO.
-
-
-
-We simplified the reproduce procedure:
-
-1. Start a busy loopping program that have near 100% cpu usage, named print
-
-./print 1 1 &
-
-
-2. Make the program become realtime application
-
-chrt -f -p 1 11514
-
-
-3. Bind the RT process to the **managed irq** core
-
-taskset -cpa 0 11514
-
-
-4. Use dd to write to hard drive, and dd could not finish and return.
-
-dd if=/dev/zero of=/test.img bs=1K count=1 oflag=direct,sync &
-
-
-Since CPU is fully utilized by RT application, and hard drive driver choose
-
-CPU0 to handle it's softirq, there is no chance for dd to run.
-
-     PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM TIME+ COMMAND
-   11514 root      -2   0    2228    740    676 R 100.0   0.0 3:26.70 print
-
-
-If we make some change on this experiment:
-
-1.  Make this RT application use less CPU time instead of 100%, the problem
-
-disappear.
-
-2, If we change rq_affinity to 2, in order to avoid handle softirq on 
-the same
-
-core of RT thread, the problem also disappear. However, this approach
-
-result in about 10%-30% random write proformance deduction comparing
-
-to rq_affinity = 1, since it may has better cache utilization.
-
-echo 2 > /sys/block/sda/queue/rq_affinity
-
-
-Therefore, I want to exclude some CPU from managed irq on boot parameter,
-
-which has simliar approach to 11ea68f553e2 ("genirq, sched/isolation: 
-Isolate
-
-from handling managed interrupts").
-
-
-Thanks,
-
-Yihang
-
+Balbir Singh
