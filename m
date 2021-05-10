@@ -2,76 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD30B377AB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 05:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19412377AD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 05:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhEJDrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 23:47:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:47058 "EHLO foss.arm.com"
+        id S230186AbhEJD77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 23:59:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230302AbhEJDq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 23:46:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B68B9ED1;
-        Sun,  9 May 2021 20:45:52 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.77.48])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D67333F718;
-        Sun,  9 May 2021 20:45:50 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org, akpm@linux-foundation.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        id S230029AbhEJD76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 23:59:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BB6D6138C;
+        Mon, 10 May 2021 03:58:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1620619134;
+        bh=/w0NtbqYwqN7K08COz9EKLZ5k+fG+jGh0uGGYhBOoGc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ih2TGI4dRSkbM0iIaLGqTPsT4a5wSCCY0PFuMCjMcMYYvJtIZkCIy0x384fZF8kn/
+         f4iiVg2T5Rko7/9yEvALnSVRCoHWao10sfGixWutB/PvFJ/xVDXnfADZFuNjpGq5up
+         zSbZ4XUY784ko3EgCvOPh9LTGkxJ6cQU20Q6MyWc=
+Date:   Sun, 9 May 2021 20:58:53 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     adobriyan@gmail.com, bsingharora@gmail.com, ebiederm@xmission.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/thp: Make ALLOC_SPLIT_PTLOCKS dependent on USE_SPLIT_PTE_PTLOCKS
-Date:   Mon, 10 May 2021 09:16:30 +0530
-Message-Id: <1620618390-9999-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+Subject: Re: [PATCH v2 2/2] delayacct: add a proc file to dump the delay
+ info
+Message-Id: <20210509205853.42a3a06f9c5b70b52bdf8509@linux-foundation.org>
+In-Reply-To: <3da76d1d565c423c6cbf92b02cbae9f86cd5accd.1618841970.git.brookxu@tencent.com>
+References: <8ac9f35074326cb36e3cdbf0ad70b36dc3412e86.1618841970.git.brookxu@tencent.com>
+        <3da76d1d565c423c6cbf92b02cbae9f86cd5accd.1618841970.git.brookxu@tencent.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split ptlocks need not be defined and allocated unless they are being used.
-ALLOC_SPLIT_PTLOCKS is inherently dependent on USE_SPLIT_PTE_PTLOCKS. This
-just makes it explicit and clear.
+On Mon, 19 Apr 2021 22:37:07 +0800 brookxu <brookxu.cn@gmail.com> wrote:
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- include/linux/mm_types_task.h | 5 +++++
- mm/memory.c                   | 2 +-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+> Many distributions do not install the getdelay tool by
+> default, similar to task_io_accounting, adding a proc
+> file to make access easier.
 
-diff --git a/include/linux/mm_types_task.h b/include/linux/mm_types_task.h
-index c1bc6731125c..1b222f8039d1 100644
---- a/include/linux/mm_types_task.h
-+++ b/include/linux/mm_types_task.h
-@@ -22,7 +22,12 @@
- #define USE_SPLIT_PTE_PTLOCKS	(NR_CPUS >= CONFIG_SPLIT_PTLOCK_CPUS)
- #define USE_SPLIT_PMD_PTLOCKS	(USE_SPLIT_PTE_PTLOCKS && \
- 		IS_ENABLED(CONFIG_ARCH_ENABLE_SPLIT_PMD_PTLOCK))
-+
-+#if USE_SPLIT_PTE_PTLOCKS
- #define ALLOC_SPLIT_PTLOCKS	(SPINLOCK_SIZE > BITS_PER_LONG/8)
-+#else
-+#define ALLOC_SPLIT_PTLOCKS	0
-+#endif
- 
- /*
-  * The per task VMA cache array:
-diff --git a/mm/memory.c b/mm/memory.c
-index 730daa00952b..9c3b63f11aee 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -5250,7 +5250,7 @@ long copy_huge_page_from_user(struct page *dst_page,
- }
- #endif /* CONFIG_TRANSPARENT_HUGEPAGE || CONFIG_HUGETLBFS */
- 
--#if USE_SPLIT_PTE_PTLOCKS && ALLOC_SPLIT_PTLOCKS
-+#if ALLOC_SPLIT_PTLOCKS
- 
- static struct kmem_cache *page_ptl_cachep;
- 
--- 
-2.20.1
-
+Well, we developed and maintain getdelays.c for a reason.  Why should
+we add (and maintain) kernel code because some people are too
+lame to install the tool we provided?
