@@ -2,120 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FFD379009
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919C2379013
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244408AbhEJN70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
+        id S238412AbhEJOCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:02:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243047AbhEJNyN (ORCPT
+        with ESMTP id S1343852AbhEJOAm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 09:54:13 -0400
-Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA74C0612F0
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:33:59 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id 64B9CC800A8;
-        Mon, 10 May 2021 15:33:56 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id XuaVf3MAzLCD; Mon, 10 May 2021 15:33:56 +0200 (CEST)
-Received: from wsembach-tuxedo.fritz.box (p200300E37F0dA80022824231f945140A.dip0.t-ipconnect.de [IPv6:2003:e3:7f0d:a800:2282:4231:f945:140a])
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPA id 18CC3C800A5;
-        Mon, 10 May 2021 15:33:56 +0200 (CEST)
-From:   Werner Sembach <wse@tuxedocomputers.com>
-To:     ville.syrjala@linux.intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     Werner Sembach <wse@tuxedocomputers.com>
-Subject: [PATCH v7 3/3] drm/i915/display: Use YCbCr420 as fallback when RGB fails
-Date:   Mon, 10 May 2021 15:33:49 +0200
-Message-Id: <20210510133349.14491-4-wse@tuxedocomputers.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210510133349.14491-1-wse@tuxedocomputers.com>
-References: <20210510133349.14491-1-wse@tuxedocomputers.com>
+        Mon, 10 May 2021 10:00:42 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4B6C0611CC;
+        Mon, 10 May 2021 06:42:51 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id c13so202873pfv.4;
+        Mon, 10 May 2021 06:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=TQSO27EdiG8kvuLj7qwrLqg41AO2WlMnI3lBxBvcbXo=;
+        b=q6PO7burX1NdBZ6LCj+nHgpLkjnqCHH89ZkdkHp33lNNMsel2G7DStUxmRpC5+6ULn
+         IQ2mWjR7TJwfvnb754iv8KIDEY4Nh7zezaIYW9F4S0BZuFLGgjE82ppPtbQKgUStgon+
+         tAMa4sR3cd/p1SP8erI1Ujsau8Houx7VL/uivOflBRanOU8OgMINrFd9KEsbCULuydNA
+         rhDwrTFPre9cA65uH41f+IQLgY4lbcIg471OLSf8UoumCjoNm0PcVrFdvc/S4NvHfGy6
+         SwiiulRdpW57J8kdl90nA8ImcRJ3JEz6fxHw+0HLWPALrxoqe2NypKRFfVehY91iJ72e
+         iHig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TQSO27EdiG8kvuLj7qwrLqg41AO2WlMnI3lBxBvcbXo=;
+        b=KEPR5KWsmsqH/hLJ3lFzjBn3/24LoEriK13swcoiRnXpzu4jIPWWtP3GCl2squ+nHc
+         qOHjyokfBOfSu9ks1U7aKkzhTxhZ+FssLWqgKzJCgQYEJy3p+XklQOKAOf/OQTTVeeis
+         wG+O7zl9bdOrHi0Kbz+g1BMxbJ2TtcUHpKVsvfUDDgJBNyJ64kb4vHYwvZ3oofveK4Nt
+         wytNgA493GqK/q00E1bj9gme0vGng5wLOBd24hheRKGCpSRZsmoGma/zkcy88/nOnSvu
+         Wf1yOOsFN33ylhrh6N5e114DYGSSQRRLu9FBX7E1K+7zqoEHj+zRKIeSKOBjwvwo7Xfd
+         e1OQ==
+X-Gm-Message-State: AOAM531/ebAxxcW09qYaOnBiZRVXErGxiaNS0mWIA/gKMJUIJzw5Zcw7
+        q+v9JrC7gj5lXjB4LPxWlss=
+X-Google-Smtp-Source: ABdhPJybTcHxXfjJ2tQaJKAVWNrUJTxAfw0ibMoA2eqw0dkNnWeuzC17ymaUnWLJrvgn3xUrohnUDg==
+X-Received: by 2002:a62:80d2:0:b029:2b3:fca1:8829 with SMTP id j201-20020a6280d20000b02902b3fca18829mr11479734pfd.2.1620654171226;
+        Mon, 10 May 2021 06:42:51 -0700 (PDT)
+Received: from localhost.localdomain ([66.115.182.68])
+        by smtp.gmail.com with ESMTPSA id h22sm11290537pfn.55.2021.05.10.06.42.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 06:42:50 -0700 (PDT)
+From:   youling257 <youling257@gmail.com>
+To:     adobriyan@gmail.com
+Cc:     akpm@linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH 2/2] proc: convert everything to "struct proc_ops"
+Date:   Mon, 10 May 2021 21:42:38 +0800
+Message-Id: <20210510134238.4905-1-youling257@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20191225172546.GB13378@avx2>
+References: <20191225172546.GB13378@avx2>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When encoder validation of a display mode fails, retry with less bandwidth
-heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
-to support 4k60Hz output, which previously failed silently.
+Hi, my xt_qtaguid module need convert to "struct proc_ops",
+https://github.com/youling257/android-4.9/commit/a6e3cddcceb96eb3edeb0da0951399b75d4f8731
+https://github.com/youling257/android-4.9/commit/9eb92f5bcdcbc5b54d7dfe4b3050c8b9b8a17999
 
-AMDGPU had nearly the exact same issue. This problem description is
-therefore copied from my commit message of the AMDGPU patch.
+static const struct proc_ops qtudev_proc_ops = {
+	.proc_open = qtudev_open,
+	.proc_release = qtudev_release,
+};
 
-On some setups, while the monitor and the gpu support display modes with
-pixel clocks of up to 600MHz, the link encoder might not. This prevents
-YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
-possible. However, which color mode is used is decided before the link
-encoder capabilities are checked. This patch fixes the problem by retrying
-to find a display mode with YCbCr420 enforced and using it, if it is
-valid.
+static struct miscdevice qtu_device = {
+	.minor = MISC_DYNAMIC_MINOR,
+	.name = QTU_DEV_NAME,
+	.fops = &qtudev_proc_ops,
+	/* How sad it doesn't allow for defaults: .mode = S_IRUGO | S_IWUSR */
+};
 
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
----
- drivers/gpu/drm/i915/display/intel_hdmi.c | 25 ++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
+I have problem about ".fops = &qtudev_fops,", convert to ".fops = &qtudev_proc_ops," is right?
 
-diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
-index c411f1862286..6e135662da3e 100644
---- a/drivers/gpu/drm/i915/display/intel_hdmi.c
-+++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
-@@ -1898,6 +1898,7 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
- 	int clock = mode->clock;
- 	int max_dotclk = to_i915(connector->dev)->max_dotclk_freq;
- 	bool has_hdmi_sink = intel_has_hdmi_sink(hdmi, connector->state);
-+	bool ycbcr_420_only;
- 
- 	if (mode->flags & DRM_MODE_FLAG_DBLSCAN)
- 		return MODE_NO_DBLESCAN;
-@@ -1914,12 +1915,22 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
- 		clock *= 2;
- 	}
- 
--	if (drm_mode_is_420_only(&connector->display_info, mode))
-+	ycbcr_420_only = drm_mode_is_420_only(&connector->display_info, mode);
-+	if (ycbcr_420_only)
- 		clock /= 2;
- 
- 	status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
--	if (status != MODE_OK)
--		return status;
-+	if (status != MODE_OK) {
-+		if (ycbcr_420_only ||
-+		    !connector->ycbcr_420_allowed ||
-+		    !drm_mode_is_420_also(&connector->display_info, mode))
-+			return status;
-+
-+		clock /= 2;
-+		status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
-+		if (status != MODE_OK)
-+			return status;
-+	}
- 
- 	return intel_mode_valid_max_plane_size(dev_priv, mode, false);
- }
-@@ -2127,6 +2138,14 @@ static int intel_hdmi_compute_output_format(struct intel_encoder *encoder,
- 	}
- 
- 	ret = intel_hdmi_compute_clock(encoder, crtc_state);
-+	if (ret) {
-+		if (crtc_state->output_format != INTEL_OUTPUT_FORMAT_YCBCR420 &&
-+		    connector->ycbcr_420_allowed &&
-+		    drm_mode_is_420_also(&connector->display_info, adjusted_mode)) {
-+			crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
-+			ret = intel_hdmi_compute_clock(encoder, crtc_state);
-+		}
-+	}
- 
- 	return ret;
- }
--- 
-2.25.1
-
+build error, can you help me?
+  CALL    /root/1/scripts/atomic/check-atomics.sh
+  CALL    /root/1/scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+  CC      net/netfilter/xt_qtaguid.o
+/root/1/net/netfilter/xt_qtaguid.c:2895:10: error: initialization of ‘const struct file_operations *’ from incompatible pointer type ‘const struct proc_ops *’ [-Werror=incompatible-pointer-types]
+ 2895 |  .fops = &qtudev_proc_ops,
+      |          ^
+/root/1/net/netfilter/xt_qtaguid.c:2895:10: note: (near initialization for ‘qtu_device.fops’)
+cc1: some warnings being treated as errors
