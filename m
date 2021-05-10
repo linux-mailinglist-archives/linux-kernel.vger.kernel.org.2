@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9B0378491
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53491378351
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbhEJKxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:53:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49358 "EHLO mail.kernel.org"
+        id S231344AbhEJKn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:43:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232349AbhEJKm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:42:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E56D56197D;
-        Mon, 10 May 2021 10:32:40 +0000 (UTC)
+        id S232889AbhEJKfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:35:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3050A61938;
+        Mon, 10 May 2021 10:28:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642761;
-        bh=Xm9u71iL/5rShfjc7BImNks/MhSQ5+eQU7mJ4bEIrik=;
+        s=korg; t=1620642523;
+        bh=81GWPSg106hfbIPfhlB6rpot/yd2HEWpe5+wVp14E/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yIXDI0CjEblaaP45wi8jqbk8bG5xeLpsllKTg1o+RP/CpKLijWYmaWmWZoirUP2QQ
-         Dpej3e+/XlbOjoR0qZIcsT/usB9U/+VswdPb1yLyJmi1bJq7xQMvHLMIym0xmRkGJP
-         twhlPIx1iAt5HTcDjxAKpEEPiL37L1eKx3OyCZMw=
+        b=ZI0ZJQtzMe1s4lqWxAu6i9EggsyKWvUgd/6XTjeRetAubH139JCuLewkef093DXW4
+         Nl9iclK3B+f8OyellFik7jGrCW22RRnCt+BCgWUQVJTHrbMVFmXIrEEEc8rlfX7rEO
+         S9uEE9cGmc6p2vflWeYLAxbsMkcboRsIe01/J0c4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Aurich <paul@darkrain42.org>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.10 039/299] cifs: Return correct error code from smb2_get_enc_key
-Date:   Mon, 10 May 2021 12:17:16 +0200
-Message-Id: <20210510102006.142070740@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Niv <danielniv3@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 084/184] media: media/saa7164: fix saa7164_encoder_register() memory leak bugs
+Date:   Mon, 10 May 2021 12:19:38 +0200
+Message-Id: <20210510101952.927758941@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510101950.200777181@linuxfoundation.org>
+References: <20210510101950.200777181@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,50 +41,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Aurich <paul@darkrain42.org>
+From: Daniel Niv <danielniv3@gmail.com>
 
-commit 83728cbf366e334301091d5b808add468ab46b27 upstream.
+[ Upstream commit c759b2970c561e3b56aa030deb13db104262adfe ]
 
-Avoid a warning if the error percolates back up:
+Add a fix for the memory leak bugs that can occur when the
+saa7164_encoder_register() function fails.
+The function allocates memory without explicitly freeing
+it when errors occur.
+Add a better error handling that deallocate the unused buffers before the
+function exits during a fail.
 
-[440700.376476] CIFS VFS: \\otters.example.com crypt_message: Could not get encryption key
-[440700.386947] ------------[ cut here ]------------
-[440700.386948] err = 1
-[440700.386977] WARNING: CPU: 11 PID: 2733 at /build/linux-hwe-5.4-p6lk6L/linux-hwe-5.4-5.4.0/lib/errseq.c:74 errseq_set+0x5c/0x70
-...
-[440700.397304] CPU: 11 PID: 2733 Comm: tar Tainted: G           OE     5.4.0-70-generic #78~18.04.1-Ubuntu
-...
-[440700.397334] Call Trace:
-[440700.397346]  __filemap_set_wb_err+0x1a/0x70
-[440700.397419]  cifs_writepages+0x9c7/0xb30 [cifs]
-[440700.397426]  do_writepages+0x4b/0xe0
-[440700.397444]  __filemap_fdatawrite_range+0xcb/0x100
-[440700.397455]  filemap_write_and_wait+0x42/0xa0
-[440700.397486]  cifs_setattr+0x68b/0xf30 [cifs]
-[440700.397493]  notify_change+0x358/0x4a0
-[440700.397500]  utimes_common+0xe9/0x1c0
-[440700.397510]  do_utimes+0xc5/0x150
-[440700.397520]  __x64_sys_utimensat+0x88/0xd0
-
-Fixes: 61cfac6f267d ("CIFS: Fix possible use after free in demultiplex thread")
-Signed-off-by: Paul Aurich <paul@darkrain42.org>
-CC: stable@vger.kernel.org
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Daniel Niv <danielniv3@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/smb2ops.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/pci/saa7164/saa7164-encoder.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -4076,7 +4076,7 @@ smb2_get_enc_key(struct TCP_Server_Info
+diff --git a/drivers/media/pci/saa7164/saa7164-encoder.c b/drivers/media/pci/saa7164/saa7164-encoder.c
+index 3fca7257a720..df494644b5b6 100644
+--- a/drivers/media/pci/saa7164/saa7164-encoder.c
++++ b/drivers/media/pci/saa7164/saa7164-encoder.c
+@@ -1008,7 +1008,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
+ 		printk(KERN_ERR "%s() failed (errno = %d), NO PCI configuration\n",
+ 			__func__, result);
+ 		result = -ENOMEM;
+-		goto failed;
++		goto fail_pci;
  	}
- 	spin_unlock(&cifs_tcp_ses_lock);
  
--	return 1;
-+	return -EAGAIN;
+ 	/* Establish encoder defaults here */
+@@ -1062,7 +1062,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
+ 			  100000, ENCODER_DEF_BITRATE);
+ 	if (hdl->error) {
+ 		result = hdl->error;
+-		goto failed;
++		goto fail_hdl;
+ 	}
+ 
+ 	port->std = V4L2_STD_NTSC_M;
+@@ -1080,7 +1080,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
+ 		printk(KERN_INFO "%s: can't allocate mpeg device\n",
+ 			dev->name);
+ 		result = -ENOMEM;
+-		goto failed;
++		goto fail_hdl;
+ 	}
+ 
+ 	port->v4l_device->ctrl_handler = hdl;
+@@ -1091,10 +1091,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
+ 	if (result < 0) {
+ 		printk(KERN_INFO "%s: can't register mpeg device\n",
+ 			dev->name);
+-		/* TODO: We're going to leak here if we don't dealloc
+-		 The buffers above. The unreg function can't deal wit it.
+-		*/
+-		goto failed;
++		goto fail_reg;
+ 	}
+ 
+ 	printk(KERN_INFO "%s: registered device video%d [mpeg]\n",
+@@ -1116,9 +1113,14 @@ int saa7164_encoder_register(struct saa7164_port *port)
+ 
+ 	saa7164_api_set_encoder(port);
+ 	saa7164_api_get_encoder(port);
++	return 0;
+ 
+-	result = 0;
+-failed:
++fail_reg:
++	video_device_release(port->v4l_device);
++	port->v4l_device = NULL;
++fail_hdl:
++	v4l2_ctrl_handler_free(hdl);
++fail_pci:
+ 	return result;
  }
- /*
-  * Encrypt or decrypt @rqst message. @rqst[0] has the following format:
+ 
+-- 
+2.30.2
+
 
 
