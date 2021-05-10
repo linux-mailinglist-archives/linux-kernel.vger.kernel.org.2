@@ -2,77 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5900D378E83
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BF8378E5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350123AbhEJNU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:20:56 -0400
-Received: from mga06.intel.com ([134.134.136.31]:34990 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352061AbhEJNNy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 09:13:54 -0400
-IronPort-SDR: W3qn28fC68RPwrIqUeWAVAkY3EyBRW2VyvwgknhumLaXFEjo2rjVWP2VBayPLymh6GrPD/TV5l
- pr5LomO31giA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="260455803"
-X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
-   d="scan'208";a="260455803"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 06:12:25 -0700
-IronPort-SDR: sIr9jWrurMg6PCum7v4YEo45Ps8OCp/+M2IwXM+YdUseDNtgvfm3TEpVvP4KqrsfGQ0m5TpSfQ
- WGXaXftYpy7g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="470793108"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 10 May 2021 06:12:08 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 05E33142; Mon, 10 May 2021 16:12:27 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Mark Brown <broonie@kernel.org>, openbmc@lists.ozlabs.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 3/7] spi: npcm-pspi: Use SPI_MODE_X_MASK
-Date:   Mon, 10 May 2021 16:12:13 +0300
-Message-Id: <20210510131217.49357-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210510131217.49357-1-andriy.shevchenko@linux.intel.com>
-References: <20210510131217.49357-1-andriy.shevchenko@linux.intel.com>
+        id S232828AbhEJNQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351916AbhEJNNX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 09:13:23 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255DCC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:12:18 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id s8so16588903wrw.10
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=arkEZloYG/8s7EHZSL/Wo17Slx2pmQjhiuq/ITnE6NE=;
+        b=Ec/orbdIinVbI1WenpM55TD0ERq7ei93XnOyFkk+yOo2iizBZeYu3EfjzaxZReH17E
+         RA2InuW7itLvWTg52rcpfbUseDR2W+muBlwqP0hjuY+SQdqcBP/VejmF7/4FoMdBjFcq
+         285A1AbY0WNfvKuJ2rKSP9VUzc6iwikVxcjAzm9ejwQCq1YgZnqJGruhzxjUKWlRqY4M
+         z2FgiHJdnWuEECfcLVI9OHMRIgH8vvr8kiMySX8YQM+obTPE+GYmCfKSd5YKFssTcztu
+         E8nH9pnlGIWRb85K9LYZCh+fTtxR/nj7qigcodEbH5NbW4q4kQ0w/BpVxdXQs/ClMpVp
+         Qmkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=arkEZloYG/8s7EHZSL/Wo17Slx2pmQjhiuq/ITnE6NE=;
+        b=j32MLXy/Jt/OeC5Kgj0/PA1PXI96KmcA7gwXz46eWsG3DUszNz06wP922KHRC0+blY
+         0TXz+NOXrjpqpHyZkr3Cmd/5cdpyWOvygS9KswMw/t/G4NslPcVdvYqXAr2YlZVQrR0T
+         gMCHJkAz6LnhWBumNlGfHA/khNt0cB8t5NFNWZnAzPHf0auKDW78pxW4IuI6wAjAeXd3
+         iVycykxCMQxIhazImZlgzZQ0SqnDIOZVtWa3ZiOYAPqBqIeMmmaxvsWwz6Fk721ZwXlb
+         NYkb7Sh1vAtiyYHCa1xE2WwkrMSd+9MtM7Ygp0DPd7RzJWEhzhreEfQWTDE7ToJOSFCb
+         Hyeg==
+X-Gm-Message-State: AOAM5328BQxv43sEKCNLtXEhvswi9VcDVRB0iSWzY1ir83UJ+KDNBiOk
+        Ne9leXjf2QTN2gkzCVpVbFs=
+X-Google-Smtp-Source: ABdhPJwRM4BuJSt5TLHHWLjs9qW0+A1lQUtZ8+Vez53b40PqcA/VfNSa+hDfZYbwGyQlUUG1+KC34Q==
+X-Received: by 2002:adf:de02:: with SMTP id b2mr14664098wrm.420.1620652336970;
+        Mon, 10 May 2021 06:12:16 -0700 (PDT)
+Received: from agape.jhs ([5.171.73.3])
+        by smtp.gmail.com with ESMTPSA id c14sm23248959wrt.77.2021.05.10.06.12.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 06:12:16 -0700 (PDT)
+Date:   Mon, 10 May 2021 15:12:14 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] staging: rtl8723bs: move comments to silence 'line
+ too long' warning
+Message-ID: <20210510131213.GA4434@agape.jhs>
+References: <cover.1620650484.git.fabioaiuto83@gmail.com>
+ <cdb37302e4d7618141997229c59467f9d196eccc.1620650484.git.fabioaiuto83@gmail.com>
+ <20210510130019.GT1955@kadam>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510130019.GT1955@kadam>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use SPI_MODE_X_MASK instead of open coded variant.
+On Mon, May 10, 2021 at 04:00:19PM +0300, Dan Carpenter wrote:
+> On Mon, May 10, 2021 at 02:46:19PM +0200, Fabio Aiuto wrote:
+> > move comments to fix the following post commit hook
+> > checkpatch warnings:
+> > 
+> > WARNING: line length of 110 exceeds 100 columns
+> > 115: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:510:
+> > +					*((__le32 *)crc)
+> >  = ~crc32_le(~0, payload, length);/* modified by Amy*/
+> 
+> Please delete the Amy comments.  :P
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/spi/spi-npcm-pspi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ok, will fix and submit a v2 :)
 
-diff --git a/drivers/spi/spi-npcm-pspi.c b/drivers/spi/spi-npcm-pspi.c
-index 56d10c4511db..1668a347e003 100644
---- a/drivers/spi/spi-npcm-pspi.c
-+++ b/drivers/spi/spi-npcm-pspi.c
-@@ -105,7 +105,7 @@ static void npcm_pspi_set_mode(struct spi_device *spi)
- 	u16 regtemp;
- 	u16 mode_val;
- 
--	switch (spi->mode & (SPI_CPOL | SPI_CPHA)) {
-+	switch (spi->mode & SPI_MODE_X_MASK) {
- 	case SPI_MODE_0:
- 		mode_val = 0;
- 		break;
--- 
-2.30.2
+> 
+> regards,
+> dan carpenter
+> 
 
+thank you,
+
+fabio
