@@ -2,70 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096FB377EE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 091EF377ED9
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhEJJED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:04:03 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2739 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230189AbhEJJD6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:03:58 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fdw3R1W9DzqV1B;
-        Mon, 10 May 2021 16:59:31 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 10 May 2021 17:02:45 +0800
-From:   Hui Tang <tanghui20@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] crypto: hisilicon/hpre - extend 'cra_driver_name' with curve name
-Date:   Mon, 10 May 2021 16:59:48 +0800
-Message-ID: <1620637188-36988-3-git-send-email-tanghui20@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1620637188-36988-1-git-send-email-tanghui20@huawei.com>
-References: <1620637188-36988-1-git-send-email-tanghui20@huawei.com>
+        id S230154AbhEJJCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:02:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229566AbhEJJCe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 05:02:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3272B60FE8;
+        Mon, 10 May 2021 09:01:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620637290;
+        bh=D18cw+fs8QmLRUSC31UNLkbAGiDlCX2TMHaNpx2XmS8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aFQzh4EEAS2aBJNvhmMXmb4eCPPSmllkV9ZEl8MuxfKlIjMH/fg3wMuJJwz6Enwbw
+         IWQqbi6Ky2/uXgOMxBkBkdWXHUby2ILZDS/SY6oEjWX6AW2ciaZfz1Ku4Q+5qwaBOO
+         sS5BDoeTePJFrRo9QnqS5W0HQjCTw1xdFhs+1pWlfjX/sMmKd/K96piWa2XFUjbzxT
+         e4AteoXAo9Hri1QH29afFk8RC2ak6KsAOtbvmHMOOaeUZWDFh3fyFqvaQTQWWRo1MD
+         uUgI152j73E9f64eoYFrMyd1nSCaf2fXIYyiK+g3oGs724vKlHQ465e0bXjSAlnnwN
+         XlUiWNVYT4G4w==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lg1nB-0000wg-7F; Mon, 10 May 2021 11:01:33 +0200
+Date:   Mon, 10 May 2021 11:01:33 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Juergen Borleis <jbe@pengutronix.de>
+Cc:     linux-usb@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH] USB: serial: ftdi_sio: add IDs for IDS GmbH Products
+Message-ID: <YJj2bXAgYtgg0jC9@hovoldconsulting.com>
+References: <20210422075852.9351-1-jbe@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210422075852.9351-1-jbe@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently,'cra_driver_name' cannot be used to specify ecdh algorithm
-with a special curve, so extending it with curve name.
+On Thu, Apr 22, 2021 at 09:58:52AM +0200, Juergen Borleis wrote:
+> From: Dominik Andreas Schorpp <dominik.a.schorpp@ids.de>
+> 
+> Add the IDS GmbH Vendor ID and the Product IDs for SI31A (2xRS232)
+> and CM31A (LoRaWAN Modem).
+> 
+> Signed-off-by: Dominik Andreas Schorpp <dominik.a.schorpp@ids.de>
+> Signed-off-by: Juergen Borleis <jbe@pengutronix.de>
 
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
----
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Applied, thanks.
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index a380087..c07a7f5 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -1940,7 +1940,7 @@ static struct kpp_alg ecdh_nist_p192 = {
- 		.cra_ctxsize = sizeof(struct hpre_ctx),
- 		.cra_priority = HPRE_CRYPTO_ALG_PRI,
- 		.cra_name = "ecdh-nist-p192",
--		.cra_driver_name = "hpre-ecdh",
-+		.cra_driver_name = "hpre-ecdh-nist-p192",
- 		.cra_module = THIS_MODULE,
- 	},
- };
-@@ -1957,7 +1957,7 @@ static struct kpp_alg ecdh_nist_p256 = {
- 		.cra_ctxsize = sizeof(struct hpre_ctx),
- 		.cra_priority = HPRE_CRYPTO_ALG_PRI,
- 		.cra_name = "ecdh-nist-p256",
--		.cra_driver_name = "hpre-ecdh",
-+		.cra_driver_name = "hpre-ecdh-nist-p256",
- 		.cra_module = THIS_MODULE,
- 	},
- };
--- 
-2.8.1
-
+Johan
