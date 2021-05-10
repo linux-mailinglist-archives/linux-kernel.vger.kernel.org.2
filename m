@@ -2,109 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2364379282
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E731379285
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbhEJPXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 11:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46564 "EHLO
+        id S235868AbhEJPXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 11:23:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235862AbhEJPXR (ORCPT
+        with ESMTP id S234967AbhEJPXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 11:23:17 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDC4C04684B;
-        Mon, 10 May 2021 07:55:19 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id a10-20020a05600c068ab029014dcda1971aso9210368wmn.3;
-        Mon, 10 May 2021 07:55:19 -0700 (PDT)
+        Mon, 10 May 2021 11:23:23 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03AB0C046854
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:55:51 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id z3so14804005oib.5
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:55:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LdzN4vabxAaywTUCUyKAN9CsvFqkJ9+cyxQ6LXEIgIg=;
-        b=tEEP9K0KtsbmbCmehq7nnKT79txVrDofPfBNxwbH4AsT6HNkMFHArBaJhDCwcp4inB
-         ay3uCvGqLbaodlFhGc7Gll7MUTCqLhYHB0ZKw9ww3xJsVXo2DwswW/AfPhbOyH1pAcPH
-         4DXp+1/hnr+ziv7fNo2HzGfuQbykCWRHtQQAZnl0yDn8KqLuq/dte5K2evulvvLq04Bm
-         6MQExnad/ZGusbGBgtyyKP5YLMwCpMdtx2zKaUWBsYYFTYY6tHNzcobVuXbYNFiHMuRC
-         tyQE5qITL4RKOvFT0YfPYsbHA6btY8ty1Se6D5mN7AVVG+lFIELsvJdo3WS51dg8uatC
-         TObQ==
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AS9nf1QYyUIyVs6RoQO80MpiosKSnnivAT6Yx1y7KWk=;
+        b=hmsr1/zRUNvK9mnHaZO5y60A+AHPfdNmIzBpb36meUCTFqPyF8BCSJoWzz+dwjMUBf
+         sOjdtYrpYb+U2KZI8AgQCSNXM2B/sYEWnAXVW22VgufrTpS6Oub6U+k8pKNHLR9od9pY
+         2JvWfGFLyMOvQgqNRMzpvCJTe8mmXm86mDSsk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LdzN4vabxAaywTUCUyKAN9CsvFqkJ9+cyxQ6LXEIgIg=;
-        b=MofI0ZuwITFDTlMBZOxxMTagSO5bicDKTW464CkaZhaqv4bMNvycb7D0POY07vPS8e
-         lKiiHMy5sQNQ9Uz7gK3bglVIaBhiiabadtx1ozjC1CmDnqmWDHStqlskVoRrpcYoWBVO
-         dZrSyA51nQhquO7AJg2oDUYiTzsz7bqiTeTEPuLEo20K2d95EVC4P8b3Wr7DoV0B2o69
-         f4RKh2Lw+isqTL8OnjAw4sTjMpnhVPxm7Vfndq+ja8bLaLMEaQRcppJ+y+5w5XIL4KuO
-         f2pWkLSgC6ZlQgnr13HXo6/SHMwsmiUlxRDcpu2q1TizMjfe9Wy/0/GJcWcAUSxLZ8zc
-         wDMA==
-X-Gm-Message-State: AOAM533V9KBkmGsyAm2EgZOCEBUOLwamLNjzJ4sR5iIVaLqXy9FvGPYx
-        0oq4QOXUIQDj9+OtbABCpsE=
-X-Google-Smtp-Source: ABdhPJyJGOksxuTa1I03eCfUNXSQXfSlP99bP4r9fmwr8UHi5oDDmGa7+XJW4+i2guA91NWX4yFBSQ==
-X-Received: by 2002:a05:600c:1909:: with SMTP id j9mr21284358wmq.100.1620658518019;
-        Mon, 10 May 2021 07:55:18 -0700 (PDT)
-Received: from agape.jhs ([5.171.73.3])
-        by smtp.gmail.com with ESMTPSA id i3sm26014413wrb.46.2021.05.10.07.55.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 07:55:17 -0700 (PDT)
-Date:   Mon, 10 May 2021 16:55:14 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Ashish Vara <ashishvara89@yahoo.com>
-Cc:     manishc@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        coiby.xu@gmail.com, gregkh@linuxfoundation.org,
-        netdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: Subject: [PATCH] staging: qlge: removed unnecessary debug
- message to fix coding style warning
-Message-ID: <20210510145513.GD4434@agape.jhs>
-References: <eb4c5af2-2980-a0f1-4708-a48da9570225.ref@yahoo.com>
- <eb4c5af2-2980-a0f1-4708-a48da9570225@yahoo.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AS9nf1QYyUIyVs6RoQO80MpiosKSnnivAT6Yx1y7KWk=;
+        b=irBF/uD0wkt+qPFt86gmBSHIjRuL4BYDdH+bZphvLLeZ2T3xtxXNZ7fWSolDkXTfKH
+         u7mvy9ebaP1yHfTnVzPUcGopLIMvHpgh5pso6QRWV8vPsmf0dulyzzDXMAA2RIZxNHuO
+         K/2dX/TPqLC2EFbUt8710bLOQ0uX05JU3EEbDDFmYS75ogElw4IeBv2DAKYFuj5/g0jR
+         5M3q2dcErM5nGA9tXWXhzH4phoWME8JKgJQufK82CSlO1IBi+AqhGgt7kGvCac9Q30Iq
+         kCxpjRSIrHjgxB8HXP5BtASoDsyAtdZG9iYVHqWL+5VE4ALr52IOHzkW2BgHnLHk379f
+         ttsQ==
+X-Gm-Message-State: AOAM532SRM6B/sS6pEPrHzIiySJDIN0M7BFQPZWEF2RDLdTXTyZcAmgH
+        QBYe07+J7EDeXyfNVoNzC0nJ7Gh3fc+s5y18p3H0Pw==
+X-Google-Smtp-Source: ABdhPJwfEDQZPJA0WzNIzsQAkshxoJAbrMEAjUNsMGt80dwxzz47vaaAr7fiCJX7iaqPc8WdsMULsSopfEIfRAdTCGQ=
+X-Received: by 2002:aca:df87:: with SMTP id w129mr18413978oig.128.1620658550366;
+ Mon, 10 May 2021 07:55:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eb4c5af2-2980-a0f1-4708-a48da9570225@yahoo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <YJBHiRiCGzojk25U@phenom.ffwll.local> <CAHk-=wiwgOPQ+4Eaf0GD5P_GveE6vUHsKxAT=pMsjk1v_kh4ig@mail.gmail.com>
+ <YJVijmznt1xnsCxc@phenom.ffwll.local> <CAHk-=wgjO8-f1bUwQB=5HGzkvSS+aGACR9+H5CkkDhRgud+3MA@mail.gmail.com>
+ <20210510135031.GF2047089@ziepe.ca>
+In-Reply-To: <20210510135031.GF2047089@ziepe.ca>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Mon, 10 May 2021 16:55:39 +0200
+Message-ID: <CAKMK7uFfN3p2fE1Xq47nOTtkPY2vm10GMvBaupQ9hgK0rS8sgQ@mail.gmail.com>
+Subject: Re: [PULL] topic/iomem-mmap-vs-gup
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ashish,
+On Mon, May 10, 2021 at 3:50 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Sat, May 08, 2021 at 09:46:41AM -0700, Linus Torvalds wrote:
+>
+> > I think follow_pfn() is ok for the actual "this is not a 'struct page'
+> > backed area", and disabling that case is wrong even going forward.
+>
+> Every place we've audited using follow_pfn() has been shown to have
+> some use-after-free bugs like Daniel describes, and a failure to check
+> permissions bug too.
+>
+> All the other follow_pfn() users were moved to follow_pte() to fix the
+> permissions check and this shifts the use-after-free bug away from
+> being inside an MM API and into the caller mis-using the API by, say,
+> extracting and using the PFN outside the pte lock.
+>
+> eg look at how VFIO wrongly uses follow_pte():
+>
+> static int follow_fault_pfn()
+>         ret = follow_pte(vma->vm_mm, vaddr, &ptep, &ptl);
+>                 *pfn = pte_pfn(*ptep);
+>         pte_unmap_unlock(ptep, ptl);
+>
+>         // no protection that pte_pfn() is still valid!
+>         use_pfn(*pfn)
+>
+> v4l is the only user that still has the missing permissions check
+> security bug too - so there is no outcome that should keep
+> follow_pfn() in the tree.
+>
+> At worst v4l should change to follow_pte() and use it wrongly like
+> VFIO. At best we should delete all the v4l stuff.
 
-in your subject line there is one Subject: too many
+yeah vfio is still broken for the case I care about. I think there's
+also some questions open still about whether kvm really uses
+mmu_notifier in all cases correctly, but iirc the one exception was
+s390, which didn't have pci mmap and that's how it gets away with that
+specific problem.
 
-On Mon, May 10, 2021 at 08:13:37PM +0530, Ashish Vara wrote:
-> From: Ashish Vara <ashishvara89@yahoo.com>
-> 
-> removed unnecessary out of memory message to fix coding style warning.
-> 
-> Signed-off-by: Ashish Vara <ashishvara89@yahoo.com>
-> ---
->  drivers/staging/qlge/qlge_main.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
-> index c9dc6a852af4..a9e0bccc52d0 100644
-> --- a/drivers/staging/qlge/qlge_main.c
-> +++ b/drivers/staging/qlge/qlge_main.c
-> @@ -2796,12 +2796,8 @@ static int qlge_init_bq(struct qlge_bq *bq)
->  
->  	bq->base = dma_alloc_coherent(&qdev->pdev->dev, QLGE_BQ_SIZE,
->  				      &bq->base_dma, GFP_ATOMIC);
-> -	if (!bq->base) {
-> -		netif_err(qdev, ifup, qdev->ndev,
-> -			  "ring %u %s allocation failed.\n", rx_ring->cq_id,
-> -			  bq_type_name[bq->type]);
-> +	if (!bq->base)
->  		return -ENOMEM;
-> -	}
->  
->  	bq->queue = kmalloc_array(QLGE_BQ_LEN, sizeof(struct qlge_bq_desc),
->  				  GFP_KERNEL);
-> -- 
-> 2.30.2
-> 
+> Daniel I suppose we missed this relation to follow_pte(), so I agree
+> that keeping a unsafe_follow_pfn() around is not good.
 
-thank you,
-
-fabio
+tbh I never really got the additional issue with the missing write
+checks. That users of follow_pfn (or well follow_pte + immediate lock
+dropping like vfio) don't subscribe to the pte updates in general is
+the bug I'm seeing. That v4l also glosses over the read/write access
+stuff is kinda just the icing on the cake :-) It's pretty well broken
+even if it would check that.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
