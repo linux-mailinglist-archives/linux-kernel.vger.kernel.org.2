@@ -2,182 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 884613798B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C033798B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbhEJVD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 17:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39456 "EHLO
+        id S231594AbhEJVDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 17:03:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231213AbhEJVD2 (ORCPT
+        with ESMTP id S231193AbhEJVDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 17:03:28 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18060C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 14:02:21 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id a5so7456518pfa.11
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 14:02:21 -0700 (PDT)
+        Mon, 10 May 2021 17:03:50 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE96C061574;
+        Mon, 10 May 2021 14:02:44 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so2262801otc.6;
+        Mon, 10 May 2021 14:02:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=45NUfNFNptvMg6JTtEiEAtq0rD4KjNhuaSZ4UKjowxM=;
-        b=XkvV82WvRXO64kiRraW9QAeJzi177K0R8eeVI7F2FbVP6xOjEftm6FuZihuX5YG95Z
-         ZgMEyUzwxTRZwOQvSjyOlcCf1UlE5D7xozB2ARQkJI9+jntLzGwOJX7K4miq9RoKn1Y7
-         BTyoT5falJYMo6Ysa9Wd6iXJ3owIbxE+TA1uK3OezcB/k44c0WsWRTkhB6bXoDzUj8eG
-         rOZ4COMsI/uwXrbu9Iij3n/mTN7/0UbKUExiNOk142Gw1vZwVb4FNfxJJNS+LI+nKHZU
-         HFMQ7sZvrI39V2Dc09jmdiQjI2LQSyioa3ouKt+zk13il41cQvPmtzzONhhvDo9uKyPv
-         SIGA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3cBBZkePd5gfKATN60V4QwGBhUGNtLUNcw+1xoOiiZs=;
+        b=S2lsNjatPX3UKOV5pkxnIgd2tRdEDE1F/mJYBW1mBH0XTLW23kTgYMfvEuqFgWgCcG
+         GpeN7skQ8HRDLyzonMznUF4k4KFu9cRWv9zQBbCtBdxybb7lS7+cyIM8ceLQvVpqebto
+         Ta+XIA3rtvSzNn4QMP/U5sGbl11s41Entls7NMUUyS7wgK8ENv7EKgBBvrS2SLGEeu/q
+         d1IQpmZRoZCDXEKRI0odbDo0kwhcdmT8MQOmT+KdCYBwpXFOZgoUV4JgLhmcnri/7V1S
+         Spb/pP0HPKxZnPu9b/Ufuha9NG2NpU2UJiquIBsEYYnlWwNWoBWkSs0Wbz2Mx2SUicRq
+         3rdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=45NUfNFNptvMg6JTtEiEAtq0rD4KjNhuaSZ4UKjowxM=;
-        b=Yl95Q9OTGr+pXTuok7ri6msL+p7cABlcgPlqaD0o+OgG1ncznvw+DHr5j2D5cwIZhW
-         /q60RlF6sZW+tO79gwPrnUSQBd8Ke6Iz/SIU/DSn/4628RzplTMjUy4hvdJxVTMrSxuW
-         Ai7Bg9HaiDTuyESRpXHm0hmksVtRe6gavEFOOEjanGomWo2unjNL/cWt6i/Jb6Mq1hs0
-         ByxT52FII3Xa9xrePHar/kHz6haOT79Tlkksh0GFlpT6mAFoU0xBU8kggEbmt8WbgXIW
-         geifd/Fnyd+XJ50BuUkSTcNYKteNfyG7GPHPAZF3I+gJTVPeB9sp4bkPy/uO67QQpiCI
-         6Oqg==
-X-Gm-Message-State: AOAM531B8VdpnoSlU/Obmju+9HYQ7uxAWAnsg7MKTj5hRdkikOM2Z5PF
-        rac5kQpDWeRddaAgFStw6JBL6Q==
-X-Google-Smtp-Source: ABdhPJzZTuM44zAfoBZUi9Bj2lDne3SvasMsj8yS5dnz/amFPTp89Usk8uPjTYlehmVU6DVhcqDOHg==
-X-Received: by 2002:aa7:90d5:0:b029:28e:df57:47ff with SMTP id k21-20020aa790d50000b029028edf5747ffmr27631557pfk.74.1620680540337;
-        Mon, 10 May 2021 14:02:20 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id e20sm324207pjt.8.2021.05.10.14.02.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 14:02:19 -0700 (PDT)
-Date:   Mon, 10 May 2021 21:02:15 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH 2/2] KVM: x86: Allow userspace to update tracked sregs
- for protected guests
-Message-ID: <YJmfV1sO8miqvQLM@google.com>
-References: <20210507165947.2502412-1-seanjc@google.com>
- <20210507165947.2502412-3-seanjc@google.com>
- <5f084672-5c0d-a6f3-6dcf-38dd76e0bde0@amd.com>
- <YJla8vpwqCxqgS8C@google.com>
- <12fe8f83-49b4-1a22-7903-84e45f16c372@amd.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3cBBZkePd5gfKATN60V4QwGBhUGNtLUNcw+1xoOiiZs=;
+        b=fi9BjZjl/jtrlaMzz5n9jkJsTfAUfLmbn0nEQ05awh0fwXS/qxudJo8z2jYqs9XZAH
+         Jg9aUM+Q/szIJkPAy7Q3rwp8nYBDvXq0PI7EnX8o/iObDZCnJHVnuGVUN28behUE3au8
+         a5SBIv2orWxXPokt50Yg/SsLC9LKjubnRZ9QjaYqv3OQL+Cyg/5aR1XG8PGfhUsvGGLD
+         f10ggyC99JdcC9KtGX5IcgLqKnyMe6o465GT4rc+rYXWvOGdx5pPT/lSDaJNWRM55k3H
+         9BTr0fvHsVnBiS6s7DrwUjLbLbB0MD07UZTqzio3GMu1zCJnBUZmebOZcP+Lq02euB1+
+         Yuhg==
+X-Gm-Message-State: AOAM531RN8pgElKcC4s7QuTf1TtNZLeAtyt18K0w4oZ/BdUt0zVCI5IY
+        8OL+Mszo3Oo+obpqy+2REcw4G9pFnbkLuwCuz2g=
+X-Google-Smtp-Source: ABdhPJw7DyKD1Lyyq9S41EMv+Yyu/ErA9AViQoXtkzjglGNF7HKdlfnp86mEla//UDe5eTZlAP0X/kMW5Kco3byONpk=
+X-Received: by 2002:a9d:51c6:: with SMTP id d6mr16637610oth.311.1620680564170;
+ Mon, 10 May 2021 14:02:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12fe8f83-49b4-1a22-7903-84e45f16c372@amd.com>
+References: <20210509144923.6316-1-dwaipayanray1@gmail.com> <2c5387b7-2fa1-9b5a-c671-806429b463aa@amd.com>
+In-Reply-To: <2c5387b7-2fa1-9b5a-c671-806429b463aa@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 10 May 2021 17:02:32 -0400
+Message-ID: <CADnq5_NXXD1K6kb0Jr8P5DPGcHRMo0jQTC+y2n4-4sfZY12pyA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/amdgpu: Fix errors in function documentation
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021, Tom Lendacky wrote:
-> On 5/10/21 11:10 AM, Sean Christopherson wrote:
-> > On Fri, May 07, 2021, Tom Lendacky wrote:
-> >> On 5/7/21 11:59 AM, Sean Christopherson wrote:
-> >>> Allow userspace to set CR0, CR4, CR8, and EFER via KVM_SET_SREGS for
-> >>> protected guests, e.g. for SEV-ES guests with an encrypted VMSA.  KVM
-> >>> tracks the aforementioned registers by trapping guest writes, and also
-> >>> exposes the values to userspace via KVM_GET_SREGS.  Skipping the regs
-> >>> in KVM_SET_SREGS prevents userspace from updating KVM's CPU model to
-> >>> match the known hardware state.
-> >>
-> >> This is very similar to the original patch I had proposed that you were
-> >> against :)
-> > 
-> > I hope/think my position was that it should be unnecessary for KVM to need to
-> > know the guest's CR0/4/0 and EFER values, i.e. even the trapping is unnecessary.
-> > I was going to say I had a change of heart, as EFER.LMA in particular could
-> > still be required to identify 64-bit mode, but that's wrong; EFER.LMA only gets
-> > us long mode, the full is_64_bit_mode() needs access to cs.L, which AFAICT isn't
-> > provided by #VMGEXIT or trapping.
-> 
-> Right, that one is missing. If you take a VMGEXIT that uses the GHCB, then
-> I think you can assume we're in 64-bit mode.
+Applied.  Thanks!
 
-But that's not technically guaranteed.  The GHCB even seems to imply that there
-are scenarios where it's legal/expected to do VMGEXIT with a valid GHCB outside
-of 64-bit mode:
+Alex
 
-  However, instead of issuing a HLT instruction, the AP will issue a VMGEXIT
-  with SW_EXITCODE of 0x8000_0004 ((this implies that the GHCB was updated prior
-  to leaving 64-bit long mode).
-
-In practice, assuming the guest is in 64-bit mode will likely work, especially
-since the MSR-based protocol is extremely limited, but ideally there should be
-stronger language in the GHCB to define the exact VMM assumptions/behaviors.
-
-On the flip side, that assumption and the limited exposure through the MSR
-protocol means trapping CR0, CR4, and EFER is pointless.  I don't see how KVM
-can do anything useful with that information outside of VMGEXITs.  Page tables
-are encrypted and GPRs are stale; what else could KVM possibly do with
-identifying protected mode, paging, and/or 64-bit?
-
-> > Unless I'm missing something, that means that VMGEXIT(VMMCALL) is broken since
-> > KVM will incorrectly crush (or preserve) bits 63:32 of GPRs.  I'm guessing no
-> > one has reported a bug because either (a) no one has tested a hypercall that
-> > requires bits 63:32 in a GPR or (b) the guest just happens to be in 64-bit mode
-> > when KVM_SEV_LAUNCH_UPDATE_VMSA is invoked and so the segment registers are
-> > frozen to make it appear as if the guest is perpetually in 64-bit mode.
-> 
-> I don't think it's (b) since the LAUNCH_UPDATE_VMSA is done against reset-
-> state vCPUs.
-> 
-> > 
-> > I see that sev_es_validate_vmgexit() checks ghcb_cpl_is_valid(), but isn't that
-> > either pointless or indicative of a much, much bigger problem?  If VMGEXIT is
-> 
-> It is needed for the VMMCALL exit.
-> 
-> > restricted to CPL0, then the check is pointless.  If VMGEXIT isn't restricted to
-> > CPL0, then KVM has a big gaping hole that allows a malicious/broken guest
-> > userspace to crash the VM simply by executing VMGEXIT.  Since valid_bitmap is
-> > cleared during VMGEXIT handling, I don't think guest userspace can attack/corrupt
-> > the guest kernel by doing a replay attack, but it does all but guarantee a
-> > VMGEXIT at CPL>0 will be fatal since the required valid bits won't be set.
-> 
-> Right, so I think some cleanup is needed there, both for the guest and the
-> hypervisor:
-> 
-> - For the guest, we could just clear the valid bitmask before leaving the
->   #VC handler/releasing the GHCB. Userspace can't update the GHCB, so any
->   VMGEXIT from userspace would just look like a no-op with the below
->   change to KVM.
-
-Ah, right, the exit_code and exit infos need to be valid.
-
-> - For KVM, instead of returning -EINVAL from sev_es_validate_vmgexit(), we
->   return the #GP action through the GHCB and continue running the guest.
-
-Agreed, KVM should never kill the guest in response to a bad VMGEXIT.  That
-should always be a guest decision.
-
-> > Sadly, the APM doesn't describe the VMGEXIT behavior, nor does any of the SEV-ES
-> > documentation I have.  I assume VMGEXIT is recognized at CPL>0 since it morphs
-> > to VMMCALL when SEV-ES isn't active.
-> 
-> Correct.
-> 
-> > 
-> > I.e. either the ghcb_cpl_is_valid() check should be nuked, or more likely KVM
-> 
-> The ghcb_cpl_is_valid() is still needed to see whether the VMMCALL was
-> from userspace or not (a VMMCALL will generate a #VC).
-
-Blech.  I get that the GHCB spec says CPL must be provided/checked for VMMCALL,
-but IMO that makes no sense whatsover.
-
-If the guest restricts the GHCB to CPL0, then the CPL field is pointless because
-the VMGEXIT will only ever come from CPL0.  Yes, technically the guest kernel
-can proxy a VMMCALL from userspace to the host, but the guest kernel _must_ be
-the one to enforce any desired CPL checks because the VMM is untrusted, at least
-once you get to SNP.
-
-If the guest exposes the GHCB to any CPL, then the CPL check is worthless because
-guest userspace can simply lie about the CPL.  And exposing the GCHB to userspace
-completely undermines guest privilege separation since hardware doesn't provide
-the real CPL, i.e. the VMM, even it were trusted, can't determine the origin of
-the VMGEXIT.
+On Sun, May 9, 2021 at 12:30 PM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 09.05.21 um 16:49 schrieb Dwaipayan Ray:
+> > Fix a couple of syntax errors and removed one excess
+> > parameter in the function documentations which lead
+> > to kernel docs build warning.
+> >
+> > Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+>
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 3 +++
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c  | 1 -
+> >   2 files changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/=
+amd/amdgpu/amdgpu_ras.c
+> > index ae9fb2025259..312f24004413 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
+> > @@ -320,11 +320,14 @@ static int amdgpu_ras_debugfs_ctrl_parse_data(str=
+uct file *f,
+> >    * "disable" requires only the block.
+> >    * "enable" requires the block and error type.
+> >    * "inject" requires the block, error type, address, and value.
+> > + *
+> >    * The block is one of: umc, sdma, gfx, etc.
+> >    *  see ras_block_string[] for details
+> > + *
+> >    * The error type is one of: ue, ce, where,
+> >    *  ue is multi-uncorrectable
+> >    *  ce is single-correctable
+> > + *
+> >    * The sub-block is a the sub-block index, pass 0 if there is no sub-=
+block.
+> >    * The address and value are hexadecimal numbers, leading 0x is optio=
+nal.
+> >    *
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/a=
+md/amdgpu/amdgpu_vm.c
+> > index 16252d48e5a4..7e1a67295106 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> > @@ -2796,7 +2796,6 @@ long amdgpu_vm_wait_idle(struct amdgpu_vm *vm, lo=
+ng timeout)
+> >    *
+> >    * @adev: amdgpu_device pointer
+> >    * @vm: requested vm
+> > - * @vm_context: Indicates if it GFX or Compute context
+> >    * @pasid: Process address space identifier
+> >    *
+> >    * Init @vm fields.
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
