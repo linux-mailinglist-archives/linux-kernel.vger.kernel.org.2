@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6CC378B15
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5F0378B14
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243686AbhEJL4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:56:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44342 "EHLO mail.kernel.org"
+        id S243667AbhEJL4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:56:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235708AbhEJLFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:05:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6526F6143C;
-        Mon, 10 May 2021 10:55:48 +0000 (UTC)
+        id S235703AbhEJLFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:05:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DCA56147F;
+        Mon, 10 May 2021 10:55:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644148;
-        bh=U34j+TrFogrOrDROvDuMaPEkYSRCDC3GOxwpZsUAbPA=;
+        s=korg; t=1620644151;
+        bh=63YIj9kq5s/dj/k7o4ecJ4EuaKz2/ix4zucPs3pYnNk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OUxOvSGg1gNLr9k2djzEY0XQ+v+OLlDyC93E95rJF6lJeYNkwGCrcRTOPs00cYLYt
-         c1f5//uQyx+rJ+TVHrEa52BVRmh5ssT+YSh434/ZAT6Lz4szIzbfLl5027RAVzXqg1
-         Rw886OW8uWu0HsAu+XMDRSZFNhVHoq6ouV+md04k=
+        b=LMLDoTalnCjixn+Xy4deJnYTjQ8d7kcIH0R5tyibmp+77lxVKoFHIPTj5uMjBowJ9
+         KiBLu6IBW5Ll76Cy+o3EjcN8XNYnlR7TO2kId7pBDsqJ60usS+qjJM+sFLEbKbPIl2
+         B0FCeVRM5I4/lIoprXQ6uERiweifldSeFm7bA0m4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, stable@kernel.org,
-        Ye Bin <yebin10@huawei.com>, Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.11 307/342] ext4: always panic when errors=panic is specified
-Date:   Mon, 10 May 2021 12:21:37 +0200
-Message-Id: <20210510102020.248402067@linuxfoundation.org>
+        Fengnan Chang <changfengnan@vivo.com>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.11 308/342] ext4: fix error code in ext4_commit_super
+Date:   Mon, 10 May 2021 12:21:38 +0200
+Message-Id: <20210510102020.279382129@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
 References: <20210510102010.096403571@linuxfoundation.org>
@@ -39,66 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Bin <yebin10@huawei.com>
+From: Fengnan Chang <changfengnan@vivo.com>
 
-commit ac2f7ca51b0929461ea49918f27c11b680f28995 upstream.
+commit f88f1466e2a2e5ca17dfada436d3efa1b03a3972 upstream.
 
-Before commit 014c9caa29d3 ("ext4: make ext4_abort() use
-__ext4_error()"), the following series of commands would trigger a
-panic:
-
-1. mount /dev/sda -o ro,errors=panic test
-2. mount /dev/sda -o remount,abort test
-
-After commit 014c9caa29d3, remounting a file system using the test
-mount option "abort" will no longer trigger a panic.  This commit will
-restore the behaviour immediately before commit 014c9caa29d3.
-(However, note that the Linux kernel's behavior has not been
-consistent; some previous kernel versions, including 5.4 and 4.19
-similarly did not panic after using the mount option "abort".)
-
-This also makes a change to long-standing behaviour; namely, the
-following series commands will now cause a panic, when previously it
-did not:
-
-1. mount /dev/sda -o ro,errors=panic test
-2. echo test > /sys/fs/ext4/sda/trigger_fs_error
-
-However, this makes ext4's behaviour much more consistent, so this is
-a good thing.
+We should set the error code when ext4_commit_super check argument failed.
+Found in code review.
+Fixes: c4be0c1dc4cdc ("filesystem freeze: add error handling of write_super_lockfs/unlockfs").
 
 Cc: stable@kernel.org
-Fixes: 014c9caa29d3 ("ext4: make ext4_abort() use __ext4_error()")
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-Link: https://lore.kernel.org/r/20210401081903.3421208-1-yebin10@huawei.com
+Signed-off-by: Fengnan Chang <changfengnan@vivo.com>
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Link: https://lore.kernel.org/r/20210402101631.561-1-changfengnan@vivo.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/super.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/ext4/super.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -667,9 +667,6 @@ static void ext4_handle_error(struct sup
- 			ext4_commit_super(sb);
- 	}
+@@ -5559,8 +5559,10 @@ static int ext4_commit_super(struct supe
+ 	struct buffer_head *sbh = EXT4_SB(sb)->s_sbh;
+ 	int error = 0;
  
--	if (sb_rdonly(sb) || continue_fs)
--		return;
--
- 	/*
- 	 * We force ERRORS_RO behavior when system is rebooting. Otherwise we
- 	 * could panic during 'reboot -f' as the underlying device got already
-@@ -679,6 +676,10 @@ static void ext4_handle_error(struct sup
- 		panic("EXT4-fs (device %s): panic forced after error\n",
- 			sb->s_id);
- 	}
-+
-+	if (sb_rdonly(sb) || continue_fs)
-+		return;
-+
- 	ext4_msg(sb, KERN_CRIT, "Remounting filesystem read-only");
- 	/*
- 	 * Make sure updated value of ->s_mount_flags will be visible before
+-	if (!sbh || block_device_ejected(sb))
+-		return error;
++	if (!sbh)
++		return -EINVAL;
++	if (block_device_ejected(sb))
++		return -ENODEV;
+ 
+ 	ext4_update_super(sb);
+ 
 
 
