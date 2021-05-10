@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0B63779C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 03:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B35D3779C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 03:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhEJB1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 21:27:04 -0400
+        id S230154AbhEJB1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 21:27:08 -0400
 Received: from mga18.intel.com ([134.134.136.126]:13561 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230137AbhEJB1C (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 21:27:02 -0400
-IronPort-SDR: 7Bpq3audLj2Vvm1nT+U42LZpTUllLv4TuvQBwh9oyr6c2/lkLogXUUOCTowFVipKScov/HgvcU
- 5HBa7yT4d92Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="186534554"
+        id S229941AbhEJB1E (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 21:27:04 -0400
+IronPort-SDR: 64CoxX2tRzyqDgxWx32yE6fPZFH5W5jqKF66vQxL8q6HN6FeCrEH7P0Xeu6iy3NoyAPvF2Tk6u
+ fOlACXkE6AdQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="186534557"
 X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
-   d="scan'208";a="186534554"
+   d="scan'208";a="186534557"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2021 18:25:57 -0700
-IronPort-SDR: Mp5iD2qZqsUin+MEEvM/HZIt36qaMX+CLt9SDKfGD4th9GuHVSjPVolQ0a9Ptrd3f8ZZUQpBvF
- dyR4mNlKbmiQ==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2021 18:26:00 -0700
+IronPort-SDR: AqUH4CaYI3diS73EEj47VKOzuekJZy6OtzF3vWGRjG24TMMebVa/v3xQ3/gPq4QYMeJo3GWtqV
+ c0ficm//vMSg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
-   d="scan'208";a="536197874"
+   d="scan'208";a="536197981"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 09 May 2021 18:25:55 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 09 May 2021 18:25:57 -0700
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH 2/4] perf vendor events: Add uncore event list for Icelake Server
-Date:   Mon, 10 May 2021 09:24:36 +0800
-Message-Id: <20210510012438.6293-3-yao.jin@linux.intel.com>
+Subject: [PATCH 3/4] perf vendor events: Add metrics for Icelake Server
+Date:   Mon, 10 May 2021 09:24:37 +0800
+Message-Id: <20210510012438.6293-4-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210510012438.6293-1-yao.jin@linux.intel.com>
 References: <20210510012438.6293-1-yao.jin@linux.intel.com>
@@ -41,2857 +41,349 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add JSON uncore events for Icelake Server to perf.
+Add JSON metrics for Icelake Server to perf.
 
-Based on JSON list v1.04
-https://download.01.org/perfmon/ICX/
+Based on TMA metrics 4.21 at 01.org.
+https://download.01.org/perfmon/
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 ---
- .../arch/x86/icelakex/uncore-memory.json      |  333 +++
- .../arch/x86/icelakex/uncore-other.json       | 2476 +++++++++++++++++
- .../arch/x86/icelakex/uncore-power.json       |   10 +
- 3 files changed, 2819 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/uncore-memory.json
- create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/uncore-other.json
- create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/uncore-power.json
+ .../arch/x86/icelakex/icx-metrics.json        | 327 ++++++++++++++++++
+ 1 file changed, 327 insertions(+)
+ create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
 
-diff --git a/tools/perf/pmu-events/arch/x86/icelakex/uncore-memory.json b/tools/perf/pmu-events/arch/x86/icelakex/uncore-memory.json
+diff --git a/tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json b/tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
 new file mode 100644
-index 000000000000..5f0d2c462940
+index 000000000000..7d61c4eab428
 --- /dev/null
-+++ b/tools/perf/pmu-events/arch/x86/icelakex/uncore-memory.json
-@@ -0,0 +1,333 @@
++++ b/tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
+@@ -0,0 +1,327 @@
 +[
 +    {
-+        "BriefDescription": "2LM Tag Check : Hit in Near Memory Cache",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xD3",
-+        "EventName": "UNC_M_TAGCHK.HIT",
-+        "PerPkg": "1",
-+        "UMask": "0x01",
-+        "Unit": "iMC"
++        "MetricExpr": "INST_RETIRED.ANY / CPU_CLK_UNHALTED.THREAD",
++        "BriefDescription": "Instructions Per Cycle (per Logical Processor)",
++        "MetricGroup": "Summary",
++        "MetricName": "IPC"
 +    },
 +    {
-+        "BriefDescription": "2LM Tag Check : Miss, no data in this line",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xD3",
-+        "EventName": "UNC_M_TAGCHK.MISS_CLEAN",
-+        "PerPkg": "1",
-+        "UMask": "0x02",
-+        "Unit": "iMC"
++        "MetricExpr": "UOPS_RETIRED.SLOTS / INST_RETIRED.ANY",
++        "BriefDescription": "Uops Per Instruction",
++        "MetricGroup": "Pipeline;Retire",
++        "MetricName": "UPI"
 +    },
 +    {
-+        "BriefDescription": "2LM Tag Check : Miss, existing data may be evicted to Far Memory",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xD3",
-+        "EventName": "UNC_M_TAGCHK.MISS_DIRTY",
-+        "PerPkg": "1",
-+        "UMask": "0x04",
-+        "Unit": "iMC"
++        "MetricExpr": "INST_RETIRED.ANY / BR_INST_RETIRED.NEAR_TAKEN",
++        "BriefDescription": "Instruction per taken branch",
++        "MetricGroup": "Branches;FetchBW;PGO",
++        "MetricName": "IpTB"
 +    },
 +    {
-+        "BriefDescription": "2LM Tag Check : Read Hit in Near Memory Cache",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xD3",
-+        "EventName": "UNC_M_TAGCHK.NM_RD_HIT",
-+        "PerPkg": "1",
-+        "UMask": "0x08",
-+        "Unit": "iMC"
++        "MetricExpr": "1 / (INST_RETIRED.ANY / CPU_CLK_UNHALTED.THREAD)",
++        "BriefDescription": "Cycles Per Instruction (per Logical Processor)",
++        "MetricGroup": "Pipeline",
++        "MetricName": "CPI"
 +    },
 +    {
-+        "BriefDescription": "2LM Tag Check : Write Hit in Near Memory Cache",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xD3",
-+        "EventName": "UNC_M_TAGCHK.NM_WR_HIT",
-+        "PerPkg": "1",
-+        "UMask": "0x10",
-+        "Unit": "iMC"
++        "MetricExpr": "CPU_CLK_UNHALTED.THREAD",
++        "BriefDescription": "Per-Logical Processor actual clocks when the Logical Processor is active.",
++        "MetricGroup": "Pipeline",
++        "MetricName": "CLKS"
 +    },
 +    {
-+        "BriefDescription": "DRAM Precharge commands. : Precharge due to read",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x02",
-+        "EventName": "UNC_M_PRE_COUNT.RD",
-+        "PerPkg": "1",
-+        "UMask": "0x04",
-+        "Unit": "iMC"
++        "MetricExpr": "INST_RETIRED.ANY / CPU_CLK_UNHALTED.DISTRIBUTED",
++        "BriefDescription": "Instructions Per Cycle (per physical core)",
++        "MetricGroup": "SMT;TmaL1",
++        "MetricName": "CoreIPC"
 +    },
 +    {
-+        "BriefDescription": "DRAM Precharge commands. : Precharge due to write",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x02",
-+        "EventName": "UNC_M_PRE_COUNT.WR",
-+        "PerPkg": "1",
-+        "UMask": "0x08",
-+        "Unit": "iMC"
++        "MetricExpr": "( 1 * ( FP_ARITH_INST_RETIRED.SCALAR_SINGLE + FP_ARITH_INST_RETIRED.SCALAR_DOUBLE ) + 2 * FP_ARITH_INST_RETIRED.128B_PACKED_DOUBLE + 4 * ( FP_ARITH_INST_RETIRED.128B_PACKED_SINGLE + FP_ARITH_INST_RETIRED.256B_PACKED_DOUBLE ) + 8 * ( FP_ARITH_INST_RETIRED.256B_PACKED_SINGLE + FP_ARITH_INST_RETIRED.512B_PACKED_DOUBLE ) + 16 * FP_ARITH_INST_RETIRED.512B_PACKED_SINGLE ) / CPU_CLK_UNHALTED.DISTRIBUTED",
++        "BriefDescription": "Floating Point Operations Per Cycle",
++        "MetricGroup": "Flops",
++        "MetricName": "FLOPc"
 +    },
 +    {
-+        "BriefDescription": "All DRAM read CAS commands issued (including underfills)",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x04",
-+        "EventName": "UNC_M_CAS_COUNT.RD",
-+        "PerPkg": "1",
-+        "UMask": "0x0f",
-+        "Unit": "iMC"
++        "MetricExpr": "UOPS_EXECUTED.THREAD / ( UOPS_EXECUTED.CORE_CYCLES_GE_1 / 2 )",
++        "BriefDescription": "Instruction-Level-Parallelism (average number of uops executed when there is at least 1 uop executed)",
++        "MetricGroup": "Pipeline;PortsUtil",
++        "MetricName": "ILP"
 +    },
 +    {
-+        "BriefDescription": "All DRAM write CAS commands issued",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x04",
-+        "EventName": "UNC_M_CAS_COUNT.WR",
-+        "PerPkg": "1",
-+        "UMask": "0x30",
-+        "Unit": "iMC"
++        "MetricExpr": "CPU_CLK_UNHALTED.DISTRIBUTED",
++        "BriefDescription": "Core actual clocks when any Logical Processor is active on the Physical Core",
++        "MetricGroup": "SMT",
++        "MetricName": "CORE_CLKS"
 +    },
 +    {
-+        "BriefDescription": "All DRAM CAS commands issued",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x04",
-+        "EventName": "UNC_M_CAS_COUNT.ALL",
-+        "PerPkg": "1",
-+        "UMask": "0x3f",
-+        "Unit": "iMC"
++        "MetricExpr": "INST_RETIRED.ANY / MEM_INST_RETIRED.ALL_LOADS",
++        "BriefDescription": "Instructions per Load (lower number means higher occurrence rate)",
++        "MetricGroup": "InsType",
++        "MetricName": "IpLoad"
 +    },
 +    {
-+        "BriefDescription": "Number of DRAM Refreshes Issued",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x45",
-+        "EventName": "UNC_M_DRAM_REFRESH.OPPORTUNISTIC",
-+        "PerPkg": "1",
-+        "UMask": "0x01",
-+        "Unit": "iMC"
++        "MetricExpr": "INST_RETIRED.ANY / MEM_INST_RETIRED.ALL_STORES",
++        "BriefDescription": "Instructions per Store (lower number means higher occurrence rate)",
++        "MetricGroup": "InsType",
++        "MetricName": "IpStore"
 +    },
 +    {
-+        "BriefDescription": "Number of DRAM Refreshes Issued",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x45",
-+        "EventName": "UNC_M_DRAM_REFRESH.PANIC",
-+        "PerPkg": "1",
-+        "UMask": "0x02",
-+        "Unit": "iMC"
++        "MetricExpr": "INST_RETIRED.ANY / BR_INST_RETIRED.ALL_BRANCHES",
++        "BriefDescription": "Instructions per Branch (lower number means higher occurrence rate)",
++        "MetricGroup": "Branches;InsType",
++        "MetricName": "IpBranch"
 +    },
 +    {
-+        "BriefDescription": "Number of DRAM Refreshes Issued",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x45",
-+        "EventName": "UNC_M_DRAM_REFRESH.HIGH",
-+        "PerPkg": "1",
-+        "UMask": "0x04",
-+        "Unit": "iMC"
++        "MetricExpr": "INST_RETIRED.ANY / BR_INST_RETIRED.NEAR_CALL",
++        "BriefDescription": "Instructions per (near) call (lower number means higher occurrence rate)",
++        "MetricGroup": "Branches",
++        "MetricName": "IpCall"
 +    },
 +    {
-+        "BriefDescription": "Read Pending Queue Allocations",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x10",
-+        "EventName": "UNC_M_RPQ_INSERTS.PCH0",
-+        "PerPkg": "1",
-+        "UMask": "0x01",
-+        "Unit": "iMC"
++        "MetricExpr": "BR_INST_RETIRED.ALL_BRANCHES / BR_INST_RETIRED.NEAR_TAKEN",
++        "BriefDescription": "Branch instructions per taken branch. ",
++        "MetricGroup": "Branches;PGO",
++        "MetricName": "BpTkBranch"
 +    },
 +    {
-+        "BriefDescription": "Read Pending Queue Allocations",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x10",
-+        "EventName": "UNC_M_RPQ_INSERTS.PCH1",
-+        "PerPkg": "1",
-+        "UMask": "0x02",
-+        "Unit": "iMC"
++        "MetricExpr": "INST_RETIRED.ANY / ( 1 * ( FP_ARITH_INST_RETIRED.SCALAR_SINGLE + FP_ARITH_INST_RETIRED.SCALAR_DOUBLE ) + 2 * FP_ARITH_INST_RETIRED.128B_PACKED_DOUBLE + 4 * ( FP_ARITH_INST_RETIRED.128B_PACKED_SINGLE + FP_ARITH_INST_RETIRED.256B_PACKED_DOUBLE ) + 8 * ( FP_ARITH_INST_RETIRED.256B_PACKED_SINGLE + FP_ARITH_INST_RETIRED.512B_PACKED_DOUBLE ) + 16 * FP_ARITH_INST_RETIRED.512B_PACKED_SINGLE )",
++        "BriefDescription": "Instructions per Floating Point (FP) Operation (lower number means higher occurrence rate)",
++        "MetricGroup": "Flops;FpArith;InsType",
++        "MetricName": "IpFLOP"
 +    },
 +    {
-+        "BriefDescription": "Write Pending Queue Allocations",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x20",
-+        "EventName": "UNC_M_WPQ_INSERTS.PCH0",
-+        "PerPkg": "1",
-+        "UMask": "0x01",
-+        "Unit": "iMC"
++        "MetricExpr": "INST_RETIRED.ANY",
++        "BriefDescription": "Total number of retired Instructions",
++        "MetricGroup": "Summary;TmaL1",
++        "MetricName": "Instructions"
 +    },
 +    {
-+        "BriefDescription": "Write Pending Queue Allocations",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x20",
-+        "EventName": "UNC_M_WPQ_INSERTS.PCH1",
-+        "PerPkg": "1",
-+        "UMask": "0x02",
-+        "Unit": "iMC"
++        "MetricExpr": "LSD.UOPS / (IDQ.DSB_UOPS + LSD.UOPS + IDQ.MITE_UOPS + IDQ.MS_UOPS)",
++        "BriefDescription": "Fraction of Uops delivered by the LSD (Loop Stream Detector; aka Loop Cache)",
++        "MetricGroup": "LSD",
++        "MetricName": "LSD_Coverage"
 +    },
 +    {
-+        "BriefDescription": "DRAM Precharge commands. : Precharge due to page table",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x02",
-+        "EventName": "UNC_M_PRE_COUNT.PGT",
-+        "PerPkg": "1",
-+        "UMask": "0x10",
-+        "Unit": "iMC"
++        "MetricExpr": "IDQ.DSB_UOPS / (IDQ.DSB_UOPS + LSD.UOPS + IDQ.MITE_UOPS + IDQ.MS_UOPS)",
++        "BriefDescription": "Fraction of Uops delivered by the DSB (aka Decoded ICache; or Uop Cache)",
++        "MetricGroup": "DSB;FetchBW",
++        "MetricName": "DSB_Coverage"
 +    },
 +    {
-+        "BriefDescription": "DRAM Clockticks",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventName": "UNC_M_CLOCKTICKS",
-+        "PerPkg": "1",
-+        "Unit": "iMC"
++        "MetricExpr": "L1D_PEND_MISS.PENDING / ( MEM_LOAD_RETIRED.L1_MISS + MEM_LOAD_RETIRED.FB_HIT )",
++        "BriefDescription": "Actual Average Latency for L1 data-cache miss demand loads (in core cycles)",
++        "MetricGroup": "MemoryBound;MemoryLat",
++        "MetricName": "Load_Miss_Real_Latency"
 +    },
 +    {
-+        "BriefDescription": "Half clockticks for IMC",
-+        "Counter": "FIXED",
-+        "CounterType": "FIXED",
-+        "EventCode": "0xff",
-+        "EventName": "UNC_M_HCLOCKTICKS",
-+        "PerPkg": "1",
-+        "Unit": "iMC"
++        "MetricExpr": "L1D_PEND_MISS.PENDING / L1D_PEND_MISS.PENDING_CYCLES",
++        "BriefDescription": "Memory-Level-Parallelism (average number of L1 miss demand load when there is at least one such miss. Per-Logical Processor)",
++        "MetricGroup": "MemoryBound;MemoryBW",
++        "MetricName": "MLP"
 +    },
 +    {
-+        "BriefDescription": "Read Pending Queue Occupancy",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x80",
-+        "EventName": "UNC_M_RPQ_OCCUPANCY_PCH0",
-+        "PerPkg": "1",
-+        "Unit": "iMC"
++        "MetricConstraint": "NO_NMI_WATCHDOG",
++        "MetricExpr": "( ITLB_MISSES.WALK_PENDING + DTLB_LOAD_MISSES.WALK_PENDING + DTLB_STORE_MISSES.WALK_PENDING ) / ( 2 * CPU_CLK_UNHALTED.DISTRIBUTED )",
++        "BriefDescription": "Utilization of the core's Page Walker(s) serving STLB misses triggered by instruction/Load/Store accesses",
++        "MetricGroup": "MemoryTLB",
++        "MetricName": "Page_Walks_Utilization"
 +    },
 +    {
-+        "BriefDescription": "Read Pending Queue Occupancy",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x81",
-+        "EventName": "UNC_M_RPQ_OCCUPANCY_PCH1",
-+        "PerPkg": "1",
-+        "Unit": "iMC"
++        "MetricExpr": "64 * L1D.REPLACEMENT / 1000000000 / duration_time",
++        "BriefDescription": "Average data fill bandwidth to the L1 data cache [GB / sec]",
++        "MetricGroup": "MemoryBW",
++        "MetricName": "L1D_Cache_Fill_BW"
 +    },
 +    {
-+        "BriefDescription": "Write Pending Queue Occupancy",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x82",
-+        "EventName": "UNC_M_WPQ_OCCUPANCY_PCH0",
-+        "PerPkg": "1",
-+        "Unit": "iMC"
++        "MetricExpr": "64 * L2_LINES_IN.ALL / 1000000000 / duration_time",
++        "BriefDescription": "Average data fill bandwidth to the L2 cache [GB / sec]",
++        "MetricGroup": "MemoryBW",
++        "MetricName": "L2_Cache_Fill_BW"
 +    },
 +    {
-+        "BriefDescription": "Write Pending Queue Occupancy",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_M_WPQ_OCCUPANCY_PCH1",
-+        "PerPkg": "1",
-+        "Unit": "iMC"
++        "MetricExpr": "64 * LONGEST_LAT_CACHE.MISS / 1000000000 / duration_time",
++        "BriefDescription": "Average per-core data fill bandwidth to the L3 cache [GB / sec]",
++        "MetricGroup": "MemoryBW",
++        "MetricName": "L3_Cache_Fill_BW"
 +    },
 +    {
-+        "BriefDescription": "DRAM Activate Count : All Activates",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x01",
-+        "EventName": "UNC_M_ACT_COUNT.ALL",
-+        "PerPkg": "1",
-+        "UMask": "0x0B",
-+        "Unit": "iMC"
++        "MetricExpr": "64 * OFFCORE_REQUESTS.ALL_REQUESTS / 1000000000 / duration_time",
++        "BriefDescription": "Average per-core data access bandwidth to the L3 cache [GB / sec]",
++        "MetricGroup": "MemoryBW;Offcore",
++        "MetricName": "L3_Cache_Access_BW"
 +    },
 +    {
-+        "BriefDescription": "DRAM Precharge commands",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x02",
-+        "EventName": "UNC_M_PRE_COUNT.ALL",
-+        "PerPkg": "1",
-+        "UMask": "0x1C",
-+        "Unit": "iMC"
++        "MetricExpr": "1000 * MEM_LOAD_RETIRED.L1_MISS / INST_RETIRED.ANY",
++        "BriefDescription": "L1 cache true misses per kilo instruction for retired demand loads",
++        "MetricGroup": "CacheMisses",
++        "MetricName": "L1MPKI"
 +    },
 +    {
-+        "BriefDescription": "PMM Read Pending Queue Occupancy",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xE0",
-+        "EventName": "UNC_M_PMM_RPQ_OCCUPANCY.ALL",
-+        "PerPkg": "1",
-+        "UMask": "0x01",
-+        "Unit": "iMC"
++        "MetricExpr": "1000 * MEM_LOAD_RETIRED.L2_MISS / INST_RETIRED.ANY",
++        "BriefDescription": "L2 cache true misses per kilo instruction for retired demand loads",
++        "MetricGroup": "CacheMisses",
++        "MetricName": "L2MPKI"
 +    },
 +    {
-+        "BriefDescription": "PMM Read Queue Inserts",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xE3",
-+        "EventName": "UNC_M_PMM_RPQ_INSERTS",
-+        "PerPkg": "1",
-+        "Unit": "iMC"
++        "MetricExpr": "1000 * ( ( OFFCORE_REQUESTS.ALL_DATA_RD - OFFCORE_REQUESTS.DEMAND_DATA_RD ) + L2_RQSTS.ALL_DEMAND_MISS + L2_RQSTS.SWPF_MISS ) / INST_RETIRED.ANY",
++        "BriefDescription": "L2 cache misses per kilo instruction for all request types (including speculative)",
++        "MetricGroup": "CacheMisses;Offcore",
++        "MetricName": "L2MPKI_All"
 +    },
 +    {
-+        "BriefDescription": "PMM Write Queue Inserts",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xE7",
-+        "EventName": "UNC_M_PMM_WPQ_INSERTS",
-+        "PerPkg": "1",
-+        "Unit": "iMC"
++        "MetricExpr": "1000 * MEM_LOAD_RETIRED.L3_MISS / INST_RETIRED.ANY",
++        "BriefDescription": "L3 cache true misses per kilo instruction for retired demand loads",
++        "MetricGroup": "CacheMisses",
++        "MetricName": "L3MPKI"
 +    },
 +    {
-+        "BriefDescription": "PMM Commands : All",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xEA",
-+        "EventName": "UNC_M_PMM_CMD1.ALL",
-+        "PerPkg": "1",
-+        "UMask": "0x01",
-+        "Unit": "iMC"
++        "MetricExpr": "1000 * L2_LINES_OUT.SILENT / INST_RETIRED.ANY",
++        "BriefDescription": "Rate of silent evictions from the L2 cache per Kilo instruction where the evicted lines are dropped (no writeback to L3 or memory)",
++        "MetricGroup": "L2Evicts;Server",
++        "MetricName": "L2_Evictions_Silent_PKI"
 +    },
 +    {
-+        "BriefDescription": "PMM Commands : Reads - RPQ",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xEA",
-+        "EventName": "UNC_M_PMM_CMD1.RD",
-+        "PerPkg": "1",
-+        "UMask": "0x02",
-+        "Unit": "iMC"
++        "MetricExpr": "1000 * L2_LINES_OUT.NON_SILENT / INST_RETIRED.ANY",
++        "BriefDescription": "Rate of non silent evictions from the L2 cache per Kilo instruction",
++        "MetricGroup": "L2Evicts;Server",
++        "MetricName": "L2_Evictions_NonSilent_PKI"
 +    },
 +    {
-+        "BriefDescription": "PMM Commands : Writes",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xEA",
-+        "EventName": "UNC_M_PMM_CMD1.WR",
-+        "PerPkg": "1",
-+        "UMask": "0x04",
-+        "Unit": "iMC"
++        "MetricExpr": "CPU_CLK_UNHALTED.REF_TSC / msr@tsc@",
++        "BriefDescription": "Average CPU Utilization",
++        "MetricGroup": "HPC;Summary",
++        "MetricName": "CPU_Utilization"
 +    },
 +    {
-+        "BriefDescription": "PMM Commands : Underfill reads",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xEA",
-+        "EventName": "UNC_M_PMM_CMD1.UFILL_RD",
-+        "PerPkg": "1",
-+        "UMask": "0x08",
-+        "Unit": "iMC"
++        "MetricExpr": "(CPU_CLK_UNHALTED.THREAD / CPU_CLK_UNHALTED.REF_TSC) * msr@tsc@ / 1000000000 / duration_time",
++        "BriefDescription": "Measured Average Frequency for unhalted processors [GHz]",
++        "MetricGroup": "Summary;Power",
++        "MetricName": "Average_Frequency"
 +    },
 +    {
-+        "BriefDescription": "PMM Write Pending Queue Occupancy",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xE4",
-+        "EventName": "UNC_M_PMM_WPQ_OCCUPANCY.ALL",
-+        "PerPkg": "1",
-+        "UMask": "0x01",
-+        "Unit": "iMC"
-+    }
-+]
-diff --git a/tools/perf/pmu-events/arch/x86/icelakex/uncore-other.json b/tools/perf/pmu-events/arch/x86/icelakex/uncore-other.json
-new file mode 100644
-index 000000000000..52f2301582bb
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/x86/icelakex/uncore-other.json
-@@ -0,0 +1,2476 @@
-+[
-+    {
-+        "BriefDescription": "Local INVITOE requests (exclusive ownership of a cache line without receiving data) that miss the SF/LLC and are sent to the CHA's home agent",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x50",
-+        "EventName": "UNC_CHA_REQUESTS.INVITOE_LOCAL",
-+        "PerPkg": "1",
-+        "UMask": "0x10",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "Remote INVITOE requests (exclusive ownership of a cache line without receiving data) sent to the CHA's home agent",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x50",
-+        "EventName": "UNC_CHA_REQUESTS.INVITOE_REMOTE",
-+        "PerPkg": "1",
-+        "UMask": "0x20",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "Local read requests that miss the SF/LLC and are sent to the CHA's home agent",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x50",
-+        "EventName": "UNC_CHA_REQUESTS.READS_LOCAL",
-+        "PerPkg": "1",
-+        "UMask": "0x01",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "Remote read requests sent to the CHA's home agent",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x50",
-+        "EventName": "UNC_CHA_REQUESTS.READS_REMOTE",
-+        "PerPkg": "1",
-+        "UMask": "0x02",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "Local write requests that miss the SF/LLC and are sent to the CHA's home agent",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x50",
-+        "EventName": "UNC_CHA_REQUESTS.WRITES_LOCAL",
-+        "PerPkg": "1",
-+        "UMask": "0x04",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "Remote write requests sent to the CHA's home agent",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x50",
-+        "EventName": "UNC_CHA_REQUESTS.WRITES_REMOTE",
-+        "PerPkg": "1",
-+        "UMask": "0x08",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "Clockticks of the uncore caching &amp;amp; home agent (CHA)",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventName": "UNC_CHA_CLOCKTICKS",
-+        "PerPkg": "1",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "Normal priority reads issued to the memory controller from the CHA",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x59",
-+        "EventName": "UNC_CHA_IMC_READS_COUNT.NORMAL",
-+        "PerPkg": "1",
-+        "UMask": "0x01",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "CHA to iMC Full Line Writes Issued : Full Line Non-ISOCH",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x5B",
-+        "EventName": "UNC_CHA_IMC_WRITES_COUNT.FULL",
-+        "PerPkg": "1",
-+        "UMask": "0x01",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "Lines Victimized : All Lines Victimized",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x37",
-+        "EventName": "UNC_CHA_LLC_VICTIMS.ALL",
-+        "PerPkg": "1",
-+        "UMask": "0x0F",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "Local read requests that miss the SF/LLC and remote read requests sent to the CHA's home agent",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x50",
-+        "EventName": "UNC_CHA_REQUESTS.READS",
-+        "PerPkg": "1",
-+        "UMask": "0x03",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "Local write requests that miss the SF/LLC and remote write requests sent to the CHA's home agent",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x50",
-+        "EventName": "UNC_CHA_REQUESTS.WRITES",
-+        "PerPkg": "1",
-+        "UMask": "0x0c",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "Snoop filter capacity evictions for E-state entries",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x3D",
-+        "EventName": "UNC_CHA_SF_EVICTION.E_STATE",
-+        "PerPkg": "1",
-+        "UMask": "0x02",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "Snoop filter capacity evictions for M-state entries",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x3D",
-+        "EventName": "UNC_CHA_SF_EVICTION.M_STATE",
-+        "PerPkg": "1",
-+        "UMask": "0x01",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "Snoop filter capacity evictions for S-state entries",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x3D",
-+        "EventName": "UNC_CHA_SF_EVICTION.S_STATE",
-+        "PerPkg": "1",
-+        "UMask": "0x04",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : All requests from iA Cores",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA",
-+        "PerPkg": "1",
-+        "UMask": "0xC001FF01",
-+        "UMaskExt": "0xC001FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : All requests from iA Cores that Hit the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_HIT",
-+        "PerPkg": "1",
-+        "UMask": "0xC001FD01",
-+        "UMaskExt": "0xC001FD",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : CRds issued by iA Cores that Hit the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_HIT_CRD",
-+        "PerPkg": "1",
-+        "UMask": "0xC80FFD01",
-+        "UMaskExt": "0xC80FFD",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : DRds issued by iA Cores that Hit the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_HIT_DRD",
-+        "PerPkg": "1",
-+        "UMask": "0xC817FD01",
-+        "UMaskExt": "0xC817FD",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : LLCPrefRFO issued by iA Cores that hit the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_HIT_LLCPREFRFO",
-+        "PerPkg": "1",
-+        "UMask": "0xCCC7FD01",
-+        "UMaskExt": "0xCCC7FD",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : RFOs issued by iA Cores that Hit the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_HIT_RFO",
-+        "PerPkg": "1",
-+        "UMask": "0xC807FD01",
-+        "UMaskExt": "0xC807FD",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : All requests from iA Cores that Missed the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS",
-+        "PerPkg": "1",
-+        "UMask": "0xC001FE01",
-+        "UMaskExt": "0xC001FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : CRds issued by iA Cores that Missed the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_CRD",
-+        "PerPkg": "1",
-+        "UMask": "0xC80FFE01",
-+        "UMaskExt": "0xC80FFE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : DRds issued by iA Cores that Missed the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_DRD",
-+        "PerPkg": "1",
-+        "UMask": "0xC817FE01",
-+        "UMaskExt": "0xC817FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : LLCPrefRFO issued by iA Cores that missed the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_LLCPREFRFO",
-+        "PerPkg": "1",
-+        "UMask": "0xCCC7FE01",
-+        "UMaskExt": "0xCCC7FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : RFOs issued by iA Cores that Missed the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_RFO",
-+        "PerPkg": "1",
-+        "UMask": "0xC807FE01",
-+        "UMaskExt": "0xC807FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : All requests from IO Devices",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IO",
-+        "PerPkg": "1",
-+        "UMask": "0xC001FF04",
-+        "UMaskExt": "0xC001FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : All requests from IO Devices that hit the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IO_HIT",
-+        "PerPkg": "1",
-+        "UMask": "0xC001FD04",
-+        "UMaskExt": "0xC001FD",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : All requests from IO Devices that missed the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IO_MISS",
-+        "PerPkg": "1",
-+        "UMask": "0xC001FE04",
-+        "UMaskExt": "0xC001FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : All requests from iA Cores",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IA",
-+        "PerPkg": "1",
-+        "UMask": "0xC001FF01",
-+        "UMaskExt": "0xC001FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : All requests from iA Cores that Hit the LLC",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IA_HIT",
-+        "PerPkg": "1",
-+        "UMask": "0xC001FD01",
-+        "UMaskExt": "0xC001FD",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : All requests from iA Cores that Missed the LLC",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IA_MISS",
-+        "PerPkg": "1",
-+        "UMask": "0xC001FE01",
-+        "UMaskExt": "0xC001FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : CRds issued by iA Cores that Missed the LLC",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IA_MISS_CRD",
-+        "PerPkg": "1",
-+        "UMask": "0xC80FFE01",
-+        "UMaskExt": "0xC80FFE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : DRds issued by iA Cores that Missed the LLC",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IA_MISS_DRD",
-+        "PerPkg": "1",
-+        "UMask": "0xC817FE01",
-+        "UMaskExt": "0xC817FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : RFOs issued by iA Cores that Missed the LLC",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IA_MISS_RFO",
-+        "PerPkg": "1",
-+        "UMask": "0xC807FE01",
-+        "UMaskExt": "0xC807FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : All requests from IO Devices",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IO",
-+        "PerPkg": "1",
-+        "UMask": "0xC001FF04",
-+        "UMaskExt": "0xC001FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : All requests from IO Devices that hit the LLC",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IO_HIT",
-+        "PerPkg": "1",
-+        "UMask": "0xC001FD04",
-+        "UMaskExt": "0xC001FD",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : All requests from IO Devices that missed the LLC",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IO_MISS",
-+        "PerPkg": "1",
-+        "UMask": "0xC001FE04",
-+        "UMaskExt": "0xC001FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : ItoMs issued by IO Devices that missed the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IO_MISS_ITOM",
-+        "PerPkg": "1",
-+        "UMask": "0xCC43FE04",
-+        "UMaskExt": "0xCC43FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "CMS Clockticks",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc0",
-+        "EventName": "UNC_CHA_CMS_CLOCKTICKS",
-+        "PerPkg": "1",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : CRd_Prefs issued by iA Cores that hit the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_HIT_CRD_PREF",
-+        "PerPkg": "1",
-+        "UMask": "0xC88FFD01",
-+        "UMaskExt": "0xC88FFD",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : DRd_Prefs issued by iA Cores that Hit the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_HIT_DRD_PREF",
-+        "PerPkg": "1",
-+        "UMask": "0xC897FD01",
-+        "UMaskExt": "0xC897FD",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : RFO_Prefs issued by iA Cores that Hit the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_HIT_RFO_PREF",
-+        "PerPkg": "1",
-+        "UMask": "0xC887FD01",
-+        "UMaskExt": "0xC887FD",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : CRd_Prefs issued by iA Cores that Missed the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_CRD_PREF",
-+        "PerPkg": "1",
-+        "UMask": "0xC88FFE01",
-+        "UMaskExt": "0xC88FFE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : DRd_Prefs issued by iA Cores that Missed the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_DRD_PREF",
-+        "PerPkg": "1",
-+        "UMask": "0xC897FE01",
-+        "UMaskExt": "0xC897FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : RFO_Prefs issued by iA Cores that Missed the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_RFO_PREF",
-+        "PerPkg": "1",
-+        "UMask": "0xC887FE01",
-+        "UMaskExt": "0xC887FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : ItoMs issued by IO Devices that Hit the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IO_HIT_ITOM",
-+        "PerPkg": "1",
-+        "UMask": "0xCC43FD04",
-+        "UMaskExt": "0xCC43FD",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : ItoMs issued by IO Devices",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IO_ITOM",
-+        "PerPkg": "1",
-+        "UMask": "0xCC43FF04",
-+        "UMaskExt": "0xCC43FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : RFO_Prefs issued by iA Cores",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_RFO_PREF",
-+        "PerPkg": "1",
-+        "UMask": "0xC887FF01",
-+        "UMaskExt": "0xC887FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : RFOs issued by iA Cores",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_RFO",
-+        "PerPkg": "1",
-+        "UMask": "0xC807FF01",
-+        "UMaskExt": "0xC807FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : LLCPrefRFO issued by iA Cores",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_LLCPREFRFO",
-+        "PerPkg": "1",
-+        "UMask": "0xCCC7FF01",
-+        "UMaskExt": "0xCCC7FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : DRd_Prefs issued by iA Cores",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_DRD_PREF",
-+        "PerPkg": "1",
-+        "UMask": "0xC897FF01",
-+        "UMaskExt": "0xC897FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : CRDs issued by iA Cores",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_CRD",
-+        "PerPkg": "1",
-+        "UMask": "0xC80FFF01",
-+        "UMaskExt": "0xC80FFF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : RFOs issued by iA Cores",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IA_RFO",
-+        "PerPkg": "1",
-+        "UMask": "0xC807FF01",
-+        "UMaskExt": "0xC807FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : DRds issued by iA Cores",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IA_DRD",
-+        "PerPkg": "1",
-+        "UMask": "0xC817FF01",
-+        "UMaskExt": "0xC817FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : CRDs issued by iA Cores",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IA_CRD",
-+        "PerPkg": "1",
-+        "UMask": "0xC80FFF01",
-+        "UMaskExt": "0xC80FFF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : DRds issued by iA Cores that Missed the LLC - HOMed locally",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IA_MISS_DRD_LOCAL",
-+        "PerPkg": "1",
-+        "UMask": "0xC816FE01",
-+        "UMaskExt": "0xC816FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : DRds issued by iA Cores that Missed the LLC - HOMed remotely",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IA_MISS_DRD_REMOTE",
-+        "PerPkg": "1",
-+        "UMask": "0xC8177E01",
-+        "UMaskExt": "0xC8177E",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : DRds issued by iA Cores that Missed the LLC - HOMed locally",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_DRD_LOCAL",
-+        "PerPkg": "1",
-+        "UMask": "0xC816FE01",
-+        "UMaskExt": "0xC816FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : DRds issued by iA Cores that Missed the LLC - HOMed remotely",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_DRD_REMOTE",
-+        "PerPkg": "1",
-+        "UMask": "0xC8177E01",
-+        "UMaskExt": "0xC8177E",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts; DRd Pref misses from local IA",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_DRD_PREF_LOCAL",
-+        "PerPkg": "1",
-+        "UMask": "0xC896FE01",
-+        "UMaskExt": "0xC896FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts; DRd Pref misses from local IA",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_DRD_PREF_REMOTE",
-+        "PerPkg": "1",
-+        "UMask": "0xC8977E01",
-+        "UMaskExt": "0xC8977E",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : RFOs issued by iA Cores that Missed the LLC - HOMed locally",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_RFO_LOCAL",
-+        "PerPkg": "1",
-+        "UMask": "0xC806FE01",
-+        "UMaskExt": "0xC806FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : RFOs issued by iA Cores that Missed the LLC - HOMed remotely",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_RFO_REMOTE",
-+        "PerPkg": "1",
-+        "UMask": "0xC8077E01",
-+        "UMaskExt": "0xC8077E",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : RFO_Prefs issued by iA Cores that Missed the LLC - HOMed locally",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_RFO_PREF_LOCAL",
-+        "PerPkg": "1",
-+        "UMask": "0xC886FE01",
-+        "UMaskExt": "0xC886FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : RFO_Prefs issued by iA Cores that Missed the LLC - HOMed remotely",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_RFO_PREF_REMOTE",
-+        "PerPkg": "1",
-+        "UMask": "0xC8877E01",
-+        "UMaskExt": "0xC8877E",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : CLFlushes issued by iA Cores",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_CLFLUSH",
-+        "PerPkg": "1",
-+        "UMask": "0xC8C7FF01",
-+        "UMaskExt": "0xC8C7FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : SpecItoMs issued by iA Cores",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_SPECITOM",
-+        "PerPkg": "1",
-+        "UMask": "0xCC57FF01",
-+        "UMaskExt": "0xCC57FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : ItoMCacheNears, indicating a partial write request, from IO Devices",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IO_ITOMCACHENEAR",
-+        "PerPkg": "1",
-+        "UMask": "0xCD43FF04",
-+        "UMaskExt": "0xCD43FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : ItoMCacheNears, indicating a partial write request, from IO Devices that hit the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IO_HIT_ITOMCACHENEAR",
-+        "PerPkg": "1",
-+        "UMask": "0xCD43FD04",
-+        "UMaskExt": "0xCD43FD",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : ItoMCacheNears, indicating a partial write request, from IO Devices that missed the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IO_MISS_ITOMCACHENEAR",
-+        "PerPkg": "1",
-+        "UMask": "0xCD43FE04",
-+        "UMaskExt": "0xCD43FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : DRds issued by iA Cores targeting PMM Mem that Missed the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_DRD_PMM",
-+        "PerPkg": "1",
-+        "UMask": "0xC8178A01",
-+        "UMaskExt": "0xC8178A",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : DRds issued by iA Cores targeting PMM Mem that Missed the LLC - HOMed locally",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_DRD_LOCAL_PMM",
-+        "PerPkg": "1",
-+        "UMask": "0xC8168A01",
-+        "UMaskExt": "0xC8168A",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : DRds issued by iA Cores targeting PMM Mem that Missed the LLC - HOMed remotely",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_DRD_REMOTE_PMM",
-+        "PerPkg": "1",
-+        "UMask": "0xC8170A01",
-+        "UMaskExt": "0xC8170A",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts; WCiLF misses from local IA",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_FULL_STREAMING_WR",
-+        "PerPkg": "1",
-+        "UMask": "0xc867fe01",
-+        "UMaskExt": "0xc867fe",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts; WCiL misses from local IA",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_PARTIAL_STREAMING_WR",
-+        "PerPkg": "1",
-+        "UMask": "0xc86ffe01",
-+        "UMaskExt": "0xc86ffe",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : DRds issued by iA Cores targeting PMM Mem that Missed the LLC",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IA_MISS_DRD_PMM",
-+        "PerPkg": "1",
-+        "UMask": "0xC8178A01",
-+        "UMaskExt": "0xC8178A",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : LLCPrefData issued by iA Cores that missed the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_LLCPREFDATA",
-+        "PerPkg": "1",
-+        "UMask": "0xCCD7FE01",
-+        "UMaskExt": "0xCCD7FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : PCIRdCurs issued by IO Devices that missed the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IO_MISS_PCIRDCUR",
-+        "PerPkg": "1",
-+        "UMask": "0xC8F3FE04",
-+        "UMaskExt": "0xC8F3FE",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : PCIRdCurs issued by IO Devices that missed the LLC",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IO_MISS_PCIRDCUR",
-+        "PerPkg": "1",
-+        "UMask": "0xc8f3fe04",
-+        "UMaskExt": "0xc8f3fe",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : DRds issued by iA Cores targeting DDR Mem that Missed the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_DRD_DDR",
-+        "PerPkg": "1",
-+        "UMask": "0xC8178601",
-+        "UMaskExt": "0xC81786",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : DRds issued by iA Cores targeting DDR Mem that Missed the LLC - HOMed locally",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_DRD_LOCAL_DDR",
-+        "PerPkg": "1",
-+        "UMask": "0xC8168601",
-+        "UMaskExt": "0xC81686",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : DRds issued by iA Cores targeting DDR Mem that Missed the LLC - HOMed remotely",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_MISS_DRD_REMOTE_DDR",
-+        "PerPkg": "1",
-+        "UMask": "0xC8170601",
-+        "UMaskExt": "0xC81706",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : DRds issued by iA Cores targeting DDR Mem that Missed the LLC",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IA_MISS_DRD_DDR",
-+        "PerPkg": "1",
-+        "UMask": "0xC8178601",
-+        "UMaskExt": "0xC81786",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : PCIRdCurs issued by IO Devices that hit the LLC",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IO_HIT_PCIRDCUR",
-+        "PerPkg": "1",
-+        "UMask": "0xC8F3FD04",
-+        "UMaskExt": "0xC8F3FD",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : PCIRdCurs issued by IO Devices",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IO_PCIRDCUR",
-+        "PerPkg": "1",
-+        "UMask": "0xC8F3FF04",
-+        "UMaskExt": "0xC8F3FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Inserts : LLCPrefData issued by iA Cores",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x35",
-+        "EventName": "UNC_CHA_TOR_INSERTS.IA_LLCPREFDATA",
-+        "PerPkg": "1",
-+        "UMask": "0xCCD7FF01",
-+        "UMaskExt": "0xCCD7FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "TOR Occupancy : PCIRdCurs issued by IO Devices",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x36",
-+        "EventName": "UNC_CHA_TOR_OCCUPANCY.IO_PCIRDCUR",
-+        "PerPkg": "1",
-+        "UMask": "0xC8F3FF04",
-+        "UMaskExt": "0xC8F3FF",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "Cache and Snoop Filter Lookups; Data Read Request",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x34",
-+        "EventName": "UNC_CHA_LLC_LOOKUP.DATA_READ",
-+        "PerPkg": "1",
-+        "UMask": "0x1BC1FF",
-+        "UMaskExt": "0x1BC1",
-+        "Unit": "CHA"
-+    },
-+    {
-+        "BriefDescription": "Clockticks of the integrated IO (IIO) traffic controller",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x01",
-+        "EventName": "UNC_IIO_CLOCKTICKS",
-+        "PerPkg": "1",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card writing to DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_WRITE.PART0",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x01",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card writing to DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_WRITE.PART1",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x02",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card writing to DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_WRITE.PART2",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x04",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card writing to DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_WRITE.PART3",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x08",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card reading from DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_READ.PART0",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x01",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card reading from DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_READ.PART1",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x02",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card reading from DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_READ.PART2",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x04",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card reading from DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_READ.PART3",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x08",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.CMPD.PART0",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x01",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.CMPD.PART1",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x02",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.CMPD.PART2",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x04",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.CMPD.PART3",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x08",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xC0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_WRITE.PART0",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x01",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
++        "MetricExpr": "( ( 1 * ( FP_ARITH_INST_RETIRED.SCALAR_SINGLE + FP_ARITH_INST_RETIRED.SCALAR_DOUBLE ) + 2 * FP_ARITH_INST_RETIRED.128B_PACKED_DOUBLE + 4 * ( FP_ARITH_INST_RETIRED.128B_PACKED_SINGLE + FP_ARITH_INST_RETIRED.256B_PACKED_DOUBLE ) + 8 * ( FP_ARITH_INST_RETIRED.256B_PACKED_SINGLE + FP_ARITH_INST_RETIRED.512B_PACKED_DOUBLE ) + 16 * FP_ARITH_INST_RETIRED.512B_PACKED_SINGLE ) / 1000000000 ) / duration_time",
++        "BriefDescription": "Giga Floating Point Operations Per Second",
++        "MetricGroup": "Flops;HPC",
++        "MetricName": "GFLOPs"
 +    },
 +    {
-+        "BriefDescription": "Data requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xC0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_WRITE.PART1",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x02",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
++        "MetricExpr": "CPU_CLK_UNHALTED.THREAD / CPU_CLK_UNHALTED.REF_TSC",
++        "BriefDescription": "Average Frequency Utilization relative nominal frequency",
++        "MetricGroup": "Power",
++        "MetricName": "Turbo_Utilization"
 +    },
 +    {
-+        "BriefDescription": "Data requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xC0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_WRITE.PART2",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x04",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
++        "MetricExpr": "1 - CPU_CLK_UNHALTED.ONE_THREAD_ACTIVE / CPU_CLK_UNHALTED.REF_DISTRIBUTED",
++        "BriefDescription": "Fraction of cycles where both hardware Logical Processors were active",
++        "MetricGroup": "SMT",
++        "MetricName": "SMT_2T_Utilization"
 +    },
 +    {
-+        "BriefDescription": "Data requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xC0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_WRITE.PART3",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x08",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
++        "MetricExpr": "CPU_CLK_UNHALTED.THREAD:k / CPU_CLK_UNHALTED.THREAD",
++        "BriefDescription": "Fraction of cycles spent in the Operating System (OS) Kernel mode",
++        "MetricGroup": "OS",
++        "MetricName": "Kernel_Utilization"
 +    },
 +    {
-+        "BriefDescription": "Data requested by the CPU : Core reporting completion of Card read from Core DRAM",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_READ.PART0",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x01",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
++        "MetricExpr": "( 64 * ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time",
++        "BriefDescription": "Average external Memory Bandwidth Use for reads and writes [GB / sec]",
++        "MetricGroup": "HPC;MemoryBW;SoC",
++        "MetricName": "DRAM_BW_Use"
 +    },
 +    {
-+        "BriefDescription": "Data requested by the CPU : Core reporting completion of Card read from Core DRAM",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_READ.PART1",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x02",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
++        "MetricExpr": "1000000000 * ( cha@event\\=0x36\\,umask\\=0x21\\,config\\=0x40433@ / cha@event\\=0x35\\,umask\\=0x21\\,config\\=0x40433@ ) / ( cha_0@event\\=0x0@ / duration_time )",
++        "BriefDescription": "Average latency of data read request to external memory (in nanoseconds). Accounts for demand loads and L1/L2 prefetches",
++        "MetricGroup": "MemoryLat;SoC",
++        "MetricName": "MEM_Read_Latency"
 +    },
 +    {
-+        "BriefDescription": "Data requested by the CPU : Core reporting completion of Card read from Core DRAM",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_READ.PART2",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x04",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
++        "MetricExpr": "cha@event\\=0x36\\,umask\\=0x21\\,config\\=0x40433@ / cha@event\\=0x36\\,umask\\=0x21\\,config\\=0x40433\\,thresh\\=1@",
++        "BriefDescription": "Average number of parallel data read requests to external memory. Accounts for demand loads and L1/L2 prefetches",
++        "MetricGroup": "MemoryBW;SoC",
++        "MetricName": "MEM_Parallel_Reads"
 +    },
 +    {
-+        "BriefDescription": "Data requested by the CPU : Core reporting completion of Card read from Core DRAM",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_READ.PART3",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x08",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
++        "MetricExpr": "( 1000000000 * ( cha@event\\=0x36\\,umask\\=0x21\\,config\\=0x40433@_PMM / cha@event\\=0x35\\,umask\\=0x21\\,config\\=0x40433@_PMM ) / cha_0@event\\=0x0@ )",
++        "BriefDescription": "Average latency of data read request to external 3D X-Point memory [in nanoseconds]. Accounts for demand loads and L1/L2 data-read prefetches",
++        "MetricGroup": "MemoryLat;SoC;Server",
++        "MetricName": "MEM_PMM_Read_Latency"
 +    },
 +    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card writing to DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_WRITE.PART0",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x01",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
++        "MetricExpr": "( ( 64 * imc@event\\=0xe3@ / 1000000000 ) / duration_time )",
++        "BriefDescription": "Average 3DXP Memory Bandwidth Use for reads [GB / sec]",
++        "MetricGroup": "MemoryBW;SoC;Server",
++        "MetricName": "PMM_Read_BW"
 +    },
 +    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card writing to DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_WRITE.PART1",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x02",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
++        "MetricExpr": "( ( 64 * imc@event\\=0xe7@ / 1000000000 ) / duration_time )",
++        "BriefDescription": "Average 3DXP Memory Bandwidth Use for Writes [GB / sec]",
++        "MetricGroup": "MemoryBW;SoC;Server",
++        "MetricName": "PMM_Write_BW"
 +    },
 +    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card writing to DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_WRITE.PART2",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x04",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
++        "MetricExpr": "UNC_CHA_TOR_INSERTS.IO_PCIRDCUR * 64 / 1000000000 / duration_time",
++        "BriefDescription": "Average IO (network or disk) Bandwidth Use for Writes [GB / sec]",
++        "MetricGroup": "IoBW;SoC;Server",
++        "MetricName": "IO_Write_BW"
 +    },
 +    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card writing to DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_WRITE.PART3",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x08",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
++        "MetricExpr": "( UNC_CHA_TOR_INSERTS.IO_HIT_ITOM + UNC_CHA_TOR_INSERTS.IO_MISS_ITOM + UNC_CHA_TOR_INSERTS.IO_HIT_ITOMCACHENEAR + UNC_CHA_TOR_INSERTS.IO_MISS_ITOMCACHENEAR ) * 64 / 1000000000 / duration_time",
++        "BriefDescription": "Average IO (network or disk) Bandwidth Use for Reads [GB / sec]",
++        "MetricGroup": "IoBW;SoC;Server",
++        "MetricName": "IO_Read_BW"
 +    },
 +    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card reading from DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_READ.PART0",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x01",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
++        "MetricExpr": "cha_0@event\\=0x0@",
++        "BriefDescription": "Socket actual clocks when any core is active on that socket",
++        "MetricGroup": "SoC",
++        "MetricName": "Socket_CLKS"
 +    },
 +    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card reading from DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_READ.PART1",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x02",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
++        "MetricExpr": "INST_RETIRED.ANY / BR_INST_RETIRED.FAR_BRANCH:u",
++        "BriefDescription": "Instructions per Far Branch ( Far Branches apply upon transition from application to operating system, handling interrupts, exceptions) [lower number means higher occurrence rate]",
++        "MetricGroup": "Branches;OS",
++        "MetricName": "IpFarBranch"
 +    },
 +    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card reading from DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_READ.PART2",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x04",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
++        "MetricExpr": "(cstate_core@c3\\-residency@ / msr@tsc@) * 100",
++        "BriefDescription": "C3 residency percent per core",
++        "MetricGroup": "Power",
++        "MetricName": "C3_Core_Residency"
 +    },
 +    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card reading from DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_READ.PART3",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x08",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
++        "MetricExpr": "(cstate_core@c6\\-residency@ / msr@tsc@) * 100",
++        "BriefDescription": "C6 residency percent per core",
++        "MetricGroup": "Power",
++        "MetricName": "C6_Core_Residency"
 +    },
 +    {
-+        "BriefDescription": "Number Transactions requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.CMPD.PART0",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x01",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
++        "MetricExpr": "(cstate_core@c7\\-residency@ / msr@tsc@) * 100",
++        "BriefDescription": "C7 residency percent per core",
++        "MetricGroup": "Power",
++        "MetricName": "C7_Core_Residency"
 +    },
 +    {
-+        "BriefDescription": "Number Transactions requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.CMPD.PART1",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x02",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
++        "MetricExpr": "(cstate_pkg@c2\\-residency@ / msr@tsc@) * 100",
++        "BriefDescription": "C2 residency percent per package",
++        "MetricGroup": "Power",
++        "MetricName": "C2_Pkg_Residency"
 +    },
 +    {
-+        "BriefDescription": "Number Transactions requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.CMPD.PART2",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x04",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
++        "MetricExpr": "(cstate_pkg@c3\\-residency@ / msr@tsc@) * 100",
++        "BriefDescription": "C3 residency percent per package",
++        "MetricGroup": "Power",
++        "MetricName": "C3_Pkg_Residency"
 +    },
 +    {
-+        "BriefDescription": "Number Transactions requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.CMPD.PART3",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x08",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
++        "MetricExpr": "(cstate_pkg@c6\\-residency@ / msr@tsc@) * 100",
++        "BriefDescription": "C6 residency percent per package",
++        "MetricGroup": "Power",
++        "MetricName": "C6_Pkg_Residency"
 +    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_WRITE.PART0",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x01",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_WRITE.PART1",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x02",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_WRITE.PART2",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x04",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_WRITE.PART3",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x08",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core reading from Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_READ.PART0",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x01",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core reading from Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_READ.PART1",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x02",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core reading from Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_READ.PART2",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x04",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core reading from Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_READ.PART3",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x08",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xC0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_WRITE.PART4",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x10",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xC0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_WRITE.PART5",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x20",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xC0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_WRITE.PART6",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x40",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xC0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_WRITE.PART7",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x80",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested by the CPU : Core reporting completion of Card read from Core DRAM",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_READ.PART4",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x10",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested by the CPU : Core reporting completion of Card read from Core DRAM",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_READ.PART5",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x20",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested by the CPU : Core reporting completion of Card read from Core DRAM",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_READ.PART6",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x40",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested by the CPU : Core reporting completion of Card read from Core DRAM",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc0",
-+        "EventName": "UNC_IIO_DATA_REQ_BY_CPU.MEM_READ.PART7",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x80",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card writing to DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_WRITE.PART4",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x10",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card writing to DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_WRITE.PART5",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x20",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card writing to DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_WRITE.PART6",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x40",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card writing to DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_WRITE.PART7",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x80",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card reading from DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_READ.PART4",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x10",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card reading from DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_READ.PART5",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x20",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card reading from DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_READ.PART6",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x40",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Four byte data request of the CPU : Card reading from DRAM",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.MEM_READ.PART7",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x80",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.CMPD.PART4",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x10",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.CMPD.PART5",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x20",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.CMPD.PART6",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x40",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Data requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x83",
-+        "EventName": "UNC_IIO_DATA_REQ_OF_CPU.CMPD.PART7",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x80",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number requests PCIe makes of the main die : All",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x85",
-+        "EventName": "UNC_IIO_NUM_REQ_OF_CPU.COMMIT.ALL",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0xFF",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_WRITE.PART4",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x10",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_WRITE.PART5",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x20",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_WRITE.PART6",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x40",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core writing to Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_WRITE.PART7",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x80",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core reading from Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_READ.PART4",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x10",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core reading from Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_READ.PART5",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x20",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core reading from Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_READ.PART6",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x40",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested by the CPU : Core reading from Card's MMIO space",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc1",
-+        "EventName": "UNC_IIO_TXN_REQ_BY_CPU.MEM_READ.PART7",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x80",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card writing to DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_WRITE.PART4",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x10",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card writing to DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_WRITE.PART5",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x20",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card writing to DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_WRITE.PART6",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x40",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card writing to DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_WRITE.PART7",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x80",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card reading from DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_READ.PART4",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x10",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card reading from DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_READ.PART5",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x20",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card reading from DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_READ.PART6",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x40",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested of the CPU : Card reading from DRAM",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.MEM_READ.PART7",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x80",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.CMPD.PART4",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x10",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.CMPD.PART5",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x20",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.CMPD.PART6",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x40",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Number Transactions requested of the CPU : CmpD - device sending completion to CPU request",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x84",
-+        "EventName": "UNC_IIO_TXN_REQ_OF_CPU.CMPD.PART7",
-+        "FCMask": "0x07",
-+        "PerPkg": "1",
-+        "PortMask": "0x80",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Free running counter that increments for IIO clocktick",
-+        "CounterType": "FREERUN",
-+        "EventName": "UNC_IIO_CLOCKTICKS_FREERUN",
-+        "PerPkg": "1",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Inserts of completions with data: Part 0",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc2",
-+        "EventName": "UNC_IIO_COMP_BUF_INSERTS.CMPD.PART0",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "PortMask": "0x01",
-+        "UMask": "0x03",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Inserts of completions with data: Part 1",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc2",
-+        "EventName": "UNC_IIO_COMP_BUF_INSERTS.CMPD.PART1",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "PortMask": "0x02",
-+        "UMask": "0x03",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Inserts of completions with data: Part 2",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc2",
-+        "EventName": "UNC_IIO_COMP_BUF_INSERTS.CMPD.PART2",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "PortMask": "0x04",
-+        "UMask": "0x03",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Inserts of completions with data: Part 3",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc2",
-+        "EventName": "UNC_IIO_COMP_BUF_INSERTS.CMPD.PART3",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "PortMask": "0x08",
-+        "UMask": "0x03",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Inserts of completions with data: Part 4",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc2",
-+        "EventName": "UNC_IIO_COMP_BUF_INSERTS.CMPD.PART4",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "PortMask": "0x10",
-+        "UMask": "0x03",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Inserts of completions with data: Part 5",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc2",
-+        "EventName": "UNC_IIO_COMP_BUF_INSERTS.CMPD.PART5",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "PortMask": "0x20",
-+        "UMask": "0x03",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Inserts of completions with data: Part 6",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc2",
-+        "EventName": "UNC_IIO_COMP_BUF_INSERTS.CMPD.PART6",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "PortMask": "0x40",
-+        "UMask": "0x03",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Inserts of completions with data: Part 7",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc2",
-+        "EventName": "UNC_IIO_COMP_BUF_INSERTS.CMPD.PART7",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "PortMask": "0x80",
-+        "UMask": "0x03",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Occupancy of completions with data : Part 0",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xd5",
-+        "EventName": "UNC_IIO_COMP_BUF_OCCUPANCY.CMPD.PART0",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "UMask": "0x01",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Occupancy of completions with data : Part 7",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xd5",
-+        "EventName": "UNC_IIO_COMP_BUF_OCCUPANCY.CMPD.PART7",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "UMask": "0x80",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Occupancy of completions with data : Part 6",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xd5",
-+        "EventName": "UNC_IIO_COMP_BUF_OCCUPANCY.CMPD.PART6",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "UMask": "0x40",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Occupancy of completions with data : Part 5",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xd5",
-+        "EventName": "UNC_IIO_COMP_BUF_OCCUPANCY.CMPD.PART5",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "UMask": "0x20",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Occupancy of completions with data : Part 4",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xd5",
-+        "EventName": "UNC_IIO_COMP_BUF_OCCUPANCY.CMPD.PART4",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "UMask": "0x10",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Occupancy of completions with data : Part 3",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xd5",
-+        "EventName": "UNC_IIO_COMP_BUF_OCCUPANCY.CMPD.PART3",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "UMask": "0x08",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Occupancy of completions with data : Part 2",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xd5",
-+        "EventName": "UNC_IIO_COMP_BUF_OCCUPANCY.CMPD.PART2",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "UMask": "0x04",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Occupancy of completions with data : Part 1",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xd5",
-+        "EventName": "UNC_IIO_COMP_BUF_OCCUPANCY.CMPD.PART1",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "UMask": "0x02",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Inserts of completions with data: Part 0-7",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc2",
-+        "EventName": "UNC_IIO_COMP_BUF_INSERTS.CMPD.ALL_PARTS",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "PortMask": "0xff",
-+        "UMask": "0x03",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "PCIe Completion Buffer Occupancy of completions with data : Part 0-7",
-+        "Counter": "2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xd5",
-+        "EventName": "UNC_IIO_COMP_BUF_OCCUPANCY.CMPD.ALL_PARTS",
-+        "FCMask": "0x04",
-+        "PerPkg": "1",
-+        "UMask": "0xff",
-+        "Unit": "IIO"
-+    },
-+    {
-+        "BriefDescription": "Misc Events - Set 1 : Lost Forward",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x1F",
-+        "EventName": "UNC_I_MISC1.LOST_FWD",
-+        "PerPkg": "1",
-+        "UMask": "0x10",
-+        "Unit": "IRP"
-+    },
-+    {
-+        "BriefDescription": "PCIITOM request issued by the IRP unit to the mesh with the intention of writing a full cacheline",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x10",
-+        "EventName": "UNC_I_COHERENT_OPS.PCITOM",
-+        "PerPkg": "1",
-+        "UMask": "0x10",
-+        "Unit": "IRP"
-+    },
-+    {
-+        "BriefDescription": "Coherent Ops : WbMtoI",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x10",
-+        "EventName": "UNC_I_COHERENT_OPS.WBMTOI",
-+        "PerPkg": "1",
-+        "UMask": "0x40",
-+        "Unit": "IRP"
-+    },
-+    {
-+        "BriefDescription": "Total IRP occupancy of inbound read and write requests to coherent memory",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x0f",
-+        "EventName": "UNC_I_CACHE_TOTAL_OCCUPANCY.MEM",
-+        "PerPkg": "1",
-+        "UMask": "0x04",
-+        "Unit": "IRP"
-+    },
-+    {
-+        "BriefDescription": ": All Inserts Inbound (p2p + faf + cset)",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x20",
-+        "EventName": "UNC_I_IRP_ALL.INBOUND_INSERTS",
-+        "PerPkg": "1",
-+        "UMask": "0x01",
-+        "Unit": "IRP"
-+    },
-+    {
-+        "BriefDescription": "Inbound write (fast path) requests received by the IRP",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x11",
-+        "EventName": "UNC_I_TRANSACTIONS.WR_PREF",
-+        "PerPkg": "1",
-+        "UMask": "0x08",
-+        "Unit": "IRP"
-+    },
-+    {
-+        "BriefDescription": "Clockticks of the IO coherency tracker (IRP)",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x01",
-+        "EventName": "UNC_I_CLOCKTICKS",
-+        "PerPkg": "1",
-+        "Unit": "IRP"
-+    },
-+    {
-+        "BriefDescription": "FAF RF full",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x17",
-+        "EventName": "UNC_I_FAF_FULL",
-+        "PerPkg": "1",
-+        "Unit": "IRP"
-+    },
-+    {
-+        "BriefDescription": "Inbound read requests received by the IRP and inserted into the FAF queue",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x18",
-+        "EventName": "UNC_I_FAF_INSERTS",
-+        "PerPkg": "1",
-+        "Unit": "IRP"
-+    },
-+    {
-+        "BriefDescription": "Occupancy of the IRP FAF queue",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x19",
-+        "EventName": "UNC_I_FAF_OCCUPANCY",
-+        "PerPkg": "1",
-+        "Unit": "IRP"
-+    },
-+    {
-+        "BriefDescription": "FAF allocation -- sent to ADQ",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x16",
-+        "EventName": "UNC_I_FAF_TRANSACTIONS",
-+        "PerPkg": "1",
-+        "Unit": "IRP"
-+    },
-+    {
-+        "BriefDescription": "Responses to snoops of any type that hit M line in the IIO cache",
-+        "Counter": "0,1",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x12",
-+        "EventName": "UNC_I_SNOOP_RESP.ALL_HIT_M",
-+        "PerPkg": "1",
-+        "UMask": "0x78",
-+        "Unit": "IRP"
-+    },
-+    {
-+        "BriefDescription": "Multi-socket cacheline Directory Lookups : Found in any state",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x2D",
-+        "EventName": "UNC_M2M_DIRECTORY_LOOKUP.ANY",
-+        "PerPkg": "1",
-+        "UMask": "0x01",
-+        "Unit": "M2M"
-+    },
-+    {
-+        "BriefDescription": "Multi-socket cacheline Directory Lookups : Found in A state",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x2D",
-+        "EventName": "UNC_M2M_DIRECTORY_LOOKUP.STATE_A",
-+        "PerPkg": "1",
-+        "UMask": "0x08",
-+        "Unit": "M2M"
-+    },
-+    {
-+        "BriefDescription": "Multi-socket cacheline Directory Lookups : Found in I state",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x2D",
-+        "EventName": "UNC_M2M_DIRECTORY_LOOKUP.STATE_I",
-+        "PerPkg": "1",
-+        "UMask": "0x02",
-+        "Unit": "M2M"
-+    },
-+    {
-+        "BriefDescription": "Multi-socket cacheline Directory Lookups : Found in S state",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x2D",
-+        "EventName": "UNC_M2M_DIRECTORY_LOOKUP.STATE_S",
-+        "PerPkg": "1",
-+        "UMask": "0x04",
-+        "Unit": "M2M"
-+    },
-+    {
-+        "BriefDescription": "Tag Hit : Clean NearMem Read Hit",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x2C",
-+        "EventName": "UNC_M2M_TAG_HIT.NM_RD_HIT_CLEAN",
-+        "PerPkg": "1",
-+        "UMask": "0x01",
-+        "Unit": "M2M"
-+    },
-+    {
-+        "BriefDescription": "Tag Hit : Dirty NearMem Read Hit",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x2C",
-+        "EventName": "UNC_M2M_TAG_HIT.NM_RD_HIT_DIRTY",
-+        "PerPkg": "1",
-+        "UMask": "0x02",
-+        "Unit": "M2M"
-+    },
-+    {
-+        "BriefDescription": "Clockticks of the mesh to memory (M2M)",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventName": "UNC_M2M_CLOCKTICKS",
-+        "PerPkg": "1",
-+        "Unit": "M2M"
-+    },
-+    {
-+        "BriefDescription": "CMS Clockticks",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc0",
-+        "EventName": "UNC_M2M_CMS_CLOCKTICKS",
-+        "PerPkg": "1",
-+        "Unit": "M2M"
-+    },
-+    {
-+        "BriefDescription": "M2M Reads Issued to iMC : PMM - All Channels",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x37",
-+        "EventName": "UNC_M2M_IMC_READS.TO_PMM",
-+        "PerPkg": "1",
-+        "UMask": "0x0720",
-+        "UMaskExt": "0x07",
-+        "Unit": "M2M"
-+    },
-+    {
-+        "BriefDescription": "M2M Writes Issued to iMC : PMM - All Channels",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x38",
-+        "EventName": "UNC_M2M_IMC_WRITES.TO_PMM",
-+        "PerPkg": "1",
-+        "UMask": "0x1C80",
-+        "UMaskExt": "0x1C",
-+        "Unit": "M2M"
-+    },
-+    {
-+        "BriefDescription": "Clockticks of the mesh to PCI (M2P)",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x01",
-+        "EventName": "UNC_M2P_CLOCKTICKS",
-+        "PerPkg": "1",
-+        "Unit": "M2PCIe"
-+    },
-+    {
-+        "BriefDescription": "CMS Clockticks",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0xc0",
-+        "EventName": "UNC_M2P_CMS_CLOCKTICKS",
-+        "PerPkg": "1",
-+        "Unit": "M2PCIe"
-+    },
-+    {
-+        "BriefDescription": "Clockticks of the mesh to UPI (M3UPI)",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x01",
-+        "EventName": "UNC_M3UPI_CLOCKTICKS",
-+        "PerPkg": "1",
-+        "Unit": "M3UPI"
-+    },
-+    {
-+        "BriefDescription": "Clockticks in the UBOX using a dedicated 48-bit Fixed Counter",
-+        "Counter": "FIXED",
-+        "CounterType": "FIXED",
-+        "EventCode": "0xff",
-+        "EventName": "UNC_U_CLOCKTICKS",
-+        "PerPkg": "1",
-+        "Unit": "UBOX"
-+    },
-+    {
-+        "BriefDescription": "Valid Flits Received : All Data",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x03",
-+        "EventName": "UNC_UPI_RxL_FLITS.ALL_DATA",
-+        "PerPkg": "1",
-+        "UMask": "0x0F",
-+        "Unit": "UPI LL"
-+    },
-+    {
-+        "BriefDescription": "Valid Flits Received : All Non Data",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x03",
-+        "EventName": "UNC_UPI_RxL_FLITS.NON_DATA",
-+        "PerPkg": "1",
-+        "UMask": "0x97",
-+        "Unit": "UPI LL"
-+    },
-+    {
-+        "BriefDescription": "Valid Flits Sent : All Data",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x02",
-+        "EventName": "UNC_UPI_TxL_FLITS.ALL_DATA",
-+        "PerPkg": "1",
-+        "UMask": "0x0F",
-+        "Unit": "UPI LL"
-+    },
-+    {
-+        "BriefDescription": "Valid Flits Sent : All Non Data",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x02",
-+        "EventName": "UNC_UPI_TxL_FLITS.NON_DATA",
-+        "PerPkg": "1",
-+        "UMask": "0x97",
-+        "Unit": "UPI LL"
-+    },
-+    {
-+        "BriefDescription": "Number of kfclks",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x01",
-+        "EventName": "UNC_UPI_CLOCKTICKS",
-+        "PerPkg": "1",
-+        "Unit": "UPI LL"
-+    },
-+    {
-+        "BriefDescription": "Cycles in L1",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x21",
-+        "EventName": "UNC_UPI_L1_POWER_CYCLES",
-+        "PerPkg": "1",
-+        "Unit": "UPI LL"
-+    },
-+    {
-+        "BriefDescription": "Cycles in L0p",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x27",
-+        "EventName": "UNC_UPI_TxL0P_POWER_CYCLES",
-+        "PerPkg": "1",
-+        "Unit": "UPI LL"
-+    },
-+    {
-+        "BriefDescription": "Valid Flits Sent : Null FLITs transmitted to any slot",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x02",
-+        "EventName": "UNC_UPI_TxL_FLITS.ALL_NULL",
-+        "PerPkg": "1",
-+        "UMask": "0x27",
-+        "Unit": "UPI LL"
-+    },
-+    {
-+        "BriefDescription": "Valid Flits Received : Null FLITs received from any slot",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventCode": "0x03",
-+        "EventName": "UNC_UPI_RxL_FLITS.ALL_NULL",
-+        "PerPkg": "1",
-+        "UMask": "0x27",
-+        "Unit": "UPI LL"
-+    }
-+]
-diff --git a/tools/perf/pmu-events/arch/x86/icelakex/uncore-power.json b/tools/perf/pmu-events/arch/x86/icelakex/uncore-power.json
-new file mode 100644
-index 000000000000..2d1368958762
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/x86/icelakex/uncore-power.json
-@@ -0,0 +1,10 @@
-+[
 +    {
-+        "BriefDescription": "Clockticks of the power control unit (PCU)",
-+        "Counter": "0,1,2,3",
-+        "CounterType": "PGMABLE",
-+        "EventName": "UNC_P_CLOCKTICKS",
-+        "PerPkg": "1",
-+        "Unit": "PCU"
++        "MetricExpr": "(cstate_pkg@c7\\-residency@ / msr@tsc@) * 100",
++        "BriefDescription": "C7 residency percent per package",
++        "MetricGroup": "Power",
++        "MetricName": "C7_Pkg_Residency"
 +    }
 +]
 -- 
