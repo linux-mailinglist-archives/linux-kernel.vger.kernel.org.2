@@ -2,142 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B0037939D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6D13793A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhEJQVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 12:21:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231144AbhEJQU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 12:20:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64EBF61132;
-        Mon, 10 May 2021 16:19:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620663591;
-        bh=FKfncr6iyOch3bNpClhjVGY6C/e1OSinUbAU2tU3DoU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P4Pwyg5bSQ83XzmjKyuq4aYPp+jBerH/hRfRyNMSDmfvGUUuHbn6M3wu3pzabgsBK
-         clVR3gLbdA8yN0w27MHydUqLi8c0FGfnFqQjHjQZPgPrCbjKH7m8JhKfaIddBEcFVW
-         EQUGat8EM2gW1GoH9GRWN7VMUkkSoYgseeekBTt8vVs6kiOReJeRzoWK3pUFvLZZd9
-         pQ1PgxT5jwzqbuKww5TCELPekHuu4c5OFYqMH/pYzCXK54SRoNSAg+/l5G1zbdGJu4
-         HwXGNsqqWFPz7nPTwtt3Ih2LsCz9W27IK+6MTQN6DO/7foR/t6r+xK0HFSdQDyx2kv
-         ob2dbnT8QOPWw==
-Date:   Mon, 10 May 2021 21:49:47 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Olivier Dautricourt <olivier.dautricourt@orolia.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Stefan Roese <sr@denx.de>,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] drivers: dma: altera-msgdma: add OF support
-Message-ID: <YJldI9WiFXdIPuUT@vkoul-mobl.Dlink>
-References: <YIrAJce3Ej8hNbkA@orolia.com>
+        id S231467AbhEJQWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 12:22:01 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:38764 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230145AbhEJQV4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 12:21:56 -0400
+Received: by mail-ot1-f54.google.com with SMTP id q7-20020a9d57870000b02902a5c2bd8c17so14939803oth.5;
+        Mon, 10 May 2021 09:20:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lK9/oyY3m8MgUruhYK2DPu5cjgnBxY2p95ZouQCulpI=;
+        b=Jv6wo+A7F3rZu4ZtPJJzJhJCIgqU8ccysDFnvPgDUFCh0KhGSliQo3yGciyQBLlJu1
+         xNo2KWft5HI4lL7iJMr9+pkGJtDTpl+/F+q38aFFTWO8LFQ0HTpNdylDE35P80ncIKSh
+         XSoZyqvGrjuJb7cGPycaUuL2h3K+xN/LD4sDLuEtFFoVKNRl+/p6wPsJzps9oTllfmK/
+         xa9TmuA0cG3M+NVOPfm7xoAl1Vq7w5+Gyp5NzaQrSqHuHywHasf5nslWliH5jb6HQZEh
+         gEXMadtkksgimMbBG6Ygl2SeFowTGZes+LffO897VcNJICNlGqo1Fz1e3GecgONPUHPy
+         eXsQ==
+X-Gm-Message-State: AOAM533F4ygwWEjxlR2RTobaJX13KetU1L39fQRnF0ggh49qZaj3YPxw
+        N4yk95IFYdPBP7lorEA9+uVQwhB7jw==
+X-Google-Smtp-Source: ABdhPJwjr2gIDHJ9GnOXJIxijY4RjHXEfNYDzfLT+l/6t2ZnFp61g/9gPgf7e1AUIuBUpMN+TIVnlA==
+X-Received: by 2002:a9d:73d7:: with SMTP id m23mr22219775otk.325.1620663649533;
+        Mon, 10 May 2021 09:20:49 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j18sm3192624ota.7.2021.05.10.09.20.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 09:20:48 -0700 (PDT)
+Received: (nullmailer pid 228437 invoked by uid 1000);
+        Mon, 10 May 2021 16:20:47 -0000
+Date:   Mon, 10 May 2021 11:20:47 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     linux-input@vger.kernel.org,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        kgunda@codeaurora.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        David Collins <collinsd@codeaurora.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Yan <andy.yan@rock-chips.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH V3 3/5] dt-bindings: power: reset: Change
+ 'additionalProperties' to true
+Message-ID: <20210510162047.GA228385@robh.at.kernel.org>
+References: <1620630064-16354-1-git-send-email-skakit@codeaurora.org>
+ <1620630064-16354-4-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YIrAJce3Ej8hNbkA@orolia.com>
+In-Reply-To: <1620630064-16354-4-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-04-21, 16:18, Olivier Dautricourt wrote:
-> This driver had no device tree support.
+On Mon, 10 May 2021 12:31:02 +0530, satya priya wrote:
+> Change 'additionalProperties' to true as this is a generic binding.
 > 
-> - add compatible field "altr,msgdma"
-> - define msgdma_of_xlate, with no argument
-> - register dma controller with of_dma_controller_register
-> 
-> Signed-off-by: Olivier Dautricourt <olivier.dautricourt@orolia.com>
+> Signed-off-by: satya priya <skakit@codeaurora.org>
 > ---
+> Changes in V3:
+>  - This is newly added in V3.
 > 
-> Notes:
->     Changes in v2:
->     	none
+>  Documentation/devicetree/bindings/power/reset/reboot-mode.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->     Changes from v2 to v3:
->     	Removed CONFIG_OF #ifdef's and use if (IS_ENABLED(CONFIG_OF))
->     	only once.
-> 
->     Changes from v3 to v4
->     	Reintroduce #ifdef CONFIG_OF for msgdma_match
->     	as it produces a unused variable warning
-> 
->  drivers/dma/altera-msgdma.c | 29 +++++++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
-> 
-> diff --git a/drivers/dma/altera-msgdma.c b/drivers/dma/altera-msgdma.c
-> index 9a841ce5f0c5..7e58385facef 100644
-> --- a/drivers/dma/altera-msgdma.c
-> +++ b/drivers/dma/altera-msgdma.c
-> @@ -19,6 +19,7 @@
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
-> +#include <linux/of_dma.h>
-> 
->  #include "dmaengine.h"
-> 
-> @@ -784,6 +785,14 @@ static int request_and_map(struct platform_device *pdev, const char *name,
->  	return 0;
->  }
-> 
-> +static struct dma_chan *msgdma_of_xlate(struct of_phandle_args *dma_spec,
-> +					struct of_dma *ofdma)
-> +{
-> +	struct msgdma_device *d = ofdma->of_dma_data;
-> +
-> +	return dma_get_any_slave_channel(&d->dmadev);
 
-Interesting, why dma_get_any_slave_channel() dont you care for the right
-slave channel which is required for your controller..?
-
-> +}
-> +
->  /**
->   * msgdma_probe - Driver probe function
->   * @pdev: Pointer to the platform_device structure
-> @@ -888,6 +897,16 @@ static int msgdma_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto fail;
-> 
-> +	if (IS_ENABLED(CONFIG_OF)) {
-
-no need of this, it is taken care by the core
-
-> +		ret = of_dma_controller_register(pdev->dev.of_node,
-> +						 msgdma_of_xlate, mdev);
-> +		if (ret) {
-> +			dev_err(&pdev->dev,
-> +				"failed to register dma controller");
-> +			goto fail;
-> +		}
-> +	}
-> +
->  	dev_notice(&pdev->dev, "Altera mSGDMA driver probe success\n");
-> 
->  	return 0;
-> @@ -916,9 +935,19 @@ static int msgdma_remove(struct platform_device *pdev)
->  	return 0;
->  }
-> 
-> +#ifdef CONFIG_OF
-> +static const struct of_device_id msgdma_match[] = {
-> +	{ .compatible = "altr,msgdma",},
-> +	{ }
-> +};
-> +
-> +MODULE_DEVICE_TABLE(of, msgdma_match);
-> +#endif
-> +
->  static struct platform_driver msgdma_driver = {
->  	.driver = {
->  		.name = "altera-msgdma",
-> +		.of_match_table = of_match_ptr(msgdma_match),
->  	},
->  	.probe = msgdma_probe,
->  	.remove = msgdma_remove,
-> --
-> 2.31.0.rc2
-
--- 
-~Vinod
+Acked-by: Rob Herring <robh@kernel.org>
