@@ -2,100 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F08378E58
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DA6378E5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbhEJNOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:14:44 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44429 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348857AbhEJNKK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 09:10:10 -0400
-Received: from mail-qt1-f199.google.com ([209.85.160.199])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lg5ei-0007hn-AH
-        for linux-kernel@vger.kernel.org; Mon, 10 May 2021 13:09:04 +0000
-Received: by mail-qt1-f199.google.com with SMTP id d13-20020a05622a05cdb02901c2cffd946bso10353318qtb.23
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:09:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3EZlfL7z84grZikXYl9bmKb5sE14hGf3dWPqG5s9Xqg=;
-        b=b7EfMzsPTt8JKHijgaumd98oE+fo/0rID95htCRNwzhEy/zUaKH4iX7g2tdeKjnTCw
-         h+a0PCnYtxLosIMAc03W6AYV7uY8Q3cNCbf+AMFT8tU/7ohSYf1k83S93x9k8PaKM0FY
-         bnKjlDbg5zRybaVfsQALSxQus6AUTZwfTE0kJF8F9GeiRo7TXT2r8JPRY8AKqyGwhyzh
-         u8ALHY5NR+5NdT3EoPY/JvT1xQP/mbzoSgcp7vkk4ER1u4gDbGxfGU2HWG7l33UEuRNO
-         syNpV/B7B54Lf01x5hAPWqdEEQtny3fnAX1SezweoGFqplYxG/ivCOIXkGjeagQOoTbP
-         30Ag==
-X-Gm-Message-State: AOAM533rvtLnDQq598FgqYwTEGLVPurJbwaTu+wglF3/H6GHj0/RZxCZ
-        vXDBIetIichhgttlbJeiicbldw4bIM/dzoo+802slrOAIc3OYb9YdCf1qiWNMJx9ZJIOZKBn9JN
-        daEVPzKRiA+cVdwxKd9Eg59AAzDFocaRM9RU65UhKzA==
-X-Received: by 2002:a37:e50e:: with SMTP id e14mr22088280qkg.117.1620652143174;
-        Mon, 10 May 2021 06:09:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwwLP9GlKtI1WyA/nxy7DLVZK7IgyXSKBIhEvh2JTEwD5ovaV0XsMxwD2P69LAwyJBXGELSqA==
-X-Received: by 2002:a37:e50e:: with SMTP id e14mr22088259qkg.117.1620652143029;
-        Mon, 10 May 2021 06:09:03 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.49.6])
-        by smtp.gmail.com with ESMTPSA id u27sm3847415qku.33.2021.05.10.06.09.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 06:09:02 -0700 (PDT)
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: Add DT bindings for
- apple,pinctrl
-To:     Tomasz Figa <tomasz.figa@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>, kettenis@openbsd.org,
-        Marc Zyngier <maz@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Hector Martin <marcan@marcan.st>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        sven@svenpeter.dev
-References: <20210508142000.85116-1-kettenis@openbsd.org>
- <20210508142000.85116-2-kettenis@openbsd.org>
- <CACRpkdbUNs_FFv9RteWKUrxBdRuiXU2Fkt-oY4=Phke4gNBoaQ@mail.gmail.com>
- <c1bd678c5dc81db8@bloch.sibelius.xs4all.nl>
- <CACRpkdb=0EQN=CJqfjKS-iuAiKCvU38fw5krzEY5LvhNpyFd3w@mail.gmail.com>
- <CA+Ln22GnbTnxoAy0CWXVxAUUV-LBRHyLqDc2u0fpH5=FdHoWcg@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <d332f69c-33a1-b1c9-e1c9-3c8d756594ef@canonical.com>
-Date:   Mon, 10 May 2021 09:09:00 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S234807AbhEJNO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:14:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:58090 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351653AbhEJNMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 09:12:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 364EC1688;
+        Mon, 10 May 2021 06:11:18 -0700 (PDT)
+Received: from [10.57.47.14] (unknown [10.57.47.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5AE143F73B;
+        Mon, 10 May 2021 06:11:16 -0700 (PDT)
+Subject: Re: [PATCH v1 0/3] coresight: Support for building more coresight
+ paths
+To:     Tao Zhang <taozha@codeaurora.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc:     Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        Yuanfang Zhang <zhangyuanfang@codeaurora.org>
+References: <1620644727-29279-1-git-send-email-taozha@codeaurora.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <070d1c13-2b3e-2dfb-f51b-9d40f1b45a03@arm.com>
+Date:   Mon, 10 May 2021 14:10:52 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <CA+Ln22GnbTnxoAy0CWXVxAUUV-LBRHyLqDc2u0fpH5=FdHoWcg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <1620644727-29279-1-git-send-email-taozha@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/05/2021 05:50, Tomasz Figa wrote:
->>>> So is this an entirely Apple thing now, and not based on some Samsung
->>>> block from S3C like what we have seen before?
->>>
->>> As far as I can tell, yes.  This Apple controller has a single
->>> register per pin that controls the muxing and gpio functions, whereas
->>> the S3C controller seems to have 4 registers per pin.
->>
->> Fair enough.
->>
-> 
-> Right, doesn't sound like any Samsung pin controller I'm familiar
-> with, although I haven't followed new hardware developments since I
-> left Samsung a few years ago. I've stayed as a maintainer mostly to
-> help with the legacy SoCs I had worked with, e.g. s3c6410. :)
+Hi Tao
 
-I can confirm that it looks different than Samsung designs.
+On 10/05/2021 12:05, Tao Zhang wrote:
+> We are trying to achieve more types of Coresight source devices.
+> For example, we have a type of coresight source devic named TPDM.
+> In the process of using, sometimes mulitiple TPDMs need to be
+> connected to the different input ports on the same funnel.
+> Meanwhile, these TPDMs also need to output from different
+> ports on the funnel.
+> But, at present the Coresight driver assumes
+> a) Only support Coresight source type ETM, ETR and ETF
+
+Did you mean ETM and STM here ? ETR & ETF are not source types, rather
+they are SINK.
 
 
-Best regards,
-Krzysztof
+> b) Funnels only support mulitiple inputs and one output
+> Which doesn't help to add the above feature for our new Coresight
+> source device TPDM. So, in order to accommodate the new device,
+> we develop the following patches.
+
+Where is the TPDM driver ? Could you give us a rough idea of the 
+behavior in terms of the input / output ?
+
+
+> a) Add support more types of Coresight source devices.
+
+Which ones ? where is the code ?
+
+> b) Add support for multiple output ports on funnel and the output
+> ports could be selected by Corsight source.
+
+Does the "TPDM" require programming to switch these output or are these 
+"static" ?
+
+Is this something that can be avoided by having a "fake" 
+static-replicator in the path ?
+
+e.g,              TPDM
+	 ________________________________________________
+  In0	|						|  -> Out0
+  In1	|   Static-Funnel   -> Static-Replicator	|  -> Out1
+  In2	|						|  -> Out2
+	 ________________________________________________
+
+
+Is this something that can be solved ? Again, please give a brief
+description of the TPDM device and the driver code in the series to
+give us a complete picture of what you are trying to do.
+
+Reviewing some changes without having the full picture is not going to 
+be helpful.
+
+Suzuki
