@@ -2,126 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA5737903D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1998379031
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345104AbhEJOJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:09:53 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:44556 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236259AbhEJOC5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:02:57 -0400
-Received: by mail-ot1-f45.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so14477675otp.11;
-        Mon, 10 May 2021 07:01:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=JKsO3/Ex9MYUNGYvtUUsilRIUDXYRO1OT6ejMhv7T8k=;
-        b=IAZHduJ4ITLsJb1ZPAZwrEwfPXhROp8zcUw7QyqEFNUdO/ESryuNkA+N5UEYXp5GMK
-         jwoo8skjwFUhLvoO/Ks1Fe4dS4/6hASWa06xuQlRCvGiNWW8Xe022amps1+JTFaroGHv
-         EshcFTUHMorSOhrUv1cCttjyQKN3Vxo9XIclCEF9bkGYS2AXD8HlscbSa9gYZVaefJpx
-         xciBmgIjhN5owv3790CMOkPjT9imtk0SsIgilfifRDKlNb6irEg8TyNwN9KEl7EmlGky
-         7Qnqmsa7JWlFHd1jCn/gVf0N2vayd9V9ZyswpcYyxveb/QAfEM6UxL4FFYsbIrMFhNsA
-         d9Rg==
-X-Gm-Message-State: AOAM532Cqf0n+um1U7VtBR1qmWdcH47sBHGZGhBy4fykrpOV6iCBUQ7m
-        gSyvUOtL94hLEXaYQbpiUxIhoPI8fA==
-X-Google-Smtp-Source: ABdhPJzkMirGR5MPxh2vUgnso6g9WUTGlKFG5pxnf2yqU3vz/35X9pfPvS3TiXp4ftEr9Ospw50ksA==
-X-Received: by 2002:a05:6830:17cb:: with SMTP id p11mr22366787ota.283.1620655310131;
-        Mon, 10 May 2021 07:01:50 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 64sm2648753oob.12.2021.05.10.07.01.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 07:01:48 -0700 (PDT)
-Received: (nullmailer pid 41441 invoked by uid 1000);
-        Mon, 10 May 2021 14:01:39 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     linux-arm-kernel@lists.infradead.org, p.zabel@pengutronix.de,
-        linux-pwm@vger.kernel.org, BMC-SW@aspeedtech.com,
-        linux-aspeed@lists.ozlabs.org, andrew@aj.id.au,
-        linux-kernel@vger.kernel.org, lee.jones@linaro.org,
-        robh+dt@kernel.org, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, devicetree@vger.kernel.org,
-        joel@jms.id.au
-In-Reply-To: <20210510073511.7291-2-billy_tsai@aspeedtech.com>
-References: <20210510073511.7291-1-billy_tsai@aspeedtech.com> <20210510073511.7291-2-billy_tsai@aspeedtech.com>
-Subject: Re: [v4 1/2] dt-bindings: Add bindings for aspeed pwm-tach.
-Date:   Mon, 10 May 2021 09:01:39 -0500
-Message-Id: <1620655299.806171.41440.nullmailer@robh.at.kernel.org>
+        id S233320AbhEJOI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:08:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231672AbhEJOCt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 10:02:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E2C36101B;
+        Mon, 10 May 2021 14:01:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620655304;
+        bh=F7dbRtEIaaThwBLKKfEpeXJ/mhUzWheRAgnCoFAyEwM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=lUuYc6yk7D1Y57pKfM61xU70A/ZwBKnBFIIF5lm0vkdMLhBIHWcT6UqBDD89l4dUl
+         vjZ/mlvuO5ZR6z2LKgsBvjZrDWXtuuwxnBYK6EJMHfrtb9O5vGrq4hSF804WvEkZF/
+         01ocGttJbpbTIhWW2XD5XQ6anS0BGPC4oAGlYd0BHpwgqRtA6yHoKiAPl7/iEcGvBT
+         R359LZvxxTBsqvpOIue3LUbhps0b+8nJaZqEkD1Q+sJ93/4EgeXIf0ol8Obiv+EGlN
+         qgwH/jpI5JRQLSHX7CEsJ/mQzeU/PToVcHSNARWkLMXNge/2izTBtdzbbAK48T7+iE
+         n3aj7myzAbHcg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id DEEE65C00D5; Mon, 10 May 2021 07:01:43 -0700 (PDT)
+Date:   Mon, 10 May 2021 07:01:43 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>, Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH v1 4/5] kvfree_rcu: Refactor kfree_rcu_monitor() function
+Message-ID: <20210510140143.GD975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210428134422.1894-1-urezki@gmail.com>
+ <20210428134422.1894-4-urezki@gmail.com>
+ <20210509165954.347dd3cd8e8815b9dce67cfb@linux-foundation.org>
+ <20210510100901.GA2019@pc638.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510100901.GA2019@pc638.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021 15:35:10 +0800, Billy Tsai wrote:
-> This patch adds device binding for aspeed pwm-tach device which is a
-> multi-function device include pwm and tach function and pwm/tach device
-> bindings which should be the child-node of pwm-tach device.
+On Mon, May 10, 2021 at 12:09:01PM +0200, Uladzislau Rezki wrote:
+> On Sun, May 09, 2021 at 04:59:54PM -0700, Andrew Morton wrote:
+> > On Wed, 28 Apr 2021 15:44:21 +0200 "Uladzislau Rezki (Sony)" <urezki@gmail.com> wrote:
+> > 
+> > > Rearm the monitor work directly from its own function that
+> > > is kfree_rcu_monitor(). So this patch puts the invocation
+> > > timing control in one place.
+> > >
+> > > ...
+> > >
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -3415,37 +3415,44 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+> > >  	return !repeat;
+> > >  }
+> > >  
+> > > -static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+> > > -					  unsigned long flags)
+> > > +/*
+> > > + * This function queues a new batch. If success or nothing to
+> > > + * drain it returns 1. Otherwise 0 is returned indicating that
+> > > + * a reclaim kthread has not processed a previous batch.
+> > > + */
+> > > +static inline int kfree_rcu_drain(struct kfree_rcu_cpu *krcp)
+> > >  {
+> > > +	unsigned long flags;
+> > > +	int ret;
+> > > +
+> > > +	raw_spin_lock_irqsave(&krcp->lock, flags);
+> > > +
+> > >  	// Attempt to start a new batch.
+> > > -	if (queue_kfree_rcu_work(krcp)) {
+> > > +	ret = queue_kfree_rcu_work(krcp);
+> > 
+> > This code has changed slightly in mainline.  Can you please redo,
+> > retest and resend?
+> > 
+> > > +	if (ret)
+> > >  		// Success! Our job is done here.
+> > >  		krcp->monitor_todo = false;
+> > > -		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > > -		return;
+> > > -	}
+> > 
+> > It's conventional to retain the braces here, otherwise the code looks
+> > weird.  Unless you're a python programmer ;)
+> > 
+> > 
+> Hello, Anrew.
 > 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-> ---
->  .../bindings/hwmon/aspeed,ast2600-tach.yaml   | 66 +++++++++++++++
->  .../bindings/mfd/aspeed,ast2600-pwm-tach.yaml | 82 +++++++++++++++++++
->  .../bindings/pwm/aspeed,ast2600-pwm.yaml      | 62 ++++++++++++++
->  3 files changed, 210 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml
->  create mode 100644 Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml
->  create mode 100644 Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml
+> This refactoring is not up to date and is obsolete, instead we have done 
+> bigger rework of kfree_rcu_monitor(). It is located here:
 > 
+> https://kernel.googlesource.com/pub/scm/linux/kernel/git/paulmck/linux-rcu/+/2349a35d39e7af5eef9064cbd0e42309040551da%5E%21/#F0
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+If Andrew would like to start taking these kvfree_rcu() patches,
+that would be all to the good.  For example, there is likely much
+more opportunity for optimization by bringing them closer to the
+sl*b allocators.  Yes, they will need some privileged access to RCU
+internals, but not that much.  And at some point, they should move from
+their current home in kernel/rcu/tree.c to somewhere in mm.
 
-yamllint warnings/errors:
+To that end, here is the list in -rcu against current mainline, from
+youngest to oldest:
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml: Additional properties are not allowed ('child-node' was unexpected)
-	hint: Keywords must be a subset of known json-schema keywords
-	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml: 'child-node' is not one of ['$id', '$schema', 'title', 'description', 'examples', 'required', 'allOf', 'anyOf', 'oneOf', 'definitions', '$defs', 'additionalProperties', 'dependencies', 'patternProperties', 'properties', 'if', 'then', 'else', 'unevaluatedProperties', 'deprecated', 'maintainers', 'select']
-	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml: 'additionalProperties' is a required property
-	hint: A schema without a "$ref" to another schema must define all properties and use "additionalProperties"
-	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml: Additional properties are not allowed ('child-node' was unexpected)
-	hint: Keywords must be a subset of known json-schema keywords
-	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml: 'child-node' is not one of ['$id', '$schema', 'title', 'description', 'examples', 'required', 'allOf', 'anyOf', 'oneOf', 'definitions', '$defs', 'additionalProperties', 'dependencies', 'patternProperties', 'properties', 'if', 'then', 'else', 'unevaluatedProperties', 'deprecated', 'maintainers', 'select']
-	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml: 'additionalProperties' is a required property
-	hint: A schema without a "$ref" to another schema must define all properties and use "additionalProperties"
-	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
-schemas/pwm/aspeed,ast2600-pwm.yaml: ignoring, error in schema: 
-schemas/hwmon/aspeed,ast2600-tach.yaml: ignoring, error in schema: 
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml: Additional properties are not allowed ('child-node' was unexpected)
-	hint: Keywords must be a subset of known json-schema keywords
-	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml: 'child-node' is not one of ['$id', '$schema', 'title', 'description', 'examples', 'required', 'allOf', 'anyOf', 'oneOf', 'definitions', '$defs', 'additionalProperties', 'dependencies', 'patternProperties', 'properties', 'if', 'then', 'else', 'unevaluatedProperties', 'deprecated', 'maintainers', 'select']
-	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml: 'additionalProperties' is a required property
-	hint: A schema without a "$ref" to another schema must define all properties and use "additionalProperties"
-	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml: ignoring, error in schema: 
-warning: no schema found in file: ./Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml: ignoring, error in schema: 
-warning: no schema found in file: ./Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml: ignoring, error in schema: 
-warning: no schema found in file: ./Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml
-Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.example.dt.yaml:0:0: /example-0/pwm_tach@1e610000: failed to match any schema with compatible: ['aspeed,ast2600-pwm-tach', 'syscon', 'simple-mfd']
-Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.example.dt.yaml:0:0: /example-0/pwm_tach@1e610000/pwm: failed to match any schema with compatible: ['aspeed,ast2600-pwm']
-Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.example.dt.yaml:0:0: /example-0/pwm_tach@1e610000/tach: failed to match any schema with compatible: ['aspeed,ast2600-tach']
+b5691dd1cd7a kvfree_rcu: Fix comments according to current code
+2349a35d39e7 kvfree_rcu: Refactor kfree_rcu_monitor()
+bfa15885893f kvfree_rcu: Release a page cache under memory pressure
+de9d86c3b0b7 kvfree_rcu: Use [READ/WRITE]_ONCE() macros to access to nr_bkv_objs
+54a0393340f7 kvfree_rcu: Add a bulk-list check when a scheduler is run
+7490789de1ac kvfree_rcu: Update "monitor_todo" once a batch is started
+28e690ce0347 kvfree_rcu: Use kfree_rcu_monitor() instead of open-coded variant
 
-See https://patchwork.ozlabs.org/patch/1476200
+Please let me know how you would like to proceed.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+							Thanx, Paul
