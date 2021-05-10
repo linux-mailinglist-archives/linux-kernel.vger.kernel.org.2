@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02AC378A88
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B362B378C09
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242063AbhEJLqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:46:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53006 "EHLO mail.kernel.org"
+        id S1345243AbhEJMWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:22:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233266AbhEJK6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:58:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3E076196A;
-        Mon, 10 May 2021 10:52:31 +0000 (UTC)
+        id S236938AbhEJLLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:11:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 386C061432;
+        Mon, 10 May 2021 11:05:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643952;
-        bh=MUVpAbIDpHgX4tBtKUQo8bni9gOy8VJ4MiQLiHFiun0=;
+        s=korg; t=1620644758;
+        bh=iHP5PI9dFvN+iJnh0PXIZUJf03sir2CeqLFELWPo6tY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YFMKVGKszi7RsuGHXJ/BznVieat/82+mT6zE4yVWJHHL13mWpVCxlxFSjuQU91ElL
-         pOn5MkcX3HfxYGvLZiQ31vCwBuHuHQdLcd/EGNz1e9zI+sjx104aIJIJhmLe1MILzB
-         pKq16BkehN50IwJB3J/XKpYqRTfvyNgGvOIqN7os=
+        b=cQh/jEz4yDc4RrKcx4gGo6rBa2wd6D1JE/VYNoUXtxwIb5Mn5th6jNZMm+GtwaeeC
+         HmpkB73lh/Suld9WskS1zE/QkA46j3ZnvoKNrP5LveFqwXMEyzvT+Ioc4D85WIbR7y
+         5WN6ehulh6cpa3fizE+X/PiTcu/W54UkGHbSt8Lw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+3c2be7424cea3b932b0e@syzkaller.appspotmail.com,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 210/342] media: dvb-usb: fix memory leak in dvb_usb_adapter_init
-Date:   Mon, 10 May 2021 12:20:00 +0200
-Message-Id: <20210510102017.026476287@linuxfoundation.org>
+Subject: [PATCH 5.12 212/384] selftests/resctrl: Fix incorrect parsing of iMC counters
+Date:   Mon, 10 May 2021 12:20:01 +0200
+Message-Id: <20210510102021.881823874@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
+References: <20210510102014.849075526@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,81 +43,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Fenghua Yu <fenghua.yu@intel.com>
 
-[ Upstream commit b7cd0da982e3043f2eec7235ac5530cb18d6af1d ]
+[ Upstream commit d81343b5eedf84be71a4313e8fd073d0c510afcf ]
 
-syzbot reported memory leak in dvb-usb. The problem was
-in invalid error handling in dvb_usb_adapter_init().
+iMC (Integrated Memory Controller) counters are usually at
+"/sys/bus/event_source/devices/" and are named as "uncore_imc_<n>".
+num_of_imcs() function tries to count number of such iMC counters so that
+it could appropriately initialize required number of perf_attr structures
+that could be used to read these iMC counters.
 
-for (n = 0; n < d->props.num_adapters; n++) {
-....
-	if ((ret = dvb_usb_adapter_stream_init(adap)) ||
-		(ret = dvb_usb_adapter_dvb_init(adap, adapter_nrs)) ||
-		(ret = dvb_usb_adapter_frontend_init(adap))) {
-		return ret;
-	}
-...
-	d->num_adapters_initialized++;
-...
-}
+num_of_imcs() function assumes that all the directories under this path
+that start with "uncore_imc" are iMC counters. But, on some systems there
+could be directories named as "uncore_imc_free_running" which aren't iMC
+counters. Trying to read from such directories will result in "not found
+file" errors and MBM/MBA tests will fail.
 
-In case of error in dvb_usb_adapter_dvb_init() or
-dvb_usb_adapter_dvb_init() d->num_adapters_initialized won't be
-incremented, but dvb_usb_adapter_exit() relies on it:
+Hence, fix the logic in num_of_imcs() such that it looks at the first
+character after "uncore_imc_" to check if it's a numerical digit or not. If
+it's a digit then the directory represents an iMC counter, else, skip the
+directory.
 
-	for (n = 0; n < d->num_adapters_initialized; n++)
-
-So, allocated objects won't be freed.
-
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Reported-by: syzbot+3c2be7424cea3b932b0e@syzkaller.appspotmail.com
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reported-by: Reinette Chatre <reinette.chatre@intel.com>
+Tested-by: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb/dvb-usb-init.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ tools/testing/selftests/resctrl/resctrl_val.c | 22 +++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/dvb-usb/dvb-usb-init.c b/drivers/media/usb/dvb-usb/dvb-usb-init.c
-index c1a7634e27b4..adc8b287326b 100644
---- a/drivers/media/usb/dvb-usb/dvb-usb-init.c
-+++ b/drivers/media/usb/dvb-usb/dvb-usb-init.c
-@@ -79,11 +79,17 @@ static int dvb_usb_adapter_init(struct dvb_usb_device *d, short *adapter_nrs)
- 			}
- 		}
- 
--		if ((ret = dvb_usb_adapter_stream_init(adap)) ||
--			(ret = dvb_usb_adapter_dvb_init(adap, adapter_nrs)) ||
--			(ret = dvb_usb_adapter_frontend_init(adap))) {
-+		ret = dvb_usb_adapter_stream_init(adap);
-+		if (ret)
- 			return ret;
--		}
+diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
+index aed71fd0713b..5478c23c62ba 100644
+--- a/tools/testing/selftests/resctrl/resctrl_val.c
++++ b/tools/testing/selftests/resctrl/resctrl_val.c
+@@ -221,8 +221,8 @@ static int read_from_imc_dir(char *imc_dir, int count)
+  */
+ static int num_of_imcs(void)
+ {
++	char imc_dir[512], *temp;
+ 	unsigned int count = 0;
+-	char imc_dir[512];
+ 	struct dirent *ep;
+ 	int ret;
+ 	DIR *dp;
+@@ -230,7 +230,25 @@ static int num_of_imcs(void)
+ 	dp = opendir(DYN_PMU_PATH);
+ 	if (dp) {
+ 		while ((ep = readdir(dp))) {
+-			if (strstr(ep->d_name, UNCORE_IMC)) {
++			temp = strstr(ep->d_name, UNCORE_IMC);
++			if (!temp)
++				continue;
 +
-+		ret = dvb_usb_adapter_dvb_init(adap, adapter_nrs);
-+		if (ret)
-+			goto dvb_init_err;
++			/*
++			 * imc counters are named as "uncore_imc_<n>", hence
++			 * increment the pointer to point to <n>. Note that
++			 * sizeof(UNCORE_IMC) would count for null character as
++			 * well and hence the last underscore character in
++			 * uncore_imc'_' need not be counted.
++			 */
++			temp = temp + sizeof(UNCORE_IMC);
 +
-+		ret = dvb_usb_adapter_frontend_init(adap);
-+		if (ret)
-+			goto frontend_init_err;
- 
- 		/* use exclusive FE lock if there is multiple shared FEs */
- 		if (adap->fe_adap[1].fe)
-@@ -103,6 +109,12 @@ static int dvb_usb_adapter_init(struct dvb_usb_device *d, short *adapter_nrs)
- 	}
- 
- 	return 0;
-+
-+frontend_init_err:
-+	dvb_usb_adapter_dvb_exit(adap);
-+dvb_init_err:
-+	dvb_usb_adapter_stream_exit(adap);
-+	return ret;
- }
- 
- static int dvb_usb_adapter_exit(struct dvb_usb_device *d)
++			/*
++			 * Some directories under "DYN_PMU_PATH" could have
++			 * names like "uncore_imc_free_running", hence, check if
++			 * first character is a numerical digit or not.
++			 */
++			if (temp[0] >= '0' && temp[0] <= '9') {
+ 				sprintf(imc_dir, "%s/%s/", DYN_PMU_PATH,
+ 					ep->d_name);
+ 				ret = read_from_imc_dir(imc_dir, count);
 -- 
 2.30.2
 
