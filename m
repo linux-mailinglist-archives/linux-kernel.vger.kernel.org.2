@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C46378A4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1A23786AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242047AbhEJLk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:40:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52158 "EHLO mail.kernel.org"
+        id S235050AbhEJLKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:10:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235030AbhEJK5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E123A61954;
-        Mon, 10 May 2021 10:51:16 +0000 (UTC)
+        id S233443AbhEJKuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:50:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9004616E8;
+        Mon, 10 May 2021 10:38:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643877;
-        bh=ZLnc7AbkMY7q3GVWYzHtpMmb6sXLZ3mU07Mw72kmTfM=;
+        s=korg; t=1620643130;
+        bh=xuaQyowJnAi9b6Ss3OrZfWGSxAGyrYu9Gkf8tyxhaX4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bKLzme7DVbcX95EabwneV/qnExIvrtyyarNgqQTnkg7ygsSoG44AtTtWUNe4aMi11
-         F03hCfUL7/LweDi5KOF7ZybpRoK0+ENm4M5Oii6oPtBgH+kiH9N/Itusm4zME3GW8W
-         3ms6/WwZS8ahzfclj1uLvgv2gugELK7MhW4B4Y7I=
+        b=cr1gYvFrBT1/W0hZPnIIZGP3XWRxeP9WvOCFaVS7RgMQkWyHvStfsxcJRCsM6pu0W
+         GiN6WP9ouw664D/WlZ7BBjU/aPFc0UyQaX4VScXBpgPpeIFd2w0zyD8DHh7DcOoshv
+         UcBGtEUZwQqtL4cS8EpdwEs/MnDxbIClBTaDj9hc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        "Ewan D. Milne" <emilne@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Gomez <daniel@qtec.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 196/342] scsi: scsi_dh_alua: Remove check for ASC 24h in alua_rtpg()
+Subject: [PATCH 5.10 189/299] drm/radeon/ttm: Fix memory leak userptr pages
 Date:   Mon, 10 May 2021 12:19:46 +0200
-Message-Id: <20210510102016.562168289@linuxfoundation.org>
+Message-Id: <20210510102011.190492536@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ewan D. Milne <emilne@redhat.com>
+From: Daniel Gomez <daniel@qtec.com>
 
-[ Upstream commit bc3f2b42b70eb1b8576e753e7d0e117bbb674496 ]
+[ Upstream commit 5aeaa43e0ef1006320c077cbc49f4a8229ca3460 ]
 
-Some arrays return ILLEGAL_REQUEST with ASC 00h if they don't support the
-RTPG extended header so remove the check for INVALID FIELD IN CDB.
+If userptr pages have been pinned but not bounded,
+they remain uncleared.
 
-Link: https://lore.kernel.org/r/20210331201154.20348-1-emilne@redhat.com
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Ewan D. Milne <emilne@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Daniel Gomez <daniel@qtec.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/device_handler/scsi_dh_alua.c | 5 +++--
+ drivers/gpu/drm/radeon/radeon_ttm.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/device_handler/scsi_dh_alua.c b/drivers/scsi/device_handler/scsi_dh_alua.c
-index ea436a14087f..5eff3368143d 100644
---- a/drivers/scsi/device_handler/scsi_dh_alua.c
-+++ b/drivers/scsi/device_handler/scsi_dh_alua.c
-@@ -573,10 +573,11 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
- 		 * even though it shouldn't according to T10.
- 		 * The retry without rtpg_ext_hdr_req set
- 		 * handles this.
-+		 * Note:  some arrays return a sense key of ILLEGAL_REQUEST
-+		 * with ASC 00h if they don't support the extended header.
- 		 */
- 		if (!(pg->flags & ALUA_RTPG_EXT_HDR_UNSUPP) &&
--		    sense_hdr.sense_key == ILLEGAL_REQUEST &&
--		    sense_hdr.asc == 0x24 && sense_hdr.ascq == 0) {
-+		    sense_hdr.sense_key == ILLEGAL_REQUEST) {
- 			pg->flags |= ALUA_RTPG_EXT_HDR_UNSUPP;
- 			goto retry;
- 		}
+diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
+index 36150b7f31a9..a65cb349fac2 100644
+--- a/drivers/gpu/drm/radeon/radeon_ttm.c
++++ b/drivers/gpu/drm/radeon/radeon_ttm.c
+@@ -566,13 +566,14 @@ static void radeon_ttm_backend_unbind(struct ttm_bo_device *bdev, struct ttm_tt
+ 	struct radeon_ttm_tt *gtt = (void *)ttm;
+ 	struct radeon_device *rdev = radeon_get_rdev(bdev);
+ 
++	if (gtt->userptr)
++		radeon_ttm_tt_unpin_userptr(bdev, ttm);
++
+ 	if (!gtt->bound)
+ 		return;
+ 
+ 	radeon_gart_unbind(rdev, gtt->offset, ttm->num_pages);
+ 
+-	if (gtt->userptr)
+-		radeon_ttm_tt_unpin_userptr(bdev, ttm);
+ 	gtt->bound = false;
+ }
+ 
 -- 
 2.30.2
 
