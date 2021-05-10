@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A2837865C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E543789AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235692AbhEJLFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:05:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59672 "EHLO mail.kernel.org"
+        id S238772AbhEJLag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:30:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232511AbhEJKp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:45:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C705F61937;
-        Mon, 10 May 2021 10:36:57 +0000 (UTC)
+        id S234818AbhEJK5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCFD361606;
+        Mon, 10 May 2021 10:49:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643018;
-        bh=Qz5Vk2Lrm8UtrZT+Y8M+F8gOAo823C+dZKCArcdc4Rg=;
+        s=korg; t=1620643768;
+        bh=8wfxU4t98busu7Cl51jcJgRn3v9dTEgdy2f8bw1cl68=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wjuJh3lwpsePuwOS/g2KKChYVd4hGBclSWd4lwOSIgSl3dS6mj7rkcbn4flbYKChc
-         POHqlgv4CJjQ2Q91wcE0tf4kBSNMnf0MUvzssgPX3w/Pg1U7KVssWArxl+KxJqR7Fm
-         9M5QplKEbhLAinBCUGSaFEcwDoVL3sB/ZbXTACsQ=
+        b=z8KvnUhRixJF4083zfX39D0cGKq2jtM46mkoptzxwR3exAohri6KXeUGZMqUx20+n
+         sxalAc44b6UFSdrDJ/x5fyPC0wC8WUKmrIFPqoxxDkBpb3MbTw/BL4GSpO5rwmNF09
+         grYXYsiZ7jhaYrYqVT3JtDKRq/NHlL1Bfwzd8Riw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kenneth Feng <kenneth.feng@amd.com>,
-        Kevin Wang <kevin1.wang@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org,
+        Mike Christie <michael.christie@oracle.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 144/299] drm/amd/pm: fix workload mismatch on vega10
+Subject: [PATCH 5.11 151/342] scsi: target: pscsi: Fix warning in pscsi_complete_cmd()
 Date:   Mon, 10 May 2021 12:19:01 +0200
-Message-Id: <20210510102009.719724157@linuxfoundation.org>
+Message-Id: <20210510102015.080753413@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kenneth Feng <kenneth.feng@amd.com>
+From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 
-[ Upstream commit 0979d43259e13846d86ba17e451e17fec185d240 ]
+[ Upstream commit fd48c056a32ed6e7754c7c475490f3bed54ed378 ]
 
-Workload number mapped to the correct one.
-This issue is only on vega10.
+This fixes a compilation warning in pscsi_complete_cmd():
 
-Signed-off-by: Kenneth Feng <kenneth.feng@amd.com>
-Reviewed-by: Kevin Wang <kevin1.wang@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+     drivers/target/target_core_pscsi.c: In function ‘pscsi_complete_cmd’:
+     drivers/target/target_core_pscsi.c:624:5: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
+     ; /* XXX: TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE */
+
+Link: https://lore.kernel.org/r/20210228055645.22253-5-chaitanya.kulkarni@wdc.com
+Reviewed-by: Mike Christie <michael.christie@oracle.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/target/target_core_pscsi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
-index ed4eafc744d3..132c269c7c89 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
-@@ -5159,7 +5159,7 @@ static int vega10_set_power_profile_mode(struct pp_hwmgr *hwmgr, long *input, ui
+diff --git a/drivers/target/target_core_pscsi.c b/drivers/target/target_core_pscsi.c
+index 0689d550c37a..328ed12e2d59 100644
+--- a/drivers/target/target_core_pscsi.c
++++ b/drivers/target/target_core_pscsi.c
+@@ -620,8 +620,9 @@ static void pscsi_complete_cmd(struct se_cmd *cmd, u8 scsi_status,
+ 			unsigned char *buf;
  
- out:
- 	smum_send_msg_to_smc_with_parameter(hwmgr, PPSMC_MSG_SetWorkloadMask,
--						1 << power_profile_mode,
-+						(!power_profile_mode) ? 0 : 1 << (power_profile_mode - 1),
- 						NULL);
- 	hwmgr->power_profile_mode = power_profile_mode;
+ 			buf = transport_kmap_data_sg(cmd);
+-			if (!buf)
++			if (!buf) {
+ 				; /* XXX: TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE */
++			}
  
+ 			if (cdb[0] == MODE_SENSE_10) {
+ 				if (!(buf[3] & 0x80))
 -- 
 2.30.2
 
