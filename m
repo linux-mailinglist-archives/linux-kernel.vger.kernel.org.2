@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF123779C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 03:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610083779C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 03:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbhEJBZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 21:25:32 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:35494 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229941AbhEJBZb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 21:25:31 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R661e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=zhangliguang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UYHfDw4_1620609865;
-Received: from 30.225.35.240(mailfrom:zhangliguang@linux.alibaba.com fp:SMTPD_---0UYHfDw4_1620609865)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 10 May 2021 09:24:25 +0800
-Subject: Re: [PATCH] tpm_tis_spi: set default probe function if device id not
- match
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210507145255.44033-1-zhangliguang@linux.alibaba.com>
- <YJXxDzougt3ZC01q@kernel.org>
- <e74fd54f-1700-4b06-a320-c0e257666565@linux.alibaba.com>
- <YJhIcIXMFj/LcYwu@kernel.org>
-From:   =?UTF-8?B?5Lmx55+z?= <zhangliguang@linux.alibaba.com>
-Message-ID: <765f9bfc-db7c-5db7-16cd-50156b2579e9@linux.alibaba.com>
-Date:   Mon, 10 May 2021 09:23:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <YJhIcIXMFj/LcYwu@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S230116AbhEJB05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 21:26:57 -0400
+Received: from mga18.intel.com ([134.134.136.126]:13561 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229941AbhEJB04 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 21:26:56 -0400
+IronPort-SDR: EhrJoonMlZNwqFW0nRQPA2nEBBzEnS0ZOkDhePh/slRhw6t+2Vvi5GFpVViH9uYmfETU8IYmaT
+ 684OQTB4oR3Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="186534544"
+X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
+   d="scan'208";a="186534544"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2021 18:25:52 -0700
+IronPort-SDR: dOVz/7o4Abo5T007mbQ1t5BmYZqI7EVLwb2KNGAzYuLa8Gx7niNKm76Wq4GhuKLpEP7VPUamio
+ PhkSVIOqsN9A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
+   d="scan'208";a="536197606"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by fmsmga001.fm.intel.com with ESMTP; 09 May 2021 18:25:50 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH 0/4] perf vendor events: Add events for Icelake Server and update for Icelake Client
+Date:   Mon, 10 May 2021 09:24:34 +0800
+Message-Id: <20210510012438.6293-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021/5/10 4:39, Jarkko Sakkinen 写道:
-> On Sat, May 08, 2021 at 10:46:57AM +0800, 乱石 wrote:
->> Hi,
->>
->> 在 2021/5/8 10:01, Jarkko Sakkinen 写道:
->>> On Fri, May 07, 2021 at 10:52:55PM +0800, Liguang Zhang wrote:
->>>> In DSDT table, TPM _CID was SMO0768, and no _HID definition. After a
->>>> kernel upgrade from 4.19 to 5.10, TPM probe function was changed which
->>>> causes device probe fails. In order to make newer kernel to be
->>>> compatible with the older acpi definition, it would be best set default
->>>> probe function.
->>>>
->>>> Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
->>>> ---
->>>>    drivers/char/tpm/tpm_tis_spi_main.c | 12 ++++++++----
->>>>    1 file changed, 8 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/drivers/char/tpm/tpm_tis_spi_main.c b/drivers/char/tpm/tpm_tis_spi_main.c
->>>> index 3856f6ebcb34..da632a582621 100644
->>>> --- a/drivers/char/tpm/tpm_tis_spi_main.c
->>>> +++ b/drivers/char/tpm/tpm_tis_spi_main.c
->>>> @@ -240,10 +240,14 @@ static int tpm_tis_spi_driver_probe(struct spi_device *spi)
->>>>    	tpm_tis_spi_probe_func probe_func;
->>>>    	probe_func = of_device_get_match_data(&spi->dev);
->>>> -	if (!probe_func && spi_dev_id)
->>>> -		probe_func = (tpm_tis_spi_probe_func)spi_dev_id->driver_data;
->>>> -	if (!probe_func)
->>>> -		return -ENODEV;
->>>> +	if (!probe_func) {
->>>> +		if (spi_dev_id) {
->>>> +			probe_func = (tpm_tis_spi_probe_func)spi_dev_id->driver_data;
->>>> +			if (!probe_func)
->>>> +				return -ENODEV;
->>> Perhaps also hear fallback to tpm_tis_spi_probe?
->>
->> Yes, I do not think of a good way. Do you have any suggestions?
-> So, I just think that when you have this part:
->
->
-> if (!probe_func) {
-> 	if (spi_dev_id) {
->                  probe_func = (tpm_tis_spi_probe_func)spi_dev_id->driver_data;
->                  if (!probe_func)
->                          return -ENODEV;
->
-> Why in here would not you also want to fallback to tpm_tis_spi_probe?
+The first 3 patches add events and metrics for Icelake Server.
+The last patch updates the event list for Icelake Client.
 
-Thanks, I got it. If spi_dev_id exists, prob_func is NULL, I think it's 
-not reasonable , but not neccessarily correct.
+The patches can be found at:
+https://github.com/yaoj/icx-events.git
 
-In this scenario, maybe can also fallback to tpm_tis_spi_probe.
+Jin Yao (4):
+  perf vendor events: Add core event list for Icelake Server
+  perf vendor events: Add uncore event list for Icelake Server
+  perf vendor events: Add metrics for Icelake Server
+  perf vendor events: Update event list for Icelake Client
 
+ .../pmu-events/arch/x86/icelake/cache.json    |  724 +++--
+ .../arch/x86/icelake/floating-point.json      |  101 +-
+ .../pmu-events/arch/x86/icelake/frontend.json |  610 ++--
+ .../arch/x86/icelake/icl-metrics.json         |  273 ++
+ .../pmu-events/arch/x86/icelake/memory.json   |  654 +++--
+ .../pmu-events/arch/x86/icelake/other.json    | 1089 +++++++-
+ .../pmu-events/arch/x86/icelake/pipeline.json | 1169 ++++----
+ .../arch/x86/icelake/virtual-memory.json      |  251 +-
+ .../pmu-events/arch/x86/icelakex/cache.json   |  706 +++++
+ .../arch/x86/icelakex/floating-point.json     |   95 +
+ .../arch/x86/icelakex/frontend.json           |  469 ++++
+ .../arch/x86/icelakex/icx-metrics.json        |  327 +++
+ .../pmu-events/arch/x86/icelakex/memory.json  |  291 ++
+ .../pmu-events/arch/x86/icelakex/other.json   |  181 ++
+ .../arch/x86/icelakex/pipeline.json           |  972 +++++++
+ .../arch/x86/icelakex/uncore-memory.json      |  333 +++
+ .../arch/x86/icelakex/uncore-other.json       | 2476 +++++++++++++++++
+ .../arch/x86/icelakex/uncore-power.json       |   10 +
+ .../arch/x86/icelakex/virtual-memory.json     |  245 ++
+ tools/perf/pmu-events/arch/x86/mapfile.csv    |    2 +
+ 20 files changed, 9403 insertions(+), 1575 deletions(-)
+ create mode 100644 tools/perf/pmu-events/arch/x86/icelake/icl-metrics.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/cache.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/floating-point.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/frontend.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/memory.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/other.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/pipeline.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/uncore-memory.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/uncore-other.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/uncore-power.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/virtual-memory.json
 
-Liguang
+-- 
+2.17.1
 
->
-> /Jarkko
