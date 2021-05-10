@@ -2,129 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250D5379534
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A160379539
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232269AbhEJRQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 13:16:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbhEJRQN (ORCPT
+        id S232146AbhEJRRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 13:17:24 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:27021 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231334AbhEJRRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 13:16:13 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602BDC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:15:08 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id n2so25657155ejy.7
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:15:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7jIuFuf8Zfs+fmLGUjbEH8ZtGFko41nDRxioSANkA/8=;
-        b=uEs9tjg9MZlXMlSQ7QXwugYoZwYcsSKgPLBJw48pSKTBDkNLaPzDPjP1tKjacIzIj6
-         ipHnA/6mWnM0PFh+DtNQherH10zY6acIPlf+Q7vsO1RkHp3eodkZaNveaB+juGlfZOyu
-         LbZ/H9ytlwMwvkuFV3D4QrEI+EDfyK4S4u5gj0Y/iPR6fh6Cu9ADapSMsbromZ03tOoE
-         4y/JRQ2Eiv4lWDDw4Ol8R166s7ywc0oI+h62xHOfkRq5Igx0xft0d7Ic+lNFjIJ0kjF4
-         JJ7BFZAJs7x8OktMlIiC8p6Aq09VUgUj7M8GvU0hCJojQODibeL78EaQKquj0CQPPxIv
-         p5Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7jIuFuf8Zfs+fmLGUjbEH8ZtGFko41nDRxioSANkA/8=;
-        b=bjGgwb0eCqWPxHn3pFodQdJD4/ba5zRuDFMaXAGxUgEL/W5qCQs6qZsFWEiEZwNt3s
-         igXG8jai/0CPPZ7wGv0R5pSSBKECjKeow2mmEar3AhIPMpJxLWfJQelAepcZaebLPgAV
-         iQF6jWEpQOWPa7Vq43XYwaSr9uFG2teuysWF4q40sm+TcKaO7YqUhqK9M8jC118sK/RT
-         sbPj4IrhpUmi4HHCQv/V0qkNPdymw4kjSGKUdd1gw1uoJ3aHsIAkl0rcMfc9jWP/J2rj
-         1oMoRTkzBBzonaXaz6F2lqIK5F2BsuX7JJ01TQ3Sbq4bDWTFuqXNMIdHfjLspa41o1EF
-         PEMQ==
-X-Gm-Message-State: AOAM531gcIwxaHvJ0J/VWo9UzbBXMqqimOxGB/Y8rdYFs/QhmX03Dkuq
-        OJvsF9fuqd+YhHcPyBvgd9/yWF03Dm9ruO/K
-X-Google-Smtp-Source: ABdhPJzxy9lRCMnYTypkHKsuB+w88pAkFn4LYMnAB+gbRW/+PcMvWX8EpixdKA4dcdK2bjzwLQnVjg==
-X-Received: by 2002:a17:907:ab2:: with SMTP id bz18mr3169358ejc.150.1620666907134;
-        Mon, 10 May 2021 10:15:07 -0700 (PDT)
-Received: from spectre.fritz.box (host-79-47-116-73.retail.telecomitalia.it. [79.47.116.73])
-        by smtp.gmail.com with ESMTPSA id hz15sm980260ejc.57.2021.05.10.10.15.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 10:15:06 -0700 (PDT)
-From:   Elia Devito <eliadevito@gmail.com>
-Cc:     Elia Devito <eliadevito@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kailang Yang <kailang@realtek.com>,
-        Jian-Hong Pan <jhp@endlessos.org>,
-        Hui Wang <hui.wang@canonical.com>,
-        Chris Chiu <chris.chiu@canonical.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: hda/realtek: Add fixup for HP Spectre x360 15-df0xxx
-Date:   Mon, 10 May 2021 19:13:33 +0200
-Message-Id: <20210510171332.8313-1-eliadevito@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 10 May 2021 13:17:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620666967; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=KYmgJlaAPF/3bYWN9KWTis2YC0dke/cqvvTO+gUhbVo=;
+ b=PQu6JW5w3jI/DkfCwL/swpaGKYEwexACk4A+uxD68MLlcn9DSMLxWLeYLj05RhMy6unbHRGc
+ hLRZ6OmoGmpIWIhM7XiruWqTT+n3BQMjlUTdMsNtL31NHpqbJ1N6gUnSSxEtinqqcD7aoVXD
+ bA5S0Z9ZJ3gIzrum1Bdd7/SvACg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60996a539a9ff96d951defc6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 10 May 2021 17:16:03
+ GMT
+Sender: gubbaven=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 24FE2C43145; Mon, 10 May 2021 17:16:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: gubbaven)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D74C1C433D3;
+        Mon, 10 May 2021 17:16:01 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 10 May 2021 22:46:01 +0530
+From:   gubbaven@codeaurora.org
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        devicetree@vger.kernel.org, mka@chromium.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        bgodavar@codeaurora.org, rjliao@codeaurora.org,
+        hbandi@codeaurora.org, abhishekpandit@chromium.org
+Subject: Re: [PATCH v3 2/5] Bluetooth: btqca: Add support for firmware image
+ with mbn type for WCN6750
+In-Reply-To: <0285BA82-111D-4CA9-9C74-E6BBFDD0FB42@holtmann.org>
+References: <1620322392-27148-1-git-send-email-gubbaven@codeaurora.org>
+ <1620322392-27148-3-git-send-email-gubbaven@codeaurora.org>
+ <0285BA82-111D-4CA9-9C74-E6BBFDD0FB42@holtmann.org>
+Message-ID: <7c304f9f22e2f2167ce831fd11c6a406@codeaurora.org>
+X-Sender: gubbaven@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixup to enable all 4 speaker on HP Spectre x360 15-df0xxx and probably
-on similar models.
-
-0x14 pin config override is required to enable all speakers and
-alc285-speaker2-to-dac1 fixup to enable volume adjustment.
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=189331
-Signed-off-by: Elia Devito <eliadevito@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index b4b71609dff1..be2a5cd2875d 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6542,6 +6542,7 @@ enum {
- 	ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST,
- 	ALC295_FIXUP_ASUS_DACS,
- 	ALC295_FIXUP_HP_OMEN,
-+	ALC285_FIXUP_HP_SPECTRE_X360,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -8099,6 +8100,15 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HP_LINE1_MIC1_LED,
- 	},
-+	[ALC285_FIXUP_HP_SPECTRE_X360] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x14, 0x90170110 }, /* enable top speaker */
-+			{}
-+		},
-+		.chained = true,
-+		.chain_id = ALC285_FIXUP_SPEAKER2_TO_DAC1,
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -8278,6 +8288,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
-+	SND_PCI_QUIRK(0x103c, 0x8519, "HP Spectre x360 15-df0xxx", ALC285_FIXUP_HP_SPECTRE_X360),
- 	SND_PCI_QUIRK(0x103c, 0x8846, "HP EliteBook 850 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x884c, "HP EliteBook 840 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8898, "HP EliteBook 845 G8 Notebook PC", ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST),
-@@ -8665,6 +8676,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
- 	{.id = ALC274_FIXUP_HP_MIC, .name = "alc274-hp-mic-detect"},
- 	{.id = ALC245_FIXUP_HP_X360_AMP, .name = "alc245-hp-x360-amp"},
- 	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
-+	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
- 	{}
- };
- #define ALC225_STANDARD_PINS \
--- 
-2.31.1
-
+Hi Marcel,
+On 2021-05-07 12:30, Marcel Holtmann wrote:
+> Hi Venkata,
+> 
+>> 1. Added support to download firmware image with mbn type for wcn6750
+>>   as it supports mbn type image.
+>> 2. If mbn type image is not present then check for tlv type image.
+>> 3. Added debug logs for mbn type image.
+>> 
+>> Signed-off-by: Venkata Lakshmi Narayana Gubba 
+>> <gubbaven@codeaurora.org>
+>> ---
+>> drivers/bluetooth/btqca.c | 69 
+>> +++++++++++++++++++++++++++++++++++------------
+>> drivers/bluetooth/btqca.h |  3 ++-
+>> 2 files changed, 54 insertions(+), 18 deletions(-)
+>> 
+>> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+>> index fce808c..320c555 100644
+>> --- a/drivers/bluetooth/btqca.c
+>> +++ b/drivers/bluetooth/btqca.c
+>> @@ -182,7 +182,8 @@ int qca_send_pre_shutdown_cmd(struct hci_dev 
+>> *hdev)
+>> }
+>> EXPORT_SYMBOL_GPL(qca_send_pre_shutdown_cmd);
+>> 
+>> -static void qca_tlv_check_data(struct qca_fw_config *config,
+>> +static void qca_tlv_check_data(struct hci_dev *hdev,
+>> +			       struct qca_fw_config *config,
+>> 		const struct firmware *fw, enum qca_btsoc_type soc_type)
+>> {
+>> 	const u8 *data;
+>> @@ -194,19 +195,21 @@ static void qca_tlv_check_data(struct 
+>> qca_fw_config *config,
+>> 	struct tlv_type_nvm *tlv_nvm;
+>> 	uint8_t nvm_baud_rate = config->user_baud_rate;
+>> 
+>> -	tlv = (struct tlv_type_hdr *)fw->data;
+>> -
+>> -	type_len = le32_to_cpu(tlv->type_len);
+>> -	length = (type_len >> 8) & 0x00ffffff;
+>> -
+>> -	BT_DBG("TLV Type\t\t : 0x%x", type_len & 0x000000ff);
+>> -	BT_DBG("Length\t\t : %d bytes", length);
+>> -
+>> 	config->dnld_mode = QCA_SKIP_EVT_NONE;
+>> 	config->dnld_type = QCA_SKIP_EVT_NONE;
+>> 
+>> 	switch (config->type) {
+>> +	case ELF_TYPE_PATCH:
+>> +		config->dnld_mode = QCA_SKIP_EVT_VSE_CC;
+>> +		config->dnld_type = QCA_SKIP_EVT_VSE_CC;
+>> +
+>> +		bt_dev_dbg(hdev, "File Class        : 0x%x", fw->data[4]);
+>> +		bt_dev_dbg(hdev, "Data Encoding     : 0x%x", fw->data[5]);
+>> +		bt_dev_dbg(hdev, "File version      : 0x%x", fw->data[6]);
+>> +		break;
+>> 	case TLV_TYPE_PATCH:
+>> +		tlv = (struct tlv_type_hdr *)fw->data;
+> 
+> Is this casting always necessary.
+> 
+[Venkata]:
+I see that this casting is required.
+>> +		type_len = le32_to_cpu(tlv->type_len);
+>> 		tlv_patch = (struct tlv_type_patch *)tlv->data;
+>> 
+>> 		/* For Rome version 1.1 to 3.1, all segment commands
+>> @@ -218,6 +221,7 @@ static void qca_tlv_check_data(struct 
+>> qca_fw_config *config,
+>> 		config->dnld_mode = tlv_patch->download_mode;
+>> 		config->dnld_type = config->dnld_mode;
+>> 
+>> +		BT_DBG("TLV Type\t\t : 0x%x", type_len & 0x000000ff);
+>> 		BT_DBG("Total Length           : %d bytes",
+>> 		       le32_to_cpu(tlv_patch->total_size));
+>> 		BT_DBG("Patch Data Length      : %d bytes",
+>> @@ -243,6 +247,14 @@ static void qca_tlv_check_data(struct 
+>> qca_fw_config *config,
+>> 		break;
+>> 
+>> 	case TLV_TYPE_NVM:
+>> +		tlv = (struct tlv_type_hdr *)fw->data;
+>> +
+>> +		type_len = le32_to_cpu(tlv->type_len);
+>> +		length = (type_len >> 8) & 0x00ffffff;
+>> +
+>> +		BT_DBG("TLV Type\t\t : 0x%x", type_len & 0x000000ff);
+>> +		BT_DBG("Length\t\t : %d bytes", length);
+>> +
+>> 		idx = 0;
+>> 		data = tlv->data;
+>> 		while (idx < length) {
+>> @@ -387,7 +399,8 @@ static int qca_inject_cmd_complete_event(struct 
+>> hci_dev *hdev)
+>> 
+>> static int qca_download_firmware(struct hci_dev *hdev,
+>> 				 struct qca_fw_config *config,
+>> -				 enum qca_btsoc_type soc_type)
+>> +				 enum qca_btsoc_type soc_type,
+>> +				 u8 rom_ver)
+>> {
+>> 	const struct firmware *fw;
+>> 	const u8 *segment;
+>> @@ -397,12 +410,30 @@ static int qca_download_firmware(struct hci_dev 
+>> *hdev,
+>> 
+>> 	ret = request_firmware(&fw, config->fwname, &hdev->dev);
+>> 	if (ret) {
+>> -		bt_dev_err(hdev, "QCA Failed to request file: %s (%d)",
+>> -			   config->fwname, ret);
+>> -		return ret;
+>> +		/* For WCN6750, if mbn file is not present then check for
+>> +		 * tlv file.
+>> +		 */
+>> +		if (soc_type == QCA_WCN6750 && config->type == ELF_TYPE_PATCH) {
+>> +			bt_dev_dbg(hdev, "QCA Failed to request file: %s (%d)",
+>> +				   config->fwname, ret);
+>> +			config->type = TLV_TYPE_PATCH;
+>> +			snprintf(config->fwname, sizeof(config->fwname),
+>> +				 "qca/msbtfw%02x.tlv", rom_ver);
+>> +			bt_dev_info(hdev, "QCA Downloading %s", config->fwname);
+>> +			ret = request_firmware(&fw, config->fwname, &hdev->dev);
+>> +			if (ret) {
+>> +				bt_dev_err(hdev, "QCA Failed to request file: %s (%d)",
+>> +					   config->fwname, ret);
+>> +				return ret;
+>> +			}
+>> +		} else {
+>> +			bt_dev_err(hdev, "QCA Failed to request file: %s (%d)",
+>> +				   config->fwname, ret);
+>> +			return ret;
+>> +		}
+>> 	}
+>> 
+>> -	qca_tlv_check_data(config, fw, soc_type);
+>> +	qca_tlv_check_data(hdev, config, fw, soc_type);
+>> 
+>> 	segment = fw->data;
+>> 	remain = fw->size;
+>> @@ -520,14 +551,18 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t 
+>> baudrate,
+>> 	} else if (soc_type == QCA_WCN6750) {
+>> 		rom_ver = ((soc_ver & 0x00000f00) >> 0x04) |
+>> 			    (soc_ver & 0x0000000f);
+>> +		/* Choose mbn file by default.If mbn file is not found
+>> +		 * then choose tlv file
+>> +		 */
+>> +		config.type = ELF_TYPE_PATCH;
+>> 		snprintf(config.fwname, sizeof(config.fwname),
+>> -			 "qca/msbtfw%02x.tlv", rom_ver);
+>> +			 "qca/msbtfw%02x.mbn", rom_ver);
+>> 	} else {
+>> 		snprintf(config.fwname, sizeof(config.fwname),
+>> 			 "qca/rampatch_%08x.bin", soc_ver);
+>> 	}
+>> 
+>> -	err = qca_download_firmware(hdev, &config, soc_type);
+>> +	err = qca_download_firmware(hdev, &config, soc_type, rom_ver);
+>> 	if (err < 0) {
+>> 		bt_dev_err(hdev, "QCA Failed to download patch (%d)", err);
+>> 		return err;
+>> @@ -560,7 +595,7 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t 
+>> baudrate,
+>> 		snprintf(config.fwname, sizeof(config.fwname),
+>> 			 "qca/nvm_%08x.bin", soc_ver);
+>> 
+>> -	err = qca_download_firmware(hdev, &config, soc_type);
+>> +	err = qca_download_firmware(hdev, &config, soc_type, rom_ver);
+>> 	if (err < 0) {
+>> 		bt_dev_err(hdev, "QCA Failed to download NVM (%d)", err);
+>> 		return err;
+>> diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
+>> index dd82d2c..5a5e699 100644
+>> --- a/drivers/bluetooth/btqca.h
+>> +++ b/drivers/bluetooth/btqca.h
+>> @@ -80,7 +80,8 @@ enum qca_tlv_dnld_mode {
+>> 
+>> enum qca_tlv_type {
+>> 	TLV_TYPE_PATCH = 1,
+>> -	TLV_TYPE_NVM
+>> +	TLV_TYPE_NVM,
+>> +	ELF_TYPE_PATCH
+>> };
+> 
+> If you end the enum in a , then future diffs only show a single line
+> of addition. So please ELF_TYPE_PATCH,.
+> 
+[Venkata]:
+Sure, I will update in next patchset.
+> Regards
+> 
+> Marcel
+Regards,
+Lakshmi Narayana.
