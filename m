@@ -2,100 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F012378DDD
+	by mail.lfdr.de (Postfix) with ESMTP id B8AE1378DDE
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349987AbhEJMzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:55:47 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:43326 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345186AbhEJMWB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 08:22:01 -0400
-Received: from mail-qt1-f199.google.com ([209.85.160.199])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lg4u7-0003Jd-LH
-        for linux-kernel@vger.kernel.org; Mon, 10 May 2021 12:20:55 +0000
-Received: by mail-qt1-f199.google.com with SMTP id r20-20020ac85c940000b02901bac34fa2eeso10237766qta.11
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:20:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Y+brPHK6z0qfj8MD7JTAIcwTm+x3W3WlQXIOTpGxTZ8=;
-        b=T7nVvoQ+wlvMDE+m1yJbeOZVeulGRRwIEhJOfpVyMT/IMyT/S/B+YmUagssxXoxIxd
-         c6FwvO5XB2/YxsbPxjgKqXPAT12KOn9XuX1DjsnEKPh36tf13ByCXXgxZSSb2Dc5FAGu
-         p3AX3STTQrWBnVAn8SOo9IXdKhy936JIGr+j6qGKu1rQ4EeqwsecV1FeYze4Wc21CtII
-         Yuo1UxJA+hXADVwY1Ti8TIHtO5+pO+wK4xCyu+WWRv++qaGadDzviGUP61TjTzXgSxnX
-         TmyVqLkteKEnIqXtOhADRT+bHipV98Yz/3htOXwn76iRQDJ1vKsJV8TfLF5HVQe19syi
-         qOxw==
-X-Gm-Message-State: AOAM532vznLP2cjAtg5RVTscLaYjwUYW7JYxF8h6hzXU0lZhjZnZljVx
-        ddLXXe6P9Z9k1wVjaNQh0NJ0Cz2omXhK4tVrXus6Y3iJ+rG2/RutKNQf1B3pr3Wn7/nOZSJGq2S
-        yLSyMlj90KCHrL2/JasCDzfuTwaeiBExzSWmu7PgnFA==
-X-Received: by 2002:ac8:7dd2:: with SMTP id c18mr22423553qte.301.1620649254826;
-        Mon, 10 May 2021 05:20:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwMunM+w/xF+r8imk3jOy21ySiyKh1GdRxXlfCXnAc7JoAsdSDDjE6CNw9JyHSGV2p/qnWbyw==
-X-Received: by 2002:ac8:7dd2:: with SMTP id c18mr22423538qte.301.1620649254655;
-        Mon, 10 May 2021 05:20:54 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.49.2])
-        by smtp.gmail.com with ESMTPSA id v65sm11805007qkc.125.2021.05.10.05.20.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 05:20:54 -0700 (PDT)
-Subject: Re: [PATCH] rtc: max77686: Remove some dead code
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Edmundo Carmona Antoranz <eantoranz@gmail.com>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        cw00.choi@samsung.com, b.zolnierkie@samsung.com,
-        a.zummo@towertech.it, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <a6b23ee8d3ea78f62d3fda0b53aa273718f14c6d.1620452523.git.christophe.jaillet@wanadoo.fr>
- <CAOc6etaUPtJqoH9DBDE72nDW7s7iEZHnaJRpKx9zFow02WOZig@mail.gmail.com>
- <9f34ebcd-0c17-cd7f-eb08-52c6c3dc7b03@wanadoo.fr>
- <CAOc6etYwTvVPnoB3BQfuQEikvsCwSs9AqBWnLFrs9zQ0pJGp1A@mail.gmail.com>
- <YJhO0cEqpbJAdv7s@piout.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <219efcc7-ca05-a7d1-5943-d34a42f0d49f@canonical.com>
-Date:   Mon, 10 May 2021 08:20:52 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <YJhO0cEqpbJAdv7s@piout.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1350004AbhEJMzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:55:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:56262 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345400AbhEJMWh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 08:22:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5CF7E15BE;
+        Mon, 10 May 2021 05:21:29 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.77.48])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 245863F73B;
+        Mon, 10 May 2021 05:21:26 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64/mm: Validate CONFIG_PGTABLE_LEVELS
+Date:   Mon, 10 May 2021 17:52:06 +0530
+Message-Id: <1620649326-24115-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/05/2021 17:06, Alexandre Belloni wrote:
-> On 08/05/2021 18:06:03-0600, Edmundo Carmona Antoranz wrote:
->> On Sat, May 8, 2021 at 10:59 AM Christophe JAILLET
->> <christophe.jaillet@wanadoo.fr> wrote:
->>>
->>>>
->>>> Following the recent conversations, I think it might make sense to do
->>>> dev_err(&pdev->dev, "Failed to register RTC device: %pe\n", info->rtc_dev);
->>>>
->>>> Is that right?
->>>>
->>>
->>> Yes, it is right, but it should be done in another patch.
->>>
->>> Would you like to give it a try?
->>>
->> Sure, I'll have the patch ready to send it when I see yours on next.
-> 
-> Does it make sense to print anything at all? Who would use the output?
-> Is anyone actually going to read it?
+CONFIG_PGTABLE_LEVELS has been statically defined in (arch/arm64/Kconfig)
+depending on the page size and requested virtual address range. In order to
+validate this page table levels selection this adds a BUILD_BUG_ON() as per
+the existing formula ARM64_HW_PGTABLE_LEVELS(). This would help protect any
+inadvertent changes to CONFIG_PGTABLE_LEVELS selection.
 
-If the RTC core does not print the message, it should be
-dev_err_probe().  However the first is recently preferred - RTC core
-should do it for all drivers.  I find such error messages useful - helps
-easily spotting regressions via dmesg -l err.
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This applies on v5.13-rc1.
 
+ arch/arm64/mm/init.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Best regards,
-Krzysztof
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 16a2b2b1c54d..b4da42f3d584 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -498,6 +498,13 @@ void __init mem_init(void)
+ 	BUILD_BUG_ON(TASK_SIZE_32 > DEFAULT_MAP_WINDOW_64);
+ #endif
+ 
++	/*
++	 * Selected page table levels should match when derived from
++	 * scratch using the virtual address range and page size.
++	 */
++	BUILD_BUG_ON(ARM64_HW_PGTABLE_LEVELS(CONFIG_ARM64_VA_BITS) !=
++		     CONFIG_PGTABLE_LEVELS);
++
+ 	if (PAGE_SIZE >= 16384 && get_num_physpages() <= 128) {
+ 		extern int sysctl_overcommit_memory;
+ 		/*
+-- 
+2.20.1
+
