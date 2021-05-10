@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A14A4378CED
+	by mail.lfdr.de (Postfix) with ESMTP id EB095378CEE
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346269AbhEJMai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:30:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
+        id S1346288AbhEJMap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:30:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235320AbhEJLKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:10:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 776CF6143B;
-        Mon, 10 May 2021 11:05:26 +0000 (UTC)
+        id S235572AbhEJLKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:10:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 309DB61464;
+        Mon, 10 May 2021 11:05:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644727;
-        bh=fh8NTrcVEp7XEynMX0wepwrZy+rJKZt3MliX/P9XDEE=;
+        s=korg; t=1620644731;
+        bh=gXiOxhMbUGRqAdnAYW3ioYWMt2JDeB0OfgFadacRKuM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yh83f5GTjpH5+6UwLfabM/X02TcbAKP4k8QM+Q+3Kwb4FJD3WRtpmqor81CjtsGf6
-         CC1X5uBGxndiz+JC99VVi2x4N+QeFlsROnn1ruAp8FGpDQrWNcroc+I6+ryH91wsEz
-         YA/kjaYiBguApb3o19ecLhgnuUhdyaTCLalUJbL0=
+        b=YW4ttufKFpQcJcN9OWw90hyYrg/4g0KPU2HYEc+YY0e3eiV35Cc/qcb9Umgkqi//C
+         Mor1L6JoIqlJ6VGdagWKBlbvSq5iz0vw3+UJSGlm+g5Xr3WEOxSGcLPsQSZ4kbdKKL
+         zOZz9g3LG96wR+iyR5uyJpFNn2CrIB/Mf8ymXW+o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bough Chen <haobo.chen@nxp.com>,
-        Alice Guo <alice.guo@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        stable@vger.kernel.org, Al Cooper <alcooperx@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 200/384] mmc: sdhci-esdhc-imx: validate pinctrl before use it
-Date:   Mon, 10 May 2021 12:19:49 +0200
-Message-Id: <20210510102021.469496439@linuxfoundation.org>
+Subject: [PATCH 5.12 202/384] mmc: sdhci-brcmstb: Remove CQE quirk
+Date:   Mon, 10 May 2021 12:19:51 +0200
+Message-Id: <20210510102021.538446995@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -41,42 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+From: Al Cooper <alcooperx@gmail.com>
 
-[ Upstream commit f410ee0aa2df050a9505f5c261953e9b18e21206 ]
+[ Upstream commit f0bdf98fab058efe7bf49732f70a0f26d1143154 ]
 
-When imx_data->pinctrl is not a valid pointer, pinctrl_lookup_state
-will trigger kernel panic.
+Remove the CQHCI_QUIRK_SHORT_TXFR_DESC_SZ quirk because the
+latest chips have this fixed and earlier chips have other
+CQE problems that prevent the feature from being enabled.
 
-When we boot Dual OS on Jailhouse hypervisor, we let the 1st Linux to
-configure pinmux ready for the 2nd OS, so the 2nd OS not have pinctrl
-settings.
-
-Similar to this commit b62eee9f804e ("mmc: sdhci-esdhc-imx: no fail when no pinctrl available").
-
-Reviewed-by: Bough Chen <haobo.chen@nxp.com>
-Reviewed-by: Alice Guo <alice.guo@nxp.com>
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
-Link: https://lore.kernel.org/r/1614222604-27066-6-git-send-email-peng.fan@oss.nxp.com
+Signed-off-by: Al Cooper <alcooperx@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20210325192834.42955-1-alcooperx@gmail.com
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-esdhc-imx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mmc/host/sdhci-brcmstb.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mmc/host/sdhci-esdhc-imx.c b/drivers/mmc/host/sdhci-esdhc-imx.c
-index a20459744d21..94327988da91 100644
---- a/drivers/mmc/host/sdhci-esdhc-imx.c
-+++ b/drivers/mmc/host/sdhci-esdhc-imx.c
-@@ -1488,7 +1488,7 @@ sdhci_esdhc_imx_probe_dt(struct platform_device *pdev,
+diff --git a/drivers/mmc/host/sdhci-brcmstb.c b/drivers/mmc/host/sdhci-brcmstb.c
+index f9780c65ebe9..f24623aac2db 100644
+--- a/drivers/mmc/host/sdhci-brcmstb.c
++++ b/drivers/mmc/host/sdhci-brcmstb.c
+@@ -199,7 +199,6 @@ static int sdhci_brcmstb_add_host(struct sdhci_host *host,
+ 	if (dma64) {
+ 		dev_dbg(mmc_dev(host->mmc), "Using 64 bit DMA\n");
+ 		cq_host->caps |= CQHCI_TASK_DESC_SZ_128;
+-		cq_host->quirks |= CQHCI_QUIRK_SHORT_TXFR_DESC_SZ;
+ 	}
  
- 	mmc_of_parse_voltage(np, &host->ocr_mask);
- 
--	if (esdhc_is_usdhc(imx_data)) {
-+	if (esdhc_is_usdhc(imx_data) && !IS_ERR(imx_data->pinctrl)) {
- 		imx_data->pins_100mhz = pinctrl_lookup_state(imx_data->pinctrl,
- 						ESDHC_PINCTRL_STATE_100MHZ);
- 		imx_data->pins_200mhz = pinctrl_lookup_state(imx_data->pinctrl,
+ 	ret = cqhci_init(cq_host, host->mmc, dma64);
 -- 
 2.30.2
 
