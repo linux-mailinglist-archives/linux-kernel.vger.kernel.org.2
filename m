@@ -2,120 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC862379A08
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3A4379A1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhEJW1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:27:51 -0400
-Received: from mga09.intel.com ([134.134.136.24]:65501 "EHLO mga09.intel.com"
+        id S231281AbhEJWbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:31:55 -0400
+Received: from mga03.intel.com ([134.134.136.65]:55414 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231368AbhEJW1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:27:35 -0400
-IronPort-SDR: ACj4mbbfIcAwS4u1dCJGNoEOCL41bCs1O8kcJy1hngtYf7Q95vMzHM5U2u07QRsooR43Xi0zQB
- lj8bM/YwYZ9w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="199370758"
+        id S231168AbhEJWbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 18:31:53 -0400
+IronPort-SDR: Xn+hCaLHH7AEuR36P6t1APKYsp3n4TnOwhDYRMBGtsICXA2qB+A6ns+c5aQ/8nSeP90rFBtFcN
+ yZm3YX4stP/Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="199353931"
 X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
-   d="scan'208";a="199370758"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 15:26:29 -0700
-IronPort-SDR: yCwHeJ6rRkGtKNof8GEjqbaKxAz/e7UvMdOJ0H5gQ+/vROArz2qCNRf+ThKjmZy9CsF3QLI59T
- YjeHavqKiVRA==
+   d="scan'208";a="199353931"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 15:30:47 -0700
+IronPort-SDR: HkaJyvpHQcM4aAWmAc/umYeyiQc/DhJtebX+nPBFAp3wUD7WRJmlDRyQW0jUDMt3vgThMBEz6c
+ GroxEbPUwWgA==
 X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
-   d="scan'208";a="430065112"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 15:26:29 -0700
-Date:   Mon, 10 May 2021 15:28:54 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210510152854.793ee594@jacob-builder>
-In-Reply-To: <20210510163956.GD1002214@nvidia.com>
-References: <20210505180023.GJ1370958@nvidia.com>
-        <20210505130446.3ee2fccd@jacob-builder>
-        <YJOZhPGheTSlHtQc@myrica>
-        <20210506122730.GQ1370958@nvidia.com>
-        <20210506163240.GA9058@otc-nc-03>
-        <MWHPR11MB188698FBEE62AF1313E0F7AC8C569@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210510123729.GA1002214@nvidia.com>
-        <20210510152502.GA90095@otc-nc-03>
-        <20210510153111.GB1002214@nvidia.com>
-        <20210510162212.GB90095@otc-nc-03>
-        <20210510163956.GD1002214@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+   d="scan'208";a="454694778"
+Received: from jlmille3-mobl1.amr.corp.intel.com (HELO [10.212.177.136]) ([10.212.177.136])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 15:30:46 -0700
+Subject: Re: [RFC v2 28/32] x86/tdx: Make pages shared in ioremap()
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <eaaa692ce1ed897f66f864bbfa2df8683768d79e.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <b884067a-19d6-105f-9f8c-28feb3b43446@intel.com>
+ <312879fb-d201-a16d-2568-150152044c54@linux.intel.com>
+ <797c95bf-9516-8aee-59d0-f5259d77bb75@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <5b4b4fc0-aaa8-3407-6602-537d59572bc1@intel.com>
+Date:   Mon, 10 May 2021 15:30:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <797c95bf-9516-8aee-59d0-f5259d77bb75@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+On 5/10/21 3:23 PM, Kuppuswamy, Sathyanarayanan wrote:
+>>>>
+>>>> -    if (!sev_active())
+>>>> +    if (!sev_active() && !is_tdx_guest())
+>>>>           return 0;
+>>> I think it's time to come up with a real name for all of the code that's
+>>> under: (sev_active() || is_tdx_guest()).
+>>>
+>>> "encrypted" isn't it, for sure.
+>>
+>> I called it protected_guest() in some other patches.
+> 
+> If you are also fine with above mentioned function name, I can include it
+> in this series. Since we have many use cases of above condition, it will
+> be useful define it as helper function.
 
-On Mon, 10 May 2021 13:39:56 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+FWIW, I think sev_active() has a horrible name.  Shouldn't that be
+"is_sev_guest()"?  "sev_active()" could be read as "I'm a SEV host" or
+"I'm a SEV guest" and "SEV is active".
 
-> I still think it is smarter to push a group of RID's into a global
-> allocation group and accept there are potential downsides with that
-> than to try to force a global allocation group on every RID and then
-> try to fix the mess that makes for non-ENQCMD devices.
-The proposed ioasid_set change in this set has a token for each set of
-IOASIDs.
+protected_guest() seems fine to cover both, despite the horrid SEV
+naming.  It'll actually be nice to banish it from appearing in many of
+its uses. :)
 
-/**
- * struct ioasid_set - Meta data about ioasid_set
- * @nh:		List of notifiers private to that set
- * @xa:		XArray to store ioasid_set private IDs, can be used for
- *		guest-host IOASID mapping, or just a private IOASID namespace.
- * @token:	Unique to identify an IOASID set
- * @type:	Token types
- * @quota:	Max number of IOASIDs can be allocated within the set
- * @nr_ioasids:	Number of IOASIDs currently allocated in the set
- * @id:		ID of the set
- */
-struct ioasid_set {
-	struct atomic_notifier_head nh;
-	struct xarray xa;
-	void *token;
-	int type;
-	int quota;
-	atomic_t nr_ioasids;
-	int id;
-	struct rcu_head rcu;
-	struct misc_cg *misc_cg; /* For misc cgroup accounting */
-};
-
-To satisfy your "give me a PASID for this RID" proposal, can we just use
-the RID's struct device as the token? Also add a type field to explicitly
-indicate global vs per-set(per-RID). i.e.
-
-ioasid_t ioasid_alloc(struct ioasid_set *set, ioasid_t min, ioasid_t max,
-		       int type, void *private)
-Where flags can be:
-enum ioasid_hwid_type {
-	IOASID_HWID_GLOBAL,
-	IOASID_HWID_PER_SET,
-};
-
-We are really talking about the HW IOASID, just a reminder.
-
-Thanks,
-
-Jacob
