@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA0F378C2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5326378A9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346046AbhEJM00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:26:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49920 "EHLO mail.kernel.org"
+        id S243229AbhEJLsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:48:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237129AbhEJLLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:11:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 487D161433;
-        Mon, 10 May 2021 11:07:24 +0000 (UTC)
+        id S231951AbhEJLBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:01:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2C9F61C52;
+        Mon, 10 May 2021 10:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644844;
-        bh=AAcA8OdPJl+ilu/dPnGtwVxONE61/5EAHLfi0bMQ3Q8=;
+        s=korg; t=1620644018;
+        bh=C0kbrCsgyDr8o88l0aKatdUORPeRqWEa/ybH6nlAdZs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yv/MZbYlzBJsXsy0d4d0G/y6x0qdmutxUMyk5x062VyFlbjtT88U9WzLPcRmOBBDN
-         1vKSZoAAiMTqOYl02kY4Y5P7wmtujtOkbWCsRDJjD52ILxwkLks2thMBg6yWei8CVb
-         M6E1GobbNgQ/9CKZExVRi6o/HQ4tPEeFCzk15r9U=
+        b=G9CR78+di83qjzmLCEjhF6pib/ZJukKBB/+O6N9uoqvcZ3xm/HJJrI6JFVSL4z1lJ
+         ZCvK2zRJF8KttVRgQs/cxD28A5YHNYGXIci/LsVTz9edwnwtpcwwXNFQq1c0nVTXeZ
+         U0xC0wXN6XhpIGYBStrMvUD7xBkP0sZecKL0bSJg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Huang <jinsdb@126.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 247/384] drm/amdkfd: Fix cat debugfs hang_hws file causes system crash bug
-Date:   Mon, 10 May 2021 12:20:36 +0200
-Message-Id: <20210510102023.032245592@linuxfoundation.org>
+        stable@vger.kernel.org, Phil Calvin <phil@philcalvin.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.11 247/342] ALSA: hda/realtek: fix mic boost on Intel NUC 8
+Date:   Mon, 10 May 2021 12:20:37 +0200
+Message-Id: <20210510102018.244352578@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
-References: <20210510102014.849075526@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,81 +39,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Huang <jinsdb@126.com>
+From: Phil Calvin <phil@philcalvin.com>
 
-[ Upstream commit d73610211eec8aa027850982b1a48980aa1bc96e ]
+commit d1ee66c5d3c5a0498dd5e3f2af5b8c219a98bba5 upstream.
 
-Here is the system crash log:
-[ 1272.884438] BUG: unable to handle kernel NULL pointer dereference at
-(null)
-[ 1272.884444] IP: [<          (null)>]           (null)
-[ 1272.884447] PGD 825b09067 PUD 8267c8067 PMD 0
-[ 1272.884452] Oops: 0010 [#1] SMP
-[ 1272.884509] CPU: 13 PID: 3485 Comm: cat Kdump: loaded Tainted: G
-[ 1272.884515] task: ffff9a38dbd4d140 ti: ffff9a37cd3b8000 task.ti:
-ffff9a37cd3b8000
-[ 1272.884517] RIP: 0010:[<0000000000000000>]  [<          (null)>]
-(null)
-[ 1272.884520] RSP: 0018:ffff9a37cd3bbe68  EFLAGS: 00010203
-[ 1272.884522] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
-0000000000014d5f
-[ 1272.884524] RDX: fffffffffffffff4 RSI: 0000000000000001 RDI:
-ffff9a38aca4d200
-[ 1272.884526] RBP: ffff9a37cd3bbed0 R08: ffff9a38dcd5f1a0 R09:
-ffff9a31ffc07300
-[ 1272.884527] R10: ffff9a31ffc07300 R11: ffffffffaddd5e9d R12:
-ffff9a38b4e0fb00
-[ 1272.884529] R13: 0000000000000001 R14: ffff9a37cd3bbf18 R15:
-ffff9a38aca4d200
-[ 1272.884532] FS:  00007feccaa67740(0000) GS:ffff9a38dcd40000(0000)
-knlGS:0000000000000000
-[ 1272.884534] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1272.884536] CR2: 0000000000000000 CR3: 00000008267c0000 CR4:
-00000000003407e0
-[ 1272.884537] Call Trace:
-[ 1272.884544]  [<ffffffffade68940>] ? seq_read+0x130/0x440
-[ 1272.884548]  [<ffffffffade40f8f>] vfs_read+0x9f/0x170
-[ 1272.884552]  [<ffffffffade41e4f>] SyS_read+0x7f/0xf0
-[ 1272.884557]  [<ffffffffae374ddb>] system_call_fastpath+0x22/0x27
-[ 1272.884558] Code:  Bad RIP value.
-[ 1272.884562] RIP  [<          (null)>]           (null)
-[ 1272.884564]  RSP <ffff9a37cd3bbe68>
-[ 1272.884566] CR2: 0000000000000000
+Fix two bugs with the Intel HDA Realtek ALC233 sound codec
+present in Intel NUC NUC8i7BEH and probably a few other similar
+NUC models.
 
-Signed-off-by: Qu Huang <jinsdb@126.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+These codecs advertise a 4-level microphone input boost amplifier on
+pin 0x19, but the highest two boost settings do not work correctly,
+and produce only low analog noise that does not seem to contain any
+discernible signal. There is an existing fixup for this exact problem
+but for a different PCI subsystem ID, so we re-use that logic.
+
+Changing the boost level also triggers a DC spike in the input signal
+that bleeds off over about a second and overwhelms any input during
+that time. Thankfully, the existing fixup has the side effect of
+making the boost control show up in userspace as a mute/unmute switch,
+and this keeps (e.g.) PulseAudio from fiddling with it during normal
+input volume adjustments.
+
+Finally, the NUC hardware has built-in inverted stereo mics. This
+patch also enables the usual fixup for this so the two channels cancel
+noise instead of the actual signal.
+
+[ Re-ordered the quirk entry point by tiwai ]
+
+Signed-off-by: Phil Calvin <phil@philcalvin.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/80dc5663-7734-e7e5-25ef-15b5df24511a@philcalvin.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c b/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c
-index 511712c2e382..673d5e34f213 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c
-@@ -33,6 +33,11 @@ static int kfd_debugfs_open(struct inode *inode, struct file *file)
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6435,6 +6435,8 @@ enum {
+ 	ALC269_FIXUP_LEMOTE_A1802,
+ 	ALC269_FIXUP_LEMOTE_A190X,
+ 	ALC256_FIXUP_INTEL_NUC8_RUGGED,
++	ALC233_FIXUP_INTEL_NUC8_DMIC,
++	ALC233_FIXUP_INTEL_NUC8_BOOST,
+ 	ALC256_FIXUP_INTEL_NUC10,
+ 	ALC255_FIXUP_XIAOMI_HEADSET_MIC,
+ 	ALC274_FIXUP_HP_MIC,
+@@ -7156,6 +7158,16 @@ static const struct hda_fixup alc269_fix
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc233_fixup_lenovo_line2_mic_hotkey,
+ 	},
++	[ALC233_FIXUP_INTEL_NUC8_DMIC] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_inv_dmic,
++		.chained = true,
++		.chain_id = ALC233_FIXUP_INTEL_NUC8_BOOST,
++	},
++	[ALC233_FIXUP_INTEL_NUC8_BOOST] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc269_fixup_limit_int_mic_boost
++	},
+ 	[ALC255_FIXUP_DELL_SPK_NOISE] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc_fixup_disable_aamix,
+@@ -8305,6 +8317,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x10ec, 0x118c, "Medion EE4254 MD62100", ALC256_FIXUP_MEDION_HEADSET_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
+ 	SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
++	SND_PCI_QUIRK(0x8086, 0x2074, "Intel NUC 8", ALC233_FIXUP_INTEL_NUC8_DMIC),
+ 	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
+ 	SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", ALC256_FIXUP_INTEL_NUC10),
  
- 	return single_open(file, show, NULL);
- }
-+static int kfd_debugfs_hang_hws_read(struct seq_file *m, void *data)
-+{
-+	seq_printf(m, "echo gpu_id > hang_hws\n");
-+	return 0;
-+}
- 
- static ssize_t kfd_debugfs_hang_hws_write(struct file *file,
- 	const char __user *user_buf, size_t size, loff_t *ppos)
-@@ -94,7 +99,7 @@ void kfd_debugfs_init(void)
- 	debugfs_create_file("rls", S_IFREG | 0444, debugfs_root,
- 			    kfd_debugfs_rls_by_device, &kfd_debugfs_fops);
- 	debugfs_create_file("hang_hws", S_IFREG | 0200, debugfs_root,
--			    NULL, &kfd_debugfs_hang_hws_fops);
-+			    kfd_debugfs_hang_hws_read, &kfd_debugfs_hang_hws_fops);
- }
- 
- void kfd_debugfs_fini(void)
--- 
-2.30.2
-
 
 
