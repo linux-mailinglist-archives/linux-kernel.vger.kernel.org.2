@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8666E379052
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55352379059
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237623AbhEJOKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:10:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42566 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244749AbhEJOFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:05:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4EA16AFE6;
-        Mon, 10 May 2021 14:04:08 +0000 (UTC)
-Subject: Re: [PATCH] mm: kmalloc_index: remove case when size is more than
- 32MB
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210508221328.7338-1-42.hyeyoo@gmail.com>
- <YJccjBMBiwLqFrB8@casper.infradead.org>
- <CAB=+i9QyxOu_1QDfX5QA=pOxxnRURPnwd2Y0EbhoO1u0e=irBA@mail.gmail.com>
- <c305ec02-a7d6-dd0c-bfee-e5b571d9ca9a@suse.cz> <20210510135857.GA3594@hyeyoo>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <9d0ffe49-a2e2-6c81-377b-4c8d2147dff8@suse.cz>
-Date:   Mon, 10 May 2021 16:04:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210510135857.GA3594@hyeyoo>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S234426AbhEJOLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:11:13 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38476 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344187AbhEJOH1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 10:07:27 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14AE34mQ171920;
+        Mon, 10 May 2021 10:06:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=7N3vj2CNerYDIrQk0YPsy9jHw8dDgtuI8EkCY3dY5N8=;
+ b=gKfwOYjuq6KMaRyqU0hkoFvXLdReTzaaKylUBauup4uL45KSZjE0xJTedZvih2WA//hl
+ k7Xzh5UcdzixhQ/XMRoR/CEcfa6JyXQ5BCMfqOME0n+zUkOQI4pWGh4wjwtm881Ix+oM
+ cn657EHgiLHMv3bYQ5tiQeHmj1gwx9RvQLharVL4qtdD3nMqPfVjWQ58yo/gpvz7RWix
+ uB1qikTuyDsEYSKGC++JQFT9L0Mq06jK7geHE3BanKZdIjptvrNsU9m6iclnS1TwlFSj
+ eiY8JlbHKps+TqZvzAURanYP/xYbCpfzY/8imfK4Fm87dzaY2NM/py9jXt2Nh0R3srIY uA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38f66808j2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 May 2021 10:06:15 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14AE35kK171984;
+        Mon, 10 May 2021 10:06:14 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38f66808gk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 May 2021 10:06:14 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14AE32JB026127;
+        Mon, 10 May 2021 14:06:11 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 38dj988hvv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 May 2021 14:06:11 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14AE68qh19071382
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 10 May 2021 14:06:09 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D3CFAA4055;
+        Mon, 10 May 2021 14:06:08 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 45B2AA405F;
+        Mon, 10 May 2021 14:06:08 +0000 (GMT)
+Received: from sig-9-145-37-150.uk.ibm.com (unknown [9.145.37.150])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 10 May 2021 14:06:08 +0000 (GMT)
+Message-ID: <f8833399951a5af8d98a8bf344505163c5947ef0.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 3/3] asm-generic/io.h: warn in inb() and friends with
+ undefined PCI_IOBASE
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>
+Cc:     Vineet Gupta <vgupta@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>, kbuild-all@lists.01.org,
+        Networking <netdev@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Date:   Mon, 10 May 2021 16:06:07 +0200
+In-Reply-To: <CAK8P3a0CiVFvgpJJMcutHv6gdfeKWN2=AWYDuAX-ohEg3+L3gQ@mail.gmail.com>
+References: <20210510085339.1857696-4-schnelle@linux.ibm.com>
+         <202105102111.SyGVczHt-lkp@intel.com>
+         <CAK8P3a0CiVFvgpJJMcutHv6gdfeKWN2=AWYDuAX-ohEg3+L3gQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: vBfEkW1LBvYu2Gl1VHUytt0e94r5D0RU
+X-Proofpoint-ORIG-GUID: F6bd4RJG8syII-GQEGRT02VAJxaPTB09
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-10_09:2021-05-10,2021-05-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ mlxscore=0 bulkscore=0 mlxlogscore=999 impostorscore=0 spamscore=0
+ priorityscore=1501 lowpriorityscore=0 adultscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105100101
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/21 3:58 PM, Hyeonggon Yoo wrote:
-> On Mon, May 10, 2021 at 12:09:55PM +0200, Vlastimil Babka wrote:
->> On 5/9/21 7:33 AM, Hyeonggon Yoo wrote:
->> > On Sun, May 09, 2021 at 12:19:40AM +0100, Matthew Wilcox wrote:
->> >> On Sun, May 09, 2021 at 07:13:28AM +0900, Hyeonggon Yoo wrote:
->> >> > the return value of kmalloc_index is used as index of kmalloc_caches,
->> >>
->> >> it doesn't matter.  every few weeks somebody posts a patch to "optimise"
->> >> kmalloc_index, failing to appreciate that it's only ever run at compile
->> >> time because it's all under __builtin_constant_p().
->> > 
->> > Oh thanks, I didn't know about __builtin_constant_p.
->> > 
->> > But I was not optimizing kmalloc_index. isn't it confusing that
->> > kmalloc_caches alllows maximum size of 32MB, and kmalloc_index allows
->> > maximum size of 64MB?
->> > 
->> > and even if the code I removed is never reached because 64MB is always
->> > bigger than KMALLOC_MAX_CACHE_SIZE, it will cause an error if reached.
->> 
->> KMALLOC_MAX_CACHE_SIZE depends on KMALLOC_SHIFT_HIGH
->> size of kmalloc_caches array depends on KMALLOC_SHIFT_HIGH
->> 
->> So I don't an easy way how it could become reachable while causing the index to
->> overflow - if someone increased KMALLOC_SHIFT_HIGH from 25 to 26, all should be
->> fine, AFAICS.
->> 
->> The problem would be if someone increased it to 27, then we might suddenly get a
->> BUG() in kmalloc_index(). We should probably replace that BUG() with
->> BUILD_BUG_ON(1) to catch that at compile time. Hopefully no supported compiler
->> will break because it's not able to do the proper compile-time evaluation - but
->> if it does, at least we would know.
->> 
->> So I would accept the patch if it also changed BUG() to e.g. BUILD_BUG_ON_MSG(1,
->> "unexpected size in kmalloc_index()");
->> and expanded the function's comment that this is always compile-time evaluated
->> and thus no attempts at "optimizing" the code should be made.
->> 
+On Mon, 2021-05-10 at 15:43 +0200, Arnd Bergmann wrote:
+> On Mon, May 10, 2021 at 3:30 PM kernel test robot <lkp@intel.com> wrote:
+> > All warnings (new ones prefixed by >>):
+> > 
+> >    In file included from include/linux/kernel.h:10,
+> >                     from include/linux/list.h:9,
+> >                     from include/linux/module.h:12,
+> >                     from drivers/net/arcnet/com20020.c:31:
+> >    drivers/net/arcnet/com20020.c: In function 'com20020_reset':
+> > > > include/linux/compiler.h:70:32: warning: 'inbyte' is used uninitialized in this function [-Wuninitialized]
+> >       70 |   (__if_trace.miss_hit[1]++,1) :  \
+> >          |                                ^
+> >    drivers/net/arcnet/com20020.c:286:9: note: 'inbyte' was declared here
+> >      286 |  u_char inbyte;
+> >          |         ^~~~~~
 > 
-> Thank you so much reviewing and replying to my patch.
-> plecase check if I understood well.
+> This looks like a real problem with the patch: the insb()/insw()/insl() helpers
+> should memset(buffer, 0xff, size) to avoid using random stack data.
 > 
-> Okay, I'll do that work. then the following patch will:
-> 	- remove case when size is more than 32MB
-> 	- change "BUG to BUILD_BUG_ON to let compiler know when the size is not supported"
-> 	- add comment that there's no need to optimize it
-> 
-> is it what you mean. right?
+>         Arnd
 
-Exactly.
 
-> and I have a question. in the lin 751 of mm/slab_common.c,
-> thre's struct kmalloc_info_struct kmalloc_info. and it initializes kmalloc info
-> up to 64MB, which is currently not supported. should I change it too? in a separate patch?
+Yes I agree, will send a v6 shortly. Thanks.
 
-Yeah that could be also changed, in the same patch.
