@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A308A37866C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B413789AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236155AbhEJLHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:07:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59296 "EHLO mail.kernel.org"
+        id S233785AbhEJLa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:30:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232714AbhEJKrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:47:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66D0C619AF;
-        Mon, 10 May 2021 10:37:20 +0000 (UTC)
+        id S234841AbhEJK5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D5976194F;
+        Mon, 10 May 2021 10:49:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643040;
-        bh=aoZGLU3h/i0WadM2DxxNm7/BB1+HyOgT5g3s4onk+jI=;
+        s=korg; t=1620643789;
+        bh=hFJ4e1Trr9DHNcMpjLkrcuRY5tumV4fL07Gqx5LGkak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rsrXvWtEjgsS8UKQ5nI3CxXnQZ12sxRwSebbqdqVUf4QlEA9mBCDRlMQWCunQmBmQ
-         tpsGGKO4hJc33cWHYwxgCEE6ch/krSk2UrAwOvsnvBVoZt9fiqk0ydc8yj0DkpcGyC
-         3RF8BOHu5XM7RHiRkhOWdmpep2btUhHeXlm0TFu4=
+        b=OTCf0QNXxhWBxy1BYiyBtfjXVJk2RHRJMk5VShyBxhxn4OkAE+nOgPMX/V1shxXn0
+         7yHxdaxwkxqoPAhwuypxnEhvc4v6eRTQ4PdYHdTMyk1Skyr2qf+T77q5+3vGkzPLgU
+         Q3paPQG7iKk9qIxXkcQJn/vOpr1yOb9tjaV30jv8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 152/299] mmc: sdhci-pci: Add PCI IDs for Intel LKF
+Subject: [PATCH 5.11 159/342] extcon: arizona: Fix some issues when HPDET IRQ fires after the jack has been unplugged
 Date:   Mon, 10 May 2021 12:19:09 +0200
-Message-Id: <20210510102009.973812026@linuxfoundation.org>
+Message-Id: <20210510102015.349857851@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +43,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit ee629112be8b4eff71d4d3d108a28bc7dc877e13 ]
+[ Upstream commit c309a3e8793f7e01c4a4ec7960658380572cb576 ]
 
-Add PCI IDs for Intel LKF eMMC and SD card host controllers.
+When the jack is partially inserted and then removed again it may be
+removed while the hpdet code is running. In this case the following
+may happen:
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Link: https://lore.kernel.org/r/20210322055356.24923-1-adrian.hunter@intel.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+1. The "JACKDET rise" or ""JACKDET fall" IRQ triggers
+2. arizona_jackdet runs and takes info->lock
+3. The "HPDET" IRQ triggers
+4. arizona_hpdet_irq runs, blocks on info->lock
+5. arizona_jackdet calls arizona_stop_mic() and clears info->hpdet_done
+6. arizona_jackdet releases info->lock
+7. arizona_hpdet_irq now can continue running and:
+7.1 Calls arizona_start_mic() (if a mic was detected)
+7.2 sets info->hpdet_done
+
+Step 7 is undesirable / a bug:
+7.1 causes the device to stay in a high power-state (with MICVDD enabled)
+7.2 causes hpdet to not run on the next jack insertion, which in turn
+    causes the EXTCON_JACK_HEADPHONE state to never get set
+
+This fixes both issues by skipping these 2 steps when arizona_hpdet_irq
+runs after the jack has been unplugged.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-pci-core.c | 2 ++
- drivers/mmc/host/sdhci-pci.h      | 2 ++
- 2 files changed, 4 insertions(+)
+ drivers/extcon/extcon-arizona.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
-index 936e4db9060f..bf04a08eeba1 100644
---- a/drivers/mmc/host/sdhci-pci-core.c
-+++ b/drivers/mmc/host/sdhci-pci-core.c
-@@ -1930,6 +1930,8 @@ static const struct pci_device_id pci_ids[] = {
- 	SDHCI_PCI_DEVICE(INTEL, CMLH_SD,   intel_byt_sd),
- 	SDHCI_PCI_DEVICE(INTEL, JSL_EMMC,  intel_glk_emmc),
- 	SDHCI_PCI_DEVICE(INTEL, JSL_SD,    intel_byt_sd),
-+	SDHCI_PCI_DEVICE(INTEL, LKF_EMMC,  intel_glk_emmc),
-+	SDHCI_PCI_DEVICE(INTEL, LKF_SD,    intel_byt_sd),
- 	SDHCI_PCI_DEVICE(O2, 8120,     o2),
- 	SDHCI_PCI_DEVICE(O2, 8220,     o2),
- 	SDHCI_PCI_DEVICE(O2, 8221,     o2),
-diff --git a/drivers/mmc/host/sdhci-pci.h b/drivers/mmc/host/sdhci-pci.h
-index d0ed232af0eb..8f90c4163bb5 100644
---- a/drivers/mmc/host/sdhci-pci.h
-+++ b/drivers/mmc/host/sdhci-pci.h
-@@ -57,6 +57,8 @@
- #define PCI_DEVICE_ID_INTEL_CMLH_SD	0x06f5
- #define PCI_DEVICE_ID_INTEL_JSL_EMMC	0x4dc4
- #define PCI_DEVICE_ID_INTEL_JSL_SD	0x4df8
-+#define PCI_DEVICE_ID_INTEL_LKF_EMMC	0x98c4
-+#define PCI_DEVICE_ID_INTEL_LKF_SD	0x98f8
+diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
+index aae82db542a5..f7ef247de46a 100644
+--- a/drivers/extcon/extcon-arizona.c
++++ b/drivers/extcon/extcon-arizona.c
+@@ -601,7 +601,7 @@ static irqreturn_t arizona_hpdet_irq(int irq, void *data)
+ 	struct arizona *arizona = info->arizona;
+ 	int id_gpio = arizona->pdata.hpdet_id_gpio;
+ 	unsigned int report = EXTCON_JACK_HEADPHONE;
+-	int ret, reading;
++	int ret, reading, state;
+ 	bool mic = false;
  
- #define PCI_DEVICE_ID_SYSKONNECT_8000	0x8000
- #define PCI_DEVICE_ID_VIA_95D0		0x95d0
+ 	mutex_lock(&info->lock);
+@@ -614,12 +614,11 @@ static irqreturn_t arizona_hpdet_irq(int irq, void *data)
+ 	}
+ 
+ 	/* If the cable was removed while measuring ignore the result */
+-	ret = extcon_get_state(info->edev, EXTCON_MECHANICAL);
+-	if (ret < 0) {
+-		dev_err(arizona->dev, "Failed to check cable state: %d\n",
+-			ret);
++	state = extcon_get_state(info->edev, EXTCON_MECHANICAL);
++	if (state < 0) {
++		dev_err(arizona->dev, "Failed to check cable state: %d\n", state);
+ 		goto out;
+-	} else if (!ret) {
++	} else if (!state) {
+ 		dev_dbg(arizona->dev, "Ignoring HPDET for removed cable\n");
+ 		goto done;
+ 	}
+@@ -667,7 +666,7 @@ done:
+ 		gpio_set_value_cansleep(id_gpio, 0);
+ 
+ 	/* If we have a mic then reenable MICDET */
+-	if (mic || info->mic)
++	if (state && (mic || info->mic))
+ 		arizona_start_mic(info);
+ 
+ 	if (info->hpdet_active) {
+@@ -675,7 +674,9 @@ done:
+ 		info->hpdet_active = false;
+ 	}
+ 
+-	info->hpdet_done = true;
++	/* Do not set hp_det done when the cable has been unplugged */
++	if (state)
++		info->hpdet_done = true;
+ 
+ out:
+ 	mutex_unlock(&info->lock);
 -- 
 2.30.2
 
