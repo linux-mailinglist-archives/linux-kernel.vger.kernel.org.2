@@ -2,147 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E333797C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 21:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7E73797C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 21:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbhEJTh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 15:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48500 "EHLO
+        id S231909AbhEJTiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 15:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbhEJThx (ORCPT
+        with ESMTP id S230002AbhEJTiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 15:37:53 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72466C061574;
-        Mon, 10 May 2021 12:36:48 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id l6so16876867oii.1;
-        Mon, 10 May 2021 12:36:48 -0700 (PDT)
+        Mon, 10 May 2021 15:38:05 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B0FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 12:37:00 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id m124so14020186pgm.13
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 12:37:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=rfwM6aeV64dlStCtynVwqpYhrKx+20fvdPRxkUUNoPk=;
-        b=mxmiFt5qvY4oygWWBZxPyrzPAzIDNPiRcZSHCSYNuvlWGg8DdQseRAuHq9FSY4Tulj
-         rTPDmvc2kJn1gm/Rc5Oyhvk22cnWgQ6DwjLFryi8ks3TwScNLTffiDchRZYJGv7cU0Ho
-         3cQ/72SWBHLm95nxpzNwLYuBEnTRnMg7Wjx7k1FQcwJ+yXpiErHlCMIU/wENp432qolY
-         XsgfAxICnVrKS2y6S44pXIiBJoJZ+F13bL9LW3esNjjfCmViHQj55iiCYPRwZswAF4EO
-         gIG6z/C2KJGqNXH2ElAzW9TWhgwYULSpttiV0EBleBsYBCgEjnYYioHiwotB8K0Rb37c
-         uzJw==
+        bh=w733lNx5OPvObGbQFjQ0hyLyLp32Sr7cenOR1wA1DIY=;
+        b=lVGfbvll40bgW3gA0fIk8JnjEglkVV5jCVUhsmj7ENwfKb7AnT261Kn/TUZHgnA8iQ
+         vFA72QWJlBYZTSrbMdmrm1kqYiHWzkPRKp2KbV392cJ+EqzkEt8SkIGerLo/bRjyzH+2
+         UrG5K2+KQ2ObPy4UieTwNbPSU/s9lxlr/kz7E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=rfwM6aeV64dlStCtynVwqpYhrKx+20fvdPRxkUUNoPk=;
-        b=hE0ItELCGgYlU4JX0txKaZQElbOT+i+fYQnIeX18Wg5rEdUdU08YNWCrNoV1BUT1Fz
-         poZi8O6HsJVGYA90f0Ijh0ssHGpuK9S2LhgLriUD3SM6Cn7C7hhiTfseSVuei+VeEFe1
-         w2URoWGAfO4SPPoj4VZtbk30jlMQMyjrnxfUUYvfUFqaP/peHOPbAT1XXeOprsZMzMRn
-         Vxfp+HaDtYmVvaqzBdpsVikXjSYBOoCbjv+dSqSSdK52n2RNvoY8+hioUf7oQ563Zevl
-         KEHCLP/cdmDNLbNkZp9jJKKYRkCwiwRmkHjK23BOLVVZmy1XX6DCeK9DyDjj31jUce5A
-         AV4w==
-X-Gm-Message-State: AOAM530OwcOcXZrZJPXLvVzEzQ8yj4ljIxkXQm+uKs4V0EqClhVATGdU
-        CW2rHROXaTPnYPf6Vq000Yw=
-X-Google-Smtp-Source: ABdhPJz99SSWF74iI7aVgrfSha6fpI7t5Ox7OPhvT9ZInZpyUwZvMG07nJMrZkS9zEDf/bXgZ7WPdQ==
-X-Received: by 2002:aca:4004:: with SMTP id n4mr19028827oia.89.1620675407817;
-        Mon, 10 May 2021 12:36:47 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g11sm288735oif.27.2021.05.10.12.36.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w733lNx5OPvObGbQFjQ0hyLyLp32Sr7cenOR1wA1DIY=;
+        b=Xu3IMaxguDWSAuxEJvXX5Ehxp3Wx06PJKexK0xFzE+EwzUMA6M5vQ34BRg2GZWJYp2
+         d030zdOsQQslUUa/j70HfAmWALoG46TdyCsv1YaUkczZ0FlNUEX6uVL1xjY2MsDkGCia
+         lnMx3hXgAVajTGSQKwq6440IUjiyIcmGFjolRWddnmW2vu/WrN5RiAsvLY+nnbcA1Tmp
+         Np9popwICsiIkRTCMl6H0lZkzs41uNrw9kjhOW04DiS/x+8HhtPRlPFZmK6dvA3VnN4I
+         ZytbQo2Eshrfy4hbfWBu/4RsUO50Ioi5CsSD4geTLoFy0lcvyxe68tOeFeTo2Ds/MkrH
+         hMow==
+X-Gm-Message-State: AOAM532WxTD5F3gtpkL7K066bIZeOs2D1EoarFCvI4FC8w+hzuWkMGfb
+        HgNxNqp3t6MXL94tXYpOnHboHA==
+X-Google-Smtp-Source: ABdhPJx+twpgUp3Tckqv3jXwuEJgx8N1FiNKbDh2d4JwFvvNONDhOoxUrO4PG1e2unCsVRONdCucWg==
+X-Received: by 2002:a63:1064:: with SMTP id 36mr27146092pgq.164.1620675419601;
+        Mon, 10 May 2021 12:36:59 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g18sm11938600pfb.178.2021.05.10.12.36.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 12:36:47 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 10 May 2021 12:36:45 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org, nsaenz@kernel.org,
-        maxime@cerno.tech, khilman@kernel.org, ulf.hansson@linaro.org,
-        len.brown@intel.com, pavel@ucw.cz, robh+dt@kernel.org,
-        frowand.list@gmail.com, maz@kernel.org, tglx@linutronix.de,
-        saravanak@google.com, geert@linux-m68k.org, nsaenzjulienne@suse.de,
-        guillaume.tucker@collabora.com, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, corbet@lwn.net,
-        nicolas.ferre@microchip.com, claudiu.beznea@microchip.com,
-        linux-doc@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-acpi@vger.kernel.org,
-        kernel-team@android.com, linux-rpi-kernel@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v2] clk: Skip clk provider registration when np is NULL
-Message-ID: <20210510193645.GA3920948@roeck-us.net>
-References: <20210426065618.588144-1-tudor.ambarus@microchip.com>
+        Mon, 10 May 2021 12:36:58 -0700 (PDT)
+Date:   Mon, 10 May 2021 12:36:56 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Jiri Slaby <jirislaby@kernel.org>, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] serial: core: fix suspicious security_locked_down() call
+Message-ID: <202105101226.E2AD9AEC@keescook>
+References: <20210507115719.140799-1-omosnace@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210426065618.588144-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20210507115719.140799-1-omosnace@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 09:56:18AM +0300, Tudor Ambarus wrote:
-> commit 6579c8d97ad7 ("clk: Mark fwnodes when their clock provider is added")
-> revealed that clk/bcm/clk-raspberrypi.c driver calls
-> devm_of_clk_add_hw_provider(), with a NULL dev->of_node, which resulted in a
-> NULL pointer dereference in of_clk_add_hw_provider() when calling
-> fwnode_dev_initialized().
+On Fri, May 07, 2021 at 01:57:19PM +0200, Ondrej Mosnacek wrote:
+> The commit that added this check did so in a very strange way - first
+> security_locked_down() is called, its value stored into retval, and if
+> it's nonzero, then an additional check is made for (change_irq ||
+> change_port), and if this is true, the function returns. However, if
+> the goto exit branch is not taken, the code keeps the retval value and
+> continues executing the function. Then, depending on whether
+> uport->ops->verify_port is set, the retval value may or may not be reset
+> to zero and eventually the error value from security_locked_down() may
+> abort the function a few lines below.
 > 
-> Returning 0 is reducing the if conditions in driver code and is being
-> consistent with the CONFIG_OF=n inline stub that returns 0 when CONFIG_OF
-> is disabled. The downside is that drivers will maybe register clkdev lookups
-> when they don't need to and waste some memory.
+> I will go out on a limb and assume that this isn't the intended behavior
+> and that an error value from security_locked_down() was supposed to
+> abort the function only in case (change_irq || change_port) is true.
 > 
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Fixes: 6579c8d97ad7 ("clk: Mark fwnodes when their clock provider is added")
-> Fixes: 3c9ea42802a1 ("clk: Mark fwnodes when their clock provider is added/removed")
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
-
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
+> Note that security_locked_down() should be called last in any series of
+> checks, since the SELinux implementation of this hook will do a check
+> against the policy and generate an audit record in case of denial. If
+> the operation was to carry on after calling security_locked_down(), then
+> the SELinux denial record would be bogus.
+> 
+> See commit 59438b46471a ("security,lockdown,selinux: implement SELinux
+> lockdown") for how SELinux implements this hook.
+> 
+> Fixes: 794edf30ee6c ("lockdown: Lock down TIOCSSERIAL")
+> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
 > ---
-> v2:
-> - s/return 0;/return; in void of_clk_del_provider()
-> - add second fixes tag and Stephen's R-b tag
-> The opinions on whether to return an error or zero were split. Returning 0
-> and skipping the logic was considered safer as we don't know for sure if
-> other drivers are affected. See:
-> https://lore.kernel.org/lkml/d24bebc5-0f78-021f-293f-e58defa32531@samsung.com/
-> https://lore.kernel.org/lkml/20210423171335.262316-1-tudor.ambarus@microchip.com/
+>  drivers/tty/serial/serial_core.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
->  drivers/clk/clk.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> index a3b30f7de2ef..b47460b40d14 100644
-> --- a/drivers/clk/clk.c
-> +++ b/drivers/clk/clk.c
-> @@ -4552,6 +4552,9 @@ int of_clk_add_provider(struct device_node *np,
->  	struct of_clk_provider *cp;
->  	int ret;
+> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+> index ba31e97d3d96..d7d8e7dbda60 100644
+> --- a/drivers/tty/serial/serial_core.c
+> +++ b/drivers/tty/serial/serial_core.c
+> @@ -865,9 +865,11 @@ static int uart_set_info(struct tty_struct *tty, struct tty_port *port,
+>  		goto check_and_exit;
+>  	}
 >  
-> +	if (!np)
-> +		return 0;
-> +
->  	cp = kzalloc(sizeof(*cp), GFP_KERNEL);
->  	if (!cp)
->  		return -ENOMEM;
-> @@ -4591,6 +4594,9 @@ int of_clk_add_hw_provider(struct device_node *np,
->  	struct of_clk_provider *cp;
->  	int ret;
+> -	retval = security_locked_down(LOCKDOWN_TIOCSSERIAL);
+> -	if (retval && (change_irq || change_port))
+> -		goto exit;
+> +	if (change_irq || change_port) {
+> +		retval = security_locked_down(LOCKDOWN_TIOCSSERIAL);
+> +		if (retval)
+> +			goto exit;
+> +	}
 >  
-> +	if (!np)
-> +		return 0;
-> +
->  	cp = kzalloc(sizeof(*cp), GFP_KERNEL);
->  	if (!cp)
->  		return -ENOMEM;
-> @@ -4688,6 +4694,9 @@ void of_clk_del_provider(struct device_node *np)
->  {
->  	struct of_clk_provider *cp;
->  
-> +	if (!np)
-> +		return;
-> +
->  	mutex_lock(&of_clk_mutex);
->  	list_for_each_entry(cp, &of_clk_providers, link) {
->  		if (cp->node == np) {
-> -- 
-> 2.25.1
-> 
+>  	/*
+>  	 * Ask the low level driver to verify the settings.
+
+Oops. Yeah, good catch -- I missed the kind of weird handling of retval
+in this function when I originally reviewed it.
+
+I think the goals of just covering IRQ/IO port changes originate from here:
+https://lore.kernel.org/lkml/26173.1479769852@warthog.procyon.org.uk/
+
+And I think the "Reported-by: Greg KH" originates from here:
+https://lore.kernel.org/lkml/20161206071104.GA10292@kroah.com/
+
+So, yes, I think your fix is correct.
+
+Acked-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
