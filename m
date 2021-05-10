@@ -2,125 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326DB3779F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 03:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8903779E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 03:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhEJBoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 21:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbhEJBn5 (ORCPT
+        id S230261AbhEJBnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 21:43:50 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:2424 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230139AbhEJBno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 21:43:57 -0400
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A3CC06175F;
-        Sun,  9 May 2021 18:42:53 -0700 (PDT)
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 4F5AC8F;
-        Sun,  9 May 2021 18:42:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1620610973;
-        bh=cJWOo4TfUzj7t7/dXgttcnTX16/CdJrjTEAU3pw82dw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kZ3ek6kKU43A648ercUBWqvEVh3HZv9sYrQRYDSF84hJPZlSt7VYfxFAtA3sPPw+W
-         t2cD3vtJwA6zK7JKdw3alNeHZjeZSYi7Xhxt2CxDFBY/xMUbWsg5hm6d/cMw4kpDZ/
-         TkTMIGzanOIQlfLHRqaO2C/H9DenBJ9r9tzLiaAw=
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     openbmc@lists.ozlabs.org, Zev Weiss <zev@bewilderbeest.net>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Joel Stanley <joel@jms.id.au>, Johan Hovold <johan@kernel.org>,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] serial: 8250_aspeed_vuart: use UPF_IOREMAP to set up register mapping
-Date:   Sun,  9 May 2021 20:42:31 -0500
-Message-Id: <20210510014231.647-4-zev@bewilderbeest.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510014231.647-1-zev@bewilderbeest.net>
-References: <20210510014231.647-1-zev@bewilderbeest.net>
+        Sun, 9 May 2021 21:43:44 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FdkJG1hsvzCr5Y;
+        Mon, 10 May 2021 09:39:58 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 10 May 2021 09:42:32 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
+        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
+        <alobakin@pm.me>
+Subject: [PATCH net v6 0/3] fix packet stuck problem for lockless qdisc
+Date:   Mon, 10 May 2021 09:42:33 +0800
+Message-ID: <1620610956-56306-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously this driver's use of devm_ioremap_resource() led to
-duplicated calls to __release_region() when unbinding it (one from
-serial8250_release_std_resource() and one from devres_release_all()),
-the second of which resulted in a warning message:
+This patchset fixes the packet stuck problem mentioned in [1].
 
-  # echo 1e787000.serial > /sys/bus/platform/drivers/aspeed-vuart/unbind
-  [33091.774200] Trying to free nonexistent resource <000000001e787000-000000001e78703f>
+Patch 1: Add STATE_MISSED flag to fix packet stuck problem.
+Patch 2: Fix a tx_action rescheduling problem after STATE_MISSED
+         flag is added in patch 1.
+Patch 3: Fix the significantly higher CPU consumption problem when
+         multiple threads are competing on a saturated outgoing
+         device.
 
-With this change the driver uses the generic serial8250 code's
-UPF_IOREMAP to take care of the register mapping automatically instead
-of doing its own devm_ioremap_resource(), thus avoiding the duplicate
-__release_region() on unbind.
+V6: Some performance optimization in patch 1 suggested by Jakub
+    and drop NET_XMIT_DROP checking in patch 3.
+V5: add patch 3 to fix the problem reported by Michal Kubecek.
+V4: Change STATE_NEED_RESCHEDULE to STATE_MISSED and add patch 2.
 
-In doing this we eliminate vuart->regs, since it merely duplicates
-vuart->port->port.membase, which we now use for our I/O accesses.
+[1]. https://lkml.org/lkml/2019/10/9/42
 
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-Reported-by: Andrew Jeffery <andrew@aj.id.au>
----
- drivers/tty/serial/8250/8250_aspeed_vuart.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+Yunsheng Lin (3):
+  net: sched: fix packet stuck problem for lockless qdisc
+  net: sched: fix endless tx action reschedule during deactivation
+  net: sched: fix tx action reschedule issue with stopped queue
 
-diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c b/drivers/tty/serial/8250/8250_aspeed_vuart.c
-index 249164dc397b..2bf1d8582d9a 100644
---- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
-+++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
-@@ -34,7 +34,6 @@
- 
- struct aspeed_vuart {
- 	struct device		*dev;
--	void __iomem		*regs;
- 	struct clk		*clk;
- 	int			line;
- 	struct timer_list	unthrottle_timer;
-@@ -66,12 +65,12 @@ static const int unthrottle_timeout = HZ/10;
- 
- static inline u8 aspeed_vuart_readb(struct aspeed_vuart *vuart, u8 reg)
- {
--	return readb(vuart->regs + reg);
-+	return readb(vuart->port->port.membase + reg);
- }
- 
- static inline void aspeed_vuart_writeb(struct aspeed_vuart *vuart, u8 val, u8 reg)
- {
--	writeb(val, vuart->regs + reg);
-+	writeb(val, vuart->port->port.membase + reg);
- }
- 
- static ssize_t lpc_address_show(struct device *dev,
-@@ -429,13 +428,9 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
- 	timer_setup(&vuart->unthrottle_timer, aspeed_vuart_unthrottle_exp, 0);
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	vuart->regs = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(vuart->regs))
--		return PTR_ERR(vuart->regs);
- 
- 	memset(&port, 0, sizeof(port));
- 	port.port.private_data = vuart;
--	port.port.membase = vuart->regs;
- 	port.port.mapbase = res->start;
- 	port.port.mapsize = resource_size(res);
- 	port.port.startup = aspeed_vuart_startup;
-@@ -492,7 +487,7 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
- 	port.port.iotype = UPIO_MEM;
- 	port.port.type = PORT_16550A;
- 	port.port.uartclk = clk;
--	port.port.flags = UPF_SHARE_IRQ | UPF_BOOT_AUTOCONF
-+	port.port.flags = UPF_SHARE_IRQ | UPF_BOOT_AUTOCONF | UPF_IOREMAP
- 		| UPF_FIXED_PORT | UPF_FIXED_TYPE | UPF_NO_THRE_TEST;
- 
- 	if (of_property_read_bool(np, "no-loopback-test"))
+ include/net/pkt_sched.h   |  7 +------
+ include/net/sch_generic.h | 33 ++++++++++++++++++++++++++++++++-
+ net/core/dev.c            | 29 ++++++++++++++++++++++++-----
+ net/sched/sch_generic.c   | 31 +++++++++++++++++++++++++++++--
+ 4 files changed, 86 insertions(+), 14 deletions(-)
+
 -- 
-2.31.1
+2.7.4
 
