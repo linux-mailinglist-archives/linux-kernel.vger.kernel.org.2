@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CF13786CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778F9378713
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236954AbhEJLLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:11:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41824 "EHLO mail.kernel.org"
+        id S232977AbhEJLN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:13:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233546AbhEJKuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:50:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC67F61948;
-        Mon, 10 May 2021 10:39:29 +0000 (UTC)
+        id S233599AbhEJKuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:50:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5380761A13;
+        Mon, 10 May 2021 10:39:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643170;
-        bh=kwOyVJpLtd8gheGbQRqdFlIORGINOYnXM+3NvNS/wfs=;
+        s=korg; t=1620643172;
+        bh=Xf+puenA/PUhO6WkOQj7oPaNgZ6nEmCspFlKaCdmti0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gyi4m4Qrbd6WyosYs2jMk9nkIOQawpfipyz1LhHjBdJht3Khm0iC2OUvsiW1y3kSe
-         EXvz3Po9BeE8h2PL85WDQME9e0bSp/YlmrxlbLhQbBkM5pT//b6QGOHurLfdDf+oMg
-         6u0mLrqQssqZvhhPZRMgk8YGLB6+uAT5KpsjFhEw=
+        b=Sp7RiJemB+F0yGEoFKIk6tmMxtRtA5lKZ/lO2eB+bHgecrZvuPrAEsQ+xdNpaCQSo
+         kXbg9p8R38NZWwzS8ucM7cdhV+X5XCz24TeR5bfbNQdmIdztHgJpqRkFoPfjr0gK+j
+         TdgLYJQpjEI4nSxe9x4zLi/ZEcGBf+h/GVApwJIk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        stable@vger.kernel.org, Guangqing Zhu <zhuguangqing83@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 207/299] sched,psi: Handle potential task count underflow bugs more gracefully
-Date:   Mon, 10 May 2021 12:20:04 +0200
-Message-Id: <20210510102011.779777963@linuxfoundation.org>
+Subject: [PATCH 5.10 208/299] power: supply: cpcap-battery: fix invalid usage of list cursor
+Date:   Mon, 10 May 2021 12:20:05 +0200
+Message-Id: <20210510102011.818616470@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
 References: <20210510102004.821838356@linuxfoundation.org>
@@ -42,54 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charan Teja Reddy <charante@codeaurora.org>
+From: Guangqing Zhu <zhuguangqing83@gmail.com>
 
-[ Upstream commit 9d10a13d1e4c349b76f1c675a874a7f981d6d3b4 ]
+[ Upstream commit d0a43c12ee9f57ddb284272187bd18726c2c2c98 ]
 
-psi_group_cpu->tasks, represented by the unsigned int, stores the
-number of tasks that could be stalled on a psi resource(io/mem/cpu).
-Decrementing these counters at zero leads to wrapping which further
-leads to the psi_group_cpu->state_mask is being set with the
-respective pressure state. This could result into the unnecessary time
-sampling for the pressure state thus cause the spurious psi events.
-This can further lead to wrong actions being taken at the user land
-based on these psi events.
+Fix invalid usage of a list_for_each_entry in cpcap_battery_irq_thread().
+Empty list or fully traversed list points to list head, which is not
+NULL (and before the first element containing real data).
 
-Though psi_bug is set under these conditions but that just for debug
-purpose. Fix it by decrementing the ->tasks count only when it is
-non-zero.
-
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Link: https://lkml.kernel.org/r/1618585336-37219-1-git-send-email-charante@codeaurora.org
+Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
+Reviewed-by: Tony Lindgren <tony@atomide.com>
+Reviewed-by: Carl Philipp Klemm <philipp@uvos.xyz>
+Tested-by: Carl Philipp Klemm <philipp@uvos.xyz>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/psi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/power/supply/cpcap-battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index 967732c0766c..651218ded981 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -711,14 +711,15 @@ static void psi_group_change(struct psi_group *group, int cpu,
- 	for (t = 0, m = clear; m; m &= ~(1 << t), t++) {
- 		if (!(m & (1 << t)))
- 			continue;
--		if (groupc->tasks[t] == 0 && !psi_bug) {
-+		if (groupc->tasks[t]) {
-+			groupc->tasks[t]--;
-+		} else if (!psi_bug) {
- 			printk_deferred(KERN_ERR "psi: task underflow! cpu=%d t=%d tasks=[%u %u %u %u] clear=%x set=%x\n",
- 					cpu, t, groupc->tasks[0],
- 					groupc->tasks[1], groupc->tasks[2],
- 					groupc->tasks[3], clear, set);
- 			psi_bug = 1;
- 		}
--		groupc->tasks[t]--;
+diff --git a/drivers/power/supply/cpcap-battery.c b/drivers/power/supply/cpcap-battery.c
+index cebc5c8fda1b..793d4ca52f8a 100644
+--- a/drivers/power/supply/cpcap-battery.c
++++ b/drivers/power/supply/cpcap-battery.c
+@@ -626,7 +626,7 @@ static irqreturn_t cpcap_battery_irq_thread(int irq, void *data)
+ 			break;
  	}
  
- 	for (t = 0; set; set &= ~(1 << t), t++)
+-	if (!d)
++	if (list_entry_is_head(d, &ddata->irq_list, node))
+ 		return IRQ_NONE;
+ 
+ 	latest = cpcap_battery_latest(ddata);
 -- 
 2.30.2
 
