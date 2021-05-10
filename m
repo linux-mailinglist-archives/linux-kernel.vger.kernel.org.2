@@ -2,161 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1F5379521
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 250D5379534
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232512AbhEJRNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 13:13:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30502 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232170AbhEJRNj (ORCPT
+        id S232269AbhEJRQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 13:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231334AbhEJRQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 13:13:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620666754;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/CIW2YCfIyemvqkNlDrF54CSJZHkshL2bUv5uy7OmnQ=;
-        b=gKpZeuWymEV2+L4c6jPrm3/ZtlrKOZBMZDaeRBm2ykzGM/6ciujq/0JHdtcuSBBbOYfcQd
-        zT2GeTdqM3CQb8gqjomfyt0XiuP+c8th5o+Ug9noCWjctj4o5kDwRonlDVG7/nf95gPG/o
-        qpDFql2XVtXIKWRadjJSOFT5ArYed5M=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-229-ZEkxYI8fOHyEYBRHJUTC6w-1; Mon, 10 May 2021 13:12:33 -0400
-X-MC-Unique: ZEkxYI8fOHyEYBRHJUTC6w-1
-Received: by mail-qk1-f199.google.com with SMTP id o14-20020a05620a130eb02902ea53a6ef80so12046282qkj.6
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:12:33 -0700 (PDT)
+        Mon, 10 May 2021 13:16:13 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602BDC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:15:08 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id n2so25657155ejy.7
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:15:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7jIuFuf8Zfs+fmLGUjbEH8ZtGFko41nDRxioSANkA/8=;
+        b=uEs9tjg9MZlXMlSQ7QXwugYoZwYcsSKgPLBJw48pSKTBDkNLaPzDPjP1tKjacIzIj6
+         ipHnA/6mWnM0PFh+DtNQherH10zY6acIPlf+Q7vsO1RkHp3eodkZaNveaB+juGlfZOyu
+         LbZ/H9ytlwMwvkuFV3D4QrEI+EDfyK4S4u5gj0Y/iPR6fh6Cu9ADapSMsbromZ03tOoE
+         4y/JRQ2Eiv4lWDDw4Ol8R166s7ywc0oI+h62xHOfkRq5Igx0xft0d7Ic+lNFjIJ0kjF4
+         JJ7BFZAJs7x8OktMlIiC8p6Aq09VUgUj7M8GvU0hCJojQODibeL78EaQKquj0CQPPxIv
+         p5Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=/CIW2YCfIyemvqkNlDrF54CSJZHkshL2bUv5uy7OmnQ=;
-        b=Gb3jSVoDELLgSGl6rrB09UkzXamVKEp+Dde6xUdytAaaj4OmNsF3fYXCyhr9C2IoOq
-         tajodstSjfPFo91RSwXFnZ2P19d3m9HY9TVmzu1t/D0bmYgOCaqd2+IitU1kwy7PpX0c
-         apDHZkQAzGo2Zs2HfEc/G2jIpMuTspGzPhkdjhTGYZ+2WXUgOqOMsTFxyKmz6E571lkV
-         /21VkQigiSsHUmg1mfEReqL5nhh4xp6y/mD4WLNZ9/dSaZOy/SK2oKg5/M7mu9/4iK0f
-         +OdwcYSykidRaL2ovq2jMmWpdYlL5yJh5bQ1fb2Z73fb3URYATygiGjRjXIXVxo4iMNP
-         DFPA==
-X-Gm-Message-State: AOAM533TyzOzOXTakRemtWcsLO0bL8cHhv6b4OUj+RgUyl4FvlvLCw1t
-        tF3UgOieW2dchHT3+oAtA1bYXPOF0oEV9aLmUzoGaNPlGJtYKdiw4wD8gsMGG0zGHwjDh8Plhrh
-        MXnxQowALz54qqu6eGfXAP4aa
-X-Received: by 2002:a05:622a:30f:: with SMTP id q15mr11898527qtw.257.1620666752679;
-        Mon, 10 May 2021 10:12:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyyc6C7/diGU6s8/6mxi8LzwJ6RGcfL0bThVSbL9h3YFSM+LmOFIdaOMw68anpi6NdkCsXwnA==
-X-Received: by 2002:a05:622a:30f:: with SMTP id q15mr11898502qtw.257.1620666752493;
-        Mon, 10 May 2021 10:12:32 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id p10sm11666764qkg.74.2021.05.10.10.12.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 10:12:32 -0700 (PDT)
-Subject: Re: [PATCH v12 5/5] fpga: m10bmc-sec: add max10 get_hw_errinfo
- callback func
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com, richard.gong@intel.com
-References: <20210503214042.316836-1-russell.h.weight@intel.com>
- <20210503214042.316836-6-russell.h.weight@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <bcbf399d-4384-4731-f768-93793a5311b6@redhat.com>
-Date:   Mon, 10 May 2021 10:12:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7jIuFuf8Zfs+fmLGUjbEH8ZtGFko41nDRxioSANkA/8=;
+        b=bjGgwb0eCqWPxHn3pFodQdJD4/ba5zRuDFMaXAGxUgEL/W5qCQs6qZsFWEiEZwNt3s
+         igXG8jai/0CPPZ7wGv0R5pSSBKECjKeow2mmEar3AhIPMpJxLWfJQelAepcZaebLPgAV
+         iQF6jWEpQOWPa7Vq43XYwaSr9uFG2teuysWF4q40sm+TcKaO7YqUhqK9M8jC118sK/RT
+         sbPj4IrhpUmi4HHCQv/V0qkNPdymw4kjSGKUdd1gw1uoJ3aHsIAkl0rcMfc9jWP/J2rj
+         1oMoRTkzBBzonaXaz6F2lqIK5F2BsuX7JJ01TQ3Sbq4bDWTFuqXNMIdHfjLspa41o1EF
+         PEMQ==
+X-Gm-Message-State: AOAM531gcIwxaHvJ0J/VWo9UzbBXMqqimOxGB/Y8rdYFs/QhmX03Dkuq
+        OJvsF9fuqd+YhHcPyBvgd9/yWF03Dm9ruO/K
+X-Google-Smtp-Source: ABdhPJzxy9lRCMnYTypkHKsuB+w88pAkFn4LYMnAB+gbRW/+PcMvWX8EpixdKA4dcdK2bjzwLQnVjg==
+X-Received: by 2002:a17:907:ab2:: with SMTP id bz18mr3169358ejc.150.1620666907134;
+        Mon, 10 May 2021 10:15:07 -0700 (PDT)
+Received: from spectre.fritz.box (host-79-47-116-73.retail.telecomitalia.it. [79.47.116.73])
+        by smtp.gmail.com with ESMTPSA id hz15sm980260ejc.57.2021.05.10.10.15.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 10:15:06 -0700 (PDT)
+From:   Elia Devito <eliadevito@gmail.com>
+Cc:     Elia Devito <eliadevito@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kailang Yang <kailang@realtek.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        Hui Wang <hui.wang@canonical.com>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: hda/realtek: Add fixup for HP Spectre x360 15-df0xxx
+Date:   Mon, 10 May 2021 19:13:33 +0200
+Message-Id: <20210510171332.8313-1-eliadevito@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210503214042.316836-6-russell.h.weight@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fixup to enable all 4 speaker on HP Spectre x360 15-df0xxx and probably
+on similar models.
 
-On 5/3/21 2:40 PM, Russ Weight wrote:
-> Extend the MAX10 BMC Secure Update driver to include
-> a function that returns 64 bits of additional HW specific
-> data for errors that require additional information.
-> This callback function enables the hw_errinfo sysfs
-> node in the Intel Security Manager class driver.
->
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+0x14 pin config override is required to enable all speakers and
+alc285-speaker2-to-dac1 fixup to enable volume adjustment.
 
-This looks fine.
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=189331
+Signed-off-by: Elia Devito <eliadevito@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Reviewed-by: Tom Rix <trix@redhat.com>
-
-> ---
-> v12:
->    - No change
-> v11:
->    - No change
-> v10:
->    - No change
-> v9:
->    - No change
-> v8:
->    - Previously patch 6/6, otherwise no change
-> v7:
->    - No change
-> v6:
->    - Initialized auth_result and doorbell to HW_ERRINFO_POISON
->      in m10bmc_sec_hw_errinfo() and removed unnecessary if statements.
-> v5:
->    - No change
-> v4:
->    - No change
-> v3:
->    - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
->    - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure Update
->      driver"
-> v2:
->    - Implemented HW_ERRINFO_POISON for m10bmc_sec_hw_errinfo() to
->      ensure that corresponding bits are set to 1 if we are unable
->      to read the doorbell or auth_result registers.
->    - Added m10bmc_ prefix to functions in m10bmc_iops structure
-> ---
->   drivers/fpga/intel-m10-bmc-secure.c | 22 ++++++++++++++++++++++
->   1 file changed, 22 insertions(+)
->
-> diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
-> index 9d45312001a3..bdf87ec125fe 100644
-> --- a/drivers/fpga/intel-m10-bmc-secure.c
-> +++ b/drivers/fpga/intel-m10-bmc-secure.c
-> @@ -483,11 +483,33 @@ static enum fpga_sec_err m10bmc_sec_cancel(struct fpga_sec_mgr *smgr)
->   	return ret ? FPGA_SEC_ERR_RW_ERROR : FPGA_SEC_ERR_NONE;
->   }
->   
-> +#define HW_ERRINFO_POISON	GENMASK(31, 0)
-> +static u64 m10bmc_sec_hw_errinfo(struct fpga_sec_mgr *smgr)
-> +{
-> +	struct m10bmc_sec *sec = smgr->priv;
-> +	u32 auth_result = HW_ERRINFO_POISON;
-> +	u32 doorbell = HW_ERRINFO_POISON;
-> +
-> +	switch (smgr->err_code) {
-> +	case FPGA_SEC_ERR_HW_ERROR:
-> +	case FPGA_SEC_ERR_TIMEOUT:
-> +	case FPGA_SEC_ERR_BUSY:
-> +	case FPGA_SEC_ERR_WEAROUT:
-> +		m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
-> +		m10bmc_sys_read(sec->m10bmc, M10BMC_AUTH_RESULT, &auth_result);
-> +
-> +		return (u64)doorbell << 32 | (u64)auth_result;
-> +	default:
-> +		return 0;
-> +	}
-> +}
-> +
->   static const struct fpga_sec_mgr_ops m10bmc_sops = {
->   	.prepare = m10bmc_sec_prepare,
->   	.write_blk = m10bmc_sec_write_blk,
->   	.poll_complete = m10bmc_sec_poll_complete,
->   	.cancel = m10bmc_sec_cancel,
-> +	.get_hw_errinfo = m10bmc_sec_hw_errinfo,
->   };
->   
->   static int m10bmc_secure_probe(struct platform_device *pdev)
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index b4b71609dff1..be2a5cd2875d 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6542,6 +6542,7 @@ enum {
+ 	ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST,
+ 	ALC295_FIXUP_ASUS_DACS,
+ 	ALC295_FIXUP_HP_OMEN,
++	ALC285_FIXUP_HP_SPECTRE_X360,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -8099,6 +8100,15 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HP_LINE1_MIC1_LED,
+ 	},
++	[ALC285_FIXUP_HP_SPECTRE_X360] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x14, 0x90170110 }, /* enable top speaker */
++			{}
++		},
++		.chained = true,
++		.chain_id = ALC285_FIXUP_SPEAKER2_TO_DAC1,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -8278,6 +8288,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
++	SND_PCI_QUIRK(0x103c, 0x8519, "HP Spectre x360 15-df0xxx", ALC285_FIXUP_HP_SPECTRE_X360),
+ 	SND_PCI_QUIRK(0x103c, 0x8846, "HP EliteBook 850 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x884c, "HP EliteBook 840 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8898, "HP EliteBook 845 G8 Notebook PC", ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST),
+@@ -8665,6 +8676,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{.id = ALC274_FIXUP_HP_MIC, .name = "alc274-hp-mic-detect"},
+ 	{.id = ALC245_FIXUP_HP_X360_AMP, .name = "alc245-hp-x360-amp"},
+ 	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
++	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
+ 	{}
+ };
+ #define ALC225_STANDARD_PINS \
+-- 
+2.31.1
 
