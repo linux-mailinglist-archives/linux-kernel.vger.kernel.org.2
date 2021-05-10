@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B124537825A
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B3B37825F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbhEJKej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:34:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60976 "EHLO mail.kernel.org"
+        id S232617AbhEJKe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:34:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231860AbhEJKap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:30:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBC826192A;
+        id S231653AbhEJKbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:31:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBD476192C;
         Mon, 10 May 2021 10:27:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620642444;
-        bh=5XvKweeJlfByIWyqx5n3/rwhfkl4jZwsOIYU0G0wXTM=;
+        bh=4kiApqtEgxHXQ5lpCKw+lSX7463eojql3r+0QIGTBk0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gWr6lfrr/p7MFRe58W8gbMix0N4mF7ECGSjy8KP4cABfEVzYgtkVRDyxNxlx1+3aK
-         4zMs5fevq+5DkA3QExPfJ1pqLhdBYHReJ3NLOEg4kHnTzh02JRTDO+Up6Sk8opb6EN
-         uyonhAHoA0xPAMfluLddVCj2ItlkfZaiBUXGRPAbt02q+SDyJvV7UToj+aBvkir34v
-         vhrH93d+KPGFDtqH98521/haSU/GPKPKBo9CYFzjPFzf/7+IN2ewGqFhMre3yCJtSH
-         OpIvBG9kC5WMFLWvalnVDUD/mIpMaqFoFqGRylO5gqYBB4O9LH04Tl2kbqvm3uikxL
-         H5K+PFJljUeOw==
+        b=gzfm3KUMVGsQoNL9uzhEOfxioVlpznVAu9YybNV7Uhz/YBB/0PhMl4MmULooDGh6N
+         J9Fd4YLOXJ8/7lTT9MsJ7kB2oM4zS42lMvaCwEjNBLKbyJByzI8pu0dUE+KcF/oYUY
+         VSw9pQ/UHkwLBPyMhejovxL/5AMOAbGxjVhkFp22qo8RO8cnDv/6q94+xP95fhXczr
+         HRMT7d0lzl+lA7N+M3LBREUxoW6sWkWJ9BXmsQVDj98tCSRpCl0Aa4NqJLhKpxCShP
+         DzAoD+DM2IFeD7peg/taNH2DViyZmw8SdlP5YjaSv/s1DfrkJeDuh2oZ3qaRJ2YoiR
+         6TlKgvAPtF9/w==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lg38D-000UQK-RE; Mon, 10 May 2021 12:27:21 +0200
+        id 1lg38D-000UQO-Sw; Mon, 10 May 2021 12:27:21 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 31/53] docs: security: tpm: avoid using UTF-8 chars
-Date:   Mon, 10 May 2021 12:26:43 +0200
-Message-Id: <1e6958e5e5e65479da9fe5b53752b872cc252269.1620641727.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>, keyrings@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 32/53] docs: security: keys: trusted-encrypted.rst: avoid using UTF-8 chars
+Date:   Mon, 10 May 2021 12:26:44 +0200
+Message-Id: <6dd7b47b3d18e201e5552c62f8186d28f787840f.1620641727.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620641727.git.mchehab+huawei@kernel.org>
 References: <cover.1620641727.git.mchehab+huawei@kernel.org>
@@ -48,38 +52,29 @@ While UTF-8 characters can be used at the Linux documentation,
 the best is to use them only when ASCII doesn't offer a good replacement.
 So, replace the occurences of the following UTF-8 characters:
 
+	- U+2018 ('‘'): LEFT SINGLE QUOTATION MARK
 	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
-	- U+feff ('﻿'): ZERO WIDTH NO-BREAK SPACE
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/security/tpm/tpm_event_log.rst | 2 +-
- Documentation/security/tpm/xen-tpmfront.rst  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ Documentation/security/keys/trusted-encrypted.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/security/tpm/tpm_event_log.rst b/Documentation/security/tpm/tpm_event_log.rst
-index f00f7a1d5e92..9f2716c170bb 100644
---- a/Documentation/security/tpm/tpm_event_log.rst
-+++ b/Documentation/security/tpm/tpm_event_log.rst
-@@ -20,7 +20,7 @@ process.
- The main application for this is remote attestation and the reason why
- it is useful is nicely put in the very first section of [1]:
+diff --git a/Documentation/security/keys/trusted-encrypted.rst b/Documentation/security/keys/trusted-encrypted.rst
+index 80d5a5af62a1..3697cbb4fc2c 100644
+--- a/Documentation/security/keys/trusted-encrypted.rst
++++ b/Documentation/security/keys/trusted-encrypted.rst
+@@ -108,8 +108,8 @@ Encrypted Keys
  
--"Attestation is used to provide information about the platform’s state
-+"Attestation is used to provide information about the platform's state
- to a challenger. However, PCR contents are difficult to interpret;
- therefore, attestation is typically more useful when the PCR contents
- are accompanied by a measurement log. While not trusted on their own,
-diff --git a/Documentation/security/tpm/xen-tpmfront.rst b/Documentation/security/tpm/xen-tpmfront.rst
-index 00d5b1db227d..31c67522f2ad 100644
---- a/Documentation/security/tpm/xen-tpmfront.rst
-+++ b/Documentation/security/tpm/xen-tpmfront.rst
-@@ -1,4 +1,4 @@
--﻿=============================
-+=============================
- Virtual TPM interface for Xen
- =============================
- 
+ Encrypted keys do not depend on a trust source, and are faster, as they use AES
+ for encryption/decryption. New keys are created from kernel-generated random
+-numbers, and are encrypted/decrypted using a specified ‘master’ key. The
+-‘master’ key can either be a trusted-key or user-key type. The main disadvantage
++numbers, and are encrypted/decrypted using a specified 'master' key. The
++'master' key can either be a trusted-key or user-key type. The main disadvantage
+ of encrypted keys is that if they are not rooted in a trusted key, they are only
+ as secure as the user key encrypting them. The master user key should therefore
+ be loaded in as secure a way as possible, preferably early in boot.
 -- 
 2.30.2
 
