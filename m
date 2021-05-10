@@ -2,132 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2971377F63
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7208A377F67
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbhEJJbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:31:42 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:34851 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230093AbhEJJbl (ORCPT
+        id S230312AbhEJJbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:31:48 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2752 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230285AbhEJJbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:31:41 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 965255805E9;
-        Mon, 10 May 2021 05:30:36 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 10 May 2021 05:30:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=o+RlLCP+uehcYeWcqJXYSH2E672
-        srG6HjVhpuNJ5Otw=; b=LRzN7R2mzE2k+V6J5lq2UK+fX2nKfXfQYuOHuKoyzRu
-        j+lbi1CqL+NP52cHv+CUoC6WJXpUlgycBjwv4T1j9a/DEjiG7Zyhv/1xpTUitXZL
-        7Fd/mDNx/OUdkho08SBnpHWnVIiHROf+vqN/fyEFiSEDxbh1551GhyRMuFrp5cMd
-        R69z7nR31SgF8D/SYPRt47jYKanW+Oo6pnXuIYvoWFyzmei4QJf02LXSZDvyhN8x
-        tFXcVYkbq/9yygODAYeQE2tG1RbZFfzu+w4RTsg6w/rAX1FD0QAdBoT+3q34uO3X
-        8ZEI4WPUzpLkycyYgQSbm1zm45+vtE0MK2Xu6lI/uyQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=o+RlLC
-        P+uehcYeWcqJXYSH2E672srG6HjVhpuNJ5Otw=; b=VX3bQ+xcj3x7+sHu1YxUks
-        X8wNw+Fd01R1yQydbq78L0Cby+TIrelv5tOaVpJB/GWvl8D+sH8CgIaGNO69c5IY
-        hEiQyv7Y2Jgds5qY1uFrSkOnaYEbYBOomlV5EOFkf4/PnX9Rs462yg/zF5Eu9QbD
-        h35gXkLL9xRD38Zar2zQmtsODpC5f73Otu29yGjoiZfNH7VAztnGyVNb0Xl2Qsfd
-        mBZFcJ8Cpo/Uq/1IUet2WiVQkTW8LqJQY+moL/C+vVhWEQf5kgbquj+p8tQ2+wl6
-        Xb3HAqB+d4YF37Bop+OEKqzE+NZnmG6gffrLPiQ6QQEf2UWv1Z+z3gZkoqJ+yX0g
-        ==
-X-ME-Sender: <xms:Of2YYIpYtkrA164iwUrw7wmpDV4h9axrUp3B3CJweKypS-TZA0NZbQ>
-    <xme:Of2YYOrKXTbfHrPgXqLYRwJGj6xl7MIhjhonGFzBdcfa6_pxjeDoxX_BgrbeBrv58
-    VZBGEOrsS_alylWUFY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdegkedgudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:Of2YYNP5VV3a0_SvB0NmN01X54WjaQrB9NnSc1yQ8lerLAQ02VA-RA>
-    <xmx:Of2YYP5cdonqadux1oSBLKDrcufNnALJwsSgUalM6zcH4dGR8Q7IXw>
-    <xmx:Of2YYH6QXRm5sYUZeJeRhxcWbGatnMHT3BFkpsgl982tUJuGTZbjjg>
-    <xmx:PP2YYHpBFc5v6b-bl_ORTr9Vz8bRf0QCFHdpWHXnPOnKVzQnXk9B9Q>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon, 10 May 2021 05:30:33 -0400 (EDT)
-Date:   Mon, 10 May 2021 11:30:30 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-kernel@vger.kernel.org, Leo Li <sunpeng.li@amd.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Eric Anholt <eric@anholt.net>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>
-Subject: Re: [PATCH v3 1/5] drm/connector: Create a helper to attach the
- hdr_output_metadata property
-Message-ID: <20210510093030.nqbfw7iayhmtnljg@gilmour>
-References: <20210430094451.2145002-1-maxime@cerno.tech>
+        Mon, 10 May 2021 05:31:46 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FdwgX4FhTzqV24;
+        Mon, 10 May 2021 17:27:20 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 10 May 2021 17:30:34 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH 2/3] f2fs: compress: fix race condition of overwrite vs truncate
+Date:   Mon, 10 May 2021 17:30:31 +0800
+Message-ID: <20210510093032.35466-2-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210510093032.35466-1-yuchao0@huawei.com>
+References: <20210510093032.35466-1-yuchao0@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="faciecejyji5pg3t"
-Content-Disposition: inline
-In-Reply-To: <20210430094451.2145002-1-maxime@cerno.tech>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+pos_fsstress testcase complains a panic as belew:
 
---faciecejyji5pg3t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+------------[ cut here ]------------
+kernel BUG at fs/f2fs/compress.c:1082!
+invalid opcode: 0000 [#1] SMP PTI
+CPU: 4 PID: 2753477 Comm: kworker/u16:2 Tainted: G           OE     5.12.0-rc1-custom #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+Workqueue: writeback wb_workfn (flush-252:16)
+RIP: 0010:prepare_compress_overwrite+0x4c0/0x760 [f2fs]
+Call Trace:
+ f2fs_prepare_compress_overwrite+0x5f/0x80 [f2fs]
+ f2fs_write_cache_pages+0x468/0x8a0 [f2fs]
+ f2fs_write_data_pages+0x2a4/0x2f0 [f2fs]
+ do_writepages+0x38/0xc0
+ __writeback_single_inode+0x44/0x2a0
+ writeback_sb_inodes+0x223/0x4d0
+ __writeback_inodes_wb+0x56/0xf0
+ wb_writeback+0x1dd/0x290
+ wb_workfn+0x309/0x500
+ process_one_work+0x220/0x3c0
+ worker_thread+0x53/0x420
+ kthread+0x12f/0x150
+ ret_from_fork+0x22/0x30
 
-Hi,
+The root cause is truncate() may race with overwrite as below,
+so that one reference count left in page can not guarantee the
+page attaching in mapping tree all the time, after truncation,
+later find_lock_page() may return NULL pointer.
 
-On Fri, Apr 30, 2021 at 11:44:47AM +0200, Maxime Ripard wrote:
-> All the drivers that implement HDR output call pretty much the same
-> function to initialise the hdr_output_metadata property, and while the
-> creation of that property is in a helper, every driver uses the same
-> code to attach it.
->=20
-> Provide a helper for it as well
->=20
-> Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-> Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+- prepare_compress_overwrite
+ - f2fs_pagecache_get_page
+ - unlock_page
+					- f2fs_setattr
+					 - truncate_setsize
+					  - truncate_inode_page
+					   - delete_from_page_cache
+ - find_lock_page
 
-I pushed all 5 patches on friday
+Fix this by avoiding referencing updated page.
 
-Maxime
+Fixes: 4c8ff7095bef ("f2fs: support data compression")
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ fs/f2fs/compress.c | 35 ++++++++++++-----------------------
+ 1 file changed, 12 insertions(+), 23 deletions(-)
 
---faciecejyji5pg3t
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index d5cb0ba9a0e1..340815cd0887 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -118,19 +118,6 @@ static void f2fs_unlock_rpages(struct compress_ctx *cc, int len)
+ 	f2fs_drop_rpages(cc, len, true);
+ }
+ 
+-static void f2fs_put_rpages_mapping(struct address_space *mapping,
+-				pgoff_t start, int len)
+-{
+-	int i;
+-
+-	for (i = 0; i < len; i++) {
+-		struct page *page = find_get_page(mapping, start + i);
+-
+-		put_page(page);
+-		put_page(page);
+-	}
+-}
+-
+ static void f2fs_put_rpages_wbc(struct compress_ctx *cc,
+ 		struct writeback_control *wbc, bool redirty, int unlock)
+ {
+@@ -1040,7 +1027,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
+ 		}
+ 
+ 		if (PageUptodate(page))
+-			unlock_page(page);
++			f2fs_put_page(page, 1);
+ 		else
+ 			f2fs_compress_ctx_add_page(cc, page);
+ 	}
+@@ -1050,32 +1037,34 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
+ 
+ 		ret = f2fs_read_multi_pages(cc, &bio, cc->cluster_size,
+ 					&last_block_in_bio, false, true);
++		f2fs_put_rpages(cc);
+ 		f2fs_destroy_compress_ctx(cc);
+ 		if (ret)
+-			goto release_pages;
++			goto out;
+ 		if (bio)
+ 			f2fs_submit_bio(sbi, bio, DATA);
+ 
+ 		ret = f2fs_init_compress_ctx(cc);
+ 		if (ret)
+-			goto release_pages;
++			goto out;
+ 	}
+ 
+ 	for (i = 0; i < cc->cluster_size; i++) {
+ 		f2fs_bug_on(sbi, cc->rpages[i]);
+ 
+ 		page = find_lock_page(mapping, start_idx + i);
+-		f2fs_bug_on(sbi, !page);
++		if (!page) {
++			/* page can be truncated */
++			goto release_and_retry;
++		}
+ 
+ 		f2fs_wait_on_page_writeback(page, DATA, true, true);
+-
+ 		f2fs_compress_ctx_add_page(cc, page);
+-		f2fs_put_page(page, 0);
+ 
+ 		if (!PageUptodate(page)) {
++release_and_retry:
++			f2fs_put_rpages(cc);
+ 			f2fs_unlock_rpages(cc, i + 1);
+-			f2fs_put_rpages_mapping(mapping, start_idx,
+-					cc->cluster_size);
+ 			f2fs_destroy_compress_ctx(cc);
+ 			goto retry;
+ 		}
+@@ -1108,10 +1097,10 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
+ 	}
+ 
+ unlock_pages:
++	f2fs_put_rpages(cc);
+ 	f2fs_unlock_rpages(cc, i);
+-release_pages:
+-	f2fs_put_rpages_mapping(mapping, start_idx, i);
+ 	f2fs_destroy_compress_ctx(cc);
++out:
+ 	return ret;
+ }
+ 
+-- 
+2.29.2
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYJj9NgAKCRDj7w1vZxhR
-xTd/AP48Cj/pWzxu4xJM1P/Gl4C1i/fr6aJANTq2rOju3Y84FQD/Re0cYaNtLidN
-8GBg64zcLh2z0n9CYT4Vc6km4PVungw=
-=/OMZ
------END PGP SIGNATURE-----
-
---faciecejyji5pg3t--
