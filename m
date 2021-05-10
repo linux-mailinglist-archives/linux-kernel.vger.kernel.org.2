@@ -2,38 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59760378B10
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81238378BB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbhEJL7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:59:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44342 "EHLO mail.kernel.org"
+        id S1344207AbhEJMPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:15:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236025AbhEJLHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:07:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF6B961944;
-        Mon, 10 May 2021 10:57:29 +0000 (UTC)
+        id S236027AbhEJLHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:07:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36B1861942;
+        Mon, 10 May 2021 10:57:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644250;
-        bh=mrxv9A38FANIUx0s566WXspDiCL3kAfq/zU5fvwKeN0=;
+        s=korg; t=1620644252;
+        bh=5tR5IpQs+z9kEAOU5POh1Sr9kQA/z9dSZJFgHXH2P10=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hrqB3t/28EcwntA7+WUPaUtZvqs8Mv8zqI8YLcNoKDPHmT0h20bpIVUD9BvwYffcq
-         M4MaFomV3TC9/F0p8mKZKJLRPRy2tOeOTMNxQJroAPfKewdwjd+KYggGMk3KTtgB+E
-         su+m8uxHJ5bPJoY7NUHyP/hoep/FeyXwBNx2s6Ak=
+        b=Uv/+Qp37/9imJV2seHHhNVGAtnNqrl5c03rimTofhnkxLSADXSgJH41FyocF9IuK0
+         VPxkdPpoE3R9HP8dg2qVIr20E/+ZlflFlSuOurtQEEQZeMx+jhi8qfZ3MBdAKRzGTJ
+         l9OiHVcg8Fifio9AQM7PvYzYZzBAoKTPUTPqbn5o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH 5.11 329/342] PCI: dwc: Move iATU detection earlier
-Date:   Mon, 10 May 2021 12:21:59 +0200
-Message-Id: <20210510102020.973975164@linuxfoundation.org>
+        syzbot+bcc922b19ccc64240b42@syzkaller.appspotmail.com,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH 5.11 330/342] tty: fix memory leak in vc_deallocate
+Date:   Mon, 10 May 2021 12:22:00 +0200
+Message-Id: <20210510102021.006951348@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
 References: <20210510102010.096403571@linuxfoundation.org>
@@ -45,100 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 8bcca26585585ae4b44d25d30f351ad0afa4976b upstream.
+commit 211b4d42b70f1c1660feaa968dac0efc2a96ac4d upstream.
 
-dw_pcie_ep_init() depends on the detected iATU region numbers to allocate
-the in/outbound window management bitmap.  It fails after 281f1f99cf3a
-("PCI: dwc: Detect number of iATU windows").
+syzbot reported memory leak in tty/vt.
+The problem was in VT_DISALLOCATE ioctl cmd.
+After allocating unimap with PIO_UNIMAP it wasn't
+freed via VT_DISALLOCATE, but vc_cons[currcons].d was
+zeroed.
 
-Move the iATU region detection into a new function, move the detection to
-the very beginning of dw_pcie_host_init() and dw_pcie_ep_init().  Also
-remove it from the dw_pcie_setup(), since it's more like a software
-initialization step than hardware setup.
-
-Link: https://lore.kernel.org/r/20210125044803.4310-1-Zhiqiang.Hou@nxp.com
-Link: https://lore.kernel.org/linux-pci/20210407131255.702054-1-dmitry.baryshkov@linaro.org
-Link: https://lore.kernel.org/r/20210413142219.2301430-1-dmitry.baryshkov@linaro.org
-Fixes: 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows")
-Tested-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Tested-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-[DB: moved dw_pcie_iatu_detect to happen after host_init callback]
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Cc: stable@vger.kernel.org	# v5.11+
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Reported-by: syzbot+bcc922b19ccc64240b42@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210327214443.21548-1-paskripkin@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/controller/dwc/pcie-designware-ep.c   |    2 ++
- drivers/pci/controller/dwc/pcie-designware-host.c |    1 +
- drivers/pci/controller/dwc/pcie-designware.c      |   11 ++++++++---
- drivers/pci/controller/dwc/pcie-designware.h      |    1 +
- 4 files changed, 12 insertions(+), 3 deletions(-)
+ drivers/tty/vt/vt.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-@@ -707,6 +707,8 @@ int dw_pcie_ep_init(struct dw_pcie_ep *e
- 		}
- 	}
- 
-+	dw_pcie_iatu_detect(pci);
-+
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "addr_space");
- 	if (!res)
- 		return -EINVAL;
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -421,6 +421,7 @@ int dw_pcie_host_init(struct pcie_port *
- 		if (ret)
- 			goto err_free_msi;
- 	}
-+	dw_pcie_iatu_detect(pci);
- 
- 	dw_pcie_setup_rc(pp);
- 	dw_pcie_msi_init(pp);
---- a/drivers/pci/controller/dwc/pcie-designware.c
-+++ b/drivers/pci/controller/dwc/pcie-designware.c
-@@ -610,11 +610,9 @@ static void dw_pcie_iatu_detect_regions(
- 	pci->num_ob_windows = ob;
- }
- 
--void dw_pcie_setup(struct dw_pcie *pci)
-+void dw_pcie_iatu_detect(struct dw_pcie *pci)
- {
--	u32 val;
- 	struct device *dev = pci->dev;
--	struct device_node *np = dev->of_node;
- 	struct platform_device *pdev = to_platform_device(dev);
- 
- 	if (pci->version >= 0x480A || (!pci->version &&
-@@ -643,6 +641,13 @@ void dw_pcie_setup(struct dw_pcie *pci)
- 
- 	dev_info(pci->dev, "Detected iATU regions: %u outbound, %u inbound",
- 		 pci->num_ob_windows, pci->num_ib_windows);
-+}
-+
-+void dw_pcie_setup(struct dw_pcie *pci)
-+{
-+	u32 val;
-+	struct device *dev = pci->dev;
-+	struct device_node *np = dev->of_node;
- 
- 	if (pci->link_gen > 0)
- 		dw_pcie_link_set_max_speed(pci, pci->link_gen);
---- a/drivers/pci/controller/dwc/pcie-designware.h
-+++ b/drivers/pci/controller/dwc/pcie-designware.h
-@@ -304,6 +304,7 @@ int dw_pcie_prog_inbound_atu(struct dw_p
- void dw_pcie_disable_atu(struct dw_pcie *pci, int index,
- 			 enum dw_pcie_region_type type);
- void dw_pcie_setup(struct dw_pcie *pci);
-+void dw_pcie_iatu_detect(struct dw_pcie *pci);
- 
- static inline void dw_pcie_writel_dbi(struct dw_pcie *pci, u32 reg, u32 val)
- {
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -1382,6 +1382,7 @@ struct vc_data *vc_deallocate(unsigned i
+ 		atomic_notifier_call_chain(&vt_notifier_list, VT_DEALLOCATE, &param);
+ 		vcs_remove_sysfs(currcons);
+ 		visual_deinit(vc);
++		con_free_unimap(vc);
+ 		put_pid(vc->vt_pid);
+ 		vc_uniscr_set(vc, NULL);
+ 		kfree(vc->vc_screenbuf);
 
 
