@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3F03796E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6373796E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232440AbhEJSQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 14:16:30 -0400
-Received: from mail.xenproject.org ([104.130.215.37]:33022 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232282AbhEJSQ1 (ORCPT
+        id S232456AbhEJSRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 14:17:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24514 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231577AbhEJSRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 14:16:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
-        bh=U5oB8mfFZLEuy5Yg/E0zgF4iSW40BPLFycfVFKKLR18=; b=bOJV5SmQ0O2K2VSbIDK/2BxZ2Q
-        hA+OjDCuSuM4X73YxfSLnzK4PkvUYT13yWt3F9Kp4L/luL4z544C+SikxjoGEzsAhlfyw5WbInzbj
-        BoLURVvENjwaKuMRzgEPeOb3k9kixOubpH6Ut322sIfARM84GOZ8pWvwuCQcPyNHUdZw=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1lgAR5-000343-IE; Mon, 10 May 2021 18:15:19 +0000
-Received: from [54.239.6.185] (helo=a483e7b01a66.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1lgAR5-00056p-BN; Mon, 10 May 2021 18:15:19 +0000
-Subject: Re: Regression when booting 5.15 as dom0 on arm64 (WAS: Re:
- [linux-linus test] 161829: regressions - FAIL)
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     f.fainelli@gmail.com, Stefano Stabellini <sstabellini@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        linux-kernel@vger.kernel.org,
-        osstest service owner <osstest-admin@xenproject.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        iommu@lists.linux-foundation.org
-References: <osstest-161829-mainreport@xen.org>
- <4ea1e89f-a7a0-7664-470c-b3cf773a1031@xen.org> <20210510084057.GA933@lst.de>
-From:   Julien Grall <julien@xen.org>
-Message-ID: <8b851596-acf7-9d3b-b08a-848cae5adada@xen.org>
-Date:   Mon, 10 May 2021 19:15:17 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        Mon, 10 May 2021 14:17:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620670587;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ao0m3qiHQNSe4HT7iJWrIcrYiJRaXz4VOGXopwkJ7Mw=;
+        b=OiICfiQbDPdVFDY/LI5YdUyRwFP+LW2W5PKT8yNZPQt1dRVfoZb/s+MOvcPex7Xg7iMlsS
+        aAQgdd0WU8srEP/UAaD+AMYrRI4RoRDextSonFmyvtUEVgJv/xJifhb2f51fX2/RgPLZa0
+        A+E+Fd1dVn5K5zfc5XR+Amk3ZxdNd94=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-174-obK8MT4-NTyR6eghOdBcCQ-1; Mon, 10 May 2021 14:16:26 -0400
+X-MC-Unique: obK8MT4-NTyR6eghOdBcCQ-1
+Received: by mail-qt1-f198.google.com with SMTP id j12-20020ac8550c0000b02901dae492d1f2so4936542qtq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:16:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ao0m3qiHQNSe4HT7iJWrIcrYiJRaXz4VOGXopwkJ7Mw=;
+        b=nAyW9oIPnsZNcWsRQosgQtHcuf/NPZgDLK/EuQ2L5JrUmvvdyW1DNqkJjGyTLzyrnv
+         7tsEjsBm3Bu4B7PRx47mDgb/jG7V33SdNLFnm8Lv82iZj4urAYWFxqxG4FGh1L0R43Oh
+         ZL9049IpNLc8o3b+RLXTskv9tbbCWa+nNDCBplFNU8sq19hXN5YhUWjSMIv2YqjzJA5r
+         Z1kVvQoWs8mLKJ/38ZCZlFwgH9HSImeC9Kqr/Drt55FIZEnjSMckOoyWHg7CzPtWqpkt
+         STrieX8U2DDyqC+eb5mfpVvhUbUpAuv/UkduOUQjej879sXn518syINZyeZdg8k/232c
+         2NAQ==
+X-Gm-Message-State: AOAM5329ZXIakf8lHSjadr91pqutFJh8ERcESHJOre+NBHpxYrsPp3tw
+        L+NJnWWopQNE9ELz51qZiMXXQdgeW1XHr2W5aEMMjeic8prr82gQIZfp0DrIFkZfpza4uRLdq12
+        DHmLr2td1ojtOtFYgfHYG5IYI
+X-Received: by 2002:a05:622a:1d1:: with SMTP id t17mr23869844qtw.267.1620670585797;
+        Mon, 10 May 2021 11:16:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzx09Q4QJnreTI0TPGe4ZrkldzJYBzrhDZmCISV5l1LSco4BzbaJnyw4UNwNIeUdGJq/oqD9A==
+X-Received: by 2002:a05:622a:1d1:: with SMTP id t17mr23869831qtw.267.1620670585617;
+        Mon, 10 May 2021 11:16:25 -0700 (PDT)
+Received: from horse (pool-173-76-174-238.bstnma.fios.verizon.net. [173.76.174.238])
+        by smtp.gmail.com with ESMTPSA id j196sm12135152qke.25.2021.05.10.11.16.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 11:16:25 -0700 (PDT)
+Date:   Mon, 10 May 2021 14:16:23 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
+        miklos@szeredi.hu, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com
+Subject: Re: [PATCH 1/2] virtiofs, dax: Fix smatch warning about loss of info
+ during shift
+Message-ID: <20210510181623.GA185367@horse>
+References: <20210506184304.321645-1-vgoyal@redhat.com>
+ <20210506184304.321645-2-vgoyal@redhat.com>
+ <YJQ+ex2DUPYo1GV5@work-vm>
+ <20210506193517.GF388843@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210510084057.GA933@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210506193517.GF388843@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
-
-On 10/05/2021 09:40, Christoph Hellwig wrote:
-> On Sat, May 08, 2021 at 12:32:37AM +0100, Julien Grall wrote:
->> The pointer dereferenced seems to suggest that the swiotlb hasn't been
->> allocated. From what I can tell, this may be because swiotlb_force is set
->> to SWIOTLB_NO_FORCE, we will still enable the swiotlb when running on top
->> of Xen.
->>
->> I am not entirely sure what would be the correct fix. Any opinions?
+On Thu, May 06, 2021 at 12:35:17PM -0700, Matthew Wilcox wrote:
+> On Thu, May 06, 2021 at 08:07:39PM +0100, Dr. David Alan Gilbert wrote:
+> > > @@ -186,7 +186,7 @@ static int fuse_setup_one_mapping(struct inode *inode, unsigned long start_idx,
+> > >  	struct fuse_conn_dax *fcd = fm->fc->dax;
+> > >  	struct fuse_inode *fi = get_fuse_inode(inode);
+> > >  	struct fuse_setupmapping_in inarg;
+> > > -	loff_t offset = start_idx << FUSE_DAX_SHIFT;
+> > > +	loff_t offset = (loff_t)start_idx << FUSE_DAX_SHIFT;
+> > 
+> > I've not followed the others back, but isn't it easier to change
+> > the start_idx parameter to be a loff_t, since the places it's called
+> > from are poth loff_t pos?
 > 
-> Can you try something like the patch below (not even compile tested, but
-> the intent should be obvious?
-> 
-> 
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index 16a2b2b1c54d..7671bc153fb1 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -44,6 +44,8 @@
->   #include <asm/tlb.h>
->   #include <asm/alternative.h>
->   
-> +#include <xen/arm/swiotlb-xen.h>
-> +
->   /*
->    * We need to be able to catch inadvertent references to memstart_addr
->    * that occur (potentially in generic code) before arm64_memblock_init()
-> @@ -482,7 +484,7 @@ void __init mem_init(void)
->   	if (swiotlb_force == SWIOTLB_FORCE ||
->   	    max_pfn > PFN_DOWN(arm64_dma_phys_limit))
->   		swiotlb_init(1);
-> -	else
-> +	else if (!IS_ENABLED(CONFIG_XEN) || !xen_swiotlb_detect())
->   		swiotlb_force = SWIOTLB_NO_FORCE;
->   
->   	set_max_mapnr(max_pfn - PHYS_PFN_OFFSET);
+> But an index isn't a file offset, and shouldn't be typed as such.
 
-I have applied the patch on top of 5.13-rc1 and can confirm I am able to 
-boot dom0. Are you going to submit the patch?
+Agreed. This is index, so it seems better to not use "loff_t" to
+represent it.
 
-Thank you for your help!
+Vivek
 
-Best regards,
-
--- 
-Julien Grall
