@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53491378351
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918233782CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhEJKn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:43:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41942 "EHLO mail.kernel.org"
+        id S230381AbhEJKiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:38:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232889AbhEJKfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:35:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3050A61938;
-        Mon, 10 May 2021 10:28:43 +0000 (UTC)
+        id S231569AbhEJKdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:33:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 617C76147F;
+        Mon, 10 May 2021 10:27:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642523;
-        bh=81GWPSg106hfbIPfhlB6rpot/yd2HEWpe5+wVp14E/Q=;
+        s=korg; t=1620642460;
+        bh=Uz6pSn0OahnFxDtAvlu/orHdqvVlgWzmt0UFYg52VB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZI0ZJQtzMe1s4lqWxAu6i9EggsyKWvUgd/6XTjeRetAubH139JCuLewkef093DXW4
-         Nl9iclK3B+f8OyellFik7jGrCW22RRnCt+BCgWUQVJTHrbMVFmXIrEEEc8rlfX7rEO
-         S9uEE9cGmc6p2vflWeYLAxbsMkcboRsIe01/J0c4=
+        b=QDcT+NHVVDDWStUPu+il8aaFrYAIUgb7hu9uCL8/zl5P8VnM8zOJf+8L0XSpiXiM6
+         H5ARfPRU/rH9xsHV59khyIrXYIYGrnBBJrft7fr3g47mM5fxZ+iem7vrlQEWLPnuCG
+         ecu0HdgqJuumIt1JLTun8bryluaNA9VoqQ5yNFPU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Niv <danielniv3@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, dongjian <dongjian@yulong.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 084/184] media: media/saa7164: fix saa7164_encoder_register() memory leak bugs
-Date:   Mon, 10 May 2021 12:19:38 +0200
-Message-Id: <20210510101952.927758941@linuxfoundation.org>
+Subject: [PATCH 5.4 086/184] power: supply: Use IRQF_ONESHOT
+Date:   Mon, 10 May 2021 12:19:40 +0200
+Message-Id: <20210510101952.998207447@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510101950.200777181@linuxfoundation.org>
 References: <20210510101950.200777181@linuxfoundation.org>
@@ -41,85 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Niv <danielniv3@gmail.com>
+From: dongjian <dongjian@yulong.com>
 
-[ Upstream commit c759b2970c561e3b56aa030deb13db104262adfe ]
+[ Upstream commit 2469b836fa835c67648acad17d62bc805236a6ea ]
 
-Add a fix for the memory leak bugs that can occur when the
-saa7164_encoder_register() function fails.
-The function allocates memory without explicitly freeing
-it when errors occur.
-Add a better error handling that deallocate the unused buffers before the
-function exits during a fail.
+Fixes coccicheck error:
 
-Signed-off-by: Daniel Niv <danielniv3@gmail.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+drivers/power/supply/pm2301_charger.c:1089:7-27: ERROR:
+drivers/power/supply/lp8788-charger.c:502:8-28: ERROR:
+drivers/power/supply/tps65217_charger.c:239:8-33: ERROR:
+drivers/power/supply/tps65090-charger.c:303:8-33: ERROR:
+
+Threaded IRQ with no primary handler requested without IRQF_ONESHOT
+
+Signed-off-by: dongjian <dongjian@yulong.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/saa7164/saa7164-encoder.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ drivers/power/supply/lp8788-charger.c   | 2 +-
+ drivers/power/supply/pm2301_charger.c   | 2 +-
+ drivers/power/supply/tps65090-charger.c | 2 +-
+ drivers/power/supply/tps65217_charger.c | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/pci/saa7164/saa7164-encoder.c b/drivers/media/pci/saa7164/saa7164-encoder.c
-index 3fca7257a720..df494644b5b6 100644
---- a/drivers/media/pci/saa7164/saa7164-encoder.c
-+++ b/drivers/media/pci/saa7164/saa7164-encoder.c
-@@ -1008,7 +1008,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
- 		printk(KERN_ERR "%s() failed (errno = %d), NO PCI configuration\n",
- 			__func__, result);
- 		result = -ENOMEM;
--		goto failed;
-+		goto fail_pci;
+diff --git a/drivers/power/supply/lp8788-charger.c b/drivers/power/supply/lp8788-charger.c
+index e7931ffb7151..397e5a03b7d9 100644
+--- a/drivers/power/supply/lp8788-charger.c
++++ b/drivers/power/supply/lp8788-charger.c
+@@ -501,7 +501,7 @@ static int lp8788_set_irqs(struct platform_device *pdev,
+ 
+ 		ret = request_threaded_irq(virq, NULL,
+ 					lp8788_charger_irq_thread,
+-					0, name, pchg);
++					IRQF_ONESHOT, name, pchg);
+ 		if (ret)
+ 			break;
  	}
+diff --git a/drivers/power/supply/pm2301_charger.c b/drivers/power/supply/pm2301_charger.c
+index 17749fc90e16..d2aff1cf4f79 100644
+--- a/drivers/power/supply/pm2301_charger.c
++++ b/drivers/power/supply/pm2301_charger.c
+@@ -1095,7 +1095,7 @@ static int pm2xxx_wall_charger_probe(struct i2c_client *i2c_client,
+ 	ret = request_threaded_irq(gpio_to_irq(pm2->pdata->gpio_irq_number),
+ 				NULL,
+ 				pm2xxx_charger_irq[0].isr,
+-				pm2->pdata->irq_type,
++				pm2->pdata->irq_type | IRQF_ONESHOT,
+ 				pm2xxx_charger_irq[0].name, pm2);
  
- 	/* Establish encoder defaults here */
-@@ -1062,7 +1062,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
- 			  100000, ENCODER_DEF_BITRATE);
- 	if (hdl->error) {
- 		result = hdl->error;
--		goto failed;
-+		goto fail_hdl;
- 	}
+ 	if (ret != 0) {
+diff --git a/drivers/power/supply/tps65090-charger.c b/drivers/power/supply/tps65090-charger.c
+index 6b0098e5a88b..0990b2fa6cd8 100644
+--- a/drivers/power/supply/tps65090-charger.c
++++ b/drivers/power/supply/tps65090-charger.c
+@@ -301,7 +301,7 @@ static int tps65090_charger_probe(struct platform_device *pdev)
  
- 	port->std = V4L2_STD_NTSC_M;
-@@ -1080,7 +1080,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
- 		printk(KERN_INFO "%s: can't allocate mpeg device\n",
- 			dev->name);
- 		result = -ENOMEM;
--		goto failed;
-+		goto fail_hdl;
- 	}
- 
- 	port->v4l_device->ctrl_handler = hdl;
-@@ -1091,10 +1091,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
- 	if (result < 0) {
- 		printk(KERN_INFO "%s: can't register mpeg device\n",
- 			dev->name);
--		/* TODO: We're going to leak here if we don't dealloc
--		 The buffers above. The unreg function can't deal wit it.
--		*/
--		goto failed;
-+		goto fail_reg;
- 	}
- 
- 	printk(KERN_INFO "%s: registered device video%d [mpeg]\n",
-@@ -1116,9 +1113,14 @@ int saa7164_encoder_register(struct saa7164_port *port)
- 
- 	saa7164_api_set_encoder(port);
- 	saa7164_api_get_encoder(port);
-+	return 0;
- 
--	result = 0;
--failed:
-+fail_reg:
-+	video_device_release(port->v4l_device);
-+	port->v4l_device = NULL;
-+fail_hdl:
-+	v4l2_ctrl_handler_free(hdl);
-+fail_pci:
- 	return result;
- }
- 
+ 	if (irq != -ENXIO) {
+ 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+-			tps65090_charger_isr, 0, "tps65090-charger", cdata);
++			tps65090_charger_isr, IRQF_ONESHOT, "tps65090-charger", cdata);
+ 		if (ret) {
+ 			dev_err(cdata->dev,
+ 				"Unable to register irq %d err %d\n", irq,
+diff --git a/drivers/power/supply/tps65217_charger.c b/drivers/power/supply/tps65217_charger.c
+index 814c2b81fdfe..ba33d1617e0b 100644
+--- a/drivers/power/supply/tps65217_charger.c
++++ b/drivers/power/supply/tps65217_charger.c
+@@ -238,7 +238,7 @@ static int tps65217_charger_probe(struct platform_device *pdev)
+ 	for (i = 0; i < NUM_CHARGER_IRQS; i++) {
+ 		ret = devm_request_threaded_irq(&pdev->dev, irq[i], NULL,
+ 						tps65217_charger_irq,
+-						0, "tps65217-charger",
++						IRQF_ONESHOT, "tps65217-charger",
+ 						charger);
+ 		if (ret) {
+ 			dev_err(charger->dev,
 -- 
 2.30.2
 
