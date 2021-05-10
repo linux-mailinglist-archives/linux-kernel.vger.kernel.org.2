@@ -2,75 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C015C378106
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C06378116
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhEJKRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:17:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:53518 "EHLO foss.arm.com"
+        id S230393AbhEJKSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:18:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32874 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229566AbhEJKRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:17:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CBCCA15BE;
-        Mon, 10 May 2021 03:16:00 -0700 (PDT)
-Received: from [10.163.77.48] (unknown [10.163.77.48])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 190423F719;
-        Mon, 10 May 2021 03:15:56 -0700 (PDT)
-Subject: Re: [PATCH] mm/thp: Make ARCH_ENABLE_SPLIT_PMD_PTLOCK dependent on
- PGTABLE_LEVELS > 2
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
-        akpm@linux-foundation.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1620621345-29176-1-git-send-email-anshuman.khandual@arm.com>
- <20210510085313.GB5618@worktop.programming.kicks-ass.net>
- <843e545a-ca0c-6a1e-2ab0-28ccca182400@arm.com> <20210510101006.GB22664@linux>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <a6ebcb5b-1fd6-d03f-cfb5-52e32b60899a@arm.com>
-Date:   Mon, 10 May 2021 15:46:41 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230196AbhEJKSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:18:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1620641836; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3cweDVHmJDxzRO4VtKIboZgqH2LOMiawxyK36GGbPmY=;
+        b=o/bmQD9GUo7ODfdUF3UID6DnGaat3qXTIm88SkPjMHt5uVFvIlKajxhNWo77eysUmbOGdH
+        4Uirwfp48bc7+hqhwCq/VFMLZ0tfwdKxgjKFbPteGMwRDh/wCd1ZpiEzp+d9vR2xK2HZHr
+        vSHo6gGnv8os6NQfGkCH70/GLeDRgSw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D5DFDADDB;
+        Mon, 10 May 2021 10:17:15 +0000 (UTC)
+Date:   Mon, 10 May 2021 12:17:15 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Luo Jiaxing <luojiaxing@huawei.com>, sergey.senozhatsky@gmail.com,
+        rostedt@goodmis.org, john.ogness@linutronix.de,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        bobo.shaobowang@huawei.com
+Subject: Re: [PATCH] printk: stop spining waiter when console resume to flush
+ prb
+Message-ID: <YJkIK9cyHr46UAFP@alley>
+References: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
+ <YJPxj83F1sBjHHAE@alley>
+ <YJP4F1UIt/eRZ96s@google.com>
+ <YJP5MnkJ8pJevXM6@google.com>
+ <YJVsgPc66lhaAUN0@alley>
+ <YJjuRV57eO3Pp/bp@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210510101006.GB22664@linux>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJjuRV57eO3Pp/bp@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/10/21 3:40 PM, Oscar Salvador wrote:
-> On Mon, May 10, 2021 at 03:36:29PM +0530, Anshuman Khandual wrote:
->>
->>
->> On 5/10/21 2:23 PM, Peter Zijlstra wrote:
->>> On Mon, May 10, 2021 at 10:05:45AM +0530, Anshuman Khandual wrote:
->>>> -	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if X86_64 || X86_PAE
->>>> +	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if (PGTABLE_LEVELS > 2) && (X86_64 || X86_PAE)
->>>
->>> It's still very early on a Monday, but IIRC this new condition is
->>> identical to the pre-existing one.
->>
->> Did not get it, could you please elaborate ?
+On Mon 2021-05-10 17:26:45, Sergey Senozhatsky wrote:
+> On (21/05/07 18:36), Petr Mladek wrote:
+> Well, the alternative patch set just gives everyone an API that selectively
+> downgrades printk() to pre-console_sem_owner age: when console_unlock()
+> would never handover the printing duty. It'll take no time until this
+> function will pop up somewhere where we don't want it to be used.
 > 
-> When using x86_PAE, you must have more than two pgtable levels, right?
-> And not speaking of x86_64.
+> E.g.
+> 
+> 	rcu_read_lock();
+> 	...
+> 	console_unlock_preemptible();
+> 	...
+> 	rcu_read_unlock();
+> 
+> lockdep_assert_preemption_enabled() is not entirely reliable - it
+> depends on __lockdep_enabled, provided that system in question has
+> CONFIG_PROVE_LOCKING set.
 
-arch/x86/Kconfig..
+I understand the concern. I think that I would be able to sleep with
+this. I believe that such problems would be discovered soon.
 
-config PGTABLE_LEVELS
-        int
-        default 5 if X86_5LEVEL
-        default 4 if X86_64
-        default 3 if X86_PAE
-        default 2
+Also I doubt that it would spread that quickly. It is the same as
+with printk_deferred(). It is just a workaround for a problem
+that only few people are aware of.
 
-Both X86_PAE and X86_64 will always have page table levels > 2 ? But
-regardless, it might be still useful to assert (PGTABLE_LEVELS > 2)
-before selecting ARCH_ENABLE_SPLIT_PMD_PTLOCK.
+If it is still a concern, we could make it static and block
+any patches that would make it public.
+
+But it does not make sense to fight over this now.
+I am not sure that console_unlock_preemptible() is worth it after all.
+Luo has to prove that it might fix a real life problem.
+
+
+> It queues the work IF we have pending messages AND there are NO active
+> console_sem waiters spinning on consolse_sem waiting for us to handover
+> the printing duty. And IRQ shall write to consoles only N messages out
+> of possibly M pending messages (M > N). N, obviously, should be small,
+> e.g. 42 lines: if after 42 printed lines we didn't handover printing
+> to another context then - queue another IRQ work and iret. But it keeps
+> the console_owner mechanism enabled.
+
+I am sorry but I am not going to continue in this discussion. Many
+printk() designs have been discussed in the past and this is just
+repeating the same again and again.
+
+The current plan is to move console work to kthreads (separate
+preemptive context). Using IRQ is a complete opposite way.
+
+There is always the fight between getting the messages out as soon
+as possible and the risk of breaking the system (softlockups,
+deadlocks).
+
+The kthread approach reduces the risk of system breakage to a bare
+minimum. The price is that some messages might never reach console.
+There is finally a consensus to give it a try. If it fails, we might
+start looking for alternatives again.
+
+Best Regards,
+Petr
