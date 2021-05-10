@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBE1378BB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66F8378B4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344452AbhEJMPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:15:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44226 "EHLO mail.kernel.org"
+        id S235386AbhEJMDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:03:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236324AbhEJLHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236321AbhEJLHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 07:07:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9CA061965;
-        Mon, 10 May 2021 10:59:54 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 575326195E;
+        Mon, 10 May 2021 10:59:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644395;
-        bh=SdSFpBpRgPfkm5XJGFFr1af15UgE2cUoz/UoKCzuSdQ=;
+        s=korg; t=1620644397;
+        bh=hs+EqPyCDyqCDKC+REF6QbabERUgprgunsI+jUv/DwY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pAJE/ymx9X+NFSZUSZucQ42xs+SgvDaJAusUL2MhOjdn40QlOk6VEPSgo3/xuaS0a
-         cy1vkwb9dVqjgRV4WpTsu4v/TWdgZZPuO4iAlQwEWpjiN7QC5im94aTzfkeOjABh41
-         CWv+zPouwylv+1iJRotCPrUHMS2QVcWeCg4wf6zk=
+        b=E/07W86HWgGO0y9moJtCaukbb8tf8ReBi773zVv0PBjiNyjrWiAVkKXKr77aP/oK6
+         TYEici5slhdLHTTOAuI2MiaZ8Q62fJOht7HTOrc1TvaXOYHWwSs9pWBXo+/NBJzM+g
+         9h3UjTPJH04UpayZHu0yLJURvBJrchtDpPJUMO0Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen Jun <chenjun102@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Richard Cochran <richardcochran@gmail.com>
-Subject: [PATCH 5.12 064/384] posix-timers: Preserve return value in clock_adjtime32()
-Date:   Mon, 10 May 2021 12:17:33 +0200
-Message-Id: <20210510102016.995934693@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+47fa9c9c648b765305b9@syzkaller.appspotmail.com,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Phillip Potter <phil@philpotter.co.uk>
+Subject: [PATCH 5.12 065/384] fbdev: zero-fill colormap in fbcmap.c
+Date:   Mon, 10 May 2021 12:17:34 +0200
+Message-Id: <20210510102017.033693099@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -40,42 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Jun <chenjun102@huawei.com>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-commit 2d036dfa5f10df9782f5278fc591d79d283c1fad upstream.
+commit 19ab233989d0f7ab1de19a036e247afa4a0a1e9c upstream.
 
-The return value on success (>= 0) is overwritten by the return value of
-put_old_timex32(). That works correct in the fault case, but is wrong for
-the success case where put_old_timex32() returns 0.
+Use kzalloc() rather than kmalloc() for the dynamically allocated parts
+of the colormap in fb_alloc_cmap_gfp, to prevent a leak of random kernel
+data to userspace under certain circumstances.
 
-Just check the return value of put_old_timex32() and return -EFAULT in case
-it is not zero.
+Fixes a KMSAN-found infoleak bug reported by syzbot at:
+https://syzkaller.appspot.com/bug?id=741578659feabd108ad9e06696f0c1f2e69c4b6e
 
-[ tglx: Massage changelog ]
-
-Fixes: 3a4d44b61625 ("ntp: Move adjtimex related compat syscalls to native counterparts")
-Signed-off-by: Chen Jun <chenjun102@huawei.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Richard Cochran <richardcochran@gmail.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210414030449.90692-1-chenjun102@huawei.com
+Reported-by: syzbot+47fa9c9c648b765305b9@syzkaller.appspotmail.com
+Cc: stable <stable@vger.kernel.org>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Link: https://lore.kernel.org/r/20210331220719.1499743-1-phil@philpotter.co.uk
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/time/posix-timers.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/video/fbdev/core/fbcmap.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/kernel/time/posix-timers.c
-+++ b/kernel/time/posix-timers.c
-@@ -1191,8 +1191,8 @@ SYSCALL_DEFINE2(clock_adjtime32, clockid
+--- a/drivers/video/fbdev/core/fbcmap.c
++++ b/drivers/video/fbdev/core/fbcmap.c
+@@ -101,17 +101,17 @@ int fb_alloc_cmap_gfp(struct fb_cmap *cm
+ 		if (!len)
+ 			return 0;
  
- 	err = do_clock_adjtime(which_clock, &ktx);
- 
--	if (err >= 0)
--		err = put_old_timex32(utp, &ktx);
-+	if (err >= 0 && put_old_timex32(utp, &ktx))
-+		return -EFAULT;
- 
- 	return err;
- }
+-		cmap->red = kmalloc(size, flags);
++		cmap->red = kzalloc(size, flags);
+ 		if (!cmap->red)
+ 			goto fail;
+-		cmap->green = kmalloc(size, flags);
++		cmap->green = kzalloc(size, flags);
+ 		if (!cmap->green)
+ 			goto fail;
+-		cmap->blue = kmalloc(size, flags);
++		cmap->blue = kzalloc(size, flags);
+ 		if (!cmap->blue)
+ 			goto fail;
+ 		if (transp) {
+-			cmap->transp = kmalloc(size, flags);
++			cmap->transp = kzalloc(size, flags);
+ 			if (!cmap->transp)
+ 				goto fail;
+ 		} else {
 
 
