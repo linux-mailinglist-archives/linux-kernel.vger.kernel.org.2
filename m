@@ -2,45 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537743782B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE78537827D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhEJKhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:37:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33952 "EHLO mail.kernel.org"
+        id S231824AbhEJKfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:35:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231391AbhEJKcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:32:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F7D56188B;
+        id S231996AbhEJKcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:32:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1042C61933;
         Mon, 10 May 2021 10:27:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620642444;
-        bh=VcaQSZIsq7mD+wAS9jpIB7+FO3hpRfDHG83wwmYCZVA=;
+        bh=wIVKBQpxk8WOlGEpuEDou4htVSzUmtL6P9hqdVeNLYc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g2w1p1MXnNawAC5FuZnuQWC5U5XbTgql+7Ar3t5rOJMsHfJty8gWY/iSptt3rjqy/
-         RK3rRhHgxeZgnbG+ASWaE9SCSX5s2ax0K4RoQtu+WfsQGm8MLnitowI3ZveX8nCVq2
-         YPx6Y+5pVSIVLUqX1K+VU5+RRkOxKQKNu8hxH21cYpSI/MWGyC+CDne4aZ7XsH/PWI
-         hUXY35hCqq0pLyocCTK/24BhfVcftbK8W5GIfORQxM0OM5KeZwJr8zs1IZfTOjLN3O
-         1LyJHoUdCqdWAC84g8Lke4AV2E+ftaVGwA+WVDuVktvxKZ97l6j70AQCK0mwi6FIbD
-         +dFms8gtkxaEA==
+        b=krQo/PYOAFASHy5IO30w/S2wpTK77+qnjM1nlXIq/v2mIhjIycv7rU9uXGJmUpMdk
+         3TksFTnq6T1/HWrJO2nbDk9MtXwijmTyKyJtQOvkY8SJW9bkUPJDaDHbssninKnPVk
+         TuA3i6grWBlrm3DizwHTp1ipykStNZ3ffY2XAOD1yKMwHDwF7Eo07+zv5C6jW7T8Ik
+         Im8W/SaS24MrN9kP3DYyLnFi8heSsNnOipsWqec1jU7mCHAHb+z30lFdBAkq1+3+we
+         hnnN4KGPH5nffBcRab8/g8b4PicDrfniWz6g9KdGQmaDbO9pTS1gth+l8369QK1KUu
+         BT2CcvcrUYJ7w==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lg38E-000UQe-3f; Mon, 10 May 2021 12:27:22 +0200
+        id 1lg38E-000UQi-51; Mon, 10 May 2021 12:27:22 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH 36/53] docs: networking: device_drivers: avoid using UTF-8 chars
-Date:   Mon, 10 May 2021 12:26:48 +0200
-Message-Id: <9d14421bef0641bb1a45dbf87865b0cd361f64d6.1620641727.git.mchehab+huawei@kernel.org>
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Jonathan Corbet" <corbet@lwn.net>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        x86@kernel.org
+Subject: [PATCH 37/53] docs: x86: avoid using UTF-8 chars
+Date:   Mon, 10 May 2021 12:26:49 +0200
+Message-Id: <466bc4e0f2b37a5a4e7b61453aff804cd0ef5693.1620641727.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620641727.git.mchehab+huawei@kernel.org>
 References: <cover.1620641727.git.mchehab+huawei@kernel.org>
@@ -56,125 +57,50 @@ While UTF-8 characters can be used at the Linux documentation,
 the best is to use them only when ASCII doesn't offer a good replacement.
 So, replace the occurences of the following UTF-8 characters:
 
-	- U+00a0 (' '): NO-BREAK SPACE
-	- U+2013 ('–'): EN DASH
-	- U+2018 ('‘'): LEFT SINGLE QUOTATION MARK
-	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
+	- U+201c ('“'): LEFT DOUBLE QUOTATION MARK
+	- U+201d ('”'): RIGHT DOUBLE QUOTATION MARK
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../device_drivers/ethernet/intel/i40e.rst           | 12 ++++++------
- .../device_drivers/ethernet/intel/iavf.rst           |  6 +++---
- .../device_drivers/ethernet/netronome/nfp.rst        | 12 ++++++------
- 3 files changed, 15 insertions(+), 15 deletions(-)
+ Documentation/x86/resctrl.rst | 2 +-
+ Documentation/x86/sgx.rst     | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/networking/device_drivers/ethernet/intel/i40e.rst b/Documentation/networking/device_drivers/ethernet/intel/i40e.rst
-index 8a9b18573688..64024c77c9ca 100644
---- a/Documentation/networking/device_drivers/ethernet/intel/i40e.rst
-+++ b/Documentation/networking/device_drivers/ethernet/intel/i40e.rst
-@@ -173,7 +173,7 @@ Director rule is added from ethtool (Sideband filter), ATR is turned off by the
- driver. To re-enable ATR, the sideband can be disabled with the ethtool -K
- option. For example::
+diff --git a/Documentation/x86/resctrl.rst b/Documentation/x86/resctrl.rst
+index 71a531061e4e..511cd5b76ed1 100644
+--- a/Documentation/x86/resctrl.rst
++++ b/Documentation/x86/resctrl.rst
+@@ -519,7 +519,7 @@ Cache pseudo-locking increases the probability that data will remain
+ in the cache via carefully configuring the CAT feature and controlling
+ application behavior. There is no guarantee that data is placed in
+ cache. Instructions like INVD, WBINVD, CLFLUSH, etc. can still evict
+-“locked” data from cache. Power management C-states may shrink or
++"locked" data from cache. Power management C-states may shrink or
+ power off cache. Deeper C-states will automatically be restricted on
+ pseudo-locked region creation.
  
--  ethtool –K [adapter] ntuple [off|on]
-+  ethtool -K [adapter] ntuple [off|on]
+diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+index dd0ac96ff9ef..7ccf63d0d083 100644
+--- a/Documentation/x86/sgx.rst
++++ b/Documentation/x86/sgx.rst
+@@ -88,7 +88,7 @@ Enclave build functions
+ -----------------------
  
- If sideband is re-enabled after ATR is re-enabled, ATR remains enabled until a
- TCP-IP flow is added. When all TCP-IP sideband rules are deleted, ATR is
-@@ -466,7 +466,7 @@ network. PTP support varies among Intel devices that support this driver. Use
- "ethtool -T <netdev name>" to get a definitive list of PTP capabilities
- supported by the device.
+ In addition to the traditional compiler and linker build process, SGX has a
+-separate enclave “build” process.  Enclaves must be built before they can be
++separate enclave "build" process.  Enclaves must be built before they can be
+ executed (entered). The first step in building an enclave is opening the
+ **/dev/sgx_enclave** device.  Since enclave memory is protected from direct
+ access, special privileged instructions are Then used to copy data into enclave
+@@ -147,7 +147,7 @@ Page reclaimer
  
--IEEE 802.1ad (QinQ) Support
-+IEEE 802.1ad (QinQ) Support
- ---------------------------
- The IEEE 802.1ad standard, informally known as QinQ, allows for multiple VLAN
- IDs within a single Ethernet frame. VLAN IDs are sometimes referred to as
-@@ -523,8 +523,8 @@ of a port's bandwidth (should it be available). The sum of all the values for
- Maximum Bandwidth is not restricted, because no more than 100% of a port's
- bandwidth can ever be used.
+ Similar to the core kswapd, ksgxd, is responsible for managing the
+ overcommitment of enclave memory.  If the system runs out of enclave memory,
+-*ksgxwapd* “swaps” enclave memory to normal memory.
++*ksgxwapd* "swaps" enclave memory to normal memory.
  
--NOTE: X710/XXV710 devices fail to enable Max VFs (64) when Multiple Functions
--per Port (MFP) and SR-IOV are enabled. An error from i40e is logged that says
-+NOTE: X710/XXV710 devices fail to enable Max VFs (64) when Multiple Functions
-+per Port (MFP) and SR-IOV are enabled. An error from i40e is logged that says
- "add vsi failed for VF N, aq_err 16". To workaround the issue, enable less than
- 64 virtual functions (VFs).
- 
-@@ -680,7 +680,7 @@ queues: for each tc, <num queues>@<offset> (e.g. queues 16@0 16@16 assigns
- 16 queues to tc0 at offset 0 and 16 queues to tc1 at offset 16. Max total
- number of queues for all tcs is 64 or number of cores, whichever is lower.)
- 
--hw 1 mode channel: ‘channel’ with ‘hw’ set to 1 is a new new hardware
-+hw 1 mode channel: 'channel' with 'hw' set to 1 is a new new hardware
- offload mode in mqprio that makes full use of the mqprio options, the
- TCs, the queue configurations, and the QoS parameters.
- 
-@@ -688,7 +688,7 @@ shaper bw_rlimit: for each tc, sets minimum and maximum bandwidth rates.
- Totals must be equal or less than port speed.
- 
- For example: min_rate 1Gbit 3Gbit: Verify bandwidth limit using network
--monitoring tools such as ifstat or sar –n DEV [interval] [number of samples]
-+monitoring tools such as ifstat or sar -n DEV [interval] [number of samples]
- 
- 2. Enable HW TC offload on interface::
- 
-diff --git a/Documentation/networking/device_drivers/ethernet/intel/iavf.rst b/Documentation/networking/device_drivers/ethernet/intel/iavf.rst
-index 52e037b11c97..25e98494b385 100644
---- a/Documentation/networking/device_drivers/ethernet/intel/iavf.rst
-+++ b/Documentation/networking/device_drivers/ethernet/intel/iavf.rst
-@@ -113,7 +113,7 @@ which the AVF is associated. The following are base mode features:
- - AVF device ID
- - HW mailbox is used for VF to PF communications (including on Windows)
- 
--IEEE 802.1ad (QinQ) Support
-+IEEE 802.1ad (QinQ) Support
- ---------------------------
- The IEEE 802.1ad standard, informally known as QinQ, allows for multiple VLAN
- IDs within a single Ethernet frame. VLAN IDs are sometimes referred to as
-@@ -171,7 +171,7 @@ queues: for each tc, <num queues>@<offset> (e.g. queues 16@0 16@16 assigns
- 16 queues to tc0 at offset 0 and 16 queues to tc1 at offset 16. Max total
- number of queues for all tcs is 64 or number of cores, whichever is lower.)
- 
--hw 1 mode channel: ‘channel’ with ‘hw’ set to 1 is a new new hardware
-+hw 1 mode channel: 'channel' with 'hw' set to 1 is a new new hardware
- offload mode in mqprio that makes full use of the mqprio options, the
- TCs, the queue configurations, and the QoS parameters.
- 
-@@ -179,7 +179,7 @@ shaper bw_rlimit: for each tc, sets minimum and maximum bandwidth rates.
- Totals must be equal or less than port speed.
- 
- For example: min_rate 1Gbit 3Gbit: Verify bandwidth limit using network
--monitoring tools such as ifstat or sar –n DEV [interval] [number of samples]
-+monitoring tools such as ifstat or sar -n DEV [interval] [number of samples]
- 
- NOTE:
-   Setting up channels via ethtool (ethtool -L) is not supported when the
-diff --git a/Documentation/networking/device_drivers/ethernet/netronome/nfp.rst b/Documentation/networking/device_drivers/ethernet/netronome/nfp.rst
-index ada611fb427c..949c036e8667 100644
---- a/Documentation/networking/device_drivers/ethernet/netronome/nfp.rst
-+++ b/Documentation/networking/device_drivers/ethernet/netronome/nfp.rst
-@@ -62,14 +62,14 @@ actual firmware files in application-named subdirectories in
-     $ tree /lib/firmware/netronome/
-     /lib/firmware/netronome/
-     ├── bpf
--    │   ├── nic_AMDA0081-0001_1x40.nffw
--    │   └── nic_AMDA0081-0001_4x10.nffw
-+    │   ├── nic_AMDA0081-0001_1x40.nffw
-+    │   └── nic_AMDA0081-0001_4x10.nffw
-     ├── flower
--    │   ├── nic_AMDA0081-0001_1x40.nffw
--    │   └── nic_AMDA0081-0001_4x10.nffw
-+    │   ├── nic_AMDA0081-0001_1x40.nffw
-+    │   └── nic_AMDA0081-0001_4x10.nffw
-     ├── nic
--    │   ├── nic_AMDA0081-0001_1x40.nffw
--    │   └── nic_AMDA0081-0001_4x10.nffw
-+    │   ├── nic_AMDA0081-0001_1x40.nffw
-+    │   └── nic_AMDA0081-0001_4x10.nffw
-     ├── nic_AMDA0081-0001_1x40.nffw -> bpf/nic_AMDA0081-0001_1x40.nffw
-     └── nic_AMDA0081-0001_4x10.nffw -> bpf/nic_AMDA0081-0001_4x10.nffw
- 
+ Launch Control
+ ==============
 -- 
 2.30.2
 
