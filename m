@@ -2,111 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8FE3779A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 03:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A543779A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 03:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhEJBME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 21:12:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34484 "EHLO mx2.suse.de"
+        id S230142AbhEJBNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 21:13:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229941AbhEJBMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 21:12:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8656EAE63;
-        Mon, 10 May 2021 01:10:58 +0000 (UTC)
-MIME-Version: 1.0
-Date:   Sun, 09 May 2021 18:10:57 -0700
-From:   Davidlohr Bueso <dbueso@suse.de>
-To:     Manfred Spraul <manfred@colorfullife.com>
-Cc:     Varad Gautam <varad.gautam@suse.com>, linux-kernel@vger.kernel.org,
-        Matthias von Faber <matthias.vonfaber@aox-tech.de>,
-        stable@vger.kernel.org,
+        id S230099AbhEJBNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 21:13:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A1C5610A5;
+        Mon, 10 May 2021 01:12:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1620609126;
+        bh=x2gGptb1afI/ezHs0O8XaEYRbGWZuQr1p1oLQy4q6Iw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PsykP65fPWil10yBdaN+TV260LHnVIO1GNUlokxYTLJMTuFAZPqNqBv6VpL7/Sgi/
+         /zkHwCxNsoOGgzUV5inffKDhjte3h3bbkthKv8CHeyjrtXVrkzQg4Gs/OGe1ChG0Dc
+         LT3ukFWo/2VAKyRLC0xJMbfHIL9B/26I5ra0PP0s=
+Date:   Sun, 9 May 2021 18:12:05 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     legion@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-mm@kvack.org,
         Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        James Morris <jamorris@linux.microsoft.com>,
-        Serge Hallyn <serge@hallyn.com>
-Subject: Re: [PATCH v3] ipc/mqueue: Avoid relying on a stack reference past
- its expiry
-In-Reply-To: <71c74711-75d6-494e-6ff7-2be49b274477@colorfullife.com>
-References: <20210507133805.11678-1-varad.gautam@suse.com>
- <71c74711-75d6-494e-6ff7-2be49b274477@colorfullife.com>
-User-Agent: Roundcube Webmail
-Message-ID: <6d36d89bc8f299a76efe8fce9c07e7b5@suse.de>
-X-Sender: dbueso@suse.de
-Organization: SUSE Labs
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH v11 0/9] Count rlimits in each user namespace
+Message-Id: <20210509181205.f0ce806919858efa0e0e0d20@linux-foundation.org>
+In-Reply-To: <cover.1619094428.git.legion@kernel.org>
+References: <cover.1619094428.git.legion@kernel.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-08 12:23, Manfred Spraul wrote:
-> Hi Varad,
-> 
-> On 5/7/21 3:38 PM, Varad Gautam wrote:
->> @@ -1005,11 +1022,9 @@ static inline void __pipelined_op(struct 
->> wake_q_head *wake_q,
->>   				  struct ext_wait_queue *this)
->>   {
->>   	list_del(&this->list);
->> -	get_task_struct(this->task);
->> -
->> +	wake_q_add(wake_q, this->task);
->>   	/* see MQ_BARRIER for purpose/pairing */
->>   	smp_store_release(&this->state, STATE_READY);
->> -	wake_q_add_safe(wake_q, this->task);
->>   }
->>     /* pipelined_send() - send a message directly to the task waiting 
->> in
-> 
-> First, I was too fast: I had assumed that wake_q_add() before
-> smp_store_release() would be a potential lost wakeup.
+On Thu, 22 Apr 2021 14:27:07 +0200 legion@kernel.org wrote:
 
-Yeah you need wake_up_q() to actually wake anything up.
+> These patches are for binding the rlimit counters to a user in user namespace.
 
-> 
-> As __pipelined_op() is called within spin_lock(&info->lock), and as
-> wq_sleep() will reread this->state after acquiring
-> spin_lock(&info->lock), I do not see a bug anymore.
+It's at v11 and no there has been no acking or reviewing activity?  Or
+have you not been tracking these?
 
-Right, and when I proposed this version of the fix I was mostly focusing 
-on STATE_READY
-being set as the last operation, but the fact of the matter is we had 
-moved to the
-wake_q_add_safe() version for two reasons:
-
-(1) Ensuring the ->state = STATE_READY is done after the reference count 
-and avoid
-racing with exit. In mqueue's original use of wake_q we were relying on 
-the call's
-implied barrier from wake_q_add() in order to avoid reordering of 
-setting the state.
-But this turned out to be insufficient hence the explicit 
-smp_store_release().
-
-(2) In order to prevent a potential lost wakeup when the blocked task is 
-already queued
-for wakeup by another task (the failed cmpxchg case in wake_q_add), and 
-therefore we need
-to set the return condition (->state = STATE_READY) before adding the 
-task to the wake_q.
-
-But I'm not seeing how race (2) can happen in mqueue. The race was 
-always theoretical to
-begin with, with the exception of rwsems[1] in which actually the wakee 
-task could end up in
-the waker's wake_q without actually blocking.
-
-So all in all I now agree that we should keep the order of how we 
-currently have things,
-just to be on the safer side, if nothing else.
-
-[1] 
-https://lore.kernel.org/lkml/1543495830-2644-1-git-send-email-xieyongji@baidu.com
-
-Thanks,
-Davidlohr
