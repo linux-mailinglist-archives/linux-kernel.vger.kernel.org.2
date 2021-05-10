@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4596037868A
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938153789FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232822AbhEJLIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:08:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59296 "EHLO mail.kernel.org"
+        id S240534AbhEJLfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:35:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232815AbhEJKtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:49:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53F3F619CB;
-        Mon, 10 May 2021 10:38:06 +0000 (UTC)
+        id S234950AbhEJK5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 856D961C33;
+        Mon, 10 May 2021 10:50:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643086;
-        bh=VYfmhFt2W1DZcgIXrOOh7ooiC4aHcLCuxvOApxAU6hY=;
+        s=korg; t=1620643837;
+        bh=gXiOxhMbUGRqAdnAYW3ioYWMt2JDeB0OfgFadacRKuM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nd4tA6Gk8FwoxyBKbc2N5OKDNg5wD9O0K6aSsphE0edAUIY3xSkW2Y0D9VCsSvBd5
-         BZIg19CsKAFjRt/2FE+Gj+hHAEKNpJmiAXQ/dJNHBZs+HiWdz/I5uev+mSXK210EIk
-         wi4W/0TLPAWe+dKtUlfZfm81FaIw+N8HcTF+2t2s=
+        b=xuBD5dnvEVkPLHFfw2Ywe0OX3huBmdxwZyZheuXSTkxcx6UoQpuAtgseYJzwN37Gr
+         2RcqPRM5KEc8i8sara9VIbPvczHe6zpTNNfs9h+45GUsM52Q7KTuJs0q2MwmFAbEvl
+         If6gjU5ZbDHQYeOmTKXHw5Xv4bSKwFOfQ+xYLHI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Al Cooper <alcooperx@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 173/299] clk: socfpga: arria10: Fix memory leak of socfpga_clk on error return
+Subject: [PATCH 5.11 180/342] mmc: sdhci-brcmstb: Remove CQE quirk
 Date:   Mon, 10 May 2021 12:19:30 +0200
-Message-Id: <20210510102010.675118075@linuxfoundation.org>
+Message-Id: <20210510102016.047500206@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Al Cooper <alcooperx@gmail.com>
 
-[ Upstream commit 657d4d1934f75a2d978c3cf2086495eaa542e7a9 ]
+[ Upstream commit f0bdf98fab058efe7bf49732f70a0f26d1143154 ]
 
-There is an error return path that is not kfree'ing socfpga_clk leading
-to a memory leak. Fix this by adding in the missing kfree call.
+Remove the CQHCI_QUIRK_SHORT_TXFR_DESC_SZ quirk because the
+latest chips have this fixed and earlier chips have other
+CQE problems that prevent the feature from being enabled.
 
-Addresses-Coverity: ("Resource leak")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20210406170115.430990-1-colin.king@canonical.com
-Acked-by: Dinh Nguyen <dinguyen@kernel.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Al Cooper <alcooperx@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20210325192834.42955-1-alcooperx@gmail.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/socfpga/clk-gate-a10.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mmc/host/sdhci-brcmstb.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/clk/socfpga/clk-gate-a10.c b/drivers/clk/socfpga/clk-gate-a10.c
-index cd5df9103614..d62778884208 100644
---- a/drivers/clk/socfpga/clk-gate-a10.c
-+++ b/drivers/clk/socfpga/clk-gate-a10.c
-@@ -146,6 +146,7 @@ static void __init __socfpga_gate_init(struct device_node *node,
- 		if (IS_ERR(socfpga_clk->sys_mgr_base_addr)) {
- 			pr_err("%s: failed to find altr,sys-mgr regmap!\n",
- 					__func__);
-+			kfree(socfpga_clk);
- 			return;
- 		}
+diff --git a/drivers/mmc/host/sdhci-brcmstb.c b/drivers/mmc/host/sdhci-brcmstb.c
+index f9780c65ebe9..f24623aac2db 100644
+--- a/drivers/mmc/host/sdhci-brcmstb.c
++++ b/drivers/mmc/host/sdhci-brcmstb.c
+@@ -199,7 +199,6 @@ static int sdhci_brcmstb_add_host(struct sdhci_host *host,
+ 	if (dma64) {
+ 		dev_dbg(mmc_dev(host->mmc), "Using 64 bit DMA\n");
+ 		cq_host->caps |= CQHCI_TASK_DESC_SZ_128;
+-		cq_host->quirks |= CQHCI_QUIRK_SHORT_TXFR_DESC_SZ;
  	}
+ 
+ 	ret = cqhci_init(cq_host, host->mmc, dma64);
 -- 
 2.30.2
 
