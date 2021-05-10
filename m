@@ -2,152 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75424378A91
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96AD378AA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242660AbhEJLr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:47:29 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:39075 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233646AbhEJK7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:59:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620644321; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=1V1hjNy0ikjEDcGsAysvLfVX9zgO6KrdzGI0V4yHr2Y=;
- b=B/nRmcCcHIotBNMIZaaBkuskEBGydLlRR2rUikivGJu2kpS9sU2LHNCOk+4XpS2h9RRPgfvI
- kA8v6mwpMoAgK4kkTg411n+qUlSm3jRDe9X6ggP0vjbgSsI4V1ng2ulOQQxeUftAU0L6IYcL
- C+osmDgwNhbkj4IeRxa8HBT1Zng=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 609911e0e0e9c9a6b6adc929 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 10 May 2021 10:58:40
- GMT
-Sender: mdalam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 585B3C43143; Mon, 10 May 2021 10:58:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: mdalam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 44379C43145;
-        Mon, 10 May 2021 10:58:33 +0000 (UTC)
+        id S243142AbhEJLsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:48:14 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36314 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235346AbhEJLAp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:00:45 -0400
+Date:   Mon, 10 May 2021 10:59:38 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620644379;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Q7UncAInzB0q75/FFVyaLc1oYz6kVZ3N+wuxDPiZGQ=;
+        b=m+Ob8OF1/rNKkcc4o+KaQvuc+pffc5x6COivv5+tMowZ6oOQn54JCYKmsv/YkgvVRRjckA
+        gjxOriiFJ195FXJwzmNOvto7mz5nlQXpTA+zEC9W0wn+CqTYAxW4UWDtuUZuSedANRRvtM
+        YouCqLZzK3eVKwDTRCr+3bXiRnculQ22/i1a7qfYrqt1v1nVCt4CQiIceB+9Rjuba3hklx
+        nozI29RIc9DzUxlhF3CnkP411RKeKsWXRF11FKtawrTHdj9wjegaZbJyPdLYiivSiuPbF5
+        MM7ayFaTWdXeH3Q7/XIzQbHUoey8f+Md6ZQPraj/qx4Iqxd8FdT4ofuMD0mgxQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620644379;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Q7UncAInzB0q75/FFVyaLc1oYz6kVZ3N+wuxDPiZGQ=;
+        b=1Qb81SzULLd7/MmcY0AvkX0mQ6Kr2gMSWiVj0fYu0/C69wy45wkQZRwkHF0K9ZrFSfKd3h
+        ahkOF82bxY4uNPBA==
+From:   "tip-bot2 for H. Peter Anvin (Intel)" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/asm] x86/asm: Use _ASM_BYTES() in <asm/nops.h>
+Cc:     "H. Peter Anvin (Intel)" <hpa@zytor.com>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210510090940.924953-4-hpa@zytor.com>
+References: <20210510090940.924953-4-hpa@zytor.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 10 May 2021 16:28:33 +0530
-From:   mdalam@codeaurora.org
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     mani@kernel.org, boris.brezillon@collabora.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH] mtd: rawnand: qcom: avoid write to obsolete register
-In-Reply-To: <20210504085805.73e60979@xps13>
-References: <1619205694-25645-1-git-send-email-mdalam@codeaurora.org>
- <2667b47434a8f2892ea3d5f304380960@codeaurora.org>
- <20210504085805.73e60979@xps13>
-Message-ID: <e5d79f2b18ffe2dcdaa7d2c827d8472f@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Message-ID: <162064437887.29796.16144339179320522548.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-04 12:28, Miquel Raynal wrote:
-> Hello,
-> 
-> mdalam@codeaurora.org wrote on Mon, 03 May 2021 20:24:54 +0530:
-> 
->> On 2021-04-24 00:51, Md Sadre Alam wrote:
->> > QPIC_EBI2_ECC_BUF_CFG register got obsolete from QPIC V2.0 onwards.
->> > Avoid writing this register if QPIC version is V2.0 or newer.
->> >
->> > Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
->> > ---
->> >  drivers/mtd/nand/raw/qcom_nandc.c | 17 +++++++++++------
->> >  1 file changed, 11 insertions(+), 6 deletions(-)
->> >
->> > diff --git a/drivers/mtd/nand/raw/qcom_nandc.c
->> > b/drivers/mtd/nand/raw/qcom_nandc.c
->> > index fd4c318..8c5205c 100644
->> > --- a/drivers/mtd/nand/raw/qcom_nandc.c
->> > +++ b/drivers/mtd/nand/raw/qcom_nandc.c
->> > @@ -714,7 +714,8 @@ static void update_rw_regs(struct qcom_nand_host
->> > *host, int num_cw, bool read)
->> >  	nandc_set_reg(nandc, NAND_DEV0_CFG0, cfg0);
->> >  	nandc_set_reg(nandc, NAND_DEV0_CFG1, cfg1);
->> >  	nandc_set_reg(nandc, NAND_DEV0_ECC_CFG, ecc_bch_cfg);
->> > -	nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
->> > +	if (!nandc->props->qpic_v2)
->> > +		nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
->> >  	nandc_set_reg(nandc, NAND_FLASH_STATUS, host->clrflashstatus);
->> >  	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
->> >  	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
->> > @@ -1083,7 +1084,8 @@ static void config_nand_page_read(struct
->> > qcom_nand_controller *nandc)
->> >  {
->> >  	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
->> >  	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
->> > -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
->> > +	if (!nandc->props->qpic_v2)
->> > +		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
->> >  	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
->> >  	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1,
->> >  		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
->> > @@ -1132,8 +1134,9 @@ static void config_nand_page_write(struct
->> > qcom_nand_controller *nandc)
->> >  {
->> >  	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
->> >  	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
->> > -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
->> > -		      NAND_BAM_NEXT_SGL);
->> > +	if (!nandc->props->qpic_v2)
->> > +		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
->> > +			      NAND_BAM_NEXT_SGL);
->> >  }
->> >
->> >  /*
->> > @@ -1187,7 +1190,8 @@ static int nandc_param(struct qcom_nand_host > *host)
->> >  					| 2 << WR_RD_BSY_GAP
->> >  					| 0 << WIDE_FLASH
->> >  					| 1 << DEV0_CFG1_ECC_DISABLE);
->> > -	nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, 1 << > ECC_CFG_ECC_DISABLE);
->> > +	if (!nandc->props->qpic_v2)
->> > +		nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, 1 << > ECC_CFG_ECC_DISABLE);
->> >
->> >  	/* configure CMD1 and VLD for ONFI param probing in QPIC v1 */
->> >  	if (!nandc->props->qpic_v2) {
->> > @@ -2628,7 +2632,8 @@ static int qcom_nand_attach_chip(struct nand_chip > *chip)
->> >  				| ecc_mode << ECC_MODE
->> >  				| host->ecc_bytes_hw << ECC_PARITY_SIZE_BYTES_BCH;
->> >
->> > -	host->ecc_buf_cfg = 0x203 << NUM_STEPS;
->> > +	if (!nandc->props->qpic_v2)
->> > +		host->ecc_buf_cfg = 0x203 << NUM_STEPS;
->> >
->> >  	host->clrflashstatus = FS_READY_BSY_N;
->> >  	host->clrreadstatus = 0xc0;
->> 
->> 
->> ping! Hi Miquel could you review this change and let me know if more 
->> info needed.
-> 
-> Come on, that's only 6 days of work and we are in the middle of the
-> merge window...
-> 
-> BTW "avoid write to" in the title is incorrect "writing to" would be
-> nicer.
+The following commit has been merged into the x86/asm branch of tip:
 
-  Updated commit message in V2 patch.
-> 
-> Thanks,
-> Miquèl
+Commit-ID:     eef23e72b78b36924aea8be5ec7c54e628c442ef
+Gitweb:        https://git.kernel.org/tip/eef23e72b78b36924aea8be5ec7c54e628c442ef
+Author:        H. Peter Anvin (Intel) <hpa@zytor.com>
+AuthorDate:    Mon, 10 May 2021 02:09:40 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 10 May 2021 12:33:28 +02:00
+
+x86/asm: Use _ASM_BYTES() in <asm/nops.h>
+
+Use the new generalized _ASM_BYTES() macro from <asm/asm.h> instead of
+the "home grown" _ASM_MK_NOP() in <asm/nops.h>.
+
+Add <asm/asm.h> and update <asm/nops.h> in the tools directory...
+
+Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20210510090940.924953-4-hpa@zytor.com
+---
+ arch/x86/include/asm/nops.h       |  24 +---
+ tools/arch/x86/include/asm/asm.h  | 189 +++++++++++++++++++++++++++++-
+ tools/arch/x86/include/asm/nops.h |  24 +---
+ 3 files changed, 209 insertions(+), 28 deletions(-)
+ create mode 100644 tools/arch/x86/include/asm/asm.h
+
+diff --git a/arch/x86/include/asm/nops.h b/arch/x86/include/asm/nops.h
+index c1e5e81..c5573ea 100644
+--- a/arch/x86/include/asm/nops.h
++++ b/arch/x86/include/asm/nops.h
+@@ -2,6 +2,8 @@
+ #ifndef _ASM_X86_NOPS_H
+ #define _ASM_X86_NOPS_H
+ 
++#include <asm/asm.h>
++
+ /*
+  * Define nops for use with alternative() and for tracing.
+  */
+@@ -57,20 +59,14 @@
+ 
+ #endif /* CONFIG_64BIT */
+ 
+-#ifdef __ASSEMBLY__
+-#define _ASM_MK_NOP(x) .byte x
+-#else
+-#define _ASM_MK_NOP(x) ".byte " __stringify(x) "\n"
+-#endif
+-
+-#define ASM_NOP1 _ASM_MK_NOP(BYTES_NOP1)
+-#define ASM_NOP2 _ASM_MK_NOP(BYTES_NOP2)
+-#define ASM_NOP3 _ASM_MK_NOP(BYTES_NOP3)
+-#define ASM_NOP4 _ASM_MK_NOP(BYTES_NOP4)
+-#define ASM_NOP5 _ASM_MK_NOP(BYTES_NOP5)
+-#define ASM_NOP6 _ASM_MK_NOP(BYTES_NOP6)
+-#define ASM_NOP7 _ASM_MK_NOP(BYTES_NOP7)
+-#define ASM_NOP8 _ASM_MK_NOP(BYTES_NOP8)
++#define ASM_NOP1 _ASM_BYTES(BYTES_NOP1)
++#define ASM_NOP2 _ASM_BYTES(BYTES_NOP2)
++#define ASM_NOP3 _ASM_BYTES(BYTES_NOP3)
++#define ASM_NOP4 _ASM_BYTES(BYTES_NOP4)
++#define ASM_NOP5 _ASM_BYTES(BYTES_NOP5)
++#define ASM_NOP6 _ASM_BYTES(BYTES_NOP6)
++#define ASM_NOP7 _ASM_BYTES(BYTES_NOP7)
++#define ASM_NOP8 _ASM_BYTES(BYTES_NOP8)
+ 
+ #define ASM_NOP_MAX 8
+ 
+diff --git a/tools/arch/x86/include/asm/asm.h b/tools/arch/x86/include/asm/asm.h
+new file mode 100644
+index 0000000..507a37a
+--- /dev/null
++++ b/tools/arch/x86/include/asm/asm.h
+@@ -0,0 +1,189 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_X86_ASM_H
++#define _ASM_X86_ASM_H
++
++#ifdef __ASSEMBLY__
++# define __ASM_FORM(x, ...)		x,## __VA_ARGS__
++# define __ASM_FORM_RAW(x, ...)		x,## __VA_ARGS__
++# define __ASM_FORM_COMMA(x, ...)	x,## __VA_ARGS__,
++#else
++#include <linux/stringify.h>
++# define __ASM_FORM(x, ...)		" " __stringify(x,##__VA_ARGS__) " "
++# define __ASM_FORM_RAW(x, ...)		    __stringify(x,##__VA_ARGS__)
++# define __ASM_FORM_COMMA(x, ...)	" " __stringify(x,##__VA_ARGS__) ","
++#endif
++
++#define _ASM_BYTES(x, ...)	__ASM_FORM(.byte x,##__VA_ARGS__ ;)
++
++#ifndef __x86_64__
++/* 32 bit */
++# define __ASM_SEL(a,b)		__ASM_FORM(a)
++# define __ASM_SEL_RAW(a,b)	__ASM_FORM_RAW(a)
++#else
++/* 64 bit */
++# define __ASM_SEL(a,b)		__ASM_FORM(b)
++# define __ASM_SEL_RAW(a,b)	__ASM_FORM_RAW(b)
++#endif
++
++#define __ASM_SIZE(inst, ...)	__ASM_SEL(inst##l##__VA_ARGS__, \
++					  inst##q##__VA_ARGS__)
++#define __ASM_REG(reg)         __ASM_SEL_RAW(e##reg, r##reg)
++
++#define _ASM_PTR	__ASM_SEL(.long, .quad)
++#define _ASM_ALIGN	__ASM_SEL(.balign 4, .balign 8)
++
++#define _ASM_MOV	__ASM_SIZE(mov)
++#define _ASM_INC	__ASM_SIZE(inc)
++#define _ASM_DEC	__ASM_SIZE(dec)
++#define _ASM_ADD	__ASM_SIZE(add)
++#define _ASM_SUB	__ASM_SIZE(sub)
++#define _ASM_XADD	__ASM_SIZE(xadd)
++#define _ASM_MUL	__ASM_SIZE(mul)
++
++#define _ASM_AX		__ASM_REG(ax)
++#define _ASM_BX		__ASM_REG(bx)
++#define _ASM_CX		__ASM_REG(cx)
++#define _ASM_DX		__ASM_REG(dx)
++#define _ASM_SP		__ASM_REG(sp)
++#define _ASM_BP		__ASM_REG(bp)
++#define _ASM_SI		__ASM_REG(si)
++#define _ASM_DI		__ASM_REG(di)
++
++#ifndef __x86_64__
++/* 32 bit */
++
++#define _ASM_ARG1	_ASM_AX
++#define _ASM_ARG2	_ASM_DX
++#define _ASM_ARG3	_ASM_CX
++
++#define _ASM_ARG1L	eax
++#define _ASM_ARG2L	edx
++#define _ASM_ARG3L	ecx
++
++#define _ASM_ARG1W	ax
++#define _ASM_ARG2W	dx
++#define _ASM_ARG3W	cx
++
++#define _ASM_ARG1B	al
++#define _ASM_ARG2B	dl
++#define _ASM_ARG3B	cl
++
++#else
++/* 64 bit */
++
++#define _ASM_ARG1	_ASM_DI
++#define _ASM_ARG2	_ASM_SI
++#define _ASM_ARG3	_ASM_DX
++#define _ASM_ARG4	_ASM_CX
++#define _ASM_ARG5	r8
++#define _ASM_ARG6	r9
++
++#define _ASM_ARG1Q	rdi
++#define _ASM_ARG2Q	rsi
++#define _ASM_ARG3Q	rdx
++#define _ASM_ARG4Q	rcx
++#define _ASM_ARG5Q	r8
++#define _ASM_ARG6Q	r9
++
++#define _ASM_ARG1L	edi
++#define _ASM_ARG2L	esi
++#define _ASM_ARG3L	edx
++#define _ASM_ARG4L	ecx
++#define _ASM_ARG5L	r8d
++#define _ASM_ARG6L	r9d
++
++#define _ASM_ARG1W	di
++#define _ASM_ARG2W	si
++#define _ASM_ARG3W	dx
++#define _ASM_ARG4W	cx
++#define _ASM_ARG5W	r8w
++#define _ASM_ARG6W	r9w
++
++#define _ASM_ARG1B	dil
++#define _ASM_ARG2B	sil
++#define _ASM_ARG3B	dl
++#define _ASM_ARG4B	cl
++#define _ASM_ARG5B	r8b
++#define _ASM_ARG6B	r9b
++
++#endif
++
++/*
++ * Macros to generate condition code outputs from inline assembly,
++ * The output operand must be type "bool".
++ */
++#ifdef __GCC_ASM_FLAG_OUTPUTS__
++# define CC_SET(c) "\n\t/* output condition code " #c "*/\n"
++# define CC_OUT(c) "=@cc" #c
++#else
++# define CC_SET(c) "\n\tset" #c " %[_cc_" #c "]\n"
++# define CC_OUT(c) [_cc_ ## c] "=qm"
++#endif
++
++/* Exception table entry */
++#ifdef __ASSEMBLY__
++# define _ASM_EXTABLE_HANDLE(from, to, handler)			\
++	.pushsection "__ex_table","a" ;				\
++	.balign 4 ;						\
++	.long (from) - . ;					\
++	.long (to) - . ;					\
++	.long (handler) - . ;					\
++	.popsection
++
++# define _ASM_EXTABLE(from, to)					\
++	_ASM_EXTABLE_HANDLE(from, to, ex_handler_default)
++
++# define _ASM_EXTABLE_UA(from, to)				\
++	_ASM_EXTABLE_HANDLE(from, to, ex_handler_uaccess)
++
++# define _ASM_EXTABLE_CPY(from, to)				\
++	_ASM_EXTABLE_HANDLE(from, to, ex_handler_copy)
++
++# define _ASM_EXTABLE_FAULT(from, to)				\
++	_ASM_EXTABLE_HANDLE(from, to, ex_handler_fault)
++
++# ifdef CONFIG_KPROBES
++#  define _ASM_NOKPROBE(entry)					\
++	.pushsection "_kprobe_blacklist","aw" ;			\
++	_ASM_ALIGN ;						\
++	_ASM_PTR (entry);					\
++	.popsection
++# else
++#  define _ASM_NOKPROBE(entry)
++# endif
++
++#else /* ! __ASSEMBLY__ */
++# define _EXPAND_EXTABLE_HANDLE(x) #x
++# define _ASM_EXTABLE_HANDLE(from, to, handler)			\
++	" .pushsection \"__ex_table\",\"a\"\n"			\
++	" .balign 4\n"						\
++	" .long (" #from ") - .\n"				\
++	" .long (" #to ") - .\n"				\
++	" .long (" _EXPAND_EXTABLE_HANDLE(handler) ") - .\n"	\
++	" .popsection\n"
++
++# define _ASM_EXTABLE(from, to)					\
++	_ASM_EXTABLE_HANDLE(from, to, ex_handler_default)
++
++# define _ASM_EXTABLE_UA(from, to)				\
++	_ASM_EXTABLE_HANDLE(from, to, ex_handler_uaccess)
++
++# define _ASM_EXTABLE_CPY(from, to)				\
++	_ASM_EXTABLE_HANDLE(from, to, ex_handler_copy)
++
++# define _ASM_EXTABLE_FAULT(from, to)				\
++	_ASM_EXTABLE_HANDLE(from, to, ex_handler_fault)
++
++/* For C file, we already have NOKPROBE_SYMBOL macro */
++
++/*
++ * This output constraint should be used for any inline asm which has a "call"
++ * instruction.  Otherwise the asm may be inserted before the frame pointer
++ * gets set up by the containing function.  If you forget to do this, objtool
++ * may print a "call without frame pointer save/setup" warning.
++ */
++register unsigned long current_stack_pointer asm(_ASM_SP);
++#define ASM_CALL_CONSTRAINT "+r" (current_stack_pointer)
++#endif /* __ASSEMBLY__ */
++
++#endif /* _ASM_X86_ASM_H */
+diff --git a/tools/arch/x86/include/asm/nops.h b/tools/arch/x86/include/asm/nops.h
+index c1e5e81..c5573ea 100644
+--- a/tools/arch/x86/include/asm/nops.h
++++ b/tools/arch/x86/include/asm/nops.h
+@@ -2,6 +2,8 @@
+ #ifndef _ASM_X86_NOPS_H
+ #define _ASM_X86_NOPS_H
+ 
++#include <asm/asm.h>
++
+ /*
+  * Define nops for use with alternative() and for tracing.
+  */
+@@ -57,20 +59,14 @@
+ 
+ #endif /* CONFIG_64BIT */
+ 
+-#ifdef __ASSEMBLY__
+-#define _ASM_MK_NOP(x) .byte x
+-#else
+-#define _ASM_MK_NOP(x) ".byte " __stringify(x) "\n"
+-#endif
+-
+-#define ASM_NOP1 _ASM_MK_NOP(BYTES_NOP1)
+-#define ASM_NOP2 _ASM_MK_NOP(BYTES_NOP2)
+-#define ASM_NOP3 _ASM_MK_NOP(BYTES_NOP3)
+-#define ASM_NOP4 _ASM_MK_NOP(BYTES_NOP4)
+-#define ASM_NOP5 _ASM_MK_NOP(BYTES_NOP5)
+-#define ASM_NOP6 _ASM_MK_NOP(BYTES_NOP6)
+-#define ASM_NOP7 _ASM_MK_NOP(BYTES_NOP7)
+-#define ASM_NOP8 _ASM_MK_NOP(BYTES_NOP8)
++#define ASM_NOP1 _ASM_BYTES(BYTES_NOP1)
++#define ASM_NOP2 _ASM_BYTES(BYTES_NOP2)
++#define ASM_NOP3 _ASM_BYTES(BYTES_NOP3)
++#define ASM_NOP4 _ASM_BYTES(BYTES_NOP4)
++#define ASM_NOP5 _ASM_BYTES(BYTES_NOP5)
++#define ASM_NOP6 _ASM_BYTES(BYTES_NOP6)
++#define ASM_NOP7 _ASM_BYTES(BYTES_NOP7)
++#define ASM_NOP8 _ASM_BYTES(BYTES_NOP8)
+ 
+ #define ASM_NOP_MAX 8
+ 
