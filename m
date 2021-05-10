@@ -2,215 +2,500 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3291379889
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 22:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BECD237988C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 22:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbhEJUqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 16:46:35 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:33589 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231672AbhEJUqe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 16:46:34 -0400
-Received: by mail-ot1-f41.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so11668269oto.0;
-        Mon, 10 May 2021 13:45:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iT6yh/cPHLGtBTa1IYIRkFWCRkmzrN2dS0BaWLF63LY=;
-        b=cHNcc2Wv5vuzcKwCOdhUf9GFAvB/n7o8bMLpU2Ipl4R68VZS8KepoTziVECxzvB17U
-         E3A2IuLCZFAX2OMwNoHoIvjIz0dFhz/mEPFKpraWAClgW9QlVaxe3mMefTvVpLui35sE
-         F9iisdQrmlL5r5nEH89pmREXLg+wrwtjVaV1bFND4EYa+VEgxU3JLZFQHG31FjeTEkJt
-         ErBS0phxIPHHU4gIml5K2lLsJ+QFAOMgfYvCJgyFNbQT93R0X8ggjw660e84ODgts7kB
-         7PZhienZSEgodVu3GoGIld+K7eHEsYbTq17z3Sl3e9Ye2pjlgLj0Gboaajx9JGnltvI7
-         KGxg==
-X-Gm-Message-State: AOAM532t0HxprkV1ksFoLauHkgFkkYbws9oXY8KRj/VhLfEVOKGuLSsl
-        /Y8dEoA9cNQOnl7NuVmPF9NrcvdNTw==
-X-Google-Smtp-Source: ABdhPJwgrvtWQSp23OuaxQoKqHfbE3fMubvosTqs2k+Gkw6N64h91HjzWMGpRK+NaEo44+Q6KznypA==
-X-Received: by 2002:a05:6830:1556:: with SMTP id l22mr22884062otp.34.1620679527190;
-        Mon, 10 May 2021 13:45:27 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id i2sm3307576oto.66.2021.05.10.13.45.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 13:45:26 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Odelu Kukatla <okukatla@codeaurora.org>,
-        Alex Elder <elder@kernel.org>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        linux-clk@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH] dt-bindings: More removals of type references on common properties
-Date:   Mon, 10 May 2021 15:45:24 -0500
-Message-Id: <20210510204524.617390-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S232377AbhEJUqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 16:46:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34346 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231672AbhEJUqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 16:46:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82C0C61108;
+        Mon, 10 May 2021 20:45:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620679546;
+        bh=1zhgF0TyiWdeFfq12LPIq80x/aDiznTpXPikYZ+8JQE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=lPvqK7T8hlPhNJTpxphTyvnPc0eJcB8GdJKWtZ4R1HOakgWUYy/jAkdqaAtOuh3YO
+         0PB6ZSV8AS13GtrnR3YTaSRiVt/3ZIrr4+2jEeP8Aw4n5f4CfiL0fzPLBW5Ur5x4DX
+         9s0GNdCC+69CxOzlvSZew0pKB3Z0zXNRzS0KCSN5sVIj00QFeBGTsVvldFBLSjTkag
+         +SKYx2WeO2od62c8+HUnerHLuXbSeTVx83TZweLP16GTnBSKfRMrEhFryXjAXuAyWQ
+         z6bSAFz0LWTkU0/qCwp9BmAJh8F3Uxo41ql/F+sX1Z6i6FGC4EE1+0f0bVrTGcqvC3
+         d4Bcm1UE0NPuA==
+Date:   Mon, 10 May 2021 15:46:18 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Evan Quan <evan.quan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] drm/amd/pm: Fix out-of-bounds bug
+Message-ID: <20210510204618.GA135281@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Users of common properties shouldn't have a type definition as the
-common schemas already have one. A few new ones slipped in and
-*-names was missed in the last clean-up pass. Drop all the unnecessary
-type references in the tree.
+Create new structure SISLANDS_SMC_SWSTATE_SINGLE, as initialState.levels
+and ACPIState.levels are never actually used as flexible arrays. Those
+arrays can be used as simple objects of type
+SISLANDS_SMC_HW_PERFORMANCE_LEVEL, instead.
 
-A meta-schema update to catch these is pending.
+Currently, the code fails because flexible array _levels_ in
+struct SISLANDS_SMC_SWSTATE doesn't allow for code that accesses
+the first element of initialState.levels and ACPIState.levels
+arrays:
 
-Cc: Luca Ceresoli <luca@lucaceresoli.net>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Olivier Moysan <olivier.moysan@foss.st.com>
-Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc: Jonathan Cameron <jic23@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Georgi Djakov <djakov@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Sebastian Reichel <sre@kernel.org>
-Cc: Orson Zhai <orsonzhai@gmail.com>
-Cc: Baolin Wang <baolin.wang7@gmail.com>
-Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
-Cc: Odelu Kukatla <okukatla@codeaurora.org>
-Cc: Alex Elder <elder@kernel.org>
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: linux-clk@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
-Cc: linux-iio@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-input@vger.kernel.org
-Cc: linux-pm@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
+drivers/gpu/drm/amd/pm/powerplay/si_dpm.c:
+4820: table->initialState.levels[0].mclk.vDLL_CNTL =
+4821:         cpu_to_be32(si_pi->clock_registers.dll_cntl);
+...
+5021: table->ACPIState.levels[0].mclk.vDLL_CNTL =
+5022:         cpu_to_be32(dll_cntl);
+
+because such element cannot be accessed without previously allocating
+enough dynamic memory for it to exist (which never actually happens).
+So, there is an out-of-bounds bug in this case.
+
+That's why struct SISLANDS_SMC_SWSTATE should only be used as type
+for object driverState and new struct SISLANDS_SMC_SWSTATE_SINGLE is
+created as type for objects initialState, ACPIState and ULVState.
+
+Also, with the change from one-element array to flexible-array member
+in commit 0e1aa13ca3ff ("drm/amd/pm: Replace one-element array with
+flexible-array in struct SISLANDS_SMC_SWSTATE"), the size of
+dpmLevels in struct SISLANDS_SMC_STATETABLE should be fixed to be
+SISLANDS_MAX_SMC_PERFORMANCE_LEVELS_PER_SWSTATE instead of
+SISLANDS_MAX_SMC_PERFORMANCE_LEVELS_PER_SWSTATE - 1.
+
+Fixes: 0e1aa13ca3ff ("drm/amd/pm: Replace one-element array with flexible-array in struct SISLANDS_SMC_SWSTATE")
+Cc: stable@vger.kernel.org
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- Documentation/devicetree/bindings/clock/idt,versaclock5.yaml    | 2 --
- .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml         | 1 -
- Documentation/devicetree/bindings/input/input.yaml              | 1 -
- Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml   | 1 -
- Documentation/devicetree/bindings/net/qcom,ipa.yaml             | 1 -
- .../devicetree/bindings/power/supply/sc2731-charger.yaml        | 2 +-
- Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml          | 2 +-
- 7 files changed, 2 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/amd/pm/powerplay/si_dpm.c     | 174 +++++++++---------
+ .../gpu/drm/amd/pm/powerplay/sislands_smc.h   |  34 ++--
+ 2 files changed, 109 insertions(+), 99 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-index c268debe5b8d..28675b0b80f1 100644
---- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-+++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-@@ -60,7 +60,6 @@ properties:
-     maxItems: 2
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/si_dpm.c b/drivers/gpu/drm/amd/pm/powerplay/si_dpm.c
+index 26a5321e621b..15c0b8af376f 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/si_dpm.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/si_dpm.c
+@@ -4817,70 +4817,70 @@ static int si_populate_smc_initial_state(struct amdgpu_device *adev,
+ 	u32 reg;
+ 	int ret;
  
-   idt,xtal-load-femtofarads:
--    $ref: /schemas/types.yaml#/definitions/uint32
-     minimum: 9000
-     maximum: 22760
-     description: Optional load capacitor for XTAL1 and XTAL2
-@@ -84,7 +83,6 @@ patternProperties:
-         enum: [ 1800000, 2500000, 3300000 ]
-       idt,slew-percent:
-         description: The Slew rate control for CMOS single-ended.
--        $ref: /schemas/types.yaml#/definitions/uint32
-         enum: [ 80, 85, 90, 100 ]
+-	table->initialState.levels[0].mclk.vDLL_CNTL =
++	table->initialState.level.mclk.vDLL_CNTL =
+ 		cpu_to_be32(si_pi->clock_registers.dll_cntl);
+-	table->initialState.levels[0].mclk.vMCLK_PWRMGT_CNTL =
++	table->initialState.level.mclk.vMCLK_PWRMGT_CNTL =
+ 		cpu_to_be32(si_pi->clock_registers.mclk_pwrmgt_cntl);
+-	table->initialState.levels[0].mclk.vMPLL_AD_FUNC_CNTL =
++	table->initialState.level.mclk.vMPLL_AD_FUNC_CNTL =
+ 		cpu_to_be32(si_pi->clock_registers.mpll_ad_func_cntl);
+-	table->initialState.levels[0].mclk.vMPLL_DQ_FUNC_CNTL =
++	table->initialState.level.mclk.vMPLL_DQ_FUNC_CNTL =
+ 		cpu_to_be32(si_pi->clock_registers.mpll_dq_func_cntl);
+-	table->initialState.levels[0].mclk.vMPLL_FUNC_CNTL =
++	table->initialState.level.mclk.vMPLL_FUNC_CNTL =
+ 		cpu_to_be32(si_pi->clock_registers.mpll_func_cntl);
+-	table->initialState.levels[0].mclk.vMPLL_FUNC_CNTL_1 =
++	table->initialState.level.mclk.vMPLL_FUNC_CNTL_1 =
+ 		cpu_to_be32(si_pi->clock_registers.mpll_func_cntl_1);
+-	table->initialState.levels[0].mclk.vMPLL_FUNC_CNTL_2 =
++	table->initialState.level.mclk.vMPLL_FUNC_CNTL_2 =
+ 		cpu_to_be32(si_pi->clock_registers.mpll_func_cntl_2);
+-	table->initialState.levels[0].mclk.vMPLL_SS =
++	table->initialState.level.mclk.vMPLL_SS =
+ 		cpu_to_be32(si_pi->clock_registers.mpll_ss1);
+-	table->initialState.levels[0].mclk.vMPLL_SS2 =
++	table->initialState.level.mclk.vMPLL_SS2 =
+ 		cpu_to_be32(si_pi->clock_registers.mpll_ss2);
  
- required:
-diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-index 6f2398cdc82d..1e7894e524f9 100644
---- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-@@ -102,7 +102,6 @@ patternProperties:
+-	table->initialState.levels[0].mclk.mclk_value =
++	table->initialState.level.mclk.mclk_value =
+ 		cpu_to_be32(initial_state->performance_levels[0].mclk);
  
-       st,adc-channel-names:
-         description: List of single-ended channel names.
--        $ref: /schemas/types.yaml#/definitions/string-array
+-	table->initialState.levels[0].sclk.vCG_SPLL_FUNC_CNTL =
++	table->initialState.level.sclk.vCG_SPLL_FUNC_CNTL =
+ 		cpu_to_be32(si_pi->clock_registers.cg_spll_func_cntl);
+-	table->initialState.levels[0].sclk.vCG_SPLL_FUNC_CNTL_2 =
++	table->initialState.level.sclk.vCG_SPLL_FUNC_CNTL_2 =
+ 		cpu_to_be32(si_pi->clock_registers.cg_spll_func_cntl_2);
+-	table->initialState.levels[0].sclk.vCG_SPLL_FUNC_CNTL_3 =
++	table->initialState.level.sclk.vCG_SPLL_FUNC_CNTL_3 =
+ 		cpu_to_be32(si_pi->clock_registers.cg_spll_func_cntl_3);
+-	table->initialState.levels[0].sclk.vCG_SPLL_FUNC_CNTL_4 =
++	table->initialState.level.sclk.vCG_SPLL_FUNC_CNTL_4 =
+ 		cpu_to_be32(si_pi->clock_registers.cg_spll_func_cntl_4);
+-	table->initialState.levels[0].sclk.vCG_SPLL_SPREAD_SPECTRUM =
++	table->initialState.level.sclk.vCG_SPLL_SPREAD_SPECTRUM =
+ 		cpu_to_be32(si_pi->clock_registers.cg_spll_spread_spectrum);
+-	table->initialState.levels[0].sclk.vCG_SPLL_SPREAD_SPECTRUM_2  =
++	table->initialState.level.sclk.vCG_SPLL_SPREAD_SPECTRUM_2  =
+ 		cpu_to_be32(si_pi->clock_registers.cg_spll_spread_spectrum_2);
  
-       st,filter-order:
-         description: |
-diff --git a/Documentation/devicetree/bindings/input/input.yaml b/Documentation/devicetree/bindings/input/input.yaml
-index 74244d21d2b3..d41d8743aad4 100644
---- a/Documentation/devicetree/bindings/input/input.yaml
-+++ b/Documentation/devicetree/bindings/input/input.yaml
-@@ -38,6 +38,5 @@ properties:
-       Duration in seconds which the key should be kept pressed for device to
-       reset automatically. Device with key pressed reset feature can specify
-       this property.
--    $ref: /schemas/types.yaml#/definitions/uint32
+-	table->initialState.levels[0].sclk.sclk_value =
++	table->initialState.level.sclk.sclk_value =
+ 		cpu_to_be32(initial_state->performance_levels[0].sclk);
  
- additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml b/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml
-index cb6498108b78..36c955965d90 100644
---- a/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml
-+++ b/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml
-@@ -92,7 +92,6 @@ properties:
-       this interconnect to send RPMh commands.
+-	table->initialState.levels[0].arbRefreshState =
++	table->initialState.level.arbRefreshState =
+ 		SISLANDS_INITIAL_STATE_ARB_INDEX;
  
-   qcom,bcm-voter-names:
--    $ref: /schemas/types.yaml#/definitions/string-array
-     description: |
-       Names for each of the qcom,bcm-voters specified.
+-	table->initialState.levels[0].ACIndex = 0;
++	table->initialState.level.ACIndex = 0;
  
-diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-index 7443490d4cc6..5fe6d3dceb08 100644
---- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-+++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-@@ -105,7 +105,6 @@ properties:
-       - description: Whether the IPA clock is enabled (if valid)
+ 	ret = si_populate_voltage_value(adev, &eg_pi->vddc_voltage_table,
+ 					initial_state->performance_levels[0].vddc,
+-					&table->initialState.levels[0].vddc);
++					&table->initialState.level.vddc);
  
-   qcom,smem-state-names:
--    $ref: /schemas/types.yaml#/definitions/string-array
-     description: The names of the state bits used for SMP2P output
-     items:
-       - const: ipa-clock-enabled-valid
-diff --git a/Documentation/devicetree/bindings/power/supply/sc2731-charger.yaml b/Documentation/devicetree/bindings/power/supply/sc2731-charger.yaml
-index db1aa238cda5..b62c2431f94e 100644
---- a/Documentation/devicetree/bindings/power/supply/sc2731-charger.yaml
-+++ b/Documentation/devicetree/bindings/power/supply/sc2731-charger.yaml
-@@ -20,7 +20,7 @@ properties:
-     maxItems: 1
+ 	if (!ret) {
+ 		u16 std_vddc;
  
-   phys:
--    $ref: /schemas/types.yaml#/definitions/phandle
-+    maxItems: 1
-     description: phandle to the USB phy
+ 		ret = si_get_std_voltage_value(adev,
+-					       &table->initialState.levels[0].vddc,
++					       &table->initialState.level.vddc,
+ 					       &std_vddc);
+ 		if (!ret)
+ 			si_populate_std_voltage_value(adev, std_vddc,
+-						      table->initialState.levels[0].vddc.index,
+-						      &table->initialState.levels[0].std_vddc);
++						      table->initialState.level.vddc.index,
++						      &table->initialState.level.std_vddc);
+ 	}
  
-   monitored-battery:
-diff --git a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-index b4c190bddd84..61802a11baf4 100644
---- a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-+++ b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-@@ -49,7 +49,7 @@ properties:
-     maxItems: 1
+ 	if (eg_pi->vddci_control)
+ 		si_populate_voltage_value(adev,
+ 					  &eg_pi->vddci_voltage_table,
+ 					  initial_state->performance_levels[0].vddci,
+-					  &table->initialState.levels[0].vddci);
++					  &table->initialState.level.vddci);
  
-   memory-region:
--    $ref: /schemas/types.yaml#/definitions/phandle
-+    maxItems: 1
-     description:
-       phandle to a node describing reserved memory (System RAM memory)
-       The M core can't access all the DDR memory space on some platform,
+ 	if (si_pi->vddc_phase_shed_control)
+ 		si_populate_phase_shedding_value(adev,
+@@ -4888,41 +4888,41 @@ static int si_populate_smc_initial_state(struct amdgpu_device *adev,
+ 						 initial_state->performance_levels[0].vddc,
+ 						 initial_state->performance_levels[0].sclk,
+ 						 initial_state->performance_levels[0].mclk,
+-						 &table->initialState.levels[0].vddc);
++						 &table->initialState.level.vddc);
+ 
+-	si_populate_initial_mvdd_value(adev, &table->initialState.levels[0].mvdd);
++	si_populate_initial_mvdd_value(adev, &table->initialState.level.mvdd);
+ 
+ 	reg = CG_R(0xffff) | CG_L(0);
+-	table->initialState.levels[0].aT = cpu_to_be32(reg);
+-	table->initialState.levels[0].bSP = cpu_to_be32(pi->dsp);
+-	table->initialState.levels[0].gen2PCIE = (u8)si_pi->boot_pcie_gen;
++	table->initialState.level.aT = cpu_to_be32(reg);
++	table->initialState.level.bSP = cpu_to_be32(pi->dsp);
++	table->initialState.level.gen2PCIE = (u8)si_pi->boot_pcie_gen;
+ 
+ 	if (adev->gmc.vram_type == AMDGPU_VRAM_TYPE_GDDR5) {
+-		table->initialState.levels[0].strobeMode =
++		table->initialState.level.strobeMode =
+ 			si_get_strobe_mode_settings(adev,
+ 						    initial_state->performance_levels[0].mclk);
+ 
+ 		if (initial_state->performance_levels[0].mclk > pi->mclk_edc_enable_threshold)
+-			table->initialState.levels[0].mcFlags = SISLANDS_SMC_MC_EDC_RD_FLAG | SISLANDS_SMC_MC_EDC_WR_FLAG;
++			table->initialState.level.mcFlags = SISLANDS_SMC_MC_EDC_RD_FLAG | SISLANDS_SMC_MC_EDC_WR_FLAG;
+ 		else
+-			table->initialState.levels[0].mcFlags =  0;
++			table->initialState.level.mcFlags =  0;
+ 	}
+ 
+ 	table->initialState.levelCount = 1;
+ 
+ 	table->initialState.flags |= PPSMC_SWSTATE_FLAG_DC;
+ 
+-	table->initialState.levels[0].dpm2.MaxPS = 0;
+-	table->initialState.levels[0].dpm2.NearTDPDec = 0;
+-	table->initialState.levels[0].dpm2.AboveSafeInc = 0;
+-	table->initialState.levels[0].dpm2.BelowSafeInc = 0;
+-	table->initialState.levels[0].dpm2.PwrEfficiencyRatio = 0;
++	table->initialState.level.dpm2.MaxPS = 0;
++	table->initialState.level.dpm2.NearTDPDec = 0;
++	table->initialState.level.dpm2.AboveSafeInc = 0;
++	table->initialState.level.dpm2.BelowSafeInc = 0;
++	table->initialState.level.dpm2.PwrEfficiencyRatio = 0;
+ 
+ 	reg = MIN_POWER_MASK | MAX_POWER_MASK;
+-	table->initialState.levels[0].SQPowerThrottle = cpu_to_be32(reg);
++	table->initialState.level.SQPowerThrottle = cpu_to_be32(reg);
+ 
+ 	reg = MAX_POWER_DELTA_MASK | STI_SIZE_MASK | LTI_RATIO_MASK;
+-	table->initialState.levels[0].SQPowerThrottle_2 = cpu_to_be32(reg);
++	table->initialState.level.SQPowerThrottle_2 = cpu_to_be32(reg);
+ 
+ 	return 0;
+ }
+@@ -4953,18 +4953,18 @@ static int si_populate_smc_acpi_state(struct amdgpu_device *adev,
+ 
+ 	if (pi->acpi_vddc) {
+ 		ret = si_populate_voltage_value(adev, &eg_pi->vddc_voltage_table,
+-						pi->acpi_vddc, &table->ACPIState.levels[0].vddc);
++						pi->acpi_vddc, &table->ACPIState.level.vddc);
+ 		if (!ret) {
+ 			u16 std_vddc;
+ 
+ 			ret = si_get_std_voltage_value(adev,
+-						       &table->ACPIState.levels[0].vddc, &std_vddc);
++						       &table->ACPIState.level.vddc, &std_vddc);
+ 			if (!ret)
+ 				si_populate_std_voltage_value(adev, std_vddc,
+-							      table->ACPIState.levels[0].vddc.index,
+-							      &table->ACPIState.levels[0].std_vddc);
++							      table->ACPIState.level.vddc.index,
++							      &table->ACPIState.level.std_vddc);
+ 		}
+-		table->ACPIState.levels[0].gen2PCIE = si_pi->acpi_pcie_gen;
++		table->ACPIState.level.gen2PCIE = si_pi->acpi_pcie_gen;
+ 
+ 		if (si_pi->vddc_phase_shed_control) {
+ 			si_populate_phase_shedding_value(adev,
+@@ -4972,23 +4972,23 @@ static int si_populate_smc_acpi_state(struct amdgpu_device *adev,
+ 							 pi->acpi_vddc,
+ 							 0,
+ 							 0,
+-							 &table->ACPIState.levels[0].vddc);
++							 &table->ACPIState.level.vddc);
+ 		}
+ 	} else {
+ 		ret = si_populate_voltage_value(adev, &eg_pi->vddc_voltage_table,
+-						pi->min_vddc_in_table, &table->ACPIState.levels[0].vddc);
++						pi->min_vddc_in_table, &table->ACPIState.level.vddc);
+ 		if (!ret) {
+ 			u16 std_vddc;
+ 
+ 			ret = si_get_std_voltage_value(adev,
+-						       &table->ACPIState.levels[0].vddc, &std_vddc);
++						       &table->ACPIState.level.vddc, &std_vddc);
+ 
+ 			if (!ret)
+ 				si_populate_std_voltage_value(adev, std_vddc,
+-							      table->ACPIState.levels[0].vddc.index,
+-							      &table->ACPIState.levels[0].std_vddc);
++							      table->ACPIState.level.vddc.index,
++							      &table->ACPIState.level.std_vddc);
+ 		}
+-		table->ACPIState.levels[0].gen2PCIE =
++		table->ACPIState.level.gen2PCIE =
+ 			(u8)amdgpu_get_pcie_gen_support(adev,
+ 							si_pi->sys_pcie_mask,
+ 							si_pi->boot_pcie_gen,
+@@ -5000,14 +5000,14 @@ static int si_populate_smc_acpi_state(struct amdgpu_device *adev,
+ 							 pi->min_vddc_in_table,
+ 							 0,
+ 							 0,
+-							 &table->ACPIState.levels[0].vddc);
++							 &table->ACPIState.level.vddc);
+ 	}
+ 
+ 	if (pi->acpi_vddc) {
+ 		if (eg_pi->acpi_vddci)
+ 			si_populate_voltage_value(adev, &eg_pi->vddci_voltage_table,
+ 						  eg_pi->acpi_vddci,
+-						  &table->ACPIState.levels[0].vddci);
++						  &table->ACPIState.level.vddci);
+ 	}
+ 
+ 	mclk_pwrmgt_cntl |= MRDCK0_RESET | MRDCK1_RESET;
+@@ -5018,59 +5018,59 @@ static int si_populate_smc_acpi_state(struct amdgpu_device *adev,
+ 	spll_func_cntl_2 &= ~SCLK_MUX_SEL_MASK;
+ 	spll_func_cntl_2 |= SCLK_MUX_SEL(4);
+ 
+-	table->ACPIState.levels[0].mclk.vDLL_CNTL =
++	table->ACPIState.level.mclk.vDLL_CNTL =
+ 		cpu_to_be32(dll_cntl);
+-	table->ACPIState.levels[0].mclk.vMCLK_PWRMGT_CNTL =
++	table->ACPIState.level.mclk.vMCLK_PWRMGT_CNTL =
+ 		cpu_to_be32(mclk_pwrmgt_cntl);
+-	table->ACPIState.levels[0].mclk.vMPLL_AD_FUNC_CNTL =
++	table->ACPIState.level.mclk.vMPLL_AD_FUNC_CNTL =
+ 		cpu_to_be32(mpll_ad_func_cntl);
+-	table->ACPIState.levels[0].mclk.vMPLL_DQ_FUNC_CNTL =
++	table->ACPIState.level.mclk.vMPLL_DQ_FUNC_CNTL =
+ 		cpu_to_be32(mpll_dq_func_cntl);
+-	table->ACPIState.levels[0].mclk.vMPLL_FUNC_CNTL =
++	table->ACPIState.level.mclk.vMPLL_FUNC_CNTL =
+ 		cpu_to_be32(mpll_func_cntl);
+-	table->ACPIState.levels[0].mclk.vMPLL_FUNC_CNTL_1 =
++	table->ACPIState.level.mclk.vMPLL_FUNC_CNTL_1 =
+ 		cpu_to_be32(mpll_func_cntl_1);
+-	table->ACPIState.levels[0].mclk.vMPLL_FUNC_CNTL_2 =
++	table->ACPIState.level.mclk.vMPLL_FUNC_CNTL_2 =
+ 		cpu_to_be32(mpll_func_cntl_2);
+-	table->ACPIState.levels[0].mclk.vMPLL_SS =
++	table->ACPIState.level.mclk.vMPLL_SS =
+ 		cpu_to_be32(si_pi->clock_registers.mpll_ss1);
+-	table->ACPIState.levels[0].mclk.vMPLL_SS2 =
++	table->ACPIState.level.mclk.vMPLL_SS2 =
+ 		cpu_to_be32(si_pi->clock_registers.mpll_ss2);
+ 
+-	table->ACPIState.levels[0].sclk.vCG_SPLL_FUNC_CNTL =
++	table->ACPIState.level.sclk.vCG_SPLL_FUNC_CNTL =
+ 		cpu_to_be32(spll_func_cntl);
+-	table->ACPIState.levels[0].sclk.vCG_SPLL_FUNC_CNTL_2 =
++	table->ACPIState.level.sclk.vCG_SPLL_FUNC_CNTL_2 =
+ 		cpu_to_be32(spll_func_cntl_2);
+-	table->ACPIState.levels[0].sclk.vCG_SPLL_FUNC_CNTL_3 =
++	table->ACPIState.level.sclk.vCG_SPLL_FUNC_CNTL_3 =
+ 		cpu_to_be32(spll_func_cntl_3);
+-	table->ACPIState.levels[0].sclk.vCG_SPLL_FUNC_CNTL_4 =
++	table->ACPIState.level.sclk.vCG_SPLL_FUNC_CNTL_4 =
+ 		cpu_to_be32(spll_func_cntl_4);
+ 
+-	table->ACPIState.levels[0].mclk.mclk_value = 0;
+-	table->ACPIState.levels[0].sclk.sclk_value = 0;
++	table->ACPIState.level.mclk.mclk_value = 0;
++	table->ACPIState.level.sclk.sclk_value = 0;
+ 
+-	si_populate_mvdd_value(adev, 0, &table->ACPIState.levels[0].mvdd);
++	si_populate_mvdd_value(adev, 0, &table->ACPIState.level.mvdd);
+ 
+ 	if (eg_pi->dynamic_ac_timing)
+-		table->ACPIState.levels[0].ACIndex = 0;
++		table->ACPIState.level.ACIndex = 0;
+ 
+-	table->ACPIState.levels[0].dpm2.MaxPS = 0;
+-	table->ACPIState.levels[0].dpm2.NearTDPDec = 0;
+-	table->ACPIState.levels[0].dpm2.AboveSafeInc = 0;
+-	table->ACPIState.levels[0].dpm2.BelowSafeInc = 0;
+-	table->ACPIState.levels[0].dpm2.PwrEfficiencyRatio = 0;
++	table->ACPIState.level.dpm2.MaxPS = 0;
++	table->ACPIState.level.dpm2.NearTDPDec = 0;
++	table->ACPIState.level.dpm2.AboveSafeInc = 0;
++	table->ACPIState.level.dpm2.BelowSafeInc = 0;
++	table->ACPIState.level.dpm2.PwrEfficiencyRatio = 0;
+ 
+ 	reg = MIN_POWER_MASK | MAX_POWER_MASK;
+-	table->ACPIState.levels[0].SQPowerThrottle = cpu_to_be32(reg);
++	table->ACPIState.level.SQPowerThrottle = cpu_to_be32(reg);
+ 
+ 	reg = MAX_POWER_DELTA_MASK | STI_SIZE_MASK | LTI_RATIO_MASK;
+-	table->ACPIState.levels[0].SQPowerThrottle_2 = cpu_to_be32(reg);
++	table->ACPIState.level.SQPowerThrottle_2 = cpu_to_be32(reg);
+ 
+ 	return 0;
+ }
+ 
+ static int si_populate_ulv_state(struct amdgpu_device *adev,
+-				 SISLANDS_SMC_SWSTATE *state)
++				 struct SISLANDS_SMC_SWSTATE_SINGLE *state)
+ {
+ 	struct evergreen_power_info *eg_pi = evergreen_get_pi(adev);
+ 	struct si_power_info *si_pi = si_get_pi(adev);
+@@ -5079,19 +5079,19 @@ static int si_populate_ulv_state(struct amdgpu_device *adev,
+ 	int ret;
+ 
+ 	ret = si_convert_power_level_to_smc(adev, &ulv->pl,
+-					    &state->levels[0]);
++					    &state->level);
+ 	if (!ret) {
+ 		if (eg_pi->sclk_deep_sleep) {
+ 			if (sclk_in_sr <= SCLK_MIN_DEEPSLEEP_FREQ)
+-				state->levels[0].stateFlags |= PPSMC_STATEFLAG_DEEPSLEEP_BYPASS;
++				state->level.stateFlags |= PPSMC_STATEFLAG_DEEPSLEEP_BYPASS;
+ 			else
+-				state->levels[0].stateFlags |= PPSMC_STATEFLAG_DEEPSLEEP_THROTTLE;
++				state->level.stateFlags |= PPSMC_STATEFLAG_DEEPSLEEP_THROTTLE;
+ 		}
+ 		if (ulv->one_pcie_lane_in_ulv)
+ 			state->flags |= PPSMC_SWSTATE_FLAG_PCIE_X1;
+-		state->levels[0].arbRefreshState = (u8)(SISLANDS_ULV_STATE_ARB_INDEX);
+-		state->levels[0].ACIndex = 1;
+-		state->levels[0].std_vddc = state->levels[0].vddc;
++		state->level.arbRefreshState = (u8)(SISLANDS_ULV_STATE_ARB_INDEX);
++		state->level.ACIndex = 1;
++		state->level.std_vddc = state->level.vddc;
+ 		state->levelCount = 1;
+ 
+ 		state->flags |= PPSMC_SWSTATE_FLAG_DC;
+@@ -5190,7 +5190,9 @@ static int si_init_smc_table(struct amdgpu_device *adev)
+ 	if (ret)
+ 		return ret;
+ 
+-	table->driverState = table->initialState;
++	table->driverState.flags = table->initialState.flags;
++	table->driverState.levelCount = table->initialState.levelCount;
++	table->driverState.levels[0] = table->initialState.level;
+ 
+ 	ret = si_do_program_memory_timing_parameters(adev, amdgpu_boot_state,
+ 						     SISLANDS_INITIAL_STATE_ARB_INDEX);
+@@ -5737,8 +5739,8 @@ static int si_upload_ulv_state(struct amdgpu_device *adev)
+ 	if (ulv->supported && ulv->pl.vddc) {
+ 		u32 address = si_pi->state_table_start +
+ 			offsetof(SISLANDS_SMC_STATETABLE, ULVState);
+-		SISLANDS_SMC_SWSTATE *smc_state = &si_pi->smc_statetable.ULVState;
+-		u32 state_size = sizeof(SISLANDS_SMC_SWSTATE);
++		struct SISLANDS_SMC_SWSTATE_SINGLE *smc_state = &si_pi->smc_statetable.ULVState;
++		u32 state_size = sizeof(struct SISLANDS_SMC_SWSTATE_SINGLE);
+ 
+ 		memset(smc_state, 0, state_size);
+ 
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/sislands_smc.h b/drivers/gpu/drm/amd/pm/powerplay/sislands_smc.h
+index 0f7554052c90..c7dc117a688c 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/sislands_smc.h
++++ b/drivers/gpu/drm/amd/pm/powerplay/sislands_smc.h
+@@ -191,6 +191,14 @@ struct SISLANDS_SMC_SWSTATE
+ 
+ typedef struct SISLANDS_SMC_SWSTATE SISLANDS_SMC_SWSTATE;
+ 
++struct SISLANDS_SMC_SWSTATE_SINGLE {
++	uint8_t                             flags;
++	uint8_t                             levelCount;
++	uint8_t                             padding2;
++	uint8_t                             padding3;
++	SISLANDS_SMC_HW_PERFORMANCE_LEVEL   level;
++};
++
+ #define SISLANDS_SMC_VOLTAGEMASK_VDDC  0
+ #define SISLANDS_SMC_VOLTAGEMASK_MVDD  1
+ #define SISLANDS_SMC_VOLTAGEMASK_VDDCI 2
+@@ -208,19 +216,19 @@ typedef struct SISLANDS_SMC_VOLTAGEMASKTABLE SISLANDS_SMC_VOLTAGEMASKTABLE;
+ 
+ struct SISLANDS_SMC_STATETABLE
+ {
+-    uint8_t                             thermalProtectType;
+-    uint8_t                             systemFlags;
+-    uint8_t                             maxVDDCIndexInPPTable;
+-    uint8_t                             extraFlags;
+-    uint32_t                            lowSMIO[SISLANDS_MAX_NO_VREG_STEPS];
+-    SISLANDS_SMC_VOLTAGEMASKTABLE       voltageMaskTable;
+-    SISLANDS_SMC_VOLTAGEMASKTABLE       phaseMaskTable;
+-    PP_SIslands_DPM2Parameters          dpm2Params;
+-    SISLANDS_SMC_SWSTATE                initialState;
+-    SISLANDS_SMC_SWSTATE                ACPIState;
+-    SISLANDS_SMC_SWSTATE                ULVState;
+-    SISLANDS_SMC_SWSTATE                driverState;
+-    SISLANDS_SMC_HW_PERFORMANCE_LEVEL   dpmLevels[SISLANDS_MAX_SMC_PERFORMANCE_LEVELS_PER_SWSTATE - 1];
++	uint8_t					thermalProtectType;
++	uint8_t					systemFlags;
++	uint8_t					maxVDDCIndexInPPTable;
++	uint8_t					extraFlags;
++	uint32_t				lowSMIO[SISLANDS_MAX_NO_VREG_STEPS];
++	SISLANDS_SMC_VOLTAGEMASKTABLE		voltageMaskTable;
++	SISLANDS_SMC_VOLTAGEMASKTABLE		phaseMaskTable;
++	PP_SIslands_DPM2Parameters		dpm2Params;
++	struct SISLANDS_SMC_SWSTATE_SINGLE	initialState;
++	struct SISLANDS_SMC_SWSTATE_SINGLE	ACPIState;
++	struct SISLANDS_SMC_SWSTATE_SINGLE	ULVState;
++	SISLANDS_SMC_SWSTATE			driverState;
++	SISLANDS_SMC_HW_PERFORMANCE_LEVEL	dpmLevels[SISLANDS_MAX_SMC_PERFORMANCE_LEVELS_PER_SWSTATE];
+ };
+ 
+ typedef struct SISLANDS_SMC_STATETABLE SISLANDS_SMC_STATETABLE;
 -- 
 2.27.0
 
