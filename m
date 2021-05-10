@@ -2,63 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3C93799F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28EDF3799F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbhEJWVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:21:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58290 "EHLO mail.kernel.org"
+        id S233338AbhEJWVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:21:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231807AbhEJWVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232009AbhEJWVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 18:21:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1C04F61574;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 24F2A61585;
         Mon, 10 May 2021 22:20:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620685212;
-        bh=IGpo852VP0UBJMhzDDLnJgI8WU2p1gQKmQuCOOvO5Bc=;
+        bh=n5YjMWaeeJkUi6Bux0sq9OLNsVytDfxk91Vw8Qg+DqY=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ah8uiay4b5d5Gvt6fV8aCCP1s1o2xIWWJ7DfuH/xW12TUkBf5qzUX8gs+jsL6+xJK
-         wTGwCGIN0n9OdGFHluU7b0aFgrMInXhnZKnpjpRQa11tMzrs1z6BIP2hwOHAEpiu27
-         m/VstknEWvsSdeLLxi/TfFVfTMIJDilKtOpKw2eYotlDacn5QUMwmOHJO/LnF+r2sf
-         VcK4mXSbsR71zhxeI3PVFKzYgqUUid2ZFK28Yl/mo/C4r5uG7Dp27ZZnKTWA+xQ2lp
-         C1Y+nsO6EAfaxMi9FR+I9PgKMZCDbwXSdbEJHt0U7CPSUaSvJ6cz5WhlqjVxFlGt11
-         sdwY8gCzOVvTw==
+        b=tet7lBEmswNS92T2EIe4D6hJmJ3cksGYTTMCGn1x1l4KrEGI44LDrPaUP/KXdSFAs
+         lGaO5MozX9Ip8yjRVZ6CqHbHdbV1Lv0bzYDcmNgkVq+I3bFSBh9pLHr3lrx5zCnIAY
+         pJeQTpHPDBuCzphUhRs+7AWsfqA9EtZc2bQlK1Q9GUETLo7n1k686Q7JrKzirDHS4h
+         cmpWPaPrzYVDBS5QTNQ+rmyBcCijkviIZOlj+SqUWJSKGDi/XadKW/WySaZ68BwsC/
+         xqYby41KuKdgEy7ogpf6uxbrzQpx1QqpNDzqPQdKDirMYX5YSjwDLVzIdR0MG6+W1Y
+         zwL6N8efbyQow==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 104FC60A48;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1B4AF60CA9;
         Mon, 10 May 2021 22:20:12 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v1 1/1] atm: Replace custom isprint() with generic analogue
+Subject: Re: [PATCH net-next v1 1/4] net: mvpp2: Put fwnode in error case during
+ ->probe()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162068521206.17141.12558344137042579043.git-patchwork-notify@kernel.org>
+Message-Id: <162068521210.17141.12537485843274435664.git-patchwork-notify@kernel.org>
 Date:   Mon, 10 May 2021 22:20:12 +0000
-References: <20210510144909.58123-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210510144909.58123-1-andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, 3chas3@gmail.com, lkp@intel.com
+References: <20210510095808.3302997-1-andy.shevchenko@gmail.com>
+In-Reply-To: <20210510095808.3302997-1-andy.shevchenko@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mw@semihalf.com,
+        linux@armlinux.org.uk, kuba@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 10 May 2021 17:49:09 +0300 you wrote:
-> Custom isprint() definition may collide with one form ctype.h.
-> In order to avoid this, replace it with a functional analogue
-> which is isascii() && isprint() in this case.
+On Mon, 10 May 2021 12:58:05 +0300 you wrote:
+> In each iteration fwnode_for_each_available_child_node() bumps a reference
+> counting of a loop variable followed by dropping in on a next iteration,
 > 
-> First appearance of the code is in the commit 636b38438001
-> ("Import 2.3.43").
+> Since in error case the loop is broken, we have to drop a reference count
+> by ourselves. Do it for port_fwnode in error case during ->probe().
+> 
+> Fixes: 248122212f68 ("net: mvpp2: use device_*/fwnode_* APIs instead of of_*")
+> Cc: Marcin Wojtas <mw@semihalf.com>
+> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [v1,1/1] atm: Replace custom isprint() with generic analogue
-    https://git.kernel.org/netdev/net-next/c/532062b09956
+  - [net-next,v1,1/4] net: mvpp2: Put fwnode in error case during ->probe()
+    https://git.kernel.org/netdev/net-next/c/71f0891c84df
+  - [net-next,v1,2/4] net: mvpp2: Use device_get_match_data() helper
+    https://git.kernel.org/netdev/net-next/c/692b82c57f71
+  - [net-next,v1,3/4] net: mvpp2: Use devm_clk_get_optional()
+    https://git.kernel.org/netdev/net-next/c/cf3399b731d3
+  - [net-next,v1,4/4] net: mvpp2: Unshadow error code of device_property_read_u32()
+    https://git.kernel.org/netdev/net-next/c/584525554fd6
 
 You are awesome, thank you!
 --
