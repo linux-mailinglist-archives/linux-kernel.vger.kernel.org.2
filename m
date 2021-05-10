@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25B63786E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38F1378A02
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbhEJLLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:11:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41486 "EHLO mail.kernel.org"
+        id S240629AbhEJLgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:36:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233176AbhEJKtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:49:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 916D9619D1;
-        Mon, 10 May 2021 10:38:25 +0000 (UTC)
+        id S235002AbhEJK50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F390619D2;
+        Mon, 10 May 2021 10:50:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643106;
-        bh=kW+Kz7+iyT/blgzYJhQ6JJtZ8Tz4bngwHmfpwDRDbB8=;
+        s=korg; t=1620643856;
+        bh=+wccCjzA60YTh/aYIuzJXLgDe3FSQk+9jQJ1eYJtsCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jcoH33+iLsdQllw+k6qXQIqLwoPV1Sc2S7lkkIJzlZ7d6WKFNQ7J75wc4grH9QbIJ
-         WV2nROgdjYIc+kZXUeUJ1/OkVsfmMPq9SzmiilGKg7fXbJoW0wS0gLtrguQHlc6KHY
-         Ow5N5RqDndHtVGlhQjIs75YsUlTOJNSAnkwfvQ9Y=
+        b=e7Zu5BM3pfTb12J8Xol0wwpJCDFx2m7DL5Jx7katqX4uE83kny1aR2eFPqd19HRjT
+         bw9xYDQytGglGu/zF8YW/1OrMlS4GB/JhzkwQXSEs/x1zUdQfM0irvq3zSYBE8KJVo
+         9Nve5wj/Kv+UDZfsIU8zjI1+e0KygsoaDuwZ7uwk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Babu Moger <babu.moger@amd.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 180/299] media: i2c: adv7842: fix possible use-after-free in adv7842_remove()
-Date:   Mon, 10 May 2021 12:19:37 +0200
-Message-Id: <20210510102010.908442541@linuxfoundation.org>
+Subject: [PATCH 5.11 188/342] selftests/resctrl: Fix missing options "-n" and "-p"
+Date:   Mon, 10 May 2021 12:19:38 +0200
+Message-Id: <20210510102016.302742504@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Fenghua Yu <fenghua.yu@intel.com>
 
-[ Upstream commit 4a15275b6a18597079f18241c87511406575179a ]
+[ Upstream commit d7af3d0d515cbdf63b6c3398a3c15ecb1bc2bd38 ]
 
-This driver's remove path calls cancel_delayed_work(). However, that
-function does not wait until the work function finishes. This means
-that the callback function may still be running after the driver's
-remove function has finished, which would result in a use-after-free.
+resctrl test suite accepts command line arguments (like -b, -t, -n and -p)
+as documented in the help. But passing -n and -p throws an invalid option
+error. This happens because -n and -p are missing in the list of
+characters that getopt() recognizes as valid arguments. Hence, they are
+treated as invalid options.
 
-Fix by calling cancel_delayed_work_sync(), which ensures that
-the work is properly cancelled, no longer running, and unable
-to re-schedule itself.
+Fix this by adding them to the list of characters that getopt() recognizes
+as valid arguments. Please note that the main() function already has the
+logic to deal with the values passed as part of these arguments and hence
+no changes are needed there.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Tested-by: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/adv7842.c | 2 +-
+ tools/testing/selftests/resctrl/resctrl_tests.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/adv7842.c b/drivers/media/i2c/adv7842.c
-index 0855f648416d..f7d2b6cd3008 100644
---- a/drivers/media/i2c/adv7842.c
-+++ b/drivers/media/i2c/adv7842.c
-@@ -3586,7 +3586,7 @@ static int adv7842_remove(struct i2c_client *client)
- 	struct adv7842_state *state = to_state(sd);
+diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
+index 4b109a59f72d..ac2269610aa9 100644
+--- a/tools/testing/selftests/resctrl/resctrl_tests.c
++++ b/tools/testing/selftests/resctrl/resctrl_tests.c
+@@ -73,7 +73,7 @@ int main(int argc, char **argv)
+ 		}
+ 	}
  
- 	adv7842_irq_enable(sd, false);
--	cancel_delayed_work(&state->delayed_work_enable_hotplug);
-+	cancel_delayed_work_sync(&state->delayed_work_enable_hotplug);
- 	v4l2_device_unregister_subdev(sd);
- 	media_entity_cleanup(&sd->entity);
- 	adv7842_unregister_clients(sd);
+-	while ((c = getopt(argc_new, argv, "ht:b:")) != -1) {
++	while ((c = getopt(argc_new, argv, "ht:b:n:p:")) != -1) {
+ 		char *token;
+ 
+ 		switch (c) {
 -- 
 2.30.2
 
