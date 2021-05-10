@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5523378C27
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACE3378A90
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345880AbhEJMZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:25:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46276 "EHLO mail.kernel.org"
+        id S242617AbhEJLrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:47:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237101AbhEJLLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:11:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DC3261628;
-        Mon, 10 May 2021 11:06:57 +0000 (UTC)
+        id S233726AbhEJK7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:59:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43EE361876;
+        Mon, 10 May 2021 10:52:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644817;
-        bh=r8UFkN2AuDgHpPR55vbdoKDopD8eGlpX6lyOUa+cLq4=;
+        s=korg; t=1620643976;
+        bh=Ffa6ELVMUGV4itxSLyDqva7PAs6fN/3nhJDRmakNfq8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Iq9UN2WXXSSzOFzPzYqVpEFOl0020i6s5D8/WPSL1EIif81oEsthOx3YlR3WwtgAB
-         8wNunuJSU+5zDqOLmwYU5jhmmjfc+e+U9OKusRdh9KKeIajcTOUJDllqp+Us0wYgaJ
-         fmtkzT+RpKnTt/h4Cd/PcsdJ1KGi5NNAB/RLjuhI=
+        b=pMXa+luC1/eW6P6DFBBZ5hfhaozNc+Z8Pm7IP/Cj6z6jhTvOPIIJ0hYd7n1kLFm3m
+         BN5j2m0jtue36DRGAiim8CLGVfjVcLPc3cZJjOSTkKOvCsnNy4cZUaVRlewYLJV24j
+         9oWYsSLpBibYD9VaHHpZBPOTb/LmmW/cQNZTwGfw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+e7f4c64a4248a0340c37@syzkaller.appspotmail.com
-Subject: [PATCH 5.12 237/384] media: gscpa/stv06xx: fix memory leak
-Date:   Mon, 10 May 2021 12:20:26 +0200
-Message-Id: <20210510102022.699390759@linuxfoundation.org>
+        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 237/342] s390/archrandom: add parameter check for s390_arch_random_generate
+Date:   Mon, 10 May 2021 12:20:27 +0200
+Message-Id: <20210510102017.908200270@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
-References: <20210510102014.849075526@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,82 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+From: Harald Freudenberger <freude@linux.ibm.com>
 
-[ Upstream commit 4f4e6644cd876c844cdb3bea2dd7051787d5ae25 ]
+[ Upstream commit 28096067686c5a5cbd4c35b079749bd805df5010 ]
 
-For two of the supported sensors the stv06xx driver allocates memory which
-is stored in sd->sensor_priv. This memory is freed on a disconnect, but if
-the probe() fails, then it isn't freed and so this leaks memory.
+A review of the code showed, that this function which is exposed
+within the whole kernel should do a parameter check for the
+amount of bytes requested. If this requested bytes is too high
+an unsigned int overflow could happen causing this function to
+try to memcpy a really big memory chunk.
 
-Add a new probe_error() op that drivers can use to free any allocated
-memory in case there was a probe failure.
+This is not a security issue as there are only two invocations
+of this function from arch/s390/include/asm/archrandom.h and both
+are not exposed to userland.
 
-Thanks to Pavel Skripkin <paskripkin@gmail.com> for discovering the cause
-of the memory leak.
-
-Reported-and-tested-by: syzbot+e7f4c64a4248a0340c37@syzkaller.appspotmail.com
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reported-by: Sven Schnelle <svens@linux.ibm.com>
+Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/gspca/gspca.c           | 2 ++
- drivers/media/usb/gspca/gspca.h           | 1 +
- drivers/media/usb/gspca/stv06xx/stv06xx.c | 9 +++++++++
- 3 files changed, 12 insertions(+)
+ arch/s390/crypto/arch_random.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/media/usb/gspca/gspca.c b/drivers/media/usb/gspca/gspca.c
-index 158c8e28ed2c..47d8f28bfdfc 100644
---- a/drivers/media/usb/gspca/gspca.c
-+++ b/drivers/media/usb/gspca/gspca.c
-@@ -1576,6 +1576,8 @@ out:
- #endif
- 	v4l2_ctrl_handler_free(gspca_dev->vdev.ctrl_handler);
- 	v4l2_device_unregister(&gspca_dev->v4l2_dev);
-+	if (sd_desc->probe_error)
-+		sd_desc->probe_error(gspca_dev);
- 	kfree(gspca_dev->usb_buf);
- 	kfree(gspca_dev);
- 	return ret;
-diff --git a/drivers/media/usb/gspca/gspca.h b/drivers/media/usb/gspca/gspca.h
-index b0ced2e14006..a6554d5e9e1a 100644
---- a/drivers/media/usb/gspca/gspca.h
-+++ b/drivers/media/usb/gspca/gspca.h
-@@ -105,6 +105,7 @@ struct sd_desc {
- 	cam_cf_op config;	/* called on probe */
- 	cam_op init;		/* called on probe and resume */
- 	cam_op init_controls;	/* called on probe */
-+	cam_v_op probe_error;	/* called if probe failed, do cleanup here */
- 	cam_op start;		/* called on stream on after URBs creation */
- 	cam_pkt_op pkt_scan;
- /* optional operations */
-diff --git a/drivers/media/usb/gspca/stv06xx/stv06xx.c b/drivers/media/usb/gspca/stv06xx/stv06xx.c
-index 95673fc0a99c..d9bc2aacc885 100644
---- a/drivers/media/usb/gspca/stv06xx/stv06xx.c
-+++ b/drivers/media/usb/gspca/stv06xx/stv06xx.c
-@@ -529,12 +529,21 @@ static int sd_int_pkt_scan(struct gspca_dev *gspca_dev,
- static int stv06xx_config(struct gspca_dev *gspca_dev,
- 			  const struct usb_device_id *id);
+diff --git a/arch/s390/crypto/arch_random.c b/arch/s390/crypto/arch_random.c
+index 7b947728d57e..56007c763902 100644
+--- a/arch/s390/crypto/arch_random.c
++++ b/arch/s390/crypto/arch_random.c
+@@ -54,6 +54,10 @@ static DECLARE_DELAYED_WORK(arch_rng_work, arch_rng_refill_buffer);
  
-+static void stv06xx_probe_error(struct gspca_dev *gspca_dev)
-+{
-+	struct sd *sd = (struct sd *)gspca_dev;
+ bool s390_arch_random_generate(u8 *buf, unsigned int nbytes)
+ {
++	/* max hunk is ARCH_RNG_BUF_SIZE */
++	if (nbytes > ARCH_RNG_BUF_SIZE)
++		return false;
 +
-+	kfree(sd->sensor_priv);
-+	sd->sensor_priv = NULL;
-+}
-+
- /* sub-driver description */
- static const struct sd_desc sd_desc = {
- 	.name = MODULE_NAME,
- 	.config = stv06xx_config,
- 	.init = stv06xx_init,
- 	.init_controls = stv06xx_init_controls,
-+	.probe_error = stv06xx_probe_error,
- 	.start = stv06xx_start,
- 	.stopN = stv06xx_stopN,
- 	.pkt_scan = stv06xx_pkt_scan,
+ 	/* lock rng buffer */
+ 	if (!spin_trylock(&arch_rng_lock))
+ 		return false;
 -- 
 2.30.2
 
