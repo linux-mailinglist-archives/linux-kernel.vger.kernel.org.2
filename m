@@ -2,89 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7856379278
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9976537927A
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231769AbhEJPWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 11:22:12 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3049 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235514AbhEJPVE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 11:21:04 -0400
-Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Ff4Jv1p9Cz6wjnc;
-        Mon, 10 May 2021 23:11:43 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 10 May 2021 17:19:56 +0200
-Received: from localhost (10.52.123.16) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 10 May
- 2021 16:19:56 +0100
-Date:   Mon, 10 May 2021 16:18:14 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, Ben Widawsky <ben.widawsky@intel.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-acpi@vger.kernel.org>
-Subject: Re: [PATCH 6/8] cxl/Kconfig: Default drivers to CONFIG_CXL_BUS
-Message-ID: <20210510161814.00007e99@Huawei.com>
-In-Reply-To: <162042791307.1202325.2513845748708305095.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <162042787450.1202325.5718541949681409566.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <162042791307.1202325.2513845748708305095.stgit@dwillia2-desk3.amr.corp.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S237433AbhEJPWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 11:22:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56766 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234617AbhEJPVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 11:21:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 56046AD5C;
+        Mon, 10 May 2021 15:20:02 +0000 (UTC)
+Subject: Re: [PATCH v2] mm: kmalloc_index: make compiler break when size is
+ not supported
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210508221328.7338-1-42.hyeyoo@gmail.com>
+ <YJccjBMBiwLqFrB8@casper.infradead.org>
+ <CAB=+i9QyxOu_1QDfX5QA=pOxxnRURPnwd2Y0EbhoO1u0e=irBA@mail.gmail.com>
+ <c305ec02-a7d6-dd0c-bfee-e5b571d9ca9a@suse.cz> <20210510135857.GA3594@hyeyoo>
+ <9d0ffe49-a2e2-6c81-377b-4c8d2147dff8@suse.cz>
+ <20210510150230.GA74915@hyeyoo>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <90591d7e-41e4-9ae5-54ae-ded467c498cf@suse.cz>
+Date:   Mon, 10 May 2021 17:19:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <20210510150230.GA74915@hyeyoo>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.123.16]
-X-ClientProxiedBy: lhreml720-chm.china.huawei.com (10.201.108.71) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 7 May 2021 15:51:53 -0700
-Dan Williams <dan.j.williams@intel.com> wrote:
-
-> CONFIG_CXL_BUS is default 'n' as expected for new functionality. When
-> that is enabled do not make the end user hunt for all the expected
-> sub-options to enable. For example CONFIG_CXL_BUS without CONFIG_CXL_MEM
-> is an odd/expert configuration, so is CONFIG_CXL_MEM without
-> CONFIG_CXL_ACPI (on ACPI capable platforms). Default CONFIG_CXL_MEM and
-> CONFIG_CXL_ACPI to CONFIG_CXL_BUS.
+On 5/10/21 5:02 PM, Hyeonggon Yoo wrote:
+> updated patch. let me know if something is wrong!
 > 
-> Acked-by: Ben Widawsky <ben.widawsky@intel.com>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> 
+> 0001-mm-kmalloc_index-make-compiler-break-when-size-is-no.patch
+> 
+> From 8fe7ecdfb0f5bd5b08771512303d72f1c6447362 Mon Sep 17 00:00:00 2001
+> From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+> Date: Mon, 10 May 2021 23:57:34 +0900
+> Subject: [PATCH] mm: kmalloc_index: make compiler break when size is not
+>  supported
 
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+I'd rephrase the subject:
+mm, slub: change run-time assertion in kmalloc_index() to compile-time
 
+> currently when size is not supported by kmalloc_index, compiler will not
+> break.
+
+"... compiler will generate a run-time BUG() while a compile-time error is also
+possible, and better"
+
+> so changed BUG to BUILD_BUG_ON_MSG to make compiler break if size is
+> wrong. this is done in compile time.
+> 
+> also removed code that allocates more than 32MB because current
+> implementation supports only up to 32MB.
+> 
+> Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 > ---
->  drivers/cxl/Kconfig |    2 ++
->  1 file changed, 2 insertions(+)
+>  include/linux/slab.h | 7 +++++--
+>  mm/slab_common.c     | 7 +++----
+>  2 files changed, 8 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
-> index fb282af84afd..1da7970a5e55 100644
-> --- a/drivers/cxl/Kconfig
-> +++ b/drivers/cxl/Kconfig
-> @@ -15,6 +15,7 @@ if CXL_BUS
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index 0c97d788762c..fd0c7229d105 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -346,6 +346,9 @@ static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
+>   * 1 =  65 .. 96 bytes
+>   * 2 = 129 .. 192 bytes
+>   * n = 2^(n-1)+1 .. 2^n
+> + *
+> + * Note: you don't need to optimize kmalloc_index because it's evaluated
+
+"there's no need to..."
+
+> + * in compile-time.
+>   */
+>  static __always_inline unsigned int kmalloc_index(size_t size)
+>  {
+> @@ -382,8 +385,8 @@ static __always_inline unsigned int kmalloc_index(size_t size)
+>  	if (size <=  8 * 1024 * 1024) return 23;
+>  	if (size <=  16 * 1024 * 1024) return 24;
+>  	if (size <=  32 * 1024 * 1024) return 25;
+> -	if (size <=  64 * 1024 * 1024) return 26;
+> -	BUG();
+> +
+> +	BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
 >  
->  config CXL_MEM
->  	tristate "CXL.mem: Memory Devices"
-> +	default CXL_BUS
->  	help
->  	  The CXL.mem protocol allows a device to act as a provider of
->  	  "System RAM" and/or "Persistent Memory" that is fully coherent
-> @@ -54,6 +55,7 @@ config CXL_MEM_RAW_COMMANDS
->  config CXL_ACPI
->  	tristate "CXL ACPI: Platform Support"
->  	depends on ACPI
-> +	default CXL_BUS
->  	help
->  	  Enable support for host managed device memory (HDM) resources
->  	  published by a platform's ACPI CXL memory layout description.
+>  	/* Will never be reached. Needed because the compiler may complain */
+>  	return -1;
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index f8833d3e5d47..39d4eca8cf9b 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -745,8 +745,8 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
+>  
+>  /*
+>   * kmalloc_info[] is to make slub_debug=,kmalloc-xx option work at boot time.
+> - * kmalloc_index() supports up to 2^26=64MB, so the final entry of the table is
+> - * kmalloc-67108864.
+> + * kmalloc_index() supports up to 2^25=32MB, so the final entry of the table is
+> + * kmalloc-33554432.
+
+      kmalloc-32M
+
+>   */
+>  const struct kmalloc_info_struct kmalloc_info[] __initconst = {
+>  	INIT_KMALLOC_INFO(0, 0),
+> @@ -774,8 +774,7 @@ const struct kmalloc_info_struct kmalloc_info[] __initconst = {
+>  	INIT_KMALLOC_INFO(4194304, 4M),
+>  	INIT_KMALLOC_INFO(8388608, 8M),
+>  	INIT_KMALLOC_INFO(16777216, 16M),
+> -	INIT_KMALLOC_INFO(33554432, 32M),
+> -	INIT_KMALLOC_INFO(67108864, 64M)
+> +	INIT_KMALLOC_INFO(33554432, 32M)
+>  };
+>  
+>  /*
 > 
 
+Thanks
