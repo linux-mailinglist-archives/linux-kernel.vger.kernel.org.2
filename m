@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B222378673
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB6B378A32
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236389AbhEJLH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:07:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33618 "EHLO mail.kernel.org"
+        id S239294AbhEJLfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:35:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232270AbhEJKrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:47:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 237CE619B2;
-        Mon, 10 May 2021 10:37:36 +0000 (UTC)
+        id S234934AbhEJK5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D79B761C2F;
+        Mon, 10 May 2021 10:50:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643057;
-        bh=Lw6vE4UcBrY7WNNZ9dvZ6+mazSAp9vuX80l+b5VsBCo=;
+        s=korg; t=1620643832;
+        bh=tCP26YbwEpPEeLdj2qXeWKhdyg5mohmzE7NfUrQ93+I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hIOoqqQhzFFC4JdE08I7lHIlcNd2Oo9JOdIeM0C1Ub7OyxcQ0zJY9ZYjNcbiKQSm6
-         lzn5nIyIP/QWQGnt2p/iSx8htXKIEMe8Lm0jDpFkuK+q+5qWDt5Bx8gFDybDsH0RXW
-         ufR9p9Z7wF2WODcBKLbjyACoEVwlYUwBcQ2ge3HA=
+        b=uHGl161yyrRvv/i1LczNa3D8QsZUAygdxr5hxaLoc5UqYuZoYKoV3iG5KERv08PT9
+         Kuiari00xTcKeGyXWV0olVewCMWOOt2/zh97oCeAJCyoT1H71P0XR6sJ8AcmRldULl
+         dEb7mtNXtJ2yixttybGlyQuvhyvekk3i1yNwYHYU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Emily Deng <Emily.Deng@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+        Gerd Hoffmann <kraxel@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 125/299] drm/amdgpu: Fix some unload driver issues
+Subject: [PATCH 5.11 132/342] drm/ast: Fix invalid usage of AST_MAX_HWC_WIDTH in cursor atomic_check
 Date:   Mon, 10 May 2021 12:18:42 +0200
-Message-Id: <20210510102009.105715197@linuxfoundation.org>
+Message-Id: <20210510102014.436114083@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Emily Deng <Emily.Deng@amd.com>
+From: Thomas Zimmermann <tzimmermann@suse.de>
 
-[ Upstream commit bb0cd09be45ea457f25fdcbcb3d6cf2230f26c46 ]
+[ Upstream commit ee4a92d690f30f3793df942939726bec0338e65b ]
 
-When unloading driver after killing some applications, it will hit sdma
-flush tlb job timeout which is called by ttm_bo_delay_delete. So
-to avoid the job submit after fence driver fini, call ttm_bo_lock_delayed_workqueue
-before fence driver fini. And also put drm_sched_fini before waiting fence.
+Use AST_MAX_HWC_HEIGHT for setting offset_y in the cursor plane's
+atomic_check. The code used AST_MAX_HWC_WIDTH instead. This worked
+because both constants has the same value.
 
-Signed-off-by: Emily Deng <Emily.Deng@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Acked-by: Gerd Hoffmann <kraxel@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210209134632.12157-3-tzimmermann@suse.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 1 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c  | 5 +++--
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/ast/ast_mode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index 76d10f1c579b..7f2689d4b86d 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -3551,6 +3551,7 @@ void amdgpu_device_fini(struct amdgpu_device *adev)
- {
- 	dev_info(adev->dev, "amdgpu: finishing device.\n");
- 	flush_delayed_work(&adev->delayed_init_work);
-+	ttm_bo_lock_delayed_workqueue(&adev->mman.bdev);
- 	adev->shutdown = true;
+diff --git a/drivers/gpu/drm/ast/ast_mode.c b/drivers/gpu/drm/ast/ast_mode.c
+index 9db371f4054f..c86ed2ffb725 100644
+--- a/drivers/gpu/drm/ast/ast_mode.c
++++ b/drivers/gpu/drm/ast/ast_mode.c
+@@ -688,7 +688,7 @@ ast_cursor_plane_helper_atomic_update(struct drm_plane *plane,
+ 	unsigned int offset_x, offset_y;
  
- 	kfree(adev->pci_state);
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
-index fe2d495d08ab..d07c458c0bed 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
-@@ -532,6 +532,8 @@ void amdgpu_fence_driver_fini(struct amdgpu_device *adev)
+ 	offset_x = AST_MAX_HWC_WIDTH - fb->width;
+-	offset_y = AST_MAX_HWC_WIDTH - fb->height;
++	offset_y = AST_MAX_HWC_HEIGHT - fb->height;
  
- 		if (!ring || !ring->fence_drv.initialized)
- 			continue;
-+		if (!ring->no_scheduler)
-+			drm_sched_fini(&ring->sched);
- 		r = amdgpu_fence_wait_empty(ring);
- 		if (r) {
- 			/* no need to trigger GPU reset as we are unloading */
-@@ -540,8 +542,7 @@ void amdgpu_fence_driver_fini(struct amdgpu_device *adev)
- 		if (ring->fence_drv.irq_src)
- 			amdgpu_irq_put(adev, ring->fence_drv.irq_src,
- 				       ring->fence_drv.irq_type);
--		if (!ring->no_scheduler)
--			drm_sched_fini(&ring->sched);
-+
- 		del_timer_sync(&ring->fence_drv.fallback_timer);
- 		for (j = 0; j <= ring->fence_drv.num_fences_mask; ++j)
- 			dma_fence_put(ring->fence_drv.fences[j]);
+ 	if (state->fb != old_state->fb) {
+ 		/* A new cursor image was installed. */
 -- 
 2.30.2
 
