@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F1E378AE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58114378ACE
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242126AbhEJLzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:55:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35596 "EHLO mail.kernel.org"
+        id S233218AbhEJLwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:52:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234684AbhEJLFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:05:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21D83610A7;
-        Mon, 10 May 2021 10:55:06 +0000 (UTC)
+        id S233219AbhEJLBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:01:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62F1D61C50;
+        Mon, 10 May 2021 10:53:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644107;
-        bh=C1dqAl8yM/FcmpKUv7/eSkotv/kH+Fip/4XB2HDQ1OA=;
+        s=korg; t=1620644020;
+        bh=HYu738Z9hfd84mR0bu7eMoQor2MK106Intwa8Fm57JE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2ZrFvDkrrTYQGEao0EzcC7CxC0kf0W2oLVRC0fy/czA7it6/2q3Ckw8aM6YFtVDMG
-         /hOC0xmACZlXI5BycIAEuznyYsQiE8eQEFgsRStH6fYXqXPnq5dC43dczw2y3xqChh
-         v8GcttqTsBIDqmI9P6coaNirGrNdQ2SyYkQGWb7g=
+        b=o4AsCKbSUZ759o+AH0frD+EZZ3GoeFawhkvNEOpSWUEVIRwMpi3ysTPeUezhwnspD
+         PDg1L3Vr/bzm9q3hNA0pRjLwjlJ7JmQsEm9Uag3EF19a5JqivqCSnFPVCIPFTNwSDO
+         x/ZlxTVXLVGCH5x+cMxbbXYKtE+BACu3TjMSmx4Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.11 255/342] fs: fix reporting supported extra file attributes for statx()
-Date:   Mon, 10 May 2021 12:20:45 +0200
-Message-Id: <20210510102018.528621214@linuxfoundation.org>
+        stable@vger.kernel.org, Luis Henriques <lhenriques@suse.de>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.11 256/342] virtiofs: fix memory leak in virtio_fs_probe()
+Date:   Mon, 10 May 2021 12:20:46 +0200
+Message-Id: <20210510102018.559834612@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
 References: <20210510102010.096403571@linuxfoundation.org>
@@ -39,51 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+From: Luis Henriques <lhenriques@suse.de>
 
-commit 5afa7e8b70d65819245fece61a65fd753b4aae33 upstream.
+commit c79c5e0178922a9e092ec8fed026750f39dcaef4 upstream.
 
-statx(2) notes that any attribute that is not indicated as supported
-by stx_attributes_mask has no usable value.  Commits 801e523796004
-("fs: move generic stat response attr handling to vfs_getattr_nosec")
-and 712b2698e4c02 ("fs/stat: Define DAX statx attribute") sets
-STATX_ATTR_AUTOMOUNT and STATX_ATTR_DAX, respectively, without setting
-stx_attributes_mask, which can cause xfstests generic/532 to fail.
+When accidentally passing twice the same tag to qemu, kmemleak ended up
+reporting a memory leak in virtiofs.  Also, looking at the log I saw the
+following error (that's when I realised the duplicated tag):
 
-Fix this in the same way as commit 1b9598c8fb99 ("xfs: fix reporting
-supported extra file attributes for statx()")
+  virtiofs: probe of virtio5 failed with error -17
 
-Fixes: 801e523796004 ("fs: move generic stat response attr handling to vfs_getattr_nosec")
-Fixes: 712b2698e4c02 ("fs/stat: Define DAX statx attribute")
-Cc: stable@kernel.org
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Here's the kmemleak log for reference:
+
+unreferenced object 0xffff888103d47800 (size 1024):
+  comm "systemd-udevd", pid 118, jiffies 4294893780 (age 18.340s)
+  hex dump (first 32 bytes):
+    00 00 00 00 ad 4e ad de ff ff ff ff 00 00 00 00  .....N..........
+    ff ff ff ff ff ff ff ff 80 90 02 a0 ff ff ff ff  ................
+  backtrace:
+    [<000000000ebb87c1>] virtio_fs_probe+0x171/0x7ae [virtiofs]
+    [<00000000f8aca419>] virtio_dev_probe+0x15f/0x210
+    [<000000004d6baf3c>] really_probe+0xea/0x430
+    [<00000000a6ceeac8>] device_driver_attach+0xa8/0xb0
+    [<00000000196f47a7>] __driver_attach+0x98/0x140
+    [<000000000b20601d>] bus_for_each_dev+0x7b/0xc0
+    [<00000000399c7b7f>] bus_add_driver+0x11b/0x1f0
+    [<0000000032b09ba7>] driver_register+0x8f/0xe0
+    [<00000000cdd55998>] 0xffffffffa002c013
+    [<000000000ea196a2>] do_one_initcall+0x64/0x2e0
+    [<0000000008f727ce>] do_init_module+0x5c/0x260
+    [<000000003cdedab6>] __do_sys_finit_module+0xb5/0x120
+    [<00000000ad2f48c6>] do_syscall_64+0x33/0x40
+    [<00000000809526b5>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Luis Henriques <lhenriques@suse.de>
+Fixes: a62a8ef9d97d ("virtio-fs: add virtiofs filesystem")
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+Reviewed-by: Vivek Goyal <vgoyal@redhat.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/stat.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ fs/fuse/virtio_fs.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/stat.c
-+++ b/fs/stat.c
-@@ -77,12 +77,20 @@ int vfs_getattr_nosec(const struct path
- 	/* SB_NOATIME means filesystem supplies dummy atime value */
- 	if (inode->i_sb->s_flags & SB_NOATIME)
- 		stat->result_mask &= ~STATX_ATIME;
-+
-+	/*
-+	 * Note: If you add another clause to set an attribute flag, please
-+	 * update attributes_mask below.
-+	 */
- 	if (IS_AUTOMOUNT(inode))
- 		stat->attributes |= STATX_ATTR_AUTOMOUNT;
+--- a/fs/fuse/virtio_fs.c
++++ b/fs/fuse/virtio_fs.c
+@@ -896,6 +896,7 @@ static int virtio_fs_probe(struct virtio
+ out_vqs:
+ 	vdev->config->reset(vdev);
+ 	virtio_fs_cleanup_vqs(vdev, fs);
++	kfree(fs->vqs);
  
- 	if (IS_DAX(inode))
- 		stat->attributes |= STATX_ATTR_DAX;
- 
-+	stat->attributes_mask |= (STATX_ATTR_AUTOMOUNT |
-+				  STATX_ATTR_DAX);
-+
- 	if (inode->i_op->getattr)
- 		return inode->i_op->getattr(path, stat, request_mask,
- 					    query_flags);
+ out:
+ 	vdev->priv = NULL;
 
 
