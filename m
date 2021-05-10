@@ -2,125 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFDC379161
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28AA9379172
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233467AbhEJOx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:53:26 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38034 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238982AbhEJOvo (ORCPT
+        id S240398AbhEJOyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:54:09 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:47600 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233675AbhEJOwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:51:44 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14AEoYJO061466;
-        Mon, 10 May 2021 09:50:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620658234;
-        bh=k3M3vsY+Vv6I4tjLGCiHaQIWbnPSEqzsLpCUZZggwOo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=ZAkf8FrKXZO+0KkHZGSHr7NR4ZP6uZjdwUyR07ltB6Q7IpDZJ2ARaaWFQtQzkBHiV
-         8gkwguXgv/8KP15PTFmbIaJMs2p1pjJ5ILku3ZCW7uvjrJCdNjfNUraKPA9rw5S4CY
-         k/iUN7rfGMg4yaAJZltqYcMaHqsMUSlMrFMOiCWo=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14AEoYAk126516
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 10 May 2021 09:50:34 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 10
- May 2021 09:50:34 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 10 May 2021 09:50:34 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14AEoYP1008334;
-        Mon, 10 May 2021 09:50:34 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Tero Kristo <kristo@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>
-Subject: [PATCH 1/4] arm64: dts: ti: k3-*: Rename the TI-SCI clocks node name
-Date:   Mon, 10 May 2021 09:50:30 -0500
-Message-ID: <20210510145033.7426-2-nm@ti.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210510145033.7426-1-nm@ti.com>
-References: <20210510145033.7426-1-nm@ti.com>
+        Mon, 10 May 2021 10:52:05 -0400
+Received: from 111-240-141-101.dynamic-ip.hinet.net ([111.240.141.101] helo=localhost.localdomain)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <chris.chiu@canonical.com>)
+        id 1lg7FJ-0007Dv-SM; Mon, 10 May 2021 14:50:58 +0000
+From:   chris.chiu@canonical.com
+To:     stern@rowland.harvard.edu, gregkh@linuxfoundation.org,
+        m.v.b@runbox.com, hadess@hadess.net
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Chiu <chris.chiu@canonical.com>
+Subject: [PATCH v2 2/2] Revert "USB: Add reset-resume quirk for WD19's Realtek Hub"
+Date:   Mon, 10 May 2021 22:50:30 +0800
+Message-Id: <20210510145030.1495-3-chris.chiu@canonical.com>
+X-Mailer: git-send-email 2.21.1 (Apple Git-122.3)
+In-Reply-To: <20210510145030.1495-1-chris.chiu@canonical.com>
+References: <20210510145030.1495-1-chris.chiu@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We currently use clocks as the node name for the node representing
-TI-SCI clock nodes. This is better renamed to being clock-controller
-as that is a better representative of the system controller function
-as a clock controller for the SoC.
+From: Chris Chiu <chris.chiu@canonical.com>
 
-Signed-off-by: Nishanth Menon <nm@ti.com>
+This reverts commit ca91fd8c7643d93bfc18a6fec1a0d3972a46a18a. The
+problematic hub should be taken care for each setting PORT_SUSPEND
+feature timeout instead of reset-resume all the time.
+
+Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
 ---
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi        | 2 +-
- arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi      | 2 +-
- arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi | 2 +-
- arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/usb/core/quirks.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-index b2bcbf23eefd..e1216073e3df 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-@@ -148,7 +148,7 @@ k3_pds: power-controller {
- 			#power-domain-cells = <2>;
- 		};
+diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+index 21e7522655ac..6114cf83bb44 100644
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -406,7 +406,6 @@ static const struct usb_device_id usb_quirk_list[] = {
  
--		k3_clks: clocks {
-+		k3_clks: clock-controller {
- 			compatible = "ti,k2g-sci-clk";
- 			#clock-cells = <2>;
- 		};
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
-index ed42f13e7663..2ae1f9214b8a 100644
---- a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
-@@ -23,7 +23,7 @@ k3_pds: power-controller {
- 			#power-domain-cells = <2>;
- 		};
+ 	/* Realtek hub in Dell WD19 (Type-C) */
+ 	{ USB_DEVICE(0x0bda, 0x0487), .driver_info = USB_QUIRK_NO_LPM },
+-	{ USB_DEVICE(0x0bda, 0x5487), .driver_info = USB_QUIRK_RESET_RESUME },
  
--		k3_clks: clocks {
-+		k3_clks: clock-controller {
- 			compatible = "ti,k2g-sci-clk";
- 			#clock-cells = <2>;
- 		};
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-index 5e74e43822c3..9dba2df3569f 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-@@ -23,7 +23,7 @@ k3_pds: power-controller {
- 			#power-domain-cells = <2>;
- 		};
- 
--		k3_clks: clocks {
-+		k3_clks: clock-controller {
- 			compatible = "ti,k2g-sci-clk";
- 			#clock-cells = <2>;
- 		};
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-index d56e3475aee7..b83801feeb10 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-@@ -23,7 +23,7 @@ k3_pds: power-controller {
- 			#power-domain-cells = <2>;
- 		};
- 
--		k3_clks: clocks {
-+		k3_clks: clock-controller {
- 			compatible = "ti,k2g-sci-clk";
- 			#clock-cells = <2>;
- 		};
+ 	/* Generic RTL8153 based ethernet adapters */
+ 	{ USB_DEVICE(0x0bda, 0x8153), .driver_info = USB_QUIRK_NO_LPM },
 -- 
-2.31.0
+2.20.1
 
