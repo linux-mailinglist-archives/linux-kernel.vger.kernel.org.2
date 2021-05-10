@@ -2,123 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF85378DE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614E7378DEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350167AbhEJM4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:56:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36570 "EHLO
+        id S1350219AbhEJM4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:56:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346892AbhEJMcw (ORCPT
+        with ESMTP id S1346986AbhEJMdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 08:32:52 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7652AC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:25:23 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lg4yK-0006PI-Q0; Mon, 10 May 2021 14:25:16 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:80ab:77d5:ac71:3f91])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id AEB03621482;
-        Mon, 10 May 2021 12:25:13 +0000 (UTC)
-Date:   Mon, 10 May 2021 14:25:12 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Gianluca Falavigna <gianluca.falavigna@inwind.it>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 3/3] can: c_can: cache frames to operate as a true FIFO
-Message-ID: <20210510122512.5lcvvvwzk6ujamzb@pengutronix.de>
-References: <20210509124309.30024-1-dariobin@libero.it>
- <20210509124309.30024-4-dariobin@libero.it>
+        Mon, 10 May 2021 08:33:06 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9706C06123F;
+        Mon, 10 May 2021 05:26:09 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id q186so930577ljq.8;
+        Mon, 10 May 2021 05:26:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=j28BzUpIKRTnonhZ9O0uQVwNvZfw8g36Oo4gUhmWtik=;
+        b=Zz27Lf7qIqSjK4ZI+aR0IJ9nK2qZt6aL28GU/G+gfVFpoBv9sGtC9dC5lIVFHww/7P
+         bEZHj8sdPCNYc3E/EDqc332H8beriFcV4vsp1/b3RP+rz4JkbVhSVvx5aFb/8drBIRZ9
+         5e+JjBOs3rA46Vb88syHDSQCTcC4CdJt0ebl0uakRPiSK+DvM7XK+/wB8/34bVzsSgto
+         nvzmXfLmyh375Nzq8AOt4U1tT14qTVi0wZp+3hgBGgAjXaT6N9M1ezsNVqcohVjT+ov0
+         LqzH48ceGN916e09G5/qt9NTxLTEE2kqmZ/X5VUypo76tqcFmGs0nhVSoRaoAnKx4NG8
+         qwTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=j28BzUpIKRTnonhZ9O0uQVwNvZfw8g36Oo4gUhmWtik=;
+        b=EuRYEwCK7+aB9eWqROJ1XWf/YDz22QJXrkaxGwdgs2jUmdIJmxeFQoxlXxoCItR5iN
+         vuqELcxD3ov6PaX3kVM6WG596RQbc0Zt7bnVFIcczzpoXLJMzoZDnyaIFTg+Q7qdvWly
+         vcUchgrnRHDNtod5Y/2HonsfPAQd5QMj5/x+UCCdWbbOTLQOpM9NXWV+8nJHJ03Dg6Uf
+         xXTvLm5F7XtgTKvgN04GgsEGwFubcCNN/LgfuaMSi+5Zksuz0Hc1Wk/1Hiy5N8iGdy5F
+         gETR6k5tUcIA9L8xCbLH6Nr0wx/XB03PMhUbZLU22PoSFDTWAzULavYTGWEIPJ1TAj/K
+         UU/g==
+X-Gm-Message-State: AOAM532J7somIiH116iznaGJCPYkS2WNggpuRqScXfH+mchfZJqNxNBu
+        yux7g4QdFeH/hKIxorS9Xd7N1UJSziA=
+X-Google-Smtp-Source: ABdhPJwlZ+hniuV/V3LLIaCld7lAnnvjREuO4c85FmndhkAxGiaw9UdiF6fYd5Od6Eu7Z0KZ+0v3XQ==
+X-Received: by 2002:a2e:b4f3:: with SMTP id s19mr19847967ljm.229.1620649568119;
+        Mon, 10 May 2021 05:26:08 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.googlemail.com with ESMTPSA id x1sm3127652ljd.61.2021.05.10.05.26.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 05:26:07 -0700 (PDT)
+Subject: Re: [PATCH v5 05/25] staging: media: tegra-vde: use
+ pm_runtime_resume_and_get()
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-tegra@vger.kernel.org
+References: <cover.1620314616.git.mchehab+huawei@kernel.org>
+ <a1230241a83a6abcd27b91edcafee1685232f81e.1620314616.git.mchehab+huawei@kernel.org>
+ <20210507051333.GE1955@kadam>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <19a73d97-3679-0c1d-eefc-a944971effac@gmail.com>
+Date:   Mon, 10 May 2021 15:26:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2ih2q34cstztikmf"
-Content-Disposition: inline
-In-Reply-To: <20210509124309.30024-4-dariobin@libero.it>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210507051333.GE1955@kadam>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+07.05.2021 08:13, Dan Carpenter пишет:
+> On Thu, May 06, 2021 at 05:25:43PM +0200, Mauro Carvalho Chehab wrote:
+>> @@ -1069,11 +1071,19 @@ static int tegra_vde_probe(struct platform_device *pdev)
+>>  	 * power-cycle it in order to put hardware into a predictable lower
+>>  	 * power state.
+>>  	 */
+>> -	pm_runtime_get_sync(dev);
+>> +	if (pm_runtime_resume_and_get(dev) < 0)
+>> +		goto err_pm_runtime;
+> 
+> Needs an error code on this path.  These days the kbuild bot will send
+> a warning for this eventually.
 
---2ih2q34cstztikmf
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 09.05.2021 14:43:09, Dario Binacchi wrote:
-> As reported by a comment in the c_can_start_xmit() this was not a FIFO.
-> C/D_CAN controller sends out the buffers prioritized so that the lowest
-> buffer number wins.
->=20
-> What did c_can_start_xmit() do if it found tx_active =3D 0x80000000 ? It
-> waited until the only frame of the FIFO was actually transmitted by the
-> controller. Only one message in the FIFO but we had to wait for it to
-> empty completely to ensure that the messages were transmitted in the
-> order in which they were loaded.
->=20
-> By storing the frames in the FIFO without requiring its transmission, we
-> will be able to use the full size of the FIFO even in cases such as the
-> one described above. The transmission interrupt will trigger their
-> transmission only when all the messages previously loaded but stored in
-> less priority positions of the buffers have been transmitted.
-
-The algorithm you implemented looks a bit too complicated to me. Let me
-sketch the algorithm that's implemented by several other drivers.
-
-- have a power of two number of TX objects
-- add a number of objects to struct priv (tx_num)
-  (or make it a define, if the number of tx objects is compile time fixed)
-- add two "unsigned int" variables to your struct priv,
-  one "tx_head", one "tx_tail"
-- the hard_start_xmit() writes to priv->tx_head & (priv->tx_num - 1)
-- increment tx_head
-- stop the tx_queue if there is no space or if the object with the
-  lowest prio has been written
-- in TX complete IRQ, handle priv->tx_tail object
-- increment tx_tail
-- wake queue if there is space but don't wake if we wait for the lowest
-  prio object to be TX completed.
-
-Special care needs to be taken to implement that lock-less and race
-free. I suggest to look the the mcp251xfd driver.
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---2ih2q34cstztikmf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmCZJiYACgkQqclaivrt
-76n85Qf+IT0CNwHgyifNTN8tBzEVWhYReBtoqj7LAtMvAsdAwLBdWxwfZYmV/W2Z
-j4qm4tSAVx8HXltmly0GfUgCcGAaPKLg83sGd29Azlgmj+6R4/rWB5ygDyjvLPgc
-TByJLVMRF5Tlur1rvIr9gMPi18DFa3GtvG9eT3lN2yl1CLCjltae1oXDO084S559
-uU9bU2WS+cjjljWqN60AHG/KaZMT7+Iw6bqkgi6NYcDHXEl0mSJU1j7jXw8tNvPY
-WHypzcF2Svg1rxdo1JDNRwgMMFPGzGwrI+R4OrsPzTKI6VuV8IE5noRTWziEx2R/
-k0Bw3cXlQcvx78nTGXPv25iBlvCVyQ==
-=cxQ0
------END PGP SIGNATURE-----
-
---2ih2q34cstztikmf--
+Good catch, thank you.
