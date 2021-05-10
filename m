@@ -2,78 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302B8379288
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FC337928A
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232297AbhEJPYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 11:24:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46544 "EHLO
+        id S231691AbhEJPZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 11:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233329AbhEJPXl (ORCPT
+        with ESMTP id S234156AbhEJPXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 11:23:41 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E366C04686E
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:57:25 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id zg3so25000734ejb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:57:25 -0700 (PDT)
+        Mon, 10 May 2021 11:23:55 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE0AC046872
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:58:00 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id l24-20020a7bc4580000b029014ac3b80020so11347497wmi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:58:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=f2JnqweJIfSd6LQ8EPIWiAKNItoboLHhQmvENtw3fGA=;
-        b=fJ5QX8QyyDydhJgvmYnV/Fx/KQk0nuRWucA9AHSa04/YgeaZG/SCjSduWq2ga/q1+U
-         m8CDb70flkViXYAMtpRpUv1ZSnQiOcEAuzIhDi025GEtAf1xbEq57s1qs9VMrrZ7ETc0
-         svQLWNXdhVfIqCJuXP2cMowr8eqgYk3PffhKha8KErPLmb3qMdWQe+vKVxrtSiZOLJZd
-         GIxrtOj+ZRnd0lCcGa/1T33UEc+6LJA08xUIkMTsAbNGLRNp537SzkZxLVhdhyNYzCXU
-         MkKukHhMzS2DNvV5hRC0zd93jZe8JC+JUJYqt1RBhDQSN91mGsfdJotflZpJSg8HKxKu
-         nk3Q==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=31kJRsKagqOpbjDnu1zqGbG73UcMqHUG/HT91hnTQiE=;
+        b=G8MzGuGkBJgACi9lAgiqQR0u/OEC1Kqpgo1LFgAdh6IMZSA4n4TUIuWGZNELHZAvfv
+         BcAVOj8dWhCuXQ66EK+GSQpPdOu8nLyP9cxp1I1/DPLzFbteb3cywPOwYvxt/OhzLixG
+         ZegPbp0HlIMLjN6x1/ALC/zB4cIMt1Ltrmcc87oiJ/KDtKahRhFphNH9Pxk7L4gqp5IV
+         tPqAfvdoZ03M06NfYOSEb9t2Z8sCa5h0andzWcXtw6XYrXvL7kbUyjHZtgjT12x7bqLK
+         6r8aTlH5pmtfOuWvlLrs5dHDFnAzGJiE9v9xF2gJzDdxfNAMGSkeJC+2W4qH1eY1ocnH
+         A5uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=f2JnqweJIfSd6LQ8EPIWiAKNItoboLHhQmvENtw3fGA=;
-        b=C/V3E5JeRcT/wthW9Shkpzu9j4dNF5/oj8mRaWQqYLcU6+HgKNOVCTK7GA14bE4SFt
-         pWEmwv8SdCumwEne8aRtt4MtjF/kcsosrZp5q2H9RRmWKrtITMajeQgdSaQWYMXeb9dc
-         Hk2bAU7lYh5BDgmSg4yg+epxeb4qwdBCQ71PeaX5XdxXRAY5l5b4JmA2SxT/cVc8StHF
-         qx4uYTNQn+/twN6pU0zuwQA/Q8RzOy4kB9CT+eIFX5x0FSDVjt4Mx4ZDLgJXaAq23YvG
-         i0eW4n8nUpOxCYrT9vsAVJCYL6rW0ZseitiV/Ohpa08QWwDOYkROE+32rvSnUtrKJ8+R
-         UmTg==
-X-Gm-Message-State: AOAM533PGCcKHUYbMgMimbBi+0fGSUghqAiJ5A7sS3qQRTbWjtJQPyWx
-        IYjUDtYb/glEvQLdrvaE8ENGsWBhfiu2PdWjhJYjjEdafWB6u/Q1
-X-Google-Smtp-Source: ABdhPJw3fgQsWMwpVMBXeuRT8yPmLHx3OalvK87l6mKLuGxwkrvbEn0CjGIWrkoiDgpIYWMXMQk0p/MVPxEKbOkCMNE=
-X-Received: by 2002:a17:906:7487:: with SMTP id e7mr26967650ejl.106.1620658643874;
- Mon, 10 May 2021 07:57:23 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=31kJRsKagqOpbjDnu1zqGbG73UcMqHUG/HT91hnTQiE=;
+        b=l4CugrchOQO0ZTRaMq7TEV47K3R03fqMGnqVbyF9VU85AjE3/GoI0df/ytG71OQiPn
+         8F1LxyCn3A5Zziyk/bu6m+imcRmhRNcxFxVpcHj0xbDqOdZ2EhlFHHiux5YvQ6szd/xx
+         Pdcw+XP+JdC75X+qMaSlCBL6ARvR1IPFS61EOasy9yRozxX9BxIq0f++mh8FO5r8X1zb
+         otcGHJ+RxCiW3hEevuwOMUzhDOSX+WwAPkieUpl6FJZbXnz5wVlZwlx09zInsYOMsMJG
+         PO0SPEK8MfRQ5F0NiMLWy1jUBID7qHDuJ8WPatjDXrZqCKiIcr543ol6DOePFzDh1XvX
+         xLDQ==
+X-Gm-Message-State: AOAM530QmfzDWHhSZfv327Daw2FB5vkTT0VbnaGsAgY7jHZJ2E0VbIrs
+        wwuEoU4v3g7tGrLQ5agohzCm1JCLFh669Q==
+X-Google-Smtp-Source: ABdhPJyc37zCKChyOOINt4jxe3UJZhzTIRmJ7rm2+oqdaKoR5S+30egeQ2BxqBrCSp9JuGz6js4cmQ==
+X-Received: by 2002:a05:600c:3510:: with SMTP id h16mr17445338wmq.38.1620658678837;
+        Mon, 10 May 2021 07:57:58 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id k15sm24635294wro.87.2021.05.10.07.57.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 07:57:58 -0700 (PDT)
+Date:   Mon, 10 May 2021 15:57:56 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] mfd: intel-lpss: Add Intel Alder Lake-M PCI IDs
+Message-ID: <20210510145756.GA751702@dell>
+References: <20210414142943.60563-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-From:   Shivank Garg <shivankgarg98@gmail.com>
-Date:   Mon, 10 May 2021 20:27:07 +0530
-Message-ID: <CAOVCmzGX54u4VLUSLt_yEM4E8MQNLwW4VTkNVurPXbCuQX6d_g@mail.gmail.com>
-Subject: Profiling execution time for __alloc_pages_nodemask
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, gregkh@linuxfoundation.org,
-        sergey.senozhatsky@gmail.com, pmladek@suse.com, david@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210414142943.60563-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Everyone!
+On Wed, 14 Apr 2021, Andy Shevchenko wrote:
 
-I want to profile the time taken to execute the __alloc_pages_nodemask
-for different linux configurations/parameters.
-To measure the execution time, I use the ktime_get() apis. I get the
-ktime_get() on the top, and I want to do ktime_sub(ktime_get(),ktime)
-and record it in a tracepoint.
-However, the patch on implementation prevents the kernel from booting
-up. I debugged the bug to find out that the issue recurs on adding
-ktime_get() inside the __alloc_pages_nodemask path. So, that the
-kernel fails to boot up ( and show the blank screen without any logs )
-I'm using the Linux kernel 5.6.13 (5821a5593fa9f28eb6fcc95c35d00454d9bb8624)
+> Add Intel Alder Lake-M LPSS PCI IDs.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/mfd/intel-lpss-pci.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 
-Is it an expected behavior? or a BUG? Has anyone else faced the same issue?
+Applied, thanks.
 
-Can you please suggest, what would be a good way to measure execution
-time for page allocation (if not ktime_get)
-
-Stay Safe!
-Best Regards,
-Shivank Garg
-Open-Source Enthusiast and Student, IIT Kanpur
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
