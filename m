@@ -2,95 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A0D3797CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 21:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61ED73797D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 21:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbhEJTkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 15:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbhEJTkb (ORCPT
+        id S231343AbhEJToX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 15:44:23 -0400
+Received: from antares.kleine-koenig.org ([94.130.110.236]:37988 "EHLO
+        antares.kleine-koenig.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230045AbhEJToW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 15:40:31 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF35C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 12:39:26 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id t4-20020a05683014c4b02902ed26dd7a60so5340580otq.7
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 12:39:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yhUDh0e/b1anVljhcDa1wrhOJB/6Woz50CPB1HWEqNY=;
-        b=iqUDDZdxsLd4gJtcv46uxXc7l+exDvo44LnhOseIIeRVeyzDH70gnu3P0u32q4CltC
-         cB8mSs8aSrvVEKc0YGZ+MJFuD4YvNjL66gfitw+3GprIT1kgmf98TUDglHMyyiqoLLDf
-         zBbzdt2eZxVI8GjeMHWqx3FlSd/7mbYxt9GZqZ4Cv2FXs6q3zc/sS4NI8bUJPxpBxhmo
-         fQb7P6xKjENsSqr+1NK42vVV0P4f2/gHX59Db6NMmrSlx8ERx+qDUoUfwctqHw1oHzh4
-         l5A+H9p53VMz7HkrmO9aLEKuULb4cpTxzIwaYGuP16/YD6eP5+0VocrcqJThZ8EHOZZF
-         KSKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=yhUDh0e/b1anVljhcDa1wrhOJB/6Woz50CPB1HWEqNY=;
-        b=JHUs4+9sChk0GM9a+tDu3AO7CyuBFKZG/VstQjWSmJ+sKM58014HV2kXTDuNSh51s1
-         DQLkr3suEjFa/e4hebTZFhkq21ljjK9+BIOHcgdf5YbmHauXp4QCI0yzWLWVzhY5KxJZ
-         +qE41fJ4O013WWxcUDS4Zv3mZS+Dwb1P4+I2U46AdITki0WGUCt/EAIINUYkyXiLqc6V
-         IIIhGn4qVxic7HYiaAbSLK8IfgPpPSLsw6JpgqbjjgL3qEAFayz9OscO112dqxjMwEY7
-         poZlpacCYW8+4fxRx1W+5yVeF/XnqbiXYmHkW9fX7JPs9H5a2kAY2TkegRvVSvgJYre/
-         6EUg==
-X-Gm-Message-State: AOAM5319+TCTWFjruQJaLlAwnICcrYNkLmDcC9UaVTLrgfYMHPOrgp1x
-        0WcaPd9x3P28Y9MzJWagVLd+rOpmrqg=
-X-Google-Smtp-Source: ABdhPJxyDthWghhbwT622y8PXKBsHrntpRrVnKxGY3Da0kcUi0sPPtnCX2Lv5pNr5aGZ3dFeQJWedQ==
-X-Received: by 2002:a9d:73d7:: with SMTP id m23mr22948588otk.325.1620675565857;
-        Mon, 10 May 2021 12:39:25 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z15sm286807otp.20.2021.05.10.12.39.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 12:39:25 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 10 May 2021 12:39:24 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.13-rc1
-Message-ID: <20210510193924.GA3929105@roeck-us.net>
-References: <CAHk-=wiWTU+=wK9pv_YG01rXSqApCS_oY+78Ztz5-ORH5a-kvg@mail.gmail.com>
- <20210510025414.GA2041281@roeck-us.net>
- <CAHk-=wjsQz-RJzXPu6eeZE+R9m2SH6JoreV6e_mwguitZ5_=zw@mail.gmail.com>
+        Mon, 10 May 2021 15:44:22 -0400
+Received: from antares.kleine-koenig.org (localhost [127.0.0.1])
+        by antares.kleine-koenig.org (Postfix) with ESMTP id 698F4B92B2A;
+        Mon, 10 May 2021 21:43:16 +0200 (CEST)
+Received: from antares.kleine-koenig.org ([94.130.110.236])
+        by antares.kleine-koenig.org (antares.kleine-koenig.org [94.130.110.236]) (amavisd-new, port 10024)
+        with ESMTP id FQOmxRin8T3E; Mon, 10 May 2021 21:43:15 +0200 (CEST)
+Received: from taurus.defre.kleine-koenig.org (unknown [IPv6:2a02:8071:b5c8:7bfc:751d:682d:7359:e261])
+        by antares.kleine-koenig.org (Postfix) with ESMTPSA;
+        Mon, 10 May 2021 21:43:15 +0200 (CEST)
+To:     Jiri Kosina <jikos@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210206151348.14530-1-uwe@kleine-koenig.org>
+ <nycvar.YFH.7.76.2103081107250.12405@cbobk.fhfr.pm>
+ <31028f589e27e246bb3b4b693caeb0b8eae3a285.camel@linux.intel.com>
+ <nycvar.YFH.7.76.2103081716200.12405@cbobk.fhfr.pm>
+From:   =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
+Subject: Re: [PATCH v1 1/3] HID: intel-ish-hid: Drop if block with an always
+ false condition
+Message-ID: <e200b949-b909-d5da-8c81-06a57fc50b98@kleine-koenig.org>
+Date:   Mon, 10 May 2021 21:43:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjsQz-RJzXPu6eeZE+R9m2SH6JoreV6e_mwguitZ5_=zw@mail.gmail.com>
+In-Reply-To: <nycvar.YFH.7.76.2103081716200.12405@cbobk.fhfr.pm>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="qGHuWGV0fsZU0BWAdzrJRAn3J4AVipvAq"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 12:01:00PM -0700, Linus Torvalds wrote:
-> On Sun, May 9, 2021 at 7:54 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> >
-> > Qemu test results:
-> >         total: 462 pass: 460 fail: 2
-> > Failed tests:
-> >         arm:raspi2:multi_v7_defconfig:net,usb:bcm2836-rpi-2-b:initrd
-> >         arm:raspi2:multi_v7_defconfig:sd:net,usb:bcm2836-rpi-2-b:rootfs
-> >
-> > The raspi2 problem (a crash in of_clk_add_hw_provider) is well known.
-> > It was introduced with commit 6579c8d97ad7 ("clk: Mark fwnodes when
-> > their clock provider is added"). Unfortunately it appears that there
-> > is still no agreement on how to fix it.
-> 
-> Hmm. I see
-> 
->     https://lore.kernel.org/linux-acpi/20210426065618.588144-1-tudor.ambarus@microchip.com/
-> 
-> and don't see any objections to that version.
-> 
-> Does that fix it for you too?
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--qGHuWGV0fsZU0BWAdzrJRAn3J4AVipvAq
+Content-Type: multipart/mixed; boundary="ZS2vNPexYSXxqk5nVV4GkR8xH11UrMQ9T";
+ protected-headers="v1"
+From: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
+To: Jiri Kosina <jikos@kernel.org>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ Guenter Roeck <groeck@chromium.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <e200b949-b909-d5da-8c81-06a57fc50b98@kleine-koenig.org>
+Subject: Re: [PATCH v1 1/3] HID: intel-ish-hid: Drop if block with an always
+ false condition
+References: <20210206151348.14530-1-uwe@kleine-koenig.org>
+ <nycvar.YFH.7.76.2103081107250.12405@cbobk.fhfr.pm>
+ <31028f589e27e246bb3b4b693caeb0b8eae3a285.camel@linux.intel.com>
+ <nycvar.YFH.7.76.2103081716200.12405@cbobk.fhfr.pm>
+In-Reply-To: <nycvar.YFH.7.76.2103081716200.12405@cbobk.fhfr.pm>
 
-Yes, it does. It was submitted ~2 weeks ago, so I have no idea what its
-status might be (it is not in the most recent -next). I just sent a
-Tested-by:, figuring that it can't hurt.
+--ZS2vNPexYSXxqk5nVV4GkR8xH11UrMQ9T
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Guenter
+Hello Jiri,
+
+On 3/8/21 5:16 PM, Jiri Kosina wrote:
+> On Mon, 8 Mar 2021, Srinivas Pandruvada wrote:
+>=20
+>>>> A remove callback is only ever called for a bound device. So there
+>>>> is no
+>>>> need to check for device or driver being NULL.
+>>>
+>>> Srinivas, any objections to this patchset? The cleanups look good to
+>>> me.
+>> Sorry, I missed this series.
+>> No objection for taking these patches.
+>=20
+> Thanks. Applied with your Acked-by:
+> If you disagree with that interpretation of your statement above, pleas=
+e
+> holler :)
+
+I expected these patches to go in during the 5.13 merge window, but they =
+
+didn't. I found your pull request for 5.13=20
+(https://lore.kernel.org/lkml/nycvar.YFH.7.76.2104292151220.18270@cbobk.f=
+hfr.pm/)=20
+and they were not included there even though the patches were in next=20
+since at least next-20210310. Looking at
+
+	git log --oneline --cherry=20
+v5.13-rc1...dce6a0d56a7719efcad438f5c46a9d192fd36a89
+
+(where dce.. was the tip of your for-next for next-20210506 (i.e. before =
+
+5.13-rc1 was cut)) and it seems there are quite a few more commits that=20
+didn't make it into your pull request.
+
+What am I missing?
+
+Best regards
+Uwe
+
+
+--ZS2vNPexYSXxqk5nVV4GkR8xH11UrMQ9T--
+
+--qGHuWGV0fsZU0BWAdzrJRAn3J4AVipvAq
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCZjM8ACgkQwfwUeK3K
+7Anuwgf+JSHxB7za9i0xL9t5R1j1A2RAAiGuuTFd+yTRWWFy1j3Loq4jCfxnd5HQ
+MhaLy8+0ZxBMzCJJnbTRJohgkBq6odjBePtSmyG+KTk42vA+uvVWv67jVpmbbXd1
+5dQqQ5zduKcN/1TEwyFaMwSd6WxDjX4Yrwg0APsJ3z34QvHgLFzKVWjaFJ33u81I
+vkma5rq504gKF0ronu4nbwFHxKyt+PXGydvG6vq10Hmhyuj6hpnSCPDtiiXwxONH
+U6ATH90TXJ4LFnc0UXwl9OPkrnbw9YucadhVq+xv9v7naLuNzBp/91Vxr5f868aW
+8MTQuhedMa6TqvjR13s9Ahaevmsi9A==
+=gNoi
+-----END PGP SIGNATURE-----
+
+--qGHuWGV0fsZU0BWAdzrJRAn3J4AVipvAq--
