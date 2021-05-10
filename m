@@ -2,63 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A20837992F
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85ADF379933
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232629AbhEJVbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 17:31:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40372 "EHLO mail.kernel.org"
+        id S232426AbhEJVbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 17:31:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230109AbhEJVbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 17:31:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4A5FF61554;
+        id S231811AbhEJVbQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 17:31:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9237D61613;
         Mon, 10 May 2021 21:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620682210;
-        bh=EZ1ERwhmpEPE5MXC0LlPZb2cgGgpZPBT+gZph7iPMLY=;
+        bh=MmE8v1hXubznzhGaE7C8q0XVtGuAxwMrNzLeBYh7e1I=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Xt6oLj0lqgUHa/4Li8xf+X2ukwkcKjh3Ln80m0t29ucfzH5jw6xvPM4JEthVLkbLu
-         t2W7lRRRyLhO6Etx80102GnBjbYCkj0BnMOhBj8obYB+hGvBTRCaw4OBKpeGMix0BU
-         7EqQoqsp7Wrhp5fmUMsf77/AxldS0+mzSgdZeMAvVGJnBdZjUwGD0ihmvkEVXADx1a
-         HbHMsMaWwT6Ew03vi7ZcoIfgV6c7ajhRgje7VtZZr7mgA/edL7DP+FaDz71D0lzgnJ
-         xD1Rc1gI+V6Z1YzuAPh6q2A3D9tIGSZk6Lr4GaGaz/IsxLCtQszZDmJbBFeGTEhW4D
-         /rFZVxpFXfsPA==
+        b=SkNlk5d9VGZTA8yyM3909B0OwqFeqk7PVPGEx71TSc+iVwc+AanZeP5ErXLnsBxtr
+         fq06GBo0JR5kylVOdYPtuQqeOSxibvxHtNdFB1ApOrzuQPnlBV6vGDpTuWeXBZtqL+
+         xKdSVXDKAEJEZgunNJyyEX0rg3wg2hkrTqKt28ytctnIFyrenC34aXUFvFoL9wi+rV
+         DIPy/dVE9vqhcdOh3B5IpXl55ZQjRsJE3wKe2uWIHVi4066an5pggQvAWXNAxXVgto
+         xZdHomiovzawzQlJGfrOZ+riTtvFgPQBNgUEDzIKrH/FVNvlbLw9xh2T00TOuzWn4+
+         hxtP/x3Prff0w==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3B78D60A48;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8C929609AC;
         Mon, 10 May 2021 21:30:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net/nfc/rawsock.c: fix a permission check bug
+Subject: Re: [PATCH] neighbour: Remove redundant initialization of 'bucket'
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162068221023.28006.17990440223056358619.git-patchwork-notify@kernel.org>
+Message-Id: <162068221057.28006.13564077451143284721.git-patchwork-notify@kernel.org>
 Date:   Mon, 10 May 2021 21:30:10 +0000
-References: <20210508035230.8229-1-jjjinmeng.zhou@gmail.com>
-In-Reply-To: <20210508035230.8229-1-jjjinmeng.zhou@gmail.com>
-To:     Jinmeng Zhou <jjjinmeng.zhou@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, shenwenbosmile@gmail.com
+References: <1620468185-122101-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1620468185-122101-1-git-send-email-yang.lee@linux.alibaba.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Sat,  8 May 2021 11:52:30 +0800 you wrote:
-> From: Jeimon <jjjinmeng.zhou@gmail.com>
+On Sat,  8 May 2021 18:03:05 +0800 you wrote:
+> Integer variable 'bucket' is being initialized however
+> this value is never read as 'bucket' is assigned zero
+> in for statement. Remove the redundant assignment.
 > 
-> The function rawsock_create() calls a privileged function sk_alloc(), which requires a ns-aware check to check net->user_ns, i.e., ns_capable(). However, the original code checks the init_user_ns using capable(). So we replace the capable() with ns_capable().
+> Cleans up clang warning:
 > 
-> Signed-off-by: Jeimon <jjjinmeng.zhou@gmail.com>
-> ---
->  net/nfc/rawsock.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> net/core/neighbour.c:3144:6: warning: Value stored to 'bucket' during
+> its initialization is never read [clang-analyzer-deadcode.DeadStores]
+> 
+> [...]
 
 Here is the summary with links:
-  - net/nfc/rawsock.c: fix a permission check bug
-    https://git.kernel.org/netdev/net/c/8ab78863e9ef
+  - neighbour: Remove redundant initialization of 'bucket'
+    https://git.kernel.org/netdev/net-next/c/48de7c0c1c92
 
 You are awesome, thank you!
 --
