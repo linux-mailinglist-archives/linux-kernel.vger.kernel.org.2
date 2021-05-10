@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3AF3799F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2C23799EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233241AbhEJWVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:21:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58312 "EHLO mail.kernel.org"
+        id S232985AbhEJWVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:21:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232177AbhEJWVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231905AbhEJWVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 18:21:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2E0F36161C;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 132E761554;
         Mon, 10 May 2021 22:20:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620685212;
-        bh=DPufKTlQo/+DorwT61wv8lVftcfjqUcX5vWqEzJyCwA=;
+        bh=4oY1apo5/J7SvKAH0z7O3N0gLfuwPOnbbw0zclqHahc=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=BHAAPjw0ImoS4OuvrEn0LULODDys6dmIKXIitA+w5qNarfhNndOTpGi43Ectzhkrx
-         45XNEmSKkJ0p96C0coqvn9UEbCTSH9uPGpwgFrE+LM+RFkDoeBYuLgNYk1PoY4omv4
-         fLwKoVzWqcUSeKGAQBQc8EBTmGMrnkFS1YThbmklE8srE0mE6Nv0bed4YReuEf5Oqu
-         mxQ1R0hoLLtyCeRYKqGUF7GdDE5G1n0H8WNQGhsCA2h9Ol+Mw+ORCxUsDPFQDKxkZd
-         Rzn0WDEvyoF1Tc/TwSk8guRekkLW9e42GNiAiAKh4u7C2xH3cnVh5/dHvLNpDmtpg1
-         7xTS3nelqYw4A==
+        b=netWBYpNUpGUfqvQSQN3jF9KKDqXewPenHuUtCSq89fuwJ+FlGkN4ljg2ypZ1dmbE
+         HqpJK/OFUe8Vj1sCw+zMlQfh9s2A067q1SKOqvL1P8DjzTepsWs3Myp4Bqfuuo00vL
+         4mVorjipFXDHTKePG2J64uUTgfMG9olmd2+Y0y0vAXVu6fiXBZ47eC1RKhAC6IL/Qi
+         KrIcz01lhizFr8vK6upvKDamxV76IVV/c8I6nvXKvXZRt41IMvk/DOBZ/Mgls0deom
+         ZYM0MJSCZqJCg98lqkvqqRJfefFZj+g1SA+VYaivdESYoK1sbmYAqvKU9FxIi5mHq3
+         M+5IfJKe3sfFg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2322B60C09;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 05BE760A6F;
         Mon, 10 May 2021 22:20:12 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3 0/5] net: pch_gbe: fix and a few cleanups
+Subject: Re: [PATCH v2 0/2] Add PTP support for TJA1103
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162068521214.17141.13468046440928102441.git-patchwork-notify@kernel.org>
+Message-Id: <162068521201.17141.3763962700851866302.git-patchwork-notify@kernel.org>
 Date:   Mon, 10 May 2021 22:20:12 +0000
-References: <20210510163931.42417-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210510163931.42417-1-andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     davem@davemloft.net, f.suligoi@asem.it, lee.jones@linaro.org,
-        jesse.brandeburg@intel.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kuba@kernel.org
+References: <20210510153433.224723-1-radu-nicolae.pirea@oss.nxp.com>
+In-Reply-To: <20210510153433.224723-1-radu-nicolae.pirea@oss.nxp.com>
+To:     Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, richardcochran@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -47,28 +47,24 @@ Hello:
 
 This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 10 May 2021 19:39:26 +0300 you wrote:
-> The series provides one fix (patch 1) for GPIO to be able to wait for
-> the GPIO driver to appear. This is separated from the conversion to
-> the GPIO descriptors (patch 2) in order to have a possibility for
-> backporting. Patches 3 and 4 fix minor warnings from Sparse while
-> moving to a new APIs. Patch 5 is MODULE_VERSION() clean up.
+On Mon, 10 May 2021 18:34:31 +0300 you wrote:
+> Hi,
 > 
-> Tested on Intel Minnowboard (v1).
+> This is the PTP support for TJA1103.
+> The RX timestamp is found in the reserved2 field of the PTP package.
+> The TX timestamp has to be read from the phy registers. Reading of the
+> timestamp works with interrupts or with polling(that starts when
+> .nxp_c45_txtstamp is called).
+> The implementation of .adjtime is done by read modify write because there
+> is no way to atomically add/subtract a constant from the clock value.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,v3,1/5] net: pch_gbe: Propagate error from devm_gpio_request_one()
-    https://git.kernel.org/netdev/net-next/c/9e3617a7b845
-  - [net-next,v3,2/5] net: pch_gbe: Convert to use GPIO descriptors
-    https://git.kernel.org/netdev/net-next/c/aca6a8746c36
-  - [net-next,v3,3/5] net: pch_gbe: use readx_poll_timeout_atomic() variant
-    https://git.kernel.org/netdev/net-next/c/6fcfb267cb49
-  - [net-next,v3,4/5] net: pch_gbe: Use proper accessors to BE data in pch_ptp_match()
-    https://git.kernel.org/netdev/net-next/c/443ef39b499c
-  - [net-next,v3,5/5] net: pch_gbe: remove unneeded MODULE_VERSION() call
-    https://git.kernel.org/netdev/net-next/c/40b161bb16c4
+  - [v2,1/2] ptp: ptp_clock: make scaled_ppm_to_ppb static inline
+    https://git.kernel.org/netdev/net-next/c/9d9d415f0048
+  - [v2,2/2] phy: nxp-c45-tja11xx: add timestamping support
+    https://git.kernel.org/netdev/net-next/c/514def5dd339
 
 You are awesome, thank you!
 --
