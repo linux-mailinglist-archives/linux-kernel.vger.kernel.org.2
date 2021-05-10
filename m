@@ -2,113 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16DD378E38
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61659378E1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237210AbhEJNHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
+        id S1351302AbhEJNGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:06:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351116AbhEJNC6 (ORCPT
+        with ESMTP id S1351119AbhEJNC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 09:02:58 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4569C06134D
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:55:50 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id n84so9161147wma.0
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:55:50 -0700 (PDT)
+        Mon, 10 May 2021 09:02:59 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A11C06134F
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:55:53 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 82-20020a1c01550000b0290142562ff7c9so8827545wmb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:55:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JLAkJk2XYN3zpNZJSBihL1QIdDzW0qzyrz5YHmbRkas=;
-        b=IyhxI8zBkWsO3F1VgIXC301oSbWCidyan9jWmrAHh5gVQ9JuDRRMiYpGXUsgI1DYqk
-         C7JG9Lpc9uf9SZN5f+nHNumtkQ343zpgRt3k3fsJ7Hii+D9m/0JOYsJQRNXr+Cf/qU33
-         XLKoOgjwaxmybPsAaXk+GU70hCGQWRC29+XDNRnVMnHxL1EzLNL7kJrHAV7jPQlUUPhr
-         qpyVSgia22Z4keGQ06wpvMmDLbBgE/LZEe48FyrvT+KaNKJX0FkeJpmuRg0PUZtHSIgP
-         lCnUqI7TNjGLTTYKp18jU5Z6U8vbPBQVK6RdiFjOClyTK6jgY5xphSfzJn7kDpWDZm5G
-         m80w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=T22i+g53k1fhCLKh9tB02Omn3iL2iUzJbrWzhjCB28A=;
+        b=eCtUxx+QoNkZtb/x+DkVSPqZKOadIhEMMlPASjY0l/1g2fFi8OVRvbxa1cF2ypMlad
+         Cy5bx2x/k/plI+xFS7PNi3znFYwTD7Wpi2sWEJ/T0lbNvXorIFyFAkzz450CKuleSf+C
+         gU2jWBcQ/3ILNxkS823GfeKdQ/GOhlpkLCdVDW4zVsbdKcBrRJckPits/sj9xHOXy+N+
+         wjmQXMupfKXoLBd4QOLr1ord6ufgI4xlfjoYD2yoKDSvolyGTYtWtrRIGCsaiJ/NMyTJ
+         fxSymlUL9EG6oNJTcQO4D0zZsX92771UIVWAt8mHt13/SMdZ3ckm5Tp0O9HTlsrnSwsC
+         gjhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JLAkJk2XYN3zpNZJSBihL1QIdDzW0qzyrz5YHmbRkas=;
-        b=JSp9L8buKSx/0ylunKWoVVHOwUR7kxzgt5uuPA+sPIGBQaUHZyMKY6VgI3JnfhJyqZ
-         UTyITPCr0s/0OvlETD1/wOgQ9gb/AugG8C+xQnirLJ60jqc59HhOQPS+Nf+VBzVTlqGh
-         DS9p2Rm548zBhvI62afr/mwzKoxGvZ+/tijYYIs67NHdK143gZQyn9wvCKFaTC9E6HaR
-         NTlhzSA/fmG3l7SkvaepNG8nJM1CYjPVfvGUIzIJApln6YAhXJtT4fTNTPKVrmqS8z6f
-         YjDfOYR7BHqGyjIdm05RvFc1mlaQGR49xIhi2TJpHbdHCH7BK4Q6DbFrqK6NM6D/X7wH
-         te4g==
-X-Gm-Message-State: AOAM531fcuglAnV3DXYPX3oHoReOx4n+ZXgx82zCjuyz7iElrovE/mDc
-        1OQWK78g4x+wZgv/BB2tpEwJoQ==
-X-Google-Smtp-Source: ABdhPJyZZuBSFJRPGg1reGsrnx5QvrgC1PJt4m9buGdkVfyVVKlcuOiawyOCrVJJyY+pRrWLsMVxFQ==
-X-Received: by 2002:a1c:740c:: with SMTP id p12mr25571375wmc.112.1620651349267;
-        Mon, 10 May 2021 05:55:49 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=T22i+g53k1fhCLKh9tB02Omn3iL2iUzJbrWzhjCB28A=;
+        b=uGoVqNYzGICmn1rIBoHY0502DeMmWN0XfTSs4SdVWG0IOE/MhwYoNDoMb1PD4HBFLm
+         kbTLwX4Rke5eOZsG5OMWJ0xZga6IcSDla3Z+Xxw8cYVIbNhzVluJoGtEnN4SK07wanZe
+         k/ntwr9aZfR2420l6IbCg3M9p5w5G+P+73RIVJ2W0EmFyKWwtTDCWLM/l2O3AZtgiFeL
+         j9o7cj5AYHJ7NG9HFsYRKNsx/sGVQm3rE7EHyjZwWa8WhfG22LARJHUM5REeM3+YqY4a
+         ndzg2jAPcFpsBWVcpsCPDbRl0ISxjs1KHy4GzEn9BJJ5ybSqLjHacJu7jKHWf5D0pRoT
+         s5wQ==
+X-Gm-Message-State: AOAM531TgR+qbQJyVafl00vIUaWB5o5KfoYrhPuUAI6fyzF6sXvl/3F6
+        QW1C2ONB6qjSfVWcI51JhqlyBA==
+X-Google-Smtp-Source: ABdhPJz2vAtWMSvSZ13uvP3TVIYNGQLJ09O47U9p2Q6KI9rlJzds0loEMA+VGywRLQo2U1RX1UOH5g==
+X-Received: by 2002:a05:600c:4304:: with SMTP id p4mr37384148wme.111.1620651352071;
+        Mon, 10 May 2021 05:55:52 -0700 (PDT)
 Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id n2sm23134329wmb.32.2021.05.10.05.55.48
+        by smtp.gmail.com with ESMTPSA id n2sm23134329wmb.32.2021.05.10.05.55.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 05:55:48 -0700 (PDT)
+        Mon, 10 May 2021 05:55:51 -0700 (PDT)
 From:   Alexandru Ardelean <aardelean@deviqon.com>
 To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     jic23@kernel.org, Jonathan.Cameron@huawei.com,
         alexandru.tachici@analog.com, linux@deviqon.com,
         Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH 00/11] ad_sigma_delta: convert all drivers to device-managed
-Date:   Mon, 10 May 2021 15:55:12 +0300
-Message-Id: <20210510125523.1271237-1-aardelean@deviqon.com>
+Subject: [PATCH 01/11] iio: adc: ad_sigma_delta: introduct devm_ad_sd_setup_buffer_and_trigger()
+Date:   Mon, 10 May 2021 15:55:13 +0300
+Message-Id: <20210510125523.1271237-2-aardelean@deviqon.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210510125523.1271237-1-aardelean@deviqon.com>
+References: <20210510125523.1271237-1-aardelean@deviqon.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Well, for lack of a better title that's what this series does.
-It merges Jonathan's patches from:
-  * https://lore.kernel.org/linux-iio/20210508182319.488551-1-jic23@kernel.org/
-    Patch 3/3 was a polished a bit with my comments from that review and also
-    to use the devm_ad_sd_setup_buffer_and_trigger() function.
-  * https://lore.kernel.org/linux-iio/20210509114118.660422-1-jic23@kernel.org/
-    Added only to base the conversion to devm_
+This is a version of ad_sd_setup_buffer_and_trigger() with all underlying
+functions (that are used) being replaced with their device-managed
+variants.
 
-The AD Sigma Delta family of ADC drivers share a lot of the logic in the
-ad_sigma_delta lib-driver.
+One thing to take care here is with {devm_}iio_trigger_alloc(), where both
+functions take a parent-device object as the first parameter.
 
-This set introduces a devm_ad_sd_setup_buffer_and_trigger() call, which
-aims to replace the 'ad_sd_{setup,cleanup}_buffer_and_trigger()' pair.
+To make sure nothing quirky is happening, the devm_ad_sd_probe_trigger()
+function is checking that the provided 'dev' reference is the same as the
+one stored on the 'struct ad_sigma_delta' driver data.
 
-This helps with converting the AD7780, AD7791, AD7793 and AD7192
-drivers use be fully converted to device-managed functions.
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/iio/adc/ad_sigma_delta.c       | 60 ++++++++++++++++++++++++++
+ include/linux/iio/adc/ad_sigma_delta.h |  3 ++
+ 2 files changed, 63 insertions(+)
 
-Alexandru Ardelean (7):
-  iio: adc: ad_sigma_delta: introduct
-    devm_ad_sd_setup_buffer_and_trigger()
-  iio: adc: ad7793: convert to device-managed functions
-  iio: adc: ad7791: convert to device-managed functions
-  iio: adc: ad7780: convert to device-managed functions
-  iio: adc: ad7192: use devm_clk_get_optional() for mclk
-  iio: adc: ad7192: convert to device-managed functions
-  iio: adc: ad_sigma_delta: remove
-    ad_sd_{setup,cleanup}_buffer_and_trigger()
-
-Jonathan Cameron (4):
-  iio: adc: ad7192: Avoid disabling a clock that was never enabled.
-  iio: adc: ad7124: Fix missbalanced regulator enable / disable on
-    error.
-  iio: adc: ad7124: Fix potential overflow due to non sequential channel
-    numbers
-  iio: adc: ad7124: Use devm_ managed calls for all of probe() + drop
-    remove()
-
- drivers/iio/adc/ad7124.c               | 84 ++++++++++--------------
- drivers/iio/adc/ad7192.c               | 90 +++++++++++---------------
- drivers/iio/adc/ad7780.c               | 38 +++--------
- drivers/iio/adc/ad7791.c               | 44 ++++---------
- drivers/iio/adc/ad7793.c               | 53 +++++----------
- drivers/iio/adc/ad_sigma_delta.c       | 82 ++++++++---------------
- include/linux/iio/adc/ad_sigma_delta.h |  4 +-
- 7 files changed, 141 insertions(+), 254 deletions(-)
-
+diff --git a/drivers/iio/adc/ad_sigma_delta.c b/drivers/iio/adc/ad_sigma_delta.c
+index 69b979331ccd..d5801a47be07 100644
+--- a/drivers/iio/adc/ad_sigma_delta.c
++++ b/drivers/iio/adc/ad_sigma_delta.c
+@@ -513,6 +513,46 @@ static int ad_sd_probe_trigger(struct iio_dev *indio_dev)
+ 	return ret;
+ }
+ 
++static int devm_ad_sd_probe_trigger(struct device *dev, struct iio_dev *indio_dev)
++{
++	struct ad_sigma_delta *sigma_delta = iio_device_get_drvdata(indio_dev);
++	int ret;
++
++	if (dev != &sigma_delta->spi->dev) {
++		dev_err(dev, "Trigger parent should be '%s', got '%s'\n",
++			dev_name(dev), dev_name(&sigma_delta->spi->dev));
++		return -EFAULT;
++	}
++
++	sigma_delta->trig = devm_iio_trigger_alloc(dev, "%s-dev%d", indio_dev->name,
++						   iio_device_id(indio_dev));
++	if (sigma_delta->trig == NULL)
++		return -ENOMEM;
++
++	sigma_delta->trig->ops = &ad_sd_trigger_ops;
++	init_completion(&sigma_delta->completion);
++
++	sigma_delta->irq_dis = true;
++	ret = devm_request_irq(dev, sigma_delta->spi->irq,
++			       ad_sd_data_rdy_trig_poll,
++			       sigma_delta->info->irq_flags | IRQF_NO_AUTOEN,
++			       indio_dev->name,
++			       sigma_delta);
++	if (ret)
++		return ret;
++
++	iio_trigger_set_drvdata(sigma_delta->trig, sigma_delta);
++
++	ret = devm_iio_trigger_register(dev, sigma_delta->trig);
++	if (ret)
++		return ret;
++
++	/* select default trigger */
++	indio_dev->trig = iio_trigger_get(sigma_delta->trig);
++
++	return 0;
++}
++
+ static void ad_sd_remove_trigger(struct iio_dev *indio_dev)
+ {
+ 	struct ad_sigma_delta *sigma_delta = iio_device_get_drvdata(indio_dev);
+@@ -556,6 +596,26 @@ void ad_sd_cleanup_buffer_and_trigger(struct iio_dev *indio_dev)
+ }
+ EXPORT_SYMBOL_GPL(ad_sd_cleanup_buffer_and_trigger);
+ 
++/**
++ * devm_ad_sd_setup_buffer_and_trigger() - Device-managed buffer & trigger setup
++ * @dev: Device object to which to bind the life-time of the resources attached
++ * @indio_dev: The IIO device
++ */
++int devm_ad_sd_setup_buffer_and_trigger(struct device *dev, struct iio_dev *indio_dev)
++{
++	int ret;
++
++	ret = devm_iio_triggered_buffer_setup(dev, indio_dev,
++					      &iio_pollfunc_store_time,
++					      &ad_sd_trigger_handler,
++					      &ad_sd_buffer_setup_ops);
++	if (ret)
++		return ret;
++
++	return devm_ad_sd_probe_trigger(dev, indio_dev);
++}
++EXPORT_SYMBOL_GPL(devm_ad_sd_setup_buffer_and_trigger);
++
+ /**
+  * ad_sd_init() - Initializes a ad_sigma_delta struct
+  * @sigma_delta: The ad_sigma_delta device
+diff --git a/include/linux/iio/adc/ad_sigma_delta.h b/include/linux/iio/adc/ad_sigma_delta.h
+index 7199280d89ca..be81ad39fb7a 100644
+--- a/include/linux/iio/adc/ad_sigma_delta.h
++++ b/include/linux/iio/adc/ad_sigma_delta.h
+@@ -26,6 +26,7 @@ struct ad_sd_calib_data {
+ };
+ 
+ struct ad_sigma_delta;
++struct device;
+ struct iio_dev;
+ 
+ /**
+@@ -135,6 +136,8 @@ int ad_sd_init(struct ad_sigma_delta *sigma_delta, struct iio_dev *indio_dev,
+ int ad_sd_setup_buffer_and_trigger(struct iio_dev *indio_dev);
+ void ad_sd_cleanup_buffer_and_trigger(struct iio_dev *indio_dev);
+ 
++int devm_ad_sd_setup_buffer_and_trigger(struct device *dev, struct iio_dev *indio_dev);
++
+ int ad_sd_validate_trigger(struct iio_dev *indio_dev, struct iio_trigger *trig);
+ 
+ #endif
 -- 
 2.31.1
 
