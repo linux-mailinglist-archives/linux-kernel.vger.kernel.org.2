@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F993799FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 956B2379A01
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhEJWY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:24:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57942 "EHLO
+        id S231223AbhEJWZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbhEJWYx (ORCPT
+        with ESMTP id S231159AbhEJWZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:24:53 -0400
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BADC061574;
-        Mon, 10 May 2021 15:23:47 -0700 (PDT)
-Received: by mail-oo1-xc36.google.com with SMTP id s1-20020a4ac1010000b02901cfd9170ce2so3798767oop.12;
-        Mon, 10 May 2021 15:23:46 -0700 (PDT)
+        Mon, 10 May 2021 18:25:35 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187D0C061574;
+        Mon, 10 May 2021 15:24:26 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id z13so25733203lft.1;
+        Mon, 10 May 2021 15:24:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QCCAqPTZBF64Wcz0OzYKh9FxhocZKj638y/bsgfHqaY=;
-        b=vdbfis9OQebCZQtShlG+bJNaMWtCaAiyndH/iMzQB5CagdEoxGZyg3CHnmxmKTdrXQ
-         dZmk5pTGdJHLIJu/Fun+YlnvOfJl494tSMKoSdbNi9/pftvm+wAKqh4zwDA75ka92X/H
-         rscNB79xIYkYP3h5g8eChzgSFQDNt8lmVSedjXlMDtAcLFX1kVM83GH3glhMi97I+oqD
-         bLiIIlTwrg1E7s4wxRKRb+Jn9QGHwkcduItlYjMzspEeAggto+M3xr7PxaPVHoqh18pW
-         LNhMpvWGQDm3j5ZTHZgzYYeGPKJ0D1g/2BOTFMUbG/UzTjOGpJPOvr5BiFFgTFqhlg7X
-         3X8A==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UB7STX+2BxkjlcmPswGdadDbZZquPtBCCQkaCzIDE+k=;
+        b=tPKvon4TXZcQUmVNIMXsbJNJJfRhE8yBGDSSU1l2CObWZ6JvokUJMkr4Y0pG4jnU0m
+         pJHdDDxlftKQbdiIkBsrQHk+9in+js7ZwPOK3T/OtTlhT9rMuXbRwBzSw1ZCgg4uLWve
+         bphsC/Abi4M3nkWnXGopGbLCiPU+omE+YKixVjfPBs67M5TcLZuVluRyEsT9GJgP4vH7
+         BOb3tWDFEYYHmu9aBSCR9SUQcOeQ8DDpqiMYh5Q8ZDQYsWcwA4PM/e6xHwkAepVD9pF3
+         sUPbAc84hitbwheGjhtRZwTj3P3bFgcHM/wwnBYUdsKxP4iLQE2/uZjP6MIQj0byMB2c
+         xkAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QCCAqPTZBF64Wcz0OzYKh9FxhocZKj638y/bsgfHqaY=;
-        b=A39fZaHXcYc7sUQzeDGB6B7RUZ0gmrKGkR8froOSuyq7RC5bb3JsFAaMu0NrhgbD36
-         M+Q7vIganZkJSaujbUh/yADMdBIS04n2IoD7a7OsDI8ExXj6GLK4MEFVSr8+omirsc6N
-         5FljGU1n7wTlHPhrdU0sRNdn1sNVpohTO9S26S50kW52nJ6RjKl6nNR9ei1uOp15Lser
-         4dmbjLIfml3bbpZiZRW4cUP/pDOq8IdFGCgsU8dzNvALPGP+iNTacdTeuDL7oqU/jRcu
-         hxBQhVOND1yIn/0kicIc+YdvNa9V4TmRwBYIJT3DrGFabZNyiSn6ZPaKLoX/yp/Q3yoC
-         I/EA==
-X-Gm-Message-State: AOAM530zbhd5RnmtRIZ/GsyMzIVwSYUBjYw0PHZ3c8NpsXI8c15yyGdb
-        LDDad5uye5lNffaoJECqkjmjfNWpAiUTI6nJ3j4VhDdq
-X-Google-Smtp-Source: ABdhPJwceOxV9rhx5D1qlkldGGeorKT1USdtoQUaL3tNrmJJY3Xg6nU9kuvg2kFpipfBN0ROoSVxY7Tjv0fl4tUiaxk=
-X-Received: by 2002:a4a:d543:: with SMTP id q3mr20705575oos.72.1620685426502;
- Mon, 10 May 2021 15:23:46 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UB7STX+2BxkjlcmPswGdadDbZZquPtBCCQkaCzIDE+k=;
+        b=m8eM26pp6vLvhKMBnpl7MPrFu5TdPXj/FEr5cTGxGiYTyd5q/0gm1ZkIiAM+Wbwv4r
+         RAkFyyZeEUWjBQNp8cxHsRo4aGsRB1cArtULPRP3qXij2fwf73B1WbIuOiwcNPaxIiHh
+         QJxWC/hIYGOKK5zyHaHWWPuDlLEVO9N2p+i9yaqjgL4oF+FCC20CfcIFfvxkVBs/UgEo
+         otzyuWqifQ7x6Jk2+G7judDB7BnLXRh1q0IF0C9a2jjMvpPv/QIuAqCKaFzvHBIPsaQu
+         Yx080i6AfDlbHRU4c7Rew2wXDJfqfeB27QHRnBrSiE2zvnBM5uinB3RHNJg6IZVgwCJ7
+         SXmA==
+X-Gm-Message-State: AOAM532RmJWgWZnCLQWLRpLBMr4RGBbWl42YtoB3qybgEsITxOjAu4ni
+        /PxiPqO+qHTIRbi2LAex7PdWqrYAw0k=
+X-Google-Smtp-Source: ABdhPJwz1nXqStPCyV4kW/r7tJbrKbNs1e+uZx5KRX66nTHku4J3LhN5phbEJ2JfUGc2GVv6Ww1p5Q==
+X-Received: by 2002:a19:6a07:: with SMTP id u7mr18725829lfu.579.1620685464366;
+        Mon, 10 May 2021 15:24:24 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.googlemail.com with ESMTPSA id x62sm2388400lff.295.2021.05.10.15.24.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 15:24:24 -0700 (PDT)
+Subject: Re: [PATCH v1] brcmfmac: Silence error messages about unsupported
+ firmware features
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "brcm80211-dev-list.pdl@broadcom.com" 
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        "brcm80211-dev-list@cypress.com" <brcm80211-dev-list@cypress.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210510221148.12134-1-digetx@gmail.com>
+ <CAHp75VdbFDxQy6vxDheTzcQhYEoodwbjD_LTOCyoiuLUoj4DXQ@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <34330b8c-1c9d-de77-8f7f-4400855777fb@gmail.com>
+Date:   Tue, 11 May 2021 01:24:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210505093458.23efd0ee@canb.auug.org.au> <20210510084628.0d4bbd6c@canb.auug.org.au>
- <CADnq5_OqX6EBWyt5TR1N2Fcwdq-0hWBzcRFnBSej=vCoPmZCrg@mail.gmail.com> <20210511081849.59d41322@elm.ozlabs.ibm.com>
-In-Reply-To: <20210511081849.59d41322@elm.ozlabs.ibm.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 10 May 2021 18:23:35 -0400
-Message-ID: <CADnq5_PgHV07dXabX9kiJzqW13W2YeYJ146=BJ-uGCxTt6-_pQ@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the amdgpu tree
-To:     Stephen Rothwell <sfr@rothwell.id.au>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jude Shih <shenshih@amd.com>,
-        Hanghong Ma <Hanghong.Ma@amd.com>,
-        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Dave Airlie <airlied@linux.ie>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHp75VdbFDxQy6vxDheTzcQhYEoodwbjD_LTOCyoiuLUoj4DXQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 6:18 PM Stephen Rothwell <sfr@rothwell.id.au> wrote:
->
-> Hi Alex,
->
-> On Mon, 10 May 2021 10:24:58 -0400 Alex Deucher <alexdeucher@gmail.com> wrote:
-> >
-> > Fixed in this patch set:
-> > https://patchwork.freedesktop.org/series/89890/
->
-> Sure, but that is not in the amdgpu tree that linux-next includes
-> (https://gitlab.freedesktop.org/agd5f/linux#drm-next).  Did you forget
-> to push it out, or is it still being reviewed/tested?
+11.05.2021 01:18, Andy Shevchenko пишет:
+> On Tuesday, May 11, 2021, Dmitry Osipenko <digetx@gmail.com
+> <mailto:digetx@gmail.com>> wrote:
+> 
+>     KMSG is flooded with error messages about unsupported firmware
+>     features on BCM4329 chip. The GET_ASSOCLIST error became especially
+>     noisy with a newer NetworkManager version of Ubuntu 21.04. Let's print
+>     the noisy error messages only once.
+> 
+> 
+> Seems like you are reinventing *_once() printing methods. Please use
+> them instead
 
-Was still being reviewed.  I just pushed out the tree with it included.
-
-Alex
-
->
-> --
-> Cheers,
-> Stephen Rothwell
+Indeed, I see now that it won't be difficult to add the new
+wiphy_err_once() helper that will use the generic dev_err_once(). I'll
+make a v2, thank you for taking a look at the patch.
