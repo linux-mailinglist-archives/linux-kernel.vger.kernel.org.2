@@ -2,71 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839A73780CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 000343780CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhEJKF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:05:29 -0400
-Received: from fgw23-7.mail.saunalahti.fi ([62.142.5.84]:28488 "EHLO
-        fgw23-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230098AbhEJKF2 (ORCPT
+        id S230338AbhEJKDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:03:40 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:50059 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230103AbhEJKDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:05:28 -0400
-Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
-        by fgw23.mail.saunalahti.fi (Halon) with ESMTP
-        id 1702a08c-b177-11eb-8ccd-005056bdfda7;
-        Mon, 10 May 2021 13:04:21 +0300 (EEST)
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Alexandru Tachici <alexandru.tachici@analog.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v1 1/1] hwmon: (ltc2992) Put fwnode in error case during ->probe()
-Date:   Mon, 10 May 2021 13:01:36 +0300
-Message-Id: <20210510100136.3303142-1-andy.shevchenko@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 10 May 2021 06:03:40 -0400
+Received: from xps13.home (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 68B8024000D;
+        Mon, 10 May 2021 10:02:33 +0000 (UTC)
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: silence static checker warning in nand_setup_interface()
+Date:   Mon, 10 May 2021 12:02:32 +0200
+Message-Id: <20210510100233.6865-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <YH6Ugwz3gcga+q8X@mwanda>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'4d888eceb725216305eee595ff5d068112cf7c15'
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In each iteration fwnode_for_each_available_child_node() bumps a reference
-counting of a loop variable followed by dropping in on a next iteration,
+On Tue, 2021-04-20 at 08:44:51 UTC, Dan Carpenter wrote:
+> Smatch complains that the error code is not set on this error path:
+> 
+>     drivers/mtd/nand/raw/nand_base.c:842 nand_setup_interface()
+>     warn: missing error code 'ret'
+> 
+> But actually returning success is intentional because the NAND chip will
+> still work in mode 0.  This patch adds a "ret = 0;" assignment to make
+> the intent more clear and to silence the static checker warning.  It
+> doesn't affect the compiled code because GCC optimises the assignment
+> away.
+> 
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Since in error case the loop is broken, we have to drop a reference count
-by ourselves. Do it for port_fwnode in error case during ->probe().
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
-Fixes: b0bd407e94b0 ("hwmon: (ltc2992) Add support")
-Cc: Alexandru Tachici <alexandru.tachici@analog.com>
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/hwmon/ltc2992.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/hwmon/ltc2992.c b/drivers/hwmon/ltc2992.c
-index 4382105bf142..2a4bed0ab226 100644
---- a/drivers/hwmon/ltc2992.c
-+++ b/drivers/hwmon/ltc2992.c
-@@ -900,11 +900,15 @@ static int ltc2992_parse_dt(struct ltc2992_state *st)
- 
- 	fwnode_for_each_available_child_node(fwnode, child) {
- 		ret = fwnode_property_read_u32(child, "reg", &addr);
--		if (ret < 0)
-+		if (ret < 0) {
-+			fwnode_handle_put(child);
- 			return ret;
-+		}
- 
--		if (addr > 1)
-+		if (addr > 1) {
-+			fwnode_handle_put(child);
- 			return -EINVAL;
-+		}
- 
- 		ret = fwnode_property_read_u32(child, "shunt-resistor-micro-ohms", &val);
- 		if (!ret)
--- 
-2.31.1
-
+Miquel
