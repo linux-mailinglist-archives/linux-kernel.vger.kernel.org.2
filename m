@@ -2,135 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA69379680
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F441379682
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbhEJRyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 13:54:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29228 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231512AbhEJRyu (ORCPT
+        id S233240AbhEJRz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 13:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231512AbhEJRzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 13:54:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620669225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZRMKkN3puVHnbiCCjdkC/0aI/Ng/WMP6VZjBrfm3u3I=;
-        b=RBBKMaQRxLgB6GnQNiSXeS7nh1aaYbKT0veTdR8EvRC3I4dC630aQth6cr9CCypXelAKSZ
-        LUzfOi3ZV3dopS3fZEBTkaSEcOJps9haJn2ULIUeRXJc9gVEXlgCa98Csa9cdvKA7f4qms
-        wU48ESwTTCXsMJC6QN9zf17vTI5dzq8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-412-X-JjoIH9PheSiKoIK8B2bA-1; Mon, 10 May 2021 13:53:41 -0400
-X-MC-Unique: X-JjoIH9PheSiKoIK8B2bA-1
-Received: by mail-wm1-f72.google.com with SMTP id 7-20020a05600c2307b02901432673350dso3757643wmo.9
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:53:40 -0700 (PDT)
+        Mon, 10 May 2021 13:55:21 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E356CC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:54:15 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2so24669411lft.4
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:54:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7DBXjIiwreoSMBulhj9z8uemdOR1wtk9OGoK/dlXrlw=;
+        b=kI1VsBmqooHdHR2wK2FW9Ig7MpJ6Jnv+jFiPsF6HkNbF+b8VVl8DmxTNTfP5pPtQ0j
+         C8zlDuqgm/LpY1XPq7E4zUQF+oP7CNQOxUuqeu7z0rmWPZFLICPCptijhGZoFoUI0z1P
+         HkpbxputLmAYvIty3BfaS3q9IUM57VE3AEcSHFdM7BZNoA74uJVuzUNAtKNxZQqzdWyK
+         GRmIvjRxARlykjpWe3DKrjUD64qa1fEpTEaTDBpLus1aQawDnXIulbOhihD+9zVBG0MQ
+         w//+PNR8qjOB9U2QX/JPuKXPlZS33XkTNz5VBENgXSJKkcJuCmhPnAb72HMK9sDuocaZ
+         EMyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZRMKkN3puVHnbiCCjdkC/0aI/Ng/WMP6VZjBrfm3u3I=;
-        b=OfLklJP0KKwQkwopBry/PmxOMh1C77EImbM7oxMX+76n/a4hsULC9eAVmdJcFne7Qk
-         m4hpn3NOq+a8NqR/3Bug3sHrJX6IvwGs5ZZR5V07w9SivDqfILmJBOtN6LbtPYvf1W+5
-         Q/+OG53C5whUwJIgzNjrlxw8FudQ93sK0X7RzuvC9Z97W1r7gAAHhtcptZB0mdGUAE5N
-         USQcLJDbG0ZMeULzxVbO72LTTenmzpyZ6lp33CFZ0a8zsyqCM6BtUyI3O4h8X08ABrDt
-         MMqKqxdvi5s4BTgtS9sDiuBauTZobMpbpcJY15Y3TBVyYx+Hcyw1NYYuMwESfMw+DS1X
-         GgHw==
-X-Gm-Message-State: AOAM53032EStbDmGYMHnIKODCpRl2IJkx9/aO9Te8CWBKTgLcpkVyOJG
-        MLr9OcfvNyWQjlU5bXDzTqJff27P7xj/FHFwG0BKYgf2GNQVOx+ANcFv+ZDaBaUmfJB2QxHAjf0
-        9qvCA4L07BJ66gTKAYz7IPeyO
-X-Received: by 2002:a05:600c:41d4:: with SMTP id t20mr397216wmh.46.1620669219692;
-        Mon, 10 May 2021 10:53:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxACCYv6x9QhD3YmeCA/WIWl5sAyibLtwamGjdiFCeIqnub2B2iMTBAkL7kge9o6yM046pzgw==
-X-Received: by 2002:a05:600c:41d4:: with SMTP id t20mr397186wmh.46.1620669219388;
-        Mon, 10 May 2021 10:53:39 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id n123sm285028wme.24.2021.05.10.10.53.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 10:53:38 -0700 (PDT)
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-References: <20210506184241.618958-1-bgardon@google.com>
- <20210506184241.618958-8-bgardon@google.com>
- <e2e73709-f247-1a60-4835-f3fad37ab736@redhat.com>
- <YJlxQe1AXljq5yhQ@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v3 7/8] KVM: x86/mmu: Protect rmaps independently with
- SRCU
-Message-ID: <a13b6960-3628-2899-5fbf-0765f97aa9eb@redhat.com>
-Date:   Mon, 10 May 2021 19:53:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7DBXjIiwreoSMBulhj9z8uemdOR1wtk9OGoK/dlXrlw=;
+        b=op4dXPJMWH52dtBDZXMUF/nSiaa7N5poEUf5XcuLE6DRxTOF8w9QZsHyRNhYZ8pNCj
+         l/YPHPvN49LVq1Vo2yQr9qF5Q28V1tsLatqEVp+KeJy0nN8N6+x2mrBbUWgc2A3ltAvt
+         M5YZKP4W40QsiPbEJX+kZstoiYYZTsPYcxxwGDTEf8g/We+ssrCJpssLSC92MZiExCHW
+         LETYk4vMGipkr9nJ+77EcjljqqCmVVGIC0pAlFcq8BGC7mRwfJcy5qY+WEUJgmN8Ae3w
+         WIy1PXQwICyzUIOsss8rTM/FeATMTr/vDifAwJS7YzOhHzBXZDeCAiPWHaS+2fJqKVQ3
+         1WyQ==
+X-Gm-Message-State: AOAM530sOD/FmcJGVb27UdVSbqZ46PLZdZbL106SsDmq07xpZRBfGw72
+        UMf0iy0isJhgF8Oz2KJjVSpoisO47wkFHFLjJdMlF5nJiMNFkw==
+X-Google-Smtp-Source: ABdhPJwo5TWc/WJMj1S2Zoc4U+lAbTeIU0HdWWA4HSEX93HD9gsFS/u34fNra0aplKIpc2fLmFcM3hmrUd20VVcAoPc=
+X-Received: by 2002:a05:6512:1190:: with SMTP id g16mr18626589lfr.342.1620669254344;
+ Mon, 10 May 2021 10:54:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YJlxQe1AXljq5yhQ@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210510171127.15056-1-dwaipayanray1@gmail.com> <630fc44bfb88f8d3d542c084c2d9f7c0a6d8aea7.camel@perches.com>
+In-Reply-To: <630fc44bfb88f8d3d542c084c2d9f7c0a6d8aea7.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Mon, 10 May 2021 23:24:02 +0530
+Message-ID: <CABJPP5BsSCH6ZX0M8_p2_QoSUZeq29e0VNFB8M2xkvafKZ6BGw@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: auto detect codespell dictionary path
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/05/21 19:45, Sean Christopherson wrote:
->>
->> ---------
->> Currently, rmaps are always allocated and published together with a new
->> memslot, so the srcu_dereference for the memslots array already ensures that
->> the memory pointed to by slots->arch.rmap is zero at the time
->> slots->arch.rmap.  However, they still need to be accessed in an SRCU
->> read-side critical section, as the whole memslot can be deleted outside
->> SRCU.
->> --------
-> I disagree, sprinkling random and unnecessary __rcu/SRCU annotations does more
-> harm than good.  Adding the unnecessary tag could be quite misleading as it
-> would imply the rmap pointers can_change_  independent of the memslots.
-> 
-> Similary, adding rcu_assign_pointer() in alloc_memslot_rmap() implies that its
-> safe to access the rmap after its pointer is assigned, and that's simply not
-> true since an rmap array can be freed if rmap allocation for a different memslot
-> fails.  Accessing the rmap is safe if and only if all rmaps are allocated, i.e.
-> if arch.memslots_have_rmaps is true, as you pointed out.
+On Mon, May 10, 2021 at 11:09 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Mon, 2021-05-10 at 22:41 +0530, Dwaipayan Ray wrote:
+> > The codespell dictionary was moved from
+> > `/usr/share/codespell/dictionary.txt` to data/dictionary.txt
+> > under the codespell_lib installation directory.
+> >
+> > Checkpatch still uses a default absolute path for it which will
+> > no longer work on new codespell installations unless the path
+> > is specified through --codespellfile.
+> >
+> > Detect the codespell dictionary path dynamically during
+> > runtime if the default path or the user provided dictionary
+> > path does not exist.
+> []
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > @@ -889,6 +889,13 @@ if (open(my $spelling, '<', $spelling_file)) {
+> >  }
+> >
+> >
+> >  if ($codespell) {
+> > +     if (! -e "$codespellfile" && which("python3") ne "") {
+> > +             my $output = `python3 -c "import codespell_lib; print(codespell_lib.__file__, end='');" 2>/dev/null`;
+>
+> It doesn't seem to me that using python3 is a great way to invoke python.
+> Maybe test the external command return $? when codespell isn't installed.
 
-This about freeing is a very good point.
+Sure, I will add that.
+>
+> > +             my $dictionary_path = dirname($output) . "/data/dictionary.txt";
+>
+> Unlikely, but this could still end up with a existing file of /data/dictionary.txt
+> that is not a codespell file.
+>
 
-> Furthermore, to actually gain any protection from SRCU, there would have to be
-> an synchronize_srcu() call after assigning the pointers, and that _does_  have an
-> associated.
+So does testing for the return status give us some guarantee here? The
+dictionary
+path should be relative to the codespell_lib directory, that's what
+the codespell
+people writes.
 
-... but this is incorrect (I was almost going to point out the below in 
-my reply to Ben, then decided I was pointing out the obvious; lesson 
-learned).
-
-synchronize_srcu() is only needed after *deleting* something, which in 
-this case is done as part of deleting the memslots---it's perfectly fine 
-to batch multiple synchronize_*() calls given how expensive some of them 
-are.
-
-(BTW an associated what?)
-
-So they still count as RCU-protected in my opinion, just because reading 
-them outside SRCU is a big no and ought to warn (it's unlikely that it 
-happens with rmaps, but then we just had 2-3 bugs like this being 
-reported in a short time for memslots so never say never).  However, 
-rcu_assign_pointer is not needed because the visibility of the rmaps is 
-further protected by the have-rmaps flag (to be accessed with 
-load-acquire/store-release) and not just by the pointer being there and 
-non-NULL.
-
-Paolo
-
-> Not to mention that to truly respect the __rcu annotation, deleting
-> the rmaps would also have to be done "independently" with the correct
-> rcu_assign_pointer() and synchronize_srcu() logic.
-> 
-
+> > +             if (-e "$dictionary_path") {
+> > +                     $codespellfile = $dictionary_path;
+> > +             }
+> > +     }
+> >       if (open(my $spelling, '<', $codespellfile)) {
+> >               while (<$spelling>) {
+> >                       my $line = $_;
+>
+>
