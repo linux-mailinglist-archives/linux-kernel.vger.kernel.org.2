@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EBD378A07
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB673786D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240719AbhEJLgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:36:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52794 "EHLO mail.kernel.org"
+        id S237286AbhEJLLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:11:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41711 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235026AbhEJK5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0A7861C3A;
-        Mon, 10 May 2021 10:51:04 +0000 (UTC)
+        id S233215AbhEJKtw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:49:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 368B561492;
+        Mon, 10 May 2021 10:38:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643865;
-        bh=ac/ECm5ssDNwfZVOirucWzBGrSsQR/PGlfv7yDn6bOs=;
+        s=korg; t=1620643115;
+        bh=r8UFkN2AuDgHpPR55vbdoKDopD8eGlpX6lyOUa+cLq4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JtfOCjw76re1uJ94T7hBdkmeg8fJxwHljBpwNr1JCrus2RheW0TbZw1oxYP6Vi9cI
-         w2+Gem+je/3TS+blnqn835GF2JJbHbZGMULu231whUCoUO/zjYmiem8OgYQiuBC5JG
-         1Qjd3GsujG2Xdc4SrhuY8m/eyMLFqOxW5kbGGqV8=
+        b=t65cpgyJKSd587AHOunoLoYz664+uni5m3JoTpo0trdIE4WNRXblQPQlNJqkpsbPX
+         DentJsTwcxjT5ceMD8apCaVNZxA3+DD7iRm4OJK31MQvGBO6FWkQJYBVq0jh+5I2u7
+         ODG2jTbxJusxFE7a9b4CuJ4np9cJf/akKlvGOzGM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 191/342] selftests/resctrl: Fix checking for < 0 for unsigned values
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+e7f4c64a4248a0340c37@syzkaller.appspotmail.com
+Subject: [PATCH 5.10 184/299] media: gscpa/stv06xx: fix memory leak
 Date:   Mon, 10 May 2021 12:19:41 +0200
-Message-Id: <20210510102016.404242129@linuxfoundation.org>
+Message-Id: <20210510102011.040433480@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,140 +41,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fenghua Yu <fenghua.yu@intel.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit 1205b688c92558a04d8dd4cbc2b213e0fceba5db ]
+[ Upstream commit 4f4e6644cd876c844cdb3bea2dd7051787d5ae25 ]
 
-Dan reported following static checker warnings
+For two of the supported sensors the stv06xx driver allocates memory which
+is stored in sd->sensor_priv. This memory is freed on a disconnect, but if
+the probe() fails, then it isn't freed and so this leaks memory.
 
-tools/testing/selftests/resctrl/resctrl_val.c:545 measure_vals()
-warn: 'bw_imc' unsigned <= 0
+Add a new probe_error() op that drivers can use to free any allocated
+memory in case there was a probe failure.
 
-tools/testing/selftests/resctrl/resctrl_val.c:549 measure_vals()
-warn: 'bw_resc_end' unsigned <= 0
+Thanks to Pavel Skripkin <paskripkin@gmail.com> for discovering the cause
+of the memory leak.
 
-These warnings are reported because
-1. measure_vals() declares 'bw_imc' and 'bw_resc_end' as unsigned long
-   variables
-2. Return value of get_mem_bw_imc() and get_mem_bw_resctrl() are assigned
-   to 'bw_imc' and 'bw_resc_end' respectively
-3. The returned values are checked for <= 0 to see if the calls failed
+Reported-and-tested-by: syzbot+e7f4c64a4248a0340c37@syzkaller.appspotmail.com
 
-Checking for < 0 for an unsigned value doesn't make any sense.
-
-Fix this issue by changing the implementation of get_mem_bw_imc() and
-get_mem_bw_resctrl() such that they now accept reference to a variable
-and set the variable appropriately upon success and return 0, else return
-< 0 on error.
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Tested-by: Babu Moger <babu.moger@amd.com>
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/resctrl/resctrl_val.c | 41 +++++++++++--------
- 1 file changed, 23 insertions(+), 18 deletions(-)
+ drivers/media/usb/gspca/gspca.c           | 2 ++
+ drivers/media/usb/gspca/gspca.h           | 1 +
+ drivers/media/usb/gspca/stv06xx/stv06xx.c | 9 +++++++++
+ 3 files changed, 12 insertions(+)
 
-diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
-index 5478c23c62ba..8df557894059 100644
---- a/tools/testing/selftests/resctrl/resctrl_val.c
-+++ b/tools/testing/selftests/resctrl/resctrl_val.c
-@@ -300,9 +300,9 @@ static int initialize_mem_bw_imc(void)
-  * Memory B/W utilized by a process on a socket can be calculated using
-  * iMC counters. Perf events are used to read these counters.
-  *
-- * Return: >= 0 on success. < 0 on failure.
-+ * Return: = 0 on success. < 0 on failure.
-  */
--static float get_mem_bw_imc(int cpu_no, char *bw_report)
-+static int get_mem_bw_imc(int cpu_no, char *bw_report, float *bw_imc)
- {
- 	float reads, writes, of_mul_read, of_mul_write;
- 	int imc, j, ret;
-@@ -373,13 +373,18 @@ static float get_mem_bw_imc(int cpu_no, char *bw_report)
- 		close(imc_counters_config[imc][WRITE].fd);
- 	}
+diff --git a/drivers/media/usb/gspca/gspca.c b/drivers/media/usb/gspca/gspca.c
+index 158c8e28ed2c..47d8f28bfdfc 100644
+--- a/drivers/media/usb/gspca/gspca.c
++++ b/drivers/media/usb/gspca/gspca.c
+@@ -1576,6 +1576,8 @@ out:
+ #endif
+ 	v4l2_ctrl_handler_free(gspca_dev->vdev.ctrl_handler);
+ 	v4l2_device_unregister(&gspca_dev->v4l2_dev);
++	if (sd_desc->probe_error)
++		sd_desc->probe_error(gspca_dev);
+ 	kfree(gspca_dev->usb_buf);
+ 	kfree(gspca_dev);
+ 	return ret;
+diff --git a/drivers/media/usb/gspca/gspca.h b/drivers/media/usb/gspca/gspca.h
+index b0ced2e14006..a6554d5e9e1a 100644
+--- a/drivers/media/usb/gspca/gspca.h
++++ b/drivers/media/usb/gspca/gspca.h
+@@ -105,6 +105,7 @@ struct sd_desc {
+ 	cam_cf_op config;	/* called on probe */
+ 	cam_op init;		/* called on probe and resume */
+ 	cam_op init_controls;	/* called on probe */
++	cam_v_op probe_error;	/* called if probe failed, do cleanup here */
+ 	cam_op start;		/* called on stream on after URBs creation */
+ 	cam_pkt_op pkt_scan;
+ /* optional operations */
+diff --git a/drivers/media/usb/gspca/stv06xx/stv06xx.c b/drivers/media/usb/gspca/stv06xx/stv06xx.c
+index 95673fc0a99c..d9bc2aacc885 100644
+--- a/drivers/media/usb/gspca/stv06xx/stv06xx.c
++++ b/drivers/media/usb/gspca/stv06xx/stv06xx.c
+@@ -529,12 +529,21 @@ static int sd_int_pkt_scan(struct gspca_dev *gspca_dev,
+ static int stv06xx_config(struct gspca_dev *gspca_dev,
+ 			  const struct usb_device_id *id);
  
--	if (strcmp(bw_report, "reads") == 0)
--		return reads;
-+	if (strcmp(bw_report, "reads") == 0) {
-+		*bw_imc = reads;
-+		return 0;
-+	}
- 
--	if (strcmp(bw_report, "writes") == 0)
--		return writes;
-+	if (strcmp(bw_report, "writes") == 0) {
-+		*bw_imc = writes;
-+		return 0;
-+	}
- 
--	return (reads + writes);
-+	*bw_imc = reads + writes;
-+	return 0;
- }
- 
- void set_mbm_path(const char *ctrlgrp, const char *mongrp, int resource_id)
-@@ -438,9 +443,8 @@ static void initialize_mem_bw_resctrl(const char *ctrlgrp, const char *mongrp,
-  * 1. If con_mon grp is given, then read from it
-  * 2. If con_mon grp is not given, then read from root con_mon grp
-  */
--static unsigned long get_mem_bw_resctrl(void)
-+static int get_mem_bw_resctrl(unsigned long *mbm_total)
- {
--	unsigned long mbm_total = 0;
- 	FILE *fp;
- 
- 	fp = fopen(mbm_total_path, "r");
-@@ -449,7 +453,7 @@ static unsigned long get_mem_bw_resctrl(void)
- 
- 		return -1;
- 	}
--	if (fscanf(fp, "%lu", &mbm_total) <= 0) {
-+	if (fscanf(fp, "%lu", mbm_total) <= 0) {
- 		perror("Could not get mbm local bytes");
- 		fclose(fp);
- 
-@@ -457,7 +461,7 @@ static unsigned long get_mem_bw_resctrl(void)
- 	}
- 	fclose(fp);
- 
--	return mbm_total;
-+	return 0;
- }
- 
- pid_t bm_pid, ppid;
-@@ -549,7 +553,8 @@ static void initialize_llc_occu_resctrl(const char *ctrlgrp, const char *mongrp,
- static int
- measure_vals(struct resctrl_val_param *param, unsigned long *bw_resc_start)
- {
--	unsigned long bw_imc, bw_resc, bw_resc_end;
-+	unsigned long bw_resc, bw_resc_end;
-+	float bw_imc;
- 	int ret;
- 
- 	/*
-@@ -559,13 +564,13 @@ measure_vals(struct resctrl_val_param *param, unsigned long *bw_resc_start)
- 	 * Compare the two values to validate resctrl value.
- 	 * It takes 1sec to measure the data.
- 	 */
--	bw_imc = get_mem_bw_imc(param->cpu_no, param->bw_report);
--	if (bw_imc <= 0)
--		return bw_imc;
-+	ret = get_mem_bw_imc(param->cpu_no, param->bw_report, &bw_imc);
-+	if (ret < 0)
-+		return ret;
- 
--	bw_resc_end = get_mem_bw_resctrl();
--	if (bw_resc_end <= 0)
--		return bw_resc_end;
-+	ret = get_mem_bw_resctrl(&bw_resc_end);
-+	if (ret < 0)
-+		return ret;
- 
- 	bw_resc = (bw_resc_end - *bw_resc_start) / MB;
- 	ret = print_results_bw(param->filename, bm_pid, bw_imc, bw_resc);
++static void stv06xx_probe_error(struct gspca_dev *gspca_dev)
++{
++	struct sd *sd = (struct sd *)gspca_dev;
++
++	kfree(sd->sensor_priv);
++	sd->sensor_priv = NULL;
++}
++
+ /* sub-driver description */
+ static const struct sd_desc sd_desc = {
+ 	.name = MODULE_NAME,
+ 	.config = stv06xx_config,
+ 	.init = stv06xx_init,
+ 	.init_controls = stv06xx_init_controls,
++	.probe_error = stv06xx_probe_error,
+ 	.start = stv06xx_start,
+ 	.stopN = stv06xx_stopN,
+ 	.pkt_scan = stv06xx_pkt_scan,
 -- 
 2.30.2
 
