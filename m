@@ -2,119 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B52F0378A96
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F628378A82
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242861AbhEJLru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235259AbhEJLAc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:00:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489FEC034611
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 03:51:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=y0sDlSb6soTPH2aehOLflGIYyxgnPAEKF3ObJMM7PY8=; b=pWvGFBX88AJupe0oZdGgshZxpQ
-        7jfNCPup37emsX+xl8PNefjYUVb7cBY/zifR1JlyIuzbIVskXG4CMKzCCFgoTO/OTXTfcKfVMklCL
-        o46gP61KTn8dJ6M9OnAYaaXXZ/z0sFhWVSPRiWor+dq2s174eIGMAu9X0u2L9fChUPwiYVET5duOD
-        ngz6ek8+jVthUy0Drzpidm8VxrCx8kW1MepWurn0ZuxHuTUbu1mhhrRRrBoaxcnOmVSkgM8JneHsR
-        xd3ETwqAu9DdedqCOf30XDYy55i47JMaoazLNaPlENldKGWeBJtbeCNemWNUN/TqsEuOft6Uyi32a
-        DZ/Vgg5g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lg3SR-005yZD-P6; Mon, 10 May 2021 10:49:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 92CC230022A;
-        Mon, 10 May 2021 12:48:14 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 278252020B52D; Mon, 10 May 2021 12:48:14 +0200 (CEST)
-Date:   Mon, 10 May 2021 12:48:14 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
+        id S236880AbhEJLp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:45:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54598 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232425AbhEJK6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:58:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 050B96194E;
+        Mon, 10 May 2021 10:52:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620643941;
+        bh=zisSpLmXvGj0wWL2cVNivIspnQewVlGp4zkqiChOCjM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PMl1HMKs+oMX21taoygwNCfen2Egc6IDsYYZ0bNbgAkv15NcmAKYVtr6Kq+THXKM5
+         40JpnSq58+sitaPVb+pLJUtcqivHfbErETauEPF1PPjwEOVnpy0CdUEFXsZz7JrJeU
+         5MS6PF1n4Fpr2fWDuyXVoa7j9790GFR9tcJ42XkcePPJPVSHmkCg3/HVvgYMTdGwfY
+         WO7VLiJ2ac+zwHTFI/A+ZVOft5oYRke8Sm0xwLnJxX+sZIKboEj9m3mVS58vJ6vzlA
+         zEHJTMjPUUckEKNxZbB8LFQUNnOw9+WR+ea0HMegeDbjz1j9z21X7zsnjwsWiW/s4T
+         5TFBkqWpiggdQ==
+Date:   Mon, 10 May 2021 12:52:19 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         LKML <linux-kernel@vger.kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
         "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Yunfeng Ye <yeyunfeng@huawei.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH 6/8] tick/nohz: Only wakeup a single target cpu when
- kicking a task
-Message-ID: <YJkPbkMiteUCYFru@hirez.programming.kicks-ass.net>
+        Yunfeng Ye <yeyunfeng@huawei.com>
+Subject: Re: [PATCH 8/8] tick/nohz: Kick only _queued_ task whose tick
+ dependency is updated
+Message-ID: <20210510105219.GB97481@lothringen>
 References: <20210422120158.33629-1-frederic@kernel.org>
- <20210422120158.33629-7-frederic@kernel.org>
- <YJKhAFAbOXzopp6/@hirez.programming.kicks-ass.net>
- <20210510103901.GA97481@lothringen>
+ <20210422120158.33629-9-frederic@kernel.org>
+ <YJKkNJTQFtmQPv1u@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510103901.GA97481@lothringen>
+In-Reply-To: <YJKkNJTQFtmQPv1u@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 12:39:01PM +0200, Frederic Weisbecker wrote:
-> On Wed, May 05, 2021 at 03:43:28PM +0200, Peter Zijlstra wrote:
-> > That had me looking at tick_nohz_task_switch(), does we want the below?
-> > 
-> > 
+On Wed, May 05, 2021 at 03:57:08PM +0200, Peter Zijlstra wrote:
+> On Thu, Apr 22, 2021 at 02:01:58PM +0200, Frederic Weisbecker wrote:
+> 
 > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 9143163fa678..ff45fc513ba7 100644
+> > index 98191218d891..08526227d200 100644
 > > --- a/kernel/sched/core.c
 > > +++ b/kernel/sched/core.c
-> > @@ -4207,6 +4207,7 @@ static struct rq *finish_task_switch(struct task_struct *prev)
-> >  	vtime_task_switch(prev);
-> >  	perf_event_task_sched_in(prev, current);
-> >  	finish_task(prev);
-> > +	tick_nohz_task_switch();
-> >  	finish_lock_switch(rq);
-> >  	finish_arch_post_lock_switch();
-> >  	kcov_finish_switch(current);
-> > @@ -4252,7 +4253,6 @@ static struct rq *finish_task_switch(struct task_struct *prev)
-> >  		put_task_struct_rcu_user(prev);
-> >  	}
+> > @@ -1580,6 +1580,11 @@ static inline void uclamp_post_fork(struct task_struct *p) { }
+> >  static inline void init_uclamp(void) { }
+> >  #endif /* CONFIG_UCLAMP_TASK */
 > >  
-> > -	tick_nohz_task_switch();
-> >  	return rq;
-> >  }
-> >  
+> > +bool sched_task_on_rq(struct task_struct *p)
+> > +{
+> > +	return task_on_rq_queued(p);
+> > +}
+> > +
+> >  static inline void enqueue_task(struct rq *rq, struct task_struct *p, int flags)
+> >  {
+> >  	if (!(flags & ENQUEUE_NOCLOCK))
+> 
+> That's a wee bit sad..
+
+I know... But I couldn't find a better way.
+
+> 
 > > diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-> > index 828b091501ca..ea079be9097f 100644
+> > index ad5c3905196a..faba7881048f 100644
 > > --- a/kernel/time/tick-sched.c
 > > +++ b/kernel/time/tick-sched.c
-> > @@ -447,13 +447,10 @@ void tick_nohz_dep_clear_signal(struct signal_struct *sig, enum tick_dep_bits bi
-> >   */
-> >  void __tick_nohz_task_switch(void)
+> > @@ -324,8 +324,6 @@ void tick_nohz_full_kick_cpu(int cpu)
+> >  
+> >  static void tick_nohz_kick_task(struct task_struct *tsk)
 > >  {
-> > -	unsigned long flags;
-> >  	struct tick_sched *ts;
-> >  
-> > -	local_irq_save(flags);
+> > -	int cpu = task_cpu(tsk);
 > > -
-> >  	if (!tick_nohz_full_cpu(smp_processor_id()))
-> > -		goto out;
-> > +		return;
-> >  
-> >  	ts = this_cpu_ptr(&tick_cpu_sched);
-> >  
-> > @@ -462,8 +459,6 @@ void __tick_nohz_task_switch(void)
-> >  		    atomic_read(&current->signal->tick_dep_mask))
-> >  			tick_nohz_full_kick();
-> >  	}
-> > -out:
-> > -	local_irq_restore(flags);
-> >  }
-> >  
-> >  /* Get the boot-time nohz CPU list from the kernel parameters. */
+> >  	/*
+> >  	 * If the task concurrently migrates to another cpu,
+> >  	 * we guarantee it sees the new tick dependency upon
+> > @@ -340,6 +338,23 @@ static void tick_nohz_kick_task(struct task_struct *tsk)
+> >  	 *   tick_nohz_task_switch()            smp_mb() (atomic_fetch_or())
+> >  	 *      LOAD p->tick_dep_mask           LOAD p->cpu
+> >  	 */
+> > +	int cpu = task_cpu(tsk);
+> > +
+> > +	/*
+> > +	 * If the task is not running, run_posix_cpu_timers
+> > +	 * has nothing to elapsed, can spare IPI in that
+> > +	 * case.
+> > +	 *
+> > +	 * activate_task()                      STORE p->tick_dep_mask
+> > +	 * STORE p->on_rq
+> > +	 * __schedule() (switch to task 'p')    smp_mb() (atomic_fetch_or())
+> > +	 * LOCK rq->lock                        LOAD p->on_rq
+> > +	 * smp_mb__after_spin_lock()
+> > +	 * tick_nohz_task_switch()
+> > +	 *	LOAD p->tick_dep_mask
+> > +	 */
 > 
-> 
-> Sure, I'll take your SoB on that too, ok?
+> That needs indenting, the style is distinctly different from the comment
+> right above it.
 
-OK, but please also test it :-) I didn't even ask a compiler it's
-opinion on the thing.
+Ok, I'll fix that.
+
+> 
+> > +	if (!sched_task_on_rq(tsk))
+> > +		return;
+> 
+> I'm too tired, but do we really need the task_cpu() load to be before
+> this?
+
+Nope, it should be fine to put it after.
+
+Thanks!
+
+> 
+> >  
+> >  	preempt_disable();
+> >  	if (cpu_online(cpu))
+> > -- 
+> > 2.25.1
+> > 
