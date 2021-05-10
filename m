@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1557F3789DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D569378690
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234772AbhEJLdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:33:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52714 "EHLO mail.kernel.org"
+        id S233664AbhEJLJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:09:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234879AbhEJK5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3461361C3B;
-        Mon, 10 May 2021 10:50:08 +0000 (UTC)
+        id S233111AbhEJKtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:49:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF165619C6;
+        Mon, 10 May 2021 10:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643808;
-        bh=bgsQ4C6uIetDSOq7p3giD0blDWPX1UU1oDNWpWVUFGc=;
+        s=korg; t=1620643096;
+        bh=zCIXw1C/sFH1de0h7EkCdQbVW7yzWhOzPy7vGicll/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YbMF2nmoga76fNfYy7sL4gJEhnQWNcybfjdXQP/ztvmnK5pQdpW4w5wAUnf0F7ygm
-         pGR8uaSL+wU+h5raJ4OqF9z80iAlxCcRL9pCc5BX3PzfA93CN6jnuS9vEyYiiXOvKO
-         jP6fjr+1snsGl+Wn53+O1c5tSl3iojns55CWt1io=
+        b=hu6jwgacQR77L0JRFQHTzuTWWPkdF0kyy8IUq/79M+mU5vW83NwALKRb0F76lzTTd
+         Wu8hCBU70vGj2RWT0I/OIPJId6sL2EwTUTbEgj6DKLBBzwuzRzUOnEeZMTk7yzsgeZ
+         TQ30jL1KOAeVq72xiLKKzPyE6jaoe1x5HNZVLQdo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kiran Gunda <kgunda@codeaurora.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 166/342] backlight: qcom-wled: Fix FSC update issue for WLED5
+Subject: [PATCH 5.10 159/299] selftests/resctrl: Fix compilation issues for other global variables
 Date:   Mon, 10 May 2021 12:19:16 +0200
-Message-Id: <20210510102015.573824302@linuxfoundation.org>
+Message-Id: <20210510102010.209095307@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,78 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kiran Gunda <kgunda@codeaurora.org>
+From: Fenghua Yu <fenghua.yu@intel.com>
 
-[ Upstream commit 4d6e9cdff7fbb6bef3e5559596fab3eeffaf95ca ]
+[ Upstream commit 896016d2ad051811ff9c9c087393adc063322fbc ]
 
-Currently, for WLED5, the FSC (Full scale current) setting is not
-updated properly due to driver toggling the wrong register after
-an FSC update.
+Reinette reported following compilation issue on Fedora 32, gcc version
+10.1.1
 
-On WLED5 we should only toggle the MOD_SYNC bit after a brightness
-update. For an FSC update we need to toggle the SYNC bits instead.
+/usr/bin/ld: resctrl_tests.o:<src_dir>/resctrl.h:65: multiple definition
+of `bm_pid'; cache.o:<src_dir>/resctrl.h:65: first defined here
 
-Fix it by adopting the common wled3_sync_toggle() for WLED5 and
-introducing new code to the brightness update path to compensate.
+Other variables are ppid, tests_run, llc_occup_path, is_amd. Compiler
+isn't happy because these variables are defined globally in two .c files
+but are not declared as extern.
 
-Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+To fix issues for the global variables, declare them as extern.
+
+Chang Log:
+- Split this patch from v4's patch 1 (Shuah).
+
+Reported-by: Reinette Chatre <reinette.chatre@intel.com>
+Tested-by: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/backlight/qcom-wled.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+ tools/testing/selftests/resctrl/resctrl.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-index 83a187fdaa1d..cd11c5776438 100644
---- a/drivers/video/backlight/qcom-wled.c
-+++ b/drivers/video/backlight/qcom-wled.c
-@@ -348,7 +348,7 @@ static int wled3_sync_toggle(struct wled *wled)
- 	return rc;
- }
+diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
+index 959c71e39bdc..12b77182cb44 100644
+--- a/tools/testing/selftests/resctrl/resctrl.h
++++ b/tools/testing/selftests/resctrl/resctrl.h
+@@ -62,11 +62,11 @@ struct resctrl_val_param {
+ 	int		(*setup)(int num, ...);
+ };
  
--static int wled5_sync_toggle(struct wled *wled)
-+static int wled5_mod_sync_toggle(struct wled *wled)
- {
- 	int rc;
- 	u8 val;
-@@ -445,10 +445,23 @@ static int wled_update_status(struct backlight_device *bl)
- 			goto unlock_mutex;
- 		}
+-pid_t bm_pid, ppid;
+-int tests_run;
++extern pid_t bm_pid, ppid;
++extern int tests_run;
  
--		rc = wled->wled_sync_toggle(wled);
--		if (rc < 0) {
--			dev_err(wled->dev, "wled sync failed rc:%d\n", rc);
--			goto unlock_mutex;
-+		if (wled->version < 5) {
-+			rc = wled->wled_sync_toggle(wled);
-+			if (rc < 0) {
-+				dev_err(wled->dev, "wled sync failed rc:%d\n", rc);
-+				goto unlock_mutex;
-+			}
-+		} else {
-+			/*
-+			 * For WLED5 toggling the MOD_SYNC_BIT updates the
-+			 * brightness
-+			 */
-+			rc = wled5_mod_sync_toggle(wled);
-+			if (rc < 0) {
-+				dev_err(wled->dev, "wled mod sync failed rc:%d\n",
-+					rc);
-+				goto unlock_mutex;
-+			}
- 		}
- 	}
+-char llc_occup_path[1024];
+-bool is_amd;
++extern char llc_occup_path[1024];
++extern bool is_amd;
  
-@@ -1459,7 +1472,7 @@ static int wled_configure(struct wled *wled)
- 		size = ARRAY_SIZE(wled5_opts);
- 		*cfg = wled5_config_defaults;
- 		wled->wled_set_brightness = wled5_set_brightness;
--		wled->wled_sync_toggle = wled5_sync_toggle;
-+		wled->wled_sync_toggle = wled3_sync_toggle;
- 		wled->wled_cabc_config = wled5_cabc_config;
- 		wled->wled_ovp_delay = wled5_ovp_delay;
- 		wled->wled_auto_detection_required =
+ bool check_resctrlfs_support(void);
+ int filter_dmesg(void);
 -- 
 2.30.2
 
