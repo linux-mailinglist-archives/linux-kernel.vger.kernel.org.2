@@ -2,152 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53099377F73
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7D3377F76
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbhEJJhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhEJJhP (ORCPT
+        id S230283AbhEJJhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:37:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60164 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230153AbhEJJhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:37:15 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D235C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 02:36:11 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:f937:4595:45ff:bcbf])
-        by baptiste.telenet-ops.be with bizsmtp
-        id 2xc72501E4jQ7kl01xc71u; Mon, 10 May 2021 11:36:08 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lg2Kd-004OY5-LJ
-        for linux-kernel@vger.kernel.org; Mon, 10 May 2021 11:36:07 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lg2Kc-00H7V9-UA
-        for linux-kernel@vger.kernel.org; Mon, 10 May 2021 11:36:06 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-Subject: Build regressions/improvements in v5.13-rc1
-Date:   Mon, 10 May 2021 11:36:06 +0200
-Message-Id: <20210510093606.4080368-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 10 May 2021 05:37:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620639391;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AU7zo6bVwVnfpZ7DIh+EUuZt1DVFtjdBfG+Vc5NzEe8=;
+        b=ePHv55GweDYOqXkwhMYTngRQJqArDUxL3fvOmSX+k97wnXZRDdHcLjNXQgTj7dXiJztGOF
+        Q+BdB4B1VvA3XBKsHVBzXCYvWImTAcdBtUILw/OaZYF5ygIxfl5FWufeg1/KjJsrSc2/DA
+        7FY3shN0iGMtQdOTcB7AFsEbgCO7tA4=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-193-T6gwsfbwP5yGJKdC3imvkA-1; Mon, 10 May 2021 05:36:30 -0400
+X-MC-Unique: T6gwsfbwP5yGJKdC3imvkA-1
+Received: by mail-ej1-f69.google.com with SMTP id cs18-20020a170906dc92b02903a8adf202d6so3460255ejc.23
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 02:36:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AU7zo6bVwVnfpZ7DIh+EUuZt1DVFtjdBfG+Vc5NzEe8=;
+        b=cb/MAjkUFYteGaT+61o35/MQDSTov2foECjdOU7mJrqzI9kwgDlOmbOF1uswKrQMmU
+         vweMH2HkflNKgTXBOdyVauN/Prtm/bniaAJHPYy20FTLnGBMueEEPjlth61kY5SGKHy9
+         tB48qk2KzClmzBhdVMTOlhBg4KPMvkGotE+ZXZXd1k3bjhfo62QvhOwMy3CWHwYcHECi
+         cCZFx4WJkZYTbh/UfpB82+8amcmod7e54veddNaeqQamivyFLXQ/30exT8TOxPG2Am74
+         wiN7eul2uwg5B31badSGlwnz4/ipTyl/MKEDMO+/z0wdfb9aNXRuUc0vAi4PQ+1Vj4E6
+         24ZQ==
+X-Gm-Message-State: AOAM531OCktTvAuWYjIcoLoxd2LSimPlYx0xAaIW1Tp/N2oQI9K/CAaY
+        T/dhSZ9XvKuk5bt+V46139A73St50FH40rxC9GnEttPPYpCjADIXRfDP7QuAkakF1wf03Vw9xbi
+        oY3mW3f8akzqfCW3DQO6pKO6s
+X-Received: by 2002:a05:6402:c1:: with SMTP id i1mr28223852edu.315.1620639388798;
+        Mon, 10 May 2021 02:36:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxGSngiLU/JDzfHN43Q9eIis2EowqfnjicjLpPjdPz+mL4ukA2XWwg1Nngs6x+TOv5GDqYLoQ==
+X-Received: by 2002:a05:6402:c1:: with SMTP id i1mr28223831edu.315.1620639388579;
+        Mon, 10 May 2021 02:36:28 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id o8sm8666791ejm.18.2021.05.10.02.36.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 02:36:28 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: dell-wmi-sysman: Make populate_foo_data
+ functions more robust
+To:     Prasanth KSR <kosigiprasanth@gmail.com>, dvhart@infradead.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Prasanth KSR <prasanth.ksr@dell.com>,
+        Divya Bharathi <divya.bharathi@dell.com>
+References: <20210427042233.5495-1-prasanth.ksr@dell.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <d465a06c-8ff2-2f5f-7183-732adfa276ac@redhat.com>
+Date:   Mon, 10 May 2021 11:36:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210427042233.5495-1-prasanth.ksr@dell.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below is the list of build error/warning regressions/improvements in
-v5.13-rc1[1] compared to v5.12[2].
+Hi,
 
-Summarized:
-  - build errors: +0/-5
-  - build warnings: +47/-20
+On 4/27/21 6:22 AM, Prasanth KSR wrote:
+> 1. Check acpi type before assignment of each property value
+> 
+> 2. Add boundary check for properties count
+> 
+> Co-developed-by: Divya Bharathi <divya.bharathi@dell.com>
+> Signed-off-by: Divya Bharathi <divya.bharathi@dell.com>
+> Signed-off-by: Prasanth KSR <prasanth.ksr@dell.com>
 
-Note that there may be false regressions, as some logs are incomplete.
-Still, they're build errors/warnings.
+Thanks this mostly looks good, 2 small remarks inline below.
 
-Happy fixing! ;-)
+Once those are fixed this is ready for merging.
 
-Thanks to the linux-next team for providing the build service.
+> ---
+>  .../dell/dell-wmi-sysman/dell-wmi-sysman.h    |  5 ++-
+>  .../dell/dell-wmi-sysman/enum-attributes.c    | 36 ++++++++++++++++---
+>  .../x86/dell/dell-wmi-sysman/int-attributes.c | 16 +++++++++
+>  .../dell/dell-wmi-sysman/passobj-attributes.c |  6 ++++
+>  .../dell/dell-wmi-sysman/string-attributes.c  | 16 ++++++++-
+>  .../x86/dell/dell-wmi-sysman/sysman.c         | 17 ++++++---
+>  6 files changed, 84 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/dell-wmi-sysman.h b/drivers/platform/x86/dell/dell-wmi-sysman/dell-wmi-sysman.h
+> index b80f2a62ea3f..3ad33a094588 100644
+> --- a/drivers/platform/x86/dell/dell-wmi-sysman/dell-wmi-sysman.h
+> +++ b/drivers/platform/x86/dell/dell-wmi-sysman/dell-wmi-sysman.h
+> @@ -152,12 +152,15 @@ static ssize_t curr_val##_store(struct kobject *kobj,				\
+>  	return ret ? ret : count;						\
+>  }
+>  
+> +#define check_property_type(attr, prop, valuetype)				\
+> +	(attr##_obj[prop].type != valuetype)
+> +
+>  union acpi_object *get_wmiobj_pointer(int instance_id, const char *guid_string);
+>  int get_instance_count(const char *guid_string);
+>  void strlcpy_attr(char *dest, char *src);
+>  
+>  int populate_enum_data(union acpi_object *enumeration_obj, int instance_id,
+> -			struct kobject *attr_name_kobj);
+> +			struct kobject *attr_name_kobj, u32 enum_property_count);
+>  int alloc_enum_data(void);
+>  void exit_enum_attributes(void);
+>  
+> diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/enum-attributes.c b/drivers/platform/x86/dell/dell-wmi-sysman/enum-attributes.c
+> index 091e48c217ed..70f4ace56ec3 100644
+> --- a/drivers/platform/x86/dell/dell-wmi-sysman/enum-attributes.c
+> +++ b/drivers/platform/x86/dell/dell-wmi-sysman/enum-attributes.c
+> @@ -132,39 +132,65 @@ int alloc_enum_data(void)
+>   * @enumeration_obj: ACPI object with enumeration data
+>   * @instance_id: The instance to enumerate
+>   * @attr_name_kobj: The parent kernel object
+> + * @enum_property_count: Total properties count under enumeration type
+>   */
+>  int populate_enum_data(union acpi_object *enumeration_obj, int instance_id,
+> -			struct kobject *attr_name_kobj)
+> +			struct kobject *attr_name_kobj, u32 enum_property_count)
+>  {
+>  	int i, next_obj, value_modifier_count, possible_values_count;
+>  
+>  	wmi_priv.enumeration_data[instance_id].attr_name_kobj = attr_name_kobj;
+> +	if (check_property_type(enumeration, ATTR_NAME, ACPI_TYPE_STRING))
+> +		return -EINVAL;
+>  	strlcpy_attr(wmi_priv.enumeration_data[instance_id].attribute_name,
+>  		enumeration_obj[ATTR_NAME].string.pointer);
+> +	if (check_property_type(enumeration, DISPL_NAME_LANG_CODE, ACPI_TYPE_STRING))
+> +		return -EINVAL;
+>  	strlcpy_attr(wmi_priv.enumeration_data[instance_id].display_name_language_code,
+>  		enumeration_obj[DISPL_NAME_LANG_CODE].string.pointer);
+> +	if (check_property_type(enumeration, DISPLAY_NAME, ACPI_TYPE_STRING))
+> +		return -EINVAL;
+>  	strlcpy_attr(wmi_priv.enumeration_data[instance_id].display_name,
+>  		enumeration_obj[DISPLAY_NAME].string.pointer);
+> +	if (check_property_type(enumeration, DEFAULT_VAL, ACPI_TYPE_STRING))
+> +		return -EINVAL;
+>  	strlcpy_attr(wmi_priv.enumeration_data[instance_id].default_value,
+>  		enumeration_obj[DEFAULT_VAL].string.pointer);
+> +	if (check_property_type(enumeration, MODIFIER, ACPI_TYPE_STRING))
+> +		return -EINVAL;
+>  	strlcpy_attr(wmi_priv.enumeration_data[instance_id].dell_modifier,
+>  		enumeration_obj[MODIFIER].string.pointer);
+>  
+>  	next_obj = MODIFIER + 1;
+>  
+> -	value_modifier_count = (uintptr_t)enumeration_obj[next_obj].string.pointer;
+> +	if (next_obj >= enum_property_count)
+> +		return -EINVAL;
+> +
+> +	if (check_property_type(enumeration, next_obj, ACPI_TYPE_INTEGER))
+> +		return -EINVAL;
+> +	value_modifier_count = (uintptr_t)enumeration_obj[next_obj++].string.pointer;
+>  
+>  	for (i = 0; i < value_modifier_count; i++) {
+> +		if (next_obj >= enum_property_count)
+> +			return -EINVAL;
+> +		if (check_property_type(enumeration, next_obj, ACPI_TYPE_STRING))
+> +			return -EINVAL;
+>  		strcat(wmi_priv.enumeration_data[instance_id].dell_value_modifier,
+> -			enumeration_obj[++next_obj].string.pointer);
+> +			enumeration_obj[next_obj++].string.pointer);
+>  		strcat(wmi_priv.enumeration_data[instance_id].dell_value_modifier, ";");
+>  	}
+>  
+> -	possible_values_count = (uintptr_t) enumeration_obj[++next_obj].string.pointer;
 
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/6efb943b8616ec53a5e444193dccf1af9ad627b5/ (191 out of 192 configs)
-[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/9f4ad9e425a1d3b6a34617b8ea226d56a119a717/ (all 192 configs)
+You are missing a:
+
+	if (next_obj >= enum_property_count)
+		return -EINVAL;
+
+Check here.
 
 
-*** ERRORS ***
+> +	if (check_property_type(enumeration, next_obj, ACPI_TYPE_INTEGER))
+> +		return -EINVAL;
+> +	possible_values_count = (uintptr_t) enumeration_obj[next_obj++].string.pointer;
+>  
+>  	for (i = 0; i < possible_values_count; i++) {
+> +		if (next_obj >= enum_property_count)
+> +			return -EINVAL;
+> +		if (check_property_type(enumeration, next_obj, ACPI_TYPE_STRING))
+> +			return -EINVAL;
+>  		strcat(wmi_priv.enumeration_data[instance_id].possible_values,
+> -			enumeration_obj[++next_obj].string.pointer);
+> +			enumeration_obj[next_obj++].string.pointer);
+>  		strcat(wmi_priv.enumeration_data[instance_id].possible_values, ";");
+>  	}
+>  
+> diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/int-attributes.c b/drivers/platform/x86/dell/dell-wmi-sysman/int-attributes.c
+> index 8a49ba6e44f9..951e75b538fa 100644
+> --- a/drivers/platform/x86/dell/dell-wmi-sysman/int-attributes.c
+> +++ b/drivers/platform/x86/dell/dell-wmi-sysman/int-attributes.c
+> @@ -141,20 +141,36 @@ int populate_int_data(union acpi_object *integer_obj, int instance_id,
+>  			struct kobject *attr_name_kobj)
+>  {
+>  	wmi_priv.integer_data[instance_id].attr_name_kobj = attr_name_kobj;
+> +	if (check_property_type(integer, ATTR_NAME, ACPI_TYPE_STRING))
+> +		return -EINVAL;
+>  	strlcpy_attr(wmi_priv.integer_data[instance_id].attribute_name,
+>  		integer_obj[ATTR_NAME].string.pointer);
+> +	if (check_property_type(integer, DISPL_NAME_LANG_CODE, ACPI_TYPE_STRING))
+> +		return -EINVAL;
+>  	strlcpy_attr(wmi_priv.integer_data[instance_id].display_name_language_code,
+>  		integer_obj[DISPL_NAME_LANG_CODE].string.pointer);
+> +	if (check_property_type(integer, DISPLAY_NAME, ACPI_TYPE_STRING))
+> +		return -EINVAL;
+>  	strlcpy_attr(wmi_priv.integer_data[instance_id].display_name,
+>  		integer_obj[DISPLAY_NAME].string.pointer);
+> +	if (check_property_type(integer, DEFAULT_VAL, ACPI_TYPE_INTEGER))
+> +		return -EINVAL;
+>  	wmi_priv.integer_data[instance_id].default_value =
+>  		(uintptr_t)integer_obj[DEFAULT_VAL].string.pointer;
+> +	if (check_property_type(integer, MODIFIER, ACPI_TYPE_STRING))
+> +		return -EINVAL;
+>  	strlcpy_attr(wmi_priv.integer_data[instance_id].dell_modifier,
+>  		integer_obj[MODIFIER].string.pointer);
+> +	if (check_property_type(integer, MIN_VALUE, ACPI_TYPE_INTEGER))
+> +		return -EINVAL;
+>  	wmi_priv.integer_data[instance_id].min_value =
+>  		(uintptr_t)integer_obj[MIN_VALUE].string.pointer;
+> +	if (check_property_type(integer, MAX_VALUE, ACPI_TYPE_INTEGER))
+> +		return -EINVAL;
+>  	wmi_priv.integer_data[instance_id].max_value =
+>  		(uintptr_t)integer_obj[MAX_VALUE].string.pointer;
+> +	if (check_property_type(integer, SCALAR_INCR, ACPI_TYPE_INTEGER))
+> +		return -EINVAL;
+>  	wmi_priv.integer_data[instance_id].scalar_increment =
+>  		(uintptr_t)integer_obj[SCALAR_INCR].string.pointer;
+>  
+> diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/passobj-attributes.c b/drivers/platform/x86/dell/dell-wmi-sysman/passobj-attributes.c
+> index 834b3e82ad9f..230e6ee96636 100644
+> --- a/drivers/platform/x86/dell/dell-wmi-sysman/passobj-attributes.c
+> +++ b/drivers/platform/x86/dell/dell-wmi-sysman/passobj-attributes.c
+> @@ -159,10 +159,16 @@ int alloc_po_data(void)
+>  int populate_po_data(union acpi_object *po_obj, int instance_id, struct kobject *attr_name_kobj)
+>  {
+>  	wmi_priv.po_data[instance_id].attr_name_kobj = attr_name_kobj;
+> +	if (check_property_type(po, ATTR_NAME, ACPI_TYPE_STRING))
+> +		return -EINVAL;
+>  	strlcpy_attr(wmi_priv.po_data[instance_id].attribute_name,
+>  		     po_obj[ATTR_NAME].string.pointer);
+> +	if (check_property_type(po, MIN_PASS_LEN, ACPI_TYPE_INTEGER))
+> +		return -EINVAL;
+>  	wmi_priv.po_data[instance_id].min_password_length =
+>  		(uintptr_t)po_obj[MIN_PASS_LEN].string.pointer;
+> +	if (check_property_type(po, MAX_PASS_LEN, ACPI_TYPE_INTEGER))
+> +		return -EINVAL;
+>  	wmi_priv.po_data[instance_id].max_password_length =
+>  		(uintptr_t) po_obj[MAX_PASS_LEN].string.pointer;
+>  
+> diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/string-attributes.c b/drivers/platform/x86/dell/dell-wmi-sysman/string-attributes.c
+> index 552537852459..c392f0ecf8b5 100644
+> --- a/drivers/platform/x86/dell/dell-wmi-sysman/string-attributes.c
+> +++ b/drivers/platform/x86/dell/dell-wmi-sysman/string-attributes.c
+> @@ -118,24 +118,38 @@ int alloc_str_data(void)
+>  
+>  /**
+>   * populate_str_data() - Populate all properties of an instance under string attribute
+> - * @str_obj: ACPI object with integer data
+> + * @str_obj: ACPI object with string data
+>   * @instance_id: The instance to enumerate
+>   * @attr_name_kobj: The parent kernel object
+>   */
+>  int populate_str_data(union acpi_object *str_obj, int instance_id, struct kobject *attr_name_kobj)
+>  {
+>  	wmi_priv.str_data[instance_id].attr_name_kobj = attr_name_kobj;
+> +	if (check_property_type(str, ATTR_NAME, ACPI_TYPE_STRING))
+> +		return -EINVAL;
+>  	strlcpy_attr(wmi_priv.str_data[instance_id].attribute_name,
+>  		     str_obj[ATTR_NAME].string.pointer);
+> +	if (check_property_type(str, DISPL_NAME_LANG_CODE, ACPI_TYPE_STRING))
+> +		return -EINVAL;
+>  	strlcpy_attr(wmi_priv.str_data[instance_id].display_name_language_code,
+>  		     str_obj[DISPL_NAME_LANG_CODE].string.pointer);
+> +	if (check_property_type(str, DISPLAY_NAME, ACPI_TYPE_STRING))
+> +		return -EINVAL;
+>  	strlcpy_attr(wmi_priv.str_data[instance_id].display_name,
+>  		     str_obj[DISPLAY_NAME].string.pointer);
+> +	if (check_property_type(str, DEFAULT_VAL, ACPI_TYPE_STRING))
+> +		return -EINVAL;
+>  	strlcpy_attr(wmi_priv.str_data[instance_id].default_value,
+>  		     str_obj[DEFAULT_VAL].string.pointer);
+> +	if (check_property_type(str, MODIFIER, ACPI_TYPE_STRING))
+> +		return -EINVAL;
+>  	strlcpy_attr(wmi_priv.str_data[instance_id].dell_modifier,
+>  		     str_obj[MODIFIER].string.pointer);
+> +	if (check_property_type(str, MIN_LEN, ACPI_TYPE_INTEGER))
+> +		return -EINVAL;
+>  	wmi_priv.str_data[instance_id].min_length = (uintptr_t)str_obj[MIN_LEN].string.pointer;
+> +	if (check_property_type(str, MAX_LEN, ACPI_TYPE_INTEGER))
+> +		return -EINVAL;
+>  	wmi_priv.str_data[instance_id].max_length = (uintptr_t) str_obj[MAX_LEN].string.pointer;
+>  
+>  	return sysfs_create_group(attr_name_kobj, &str_attr_group);
+> diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
+> index c8d276d78e92..5276e8c5aad5 100644
+> --- a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
+> +++ b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
+> @@ -412,10 +412,16 @@ static int init_bios_attributes(int attr_type, const char *guid)
+>  		return retval;
+>  
+>  	switch (attr_type) {
+> -	case ENUM:	min_elements = 8;	break;
+> -	case INT:	min_elements = 9;	break;
+> -	case STR:	min_elements = 8;	break;
+> -	case PO:	min_elements = 4;	break;
+> +	case ENUM:
+> +	case STR:
+> +		min_elements = 8;
+> +		break;
+> +	case INT:
+> +		min_elements = 9;
+> +		break;
+> +	case PO:
+> +		min_elements = 4;
+> +		break;
+>  	default:
+>  		pr_err("Error: Unknown attr_type: %d\n", attr_type);
+>  		return -EINVAL;
 
-5 error improvements:
-  - error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!: N/A => 
-  - error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emaclite.ko] undefined!: N/A => 
-  - error: modpost: "devm_of_iomap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
-  - error: modpost: "devm_platform_ioremap_resource" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
-  - error: modpost: "devm_platform_ioremap_resource_byname" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
+Please drop these unrelated changes. If you want to change this please submit a
+separate patch for it, but I would prefer to keep this as is.
 
+> @@ -481,7 +487,8 @@ static int init_bios_attributes(int attr_type, const char *guid)
+>  		/* enumerate all of this attribute */
+>  		switch (attr_type) {
+>  		case ENUM:
+> -			retval = populate_enum_data(elements, instance_id, attr_name_kobj);
+> +			retval = populate_enum_data(elements, instance_id, attr_name_kobj,
+> +					obj->package.count);
+>  			break;
+>  		case INT:
+>  			retval = populate_int_data(elements, instance_id, attr_name_kobj);
+> 
 
-*** WARNINGS ***
+Regards,
 
-47 warning regressions:
-  + /kisskb/src/arch/s390/kernel/syscall.c: warning: '__do_syscall' uses dynamic stack allocation:  => 169:1
-  + /kisskb/src/arch/s390/kernel/traps.c: warning: '__do_pgm_check' uses dynamic stack allocation:  => 359:1
-  + /kisskb/src/block/genhd.c: warning: the frame size of 1112 bytes is larger than 1024 bytes [-Wframe-larger-than=]:  => 1236:1
-  + /kisskb/src/block/genhd.c: warning: the frame size of 1120 bytes is larger than 1024 bytes [-Wframe-larger-than=]:  => 1236:1
-  + /kisskb/src/block/genhd.c: warning: the frame size of 1680 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 1236:1
-  + /kisskb/src/block/genhd.c: warning: the frame size of 1712 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 1236:1
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c: warning: (near initialization for 'cmd.lock_hw') [-Wmissing-braces]:  => 3392:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c: warning: missing braces around initializer [-Wmissing-braces]: 2483:11, 2664:11 => 2810:11, 3392:8, 2625:11
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: (near initialization for 'hw_crtc_timing[0]') [-Wmissing-braces]:  => 1953:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: missing braces around initializer [-Wmissing-braces]: 1802:9 => 1953:9, 1814:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_srv_stat.c: warning: (near initialization for 'cmd.cmd_common') [-Wmissing-braces]:  => 61:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_srv_stat.c: warning: missing braces around initializer [-Wmissing-braces]:  => 61:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c: warning: (near initialization for 'info.head') [-Wmissing-braces]:  => 610:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c: warning: missing braces around initializer [-Wmissing-braces]:  => 610:9
-  + /kisskb/src/drivers/i2c/busses/i2c-icy.c: warning: unused variable 'new_fwnode' [-Wunused-variable]:  => 126:24
-  + /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2288 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 98:1
-  + /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2320 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 98:1
-  + /kisskb/src/drivers/net/can/usb/etas_es58x/es58x_fd.c: warning: (near initialization for 'tx_conf_msg.nominal_bittiming') [-Wmissing-braces]:  => 400:9
-  + /kisskb/src/drivers/net/can/usb/etas_es58x/es58x_fd.c: warning: missing braces around initializer [-Wmissing-braces]:  => 400:9
-  + /kisskb/src/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c: warning: (near initialization for 'acl_entry.list') [-Wmissing-braces]:  => 2945:9
-  + /kisskb/src/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c: warning: missing braces around initializer [-Wmissing-braces]:  => 2945:9
-  + /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc.c: warning: (near initialization for 'xdp_redirect_arr[0]') [-Wmissing-braces]:  => 1078:9
-  + /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc.c: warning: (near initialization for 'xdp_tx_arr[0]') [-Wmissing-braces]:  => 1245:9
-  + /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1245:9, 1078:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'req.hdr') [-Wmissing-braces]: 604:9 => 754:9, 604:9, 654:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'rsp.hdr') [-Wmissing-braces]: 605:9 => 755:9, 655:9, 605:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: missing braces around initializer [-Wmissing-braces]: 605:9, 604:9 => 605:9, 604:9, 654:9, 655:9, 754:9, 755:9
-  + /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.13' uses dynamic stack allocation:  => 238:1
-  + /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_get_info_by_fd.isra.28' uses dynamic stack allocation:  => 3692:1
-  + /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.64' uses dynamic stack allocation:  => 2310:1
-  + /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.63' uses dynamic stack allocation:  => 2020:1
-  + /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.62' uses dynamic stack allocation:  => 2378:1
-  + /kisskb/src/net/openvswitch/actions.c: warning: (near initialization for 'ovs_rt.dst') [-Wmissing-braces]:  => 830:10
-  + /kisskb/src/net/openvswitch/actions.c: warning: missing braces around initializer [-Wmissing-braces]:  => 830:10
-  + /kisskb/src/net/sched/sch_frag.c: warning: (near initialization for 'sch_frag_rt.dst') [-Wmissing-braces]:  => 93:10
-  + /kisskb/src/net/sched/sch_frag.c: warning: missing braces around initializer [-Wmissing-braces]:  => 93:10
-  + /kisskb/src/security/landlock/ruleset.c: warning: passing argument 2 of 'create_rule' from incompatible pointer type:  => 196:34
-  + /kisskb/src/security/landlock/ruleset.c: warning: passing argument 3 of 'insert_rule' from incompatible pointer type:  => 300:47, 330:5, 240:38
-  + arch/arm64/configs/defconfig: warning: override: reassigning to symbol MTK_PMIC_WRAP:  => 1018
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x13c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x154): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x16c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x184): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x19c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1b4): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1cc): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: lib/find_bit_benchmark.o(.text.unlikely+0x0): Section mismatch in reference from the (unknown reference) (unknown) to the variable .init.data:bitmap2:  => N/A
+Hans
 
-20 warning improvements:
-  - /kisskb/src/arch/m68k/include/asm/raw_io.h: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]: 33:35, 30:32, 20:19, 26:31 => 20:19, 30:32
-  - /kisskb/src/block/genhd.c: warning: the frame size of 1160 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 1311:1 => 
-  - /kisskb/src/block/genhd.c: warning: the frame size of 1168 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 1311:1 => 
-  - /kisskb/src/block/genhd.c: warning: the frame size of 1720 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 1311:1 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/navi10_ppt.c: warning: (near initialization for 'nv12_metrics.CurrClock') [-Wmissing-braces]: 2297:2 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/navi10_ppt.c: warning: missing braces around initializer [-Wmissing-braces]: 2297:2 => 
-  - /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.10' uses dynamic stack allocation: 238:1 => 
-  - /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_get_info_by_fd.isra.26' uses dynamic stack allocation: 3675:1 => 
-  - /kisskb/src/kernel/static_call.c: warning: unused variable 'mod' [-Wunused-variable]: 153:18 => 
-  - /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.65' uses dynamic stack allocation: 2304:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.64' uses dynamic stack allocation: 2014:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.63' uses dynamic stack allocation: 2372:1 => 
-  - modpost: WARNING: modpost: Symbol info of vmlinux is missing. Unresolved symbol check will be entirely skipped.: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x134): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x14c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x164): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x17c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x194): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1ac): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1c4): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
