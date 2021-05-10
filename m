@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846C1378DAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D206C378DB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349685AbhEJMtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:49:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:55812 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236712AbhEJLwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:52:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3280B15BE;
-        Mon, 10 May 2021 04:50:59 -0700 (PDT)
-Received: from [10.163.77.48] (unknown [10.163.77.48])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D00153F73B;
-        Mon, 10 May 2021 04:50:55 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH] mm/thp: Make ARCH_ENABLE_SPLIT_PMD_PTLOCK dependent on
- PGTABLE_LEVELS > 2
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
-        akpm@linux-foundation.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1620621345-29176-1-git-send-email-anshuman.khandual@arm.com>
- <20210510085313.GB5618@worktop.programming.kicks-ass.net>
- <843e545a-ca0c-6a1e-2ab0-28ccca182400@arm.com> <20210510101006.GB22664@linux>
- <a6ebcb5b-1fd6-d03f-cfb5-52e32b60899a@arm.com>
-Message-ID: <f13b3394-cd16-dc20-4069-083c86f5b706@arm.com>
-Date:   Mon, 10 May 2021 17:21:40 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S241526AbhEJMuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:50:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244233AbhEJL6m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:58:42 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D0DC07E5FF
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 04:52:25 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 5675322239;
+        Mon, 10 May 2021 13:52:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1620647543;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yO4AK8WNlzpOysSwYhMdNTxh6p0zS+xaRzCx4D02VTA=;
+        b=aJ87l8l+za7++bQhHM8uOwBLK2wipB1v1+sZx34XkEkmjZHOv75oGC1IDaKjYhbCW71sEx
+        pumTU78vNkCc0/3mJpbDWKIuAN9pKWtEZKYHgp+s552bdDH5W9F4pN9yl3O7xwd2dNhHPZ
+        Xt/zqwgvO0o4O2tu8faj/8U4oUrSDKI=
 MIME-Version: 1.0
-In-Reply-To: <a6ebcb5b-1fd6-d03f-cfb5-52e32b60899a@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 10 May 2021 13:52:22 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        kernelci-results@groups.io, Heiko Thiery <heiko.thiery@gmail.com>,
+        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Thierry Reding <treding@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: Re: broonie-sound/for-next bisection:
+ baseline.bootrr.asoc-simple-card-probed on kontron-sl28-var3-ads2
+In-Reply-To: <87o8djcxas.wl-kuninori.morimoto.gx@renesas.com>
+References: <6080e82c.1c69fb81.cd60c.2a13@mx.google.com>
+ <3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com>
+ <877dkp5141.wl-kuninori.morimoto.gx@renesas.com>
+ <20210426144242.GF4590@sirena.org.uk>
+ <8735vc4r59.wl-kuninori.morimoto.gx@renesas.com>
+ <20210427101926.GA4605@sirena.org.uk>
+ <ea2b6dae-3087-67d3-8473-410255a51e23@collabora.com>
+ <e20b9c8a2715b5d091a8d1f37ba890b4@walle.cc>
+ <20210427135703.GH4605@sirena.org.uk>
+ <cc9a39f977c3765d1060ab1b0038bc79@walle.cc>
+ <a1ec388def4febd9af6ef477245ef2d3@walle.cc>
+ <1aa3a8716d2416f0cc127737dcff092a@walle.cc>
+ <87o8djcxas.wl-kuninori.morimoto.gx@renesas.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <99b3cd8db134d9682c16784f75f40bae@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+Am 2021-05-10 01:16, schrieb Kuninori Morimoto:
+> I'm sorry for my late response. Japan was holiday
+> 
+>>  _But_ later
+>> asoc_simple_canonicalize_cpu() will reset the dai_name pointer to
+>> NULL in simple_parse_node() if "single" is 1 and then we end up
+>> having two links with the same name.
+> 
+> Ahh, OK thanks.
+> I think understand that why my posted patch
+> (= 59c35c44a9cf89a83a9 "ASoC: simple-card: add simple_parse_node()")
+> breaks your board.
+> 
+> I will try to fixup the issue.
+> 
+> Thank you for your help !!
 
-On 5/10/21 3:46 PM, Anshuman Khandual wrote:
-> 
-> 
-> On 5/10/21 3:40 PM, Oscar Salvador wrote:
->> On Mon, May 10, 2021 at 03:36:29PM +0530, Anshuman Khandual wrote:
->>>
->>>
->>> On 5/10/21 2:23 PM, Peter Zijlstra wrote:
->>>> On Mon, May 10, 2021 at 10:05:45AM +0530, Anshuman Khandual wrote:
->>>>> -	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if X86_64 || X86_PAE
->>>>> +	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if (PGTABLE_LEVELS > 2) && (X86_64 || X86_PAE)
->>>>
->>>> It's still very early on a Monday, but IIRC this new condition is
->>>> identical to the pre-existing one.
->>>
->>> Did not get it, could you please elaborate ?
->>
->> When using x86_PAE, you must have more than two pgtable levels, right?
->> And not speaking of x86_64.
-> 
-> arch/x86/Kconfig..
-> 
-> config PGTABLE_LEVELS
->         int
->         default 5 if X86_5LEVEL
->         default 4 if X86_64
->         default 3 if X86_PAE
->         default 2
-> 
-> Both X86_PAE and X86_64 will always have page table levels > 2 ? But
-> regardless, it might be still useful to assert (PGTABLE_LEVELS > 2)
-> before selecting ARCH_ENABLE_SPLIT_PMD_PTLOCK.
+I've just tested your new patches. Unfortunately, it was very
+successful. I've also traced the is_single_links and it is still
+1 for this board. Is this correct?
 
-PGTABLE_LEVELS > 2 is a necessary condition for this PMD split lock
-config. The problem is that for arch selectable configs like this,
-conditional statements would not work properly when defined along
-with the config. Otherwise the following change would have been
-sufficient.
+Still these two questions are open:
+>> Which begs the two questions:
+>> (1) What is "single" actually and when should it be 1?
+>> (2) If single is 1, then the sysfs file will be named 
+>> "(null)-codec-name".
+>>     Do we want that?
 
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 02d44e3420f5..5830ea7746b3 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -214,6 +214,7 @@ config SPLIT_PTLOCK_CPUS
- 
- config ARCH_ENABLE_SPLIT_PMD_PTLOCK
-        bool
-+       depends on PGTABLE_LEVELS > 2
-
-Hence this just moves the condition to all subscribing platforms
-while making the selection for ARCH_ENABLE_SPLIT_PMD_PTLOCK.
+-michael
