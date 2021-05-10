@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AB5378C12
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D80E7378A5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345191AbhEJMWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:22:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53306 "EHLO mail.kernel.org"
+        id S242277AbhEJLln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:41:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236891AbhEJLK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:10:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 437126145C;
-        Mon, 10 May 2021 11:05:48 +0000 (UTC)
+        id S231593AbhEJK5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95D3261A13;
+        Mon, 10 May 2021 10:51:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644748;
-        bh=zCIXw1C/sFH1de0h7EkCdQbVW7yzWhOzPy7vGicll/k=;
+        s=korg; t=1620643906;
+        bh=kW+Kz7+iyT/blgzYJhQ6JJtZ8Tz4bngwHmfpwDRDbB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iwHgPS5chGoHlSpXqxW1fficWe1WBed1HJoDhgz6N+T9S/4/g/m+LgU4ifGi93oWS
-         NKPiNg/9UFr7qRpIBXiKPjMSsT7uJQ/Qew+NKq9tkz1sDOdu3x+GWAsrb1nNtUTaJa
-         KP3LqQT63R8mHej40Z1u9Bc5g1KNudpokoU+1zlo=
+        b=tViLla1Zwcsc4pnz4zyZS7jaMYVmIZkPSD6x7DTxXRL5Ucx8UiqRvYOII0piUr8sY
+         Do19PmbfmEismYohF2G5CJTHuikPs8i744Z/TM1nMWNtpMRgfv9tZmwBBw+2qLWrxq
+         hmJA3tuqXaeqWm7ymnGKCTlNYFieZCmMz/hjTMbk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 208/384] selftests/resctrl: Fix compilation issues for other global variables
+Subject: [PATCH 5.11 207/342] media: i2c: adv7842: fix possible use-after-free in adv7842_remove()
 Date:   Mon, 10 May 2021 12:19:57 +0200
-Message-Id: <20210510102021.751587601@linuxfoundation.org>
+Message-Id: <20210510102016.925981135@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
-References: <20210510102014.849075526@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,54 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fenghua Yu <fenghua.yu@intel.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 896016d2ad051811ff9c9c087393adc063322fbc ]
+[ Upstream commit 4a15275b6a18597079f18241c87511406575179a ]
 
-Reinette reported following compilation issue on Fedora 32, gcc version
-10.1.1
+This driver's remove path calls cancel_delayed_work(). However, that
+function does not wait until the work function finishes. This means
+that the callback function may still be running after the driver's
+remove function has finished, which would result in a use-after-free.
 
-/usr/bin/ld: resctrl_tests.o:<src_dir>/resctrl.h:65: multiple definition
-of `bm_pid'; cache.o:<src_dir>/resctrl.h:65: first defined here
+Fix by calling cancel_delayed_work_sync(), which ensures that
+the work is properly cancelled, no longer running, and unable
+to re-schedule itself.
 
-Other variables are ppid, tests_run, llc_occup_path, is_amd. Compiler
-isn't happy because these variables are defined globally in two .c files
-but are not declared as extern.
-
-To fix issues for the global variables, declare them as extern.
-
-Chang Log:
-- Split this patch from v4's patch 1 (Shuah).
-
-Reported-by: Reinette Chatre <reinette.chatre@intel.com>
-Tested-by: Babu Moger <babu.moger@amd.com>
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/resctrl/resctrl.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/media/i2c/adv7842.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index 959c71e39bdc..12b77182cb44 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -62,11 +62,11 @@ struct resctrl_val_param {
- 	int		(*setup)(int num, ...);
- };
+diff --git a/drivers/media/i2c/adv7842.c b/drivers/media/i2c/adv7842.c
+index 0855f648416d..f7d2b6cd3008 100644
+--- a/drivers/media/i2c/adv7842.c
++++ b/drivers/media/i2c/adv7842.c
+@@ -3586,7 +3586,7 @@ static int adv7842_remove(struct i2c_client *client)
+ 	struct adv7842_state *state = to_state(sd);
  
--pid_t bm_pid, ppid;
--int tests_run;
-+extern pid_t bm_pid, ppid;
-+extern int tests_run;
- 
--char llc_occup_path[1024];
--bool is_amd;
-+extern char llc_occup_path[1024];
-+extern bool is_amd;
- 
- bool check_resctrlfs_support(void);
- int filter_dmesg(void);
+ 	adv7842_irq_enable(sd, false);
+-	cancel_delayed_work(&state->delayed_work_enable_hotplug);
++	cancel_delayed_work_sync(&state->delayed_work_enable_hotplug);
+ 	v4l2_device_unregister_subdev(sd);
+ 	media_entity_cleanup(&sd->entity);
+ 	adv7842_unregister_clients(sd);
 -- 
 2.30.2
 
