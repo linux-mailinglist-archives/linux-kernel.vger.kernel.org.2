@@ -2,253 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE29A379965
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D11837996C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232280AbhEJVsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 17:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhEJVsS (ORCPT
+        id S232885AbhEJVty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 17:49:54 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:51036 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229946AbhEJVtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 17:48:18 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797C0C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 14:47:13 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id b25so11930792oic.0
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 14:47:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7Die/telGbdWIP9JgRVkVpz75GT4VbLHvj3keyFcZUw=;
-        b=U3VdYNLcYlH95Z/rZdOlq8FiWToQ9zA/vD8iisN3jthb/7WTfB3j6HtEK2K8bkaI6v
-         hYtKzP00soOJr+czmV/KfALPhwDTojJzrk540WqCJ08vysRUrAxipsemmipPFt668OLC
-         xvQhvBQyysIBor8o8cC+CpKlgx9vdnxM/u0YxtF2RiDgAg50F8tG+36GgK0m1Vta5YHn
-         94/9Ou4hkVerG8yU7Hw5QddWxNF5D7KI50seTkq7oL0BwNhWXohaLrH+cQj9P+gOTONN
-         MmH9/Lhu7vFaEC3oo4ZSqZzbrOEwYX2a0irZz68DnOv4ucauuJbubSqXCR9FFwVMWNDi
-         xMAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7Die/telGbdWIP9JgRVkVpz75GT4VbLHvj3keyFcZUw=;
-        b=jwP9KxQROHOYUV5CQDRDci/+U/xXN0ycJ8p2EMnvpR7HbksAIPkmg3BYxDs31bQ7Wi
-         FVtgI7iQivXuPfN+eQ2kBRklJEUFFXQ+p0WyQcDNsPu23CMgTzlUbJCU2trkoEbYKZpS
-         FfvQka01iVwV+RZpc88mKwLZ7jf3ejd+OLKsX9Ta3raTJrwWVgJSnoGAyu+7UUVZDg31
-         gIlsKLQ6CUkCNnqVw/MWmic//ZlOtOBbq7vALjOm+CKgTvz0XEw7Zvpw4YwQ8hY3YWpC
-         bbTxehsLsuSfBjsm9RJcXJDDwgBs9rxQxB6PeDReVyoJl53jHNCPM3eJR0AxJw1DoUnU
-         V1/Q==
-X-Gm-Message-State: AOAM531NominmcNQuhLr1COW9KEhYYkNQcPjB5qGoBJiuLAJe/8CNBJQ
-        Fc8kUp9JTcpd3x+VV6yaD/9kUlv6OJVF+YmK4npYQO5LBAM=
-X-Google-Smtp-Source: ABdhPJzwzhVEg2RVOHSLhEeBlyzl1b7Ggx8YB8Xr3Uy2sGFDmRFfuEGHONwbdG+hfSZHkfFblcVgjtG/0STxBhuQKLc=
-X-Received: by 2002:a05:6808:68a:: with SMTP id k10mr19379396oig.120.1620683232281;
- Mon, 10 May 2021 14:47:12 -0700 (PDT)
+        Mon, 10 May 2021 17:49:53 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14ALXmsc126425;
+        Mon, 10 May 2021 17:48:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=P39Oib40GXzeNDaTB43BpzKW5YHtdvvLdTFwbihRiMk=;
+ b=Q6uCu92up0QjhgAq7ZnVwhRZvy00h6wWJOPYnk1k+gQYSF6SwOzaQkYJv/MNqaFqTr5i
+ MVr464sxzafNhdIg7r0tQ8VQa8q+PulGDt6PTZv5RG0pwI4kVlEqt8A6YL1XEOeClLFj
+ FAew+nXHTs0gJRgyUyds+UHWlwrtnEfFy1fmvVkNPHFLXY7JqR53aNAHHW1dYIrm+Rl1
+ lmrj5vcLsM6bXKRzDWj/yTJNxH9v4yqNgjGMaBKF+vvZjx8/BkiFYfijj4em4XSLQ+5z
+ Xw5NQfSq+s2V8q0FHufa6UlV+6sphUjeUNUYJxAEya5AVP/Ko1q1qIDJZShX8VYEV7v2 Tg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38f9rpx10e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 May 2021 17:48:45 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14ALZBkl137083;
+        Mon, 10 May 2021 17:48:44 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38f9rpx0yv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 May 2021 17:48:44 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14ALQdcG009113;
+        Mon, 10 May 2021 21:48:43 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma01dal.us.ibm.com with ESMTP id 38dj99dna3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 May 2021 21:48:43 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14ALmgqC22020518
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 10 May 2021 21:48:42 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 367A6BE053;
+        Mon, 10 May 2021 21:48:42 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 12A6EBE04F;
+        Mon, 10 May 2021 21:48:40 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com.com (unknown [9.85.140.234])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 10 May 2021 21:48:40 +0000 (GMT)
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        Tony Krowiak <akrowiak@linux.ibm.com>, stable@vger.kernel.org,
+        Tony Krowiak <akrowiak@stny.rr.com>
+Subject: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove callback
+Date:   Mon, 10 May 2021 17:48:37 -0400
+Message-Id: <20210510214837.359717-1-akrowiak@linux.ibm.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210507192718.35314-1-wse@tuxedocomputers.com>
-In-Reply-To: <20210507192718.35314-1-wse@tuxedocomputers.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 10 May 2021 17:47:01 -0400
-Message-ID: <CADnq5_O7uuSj-nmKXRvGVTb9n1e+Bb-SU3Psi7BVhN4AOYhHsQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Expose active display color
- configurations to userspace
-To:     Werner Sembach <wse@tuxedocomputers.com>
-Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Wentland, Harry" <harry.wentland@amd.com>,
-        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: pDssY_eJuqQDcj1EriVuUJQ7QiUZ1cqR
+X-Proofpoint-GUID: o_MYZTdijfyJ_WTinENXLlbeKS9oCONJ
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-10_12:2021-05-10,2021-05-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
+ spamscore=0 impostorscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
+ suspectscore=0 adultscore=0 priorityscore=1501 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105100147
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 7, 2021 at 3:27 PM Werner Sembach <wse@tuxedocomputers.com> wrote:
->
-> xrandr --prop and other userspace info tools have currently no way of
-> telling which color configuration is used on HDMI and DP ports.
->
-> The ongoing transsition from HDMI 1.4 to 2.0 and the different bandwidth
-> requirements of YCbCr 4:2:0 and RGB color format raise different
-> incompatibilities. Having these configuration information readily
-> available is a useful tool in debuging washed out colors, color artefacts
-> on small fonts and missing refreshrate options.
+The mdev remove callback for the vfio_ap device driver bails out with
+-EBUSY if the mdev is in use by a KVM guest. The intended purpose was
+to prevent the mdev from being removed while in use; however, returning a
+non-zero rc does not prevent removal. This could result in a memory leak
+of the resources allocated when the mdev was created. In addition, the
+KVM guest will still have access to the AP devices assigned to the mdev
+even though the mdev no longer exists.
 
-I think we would ideally want these as generic connector properties
-rather than AMD specific ones since they are not really AMD specific.
-I believe there is already a generic drm property (max_bpc) for the
-color depth.  At this point, I think having a generic RGB vs YCbCr
-property would make sense.  I'm not sure about the color space.
+To prevent this scenario, cleanup will be done - including unplugging the
+AP adapters, domains and control domains - regardless of whether the mdev
+is in use by a KVM guest or not.
 
-Alex
+Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+Cc: stable@vger.kernel.org
+Signed-off-by: Tony Krowiak <akrowiak@stny.rr.com>
+---
+ drivers/s390/crypto/vfio_ap_ops.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
->
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_display.c   | 58 +++++++++++++++++++
->  drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h      |  4 ++
->  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 36 ++++++++++++
->  3 files changed, 98 insertions(+)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-> index f753e04fee99..c0404bcda31b 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-> @@ -986,6 +986,40 @@ static const struct drm_prop_enum_list amdgpu_dither_enum_list[] =
->         { AMDGPU_FMT_DITHER_ENABLE, "on" },
->  };
->
-> +static const struct drm_prop_enum_list amdgpu_active_pixel_encoding_enum_list[] = {
-> +       { PIXEL_ENCODING_UNDEFINED, "undefined" },
-> +       { PIXEL_ENCODING_RGB, "RGB" },
-> +       { PIXEL_ENCODING_YCBCR422, "YCbCr 4:2:2" },
-> +       { PIXEL_ENCODING_YCBCR444, "YCbCr 4:4:4" },
-> +       { PIXEL_ENCODING_YCBCR420, "YCbCr 4:2:0" },
-> +};
-> +
-> +static const struct drm_prop_enum_list amdgpu_active_display_color_depth_enum_list[] = {
-> +       { COLOR_DEPTH_UNDEFINED, "undefined" },
-> +       { COLOR_DEPTH_666, "6 bit" },
-> +       { COLOR_DEPTH_888, "8 bit" },
-> +       { COLOR_DEPTH_101010, "10 bit" },
-> +       { COLOR_DEPTH_121212, "12 bit" },
-> +       { COLOR_DEPTH_141414, "14 bit" },
-> +       { COLOR_DEPTH_161616, "16 bit" },
-> +       { COLOR_DEPTH_999, "9 bit" },
-> +       { COLOR_DEPTH_111111, "11 bit" },
-> +};
-> +
-> +static const struct drm_prop_enum_list amdgpu_active_output_color_space_enum_list[] = {
-> +       { COLOR_SPACE_UNKNOWN, "unknown" },
-> +       { COLOR_SPACE_SRGB, "sRGB" },
-> +       { COLOR_SPACE_SRGB_LIMITED, "sRGB limited" },
-> +       { COLOR_SPACE_YCBCR601, "YCbCr 601" },
-> +       { COLOR_SPACE_YCBCR709, "YCbCr 709" },
-> +       { COLOR_SPACE_YCBCR601_LIMITED, "YCbCr 601 limited" },
-> +       { COLOR_SPACE_YCBCR709_LIMITED, "YCbCr 709 limited" },
-> +       { COLOR_SPACE_2020_RGB_FULLRANGE, "RGB 2020" },
-> +       { COLOR_SPACE_2020_RGB_LIMITEDRANGE, "RGB 2020 limited" },
-> +       { COLOR_SPACE_2020_YCBCR, "YCbCr 2020" },
-> +       { COLOR_SPACE_ADOBERGB, "Adobe RGB" },
-> +};
-> +
->  int amdgpu_display_modeset_create_props(struct amdgpu_device *adev)
->  {
->         int sz;
-> @@ -1038,6 +1072,30 @@ int amdgpu_display_modeset_create_props(struct amdgpu_device *adev)
->                                                   "abm level", 0, 4);
->                 if (!adev->mode_info.abm_level_property)
->                         return -ENOMEM;
-> +
-> +               sz = ARRAY_SIZE(amdgpu_active_pixel_encoding_enum_list);
-> +               adev->mode_info.active_pixel_encoding_property =
-> +                       drm_property_create_enum(adev_to_drm(adev), 0,
-> +                               "active pixel encoding",
-> +                               amdgpu_active_pixel_encoding_enum_list, sz);
-> +               if (!adev->mode_info.active_pixel_encoding_property)
-> +                       return -ENOMEM;
-> +
-> +               sz = ARRAY_SIZE(amdgpu_active_display_color_depth_enum_list);
-> +               adev->mode_info.active_display_color_depth_property =
-> +                       drm_property_create_enum(adev_to_drm(adev), 0,
-> +                               "active display color depth",
-> +                               amdgpu_active_display_color_depth_enum_list, sz);
-> +               if (!adev->mode_info.active_display_color_depth_property)
-> +                       return -ENOMEM;
-> +
-> +               sz = ARRAY_SIZE(amdgpu_active_output_color_space_enum_list);
-> +               adev->mode_info.active_output_color_space_property =
-> +                       drm_property_create_enum(adev_to_drm(adev), 0,
-> +                               "active output color space",
-> +                               amdgpu_active_output_color_space_enum_list, sz);
-> +               if (!adev->mode_info.active_output_color_space_property)
-> +                       return -ENOMEM;
->         }
->
->         return 0;
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
-> index 319cb19e1b99..ad43af6a878d 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
-> @@ -337,6 +337,10 @@ struct amdgpu_mode_info {
->         struct drm_property *dither_property;
->         /* Adaptive Backlight Modulation (power feature) */
->         struct drm_property *abm_level_property;
-> +       /* Color settings */
-> +       struct drm_property *active_pixel_encoding_property;
-> +       struct drm_property *active_display_color_depth_property;
-> +       struct drm_property *active_output_color_space_property;
->         /* hardcoded DFP edid from BIOS */
->         struct edid *bios_hardcoded_edid;
->         int bios_hardcoded_edid_size;
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> index d699a5cf6c11..89465f74ca59 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> @@ -5592,8 +5592,13 @@ int amdgpu_dm_connector_atomic_get_property(struct drm_connector *connector,
->         struct amdgpu_device *adev = drm_to_adev(dev);
->         struct dm_connector_state *dm_state =
->                 to_dm_connector_state(state);
-> +       struct dm_crtc_state *dm_crtc_state = NULL;
->         int ret = -EINVAL;
->
-> +       if (state->crtc != NULL && state->crtc->state != NULL) {
-> +               dm_crtc_state = to_dm_crtc_state(state->crtc->state);
-> +       }
-> +
->         if (property == dev->mode_config.scaling_mode_property) {
->                 switch (dm_state->scaling) {
->                 case RMX_CENTER:
-> @@ -5623,6 +5628,21 @@ int amdgpu_dm_connector_atomic_get_property(struct drm_connector *connector,
->         } else if (property == adev->mode_info.abm_level_property) {
->                 *val = dm_state->abm_level;
->                 ret = 0;
-> +       } else if (property == adev->mode_info.active_pixel_encoding_property) {
-> +               *val = PIXEL_ENCODING_UNDEFINED;
-> +               if (dm_crtc_state != NULL && dm_crtc_state->stream != NULL)
-> +                       *val = dm_crtc_state->stream->timing.pixel_encoding;
-> +               ret = 0;
-> +       } else if (property == adev->mode_info.active_display_color_depth_property) {
-> +               *val = COLOR_DEPTH_UNDEFINED;
-> +               if (dm_crtc_state != NULL && dm_crtc_state->stream != NULL)
-> +                       *val = dm_crtc_state->stream->timing.display_color_depth;
-> +               ret = 0;
-> +       } else if (property == adev->mode_info.active_output_color_space_property) {
-> +               *val = COLOR_SPACE_UNKNOWN;
-> +               if (dm_crtc_state != NULL && dm_crtc_state->stream != NULL)
-> +                       *val = dm_crtc_state->stream->output_color_space;
-> +               ret = 0;
->         }
->
->         return ret;
-> @@ -7083,6 +7103,22 @@ void amdgpu_dm_connector_init_helper(struct amdgpu_display_manager *dm,
->                         drm_connector_attach_content_protection_property(&aconnector->base, true);
->  #endif
->         }
-> +
-> +       if (adev->mode_info.active_pixel_encoding_property) {
-> +               drm_object_attach_property(&aconnector->base.base,
-> +                       adev->mode_info.active_pixel_encoding_property, 0);
-> +               DRM_DEBUG_DRIVER("amdgpu: attached active pixel encoding drm property");
-> +       }
-> +       if (adev->mode_info.active_display_color_depth_property) {
-> +               drm_object_attach_property(&aconnector->base.base,
-> +                       adev->mode_info.active_display_color_depth_property, 0);
-> +               DRM_DEBUG_DRIVER("amdgpu: attached active color depth drm property");
-> +       }
-> +       if (adev->mode_info.active_output_color_space_property) {
-> +               drm_object_attach_property(&aconnector->base.base,
-> +                       adev->mode_info.active_output_color_space_property, 0);
-> +               DRM_DEBUG_DRIVER("amdgpu: attached active output color space drm property");
-> +       }
->  }
->
->  static int amdgpu_dm_i2c_xfer(struct i2c_adapter *i2c_adap,
-> --
-> 2.25.1
->
+diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+index b2c7e10dfdcd..f90c9103dac2 100644
+--- a/drivers/s390/crypto/vfio_ap_ops.c
++++ b/drivers/s390/crypto/vfio_ap_ops.c
+@@ -26,6 +26,7 @@
+ 
+ static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev);
+ static struct vfio_ap_queue *vfio_ap_find_queue(int apqn);
++static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev);
+ 
+ static int match_apqn(struct device *dev, const void *data)
+ {
+@@ -366,17 +367,7 @@ static int vfio_ap_mdev_remove(struct mdev_device *mdev)
+ 	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
+ 
+ 	mutex_lock(&matrix_dev->lock);
+-
+-	/*
+-	 * If the KVM pointer is in flux or the guest is running, disallow
+-	 * un-assignment of control domain.
+-	 */
+-	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
+-		mutex_unlock(&matrix_dev->lock);
+-		return -EBUSY;
+-	}
+-
+-	vfio_ap_mdev_reset_queues(mdev);
++	vfio_ap_mdev_unset_kvm(matrix_mdev);
+ 	list_del(&matrix_mdev->node);
+ 	kfree(matrix_mdev);
+ 	mdev_set_drvdata(mdev, NULL);
+-- 
+2.30.2
+
