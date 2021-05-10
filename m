@@ -2,176 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B2B3796E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3F03796E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232361AbhEJSQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 14:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230165AbhEJSQX (ORCPT
+        id S232440AbhEJSQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 14:16:30 -0400
+Received: from mail.xenproject.org ([104.130.215.37]:33022 "EHLO
+        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232282AbhEJSQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 14:16:23 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B8CC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:15:17 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id s1-20020a4ac1010000b02901cfd9170ce2so3653872oop.12
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:15:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=rni/8nhHV7qXN2iY+BROqiZjKk32a9q0hZwNLgb5WwM=;
-        b=G/xZOlZkRSIIpCpdw+K0oVxHNwIwADJP2EQPwUsmVDJ32K8/Q4k4vOR9Xdo3YTGkVO
-         ZbEUvKqQ3xjibLhgKLxMgt00gqcV5dtLUYC27NWJeKHF8Vs76e5sBxCMZH5Uv8UBc7Qr
-         kmTSSAQk5Gp+32ZkKSI+1J5Reubyn3NthQE4A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=rni/8nhHV7qXN2iY+BROqiZjKk32a9q0hZwNLgb5WwM=;
-        b=DeyUhMsKpcJdkmNdGYaQ+S8eMJHshc9KlG1apcj+9gvfis+39y+DTrWce1lv+ipkBU
-         6S7UvcYl8K8wuLm2N3rlgqRQ4tdbhrfbManIJ7795qmEn+CMjaiWNoXxXXaCK7yC+1Ly
-         FUrrPuSJfEQsyLYfTc55H+lQCIPovAwS1cm19x4nkReXwOKB0iYlhGmXD2OnQXjpVTdZ
-         eJhCWsDtWkpJvgJyrous1/fEfsIQJyHgPtWBAxk5BZSxkOFPQQriS2NGCwPu+NSqzYfl
-         TUQ2BxgNJ3UOzhUUsG+CSjXBOC3JigHDZjuw0Tb/6t0vCRm7Bsw1or4S7hNnVWLZdnXz
-         VGlw==
-X-Gm-Message-State: AOAM533fVg/L7qHDylXlSlbtKDtuNWDxwQjy6rMD6Ft7hG9z04SA/iCg
-        SjYf7TS9yt+99ZwySlBk3F/Pegqk3rR3mGLleTPxon/U4Qw=
-X-Google-Smtp-Source: ABdhPJzhZvGhDZJYl9F/EOaunXHj/ckIOeOUKqiU34nSNZaVoUAUUF7RFS6usQYG/ft8eVEfBKUZYfMFkXVzyZ+nkrY=
-X-Received: by 2002:a4a:1703:: with SMTP id 3mr20059748ooe.92.1620670516774;
- Mon, 10 May 2021 11:15:16 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 10 May 2021 11:15:16 -0700
+        Mon, 10 May 2021 14:16:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
+        bh=U5oB8mfFZLEuy5Yg/E0zgF4iSW40BPLFycfVFKKLR18=; b=bOJV5SmQ0O2K2VSbIDK/2BxZ2Q
+        hA+OjDCuSuM4X73YxfSLnzK4PkvUYT13yWt3F9Kp4L/luL4z544C+SikxjoGEzsAhlfyw5WbInzbj
+        BoLURVvENjwaKuMRzgEPeOb3k9kixOubpH6Ut322sIfARM84GOZ8pWvwuCQcPyNHUdZw=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1lgAR5-000343-IE; Mon, 10 May 2021 18:15:19 +0000
+Received: from [54.239.6.185] (helo=a483e7b01a66.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1lgAR5-00056p-BN; Mon, 10 May 2021 18:15:19 +0000
+Subject: Re: Regression when booting 5.15 as dom0 on arm64 (WAS: Re:
+ [linux-linus test] 161829: regressions - FAIL)
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     f.fainelli@gmail.com, Stefano Stabellini <sstabellini@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        linux-kernel@vger.kernel.org,
+        osstest service owner <osstest-admin@xenproject.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        iommu@lists.linux-foundation.org
+References: <osstest-161829-mainreport@xen.org>
+ <4ea1e89f-a7a0-7664-470c-b3cf773a1031@xen.org> <20210510084057.GA933@lst.de>
+From:   Julien Grall <julien@xen.org>
+Message-ID: <8b851596-acf7-9d3b-b08a-848cae5adada@xen.org>
+Date:   Mon, 10 May 2021 19:15:17 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <1620251521-29999-1-git-send-email-khsieh@codeaurora.org>
-References: <1620251521-29999-1-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 10 May 2021 11:15:16 -0700
-Message-ID: <CAE-0n50HUo0tm22xX+j8H-u+EDH+wBrdEvM68p-X3EyR8S_u3Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/dp: handle irq_hpd with sink_count = 0 correctly
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210510084057.GA933@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-05-05 14:52:01)
-> irq_hpd interrupt should be handled after dongle plugged in and
-> before dongle unplugged. Hence irq_hpd interrupt is enabled at
-> the end of the plugin handle and disabled at the beginning of
-> unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
-> handled same as the dongle unplugged which tears down the mainlink
-> and disables the phy. This patch fixes this problem by only tearing
-> down the mainlink but keeping phy enabled at irq_hpd with
-> sink_count = 0 handle so that next irq_hpe with sink_count =1 can be
-> handled by setup mainlink only.
->
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
+Hi Christoph,
 
-It works for me, but I question the poking into phy internals below.
-
->  drivers/gpu/drm/msm/dp/dp_catalog.c |  5 +--
->  drivers/gpu/drm/msm/dp/dp_ctrl.c    | 78 +++++++++++++++++++++++++++++++++----
->  drivers/gpu/drm/msm/dp/dp_ctrl.h    |  2 +
->  drivers/gpu/drm/msm/dp/dp_display.c | 47 +++++++++++++++++-----
->  4 files changed, 111 insertions(+), 21 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
-> index b1a9b1b..f4f53f2 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_catalog.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
-> @@ -582,10 +582,9 @@ void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog)
->
->         u32 reftimer = dp_read_aux(catalog, REG_DP_DP_HPD_REFTIMER);
->
-> -       /* enable HPD interrupts */
-> +       /* enable HPD plug and unplug interrupts */
->         dp_catalog_hpd_config_intr(dp_catalog,
-> -               DP_DP_HPD_PLUG_INT_MASK | DP_DP_IRQ_HPD_INT_MASK
-> -               | DP_DP_HPD_UNPLUG_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
-> +               DP_DP_HPD_PLUG_INT_MASK | DP_DP_HPD_UNPLUG_INT_MASK, true);
->
->         /* Configure REFTIMER and enable it */
->         reftimer |= DP_DP_HPD_REFTIMER_ENABLE;
-> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> index 8d59eb9..5922259 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> @@ -1334,8 +1334,10 @@ static int dp_ctrl_enable_mainlink_clocks(struct dp_ctrl_private *ctrl)
->         dp_ctrl_set_clock_rate(ctrl, DP_CTRL_PM, "ctrl_link",
->                                         ctrl->link->link_params.rate * 1000);
->
-> -       phy_configure(phy, &dp_io->phy_opts);
-> -       phy_power_on(phy);
-> +       if (!phy->power_count) {
-> +               phy_configure(phy, &dp_io->phy_opts);
-> +               phy_power_on(phy);
-> +       }
->
->         ret = dp_power_clk_enable(ctrl->power, DP_CTRL_PM, true);
->         if (ret)
-> @@ -1414,6 +1416,10 @@ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
->         phy = dp_io->phy;
->
->         dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
+On 10/05/2021 09:40, Christoph Hellwig wrote:
+> On Sat, May 08, 2021 at 12:32:37AM +0100, Julien Grall wrote:
+>> The pointer dereferenced seems to suggest that the swiotlb hasn't been
+>> allocated. From what I can tell, this may be because swiotlb_force is set
+>> to SWIOTLB_NO_FORCE, we will still enable the swiotlb when running on top
+>> of Xen.
+>>
+>> I am not entirely sure what would be the correct fix. Any opinions?
+> 
+> Can you try something like the patch below (not even compile tested, but
+> the intent should be obvious?
+> 
+> 
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index 16a2b2b1c54d..7671bc153fb1 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -44,6 +44,8 @@
+>   #include <asm/tlb.h>
+>   #include <asm/alternative.h>
+>   
+> +#include <xen/arm/swiotlb-xen.h>
 > +
-> +       if (phy->power_count)
-> +               phy_power_off(phy);
-> +
->         phy_exit(phy);
->
->         DRM_DEBUG_DP("Host deinitialized successfully\n");
-> @@ -1445,7 +1451,6 @@ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
->
->         dp_catalog_ctrl_mainlink_ctrl(ctrl->catalog, false);
->         opts_dp->lanes = ctrl->link->link_params.num_lanes;
-> -       phy_configure(phy, &dp_io->phy_opts);
->         /*
->          * Disable and re-enable the mainlink clock since the
->          * link clock might have been adjusted as part of the
-> @@ -1456,9 +1461,13 @@ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
->                 DRM_ERROR("Failed to disable clocks. ret=%d\n", ret);
->                 return ret;
->         }
-> -       phy_power_off(phy);
-> -       /* hw recommended delay before re-enabling clocks */
-> -       msleep(20);
-> +
-> +       if (phy->power_count) {
+>   /*
+>    * We need to be able to catch inadvertent references to memstart_addr
+>    * that occur (potentially in generic code) before arm64_memblock_init()
+> @@ -482,7 +484,7 @@ void __init mem_init(void)
+>   	if (swiotlb_force == SWIOTLB_FORCE ||
+>   	    max_pfn > PFN_DOWN(arm64_dma_phys_limit))
+>   		swiotlb_init(1);
+> -	else
+> +	else if (!IS_ENABLED(CONFIG_XEN) || !xen_swiotlb_detect())
+>   		swiotlb_force = SWIOTLB_NO_FORCE;
+>   
+>   	set_max_mapnr(max_pfn - PHYS_PFN_OFFSET);
 
-I don't believe members of 'phy' are supposed to be looked at by various
-phy consumer drivers. Vinod, is that right?
+I have applied the patch on top of 5.13-rc1 and can confirm I am able to 
+boot dom0. Are you going to submit the patch?
 
-> +               phy_configure(phy, &dp_io->phy_opts);
-> +               phy_power_off(phy);
-> +               /* hw recommended delay before re-enabling clocks */
-> +               msleep(20);
-> +       }
->
->         ret = dp_ctrl_enable_mainlink_clocks(ctrl);
->         if (ret) {
-> @@ -1487,7 +1496,9 @@ static int dp_ctrl_deinitialize_mainlink(struct dp_ctrl_private *ctrl)
->                 DRM_ERROR("Failed to disable link clocks. ret=%d\n", ret);
->         }
->
-> -       phy_power_off(phy);
-> +       if (phy->power_count)
-> +               phy_power_off(phy);
-> +
+Thank you for your help!
 
-Given that init/power_on are both refcounted, maybe the code could call
-phy_init()/phy_exit() when hpd changes, i.e. the link is up and
-phy_power_on()/phy_power_off() when the mainlink is supposed to be
-enabled (I guess when we're going to display bit to the screen?). That
-way we don't have to check the counts.
+Best regards,
 
->         phy_exit(phy);
->
->         return 0;
+-- 
+Julien Grall
