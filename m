@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBFD378C08
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD3B378A58
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345226AbhEJMWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:22:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49920 "EHLO mail.kernel.org"
+        id S242262AbhEJLlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:41:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236821AbhEJLKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:10:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D88CA613D6;
-        Mon, 10 May 2021 11:05:45 +0000 (UTC)
+        id S235067AbhEJK5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3325F6195E;
+        Mon, 10 May 2021 10:51:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644746;
-        bh=tUIDDDqeNXJUgmAPa6kLdcp9Jo0AeRYDEfVFI6u/9XQ=;
+        s=korg; t=1620643903;
+        bh=jSFnpPCMOcIv5/ncZmQy4KGPp60iGDNp1gQ4t8bTZgo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZeZ98SONKQ/H36P2+T/0O8BkVhC1TWS0WSaxgEoiOCxmpvqhTwcUXBQaL8apxQYXr
-         Ex94rPF1mZIIWsxAaG3jNWGz+JXDeg9UUfxEOm96H4wsor4t4Y0bMFCUYknXNhmJ/s
-         MCBrARjQbw3WdZM8lJ1GjzNTKHQPwrQKcxRY/Tq8=
+        b=vNVILZ5r3xw/nQiGSZnJn3Xz2AFIREEre+EplSDua+D7eeCw9F0IqJZTl279FY1i4
+         kH3zHAWICm2tIWSb92k9V40XtOENhtStz0mFW5Abf3BANcMkybiwOWz4xpY63I17yg
+         OD4eMX/Guh6pVhjPP5ZvjdFfwNFGK4nIUxkwwOx0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 207/384] selftests/resctrl: Fix compilation issues for global variables
+Subject: [PATCH 5.11 206/342] media: i2c: tda1997: Fix possible use-after-free in tda1997x_remove()
 Date:   Mon, 10 May 2021 12:19:56 +0200
-Message-Id: <20210510102021.720588310@linuxfoundation.org>
+Message-Id: <20210510102016.897368645@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
-References: <20210510102014.849075526@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,145 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fenghua Yu <fenghua.yu@intel.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 8236c51d85a64643588505a6791e022cc8d84864 ]
+[ Upstream commit 7f820ab5d4eebfe2d970d32a76ae496a6c286f0f ]
 
-Reinette reported following compilation issue on Fedora 32, gcc version
-10.1.1
+This driver's remove path calls cancel_delayed_work(). However, that
+function does not wait until the work function finishes. This means
+that the callback function may still be running after the driver's
+remove function has finished, which would result in a use-after-free.
 
-/usr/bin/ld: cqm_test.o:<src_dir>/cqm_test.c:22: multiple definition of
-`cache_size'; cat_test.o:<src_dir>/cat_test.c:23: first defined here
+Fix by calling cancel_delayed_work_sync(), which ensures that
+the work is properly cancelled, no longer running, and unable
+to re-schedule itself.
 
-The same issue is reported for long_mask, cbm_mask, count_of_bits etc
-variables as well. Compiler isn't happy because these variables are
-defined globally in two .c files namely cqm_test.c and cat_test.c and
-the compiler during compilation finds that the variable is already
-defined (multiple definition error).
-
-Taking a closer look at the usage of these variables reveals that these
-variables are used only locally in functions such as cqm_resctrl_val()
-(defined in cqm_test.c) and cat_perf_miss_val() (defined in cat_test.c).
-These variables are not shared between those functions. So, there is no
-need for these variables to be global. Hence, fix this issue by making
-them static variables.
-
-Reported-by: Reinette Chatre <reinette.chatre@intel.com>
-Tested-by: Babu Moger <babu.moger@amd.com>
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/resctrl/cat_test.c  | 10 +++++-----
- tools/testing/selftests/resctrl/cqm_test.c  | 10 +++++-----
- tools/testing/selftests/resctrl/resctrl.h   |  2 +-
- tools/testing/selftests/resctrl/resctrlfs.c | 10 +++++-----
- 4 files changed, 16 insertions(+), 16 deletions(-)
+ drivers/media/i2c/tda1997x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-index 5da43767b973..bdeeb5772592 100644
---- a/tools/testing/selftests/resctrl/cat_test.c
-+++ b/tools/testing/selftests/resctrl/cat_test.c
-@@ -17,10 +17,10 @@
- #define MAX_DIFF_PERCENT	4
- #define MAX_DIFF		1000000
+diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
+index a09bf0a39d05..89bb7e6dc7a4 100644
+--- a/drivers/media/i2c/tda1997x.c
++++ b/drivers/media/i2c/tda1997x.c
+@@ -2804,7 +2804,7 @@ static int tda1997x_remove(struct i2c_client *client)
+ 	media_entity_cleanup(&sd->entity);
+ 	v4l2_ctrl_handler_free(&state->hdl);
+ 	regulator_bulk_disable(TDA1997X_NUM_SUPPLIES, state->supplies);
+-	cancel_delayed_work(&state->delayed_work_enable_hpd);
++	cancel_delayed_work_sync(&state->delayed_work_enable_hpd);
+ 	mutex_destroy(&state->page_lock);
+ 	mutex_destroy(&state->lock);
  
--int count_of_bits;
--char cbm_mask[256];
--unsigned long long_mask;
--unsigned long cache_size;
-+static int count_of_bits;
-+static char cbm_mask[256];
-+static unsigned long long_mask;
-+static unsigned long cache_size;
- 
- /*
-  * Change schemata. Write schemata to specified
-@@ -136,7 +136,7 @@ int cat_perf_miss_val(int cpu_no, int n, char *cache_type)
- 		return -1;
- 
- 	/* Get default cbm mask for L3/L2 cache */
--	ret = get_cbm_mask(cache_type);
-+	ret = get_cbm_mask(cache_type, cbm_mask);
- 	if (ret)
- 		return ret;
- 
-diff --git a/tools/testing/selftests/resctrl/cqm_test.c b/tools/testing/selftests/resctrl/cqm_test.c
-index 5e7308ac63be..de33d1c0466e 100644
---- a/tools/testing/selftests/resctrl/cqm_test.c
-+++ b/tools/testing/selftests/resctrl/cqm_test.c
-@@ -16,10 +16,10 @@
- #define MAX_DIFF		2000000
- #define MAX_DIFF_PERCENT	15
- 
--int count_of_bits;
--char cbm_mask[256];
--unsigned long long_mask;
--unsigned long cache_size;
-+static int count_of_bits;
-+static char cbm_mask[256];
-+static unsigned long long_mask;
-+static unsigned long cache_size;
- 
- static int cqm_setup(int num, ...)
- {
-@@ -125,7 +125,7 @@ int cqm_resctrl_val(int cpu_no, int n, char **benchmark_cmd)
- 	if (!validate_resctrl_feature_request("cqm"))
- 		return -1;
- 
--	ret = get_cbm_mask("L3");
-+	ret = get_cbm_mask("L3", cbm_mask);
- 	if (ret)
- 		return ret;
- 
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index 39bf59c6b9c5..959c71e39bdc 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -92,7 +92,7 @@ void tests_cleanup(void);
- void mbm_test_cleanup(void);
- int mba_schemata_change(int cpu_no, char *bw_report, char **benchmark_cmd);
- void mba_test_cleanup(void);
--int get_cbm_mask(char *cache_type);
-+int get_cbm_mask(char *cache_type, char *cbm_mask);
- int get_cache_size(int cpu_no, char *cache_type, unsigned long *cache_size);
- void ctrlc_handler(int signum, siginfo_t *info, void *ptr);
- int cat_val(struct resctrl_val_param *param);
-diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
-index 19c0ec4045a4..2a16100c9c3f 100644
---- a/tools/testing/selftests/resctrl/resctrlfs.c
-+++ b/tools/testing/selftests/resctrl/resctrlfs.c
-@@ -49,8 +49,6 @@ static int find_resctrl_mount(char *buffer)
- 	return -ENOENT;
- }
- 
--char cbm_mask[256];
--
- /*
-  * remount_resctrlfs - Remount resctrl FS at /sys/fs/resctrl
-  * @mum_resctrlfs:	Should the resctrl FS be remounted?
-@@ -205,16 +203,18 @@ int get_cache_size(int cpu_no, char *cache_type, unsigned long *cache_size)
- /*
-  * get_cbm_mask - Get cbm mask for given cache
-  * @cache_type:	Cache level L2/L3
-- *
-- * Mask is stored in cbm_mask which is global variable.
-+ * @cbm_mask:	cbm_mask returned as a string
-  *
-  * Return: = 0 on success, < 0 on failure.
-  */
--int get_cbm_mask(char *cache_type)
-+int get_cbm_mask(char *cache_type, char *cbm_mask)
- {
- 	char cbm_mask_path[1024];
- 	FILE *fp;
- 
-+	if (!cbm_mask)
-+		return -1;
-+
- 	sprintf(cbm_mask_path, "%s/%s/cbm_mask", CBM_MASK_PATH, cache_type);
- 
- 	fp = fopen(cbm_mask_path, "r");
 -- 
 2.30.2
 
