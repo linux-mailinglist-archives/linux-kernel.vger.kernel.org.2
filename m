@@ -2,118 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974E4379287
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302B8379288
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237649AbhEJPX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 11:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46750 "EHLO
+        id S232297AbhEJPYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 11:24:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235695AbhEJPXY (ORCPT
+        with ESMTP id S233329AbhEJPXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 11:23:24 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17C2C04685D;
-        Mon, 10 May 2021 07:56:07 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso14647723otg.9;
-        Mon, 10 May 2021 07:56:07 -0700 (PDT)
+        Mon, 10 May 2021 11:23:41 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E366C04686E
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:57:25 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id zg3so25000734ejb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:57:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Jr3vjHhMvc40r6BuXB/YSh49tUzu/s2tfxn11JpQLqo=;
-        b=p52tvVBSftImdLqKt/DzQJddUciZJWewknYkLxtQ46CbCJ2ng3Kq7Y7tlq+aIhdEWS
-         7IlIrZNkxPQvIkcQDLpZh9s+nt/Y91P8MgiiR0DaDhHFNJYj+hjfZrpcpwDCBqmBnj03
-         yjZBKwvTJKqubti3sngHkY2WlUUXSSGue9Zfr8aEAX1Ia7gBJ9VuiujrRdLPRex1Da57
-         Mx9703PvxfQCu+gwRl7pRl+laLN/D0ZCWvEoTsQuVuWlQWXCA/VXwJSEU6WtoKbbhDsr
-         s25fg9/+b4my4BhfNx+GhIX9VZaar7Pmg1+alvUwXUBsSm1st+MX1xza8GgASnjD4JWc
-         M7IA==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=f2JnqweJIfSd6LQ8EPIWiAKNItoboLHhQmvENtw3fGA=;
+        b=fJ5QX8QyyDydhJgvmYnV/Fx/KQk0nuRWucA9AHSa04/YgeaZG/SCjSduWq2ga/q1+U
+         m8CDb70flkViXYAMtpRpUv1ZSnQiOcEAuzIhDi025GEtAf1xbEq57s1qs9VMrrZ7ETc0
+         svQLWNXdhVfIqCJuXP2cMowr8eqgYk3PffhKha8KErPLmb3qMdWQe+vKVxrtSiZOLJZd
+         GIxrtOj+ZRnd0lCcGa/1T33UEc+6LJA08xUIkMTsAbNGLRNp537SzkZxLVhdhyNYzCXU
+         MkKukHhMzS2DNvV5hRC0zd93jZe8JC+JUJYqt1RBhDQSN91mGsfdJotflZpJSg8HKxKu
+         nk3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Jr3vjHhMvc40r6BuXB/YSh49tUzu/s2tfxn11JpQLqo=;
-        b=Q+J/Ma/0lHnEQGHl/0zwihwVQ1+RSRWc92pqieGiE9flLMIIsBTx0Ejq5GnhLYOKai
-         7yX4pt1QhvI9UMl44P8okd+eQUfY+3wlvRcvXOvBjQJGw7rQgLIQ0wnGshrmrrbpeMQH
-         T5dh6HtfLBDc/UK4rqdXKghwdGBY9biYqgq5/CVgQ17ZZ/e0wLqIsTM8FKetP5qCQfgb
-         +b2k9nXXOdczyk1nW+x52+8gX9vSWkhVZjoKC59HUFBam5nE3tUiqWv7GWC8Ozj7ytah
-         UaMPZ5gRIZ1gGALfEVtwZBDSVNTHASNXnmSU4rr7KuKJy7GPWxsyGGe/fnWYjpyelcUC
-         B2TA==
-X-Gm-Message-State: AOAM532jMi4jxdpotWc0rBmikjOGvneQ+KTP+ohnamc/KyGcgCO7QDL0
-        N2gQZRm41z6K0XZoM5/mmK+oJ4yVrh0=
-X-Google-Smtp-Source: ABdhPJyhyHy/fDTiINaV8aO6NtQ2/b6Av4mIJfONa2JFfegJAkMIFZBfM4meVIXHVoLcjWUoBycRGg==
-X-Received: by 2002:a9d:630e:: with SMTP id q14mr21327338otk.69.1620658566791;
-        Mon, 10 May 2021 07:56:06 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i11sm2617325otk.70.2021.05.10.07.56.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 07:56:06 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Juerg Haefliger <juerg.haefliger@canonical.com>
-Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210510131625.21506-1-juergh@canonical.com>
- <695dfd0f-f090-653e-7580-e45484228781@roeck-us.net>
- <20210510161406.1b32debd@gollum>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] watchdog: Add {min,max}_timeout sysfs nodes
-Message-ID: <f89159ab-a12e-6a71-c415-da1800d67c21@roeck-us.net>
-Date:   Mon, 10 May 2021 07:56:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=f2JnqweJIfSd6LQ8EPIWiAKNItoboLHhQmvENtw3fGA=;
+        b=C/V3E5JeRcT/wthW9Shkpzu9j4dNF5/oj8mRaWQqYLcU6+HgKNOVCTK7GA14bE4SFt
+         pWEmwv8SdCumwEne8aRtt4MtjF/kcsosrZp5q2H9RRmWKrtITMajeQgdSaQWYMXeb9dc
+         Hk2bAU7lYh5BDgmSg4yg+epxeb4qwdBCQ71PeaX5XdxXRAY5l5b4JmA2SxT/cVc8StHF
+         qx4uYTNQn+/twN6pU0zuwQA/Q8RzOy4kB9CT+eIFX5x0FSDVjt4Mx4ZDLgJXaAq23YvG
+         i0eW4n8nUpOxCYrT9vsAVJCYL6rW0ZseitiV/Ohpa08QWwDOYkROE+32rvSnUtrKJ8+R
+         UmTg==
+X-Gm-Message-State: AOAM533PGCcKHUYbMgMimbBi+0fGSUghqAiJ5A7sS3qQRTbWjtJQPyWx
+        IYjUDtYb/glEvQLdrvaE8ENGsWBhfiu2PdWjhJYjjEdafWB6u/Q1
+X-Google-Smtp-Source: ABdhPJw3fgQsWMwpVMBXeuRT8yPmLHx3OalvK87l6mKLuGxwkrvbEn0CjGIWrkoiDgpIYWMXMQk0p/MVPxEKbOkCMNE=
+X-Received: by 2002:a17:906:7487:: with SMTP id e7mr26967650ejl.106.1620658643874;
+ Mon, 10 May 2021 07:57:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210510161406.1b32debd@gollum>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   Shivank Garg <shivankgarg98@gmail.com>
+Date:   Mon, 10 May 2021 20:27:07 +0530
+Message-ID: <CAOVCmzGX54u4VLUSLt_yEM4E8MQNLwW4VTkNVurPXbCuQX6d_g@mail.gmail.com>
+Subject: Profiling execution time for __alloc_pages_nodemask
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, gregkh@linuxfoundation.org,
+        sergey.senozhatsky@gmail.com, pmladek@suse.com, david@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/21 7:14 AM, Juerg Haefliger wrote:
-> On Mon, 10 May 2021 06:45:15 -0700
-> Guenter Roeck <linux@roeck-us.net> wrote:
-> 
->> On 5/10/21 6:16 AM, Juerg Haefliger wrote:
->>> The valid range for the 'timeout' value is useful information so expose
->>> the min and max timeout values via sysfs.
->>>
->>> Signed-off-by: Juerg Haefliger <juergh@canonical.com>
->>> ---
->>>    drivers/watchdog/watchdog_dev.c | 20 ++++++++++++++++++++
->>>    1 file changed, 20 insertions(+)
->>>
->>> diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
->>> index 2946f3a63110..b84d53a79618 100644
->>> --- a/drivers/watchdog/watchdog_dev.c
->>> +++ b/drivers/watchdog/watchdog_dev.c
->>> @@ -525,6 +525,24 @@ static ssize_t timeout_show(struct device *dev, struct device_attribute *attr,
->>>    }
->>>    static DEVICE_ATTR_RO(timeout);
->>>    
->>> +static ssize_t min_timeout_show(struct device *dev,
->>> +				struct device_attribute *attr, char *buf)
->>> +{
->>> +	struct watchdog_device *wdd = dev_get_drvdata(dev);
->>> +
->>> +	return sprintf(buf, "%u\n", wdd->min_timeout);
->>> +}
->>> +static DEVICE_ATTR_RO(min_timeout);
->>> +
->>> +static ssize_t max_timeout_show(struct device *dev,
->>> +				struct device_attribute *attr, char *buf)
->>> +{
->>> +	struct watchdog_device *wdd = dev_get_drvdata(dev);
->>> +
->>> +	return sprintf(buf, "%u\n", wdd->max_timeout);
->>
->> Makes sense, but please use sysfs_emit().
-> 
-> OK. And maybe I should send a patch to convert the other occurrences of
-> sprintf as well?
-> 
+Hi Everyone!
 
-Sure, if you want to.
+I want to profile the time taken to execute the __alloc_pages_nodemask
+for different linux configurations/parameters.
+To measure the execution time, I use the ktime_get() apis. I get the
+ktime_get() on the top, and I want to do ktime_sub(ktime_get(),ktime)
+and record it in a tracepoint.
+However, the patch on implementation prevents the kernel from booting
+up. I debugged the bug to find out that the issue recurs on adding
+ktime_get() inside the __alloc_pages_nodemask path. So, that the
+kernel fails to boot up ( and show the blank screen without any logs )
+I'm using the Linux kernel 5.6.13 (5821a5593fa9f28eb6fcc95c35d00454d9bb8624)
 
-Guenter
+Is it an expected behavior? or a BUG? Has anyone else faced the same issue?
+
+Can you please suggest, what would be a good way to measure execution
+time for page allocation (if not ktime_get)
+
+Stay Safe!
+Best Regards,
+Shivank Garg
+Open-Source Enthusiast and Student, IIT Kanpur
