@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B95A378FA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C2D378FA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232098AbhEJNvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:51:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53778 "EHLO
+        id S237751AbhEJNvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:51:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243351AbhEJNq4 (ORCPT
+        with ESMTP id S1349855AbhEJNrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 09:46:56 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C93C061345
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:29:46 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lg5yX-0001Bg-K8; Mon, 10 May 2021 15:29:33 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:80ab:77d5:ac71:3f91])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 638ED6215A8;
-        Mon, 10 May 2021 13:29:32 +0000 (UTC)
-Date:   Mon, 10 May 2021 15:29:31 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Tong Zhang <ztong0001@gmail.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 1/3] can: c_can: remove the rxmasked unused variable
-Message-ID: <20210510132931.aic2kbk5ehu5un2m@pengutronix.de>
-References: <20210509124309.30024-1-dariobin@libero.it>
- <20210509124309.30024-2-dariobin@libero.it>
+        Mon, 10 May 2021 09:47:24 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0BBC061350;
+        Mon, 10 May 2021 06:30:28 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso14352297otb.13;
+        Mon, 10 May 2021 06:30:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=pKcFpNrYArLAxHAj0nuMkWNgdTcMDY9pSi+5bBnGys0=;
+        b=akbEunFwOpjSpmQuDji2lyArPgyTohkU8/A2DpX7DzQbCc7FCHeHsfpWHRGP/0P5+g
+         7e7XsKAu/PGa9Pbqdx+phn00ktYLTJP23Oj8Yf3z3Q3NVxlug8K5U+kli35vyXRlC021
+         yB2IiTk9xUXmpyAwo+iV2boyZNeyicLATzRskkguLsgItx04djVDKn4HnfsMJlsqp+Cg
+         r/a5GoCZFT9TjnQSGIkyMszCerZskdYTeoxG22qFOGJtrECV2zwJAEc43mLQEd6BfMKh
+         Yx6mf22Bb96AcyFrl5dvIvFgKXm/vo6jd8sFhYLhMX2M9JQSdEbWAKrjef8nlUNVpglv
+         qKeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=pKcFpNrYArLAxHAj0nuMkWNgdTcMDY9pSi+5bBnGys0=;
+        b=tO3ELAKcbG9AUGeahsxblMiDkfAAsc9efx7fcaywx93vCgKpTCzOnDuE3/tdSDePWO
+         3ABHaAbMuMHuxdB+v8nAAWAnb6Uo2gfzG8rwFykLshORZY1ZP08hsbWgnCrfOoyichft
+         m78eBr3DnOuOsnNqwa80t93KOfHhegqN3B/TCvv+5feqq+eVhxmCFDz1hbWC1coceVD2
+         JzHoZ46wkruJTrhjm20raadtkr6S6NOthGIVKuWzDuY/MAgBqOmLai89d/HYTR827FBb
+         fRufBssqhQpLWe5vnZpEykTfnbVvv7/BMmUhnktV/YiYHU8YaknDDh1xS+XM/YgX/g3O
+         BZyQ==
+X-Gm-Message-State: AOAM531cOCY3a4RuEwCse6cQc/KWwqcLPDtR0sFTIU/NCU6FUiXOnNjZ
+        Z1zVEP6SZZ09+SAzYgPuA1g=
+X-Google-Smtp-Source: ABdhPJzcvjDGAR2agIrBQmlXlNosBKfeiS0rwCbQPH9RXcMLMICTtLee+VJGmCVj89dVvTZv0oWzow==
+X-Received: by 2002:a9d:8ef:: with SMTP id 102mr15778804otf.136.1620653427506;
+        Mon, 10 May 2021 06:30:27 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o20sm2647140oos.19.2021.05.10.06.30.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 06:30:26 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 10 May 2021 06:30:25 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Charles Hsu <hsu.yungteng@gmail.com>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/53] docs: hwmon: avoid using UTF-8 chars
+Message-ID: <20210510133025.GA2717347@roeck-us.net>
+References: <cover.1620641727.git.mchehab+huawei@kernel.org>
+ <ccdd1bf45963a7748188a97c75f667b37bd43d2f.1620641727.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xz453uakwv65dvln"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210509124309.30024-2-dariobin@libero.it>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ccdd1bf45963a7748188a97c75f667b37bd43d2f.1620641727.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 10, 2021 at 12:26:17PM +0200, Mauro Carvalho Chehab wrote:
+> While UTF-8 characters can be used at the Linux documentation,
+> the best is to use them only when ASCII doesn't offer a good replacement.
+> So, replace the occurences of the following UTF-8 characters:
+> 
+> 	- U+2010 ('‐'): HYPHEN
+> 	- U+2013 ('–'): EN DASH
+> 	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
---xz453uakwv65dvln
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Makes perfect sense for the changes below. I don't know what the plan is,
+so I applied the patch to hwmon-next.
 
-On 09.05.2021 14:43:07, Dario Binacchi wrote:
-> Initialized by c_can_chip_config() it's never used.
->=20
-> Signed-off-by: Dario Binacchi <dariobin@libero.it>
-
-applied to linux-can-next/testing
-
-thanks,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---xz453uakwv65dvln
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmCZNTkACgkQqclaivrt
-76nx4Af/VJfRs/tZ2XnRazx5qKveRojEk7IALkZJt29jlu0wXxedhtoEKXCcgTBT
-1KZtQdS6VO4q15tjhk7A/WJmTh1MGKDFw5dQoHpQF1fhJqZhqNS2XOZ9iABiGoU7
-fX2Z3+sRVgM4bQu9x9QzjU5h6oSwarupH3UvxPj9x1RdxOd2tvOc54ih2okmjsbN
-9pa3IUrFf4MPmpDt8OU3IAdzxFR2Y4O0kJQszRqTYoKGptog7L5vUFD5uVx+IknE
-WVbF518otNqv9+6yT1oEvxq7aSEv+Zux5Ohx66APM70HiBZiEpIEEDwX5KOoBjtD
-vTTpzJYYMp2ZKdzhSy4Il8pacrRWCw==
-=Z/lu
------END PGP SIGNATURE-----
-
---xz453uakwv65dvln--
+Thanks,
+Guenter
