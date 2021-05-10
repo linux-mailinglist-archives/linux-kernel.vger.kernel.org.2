@@ -2,128 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BC1378E05
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3645378E0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351180AbhEJNDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
+        id S235716AbhEJNDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349667AbhEJMtw (ORCPT
+        with ESMTP id S1349676AbhEJMtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 08:49:52 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E17C06138D
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:44:50 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id l19so8174182qvu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:44:50 -0700 (PDT)
+        Mon, 10 May 2021 08:49:53 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53488C06125C
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:46:22 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id h4so16468521wrt.12
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:46:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yJZh56rU3bYx3u0hyhnSmYJm+7oluLwY5PsDMkWTwj8=;
-        b=dTD7X4qIOIW3q0wnQpu5kBaqCx0W1aLhKu9OI27JNbz8W1AMe4smiu22nLshqX1a2q
-         EvM7yVOK23HKGKjBtvtWPVqL6hxaL0QS6mCGIHLZJRswSm0uvAblgBxyOgyfxFuwHd3D
-         qnV8CwF1/83ZO3dFpVMs5U3yrI8vnUHr8PTCg5sLMSZi94FWRf9/Cbr1g8czyrzcxSRv
-         jPy6LPAAIjyOrPoZLPNNFeRykjHnojG/wE9qI8VMjZ/HPgG878lXlz86OENfDVUDnF+a
-         rxqkhDZoyASdeH/GJ1al729dx4GbqRZ5KceBI/35iTepDgoUrTxhsLl0J5aW9GigPCa4
-         vmYw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MZpUv7tgjGxsXDRQniIs0eZxYD9bjY5jkBU/UVJQVj8=;
+        b=KbG8JXbT2noHOgmMd8wJRapH4yPW5nZH1EiRztpC69MkRLgon2bZfP/aSKBEBilS41
+         K5v1HIQei9NxtxbWzIEX8ZRTOY8s/ISaEWwh9uCZE2jmOyKCYaSpJvQXq37QbZEgKMse
+         0YmMVjQutEteHLbaUmy75ccRGeePdej01d3FuuEIzovSmFL7TeaBQzdsAUiujBTjRnkS
+         dUfyLcYVT1KmgGgus4jBLDamMM3JGBJk4r2rlcIDk/vrE9fCVBJQD7dilyT41EBHH6Un
+         PkOXv4vYvzh1OeXj2uQRdLLQ5YD/+5kRE4otP4Mv9nIG1i73zeIEL9OyWP52jVDaFW+d
+         FR0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=yJZh56rU3bYx3u0hyhnSmYJm+7oluLwY5PsDMkWTwj8=;
-        b=MUx26e5UOr9gd6oQ6Pha+HlaKBzk2DFVHOnOAfq4h3QgH+Ce6G61tbY+ZxdTz+SKKA
-         TG6ceqm4mH+coWBMGcYgyMgiBHJAcQDbw0Vcn3S0d25eLbuTHPNnsXIl76XZvftmUXQV
-         BOHeXdZGAzsHp+Qj4V0BQvoD7AyjCJjS2xv92U+Iu/XEY4EfVK1bFoahpiztqw6iBfrr
-         X5mDxwJXy6/6yRqZ5D8NkvczLZ70pWfM4LDEY3hL+abfTVZsQB/XoRWwFbLVXvKxgzEm
-         Er97hJNRjFIVFRYfxlpCfeOf7gvfv4qcrzeSVNQpPwGpUUQKtOQ2Ud6vwRyxYh7vgUwL
-         M+fg==
-X-Gm-Message-State: AOAM531Ja8ywpunvhVTz82f0G9lJ3U/CGiasnV8NYCVvcu8DPbyGTUzc
-        sDusZRXRw9og94gbwM/VMgTm9cj2ee0nI7V0
-X-Google-Smtp-Source: ABdhPJzJFl6qzX5SQHXoL2AsR/59ShHpx0CUAhmEN4kCRmLiFglIN+kwZNnN3Ku1cuR/w5/yol5byw==
-X-Received: by 2002:a0c:f808:: with SMTP id r8mr9686322qvn.18.1620650689313;
-        Mon, 10 May 2021 05:44:49 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id l16sm11425151qkg.91.2021.05.10.05.44.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 05:44:48 -0700 (PDT)
-Subject: Re: [thermal-next PATCH v2 2/2] thermal: qcom: tsens: simplify
- debugfs init function
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Amit Kucheria <amitk@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210429010518.13319-1-ansuelsmth@gmail.com>
- <20210429010518.13319-3-ansuelsmth@gmail.com>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <6fe0749e-e0e1-6094-e000-7b12f6c7b71d@linaro.org>
-Date:   Mon, 10 May 2021 08:44:46 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=MZpUv7tgjGxsXDRQniIs0eZxYD9bjY5jkBU/UVJQVj8=;
+        b=Ef8sOaKN+KPF21pIrUdL3m2RFfunqRAm1QpdW5AgNhQ+OVoRhlijaYmOzZqp5/fEMa
+         nyHhqq4wuHmpJ8T4wdq+D6g/b4TM/C5v+dkOSKOoejnF9FE1kDanYhrcOxKibULwHsP5
+         vXlLqXPhVckPFjuQZBDW3I87Rf337dwo9cwB9v57Sg4mSA55JxYDhlGMbZ2ZuotSKx7D
+         LMpyUOIbr3Z2cYqSaLIp3x5D1NJFnBMaQy3+pdh5wViWJlcY+502xF0fyJo7/q5p8xoo
+         4lbpSDwy/JXRyQ/qT+8P8XPkT/F4EMNNh1CNNjCAcWqlxaKyHBR8rx7q6j0Cj/nj08DL
+         NJRg==
+X-Gm-Message-State: AOAM533h008sptWh256Khmx9geCyZxUQou8z6TploVCSC4k2rRDDzkCb
+        kA4ucQGSKJrC1Bu6zBOHmEP8Ut8RHYTPOw==
+X-Google-Smtp-Source: ABdhPJwHJ0YxxrB1WrnxtlN4cFr+nvxmbre1h5q2AO1M+TCVJHiwm+S+EaVBDIvEkjDcFLF/bUWTXw==
+X-Received: by 2002:adf:ef45:: with SMTP id c5mr29775237wrp.78.1620650780962;
+        Mon, 10 May 2021 05:46:20 -0700 (PDT)
+Received: from agape ([5.171.73.3])
+        by smtp.gmail.com with ESMTPSA id a9sm22109481wrw.26.2021.05.10.05.46.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 05:46:20 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] staging: rtl8723bs: use of generic CRC-32
+Date:   Mon, 10 May 2021 14:46:17 +0200
+Message-Id: <cover.1620650484.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210429010518.13319-3-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset replaces all private CRC-32 routines with
+generic ones.
 
+Fabio Aiuto (2):
+  staging: rtl8723bs: replace private CRC-32 routines with in-kernel ones
+  staging: rtl8723bs: move comments to silence 'line too long' warning
 
-On 4/28/21 9:05 PM, Ansuel Smith wrote:
-> Simplify debugfs init function.
-> - Add check for existing dev directory.
-> - Fix wrong version in dbg_version_show (with version 0.0.0, 0.1.0 was
->    incorrectly reported)
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+ drivers/staging/rtl8723bs/core/rtw_security.c | 69 +++----------------
+ 1 file changed, 10 insertions(+), 59 deletions(-)
 
-Acked-by: Thara Gopinath <thara.gopinath@linaro.org>
+-- 
+2.20.1
 
-Warm Regards
-Thara
-
-> ---
->   drivers/thermal/qcom/tsens.c | 12 ++++--------
->   1 file changed, 4 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
-> index b37d5fd71f3a..e43898bf3199 100644
-> --- a/drivers/thermal/qcom/tsens.c
-> +++ b/drivers/thermal/qcom/tsens.c
-> @@ -657,7 +657,7 @@ static int dbg_version_show(struct seq_file *s, void *data)
->   			return ret;
->   		seq_printf(s, "%d.%d.%d\n", maj_ver, min_ver, step_ver);
->   	} else {
-> -		seq_puts(s, "0.1.0\n");
-> +		seq_printf(s, "0.%d.0\n", priv->feat->ver_major);
->   	}
->   
->   	return 0;
-> @@ -669,16 +669,12 @@ DEFINE_SHOW_ATTRIBUTE(dbg_sensors);
->   static void tsens_debug_init(struct platform_device *pdev)
->   {
->   	struct tsens_priv *priv = platform_get_drvdata(pdev);
-> -	struct dentry *root, *file;
->   
-> -	root = debugfs_lookup("tsens", NULL);
-> -	if (!root)
-> +	priv->debug_root = debugfs_lookup("tsens", NULL);
-> +	if (!priv->debug_root)
->   		priv->debug_root = debugfs_create_dir("tsens", NULL);
-> -	else
-> -		priv->debug_root = root;
->   
-> -	file = debugfs_lookup("version", priv->debug_root);
-> -	if (!file)
-> +	if (!debugfs_lookup("version", priv->debug_root))
->   		debugfs_create_file("version", 0444, priv->debug_root,
->   				    pdev, &dbg_version_fops);
->   
->
