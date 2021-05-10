@@ -2,128 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6227C379008
+	by mail.lfdr.de (Postfix) with ESMTP id D3FFD379009
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244346AbhEJN7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:59:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55666 "EHLO
+        id S244408AbhEJN70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:59:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236751AbhEJNxy (ORCPT
+        with ESMTP id S243047AbhEJNyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 09:53:54 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908DFC0612ED;
-        Mon, 10 May 2021 06:33:32 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id gx21-20020a17090b1255b02901589d39576eso3782976pjb.0;
-        Mon, 10 May 2021 06:33:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SWc6HvBPJvv2dkce5ud+kbAsCLR0AEFXu+aa6as3WtI=;
-        b=RYQEnGEMhpGjvohnk2yQjpWAbJ8bTMQdWfcTL7H678yAe8WA8MT6WwVlhApozlBfu7
-         rV63Wi1f73OnVRBIfQu1fdgj3/O8xRMUUz6l4tWPCK5Pcx3GaoNc+hhdUm/guRnbd/EP
-         2gZD/RBVSF02kDXw5SwSu7GDl8bucgAr0ljCjgYBxHOhV9gstO/ZpUpDGRlLOzSvo3Dl
-         WXjTHW6WuUFfOiCdcFZxGI6uszimldO8rc5ZTZtNV4ZxMJBaYVEaYfoi6ncrubJonDo2
-         4KP+uiz+h6VdPTun5x06QAWEx3LjlXwkZD2NQowW3AuLE3dU6Y0qDvN2qsRhFA75shEg
-         mXTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SWc6HvBPJvv2dkce5ud+kbAsCLR0AEFXu+aa6as3WtI=;
-        b=E62H+Gpvt6XdD1yd9UBoOcx0KVH60lhwPL7iBJGFZ0A5nj8ajAETxWYhqFVF3g34PR
-         7cOCdQv4jTfxZDx1+UdfWYDJRZnOua+Xs6mTyfrF12SmfZmCqrsxU9xWqfgqOTPTD6nB
-         ovsv7/oudzSEsKb35oUFqZ2h9+cOED4ov5xmlyNDeN3NkRltAlEirGy8DeG7HOJGJTkl
-         8kWrEX/MCrNhrpN1exeRpkLLPkEGhqj2t63tHvUgDs9RlCSHZTVo5gYlOCdAa8zhWjLZ
-         euBycbdeLLpzivqXL+iKRarZRsZv53XJBjx7h1yJaorHkaZkXxMV02wuaqO/GyVACOkD
-         /xNg==
-X-Gm-Message-State: AOAM532vyj4duXKRRT675IO4uRx1eIN/Ry+yKDOdv7SH5ErGadCT8gCL
-        tUSVTbi5NPtAfSFWU0ZNPKS/x/gv2zU=
-X-Google-Smtp-Source: ABdhPJz5zGBsiedFPuOElsetInFE8TbXFegdd8SF+sdd6CJEMJsKqSMEetYIXPAzp7MJI1rVupRvpA==
-X-Received: by 2002:a17:90a:3948:: with SMTP id n8mr28760783pjf.32.1620653612080;
-        Mon, 10 May 2021 06:33:32 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id w127sm7906564pfw.4.2021.05.10.06.33.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 06:33:31 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     stable@vger.kernel.org
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        "kernelci.org bot" <bot@kernelci.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-        linux-kernel@vger.kernel.org (open list),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH stable 5.4 v2 4/4] ARM: 9027/1: head.S: explicitly map DT even if it lives in the first physical section
-Date:   Mon, 10 May 2021 06:33:21 -0700
-Message-Id: <20210510133321.1790243-5-f.fainelli@gmail.com>
+        Mon, 10 May 2021 09:54:13 -0400
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA74C0612F0
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:33:59 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 64B9CC800A8;
+        Mon, 10 May 2021 15:33:56 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id XuaVf3MAzLCD; Mon, 10 May 2021 15:33:56 +0200 (CEST)
+Received: from wsembach-tuxedo.fritz.box (p200300E37F0dA80022824231f945140A.dip0.t-ipconnect.de [IPv6:2003:e3:7f0d:a800:2282:4231:f945:140a])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPA id 18CC3C800A5;
+        Mon, 10 May 2021 15:33:56 +0200 (CEST)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     ville.syrjala@linux.intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     Werner Sembach <wse@tuxedocomputers.com>
+Subject: [PATCH v7 3/3] drm/i915/display: Use YCbCr420 as fallback when RGB fails
+Date:   Mon, 10 May 2021 15:33:49 +0200
+Message-Id: <20210510133349.14491-4-wse@tuxedocomputers.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210510133321.1790243-1-f.fainelli@gmail.com>
-References: <20210510133321.1790243-1-f.fainelli@gmail.com>
+In-Reply-To: <20210510133349.14491-1-wse@tuxedocomputers.com>
+References: <20210510133349.14491-1-wse@tuxedocomputers.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+When encoder validation of a display mode fails, retry with less bandwidth
+heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
+to support 4k60Hz output, which previously failed silently.
 
-commit 10fce53c0ef8f6e79115c3d9e0d7ea1338c3fa37 upstream
+AMDGPU had nearly the exact same issue. This problem description is
+therefore copied from my commit message of the AMDGPU patch.
 
-The early ATAGS/DT mapping code uses SECTION_SHIFT to mask low order
-bits of R2, and decides that no ATAGS/DTB were provided if the resulting
-value is 0x0.
+On some setups, while the monitor and the gpu support display modes with
+pixel clocks of up to 600MHz, the link encoder might not. This prevents
+YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
+possible. However, which color mode is used is decided before the link
+encoder capabilities are checked. This patch fixes the problem by retrying
+to find a display mode with YCbCr420 enforced and using it, if it is
+valid.
 
-This means that on systems where DRAM starts at 0x0 (such as Raspberry
-Pi), no explicit mapping of the DT will be created if R2 points into the
-first 1 MB section of memory. This was not a problem before, because the
-decompressed kernel is loaded at the base of DRAM and mapped using
-sections as well, and so as long as the DT is referenced via a virtual
-address that uses the same translation (the linear map, in this case),
-things work fine.
-
-However, commit 7a1be318f579 ("9012/1: move device tree mapping out of
-linear region") changes this, and now the DT is referenced via a virtual
-address that is disjoint from the linear mapping of DRAM, and so we need
-the early code to create the DT mapping unconditionally.
-
-So let's create the early DT mapping for any value of R2 != 0x0.
-
-Reported-by: "kernelci.org bot" <bot@kernelci.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
 ---
- arch/arm/kernel/head.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/i915/display/intel_hdmi.c | 25 ++++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
-index 4f49e8c71ef1..5ceed4d9ee03 100644
---- a/arch/arm/kernel/head.S
-+++ b/arch/arm/kernel/head.S
-@@ -274,10 +274,10 @@ __create_page_tables:
- 	 * We map 2 sections in case the ATAGs/DTB crosses a section boundary.
- 	 */
- 	mov	r0, r2, lsr #SECTION_SHIFT
--	movs	r0, r0, lsl #SECTION_SHIFT
-+	cmp	r2, #0
- 	ldrne	r3, =FDT_FIXED_BASE >> (SECTION_SHIFT - PMD_ORDER)
- 	addne	r3, r3, r4
--	orrne	r6, r7, r0
-+	orrne	r6, r7, r0, lsl #SECTION_SHIFT
- 	strne	r6, [r3], #1 << PMD_ORDER
- 	addne	r6, r6, #1 << SECTION_SHIFT
- 	strne	r6, [r3]
+diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+index c411f1862286..6e135662da3e 100644
+--- a/drivers/gpu/drm/i915/display/intel_hdmi.c
++++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+@@ -1898,6 +1898,7 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
+ 	int clock = mode->clock;
+ 	int max_dotclk = to_i915(connector->dev)->max_dotclk_freq;
+ 	bool has_hdmi_sink = intel_has_hdmi_sink(hdmi, connector->state);
++	bool ycbcr_420_only;
+ 
+ 	if (mode->flags & DRM_MODE_FLAG_DBLSCAN)
+ 		return MODE_NO_DBLESCAN;
+@@ -1914,12 +1915,22 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
+ 		clock *= 2;
+ 	}
+ 
+-	if (drm_mode_is_420_only(&connector->display_info, mode))
++	ycbcr_420_only = drm_mode_is_420_only(&connector->display_info, mode);
++	if (ycbcr_420_only)
+ 		clock /= 2;
+ 
+ 	status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
+-	if (status != MODE_OK)
+-		return status;
++	if (status != MODE_OK) {
++		if (ycbcr_420_only ||
++		    !connector->ycbcr_420_allowed ||
++		    !drm_mode_is_420_also(&connector->display_info, mode))
++			return status;
++
++		clock /= 2;
++		status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
++		if (status != MODE_OK)
++			return status;
++	}
+ 
+ 	return intel_mode_valid_max_plane_size(dev_priv, mode, false);
+ }
+@@ -2127,6 +2138,14 @@ static int intel_hdmi_compute_output_format(struct intel_encoder *encoder,
+ 	}
+ 
+ 	ret = intel_hdmi_compute_clock(encoder, crtc_state);
++	if (ret) {
++		if (crtc_state->output_format != INTEL_OUTPUT_FORMAT_YCBCR420 &&
++		    connector->ycbcr_420_allowed &&
++		    drm_mode_is_420_also(&connector->display_info, adjusted_mode)) {
++			crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
++			ret = intel_hdmi_compute_clock(encoder, crtc_state);
++		}
++	}
+ 
+ 	return ret;
+ }
 -- 
 2.25.1
 
