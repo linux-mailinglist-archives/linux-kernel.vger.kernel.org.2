@@ -2,158 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354B53784DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7483784DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234140AbhEJKz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41536 "EHLO
+        id S234214AbhEJK4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:56:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232868AbhEJKon (ORCPT
+        with ESMTP id S232881AbhEJKop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:44:43 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF11BC061342
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 03:33:45 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id o16so20199163ljp.3
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 03:33:45 -0700 (PDT)
+        Mon, 10 May 2021 06:44:45 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D86C5C061343
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 03:33:54 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id a4so16062944wrr.2
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 03:33:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=p6q3FouuvAK/dFHwqvkwMOvxpXrjcuEE0+n+l7JtwzA=;
-        b=F/UCZb3JYWgQnakd5gk2goJqoPmHVglv1/XY+YBl+tG3yrsDL0ypUYqp43ssEeAghj
-         8vB+59rOCgv25+YLwQgL0oNIv243jLEVzioAax1K2wyDHY7zy+y6HTLHlV/D7efo1ahg
-         tV8QvwDqiYW3FJC9/lg5vyZzz/VmT7LFAWU45NcV2fsgPa8QDmTyrzEToSdlLjM35tvB
-         UMM4lAfYLkIWnEXivfxcAaogqH87VnWld5cVuYRAs5Feuh1qnlvyum2BMcAJznTBgRw4
-         J0XCfnCaSOiq3jsbUhQZwLS9zkKrwAApGQ1+UYEH/RLgDyNMHAVf/dyjtMTiNq4IjS6S
-         vvVA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=j9ho1FshsaBSAwzsRsNW4z/HT3Epd7NSpGM7BhSuMLI=;
+        b=Cgd2xNWIsVDX4Xl20RjyyQ4FGNgdzGAty8TF4bAjIR0WhTqWum0+aJAgcxHj/EQ8Ed
+         kDakR2SDvRtBWuRixHYp/j0hzYlo6YAVJZq3Z2kDwbpdEqvJycsoZLAYZhrww98iCXV/
+         n4Yf0tuTto88YwF1sF3qOkEu+oN7mnkb+gV7kZqQfc+skszrqg6qeYhyV1Oa+HmEuH4a
+         wsmW7GZg5wSzl12Pl3A3ClNCy6BB2XmYTvIPLmLPnR6khRt1HB51EpoHwVN7j7MCD6lE
+         tLNrUiGKTV1wBU1CupexdnUzO3u0g59DHsXwdTswYMzb/nhiXR3LVDGCsRgIIcvP9/Qz
+         8udQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=p6q3FouuvAK/dFHwqvkwMOvxpXrjcuEE0+n+l7JtwzA=;
-        b=cUBc22laM1tnvVf87E4SUgBTx1lBsCqC2FpPhXlnnp1ov33oEVzTez+NmDY7TLu0rH
-         eiImyUK40gxbKHn1fCGrvZWwYFaU3S/8Rq9MzcABFe0prxa438enFAit/fu2QGpzXsg/
-         bvLgOa6Tby5Y61M9NKZY2mHpqoUJ5oCqeUe+PI96Fm6XHjz9hNXBMP/GZIoDZ2JnIs0z
-         nGJHQuAbJ7UZY0IURzxk7Sc+BEJfYF0/zjCqYI6mMINdeVnImsR47SAQIxhSzSNbNV7n
-         tJMlI0mAUntRZ31xGnozMR4J+WDFxuCLYtGKbmAJu4faAr0fsBwfMWXzLM3n0fY8yCdZ
-         1gyg==
-X-Gm-Message-State: AOAM531+8ZQ5l8kWJA/uOA5sIlTXWGQIclZcdXlr6CQuiJ6ewfySZPEy
-        TRlrenhJrR2avnRDrMevl8Y=
-X-Google-Smtp-Source: ABdhPJySY1nrJBc3C+FYQPeHcMMrZKNHaQ9ZECqFCNJ06J05nLJMHN/66jDqwoS9jyC99Xr9WUn0wQ==
-X-Received: by 2002:a2e:a0ca:: with SMTP id f10mr19992756ljm.66.1620642824224;
-        Mon, 10 May 2021 03:33:44 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id 26sm3066077ljv.140.2021.05.10.03.33.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 03:33:43 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Mon, 10 May 2021 12:33:42 +0200
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Mel Gorman <mgorman@suse.de>, Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2 2/2] mm/vmalloc: Print a warning message first on
- failure
-Message-ID: <20210510103342.GA2169@pc638.lan>
-References: <20210509193844.2562-1-urezki@gmail.com>
- <20210509193844.2562-2-urezki@gmail.com>
- <YJg8QO2JXm0+8UH6@casper.infradead.org>
- <20210509200519.GA3016@pc638.lan>
- <YJhDpkpdUKiNEAnt@casper.infradead.org>
- <20210509212641.GA3220@pc638.lan>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=j9ho1FshsaBSAwzsRsNW4z/HT3Epd7NSpGM7BhSuMLI=;
+        b=P4kDfzmk/540iFPQaxE/x2f0gQFe/eJ2SqXUn2nlUzqXBubbxxzfEyjW1RtK0LBw6S
+         TfMu4O42wDuczK6Bqd9IRGfCvqX5XS3ZW+IMSoxCcploSwVlrZ0GqB70c1I6vZcZGXE4
+         iIWA2mEMUqDEElS8QQ/HY3JoiGn6WzW06ZmeO8Y8szZlAp9IuWTCZAHlt9Mim/wylbLn
+         ogpA7h0oU7j8gRDAr+OWTBX1oGa8lOM0HDcWt6DWuBNqCdNIn9ricegExLxImH1Frelm
+         sYmc6vdRgABQkEb61dcnOwE6TD8NbHC6sQR9JGjUV6ch2mBd56aCKLnCZeilYMxoIDT2
+         4w5w==
+X-Gm-Message-State: AOAM5313Fdt2nQMS4BorZu+wg9HtwiTROC378CxDjNu/lPTko5wyBWCt
+        VpKufrNXtQSJy2CXXC0QOD/o3Q==
+X-Google-Smtp-Source: ABdhPJy1SqFJjzZtiLqFnniXN1gwxbdOhOTKoi7KDq80pgXVVv02TOIdIAi3Odqa4ZJaLPJtSKzYcw==
+X-Received: by 2002:a05:6000:1b06:: with SMTP id f6mr29460986wrz.339.1620642833642;
+        Mon, 10 May 2021 03:33:53 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id g6sm25938797wrr.63.2021.05.10.03.33.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 10 May 2021 03:33:53 -0700 (PDT)
+Subject: Re: [PATCH -next] ASoC: codecs: lpass-tx-macro: add missing
+ MODULE_DEVICE_TABLE
+To:     Bixuan Cui <cuibixuan@huawei.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Ye Bin <yebin10@huawei.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <20210508031512.53783-1-cuibixuan@huawei.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <a4bbe07e-eed6-4667-3efc-c9307782c05b@linaro.org>
+Date:   Mon, 10 May 2021 11:33:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210509212641.GA3220@pc638.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210508031512.53783-1-cuibixuan@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 09, 2021 at 11:26:41PM +0200, Uladzislau Rezki wrote:
-> On Sun, May 09, 2021 at 09:18:46PM +0100, Matthew Wilcox wrote:
-> > On Sun, May 09, 2021 at 10:05:19PM +0200, Uladzislau Rezki wrote:
-> > > On Sun, May 09, 2021 at 08:47:12PM +0100, Matthew Wilcox wrote:
-> > > > > +++ b/mm/vmalloc.c
-> > > > > @@ -2781,11 +2781,11 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
-> > > > >  	}
-> > > > >  
-> > > > >  	if (!area->pages) {
-> > > > > -		free_vm_area(area);
-> > > > >  		warn_alloc(gfp_mask, NULL,
-> > > > >  			   "vmalloc size %lu allocation failure: "
-> > > > >  			   "page array size %lu allocation failed",
-> > > > >  			   nr_small_pages * PAGE_SIZE, array_size);
-> > > > > +		free_vm_area(area);
-> > > > >  		return NULL;
-> > > > >  	}
-> > > > 
-> > > > I think this is a bad idea.  We're clearly low on memory (a memory
-> > > > allocation just failed).  We should free the memory we have allocated
-> > > > to improve the chances of the warning message making it out.
-> > > Not sure if i fully follow you here. We do free the memory. The intention
-> > > was to print a warning message first because, if, potentially, the
-> > > free_vm_area(area) also does some prints it would be a bit messy from the
-> > > point what has been broken first.
-> > > 
-> > > So, could you please clarify what was your concern?
-> > 
-> > We may need to allocate memory in order to emit the error message.
-> >
-> > Your commit message didn't mention the potential confusion, and I think
-> > that is worth adding for a v4.
-> I agree that the commit message should be updated in regard of potential
-> confusion, because it was the main intention of this patch.
+
+
+On 08/05/2021 04:15, Bixuan Cui wrote:
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
 > 
-> I will upload a v4 tomorrow.
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+
+
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+
+> ---
+>   sound/soc/codecs/lpass-tx-macro.c | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-Please find the v4 version of the patch that is in question:
-
-From 7e27e4ac8f299ae244e9e0e90e0292ae2c08d37d Mon Sep 17 00:00:00 2001
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Date: Sat, 8 May 2021 23:41:21 +0200
-Subject: [PATCH v4 1/1] mm/vmalloc: Print a warning message first on failure
-
-When a memory allocation for array of pages are not succeed
-emit a warning message as a first step and then perform the
-further cleanup.
-
-The reason it should be done in a right order is the clean
-up function which is free_vm_area() can potentially also
-follow its error paths what can lead to confusion what was
-broken first.
-
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- mm/vmalloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index dbc6744400d5..1f664a17d9ea 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2781,11 +2781,11 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 	}
- 
- 	if (!area->pages) {
--		free_vm_area(area);
- 		warn_alloc(gfp_mask, NULL,
- 			   "vmalloc size %lu allocation failure: "
- 			   "page array size %lu allocation failed",
- 			   nr_small_pages * PAGE_SIZE, array_size);
-+		free_vm_area(area);
- 		return NULL;
- 	}
- 
--- 
-2.20.1
-
---
-Vlad Rezki
+> diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-tx-macro.c
+> index acd2fbc0ca7c..27a0d5defd27 100644
+> --- a/sound/soc/codecs/lpass-tx-macro.c
+> +++ b/sound/soc/codecs/lpass-tx-macro.c
+> @@ -1846,6 +1846,7 @@ static const struct of_device_id tx_macro_dt_match[] = {
+>   	{ .compatible = "qcom,sm8250-lpass-tx-macro" },
+>   	{ }
+>   };
+> +MODULE_DEVICE_TABLE(of, tx_macro_dt_match);
+>   static struct platform_driver tx_macro_driver = {
+>   	.driver = {
+>   		.name = "tx_macro",
+> 
