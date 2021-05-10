@@ -2,77 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E56379A59
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D345379A5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231296AbhEJWr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34890 "EHLO
+        id S229685AbhEJWtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:49:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbhEJWrZ (ORCPT
+        with ESMTP id S229876AbhEJWtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:47:25 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B406C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:46:20 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id v5so9522343edc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:46:20 -0700 (PDT)
+        Mon, 10 May 2021 18:49:11 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA09C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:48:04 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id i8-20020a4aa1080000b0290201edd785e7so3823411ool.1
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:48:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dV2fbQ9we9uyPGgdf7bI2BbfhIiau/JyLnqbyj6Q3Sw=;
-        b=QUPiMooSz0l5MjoNONoFhTr1BKLywkNA4HKVyO9v2XFl5BuXItbnHwz8N6SJwuGYx8
-         cXqeK1PxzondZ7oHEePXD8yCJcCcvbVI9osgErLGQbcKSyoXOhQoewDVXKzXVbjANOsY
-         FwpkfOvnrsVEYBxvQwnRnvZzmR5APOd72JnVOrCAhNzMicD9hVcuqy3+oh975JDMWFem
-         OHzc7dVn7Q8UHD3TbUY3OiITbyXh7chwYJs5Bb2afrf8Z2GR2QF8tfNVje+80KlDLl4d
-         lzTa0ufQAe9pa5BwS57psy3PM+bMkFccqZGiSrilb+Bc0swItlCblOQKfzOzj/ea+Ymx
-         C7PA==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nXDiOD6FS2QgUBLRfCpt2/uv9F17SdmkBwWNRwmru5Y=;
+        b=BPmR2yHSGG/nLuv402u0vKb0JU2qqSNNX3PhvngJo0IpvPc9n8GCieuO7tf2JdXB88
+         sBtuWmFMGhXg8iogd+KS11T4Pzkx88fCj0f+rAm0Cck5iV87/N7mANFULMD2BDXVQATM
+         2i36wm5xBwoVwLMhwx+hYY3qtpKqyrG+UfjHw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dV2fbQ9we9uyPGgdf7bI2BbfhIiau/JyLnqbyj6Q3Sw=;
-        b=fLgaVTZeJftJ+aFiWnbCPqD4aOAoRqXnehgzL3YDweEthbE0agUowpWe9ZLDurpVxW
-         sHELPL1yeGSIzvdDxaDcE2MFLYEh+B5uB6mUMnG8wfZizfuFZfhagBfSQLy404/oSoup
-         KQm6ZVouKdYh9tmTb9N6qDqBwnQsQ4XaPShzbJk8rFpZg22JxkCodqI1YHT+d8BniyvX
-         5jOj5UGSr3GOuJJuyz4gqqY6mw1ruzWUyK+lw2xaJijkGFAVVHpUpT6EocYDr/6r8Mzx
-         mWLsZx5IkghvPGwBUolVTzxrpLUGxX1lKNwwXa21xtJ0rlJ++iXUQ8VctKgg0yYsnCXG
-         QqRA==
-X-Gm-Message-State: AOAM531c/AlgZr2Jq+x3OsMoPgKwcLRmKJTHRblSNB9Vo933PSFmmxEE
-        vu0PwNtw8EPK3MJrlvRVxIcJEKMiYQBGQ3YTIjAIUnUcCw==
-X-Google-Smtp-Source: ABdhPJyECo9u60lYqEC4PUIr8xxZkeLBHjQ+oOV7bZ3nKJ3N26zglkzRfv8eEhECFQ2SXRD0VYsFZcYIihFUdjmbGCw=
-X-Received: by 2002:a05:6402:b2c:: with SMTP id bo12mr32474141edb.196.1620686778767;
- Mon, 10 May 2021 15:46:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <YJLFrrsN2jOx9ooS@kitten-GF63-Thin-9SCSR>
-In-Reply-To: <YJLFrrsN2jOx9ooS@kitten-GF63-Thin-9SCSR>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 10 May 2021 18:46:08 -0400
-Message-ID: <CAHC9VhRcRW9zGpJsdZCCNTjdZDDfEXMmH-JGy3VjOY4BaO=PYg@mail.gmail.com>
-Subject: Re: [PATCH] audit: add blank line after variable declarations
-To:     Roni Nevalainen <catmaster.kissa@gmail.com>
-Cc:     Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nXDiOD6FS2QgUBLRfCpt2/uv9F17SdmkBwWNRwmru5Y=;
+        b=ChRbF6bxwTpznDBqQmD8YTIgagy0thuisMcysNTEAmBpmxvDFrGpB8/twuyy3u6XgK
+         t9kKfXsLnag0zKrEBstifmxM0/tpGKbiPKdqw+789Jb1H6uiSILaaD7f1vXOTJU248+L
+         GHIZlfi3gvi6YgwVDdP28lKSJqk3gzBF5MXuX1RGtGC5PVAL1WCcXlbtz/ETQX/SaCB7
+         CAMAo888Z9S/fKITrBFu/vUGIrLRnpwF5Sx6D7dqq1nrTfbO5QOIjU+6kf1Of3KntIln
+         +TqF2HVbF9YK5nb24lbDdkiUXRCJwxKtK6hHLcsCtlvyRHRMqSbFw62SsjScDMvwb1GE
+         3OCA==
+X-Gm-Message-State: AOAM533RrqsWe/j+UmN2GHzLStaEjhVvTMtDOVl87uHeRn6ADuvstfl3
+        FXpRHmGdOliU4aX+e25QYbK95A==
+X-Google-Smtp-Source: ABdhPJygFW5jPZZbuqmbpeV4pT6I/uC1MkJ52VitIdzh4m/oQ05mpI5eGlRRJOP3fGBowrRg6ePM7g==
+X-Received: by 2002:a4a:e548:: with SMTP id s8mr20898592oot.63.1620686883535;
+        Mon, 10 May 2021 15:48:03 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id 7sm722530oti.30.2021.05.10.15.48.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 15:48:03 -0700 (PDT)
+Subject: Re: [PATCH 5.11 000/342] 5.11.20-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <396382a7-9a50-7ea1-53a9-8898bf640c46@linuxfoundation.org>
+Date:   Mon, 10 May 2021 16:48:01 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 12:20 PM Roni Nevalainen
-<catmaster.kissa@gmail.com> wrote:
->
-> Fix the following checkpatch warning in auditsc.c:
->
-> WARNING: Missing a blank line after declarations
->
-> Signed-off-by: Roni Nevalainen <kitten@kittenz.dev>
-> ---
->  kernel/auditsc.c | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
+On 5/10/21 4:16 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.11.20 release.
+> There are 342 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.20-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Merged into audit/next.
+Compiled and doesn't boot. Dies in kmem_cache_alloc_node() called
+from alloc_skb_with_frags()
 
--- 
-paul moore
-www.paul-moore.com
+I will start bisect.
+
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
+
