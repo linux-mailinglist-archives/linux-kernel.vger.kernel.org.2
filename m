@@ -2,101 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3043793B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D053793B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbhEJQZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 12:25:56 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:44748 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhEJQZx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 12:25:53 -0400
-Received: by mail-ot1-f43.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so14931055otp.11;
-        Mon, 10 May 2021 09:24:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U2QmA0kT5KGKtEEfgKEA5hMeDW03KIt9H3QxMG9piFw=;
-        b=mfI5MIfJitrBkxc2cE9N5WB2KyOsb2BogBytsga57U2I1uCwGihoQBd++pgC2NWQWB
-         osX6ANNbeo9cWISIiM3pNyga/HW31PCQFZNW9Pe/qDCprF8tWf3OKz2JQJemwL3iE0jy
-         Fw46bHU0zW8mVGnUQtFmhPQ8rPV6Yw+qcgDODIoyi0WL8fPCAf1+HFMzXPz6JCXjjEE7
-         hIMjAX3wCnWU6VQqAWxgYG8B+PRAs8oxozeji9jHqOUJAnEuGVdyZKPmAneI15gt4+QT
-         XoHBr33cwa5IS5gNdYfbczRZlK1DG4V2AuWpe3DU2u5GIoA2AH8tpKW7LSEQpOFiKp5L
-         B9mA==
-X-Gm-Message-State: AOAM53205l92AVEXKRVWp+y29+OeW7+/nXd+E5QMB0qBiFq2yGzJi8cw
-        6TvPUJjG+RstMzXhW/i8vA==
-X-Google-Smtp-Source: ABdhPJxcwWkV87qLFbePQOlAS7VuwdvHmnrsQjgiZIUEHijHWQCrqZrYHZKJAdgrHzjfGbvABhkWwg==
-X-Received: by 2002:a9d:2271:: with SMTP id o104mr21591456ota.201.1620663887279;
-        Mon, 10 May 2021 09:24:47 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b8sm736481ooo.42.2021.05.10.09.24.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 09:24:46 -0700 (PDT)
-Received: (nullmailer pid 233712 invoked by uid 1000);
-        Mon, 10 May 2021 16:24:45 -0000
-Date:   Mon, 10 May 2021 11:24:45 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        kgunda@codeaurora.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        David Collins <collinsd@codeaurora.org>,
-        Andy Yan <andy.yan@rock-chips.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH V3 4/5] dt-bindings: input: pm8941-pwrkey: Convert pm8941
- power key binding to yaml
-Message-ID: <20210510162445.GA230005@robh.at.kernel.org>
-References: <1620630064-16354-1-git-send-email-skakit@codeaurora.org>
- <1620630064-16354-5-git-send-email-skakit@codeaurora.org>
- <1620655299.793818.41438.nullmailer@robh.at.kernel.org>
+        id S231542AbhEJQ0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 12:26:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230145AbhEJQ0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 12:26:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FD346112F;
+        Mon, 10 May 2021 16:25:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620663910;
+        bh=V3huKmh6GgUUU+2+jLRu6TLFbHdQL3XqX+IYvRfuV3w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XxtM58M+ahbXBAdvDO1n1Bz+76WXV9JvkjWjHbf8DluZH4FgM0c+bqcxBS9YCqVj3
+         vA/nCt84fapgGMhUh76QKs18ELcr/G08WB0OwTMqFxavZoJnqMxRsG6+5RKN+ic9Ut
+         QFoo95rAlj+WYrpL/z2IkqRqHm4bjQyU0mVN8F0L6dFFfovXuR30PQjtVDMCV4JjLk
+         s1UPuuZvCtxX8EiKK4wmDnX9L/1MUU9MORcuvCCN7X5S4PlY00KDCjDVM8F8ts038M
+         CLAIqcRQSauAeFJuYNT0JB6KPv5dchS4uDxEst6tTQnuHIKm2NanPL+jijjgDozATE
+         ftzx7oP8zdJlA==
+From:   Gao Xiang <xiang@kernel.org>
+To:     linux-erofs@lists.ozlabs.org, Chao Yu <yuchao0@huawei.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Gao Xiang <hsiangkao@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 1/2] erofs: fix broken illustration in documentation
+Date:   Tue, 11 May 2021 00:25:05 +0800
+Message-Id: <20210510162506.28637-1-xiang@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620655299.793818.41438.nullmailer@robh.at.kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 09:01:39AM -0500, Rob Herring wrote:
-> On Mon, 10 May 2021 12:31:03 +0530, satya priya wrote:
-> > Convert qcom pm8941 power key binding from .txt to .yaml format.
-> > 
-> > Signed-off-by: satya priya <skakit@codeaurora.org>
-> > ---
-> > Changes in V2:
-> >  - Fixed bot errors, took reference from input.yaml for "linux,code"
-> >  - Added one complete example for powerkey and resin, and referenced it
-> >    in main PON binding.
-> >  - Moved this patch to the end of the series.
-> > 
-> > Changes in V3:
-> >  - Moved this patch before PON binding patch.
-> >  - As per Rob's comments, added allOf at the beginning of binding.
-> >    Added maxItems for interrupts.
-> >  - Added 'unevaluatedProperties' instead of 'additionalProperties' as
-> >    we are using allOf.
-> > 
-> >  .../bindings/input/qcom,pm8941-pwrkey.txt          | 55 --------------
-> >  .../bindings/input/qcom,pm8941-pwrkey.yaml         | 87 ++++++++++++++++++++++
-> >  2 files changed, 87 insertions(+), 55 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.txt
-> >  create mode 100644 Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.yaml
-> > 
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.example.dt.yaml:0:0: /example-0/spmi@c440000/pmic@0/pon_hlos@1300: failed to match any schema with compatible: ['qcom,pm8998-pon']
+From: Gao Xiang <hsiangkao@redhat.com>
 
-You have the same example in patch 5, so drop the example here. That 
-will fix this circular dependency.
+Illustration was broken after ReST conversion by accident.
+(checked by 'make SPHINXDIRS="filesystems" htmldocs')
+
+Fixes: e66d8631ddb3 ("docs: filesystems: convert erofs.txt to ReST")
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+---
+ Documentation/filesystems/erofs.rst | 119 ++++++++++++++--------------
+ 1 file changed, 59 insertions(+), 60 deletions(-)
+
+diff --git a/Documentation/filesystems/erofs.rst b/Documentation/filesystems/erofs.rst
+index bf145171c2bf..869b183ff215 100644
+--- a/Documentation/filesystems/erofs.rst
++++ b/Documentation/filesystems/erofs.rst
+@@ -113,31 +113,31 @@ may not. All metadatas can be now observed in two different spaces (views):
+ 
+     ::
+ 
+-				    |-> aligned with 8B
+-					    |-> followed closely
+-	+ meta_blkaddr blocks                                      |-> another slot
+-	_____________________________________________________________________
+-	|  ...   | inode |  xattrs  | extents  | data inline | ... | inode ...
+-	|________|_______|(optional)|(optional)|__(optional)_|_____|__________
+-		|-> aligned with the inode slot size
+-		    .                   .
+-		    .                         .
+-		.                              .
+-		.                                    .
+-	    .                                         .
+-	    .                                              .
+-	.____________________________________________________|-> aligned with 4B
+-	| xattr_ibody_header | shared xattrs | inline xattrs |
+-	|____________________|_______________|_______________|
+-	|->    12 bytes    <-|->x * 4 bytes<-|               .
+-			    .                .                 .
+-			.                      .                   .
+-		.                           .                     .
+-	    ._______________________________.______________________.
+-	    | id | id | id | id |  ... | id | ent | ... | ent| ... |
+-	    |____|____|____|____|______|____|_____|_____|____|_____|
+-					    |-> aligned with 4B
+-							|-> aligned with 4B
++                                 |-> aligned with 8B
++                                            |-> followed closely
++     + meta_blkaddr blocks                                      |-> another slot
++       _____________________________________________________________________
++     |  ...   | inode |  xattrs  | extents  | data inline | ... | inode ...
++     |________|_______|(optional)|(optional)|__(optional)_|_____|__________
++              |-> aligned with the inode slot size
++                   .                   .
++                 .                         .
++               .                              .
++             .                                    .
++           .                                         .
++         .                                              .
++       .____________________________________________________|-> aligned with 4B
++       | xattr_ibody_header | shared xattrs | inline xattrs |
++       |____________________|_______________|_______________|
++       |->    12 bytes    <-|->x * 4 bytes<-|               .
++                           .                .                 .
++                     .                      .                   .
++                .                           .                     .
++            ._______________________________.______________________.
++            | id | id | id | id |  ... | id | ent | ... | ent| ... |
++            |____|____|____|____|______|____|_____|_____|____|_____|
++                                            |-> aligned with 4B
++                                                        |-> aligned with 4B
+ 
+     Inode could be 32 or 64 bytes, which can be distinguished from a common
+     field which all inode versions have -- i_format::
+@@ -175,13 +175,13 @@ may not. All metadatas can be now observed in two different spaces (views):
+     Each share xattr can also be directly found by the following formula:
+          xattr offset = xattr_blkaddr * block_size + 4 * xattr_id
+ 
+-    ::
++::
+ 
+-			    |-> aligned by  4 bytes
+-	+ xattr_blkaddr blocks                     |-> aligned with 4 bytes
+-	_________________________________________________________________________
+-	|  ...   | xattr_entry |  xattr data | ... |  xattr_entry | xattr data  ...
+-	|________|_____________|_____________|_____|______________|_______________
++                           |-> aligned by  4 bytes
++    + xattr_blkaddr blocks                     |-> aligned with 4 bytes
++     _________________________________________________________________________
++    |  ...   | xattr_entry |  xattr data | ... |  xattr_entry | xattr data  ...
++    |________|_____________|_____________|_____|______________|_______________
+ 
+ Directories
+ -----------
+@@ -193,19 +193,18 @@ algorithm (could refer to the related source code).
+ 
+ ::
+ 
+-		    ___________________________
+-		    /                           |
+-		/              ______________|________________
+-		/              /              | nameoff1       | nameoffN-1
+-    ____________.______________._______________v________________v__________
+-    | dirent | dirent | ... | dirent | filename | filename | ... | filename |
+-    |___.0___|____1___|_____|___N-1__|____0_____|____1_____|_____|___N-1____|
+-	\                           ^
+-	\                          |                           * could have
+-	\                         |                             trailing '\0'
+-	    \________________________| nameoff0
+-
+-				Directory block
++                  ___________________________
++                 /                           |
++                /              ______________|________________
++               /              /              | nameoff1       | nameoffN-1
++  ____________.______________._______________v________________v__________
++ | dirent | dirent | ... | dirent | filename | filename | ... | filename |
++ |___.0___|____1___|_____|___N-1__|____0_____|____1_____|_____|___N-1____|
++      \                           ^
++       \                          |                           * could have
++        \                         |                             trailing '\0'
++         \________________________| nameoff0
++                             Directory block
+ 
+ Note that apart from the offset of the first filename, nameoff0 also indicates
+ the total number of directory entries in this block since it is no need to
+@@ -216,22 +215,22 @@ Compression
+ Currently, EROFS supports 4KB fixed-sized output transparent file compression,
+ as illustrated below::
+ 
+-	    |---- Variant-Length Extent ----|-------- VLE --------|----- VLE -----
+-	    clusterofs                      clusterofs            clusterofs
+-	    |                               |                     |   logical data
+-    _________v_______________________________v_____________________v_______________
+-    ... |    .        |             |        .    |             |  .          | ...
+-    ____|____.________|_____________|________.____|_____________|__.__________|____
+-	|-> cluster <-|-> cluster <-|-> cluster <-|-> cluster <-|-> cluster <-|
+-	    size          size          size          size          size
+-	    .                             .                .                   .
+-	    .                       .               .                  .
+-		.                  .              .                .
+-	_______._____________._____________._____________._____________________
+-	    ... |             |             |             | ... physical data
+-	_______|_____________|_____________|_____________|_____________________
+-		|-> cluster <-|-> cluster <-|-> cluster <-|
+-		    size          size          size
++          |<-    variable-sized extent    ->|<-       VLE         ->|
++        clusterofs                        clusterofs              clusterofs
++          |                                 |                       |
++ _________v_________________________________v_______________________v________
++ ... |    .         |              |        .     |              |  .   ...
++ ____|____._________|______________|________.___ _|______________|__.________
++     |-> lcluster <-|-> lcluster <-|-> lcluster <-|-> lcluster <-|
++          size           size           size           size   .             .
++           .                            .                .              .
++            .                       .               .               .
++             .                   .              .               .
++       _______.______________.______________.______________._________________
++          ... |              |              |              | ...
++       _______|______________|______________|______________|_________________
++              |-> pcluster <-|-> pcluster <-|-> pcluster <-|
++                    size           size           size
+ 
+ Currently each on-disk physical cluster can contain 4KB (un)compressed data
+ at most. For each logical cluster, there is a corresponding on-disk index to
+-- 
+2.20.1
+
