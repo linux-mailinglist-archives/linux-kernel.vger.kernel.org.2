@@ -2,112 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9E9378FEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95A0379000
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242258AbhEJN5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
+        id S235672AbhEJN6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235146AbhEJNwN (ORCPT
+        with ESMTP id S242960AbhEJNxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 09:52:13 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4412C034612;
-        Mon, 10 May 2021 06:31:57 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id k5so182516pjj.1;
-        Mon, 10 May 2021 06:31:57 -0700 (PDT)
+        Mon, 10 May 2021 09:53:49 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1336BC06137E;
+        Mon, 10 May 2021 06:33:27 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id 10so13751250pfl.1;
+        Mon, 10 May 2021 06:33:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:references:mime-version:message-id
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=UDrZA8LYoy62mejg38ULfDfRvmzFbsPo8ortPrEf13g=;
-        b=KYCt1LqLZ7Fb4bQvqLnrhQ7awqFWwyp0feXtDJtw99j5JFXMYtDH0LRw0Cp0eVVyft
-         NkfB6HyWHBFPsIqyWgiBuJ3Sod5IierE0V+Qqea4aMig7wYxyFIWeQu3clyZqWIVognx
-         Ndrg5/zoEmd/byX3U7X86GAAWbQuywmBldsz7hX6XZ4ypUiinQD5kf389d5LEj54OMqC
-         GnOetrBDjq4o8QMbHS/CdJ0456Jaucf1elLJFdIslQ0eISs8LCAhmcm+y5unUVc6VmMK
-         /a9e6PFihwC3eNozaITV2PZogbHtKopE73yEupl5R4mRn3iB3Ms3mBlJZunUJfOCrXuo
-         AncQ==
+        bh=KXKAAx7CLKZeMl7TpKKmKCAcmvO/BVIrKGp8RbmnYl4=;
+        b=CNSZK/Cinvl8bScaoPMZT4drw0OIphHipTKR4GsQk9OwP5Boy0WFaPP2no815SiFav
+         ZJD85u8udlrqYDxEVvJf4p6R9koLDGkQswNrQFoTnDf6G3hJWPpMJuTZclp7HGfpqmbf
+         UzrUpFCOqxNAU8zb2qD45tjBue+d+UheMCNdjRVnGthrb9YCSz1IVBU879DUdpDW/QvJ
+         1w+noTjxr/L7Hsoau9oqGBSbP58w0wbgYhhEFEtFRZseC2L0DegCczSGGoVIA6uxvlUL
+         EhJFZVilpUZS8DZNT4aCnbvW94+7qjuyT70hy/yKnWlxzjKqduphmelVl89l7m/ckltq
+         pSNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:references:mime-version
-         :message-id:content-transfer-encoding;
-        bh=UDrZA8LYoy62mejg38ULfDfRvmzFbsPo8ortPrEf13g=;
-        b=bLoqbo0j+qqNVvmmxvrphWLfuR7RDQLYDIWEmpoNkCd4eUftnnAYiQdiY07aPI1CVB
-         9Sv3yazYwzb9tDpybqiPa95H5FSBXryiDiUEVIJJxxAHi77kWjqIFI5rILAdxzpko+Gv
-         fVTGouuZS1ntD9hEERCGj2j0j5RPNxqvCGIYdFjlVT2MyX6qzQ9DpcPSQDJIJ4t+9BEI
-         aygJGG6GpO9lGoYsK9haIxSlfWeRKKtJZnZvjQ/XGJZnVvOvi5yrvxqQDhJ0WJkzXlAv
-         GBmTeFQmRDVXnsH2FnylTahoIzNO5v7Y4+grHZo5dWe8aPUrxqT8iC7OQxAEQmcXarNn
-         m1AA==
-X-Gm-Message-State: AOAM530s7JaVWAcKnZCNACX4a0lPq5XdToyTehobaLCnsnKi2GyyHmvB
-        +y0wVexdZEoXM7VDTldotbc=
-X-Google-Smtp-Source: ABdhPJyel3QzA4FjOmbcdobjhd3/QAGazjaDaJ1lYLxwlHoWZZgzqwQRZIvAEBUzRG0oK72PHXiV1A==
-X-Received: by 2002:a17:902:854a:b029:ef:3f99:91a7 with SMTP id d10-20020a170902854ab02900ef3f9991a7mr2355511plo.74.1620653517287;
-        Mon, 10 May 2021 06:31:57 -0700 (PDT)
-Received: from DESKTOP-2BQJOC8 ([64.71.185.171])
-        by smtp.gmail.com with ESMTPSA id d22sm5241427pgb.15.2021.05.10.06.31.50
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 10 May 2021 06:31:56 -0700 (PDT)
-Date:   Mon, 10 May 2021 21:31:50 +0800
-From:   "lambertdev@gmail.com" <lambertdev@gmail.com>
-To:     "Johannes Berg" <johannes@sipsolutions.net>,
-        "Peter Oberparleiter" <oberpar@linux.ibm.com>
-Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Arnd Bergmann" <arnd@arndb.de>, "Jessica Yu" <jeyu@kernel.org>,
-        linux-um <linux-um@lists.infradead.org>
-Subject: Re: Re: [PATCH v2] init/gcov: allow CONFIG_CONSTRUCTORS on UML to fix module gcov
-References: <e386f13f8496330cd42e93c6d48a25b9a57a6792.camel@sipsolutions.net>, 
-        <20210120172041.c246a2cac2fb.I1358f584b76f1898373adfed77f4462c8705b736@changeid>, 
-        <ee3bc3bf-9582-d278-5b7a-d9fa27b17800@linux.ibm.com>, 
-        <tencent_99073B61C8137C88B76C231139F94EFB3805@qq.com>, 
-        <2a46ca787df9a44c8b4fbc17ab6b69247ab38400.camel@sipsolutions.net>
-X-Priority: 3
-X-GUID: CCDC8702-C70A-48BA-9472-59D1613C5ADC
-X-Has-Attach: no
-X-Mailer: Foxmail 7.2.21.453[cn]
-Mime-Version: 1.0
-Message-ID: <2021051021314677744820@gmail.com>
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: base64
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KXKAAx7CLKZeMl7TpKKmKCAcmvO/BVIrKGp8RbmnYl4=;
+        b=dwSesHdUjHKupMhAljuVGarSwgDtRsMmGm4tcAvvF2pYM/yzKo27OSrLkrMf1ej/7m
+         VH2yyTfCyIt2/7zqMethaulvIuf4RDPoMAB9eEdWqNWXDFcS1FjB9IRBvl8eEPYbYOL7
+         /z+kJ4TEyIKTw/yyP/psFdZgr991OJWSu0NxhCu5aY0GiiBptzCywH9bZumpqfEvQBO6
+         8kztVyno9wyim+I+X6JxKvW6JJr8FkdIXz/jT8PLfPlgDlDDMWRHJ/0R7s66MFlaPnjU
+         nXeRpGwf8m/tRhdBxgW4ik5jIUu6PtWejpRR1oArspGJ7Ls0XardlGskvUYFuMN9fIhq
+         XgNg==
+X-Gm-Message-State: AOAM530VUNttRxL6GJvV5Xv0psSUpTmxdDPus1FYlhvWVMCj72G2upuy
+        KnIkLIeQj3ddEXif1hLCHqYp62kNcS4=
+X-Google-Smtp-Source: ABdhPJzc2Zel/3nvTwKMN44cVHNoEyqNpKn793SdY/mTZkl8/DFrtvzmEKYdGeMflsrOwdO6pypBCA==
+X-Received: by 2002:a62:e704:0:b029:2c4:b81e:d1a7 with SMTP id s4-20020a62e7040000b02902c4b81ed1a7mr2414098pfh.31.1620653606116;
+        Mon, 10 May 2021 06:33:26 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id w127sm7906564pfw.4.2021.05.10.06.33.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 06:33:25 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     stable@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+        linux-kernel@vger.kernel.org (open list),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH stable 5.4 v2 0/4] ARM FDT relocation backports
+Date:   Mon, 10 May 2021 06:33:17 -0700
+Message-Id: <20210510133321.1790243-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSm9oYW5uZXMsCgpNeSBvcmlnaW5hbCBFbWFpbCBhZGRyZXNzIGlzIGJsb2NrZWQgYnkgdGhl
-IHNlcnZlciBvZiBrZXJuZWwub3JnLCAKc28gSSBoYXZlIHRvIGNoYW5nZSBhbiBFbWFpbCBhZGRy
-ZXNzLiBQbGVhc2Ugc2VlIG15IHJlcGx5IGlubGluZS4KCj5IaSwKCgo+CgoKCj4+IEhpIEpvaGFu
-bmVzIGFuZCBQZXRlciwgc29ycnkgdG8gYm90aGVyIGJ1dCBJIGhhdmUgb25lIHF1ZXN0aW9uIAoK
-Cgo+PiBvbiB0aGlzIGNoYW5nZS4gVGhlIGRvX2N0b3JzKCkgd29u4oCZdCBiZSBleGVjdXRlZCBm
-b3IgVU1MIAoKCgo+PiBiZWNhdXNlwqAgKnRoZSBjb25zdHJ1Y3RvcnMgaGF2ZSBhbHJlYWR5IGJl
-ZW4gY2FsbGVkIGZvciBFTEYqLiAKCgoKPj4gCgoKCj4+ICpfX2N0b3JzX3N0YXJ0KsKgIGFuZMKg
-ICpfX2N0b3JzX2VuZCogc3ltYm9scy4gU2VlIGxpbms6CgoKCj4+IGh0dHBzOi8vZWxpeGlyLmJv
-b3RsaW4uY29tL2xpbnV4L3Y1LjEyLjIvc291cmNlL2luY2x1ZGUvYXNtLWdlbmVyaWMvdm1saW51
-eC5sZHMuaCNMNjc2CgoKCj4+IAoKCgo+PiBJbiBteSBlbnZpcm9ubWVudCwgVU1MK0dDQyAxMCwg
-SSBjYW4ndCBmaW5kIF9fZ2Nvdl9pbml0IGV4ZWN1dGVkIAoKCgo+PiBiZWZvcmUga2VybmVsIHN0
-YXJ0cy4gU28gSSBkaWQgc29tZSB0cmFjZSBhbmQgZm91bmQgZ2xpYmMKCgoKPj4gX19saWJjX2Nz
-dV9pbml0IAoKCgo+PiB3aWxsIG9ubHkgZXhlY3V0ZSBjb25zdHJ1Y3RvcnMgYmV0d2VlbiAqX19p
-bml0X2FycmF5X3N0YXJ0KmFuZAoKCgo+PiAqX19pbml0X2FycmF5X2VuZCouwqAgCgoKCj4+IFdo
-aWNoIG1lYW5zIGlmIGRvX2N0b3JzKCkgaXMgbm90IGV4ZWN1dGVkIGZvciBVTUwsIG5vIGVsc2V3
-aGVyZSB3aWxsIAoKCgo+PiB0aGUgY29uc3RydWN0b3JzIGJlIGV4ZWN1dGVkLgoKCgo+PiAKCgoK
-Pj4gU2hhbGwgd2UgcmVtb3ZlIHRoZSAqIWRlZmluZWQoQ09ORklHX1VNTCkqIGZvciBHQ0MsIG9y
-IEkganVzdCBtaXNzZWQgCgoKCj4+IHNvbWUgc3RlcHMgdG8gbWFrZSB0aGUgR0NPViB3b3JrIGZv
-ciBVTUw/IAoKCgo+CgoKCj5ObywgdGhhdCBkb2Vzbid0IHNlZW0gbGlrZSB0aGUgcmlnaHQgc29s
-dXRpb24uCgoKPgoKCgo+UGVyaGFwcyB0aGVuIHdpdGggdGhhdCB0b29sY2hhaW4gKG9yIGNvbmZp
-Z3VyYXRpb24gdGhlcmVvZikgd2UgbmVlZCB0bwoKCgo+cHJvdmlkZSBfX2luaXRfYXJyYXlfc3Rh
-cnQvZW5kIGxhYmVscz8KCgpZZXMsIHRoYXQncyBob3cgSSB3b3JrZWQgYXJvdW5kICBpbiBteSBs
-b2NhbCBlbnZpcm9ubWVudCAKKGNoYW5nZSBsaW5rZXIgc2NyaXB0IHRvIGFkZCBfaW5pdF9hcnJh
-eV9zdGFydC9lbmQgbGFiZWxzKS4KU28gdGhlIF9fZ2Nvdl9pbml0IGlzIGNhbGxlZCBiZWZvcmUg
-c3RhcnRfa2VybmVsLgoKCj4KCgoKPk9yIC4uLiBtYXliZSB0aGF0IGFjdHVhbGx5IGp1c3QgbmVl
-ZHMgdG8gYmUgcmVtb3ZlZCwgc28gdGhhdCB0aGUKCgoKPnRvb2xjaGFpbiBnZXRzIHRvIGNob29z
-ZT8KCgoKPgoKCgo+SG1tLiBQcmV0dHkgc3VyZSBpdCB3b3JrZWQgZm9yIG1lLCBJIHRoaW5rIGFs
-c28gd2l0aCBnY2MgMTAsIGJ1dCBub3QKCgoKPnN1cmUgZXhhY3RseSB3aGVyZSBJIHRlc3RlZC4K
-CgpJIHdpbGwgbWFrZSBzdXJlIG15IGVudmlyb25tZW50IGlzIGNsZWFuIGFuZCB0cnkgYWdhaW4u
-IApDb3VsZCB5b3UgcGxlYXNlIHVzZSBnZGIgdG8gY2hlY2sgd2hlbiBfX2djb3ZfaW5pdCBpcyBj
-YWxsZWQgaW4geW91ciBzZXR1cD8KZS5nLgooMSkgZ2RiICp5b3VyIHVtbCBlbGYqIAooMikgYiBf
-X2djb3ZfaW5pdAooMykgcgooNCkgd2hlbiB0aGUgZXhlY3V0aW9uIGlzIGJyZWFrZWQsIHVzZSAn
-YnQnIHRvIGNoZWNrIHRoZSBjYWxsIHN0YWNrClRoYW5rcwoKTGFtYmVydAoKPgoKCgo+am9oYW5u
-ZXMKCgoKPgoKCgo+CgoKCj4KCgo=
+Hi Greg, Sasha,
+
+These patches were not marked with a Fixes: tag but they do fix booting
+ARM 32-bit platforms that have specific FDT placement and would cause
+boot failures like these:
+
+[    0.000000] 8<--- cut here ---
+[    0.000000] Unable to handle kernel paging request at virtual address
+ffa14000
+[    0.000000] pgd = (ptrval)
+[    0.000000] [ffa14000] *pgd=80000040007003, *pmd=00000000
+[    0.000000] Internal error: Oops: 206 [#1] SMP ARM
+[    0.000000] Modules linked in:
+[    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.4.85-1.0 #1
+[    0.000000] Hardware name: Broadcom STB (Flattened Device Tree)
+[    0.000000] PC is at fdt_check_header+0xc/0x21c
+[    0.000000] LR is at __unflatten_device_tree+0x7c/0x2f8
+[    0.000000] pc : [<c0d30e44>]    lr : [<c0a6c0fc>]    psr: 600000d3
+[    0.000000] sp : c1401eac  ip : c1401ec8  fp : c1401ec4
+[    0.000000] r10: 00000000  r9 : c150523c  r8 : 00000000
+[    0.000000] r7 : c124eab4  r6 : ffa14000  r5 : 00000000  r4 :
+c14ba920
+[    0.000000] r3 : 00000000  r2 : c150523c  r1 : 00000000  r0 :
+ffa14000
+[    0.000000] Flags: nZCv  IRQs off  FIQs off  Mode SVC_32  ISA ARM
+Segment user
+[    0.000000] Control: 30c5383d  Table: 40003000  DAC: fffffffd
+[    0.000000] Process swapper (pid: 0, stack limit = 0x(ptrval))
+[    0.000000] Stack: (0xc1401eac to 0xc1402000)
+[    0.000000] 1ea0:                            c14ba920 00000000
+ffa14000 c1401ef4 c1401ec8
+[    0.000000] 1ec0: c0a6c0fc c0d30e44 c124eab4 c124eab4 00000000
+c14ebfc0 c140e5b8 00000000
+[    0.000000] 1ee0: 00000001 c126f5a0 c1401f14 c1401ef8 c1250064
+c0a6c08c 00000000 c1401f08
+[    0.000000] 1f00: c022ddac c140ce80 c1401f9c c1401f18 c120506c
+c125002c 00000000 00000000
+[    0.000000] 1f20: 00000000 00000000 ffffffff c1401f94 c1401f6c
+c1406308 3fffffff 00000001
+[    0.000000] 1f40: 00000000 00000001 c1432b58 c14ca180 c1213ca4
+c1406308 c1406300 30c0387d
+[    0.000000] 1f60: c1401f8c c1401f70 c028e0ec 00000000 c1401f94
+c1406308 c1406300 30c0387d
+[    0.000000] 1f80: 00000000 7fa14000 420f1000 30c5387d c1401ff4
+c1401fa0 c1200c98 c120467c
+[    0.000000] 1fa0: 00000000 00000000 00000000 00000000 00000000
+00000000 00000000 c127fa44
+[    0.000000] 1fc0: 00000000 00000000 00000000 c1200330 00000000
+30c0387d ffffffff 7fa14000
+[    0.000000] 1fe0: 420f1000 30c5387d 00000000 c1401ff8 00000000
+c1200c28 00000000 00000000
+[    0.000000] Backtrace:
+[    0.000000] [<c0d30e38>] (fdt_check_header) from [<c0a6c0fc>]
+(__unflatten_device_tree+0x7c/0x2f8)
+[    0.000000]  r6:ffa14000 r5:00000000 r4:c14ba920
+[    0.000000] [<c0a6c080>] (__unflatten_device_tree) from [<c1250064>]
+(unflatten_device_tree+0x44/0x54)
+[    0.000000]  r10:c126f5a0 r9:00000001 r8:00000000 r7:c140e5b8
+r6:c14ebfc0 r5:00000000
+[    0.000000]  r4:c124eab4 r3:c124eab4
+[    0.000000] [<c1250020>] (unflatten_device_tree) from [<c120506c>]
+(setup_arch+0x9fc/0xc84)
+[    0.000000]  r4:c140ce80
+[    0.000000] [<c1204670>] (setup_arch) from [<c1200c98>]
+(start_kernel+0x7c/0x540)
+[    0.000000]  r10:30c5387d r9:420f1000 r8:7fa14000 r7:00000000
+r6:30c0387d r5:c1406300
+[    0.000000]  r4:c1406308
+[    0.000000] [<c1200c1c>] (start_kernel) from [<00000000>] (0x0)
+[    0.000000]  r10:30c5387d r9:420f1000 r8:7fa14000 r7:ffffffff
+r6:30c0387d r5:00000000
+[    0.000000]  r4:c1200330
+[    0.000000] Code: e89da800 e1a0c00d e92dd870 e24cb004 (e5d03000)
+[    0.000000] random: get_random_bytes called from
+print_oops_end_marker+0x50/0x58 with crng_init=0
+[    0.000000] ---[ end trace f34b4929828506c1 ]---
+[    0.000000] Kernel panic - not syncing: Attempted to kill the idle
+task!
+[    0.000000] ---[ end Kernel panic - not syncing: Attempted to kill
+the idle task! ]---
+
+Changes in v2:
+
+- include "ARM: 9027/1: head.S: explicitly map DT even if it lives in
+  the first physical section" as suggested by Ard.
+
+Ard Biesheuvel (4):
+  ARM: 9011/1: centralize phys-to-virt conversion of DT/ATAGS address
+  ARM: 9012/1: move device tree mapping out of linear region
+  ARM: 9020/1: mm: use correct section size macro to describe the FDT
+    virtual address
+  ARM: 9027/1: head.S: explicitly map DT even if it lives in the first
+    physical section
+
+ Documentation/arm/memory.rst  |  7 ++++++-
+ arch/arm/include/asm/fixmap.h |  2 +-
+ arch/arm/include/asm/memory.h |  5 +++++
+ arch/arm/include/asm/prom.h   |  4 ++--
+ arch/arm/kernel/atags.h       |  4 ++--
+ arch/arm/kernel/atags_parse.c |  6 +++---
+ arch/arm/kernel/devtree.c     |  6 +++---
+ arch/arm/kernel/head.S        |  9 ++++-----
+ arch/arm/kernel/setup.c       | 19 ++++++++++++++-----
+ arch/arm/mm/init.c            |  1 -
+ arch/arm/mm/mmu.c             | 20 ++++++++++++++------
+ arch/arm/mm/pv-fixup-asm.S    |  4 ++--
+ 12 files changed, 56 insertions(+), 31 deletions(-)
+
+-- 
+2.25.1
 
