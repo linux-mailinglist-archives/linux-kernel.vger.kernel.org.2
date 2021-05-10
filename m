@@ -2,110 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C605379A3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91CBF379A3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbhEJWkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33184 "EHLO
+        id S231308AbhEJWla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbhEJWkL (ORCPT
+        with ESMTP id S229944AbhEJWlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:40:11 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E15C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:39:05 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id l4so26858574ejc.10
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:39:05 -0700 (PDT)
+        Mon, 10 May 2021 18:41:25 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9DA5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:40:19 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id p4so14692108pfo.3
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:40:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kH1/lqZ2NQP1a9fznT6J9FoyYxZoXrz6MnF/IsF/LD8=;
-        b=OIU8Pc6oDAnDeHaRZizpqtco+PESrEQcRKrfoct3xvNNzamiviTvQXnXZnu1/0a1qL
-         qtwI6P+gZoHEGCl3lVFz4EszzhXNfaReWGEfg1OHrtMbfx3Z/6ssKMUSn58LtasxgzPg
-         lYlRVUI/zl6SMsTQ6BvQHFcfn/eK0Sgf//CNz3vnuQZih/oPmwhwuKV3gZklxmGpANOv
-         4mQqnvdTn0mctcyeAu65LExOZMzBdOlcFPHlF6D5WpC0slUZZM561kfGXPzv4bd3CBvC
-         OosiQYZy2sRNc4eJzLC80kYejb+UR+jiVFTIV/hoORV/TDixQC75n1X07MfRPIAm14F8
-         PyIw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hbH0C8P8Jk3egpmCRvdSA5W5Q4AjZh56OZVlG79oi5c=;
+        b=A+xlxTb/7lkPj03icNYGlzQpfUJGeogr1P2hfAIiS6/3JQyu0vO6r5DAucRJeq+enP
+         i5zbzHECRyMxzPr7MQM53STbDIDcceKOeZnybqIVnfY5VVMNvIBU8HjZZNJeVXWimXLU
+         V8yj3USNQudRfzWVfXAt5oJApFpDAjuFAZTjzTMumcnMe0+zAdEjooDffz+mstlPIGbC
+         Kzyt4DCWTF+Fm3+QXFn+FQ9XNwLMJaZoM69SB9YAYPOUqsgUYp1IZcFR06wS86LWGTlH
+         iQcGS6l5IzM2NO+SI6sCQO38MN5gIjZwIchV7zNf0SSqu4InPIWUdBH3VZWo6RlrM1xl
+         KQcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kH1/lqZ2NQP1a9fznT6J9FoyYxZoXrz6MnF/IsF/LD8=;
-        b=EUN7F6HcrSX1eYyGc4UrXy1Ef5rSMS9ZwT+/SQJlG7Lk3lo9aKMd+HqD1QLcUOW47m
-         EJ8IlebGAkTsfyl/OUY7KPyH0wGvFRZ0eANUEf7mVKlpQDWxJbVwdmcveeTQrav3HRab
-         EOtfr0Mh50Chz1OSGLxCyI/eyNTTZqehKsCnlR0R118hdbOqe/uqHB/J/DxMoeK301uc
-         6WCmH88uwhgMpXp0FSLMj+nN9/vPgvbh+EanZwzXEsXWIaQQy7Qwxs9kBJVQVfPlSmpO
-         HlGWKlutrEtwHldLGNymVqkrWvZpEtPbLM9nfysGWVfMMu9SXoF1QJnKFud2DJT/CRPO
-         FAkA==
-X-Gm-Message-State: AOAM530EWfJq9ukoQdkA3MFpHXyJOg98ufuca9VIoozNNxFXQii2gNOQ
-        PXcaYok1WIJvKwWOCPi+DdddXtgC14/tlxfzjCEh
-X-Google-Smtp-Source: ABdhPJxlvCV7PFOsLnBX3Na+g8t7Ve4oLOc7zDm2RO/5Nqb08hUq9UvLY1JOFhRgKMR4J+srbEqkAyyjCKBHNlK/AfA=
-X-Received: by 2002:a17:906:2510:: with SMTP id i16mr28108053ejb.488.1620686344212;
- Mon, 10 May 2021 15:39:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hbH0C8P8Jk3egpmCRvdSA5W5Q4AjZh56OZVlG79oi5c=;
+        b=Wqb6Zk/VQQSOdhslccUwVnLvCz0pQKsga0hbaWs1aKBvrzkbmzXWhzTmg27G8T9fdu
+         qVY9v6jw5SOmcSSl08+REeioVTpI0autTZc0/F9fAzirf7CVvmhSxyCSMnhfRMTjhNQ6
+         CKNx/mQXpIJb33Wlxgi/HD4dX0SQ02ZdWFZaVI4n3zI731jTvJ2C/Z9c2GZrBXl26T3r
+         V6e2NNwB/xUZJrFevmJk2w1+iYikvnrcjbAcB7noToV8mEKHz7qB+JciTxNQTZjISWEH
+         QeX783t0ZhfSQ+9BVSaz7ajknhRVqLc4BPHKLevg+wDChU1jtyC+oOQ5Y8Pp8f/zecqW
+         KmvQ==
+X-Gm-Message-State: AOAM533oTyDIkC5aDWZYeOz0M7kQIS6UaM//FIkVE+NbPXZQ4OlaollP
+        URxEMEc+/Tm6nkRt/7p7BlX9Aw==
+X-Google-Smtp-Source: ABdhPJwf9X8xH3jIgjeORQIx2SfTico/ajOH9CLwd2EbFrzvR88MdP2uV0vBGdNelb+tLqnIvu7CRQ==
+X-Received: by 2002:aa7:904e:0:b029:28f:da01:1a5f with SMTP id n14-20020aa7904e0000b029028fda011a5fmr26907997pfo.67.1620686419178;
+        Mon, 10 May 2021 15:40:19 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id z29sm12097398pga.52.2021.05.10.15.40.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 15:40:18 -0700 (PDT)
+Date:   Mon, 10 May 2021 22:40:14 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: Re: [PATCH 2/2] KVM: x86: Allow userspace to update tracked sregs
+ for protected guests
+Message-ID: <YJm2TkGFyciplA8l@google.com>
+References: <20210507165947.2502412-1-seanjc@google.com>
+ <20210507165947.2502412-3-seanjc@google.com>
+ <5f084672-5c0d-a6f3-6dcf-38dd76e0bde0@amd.com>
+ <YJla8vpwqCxqgS8C@google.com>
+ <12fe8f83-49b4-1a22-7903-84e45f16c372@amd.com>
+ <YJmfV1sO8miqvQLM@google.com>
+ <26da40a0-c9b4-f517-94a6-5d3d69c4a207@amd.com>
 MIME-Version: 1.0
-References: <20210423103533.30121-1-zhe.he@windriver.com> <20210423103533.30121-3-zhe.he@windriver.com>
-In-Reply-To: <20210423103533.30121-3-zhe.he@windriver.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 10 May 2021 18:38:53 -0400
-Message-ID: <CAHC9VhQXawubMsKg2F282k-bJqZFT=vNurZAeAPKLU1ZZpYKeg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] audit: Use syscall_get_return_value to get syscall
- return code in audit_syscall_exit
-To:     He Zhe <zhe.he@windriver.com>
-Cc:     oleg@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <26da40a0-c9b4-f517-94a6-5d3d69c4a207@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 6:36 AM He Zhe <zhe.he@windriver.com> wrote:
->
-> regs_return_value for some architectures like arm64 simply retrieve
-> register value from pt_regs without sign extension in 32-bit compatible
-> case and cause audit to have false syscall return code. For example,
-> 32-bit -13 would be treated as 4294967283 below.
->
-> type=SYSCALL msg=audit(1611110715.887:582): arch=40000028 syscall=322
-> success=yes exit=4294967283
->
-> We just added proper sign extension in syscall_get_return_value which
-> should be used instead.
->
-> Signed-off-by: He Zhe <zhe.he@windriver.com>
-> ---
-> v1 to v2: No change
->
->  include/linux/audit.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, May 10, 2021, Tom Lendacky wrote:
+> On 5/10/21 4:02 PM, Sean Christopherson wrote:
+> > On Mon, May 10, 2021, Tom Lendacky wrote:
+> >> On 5/10/21 11:10 AM, Sean Christopherson wrote:
+> >>> On Fri, May 07, 2021, Tom Lendacky wrote:
+> >>>> On 5/7/21 11:59 AM, Sean Christopherson wrote:
+> >>>>> Allow userspace to set CR0, CR4, CR8, and EFER via KVM_SET_SREGS for
+> >>>>> protected guests, e.g. for SEV-ES guests with an encrypted VMSA.  KVM
+> >>>>> tracks the aforementioned registers by trapping guest writes, and also
+> >>>>> exposes the values to userspace via KVM_GET_SREGS.  Skipping the regs
+> >>>>> in KVM_SET_SREGS prevents userspace from updating KVM's CPU model to
+> >>>>> match the known hardware state.
+> >>>>
+> >>>> This is very similar to the original patch I had proposed that you were
+> >>>> against :)
+> >>>
+> >>> I hope/think my position was that it should be unnecessary for KVM to need to
+> >>> know the guest's CR0/4/0 and EFER values, i.e. even the trapping is unnecessary.
+> >>> I was going to say I had a change of heart, as EFER.LMA in particular could
+> >>> still be required to identify 64-bit mode, but that's wrong; EFER.LMA only gets
+> >>> us long mode, the full is_64_bit_mode() needs access to cs.L, which AFAICT isn't
+> >>> provided by #VMGEXIT or trapping.
+> >>
+> >> Right, that one is missing. If you take a VMGEXIT that uses the GHCB, then
+> >> I think you can assume we're in 64-bit mode.
+> > 
+> > But that's not technically guaranteed.  The GHCB even seems to imply that there
+> > are scenarios where it's legal/expected to do VMGEXIT with a valid GHCB outside
+> > of 64-bit mode:
+> > 
+> >   However, instead of issuing a HLT instruction, the AP will issue a VMGEXIT
+> >   with SW_EXITCODE of 0x8000_0004 ((this implies that the GHCB was updated prior
+> >   to leaving 64-bit long mode).
+> 
+> Right, but in order to fill in the GHCB so that the hypervisor can read
+> it, the guest had to have been in 64-bit mode. Otherwise, whatever the
+> guest wrote will be seen as encrypted data and make no sense to the
+> hypervisor anyway.
 
-Perhaps I missed it but did you address the compile error that was
-found by the kernel test robot?
+Having once been in 64-bit is not the same thing as currently being in 64-bit.
+E.g. if the VMM _knows_ that the vCPU is not in 64-bit, e.g. because it traps
+writes to CR0, then ignoring bits 63:32 of GPRs would be entirely reasonable.
 
-Regardless, one comment inline below ...
+In practice it probably won't matter since the guest will have to go out of its
+way to do VMGEXIT outside of 64-bit mode with valid data in the GHCB, but ideally
+KVM will conform to a spec, not implement a best guess as to what will/won't work
+for the guest.
 
-> diff --git a/include/linux/audit.h b/include/linux/audit.h
-> index 82b7c1116a85..135adbe22c19 100644
-> --- a/include/linux/audit.h
-> +++ b/include/linux/audit.h
-> @@ -334,7 +334,7 @@ static inline void audit_syscall_exit(void *pt_regs)
->  {
->         if (unlikely(audit_context())) {
->                 int success = is_syscall_success(pt_regs);
+> >>> I.e. either the ghcb_cpl_is_valid() check should be nuked, or more likely KVM
+> >>
+> >> The ghcb_cpl_is_valid() is still needed to see whether the VMMCALL was
+> >> from userspace or not (a VMMCALL will generate a #VC).
+> > 
+> > Blech.  I get that the GHCB spec says CPL must be provided/checked for VMMCALL,
+> > but IMO that makes no sense whatsover.
+> > 
+> > If the guest restricts the GHCB to CPL0, then the CPL field is pointless because
+> > the VMGEXIT will only ever come from CPL0.  Yes, technically the guest kernel
+> > can proxy a VMMCALL from userspace to the host, but the guest kernel _must_ be
+> > the one to enforce any desired CPL checks because the VMM is untrusted, at least
+> > once you get to SNP.
+> > 
+> > If the guest exposes the GHCB to any CPL, then the CPL check is worthless because
+> 
+> The GHCB itself is not exposed to any CPL.
 
-Since we are shifting to use syscall_get_return_value() below, would
-it also make sense to shift to using syscall_get_error() here instead
-of is_syscall_success()?
+That is a guest decision.  Nothing in the GHCB spec requires the GHCB to be
+accessible only in CPL0.  I'm not arguing that any sane guest will actually map
+the GHCB into userspace, but from an architectural perspective it's not a given.
 
-> -               long return_code = regs_return_value(pt_regs);
-> +               long return_code = syscall_get_return_value(current, pt_regs);
->
->                 __audit_syscall_exit(success, return_code);
->         }
+> A VMMCALL will generate a #VC.
 
--- 
-paul moore
-www.paul-moore.com
+But that's irrevelant from an architectural perspective.  It is 100% legal to
+do VMGEXIT(VMMCALL) without first doing VMMCALL and taking a #VC.
+
+> The guest #VC handler will extract the CPL level from the context that
+> generated the #VC (see vc_handle_vmmcall() in arch/x86/kernel/sev-es.c),
+> so that a VMMCALL from userspace will have the proper CPL value in the
+> GHCB when the #VC handler issues the VMGEXIT instruction.
+
+I get how the CPL ended up as a requirement for VMMCALL in the GHCB, I'm arguing
+that it's useless information.  From the guest's perspective, it must handle
+privilege checks for those checks to have any meaning with respect to security.
+From the VMM's perspective, the checks have zero meaning whatsoever because the
+CPL field is software controlled.  The fact that the VMM got a VMGEXIT with
+valid data in the GHCB is proof enough that the guest blessed the VMGEXIT.
+
+It's kind of a moot point because the extra CPL doesn't break anything, but it
+gives a false sense of security since it implies the guest can/should rely on
+the VMM to do privilege enforcement.
+
+Actually, after looking at the Linux guest code, the entire VMCALL->#VC->VMGEXIT
+concept is flawed.  E.g. kvm_sev_es_hcall_prepare() copies over all _possible_
+GPRs.  That means users of kvm_hypercall{1,2,3}() are leaking random register
+state to the VMM.  That can be "fixed" by zeroing unused registers or reflecting
+on regs->ax, but at that point it's far easier and more performant to simply do
+VMGEXIT(VMCALL) directly and skip the #VC.
+
+As for VMMCALL from userspace, IMO the kernel's default should be to reject them
+unconditionally.  KVM and Hyper-V APIs do not allow hypercalls from CPL>0.  At a
+glance, neither does Xen (Xen skips the CPL check, but AFAICT only when the vCPU
+is in real mode and thus the CPL check is meaningless).  No idea about VMware.
+If there is a use case for allowing VMMCALL from userspace, then it absolutely
+needs to be handled in a x86_hyper_runtime hook, because otherwise the kernel
+has zero clue whether or not the hypercall should be allowed, and if it's
+allowed, precisely which registers to expose.  I.e. the hook would have to
+expose only the registers needed for that exact hypercall, otherwise the kernel
+would unintentionally leak userspace register state.
