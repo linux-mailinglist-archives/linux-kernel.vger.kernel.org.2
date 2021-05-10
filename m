@@ -2,83 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406F8378E00
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BC1378E05
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351032AbhEJNCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:02:38 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:60844 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346913AbhEJMpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 08:45:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=j5EzHxmHIQeijYWLXgO27l27M9QmN8aWCXpiUoQsyRg=; b=ErWqRBqQxGP5hYTBa/6MP/JKQi
-        c46A5l+jYpT8OT5T+igBPnet36GTnr0d0HvauHrk0ZSK/uGX582f2WeHEB7sgnhXPH6zGH4oCJ1lC
-        +CufHH5KzLYH1JchXtKG+OKxoc/FKuhxFOabHF1GywWbvgNV4kPTFgiTkphLQUAiXZIA=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lg5Gp-003Wob-CZ; Mon, 10 May 2021 14:44:23 +0200
-Date:   Mon, 10 May 2021 14:44:23 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>
-Subject: Re: [RFC PATCH v1 8/9] net: phy: micrel: ksz886x/ksz8081: add
- cabletest support
-Message-ID: <YJkqpxF9gu1XYdAs@lunn.ch>
-References: <20210505092025.8785-1-o.rempel@pengutronix.de>
- <20210505092025.8785-9-o.rempel@pengutronix.de>
- <YJKT173qkYZ+Iyp6@lunn.ch>
- <20210510090656.eiqlwp7t7hkvsxq3@pengutronix.de>
+        id S1351180AbhEJNDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349667AbhEJMtw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 08:49:52 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E17C06138D
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:44:50 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id l19so8174182qvu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:44:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yJZh56rU3bYx3u0hyhnSmYJm+7oluLwY5PsDMkWTwj8=;
+        b=dTD7X4qIOIW3q0wnQpu5kBaqCx0W1aLhKu9OI27JNbz8W1AMe4smiu22nLshqX1a2q
+         EvM7yVOK23HKGKjBtvtWPVqL6hxaL0QS6mCGIHLZJRswSm0uvAblgBxyOgyfxFuwHd3D
+         qnV8CwF1/83ZO3dFpVMs5U3yrI8vnUHr8PTCg5sLMSZi94FWRf9/Cbr1g8czyrzcxSRv
+         jPy6LPAAIjyOrPoZLPNNFeRykjHnojG/wE9qI8VMjZ/HPgG878lXlz86OENfDVUDnF+a
+         rxqkhDZoyASdeH/GJ1al729dx4GbqRZ5KceBI/35iTepDgoUrTxhsLl0J5aW9GigPCa4
+         vmYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yJZh56rU3bYx3u0hyhnSmYJm+7oluLwY5PsDMkWTwj8=;
+        b=MUx26e5UOr9gd6oQ6Pha+HlaKBzk2DFVHOnOAfq4h3QgH+Ce6G61tbY+ZxdTz+SKKA
+         TG6ceqm4mH+coWBMGcYgyMgiBHJAcQDbw0Vcn3S0d25eLbuTHPNnsXIl76XZvftmUXQV
+         BOHeXdZGAzsHp+Qj4V0BQvoD7AyjCJjS2xv92U+Iu/XEY4EfVK1bFoahpiztqw6iBfrr
+         X5mDxwJXy6/6yRqZ5D8NkvczLZ70pWfM4LDEY3hL+abfTVZsQB/XoRWwFbLVXvKxgzEm
+         Er97hJNRjFIVFRYfxlpCfeOf7gvfv4qcrzeSVNQpPwGpUUQKtOQ2Ud6vwRyxYh7vgUwL
+         M+fg==
+X-Gm-Message-State: AOAM531Ja8ywpunvhVTz82f0G9lJ3U/CGiasnV8NYCVvcu8DPbyGTUzc
+        sDusZRXRw9og94gbwM/VMgTm9cj2ee0nI7V0
+X-Google-Smtp-Source: ABdhPJzJFl6qzX5SQHXoL2AsR/59ShHpx0CUAhmEN4kCRmLiFglIN+kwZNnN3Ku1cuR/w5/yol5byw==
+X-Received: by 2002:a0c:f808:: with SMTP id r8mr9686322qvn.18.1620650689313;
+        Mon, 10 May 2021 05:44:49 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id l16sm11425151qkg.91.2021.05.10.05.44.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 05:44:48 -0700 (PDT)
+Subject: Re: [thermal-next PATCH v2 2/2] thermal: qcom: tsens: simplify
+ debugfs init function
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Amit Kucheria <amitk@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210429010518.13319-1-ansuelsmth@gmail.com>
+ <20210429010518.13319-3-ansuelsmth@gmail.com>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <6fe0749e-e0e1-6094-e000-7b12f6c7b71d@linaro.org>
+Date:   Mon, 10 May 2021 08:44:46 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210510090656.eiqlwp7t7hkvsxq3@pengutronix.de>
+In-Reply-To: <20210429010518.13319-3-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 11:06:56AM +0200, Oleksij Rempel wrote:
-> On Wed, May 05, 2021 at 02:47:19PM +0200, Andrew Lunn wrote:
-> > On Wed, May 05, 2021 at 11:20:24AM +0200, Oleksij Rempel wrote:
-> > > This patch support for cable test for the ksz886x switches and the
-> > > ksz8081 PHY.
-> > > 
-> > > The patch was tested on a KSZ8873RLL switch with following results:
-> > > 
-> > > - port 1:
-> > >   - cannot detect any distance
-> > >   - provides inverted values
-> > >     (Errata: DS80000830A: "LinkMD does not work on Port 1",
-> > >      http://ww1.microchip.com/downloads/en/DeviceDoc/KSZ8873-Errata-DS80000830A.pdf)
-> > >     - Reports "short" on open or ok.
-> > >     - Reports "ok" on short.
-> > 
-> > Quite broken. Distance is optional, simply don't report it.  Status is
-> > harder. Reporting ETHTOOL_A_CABLE_RESULT_CODE_OK should really mean
-> > the cable is O.K. If you cannot tell open from O.K, i would return
-> > ETHTOOL_A_CABLE_RESULT_CODE_UNSPEC.
-> > 
-> 
-> Yes, patch "net: phy: micrel: add patch for erratas on port1" provides
-> a flag to return -ENOTSUPP on this port.
-> 
-> Is it acceptable way? Should I squash this patches?
 
-This is O.K. Maybe add a comment that later patches in the series with
-handle the errata?
 
-       Andrew
+On 4/28/21 9:05 PM, Ansuel Smith wrote:
+> Simplify debugfs init function.
+> - Add check for existing dev directory.
+> - Fix wrong version in dbg_version_show (with version 0.0.0, 0.1.0 was
+>    incorrectly reported)
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+
+Acked-by: Thara Gopinath <thara.gopinath@linaro.org>
+
+Warm Regards
+Thara
+
+> ---
+>   drivers/thermal/qcom/tsens.c | 12 ++++--------
+>   1 file changed, 4 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+> index b37d5fd71f3a..e43898bf3199 100644
+> --- a/drivers/thermal/qcom/tsens.c
+> +++ b/drivers/thermal/qcom/tsens.c
+> @@ -657,7 +657,7 @@ static int dbg_version_show(struct seq_file *s, void *data)
+>   			return ret;
+>   		seq_printf(s, "%d.%d.%d\n", maj_ver, min_ver, step_ver);
+>   	} else {
+> -		seq_puts(s, "0.1.0\n");
+> +		seq_printf(s, "0.%d.0\n", priv->feat->ver_major);
+>   	}
+>   
+>   	return 0;
+> @@ -669,16 +669,12 @@ DEFINE_SHOW_ATTRIBUTE(dbg_sensors);
+>   static void tsens_debug_init(struct platform_device *pdev)
+>   {
+>   	struct tsens_priv *priv = platform_get_drvdata(pdev);
+> -	struct dentry *root, *file;
+>   
+> -	root = debugfs_lookup("tsens", NULL);
+> -	if (!root)
+> +	priv->debug_root = debugfs_lookup("tsens", NULL);
+> +	if (!priv->debug_root)
+>   		priv->debug_root = debugfs_create_dir("tsens", NULL);
+> -	else
+> -		priv->debug_root = root;
+>   
+> -	file = debugfs_lookup("version", priv->debug_root);
+> -	if (!file)
+> +	if (!debugfs_lookup("version", priv->debug_root))
+>   		debugfs_create_file("version", 0444, priv->debug_root,
+>   				    pdev, &dbg_version_fops);
+>   
+>
