@@ -2,190 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FBE3792BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EEB13792C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232291AbhEJPbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 11:31:47 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:55965 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234203AbhEJPbG (ORCPT
+        id S236300AbhEJPc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 11:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232239AbhEJPb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 11:31:06 -0400
-Received: from fsav303.sakura.ne.jp (fsav303.sakura.ne.jp [153.120.85.134])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 14AFRtfE007232;
-        Tue, 11 May 2021 00:27:56 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav303.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav303.sakura.ne.jp);
- Tue, 11 May 2021 00:27:55 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav303.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 14AFRtnu007228
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 11 May 2021 00:27:55 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Subject: Re: [PATCH 11/12] tools: sync lib/find_bit implementation
-To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
-        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-References: <20210401003153.97325-1-yury.norov@gmail.com>
- <20210401003153.97325-12-yury.norov@gmail.com>
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Message-ID: <1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp>
-Date:   Tue, 11 May 2021 00:27:51 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Mon, 10 May 2021 11:31:57 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1ECDC06129E;
+        Mon, 10 May 2021 08:26:19 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id c3so16063647oic.8;
+        Mon, 10 May 2021 08:26:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PKb19RbJtddT9ixiaDJEd8lwiTEBJP0932RguN39+5w=;
+        b=DN5VlvIzv2g9pN3rZ3NKCDlekbYySLhe/345TmwLE6f4Ue27NTu9IBhPFBLr9IaIdp
+         z4Zv7LzGdz4jlFYWm6fMGoZ7E8Bp7Q3gbA4NwITHmOGmb7bVjIZUqOoW/h4sy9iC3WJ6
+         z4zxnILaTCBvcRn04n77bWpzO+pJ5J4xvbALUbLoo25WVLrHdyXePrAUj/P2A4bQ1Nzj
+         nfzvdu2lN5xCZZmVkEk2fCzh8oWxvjprHyhXUtYiso/TnUJ3t9USHJHvbzc3Q9goIYH1
+         lkfU6sVWEMBZWptG8R/usnz+NxOg3E5m9FubEpR09knIBMHcF7pUvZBANGlZPst+vOCo
+         /yRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PKb19RbJtddT9ixiaDJEd8lwiTEBJP0932RguN39+5w=;
+        b=CgTrWoanLHlcoSaiYHdMii1FWodziO9GWkvIKrSThfYBOcehiy6nO6421QDQQfbrok
+         o9M6T1TvVM3H5zDhsJPz+JQKCQp32As8MDqtwDZBo7cmDB6fartfL1MhcAToxK0IpddV
+         D7IKrA8wMZoJLkKzWkPzTUU+dwL4fmBGaXMlfCh4dIHPZADmF4ZkJVuSfgnIXEcCfXze
+         a9eeUcOlH8zZAJctJxCfq+cOlffG8udS2UdnCV6u8Qzq5HLydLeJRCU4yKSzWoUrOg7p
+         wT311xFRgTWOitXW7gTyJnbgShCNhQdH5pnVaW85jVmviMNNCDWlZSqbkV01XgkMG09P
+         uxOQ==
+X-Gm-Message-State: AOAM5322P7Yqh5lLYMblMt/xkpa5W3nqAen1/A+A0pfDpKcSu5g+V68d
+        KyymAvjWWG2V92l7H95FebLb+nzK7Jqvpj+btTo=
+X-Google-Smtp-Source: ABdhPJzCSRFYLLVUuC5sQQX2WXHyV1S5ZaJ9vjN9QEEuHySuJRNPNM6lWwqjm5FEw2QcIvsAelWNDKhsqEnDR1wI5ls=
+X-Received: by 2002:aca:c08a:: with SMTP id q132mr24901330oif.5.1620660379373;
+ Mon, 10 May 2021 08:26:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210401003153.97325-12-yury.norov@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210508195641.397198-3-robdclark@gmail.com> <20210509153842.124974-1-Houdek.Ryan@fex-emu.org>
+In-Reply-To: <20210509153842.124974-1-Houdek.Ryan@fex-emu.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 10 May 2021 11:26:08 -0400
+Message-ID: <CADnq5_OYRP5EE3GOdY6HyTcJuLxXw5V7X9fTTw+QMrKs6cjcvw@mail.gmail.com>
+Subject: Re: Tested
+To:     houdek.ryan@fex-emu.org
+Cc:     Rob Clark <robdclark@gmail.com>, robdclark@chromium.org,
+        Dave Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        yaohongbo@huawei.com, LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, swboyd@chromium.org,
+        Sean Paul <sean@poorly.run>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        abhinavk@codeaurora.org, kalyan_t@codeaurora.org,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Maxime Ripard <maxime@cerno.tech>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit eaae7841ba83bb42 ("tools: sync lib/find_bit implementation") broke
-build of 5.13-rc1 using gcc (GCC) 8.3.1 20190311 (Red Hat 8.3.1-3).
+Sorry, what patch are you referring to?
 
-  DESCEND  objtool
-  CC       /usr/src/linux/tools/objtool/exec-cmd.o
-  CC       /usr/src/linux/tools/objtool/help.o
-  CC       /usr/src/linux/tools/objtool/pager.o
-  CC       /usr/src/linux/tools/objtool/parse-options.o
-  CC       /usr/src/linux/tools/objtool/run-command.o
-  CC       /usr/src/linux/tools/objtool/sigchain.o
-  CC       /usr/src/linux/tools/objtool/subcmd-config.o
-  LD       /usr/src/linux/tools/objtool/libsubcmd-in.o
-  AR       /usr/src/linux/tools/objtool/libsubcmd.a
-  CC       /usr/src/linux/tools/objtool/arch/x86/special.o
-In file included from /usr/src/linux/tools/include/linux/kernel.h:8:0,
-                 from /usr/src/linux/tools/include/linux/list.h:7,
-                 from /usr/src/linux/tools/objtool/include/objtool/arch.h:10,
-                 from /usr/src/linux/tools/objtool/include/objtool/check.h:11,
-                 from /usr/src/linux/tools/objtool/include/objtool/special.h:10,
-                 from arch/x86/special.c:4:
-/usr/src/linux/tools/include/asm-generic/bitops/find.h: In function 'find_next_bit':
-/usr/src/linux/tools/include/linux/bits.h:24:21: error: first argument to '__builtin_choose_expr' not a constant
-  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-                     ^
-/usr/src/linux/tools/include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
- #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-                                                              ^
-/usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-   ^
-/usr/src/linux/tools/include/asm-generic/bitops/find.h:32:17: note: in expansion of macro 'GENMASK'
-   val = *addr & GENMASK(size - 1, offset);
-                 ^
-/usr/src/linux/tools/include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' width not an integer constant
- #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-                                                   ^
-/usr/src/linux/tools/include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-   ^
-/usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-   ^
-/usr/src/linux/tools/include/asm-generic/bitops/find.h:32:17: note: in expansion of macro 'GENMASK'
-   val = *addr & GENMASK(size - 1, offset);
-                 ^
-/usr/src/linux/tools/include/asm-generic/bitops/find.h: In function 'find_next_and_bit':
-/usr/src/linux/tools/include/linux/bits.h:24:21: error: first argument to '__builtin_choose_expr' not a constant
-  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-                     ^
-/usr/src/linux/tools/include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
- #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-                                                              ^
-/usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-   ^
-/usr/src/linux/tools/include/asm-generic/bitops/find.h:62:27: note: in expansion of macro 'GENMASK'
-   val = *addr1 & *addr2 & GENMASK(size - 1, offset);
-                           ^
-/usr/src/linux/tools/include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' width not an integer constant
- #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-                                                   ^
-/usr/src/linux/tools/include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-   ^
-/usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-   ^
-/usr/src/linux/tools/include/asm-generic/bitops/find.h:62:27: note: in expansion of macro 'GENMASK'
-   val = *addr1 & *addr2 & GENMASK(size - 1, offset);
-                           ^
-/usr/src/linux/tools/include/asm-generic/bitops/find.h: In function 'find_next_zero_bit':
-/usr/src/linux/tools/include/linux/bits.h:24:21: error: first argument to '__builtin_choose_expr' not a constant
-  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-                     ^
-/usr/src/linux/tools/include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
- #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-                                                              ^
-/usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-   ^
-/usr/src/linux/tools/include/asm-generic/bitops/find.h:90:18: note: in expansion of macro 'GENMASK'
-   val = *addr | ~GENMASK(size - 1, offset);
-                  ^
-/usr/src/linux/tools/include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' width not an integer constant
- #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-                                                   ^
-/usr/src/linux/tools/include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-   ^
-/usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-   ^
-/usr/src/linux/tools/include/asm-generic/bitops/find.h:90:18: note: in expansion of macro 'GENMASK'
-   val = *addr | ~GENMASK(size - 1, offset);
-                  ^
-make[5]: *** [/usr/src/linux/tools/objtool/arch/x86/special.o] Error 1
-make[4]: *** [arch/x86] Error 2
-make[3]: *** [/usr/src/linux/tools/objtool/objtool-in.o] Error 2
-make[2]: *** [objtool] Error 2
-make[1]: *** [tools/objtool] Error 2
-make: *** [__sub-make] Error 2
+Alex
 
-
-
-Applying below diff seems to solve the build failure.
-Do we need to use BUILD_BUG_ON_ZERO() here?
-
-diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
-index 7f475d59a097..0aba9294f29d 100644
---- a/tools/include/linux/bits.h
-+++ b/tools/include/linux/bits.h
-@@ -21,8 +21,7 @@
- #if !defined(__ASSEMBLY__)
- #include <linux/build_bug.h>
- #define GENMASK_INPUT_CHECK(h, l) \
--	(BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
--		__builtin_constant_p((l) > (h)), (l) > (h), 0)))
-+	({ BUILD_BUG_ON(__builtin_constant_p((l) > (h)) && ((l) > (h))); 0; })
- #else
- /*
-  * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
-
-
-
-Also, why the fast path of find_*_bit() functions does not check
-__builtin_constant_p(offset) as well as small_const_nbits(size), for the fast
-path fails to catch BUILD_BUG_ON_ZERO() when offset argument is not a constant.
-
+On Mon, May 10, 2021 at 4:04 AM <houdek.ryan@fex-emu.org> wrote:
+>
+> I have tested this on my end and it resolves the 120hz problem.
+>
+> Tested-By: Ryan Houdek <Houdek.Ryan@fex-emu.org>
