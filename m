@@ -2,85 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C9837903B
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA5737903D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243268AbhEJOJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:09:36 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:43769 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238363AbhEJOCw (ORCPT
+        id S1345104AbhEJOJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:09:53 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:44556 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236259AbhEJOC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:02:52 -0400
-Received: by mail-ot1-f53.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso13708549ots.10;
-        Mon, 10 May 2021 07:01:47 -0700 (PDT)
+        Mon, 10 May 2021 10:02:57 -0400
+Received: by mail-ot1-f45.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so14477675otp.11;
+        Mon, 10 May 2021 07:01:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=aMyd74V2xPR9HsHsdnpVhEpDDf6pkpJ1H3LsUAn7sbI=;
-        b=d/4ZY7ISqohEwb2d1Bdh83OedwbHW94d1A6Dfgq1IcCP1Q18XZQA0ulSJ19AKAbmHa
-         2Lzsdw9uRigyAzFlQ2T6GIAJfs3jcH2Y+PeGfJvwbjbwH49hup22tvWi9W7n2mhxrKF1
-         47+oLcTkImAA7sz/HrrDHZWPmng0YZ+dMDTmmjrg+Z+w4AcrP+ZmB5m0PI/QI6nestHG
-         J/dw+UisWRRwDOpFBCLtAylxoA/ONIw3VDHa5FQEIpWgUssJxwpF+vIKdNhwZ+mnxyma
-         oUKA3Sfcw3MVD8Fm0sA+m/sIqRj5ohBLcd8ay0YXTV+AU0Y5gBoOjW67eT7uArMzoPPA
-         jMPg==
-X-Gm-Message-State: AOAM533qusKFrwaEfH7YQdCxq+H6+1Ji/VMrtuWPUcTQUJv9ppWIVT4a
-        fjThkDNli3FrirnhzojlMpOYUnpsWw==
-X-Google-Smtp-Source: ABdhPJzSILUisRkF9ZkgKtKLtWcN1AIVtat4Sjmyowu6KWN3kbXqHOkZeDA9q9iEo8Fblx+U2ozBDw==
-X-Received: by 2002:a9d:70c1:: with SMTP id w1mr2290991otj.276.1620655306804;
-        Mon, 10 May 2021 07:01:46 -0700 (PDT)
+        bh=JKsO3/Ex9MYUNGYvtUUsilRIUDXYRO1OT6ejMhv7T8k=;
+        b=IAZHduJ4ITLsJb1ZPAZwrEwfPXhROp8zcUw7QyqEFNUdO/ESryuNkA+N5UEYXp5GMK
+         jwoo8skjwFUhLvoO/Ks1Fe4dS4/6hASWa06xuQlRCvGiNWW8Xe022amps1+JTFaroGHv
+         EshcFTUHMorSOhrUv1cCttjyQKN3Vxo9XIclCEF9bkGYS2AXD8HlscbSa9gYZVaefJpx
+         xciBmgIjhN5owv3790CMOkPjT9imtk0SsIgilfifRDKlNb6irEg8TyNwN9KEl7EmlGky
+         7Qnqmsa7JWlFHd1jCn/gVf0N2vayd9V9ZyswpcYyxveb/QAfEM6UxL4FFYsbIrMFhNsA
+         d9Rg==
+X-Gm-Message-State: AOAM532Cqf0n+um1U7VtBR1qmWdcH47sBHGZGhBy4fykrpOV6iCBUQ7m
+        gSyvUOtL94hLEXaYQbpiUxIhoPI8fA==
+X-Google-Smtp-Source: ABdhPJzkMirGR5MPxh2vUgnso6g9WUTGlKFG5pxnf2yqU3vz/35X9pfPvS3TiXp4ftEr9Ospw50ksA==
+X-Received: by 2002:a05:6830:17cb:: with SMTP id p11mr22366787ota.283.1620655310131;
+        Mon, 10 May 2021 07:01:50 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s6sm1167461otk.71.2021.05.10.07.01.43
+        by smtp.gmail.com with ESMTPSA id 64sm2648753oob.12.2021.05.10.07.01.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 07:01:45 -0700 (PDT)
-Received: (nullmailer pid 41439 invoked by uid 1000);
+        Mon, 10 May 2021 07:01:48 -0700 (PDT)
+Received: (nullmailer pid 41441 invoked by uid 1000);
         Mon, 10 May 2021 14:01:39 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        kgunda@codeaurora.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        David Collins <collinsd@codeaurora.org>,
-        Andy Yan <andy.yan@rock-chips.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>
-In-Reply-To: <1620630064-16354-5-git-send-email-skakit@codeaurora.org>
-References: <1620630064-16354-1-git-send-email-skakit@codeaurora.org> <1620630064-16354-5-git-send-email-skakit@codeaurora.org>
-Subject: Re: [PATCH V3 4/5] dt-bindings: input: pm8941-pwrkey: Convert pm8941 power key binding to yaml
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     linux-arm-kernel@lists.infradead.org, p.zabel@pengutronix.de,
+        linux-pwm@vger.kernel.org, BMC-SW@aspeedtech.com,
+        linux-aspeed@lists.ozlabs.org, andrew@aj.id.au,
+        linux-kernel@vger.kernel.org, lee.jones@linaro.org,
+        robh+dt@kernel.org, thierry.reding@gmail.com,
+        u.kleine-koenig@pengutronix.de, devicetree@vger.kernel.org,
+        joel@jms.id.au
+In-Reply-To: <20210510073511.7291-2-billy_tsai@aspeedtech.com>
+References: <20210510073511.7291-1-billy_tsai@aspeedtech.com> <20210510073511.7291-2-billy_tsai@aspeedtech.com>
+Subject: Re: [v4 1/2] dt-bindings: Add bindings for aspeed pwm-tach.
 Date:   Mon, 10 May 2021 09:01:39 -0500
-Message-Id: <1620655299.793818.41438.nullmailer@robh.at.kernel.org>
+Message-Id: <1620655299.806171.41440.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021 12:31:03 +0530, satya priya wrote:
-> Convert qcom pm8941 power key binding from .txt to .yaml format.
+On Mon, 10 May 2021 15:35:10 +0800, Billy Tsai wrote:
+> This patch adds device binding for aspeed pwm-tach device which is a
+> multi-function device include pwm and tach function and pwm/tach device
+> bindings which should be the child-node of pwm-tach device.
 > 
-> Signed-off-by: satya priya <skakit@codeaurora.org>
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
 > ---
-> Changes in V2:
->  - Fixed bot errors, took reference from input.yaml for "linux,code"
->  - Added one complete example for powerkey and resin, and referenced it
->    in main PON binding.
->  - Moved this patch to the end of the series.
-> 
-> Changes in V3:
->  - Moved this patch before PON binding patch.
->  - As per Rob's comments, added allOf at the beginning of binding.
->    Added maxItems for interrupts.
->  - Added 'unevaluatedProperties' instead of 'additionalProperties' as
->    we are using allOf.
-> 
->  .../bindings/input/qcom,pm8941-pwrkey.txt          | 55 --------------
->  .../bindings/input/qcom,pm8941-pwrkey.yaml         | 87 ++++++++++++++++++++++
->  2 files changed, 87 insertions(+), 55 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.txt
->  create mode 100644 Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.yaml
+>  .../bindings/hwmon/aspeed,ast2600-tach.yaml   | 66 +++++++++++++++
+>  .../bindings/mfd/aspeed,ast2600-pwm-tach.yaml | 82 +++++++++++++++++++
+>  .../bindings/pwm/aspeed,ast2600-pwm.yaml      | 62 ++++++++++++++
+>  3 files changed, 210 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml
+>  create mode 100644 Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml
+>  create mode 100644 Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -89,9 +76,43 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.example.dt.yaml:0:0: /example-0/spmi@c440000/pmic@0/pon_hlos@1300: failed to match any schema with compatible: ['qcom,pm8998-pon']
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml: Additional properties are not allowed ('child-node' was unexpected)
+	hint: Keywords must be a subset of known json-schema keywords
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml: 'child-node' is not one of ['$id', '$schema', 'title', 'description', 'examples', 'required', 'allOf', 'anyOf', 'oneOf', 'definitions', '$defs', 'additionalProperties', 'dependencies', 'patternProperties', 'properties', 'if', 'then', 'else', 'unevaluatedProperties', 'deprecated', 'maintainers', 'select']
+	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml: 'additionalProperties' is a required property
+	hint: A schema without a "$ref" to another schema must define all properties and use "additionalProperties"
+	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml: Additional properties are not allowed ('child-node' was unexpected)
+	hint: Keywords must be a subset of known json-schema keywords
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml: 'child-node' is not one of ['$id', '$schema', 'title', 'description', 'examples', 'required', 'allOf', 'anyOf', 'oneOf', 'definitions', '$defs', 'additionalProperties', 'dependencies', 'patternProperties', 'properties', 'if', 'then', 'else', 'unevaluatedProperties', 'deprecated', 'maintainers', 'select']
+	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml: 'additionalProperties' is a required property
+	hint: A schema without a "$ref" to another schema must define all properties and use "additionalProperties"
+	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
+schemas/pwm/aspeed,ast2600-pwm.yaml: ignoring, error in schema: 
+schemas/hwmon/aspeed,ast2600-tach.yaml: ignoring, error in schema: 
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml: Additional properties are not allowed ('child-node' was unexpected)
+	hint: Keywords must be a subset of known json-schema keywords
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml: 'child-node' is not one of ['$id', '$schema', 'title', 'description', 'examples', 'required', 'allOf', 'anyOf', 'oneOf', 'definitions', '$defs', 'additionalProperties', 'dependencies', 'patternProperties', 'properties', 'if', 'then', 'else', 'unevaluatedProperties', 'deprecated', 'maintainers', 'select']
+	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml: 'additionalProperties' is a required property
+	hint: A schema without a "$ref" to another schema must define all properties and use "additionalProperties"
+	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml
+Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.example.dt.yaml:0:0: /example-0/pwm_tach@1e610000: failed to match any schema with compatible: ['aspeed,ast2600-pwm-tach', 'syscon', 'simple-mfd']
+Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.example.dt.yaml:0:0: /example-0/pwm_tach@1e610000/pwm: failed to match any schema with compatible: ['aspeed,ast2600-pwm']
+Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.example.dt.yaml:0:0: /example-0/pwm_tach@1e610000/tach: failed to match any schema with compatible: ['aspeed,ast2600-tach']
 
-See https://patchwork.ozlabs.org/patch/1476186
+See https://patchwork.ozlabs.org/patch/1476200
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
