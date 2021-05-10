@@ -2,98 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AF8379216
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8F4379219
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbhEJPHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 11:07:44 -0400
-Received: from mga03.intel.com ([134.134.136.65]:18899 "EHLO mga03.intel.com"
+        id S236763AbhEJPIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 11:08:00 -0400
+Received: from verein.lst.de ([213.95.11.211]:60477 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235326AbhEJPFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 11:05:24 -0400
-IronPort-SDR: 3d5S3Swa/9p9Ugalhr8YwapLF6TJL2CYMzXfJm9s3KELeX4eI2GRlLMRMZUDR0Vs+43a0oG97Y
- u1ObvhnBRwSQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="199266347"
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="199266347"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 08:04:02 -0700
-IronPort-SDR: IOjie96ZhmgBakkWhU2dJA996iOyKlZJgdodqHtw3Qv0We3mF69WZ562+YavWqrvP7cHA1djcp
- KCtcD6gLXJ3w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="468259165"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 10 May 2021 08:03:56 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 88ECF1D2; Mon, 10 May 2021 18:04:16 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Petr Mladek <pmladek@suse.com>, JC Kuo <jckuo@nvidia.com>,
-        Joe Perches <joe@perches.com>,
-        Sumit Garg <sumit.garg@linaro.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        id S240600AbhEJPGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 11:06:41 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 2DAB567373; Mon, 10 May 2021 17:05:17 +0200 (CEST)
+Date:   Mon, 10 May 2021 17:05:16 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Claire Chang <tientzu@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH v1 4/4] usb: host: xhci-tegra: Switch to use %ptTs
-Date:   Mon, 10 May 2021 18:04:13 +0300
-Message-Id: <20210510150413.59356-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210510150413.59356-1-andriy.shevchenko@linux.intel.com>
-References: <20210510150413.59356-1-andriy.shevchenko@linux.intel.com>
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
+        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
+        jxgao@google.com, joonas.lahtinen@linux.intel.com,
+        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        matthew.auld@intel.com, nouveau@lists.freedesktop.org,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
+Subject: Re: [PATCH v6 08/15] swiotlb: Bounce data from/to restricted DMA
+ pool if available
+Message-ID: <20210510150516.GE28066@lst.de>
+References: <20210510095026.3477496-1-tientzu@chromium.org> <20210510095026.3477496-9-tientzu@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510095026.3477496-9-tientzu@chromium.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use %ptTs instead of open coded variant to print contents
-of time64_t type in human readable form.
+> +static inline bool is_dev_swiotlb_force(struct device *dev)
+> +{
+> +#ifdef CONFIG_DMA_RESTRICTED_POOL
+> +	if (dev->dma_io_tlb_mem)
+> +		return true;
+> +#endif /* CONFIG_DMA_RESTRICTED_POOL */
+> +	return false;
+> +}
+> +
 
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: Jonathan Hunter <jonathanh@nvidia.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/usb/host/xhci-tegra.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+>  	/* If SWIOTLB is active, use its maximum mapping size */
+>  	if (is_swiotlb_active(dev) &&
+> -	    (dma_addressing_limited(dev) || swiotlb_force == SWIOTLB_FORCE))
+> +	    (dma_addressing_limited(dev) || swiotlb_force == SWIOTLB_FORCE ||
+> +	     is_dev_swiotlb_force(dev)))
 
-diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
-index ce97ff054c68..937b78cba89b 100644
---- a/drivers/usb/host/xhci-tegra.c
-+++ b/drivers/usb/host/xhci-tegra.c
-@@ -890,7 +890,6 @@ static int tegra_xusb_load_firmware(struct tegra_xusb *tegra)
- 	struct xhci_op_regs __iomem *op;
- 	unsigned long timeout;
- 	time64_t timestamp;
--	struct tm time;
- 	u64 address;
- 	u32 value;
- 	int err;
-@@ -987,11 +986,8 @@ static int tegra_xusb_load_firmware(struct tegra_xusb *tegra)
- 	}
- 
- 	timestamp = le32_to_cpu(header->fwimg_created_time);
--	time64_to_tm(timestamp, 0, &time);
- 
--	dev_info(dev, "Firmware timestamp: %ld-%02d-%02d %02d:%02d:%02d UTC\n",
--		 time.tm_year + 1900, time.tm_mon + 1, time.tm_mday,
--		 time.tm_hour, time.tm_min, time.tm_sec);
-+	dev_info(dev, "Firmware timestamp: %ptTs UTC\n", &timestamp);
- 
- 	return 0;
- }
--- 
-2.30.2
-
+This is a mess.  I think the right way is to have an always_bounce flag
+in the io_tlb_mem structure instead.  Then the global swiotlb_force can
+go away and be replace with this and the fact that having no
+io_tlb_mem structure at all means forced no buffering (after a little
+refactoring).
