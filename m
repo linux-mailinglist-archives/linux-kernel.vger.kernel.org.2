@@ -2,174 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FEA37976D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 21:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AF9379771
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 21:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232427AbhEJTJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 15:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232192AbhEJTJq (ORCPT
+        id S232781AbhEJTK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 15:10:56 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:51466 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231223AbhEJTKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 15:09:46 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C1BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 12:08:41 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id w16so8595789oiv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 12:08:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=eP6gvGEziKbBxse1ZZa4wvu/p/N5mBk1XQzX+RNRSrk=;
-        b=hAb0NhrwpTLU1E9f834oH321MocrM3MUFd3zvEkAe65c63eoIihBWTiFsXaEOrh09L
-         uvlvV1bK7n57oTVQRH4Du7xv3/8P5yzgLHmpYsapsRtdU9zKJqFoCUbwWka0Y9UM42ig
-         dxsoaVKO3LthfKZKX+O2N4ysN/uMJ5HMoCAZY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=eP6gvGEziKbBxse1ZZa4wvu/p/N5mBk1XQzX+RNRSrk=;
-        b=mtRZeNNqNvnPMIpJ6FIrtTFQGkPjLCCW8A90mibo5bjWkjoGp6Ihw7m4cZAsy2gYbk
-         5j6K9lYuzfo5ryQqB3DOV3new+tB5ONiJcENELO4cY/KlJi4bkCwSKQO2Tlre+90u0z2
-         Kw5AeLJ5XC2aiJzup9r2JgUjifyxiTCZUfXtOfK8h/JUHx+O/23tuGtnG+4H3zz25Aej
-         ugSVd2AotubFJw7VSoUOzEjEMldj8VnyNck2DLFoJw3zmTtXxDzG2TqfusIRwCD62/9j
-         gc1Z1BiEkCFpU9nT57YWiSSbPTFvC00g4HeX2ou7GCxKIX6oRfKB9wKql8Cq7csYv3UA
-         fAjw==
-X-Gm-Message-State: AOAM533HaEPnyXlVlPEEgWGqAX3KzF9ACT9RB0AWP+zPbShWcNLu0iDJ
-        PUCM+pLMXiInUDxMQJWg2GXi8iDiDzueTBsjlBl1NC1Un/k=
-X-Google-Smtp-Source: ABdhPJzYMhCCpm68K994SNvm+ZulvXrBB02Bh/q2MyeStbZV0IE0NuWg4JX8A4X4mpFNoQGj4v/NujH3OVWaWcucZGA=
-X-Received: by 2002:aca:211a:: with SMTP id 26mr18840223oiz.19.1620673720507;
- Mon, 10 May 2021 12:08:40 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 10 May 2021 12:08:40 -0700
-MIME-Version: 1.0
-In-Reply-To: <CAKMK7uE_yrXNdEYTf-snNU9dS+=6AKOmUxRuLSHLWBTOtVwpmg@mail.gmail.com>
-References: <20210508074118.1621729-1-swboyd@chromium.org> <YJlZwYS+oH7W5WjO@phenom.ffwll.local>
- <CAE-0n52S=LFRx93qVyWBpF5PmdCEbWH_+HnN0Do9W45kiJLCbQ@mail.gmail.com> <CAKMK7uE_yrXNdEYTf-snNU9dS+=6AKOmUxRuLSHLWBTOtVwpmg@mail.gmail.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 10 May 2021 12:08:40 -0700
-Message-ID: <CAE-0n50d8_OtZTpBGaz0uhj6AO823_kwHg9+SJK6ar=e+rGxFA@mail.gmail.com>
-Subject: Re: [PATCH] component: Move host device to end of device lists on binding
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Russell King <rmk+kernel@arm.linux.org.uk>,
-        Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 10 May 2021 15:10:53 -0400
+Received: from tusharsu-Ubuntu.lan (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B23F520B7178;
+        Mon, 10 May 2021 12:09:47 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B23F520B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1620673788;
+        bh=1oQQMwGQg2uKxJ4eZAGjdrgzZTTEUgAfc+6z1nJWyuA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=M/GbmKsX2cqpZQaOEfj5qMvxuT7ppdEM3TFroKU4zrXZg7Y0zxkfifVbNbbrdynjX
+         aLAFOK9uTWwD1JjQg+YjMXw1CItzKPbidhSbgI/VN330180p5QwRd5mOejIqj23buZ
+         wI1rIYxVKOo9iD+kFoXwclV8JUxHOz6you+AKUMw=
+From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
+To:     zohar@linux.ibm.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pvorel@suse.cz
+Subject: [PATCH v4] IMA: support for duplicate measurement records
+Date:   Mon, 10 May 2021 12:09:39 -0700
+Message-Id: <20210510190939.28279-1-tusharsu@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Daniel Vetter (2021-05-10 11:26:40)
-> On Mon, May 10, 2021 at 7:52 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > The device list now has msm, i2c, bridge in that order. When we go to
-> > system wide shutdown the bridge is shutdown first, then the i2c bus, and
-> > then msm calls drm_atomic_helper_shutdown(). That tries to call the i2c
-> > bridge ops because it's attached to the end of the DSI encoder and
-> > things don't go well because i2c is gone. This patch fixes the order of
-> > the list so that msm is moved on the device list after all the
-> > components that make up the aggregate device have probed. This only
-> > works to move the aggregate device after the i2c bridge because the
-> > msm_dsi_host_register() function won't return success until the bridge
-> > device is probed.
->
-> Ah I think I get this now. There is indeed a design problem:
-> component.c only has bind/unbind hooks for all its things. Which means
-> driver load/unload will work correctly because in your above sequence:
->
-> 1. drm_brige unbinds
-> -> this triggers the unbind of the entire aggregate of components
-> 2. i2c unbinds
-> 3. msm unbinds, but there's nothing to clean up anymore except the
-> aggregate/master struct
+IMA measures contents of a given file/buffer/critical-data record,
+and properly re-measures it on change.  However, IMA does not measure
+the duplicate value for a given record, since TPM extend is a very
+expensive operation.  For example, if the record changes from value
+'v#1' to 'v#2', and then back to 'v#1', IMA will not measure and log
+the last change to 'v#1', since the hash of 'v#1' for that record is
+already present in the IMA htable.  This limits the ability of an
+external attestation service to accurately determine the current state
+of the system.  The service would incorrectly conclude that the latest
+value of the given record on the system is 'v#2', and act accordingly.
 
-Yes. I just tried this though and it didn't work, so I suspect there are
-bugs in bridge unbind. Another rabbit hole.
+Define and use a new Kconfig option IMA_DISABLE_HTABLE to permit
+duplicate records in the IMA measurement list.
 
->
-> Now for runtime pm this also all works out, because each component
-> grabs the right runtime pm references. But for the system-wide pm
-> changes, where we rely on the device list order to make sure things
-> happen in the right way, it all blows up.
->
-> 1. drm_bringe shutdown
-> 2. i2c shutdown
-> 3. msm shutdown, and with very sad thrombones because we blow up
->
-> I think the right fix is to make component.c more of  a driver model
-> thing, which probably means either the aggregate must get tied closer
-> to the main struct device, or it needs to gain its own struct device.
-> Or minimally at least, the aggregate needs to gain an entire set of
-> pm_ops, which gets called in the right order if any of the component's
-> pm_ops gets called. Wiring that all up will be major surgery I think.
+In addition to the duplicate measurement records described above,
+other duplicate file measurement records may be included in the log,
+when CONFIG_IMA_DISABLE_HTABLE=y.
+For example,
+    - i_version is not enabled,
+    - i_generation changed,
+    - an inode is evicted from dcache etc.
 
-Yes the root of the problem is that the aggregate device is not part of
-the kernel's driver model. It's basically a pair of probe and remove
-functions and nothing else.
+Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+---
+Change Log v4:
+ - Incorporated feedback from Mimi on patch description.
+ - Tested more use cases for i_version, i_generation, and dcache.
 
->
-> I guess another option would be trying to figure out how the aggreate
-> registration could fail with EPROBE_DEFER until all the parts are
-> there, to guarantee the right ordering. Not sure that will work with
-> the current component users though.
+Change Log v3:
+ - Incorporated feedback from Mimi on v2.
+ - Updated patch title and description to make it generic.
+ - Changed config description word 'data' to 'records'.
+ - Tested use cases for boot param "ima_policy=tcb".
 
-I had that written up and it worked for me but I was concerned it would
-break other users, plus it didn't feel correct to defer probe just
-because the components weren't probed yet. The aggregate device wasn't
-waiting for the components to probe, so why change that? For msm it led
-to more work too, because we have some child devices that are removed if
-the aggregate device fails to probe, meaning we go through a few cycles
-of add/remove of the components this way. If the aggregate doesn't defer
-probe then we can avoid the other components adding/removing over and
-over again until the final component, DSI that is waiting for the
-bridge, can probe.
+Change Log v2:
+ - Incorporated feedback from Mimi on v1.
+ - The fix is not just applicable to measurement of critical data,
+   it now applies to other buffers and file data as well.
+ - the fix is driven by a Kconfig option IMA_DISABLE_HTABLE, rather
+   than a IMA policy condition - allow_dup.
 
-That's why I opted to move the device on the list to the tail. I'm
-hoping that most component users (which is basically drm?) don't do much
-with the device they're using to host the aggregate device besides tell
-drm that the display pipeline is here now. Everything else would be in
-the bind/unbind callbacks. If there was a 'struct device', or maybe a
-'struct class', that was associated with the whole display pipeline and
-aggregate device we could attach the pm ops to that. Would 'struct
-drm_device' be that? If yes we could make some drm functions that let
-you attach PM ops to a struct device inside of that and make it a child
-of the device that calls drm_dev_alloc().
+ security/integrity/ima/Kconfig     | 7 +++++++
+ security/integrity/ima/ima_queue.c | 5 +++--
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
->
-> > It's an interesting idea to trigger shutdown when the component device
-> > is unbound. Are you suggesting that the i2c bridge device have a
-> > 'shutdown' callback, that essentially removes the bridge from the
-> > encoder chain via mipi_dsi_detach() and then drm_bridge_remove()?
-> > Presumably that would somehow tell the DSI encoder that it should stop
-> > trying to use the i2c bridge and then drm_atomic_helper_shutdown()
-> > wouldn't try to traverse beyond the DSI to shut things down.
->
-> Nope, we don't want to unbind the driver on shutdown. I somehow
-> thought you're dying in there, which is why I wondered what's going
-> on. But since you're dying in pm_ops->shutdown, that's a different
-> thing.
+diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kconfig
+index 12e9250c1bec..d0ceada99243 100644
+--- a/security/integrity/ima/Kconfig
++++ b/security/integrity/ima/Kconfig
+@@ -334,3 +334,10 @@ config IMA_SECURE_AND_OR_TRUSTED_BOOT
+        help
+           This option is selected by architectures to enable secure and/or
+           trusted boot based on IMA runtime policies.
++
++config IMA_DISABLE_HTABLE
++	bool "Disable htable to allow measurement of duplicate records"
++	depends on IMA
++	default n
++	help
++	   This option disables htable to allow measurement of duplicate records.
+diff --git a/security/integrity/ima/ima_queue.c b/security/integrity/ima/ima_queue.c
+index c096ef8945c7..532da87ce519 100644
+--- a/security/integrity/ima/ima_queue.c
++++ b/security/integrity/ima/ima_queue.c
+@@ -168,7 +168,7 @@ int ima_add_template_entry(struct ima_template_entry *entry, int violation,
+ 	int result = 0, tpmresult = 0;
+ 
+ 	mutex_lock(&ima_extend_list_mutex);
+-	if (!violation) {
++	if (!violation && !IS_ENABLED(CONFIG_IMA_DISABLE_HTABLE)) {
+ 		if (ima_lookup_digest_entry(digest, entry->pcr)) {
+ 			audit_cause = "hash_exists";
+ 			result = -EEXIST;
+@@ -176,7 +176,8 @@ int ima_add_template_entry(struct ima_template_entry *entry, int violation,
+ 		}
+ 	}
+ 
+-	result = ima_add_digest_entry(entry, 1);
++	result = ima_add_digest_entry(entry,
++				      !IS_ENABLED(CONFIG_IMA_DISABLE_HTABLE));
+ 	if (result < 0) {
+ 		audit_cause = "ENOMEM";
+ 		audit_info = 0;
+-- 
+2.17.1
 
-I'm dying in msm_pdev_shutdown(), but yes pm_ops are similar.
-
->
-> > I will try it, but then I wonder about things like system wide
-> > suspend/resume too. The drm encoder chain would need to reimplement the
-> > logic for system wide suspend/resume so that any PM ops attached to the
-> > msm device run in the correct order. Right now the bridge PM ops will
-> > run, the i2c bus PM ops will run, and then the msm PM ops will run.
-> > After this change, the msm PM ops will run, the bridge PM ops will run,
-> > and then the i2c bus PM ops will run. It feels like that could be a
-> > problem if we're suspending the DSI encoder while the bridge is still
-> > active.
->
-> Yup suspend/resume has the exact same problem as shutdown.
-
-I think suspend/resume has the exact opposite problem. At least I think
-the correct order is to suspend the bridge, then the encoder, i.e. DSI,
-like is happening today. It looks like drm_atomic_helper_shutdown()
-operates from the top down when we want bottom up? I admit I have no
-idea what is supposed to happen here.
