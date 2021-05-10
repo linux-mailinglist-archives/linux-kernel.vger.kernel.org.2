@@ -2,83 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CEF377C61
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 08:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F623377C62
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 08:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbhEJGio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 02:38:44 -0400
-Received: from lucky1.263xmail.com ([211.157.147.134]:50254 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbhEJGin (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 02:38:43 -0400
-Received: from localhost (unknown [192.168.167.130])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 41CF7C8603;
-        Mon, 10 May 2021 14:37:37 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P29694T140717190006528S1620628656593974_;
-        Mon, 10 May 2021 14:37:37 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <e409584a888479cdfcdec1650aab20fe>
-X-RL-SENDER: jay.xu@rock-chips.com
-X-SENDER: xjq@rock-chips.com
-X-LOGIN-NAME: jay.xu@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-RCPT-COUNT: 7
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jianqun Xu <jay.xu@rock-chips.com>
-To:     heiko@sntech.de, linus.walleij@linaro.org, robh+dt@kernel.org
-Cc:     linux-gpio@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Jianqun Xu <jay.xu@rock-chips.com>
-Subject: [PATCH 7/7] gpio/rockchip: drop irq_gc_lock/irq_gc_unlock for irq set type
-Date:   Mon, 10 May 2021 14:37:34 +0800
-Message-Id: <20210510063734.506063-1-jay.xu@rock-chips.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210510063602.505829-1-jay.xu@rock-chips.com>
-References: <20210510063602.505829-1-jay.xu@rock-chips.com>
+        id S230236AbhEJGiq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 10 May 2021 02:38:46 -0400
+Received: from mga03.intel.com ([134.134.136.65]:46553 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230197AbhEJGim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 02:38:42 -0400
+IronPort-SDR: f61N0gRtyAsotoQWLXHhRo33GXcV+vjq3y9RtD1lBY6JHmO8p/o9F6dswkgfl6yZIOB5GEdMct
+ O7qwy9DKYodQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="199174553"
+X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
+   d="scan'208";a="199174553"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2021 23:37:38 -0700
+IronPort-SDR: NxCwymvFZvh6DxYRcDjbhoByrIsM6+fQXxNhK94nJfHX0IdPCsw4ts1ndVbN+VHa4/N4LKfGkq
+ bl0o/RCNExCg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
+   d="scan'208";a="467974727"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga002.fm.intel.com with ESMTP; 09 May 2021 23:37:38 -0700
+Received: from shsmsx606.ccr.corp.intel.com (10.109.6.216) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Sun, 9 May 2021 23:37:37 -0700
+Received: from shsmsx603.ccr.corp.intel.com (10.109.6.143) by
+ SHSMSX606.ccr.corp.intel.com (10.109.6.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 10 May 2021 14:37:35 +0800
+Received: from shsmsx603.ccr.corp.intel.com ([10.109.6.143]) by
+ SHSMSX603.ccr.corp.intel.com ([10.109.6.143]) with mapi id 15.01.2106.013;
+ Mon, 10 May 2021 14:37:35 +0800
+From:   "Zhang, Rui" <rui.zhang@intel.com>
+To:     Shujun Wang <wsj20369@163.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] Revert "ACPI: power: Turn off unused power resources
+ unconditionally"
+Thread-Topic: [PATCH] Revert "ACPI: power: Turn off unused power resources
+ unconditionally"
+Thread-Index: AQHXPb5+qq82JOqVIEyyCWhpAV7v56rcT9ZA
+Date:   Mon, 10 May 2021 06:37:35 +0000
+Message-ID: <0e480ceabe4d42d79bf49a1989c0f95f@intel.com>
+References: <20210430124224.6383-1-wsj20369@163.com>
+In-Reply-To: <20210430124224.6383-1-wsj20369@163.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.239.127.36]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There has spin lock for irq set type already, so drop irq_gc_lock and
-irq_gc_unlock.
+Hi, Shujun,
 
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
----
- drivers/gpio/gpio-rockchip.c | 2 --
- 1 file changed, 2 deletions(-)
+I'm experiencing similar problem, and it should be a BIOS problem, which can be fixed by a customized DSDT.
+Can you please attach the full acpidump output on this machine? I just want to make sure if it is the same problem.
 
-diff --git a/drivers/gpio/gpio-rockchip.c b/drivers/gpio/gpio-rockchip.c
-index 048e7eecddba..c9c55614bbef 100644
---- a/drivers/gpio/gpio-rockchip.c
-+++ b/drivers/gpio/gpio-rockchip.c
-@@ -406,7 +406,6 @@ static int rockchip_irq_set_type(struct irq_data *d, unsigned int type)
- 		irq_set_handler_locked(d, handle_level_irq);
- 
- 	raw_spin_lock_irqsave(&bank->slock, flags);
--	irq_gc_lock(gc);
- 
- 	level = rockchip_gpio_readl(bank, bank->gpio_regs->int_type);
- 	polarity = rockchip_gpio_readl(bank, bank->gpio_regs->int_polarity);
-@@ -461,7 +460,6 @@ static int rockchip_irq_set_type(struct irq_data *d, unsigned int type)
- 	rockchip_gpio_writel(bank, level, bank->gpio_regs->int_type);
- 	rockchip_gpio_writel(bank, polarity, bank->gpio_regs->int_polarity);
- out:
--	irq_gc_unlock(gc);
- 	raw_spin_unlock_irqrestore(&bank->slock, flags);
- 
- 	return ret;
--- 
-2.25.1
+Thanks,
+rui
 
-
+> -----Original Message-----
+> From: Shujun Wang <wsj20369@163.com>
+> Sent: Friday, April 30, 2021 8:42 PM
+> To: rjw@rjwysocki.net; lenb@kernel.org; linux-acpi@vger.kernel.org; linux-
+> kernel@vger.kernel.org
+> Cc: Shujun Wang <wsj20369@163.com>
+> Subject: [PATCH] Revert "ACPI: power: Turn off unused power resources
+> unconditionally"
+> 
+> This reverts commit 7e4fdeafa61f2b653fcf9678f09935e55756aed2.
+> It may cause some NVMe device probes to fail, and the system may get stuck
+> when using an NVMe device as the root filesystem.
+> 
+> In the function nvme_pci_enable(struct nvme_dev *dev), as shown below,
+> readl(NVME_REG_CSTS) always returns -1 with the commit, which results in
+> the probe failed.
+> 
+>   if (readl(dev->bar + NVME_REG_CSTS) == -1) {
+> 	result = -ENODEV;
+> 	goto disable;
+>   }
+> 
+> dmesg:
+>   [    1.106280] nvme 0000:04:00.0: platform quirk: setting simple suspend
+>   [    1.109111] nvme nvme0: pci function 0000:04:00.0
+>   [    1.113066] nvme 0000:04:00.0: enabling device (0000 -> 0002)
+>   [    1.121040] nvme nvme0: Removing after probe failure status: -19
+> 
+> lspci:
+>   Non-Volatile memory controller: KIOXIA Corporation Device 0001
+> 
+> device uevent:
+>   DRIVER=nvme
+>   PCI_CLASS=10802
+>   PCI_ID=1E0F:0001
+>   PCI_SUBSYS_ID=1E0F:0001
+>   PCI_SLOT_NAME=0000:04:00.0
+>   MODALIAS=pci:v00001E0Fd00000001sv00001E0Fsd00000001bc01sc08i02
+> 
+> This patch was tested in Lenovo Thinkpad X1.
+> 
+> Signed-off-by: Shujun Wang <wsj20369@163.com>
+> ---
+>  drivers/acpi/power.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/acpi/power.c b/drivers/acpi/power.c index
+> 56102eaaa2da..8bf10abeb2e0 100644
+> --- a/drivers/acpi/power.c
+> +++ b/drivers/acpi/power.c
+> @@ -1004,9 +1004,18 @@ void
+> acpi_turn_off_unused_power_resources(void)
+>  	mutex_lock(&power_resource_list_lock);
+> 
+>  	list_for_each_entry_reverse(resource, &acpi_power_resource_list,
+> list_node) {
+> +		int result, state;
+> +
+>  		mutex_lock(&resource->resource_lock);
+> 
+> -		if (!resource->ref_count) {
+> +		result = acpi_power_get_state(resource->device.handle,
+> &state);
+> +		if (result) {
+> +			mutex_unlock(&resource->resource_lock);
+> +			continue;
+> +		}
+> +
+> +		if (state == ACPI_POWER_RESOURCE_STATE_ON
+> +		    && !resource->ref_count) {
+>  			dev_info(&resource->device.dev, "Turning OFF\n");
+>  			__acpi_power_off(resource);
+>  		}
+> --
+> 2.25.1
 
