@@ -2,134 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98015379128
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23A2379141
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234418AbhEJOpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37832 "EHLO
+        id S232119AbhEJOuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233098AbhEJOnB (ORCPT
+        with ESMTP id S239758AbhEJOs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:43:01 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F06C08EAC9
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:01:50 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id o16so20959107ljp.3
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:01:49 -0700 (PDT)
+        Mon, 10 May 2021 10:48:29 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF857C0611F0
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:03:50 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id m124so13330758pgm.13
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:03:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=DQsuL10ttGgvUSSdwEEABCcNLhZF92QzGWTDfsTdZC0=;
-        b=qNtWaLjGIXQMeTIChrMNYPp2/WjHnGPearQQprE05w3lsIY390FY2r1cFDsNdyxCNZ
-         jrXtwIa2MpTAokF2DjIfBEnGEnFcNeKYhs/jcoPOwoWKck8/JKhBYwPkLF+7hPxoCSie
-         WvdtEleVqiDOuLhvesR3tOU4j8ErY0Hxzn6dCO2MZ8Pr0I7BabiZpd1qQwKAE/+hxSY3
-         nknoLINClx20aEJImVjqx37XthuTT1uHfzMX2Tt5c37QBi00j991nCh0BrlPoRevPo55
-         I4W84RAKkx+qkHsUG7mmdZpFhUW4jCYGkFJ0Nxhg+ZFFjj6pOIzn5jPKD89sKNyn1/xB
-         z6kg==
+        bh=vdSORtAfUIV+iX7fRj6W8/weTOPW870A7GgAibxGeIM=;
+        b=DVCJtZs5JHiZvx5Eo04ZIV8NCwsBgcXsVhZvoQcHbcNgTfh99mqZ6ID4eJS5kxYq/R
+         fS3cXw0+ea2IRDAUlfEEU51zyGqdL+zx4TqwYwjaCW2bpDmLR5t5OPrkSmxoVxKmvxk3
+         rzTjZoW9MjIIp2HYbwiW2A4R8cMJYhQCbYAfFnhGvMpgQoQuOJUXXfFoAQaBzJKZlVB1
+         w3EVmrj3OAlHDU0fgDKfvkgMK/fOIuLJ6KcvFh2VPrjda9S6BepPvhp2pkWkdDJM96Xq
+         HIEsUIgblY7FOTPlrQrxdOrgtouAAV/3srinIEEikjfn+iqBIFMi9H8N4ODwOVjPc/Dx
+         +O+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DQsuL10ttGgvUSSdwEEABCcNLhZF92QzGWTDfsTdZC0=;
-        b=E9uz84M19LkgPiKYYdxF6pmXIJVIzrVvKmd7ibcPsMAH+nDRQc6zPLvzPCw4xYAvq5
-         3zrppFbHBzrZatHRuIDOuacQZIySsO5THwLJ9+0yzzLE7OrnUJlcRFNy7sHmRE3KT+4g
-         gssOG4jrCdPynrxgRMK/J126rH3XXlu+2uO30KTtfcsgw0ft5qkH3mLUvAB8u8eLInp+
-         QDk94En1cYcH0XaxE7axtvDx6JkCja7A7lQzb0fcbVCYtqbUnz4NdaMo9VI6qRK8bq53
-         ii3b23LXx+1/fqz/GkCFWw6CHVVWSLg8oRCBIUhr48frT1aQH8qHIMNspGGqqexi/dlh
-         RtlA==
-X-Gm-Message-State: AOAM530tC2PGsYH+oDAWHrJu53umGaE5322dIdTfhSoLuyMHSbKEDstR
-        m6n4xiR704krs4rSapACI/2kcnmlHDeJkas66JZ3CQ==
-X-Google-Smtp-Source: ABdhPJzTAghL8Sdb1Gw9MPXcbmOW24XGnOJcMCgtYTxm5f97ovoej8TmEINBWT+FiI25beskbGWOdasTt0AKNmWY6l8=
-X-Received: by 2002:a05:651c:22b:: with SMTP id z11mr19730326ljn.182.1620655306896;
- Mon, 10 May 2021 07:01:46 -0700 (PDT)
+        bh=vdSORtAfUIV+iX7fRj6W8/weTOPW870A7GgAibxGeIM=;
+        b=jsTYUayQSVtPyqOUnL+pGC8hDKWPftME7DA9HFX4J6Aoeec99K8HjPR4cpib7VQMVc
+         REj4yWRvqeCzc+zqsS2HAeJO7y7/wHp0Yz+dDxxgyoZskd6r6He/NKXu6xNJ1KCRwiNS
+         1MzsMfQGx2uFyHBuvY7uhpfMUH6M4mKBpwakEvj3vQSB03jYeWcvE32B3M7ep9GAEmgE
+         FYfaT/Lczzd53yBfBxes81O/b1pQFogj/Tg1F5a5HnpGgYdUI+nOmtccwwr+3MQl0XKL
+         M5KE3VQgFvsOg3QSQM3hM1Rtvj7LZQe6Jn6NYN/ITH1tZESNbx1nrQhmPl2zqqImkcp3
+         jMbg==
+X-Gm-Message-State: AOAM533gr7w9FX4fO46f0XqLmUJ6vFRL2dlU/xvIMHurM7AXKNdo4U2y
+        u5/oDnyWO+2itO12AoaBiDzwi7nJ8MPXz0i9D5o=
+X-Google-Smtp-Source: ABdhPJw1IZ/mGWqMpJ20qJVhgD7MsEuGTAXDrHNr09OeF8WNh9ISOaimZyiFUrxDQl1AIK2XKFRStC8FLOYBT832rEM=
+X-Received: by 2002:a63:79c3:: with SMTP id u186mr21921333pgc.203.1620655430348;
+ Mon, 10 May 2021 07:03:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210319121357.255176-1-huobean@gmail.com> <20210319121357.255176-3-huobean@gmail.com>
- <CAPDyKFrU591aeH5GyuuQW8tPeNc9wav=t8wqF1EdTBbCc9xheg@mail.gmail.com>
- <79ec60974875d4ac17589ea4575e36ec1204f881.camel@gmail.com> <9b7ecf8a74e7e04174181aed0c5f0e356d0ed280.camel@gmail.com>
-In-Reply-To: <9b7ecf8a74e7e04174181aed0c5f0e356d0ed280.camel@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 10 May 2021 16:01:10 +0200
-Message-ID: <CAPDyKFqd03GZVtxmoiY3NFS_EggLQLMGk62AneZLoOn_20BDJQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] mmc: cavium: Remove redundant if-statement checkup
-To:     Bean Huo <huobean@gmail.com>
-Cc:     rric@kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
+References: <202105102120.WFbgbP3I-lkp@intel.com>
+In-Reply-To: <202105102120.WFbgbP3I-lkp@intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 10 May 2021 17:03:34 +0300
+Message-ID: <CAHp75Ve556kxeqMQAOePTK8jt7--zRiqJHUi5-A=wWgcajAXMQ@mail.gmail.com>
+Subject: Re: drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:306:26:
+ sparse: sparse: incorrect type in argument 1 (different address spaces)
+To:     kernel test robot <lkp@intel.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        kbuild-all@lists.01.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Bean Huo (beanhuo)" <beanhuo@micron.com>,
-        "# 4.0+" <stable@vger.kernel.org>
+        Michael Ellerman <mpe@ellerman.id.au>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Apr 2021 at 22:30, Bean Huo <huobean@gmail.com> wrote:
+On Mon, May 10, 2021 at 4:31 PM kernel test robot <lkp@intel.com> wrote:
 >
-> On Fri, 2021-03-19 at 16:42 +0100, Bean Huo wrote:
-> > On Fri, 2021-03-19 at 15:09 +0100, Ulf Hansson wrote:
-> >
-> > > On Fri, 19 Mar 2021 at 13:14, Bean Huo <huobean@gmail.com> wrote:
-> > > > From: Bean Huo <beanhuo@micron.com>
-> > > > Currently, we have two ways to issue multiple-block read/write
-> > > > the
-> > > > command to the eMMC. One is by normal IO request path fs->block-
-> > > > > mmc.
-> > > > Another one is that we can issue multiple-block read/write
-> > > > through
-> > > > MMC ioctl interface. For the first path, mrq->stop, and mrq-
-> > > > >stop-
-> > > > > opcode
-> > > > will be initialized in mmc_blk_data_prep(). However, for the
-> > > > second
-> > > > IO
-> > > > path, mrq->stop is not initialized since it is a pre-defined
-> > > > multiple
-> > > > blocks read/write.
-> > > As a matter of fact this way is also supported for the regular
-> > > block
-> > > I/O path. To make the mmc block driver to use it, mmc host drivers
-> > > need to announce that it's supported by setting MMC_CAP_CMD23.
-> > > It looks like that is what your patch should be targeted towards,
-> > > can
-> > > you have a look at this instead?
-> >
-> >
-> > Hi Ulf,
-> >
-> > Thanks for your comments. I will look at that as your suggestion.
-> >
-> > The patch [1/2] is accepted, so I will just update this patch to
-> >
-> > the next version.
-> >
-> >
-> >
-> > Kind regards,
-> >
-> > Bean
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   6efb943b8616ec53a5e444193dccf1af9ad627b5
+> commit: 894fa235eb4ca0bfa692dbe4932c2f940cdc8c1e powerpc: inline iomap accessors
+> date:   5 months ago
+> config: powerpc-randconfig-s032-20210510 (attached as .config)
+> compiler: powerpc-linux-gcc (GCC) 9.3.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # apt-get install sparse
+>         # sparse version: v0.6.3-341-g8af24329-dirty
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=894fa235eb4ca0bfa692dbe4932c2f940cdc8c1e
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 894fa235eb4ca0bfa692dbe4932c2f940cdc8c1e
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' W=1 ARCH=powerpc
 >
->
-> Hi Uffe,
-> Could you please firstly accept this patch? let the customer update
-> their kernel. As I tried to develop the next version of the patch
-> according to your suggestion, more changes will be involved. Also, no
-> matter how to make the change general, below mrq->stop checkup should
-> be deleted since it is obsolete. In the data transmission completion
-> interrupt, mrq->stop will be checked again.
->
-> -       if (!mrq->data || !mrq->data->sg || !mrq->data->sg_len ||
-> -           !mrq->stop || mrq->stop->opcode != MMC_STOP_TRANSMISSION) {
-> +       if (!mrq->data || !mrq->data->sg || !mrq->data->sg_len) {
->
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 
-Well, I don't think the above checks are incorrect. Instead I think it
-points out that the cavium mmc driver lacks support for CMD23, while
-only open ended data transfers are supported.
+Okay, I will rebase on top of v5.13-rc1 my patch series and will add
+the above line to certain patches in it.
 
-The proper way forward is instead to implement CMD23 support to the
-cavium mmc driver. In the same patch adding that support, you should
-be able to remove the above checks.
+> sparse warnings: (new ones prefixed by >>)
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:2135:41: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *reg @@     got unsigned int [noderef] __iomem * @@
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:2135:41: sparse:     expected void *reg
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:2135:41: sparse:     got unsigned int [noderef] __iomem *
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:157:33: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned short [usertype] uid_hi @@     got restricted __be16 [usertype] @@
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:157:33: sparse:     expected unsigned short [usertype] uid_hi
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:157:33: sparse:     got restricted __be16 [usertype]
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:157:45: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned int [usertype] uid_lo @@     got restricted __be32 [usertype] @@
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:157:45: sparse:     expected unsigned int [usertype] uid_lo
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:157:45: sparse:     got restricted __be32 [usertype]
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:157:56: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected unsigned short [usertype] seqid @@     got restricted __be16 [usertype] @@
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:157:56: sparse:     expected unsigned short [usertype] seqid
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:157:56: sparse:     got restricted __be16 [usertype]
+> >> drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:306:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *reg @@
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:306:26: sparse:     expected void const volatile [noderef] __iomem *addr
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:306:26: sparse:     got void *reg
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:336:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *reg @@     got unsigned int [noderef] __iomem * @@
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:336:33: sparse:     expected void *reg
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:336:33: sparse:     got unsigned int [noderef] __iomem *
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:343:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *reg @@     got unsigned int [noderef] __iomem * @@
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:343:33: sparse:     expected void *reg
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:343:33: sparse:     got unsigned int [noderef] __iomem *
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:356:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *reg @@     got unsigned int [noderef] __iomem * @@
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:356:33: sparse:     expected void *reg
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:356:33: sparse:     got unsigned int [noderef] __iomem *
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:397:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *reg @@     got unsigned int [noderef] __iomem * @@
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:397:33: sparse:     expected void *reg
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:397:33: sparse:     got unsigned int [noderef] __iomem *
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:466:41: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *reg @@     got unsigned int [noderef] __iomem * @@
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:466:41: sparse:     expected void *reg
+>    drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:466:41: sparse:     got unsigned int [noderef] __iomem *
+>
+> vim +306 drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
+>
+> 77555ee7228234 drivers/net/pch_gbe/pch_gbe_main.c                   Masayuki Ohtake   2010-09-21  294
+> 77555ee7228234 drivers/net/pch_gbe/pch_gbe_main.c                   Masayuki Ohtake   2010-09-21  295  /**
+> 77555ee7228234 drivers/net/pch_gbe/pch_gbe_main.c                   Masayuki Ohtake   2010-09-21  296   * pch_gbe_wait_clr_bit - Wait to clear a bit
+> 77555ee7228234 drivers/net/pch_gbe/pch_gbe_main.c                   Masayuki Ohtake   2010-09-21  297   * @reg: Pointer of register
+> d0ea5cbdc286de drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c Jesse Brandeburg  2020-09-25  298   * @bit: Busy bit
+> 77555ee7228234 drivers/net/pch_gbe/pch_gbe_main.c                   Masayuki Ohtake   2010-09-21  299   */
+> 191cc687740834 drivers/net/pch_gbe/pch_gbe_main.c                   stephen hemminger 2010-10-15  300  static void pch_gbe_wait_clr_bit(void *reg, u32 bit)
+> 77555ee7228234 drivers/net/pch_gbe/pch_gbe_main.c                   Masayuki Ohtake   2010-09-21  301  {
+> 77555ee7228234 drivers/net/pch_gbe/pch_gbe_main.c                   Masayuki Ohtake   2010-09-21  302   u32 tmp;
+> 453ca931f51516 drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c Andy Shevchenko   2013-06-28  303
+> 77555ee7228234 drivers/net/pch_gbe/pch_gbe_main.c                   Masayuki Ohtake   2010-09-21  304   /* wait busy */
+> 77555ee7228234 drivers/net/pch_gbe/pch_gbe_main.c                   Masayuki Ohtake   2010-09-21  305   tmp = 1000;
+> 77555ee7228234 drivers/net/pch_gbe/pch_gbe_main.c                   Masayuki Ohtake   2010-09-21 @306   while ((ioread32(reg) & bit) && --tmp)
+> 77555ee7228234 drivers/net/pch_gbe/pch_gbe_main.c                   Masayuki Ohtake   2010-09-21  307           cpu_relax();
+> 77555ee7228234 drivers/net/pch_gbe/pch_gbe_main.c                   Masayuki Ohtake   2010-09-21  308   if (!tmp)
+> 77555ee7228234 drivers/net/pch_gbe/pch_gbe_main.c                   Masayuki Ohtake   2010-09-21  309           pr_err("Error: busy bit is not cleared\n");
+> 77555ee7228234 drivers/net/pch_gbe/pch_gbe_main.c                   Masayuki Ohtake   2010-09-21  310  }
+> 124d770a6459be drivers/net/pch_gbe/pch_gbe_main.c                   Toshiharu Okada   2011-09-01  311
+>
+> :::::: The code at line 306 was first introduced by commit
+> :::::: 77555ee7228234257957fd54daa0b69178906320 net: Add Gigabit Ethernet driver of Topcliff PCH
+>
+> :::::: TO: Masayuki Ohtake <masa-korg@dsn.okisemi.com>
+> :::::: CC: David S. Miller <davem@davemloft.net>
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-Kind regards
-Uffe
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
