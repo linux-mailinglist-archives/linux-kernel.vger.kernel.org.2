@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9D1378CE7
+	by mail.lfdr.de (Postfix) with ESMTP id E0FAC378CE8
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243076AbhEJM3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:29:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46276 "EHLO mail.kernel.org"
+        id S1343983AbhEJM36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:29:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236747AbhEJLIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:08:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB9A8619F1;
-        Mon, 10 May 2021 11:03:44 +0000 (UTC)
+        id S233324AbhEJLI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:08:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30D8161A1D;
+        Mon, 10 May 2021 11:04:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644625;
-        bh=/i7twi6+kmLwdQCEga9hbGTxL+7/51Mn2FVRvzRAG8Y=;
+        s=korg; t=1620644665;
+        bh=hFJ4e1Trr9DHNcMpjLkrcuRY5tumV4fL07Gqx5LGkak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iZca1P7awxY/wIFbFzRunxXNXoV9IJsizO89uFDLsJFH4HtB8Im4PJsJkYOLcxTlK
-         bXQGfkGxwhsSYMzlQGUe3jj/tJiAboxR+ogOECBpjjLqv9lfWzfK15D8561sC1oVIs
-         WDXsVUu56XzXeZrmZKZr/TTSPO91BJsR675peszQ=
+        b=Dzb04j9OTV86jgnXUThYWdzq4DL1RUTYBq0fNORGYalybjOhx0UCg9bvrq1I/0vHA
+         XXsV3eV5K0ejENVNbE84fhSarffBbfMH/Csmy5t1FdQ9WrqPcNKqw2E3YFyfTWAHSA
+         E0hFGZMTEMz3i+x9OfkLGwOlUf/pm8tiYL2xHFLE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Arunpravin <Arunpravin.PaneerSelvam@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 159/384] drm/amd/pm/swsmu: clean up user profile function
-Date:   Mon, 10 May 2021 12:19:08 +0200
-Message-Id: <20210510102020.121765436@linuxfoundation.org>
+Subject: [PATCH 5.12 174/384] extcon: arizona: Fix some issues when HPDET IRQ fires after the jack has been unplugged
+Date:   Mon, 10 May 2021 12:19:23 +0200
+Message-Id: <20210510102020.619018608@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -42,141 +43,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arunpravin <Arunpravin.PaneerSelvam@amd.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit d8cce9306801cfbf709055677f7896905094ff95 ]
+[ Upstream commit c309a3e8793f7e01c4a4ec7960658380572cb576 ]
 
-Remove unnecessary comments, enable restore mode using
-'|=' operator, fixes the alignment to improve the code
-readability.
+When the jack is partially inserted and then removed again it may be
+removed while the hpdet code is running. In this case the following
+may happen:
 
-v2: Move all restoration flag check to bitwise '&' operator
+1. The "JACKDET rise" or ""JACKDET fall" IRQ triggers
+2. arizona_jackdet runs and takes info->lock
+3. The "HPDET" IRQ triggers
+4. arizona_hpdet_irq runs, blocks on info->lock
+5. arizona_jackdet calls arizona_stop_mic() and clears info->hpdet_done
+6. arizona_jackdet releases info->lock
+7. arizona_hpdet_irq now can continue running and:
+7.1 Calls arizona_start_mic() (if a mic was detected)
+7.2 sets info->hpdet_done
 
-Signed-off-by: Arunpravin <Arunpravin.PaneerSelvam@amd.com>
-Reviewed-by: Evan Quan <evan.quan@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Step 7 is undesirable / a bug:
+7.1 causes the device to stay in a high power-state (with MICVDD enabled)
+7.2 causes hpdet to not run on the next jack insertion, which in turn
+    causes the EXTCON_JACK_HEADPHONE state to never get set
+
+This fixes both issues by skipping these 2 steps when arizona_hpdet_irq
+runs after the jack has been unplugged.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c | 34 ++++++++---------------
- 1 file changed, 12 insertions(+), 22 deletions(-)
+ drivers/extcon/extcon-arizona.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c b/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c
-index cd905e41080e..42c4dbe3e362 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c
-@@ -279,35 +279,25 @@ static void smu_set_user_clk_dependencies(struct smu_context *smu, enum smu_clk_
- 	if (smu->adev->in_suspend)
- 		return;
+diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
+index aae82db542a5..f7ef247de46a 100644
+--- a/drivers/extcon/extcon-arizona.c
++++ b/drivers/extcon/extcon-arizona.c
+@@ -601,7 +601,7 @@ static irqreturn_t arizona_hpdet_irq(int irq, void *data)
+ 	struct arizona *arizona = info->arizona;
+ 	int id_gpio = arizona->pdata.hpdet_id_gpio;
+ 	unsigned int report = EXTCON_JACK_HEADPHONE;
+-	int ret, reading;
++	int ret, reading, state;
+ 	bool mic = false;
  
--	/*
--	 * mclk, fclk and socclk are interdependent
--	 * on each other
--	 */
- 	if (clk == SMU_MCLK) {
--		/* reset clock dependency */
- 		smu->user_dpm_profile.clk_dependency = 0;
--		/* set mclk dependent clocks(fclk and socclk) */
- 		smu->user_dpm_profile.clk_dependency = BIT(SMU_FCLK) | BIT(SMU_SOCCLK);
- 	} else if (clk == SMU_FCLK) {
--		/* give priority to mclk, if mclk dependent clocks are set */
-+		/* MCLK takes precedence over FCLK */
- 		if (smu->user_dpm_profile.clk_dependency == (BIT(SMU_FCLK) | BIT(SMU_SOCCLK)))
- 			return;
- 
--		/* reset clock dependency */
- 		smu->user_dpm_profile.clk_dependency = 0;
--		/* set fclk dependent clocks(mclk and socclk) */
- 		smu->user_dpm_profile.clk_dependency = BIT(SMU_MCLK) | BIT(SMU_SOCCLK);
- 	} else if (clk == SMU_SOCCLK) {
--		/* give priority to mclk, if mclk dependent clocks are set */
-+		/* MCLK takes precedence over SOCCLK */
- 		if (smu->user_dpm_profile.clk_dependency == (BIT(SMU_FCLK) | BIT(SMU_SOCCLK)))
- 			return;
- 
--		/* reset clock dependency */
- 		smu->user_dpm_profile.clk_dependency = 0;
--		/* set socclk dependent clocks(mclk and fclk) */
- 		smu->user_dpm_profile.clk_dependency = BIT(SMU_MCLK) | BIT(SMU_FCLK);
- 	} else
--		/* add clk dependencies here, if any */
-+		/* Add clk dependencies here, if any */
- 		return;
- }
- 
-@@ -331,7 +321,7 @@ static void smu_restore_dpm_user_profile(struct smu_context *smu)
- 		return;
- 
- 	/* Enable restore flag */
--	smu->user_dpm_profile.flags = SMU_DPM_USER_PROFILE_RESTORE;
-+	smu->user_dpm_profile.flags |= SMU_DPM_USER_PROFILE_RESTORE;
- 
- 	/* set the user dpm power limit */
- 	if (smu->user_dpm_profile.power_limit) {
-@@ -354,8 +344,8 @@ static void smu_restore_dpm_user_profile(struct smu_context *smu)
- 				ret = smu_force_clk_levels(smu, clk_type,
- 						smu->user_dpm_profile.clk_mask[clk_type]);
- 				if (ret)
--					dev_err(smu->adev->dev, "Failed to set clock type = %d\n",
--							clk_type);
-+					dev_err(smu->adev->dev,
-+						"Failed to set clock type = %d\n", clk_type);
- 			}
- 		}
- 	}
-@@ -1777,7 +1767,7 @@ int smu_force_clk_levels(struct smu_context *smu,
- 
- 	if (smu->ppt_funcs && smu->ppt_funcs->force_clk_levels) {
- 		ret = smu->ppt_funcs->force_clk_levels(smu, clk_type, mask);
--		if (!ret && smu->user_dpm_profile.flags != SMU_DPM_USER_PROFILE_RESTORE) {
-+		if (!ret && !(smu->user_dpm_profile.flags & SMU_DPM_USER_PROFILE_RESTORE)) {
- 			smu->user_dpm_profile.clk_mask[clk_type] = mask;
- 			smu_set_user_clk_dependencies(smu, clk_type);
- 		}
-@@ -2034,7 +2024,7 @@ int smu_set_fan_speed_rpm(struct smu_context *smu, uint32_t speed)
- 	if (smu->ppt_funcs->set_fan_speed_percent) {
- 		percent = speed * 100 / smu->fan_max_rpm;
- 		ret = smu->ppt_funcs->set_fan_speed_percent(smu, percent);
--		if (!ret && smu->user_dpm_profile.flags != SMU_DPM_USER_PROFILE_RESTORE)
-+		if (!ret && !(smu->user_dpm_profile.flags & SMU_DPM_USER_PROFILE_RESTORE))
- 			smu->user_dpm_profile.fan_speed_percent = percent;
+ 	mutex_lock(&info->lock);
+@@ -614,12 +614,11 @@ static irqreturn_t arizona_hpdet_irq(int irq, void *data)
  	}
  
-@@ -2104,7 +2094,7 @@ int smu_set_power_limit(struct smu_context *smu, uint32_t limit)
+ 	/* If the cable was removed while measuring ignore the result */
+-	ret = extcon_get_state(info->edev, EXTCON_MECHANICAL);
+-	if (ret < 0) {
+-		dev_err(arizona->dev, "Failed to check cable state: %d\n",
+-			ret);
++	state = extcon_get_state(info->edev, EXTCON_MECHANICAL);
++	if (state < 0) {
++		dev_err(arizona->dev, "Failed to check cable state: %d\n", state);
+ 		goto out;
+-	} else if (!ret) {
++	} else if (!state) {
+ 		dev_dbg(arizona->dev, "Ignoring HPDET for removed cable\n");
+ 		goto done;
+ 	}
+@@ -667,7 +666,7 @@ done:
+ 		gpio_set_value_cansleep(id_gpio, 0);
  
- 	if (smu->ppt_funcs->set_power_limit) {
- 		ret = smu->ppt_funcs->set_power_limit(smu, limit);
--		if (!ret && smu->user_dpm_profile.flags != SMU_DPM_USER_PROFILE_RESTORE)
-+		if (!ret && !(smu->user_dpm_profile.flags & SMU_DPM_USER_PROFILE_RESTORE))
- 			smu->user_dpm_profile.power_limit = limit;
+ 	/* If we have a mic then reenable MICDET */
+-	if (mic || info->mic)
++	if (state && (mic || info->mic))
+ 		arizona_start_mic(info);
+ 
+ 	if (info->hpdet_active) {
+@@ -675,7 +674,9 @@ done:
+ 		info->hpdet_active = false;
  	}
  
-@@ -2285,7 +2275,7 @@ int smu_set_fan_control_mode(struct smu_context *smu, int value)
+-	info->hpdet_done = true;
++	/* Do not set hp_det done when the cable has been unplugged */
++	if (state)
++		info->hpdet_done = true;
  
- 	if (smu->ppt_funcs->set_fan_control_mode) {
- 		ret = smu->ppt_funcs->set_fan_control_mode(smu, value);
--		if (!ret && smu->user_dpm_profile.flags != SMU_DPM_USER_PROFILE_RESTORE)
-+		if (!ret && !(smu->user_dpm_profile.flags & SMU_DPM_USER_PROFILE_RESTORE))
- 			smu->user_dpm_profile.fan_mode = value;
- 	}
- 
-@@ -2293,7 +2283,7 @@ int smu_set_fan_control_mode(struct smu_context *smu, int value)
- 
- 	/* reset user dpm fan speed */
- 	if (!ret && value != AMD_FAN_CTRL_MANUAL &&
--			smu->user_dpm_profile.flags != SMU_DPM_USER_PROFILE_RESTORE)
-+			!(smu->user_dpm_profile.flags & SMU_DPM_USER_PROFILE_RESTORE))
- 		smu->user_dpm_profile.fan_speed_percent = 0;
- 
- 	return ret;
-@@ -2335,7 +2325,7 @@ int smu_set_fan_speed_percent(struct smu_context *smu, uint32_t speed)
- 		if (speed > 100)
- 			speed = 100;
- 		ret = smu->ppt_funcs->set_fan_speed_percent(smu, speed);
--		if (!ret && smu->user_dpm_profile.flags != SMU_DPM_USER_PROFILE_RESTORE)
-+		if (!ret && !(smu->user_dpm_profile.flags & SMU_DPM_USER_PROFILE_RESTORE))
- 			smu->user_dpm_profile.fan_speed_percent = speed;
- 	}
- 
+ out:
+ 	mutex_unlock(&info->lock);
 -- 
 2.30.2
 
