@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D163786BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 185C7378A4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236780AbhEJLK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:10:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42076 "EHLO mail.kernel.org"
+        id S242093AbhEJLkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:40:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233456AbhEJKuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:50:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2891C619D0;
-        Mon, 10 May 2021 10:38:51 +0000 (UTC)
+        id S235040AbhEJK5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2D666195F;
+        Mon, 10 May 2021 10:51:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643132;
-        bh=szF3c9ShV5dLhia4AnTX0NjVXZj9kw1lman0nuAV8/A=;
+        s=korg; t=1620643882;
+        bh=UKmYwDYp+atKyBGY0j+F+SZeHkEihxOzjZeGSlNGlNo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xxUWnovD//94YYK3+h1D0uIW4UD9OGsEQRkmrnGZnsiHYLaWX8akiOJGQvp4shKHX
-         xs6371lBK2OrfarnIFCC1VHZMWDMtSoyLDjzEJfQf5T3iEM5VW1ZaAZ/qLUmVX0f2g
-         GnR20CkYnq3d0dgXCiT3ntFuq7DAHxK6uxv9GYv8=
+        b=b2rVZICuLugk3tBd0R05zZi+dAxj8HesK0ur+6UWEfaNph1N3bHr4Mq0Vl2bFoWPe
+         yApoB/3wEkFvzqoc7cGxEfrxDrZn3jkDc8070FnioysdzJX0aJnkividPXwnqO3Agg
+         +UzFymCFlFo0oYLaHb9l0WyAchKGanaXMPty+9P0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
-        Fangzhi Zuo <Jerry.Zuo@amd.com>,
-        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
-        Solomon Chiu <solomon.chiu@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 190/299] drm/amd/display: Fix debugfs link_settings entry
-Date:   Mon, 10 May 2021 12:19:47 +0200
-Message-Id: <20210510102011.222083052@linuxfoundation.org>
+Subject: [PATCH 5.11 198/342] media: vivid: update EDID
+Date:   Mon, 10 May 2021 12:19:48 +0200
+Message-Id: <20210510102016.631344424@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,99 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fangzhi Zuo <Jerry.Zuo@amd.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit c006a1c00de29e8cdcde1d0254ac23433ed3fee9 ]
+[ Upstream commit 443ec4bbc6116f6f492a7a1282bfd8422c862158 ]
 
-1. Catch invalid link_rate and link_count settings
-2. Call dc interface to overwrite preferred link settings, and wait
-until next stream update to apply the new settings.
+The EDID had a few mistakes as reported by edid-decode:
 
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Fangzhi Zuo <Jerry.Zuo@amd.com>
-Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
-Acked-by: Solomon Chiu <solomon.chiu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Block 1, CTA-861 Extension Block:
+  Video Data Block: For improved preferred timing interoperability, set 'Native detailed modes' to 1.
+  Video Capability Data Block: S_PT is equal to S_IT and S_CE, so should be set to 0 instead.
+
+Fixed those.
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/media/test-drivers/vivid/vivid-core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-index 8cd646eef096..e02a55fc1382 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-@@ -150,7 +150,7 @@ static int parse_write_buffer_into_params(char *wr_buf, uint32_t wr_buf_size,
-  *
-  * --- to get dp configuration
-  *
-- * cat link_settings
-+ * cat /sys/kernel/debug/dri/0/DP-x/link_settings
-  *
-  * It will list current, verified, reported, preferred dp configuration.
-  * current -- for current video mode
-@@ -163,7 +163,7 @@ static int parse_write_buffer_into_params(char *wr_buf, uint32_t wr_buf_size,
-  * echo <lane_count>  <link_rate> > link_settings
-  *
-  * for example, to force to  2 lane, 2.7GHz,
-- * echo 4 0xa > link_settings
-+ * echo 4 0xa > /sys/kernel/debug/dri/0/DP-x/link_settings
-  *
-  * spread_spectrum could not be changed dynamically.
-  *
-@@ -171,7 +171,7 @@ static int parse_write_buffer_into_params(char *wr_buf, uint32_t wr_buf_size,
-  * done. please check link settings after force operation to see if HW get
-  * programming.
-  *
-- * cat link_settings
-+ * cat /sys/kernel/debug/dri/0/DP-x/link_settings
-  *
-  * check current and preferred settings.
-  *
-@@ -255,7 +255,7 @@ static ssize_t dp_link_settings_write(struct file *f, const char __user *buf,
- 	int max_param_num = 2;
- 	uint8_t param_nums = 0;
- 	long param[2];
--	bool valid_input = false;
-+	bool valid_input = true;
+diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
+index 0dc65ef3aa14..ca0ebf6ad9cc 100644
+--- a/drivers/media/test-drivers/vivid/vivid-core.c
++++ b/drivers/media/test-drivers/vivid/vivid-core.c
+@@ -205,13 +205,13 @@ static const u8 vivid_hdmi_edid[256] = {
+ 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+ 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x7b,
  
- 	if (size == 0)
- 		return -EINVAL;
-@@ -282,9 +282,9 @@ static ssize_t dp_link_settings_write(struct file *f, const char __user *buf,
- 	case LANE_COUNT_ONE:
- 	case LANE_COUNT_TWO:
- 	case LANE_COUNT_FOUR:
--		valid_input = true;
- 		break;
- 	default:
-+		valid_input = false;
- 		break;
- 	}
+-	0x02, 0x03, 0x3f, 0xf0, 0x51, 0x61, 0x60, 0x5f,
++	0x02, 0x03, 0x3f, 0xf1, 0x51, 0x61, 0x60, 0x5f,
+ 	0x5e, 0x5d, 0x10, 0x1f, 0x04, 0x13, 0x22, 0x21,
+ 	0x20, 0x05, 0x14, 0x02, 0x11, 0x01, 0x23, 0x09,
+ 	0x07, 0x07, 0x83, 0x01, 0x00, 0x00, 0x6d, 0x03,
+ 	0x0c, 0x00, 0x10, 0x00, 0x00, 0x3c, 0x21, 0x00,
+ 	0x60, 0x01, 0x02, 0x03, 0x67, 0xd8, 0x5d, 0xc4,
+-	0x01, 0x78, 0x00, 0x00, 0xe2, 0x00, 0xea, 0xe3,
++	0x01, 0x78, 0x00, 0x00, 0xe2, 0x00, 0xca, 0xe3,
+ 	0x05, 0x00, 0x00, 0xe3, 0x06, 0x01, 0x00, 0x4d,
+ 	0xd0, 0x00, 0xa0, 0xf0, 0x70, 0x3e, 0x80, 0x30,
+ 	0x20, 0x35, 0x00, 0xc0, 0x1c, 0x32, 0x00, 0x00,
+@@ -220,7 +220,7 @@ static const u8 vivid_hdmi_edid[256] = {
+ 	0x00, 0x00, 0x1a, 0x1a, 0x1d, 0x00, 0x80, 0x51,
+ 	0xd0, 0x1c, 0x20, 0x40, 0x80, 0x35, 0x00, 0xc0,
+ 	0x1c, 0x32, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00,
+-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63,
++	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x82,
+ };
  
-@@ -294,9 +294,9 @@ static ssize_t dp_link_settings_write(struct file *f, const char __user *buf,
- 	case LINK_RATE_RBR2:
- 	case LINK_RATE_HIGH2:
- 	case LINK_RATE_HIGH3:
--		valid_input = true;
- 		break;
- 	default:
-+		valid_input = false;
- 		break;
- 	}
- 
-@@ -310,10 +310,11 @@ static ssize_t dp_link_settings_write(struct file *f, const char __user *buf,
- 	 * spread spectrum will not be changed
- 	 */
- 	prefer_link_settings.link_spread = link->cur_link_settings.link_spread;
-+	prefer_link_settings.use_link_rate_set = false;
- 	prefer_link_settings.lane_count = param[0];
- 	prefer_link_settings.link_rate = param[1];
- 
--	dc_link_set_preferred_link_settings(dc, &prefer_link_settings, link);
-+	dc_link_set_preferred_training_settings(dc, &prefer_link_settings, NULL, link, true);
- 
- 	kfree(wr_buf);
- 	return size;
+ static int vidioc_querycap(struct file *file, void  *priv,
 -- 
 2.30.2
 
