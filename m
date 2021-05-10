@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09EC379A54
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AEBF379A56
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhEJWmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33604 "EHLO
+        id S231808AbhEJWms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbhEJWlz (ORCPT
+        with ESMTP id S231462AbhEJWl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:41:55 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30DDC0613ED;
-        Mon, 10 May 2021 15:40:48 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id x19so25775294lfa.2;
-        Mon, 10 May 2021 15:40:48 -0700 (PDT)
+        Mon, 10 May 2021 18:41:56 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC8AC06175F;
+        Mon, 10 May 2021 15:40:49 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2so25752213lft.4;
+        Mon, 10 May 2021 15:40:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RXKVqH0Gu1PT1WV5SwHA4/xjxYRDYxbiWQf6ubIWKHM=;
-        b=RhpXB8nQiQOFQ4QC2dEKwCVNXiMkG++cX9ObPSa7BqR3qtDa2obxzBvzWihWn8Qnhj
-         kUr2Nl+3V7XPUMhyQM9h0PyD+XkJUxubQsZ++4sw291mxdk/C8KIji7cJY4BoUw8A6LX
-         1ezABq8RAJqUMXfheG5u7JKvauWFZiqDWa0PFLg1zZejlyZiGCco00PaQ56HjZEaEHuB
-         RgbqhBmQ361M9ufseuAi7FzmwS+AxJLTyYhXMe9RwxYqy2/8o1lh93+eqAFV4Nx733Er
-         8EVizSk48f2vEj5bzUbyWDDQXEFUisy77Lf0m9yTKl7Io2DMxvLsiz0u7/2XVykYYMxu
-         Zp/Q==
+        bh=uG0wF9x5J31B5QovgpxzHE3VxGkFw0gZRlBKzlTkO48=;
+        b=tsZdxnMiH149R1Dhw3d33KtAcAFLklb+vJjWxVEJDl4lPAU4VlIugJxbHuAe5g80w+
+         REkbev/MJ3OrjtgBr2IpNWhnMN7td1LuqtSzzyY0iFwS52m07H8V6DRNlw/M5YUVYrCO
+         fXONaqSgvgx1nKwIEP0km8pDbQBUYbP4E673nTz/g77kLRdVZoT03RS0AOTGYPKvKMQz
+         1T72rY2U7pNY2711Vgx3FUmHs67+I9imTXW5C+PQx/P8jKGCreBWGtwif0usYlFQJ0ek
+         jeOeL5feuWpol2GOCSxIKyzwahU5dc8n75WPLexptB486ZURiFUVzgyb7NZs8dFVGcsT
+         T+SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RXKVqH0Gu1PT1WV5SwHA4/xjxYRDYxbiWQf6ubIWKHM=;
-        b=ghxHaFigGFsa002Jgmr4fbGVWIYJLRgAF6H6naXvy9aa1WHGqSAeVvwAK8cWqgAVFm
-         dd1t1sXqTkclnLL+33aTlFz5f45EDdMmAgd2GGm7cKqeI9aWgRlE0+W6fQaCgRDWDN0J
-         XhglcDukI6vElhUk5iyl+xpLk7FIsWeSTefeQtlX01A8fRJN5tesQ79BY+vHZwVANqRf
-         VnivR8KSHdxqELsU7jQPHr2ijhOvxhL4HQmy4IRk0JULyUom0aL3dD7SCA2ExREirnfI
-         +FdicXa+0ZlVzDUB5fcbgW5SfAn8p6TXbL8+LSPuGjie/XaAem8TyLIrPQd36sJ/fqVC
-         i06g==
-X-Gm-Message-State: AOAM530h+AM7SOOjPY3zmAIUZK0UzZOWC9aScin3kFxa+oF1IR/AElQP
-        I1HoClsv3NB3e50ff5sYY/0=
-X-Google-Smtp-Source: ABdhPJw4+KNAdGIoq2cCUN+UMGmsEz5RMz1h818IpW1Te5EHVzfhGx9Stm0xsPpuq/G0PiH/r24ZUg==
-X-Received: by 2002:ac2:4d0d:: with SMTP id r13mr18102156lfi.42.1620686447304;
-        Mon, 10 May 2021 15:40:47 -0700 (PDT)
+        bh=uG0wF9x5J31B5QovgpxzHE3VxGkFw0gZRlBKzlTkO48=;
+        b=saMpgIAsU7/koyrqgJmxPkvXs/2mk8Y38AaHeDE2Sa/Y8nNvf/7BDrcmgirQGslMji
+         0VVq98EX2DBHA83RsJo3/rws866Z/04fIXj/y9aCzV0UJiHYx2paxChh76Y4mb/NiQ66
+         8PpQ/0ZYY/9B9EW5LauvC4S/Ulq/yzalaTOS9Shwg5r+9eKC4qUcPJOSGcn7uHkiKE2n
+         t+DKWZaeC/XFFSRUYcsu2m60G1qj0Dez4HNdc9zKGz7HDKpZQt7bl9auBhUJqod0kRsm
+         6D7YrofdMu1whR9eKcCTMyXf8w+VDE7wwkMaF8YFzSMWqeE03W1oNT9OyF2Ryxt89neX
+         5CNA==
+X-Gm-Message-State: AOAM533/0Qm3cbILY1CFeMkN9XKhE/g2pqs77tfdvJcZbSbp3ya0UsZp
+        zCdn/FyuhfjTz44Fk9+NC9c=
+X-Google-Smtp-Source: ABdhPJwk9QDTp6EFnUSeNwin5PoUdwbzqLx0YL15DDUf3BuJDlzikg6Ha0c7ropbAuWKBLKj8Lk3gA==
+X-Received: by 2002:a19:7dc4:: with SMTP id y187mr18680565lfc.525.1620686448146;
+        Mon, 10 May 2021 15:40:48 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.gmail.com with ESMTPSA id g24sm2780698lja.63.2021.05.10.15.40.46
+        by smtp.gmail.com with ESMTPSA id g24sm2780698lja.63.2021.05.10.15.40.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 10 May 2021 15:40:47 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
@@ -64,9 +64,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Peter Geis <pgwipeout@gmail.com>
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-tegra@vger.kernel.org
-Subject: [PATCH v1 5/7] ARM: tegra_defconfig: Enable CONFIG_TEGRA30_TSENSOR
-Date:   Tue, 11 May 2021 01:38:14 +0300
-Message-Id: <20210510223816.18565-6-digetx@gmail.com>
+Subject: [PATCH v1 6/7] ARM: multi_v7_defconfig: Enable CONFIG_TEGRA30_TSENSOR
+Date:   Tue, 11 May 2021 01:38:15 +0300
+Message-Id: <20210510223816.18565-7-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210510223816.18565-1-digetx@gmail.com>
 References: <20210510223816.18565-1-digetx@gmail.com>
@@ -76,25 +76,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable NVIDIA Tegra30 SoC thermal sensor driver in tegra_defconfig.
+Enable NVIDIA Tegra30 SoC thermal sensor driver in multi_v7_defconfig.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm/configs/tegra_defconfig | 1 +
+ arch/arm/configs/multi_v7_defconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_defconfig
-index 458b9280224d..581fcea671f8 100644
---- a/arch/arm/configs/tegra_defconfig
-+++ b/arch/arm/configs/tegra_defconfig
-@@ -171,6 +171,7 @@ CONFIG_THERMAL_STATISTICS=y
- CONFIG_CPU_THERMAL=y
- CONFIG_DEVFREQ_THERMAL=y
+diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+index 52a0400fdd92..fc346f87d7f9 100644
+--- a/arch/arm/configs/multi_v7_defconfig
++++ b/arch/arm/configs/multi_v7_defconfig
+@@ -523,6 +523,7 @@ CONFIG_BRCMSTB_THERMAL=m
+ CONFIG_GENERIC_ADC_THERMAL=m
+ CONFIG_ST_THERMAL_MEMMAP=y
  CONFIG_TEGRA_SOCTHERM=m
 +CONFIG_TEGRA30_TSENSOR=m
- CONFIG_WATCHDOG=y
- CONFIG_MAX77620_WATCHDOG=y
- CONFIG_TEGRA_WATCHDOG=y
+ CONFIG_UNIPHIER_THERMAL=y
+ CONFIG_DA9063_WATCHDOG=m
+ CONFIG_XILINX_WATCHDOG=y
 -- 
 2.30.2
 
