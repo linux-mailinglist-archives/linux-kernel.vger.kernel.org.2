@@ -2,96 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2DF3791F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE69C379297
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240868AbhEJPGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 11:06:45 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:38697 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S232164AbhEJPDP (ORCPT
+        id S234809AbhEJPZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 11:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239050AbhEJPYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 11:03:15 -0400
-Received: (qmail 865031 invoked by uid 1000); 10 May 2021 11:02:03 -0400
-Date:   Mon, 10 May 2021 11:02:03 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     chris.chiu@canonical.com
-Cc:     gregkh@linuxfoundation.org, m.v.b@runbox.com, hadess@hadess.net,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] USB: reset-resume the device when PORT_SUSPEND is
- set but timeout
-Message-ID: <20210510150203.GD863718@rowland.harvard.edu>
-References: <20210510145030.1495-1-chris.chiu@canonical.com>
- <20210510145030.1495-2-chris.chiu@canonical.com>
+        Mon, 10 May 2021 11:24:45 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB0AC07E5DC;
+        Mon, 10 May 2021 08:02:30 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so10692838oto.0;
+        Mon, 10 May 2021 08:02:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BJBAKc3PQ9AHpThbEJS50zFIUwVJp1qU6xGIki8dg58=;
+        b=CsiMDWwUq9272G9cotZI3nZ5EnvRLzF599akRxkhVtpv8fLQo55fuZXw0h51/M6mcs
+         x+b3nlcynyVBLKvo4BpGM47/sg1JoJS+ZJAnwfGH44EjRZQmKnUknAlIPkKlgA7B4Cat
+         iYx61KpD5LlrYioDMeidgcqEmnkYfiQT3Jju6Vayr8YnIfRH78DQH/43Uah8ImMF4zjK
+         5k/Dab31oMtzF+MiHUaO1aL2+D/fV1rVEhQvDJH4Bb7vb7rB09mguyJzBUNSFC0zThJs
+         /cZftPo5jQzwW1tmtULCSfk1+hWwNRNSw+On79I9JU86JB2QdaDHGf6X6qbLpG6+8/Fu
+         IH3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=BJBAKc3PQ9AHpThbEJS50zFIUwVJp1qU6xGIki8dg58=;
+        b=mvtw1gjucq1ybsLg4C2CUw2ddp6EQLyHXMTp/mRMT8Cowux3MKkVtwX4MmI6wWN+9j
+         hrdDlclDfGpZLUIuLD0VXD4ibrMrkNXhQajmyOPCU9trYPsDs9AnxjQa0wVBXziKFDnf
+         vzVC4z78gYQtPG/k+odxVeIQTTrY1mkuLubfb9jubTw2z8BJ7hFL/MHyNhCsDj+iMVHM
+         DXrw+GHzk29csqM0YKRQubLkChjZdnsN00TabFslkmHxRTtPBUS3BdyshKKoHTDlJKMX
+         K4e6+JRmbn6GMTtFcD4wq9lZM56bjUZNW+pZd/WGnntfP4QApX2GQCguVn58mShzA2Op
+         +KXw==
+X-Gm-Message-State: AOAM530KOBGRv9pwT6KM9bS4Gl/ZT7qqQTISNFsQ+lt5CGDc6cleUwTi
+        Hy0N5pfOaMsXSooiup85YEk=
+X-Google-Smtp-Source: ABdhPJyYbzqATX7KJRRHJu4DNrk4N0sbPVcXyEG4Uw54J9gfIRD/M4fRW/+hcpTfnkkkbsqjvT//bw==
+X-Received: by 2002:a9d:449:: with SMTP id 67mr21185911otc.333.1620658949920;
+        Mon, 10 May 2021 08:02:29 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a12sm3159302oti.12.2021.05.10.08.02.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 08:02:29 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 10 May 2021 08:02:28 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Alexandru Tachici <alexandru.tachici@analog.com>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>
+Subject: Re: [PATCH v1 1/1] hwmon: (ltc2992) Put fwnode in error case during
+ ->probe()
+Message-ID: <20210510150228.GA1997561@roeck-us.net>
+References: <20210510100136.3303142-1-andy.shevchenko@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510145030.1495-2-chris.chiu@canonical.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210510100136.3303142-1-andy.shevchenko@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 10:50:29PM +0800, chris.chiu@canonical.com wrote:
-> From: Chris Chiu <chris.chiu@canonical.com>
+On Mon, May 10, 2021 at 01:01:36PM +0300, Andy Shevchenko wrote:
+> In each iteration fwnode_for_each_available_child_node() bumps a reference
+> counting of a loop variable followed by dropping in on a next iteration,
 > 
-> On the Realtek high-speed Hub(0bda:5487), the port which has wakeup
-> enabled_descendants will sometimes timeout when setting PORT_SUSPEND
-> feature. After checking the PORT_SUSPEND bit in wPortStatus, it is
-> already set. However, the hub will fail to activate because the
-> PORT_SUSPEND feature of that port is not cleared during resume. All
-> connected devices are lost after resume.
+> Since in error case the loop is broken, we have to drop a reference count
+> by ourselves. Do it for port_fwnode in error case during ->probe().
 > 
-> This commit force reset-resume the device connected to the timeout
-> but suspended port so that the hub will have chance to clear the
-> PORT_SUSPEND feature during resume.
+> Fixes: b0bd407e94b0 ("hwmon: (ltc2992) Add support")
+> Cc: Alexandru Tachici <alexandru.tachici@analog.com>
+> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Are you certain that the reset-resume is needed?  What happens if you 
-leave out the line that sets udev->reset_resume?  The rest of the patch 
-will cause the kernel to realize that the port really is suspended, so 
-maybe the suspend feature will get cleared properly during resume.
+Applied.
 
-It's worthwhile to try the experiement and see what happens.
+Thanks,
+Guenter
 
-Alan Stern
-
-> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
 > ---
+>  drivers/hwmon/ltc2992.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 > 
-> Changelog:
->   v2:
->     - create a new variable to keep the result of hub_port_status
->       when suspend timeout.
-> 
->  drivers/usb/core/hub.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-> index b2bc4b7c4289..3c823544e425 100644
-> --- a/drivers/usb/core/hub.c
-> +++ b/drivers/usb/core/hub.c
-> @@ -3385,6 +3385,21 @@ int usb_port_suspend(struct usb_device *udev, pm_message_t msg)
->  		status = 0;
->  	}
->  	if (status) {
-> +		if (status == -ETIMEDOUT) {
-> +			u16 portstatus, portchange;
-> +
-> +			int ret = hub_port_status(hub, port1, &portstatus,
-> +					&portchange);
-> +
-> +			dev_dbg(&port_dev->dev,
-> +				"suspend timeout, status %04x\n", portstatus);
-> +
-> +			if (ret == 0 && port_is_suspended(hub, portstatus)) {
-> +				udev->reset_resume = 1;
-> +				goto err_wakeup;
-> +			}
-> +		}
-> +
->  		dev_dbg(&port_dev->dev, "can't suspend, status %d\n", status);
+> diff --git a/drivers/hwmon/ltc2992.c b/drivers/hwmon/ltc2992.c
+> index 4382105bf142..2a4bed0ab226 100644
+> --- a/drivers/hwmon/ltc2992.c
+> +++ b/drivers/hwmon/ltc2992.c
+> @@ -900,11 +900,15 @@ static int ltc2992_parse_dt(struct ltc2992_state *st)
 >  
->  		/* Try to enable USB3 LTM again */
-> -- 
-> 2.20.1
-> 
+>  	fwnode_for_each_available_child_node(fwnode, child) {
+>  		ret = fwnode_property_read_u32(child, "reg", &addr);
+> -		if (ret < 0)
+> +		if (ret < 0) {
+> +			fwnode_handle_put(child);
+>  			return ret;
+> +		}
+>  
+> -		if (addr > 1)
+> +		if (addr > 1) {
+> +			fwnode_handle_put(child);
+>  			return -EINVAL;
+> +		}
+>  
+>  		ret = fwnode_property_read_u32(child, "shunt-resistor-micro-ohms", &val);
+>  		if (!ret)
