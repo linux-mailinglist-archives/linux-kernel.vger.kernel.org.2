@@ -2,134 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1DE378E84
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A584B378E79
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242895AbhEJN3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240762AbhEJNXE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 09:23:04 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7135C06175F;
-        Mon, 10 May 2021 06:21:59 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id c17so13596044pfn.6;
-        Mon, 10 May 2021 06:21:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Tl7s734YASKJ3u2oeYhTRanwUBfl3NVcj5cenpAt2BA=;
-        b=RDNUTjjWuPi6DrAVXk8S4EwXsMHELJPuIrLV/GV2tDwYTZFG3kponlg/mD8htKAyyF
-         l7ey9CPgxtsQmt+SKIeXQqZf0RDK5L4bIpU2aTmB3pdJwQg10YYuzIWbMuTVz+t3I26m
-         /bB9ZUiSM7i3rLGqwTeBrqbblqUAX6JuNb10VUTLGtGZo/h0w8WyNGFozhZcq1I9zP6k
-         1WxYPMP7mFlac3OmtpUnzJGjOVZEqugQeWazlVMnRMYTe7daWLp/P1BGkEGxNu9SxSys
-         Y6kPDxBLRslvFbe7zk9KG7lS1VLuGswJnYcxz7uYKn1E7YGJ22wBJ5lF3bDzdNroD+wu
-         Z3+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Tl7s734YASKJ3u2oeYhTRanwUBfl3NVcj5cenpAt2BA=;
-        b=CyxdxYaQvM4COkvPBT+V9syVHQgmiWWcG2PFkfxYDHfA6QCkvMIKG+bABEkTBryR0f
-         M8H4TLCo1AAN4fWlmwElBlvCzCsN/PNIHmSCzJEDAJYQU4zWZMACItvv/+h6RSdF9Em0
-         fiOFZkhIjwMO9vEoUHrrA9mOrg/NYJm412ZXYNgYy9bq4jxgEZZufgEU8yxp74xKaogz
-         5I4fobHxwu08rubFU9lGjjTNF0S4iNKbgDn8Ow2fXNAHGNePxaT1TtDQ9u+9VceaC84O
-         9q8DrPnI9VOp4fYgcZlotN0jSSWjQhx3EsfA2nk6t4/cRp8ZMJNn20KSV8AmiOCLvsjw
-         xb2w==
-X-Gm-Message-State: AOAM531omSJfwKlRAjDw4F9u66FbDSD7P62397Acz/90a8KJVjJrUKA5
-        PM8YWSYNtrwBKKwTdUI8Fm9HkgPqI7U=
-X-Google-Smtp-Source: ABdhPJwgpvW8eWnj+FLU83e1o6few5DdpVIj8azOzsaa1GO2bWm6iQV+eSPlzZo49yqqgnor60zVUg==
-X-Received: by 2002:a63:490:: with SMTP id 138mr24777071pge.99.1620652918900;
-        Mon, 10 May 2021 06:21:58 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id n8sm11129351pgm.7.2021.05.10.06.21.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 06:21:58 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     stable@vger.kernel.org
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        "kernelci.org bot" <bot@kernelci.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Joe Perches <joe@perches.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-        linux-kernel@vger.kernel.org (open list),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH stable 5.10 v2 4/4] ARM: 9027/1: head.S: explicitly map DT even if it lives in the first physical section
-Date:   Mon, 10 May 2021 06:21:11 -0700
-Message-Id: <20210510132111.1690943-5-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210510132111.1690943-1-f.fainelli@gmail.com>
-References: <20210510132111.1690943-1-f.fainelli@gmail.com>
+        id S242639AbhEJN3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:29:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59078 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240717AbhEJNW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 09:22:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1620652912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=76XvVApBB4h7nYMX/HL+xbx3l2IPhYwz78pPaYpWgyE=;
+        b=C8nlywMgxfVWPNWbEBDWDlHZEKozXTkQlJe7DpH5o5yxrObUopaUDcW4dfdspP8psx9zqU
+        +i1sWoejZSL9c8im6svLSdKAvsh1k4aGdA189j9+Pt0WEMi4ZzJs1d/S2wxiaaL/qsofqB
+        Y07lur/mzuiVkCyGmKk6df3pWjGtanI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 98A17B0BE;
+        Mon, 10 May 2021 13:21:52 +0000 (UTC)
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20210422151007.2205-1-jgross@suse.com>
+ <20210422151007.2205-2-jgross@suse.com>
+ <4282bb6f-1d19-4d00-d468-f5d4c7fb0f90@oracle.com>
+From:   Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH 1/3] xen: check required Xen features
+Message-ID: <d53d6b83-2730-1ab6-7dba-236e86e247b3@suse.com>
+Date:   Mon, 10 May 2021 15:21:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <4282bb6f-1d19-4d00-d468-f5d4c7fb0f90@oracle.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="v0xJqlEx16PQDex2Ji9eivWzhreV2gsI3"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--v0xJqlEx16PQDex2Ji9eivWzhreV2gsI3
+Content-Type: multipart/mixed; boundary="7atwZJqHbxCWQIe1gx0HLOWsAMaPzFtob";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Cc: Stefano Stabellini <sstabellini@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>
+Message-ID: <d53d6b83-2730-1ab6-7dba-236e86e247b3@suse.com>
+Subject: Re: [PATCH 1/3] xen: check required Xen features
+References: <20210422151007.2205-1-jgross@suse.com>
+ <20210422151007.2205-2-jgross@suse.com>
+ <4282bb6f-1d19-4d00-d468-f5d4c7fb0f90@oracle.com>
+In-Reply-To: <4282bb6f-1d19-4d00-d468-f5d4c7fb0f90@oracle.com>
 
-commit 10fce53c0ef8f6e79115c3d9e0d7ea1338c3fa37 upstream
+--7atwZJqHbxCWQIe1gx0HLOWsAMaPzFtob
+Content-Type: multipart/mixed;
+ boundary="------------EB1D33D114EA20FD47EBA1F0"
+Content-Language: en-US
 
-The early ATAGS/DT mapping code uses SECTION_SHIFT to mask low order
-bits of R2, and decides that no ATAGS/DTB were provided if the resulting
-value is 0x0.
+This is a multi-part message in MIME format.
+--------------EB1D33D114EA20FD47EBA1F0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-This means that on systems where DRAM starts at 0x0 (such as Raspberry
-Pi), no explicit mapping of the DT will be created if R2 points into the
-first 1 MB section of memory. This was not a problem before, because the
-decompressed kernel is loaded at the base of DRAM and mapped using
-sections as well, and so as long as the DT is referenced via a virtual
-address that uses the same translation (the linear map, in this case),
-things work fine.
+On 10.05.21 14:11, Boris Ostrovsky wrote:
+>=20
+> On 4/22/21 11:10 AM, Juergen Gross wrote:
+>>  =20
+>> +/*
+>> + * Linux kernel expects at least Xen 4.0.
+>> + *
+>> + * Assume some features to be available for that reason (depending on=
+ guest
+>> + * mode, of course).
+>> + */
+>> +#define chk_feature(f) {						\
+>> +		if (!xen_feature(f))					\
+>> +			pr_err("Xen: feature %s not available!\n", #f);	\
+>> +	}
+>=20
+>=20
+> With your changes in the subsequent patches, are we still going to func=
+tion properly without those features? (i.e. maybe we should just panic)
 
-However, commit 7a1be318f579 ("9012/1: move device tree mapping out of
-linear region") changes this, and now the DT is referenced via a virtual
-address that is disjoint from the linear mapping of DRAM, and so we need
-the early code to create the DT mapping unconditionally.
+Depends on the use case.
 
-So let's create the early DT mapping for any value of R2 != 0x0.
+XENFEAT_gnttab_map_avail_bits is relevant for driver domains using
+user space backends only. In case it is not available "interesting"
+things might happen.
 
-Reported-by: "kernelci.org bot" <bot@kernelci.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/arm/kernel/head.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+XENFEAT_mmu_pt_update_preserve_ad not being present would result in
+a subsequent mmu-update function using that feature returning -ENOSYS,
+so this wouldn't be unrecognized.
 
-diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
-index 8cd968199e2c..4af5c7679624 100644
---- a/arch/arm/kernel/head.S
-+++ b/arch/arm/kernel/head.S
-@@ -274,10 +274,10 @@ __create_page_tables:
- 	 * We map 2 sections in case the ATAGs/DTB crosses a section boundary.
- 	 */
- 	mov	r0, r2, lsr #SECTION_SHIFT
--	movs	r0, r0, lsl #SECTION_SHIFT
-+	cmp	r2, #0
- 	ldrne	r3, =FDT_FIXED_BASE >> (SECTION_SHIFT - PMD_ORDER)
- 	addne	r3, r3, r4
--	orrne	r6, r7, r0
-+	orrne	r6, r7, r0, lsl #SECTION_SHIFT
- 	strne	r6, [r3], #1 << PMD_ORDER
- 	addne	r6, r6, #1 << SECTION_SHIFT
- 	strne	r6, [r3]
--- 
-2.25.1
+So panic() might be a good idea in case the features are not available.
 
+> (Also, chk_required_features() perhaps?)
+
+Fine with me.
+
+
+Juergen
+
+--------------EB1D33D114EA20FD47EBA1F0
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------EB1D33D114EA20FD47EBA1F0--
+
+--7atwZJqHbxCWQIe1gx0HLOWsAMaPzFtob--
+
+--v0xJqlEx16PQDex2Ji9eivWzhreV2gsI3
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmCZM28FAwAAAAAACgkQsN6d1ii/Ey9a
+UAf9GTiuYSXEqCcah/973qkXKYOKNSnvm+avImO9swd3uYJZEAzIsV8KUReYqWnFefWwlJ9IMOZr
+Y2yRjS/LQPuwNZl5giuqzrrPouYNbLhtfYFEaEx7zxNINQeQwB1tWCP6RI69jR1iowIAPuLhLUyN
++qj8+K8EhK+4Z1dfaBtOYAzBJMlWSyJvFIJ+RanRt3xQCn5TUoBegImkFWvTXH7rVKHpaBDY9rUq
+u0C2ac9aIJQRffg9WN5HK54poy9Mydsj6Ny0/d7yPNFskUZrdPNVL9ptsKkMsWUyLbWgYFVTAex1
+OjM52H2OtsHh73FzHNPvJUq4FYrHOEjIiIBKeIaZ2A==
+=XdOU
+-----END PGP SIGNATURE-----
+
+--v0xJqlEx16PQDex2Ji9eivWzhreV2gsI3--
