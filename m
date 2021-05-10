@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D233796B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF6E3796C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbhEJR6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 13:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233312AbhEJR6Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 13:58:24 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442E0C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:57:19 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id z16so13901603pga.1
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:57:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mWPrNb69nyGWKI0m9pPGW0IsoOENSpHi4HuteUPIllA=;
-        b=WDir0qDOMsL25iK8wuf0VwNf0hPuuhOqUjjIVr1hs7XzcxFvbzfzYbFkdx/sh9mljA
-         1j3r5+a480WbR1tiGdAGMc75YHoI0pWIg1rBqEVgUfMYWxjA8ZHrhNHj2pd2/8iAlJB3
-         sfcnzbav23KQ6dzUy2Z0rWCgkThAw+d2CBVFPzYeT8htkYT+muYNLyNGbzHzWUMRWPUf
-         9tdzV2Im41JBWIiZLskLQGpj0ERl0rBZNSWHYrwPKUQD8N2F23w1M3xGeP8qAW2tMSoZ
-         GUP5y2jtRz6EtzZTPRO0KyFrNDU+cJ0rqnkbYZuw1wJeYbmYfrrKCXk9NNQmDdnhDo8N
-         GaNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mWPrNb69nyGWKI0m9pPGW0IsoOENSpHi4HuteUPIllA=;
-        b=IOFABZ+SrgKPnl4hMkXgy4LdDPV+vWPvs5uMNfVd9SfiRMsUo9QyZldTdskQzkLG4K
-         /MThqKDcEa8pQccVgXlosHl20VApIHcMHVfv2wbQ6yXdAMkRoKc9teTfkj+8P9sue9qT
-         5mM9XhmMylmVzxNvQ/DpUe/KC0kZg91NJ4QuWRo064iPQVeQBeB7RroLY0W2+uhQCJUg
-         O7A+nnaKjGS6rByLczDD9v0LCNbzNVHWLBmg4nB+EhPUf8kUOspv9tq9CkZQXI7u+wvg
-         nhcu1LcA8a+fwPwe+vRoCIEHre36zXIRfsDWqkLhCE4OO5U5Ail4gczlWSobYzzBgzIB
-         zC9A==
-X-Gm-Message-State: AOAM530bDT6c/jKBaMc21Q5QDOm7xcy8vrnkfA+vMIUt35/3Ao50odVE
-        w6oQ6ia7WCMlMuGNfWWGy8GYew==
-X-Google-Smtp-Source: ABdhPJxGmr5OAWApep3UYINJrGM2ui/EZ9ttx3t/4ewaXx+5Bt9eSw10BXX2oHyBKAcRoxeHzRohHg==
-X-Received: by 2002:a62:d108:0:b029:25d:497e:2dfd with SMTP id z8-20020a62d1080000b029025d497e2dfdmr26602164pfg.29.1620669438673;
-        Mon, 10 May 2021 10:57:18 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id s21sm11918766pjn.29.2021.05.10.10.57.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 10:57:18 -0700 (PDT)
-Date:   Mon, 10 May 2021 17:57:14 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PULL] topic/iomem-mmap-vs-gup
-Message-ID: <YJlz+p787mK8tAh+@google.com>
-References: <YJBHiRiCGzojk25U@phenom.ffwll.local>
- <CAHk-=wiwgOPQ+4Eaf0GD5P_GveE6vUHsKxAT=pMsjk1v_kh4ig@mail.gmail.com>
- <YJVijmznt1xnsCxc@phenom.ffwll.local>
- <CAHk-=wgjO8-f1bUwQB=5HGzkvSS+aGACR9+H5CkkDhRgud+3MA@mail.gmail.com>
- <20210510135031.GF2047089@ziepe.ca>
- <CAKMK7uFfN3p2fE1Xq47nOTtkPY2vm10GMvBaupQ9hgK0rS8sgQ@mail.gmail.com>
- <20210510153412.GG2047089@ziepe.ca>
+        id S232242AbhEJSDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 14:03:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55058 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231499AbhEJSDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 14:03:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94CA1614A5;
+        Mon, 10 May 2021 18:02:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620669758;
+        bh=n42L871tHZ441F87A/b+CutETfOOFwkObERFP9A3pdA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jAVU4p1uzu94ulPZBeoZfk4s2+0oKep8O35dEH9B3XGOnfBOez0cqT9O/YPNWcq7K
+         T7jehq1COHzvQk562M5QFEuz58iBsW6GnwPXjhA/cVyTt1N3jxE15rCZgZHKILMpn/
+         j2uFJ1Qhe2ksUV0APrDOdlb2LHSBV6/yEmdkTakyE7eMIf2Gd3PEcDYmfuilpYxdEE
+         J2LthyZVJKGF4qAs0eL5J6Nek5zNOrWq6FoOABkHN+M7vDleC7VZQX3j2kIx/+Qboo
+         1/WODQxulH/sCuGBwe0ku+eYg7lCepVzxRaMSgvNWQxZ05b1ox+NqaPNhK7RwoJCp7
+         a38PA1z3yoBmQ==
+Date:   Mon, 10 May 2021 21:02:21 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     James Bottomley <jejb@linux.ibm.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v18 0/9] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+Message-ID: <YJl1LQvQuxxfGRnJ@kernel.org>
+References: <20210303162209.8609-1-rppt@kernel.org>
+ <20210505120806.abfd4ee657ccabf2f221a0eb@linux-foundation.org>
+ <de27bfae0f4fdcbb0bb4ad17ec5aeffcd774c44b.camel@linux.ibm.com>
+ <202105060916.ECDEC21@keescook>
+ <9e1953a1412fad06a9f7988a280d2d9a74ab0464.camel@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510153412.GG2047089@ziepe.ca>
+In-Reply-To: <9e1953a1412fad06a9f7988a280d2d9a74ab0464.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Paolo
-
-On Mon, May 10, 2021, Jason Gunthorpe wrote:
-> On Mon, May 10, 2021 at 04:55:39PM +0200, Daniel Vetter wrote:
+On Thu, May 06, 2021 at 11:47:47AM -0700, James Bottomley wrote:
+> On Thu, 2021-05-06 at 10:33 -0700, Kees Cook wrote:
+> > On Thu, May 06, 2021 at 08:26:41AM -0700, James Bottomley wrote:
 > 
-> > yeah vfio is still broken for the case I care about. I think there's
-> > also some questions open still about whether kvm really uses
-> > mmu_notifier in all cases correctly, 
+> > What's happening with O_CLOEXEC in this code? I don't see that
+> > mentioned in the cover letter either. Why is it disallowed? That
+> > seems a strange limitation for something trying to avoid leaking
+> > secrets into other processes.
 > 
-> IIRC kvm doesn't either.
+> I actually thought we forced it, so I'll let Mike address this.  I
+> think allowing it is great, so the secret memory isn't inherited by
+> children, but I can see use cases where a process would want its child
+> to inherit the secrets.
 
-Yep, KVM on x86 has a non-trivial number of flows that don't properly hook into
-the mmu_notifier.  Paolo is working on fixing the problem, but I believe the
-rework won't be ready until 5.14.
+We do not enforce O_CLOEXEC, but if the user explicitly requested O_CLOEXEC
+it would be passed to get_unused_fd_flags().
+
+-- 
+Sincerely yours,
+Mike.
