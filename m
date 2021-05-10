@@ -2,99 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DA6378E5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D51378E80
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234807AbhEJNO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:14:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:58090 "EHLO foss.arm.com"
+        id S1349883AbhEJNUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:20:53 -0400
+Received: from mga07.intel.com ([134.134.136.100]:33803 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351653AbhEJNMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 09:12:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 364EC1688;
-        Mon, 10 May 2021 06:11:18 -0700 (PDT)
-Received: from [10.57.47.14] (unknown [10.57.47.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5AE143F73B;
-        Mon, 10 May 2021 06:11:16 -0700 (PDT)
-Subject: Re: [PATCH v1 0/3] coresight: Support for building more coresight
- paths
-To:     Tao Zhang <taozha@codeaurora.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc:     Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tingwei Zhang <tingwei@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        Yuanfang Zhang <zhangyuanfang@codeaurora.org>
-References: <1620644727-29279-1-git-send-email-taozha@codeaurora.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <070d1c13-2b3e-2dfb-f51b-9d40f1b45a03@arm.com>
-Date:   Mon, 10 May 2021 14:10:52 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        id S1352056AbhEJNNy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 09:13:54 -0400
+IronPort-SDR: rlniRiIoyfB4uaifsHZFo0vM/58h3+8f3PowU0MYlks/rVjcf+YFFpX5JQtt0cilC7LzVC6r9T
+ Q4wJONLNs5hA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="263122578"
+X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
+   d="scan'208";a="263122578"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 06:11:14 -0700
+IronPort-SDR: TYUGSpAYirdA6DAbx+o4/wISui+roA3VIJWoWqK6Jenkjck9dXiyzNFFHIbWVyH54q/qKaDfis
+ XQl5dObFAJFg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
+   d="scan'208";a="468122274"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 10 May 2021 06:11:11 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 7FA86D7; Mon, 10 May 2021 16:11:31 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] spi: Convert to use predefined time multipliers
+Date:   Mon, 10 May 2021 16:11:20 +0300
+Message-Id: <20210510131120.49253-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <1620644727-29279-1-git-send-email-taozha@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tao
+We have a lot of hard coded values in nanoseconds or other units.
+Use predefined constants to make it more clear.
 
-On 10/05/2021 12:05, Tao Zhang wrote:
-> We are trying to achieve more types of Coresight source devices.
-> For example, we have a type of coresight source devic named TPDM.
-> In the process of using, sometimes mulitiple TPDMs need to be
-> connected to the different input ports on the same funnel.
-> Meanwhile, these TPDMs also need to output from different
-> ports on the funnel.
-> But, at present the Coresight driver assumes
-> a) Only support Coresight source type ETM, ETR and ETF
+While at it, add or amend comments in the corresponding functions.
 
-Did you mean ETM and STM here ? ETR & ETF are not source types, rather
-they are SINK.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/spi/spi.c | 41 ++++++++++++++++++++++++++++-------------
+ 1 file changed, 28 insertions(+), 13 deletions(-)
 
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index f9885c096563..407420977a73 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1118,10 +1118,20 @@ static int spi_transfer_wait(struct spi_controller *ctlr,
+ 		if (!speed_hz)
+ 			speed_hz = 100000;
+ 
+-		ms = 8LL * 1000LL * xfer->len;
++		/*
++		 * For each byte we wait for 8 cycles of the SPI clock.
++		 * Since speed is defined in Hz and we want milliseconds,
++		 * use respective multiplier, but before the division,
++		 * otherwise we may get 0 for short transfers.
++		 */
++		ms = 8LL * MSEC_PER_SEC * xfer->len;
+ 		do_div(ms, speed_hz);
+-		ms += ms + 200; /* some tolerance */
+ 
++		/*
++		 * Increase it twice and add 200 ms tolerance, use
++		 * predefined maximum in case of overflow.
++		 */
++		ms += ms + 200;
+ 		if (ms > UINT_MAX)
+ 			ms = UINT_MAX;
+ 
+@@ -1144,10 +1154,10 @@ static void _spi_transfer_delay_ns(u32 ns)
+ {
+ 	if (!ns)
+ 		return;
+-	if (ns <= 1000) {
++	if (ns <= NSEC_PER_USEC) {
+ 		ndelay(ns);
+ 	} else {
+-		u32 us = DIV_ROUND_UP(ns, 1000);
++		u32 us = DIV_ROUND_UP(ns, NSEC_PER_USEC);
+ 
+ 		if (us <= 10)
+ 			udelay(us);
+@@ -1167,21 +1177,25 @@ int spi_delay_to_ns(struct spi_delay *_delay, struct spi_transfer *xfer)
+ 
+ 	switch (unit) {
+ 	case SPI_DELAY_UNIT_USECS:
+-		delay *= 1000;
++		delay *= NSEC_PER_USEC;
+ 		break;
+-	case SPI_DELAY_UNIT_NSECS: /* nothing to do here */
++	case SPI_DELAY_UNIT_NSECS:
++		/* Nothing to do here */
+ 		break;
+ 	case SPI_DELAY_UNIT_SCK:
+ 		/* clock cycles need to be obtained from spi_transfer */
+ 		if (!xfer)
+ 			return -EINVAL;
+-		/* if there is no effective speed know, then approximate
+-		 * by underestimating with half the requested hz
++		/*
++		 * If there is unknown effective speed, approximate it
++		 * by underestimating with half of the requested hz.
+ 		 */
+ 		hz = xfer->effective_speed_hz ?: xfer->speed_hz / 2;
+ 		if (!hz)
+ 			return -EINVAL;
+-		delay *= DIV_ROUND_UP(1000000000, hz);
++
++		/* Convert delay to nanoseconds */
++		delay *= DIV_ROUND_UP(NSEC_PER_SEC, hz);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -1213,6 +1227,7 @@ EXPORT_SYMBOL_GPL(spi_delay_exec);
+ static void _spi_transfer_cs_change_delay(struct spi_message *msg,
+ 					  struct spi_transfer *xfer)
+ {
++	u32 default_delay_ns = 10 * NSEC_PER_USEC;
+ 	u32 delay = xfer->cs_change_delay.value;
+ 	u32 unit = xfer->cs_change_delay.unit;
+ 	int ret;
+@@ -1220,16 +1235,16 @@ static void _spi_transfer_cs_change_delay(struct spi_message *msg,
+ 	/* return early on "fast" mode - for everything but USECS */
+ 	if (!delay) {
+ 		if (unit == SPI_DELAY_UNIT_USECS)
+-			_spi_transfer_delay_ns(10000);
++			_spi_transfer_delay_ns(default_delay_ns);
+ 		return;
+ 	}
+ 
+ 	ret = spi_delay_exec(&xfer->cs_change_delay, xfer);
+ 	if (ret) {
+ 		dev_err_once(&msg->spi->dev,
+-			     "Use of unsupported delay unit %i, using default of 10us\n",
+-			     unit);
+-		_spi_transfer_delay_ns(10000);
++			     "Use of unsupported delay unit %i, using default of %luus\n",
++			     unit, default_delay_ns / NSEC_PER_USEC);
++		_spi_transfer_delay_ns(default_delay_ns);
+ 	}
+ }
+ 
+-- 
+2.30.2
 
-> b) Funnels only support mulitiple inputs and one output
-> Which doesn't help to add the above feature for our new Coresight
-> source device TPDM. So, in order to accommodate the new device,
-> we develop the following patches.
-
-Where is the TPDM driver ? Could you give us a rough idea of the 
-behavior in terms of the input / output ?
-
-
-> a) Add support more types of Coresight source devices.
-
-Which ones ? where is the code ?
-
-> b) Add support for multiple output ports on funnel and the output
-> ports could be selected by Corsight source.
-
-Does the "TPDM" require programming to switch these output or are these 
-"static" ?
-
-Is this something that can be avoided by having a "fake" 
-static-replicator in the path ?
-
-e.g,              TPDM
-	 ________________________________________________
-  In0	|						|  -> Out0
-  In1	|   Static-Funnel   -> Static-Replicator	|  -> Out1
-  In2	|						|  -> Out2
-	 ________________________________________________
-
-
-Is this something that can be solved ? Again, please give a brief
-description of the TPDM device and the driver code in the series to
-give us a complete picture of what you are trying to do.
-
-Reviewing some changes without having the full picture is not going to 
-be helpful.
-
-Suzuki
