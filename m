@@ -2,85 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C68379A24
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A45379A52
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbhEJWgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:36:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60602 "EHLO
+        id S231661AbhEJWmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbhEJWgl (ORCPT
+        with ESMTP id S231140AbhEJWly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:36:41 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE82CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:35:35 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id u16so17275494oiu.7
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:35:35 -0700 (PDT)
+        Mon, 10 May 2021 18:41:54 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0715C061574;
+        Mon, 10 May 2021 15:40:44 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id f12so10176057ljp.2;
+        Mon, 10 May 2021 15:40:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fUc4hgydM0CmYj7T3eVJGvSCBCFbFHknkLeXpTs7Z6Y=;
-        b=SLk9lya6kpODyG3A9aha91IDHmammqhVWHFEBiXDvoQg/K/Eygl/gKDZR6/tL3Yebj
-         hDklG7mlvfI9Ci+pM9tIk5a8GIbH+nFzxXMB2be1qS6t9I60mqrkmwyxFWZAjTpYf/2n
-         Yaf659jnGqNryNN0ZbPbhm1wM9hffJ4XBddJQfUjWRRLuVJqSAAlfdkUHnJ4Dbwr5PCt
-         Nuc5t2GleTZvRizJ4pb6x0Ds08BybB8NTXy6Cgwh+2AMQc2eCSi3hFatmimpUOhFS9cV
-         3SJmHiv9U/GxrA3hWaCOM4JrKd1e3HFItKYJQ+U1bLM++X0UZr2rPnvN5cTywazaVgk1
-         MbGQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R+Rd07GeXg7osdvqVYsm1E0rafFFbHSRMuRffChtsHA=;
+        b=mLg7i8sKP/iAGsLbKXtizzcb9N5sqQeeK+YWUL5uhSjcnxqQoAjWZSAyHHIsabjP1a
+         en7ZPR/txARAXcSPayM28409Aqt1uVADNHFQtTwCp5HtSsHk0vm+EjrMKCt604FG79xA
+         Jr9XreHjfs3J99X4zAWsh/XcSXmEPKtgHjITDQJVtZ7OTAHBEkFilQCf8J6Q5ipF8Jqg
+         NlBNeGtvKPQON3N8ktFOHTpbYWI9Gu9NjMLdm5NPuoZ+WP9VGKLrmKmPHMEMWfaRzZ0n
+         eUcKXE0ql1t9spCDBiJMgz4q5PJhOn+eacN6m4mbWyUagnms48j9HIIs/d8+bse8/Doe
+         ZpYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=fUc4hgydM0CmYj7T3eVJGvSCBCFbFHknkLeXpTs7Z6Y=;
-        b=ALhlSzPLzT94em1nwlPaDD6MAd1RMX0G6meKwa8oCBeqZ6B8H53Ioq5nboqedaEcYX
-         WCrLvsAzyzMgNLEtZ6qUG6m+6cWwbZzSeqJaSsz9UvRfcLY5OUHg4kmIiarXxYXZIjzv
-         SMWSvLBkQLcEhmTh8g9AuLw7iiz0eYVmgL1SpZ3hWruGqMZ0x+Zum90yRFzr7Cd9w7cR
-         wn2fN6FdtQCr+gadvjV0D4zfo+T3Z3p4jNPqkllOvEUQhSpgG0j0N2E2Sk3hwLiO22Gi
-         V5rt8Hkov8Gddm3Ffe9opTrzL0e7zBeA3IIRv7GnMZcIi+WDRc3iHlEQ3wEp9pZ2xpaA
-         PUng==
-X-Gm-Message-State: AOAM530gtpfeyzMHidhLLG+eFnv4yavGGHZdlVqJFFTcStY0zBux87Jy
-        IpFHc8utHZ18soHJJHMIxZQ=
-X-Google-Smtp-Source: ABdhPJxgFNdDGEUHPyAgN1KF//N7LH3FxagGp6jWy4NeVMTG7lL4PBPgFcGh/CxI8K5qN3VESAycKQ==
-X-Received: by 2002:aca:ebc1:: with SMTP id j184mr19502217oih.125.1620686135243;
-        Mon, 10 May 2021 15:35:35 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r17sm2948830oos.39.2021.05.10.15.35.34
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R+Rd07GeXg7osdvqVYsm1E0rafFFbHSRMuRffChtsHA=;
+        b=R5Ip1dfvPPjEJNkXY5MsFMax1nhJgeVDYQV/cg5rFwMvcmjIujzH12zgtnncEOT+ms
+         Hr0Wrqfl+NlG3+L+X2YHuoS2S/28qHwcgqiolAR9W1DgCak848lcuvcNr8fxRzDfHZJ8
+         TNoPmC/UNzM6+apPf3VCUp4aDQ4cDbCK6RU1pSDjjKu3po7aLwu9IOx7JDI69MSqJh7J
+         X8VruoWXNgPrLt/iIRM41TteHpHC0GlMIaOKee5ogP/mDGBSpAi81HAkmIOlhzY7yS1J
+         pSeCDbw8HDBDTWXKar5LMxRXo8+qOSk+76LU8LdEDzaGQK4FVsiT1E0SpekXJri3ebfY
+         XoKg==
+X-Gm-Message-State: AOAM532BGax++kea8zgfiC232rwQYE2VOWBcWJtHBtujrRiGjLSwx/xH
+        1Aga4f/TU8QY6hrOfYEwsY8=
+X-Google-Smtp-Source: ABdhPJyfRdt0aXWo4Qap7V1prAzpUdwAoOzQwX7ctxtAbHlHm2FXe2zdtZ6NcyMRstEOCYSsco9oMg==
+X-Received: by 2002:a2e:a0ca:: with SMTP id f10mr22304951ljm.66.1620686443312;
+        Mon, 10 May 2021 15:40:43 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.gmail.com with ESMTPSA id g24sm2780698lja.63.2021.05.10.15.40.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 15:35:34 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 10 May 2021 15:35:33 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Rajat Asthana <thisisrast7@gmail.com>
-Cc:     mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v2] drm: Declare drm_send_event_helper static.
-Message-ID: <20210510223533.GA2335713@roeck-us.net>
-References: <20210510123243.hmwar3swmrewskjs@gilmour>
- <20210510131616.544547-1-thisisrast7@gmail.com>
+        Mon, 10 May 2021 15:40:43 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Ihor Didenko <tailormoon@rambler.ru>,
+        Ion Agorria <ion@agorria.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH v1 0/7] Add driver for NVIDIA Tegra30 SoC Thermal sensor
+Date:   Tue, 11 May 2021 01:38:09 +0300
+Message-Id: <20210510223816.18565-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210510131616.544547-1-thisisrast7@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 06:46:16PM +0530, Rajat Asthana wrote:
-> Declare drm_send_event_helper as static to fix sparse warning:
-> 
-> > warning: symbol 'drm_send_event_helper' was not declared.
-> > Should it be static?
-> 
-> Signed-off-by: Rajat Asthana <thisisrast7@gmail.com>
-> ---
-> Changes in v2:
->     Provide full name in Author and Signed-off.
-> 
+Hi,
 
-Turns out a variant of this patch [1] has already been accepted.
+This series adds support for the thermal sensor that is found on NVIDIA
+Tegra30 SoC. Sensor monitors temperature and voltage of the SoC, it also
+emits signals to the power management and clock controllers that are
+performing the emergency shut down and the CPU frequency throttling
+when a pre-programmed temperature levels are reached.
 
-Guenter
+Dmitry Osipenko (7):
+  dt-bindings: thermal: Add binding for Tegra30 thermal sensor
+  thermal: thermal_of: Stop zone device before unregistering it
+  thermal/core: Export thermal_cooling_device_stats_update()
+  thermal/drivers/tegra: Add driver for Tegra30 thermal sensor
+  ARM: tegra_defconfig: Enable CONFIG_TEGRA30_TSENSOR
+  ARM: multi_v7_defconfig: Enable CONFIG_TEGRA30_TSENSOR
+  ARM: tegra: Add SoC thermal sensor to Tegra30 device-trees
 
----
-[1] https://patchwork.kernel.org/project/dri-devel/patch/20210427105503.10765-1-fmdefrancesco@gmail.com/
+ .../thermal/nvidia,tegra30-tsensor.yaml       |  78 ++
+ arch/arm/boot/dts/tegra30-ouya.dts            |  16 +
+ arch/arm/boot/dts/tegra30.dtsi                |  93 ++-
+ arch/arm/configs/multi_v7_defconfig           |   1 +
+ arch/arm/configs/tegra_defconfig              |   1 +
+ drivers/thermal/tegra/Kconfig                 |   7 +
+ drivers/thermal/tegra/Makefile                |   1 +
+ drivers/thermal/tegra/tegra30-tsensor.c       | 735 ++++++++++++++++++
+ drivers/thermal/thermal_of.c                  |   3 +
+ drivers/thermal/thermal_sysfs.c               |   1 +
+ 10 files changed, 932 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/thermal/nvidia,tegra30-tsensor.yaml
+ create mode 100644 drivers/thermal/tegra/tegra30-tsensor.c
+
+-- 
+2.30.2
+
