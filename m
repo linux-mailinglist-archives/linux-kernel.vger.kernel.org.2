@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98BD378666
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4453789A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235970AbhEJLHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:07:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57592 "EHLO mail.kernel.org"
+        id S240471AbhEJLam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:30:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232392AbhEJKqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:46:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D15266193B;
-        Mon, 10 May 2021 10:37:07 +0000 (UTC)
+        id S234830AbhEJK5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C94AF6194A;
+        Mon, 10 May 2021 10:49:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643028;
-        bh=OmAsP+tYBJDtFQWqX428dKjCzbn7jC2wicgTcopdX3E=;
+        s=korg; t=1620643780;
+        bh=zF10B42BU7PZxpk8L9YI3lbTpw7BWdCgjXh1YWIYcew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EYxGZj7bfsIvARRawadOyfDVntJa6Q/C5aTlUHScdADv1ySbpmLdXV5ZI70kD+DPs
-         ms6mj+LaccHJ1GgAZB/6cfBuCw0EYuOW32IBS3st5+TVgkrYi6rFrXETPiLjcYbpgB
-         xm+YUjw8EXDM7VowW+jHpy/f3K9i8HuksIKQiDbo=
+        b=yQHOIFp6nsy4tbC77woEx/bUzfc5SRCecMAe+hCNeTyUXrnMk+cHIREkONUtEVZrc
+         c9uIJ3pyVvCzvDNa400KMmZANbX182wLn2VFKWL32fbPfQkAh27AYw+Q9rz/28T/+A
+         859hrXAgEXquIYDuHIGICXsA7j3oXZG+n6Uvx6GQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Quinn Tran <qutran@marvell.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Daniel Wagner <dwagner@suse.de>, Lee Duncan <lduncan@suse.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Brad Love <brad@nextdimension.cc>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 148/299] scsi: qla2xxx: Always check the return value of qla24xx_get_isp_stats()
+Subject: [PATCH 5.11 155/342] media: cx23885: add more quirks for reset DMA on some AMD IOMMU
 Date:   Mon, 10 May 2021 12:19:05 +0200
-Message-Id: <20210510102009.849026419@linuxfoundation.org>
+Message-Id: <20210510102015.219113302@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Brad Love <brad@nextdimension.cc>
 
-[ Upstream commit a2b2cc660822cae08c351c7f6b452bfd1330a4f7 ]
+[ Upstream commit 5f864cfbf59bfed2057bd214ce7fbf6ad420d54b ]
 
-This patch fixes the following Coverity warning:
+The folowing AMD IOMMU are affected by the RiSC engine stall, requiring a
+reset to maintain continual operation. After being added to the
+broken_dev_id list the systems are functional long term.
 
-    CID 361199 (#1 of 1): Unchecked return value (CHECKED_RETURN)
-    3. check_return: Calling qla24xx_get_isp_stats without checking return
-    value (as is done elsewhere 4 out of 5 times).
+0x1481 is the PCI ID for the IOMMU found on Starship/Matisse
 
-Link: https://lore.kernel.org/r/20210320232359.941-7-bvanassche@acm.org
-Cc: Quinn Tran <qutran@marvell.com>
-Cc: Mike Christie <michael.christie@oracle.com>
-Cc: Himanshu Madhani <himanshu.madhani@oracle.com>
-Cc: Daniel Wagner <dwagner@suse.de>
-Cc: Lee Duncan <lduncan@suse.com>
-Reviewed-by: Daniel Wagner <dwagner@suse.de>
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+0x1419 is the PCI ID for the IOMMU found on 15h (Models 10h-1fh) family
+
+0x5a23 is the PCI ID for the IOMMU found on RD890S/RD990
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_attr.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/media/pci/cx23885/cx23885-core.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/scsi/qla2xxx/qla_attr.c b/drivers/scsi/qla2xxx/qla_attr.c
-index ab45ac1e5a72..6a2c4a6fcded 100644
---- a/drivers/scsi/qla2xxx/qla_attr.c
-+++ b/drivers/scsi/qla2xxx/qla_attr.c
-@@ -2855,6 +2855,8 @@ qla2x00_reset_host_stats(struct Scsi_Host *shost)
- 	vha->qla_stats.jiffies_at_last_reset = get_jiffies_64();
+diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
+index 22f55a7840a6..d0ca260ecf70 100644
+--- a/drivers/media/pci/cx23885/cx23885-core.c
++++ b/drivers/media/pci/cx23885/cx23885-core.c
+@@ -2077,6 +2077,15 @@ static struct {
+ 	 * 0x1423 is the PCI ID for the IOMMU found on Kaveri
+ 	 */
+ 	{ PCI_VENDOR_ID_AMD, 0x1423 },
++	/* 0x1481 is the PCI ID for the IOMMU found on Starship/Matisse
++	 */
++	{ PCI_VENDOR_ID_AMD, 0x1481 },
++	/* 0x1419 is the PCI ID for the IOMMU found on 15h (Models 10h-1fh) family
++	 */
++	{ PCI_VENDOR_ID_AMD, 0x1419 },
++	/* 0x5a23 is the PCI ID for the IOMMU found on RD890S/RD990
++	 */
++	{ PCI_VENDOR_ID_ATI, 0x5a23 },
+ };
  
- 	if (IS_FWI2_CAPABLE(ha)) {
-+		int rval;
-+
- 		stats = dma_alloc_coherent(&ha->pdev->dev,
- 		    sizeof(*stats), &stats_dma, GFP_KERNEL);
- 		if (!stats) {
-@@ -2864,7 +2866,11 @@ qla2x00_reset_host_stats(struct Scsi_Host *shost)
- 		}
- 
- 		/* reset firmware statistics */
--		qla24xx_get_isp_stats(base_vha, stats, stats_dma, BIT_0);
-+		rval = qla24xx_get_isp_stats(base_vha, stats, stats_dma, BIT_0);
-+		if (rval != QLA_SUCCESS)
-+			ql_log(ql_log_warn, vha, 0x70de,
-+			       "Resetting ISP statistics failed: rval = %d\n",
-+			       rval);
- 
- 		dma_free_coherent(&ha->pdev->dev, sizeof(*stats),
- 		    stats, stats_dma);
+ static bool cx23885_does_need_dma_reset(void)
 -- 
 2.30.2
 
