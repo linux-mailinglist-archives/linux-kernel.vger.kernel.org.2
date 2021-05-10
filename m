@@ -2,141 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7B5379940
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8151A379944
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbhEJVif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 17:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
+        id S232772AbhEJVip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 17:38:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232469AbhEJVic (ORCPT
+        with ESMTP id S231738AbhEJVio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 17:38:32 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B10C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 14:37:26 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id d4so18057042wru.7
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 14:37:26 -0700 (PDT)
+        Mon, 10 May 2021 17:38:44 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5E5C061574;
+        Mon, 10 May 2021 14:37:38 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id a2so4559921lfc.9;
+        Mon, 10 May 2021 14:37:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=9XUgLuGGfG6fvCOnoM0als/tlAr9SP064P/RkEd2QVU=;
-        b=g2VR9mc7Hr1AaxZrqangX0oRdrVDaAmH1eVSa5vu5/S8167IX0pEK8PeEHNgcokNb/
-         uYmlGwNo1x8lWVoY30trqupYSWEY6N50H7H6cCp/1PTwS8A3SpF+j/9oy+3baOrIh6U4
-         ROA5tbFICipzi0OmOZfMD+IE2VOfw99qOzg+I=
+        bh=ZZ3dIYF17xs8rq6AigAREJS41sYYsN6ajt+jO0WIUAc=;
+        b=k/mSGpy7Gn7gaeUqTmgUQEuWeKxEgzZQP3ejR1LjntRPIlqLl1DmXvGc6SIjSp4UTx
+         MtwjXBDzIXP+h4/VpqZU/yPDXhLwPqFnCx0pemFoFC1xSNJiVICLKkGQu9v7YImlCOxb
+         rKagTKMb8h7/DD/yywIOPuCykf3/u0hSYVzsh+yWSMqSjOs592qBMrdW0OP1rcOrpyWo
+         e4UxkpHCNblUdNYKp5hvVb7FkWrL1mKCwlqoXSs/EI6rqojJT163tOVg3a5oYDEvOu5C
+         Aih4+bGxDQ+pZfPKYOHo3F8fNqONwK7tE0DBnWYZ5rNnyItu4JBGlw9fHxMKesNcv0UI
+         BqfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=9XUgLuGGfG6fvCOnoM0als/tlAr9SP064P/RkEd2QVU=;
-        b=QQGJvf26QGWT36oRxL0geYvW5ABlkiSqzKqdNfVuGyrKNi5JjeGtBey7TA5cqvPm74
-         ZPaKJpo78EKw3Ak/wb+4VdQq4Fb171H7MaAEi8RCYVT2oAq8jPFA209SE1a0sGFwePJE
-         g4Dgp0qqmoS0PzZ1okg07IMMZtdwrCDB59JCYMtIjXY+NRfy/HeGwzWJHgZ6YUsjDGdn
-         dg+NaVRKkiuc/suBYfbVqu6oVS+LFYZSaE5yeg2wsmHrurotwRkozuclTgjm+BN4dDiL
-         OJMFjtC16KzWJClFUlpkXjKSvx07aI/MQJ0sa4iXUIZeRS2gZwStHmHjFx5Poig98gQ1
-         Ho8Q==
-X-Gm-Message-State: AOAM531vFsARZpypo2ry0NTjOZDsd8j9Mw5t2zFBE3F6Rg4hN8aOF7U3
-        JnFpLbYGI7cr6/LWnd1EBwSGVQ==
-X-Google-Smtp-Source: ABdhPJyGbp6cuYMaS0B0oIRAgdeVdc18BO8J+/8W/s84Bn4K4Zz7KIcCPrqhQzPlv89666Bem2FpZw==
-X-Received: by 2002:adf:f683:: with SMTP id v3mr32914523wrp.133.1620682645559;
-        Mon, 10 May 2021 14:37:25 -0700 (PDT)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:61:302:5cab:f78e:32e4:87aa])
-        by smtp.gmail.com with ESMTPSA id l12sm28136463wrq.36.2021.05.10.14.37.24
+        bh=ZZ3dIYF17xs8rq6AigAREJS41sYYsN6ajt+jO0WIUAc=;
+        b=KO+uQ7FDOcuK60EdiQRVxUkwU5gJvRzJJI3uGSFi0QAbZto7rl4ohThZ8tg/EcOfbe
+         VaWPuKJeuAfSEXmmzwJSe1rXZEBiOgfACDY0ZSlElWGVBZlzf/S2mqJlmZn08kQaHu9Z
+         RPsCgB9K+2I78o/3DKCVBadScB4T7ah51khfCoCi+IHvJLM7mHVCSnZfLzOwFsgPdT0B
+         q2YKw2hzIuSywWvbVQiQ06vdRLQFvR5WIHKjoagtSzb6F3V9+Y7X+MayzqKaWh4PNr0/
+         EbcAYZ+StNSjaqJwTe2hX7BAJScz9+rGTKe3FLdhYb2OJdl7Ye0GgygkYheCwqGOivhV
+         soDg==
+X-Gm-Message-State: AOAM532ousPDeM4pB8UTl2jh+worOIdm5fBmjkArI2ilAUPfYqO+3ORk
+        anvTwOUvZXCRrCSA/9DW3R4=
+X-Google-Smtp-Source: ABdhPJwg5ANjLJgEc7KYzBaudAUgK5jdtvLRcMzuf9jtf0GuypbXJBgTxrD5Iyrd55W8ym2F3lwZFg==
+X-Received: by 2002:a05:6512:114e:: with SMTP id m14mr19377348lfg.385.1620682657547;
+        Mon, 10 May 2021 14:37:37 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.gmail.com with ESMTPSA id 9sm431315lfm.271.2021.05.10.14.37.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 14:37:25 -0700 (PDT)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@kernel.org, jackmanb@google.com,
-        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>,
-        syzbot+63122d0bc347f18c1884@syzkaller.appspotmail.com
-Subject: [PATCH bpf] bpf: Fix nested bpf_bprintf_prepare with more per-cpu buffers
-Date:   Mon, 10 May 2021 23:37:09 +0200
-Message-Id: <20210510213709.2004366-1-revest@chromium.org>
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
+        Mon, 10 May 2021 14:37:37 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: [PATCH v1 0/2] Enable compile-testing for Tegra memory drivers
+Date:   Tue, 11 May 2021 00:37:27 +0300
+Message-Id: <20210510213729.7095-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bpf_seq_printf, bpf_trace_printk and bpf_snprintf helpers share one
-per-cpu buffer that they use to store temporary data (arguments to
-bprintf). They "get" that buffer with try_get_fmt_tmp_buf and "put" it
-by the end of their scope with bpf_bprintf_cleanup.
+Hi,
 
-If one of these helpers gets called within the scope of one of these
-helpers, for example: a first bpf program gets called, uses
-bpf_trace_printk which calls raw_spin_lock_irqsave which is traced by
-another bpf program that calls bpf_snprintf, then the second "get"
-fails. Essentially, these helpers are not re-entrant. They would return
--EBUSY and print a warning message once.
+This small series enables compile-testing for all of NVIDIA Tegra memory
+drivers.
 
-This patch triples the number of bprintf buffers to allow three levels
-of nesting. This is very similar to what was done for tracepoints in
-"9594dc3c7e7 bpf: fix nested bpf tracepoints with per-cpu data"
+Dmitry Osipenko (2):
+  soc/tegra: fuse: Add missing stubs
+  memory: tegra: Enable compile testing for all drivers
 
-Fixes: d9c9e4db186a ("bpf: Factorize bpf_trace_printk and bpf_seq_printf")
-Reported-by: syzbot+63122d0bc347f18c1884@syzkaller.appspotmail.com
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- kernel/bpf/helpers.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+ drivers/memory/tegra/Kconfig | 10 +++++-----
+ include/soc/tegra/fuse.h     | 20 +++++++++++++++++---
+ 2 files changed, 22 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 544773970dbc..302410ebbea9 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -696,34 +696,35 @@ static int bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
-  */
- #define MAX_PRINTF_BUF_LEN	512
- 
--struct bpf_printf_buf {
--	char tmp_buf[MAX_PRINTF_BUF_LEN];
-+/* Support executing three nested bprintf helper calls on a given CPU */
-+struct bpf_bprintf_buffers {
-+	char tmp_bufs[3][MAX_PRINTF_BUF_LEN];
- };
--static DEFINE_PER_CPU(struct bpf_printf_buf, bpf_printf_buf);
--static DEFINE_PER_CPU(int, bpf_printf_buf_used);
-+static DEFINE_PER_CPU(struct bpf_bprintf_bufs, bpf_bprintf_bufs);
-+static DEFINE_PER_CPU(int, bpf_bprintf_nest_level);
- 
- static int try_get_fmt_tmp_buf(char **tmp_buf)
- {
--	struct bpf_printf_buf *bufs;
--	int used;
-+	struct bpf_bprintf_buffers *bufs;
-+	int nest_level;
- 
- 	preempt_disable();
--	used = this_cpu_inc_return(bpf_printf_buf_used);
--	if (WARN_ON_ONCE(used > 1)) {
--		this_cpu_dec(bpf_printf_buf_used);
-+	nest_level = this_cpu_inc_return(bpf_bprintf_nest_level);
-+	if (WARN_ON_ONCE(nest_level > ARRAY_SIZE(bufs->tmp_bufs))) {
-+		this_cpu_dec(bpf_bprintf_nest_level);
- 		preempt_enable();
- 		return -EBUSY;
- 	}
--	bufs = this_cpu_ptr(&bpf_printf_buf);
--	*tmp_buf = bufs->tmp_buf;
-+	bufs = this_cpu_ptr(&bpf_bprintf_buf);
-+	*tmp_buf = bufs->tmp_bufs[nest_level - 1];
- 
- 	return 0;
- }
- 
- void bpf_bprintf_cleanup(void)
- {
--	if (this_cpu_read(bpf_printf_buf_used)) {
--		this_cpu_dec(bpf_printf_buf_used);
-+	if (this_cpu_read(bpf_bprintf_nest_level)) {
-+		this_cpu_dec(bpf_bprintf_nest_level);
- 		preempt_enable();
- 	}
- }
 -- 
-2.31.1.607.g51e8a6a459-goog
+2.30.2
 
