@@ -2,85 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1168E377E55
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 214BB377E5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbhEJIhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 04:37:47 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:52006 "EHLO mail.skyhub.de"
+        id S230153AbhEJImF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 04:42:05 -0400
+Received: from verein.lst.de ([213.95.11.211]:57650 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230029AbhEJIhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 04:37:47 -0400
-Received: from zn.tnic (p200300ec2f066d00c3c3b9d774715f25.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:6d00:c3c3:b9d7:7471:5f25])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 487AB1EC04A6;
-        Mon, 10 May 2021 10:36:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1620635801;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=lKWUtHrdn8WhQE7UfCe0YXghCkTkcq/bmDYMTWW7yow=;
-        b=EkAkUyXv5bYLO2N6rxZW6U9gU3fa1hBBhFNRSiZGNr9EoncLWXsLH3U55unvnjMxzwfMYo
-        dIhSLhKbw4UoVHoczYaMrasflOjVBWjrctxT7lht/csnFpswYDmmfWWrxSeLwxaDe6CisT
-        2M3vwDeN8wOnMmlrEXf+Wwk2vaWoWHs=
-Date:   Mon, 10 May 2021 10:36:37 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     rric@kernel.org, mchehab@kernel.org, tony.luck@intel.com,
-        james.morse@arm.com, s.temerkhanov@gmail.com,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] EDAC/thunderx: Fix an error message
-Message-ID: <YJjwlTI30S9PfD4I@zn.tnic>
-References: <0c046ef5cfb367a3f707ef4270e21a2bcbf44952.1620280098.git.christophe.jaillet@wanadoo.fr>
+        id S230029AbhEJImE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 04:42:04 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 4D61467373; Mon, 10 May 2021 10:40:57 +0200 (CEST)
+Date:   Mon, 10 May 2021 10:40:57 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Julien Grall <julien@xen.org>
+Cc:     f.fainelli@gmail.com, Stefano Stabellini <sstabellini@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        linux-kernel@vger.kernel.org,
+        osstest service owner <osstest-admin@xenproject.org>,
+        hch@lst.de, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        iommu@lists.linux-foundation.org
+Subject: Re: Regression when booting 5.15 as dom0 on arm64 (WAS: Re:
+ [linux-linus test] 161829: regressions - FAIL)
+Message-ID: <20210510084057.GA933@lst.de>
+References: <osstest-161829-mainreport@xen.org> <4ea1e89f-a7a0-7664-470c-b3cf773a1031@xen.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0c046ef5cfb367a3f707ef4270e21a2bcbf44952.1620280098.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <4ea1e89f-a7a0-7664-470c-b3cf773a1031@xen.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 07:49:34AM +0200, Christophe JAILLET wrote:
-> 'ret' is known to be 0 here.
-> No error code is available, so just remove it from the error message.
-> 
-> Fixes: 41003396f932 ("EDAC, thunderx: Add Cavium ThunderX EDAC driver")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/edac/thunderx_edac.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/edac/thunderx_edac.c b/drivers/edac/thunderx_edac.c
-> index 0eb5eb97fd74..f13674081cb6 100644
-> --- a/drivers/edac/thunderx_edac.c
-> +++ b/drivers/edac/thunderx_edac.c
-> @@ -1368,7 +1368,7 @@ static int thunderx_ocx_probe(struct pci_dev *pdev,
->  					      name, 1, "CCPI", 1,
->  					      0, NULL, 0, idx);
->  	if (!edac_dev) {
-> -		dev_err(&pdev->dev, "Cannot allocate EDAC device: %d\n", ret);
-> +		dev_err(&pdev->dev, "Cannot allocate EDAC device\n");
->  		return -ENOMEM;
->  	}
->  	ocx = edac_dev->pvt_info;
-> @@ -1380,7 +1380,7 @@ static int thunderx_ocx_probe(struct pci_dev *pdev,
->  
->  	ocx->regs = pcim_iomap_table(pdev)[0];
->  	if (!ocx->regs) {
-> -		dev_err(&pdev->dev, "Cannot map PCI resources: %d\n", ret);
-> +		dev_err(&pdev->dev, "Cannot map PCI resources\n");
->  		ret = -ENODEV;
->  		goto err_free;
->  	}
-> -- 
+On Sat, May 08, 2021 at 12:32:37AM +0100, Julien Grall wrote:
+> The pointer dereferenced seems to suggest that the swiotlb hasn't been 
+> allocated. From what I can tell, this may be because swiotlb_force is set 
+> to SWIOTLB_NO_FORCE, we will still enable the swiotlb when running on top 
+> of Xen.
+>
+> I am not entirely sure what would be the correct fix. Any opinions?
 
-Applied, thanks.
+Can you try something like the patch below (not even compile tested, but
+the intent should be obvious?
 
--- 
-Regards/Gruss,
-    Boris.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 16a2b2b1c54d..7671bc153fb1 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -44,6 +44,8 @@
+ #include <asm/tlb.h>
+ #include <asm/alternative.h>
+ 
++#include <xen/arm/swiotlb-xen.h>
++
+ /*
+  * We need to be able to catch inadvertent references to memstart_addr
+  * that occur (potentially in generic code) before arm64_memblock_init()
+@@ -482,7 +484,7 @@ void __init mem_init(void)
+ 	if (swiotlb_force == SWIOTLB_FORCE ||
+ 	    max_pfn > PFN_DOWN(arm64_dma_phys_limit))
+ 		swiotlb_init(1);
+-	else
++	else if (!IS_ENABLED(CONFIG_XEN) || !xen_swiotlb_detect())
+ 		swiotlb_force = SWIOTLB_NO_FORCE;
+ 
+ 	set_max_mapnr(max_pfn - PHYS_PFN_OFFSET);
