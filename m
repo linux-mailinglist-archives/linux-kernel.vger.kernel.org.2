@@ -2,153 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E193796DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B2B3796E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbhEJSQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 14:16:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230165AbhEJSQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 14:16:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1187D611F0;
-        Mon, 10 May 2021 18:14:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620670496;
-        bh=ypUzHgI3DDcWO+oAfwbWFnBxdqOAYhvWBP5s0EGEWiw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=cV/WHw+lmmLatO+tAhiHDMVL9xNANJ3LZVL8Ep44U7vaQkhRWIuaWrsWQFAq+mS6n
-         tqVUpqqkHs0KBwXn6OqeA5B59tdZx6Bl63NzbUZaN2O+HcqrLRpBdXV0sDxIjo1JZL
-         3ToM/YCUGHeP65saSY9vmct2ymjAPYLDm9aCNgIvqoSHmDn4SduKfAaQB0yFZJh/gK
-         QpljD6Nhlyr5eBKNqFtKoxkntuFK0GS4i5wxAMi/t1a+zlzVkWMS+1q7+P+LFaZikx
-         oAZXOon0jUb0TBxAXSxM4fUajSYbPqd4p/Otrn3ydO57NPp7YdhfRU5PaK9nL3PPul
-         8LmblpLQnnMbQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B6B3D5C0333; Mon, 10 May 2021 11:14:55 -0700 (PDT)
-Date:   Mon, 10 May 2021 11:14:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [rcu:dev.2021.05.02a 114/114] kernel/rcu/refscale.c:472:15:
- warning: variable 'x' set but not used
-Message-ID: <20210510181455.GH975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <202105061040.osgFAKrJ-lkp@intel.com>
+        id S232361AbhEJSQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 14:16:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230165AbhEJSQX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 14:16:23 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B8CC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:15:17 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id s1-20020a4ac1010000b02901cfd9170ce2so3653872oop.12
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:15:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=rni/8nhHV7qXN2iY+BROqiZjKk32a9q0hZwNLgb5WwM=;
+        b=G/xZOlZkRSIIpCpdw+K0oVxHNwIwADJP2EQPwUsmVDJ32K8/Q4k4vOR9Xdo3YTGkVO
+         ZbEUvKqQ3xjibLhgKLxMgt00gqcV5dtLUYC27NWJeKHF8Vs76e5sBxCMZH5Uv8UBc7Qr
+         kmTSSAQk5Gp+32ZkKSI+1J5Reubyn3NthQE4A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=rni/8nhHV7qXN2iY+BROqiZjKk32a9q0hZwNLgb5WwM=;
+        b=DeyUhMsKpcJdkmNdGYaQ+S8eMJHshc9KlG1apcj+9gvfis+39y+DTrWce1lv+ipkBU
+         6S7UvcYl8K8wuLm2N3rlgqRQ4tdbhrfbManIJ7795qmEn+CMjaiWNoXxXXaCK7yC+1Ly
+         FUrrPuSJfEQsyLYfTc55H+lQCIPovAwS1cm19x4nkReXwOKB0iYlhGmXD2OnQXjpVTdZ
+         eJhCWsDtWkpJvgJyrous1/fEfsIQJyHgPtWBAxk5BZSxkOFPQQriS2NGCwPu+NSqzYfl
+         TUQ2BxgNJ3UOzhUUsG+CSjXBOC3JigHDZjuw0Tb/6t0vCRm7Bsw1or4S7hNnVWLZdnXz
+         VGlw==
+X-Gm-Message-State: AOAM533fVg/L7qHDylXlSlbtKDtuNWDxwQjy6rMD6Ft7hG9z04SA/iCg
+        SjYf7TS9yt+99ZwySlBk3F/Pegqk3rR3mGLleTPxon/U4Qw=
+X-Google-Smtp-Source: ABdhPJzhZvGhDZJYl9F/EOaunXHj/ckIOeOUKqiU34nSNZaVoUAUUF7RFS6usQYG/ft8eVEfBKUZYfMFkXVzyZ+nkrY=
+X-Received: by 2002:a4a:1703:: with SMTP id 3mr20059748ooe.92.1620670516774;
+ Mon, 10 May 2021 11:15:16 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 10 May 2021 11:15:16 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202105061040.osgFAKrJ-lkp@intel.com>
+In-Reply-To: <1620251521-29999-1-git-send-email-khsieh@codeaurora.org>
+References: <1620251521-29999-1-git-send-email-khsieh@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 10 May 2021 11:15:16 -0700
+Message-ID: <CAE-0n50HUo0tm22xX+j8H-u+EDH+wBrdEvM68p-X3EyR8S_u3Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dp: handle irq_hpd with sink_count = 0 correctly
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
+        vkoul@kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 10:16:43AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.05.02a
-> head:   35d2c62851bc03a945ae81ab0726985f726107b1
-> commit: 35d2c62851bc03a945ae81ab0726985f726107b1 [114/114] refscale: Add measurement of clock readout
-> config: nios2-randconfig-r014-20210505 (attached as .config)
-> compiler: nios2-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?id=35d2c62851bc03a945ae81ab0726985f726107b1
->         git remote add rcu https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
->         git fetch --no-tags rcu dev.2021.05.02a
->         git checkout 35d2c62851bc03a945ae81ab0726985f726107b1
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross W=1 ARCH=nios2 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    kernel/rcu/refscale.c: In function 'ref_clock_section':
-> >> kernel/rcu/refscale.c:472:15: warning: variable 'x' set but not used [-Wunused-but-set-variable]
->      472 |  volatile u64 x;
->          |               ^
->    kernel/rcu/refscale.c: In function 'ref_clock_delay_section':
->    kernel/rcu/refscale.c:484:15: warning: variable 'x' set but not used [-Wunused-but-set-variable]
->      484 |  volatile u64 x;
->          |               ^
-> 
-> 
-> vim +/x +472 kernel/rcu/refscale.c
-> 
->    469	
->    470	static void ref_clock_section(const int nloops)
->    471	{
->  > 472		volatile u64 x;
->    473		int i;
->    474	
->    475		preempt_disable();
->    476		for (i = nloops; i >= 0; i--) {
->    477			x = ktime_get_real_fast_ns();
->    478		}
->    479		preempt_enable();
->    480	}
->    481	
+Quoting Kuogee Hsieh (2021-05-05 14:52:01)
+> irq_hpd interrupt should be handled after dongle plugged in and
+> before dongle unplugged. Hence irq_hpd interrupt is enabled at
+> the end of the plugin handle and disabled at the beginning of
+> unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
+> handled same as the dongle unplugged which tears down the mainlink
+> and disables the phy. This patch fixes this problem by only tearing
+> down the mainlink but keeping phy enabled at irq_hpd with
+> sink_count = 0 handle so that next irq_hpe with sink_count =1 can be
+> handled by setup mainlink only.
+>
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
 
-OK, how about with the following fixup patch?
+It works for me, but I question the poking into phy internals below.
 
-But please note that this compiler warning is incorrect.  The variable
-is marked volatile, so the compiler cannot possibly know that it is in
-fact unused.  Some debugger might be examining it, for but one example.
+>  drivers/gpu/drm/msm/dp/dp_catalog.c |  5 +--
+>  drivers/gpu/drm/msm/dp/dp_ctrl.c    | 78 +++++++++++++++++++++++++++++++++----
+>  drivers/gpu/drm/msm/dp/dp_ctrl.h    |  2 +
+>  drivers/gpu/drm/msm/dp/dp_display.c | 47 +++++++++++++++++-----
+>  4 files changed, 111 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
+> index b1a9b1b..f4f53f2 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_catalog.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+> @@ -582,10 +582,9 @@ void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog)
+>
+>         u32 reftimer = dp_read_aux(catalog, REG_DP_DP_HPD_REFTIMER);
+>
+> -       /* enable HPD interrupts */
+> +       /* enable HPD plug and unplug interrupts */
+>         dp_catalog_hpd_config_intr(dp_catalog,
+> -               DP_DP_HPD_PLUG_INT_MASK | DP_DP_IRQ_HPD_INT_MASK
+> -               | DP_DP_HPD_UNPLUG_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
+> +               DP_DP_HPD_PLUG_INT_MASK | DP_DP_HPD_UNPLUG_INT_MASK, true);
+>
+>         /* Configure REFTIMER and enable it */
+>         reftimer |= DP_DP_HPD_REFTIMER_ENABLE;
+> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> index 8d59eb9..5922259 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> @@ -1334,8 +1334,10 @@ static int dp_ctrl_enable_mainlink_clocks(struct dp_ctrl_private *ctrl)
+>         dp_ctrl_set_clock_rate(ctrl, DP_CTRL_PM, "ctrl_link",
+>                                         ctrl->link->link_params.rate * 1000);
+>
+> -       phy_configure(phy, &dp_io->phy_opts);
+> -       phy_power_on(phy);
+> +       if (!phy->power_count) {
+> +               phy_configure(phy, &dp_io->phy_opts);
+> +               phy_power_on(phy);
+> +       }
+>
+>         ret = dp_power_clk_enable(ctrl->power, DP_CTRL_PM, true);
+>         if (ret)
+> @@ -1414,6 +1416,10 @@ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
+>         phy = dp_io->phy;
+>
+>         dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
+> +
+> +       if (phy->power_count)
+> +               phy_power_off(phy);
+> +
+>         phy_exit(phy);
+>
+>         DRM_DEBUG_DP("Host deinitialized successfully\n");
+> @@ -1445,7 +1451,6 @@ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
+>
+>         dp_catalog_ctrl_mainlink_ctrl(ctrl->catalog, false);
+>         opts_dp->lanes = ctrl->link->link_params.num_lanes;
+> -       phy_configure(phy, &dp_io->phy_opts);
+>         /*
+>          * Disable and re-enable the mainlink clock since the
+>          * link clock might have been adjusted as part of the
+> @@ -1456,9 +1461,13 @@ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
+>                 DRM_ERROR("Failed to disable clocks. ret=%d\n", ret);
+>                 return ret;
+>         }
+> -       phy_power_off(phy);
+> -       /* hw recommended delay before re-enabling clocks */
+> -       msleep(20);
+> +
+> +       if (phy->power_count) {
 
-Thus, the fixup patch below is a workaround for the compiler bug.
+I don't believe members of 'phy' are supposed to be looked at by various
+phy consumer drivers. Vinod, is that right?
 
-							Thanx, Paul
+> +               phy_configure(phy, &dp_io->phy_opts);
+> +               phy_power_off(phy);
+> +               /* hw recommended delay before re-enabling clocks */
+> +               msleep(20);
+> +       }
+>
+>         ret = dp_ctrl_enable_mainlink_clocks(ctrl);
+>         if (ret) {
+> @@ -1487,7 +1496,9 @@ static int dp_ctrl_deinitialize_mainlink(struct dp_ctrl_private *ctrl)
+>                 DRM_ERROR("Failed to disable link clocks. ret=%d\n", ret);
+>         }
+>
+> -       phy_power_off(phy);
+> +       if (phy->power_count)
+> +               phy_power_off(phy);
+> +
 
-------------------------------------------------------------------------
+Given that init/power_on are both refcounted, maybe the code could call
+phy_init()/phy_exit() when hpd changes, i.e. the link is up and
+phy_power_on()/phy_power_off() when the mainlink is supposed to be
+enabled (I guess when we're going to display bit to the screen?). That
+way we don't have to check the counts.
 
-commit 1838223c42250bfc27a15b9712591e663babb1f0
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Mon May 10 11:12:01 2021 -0700
-
-    squash! refscale: Add measurement of clock readout
-    
-    [ paulmck: Adjust volatility per kernel test robot feedback. ]
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index bef61a322104..20e892b2502c 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -467,29 +467,33 @@ static struct ref_scale_ops acqrel_ops = {
- 	.name		= "acqrel"
- };
- 
-+static volatile u64 stopopts;
-+
- static void ref_clock_section(const int nloops)
- {
--	volatile u64 x;
-+	u64 x;
- 	int i;
- 
- 	preempt_disable();
- 	for (i = nloops; i >= 0; i--) {
--		x = ktime_get_real_fast_ns();
-+		x += ktime_get_real_fast_ns();
- 	}
- 	preempt_enable();
-+	stopopts = x;
- }
- 
- static void ref_clock_delay_section(const int nloops, const int udl, const int ndl)
- {
--	volatile u64 x;
-+	u64 x;
- 	int i;
- 
- 	preempt_disable();
- 	for (i = nloops; i >= 0; i--) {
--		x = ktime_get_real_fast_ns();
-+		x += ktime_get_real_fast_ns();
- 		un_delay(udl, ndl);
- 	}
- 	preempt_enable();
-+	stopopts = x;
- }
- 
- static struct ref_scale_ops clock_ops = {
+>         phy_exit(phy);
+>
+>         return 0;
