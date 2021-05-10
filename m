@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC42378797
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58950378798
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237773AbhEJLQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:16:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41986 "EHLO mail.kernel.org"
+        id S237791AbhEJLQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:16:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232734AbhEJKuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232807AbhEJKuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 06:50:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E11A46195E;
-        Mon, 10 May 2021 10:40:23 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52C3A61953;
+        Mon, 10 May 2021 10:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643224;
-        bh=j+yJxaDaNg+0dsAfuh4blpsx95zm7XMjaysqroZ6ZpI=;
+        s=korg; t=1620643226;
+        bh=2Ew7SdvYxcFLa2uDXttS0jcue6Vsq8HnzaliefXOdWo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jkXipbe9nzmOxV0ATMSB9UM6u+W6lZG+re74GQuZJBr7fHtir7NqpwgSa7CUlPG2s
-         fKX5NI0wF6mky5qh4NQ2AUqFpTCZoooBYEnG2XNb0RBAOH2GJJt82awbnxixfEi09u
-         QPZsZ+ZeNc7XKxlmbUwtIy3EOhwmdG95GIoPiMrI=
+        b=05HAAdOSt1f6uLoPmm6oIsvnDLS5AhhdroSUYcxKTZCI1WbDQr7gSNJWLd6MgKYeV
+         JCEQj69fViGeKH882MNJaeEIVihTR7lWivYd1IZa/OII3WDbHWw59oAG66TOACmxDX
+         Ba4I4I8vPb55pafc3Fe/NaJKrQTLsMk32iPBvl6s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guochun Mao <guochun.mao@mediatek.com>,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH 5.10 227/299] ubifs: Only check replay with inode type to judge if inode linked
-Date:   Mon, 10 May 2021 12:20:24 +0200
-Message-Id: <20210510102012.449612872@linuxfoundation.org>
+        stable@vger.kernel.org, Yunlei He <heyunlei@hihonor.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH 5.10 228/299] f2fs: fix error handling in f2fs_end_enable_verity()
+Date:   Mon, 10 May 2021 12:20:25 +0200
+Message-Id: <20210510102012.485457773@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
 References: <20210510102004.821838356@linuxfoundation.org>
@@ -39,46 +40,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guochun Mao <guochun.mao@mediatek.com>
+From: Eric Biggers <ebiggers@google.com>
 
-commit 3e903315790baf4a966436e7f32e9c97864570ac upstream.
+commit 3c0315424f5e3d2a4113c7272367bee1e8e6a174 upstream.
 
-Conside the following case, it just write a big file into flash,
-when complete writing, delete the file, and then power off promptly.
-Next time power on, we'll get a replay list like:
-...
-LEB 1105:211344 len 4144 deletion 0 sqnum 428783 key type 1 inode 80
-LEB 15:233544 len 160 deletion 1 sqnum 428785 key type 0 inode 80
-LEB 1105:215488 len 4144 deletion 0 sqnum 428787 key type 1 inode 80
-...
-In the replay list, data nodes' deletion are 0, and the inode node's
-deletion is 1. In current logic, the file's dentry will be removed,
-but inode and the flash space it occupied will be reserved.
-User will see that much free space been disappeared.
+f2fs didn't properly clean up if verity failed to be enabled on a file:
 
-We only need to check the deletion value of the following inode type
-node of the replay entry.
+- It left verity metadata (pages past EOF) in the page cache, which
+  would be exposed to userspace if the file was later extended.
 
-Fixes: e58725d51fa8 ("ubifs: Handle re-linking of inodes correctly while recovery")
-Cc: stable@vger.kernel.org
-Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+- It didn't truncate the verity metadata at all (either from cache or
+  from disk) if an error occurred while setting the verity bit.
+
+Fix these bugs by adding a call to truncate_inode_pages() and ensuring
+that we truncate the verity metadata (both from cache and from disk) in
+all error paths.  Also rework the code to cleanly separate the success
+path from the error paths, which makes it much easier to understand.
+
+Finally, log a message if f2fs_truncate() fails, since it might
+otherwise fail silently.
+
+Reported-by: Yunlei He <heyunlei@hihonor.com>
+Fixes: 95ae251fe828 ("f2fs: add fs-verity support")
+Cc: <stable@vger.kernel.org> # v5.4+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ubifs/replay.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/f2fs/verity.c |   79 ++++++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 56 insertions(+), 23 deletions(-)
 
---- a/fs/ubifs/replay.c
-+++ b/fs/ubifs/replay.c
-@@ -223,7 +223,8 @@ static bool inode_still_linked(struct ub
- 	 */
- 	list_for_each_entry_reverse(r, &c->replay_list, list) {
- 		ubifs_assert(c, r->sqnum >= rino->sqnum);
--		if (key_inum(c, &r->key) == key_inum(c, &rino->key))
-+		if (key_inum(c, &r->key) == key_inum(c, &rino->key) &&
-+		    key_type(c, &r->key) == UBIFS_INO_KEY)
- 			return r->deletion == 0;
+--- a/fs/f2fs/verity.c
++++ b/fs/f2fs/verity.c
+@@ -152,40 +152,73 @@ static int f2fs_end_enable_verity(struct
+ 				  size_t desc_size, u64 merkle_tree_size)
+ {
+ 	struct inode *inode = file_inode(filp);
++	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+ 	u64 desc_pos = f2fs_verity_metadata_pos(inode) + merkle_tree_size;
+ 	struct fsverity_descriptor_location dloc = {
+ 		.version = cpu_to_le32(F2FS_VERIFY_VER),
+ 		.size = cpu_to_le32(desc_size),
+ 		.pos = cpu_to_le64(desc_pos),
+ 	};
+-	int err = 0;
++	int err = 0, err2 = 0;
  
+-	if (desc != NULL) {
+-		/* Succeeded; write the verity descriptor. */
+-		err = pagecache_write(inode, desc, desc_size, desc_pos);
+-
+-		/* Write all pages before clearing FI_VERITY_IN_PROGRESS. */
+-		if (!err)
+-			err = filemap_write_and_wait(inode->i_mapping);
+-	}
+-
+-	/* If we failed, truncate anything we wrote past i_size. */
+-	if (desc == NULL || err)
+-		f2fs_truncate(inode);
++	/*
++	 * If an error already occurred (which fs/verity/ signals by passing
++	 * desc == NULL), then only clean-up is needed.
++	 */
++	if (desc == NULL)
++		goto cleanup;
++
++	/* Append the verity descriptor. */
++	err = pagecache_write(inode, desc, desc_size, desc_pos);
++	if (err)
++		goto cleanup;
++
++	/*
++	 * Write all pages (both data and verity metadata).  Note that this must
++	 * happen before clearing FI_VERITY_IN_PROGRESS; otherwise pages beyond
++	 * i_size won't be written properly.  For crash consistency, this also
++	 * must happen before the verity inode flag gets persisted.
++	 */
++	err = filemap_write_and_wait(inode->i_mapping);
++	if (err)
++		goto cleanup;
++
++	/* Set the verity xattr. */
++	err = f2fs_setxattr(inode, F2FS_XATTR_INDEX_VERITY,
++			    F2FS_XATTR_NAME_VERITY, &dloc, sizeof(dloc),
++			    NULL, XATTR_CREATE);
++	if (err)
++		goto cleanup;
++
++	/* Finally, set the verity inode flag. */
++	file_set_verity(inode);
++	f2fs_set_inode_flags(inode);
++	f2fs_mark_inode_dirty_sync(inode, true);
+ 
+ 	clear_inode_flag(inode, FI_VERITY_IN_PROGRESS);
++	return 0;
+ 
+-	if (desc != NULL && !err) {
+-		err = f2fs_setxattr(inode, F2FS_XATTR_INDEX_VERITY,
+-				    F2FS_XATTR_NAME_VERITY, &dloc, sizeof(dloc),
+-				    NULL, XATTR_CREATE);
+-		if (!err) {
+-			file_set_verity(inode);
+-			f2fs_set_inode_flags(inode);
+-			f2fs_mark_inode_dirty_sync(inode, true);
+-		}
++cleanup:
++	/*
++	 * Verity failed to be enabled, so clean up by truncating any verity
++	 * metadata that was written beyond i_size (both from cache and from
++	 * disk) and clearing FI_VERITY_IN_PROGRESS.
++	 *
++	 * Taking i_gc_rwsem[WRITE] is needed to stop f2fs garbage collection
++	 * from re-instantiating cached pages we are truncating (since unlike
++	 * normal file accesses, garbage collection isn't limited by i_size).
++	 */
++	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
++	truncate_inode_pages(inode->i_mapping, inode->i_size);
++	err2 = f2fs_truncate(inode);
++	if (err2) {
++		f2fs_err(sbi, "Truncating verity metadata failed (errno=%d)",
++			 err2);
++		set_sbi_flag(sbi, SBI_NEED_FSCK);
  	}
+-	return err;
++	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
++	clear_inode_flag(inode, FI_VERITY_IN_PROGRESS);
++	return err ?: err2;
+ }
+ 
+ static int f2fs_get_verity_descriptor(struct inode *inode, void *buf,
 
 
