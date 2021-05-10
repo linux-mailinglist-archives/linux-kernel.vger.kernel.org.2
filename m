@@ -2,159 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84AA7377EE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C45D0377EE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbhEJJFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:05:30 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:50266 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbhEJJF3 (ORCPT
+        id S230169AbhEJJGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:06:22 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2607 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhEJJGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:05:29 -0400
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210510090423epoutp045de4972afffc44387511d840cc6d1fcf~9qS_6NUT81837118371epoutp04k
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 09:04:23 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210510090423epoutp045de4972afffc44387511d840cc6d1fcf~9qS_6NUT81837118371epoutp04k
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1620637463;
-        bh=LyJ2/vrXA79R2bIzxqX+Panl8BD71MJWRMa3PlB7Z6c=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=mhSzJb+hfjCmCd2HQJ7ZGiBcREUWeTOpARrqhpi3tpTP3LTDWWoyzIku6Vy98wGeV
-         7flKUUpzkhs00v1rXEUBBxX//FMYSUpFLtxfo0ihk6WcOeATyCdYUCKzwNFN0Qvnq3
-         kqAUU1WY1HsY2DL5krTPXWhayWFZN6fTQcgb+FfE=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210510090422epcas2p152c5088255ca59e456d325018be031eb~9qS_jFj100043500435epcas2p1d;
-        Mon, 10 May 2021 09:04:22 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.181]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4Fdw906g0gz4x9QS; Mon, 10 May
-        2021 09:04:20 +0000 (GMT)
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        5A.83.09433.217F8906; Mon, 10 May 2021 18:04:18 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210510090417epcas2p39cbc55bfe85c5b22aedac38c62d54c5e~9qS55jlxD3141131411epcas2p39;
-        Mon, 10 May 2021 09:04:17 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210510090417epsmtrp254f93fe9b4cae2ed9e925c438ec1fa66~9qS54xgzu2598725987epsmtrp2c;
-        Mon, 10 May 2021 09:04:17 +0000 (GMT)
-X-AuditID: b6c32a47-f4bff700000024d9-7b-6098f7122b8b
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        82.9C.08637.117F8906; Mon, 10 May 2021 18:04:17 +0900 (KST)
-Received: from KORCO039056 (unknown [10.229.8.156]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210510090417epsmtip18096a2fa52447a4807b551688872e665~9qS5s2TS20529505295epsmtip1L;
-        Mon, 10 May 2021 09:04:17 +0000 (GMT)
-From:   "Chanho Park" <chanho61.park@samsung.com>
-To:     "'Christoph Hellwig'" <hch@lst.de>
-Cc:     "'Konrad Rzeszutek Wilk'" <konrad.wilk@oracle.com>,
-        "'Marek Szyprowski'" <m.szyprowski@samsung.com>,
-        "'Robin Murphy'" <robin.murphy@arm.com>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        "'Bumyong Lee'" <bumyong.lee@samsung.com>
-In-Reply-To: <20210510084406.GA1093@lst.de>
-Subject: RE: [PATCH] swiotlb: manipulate orig_addr when tlb_addr has offset
-Date:   Mon, 10 May 2021 18:04:17 +0900
-Message-ID: <002401d7457b$75171560$5f454020$@samsung.com>
+        Mon, 10 May 2021 05:06:20 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fdw656rm2zQldM;
+        Mon, 10 May 2021 17:01:49 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 10 May
+ 2021 17:05:08 +0800
+Subject: Re: [f2fs-dev] [PATCH v4] f2fs: compress: add compress_inode to cache
+ compressed blockst
+From:   Chao Yu <yuchao0@huawei.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20210202080056.51658-1-yuchao0@huawei.com>
+ <46e9924c-0086-cd2a-2e93-7149b92ba27e@huawei.com>
+ <YDsleDjeIcpuBXKA@google.com> <YEFBAuP26t0RzVHZ@google.com>
+ <01a0ff76-6fa7-3196-8760-e7f6f163ef64@huawei.com>
+ <YEa66ekikyuPWSyd@google.com>
+ <a40929d4-a8de-98ea-8dd8-6c807d8a6adc@huawei.com>
+ <YEkxpAp8FQjRUfm6@google.com>
+ <157988c7-079f-0c9f-5cf9-e83bc2f835d1@huawei.com>
+ <YID0sDPrUxOJLz+A@google.com>
+ <6d574f4e-fed2-ded8-c9d5-4d88bff5d584@huawei.com>
+Message-ID: <3f7ebf46-536e-dc80-ebda-71b2034cb4c9@huawei.com>
+Date:   Mon, 10 May 2021 17:05:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
+In-Reply-To: <6d574f4e-fed2-ded8-c9d5-4d88bff5d584@huawei.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHf+D/7GCiM8g+JpPf60X7uhtFZNAFoIg0LAnrz/3Wqq+y8MA==
-Content-Language: ko
-x-msg-type: PERSONAL
-x-drm-type: PERSONAL
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDJsWRmVeSWpSXmKPExsWy7bCmma7Q9xkJBj/faVjsPW1hsXL1USaL
-        BfutLZYtfspocXnXHDaLtUfuslsc/PCE1YHdY828NYwek28sZ/TYfbOBzePj01ssHn1bVjF6
-        fN4kF8AWlWOTkZqYklqkkJqXnJ+SmZduq+QdHO8cb2pmYKhraGlhrqSQl5ibaqvk4hOg65aZ
-        A3SJkkJZYk4pUCggsbhYSd/Opii/tCRVISO/uMRWKbUgJafA0LBArzgxt7g0L10vOT/XytDA
-        wMgUqDIhJ2PyjjaWgp+cFbPWrmVvYHzA3sXIySEhYCJxZkE7UxcjF4eQwA5GiWcvD0I5nxgl
-        9v2YyAzhfGOUuHazgw2m5XjPUlaIxF5GiYe3WxkhnBeMEh+vbGMCqWIT0Jd42bGNFcQWEVCT
-        OPOzjR2kiFmglUmiYesdRpAEp4C2RMPlPhYQW1jAW+LXzQtgcRYBVYmDX1rA1vEKWEr0zDvK
-        CGELSpyc+QSsnllAXmL72znMECcpSPx8ugxqmZPE/rY5rBA1IhKzO9ugakQkurfcBjqOA8y+
-        sycF5B4JgSMcErt272OBqHGR2LdwG9SbwhKvjm+BhpKUxOd3e9kgGroZJVof/YdKrGaU6Gz0
-        gbDtJX5N38IKsoBZQFNi/S59iF3KEkduQZ3MJ9Fx+C87RJhXoqNNaAKjyiwkj81C8tgsJA/M
-        Qpi5gJFlFaNYakFxbnpqsVGBMXJsb2IEJ1Mt9x2MM95+0DvEyMTBeIhRgoNZSYRXtGNaghBv
-        SmJlVWpRfnxRaU5q8SFGU2BQT2SWEk3OB6bzvJJ4Q1MjMzMDS1MLUzMjCyVx3p+pdQlCAumJ
-        JanZqakFqUUwfUwcnFINTNwNchfU4tpnBPhu72jNPfB5duOUbtlmv6obpyXU0/qea6kuWBE0
-        uVMqzcnJ4mN8R+Ycne17lboFKsNaF3gLXYvYnSN4xYFbqNGJP8tmk/xuIW6D3q+rS5dbW35q
-        mmZZH34u6CfTWonCyrt3PS9JmWoYvopeu9G/ksH4vURyhFf9ksyypvvrt6zeaRr79HBfmoVq
-        dKF8asLcR+dkj3+aytzy9KL+7aMb7KW8guz/PH97bgfPd3GJlMprcbdd1W1d5Dof1HN3BaZ3
-        nvhXNf+Q2k3GXYLJ3O1Ocepys0RDOHd/ff3ZcqrDhBMLZ3xVqKnu+cX1dCHn4tiHp7u3eDz0
-        V8tSjpFUt6pTTK2b26PEUpyRaKjFXFScCADPuGPuLwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMIsWRmVeSWpSXmKPExsWy7bCSnK7g9xkJBn9+m1rsPW1hsXL1USaL
-        BfutLZYtfspocXnXHDaLtUfuslsc/PCE1YHdY828NYwek28sZ/TYfbOBzePj01ssHn1bVjF6
-        fN4kF8AWxWWTkpqTWZZapG+XwJUxeUcbS8FPzopZa9eyNzA+YO9i5OSQEDCRON6zlLWLkYtD
-        SGA3o8S5+R+ZIRKyEs/e7YAqEpa433IEqugZo0TH1ccsIAk2AX2Jlx3bWEFsEQE1iTM/28Aa
-        mAU6mSQaTnKB2EIC6xklen95g9icAtoSDZf7wHqFBbwlft28wAhiswioShz80sIGYvMKWEr0
-        zDvKCGELSpyc+QSongNopp5E20ZGiPHyEtvfzoG6U0Hi59NlrBC2qcSFryuYYG5+dXwLO8Rp
-        ThL72+awQvSKSMzubIPqFZHo3nKbCWQ8iH1nT8oERvFZSBbPQlg8C8niWUgGLWBkWcUomVpQ
-        nJueW2xYYJiXWq5XnJhbXJqXrpecn7uJERyvWpo7GLev+qB3iJGJg/EQowQHs5IIr2jHtAQh
-        3pTEyqrUovz4otKc1OJDjNIcLErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUamHRXxU5aH3v3
-        3pKqaT9r//+Y9Fvv4ew80dlHs8XNJBLX5Heb3D/vvTamn/ndLIeHuozMZ9c6mS6d/u/H5n8T
-        +WNi3RssDycvWFNTvWv3jqYpKv0vQ50f7Diy5H1g5Xa/y31vtK6df/Gsjs3CyWZzB5fahjmr
-        N/J61jQyPw+QCFNZOmWDNd/UcP4dyl5JfyrNtZJuHTH+enxHyh+/G3cz7/HY3d959WTGpYfr
-        Fv1aNrfRrsYvqubsJI9ekdWtsqlH59sIPXm83mnmB5+A1nUVaSEdh9yD/OUEE11zLQ7Fa99K
-        XnSkR/DtvZsn7W5xTlRmDp3Y8pFd/NFbyxt+z1kr+M41PViu4l04v3z2VcvVYcuVWIozEg21
-        mIuKEwHCi91ARgMAAA==
-X-CMS-MailID: 20210510090417epcas2p39cbc55bfe85c5b22aedac38c62d54c5e
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
+X-Originating-IP: [10.136.110.154]
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210510083139epcas2p211d9bee16e5e8f8ea34e606c83ac3a55
-References: <CGME20210510083139epcas2p211d9bee16e5e8f8ea34e606c83ac3a55@epcas2p2.samsung.com>
-        <20210510083057.46476-1-chanho61.park@samsung.com>
-        <20210510084406.GA1093@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(RESEND due to wrong encrypted message setting)
-
-Hi,
-
-> On Mon, May 10, 2021 at 05:30:57PM +0900, Chanho Park wrote:
-> > +static unsigned int swiotlb_align_offset(struct device *dev, u64
-> > +addr);
+On 2021/4/22 14:07, Chao Yu wrote:
+> On 2021/4/22 11:59, Jaegeuk Kim wrote:
+>> On 04/21, Chao Yu wrote:
+>>> On 2021/3/11 4:52, Jaegeuk Kim wrote:
+>>>> On 03/09, Chao Yu wrote:
+>>>>> On 2021/3/9 8:01, Jaegeuk Kim wrote:
+>>>>>> On 03/05, Chao Yu wrote:
+>>>>>>> On 2021/3/5 4:20, Jaegeuk Kim wrote:
+>>>>>>>> On 02/27, Jaegeuk Kim wrote:
+>>>>>>>>> On 02/04, Chao Yu wrote:
+>>>>>>>>>> Jaegeuk,
+>>>>>>>>>>
+>>>>>>>>>> On 2021/2/2 16:00, Chao Yu wrote:
+>>>>>>>>>>> -	for (i = 0; i < dic->nr_cpages; i++) {
+>>>>>>>>>>> +	for (i = 0; i < cc->nr_cpages; i++) {
+>>>>>>>>>>>        		struct page *page = dic->cpages[i];
+>>>>>>>>>>
+>>>>>>>>>> por_fsstress still hang in this line?
+>>>>>>>>>
+>>>>>>>>> I'm stuck on testing the patches, since the latest kernel is panicking somehow.
+>>>>>>>>> Let me update later, once I can test a bit. :(
+>>>>>>>>
+>>>>>>>> It seems this works without error.
+>>>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev&id=4e6e1364dccba80ed44925870b97fbcf989b96c9
+>>>>>>>
+>>>>>>> Ah, good news.
+>>>>>>>
+>>>>>>> Thanks for helping to test the patch. :)
+>>>>>>
+>>>>>> Hmm, I hit this again. Let me check w/o compress_cache back. :(
+>>>>>
+>>>>> Oops :(
+>>>>
+>>>> Ok, apprantely that panic is caused by compress_cache. The test is running over
+>>>> 24hours w/o it.
+>>>
+>>> Jaegeuk,
+>>>
+>>> I'm still struggling troubleshooting this issue.
+>>>
+>>> However, I failed again to reproduce this bug, I doubt the reason may be
+>>> my test script and environment(device type/size) is different from yours.
+>>> (btw, I used pmem as back-end device, and test w/ all fault injection
+>>> points and w/o write_io/checkpoint fault injection points)
+>>>
+>>> Could you please share me your run.sh script? and test command?
+>>>
+>>> And I'd like to ask what's your device type and size?
+>>
+>> I'm using qemu with 16GB with this script.
+>> https://github.com/jaegeuk/xfstests-f2fs/blob/f2fs/run.sh
+>>
+>> ./run.sh por_fsstress
 > 
-> Please just move swiotlb_align_offset up to avoid the forward declaration.
+> Thanks, let me check the difference, and try again.
 
-Okay. I'll move the position of the function next patch.
+Finally, I can reproduce this bug, and after troubleshooting this
+issue, I guess the root cause is not related to this patch, could
+you please test patch "f2fs: compress: fix race condition of overwrite
+vs truncate" with compress_cache enabled? I've ran por_fsstress case
+for 6 hours w/o any problems.
+
+Thanks,
 
 > 
-> >  /*
-> >   * Bounce: copy the swiotlb buffer from or back to the original dma
-> location
-> >   */
-> > @@ -346,10 +347,17 @@ static void swiotlb_bounce(struct device *dev,
-> phys_addr_t tlb_addr, size_t size
-> >  	size_t alloc_size = mem->slots[index].alloc_size;
-> >  	unsigned long pfn = PFN_DOWN(orig_addr);
-> >  	unsigned char *vaddr = phys_to_virt(tlb_addr);
-> > +	unsigned int tlb_offset;
-> >
-> >  	if (orig_addr == INVALID_PHYS_ADDR)
-> >  		return;
-> >
-> > +	tlb_offset = (unsigned int)tlb_addr & (IO_TLB_SIZE - 1);
-> > +	tlb_offset -= swiotlb_align_offset(dev, orig_addr);
+> Thanks,
 > 
-> Nit: I'd write this as:
+>>
+>>>
+>>> Thanks,
+>>>
+>>>> .
+>>>>
+>> .
+>>
 > 
-> 	tlb_offset = (tlb_addr & (IO_TLB_SIZE - 1)) -
-> 			swiotlb_align_offset(dev, orig_addr);
 > 
-> as there is no need for the cast, and just having a single assignment is
-> easier to follow.
-
-Great. It can be a single assignment as you suggested.
-
-Best Regards,
-Chanho Park
-
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> .
+> 
