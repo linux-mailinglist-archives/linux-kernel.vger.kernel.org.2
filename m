@@ -2,348 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9879377C54
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 08:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741A7377C67
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 08:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhEJGhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 02:37:34 -0400
-Received: from lucky1.263xmail.com ([211.157.147.134]:48740 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbhEJGh3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 02:37:29 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 3F5FAC84C2;
-        Mon, 10 May 2021 14:36:08 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P2750T140649254856448S1620628564034882_;
-        Mon, 10 May 2021 14:36:07 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <5288393d83d194f6ae43ce016fdf43ba>
-X-RL-SENDER: jay.xu@rock-chips.com
-X-SENDER: xjq@rock-chips.com
-X-LOGIN-NAME: jay.xu@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-RCPT-COUNT: 7
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jianqun Xu <jay.xu@rock-chips.com>
-To:     heiko@sntech.de, linus.walleij@linaro.org, robh+dt@kernel.org
-Cc:     linux-gpio@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Jianqun Xu <jay.xu@rock-chips.com>
-Subject: [PATCH 4/7] gpio/rockchip: use struct rockchip_gpio_regs for gpio controller
-Date:   Mon, 10 May 2021 14:35:59 +0800
-Message-Id: <20210510063602.505829-5-jay.xu@rock-chips.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210510063602.505829-1-jay.xu@rock-chips.com>
-References: <20210510063602.505829-1-jay.xu@rock-chips.com>
+        id S230098AbhEJGiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 02:38:52 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:28200 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230224AbhEJGiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 02:38:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620628666; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=EFrg0Rm2dQilSVOBS+x/LQkRzZDIy/tILQa3waU6VwA=; b=haHPuw6GWdj3uLsIGlDRpW43xQkV5fry6gZw6guBuhXFw8cvZI30N7XssWUn8Szl9yP1RVy1
+ xbelcqetYdin0L4WVsKRxTwTSfpCZYcA/xKTm7vWW5OH4EyUVj4ygdxTUh/L9TRfq7a7RUNx
+ QzashMj8viWKQpZgO7EKLEzJ/ME=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6098d49f74f773a66494f0b9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 10 May 2021 06:37:19
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 921D5C43148; Mon, 10 May 2021 06:37:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.50.45.159] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8A31DC43143;
+        Mon, 10 May 2021 06:37:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8A31DC43143
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH 3/3] i2c: i2c-qcom-geni: Add support for
+ 'assigned-performance-states'
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>, akashast@codeaurora.org,
+        msavaliy@qti.qualcomm.com, parashar@codeaurora.org,
+        Linux PM <linux-pm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>, linux-i2c@vger.kernel.org
+References: <20201224111210.1214-1-rojay@codeaurora.org>
+ <20201224111210.1214-4-rojay@codeaurora.org> <YAGqKfDfB7EEuZVn@builder.lan>
+ <6bfec3e6-3d26-7ade-d836-032273856ce2@codeaurora.org>
+ <CAPDyKFqF0NE3QRAEfiqj5QOXXH2om4CpyyeudeqoovANfvjsaQ@mail.gmail.com>
+ <20210429075054.vrotcbldbaivfh2d@vireshk-i7>
+ <3743d729-4287-a389-72e2-2201ee59601d@codeaurora.org>
+ <CAPDyKFrVcvXvSHrRyJFZUjTXEeOLk2k7G-36pOSWUKhkWRTftA@mail.gmail.com>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <b02be4a9-aae4-62c2-2ef2-5ade683eb1a9@codeaurora.org>
+Date:   Mon, 10 May 2021 12:07:08 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPDyKFrVcvXvSHrRyJFZUjTXEeOLk2k7G-36pOSWUKhkWRTftA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Store register offsets in the struct rockchip_gpio_regs, this patch
-prepare for the driver update for new gpio controller.
 
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
----
- drivers/gpio/gpio-rockchip.c       | 85 ++++++++++++++++--------------
- drivers/pinctrl/pinctrl-rockchip.h | 38 +++++++++++++
- 2 files changed, 84 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/gpio/gpio-rockchip.c b/drivers/gpio/gpio-rockchip.c
-index 03a3d251faae..b12db3a523d0 100644
---- a/drivers/gpio/gpio-rockchip.c
-+++ b/drivers/gpio/gpio-rockchip.c
-@@ -24,19 +24,21 @@
- #include "../pinctrl/core.h"
- #include "../pinctrl/pinctrl-rockchip.h"
- 
--/* GPIO control registers */
--#define GPIO_SWPORT_DR		0x00
--#define GPIO_SWPORT_DDR		0x04
--#define GPIO_INTEN		0x30
--#define GPIO_INTMASK		0x34
--#define GPIO_INTTYPE_LEVEL	0x38
--#define GPIO_INT_POLARITY	0x3c
--#define GPIO_INT_STATUS		0x40
--#define GPIO_INT_RAWSTATUS	0x44
--#define GPIO_DEBOUNCE		0x48
--#define GPIO_PORTS_EOI		0x4c
--#define GPIO_EXT_PORT		0x50
--#define GPIO_LS_SYNC		0x60
-+#define GPIO_TYPE_V1		(0)           /* GPIO Version ID reserved */
-+
-+static const struct rockchip_gpio_regs gpio_regs_v1 = {
-+	.port_dr = 0x00,
-+	.port_ddr = 0x04,
-+	.int_en = 0x30,
-+	.int_mask = 0x34,
-+	.int_type = 0x38,
-+	.int_polarity = 0x3c,
-+	.int_status = 0x40,
-+	.int_rawstatus = 0x44,
-+	.debounce = 0x48,
-+	.port_eoi = 0x4c,
-+	.ext_port = 0x50,
-+};
- 
- static int rockchip_gpio_get_direction(struct gpio_chip *chip,
- 				       unsigned int offset)
-@@ -51,7 +53,7 @@ static int rockchip_gpio_get_direction(struct gpio_chip *chip,
- 			"failed to enable clock for bank %s\n", bank->name);
- 		return ret;
- 	}
--	data = readl_relaxed(bank->reg_base + GPIO_SWPORT_DDR);
-+	data = readl_relaxed(bank->reg_base + bank->gpio_regs->port_ddr);
- 	clk_disable(bank->clk);
- 
- 	if (data & BIT(offset))
-@@ -70,13 +72,13 @@ static int rockchip_gpio_set_direction(struct gpio_chip *chip,
- 	clk_enable(bank->clk);
- 	raw_spin_lock_irqsave(&bank->slock, flags);
- 
--	data = readl_relaxed(bank->reg_base + GPIO_SWPORT_DDR);
-+	data = readl_relaxed(bank->reg_base + bank->gpio_regs->port_ddr);
- 	/* set bit to 1 for output, 0 for input */
- 	if (!input)
- 		data |= BIT(offset);
- 	else
- 		data &= ~BIT(offset);
--	writel_relaxed(data, bank->reg_base + GPIO_SWPORT_DDR);
-+	writel_relaxed(data, bank->reg_base + bank->gpio_regs->port_ddr);
- 
- 	raw_spin_unlock_irqrestore(&bank->slock, flags);
- 	clk_disable(bank->clk);
-@@ -88,7 +90,7 @@ static void rockchip_gpio_set(struct gpio_chip *gc, unsigned int offset,
- 			      int value)
- {
- 	struct rockchip_pin_bank *bank = gpiochip_get_data(gc);
--	void __iomem *reg = bank->reg_base + GPIO_SWPORT_DR;
-+	void __iomem *reg = bank->reg_base + bank->gpio_regs->port_dr;
- 	unsigned long flags;
- 	u32 data;
- 
-@@ -111,7 +113,7 @@ static int rockchip_gpio_get(struct gpio_chip *gc, unsigned int offset)
- 	u32 data;
- 
- 	clk_enable(bank->clk);
--	data = readl(bank->reg_base + GPIO_EXT_PORT);
-+	data = readl(bank->reg_base + bank->gpio_regs->ext_port);
- 	clk_disable(bank->clk);
- 	data >>= offset;
- 	data &= 1;
-@@ -122,7 +124,7 @@ static void rockchip_gpio_set_debounce(struct gpio_chip *gc,
- 				       unsigned int offset, bool enable)
- {
- 	struct rockchip_pin_bank *bank = gpiochip_get_data(gc);
--	void __iomem *reg = bank->reg_base + GPIO_DEBOUNCE;
-+	void __iomem *reg = bank->reg_base + bank->gpio_regs->debounce;
- 	unsigned long flags;
- 	u32 data;
- 
-@@ -226,7 +228,7 @@ static void rockchip_irq_demux(struct irq_desc *desc)
- 
- 	chained_irq_enter(chip, desc);
- 
--	pend = readl_relaxed(bank->reg_base + GPIO_INT_STATUS);
-+	pend = readl_relaxed(bank->reg_base + bank->gpio_regs->int_status);
- 
- 	while (pend) {
- 		unsigned int irq, virq;
-@@ -250,24 +252,26 @@ static void rockchip_irq_demux(struct irq_desc *desc)
- 			u32 data, data_old, polarity;
- 			unsigned long flags;
- 
--			data = readl_relaxed(bank->reg_base + GPIO_EXT_PORT);
-+			data = readl_relaxed(bank->reg_base +
-+					     bank->gpio_regs->ext_port);
- 			do {
- 				raw_spin_lock_irqsave(&bank->slock, flags);
- 
- 				polarity = readl_relaxed(bank->reg_base +
--							 GPIO_INT_POLARITY);
-+							 bank->gpio_regs->int_polarity);
- 				if (data & BIT(irq))
- 					polarity &= ~BIT(irq);
- 				else
- 					polarity |= BIT(irq);
- 				writel(polarity,
--				       bank->reg_base + GPIO_INT_POLARITY);
-+				       bank->reg_base +
-+				       bank->gpio_regs->int_polarity);
- 
- 				raw_spin_unlock_irqrestore(&bank->slock, flags);
- 
- 				data_old = data;
- 				data = readl_relaxed(bank->reg_base +
--						     GPIO_EXT_PORT);
-+						     bank->gpio_regs->ext_port);
- 			} while ((data & BIT(irq)) != (data_old & BIT(irq)));
- 		}
- 
-@@ -290,9 +294,9 @@ static int rockchip_irq_set_type(struct irq_data *d, unsigned int type)
- 	clk_enable(bank->clk);
- 	raw_spin_lock_irqsave(&bank->slock, flags);
- 
--	data = readl_relaxed(bank->reg_base + GPIO_SWPORT_DDR);
-+	data = readl_relaxed(bank->reg_base + bank->gpio_regs->port_ddr);
- 	data &= ~mask;
--	writel_relaxed(data, bank->reg_base + GPIO_SWPORT_DDR);
-+	writel_relaxed(data, bank->reg_base + bank->gpio_regs->port_ddr);
- 
- 	raw_spin_unlock_irqrestore(&bank->slock, flags);
- 
-@@ -304,8 +308,8 @@ static int rockchip_irq_set_type(struct irq_data *d, unsigned int type)
- 	raw_spin_lock_irqsave(&bank->slock, flags);
- 	irq_gc_lock(gc);
- 
--	level = readl_relaxed(gc->reg_base + GPIO_INTTYPE_LEVEL);
--	polarity = readl_relaxed(gc->reg_base + GPIO_INT_POLARITY);
-+	level = readl_relaxed(gc->reg_base + bank->gpio_regs->int_type);
-+	polarity = readl_relaxed(gc->reg_base + bank->gpio_regs->int_polarity);
- 
- 	switch (type) {
- 	case IRQ_TYPE_EDGE_BOTH:
-@@ -316,7 +320,7 @@ static int rockchip_irq_set_type(struct irq_data *d, unsigned int type)
- 		 * Determine gpio state. If 1 next interrupt should be falling
- 		 * otherwise rising.
- 		 */
--		data = readl(bank->reg_base + GPIO_EXT_PORT);
-+		data = readl(bank->reg_base + bank->gpio_regs->ext_port);
- 		if (data & mask)
- 			polarity &= ~mask;
- 		else
-@@ -349,8 +353,8 @@ static int rockchip_irq_set_type(struct irq_data *d, unsigned int type)
- 		return -EINVAL;
- 	}
- 
--	writel_relaxed(level, gc->reg_base + GPIO_INTTYPE_LEVEL);
--	writel_relaxed(polarity, gc->reg_base + GPIO_INT_POLARITY);
-+	writel_relaxed(level, gc->reg_base + bank->gpio_regs->int_type);
-+	writel_relaxed(polarity, gc->reg_base + bank->gpio_regs->int_polarity);
- 
- 	irq_gc_unlock(gc);
- 	raw_spin_unlock_irqrestore(&bank->slock, flags);
-@@ -365,8 +369,8 @@ static void rockchip_irq_suspend(struct irq_data *d)
- 	struct rockchip_pin_bank *bank = gc->private;
- 
- 	clk_enable(bank->clk);
--	bank->saved_masks = irq_reg_readl(gc, GPIO_INTMASK);
--	irq_reg_writel(gc, ~gc->wake_active, GPIO_INTMASK);
-+	bank->saved_masks = irq_reg_readl(gc, bank->gpio_regs->int_mask);
-+	irq_reg_writel(gc, ~gc->wake_active, bank->gpio_regs->int_mask);
- 	clk_disable(bank->clk);
- }
- 
-@@ -376,7 +380,7 @@ static void rockchip_irq_resume(struct irq_data *d)
- 	struct rockchip_pin_bank *bank = gc->private;
- 
- 	clk_enable(bank->clk);
--	irq_reg_writel(gc, bank->saved_masks, GPIO_INTMASK);
-+	irq_reg_writel(gc, bank->saved_masks, bank->gpio_regs->int_mask);
- 	clk_disable(bank->clk);
- }
- 
-@@ -435,8 +439,8 @@ static int rockchip_interrupts_register(struct rockchip_pin_bank *bank)
- 	gc = irq_get_domain_generic_chip(bank->domain, 0);
- 	gc->reg_base = bank->reg_base;
- 	gc->private = bank;
--	gc->chip_types[0].regs.mask = GPIO_INTMASK;
--	gc->chip_types[0].regs.ack = GPIO_PORTS_EOI;
-+	gc->chip_types[0].regs.mask = bank->gpio_regs->int_mask;
-+	gc->chip_types[0].regs.ack = bank->gpio_regs->port_eoi;
- 	gc->chip_types[0].chip.irq_ack = irq_gc_ack_set_bit;
- 	gc->chip_types[0].chip.irq_mask = irq_gc_mask_set_bit;
- 	gc->chip_types[0].chip.irq_unmask = irq_gc_mask_clr_bit;
-@@ -453,9 +457,9 @@ static int rockchip_interrupts_register(struct rockchip_pin_bank *bank)
- 	 * Our driver only uses the concept of masked and always keeps
- 	 * things enabled, so for us that's all masked and all enabled.
- 	 */
--	writel_relaxed(0xffffffff, bank->reg_base + GPIO_INTMASK);
--	writel_relaxed(0xffffffff, bank->reg_base + GPIO_PORTS_EOI);
--	writel_relaxed(0xffffffff, bank->reg_base + GPIO_INTEN);
-+	writel_relaxed(0xffffffff, bank->reg_base + bank->gpio_regs->int_mask);
-+	writel_relaxed(0xffffffff, bank->reg_base + bank->gpio_regs->port_eoi);
-+	writel_relaxed(0xffffffff, bank->reg_base + bank->gpio_regs->int_en);
- 	gc->mask_cache = 0xffffffff;
- 
- 	irq_set_chained_handler_and_data(bank->irq,
-@@ -546,6 +550,9 @@ static int rockchip_get_bank_data(struct rockchip_pin_bank *bank)
- 
- 	bank->irq = irq_of_parse_and_map(bank->of_node, 0);
- 
-+	bank->gpio_regs = &gpio_regs_v1;
-+	bank->gpio_type = GPIO_TYPE_V1;
-+
- 	bank->clk = of_clk_get(bank->of_node, 0);
- 	if (!IS_ERR(bank->clk))
- 		return clk_prepare(bank->clk);
-diff --git a/drivers/pinctrl/pinctrl-rockchip.h b/drivers/pinctrl/pinctrl-rockchip.h
-index 4aa3d2f1fa67..1b774b6bbc3e 100644
---- a/drivers/pinctrl/pinctrl-rockchip.h
-+++ b/drivers/pinctrl/pinctrl-rockchip.h
-@@ -32,6 +32,42 @@ enum rockchip_pinctrl_type {
- 	RK3568,
- };
- 
-+/**
-+ * struct rockchip_gpio_regs
-+ * @port_dr: data register
-+ * @port_ddr: data direction register
-+ * @int_en: interrupt enable
-+ * @int_mask: interrupt mask
-+ * @int_type: interrupt trigger type, such as high, low, edge trriger type.
-+ * @int_polarity: interrupt polarity enable register
-+ * @int_bothedge: interrupt bothedge enable register
-+ * @int_status: interrupt status register
-+ * @int_rawstatus: int_status = int_rawstatus & int_mask
-+ * @debounce: enable debounce for interrupt signal
-+ * @dbclk_div_en: enable divider for debounce clock
-+ * @dbclk_div_con: setting for divider of debounce clock
-+ * @port_eoi: end of interrupt of the port
-+ * @ext_port: port data from external
-+ * @version_id: controller version register
-+ */
-+struct rockchip_gpio_regs {
-+	u32 port_dr;
-+	u32 port_ddr;
-+	u32 int_en;
-+	u32 int_mask;
-+	u32 int_type;
-+	u32 int_polarity;
-+	u32 int_bothedge;
-+	u32 int_status;
-+	u32 int_rawstatus;
-+	u32 debounce;
-+	u32 dbclk_div_en;
-+	u32 dbclk_div_con;
-+	u32 port_eoi;
-+	u32 ext_port;
-+	u32 version_id;
-+};
-+
- /**
-  * struct rockchip_iomux
-  * @type: iomux variant using IOMUX_* constants
-@@ -126,6 +162,8 @@ struct rockchip_pin_bank {
- 	struct gpio_chip		gpio_chip;
- 	struct pinctrl_gpio_range	grange;
- 	raw_spinlock_t			slock;
-+	const struct rockchip_gpio_regs	*gpio_regs;
-+	u32				gpio_type;
- 	u32				toggle_edge_mode;
- 	u32				recalced_mask;
- 	u32				route_mask;
+On 5/7/2021 2:36 PM, Ulf Hansson wrote:
+> On Tue, 4 May 2021 at 09:18, Rajendra Nayak <rnayak@codeaurora.org> wrote:
+>>
+>>
+>> []...
+>>>>>>
+>>>>>> Ulf, Viresh, I think we discussed this at the time of introducing the
+>>>>>> performance states.
+>>>>>>
+>>>>>> The client's state does not affect if its performance_state should
+>>>>>> be included in the calculation of the aggregated performance_state, so
+>>>>>> each driver that needs to keep some minimum performance state needs to
+>>>>>> have these two snippets.
+>>>>>>
+>>>>>> Would it not make sense to on enable/disable re-evaluate the
+>>>>>> performance_state and potentially reconfigure the hardware
+>>>>>> automatically?
+>>>>>
+>>>>> I agree, this will be repeated across multiple drivers which would
+>>>>> need some minimal vote while they are active, handling this during
+>>>>> genpd enable/disable in genpd core makes sense.
+>>>>
+>>>> Initially that's what we tried out, but we realized that it was
+>>>> difficult to deal with this internally in genpd, but more importantly
+>>>> it also removed some flexibility from consumers and providers. See
+>>>> commit 68de2fe57a8f ("PM / Domains: Make genpd performance states
+>>>> orthogonal to the idlestates").
+>>>>
+>>>> As a matter of fact this was quite recently discussed [1], which also
+>>>> pointed out some issues when using the "required-opps" in combination,
+>>>> but perhaps that got resolved? Viresh?
+>>>
+>>> So I looked again at that thread in detail today. The basic idea was
+>>> to enable/disable the genpd from within the OPP core and there were
+>>> doubts on how to do that efficiently as there are cases where domains
+>>> may be enabled for an OPP, but not for others.. etc. etc.
+>>>
+>>> I am not sure if I consider that thread as part of the discussion we
+>>> are having here, they may be related, but that thread doesn't block
+>>> anything to be done in the genpd core.
+>>
+>> That's true, the 2 threads are different in the sense that one talks
+>> about having OPP core managing power on/off along with setting perf state,
+>> while the other talks about genpd core managing a default perf state
+>> along with power on/off, but they are similar in the sense that both
+>> are related to the discussion whether we should treat powering on and off
+>> a domain related to setting its performance state or if it should be
+>> considered completely orthogonal.
+>>
+>> I think the clock framework treats setting clock rates and turning
+>> on/off a clock orthogonal because there is an inherent assumption that
+>> once the clock is turned off, what rate it was set to should not matter,
+>> and it can be running at the same rate when we turn the clock back on.
+>>
+>> I guess we can have the same assumption here that a perf state of a
+>> power domain should not matter if the power domain is turned off
+>> and hence the perf state need not be dropped explicitly during power off,
+>> atleast that should be true for the qcom power domains supporting perf
+>> state upstream.
+>>
+>> Should that be the approach taken here? I guess that would mean the patch
+>> I had proposed earlier [1] to manage this in the genpd core would have to set the default
+>> perf state at attach and remove it only during a detach of the device to
+>> the pm_domain, and not manage it during the runtime_suspend/resume of the device.
+> 
+> Right, I think this would be a step in the right direction, but it's
+> not sufficient to solve the complete problem. As you also point out
+> below.
+> 
+>>
+>>>> A consumer driver
+>>>> can no longer make its vote for its device to stick around, when the
+>>>> device becomes runtime suspended - and how do we know that we never
+>>>> need to support such a case?
+>>
+>> The above approach should take care of this but the down side of it would be,
+>> unlike in the case of clocks where the devices assigning a default clock rate
+>> might be doing so on a device specific clock (rarely shared with other devices)
+>> in case of power domain, and especially in the qcom implementation of these
+>> power domains which support perf state, these can be large domains with lots of devices,
+>> and any device being active (not necessarily wanting any default perf state) will keep
+>> the domain at the default perf state, requested by a device which isn't really active.
+> 
+> Yep, this certainly sounds suboptimal. To me, this isn't good enough.
+> 
+>>
+>>> What about doing this just for the assigned-performance-state case as
+>>> the clients don't want to play with it at all.
+>>
+>> well, thats possible too, but you obviously can't reuse the same bindings
+>> in such cases
+> 
+> Not sure I understand the issue with the DT binding? Let me elaborate
+> on how I think we could move forward.
+> 
+> It looks like we have two problems to solve:
+> 
+> *) We need a new DT binding.
+> If that becomes a generic property along the lines of the
+> "assigned-performance-state" as suggested - or if we decide to add a
+> SoC specific binding via using an additional cell in "power-domains"
+> (suggested by Rob), doesn't really matter much to me. The arguments
+> for the new DT property are very much similar to why we added
+> "assigned-clock-rates" for clocks.
+> 
+> **) We want to avoid boiler-plate code in drivers to manage
+> "assigned-performance-state" for their devices.
+> No matter what DT property we decide on (generic or SoC specific), we
+> should be able to manage this from the PM domain (genpd) layer. No
+> changes in the drivers should be needed.
+> If a generic binding is used, we could consider to let genpd
+> internally manage the whole thing (DT parsing and updating performance
+> state votes for assigned-performance-state only).
+
+Sure, so for starters does that mean I should re-spin my series which
+adds the generic 'assigned-performance-states' bindings and see if Rob
+is OK with that? I am guessing you are OK with the way that binding gets
+used within genpd core in that series, or would you want it to be handled
+differently?
+
+> If we go for an SoC specific binding, the genpd provider needs to be
+> updated. It can manage DT parsing from the ->attach|detach_dev()
+> callbacks and update performance votes from the ->start|stop()
+> callbacks.
+> We could also consider a hybrid of these two solutions.
+>>
+>> [1] https://lore.kernel.org/patchwork/patch/1284042/
+> 
+> Kind regards
+> Uffe
+> 
+
 -- 
-2.25.1
-
-
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
