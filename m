@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F4737906D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB9337906E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237434AbhEJORT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:17:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59783 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232983AbhEJOOH (ORCPT
+        id S234920AbhEJORc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:17:32 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:46433 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241990AbhEJOOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:14:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620655982;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jsE4Hu1jfyAgBnO9Xt9Yk2kkAWYBUYyQ7xRMEnEGmO0=;
-        b=HCM3JbLodXoVGYaeRY6II7xFUX3fGLVuajIzHP9sqXlytWAtuFvyI2lJ/gLUf5Liiuubcd
-        Lg5P1iVdP4Wg98iqvQf25JrReb4ftMT5E5evj1KLBWAhSZE5iJqcV82E/+t12WcWx/EkNw
-        Y2d9bOk/5DS4RrPl+QU5xlzFYFCZZ1Q=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-445-x2x8ZUbFO72U-80F4nd6GA-1; Mon, 10 May 2021 10:13:00 -0400
-X-MC-Unique: x2x8ZUbFO72U-80F4nd6GA-1
-Received: by mail-qv1-f71.google.com with SMTP id y24-20020a0ca9180000b02901d367101f9dso12720981qva.1
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:13:00 -0700 (PDT)
+        Mon, 10 May 2021 10:14:11 -0400
+Received: from mail-qt1-f197.google.com ([209.85.160.197])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lg6eg-00049e-FU
+        for linux-kernel@vger.kernel.org; Mon, 10 May 2021 14:13:06 +0000
+Received: by mail-qt1-f197.google.com with SMTP id e28-20020ac84b5c0000b02901cd9b2b2170so10506756qts.13
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:13:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=jsE4Hu1jfyAgBnO9Xt9Yk2kkAWYBUYyQ7xRMEnEGmO0=;
-        b=fFZEfLo14bXBxR9hViPYqAUq0GXC/kN2v1UHnJ2vbT+b1ThHfrriYMAVaWvYWbWrcb
-         fH1oRT60Y673v6v0Dkz8TkiuorJc9JGb43aufJodlQPzvqog/hztQRJJFUeOdUQdzS/K
-         V36WXRIiRQsgABUd8qsrbL2b7l9nMSrBA2uZov8YW0L4yPTqFNQxa5JjHg8ge9LHzIO/
-         4nc1OklLvwIuzz5NRw14mgL3+auQlItchltMjI7NvRSymrmNRF5/c4UsxCdbpONT/BmK
-         Zl6wG2s3g+63G5cFzLZl3KY6xj+X2wAztsS672dPqmbwdvvhG3Qhupgy1/WJhAJFKB7r
-         4MLA==
-X-Gm-Message-State: AOAM530SkU7zQ3BBiSZKTUdwngeX2QjFgRz3Og8qWOARIB2uL/SiJk3E
-        swjL+UIviA/gHxZBzSrm5pXcyry6L4S6Nq38l1t6kmOY81QFXYyjPUGPSVmw3hS2mHhcGwKhy9Q
-        HXzNKBtx9VPRyU8JaqvL9aJZl
-X-Received: by 2002:a05:620a:b:: with SMTP id j11mr23282246qki.159.1620655980280;
-        Mon, 10 May 2021 07:13:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxsz1KIzKqaoZqip0lZ+ej6Lo6hmON3jwnFv+dFMaAM1pY0v6DAVkwcOpGnU/1t8FDiz0YU8w==
-X-Received: by 2002:a05:620a:b:: with SMTP id j11mr23282219qki.159.1620655980094;
-        Mon, 10 May 2021 07:13:00 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id r5sm11395577qtp.75.2021.05.10.07.12.58
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yHK+cQr8MhVm2w7dksdyD//Uz1iT2UJzqYpI2qAr1FI=;
+        b=OFV725ckbn1qUNdT7RT8rBi1xJDFKdLOc+wJMgaSXSB+eN4mC+zeU3hJ4hd6CfYeRf
+         rQu9XAN2kw524tWe1pQHNdaOIMLOVpIIYq9d3AZ6vThFUmA5bJJCffRbb8oYxkbQwkV8
+         vSu8TbzxYJGGDlHjh8VQVleJEpcYaydj8Vre5+yBHLpoEaPuudncpoxyPsC2sa7xGsiV
+         pifuAbrEuS+7jytIKE75iKUYfKpVNavW2OrE3j6XevM25eKvlRq9G4PAu/qOyRG9/mOn
+         2AbsyfvG1AR5Abb4ph8ZXYkrxag9L7FofFMIW3JqDVvyIwjHaxrVq8UEDwQA8JiUhgp4
+         ihmg==
+X-Gm-Message-State: AOAM531WaxqHedskWZxn+ztZb2ASObUGZDsQmufGmyTJJJBnV4doPso9
+        qkc91pKz10+xmE8VdjGV57d236VAOypgykaT3HZx3U2qWGxzEO/SmG5MfrvJIjYR6rTanElfr80
+        23J70azmIiXSaUxaBtrMs5yXoDgbvKV1fuzyyVNFfbg==
+X-Received: by 2002:ad4:46a9:: with SMTP id br9mr23481794qvb.35.1620655985334;
+        Mon, 10 May 2021 07:13:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw/TofY+XlduMi5T79Lk3yk44+wBaFq1AMtF3DneP6jD4ViCnAcK0LiJUs5mEdc7LO86ewL+A==
+X-Received: by 2002:ad4:46a9:: with SMTP id br9mr23481784qvb.35.1620655985223;
+        Mon, 10 May 2021 07:13:05 -0700 (PDT)
+Received: from [192.168.1.4] ([45.237.49.2])
+        by smtp.gmail.com with ESMTPSA id g9sm3356087qka.38.2021.05.10.07.13.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 07:12:59 -0700 (PDT)
-Subject: Re: [PATCH v12 0/7] FPGA Security Manager Class Driver
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com, richard.gong@intel.com
-References: <20210503213546.316439-1-russell.h.weight@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <6f3ce0db-883e-2c5b-e671-9ccc363ee532@redhat.com>
-Date:   Mon, 10 May 2021 07:12:57 -0700
+        Mon, 10 May 2021 07:13:04 -0700 (PDT)
+Subject: Re: [PATCH 2/4] extcon: extcon-max14577: Fix potential work-queue
+ cancellation race
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1620633360.git.matti.vaittinen@fi.rohmeurope.com>
+ <70dfbe28725bac3383f77d02037f4f7f37839989.1620633360.git.matti.vaittinen@fi.rohmeurope.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <9a706f57-6c2a-6680-e24b-ff00fe15b95f@canonical.com>
+Date:   Mon, 10 May 2021 10:13:01 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210503213546.316439-1-russell.h.weight@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <70dfbe28725bac3383f77d02037f4f7f37839989.1620633360.git.matti.vaittinen@fi.rohmeurope.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/05/2021 04:11, Matti Vaittinen wrote:
+> The extcon IRQ schedules a work item. IRQ is requested using devm while
+> WQ is cancelld at remove(). This mixing of devm and manual unwinding has
+> potential case where the WQ has been emptied (.remove() was ran) but
+> devm unwinding of IRQ was not yet done. It is possible the IRQ is triggered
+> at this point scheduling new work item to the already flushed queue.
+> 
+> Use new devm_work_autocancel() to remove the remove() and to kill the bug.
+> 
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> ---
+> 
+> Please note that the change is compile-tested only. All proper testing is
+> highly appreciated.
+> ---
+>  drivers/extcon/extcon-max14577.c | 16 +++++-----------
+>  1 file changed, 5 insertions(+), 11 deletions(-)
+> 
 
-On 5/3/21 2:35 PM, Russ Weight wrote:
-> The FPGA Security Manager class driver provides a common
-> API for user-space tools to manage updates for secure FPGA
-> devices. Device drivers that instantiate the FPGA Security
-> Manager class driver will interact with a HW secure update
-> engine in order to transfer new FPGA and BMC images to FLASH so
-> that they will be automatically loaded when the FPGA card reboots.
+I don't have the HW anymore for this testing, but looks good:
 
-Russ,
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-These have my Reviewed-by, but since it has been a while, I am looking 
-these over again.
 
-If you do not hear anything from me in the next couple of days, please 
-assume everything is fine.
-
-Tom
-
+Best regards,
+Krzysztof
