@@ -2,535 +2,461 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF65C379915
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FCD737991A
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232487AbhEJVVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 17:21:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
+        id S231747AbhEJVYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 17:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhEJVVs (ORCPT
+        with ESMTP id S231434AbhEJVYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 17:21:48 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB0FC061574;
-        Mon, 10 May 2021 14:20:42 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id c3so17052226oic.8;
-        Mon, 10 May 2021 14:20:42 -0700 (PDT)
+        Mon, 10 May 2021 17:24:35 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E1DAC061574;
+        Mon, 10 May 2021 14:23:30 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id z13so25543434lft.1;
+        Mon, 10 May 2021 14:23:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UeT1yVa8IIxY6hdASi/NqWEsMFgzmGdlvlJ7R9HQwm8=;
-        b=RbJt2ajQ868MUEQUzQh0fYgU+oDUU0Eq9AaFR0howBjOvVJaxaCgobsWq/TOfzVxu9
-         3jNtKIY/il6EDyV5Le4sHLHh5HUrMVcn7ghYfYIPhvBCzehc/74W0ygawpN0DGCgmkMt
-         +XjGuyO3uxG06jJtAy9LmJfcsYt6JmPSJK9k2t9tV/jmBkU21VekRBFwutU0Qa/Hkm1g
-         7fMty9dzDu7acWGG0LgVEuvLFu9KdBBOWYdSlLP/vw+Wyt43yO9zXj70ECEAmU6BF5Xz
-         e52C24Thst/c7rj7aPaY52OtoGWkHNUKZfRFngZsR10qwrzM33Mun1NVCjKhgH2Z4fJQ
-         KClg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K2BeHmCvh+c4LgvO0p37BZhDNERKS5iR74FxOexrU2E=;
+        b=ir8smZOpozdik85ufY+JqMFVbe4vnlMPt6qfTN1BaloKrU491FLrBib7kvDrCB1MRo
+         3d1oWkIJE0MgS6Ak93ELbVMvPUeaZ0+3BeGR8mLGEjtz6DxUrUeFz2w7E8izX0MRexsQ
+         mkXkNc7MyjlSgTClBL1zdRJpYGFU1WAfoNfgtCqzdA28goJVFKPo05B3u3qUoUvvs4Ch
+         svcxokCwHoZ0LRD6vujDNBIkrCCHAJyaupmoeY/uOYJIlYJBrglT0B82GCHlXqeA25/h
+         C7y2fnqmfXG2vMkj7+DGiJlgoWKatfWrUIRYydhalSSrPQc57HFF9MB8osDNSotIJTvc
+         kPDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UeT1yVa8IIxY6hdASi/NqWEsMFgzmGdlvlJ7R9HQwm8=;
-        b=QY53SmH1PK6MRWUHckxVPlcIgLUVii+yWFAQyGXo+vA0yiugzB6gzae/jF2bxW/YKp
-         l96A36tdkQ54E1Ug4zrZczes1UILBwtyJxlCvzlZ6vredPbuAcGrMmdi7zjXEGNg3BCX
-         GDQ7GuXXLCgsm6NY8lvjj1p5rKOVaci7ymPxpqCR99g1rihRNgucc+si8Vwel0cqoMAp
-         FGakCTZHBjnLplvaCvO852l4rmy6p4gBD4b8Gz6gitxTF2ojvXLSyZrBp0VxT5TinxdG
-         3aQmDK2WbMkcM7U1t2cFjoD13r7vw4xeN6buHrXGNM0FonPJBd9HHG3v8drQlHn5+2pV
-         elHg==
-X-Gm-Message-State: AOAM533lOBKCnh+/QjzRQWV80zOcgcAj/ju+YFcLIZlITXRuDnUBlC0m
-        aicEQDwo1Wted+mSw07XnYmec4CGQiNCo/BnPZU=
-X-Google-Smtp-Source: ABdhPJwVVrhMgNcxgHUGoaId/wywToOMzLn/154v1gmpV/hZ8IVBL6deqT+9tYpfmOrhhbbUCYQxmpcx9RHai1YeP1w=
-X-Received: by 2002:a05:6808:68a:: with SMTP id k10mr19309258oig.120.1620681642063;
- Mon, 10 May 2021 14:20:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K2BeHmCvh+c4LgvO0p37BZhDNERKS5iR74FxOexrU2E=;
+        b=m534ppg/+zlDfMvkt5/yVCjO7bVOMqi3sQA2pCV8y4ZvtZzaw9CS232apbl7ZA4+Jf
+         IWth26MQ+Lmn9T9x4SrJ20bjBX0Y2U2ufcdlLJyXjHlrdWQ6uKDOl8rtnmzPKdsijXrj
+         9ZFV8k++iHEXIwPh+qEvg7I9MGbvwQZsPtMq8DSfoMfqiQ5ab/YBbTvpSPpTCoFViFHE
+         HGv3Uk4EaGkiG3un0O2fV/dU7HINqwIOcij2whkWaxuSenMDmcSichlATEnwEP5kxp36
+         wb02PYfPUVqa6zuxhREc42t286A+/HKaIeZ9740zPWWzOPjZkUEw3w0yNp3iqckk8MAK
+         v9bA==
+X-Gm-Message-State: AOAM533u/86B42Kcpr9uaB4PR1kYsoa6yLn8wQRhdOkBJEqYR8AaOaPp
+        ZUrD/Hdh6GbOrFf/v2qlhw0=
+X-Google-Smtp-Source: ABdhPJwSkMnVE2Vfvkw8u9w8MLlSIniHUWl3U16F6X6NfUBs7MuF2+n1Mn1HdR/h/VyL3O3Xcg+qyw==
+X-Received: by 2002:a19:5208:: with SMTP id m8mr18526887lfb.372.1620681808831;
+        Mon, 10 May 2021 14:23:28 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.gmail.com with ESMTPSA id z139sm91876lfc.150.2021.05.10.14.23.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 14:23:28 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH v4] dt-bindings: memory: tegra20: emc: Convert to schema
+Date:   Tue, 11 May 2021 00:23:20 +0300
+Message-Id: <20210510212320.3255-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210510204618.GA135281@embeddedor>
-In-Reply-To: <20210510204618.GA135281@embeddedor>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 10 May 2021 17:20:31 -0400
-Message-ID: <CADnq5_Mxu4SitZPJYPgw4X8zFo+wdT2_ZXP4fum4Xr=pt-icZw@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: Fix out-of-bounds bug
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Evan Quan <evan.quan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-hardening@vger.kernel.org,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 4:45 PM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> Create new structure SISLANDS_SMC_SWSTATE_SINGLE, as initialState.levels
-> and ACPIState.levels are never actually used as flexible arrays. Those
-> arrays can be used as simple objects of type
-> SISLANDS_SMC_HW_PERFORMANCE_LEVEL, instead.
->
-> Currently, the code fails because flexible array _levels_ in
-> struct SISLANDS_SMC_SWSTATE doesn't allow for code that accesses
-> the first element of initialState.levels and ACPIState.levels
-> arrays:
->
-> drivers/gpu/drm/amd/pm/powerplay/si_dpm.c:
-> 4820: table->initialState.levels[0].mclk.vDLL_CNTL =
-> 4821:         cpu_to_be32(si_pi->clock_registers.dll_cntl);
-> ...
-> 5021: table->ACPIState.levels[0].mclk.vDLL_CNTL =
-> 5022:         cpu_to_be32(dll_cntl);
->
-> because such element cannot be accessed without previously allocating
-> enough dynamic memory for it to exist (which never actually happens).
-> So, there is an out-of-bounds bug in this case.
->
-> That's why struct SISLANDS_SMC_SWSTATE should only be used as type
-> for object driverState and new struct SISLANDS_SMC_SWSTATE_SINGLE is
-> created as type for objects initialState, ACPIState and ULVState.
->
-> Also, with the change from one-element array to flexible-array member
-> in commit 0e1aa13ca3ff ("drm/amd/pm: Replace one-element array with
-> flexible-array in struct SISLANDS_SMC_SWSTATE"), the size of
-> dpmLevels in struct SISLANDS_SMC_STATETABLE should be fixed to be
-> SISLANDS_MAX_SMC_PERFORMANCE_LEVELS_PER_SWSTATE instead of
-> SISLANDS_MAX_SMC_PERFORMANCE_LEVELS_PER_SWSTATE - 1.
->
-> Fixes: 0e1aa13ca3ff ("drm/amd/pm: Replace one-element array with flexible-array in struct SISLANDS_SMC_SWSTATE")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Convert Tegra20 External Memory Controller binding to schema.
 
-Applied.  Thanks!
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
 
-Alex
+Changelog:
 
-> ---
->  drivers/gpu/drm/amd/pm/powerplay/si_dpm.c     | 174 +++++++++---------
->  .../gpu/drm/amd/pm/powerplay/sislands_smc.h   |  34 ++--
->  2 files changed, 109 insertions(+), 99 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/si_dpm.c b/drivers/gpu/drm/amd/pm/powerplay/si_dpm.c
-> index 26a5321e621b..15c0b8af376f 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/si_dpm.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/si_dpm.c
-> @@ -4817,70 +4817,70 @@ static int si_populate_smc_initial_state(struct amdgpu_device *adev,
->         u32 reg;
->         int ret;
->
-> -       table->initialState.levels[0].mclk.vDLL_CNTL =
-> +       table->initialState.level.mclk.vDLL_CNTL =
->                 cpu_to_be32(si_pi->clock_registers.dll_cntl);
-> -       table->initialState.levels[0].mclk.vMCLK_PWRMGT_CNTL =
-> +       table->initialState.level.mclk.vMCLK_PWRMGT_CNTL =
->                 cpu_to_be32(si_pi->clock_registers.mclk_pwrmgt_cntl);
-> -       table->initialState.levels[0].mclk.vMPLL_AD_FUNC_CNTL =
-> +       table->initialState.level.mclk.vMPLL_AD_FUNC_CNTL =
->                 cpu_to_be32(si_pi->clock_registers.mpll_ad_func_cntl);
-> -       table->initialState.levels[0].mclk.vMPLL_DQ_FUNC_CNTL =
-> +       table->initialState.level.mclk.vMPLL_DQ_FUNC_CNTL =
->                 cpu_to_be32(si_pi->clock_registers.mpll_dq_func_cntl);
-> -       table->initialState.levels[0].mclk.vMPLL_FUNC_CNTL =
-> +       table->initialState.level.mclk.vMPLL_FUNC_CNTL =
->                 cpu_to_be32(si_pi->clock_registers.mpll_func_cntl);
-> -       table->initialState.levels[0].mclk.vMPLL_FUNC_CNTL_1 =
-> +       table->initialState.level.mclk.vMPLL_FUNC_CNTL_1 =
->                 cpu_to_be32(si_pi->clock_registers.mpll_func_cntl_1);
-> -       table->initialState.levels[0].mclk.vMPLL_FUNC_CNTL_2 =
-> +       table->initialState.level.mclk.vMPLL_FUNC_CNTL_2 =
->                 cpu_to_be32(si_pi->clock_registers.mpll_func_cntl_2);
-> -       table->initialState.levels[0].mclk.vMPLL_SS =
-> +       table->initialState.level.mclk.vMPLL_SS =
->                 cpu_to_be32(si_pi->clock_registers.mpll_ss1);
-> -       table->initialState.levels[0].mclk.vMPLL_SS2 =
-> +       table->initialState.level.mclk.vMPLL_SS2 =
->                 cpu_to_be32(si_pi->clock_registers.mpll_ss2);
->
-> -       table->initialState.levels[0].mclk.mclk_value =
-> +       table->initialState.level.mclk.mclk_value =
->                 cpu_to_be32(initial_state->performance_levels[0].mclk);
->
-> -       table->initialState.levels[0].sclk.vCG_SPLL_FUNC_CNTL =
-> +       table->initialState.level.sclk.vCG_SPLL_FUNC_CNTL =
->                 cpu_to_be32(si_pi->clock_registers.cg_spll_func_cntl);
-> -       table->initialState.levels[0].sclk.vCG_SPLL_FUNC_CNTL_2 =
-> +       table->initialState.level.sclk.vCG_SPLL_FUNC_CNTL_2 =
->                 cpu_to_be32(si_pi->clock_registers.cg_spll_func_cntl_2);
-> -       table->initialState.levels[0].sclk.vCG_SPLL_FUNC_CNTL_3 =
-> +       table->initialState.level.sclk.vCG_SPLL_FUNC_CNTL_3 =
->                 cpu_to_be32(si_pi->clock_registers.cg_spll_func_cntl_3);
-> -       table->initialState.levels[0].sclk.vCG_SPLL_FUNC_CNTL_4 =
-> +       table->initialState.level.sclk.vCG_SPLL_FUNC_CNTL_4 =
->                 cpu_to_be32(si_pi->clock_registers.cg_spll_func_cntl_4);
-> -       table->initialState.levels[0].sclk.vCG_SPLL_SPREAD_SPECTRUM =
-> +       table->initialState.level.sclk.vCG_SPLL_SPREAD_SPECTRUM =
->                 cpu_to_be32(si_pi->clock_registers.cg_spll_spread_spectrum);
-> -       table->initialState.levels[0].sclk.vCG_SPLL_SPREAD_SPECTRUM_2  =
-> +       table->initialState.level.sclk.vCG_SPLL_SPREAD_SPECTRUM_2  =
->                 cpu_to_be32(si_pi->clock_registers.cg_spll_spread_spectrum_2);
->
-> -       table->initialState.levels[0].sclk.sclk_value =
-> +       table->initialState.level.sclk.sclk_value =
->                 cpu_to_be32(initial_state->performance_levels[0].sclk);
->
-> -       table->initialState.levels[0].arbRefreshState =
-> +       table->initialState.level.arbRefreshState =
->                 SISLANDS_INITIAL_STATE_ARB_INDEX;
->
-> -       table->initialState.levels[0].ACIndex = 0;
-> +       table->initialState.level.ACIndex = 0;
->
->         ret = si_populate_voltage_value(adev, &eg_pi->vddc_voltage_table,
->                                         initial_state->performance_levels[0].vddc,
-> -                                       &table->initialState.levels[0].vddc);
-> +                                       &table->initialState.level.vddc);
->
->         if (!ret) {
->                 u16 std_vddc;
->
->                 ret = si_get_std_voltage_value(adev,
-> -                                              &table->initialState.levels[0].vddc,
-> +                                              &table->initialState.level.vddc,
->                                                &std_vddc);
->                 if (!ret)
->                         si_populate_std_voltage_value(adev, std_vddc,
-> -                                                     table->initialState.levels[0].vddc.index,
-> -                                                     &table->initialState.levels[0].std_vddc);
-> +                                                     table->initialState.level.vddc.index,
-> +                                                     &table->initialState.level.std_vddc);
->         }
->
->         if (eg_pi->vddci_control)
->                 si_populate_voltage_value(adev,
->                                           &eg_pi->vddci_voltage_table,
->                                           initial_state->performance_levels[0].vddci,
-> -                                         &table->initialState.levels[0].vddci);
-> +                                         &table->initialState.level.vddci);
->
->         if (si_pi->vddc_phase_shed_control)
->                 si_populate_phase_shedding_value(adev,
-> @@ -4888,41 +4888,41 @@ static int si_populate_smc_initial_state(struct amdgpu_device *adev,
->                                                  initial_state->performance_levels[0].vddc,
->                                                  initial_state->performance_levels[0].sclk,
->                                                  initial_state->performance_levels[0].mclk,
-> -                                                &table->initialState.levels[0].vddc);
-> +                                                &table->initialState.level.vddc);
->
-> -       si_populate_initial_mvdd_value(adev, &table->initialState.levels[0].mvdd);
-> +       si_populate_initial_mvdd_value(adev, &table->initialState.level.mvdd);
->
->         reg = CG_R(0xffff) | CG_L(0);
-> -       table->initialState.levels[0].aT = cpu_to_be32(reg);
-> -       table->initialState.levels[0].bSP = cpu_to_be32(pi->dsp);
-> -       table->initialState.levels[0].gen2PCIE = (u8)si_pi->boot_pcie_gen;
-> +       table->initialState.level.aT = cpu_to_be32(reg);
-> +       table->initialState.level.bSP = cpu_to_be32(pi->dsp);
-> +       table->initialState.level.gen2PCIE = (u8)si_pi->boot_pcie_gen;
->
->         if (adev->gmc.vram_type == AMDGPU_VRAM_TYPE_GDDR5) {
-> -               table->initialState.levels[0].strobeMode =
-> +               table->initialState.level.strobeMode =
->                         si_get_strobe_mode_settings(adev,
->                                                     initial_state->performance_levels[0].mclk);
->
->                 if (initial_state->performance_levels[0].mclk > pi->mclk_edc_enable_threshold)
-> -                       table->initialState.levels[0].mcFlags = SISLANDS_SMC_MC_EDC_RD_FLAG | SISLANDS_SMC_MC_EDC_WR_FLAG;
-> +                       table->initialState.level.mcFlags = SISLANDS_SMC_MC_EDC_RD_FLAG | SISLANDS_SMC_MC_EDC_WR_FLAG;
->                 else
-> -                       table->initialState.levels[0].mcFlags =  0;
-> +                       table->initialState.level.mcFlags =  0;
->         }
->
->         table->initialState.levelCount = 1;
->
->         table->initialState.flags |= PPSMC_SWSTATE_FLAG_DC;
->
-> -       table->initialState.levels[0].dpm2.MaxPS = 0;
-> -       table->initialState.levels[0].dpm2.NearTDPDec = 0;
-> -       table->initialState.levels[0].dpm2.AboveSafeInc = 0;
-> -       table->initialState.levels[0].dpm2.BelowSafeInc = 0;
-> -       table->initialState.levels[0].dpm2.PwrEfficiencyRatio = 0;
-> +       table->initialState.level.dpm2.MaxPS = 0;
-> +       table->initialState.level.dpm2.NearTDPDec = 0;
-> +       table->initialState.level.dpm2.AboveSafeInc = 0;
-> +       table->initialState.level.dpm2.BelowSafeInc = 0;
-> +       table->initialState.level.dpm2.PwrEfficiencyRatio = 0;
->
->         reg = MIN_POWER_MASK | MAX_POWER_MASK;
-> -       table->initialState.levels[0].SQPowerThrottle = cpu_to_be32(reg);
-> +       table->initialState.level.SQPowerThrottle = cpu_to_be32(reg);
->
->         reg = MAX_POWER_DELTA_MASK | STI_SIZE_MASK | LTI_RATIO_MASK;
-> -       table->initialState.levels[0].SQPowerThrottle_2 = cpu_to_be32(reg);
-> +       table->initialState.level.SQPowerThrottle_2 = cpu_to_be32(reg);
->
->         return 0;
->  }
-> @@ -4953,18 +4953,18 @@ static int si_populate_smc_acpi_state(struct amdgpu_device *adev,
->
->         if (pi->acpi_vddc) {
->                 ret = si_populate_voltage_value(adev, &eg_pi->vddc_voltage_table,
-> -                                               pi->acpi_vddc, &table->ACPIState.levels[0].vddc);
-> +                                               pi->acpi_vddc, &table->ACPIState.level.vddc);
->                 if (!ret) {
->                         u16 std_vddc;
->
->                         ret = si_get_std_voltage_value(adev,
-> -                                                      &table->ACPIState.levels[0].vddc, &std_vddc);
-> +                                                      &table->ACPIState.level.vddc, &std_vddc);
->                         if (!ret)
->                                 si_populate_std_voltage_value(adev, std_vddc,
-> -                                                             table->ACPIState.levels[0].vddc.index,
-> -                                                             &table->ACPIState.levels[0].std_vddc);
-> +                                                             table->ACPIState.level.vddc.index,
-> +                                                             &table->ACPIState.level.std_vddc);
->                 }
-> -               table->ACPIState.levels[0].gen2PCIE = si_pi->acpi_pcie_gen;
-> +               table->ACPIState.level.gen2PCIE = si_pi->acpi_pcie_gen;
->
->                 if (si_pi->vddc_phase_shed_control) {
->                         si_populate_phase_shedding_value(adev,
-> @@ -4972,23 +4972,23 @@ static int si_populate_smc_acpi_state(struct amdgpu_device *adev,
->                                                          pi->acpi_vddc,
->                                                          0,
->                                                          0,
-> -                                                        &table->ACPIState.levels[0].vddc);
-> +                                                        &table->ACPIState.level.vddc);
->                 }
->         } else {
->                 ret = si_populate_voltage_value(adev, &eg_pi->vddc_voltage_table,
-> -                                               pi->min_vddc_in_table, &table->ACPIState.levels[0].vddc);
-> +                                               pi->min_vddc_in_table, &table->ACPIState.level.vddc);
->                 if (!ret) {
->                         u16 std_vddc;
->
->                         ret = si_get_std_voltage_value(adev,
-> -                                                      &table->ACPIState.levels[0].vddc, &std_vddc);
-> +                                                      &table->ACPIState.level.vddc, &std_vddc);
->
->                         if (!ret)
->                                 si_populate_std_voltage_value(adev, std_vddc,
-> -                                                             table->ACPIState.levels[0].vddc.index,
-> -                                                             &table->ACPIState.levels[0].std_vddc);
-> +                                                             table->ACPIState.level.vddc.index,
-> +                                                             &table->ACPIState.level.std_vddc);
->                 }
-> -               table->ACPIState.levels[0].gen2PCIE =
-> +               table->ACPIState.level.gen2PCIE =
->                         (u8)amdgpu_get_pcie_gen_support(adev,
->                                                         si_pi->sys_pcie_mask,
->                                                         si_pi->boot_pcie_gen,
-> @@ -5000,14 +5000,14 @@ static int si_populate_smc_acpi_state(struct amdgpu_device *adev,
->                                                          pi->min_vddc_in_table,
->                                                          0,
->                                                          0,
-> -                                                        &table->ACPIState.levels[0].vddc);
-> +                                                        &table->ACPIState.level.vddc);
->         }
->
->         if (pi->acpi_vddc) {
->                 if (eg_pi->acpi_vddci)
->                         si_populate_voltage_value(adev, &eg_pi->vddci_voltage_table,
->                                                   eg_pi->acpi_vddci,
-> -                                                 &table->ACPIState.levels[0].vddci);
-> +                                                 &table->ACPIState.level.vddci);
->         }
->
->         mclk_pwrmgt_cntl |= MRDCK0_RESET | MRDCK1_RESET;
-> @@ -5018,59 +5018,59 @@ static int si_populate_smc_acpi_state(struct amdgpu_device *adev,
->         spll_func_cntl_2 &= ~SCLK_MUX_SEL_MASK;
->         spll_func_cntl_2 |= SCLK_MUX_SEL(4);
->
-> -       table->ACPIState.levels[0].mclk.vDLL_CNTL =
-> +       table->ACPIState.level.mclk.vDLL_CNTL =
->                 cpu_to_be32(dll_cntl);
-> -       table->ACPIState.levels[0].mclk.vMCLK_PWRMGT_CNTL =
-> +       table->ACPIState.level.mclk.vMCLK_PWRMGT_CNTL =
->                 cpu_to_be32(mclk_pwrmgt_cntl);
-> -       table->ACPIState.levels[0].mclk.vMPLL_AD_FUNC_CNTL =
-> +       table->ACPIState.level.mclk.vMPLL_AD_FUNC_CNTL =
->                 cpu_to_be32(mpll_ad_func_cntl);
-> -       table->ACPIState.levels[0].mclk.vMPLL_DQ_FUNC_CNTL =
-> +       table->ACPIState.level.mclk.vMPLL_DQ_FUNC_CNTL =
->                 cpu_to_be32(mpll_dq_func_cntl);
-> -       table->ACPIState.levels[0].mclk.vMPLL_FUNC_CNTL =
-> +       table->ACPIState.level.mclk.vMPLL_FUNC_CNTL =
->                 cpu_to_be32(mpll_func_cntl);
-> -       table->ACPIState.levels[0].mclk.vMPLL_FUNC_CNTL_1 =
-> +       table->ACPIState.level.mclk.vMPLL_FUNC_CNTL_1 =
->                 cpu_to_be32(mpll_func_cntl_1);
-> -       table->ACPIState.levels[0].mclk.vMPLL_FUNC_CNTL_2 =
-> +       table->ACPIState.level.mclk.vMPLL_FUNC_CNTL_2 =
->                 cpu_to_be32(mpll_func_cntl_2);
-> -       table->ACPIState.levels[0].mclk.vMPLL_SS =
-> +       table->ACPIState.level.mclk.vMPLL_SS =
->                 cpu_to_be32(si_pi->clock_registers.mpll_ss1);
-> -       table->ACPIState.levels[0].mclk.vMPLL_SS2 =
-> +       table->ACPIState.level.mclk.vMPLL_SS2 =
->                 cpu_to_be32(si_pi->clock_registers.mpll_ss2);
->
-> -       table->ACPIState.levels[0].sclk.vCG_SPLL_FUNC_CNTL =
-> +       table->ACPIState.level.sclk.vCG_SPLL_FUNC_CNTL =
->                 cpu_to_be32(spll_func_cntl);
-> -       table->ACPIState.levels[0].sclk.vCG_SPLL_FUNC_CNTL_2 =
-> +       table->ACPIState.level.sclk.vCG_SPLL_FUNC_CNTL_2 =
->                 cpu_to_be32(spll_func_cntl_2);
-> -       table->ACPIState.levels[0].sclk.vCG_SPLL_FUNC_CNTL_3 =
-> +       table->ACPIState.level.sclk.vCG_SPLL_FUNC_CNTL_3 =
->                 cpu_to_be32(spll_func_cntl_3);
-> -       table->ACPIState.levels[0].sclk.vCG_SPLL_FUNC_CNTL_4 =
-> +       table->ACPIState.level.sclk.vCG_SPLL_FUNC_CNTL_4 =
->                 cpu_to_be32(spll_func_cntl_4);
->
-> -       table->ACPIState.levels[0].mclk.mclk_value = 0;
-> -       table->ACPIState.levels[0].sclk.sclk_value = 0;
-> +       table->ACPIState.level.mclk.mclk_value = 0;
-> +       table->ACPIState.level.sclk.sclk_value = 0;
->
-> -       si_populate_mvdd_value(adev, 0, &table->ACPIState.levels[0].mvdd);
-> +       si_populate_mvdd_value(adev, 0, &table->ACPIState.level.mvdd);
->
->         if (eg_pi->dynamic_ac_timing)
-> -               table->ACPIState.levels[0].ACIndex = 0;
-> +               table->ACPIState.level.ACIndex = 0;
->
-> -       table->ACPIState.levels[0].dpm2.MaxPS = 0;
-> -       table->ACPIState.levels[0].dpm2.NearTDPDec = 0;
-> -       table->ACPIState.levels[0].dpm2.AboveSafeInc = 0;
-> -       table->ACPIState.levels[0].dpm2.BelowSafeInc = 0;
-> -       table->ACPIState.levels[0].dpm2.PwrEfficiencyRatio = 0;
-> +       table->ACPIState.level.dpm2.MaxPS = 0;
-> +       table->ACPIState.level.dpm2.NearTDPDec = 0;
-> +       table->ACPIState.level.dpm2.AboveSafeInc = 0;
-> +       table->ACPIState.level.dpm2.BelowSafeInc = 0;
-> +       table->ACPIState.level.dpm2.PwrEfficiencyRatio = 0;
->
->         reg = MIN_POWER_MASK | MAX_POWER_MASK;
-> -       table->ACPIState.levels[0].SQPowerThrottle = cpu_to_be32(reg);
-> +       table->ACPIState.level.SQPowerThrottle = cpu_to_be32(reg);
->
->         reg = MAX_POWER_DELTA_MASK | STI_SIZE_MASK | LTI_RATIO_MASK;
-> -       table->ACPIState.levels[0].SQPowerThrottle_2 = cpu_to_be32(reg);
-> +       table->ACPIState.level.SQPowerThrottle_2 = cpu_to_be32(reg);
->
->         return 0;
->  }
->
->  static int si_populate_ulv_state(struct amdgpu_device *adev,
-> -                                SISLANDS_SMC_SWSTATE *state)
-> +                                struct SISLANDS_SMC_SWSTATE_SINGLE *state)
->  {
->         struct evergreen_power_info *eg_pi = evergreen_get_pi(adev);
->         struct si_power_info *si_pi = si_get_pi(adev);
-> @@ -5079,19 +5079,19 @@ static int si_populate_ulv_state(struct amdgpu_device *adev,
->         int ret;
->
->         ret = si_convert_power_level_to_smc(adev, &ulv->pl,
-> -                                           &state->levels[0]);
-> +                                           &state->level);
->         if (!ret) {
->                 if (eg_pi->sclk_deep_sleep) {
->                         if (sclk_in_sr <= SCLK_MIN_DEEPSLEEP_FREQ)
-> -                               state->levels[0].stateFlags |= PPSMC_STATEFLAG_DEEPSLEEP_BYPASS;
-> +                               state->level.stateFlags |= PPSMC_STATEFLAG_DEEPSLEEP_BYPASS;
->                         else
-> -                               state->levels[0].stateFlags |= PPSMC_STATEFLAG_DEEPSLEEP_THROTTLE;
-> +                               state->level.stateFlags |= PPSMC_STATEFLAG_DEEPSLEEP_THROTTLE;
->                 }
->                 if (ulv->one_pcie_lane_in_ulv)
->                         state->flags |= PPSMC_SWSTATE_FLAG_PCIE_X1;
-> -               state->levels[0].arbRefreshState = (u8)(SISLANDS_ULV_STATE_ARB_INDEX);
-> -               state->levels[0].ACIndex = 1;
-> -               state->levels[0].std_vddc = state->levels[0].vddc;
-> +               state->level.arbRefreshState = (u8)(SISLANDS_ULV_STATE_ARB_INDEX);
-> +               state->level.ACIndex = 1;
-> +               state->level.std_vddc = state->level.vddc;
->                 state->levelCount = 1;
->
->                 state->flags |= PPSMC_SWSTATE_FLAG_DC;
-> @@ -5190,7 +5190,9 @@ static int si_init_smc_table(struct amdgpu_device *adev)
->         if (ret)
->                 return ret;
->
-> -       table->driverState = table->initialState;
-> +       table->driverState.flags = table->initialState.flags;
-> +       table->driverState.levelCount = table->initialState.levelCount;
-> +       table->driverState.levels[0] = table->initialState.level;
->
->         ret = si_do_program_memory_timing_parameters(adev, amdgpu_boot_state,
->                                                      SISLANDS_INITIAL_STATE_ARB_INDEX);
-> @@ -5737,8 +5739,8 @@ static int si_upload_ulv_state(struct amdgpu_device *adev)
->         if (ulv->supported && ulv->pl.vddc) {
->                 u32 address = si_pi->state_table_start +
->                         offsetof(SISLANDS_SMC_STATETABLE, ULVState);
-> -               SISLANDS_SMC_SWSTATE *smc_state = &si_pi->smc_statetable.ULVState;
-> -               u32 state_size = sizeof(SISLANDS_SMC_SWSTATE);
-> +               struct SISLANDS_SMC_SWSTATE_SINGLE *smc_state = &si_pi->smc_statetable.ULVState;
-> +               u32 state_size = sizeof(struct SISLANDS_SMC_SWSTATE_SINGLE);
->
->                 memset(smc_state, 0, state_size);
->
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/sislands_smc.h b/drivers/gpu/drm/amd/pm/powerplay/sislands_smc.h
-> index 0f7554052c90..c7dc117a688c 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/sislands_smc.h
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/sislands_smc.h
-> @@ -191,6 +191,14 @@ struct SISLANDS_SMC_SWSTATE
->
->  typedef struct SISLANDS_SMC_SWSTATE SISLANDS_SMC_SWSTATE;
->
-> +struct SISLANDS_SMC_SWSTATE_SINGLE {
-> +       uint8_t                             flags;
-> +       uint8_t                             levelCount;
-> +       uint8_t                             padding2;
-> +       uint8_t                             padding3;
-> +       SISLANDS_SMC_HW_PERFORMANCE_LEVEL   level;
-> +};
-> +
->  #define SISLANDS_SMC_VOLTAGEMASK_VDDC  0
->  #define SISLANDS_SMC_VOLTAGEMASK_MVDD  1
->  #define SISLANDS_SMC_VOLTAGEMASK_VDDCI 2
-> @@ -208,19 +216,19 @@ typedef struct SISLANDS_SMC_VOLTAGEMASKTABLE SISLANDS_SMC_VOLTAGEMASKTABLE;
->
->  struct SISLANDS_SMC_STATETABLE
->  {
-> -    uint8_t                             thermalProtectType;
-> -    uint8_t                             systemFlags;
-> -    uint8_t                             maxVDDCIndexInPPTable;
-> -    uint8_t                             extraFlags;
-> -    uint32_t                            lowSMIO[SISLANDS_MAX_NO_VREG_STEPS];
-> -    SISLANDS_SMC_VOLTAGEMASKTABLE       voltageMaskTable;
-> -    SISLANDS_SMC_VOLTAGEMASKTABLE       phaseMaskTable;
-> -    PP_SIslands_DPM2Parameters          dpm2Params;
-> -    SISLANDS_SMC_SWSTATE                initialState;
-> -    SISLANDS_SMC_SWSTATE                ACPIState;
-> -    SISLANDS_SMC_SWSTATE                ULVState;
-> -    SISLANDS_SMC_SWSTATE                driverState;
-> -    SISLANDS_SMC_HW_PERFORMANCE_LEVEL   dpmLevels[SISLANDS_MAX_SMC_PERFORMANCE_LEVELS_PER_SWSTATE - 1];
-> +       uint8_t                                 thermalProtectType;
-> +       uint8_t                                 systemFlags;
-> +       uint8_t                                 maxVDDCIndexInPPTable;
-> +       uint8_t                                 extraFlags;
-> +       uint32_t                                lowSMIO[SISLANDS_MAX_NO_VREG_STEPS];
-> +       SISLANDS_SMC_VOLTAGEMASKTABLE           voltageMaskTable;
-> +       SISLANDS_SMC_VOLTAGEMASKTABLE           phaseMaskTable;
-> +       PP_SIslands_DPM2Parameters              dpm2Params;
-> +       struct SISLANDS_SMC_SWSTATE_SINGLE      initialState;
-> +       struct SISLANDS_SMC_SWSTATE_SINGLE      ACPIState;
-> +       struct SISLANDS_SMC_SWSTATE_SINGLE      ULVState;
-> +       SISLANDS_SMC_SWSTATE                    driverState;
-> +       SISLANDS_SMC_HW_PERFORMANCE_LEVEL       dpmLevels[SISLANDS_MAX_SMC_PERFORMANCE_LEVELS_PER_SWSTATE];
->  };
->
->  typedef struct SISLANDS_SMC_STATETABLE SISLANDS_SMC_STATETABLE;
-> --
-> 2.27.0
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+v4: - Doesn't have duplicated properties by making use of $defs/$ref,
+      which was suggested by Rob Herring in a review comment to v3.
+
+v3: - Fixed dt_binding_check warning about the missing reg property.
+
+    - Became a standalone patch since other v2 patches were applied.
+
+ .../memory-controllers/nvidia,tegra20-emc.txt | 130 ----------
+ .../nvidia,tegra20-emc.yaml                   | 230 ++++++++++++++++++
+ 2 files changed, 230 insertions(+), 130 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
+
+diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+deleted file mode 100644
+index d2250498c36d..000000000000
+--- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
++++ /dev/null
+@@ -1,130 +0,0 @@
+-Embedded Memory Controller
+-
+-Properties:
+-- name : Should be emc
+-- #address-cells : Should be 1
+-- #size-cells : Should be 0
+-- compatible : Should contain "nvidia,tegra20-emc".
+-- reg : Offset and length of the register set for the device
+-- nvidia,use-ram-code : If present, the sub-nodes will be addressed
+-  and chosen using the ramcode board selector. If omitted, only one
+-  set of tables can be present and said tables will be used
+-  irrespective of ram-code configuration.
+-- interrupts : Should contain EMC General interrupt.
+-- clocks : Should contain EMC clock.
+-- nvidia,memory-controller : Phandle of the Memory Controller node.
+-- #interconnect-cells : Should be 0.
+-- operating-points-v2: See ../bindings/opp/opp.txt for details.
+-
+-For each opp entry in 'operating-points-v2' table:
+-- opp-supported-hw: One bitfield indicating SoC process ID mask
+-
+-	A bitwise AND is performed against this value and if any bit
+-	matches, the OPP gets enabled.
+-
+-Optional properties:
+-- power-domains: Phandle of the SoC "core" power domain.
+-
+-Child device nodes describe the memory settings for different configurations and clock rates.
+-
+-Example:
+-
+-	opp_table: opp-table {
+-		compatible = "operating-points-v2";
+-
+-		opp@36000000 {
+-			opp-microvolt = <950000 950000 1300000>;
+-			opp-hz = /bits/ 64 <36000000>;
+-		};
+-		...
+-	};
+-
+-	memory-controller@7000f400 {
+-		#address-cells = < 1 >;
+-		#size-cells = < 0 >;
+-		#interconnect-cells = <0>;
+-		compatible = "nvidia,tegra20-emc";
+-		reg = <0x7000f400 0x400>;
+-		interrupts = <0 78 0x04>;
+-		clocks = <&tegra_car TEGRA20_CLK_EMC>;
+-		nvidia,memory-controller = <&mc>;
+-		power-domains = <&domain>;
+-		operating-points-v2 = <&opp_table>;
+-	}
+-
+-
+-Embedded Memory Controller ram-code table
+-
+-If the emc node has the nvidia,use-ram-code property present, then the
+-next level of nodes below the emc table are used to specify which settings
+-apply for which ram-code settings.
+-
+-If the emc node lacks the nvidia,use-ram-code property, this level is omitted
+-and the tables are stored directly under the emc node (see below).
+-
+-Properties:
+-
+-- name : Should be emc-tables
+-- nvidia,ram-code : the binary representation of the ram-code board strappings
+-  for which this node (and children) are valid.
+-
+-
+-
+-Embedded Memory Controller configuration table
+-
+-This is a table containing the EMC register settings for the various
+-operating speeds of the memory controller. They are always located as
+-subnodes of the emc controller node.
+-
+-There are two ways of specifying which tables to use:
+-
+-* The simplest is if there is just one set of tables in the device tree,
+-  and they will always be used (based on which frequency is used).
+-  This is the preferred method, especially when firmware can fill in
+-  this information based on the specific system information and just
+-  pass it on to the kernel.
+-
+-* The slightly more complex one is when more than one memory configuration
+-  might exist on the system.  The Tegra20 platform handles this during
+-  early boot by selecting one out of possible 4 memory settings based
+-  on a 2-pin "ram code" bootstrap setting on the board. The values of
+-  these strappings can be read through a register in the SoC, and thus
+-  used to select which tables to use.
+-
+-Properties:
+-- name : Should be emc-table
+-- compatible : Should contain "nvidia,tegra20-emc-table".
+-- reg : either an opaque enumerator to tell different tables apart, or
+-  the valid frequency for which the table should be used (in kHz).
+-- clock-frequency : the clock frequency for the EMC at which this
+-  table should be used (in kHz).
+-- nvidia,emc-registers : a 46 word array of EMC registers to be programmed
+-  for operation at the 'clock-frequency' setting.
+-  The order and contents of the registers are:
+-    RC, RFC, RAS, RP, R2W, W2R, R2P, W2P, RD_RCD, WR_RCD, RRD, REXT,
+-    WDV, QUSE, QRST, QSAFE, RDV, REFRESH, BURST_REFRESH_NUM, PDEX2WR,
+-    PDEX2RD, PCHG2PDEN, ACT2PDEN, AR2PDEN, RW2PDEN, TXSR, TCKE, TFAW,
+-    TRPAB, TCLKSTABLE, TCLKSTOP, TREFBW, QUSE_EXTRA, FBIO_CFG6, ODT_WRITE,
+-    ODT_READ, FBIO_CFG5, CFG_DIG_DLL, DLL_XFORM_DQS, DLL_XFORM_QUSE,
+-    ZCAL_REF_CNT, ZCAL_WAIT_CNT, AUTO_CAL_INTERVAL, CFG_CLKTRIM_0,
+-    CFG_CLKTRIM_1, CFG_CLKTRIM_2
+-
+-		emc-table@166000 {
+-			reg = <166000>;
+-			compatible = "nvidia,tegra20-emc-table";
+-			clock-frequency = < 166000 >;
+-			nvidia,emc-registers = < 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+-						 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+-						 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+-						 0 0 0 0 >;
+-		};
+-
+-		emc-table@333000 {
+-			reg = <333000>;
+-			compatible = "nvidia,tegra20-emc-table";
+-			clock-frequency = < 333000 >;
+-			nvidia,emc-registers = < 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+-						 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+-						 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+-						 0 0 0 0 >;
+-		};
+diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
+new file mode 100644
+index 000000000000..cac6842dc8f1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
+@@ -0,0 +1,230 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/memory-controllers/nvidia,tegra20-emc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NVIDIA Tegra20 SoC External Memory Controller
++
++maintainers:
++  - Dmitry Osipenko <digetx@gmail.com>
++  - Jon Hunter <jonathanh@nvidia.com>
++  - Thierry Reding <thierry.reding@gmail.com>
++
++description: |
++  The External Memory Controller (EMC) interfaces with the off-chip SDRAM to
++  service the request stream sent from Memory Controller. The EMC also has
++  various performance-affecting settings beyond the obvious SDRAM configuration
++  parameters and initialization settings. Tegra20 EMC supports multiple JEDEC
++  standard protocols: DDR1, LPDDR2 and DDR2.
++
++properties:
++  compatible:
++    const: nvidia,tegra20-emc
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++  "#interconnect-cells":
++    const: 0
++
++  nvidia,memory-controller:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Phandle of the Memory Controller node.
++
++  power-domains:
++    maxItems: 1
++    description:
++      Phandle of the SoC "core" power domain.
++
++  operating-points-v2:
++    description:
++      Should contain freqs and voltages and opp-supported-hw property, which
++      is a bitfield indicating SoC process ID mask.
++
++  nvidia,use-ram-code:
++    type: boolean
++    description:
++      If present, the emc-tables@ sub-nodes will be addressed.
++
++$defs:
++  emc-table:
++    type: object
++    properties:
++      compatible:
++        const: nvidia,tegra20-emc-table
++
++      clock-frequency:
++        description:
++          Memory clock rate in kHz.
++        minimum: 1000
++        maximum: 900000
++
++      reg:
++        maxItems: 1
++        description:
++          Either an opaque enumerator to tell different tables apart, or
++          the valid frequency for which the table should be used (in kHz).
++
++      nvidia,emc-registers:
++        description:
++          EMC timing characterization data. These are the registers
++          (see section "15.4.1 EMC Registers" in the TRM) whose values
++          need to be specified, according to the board documentation.
++        $ref: /schemas/types.yaml#/definitions/uint32-array
++        items:
++          - description: EMC_RC
++          - description: EMC_RFC
++          - description: EMC_RAS
++          - description: EMC_RP
++          - description: EMC_R2W
++          - description: EMC_W2R
++          - description: EMC_R2P
++          - description: EMC_W2P
++          - description: EMC_RD_RCD
++          - description: EMC_WR_RCD
++          - description: EMC_RRD
++          - description: EMC_REXT
++          - description: EMC_WDV
++          - description: EMC_QUSE
++          - description: EMC_QRST
++          - description: EMC_QSAFE
++          - description: EMC_RDV
++          - description: EMC_REFRESH
++          - description: EMC_BURST_REFRESH_NUM
++          - description: EMC_PDEX2WR
++          - description: EMC_PDEX2RD
++          - description: EMC_PCHG2PDEN
++          - description: EMC_ACT2PDEN
++          - description: EMC_AR2PDEN
++          - description: EMC_RW2PDEN
++          - description: EMC_TXSR
++          - description: EMC_TCKE
++          - description: EMC_TFAW
++          - description: EMC_TRPAB
++          - description: EMC_TCLKSTABLE
++          - description: EMC_TCLKSTOP
++          - description: EMC_TREFBW
++          - description: EMC_QUSE_EXTRA
++          - description: EMC_FBIO_CFG6
++          - description: EMC_ODT_WRITE
++          - description: EMC_ODT_READ
++          - description: EMC_FBIO_CFG5
++          - description: EMC_CFG_DIG_DLL
++          - description: EMC_DLL_XFORM_DQS
++          - description: EMC_DLL_XFORM_QUSE
++          - description: EMC_ZCAL_REF_CNT
++          - description: EMC_ZCAL_WAIT_CNT
++          - description: EMC_AUTO_CAL_INTERVAL
++          - description: EMC_CFG_CLKTRIM_0
++          - description: EMC_CFG_CLKTRIM_1
++          - description: EMC_CFG_CLKTRIM_2
++
++    required:
++      - clock-frequency
++      - compatible
++      - reg
++      - nvidia,emc-registers
++
++    additionalProperties: false
++
++patternProperties:
++  "^emc-table@[0-9]+$":
++    $ref: "#/$defs/emc-table"
++
++  "^emc-tables@[a-z0-9-]+$":
++    type: object
++    properties:
++      reg:
++        maxItems: 1
++        description:
++          An opaque enumerator to tell different tables apart.
++
++      nvidia,ram-code:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        description:
++          Value of RAM_CODE this timing set is used for.
++
++      "#address-cells":
++        const: 1
++
++      "#size-cells":
++        const: 0
++
++    patternProperties:
++      "^emc-table@[0-9]+$":
++        $ref: "#/$defs/emc-table"
++
++    required:
++      - nvidia,ram-code
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - nvidia,memory-controller
++  - "#interconnect-cells"
++  - operating-points-v2
++
++additionalProperties: false
++
++examples:
++  - |
++    external-memory-controller@7000f400 {
++        compatible = "nvidia,tegra20-emc";
++        reg = <0x7000f400 0x400>;
++        interrupts = <0 78 4>;
++        clocks = <&clock_controller 57>;
++
++        nvidia,memory-controller = <&mc>;
++        operating-points-v2 = <&dvfs_opp_table>;
++        power-domains = <&domain>;
++
++        #interconnect-cells = <0>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        nvidia,use-ram-code;
++
++        emc-tables@0 {
++            nvidia,ram-code = <0>;
++            reg = <0>;
++
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            emc-table@333000 {
++                reg = <333000>;
++                compatible = "nvidia,tegra20-emc-table";
++                clock-frequency = <333000>;
++                nvidia,emc-registers = <0x00000018 0x00000033
++                        0x00000012 0x00000004 0x00000004 0x00000005
++                        0x00000003 0x0000000c 0x00000006 0x00000006
++                        0x00000003 0x00000001 0x00000004 0x00000005
++                        0x00000004 0x00000009 0x0000000d 0x00000bff
++                        0x00000000 0x00000003 0x00000003 0x00000006
++                        0x00000006 0x00000001 0x00000011 0x000000c8
++                        0x00000003 0x0000000e 0x00000007 0x00000008
++                        0x00000002 0x00000000 0x00000000 0x00000002
++                        0x00000000 0x00000000 0x00000083 0xf0440303
++                        0x007fe010 0x00001414 0x00000000 0x00000000
++                        0x00000000 0x00000000 0x00000000 0x00000000>;
++            };
++        };
++    };
+-- 
+2.30.2
+
