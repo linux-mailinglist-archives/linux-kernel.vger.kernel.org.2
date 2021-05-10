@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F60378236
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C5A37822B
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231821AbhEJKdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:33:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60020 "EHLO mail.kernel.org"
+        id S231191AbhEJKcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:32:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231186AbhEJK3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:29:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA65A616E9;
+        id S231320AbhEJK3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:29:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90ABA61606;
         Mon, 10 May 2021 10:27:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620642443;
-        bh=ql3fH9YF+Tp5Cdc+ks9xGMNWAcomJ3IyUAsw5MhHPbI=;
+        bh=6sjYk0L7r47OqYeDFjm8HLNedMhHYNiE4aHEhPrw9X4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=frxEZ0X2fnSoTgU9+JLGE5I7t/YU/G9oiXxRS1X0xW2Rv+v8hoiKZPVF6zZK6gmuK
-         YWraBoSxpZGipN4NdE4hqBK52JTen8IA1LsfqLifc5tF7W8C+WUVaqz8X5FZ39OZBs
-         VeQ1meZ6FZVB53BiRJuawwZv49MOAYRIh/piw8Dxtp5IfRCR3wlzFrc8s9+xD7ISX5
-         2tVOlYb5BhDw77vso25ycg41imjrpl1aK40Ev8uKhIz/hqvflrvPJHmSsiA+ZSdZxE
-         2mIYEZVS/u4bXDyph0ZTenGw+N40Gpjcgkr5xTN0nTAo8go9WORp7Sicj56oXYjY+N
-         8m+X5ej6mV+Cg==
+        b=rPNA5gEb5wiceV6HZJDTEF76167hXADux0bMIy4zcCsn87c0Pv/dhwycAoBvBt0Mg
+         L8E1PnHY/IY0UsGTRRAe6VFOk1LBA9yNuSXQ4KmtxcA9qj8l75kW/l7LNHfMr/WNWy
+         9UOGqjfxUBQ2/dzsSQUZg5sbYS8xqRdyq+a9O2UhEqrQqvtl7iKZmIsaNwQKBSuEgW
+         7zbM4Oht6O649bsiQ7yXMTu3uyg54vHyaX9ZnuXoeZXJGIVp1YdKe6JZR3NG7+Siuc
+         PWPn4e/RXVENSgzMkKVeVwZNAEtkCO+3/0vE5iPH8L5c0ZsmoKJwdIP8Iq5L5Deztp
+         ObXMEsBNcz9BA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lg38C-000UOW-E6; Mon, 10 May 2021 12:27:20 +0200
+        id 1lg38C-000UOa-Fy; Mon, 10 May 2021 12:27:20 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 03/53] docs: ABI: remove some spurious characters
-Date:   Mon, 10 May 2021 12:26:15 +0200
-Message-Id: <6d774ad6cb3795a177309503a39f8f1b5e309d64.1620641727.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: [PATCH 04/53] docs: index.rst: avoid using UTF-8 chars
+Date:   Mon, 10 May 2021 12:26:16 +0200
+Message-Id: <fbf39b4b4a7d78a5180489755fd27b5723224adc.1620641727.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620641727.git.mchehab+huawei@kernel.org>
 References: <cover.1620641727.git.mchehab+huawei@kernel.org>
@@ -49,34 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The KernelVersion tag contains some spurious UTF-8 characters
-for no reason. Drop them.
+While UTF-8 characters can be used at the Linux documentation,
+the best is to use them only when ASCII doesn't offer a good replacement.
+So, replace the occurences of the following UTF-8 characters:
+
+	- U+2014 ('—'): EM DASH
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/ABI/testing/sysfs-module | 4 ++--
+ Documentation/index.rst | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-module b/Documentation/ABI/testing/sysfs-module
-index a485434d2a0f..88bddf192ceb 100644
---- a/Documentation/ABI/testing/sysfs-module
-+++ b/Documentation/ABI/testing/sysfs-module
-@@ -37,13 +37,13 @@ Description:	Maximum time allowed for periodic transfers per microframe (μs)
+diff --git a/Documentation/index.rst b/Documentation/index.rst
+index 54ce34fd6fbd..11cd806ea3a4 100644
+--- a/Documentation/index.rst
++++ b/Documentation/index.rst
+@@ -30,7 +30,7 @@ tree, as well as links to the full license text.
+ User-oriented documentation
+ ---------------------------
  
- What:		/sys/module/*/{coresize,initsize}
- Date:		Jan 2012
--KernelVersion:»·3.3
-+KernelVersion:	3.3
- Contact:	Kay Sievers <kay.sievers@vrfy.org>
- Description:	Module size in bytes.
+-The following manuals are written for *users* of the kernel — those who are
++The following manuals are written for *users* of the kernel - those who are
+ trying to get it to work optimally on a given system.
  
- What:		/sys/module/*/taint
- Date:		Jan 2012
--KernelVersion:»·3.3
-+KernelVersion:	3.3
- Contact:	Kay Sievers <kay.sievers@vrfy.org>
- Description:	Module taint flags:
- 			==  =====================
+ .. toctree::
+@@ -90,7 +90,7 @@ Kernel API documentation
+ These books get into the details of how specific kernel subsystems work
+ from the point of view of a kernel developer.  Much of the information here
+ is taken directly from the kernel source, with supplemental material added
+-as needed (or at least as we managed to add it — probably *not* all that is
++as needed (or at least as we managed to add it - probably *not* all that is
+ needed).
+ 
+ .. toctree::
 -- 
 2.30.2
 
