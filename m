@@ -2,114 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F71378AE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A4B378B1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240793AbhEJLze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:55:34 -0400
-Received: from smtprelay0200.hostedemail.com ([216.40.44.200]:54350 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234630AbhEJLFJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:05:09 -0400
-Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 819F96C11;
-        Mon, 10 May 2021 11:04:02 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id A71BD13D99;
-        Mon, 10 May 2021 11:04:01 +0000 (UTC)
-Message-ID: <22f25cc644dea4ab42ddb7a5f177d6eadc18f93e.camel@perches.com>
-Subject: Re: bug at scripts/get_maintainer.pl with ARM KOMEDA DRM-KMS DRIVER
-From:   Joe Perches <joe@perches.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
-Date:   Mon, 10 May 2021 04:04:00 -0700
-In-Reply-To: <20210510123458.32f931c6@coco.lan>
-References: <20210510123458.32f931c6@coco.lan>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.61
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: A71BD13D99
-X-Stat-Signature: xscigx4xi7i9zjdak787cpwjgrt5rezz
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18llAy+M+XZuz+RIpwwLsQDxL0SGi+D/wI=
-X-HE-Tag: 1620644641-113795
+        id S244476AbhEJL7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:59:10 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:25289 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235907AbhEJLG6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:06:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620644754; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=vzp/BdIxiUuRKSV3zwAgC8rx5gUETWRirAk6r1N26V8=; b=Xz723RuDErYqYk4yWHx1gl3TsS12QkZ837r/bJUP4uDs7AB7R510Y+I0MIi1aCjLbpSHWR6b
+ Y9aEZdNWFDmD6QGunasoLu8TQ3iBRtf3dTui6EVzYcbLp0X9CwFfeckYxy5PjDGdRKc08j/O
+ i06n3QHmUfxd+tMQmiZ+LxSz8IA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6099138a8166b7eff7662062 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 10 May 2021 11:05:46
+ GMT
+Sender: taozha=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E2802C75617; Mon, 10 May 2021 11:05:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from taozha-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: taozha)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 720BEC4338A;
+        Mon, 10 May 2021 11:05:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 720BEC4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=taozha@codeaurora.org
+From:   Tao Zhang <taozha@codeaurora.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc:     Tao Zhang <taozha@codeaurora.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        Yuanfang Zhang <zhangyuanfang@codeaurora.org>
+Subject: [PATCH v1 0/3] coresight: Support for building more coresight paths
+Date:   Mon, 10 May 2021 19:05:24 +0800
+Message-Id: <1620644727-29279-1-git-send-email-taozha@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-10 at 12:34 +0200, Mauro Carvalho Chehab wrote:
-> Hi Joe,
-> 
-> While submitting today a patch series, I noticed that the
-> ./scripts/get_maintainer.pl script is not handling well the
-> ARM KOMEDA DRM-KMS DRIVER open list entry at MAINTAINERS.
-> 
-> I'm using v5.13-rc1 here.
-> 
-> See, it gets an empty e-mail for the ML:
-> 
-> 	$ git show a1c3be890440 --pretty=email|./scripts/get_maintainer.pl 
-> 	"James (Qian) Wang" <james.qian.wang@arm.com> (supporter:ARM KOMEDA DRM-KMS DRIVER)
-> 	Liviu Dudau <liviu.dudau@arm.com> (supporter:ARM KOMEDA DRM-KMS DRIVER)
-> 	Mihail Atanassov <mihail.atanassov@arm.com> (supporter:ARM KOMEDA DRM-KMS DRIVER)
-> 	Brian Starkey <brian.starkey@arm.com> (supporter:ARM MALI-DP DRM DRIVER)
-> 	David Airlie <airlied@linux.ie> (maintainer:DRM DRIVERS)
-> 	Daniel Vetter <daniel@ffwll.ch> (maintainer:DRM DRIVERS)
-> 	 (open list:ARM KOMEDA DRM-KMS DRIVER)
-> 	dri-devel@lists.freedesktop.org (open list:DRM DRIVERS)
-> 	linux-kernel@vger.kernel.org (open list)
-> 
-> The entry at MAINTAINERS apparently looks OK:
-> 
-> 	ARM KOMEDA DRM-KMS DRIVER
-> 	M:      James (Qian) Wang <james.qian.wang@arm.com>
-> 	M:      Liviu Dudau <liviu.dudau@arm.com>
-> 	M:      Mihail Atanassov <mihail.atanassov@arm.com>
-> 	L:      Mali DP Maintainers <malidp@foss.arm.com>
-> 	S:      Supported
-> 	T:      git git://anongit.freedesktop.org/drm/drm-misc
-> 	F:      Documentation/devicetree/bindings/display/arm,komeda.txt
-> 	F:      Documentation/gpu/komeda-kms.rst
-> 	F:      drivers/gpu/drm/arm/display/include/
-> 	F:      drivers/gpu/drm/arm/display/komeda/
+We are trying to achieve more types of Coresight source devices.
+For example, we have a type of coresight source devic named TPDM.
+In the process of using, sometimes mulitiple TPDMs need to be
+connected to the different input ports on the same funnel.
+Meanwhile, these TPDMs also need to output from different
+ports on the funnel.
+But, at present the Coresight driver assumes
+a) Only support Coresight source type ETM, ETR and ETF
+b) Funnels only support mulitiple inputs and one output
+Which doesn't help to add the above feature for our new Coresight
+source device TPDM. So, in order to accommodate the new device,
+we develop the following patches.
+a) Add support more types of Coresight source devices.
+b) Add support for multiple output ports on funnel and the output
+ports could be selected by Corsight source.
 
-get_maintainer.pl does not support the L: using a "name" for the mailing list.
-Only use the actual mailing list email address.
+Applies on coresight/next.
+http://git.linaro.org/kernel/coresight.git/log/?h=next
 
-This should just be:
+Tao Zhang (3):
+  coresight: add support to enable more coresight paths
+  coresight: funnel: add support for multiple output ports
+  dt-bindings: arm: add property for selecting funnel output port
 
-L:	malidp@foss.arm.com
+ .../devicetree/bindings/arm/coresight.txt          |   5 +
+ drivers/hwtracing/coresight/coresight-core.c       | 169 ++++++++++++++-------
+ drivers/hwtracing/coresight/coresight-platform.c   |   9 ++
+ include/linux/coresight.h                          |   2 +
+ 4 files changed, 127 insertions(+), 58 deletions(-)
 
-so a possible patch is:
----
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bd7aff0c120f..a41a26079806 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1383,7 +1383,7 @@ ARM KOMEDA DRM-KMS DRIVER
- M:	James (Qian) Wang <james.qian.wang@arm.com>
- M:	Liviu Dudau <liviu.dudau@arm.com>
- M:	Mihail Atanassov <mihail.atanassov@arm.com>
--L:	Mali DP Maintainers <malidp@foss.arm.com>
-+L:	malidp@foss.arm.com
- S:	Supported
- T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	Documentation/devicetree/bindings/display/arm,komeda.txt
-@@ -1405,7 +1405,7 @@ F:	include/uapi/drm/panfrost_drm.h
- ARM MALI-DP DRM DRIVER
- M:	Liviu Dudau <liviu.dudau@arm.com>
- M:	Brian Starkey <brian.starkey@arm.com>
--L:	Mali DP Maintainers <malidp@foss.arm.com>
-+L:	malidp@foss.arm.com
- S:	Supported
- T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	Documentation/devicetree/bindings/display/arm,malidp.txt
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
