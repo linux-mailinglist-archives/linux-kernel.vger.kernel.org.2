@@ -2,68 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC17E3799CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A2A3799CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbhEJWQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:16:42 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39436 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230503AbhEJWQk (ORCPT
+        id S231708AbhEJWQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhEJWQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 18:16:40 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620684932;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U4DwF9/Tu0CY7TspHUPgQGEsFfZQjPTALYWkPy0GpnQ=;
-        b=l3/ylfDcE8PvRNxkqTHthC9O2iysd+rzANbRwmcyYrsl528S9Dre41EPPzL6rwnNKKeq4+
-        LlW+ZRs24f4czgDtlKowzjjzYpLPhk2BZZRPOmqd9OsDcvcPxwikY/DgihiYbADYRQnokT
-        F4lA/45hv5zkm36xrotDJ8ECrdPsQaDzCdYtLfveWFx1Gma7z0TPxV6DYDqJhSUDnXEp9U
-        8Qz9PSAZwIQet0amqOyNKc4WFbwZh5bslS5EV5u6dAtwDYJJSBgHnl06NDXoCP3+UqjC4i
-        56/x4og5ufqAbI7QqpKHX1oSf63+sVRPpfUO+v4wNWn0MmZJzQVEHj/GwXzBLQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620684932;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U4DwF9/Tu0CY7TspHUPgQGEsFfZQjPTALYWkPy0GpnQ=;
-        b=asOXaR/974z/iqy1/EWbETxeBo+RTMGEjM4qCi9Yi16ITPIeXsR2b7+Ffa9Vk6dgFhU3JO
-        leKknq5cmDxpAHDw==
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Saripalli\, RK" <rsaripal@amd.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        Jonathan Corbet <corbet@lwn.net>, bsd@redhat.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH v5 1/1] x86/cpufeatures: Implement Predictive Store Forwarding control.
-In-Reply-To: <202105101508.BC6CC99FAD@keescook>
-References: <20210505190923.276051-1-rsaripal@amd.com> <20210505190923.276051-2-rsaripal@amd.com> <87wnsamvaa.ffs@nanos.tec.linutronix.de> <d134cbb1-a8a5-161a-1927-2a04df6b4b4a@amd.com> <87h7jagt7g.ffs@nanos.tec.linutronix.de> <202105101508.BC6CC99FAD@keescook>
-Date:   Tue, 11 May 2021 00:15:32 +0200
-Message-ID: <878s4mgrqz.ffs@nanos.tec.linutronix.de>
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208DCC061574;
+        Mon, 10 May 2021 15:15:35 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so2414021otc.6;
+        Mon, 10 May 2021 15:15:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2Gcj00cuBmY81XYE95k0HpmAkZGRIejMfib2zxca4pc=;
+        b=dwXJ1N8487cr86WAxN31AZX5P8J1N/dDH3kb1wcBqy4pZ1zFxO1T8z4paUMeGs/LVf
+         Dz+BKI/PI6mw44iOnkehNHE+qKRhCCG3JL0ByRNRk3u/++uIOV+ho6NTeUnQQwfEEbUI
+         TTZK5zpp1EdCSPmvNcwKyKa9HK2j7H+jeX2ukzEiDU8I1mmIdJUY461/IaUeu4Y5M2IS
+         np1BSoBHZkuU9lVlXv/wzKktqdCs2dAvx15hzRtbpG7r4JFKHQaQGbqyKIidv6s7jTTR
+         UadYw7+2jrEeqBBly15OcdJk/PIPN9CAi+U+jHPgCbupnlSO2LhmjoEix/49CjHPMgLA
+         vgeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=2Gcj00cuBmY81XYE95k0HpmAkZGRIejMfib2zxca4pc=;
+        b=OSe4+oyiqEYfAJF2V/l46p2RWP+3G45ZLBWgEi54XVDOyq0851Zk4DRdBHtUb9s86V
+         Gj+YjVd9IgX8OYazyAy35o8INPfUSpsC9agDYcxV3U3bafNAI1olXiLIjsKJJ73nt/NN
+         6BWZQR1Xeiu8Ct2IECT9hnqVIjcL3YYwo3roIJIVsBQkdas26i5UjmA4EH7+YyZIZ9OA
+         3E1GbUjPTaYFYRIPR3C4IFWQedFOC1PySU7hi0IZRS38fh+1R/g+HHfBhJ7D5hJJ9YKO
+         T89R/CZiRWSvDBT8uXp1AH7nvvTmh3NT8EwQCfll1T4cpdDzqJI2LZ4kSjaDGj+ttztJ
+         v6zA==
+X-Gm-Message-State: AOAM5330kzpU3x/B7xFHNb4jXfWnX5e4tpc/LOhFEJ8Of4uowL1m+vGk
+        zlxP1Z8osmjpBtMmoxvQ17c=
+X-Google-Smtp-Source: ABdhPJz1PDgi8DdUr4K6+WwB0CVFomWQtsi78XarGh+y9kTdF6dyZX1fZ8h3Q3LP6SR1HhrSBSo0Zw==
+X-Received: by 2002:a9d:7997:: with SMTP id h23mr23438326otm.366.1620684934620;
+        Mon, 10 May 2021 15:15:34 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y5sm2898281oig.18.2021.05.10.15.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 15:15:34 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 10 May 2021 15:15:33 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/299] 5.10.36-rc1 review
+Message-ID: <20210510221533.GB2334827@roeck-us.net>
+References: <20210510102004.821838356@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10 2021 at 15:09, Kees Cook wrote:
-> On Mon, May 10, 2021 at 11:44:03PM +0200, Thomas Gleixner wrote:
->> Kees, any opinions?
->
-> I agree: if PSF is a subset of SSBD, there's no need for the additional
-> machinery.
->
-> On a related topic, what happened to Andi's patch to switch the seccomp
-> defaults? I can't find it now...
+On Mon, May 10, 2021 at 12:16:37PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.36 release.
+> There are 299 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
+> Anything received after that time might be too late.
+> 
 
-You mean this one:
+Build results:
+	total: 156 pass: 156 fail: 0
+Qemu test results:
+	total: 455 pass: 455 fail: 0
 
-  https://lore.kernel.org/r/20200312231222.81861-1-andi@firstfloor.org
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-If so, then it has lacks a follow up.
-
-Thanks,
-
-        tglx
+Guenter
