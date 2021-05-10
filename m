@@ -2,129 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3251379727
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538AF37972D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbhEJSrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 14:47:36 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44054 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230186AbhEJSre (ORCPT
+        id S232117AbhEJSx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 14:53:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47352 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230186AbhEJSx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 14:47:34 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14AIVFoC020738
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:46:30 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=rWFLuxjlkCJpY+dUzioJAmlhNduAcTJxyvXk5dzyWIo=;
- b=ouzbLFe/3wo/rDw79rBNsSn8TgezE+cVrTlolHE5MX8NxiOlk7budplM3sBW5sdsFgQa
- xD+IQfa/4hFJd5E9Lbpyd2qKOg7QlhNFqbtDduufaw3Jae6qPK9QTp+Z/80a6NsCj2ZV
- PFs+OZ23qLio35ekaQxLn6bprQRS+6wOvXw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 38eafxy2v3-9
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:46:29 -0700
-Received: from intmgw001.05.prn6.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 10 May 2021 11:46:03 -0700
-Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id 510CA71F437F; Mon, 10 May 2021 11:46:01 -0700 (PDT)
-From:   Roman Gushchin <guro@fb.com>
-To:     Tejun Heo <tj@kernel.org>, <cgroups@vger.kernel.org>
-CC:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
-Subject: [PATCH] cgroup: inline cgroup_task_freeze()
-Date:   Mon, 10 May 2021 11:45:56 -0700
-Message-ID: <20210510184556.946798-1-guro@fb.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 10 May 2021 14:53:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620672742;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g7j+izsokRqpT308sJPWfxVQOB87GOP9BtFazVppLoQ=;
+        b=JHZkCTl9S7E9Q64u7dqEEJyzhvgUoT/t5/iUQPDnElNlt3ORpL15iz7sloP7M6IOnzM7CK
+        roNTysVtV8/GsTH3DjBNb95DwL15q/t5CLOxt1vb29ZVaGlJD0fKgllkwQdbHpkFSfzY4s
+        txGYYD7jJVr5UMzITeK1DREeig9J8ok=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-564-z31LuRnTOEm6OyHadIYgrg-1; Mon, 10 May 2021 14:52:18 -0400
+X-MC-Unique: z31LuRnTOEm6OyHadIYgrg-1
+Received: by mail-qk1-f199.google.com with SMTP id d201-20020ae9efd20000b02902e9e9d8d9dcso12353773qkg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:52:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=g7j+izsokRqpT308sJPWfxVQOB87GOP9BtFazVppLoQ=;
+        b=YGbgCJuS2HruPTXo0IGSbHK+XPjH+hjmLQdZrVhPkRhBsBiO/LtHh1dk/Dv+z7F9LY
+         BxO2A/oxA4L2ArwE8pJXodi2jHIW8LjWBL0Kw163M0fAGTpTTHjKBJDFczBU3Ks2RAFU
+         rRhIsnFU9P7EaUKuJRoDp1bpUJUoHT/Qc7TRVZ6anaWYvEFCiUmPxd2DUSsh1FwLXiaD
+         oz5y/PU6pWwOhpWgT63tu8qUaG9yn7je8PZEfm5rAZAOTYkMuOsjfGSsF+21gG1uC+Kj
+         kX4zyKNC6TGpVHSIyu/K75mAwVhB1FQkefAKg0jDdRhJqR873Je99P2zD4tLTAYNMbzq
+         gTwg==
+X-Gm-Message-State: AOAM532zGGyAJsuqNuJqSWwVyEVF0fwHuWngSf4fdWYKlDspqgHwtUb9
+        6OJ/NNrU16x8Rt2Iu5EZPaKKQei3m7C6TXqK00BSaeRwTGAyQmXSVa8PuAXZyOEYH0/hES8FIXc
+        mZIvSt67UP0HGvX0Z3aupPuCw
+X-Received: by 2002:a05:620a:2912:: with SMTP id m18mr24874752qkp.475.1620672737973;
+        Mon, 10 May 2021 11:52:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzslxJCI13N/HGEQf/0CdbPdBfh/ACVbIw9n9wIQ9PcwW2U4mKsFsbmO04LbWfLWQIMFWZd5A==
+X-Received: by 2002:a05:620a:2912:: with SMTP id m18mr24874733qkp.475.1620672737751;
+        Mon, 10 May 2021 11:52:17 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id u9sm12338360qtf.76.2021.05.10.11.52.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 11:52:17 -0700 (PDT)
+Subject: Re: [PATCH v12 0/7] FPGA Security Manager Class Driver
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     Russ Weight <russell.h.weight@intel.com>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com, richard.gong@intel.com
+References: <20210503213546.316439-1-russell.h.weight@intel.com>
+ <6f3ce0db-883e-2c5b-e671-9ccc363ee532@redhat.com>
+ <YJlvYNXUcwrBFGey@epycbox.lan>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <91d29fc4-ac04-270a-f73a-e1dd3ba2965f@redhat.com>
+Date:   Mon, 10 May 2021 11:52:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: 2dFkUtz5K724pHtpUMD2YGGWTVCoIxYT
-X-Proofpoint-ORIG-GUID: 2dFkUtz5K724pHtpUMD2YGGWTVCoIxYT
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-10_11:2021-05-10,2021-05-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- phishscore=0 mlxlogscore=399 impostorscore=0 mlxscore=0 suspectscore=0
- spamscore=0 adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105100125
-X-FB-Internal: deliver
+In-Reply-To: <YJlvYNXUcwrBFGey@epycbox.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the introduction of the cgroup.kill there is only one call site
-of cgroup_task_freeze() left: cgroup_exit(). cgroup_task_freeze() is
-currently taking rcu_read_lock() to read task's cgroup flags, but
-because it's always called with css_set_lock locked, the rcu protection
-is excessive.
 
-Simplify the code by inlining cgroup_task_freeze().
+On 5/10/21 10:37 AM, Moritz Fischer wrote:
+> On Mon, May 10, 2021 at 07:12:57AM -0700, Tom Rix wrote:
+>> On 5/3/21 2:35 PM, Russ Weight wrote:
+>>> The FPGA Security Manager class driver provides a common
+>>> API for user-space tools to manage updates for secure FPGA
+>>> devices. Device drivers that instantiate the FPGA Security
+>>> Manager class driver will interact with a HW secure update
+>>> engine in order to transfer new FPGA and BMC images to FLASH so
+>>> that they will be automatically loaded when the FPGA card reboots.
+>> Russ,
+>>
+>> These have my Reviewed-by, but since it has been a while, I am looking these
+>> over again.
+>>
+>> If you do not hear anything from me in the next couple of days, please
+>> assume everything is fine.
+>>
+>> Tom
+>>
+> I'll do one more one-over, if it looks good will apply end of the week,
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
----
- include/linux/cgroup.h | 18 ------------------
- kernel/cgroup/cgroup.c |  3 ++-
- 2 files changed, 2 insertions(+), 19 deletions(-)
+FWIW, my pass was fine.
 
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 4f2f79de083e..a72764287cb5 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -906,20 +906,6 @@ void cgroup_freeze(struct cgroup *cgrp, bool freeze)=
-;
- void cgroup_freezer_migrate_task(struct task_struct *task, struct cgroup=
- *src,
- 				 struct cgroup *dst);
-=20
--static inline bool cgroup_task_freeze(struct task_struct *task)
--{
--	bool ret;
--
--	if (task->flags & PF_KTHREAD)
--		return false;
--
--	rcu_read_lock();
--	ret =3D test_bit(CGRP_FREEZE, &task_dfl_cgroup(task)->flags);
--	rcu_read_unlock();
--
--	return ret;
--}
--
- static inline bool cgroup_task_frozen(struct task_struct *task)
- {
- 	return task->frozen;
-@@ -929,10 +915,6 @@ static inline bool cgroup_task_frozen(struct task_st=
-ruct *task)
-=20
- static inline void cgroup_enter_frozen(void) { }
- static inline void cgroup_leave_frozen(bool always_leave) { }
--static inline bool cgroup_task_freeze(struct task_struct *task)
--{
--	return false;
--}
- static inline bool cgroup_task_frozen(struct task_struct *task)
- {
- 	return false;
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index e640fc78d731..29be28e903ab 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -6267,7 +6267,8 @@ void cgroup_exit(struct task_struct *tsk)
- 	cset->nr_tasks--;
-=20
- 	WARN_ON_ONCE(cgroup_task_frozen(tsk));
--	if (unlikely(cgroup_task_freeze(tsk)))
-+	if (unlikely(!(task->flags & PF_KTHREAD) &&
-+		     test_bit(CGRP_FREEZE, &task_dfl_cgroup(task)->flags)))
- 		cgroup_update_frozen(task_dfl_cgroup(tsk));
-=20
- 	spin_unlock_irq(&css_set_lock);
---=20
-2.30.2
+Thanks,
+
+Tom
+
+>
+> - Moritz
+>
 
