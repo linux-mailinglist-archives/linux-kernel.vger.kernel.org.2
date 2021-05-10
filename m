@@ -2,161 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8788E378D98
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E7D378D99
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349211AbhEJMsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:48:33 -0400
-Received: from mail-eopbgr00062.outbound.protection.outlook.com ([40.107.0.62]:61958
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232403AbhEJL3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:29:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nesMmrMFhdqilGVkBK2zAks+srmjYCNW8P0EmM56mT/xmq5umJ4pTJXIzxkXq9s2e1UoZGsA6X1HJPGXf121IvFYXBMBZn4yUKezzklgFHzoVGrSb41FZVHFMS0r5Z48e3xYCjTL2NsEL1A7MtTICsNBneNSb3LCETWm+RKIaBjGIlxad7kojoONUY6mp+vsnVmeMaQPFiN7xkEFg0GWuvajruOo1KeLX6GQPf8cqdcNLn3mnKqCwzqknS7a/t/znJOdvNksUEMJh7FF/rz7DHXdeEi+oGu1TGW6sADdYtyRb/rasiqsplPa3g9RYkj/9ZVL24DmlnuLko/pUoJ5aw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sF/mfBbXW4pSaQ/gutHZd36n9mgbYZkcq1nLtUEV0eQ=;
- b=coGZfuREV85rH51aMYQgKoPwD0YGeGpJFUY1t/pgKA935zmoBvpLvRrEt7Peu2H0LPKudQGyuwtdVvU36HOvQlMWZm3qCNlP53UgpIjY64xmJuvuDs0naGhbbkqkvYkrEzwN8etjoFoDwAZPNquWnJojPaaruC3o4ewHwqx8wOMYHpFIjsRchswAa5cl+Z4YUe/ezqVU6IuvN8LF4QtkK9FAgIhVRjxMfUrK3PQnSSzN6rBNLAUJg8OqHDa9y3bKCRhVmru1v0Q6s3CekCpCf5UUtgpsgVF3Qte1djxGG3XgRAdkX7roM59KitIIDUaOeUt7X1gZCGtPqAVjFsnXgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sF/mfBbXW4pSaQ/gutHZd36n9mgbYZkcq1nLtUEV0eQ=;
- b=XYjscPtv76cN00ymQYcwYVMRtn+j1nt2qdaVY7ZwVl7PoWZK0LQ9kYXsFacf5kTY3jfnvTEPVJonBwTXlA/EWQzBtqUUCw2toKHsLpcwg6gzf2ULqgTuvyZ5e4C89fkgzrtmW7viAmwHH51vXF43dpYBljvcy+4DFNbrdlhXDwc=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
- by VI1PR04MB4895.eurprd04.prod.outlook.com (2603:10a6:803:56::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.29; Mon, 10 May
- 2021 11:28:04 +0000
-Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com
- ([fe80::f1a9:a104:7d02:2efa]) by VI1PR0402MB3405.eurprd04.prod.outlook.com
- ([fe80::f1a9:a104:7d02:2efa%3]) with mapi id 15.20.4108.031; Mon, 10 May 2021
- 11:28:04 +0000
-Subject: Re: [PATCH 22/35] tty: make tty_operations::write_room return uint
-To:     Jiri Slaby <jslaby@suse.cz>, gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Karsten Keil <isdn@linux-pingi.de>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        David Lin <dtwlin@gmail.com>, Johan Hovold <johan@kernel.org>,
-        Alex Elder <elder@kernel.org>, Jiri Kosina <jikos@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Oliver Neukum <oneukum@suse.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-References: <20210505091928.22010-1-jslaby@suse.cz>
- <20210505091928.22010-23-jslaby@suse.cz>
-From:   Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Message-ID: <bb07b435-ff8c-1d9d-bc2d-6d8981902be8@nxp.com>
-Date:   Mon, 10 May 2021 14:27:59 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-In-Reply-To: <20210505091928.22010-23-jslaby@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [79.115.169.144]
-X-ClientProxiedBy: AM3PR05CA0127.eurprd05.prod.outlook.com
- (2603:10a6:207:2::29) To VI1PR0402MB3405.eurprd04.prod.outlook.com
- (2603:10a6:803:3::26)
+        id S1349228AbhEJMsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:48:45 -0400
+Received: from mail-lf1-f41.google.com ([209.85.167.41]:37753 "EHLO
+        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234399AbhEJL3o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:29:44 -0400
+Received: by mail-lf1-f41.google.com with SMTP id 2so22822971lft.4;
+        Mon, 10 May 2021 04:28:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WSCIycZ4be1RayJUkUz89M7xayRC4UjtGgdTGNbT714=;
+        b=GadFIdurhR+i9GwByilTl0uP4wj/NF7C/lbUteXhXrg0VPIrwY+F6wKnZGL5T6BGP3
+         oXZNWAmRntHvmKQfGf3p8YJlX+h88QgW+EGgvr7bSQogOvvmUp/VITJbaxh/HFrkYA1D
+         O3xkAM3fUeM81bhJTYRwyOe3cKKcpds+kX9WB/XdOWskNt61lPjM7qkb+OQ+HoVc3zBF
+         IOCWNnV+BbQzlm2F+X6fw8AZL0B2FKuduNSuJmfb+NADAQdbValkWMWVS8xSxb2CC9tE
+         DKTtzdxxtXA44+SyWNwnJXRQJ5n8qDgW2rvwFFAzdB4s3dnIiiZw4qI7gdV06uq/tidu
+         VLiQ==
+X-Gm-Message-State: AOAM531F+gjaUPpXrNUFNK7RtxBfmtcGOH20bWCHYAbt/PbA1R4PXD6N
+        0p/u+ocqn2fZTiwroY/mpxE=
+X-Google-Smtp-Source: ABdhPJwXwsZbwZfge7a+eGifC1Frwq17v6o0DDFO/wLp57MfQoXVNyw30VYur7MPSB67ySrlZBrqkQ==
+X-Received: by 2002:a05:6512:5c5:: with SMTP id o5mr17262255lfo.168.1620646117822;
+        Mon, 10 May 2021 04:28:37 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
+        by smtp.gmail.com with ESMTPSA id 17sm2229864lfr.187.2021.05.10.04.28.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 04:28:37 -0700 (PDT)
+Date:   Mon, 10 May 2021 14:28:30 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-pm@vger.kernel.org
+Subject: [PATCH v9 02/10] reboot: Add hardware protection power-off
+Message-ID: <97260f8e150abb898a262fade25860609b460912.1620645507.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1620645507.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.107] (79.115.169.144) by AM3PR05CA0127.eurprd05.prod.outlook.com (2603:10a6:207:2::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend Transport; Mon, 10 May 2021 11:28:01 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0783ae4a-8172-40fe-30b1-08d913a6acff
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4895:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB489545704BE3CACF5642A808EC549@VI1PR04MB4895.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:497;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RR3tp5CK8z7JTqtZQ54dKT2/Qi510kuwZTlaFxujOxaS3dMvZEpg5BCN+WO+kFqHDyn6AXMXyi8ft5ekBCWxfSNlyjv+q1yCwaC2VIvB2IHwfOckuTf16xsoCfCfN5GI1qxae6sDIKwbp1Wr4D/YiBim4bQhIoY8dB2MYecHhQ+99Ybb1nMEtNvX4f9cGAeLEHh6LnitL3Y+MDR8fe8aEkQ8CAU1wll+nTDmFnzNeHpZITAi9Rjxq0CQXN77TkUZtkFLta9Wv02kMV5t9FVCJXU8K48Zi12hvb7YhR90pEg9chqFlwLIVm6k5EP4HJ99du4mJ63OWjhmF4sIVpR7AWD/65TQmvQgRxVeXICI41Z45s5pQ1JXJTLCuHLn8zcmr3qJS3esIiJqHxgY0yEnNM4e5U+hAhvesFIeYU00L2D5iYST9PJQj7TPcxMOkyYWuwwUsdFOuXpifQrBQxQQGY+l5DBHvOJ/MQY9To9FERilCz56hi2mZGx60FK8Y5KgvDbcr24BAe1LNK9YqEkfl3pFPQX2MkNZXGsED9dicDhSWuhJ64dHTB6iYXRAOpt9aGSV+IOGfvM9VBydHQuHpFaPQEHMZUQHTz11gXThi8/ZNBpd8MKAniSi6JCKb7AKBBIZRFO4DdAynWq28UVaXdoS3eqsdmzqmRNtyc6Jrikb0iP0W8M4U+uarWnOmUDwgQrbebZn7V9hc7t+5M4K7Q6d0ceWHl830BkXHeYW7jM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3405.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(346002)(39860400002)(366004)(86362001)(16526019)(186003)(31696002)(6486002)(38350700002)(38100700002)(44832011)(53546011)(2906002)(36756003)(4326008)(66476007)(7416002)(7406005)(5660300002)(2616005)(956004)(66946007)(316002)(52116002)(26005)(16576012)(54906003)(8676002)(478600001)(31686004)(4744005)(8936002)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NlhHT0tRQllJNGdkTWthemM4SDE2OWxRbERBRlRGK0FKTnhta3lLZUdLbVRY?=
- =?utf-8?B?ZDJNZVZVd2JTMFV0Q3lmby83Wm1pSVF5djRIMGZUWk5Jc3B6Ti9hMGtrNWpL?=
- =?utf-8?B?clErczBFMWlITXova2lRRkt2Z05ubmZwbHJyVkdmMnp2cDdyVkhMOWJ2RVRl?=
- =?utf-8?B?dGdhMmFIaTJFZWpYaEJQYWsrL0xWN0pwVUVNUFJQUG5LMnQySEdFR2dFa2JX?=
- =?utf-8?B?RXJEenBkQVV2MnJETkpXeFBDV1owT01tOUVhbTBoKytWWVVuYnRsRDJrNGF1?=
- =?utf-8?B?VFhwd3E0UVNBWnZHY3FoazYwRnY0TTFIb1ozcmUxSmhaZHd1cTNtTGNhN2Vr?=
- =?utf-8?B?TmtoMERXaVVjZUd6aHVvQ204eGlJUGE1SGlFRDFOcWd0MmQrdVhDbG9YWVFG?=
- =?utf-8?B?bTRKbHRnbGNucG5oUHo1ZGMya0ZFc1htUEdkeXIrMnFFVzgvdkM0YTFtdlBo?=
- =?utf-8?B?N0tqZ09XcjBxWmJXdDJyQi9ORm1UTlpOUHlHbmgvTXNkMVJaYUhKK3lSOEhZ?=
- =?utf-8?B?OHNuWDFCenNUZGh5VlNmclJ4d2VQZGdIdTZ3RHlJY2NFSDJZaGVQcnhDMHR2?=
- =?utf-8?B?bGhIUUZsQVdxM2JZRmdHQmRIcDZ5Ukx3TWJxYjNoeTJyTURGeWRMUVQ4bS9u?=
- =?utf-8?B?Q0ZMUmIzcndHMjFjdG5LMlBkaEpJdzVBQmw3c1Fmcktwd2NaclN3UVVvcG1v?=
- =?utf-8?B?Y0cyRkdHclJzRGx5czg5Q2llVU9lREloSUp1OHV5ZWhYbm10SHBoSFhubGI2?=
- =?utf-8?B?TGd1NDJuUnpPZjVFYnhZNTdFOTFsaXBDdWo3NldnZjEvalFOd2tpRVNyKzNp?=
- =?utf-8?B?cWdVZnpNQlpjQnBwa1d1K2NxaDRZby9KZ2lSUlppN1VlbWhJQ3Z6bEVDcVd1?=
- =?utf-8?B?d3BWMTAyUmhXNXlVRWlQR2JSZGJqR3NWSmM2ZE5DdWd3b1FNZTFkRHlEYzJl?=
- =?utf-8?B?Rmlmb1l3bm5YUTFHMTI3aGxINU1hYWcvUEl5TnRrb3VURFpMdEtYVzRHcUZB?=
- =?utf-8?B?R2txd21TalMzNTdWVE1rNEIzdHZOcVRjLzJmampsaUl1VTZ2S2dYdHRqUVlY?=
- =?utf-8?B?b1E1TUE3Z0FUU0w1V3dMWk13djh2RmY4VG9ZUFVrOEEzS3lGTkFtUEVtTVh3?=
- =?utf-8?B?NGlrL0hCNEt4OUZMbitnMzZ1MWV1Z0hjNmVpZ3VvcGNXK2FmSXNCanExaXYy?=
- =?utf-8?B?Q3IzZFJBWnEzaVpId1pBaEdqRWszZ0NqTFRCdTdzanU2allqamdnbEY0U1Uw?=
- =?utf-8?B?YnZCRkZNQUZwcWZUS2dBeXpzY09jaVJnQ05kNThIUjF4UjJFdVJHT2VVVjcx?=
- =?utf-8?B?ejV6b2ZYenB1SnhtNkR6T2tqMXhFR0t6VzFRT1FlQ2YzQWNGNXZhbkdWdEVD?=
- =?utf-8?B?eEt6Q1lzWkhSQTBpeDA5VWdIa01Ga0VkUm1qNUtHejl1L1MvUUNBUWhiS0E3?=
- =?utf-8?B?YmlFUHhtaW5qS1lOMXNraVFlZG4yRmo3S3BkcGdzWHhrZ1hVYkhMVzMzV2xM?=
- =?utf-8?B?MFhDeU41OTM4bkVhWlk1TzhNV0Rlb1kxYSt0cXUwdGxiVmVTZzB4ZjZBYzgr?=
- =?utf-8?B?S1FUa2hpVHdqM25EMHFVM1VUT0MzT0FUTms0TW1maDhrTEd1dmZWTlBVTy9Y?=
- =?utf-8?B?eDRUNzlJb3Z3V1lxNnNnSkZLYk9vRk8wTU1taW52M2l6SlpvNldhTXNzQmR5?=
- =?utf-8?B?Znh6Q0dDZWEwemJFcW1XSWxaMHYyaGRmSGtKcmZFMGU3VUpYUVo1SWcxNTlF?=
- =?utf-8?Q?GcZFzGXVn5gIw3qSmj5dpyj+gKrxhiEKqnpowfv?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0783ae4a-8172-40fe-30b1-08d913a6acff
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3405.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 May 2021 11:28:04.0678
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XobJaVTkUFN4R6r40VqBfJ/zdaNp4Pcxi3kfICluw5KTp0mX5BJ2rHZX3xfmuE0y4T6loPPuVE0UMqiNQ7YBUg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4895
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
+Content-Disposition: inline
+In-Reply-To: <cover.1620645507.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--gBBFr7Ir9EOA20Yy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 5/5/2021 12:19 PM, Jiri Slaby wrote:
-> Line disciplines expect a positive value or zero returned from
-> tty->ops->write_room (invoked by tty_write_room). So make this
-> assumption explicit by using unsigned int as a return value. Both of
-> tty->ops->write_room and tty_write_room.
-> 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+There can be few cases when we need to shut-down the system in order to
+protect the hardware. Currently this is done at east by the thermal core
+when temperature raises over certain limit.
 
->  drivers/tty/ehv_bytechan.c             | 4 ++--
+Some PMICs can also generate interrupts for example for over-current or
+over-voltage, voltage drops, short-circuit, ... etc. On some systems
+these are a sign of hardware failure and only thing to do is try to
+protect the rest of the hardware by shutting down the system.
 
-Acked-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Add shut-down logic which can be used by all subsystems instead of
+implementing the shutdown in each subsystem. The logic is stolen from
+thermal_core with difference of using atomic_t instead of a mutex in
+order to allow calls directly from IRQ context.
+
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 
 ---
-Best Regards, Laurentiu
+
+Changelog:
+v8: (changes suggested by Daniel Lezcano)
+ - replace a protection implemented by a flag + spin_lock_irqsave() with
+   simple atomic_dec_and_test().
+ - Split thermal-core changes and adding the new API to separate patches
+v7:
+ - New patch
+---
+ include/linux/reboot.h |  1 +
+ kernel/reboot.c        | 80 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 81 insertions(+)
+
+diff --git a/include/linux/reboot.h b/include/linux/reboot.h
+index 3734cd8f38a8..af907a3d68d1 100644
+--- a/include/linux/reboot.h
++++ b/include/linux/reboot.h
+@@ -79,6 +79,7 @@ extern char poweroff_cmd[POWEROFF_CMD_PATH_LEN];
+=20
+ extern void orderly_poweroff(bool force);
+ extern void orderly_reboot(void);
++void hw_protection_shutdown(const char *reason, int ms_until_forced);
+=20
+ /*
+  * Emergency restart, callable from an interrupt handler.
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index a6ad5eb2fa73..5da8c80a2647 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -7,6 +7,7 @@
+=20
+ #define pr_fmt(fmt)	"reboot: " fmt
+=20
++#include <linux/atomic.h>
+ #include <linux/ctype.h>
+ #include <linux/export.h>
+ #include <linux/kexec.h>
+@@ -518,6 +519,85 @@ void orderly_reboot(void)
+ }
+ EXPORT_SYMBOL_GPL(orderly_reboot);
+=20
++/**
++ * hw_failure_emergency_poweroff_func - emergency poweroff work after a kn=
+own delay
++ * @work: work_struct associated with the emergency poweroff function
++ *
++ * This function is called in very critical situations to force
++ * a kernel poweroff after a configurable timeout value.
++ */
++static void hw_failure_emergency_poweroff_func(struct work_struct *work)
++{
++	/*
++	 * We have reached here after the emergency shutdown waiting period has
++	 * expired. This means orderly_poweroff has not been able to shut off
++	 * the system for some reason.
++	 *
++	 * Try to shut down the system immediately using kernel_power_off
++	 * if populated
++	 */
++	WARN(1, "Hardware protection timed-out. Trying forced poweroff\n");
++	kernel_power_off();
++
++	/*
++	 * Worst of the worst case trigger emergency restart
++	 */
++	WARN(1,
++	     "Hardware protection shutdown failed. Trying emergency restart\n");
++	emergency_restart();
++}
++
++static DECLARE_DELAYED_WORK(hw_failure_emergency_poweroff_work,
++			    hw_failure_emergency_poweroff_func);
++
++/**
++ * hw_failure_emergency_poweroff - Trigger an emergency system poweroff
++ *
++ * This may be called from any critical situation to trigger a system shut=
+down
++ * after a given period of time. If time is negative this is not scheduled.
++ */
++static void hw_failure_emergency_poweroff(int poweroff_delay_ms)
++{
++	if (poweroff_delay_ms <=3D 0)
++		return;
++	schedule_delayed_work(&hw_failure_emergency_poweroff_work,
++			      msecs_to_jiffies(poweroff_delay_ms));
++}
++
++/**
++ * hw_protection_shutdown - Trigger an emergency system poweroff
++ *
++ * @reason:		Reason of emergency shutdown to be printed.
++ * @ms_until_forced:	Time to wait for orderly shutdown before tiggering a
++ *			forced shudown. Negative value disables the forced
++ *			shutdown.
++ *
++ * Initiate an emergency system shutdown in order to protect hardware from
++ * further damage. Usage examples include a thermal protection or a voltag=
+e or
++ * current regulator failures.
++ * NOTE: The request is ignored if protection shutdown is already pending =
+even
++ * if the previous request has given a large timeout for forced shutdown.
++ * Can be called from any context.
++ */
++void hw_protection_shutdown(const char *reason, int ms_until_forced)
++{
++	static atomic_t allow_proceed =3D ATOMIC_INIT(1);
++
++	pr_emerg("HARDWARE PROTECTION shutdown (%s)\n", reason);
++
++	/* Shutdown should be initiated only once. */
++	if (!atomic_dec_and_test(&allow_proceed))
++		return;
++
++	/*
++	 * Queue a backup emergency shutdown in the event of
++	 * orderly_poweroff failure
++	 */
++	hw_failure_emergency_poweroff(ms_until_forced);
++	orderly_poweroff(true);
++}
++EXPORT_SYMBOL_GPL(hw_protection_shutdown);
++
+ static int __init reboot_setup(char *str)
+ {
+ 	for (;;) {
+--=20
+2.25.4
+
+
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--gBBFr7Ir9EOA20Yy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmCZGN4ACgkQeFA3/03a
+ocVxkwf/V/uO6urS2v6z4nhTdR0gcwQvpoRWDZyJT1DjcCauRH42M77H7zVoCO57
+bh+dqZ73JaQmb+7X3l+xkz/IVvOsI1J2RMQavflcqdVYhc6Mw7kS6EXK/4PZv+0s
+ESl5vFLC9fh966uCBSMwh2Tu+oRxDvNTMMs8gtqzwhM1Ul8ivN4Rs6nWx7R+1g6B
+Iz+x2+ry59RgB7hv89ozLuvoSpU9KXw3FVoemm1ErCADbNcR1H3iapKAVuo2yLUv
+sAAinYOFnp91XEI4WpXbykpwiWuoizsGqVeTMhfDRrJR6aNqVgBl0B3B7GirIJ2c
+SK5eXUQ+dV0TaJisbdA4DzaqFFP5/g==
+=Ajf7
+-----END PGP SIGNATURE-----
+
+--gBBFr7Ir9EOA20Yy--
