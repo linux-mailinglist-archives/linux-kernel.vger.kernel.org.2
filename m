@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBCE3789FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1F83786C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240550AbhEJLfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:35:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52754 "EHLO mail.kernel.org"
+        id S236804AbhEJLK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:10:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234971AbhEJK5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E6B4619EE;
-        Mon, 10 May 2021 10:50:48 +0000 (UTC)
+        id S233167AbhEJKtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:49:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF0AA6145C;
+        Mon, 10 May 2021 10:38:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643849;
-        bh=tUIDDDqeNXJUgmAPa6kLdcp9Jo0AeRYDEfVFI6u/9XQ=;
+        s=korg; t=1620643101;
+        bh=TbnfRyrVPiZhBN1/T3YrOQ5IbnGguP1qyaLCMaCnOYc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ceOMPi4hykwNwLM0CS0MfOftrKdus7YV/IvlkMVowVcU58wjv08S4SQ9dcCR2Ak42
-         4kfs6O1ETnNzNMH14dqtctYEbyqRFzxhoCYSK6Emw+arUFxjJQ0pZM/i6DRX7xACcS
-         T4Q841CW1jP3AvLXqJ7RYfnq+m5XRtbAAco1/U0I=
+        b=e8Roq9h7wsky3RndkjBRBr1usU3beJiYaWzxVR9fx0dr3DeHhzqXgOC3jib4xTvMu
+         i84jb/r5KWNsn35aKWo+FgLX4ctX8kl2qGTgQifxzGb/SbBZrSGywNrCCfWRzRv5ks
+         hCDy4bcPF2CKeJcSe5HF419JZLUSWSX9mpMi9jXU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 185/342] selftests/resctrl: Fix compilation issues for global variables
+Subject: [PATCH 5.10 178/299] media: i2c: adv7511-v4l2: fix possible use-after-free in adv7511_remove()
 Date:   Mon, 10 May 2021 12:19:35 +0200
-Message-Id: <20210510102016.201035002@linuxfoundation.org>
+Message-Id: <20210510102010.839621294@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,145 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fenghua Yu <fenghua.yu@intel.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 8236c51d85a64643588505a6791e022cc8d84864 ]
+[ Upstream commit 2c9541720c66899adf6f3600984cf3ef151295ad ]
 
-Reinette reported following compilation issue on Fedora 32, gcc version
-10.1.1
+This driver's remove path calls cancel_delayed_work(). However, that
+function does not wait until the work function finishes. This means
+that the callback function may still be running after the driver's
+remove function has finished, which would result in a use-after-free.
 
-/usr/bin/ld: cqm_test.o:<src_dir>/cqm_test.c:22: multiple definition of
-`cache_size'; cat_test.o:<src_dir>/cat_test.c:23: first defined here
+Fix by calling cancel_delayed_work_sync(), which ensures that
+the work is properly cancelled, no longer running, and unable
+to re-schedule itself.
 
-The same issue is reported for long_mask, cbm_mask, count_of_bits etc
-variables as well. Compiler isn't happy because these variables are
-defined globally in two .c files namely cqm_test.c and cat_test.c and
-the compiler during compilation finds that the variable is already
-defined (multiple definition error).
-
-Taking a closer look at the usage of these variables reveals that these
-variables are used only locally in functions such as cqm_resctrl_val()
-(defined in cqm_test.c) and cat_perf_miss_val() (defined in cat_test.c).
-These variables are not shared between those functions. So, there is no
-need for these variables to be global. Hence, fix this issue by making
-them static variables.
-
-Reported-by: Reinette Chatre <reinette.chatre@intel.com>
-Tested-by: Babu Moger <babu.moger@amd.com>
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/resctrl/cat_test.c  | 10 +++++-----
- tools/testing/selftests/resctrl/cqm_test.c  | 10 +++++-----
- tools/testing/selftests/resctrl/resctrl.h   |  2 +-
- tools/testing/selftests/resctrl/resctrlfs.c | 10 +++++-----
- 4 files changed, 16 insertions(+), 16 deletions(-)
+ drivers/media/i2c/adv7511-v4l2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-index 5da43767b973..bdeeb5772592 100644
---- a/tools/testing/selftests/resctrl/cat_test.c
-+++ b/tools/testing/selftests/resctrl/cat_test.c
-@@ -17,10 +17,10 @@
- #define MAX_DIFF_PERCENT	4
- #define MAX_DIFF		1000000
+diff --git a/drivers/media/i2c/adv7511-v4l2.c b/drivers/media/i2c/adv7511-v4l2.c
+index a3161d709015..ab7883cff8b2 100644
+--- a/drivers/media/i2c/adv7511-v4l2.c
++++ b/drivers/media/i2c/adv7511-v4l2.c
+@@ -1964,7 +1964,7 @@ static int adv7511_remove(struct i2c_client *client)
  
--int count_of_bits;
--char cbm_mask[256];
--unsigned long long_mask;
--unsigned long cache_size;
-+static int count_of_bits;
-+static char cbm_mask[256];
-+static unsigned long long_mask;
-+static unsigned long cache_size;
- 
- /*
-  * Change schemata. Write schemata to specified
-@@ -136,7 +136,7 @@ int cat_perf_miss_val(int cpu_no, int n, char *cache_type)
- 		return -1;
- 
- 	/* Get default cbm mask for L3/L2 cache */
--	ret = get_cbm_mask(cache_type);
-+	ret = get_cbm_mask(cache_type, cbm_mask);
- 	if (ret)
- 		return ret;
- 
-diff --git a/tools/testing/selftests/resctrl/cqm_test.c b/tools/testing/selftests/resctrl/cqm_test.c
-index 5e7308ac63be..de33d1c0466e 100644
---- a/tools/testing/selftests/resctrl/cqm_test.c
-+++ b/tools/testing/selftests/resctrl/cqm_test.c
-@@ -16,10 +16,10 @@
- #define MAX_DIFF		2000000
- #define MAX_DIFF_PERCENT	15
- 
--int count_of_bits;
--char cbm_mask[256];
--unsigned long long_mask;
--unsigned long cache_size;
-+static int count_of_bits;
-+static char cbm_mask[256];
-+static unsigned long long_mask;
-+static unsigned long cache_size;
- 
- static int cqm_setup(int num, ...)
- {
-@@ -125,7 +125,7 @@ int cqm_resctrl_val(int cpu_no, int n, char **benchmark_cmd)
- 	if (!validate_resctrl_feature_request("cqm"))
- 		return -1;
- 
--	ret = get_cbm_mask("L3");
-+	ret = get_cbm_mask("L3", cbm_mask);
- 	if (ret)
- 		return ret;
- 
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index 39bf59c6b9c5..959c71e39bdc 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -92,7 +92,7 @@ void tests_cleanup(void);
- void mbm_test_cleanup(void);
- int mba_schemata_change(int cpu_no, char *bw_report, char **benchmark_cmd);
- void mba_test_cleanup(void);
--int get_cbm_mask(char *cache_type);
-+int get_cbm_mask(char *cache_type, char *cbm_mask);
- int get_cache_size(int cpu_no, char *cache_type, unsigned long *cache_size);
- void ctrlc_handler(int signum, siginfo_t *info, void *ptr);
- int cat_val(struct resctrl_val_param *param);
-diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
-index 19c0ec4045a4..2a16100c9c3f 100644
---- a/tools/testing/selftests/resctrl/resctrlfs.c
-+++ b/tools/testing/selftests/resctrl/resctrlfs.c
-@@ -49,8 +49,6 @@ static int find_resctrl_mount(char *buffer)
- 	return -ENOENT;
- }
- 
--char cbm_mask[256];
--
- /*
-  * remount_resctrlfs - Remount resctrl FS at /sys/fs/resctrl
-  * @mum_resctrlfs:	Should the resctrl FS be remounted?
-@@ -205,16 +203,18 @@ int get_cache_size(int cpu_no, char *cache_type, unsigned long *cache_size)
- /*
-  * get_cbm_mask - Get cbm mask for given cache
-  * @cache_type:	Cache level L2/L3
-- *
-- * Mask is stored in cbm_mask which is global variable.
-+ * @cbm_mask:	cbm_mask returned as a string
-  *
-  * Return: = 0 on success, < 0 on failure.
-  */
--int get_cbm_mask(char *cache_type)
-+int get_cbm_mask(char *cache_type, char *cbm_mask)
- {
- 	char cbm_mask_path[1024];
- 	FILE *fp;
- 
-+	if (!cbm_mask)
-+		return -1;
-+
- 	sprintf(cbm_mask_path, "%s/%s/cbm_mask", CBM_MASK_PATH, cache_type);
- 
- 	fp = fopen(cbm_mask_path, "r");
+ 	adv7511_set_isr(sd, false);
+ 	adv7511_init_setup(sd);
+-	cancel_delayed_work(&state->edid_handler);
++	cancel_delayed_work_sync(&state->edid_handler);
+ 	i2c_unregister_device(state->i2c_edid);
+ 	i2c_unregister_device(state->i2c_cec);
+ 	i2c_unregister_device(state->i2c_pktmem);
 -- 
 2.30.2
 
