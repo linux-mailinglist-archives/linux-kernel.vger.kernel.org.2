@@ -2,237 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EE637984A
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 22:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BA2379857
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 22:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232036AbhEJU04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 16:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59458 "EHLO
+        id S232400AbhEJU3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 16:29:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbhEJU0z (ORCPT
+        with ESMTP id S232305AbhEJU3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 16:26:55 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92204C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 13:25:50 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id s7so15555289edq.12
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 13:25:50 -0700 (PDT)
+        Mon, 10 May 2021 16:29:11 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D843C061574;
+        Mon, 10 May 2021 13:28:05 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id m11so8871010lfg.3;
+        Mon, 10 May 2021 13:28:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=F9XsT5hBAtjR+cllhpzT7Fpo7FEhxvpGbm50HALgfk4=;
-        b=cBwkRg0CUiOA5r4bXrcnTLAXJNuQ5IBPf33t+JKWJ0Mq9MXreTJom6XnO3s9mGMCx8
-         QA5OXbIT9fWIAs7XhumQYjg3TIK0ilKHkvn4n/yj5OqkI+FsWzZafjEfJOGSnOiq1iUe
-         AIJ/rgFYNBFWFoDSGQtz5/uCMZ9zgov4dWjbIltWWFbyytZrzmUbjjv16cq8q4Tatl2G
-         FpmrZxLCN1tOJ7eC6zP4+ajlgJ3UHWatLu/mT1XuB1ifphrRs/DNzchYTjX7KrNPcToR
-         ftu5v6GuF/iATMVfLk3vnNNEviCX5XidPaoCdFp68S1oTRebdK4DottsQd5VyFAJAFYq
-         yrog==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bVy+Wng+Or641wG/f1scEbi4eyzqkPKBYfA0bhNiIlc=;
+        b=YCDIF2wHH8+u+RFFjreIB0KnUxzOpT1HTdCRGtoLKu7iFxn9lma47Chv+hTTnv/nsB
+         Owxp6uV5257ui0GVA0kl98NZYhwVFO0CAYF7tqsWVQAtdsZWNdnqPxmQwRqdmKGOmcST
+         fYWWtuaRZmUzsQXzFmjnWSc5E3u15MeIoCSfdba7/sHJOLA5Xd00jD4MWyuSnCp4AhoI
+         uU3IX6vBVHQOaO539xAmuWZXnuEXtWnxpgeSZCDuLLndayYcSEpQAV7QFFxMFsWss3Sj
+         3QDw343/z5d7+tn63s66193WwIPIJq69vjLdNu5FpBIq12W0XYLW0/KwIY/iD5dmVecH
+         Q5ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=F9XsT5hBAtjR+cllhpzT7Fpo7FEhxvpGbm50HALgfk4=;
-        b=HYi/YRTIay2GzFxO+xAwEPY/Xw4FOAb6BXjzL0HZKLk3sdjfQguj3gTeqOSGgB1nUt
-         oSDWI1eNhbqy8jiVBTpUxhtDqfoZhSxuRCNTkPEXwxWfEl9+NEp9wiV3NxrEM9L6Qqwy
-         LV/pMlfa6k1RnK4yHMDnnUAQCoCLID0rZmAt1MvdiVr4we0q97F9KYOvdHtFNgTa3NsT
-         ROJHrB4iEEH1elcPAAnSVq19xlP+6OfI/UYZxnWmQkbaFDq+PLQP6nBBYXkDW7i6Tllm
-         rkvawegSCwfdGip9LLaTBxfevOp2f0t0yLiTQQ+dEeBPHLoWZDSlBfNbFBPxT92EznN5
-         g3Bg==
-X-Gm-Message-State: AOAM533H89SStn48pHBEf+m0oMZZoJM/zlC4ytSMhaShotxsYqTICiu4
-        yBjjQ8CMghFXXWM9qa4Phxk/JP4sw1DVvh+ttBlddw==
-X-Google-Smtp-Source: ABdhPJwrgch9adtXpwlW74y+pDWwMxWfa7lQm77Ez9wejvwOcz8CAI2+aCGwWjHWycu6jHkNIE2RflKFyH4qs9ijIe0=
-X-Received: by 2002:aa7:c349:: with SMTP id j9mr31138778edr.230.1620678349003;
- Mon, 10 May 2021 13:25:49 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bVy+Wng+Or641wG/f1scEbi4eyzqkPKBYfA0bhNiIlc=;
+        b=sruhLPe9f/HwKUn2sn0mm3MHFjX6sYrJRkNLagOs85eCWnH5RB9lB7qplUsl2VXFVh
+         krGuMZFEWc2Akqe62PwqYQ9VXPlPrVuABG7/XMUdoY5PWO5dtO7fSoCc+Boi2WBHVgKH
+         /JNMGw/0UOdWGHpuuALVRZCIeoRit1HUiKIv5X68q+5yQ9qrzeZrEEriitRYFM8Z/4K6
+         7mka0uIM3XONnbzB3iezI8y/8COIuOSzsJRESjGPp/L2SODSRxMLPOB9xMY0n9uu+LIy
+         o/NoQzY289shoz13+NQrX0bj/QzV8pIaIF75jaCvVNtDRos2Oh79Kj7dXCl0hSwfvKBg
+         hKLg==
+X-Gm-Message-State: AOAM531+newXbJxqgOlU/rux2tiMJBwkYyCJwm/vN8vQamCW1zaHJXIy
+        cfL57r2L/fk5T7A5HnQTCY37o/T6TPA=
+X-Google-Smtp-Source: ABdhPJwuU9a0Q6Y/bHeMhjPj1COzXDLl4Nq7+dtHMC4vR9tVCYy6Vnd9d0Z8o9G8jt0vUCxcY0+DeQ==
+X-Received: by 2002:ac2:5979:: with SMTP id h25mr18144406lfp.297.1620678483931;
+        Mon, 10 May 2021 13:28:03 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.gmail.com with ESMTPSA id z23sm2360662lfq.241.2021.05.10.13.28.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 13:28:03 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Agneli <poczt@protonmail.ch>, Paul Fertser <fercerpav@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 00/10] NVIDIA Tegra ARM32 device-tree improvements for 5.14
+Date:   Mon, 10 May 2021 23:25:50 +0300
+Message-Id: <20210510202600.12156-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210510102010.096403571@linuxfoundation.org>
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 11 May 2021 01:55:36 +0530
-Message-ID: <CA+G9fYug2C5rD6nMw88=SZH1okNJJcfAdKSWnFL3c0O=Vgb-tQ@mail.gmail.com>
-Subject: Re: [PATCH 5.11 000/342] 5.11.20-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021 at 16:14, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.11.20 release.
-> There are 342 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.11.20-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.11.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+This series brings couple corrections and improvements to the device-trees
+of Acer A500, AC100 and Nexus 7 devices. It also corrects polarity of
+headphones-detection GPIO in all Tegra device-trees that use WM8903 audio
+codec.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Dmitry Osipenko (10):
+  ARM: tegra: acer-a500: Improve microphone detection
+  ARM: tegra: acer-a500: Specify proper voltage for WiFi SDIO bus
+  ARM: tegra: acer-a500: Bump thermal trips by 10C
+  ARM: tegra: Add reg property to Tegra20 EMC table device-tree nodes
+  ARM: tegra: wm8903: Fix polarity of headphones-detection GPIO in
+    device-trees
+  ARM: tegra: paz00: Add CPU thermal zone
+  ARM: tegra: nexus7: Add i2c-thermtrip node
+  ARM: tegra: nexus7: Improve thermal zones
+  ARM: tegra: nexus7: Remove monitored-battery property
+  ARM: tegra: nexus7: Correct 3v3 regulator GPIO of PM269 variant
 
-## Build
-* kernel: 5.11.20-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.11.y
-* git commit: 44eb32ead9ee049c1d607d49a1eea51e191dbaa6
-* git describe: v5.11.19-343-g44eb32ead9ee
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/build/v5.11=
-.19-343-g44eb32ead9ee
+ .../boot/dts/tegra20-acer-a500-picasso.dts    | 21 ++++++---
+ arch/arm/boot/dts/tegra20-harmony.dts         |  2 +-
+ arch/arm/boot/dts/tegra20-medcom-wide.dts     |  2 +-
+ arch/arm/boot/dts/tegra20-paz00.dts           | 43 ++++++++++++++++++-
+ arch/arm/boot/dts/tegra20-plutux.dts          |  2 +-
+ arch/arm/boot/dts/tegra20-seaboard.dts        |  2 +-
+ arch/arm/boot/dts/tegra20-tec.dts             |  2 +-
+ arch/arm/boot/dts/tegra20-ventana.dts         |  2 +-
+ .../tegra30-asus-nexus7-grouper-common.dtsi   | 12 +-----
+ ...egra30-asus-nexus7-grouper-maxim-pmic.dtsi |  9 ++++
+ .../tegra30-asus-nexus7-grouper-ti-pmic.dtsi  | 11 ++++-
+ arch/arm/boot/dts/tegra30-cardhu.dtsi         |  2 +-
+ 12 files changed, 83 insertions(+), 27 deletions(-)
 
-## No Regressions (compared to v5.11.19)
+-- 
+2.30.2
 
-## No fixes (compared to v5.11.19)
-
-## Test result summary
- total: 78342, pass: 64452, fail: 2356, skip: 11275, xfail: 259,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
