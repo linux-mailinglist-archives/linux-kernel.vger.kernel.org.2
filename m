@@ -2,160 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CC8379AD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 01:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E4C379AD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 01:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhEJXh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 19:37:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45968 "EHLO
+        id S230185AbhEJXhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 19:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhEJXhY (ORCPT
+        with ESMTP id S229950AbhEJXhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 19:37:24 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B88C061574;
-        Mon, 10 May 2021 16:36:18 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id v6so22872321ljj.5;
-        Mon, 10 May 2021 16:36:18 -0700 (PDT)
+        Mon, 10 May 2021 19:37:41 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C0AC061574;
+        Mon, 10 May 2021 16:36:36 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id j3-20020a05600c4843b02901484662c4ebso225153wmo.0;
+        Mon, 10 May 2021 16:36:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZKKW+K0dIdsjUJHAnndSYglrw3/aTncWjvYhS3w4Trg=;
-        b=IaARyqKetclXdh5XbI4ONYrT/JVdndL0jie0/m3ZlTyGKmtDzmEM0h0R6kJ5rmT+cI
-         DvC5O1jbjeRg34VPKlblUDymxwrJlEkSFtOPYBf8/nyhiwcrDC3b9MoRi7N3/MhciKnu
-         NRwXpVd/abtzxEO1wnYfDXEAdNSL4Lxz9lqBGqqQCvyVov+P51abf7jU0KE4WBmZ0Z30
-         kTaqJylnwhn2/W0isEwM/aHv+Zh01xxTQteKes0PGv87zXOoLDRo7xtQWATSA5Pp/BCA
-         n3jm5Rp0CCAWkom+Cgf5Ut91RvEFWZYR6Ai9pCJGukij+P2MpOHBeJ66iPTzattI6Hks
-         Nr9g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zmVdPodNBh1H0rgnm38deCST/rryCbgx8LeA4HoogHE=;
+        b=OmEfPyyaDh4DIPO6uK6xsdL9GtjAOtrJ/GpN5iKASc9uZCTctM1o3nV61Ghc3y2Y8P
+         6eMxsqnmgGDvrtIr7/+Utj8tqI3CsCzrypJ2S4EJPqkUqx3XIkjCidOi4T5wPSaT3wsb
+         JAeEvRhpzNqwzeVq0/C1MVpFITx+6njQ3yyUl8lmfHyYxIZ8Ju6Gny8L+KA7+q9tEPbN
+         j9P4FaGCR73OPvI/7MEpGXhKU1vsmso9cT/byA85nGYo7KrP/bvEphveoBDjndl+fr/p
+         p66FVTYULXT2TVeFA852LMMez76LDJWJ1q/fSOidS9ydU9Q38H0+JGJLQnUzUEZxA6uG
+         Ee4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZKKW+K0dIdsjUJHAnndSYglrw3/aTncWjvYhS3w4Trg=;
-        b=NzPExFOF5mbzaBHhor3UUVajRg3DnbORqR+S8R350cm/5RsCxRk5WizSrvdzAZfzhg
-         vk5infRMK3p6HgzS30vkdxJywzBnRaD/y8JigGylPxwuhSEdPvEy5SDruMhtbAozihoR
-         N7f5WZMfnfN8uTUubSx2Ffj4JP+skylmpdiZSznTBgrK4YiM7jLEMuO90f0Wc8ij980m
-         HkTDyTDeY04oi/2S/vL90Evw6mnyfEBtOwMbp9dP3n39EtQo0C3UGjsIUrM2LTsffQNt
-         hyz59QgTXC9uXuWovcv4Rlw9dQWc5LifnPkz0IkcrrmM4Kf508y8RvfZv1h3JUcgNDvW
-         WYGw==
-X-Gm-Message-State: AOAM530LkCWEUmIjexhyBh9MajohZBLTsDyvkT24dldu+0aojibMkj5T
-        1FNubJwvgDUYoUL8BRp1uBs=
-X-Google-Smtp-Source: ABdhPJwwFZdsy+kgOUzcZ0jND70n4Tg4BvLOOt7Fhi+No+nuR4qT7zrwEb/nnFNWv9ZPmOL2LYp3Tg==
-X-Received: by 2002:a2e:9782:: with SMTP id y2mr21349914lji.303.1620689777422;
-        Mon, 10 May 2021 16:36:17 -0700 (PDT)
-Received: from xws.localdomain ([37.58.58.229])
-        by smtp.gmail.com with ESMTPSA id w21sm349247lfu.174.2021.05.10.16.36.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 16:36:16 -0700 (PDT)
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: 
-Date:   Tue, 11 May 2021 01:35:49 +0200
-Message-Id: <20210510233549.1329706-1-luzmaximilian@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zmVdPodNBh1H0rgnm38deCST/rryCbgx8LeA4HoogHE=;
+        b=U27VnFXYpwMS3Q4cA11T5u/K+Zzn8I0ccM2Q49quygX0UxDkvpBfrDhQ5h97+tOlwI
+         ycnHgNoJJANLPe3KpJKkBq+txYsFx8QsXLgPoPMEhSS/hRXaCni0momvbsm+RwPx0eZv
+         JGg2vjjmxl1vRrlDzqYQRYCm+0dTyVTuB1lXqTc77Brz6KbvD8jgY59Pk3SUABgihr8W
+         qVduoDgJgIkobQ/41JqnULKPVMK269iJxpGtd7AjqakQYNMLn4A5qZKAAp3OorS2lStv
+         1obD401nEOdcFSJUtqutKXPbjjEvc0cOIJ8p5xEwZdhyIxWzVLlXVXMZFbzsjGUownQl
+         D2Hg==
+X-Gm-Message-State: AOAM533sJ285NNp4eBDCWx0AWWOpoHOg8QJVBhtjhSkujwWiikO4R+j2
+        6FDL5JtEIueQzrsNoEMT3c7zQcGkMTsmSfye5Lo=
+X-Google-Smtp-Source: ABdhPJxcfvT5O1SvgyRKQ5d9F4Q6wTLFlPL1V3xFX1EcUFhWi8EaeHTBvV39WmTMxefb46AZaG2YlVlm3eYnd9Vin+M=
+X-Received: by 2002:a05:600c:4f8b:: with SMTP id n11mr28560834wmq.11.1620689794697;
+ Mon, 10 May 2021 16:36:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210510141022.56499-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210510141022.56499-1-andriy.shevchenko@linux.intel.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Mon, 10 May 2021 19:36:21 -0400
+Message-ID: <CAGngYiVHq=TxVL5gs19EXHSobCmQ7Pw0v9Oe4XceLRboj8u+3A@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] spi: Assume GPIO CS active high in ACPI case
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liguang Zhang <zhangliguang@linux.alibaba.com>,
+        Jay Fang <f.fangjian@huawei.com>,
+        Xin Hao <xhao@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subject: [PATCH] Revert "arm64: PCI: Exclude ACPI "consumer" resources from
- host bridge windows"
+Hi Andy, see below.
 
-The Microsoft Surface Pro X has host bridges defined as
+On Mon, May 10, 2021 at 10:10 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+>         if (spi->cs_gpiod || gpio_is_valid(spi->cs_gpio)) {
+>                 if (!(spi->mode & SPI_NO_CS)) {
+> +                       /*
+> +                        * Historically ACPI has no means of the GPIO polarity and thus
+> +                        * the SPISerialBus() resource defines it on the per-chip basis.
+> +                        * In order to avoid a chain of negations, the GPIO polarity is
+> +                        * considered being Active High. Even for the cases when _DSD()
+> +                        * is involved (in the updated versions of ACPI) the GPIO CS
+> +                        * polarity must be defined Active High to avoid ambiguity.
+> +                        * That's why we use enable, that takes SPI_CS_HIGH into account.
+> +                        */
+> +                       bool value = has_acpi_companion(&spi->dev) ? !enable : activate;
 
-    Name (_HID, EisaId ("PNP0A08") /* PCI Express Bus */)  // _HID: Hardware ID
-    Name (_CID, EisaId ("PNP0A03") /* PCI Bus */)  // _CID: Compatible ID
+There are three booleans involved now: "value", "enable" and
+"activate". It might be quite hard for someone reading this code
+later, to work out what's going on? I've got to admit that my previous
+choice of "enable1" was also not perfect, to say the least...
 
-    Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-    {
-        Name (RBUF, ResourceTemplate ()
-        {
-            Memory32Fixed (ReadWrite,
-                0x60200000,         // Address Base
-                0x01DF0000,         // Address Length
-                )
-            WordBusNumber (ResourceProducer, MinFixed, MaxFixed, PosDecode,
-                0x0000,             // Granularity
-                0x0000,             // Range Minimum
-                0x0001,             // Range Maximum
-                0x0000,             // Translation Offset
-                0x0002,             // Length
-                ,, )
-        })
-        Return (RBUF) /* \_SB_.PCI0._CRS.RBUF */
-    }
+AFAIK there are two basic concepts in this function:
+- enable: indicates chip-select enabled or disabled (independent of
+gpio polarity)
+- level : indicates the required level of the chip-select gpio
 
-meaning that the memory resources aren't (explicitly) defined as
-"producers", i.e. host bridge windows.
+So maybe we can simplify like this?
 
-Commit 8fd4391ee717 ("arm64: PCI: Exclude ACPI "consumer" resources from
-host bridge windows") introduced a check that removes such resources,
-causing BAR allocation failures later on:
+static void spi_set_cs(struct spi_device *spi, bool enable, bool force)
+{
+        bool level = (spi->mode & SPI_CS_HIGH) ? enable : !enable;
 
-    [ 0.150731] pci 0002:00:00.0: BAR 14: no space for [mem size 0x00100000]
-    [ 0.150744] pci 0002:00:00.0: BAR 14: failed to assign [mem size 0x00100000]
-    [ 0.150758] pci 0002:01:00.0: BAR 0: no space for [mem size 0x00004000 64bit]
-    [ 0.150769] pci 0002:01:00.0: BAR 0: failed to assign [mem size 0x00004000 64bit]
-
-This eventually prevents the PCIe NVME drive from being accessible.
-
-On x86 we already skip the check for producer/window due to some history
-with negligent firmware. It seems that Microsoft is intent on continuing
-that history on their ARM devices, so let's drop that check here too.
-
-Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
----
-
-Please note: I am not sure if this is the right way to fix that, e.g. I
-don't know if any additional checks like on IA64 or x86 might be
-required instead, or if this might break things on other devices. So
-please consider this more as a bug report rather than a fix.
-
----
- arch/arm64/kernel/pci.c | 14 --------------
- 1 file changed, 14 deletions(-)
-
-diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
-index 1006ed2d7c60..80f87fe0a2b8 100644
---- a/arch/arm64/kernel/pci.c
-+++ b/arch/arm64/kernel/pci.c
-@@ -94,19 +94,6 @@ int pcibios_root_bridge_prepare(struct pci_host_bridge *bridge)
- 	return 0;
- }
- 
--static int pci_acpi_root_prepare_resources(struct acpi_pci_root_info *ci)
--{
--	struct resource_entry *entry, *tmp;
--	int status;
--
--	status = acpi_pci_probe_root_resources(ci);
--	resource_list_for_each_entry_safe(entry, tmp, &ci->resources) {
--		if (!(entry->res->flags & IORESOURCE_WINDOW))
--			resource_list_destroy_entry(entry);
--	}
--	return status;
--}
--
- /*
-  * Lookup the bus range for the domain in MCFG, and set up config space
-  * mapping.
-@@ -184,7 +171,6 @@ struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
- 	}
- 
- 	root_ops->release_info = pci_acpi_generic_release_info;
--	root_ops->prepare_resources = pci_acpi_root_prepare_resources;
- 	root_ops->pci_ops = (struct pci_ops *)&ri->cfg->ops->pci_ops;
- 	bus = acpi_pci_root_create(root, root_ops, &ri->common, ri->cfg);
- 	if (!bus)
--- 
-2.31.1
-
+        if cs_gpio              => use level  : gpio_set_value_cansleep(level)
+        else if cs_gpiod(acpi)  => use level  : gpiod_set_value_cansleep(level)
+        else if cs_gpiod(_)     => use enable :
+gpiod_set_value_cansleep(enable);
+}
