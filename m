@@ -2,65 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765DF3780A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A3D3780AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhEJJ6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:58:00 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:42156 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231140AbhEJJ5g (ORCPT
+        id S230363AbhEJJ6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:58:21 -0400
+Received: from fgw21-7.mail.saunalahti.fi ([62.142.5.82]:48749 "EHLO
+        fgw21-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230103AbhEJJ6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:57:36 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 9AE791C0B79; Mon, 10 May 2021 11:56:30 +0200 (CEST)
-Date:   Mon, 10 May 2021 11:56:29 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kael_w@yeah.net
-Subject: Re: [PATCH] leds: Fix reference file name of documentation
-Message-ID: <20210510095629.GA14728@amd>
-References: <20210506070824.10965-1-wanjiabing@vivo.com>
+        Mon, 10 May 2021 05:58:15 -0400
+Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
+        by fgw21.mail.saunalahti.fi (Halon) with ESMTP
+        id 147d99d2-b176-11eb-9eb8-005056bdd08f;
+        Mon, 10 May 2021 12:57:07 +0300 (EEST)
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Alexandru Tachici <alexandru.tachici@analog.com>
+Subject: [PATCH v1 1/1] iio: dac: ad5770r: Put fwnode in error case during ->probe()
+Date:   Mon, 10 May 2021 12:56:49 +0300
+Message-Id: <20210510095649.3302835-1-andy.shevchenko@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
-Content-Disposition: inline
-In-Reply-To: <20210506070824.10965-1-wanjiabing@vivo.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+device_for_each_child_node() bumps a reference counting of a returned variable.
+We have to balance it whenever we return to the caller.
 
---gBBFr7Ir9EOA20Yy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: cbbb819837f6 ("iio: dac: ad5770r: Add AD5770R support")
+Cc: Alexandru Tachici <alexandru.tachici@analog.com>
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+---
+ drivers/iio/dac/ad5770r.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-On Thu 2021-05-06 15:08:24, Wan Jiabing wrote:
-> In commit 56b01acc1c79a ("dt-bindings: gpio: fairchild,74hc595:
-> Convert to json-schema"), gpio-74x164.txt was deleted and replaced
-> by fairchild,74hc595.yaml. Fix the reference file name.
->=20
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+diff --git a/drivers/iio/dac/ad5770r.c b/drivers/iio/dac/ad5770r.c
+index 7ab2ccf90863..8107f7bbbe3c 100644
+--- a/drivers/iio/dac/ad5770r.c
++++ b/drivers/iio/dac/ad5770r.c
+@@ -524,23 +524,29 @@ static int ad5770r_channel_config(struct ad5770r_state *st)
+ 	device_for_each_child_node(&st->spi->dev, child) {
+ 		ret = fwnode_property_read_u32(child, "num", &num);
+ 		if (ret)
+-			return ret;
+-		if (num >= AD5770R_MAX_CHANNELS)
+-			return -EINVAL;
++			goto err_child_out;
++		if (num >= AD5770R_MAX_CHANNELS) {
++			ret = -EINVAL;
++			goto err_child_out;
++		}
+ 
+ 		ret = fwnode_property_read_u32_array(child,
+ 						     "adi,range-microamp",
+ 						     tmp, 2);
+ 		if (ret)
+-			return ret;
++			goto err_child_out;
+ 
+ 		min = tmp[0] / 1000;
+ 		max = tmp[1] / 1000;
+ 		ret = ad5770r_store_output_range(st, min, max, num);
+ 		if (ret)
+-			return ret;
++			goto err_child_out;
+ 	}
+ 
++	return 0;
++
++err_child_out:
++	fwnode_handle_put(child);
+ 	return ret;
+ }
+ 
+-- 
+2.31.1
 
-Acked-by: Pavel Machek <pavel@ucw.cz>
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---gBBFr7Ir9EOA20Yy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmCZA0wACgkQMOfwapXb+vIxEgCeJcCOXUpDIRw9jY3lxihLArGX
-k6EAn2KJDQ7NG3/gMF6p2v1DvdD6DAjF
-=l7nT
------END PGP SIGNATURE-----
-
---gBBFr7Ir9EOA20Yy--
