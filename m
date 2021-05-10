@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C0C3798A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 22:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2345D37989C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 22:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232774AbhEJU56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 16:57:58 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:58198 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232082AbhEJU55 (ORCPT
+        id S232741AbhEJU4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 16:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232345AbhEJU4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 16:57:57 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 0BC601C0B76; Mon, 10 May 2021 22:56:51 +0200 (CEST)
-Date:   Mon, 10 May 2021 22:56:50 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH 5.10 002/299] bus: mhi: core: Clear configuration from
- channel context during reset
-Message-ID: <20210510205650.GA17966@amd>
-References: <20210510102004.821838356@linuxfoundation.org>
- <20210510102004.900838842@linuxfoundation.org>
+        Mon, 10 May 2021 16:56:21 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E1EC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 13:55:16 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id w22so3171934oiw.9
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 13:55:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9u1bWm+wMG0wleduKDsfRD/ISspIfmoacCqdbEduS70=;
+        b=07VWv3bG3mqPHl9O5DXepUYWpD3EvEfNY28LK1KB/UH2Kwt0GjhNrqdbJkHRvWPjJM
+         hWx4RDSwmmwIS/oBRuTkVfA+khJ21cY7Cult/tXugu2B9aa1P2q8WsPpePMq5r6cy1PB
+         yIsSaO6Deosd2gedOK7qUjMnGDR3Z1Ull7qY/0vGXgPfqoT1Few0vCD9k1rqzfpX6Ymq
+         E9MCLGiKtTflzLg1xHy6+tRe8QXRyxfKg7nmGmA6sLOCp383eEOk625RCGdh4k5MI0Gv
+         N9UrdmdmlwtsB78O0Z/6LtER9DuDgzBGsRiWATjw85lGWG8M3N9C63eoOkpshD22lxeU
+         Zwcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9u1bWm+wMG0wleduKDsfRD/ISspIfmoacCqdbEduS70=;
+        b=iI8kQTjtzMkEqZCRGeLGY9E/fNYncHA+3LtomWzQlqURmu47iDT116ajWzVVFcyTUh
+         LM/nKHEfQcgObmRk0t/g0rm6uiHVObUEwztswgc6JGJgZ/8rCYKKbzlj4s4UcEsDo87u
+         77cMlrW6KaJDrCvA1s+ZUtdcCvc0LuPJHD0LbGN6AD+sOFtFpit3oiVMLr6fjdYHAP/P
+         QHUmHyHEDx6juXC0xotL1dg3F6DVlkMCXIz1GHwf1QyzIwmkF2gtL90ltysPfIhZTGjw
+         v9MGE6sjzaYTS4XhhTvB3EmdZ2R4XfEtE7CWiKweJGgnrDdmd+cIRfChzGsZ1N3EAgzw
+         KCWg==
+X-Gm-Message-State: AOAM531lOSEqfPfBAo5MuW9vW3a9BAWPwnJ2qCHTOFhGE0PpGMfZdctx
+        iITNOhu+CeJ31x2/gKuOqLUBZSNs5QNNwPP6
+X-Google-Smtp-Source: ABdhPJyTPwx7ky+oR8zThuZFUp77XsFOUzbz1Vb//R9BLsN8RXAAbggqn6oYnI1nsj+RrSN84lWqbQ==
+X-Received: by 2002:aca:5b86:: with SMTP id p128mr19761737oib.127.1620680115142;
+        Mon, 10 May 2021 13:55:15 -0700 (PDT)
+Received: from [192.168.86.122] ([136.62.4.88])
+        by smtp.gmail.com with ESMTPSA id c65sm2799334oia.47.2021.05.10.13.55.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 13:55:14 -0700 (PDT)
+Subject: Re: [RFC 03/12] sh: remove unaligned access for sh4a
+To:     Arnd Bergmann <arnd@kernel.org>, linux-arch@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210507220813.365382-1-arnd@kernel.org>
+ <20210507220813.365382-4-arnd@kernel.org>
+From:   Rob Landley <rob@landley.net>
+Message-ID: <1b1d34a8-d170-7287-1c99-40d2af83d1b9@landley.net>
+Date:   Mon, 10 May 2021 16:11:03 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="TB36FDmn/VVEgNH/"
-Content-Disposition: inline
-In-Reply-To: <20210510102004.900838842@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210507220813.365382-4-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 5/7/21 5:07 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Unlike every other architecture, sh4a uses an inline asm implementation
+> for get_unaligned(). I have shown that this produces better object
+> code than the asm-generic version. However, there are very few users of
+> arch/sh/ overall, and most of those seem to use sh4 rather than sh4a CPU
 
---TB36FDmn/VVEgNH/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hitachi's sh4, sh3, and sh2 are all out of patent, and have been cloned as open
+hardware. (Modulo the sh4 clone uses a different mmu design, but lots of
+regression testing gets done against qemu-system-sh4 and sh4 hardware using the
+original mmu.) Plus superh was the bestselling CPU architecture in the world for
+3 years back in the 1990s, and there's a remaining userbase from that.
 
-Hi!
+sh5 and the "a" designs like sh4a were created by renesas after hitachi spun off
+the IP to them, and are not out of patent. I do not have access to an sh4a test
+system.
 
-> From: Bhaumik Bhatt <bbhatt@codeaurora.org>
->=20
-> commit 47705c08465931923e2f2b506986ca0bdf80380d upstream.
->=20
-> When clearing up the channel context after client drivers are
-> done using channels, the configuration is currently not being
-> reset entirely. Ensure this is done to appropriately handle
-> issues where clients unaware of the context state end up calling
-> functions which expect a context.
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/sh/include/asm/unaligned-sh4a.h | 199 ---------------------------
+>  arch/sh/include/asm/unaligned.h      |  13 --
 
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -544,6 +544,7 @@ void mhi_deinit_chan_ctxt(struct mhi_con
-> +	u32 tmp;
-> @@ -554,7 +555,19 @@ void mhi_deinit_chan_ctxt(struct mhi_con
-=2E..
-> +	tmp =3D chan_ctxt->chcfg;
-> +	tmp &=3D ~CHAN_CTX_CHSTATE_MASK;
-> +	tmp |=3D (MHI_CH_STATE_DISABLED << CHAN_CTX_CHSTATE_SHIFT);
-> +	chan_ctxt->chcfg =3D tmp;
-> +
-> +	/* Update to all cores */
-> +	smp_wmb();
->  }
+All I can test is that it didn't cause regressions on my sh4 and j-core systems,
+which it (unsurprisingly) did not.
 
-This is really interesting code; author was careful to make sure chcfg
-is updated atomically, but C compiler is free to undo that. Plus, this
-will make all kinds of checkers angry.
+Acked-by: Rob Landley <rob@landley.net>
 
-Does the file need to use READ_ONCE and WRITE_ONCE?
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---TB36FDmn/VVEgNH/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmCZnhIACgkQMOfwapXb+vLm+QCgrjtqO/fk9hdWsOqd82lCs93/
-OkAAoJT5b/Oi5j5XtOKXCYwDFMuvzCYA
-=NHPs
------END PGP SIGNATURE-----
-
---TB36FDmn/VVEgNH/--
+Rob
