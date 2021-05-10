@@ -2,217 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3883379742
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCE0379746
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232241AbhEJS6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 14:58:24 -0400
-Received: from mail.hallyn.com ([178.63.66.53]:57048 "EHLO mail.hallyn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230300AbhEJS6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 14:58:21 -0400
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id 4995799D; Mon, 10 May 2021 13:57:15 -0500 (CDT)
-Date:   Mon, 10 May 2021 13:57:15 -0500
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     Giuseppe Scrivano <gscrivan@redhat.com>,
-        linux-kernel@vger.kernel.org, ebiederm@xmission.com,
-        christian.brauner@ubuntu.com
-Subject: Re: [PATCH v2] userns: automatically split user namespace extent
-Message-ID: <20210510185715.GA20897@mail.hallyn.com>
-References: <20201203150252.1229077-1-gscrivan@redhat.com>
- <20210510172351.GA19918@mail.hallyn.com>
+        id S232633AbhEJS6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 14:58:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232301AbhEJS6r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 14:58:47 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5FBC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:57:41 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id x20so24949132lfu.6
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:57:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rHjqwVQjzMEV5GK54WowYNEUzQ+k4CK9chJTV5Okn7c=;
+        b=QMjJbO1L2Cxu9EqcoA2Dh2LjzMSrVFxlZPKXiltJd/6sQmrMeQxmH95UG0NicAqPUj
+         WNZPpwMln6fAm4nod1Kpt1aNKY1MaRsPbYZoWlDMc9bQZsgZ7sJQh2ap2gK+rrTHhq3M
+         rXmH3pAazUZliBie1fO20stm2CEZvezyK7PRArTr6i0RZFqSBe7z1CKS1zvYK1Rwqlsi
+         jMbodNLYT7iIEDAxxKpv1Kut+KZtAe/W5wCfazhEJqRD15FENd3QWbMh8iwrNdcW94F5
+         qMz3DlZ5VbtODD74KEe0KpnwbXRKnPiM94zZ29/OIZjvuzA6ftBfv/rbBMVz2Btxvpqp
+         5iTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rHjqwVQjzMEV5GK54WowYNEUzQ+k4CK9chJTV5Okn7c=;
+        b=gvMazp0wYGbSxklnxJ8AAf1i+Jz8VUdXC750MaHqSG0TWX6dDCbXiZPq/Sj4wkHTZk
+         yeXgocWo74okXis4nvXhiWvlV3ADgWyHcOJpCFq/HFx+Pxdb+288KYG+d8YIBIvDvHkU
+         TMz0EkKb0oQZPrF9KIpICC+EPe5ve/KoNfxtcKxvGFU45BAOsLFTfKgXjHOEE4Mee4CM
+         2/Qqu8SIa8g4xJxhsyi5/Pagsr5L11B/qZOtWFQwRMNwcxsgvWkhNhcI/nzm2VXfJYhQ
+         KIR8bcbg124/pJ74tpduo+BFztlFH1t/jk0zOI6iXewSWxYN9pt2/CzmMgIIVZxxK+YR
+         89PQ==
+X-Gm-Message-State: AOAM533J9/bS/rOq5DV+x2KdWqZTbS2U+DYhzUC8VitLS25oBQaObWjD
+        i5cZlZt9dfup9BEhmWfgHUMRiFE67+M1bHd5+q7bJQ==
+X-Google-Smtp-Source: ABdhPJyUTojXkR3OkkvxmoH6PFq+uUMBCtGrr8/i1SBWhTm9x+5pM4LoolwpcagABSdUASsTaqvLwYA+WiLFk52KFmI=
+X-Received: by 2002:ac2:532d:: with SMTP id f13mr17394936lfh.81.1620673059631;
+ Mon, 10 May 2021 11:57:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210510172351.GA19918@mail.hallyn.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210430123822.13825-1-brijesh.singh@amd.com> <20210430123822.13825-37-brijesh.singh@amd.com>
+In-Reply-To: <20210430123822.13825-37-brijesh.singh@amd.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Mon, 10 May 2021 12:57:27 -0600
+Message-ID: <CAMkAt6ottZkx02-ykazkG-5Tu5URv-xwOjWOZ=XMAXv98_HOYA@mail.gmail.com>
+Subject: Re: [PATCH Part2 RFC v2 36/37] KVM: SVM: Provide support for
+ SNP_GUEST_REQUEST NAE event
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        kvm list <kvm@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, jroedel@suse.de,
+        "Lendacky, Thomas" <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>, peterz@infradead.org,
+        "H. Peter Anvin" <hpa@zytor.com>, tony.luck@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 12:23:51PM -0500, Serge E. Hallyn wrote:
-> On Thu, Dec 03, 2020 at 04:02:52PM +0100, Giuseppe Scrivano wrote:
-> > writing to the id map fails when an extent overlaps multiple mappings
-> > in the parent user namespace, e.g.:
-> > 
-> > $ cat /proc/self/uid_map
-> >          0       1000          1
-> >          1     100000      65536
-> > $ unshare -U sleep 100 &
-> > [1] 1029703
-> > $ printf "0 0 100\n" | tee /proc/$!/uid_map
-> > 0 0 100
-> > tee: /proc/1029703/uid_map: Operation not permitted
-> > 
-> > To prevent it from happening, automatically split an extent so that
-> > each portion fits in one extent in the parent user namespace.
-> > 
-> > $ cat /proc/self/uid_map
-> >          0       1000          1
-> >          1     110000      65536
-> > $ unshare -U sleep 100 &
-> > [1] 1552
-> > $ printf "0 0 100\n" | tee /proc/$!/uid_map
-> > 0 0 100
-> > $ cat /proc/$!/uid_map
-> >          0          0          1
-> >          1          1         99
-> > 
-> > Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
-> 
-> The patch on the whole looks great, easy to reason about.  But I have
-> one question below:
+>
+> +static void snp_handle_guest_request(struct vcpu_svm *svm, struct ghcb *ghcb,
+> +                                   gpa_t req_gpa, gpa_t resp_gpa)
+> +{
+> +       struct sev_data_snp_guest_request data = {};
+> +       struct kvm_vcpu *vcpu = &svm->vcpu;
+> +       struct kvm *kvm = vcpu->kvm;
+> +       kvm_pfn_t req_pfn, resp_pfn;
+> +       struct kvm_sev_info *sev;
+> +       int rc, err = 0;
+> +
+> +       if (!sev_snp_guest(vcpu->kvm)) {
+> +               rc = -ENODEV;
+> +               goto e_fail;
+> +       }
+> +
+> +       sev = &to_kvm_svm(kvm)->sev_info;
+> +
+> +       if (!__ratelimit(&sev->snp_guest_msg_rs)) {
+> +               pr_info_ratelimited("svm: too many guest message requests\n");
+> +               rc = -EAGAIN;
+> +               goto e_fail;
+> +       }
+> +
+> +       if (!IS_ALIGNED(req_gpa, PAGE_SIZE) || !IS_ALIGNED(resp_gpa, PAGE_SIZE)) {
+> +               pr_err("svm: guest request (%#llx) or response (%#llx) is not page aligned\n",
+> +                       req_gpa, resp_gpa);
+> +               goto e_term;
+> +       }
+> +
+> +       req_pfn = gfn_to_pfn(kvm, gpa_to_gfn(req_gpa));
+> +       if (is_error_noslot_pfn(req_pfn)) {
+> +               pr_err("svm: guest request invalid gpa=%#llx\n", req_gpa);
+> +               goto e_term;
+> +       }
+> +
+> +       resp_pfn = gfn_to_pfn(kvm, gpa_to_gfn(resp_gpa));
+> +       if (is_error_noslot_pfn(resp_pfn)) {
+> +               pr_err("svm: guest response invalid gpa=%#llx\n", resp_gpa);
+> +               goto e_term;
+> +       }
+> +
+> +       data.gctx_paddr = __psp_pa(sev->snp_context);
+> +       data.req_paddr = __sme_set(req_pfn << PAGE_SHIFT);
+> +       data.res_paddr = __psp_pa(sev->snp_resp_page);
+> +
+> +       mutex_lock(&kvm->lock);
+> +
+> +       rc = sev_issue_cmd(kvm, SEV_CMD_SNP_GUEST_REQUEST, &data, &err);
+> +       if (rc) {
+> +               mutex_unlock(&kvm->lock);
+> +
+> +               /* If we have a firmware error code then use it. */
+> +               if (err)
+> +                       rc = err;
+> +
+> +               goto e_fail;
+> +       }
+> +
+> +       /* Copy the response after the firmware returns success. */
+> +       rc = kvm_write_guest(kvm, resp_gpa, sev->snp_resp_page, PAGE_SIZE);
+> +
+> +       mutex_unlock(&kvm->lock);
+> +
+> +e_fail:
+> +       ghcb_set_sw_exit_info_2(ghcb, rc);
+> +       return;
+> +
+> +e_term:
+> +       ghcb_set_sw_exit_info_1(ghcb, 1);
+> +       ghcb_set_sw_exit_info_2(ghcb,
+> +                               X86_TRAP_GP |
+> +                               SVM_EVTINJ_TYPE_EXEPT |
+> +                               SVM_EVTINJ_VALID);
+> +}
 
-As you pointed out, I was misreading the variable name, thank you :)
-
-Reviewed-by: Serge Hallyn <serge@hallyn.com>
-
-> 
-> > ---
-> > v2:
-> > - move the split logic when the extent are mapped to the parent map to
-> >   reduce lookup complexity.
-> > 
-> > v1: https://lkml.kernel.org/lkml/20201126100839.381415-1-gscrivan@redhat.com
-> > 
-> >  kernel/user_namespace.c | 79 +++++++++++++++++++++++++++++++++++------
-> >  1 file changed, 68 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
-> > index 87804e0371fe..550612c6e794 100644
-> > --- a/kernel/user_namespace.c
-> > +++ b/kernel/user_namespace.c
-> > @@ -312,6 +312,55 @@ static u32 map_id_down(struct uid_gid_map *map, u32 id)
-> >  	return map_id_range_down(map, id, 1);
-> >  }
-> >  
-> > +/**
-> > + * find_and_split_extent_down - Find lower_first for the target extent
-> > + * using the specified map.
-> > + * If the extent doesn't fit in a single lower extent, split target and
-> > + * write the remaining IDs (first and count) to the overflow extent.
-> > + * If no overflow happens, overflow->count is set to 0.
-> > + */
-> > +static int find_and_split_extent_down(struct uid_gid_map *map,
-> > +				       struct uid_gid_extent *target,
-> > +				       struct uid_gid_extent *overflow)
-> > +{
-> > +	unsigned int extents = map->nr_extents;
-> > +	u32 lower_first = target->lower_first;
-> > +	struct uid_gid_extent *extent;
-> > +	u32 off, available;
-> > +
-> > +	overflow->count = 0;
-> > +
-> > +	/* Find the lower extent that includes the first ID.  */
-> > +	if (extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
-> > +		extent = map_id_range_down_base(extents, map, lower_first, 1);
-> > +	else
-> > +		extent = map_id_range_down_max(extents, map, lower_first, 1);
-> > +
-> > +	/* Could not map the first ID in the extent.  */
-> > +	if (extent == NULL)
-> > +		return -EPERM;
-> > +
-> > +	/* Offset of lower_first in the lower extent.  */
-> > +	off = target->lower_first - extent->first;
-> > +
-> > +	/* How many IDs are available in the lower extent?  */
-> > +	available = extent->count - off;
-> > +
-> > +	/* Requesting more IDs than available in the lower extent.  */
-> > +	if (target->count > available) {
-> > +		/* Move the remaining IDs to the overflow extent.  */
-> > +		overflow->first = target->first + available;
-> > +		overflow->lower_first = target->lower_first + available;
-> > +		overflow->count = target->count - available;
-> > +
-> > +		/* Shrink the initial extent to what is available.  */
-> > +		target->count = available;
-> > +	}
-> > +
-> > +	target->lower_first = extent->lower_first + off;
-> > +	return 0;
-> > +}
-> > +
-> >  /**
-> >   * map_id_up_base - Find idmap via binary search in static extent array.
-> >   * Can only be called if number of mappings is equal or less than
-> > @@ -749,6 +798,7 @@ static bool mappings_overlap(struct uid_gid_map *new_map,
-> >   * insert_extent - Safely insert a new idmap extent into struct uid_gid_map.
-> >   * Takes care to allocate a 4K block of memory if the number of mappings exceeds
-> >   * UID_GID_MAP_MAX_BASE_EXTENTS.
-> > + * The extent is appended at the position map->nr_extents.
-> >   */
-> >  static int insert_extent(struct uid_gid_map *map, struct uid_gid_extent *extent)
-> >  {
-> > @@ -968,30 +1018,37 @@ static ssize_t map_write(struct file *file, const char __user *buf,
-> >  	if (!new_idmap_permitted(file, ns, cap_setid, &new_map))
-> >  		goto out;
-> >  
-> > -	ret = -EPERM;
-> >  	/* Map the lower ids from the parent user namespace to the
-> >  	 * kernel global id space.
-> >  	 */
-> >  	for (idx = 0; idx < new_map.nr_extents; idx++) {
-> > +		struct uid_gid_extent overflow;
-> >  		struct uid_gid_extent *e;
-> > -		u32 lower_first;
-> >  
-> >  		if (new_map.nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
-> >  			e = &new_map.extent[idx];
-> >  		else
-> >  			e = &new_map.forward[idx];
-> >  
-> > -		lower_first = map_id_range_down(parent_map,
-> > -						e->lower_first,
-> > -						e->count);
-> > -
-> > -		/* Fail if we can not map the specified extent to
-> > -		 * the kernel global id space.
-> > -		 */
-> > -		if (lower_first == (u32) -1)
-> > +		ret = find_and_split_extent_down(parent_map, e, &overflow);
-> > +		if (ret < 0)
-> >  			goto out;
-> >  
-> > -		e->lower_first = lower_first;
-> > +		/* If the extent doesn't fit in a single lower extent,
-> > +		 * move what could not be mapped to a new extent.
-> > +		 * The new extent is appended to the existing ones in
-> > +		 * new_map, it will be checked again and if necessary it
-> > +		 * is split further.
-> > +		 */
-> > +		if (overflow.count > 0) {
-> > +			if (new_map.nr_extents == UID_GID_MAP_MAX_EXTENTS) {
-> 
-> Why are you doing this?  The insert_extent() will automatically extend it
-> if needed, right?  So this condition should be fine?
-> 
-> > +				ret = -EINVAL;
-> > +				goto out;
-> > +			}
-> > +			ret = insert_extent(&new_map, &overflow);
-> > +			if (ret < 0)
-> > +				goto out;
-> > +		}
-> >  	}
-> >  
-> >  	/*
-> > -- 
-> > 2.28.0
-> 
-> Cheers,
-> Balint
-> 
-> >
-> > -serge
-> 
-> 
-> 
-> -- 
-> Balint Reczey
-> Ubuntu & Debian Developer
-> > 
+I am probably missing something in the spec but I don't see any
+references to #GP in the '4.1.7 SNP Guest Request' section. Why is
+this different from e_fail?
