@@ -2,101 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B0437978D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 21:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195DD3797A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 21:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbhEJTWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 15:22:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231735AbhEJTWI (ORCPT
+        id S233375AbhEJTXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 15:23:55 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47815 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233208AbhEJTXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 15:22:08 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2699CC061574;
-        Mon, 10 May 2021 12:21:03 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id g14so20056302edy.6;
-        Mon, 10 May 2021 12:21:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=EFsFb8pMI8UH4jNijLN54heTyN+8V4Uo+MBIc8sUxEk=;
-        b=B3BkgcsmCDDggzaQBqgSezKwkbbqsZfGSGHotgPFSo6MlhFi5AZI+EQJXmxL6ONXIH
-         +XxT3brBTzKMIl2XB5AaK+hb0YNx6DinOhsmfRc/nInm5YEIeiDMltiuAI/bi+dp8yMt
-         zHuHR5wg0IXhjq6MWHo5Xcp+bDr/7B3uOhlAhI6fCyybriz0X6gcBQooJh7NLRl4CXGN
-         GOUXbAg0vOxhKZgOIPf8VsZfG5SSHaqQvy37N8Am7RUAM/0THSJ9jPG16/Rf49WDc4/n
-         PvK3s+s0stZSfOozyYcCckeD1l1NRYuJErP3JiX0MuL368RMCgV7KZK/6RNqoC6j4Jn9
-         5RhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=EFsFb8pMI8UH4jNijLN54heTyN+8V4Uo+MBIc8sUxEk=;
-        b=G/jHuUToc5ADxZnQAFandO8oab/q/3gpxMyHYdZm/iOkyXLG0qAXmRdPLkqM3PaJij
-         F2knkos3Y45/E4qDKpTyEZOl7HiBYOhdggjmCBy+EITLe0yxdpUrBtzSBiK9XvQ7iQDi
-         quTvFJy/ndledJbEaitE12g89WI9DHkCbZ2+xGrpxITkrMabO1Bwq8V/cg3WO5KZeO8V
-         X0lbzRQBRUidnY28leT+mi/KKx+vCknQ2lJKrvVChK0/0Shw75UMlUk7BBll7vgXOJGV
-         iF8GRyRN92TCn2R8Ly42d+dq+u1winHAyM54oxM3n70I1AWMPhpIldzgMuFl/SH8FqE8
-         fsIw==
-X-Gm-Message-State: AOAM533YXELtPbYzu6AkPNElxXb0PGs1UrVTSwquEQwMpwZrkZKpYMBF
-        eG5xYgk5narkbiM13YNWjYdp3Mxs6qY=
-X-Google-Smtp-Source: ABdhPJxsLinSeYfgg7lxOp4j3xHptYRQPXsgIzFgXp1XDQN7tfLYAzTCO0Vru0TAv7NHrcaunEiqIA==
-X-Received: by 2002:a05:6402:4383:: with SMTP id o3mr31312889edc.333.1620674461780;
-        Mon, 10 May 2021 12:21:01 -0700 (PDT)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id da25sm12588723edb.38.2021.05.10.12.21.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 10 May 2021 12:21:01 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: rockchip: rename vcc_stdby node name for rk3066a-rayeager.dts
-Date:   Mon, 10 May 2021 21:20:54 +0200
-Message-Id: <20210510192054.8876-1-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        Mon, 10 May 2021 15:23:49 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 14AJM3dI013584
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 May 2021 15:22:05 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id F267215C3CD9; Mon, 10 May 2021 15:22:02 -0400 (EDT)
+Date:   Mon, 10 May 2021 15:22:02 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fpga@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
+        rcu@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as ASCII
+Message-ID: <YJmH2irxoRsyNudb@mit.edu>
+References: <cover.1620641727.git.mchehab+huawei@kernel.org>
+ <2ae366fdff4bd5910a2270823e8da70521c859af.camel@infradead.org>
+ <20210510135518.305cc03d@coco.lan>
+ <de6d1fa5b7934f4afd61370d9c58502bef588466.camel@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <de6d1fa5b7934f4afd61370d9c58502bef588466.camel@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A test with the command below gives this error:
+On Mon, May 10, 2021 at 02:49:44PM +0100, David Woodhouse wrote:
+> On Mon, 2021-05-10 at 13:55 +0200, Mauro Carvalho Chehab wrote:
+> > This patch series is doing conversion only when using ASCII makes
+> > more sense than using UTF-8. 
+> > 
+> > See, a number of converted documents ended with weird characters
+> > like ZERO WIDTH NO-BREAK SPACE (U+FEFF) character. This specific
+> > character doesn't do any good.
+> > 
+> > Others use NO-BREAK SPACE (U+A0) instead of 0x20. Harmless, until
+> > someone tries to use grep[1].
+> 
+> Replacing those makes sense. But replacing emdashes — which are a
+> distinct character that has no direct replacement in ASCII and which
+> people do *deliberately* use instead of hyphen-minus — does not.
 
-/arch/arm/boot/dts/rk3066a-rayeager.dt.yaml:
-/: '5v-stdby-regulator' does not match any of the regexes:
-'.*-names$',
-'.*-supply$',
-'^#.*-cells$',
-'^#[a-zA-Z0-9,+\\-._]{0,63}$',
-'^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}$',
-'^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$',
-'^__.*__$',
-'pinctrl-[0-9]+'
+I regularly use --- for em-dashes and -- for en-dashes.  Markdown will
+automatically translate 3 ASCII hypens to em-dashes, and 2 ASCII
+hyphens to en-dashes.  It's much, much easier for me to type 2 or 3
+hypens into my text editor of choice than trying to enter the UTF-8
+characters.  If we can make sphinx do this translation, maybe that's
+the best way of dealing with these two characters?
 
-A node name shouldn't start with a number,
-so change it to 'stdby-regulator'.
+Cheers,
 
-make ARCH=arm dtbs_check
-DT_SCHEMA_FILES=~/.local/lib/python3.5/site-packages/dtschema
-/schemas/dt-core.yaml
-
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm/boot/dts/rk3066a-rayeager.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/rk3066a-rayeager.dts b/arch/arm/boot/dts/rk3066a-rayeager.dts
-index 309518403..a73e8900c 100644
---- a/arch/arm/boot/dts/rk3066a-rayeager.dts
-+++ b/arch/arm/boot/dts/rk3066a-rayeager.dts
-@@ -58,7 +58,7 @@
- 	};
- 
- 	/* input for 5V_STDBY is VSYS or DC5V, selectable by jumper J4 */
--	vcc_stdby: 5v-stdby-regulator {
-+	vcc_stdby: stdby-regulator {
- 		compatible = "regulator-fixed";
- 		regulator-name = "5v_stdby";
- 		regulator-min-microvolt = <5000000>;
--- 
-2.11.0
-
+					- Ted
