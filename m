@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3809A378D06
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA07378D04
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346804AbhEJMco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:32:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53778 "EHLO mail.kernel.org"
+        id S1346763AbhEJMcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:32:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237305AbhEJLLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237308AbhEJLLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 07:11:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC2356192E;
-        Mon, 10 May 2021 11:08:56 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 374586101E;
+        Mon, 10 May 2021 11:08:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644937;
-        bh=m1/6NUWW1FDP/McTnMl3GIptawWKsdd2yROLn8Oi0kE=;
+        s=korg; t=1620644939;
+        bh=5DoIjNRWGTHQ1LbjM+5SuLfMXIljz9gPnSE8Kzb6UQM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IbEF3hCKwrIXHmVUx5uFdVoPBWdLwTgv99uSw1ctpVYikia4M8efP1Rh0cC1/tgtX
-         ZRbi8qvowDXBlbaaJKeQ4BU/IS82C8hK4oWrBZtq8+23JfuD62SVN+BCeGmm+ZKsEF
-         eD3njFDqc/eJeU0tVBo/JV9y+2mOEjmzQlACvT+0=
+        b=UgBoimVUvBzDyTxByLxT+dFjWZGSNwVE0gN28rylcziohXRzm5NSk56xwp9deO6FN
+         Ja34+MY3fxNNeitaQQAYhuPPrb0NbmtkSXwhMf2rxzhfPJ9V9UkCZBlBwZcI/0agEw
+         vvbl1YbT2AEfDRpwYKvWTx7KRgGjAR1hHIjwhlaM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robbie Ko <robbieko@synology.com>,
-        Chung-Chiang Cheng <cccheng@synology.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        BingJing Chang <bingjingc@synology.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Bill Wendling <morbo@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 284/384] btrfs: fix a potential hole punching failure
-Date:   Mon, 10 May 2021 12:21:13 +0200
-Message-Id: <20210510102024.181662447@linuxfoundation.org>
+Subject: [PATCH 5.12 285/384] arm64/vdso: Discard .note.gnu.property sections in vDSO
+Date:   Mon, 10 May 2021 12:21:14 +0200
+Message-Id: <20210510102024.213289243@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -43,78 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: BingJing Chang <bingjingc@synology.com>
+From: Bill Wendling <morbo@google.com>
 
-[ Upstream commit 3227788cd369d734d2d3cd94f8af7536b60fa552 ]
+[ Upstream commit 388708028e6937f3fc5fc19aeeb847f8970f489c ]
 
-In commit d77815461f04 ("btrfs: Avoid trucating page or punching hole
-in a already existed hole."), existing holes can be skipped by calling
-find_first_non_hole() to adjust start and len. However, if the given len
-is invalid and large, when an EXTENT_MAP_HOLE extent is found, len will
-not be set to zero because (em->start + em->len) is less than
-(start + len). Then the ret will be 1 but len will not be set to 0.
-The propagated non-zero ret will result in fallocate failure.
+The arm64 assembler in binutils 2.32 and above generates a program
+property note in a note section, .note.gnu.property, to encode used x86
+ISAs and features. But the kernel linker script only contains a single
+NOTE segment:
 
-In the while-loop of btrfs_replace_file_extents(), len is not updated
-every time before it calls find_first_non_hole(). That is, after
-btrfs_drop_extents() successfully drops the last non-hole file extent,
-it may fail with ENOSPC when attempting to drop a file extent item
-representing a hole. The problem can happen. After it calls
-find_first_non_hole(), the cur_offset will be adjusted to be larger
-than or equal to end. However, since the len is not set to zero, the
-break-loop condition (ret && !len) will not be met. After it leaves the
-while-loop, fallocate will return 1, which is an unexpected return
-value.
-
-We're not able to construct a reproducible way to let
-btrfs_drop_extents() fail with ENOSPC after it drops the last non-hole
-file extent but with remaining holes left. However, it's quite easy to
-fix. We just need to update and check the len every time before we call
-find_first_non_hole(). To make the while loop more readable, we also
-pull the variable updates to the bottom of loop like this:
-  while (cur_offset < end) {
-	  ...
-	  // update cur_offset & len
-	  // advance cur_offset & len in hole-punching case if needed
+  PHDRS
+  {
+    text    PT_LOAD    FLAGS(5) FILEHDR PHDRS; /* PF_R|PF_X */
+    dynamic PT_DYNAMIC FLAGS(4);               /* PF_R */
+    note    PT_NOTE    FLAGS(4);               /* PF_R */
   }
 
-Reported-by: Robbie Ko <robbieko@synology.com>
-Fixes: d77815461f04 ("btrfs: Avoid trucating page or punching hole in a already existed hole.")
-CC: stable@vger.kernel.org # 4.4+
-Reviewed-by: Robbie Ko <robbieko@synology.com>
-Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: BingJing Chang <bingjingc@synology.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+The NOTE segment generated by the vDSO linker script is aligned to 4 bytes.
+But the .note.gnu.property section must be aligned to 8 bytes on arm64.
+
+  $ readelf -n vdso64.so
+
+  Displaying notes found in: .note
+    Owner                Data size      Description
+    Linux                0x00000004     Unknown note type: (0x00000000)
+     description data: 06 00 00 00
+  readelf: Warning: note with invalid namesz and/or descsz found at offset 0x20
+  readelf: Warning:  type: 0x78, namesize: 0x00000100, descsize: 0x756e694c, alignment: 8
+
+Since the note.gnu.property section in the vDSO is not checked by the
+dynamic linker, discard the .note.gnu.property sections in the vDSO.
+
+Similar to commit 4caffe6a28d31 ("x86/vdso: Discard .note.gnu.property
+sections in vDSO"), but for arm64.
+
+Signed-off-by: Bill Wendling <morbo@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Link: https://lore.kernel.org/r/20210423205159.830854-1-morbo@google.com
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/file.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm64/kernel/vdso/vdso.lds.S | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 4130523a77c9..6eb72c9b15a7 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2729,8 +2729,6 @@ int btrfs_replace_file_extents(struct inode *inode, struct btrfs_path *path,
- 			extent_info->file_offset += replace_len;
- 		}
+diff --git a/arch/arm64/kernel/vdso/vdso.lds.S b/arch/arm64/kernel/vdso/vdso.lds.S
+index 61dbb4c838ef..a5e61e09ea92 100644
+--- a/arch/arm64/kernel/vdso/vdso.lds.S
++++ b/arch/arm64/kernel/vdso/vdso.lds.S
+@@ -31,6 +31,13 @@ SECTIONS
+ 	.gnu.version_d	: { *(.gnu.version_d) }
+ 	.gnu.version_r	: { *(.gnu.version_r) }
  
--		cur_offset = drop_args.drop_end;
--
- 		ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
- 		if (ret)
- 			break;
-@@ -2750,7 +2748,9 @@ int btrfs_replace_file_extents(struct inode *inode, struct btrfs_path *path,
- 		BUG_ON(ret);	/* shouldn't happen */
- 		trans->block_rsv = rsv;
++	/*
++	 * Discard .note.gnu.property sections which are unused and have
++	 * different alignment requirement from vDSO note sections.
++	 */
++	/DISCARD/	: {
++		*(.note.GNU-stack .note.gnu.property)
++	}
+ 	.note		: { *(.note.*) }		:text	:note
  
--		if (!extent_info) {
-+		cur_offset = drop_args.drop_end;
-+		len = end - cur_offset;
-+		if (!extent_info && len) {
- 			ret = find_first_non_hole(BTRFS_I(inode), &cur_offset,
- 						  &len);
- 			if (unlikely(ret < 0))
+ 	. = ALIGN(16);
+@@ -48,7 +55,6 @@ SECTIONS
+ 	PROVIDE(end = .);
+ 
+ 	/DISCARD/	: {
+-		*(.note.GNU-stack)
+ 		*(.data .data.* .gnu.linkonce.d.* .sdata*)
+ 		*(.bss .sbss .dynbss .dynsbss)
+ 		*(.eh_frame .eh_frame_hdr)
 -- 
 2.30.2
 
