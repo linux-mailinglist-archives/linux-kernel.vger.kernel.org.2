@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8918237852F
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 048773784D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233575AbhEJK7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:59:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58338 "EHLO mail.kernel.org"
+        id S233796AbhEJKzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:55:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231951AbhEJKnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:43:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A66561985;
-        Mon, 10 May 2021 10:33:04 +0000 (UTC)
+        id S232292AbhEJKmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:42:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 923116197F;
+        Mon, 10 May 2021 10:32:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642785;
-        bh=Zrn6PZ/vD053kAqHNW7k7BCKX5TpMdTryt4Px1tVa7U=;
+        s=korg; t=1620642771;
+        bh=RWpexhPvp66+Tff5MbWUMpq+NMkNjRW/PLGWLjp8PVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=caQvE+15NjmW4w8L3AiK/fL5XJB9r8w4BF2dQteUhsuXCdvDLxiuc3BcnBvvP76cf
-         YonWqcSkdCdABreL1nOIHj0CauGxZ86bdeBqh4OisXcSsuJuvb0QKpusBEzvmMTHjh
-         KYXqOLyiNBDAqmBypgR+l8MoTn4KQIi20jO1CUno=
+        b=QVbdfHiZE5a2oeOiPThmfjfqixnbRanPrJVSWgnyZ+rl1JJcG+gdq61GiQMZuRS1t
+         NuoXfp7mBR9MqdRCJrg5qGkiXg5yJgIr+HRpIqRDzatxuMD2MvDBJfkZd0s9NdhEN7
+         QtaFACd47qsF28t+gSeG0ZKqMG2mjOceBdg3el8Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Shuo Chen <shuochen@google.com>,
-        Jason Baron <jbaron@akamai.com>
-Subject: [PATCH 5.10 005/299] dyndbg: fix parsing file query without a line-range suffix
-Date:   Mon, 10 May 2021 12:16:42 +0200
-Message-Id: <20210510102005.004525410@linuxfoundation.org>
+        stable@vger.kernel.org, Stefan Berger <stefanb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Subject: [PATCH 5.10 009/299] tpm: acpi: Check eventlog signature before using it
+Date:   Mon, 10 May 2021 12:16:46 +0200
+Message-Id: <20210510102005.137924019@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
 References: <20210510102004.821838356@linuxfoundation.org>
@@ -40,38 +39,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuo Chen <shuochen@google.com>
+From: Stefan Berger <stefanb@linux.ibm.com>
 
-commit 7b1ae248279bea33af9e797a93c35f49601cb8a0 upstream.
+commit 3dcd15665aca80197333500a4be3900948afccc1 upstream.
 
-Query like 'file tcp_input.c line 1234 +p' was broken by
-commit aaebe329bff0 ("dyndbg: accept 'file foo.c:func1' and 'file
-foo.c:10-100'") because a file name without a ':' now makes the loop in
-ddebug_parse_query() exits early before parsing the 'line 1234' part.
-As a result, all pr_debug() in tcp_input.c will be enabled, instead of only
-the one on line 1234.  Changing 'break' to 'continue' fixes this.
+Check the eventlog signature before using it. This avoids using an
+empty log, as may be the case when QEMU created the ACPI tables,
+rather than probing the EFI log next. This resolves an issue where
+the EFI log was empty since an empty ACPI log was used.
 
-Fixes: aaebe329bff0 ("dyndbg: accept 'file foo.c:func1' and 'file foo.c:10-100'")
-Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Shuo Chen <shuochen@google.com>
-Acked-by: Jason Baron <jbaron@akamai.com>
-Link: https://lore.kernel.org/r/20210414212400.2927281-1-giantchen@gmail.com
+Cc: stable@vger.kernel.org
+Fixes: 85467f63a05c ("tpm: Add support for event log pointer found in TPM2 ACPI table")
+Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- lib/dynamic_debug.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/char/tpm/eventlog/acpi.c |   33 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 32 insertions(+), 1 deletion(-)
 
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -396,7 +396,7 @@ static int ddebug_parse_query(char *word
- 			/* tail :$info is function or line-range */
- 			fline = strchr(query->filename, ':');
- 			if (!fline)
--				break;
-+				continue;
- 			*fline++ = '\0';
- 			if (isalpha(*fline) || *fline == '*' || *fline == '?') {
- 				/* take as function name */
+--- a/drivers/char/tpm/eventlog/acpi.c
++++ b/drivers/char/tpm/eventlog/acpi.c
+@@ -41,6 +41,27 @@ struct acpi_tcpa {
+ 	};
+ };
+ 
++/* Check that the given log is indeed a TPM2 log. */
++static bool tpm_is_tpm2_log(void *bios_event_log, u64 len)
++{
++	struct tcg_efi_specid_event_head *efispecid;
++	struct tcg_pcr_event *event_header;
++	int n;
++
++	if (len < sizeof(*event_header))
++		return false;
++	len -= sizeof(*event_header);
++	event_header = bios_event_log;
++
++	if (len < sizeof(*efispecid))
++		return false;
++	efispecid = (struct tcg_efi_specid_event_head *)event_header->event;
++
++	n = memcmp(efispecid->signature, TCG_SPECID_SIG,
++		   sizeof(TCG_SPECID_SIG));
++	return n == 0;
++}
++
+ /* read binary bios log */
+ int tpm_read_log_acpi(struct tpm_chip *chip)
+ {
+@@ -52,6 +73,7 @@ int tpm_read_log_acpi(struct tpm_chip *c
+ 	struct acpi_table_tpm2 *tbl;
+ 	struct acpi_tpm2_phy *tpm2_phy;
+ 	int format;
++	int ret;
+ 
+ 	log = &chip->log;
+ 
+@@ -112,6 +134,7 @@ int tpm_read_log_acpi(struct tpm_chip *c
+ 
+ 	log->bios_event_log_end = log->bios_event_log + len;
+ 
++	ret = -EIO;
+ 	virt = acpi_os_map_iomem(start, len);
+ 	if (!virt)
+ 		goto err;
+@@ -119,11 +142,19 @@ int tpm_read_log_acpi(struct tpm_chip *c
+ 	memcpy_fromio(log->bios_event_log, virt, len);
+ 
+ 	acpi_os_unmap_iomem(virt, len);
++
++	if (chip->flags & TPM_CHIP_FLAG_TPM2 &&
++	    !tpm_is_tpm2_log(log->bios_event_log, len)) {
++		/* try EFI log next */
++		ret = -ENODEV;
++		goto err;
++	}
++
+ 	return format;
+ 
+ err:
+ 	kfree(log->bios_event_log);
+ 	log->bios_event_log = NULL;
+-	return -EIO;
++	return ret;
+ 
+ }
 
 
