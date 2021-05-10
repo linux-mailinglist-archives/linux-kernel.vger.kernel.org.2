@@ -2,111 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 870F3377D80
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 09:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16597377D85
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 09:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhEJHxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 03:53:54 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:58158 "EHLO m43-7.mailgun.net"
+        id S230176AbhEJHyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 03:54:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229852AbhEJHxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 03:53:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620633169; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=2z80gbPhH136dYR4Fq2BEfvgVhJIsU7HqbSV3qvsj2c=;
- b=ovcG/CKowUyaKCT80PV2l53Z0gUjJWAzNrcK+UwT3awEXq8iV3jd/7xASu/o0LBRqroCQ6U4
- cV3cqzDryjKoaRc3+ZR82+KJb23427zb2zh5N6kslIUnuAHTQEAabzmVdgS+11QhQ6kRKg9a
- uLEsDxOtfpRBQkQ05O8ZBCZrSpw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 6098e63a87ce1fbb56a01778 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 10 May 2021 07:52:26
- GMT
-Sender: pragalla=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 63F1FC43145; Mon, 10 May 2021 07:52:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pragalla)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BD7DEC4338A;
-        Mon, 10 May 2021 07:52:23 +0000 (UTC)
+        id S229852AbhEJHyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 03:54:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C609F61432;
+        Mon, 10 May 2021 07:53:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620633211;
+        bh=wV3FOLsGdsluxhFslcLsHxy+AdeTNM4HCjlqOyw8ROE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZgWERDec1CKd5z258dmNZiTSDmZUd7j+lrmyvoP6wGaPV2+gMFz9VyTlLYsumzKBj
+         8e8+MknFuChqV1W9r6u8YkG8oCEk/N5DvsItr20nsQiKDw/2+a9buQkEnRahpFus/V
+         o42L843gdqjYEAledknFgiP1cKSp1nHDGhVjy8Y9a0MfFTVRZVUh73Gqd4sc/2CiR1
+         9GwG5ugY9lXd3C7zmsu9SZWqGrxI6bZRwjYUqvNVbLuJwvEBgWUMkzmQM3DXfQ9dCO
+         xxLatJQWh3K1j4BC6IRuLPQoPixw0YyfYAMvCVXcn+2w5VoCFVbuieYGL764bp9/Nn
+         VZs+8GXe7kXWA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lg0jN-0000Hu-Vh; Mon, 10 May 2021 09:53:34 +0200
+Date:   Mon, 10 May 2021 09:53:33 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Frank Zago <frank@zago.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Jan-Niklas Burfeind <kernel@aiyionpri.me>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-usb@vger.kernel.org,
+        gunar@schorcht.net
+Subject: Re: [PATCH v2 2/2] USB: misc: Add driver for the WCH CH341 in
+ I2C/GPIO mode
+Message-ID: <YJjmfce0WKoFx35z@hovoldconsulting.com>
+References: <20210423002852.3904-1-frank@zago.net>
+ <20210423002852.3904-2-frank@zago.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 10 May 2021 13:22:23 +0530
-From:   pragalla@codeaurora.org
-To:     miklos@szeredi.hu
-Cc:     stummala@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V1] fuse: Set fuse request error upon fuse abort
- connection
-In-Reply-To: <1618582752-26178-1-git-send-email-pragalla@codeaurora.org>
-References: <1618582752-26178-1-git-send-email-pragalla@codeaurora.org>
-Message-ID: <c0c0c33be51672f01d4f7a2e097bb978@codeaurora.org>
-X-Sender: pragalla@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210423002852.3904-2-frank@zago.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miklos,
-
-Did you get a chance to look on the below change ?
-could you please review and provide your comments if any.
-
-Thanks and Regards,
-Pradeep
-
-On 2021-04-16 19:49, Pradeep P V K wrote:
-> There is a minor race in setting the fuse out request error
-> between fuse_abort_conn() and fuse_dev_do_read() as explained
-> below.
+On Thu, Apr 22, 2021 at 07:28:52PM -0500, Frank Zago wrote:
+> From: frank zago <frank@zago.net>
 > 
-> Thread-1			  Thread-2
-> ========			  ========
-> ->fuse_simple_request()           ->shutdown
->   ->__fuse_request_send()
->     ->queue_request()		->fuse_abort_conn()
-> ->fuse_dev_do_read()                ->acquire(fpq->lock)
->   ->wait_for(fpq->lock) 	  ->set err to all req's in fpq->io
-> 				  ->release(fpq->lock)
->   ->acquire(fpq->lock)
->   ->add req to fpq->io
+> The CH341 is a multifunction chip, presenting 3 different USB PID. One
+> of these functions is for I2C/SPI/GPIO. This new driver manages I2C
+> and GPIO. A future update will manage the SPI part as well.
 > 
-> The above scenario may cause Thread-1 request to add into
-> fpq->io list after Thread-2 sets -ECONNABORTED err to all
-> its requests in fpq->io list. This leaves Thread-1 request
-> with unset err and this further misleads as a completed
-> request without an err set upon request_end().
+> The I2C interface can run at 4 different speeds. This driver currently
+> only offer 100MHz. Tested with a variety of I2C sensors, and the IIO
+> subsystem.
 > 
-> Handle this by setting the err appropriately.
+> The GPIO interface offers 8 GPIOs. 6 are read/write, and 2 are
+> rea-only. However the SPI interface will use 6 of them, leaving 2
+> available GPIOs.
 > 
-> Signed-off-by: Pradeep P V K <pragalla@codeaurora.org>
+> Signed-off-by: frank zago <frank@zago.net>
 > ---
->  fs/fuse/dev.c | 1 +
->  1 file changed, 1 insertion(+)
 > 
-> diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
-> index a5ceccc..102c56f 100644
-> --- a/fs/fuse/dev.c
-> +++ b/fs/fuse/dev.c
-> @@ -1283,6 +1283,7 @@ static ssize_t fuse_dev_do_read(struct fuse_dev
-> *fud, struct file *file,
->  	clear_bit(FR_LOCKED, &req->flags);
->  	if (!fpq->connected) {
->  		err = fc->aborted ? -ECONNABORTED : -ENODEV;
-> +		req->out.h.error = err;
->  		goto out_end;
->  	}
->  	if (err) {
+> Changes from v1:
+>   - Removed double Signed-off-by
+>   - Move Kconfig into the same directory as the driver
+> 
+>  MAINTAINERS                         |   6 +
+>  drivers/usb/misc/Kconfig            |   2 +
+>  drivers/usb/misc/Makefile           |   1 +
+>  drivers/usb/misc/ch341/Kconfig      |  17 ++
+>  drivers/usb/misc/ch341/Makefile     |   3 +
+>  drivers/usb/misc/ch341/ch341-core.c |  87 +++++++++
+>  drivers/usb/misc/ch341/ch341-gpio.c | 249 ++++++++++++++++++++++++++
+>  drivers/usb/misc/ch341/ch341-i2c.c  | 267 ++++++++++++++++++++++++++++
+>  drivers/usb/misc/ch341/ch341.h      |  50 ++++++
+>  9 files changed, 682 insertions(+)
+
+Not sure about sticking this in usb/misc. We already have an MFD driver
+(dln2) for something like this with i2c and spi iirc. The difference
+from regular MFDs here is that these modes are mutually exclusive.
+
+If it was just an i2c driver with some pins to toggle, I'd say just add
+it to drivers/i2c but that would probably make it harder to reuse code
+for the SPI driver.
+
+I'm not really reviewing the rest of the driver, just pointing out a few
+more things that stood out below.
+
+> +static void ch341_usb_free_device(struct ch341_device *dev)
+> +{
+> +	ch341_gpio_remove(dev);
+> +	ch341_i2c_remove(dev);
+
+Have you verified that the i2c subsystem can handle a device being
+removed like this while in use. That wasn't the case a few years back.
+
+> +
+> +	usb_set_intfdata(dev->iface, NULL);
+> +	usb_put_dev(dev->usb_dev);
+> +
+> +	kfree(dev);
+> +}
+> +
+> +static int ch341_usb_probe(struct usb_interface *iface,
+> +			   const struct usb_device_id *usb_id)
+> +{
+> +	struct ch341_device *dev;
+> +	int error;
+> +
+> +	dev = kzalloc(sizeof(struct ch341_device), GFP_KERNEL);
+> +	if (!dev)
+> +		return -ENOMEM;
+> +
+> +	dev->usb_dev = usb_get_dev(interface_to_usbdev(iface));
+> +	dev->iface = iface;
+> +	mutex_init(&dev->usb_lock);
+> +	dev->ep_out = iface->cur_altsetting->endpoint[1].desc.bEndpointAddress;
+> +	dev->ep_in = iface->cur_altsetting->endpoint[0].desc.bEndpointAddress;
+
+NULL-deref in case a device lacks the expected endpoints.
+
+> +
+> +	usb_set_intfdata(iface, dev);
+> +
+> +	error = ch341_i2c_init(dev);
+> +	if (error) {
+> +		ch341_usb_free_device(dev);
+> +		return error;
+> +	}
+> +
+> +	error = ch341_gpio_init(dev);
+> +	if (error) {
+> +		ch341_usb_free_device(dev);
+> +		return error;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void ch341_usb_disconnect(struct usb_interface *usb_if)
+> +{
+> +	struct ch341_device *dev = usb_get_intfdata(usb_if);
+> +
+> +	ch341_usb_free_device(dev);
+> +}
+
+> +int ch341_gpio_init(struct ch341_device *dev)
+> +{
+> +	struct gpio_chip *gpio = &dev->gpio;
+> +	int result;
+> +
+> +	gpio->label = "ch341";
+> +	gpio->parent = &dev->usb_dev->dev;
+> +	gpio->owner = THIS_MODULE;
+> +	gpio->get_direction = ch341_gpio_get_direction;
+> +	gpio->direction_input = ch341_gpio_direction_input;
+> +	gpio->direction_output = ch341_gpio_direction_output;
+> +	gpio->get = ch341_gpio_get;
+> +	gpio->get_multiple = ch341_gpio_get_multiple;
+> +	gpio->set = ch341_gpio_set;
+> +	gpio->set_multiple = ch341_gpio_set_multiple;
+> +	gpio->dbg_show = ch341_gpio_dbg_show;
+> +	gpio->base = -1;
+> +	gpio->ngpio = CH341_GPIO_NUM_PINS;
+> +	gpio->names = gpio_names;
+
+Last time I checked (a few weeks ago) you could still not set names for
+hotpluggable devices of which there could be more than one or you'd get
+a warning when plugging a second device in. Not sure if Linus W fixed
+that yet.
+
+Johan
