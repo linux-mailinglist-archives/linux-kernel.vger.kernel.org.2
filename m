@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80E7378A5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82FCB378BA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242277AbhEJLln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:41:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53006 "EHLO mail.kernel.org"
+        id S1344009AbhEJMOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:14:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231593AbhEJK5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95D3261A13;
-        Mon, 10 May 2021 10:51:45 +0000 (UTC)
+        id S232968AbhEJLBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:01:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DBB061C4D;
+        Mon, 10 May 2021 10:53:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643906;
-        bh=kW+Kz7+iyT/blgzYJhQ6JJtZ8Tz4bngwHmfpwDRDbB8=;
+        s=korg; t=1620644016;
+        bh=8JuOBfHGY6464xmuus0V/491IaJ6X4Av8CBmTmKKVJQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tViLla1Zwcsc4pnz4zyZS7jaMYVmIZkPSD6x7DTxXRL5Ucx8UiqRvYOII0piUr8sY
-         Do19PmbfmEismYohF2G5CJTHuikPs8i744Z/TM1nMWNtpMRgfv9tZmwBBw+2qLWrxq
-         hmJA3tuqXaeqWm7ymnGKCTlNYFieZCmMz/hjTMbk=
+        b=cBOTU2vxe/IaoIgn0qEsghehEoOw8Yecf5zyRPL6LVxyZDAPr5cYgwzsZRE79O9og
+         jjL6SUsr5ER3d74kFpgR7H9s8oj71GqMEftJvr0a58Jupz9VLqg3ENETJfMwix0pr8
+         pI1x9KEgNjaPNfs1vL0YM6CyYyZUnNEhDJh6xro4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 207/342] media: i2c: adv7842: fix possible use-after-free in adv7842_remove()
-Date:   Mon, 10 May 2021 12:19:57 +0200
-Message-Id: <20210510102016.925981135@linuxfoundation.org>
+Subject: [PATCH 5.11 208/342] media: platform: sti: Fix runtime PM imbalance in regs_show
+Date:   Mon, 10 May 2021 12:19:58 +0200
+Message-Id: <20210510102016.956962956@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
 References: <20210510102010.096403571@linuxfoundation.org>
@@ -42,41 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 4a15275b6a18597079f18241c87511406575179a ]
+[ Upstream commit 69306a947b3ae21e0d1cbfc9508f00fec86c7297 ]
 
-This driver's remove path calls cancel_delayed_work(). However, that
-function does not wait until the work function finishes. This means
-that the callback function may still be running after the driver's
-remove function has finished, which would result in a use-after-free.
+pm_runtime_get_sync() will increase the runtime PM counter
+even it returns an error. Thus a pairing decrement is needed
+to prevent refcount leak. Fix this by replacing this API with
+pm_runtime_resume_and_get(), which will not change the runtime
+PM counter on error.
 
-Fix by calling cancel_delayed_work_sync(), which ensures that
-the work is properly cancelled, no longer running, and unable
-to re-schedule itself.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/adv7842.c | 2 +-
+ drivers/media/platform/sti/bdisp/bdisp-debug.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/adv7842.c b/drivers/media/i2c/adv7842.c
-index 0855f648416d..f7d2b6cd3008 100644
---- a/drivers/media/i2c/adv7842.c
-+++ b/drivers/media/i2c/adv7842.c
-@@ -3586,7 +3586,7 @@ static int adv7842_remove(struct i2c_client *client)
- 	struct adv7842_state *state = to_state(sd);
+diff --git a/drivers/media/platform/sti/bdisp/bdisp-debug.c b/drivers/media/platform/sti/bdisp/bdisp-debug.c
+index 2b270093009c..a27f638df11c 100644
+--- a/drivers/media/platform/sti/bdisp/bdisp-debug.c
++++ b/drivers/media/platform/sti/bdisp/bdisp-debug.c
+@@ -480,7 +480,7 @@ static int regs_show(struct seq_file *s, void *data)
+ 	int ret;
+ 	unsigned int i;
  
- 	adv7842_irq_enable(sd, false);
--	cancel_delayed_work(&state->delayed_work_enable_hotplug);
-+	cancel_delayed_work_sync(&state->delayed_work_enable_hotplug);
- 	v4l2_device_unregister_subdev(sd);
- 	media_entity_cleanup(&sd->entity);
- 	adv7842_unregister_clients(sd);
+-	ret = pm_runtime_get_sync(bdisp->dev);
++	ret = pm_runtime_resume_and_get(bdisp->dev);
+ 	if (ret < 0) {
+ 		seq_puts(s, "Cannot wake up IP\n");
+ 		return 0;
 -- 
 2.30.2
 
