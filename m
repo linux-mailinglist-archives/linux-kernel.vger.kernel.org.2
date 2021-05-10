@@ -2,113 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC2F377A76
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 05:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F6F377A7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 05:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhEJDU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 23:20:56 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2733 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbhEJDUz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 23:20:55 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FdmRf71BLzqTmQ;
-        Mon, 10 May 2021 11:16:30 +0800 (CST)
-Received: from [10.67.110.108] (10.67.110.108) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 10 May 2021 11:19:42 +0800
-Subject: Re: Virtio-scsi multiqueue irq affinity
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        xuyihang <xuyihang@huawei.com>, "Ming Lei" <ming.lei@redhat.com>
-CC:     Peter Xu <peterx@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        Jason Wang <jasowang@redhat.com>,
-        Luiz Capitulino <lcapitulino@redhat.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>, <minlei@redhat.com>
-References: <20190318062150.GC6654@xz-x1>
- <alpine.DEB.2.21.1903231805310.1798@nanos.tec.linutronix.de>
- <20190325050213.GH9149@xz-x1> <20190325070616.GA9642@ming.t460p>
- <alpine.DEB.2.21.1903250948490.1798@nanos.tec.linutronix.de>
- <20190325095011.GA23225@ming.t460p>
- <0f6c8a5f-ad33-1199-f313-53fe9187a672@huawei.com>
- <87zgx5l8ck.ffs@nanos.tec.linutronix.de>
-From:   "liaochang (A)" <liaochang1@huawei.com>
-Message-ID: <9903df53-8a84-fe89-7ae0-aac8e6d3f42f@huawei.com>
-Date:   Mon, 10 May 2021 11:19:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S230243AbhEJD3O convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 9 May 2021 23:29:14 -0400
+Received: from mga09.intel.com ([134.134.136.24]:24215 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230126AbhEJD3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 23:29:13 -0400
+IronPort-SDR: m/B67G93Bk3fupKUvEg1iWlU8j/y3QUnlxwl62q+NfTJqptC5iGDBhw2+/4vX55voeGet2ya9t
+ hXI4O81s94Bg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="199173575"
+X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
+   d="scan'208";a="199173575"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2021 20:28:08 -0700
+IronPort-SDR: 3CDholy5BJ7Vmf/JABB6RxzlkV8ggywUriuMcaB/y7SyzqRMVjkN1ynKFnTrCSsiruMRTHwOG8
+ YCuSZX0e10mQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
+   d="scan'208";a="390804963"
+Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
+  by orsmga003.jf.intel.com with ESMTP; 09 May 2021 20:28:08 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Sun, 9 May 2021 20:28:08 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Sun, 9 May 2021 20:28:07 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
+ Sun, 9 May 2021 20:28:07 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Aili Yao <yaoaili@kingsoft.com>,
+        =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
+        <naoya.horiguchi@nec.com>
+CC:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Oscar Salvador" <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>, Jue Wang <juew@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "yaoaili126@gmail.com" <yaoaili126@gmail.com>
+Subject: RE: [PATCH v3 0/3] mm,hwpoison: fix sending SIGBUS for Action
+ Required MCE
+Thread-Topic: [PATCH v3 0/3] mm,hwpoison: fix sending SIGBUS for Action
+ Required MCE
+Thread-Index: AQHXNklUtDziI1+1ZUqZsXGvSliLyarXX3UAgAAW4VCAAJTpAIAAYa8A///72gCAAQaCAIACu56g
+Date:   Mon, 10 May 2021 03:28:07 +0000
+Message-ID: <ad43e2df993e477cbe5d2db44ebbcad5@intel.com>
+References: <20210421005728.1994268-1-nao.horiguchi@gmail.com>
+        <d09f178272df4c82b8c090ba79d222b5@intel.com>
+        <87ba79daaba1416589b203118be096cb@intel.com>
+        <20210507052422.GB2158342@hori.linux.bs1.fc.nec.co.jp>
+        <20210507191400.6258dee6@alex-virtual-machine>
+        <e6577ace06ca4ce9bbfb8195d7a2bfb7@intel.com>
+ <20210508103842.7dc6e8b1@alex-virtual-machine>
+In-Reply-To: <20210508103842.7dc6e8b1@alex-virtual-machine>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <87zgx5l8ck.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.110.108]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+> Sorry, I am not sure if the stress test in my server is same with yours.
 
-ÔÚ 2021/5/8 20:26, Thomas Gleixner Ð´µÀ:
-> Yihang,
-> 
-> On Sat, May 08 2021 at 15:52, xuyihang wrote:
->>
->> We are dealing with a scenario which may need to assign a default 
->> irqaffinity for managed IRQ.
->>
->> Assume we have a full CPU usage RT thread running binded to a specific
->> CPU.
->>
->> In the mean while, interrupt handler registered by a device which is
->> ksoftirqd may never have a chance to run. (And we don't want to use
->> isolate CPU)
-> 
-> A device cannot register and interrupt handler in ksoftirqd.
+It's better if you test different things ... that's how we get better coverage.
 
-I learn the scenario further after communicate with Yihang offline:
-1.We have a machine with 36 CPUs,and assign several RT threads to last two CPUs(CPU-34, CPU-35).
-2.I/O device driver create single managed irq, the affinity of which includes CPU-34 and CPU-35.
-3.Another regular application launch I/O operation at different CPUs with the ones RT threads use,
-  then CPU-34/35 will receive hardware interrupt and wakeup ksoftirqd to deal with real I/O stuff.
-4.Cause the priority and schedule policy of RT thread overwhlem per-cpu ksoftirqd, it looks like
-  ksoftirqd has no chance to run at CPU-34/35,which leads to I/O processing can't finish at time,
-  and application get stuck.
+> Usually, I will do one RAS stress test from mce-test/cases/stress before post something.
+> Maybe this test is not general useful or you have tested it and passed or you may think
+> the test is not proper though or you tested and you don't think it's one real issue,
+> then just ignore it please.
 
-> 
->> There could be a couple way to deal with this problem:
->>
->> 1. Adjust priority of ksoftirqd or RT thread, so the interrupt handler 
->> could preempt
->>
->> RT thread. However, I am not sure whether it could have some side 
->> effects or not.
->>
->> 2. Adjust interrupt CPU affinity or RT thread affinity. But managed IRQ 
->> seems design to forbid user from manipulating interrupt affinity.
->>
->> It seems managed IRQ is coupled with user side application to me.
->>
->> Would you share your thoughts about this issue please?
-> 
-> Can you please provide a more detailed description of your system?
-> 
->     - Number of CPUs
-> 
->     - Kernel version
->     - Is NOHZ full enabled?
->     - Any isolation mechanisms enabled, and if so how are they
->       configured (e.g. on the kernel command line)?
-> 
->     - Number of queues in the multiqueue device
->           
->     - Is the RT thread issuing I/O to the multiqueue device?
-> 
-> Thanks,
-> 
->         tglx
-> .
-> 
-BR,
-Liao Chang
+I haven't re-run the mce-test cases for a while. The test that was run on these patches
+involves a multi-threaded application running on all logical CPUs. When poison is injected
+many of the CPUs can hit the poison close together. So it's a good stress test for the new
+series.
+
+-Tony
+
