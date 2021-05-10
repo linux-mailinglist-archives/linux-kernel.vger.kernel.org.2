@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C2E377F7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675C9377F80
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhEJJjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:39:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:50298 "EHLO foss.arm.com"
+        id S230203AbhEJJkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:40:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:50362 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230137AbhEJJjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:39:14 -0400
+        id S230137AbhEJJkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 05:40:02 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D94A8106F;
-        Mon, 10 May 2021 02:38:09 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8A78E113E;
+        Mon, 10 May 2021 02:38:57 -0700 (PDT)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AC3003F73B;
-        Mon, 10 May 2021 02:38:05 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 58F233F73B;
+        Mon, 10 May 2021 02:38:53 -0700 (PDT)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-kernel@vger.kernel.org, will@kernel.org,
         boqun.feng@gmail.com, peterz@infradead.org
@@ -32,153 +32,152 @@ Cc:     aou@eecs.berkeley.edu, arnd@arndb.de, bcain@codeaurora.org,
         rth@twiddle.net, shorne@gmail.com,
         stefan.kristiansson@saunalahti.fi, tsbogend@alpha.franken.de,
         vgupta@synopsys.com, ysato@users.sourceforge.jp
-Subject: [PATCH 00/33] locking/atomic: convert all architectures to ARCH_ATOMIC
-Date:   Mon, 10 May 2021 10:37:20 +0100
-Message-Id: <20210510093753.40683-1-mark.rutland@arm.com>
+Subject: [PATCH 01/33] locking/atomic: make ARCH_ATOMIC a Kconfig symbol
+Date:   Mon, 10 May 2021 10:37:21 +0100
+Message-Id: <20210510093753.40683-2-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20210510093753.40683-1-mark.rutland@arm.com>
+References: <20210510093753.40683-1-mark.rutland@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series (based on v5.13-rc1) converts all architectures to
-ARCH_ATOMIC. This will allow the use of instrumented atomics on all
-architectures (e.g. for KASAN and similar), and simplifies the core
-atomic code (which should allow for easier rework of the fallbacks and
-other bits in future).
+Subsequent patches will move architectures over to the ARCH_ATOMIC API,
+after preparing the asm-generic atomic implementations to function with
+or without ARCH_ATOMIC.
 
-The series is split into three parts:
+As some architectures use the asm-generic implementations exclusively
+(and don't have a local atomic.h), and to avoid the risk that
+ARCH_ATOMIC isn't defined in some cases we expect, let's make the
+ARCH_ATOMIC macro a Kconfig symbol instead, so that we can guarantee it
+is consistently available where needed.
 
-1) Some preparatory work is done to prepare architectures and common
-   code for the conversion. In this phase h8300 and microblaze are
-   converted to use the asm-generic atomics exclusively, and the
-   asm-generic implementations are made to function with or without
-   ARCH_ATOMIC.
+There should be no functional change as a result of this patch.
 
-2) Architectures are converted one-by-one to use the ARCH_ATOMIC
-   interface. I've converted each architecture with its own patch (even
-   where the conversion is trivial) to make review and bisection easier.
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Will Deacon <will@kernel.org>
+---
+ arch/Kconfig                    | 3 +++
+ arch/arm64/Kconfig              | 1 +
+ arch/arm64/include/asm/atomic.h | 2 --
+ arch/s390/Kconfig               | 1 +
+ arch/s390/include/asm/atomic.h  | 2 --
+ arch/um/Kconfig                 | 1 +
+ arch/x86/Kconfig                | 1 +
+ arch/x86/include/asm/atomic.h   | 2 --
+ include/linux/atomic.h          | 2 +-
+ 9 files changed, 8 insertions(+), 7 deletions(-)
 
-3) The code handling !ARCH_ATOMIC is removed.
-
-Note: I've generated the patches with:
-
-  git format-patch -C -M -D 
-
-... so the preimage of include/linux/atomic-fallback.h is not included
-in the diff when it is deleted.
-
-The series can also be found in my atomics/arch-atomic branch on
-kernel.org:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=atomics/arch-atomic
-  git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git atomics/arch-atomic
-
-Thanks,
-Mark.
-
-Mark Rutland (33):
-  locking/atomic: make ARCH_ATOMIC a Kconfig symbol
-  locking/atomic: net: use linux/atomic.h for xchg & cmpxchg
-  locking/atomic: h8300: use asm-generic exclusively
-  locking/atomic: microblaze: use asm-generic exclusively
-  locking/atomic: openrisc: avoid asm-generic/atomic.h
-  locking/atomic: atomic: remove stale comments
-  locking/atomic: atomic: remove redundant include
-  locking/atomic: atomic: simplify ifdeffery
-  locking/atomic: atomic: support ARCH_ATOMIC
-  locking/atomic: atomic64: support ARCH_ATOMIC
-  locking/atomic: cmpxchg: make `generic` a prefix
-  locking/atomic: cmpxchg: support ARCH_ATOMIC
-  locking/atomic: alpha: move to ARCH_ATOMIC
-  locking/atomic: arc: move to ARCH_ATOMIC
-  locking/atomic: arm: move to ARCH_ATOMIC
-  locking/atomic: csky: move to ARCH_ATOMIC
-  locking/atomic: h8300: move to ARCH_ATOMIC
-  locking/atomic: hexagon: move to ARCH_ATOMIC
-  locking/atomic: ia64: move to ARCH_ATOMIC
-  locking/atomic: m68k: move to ARCH_ATOMIC
-  locking/atomic: microblaze: move to ARCH_ATOMIC
-  locking/atomic: mips: move to ARCH_ATOMIC
-  locking/atomic: nds32: move to ARCH_ATOMIC
-  locking/atomic: nios2: move to ARCH_ATOMIC
-  locking/atomic: openrisc: move to ARCH_ATOMIC
-  locking/atomic: parisc: move to ARCH_ATOMIC
-  locking/atomic: powerpc: move to ARCH_ATOMIC
-  locking/atomic: riscv: move to ARCH_ATOMIC
-  locking/atomic: sh: move to ARCH_ATOMIC
-  locking/atomic: sparc: move to ARCH_ATOMIC
-  locking/atomic: xtensa: move to ARCH_ATOMIC
-  locking/atomic: delete !ARCH_ATOMIC remnants
-  locking/atomics: atomic-instrumented: simplify ifdeffery
-
- arch/alpha/include/asm/atomic.h           |   88 +-
- arch/alpha/include/asm/cmpxchg.h          |   12 +-
- arch/arc/include/asm/atomic.h             |   56 +-
- arch/arc/include/asm/cmpxchg.h            |    8 +-
- arch/arm/include/asm/atomic.h             |   96 +-
- arch/arm/include/asm/cmpxchg.h            |   20 +-
- arch/arm64/include/asm/atomic.h           |    2 -
- arch/csky/include/asm/cmpxchg.h           |    8 +-
- arch/h8300/include/asm/Kbuild             |    1 +
- arch/h8300/include/asm/atomic.h           |   97 --
- arch/h8300/include/asm/cmpxchg.h          |   66 -
- arch/hexagon/include/asm/atomic.h         |   28 +-
- arch/hexagon/include/asm/cmpxchg.h        |    4 +-
- arch/ia64/include/asm/atomic.h            |   74 +-
- arch/ia64/include/asm/cmpxchg.h           |   16 +
- arch/ia64/include/uapi/asm/cmpxchg.h      |   10 +-
- arch/m68k/include/asm/atomic.h            |   60 +-
- arch/m68k/include/asm/cmpxchg.h           |   10 +-
- arch/microblaze/include/asm/Kbuild        |    1 +
- arch/microblaze/include/asm/atomic.h      |   28 -
- arch/microblaze/include/asm/cmpxchg.h     |    9 -
- arch/mips/include/asm/atomic.h            |   55 +-
- arch/mips/include/asm/cmpxchg.h           |   22 +-
- arch/mips/kernel/cmpxchg.c                |    4 +-
- arch/openrisc/include/asm/atomic.h        |   42 +-
- arch/openrisc/include/asm/cmpxchg.h       |    4 +-
- arch/parisc/include/asm/atomic.h          |   34 +-
- arch/parisc/include/asm/cmpxchg.h         |   14 +-
- arch/powerpc/include/asm/atomic.h         |  140 +-
- arch/powerpc/include/asm/cmpxchg.h        |   30 +-
- arch/riscv/include/asm/atomic.h           |  128 +-
- arch/riscv/include/asm/cmpxchg.h          |   34 +-
- arch/s390/include/asm/atomic.h            |    2 -
- arch/sh/include/asm/atomic-grb.h          |    6 +-
- arch/sh/include/asm/atomic-irq.h          |    6 +-
- arch/sh/include/asm/atomic-llsc.h         |    6 +-
- arch/sh/include/asm/atomic.h              |    8 +-
- arch/sh/include/asm/cmpxchg.h             |    4 +-
- arch/sparc/include/asm/atomic_32.h        |   38 +-
- arch/sparc/include/asm/atomic_64.h        |   36 +-
- arch/sparc/include/asm/cmpxchg_32.h       |   12 +-
- arch/sparc/include/asm/cmpxchg_64.h       |   12 +-
- arch/sparc/lib/atomic32.c                 |   24 +-
- arch/sparc/lib/atomic_64.S                |   42 +-
- arch/x86/include/asm/atomic.h             |    2 -
- arch/xtensa/include/asm/atomic.h          |   26 +-
- arch/xtensa/include/asm/cmpxchg.h         |   14 +-
- include/asm-generic/atomic-instrumented.h |  498 +-----
- include/asm-generic/atomic.h              |  118 +-
- include/asm-generic/atomic64.h            |   45 +-
- include/asm-generic/cmpxchg-local.h       |    4 +-
- include/asm-generic/cmpxchg.h             |   42 +-
- include/linux/atomic-fallback.h           | 2595 -----------------------------
- include/linux/atomic.h                    |    4 -
- lib/atomic64.c                            |   36 +-
- net/core/filter.c                         |    2 +-
- net/sunrpc/xprtmultipath.c                |    2 +-
- scripts/atomic/check-atomics.sh           |    1 -
- scripts/atomic/gen-atomic-instrumented.sh |   51 +-
- scripts/atomic/gen-atomics.sh             |    1 -
- 60 files changed, 750 insertions(+), 4088 deletions(-)
- delete mode 100644 arch/h8300/include/asm/atomic.h
- delete mode 100644 arch/h8300/include/asm/cmpxchg.h
- create mode 100644 arch/ia64/include/asm/cmpxchg.h
- delete mode 100644 arch/microblaze/include/asm/atomic.h
- delete mode 100644 arch/microblaze/include/asm/cmpxchg.h
- delete mode 100644 include/linux/atomic-fallback.h
-
+diff --git a/arch/Kconfig b/arch/Kconfig
+index c45b770d3579..3fb3b12d4a95 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -11,6 +11,9 @@ source "arch/$(SRCARCH)/Kconfig"
+ 
+ menu "General architecture-dependent options"
+ 
++config ARCH_ATOMIC
++	bool
++
+ config CRASH_CORE
+ 	bool
+ 
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 9f1d8566bbf9..62ab429d1f42 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -9,6 +9,7 @@ config ARM64
+ 	select ACPI_MCFG if (ACPI && PCI)
+ 	select ACPI_SPCR_TABLE if ACPI
+ 	select ACPI_PPTT if ACPI
++	select ARCH_ATOMIC
+ 	select ARCH_HAS_DEBUG_WX
+ 	select ARCH_BINFMT_ELF_STATE
+ 	select ARCH_ENABLE_HUGEPAGE_MIGRATION if HUGETLB_PAGE && MIGRATION
+diff --git a/arch/arm64/include/asm/atomic.h b/arch/arm64/include/asm/atomic.h
+index b56a4b2bc248..c9979273d389 100644
+--- a/arch/arm64/include/asm/atomic.h
++++ b/arch/arm64/include/asm/atomic.h
+@@ -223,6 +223,4 @@ static __always_inline long arch_atomic64_dec_if_positive(atomic64_t *v)
+ 
+ #define arch_atomic64_dec_if_positive		arch_atomic64_dec_if_positive
+ 
+-#define ARCH_ATOMIC
+-
+ #endif /* __ASM_ATOMIC_H */
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index b4c7c34069f8..85374a36c69e 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -58,6 +58,7 @@ config S390
+ 	# Note: keep this list sorted alphabetically
+ 	#
+ 	imply IMA_SECURE_AND_OR_TRUSTED_BOOT
++	select ARCH_ATOMIC
+ 	select ARCH_32BIT_USTAT_F_TINODE
+ 	select ARCH_BINFMT_ELF_STATE
+ 	select ARCH_ENABLE_MEMORY_HOTPLUG if SPARSEMEM
+diff --git a/arch/s390/include/asm/atomic.h b/arch/s390/include/asm/atomic.h
+index 7c93c6573524..7138d189cc42 100644
+--- a/arch/s390/include/asm/atomic.h
++++ b/arch/s390/include/asm/atomic.h
+@@ -147,6 +147,4 @@ ATOMIC64_OPS(xor)
+ #define arch_atomic64_fetch_sub(_i, _v)  arch_atomic64_fetch_add(-(s64)(_i), _v)
+ #define arch_atomic64_sub(_i, _v)	 arch_atomic64_add(-(s64)(_i), _v)
+ 
+-#define ARCH_ATOMIC
+-
+ #endif /* __ARCH_S390_ATOMIC__  */
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 57cfd9a1c082..4370a9521ea4 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -5,6 +5,7 @@ menu "UML-specific options"
+ config UML
+ 	bool
+ 	default y
++	select ARCH_ATOMIC
+ 	select ARCH_EPHEMERAL_INODES
+ 	select ARCH_HAS_KCOV
+ 	select ARCH_NO_PREEMPT
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 0045e1b44190..11a27563033d 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -58,6 +58,7 @@ config X86
+ 	#
+ 	select ACPI_LEGACY_TABLES_LOOKUP	if ACPI
+ 	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
++	select ARCH_ATOMIC
+ 	select ARCH_32BIT_OFF_T			if X86_32
+ 	select ARCH_CLOCKSOURCE_INIT
+ 	select ARCH_ENABLE_HUGEPAGE_MIGRATION if X86_64 && HUGETLB_PAGE && MIGRATION
+diff --git a/arch/x86/include/asm/atomic.h b/arch/x86/include/asm/atomic.h
+index f732741ad7c7..5e754e895767 100644
+--- a/arch/x86/include/asm/atomic.h
++++ b/arch/x86/include/asm/atomic.h
+@@ -269,6 +269,4 @@ static __always_inline int arch_atomic_fetch_xor(int i, atomic_t *v)
+ # include <asm/atomic64_64.h>
+ #endif
+ 
+-#define ARCH_ATOMIC
+-
+ #endif /* _ASM_X86_ATOMIC_H */
+diff --git a/include/linux/atomic.h b/include/linux/atomic.h
+index 571a11008ab5..4f8d83f9e480 100644
+--- a/include/linux/atomic.h
++++ b/include/linux/atomic.h
+@@ -77,7 +77,7 @@
+ 	__ret;								\
+ })
+ 
+-#ifdef ARCH_ATOMIC
++#ifdef CONFIG_ARCH_ATOMIC
+ #include <linux/atomic-arch-fallback.h>
+ #include <asm-generic/atomic-instrumented.h>
+ #else
 -- 
 2.11.0
 
