@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688763786CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D44378A06
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236981AbhEJLLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:11:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41486 "EHLO mail.kernel.org"
+        id S240699AbhEJLgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:36:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233521AbhEJKuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:50:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA085619EE;
-        Mon, 10 May 2021 10:39:12 +0000 (UTC)
+        id S235023AbhEJK53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4795E619D5;
+        Mon, 10 May 2021 10:51:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643153;
-        bh=ac/ECm5ssDNwfZVOirucWzBGrSsQR/PGlfv7yDn6bOs=;
+        s=korg; t=1620643860;
+        bh=H7ulAp85c03BcRxDPFfrXzC1sbyDKWoUNz+YQOt1LAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XJVCqrMhsMTjTnxonD3ne2dRv7NLpD0gEaryw69a97dR/Udls/ki7oJTe4lvogAxR
-         aFHjX0TMXrorIKkwS68SOptUTXSXi0x5kZ3NNU01pfl55X3xRX9AxSqVkjVSkfwKf4
-         tkdQPgsGCTORaKWcmK4icvFsJ84VDuUngdESY5Is=
+        b=xPRociHToFA7t+DaA3e7SVkIK42Q69BfdjYke/SB/9I2n+7wk2r1epdQqOTyom0xH
+         eD59W+LRPu+Tusx/LZOAULlJo45RJUvzLvEPRAI4EoMc6Px8MuJldTyiGrZGe4BJP9
+         ZKzqVQwskyvWq5moa3+9nz6TXNTFpitVhIvFn514=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
+        Aric Cyr <aric.cyr@amd.com>,
+        Solomon Chiu <solomon.chiu@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 164/299] selftests/resctrl: Fix checking for < 0 for unsigned values
-Date:   Mon, 10 May 2021 12:19:21 +0200
-Message-Id: <20210510102010.371693121@linuxfoundation.org>
+Subject: [PATCH 5.11 172/342] drm/amd/display: DCHUB underflow counter increasing in some scenarios
+Date:   Mon, 10 May 2021 12:19:22 +0200
+Message-Id: <20210510102015.795905627@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,140 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fenghua Yu <fenghua.yu@intel.com>
+From: Aric Cyr <aric.cyr@amd.com>
 
-[ Upstream commit 1205b688c92558a04d8dd4cbc2b213e0fceba5db ]
+[ Upstream commit 4710430a779e6077d81218ac768787545bff8c49 ]
 
-Dan reported following static checker warnings
+[Why]
+When unplugging a display, the underflow counter can be seen to
+increase because PSTATE switch is allowed even when some planes are not
+blanked.
 
-tools/testing/selftests/resctrl/resctrl_val.c:545 measure_vals()
-warn: 'bw_imc' unsigned <= 0
+[How]
+Check that all planes are not active instead of all streams before
+allowing PSTATE change.
 
-tools/testing/selftests/resctrl/resctrl_val.c:549 measure_vals()
-warn: 'bw_resc_end' unsigned <= 0
-
-These warnings are reported because
-1. measure_vals() declares 'bw_imc' and 'bw_resc_end' as unsigned long
-   variables
-2. Return value of get_mem_bw_imc() and get_mem_bw_resctrl() are assigned
-   to 'bw_imc' and 'bw_resc_end' respectively
-3. The returned values are checked for <= 0 to see if the calls failed
-
-Checking for < 0 for an unsigned value doesn't make any sense.
-
-Fix this issue by changing the implementation of get_mem_bw_imc() and
-get_mem_bw_resctrl() such that they now accept reference to a variable
-and set the variable appropriately upon success and return 0, else return
-< 0 on error.
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Tested-by: Babu Moger <babu.moger@amd.com>
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Aric Cyr <aric.cyr@amd.com>
+Acked-by: Solomon Chiu <solomon.chiu@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/resctrl/resctrl_val.c | 41 +++++++++++--------
- 1 file changed, 23 insertions(+), 18 deletions(-)
+ drivers/gpu/drm/amd/display/dc/clk_mgr/dcn30/dcn30_clk_mgr.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
-index 5478c23c62ba..8df557894059 100644
---- a/tools/testing/selftests/resctrl/resctrl_val.c
-+++ b/tools/testing/selftests/resctrl/resctrl_val.c
-@@ -300,9 +300,9 @@ static int initialize_mem_bw_imc(void)
-  * Memory B/W utilized by a process on a socket can be calculated using
-  * iMC counters. Perf events are used to read these counters.
-  *
-- * Return: >= 0 on success. < 0 on failure.
-+ * Return: = 0 on success. < 0 on failure.
-  */
--static float get_mem_bw_imc(int cpu_no, char *bw_report)
-+static int get_mem_bw_imc(int cpu_no, char *bw_report, float *bw_imc)
- {
- 	float reads, writes, of_mul_read, of_mul_write;
- 	int imc, j, ret;
-@@ -373,13 +373,18 @@ static float get_mem_bw_imc(int cpu_no, char *bw_report)
- 		close(imc_counters_config[imc][WRITE].fd);
- 	}
+diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn30/dcn30_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn30/dcn30_clk_mgr.c
+index ab98c259ef69..cbe94cf489c7 100644
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn30/dcn30_clk_mgr.c
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn30/dcn30_clk_mgr.c
+@@ -252,6 +252,7 @@ static void dcn3_update_clocks(struct clk_mgr *clk_mgr_base,
+ 	bool force_reset = false;
+ 	bool update_uclk = false;
+ 	bool p_state_change_support;
++	int total_plane_count;
  
--	if (strcmp(bw_report, "reads") == 0)
--		return reads;
-+	if (strcmp(bw_report, "reads") == 0) {
-+		*bw_imc = reads;
-+		return 0;
-+	}
+ 	if (dc->work_arounds.skip_clock_update || !clk_mgr->smu_present)
+ 		return;
+@@ -292,7 +293,8 @@ static void dcn3_update_clocks(struct clk_mgr *clk_mgr_base,
+ 		clk_mgr_base->clks.socclk_khz = new_clocks->socclk_khz;
  
--	if (strcmp(bw_report, "writes") == 0)
--		return writes;
-+	if (strcmp(bw_report, "writes") == 0) {
-+		*bw_imc = writes;
-+		return 0;
-+	}
+ 	clk_mgr_base->clks.prev_p_state_change_support = clk_mgr_base->clks.p_state_change_support;
+-	p_state_change_support = new_clocks->p_state_change_support || (display_count == 0);
++	total_plane_count = clk_mgr_helper_get_active_plane_cnt(dc, context);
++	p_state_change_support = new_clocks->p_state_change_support || (total_plane_count == 0);
+ 	if (should_update_pstate_support(safe_to_lower, p_state_change_support, clk_mgr_base->clks.p_state_change_support)) {
+ 		clk_mgr_base->clks.p_state_change_support = p_state_change_support;
  
--	return (reads + writes);
-+	*bw_imc = reads + writes;
-+	return 0;
- }
- 
- void set_mbm_path(const char *ctrlgrp, const char *mongrp, int resource_id)
-@@ -438,9 +443,8 @@ static void initialize_mem_bw_resctrl(const char *ctrlgrp, const char *mongrp,
-  * 1. If con_mon grp is given, then read from it
-  * 2. If con_mon grp is not given, then read from root con_mon grp
-  */
--static unsigned long get_mem_bw_resctrl(void)
-+static int get_mem_bw_resctrl(unsigned long *mbm_total)
- {
--	unsigned long mbm_total = 0;
- 	FILE *fp;
- 
- 	fp = fopen(mbm_total_path, "r");
-@@ -449,7 +453,7 @@ static unsigned long get_mem_bw_resctrl(void)
- 
- 		return -1;
- 	}
--	if (fscanf(fp, "%lu", &mbm_total) <= 0) {
-+	if (fscanf(fp, "%lu", mbm_total) <= 0) {
- 		perror("Could not get mbm local bytes");
- 		fclose(fp);
- 
-@@ -457,7 +461,7 @@ static unsigned long get_mem_bw_resctrl(void)
- 	}
- 	fclose(fp);
- 
--	return mbm_total;
-+	return 0;
- }
- 
- pid_t bm_pid, ppid;
-@@ -549,7 +553,8 @@ static void initialize_llc_occu_resctrl(const char *ctrlgrp, const char *mongrp,
- static int
- measure_vals(struct resctrl_val_param *param, unsigned long *bw_resc_start)
- {
--	unsigned long bw_imc, bw_resc, bw_resc_end;
-+	unsigned long bw_resc, bw_resc_end;
-+	float bw_imc;
- 	int ret;
- 
- 	/*
-@@ -559,13 +564,13 @@ measure_vals(struct resctrl_val_param *param, unsigned long *bw_resc_start)
- 	 * Compare the two values to validate resctrl value.
- 	 * It takes 1sec to measure the data.
- 	 */
--	bw_imc = get_mem_bw_imc(param->cpu_no, param->bw_report);
--	if (bw_imc <= 0)
--		return bw_imc;
-+	ret = get_mem_bw_imc(param->cpu_no, param->bw_report, &bw_imc);
-+	if (ret < 0)
-+		return ret;
- 
--	bw_resc_end = get_mem_bw_resctrl();
--	if (bw_resc_end <= 0)
--		return bw_resc_end;
-+	ret = get_mem_bw_resctrl(&bw_resc_end);
-+	if (ret < 0)
-+		return ret;
- 
- 	bw_resc = (bw_resc_end - *bw_resc_start) / MB;
- 	ret = print_results_bw(param->filename, bm_pid, bw_imc, bw_resc);
 -- 
 2.30.2
 
