@@ -2,227 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9654F377A0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 04:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7252F377A17
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 04:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230199AbhEJCMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 22:12:03 -0400
-Received: from mga01.intel.com ([192.55.52.88]:32210 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230038AbhEJCMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 22:12:02 -0400
-IronPort-SDR: 1c7O/qcIPKX08m6cTzh3BAqUjWxXFX5WUXh3coH7Komrotzs+BolxWy+clTN89soGLxeOEdxh8
- b6zdpke/ChSQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="220030448"
-X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
-   d="scan'208";a="220030448"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2021 19:10:57 -0700
-IronPort-SDR: p8zSHbq3FlSo/1QmlcC2EhIwc7/3OWr/InNG1IETZ+fEMSYpigauOchd0HQ471Qix5m9fvRJZ/
- ED/ceHx1CLLA==
-X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
-   d="scan'208";a="435927829"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2021 19:10:51 -0700
-Subject: Re: [PATCH v2 2/2] perf/x86/lbr: Move cpuc->lbr_xsave allocation out
- of sleeping region
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>, seanjc@google.com,
-        x86@kernel.org
-References: <20210430052247.3079672-1-like.xu@linux.intel.com>
- <20210430052247.3079672-2-like.xu@linux.intel.com>
-From:   Like Xu <like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <f8b1a313-1a1a-b678-6c82-64cdc5fede75@linux.intel.com>
-Date:   Mon, 10 May 2021 10:10:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230166AbhEJCVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 22:21:21 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5095 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230103AbhEJCVU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 22:21:20 -0400
+Received: from dggeml755-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fdl7s6BNxzYgMc;
+        Mon, 10 May 2021 10:17:45 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggeml755-chm.china.huawei.com (10.1.199.136) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 10 May 2021 10:20:11 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 10 May
+ 2021 10:20:11 +0800
+Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+CC:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
+ <YIsAIzecktXXBlxn@apalos.home>
+ <9bf7c5b3-c3cf-e669-051f-247aa8df5c5a@huawei.com>
+ <YIwvI5/ygBvZG5sy@apalos.home>
+ <33b02220-cc50-f6b2-c436-f4ec041d6bc4@huawei.com>
+ <YJPn5t2mdZKC//dp@apalos.home>
+ <75a332fa-74e4-7b7b-553e-3a1a6cb85dff@huawei.com>
+ <YJTm4uhvqCy2lJH8@apalos.home>
+ <bdd97ac5-f932-beec-109e-ace9cd62f661@huawei.com>
+ <20210507121953.59e22aa8@carbon>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <2a8d9195-6904-8d24-b88d-dfd6ef8f8525@huawei.com>
+Date:   Mon, 10 May 2021 10:20:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-In-Reply-To: <20210430052247.3079672-2-like.xu@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210507121953.59e22aa8@carbon>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter, do you have any comments on this version ?
+On 2021/5/7 18:19, Jesper Dangaard Brouer wrote:
+> On Fri, 7 May 2021 16:28:30 +0800
+> Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> 
 
-On 2021/4/30 13:22, Like Xu wrote:
-> If the kernel is compiled with the CONFIG_LOCKDEP option, the conditional
-> might_sleep_if() deep in kmem_cache_alloc() will generate the following
-> trace, and potentially cause a deadlock when another LBR event is added:
+[...]
+
 > 
-> [  243.115549] BUG: sleeping function called from invalid context at include/linux/sched/mm.h:196
-> [  243.117576] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 839, name: perf
-> [  243.119326] INFO: lockdep is turned off.
-> [  243.120249] irq event stamp: 0
-> [  243.120967] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> [  243.122415] hardirqs last disabled at (0): [<ffffffff810d9bf5>] copy_process+0xa45/0x1dc0
-> [  243.124302] softirqs last  enabled at (0): [<ffffffff810d9bf5>] copy_process+0xa45/0x1dc0
-> [  243.126255] softirqs last disabled at (0): [<0000000000000000>] 0x0
-> [  243.128119] CPU: 0 PID: 839 Comm: perf Not tainted 5.11.0-rc4-guest+ #8
-> [  243.129654] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
-> [  243.131520] Call Trace:
-> [  243.132112]  dump_stack+0x8d/0xb5
-> [  243.132896]  ___might_sleep.cold.106+0xb3/0xc3
-> [  243.133984]  slab_pre_alloc_hook.constprop.85+0x96/0xd0
-> [  243.135208]  ? intel_pmu_lbr_add+0x152/0x170
-> [  243.136207]  kmem_cache_alloc+0x36/0x250
-> [  243.137126]  intel_pmu_lbr_add+0x152/0x170
-> [  243.138088]  x86_pmu_add+0x83/0xd0
-> [  243.138889]  ? lock_acquire+0x158/0x350
-> [  243.139791]  ? lock_acquire+0x158/0x350
-> [  243.140694]  ? lock_acquire+0x158/0x350
-> [  243.141625]  ? lock_acquired+0x1e3/0x360
-> [  243.142544]  ? lock_release+0x1bf/0x340
-> [  243.143726]  ? trace_hardirqs_on+0x1a/0xd0
-> [  243.144823]  ? lock_acquired+0x1e3/0x360
-> [  243.145742]  ? lock_release+0x1bf/0x340
-> [  243.147107]  ? __slab_free+0x49/0x540
-> [  243.147966]  ? trace_hardirqs_on+0x1a/0xd0
-> [  243.148924]  event_sched_in.isra.129+0xf8/0x2a0
-> [  243.149989]  merge_sched_in+0x261/0x3e0
-> [  243.150889]  ? trace_hardirqs_on+0x1a/0xd0
-> [  243.151869]  visit_groups_merge.constprop.135+0x130/0x4a0
-> [  243.153122]  ? sched_clock_cpu+0xc/0xb0
-> [  243.154023]  ctx_sched_in+0x101/0x210
-> [  243.154884]  ctx_resched+0x6f/0xc0
-> [  243.155686]  perf_event_exec+0x21e/0x2e0
-> [  243.156641]  begin_new_exec+0x5e5/0xbd0
-> [  243.157540]  load_elf_binary+0x6af/0x1770
-> [  243.158478]  ? __kernel_read+0x19d/0x2b0
-> [  243.159977]  ? lock_acquire+0x158/0x350
-> [  243.160876]  ? __kernel_read+0x19d/0x2b0
-> [  243.161796]  bprm_execve+0x3c8/0x840
-> [  243.162638]  do_execveat_common.isra.38+0x1a5/0x1c0
-> [  243.163776]  __x64_sys_execve+0x32/0x40
-> [  243.164676]  do_syscall_64+0x33/0x40
-> [  243.165514]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [  243.166746] RIP: 0033:0x7f6180a26feb
-> [  243.167590] Code: Unable to access opcode bytes at RIP 0x7f6180a26fc1.
-> [  243.169097] RSP: 002b:00007ffc6558ce18 EFLAGS: 00000202 ORIG_RAX: 000000000000003b
-> [  243.170844] RAX: ffffffffffffffda RBX: 00007ffc65592d30 RCX: 00007f6180a26feb
-> [  243.172514] RDX: 000055657f408dc0 RSI: 00007ffc65592410 RDI: 00007ffc65592d30
-> [  243.174162] RBP: 00007ffc6558ce80 R08: 00007ffc6558cde0 R09: 0000000000000000
-> [  243.176042] R10: 0000000000000008 R11: 0000000000000202 R12: 00007ffc65592410
-> [  243.177696] R13: 000055657f408dc0 R14: 0000000000000001 R15: 00007ffc65592410
+> I'm actually not against storing page_pool object ptr directly in
+> struct-page.  It is a nice optimization.  Perhaps we should implement
+> this optimization outside this patchset first, and let __xdp_return()
+> for XDP-redirected packets also take advantage to this optimization?
 > 
-> One of the solution is to use GFP_ATOMIC, but it will make the code less
-> reliable under memory pressue. Let's move the memory allocation out of
-> the sleeping region and put it into the intel_pmu_hw_config(). The LBR
-> xsave buffer is a per-CPU buffer, not a per-event buffer. This buffer is
-> allocated once when initializing the LBR event.
-> 
-> The disadvantage of this fix is that the cpuc->lbr_xsave memory
-> will be allocated for each cpu like the legacy ds_buffer.
-> 
-> Fixes: c085fb8774 ("perf/x86/intel/lbr: Support XSAVES for arch LBR read")
-> Tested-by: Kan Liang <kan.liang@linux.intel.com>
-> Signed-off-by: Like Xu <like.xu@linux.intel.com>
-> ---
-> v1->v2 Changelog:
-> - Frob reserve_lbr_buffers() in intel_pmu_hw_config().
-> 
->   arch/x86/events/intel/core.c |  2 ++
->   arch/x86/events/intel/lbr.c  | 25 +++++++++++++++++++------
->   arch/x86/events/perf_event.h |  6 ++++++
->   3 files changed, 27 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-> index 456aa6ffd9a1..19027aa01f82 100644
-> --- a/arch/x86/events/intel/core.c
-> +++ b/arch/x86/events/intel/core.c
-> @@ -3745,6 +3745,8 @@ static int intel_pmu_hw_config(struct perf_event *event)
->   
->   			event->destroy = hw_perf_lbr_event_destroy;
->   		}
-> +
-> +		reserve_lbr_buffers(event);
->   	}
->   
->   	if (event->attr.aux_output) {
-> diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-> index bb4486c4155a..1c39155c9f67 100644
-> --- a/arch/x86/events/intel/lbr.c
-> +++ b/arch/x86/events/intel/lbr.c
-> @@ -658,7 +658,6 @@ static inline bool branch_user_callstack(unsigned br_sel)
->   
->   void intel_pmu_lbr_add(struct perf_event *event)
->   {
-> -	struct kmem_cache *kmem_cache = event->pmu->task_ctx_cache;
->   	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
->   
->   	if (!x86_pmu.lbr_nr)
-> @@ -696,11 +695,6 @@ void intel_pmu_lbr_add(struct perf_event *event)
->   	perf_sched_cb_inc(event->ctx->pmu);
->   	if (!cpuc->lbr_users++ && !event->total_time_running)
->   		intel_pmu_lbr_reset();
-> -
-> -	if (static_cpu_has(X86_FEATURE_ARCH_LBR) &&
-> -	    kmem_cache && !cpuc->lbr_xsave &&
-> -	    (cpuc->lbr_users != cpuc->lbr_pebs_users))
-> -		cpuc->lbr_xsave = kmem_cache_alloc(kmem_cache, GFP_KERNEL);
->   }
->   
->   void release_lbr_buffers(void)
-> @@ -722,6 +716,25 @@ void release_lbr_buffers(void)
->   	}
->   }
->   
-> +void reserve_lbr_buffers(struct perf_event *event)
-> +{
-> +	struct kmem_cache *kmem_cache;
-> +	struct cpu_hw_events *cpuc;
-> +	int cpu;
-> +
-> +	if (!static_cpu_has(X86_FEATURE_ARCH_LBR))
-> +		return;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		cpuc = per_cpu_ptr(&cpu_hw_events, cpu);
-> +		kmem_cache = x86_get_pmu(cpu)->task_ctx_cache;
-> +		if (kmem_cache && !cpuc->lbr_xsave && !event->attr.precise_ip)
-> +			cpuc->lbr_xsave =
-> +				kmem_cache_alloc_node(kmem_cache, GFP_KERNEL,
-> +						      cpu_to_node(cpu));
-> +	}
-> +}
-> +
->   void intel_pmu_lbr_del(struct perf_event *event)
->   {
->   	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-> diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-> index 27fa85e7d4fd..727e5490e78c 100644
-> --- a/arch/x86/events/perf_event.h
-> +++ b/arch/x86/events/perf_event.h
-> @@ -1244,6 +1244,8 @@ void reserve_ds_buffers(void);
->   
->   void release_lbr_buffers(void);
->   
-> +void reserve_lbr_buffers(struct perf_event *event);
-> +
->   extern struct event_constraint bts_constraint;
->   extern struct event_constraint vlbr_constraint;
->   
-> @@ -1393,6 +1395,10 @@ static inline void release_lbr_buffers(void)
->   {
->   }
->   
-> +static inline void reserve_lbr_buffers(struct perf_event *event)
-> +{
-> +}
-> +
->   static inline int intel_pmu_init(void)
->   {
->   	return 0;
+> Then it would feel more natural to also used this optimization in this
+> patchset, right?
+
+Yes, it would be good if XDP can take advantage of this optimization too.
+
+Then it seems we can remove the "mem_id_ht"? if we want to support different
+type of page pool in the future, the type field is in the page pool too
+when page_pool object ptr directly in struct-page.
+
 > 
 
