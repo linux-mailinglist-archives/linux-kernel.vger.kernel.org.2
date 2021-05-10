@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E87837961C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A40C37961F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232796AbhEJRio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 13:38:44 -0400
-Received: from mail-pl1-f179.google.com ([209.85.214.179]:38546 "EHLO
-        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230512AbhEJRim (ORCPT
+        id S232813AbhEJRkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 13:40:15 -0400
+Received: from smtprelay0124.hostedemail.com ([216.40.44.124]:37000 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230507AbhEJRkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 13:38:42 -0400
-Received: by mail-pl1-f179.google.com with SMTP id 69so4885464plc.5;
-        Mon, 10 May 2021 10:37:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FqksKLFJgYxQZl9Y18SHfYPa3tKgodRoYiwD/TGaez8=;
-        b=jMSJ3eeaCf1Qn71+OUoPckItnqJ3jYmYpkP+8fKUzxTNJcxio9LEg4Kp0uQPqTuSDb
-         iq5DQltkO9wV3B7jMgawb2n7HchAgAhDbprdf+6gtgGdVqElH7aTuIEHPsPpovY07fx8
-         i96D7qu9rMjjpkxjKrhZiMUIAGYzCNTGOsKOfUpmamDGNPs0gdvkzoy3EUFz9N+sZgkY
-         iCPqT3CsJjj5zpkKDAPMBokRyQICjI8GHbIgtSDvZYlYbHmbmjSd3d+9U763rBfzZxp5
-         lbendjb27qGHQtjn5Ik2Q1bhMeTZ9HkkHW8ffN1HH1OGLMosQG7jpN/IWXqv3h+NPDol
-         CVQw==
-X-Gm-Message-State: AOAM530ZJfHvh/me3ajpNbHVVawShQHfcZKgrf6r0UF0qk1JkbjihbZn
-        vtgBXk0+k4UuvPim+KFs10s=
-X-Google-Smtp-Source: ABdhPJyPS4jdZ3WuTm+roRCvA8KQ2yLi3GuoeeYR2tSTGDw6XroMsneTKnEr7qLcluPSJ1nke0tsNw==
-X-Received: by 2002:a17:902:a60f:b029:ee:cc8c:f891 with SMTP id u15-20020a170902a60fb02900eecc8cf891mr25114543plq.39.1620668257796;
-        Mon, 10 May 2021 10:37:37 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id s8sm11737251pfh.108.2021.05.10.10.37.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 10:37:37 -0700 (PDT)
-Date:   Mon, 10 May 2021 10:37:36 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com, richard.gong@intel.com
-Subject: Re: [PATCH v12 0/7] FPGA Security Manager Class Driver
-Message-ID: <YJlvYNXUcwrBFGey@epycbox.lan>
-References: <20210503213546.316439-1-russell.h.weight@intel.com>
- <6f3ce0db-883e-2c5b-e671-9ccc363ee532@redhat.com>
+        Mon, 10 May 2021 13:40:13 -0400
+Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 52048837F27B;
+        Mon, 10 May 2021 17:39:07 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id 9B5FC315D82;
+        Mon, 10 May 2021 17:39:06 +0000 (UTC)
+Message-ID: <630fc44bfb88f8d3d542c084c2d9f7c0a6d8aea7.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: auto detect codespell dictionary path
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+Date:   Mon, 10 May 2021 10:39:05 -0700
+In-Reply-To: <20210510171127.15056-1-dwaipayanray1@gmail.com>
+References: <20210510171127.15056-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6f3ce0db-883e-2c5b-e671-9ccc363ee532@redhat.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.87
+X-Stat-Signature: m7kffn3zzbpqdc8wza5mbk5gy45z836s
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 9B5FC315D82
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18lb2+7QkLKJXxM0h5ZWEvgHf9j5olsgQw=
+X-HE-Tag: 1620668346-785097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 07:12:57AM -0700, Tom Rix wrote:
+On Mon, 2021-05-10 at 22:41 +0530, Dwaipayan Ray wrote:
+> The codespell dictionary was moved from
+> `/usr/share/codespell/dictionary.txt` to data/dictionary.txt
+> under the codespell_lib installation directory.
 > 
-> On 5/3/21 2:35 PM, Russ Weight wrote:
-> > The FPGA Security Manager class driver provides a common
-> > API for user-space tools to manage updates for secure FPGA
-> > devices. Device drivers that instantiate the FPGA Security
-> > Manager class driver will interact with a HW secure update
-> > engine in order to transfer new FPGA and BMC images to FLASH so
-> > that they will be automatically loaded when the FPGA card reboots.
+> Checkpatch still uses a default absolute path for it which will
+> no longer work on new codespell installations unless the path
+> is specified through --codespellfile.
 > 
-> Russ,
+> Detect the codespell dictionary path dynamically during
+> runtime if the default path or the user provided dictionary
+> path does not exist.
+[]
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -889,6 +889,13 @@ if (open(my $spelling, '<', $spelling_file)) {
+>  }
+>  
 > 
-> These have my Reviewed-by, but since it has been a while, I am looking these
-> over again.
-> 
-> If you do not hear anything from me in the next couple of days, please
-> assume everything is fine.
-> 
-> Tom
-> 
+>  if ($codespell) {
+> +	if (! -e "$codespellfile" && which("python3") ne "") {
+> +		my $output = `python3 -c "import codespell_lib; print(codespell_lib.__file__, end='');" 2>/dev/null`;
 
-I'll do one more one-over, if it looks good will apply end of the week,
+It doesn't seem to me that using python3 is a great way to invoke python.
+Maybe test the external command return $? when codespell isn't installed.
 
-- Moritz
+> +		my $dictionary_path = dirname($output) . "/data/dictionary.txt";
+
+Unlikely, but this could still end up with a existing file of /data/dictionary.txt
+that is not a codespell file.
+
+> +		if (-e "$dictionary_path") {
+> +			$codespellfile = $dictionary_path;
+> +		}
+> +	}
+>  	if (open(my $spelling, '<', $codespellfile)) {
+>  		while (<$spelling>) {
+>  			my $line = $_;
+
+
