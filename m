@@ -2,83 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37578377B44
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 06:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE740377B50
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 06:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbhEJEgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 00:36:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:47316 "EHLO foss.arm.com"
+        id S230049AbhEJErM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 00:47:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229533AbhEJEgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 00:36:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6D641FB;
-        Sun,  9 May 2021 21:35:12 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.77.48])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 965E63F718;
-        Sun,  9 May 2021 21:35:09 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org, akpm@linux-foundation.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/thp: Make ARCH_ENABLE_SPLIT_PMD_PTLOCK dependent on PGTABLE_LEVELS > 2
-Date:   Mon, 10 May 2021 10:05:45 +0530
-Message-Id: <1620621345-29176-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S229863AbhEJErI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 00:47:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E47D613CE;
+        Mon, 10 May 2021 04:46:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1620621964;
+        bh=rp7Pr5ZwLz7xf26y8soMdGC8+zpjFeP6bya6HohveU8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CqyexdQOXdYJurd8t44gilCxJyd/22uk3uYbXEYUkNJt1aSbnwkCuFEt6rLVjHaFQ
+         ZtJ0VcZ4E1eih/esEpLdf/IQYyVMLueE6B2tv+RKF3LqRezylSovsacOdKMbEPZ4YL
+         P9NiKYAR7R7YOj1GRmmDexSjy73xHqOshwnt2G+4=
+Date:   Sun, 9 May 2021 21:46:03 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     glittao@gmail.com
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, vbabka@suse.cz,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm/slub: use stackdepot to save stack trace in objects
+Message-Id: <20210509214603.d2a5faaa3fe0d71c3517cb36@linux-foundation.org>
+In-Reply-To: <20210414163434.4376-1-glittao@gmail.com>
+References: <20210414163434.4376-1-glittao@gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ARCH_ENABLE_SPLIT_PMD_PTLOCK is irrelevant unless there are two page table
-levels including PMD (also per Documentation/vm/split_page_table_lock.rst).
-Make this dependency explicit on remaining platforms i.e x86 and s390 where
-ARCH_ENABLE_SPLIT_PMD_PTLOCK is subscribed.
+On Wed, 14 Apr 2021 18:34:34 +0200 glittao@gmail.com wrote:
 
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: x86@kernel.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/s390/Kconfig | 2 +-
- arch/x86/Kconfig  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+> Many stack traces are similar so there are many similar arrays.
+> Stackdepot saves each unique stack only once.
+> 
+> Replace field addrs in struct track with depot_stack_handle_t handle.
+> Use stackdepot to save stack trace.
+> 
+> The benefits are smaller memory overhead and possibility to aggregate
+> per-cache statistics in the future using the stackdepot handle
+> instead of matching stacks manually.
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index b4c7c34069f8..fcc1ea339a9d 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -62,7 +62,7 @@ config S390
- 	select ARCH_BINFMT_ELF_STATE
- 	select ARCH_ENABLE_MEMORY_HOTPLUG if SPARSEMEM
- 	select ARCH_ENABLE_MEMORY_HOTREMOVE
--	select ARCH_ENABLE_SPLIT_PMD_PTLOCK
-+	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if PGTABLE_LEVELS > 2
- 	select ARCH_HAS_DEBUG_VM_PGTABLE
- 	select ARCH_HAS_DEBUG_WX
- 	select ARCH_HAS_DEVMEM_IS_ALLOWED
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 0045e1b44190..ec9e9d3d7e3f 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -63,7 +63,7 @@ config X86
- 	select ARCH_ENABLE_HUGEPAGE_MIGRATION if X86_64 && HUGETLB_PAGE && MIGRATION
- 	select ARCH_ENABLE_MEMORY_HOTPLUG if X86_64 || (X86_32 && HIGHMEM)
- 	select ARCH_ENABLE_MEMORY_HOTREMOVE if MEMORY_HOTPLUG
--	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if X86_64 || X86_PAE
-+	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if (PGTABLE_LEVELS > 2) && (X86_64 || X86_PAE)
- 	select ARCH_ENABLE_THP_MIGRATION if X86_64 && TRANSPARENT_HUGEPAGE
- 	select ARCH_HAS_ACPI_TABLE_UPGRADE	if ACPI
- 	select ARCH_HAS_CACHE_LINE_SIZE
--- 
-2.20.1
+Which tree was this prepared against?  5.12's kmem_obj_info() is
+significantly different from the version you were working on.
 
+Please take a look, redo, retest and resend?  Thanks.
