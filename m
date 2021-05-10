@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55C43789A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC84378663
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240491AbhEJLas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:30:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52778 "EHLO mail.kernel.org"
+        id S235893AbhEJLGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:06:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234829AbhEJK5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D6AF61944;
-        Mon, 10 May 2021 10:49:32 +0000 (UTC)
+        id S232585AbhEJKp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:45:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E791619AA;
+        Mon, 10 May 2021 10:37:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643773;
-        bh=M8Fw1kys6+G6wwPjb5qVzyUf6hZGtRAEXQedwGOyilo=;
+        s=korg; t=1620643020;
+        bh=Kc3/jYjdXUV2vo541oiEx5cP/sIAfbsWjpGIBRrWKQQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hKpOugHfXLMF6K/ZOmqKwaz/MhOFFbxQzFVltDmBuUx39mDfpwi6lsXmTBbtIe2Vz
-         FBI0U8ny5CELMpvticmKdVLWsNcZyG07BqwtTvuwzT9A/gjBQHWJzRqq9gOlZgeWx/
-         kJi2k9NfsC7Lyz1FfR2ijIEdO+a5DtlMZF3tZBgk=
+        b=aZVYUdB1e8f945xpTDJIYIPmw4LO/FAZpMbJHjuEQirZHZ/7D+5CCqGI7HIS8691S
+         C0/nGF1M1sDW3UZ7pja/fvLRrD3FaqiYG+ObxNkYJBOfviA238jNTFkT0NwSxSnvF5
+         rU9gR1nrCa9pQ3rqmQT7AXJ+IlsLWMsKpeSShcAs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Anson Jacob <Anson.Jacob@amd.com>,
+        Aurabindo Jayamohanan Pillai <Aurabindo.Pillai@amd.com>,
+        Solomon Chiu <solomon.chiu@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 152/342] media: ite-cir: check for receive overflow
+Subject: [PATCH 5.10 145/299] drm/amd/display: Fix UBSAN warning for not a valid value for type _Bool
 Date:   Mon, 10 May 2021 12:19:02 +0200
-Message-Id: <20210510102015.110138467@linuxfoundation.org>
+Message-Id: <20210510102009.750814647@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+From: Anson Jacob <Anson.Jacob@amd.com>
 
-[ Upstream commit 28c7afb07ccfc0a939bb06ac1e7afe669901c65a ]
+[ Upstream commit 6a30a92997eee49554f72b462dce90abe54a496f ]
 
-It's best if this condition is reported.
+[Why]
+dc_cursor_position do not initialise position.translate_by_source when
+crtc or plane->state->fb is NULL. UBSAN caught this error in
+dce110_set_cursor_position, as the value was garbage.
 
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+[How]
+Initialise dc_cursor_position structure elements to 0 in handle_cursor_update
+before calling get_cursor_position.
+
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1471
+Reported-by: Lyude Paul <lyude@redhat.com>
+Signed-off-by: Anson Jacob <Anson.Jacob@amd.com>
+Reviewed-by: Aurabindo Jayamohanan Pillai <Aurabindo.Pillai@amd.com>
+Acked-by: Solomon Chiu <solomon.chiu@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/rc/ite-cir.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/media/rc/ite-cir.c b/drivers/media/rc/ite-cir.c
-index 0c6229592e13..e5c4a6941d26 100644
---- a/drivers/media/rc/ite-cir.c
-+++ b/drivers/media/rc/ite-cir.c
-@@ -276,8 +276,14 @@ static irqreturn_t ite_cir_isr(int irq, void *data)
- 	/* read the interrupt flags */
- 	iflags = dev->params.get_irq_causes(dev);
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 830d302be045..12a4f0675fb0 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -6800,10 +6800,6 @@ static int get_cursor_position(struct drm_plane *plane, struct drm_crtc *crtc,
+ 	int x, y;
+ 	int xorigin = 0, yorigin = 0;
  
-+	/* Check for RX overflow */
-+	if (iflags & ITE_IRQ_RX_FIFO_OVERRUN) {
-+		dev_warn(&dev->rdev->dev, "receive overflow\n");
-+		ir_raw_event_reset(dev->rdev);
-+	}
-+
- 	/* check for the receive interrupt */
--	if (iflags & (ITE_IRQ_RX_FIFO | ITE_IRQ_RX_FIFO_OVERRUN)) {
-+	if (iflags & ITE_IRQ_RX_FIFO) {
- 		/* read the FIFO bytes */
- 		rx_bytes =
- 			dev->params.get_rx_bytes(dev, rx_buf,
+-	position->enable = false;
+-	position->x = 0;
+-	position->y = 0;
+-
+ 	if (!crtc || !plane->state->fb)
+ 		return 0;
+ 
+@@ -6850,7 +6846,7 @@ static void handle_cursor_update(struct drm_plane *plane,
+ 	struct dm_crtc_state *crtc_state = crtc ? to_dm_crtc_state(crtc->state) : NULL;
+ 	struct amdgpu_crtc *amdgpu_crtc = to_amdgpu_crtc(crtc);
+ 	uint64_t address = afb ? afb->address : 0;
+-	struct dc_cursor_position position;
++	struct dc_cursor_position position = {0};
+ 	struct dc_cursor_attributes attributes;
+ 	int ret;
+ 
 -- 
 2.30.2
 
