@@ -2,133 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57258378081
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E54E377FEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbhEJJyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230486AbhEJJwj (ORCPT
+        id S230519AbhEJJwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:52:14 -0400
+Received: from fgw22-7.mail.saunalahti.fi ([62.142.5.83]:16880 "EHLO
+        fgw22-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230468AbhEJJwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:52:39 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F5BC06138F
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 02:51:23 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id l10-20020a17090a850ab0290155b06f6267so9740182pjn.5
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 02:51:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=H8s2Ssxedi+m7Lc7mdaT6IyIVFNL7UMFVGCjjIXUKBs=;
-        b=aEzUGv6HyICG91lVRchMBsfGFoiKw5t3UKv5r9/XWkq1l03uTxk5gK7BReGArG4wM7
-         eL8k61LHaWwrgnh+WJYeL7I+S/QoUwEkwv6x0tDx3HcpYoUp9liwFvhqHJX8OnvlaqU3
-         oxtyLQT57sgPbzesRlkZ21sVrQ/LPb2+Dv9rE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=H8s2Ssxedi+m7Lc7mdaT6IyIVFNL7UMFVGCjjIXUKBs=;
-        b=mzenl6x7bDmCwfbOjd5LXlT+GZQkhoC+B5aSm1NUM7dH5WwL7QBA3ZimotmB5UC5xs
-         hrH8AyRHp2yOoU5708Z6T7zYnyTsMrOXe3v9FoDq4yMFT3WayQHwbdSrF2u+6nj/QQPd
-         wqHrj5s1Mfkj8UdxHgQp3Zi70PBKfPQL7XiEJJWLj91squzcTga7KvK76TrB2unRR9A4
-         s4txmdOKq3oIXUHh7BmVpIc19OTUdFChoylEBprn4ekt/4kschFbYaj8uGoNuZXYHPSD
-         1+4yhCaHtDG7fOGUNvrb+bRll8HzZOX/OCawcXqYxdvhpvt3rB+uOnIVVxEoSdPND3kw
-         IsLg==
-X-Gm-Message-State: AOAM533y3H7/FPaTffNWC1dQelbhOe5JWKCh8yd2G9vINXSQQmTdXQKg
-        74fCs4L2eGgtC/LD0zTAwsuXVg==
-X-Google-Smtp-Source: ABdhPJzROW5FUCBZB2fXFHkP0ALBea1sVjbZahlfu04HnoSywATlCq/z9y3jgockvO/xDk1J1RoGzg==
-X-Received: by 2002:a17:90b:1bcd:: with SMTP id oa13mr40100520pjb.22.1620640283118;
-        Mon, 10 May 2021 02:51:23 -0700 (PDT)
-Received: from localhost ([2401:fa00:95:205:a524:abe8:94e3:5601])
-        by smtp.gmail.com with UTF8SMTPSA id ml19sm46030318pjb.2.2021.05.10.02.51.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 02:51:22 -0700 (PDT)
-From:   Claire Chang <tientzu@chromium.org>
-To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
+        Mon, 10 May 2021 05:52:03 -0400
+Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
+        by fgw22.mail.saunalahti.fi (Halon) with ESMTP
+        id 37901f08-b175-11eb-88cb-005056bdf889;
+        Mon, 10 May 2021 12:50:57 +0300 (EEST)
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Pavel Machek <pavel@ucw.cz>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        tientzu@chromium.org, daniel@ffwll.ch, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, jxgao@google.com,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        nouveau@lists.freedesktop.org, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com
-Subject: [PATCH v6 05/15] swiotlb: Add a new get_io_tlb_mem getter
-Date:   Mon, 10 May 2021 17:50:16 +0800
-Message-Id: <20210510095026.3477496-6-tientzu@chromium.org>
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-In-Reply-To: <20210510095026.3477496-1-tientzu@chromium.org>
-References: <20210510095026.3477496-1-tientzu@chromium.org>
+        Amireddy Mallikarjuna reddy 
+        <mallikarjunax.reddy@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
+        Abanoub Sameh <abanoubsameh8@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v1 00/28] leds: cleanups and fwnode refcounting bug fixes
+Date:   Mon, 10 May 2021 12:50:17 +0300
+Message-Id: <20210510095045.3299382-1-andy.shevchenko@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new getter, get_io_tlb_mem, to help select the io_tlb_mem struct.
-The restricted DMA pool is preferred if available.
+When analyzing the current state of affairs with fwnode reference counting 
+I found that a lot of core doesn't take it right. Here is a bunch of
+corresponding fixes against LED drivers.
 
-Signed-off-by: Claire Chang <tientzu@chromium.org>
----
- include/linux/swiotlb.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+The series includes some cleanups and a few other fixes grouped by a driver.
 
-diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index 03ad6e3b4056..b469f04cca26 100644
---- a/include/linux/swiotlb.h
-+++ b/include/linux/swiotlb.h
-@@ -2,6 +2,7 @@
- #ifndef __LINUX_SWIOTLB_H
- #define __LINUX_SWIOTLB_H
- 
-+#include <linux/device.h>
- #include <linux/dma-direction.h>
- #include <linux/init.h>
- #include <linux/types.h>
-@@ -102,6 +103,16 @@ struct io_tlb_mem {
- };
- extern struct io_tlb_mem *io_tlb_default_mem;
- 
-+static inline struct io_tlb_mem *get_io_tlb_mem(struct device *dev)
-+{
-+#ifdef CONFIG_DMA_RESTRICTED_POOL
-+	if (dev && dev->dma_io_tlb_mem)
-+		return dev->dma_io_tlb_mem;
-+#endif /* CONFIG_DMA_RESTRICTED_POOL */
-+
-+	return io_tlb_default_mem;
-+}
-+
- static inline bool is_swiotlb_buffer(phys_addr_t paddr)
- {
- 	struct io_tlb_mem *mem = io_tlb_default_mem;
+First two patches are taking care of -ENOTSUPP error code too  prevent its
+appearance in the user space.
+
+Andy Shevchenko (28):
+  leds: class: The -ENOTSUPP should never be seen by user space
+  leds: core: The -ENOTSUPP should never be seen by user space
+  leds: el15203000: Give better margin for usleep_range()
+  leds: el15203000: Make error handling more robust
+  leds: el15203000: Correct headers (of*.h -> mod_devicetable.h)
+  leds: el15203000: Introduce to_el15203000_led() helper
+  leds: lgm-sso: Fix clock handling
+  leds: lgm-sso: Put fwnode in any case during ->probe()
+  leds: lgm-sso: Don't spam logs when probe is deferred
+  leds: lgm-sso: Remove unneeded of_match_ptr()
+  leds: lgm-sso: Remove explicit managed resource cleanups
+  leds: lgm-sso: Drop duplicate NULL check for GPIO operations
+  leds: lgm-sso: Convert to use list_for_each_entry*() API
+  leds: lm3532: select regmap I2C API
+  leds: lm3532: Make error handling more robust
+  leds: lm36274: Put fwnode in error case during ->probe()
+  leds: lm36274: Correct headers (of*.h -> mod_devicetable.h)
+  leds: lm3692x: Put fwnode in any case during ->probe()
+  leds: lm3692x: Correct headers (of*.h -> mod_devicetable.h)
+  leds: lm3697: Update header block to reflect reality
+  leds: lm3697: Make error handling more robust
+  leds: lm3697: Don't spam logs when probe is deferred
+  leds: lp50xx: Put fwnode in error case during ->probe()
+  leds: lt3593: Put fwnode in any case during ->probe()
+  leds: lt3593: Make use of device properties
+  leds: pwm: Make error handling more robust
+  leds: rt8515: Put fwnode in any case during ->probe()
+  leds: sgm3140: Put fwnode in any case during ->probe()
+
+ drivers/leds/Kconfig              |  7 ++-
+ drivers/leds/blink/leds-lgm-sso.c | 86 +++++++++++++------------------
+ drivers/leds/flash/leds-rt8515.c  |  4 +-
+ drivers/leds/led-class.c          |  4 --
+ drivers/leds/led-core.c           |  7 ++-
+ drivers/leds/leds-el15203000.c    | 54 ++++++++-----------
+ drivers/leds/leds-lm3532.c        |  7 +--
+ drivers/leds/leds-lm36274.c       |  3 +-
+ drivers/leds/leds-lm3692x.c       | 11 ++--
+ drivers/leds/leds-lm3697.c        | 22 ++++----
+ drivers/leds/leds-lp50xx.c        |  2 +-
+ drivers/leds/leds-lt3593.c        | 13 ++---
+ drivers/leds/leds-pwm.c           | 16 +++---
+ drivers/leds/leds-sgm3140.c       |  8 +--
+ 14 files changed, 106 insertions(+), 138 deletions(-)
+
 -- 
-2.31.1.607.g51e8a6a459-goog
+2.31.1
 
