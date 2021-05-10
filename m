@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F852378BED
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5328378A80
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243579AbhEJMTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:19:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46276 "EHLO mail.kernel.org"
+        id S236726AbhEJLpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:45:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234224AbhEJLJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:09:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 389156191C;
-        Mon, 10 May 2021 11:04:40 +0000 (UTC)
+        id S232509AbhEJK5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3BD461C35;
+        Mon, 10 May 2021 10:51:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644680;
-        bh=5LnsDbENCZlQF4nCWMHw2rIS0V68TkYnwy3mGlCDfCc=;
+        s=korg; t=1620643920;
+        bh=aoZGLU3h/i0WadM2DxxNm7/BB1+HyOgT5g3s4onk+jI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lYktaXjfAlu+Vf7Hol801vInbVBqwEV8EH/fqLCP3hYDBTZMh1fmuDBdGEJsJrYPE
-         vAVixlI00M01srbitqmNbtOS06pPW/XkRN/NDRujyPxn4GYjNW7uu1+Qb64u/f8O5J
-         xqtfrxUpsekvs7vUg12NA53cQpEBuPvt2gLsu7tY=
+        b=yLuOzM6X63RkO5dzIpAnV8zawjFmA0u7jGURbBCQzmyF7MCv767B3vqpZO8Fkj7nE
+         qyAKqty7Df0wCPpPwcfATuFzJBOegDVVNjLvWuZU3/FkOOliWVm0KGMR4YHIw08x+t
+         0Dz8H9PzsoRsd596QEVEvqwdbouleKXwEJGQsFHI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 179/384] media: gspca/sq905.c: fix uninitialized variable
-Date:   Mon, 10 May 2021 12:19:28 +0200
-Message-Id: <20210510102020.791047814@linuxfoundation.org>
+Subject: [PATCH 5.11 179/342] mmc: sdhci-pci: Add PCI IDs for Intel LKF
+Date:   Mon, 10 May 2021 12:19:29 +0200
+Message-Id: <20210510102016.017686994@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
-References: <20210510102014.849075526@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit eaaea4681984c79d2b2b160387b297477f0c1aab ]
+[ Upstream commit ee629112be8b4eff71d4d3d108a28bc7dc877e13 ]
 
-act_len can be uninitialized if usb_bulk_msg() returns an error.
-Set it to 0 to avoid a KMSAN error.
+Add PCI IDs for Intel LKF eMMC and SD card host controllers.
 
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Reported-by: syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/20210322055356.24923-1-adrian.hunter@intel.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/gspca/sq905.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mmc/host/sdhci-pci-core.c | 2 ++
+ drivers/mmc/host/sdhci-pci.h      | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/drivers/media/usb/gspca/sq905.c b/drivers/media/usb/gspca/sq905.c
-index 97799cfb832e..949111070971 100644
---- a/drivers/media/usb/gspca/sq905.c
-+++ b/drivers/media/usb/gspca/sq905.c
-@@ -158,7 +158,7 @@ static int
- sq905_read_data(struct gspca_dev *gspca_dev, u8 *data, int size, int need_lock)
- {
- 	int ret;
--	int act_len;
-+	int act_len = 0;
+diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
+index 936e4db9060f..bf04a08eeba1 100644
+--- a/drivers/mmc/host/sdhci-pci-core.c
++++ b/drivers/mmc/host/sdhci-pci-core.c
+@@ -1930,6 +1930,8 @@ static const struct pci_device_id pci_ids[] = {
+ 	SDHCI_PCI_DEVICE(INTEL, CMLH_SD,   intel_byt_sd),
+ 	SDHCI_PCI_DEVICE(INTEL, JSL_EMMC,  intel_glk_emmc),
+ 	SDHCI_PCI_DEVICE(INTEL, JSL_SD,    intel_byt_sd),
++	SDHCI_PCI_DEVICE(INTEL, LKF_EMMC,  intel_glk_emmc),
++	SDHCI_PCI_DEVICE(INTEL, LKF_SD,    intel_byt_sd),
+ 	SDHCI_PCI_DEVICE(O2, 8120,     o2),
+ 	SDHCI_PCI_DEVICE(O2, 8220,     o2),
+ 	SDHCI_PCI_DEVICE(O2, 8221,     o2),
+diff --git a/drivers/mmc/host/sdhci-pci.h b/drivers/mmc/host/sdhci-pci.h
+index d0ed232af0eb..8f90c4163bb5 100644
+--- a/drivers/mmc/host/sdhci-pci.h
++++ b/drivers/mmc/host/sdhci-pci.h
+@@ -57,6 +57,8 @@
+ #define PCI_DEVICE_ID_INTEL_CMLH_SD	0x06f5
+ #define PCI_DEVICE_ID_INTEL_JSL_EMMC	0x4dc4
+ #define PCI_DEVICE_ID_INTEL_JSL_SD	0x4df8
++#define PCI_DEVICE_ID_INTEL_LKF_EMMC	0x98c4
++#define PCI_DEVICE_ID_INTEL_LKF_SD	0x98f8
  
- 	gspca_dev->usb_buf[0] = '\0';
- 	if (need_lock)
+ #define PCI_DEVICE_ID_SYSKONNECT_8000	0x8000
+ #define PCI_DEVICE_ID_VIA_95D0		0x95d0
 -- 
 2.30.2
 
