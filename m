@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A84378733
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD46337873D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236994AbhEJLOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:14:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42196 "EHLO mail.kernel.org"
+        id S237356AbhEJLOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:14:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233685AbhEJKub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233692AbhEJKub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 06:50:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0898161940;
-        Mon, 10 May 2021 10:39:44 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 766616194B;
+        Mon, 10 May 2021 10:39:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643185;
-        bh=+umnaM+B+t3BvPAR05JY02m114BmcOxcv9BHB14b6MM=;
+        s=korg; t=1620643188;
+        bh=QFW2PpfndsL4yLPOv8wibmBs/SN33oj8abfed6abK/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o79lL16NTolD2glC0nFf32FSPK8nfhwRIwOeb+bqLD3YEFK60layIYBsiA64HlTLn
-         kmoz69F0A4M0qN48l4lGOYGv2zL7ZXdK65Xds0H6MfPApCaNii08Mgwqkjnro4DVK6
-         zRnO+BDSAXBFU7S6SlHHqahcqZrV+Uy38wszPO14=
+        b=Htz1dLZ4ZqJJ3fyorrzO0NUTcftuPGR1/x6Gh3FceMGx+fmEh6xe1JLlwBC981Ych
+         uRQWjko5XWKZ/29zkymPikmsnTxb341QXWgmyGLzmEdrua98XcgxTFlTpocmF75nWc
+         dtmvwXnp8TfI649ClEeBB08iNBfW8ycwGLM5dqhg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Timo Gurr <timo.gurr@gmail.com>,
+        stable@vger.kernel.org, Jonas Witschel <diabonas@archlinux.org>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 213/299] ALSA: usb-audio: Add dB range mapping for Sennheiser Communications Headset PC 8
-Date:   Mon, 10 May 2021 12:20:10 +0200
-Message-Id: <20210510102011.983003010@linuxfoundation.org>
+Subject: [PATCH 5.10 214/299] ALSA: hda/realtek: fix mute/micmute LEDs for HP ProBook 445 G7
+Date:   Mon, 10 May 2021 12:20:11 +0200
+Message-Id: <20210510102012.013817323@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
 References: <20210510102004.821838356@linuxfoundation.org>
@@ -39,54 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Timo Gurr <timo.gurr@gmail.com>
+From: Jonas Witschel <diabonas@archlinux.org>
 
-commit ab2165e2e6ed17345ffa8ee88ca764e8788ebcd7 upstream.
+commit 75b62ab65d2715ce6ff0794033d61ab9dc4a2dfc upstream.
 
-The decibel volume range contains a negative maximum value resulting in
-pipewire complaining about the device and effectivly having no sound
-output. The wrong values also resulted in the headset sounding muted
-already at a mixer level of about ~25%.
+The HP ProBook 445 G7 (17T32ES) uses ALC236. Like ALC236_FIXUP_HP_GPIO_LED,
+COEF index 0x34 bit 5 is used to control the playback mute LED, but the
+microphone mute LED is controlled using pin VREF instead of a COEF index.
 
-PipeWire BugLink: https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1049
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=212897
-Signed-off-by: Timo Gurr <timo.gurr@gmail.com>
+AlsaInfo: https://alsa-project.org/db/?f=0d3f4d1af39cc359f9fea9b550727ee87e5cf45a
+Signed-off-by: Jonas Witschel <diabonas@archlinux.org>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503110822.10222-1-tiwai@suse.de
+Link: https://lore.kernel.org/r/20210416105852.52588-1-diabonas@archlinux.org
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/mixer_maps.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/pci/hda/patch_realtek.c |   25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
---- a/sound/usb/mixer_maps.c
-+++ b/sound/usb/mixer_maps.c
-@@ -337,6 +337,13 @@ static const struct usbmix_name_map bose
- 	{ 0 }	/* terminator */
- };
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4438,6 +4438,25 @@ static void alc236_fixup_hp_mute_led(str
+ 	alc236_fixup_hp_coef_micmute_led(codec, fix, action);
+ }
  
-+/* Sennheiser Communications Headset [PC 8], the dB value is reported as -6 negative maximum  */
-+static const struct usbmix_dB_map sennheiser_pc8_dB = {-9500, 0};
-+static const struct usbmix_name_map sennheiser_pc8_map[] = {
-+	{ 9, NULL, .dB = &sennheiser_pc8_dB },
-+	{ 0 }   /* terminator */
-+};
++static void alc236_fixup_hp_micmute_led_vref(struct hda_codec *codec,
++				const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
 +
- /*
-  * Dell usb dock with ALC4020 codec had a firmware problem where it got
-  * screwed up when zero volume is passed; just skip it as a workaround
-@@ -593,6 +600,11 @@ static const struct usbmix_ctl_map usbmi
- 		.id = USB_ID(0x17aa, 0x1046),
- 		.map = lenovo_p620_rear_map,
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		spec->cap_mute_led_nid = 0x1a;
++		snd_hda_gen_add_micmute_led_cdev(codec, vref_micmute_led_set);
++		codec->power_filter = led_power_filter;
++	}
++}
++
++static void alc236_fixup_hp_mute_led_micmute_vref(struct hda_codec *codec,
++				const struct hda_fixup *fix, int action)
++{
++	alc236_fixup_hp_mute_led_coefbit(codec, fix, action);
++	alc236_fixup_hp_micmute_led_vref(codec, fix, action);
++}
++
+ #if IS_REACHABLE(CONFIG_INPUT)
+ static void gpio2_mic_hotkey_event(struct hda_codec *codec,
+ 				   struct hda_jack_callback *event)
+@@ -6400,6 +6419,7 @@ enum {
+ 	ALC285_FIXUP_HP_MUTE_LED,
+ 	ALC236_FIXUP_HP_GPIO_LED,
+ 	ALC236_FIXUP_HP_MUTE_LED,
++	ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF,
+ 	ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET,
+ 	ALC295_FIXUP_ASUS_MIC_NO_PRESENCE,
+ 	ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS,
+@@ -7646,6 +7666,10 @@ static const struct hda_fixup alc269_fix
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc236_fixup_hp_mute_led,
  	},
-+	{
-+		/* Sennheiser Communications Headset [PC 8] */
-+		.id = USB_ID(0x1395, 0x0025),
-+		.map = sennheiser_pc8_map,
++	[ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc236_fixup_hp_mute_led_micmute_vref,
 +	},
- 	{ 0 } /* terminator */
- };
- 
+ 	[ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET] = {
+ 		.type = HDA_FIXUP_VERBS,
+ 		.v.verbs = (const struct hda_verb[]) {
+@@ -8063,6 +8087,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8724, "HP EliteBook 850 G7", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x8730, "HP ProBook 445 G7", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ 	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8760, "HP", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x877a, "HP", ALC285_FIXUP_HP_MUTE_LED),
 
 
