@@ -2,115 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3CF37905D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C2C37907B
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235280AbhEJOMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:12:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58804 "EHLO
+        id S231970AbhEJOU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232917AbhEJOKD (ORCPT
+        with ESMTP id S236977AbhEJORr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:10:03 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85929C0610E4
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:50:34 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id a2so15295966qkh.11
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:50:34 -0700 (PDT)
+        Mon, 10 May 2021 10:17:47 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CB3C08C5D6
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:53:45 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id t4so24721494ejo.0
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:53:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+2U891pcT5PFaAL7+dZJNGYBFLIb+qctBvykRURXgBY=;
-        b=dACYFzmZp5FCubbaz661EkjXMEr4yIw8M3uTK3Kyf9WGXPYwdZw+Te0aQwLTIgwwC2
-         IcIyUfISzla30F1Y5z5YNyfFMSuvpPToFEKyFwyWyzNO8J90FAq4FSLctkLmbUnqXieu
-         lMQ7sIa6zzDWNW+3ZAA/Ywi2wnST8RvZfOXC1jXTR/nDU/u1OUAIwV5METsf0kVOPHrk
-         PIuKStNqOQCBo7BK5+duLO5e2wBIi32E+Rgu2kNOG2SYryYXUN5IAmaJPspud5x7d6Vf
-         5XGHOc/1cpdW83EDoXATbw25gMJUpTl30B68jCIFcCNIzm8fMivAz/aG2nH3kKyIFqz2
-         KzIA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3/BpnWJEv4o5FfX0aIZJ40Ru/5e0Tbvo6Tknzzoadv8=;
+        b=UkesQq7U/Vv6j8enBp4w98nDH5cgHq2J7P37F7StYDrpooPI34/pzSH+hT06U1W2/C
+         SrQRPskipuF0pIQL1UWCrC9wa00Z1+Yz3mVw580J9TEeRv3YPQHJNDnWVxiWayqSliYW
+         RvfQn8L7qemW7Hrg0OdX5lvb5WihYgqnewGXnOLz045bXvi4zEi2/Oxj+Wauz/coV+oI
+         ruLiqiRfuX3z5K7puwuN3t4pIlz9v0QtXaRPLKqSGgZn8bn9dS0VOVSQB9yNuoNxLH6Y
+         +PLT34lTaDhXYKBD18/9HqcwDBz7y26rzkTPDRoLriu+O7/qfQSeCtDJd0B1431ESYj1
+         CgPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+2U891pcT5PFaAL7+dZJNGYBFLIb+qctBvykRURXgBY=;
-        b=L7TOpkwg1ftjsTub9tzAHcr64oLOM2hMPPQKJUZif64aLqxttdTqs0yTAwerk70RCe
-         x8B3BZqQn2h8dOaww8VGPydzNZJ8D5lfUYcmVk05LXgckll19Dh+bT6L6Ik4Rfu4gyN8
-         FEc2DjgZR0qx/Yoniyro4HOpT+4LcrMYBntvDiQN0oX0ck2q03WZQfqkgUCChyOY6Mu8
-         5uAx3mMu4nvoq4/y+UrC/SXv/L3EoOl15uk6RkJ1YNKFwSlI1O+Ktbp4VQt2+stoppyv
-         cWmAalIktMI3Pbf4ukyv29cqSzMX5QtjI/A0jYm8z01HtMnMC0rCqtDQAr/9hWCw41GX
-         M6bA==
-X-Gm-Message-State: AOAM532KDBjZkfI7G49M3XQ43vaZQtFaTmme1EmDnD3Krn9TttCjSK4i
-        94NYAoQIVl13i1Bv4SGR7JqFDQ==
-X-Google-Smtp-Source: ABdhPJzBvEXIq3ZKj83MNPLUEszsweYjMFeVQA7SyU/yis3HOqTzVmEhu9DH0fP04ViEgC4gr5a3yA==
-X-Received: by 2002:a05:620a:4543:: with SMTP id u3mr22610464qkp.118.1620654633736;
-        Mon, 10 May 2021 06:50:33 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id e7sm11644631qth.27.2021.05.10.06.50.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 06:50:32 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lg6Ip-004ZFk-QY; Mon, 10 May 2021 10:50:31 -0300
-Date:   Mon, 10 May 2021 10:50:31 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PULL] topic/iomem-mmap-vs-gup
-Message-ID: <20210510135031.GF2047089@ziepe.ca>
-References: <YJBHiRiCGzojk25U@phenom.ffwll.local>
- <CAHk-=wiwgOPQ+4Eaf0GD5P_GveE6vUHsKxAT=pMsjk1v_kh4ig@mail.gmail.com>
- <YJVijmznt1xnsCxc@phenom.ffwll.local>
- <CAHk-=wgjO8-f1bUwQB=5HGzkvSS+aGACR9+H5CkkDhRgud+3MA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3/BpnWJEv4o5FfX0aIZJ40Ru/5e0Tbvo6Tknzzoadv8=;
+        b=VKmJt09Bgp0sxQDXnbb7JMzQ9coEWOz9xrCvc1hs1fAObm9icz6erLUi1jdYl7+jXZ
+         ZjVAKuokkYAhXjPWY5SxPALnmU8ci0KCkii0rk5bslhM2Q1vvfYoxiqhh6U1PZxNWF5C
+         kE18EcMG/+RJe57xAlJLhG+JJNplQ/snI1iiwExfFRYXYDiffOD/d9wvtikhE4dRW3Fz
+         4lyIxj0ZGsGkDAmZzz/yJq1EPb4MEDsSiqhtJWyWd8iPh07m2UU4PYGNj3WcI6H3Ha9o
+         uwBDx9/xScLXFqeyuPGq4MPGGaX0n5N0Yffj97F0p8PDvmDTcCHPEGJAxYmjKtd7G0eo
+         CImg==
+X-Gm-Message-State: AOAM530WVSyOF5t58Re1uPS86jWtsbHcGKZk2Frin37yNOJqCInL+Y5s
+        rASuv0sIe5ip9WjppscykPR5IxDvYHnjM0Q+jrFryA==
+X-Google-Smtp-Source: ABdhPJxTc1BkzCj3RKu6aUlgFJxgyFP3L14QOJWTKLIzRzZDXDruv3cMRlZzIFPCM95csvx+Esb4EjCSrpUflzt4+aE=
+X-Received: by 2002:a17:906:fa86:: with SMTP id lt6mr25351839ejb.547.1620654822363;
+ Mon, 10 May 2021 06:53:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgjO8-f1bUwQB=5HGzkvSS+aGACR9+H5CkkDhRgud+3MA@mail.gmail.com>
+References: <cover.1620641727.git.mchehab+huawei@kernel.org> <16298d18c8bada9775e32d5f7f9edf664bce820d.1620641727.git.mchehab+huawei@kernel.org>
+In-Reply-To: <16298d18c8bada9775e32d5f7f9edf664bce820d.1620641727.git.mchehab+huawei@kernel.org>
+From:   Guenter Roeck <groeck@google.com>
+Date:   Mon, 10 May 2021 06:53:30 -0700
+Message-ID: <CABXOdTctRP0qHzgJGKXuE6AnroP-J1yJVYEDNQ4O-NKMC0ajcA@mail.gmail.com>
+Subject: Re: [PATCH 41/53] docs: ABI: avoid using UTF-8 chars
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Steven Price <steven.price@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Tom Rix <trix@redhat.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 09:46:41AM -0700, Linus Torvalds wrote:
+On Mon, May 10, 2021 at 3:27 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> While UTF-8 characters can be used at the Linux documentation,
+> the best is to use them only when ASCII doesn't offer a good replacement.
+> So, replace the occurences of the following UTF-8 characters:
+>
+>         - U+2013 ('=E2=80=93'): EN DASH
+>         - U+2018 ('=E2=80=98'): LEFT SINGLE QUOTATION MARK
+>         - U+2019 ('=E2=80=99'): RIGHT SINGLE QUOTATION MARK
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-> I think follow_pfn() is ok for the actual "this is not a 'struct page'
-> backed area", and disabling that case is wrong even going forward.
+Reviewed-by: Guenter Roeck <groeck@chromium.org>
 
-Every place we've audited using follow_pfn() has been shown to have
-some use-after-free bugs like Daniel describes, and a failure to check
-permissions bug too.
-
-All the other follow_pfn() users were moved to follow_pte() to fix the
-permissions check and this shifts the use-after-free bug away from
-being inside an MM API and into the caller mis-using the API by, say,
-extracting and using the PFN outside the pte lock.
-
-eg look at how VFIO wrongly uses follow_pte():
-
-static int follow_fault_pfn()
-        ret = follow_pte(vma->vm_mm, vaddr, &ptep, &ptl);
-                *pfn = pte_pfn(*ptep);
-        pte_unmap_unlock(ptep, ptl);
-
-        // no protection that pte_pfn() is still valid!
-        use_pfn(*pfn)
-
-v4l is the only user that still has the missing permissions check
-security bug too - so there is no outcome that should keep
-follow_pfn() in the tree.
-
-At worst v4l should change to follow_pte() and use it wrongly like
-VFIO. At best we should delete all the v4l stuff.
-
-Daniel I suppose we missed this relation to follow_pte(), so I agree
-that keeping a unsafe_follow_pfn() around is not good.
-
-Regards,
-Jason
+> ---
+>  .../ABI/testing/sysfs-class-chromeos-driver-cros-ec-lightbar  | 2 +-
+>  Documentation/ABI/testing/sysfs-class-net-cdc_ncm             | 2 +-
+>  Documentation/ABI/testing/sysfs-devices-platform-ipmi         | 2 +-
+>  Documentation/ABI/testing/sysfs-devices-platform-trackpoint   | 2 +-
+>  Documentation/ABI/testing/sysfs-devices-soc                   | 4 ++--
+>  5 files changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/Documentation/ABI/testing/sysfs-class-chromeos-driver-cros-e=
+c-lightbar b/Documentation/ABI/testing/sysfs-class-chromeos-driver-cros-ec-=
+lightbar
+> index 57a037791403..a7fb8f1169f2 100644
+> --- a/Documentation/ABI/testing/sysfs-class-chromeos-driver-cros-ec-light=
+bar
+> +++ b/Documentation/ABI/testing/sysfs-class-chromeos-driver-cros-ec-light=
+bar
+> @@ -29,7 +29,7 @@ KernelVersion:        4.2
+>  Description:
+>                 This allows you to control each LED segment. If the
+>                 lightbar is already running one of the automatic
+> -               sequences, you probably won=E2=80=99t see anything change=
+ because
+> +               sequences, you probably won't see anything change because
+>                 your color setting will be almost immediately replaced.
+>                 To get useful results, you should stop the lightbar
+>                 sequence first.
+> diff --git a/Documentation/ABI/testing/sysfs-class-net-cdc_ncm b/Document=
+ation/ABI/testing/sysfs-class-net-cdc_ncm
+> index 06416d0e163d..41a1eef0d0e7 100644
+> --- a/Documentation/ABI/testing/sysfs-class-net-cdc_ncm
+> +++ b/Documentation/ABI/testing/sysfs-class-net-cdc_ncm
+> @@ -93,7 +93,7 @@ Contact:      Bj=C3=B8rn Mork <bjorn@mork.no>
+>  Description:
+>                 - Bit 0: 16-bit NTB supported (set to 1)
+>                 - Bit 1: 32-bit NTB supported
+> -               - Bits 2 =E2=80=93 15: reserved (reset to zero; must be i=
+gnored by host)
+> +               - Bits 2 - 15: reserved (reset to zero; must be ignored b=
+y host)
+>
+>  What:          /sys/class/net/<iface>/cdc_ncm/dwNtbInMaxSize
+>  Date:          May 2014
+> diff --git a/Documentation/ABI/testing/sysfs-devices-platform-ipmi b/Docu=
+mentation/ABI/testing/sysfs-devices-platform-ipmi
+> index 07df0ddc0b69..3935cdedea0e 100644
+> --- a/Documentation/ABI/testing/sysfs-devices-platform-ipmi
+> +++ b/Documentation/ABI/testing/sysfs-devices-platform-ipmi
+> @@ -52,7 +52,7 @@ Date:         Mar, 2006
+>  KernelVersion: v2.6.17
+>  Contact:       openipmi-developer@lists.sourceforge.net
+>  Description:
+> -               (RO) Lists the IPMI =E2=80=98logical device=E2=80=99 comm=
+ands and functions
+> +               (RO) Lists the IPMI 'logical device' commands and functio=
+ns
+>                 that the controller supports that are in addition to the
+>                 mandatory IPM and Application commands.
+>
+> diff --git a/Documentation/ABI/testing/sysfs-devices-platform-trackpoint =
+b/Documentation/ABI/testing/sysfs-devices-platform-trackpoint
+> index df11901a6b3d..82a38ac0435c 100644
+> --- a/Documentation/ABI/testing/sysfs-devices-platform-trackpoint
+> +++ b/Documentation/ABI/testing/sysfs-devices-platform-trackpoint
+> @@ -105,7 +105,7 @@ KernelVersion:      3.19
+>  Contact:       linux-input@vger.kernel.org
+>  Description:
+>                 (RW) This parameter controls the period of time to test f=
+or a
+> -               =E2=80=98hands off=E2=80=99 condition (i.e. when no force=
+ is applied) before a
+> +               'hands off' condition (i.e. when no force is applied) bef=
+ore a
+>                 drift (noise) calibration occurs.
+>
+>                 IBM Trackpoints have a feature to compensate for drift by
+> diff --git a/Documentation/ABI/testing/sysfs-devices-soc b/Documentation/=
+ABI/testing/sysfs-devices-soc
+> index ea999e292f11..7f90c6a44610 100644
+> --- a/Documentation/ABI/testing/sysfs-devices-soc
+> +++ b/Documentation/ABI/testing/sysfs-devices-soc
+> @@ -27,11 +27,11 @@ Description:
+>                 (e.g. DB8500).
+>
+>                 On many of ARM based silicon with SMCCC v1.2+ compliant f=
+irmware
+> -               this will contain the JEDEC JEP106 manufacturer=E2=80=99s=
+ identification
+> +               this will contain the JEDEC JEP106 manufacturer's identif=
+ication
+>                 code. The format is "jep106:XXYY" where XX is identity co=
+de and
+>                 YY is continuation code.
+>
+> -               This manufacturer=E2=80=99s identification code is define=
+d by one
+> +               This manufacturer's identification code is defined by one
+>                 or more eight (8) bit fields, each consisting of seven (7=
+)
+>                 data bits plus one (1) odd parity bit. It is a single fie=
+ld,
+>                 limiting the possible number of vendors to 126. To expand
+> --
+> 2.30.2
+>
