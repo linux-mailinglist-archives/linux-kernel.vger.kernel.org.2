@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA5C378367
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2868378363
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232940AbhEJKot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:44:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41508 "EHLO mail.kernel.org"
+        id S233405AbhEJKpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:45:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232260AbhEJKgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:36:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADB6961943;
-        Mon, 10 May 2021 10:29:12 +0000 (UTC)
+        id S231472AbhEJKhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:37:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A92E761628;
+        Mon, 10 May 2021 10:29:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642553;
-        bh=zdyythD21HvJgoFCj/9ADYkiuDf0zulSgc++zqebsM8=;
+        s=korg; t=1620642580;
+        bh=2x17qympeKNR+HljtLITMAh+gayFVjXH0nYXirtyFrw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kg5d94kXQd6aW4MXy1XRte2ktf8LD4cL7CeZf82lDAxIiFWDhVdeMPYOjJPkP+J64
-         UnnaEC8WwoFBnik6zlI1LIEFqFdzN/COLMvtfZsrgXRqMDqOT2evedFVIcQW0bZE4L
-         jl7tToyAIRxK7E+vsZXugbdzAFGLeG8pptn3GXKQ=
+        b=SfUDiYiK/eM4G+2KGXc8nSY2asbOOrWmM0wrgdNNtc2wOLTfT4eBvSHqFdbpDvjyx
+         /e4FyTmm3gvVppTyKuBOMQ6RII/qOxyFInRJQFce1O048s6kMnYPkyU1FTFJzG/MhA
+         02cJ51+UE/ZP6imEtgySlu7RXHjWyYdpylC1DXf8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 124/184] s390/archrandom: add parameter check for s390_arch_random_generate
-Date:   Mon, 10 May 2021 12:20:18 +0200
-Message-Id: <20210510101954.238752805@linuxfoundation.org>
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 125/184] ALSA: emu8000: Fix a use after free in snd_emu8000_create_mixer
+Date:   Mon, 10 May 2021 12:20:19 +0200
+Message-Id: <20210510101954.268837184@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510101950.200777181@linuxfoundation.org>
 References: <20210510101950.200777181@linuxfoundation.org>
@@ -41,45 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harald Freudenberger <freude@linux.ibm.com>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit 28096067686c5a5cbd4c35b079749bd805df5010 ]
+commit 1c98f574403dbcf2eb832d5535a10d967333ef2d upstream.
 
-A review of the code showed, that this function which is exposed
-within the whole kernel should do a parameter check for the
-amount of bytes requested. If this requested bytes is too high
-an unsigned int overflow could happen causing this function to
-try to memcpy a really big memory chunk.
+Our code analyzer reported a uaf.
 
-This is not a security issue as there are only two invocations
-of this function from arch/s390/include/asm/archrandom.h and both
-are not exposed to userland.
+In snd_emu8000_create_mixer, the callee snd_ctl_add(..,emu->controls[i])
+calls snd_ctl_add_replace(.., kcontrol,..). Inside snd_ctl_add_replace(),
+if error happens, kcontrol will be freed by snd_ctl_free_one(kcontrol).
+Then emu->controls[i] points to a freed memory, and the execution comes
+to __error branch of snd_emu8000_create_mixer. The freed emu->controls[i]
+is used in snd_ctl_remove(card, emu->controls[i]).
 
-Reported-by: Sven Schnelle <svens@linux.ibm.com>
-Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+My patch set emu->controls[i] to NULL if snd_ctl_add() failed to avoid
+the uaf.
+
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210426131129.4796-1-lyl2019@mail.ustc.edu.cn
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/crypto/arch_random.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/isa/sb/emu8000.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/crypto/arch_random.c b/arch/s390/crypto/arch_random.c
-index dd95cdbd22ce..4cbb4b6d85a8 100644
---- a/arch/s390/crypto/arch_random.c
-+++ b/arch/s390/crypto/arch_random.c
-@@ -53,6 +53,10 @@ static DECLARE_DELAYED_WORK(arch_rng_work, arch_rng_refill_buffer);
+--- a/sound/isa/sb/emu8000.c
++++ b/sound/isa/sb/emu8000.c
+@@ -1029,8 +1029,10 @@ snd_emu8000_create_mixer(struct snd_card
  
- bool s390_arch_random_generate(u8 *buf, unsigned int nbytes)
- {
-+	/* max hunk is ARCH_RNG_BUF_SIZE */
-+	if (nbytes > ARCH_RNG_BUF_SIZE)
-+		return false;
-+
- 	/* lock rng buffer */
- 	if (!spin_trylock(&arch_rng_lock))
- 		return false;
--- 
-2.30.2
-
+ 	memset(emu->controls, 0, sizeof(emu->controls));
+ 	for (i = 0; i < EMU8000_NUM_CONTROLS; i++) {
+-		if ((err = snd_ctl_add(card, emu->controls[i] = snd_ctl_new1(mixer_defs[i], emu))) < 0)
++		if ((err = snd_ctl_add(card, emu->controls[i] = snd_ctl_new1(mixer_defs[i], emu))) < 0) {
++			emu->controls[i] = NULL;
+ 			goto __error;
++		}
+ 	}
+ 	return 0;
+ 
 
 
