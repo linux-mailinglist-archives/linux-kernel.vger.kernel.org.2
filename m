@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A9A378A81
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148B9378C1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236789AbhEJLps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:45:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52754 "EHLO mail.kernel.org"
+        id S1345688AbhEJMZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:25:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232288AbhEJK6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:58:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 735F961968;
-        Mon, 10 May 2021 10:52:19 +0000 (UTC)
+        id S237034AbhEJLLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:11:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65B7361581;
+        Mon, 10 May 2021 11:06:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643940;
-        bh=StED5C+9xFJIbXF5NNcYncqzgF/6dFP2+isRA9tQBtc=;
+        s=korg; t=1620644790;
+        bh=x9QvwcMUriwz5L2DA6a+cYKWavVW1n8+/4S4UeHFsE0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oUCX2OHZ5JGF8IRBF749XZCThbTrqyRdEoAAecG2mbyYKoPHANVbJGX6wdM2T6KA5
-         Am8oXbrgJTck21Ih/KhdTDT8p/S2dcz1OQeBDps9ao14ccuFFrQSnuB0Lokzl2XXI/
-         +TelM4+qVXmu26KY0dLT52/i8+/yWOPaF247OhfA=
+        b=gqKT9R7V9ZiJrfA3MUK0Y4qWqR8fE1Qmg+k4BsXHcTuxzt8k6uFE8o1B7BpsK0Ups
+         Z2aKHCStRB3/LGxOh7K5ZWm8hslzDndoaBZFBCLROYr422ylDMiAoFZw89UgYQUl+S
+         TSQ7WMiKva3X5EaTHxJJnJE5jO+5Ff9ZMdkO7yS4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Harry Wentland <harry.wentland@amd.com>,
-        Werner Sembach <wse@tuxedocomputers.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Akhil P Oommen <akhilpo@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 223/342] drm/amd/display: Try YCbCr420 color when YCbCr444 fails
+Subject: [PATCH 5.12 224/384] drm/msm/a6xx: Fix perfcounter oob timeout
 Date:   Mon, 10 May 2021 12:20:13 +0200
-Message-Id: <20210510102017.461162224@linuxfoundation.org>
+Message-Id: <20210510102022.286064522@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
+References: <20210510102014.849075526@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Werner Sembach <wse@tuxedocomputers.com>
+From: Akhil P Oommen <akhilpo@codeaurora.org>
 
-[ Upstream commit 68eb3ae3c63708f823aeeb63bb15197c727bd9bf ]
+[ Upstream commit 2fc8a92e0a22c483e749232d4f13c77a92139aa7 ]
 
-When encoder validation of a display mode fails, retry with less bandwidth
-heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
-to support 4k60Hz output, which previously failed silently.
+We were not programing the correct bit while clearing the perfcounter oob.
+So, clear it correctly using the new 'clear' bit. This fixes the below
+error:
 
-On some setups, while the monitor and the gpu support display modes with
-pixel clocks of up to 600MHz, the link encoder might not. This prevents
-YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
-possible. However, which color mode is used is decided before the link
-encoder capabilities are checked. This patch fixes the problem by retrying
-to find a display mode with YCbCr420 enforced and using it, if it is
-valid.
+[drm:a6xx_gmu_set_oob] *ERROR* Timeout waiting for GMU OOB set PERFCOUNTER: 0x80000000
 
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+Link: https://lore.kernel.org/r/1617630433-36506-1-git-send-email-akhilpo@codeaurora.org
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 2b957d60c7b5..fa4786a8296f 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -5735,6 +5735,15 @@ create_validate_stream_for_sink(struct amdgpu_dm_connector *aconnector,
- 
- 	} while (stream == NULL && requested_bpc >= 6);
- 
-+	if (dc_result == DC_FAIL_ENC_VALIDATE && !aconnector->force_yuv420_output) {
-+		DRM_DEBUG_KMS("Retry forcing YCbCr420 encoding\n");
-+
-+		aconnector->force_yuv420_output = true;
-+		stream = create_validate_stream_for_sink(aconnector, drm_mode,
-+						dm_state, old_stream);
-+		aconnector->force_yuv420_output = false;
-+	}
-+
- 	return stream;
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+index 91cf46f84025..3d55e153fa9c 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+@@ -246,7 +246,7 @@ static int a6xx_gmu_hfi_start(struct a6xx_gmu *gmu)
  }
  
+ struct a6xx_gmu_oob_bits {
+-	int set, ack, set_new, ack_new;
++	int set, ack, set_new, ack_new, clear, clear_new;
+ 	const char *name;
+ };
+ 
+@@ -260,6 +260,8 @@ static const struct a6xx_gmu_oob_bits a6xx_gmu_oob_bits[] = {
+ 		.ack = 24,
+ 		.set_new = 30,
+ 		.ack_new = 31,
++		.clear = 24,
++		.clear_new = 31,
+ 	},
+ 
+ 	[GMU_OOB_PERFCOUNTER_SET] = {
+@@ -268,18 +270,22 @@ static const struct a6xx_gmu_oob_bits a6xx_gmu_oob_bits[] = {
+ 		.ack = 25,
+ 		.set_new = 28,
+ 		.ack_new = 30,
++		.clear = 25,
++		.clear_new = 29,
+ 	},
+ 
+ 	[GMU_OOB_BOOT_SLUMBER] = {
+ 		.name = "BOOT_SLUMBER",
+ 		.set = 22,
+ 		.ack = 30,
++		.clear = 30,
+ 	},
+ 
+ 	[GMU_OOB_DCVS_SET] = {
+ 		.name = "GPU_DCVS",
+ 		.set = 23,
+ 		.ack = 31,
++		.clear = 31,
+ 	},
+ };
+ 
+@@ -335,9 +341,9 @@ void a6xx_gmu_clear_oob(struct a6xx_gmu *gmu, enum a6xx_gmu_oob_state state)
+ 		return;
+ 
+ 	if (gmu->legacy)
+-		bit = a6xx_gmu_oob_bits[state].ack;
++		bit = a6xx_gmu_oob_bits[state].clear;
+ 	else
+-		bit = a6xx_gmu_oob_bits[state].ack_new;
++		bit = a6xx_gmu_oob_bits[state].clear_new;
+ 
+ 	gmu_write(gmu, REG_A6XX_GMU_HOST2GMU_INTR_SET, 1 << bit);
+ }
 -- 
 2.30.2
 
