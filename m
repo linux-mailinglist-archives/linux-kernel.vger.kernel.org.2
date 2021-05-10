@@ -2,137 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8701B378DE8
+	by mail.lfdr.de (Postfix) with ESMTP id EA225378DE9
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350184AbhEJM4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:56:46 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:56980 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347138AbhEJMdY (ORCPT
+        id S1350202AbhEJM4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:56:48 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:35937 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347305AbhEJMdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 08:33:24 -0400
-Received: by mail-il1-f199.google.com with SMTP id u5-20020a92da850000b0290167339353beso13578038iln.23
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:32:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=odmkibldUbiwFggnW0nDh4OAVXIo2X/IT1wmt/9TM3I=;
-        b=Hti7bFnOTCfch+S6ynHvqG6nKCW9pES/yGtq7+qHbIr6z/HnAn/wqKVGhO5bxDkPPK
-         B7Qes+TjdDsJcfG1wFmbJs45rBakNyVlu6sMm/G8ZiPM6VW+XKyxG3cNTnDFUb7gFUaR
-         l+sJeALLTQOq4zayWuNW21V8yiOSqCL11rKm9iB9sAxJXUgowwuAWCffJohh9lfciu9+
-         LsyT9OOi0+B6Ln2MiWAjTCznEHRn+mm5fECwq4tARHdTxEM2dbpQedYsu/OV4Db5VtrY
-         XX5EO6tYi5ZB/KKEmeq7S7g0e9pHxoek4BgmkpjVcfvWVsxcv33iR+ezf1ancDpcDYYa
-         MEzA==
-X-Gm-Message-State: AOAM530w5Ci1hj1u3qWGVC9JI9GD8dxN9Zql9qIF4Y/GhLlDDK/0NUEt
-        79wkEnxkbY06rlWPDL3omO8rDZsHSIgrsNp4sEI4sM2Oxgeo
-X-Google-Smtp-Source: ABdhPJwNXYY5T23GCs9vinYV8f/uVNNg+81bMtfJSaaXK/6cbHvUnE0CKYIJ46hT0g7GrIOxS+Vwq/cJGRTLqIQM4XUOA/XtTiKp
+        Mon, 10 May 2021 08:33:53 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id A79D65C01A3;
+        Mon, 10 May 2021 08:32:47 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 10 May 2021 08:32:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=oObO8o2tNMzbSU4/I4bCTlKDZH5
+        pBHbBb3SLAsD2hUU=; b=uNauK/jkeEozgJQXiu8ZVVoI/RvcyuA56y2xsTdwWZB
+        0v8DOtWRP13qyap6Q6RR9Vz4VmAcBFq57iuBLe3z1gCj81ekbzHkQIhbtZJogYDS
+        Z2fDHf3alxt9CluV9lHIwygA3rdk7DiRk74reShtHtHRL4wYc8PyGC6v1yGP7vdG
+        EBJI71liWSyjvpIAJ+d/+vIDMafr4cbTUu8ojrzm40+V/bZhsxdLTJTL/xddDQvd
+        boXuP+KfT9QnVNBhDWasEpS5ZdhrVAyJzfS3yRe2HdJBK6G0ZBnk0PrKgtb74qLi
+        WT/+CXv6HSNIVU+0AD/HnF/3I31QbKBX3q73Qnf1/ew==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=oObO8o
+        2tNMzbSU4/I4bCTlKDZH5pBHbBb3SLAsD2hUU=; b=fB5OlocDnX6odU9hjhCqnq
+        wx70CnAuo7nLGyY7Lk6OS2TqCtcMhBbbA+jw1j1UGad8hVfojam25x4Y+oyr+pl2
+        de3RVnsh8RslC8BVuNHhOyZnbeF6qS7byAteERqinRlLF4UFiUTBY1msA8Ea35Pt
+        kWlFcsv1UPRCtNlSdrHq4Uj0ygYXQ/q1va/X8rMVMfCCKXqngQ5NSR4813DWIEsl
+        1zRao3qO4C6hdCfBWk5itt1Ce/qVbeKcctdQafQmgDskUD/s0CBxVMIlWj/ynlR4
+        KS/QYASKKFSLkBA5df3sOtTaf4iIhVJpT68G56T9MhVT5zIpiLTkpZQDc4ulHIag
+        ==
+X-ME-Sender: <xms:7ieZYPxsOmzgxIOg1UW9WxXxb-TIgGrR0CKKebhbCWyXNaSvWetzIg>
+    <xme:7ieZYHTrENvJlVUF-8DNsQO3bKma1rLxqrofWLq9P2CPWdm9pLu8dY2kpStvtOsIn
+    S8I9zxQYoPuzFlzuWg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdegkedgheefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesghdtre
+    ertddtvdenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
+    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpeelkeeghefhuddtleejgfeljeffhe
+    ffgfeijefhgfeufefhtdevteegheeiheegudenucfkphepledtrdekledrieekrdejieen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigih
+    hmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:7ieZYJXQDhjUPWKNxD-2PDLoXTfOlvO2bm0WOIcPmhkX6sunJLheAw>
+    <xmx:7ieZYJgZ9FEuR095h10UdRnWrelAZTSeyO0vLdbO_CghObjtW0F0fw>
+    <xmx:7ieZYBA6UdiTrGlU6Bd1fc_0YyMkmUQmQ3fuJGvNAxnrJE9XJYSPwg>
+    <xmx:7yeZYM9r6bT2rLVvsVL0_eZreSOLkm6bBkjB9wAf0VdrfNUPxNbfIQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Mon, 10 May 2021 08:32:46 -0400 (EDT)
+Date:   Mon, 10 May 2021 14:32:43 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Rajat Asthana <thisisrast7@gmail.com>
+Cc:     maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
+        airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: Declare drm_send_event_helper static.
+Message-ID: <20210510123243.hmwar3swmrewskjs@gilmour>
+References: <20210509134252.488157-1-thisisrast7@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:91c1:: with SMTP id s1mr21010543jag.61.1620649938133;
- Mon, 10 May 2021 05:32:18 -0700 (PDT)
-Date:   Mon, 10 May 2021 05:32:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000de267605c1f8f7ad@google.com>
-Subject: [syzbot] WARNING: refcount bug in rxe_qp_do_cleanup
-From:   syzbot <syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        zyjzyj2000@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3bqrf5xpqv6etbos"
+Content-Disposition: inline
+In-Reply-To: <20210509134252.488157-1-thisisrast7@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--3bqrf5xpqv6etbos
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13c0e569d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d360b81e47df40ea
-dashboard link: https://syzkaller.appspot.com/bug?extid=36a7f280de4e11c6f04e
+Hi,
 
-Unfortunately, I don't have any reproducer for this issue yet.
+On Sun, May 09, 2021 at 07:12:52PM +0530, Rajat Asthana wrote:
+> From: Rajat <thisisrast7@gmail.com>
+>=20
+> Declare drm_send_event_helper as static to fix sparse warning:
+>=20
+> > warning: symbol 'drm_send_event_helper' was not declared.
+> > Should it be static?
+>=20
+> Signed-off-by: Rajat <thisisrast7@gmail.com>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com
+Both the Author and Signed-off-by should have your full name
 
-infiniband syz1: set active
-infiniband syz1: added bridge_slave_0
-------------[ cut here ]------------
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 1 PID: 12560 at lib/refcount.c:28 refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
-Modules linked in:
-CPU: 1 PID: 12560 Comm: syz-executor.4 Not tainted 5.12.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
-Code: e9 db fe ff ff 48 89 df e8 2c c2 ea fd e9 8a fe ff ff e8 72 6a a7 fd 48 c7 c7 e0 b2 c1 89 c6 05 dc 3a e6 09 01 e8 ee 74 fb 04 <0f> 0b e9 af fe ff ff 0f 1f 84 00 00 00 00 00 41 56 41 55 41 54 55
-RSP: 0018:ffffc900097ceba8 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000040000 RSI: ffffffff815bb075 RDI: fffff520012f9d67
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815b4eae R11: 0000000000000000 R12: ffff8880322a4800
-R13: ffff8880322a4940 R14: ffff888033044e00 R15: 0000000000000000
-FS:  00007f6eb2be3700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fdbe5d41000 CR3: 000000001d181000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __refcount_sub_and_test include/linux/refcount.h:283 [inline]
- __refcount_dec_and_test include/linux/refcount.h:315 [inline]
- refcount_dec_and_test include/linux/refcount.h:333 [inline]
- kref_put include/linux/kref.h:64 [inline]
- rxe_qp_do_cleanup+0x96f/0xaf0 drivers/infiniband/sw/rxe/rxe_qp.c:805
- execute_in_process_context+0x37/0x150 kernel/workqueue.c:3327
- rxe_elem_release+0x9f/0x180 drivers/infiniband/sw/rxe/rxe_pool.c:391
- kref_put include/linux/kref.h:65 [inline]
- rxe_create_qp+0x2cd/0x310 drivers/infiniband/sw/rxe/rxe_verbs.c:425
- _ib_create_qp drivers/infiniband/core/core_priv.h:331 [inline]
- ib_create_named_qp+0x2ad/0x1370 drivers/infiniband/core/verbs.c:1231
- ib_create_qp include/rdma/ib_verbs.h:3644 [inline]
- create_mad_qp+0x177/0x2d0 drivers/infiniband/core/mad.c:2920
- ib_mad_port_open drivers/infiniband/core/mad.c:3001 [inline]
- ib_mad_init_device+0xd6f/0x1400 drivers/infiniband/core/mad.c:3092
- add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:717
- enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1331
- ib_register_device drivers/infiniband/core/device.c:1413 [inline]
- ib_register_device+0x7c7/0xa50 drivers/infiniband/core/device.c:1365
- rxe_register_device+0x3d5/0x4a0 drivers/infiniband/sw/rxe/rxe_verbs.c:1147
- rxe_add+0x12fe/0x16d0 drivers/infiniband/sw/rxe/rxe.c:247
- rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:503
- rxe_newlink drivers/infiniband/sw/rxe/rxe.c:269 [inline]
- rxe_newlink+0xb7/0xe0 drivers/infiniband/sw/rxe/rxe.c:250
- nldev_newlink+0x30e/0x550 drivers/infiniband/core/nldev.c:1555
- rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
- rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
- rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f6eb2be3188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 00000000004665f9
-RDX: 0000000000000000 RSI: 0000000020000600 RDI: 0000000000000003
-RBP: 00000000004bfce1 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
-R13: 00007ffc54e34f4f R14: 00007f6eb2be3300 R15: 0000000000022000
+Thanks!
+Maxime
 
+--3bqrf5xpqv6etbos
+Content-Type: application/pgp-signature; name="signature.asc"
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+-----BEGIN PGP SIGNATURE-----
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYJkn6wAKCRDj7w1vZxhR
+xRQ9APwPHSZPts1UIAqgRY/CgRs0O1YGQqMv21YRhb6knJ94AQEApfOc+eTQ6ucz
+4XbQebw6e4QiW/7mvxkW4JeIn7pKdws=
+=7fcP
+-----END PGP SIGNATURE-----
+
+--3bqrf5xpqv6etbos--
