@@ -2,128 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C5137840A
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8473782A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231810AbhEJKsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:48:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49358 "EHLO mail.kernel.org"
+        id S231200AbhEJKgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:36:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232772AbhEJKkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:40:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25C6C61874;
-        Mon, 10 May 2021 10:30:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642660;
-        bh=0mTBO4ocjefvlol03JlUoyOvHyGTENWBF1MOLXwhduU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=15dnZPZMAzvEoPMuIbL2Xl6/+UH3icPO0UUJ1MEyg/Op7AobuK716K5m2i85HfK2J
-         og0OeZV7jDXm1dMRSbn9lq/PhPgJaspVeyChrN3c3oF/pgfa9vzNSL11M1C7VguoiG
-         iY+kSy6jcDt2rPirc13wXBy5KVWLG1gyyJ9KN7HA=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Benjamin Block <bblock@linux.ibm.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.4 184/184] dm rq: fix double free of blk_mq_tag_set in dev remove after table load fails
-Date:   Mon, 10 May 2021 12:21:18 +0200
-Message-Id: <20210510101956.146785310@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510101950.200777181@linuxfoundation.org>
-References: <20210510101950.200777181@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S232056AbhEJKca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:32:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8B7061864;
+        Mon, 10 May 2021 10:27:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620642444;
+        bh=ecNT6Qkny310TF2Gc5f4rT75sPCp5MHYtIZGEKTj06Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UcevxFcEh3Li+i6O96esjAQwtO4uSF7OkmnaXbUGuKrV8uvn5D3YHrYAkQ2/PUQ+H
+         W9TvnHIXs+6PuDeS1sySVDl5b+kZJLJNiKWzOaT28OTrcYXd41BcTT/W/xmDMiDYJc
+         NXMcl5dkZF+skL/ecPvA5wTdK4o4x+GnunjH/NmxR/yJu8E4pznFJs+xWcx2gEwfA4
+         XCBkfBQ0zIGZl9DOMzQHk7sBS5W6Hlu9kth9XR129w1/oLPDA2JZ/64ZgwSblnTghd
+         iot0AnPlhuAm6nY73Msiw7+8VeDC0SCv/fIeb4QX1qF678zB0I6rD9S2HSN+p78ETw
+         VllHul+Znpi9A==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1lg38C-000UOL-8L; Mon, 10 May 2021 12:27:20 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fpga@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
+        rcu@vger.kernel.org, x86@kernel.org
+Subject: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as ASCII
+Date:   Mon, 10 May 2021 12:26:12 +0200
+Message-Id: <cover.1620641727.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Block <bblock@linux.ibm.com>
+There are several UTF-8 characters at the Kernel's documentation.
 
-commit 8e947c8f4a5620df77e43c9c75310dc510250166 upstream.
+Several of them were due to the process of converting files from
+DocBook, LaTeX, HTML and Markdown. They were probably introduced
+by the conversion tools used on that time.
 
-When loading a device-mapper table for a request-based mapped device,
-and the allocation/initialization of the blk_mq_tag_set for the device
-fails, a following device remove will cause a double free.
+Other UTF-8 characters were added along the time, but they're easily
+replaceable by ASCII chars.
 
-E.g. (dmesg):
-  device-mapper: core: Cannot initialize queue for request-based dm-mq mapped device
-  device-mapper: ioctl: unable to set up device queue for new table.
-  Unable to handle kernel pointer dereference in virtual kernel address space
-  Failing address: 0305e098835de000 TEID: 0305e098835de803
-  Fault in home space mode while using kernel ASCE.
-  AS:000000025efe0007 R3:0000000000000024
-  Oops: 0038 ilc:3 [#1] SMP
-  Modules linked in: ... lots of modules ...
-  Supported: Yes, External
-  CPU: 0 PID: 7348 Comm: multipathd Kdump: loaded Tainted: G        W      X    5.3.18-53-default #1 SLE15-SP3
-  Hardware name: IBM 8561 T01 7I2 (LPAR)
-  Krnl PSW : 0704e00180000000 000000025e368eca (kfree+0x42/0x330)
-             R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:0 AS:3 CC:2 PM:0 RI:0 EA:3
-  Krnl GPRS: 000000000000004a 000000025efe5230 c1773200d779968d 0000000000000000
-             000000025e520270 000000025e8d1b40 0000000000000003 00000007aae10000
-             000000025e5202a2 0000000000000001 c1773200d779968d 0305e098835de640
-             00000007a8170000 000003ff80138650 000000025e5202a2 000003e00396faa8
-  Krnl Code: 000000025e368eb8: c4180041e100       lgrl    %r1,25eba50b8
-             000000025e368ebe: ecba06b93a55       risbg   %r11,%r10,6,185,58
-            #000000025e368ec4: e3b010000008       ag      %r11,0(%r1)
-            >000000025e368eca: e310b0080004       lg      %r1,8(%r11)
-             000000025e368ed0: a7110001           tmll    %r1,1
-             000000025e368ed4: a7740129           brc     7,25e369126
-             000000025e368ed8: e320b0080004       lg      %r2,8(%r11)
-             000000025e368ede: b904001b           lgr     %r1,%r11
-  Call Trace:
-   [<000000025e368eca>] kfree+0x42/0x330
-   [<000000025e5202a2>] blk_mq_free_tag_set+0x72/0xb8
-   [<000003ff801316a8>] dm_mq_cleanup_mapped_device+0x38/0x50 [dm_mod]
-   [<000003ff80120082>] free_dev+0x52/0xd0 [dm_mod]
-   [<000003ff801233f0>] __dm_destroy+0x150/0x1d0 [dm_mod]
-   [<000003ff8012bb9a>] dev_remove+0x162/0x1c0 [dm_mod]
-   [<000003ff8012a988>] ctl_ioctl+0x198/0x478 [dm_mod]
-   [<000003ff8012ac8a>] dm_ctl_ioctl+0x22/0x38 [dm_mod]
-   [<000000025e3b11ee>] ksys_ioctl+0xbe/0xe0
-   [<000000025e3b127a>] __s390x_sys_ioctl+0x2a/0x40
-   [<000000025e8c15ac>] system_call+0xd8/0x2c8
-  Last Breaking-Event-Address:
-   [<000000025e52029c>] blk_mq_free_tag_set+0x6c/0xb8
-  Kernel panic - not syncing: Fatal exception: panic_on_oops
+As Linux developers are all around the globe, and not everybody has UTF-8
+as their default charset, better to use UTF-8 only on cases where it is really
+needed.
 
-When allocation/initialization of the blk_mq_tag_set fails in
-dm_mq_init_request_queue(), it is uninitialized/freed, but the pointer
-is not reset to NULL; so when dev_remove() later gets into
-dm_mq_cleanup_mapped_device() it sees the pointer and tries to
-uninitialize and free it again.
+The first 3 patches on this series were manually written, in order to solve
+a few special cases.
 
-Fix this by setting the pointer to NULL in dm_mq_init_request_queue()
-error-handling. Also set it to NULL in dm_mq_cleanup_mapped_device().
+The remaining patches on series address such cases on *.rst files and 
+inside the Documentation/ABI, using this perl map table in order to do the
+charset conversion:
 
-Cc: <stable@vger.kernel.org> # 4.6+
-Fixes: 1c357a1e86a4 ("dm: allocate blk_mq_tag_set rather than embed in mapped_device")
-Signed-off-by: Benjamin Block <bblock@linux.ibm.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/md/dm-rq.c |    2 ++
- 1 file changed, 2 insertions(+)
+my %char_map = (
+	0x2010 => '-',		# HYPHEN
+	0xad   => '-',		# SOFT HYPHEN
+	0x2013 => '-',		# EN DASH
+	0x2014 => '-',		# EM DASH
 
---- a/drivers/md/dm-rq.c
-+++ b/drivers/md/dm-rq.c
-@@ -572,6 +572,7 @@ out_tag_set:
- 	blk_mq_free_tag_set(md->tag_set);
- out_kfree_tag_set:
- 	kfree(md->tag_set);
-+	md->tag_set = NULL;
- 
- 	return err;
- }
-@@ -581,6 +582,7 @@ void dm_mq_cleanup_mapped_device(struct
- 	if (md->tag_set) {
- 		blk_mq_free_tag_set(md->tag_set);
- 		kfree(md->tag_set);
-+		md->tag_set = NULL;
- 	}
- }
- 
+	0x2018 => "'",		# LEFT SINGLE QUOTATION MARK
+	0x2019 => "'",		# RIGHT SINGLE QUOTATION MARK
+	0xb4   => "'",		# ACUTE ACCENT
+
+	0x201c => '"',		# LEFT DOUBLE QUOTATION MARK
+	0x201d => '"',		# RIGHT DOUBLE QUOTATION MARK
+
+	0x2212 => '-',		# MINUS SIGN
+	0x2217 => '*',		# ASTERISK OPERATOR
+	0xd7   => 'x',		# MULTIPLICATION SIGN
+
+	0xbb   => '>',		# RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+
+	0xa0   => ' ',		# NO-BREAK SPACE
+	0xfeff => '',		# ZERO WIDTH NO-BREAK SPACE
+);
+
+After the conversion, those UTF-8 chars will be kept:
+
+	- U+00a9 ('©'): COPYRIGHT SIGN
+	- U+00ac ('¬'): NOT SIGN		# only at Documentation/powerpc/transactional_memory.rst
+	- U+00ae ('®'): REGISTERED SIGN
+	- U+00b0 ('°'): DEGREE SIGN
+	- U+00b1 ('±'): PLUS-MINUS SIGN
+	- U+00b2 ('²'): SUPERSCRIPT TWO
+	- U+00b5 ('µ'): MICRO SIGN
+	- U+00b7 ('·'): MIDDLE DOT		# See below
+	- U+00bd ('½'): VULGAR FRACTION ONE HALF
+	- U+00c7 ('Ç'): LATIN CAPITAL LETTER C WITH CEDILLA
+	- U+00df ('ß'): LATIN SMALL LETTER SHARP S
+	- U+00e1 ('á'): LATIN SMALL LETTER A WITH ACUTE
+	- U+00e4 ('ä'): LATIN SMALL LETTER A WITH DIAERESIS
+	- U+00e6 ('æ'): LATIN SMALL LETTER AE
+	- U+00e7 ('ç'): LATIN SMALL LETTER C WITH CEDILLA
+	- U+00e9 ('é'): LATIN SMALL LETTER E WITH ACUTE
+	- U+00ea ('ê'): LATIN SMALL LETTER E WITH CIRCUMFLEX
+	- U+00eb ('ë'): LATIN SMALL LETTER E WITH DIAERESIS
+	- U+00f3 ('ó'): LATIN SMALL LETTER O WITH ACUTE
+	- U+00f4 ('ô'): LATIN SMALL LETTER O WITH CIRCUMFLEX
+	- U+00f6 ('ö'): LATIN SMALL LETTER O WITH DIAERESIS
+	- U+00f8 ('ø'): LATIN SMALL LETTER O WITH STROKE
+	- U+00fa ('ú'): LATIN SMALL LETTER U WITH ACUTE
+	- U+00fc ('ü'): LATIN SMALL LETTER U WITH DIAERESIS
+	- U+00fd ('ý'): LATIN SMALL LETTER Y WITH ACUTE
+	- U+011f ('ğ'): LATIN SMALL LETTER G WITH BREVE
+	- U+0142 ('ł'): LATIN SMALL LETTER L WITH STROKE
+	- U+03bc ('μ'): GREEK SMALL LETTER MU
+	- U+2026 ('…'): HORIZONTAL ELLIPSIS
+	- U+2122 ('™'): TRADE MARK SIGN
+	- U+2191 ('↑'): UPWARDS ARROW
+	- U+2192 ('→'): RIGHTWARDS ARROW
+	- U+2193 ('↓'): DOWNWARDS ARROW
+	- U+2264 ('≤'): LESS-THAN OR EQUAL TO
+	- U+2265 ('≥'): GREATER-THAN OR EQUAL TO
+	- U+2500 ('─'): BOX DRAWINGS LIGHT HORIZONTAL
+	- U+2502 ('│'): BOX DRAWINGS LIGHT VERTICAL
+	- U+2514 ('└'): BOX DRAWINGS LIGHT UP AND RIGHT
+	- U+251c ('├'): BOX DRAWINGS LIGHT VERTICAL AND RIGHT
+	- U+2b0d ('⬍'): UP DOWN BLACK ARROW
+
+PS.: maintainers were bcc on patch 00/53, in order to reduce the
+risk of patch 00 to be rejected by list servers.
+
+-
+
+For U+00b7 ('·'): MIDDLE DOT, I opted to keep it on a few places:
+
+- Documentation/devicetree/bindings/clock/qcom,rpmcc.txt
+
+  As this file will be some day converted to yaml, where the 
+  MIDDLE DOT will be removed, I guess it is not worth touching it.
+
+- Documentation/scheduler/sched-deadline.rst
+
+  There, it is used on a math expressions. So, better to keep.
+
+- Documentation/devicetree/bindings/media/video-interface-devices.yaml
+
+  There, it part of an ASCII artwork.
+
+- translations/zh_CN
+
+  I prefer not touching it, as it might have some special meaning in Simplified Chinese.
+
+Mauro Carvalho Chehab (53):
+  docs: cdrom-standard.rst: get rid of uneeded UTF-8 chars
+  docs: ABI: remove a meaningless UTF-8 character
+  docs: ABI: remove some spurious characters
+  docs: index.rst: avoid using UTF-8 chars
+  docs: hwmon: avoid using UTF-8 chars
+  docs: admin-guide: avoid using UTF-8 chars
+  docs: admin-guide: media: ipu3.rst: avoid using UTF-8 chars
+  docs: admin-guide: sysctl: kernel.rst: avoid using UTF-8 chars
+  docs: admin-guide: perf: imx-ddr.rst: avoid using UTF-8 chars
+  docs: admin-guide: pm: avoid using UTF-8 chars
+  docs: trace: coresight: coresight-etm4x-reference.rst: avoid using
+    UTF-8 chars
+  docs: driver-api: avoid using UTF-8 chars
+  docs: driver-api: fpga: avoid using UTF-8 chars
+  docs: driver-api: iio: avoid using UTF-8 chars
+  docs: driver-api: thermal: avoid using UTF-8 chars
+  docs: driver-api: media: drivers: avoid using UTF-8 chars
+  docs: driver-api: firmware: other_interfaces.rst: avoid using UTF-8
+    chars
+  docs: driver-api: nvdimm: btt.rst: avoid using UTF-8 chars
+  docs: fault-injection: nvme-fault-injection.rst: avoid using UTF-8
+    chars
+  docs: usb: avoid using UTF-8 chars
+  docs: process: avoid using UTF-8 chars
+  docs: block: data-integrity.rst: avoid using UTF-8 chars
+  docs: userspace-api: media: fdl-appendix.rst: avoid using UTF-8 chars
+  docs: userspace-api: media: v4l: avoid using UTF-8 chars
+  docs: userspace-api: media: dvb: avoid using UTF-8 chars
+  docs: vm: zswap.rst: avoid using UTF-8 chars
+  docs: filesystems: f2fs.rst: avoid using UTF-8 chars
+  docs: filesystems: ext4: avoid using UTF-8 chars
+  docs: kernel-hacking: avoid using UTF-8 chars
+  docs: hid: avoid using UTF-8 chars
+  docs: security: tpm: avoid using UTF-8 chars
+  docs: security: keys: trusted-encrypted.rst: avoid using UTF-8 chars
+  docs: riscv: vm-layout.rst: avoid using UTF-8 chars
+  docs: networking: scaling.rst: avoid using UTF-8 chars
+  docs: networking: devlink: devlink-dpipe.rst: avoid using UTF-8 chars
+  docs: networking: device_drivers: avoid using UTF-8 chars
+  docs: x86: avoid using UTF-8 chars
+  docs: scheduler: sched-deadline.rst: avoid using UTF-8 chars
+  docs: dev-tools: testing-overview.rst: avoid using UTF-8 chars
+  docs: power: powercap: powercap.rst: avoid using UTF-8 chars
+  docs: ABI: avoid using UTF-8 chars
+  docs: doc-guide: contributing.rst: avoid using UTF-8 chars
+  docs: PCI: acpi-info.rst: avoid using UTF-8 chars
+  docs: gpu: avoid using UTF-8 chars
+  docs: sound: kernel-api: writing-an-alsa-driver.rst: avoid using UTF-8
+    chars
+  docs: arm64: arm-acpi.rst: avoid using UTF-8 chars
+  docs: infiniband: tag_matching.rst: avoid using UTF-8 chars
+  docs: timers: no_hz.rst: avoid using UTF-8 chars
+  docs: misc-devices: ibmvmc.rst: avoid using UTF-8 chars
+  docs: firmware-guide: acpi: lpit.rst: avoid using UTF-8 chars
+  docs: firmware-guide: acpi: dsd: graph.rst: avoid using UTF-8 chars
+  docs: virt: kvm: avoid using UTF-8 chars
+  docs: RCU: avoid using UTF-8 chars
+
+ .../obsolete/sysfs-kernel-fadump_registered   |   2 +-
+ .../obsolete/sysfs-kernel-fadump_release_mem  |   2 +-
+ ...sfs-class-chromeos-driver-cros-ec-lightbar |   2 +-
+ .../ABI/testing/sysfs-class-net-cdc_ncm       |   2 +-
+ .../ABI/testing/sysfs-devices-platform-ipmi   |   2 +-
+ .../testing/sysfs-devices-platform-trackpoint |   2 +-
+ Documentation/ABI/testing/sysfs-devices-soc   |   4 +-
+ Documentation/ABI/testing/sysfs-module        |   4 +-
+ Documentation/PCI/acpi-info.rst               |  26 +-
+ .../Data-Structures/Data-Structures.rst       |  52 ++--
+ .../Expedited-Grace-Periods.rst               |  40 +--
+ .../Tree-RCU-Memory-Ordering.rst              |  10 +-
+ .../RCU/Design/Requirements/Requirements.rst  | 126 ++++-----
+ Documentation/admin-guide/index.rst           |   2 +-
+ Documentation/admin-guide/media/ipu3.rst      |   2 +-
+ Documentation/admin-guide/module-signing.rst  |   4 +-
+ Documentation/admin-guide/perf/imx-ddr.rst    |   2 +-
+ Documentation/admin-guide/pm/intel_idle.rst   |   4 +-
+ Documentation/admin-guide/pm/intel_pstate.rst |   4 +-
+ Documentation/admin-guide/ras.rst             |  94 +++----
+ .../admin-guide/reporting-issues.rst          |  12 +-
+ Documentation/admin-guide/sysctl/kernel.rst   |   2 +-
+ Documentation/arm64/arm-acpi.rst              |   8 +-
+ Documentation/block/data-integrity.rst        |   2 +-
+ Documentation/cdrom/cdrom-standard.rst        |  30 +--
+ Documentation/dev-tools/testing-overview.rst  |   4 +-
+ Documentation/doc-guide/contributing.rst      |   2 +-
+ .../driver-api/firmware/other_interfaces.rst  |   2 +-
+ Documentation/driver-api/fpga/fpga-bridge.rst |  10 +-
+ Documentation/driver-api/fpga/fpga-mgr.rst    |  12 +-
+ .../driver-api/fpga/fpga-programming.rst      |   8 +-
+ Documentation/driver-api/fpga/fpga-region.rst |  20 +-
+ Documentation/driver-api/iio/buffers.rst      |   8 +-
+ Documentation/driver-api/iio/hw-consumer.rst  |  10 +-
+ .../driver-api/iio/triggered-buffers.rst      |   6 +-
+ Documentation/driver-api/iio/triggers.rst     |  10 +-
+ Documentation/driver-api/index.rst            |   2 +-
+ Documentation/driver-api/ioctl.rst            |   8 +-
+ .../media/drivers/sh_mobile_ceu_camera.rst    |   8 +-
+ .../driver-api/media/drivers/vidtv.rst        |   4 +-
+ .../driver-api/media/drivers/zoran.rst        |   2 +-
+ Documentation/driver-api/nvdimm/btt.rst       |   2 +-
+ .../driver-api/thermal/cpu-idle-cooling.rst   |  14 +-
+ .../driver-api/thermal/intel_powerclamp.rst   |   6 +-
+ .../thermal/x86_pkg_temperature_thermal.rst   |   2 +-
+ .../fault-injection/nvme-fault-injection.rst  |   2 +-
+ Documentation/filesystems/ext4/attributes.rst |  20 +-
+ Documentation/filesystems/ext4/bigalloc.rst   |   6 +-
+ Documentation/filesystems/ext4/blockgroup.rst |   8 +-
+ Documentation/filesystems/ext4/blocks.rst     |   2 +-
+ Documentation/filesystems/ext4/directory.rst  |  16 +-
+ Documentation/filesystems/ext4/eainode.rst    |   2 +-
+ Documentation/filesystems/ext4/inlinedata.rst |   6 +-
+ Documentation/filesystems/ext4/inodes.rst     |   6 +-
+ Documentation/filesystems/ext4/journal.rst    |   8 +-
+ Documentation/filesystems/ext4/mmp.rst        |   2 +-
+ .../filesystems/ext4/special_inodes.rst       |   4 +-
+ Documentation/filesystems/ext4/super.rst      |  10 +-
+ Documentation/filesystems/f2fs.rst            |   6 +-
+ .../firmware-guide/acpi/dsd/graph.rst         |   2 +-
+ Documentation/firmware-guide/acpi/lpit.rst    |   2 +-
+ Documentation/gpu/i915.rst                    |   2 +-
+ Documentation/gpu/komeda-kms.rst              |   2 +-
+ Documentation/hid/hid-sensor.rst              |  70 ++---
+ Documentation/hid/intel-ish-hid.rst           | 246 +++++++++---------
+ Documentation/hwmon/ir36021.rst               |   2 +-
+ Documentation/hwmon/ltc2992.rst               |   2 +-
+ Documentation/hwmon/pm6764tr.rst              |   2 +-
+ Documentation/hwmon/tmp103.rst                |   4 +-
+ Documentation/index.rst                       |   4 +-
+ Documentation/infiniband/tag_matching.rst     |   8 +-
+ Documentation/kernel-hacking/hacking.rst      |   2 +-
+ Documentation/kernel-hacking/locking.rst      |   2 +-
+ Documentation/misc-devices/ibmvmc.rst         |   8 +-
+ .../device_drivers/ethernet/intel/i40e.rst    |  12 +-
+ .../device_drivers/ethernet/intel/iavf.rst    |   6 +-
+ .../device_drivers/ethernet/netronome/nfp.rst |  12 +-
+ .../networking/devlink/devlink-dpipe.rst      |   2 +-
+ Documentation/networking/scaling.rst          |  18 +-
+ Documentation/power/powercap/powercap.rst     | 210 +++++++--------
+ Documentation/process/code-of-conduct.rst     |   2 +-
+ .../process/kernel-enforcement-statement.rst  |   2 +-
+ Documentation/riscv/vm-layout.rst             |   2 +-
+ Documentation/scheduler/sched-deadline.rst    |   4 +-
+ .../security/keys/trusted-encrypted.rst       |   4 +-
+ Documentation/security/tpm/tpm_event_log.rst  |   2 +-
+ Documentation/security/tpm/xen-tpmfront.rst   |   2 +-
+ .../kernel-api/writing-an-alsa-driver.rst     |  68 ++---
+ Documentation/timers/no_hz.rst                |   2 +-
+ .../coresight/coresight-etm4x-reference.rst   |  16 +-
+ Documentation/usb/ehci.rst                    |   2 +-
+ Documentation/usb/gadget_printer.rst          |   2 +-
+ Documentation/usb/mass-storage.rst            |  36 +--
+ Documentation/usb/mtouchusb.rst               |   2 +-
+ Documentation/usb/usb-serial.rst              |   2 +-
+ .../media/dvb/audio-set-bypass-mode.rst       |   2 +-
+ .../userspace-api/media/dvb/audio.rst         |   2 +-
+ .../userspace-api/media/dvb/dmx-fopen.rst     |   2 +-
+ .../userspace-api/media/dvb/dmx-fread.rst     |   2 +-
+ .../media/dvb/dmx-set-filter.rst              |   2 +-
+ .../userspace-api/media/dvb/intro.rst         |   6 +-
+ .../userspace-api/media/dvb/video.rst         |   2 +-
+ .../userspace-api/media/fdl-appendix.rst      |  64 ++---
+ .../userspace-api/media/v4l/biblio.rst        |   8 +-
+ .../userspace-api/media/v4l/crop.rst          |  16 +-
+ .../userspace-api/media/v4l/dev-decoder.rst   |   6 +-
+ .../userspace-api/media/v4l/diff-v4l.rst      |   2 +-
+ .../userspace-api/media/v4l/open.rst          |   2 +-
+ .../media/v4l/vidioc-cropcap.rst              |   4 +-
+ Documentation/virt/kvm/api.rst                |  28 +-
+ .../virt/kvm/running-nested-guests.rst        |  12 +-
+ Documentation/vm/zswap.rst                    |   4 +-
+ Documentation/x86/resctrl.rst                 |   2 +-
+ Documentation/x86/sgx.rst                     |   4 +-
+ 114 files changed, 807 insertions(+), 807 deletions(-)
+
+-- 
+2.30.2
 
 
