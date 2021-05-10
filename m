@@ -2,63 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8642E377F10
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8D2377EF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhEJJLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:11:13 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2745 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbhEJJLA (ORCPT
+        id S230205AbhEJJIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:08:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230150AbhEJJIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:11:00 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FdwCZ4zzmzqV1P;
-        Mon, 10 May 2021 17:06:34 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 10 May 2021 17:09:48 +0800
-From:   Hui Tang <tanghui20@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 8/8] crypto: hisilicon/hpre - add 'default' for switch statement
-Date:   Mon, 10 May 2021 17:06:51 +0800
-Message-ID: <1620637611-41643-9-git-send-email-tanghui20@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1620637611-41643-1-git-send-email-tanghui20@huawei.com>
-References: <1620637611-41643-1-git-send-email-tanghui20@huawei.com>
+        Mon, 10 May 2021 05:08:09 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F36C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 02:07:05 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lg1sP-0002jM-0a; Mon, 10 May 2021 11:06:57 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lg1sO-00044x-I9; Mon, 10 May 2021 11:06:56 +0200
+Date:   Mon, 10 May 2021 11:06:56 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, kernel@pengutronix.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>
+Subject: Re: [RFC PATCH v1 8/9] net: phy: micrel: ksz886x/ksz8081: add
+ cabletest support
+Message-ID: <20210510090656.eiqlwp7t7hkvsxq3@pengutronix.de>
+References: <20210505092025.8785-1-o.rempel@pengutronix.de>
+ <20210505092025.8785-9-o.rempel@pengutronix.de>
+ <YJKT173qkYZ+Iyp6@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YJKT173qkYZ+Iyp6@lunn.ch>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 11:04:23 up 158 days, 23:10, 47 users,  load average: 0.16, 0.07,
+ 0.04
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return error immediately if it goto 'default' path.
+On Wed, May 05, 2021 at 02:47:19PM +0200, Andrew Lunn wrote:
+> On Wed, May 05, 2021 at 11:20:24AM +0200, Oleksij Rempel wrote:
+> > This patch support for cable test for the ksz886x switches and the
+> > ksz8081 PHY.
+> > 
+> > The patch was tested on a KSZ8873RLL switch with following results:
+> > 
+> > - port 1:
+> >   - cannot detect any distance
+> >   - provides inverted values
+> >     (Errata: DS80000830A: "LinkMD does not work on Port 1",
+> >      http://ww1.microchip.com/downloads/en/DeviceDoc/KSZ8873-Errata-DS80000830A.pdf)
+> >     - Reports "short" on open or ok.
+> >     - Reports "ok" on short.
+> 
+> Quite broken. Distance is optional, simply don't report it.  Status is
+> harder. Reporting ETHTOOL_A_CABLE_RESULT_CODE_OK should really mean
+> the cable is O.K. If you cannot tell open from O.K, i would return
+> ETHTOOL_A_CABLE_RESULT_CODE_UNSPEC.
+> 
 
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
----
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Yes, patch "net: phy: micrel: add patch for erratas on port1" provides
+a flag to return -ENOTSUPP on this port.
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index fb8e9c0..b4b12dc 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -617,9 +617,9 @@ static int hpre_is_dh_params_length_valid(unsigned int key_sz)
- 	case _HPRE_DH_GRP15:
- 	case _HPRE_DH_GRP16:
- 		return 0;
-+	default:
-+		return -EINVAL;
- 	}
--
--	return -EINVAL;
- }
- 
- static int hpre_dh_set_params(struct hpre_ctx *ctx, struct dh *params)
+Is it acceptable way? Should I squash this patches?
+
+Regards,
+Oleksij
 -- 
-2.8.1
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
