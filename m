@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB7A378EB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B328378EEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240867AbhEJNXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:23:12 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36798 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237069AbhEJNRU (ORCPT
+        id S242482AbhEJNYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240609AbhEJNS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 09:17:20 -0400
-Date:   Mon, 10 May 2021 13:16:07 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620652567;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aZNKMR4h/Zzes7iAi6bYvhemum1MtW7y9awfP3I8xwc=;
-        b=qwFKWzNfffj10IwEwO1I2999td0/0DLtv/5wrmim1mqZ5cQeimEiw/a7ZsDTu0BnwQC9Xt
-        tsOXwhi8/KRTs9BbIrO3o/n0vmspm7Sr0kzaQ06lTob5H72pTi5C7oH6CZa+NNloIffBle
-        JO4HAqjTiHBqN/V1u4Z5E/wWeNUy84nQRa6vQgxYfMsCDoLevNPhQTxBhUElxG5EpJmY6Z
-        gSVLhvpyB6BxEPrmP19Zso+LSQaCs5dvOhgtuw652DhVktyBiPsEesBFN11vSuRKG/KVnI
-        Jna5xoEf0S/xQyaTySp6B7IR7lH5riR0GZU8RFNvM4oQpf5vwwtV6yJHRwVmpw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620652567;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aZNKMR4h/Zzes7iAi6bYvhemum1MtW7y9awfP3I8xwc=;
-        b=8r1NDttBzjshHhwBL0+XS8873u/X8zI67091tXLt6blA/D2Uu+oc2wK1e9xdLNN6R7Ni3Y
-        vdP9xq7XdpFu1NBw==
-From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] ARM: PXA: Fix cplds irqdesc allocation
- when using legacy mode
-Cc:     Guenter Roeck <linux@roeck-us.net>, Marc Zyngier <maz@kernel.org>,
-        tglx@linutronix.de
-In-Reply-To: <20210426223942.GA213931@roeck-us.net>
-References: <20210426223942.GA213931@roeck-us.net>
+        Mon, 10 May 2021 09:18:59 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 660EAC061352
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:16:55 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id v13so9106474ple.9
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:16:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+ua8K1EdEgu+P2D3MHGhK9KL8rinnu1K5br5+Hr9m6Y=;
+        b=RDUoseO/yhqyEsZbGXXurk2NNaM/ZRrpkxCM8aTex4vRWf70nD8z4zCqKTqj9BdJ3J
+         TpogAD8aGRQgyXqm9oZwLxX/GTPoWvcy2iHT5JGjsAr8MwAHnjeEG8/8lzKQCGrJQ2q+
+         vJSKUcWLCw3XcfELal3+gMlrMYx2MAKyiJRuarV1076vTQ4zy9oiW6paNVc5vz+PiK+a
+         1kpGJiWyb1NaBlpDi0oZ5QBKzPsq0D0q8UsMaduK9798eOQcKKFAZPu9nBU7Yw9BamTi
+         Bg+okM9q3yJwpxrOJP0GCKwMfOAWlZtFZ3TRcAgRGDhlc523Ca99+2CCq8NeXyHiX1j/
+         mFqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+ua8K1EdEgu+P2D3MHGhK9KL8rinnu1K5br5+Hr9m6Y=;
+        b=Px4e1kDY4aXk5Vfs4GpD4J7q1g7hov9Z6RuxiEj9fa3Mgvf/bjWSU/OGsac8KvWfoL
+         uCqyI32byXtYa+jLSURGP2GPJBv499tQCoTiXVaOoRdcrYhjr3vUomACjzzve+7mrZaJ
+         vcHoI92aIFR7urUDSqL+akcb3/5ZpIr+X4udiEvDx7o7VBm+lw1P4tuuu9Mg4OWDB0Jn
+         ttUp/sfRONUjabXdmb8J0kLq7lP4TAPPD0hJ7l21WO/UunE7xtT1v0+DcqzhZio5RumS
+         egnSPyXk1drcez0keWVSLj7+ZZyhm4t687ubzuNlCPTeZPfx58JnA8vx9YexhyDVLv2S
+         eOlA==
+X-Gm-Message-State: AOAM533Nbcyn8U1kAzo028S9l/Joaq7PSVjtxOtdgE9GYGAVXCNTBL5F
+        7MPJZ2ytBPo0FXwFTC1kcm4=
+X-Google-Smtp-Source: ABdhPJzsBsSQPk9E2Ceyd+G4hkbvWXHGgfT2Vt+wSorlF942NRObmE0ekpytDqr8raVf/gs3421t/g==
+X-Received: by 2002:a17:90b:3686:: with SMTP id mj6mr41167040pjb.116.1620652614991;
+        Mon, 10 May 2021 06:16:54 -0700 (PDT)
+Received: from novachrono.domain.name ([223.235.208.114])
+        by smtp.gmail.com with ESMTPSA id u1sm11320991pgh.80.2021.05.10.06.16.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 06:16:54 -0700 (PDT)
+From:   Rajat Asthana <thisisrast7@gmail.com>
+To:     mripard@kernel.org
+Cc:     maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
+        airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Rajat Asthana <thisisrast7@gmail.com>
+Subject: [PATCH v2] drm: Declare drm_send_event_helper static.
+Date:   Mon, 10 May 2021 18:46:16 +0530
+Message-Id: <20210510131616.544547-1-thisisrast7@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210510123243.hmwar3swmrewskjs@gilmour>
+References: <20210510123243.hmwar3swmrewskjs@gilmour>
 MIME-Version: 1.0
-Message-ID: <162065256707.29796.16984262022305122668.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-next branch of irqchip:
+Declare drm_send_event_helper as static to fix sparse warning:
 
-Commit-ID:     be1c2bb3ba5a39c20b1d54e01ffbcb2b1ca7e46c
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/be1c2bb3ba5a39c20b1d54e01ffbcb2b1ca7e46c
-Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Tue, 27 Apr 2021 09:00:28 +01:00
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Mon, 10 May 2021 14:12:25 +01:00
+> warning: symbol 'drm_send_event_helper' was not declared.
+> Should it be static?
 
-ARM: PXA: Fix cplds irqdesc allocation when using legacy mode
-
-The Mainstone PXA platform uses CONFIG_SPARSE_IRQ, and thus we
-cannot rely on the irq descriptors to be readilly allocated
-before creating the irqdomain in legacy mode. The kernel then
-complains loudly about not being able to associate the interrupt
-in the domain -- can't blame it.
-
-Fix it by allocating the irqdescs upfront in the legacy case.
-
-Fixes: b68761da0111 ("ARM: PXA: Kill use of irq_create_strict_mappings()")
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210426223942.GA213931@roeck-us.net
+Signed-off-by: Rajat Asthana <thisisrast7@gmail.com>
 ---
- arch/arm/mach-pxa/pxa_cplds_irqs.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Changes in v2:
+    Provide full name in Author and Signed-off.
 
-diff --git a/arch/arm/mach-pxa/pxa_cplds_irqs.c b/arch/arm/mach-pxa/pxa_cplds_irqs.c
-index ec0d9b0..bddfc7c 100644
---- a/arch/arm/mach-pxa/pxa_cplds_irqs.c
-+++ b/arch/arm/mach-pxa/pxa_cplds_irqs.c
-@@ -121,8 +121,13 @@ static int cplds_probe(struct platform_device *pdev)
- 		return fpga->irq;
- 
- 	base_irq = platform_get_irq(pdev, 1);
--	if (base_irq < 0)
-+	if (base_irq < 0) {
- 		base_irq = 0;
-+	} else {
-+		ret = devm_irq_alloc_descs(&pdev->dev, base_irq, base_irq, CPLDS_NB_IRQ, 0);
-+		if (ret < 0)
-+			return ret;
-+	}
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	fpga->base = devm_ioremap_resource(&pdev->dev, res);
+ drivers/gpu/drm/drm_file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
+index 7efbccffc2ea..17f38d873972 100644
+--- a/drivers/gpu/drm/drm_file.c
++++ b/drivers/gpu/drm/drm_file.c
+@@ -786,7 +786,7 @@ EXPORT_SYMBOL(drm_event_cancel_free);
+  * The timestamp variant of dma_fence_signal is used when the caller
+  * sends a valid timestamp.
+  */
+-void drm_send_event_helper(struct drm_device *dev,
++static void drm_send_event_helper(struct drm_device *dev,
+ 			   struct drm_pending_event *e, ktime_t timestamp)
+ {
+ 	assert_spin_locked(&dev->event_lock);
+-- 
+2.31.1
+
