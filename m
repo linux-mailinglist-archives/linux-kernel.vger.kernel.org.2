@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C1F37848C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86876378423
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231980AbhEJKxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:53:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48982 "EHLO mail.kernel.org"
+        id S232244AbhEJKum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:50:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232288AbhEJKmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:42:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2E806197C;
-        Mon, 10 May 2021 10:32:28 +0000 (UTC)
+        id S233001AbhEJKk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:40:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4E7361108;
+        Mon, 10 May 2021 10:31:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642749;
-        bh=TbOoaBNl6TT1mxUu9K5JxcdmPXH/Jfwogsx/lXYDgzg=;
+        s=korg; t=1620642697;
+        bh=5ZyFABkoK2sJ5o/a0aWZqMArQAsOHUDRrePcWg/z8Go=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2s4oHRXnr+7XwstC2t3kTleYOI5NNkr52s61SWiTzwTzWwPugqFzFa+GibuC4FLJ6
-         GfT3r1vJcXKYKaSuCbBZm/hRXqgXYqcrj8B05kCSJRw9DFAdLvPCsB9L5vD5kkDXe8
-         fa29xh9cinmpWfQx10YTVtynjaDV4yp7Adckr2Sg=
+        b=PiNDUudIBdvoxP71Bla9959CIoTYntU02OgiXYYeggsABRoCjUmNVGVi0vYluI+vK
+         rvcr5I2t+VylYVgGfSrcW7OQ+nSZjKA5uJPc5+G1EoT1ipsDRyxlDryQqor8Vn5VJX
+         6cgPd1fWfEKk757sWqxbgDhBhHYPvHW9QHNk7KC8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH 5.10 008/299] vhost-vdpa: fix vm_flags for virtqueue doorbell mapping
-Date:   Mon, 10 May 2021 12:16:45 +0200
-Message-Id: <20210510102005.108590635@linuxfoundation.org>
+        stable@vger.kernel.org, Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Subject: [PATCH 5.10 015/299] arm64: dts: mt8173: fix property typo of phys in dsi node
+Date:   Mon, 10 May 2021 12:16:52 +0200
+Message-Id: <20210510102005.347517657@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
 References: <20210510102004.821838356@linuxfoundation.org>
@@ -39,37 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Wang <jasowang@redhat.com>
+From: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-commit 3a3e0fad16d40a2aa68ddf7eea4acdf48b22dd44 upstream.
+commit e4e5d030bd779fb8321d3b8bd65406fbe0827037 upstream.
 
-The virtqueue doorbell is usually implemented via registeres but we
-don't provide the necessary vma->flags like VM_PFNMAP. This may cause
-several issues e.g when userspace tries to map the doorbell via vhost
-IOTLB, kernel may panic due to the page is not backed by page
-structure. This patch fixes this by setting the necessary
-vm_flags. With this patch, try to map doorbell via IOTLB will fail
-with bad address.
+Use 'phys' instead of 'phy'.
 
-Cc: stable@vger.kernel.org
-Fixes: ddd89d0a059d ("vhost_vdpa: support doorbell mapping via mmap")
-Signed-off-by: Jason Wang <jasowang@redhat.com>
-Link: https://lore.kernel.org/r/20210413091557.29008-1-jasowang@redhat.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Fixes: 81ad4dbaf7af ("arm64: dts: mt8173: Add display subsystem related nodes")
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210316092232.9806-5-chunfeng.yun@mediatek.com
+Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/vhost/vdpa.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -997,6 +997,7 @@ static int vhost_vdpa_mmap(struct file *
- 	if (vma->vm_end - vma->vm_start != notify.size)
- 		return -ENOTSUPP;
- 
-+	vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP;
- 	vma->vm_ops = &vhost_vdpa_vm_ops;
- 	return 0;
- }
+--- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+@@ -1169,7 +1169,7 @@
+ 				 <&mmsys CLK_MM_DSI1_DIGITAL>,
+ 				 <&mipi_tx1>;
+ 			clock-names = "engine", "digital", "hs";
+-			phy = <&mipi_tx1>;
++			phys = <&mipi_tx1>;
+ 			phy-names = "dphy";
+ 			status = "disabled";
+ 		};
 
 
