@@ -2,81 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D990C37915D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94AF379162
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239851AbhEJOwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:52:55 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38028 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238531AbhEJOvm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:51:42 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14AEoYhO061462;
-        Mon, 10 May 2021 09:50:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620658234;
-        bh=HT9wiHZD8KaX5otvkMOqsHaVxNQBceavAhDafqkcpK8=;
-        h=From:To:CC:Subject:Date;
-        b=otSDTREZCoyY73U2mxAHnohtcTfsLzZcMZ1tdNYJWP2ZV0BjyAkP4IOC2IGP5E2hx
-         S+ZOyQPbhFocb6n9+xAL4qH08cdhTXgTLlXpM2aCjLS8lhHECu4L126rHhCJ+/a4mW
-         J4FPR4s+bcmeZtmc+sDHeDLWvq+TFxzyE2t2DNaI=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14AEoYKH062285
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 10 May 2021 09:50:34 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 10
- May 2021 09:50:34 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 10 May 2021 09:50:34 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14AEoYXq111324;
-        Mon, 10 May 2021 09:50:34 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Tero Kristo <kristo@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>
-Subject: [PATCH 0/4] arm64: dts: ti: k3-*: Fixup nodes to exposed to be non-compliant with yaml
-Date:   Mon, 10 May 2021 09:50:29 -0500
-Message-ID: <20210510145033.7426-1-nm@ti.com>
-X-Mailer: git-send-email 2.31.0
+        id S234551AbhEJOx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:53:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:60122 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239074AbhEJOvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 10:51:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4605F31B;
+        Mon, 10 May 2021 07:50:43 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C4DE43F719;
+        Mon, 10 May 2021 07:50:41 -0700 (PDT)
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Tejun Heo <tj@kernel.org>, Quentin Perret <qperret@google.com>,
+        Wei Wang <wvw@google.com>, Yun Hsiang <hsiang023167@gmail.com>,
+        linux-kernel@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>
+Subject: [PATCH RESEND 0/2] Uclamp cgroup fixes
+Date:   Mon, 10 May 2021 15:50:30 +0100
+Message-Id: <20210510145032.1934078-1-qais.yousef@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+A couple of fixes for uclamp cgroup. The first one is addressing wrong
+implementation details that is restricting usability of uclamp in cgroup. The
+2nd is fixing locking issues.
 
-Series of minor fixups for v5.13-rc1 for compliance exposed by yaml
-conversion in the series:
-https://lore.kernel.org/linux-arm-kernel/20210503190824.GA2192378@robh.at.kernel.org/#t
+This is a resend since I forgot to CC LKML...
 
-Minimal testing performed on k3 platforms.
+Qais Yousef (2):
+  sched/uclamp: Fix wrong implementation of cpu.uclamp.min
+  sched/uclamp: Fix locking around cpu_util_update_eff()
 
-If possible, will be good to get in 5.13 window.
-
-Nishanth Menon (4):
-  arm64: dts: ti: k3-*: Rename the TI-SCI clocks node name
-  arm64: dts: ti: k3-am65-wakeup: Add debug region to TI-SCI node
-  arm64: dts: ti: k3-am65-wakeup: Drop un-necessary properties from dmsc
-    node
-  arm64: dts: ti: k3-*: Rename the TI-SCI node
-
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi        |  4 ++--
- arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi      | 10 +++++-----
- arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi |  4 ++--
- arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi |  4 ++--
- 4 files changed, 11 insertions(+), 11 deletions(-)
+ kernel/sched/core.c | 28 ++++++++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
 
 -- 
-2.31.0
+2.25.1
 
