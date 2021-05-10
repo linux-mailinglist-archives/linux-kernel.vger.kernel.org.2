@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8E5378A83
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C64B378C2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236985AbhEJLqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:46:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52744 "EHLO mail.kernel.org"
+        id S1345972AbhEJM0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:26:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232943AbhEJK62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:58:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9804561C43;
-        Mon, 10 May 2021 10:52:24 +0000 (UTC)
+        id S237122AbhEJLLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:11:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23D476108B;
+        Mon, 10 May 2021 11:07:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643945;
-        bh=gTjLa+Brssx6efEzCSxRi4RQ51FVS4CAo6dzZdqi0yo=;
+        s=korg; t=1620644837;
+        bh=QjSBw+Y6XhXQaB/vrBFpm1kDfUcD7FqR92r8Xtah6ww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aXy37ft2xowVm3RLsXlkgJNTzBAWb69SquT2YOFRplwY1oIJrFVxngSi12ZgkCOCh
-         xx4eJYqkUwYN6p8of9JqrUmGlZnQfRJ430A4iUw122F0Oded/Tmc4i19QgCwy0VqLG
-         JFH4xspyWTx2h5245cHCLFb/SjT3jzzQRbywj/s4=
+        b=vNVyEJoSak5Lse5SF81coFp3WTNcS5jexiQ4fGqAiYkEUBHONo2RwfTw07YwRbVCU
+         rmNDo0Ks8oH92chHuebIZrNmc9wSdjLQlt24gtXQWcaH8ZGPJSVihz7I2B1cYxIFOg
+         x2n/nHfaOvBsaVK0fAyhIoUe8CkmTfRM26TuxpKY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
-        James Smart <jsmart2021@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 225/342] scsi: lpfc: Fix crash when a REG_RPI mailbox fails triggering a LOGO response
-Date:   Mon, 10 May 2021 12:20:15 +0200
-Message-Id: <20210510102017.524147027@linuxfoundation.org>
+Subject: [PATCH 5.12 227/384] power: supply: generic-adc-battery: fix possible use-after-free in gab_remove()
+Date:   Mon, 10 May 2021 12:20:16 +0200
+Message-Id: <20210510102022.387202690@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
+References: <20210510102014.849075526@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit fffd18ec6579c2d9c72b212169259062fe747888 ]
+[ Upstream commit b6cfa007b3b229771d9588970adb4ab3e0487f49 ]
 
-Fix a crash caused by a double put on the node when the driver completed an
-ACC for an unsolicted abort on the same node.  The second put was executed
-by lpfc_nlp_not_used() and is wrong because the completion routine executes
-the nlp_put when the iocbq was released.  Additionally, the driver is
-issuing a LOGO then immediately calls lpfc_nlp_set_state to put the node
-into NPR.  This call does nothing.
+This driver's remove path calls cancel_delayed_work(). However, that
+function does not wait until the work function finishes. This means
+that the callback function may still be running after the driver's
+remove function has finished, which would result in a use-after-free.
 
-Remove the lpfc_nlp_not_used call and additional set_state in the
-completion routine.  Remove the lpfc_nlp_set_state post issue_logo.  Isn't
-necessary.
+Fix by calling cancel_delayed_work_sync(), which ensures that
+the work is properly cancelled, no longer running, and unable
+to re-schedule itself.
 
-Link: https://lore.kernel.org/r/20210412013127.2387-3-jsmart2021@gmail.com
-Co-developed-by: Justin Tee <justin.tee@broadcom.com>
-Signed-off-by: Justin Tee <justin.tee@broadcom.com>
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_nportdisc.c | 2 --
- drivers/scsi/lpfc/lpfc_sli.c       | 1 -
- 2 files changed, 3 deletions(-)
+ drivers/power/supply/generic-adc-battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_nportdisc.c b/drivers/scsi/lpfc/lpfc_nportdisc.c
-index b5ea5e032a74..b414c4210ce6 100644
---- a/drivers/scsi/lpfc/lpfc_nportdisc.c
-+++ b/drivers/scsi/lpfc/lpfc_nportdisc.c
-@@ -1874,8 +1874,6 @@ lpfc_cmpl_reglogin_reglogin_issue(struct lpfc_vport *vport,
- 		ndlp->nlp_last_elscmd = ELS_CMD_PLOGI;
- 
- 		lpfc_issue_els_logo(vport, ndlp, 0);
--		ndlp->nlp_prev_state = NLP_STE_REG_LOGIN_ISSUE;
--		lpfc_nlp_set_state(vport, ndlp, NLP_STE_NPR_NODE);
- 		return ndlp->nlp_state;
+diff --git a/drivers/power/supply/generic-adc-battery.c b/drivers/power/supply/generic-adc-battery.c
+index 0032069fbc2b..66039c665dd1 100644
+--- a/drivers/power/supply/generic-adc-battery.c
++++ b/drivers/power/supply/generic-adc-battery.c
+@@ -373,7 +373,7 @@ static int gab_remove(struct platform_device *pdev)
  	}
  
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index 8fca15549ea5..8cb60c5703d0 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -18033,7 +18033,6 @@ lpfc_sli4_seq_abort_rsp_cmpl(struct lpfc_hba *phba,
- 	if (cmd_iocbq) {
- 		ndlp = (struct lpfc_nodelist *)cmd_iocbq->context1;
- 		lpfc_nlp_put(ndlp);
--		lpfc_nlp_not_used(ndlp);
- 		lpfc_sli_release_iocbq(phba, cmd_iocbq);
- 	}
+ 	kfree(adc_bat->psy_desc.properties);
+-	cancel_delayed_work(&adc_bat->bat_work);
++	cancel_delayed_work_sync(&adc_bat->bat_work);
+ 	return 0;
+ }
  
 -- 
 2.30.2
