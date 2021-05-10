@@ -2,177 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180F8378DFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 907F0378E04
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350907AbhEJNCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:02:14 -0400
-Received: from mga17.intel.com ([192.55.52.151]:1594 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239939AbhEJMml (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 08:42:41 -0400
-IronPort-SDR: H7duiiXlBKM3D1sPNM1+leZOFvkruyadoB+XMefYMRIF3SAAsxNCs9WUax3qfDS/uHtHFBJJdi
- RGKNxPLBwPbg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="179448228"
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="179448228"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 05:41:33 -0700
-IronPort-SDR: ZcVxuHri2dD4ciwWI4oWdRZ7p/+LckV0YaOYmYBVU3dzIZcxj8jwlpQ+rXJPkEaSd4kltz9+vn
- CRqglLRb94rg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="470783524"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 10 May 2021 05:41:21 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 01B99836; Mon, 10 May 2021 15:41:37 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v3 14/14] spi: pxa2xx: Introduce special type for Merrifield SPIs
-Date:   Mon, 10 May 2021 15:41:34 +0300
-Message-Id: <20210510124134.24638-15-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210510124134.24638-1-andriy.shevchenko@linux.intel.com>
-References: <20210510124134.24638-1-andriy.shevchenko@linux.intel.com>
+        id S1351156AbhEJNDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:03:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349555AbhEJMto (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 08:49:44 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EAE0C0611EE;
+        Mon, 10 May 2021 05:41:48 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id t4so24356168ejo.0;
+        Mon, 10 May 2021 05:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rPnjj7CcDT7Ek5LVYSpFT50vZUaAaBcOH5bltoGapPU=;
+        b=CiZDfhVL3JV3m6t6D4g5Uqhp1EPHsM9BxmpkK61WAUKNTXpyhV9F9eumP93Cf3JxTq
+         0RdnVauyd0ECPpIgfQ6R0HryOpHX22rh5Mz1yaBizVnzg/EuHEzSa+4cCAedClMwVNLK
+         ZxdAGzYSiv3BLLi+RRmP0atYiFayG2FxCm3rNuUQufGwWZ5WeIUg6jRmS14cnmj8mIX0
+         ostU1vsRE3jo+VSNS1+AIIPrg/l6j/bVgIh+e3C4fc1dkpkhGdaM+OXuymzsaVeWuKXh
+         12LdBtxHEP42Yz55Nxr2SMIzqRBcbbsDymJ5tv34AslUvz5Y1+nHAYs6w5aojhk3WaA8
+         MPvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=rPnjj7CcDT7Ek5LVYSpFT50vZUaAaBcOH5bltoGapPU=;
+        b=Swp9ybG+NZr/QCaBHtIlJREZ1D2yolD1lliWaO8cV4EZ+MSWsxIbHb0FDUneLT9k0/
+         TxZqEq09TVypn4ajAhJ8JyUE7WEt9XHm4dxPrj6KlH4+TH2/TkqvPdFkETmIccqbKlTa
+         yLsWwLTkxa7pI1friTeuGJyFK9yEb6d+rtYnVdRX4Nwrpi3iSLAVp41rBISmK5rFvwcd
+         CVcWzNoqCiFA4Vd1roxok1pqv2w+hrZGqUP71B+9f4/bV2GWgwwYXpJoSm60VoQXrfJS
+         wRpPynumNQA4GS4oYxftaY6K1+FIuK/pvJSgDw1GnGMIVPk7sPvU1SFPhftrqQ2l5Cx4
+         0I9A==
+X-Gm-Message-State: AOAM532SGhwKhO0je6HbtAd1t7gNZAbAU3375IjAS5sYg1UUMVpU0WS8
+        1j/F35OTYCKrKSKEAm6Ppes=
+X-Google-Smtp-Source: ABdhPJzK0+r8dgR2IDmFPLK8afHqKCX3W+D5qXcQhruMZDZJjTKcyr3IJKISP1z+pSvNqk5nZLbbOw==
+X-Received: by 2002:a17:906:2bd0:: with SMTP id n16mr25552395ejg.110.1620650507431;
+        Mon, 10 May 2021 05:41:47 -0700 (PDT)
+Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
+        by smtp.gmail.com with ESMTPSA id h11sm11208696eds.15.2021.05.10.05.41.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 05:41:46 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 10 May 2021 14:41:45 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: 'make O=' indigestion with module signing
+Message-ID: <YJkqCZmTMRLUh+vf@gmail.com>
+References: <134696.1615510534@turing-police>
+ <109018.1615463088@turing-police>
+ <91190.1615444370@turing-police>
+ <972381.1615459754@warthog.procyon.org.uk>
+ <1486567.1615464259@warthog.procyon.org.uk>
+ <2026575.1615539696@warthog.procyon.org.uk>
+ <20210509151112.GA839293@gmail.com>
+ <20210509151556.GA842014@gmail.com>
+ <20210509161914.GB839293@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210509161914.GB839293@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel Merrifield SPI is actually more closer to PXA3xx. It has extended FIFO
-(32 bytes) and additional registers to get or set FIFO thresholds.
 
-Introduce new type for Intel Merrifield SPI host controllers and handle bigger
-FIFO size.
+* Ingo Molnar <mingo@kernel.org> wrote:
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/spi/spi-pxa2xx-pci.c |  2 +-
- drivers/spi/spi-pxa2xx.c     | 32 +++++++++++++++++++++++++++++---
- include/linux/pxa2xx_ssp.h   | 16 ++++++++++++++++
- 3 files changed, 46 insertions(+), 4 deletions(-)
+> 
+> * Ingo Molnar <mingo@kernel.org> wrote:
+> 
+> > Correction - there appears to be something else going on, but the
+> > error messages are similar:
+> > 
+> >   At main.c:291:
+> >   - SSL error:02001002:system library:fopen:No such file or directory: ../crypto/bio/bss_file.c:69
+> >   - SSL error:2006D080:BIO routines:BIO_new_file:no such file: ../crypto/bio/bss_file.c:76
+> >   sign-file: debian/linux-image/lib/modules/5.12.0-custom/kernel/arch/x86/crypto/aegis128-aesni.ko: No such file or directory
+> >   At main.c:291:
+> > 
+> > The error messages look pretty obscure to me. :-/
+> 
+> I didn't find any stray build files left in the tree, so 'make mrproper'
+> is innocent I believe.
+> 
+> I ended up with the config tweak below to get the kernel package to build,
+> which is not an ideal solution. :-/
+> 
+> Let me know if you'd like me to send you the .config and/or any diagnostic
+> messages or other details.
 
-diff --git a/drivers/spi/spi-pxa2xx-pci.c b/drivers/spi/spi-pxa2xx-pci.c
-index a259be12d326..dce9ade9a4df 100644
---- a/drivers/spi/spi-pxa2xx-pci.c
-+++ b/drivers/spi/spi-pxa2xx-pci.c
-@@ -179,7 +179,7 @@ static struct pxa_spi_info spi_info_configs[] = {
- 		.rx_param = &bsw2_rx_param,
- 	},
- 	[PORT_MRFLD] = {
--		.type = PXA27x_SSP,
-+		.type = MRFLD_SSP,
- 		.max_clk_rate = 25000000,
- 		.setup = mrfld_spi_setup,
- 	},
-diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
-index af3f01de8f5b..5985b39e2dd6 100644
---- a/drivers/spi/spi-pxa2xx.c
-+++ b/drivers/spi/spi-pxa2xx.c
-@@ -200,6 +200,11 @@ static bool is_mmp2_ssp(const struct driver_data *drv_data)
- 	return drv_data->ssp_type == MMP2_SSP;
- }
- 
-+static bool is_mrfld_ssp(const struct driver_data *drv_data)
-+{
-+	return drv_data->ssp_type == MRFLD_SSP;
-+}
-+
- static void pxa2xx_spi_update(const struct driver_data *drv_data, u32 reg, u32 mask, u32 value)
- {
- 	if ((pxa2xx_spi_read(drv_data, reg) & mask) != value)
-@@ -1087,6 +1092,15 @@ static int pxa2xx_spi_transfer_one(struct spi_controller *controller,
- 		pxa2xx_spi_update(drv_data, SSITF, GENMASK(15, 0), chip->lpss_tx_threshold);
- 	}
- 
-+	if (is_mrfld_ssp(drv_data)) {
-+		u32 thresh = 0;
-+
-+		thresh |= SFIFOTT_RxThresh(chip->lpss_rx_threshold);
-+		thresh |= SFIFOTT_TxThresh(chip->lpss_tx_threshold);
-+
-+		pxa2xx_spi_update(drv_data, SFIFOTT, 0xffffffff, thresh);
-+	}
-+
- 	if (is_quark_x1000_ssp(drv_data))
- 		pxa2xx_spi_update(drv_data, DDS_RATE, GENMASK(23, 0), chip->dds_rate);
- 
-@@ -1253,6 +1267,11 @@ static int setup(struct spi_device *spi)
- 		tx_hi_thres = 0;
- 		rx_thres = RX_THRESH_QUARK_X1000_DFLT;
- 		break;
-+	case MRFLD_SSP:
-+		tx_thres = TX_THRESH_MRFLD_DFLT;
-+		tx_hi_thres = 0;
-+		rx_thres = RX_THRESH_MRFLD_DFLT;
-+		break;
- 	case CE4100_SSP:
- 		tx_thres = TX_THRESH_CE4100_DFLT;
- 		tx_hi_thres = 0;
-@@ -1328,9 +1347,16 @@ static int setup(struct spi_device *spi)
- 		chip->cr1 |= SSCR1_SPH;
- 	}
- 
--	chip->lpss_rx_threshold = SSIRF_RxThresh(rx_thres);
--	chip->lpss_tx_threshold = SSITF_TxLoThresh(tx_thres)
--				| SSITF_TxHiThresh(tx_hi_thres);
-+	if (is_lpss_ssp(drv_data)) {
-+		chip->lpss_rx_threshold = SSIRF_RxThresh(rx_thres);
-+		chip->lpss_tx_threshold = SSITF_TxLoThresh(tx_thres) |
-+					  SSITF_TxHiThresh(tx_hi_thres);
-+	}
-+
-+	if (is_mrfld_ssp(drv_data)) {
-+		chip->lpss_rx_threshold = rx_thres;
-+		chip->lpss_tx_threshold = tx_thres;
-+	}
- 
- 	/* set dma burst and threshold outside of chip_info path so that if
- 	 * chip_info goes away after setting chip->enable_dma, the
-diff --git a/include/linux/pxa2xx_ssp.h b/include/linux/pxa2xx_ssp.h
-index fdfbe17e15f4..2b21bc1f3c73 100644
---- a/include/linux/pxa2xx_ssp.h
-+++ b/include/linux/pxa2xx_ssp.h
-@@ -183,6 +183,21 @@ struct device_node;
- #define SSACD_ACPS(x)		((x) << 4)	/* Audio clock PLL select */
- #define SSACD_SCDX8		BIT(7)		/* SYSCLK division ratio select */
- 
-+/* Intel Merrifield SSP */
-+#define SFIFOL			0x68		/* FIFO level */
-+#define SFIFOTT			0x6c		/* FIFO trigger threshold */
-+
-+#define RX_THRESH_MRFLD_DFLT	16
-+#define TX_THRESH_MRFLD_DFLT	16
-+
-+#define SFIFOL_TFL_MASK		GENMASK(15, 0)	/* Transmit FIFO Level mask */
-+#define SFIFOL_RFL_MASK		GENMASK(31, 16)	/* Receive FIFO Level mask */
-+
-+#define SFIFOTT_TFT		GENMASK(15, 0)	/* Transmit FIFO Threshold (mask) */
-+#define SFIFOTT_TxThresh(x)	(((x) - 1) << 0)	/* TX FIFO trigger threshold / level */
-+#define SFIFOTT_RFT		GENMASK(31, 16)	/* Receive FIFO Threshold (mask) */
-+#define SFIFOTT_RxThresh(x)	(((x) - 1) << 16)	/* RX FIFO trigger threshold / level */
-+
- /* LPSS SSP */
- #define SSITF			0x44		/* TX FIFO trigger level */
- #define SSITF_TxHiThresh(x)	(((x) - 1) << 0)
-@@ -205,6 +220,7 @@ enum pxa_ssp_type {
- 	MMP2_SSP,
- 	PXA910_SSP,
- 	CE4100_SSP,
-+	MRFLD_SSP,
- 	QUARK_X1000_SSP,
- 	LPSS_LPT_SSP, /* Keep LPSS types sorted with lpss_platforms[] */
- 	LPSS_BYT_SSP,
--- 
-2.30.2
+Update: I now have a config that builds & boots fine, and I've done a 
+.config bisection to figure out which config option combination breaks the 
+build, which turned out to be the new MODULE_COMPRESS options:
 
+--- .config.good.002	2021-05-10 14:34:48.932206255 +0200
++++ .config.bad.002	2021-05-10 14:40:48.587450742 +0200
+@@ -899,8 +899,8 @@ CONFIG_MODULE_SIG_ALL=y
+ # CONFIG_MODULE_SIG_SHA384 is not set
+ CONFIG_MODULE_SIG_SHA512=y
+ CONFIG_MODULE_SIG_HASH="sha512"
+-CONFIG_MODULE_COMPRESS_NONE=y
+-# CONFIG_MODULE_COMPRESS_GZIP is not set
++# CONFIG_MODULE_COMPRESS_NONE is not set
++CONFIG_MODULE_COMPRESS_GZIP=y
+ # CONFIG_MODULE_COMPRESS_XZ is not set
+ # CONFIG_MODULE_COMPRESS_ZSTD is not set
+ # CONFIG_MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS is not set
+
+Setting it to gzip triggered this build bug.
+
+Thanks,
+
+	Ingo
