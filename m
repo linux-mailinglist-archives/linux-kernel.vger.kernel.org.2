@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF89378661
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7810F378978
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235842AbhEJLGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:06:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59426 "EHLO mail.kernel.org"
+        id S240377AbhEJL25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:28:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232165AbhEJKp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:45:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 194FC61554;
-        Mon, 10 May 2021 10:36:42 +0000 (UTC)
+        id S234736AbhEJK45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:56:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 057C7613D6;
+        Mon, 10 May 2021 10:48:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643003;
-        bh=k4gBegVAEn2jj8BmW/pCQak07gwsrGkTjFrlAu+I4w4=;
+        s=korg; t=1620643717;
+        bh=Wm6JspxkzxF3Cfp0fZil21rw4Y+hepvR/gttYOPuVPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HRthBnHEPt6X9amwHEjEq30GJl7e2I9OCy3iVFWNl/OiGFab2vlb0EbGTZw5C6YSK
-         5Q+k6FBfUoVlV69xddsngfoR4end8CIngJBm2cJYaskAlR1uO8o7JwlmBs5Aljutf0
-         gXTe/Zb70i0JJ+Je/u+XTl3+jbJWI8oe81IopAgQ=
+        b=JYlm+/i99uN/4dHUQjV1sCwzsj4FJJCok42+5cZSu5e22pB5n0Xe/Njz5tOMAQkGu
+         vtyEbE2hE/Nl6O33PL/G/th7ZLdKGR1UuIsLv7vIKh4cjSCmVf8DwsjJRGuvmtdUse
+         qicWvh7v908ufp/p4RTCibYJ+gYFB83waBHMP47s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiaogang Chen <xiaogang.chen@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org,
+        Adam Ward <Adam.Ward.opensource@diasemi.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 121/299] drm/amdgpu/display: buffer INTERRUPT_LOW_IRQ_CONTEXT interrupt work
+Subject: [PATCH 5.11 128/342] regulator: da9121: automotive variants identity fix
 Date:   Mon, 10 May 2021 12:18:38 +0200
-Message-Id: <20210510102008.978071102@linuxfoundation.org>
+Message-Id: <20210510102014.305821980@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,288 +41,190 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaogang Chen <xiaogang.chen@amd.com>
+From: Adam Ward <Adam.Ward.opensource@diasemi.com>
 
-[ Upstream commit b6f91fc183f758461b9462cc93e673adbbf95c2d ]
+[ Upstream commit 013592be146a10d3567c0062cd1416faab060704 ]
 
-amdgpu DM handles INTERRUPT_LOW_IRQ_CONTEXT interrupt(hpd, hpd_rx) by using work
-queue and uses single work_struct. If new interrupt is recevied before the
-previous handler finished, new interrupts(same type) will be discarded and
-driver just sends "amdgpu_dm_irq_schedule_work FAILED" message out. If some
-important hpd, hpd_rx related interrupts are missed by driver the hot (un)plug
-devices may cause system hang or instability, such as issues with system
-resume from S3 sleep with mst device connected.
+This patch fixes identification of DA913x parts by the DA9121 driver,
+where a lack of clarity lead to implementation on the basis that variant
+IDs were to be identical to the equivalent rated non-automotive parts.
 
-This patch dynamically allocates new amdgpu_dm_irq_handler_data for new
-interrupts if previous INTERRUPT_LOW_IRQ_CONTEXT interrupt work has not been
-handled. So the new interrupt works can be queued to the same workqueue_struct,
-instead of discard the new interrupts. All allocated amdgpu_dm_irq_handler_data
-are put into a single linked list and will be reused after.
+There is a new emphasis on the DT identity to cope with overlap in these
+ID's - this is not considered to be problematic, because projects would
+be exclusively using automotive or consumer grade parts.
 
-Signed-off-by: Xiaogang Chen <xiaogang.chen@amd.com>
-Reviewed-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Adam Ward <Adam.Ward.opensource@diasemi.com>
+Link: https://lore.kernel.org/r/20210421120306.DB5B880007F@slsrvapps-01.diasemi.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h |  14 +--
- .../drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c | 115 ++++++++++++------
- 2 files changed, 80 insertions(+), 49 deletions(-)
+ drivers/regulator/da9121-regulator.c | 80 ++++++++++++++++++----------
+ drivers/regulator/da9121-regulator.h | 13 +++++
+ 2 files changed, 65 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-index a8a0e8cb1a11..1df7f1b18049 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-@@ -68,18 +68,6 @@ struct common_irq_params {
- 	enum dc_irq_source irq_src;
+diff --git a/drivers/regulator/da9121-regulator.c b/drivers/regulator/da9121-regulator.c
+index a2ede7d7897e..08cbf688e14d 100644
+--- a/drivers/regulator/da9121-regulator.c
++++ b/drivers/regulator/da9121-regulator.c
+@@ -40,6 +40,7 @@ struct da9121 {
+ 	unsigned int passive_delay;
+ 	int chip_irq;
+ 	int variant_id;
++	int subvariant_id;
  };
  
--/**
-- * struct irq_list_head - Linked-list for low context IRQ handlers.
-- *
-- * @head: The list_head within &struct handler_data
-- * @work: A work_struct containing the deferred handler work
-- */
--struct irq_list_head {
--	struct list_head head;
--	/* In case this interrupt needs post-processing, 'work' will be queued*/
--	struct work_struct work;
--};
--
- /**
-  * struct dm_compressor_info - Buffer info used by frame buffer compression
-  * @cpu_addr: MMIO cpu addr
-@@ -270,7 +258,7 @@ struct amdgpu_display_manager {
- 	 * Note that handlers are called in the same order as they were
- 	 * registered (FIFO).
- 	 */
--	struct irq_list_head irq_handler_list_low_tab[DAL_IRQ_SOURCES_NUMBER];
-+	struct list_head irq_handler_list_low_tab[DAL_IRQ_SOURCES_NUMBER];
+ /* Define ranges for different variants, enabling translation to/from
+@@ -812,7 +813,6 @@ static struct regmap_config da9121_2ch_regmap_config = {
+ static int da9121_check_device_type(struct i2c_client *i2c, struct da9121 *chip)
+ {
+ 	u32 device_id;
+-	u8 chip_id = chip->variant_id;
+ 	u32 variant_id;
+ 	u8 variant_mrc, variant_vrc;
+ 	char *type;
+@@ -839,22 +839,34 @@ static int da9121_check_device_type(struct i2c_client *i2c, struct da9121 *chip)
  
- 	/**
- 	 * @irq_handler_list_high_tab:
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c
-index 357778556b06..281b274e2b9b 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c
-@@ -82,6 +82,7 @@ struct amdgpu_dm_irq_handler_data {
- 	struct amdgpu_display_manager *dm;
- 	/* DAL irq source which registered for this interrupt. */
- 	enum dc_irq_source irq_source;
-+	struct work_struct work;
+ 	variant_vrc = variant_id & DA9121_MASK_OTP_VARIANT_ID_VRC;
+ 
+-	switch (variant_vrc) {
+-	case DA9121_VARIANT_VRC:
+-		type = "DA9121/DA9130";
+-		config_match = (chip_id == DA9121_TYPE_DA9121_DA9130);
++	switch (chip->subvariant_id) {
++	case DA9121_SUBTYPE_DA9121:
++		type = "DA9121";
++		config_match = (variant_vrc == DA9121_VARIANT_VRC);
+ 		break;
+-	case DA9220_VARIANT_VRC:
+-		type = "DA9220/DA9132";
+-		config_match = (chip_id == DA9121_TYPE_DA9220_DA9132);
++	case DA9121_SUBTYPE_DA9130:
++		type = "DA9130";
++		config_match = (variant_vrc == DA9130_VARIANT_VRC);
+ 		break;
+-	case DA9122_VARIANT_VRC:
+-		type = "DA9122/DA9131";
+-		config_match = (chip_id == DA9121_TYPE_DA9122_DA9131);
++	case DA9121_SUBTYPE_DA9220:
++		type = "DA9220";
++		config_match = (variant_vrc == DA9220_VARIANT_VRC);
+ 		break;
+-	case DA9217_VARIANT_VRC:
++	case DA9121_SUBTYPE_DA9132:
++		type = "DA9132";
++		config_match = (variant_vrc == DA9132_VARIANT_VRC);
++		break;
++	case DA9121_SUBTYPE_DA9122:
++		type = "DA9122";
++		config_match = (variant_vrc == DA9122_VARIANT_VRC);
++		break;
++	case DA9121_SUBTYPE_DA9131:
++		type = "DA9131";
++		config_match = (variant_vrc == DA9131_VARIANT_VRC);
++		break;
++	case DA9121_SUBTYPE_DA9217:
+ 		type = "DA9217";
+-		config_match = (chip_id == DA9121_TYPE_DA9217);
++		config_match = (variant_vrc == DA9217_VARIANT_VRC);
+ 		break;
+ 	default:
+ 		type = "Unknown";
+@@ -892,15 +904,27 @@ static int da9121_assign_chip_model(struct i2c_client *i2c,
+ 
+ 	chip->dev = &i2c->dev;
+ 
+-	switch (chip->variant_id) {
+-	case DA9121_TYPE_DA9121_DA9130:
+-		fallthrough;
+-	case DA9121_TYPE_DA9217:
++	/* Use configured subtype to select the regulator descriptor index and
++	 * register map, common to both consumer and automotive grade variants
++	 */
++	switch (chip->subvariant_id) {
++	case DA9121_SUBTYPE_DA9121:
++	case DA9121_SUBTYPE_DA9130:
++		chip->variant_id = DA9121_TYPE_DA9121_DA9130;
+ 		regmap = &da9121_1ch_regmap_config;
+ 		break;
+-	case DA9121_TYPE_DA9122_DA9131:
+-		fallthrough;
+-	case DA9121_TYPE_DA9220_DA9132:
++	case DA9121_SUBTYPE_DA9217:
++		chip->variant_id = DA9121_TYPE_DA9217;
++		regmap = &da9121_1ch_regmap_config;
++		break;
++	case DA9121_SUBTYPE_DA9122:
++	case DA9121_SUBTYPE_DA9131:
++		chip->variant_id = DA9121_TYPE_DA9122_DA9131;
++		regmap = &da9121_2ch_regmap_config;
++		break;
++	case DA9121_SUBTYPE_DA9220:
++	case DA9121_SUBTYPE_DA9132:
++		chip->variant_id = DA9121_TYPE_DA9220_DA9132;
+ 		regmap = &da9121_2ch_regmap_config;
+ 		break;
+ 	}
+@@ -975,13 +999,13 @@ regmap_error:
+ }
+ 
+ static const struct of_device_id da9121_dt_ids[] = {
+-	{ .compatible = "dlg,da9121", .data = (void *) DA9121_TYPE_DA9121_DA9130 },
+-	{ .compatible = "dlg,da9130", .data = (void *) DA9121_TYPE_DA9121_DA9130 },
+-	{ .compatible = "dlg,da9217", .data = (void *) DA9121_TYPE_DA9217 },
+-	{ .compatible = "dlg,da9122", .data = (void *) DA9121_TYPE_DA9122_DA9131 },
+-	{ .compatible = "dlg,da9131", .data = (void *) DA9121_TYPE_DA9122_DA9131 },
+-	{ .compatible = "dlg,da9220", .data = (void *) DA9121_TYPE_DA9220_DA9132 },
+-	{ .compatible = "dlg,da9132", .data = (void *) DA9121_TYPE_DA9220_DA9132 },
++	{ .compatible = "dlg,da9121", .data = (void *) DA9121_SUBTYPE_DA9121 },
++	{ .compatible = "dlg,da9130", .data = (void *) DA9121_SUBTYPE_DA9130 },
++	{ .compatible = "dlg,da9217", .data = (void *) DA9121_SUBTYPE_DA9217 },
++	{ .compatible = "dlg,da9122", .data = (void *) DA9121_SUBTYPE_DA9122 },
++	{ .compatible = "dlg,da9131", .data = (void *) DA9121_SUBTYPE_DA9131 },
++	{ .compatible = "dlg,da9220", .data = (void *) DA9121_SUBTYPE_DA9220 },
++	{ .compatible = "dlg,da9132", .data = (void *) DA9121_SUBTYPE_DA9132 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, da9121_dt_ids);
+@@ -1011,7 +1035,7 @@ static int da9121_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 
+ 	chip->pdata = i2c->dev.platform_data;
+-	chip->variant_id = da9121_of_get_id(&i2c->dev);
++	chip->subvariant_id = da9121_of_get_id(&i2c->dev);
+ 
+ 	ret = da9121_assign_chip_model(i2c, chip);
+ 	if (ret < 0)
+diff --git a/drivers/regulator/da9121-regulator.h b/drivers/regulator/da9121-regulator.h
+index 3c34cb889ca8..357f416e17c1 100644
+--- a/drivers/regulator/da9121-regulator.h
++++ b/drivers/regulator/da9121-regulator.h
+@@ -29,6 +29,16 @@ enum da9121_variant {
+ 	DA9121_TYPE_DA9217
  };
  
- #define DM_IRQ_TABLE_LOCK(adev, flags) \
-@@ -111,20 +112,10 @@ static void init_handler_common_data(struct amdgpu_dm_irq_handler_data *hcd,
-  */
- static void dm_irq_work_func(struct work_struct *work)
- {
--	struct irq_list_head *irq_list_head =
--		container_of(work, struct irq_list_head, work);
--	struct list_head *handler_list = &irq_list_head->head;
--	struct amdgpu_dm_irq_handler_data *handler_data;
--
--	list_for_each_entry(handler_data, handler_list, list) {
--		DRM_DEBUG_KMS("DM_IRQ: work_func: for dal_src=%d\n",
--				handler_data->irq_source);
-+	struct amdgpu_dm_irq_handler_data *handler_data =
-+		container_of(work, struct amdgpu_dm_irq_handler_data, work);
- 
--		DRM_DEBUG_KMS("DM_IRQ: schedule_work: for dal_src=%d\n",
--			handler_data->irq_source);
--
--		handler_data->handler(handler_data->handler_arg);
--	}
-+	handler_data->handler(handler_data->handler_arg);
- 
- 	/* Call a DAL subcomponent which registered for interrupt notification
- 	 * at INTERRUPT_LOW_IRQ_CONTEXT.
-@@ -156,7 +147,7 @@ static struct list_head *remove_irq_handler(struct amdgpu_device *adev,
- 		break;
- 	case INTERRUPT_LOW_IRQ_CONTEXT:
- 	default:
--		hnd_list = &adev->dm.irq_handler_list_low_tab[irq_source].head;
-+		hnd_list = &adev->dm.irq_handler_list_low_tab[irq_source];
- 		break;
- 	}
- 
-@@ -287,7 +278,8 @@ void *amdgpu_dm_irq_register_interrupt(struct amdgpu_device *adev,
- 		break;
- 	case INTERRUPT_LOW_IRQ_CONTEXT:
- 	default:
--		hnd_list = &adev->dm.irq_handler_list_low_tab[irq_source].head;
-+		hnd_list = &adev->dm.irq_handler_list_low_tab[irq_source];
-+		INIT_WORK(&handler_data->work, dm_irq_work_func);
- 		break;
- 	}
- 
-@@ -369,7 +361,7 @@ void amdgpu_dm_irq_unregister_interrupt(struct amdgpu_device *adev,
- int amdgpu_dm_irq_init(struct amdgpu_device *adev)
- {
- 	int src;
--	struct irq_list_head *lh;
-+	struct list_head *lh;
- 
- 	DRM_DEBUG_KMS("DM_IRQ\n");
- 
-@@ -378,9 +370,7 @@ int amdgpu_dm_irq_init(struct amdgpu_device *adev)
- 	for (src = 0; src < DAL_IRQ_SOURCES_NUMBER; src++) {
- 		/* low context handler list init */
- 		lh = &adev->dm.irq_handler_list_low_tab[src];
--		INIT_LIST_HEAD(&lh->head);
--		INIT_WORK(&lh->work, dm_irq_work_func);
--
-+		INIT_LIST_HEAD(lh);
- 		/* high context handler init */
- 		INIT_LIST_HEAD(&adev->dm.irq_handler_list_high_tab[src]);
- 	}
-@@ -397,8 +387,11 @@ int amdgpu_dm_irq_init(struct amdgpu_device *adev)
- void amdgpu_dm_irq_fini(struct amdgpu_device *adev)
- {
- 	int src;
--	struct irq_list_head *lh;
-+	struct list_head *lh;
-+	struct list_head *entry, *tmp;
-+	struct amdgpu_dm_irq_handler_data *handler;
- 	unsigned long irq_table_flags;
++enum da9121_subvariant {
++	DA9121_SUBTYPE_DA9121,
++	DA9121_SUBTYPE_DA9130,
++	DA9121_SUBTYPE_DA9220,
++	DA9121_SUBTYPE_DA9132,
++	DA9121_SUBTYPE_DA9122,
++	DA9121_SUBTYPE_DA9131,
++	DA9121_SUBTYPE_DA9217
++};
 +
- 	DRM_DEBUG_KMS("DM_IRQ: releasing resources.\n");
- 	for (src = 0; src < DAL_IRQ_SOURCES_NUMBER; src++) {
- 		DM_IRQ_TABLE_LOCK(adev, irq_table_flags);
-@@ -407,7 +400,16 @@ void amdgpu_dm_irq_fini(struct amdgpu_device *adev)
- 		 * (because no code can schedule a new one). */
- 		lh = &adev->dm.irq_handler_list_low_tab[src];
- 		DM_IRQ_TABLE_UNLOCK(adev, irq_table_flags);
--		flush_work(&lh->work);
-+
-+		if (!list_empty(lh)) {
-+			list_for_each_safe(entry, tmp, lh) {
-+				handler = list_entry(
-+					entry,
-+					struct amdgpu_dm_irq_handler_data,
-+					list);
-+				flush_work(&handler->work);
-+			}
-+		}
- 	}
- }
+ /* Minimum, maximum and default polling millisecond periods are provided
+  * here as an example. It is expected that any final implementation will
+  * include a modification of these settings to match the required
+@@ -279,6 +289,9 @@ enum da9121_variant {
+ #define DA9220_VARIANT_VRC	0x0
+ #define DA9122_VARIANT_VRC	0x2
+ #define DA9217_VARIANT_VRC	0x7
++#define DA9130_VARIANT_VRC	0x0
++#define DA9131_VARIANT_VRC	0x1
++#define DA9132_VARIANT_VRC	0x2
  
-@@ -417,6 +419,8 @@ int amdgpu_dm_irq_suspend(struct amdgpu_device *adev)
- 	struct list_head *hnd_list_h;
- 	struct list_head *hnd_list_l;
- 	unsigned long irq_table_flags;
-+	struct list_head *entry, *tmp;
-+	struct amdgpu_dm_irq_handler_data *handler;
+ /* DA9121_REG_OTP_CUSTOMER_ID */
  
- 	DM_IRQ_TABLE_LOCK(adev, irq_table_flags);
- 
-@@ -427,14 +431,22 @@ int amdgpu_dm_irq_suspend(struct amdgpu_device *adev)
- 	 * will be disabled from manage_dm_interrupts on disable CRTC.
- 	 */
- 	for (src = DC_IRQ_SOURCE_HPD1; src <= DC_IRQ_SOURCE_HPD6RX; src++) {
--		hnd_list_l = &adev->dm.irq_handler_list_low_tab[src].head;
-+		hnd_list_l = &adev->dm.irq_handler_list_low_tab[src];
- 		hnd_list_h = &adev->dm.irq_handler_list_high_tab[src];
- 		if (!list_empty(hnd_list_l) || !list_empty(hnd_list_h))
- 			dc_interrupt_set(adev->dm.dc, src, false);
- 
- 		DM_IRQ_TABLE_UNLOCK(adev, irq_table_flags);
--		flush_work(&adev->dm.irq_handler_list_low_tab[src].work);
- 
-+		if (!list_empty(hnd_list_l)) {
-+			list_for_each_safe (entry, tmp, hnd_list_l) {
-+				handler = list_entry(
-+					entry,
-+					struct amdgpu_dm_irq_handler_data,
-+					list);
-+				flush_work(&handler->work);
-+			}
-+		}
- 		DM_IRQ_TABLE_LOCK(adev, irq_table_flags);
- 	}
- 
-@@ -454,7 +466,7 @@ int amdgpu_dm_irq_resume_early(struct amdgpu_device *adev)
- 
- 	/* re-enable short pulse interrupts HW interrupt */
- 	for (src = DC_IRQ_SOURCE_HPD1RX; src <= DC_IRQ_SOURCE_HPD6RX; src++) {
--		hnd_list_l = &adev->dm.irq_handler_list_low_tab[src].head;
-+		hnd_list_l = &adev->dm.irq_handler_list_low_tab[src];
- 		hnd_list_h = &adev->dm.irq_handler_list_high_tab[src];
- 		if (!list_empty(hnd_list_l) || !list_empty(hnd_list_h))
- 			dc_interrupt_set(adev->dm.dc, src, true);
-@@ -480,7 +492,7 @@ int amdgpu_dm_irq_resume_late(struct amdgpu_device *adev)
- 	 * will be enabled from manage_dm_interrupts on enable CRTC.
- 	 */
- 	for (src = DC_IRQ_SOURCE_HPD1; src <= DC_IRQ_SOURCE_HPD6; src++) {
--		hnd_list_l = &adev->dm.irq_handler_list_low_tab[src].head;
-+		hnd_list_l = &adev->dm.irq_handler_list_low_tab[src];
- 		hnd_list_h = &adev->dm.irq_handler_list_high_tab[src];
- 		if (!list_empty(hnd_list_l) || !list_empty(hnd_list_h))
- 			dc_interrupt_set(adev->dm.dc, src, true);
-@@ -497,22 +509,53 @@ int amdgpu_dm_irq_resume_late(struct amdgpu_device *adev)
- static void amdgpu_dm_irq_schedule_work(struct amdgpu_device *adev,
- 					enum dc_irq_source irq_source)
- {
--	unsigned long irq_table_flags;
--	struct work_struct *work = NULL;
-+	struct  list_head *handler_list = &adev->dm.irq_handler_list_low_tab[irq_source];
-+	struct  amdgpu_dm_irq_handler_data *handler_data;
-+	bool    work_queued = false;
- 
--	DM_IRQ_TABLE_LOCK(adev, irq_table_flags);
-+	if (list_empty(handler_list))
-+		return;
- 
--	if (!list_empty(&adev->dm.irq_handler_list_low_tab[irq_source].head))
--		work = &adev->dm.irq_handler_list_low_tab[irq_source].work;
-+	list_for_each_entry (handler_data, handler_list, list) {
-+		if (!queue_work(system_highpri_wq, &handler_data->work)) {
-+			continue;
-+		} else {
-+			work_queued = true;
-+			break;
-+		}
-+	}
- 
--	DM_IRQ_TABLE_UNLOCK(adev, irq_table_flags);
-+	if (!work_queued) {
-+		struct  amdgpu_dm_irq_handler_data *handler_data_add;
-+		/*get the amdgpu_dm_irq_handler_data of first item pointed by handler_list*/
-+		handler_data = container_of(handler_list->next, struct amdgpu_dm_irq_handler_data, list);
- 
--	if (work) {
--		if (!schedule_work(work))
--			DRM_INFO("amdgpu_dm_irq_schedule_work FAILED src %d\n",
--						irq_source);
--	}
-+		/*allocate a new amdgpu_dm_irq_handler_data*/
-+		handler_data_add = kzalloc(sizeof(*handler_data), GFP_KERNEL);
-+		if (!handler_data_add) {
-+			DRM_ERROR("DM_IRQ: failed to allocate irq handler!\n");
-+			return;
-+		}
-+
-+		/*copy new amdgpu_dm_irq_handler_data members from handler_data*/
-+		handler_data_add->handler       = handler_data->handler;
-+		handler_data_add->handler_arg   = handler_data->handler_arg;
-+		handler_data_add->dm            = handler_data->dm;
-+		handler_data_add->irq_source    = irq_source;
- 
-+		list_add_tail(&handler_data_add->list, handler_list);
-+
-+		INIT_WORK(&handler_data_add->work, dm_irq_work_func);
-+
-+		if (queue_work(system_highpri_wq, &handler_data_add->work))
-+			DRM_DEBUG("Queued work for handling interrupt from "
-+				  "display for IRQ source %d\n",
-+				  irq_source);
-+		else
-+			DRM_ERROR("Failed to queue work for handling interrupt "
-+				  "from display for IRQ source %d\n",
-+				  irq_source);
-+	}
- }
- 
- /*
 -- 
 2.30.2
 
