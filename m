@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A013789A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98BD378666
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240507AbhEJLau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:30:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52212 "EHLO mail.kernel.org"
+        id S235970AbhEJLHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:07:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234828AbhEJK5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 610B361946;
-        Mon, 10 May 2021 10:49:37 +0000 (UTC)
+        id S232392AbhEJKqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:46:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D15266193B;
+        Mon, 10 May 2021 10:37:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643777;
-        bh=AZe2vZ5ADJJaJ4xV8wf/15PTru8F8h0rROcmQxBeQO8=;
+        s=korg; t=1620643028;
+        bh=OmAsP+tYBJDtFQWqX428dKjCzbn7jC2wicgTcopdX3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZwPUq2jF8BTW9d9fQNTPJWksn/Kne2ROidAyx56U4h5an/gmfsEOlbf1TwTBxNKDl
-         ZyzL20PgPJ9tvGku9BvmA9I+I1sYtes/tZpXXxnOR/uMbO+VrmiNta0PKy3+kugSiq
-         Ky+gaDngOJIHPJqmdBrjth+PMkee8tTetXNI7GNw=
+        b=EYxGZj7bfsIvARRawadOyfDVntJa6Q/C5aTlUHScdADv1ySbpmLdXV5ZI70kD+DPs
+         ms6mj+LaccHJ1GgAZB/6cfBuCw0EYuOW32IBS3st5+TVgkrYi6rFrXETPiLjcYbpgB
+         xm+YUjw8EXDM7VowW+jHpy/f3K9i8HuksIKQiDbo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+efe9aefc31ae1e6f7675@syzkaller.appspotmail.com,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Quinn Tran <qutran@marvell.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Daniel Wagner <dwagner@suse.de>, Lee Duncan <lduncan@suse.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 154/342] media: drivers/media/usb: fix memory leak in zr364xx_probe
-Date:   Mon, 10 May 2021 12:19:04 +0200
-Message-Id: <20210510102015.181417815@linuxfoundation.org>
+Subject: [PATCH 5.10 148/299] scsi: qla2xxx: Always check the return value of qla24xx_get_isp_stats()
+Date:   Mon, 10 May 2021 12:19:05 +0200
+Message-Id: <20210510102009.849026419@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,78 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit 9c39be40c0155c43343f53e3a439290c0fec5542 ]
+[ Upstream commit a2b2cc660822cae08c351c7f6b452bfd1330a4f7 ]
 
-syzbot reported memory leak in zr364xx_probe()[1].
-The problem was in invalid error handling order.
-All error conditions rigth after v4l2_ctrl_handler_init()
-must call v4l2_ctrl_handler_free().
+This patch fixes the following Coverity warning:
 
-Reported-by: syzbot+efe9aefc31ae1e6f7675@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+    CID 361199 (#1 of 1): Unchecked return value (CHECKED_RETURN)
+    3. check_return: Calling qla24xx_get_isp_stats without checking return
+    value (as is done elsewhere 4 out of 5 times).
+
+Link: https://lore.kernel.org/r/20210320232359.941-7-bvanassche@acm.org
+Cc: Quinn Tran <qutran@marvell.com>
+Cc: Mike Christie <michael.christie@oracle.com>
+Cc: Himanshu Madhani <himanshu.madhani@oracle.com>
+Cc: Daniel Wagner <dwagner@suse.de>
+Cc: Lee Duncan <lduncan@suse.com>
+Reviewed-by: Daniel Wagner <dwagner@suse.de>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/zr364xx/zr364xx.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/scsi/qla2xxx/qla_attr.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/zr364xx/zr364xx.c b/drivers/media/usb/zr364xx/zr364xx.c
-index d29b861367ea..1ef611e08323 100644
---- a/drivers/media/usb/zr364xx/zr364xx.c
-+++ b/drivers/media/usb/zr364xx/zr364xx.c
-@@ -1430,7 +1430,7 @@ static int zr364xx_probe(struct usb_interface *intf,
- 	if (hdl->error) {
- 		err = hdl->error;
- 		dev_err(&udev->dev, "couldn't register control\n");
--		goto unregister;
-+		goto free_hdlr_and_unreg_dev;
- 	}
- 	/* save the init method used by this camera */
- 	cam->method = id->driver_info;
-@@ -1503,7 +1503,7 @@ static int zr364xx_probe(struct usb_interface *intf,
- 	if (!cam->read_endpoint) {
- 		err = -ENOMEM;
- 		dev_err(&intf->dev, "Could not find bulk-in endpoint\n");
--		goto unregister;
-+		goto free_hdlr_and_unreg_dev;
- 	}
+diff --git a/drivers/scsi/qla2xxx/qla_attr.c b/drivers/scsi/qla2xxx/qla_attr.c
+index ab45ac1e5a72..6a2c4a6fcded 100644
+--- a/drivers/scsi/qla2xxx/qla_attr.c
++++ b/drivers/scsi/qla2xxx/qla_attr.c
+@@ -2855,6 +2855,8 @@ qla2x00_reset_host_stats(struct Scsi_Host *shost)
+ 	vha->qla_stats.jiffies_at_last_reset = get_jiffies_64();
  
- 	/* v4l */
-@@ -1515,7 +1515,7 @@ static int zr364xx_probe(struct usb_interface *intf,
- 	/* load zr364xx board specific */
- 	err = zr364xx_board_init(cam);
- 	if (err)
--		goto unregister;
-+		goto free_hdlr_and_unreg_dev;
- 	err = v4l2_ctrl_handler_setup(hdl);
- 	if (err)
- 		goto board_uninit;
-@@ -1533,7 +1533,7 @@ static int zr364xx_probe(struct usb_interface *intf,
- 	err = video_register_device(&cam->vdev, VFL_TYPE_VIDEO, -1);
- 	if (err) {
- 		dev_err(&udev->dev, "video_register_device failed\n");
--		goto free_handler;
-+		goto board_uninit;
- 	}
- 	cam->v4l2_dev.release = zr364xx_release;
+ 	if (IS_FWI2_CAPABLE(ha)) {
++		int rval;
++
+ 		stats = dma_alloc_coherent(&ha->pdev->dev,
+ 		    sizeof(*stats), &stats_dma, GFP_KERNEL);
+ 		if (!stats) {
+@@ -2864,7 +2866,11 @@ qla2x00_reset_host_stats(struct Scsi_Host *shost)
+ 		}
  
-@@ -1541,11 +1541,10 @@ static int zr364xx_probe(struct usb_interface *intf,
- 		 video_device_node_name(&cam->vdev));
- 	return 0;
+ 		/* reset firmware statistics */
+-		qla24xx_get_isp_stats(base_vha, stats, stats_dma, BIT_0);
++		rval = qla24xx_get_isp_stats(base_vha, stats, stats_dma, BIT_0);
++		if (rval != QLA_SUCCESS)
++			ql_log(ql_log_warn, vha, 0x70de,
++			       "Resetting ISP statistics failed: rval = %d\n",
++			       rval);
  
--free_handler:
--	v4l2_ctrl_handler_free(hdl);
- board_uninit:
- 	zr364xx_board_uninit(cam);
--unregister:
-+free_hdlr_and_unreg_dev:
-+	v4l2_ctrl_handler_free(hdl);
- 	v4l2_device_unregister(&cam->v4l2_dev);
- free_cam:
- 	kfree(cam);
+ 		dma_free_coherent(&ha->pdev->dev, sizeof(*stats),
+ 		    stats, stats_dma);
 -- 
 2.30.2
 
