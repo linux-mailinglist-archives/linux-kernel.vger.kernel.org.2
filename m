@@ -2,106 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06453378DBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD41378DC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240422AbhEJMvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:51:12 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:54446 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233896AbhEJMHF (ORCPT
+        id S233798AbhEJMwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343497AbhEJMNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 08:07:05 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 8E4331C0B7C; Mon, 10 May 2021 14:05:54 +0200 (CEST)
-Date:   Mon, 10 May 2021 14:05:54 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Shixin Liu <liushixin2@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 104/299] crypto: stm32/hash - Fix PM reference leak
- on stm32-hash.c
-Message-ID: <20210510120554.GB3547@duo.ucw.cz>
-References: <20210510102004.821838356@linuxfoundation.org>
- <20210510102008.377102138@linuxfoundation.org>
+        Mon, 10 May 2021 08:13:45 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353E5C0611AC
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:06:15 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id q15so8890773pgg.12
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:06:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PTR4dBkNFBCJ7q1RjCjO2bl1wxVL8tAhBVKYkSFF/gk=;
+        b=O3jcwqfmGMEjWuO+My7tQegTIjW5LTammV9l2g6BXHdojoV+bbCdqpSQF5K8Fp/DLU
+         9mRkNI59Tqysx8YyihQJdMURooh8i1jB0p/oihyAllVHu4uolRbHlkysHf3R+/okOG1J
+         ey+W603teOFrvkM9YS/Y6H/rC22KNHVK1hQ5Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PTR4dBkNFBCJ7q1RjCjO2bl1wxVL8tAhBVKYkSFF/gk=;
+        b=h/tuWE30ZeFFMOkWN0R84b6qPal1OTe+KqRj9kQaXIQrlJ5MC6z4RpbVeI7dlYi+UQ
+         QK1G6015s2YUTk9V/KifSVUyi7GxfnoGOdyRqsNIplrQ2xf7b0lKRhXfnystLxoMIJdK
+         KBN0g196vmuXcxKZhWrDhJGopuGy53agqtvCwxt+VlQpcWqJNZr01Qyc8MMaY5twF/0U
+         fj99qI2kYcvvlNhg6bykrUS/1siBNU37QnLwsy64T0nH8wcjTWH61QbPnX4wZ+SPF5HN
+         0zokzFuXgc4dRZlEGnTzkEiL8OHuC3CXt2unFHK6DY+h1cngniB3cLda/uh5LbUDBrRR
+         /vpQ==
+X-Gm-Message-State: AOAM5300QTmZ3q0Bsqf3AeGYanc1wGCbHZN9mfxvwhQurRRGQ0xhLcuH
+        fXALhY76zzdQu20oGEzIYUji/w==
+X-Google-Smtp-Source: ABdhPJw1nvyccaShmLkqHXdOxQNzynoJPzOIgrVgI+jk8306PThKT5gWkzc1c82RfmlvUN8F1xMAcw==
+X-Received: by 2002:a63:aa48:: with SMTP id x8mr1238179pgo.359.1620648375232;
+        Mon, 10 May 2021 05:06:15 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:b1d:8aee:8284:2f76])
+        by smtp.gmail.com with ESMTPSA id d16sm11392910pgk.34.2021.05.10.05.06.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 05:06:14 -0700 (PDT)
+Date:   Mon, 10 May 2021 21:06:09 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     luojiaxing <luojiaxing@huawei.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
+        john.ogness@linutronix.de, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, bobo.shaobowang@huawei.com
+Subject: Re: [PATCH] printk: stop spining waiter when console resume to flush
+ prb
+Message-ID: <YJkhsb7h5Ptn+oFO@google.com>
+References: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
+ <YJPxj83F1sBjHHAE@alley>
+ <YJP4F1UIt/eRZ96s@google.com>
+ <YJVnNQ7RGvx9JKxV@alley>
+ <46df3838-e1a6-ee95-b398-bef0896d2b03@huawei.com>
+ <YJkB6SedDHe3FlGI@alley>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="s2ZSL+KKDSLx8OML"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510102008.377102138@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YJkB6SedDHe3FlGI@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On (21/05/10 11:50), Petr Mladek wrote:
+[..]
+> The only problem is that it becomes the console_owner too late.
+> It spends long time by flushing the accumulated messages. But
+> they are its own messages after all.
+> 
+> The only real solution is to pass the console work to a separate
+> kthread and do not block any printk() caller.
 
---s2ZSL+KKDSLx8OML
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> pm_runtime_get_sync will increment pm usage counter even it failed.
-> Forgetting to putting operation will result in reference leak here.
-> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-> counter balanced.
-
-I believe we need to enforce "patches need to be tested" rule at least
-against robots.
-
-Code was correct in 3/4 instances, this introduces bugs. Yes, last one
-needs fixing.
-
-Best regards,
-								Pavel
-
-> +++ b/drivers/crypto/stm32/stm32-hash.c
-> @@ -812,7 +812,7 @@ static void stm32_hash_finish_req(struct ahash_reques=
-t *req, int err)
->  static int stm32_hash_hw_init(struct stm32_hash_dev *hdev,
->  			      struct stm32_hash_request_ctx *rctx)
->  {
-> -	pm_runtime_get_sync(hdev->dev);
-> +	pm_runtime_resume_and_get(hdev->dev);
-> =20
->  	if (!(HASH_FLAGS_INIT & hdev->flags)) {
->  		stm32_hash_write(hdev, HASH_CR, HASH_CR_INIT);
-> @@ -961,7 +961,7 @@ static int stm32_hash_export(struct ahash_request *re=
-q, void *out)
->  	u32 *preg;
->  	unsigned int i;
-> =20
-> -	pm_runtime_get_sync(hdev->dev);
-> +	pm_runtime_resume_and_get(hdev->dev);
-> =20
->  	while ((stm32_hash_read(hdev, HASH_SR) & HASH_SR_BUSY))
->  		cpu_relax();
-> @@ -999,7 +999,7 @@ static int stm32_hash_import(struct ahash_request *re=
-q, const void *in)
-> =20
->  	preg =3D rctx->hw_context;
-> =20
-> -	pm_runtime_get_sync(hdev->dev);
-> +	pm_runtime_resume_and_get(hdev->dev);
-> =20
->  	stm32_hash_write(hdev, HASH_IMR, *preg++);
->  	stm32_hash_write(hdev, HASH_STR, *preg++);
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---s2ZSL+KKDSLx8OML
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYJkhogAKCRAw5/Bqldv6
-8v/SAKCt0vlNj8WNcw3FsHi/g5drvv9CugCfQnV2lUXyG4V2RpeJ7VBSwT893TI=
-=oHNw
------END PGP SIGNATURE-----
-
---s2ZSL+KKDSLx8OML--
+Yeah, but even that thing is getting complex fairly quickly.
+wake_up_process() queues kthread on the same CPU, so if the
+printk() (ab)-user is in atomic context then printing kthread
+won't get scheduled.
