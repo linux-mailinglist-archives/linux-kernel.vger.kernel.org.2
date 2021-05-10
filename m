@@ -2,123 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B30E378E08
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E227A378DF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351218AbhEJNDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348738AbhEJMq5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 08:46:57 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9B2C061345
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:41:04 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id j19so11737064qtp.7
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:41:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sWBxeMl4QMRBC5+HydxigOqadY8c03VHN4Jo2XyXuPo=;
-        b=lUJjWERR/ZcJbmtBbd5iJHakU3oreeyOxyCL4YrM6P7zuPQw2GJkQffGGmfGnvJRir
-         +oF0c/rzhyz/lBDJsejg9ioEipSSUl6YM7KVlF22Niw9EMV4pl0+rknlKMWtfLG1QBaC
-         3uu6kPe2j1gowaAl8KngEZD+1x2gctxma/sH/MWCp1ACPZPVtp0PV84ISPrCwiy5yhfi
-         Cd44Bhz7s1CZe0YfwOyq0ROOHSxmgsl6ybs1U2eo3pwKzSsGRlUK2mgNDmXQ6HldbWFN
-         G0i50m6QYIKB9/dbw2CsgNdOtt+rh3MzCrpJ/u8WOJs6uwD0OEx6ftDWNImjebFY24Pr
-         8Vew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sWBxeMl4QMRBC5+HydxigOqadY8c03VHN4Jo2XyXuPo=;
-        b=kz2QBwlHcC6SXpSwIBDNJ8UfHMcfaaxNAKfcd3jyPmf1rsvi3sONKuE3t/vrhPYefC
-         /GyxBcw3qx1oInqCLvTqyMphFqbHCxMLXYS5Okex+scD7bSL65SWGroA7jhUoff3WByG
-         F0HPPHc3iid0KZ+cXQVu0CqZ60SdkA/YdFKIn7hyPKFqBSaVwD68/eY78WleRQ8xcFXr
-         u69+CsyJyPTJXPvHreIT3YogYvdHXQbL5EVSLJ5P3cniyu+gKui3cQa5Mpl3BFexE3p8
-         eBwgVXb68sBleOMXoMKjd2xP8rYDp14B+aF2ea2XAhL0cY0fPO7qmLrtCBsFCBgQsAdj
-         EkIQ==
-X-Gm-Message-State: AOAM532Qp7ebwY9c/dSf1Fib4gchaOGmLVQBvFRoV81KLI1zxQak5+6O
-        jheMJQZxkg3k5uoJXIxc1d+3iU7t8pe3PFja
-X-Google-Smtp-Source: ABdhPJxbq2hX5CW1bhvlOJNY25r+kplAkc2Kf7zakAydxBuGzUc7Mh8fQJ2R+nUpsqxXyWrj9bYZ9Q==
-X-Received: by 2002:ac8:4710:: with SMTP id f16mr18777928qtp.250.1620650463263;
-        Mon, 10 May 2021 05:41:03 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id o5sm11333822qkl.64.2021.05.10.05.41.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 05:41:02 -0700 (PDT)
-Subject: Re: [thermal-next PATCH v2 1/2] thermal: qcom: tsens: init debugfs
- only with successful probe
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210429010518.13319-1-ansuelsmth@gmail.com>
- <20210429010518.13319-2-ansuelsmth@gmail.com>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <d9549fb6-462e-5e22-4f76-c6b37a04a02a@linaro.org>
-Date:   Mon, 10 May 2021 08:41:00 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1350819AbhEJNBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:01:39 -0400
+Received: from mga07.intel.com ([134.134.136.100]:31643 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239843AbhEJMme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 08:42:34 -0400
+IronPort-SDR: thlt/mWZjXb5OWzMfe0YwQaxdxQn+7G8fAp0AM16gY14rPkDNsrhfPGafbCrBgYJTebI6FiUiE
+ ZzaznKxT9dZQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="263114672"
+X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
+   d="scan'208";a="263114672"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 05:41:20 -0700
+IronPort-SDR: 5nN/+7mM/gojnHt//gtw2ISyE1hf0GSBEA0Igq5eujV0QPHMd1F9Pmq4FrvuZI5TRp33lU1ioh
+ udxzIQuO6WXQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
+   d="scan'208";a="536401736"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 10 May 2021 05:41:16 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 1917FD7; Mon, 10 May 2021 15:41:37 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v3 00/14] spi: pxa2xx: Set of cleanups
+Date:   Mon, 10 May 2021 15:41:20 +0300
+Message-Id: <20210510124134.24638-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210429010518.13319-2-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Mailer: git-send-email 2.30.2
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Set of cleanups here and there related to the SPI PXA2xx driver.
+On top of them, adding the special type for Intel Merrifield.
 
+In v3:
+- rebased on top of v5.13-rc1 and/or spi/for-5,14
 
-On 4/28/21 9:05 PM, Ansuel Smith wrote:
-> calibrate and tsens_register can fail or PROBE_DEFER. This will cause a
-> double or a wrong init of the debugfs information. Init debugfs only
-> with successful probe fixing warning about directory already present.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+In v2:
+- cover letter (Mark)
+- drop moving the header in patch 5 (Mark)
 
-Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
+Andy Shevchenko (14):
+  spi: pxa2xx: Use one point of return when ->probe() fails
+  spi: pxa2xx: Utilize MMIO and physical base from struct ssp_device
+  spi: pxa2xx: Utilize struct device from struct ssp_device
+  spi: pxa2xx: Replace header inclusions by forward declarations
+  spi: pxa2xx: Unify ifdeffery used in the headers
+  spi: pxa2xx: Group Intel Quark specific definitions
+  spi: pxa2xx: Introduce int_stop_and_reset() helper
+  spi: pxa2xx: Reuse int_error_stop() in pxa2xx_spi_slave_abort()
+  spi: pxa2xx: Use pxa_ssp_enable()/pxa_ssp_disable() in the driver
+  spi: pxa2xx: Extract pxa2xx_spi_update() helper
+  spi: pxa2xx: Extract clear_SSCR1_bits() helper
+  spi: pxa2xx: Extract read_SSSR_bits() helper
+  spi: pxa2xx: Constify struct driver_data parameter
+  spi: pxa2xx: Introduce special type for Merrifield SPIs
+
+ drivers/spi/spi-pxa2xx-dma.c   |  37 +++----
+ drivers/spi/spi-pxa2xx-pci.c   |   4 +-
+ drivers/spi/spi-pxa2xx.c       | 190 +++++++++++++++++----------------
+ drivers/spi/spi-pxa2xx.h       |  52 ++++-----
+ include/linux/pxa2xx_ssp.h     |  42 +++++++-
+ include/linux/spi/pxa2xx_spi.h |   9 +-
+ sound/soc/pxa/pxa-ssp.c        |  16 ---
+ 7 files changed, 185 insertions(+), 165 deletions(-)
 
 -- 
-Warm Regards
-Thara
-> ---
->   drivers/thermal/qcom/tsens.c | 9 ++++++---
->   1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
-> index d8ce3a687b80..b37d5fd71f3a 100644
-> --- a/drivers/thermal/qcom/tsens.c
-> +++ b/drivers/thermal/qcom/tsens.c
-> @@ -845,8 +845,6 @@ int __init init_common(struct tsens_priv *priv)
->   	if (tsens_version(priv) >= VER_0_1)
->   		tsens_enable_irq(priv);
->   
-> -	tsens_debug_init(op);
-> -
->   err_put_device:
->   	put_device(&op->dev);
->   	return ret;
-> @@ -1057,7 +1055,12 @@ static int tsens_probe(struct platform_device *pdev)
->   		}
->   	}
->   
-> -	return tsens_register(priv);
-> +	ret = tsens_register(priv);
-> +
-> +	if (!ret)
-> +		tsens_debug_init(pdev);
-> +
-> +	return ret;
->   }
->   
->   static int tsens_remove(struct platform_device *pdev)
-> 
+2.30.2
 
