@@ -2,79 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A80B3787EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E822C37871B
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236196AbhEJLTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:19:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234003AbhEJKzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:55:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3D1961925;
-        Mon, 10 May 2021 10:43:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643399;
-        bh=pTjM3Nl2nmy8c77cRJ2FbBpx2W0g03c7lC80yDjpenU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MMOxQ5sCIA391TmZaJcUhkoOkksCSoKMBR/bbuUVOhSX0wy7/+VN8Fdhsh+SQsorp
-         BdDKsZZMAoWZMAlN0vgVsRDQQ6TshzqzE0XCQETSm3rWyoA1EYV1XKvIQxLE+M2pvx
-         sKXyc6m98DWYv7RNF/OTrb636ySiOnd8eP23F9t4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH 5.10 299/299] thermal/core/fair share: Lock the thermal zone while looping over instances
-Date:   Mon, 10 May 2021 12:21:36 +0200
-Message-Id: <20210510102014.798993178@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S236257AbhEJLNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233618AbhEJKuZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:50:25 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D03C061361
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 03:38:48 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id h4so16049191wrt.12
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 03:38:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Prd7IRa+ZjrFAJ2l9tG9om0bmi1tNmgIcFpqkLdVso8=;
+        b=NuhWo+54thqqc6supEKfQxC6/OlcJeHSBZV2wKNM8FXf1rp/G+p34TWHidArw4GZK7
+         Qo/UGOk5atuqwWGVqARjwx6G3ZFQqw7c/SeJL3FR9C5lHrA124/ClYt3hNvMrXTHFsh7
+         wqplJa90tPOPGEWwUMTCwyErLOYYigo4akoRNht5C1jSBTbowLBeMgITVQ9AVtAKesxO
+         rOD+7dl+1nmOrCLZbqLBy4GD/agqRW1Zn5zIqYm/FUOiHx9QoVnafgZOFsZ31jWw6Kbq
+         O27l1HXZ4B9H2Y38yInMxBYf9eQpCYHW9uwQ1M2OE7JK+RCQyt/CUTk2QW0l6vqNvJJS
+         DuSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Prd7IRa+ZjrFAJ2l9tG9om0bmi1tNmgIcFpqkLdVso8=;
+        b=V3yxe7iWHu7nWot7PMwLw7Svt0FASJOPbzQ9dsVemIEpIN6yr0vOfjGPBpH7mMVF1o
+         4Ge3EBvuRK5qCR2sJjAPH+lamj/jtHAlPYlQCVSe/BwCTKNCrTpc/rVjiGuE/AmCApx6
+         5frq8MwEnQqBEVfBL64//3PnufIfZ1mNR4pjSBN/t854P8/Z37oGORzteWhREnC/efX9
+         LLPBPk96bzSRqwDl77M/lkRPSMLvn3r5o4JlnmHENAslZjXlA6rk+msVT8eTufrsBPzV
+         otP5h9BcVY/J4CSKQZ45KIdwkJ9oV90gCxIsrICQogQAEOEEPZyjcORt4G42CCJbUaoe
+         0NJQ==
+X-Gm-Message-State: AOAM530/i9ePcmPWgvDRFECCAdkYjKsGMlt1ZrumrykM5fEl1Ki97nUJ
+        NY7Sp2pYisQnAB4Hx5DG4j5v0s1MWJVLjX8h
+X-Google-Smtp-Source: ABdhPJwa6IkT8s5sItmkcKt+12m+tAbUxpwWn0JQHjuk3Z7CgKM3vnSR2vC1+VQFJherkPDIUIMrlw==
+X-Received: by 2002:adf:eec4:: with SMTP id a4mr30213979wrp.159.1620643127467;
+        Mon, 10 May 2021 03:38:47 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id d127sm25055313wmd.14.2021.05.10.03.38.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 03:38:47 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH] ASoC: codecs: lpass-rx-macro: add missing MODULE_DEVICE_TABLE
+Date:   Mon, 10 May 2021 11:38:44 +0100
+Message-Id: <20210510103844.1532-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukasz Luba <lukasz.luba@arm.com>
+Fix module loading by adding missing MODULE_DEVICE_TABLE.
 
-commit fef05776eb02238dcad8d5514e666a42572c3f32 upstream.
-
-The tz->lock must be hold during the looping over the instances in that
-thermal zone. This lock was missing in the governor code since the
-beginning, so it's hard to point into a particular commit.
-
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210422153624.6074-2-lukasz.luba@arm.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/thermal/gov_fair_share.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/codecs/lpass-rx-macro.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/thermal/gov_fair_share.c
-+++ b/drivers/thermal/gov_fair_share.c
-@@ -82,6 +82,8 @@ static int fair_share_throttle(struct th
- 	int total_instance = 0;
- 	int cur_trip_level = get_trip_level(tz);
+diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+index b0ebfc8d180c..171ab7f519c0 100644
+--- a/sound/soc/codecs/lpass-rx-macro.c
++++ b/sound/soc/codecs/lpass-rx-macro.c
+@@ -3579,6 +3579,7 @@ static const struct of_device_id rx_macro_dt_match[] = {
+ 	{ .compatible = "qcom,sm8250-lpass-rx-macro" },
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(of, rx_macro_dt_match);
  
-+	mutex_lock(&tz->lock);
-+
- 	list_for_each_entry(instance, &tz->thermal_instances, tz_node) {
- 		if (instance->trip != trip)
- 			continue;
-@@ -110,6 +112,8 @@ static int fair_share_throttle(struct th
- 		mutex_unlock(&instance->cdev->lock);
- 		thermal_cdev_update(cdev);
- 	}
-+
-+	mutex_unlock(&tz->lock);
- 	return 0;
- }
- 
-
+ static struct platform_driver rx_macro_driver = {
+ 	.driver = {
+-- 
+2.21.0
 
