@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2ED378BDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F9A378A5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236324AbhEJMQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:16:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45604 "EHLO mail.kernel.org"
+        id S233980AbhEJLma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:42:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232714AbhEJLIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:08:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 871406162B;
-        Mon, 10 May 2021 11:04:15 +0000 (UTC)
+        id S232700AbhEJK5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFDBE61C51;
+        Mon, 10 May 2021 10:52:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644656;
-        bh=zF10B42BU7PZxpk8L9YI3lbTpw7BWdCgjXh1YWIYcew=;
+        s=korg; t=1620643923;
+        bh=DFaUFvaFSzNv+2K395Ty4lHD4aIvOZei9Y2R13qGQcc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=phNeN61drW9QPPARijFbQH28pkLItZCJQMI5MBROn1Ca4lVPAk0qMOXhxl9Wdu+Gc
-         zv2dHjAgxvOQ85DCiZr2w6c9ZKZ7Xxk7WWTHpmnon3rDlYGKcny9OCez73ZxTeKc6X
-         DcxpndTYXU8aS+FEhbNf0ahY0gJzDOlaSs3PiKp8=
+        b=ynRUYMd9tfVKGaXBWmclDiDiobPotpvJoILwoCq78Tu85ga5VAdPJABPbO90vNwnV
+         V603aZjBP1wmmZuIcyVDS9k3WJRR+EpUqBQia92tfQa4E7N+G4wpOCG4JByrFMbd/O
+         QUbzLLvtC6ZuJ+kdzbJfraXpdz8DlDnb4chJ78eM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brad Love <brad@nextdimension.cc>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Kenneth Feng <kenneth.feng@amd.com>,
+        Kevin Wang <kevin1.wang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 170/384] media: cx23885: add more quirks for reset DMA on some AMD IOMMU
-Date:   Mon, 10 May 2021 12:19:19 +0200
-Message-Id: <20210510102020.483245389@linuxfoundation.org>
+Subject: [PATCH 5.11 170/342] drm/amd/pm: fix workload mismatch on vega10
+Date:   Mon, 10 May 2021 12:19:20 +0200
+Message-Id: <20210510102015.724399482@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
-References: <20210510102014.849075526@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brad Love <brad@nextdimension.cc>
+From: Kenneth Feng <kenneth.feng@amd.com>
 
-[ Upstream commit 5f864cfbf59bfed2057bd214ce7fbf6ad420d54b ]
+[ Upstream commit 0979d43259e13846d86ba17e451e17fec185d240 ]
 
-The folowing AMD IOMMU are affected by the RiSC engine stall, requiring a
-reset to maintain continual operation. After being added to the
-broken_dev_id list the systems are functional long term.
+Workload number mapped to the correct one.
+This issue is only on vega10.
 
-0x1481 is the PCI ID for the IOMMU found on Starship/Matisse
-
-0x1419 is the PCI ID for the IOMMU found on 15h (Models 10h-1fh) family
-
-0x5a23 is the PCI ID for the IOMMU found on RD890S/RD990
-
-Signed-off-by: Brad Love <brad@nextdimension.cc>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Kenneth Feng <kenneth.feng@amd.com>
+Reviewed-by: Kevin Wang <kevin1.wang@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/cx23885/cx23885-core.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
-index 22f55a7840a6..d0ca260ecf70 100644
---- a/drivers/media/pci/cx23885/cx23885-core.c
-+++ b/drivers/media/pci/cx23885/cx23885-core.c
-@@ -2077,6 +2077,15 @@ static struct {
- 	 * 0x1423 is the PCI ID for the IOMMU found on Kaveri
- 	 */
- 	{ PCI_VENDOR_ID_AMD, 0x1423 },
-+	/* 0x1481 is the PCI ID for the IOMMU found on Starship/Matisse
-+	 */
-+	{ PCI_VENDOR_ID_AMD, 0x1481 },
-+	/* 0x1419 is the PCI ID for the IOMMU found on 15h (Models 10h-1fh) family
-+	 */
-+	{ PCI_VENDOR_ID_AMD, 0x1419 },
-+	/* 0x5a23 is the PCI ID for the IOMMU found on RD890S/RD990
-+	 */
-+	{ PCI_VENDOR_ID_ATI, 0x5a23 },
- };
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
+index 892f08f2ba42..13b5ae1c106f 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
+@@ -5161,7 +5161,7 @@ static int vega10_set_power_profile_mode(struct pp_hwmgr *hwmgr, long *input, ui
  
- static bool cx23885_does_need_dma_reset(void)
+ out:
+ 	smum_send_msg_to_smc_with_parameter(hwmgr, PPSMC_MSG_SetWorkloadMask,
+-						1 << power_profile_mode,
++						(!power_profile_mode) ? 0 : 1 << (power_profile_mode - 1),
+ 						NULL);
+ 	hwmgr->power_profile_mode = power_profile_mode;
+ 
 -- 
 2.30.2
 
