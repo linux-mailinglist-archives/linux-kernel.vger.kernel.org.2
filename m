@@ -2,82 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F5B379909
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DAA37990C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbhEJVSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 17:18:42 -0400
-Received: from ms.lwn.net ([45.79.88.28]:54254 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229810AbhEJVSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 17:18:36 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 4ADCD6D6;
-        Mon, 10 May 2021 21:17:29 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 4ADCD6D6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1620681449; bh=bMfhGN2Sb5awdnhBL0PMAadt6SFAO53pU1Yu0mUz7Lo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=LuTteKp+df+DrnQuj+GhvAJQ78fC9PgLQx2EuY8J0l5yVpKMF1xg/BoEM6SllgbTq
-         uNokbTg9glKu8ueUu5g5aG3YZFDEBOO9TyIs31XwPbE7eMG0JjH+nQVLbwlbxbdn/i
-         Q0XTWLxR2B9Ba3zRIefuTrxfXzlRa0lj8V5XcSZYYjMePUprIiCRGF9aLAycuqBiR8
-         vEOVgc7vd1gYBqDQu8WXApV/rqpw26+xgYpgjBFM1+eZST6P1hiLd7XLR5kp7cyrac
-         LiqQx7TtYuPl32A6LFCNBBvFO+41yAWpwy/gfrUo+F4hpvV6GBQJfsWC8mbbULhHC4
-         fP2+u36ka6Ymw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH] Documentation: drop optional BOMs
-In-Reply-To: <20210506231907.14359-1-rdunlap@infradead.org>
-References: <20210506231907.14359-1-rdunlap@infradead.org>
-Date:   Mon, 10 May 2021 15:17:28 -0600
-Message-ID: <875yzqffvb.fsf@meer.lwn.net>
+        id S231190AbhEJVTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 17:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231854AbhEJVTD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 17:19:03 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884C4C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 14:17:58 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id c13so1095530pfv.4
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 14:17:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0n88KguwK4u1Tl40XFeYJoKeAxPDsastf87y73L4zpU=;
+        b=bA4rMWnN7wm4v/a7EQ9UE5EfJewP1uei2YncP5LVPTIMrZHcbxqJTZncdbPvGuag7M
+         SOn9d1m9ir1oUtIaL396Jk2zcmZlgzzq22MqPdrxU23iqWuBUx5SpGG+rh6VhtJlEe9x
+         SK0i13IrBunc1t1JqsrmeTCpt4zZ+QcJ2UVDvDleEU2hQnTrVLtNvG2cpk1HELkBlPqn
+         ZAHNnrOsx2PtVO7s4UtUPGMTvf+DtBtSLqnXAuSvCewRDTFvlvfWjlPkvVL1nfNqpZFs
+         oF3RER3pvNMy08u0Mx+VljVqvnzwL9W7E1OfL4AJPSjdYkWS8STTkmIDTAkgzye8tPHt
+         3FTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0n88KguwK4u1Tl40XFeYJoKeAxPDsastf87y73L4zpU=;
+        b=qaZsgDaJgQZGClSnTSAY5MEfpnMODWjCN6TMa9xTwI1vltqMuolhJOmJmerMpQl6Eq
+         U7yexnSf/BJkegI51xGqtqaJ/2P+Fi9239+My7O78kNZqPYhsCdQo1NVzgVHrvKXoFCG
+         NmkXSA2DXedB+6pqP69O53bif4WVL/ArEXpUxwkdvmh9u15ry8pezRmN6stGwiBDEdrm
+         4irOj7jd74diFbTGpZA1SNKy/d8XUc1qhzilGS8cWaqD0LGvZGLAYDKPGhp2nl5nh4Ku
+         hOE1712gwh6Ufs0Ioa/xyCGFRzt2lWJm99LoQMLaAhThdY841oRhBIR+J034Q5c8vp22
+         6z4Q==
+X-Gm-Message-State: AOAM530JYvemog7zOZY7Hy4Hg8whnL34s0YZnd8vtP9PJYLJ5VU9FUvZ
+        8JxOcC7Lk9WOul5UXVaijHELXA==
+X-Google-Smtp-Source: ABdhPJy9w+X4oY2R3aIS+LuC4kgu8dLv7P/58an6EiZEdbMJtO8s28rzY3t1vB20O8L4vKb6gxiKIw==
+X-Received: by 2002:a63:9d48:: with SMTP id i69mr27113197pgd.297.1620681477999;
+        Mon, 10 May 2021 14:17:57 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id n30sm11679056pfv.52.2021.05.10.14.17.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 14:17:57 -0700 (PDT)
+Date:   Mon, 10 May 2021 21:17:53 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     Peter Gonda <pgonda@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, jroedel@suse.de,
+        "Lendacky, Thomas" <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        David Rientjes <rientjes@google.com>, peterz@infradead.org,
+        "H. Peter Anvin" <hpa@zytor.com>, tony.luck@intel.com
+Subject: Re: [PATCH Part2 RFC v2 36/37] KVM: SVM: Provide support for
+ SNP_GUEST_REQUEST NAE event
+Message-ID: <YJmjAaogWeFgCEmb@google.com>
+References: <20210430123822.13825-1-brijesh.singh@amd.com>
+ <20210430123822.13825-37-brijesh.singh@amd.com>
+ <CAMkAt6ottZkx02-ykazkG-5Tu5URv-xwOjWOZ=XMAXv98_HOYA@mail.gmail.com>
+ <f357d874-a369-93b6-ffa1-75c643596c81@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f357d874-a369-93b6-ffa1-75c643596c81@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy Dunlap <rdunlap@infradead.org> writes:
+On Mon, May 10, 2021, Brijesh Singh wrote:
+> 
+> On 5/10/21 1:57 PM, Peter Gonda wrote:
+> >> +e_fail:
+> >> +       ghcb_set_sw_exit_info_2(ghcb, rc);
+> >> +       return;
+> >> +
+> >> +e_term:
+> >> +       ghcb_set_sw_exit_info_1(ghcb, 1);
+> >> +       ghcb_set_sw_exit_info_2(ghcb,
+> >> +                               X86_TRAP_GP |
+> >> +                               SVM_EVTINJ_TYPE_EXEPT |
+> >> +                               SVM_EVTINJ_VALID);
+> >> +}
+> > I am probably missing something in the spec but I don't see any
+> > references to #GP in the '4.1.7 SNP Guest Request' section. Why is
+> > this different from e_fail?
+> 
+> The spec does not say to inject the #GP, I chose this because guest is
+> not adhering to the spec and there was a not a good error code in the
+> GHCB spec to communicate this condition. Per the spec, both the request
+> and response page must be a valid GPA. If we detect that guest is not
+> following the spec then its a guest BUG. IIRC, other places in the KVM
+> does something similar when guest is trying invalid operation.
 
-> A few of the Documentation .rst files begin with a Unicode
-> byte order mark (BOM). The BOM may signify endianess for
-> 16-bit or 32-bit encodings or indicate that the text stream
-> is indeed Unicode. We don't need it for either of those uses.
-> It may also interfere with (confuse) some software.
->
-> Since we don't need it and its use is optional, just delete
-> the uses of it in Documentation/.
->
-> https://en.wikipedia.org/wiki/Byte_order_mark
->
-> Fixes: 898bd37a9206 ("docs: block: convert to ReST")
-> Fixes: edba5eecfd6e ("doc:it_IT: add some process/* translations")
-> Fixes: 675aaf05d898 ("docs: xen-tpmfront.txt: convert it to .rstX")
-> Fixes: 458f69ef3665 ("docs: timers: convert docs to ReST and rename to *.rst")
-> Fixes: d80b5005c5dd ("docs: usb: convert documents to ReST")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
-> Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-> Cc: Federico Vaga <federico.vaga@vaga.pv.it>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> ---
->  Documentation/block/data-integrity.rst                 |    2 +-
->  Documentation/process/kernel-enforcement-statement.rst |    2 +-
->  Documentation/security/tpm/xen-tpmfront.rst            |    2 +-
->  Documentation/timers/no_hz.rst                         |    2 +-
->  Documentation/usb/mtouchusb.rst                        |    2 +-
->  Documentation/usb/usb-serial.rst                       |    2 +-
->  6 files changed, 6 insertions(+), 6 deletions(-)
+The GHCB spec should be updated to define an error code, even if it's a blanket
+statement for all VMGEXITs that fail to adhere to the spec.  Arbitrarily choosing
+an error code and/or exception number makes the information useless to the guest
+because the guest can't take specific action for those failures.  E.g. if there
+is a return code specifically for GHCB spec violation, then the guest can panic,
+WARN, etc... knowing that it done messed up.
 
-Applied, thanks.
-
-jon
+"Injecting" an exception is particularly bad, because if the guest kernel takes
+that request literally and emulates a #GP, then we can end up in a situation
+where someone files a bug report because VMGEXIT is hitting a #GP and confusion
+ensues.
