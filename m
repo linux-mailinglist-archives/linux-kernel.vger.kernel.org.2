@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E443783AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5F9378365
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbhEJKq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:46:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49878 "EHLO mail.kernel.org"
+        id S232847AbhEJKom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:44:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230501AbhEJKiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:38:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B995D61948;
-        Mon, 10 May 2021 10:30:11 +0000 (UTC)
+        id S231989AbhEJKfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:35:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F81B6144E;
+        Mon, 10 May 2021 10:28:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642612;
-        bh=wdbCHKdUvK32gg7LPa2Wwc9jzT2t0sh0ThTdvKoP5u4=;
+        s=korg; t=1620642528;
+        bh=DCHY9BwtrB1rxiIe8oM3OsBDQMo8xeEFLzJ/0d9rmWg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yGAjYGpOCv+LNIbCYRlNMy1HA1tmAnv8iUKmiFNzBxbWoejZSYn6k+lRo54poMkup
-         gSndw/UKKxeVMAJ5w44Tug7assrPQaEeZlfEgHSLCopItFAVi28325p/I2ILdyBwIN
-         JGlu1x8PYuxfx8J2A+S6d+ZLU0i8abr7YunDgnJg=
+        b=CUrM23RWnxjTtSVPfg10t9YGDfqRRXSFWK/L6qD/6A623KG8xe98uLHv8IW42/wpB
+         a+hF7fYkz8HRHgteOovsyBeKlTnMsCnFJj7UmcBSvyCTRzVTFkVzCamKZ88tWw/X7q
+         iQUiLokV8XdEIvm5wEww7uXxbXAivC1nh57GU3MU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luke D Jones <luke@ljones.dev>,
+        stable@vger.kernel.org, Phil Calvin <phil@philcalvin.com>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 131/184] ALSA: hda/realtek: GA503 use same quirks as GA401
-Date:   Mon, 10 May 2021 12:20:25 +0200
-Message-Id: <20210510101954.458213075@linuxfoundation.org>
+Subject: [PATCH 5.4 132/184] ALSA: hda/realtek: fix mic boost on Intel NUC 8
+Date:   Mon, 10 May 2021 12:20:26 +0200
+Message-Id: <20210510101954.490276309@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510101950.200777181@linuxfoundation.org>
 References: <20210510101950.200777181@linuxfoundation.org>
@@ -39,32 +39,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luke D Jones <luke@ljones.dev>
+From: Phil Calvin <phil@philcalvin.com>
 
-commit 76fae6185f5456865ff1bcb647709d44fd987eb6 upstream.
+commit d1ee66c5d3c5a0498dd5e3f2af5b8c219a98bba5 upstream.
 
-The GA503 has almost exactly the same default setup as the GA401
-model with the same issues. The GA401 quirks solve all the issues
-so we will use the full quirk chain.
+Fix two bugs with the Intel HDA Realtek ALC233 sound codec
+present in Intel NUC NUC8i7BEH and probably a few other similar
+NUC models.
 
-Signed-off-by: Luke D Jones <luke@ljones.dev>
+These codecs advertise a 4-level microphone input boost amplifier on
+pin 0x19, but the highest two boost settings do not work correctly,
+and produce only low analog noise that does not seem to contain any
+discernible signal. There is an existing fixup for this exact problem
+but for a different PCI subsystem ID, so we re-use that logic.
+
+Changing the boost level also triggers a DC spike in the input signal
+that bleeds off over about a second and overwhelms any input during
+that time. Thankfully, the existing fixup has the side effect of
+making the boost control show up in userspace as a mute/unmute switch,
+and this keeps (e.g.) PulseAudio from fiddling with it during normal
+input volume adjustments.
+
+Finally, the NUC hardware has built-in inverted stereo mics. This
+patch also enables the usual fixup for this so the two channels cancel
+noise instead of the actual signal.
+
+[ Re-ordered the quirk entry point by tiwai ]
+
+Signed-off-by: Phil Calvin <phil@philcalvin.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210419030411.28304-1-luke@ljones.dev
+Link: https://lore.kernel.org/r/80dc5663-7734-e7e5-25ef-15b5df24511a@philcalvin.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_realtek.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -7958,6 +7958,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1043, 0x1ccd, "ASUS X555UB", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1d4e, "ASUS TM420", ALC256_FIXUP_ASUS_HPE),
- 	SND_PCI_QUIRK(0x1043, 0x1e11, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA502),
-+	SND_PCI_QUIRK(0x1043, 0x1e8e, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1881, "ASUS Zephyrus S/M", ALC294_FIXUP_ASUS_GX502_PINS),
- 	SND_PCI_QUIRK(0x1043, 0x3030, "ASUS ZN270IE", ALC256_FIXUP_ASUS_AIO_GPIO2),
+@@ -6332,6 +6332,8 @@ enum {
+ 	ALC269_FIXUP_LEMOTE_A1802,
+ 	ALC269_FIXUP_LEMOTE_A190X,
+ 	ALC256_FIXUP_INTEL_NUC8_RUGGED,
++	ALC233_FIXUP_INTEL_NUC8_DMIC,
++	ALC233_FIXUP_INTEL_NUC8_BOOST,
+ 	ALC256_FIXUP_INTEL_NUC10,
+ 	ALC255_FIXUP_XIAOMI_HEADSET_MIC,
+ 	ALC274_FIXUP_HP_MIC,
+@@ -7043,6 +7045,16 @@ static const struct hda_fixup alc269_fix
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc233_fixup_lenovo_line2_mic_hotkey,
+ 	},
++	[ALC233_FIXUP_INTEL_NUC8_DMIC] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_inv_dmic,
++		.chained = true,
++		.chain_id = ALC233_FIXUP_INTEL_NUC8_BOOST,
++	},
++	[ALC233_FIXUP_INTEL_NUC8_BOOST] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc269_fixup_limit_int_mic_boost
++	},
+ 	[ALC255_FIXUP_DELL_SPK_NOISE] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc_fixup_disable_aamix,
+@@ -8125,6 +8137,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x10ec, 0x118c, "Medion EE4254 MD62100", ALC256_FIXUP_MEDION_HEADSET_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
+ 	SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
++	SND_PCI_QUIRK(0x8086, 0x2074, "Intel NUC 8", ALC233_FIXUP_INTEL_NUC8_DMIC),
+ 	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
+ 	SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", ALC256_FIXUP_INTEL_NUC10),
+ 
 
 
