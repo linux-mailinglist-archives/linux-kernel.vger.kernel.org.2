@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C768378A7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A2D378C1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236530AbhEJLpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:45:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52164 "EHLO mail.kernel.org"
+        id S1343902AbhEJMYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:24:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232880AbhEJK5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D5F861C3D;
-        Mon, 10 May 2021 10:52:12 +0000 (UTC)
+        id S237022AbhEJLLK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:11:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DCF161554;
+        Mon, 10 May 2021 11:06:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643932;
-        bh=AAcA8OdPJl+ilu/dPnGtwVxONE61/5EAHLfi0bMQ3Q8=;
+        s=korg; t=1620644783;
+        bh=UKmYwDYp+atKyBGY0j+F+SZeHkEihxOzjZeGSlNGlNo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mTPjwlkfuQPc78ydznKYl8V5IAF6W2TEVVV8c5o5OZVVr1VAMxYdvRpz6i7dtKqQK
-         3GhPT0SNVfJ2sxsqs2c65nCOreTnvNLL6taiRWb2Nq8ttR+x1nAJD4r4//OtZTc6Mq
-         GtHZu0lbLJGL+F8bs6oO705WJSwkX5Q/s5H6KlDQ=
+        b=bwrbAdJV9i37YpBCjvEd5qlCrxHHduTUQD7TTkS7M3IStAYTP7HdX+XPE26kKMEE3
+         uQbzZ/lndVHsdZEcZNHlcb+mvgOR8ukpqzDXfQFVLohVmYxq6myVFEtBFQFbWWVqnC
+         Lwzrbfqf1iHpXMmt1B824rhwgnRNMjzuz7/iPVgA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Huang <jinsdb@126.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 220/342] drm/amdkfd: Fix cat debugfs hang_hws file causes system crash bug
+Subject: [PATCH 5.12 221/384] media: vivid: update EDID
 Date:   Mon, 10 May 2021 12:20:10 +0200
-Message-Id: <20210510102017.367218398@linuxfoundation.org>
+Message-Id: <20210510102022.191138096@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
+References: <20210510102014.849075526@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,79 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Huang <jinsdb@126.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit d73610211eec8aa027850982b1a48980aa1bc96e ]
+[ Upstream commit 443ec4bbc6116f6f492a7a1282bfd8422c862158 ]
 
-Here is the system crash log:
-[ 1272.884438] BUG: unable to handle kernel NULL pointer dereference at
-(null)
-[ 1272.884444] IP: [<          (null)>]           (null)
-[ 1272.884447] PGD 825b09067 PUD 8267c8067 PMD 0
-[ 1272.884452] Oops: 0010 [#1] SMP
-[ 1272.884509] CPU: 13 PID: 3485 Comm: cat Kdump: loaded Tainted: G
-[ 1272.884515] task: ffff9a38dbd4d140 ti: ffff9a37cd3b8000 task.ti:
-ffff9a37cd3b8000
-[ 1272.884517] RIP: 0010:[<0000000000000000>]  [<          (null)>]
-(null)
-[ 1272.884520] RSP: 0018:ffff9a37cd3bbe68  EFLAGS: 00010203
-[ 1272.884522] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
-0000000000014d5f
-[ 1272.884524] RDX: fffffffffffffff4 RSI: 0000000000000001 RDI:
-ffff9a38aca4d200
-[ 1272.884526] RBP: ffff9a37cd3bbed0 R08: ffff9a38dcd5f1a0 R09:
-ffff9a31ffc07300
-[ 1272.884527] R10: ffff9a31ffc07300 R11: ffffffffaddd5e9d R12:
-ffff9a38b4e0fb00
-[ 1272.884529] R13: 0000000000000001 R14: ffff9a37cd3bbf18 R15:
-ffff9a38aca4d200
-[ 1272.884532] FS:  00007feccaa67740(0000) GS:ffff9a38dcd40000(0000)
-knlGS:0000000000000000
-[ 1272.884534] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1272.884536] CR2: 0000000000000000 CR3: 00000008267c0000 CR4:
-00000000003407e0
-[ 1272.884537] Call Trace:
-[ 1272.884544]  [<ffffffffade68940>] ? seq_read+0x130/0x440
-[ 1272.884548]  [<ffffffffade40f8f>] vfs_read+0x9f/0x170
-[ 1272.884552]  [<ffffffffade41e4f>] SyS_read+0x7f/0xf0
-[ 1272.884557]  [<ffffffffae374ddb>] system_call_fastpath+0x22/0x27
-[ 1272.884558] Code:  Bad RIP value.
-[ 1272.884562] RIP  [<          (null)>]           (null)
-[ 1272.884564]  RSP <ffff9a37cd3bbe68>
-[ 1272.884566] CR2: 0000000000000000
+The EDID had a few mistakes as reported by edid-decode:
 
-Signed-off-by: Qu Huang <jinsdb@126.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Block 1, CTA-861 Extension Block:
+  Video Data Block: For improved preferred timing interoperability, set 'Native detailed modes' to 1.
+  Video Capability Data Block: S_PT is equal to S_IT and S_CE, so should be set to 0 instead.
+
+Fixed those.
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/media/test-drivers/vivid/vivid-core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c b/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c
-index 511712c2e382..673d5e34f213 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c
-@@ -33,6 +33,11 @@ static int kfd_debugfs_open(struct inode *inode, struct file *file)
+diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
+index 0dc65ef3aa14..ca0ebf6ad9cc 100644
+--- a/drivers/media/test-drivers/vivid/vivid-core.c
++++ b/drivers/media/test-drivers/vivid/vivid-core.c
+@@ -205,13 +205,13 @@ static const u8 vivid_hdmi_edid[256] = {
+ 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+ 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x7b,
  
- 	return single_open(file, show, NULL);
- }
-+static int kfd_debugfs_hang_hws_read(struct seq_file *m, void *data)
-+{
-+	seq_printf(m, "echo gpu_id > hang_hws\n");
-+	return 0;
-+}
+-	0x02, 0x03, 0x3f, 0xf0, 0x51, 0x61, 0x60, 0x5f,
++	0x02, 0x03, 0x3f, 0xf1, 0x51, 0x61, 0x60, 0x5f,
+ 	0x5e, 0x5d, 0x10, 0x1f, 0x04, 0x13, 0x22, 0x21,
+ 	0x20, 0x05, 0x14, 0x02, 0x11, 0x01, 0x23, 0x09,
+ 	0x07, 0x07, 0x83, 0x01, 0x00, 0x00, 0x6d, 0x03,
+ 	0x0c, 0x00, 0x10, 0x00, 0x00, 0x3c, 0x21, 0x00,
+ 	0x60, 0x01, 0x02, 0x03, 0x67, 0xd8, 0x5d, 0xc4,
+-	0x01, 0x78, 0x00, 0x00, 0xe2, 0x00, 0xea, 0xe3,
++	0x01, 0x78, 0x00, 0x00, 0xe2, 0x00, 0xca, 0xe3,
+ 	0x05, 0x00, 0x00, 0xe3, 0x06, 0x01, 0x00, 0x4d,
+ 	0xd0, 0x00, 0xa0, 0xf0, 0x70, 0x3e, 0x80, 0x30,
+ 	0x20, 0x35, 0x00, 0xc0, 0x1c, 0x32, 0x00, 0x00,
+@@ -220,7 +220,7 @@ static const u8 vivid_hdmi_edid[256] = {
+ 	0x00, 0x00, 0x1a, 0x1a, 0x1d, 0x00, 0x80, 0x51,
+ 	0xd0, 0x1c, 0x20, 0x40, 0x80, 0x35, 0x00, 0xc0,
+ 	0x1c, 0x32, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00,
+-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63,
++	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x82,
+ };
  
- static ssize_t kfd_debugfs_hang_hws_write(struct file *file,
- 	const char __user *user_buf, size_t size, loff_t *ppos)
-@@ -94,7 +99,7 @@ void kfd_debugfs_init(void)
- 	debugfs_create_file("rls", S_IFREG | 0444, debugfs_root,
- 			    kfd_debugfs_rls_by_device, &kfd_debugfs_fops);
- 	debugfs_create_file("hang_hws", S_IFREG | 0200, debugfs_root,
--			    NULL, &kfd_debugfs_hang_hws_fops);
-+			    kfd_debugfs_hang_hws_read, &kfd_debugfs_hang_hws_fops);
- }
- 
- void kfd_debugfs_fini(void)
+ static int vidioc_querycap(struct file *file, void  *priv,
 -- 
 2.30.2
 
