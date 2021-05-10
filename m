@@ -2,84 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7855B377FC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4D9377FC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhEJJr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:47:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33204 "EHLO mail.kernel.org"
+        id S230261AbhEJJsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:48:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230093AbhEJJrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:47:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B54960FDA;
-        Mon, 10 May 2021 09:46:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620640010;
-        bh=21GdrFSAMQTXMFVqvxpKiSR1Lz6xlfRm4Wzori0Wuyg=;
+        id S230093AbhEJJsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 05:48:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35184610CC;
+        Mon, 10 May 2021 09:47:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620640031;
+        bh=vbT0CJnb5jNv7EzhGN3Xiroc5UAq23c1lIkvSnH7RQw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=caotaLPrm2BobhTu6NiJSLEk3GWqQuWfa8ZP7fUS671MX7PbGKUGdv7/M4475rDTp
-         tRAqHDBN/yQ1rI+qYO75gU7VUYwJj2Kp5d1gey/kBNzt2xgMJzVoxNSTwkPW7N1hep
-         xJd3RgAJKFL8qo2E9HocZdWhTrhxYevXfV3LSANM=
-Date:   Mon, 10 May 2021 11:46:48 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@gooogle.com>,
-        Joe Perches <joe@perches.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH stable 5.10 0/3] ARM FDT relocation backports
-Message-ID: <YJkBCMUpKUax0idB@kroah.com>
-References: <20210509173029.1653182-1-f.fainelli@gmail.com>
- <CAMj1kXGt1zrRQused3xgXzhQYfDchgH325iRDCZrx+7o1+bUnA@mail.gmail.com>
- <5f8fed97-8c73-73b0-6576-bf3fbcdb1440@gmail.com>
- <YJjkOLg/Ivo2kMOS@kroah.com>
- <CACRpkdb+4OFpsJAPkEjTBBf_+VTUvKkzsDb9xaSOxqhNSWkeeg@mail.gmail.com>
+        b=cONtVYMmyv72CFAhbmElAAmIO+U9/ctxFfSFMHhT2OjPIol7wuKIcBxPm4r7fOU3k
+         LXK84Skdi17mEuhgv3VIIpvDckaYhXD4Kwbh/rTq6DPDuIZiiXWSlIr0dti1kCXYgy
+         EdfYVFmN/Sz8xblgGx99xkgPbM0HFU3u37ozi4bBkCKyZ63wv1Y3tW4hRbXXqzsK2i
+         mvzgC58iLMvBc2rRk9mwtslf4Z3skQH91LWho1SmDq1ka0kKf1Tw0RVFqAb7JXheOA
+         ewKeKel2DeNFTY0+RbuQgcIpmoydF8DQgzi7950VqXf4FCo1xAuzVm1oJ91LO8AJEo
+         fJHEzEX2MtGmw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lg2VO-00025q-A8; Mon, 10 May 2021 11:47:14 +0200
+Date:   Mon, 10 May 2021 11:47:14 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v2 34/35] tty: make tty_get_byte_size available
+Message-ID: <YJkBIm4IiaZSrSPw@hovoldconsulting.com>
+References: <20210505091928.22010-35-jslaby@suse.cz>
+ <20210510070054.5397-1-jslaby@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdb+4OFpsJAPkEjTBBf_+VTUvKkzsDb9xaSOxqhNSWkeeg@mail.gmail.com>
+In-Reply-To: <20210510070054.5397-1-jslaby@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 11:37:01AM +0200, Linus Walleij wrote:
-> On Mon, May 10, 2021 at 9:43 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> > On Sun, May 09, 2021 at 06:22:05PM -0700, Florian Fainelli wrote:
+On Mon, May 10, 2021 at 09:00:54AM +0200, Jiri Slaby wrote:
+> Many tty drivers contain code to compute bits count depending on termios
+> cflags. So extract this code from serial core to a separate tty helper
+> function called tty_get_byte_size.
 > 
-> > > This does not qualify as a regression in that it has never worked for
-> > > the specific platform that I have shown above until your 3 commits came
-> > > in and fixed that particular FDT placement. To me this qualifies as a
-> > > bug fix, and given that the 3 (now 4) commits applied without hunks, it
-> > > seems reasonable to me to back port those to stable.
-> >
-> > As this isn't a regression, why not just use 5.12 on these platforms?
-> > Why is 5.4 and 5.10 needed?
+> In the next patch, call to this new function will replace many copies of
+> this code.
 > 
-> Actually I think it *is* a regression, but not a common one. The bug that
-> Ard is fixing can appear when the kernel grows over a certain size.
+> [v2] simplified the code flow as suggested by Joe and Andy
 > 
-> If a user compile in a new set of functionality and the kernel size
-> reach a tripping point so that the DTB ends up just outside the 1:1
-> lowmem map, disaster strikes.
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Cc: Joe Perches <joe@perches.com>
+> ---
+>  drivers/tty/serial/serial_core.c | 30 +++--------------------
+>  drivers/tty/tty_ioctl.c          | 42 ++++++++++++++++++++++++++++++++
+>  include/linux/tty.h              |  2 ++
+>  3 files changed, 47 insertions(+), 27 deletions(-)
 > 
-> This has been a long standing mysterious bug for people using
-> attached device trees.
+> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+> index d29329eb52f4..b3fc2b02a705 100644
+> --- a/drivers/tty/serial/serial_core.c
+> +++ b/drivers/tty/serial/serial_core.c
+> @@ -334,39 +334,15 @@ void
+>  uart_update_timeout(struct uart_port *port, unsigned int cflag,
+>  		    unsigned int baud)
+>  {
+> -	unsigned int bits;
+> +	unsigned int size;
+>  
+> -	/* byte size and parity */
+> -	switch (cflag & CSIZE) {
+> -	case CS5:
+> -		bits = 7;
+> -		break;
+> -	case CS6:
+> -		bits = 8;
+> -		break;
+> -	case CS7:
+> -		bits = 9;
+> -		break;
+> -	default:
+> -		bits = 10;
+> -		break; /* CS8 */
+> -	}
+> -
+> -	if (cflag & CSTOPB)
+> -		bits++;
+> -	if (cflag & PARENB)
+> -		bits++;
+> -
+> -	/*
+> -	 * The total number of bits to be transmitted in the fifo.
+> -	 */
+> -	bits = bits * port->fifosize;
+> +	size = tty_get_byte_size(cflag, true) * port->fifosize;
+>
+>  	/*
+>  	 * Figure the timeout to send the above number of bits.
+>  	 * Add .02 seconds of slop
+>  	 */
+> -	port->timeout = (HZ * bits) / baud + HZ/50;
+> +	port->timeout = (HZ * size) / baud + HZ/50;
+>  }
+>  
+>  EXPORT_SYMBOL(uart_update_timeout);
+> diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
+> index aa9ecc8be990..13acc3decd87 100644
+> --- a/drivers/tty/tty_ioctl.c
+> +++ b/drivers/tty/tty_ioctl.c
+> @@ -300,6 +300,48 @@ int tty_termios_hw_change(const struct ktermios *a, const struct ktermios *b)
+>  }
+>  EXPORT_SYMBOL(tty_termios_hw_change);
+>  
+> +/**
+> + *	tty_get_byte_size	-	get size of a byte
+> + *	@cflag: termios cflag value
+> + *	@account_flags: account for start and stop bits, second stop bit (if
+> + *			set), and parity (if set)
+> + *
+> + *	Get the size of a byte in bits depending on @cflag. Depending on
+> + *	@account_flags parameter, the result also accounts start and stop bits,
+> + *	the second stop bit, and parity bit.
+> + */
+> +unsigned char tty_get_byte_size(unsigned int cflag, bool account_flags)
+> +{
+> +	unsigned char bits;
+> +
+> +	switch (cflag & CSIZE) {
+> +	case CS5:
+> +		bits = 5;
+> +		break;
+> +	case CS6:
+> +		bits = 6;
+> +		break;
+> +	case CS7:
+> +		bits = 7;
+> +		break;
+> +	case CS8:
+> +	default:
+> +		bits = 8;
+> +		break;
+> +	}
+> +
+> +	if (!account_flags)
+> +		return bits;
+> +
+> +	if (cflag & CSTOPB)
+> +		bits++;
+> +	if (cflag & PARENB)
+> +		bits++;
+> +
+> +	return bits + 2;
+> +}
+> +EXPORT_SYMBOL_GPL(tty_get_byte_size);
 
-Ok, then feel free to ack them when they get resubmitted.
+This should really be two functions rather than passing a bool argument.
 
-thanks,
+I think naming them
 
-greg k-h
+	tty_get_word_size()
+
+and
+
+	tty_get_frame_size()
+
+would be much more clear than than "byte size" + flag.
+
+I realise that the serial-driver interface only uses a cflag argument,
+but I think we should consider passing a pointer to the termios
+structure instead.
+
+Johan
