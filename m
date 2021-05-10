@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB095378CEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F84378CFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346288AbhEJMap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:30:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45870 "EHLO mail.kernel.org"
+        id S1346607AbhEJMcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:32:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235572AbhEJLKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:10:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 309DB61464;
-        Mon, 10 May 2021 11:05:31 +0000 (UTC)
+        id S237223AbhEJLLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:11:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 165436190A;
+        Mon, 10 May 2021 11:08:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644731;
-        bh=gXiOxhMbUGRqAdnAYW3ioYWMt2JDeB0OfgFadacRKuM=;
+        s=korg; t=1620644899;
+        bh=9nmZ9Pr/nDgFEeeAliQu9uMjuWaXNj3UsCrrHaNqzEs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YW4ttufKFpQcJcN9OWw90hyYrg/4g0KPU2HYEc+YY0e3eiV35Cc/qcb9Umgkqi//C
-         Mor1L6JoIqlJ6VGdagWKBlbvSq5iz0vw3+UJSGlm+g5Xr3WEOxSGcLPsQSZ4kbdKKL
-         zOZz9g3LG96wR+iyR5uyJpFNn2CrIB/Mf8ymXW+o=
+        b=kKfY9KGeAI7sNo9oXlH8q9+ZlXQ4O0rtC1AdiCZd0qP1qVThukQvtLB5d6gWJ+c72
+         j4itD3DXlvbYfV8PTaZUP7V72cBYnpvjD4AQ7dJpr8Q/Xb2xnPgP1u9tDZai3xxrbG
+         uQB0nhSMgT2u6RXCpY6kXo+9de7/Q0sEtJc4eJhQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Cooper <alcooperx@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 202/384] mmc: sdhci-brcmstb: Remove CQE quirk
-Date:   Mon, 10 May 2021 12:19:51 +0200
-Message-Id: <20210510102021.538446995@linuxfoundation.org>
+Subject: [PATCH 5.12 225/384] drm/msm/dp: Fix incorrect NULL check kbot warnings in DP driver
+Date:   Mon, 10 May 2021 12:20:14 +0200
+Message-Id: <20210510102022.316278079@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -41,35 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Cooper <alcooperx@gmail.com>
+From: Abhinav Kumar <abhinavk@codeaurora.org>
 
-[ Upstream commit f0bdf98fab058efe7bf49732f70a0f26d1143154 ]
+[ Upstream commit 7d649cfe0314aad2ba18042885ab9de2f13ad809 ]
 
-Remove the CQHCI_QUIRK_SHORT_TXFR_DESC_SZ quirk because the
-latest chips have this fixed and earlier chips have other
-CQE problems that prevent the feature from being enabled.
+Fix an incorrect NULL check reported by kbot in the MSM DP driver
 
-Signed-off-by: Al Cooper <alcooperx@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20210325192834.42955-1-alcooperx@gmail.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+smatch warnings:
+drivers/gpu/drm/msm/dp/dp_hpd.c:37 dp_hpd_connect()
+error: we previously assumed 'hpd_priv->dp_cb' could be null
+(see line 37)
+
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Abhinav Kumar <abhinavk@codeaurora.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Link: https://lore.kernel.org/r/1614971839-2686-2-git-send-email-abhinavk@codeaurora.org
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-brcmstb.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/gpu/drm/msm/dp/dp_hpd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-brcmstb.c b/drivers/mmc/host/sdhci-brcmstb.c
-index f9780c65ebe9..f24623aac2db 100644
---- a/drivers/mmc/host/sdhci-brcmstb.c
-+++ b/drivers/mmc/host/sdhci-brcmstb.c
-@@ -199,7 +199,6 @@ static int sdhci_brcmstb_add_host(struct sdhci_host *host,
- 	if (dma64) {
- 		dev_dbg(mmc_dev(host->mmc), "Using 64 bit DMA\n");
- 		cq_host->caps |= CQHCI_TASK_DESC_SZ_128;
--		cq_host->quirks |= CQHCI_QUIRK_SHORT_TXFR_DESC_SZ;
- 	}
+diff --git a/drivers/gpu/drm/msm/dp/dp_hpd.c b/drivers/gpu/drm/msm/dp/dp_hpd.c
+index 5b8fe32022b5..e1c90fa47411 100644
+--- a/drivers/gpu/drm/msm/dp/dp_hpd.c
++++ b/drivers/gpu/drm/msm/dp/dp_hpd.c
+@@ -34,8 +34,8 @@ int dp_hpd_connect(struct dp_usbpd *dp_usbpd, bool hpd)
  
- 	ret = cqhci_init(cq_host, host->mmc, dma64);
+ 	dp_usbpd->hpd_high = hpd;
+ 
+-	if (!hpd_priv->dp_cb && !hpd_priv->dp_cb->configure
+-				&& !hpd_priv->dp_cb->disconnect) {
++	if (!hpd_priv->dp_cb || !hpd_priv->dp_cb->configure
++				|| !hpd_priv->dp_cb->disconnect) {
+ 		pr_err("hpd dp_cb not initialized\n");
+ 		return -EINVAL;
+ 	}
 -- 
 2.30.2
 
