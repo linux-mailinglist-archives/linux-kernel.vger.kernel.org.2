@@ -2,127 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA8A377E24
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A81377E26
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230199AbhEJI1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 04:27:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53955 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230153AbhEJI1n (ORCPT
+        id S230237AbhEJI17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 04:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230049AbhEJI14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 04:27:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620635199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sWcIao3fyIb+rZwFq38FUEtAAU/boSjtt1gdDYbHnw8=;
-        b=MtASAx5aTcQogaeSsOjvgq0jMsD6ieZdf1LiEFPm+6u8qdVzIQumSjuCvs9yLkDC4PxrCe
-        eVNMk3DiPLq7u36M/gnOyOXAHTZroFOy9yiXrPLVzS4acbQFNwWLzrGp2DsBFrQ0HcEM+p
-        GK+qRMiSrjeTpOid+7ExWUhxZ1wDAXI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-618f1OB5MduTzUi6JbqDsg-1; Mon, 10 May 2021 04:26:37 -0400
-X-MC-Unique: 618f1OB5MduTzUi6JbqDsg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3F6A01883520;
-        Mon, 10 May 2021 08:26:36 +0000 (UTC)
-Received: from starship (unknown [10.40.194.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F36B317253;
-        Mon, 10 May 2021 08:26:32 +0000 (UTC)
-Message-ID: <a8595d87b67616a7ac25784c6acdebbd170d2f5a.camel@redhat.com>
-Subject: Re: [PATCH 11/15] KVM: VMX: Disable loading of TSX_CTRL MSR the
- more conventional way
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Reiji Watanabe <reijiw@google.com>
-Date:   Mon, 10 May 2021 11:26:31 +0300
-In-Reply-To: <20210504171734.1434054-12-seanjc@google.com>
-References: <20210504171734.1434054-1-seanjc@google.com>
-         <20210504171734.1434054-12-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Mon, 10 May 2021 04:27:56 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71586C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 01:26:51 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id b14-20020a17090a6e0eb0290155c7f6a356so7867008pjk.0
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 01:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/rg41zCxK5ufgrvrfH/DIqgz2oAqQCyoIrvoteBUQDo=;
+        b=Tw+gGshZVURsIad/I+sle6Nc1D0+esrDiUFwI/SLLjbgaZ2TP2YHChmuOXLY2LffTP
+         qbXbS06GbTCfaiUXj+6BF3+MX42nI4tKBZz+yCUZu+EjkxJpU/iRif1jsj+vkkzYfc6l
+         lyuoMn9eZH9dnUo0DRatDgh6U7WL0+cVKXnrs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/rg41zCxK5ufgrvrfH/DIqgz2oAqQCyoIrvoteBUQDo=;
+        b=YcJmFLbsIm0KuLINiZFmLBBvTTeEBFzf8pWmaWl6EYqACVcUr0rf8pk2xi7XHYSvM/
+         JZMLRRf/3d5W4FnPuM9LHsZ7XnrvTSrwbioE3CweA6UH2xY53kMtEJrDPGG1gX8e7LAj
+         93j7jZtZTGDgCB9aiKqv4fLqNlinPBiTuNOzewsKZq4mlM6CufZ5uN2wBedRIv27TNGn
+         CYmneRgUvPtkI08DtEKiVCKPZ7GgYXWSzN+Hr+mi/5NYdwTH79YzUE57oI+WjLy/pmmf
+         U4mg7v169Q0BNDbHy81zWpcfCec8lwDfaZINmLTJ9ZqTfqG/jpd+a47yBOGEY1KMWZSs
+         mT6g==
+X-Gm-Message-State: AOAM531OOMRJ3HXT4Kd9dV0Jt8ENwN2JRVHKgjzSFnWMuuOSro0nwWpY
+        LJviby61iVp/uflPGEu0+pWeBw==
+X-Google-Smtp-Source: ABdhPJwgHbJadzYFgxn0SJq0BUKEMphCRYHQn+iFoxOA1DgjiNSMzxy+QEScnyqo9Rq0e9/LGI8oWA==
+X-Received: by 2002:a17:903:4091:b029:ec:fbd2:3192 with SMTP id z17-20020a1709034091b02900ecfbd23192mr23163672plc.21.1620635210962;
+        Mon, 10 May 2021 01:26:50 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:f055:559a:ad7f:e975])
+        by smtp.gmail.com with ESMTPSA id a7sm19704904pjm.0.2021.05.10.01.26.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 01:26:50 -0700 (PDT)
+Date:   Mon, 10 May 2021 17:26:45 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Luo Jiaxing <luojiaxing@huawei.com>,
+        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
+        john.ogness@linutronix.de, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, bobo.shaobowang@huawei.com
+Subject: Re: [PATCH] printk: stop spining waiter when console resume to flush
+ prb
+Message-ID: <YJjuRV57eO3Pp/bp@google.com>
+References: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
+ <YJPxj83F1sBjHHAE@alley>
+ <YJP4F1UIt/eRZ96s@google.com>
+ <YJP5MnkJ8pJevXM6@google.com>
+ <YJVsgPc66lhaAUN0@alley>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJVsgPc66lhaAUN0@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-05-04 at 10:17 -0700, Sean Christopherson wrote:
-> Tag TSX_CTRL as not needing to be loaded when RTM isn't supported in the
-> host.  Crushing the write mask to '0' has the same effect, but requires
-> more mental gymnastics to understand.
+On (21/05/07 18:36), Petr Mladek wrote:
+> > console_unlock()
+> > {
+> > 	...
+> > 
+> > 	if (printed_messages > limit && !console_lock_spinning_disable_and_check()) {
+> > 		printk_safe_exit_irqrestore(flags);
+> > 
+> > 		console_locked = 0;
+> > 		up_console_sem();
+> > 
+> > 		defer_console_output();
+> > 		return;
+> > 	}
+> > 
+> > 	...
+> > }
 > 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 22 ++++++++++------------
->  1 file changed, 10 insertions(+), 12 deletions(-)
+> No, please, no.
 > 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 4b432d2bbd06..7a53568b34fc 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -1771,7 +1771,13 @@ static void setup_msrs(struct vcpu_vmx *vmx)
->  			   guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDTSCP) ||
->  			   guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDPID));
->  
-> -	vmx_setup_uret_msr(vmx, MSR_IA32_TSX_CTRL, true);
-> +	/*
-> +	 * hle=0, rtm=0, tsx_ctrl=1 can be found with some combinations of new
-> +	 * kernel and old userspace.  If those guests run on a tsx=off host, do
-> +	 * allow guests to use TSX_CTRL, but don't change the value in hardware
-> +	 * so that TSX remains always disabled.
-> +	 */
-> +	vmx_setup_uret_msr(vmx, MSR_IA32_TSX_CTRL, boot_cpu_has(X86_FEATURE_RTM));
->  
->  	if (cpu_has_vmx_msr_bitmap())
->  		vmx_update_msr_bitmap(&vmx->vcpu);
-> @@ -6919,23 +6925,15 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->  		vmx->guest_uret_msrs[i].data = 0;
->  		vmx->guest_uret_msrs[i].mask = -1ull;
->  	}
-> -	tsx_ctrl = vmx_find_uret_msr(vmx, MSR_IA32_TSX_CTRL);
-> -	if (tsx_ctrl) {
-> +	if (boot_cpu_has(X86_FEATURE_RTM)) {
->  		/*
->  		 * TSX_CTRL_CPUID_CLEAR is handled in the CPUID interception.
->  		 * Keep the host value unchanged to avoid changing CPUID bits
->  		 * under the host kernel's feet.
-> -		 *
-> -		 * hle=0, rtm=0, tsx_ctrl=1 can be found with some combinations
-> -		 * of new kernel and old userspace.  If those guests run on a
-> -		 * tsx=off host, do allow guests to use TSX_CTRL, but do not
-> -		 * change the value on the host so that TSX remains always
-> -		 * disabled.
->  		 */
-> -		if (boot_cpu_has(X86_FEATURE_RTM))
-> +		tsx_ctrl = vmx_find_uret_msr(vmx, MSR_IA32_TSX_CTRL);
-> +		if (tsx_ctrl)
->  			vmx->guest_uret_msrs[i].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
-> -		else
-> -			vmx->guest_uret_msrs[i].mask = 0;
->  	}
->  
->  	err = alloc_loaded_vmcs(&vmx->vmcs01);
 
-I also agree that commit message should be updated as Paolo said,
-but other than that:
+Well, the alternative patch set just gives everyone an API that selectively
+downgrades printk() to pre-console_sem_owner age: when console_unlock()
+would never handover the printing duty. It'll take no time until this
+function will pop up somewhere where we don't want it to be used.
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+E.g.
 
-Best regards,
-	Maxim Levitsky <mlevitsk@redhat.com>
+	rcu_read_lock();
+	...
+	console_unlock_preemptible();
+	...
+	rcu_read_unlock();
 
+lockdep_assert_preemption_enabled() is not entirely reliable - it
+depends on __lockdep_enabled, provided that system in question has
+CONFIG_PROVE_LOCKING set.
 
+> Not to say, that defer_console_output() would trigger IRQ on the same
+> CPU again and again.
 
+You mean only on archs that have arch_irq_work_raise()?
+
+It queues the work IF we have pending messages AND there are NO active
+console_sem waiters spinning on consolse_sem waiting for us to handover
+the printing duty. And IRQ shall write to consoles only N messages out
+of possibly M pending messages (M > N). N, obviously, should be small,
+e.g. 42 lines: if after 42 printed lines we didn't handover printing
+to another context then - queue another IRQ work and iret. But it keeps
+the console_owner mechanism enabled.
