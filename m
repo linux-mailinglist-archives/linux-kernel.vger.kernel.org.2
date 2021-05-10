@@ -2,105 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F27D378BFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF681378BD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344995AbhEJMVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:21:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234993AbhEJLJ6 (ORCPT
+        id S1344470AbhEJMPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:15:46 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:54176 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236419AbhEJLIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:09:58 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D859C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 04:06:01 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id r11so3358665edt.13
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 04:06:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0F9bimE8+5EWA3eWwl/8LEBaz81yCMOXbgA6TyW/oLg=;
-        b=tzb8l/S32DpuUXobAviyA/LsyMVqU4VX5cd/39E/y5uE0Dw26QO40Sk7eR2uFraGQg
-         kOBeLx72xxyP8gyOSrN/20YTeoouE6jUWi6jWe4EBQBPzjrzAZ5uSXm5Mjq/z5AErXUH
-         QN2PrzMF+QrBTGvprRMfzIfF1GcrENyF6BmI0ujj8wi5EqR2jjl2oHrdXapdLzUDEZS1
-         aUk4PczcIlg8C2UJhZQnOVLHxWUKZ82D4DT8Ah5gOsaB4n/7iC2l+9D8+M9D0IdWaCAl
-         lY1Z9Jz3/4ghP2qXKST0qG0vliZevO7FXT9D6L8A6BruvUCfMnLiCIHCSuxhGZ0hdBY1
-         mBTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0F9bimE8+5EWA3eWwl/8LEBaz81yCMOXbgA6TyW/oLg=;
-        b=MOj9RDW+SHUv3NSf24g4pqiNdlK9K3yr7tcvhJmzqP40MGJfRBfbP0SG1DKxLfg6/h
-         wMsG7+GC0CASqvmQNUjNHlhc+K9dyGls14Y/hmk7wF2klBrBs4zo16pwxQXSrEcJCpZB
-         4J3UYItoZXxpsuX6b5urqkk4b9GxQ62FjNFwLPBdm1p4fhCsCramcCX1GxYqFIyOS1y9
-         YZEceaWVx67Spkj/shUx7MsJwa+4QrHC+U6VJtTayp10qgUP9tH88C1h1cYo6jRwLFSj
-         a7r/xhUYc83HIwS/eEK20DeqqDfaV4KGpwrRh2WViBHSsUxQzvL6fyoKgcBFDiCrvSRb
-         3okQ==
-X-Gm-Message-State: AOAM532/MSSJ/WpcVsNXbLFdSlzsR1rmUk7BB5Aj8XUecWFLOKGl4YW5
-        lhrImJT4gXmYaTTKJEBFyly3rOEDodIQsOo2Fd8WPA==
-X-Google-Smtp-Source: ABdhPJz4pzHKioBq47oVokcL8AdJFYCEpqNrQDVgKPBRT7TU9XuDIhRCrTg1zf5pdfHmEd4/boz8NFY6VRVmGEiIeq0=
-X-Received: by 2002:aa7:c15a:: with SMTP id r26mr29236413edp.78.1620644759525;
- Mon, 10 May 2021 04:05:59 -0700 (PDT)
+        Mon, 10 May 2021 07:08:05 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14AB6OKS091598;
+        Mon, 10 May 2021 06:06:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620644785;
+        bh=kgaF/3mUI0XqQwl5gHvSVaucptcT977BMjdyeZjV5Lk=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=sf4ia7RyjblXhg7Bf0hjzbRO0wFizxmPD7/1FSwmMDSAipAbfLIJecmO67YX2Xtgk
+         LWVAKi/eTFVM0fIv1I7R7i6gAxbvkjzeixqrhZYHBMnhuSrfc4vmIh4hWUesLaE6WJ
+         +eVOnFgmKu7q8GI3ZxPDI61j0bk3aqoNtGXpLTKw=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14AB6OAO079251
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 10 May 2021 06:06:24 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 10
+ May 2021 06:06:24 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 10 May 2021 06:06:24 -0500
+Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14AB6LHt121770;
+        Mon, 10 May 2021 06:06:21 -0500
+Subject: Re: [PATCH v2] dt-bindings: i2c: Move i2c-omap.txt to YAML format
+To:     Tony Lindgren <tony@atomide.com>
+CC:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Rob Herring <robh+dt@kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Nishanth Menon <nm@ti.com>
+References: <20210506140026.31254-1-vigneshr@ti.com>
+ <f7570cb4-8c21-2fa5-bd26-1388f2a4bd6b@ti.com>
+ <429a740a-c2b9-1cf8-ed2b-0fb7b1bea422@ti.com> <20210507163602.219894f4@aktux>
+ <1ef076ac-e0de-a0df-a918-aeb8ed6c5956@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <e4fbdf7b-6556-eeba-c1b8-9d48f718437a@ti.com>
+Date:   Mon, 10 May 2021 16:36:20 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CA+G9fYtZZoX53PjJ0VV54beMN6COccES9agttNYSzW=FbC=NFg@mail.gmail.com>
- <CA+G9fYvrhB5-Zfh7Xudetsw+rC=LE3JatW6eh8K+mXQHdDKpHQ@mail.gmail.com>
-In-Reply-To: <CA+G9fYvrhB5-Zfh7Xudetsw+rC=LE3JatW6eh8K+mXQHdDKpHQ@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 10 May 2021 16:35:48 +0530
-Message-ID: <CA+G9fYu7h+XBKvC=j7AFNr5tTmNUYWfDWoEEHHf34Gm2jcQoxg@mail.gmail.com>
-Subject: Re: Unhandled fault: imprecise external abort (0x1406) at 0x00000000
- - PC is at xhci_hub_control
-To:     linux-usb@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     peter.chen@kernel.org, jackp@codeaurora.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        mathias.nyman@intel.com, Li Jun <jun.li@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1ef076ac-e0de-a0df-a918-aeb8ed6c5956@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021 at 16:22, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> On Mon, 10 May 2021 at 16:02, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> >
-> > The kernel crash reported on arm architecture BeagleBoard-X15 device running
-> > Linux next 5.13.0-rc1-next-20210510 while booting the device.
-> >
-> > [    4.956085] xhci-hcd xhci-hcd.1.auto: xHCI Host Controller
-> > [    4.961639] xhci-hcd xhci-hcd.1.auto: new USB bus registered,
-> > assigned bus number 2
-> > [    4.969360] xhci-hcd xhci-hcd.1.auto: Host supports USB 3.0 SuperSpeed
-> > [    4.976165] usb usb2: We don't know the algorithms for LPM for this
-> > host, disabling LPM.
-> > [    4.985321] hub 2-0:1.0: USB hub found
-> > [    4.989196] hub 2-0:1.0: 1 port detected
-> > [    5.002197] Waiting for root device
-> > PARTUUID=6b10e805-12ad-b44e-88b8-3abf3d5f52ed...
-> > [    5.022918] 8<--- cut here ---
-> > [    5.026000] Unhandled fault: imprecise external abort (0x1406) at 0x00000000
-> > [    5.033root
-> > 081] pgd = ff6a1748
-> > [    5.035797] [00000000] *pgd=00000000
-> > [    5.039398] Internal error: : 1406 [#1] SMP ARM
-> > [    5.043975] Modules linked in:
-> > [    5.047027] CPU: 0 PID: 22 Comm: kworker/0:1 Not tainted
-> > 5.13.0-rc1-next-20210510 #1
-> > [    5.054809] Hardware name: Generic DRA74X (Flattened Device Tree)
-> > [    5.060943] Workqueue: pm pm_runtime_work
-> > [    5.065002] PC is at xhci_hub_control+0xd00/0x248c
-> > [    5.069824] LR is at arm_heavy_mb+0x44/0x48
->
-> Since, this crash is not easily reproducible I could bisect it.
+Hi Tony,
 
-sorry, i mean i could *not*
+On 5/7/21 10:54 PM, Grygorii Strashko wrote:
+> 
+> 
+> On 07/05/2021 17:36, Andreas Kemnade wrote:
+>> On Fri, 7 May 2021 19:45:45 +0530
+>> Vignesh Raghavendra <vigneshr@ti.com> wrote:
+>>
+>>> On 5/7/21 12:24 PM, Grygorii Strashko wrote:
+>>>>
+>>>>
+>>>> On 06/05/2021 17:00, Vignesh Raghavendra wrote:
+>>>>> Convert i2c-omap.txt to YAML schema for better checks and
+>>>>> documentation.
+>>>>>
+>>>>> Following properties were used in DT but were not documented in txt
+>>>>> bindings and has been included in YAML schema:
+>>>>> 1. Include ti,am4372-i2c compatible
+>>>>> 2. Include dmas property used in few OMAP dts files
+>>>>
+>>>> The DMA is not supported by i2c-omap driver, so wouldn't be better to
+>>>> just drop dmas from DTBs to avoid confusions?
+>>>> It can be added later.
+>>>>    
+>>>
+>>> Will do.. I will also send patches dropping dmas from dts that currently
+>>> have them populated.
+>>>
+>> hmm, we have
+>> - DO attempt to make bindings complete even if a driver doesn't
+>> support some
+>>    features. For example, if a device has an interrupt, then include the
+>>    'interrupts' property even if the driver is only polled mode.
+>>
+>> in Documentation/devicetree/bindings/writing-bindings.rst
+>> Shouln't the dma stay there if the hardware supports it? Devicetree
+>> should describe the hardware not the driver if I understood things
+>> right.
+> 
+> True.  But my above statement is also valid - it introduces confusion
+> from user point of view.
+> More over, 'dmas' is not part of original binding and were randomly
+> added to some SoCs.
+> And it's much more easy to extend binding (in the future) then remove
+> something after.
+> 
+> I leave it to Vignesh, Tony to decide.
+> 
 
-Since, this crash is not easily reproducible I could not bisect it.
+What do you prefer here? Removing dmas from schema would mean I would
+have to delete dmas property from omap2/3 dtsi files that list dmas
+property today? Note that driver does not support DMA mode today.
 
-- Naresh
+
+Regards
+Vignesh
+
