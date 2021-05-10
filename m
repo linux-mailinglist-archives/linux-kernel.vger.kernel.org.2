@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C65F3789B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A308A37866C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235272AbhEJLbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:31:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53004 "EHLO mail.kernel.org"
+        id S236155AbhEJLHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:07:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234837AbhEJK5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F40A661947;
-        Mon, 10 May 2021 10:49:46 +0000 (UTC)
+        id S232714AbhEJKrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:47:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66D0C619AF;
+        Mon, 10 May 2021 10:37:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643787;
-        bh=ZU2OOxlhm8Xwe6mgPEa1KOVHakIA5RSh6Z5xq5VAw5Y=;
+        s=korg; t=1620643040;
+        bh=aoZGLU3h/i0WadM2DxxNm7/BB1+HyOgT5g3s4onk+jI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BwKZB23EDjWs8q4UEQ8rdqdco9uGNVlDtAPVMZX4mD/bYMzOm7M5QMWz3+Radd9FX
-         kV2bfToIxsBePeYZ2Myn5+EbI61ek2YKk4txWodtRhNyTLLMqDPtN7C0KTelFUW6cX
-         AG7DPuLVcEnKxtySBUaJEeirKRtK/WBWGLZYUmdU=
+        b=rsrXvWtEjgsS8UKQ5nI3CxXnQZ12sxRwSebbqdqVUf4QlEA9mBCDRlMQWCunQmBmQ
+         tpsGGKO4hJc33cWHYwxgCEE6ch/krSk2UrAwOvsnvBVoZt9fiqk0ydc8yj0DkpcGyC
+         3RF8BOHu5XM7RHiRkhOWdmpep2btUhHeXlm0TFu4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 158/342] power: supply: bq27xxx: fix power_avg for newer ICs
-Date:   Mon, 10 May 2021 12:19:08 +0200
-Message-Id: <20210510102015.319915512@linuxfoundation.org>
+Subject: [PATCH 5.10 152/299] mmc: sdhci-pci: Add PCI IDs for Intel LKF
+Date:   Mon, 10 May 2021 12:19:09 +0200
+Message-Id: <20210510102009.973812026@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,129 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit c4d57c22ac65bd503716062a06fad55a01569cac ]
+[ Upstream commit ee629112be8b4eff71d4d3d108a28bc7dc877e13 ]
 
-On all newer bq27xxx ICs, the AveragePower register contains a signed
-value; in addition to handling the raw value as unsigned, the driver
-code also didn't convert it to µW as expected.
+Add PCI IDs for Intel LKF eMMC and SD card host controllers.
 
-At least for the BQ28Z610, the reference manual incorrectly states that
-the value is in units of 1mW and not 10mW. I have no way of knowing
-whether the manuals of other supported ICs contain the same error, or if
-there are models that actually use 1mW. At least, the new code shouldn't
-be *less* correct than the old version for any device.
-
-power_avg is removed from the cache structure, se we don't have to
-extend it to store both a signed value and an error code. Always getting
-an up-to-date value may be desirable anyways, as it avoids inconsistent
-current and power readings when switching between charging and
-discharging.
-
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/20210322055356.24923-1-adrian.hunter@intel.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/bq27xxx_battery.c | 51 ++++++++++++++------------
- include/linux/power/bq27xxx_battery.h  |  1 -
- 2 files changed, 27 insertions(+), 25 deletions(-)
+ drivers/mmc/host/sdhci-pci-core.c | 2 ++
+ drivers/mmc/host/sdhci-pci.h      | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/bq27xxx_battery.c
-index 315e0909e6a4..72a2bcf3ab32 100644
---- a/drivers/power/supply/bq27xxx_battery.c
-+++ b/drivers/power/supply/bq27xxx_battery.c
-@@ -1631,27 +1631,6 @@ static int bq27xxx_battery_read_time(struct bq27xxx_device_info *di, u8 reg)
- 	return tval * 60;
- }
+diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
+index 936e4db9060f..bf04a08eeba1 100644
+--- a/drivers/mmc/host/sdhci-pci-core.c
++++ b/drivers/mmc/host/sdhci-pci-core.c
+@@ -1930,6 +1930,8 @@ static const struct pci_device_id pci_ids[] = {
+ 	SDHCI_PCI_DEVICE(INTEL, CMLH_SD,   intel_byt_sd),
+ 	SDHCI_PCI_DEVICE(INTEL, JSL_EMMC,  intel_glk_emmc),
+ 	SDHCI_PCI_DEVICE(INTEL, JSL_SD,    intel_byt_sd),
++	SDHCI_PCI_DEVICE(INTEL, LKF_EMMC,  intel_glk_emmc),
++	SDHCI_PCI_DEVICE(INTEL, LKF_SD,    intel_byt_sd),
+ 	SDHCI_PCI_DEVICE(O2, 8120,     o2),
+ 	SDHCI_PCI_DEVICE(O2, 8220,     o2),
+ 	SDHCI_PCI_DEVICE(O2, 8221,     o2),
+diff --git a/drivers/mmc/host/sdhci-pci.h b/drivers/mmc/host/sdhci-pci.h
+index d0ed232af0eb..8f90c4163bb5 100644
+--- a/drivers/mmc/host/sdhci-pci.h
++++ b/drivers/mmc/host/sdhci-pci.h
+@@ -57,6 +57,8 @@
+ #define PCI_DEVICE_ID_INTEL_CMLH_SD	0x06f5
+ #define PCI_DEVICE_ID_INTEL_JSL_EMMC	0x4dc4
+ #define PCI_DEVICE_ID_INTEL_JSL_SD	0x4df8
++#define PCI_DEVICE_ID_INTEL_LKF_EMMC	0x98c4
++#define PCI_DEVICE_ID_INTEL_LKF_SD	0x98f8
  
--/*
-- * Read an average power register.
-- * Return < 0 if something fails.
-- */
--static int bq27xxx_battery_read_pwr_avg(struct bq27xxx_device_info *di)
--{
--	int tval;
--
--	tval = bq27xxx_read(di, BQ27XXX_REG_AP, false);
--	if (tval < 0) {
--		dev_err(di->dev, "error reading average power register  %02x: %d\n",
--			BQ27XXX_REG_AP, tval);
--		return tval;
--	}
--
--	if (di->opts & BQ27XXX_O_ZERO)
--		return (tval * BQ27XXX_POWER_CONSTANT) / BQ27XXX_RS;
--	else
--		return tval;
--}
--
- /*
-  * Returns true if a battery over temperature condition is detected
-  */
-@@ -1739,8 +1718,6 @@ void bq27xxx_battery_update(struct bq27xxx_device_info *di)
- 		}
- 		if (di->regs[BQ27XXX_REG_CYCT] != INVALID_REG_ADDR)
- 			cache.cycle_count = bq27xxx_battery_read_cyct(di);
--		if (di->regs[BQ27XXX_REG_AP] != INVALID_REG_ADDR)
--			cache.power_avg = bq27xxx_battery_read_pwr_avg(di);
- 
- 		/* We only have to read charge design full once */
- 		if (di->charge_design_full <= 0)
-@@ -1803,6 +1780,32 @@ static int bq27xxx_battery_current(struct bq27xxx_device_info *di,
- 	return 0;
- }
- 
-+/*
-+ * Get the average power in µW
-+ * Return < 0 if something fails.
-+ */
-+static int bq27xxx_battery_pwr_avg(struct bq27xxx_device_info *di,
-+				   union power_supply_propval *val)
-+{
-+	int power;
-+
-+	power = bq27xxx_read(di, BQ27XXX_REG_AP, false);
-+	if (power < 0) {
-+		dev_err(di->dev,
-+			"error reading average power register %02x: %d\n",
-+			BQ27XXX_REG_AP, power);
-+		return power;
-+	}
-+
-+	if (di->opts & BQ27XXX_O_ZERO)
-+		val->intval = (power * BQ27XXX_POWER_CONSTANT) / BQ27XXX_RS;
-+	else
-+		/* Other gauges return a signed value in units of 10mW */
-+		val->intval = (int)((s16)power) * 10000;
-+
-+	return 0;
-+}
-+
- static int bq27xxx_battery_status(struct bq27xxx_device_info *di,
- 				  union power_supply_propval *val)
- {
-@@ -1987,7 +1990,7 @@ static int bq27xxx_battery_get_property(struct power_supply *psy,
- 		ret = bq27xxx_simple_value(di->cache.energy, val);
- 		break;
- 	case POWER_SUPPLY_PROP_POWER_AVG:
--		ret = bq27xxx_simple_value(di->cache.power_avg, val);
-+		ret = bq27xxx_battery_pwr_avg(di, val);
- 		break;
- 	case POWER_SUPPLY_PROP_HEALTH:
- 		ret = bq27xxx_simple_value(di->cache.health, val);
-diff --git a/include/linux/power/bq27xxx_battery.h b/include/linux/power/bq27xxx_battery.h
-index 111a40d0d3d5..8d5f4f40fb41 100644
---- a/include/linux/power/bq27xxx_battery.h
-+++ b/include/linux/power/bq27xxx_battery.h
-@@ -53,7 +53,6 @@ struct bq27xxx_reg_cache {
- 	int capacity;
- 	int energy;
- 	int flags;
--	int power_avg;
- 	int health;
- };
- 
+ #define PCI_DEVICE_ID_SYSKONNECT_8000	0x8000
+ #define PCI_DEVICE_ID_VIA_95D0		0x95d0
 -- 
 2.30.2
 
