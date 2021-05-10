@@ -2,129 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE86F379939
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7B5379940
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbhEJVgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 17:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46874 "EHLO
+        id S232792AbhEJVif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 17:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230165AbhEJVgG (ORCPT
+        with ESMTP id S232469AbhEJVic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 17:36:06 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9253C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 14:35:00 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id n2so18121697wrm.0
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 14:35:00 -0700 (PDT)
+        Mon, 10 May 2021 17:38:32 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B10C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 14:37:26 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id d4so18057042wru.7
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 14:37:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5hZ/+U6WM/oBhT9ejagi+2/Cu4FUVwBwnUAjh35AzmU=;
-        b=c+4XfWHa01qoxqxzh+khnIIAmXl+BFrsmtRbiN5wDAxlckwnrILOnc+gmdmUd0VU2u
-         dsagWuA/cxohATcTDqDheiKMgmpBKsy11Ghpsfd19kYxuDjEK/6+C8oBPL5ZBaP769sJ
-         POSd0VVj9LUtXnG+khBEEmFpcx/g2mTJf3fVA=
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9XUgLuGGfG6fvCOnoM0als/tlAr9SP064P/RkEd2QVU=;
+        b=g2VR9mc7Hr1AaxZrqangX0oRdrVDaAmH1eVSa5vu5/S8167IX0pEK8PeEHNgcokNb/
+         uYmlGwNo1x8lWVoY30trqupYSWEY6N50H7H6cCp/1PTwS8A3SpF+j/9oy+3baOrIh6U4
+         ROA5tbFICipzi0OmOZfMD+IE2VOfw99qOzg+I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5hZ/+U6WM/oBhT9ejagi+2/Cu4FUVwBwnUAjh35AzmU=;
-        b=JOFWGgTGgGVeCzeNlOEPTB80/dqUWQQZ7eH6bRv2Xlc4ScY7TUT/Rw5uWDvjaCTqN5
-         Pu/kqMCWQlE1JhVQFa93Iz7viR6TdXf02fL8HM8QmQiuq/qABzLsnhTb2Pymn82pNFln
-         PBUktodfJmQCtNyC0bDRl+8s8J7PUUbrsadvjhZBrCkTI8mG2Di4cw6yzaYairsSRyRg
-         Y4HJX3GIMFuAlTA5EW5Tz2ptA6fLsRJeevfMBrxw+d1NHvQnTvl0u4kYmXpYuRVrXlmj
-         djZBv4R2BBgdO/dIzkZFjkSJGhPh+9S/SJ0lBYOoSm8KUpcwbp3x2anwT0LmorTgEbEn
-         ZSpw==
-X-Gm-Message-State: AOAM531fsRwZoJLm7PBkiQO5KAQyznsM96T+8gr0Iu7x1WDNwdRNR6QU
-        3SE9OjjYfTOzeCIU7cPnEbILCG04vmSfNS6+bkm06A==
-X-Google-Smtp-Source: ABdhPJxoN8xyxBOpcL2/QUwyrNQuDJWKT1MEyVeekKmH+8ZQm9PvvqXsvVoemOpCGUEmqDrWsBhAaZThKOFcFJCqI50=
-X-Received: by 2002:a5d:498c:: with SMTP id r12mr33397485wrq.31.1620682499375;
- Mon, 10 May 2021 14:34:59 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9XUgLuGGfG6fvCOnoM0als/tlAr9SP064P/RkEd2QVU=;
+        b=QQGJvf26QGWT36oRxL0geYvW5ABlkiSqzKqdNfVuGyrKNi5JjeGtBey7TA5cqvPm74
+         ZPaKJpo78EKw3Ak/wb+4VdQq4Fb171H7MaAEi8RCYVT2oAq8jPFA209SE1a0sGFwePJE
+         g4Dgp0qqmoS0PzZ1okg07IMMZtdwrCDB59JCYMtIjXY+NRfy/HeGwzWJHgZ6YUsjDGdn
+         dg+NaVRKkiuc/suBYfbVqu6oVS+LFYZSaE5yeg2wsmHrurotwRkozuclTgjm+BN4dDiL
+         OJMFjtC16KzWJClFUlpkXjKSvx07aI/MQJ0sa4iXUIZeRS2gZwStHmHjFx5Poig98gQ1
+         Ho8Q==
+X-Gm-Message-State: AOAM531vFsARZpypo2ry0NTjOZDsd8j9Mw5t2zFBE3F6Rg4hN8aOF7U3
+        JnFpLbYGI7cr6/LWnd1EBwSGVQ==
+X-Google-Smtp-Source: ABdhPJyGbp6cuYMaS0B0oIRAgdeVdc18BO8J+/8W/s84Bn4K4Zz7KIcCPrqhQzPlv89666Bem2FpZw==
+X-Received: by 2002:adf:f683:: with SMTP id v3mr32914523wrp.133.1620682645559;
+        Mon, 10 May 2021 14:37:25 -0700 (PDT)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:61:302:5cab:f78e:32e4:87aa])
+        by smtp.gmail.com with ESMTPSA id l12sm28136463wrq.36.2021.05.10.14.37.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 14:37:25 -0700 (PDT)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kpsingh@kernel.org, jackmanb@google.com,
+        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>,
+        syzbot+63122d0bc347f18c1884@syzkaller.appspotmail.com
+Subject: [PATCH bpf] bpf: Fix nested bpf_bprintf_prepare with more per-cpu buffers
+Date:   Mon, 10 May 2021 23:37:09 +0200
+Message-Id: <20210510213709.2004366-1-revest@chromium.org>
+X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
 MIME-Version: 1.0
-References: <20210508205020.617984-1-jolsa@kernel.org>
-In-Reply-To: <20210508205020.617984-1-jolsa@kernel.org>
-From:   Justin Forbes <jmforbes@linuxtx.org>
-Date:   Mon, 10 May 2021 16:34:48 -0500
-Message-ID: <CAFxkdArafHXFtw-MQzJ+bpFUqne7u3++amqL0h-pdBj4_UK0dA@mail.gmail.com>
-Subject: Re: [PATCH] perf tools: Fix dynamic libbpf link
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        "Justin M . Forbes" <jforbes@redhat.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 8, 2021 at 3:50 PM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Justin reported broken build with LIBBPF_DYNAMIC=1.
->
-> When linking libbpf dynamically we need to use perf's
-> hashmap object, because it's not exported in libbpf.so
-> (only in libbpf.a).
->
-> Following build is now passing:
->
->   $ make LIBBPF_DYNAMIC=1
->     BUILD:   Doing 'make -j8' parallel build
->     ...
->   $ ldd perf | grep libbpf
->         libbpf.so.0 => /lib64/libbpf.so.0 (0x00007fa7630db000)
->
-> Fixes: eee19501926d ("perf tools: Grab a copy of libbpf's hashmap")
-> Cc: Ian Rogers <irogers@google.com>
-> Reported-by: Justin M. Forbes <jforbes@redhat.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
+The bpf_seq_printf, bpf_trace_printk and bpf_snprintf helpers share one
+per-cpu buffer that they use to store temporary data (arguments to
+bprintf). They "get" that buffer with try_get_fmt_tmp_buf and "put" it
+by the end of their scope with bpf_bprintf_cleanup.
 
-This patch fixes it for me.
+If one of these helpers gets called within the scope of one of these
+helpers, for example: a first bpf program gets called, uses
+bpf_trace_printk which calls raw_spin_lock_irqsave which is traced by
+another bpf program that calls bpf_snprintf, then the second "get"
+fails. Essentially, these helpers are not re-entrant. They would return
+-EBUSY and print a warning message once.
 
-Tested-by: Justin M. Forbes <jforbes@redhat.com>
+This patch triples the number of bprintf buffers to allow three levels
+of nesting. This is very similar to what was done for tracepoints in
+"9594dc3c7e7 bpf: fix nested bpf tracepoints with per-cpu data"
 
->  tools/perf/Makefile.config | 1 +
->  tools/perf/util/Build      | 7 +++++++
->  2 files changed, 8 insertions(+)
->
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index 7b195e16040e..dacd16874d3d 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -546,6 +546,7 @@ ifndef NO_LIBELF
->        ifdef LIBBPF_DYNAMIC
->          ifeq ($(feature-libbpf), 1)
->            EXTLIBS += -lbpf
-> +          $(call detected,CONFIG_LIBBPF_DYNAMIC)
->          else
->            dummy := $(error Error: No libbpf devel library found, please install libbpf-devel);
->          endif
-> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> index e27a551acd3a..95e15d1035ab 100644
-> --- a/tools/perf/util/Build
-> +++ b/tools/perf/util/Build
-> @@ -145,7 +145,14 @@ perf-$(CONFIG_LIBELF) += symbol-elf.o
->  perf-$(CONFIG_LIBELF) += probe-file.o
->  perf-$(CONFIG_LIBELF) += probe-event.o
->
-> +ifdef CONFIG_LIBBPF_DYNAMIC
-> +  hashmap := 1
-> +endif
->  ifndef CONFIG_LIBBPF
-> +  hashmap := 1
-> +endif
-> +
-> +ifdef hashmap
->  perf-y += hashmap.o
->  endif
->
-> --
-> 2.31.1
->
+Fixes: d9c9e4db186a ("bpf: Factorize bpf_trace_printk and bpf_seq_printf")
+Reported-by: syzbot+63122d0bc347f18c1884@syzkaller.appspotmail.com
+Signed-off-by: Florent Revest <revest@chromium.org>
+---
+ kernel/bpf/helpers.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
+
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 544773970dbc..302410ebbea9 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -696,34 +696,35 @@ static int bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
+  */
+ #define MAX_PRINTF_BUF_LEN	512
+ 
+-struct bpf_printf_buf {
+-	char tmp_buf[MAX_PRINTF_BUF_LEN];
++/* Support executing three nested bprintf helper calls on a given CPU */
++struct bpf_bprintf_buffers {
++	char tmp_bufs[3][MAX_PRINTF_BUF_LEN];
+ };
+-static DEFINE_PER_CPU(struct bpf_printf_buf, bpf_printf_buf);
+-static DEFINE_PER_CPU(int, bpf_printf_buf_used);
++static DEFINE_PER_CPU(struct bpf_bprintf_bufs, bpf_bprintf_bufs);
++static DEFINE_PER_CPU(int, bpf_bprintf_nest_level);
+ 
+ static int try_get_fmt_tmp_buf(char **tmp_buf)
+ {
+-	struct bpf_printf_buf *bufs;
+-	int used;
++	struct bpf_bprintf_buffers *bufs;
++	int nest_level;
+ 
+ 	preempt_disable();
+-	used = this_cpu_inc_return(bpf_printf_buf_used);
+-	if (WARN_ON_ONCE(used > 1)) {
+-		this_cpu_dec(bpf_printf_buf_used);
++	nest_level = this_cpu_inc_return(bpf_bprintf_nest_level);
++	if (WARN_ON_ONCE(nest_level > ARRAY_SIZE(bufs->tmp_bufs))) {
++		this_cpu_dec(bpf_bprintf_nest_level);
+ 		preempt_enable();
+ 		return -EBUSY;
+ 	}
+-	bufs = this_cpu_ptr(&bpf_printf_buf);
+-	*tmp_buf = bufs->tmp_buf;
++	bufs = this_cpu_ptr(&bpf_bprintf_buf);
++	*tmp_buf = bufs->tmp_bufs[nest_level - 1];
+ 
+ 	return 0;
+ }
+ 
+ void bpf_bprintf_cleanup(void)
+ {
+-	if (this_cpu_read(bpf_printf_buf_used)) {
+-		this_cpu_dec(bpf_printf_buf_used);
++	if (this_cpu_read(bpf_bprintf_nest_level)) {
++		this_cpu_dec(bpf_bprintf_nest_level);
+ 		preempt_enable();
+ 	}
+ }
+-- 
+2.31.1.607.g51e8a6a459-goog
+
