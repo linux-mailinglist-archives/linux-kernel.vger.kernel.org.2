@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0712937879C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640D63787A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237906AbhEJLQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:16:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42240 "EHLO mail.kernel.org"
+        id S237993AbhEJLQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:16:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233088AbhEJKvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:51:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C63E61A24;
-        Mon, 10 May 2021 10:40:41 +0000 (UTC)
+        id S232431AbhEJKwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:52:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C84BE61962;
+        Mon, 10 May 2021 10:40:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643241;
-        bh=OKwK4eLz2HroNbBIrmCzlVwA30oGt11q/lcXejRblVc=;
+        s=korg; t=1620643244;
+        bh=L66Dg4efrjTlEdVkkjD8JcYEnpuE6xHh4jiXg+tdQJM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rjOXQjNSugmNclpee+ZWb458IOWFEgsWttOkQ84IDG9wqq/t5DaRdfACzmmrUyhv2
-         iM87tEaNFib7z6HMlg/45tQcBY3qCmJHPGpnXhpV0OHNv+8Kn1l4LSRIcnNeJzpqQz
-         UxKGC31nblPz81/fC4Vs7oL7CG8YUiKRkAXClgcM=
+        b=BvOIAr11+GKdCfMpPQisJLE1OIwsyXCkzkyJlqrx/HJn6bdtXcGKb1TputQXzPJoz
+         NtT6YXFohDv+spiTgxDXeGH1dJ/HsaKwxCKNPYv2FbgVlXd36RYcWSkAkxvD+1RueT
+         7lfhPG+6WTHoZOcrvAWl+ycUq2cWVlBTHEiuIbLo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 201/299] mfd: arizona: Fix rumtime PM imbalance on error
-Date:   Mon, 10 May 2021 12:19:58 +0200
-Message-Id: <20210510102011.580783880@linuxfoundation.org>
+Subject: [PATCH 5.10 202/299] scsi: libfc: Fix a format specifier
+Date:   Mon, 10 May 2021 12:19:59 +0200
+Message-Id: <20210510102011.611370795@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
 References: <20210510102004.821838356@linuxfoundation.org>
@@ -41,37 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit fe6df2b48043bbe1e852b2320501d3b169363c35 ]
+[ Upstream commit 90d6697810f06aceea9de71ad836a8c7669789cd ]
 
-pm_runtime_get_sync() will increase the rumtime PM counter
-even it returns an error. Thus a pairing decrement is needed
-to prevent refcount leak. Fix this by replacing this API with
-pm_runtime_resume_and_get(), which will not change the runtime
-PM counter on error.
+Since the 'mfs' member has been declared as 'u32' in include/scsi/libfc.h,
+use the %u format specifier instead of %hu. This patch fixes the following
+clang compiler warning:
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+warning: format specifies type
+      'unsigned short' but the argument has type 'u32' (aka 'unsigned int')
+      [-Wformat]
+                             "lport->mfs:%hu\n", mfs, lport->mfs);
+                                         ~~~          ^~~~~~~~~~
+                                         %u
+
+Link: https://lore.kernel.org/r/20210415220826.29438-8-bvanassche@acm.org
+Cc: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/arizona-irq.c | 2 +-
+ drivers/scsi/libfc/fc_lport.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/arizona-irq.c b/drivers/mfd/arizona-irq.c
-index 077d9ab112b7..d919ae9691e2 100644
---- a/drivers/mfd/arizona-irq.c
-+++ b/drivers/mfd/arizona-irq.c
-@@ -100,7 +100,7 @@ static irqreturn_t arizona_irq_thread(int irq, void *data)
- 	unsigned int val;
- 	int ret;
+diff --git a/drivers/scsi/libfc/fc_lport.c b/drivers/scsi/libfc/fc_lport.c
+index 6557fda85c5c..abb14b206be0 100644
+--- a/drivers/scsi/libfc/fc_lport.c
++++ b/drivers/scsi/libfc/fc_lport.c
+@@ -1731,7 +1731,7 @@ void fc_lport_flogi_resp(struct fc_seq *sp, struct fc_frame *fp,
  
--	ret = pm_runtime_get_sync(arizona->dev);
-+	ret = pm_runtime_resume_and_get(arizona->dev);
- 	if (ret < 0) {
- 		dev_err(arizona->dev, "Failed to resume device: %d\n", ret);
- 		return IRQ_NONE;
+ 	if (mfs < FC_SP_MIN_MAX_PAYLOAD || mfs > FC_SP_MAX_MAX_PAYLOAD) {
+ 		FC_LPORT_DBG(lport, "FLOGI bad mfs:%hu response, "
+-			     "lport->mfs:%hu\n", mfs, lport->mfs);
++			     "lport->mfs:%u\n", mfs, lport->mfs);
+ 		fc_lport_error(lport, fp);
+ 		goto out;
+ 	}
 -- 
 2.30.2
 
