@@ -2,33 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13626378D27
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CFA6378D21
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237305AbhEJMep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:34:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54928 "EHLO mail.kernel.org"
+        id S1347456AbhEJMeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:34:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233525AbhEJLMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233537AbhEJLMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 07:12:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B38E61139;
-        Mon, 10 May 2021 11:09:57 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD8E8610C9;
+        Mon, 10 May 2021 11:09:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644997;
-        bh=nM82XFwB+Hv0Rbe30sfFpEmwyRJEFZjJt83JZ6zhF7s=;
+        s=korg; t=1620645000;
+        bh=cccvPXStjqd+9m62K0FQoCSB956SlMxdLxO/1zn/KMk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v9YSTGwGOaI0zWE7WIDJC3K4M2N4LjzeukiwhA7dT2yzgpbyUXH13azETGmXH0ubK
-         MI9MkGMdyKIOtCqhDd5eCtcvvqjMh7wICKDrknFc5ZJjv7W3Upptvwdc4XalPu9ABq
-         J7A+di50zfgg8rSTU6wvRJNHzcA4Dla1oNg7mmTk=
+        b=oOLJOe7LDTcfFc/kpH9qxlXeteZ98o/rFc59Y5IfisWPfyGutU2+4174omheNoqOQ
+         Una5d6ywgqUcvaEU8UJKR/PRSMsCGJFVQ9F6bNYANeh6/m+h4ypvEZWSqLjP32LouX
+         k6uk9tcjLJ4I6rgNWEG8/e+LXzn3Hepn9UWtalSA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rosen Penev <rosenp@gmail.com>,
-        Tony Ambardar <Tony.Ambardar@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.12 310/384] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
-Date:   Mon, 10 May 2021 12:21:39 +0200
-Message-Id: <20210510102025.020262360@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.12 311/384] powerpc/kvm: Fix PR KVM with KUAP/MEM_KEYS enabled
+Date:   Mon, 10 May 2021 12:21:40 +0200
+Message-Id: <20210510102025.050546957@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -40,53 +38,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Ambardar <tony.ambardar@gmail.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-commit 7de21e679e6a789f3729e8402bc440b623a28eae upstream.
+commit e4e8bc1df691ba5ba749d1e2b67acf9827e51a35 upstream.
 
-A few archs like powerpc have different errno.h values for macros
-EDEADLOCK and EDEADLK. In code including both libc and linux versions of
-errno.h, this can result in multiple definitions of EDEADLOCK in the
-include chain. Definitions to the same value (e.g. seen with mips) do
-not raise warnings, but on powerpc there are redefinitions changing the
-value, which raise warnings and errors (if using "-Werror").
+The changes to add KUAP support with the hash MMU broke booting of KVM
+PR guests. The symptom is no visible progress of the guest, or possibly
+just "SLOF" being printed to the qemu console.
 
-Guard against these redefinitions to avoid build errors like the following,
-first seen cross-compiling libbpf v5.8.9 for powerpc using GCC 8.4.0 with
-musl 1.1.24:
+Host code is still executing, but breaking into xmon might show a stack
+trace such as:
 
-  In file included from ../../arch/powerpc/include/uapi/asm/errno.h:5,
-                   from ../../include/linux/err.h:8,
-                   from libbpf.c:29:
-  ../../include/uapi/asm-generic/errno.h:40: error: "EDEADLOCK" redefined [-Werror]
-   #define EDEADLOCK EDEADLK
+  __might_fault+0x84/0xe0 (unreliable)
+  kvm_read_guest+0x1c8/0x2f0 [kvm]
+  kvmppc_ld+0x1b8/0x2d0 [kvm]
+  kvmppc_load_last_inst+0x50/0xa0 [kvm]
+  kvmppc_exit_pr_progint+0x178/0x220 [kvm_pr]
+  kvmppc_handle_exit_pr+0x31c/0xe30 [kvm_pr]
+  after_sprg3_load+0x80/0x90 [kvm_pr]
+  kvmppc_vcpu_run_pr+0x104/0x260 [kvm_pr]
+  kvmppc_vcpu_run+0x34/0x48 [kvm]
+  kvm_arch_vcpu_ioctl_run+0x340/0x450 [kvm]
+  kvm_vcpu_ioctl+0x2ac/0x8c0 [kvm]
+  sys_ioctl+0x320/0x1060
+  system_call_exception+0x160/0x270
+  system_call_common+0xf0/0x27c
 
-  In file included from toolchain-powerpc_8540_gcc-8.4.0_musl/include/errno.h:10,
-                   from libbpf.c:26:
-  toolchain-powerpc_8540_gcc-8.4.0_musl/include/bits/errno.h:58: note: this is the location of the previous definition
-   #define EDEADLOCK       58
+Bisect points to commit b2ff33a10c8b ("powerpc/book3s64/hash/kuap:
+Enable kuap on hash"), but that's just the commit that enabled KUAP with
+hash and made the bug visible.
 
-  cc1: all warnings being treated as errors
+The root cause seems to be that KVM PR is creating kernel mappings that
+don't use the correct key, since we switched to using key 3.
 
-Cc: Stable <stable@vger.kernel.org>
-Reported-by: Rosen Penev <rosenp@gmail.com>
-Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
+We have a helper for adding the right key value, however it's designed
+to take a pteflags variable, which the KVM code doesn't have. But we can
+make it work by passing 0 for the pteflags, and tell it explicitly that
+it should use the kernel key.
+
+With that changed guests boot successfully.
+
+Fixes: d94b827e89dc ("powerpc/book3s64/kuap: Use Key 3 for kernel mapping with hash translation")
+Cc: stable@vger.kernel.org # v5.11+
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200917135437.1238787-1-Tony.Ambardar@gmail.com
+Link: https://lore.kernel.org/r/20210419120139.1455937-1-mpe@ellerman.id.au
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/include/uapi/asm/errno.h |    1 +
- 1 file changed, 1 insertion(+)
+ arch/powerpc/kvm/book3s_64_mmu_host.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/powerpc/include/uapi/asm/errno.h
-+++ b/arch/powerpc/include/uapi/asm/errno.h
-@@ -2,6 +2,7 @@
- #ifndef _ASM_POWERPC_ERRNO_H
- #define _ASM_POWERPC_ERRNO_H
+--- a/arch/powerpc/kvm/book3s_64_mmu_host.c
++++ b/arch/powerpc/kvm/book3s_64_mmu_host.c
+@@ -12,6 +12,7 @@
+ #include <asm/kvm_ppc.h>
+ #include <asm/kvm_book3s.h>
+ #include <asm/book3s/64/mmu-hash.h>
++#include <asm/book3s/64/pkeys.h>
+ #include <asm/machdep.h>
+ #include <asm/mmu_context.h>
+ #include <asm/hw_irq.h>
+@@ -133,6 +134,7 @@ int kvmppc_mmu_map_page(struct kvm_vcpu
+ 	else
+ 		kvmppc_mmu_flush_icache(pfn);
  
-+#undef	EDEADLOCK
- #include <asm-generic/errno.h>
++	rflags |= pte_to_hpte_pkey_bits(0, HPTE_USE_KERNEL_KEY);
+ 	rflags = (rflags & ~HPTE_R_WIMG) | orig_pte->wimg;
  
- #undef	EDEADLOCK
+ 	/*
 
 
