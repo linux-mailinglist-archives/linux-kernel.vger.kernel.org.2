@@ -2,163 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B753379A7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 01:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30272379A87
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 01:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbhEJXJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 19:09:53 -0400
-Received: from mga07.intel.com ([134.134.136.100]:17989 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229502AbhEJXJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 19:09:51 -0400
-IronPort-SDR: X8HV9nn+rTJFTWoweLiAj+4HhXDeX6lsAMAqirBUuou4Y8cYj8jd+Zs5KtNvgjBLv+DoJy7eUf
- EsLSqaTQHK/A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="263239092"
-X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
-   d="scan'208";a="263239092"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 16:08:43 -0700
-IronPort-SDR: E2KqVgeupgma0ACp6LRa582YaTCbDKsP6QiK26M+uvBvb2xS26/sA0EHioJUlpAoRNjaix0I3H
- tJMkXThKZ1dQ==
-X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
-   d="scan'208";a="434020287"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.32.217]) ([10.209.32.217])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 16:08:42 -0700
-Subject: Re: [RFC v2 14/32] x86/tdx: Handle port I/O
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <0e7e94d1ee4bae49dfd0dd441dc4f2ab6df76668.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4jPLGs6p0PNZQB6yKB3QDtEcGb234zcgCbJutXxZZEGnA@mail.gmail.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <e8ac31bc-e307-f277-f928-24ebba4cbca7@linux.intel.com>
-Date:   Mon, 10 May 2021 16:08:41 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S229968AbhEJXSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 19:18:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229561AbhEJXSu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 19:18:50 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC15C061574;
+        Mon, 10 May 2021 16:17:45 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id c3so25843567lfs.7;
+        Mon, 10 May 2021 16:17:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5c45erSURxeCEHSKNhav6B+HVmEo5Q7GZQowAFugOAc=;
+        b=NqZNRuu1HG9xlohcDS6IOK/kb9nJhKJYi3gD5p77/P/JE0OTKVAa0on/9BVLLZ1Tu8
+         KefR1+tstfCQFGq3ozrLTCYuo6kwZvgoAOW4g+rkB1J6qI7cosr0EcPexCVrLpn2/qhD
+         V18w0QYs7m5ujyQqDp9/5xck82JYKz/EpwQgEU1+UiYixVZhHOyNykvns0u3ekP9lqhE
+         qOQMARzMB6qatxWJ/BvWxNYP28tMUZmeHPb6ItCM+a7dRFklUVBq8Foeu2kFXknrEg+q
+         lG7Q+9Ohs73V5wfMoidyplpLYpeCAG3f5/qvQvMeVxHQ4HvRikHR2cS5YBDTB8HAqzzR
+         oGwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5c45erSURxeCEHSKNhav6B+HVmEo5Q7GZQowAFugOAc=;
+        b=Mf3dN8WNq1jn+qtb5gJVJOAJibKgR7AfGSA/GSGcYHjrfZbiyKR0yBCOZ2LRc1l7cV
+         VabPWms1W0OB4zn3H2ucf5UMQzqYz7b7rVi1qgi2XSSjQlTL1ztVad2ZKYjgL8KQBIOb
+         2pZqHBFMmIZbWOp9XB2qUibhc+oj3Soi9lpO4v11aF+5U0X1jBazKd3pdXXumz3ImEvA
+         zLuavSmWVEF/UoGgEtokX4oy/8W0s6axXnoxFBvyMtxs6p8QQuJkbmIc11VktMuizoPB
+         JjIak4wKNyUP1ltuzSfJU9zUFZu4pWlpsVbMc0teRzhrZx2rjfDJ/tzjHqOY2QyrCB74
+         V54g==
+X-Gm-Message-State: AOAM531nh5Vtz6LorEXnD2Dp36+1zqsdADcv686Z/bq2asIQtaXp1mo8
+        MAU3Jwd8hPwMOUVi87spXCs=
+X-Google-Smtp-Source: ABdhPJxqUk7gPLV7h/f4yqGcGnIRgoOIA/snpb+clQSo+qHgKdWdSLWp0V69lNxZV2pw1vDzbbxfEw==
+X-Received: by 2002:ac2:5f5b:: with SMTP id 27mr18580184lfz.571.1620688663420;
+        Mon, 10 May 2021 16:17:43 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.gmail.com with ESMTPSA id k8sm2422254lfo.123.2021.05.10.16.17.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 16:17:43 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v7 0/8] Couple improvements for Tegra clk driver
+Date:   Tue, 11 May 2021 02:17:29 +0300
+Message-Id: <20210510231737.30313-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4jPLGs6p0PNZQB6yKB3QDtEcGb234zcgCbJutXxZZEGnA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series fixes couple minor standalone problems of the Tegra clk
+driver and adds new features.
 
-On 5/10/2021 2:57 PM, Dan Williams wrote:
->
-> There is a mix of direct-TDVMCALL usage and handling #VE when and why
-> is either approached used?
+Changelog:
 
-For the really early code in the decompressor or the main kernel we 
-can't use #VE because the IDT needed for handling the exception is not 
-set up, and some other infrastructure needed by the handler is missing. 
-The early code needs to do port IO to be able to write the early serial 
-console. To keep it all common it ended up that all port IO is paravirt. 
-Actually for most the main kernel port IO calls we could just use #VE 
-and it would result in smaller binaries, but then we would need to 
-annotate all early portio with some special name. That's why port IO is 
-all TDCALL.
+v7: - Added r-b from Rob Herring to the schema patch which he gave to v6.
 
-For some others the only thing that really has to be #VE is MMIO because 
-we don't want to annotate every MMIO read*/write* with an alternative 
-(which would result in incredible binary bloat) For the others they have 
-mostly become now direct calls.
+    - Dropped the MAINTAINERS-update patch. Previously Peter said on IRC
+      that he doesn't have time on the tegra-clk driver anymore and approved
+      the patch, but then he refused to ack the v6 patch, saying that he
+      is not reading mailing lists. So I don't feel comfortable with that
+      patch. Peter could send it by himself if will be necessary.
 
+    - Added these new patches:
 
->
->> Decompression code uses port IO for earlyprintk. We must use
->> paravirt calls there too if we want to allow earlyprintk.
-> What is the tradeoff between teaching the decompression code to handle
-> #VE (the implied assumption) vs teaching it to avoid #VE with direct
-> TDVMCALLs (the chosen direction)?
+        clk: tegra: cclk: Handle thermal DIV2 CPU frequency throttling
+        clk: tegra: Mark external clocks as not having reset control
 
-The decompression code only really needs it to output something. But you 
-couldn't debug anything until #VE is set up. Also the decompression code 
-has a very basic environment that doesn't supply most kernel services, 
-and the #VE handler is relatively complicated. It would probably need to 
-be duplicated and the instruction decoder be ported to work in this 
-environment. It would be all a lot of work, just to make the debug 
-output work.
+      I sent out the new Tegra30 thermal sensor driver and now CPU clock
+      could be throttled by the sensor hardware [1]. The first patch adds
+      support for reporting of the throttled frequency properly.
 
->
->> Co-developed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->> Reviewed-by: Andi Kleen <ak@linux.intel.com>
->> ---
->>   arch/x86/boot/compressed/Makefile |   1 +
->>   arch/x86/boot/compressed/tdcall.S |   9 ++
->>   arch/x86/include/asm/io.h         |   5 +-
->>   arch/x86/include/asm/tdx.h        |  46 ++++++++-
->>   arch/x86/kernel/tdcall.S          | 154 ++++++++++++++++++++++++++++++
-> Why is this named "tdcall" when it is implementing tdvmcalls? I must
-> say those names don't really help me understand what they do. Can we
-> have Linux names that don't mandate keeping the spec terminology in my
-> brain's translation cache?
+      [1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=243126
 
-The instruction is called TDCALL. It's always the same instruction
+      During of debugging sound issues of Asus Transformer devices, I noticed
+      that the external clocks are missing the no-reset flag. The second
+      patch fixes it.
 
-TDVMCALL is the variant when the host processes it (as opposed to the 
-TDX module), but it's just a different name space in the call number.
+v6: - Made a small improvement and corrected a typo in patch
+      "Fix refcounting of gate clocks" that were spotted by
+      Michał Mirosław.
 
+v5: - Corrected example in the schema binding to silence dt_binding_check
+      warning.
 
-             \
+    - The Tegra124 binding is factored out into standalone binding since
+      Tegra124 has properties that aren't used by other SoCs and I couldn't
+      figure out how to make them conditional in schema.
 
-> Is there a unified Linux name these can be given to stop the
-> proliferation of poor vendor names for similar concepts?
+v4: - Added new patch that converts DT bindings to schema.
 
-We could use protected_guest()
+v3: - Added acks from Thierry Reding that he gave to v2.
 
+    - Added new patch "clk: tegra: Don't allow zero clock rate for PLLs".
 
->
-> Does it also not know how to handle #VE to keep it aligned with the
-> runtime code?
+v2: - Added these new patches:
 
+      clk: tegra: Halve SCLK rate on Tegra20
+      MAINTAINERS: Hand Tegra clk driver to Jon and Thierry
 
-Not sure I understand the question, but the decompression code supports 
-neither alternatives nor #VE. It's a very limited environment.
+v1: - Collected clk patches into a single series.
 
->
-> Outside the boot decompression code isn't this branch of the "ifdef
-> BOOT_COMPRESSED_MISC_H"  handled by #VE? I also don't see any usage of
-> __{in,out}() in this patch.
+Dmitry Osipenko (8):
+  clk: tegra30: Use 300MHz for video decoder by default
+  clk: tegra: Fix refcounting of gate clocks
+  clk: tegra: Ensure that PLLU configuration is applied properly
+  clk: tegra: Halve SCLK rate on Tegra20
+  clk: tegra: Don't allow zero clock rate for PLLs
+  clk: tegra: cclk: Handle thermal DIV2 CPU frequency throttling
+  clk: tegra: Mark external clocks as not having reset control
+  dt-bindings: clock: tegra: Convert to schema
 
-I thought it was all alternative after decompression, so the #VE code 
-shouldn't be called. We still have it for some reason though.
+ .../bindings/clock/nvidia,tegra114-car.txt    |  63 ----------
+ .../bindings/clock/nvidia,tegra124-car.txt    | 107 ----------------
+ .../bindings/clock/nvidia,tegra124-car.yaml   | 115 ++++++++++++++++++
+ .../bindings/clock/nvidia,tegra20-car.txt     |  63 ----------
+ .../bindings/clock/nvidia,tegra20-car.yaml    |  69 +++++++++++
+ .../bindings/clock/nvidia,tegra210-car.txt    |  56 ---------
+ .../bindings/clock/nvidia,tegra30-car.txt     |  63 ----------
+ drivers/clk/tegra/clk-periph-gate.c           |  72 +++++++----
+ drivers/clk/tegra/clk-periph.c                |  11 ++
+ drivers/clk/tegra/clk-pll.c                   |  12 +-
+ drivers/clk/tegra/clk-tegra-periph.c          |   6 +-
+ drivers/clk/tegra/clk-tegra-super-cclk.c      |  16 ++-
+ drivers/clk/tegra/clk-tegra20.c               |   6 +-
+ drivers/clk/tegra/clk-tegra30.c               |   4 +-
+ 14 files changed, 271 insertions(+), 392 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra114-car.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra124-car.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra124-car.yaml
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra20-car.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra210-car.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra30-car.txt
 
-
->
-> Perhaps "PAYLOAD_SIZE" since it is used for both input and output?
->
-> If the ABI does not include the size of the payload then how would
-> code detect if even 80 bytes was violated in the future?
-
-
-The payload in memory is just a Linux concept. At the TDCALL level it's 
-only registers.
-
-
->
-> 5
-> Surely there's an existing macro for this pattern? Would
-> PUSH_AND_CLEAR_REGS + POP_REGS be suitable? Besides code sharing it
-> would eliminate clearing of %r8.
-
-
-There used to be SAVE_ALL/SAVE_REGS, but they have been all removed in 
-some past refactorings.
-
-
--Andi
+-- 
+2.30.2
 
