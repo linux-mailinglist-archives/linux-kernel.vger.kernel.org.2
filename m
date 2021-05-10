@@ -2,110 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE69C379297
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6746379295
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234809AbhEJPZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 11:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46542 "EHLO
+        id S234940AbhEJPZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 11:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239050AbhEJPYp (ORCPT
+        with ESMTP id S239072AbhEJPYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 11:24:45 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB0AC07E5DC;
-        Mon, 10 May 2021 08:02:30 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so10692838oto.0;
-        Mon, 10 May 2021 08:02:30 -0700 (PDT)
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78887C07E5DD
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 08:02:37 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id i14so13498842pgk.5
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 08:02:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=BJBAKc3PQ9AHpThbEJS50zFIUwVJp1qU6xGIki8dg58=;
-        b=CsiMDWwUq9272G9cotZI3nZ5EnvRLzF599akRxkhVtpv8fLQo55fuZXw0h51/M6mcs
-         x+b3nlcynyVBLKvo4BpGM47/sg1JoJS+ZJAnwfGH44EjRZQmKnUknAlIPkKlgA7B4Cat
-         iYx61KpD5LlrYioDMeidgcqEmnkYfiQT3Jju6Vayr8YnIfRH78DQH/43Uah8ImMF4zjK
-         5k/Dab31oMtzF+MiHUaO1aL2+D/fV1rVEhQvDJH4Bb7vb7rB09mguyJzBUNSFC0zThJs
-         /cZftPo5jQzwW1tmtULCSfk1+hWwNRNSw+On79I9JU86JB2QdaDHGf6X6qbLpG6+8/Fu
-         IH3w==
+        bh=1fO+jUmqEDUXSIis3oHW0Flx6cFL+pa0JnVYsPy9H5I=;
+        b=bFZ2I95XqBU/PFzvrqyUF/2DiJ+BxRvWsCLG7v/9/rVTuulyQvEeMXOezUvG7Y9/2X
+         AGuB+EkdZObLucVtZcxHn9jiRQvyoQ8ttoz7V3xzHJ1i+4RNu2Q2gLmdR9g8LX2d03CZ
+         8tzzhdQCBdYMs3RoxPJHHXC0u5hoVUBoy94XivcekQvB8uOmlgXQEjsUB+i/VTBT6PCY
+         sm4fPImkScmf8wPEWauw2AgHiMJe2pW9rSejFg5/jUEhEYvmt8l+gIjvszk2BAkUnrhE
+         CDcHRDzsMayXf1u8YmpdW8HcA8xDTm/hq5zDmD2LJf36pwnJd6TZPVomR+zhZ6mEH3MJ
+         +lEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=BJBAKc3PQ9AHpThbEJS50zFIUwVJp1qU6xGIki8dg58=;
-        b=mvtw1gjucq1ybsLg4C2CUw2ddp6EQLyHXMTp/mRMT8Cowux3MKkVtwX4MmI6wWN+9j
-         hrdDlclDfGpZLUIuLD0VXD4ibrMrkNXhQajmyOPCU9trYPsDs9AnxjQa0wVBXziKFDnf
-         vzVC4z78gYQtPG/k+odxVeIQTTrY1mkuLubfb9jubTw2z8BJ7hFL/MHyNhCsDj+iMVHM
-         DXrw+GHzk29csqM0YKRQubLkChjZdnsN00TabFslkmHxRTtPBUS3BdyshKKoHTDlJKMX
-         K4e6+JRmbn6GMTtFcD4wq9lZM56bjUZNW+pZd/WGnntfP4QApX2GQCguVn58mShzA2Op
-         +KXw==
-X-Gm-Message-State: AOAM530KOBGRv9pwT6KM9bS4Gl/ZT7qqQTISNFsQ+lt5CGDc6cleUwTi
-        Hy0N5pfOaMsXSooiup85YEk=
-X-Google-Smtp-Source: ABdhPJyYbzqATX7KJRRHJu4DNrk4N0sbPVcXyEG4Uw54J9gfIRD/M4fRW/+hcpTfnkkkbsqjvT//bw==
-X-Received: by 2002:a9d:449:: with SMTP id 67mr21185911otc.333.1620658949920;
-        Mon, 10 May 2021 08:02:29 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a12sm3159302oti.12.2021.05.10.08.02.28
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1fO+jUmqEDUXSIis3oHW0Flx6cFL+pa0JnVYsPy9H5I=;
+        b=M++MuS56EWUvxFD7QuhSfsCaiJDr4Q0qyPJk0+hxINZAbEc0GoI6iYN2HT5a7hOfd7
+         5BugoarM3QRxa/Hio0VD9QnhVDkhInaj1Q1fM44AhRngE++231MiNxtWAk+PgKKbXjDf
+         hX4SATfAdRQWyEbkt9M+xUV8zWqiiZK1w8S7j2G19LammB9OJzhWk6cEmYdNUq5R4UPU
+         wCtJ8py3bDBghjXTMdqWV5P661BZgF3ttO6ruQqVuzDuWUoMroewONKU1A+f+0dk8Ah9
+         MIMOhJAlw+8mnMxQmpcO5doWqcZIpZrJXDuUMnCqSPzAJSjiQysHMBmr1AtznbO8vqcu
+         L6OA==
+X-Gm-Message-State: AOAM532z4dQFiFoJ5iFInlJ6QJBYZq0/eaF3XaRcGX57oHKHO/H7f+KI
+        4v2wELHjJxtN0rcz6j4q6MM=
+X-Google-Smtp-Source: ABdhPJwkqw1ZCSxkz13/m97i+8H+bDz5Nn73JP5OO23EC+b2P1eYzE53Mns8FVUydAeWzWGOYiYlNw==
+X-Received: by 2002:a63:4652:: with SMTP id v18mr26064909pgk.386.1620658956714;
+        Mon, 10 May 2021 08:02:36 -0700 (PDT)
+Received: from hyeyoo ([183.99.11.150])
+        by smtp.gmail.com with ESMTPSA id e27sm7600554pfm.144.2021.05.10.08.02.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 08:02:29 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 10 May 2021 08:02:28 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Alexandru Tachici <alexandru.tachici@analog.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>
-Subject: Re: [PATCH v1 1/1] hwmon: (ltc2992) Put fwnode in error case during
- ->probe()
-Message-ID: <20210510150228.GA1997561@roeck-us.net>
-References: <20210510100136.3303142-1-andy.shevchenko@gmail.com>
+        Mon, 10 May 2021 08:02:36 -0700 (PDT)
+Date:   Tue, 11 May 2021 00:02:30 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Matthew Wilcox <willy@infradead.org>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        42.hyeyoo@gmail.com
+Subject: [PATCH v2] mm: kmalloc_index: make compiler break when size is not
+ supported
+Message-ID: <20210510150230.GA74915@hyeyoo>
+References: <20210508221328.7338-1-42.hyeyoo@gmail.com>
+ <YJccjBMBiwLqFrB8@casper.infradead.org>
+ <CAB=+i9QyxOu_1QDfX5QA=pOxxnRURPnwd2Y0EbhoO1u0e=irBA@mail.gmail.com>
+ <c305ec02-a7d6-dd0c-bfee-e5b571d9ca9a@suse.cz>
+ <20210510135857.GA3594@hyeyoo>
+ <9d0ffe49-a2e2-6c81-377b-4c8d2147dff8@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="HlL+5n6rz5pIUxbD"
 Content-Disposition: inline
-In-Reply-To: <20210510100136.3303142-1-andy.shevchenko@gmail.com>
+In-Reply-To: <9d0ffe49-a2e2-6c81-377b-4c8d2147dff8@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 01:01:36PM +0300, Andy Shevchenko wrote:
-> In each iteration fwnode_for_each_available_child_node() bumps a reference
-> counting of a loop variable followed by dropping in on a next iteration,
-> 
-> Since in error case the loop is broken, we have to drop a reference count
-> by ourselves. Do it for port_fwnode in error case during ->probe().
-> 
-> Fixes: b0bd407e94b0 ("hwmon: (ltc2992) Add support")
-> Cc: Alexandru Tachici <alexandru.tachici@analog.com>
-> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Applied.
+--HlL+5n6rz5pIUxbD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Guenter
+updated patch. let me know if something is wrong!
 
-> ---
->  drivers/hwmon/ltc2992.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/hwmon/ltc2992.c b/drivers/hwmon/ltc2992.c
-> index 4382105bf142..2a4bed0ab226 100644
-> --- a/drivers/hwmon/ltc2992.c
-> +++ b/drivers/hwmon/ltc2992.c
-> @@ -900,11 +900,15 @@ static int ltc2992_parse_dt(struct ltc2992_state *st)
->  
->  	fwnode_for_each_available_child_node(fwnode, child) {
->  		ret = fwnode_property_read_u32(child, "reg", &addr);
-> -		if (ret < 0)
-> +		if (ret < 0) {
-> +			fwnode_handle_put(child);
->  			return ret;
-> +		}
->  
-> -		if (addr > 1)
-> +		if (addr > 1) {
-> +			fwnode_handle_put(child);
->  			return -EINVAL;
-> +		}
->  
->  		ret = fwnode_property_read_u32(child, "shunt-resistor-micro-ohms", &val);
->  		if (!ret)
+--HlL+5n6rz5pIUxbD
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-mm-kmalloc_index-make-compiler-break-when-size-is-no.patch"
+
+From 8fe7ecdfb0f5bd5b08771512303d72f1c6447362 Mon Sep 17 00:00:00 2001
+From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Date: Mon, 10 May 2021 23:57:34 +0900
+Subject: [PATCH] mm: kmalloc_index: make compiler break when size is not
+ supported
+
+currently when size is not supported by kmalloc_index, compiler will not
+break. so changed BUG to BUILD_BUG_ON_MSG to make compiler break if size is
+wrong. this is done in compile time.
+
+also removed code that allocates more than 32MB because current
+implementation supports only up to 32MB.
+
+Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+---
+ include/linux/slab.h | 7 +++++--
+ mm/slab_common.c     | 7 +++----
+ 2 files changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index 0c97d788762c..fd0c7229d105 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -346,6 +346,9 @@ static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
+  * 1 =  65 .. 96 bytes
+  * 2 = 129 .. 192 bytes
+  * n = 2^(n-1)+1 .. 2^n
++ *
++ * Note: you don't need to optimize kmalloc_index because it's evaluated
++ * in compile-time.
+  */
+ static __always_inline unsigned int kmalloc_index(size_t size)
+ {
+@@ -382,8 +385,8 @@ static __always_inline unsigned int kmalloc_index(size_t size)
+ 	if (size <=  8 * 1024 * 1024) return 23;
+ 	if (size <=  16 * 1024 * 1024) return 24;
+ 	if (size <=  32 * 1024 * 1024) return 25;
+-	if (size <=  64 * 1024 * 1024) return 26;
+-	BUG();
++
++	BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
+ 
+ 	/* Will never be reached. Needed because the compiler may complain */
+ 	return -1;
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index f8833d3e5d47..39d4eca8cf9b 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -745,8 +745,8 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
+ 
+ /*
+  * kmalloc_info[] is to make slub_debug=,kmalloc-xx option work at boot time.
+- * kmalloc_index() supports up to 2^26=64MB, so the final entry of the table is
+- * kmalloc-67108864.
++ * kmalloc_index() supports up to 2^25=32MB, so the final entry of the table is
++ * kmalloc-33554432.
+  */
+ const struct kmalloc_info_struct kmalloc_info[] __initconst = {
+ 	INIT_KMALLOC_INFO(0, 0),
+@@ -774,8 +774,7 @@ const struct kmalloc_info_struct kmalloc_info[] __initconst = {
+ 	INIT_KMALLOC_INFO(4194304, 4M),
+ 	INIT_KMALLOC_INFO(8388608, 8M),
+ 	INIT_KMALLOC_INFO(16777216, 16M),
+-	INIT_KMALLOC_INFO(33554432, 32M),
+-	INIT_KMALLOC_INFO(67108864, 64M)
++	INIT_KMALLOC_INFO(33554432, 32M)
+ };
+ 
+ /*
+-- 
+2.25.1
+
+
+--HlL+5n6rz5pIUxbD--
