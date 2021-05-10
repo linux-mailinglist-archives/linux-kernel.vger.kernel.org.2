@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E197E3782F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1007C378323
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbhEJKlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:41:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41944 "EHLO mail.kernel.org"
+        id S232295AbhEJKmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:42:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232392AbhEJKea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:34:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93AD461920;
+        id S232542AbhEJKey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:34:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9239361624;
         Mon, 10 May 2021 10:28:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620642492;
-        bh=UdJoc4oz4UR45DYdDMtvCbPGRIFRoj5CojFrrsp5YdU=;
+        bh=douQRqdAuSEyY2c01j2A8jGeoYHQIC0zRAigEPzlh3k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UfRyAjZ4P+TwFWlRmR+rCkGT9crzu4E2kDWzBJ8xo4ICLvjoaH060nJcgEqj5kvP0
-         TMhGA9z9a6DWW1G78C1WWJlh1t3dTF7258EjZe1RM8fWswrUVpIbQlsGAhDtFiPMsk
-         BThjZ8Gn3RRyU1hjvL8iqdfGvngscKdrki7RQmoPLO7NML/Q2fWiHfF/+Qk6hSvi/i
-         joiT2z1wwDuGv5xxFgVOUbjktooRSOekK+r1NoMMBUhimlD823uwaGriVjFr25OJ+j
-         kJdAcVkqNnj0/U2nRSpLTF5vQWuIEcz7szRR6uoW7s3p8pyAOo1fcT4GIWWYOkh6eI
-         qFY12nfZZg35g==
+        b=azusiLCfLPK7/w4iGdDQPjmMGxeoKcFY4r1yfU8sEIwHAeSjI2D4e0nNADeh8l41/
+         ea6jTvatCm2sfi9wYZVLyOSYOdlqdsY6kgcLIImKQdYAUS6QSLbW8BGjc0iV1tbPgj
+         HCk4ZG/9qaMxpEtUl4oNKeZl55ritr3MCZ5Wnj7Q/kYgu0Iy7BdDfm3f4zthJIT9NH
+         fZz6Jn1G1/HpjTKYzBNpbw31cQgUQn2L3cbSt0dxYPeMTDUKksgKhiVB6jLRGY8yG0
+         5Ic3lIy5n/gxYB44wwOo3t+6rnfEwA50nVbBM9Yc46EjPDWzlD2gWdlP+IGbfxt1C6
+         mr9peKpqfpSvQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lg38z-000UYK-Id; Mon, 10 May 2021 12:28:09 +0200
+        id 1lg38z-000UYO-KN; Mon, 10 May 2021 12:28:09 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 49/53] docs: misc-devices: ibmvmc.rst: avoid using UTF-8 chars
-Date:   Mon, 10 May 2021 12:27:01 +0200
-Message-Id: <870e02b2fa71498907e6fc3a8bf43b0060f5b831.1620641727.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 50/53] docs: firmware-guide: acpi: lpit.rst: avoid using UTF-8 chars
+Date:   Mon, 10 May 2021 12:27:02 +0200
+Message-Id: <f981646e5ffb5d6260928041cc3b420f7fb3ad62.1620641727.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620641727.git.mchehab+huawei@kernel.org>
 References: <cover.1620641727.git.mchehab+huawei@kernel.org>
@@ -48,52 +51,27 @@ While UTF-8 characters can be used at the Linux documentation,
 the best is to use them only when ASCII doesn't offer a good replacement.
 So, replace the occurences of the following UTF-8 characters:
 
-	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
+	- U+201c ('“'): LEFT DOUBLE QUOTATION MARK
+	- U+201d ('”'): RIGHT DOUBLE QUOTATION MARK
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/misc-devices/ibmvmc.rst | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ Documentation/firmware-guide/acpi/lpit.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/misc-devices/ibmvmc.rst b/Documentation/misc-devices/ibmvmc.rst
-index b46df4ea2b81..b075211c6dce 100644
---- a/Documentation/misc-devices/ibmvmc.rst
-+++ b/Documentation/misc-devices/ibmvmc.rst
-@@ -36,7 +36,7 @@ Management Application
- ----------------------
+diff --git a/Documentation/firmware-guide/acpi/lpit.rst b/Documentation/firmware-guide/acpi/lpit.rst
+index 37922a903573..d7d6c406074a 100644
+--- a/Documentation/firmware-guide/acpi/lpit.rst
++++ b/Documentation/firmware-guide/acpi/lpit.rst
+@@ -5,7 +5,7 @@ Low Power Idle Table (LPIT)
+ ===========================
  
- In the management partition, a management application exists which enables
--a system administrator to configure the system’s partitioning
-+a system administrator to configure the system's partitioning
- characteristics via a command line interface (CLI) or Representational
- State Transfer Application (REST API's).
+ To enumerate platform Low Power Idle states, Intel platforms are using
+-“Low Power Idle Table” (LPIT). More details about this table can be
++"Low Power Idle Table" (LPIT). More details about this table can be
+ downloaded from:
+ https://www.uefi.org/sites/default/files/resources/Intel_ACPI_Low_Power_S0_Idle.pdf
  
-@@ -108,7 +108,7 @@ This section provides an example for the management application
- implementation where a device driver is used to interface to the VMC
- device. This driver consists of a new device, for example /dev/ibmvmc,
- which provides interfaces to open, close, read, write, and perform
--ioctl’s against the VMC device.
-+ioctl's against the VMC device.
- 
- VMC Interface Initialization
- ----------------------------
-@@ -177,14 +177,14 @@ VMC Interface Runtime
- During normal runtime, the management application and the hypervisor
- exchange HMC messages via the Signal VMC message and RDMA operations. When
- sending data to the hypervisor, the management application performs a
--write() to the VMC device, and the driver RDMA’s the data to the hypervisor
-+write() to the VMC device, and the driver RDMA's the data to the hypervisor
- and then sends a Signal Message. If a write() is attempted before VMC
- device buffers have been made available by the hypervisor, or no buffers
- are currently available, EBUSY is returned in response to the write(). A
- write() will return EIO for all other errors, such as an invalid device
- state. When the hypervisor sends a message to the management, the data is
- put into a VMC buffer and an Signal Message is sent to the VMC driver in
--the management partition. The driver RDMA’s the buffer into the partition
-+the management partition. The driver RDMA's the buffer into the partition
- and passes the data up to the appropriate management application via a
- read() to the VMC device. The read() request blocks if there is no buffer
- available to read. The management application may use select() to wait for
 -- 
 2.30.2
 
