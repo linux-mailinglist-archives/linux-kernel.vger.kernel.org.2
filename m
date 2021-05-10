@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710BF378D2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D99378D31
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347562AbhEJMgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:36:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55450 "EHLO mail.kernel.org"
+        id S1347600AbhEJMg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:36:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233269AbhEJLOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:14:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 831EB610A0;
-        Mon, 10 May 2021 11:10:38 +0000 (UTC)
+        id S233601AbhEJLOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:14:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF49161424;
+        Mon, 10 May 2021 11:10:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620645039;
-        bh=8VikAt3YSecImfYBfomlhEJb3RSTeVARhmkcfe9AGyU=;
+        s=korg; t=1620645041;
+        bh=Rm//JxqJELkUL8BRgI54ulf7oVv8a4orV4V0NwUxU2U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DR9y/MqNk7iT694CaEqulmsbM4RGev+n7oy0L1n9ijXTjAVWeYmaD52y9ReJyJv/h
-         jDbx2py9ff/9roTnHydOp6mBrDeV29/gL9qbpMNnuElTHUqgBGkpfxRoqXq4sGr86q
-         pLim601fSdoo+szWGNaKq7/pRNk5H4x4b0+B0Yqg=
+        b=Rvbd9EDQcJvCA3LstLbuNbssNwdOIkBL26Pk85IjUY0CyVoLE9sNnkVquZfkAGyHt
+         m1PftWr2tebvnjuCgvGG3pljCGvX0Hq7/iX6xJUezV5DyU26ZNZKT9HToKcbPTkRVK
+         tq0XRD7Wi2yvHwHVFnKkVS5tr/k8saeJn2SmAvhU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH 5.12 326/384] rcu/nocb: Fix missed nocb_timer requeue
-Date:   Mon, 10 May 2021 12:21:55 +0200
-Message-Id: <20210510102025.542777967@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Andrey Zhizhikin <andrey.z@gmail.com>
+Subject: [PATCH 5.12 327/384] security: commoncap: fix -Wstringop-overread warning
+Date:   Mon, 10 May 2021 12:21:56 +0200
+Message-Id: <20210510102025.573829288@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -44,122 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit b2fcf2102049f6e56981e0ab3d9b633b8e2741da upstream.
+commit 82e5d8cc768b0c7b03c551a9ab1f8f3f68d5f83f upstream.
 
-This sequence of events can lead to a failure to requeue a CPU's
-->nocb_timer:
+gcc-11 introdces a harmless warning for cap_inode_getsecurity:
 
-1.	There are no callbacks queued for any CPU covered by CPU 0-2's
-	->nocb_gp_kthread.  Note that ->nocb_gp_kthread is associated
-	with CPU 0.
+security/commoncap.c: In function ‘cap_inode_getsecurity’:
+security/commoncap.c:440:33: error: ‘memcpy’ reading 16 bytes from a region of size 0 [-Werror=stringop-overread]
+  440 |                                 memcpy(&nscap->data, &cap->data, sizeof(__le32) * 2 * VFS_CAP_U32);
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-2.	CPU 1 enqueues its first callback with interrupts disabled, and
-	thus must defer awakening its ->nocb_gp_kthread.  It therefore
-	queues its rcu_data structure's ->nocb_timer.  At this point,
-	CPU 1's rdp->nocb_defer_wakeup is RCU_NOCB_WAKE.
+The problem here is that tmpbuf is initialized to NULL, so gcc assumes
+it is not accessible unless it gets set by vfs_getxattr_alloc().  This is
+a legitimate warning as far as I can tell, but the code is correct since
+it correctly handles the error when that function fails.
 
-3.	CPU 2, which shares the same ->nocb_gp_kthread, also enqueues a
-	callback, but with interrupts enabled, allowing it to directly
-	awaken the ->nocb_gp_kthread.
+Add a separate NULL check to tell gcc about it as well.
 
-4.	The newly awakened ->nocb_gp_kthread associates both CPU 1's
-	and CPU 2's callbacks with a future grace period and arranges
-	for that grace period to be started.
-
-5.	This ->nocb_gp_kthread goes to sleep waiting for the end of this
-	future grace period.
-
-6.	This grace period elapses before the CPU 1's timer fires.
-	This is normally improbably given that the timer is set for only
-	one jiffy, but timers can be delayed.  Besides, it is possible
-	that kernel was built with CONFIG_RCU_STRICT_GRACE_PERIOD=y.
-
-7.	The grace period ends, so rcu_gp_kthread awakens the
-	->nocb_gp_kthread, which in turn awakens both CPU 1's and
-	CPU 2's ->nocb_cb_kthread.  Then ->nocb_gb_kthread sleeps
-	waiting for more newly queued callbacks.
-
-8.	CPU 1's ->nocb_cb_kthread invokes its callback, then sleeps
-	waiting for more invocable callbacks.
-
-9.	Note that neither kthread updated any ->nocb_timer state,
-	so CPU 1's ->nocb_defer_wakeup is still set to RCU_NOCB_WAKE.
-
-10.	CPU 1 enqueues its second callback, this time with interrupts
- 	enabled so it can wake directly	->nocb_gp_kthread.
-	It does so with calling wake_nocb_gp() which also cancels the
-	pending timer that got queued in step 2. But that doesn't reset
-	CPU 1's ->nocb_defer_wakeup which is still set to RCU_NOCB_WAKE.
-	So CPU 1's ->nocb_defer_wakeup and its ->nocb_timer are now
-	desynchronized.
-
-11.	->nocb_gp_kthread associates the callback queued in 10 with a new
-	grace period, arranges for that grace period to start and sleeps
-	waiting for it to complete.
-
-12.	The grace period ends, rcu_gp_kthread awakens ->nocb_gp_kthread,
-	which in turn wakes up CPU 1's ->nocb_cb_kthread which then
-	invokes the callback queued in 10.
-
-13.	CPU 1 enqueues its third callback, this time with interrupts
-	disabled so it must queue a timer for a deferred wakeup. However
-	the value of its ->nocb_defer_wakeup is RCU_NOCB_WAKE which
-	incorrectly indicates that a timer is already queued.  Instead,
-	CPU 1's ->nocb_timer was cancelled in 10.  CPU 1 therefore fails
-	to queue the ->nocb_timer.
-
-14.	CPU 1 has its pending callback and it may go unnoticed until
-	some other CPU ever wakes up ->nocb_gp_kthread or CPU 1 ever
-	calls an explicit deferred wakeup, for example, during idle entry.
-
-This commit fixes this bug by resetting rdp->nocb_defer_wakeup everytime
-we delete the ->nocb_timer.
-
-It is quite possible that there is a similar scenario involving
-->nocb_bypass_timer and ->nocb_defer_wakeup.  However, despite some
-effort from several people, a failure scenario has not yet been located.
-However, that by no means guarantees that no such scenario exists.
-Finding a failure scenario is left as an exercise for the reader, and the
-"Fixes:" tag below relates to ->nocb_bypass_timer instead of ->nocb_timer.
-
-Fixes: d1b222c6be1f (rcu/nocb: Add bypass callback queueing)
-Cc: <stable@vger.kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Signed-off-by: James Morris <jamorris@linux.microsoft.com>
+Cc: Andrey Zhizhikin <andrey.z@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/rcu/tree_plugin.h |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ security/commoncap.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1646,7 +1646,11 @@ static bool wake_nocb_gp(struct rcu_data
- 		rcu_nocb_unlock_irqrestore(rdp, flags);
- 		return false;
- 	}
--	del_timer(&rdp->nocb_timer);
-+
-+	if (READ_ONCE(rdp->nocb_defer_wakeup) > RCU_NOCB_WAKE_NOT) {
-+		WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
-+		del_timer(&rdp->nocb_timer);
-+	}
- 	rcu_nocb_unlock_irqrestore(rdp, flags);
- 	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
- 	if (force || READ_ONCE(rdp_gp->nocb_gp_sleep)) {
-@@ -2265,7 +2269,6 @@ static bool do_nocb_deferred_wakeup_comm
- 		return false;
- 	}
- 	ndw = READ_ONCE(rdp->nocb_defer_wakeup);
--	WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
- 	ret = wake_nocb_gp(rdp, ndw == RCU_NOCB_WAKE_FORCE, flags);
- 	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("DeferredWake"));
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -400,7 +400,7 @@ int cap_inode_getsecurity(struct user_na
+ 				      &tmpbuf, size, GFP_NOFS);
+ 	dput(dentry);
  
+-	if (ret < 0)
++	if (ret < 0 || !tmpbuf)
+ 		return ret;
+ 
+ 	fs_ns = inode->i_sb->s_user_ns;
 
 
