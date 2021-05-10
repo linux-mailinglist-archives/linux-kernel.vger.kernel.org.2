@@ -2,243 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CE4377E10
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754FA377E19
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhEJIYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 04:24:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49523 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230103AbhEJIYm (ORCPT
+        id S230201AbhEJI1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 04:27:01 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8272 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230103AbhEJI0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 04:24:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620635017;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SXcRAMdTTq9agHinpVnDEOoIRb3gzFTcgg5wrqSzOlM=;
-        b=eEmAtJRvlMZjlTnbNd1UQ/VmufILT4vi1fX0sVADaahEh7WkMdS3rbB7FJZOZ17fmPm3nb
-        P5G/aU4MnkCj14yeWvx/kGiV4k6V/owZ+SKZWy6qzEKLFq9EfkSY/6WkjYy4I9U+igPdji
-        P2zeqLw4WyTjcrktrNpQMXxSWLZ0vnU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-237-rSDw5w2JMAaCVrbGwFX9SA-1; Mon, 10 May 2021 04:23:35 -0400
-X-MC-Unique: rSDw5w2JMAaCVrbGwFX9SA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 34B76107ACC7;
-        Mon, 10 May 2021 08:23:34 +0000 (UTC)
-Received: from starship (unknown [10.40.194.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 20CB55D9CA;
-        Mon, 10 May 2021 08:23:30 +0000 (UTC)
-Message-ID: <db161b4dd7286870db5adb9324e4941f0dc3f098.camel@redhat.com>
-Subject: Re: [PATCH 08/15] KVM: VMX: Configure list of user return MSRs at
- module init
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Reiji Watanabe <reijiw@google.com>
-Date:   Mon, 10 May 2021 11:23:29 +0300
-In-Reply-To: <20210504171734.1434054-9-seanjc@google.com>
-References: <20210504171734.1434054-1-seanjc@google.com>
-         <20210504171734.1434054-9-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Mon, 10 May 2021 04:26:35 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14A86D2e182390
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 04:25:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
+ from : to : cc : date : mime-version : references :
+ content-transfer-encoding : content-type : message-id; s=pp1;
+ bh=M4nbHpNduBbkXCBtSRwSgHEfT5WV3iEJzRsV73/7kIo=;
+ b=cr7TxUK3b3Okdfu5SrGYCd8QuT/tT4t0DZxzLUYt8FkcifrEbZpSqDzzR6h06+SDS9/b
+ m7oNqVFEVTaZVa4iwmVcf4ZQOXcTi6zTrZYt9VXmPyXMfdQF7XCRMPLBWN/MNOILJVKd
+ VuwYg8lUsmBRzPIoxgDs7fwJwn+HrsXpWLn8MdhhzUvtTxG9GjVMGytXX7ogNp8VW4X6
+ J33bgAJYDQCRWINPc9ssgRa7erHsG1t5DHawg8G1LLiTWUNUc/Gn8dJay5efTEAr7wOV
+ ndj++P2glx4DaKUbRHDicUJav6F+IpDaauMyPSuIMjrL2n7mK0WnPNzW3PHI9ViqOvl2 8A== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38f0j39b3q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 04:25:30 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-kernel@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Mon, 10 May 2021 08:25:30 -0000
+Received: from us1b3-smtp01.a3dr.sjc01.isc4sb.com (10.122.7.174)
+        by smtp.notes.na.collabserv.com (10.122.47.46) with smtp.notes.na.collabserv.com ESMTP;
+        Mon, 10 May 2021 08:25:28 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp01.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2021051008252792-166522 ;
+          Mon, 10 May 2021 08:25:27 +0000 
+In-Reply-To: <f070b59d5a1114d5a4e830346755c2b3f141cde5.1620560472.git.leonro@nvidia.com>
+Subject: Re: [PATCH rdma-rc] RDMA/siw: Release xarray entry
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Leon Romanovsky" <leon@kernel.org>
+Cc:     "Doug Ledford" <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@nvidia.com>,
+        "Leon Romanovsky" <leonro@nvidia.com>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "linux-rdma" <linux-rdma@vger.kernel.org>
+Date:   Mon, 10 May 2021 08:25:27 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <f070b59d5a1114d5a4e830346755c2b3f141cde5.1620560472.git.leonro@nvidia.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
+X-KeepSent: CA0BD73F:A7CD6605-002586D1:002E4672;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 9127
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 21051008-3017-0000-0000-0000048D3D9B
+X-IBM-SpamModules-Scores: BY=0.059455; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0; ST=0; TS=0; UL=0; ISC=; MB=0.000180
+X-IBM-SpamModules-Versions: BY=3.00015182; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000296; SDB=6.01546296; UDB=6.00825223; IPR=6.01329096;
+ MB=3.00036941; MTD=3.00000008; XFM=3.00000015; UTC=2021-05-10 08:25:29
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2021-03-22 14:10:42 - 6.00012377
+x-cbparentid: 21051008-3018-0000-0000-0000704E4D33
+Message-Id: <OFCA0BD73F.A7CD6605-ON002586D1.002E4672-002586D1.002E467F@notes.na.collabserv.com>
+X-Proofpoint-GUID: S9WcuLgIMV_rC0_sxKwHNPOjN-JMuPWe
+X-Proofpoint-ORIG-GUID: S9WcuLgIMV_rC0_sxKwHNPOjN-JMuPWe
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-10_02:2021-05-10,2021-05-10 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-05-04 at 10:17 -0700, Sean Christopherson wrote:
-> Configure the list of user return MSRs that are actually supported at
-> module init instead of reprobing the list of possible MSRs every time a
-> vCPU is created.  Curating the list on a per-vCPU basis is pointless; KVM
-> is completely hosed if the set of supported MSRs changes after module init,
-> or if the set of MSRs differs per physical PCU.
-> 
-> The per-vCPU lists also increase complexity (see __vmx_find_uret_msr()) and
-> creates corner cases that _should_ be impossible, but theoretically exist
-> in KVM, e.g. advertising RDTSCP to userspace without actually being able to
-> virtualize RDTSCP if probing MSR_TSC_AUX fails.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 61 ++++++++++++++++++++++++++++--------------
->  arch/x86/kvm/vmx/vmx.h | 10 ++++++-
->  2 files changed, 50 insertions(+), 21 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 42e4bbaa299a..68454b0de2b1 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -461,7 +461,7 @@ static unsigned long host_idt_base;
->   * support this emulation, IA32_STAR must always be included in
->   * vmx_uret_msrs_list[], even in i386 builds.
->   */
-> -static const u32 vmx_uret_msrs_list[] = {
-> +static u32 vmx_uret_msrs_list[] = {
->  #ifdef CONFIG_X86_64
->  	MSR_SYSCALL_MASK, MSR_LSTAR, MSR_CSTAR,
->  #endif
-> @@ -469,6 +469,12 @@ static const u32 vmx_uret_msrs_list[] = {
->  	MSR_IA32_TSX_CTRL,
->  };
->  
-> +/*
-> + * Number of user return MSRs that are actually supported in hardware.
-> + * vmx_uret_msrs_list is modified when KVM is loaded to drop unsupported MSRs.
-> + */
-> +static int vmx_nr_uret_msrs;
-> +
->  #if IS_ENABLED(CONFIG_HYPERV)
->  static bool __read_mostly enlightened_vmcs = true;
->  module_param(enlightened_vmcs, bool, 0444);
-> @@ -700,9 +706,16 @@ static inline int __vmx_find_uret_msr(struct vcpu_vmx *vmx, u32 msr)
->  {
->  	int i;
->  
-> -	for (i = 0; i < vmx->nr_uret_msrs; ++i)
-> +	/*
-> +	 * Note, vmx->guest_uret_msrs is the same size as vmx_uret_msrs_list,
-> +	 * but is ordered differently.  The MSR is matched against the list of
-> +	 * supported uret MSRs using "slot", but the index that is returned is
-> +	 * the index into guest_uret_msrs.
-> +	 */
-> +	for (i = 0; i < vmx_nr_uret_msrs; ++i) {
->  		if (vmx_uret_msrs_list[vmx->guest_uret_msrs[i].slot] == msr)
->  			return i;
-> +	}
->  	return -1;
->  }
->  
-> @@ -6929,18 +6942,10 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->  			goto free_vpid;
->  	}
->  
-> -	BUILD_BUG_ON(ARRAY_SIZE(vmx_uret_msrs_list) != MAX_NR_USER_RETURN_MSRS);
-> +	for (i = 0; i < vmx_nr_uret_msrs; ++i) {
-> +		vmx->guest_uret_msrs[i].data = 0;
->  
-> -	for (i = 0; i < ARRAY_SIZE(vmx_uret_msrs_list); ++i) {
-> -		u32 index = vmx_uret_msrs_list[i];
-> -		int j = vmx->nr_uret_msrs;
-> -
-> -		if (kvm_probe_user_return_msr(index))
-> -			continue;
-> -
-> -		vmx->guest_uret_msrs[j].slot = i;
-I don't see anything initalizing the .slot after this patch.
-Now this code is removed later which masks this bug, 
-but for the bisect sake, I think that this patch 
-should still be fixed.
+-----"Leon Romanovsky" <leon@kernel.org> wrote: -----
 
-Other than this minor bug:
+>To: "Doug Ledford" <dledford@redhat.com>, "Jason Gunthorpe"
+><jgg@nvidia.com>
+>From: "Leon Romanovsky" <leon@kernel.org>
+>Date: 05/09/2021 01:41PM
+>Cc: "Leon Romanovsky" <leonro@nvidia.com>, "Bernard Metzler"
+><bmt@zurich.ibm.com>, linux-kernel@vger.kernel.org,
+>linux-rdma@vger.kernel.org
+>Subject: [EXTERNAL] [PATCH rdma-rc] RDMA/siw: Release xarray entry
+>
+>From: Leon Romanovsky <leonro@nvidia.com>
+>
+>The xarray entry is allocated in siw=5Fqp=5Fadd(), but release was
+>missed in case zero-sized SQ was discovered.
+>
+>Fixes: 661f385961f0 ("RDMA/siw: Fix handling of zero-sized Read and
+>Receive Queues.")
+>Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+>---
+> drivers/infiniband/sw/siw/siw=5Fverbs.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>b/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>index 917c8a919f38..3f175f220a22 100644
+>--- a/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>+++ b/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>@@ -375,7 +375,7 @@ struct ib=5Fqp *siw=5Fcreate=5Fqp(struct ib=5Fpd *pd,
+> 	else {
+> 		/* Zero sized SQ is not supported */
+> 		rv =3D -EINVAL;
+>-		goto err=5Fout;
+>+		goto err=5Fout=5Fxa;
+> 	}
+> 	if (num=5Frqe)
+> 		num=5Frqe =3D roundup=5Fpow=5Fof=5Ftwo(num=5Frqe);
+>--=20
+>2.31.1
+>
+>
+Thanks Leon!
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-
-Best regards,
-	Maxim Levitsky
-
-
-
-> -		vmx->guest_uret_msrs[j].data = 0;
-> -		switch (index) {
-> +		switch (vmx_uret_msrs_list[i]) {
->  		case MSR_IA32_TSX_CTRL:
->  			/*
->  			 * TSX_CTRL_CPUID_CLEAR is handled in the CPUID
-> @@ -6954,15 +6959,14 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->  			 * host so that TSX remains always disabled.
->  			 */
->  			if (boot_cpu_has(X86_FEATURE_RTM))
-> -				vmx->guest_uret_msrs[j].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
-> +				vmx->guest_uret_msrs[i].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
->  			else
-> -				vmx->guest_uret_msrs[j].mask = 0;
-> +				vmx->guest_uret_msrs[i].mask = 0;
->  			break;
->  		default:
-> -			vmx->guest_uret_msrs[j].mask = -1ull;
-> +			vmx->guest_uret_msrs[i].mask = -1ull;
->  			break;
->  		}
-> -		++vmx->nr_uret_msrs;
->  	}
->  
->  	err = alloc_loaded_vmcs(&vmx->vmcs01);
-> @@ -7821,17 +7825,34 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
->  	.vcpu_deliver_sipi_vector = kvm_vcpu_deliver_sipi_vector,
->  };
->  
-> +static __init void vmx_setup_user_return_msrs(void)
-> +{
-> +	u32 msr;
-> +	int i;
-> +
-> +	BUILD_BUG_ON(ARRAY_SIZE(vmx_uret_msrs_list) != MAX_NR_USER_RETURN_MSRS);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(vmx_uret_msrs_list); ++i) {
-> +		msr = vmx_uret_msrs_list[i];
-> +
-> +		if (kvm_probe_user_return_msr(msr))
-> +			continue;
-> +
-> +		kvm_define_user_return_msr(vmx_nr_uret_msrs, msr);
-> +		vmx_uret_msrs_list[vmx_nr_uret_msrs++] = msr;
-> +	}
-> +}
-> +
->  static __init int hardware_setup(void)
->  {
->  	unsigned long host_bndcfgs;
->  	struct desc_ptr dt;
-> -	int r, i, ept_lpage_level;
-> +	int r, ept_lpage_level;
->  
->  	store_idt(&dt);
->  	host_idt_base = dt.address;
->  
-> -	for (i = 0; i < ARRAY_SIZE(vmx_uret_msrs_list); ++i)
-> -		kvm_define_user_return_msr(i, vmx_uret_msrs_list[i]);
-> +	vmx_setup_user_return_msrs();
->  
->  	if (setup_vmcs_config(&vmcs_config, &vmx_capability) < 0)
->  		return -EIO;
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 008cb87ff088..d71ed8b425c5 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -245,8 +245,16 @@ struct vcpu_vmx {
->  	u32                   idt_vectoring_info;
->  	ulong                 rflags;
->  
-> +	/*
-> +	 * User return MSRs are always emulated when enabled in the guest, but
-> +	 * only loaded into hardware when necessary, e.g. SYSCALL #UDs outside
-> +	 * of 64-bit mode or if EFER.SCE=1, thus the SYSCALL MSRs don't need to
-> +	 * be loaded into hardware if those conditions aren't met.
-> +	 * nr_active_uret_msrs tracks the number of MSRs that need to be loaded
-> +	 * into hardware when running the guest.  guest_uret_msrs[] is resorted
-> +	 * whenever the number of "active" uret MSRs is modified.
-> +	 */
->  	struct vmx_uret_msr   guest_uret_msrs[MAX_NR_USER_RETURN_MSRS];
-> -	int                   nr_uret_msrs;
->  	int                   nr_active_uret_msrs;
->  	bool                  guest_uret_msrs_loaded;
->  #ifdef CONFIG_X86_64
-
-
-
-
-
+Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
 
