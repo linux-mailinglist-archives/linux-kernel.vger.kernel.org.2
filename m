@@ -2,175 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AADDD3798B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 884613798B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232417AbhEJVCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 17:02:53 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:45764 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232019AbhEJVCw (ORCPT
+        id S231636AbhEJVD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 17:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231213AbhEJVD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 17:02:52 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14AL0X2h022566;
-        Mon, 10 May 2021 21:01:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=l4XV84N+1N5eQqt2hh0oaMCnQXmTAcL6yy5KhEPKw1U=;
- b=G5FfqcuxuvvuFPrpXDnHf6zOfc/k7UPMgVuRn264koKprgd/ez9LQtuKkDvfvcbgf7UA
- 8nfUTZHvF17mEMvwfnUdrKSkZF4WJm4/6GlS+FtmH9nzS2QQ10qQKEFdcv3Giina+BBU
- lLfC85Nem+6C0nZYoCCuLdb3tHfJlC4NrvJ4dW1fJFQg1iK5zfcieN6TH/zk6kMzypHm
- 77zyLHHQQ0FbFjxzACKOPQ3aglCs14MoVqIy9+1qrGvuXdznHS91rnDab5WGBvW31tum
- um1FXcXzawBGl0Gz30QNkHt4r0Ol/tDq7qv7UrE65cr7xETIvfEs8dAVHWyj7Hh7nYSq Qg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 38djkmcnpw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 May 2021 21:01:19 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14AKxYm5106846;
-        Mon, 10 May 2021 21:01:19 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
-        by userp3030.oracle.com with ESMTP id 38dfrw3mes-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 May 2021 21:01:18 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J/17ZF+MQmCwuYoheWVCe/pNmb2+jc7SwlNY8h4B9NfIaisZdvwTbwjASFAuui3ciY1iBEcL1my6KoMMzlVmSl87MX/6M9P4w20gJ/M2qJn9uWGrz7dTnpnnPJfUxRWD+8dqeYVeH01DF/FZ8xxKigzDynsSNlnI++HMOCLC98jHegU2zi/YDh1YhYeggAhYahOhQ1DCLCDCyfohctzk9/rUidu5NLo0H7MtGh1Qx97VAQEes3BGnyCxpeZdMOBj5UYrbLpk6chrTbZ83m1uFJq9dmgQp5CzdGU9pnYLRtdA0FeGxIJBZhXSTNXWUspIbk2OZ5i5JClJ1FGZVbkxSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l4XV84N+1N5eQqt2hh0oaMCnQXmTAcL6yy5KhEPKw1U=;
- b=a0hKc5EHskDAck293SWmEF9YIecA7iLrJX7EhfkwLRXp5kdL9wESiTbTN1kfuvfn6vF72l4dIlhccpcZsfGx5cQKrKWrf1SN1maqiTSlLeM5EefN2LgUdMlK+L49RE58T10gMRroEELUcBS7pyE7o1UMVSsk4rmCtHMwhV2VgcQb5m299SSqvf0EqRCPWfJn08hua4FdL/CvBwW3OHy6KzpqikgNTL9Xw0sF/6Qajh3DPW55gfv2VABeXgXjDgDg/cdc0RMM10Trg20TnXJ8LwX0PAkcX3qTdmP143ta4+HoLl5FWezKNtRIW5YNChWASi+G3FzSr3pHaC852Dwreg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 10 May 2021 17:03:28 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18060C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 14:02:21 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id a5so7456518pfa.11
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 14:02:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l4XV84N+1N5eQqt2hh0oaMCnQXmTAcL6yy5KhEPKw1U=;
- b=vyTGvyDpOHohvtZlA9c1PlJy8L9THjfmWFJnKMuMO2nLzEVT4HA13ngytGYbTEn9zO+UoRN4wkTTuecoQrwfxVk3JUBlGnz6Ay76DUEkqziA6TICxkrqiPw2GKNSaSVOHm1kQ/uSqyIko255u9SsXqVJ1Iei+YcxmnBau4jN8IU=
-Received: from MWHPR10MB1582.namprd10.prod.outlook.com (2603:10b6:300:22::8)
- by MWHPR10MB1309.namprd10.prod.outlook.com (2603:10b6:300:1e::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.27; Mon, 10 May
- 2021 21:01:16 +0000
-Received: from MWHPR10MB1582.namprd10.prod.outlook.com
- ([fe80::353a:1802:6e91:1811]) by MWHPR10MB1582.namprd10.prod.outlook.com
- ([fe80::353a:1802:6e91:1811%8]) with mapi id 15.20.4108.031; Mon, 10 May 2021
- 21:01:16 +0000
-From:   Liam Howlett <liam.howlett@oracle.com>
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Song Liu <songliubraving@fb.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        David Rientjes <rientjes@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michel Lespinasse <michel@lespinasse.org>
-Subject: Re: [PATCH] mm/mmap: Introduce unlock_range() for code cleanup
-Thread-Topic: [PATCH] mm/mmap: Introduce unlock_range() for code cleanup
-Thread-Index: AQHXRdW2cmhwkET57kappKEjcFfu8qrdIZQAgAAR5YA=
-Date:   Mon, 10 May 2021 21:01:16 +0000
-Message-ID: <20210510210057.mk7hgtdrxa5c5wt6@revolver>
-References: <20210510195020.2778501-1-Liam.Howlett@Oracle.com>
- <YJmQBp9r5UgvQiWr@casper.infradead.org>
-In-Reply-To: <YJmQBp9r5UgvQiWr@casper.infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [23.233.25.87]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 294b7cfe-3bbe-466a-ea7b-08d913f6c0a3
-x-ms-traffictypediagnostic: MWHPR10MB1309:
-x-microsoft-antispam-prvs: <MWHPR10MB1309D7FF3764E2D40019A8C5FD549@MWHPR10MB1309.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1051;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ztd8Trp82/EOU1xdOh2eoOZyxcxUUllqhc+TBuaWlsdenWJVdU+RXUhktzsT8Rs5EMunbluQWoHecb3U1+fBZyY5Dzq0fIIJvLf0yRubV4HXcwpYzJrcZVYym0TIIcw2LVOJvDht/sMW4JxY2jfCiIY2TSlG7RwkJaoXmIM/sSsiD2CVBR0eN8IHquuYtND6ywkd+Kdum7dafsCnVFyD21bwnffdz8arrDwNB+0O0RZk41hKLJksKbwjlJZ43LV8qZ/wfET2B43tXJOMQyumPlCj3EV3A6GmP7CLaO2+1nD3ODhLy1AmWHRyGgsOPE98f89y85EXuklL9B7ibi0bWpoKR0l3/kjckqBnnOP0JNFHPtkBxWy1RweHk96Ut/6nXs/aojSlS2kdndqUxVl5zxIoPpRgDFbY3hNruQF2I7i4iJ6VId473mEM80ZCm6j8XtGQMv7WO5CbRRmRcdxWsktZ9dsP0IhN/VLOhesb4fcp8wTJbCDc5aEe47Jz22zckIfUhTHFfUGxaEXI5owKowchN5xV3+h/CmxYKHLN4xGkHZhHsWmYu0/wAAUbB4sAUBw738r538An0JZqiQ86LVhUkQ/WpvtANmp+OIYdQsI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1582.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(366004)(136003)(39860400002)(376002)(346002)(396003)(33716001)(38100700002)(186003)(44832011)(7416002)(86362001)(122000001)(6506007)(26005)(83380400001)(4744005)(66556008)(64756008)(5660300002)(8936002)(4326008)(6486002)(66476007)(66446008)(1076003)(6916009)(2906002)(54906003)(316002)(71200400001)(8676002)(9686003)(478600001)(6512007)(91956017)(76116006)(66946007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?/CsWMVHanINT8ije8A+r7X6+pd4Yuk1DvPO3L4GfoZv7I1dwF4DZ/VsPOmdW?=
- =?us-ascii?Q?Cpezmi7aiVM3Nhuluoiv0fx3S4UVQF/NN7aSvIAChD9duIbTguG075N3WOtl?=
- =?us-ascii?Q?Jm2tVPXSsfJNK6i3on4DreMkNAX2qOoedRqNknN5pNXtBtxrtdtKsZ/9mgmb?=
- =?us-ascii?Q?fbdw826J2XWGPQ+qTXFX8oh6EYnTXF8JP7sXPE+kP6erlEb58r98YqCFZXvd?=
- =?us-ascii?Q?CCVhw5EHwrPbotOFErAVbvCO8bEJmEE8YZV8PoyHtQmIM1irJZ1EDC+o+Kh3?=
- =?us-ascii?Q?cdnYAvMhHgLlDeHgycaGVtkw0uUNgbIvltIpMBTYzskDTHUjYGzRZxcW6KvG?=
- =?us-ascii?Q?qy7nd9W2rtd1Ma2GJt6Mnf8bXbT3pBj1cMl+HHjQHwXoW0vCBkh8Aj0HIZai?=
- =?us-ascii?Q?YbSuDwa7/3eTlf2JTE+WDuGZudTvcQGQsf7cYCuesAfRlbUxtSmO4B3DrvhM?=
- =?us-ascii?Q?KNZHhg7JM1eO7soI7ZtQOALw86isO5caHnyKhCufDTbxObzfqXtW5xxtVvwi?=
- =?us-ascii?Q?HmYq5mCtLJLMZS8GiMBYWmpxc3zU8uQXOBdpN3o2y4MOMG2jxzmTE8ywQEZs?=
- =?us-ascii?Q?Jc8y3vsgbU239+JMjSk+qvzKS5xBgUKi6bxlQigNioeq8FwtY+tUXqYBUYh1?=
- =?us-ascii?Q?DEmwLb/ZSnxvbrM2O1C9CGOSz44jNBEY06MOXdXe8Kqrp5GDHB6naTcgGUUs?=
- =?us-ascii?Q?AUFBviLtCW4iCHP0gYVRuTGKH5unXNgE1HY0LwNmqunrzbK9EDrIUk1sZUFv?=
- =?us-ascii?Q?efgrsZcWUJGJXKa7LSCHJnfjDMZ9hw7+JfTpL7lidKOCa+f2OPJSl4ph3aiF?=
- =?us-ascii?Q?rrze7JonZHsscX09nwlgrIW8Eg7yZOlWKbeFPq08YAhRR0CHZqWX1Q8Svgmu?=
- =?us-ascii?Q?6UV6Ku5lkc/LoMOfnHq347rKvH3PUGuOCVtLSGVuSkJsF90ijbLIPdVWoB0Y?=
- =?us-ascii?Q?9CHlEkobf/VppgfG9dNajLqfD5jwXIQFvR/7mU+WgGYWWBD7fcyXX7ZOt746?=
- =?us-ascii?Q?yYOzG0ksxmR0RTGJXmTyOiEKjx8ixVWOD/ktASUYbGy7v26NRYg3jNB/5j25?=
- =?us-ascii?Q?Dsd7fJCV0k3cDxQ8m4R14Pp0E/2h+97ctOtPKr28EIZtlTctdpcm5kTsmrLO?=
- =?us-ascii?Q?EkJ2ZzpEsCgrYh8Y6qRsegJRNansJuL2Q6P+yJ+WwS3L8kQmHnH+SVmR2WkO?=
- =?us-ascii?Q?Zz91YrflhsHRbUbXOStr7sJqrTIZ/Ak1KCv29eFj7r9NaoHiSXdLofOdM7F3?=
- =?us-ascii?Q?jgyqqE9Pu4qQdtsQVwu9hxw6N0WFFg+E+zrutJUx7qfdQYp1H3YsA6wnD5Wx?=
- =?us-ascii?Q?AtO3OEwaHdpYnXo8dC9Vop5X?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <7444805AE6186C40933C8489E07D2EF8@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=45NUfNFNptvMg6JTtEiEAtq0rD4KjNhuaSZ4UKjowxM=;
+        b=XkvV82WvRXO64kiRraW9QAeJzi177K0R8eeVI7F2FbVP6xOjEftm6FuZihuX5YG95Z
+         ZgMEyUzwxTRZwOQvSjyOlcCf1UlE5D7xozB2ARQkJI9+jntLzGwOJX7K4miq9RoKn1Y7
+         BTyoT5falJYMo6Ysa9Wd6iXJ3owIbxE+TA1uK3OezcB/k44c0WsWRTkhB6bXoDzUj8eG
+         rOZ4COMsI/uwXrbu9Iij3n/mTN7/0UbKUExiNOk142Gw1vZwVb4FNfxJJNS+LI+nKHZU
+         HFMQ7sZvrI39V2Dc09jmdiQjI2LQSyioa3ouKt+zk13il41cQvPmtzzONhhvDo9uKyPv
+         SIGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=45NUfNFNptvMg6JTtEiEAtq0rD4KjNhuaSZ4UKjowxM=;
+        b=Yl95Q9OTGr+pXTuok7ri6msL+p7cABlcgPlqaD0o+OgG1ncznvw+DHr5j2D5cwIZhW
+         /q60RlF6sZW+tO79gwPrnUSQBd8Ke6Iz/SIU/DSn/4628RzplTMjUy4hvdJxVTMrSxuW
+         Ai7Bg9HaiDTuyESRpXHm0hmksVtRe6gavEFOOEjanGomWo2unjNL/cWt6i/Jb6Mq1hs0
+         ByxT52FII3Xa9xrePHar/kHz6haOT79Tlkksh0GFlpT6mAFoU0xBU8kggEbmt8WbgXIW
+         geifd/Fnyd+XJ50BuUkSTcNYKteNfyG7GPHPAZF3I+gJTVPeB9sp4bkPy/uO67QQpiCI
+         6Oqg==
+X-Gm-Message-State: AOAM531B8VdpnoSlU/Obmju+9HYQ7uxAWAnsg7MKTj5hRdkikOM2Z5PF
+        rac5kQpDWeRddaAgFStw6JBL6Q==
+X-Google-Smtp-Source: ABdhPJzZTuM44zAfoBZUi9Bj2lDne3SvasMsj8yS5dnz/amFPTp89Usk8uPjTYlehmVU6DVhcqDOHg==
+X-Received: by 2002:aa7:90d5:0:b029:28e:df57:47ff with SMTP id k21-20020aa790d50000b029028edf5747ffmr27631557pfk.74.1620680540337;
+        Mon, 10 May 2021 14:02:20 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id e20sm324207pjt.8.2021.05.10.14.02.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 14:02:19 -0700 (PDT)
+Date:   Mon, 10 May 2021 21:02:15 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: Re: [PATCH 2/2] KVM: x86: Allow userspace to update tracked sregs
+ for protected guests
+Message-ID: <YJmfV1sO8miqvQLM@google.com>
+References: <20210507165947.2502412-1-seanjc@google.com>
+ <20210507165947.2502412-3-seanjc@google.com>
+ <5f084672-5c0d-a6f3-6dcf-38dd76e0bde0@amd.com>
+ <YJla8vpwqCxqgS8C@google.com>
+ <12fe8f83-49b4-1a22-7903-84e45f16c372@amd.com>
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1582.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 294b7cfe-3bbe-466a-ea7b-08d913f6c0a3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 May 2021 21:01:16.3326
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2Z/ObJcYSWTYmI24g72ADcVovKaEuZxlwcbptuNL6qQKOFdJ7W4gp+EClU3sLowxgm/SOiBDjD3qb9Czrg7G7A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1309
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9980 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- adultscore=0 bulkscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105100144
-X-Proofpoint-GUID: eIFwCES94S_Agei69HDhXFRThSErXFg9
-X-Proofpoint-ORIG-GUID: eIFwCES94S_Agei69HDhXFRThSErXFg9
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9980 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
- suspectscore=0 clxscore=1015 bulkscore=0 adultscore=0 impostorscore=0
- spamscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105100144
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <12fe8f83-49b4-1a22-7903-84e45f16c372@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Matthew Wilcox <willy@infradead.org> [210510 15:57]:
-> On Mon, May 10, 2021 at 07:50:22PM +0000, Liam Howlett wrote:
-> > Both __do_munmap() and exit_mmap() unlock a range of VMAs using almost
-> > identical code blocks.  Replace both blocks by a static inline function=
-.
-> >=20
-> > Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
->=20
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
->=20
-> > +static inline void unlock_range(struct vm_area_struct *start, unsigned=
- long limit)
->=20
-> Seems like an unnecessary >80 column line ...
->=20
-> static inline
-> void unlock_range(struct vm_area_struct *start, unsigned long limit)
->=20
+On Mon, May 10, 2021, Tom Lendacky wrote:
+> On 5/10/21 11:10 AM, Sean Christopherson wrote:
+> > On Fri, May 07, 2021, Tom Lendacky wrote:
+> >> On 5/7/21 11:59 AM, Sean Christopherson wrote:
+> >>> Allow userspace to set CR0, CR4, CR8, and EFER via KVM_SET_SREGS for
+> >>> protected guests, e.g. for SEV-ES guests with an encrypted VMSA.  KVM
+> >>> tracks the aforementioned registers by trapping guest writes, and also
+> >>> exposes the values to userspace via KVM_GET_SREGS.  Skipping the regs
+> >>> in KVM_SET_SREGS prevents userspace from updating KVM's CPU model to
+> >>> match the known hardware state.
+> >>
+> >> This is very similar to the original patch I had proposed that you were
+> >> against :)
+> > 
+> > I hope/think my position was that it should be unnecessary for KVM to need to
+> > know the guest's CR0/4/0 and EFER values, i.e. even the trapping is unnecessary.
+> > I was going to say I had a change of heart, as EFER.LMA in particular could
+> > still be required to identify 64-bit mode, but that's wrong; EFER.LMA only gets
+> > us long mode, the full is_64_bit_mode() needs access to cs.L, which AFAICT isn't
+> > provided by #VMGEXIT or trapping.
+> 
+> Right, that one is missing. If you take a VMGEXIT that uses the GHCB, then
+> I think you can assume we're in 64-bit mode.
 
-Sorry about that, checkpatch also did not see this.  I will send a v2.=
+But that's not technically guaranteed.  The GHCB even seems to imply that there
+are scenarios where it's legal/expected to do VMGEXIT with a valid GHCB outside
+of 64-bit mode:
+
+  However, instead of issuing a HLT instruction, the AP will issue a VMGEXIT
+  with SW_EXITCODE of 0x8000_0004 ((this implies that the GHCB was updated prior
+  to leaving 64-bit long mode).
+
+In practice, assuming the guest is in 64-bit mode will likely work, especially
+since the MSR-based protocol is extremely limited, but ideally there should be
+stronger language in the GHCB to define the exact VMM assumptions/behaviors.
+
+On the flip side, that assumption and the limited exposure through the MSR
+protocol means trapping CR0, CR4, and EFER is pointless.  I don't see how KVM
+can do anything useful with that information outside of VMGEXITs.  Page tables
+are encrypted and GPRs are stale; what else could KVM possibly do with
+identifying protected mode, paging, and/or 64-bit?
+
+> > Unless I'm missing something, that means that VMGEXIT(VMMCALL) is broken since
+> > KVM will incorrectly crush (or preserve) bits 63:32 of GPRs.  I'm guessing no
+> > one has reported a bug because either (a) no one has tested a hypercall that
+> > requires bits 63:32 in a GPR or (b) the guest just happens to be in 64-bit mode
+> > when KVM_SEV_LAUNCH_UPDATE_VMSA is invoked and so the segment registers are
+> > frozen to make it appear as if the guest is perpetually in 64-bit mode.
+> 
+> I don't think it's (b) since the LAUNCH_UPDATE_VMSA is done against reset-
+> state vCPUs.
+> 
+> > 
+> > I see that sev_es_validate_vmgexit() checks ghcb_cpl_is_valid(), but isn't that
+> > either pointless or indicative of a much, much bigger problem?  If VMGEXIT is
+> 
+> It is needed for the VMMCALL exit.
+> 
+> > restricted to CPL0, then the check is pointless.  If VMGEXIT isn't restricted to
+> > CPL0, then KVM has a big gaping hole that allows a malicious/broken guest
+> > userspace to crash the VM simply by executing VMGEXIT.  Since valid_bitmap is
+> > cleared during VMGEXIT handling, I don't think guest userspace can attack/corrupt
+> > the guest kernel by doing a replay attack, but it does all but guarantee a
+> > VMGEXIT at CPL>0 will be fatal since the required valid bits won't be set.
+> 
+> Right, so I think some cleanup is needed there, both for the guest and the
+> hypervisor:
+> 
+> - For the guest, we could just clear the valid bitmask before leaving the
+>   #VC handler/releasing the GHCB. Userspace can't update the GHCB, so any
+>   VMGEXIT from userspace would just look like a no-op with the below
+>   change to KVM.
+
+Ah, right, the exit_code and exit infos need to be valid.
+
+> - For KVM, instead of returning -EINVAL from sev_es_validate_vmgexit(), we
+>   return the #GP action through the GHCB and continue running the guest.
+
+Agreed, KVM should never kill the guest in response to a bad VMGEXIT.  That
+should always be a guest decision.
+
+> > Sadly, the APM doesn't describe the VMGEXIT behavior, nor does any of the SEV-ES
+> > documentation I have.  I assume VMGEXIT is recognized at CPL>0 since it morphs
+> > to VMMCALL when SEV-ES isn't active.
+> 
+> Correct.
+> 
+> > 
+> > I.e. either the ghcb_cpl_is_valid() check should be nuked, or more likely KVM
+> 
+> The ghcb_cpl_is_valid() is still needed to see whether the VMMCALL was
+> from userspace or not (a VMMCALL will generate a #VC).
+
+Blech.  I get that the GHCB spec says CPL must be provided/checked for VMMCALL,
+but IMO that makes no sense whatsover.
+
+If the guest restricts the GHCB to CPL0, then the CPL field is pointless because
+the VMGEXIT will only ever come from CPL0.  Yes, technically the guest kernel
+can proxy a VMMCALL from userspace to the host, but the guest kernel _must_ be
+the one to enforce any desired CPL checks because the VMM is untrusted, at least
+once you get to SNP.
+
+If the guest exposes the GHCB to any CPL, then the CPL check is worthless because
+guest userspace can simply lie about the CPL.  And exposing the GCHB to userspace
+completely undermines guest privilege separation since hardware doesn't provide
+the real CPL, i.e. the VMM, even it were trusted, can't determine the origin of
+the VMGEXIT.
