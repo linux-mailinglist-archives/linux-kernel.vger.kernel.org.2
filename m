@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06AF9379771
+	by mail.lfdr.de (Postfix) with ESMTP id BAD43379773
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 21:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232781AbhEJTK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 15:10:56 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:51466 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231223AbhEJTKx (ORCPT
+        id S233020AbhEJTK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 15:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232133AbhEJTKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 15:10:53 -0400
-Received: from tusharsu-Ubuntu.lan (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B23F520B7178;
-        Mon, 10 May 2021 12:09:47 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B23F520B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620673788;
-        bh=1oQQMwGQg2uKxJ4eZAGjdrgzZTTEUgAfc+6z1nJWyuA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=M/GbmKsX2cqpZQaOEfj5qMvxuT7ppdEM3TFroKU4zrXZg7Y0zxkfifVbNbbrdynjX
-         aLAFOK9uTWwD1JjQg+YjMXw1CItzKPbidhSbgI/VN330180p5QwRd5mOejIqj23buZ
-         wI1rIYxVKOo9iD+kFoXwclV8JUxHOz6you+AKUMw=
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-To:     zohar@linux.ibm.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pvorel@suse.cz
-Subject: [PATCH v4] IMA: support for duplicate measurement records
-Date:   Mon, 10 May 2021 12:09:39 -0700
-Message-Id: <20210510190939.28279-1-tusharsu@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 10 May 2021 15:10:55 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C254AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 12:09:49 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id t193so1467696pgb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 12:09:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mgdZMcvNYkjsPLV9hPmFw01fQwD6bWf6+x+1xi3tISM=;
+        b=IfKnIJ2VyxRci+J3kp/Ql6Eo/hXM5QZS9Ez8aaAfuPw2VqWGOlPvLChA+WTXTku1WF
+         to8/CPTQ/4FjOZGWfJGVg+pFCncRzBM1G/+CkT9P6wkD+rH8Qwg/F9l7bSZ9Q+JKV9FU
+         3Zl4YsKDWBHNtWKIRLAf3PRd2zJs+Swv1lsyZPjFoR5RHQdrM7H/4IHScEI9Ty/PqCNG
+         iVBA7HczDKmpe+LJN3OkoUoT0t9tF8dpziH/R3CDyiF46F1qQCqSczMju563Wbup8Fgd
+         W0J1NzCp38TK50mWTieOhtjgR9qLaACLQcMOvAfHIle9rpvgX25nr7ZafJ3/wApV4Q0W
+         nNAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mgdZMcvNYkjsPLV9hPmFw01fQwD6bWf6+x+1xi3tISM=;
+        b=k5wWBUVN/D+p31rxfQIfQ/my39lxNj/gqFc56xa9Bwedy5EjBgioHTwCF9IQ8NCSHg
+         z94y6CwNAaI2eH9unrtwnznDqHOsWmux+tkPjNTViiow+Khst4l1yGKjX3pyTycwTCPb
+         FEaCSarmSLYZ+jfDmPz1N6sEpzjubHe2OtP//EbSw+69yTaBLVHAVkVtlbmzEg+Kmnq/
+         k8lpqcNrReyn8FxLjXN127TOwlPdfBhZf7gmpqMv58y2Vo9DacTNuUsrFoD+UJvazi5k
+         nA8gznVZy67kLUyx2duumVvxjBG37piRFzV7W7saH5RyM6kS+DBVqNanyeQM9Kd+lyqk
+         n5ig==
+X-Gm-Message-State: AOAM533CmOzvv6hfIFIdouvhvlLKD6E6+QurqOAOow38ehncMCUzPOET
+        0rJx6Q/kJ71rEFEuUGSKRYUnFg==
+X-Google-Smtp-Source: ABdhPJw12h8+tFsY3t4ukeyKuMFQPy8tkkLsjsvVjJVLAzv6rMc55IvUbCU6a4WkCrbyUljO9MEpyA==
+X-Received: by 2002:a62:e203:0:b029:28e:8267:e02e with SMTP id a3-20020a62e2030000b029028e8267e02emr26746639pfi.75.1620673789134;
+        Mon, 10 May 2021 12:09:49 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id z25sm12528938pgu.89.2021.05.10.12.09.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 12:09:48 -0700 (PDT)
+Date:   Mon, 10 May 2021 19:09:44 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [GIT PULL] KVM updates for Linux 5.13-rc2
+Message-ID: <YJmE+NpAt4GTw/ZK@google.com>
+References: <20210510181441.351452-1-pbonzini@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510181441.351452-1-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IMA measures contents of a given file/buffer/critical-data record,
-and properly re-measures it on change.  However, IMA does not measure
-the duplicate value for a given record, since TPM extend is a very
-expensive operation.  For example, if the record changes from value
-'v#1' to 'v#2', and then back to 'v#1', IMA will not measure and log
-the last change to 'v#1', since the hash of 'v#1' for that record is
-already present in the IMA htable.  This limits the ability of an
-external attestation service to accurately determine the current state
-of the system.  The service would incorrectly conclude that the latest
-value of the given record on the system is 'v#2', and act accordingly.
+On Mon, May 10, 2021, Paolo Bonzini wrote:
+> Linus,
+> 
+> The following changes since commit 9ccce092fc64d19504fa54de4fd659e279cc92e7:
+> 
+>   Merge tag 'for-linus-5.13-ofs-1' of git://git.kernel.org/pub/scm/linux/kernel/git/hubcap/linux (2021-05-02 14:13:46 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+> 
+> for you to fetch changes up to ce7ea0cfdc2e9ff31d12da31c3226deddb9644f5:
+> 
+>   KVM: SVM: Move GHCB unmapping to fix RCU warning (2021-05-07 06:06:23 -0400)
+> 
+> Thomas Gleixner and Michael Ellerman had some KVM changes in their
+> late merge window pull requests, but there are no conflicts.
+> 
+> ----------------------------------------------------------------
+> Sean Christopherson (17):
+>       KVM: VMX: Do not advertise RDPID if ENABLE_RDTSCP control is unsupported
+>       KVM: x86: Emulate RDPID only if RDTSCP is supported
+>       KVM: SVM: Inject #UD on RDTSCP when it should be disabled in the guest
+>       KVM: x86: Move RDPID emulation intercept to its own enum
+>       KVM: VMX: Disable preemption when probing user return MSRs
+>       KVM: SVM: Probe and load MSR_TSC_AUX regardless of RDTSCP support in host
+>       KVM: x86: Add support for RDPID without RDTSCP
+>       KVM: VMX: Configure list of user return MSRs at module init
 
-Define and use a new Kconfig option IMA_DISABLE_HTABLE to permit
-duplicate records in the IMA measurement list.
+I'm guessing I'm too late as usual and the hashes are set in stone, but just in
+case I'm not...
 
-In addition to the duplicate measurement records described above,
-other duplicate file measurement records may be included in the log,
-when CONFIG_IMA_DISABLE_HTABLE=y.
-For example,
-    - i_version is not enabled,
-    - i_generation changed,
-    - an inode is evicted from dcache etc.
+This patch (commit b6194b94a2ca, "KVM: VMX: Configure...) has a bug that Maxim
+found during code review.  The bug is eliminated by the very next patch (commit
+e7f5ab87841c), but it will break bisection if bisection involves running a KVM
+guest.  At a glance, even syzkaller will be affected :-(
 
-Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
----
-Change Log v4:
- - Incorporated feedback from Mimi on patch description.
- - Tested more use cases for i_version, i_generation, and dcache.
-
-Change Log v3:
- - Incorporated feedback from Mimi on v2.
- - Updated patch title and description to make it generic.
- - Changed config description word 'data' to 'records'.
- - Tested use cases for boot param "ima_policy=tcb".
-
-Change Log v2:
- - Incorporated feedback from Mimi on v1.
- - The fix is not just applicable to measurement of critical data,
-   it now applies to other buffers and file data as well.
- - the fix is driven by a Kconfig option IMA_DISABLE_HTABLE, rather
-   than a IMA policy condition - allow_dup.
-
- security/integrity/ima/Kconfig     | 7 +++++++
- security/integrity/ima/ima_queue.c | 5 +++--
- 2 files changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kconfig
-index 12e9250c1bec..d0ceada99243 100644
---- a/security/integrity/ima/Kconfig
-+++ b/security/integrity/ima/Kconfig
-@@ -334,3 +334,10 @@ config IMA_SECURE_AND_OR_TRUSTED_BOOT
-        help
-           This option is selected by architectures to enable secure and/or
-           trusted boot based on IMA runtime policies.
-+
-+config IMA_DISABLE_HTABLE
-+	bool "Disable htable to allow measurement of duplicate records"
-+	depends on IMA
-+	default n
-+	help
-+	   This option disables htable to allow measurement of duplicate records.
-diff --git a/security/integrity/ima/ima_queue.c b/security/integrity/ima/ima_queue.c
-index c096ef8945c7..532da87ce519 100644
---- a/security/integrity/ima/ima_queue.c
-+++ b/security/integrity/ima/ima_queue.c
-@@ -168,7 +168,7 @@ int ima_add_template_entry(struct ima_template_entry *entry, int violation,
- 	int result = 0, tpmresult = 0;
- 
- 	mutex_lock(&ima_extend_list_mutex);
--	if (!violation) {
-+	if (!violation && !IS_ENABLED(CONFIG_IMA_DISABLE_HTABLE)) {
- 		if (ima_lookup_digest_entry(digest, entry->pcr)) {
- 			audit_cause = "hash_exists";
- 			result = -EEXIST;
-@@ -176,7 +176,8 @@ int ima_add_template_entry(struct ima_template_entry *entry, int violation,
- 		}
- 	}
- 
--	result = ima_add_digest_entry(entry, 1);
-+	result = ima_add_digest_entry(entry,
-+				      !IS_ENABLED(CONFIG_IMA_DISABLE_HTABLE));
- 	if (result < 0) {
- 		audit_cause = "ENOMEM";
- 		audit_info = 0;
--- 
-2.17.1
-
+>       KVM: VMX: Use flag to indicate "active" uret MSRs instead of sorting list
+>       KVM: VMX: Use common x86's uret MSR list as the one true list
+>       KVM: VMX: Disable loading of TSX_CTRL MSR the more conventional way
+>       KVM: x86: Export the number of uret MSRs to vendor modules
+>       KVM: x86: Move uret MSR slot management to common x86
+>       KVM: x86: Tie Intel and AMD behavior for MSR_TSC_AUX to guest CPU model
+>       KVM: x86: Hide RDTSCP and RDPID if MSR_TSC_AUX probing failed
+>       KVM: x86: Prevent KVM SVM from loading on kernels with 5-level paging
+>       KVM: SVM: Invert user pointer casting in SEV {en,de}crypt helpers
