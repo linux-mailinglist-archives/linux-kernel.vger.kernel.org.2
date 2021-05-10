@@ -2,165 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2613F378DC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06453378DBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239647AbhEJMwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245646AbhEJMNe (ORCPT
+        id S240422AbhEJMvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:51:12 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54446 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233896AbhEJMHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 08:13:34 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7788DC0611CC;
-        Mon, 10 May 2021 05:05:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hgWKawcsmXyf/l2+3vEwOhYJ9xgud2VHY8Z8IPJF1w8=; b=k42pJsX2WLlKvruyN8PNJivDyZ
-        ffOn188g03X9FmI6TkpJONi0Qz2pdy2kB9vYEHDDxtQlChs7w92Pfb+Uz8BonqjueTs1HqWZeErpj
-        pOBBZ20ra5bGCrmwqIh930icE2Ri940t6qJfHWg26uauAi2UOREq+fJhILXRNRjPMGf12iWaJ1lJC
-        Hh4R/UOxTDRblhm89WOSYb6K3cEZUi1WID/rUepmD6pbzAd5FH1R0+iMqeEEp8A4X3sw6XxuhPIJk
-        J4mnk9jkHDWOBZ4YTPN7zcl1IIkSqdBwuefml5auPMtlR0ULkuKyy4Q1q88WTvmba+shetUGvHvIe
-        l3qCOUbA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lg4ez-00EBfk-H3; Mon, 10 May 2021 12:05:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9B9A63002C4;
-        Mon, 10 May 2021 14:05:13 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8077C20275859; Mon, 10 May 2021 14:05:13 +0200 (CEST)
-Date:   Mon, 10 May 2021 14:05:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de, mingo@kernel.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, bsingharora@gmail.com, pbonzini@redhat.com,
-        maz@kernel.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        riel@surriel.com, hannes@cmpxchg.org
-Subject: [PATCH 7/6] delayacct: Add sysctl to enable at runtime
-Message-ID: <YJkhebGJAywaZowX@hirez.programming.kicks-ass.net>
-References: <20210505105940.190490250@infradead.org>
+        Mon, 10 May 2021 08:07:05 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 8E4331C0B7C; Mon, 10 May 2021 14:05:54 +0200 (CEST)
+Date:   Mon, 10 May 2021 14:05:54 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Shixin Liu <liushixin2@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 104/299] crypto: stm32/hash - Fix PM reference leak
+ on stm32-hash.c
+Message-ID: <20210510120554.GB3547@duo.ucw.cz>
+References: <20210510102004.821838356@linuxfoundation.org>
+ <20210510102008.377102138@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="s2ZSL+KKDSLx8OML"
 Content-Disposition: inline
-In-Reply-To: <20210505105940.190490250@infradead.org>
+In-Reply-To: <20210510102008.377102138@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Just like sched_schedstats, allow runtime enabling (and disabling) of
-delayacct. This is useful if one forgot to add the delayacct boot time
-option.
+--s2ZSL+KKDSLx8OML
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- Documentation/accounting/delay-accounting.rst |    6 ++--
- kernel/delayacct.c                            |   36 ++++++++++++++++++++++++--
- kernel/sysctl.c                               |   12 ++++++++
- 3 files changed, 50 insertions(+), 4 deletions(-)
+Hi!
 
---- a/Documentation/accounting/delay-accounting.rst
-+++ b/Documentation/accounting/delay-accounting.rst
-@@ -74,8 +74,10 @@ Delay accounting is disabled by default
- 
-    delayacct
- 
--to the kernel boot options. The rest of the instructions
--below assume this has been done.
-+to the kernel boot options. The rest of the instructions below assume this has
-+been done. Alternatively, use sysctl kernel.sched_delayacct to switch the state
-+at runtime. Note however that only tasks started after enabling it will have
-+delayacct information.
- 
- After the system has booted up, use a utility
- similar to  getdelays.c to access the delays
---- a/kernel/delayacct.c
-+++ b/kernel/delayacct.c
-@@ -18,6 +18,17 @@ DEFINE_STATIC_KEY_FALSE(delayacct_key);
- int delayacct_on __read_mostly;	/* Delay accounting turned on/off */
- struct kmem_cache *delayacct_cache;
- 
-+static void set_delayacct(bool enabled)
-+{
-+	if (enabled) {
-+		static_branch_enable(&delayacct_key);
-+		delayacct_on = 1;
-+	} else {
-+		delayacct_on = 0;
-+		static_branch_disable(&delayacct_key);
-+	}
-+}
-+
- static int __init delayacct_setup_enable(char *str)
- {
- 	delayacct_on = 1;
-@@ -29,9 +40,30 @@ void delayacct_init(void)
- {
- 	delayacct_cache = KMEM_CACHE(task_delay_info, SLAB_PANIC|SLAB_ACCOUNT);
- 	delayacct_tsk_init(&init_task);
--	if (delayacct_on)
--		static_branch_enable(&delayacct_key);
-+	set_delayacct(delayacct_on);
-+}
-+
-+#ifdef CONFIG_PROC_SYSCTL
-+int sysctl_delayacct(struct ctl_table *table, int write, void *buffer,
-+		     size_t *lenp, loff_t *ppos)
-+{
-+	int state = delayacct_on;
-+	struct ctl_table t;
-+	int err;
-+
-+	if (write && !capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	t = *table;
-+	t.data = &state;
-+	err = proc_dointvec_minmax(&t, write, buffer, lenp, ppos);
-+	if (err < 0)
-+		return err;
-+	if (write)
-+		set_delayacct(state);
-+	return err;
- }
-+#endif
- 
- void __delayacct_tsk_init(struct task_struct *tsk)
- {
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -71,6 +71,7 @@
- #include <linux/coredump.h>
- #include <linux/latencytop.h>
- #include <linux/pid.h>
-+#include <linux/delayacct.h>
- 
- #include "../lib/kstrtox.h"
- 
-@@ -1727,6 +1728,17 @@ static struct ctl_table kern_table[] = {
- 		.extra2		= SYSCTL_ONE,
- 	},
- #endif /* CONFIG_SCHEDSTATS */
-+#ifdef CONFIG_TASK_DELAY_ACCT
-+	{
-+		.procname	= "sched_delayacct",
-+		.data		= NULL,
-+		.maxlen		= sizeof(unsigned int),
-+		.mode		= 0644,
-+		.proc_handler	= sysctl_delayacct,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_ONE,
-+	},
-+#endif /* CONFIG_TASK_DELAY_ACCT */
- #ifdef CONFIG_NUMA_BALANCING
- 	{
- 		.procname	= "numa_balancing",
+> pm_runtime_get_sync will increment pm usage counter even it failed.
+> Forgetting to putting operation will result in reference leak here.
+> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+> counter balanced.
+
+I believe we need to enforce "patches need to be tested" rule at least
+against robots.
+
+Code was correct in 3/4 instances, this introduces bugs. Yes, last one
+needs fixing.
+
+Best regards,
+								Pavel
+
+> +++ b/drivers/crypto/stm32/stm32-hash.c
+> @@ -812,7 +812,7 @@ static void stm32_hash_finish_req(struct ahash_reques=
+t *req, int err)
+>  static int stm32_hash_hw_init(struct stm32_hash_dev *hdev,
+>  			      struct stm32_hash_request_ctx *rctx)
+>  {
+> -	pm_runtime_get_sync(hdev->dev);
+> +	pm_runtime_resume_and_get(hdev->dev);
+> =20
+>  	if (!(HASH_FLAGS_INIT & hdev->flags)) {
+>  		stm32_hash_write(hdev, HASH_CR, HASH_CR_INIT);
+> @@ -961,7 +961,7 @@ static int stm32_hash_export(struct ahash_request *re=
+q, void *out)
+>  	u32 *preg;
+>  	unsigned int i;
+> =20
+> -	pm_runtime_get_sync(hdev->dev);
+> +	pm_runtime_resume_and_get(hdev->dev);
+> =20
+>  	while ((stm32_hash_read(hdev, HASH_SR) & HASH_SR_BUSY))
+>  		cpu_relax();
+> @@ -999,7 +999,7 @@ static int stm32_hash_import(struct ahash_request *re=
+q, const void *in)
+> =20
+>  	preg =3D rctx->hw_context;
+> =20
+> -	pm_runtime_get_sync(hdev->dev);
+> +	pm_runtime_resume_and_get(hdev->dev);
+> =20
+>  	stm32_hash_write(hdev, HASH_IMR, *preg++);
+>  	stm32_hash_write(hdev, HASH_STR, *preg++);
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--s2ZSL+KKDSLx8OML
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYJkhogAKCRAw5/Bqldv6
+8v/SAKCt0vlNj8WNcw3FsHi/g5drvv9CugCfQnV2lUXyG4V2RpeJ7VBSwT893TI=
+=oHNw
+-----END PGP SIGNATURE-----
+
+--s2ZSL+KKDSLx8OML--
