@@ -2,461 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FCD737991A
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5CC37991C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 23:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231747AbhEJVYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 17:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbhEJVYf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 17:24:35 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E1DAC061574;
-        Mon, 10 May 2021 14:23:30 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id z13so25543434lft.1;
-        Mon, 10 May 2021 14:23:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=K2BeHmCvh+c4LgvO0p37BZhDNERKS5iR74FxOexrU2E=;
-        b=ir8smZOpozdik85ufY+JqMFVbe4vnlMPt6qfTN1BaloKrU491FLrBib7kvDrCB1MRo
-         3d1oWkIJE0MgS6Ak93ELbVMvPUeaZ0+3BeGR8mLGEjtz6DxUrUeFz2w7E8izX0MRexsQ
-         mkXkNc7MyjlSgTClBL1zdRJpYGFU1WAfoNfgtCqzdA28goJVFKPo05B3u3qUoUvvs4Ch
-         svcxokCwHoZ0LRD6vujDNBIkrCCHAJyaupmoeY/uOYJIlYJBrglT0B82GCHlXqeA25/h
-         C7y2fnqmfXG2vMkj7+DGiJlgoWKatfWrUIRYydhalSSrPQc57HFF9MB8osDNSotIJTvc
-         kPDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=K2BeHmCvh+c4LgvO0p37BZhDNERKS5iR74FxOexrU2E=;
-        b=m534ppg/+zlDfMvkt5/yVCjO7bVOMqi3sQA2pCV8y4ZvtZzaw9CS232apbl7ZA4+Jf
-         IWth26MQ+Lmn9T9x4SrJ20bjBX0Y2U2ufcdlLJyXjHlrdWQ6uKDOl8rtnmzPKdsijXrj
-         9ZFV8k++iHEXIwPh+qEvg7I9MGbvwQZsPtMq8DSfoMfqiQ5ab/YBbTvpSPpTCoFViFHE
-         HGv3Uk4EaGkiG3un0O2fV/dU7HINqwIOcij2whkWaxuSenMDmcSichlATEnwEP5kxp36
-         wb02PYfPUVqa6zuxhREc42t286A+/HKaIeZ9740zPWWzOPjZkUEw3w0yNp3iqckk8MAK
-         v9bA==
-X-Gm-Message-State: AOAM533u/86B42Kcpr9uaB4PR1kYsoa6yLn8wQRhdOkBJEqYR8AaOaPp
-        ZUrD/Hdh6GbOrFf/v2qlhw0=
-X-Google-Smtp-Source: ABdhPJwSkMnVE2Vfvkw8u9w8MLlSIniHUWl3U16F6X6NfUBs7MuF2+n1Mn1HdR/h/VyL3O3Xcg+qyw==
-X-Received: by 2002:a19:5208:: with SMTP id m8mr18526887lfb.372.1620681808831;
-        Mon, 10 May 2021 14:23:28 -0700 (PDT)
-Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.gmail.com with ESMTPSA id z139sm91876lfc.150.2021.05.10.14.23.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 14:23:28 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v4] dt-bindings: memory: tegra20: emc: Convert to schema
-Date:   Tue, 11 May 2021 00:23:20 +0300
-Message-Id: <20210510212320.3255-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S232345AbhEJVYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 17:24:50 -0400
+Received: from mail-mw2nam10on2066.outbound.protection.outlook.com ([40.107.94.66]:61729
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231434AbhEJVYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 17:24:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X8IdECnFlndcEA3tpUZxBFoG/JLq5HRhQe/rIQ34q3k1fGlX3ZGpSXc+QDhsuNtJ6c1V6WwOJovz9NTjPLV3NJZ65i/TKBzpi/ztUPwvdHDHBCbg7dVyGdvt0YBmcUGIJRdMgWdBZ78riLBlq1Y7uZYRHKbfYUioZ9YbMtoEUdN/qPpwrZEVZgjwY60LK+vV4PVFqt7Y+JngafiALhiqPoXUdlWYaSQ7GmVf/oiQ/wtpHq0Ox+E0KNxU/s+DXY4y8nkgc0ReoB4W3Kj7F6hsSO025FoSFsRkUh88sfsTPmLJnkykDlNDe63x9Lr/QWE7GJRNWsAQvTALS7Fj1SeA8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xtU5ciZJ7TSySAk9rSzC5YRoT+7R5fQbsynNiiyQsmM=;
+ b=dK0YOpgtLmv5egJcJs2UTfgohCnyDlq0wwonzXBq7adbV37G/xYUMWsiQUWK7ew+gi045xyyaxEenN8kHCqKhht99duxKJjHBzmPKSZOz8JiRGHLFwkGtJqSdcPIsasudtUBxHacIZcbSxnv6KqQOkaUsqxWlqatjd1hbAw6EZpfoubXzMzQPOLlQpcrs3VbXgAs36LGbFK4cNe1w5FQ7x5dPKF/oc86TqVJ+NogktufQKU1t86VVY1hA7MzEZ/Qg0LoCuJaBvqq8ntGBflic3/6+IjetTfdF+nyBdk8rHPH0RO2mN12wHM/PshKXIIE1UTGXOZ5nZOfbhn+xYuHpQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xtU5ciZJ7TSySAk9rSzC5YRoT+7R5fQbsynNiiyQsmM=;
+ b=2PJAf+QTUNABdtVmB+xvGm54hEa8CFJIbJWOlck2neq8CQS9vDojk7ZV+XR6LACJdMPp5qrYX4S2ymLGdSTa7uBek8SAJTW0zp3sKMrgW5IAArWNhwX0DDwDVkPoy5qoNVqLnP1ZFX2zc5zFVFO9j0vvWqVu3nue60uyfaiIo28=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4108.26; Mon, 10 May 2021 21:23:40 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::b914:4704:ad6f:aba9]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::b914:4704:ad6f:aba9%12]) with mapi id 15.20.4108.031; Mon, 10 May
+ 2021 21:23:40 +0000
+Subject: Re: [PATCH 2/2] KVM: x86: Allow userspace to update tracked sregs for
+ protected guests
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+References: <20210507165947.2502412-1-seanjc@google.com>
+ <20210507165947.2502412-3-seanjc@google.com>
+ <5f084672-5c0d-a6f3-6dcf-38dd76e0bde0@amd.com> <YJla8vpwqCxqgS8C@google.com>
+ <12fe8f83-49b4-1a22-7903-84e45f16c372@amd.com> <YJmfV1sO8miqvQLM@google.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <26da40a0-c9b4-f517-94a6-5d3d69c4a207@amd.com>
+Date:   Mon, 10 May 2021 16:23:37 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <YJmfV1sO8miqvQLM@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [67.79.209.213]
+X-ClientProxiedBy: SA0PR11CA0171.namprd11.prod.outlook.com
+ (2603:10b6:806:1bb::26) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from office-linux.texastahm.com (67.79.209.213) by SA0PR11CA0171.namprd11.prod.outlook.com (2603:10b6:806:1bb::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Mon, 10 May 2021 21:23:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 248aaaba-460d-4fa5-f59e-08d913f9e1bd
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1163:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1163292CB736292964B513D0EC549@DM5PR12MB1163.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CGA4YSu5sZCaY8b4X5y9i9Yr7F4cdM1ECogfMy66ItGDC9jeWaJ4GECJ+70VCE/605X07GflCoQsUgO0J5Gk80tO4pLCGrv+QguZrUgO+h5/I3AoP2GKVvauOwFIMxsXQIn2woyX9DuaTxzUHwSp6LsagGIWxUyV3wipN+UXNvwf6SZRUyJnPbO1+XG4lLWAjgOkvPjTYQpZXTr0gJA+oX2h2deLnP0/TurTdJ4miUrYdVcvyWWazA/9gXHnxPNLwCljhaaMBEbvcFKh4iVKsfSRL/ZGcBvpLRmQVgVwy/TSQI/HO3toblel5k3yGDrpxcHCmFM5TdLDIOfxfL8ylVuo6vW+iEOUzTkfpoaT/kfAYs5pPg7gNh+VMFjK1uClDb///QdhL9xU2uhwSLAr7oA8u6IDDkbbgcoQVGnAzMQWdhAegCypRM5/kutGE6Jm3kzngLxmulz6YcYU9ufxxJUD4WJ1Y48Brl5/g6M0lS05aqoLA6bzKp1WjUPysLU/mqpl/GQZi1Dts+ufqsAwEXgzSxOoqCjVFxUpdZDo2DeTXEsC6Hl1X+frqrKXUUyWJMmCuB1mMCHhNLb9gnMsYAMxl0CfsEUQKYJN0N+k/HeNuXYfAiSjQ5dEIdPv4kGFmwfN2Hd+SjsTiPZ2I7bqtBnCSYK9qNHWoT9pfcj2Cq36npVUXN162LOqQIh/TY1z
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(396003)(366004)(376002)(26005)(7416002)(478600001)(86362001)(36756003)(6512007)(6486002)(38100700002)(956004)(2616005)(6916009)(2906002)(53546011)(83380400001)(16526019)(54906003)(31696002)(66476007)(66556008)(66946007)(316002)(8936002)(186003)(8676002)(31686004)(15650500001)(4326008)(6506007)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bnJYZWdSWVQrTzYwaWlUKy8zNmhpTjNmWU9lcjNpM2o1RWV5WkhMRUJjYWxM?=
+ =?utf-8?B?c3p2eTBZZHN1OFV3U3dLdnVsRXRxSWcrVXRRWVVaY1N2L0o4MWJXTkJnRE9o?=
+ =?utf-8?B?bGt1Nkc5cTVPRUZoNU1HN0UyYnFDcmRmRTQ3WVFrL2ZzRDVESTBtMk15YlRh?=
+ =?utf-8?B?SWFJUTgvQWJ2RHJGTHFFL3QrNlpCZ3JCQkQvVW9zc2J0VnVsTGNDVW5mOWxY?=
+ =?utf-8?B?dFZpZE5yM2VsLzR6elgvc1IzSktkdDU1QnUvdXFLNVpkMlIxcjVOQjdDVUw3?=
+ =?utf-8?B?MFBsbzEyTTRDK0xqdFV0anU3Y0hQbVRZc1hPdEFWTGlOajNOdi9WQXBrR2VR?=
+ =?utf-8?B?bXhXTGU0MStTOGgxSG02eEVCU2lIdG1odGhBNGxKK2ZYSjNOMkJ4VVJMUEVR?=
+ =?utf-8?B?cWM3bVM3OURHSTYvUk5jQzF6SDZxWlJ0eVVlQWVqUmxQbUx5TmJ4bytYc3RH?=
+ =?utf-8?B?T09pcmhDQ3VKaUUrMFVPcjZvWDZrbzlQb0tXR0dlS09WNXhnOEwwakJISXlv?=
+ =?utf-8?B?TDFEekRBZ3BzNjZrRjk2Tkt3blAxTVpKVnZlRWRDTE44Q2xUV0paeHZ5WXZl?=
+ =?utf-8?B?d3JjZEZBbjV4dnB3eWxWZ24xbHErZW1LQlA4QkxLSXBCcFcwV25KYVowNC93?=
+ =?utf-8?B?RkZRRzVvTXZBMWRzT29VMm41RDl5V0NSQjNSbDJYWEJycnlmbmNYMThpYzdS?=
+ =?utf-8?B?SzF0TXRvYUYxS0R4bm5qOXh5Wnc2TmRnZUxmc0h4V2VTdTZLc1oxempGNk9v?=
+ =?utf-8?B?elZwVC9ITko5dTNvRkVMYnRHL2xwcjE0QnRtejgzQWw4bCtpNjZYUFdybEVz?=
+ =?utf-8?B?MjhhYUlEbWFSaTEyZlRubjVWS0RKcllDbzBpcHI2dmxhVW55d0FPMnVYSXpL?=
+ =?utf-8?B?aUh3T3Iyb2lzcjc1Y0J3R2I0UFZrQXVuYU9hdkdRbjdMMFZVZVBoTkNEY3VK?=
+ =?utf-8?B?QXdUWjJJN0xJdFA2NHlIUVIwVGZGNEtXNmxTbWtkUExxMm5NYjA1alNFWWtR?=
+ =?utf-8?B?U2QrVHE5SGNjOFpjV2tVbVlaZWdwNmdtQ0U2S3pIYXUwRVhWdHA2MnZzV0h4?=
+ =?utf-8?B?cVRjbUpZWGNGM2dCa0RZQXhWKzR1c1ZLck5saGhYUVk0RzRuT2RBOGJSR0k1?=
+ =?utf-8?B?Z0w4bUhBSEQ2RmgxSFM2MzlpYzBjK1M3cnh1WnJJcDVpQkhFT01MNXU2bG13?=
+ =?utf-8?B?dkRLVGNWcmJ0Q0NvamdvakFVVTFkYzVOT1BmcHdDSzdQOE5zREFqZjEwYkxo?=
+ =?utf-8?B?YkhadHBDVGJ2NldpY3g2dmFVUFErS1JyY2Z5OGVQM3Z2NG9FWGpoWGNFZE1E?=
+ =?utf-8?B?U0FBZHJWVzBvbElYSmxWMU9mL2h0dlV4a3lGV3pjTmM1TVJKWlliNlpQZXcr?=
+ =?utf-8?B?c2V5Y0Y1c0l4N1RRZ2J2Rll2M3RxbGVCc05xZTduUThsN2lpNUwrdWVTWTFl?=
+ =?utf-8?B?bUdDSHR5RHJyZEFYT1BqZGJnSzRSbExZeEM0aG1HNkpaMnlvbkhHVTFGaXpZ?=
+ =?utf-8?B?MUQvSlEyU21jUVZ1SmJHcjRidGRadXdRbXhOek9qNmlIUGhLQTJTcDd6MGN0?=
+ =?utf-8?B?bGtPNkZ6bDhJbmJzTThaRS9DcUFjdGtRWndyWHNKMUpFOVJlRWl4M0VpNEVp?=
+ =?utf-8?B?bTRGZmJ6cUFoaXlZMklYY0tBR2Fib2VkYnRyN1hZQmdrYXJJRFFnYUg3c0lT?=
+ =?utf-8?B?NFk5TktmRDdnMTAyLzMxb0xMRWR1dktNRHY1TS9FVlcyQkpmWUdxQXlEdTdh?=
+ =?utf-8?Q?7ipaY3LB6HZOEE+DWFIL9u1u9TzQSL1kmya4VV4?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 248aaaba-460d-4fa5-f59e-08d913f9e1bd
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 May 2021 21:23:40.6752
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gC3SdCKB/j1JP0AWO4wc+U+A2z62tAUG/0WM2A9MR9Vi+wns+Kmqy0qKh5hYUaVZPdSw4buKO4zeTvaz1elPWg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1163
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert Tegra20 External Memory Controller binding to schema.
+On 5/10/21 4:02 PM, Sean Christopherson wrote:
+> On Mon, May 10, 2021, Tom Lendacky wrote:
+>> On 5/10/21 11:10 AM, Sean Christopherson wrote:
+>>> On Fri, May 07, 2021, Tom Lendacky wrote:
+>>>> On 5/7/21 11:59 AM, Sean Christopherson wrote:
+>>>>> Allow userspace to set CR0, CR4, CR8, and EFER via KVM_SET_SREGS for
+>>>>> protected guests, e.g. for SEV-ES guests with an encrypted VMSA.  KVM
+>>>>> tracks the aforementioned registers by trapping guest writes, and also
+>>>>> exposes the values to userspace via KVM_GET_SREGS.  Skipping the regs
+>>>>> in KVM_SET_SREGS prevents userspace from updating KVM's CPU model to
+>>>>> match the known hardware state.
+>>>>
+>>>> This is very similar to the original patch I had proposed that you were
+>>>> against :)
+>>>
+>>> I hope/think my position was that it should be unnecessary for KVM to need to
+>>> know the guest's CR0/4/0 and EFER values, i.e. even the trapping is unnecessary.
+>>> I was going to say I had a change of heart, as EFER.LMA in particular could
+>>> still be required to identify 64-bit mode, but that's wrong; EFER.LMA only gets
+>>> us long mode, the full is_64_bit_mode() needs access to cs.L, which AFAICT isn't
+>>> provided by #VMGEXIT or trapping.
+>>
+>> Right, that one is missing. If you take a VMGEXIT that uses the GHCB, then
+>> I think you can assume we're in 64-bit mode.
+> 
+> But that's not technically guaranteed.  The GHCB even seems to imply that there
+> are scenarios where it's legal/expected to do VMGEXIT with a valid GHCB outside
+> of 64-bit mode:
+> 
+>   However, instead of issuing a HLT instruction, the AP will issue a VMGEXIT
+>   with SW_EXITCODE of 0x8000_0004 ((this implies that the GHCB was updated prior
+>   to leaving 64-bit long mode).
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
+Right, but in order to fill in the GHCB so that the hypervisor can read
+it, the guest had to have been in 64-bit mode. Otherwise, whatever the
+guest wrote will be seen as encrypted data and make no sense to the
+hypervisor anyway.
 
-Changelog:
+> 
+> In practice, assuming the guest is in 64-bit mode will likely work, especially
+> since the MSR-based protocol is extremely limited, but ideally there should be
+> stronger language in the GHCB to define the exact VMM assumptions/behaviors.
+> 
+> On the flip side, that assumption and the limited exposure through the MSR
+> protocol means trapping CR0, CR4, and EFER is pointless.  I don't see how KVM
+> can do anything useful with that information outside of VMGEXITs.  Page tables
+> are encrypted and GPRs are stale; what else could KVM possibly do with
+> identifying protected mode, paging, and/or 64-bit?
+> 
+>>> Unless I'm missing something, that means that VMGEXIT(VMMCALL) is broken since
+>>> KVM will incorrectly crush (or preserve) bits 63:32 of GPRs.  I'm guessing no
+>>> one has reported a bug because either (a) no one has tested a hypercall that
+>>> requires bits 63:32 in a GPR or (b) the guest just happens to be in 64-bit mode
+>>> when KVM_SEV_LAUNCH_UPDATE_VMSA is invoked and so the segment registers are
+>>> frozen to make it appear as if the guest is perpetually in 64-bit mode.
+>>
+>> I don't think it's (b) since the LAUNCH_UPDATE_VMSA is done against reset-
+>> state vCPUs.
+>>
+>>>
+>>> I see that sev_es_validate_vmgexit() checks ghcb_cpl_is_valid(), but isn't that
+>>> either pointless or indicative of a much, much bigger problem?  If VMGEXIT is
+>>
+>> It is needed for the VMMCALL exit.
+>>
+>>> restricted to CPL0, then the check is pointless.  If VMGEXIT isn't restricted to
+>>> CPL0, then KVM has a big gaping hole that allows a malicious/broken guest
+>>> userspace to crash the VM simply by executing VMGEXIT.  Since valid_bitmap is
+>>> cleared during VMGEXIT handling, I don't think guest userspace can attack/corrupt
+>>> the guest kernel by doing a replay attack, but it does all but guarantee a
+>>> VMGEXIT at CPL>0 will be fatal since the required valid bits won't be set.
+>>
+>> Right, so I think some cleanup is needed there, both for the guest and the
+>> hypervisor:
+>>
+>> - For the guest, we could just clear the valid bitmask before leaving the
+>>   #VC handler/releasing the GHCB. Userspace can't update the GHCB, so any
+>>   VMGEXIT from userspace would just look like a no-op with the below
+>>   change to KVM.
+> 
+> Ah, right, the exit_code and exit infos need to be valid.
+> 
+>> - For KVM, instead of returning -EINVAL from sev_es_validate_vmgexit(), we
+>>   return the #GP action through the GHCB and continue running the guest.
+> 
+> Agreed, KVM should never kill the guest in response to a bad VMGEXIT.  That
+> should always be a guest decision.
+> 
+>>> Sadly, the APM doesn't describe the VMGEXIT behavior, nor does any of the SEV-ES
+>>> documentation I have.  I assume VMGEXIT is recognized at CPL>0 since it morphs
+>>> to VMMCALL when SEV-ES isn't active.
+>>
+>> Correct.
+>>
+>>>
+>>> I.e. either the ghcb_cpl_is_valid() check should be nuked, or more likely KVM
+>>
+>> The ghcb_cpl_is_valid() is still needed to see whether the VMMCALL was
+>> from userspace or not (a VMMCALL will generate a #VC).
+> 
+> Blech.  I get that the GHCB spec says CPL must be provided/checked for VMMCALL,
+> but IMO that makes no sense whatsover.
+> 
+> If the guest restricts the GHCB to CPL0, then the CPL field is pointless because
+> the VMGEXIT will only ever come from CPL0.  Yes, technically the guest kernel
+> can proxy a VMMCALL from userspace to the host, but the guest kernel _must_ be
+> the one to enforce any desired CPL checks because the VMM is untrusted, at least
+> once you get to SNP.
+> 
+> If the guest exposes the GHCB to any CPL, then the CPL check is worthless because
 
-v4: - Doesn't have duplicated properties by making use of $defs/$ref,
-      which was suggested by Rob Herring in a review comment to v3.
+The GHCB itself is not exposed to any CPL. A VMMCALL will generate a #VC.
+The guest #VC handler will extract the CPL level from the context that
+generated the #VC (see vc_handle_vmmcall() in arch/x86/kernel/sev-es.c),
+so that a VMMCALL from userspace will have the proper CPL value in the
+GHCB when the #VC handler issues the VMGEXIT instruction.
 
-v3: - Fixed dt_binding_check warning about the missing reg property.
+Thanks,
+Tom
 
-    - Became a standalone patch since other v2 patches were applied.
-
- .../memory-controllers/nvidia,tegra20-emc.txt | 130 ----------
- .../nvidia,tegra20-emc.yaml                   | 230 ++++++++++++++++++
- 2 files changed, 230 insertions(+), 130 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
-
-diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
-deleted file mode 100644
-index d2250498c36d..000000000000
---- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
-+++ /dev/null
-@@ -1,130 +0,0 @@
--Embedded Memory Controller
--
--Properties:
--- name : Should be emc
--- #address-cells : Should be 1
--- #size-cells : Should be 0
--- compatible : Should contain "nvidia,tegra20-emc".
--- reg : Offset and length of the register set for the device
--- nvidia,use-ram-code : If present, the sub-nodes will be addressed
--  and chosen using the ramcode board selector. If omitted, only one
--  set of tables can be present and said tables will be used
--  irrespective of ram-code configuration.
--- interrupts : Should contain EMC General interrupt.
--- clocks : Should contain EMC clock.
--- nvidia,memory-controller : Phandle of the Memory Controller node.
--- #interconnect-cells : Should be 0.
--- operating-points-v2: See ../bindings/opp/opp.txt for details.
--
--For each opp entry in 'operating-points-v2' table:
--- opp-supported-hw: One bitfield indicating SoC process ID mask
--
--	A bitwise AND is performed against this value and if any bit
--	matches, the OPP gets enabled.
--
--Optional properties:
--- power-domains: Phandle of the SoC "core" power domain.
--
--Child device nodes describe the memory settings for different configurations and clock rates.
--
--Example:
--
--	opp_table: opp-table {
--		compatible = "operating-points-v2";
--
--		opp@36000000 {
--			opp-microvolt = <950000 950000 1300000>;
--			opp-hz = /bits/ 64 <36000000>;
--		};
--		...
--	};
--
--	memory-controller@7000f400 {
--		#address-cells = < 1 >;
--		#size-cells = < 0 >;
--		#interconnect-cells = <0>;
--		compatible = "nvidia,tegra20-emc";
--		reg = <0x7000f400 0x400>;
--		interrupts = <0 78 0x04>;
--		clocks = <&tegra_car TEGRA20_CLK_EMC>;
--		nvidia,memory-controller = <&mc>;
--		power-domains = <&domain>;
--		operating-points-v2 = <&opp_table>;
--	}
--
--
--Embedded Memory Controller ram-code table
--
--If the emc node has the nvidia,use-ram-code property present, then the
--next level of nodes below the emc table are used to specify which settings
--apply for which ram-code settings.
--
--If the emc node lacks the nvidia,use-ram-code property, this level is omitted
--and the tables are stored directly under the emc node (see below).
--
--Properties:
--
--- name : Should be emc-tables
--- nvidia,ram-code : the binary representation of the ram-code board strappings
--  for which this node (and children) are valid.
--
--
--
--Embedded Memory Controller configuration table
--
--This is a table containing the EMC register settings for the various
--operating speeds of the memory controller. They are always located as
--subnodes of the emc controller node.
--
--There are two ways of specifying which tables to use:
--
--* The simplest is if there is just one set of tables in the device tree,
--  and they will always be used (based on which frequency is used).
--  This is the preferred method, especially when firmware can fill in
--  this information based on the specific system information and just
--  pass it on to the kernel.
--
--* The slightly more complex one is when more than one memory configuration
--  might exist on the system.  The Tegra20 platform handles this during
--  early boot by selecting one out of possible 4 memory settings based
--  on a 2-pin "ram code" bootstrap setting on the board. The values of
--  these strappings can be read through a register in the SoC, and thus
--  used to select which tables to use.
--
--Properties:
--- name : Should be emc-table
--- compatible : Should contain "nvidia,tegra20-emc-table".
--- reg : either an opaque enumerator to tell different tables apart, or
--  the valid frequency for which the table should be used (in kHz).
--- clock-frequency : the clock frequency for the EMC at which this
--  table should be used (in kHz).
--- nvidia,emc-registers : a 46 word array of EMC registers to be programmed
--  for operation at the 'clock-frequency' setting.
--  The order and contents of the registers are:
--    RC, RFC, RAS, RP, R2W, W2R, R2P, W2P, RD_RCD, WR_RCD, RRD, REXT,
--    WDV, QUSE, QRST, QSAFE, RDV, REFRESH, BURST_REFRESH_NUM, PDEX2WR,
--    PDEX2RD, PCHG2PDEN, ACT2PDEN, AR2PDEN, RW2PDEN, TXSR, TCKE, TFAW,
--    TRPAB, TCLKSTABLE, TCLKSTOP, TREFBW, QUSE_EXTRA, FBIO_CFG6, ODT_WRITE,
--    ODT_READ, FBIO_CFG5, CFG_DIG_DLL, DLL_XFORM_DQS, DLL_XFORM_QUSE,
--    ZCAL_REF_CNT, ZCAL_WAIT_CNT, AUTO_CAL_INTERVAL, CFG_CLKTRIM_0,
--    CFG_CLKTRIM_1, CFG_CLKTRIM_2
--
--		emc-table@166000 {
--			reg = <166000>;
--			compatible = "nvidia,tegra20-emc-table";
--			clock-frequency = < 166000 >;
--			nvidia,emc-registers = < 0 0 0 0 0 0 0 0 0 0 0 0 0 0
--						 0 0 0 0 0 0 0 0 0 0 0 0 0 0
--						 0 0 0 0 0 0 0 0 0 0 0 0 0 0
--						 0 0 0 0 >;
--		};
--
--		emc-table@333000 {
--			reg = <333000>;
--			compatible = "nvidia,tegra20-emc-table";
--			clock-frequency = < 333000 >;
--			nvidia,emc-registers = < 0 0 0 0 0 0 0 0 0 0 0 0 0 0
--						 0 0 0 0 0 0 0 0 0 0 0 0 0 0
--						 0 0 0 0 0 0 0 0 0 0 0 0 0 0
--						 0 0 0 0 >;
--		};
-diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
-new file mode 100644
-index 000000000000..cac6842dc8f1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
-@@ -0,0 +1,230 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/memory-controllers/nvidia,tegra20-emc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NVIDIA Tegra20 SoC External Memory Controller
-+
-+maintainers:
-+  - Dmitry Osipenko <digetx@gmail.com>
-+  - Jon Hunter <jonathanh@nvidia.com>
-+  - Thierry Reding <thierry.reding@gmail.com>
-+
-+description: |
-+  The External Memory Controller (EMC) interfaces with the off-chip SDRAM to
-+  service the request stream sent from Memory Controller. The EMC also has
-+  various performance-affecting settings beyond the obvious SDRAM configuration
-+  parameters and initialization settings. Tegra20 EMC supports multiple JEDEC
-+  standard protocols: DDR1, LPDDR2 and DDR2.
-+
-+properties:
-+  compatible:
-+    const: nvidia,tegra20-emc
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+  "#interconnect-cells":
-+    const: 0
-+
-+  nvidia,memory-controller:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      Phandle of the Memory Controller node.
-+
-+  power-domains:
-+    maxItems: 1
-+    description:
-+      Phandle of the SoC "core" power domain.
-+
-+  operating-points-v2:
-+    description:
-+      Should contain freqs and voltages and opp-supported-hw property, which
-+      is a bitfield indicating SoC process ID mask.
-+
-+  nvidia,use-ram-code:
-+    type: boolean
-+    description:
-+      If present, the emc-tables@ sub-nodes will be addressed.
-+
-+$defs:
-+  emc-table:
-+    type: object
-+    properties:
-+      compatible:
-+        const: nvidia,tegra20-emc-table
-+
-+      clock-frequency:
-+        description:
-+          Memory clock rate in kHz.
-+        minimum: 1000
-+        maximum: 900000
-+
-+      reg:
-+        maxItems: 1
-+        description:
-+          Either an opaque enumerator to tell different tables apart, or
-+          the valid frequency for which the table should be used (in kHz).
-+
-+      nvidia,emc-registers:
-+        description:
-+          EMC timing characterization data. These are the registers
-+          (see section "15.4.1 EMC Registers" in the TRM) whose values
-+          need to be specified, according to the board documentation.
-+        $ref: /schemas/types.yaml#/definitions/uint32-array
-+        items:
-+          - description: EMC_RC
-+          - description: EMC_RFC
-+          - description: EMC_RAS
-+          - description: EMC_RP
-+          - description: EMC_R2W
-+          - description: EMC_W2R
-+          - description: EMC_R2P
-+          - description: EMC_W2P
-+          - description: EMC_RD_RCD
-+          - description: EMC_WR_RCD
-+          - description: EMC_RRD
-+          - description: EMC_REXT
-+          - description: EMC_WDV
-+          - description: EMC_QUSE
-+          - description: EMC_QRST
-+          - description: EMC_QSAFE
-+          - description: EMC_RDV
-+          - description: EMC_REFRESH
-+          - description: EMC_BURST_REFRESH_NUM
-+          - description: EMC_PDEX2WR
-+          - description: EMC_PDEX2RD
-+          - description: EMC_PCHG2PDEN
-+          - description: EMC_ACT2PDEN
-+          - description: EMC_AR2PDEN
-+          - description: EMC_RW2PDEN
-+          - description: EMC_TXSR
-+          - description: EMC_TCKE
-+          - description: EMC_TFAW
-+          - description: EMC_TRPAB
-+          - description: EMC_TCLKSTABLE
-+          - description: EMC_TCLKSTOP
-+          - description: EMC_TREFBW
-+          - description: EMC_QUSE_EXTRA
-+          - description: EMC_FBIO_CFG6
-+          - description: EMC_ODT_WRITE
-+          - description: EMC_ODT_READ
-+          - description: EMC_FBIO_CFG5
-+          - description: EMC_CFG_DIG_DLL
-+          - description: EMC_DLL_XFORM_DQS
-+          - description: EMC_DLL_XFORM_QUSE
-+          - description: EMC_ZCAL_REF_CNT
-+          - description: EMC_ZCAL_WAIT_CNT
-+          - description: EMC_AUTO_CAL_INTERVAL
-+          - description: EMC_CFG_CLKTRIM_0
-+          - description: EMC_CFG_CLKTRIM_1
-+          - description: EMC_CFG_CLKTRIM_2
-+
-+    required:
-+      - clock-frequency
-+      - compatible
-+      - reg
-+      - nvidia,emc-registers
-+
-+    additionalProperties: false
-+
-+patternProperties:
-+  "^emc-table@[0-9]+$":
-+    $ref: "#/$defs/emc-table"
-+
-+  "^emc-tables@[a-z0-9-]+$":
-+    type: object
-+    properties:
-+      reg:
-+        maxItems: 1
-+        description:
-+          An opaque enumerator to tell different tables apart.
-+
-+      nvidia,ram-code:
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        description:
-+          Value of RAM_CODE this timing set is used for.
-+
-+      "#address-cells":
-+        const: 1
-+
-+      "#size-cells":
-+        const: 0
-+
-+    patternProperties:
-+      "^emc-table@[0-9]+$":
-+        $ref: "#/$defs/emc-table"
-+
-+    required:
-+      - nvidia,ram-code
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - nvidia,memory-controller
-+  - "#interconnect-cells"
-+  - operating-points-v2
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    external-memory-controller@7000f400 {
-+        compatible = "nvidia,tegra20-emc";
-+        reg = <0x7000f400 0x400>;
-+        interrupts = <0 78 4>;
-+        clocks = <&clock_controller 57>;
-+
-+        nvidia,memory-controller = <&mc>;
-+        operating-points-v2 = <&dvfs_opp_table>;
-+        power-domains = <&domain>;
-+
-+        #interconnect-cells = <0>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        nvidia,use-ram-code;
-+
-+        emc-tables@0 {
-+            nvidia,ram-code = <0>;
-+            reg = <0>;
-+
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+
-+            emc-table@333000 {
-+                reg = <333000>;
-+                compatible = "nvidia,tegra20-emc-table";
-+                clock-frequency = <333000>;
-+                nvidia,emc-registers = <0x00000018 0x00000033
-+                        0x00000012 0x00000004 0x00000004 0x00000005
-+                        0x00000003 0x0000000c 0x00000006 0x00000006
-+                        0x00000003 0x00000001 0x00000004 0x00000005
-+                        0x00000004 0x00000009 0x0000000d 0x00000bff
-+                        0x00000000 0x00000003 0x00000003 0x00000006
-+                        0x00000006 0x00000001 0x00000011 0x000000c8
-+                        0x00000003 0x0000000e 0x00000007 0x00000008
-+                        0x00000002 0x00000000 0x00000000 0x00000002
-+                        0x00000000 0x00000000 0x00000083 0xf0440303
-+                        0x007fe010 0x00001414 0x00000000 0x00000000
-+                        0x00000000 0x00000000 0x00000000 0x00000000>;
-+            };
-+        };
-+    };
--- 
-2.30.2
-
+> guest userspace can simply lie about the CPL.  And exposing the GCHB to userspace
+> completely undermines guest privilege separation since hardware doesn't provide
+> the real CPL, i.e. the VMM, even it were trusted, can't determine the origin of
+> the VMGEXIT.
+> 
