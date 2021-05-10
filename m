@@ -2,58 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4CF377C1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 08:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1460377C35
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 08:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbhEJGOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 02:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhEJGOE (ORCPT
+        id S230145AbhEJGS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 02:18:57 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2669 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230140AbhEJGSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 02:14:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E39C061573;
-        Sun,  9 May 2021 23:13:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=P+kqNKNxvPn+WQsUe5wG5zKQfBTbs5EJcqRgrHP9ME0=; b=dNGYaNsIcZd9E+MQZ3SmcZ17xa
-        Ehrbo+Xv2Hw2kBNS2yk5pUL2c0vHN7W3u36TfFocvfUIaO4kEqHccpqWrZ2YqHOhEcpWp6xzUyEpy
-        9QPviiTgwn40yKHOZrQekbCAKuFR7Bon5h0LA7EhOS163tpMBmp5fD+h6pyJJ065i4GYGlwZC9miy
-        5OgYbAUFaNU2QEzmcPfBNe8YZWyDcKd9fzN/HIFxPkbZPEI3EFQ5rBPG3diF+MVi47whLZDKlffTs
-        DeN9IIXGRey3NGZa5852S337GbhGHC1XwxhpH1NP/XkgF/6BDOkeOY2g/uco2HR9l9d8zedKLpyYi
-        M3QAWiJw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lfz9q-005lOi-3j; Mon, 10 May 2021 06:12:47 +0000
-Date:   Mon, 10 May 2021 07:12:46 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     tkffaul@outlook.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfio/pci: Sanity check IGD OpRegion Size
-Message-ID: <YJjO3n6jWYDoYPAo@infradead.org>
-References: <162041357421.21800.16214130780777455390.stgit@omen>
+        Mon, 10 May 2021 02:18:54 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FdrPn6m1jz1BKlN;
+        Mon, 10 May 2021 14:15:09 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.72) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Mon, 10 May 2021
+ 14:17:45 +0800
+Subject: Re: [PATCH v2 0/1] drm/msm/dpu: Fix error return code in
+ dpu_mdss_init()
+To:     Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210510031606.3112-1-thunder.leizhen@huawei.com>
+ <9109a395-099b-ed14-4433-d4bf6dbf5cef@cambridgegreys.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <0bb32dc4-b47e-25e8-70a6-fe9bf2c5078f@huawei.com>
+Date:   Mon, 10 May 2021 14:17:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162041357421.21800.16214130780777455390.stgit@omen>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <9109a395-099b-ed14-4433-d4bf6dbf5cef@cambridgegreys.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.72]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 12:53:17PM -0600, Alex Williamson wrote:
-> +	/*
-> +	 * The OpRegion size field is specified as size in KB, but there have been
-> +	 * user reports where this field appears to report size in bytes.  If we
-> +	 * read 8192, assume this is the case.
-> +	 */
-
-Please avoid pointlesly spilling the comment line over 80 chars.
 
 
-> +	if (size == OPREGION_SIZE)
+On 2021/5/10 14:01, Anton Ivanov wrote:
+> On 10/05/2021 04:16, Zhen Lei wrote:
+>> v1 --> v2:
+>> According to Anton Ivanov's review comments, detele the unnecessary local
+>> variable initialization "ret = 0".
+>>
+>>
+>> Zhen Lei (1):
+>>    drm/msm/dpu: Fix error return code in dpu_mdss_init()
+>>
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c | 8 +++++---
+>>   1 file changed, 5 insertions(+), 3 deletions(-)
+>>
+> I do not recall reviewing this.
 
-Shouldn't this be a range tests, i.e. >= ?
+Oh, Sorry, the two e-mails next to each other. I lost sight of them.
+
+> 
+> I think you got the wrong Anton Ivanov - I maintain UML so the previous revision hit someone's else inbox.
+> 
+
