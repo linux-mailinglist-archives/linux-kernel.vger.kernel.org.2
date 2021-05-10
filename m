@@ -2,115 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E74378D83
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBB7378D95
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348814AbhEJMr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238567AbhEJLSG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:18:06 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B779BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 04:17:01 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id t21so8974388plo.2
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 04:17:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xm+XYqfWRu4ZHIHc10/OIsTGE2salXwYppbXnujxvCI=;
-        b=VlHYn2TWlqhF19uo0fToa8AxcsNyfkg2YXKiRhUCktMzb6qLgu6IRoWJBtTdR2txYm
-         b6CkGAvm/r8JbAcF2ZGjO+zbfzJZv3Rb4kjtenP/wLAk7Nllb1aG28cylBfTFUjl8qIq
-         M0+8SoNHHODbp3iFDnxWRctq3PqaMb8dYXF3Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xm+XYqfWRu4ZHIHc10/OIsTGE2salXwYppbXnujxvCI=;
-        b=HsZIh5u8Q6uuPw6jZkqfqV95CdYD+QsEsMwXOCL4PiNyYgMZmptKxPqz+oP1842rqo
-         8wfv9+LkZFTbiOLevOZcvc2cKh/4NsFV3Mt7eCRHRlJmZexqBQZTllaSHk6DosSKJXR0
-         ed5sa7nsahVVjdkzPRivdTp4P+NY8BbbFhcEWCPZ75yRohckU16BKkx5UJDFzgKhhjXo
-         27iHjVbWLYfUA9bUAJRY+zL5+ZmV2t0RtYUthgmUwjvFXioR9uUdqJ9FHpFZbSpOazX9
-         wo75EEpP+buiHq2o8GiWL6WsGo8POwc26v6x7eKKCuczrIKPBd9XDPpmV5zqW2MRAnDf
-         XMGQ==
-X-Gm-Message-State: AOAM530AjmGEAXO+fgJx5qSiPG+Xm1uSbN12E8GQP9owLbOV8DKibKEw
-        QSGWDbXRGdKuA5oAvyMsy3xtGQ==
-X-Google-Smtp-Source: ABdhPJw16paoQ7z1gvdL6lnJZo9bKETOe2uY73tywQXG+r7aqgxsmjxR0XhBFWbTRmQlr5SpUC1bwQ==
-X-Received: by 2002:a17:902:d2c3:b029:ed:764e:d1f4 with SMTP id n3-20020a170902d2c3b02900ed764ed1f4mr24033202plc.84.1620645421193;
-        Mon, 10 May 2021 04:17:01 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:b1d:8aee:8284:2f76])
-        by smtp.gmail.com with ESMTPSA id f1sm18302018pjt.50.2021.05.10.04.16.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 04:17:00 -0700 (PDT)
-Date:   Mon, 10 May 2021 20:16:55 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Luo Jiaxing <luojiaxing@huawei.com>,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        bobo.shaobowang@huawei.com
-Subject: Re: [PATCH] printk: stop spining waiter when console resume to flush
- prb
-Message-ID: <YJkWJ7OCzFM7m4OU@google.com>
-References: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
- <YJPxj83F1sBjHHAE@alley>
- <YJP4F1UIt/eRZ96s@google.com>
- <YJP5MnkJ8pJevXM6@google.com>
- <YJVsgPc66lhaAUN0@alley>
- <YJjuRV57eO3Pp/bp@google.com>
- <YJkIK9cyHr46UAFP@alley>
- <871raeop5q.fsf@jogness.linutronix.de>
+        id S1349151AbhEJMsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:48:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40598 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239112AbhEJLVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:21:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC8EA6101E;
+        Mon, 10 May 2021 11:19:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620645601;
+        bh=W7iAKST7BRDMlEttXNNjJ33EX76A4qp8I6GEgdSMv7U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gmDmb0dM5IcZQ9rSlubjtF+K7WR5CTuBYzK7hGG8NgJ6VoZl1xWTpOcwkH/5/0zA/
+         vlx1VxEGYzpDqoIrEOS4Gq4vleDywsH/Tbkz7KjwQOxa0gHoTz3ZfhQBobu6oYwUNn
+         Apktwvurhr0XmVvzqYbUbTW3FMnBkgNdhIrbGi6F2SzZTvdCwG1IcEdUG7Tg53VOjZ
+         rsHYuTEPmzH2qPOyCxJC2wx/q7V+K8nhKe4JHOwCkQGI9ADck3Kw17WLNRkmbFOBip
+         a9pcqsOJVVBc05NJGVPFoJfSO03eP8zjvIV4wRYaZYLrBIVfbDQLgQs1bXlcp7w7lK
+         9KVTRb7Ve04dg==
+Date:   Mon, 10 May 2021 13:19:50 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fpga@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
+        rcu@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as
+ ASCII
+Message-ID: <20210510131950.063f0608@coco.lan>
+In-Reply-To: <c4479ced-f4d8-1a1e-ee54-9abc55344187@leemhuis.info>
+References: <cover.1620641727.git.mchehab+huawei@kernel.org>
+        <c4479ced-f4d8-1a1e-ee54-9abc55344187@leemhuis.info>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871raeop5q.fsf@jogness.linutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/05/10 12:32), John Ogness wrote:
-> On 2021-05-10, Petr Mladek <pmladek@suse.com> wrote:
-> > The current plan is to move console work to kthreads (separate
-> > preemptive context). Using IRQ is a complete opposite way.
+Em Mon, 10 May 2021 12:52:44 +0200
+Thorsten Leemhuis <linux@leemhuis.info> escreveu:
+
+> On 10.05.21 12:26, Mauro Carvalho Chehab wrote:
 > >
-> > There is always the fight between getting the messages out as soon
-> > as possible and the risk of breaking the system (softlockups,
-> > deadlocks).
-> >
-> > The kthread approach reduces the risk of system breakage to a bare
-> > minimum. The price is that some messages might never reach console.
-> > There is finally a consensus to give it a try. If it fails, we might
-> > start looking for alternatives again.
-> 
-> +1
-> 
-> I think it is clear that any such fixups will disappear once
-> atomic-consoles and console printing kthreads arrive.
+> > As Linux developers are all around the globe, and not everybody has UTF=
+-8
+> > as their default charset, better to use UTF-8 only on cases where it is=
+ really
+> > needed.
+> > [=E2=80=A6]
+> > The remaining patches on series address such cases on *.rst files and=20
+> > inside the Documentation/ABI, using this perl map table in order to do =
+the
+> > charset conversion:
+> >=20
+> > my %char_map =3D (
+> > [=E2=80=A6]
+> > 	0x2013 =3D> '-',		# EN DASH
+> > 	0x2014 =3D> '-',		# EM DASH =20
 
-Yes, hopefully.
 
-> That doesn't mean we should ignore the fixups.
+> I might be performing bike shedding here, but wouldn't it be better to
+> replace those two with "--", as explained in
+> https://en.wikipedia.org/wiki/Dash#Approximating_the_em_dash_with_two_or_=
+three_hyphens
+>=20
+> For EM DASH there seems to be even "---", but I'd say that is a bit too
+> much.
 
-Well, that also doesn't mean that we should not discuss the fixups.
-And there seems to be some sort of taboo on discussions.
+Yeah, we can do, instead:
 
-> We just need to decide if it is a real problem that needs our
-> immediate attention, thus warranting a fixup in the current implementation.
+ 	0x2013 =3D> '--',		# EN DASH
+ 	0x2014 =3D> '---',	# EM DASH =20
 
-That's a good point.
+I was actually in doubt about those ;-)
 
-> I can see the suspend/resume issue might be a real problem. If this
-> should be addressed now, I would support Petr's patch, forcing the
-> backlog to be printed in the preemptible resuming context. But let's
-> just keep it a suspend/resume fixup. I do not think we want to start
-> playing with how console_unlock() behaves.
+Btw, when producing HTML documentation,  Sphinx should convert:
+	-- into EN DASH
+and:
+	--- into EM DASH
 
-And yes again. If console suspend/resume is a problem then something
-superficially about suspend/resume can be done. System wide API that
-makes printk behave either like "old" or like "new" one depending on
-some flags is slightly opposite to "keep printk simple" intention. IMHO
+So, the resulting html will be identical.
+
+> Or do you fear the extra work as some lines then might break the
+> 80-character limit then?
+
+No, I suspect that the line size won't be an issue. Some care should
+taken when EN DASH and EM DASH are used inside tables.
+
+Thanks,
+Mauro
