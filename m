@@ -2,154 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE4937984C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 22:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE8C379865
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 22:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbhEJU2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 16:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbhEJU2C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 16:28:02 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0918BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 13:26:57 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lgCUR-0007Cw-L1; Mon, 10 May 2021 22:26:55 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:5dca:2b47:47f4:4cec])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id C9002621B02;
-        Mon, 10 May 2021 20:26:54 +0000 (UTC)
-Date:   Mon, 10 May 2021 22:26:53 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org
-Subject: global-out-of-bounds in move_module
-Message-ID: <20210510202653.gjvqsxacw3hcxfvr@pengutronix.de>
+        id S231975AbhEJUak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 16:30:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230449AbhEJUaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 16:30:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9CC361433
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 20:29:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620678573;
+        bh=oaTgjDQTfshiY3HK0jVQ1voc8/BEcB5zGI7QMfQSF9I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=q06fs1u9eYAPV7usG9KN0CKyWOqBRsYrBPlsCUwx6B80+r1iUjyH1mESsLC470rb0
+         9IHY3kraSxXK7g5AVCeXPO3QvW3P6Em+LJIeYCFkNr1sph/biWor3a5xvu4+aiZAhn
+         uVaO72KqjEBahOywnXCIe7fiCbpsyhB6Az76CMaNXz+5CjtZVEyo40PYG9JiIcy7V+
+         t0hrduJGxu+yyhYq5T8S/6VoBhC35aRl1NfZMULyBgYutlz0o1LfkKligyfNGE597p
+         rA/XOBC7zAqgeFO8lnmBA8ZpFKpQt9LqU05ocAIA/u8krYeP/Tu5wHgeGh3sHccjYE
+         I4KI7JgaB8XNQ==
+Received: by mail-ej1-f41.google.com with SMTP id ga25so665118ejb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 13:29:33 -0700 (PDT)
+X-Gm-Message-State: AOAM532UcLqcZa+aoVNO008sIfuxmv4nttODLrX6DWtytYTF/E6qxABK
+        pkDdzh1o3RZX2JXM1kEZ7D9RrrBCfAIDAUYmCw==
+X-Google-Smtp-Source: ABdhPJxcl8SOaXY48jlx9ihlR2EkCtvL+rPAKiJKWep1AaOyxjKwLWkTvDhPYauk9+U3bqRpKB9Wb6nYXUeQ/huxEDQ=
+X-Received: by 2002:a17:906:f1d4:: with SMTP id gx20mr27377644ejb.108.1620678572460;
+ Mon, 10 May 2021 13:29:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="z3ddcakcx2sjlesu"
-Content-Disposition: inline
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <1619115952-155809-1-git-send-email-kan.liang@linux.intel.com> <20210510191811.GA21560@worktop.programming.kicks-ass.net>
+In-Reply-To: <20210510191811.GA21560@worktop.programming.kicks-ass.net>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 10 May 2021 15:29:21 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKeVoBL6cn6CGUW17jnf8B+4aHKeyRdceaGCiKzsUsZwg@mail.gmail.com>
+Message-ID: <CAL_JsqKeVoBL6cn6CGUW17jnf8B+4aHKeyRdceaGCiKzsUsZwg@mail.gmail.com>
+Subject: Re: [PATCH V6] perf: Reset the dirty counter to prevent the leak for
+ an RDPMC task
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Stephane Eranian <eranian@google.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 10, 2021 at 2:18 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, Apr 22, 2021 at 11:25:52AM -0700, kan.liang@linux.intel.com wrote:
+>
+> > - Add a new method check_leakage() to check and clear dirty counters
+> >   to prevent potential leakage.
+>
+> I really dislike adding spurious callbacks, also because indirect calls
+> are teh suck, but also because it pollutes the interface so.
+>
+> That said, I'm not sure I actually like the below any better :/
+>
+> ---
+>
+>  arch/x86/events/core.c       | 58 +++++++++++++++++++++++++++++++++++++++++---
+>  arch/x86/events/perf_event.h |  1 +
+>  include/linux/perf_event.h   |  2 ++
+>  kernel/events/core.c         |  7 +++++-
+>  4 files changed, 63 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index 8e509325c2c3..e650c4ab603a 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -740,21 +740,26 @@ void x86_pmu_enable_all(int added)
+>         }
+>  }
+>
+> -static inline int is_x86_event(struct perf_event *event)
+> +static inline bool is_x86_pmu(struct pmu *_pmu)
+>  {
+>         int i;
+>
+>         if (!is_hybrid())
+> -               return event->pmu == &pmu;
+> +               return _pmu == &pmu;
+>
+>         for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
+> -               if (event->pmu == &x86_pmu.hybrid_pmu[i].pmu)
+> +               if (_pmu == &x86_pmu.hybrid_pmu[i].pmu)
+>                         return true;
+>         }
+>
+>         return false;
+>  }
 
---z3ddcakcx2sjlesu
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[...]
 
-Hello,
+> +bool arch_perf_needs_sched_in(struct pmu *pmu)
+> +{
+> +       if (!READ_ONCE(x86_pmu.attr_rdpmc))
+> +               return false;
+> +
+> +       if (!is_x86_pmu(pmu))
+> +               return  false;
+> +
+> +       return current->mm && atomic_read(&current->mm->context.perf_rdpmc_allowed);
+>  }
 
-I just noticed on current net-next/master b741596468b0 ("Merge tag
-'riscv-for-linus-5.13-mw1' of
-git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux") on 32 bit
-arm, that modprobe of a module triggers the following KASAN bug:
+Why add an arch hook for something that clearly looks to be per PMU?
+Couldn't we add another atomic/flag for calling sched_task() that is
+per PMU rather than per CPU. With that, I think I can avoid a hook in
+switch_mm() and keep every self contained in the Arm PMU driver.
 
-| [  110.241783] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-| [  110.249600] BUG: KASAN: global-out-of-bounds in move_module+0x58/0x208
-| [  110.256253] Write of size 69632 at addr bf030000 by task modprobe/290
-| [  110.262789]=20
-| [  110.264361] CPU: 0 PID: 290 Comm: modprobe Tainted: G        W        =
- 5.12.0-perf+ #7
-| [  110.272373] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-| [  110.278977] Backtrace:=20
-| [  110.281537] [<c150df20>] (dump_backtrace) from [<c150e430>] (show_stac=
-k+0x20/0x24)
-| [  110.289245]  r7:00000080 r6:80010093 r5:00000000 r4:c24c20a0
-| [  110.294981] [<c150e410>] (show_stack) from [<c151e794>] (dump_stack+0x=
-f0/0x118)
-| [  110.302407] [<c151e6a4>] (dump_stack) from [<c1515770>] (print_address=
-_description.constprop.0+0x58/0x210)
-| [  110.312205]  r9:b6e0720e r8:b6e08200 r7:c0273980 r6:00000001 r5:000000=
-00 r4:bf030000
-| [  110.320023] [<c1515718>] (print_address_description.constprop.0) from =
-[<c03da2b4>] (kasan_report+0x11c/0x140)
-| [  110.330088]  r7:c0273980 r6:00000001 r5:00011000 r4:bf030000
-| [  110.335820] [<c03da198>] (kasan_report) from [<c03dae54>] (kasan_check=
-_range+0xcc/0x1a4)
-| [  110.344039]  r7:000001ff r6:b6e081ff r5:bf040fff r4:b6e07210
-| [  110.349772] [<c03dad88>] (kasan_check_range) from [<c03db6e0>] (memset=
-+0x28/0x44)
-| [  110.357386]  r10:cc6a3ef4 r9:f0f1ef18 r8:f0de8740 r7:cc6a3ee0 r6:00000=
-000 r5:bf030000
-| [  110.365296]  r4:00011000 r3:c0273980
-| [  110.368943] [<c03db6b8>] (memset) from [<c0273980>] (move_module+0x58/=
-0x208)
-| [  110.376116]  r7:cc6a3ee0 r6:f0de8880 r5:f0de8884 r4:bf030000
-| [  110.381850] [<c0273928>] (move_module) from [<c0274314>] (layout_and_a=
-llocate+0x1bc/0x290)
-| [  110.390233]  r10:cc6a3ef4 r9:f0f1ef18 r8:cc6a3ef0 r7:00000039 r6:cc6a3=
-ee4 r5:cc6a3ee0
-| [  110.398138]  r4:00000000
-| [  110.400743] [<c0274158>] (layout_and_allocate) from [<c0274734>] (load=
-_module+0x34c/0xbe4)
-| [  110.409125]  r10:cc6a0000 r9:b88d47b8 r8:c165cb00 r7:f3f3f3f3 r6:cc6a3=
-e40 r5:cc6a3ee0
-| [  110.417031]  r4:cc6a0000
-| [  110.419634] [<c02743e8>] (load_module) from [<c0275248>] (sys_finit_mo=
-dule+0x110/0x178)
-| [  110.427760]  r10:0000017b r9:00000003 r8:cc6a3ee0 r7:004762d0 r6:00000=
-000 r5:cc6a3f80
-| [  110.435666]  r4:b88d47d4
-| [  110.438273] [<c0275138>] (sys_finit_module) from [<c0100080>] (ret_fas=
-t_syscall+0x0/0x2c)
-| [  110.446565] Exception stack(0xcc6a3fa8 to 0xcc6a3ff0)
-| [  110.451708] 3fa0:                   004780c0 00000000 00000003 004762d=
-0 00000000 00477cd0
-| [  110.459983] 3fc0: 004780c0 00000000 98560c00 0000017b 0210a3f8 0048a09=
-0 0047544c 0210a360
-| [  110.468246] 3fe0: b6c91978 b6c91968 0046eb0d aea934f2
-| [  110.473388]  r9:cc6a0000 r8:c0100268 r7:0000017b r6:98560c00 r5:000000=
-00 r4:004780c0
-| [  110.481206]=20
-| [  110.482769]=20
-| [  110.484329] Memory state around the buggy address:
-| [  110.489199]  bf038f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-| [  110.495812]  bf038f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-| [  110.502419] >bf039000: 00 00 00 00 00 00 00 00 00 00 00 00 00 02 f9 f9
-| [  110.509021]                                                   ^
-| [  110.515018]  bf039080: f9 f9 f9 f9 00 02 f9 f9 f9 f9 f9 f9 00 02 f9 f9
-| [  110.521626]  bf039100: f9 f9 f9 f9 00 02 f9 f9 f9 f9 f9 f9 00 00 00 00
-| [  110.528231] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---z3ddcakcx2sjlesu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmCZlwsACgkQqclaivrt
-76mqpQf+PWB4ncXjQJ4uSTx7xjhEAArm1mp+JUvMgMDlCLvdEwf9uXchlmkjtt4m
-9YGfpYZ6Y/jID0MxNxqPgu+7IaG9X8bat6bavFmuLwhNZ/ZogUUs72glWpvtHimw
-SHCCYwYMmF1Pg/UVZ1TFmK69w17wDiM8NDYt8qHyzRqvvkjWDmatrG7623YwGIhw
-8bPhPZaVAX9PNfE1iU6Q0/A3b+ry0mN/AoobtQQHkB0uy618umBa6hBrHAiOiJmB
-5fktekj6V1s8O1WuiVvEesy+OomUMxlowUvRQl0ugcTgM3I8djRydPvAs0LFlcEi
-Wir1ytYaoo+am4TGj9Etf+TKkFGgrw==
-=E4v7
------END PGP SIGNATURE-----
-
---z3ddcakcx2sjlesu--
+Rob
