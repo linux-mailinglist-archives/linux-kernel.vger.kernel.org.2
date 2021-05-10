@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB09378BF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E39F378A5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344813AbhEJMUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:20:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45768 "EHLO mail.kernel.org"
+        id S233898AbhEJLlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:41:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234770AbhEJLJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:09:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A54E361924;
-        Mon, 10 May 2021 11:04:27 +0000 (UTC)
+        id S231859AbhEJK5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F38F361A06;
+        Mon, 10 May 2021 10:51:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644668;
-        bh=68IAiojGTqdlEEmbV+6OLViD4ckdZJ2dRbHFp8ldvfY=;
+        s=korg; t=1620643908;
+        bh=+HgmHTOTaMq1E0gDxXCL9uXYquSbuU8ATcw7dyeRPWo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dDGZhB3zNqSDaccne02ZegyLxFdsBXCKSQWw6WwAKYT7lund//plv6lBjeNAUDgjx
-         48HDyS4vDBIHkXI0X2WCW9K/KacIht6EA3BsagGD177g5knoxt7t/v3a1EMN2UniLw
-         TfzwFgsIq6c9ZUXCarCer+AOng8BSWB9PR6pAgP0=
+        b=nPXtitKSWwK41QN+d2idFU2m3XiN1FO7woyVHroDHXiL0TWjb3dfUVUCNMDfHZKIZ
+         /MKMILX8z2nezVoPd5ymwGadtNHPG7OZATjfPro7IvIXKCCK/SgVgOAVIvKHGE21Aa
+         XMQFZ+NuA+XuIT4oGjO2hDD7Vq+n9jLKqaHnyme0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, xinhui pan <xinhui.pan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 175/384] extcon: arizona: Fix various races on driver unbind
+Subject: [PATCH 5.11 174/342] drm/amdgpu: Fix memory leak
 Date:   Mon, 10 May 2021 12:19:24 +0200
-Message-Id: <20210510102020.658355522@linuxfoundation.org>
+Message-Id: <20210510102015.856820807@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
-References: <20210510102014.849075526@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,128 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: xinhui pan <xinhui.pan@amd.com>
 
-[ Upstream commit e5b499f6fb17bc95a813e85d0796522280203806 ]
+[ Upstream commit 79fcd446e7e182c52c2c808c76f8de3eb6714349 ]
 
-We must free/disable all interrupts and cancel all pending works
-before doing further cleanup.
+drm_gem_object_put() should be paired with drm_gem_object_lookup().
 
-Before this commit arizona_extcon_remove() was doing several
-register writes to shut things down before disabling the IRQs
-and it was cancelling only 1 of the 3 different works used.
+All gem objs are saved in fb->base.obj[]. Need put the old first before
+assign a new obj.
 
-Move all the register-writes shutting things down to after
-the disabling of the IRQs and add the 2 missing
-cancel_delayed_work_sync() calls.
+Trigger VRAM leak by running command below
+$ service gdm restart
 
-This fixes various possible races on driver unbind. One of which
-would always trigger on devices using the mic-clamp feature for
-jack detection. The ARIZONA_MICD_CLAMP_MODE_MASK update was
-done before disabling the IRQs, causing:
-1. arizona_jackdet() to run
-2. detect a jack being inserted (clamp disabled means jack inserted)
-3. call arizona_start_mic() which:
-3.1 Enables the MICVDD regulator
-3.2 takes a pm_runtime_reference
-
-And this was all happening after the ARIZONA_MICD_ENA bit clearing,
-which would undo 3.1 and 3.2 because the ARIZONA_MICD_CLAMP_MODE_MASK
-update was being done after the ARIZONA_MICD_ENA bit clearing.
-
-So this means that arizona_extcon_remove() would exit with
-1. MICVDD enabled and 2. The pm_runtime_reference being unbalanced.
-
-MICVDD still being enabled caused the following oops when the
-regulator is released by the devm framework:
-
-[ 2850.745757] ------------[ cut here ]------------
-[ 2850.745827] WARNING: CPU: 2 PID: 2098 at drivers/regulator/core.c:2123 _regulator_put.part.0+0x19f/0x1b0
-[ 2850.745835] Modules linked in: extcon_arizona ...
-...
-[ 2850.746909] Call Trace:
-[ 2850.746932]  regulator_put+0x2d/0x40
-[ 2850.746946]  release_nodes+0x22a/0x260
-[ 2850.746984]  __device_release_driver+0x190/0x240
-[ 2850.747002]  driver_detach+0xd4/0x120
-...
-[ 2850.747337] ---[ end trace f455dfd7abd9781f ]---
-
-Note this oops is just one of various theoretically possible races caused
-by the wrong ordering inside arizona_extcon_remove(), this fixes the
-ordering fixing all possible races, including the reported oops.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: xinhui pan <xinhui.pan@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/extcon/extcon-arizona.c | 40 +++++++++++++++++----------------
- 1 file changed, 21 insertions(+), 19 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
-index f7ef247de46a..76aacbac5869 100644
---- a/drivers/extcon/extcon-arizona.c
-+++ b/drivers/extcon/extcon-arizona.c
-@@ -1760,25 +1760,6 @@ static int arizona_extcon_remove(struct platform_device *pdev)
- 	bool change;
- 	int ret;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+index 48cb33e5b382..f5fa1befa7e2 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+@@ -910,8 +910,9 @@ int amdgpu_display_framebuffer_init(struct drm_device *dev,
+ 	}
  
--	ret = regmap_update_bits_check(arizona->regmap, ARIZONA_MIC_DETECT_1,
--				       ARIZONA_MICD_ENA, 0,
--				       &change);
--	if (ret < 0) {
--		dev_err(&pdev->dev, "Failed to disable micd on remove: %d\n",
--			ret);
--	} else if (change) {
--		regulator_disable(info->micvdd);
--		pm_runtime_put(info->dev);
--	}
--
--	gpiod_put(info->micd_pol_gpio);
--
--	pm_runtime_disable(&pdev->dev);
--
--	regmap_update_bits(arizona->regmap,
--			   ARIZONA_MICD_CLAMP_CONTROL,
--			   ARIZONA_MICD_CLAMP_MODE_MASK, 0);
--
- 	if (info->micd_clamp) {
- 		jack_irq_rise = ARIZONA_IRQ_MICD_CLAMP_RISE;
- 		jack_irq_fall = ARIZONA_IRQ_MICD_CLAMP_FALL;
-@@ -1794,10 +1775,31 @@ static int arizona_extcon_remove(struct platform_device *pdev)
- 	arizona_free_irq(arizona, jack_irq_rise, info);
- 	arizona_free_irq(arizona, jack_irq_fall, info);
- 	cancel_delayed_work_sync(&info->hpdet_work);
-+	cancel_delayed_work_sync(&info->micd_detect_work);
-+	cancel_delayed_work_sync(&info->micd_timeout_work);
-+
-+	ret = regmap_update_bits_check(arizona->regmap, ARIZONA_MIC_DETECT_1,
-+				       ARIZONA_MICD_ENA, 0,
-+				       &change);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "Failed to disable micd on remove: %d\n",
-+			ret);
-+	} else if (change) {
-+		regulator_disable(info->micvdd);
-+		pm_runtime_put(info->dev);
-+	}
-+
-+	regmap_update_bits(arizona->regmap,
-+			   ARIZONA_MICD_CLAMP_CONTROL,
-+			   ARIZONA_MICD_CLAMP_MODE_MASK, 0);
- 	regmap_update_bits(arizona->regmap, ARIZONA_JACK_DETECT_ANALOGUE,
- 			   ARIZONA_JD1_ENA, 0);
- 	arizona_clk32k_disable(arizona);
+ 	for (i = 1; i < rfb->base.format->num_planes; ++i) {
++		drm_gem_object_get(rfb->base.obj[0]);
++		drm_gem_object_put(rfb->base.obj[i]);
+ 		rfb->base.obj[i] = rfb->base.obj[0];
+-		drm_gem_object_get(rfb->base.obj[i]);
+ 	}
  
-+	gpiod_put(info->micd_pol_gpio);
-+
-+	pm_runtime_disable(&pdev->dev);
-+
  	return 0;
+@@ -960,6 +961,7 @@ amdgpu_display_user_framebuffer_create(struct drm_device *dev,
+ 		return ERR_PTR(ret);
+ 	}
+ 
++	drm_gem_object_put(obj);
+ 	return &amdgpu_fb->base;
  }
  
 -- 
