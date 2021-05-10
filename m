@@ -2,135 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0EED378665
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2E837866A
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235938AbhEJLHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:07:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32854 "EHLO mx2.suse.de"
+        id S236094AbhEJLHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:07:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33584 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232821AbhEJKqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:46:00 -0400
+        id S231783AbhEJKqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:46:36 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 52563ADCE;
-        Mon, 10 May 2021 10:44:54 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id F158B1F2C5C; Mon, 10 May 2021 12:44:53 +0200 (CEST)
-Date:   Mon, 10 May 2021 12:44:53 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chi Wu <wuchi.zero@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, tj@kernel.org,
-        Howard Cochran <hcochran@kernelspring.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Jens Axboe <axboe@fb.com>, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH] mm/page-writeback: Fix performance when BDI's share of
- ratio is 0.
-Message-ID: <20210510104453.GE11100@quack2.suse.cz>
-References: <20210428225046.16301-1-wuchi.zero@gmail.com>
- <20210509163633.ced3588cb92984c0d3835fc3@linux-foundation.org>
+        by mx2.suse.de (Postfix) with ESMTP id B2313AD21;
+        Mon, 10 May 2021 10:45:30 +0000 (UTC)
+Date:   Mon, 10 May 2021 12:45:24 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        willy@infradead.org, mhocko@suse.com, song.bao.hua@hisilicon.com,
+        david@redhat.com, naoya.horiguchi@nec.com,
+        joao.m.martins@oracle.com, duanxiongchun@bytedance.com,
+        fam.zheng@bytedance.com, zhengqi.arch@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v23 6/9] mm: hugetlb: alloc the vmemmap pages associated
+ with each HugeTLB page
+Message-ID: <20210510104524.GD22664@linux>
+References: <20210510030027.56044-1-songmuchun@bytedance.com>
+ <20210510030027.56044-7-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210509163633.ced3588cb92984c0d3835fc3@linux-foundation.org>
+In-Reply-To: <20210510030027.56044-7-songmuchun@bytedance.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 09-05-21 16:36:33, Andrew Morton wrote:
-> On Thu, 29 Apr 2021 06:50:46 +0800 Chi Wu <wuchi.zero@gmail.com> wrote:
-> 
-> > Fix performance when BDI's share of ratio is 0.
-> > 
-> > The issue is similar to commit 74d369443325 ("writeback: Fix
-> > performance regression in wb_over_bg_thresh()").
-> > 
-> > Balance_dirty_pages and the writeback worker will also disagree on
-> > whether writeback when a BDI uses BDI_CAP_STRICTLIMIT and BDI's share
-> > of the thresh ratio is zero.
-> > 
-> > For example, A thread on cpu0 writes 32 pages and then
-> > balance_dirty_pages, it will wake up background writeback and pauses
-> > because wb_dirty > wb->wb_thresh = 0 (share of thresh ratio is zero).
-> > A thread may runs on cpu0 again because scheduler prefers pre_cpu.
-> > Then writeback worker may runs on other cpus(1,2..) which causes the
-> > value of wb_stat(wb, WB_RECLAIMABLE) in wb_over_bg_thresh is 0 and does
-> > not writeback and returns.
-> > 
-> > Thus, balance_dirty_pages keeps looping, sleeping and then waking up the
-> > worker who will do nothing. It remains stuck in this state until the
-> > writeback worker hit the right dirty cpu or the dirty pages expire.
-> > 
-> > The fix that we should get the wb_stat_sum radically when thresh is low.
-> 
-> (optimistically Cc's various people who might remember how this code works)
+On Mon, May 10, 2021 at 11:00:24AM +0800, Muchun Song wrote:
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1376,6 +1376,39 @@ static void remove_hugetlb_page(struct hstate *h, struct page *page,
+>  	h->nr_huge_pages_node[nid]--;
+>  }
+>  
+> +static void add_hugetlb_page(struct hstate *h, struct page *page,
+> +			     bool adjust_surplus)
+> +{
+> +	int zeroed;
+> +	int nid = page_to_nid(page);
+> +
+> +	VM_BUG_ON_PAGE(!HPageVmemmapOptimized(page), page);
+> +
+> +	lockdep_assert_held(&hugetlb_lock);
+> +
+> +	INIT_LIST_HEAD(&page->lru);
+> +	h->nr_huge_pages++;
+> +	h->nr_huge_pages_node[nid]++;
+> +
+> +	if (adjust_surplus) {
+> +		h->surplus_huge_pages++;
+> +		h->surplus_huge_pages_node[nid]++;
+> +	}
+> +
+> +	set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
+> +	set_page_private(page, 0);
 
-Thanks for forwarding Andrew!
+I think this has already been discused, so sorry about this.
 
-> > Signed-off-by: Chi Wu <wuchi.zero@gmail.com>
-> 
-> Thanks.  I'll add it for some testing and hopefully someone will find
-> the time to review this.
+The only reason to need the set_page_private() is because of the dissolving
+function right? add_hugetlb_page() can only get reached via free_huge_page(),
+or dissolve_free_huge_page, and while the former clears the flags, the latter
+it does not.
 
-Thanks for the patch! It looks good to me, good catch! Feel free to add:
+I think this function would benefit from some renaming. add_hugetlb_page() gives
+me no hint of what is this about, although I can figure it out reading the code.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+With that: Reviewed-by: Oscar Salvador <osalvador@suse.de>
 
-								Honza
 
-> > ---
-> >  mm/page-writeback.c | 20 ++++++++++++++++----
-> >  1 file changed, 16 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> > index 0062d5c57d41..bd7052295246 100644
-> > --- a/mm/page-writeback.c
-> > +++ b/mm/page-writeback.c
-> > @@ -1945,6 +1945,8 @@ bool wb_over_bg_thresh(struct bdi_writeback *wb)
-> >  	struct dirty_throttle_control * const gdtc = &gdtc_stor;
-> >  	struct dirty_throttle_control * const mdtc = mdtc_valid(&mdtc_stor) ?
-> >  						     &mdtc_stor : NULL;
-> > +	unsigned long reclaimable;
-> > +	unsigned long thresh;
-> >  
-> >  	/*
-> >  	 * Similar to balance_dirty_pages() but ignores pages being written
-> > @@ -1957,8 +1959,13 @@ bool wb_over_bg_thresh(struct bdi_writeback *wb)
-> >  	if (gdtc->dirty > gdtc->bg_thresh)
-> >  		return true;
-> >  
-> > -	if (wb_stat(wb, WB_RECLAIMABLE) >
-> > -	    wb_calc_thresh(gdtc->wb, gdtc->bg_thresh))
-> > +	thresh = wb_calc_thresh(gdtc->wb, gdtc->bg_thresh);
-> > +	if (thresh < 2 * wb_stat_error())
-> > +		reclaimable = wb_stat_sum(wb, WB_RECLAIMABLE);
-> > +	else
-> > +		reclaimable = wb_stat(wb, WB_RECLAIMABLE);
-> > +
-> > +	if (reclaimable > thresh)
-> >  		return true;
-> >  
-> >  	if (mdtc) {
-> > @@ -1972,8 +1979,13 @@ bool wb_over_bg_thresh(struct bdi_writeback *wb)
-> >  		if (mdtc->dirty > mdtc->bg_thresh)
-> >  			return true;
-> >  
-> > -		if (wb_stat(wb, WB_RECLAIMABLE) >
-> > -		    wb_calc_thresh(mdtc->wb, mdtc->bg_thresh))
-> > +		thresh = wb_calc_thresh(mdtc->wb, mdtc->bg_thresh);
-> > +		if (thresh < 2 * wb_stat_error())
-> > +			reclaimable = wb_stat_sum(wb, WB_RECLAIMABLE);
-> > +		else
-> > +			reclaimable = wb_stat(wb, WB_RECLAIMABLE);
-> > +
-> > +		if (reclaimable > thresh)
-> >  			return true;
-> >  	}
-> >  
-> > -- 
-> > 2.17.1
+
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Oscar Salvador
+SUSE L3
