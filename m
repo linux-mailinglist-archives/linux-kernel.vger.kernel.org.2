@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BD8378DD8
+	by mail.lfdr.de (Postfix) with ESMTP id B79D9378DDA
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349888AbhEJMzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:55:22 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:47674 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344803AbhEJMUX (ORCPT
+        id S1349922AbhEJMza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:55:30 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:35442 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344816AbhEJMUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 08:20:23 -0400
-Received: by mail-il1-f200.google.com with SMTP id m18-20020a056e020df2b02901a467726f49so13555152ilj.14
+        Mon, 10 May 2021 08:20:25 -0400
+Received: by mail-io1-f70.google.com with SMTP id l2-20020a5e82020000b02903c2fa852f92so10323026iom.2
         for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:19:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=LIsysw+22kJoVtdEn0ARG+JVEdMdBtBx51RjL3I2/Tk=;
-        b=AhnqCQIrUhsmrydVUu8D/c8ahY7TcZanjkhxNCbyByxK0smiLJKwDCE0MtdwPNpMkv
-         mN6HptffPPmRLZyoJul4BUxovOsI164fYCqYxz57QNMaiAKmWO+od1zI79a5M/kzZ3dS
-         2FkAUMtfHctjwjgpjVe4sYFMrnd6o8mPdVfmNyBpU0EZH6VdHNFycWVIz+4hxGQXl3Za
-         Ej9WuDMKePETiVEA3g8JE1C4GXA7MKvMwb9bWKBxMe4iY+2SATbjS9NwsoazMUQRlTPQ
-         cU98ie1DWzyyo+g0SjVtNY9xocA82Vk3HB/+tQs1UMGygcwzAV04oAF0ypu4BMVKpx7K
-         pa4Q==
-X-Gm-Message-State: AOAM532HSjapoX0LqTVEdwHH8C/Ysu9I47RsGGhBgzk02fGhCXops1xP
-        RGKnWeYDgZ4r44MAnLGr1molosC+dS1+9cb9rm3Jrp2o1PQk
-X-Google-Smtp-Source: ABdhPJwiqnW7Qb1We7cNl8N28tyshNYYabZIjlibGO6iNBPyJmQU/lUn76wY7epMNeYvZ48V9/OSJgb7NToOHS37ma24vqhZuAHn
+        bh=eYJwuDZ+XsqRKCRKIvwFZzV5wcwkB59FcbGmaKLVifw=;
+        b=SdmOZ4e8oT0oHG6kyF5HoCU1HLk8pOQipDFaZK4TLRZ5ZtBSpfe7arR1UOZS7ic0np
+         lXP63LSkcTFmzTAaWSGDgcUT6AdpYtPN+sV+K5POjObnbDGjo41+YrAGVetuoCJykdfo
+         Ewb9oWe4k0CkCanwbeBWNlUBog5QuFLO5vagAvYSsFvLwp3JxwEOPP4VdqfLPLyyabqs
+         6lCSrEutMH+V2RKzcEPYPYVmswZICdnPFN/IyZj8FTH4ldDVauUyIfT3lUPq5ygHsCDT
+         UDfFZ/7vUL2d0kwOMFGjx96hOxi/6DfP5RfWYTqgmHtGstH57lKnSjG1vMU0gGN/JCtY
+         2ebw==
+X-Gm-Message-State: AOAM5303KJcRxZNdxbnUWts8HkmGxNUT2rSWcSWPLTfj6dQogX09FXec
+        0JLx0v+9ffENV7RlvFxRc0oWiEA7xR/EZQZY2mmgRU1AHY/d
+X-Google-Smtp-Source: ABdhPJyFK7D1jwvXUWQ6WVwkji1paIyU97HyrhX4bG6k0z3W/BkrqxebK0x1iuSYmhw44Dkty51TcsDtORPoQdIK2afFatUJ5DMg
 MIME-Version: 1.0
-X-Received: by 2002:a92:2a0a:: with SMTP id r10mr21447954ile.274.1620649158133;
+X-Received: by 2002:a92:cd85:: with SMTP id r5mr21276631ilb.169.1620649158349;
  Mon, 10 May 2021 05:19:18 -0700 (PDT)
 Date:   Mon, 10 May 2021 05:19:18 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000604ea605c1f8c9af@google.com>
-Subject: [syzbot] possible deadlock in process_measurement (3)
-From:   syzbot <syzbot+ccfcdc8958f74084f16d@syzkaller.appspotmail.com>
-To:     dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, serge@hallyn.com,
-        syzkaller-bugs@googlegroups.com, zohar@linux.ibm.com
+Message-ID: <00000000000063a4b605c1f8c94b@google.com>
+Subject: [syzbot] UBSAN: shift-out-of-bounds in do_mpage_readpage
+From:   syzbot <syzbot+cf89d662483d6a1a0790@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes.berg@intel.com,
+        johannes@sipsolutions.net, kuba@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -51,130 +52,59 @@ syzbot found the following issue on:
 
 HEAD commit:    d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15f425b3d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=65c207250bba4efe
-dashboard link: https://syzkaller.appspot.com/bug?extid=ccfcdc8958f74084f16d
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16079d1ed00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12280d95d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11dfac0dd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d360b81e47df40ea
+dashboard link: https://syzkaller.appspot.com/bug?extid=cf89d662483d6a1a0790
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17051fc3d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=163ab395d00000
+
+The issue was bisected to:
+
+commit dcd479e10a0510522a5d88b29b8f79ea3467d501
+Author: Johannes Berg <johannes.berg@intel.com>
+Date:   Fri Oct 9 12:17:11 2020 +0000
+
+    mac80211: always wind down STA state
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10795f2dd00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12795f2dd00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14795f2dd00000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ccfcdc8958f74084f16d@syzkaller.appspotmail.com
+Reported-by: syzbot+cf89d662483d6a1a0790@syzkaller.appspotmail.com
+Fixes: dcd479e10a05 ("mac80211: always wind down STA state")
 
-======================================================
-WARNING: possible circular locking dependency detected
-5.12.0-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor167/10873 is trying to acquire lock:
-ffff8880162d0bc0 (&iint->mutex){+.+.}-{3:3}, at: process_measurement+0x3a8/0x17e0 security/integrity/ima/ima_main.c:253
-
-but task is already holding lock:
-ffff888147e2e460 (sb_writers#5){.+.+}-{0:0}, at: do_open fs/namei.c:3354 [inline]
-ffff888147e2e460 (sb_writers#5){.+.+}-{0:0}, at: path_openat+0x1ad9/0x27e0 fs/namei.c:3494
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (sb_writers#5){.+.+}-{0:0}:
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       __sb_start_write include/linux/fs.h:1765 [inline]
-       sb_start_write include/linux/fs.h:1835 [inline]
-       mnt_want_write+0x6e/0x3e0 fs/namespace.c:375
-       ovl_maybe_copy_up+0x11f/0x190 fs/overlayfs/copy_up.c:995
-       ovl_open+0xba/0x270 fs/overlayfs/file.c:149
-       do_dentry_open+0x4b9/0x11b0 fs/open.c:826
-       vfs_open fs/open.c:940 [inline]
-       dentry_open+0x132/0x1d0 fs/open.c:956
-       ima_calc_file_hash+0x2d2/0x4b0 security/integrity/ima/ima_crypto.c:557
-       ima_collect_measurement+0x4ca/0x570 security/integrity/ima/ima_api.c:252
-       process_measurement+0xd1c/0x17e0 security/integrity/ima/ima_main.c:330
-       ima_file_check+0xb9/0x100 security/integrity/ima/ima_main.c:499
-       do_open fs/namei.c:3363 [inline]
-       path_openat+0x15b5/0x27e0 fs/namei.c:3494
-       do_filp_open+0x190/0x3d0 fs/namei.c:3521
-       do_sys_openat2+0x16d/0x420 fs/open.c:1187
-       do_sys_open fs/open.c:1203 [inline]
-       __do_sys_open fs/open.c:1211 [inline]
-       __se_sys_open fs/open.c:1207 [inline]
-       __x64_sys_open+0x119/0x1c0 fs/open.c:1207
-       do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #0 (&iint->mutex){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:2938 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3061 [inline]
-       validate_chain kernel/locking/lockdep.c:3676 [inline]
-       __lock_acquire+0x2a17/0x5230 kernel/locking/lockdep.c:4902
-       lock_acquire kernel/locking/lockdep.c:5512 [inline]
-       lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
-       __mutex_lock_common kernel/locking/mutex.c:949 [inline]
-       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
-       process_measurement+0x3a8/0x17e0 security/integrity/ima/ima_main.c:253
-       ima_file_check+0xb9/0x100 security/integrity/ima/ima_main.c:499
-       do_open fs/namei.c:3363 [inline]
-       path_openat+0x15b5/0x27e0 fs/namei.c:3494
-       do_filp_open+0x190/0x3d0 fs/namei.c:3521
-       do_sys_openat2+0x16d/0x420 fs/open.c:1187
-       do_sys_open fs/open.c:1203 [inline]
-       __do_sys_open fs/open.c:1211 [inline]
-       __se_sys_open fs/open.c:1207 [inline]
-       __x64_sys_open+0x119/0x1c0 fs/open.c:1207
-       do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(sb_writers#5);
-                               lock(&iint->mutex);
-                               lock(sb_writers#5);
-  lock(&iint->mutex);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor167/10873:
- #0: ffff888147e2e460 (sb_writers#5){.+.+}-{0:0}, at: do_open fs/namei.c:3354 [inline]
- #0: ffff888147e2e460 (sb_writers#5){.+.+}-{0:0}, at: path_openat+0x1ad9/0x27e0 fs/namei.c:3494
-
-stack backtrace:
-CPU: 1 PID: 10873 Comm: syz-executor167 Not tainted 5.12.0-syzkaller #0
+================================================================================
+UBSAN: shift-out-of-bounds in fs/mpage.c:189:40
+shift exponent 4294967279 is too large for 64-bit type 'long long unsigned int'
+CPU: 1 PID: 8457 Comm: systemd-udevd Not tainted 5.12.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:79 [inline]
  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2129
- check_prev_add kernel/locking/lockdep.c:2938 [inline]
- check_prevs_add kernel/locking/lockdep.c:3061 [inline]
- validate_chain kernel/locking/lockdep.c:3676 [inline]
- __lock_acquire+0x2a17/0x5230 kernel/locking/lockdep.c:4902
- lock_acquire kernel/locking/lockdep.c:5512 [inline]
- lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
- __mutex_lock_common kernel/locking/mutex.c:949 [inline]
- __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
- process_measurement+0x3a8/0x17e0 security/integrity/ima/ima_main.c:253
- ima_file_check+0xb9/0x100 security/integrity/ima/ima_main.c:499
- do_open fs/namei.c:3363 [inline]
- path_openat+0x15b5/0x27e0 fs/namei.c:3494
- do_filp_open+0x190/0x3d0 fs/namei.c:3521
- do_sys_openat2+0x16d/0x420 fs/open.c:1187
- do_sys_open fs/open.c:1203 [inline]
- __do_sys_open fs/open.c:1211 [inline]
- __se_sys_open fs/open.c:1207 [inline]
- __x64_sys_open+0x119/0x1c0 fs/open.c:1207
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
+ do_mpage_readpage.cold+0x226/0x2bb fs/mpage.c:189
+ mpage_readahead+0x3a3/0x880 fs/mpage.c:389
+ read_pages+0x1df/0x8d0 mm/readahead.c:130
+ page_cache_ra_unbounded+0x61f/0x920 mm/readahead.c:238
+ do_page_cache_ra mm/readahead.c:267 [inline]
+ force_page_cache_ra+0x3ba/0x5b0 mm/readahead.c:299
+ page_cache_sync_ra+0x107/0x200 mm/readahead.c:573
+ page_cache_sync_readahead include/linux/pagemap.h:864 [inline]
+ filemap_get_pages+0x29f/0x1920 mm/filemap.c:2442
+ filemap_read+0x2ca/0xe40 mm/filemap.c:2525
+ generic_file_read_iter+0x397/0x4f0 mm/filemap.c:2676
+ blkdev_read_iter+0x11b/0x180 fs/block_dev.c:1720
+ call_read_iter include/linux/fs.h:2110 [inline]
+ new_sync_read+0x41e/0x6e0 fs/read_write.c:415
+ vfs_read+0x35c/0x570 fs/read_write.c:496
+ ksys_read+0x12d/0x250 fs/read_write.c:634
  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
  entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x446119
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 41 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ff688b472f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 00000000004cb4c0 RCX: 0000000000446119
-RDX: 0000000000000000 RSI: 0000000000000300 RDI: 0000000020000040
-RBP: 000000000049b06c R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0030656c69662f2e
-R13: 3d72696472657070 R14: 0079616c7265766f R15: 00000000004cb4c8
+RIP: 0033:0x7fdc7280d210
+Code: 73 01 c3 48 8b 0d 98 7d 20 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d b9 c1 20 00 00 75 10 b8 00 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 4e fc ff ff 48 89 04 24
+RSP: 002
 
 
 ---
@@ -184,5 +114,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
