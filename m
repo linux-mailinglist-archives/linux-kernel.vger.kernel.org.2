@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CD9378C28
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571AD378A8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345902AbhEJMZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:25:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46148 "EHLO mail.kernel.org"
+        id S242561AbhEJLrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:47:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237098AbhEJLLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:11:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF69C61606;
-        Mon, 10 May 2021 11:06:54 +0000 (UTC)
+        id S233659AbhEJK7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:59:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAC9F61C4F;
+        Mon, 10 May 2021 10:52:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644815;
-        bh=MUVpAbIDpHgX4tBtKUQo8bni9gOy8VJ4MiQLiHFiun0=;
+        s=korg; t=1620643974;
+        bh=ziNBxzhKZPutONo3f4ou2khFKiqLnOtDZul7o3GCZCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eA//8WHI5pe9s3XtKdo721jiiYNp2eTT9iMzKvtjSdbre6Indw17UjlZyavW+zKNz
-         G3s4sUEK2Fybgnarvf/lbTiqyY/ix4NLWFnELFXGOA7+egX34VxS2bct3JNhm/rULC
-         /TPubrbrp9iW5J+nOsI91fCweChpf+zkwwCnbBOs=
+        b=sD6vR5X+HWkPHNcd3Y65Fv4pqMdlkpZ06jRpxIESP7vD8yYBC/zeGnDd0yBVxRjPE
+         XzftDEcrSLuhj28mzNrcHfOgoOaojqXi08rVtqcTDMgVWkucA6mgh+zjnjCq3Z7hK0
+         Jt85QFY8KhB2CeIii0ZqnQlvhj0WTwImHaAZV8DI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+3c2be7424cea3b932b0e@syzkaller.appspotmail.com,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Gioh Kim <gi-oh.kim@ionos.com>,
+        Jack Wang <jinpu.wang@ionos.com>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 236/384] media: dvb-usb: fix memory leak in dvb_usb_adapter_init
-Date:   Mon, 10 May 2021 12:20:25 +0200
-Message-Id: <20210510102022.669039843@linuxfoundation.org>
+Subject: [PATCH 5.11 236/342] block/rnbd-clt: Fix missing a memory free when unloading the module
+Date:   Mon, 10 May 2021 12:20:26 +0200
+Message-Id: <20210510102017.876970042@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
-References: <20210510102014.849075526@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,81 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 
-[ Upstream commit b7cd0da982e3043f2eec7235ac5530cb18d6af1d ]
+[ Upstream commit 12b06533104e802df73c1fbe159437c19933d6c0 ]
 
-syzbot reported memory leak in dvb-usb. The problem was
-in invalid error handling in dvb_usb_adapter_init().
+When unloading the rnbd-clt module, it does not free a memory
+including the filename of the symbolic link to /sys/block/rnbdX.
 
-for (n = 0; n < d->props.num_adapters; n++) {
-....
-	if ((ret = dvb_usb_adapter_stream_init(adap)) ||
-		(ret = dvb_usb_adapter_dvb_init(adap, adapter_nrs)) ||
-		(ret = dvb_usb_adapter_frontend_init(adap))) {
-		return ret;
-	}
-...
-	d->num_adapters_initialized++;
-...
-}
+It is found by kmemleak as below.
 
-In case of error in dvb_usb_adapter_dvb_init() or
-dvb_usb_adapter_dvb_init() d->num_adapters_initialized won't be
-incremented, but dvb_usb_adapter_exit() relies on it:
+unreferenced object 0xffff9f1a83d3c740 (size 16):
+  comm "bash", pid 736, jiffies 4295179665 (age 9841.310s)
+  hex dump (first 16 bytes):
+    21 64 65 76 21 6e 75 6c 6c 62 30 40 62 6c 61 00  !dev!nullb0@bla.
+  backtrace:
+    [<0000000039f0c55e>] 0xffffffffc0456c24
+    [<000000001aab9513>] kernfs_fop_write+0xcf/0x1c0
+    [<00000000db5aa4b3>] vfs_write+0xdb/0x1d0
+    [<000000007a2e2207>] ksys_write+0x65/0xe0
+    [<00000000055e280a>] do_syscall_64+0x50/0x1b0
+    [<00000000c2b51831>] entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-	for (n = 0; n < d->num_adapters_initialized; n++)
-
-So, allocated objects won't be freed.
-
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Reported-by: syzbot+3c2be7424cea3b932b0e@syzkaller.appspotmail.com
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Link: https://lore.kernel.org/r/20210419073722.15351-13-gi-oh.kim@ionos.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb/dvb-usb-init.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ drivers/block/rnbd/rnbd-clt-sysfs.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/usb/dvb-usb/dvb-usb-init.c b/drivers/media/usb/dvb-usb/dvb-usb-init.c
-index c1a7634e27b4..adc8b287326b 100644
---- a/drivers/media/usb/dvb-usb/dvb-usb-init.c
-+++ b/drivers/media/usb/dvb-usb/dvb-usb-init.c
-@@ -79,11 +79,17 @@ static int dvb_usb_adapter_init(struct dvb_usb_device *d, short *adapter_nrs)
- 			}
- 		}
- 
--		if ((ret = dvb_usb_adapter_stream_init(adap)) ||
--			(ret = dvb_usb_adapter_dvb_init(adap, adapter_nrs)) ||
--			(ret = dvb_usb_adapter_frontend_init(adap))) {
-+		ret = dvb_usb_adapter_stream_init(adap);
-+		if (ret)
- 			return ret;
--		}
-+
-+		ret = dvb_usb_adapter_dvb_init(adap, adapter_nrs);
-+		if (ret)
-+			goto dvb_init_err;
-+
-+		ret = dvb_usb_adapter_frontend_init(adap);
-+		if (ret)
-+			goto frontend_init_err;
- 
- 		/* use exclusive FE lock if there is multiple shared FEs */
- 		if (adap->fe_adap[1].fe)
-@@ -103,6 +109,12 @@ static int dvb_usb_adapter_init(struct dvb_usb_device *d, short *adapter_nrs)
+diff --git a/drivers/block/rnbd/rnbd-clt-sysfs.c b/drivers/block/rnbd/rnbd-clt-sysfs.c
+index d4aa6bfc9555..526c77cd7a50 100644
+--- a/drivers/block/rnbd/rnbd-clt-sysfs.c
++++ b/drivers/block/rnbd/rnbd-clt-sysfs.c
+@@ -432,10 +432,14 @@ void rnbd_clt_remove_dev_symlink(struct rnbd_clt_dev *dev)
+ 	 * i.e. rnbd_clt_unmap_dev_store() leading to a sysfs warning because
+ 	 * of sysfs link already was removed already.
+ 	 */
+-	if (dev->blk_symlink_name && try_module_get(THIS_MODULE)) {
+-		sysfs_remove_link(rnbd_devs_kobj, dev->blk_symlink_name);
++	if (dev->blk_symlink_name) {
++		if (try_module_get(THIS_MODULE)) {
++			sysfs_remove_link(rnbd_devs_kobj, dev->blk_symlink_name);
++			module_put(THIS_MODULE);
++		}
++		/* It should be freed always. */
+ 		kfree(dev->blk_symlink_name);
+-		module_put(THIS_MODULE);
++		dev->blk_symlink_name = NULL;
  	}
- 
- 	return 0;
-+
-+frontend_init_err:
-+	dvb_usb_adapter_dvb_exit(adap);
-+dvb_init_err:
-+	dvb_usb_adapter_stream_exit(adap);
-+	return ret;
  }
  
- static int dvb_usb_adapter_exit(struct dvb_usb_device *d)
 -- 
 2.30.2
 
