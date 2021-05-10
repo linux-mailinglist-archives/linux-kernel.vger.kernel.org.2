@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AA3D378DA7
+	by mail.lfdr.de (Postfix) with ESMTP id E863C378DA8
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349509AbhEJMti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52576 "EHLO
+        id S1349534AbhEJMtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241889AbhEJLi7 (ORCPT
+        with ESMTP id S234249AbhEJLjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:38:59 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D828C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 04:35:34 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id y32so13059594pga.11
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 04:35:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Wz6rpD52zl7+K2dd5/t2p4HjFSdc/LeLXvqpvIZcQ0o=;
-        b=FO5UemEJ8pI/qUHyw04cZVpQtVp809X+rOJesPIR7nHgpdBF9j2ShCgsIUXmJ0gywm
-         ungucMQfC+hET1jcdLWDlGJxl/r8lDv1hVbyZYwxJJIB/Iokul2g2wJDKmV7nBberdVd
-         wWarHx7vSqBwdzYR/ADYyBwPBm2ByzPN8jzGbD7jmOlAGGdz7oEv1BGCuJQ+C/5aJADE
-         oOSvgvo1OCHgQ1XBVypUubHQlw31Q444kIwMYwrSf0Oadfkure3aAkmdEbgX+VWWikjv
-         dRljc78O2W65JCUa/TTRu7q+2mGKzi6SMbef6Ws69n3h7xpm8aPsYz/vCLIg4/zzCVfN
-         lMDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Wz6rpD52zl7+K2dd5/t2p4HjFSdc/LeLXvqpvIZcQ0o=;
-        b=Wpjb3sdAJ6DvM2Oc3ua/4vJVMcpQzwBo+PeqXLVFj9HuAsCjDUP3gd7/ABiEUvNdkt
-         zqA2pSqaY+KFKgAtesDoXoqW6vSZHYO3pzW5fYM3nu88FdqHZACaEZ7XaUxIKgeDhbPM
-         N0WAJcBUmtyTL6uSC3J8VdYBYiBbbj8H0c6bM02l3tG5Fm3thrMPArOmT8FGQsR14Lvr
-         slyr3l9yrAYNyN93XBN4PjIYrK9utlq05DJYR9YkfQrIDC+7kAMKlrwUmef3XRSdfiJ0
-         v1+qpeFQSwPLYkEMRafgt+m2oDVjA2ZnSFT94R1jJFbKUR0DU17Ec0ciwyl5PneY0PT1
-         Ku9w==
-X-Gm-Message-State: AOAM530YhWZAE7dJ+hIvuq2VLHO4yWRBrzj6QwnXCvxe4vApOUFGTxFF
-        kBIeErzPZeI1+2DyOfrtdvpEvts4ea7mKg==
-X-Google-Smtp-Source: ABdhPJzOjpk+TLqHWwStu3zSfOXZM5YnCKB6nOfvr+ZOZw6gKWH4Lat2NceBqTMKIPVj7oeo0w4bjg==
-X-Received: by 2002:a62:1a4b:0:b029:24e:ba53:aaa4 with SMTP id a72-20020a621a4b0000b029024eba53aaa4mr25149188pfa.63.1620646533827;
-        Mon, 10 May 2021 04:35:33 -0700 (PDT)
-Received: from ojas ([122.177.206.92])
-        by smtp.gmail.com with ESMTPSA id x26sm11069542pfm.134.2021.05.10.04.35.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 04:35:33 -0700 (PDT)
-Date:   Mon, 10 May 2021 17:05:24 +0530
-From:   Ojaswin Mujoo <ojaswin98@gmail.com>
-To:     linux-staging@lists.linux.dev
-Cc:     linux-kernel@vger.kernel.org, ojaswin98@gmail.com,
-        gregkh@linuxfoundation.org, atulgopinathan@gmail.com,
-        yashsri421@gmail.com
-Subject: [PATCH 3/3] staging: rtl8192e: Fix whitespace around conditional
- statement
-Message-ID: <b25f07b14c7e1f0d70d54b8723f786e33ffeb77a.1620642396.git.ojaswin98@gmail.com>
-References: <cover.1620642396.git.ojaswin98@gmail.com>
+        Mon, 10 May 2021 07:39:15 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C87C06138B;
+        Mon, 10 May 2021 04:38:01 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94.2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1lg4EU-006y0Y-BN; Mon, 10 May 2021 13:37:54 +0200
+Message-ID: <2a46ca787df9a44c8b4fbc17ab6b69247ab38400.camel@sipsolutions.net>
+Subject: Re: [PATCH v2] init/gcov: allow CONFIG_CONSTRUCTORS on UML to fix
+ module gcov
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Lambert <lambertdev@qq.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, Jessica Yu <jeyu@kernel.org>,
+        linux-um@lists.infradead.org, "Lambert." <lambertdev@foxmail.com>
+Date:   Mon, 10 May 2021 13:37:53 +0200
+In-Reply-To: <tencent_99073B61C8137C88B76C231139F94EFB3805@qq.com>
+References: <e386f13f8496330cd42e93c6d48a25b9a57a6792.camel@sipsolutions.net>
+         <20210120172041.c246a2cac2fb.I1358f584b76f1898373adfed77f4462c8705b736@changeid>
+         <ee3bc3bf-9582-d278-5b7a-d9fa27b17800@linux.ibm.com>
+         <tencent_99073B61C8137C88B76C231139F94EFB3805@qq.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1620642396.git.ojaswin98@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the following checkpatch.pl warnings:
+Hi,
 
-- WARNING: suspect code indent for conditional statements (8, 17)
-  FILE: ./rtl8192e/rtl8192e/rtl_dm.c:1735:
+> Hi Johannes and Peter, sorry to bother but I have one question 
+> on this change. The do_ctors() won’t be executed for UML 
+> because  *the constructors have already been called for ELF*. 
+> 
+> *__ctors_start*  and  *__ctors_end* symbols. See link:
+> https://elixir.bootlin.com/linux/v5.12.2/source/include/asm-generic/vmlinux.lds.h#L676
+> 
+> In my environment, UML+GCC 10, I can't find __gcov_init executed 
+> before kernel starts. So I did some trace and found glibc
+> __libc_csu_init 
+> will only execute constructors between *__init_array_start*and
+> *__init_array_end*.  
+> Which means if do_ctors() is not executed for UML, no elsewhere will 
+> the constructors be executed.
+> 
+> Shall we remove the *!defined(CONFIG_UML)* for GCC, or I just missed 
+> some steps to make the GCOV work for UML? 
 
-- WARNING: Statements should start on a tabstop
-  FILE: ./rtl8192e/rtl8192e/rtl_dm.c:1736:
+No, that doesn't seem like the right solution.
 
-Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
----
- drivers/staging/rtl8192e/rtl8192e/rtl_dm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Perhaps then with that toolchain (or configuration thereof) we need to
+provide __init_array_start/end labels?
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-index e340be3ebb97..3d5f9dc5882b 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-@@ -1733,7 +1733,7 @@ static void _rtl92e_dm_check_edca_turbo(struct net_device *dev)
- 			priv->bcurrent_turbo_EDCA = true;
- 		}
- 	} else {
--		 if (priv->bcurrent_turbo_EDCA) {
-+		if (priv->bcurrent_turbo_EDCA) {
- 			u8 tmp = AC0_BE;
- 
- 			priv->rtllib->SetHwRegHandler(dev, HW_VAR_AC_PARAM,
--- 
-2.25.1
+Or ... maybe that actually just needs to be removed, so that the
+toolchain gets to choose?
+
+Hmm. Pretty sure it worked for me, I think also with gcc 10, but not
+sure exactly where I tested.
+
+johannes
+
 
