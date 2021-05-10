@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453FA378D34
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEC6378D35
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347649AbhEJMgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:36:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56146 "EHLO mail.kernel.org"
+        id S1347666AbhEJMgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:36:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235318AbhEJLOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:14:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B0C961075;
-        Mon, 10 May 2021 11:10:55 +0000 (UTC)
+        id S237438AbhEJLPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:15:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7B4F61108;
+        Mon, 10 May 2021 11:10:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620645056;
-        bh=id582z2zHgIDtFnlOdn0Ci+tIXY+YTX5iV853NXKwEs=;
+        s=korg; t=1620645058;
+        bh=rAGappilp1e9ZWphv4CQintWd2/j0kzuJ2+3dx1DlRQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wr/Rj2Qf+4OqRlOsBMMRW9thLqW0XzyNnFiHd9JpKSOk7FTsO7OHvohq6nuvz9fEc
-         9BX/cDDcjnL4qUc9872GSQNz47Nl7EIX8IG/PcWiAwLE/vEkoDXgE0m7cqVZA341aK
-         ABzqbwFdmsWo53tF7BBDbu3mmHQtACWDlS9FDa3Y=
+        b=Id4VGtSE3FAwdvgJEh1lzj4B90BILiOfzBm59KAkys0n5L6aNu7cXrqRdq4d2o9My
+         3pn1meq1dWAXZF2O+kDfXOT9UnW1A4Rb4c4u/pUI4U9wmULt9jtNBem5sRfd7J6D1Y
+         u7RiDgcMDK7uOeTm3PAwZDZ2cZ3PbXdUf74TCyIM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.12 332/384] Revert 337f13046ff0 ("futex: Allow FUTEX_CLOCK_REALTIME with FUTEX_WAIT op")
-Date:   Mon, 10 May 2021 12:22:01 +0200
-Message-Id: <20210510102025.735241788@linuxfoundation.org>
+Subject: [PATCH 5.12 333/384] futex: Do not apply time namespace adjustment on FUTEX_LOCK_PI
+Date:   Mon, 10 May 2021 12:22:02 +0200
+Message-Id: <20210510102025.766946593@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -41,44 +41,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-commit 4fbf5d6837bf81fd7a27d771358f4ee6c4f243f8 upstream.
+commit cdf78db4070967869e4d027c11f4dd825d8f815a upstream.
 
-The FUTEX_WAIT operand has historically a relative timeout which means that
-the clock id is irrelevant as relative timeouts on CLOCK_REALTIME are not
-subject to wall clock changes and therefore are mapped by the kernel to
-CLOCK_MONOTONIC for simplicity.
+FUTEX_LOCK_PI does not require to have the FUTEX_CLOCK_REALTIME bit set
+because it has been using CLOCK_REALTIME based absolute timeouts
+forever. Due to that, the time namespace adjustment which is applied when
+FUTEX_CLOCK_REALTIME is not set, will wrongly take place for FUTEX_LOCK_PI
+and wreckage the timeout.
 
-If a caller would set FUTEX_CLOCK_REALTIME for FUTEX_WAIT the timeout is
-still treated relative vs. CLOCK_MONOTONIC and then the wait arms that
-timeout based on CLOCK_REALTIME which is broken and obviously has never
-been used or even tested.
+Exclude it from that procedure.
 
-Reject any attempt to use FUTEX_CLOCK_REALTIME with FUTEX_WAIT again.
-
-The desired functionality can be achieved with FUTEX_WAIT_BITSET and a
-FUTEX_BITSET_MATCH_ANY argument.
-
-Fixes: 337f13046ff0 ("futex: Allow FUTEX_CLOCK_REALTIME with FUTEX_WAIT op")
+Fixes: c2f7d08cccf4 ("futex: Adjust absolute futex timeouts with per time namespace offset")
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210422194704.834797921@linutronix.de
+Link: https://lore.kernel.org/r/20210422194704.984540159@linutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/futex.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/futex.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -3711,8 +3711,7 @@ long do_futex(u32 __user *uaddr, int op,
- 
- 	if (op & FUTEX_CLOCK_REALTIME) {
- 		flags |= FLAGS_CLOCKRT;
--		if (cmd != FUTEX_WAIT && cmd != FUTEX_WAIT_BITSET && \
--		    cmd != FUTEX_WAIT_REQUEUE_PI)
-+		if (cmd != FUTEX_WAIT_BITSET &&	cmd != FUTEX_WAIT_REQUEUE_PI)
- 			return -ENOSYS;
+@@ -3781,7 +3781,7 @@ SYSCALL_DEFINE6(futex, u32 __user *, uad
+ 		t = timespec64_to_ktime(ts);
+ 		if (cmd == FUTEX_WAIT)
+ 			t = ktime_add_safe(ktime_get(), t);
+-		else if (!(op & FUTEX_CLOCK_REALTIME))
++		else if (cmd != FUTEX_LOCK_PI && !(op & FUTEX_CLOCK_REALTIME))
+ 			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
+ 		tp = &t;
  	}
- 
+@@ -3975,7 +3975,7 @@ SYSCALL_DEFINE6(futex_time32, u32 __user
+ 		t = timespec64_to_ktime(ts);
+ 		if (cmd == FUTEX_WAIT)
+ 			t = ktime_add_safe(ktime_get(), t);
+-		else if (!(op & FUTEX_CLOCK_REALTIME))
++		else if (cmd != FUTEX_LOCK_PI && !(op & FUTEX_CLOCK_REALTIME))
+ 			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
+ 		tp = &t;
+ 	}
 
 
