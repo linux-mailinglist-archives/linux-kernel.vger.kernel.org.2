@@ -2,146 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA583796EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98A53796F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbhEJSUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 14:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
+        id S232585AbhEJSVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 14:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbhEJSUs (ORCPT
+        with ESMTP id S231772AbhEJSVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 14:20:48 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D63C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:19:42 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id j10so24733163lfb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:19:42 -0700 (PDT)
+        Mon, 10 May 2021 14:21:17 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46FF2C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:20:11 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id r11so4985709edt.13
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:20:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uLEPdHE/lUDqSfzKgjlnQIQkgZHfxgrF+vujnKkyTIM=;
-        b=cS3HdG8156DCaEKIJ+gTF1weCypb9gV1HaJjmr1Aqq0coGamkyOxKt3YpLZLmcRAOi
-         zAKb2gl2KQnO+XP/itg7MwOmO/ebuGOZ044jSVLRZfBrIqC2t2jleOBLqT7xmc0Wc9B4
-         C6CFtQrFxWqJ0cwLcve8MBErb+lO0oE+VQu4U=
+         :cc:content-transfer-encoding;
+        bh=c3QbbaRgr8o8EX1t84khRzMUdSHXWmV3lu/xPgAS6HQ=;
+        b=Xw2LrNe/QHmdP61IQs4q6ounUN9gzRRTYXyIU+EIzwyOeNb6QMY//7TSoMbvb0GveK
+         oujKlv3QVYbEZ/uGDZseTxmnIkCaxy/biI3oHuOLlNJZFaTV92N5r74G1k6qe+WU6bMS
+         oOwiYVVHg/9QTBFjxHj+Q0UzLnkLB0Nw3WfoQbdYp3LGMJUuJJGdg1G9kY/CMh7qQAzZ
+         /GY/ZnVHpAjm392cpmH/NYv+9cBjfCUnegz+9VEtiNbvnAgxXUjzrqPy/W69fikS4sSq
+         8FuAMxcPwGGto5nfi1FuHATQhFAigY35becQxj33IO+KY9GreRXCOcdXTYYyiM4L1o4r
+         pvhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uLEPdHE/lUDqSfzKgjlnQIQkgZHfxgrF+vujnKkyTIM=;
-        b=rcvu17bvn36QvzezjELIM51pZG5lB2joVicDmY0OjvGdmwMr+jZzDalvjuLOQ7qGF2
-         z9dAOSbxumr0vAmZUb9imiJy5LFQgTfW37GLN6nAirp9Hsn4trD6w03BnhHP+L6lDzu1
-         XX94839O/Wz8MlTlHs61iYt1t8T3VylO8arRwFjMTh0NVBpIiF1uZ/m6E8WviWwe9xio
-         hcNfYg+sBcZbhD4KrfjVXESr3LytBH1yl3W5nsjP/k2lsYsIEg8rO4ZzSvGPHyiRCI0C
-         Icq4Fp/9Bg8hBziVTtUp9EsH8WdvX+FAcKad1G/s2kXxl8EFapCxEe4klFrKB8AbjnsR
-         f/cw==
-X-Gm-Message-State: AOAM5329WK5J9sgd9bkEeaQGRx9w/HO9lqaIe3wVZnSA7Zj2wBT86pos
-        /cFhT2aNFUbNy8xfGqtYQPGB1+/ArnAwNzvd3Hic6A==
-X-Google-Smtp-Source: ABdhPJxs4LHfNXqgUxARz6fo8mRzkAZgx4ftO6ABggMu744wQqHYQJ+4SXfGJhXSiabP8RKsd02US/YzOyc1q9fHTjs=
-X-Received: by 2002:ac2:5a07:: with SMTP id q7mr3615365lfn.407.1620670781305;
- Mon, 10 May 2021 11:19:41 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=c3QbbaRgr8o8EX1t84khRzMUdSHXWmV3lu/xPgAS6HQ=;
+        b=HjbIhqWj45XuEzZBlGIL6c0501lYcDo7Y326eBsAu7/kE1TSwutrS57s/OZfkLsL2I
+         XBDGu9ty8HEDR5PZjjKsgPL+s/yGxmgyssFyaaghGXRW/SZvGdtDX0+QP2FEWGoXRqDO
+         Peu7oX64zpQMGsSdmuonSf/A8+KCNV0hsX3FgAjzLjZRucLJe6XDT1RhZJOBB0+ke2st
+         ZZYQ92hluq3hxE3KoqwA3K23u9UnIaUe/HVtvgauMIK59PozfJ3lJihega3ug6gpB5xZ
+         0p9QGwlpBCSYUOpj3ZMpKzP5pw3tvnHCxeOqjPBKzMjLvQADH+VS3SgoVZju9bzNlo69
+         xTNQ==
+X-Gm-Message-State: AOAM530IfKL9fEYebGGypOO/EB9p04sl5Apv0crYO5iPRuKpayOG8nwj
+        Zq3sylGxCeGHHIAjX4jab+HDrgWMRiH4Ju3nPKKeoQ==
+X-Google-Smtp-Source: ABdhPJw0L5zSdlCIMQlwgizUs6glrL2uuSyaQl6assfbZbOQ2AZjRygRJy2bC1a6GIYwafty8jugzuHhWolJoRhK2l4=
+X-Received: by 2002:a05:6402:12d3:: with SMTP id k19mr30703281edx.52.1620670809825;
+ Mon, 10 May 2021 11:20:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210511002838.7b3cb1e7@xhacker>
-In-Reply-To: <20210511002838.7b3cb1e7@xhacker>
-From:   Vitaly Wool <vitaly.wool@konsulko.com>
-Date:   Mon, 10 May 2021 20:19:30 +0200
-Message-ID: <CAM4kBBJqF=AxTu50PF=EshLSyqn0=yeC2dwf4JJj_Grsi_Tccg@mail.gmail.com>
-Subject: Re: [PATCH] riscv: code patching only works on !XIP_KERNEL
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210510102014.849075526@linuxfoundation.org>
+In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 10 May 2021 23:49:58 +0530
+Message-ID: <CA+G9fYs00AkMdMJ33ysycLH5_bpc6G1VXoGQQ1_xr1tAv=Vu8w@mail.gmail.com>
+Subject: Re: [PATCH 5.12 000/384] 5.12.3-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 6:35 PM Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
+On Mon, 10 May 2021 at 16:29, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> From: Jisheng Zhang <jszhang@kernel.org>
+> This is the start of the stable review cycle for the 5.12.3 release.
+> There are 384 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Some features which need code patching such as KPROBES, DYNAMIC_FTRACE
-> KGDB can only work on !XIP_KERNEL. Add dependencies for these features
-> that rely on code patching.
+> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.12.3-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.12.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Since we can define extra RW sections to place some tiny code bits in
-RAM, I would suggest that you hold back this patch for a while.
-I am not going to support the idea of e. g. compiling KGDB support
-into a XIP kernel, but disabling the whole HAVE_ARCH_JUMP_LABEL is
-hardly the way to go.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Best regards,
-   Vitaly
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
-> Hi,
->
-> Currently, the RISCV_ERRATA_ALTERNATIVE also only works on !XIP_KERNEL
-> but from the maillist it seem there's effort to make the co-exist, so
-> I drop RISCV_ERRATA_ALTERNATIVE dependency on !XIP_KERNEL.
->
-> Thanks
->
->  arch/riscv/Kconfig | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index a8ad8eb76120..61320b94ef97 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -60,11 +60,11 @@ config RISCV
->         select GENERIC_TIME_VSYSCALL if MMU && 64BIT
->         select HANDLE_DOMAIN_IRQ
->         select HAVE_ARCH_AUDITSYSCALL
-> -       select HAVE_ARCH_JUMP_LABEL
-> -       select HAVE_ARCH_JUMP_LABEL_RELATIVE
-> +       select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
-> +       select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
->         select HAVE_ARCH_KASAN if MMU && 64BIT
->         select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
-> -       select HAVE_ARCH_KGDB
-> +       select HAVE_ARCH_KGDB if !XIP_KERNEL
->         select HAVE_ARCH_KGDB_QXFER_PKT
->         select HAVE_ARCH_MMAP_RND_BITS if MMU
->         select HAVE_ARCH_SECCOMP_FILTER
-> @@ -79,9 +79,9 @@ config RISCV
->         select HAVE_GCC_PLUGINS
->         select HAVE_GENERIC_VDSO if MMU && 64BIT
->         select HAVE_IRQ_TIME_ACCOUNTING
-> -       select HAVE_KPROBES
-> -       select HAVE_KPROBES_ON_FTRACE
-> -       select HAVE_KRETPROBES
-> +       select HAVE_KPROBES if !XIP_KERNEL
-> +       select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
-> +       select HAVE_KRETPROBES if !XIP_KERNEL
->         select HAVE_PCI
->         select HAVE_PERF_EVENTS
->         select HAVE_PERF_REGS
-> @@ -230,11 +230,11 @@ config ARCH_RV64I
->         bool "RV64I"
->         select 64BIT
->         select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && GCC_VERSION >= 50000
-> -       select HAVE_DYNAMIC_FTRACE if MMU && $(cc-option,-fpatchable-function-entry=8)
-> +       select HAVE_DYNAMIC_FTRACE if !XIP_KERNEL && MMU && $(cc-option,-fpatchable-function-entry=8)
->         select HAVE_DYNAMIC_FTRACE_WITH_REGS if HAVE_DYNAMIC_FTRACE
-> -       select HAVE_FTRACE_MCOUNT_RECORD
-> +       select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
->         select HAVE_FUNCTION_GRAPH_TRACER
-> -       select HAVE_FUNCTION_TRACER
-> +       select HAVE_FUNCTION_TRACER if !XIP_KERNEL
->         select SWIOTLB if MMU
->
->  endchoice
-> --
-> 2.31.0
->
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+## Build
+* kernel: 5.12.3-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.12.y
+* git commit: 47db4685df6206a3e39f7d56d6402b56e151373b
+* git describe: v5.12.2-385-g47db4685df62
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.12.y/build/v5.12=
+.2-385-g47db4685df62
+
+## No regressions (compared to v5.12.2-284-g66353c8ef656)
+
+## No fixes (compared to v5.12.2-284-g66353c8ef656)
+
+## Test result summary
+ total: 76372, pass: 64454, fail: 1319, skip: 10599, xfail: 0,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
