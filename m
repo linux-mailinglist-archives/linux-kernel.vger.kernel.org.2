@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECD83799ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3AF3799F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbhEJWV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:21:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58280 "EHLO mail.kernel.org"
+        id S233241AbhEJWVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:21:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231680AbhEJWVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232177AbhEJWVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 18:21:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0DB47614A5;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2E0F36161C;
         Mon, 10 May 2021 22:20:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620685212;
-        bh=+qs6QUZsikd3ICz2UiLJtwktgyraJBroeNj6A1XFuYQ=;
+        bh=DPufKTlQo/+DorwT61wv8lVftcfjqUcX5vWqEzJyCwA=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JBZxUzS+qUcEqFV9FVf4Ni0ZlSaiz1yGDC9dqqw2A7+zkbeElRTS8S9oQG0ut8jN+
-         hZNG3VwJ/lG8vMXXhJGUhuCYlod+kvA8tcmzWmicRAhB5Q6PnOZ6b2TCI5/Rdaprzq
-         Kq5+DbEtNFLLF0AUtQDgNZd8m774e5IOFxoHji56hF1XdBGk1RZuEb2R/F1b32YMTl
-         Q2scxn7r0g+cNya9OTxCKJANqrSjkez1B4xuMlK6ZuD2jD2KhaedVEG9Mb8vFKcPpM
-         VfMJEf6J4cwWQ8NfUogTzNPykhDPZLSdjCoauzgHsBxC/M7U/v17wlUYQK8RJ1w4EO
-         sW/R2riUuGrDw==
+        b=BHAAPjw0ImoS4OuvrEn0LULODDys6dmIKXIitA+w5qNarfhNndOTpGi43Ectzhkrx
+         45XNEmSKkJ0p96C0coqvn9UEbCTSH9uPGpwgFrE+LM+RFkDoeBYuLgNYk1PoY4omv4
+         fLwKoVzWqcUSeKGAQBQc8EBTmGMrnkFS1YThbmklE8srE0mE6Nv0bed4YReuEf5Oqu
+         mxQ1R0hoLLtyCeRYKqGUF7GdDE5G1n0H8WNQGhsCA2h9Ol+Mw+ORCxUsDPFQDKxkZd
+         Rzn0WDEvyoF1Tc/TwSk8guRekkLW9e42GNiAiAKh4u7C2xH3cnVh5/dHvLNpDmtpg1
+         7xTS3nelqYw4A==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F130B60A0E;
-        Mon, 10 May 2021 22:20:11 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2322B60C09;
+        Mon, 10 May 2021 22:20:12 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2] mvpp2: resolve two warnings
+Subject: Re: [PATCH net-next v3 0/5] net: pch_gbe: fix and a few cleanups
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162068521198.17141.17479532563487837396.git-patchwork-notify@kernel.org>
-Date:   Mon, 10 May 2021 22:20:11 +0000
-References: <20210510165232.16609-1-mcroce@linux.microsoft.com>
-In-Reply-To: <20210510165232.16609-1-mcroce@linux.microsoft.com>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     mw@semihalf.com, linux@armlinux.org.uk, netdev@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <162068521214.17141.13468046440928102441.git-patchwork-notify@kernel.org>
+Date:   Mon, 10 May 2021 22:20:12 +0000
+References: <20210510163931.42417-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210510163931.42417-1-andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     davem@davemloft.net, f.suligoi@asem.it, lee.jones@linaro.org,
+        jesse.brandeburg@intel.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kuba@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -46,22 +47,28 @@ Hello:
 
 This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 10 May 2021 18:52:30 +0200 you wrote:
-> From: Matteo Croce <mcroce@microsoft.com>
+On Mon, 10 May 2021 19:39:26 +0300 you wrote:
+> The series provides one fix (patch 1) for GPIO to be able to wait for
+> the GPIO driver to appear. This is separated from the conversion to
+> the GPIO descriptors (patch 2) in order to have a possibility for
+> backporting. Patches 3 and 4 fix minor warnings from Sparse while
+> moving to a new APIs. Patch 5 is MODULE_VERSION() clean up.
 > 
-> Just two small changes to suppress two warnings.
-> 
-> Matteo Croce (2):
->   mvpp2: remove unused parameter
->   mvpp2: suppress warning
+> Tested on Intel Minnowboard (v1).
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,1/2] mvpp2: remove unused parameter
-    https://git.kernel.org/netdev/net-next/c/376d68929d5b
-  - [net-next,2/2] mvpp2: suppress warning
-    https://git.kernel.org/netdev/net-next/c/4c598e5e679c
+  - [net-next,v3,1/5] net: pch_gbe: Propagate error from devm_gpio_request_one()
+    https://git.kernel.org/netdev/net-next/c/9e3617a7b845
+  - [net-next,v3,2/5] net: pch_gbe: Convert to use GPIO descriptors
+    https://git.kernel.org/netdev/net-next/c/aca6a8746c36
+  - [net-next,v3,3/5] net: pch_gbe: use readx_poll_timeout_atomic() variant
+    https://git.kernel.org/netdev/net-next/c/6fcfb267cb49
+  - [net-next,v3,4/5] net: pch_gbe: Use proper accessors to BE data in pch_ptp_match()
+    https://git.kernel.org/netdev/net-next/c/443ef39b499c
+  - [net-next,v3,5/5] net: pch_gbe: remove unneeded MODULE_VERSION() call
+    https://git.kernel.org/netdev/net-next/c/40b161bb16c4
 
 You are awesome, thank you!
 --
