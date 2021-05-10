@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8476F378678
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143FA3789BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236549AbhEJLIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:08:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59618 "EHLO mail.kernel.org"
+        id S236160AbhEJLbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:31:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230430AbhEJKrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:47:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE818619C0;
-        Mon, 10 May 2021 10:37:41 +0000 (UTC)
+        id S234848AbhEJK5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D387619C4;
+        Mon, 10 May 2021 10:49:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643062;
-        bh=3kj4PJO8ex25VlM44hatwOl/Lp8XInGFtr40JCTQWx0=;
+        s=korg; t=1620643796;
+        bh=0PaCOtLrQBGr+8tY+o5O/Wn8N9gMmISX7EmabCtUb6Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=olm1l8rHvemgo8sNmU792jqahGNc68gFGyVmC4+SDYoerVHwOhx9Ajpv2iUPvD484
-         ZzVwjso2FTVsgvTof4N1rUL4ADZVzS2k20VKBI41bGRRDfBk7AzSYAviIFt0u0VMxp
-         C7PtOm+BOcmnQycOty3i7NsbpjRYwBD1r+klEWEY=
+        b=pYn1S3dOWE7KsGctDaYPr5wlo7imcNlR7AQ9/PH0QaBbGgb8r1FnXhlFfXK3PJ00+
+         81Hu/SXTCOJMhOIOwX8jbACbuy2RPPzPp48SG1J5fYR+uaXtaLvk60LnaXDeTjWs5l
+         jhRbOsbN4WqykLRUbHBUi1Wgc0qYFNhnD6gm0Fo4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 127/299] kvfree_rcu: Use same set of GFP flags as does single-argument
-Date:   Mon, 10 May 2021 12:18:44 +0200
-Message-Id: <20210510102009.172462871@linuxfoundation.org>
+Subject: [PATCH 5.11 135/342] drm/ast: fix memory leak when unload the driver
+Date:   Mon, 10 May 2021 12:18:45 +0200
+Message-Id: <20210510102014.532268451@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,95 +40,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uladzislau Rezki (Sony) <urezki@gmail.com>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit ee6ddf58475cce8a3d3697614679cd8cb4a6f583 ]
+[ Upstream commit dc739820ff90acccd013f6bb420222978a982791 ]
 
-Running an rcuscale stress-suite can lead to "Out of memory" of a
-system. This can happen under high memory pressure with a small amount
-of physical memory.
+a connector is leaked upon module unload, it seems that we should do
+similar to sample driver as suggested in drm_drv.c.
 
-For example, a KVM test configuration with 64 CPUs and 512 megabytes
-can result in OOM when running rcuscale with below parameters:
+Adding drm_atomic_helper_shutdown() in ast_pci_remove to prevent leaking.
 
-../kvm.sh --torture rcuscale --allcpus --duration 10 --kconfig CONFIG_NR_CPUS=64 \
---bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 \
-  rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot" --trust-make
+[  153.822134] WARNING: CPU: 0 PID: 173 at drivers/gpu/drm/drm_mode_config.c:504 drm_mode_config_cle0
+[  153.822698] Modules linked in: ast(-) drm_vram_helper drm_ttm_helper ttm [last unloaded: ttm]
+[  153.823197] CPU: 0 PID: 173 Comm: modprobe Tainted: G        W         5.11.0-03615-g55f62bc873474
+[  153.823708] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-48-gd9c812dda519-4
+[  153.824333] RIP: 0010:drm_mode_config_cleanup+0x418/0x470
+[  153.824637] Code: 0c 00 00 00 00 48 8b 84 24 a8 00 00 00 65 48 33 04 25 28 00 00 00 75 65 48 81 c0
+[  153.825668] RSP: 0018:ffff888103c9fb70 EFLAGS: 00010212
+[  153.825962] RAX: ffff888102b0d100 RBX: ffff888102b0c298 RCX: ffffffff818d8b2b
+[  153.826356] RDX: dffffc0000000000 RSI: 000000007fffffff RDI: ffff888102b0c298
+[  153.826748] RBP: ffff888103c9fba0 R08: 0000000000000001 R09: ffffed1020561857
+[  153.827146] R10: ffff888102b0c2b7 R11: ffffed1020561856 R12: ffff888102b0c000
+[  153.827538] R13: ffff888102b0c2d8 R14: ffff888102b0c2d8 R15: 1ffff11020793f70
+[  153.827935] FS:  00007f24bff456a0(0000) GS:ffff88815b400000(0000) knlGS:0000000000000000
+[  153.828380] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  153.828697] CR2: 0000000001c39018 CR3: 0000000103c90000 CR4: 00000000000006f0
+[  153.829096] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  153.829486] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  153.829883] Call Trace:
+[  153.830024]  ? drmm_mode_config_init+0x930/0x930
+[  153.830281]  ? cpumask_next+0x16/0x20
+[  153.830488]  ? mnt_get_count+0x66/0x80
+[  153.830699]  ? drm_mode_config_cleanup+0x470/0x470
+[  153.830972]  drm_managed_release+0xed/0x1c0
+[  153.831208]  drm_dev_release+0x3a/0x50
+[  153.831420]  release_nodes+0x39e/0x410
+[  153.831631]  ? devres_release+0x40/0x40
+[  153.831852]  device_release_driver_internal+0x158/0x270
+[  153.832143]  driver_detach+0x76/0xe0
+[  153.832344]  bus_remove_driver+0x7e/0x100
+[  153.832568]  pci_unregister_driver+0x28/0xf0
+[  153.832821]  __x64_sys_delete_module+0x268/0x300
+[  153.833086]  ? __ia32_sys_delete_module+0x300/0x300
+[  153.833357]  ? call_rcu+0x372/0x4f0
+[  153.833553]  ? fpregs_assert_state_consistent+0x4d/0x60
+[  153.833840]  ? exit_to_user_mode_prepare+0x2f/0x130
+[  153.834118]  do_syscall_64+0x33/0x40
+[  153.834317]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  153.834597] RIP: 0033:0x7f24bfec7cf7
+[  153.834797] Code: 48 89 57 30 48 8b 04 24 48 89 47 38 e9 1d a0 02 00 48 89 f8 48 89 f7 48 89 d6 41
+[  153.835812] RSP: 002b:00007fff72e6cb58 EFLAGS: 00000202 ORIG_RAX: 00000000000000b0
+[  153.836234] RAX: ffffffffffffffda RBX: 00007f24bff45690 RCX: 00007f24bfec7cf7
+[  153.836623] RDX: 00000000ffffffff RSI: 0000000000000080 RDI: 0000000001c2fb10
+[  153.837018] RBP: 0000000001c2fac0 R08: 2f2f2f2f2f2f2f2f R09: 0000000001c2fac0
+[  153.837408] R10: fefefefefefefeff R11: 0000000000000202 R12: 0000000001c2fac0
+[  153.837798] R13: 0000000001c2f9d0 R14: 0000000000000000 R15: 0000000000000001
+[  153.838194] ---[ end trace b92031513bbe596c ]---
+[  153.838441] [drm:drm_mode_config_cleanup] *ERROR* connector VGA-1 leaked!
 
-<snip>
-[   12.054448] kworker/1:1H invoked oom-killer: gfp_mask=0x2cc0(GFP_KERNEL|__GFP_NOWARN), order=0, oom_score_adj=0
-[   12.055303] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
-[   12.055416] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
-[   12.056485] Workqueue: events_highpri fill_page_cache_func
-[   12.056485] Call Trace:
-[   12.056485]  dump_stack+0x57/0x6a
-[   12.056485]  dump_header+0x4c/0x30a
-[   12.056485]  ? del_timer_sync+0x20/0x30
-[   12.056485]  out_of_memory.cold.47+0xa/0x7e
-[   12.056485]  __alloc_pages_slowpath.constprop.123+0x82f/0xc00
-[   12.056485]  __alloc_pages_nodemask+0x289/0x2c0
-[   12.056485]  __get_free_pages+0x8/0x30
-[   12.056485]  fill_page_cache_func+0x39/0xb0
-[   12.056485]  process_one_work+0x1ed/0x3b0
-[   12.056485]  ? process_one_work+0x3b0/0x3b0
-[   12.060485]  worker_thread+0x28/0x3c0
-[   12.060485]  ? process_one_work+0x3b0/0x3b0
-[   12.060485]  kthread+0x138/0x160
-[   12.060485]  ? kthread_park+0x80/0x80
-[   12.060485]  ret_from_fork+0x22/0x30
-[   12.062156] Mem-Info:
-[   12.062350] active_anon:0 inactive_anon:0 isolated_anon:0
-[   12.062350]  active_file:0 inactive_file:0 isolated_file:0
-[   12.062350]  unevictable:0 dirty:0 writeback:0
-[   12.062350]  slab_reclaimable:2797 slab_unreclaimable:80920
-[   12.062350]  mapped:1 shmem:2 pagetables:8 bounce:0
-[   12.062350]  free:10488 free_pcp:1227 free_cma:0
-...
-[   12.101610] Out of memory and no killable processes...
-[   12.102042] Kernel panic - not syncing: System is deadlocked on memory
-[   12.102583] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
-[   12.102600] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
-<snip>
-
-Because kvfree_rcu() has a fallback path, memory allocation failure is
-not the end of the world.  Furthermore, the added overhead of aggressive
-GFP settings must be balanced against the overhead of the fallback path,
-which is a cache miss for double-argument kvfree_rcu() and a call to
-synchronize_rcu() for single-argument kvfree_rcu().  The current choice
-of GFP_KERNEL|__GFP_NOWARN can result in longer latencies than a call
-to synchronize_rcu(), so less-tenacious GFP flags would be helpful.
-
-Here is the tradeoff that must be balanced:
-    a) Minimize use of the fallback path,
-    b) Avoid pushing the system into OOM,
-    c) Bound allocation latency to that of synchronize_rcu(), and
-    d) Leave the emergency reserves to use cases lacking fallbacks.
-
-This commit therefore changes GFP flags from GFP_KERNEL|__GFP_NOWARN to
-GFP_KERNEL|__GFP_NORETRY|__GFP_NOMEMALLOC|__GFP_NOWARN.  This combination
-leaves the emergency reserves alone and can initiate reclaim, but will
-not invoke the OOM killer.
-
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210222023322.984885-1-ztong0001@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/ast/ast_drv.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 5dc36c6e80fd..8a5cc76ecac9 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3386,7 +3386,7 @@ static void fill_page_cache_func(struct work_struct *work)
+diff --git a/drivers/gpu/drm/ast/ast_drv.c b/drivers/gpu/drm/ast/ast_drv.c
+index 667b450606ef..b047c0ea43e8 100644
+--- a/drivers/gpu/drm/ast/ast_drv.c
++++ b/drivers/gpu/drm/ast/ast_drv.c
+@@ -30,6 +30,7 @@
+ #include <linux/module.h>
+ #include <linux/pci.h>
  
- 	for (i = 0; i < rcu_min_cached_objs; i++) {
- 		bnode = (struct kvfree_rcu_bulk_data *)
--			__get_free_page(GFP_KERNEL | __GFP_NOWARN);
-+			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
++#include <drm/drm_atomic_helper.h>
+ #include <drm/drm_crtc_helper.h>
+ #include <drm/drm_drv.h>
+ #include <drm/drm_fb_helper.h>
+@@ -138,6 +139,7 @@ static void ast_pci_remove(struct pci_dev *pdev)
+ 	struct drm_device *dev = pci_get_drvdata(pdev);
  
- 		if (bnode) {
- 			raw_spin_lock_irqsave(&krcp->lock, flags);
+ 	drm_dev_unregister(dev);
++	drm_atomic_helper_shutdown(dev);
+ }
+ 
+ static int ast_drm_freeze(struct drm_device *dev)
 -- 
 2.30.2
 
