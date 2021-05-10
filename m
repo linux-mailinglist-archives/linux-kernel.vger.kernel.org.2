@@ -2,216 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D93377E3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E37377E40
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhEJIcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 04:32:53 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:13800 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhEJIcv (ORCPT
+        id S230243AbhEJIdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 04:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230145AbhEJIc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 04:32:51 -0400
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210510083145epoutp04368b8d9d79d4a807d54c933107919774~9p2febY1E2643526435epoutp04o
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 08:31:45 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210510083145epoutp04368b8d9d79d4a807d54c933107919774~9p2febY1E2643526435epoutp04o
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1620635505;
-        bh=+FtN8Qg2E3DJyloZaR29LDKNlo4cw2mybAyOLLGFY1M=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=Myt++ZLt1ic0jHzsC0MTHzL77lZB2PNZcoXxV03XVK0kCLpmUQV4vPSfsnB+Uanoe
-         DAL6cr0lK30O62+Am1xhMtAPspaKEJcClCLzQZKoZ5GkAB8k+0fqIEr3EOOM8YoqYa
-         nsk1Gw/eWExR860dX9TsbtQkz/4we70KtsHD+iVA=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20210510083144epcas2p2292fd8fe2465d6ff3b1cf1c2d8721197~9p2evo_H93143631436epcas2p2c;
-        Mon, 10 May 2021 08:31:44 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.183]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4FdvRM2GRFz4x9QB; Mon, 10 May
-        2021 08:31:43 +0000 (GMT)
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        AF.01.09433.C6FE8906; Mon, 10 May 2021 17:31:40 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210510083139epcas2p211d9bee16e5e8f8ea34e606c83ac3a55~9p2aGkLxH0395303953epcas2p24;
-        Mon, 10 May 2021 08:31:39 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210510083139epsmtrp168988c06dd3c981f1a6ea6b519db0370~9p2aFxfyF1230012300epsmtrp1j;
-        Mon, 10 May 2021 08:31:39 +0000 (GMT)
-X-AuditID: b6c32a47-f4bff700000024d9-89-6098ef6c451f
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        37.C6.08163.B6FE8906; Mon, 10 May 2021 17:31:39 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.229.9.51]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210510083139epsmtip260ae4ea25a2f318bb3947e6edefd4c34~9p2Z2Iu140654006540epsmtip2t;
-        Mon, 10 May 2021 08:31:39 +0000 (GMT)
-From:   Chanho Park <chanho61.park@samsung.com>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Bumyong Lee <bumyong.lee@samsung.com>,
-        Chanho Park <chanho61.park@samsung.com>
-Subject: [PATCH] swiotlb: manipulate orig_addr when tlb_addr has offset
-Date:   Mon, 10 May 2021 17:30:57 +0900
-Message-Id: <20210510083057.46476-1-chanho61.park@samsung.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 10 May 2021 04:32:59 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 342B3C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 01:31:52 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id lj11-20020a17090b344bb029015bc3073608so9871660pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 01:31:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gckp4CwIdREzc2XV63iEz0XEYATQJrhMFeE6Dl5feXY=;
+        b=Me15DNcWLAPOAGCbTZQTwgdxPa2RW3B5nKy7JFkDKIJ5b6K3U//qtvqskBKA4/uLxK
+         oG5pEED0n3F6IxPkHIEiuuKyJvQSnWnfnrPIfGPWHaOzLvdruiP9tFNmGkku89EO5Cu6
+         ZBxtRnUD3bdJT0AYz9qh+4ZAYhRUzk342qpwM8F8jHNCTja5dYxg4cQaZbZd4KT9JNhL
+         J/wWDm+38bXjBQ9BgqyNXrtB9zHT1UAHLIPP6zBgRtBCh6EC+fT9WTPabXRczkvZU05g
+         ESHzzeApa0zQDz6lOujSqwnAj4t9x61mna27CsLSPYCtQQ8YF42snmyEwDTyDa4JkK6R
+         OeWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gckp4CwIdREzc2XV63iEz0XEYATQJrhMFeE6Dl5feXY=;
+        b=NUaucQAt6fWxakVVxgLIeFC9Guidn6PGK9LK2INeyGQ4ztHJfBCvjUdhCsXoP1p2xn
+         DOIOYDz/GsSvwlCbT5pNZtRWz+wDwyWpEFVEcNylP2K94MxfVFQ7mwPSnMI3A8ZBjlKf
+         5m5hn1J/q5XpaFwzJ+dwXcXgLPzD8fGvW1sypysXWdt8p+WqzYB4/QMG1kdIRxnE1ZDJ
+         Pivk0tUCkie7g9hfq3C+rNt8PbHESmCHyoaHxjxKNd/Hy8Z14cxgVpnIlRE7D1Ii4wpo
+         LeRS6cGaZzN80ceMe/UgOFQrjzrzNnjrfJ7sxqoFXi862qVbh26C7pALl6tK5BsfafkX
+         9IHQ==
+X-Gm-Message-State: AOAM531Zy1dHXXVbkwAptSRL8OPqwyDk27Y2keUzWhf4ny1i2IQ01BQ3
+        VjRO8ajo4RZ5c1rxfwYRwAYA6ZaUHrtZoJN4yvYIog==
+X-Google-Smtp-Source: ABdhPJy3CFE2Nxrn+MAqigTDlVhEEg4UuArMR3muy2dMVaeEg7fjiVJpWKLYRCS3ODPR8gLHMLs6GMGLOvLhcl9Q/4c=
+X-Received: by 2002:a17:90a:7e8f:: with SMTP id j15mr27073962pjl.19.1620635511729;
+ Mon, 10 May 2021 01:31:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgk+LIzCtJLcpLzFFi42LZdljTVDfn/YwEg59rBCz2nrawuLxf22Ll
-        6qNMFgv2W1ssW/yU0eLyrjlsFmuP3GW3OPjhCasDh8eaeWsYPSbfWM7osftmA5vHx6e3WDz6
-        tqxi9Pi8SS6ALSrHJiM1MSW1SCE1Lzk/JTMv3VbJOzjeOd7UzMBQ19DSwlxJIS8xN9VWycUn
-        QNctMwfoGiWFssScUqBQQGJxsZK+nU1RfmlJqkJGfnGJrVJqQUpOgaFhgV5xYm5xaV66XnJ+
-        rpWhgYGRKVBlQk7GiRWL2AteyVS8/jybrYHxs2gXIyeHhICJxIpd11i7GLk4hAR2MEocufCa
-        CcL5xChxa8klRgjnM6PE/B9r2GBann6ZBNWyi1Hi1aR1bBDOR0aJmf0HmUGq2AR0JbY8f8UI
-        YosIhEjMaH7EDmIzC7xilPi2whDEFhZwlzh79xNYDYuAqsT01s1gNq+AncT831MZIbbJS5w+
-        cQ0qLihxcuYTFog58hLNW2czgyyWELjHLnHv4HQWiAYXiU07vrNC2MISr45vYYewpSRe9rex
-        QzR0M0q0PvoPlVjNKNHZ6ANh20v8mr4FqJkDaIOmxPpd+iCmhICyxJFbUHv5JDoO/2WHCPNK
-        dLQJQTSqSxzYDnOBrET3nM9QF3hI/L3bzgRiCwnESjyb84plAqP8LCTfzELyzSyEvQsYmVcx
-        iqUWFOempxYbFRgjx+omRnCS1HLfwTjj7Qe9Q4xMHIyHGCU4mJVEeEU7piUI8aYkVlalFuXH
-        F5XmpBYfYjQFhu9EZinR5Hxgms4riTc0NTIzM7A0tTA1M7JQEuf9mVqXICSQnliSmp2aWpBa
-        BNPHxMEp1cDU+FErR2Z+auBqA2Pv2DXaXrky7NOVVwg0x+1OPfvg3tTVttf3Pz+5eqWjM9uZ
-        q78uXfVRvvdnczf3hCeVJ44bbbflCL7TxmtRJMVQ9WXXzFMxTJErfzYVlM5i2j5Hr05Keqnz
-        tYNGgi9P1adduvX66ykBzdtSO0XCrS7v6pD/OeEm5++mgNecOqp8rS6/Dj86wvp5Wd2DfBmF
-        R681vnf5MPu69z8+NO9m/FKuw8fXn9ZLnGc1xfjCuknXDZ38wqquch08fZZp2qQ639X93ws8
-        bt0t7r7wqLr9e5NRn7alOPcv3nOTPb7Mjvl4WbxjS3ja67Lz1Ys9v0fO+hSv/rdT69xUJtaO
-        pfOF/0hPlRO/pcRSnJFoqMVcVJwIALnOOBobBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGLMWRmVeSWpSXmKPExsWy7bCSvG72+xkJBqe/KljsPW1hcXm/tsXK
-        1UeZLBbst7ZYtvgpo8XlXXPYLNYeuctucfDDE1YHDo8189Yweky+sZzRY/fNBjaPj09vsXj0
-        bVnF6PF5k1wAWxSXTUpqTmZZapG+XQJXxokVi9gLXslUvP48m62B8bNoFyMnh4SAicTTL5NY
-        uxi5OIQEdjBKHH/TwgaRkJV49m4HO4QtLHG/5QhU0XtGiX/N/UwgCTYBXYktz18xdjFycIgI
-        hEj83CgKUsMs8I5R4vqmM8wgNcIC7hJn735iBLFZBFQlprduBrN5Bewk5v+eygixQF7i9Ilr
-        UHFBiZMzn7CA2MxA8eats5knMPLNQpKahSS1gJFpFaNkakFxbnpusWGBUV5quV5xYm5xaV66
-        XnJ+7iZGcNBqae1g3LPqg94hRiYOxkOMEhzMSiK8oh3TEoR4UxIrq1KL8uOLSnNSiw8xSnOw
-        KInzXug6GS8kkJ5YkpqdmlqQWgSTZeLglGpgmmVRK7I7ZnFA22Sb5V80Of/WzNqQcMEvvE15
-        rpLFudLlX2feKzn7f8It74vxb0TOb208Ln3rzKOW+Zcc9z2SkjJZOP2xYRbvg+C8iOyZxuxc
-        m88lTJwuzPWw0V3xRchU9kmS0hv9u97bzJgxxV38r8SVhOlvO0/tfGu28Qu7vFLeO7lPVwTm
-        nMor9JJNv73o6l2NnTUxNy7fs5U9Uv6KITdi8tYgK4udqwMulnzSsTlrNOkWcy7LldWMMtdu
-        XX2ZGJs58bm+U9TkAz9/tC3gyWM3Wao0+XjEusd5dgFM1ye+ZpCI/K11rKnhx9kS9miGmWzJ
-        f7/yrPNJ6LiTbFgU4jL3gti260/nRdnfr9Gcl6DEUpyRaKjFXFScCAAzU3uEyQIAAA==
-X-CMS-MailID: 20210510083139epcas2p211d9bee16e5e8f8ea34e606c83ac3a55
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210510083139epcas2p211d9bee16e5e8f8ea34e606c83ac3a55
-References: <CGME20210510083139epcas2p211d9bee16e5e8f8ea34e606c83ac3a55@epcas2p2.samsung.com>
+References: <20210510070532.3838598-1-vkoul@kernel.org>
+In-Reply-To: <20210510070532.3838598-1-vkoul@kernel.org>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Mon, 10 May 2021 10:31:40 +0200
+Message-ID: <CAG3jFyukM7tYMdQC_0HWGUBLZtafYu21yvk2LDLS0Ha_jJKm8g@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sm8350: fix the node unit addresses
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bumyong Lee <bumyong.lee@samsung.com>
+Hey Vinod,
 
-in case of driver wants to sync part of ranges with offset,
-swiotlb_tbl_sync_single() copies from orig_addr base to tlb_addr with offset
-it makes data mismatch
+Thanks for catching this.
 
-it removed from "swiotlb: don't modify orig_addr in swiotlb_tbl_sync_single",
-but it have to be recovered
+On Mon, 10 May 2021 at 09:05, Vinod Koul <vkoul@kernel.org> wrote:
+>
+> Some node unit addresses were put wrongly in the dts, resulting in
+> below warning when run with W=1
+>
+> arch/arm64/boot/dts/qcom/sm8350.dtsi:693.34-702.5: Warning (simple_bus_reg): /soc@0/thermal-sensor@c222000: simple-bus unit address format error, expected "c263000"
+> arch/arm64/boot/dts/qcom/sm8350.dtsi:704.34-713.5: Warning (simple_bus_reg): /soc@0/thermal-sensor@c223000: simple-bus unit address format error, expected "c265000"
+> arch/arm64/boot/dts/qcom/sm8350.dtsi:1180.32-1185.5: Warning (simple_bus_reg): /soc@0/interconnect@90e0000: simple-bus unit address format error, expected "90c0000"
+>
+> Fix by correcting to the correct address as given in reg node
+>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sm8350.dtsi | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> index a8cd224a2f31..d015a9ca95a5 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> @@ -6,6 +6,7 @@
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/clock/qcom,gcc-sm8350.h>
+>  #include <dt-bindings/clock/qcom,rpmh.h>
+> +#include <dt-bindings/interconnect/qcom,sm8350.h>
+>  #include <dt-bindings/mailbox/qcom-ipcc.h>
+>  #include <dt-bindings/power/qcom-aoss-qmp.h>
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+> @@ -689,7 +690,7 @@ pdc: interrupt-controller@b220000 {
+>                         interrupt-controller;
+>                 };
+>
+> -               tsens0: thermal-sensor@c222000 {
+> +               tsens0: thermal-sensor@c263000 {
+>                         compatible = "qcom,sm8350-tsens", "qcom,tsens-v2";
+>                         reg = <0 0x0c263000 0 0x1ff>, /* TM */
+>                               <0 0x0c222000 0 0x8>; /* SROT */
+> @@ -700,7 +701,7 @@ tsens0: thermal-sensor@c222000 {
+>                         #thermal-sensor-cells = <1>;
+>                 };
+>
+> -               tsens1: thermal-sensor@c223000 {
+> +               tsens1: thermal-sensor@c265000 {
+>                         compatible = "qcom,sm8350-tsens", "qcom,tsens-v2";
+>                         reg = <0 0x0c265000 0 0x1ff>, /* TM */
+>                               <0 0x0c223000 0 0x8>; /* SROT */
+> @@ -1176,7 +1177,7 @@ usb_2_ssphy: phy@88ebe00 {
+>                         };
+>                 };
+>
+> -               dc_noc: interconnect@90e0000 {
+> +               dc_noc: interconnect@90c0000 {
+>                         compatible = "qcom,sm8350-dc-noc";
+>                         reg = <0 0x090c0000 0 0x4200>;
+>                         #interconnect-cells = <1>;
 
-1. Get dma_addr_t from dma_map_single()
-dma_addr_t tlb_addr = dma_map_single(dev, vaddr, vsize, DMA_TO_DEVICE);
-
-    |<---------------vsize------------->|
-    +-----------------------------------+
-    |                                   | original buffer
-    +-----------------------------------+
-  vaddr
-
- swiotlb_align_offset
-     |<----->|<---------------vsize------------->|
-     +-------+-----------------------------------+
-     |       |                                   | swiotlb buffer
-     +-------+-----------------------------------+
-          tlb_addr
-
-2. Do something
-3. Sync dma_addr_t through dma_sync_single_for_device(..)
-dma_sync_single_for_device(dev, tlb_addr + offset, size, DMA_TO_DEVICE);
-
-  Error case.
-    copy data to original buffer.
-    but it is from base addr in original buffer
-
-     |<----->|<- offset ->|<- size ->|
-     +-------+-----------------------------------+
-     |       |            |##########|           | swiotlb buffer
-     +-------+-----------------------------------+
-          tlb_addr
-
- swiotlb_align_offset
-     |<----->|<- offset ->|<- size ->|
-     +-------+-----------------------------------+
-     |       |            |##########|           | swiotlb buffer
-     +-------+-----------------------------------+
-          tlb_addr
-
-    |<- size ->|
-    +-----------------------------------+
-    |##########|                        | original buffer
-    +-----------------------------------+
-  vaddr
-
-  FIX. copy data to original buffer.
-  but it is from base addr in original buffer
-
- swiotlb_align_offset
-     |<----->|<- offset ->|<- size ->|
-     +-------+-----------------------------------+
-     |       |            |##########|           | swiotlb buffer
-     +-------+-----------------------------------+
-          tlb_addr
-
-    |<- offset ->|<- size ->|
-    +-----------------------------------+
-    |            |##########|           | original buffer
-    +-----------------------------------+
-  vaddr
-
-Fixes: 16fc3cef33a0 ("swiotlb: don't modify orig_addr in swiotlb_tbl_sync_single")
-Signed-off-by: Bumyong Lee <bumyong.lee@samsung.com>
-Signed-off-by: Chanho Park <chanho61.park@samsung.com>
----
- kernel/dma/swiotlb.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 8ca7d505d61c..e8243725e298 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -334,6 +334,7 @@ void __init swiotlb_exit(void)
- 	io_tlb_default_mem = NULL;
- }
- 
-+static unsigned int swiotlb_align_offset(struct device *dev, u64 addr);
- /*
-  * Bounce: copy the swiotlb buffer from or back to the original dma location
-  */
-@@ -346,10 +347,17 @@ static void swiotlb_bounce(struct device *dev, phys_addr_t tlb_addr, size_t size
- 	size_t alloc_size = mem->slots[index].alloc_size;
- 	unsigned long pfn = PFN_DOWN(orig_addr);
- 	unsigned char *vaddr = phys_to_virt(tlb_addr);
-+	unsigned int tlb_offset;
- 
- 	if (orig_addr == INVALID_PHYS_ADDR)
- 		return;
- 
-+	tlb_offset = (unsigned int)tlb_addr & (IO_TLB_SIZE - 1);
-+	tlb_offset -= swiotlb_align_offset(dev, orig_addr);
-+
-+	orig_addr += tlb_offset;
-+	alloc_size -= tlb_offset;
-+
- 	if (size > alloc_size) {
- 		dev_WARN_ONCE(dev, 1,
- 			"Buffer overflow detected. Allocation size: %zu. Mapping size: %zu.\n",
--- 
-2.31.1
-
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
