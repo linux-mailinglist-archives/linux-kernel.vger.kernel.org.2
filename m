@@ -2,75 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395FA378659
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994603784DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235608AbhEJLFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:05:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232503AbhEJKp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:45:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB9656143C;
-        Mon, 10 May 2021 10:36:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642998;
-        bh=5LnsDbENCZlQF4nCWMHw2rIS0V68TkYnwy3mGlCDfCc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HCyAou6E5GZIj2XtYIZvENUPS6lcgvpw62OyQU1RlKF0u0VjFlA55v+LDzPHVyMNj
-         eA8iQE99vPUAnWRDMQicZJ7nT6cH9Iau+XIkxoVjKXaF9cZg5TqFpe4dvBJ2+6s713
-         lY+UcKbmbNoMPtN2hoRKzoVDDywfcINS9zHce+5Y=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 137/299] media: gspca/sq905.c: fix uninitialized variable
-Date:   Mon, 10 May 2021 12:18:54 +0200
-Message-Id: <20210510102009.494905422@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S234251AbhEJK4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232880AbhEJKop (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:44:45 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113A4C061345
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 03:34:16 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id u25so2393187pgl.9
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 03:34:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GbEg5B1XI9iNST/E/f70TSfKy/dyLBSsJanb6FiDxic=;
+        b=f59ner0D/1qo5HyqTZPlnjeQGdv7ehb8TdlVTo883tA/MXBcSAIscvH2kflRetliLC
+         2ldbA4AOnMUr/99l1qryK6AOVgMBHunKzEHL/8Dh1NDK9SueoJw/qeG8RdHl2Op/gzox
+         L5wdoQkSdijVZGPr49AJgJ7z3J1DewJWUEkdLff0xSkZZwvITSznBNxdWJFuwOygvU5Y
+         J2dLOxY4NbqekqowGzzndqj7IrRuz4/t+O3heK9u1Xzeb2rJBWbSG9sTkueoQ+GzrKWl
+         dN7rmghZQrBAgGrUeDTAIEJ1MJjXNtmUAmttQKTKQH1rrqCmJdnTbJGYurasAK/zkqwo
+         ykIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GbEg5B1XI9iNST/E/f70TSfKy/dyLBSsJanb6FiDxic=;
+        b=t+0tGxC/tV1W8J+YETFc4evFELI0OpcO6Ph+IsO6773t+yxl+7+apI71ThBVP4YmxB
+         GjI4O2E9qEpi4YsO3ETSBEf1A6ICy4SkZNCyTizZEOB8G1/Y6Cjdazs4hb4L5ASbSYF4
+         oonIXi/09a/3dEQ13bq8aLUY6QMQ33V7MrjAkmo9tvxqLbF97zO5NLhmp7Cp4IbFItYq
+         bb0JlN+TQ0NepPBzPq1G9UqTUMzb0E22SU/LwwB+ru2QsYYPAJtvxPYgFpR9RUWcUFHG
+         XzPsXCeImasCWAUdGyY74yKyTB6bSMuAmljosOVC0/g1XLuJEbxkRgy5vyuiyog6TCqf
+         Wi/Q==
+X-Gm-Message-State: AOAM531mYIDSxT4h11HxVnizWTSPLoHFhE15Hckg54ND4B5/p+Lp9/qT
+        JC14NwZSKikLjxmvE2ucllwwqF0D+sgxd+AW3+Ut8Q==
+X-Google-Smtp-Source: ABdhPJyHUEien5qCpH7v1ah8orxYfkawudbsyoFQsZ5IuBkIgJ3pV0ZZhlDNcBUrx9QSpxHHGhQ+bS4LMxBGt3jpl1s=
+X-Received: by 2002:a63:b206:: with SMTP id x6mr11623323pge.341.1620642855648;
+ Mon, 10 May 2021 03:34:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210510030027.56044-1-songmuchun@bytedance.com>
+ <20210510030027.56044-9-songmuchun@bytedance.com> <20210510100809.GA22664@linux>
+In-Reply-To: <20210510100809.GA22664@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 10 May 2021 18:33:38 +0800
+Message-ID: <CAMZfGtVzwA+35az8ARxzVmTnt=pGObJvG=a23_2_7TVptmzN1g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v23 8/9] mm: memory_hotplug: disable
+ memmap_on_memory when hugetlb_free_vmemmap enabled
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, bp@alien8.de,
+        X86 ML <x86@kernel.org>, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        fam.zheng@bytedance.com, zhengqi.arch@bytedance.com,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+On Mon, May 10, 2021 at 6:08 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Mon, May 10, 2021 at 11:00:26AM +0800, Muchun Song wrote:
+> > diff --git a/drivers/acpi/acpi_memhotplug.c b/drivers/acpi/acpi_memhotplug.c
+> > index 8cc195c4c861..0d7f595ee441 100644
+> > --- a/drivers/acpi/acpi_memhotplug.c
+> > +++ b/drivers/acpi/acpi_memhotplug.c
+> > @@ -15,6 +15,7 @@
+> >  #include <linux/acpi.h>
+> >  #include <linux/memory.h>
+> >  #include <linux/memory_hotplug.h>
+> > +#include <linux/hugetlb.h>
+> >
+> >  #include "internal.h"
+>
+> Uhm, I am confused.
+> Why do we need this here? AFAICS, we do not.
+>
+> The function is in memory_hotplug.c, and that alrady has that include.
+> What am I missing?
 
-[ Upstream commit eaaea4681984c79d2b2b160387b297477f0c1aab ]
+You are right. That include is redundant. I will remove it
+from acpi_memhotplug.c. Thanks Oscar.
 
-act_len can be uninitialized if usb_bulk_msg() returns an error.
-Set it to 0 to avoid a KMSAN error.
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Reported-by: syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/media/usb/gspca/sq905.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/usb/gspca/sq905.c b/drivers/media/usb/gspca/sq905.c
-index 97799cfb832e..949111070971 100644
---- a/drivers/media/usb/gspca/sq905.c
-+++ b/drivers/media/usb/gspca/sq905.c
-@@ -158,7 +158,7 @@ static int
- sq905_read_data(struct gspca_dev *gspca_dev, u8 *data, int size, int need_lock)
- {
- 	int ret;
--	int act_len;
-+	int act_len = 0;
- 
- 	gspca_dev->usb_buf[0] = '\0';
- 	if (need_lock)
--- 
-2.30.2
-
-
-
+>
+>
+> --
+> Oscar Salvador
+> SUSE L3
