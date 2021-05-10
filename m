@@ -2,160 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25C0379707
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0246E37970D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbhEJS3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 14:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231538AbhEJS3t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 14:29:49 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DDEC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:28:44 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id c17so14226008pfn.6
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 11:28:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZgpaffSujtHNJ5LjhNfC/DukRnISOwF7Vy02GDD16AE=;
-        b=DkmtsBN56yN77odOMd87wgYicJgsfSNRc43qNKbvBXiTxDYogtZWKgoqkKBAmKb11h
-         cJvETHV9SgeuA5i/WetBSFWnA6oYJdEt2A+aN39XN7vLo7t4iljLWe2hG0I/M7OEL9zF
-         s4kYpiMY0lNlR1xuuLzijdaYHsAFZkVVq7eMQzbBDzjniG1ZITWP2NglttnSmlkU6fBy
-         BRVUm0qG+cBc6BnWyZAn44uwz9Zv+z5PSvOUARXZyNNNUpOgmTZ6diSpmwvvpPctmyTU
-         3kNYIOimswz8DS0CsyKEGlZwNM138LYvA3iSMmEGHccV07iExYBKi5mcuieNfg3RI9e1
-         m50Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZgpaffSujtHNJ5LjhNfC/DukRnISOwF7Vy02GDD16AE=;
-        b=nNKLXags0IkMcVQ92ZgrlvvLwWPZw3cXfgnEa89RN7Ggch+fbe+GeuWJz/UEoF+4v/
-         AZ9QF0ajwzYB5RO7uC9PisqQUrVl0M0BgMWc4ggyYUY3N8qIte5WMP4oy3IfCc6iTJnM
-         Tc2v/Qy7PykoBqTwSnc9IlQ86olYfV4Gg40gY8NZysc2EGLosTtao3m+qi5GBQbOWwcX
-         lzhKAW1s9gMZwzPtGrv47OIhc8MeDYItOooHe9eRqGMhhCbOY8ZxfWgzYWIum8iZrHX1
-         eep+aijT1T1OqAKxet3pIA/aI7K7sUGXxsr27GDKHMNX+p0rFKVh8vlwpIirrQb3+O4M
-         ZKQA==
-X-Gm-Message-State: AOAM5311NITS3IdVd2otOapZTgG/h7lxxT0ILLfdAYINt9qbcTXD7xnr
-        lOHx8wYG3DFv84PR+LY05xFxuA==
-X-Google-Smtp-Source: ABdhPJzFJKSisbHtuHDKnc5ct9si1UeYWj1pjvyX0xQnyV/dKSb/XbcoDPHhZwfDVBze7d2oUkmqRQ==
-X-Received: by 2002:a63:cc57:: with SMTP id q23mr26359576pgi.357.1620671323614;
-        Mon, 10 May 2021 11:28:43 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id i3sm149187pjv.30.2021.05.10.11.28.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 11:28:42 -0700 (PDT)
-Date:   Mon, 10 May 2021 18:28:39 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-Subject: Re: [PATCH v3 7/8] KVM: x86/mmu: Protect rmaps independently with
- SRCU
-Message-ID: <YJl7V1arDXyC6i5P@google.com>
-References: <20210506184241.618958-1-bgardon@google.com>
- <20210506184241.618958-8-bgardon@google.com>
- <e2e73709-f247-1a60-4835-f3fad37ab736@redhat.com>
- <YJlxQe1AXljq5yhQ@google.com>
- <a13b6960-3628-2899-5fbf-0765f97aa9eb@redhat.com>
+        id S232591AbhEJScc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 14:32:32 -0400
+Received: from mout.gmx.net ([212.227.17.20]:48911 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231400AbhEJSca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 14:32:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1620671474;
+        bh=yed0YzBjgjohaBfaix3PjUoWhDcykU3KCCY0bWzyjyI=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=NnQdoEH/HuTVFV5tPZ0PzGIhI5gPuCLzdAQIxoB8Mg/haTDvsEW0iZN+eRWACUG/C
+         0M+AngNCr+Yb67Amt5+fJnJuVh+uJthTkmXPW/kaZdlWBKFGxD+OsCr8kD17yjZoxI
+         Zn/xA30oRSKI8SWevDKZsvnsaYoPQiAaAyfo91CU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.126]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MBUqF-1lo6V43WaF-00D12H; Mon, 10
+ May 2021 20:31:13 +0200
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>
+Subject: [PATCH] MAINTAINERS: De-duplicate INTEL MAX 10 BMC MFD DRIVER entry
+Date:   Mon, 10 May 2021 20:30:56 +0200
+Message-Id: <20210510183056.810753-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a13b6960-3628-2899-5fbf-0765f97aa9eb@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Gdl++FMm2DGDZatLRDX8S8izqi+YXGsZEF9cslmYyjjSVWKqrHm
+ SS5kn+pR3kFw0Ejl1Fzqm2VHo4tG56kyjyBJUKYSmvvZzPbFL6D7ajCBxhKVw7sb/v7CI6K
+ GMordSTDz/t6IXQ/H7gcV37IwtuWLRRl4p1NjSvDYOeuNWhoyaPoaK9gq9y0HjjhtVvRGip
+ pBE9dbbEHV2e739ddnnMg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6QdcJHu5bqc=:CfeMtMctJzrBwrOsoifNy0
+ EqhXYrPr2xBJqJEsfhrQ3yMkGdCcoht0ceedqdku+D9XoDwPr+bG+iHFKA+Fas8McwZoy+tjw
+ apeTRx3i3/a/sjg0LoOBiX25G0IQvhk38vFeQ3i1wZ78HaI40MZKjd0N0ZRgJ2+n20se15YME
+ n8AVCLo6iR8A2RO9JqAYtDW184xmEOXgZfbdumf+fax5ZErKn7h2kHJMfayuA7lEOy/QwLfsO
+ B1jOTic0D3POKLd+7IgfTsmIQXRW/Fi/0pMnJe+3QTJHqO1YRTXiU10jU29tlCNKi5/mZWOPD
+ aIbDrlE0VNecge3gmW6XeUZqeDmi38QhLS4Ji9r9pq5DXoEyLOmdSmQxYIVaQ5oWniIO7XVlF
+ SowsQoKAak4i6CD4V3YUHKLEt/oFJ2QOt5F0h7+j7QHMlrpGiLrI3jsAmbO2E6Q70ujeJa8on
+ MFiJRbatQc8PAPRTwmvnipB5SmGdbNyxKzWEW9+sv3dcrII2nOPLdkzs1bpW0XuyC9PsW00A8
+ NWS+GP+H+H5pWjBPviPwyy+2gdlX5MfPlSFXd6NdVuneW2M3Qgv5+Y66BA527ad6fzFzz8WWx
+ yH9a5eeD/6zatPbdC27PihGu+Dw4vgpmoqjsgKz8N9nUf1x5oGxJQ1okvvXTdxBANGIGmgGXi
+ OUFGsDyTEsfKfik3GscqSVoQq7KgkTW2kElheVmfTUlz8xjzqBst4xdrxDGgaiEzY4xULKxdu
+ RNrtmkrtpUqKE6CbDz4Mhjtq614WchR7KQUdXYukdhk/EWrytzA8eE0uMllCcJXvaJglWLPPO
+ 8xVupapHuAY6WKfFMIG61D4BYvMogMOm0gETNn7IU7fgbx5/obImMgSmjTKqOVQ9YPj+x3o92
+ 7LiisJLS25p2rYf2YhJN+fKMYpp8zvtaU8+ttidZ/t006pwOLY9SpW6R2ymxzfcsYQ0Ry7Gi2
+ 8/lK1QH7Z4QuxoUPQW+n36D0sNQA+3esSRVV/GRNXJQUDAFifezPmq6q7xS/2NFb1iyM6srIf
+ 52h6wV06k7GNYb+v3/lHH8J9VBQ7zLB7lcZOevAZNomD+bht9Do98c24XvDDf+eVxQ0M5sWTM
+ RZEsDUM7EA6CPQYwW07ZCaWT6VSa542dTD3/sPd32H+STwdzohqm24yiPtsnUaxcD1yroI2/I
+ 3P7fwnpcS2XOxrFphIZRQQZfzkPhR2JwPtUvY1ezOSgOWbRq3W6qj5oR1uNzJxH3znCMROJd7
+ tBSkqt25Z7h/jt9ji
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021, Paolo Bonzini wrote:
-> On 10/05/21 19:45, Sean Christopherson wrote:
-> > > 
-> > > ---------
-> > > Currently, rmaps are always allocated and published together with a new
-> > > memslot, so the srcu_dereference for the memslots array already ensures that
-> > > the memory pointed to by slots->arch.rmap is zero at the time
-> > > slots->arch.rmap.  However, they still need to be accessed in an SRCU
-> > > read-side critical section, as the whole memslot can be deleted outside
-> > > SRCU.
-> > > --------
-> > I disagree, sprinkling random and unnecessary __rcu/SRCU annotations does more
-> > harm than good.  Adding the unnecessary tag could be quite misleading as it
-> > would imply the rmap pointers can_change_  independent of the memslots.
-> > 
-> > Similary, adding rcu_assign_pointer() in alloc_memslot_rmap() implies that its
-> > safe to access the rmap after its pointer is assigned, and that's simply not
-> > true since an rmap array can be freed if rmap allocation for a different memslot
-> > fails.  Accessing the rmap is safe if and only if all rmaps are allocated, i.e.
-> > if arch.memslots_have_rmaps is true, as you pointed out.
-> 
-> This about freeing is a very good point.
-> 
-> > Furthermore, to actually gain any protection from SRCU, there would have to be
-> > an synchronize_srcu() call after assigning the pointers, and that _does_  have an
-> > associated.
-> 
-> ... but this is incorrect (I was almost going to point out the below in my
-> reply to Ben, then decided I was pointing out the obvious; lesson learned).
-> 
-> synchronize_srcu() is only needed after *deleting* something, which in this
+Xu Yilin's patch "MAINTAINERS: Add entry for Intel MAX 10 mfd driver"
+was applied twice, resulting in a duplicate entry. De-duplicate it.
 
-No, synchronization is required any time the writer needs to ensure readers have
-recognized the change.  E.g. making a memslot RO, moving a memslot's gfn base,
-adding an MSR to the filter list.  I suppose you could frame any modification as
-"deleting" something, but IMO that's cheating :-)
+Fixes: 58d91f1c1701d ("MAINTAINERS: Add entry for Intel MAX 10 mfd driver"=
+)
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ MAINTAINERS | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-> case is done as part of deleting the memslots---it's perfectly fine to batch
-> multiple synchronize_*() calls given how expensive some of them are.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index bd7aff0c120f2..7d6e44b9f4664 100644
+=2D-- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9299,16 +9299,6 @@ F:	drivers/hwmon/intel-m10-bmc-hwmon.c
+ F:	drivers/mfd/intel-m10-bmc.c
+ F:	include/linux/mfd/intel-m10-bmc.h
 
-Yes, but the shortlog says "Protect rmaps _independently_ with SRCU", emphasis
-mine.  If the rmaps are truly protected independently, then they need to have
-their own synchronization.  Setting all rmaps could be batched under a single
-synchronize_srcu(), but IMO batching the rmaps with the memslot itself would be
-in direct contradiction with the shortlog.
+-INTEL MAX 10 BMC MFD DRIVER
+-M:	Xu Yilun <yilun.xu@intel.com>
+-R:	Tom Rix <trix@redhat.com>
+-S:	Maintained
+-F:	Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
+-F:	Documentation/hwmon/intel-m10-bmc-hwmon.rst
+-F:	drivers/hwmon/intel-m10-bmc-hwmon.c
+-F:	drivers/mfd/intel-m10-bmc.c
+-F:	include/linux/mfd/intel-m10-bmc.h
+-
+ INTEL MENLOW THERMAL DRIVER
+ M:	Sujith Thomas <sujith.thomas@intel.com>
+ L:	platform-driver-x86@vger.kernel.org
+=2D-
+2.30.2
 
-> (BTW an associated what?)
-
-Doh.  "associated memslot."
-
-> So they still count as RCU-protected in my opinion, just because reading
-> them outside SRCU is a big no and ought to warn (it's unlikely that it
-> happens with rmaps, but then we just had 2-3 bugs like this being reported
-> in a short time for memslots so never say never).
-
-Yes, but that interpretation holds true for literally everything that is hidden
-behind an SRCU-protected pointer.  E.g. this would also be wrong, it's just much
-more obviously broken:
-
-bool kvm_is_gfn_writable(struct kvm* kvm, gfn_t gfn)
-{
-	struct kvm_memory_slot *slot;
-	int idx;
-
-	idx = srcu_read_lock(&kvm->srcu);
-	slot = gfn_to_memslot(kvm, gfn);
-	srcu_read_unlock(&kvm->srcu);
-
-	return slot && !(slot->flags & KVM_MEMSLOT_INVALID) &&
-	       !(slot->flags & KVM_MEM_READONLY);
-}
-
-
-> However, rcu_assign_pointer is not needed because the visibility of the rmaps
-> is further protected by the have-rmaps flag (to be accessed with
-> load-acquire/store-release) and not just by the pointer being there and
-> non-NULL.
-
-Yes, and I'm arguing that annotating the rmaps as __rcu is wrong because they
-themselves are not protected by SRCU.  The memslot that contains the rmaps is
-protected by SRCU, and because of that asserting SRCU is held for read will hold
-true.  But, if the memslot code were changed to use a different protection scheme,
-e.g. a rwlock for argument's sake, then the SRCU assertion would fail even though
-the rmap logic itself didn't change.
