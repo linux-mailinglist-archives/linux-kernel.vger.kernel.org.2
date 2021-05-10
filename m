@@ -2,98 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C932379255
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D01379262
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241912AbhEJPRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 11:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
+        id S230486AbhEJPUG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 10 May 2021 11:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233657AbhEJPQD (ORCPT
+        with ESMTP id S231394AbhEJPSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 11:16:03 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2952C0611C9;
-        Mon, 10 May 2021 07:42:58 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id p17so9221033plf.12;
-        Mon, 10 May 2021 07:42:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uVw3wvukRQjrsLK2st7F2fMfyD602tcKtTD7xRY236E=;
-        b=Sr2UcDVXDe6y3MRHjPbch/SPAhGutpkt+BiyrXzLEjT5rvRpea1aFX0TKZ7YYG0IqP
-         HgSfQhE0A18Egc2NecF8AXEDx22DHsazUD4gdzeVvGyyyuKAQzr3mbnW9fqZHzMgpPjt
-         Q+SO3SfUc2Mqj0+mXovTPkRfJ1W94jwxigavcY7wgrzVsCI/Iyo8KAOSetlY1N6P/O3e
-         iKADLImRQtewhaYgmtcKiH+jrI9NaVpt6PZaKgMgP00it/gSgQ9dRmDy4eTuTwF7ZnbR
-         f/zUQCvoNoq4WjzHmjeSrawHhtCEVDiDegjrvQ5MtisAYBX5Pr5mSlhmf/js2kKdfVgt
-         y2DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uVw3wvukRQjrsLK2st7F2fMfyD602tcKtTD7xRY236E=;
-        b=U+hPahg0SmB4WJ22h5AuSxt/J6dSI9Aqk+FSkWRClS0MImWj1aSjp2CxIyLgF4xsik
-         V8LJ9eWT746W73E2seJ5yLwPG9w7C78hp/OJqbvd5BiVOm0tuofp6atJWKvExNT9WlQM
-         R4YphJsbqX/9mdRPHxijCBwmc0nIE4uR88ecE2DeqIM7247ae9eljMuIkEjSJNfMiXug
-         ccyO8tA61UbmNtdnhK9uUkvAv4MD/8k6c268GK3GfdvZDBsHjfzhoe2HJ42a+ynhMGxI
-         6bgEQOno0RCZqYFROb2WIa3DHH7Yrgx1FNBwaSF0a6Wl+chH3PcQdQBmOcKpMD3j6eBK
-         ebsw==
-X-Gm-Message-State: AOAM532G5s/kqaeEkqhmA/S7Bnv40wk/dW92Ou9ea0BfzUa5hDwNiBqH
-        +ag5/oAcd5CF2F3Ry5qMydHbpbOrecY=
-X-Google-Smtp-Source: ABdhPJxb9IXDb2QRgTS1FkHRcjIcnbYopNctPvX2SCIGMDqp4zhEb4ISB3BKITpTKINS3esnUAi6EA==
-X-Received: by 2002:a17:902:e84f:b029:ee:cd36:80e3 with SMTP id t15-20020a170902e84fb02900eecd3680e3mr24951971plg.70.1620657777898;
-        Mon, 10 May 2021 07:42:57 -0700 (PDT)
-Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id v2sm2313635pfv.97.2021.05.10.07.42.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 07:42:57 -0700 (PDT)
-Subject: Re: [PATCH 5.10 000/299] 5.10.36-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210510102004.821838356@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <7534d969-6900-d8ce-e1d1-44dd2c972c50@gmail.com>
-Date:   Mon, 10 May 2021 07:42:55 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.1
+        Mon, 10 May 2021 11:18:12 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3BAC08EAEF
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:47:19 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lg7Bb-0005Em-Ef; Mon, 10 May 2021 16:47:07 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lg7BZ-0001jS-In; Mon, 10 May 2021 16:47:05 +0200
+Message-ID: <6dc43e369107d470d85dc541dc67432744bd4d01.camel@pengutronix.de>
+Subject: Re: [PATCHv2 2/5] drm/imx: Add 8 pixel alignment fix
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Saravana Kannan <saravanak@google.com>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        kernel@collabora.com,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Date:   Mon, 10 May 2021 16:47:05 +0200
+In-Reply-To: <20210428222953.235280-3-sebastian.reichel@collabora.com>
+References: <20210428222953.235280-1-sebastian.reichel@collabora.com>
+         <20210428222953.235280-3-sebastian.reichel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sebastian,
 
+On Thu, 2021-04-29 at 00:29 +0200, Sebastian Reichel wrote:
+> Some standard resolutions like 1366x768 do not work properly with
+> i.MX6 SoCs, since the horizontal resolution needs to be aligned
+> to 8 pixels (so 1360x768 or 1368x768 would work).
+> 
+> This patch allocates framebuffers allocated to 8 pixels. The extra
+> time required to send the extra pixels are removed from the blank
+> time. In order to expose the correct display size to userspace,
+> the stride is increased without increasing the width.
+> 
+> Without this patch systems with this display resolution hang
+> indefinitely during boot up.
+> 
+> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-On 5/10/2021 3:16 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.36 release.
-> There are 299 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.36-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Thank you, I've rebased and applied this patch on top of imx-drm/next.
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
-
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+regards
+Philipp
