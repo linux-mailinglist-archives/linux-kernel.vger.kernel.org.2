@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC064378BF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41375378A5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245154AbhEJMUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:20:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46278 "EHLO mail.kernel.org"
+        id S242327AbhEJLls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:41:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233707AbhEJLJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:09:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6983B61926;
-        Mon, 10 May 2021 11:04:35 +0000 (UTC)
+        id S231830AbhEJK5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CFFB619E6;
+        Mon, 10 May 2021 10:51:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644675;
-        bh=Wh17wluSKUTBOWNzYuYLyW+TL60RDkDmKbWLKi2/MZc=;
+        s=korg; t=1620643917;
+        bh=fh8NTrcVEp7XEynMX0wepwrZy+rJKZt3MliX/P9XDEE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p17mKUC8Fwm0eC82gB6YorWBTTYbvtbBTzUWL5jo8GjYqXrRYOBDRXa9DHhOCpKVN
-         AS/grZpcOxBj7j2V/wGpoihhwYCyPPoXM4ZcGK3cpnzFURMlzpzRolfv9X6TtciQN4
-         uuJ0wl4lr2vbWq9Rhcc2vjcIb/U+gYX8WalrQcs4=
+        b=KvtC00UJ8WtfXQbbVqlo49SBN0BOZLYbcXTQGDst+xARW4rNVuw5EbbMBkKxMZYLa
+         X8o/jGLoUOZDhkQrkW2bsjm2CIxPgQqPS7Xc5YjEw7uTjVUYX3eE+WFc7BfodyM0kc
+         wa3cEJOEbp/EihOD0jmtqsLZ1q8iOEg3zimMAlXc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Niv <danielniv3@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Bough Chen <haobo.chen@nxp.com>,
+        Alice Guo <alice.guo@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 178/384] media: media/saa7164: fix saa7164_encoder_register() memory leak bugs
-Date:   Mon, 10 May 2021 12:19:27 +0200
-Message-Id: <20210510102020.760715108@linuxfoundation.org>
+Subject: [PATCH 5.11 178/342] mmc: sdhci-esdhc-imx: validate pinctrl before use it
+Date:   Mon, 10 May 2021 12:19:28 +0200
+Message-Id: <20210510102015.987100110@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
-References: <20210510102014.849075526@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,85 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Niv <danielniv3@gmail.com>
+From: Peng Fan <peng.fan@nxp.com>
 
-[ Upstream commit c759b2970c561e3b56aa030deb13db104262adfe ]
+[ Upstream commit f410ee0aa2df050a9505f5c261953e9b18e21206 ]
 
-Add a fix for the memory leak bugs that can occur when the
-saa7164_encoder_register() function fails.
-The function allocates memory without explicitly freeing
-it when errors occur.
-Add a better error handling that deallocate the unused buffers before the
-function exits during a fail.
+When imx_data->pinctrl is not a valid pointer, pinctrl_lookup_state
+will trigger kernel panic.
 
-Signed-off-by: Daniel Niv <danielniv3@gmail.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+When we boot Dual OS on Jailhouse hypervisor, we let the 1st Linux to
+configure pinmux ready for the 2nd OS, so the 2nd OS not have pinctrl
+settings.
+
+Similar to this commit b62eee9f804e ("mmc: sdhci-esdhc-imx: no fail when no pinctrl available").
+
+Reviewed-by: Bough Chen <haobo.chen@nxp.com>
+Reviewed-by: Alice Guo <alice.guo@nxp.com>
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Link: https://lore.kernel.org/r/1614222604-27066-6-git-send-email-peng.fan@oss.nxp.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/saa7164/saa7164-encoder.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ drivers/mmc/host/sdhci-esdhc-imx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/pci/saa7164/saa7164-encoder.c b/drivers/media/pci/saa7164/saa7164-encoder.c
-index 11e1eb6a6809..1d1d32e043f1 100644
---- a/drivers/media/pci/saa7164/saa7164-encoder.c
-+++ b/drivers/media/pci/saa7164/saa7164-encoder.c
-@@ -1008,7 +1008,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
- 		printk(KERN_ERR "%s() failed (errno = %d), NO PCI configuration\n",
- 			__func__, result);
- 		result = -ENOMEM;
--		goto failed;
-+		goto fail_pci;
- 	}
+diff --git a/drivers/mmc/host/sdhci-esdhc-imx.c b/drivers/mmc/host/sdhci-esdhc-imx.c
+index a20459744d21..94327988da91 100644
+--- a/drivers/mmc/host/sdhci-esdhc-imx.c
++++ b/drivers/mmc/host/sdhci-esdhc-imx.c
+@@ -1488,7 +1488,7 @@ sdhci_esdhc_imx_probe_dt(struct platform_device *pdev,
  
- 	/* Establish encoder defaults here */
-@@ -1062,7 +1062,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
- 			  100000, ENCODER_DEF_BITRATE);
- 	if (hdl->error) {
- 		result = hdl->error;
--		goto failed;
-+		goto fail_hdl;
- 	}
+ 	mmc_of_parse_voltage(np, &host->ocr_mask);
  
- 	port->std = V4L2_STD_NTSC_M;
-@@ -1080,7 +1080,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
- 		printk(KERN_INFO "%s: can't allocate mpeg device\n",
- 			dev->name);
- 		result = -ENOMEM;
--		goto failed;
-+		goto fail_hdl;
- 	}
- 
- 	port->v4l_device->ctrl_handler = hdl;
-@@ -1091,10 +1091,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
- 	if (result < 0) {
- 		printk(KERN_INFO "%s: can't register mpeg device\n",
- 			dev->name);
--		/* TODO: We're going to leak here if we don't dealloc
--		 The buffers above. The unreg function can't deal wit it.
--		*/
--		goto failed;
-+		goto fail_reg;
- 	}
- 
- 	printk(KERN_INFO "%s: registered device video%d [mpeg]\n",
-@@ -1116,9 +1113,14 @@ int saa7164_encoder_register(struct saa7164_port *port)
- 
- 	saa7164_api_set_encoder(port);
- 	saa7164_api_get_encoder(port);
-+	return 0;
- 
--	result = 0;
--failed:
-+fail_reg:
-+	video_device_release(port->v4l_device);
-+	port->v4l_device = NULL;
-+fail_hdl:
-+	v4l2_ctrl_handler_free(hdl);
-+fail_pci:
- 	return result;
- }
- 
+-	if (esdhc_is_usdhc(imx_data)) {
++	if (esdhc_is_usdhc(imx_data) && !IS_ERR(imx_data->pinctrl)) {
+ 		imx_data->pins_100mhz = pinctrl_lookup_state(imx_data->pinctrl,
+ 						ESDHC_PINCTRL_STATE_100MHZ);
+ 		imx_data->pins_200mhz = pinctrl_lookup_state(imx_data->pinctrl,
 -- 
 2.30.2
 
