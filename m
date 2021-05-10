@@ -2,226 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631DB377FC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D9A377FDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhEJJtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:49:21 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:47758 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230098AbhEJJtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:49:19 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 24EF020016E;
-        Mon, 10 May 2021 11:48:14 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 15CE5200165;
-        Mon, 10 May 2021 11:48:14 +0200 (CEST)
-Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 0024420340;
-        Mon, 10 May 2021 11:48:13 +0200 (CEST)
-Date:   Mon, 10 May 2021 12:48:13 +0300
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        p.zabel@pengutronix.de, l.stach@pengutronix.de, krzk@kernel.org,
-        agx@sigxcpu.org, marex@denx.de, andrew.smirnov@gmail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, ping.bai@nxp.com,
-        frieder.schrempf@kontron.de, aford173@gmail.com,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V4 4/4] soc: imx: Add blk-ctl driver for i.MX8MM
-Message-ID: <20210510094813.vye2yjdspuqkiocd@fsr-ub1664-175>
-References: <20210510040704.14997-1-peng.fan@oss.nxp.com>
- <20210510040704.14997-5-peng.fan@oss.nxp.com>
+        id S230355AbhEJJvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230390AbhEJJvo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 05:51:44 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189AFC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 02:50:40 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id j12so6835604pgh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 02:50:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=suql6mxhF7VWacBQX+vVI90y4jo7pK7o7lRK42P1ziE=;
+        b=lOHb/wGLPI35HYDpC1OybPS0wSHtEceWE9NWy4yGK8ilXXldfGkKtOa8K66bNr4LEO
+         Pr9azSla0OuJEaDOigJpQisql/QT6Rzgq/OL94Z5dEW4Jo9qDvVnUfwuUeDl/NGvpzhn
+         KxdIcdeNTo8YF1ZknPwF9akS+XlqzfXmq6cBU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=suql6mxhF7VWacBQX+vVI90y4jo7pK7o7lRK42P1ziE=;
+        b=TjK6XoOsopMlZppICJ1fpyBEo/gs5qTqX6ooUZazn+7m1XEldp4gd2cNXIMWNxspF6
+         7UvGRJDbsBJbC91Yien6Q11leaLdQgd9nkEqszBnOk/i5UjchI27vg326RuCoFzq1SYu
+         RwLCBihhWMy5CthqimBaS6QLZICS5NWGq6MJK6Uq1nL8yNIpGi2B5tA7OAVme8r9LcEM
+         SUJilu5M8B6jUuc6ykJPv/YSo71sthNvQTTOLBBGjhDjdPlZu+QWcOpvxz+xv2eCveue
+         axUgAzoFNT9KuiPAIo8IcnqPr5Km+/YwWEYOlkDWqrSJhTkwnaqrI8n0uE1FpQdFTmd1
+         OzIg==
+X-Gm-Message-State: AOAM5324d46W9JPYFP/LgoVQw/q1juNwJ79OlZVGz605YQXoYvAyRH6w
+        68vn2UxYQkagXAe7/mE2gWi4GQ==
+X-Google-Smtp-Source: ABdhPJxaRNqwofbH1Q1gT6hjDo7UCjX7KCvjB0rJLaDOY22mJQZwGH/owOzO7oGoIZrGlaECEV1xwQ==
+X-Received: by 2002:a62:2a14:0:b029:263:20c5:6d8c with SMTP id q20-20020a622a140000b029026320c56d8cmr24491637pfq.23.1620640239613;
+        Mon, 10 May 2021 02:50:39 -0700 (PDT)
+Received: from localhost ([2401:fa00:95:205:a524:abe8:94e3:5601])
+        by smtp.gmail.com with UTF8SMTPSA id 3sm10134744pff.132.2021.05.10.02.50.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 02:50:39 -0700 (PDT)
+From:   Claire Chang <tientzu@chromium.org>
+To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
+        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
+        tientzu@chromium.org, daniel@ffwll.ch, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, jxgao@google.com,
+        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
+        nouveau@lists.freedesktop.org, rodrigo.vivi@intel.com,
+        thomas.hellstrom@linux.intel.com, Claire Chang <tientzu@google.com>
+Subject: [PATCH v6 00/15] Restricted DMA
+Date:   Mon, 10 May 2021 17:50:11 +0800
+Message-Id: <20210510095026.3477496-1-tientzu@chromium.org>
+X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210510040704.14997-5-peng.fan@oss.nxp.com>
-User-Agent: NeoMutt/20180622
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-05-10 12:07:04, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> The i.MX8MM SoC has dispmix BLK-CTL and vpumix BLK-CTL, so we add
-> that support in this driver.
-> 
-> Reviewed-by: Abel Vesa <abel.vesa@nxp.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/soc/imx/Makefile         |   2 +-
->  drivers/soc/imx/blk-ctl-imx8mm.c | 138 +++++++++++++++++++++++++++++++
->  2 files changed, 139 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/soc/imx/blk-ctl-imx8mm.c
-> 
-> diff --git a/drivers/soc/imx/Makefile b/drivers/soc/imx/Makefile
-> index d3d2b49a386c..c260b962f495 100644
-> --- a/drivers/soc/imx/Makefile
-> +++ b/drivers/soc/imx/Makefile
-> @@ -4,4 +4,4 @@ obj-$(CONFIG_ARCH_MXC) += soc-imx.o
->  endif
->  obj-$(CONFIG_HAVE_IMX_GPC) += gpc.o
->  obj-$(CONFIG_IMX_GPCV2_PM_DOMAINS) += gpcv2.o
-> -obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o blk-ctl.o
-> +obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o blk-ctl.o blk-ctl-imx8mm.o
-> diff --git a/drivers/soc/imx/blk-ctl-imx8mm.c b/drivers/soc/imx/blk-ctl-imx8mm.c
-> new file mode 100644
-> index 000000000000..5ca8d6c52917
-> --- /dev/null
-> +++ b/drivers/soc/imx/blk-ctl-imx8mm.c
-> @@ -0,0 +1,138 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright 2021 NXP
-> + */
-> +
-> +#include <dt-bindings/clock/imx8mm-clock.h>
-> +#include <dt-bindings/power/imx8mm-power.h>
-> +#include <linux/clk.h>
-> +#include <linux/err.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/types.h>
-> +#include <linux/pm_domain.h>
-> +#include <linux/regmap.h>
-> +
-> +#include "blk-ctl.h"
-> +
-> +#define MEDIA_BLK_BUS_RSTN_BLK_SYNC_SFT_EN			BIT(6)
-> +#define MEDIA_BLK_MIPI_DSI_I_PRESETN_SFT_EN			BIT(5)
-> +#define MEDIA_BLK_MIPI_CSI_I_PRESETN_SFT_EN			BIT(4)
-> +#define MEDIA_BLK_CAMERA_PIXEL_RESET_N_SFT_EN			BIT(3)
-> +#define MEDIA_BLK_CSI_BRIDGE_SFT_EN				GENMASK(2, 0)
-> +
-> +#define MEDIA_BLK_BUS_PD_MASK					BIT(12)
-> +#define MEDIA_BLK_MIPI_CSI_PD_MASK				GENMASK(11, 10)
-> +#define MEDIA_BLK_MIPI_DSI_PD_MASK				GENMASK(9, 8)
-> +#define MEDIA_BLK_LCDIF_PD_MASK					GENMASK(7, 6)
-> +#define MEDIA_BLK_CSI_BRIDGE_PD_MASK				GENMASK(5, 0)
-> +
-> +static struct imx_blk_ctl_hw imx8mm_dispmix_blk_ctl_pds[] = {
-> +	IMX_BLK_CTL_PD("CSI_BRIDGE", "dispmix", IMX8MM_BLK_CTL_PD_DISPMIX_CSI_BRIDGE, 0x4,
-> +		       MEDIA_BLK_CSI_BRIDGE_PD_MASK, 0, MEDIA_BLK_CSI_BRIDGE_SFT_EN,
-> +		       IMX_BLK_CTL_PD_RESET),
-> +	IMX_BLK_CTL_PD("LCDIF", "dispmix", IMX8MM_BLK_CTL_PD_DISPMIX_LCDIF, 0x4,
-> +		       MEDIA_BLK_LCDIF_PD_MASK, -1, -1, 0),
-> +	IMX_BLK_CTL_PD("MIPI_DSI", "mipi", IMX8MM_BLK_CTL_PD_DISPMIX_MIPI_DSI, 0x4,
-> +		       MEDIA_BLK_MIPI_DSI_PD_MASK, 0, MEDIA_BLK_MIPI_DSI_I_PRESETN_SFT_EN,
-> +		       IMX_BLK_CTL_PD_RESET),
-> +	IMX_BLK_CTL_PD("MIPI_CSI", "mipi", IMX8MM_BLK_CTL_PD_DISPMIX_MIPI_CSI, 0x4,
-> +		       MEDIA_BLK_MIPI_CSI_PD_MASK, 0,
-> +		       MEDIA_BLK_MIPI_CSI_I_PRESETN_SFT_EN | MEDIA_BLK_CAMERA_PIXEL_RESET_N_SFT_EN,
-> +		       IMX_BLK_CTL_PD_RESET)
-> +};
-> +
-> +static struct imx_blk_ctl_hw imx8mm_vpumix_blk_ctl_pds[] = {
-> +	IMX_BLK_CTL_PD("VPU_BLK_CTL_G2", "vpu-g2", IMX8MM_BLK_CTL_PD_VPU_G2, 0x4,
-> +		       BIT(0), 0, BIT(0), IMX_BLK_CTL_PD_RESET),
-> +	IMX_BLK_CTL_PD("VPU_BLK_CTL_G1", "vpu-g1", IMX8MM_BLK_CTL_PD_VPU_G1, 0x4,
-> +		       BIT(1), 0, BIT(1), IMX_BLK_CTL_PD_RESET),
-> +	IMX_BLK_CTL_PD("VPU_BLK_CTL_H1", "vpu-h1", IMX8MM_BLK_CTL_PD_VPU_H1, 0x4,
-> +		       BIT(2), 0, BIT(2), IMX_BLK_CTL_PD_HANDSHAKE | IMX_BLK_CTL_PD_RESET),
-> +};
-> +
-> +static const struct regmap_config imx8mm_blk_ctl_regmap_config = {
-> +	.reg_bits		= 32,
-> +	.reg_stride		= 4,
-> +	.val_bits		= 32,
-> +	.max_register		= 0x30,
-> +	.fast_io		= true,
-> +};
-> +
-> +static const struct imx_blk_ctl_dev_data imx8mm_vpumix_blk_ctl_dev_data = {
-> +	.pds = imx8mm_vpumix_blk_ctl_pds,
-> +	.pds_num = ARRAY_SIZE(imx8mm_vpumix_blk_ctl_pds),
-> +	.hw_hsk = IMX_BLK_CTL_PD(NULL, NULL, IMX8MM_BLK_CTL_PD_VPU_H1, 0x4, BIT(2), 0, BIT(2),
-> +				 IMX_BLK_CTL_PD_HANDSHAKE),
-> +	.config = imx8mm_blk_ctl_regmap_config,
-> +	.active_pd_names = (char*[]){"vpumix", "g1", "g2", "h1"},
-> +	.num_active_pd = 4,
-> +};
-> +
-> +static const struct imx_blk_ctl_dev_data imx8mm_dispmix_blk_ctl_dev_data = {
-> +	.pds = imx8mm_dispmix_blk_ctl_pds,
-> +	.pds_num = ARRAY_SIZE(imx8mm_dispmix_blk_ctl_pds),
-> +	.hw_hsk = IMX_BLK_CTL_PD(NULL, NULL, -1, 0x4, MEDIA_BLK_BUS_PD_MASK, 0,
-> +				 MEDIA_BLK_BUS_RSTN_BLK_SYNC_SFT_EN,
-> +				 IMX_BLK_CTL_PD_HANDSHAKE | IMX_BLK_CTL_PD_RESET),
-> +	.config = imx8mm_blk_ctl_regmap_config,
-> +	.active_pd_names = (char*[]){"dispmix", "mipi"},
-> +	.num_active_pd = 2,
-> +};
-> +
-> +static int imx8mm_blk_ctl_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	const struct imx_blk_ctl_dev_data *dev_data = of_device_get_match_data(dev);
-> +	struct regmap *regmap;
-> +	struct imx_blk_ctl *ctl;
-> +	void __iomem *base;
-> +
-> +	ctl = devm_kzalloc(dev, sizeof(*ctl), GFP_KERNEL);
-> +	if (!ctl)
-> +		return -ENOMEM;
-> +
-> +	base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(base))
-> +		return PTR_ERR(base);
-> +
-> +	regmap = devm_regmap_init_mmio(dev, base, &dev_data->config);
-> +	if (IS_ERR(regmap))
-> +		return PTR_ERR(regmap);
-> +
-> +	ctl->regmap = regmap;
-> +	ctl->dev = dev;
-> +	ctl->power_count = 0;
-> +	mutex_init(&ctl->lock);
-> +
-> +	ctl->num_clks = devm_clk_bulk_get_all(dev, &ctl->clks);
-> +	if (ctl->num_clks < 0)
-> +		return ctl->num_clks;
-> +
-> +	dev_set_drvdata(dev, ctl);
-> +	ctl->dev_data = dev_data;
-> +
-> +	return imx_blk_ctl_register(dev);
-> +}
+From: Claire Chang <tientzu@google.com>
 
-Nitpick:
+This series implements mitigations for lack of DMA access control on
+systems without an IOMMU, which could result in the DMA accessing the
+system memory at unexpected times and/or unexpected addresses, possibly
+leading to data leakage or corruption.
 
-Pretty sure all the other platforms will have a similar probe function.
-So maybe we can move this into the generic and call it imx8_blk_ctl_register
-and pass on the PDs, dev data and regmap_config. 
+For example, we plan to use the PCI-e bus for Wi-Fi and that PCI-e bus is
+not behind an IOMMU. As PCI-e, by design, gives the device full access to
+system memory, a vulnerability in the Wi-Fi firmware could easily escalate
+to a full system exploit (remote wifi exploits: [1a], [1b] that shows a
+full chain of exploits; [2], [3]).
 
-We could also do this later on when i.MX8MP variant will be done. 
+To mitigate the security concerns, we introduce restricted DMA. Restricted
+DMA utilizes the existing swiotlb to bounce streaming DMA in and out of a
+specially allocated region and does memory allocation from the same region.
+The feature on its own provides a basic level of protection against the DMA
+overwriting buffer contents at unexpected times. However, to protect
+against general data leakage and system memory corruption, the system needs
+to provide a way to restrict the DMA to a predefined memory region (this is
+usually done at firmware level, e.g. MPU in ATF on some ARM platforms [4]).
 
-> +
-> +static const struct of_device_id imx_blk_ctl_of_match[] = {
-> +	{ .compatible = "fsl,imx8mm-vpumix-blk-ctl", .data = &imx8mm_vpumix_blk_ctl_dev_data },
-> +	{ .compatible = "fsl,imx8mm-dispmix-blk-ctl", .data = &imx8mm_dispmix_blk_ctl_dev_data },
-> +	{ /* Sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, imx_blk_ctl_of_match);
-> +
-> +static struct platform_driver imx_blk_ctl_driver = {
-> +	.probe = imx8mm_blk_ctl_probe,
-> +	.driver = {
-> +		.name = "imx8mm-blk-ctl",
-> +		.of_match_table = of_match_ptr(imx_blk_ctl_of_match),
-> +		.pm = &imx_blk_ctl_pm_ops,
-> +	},
-> +};
-> +module_platform_driver(imx_blk_ctl_driver);
-> -- 
-> 2.30.0
-> 
+[1a] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_4.html
+[1b] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_11.html
+[2] https://blade.tencent.com/en/advisories/qualpwn/
+[3] https://www.bleepingcomputer.com/news/security/vulnerabilities-found-in-highly-popular-firmware-for-wifi-chips/
+[4] https://github.com/ARM-software/arm-trusted-firmware/blob/master/plat/mediatek/mt8183/drivers/emi_mpu/emi_mpu.c#L132
+
+v6:
+Address the comments in v5
+
+v5:
+Rebase on latest linux-next
+https://lore.kernel.org/patchwork/cover/1416899/
+
+v4:
+- Fix spinlock bad magic
+- Use rmem->name for debugfs entry
+- Address the comments in v3
+https://lore.kernel.org/patchwork/cover/1378113/
+
+v3:
+Using only one reserved memory region for both streaming DMA and memory
+allocation.
+https://lore.kernel.org/patchwork/cover/1360992/
+
+v2:
+Building on top of swiotlb.
+https://lore.kernel.org/patchwork/cover/1280705/
+
+v1:
+Using dma_map_ops.
+https://lore.kernel.org/patchwork/cover/1271660/
+*** BLURB HERE ***
+
+Claire Chang (15):
+  swiotlb: Refactor swiotlb init functions
+  swiotlb: Refactor swiotlb_create_debugfs
+  swiotlb: Add DMA_RESTRICTED_POOL
+  swiotlb: Add restricted DMA pool initialization
+  swiotlb: Add a new get_io_tlb_mem getter
+  swiotlb: Update is_swiotlb_buffer to add a struct device argument
+  swiotlb: Update is_swiotlb_active to add a struct device argument
+  swiotlb: Bounce data from/to restricted DMA pool if available
+  swiotlb: Move alloc_size to find_slots
+  swiotlb: Refactor swiotlb_tbl_unmap_single
+  dma-direct: Add a new wrapper __dma_direct_free_pages()
+  swiotlb: Add restricted DMA alloc/free support.
+  dma-direct: Allocate memory from restricted DMA pool if available
+  dt-bindings: of: Add restricted DMA pool
+  of: Add plumbing for restricted DMA pool
+
+ .../reserved-memory/reserved-memory.txt       |  27 ++
+ drivers/gpu/drm/i915/gem/i915_gem_internal.c  |   2 +-
+ drivers/gpu/drm/nouveau/nouveau_ttm.c         |   2 +-
+ drivers/iommu/dma-iommu.c                     |  12 +-
+ drivers/of/address.c                          |  25 ++
+ drivers/of/device.c                           |   3 +
+ drivers/of/of_private.h                       |   5 +
+ drivers/pci/xen-pcifront.c                    |   2 +-
+ drivers/xen/swiotlb-xen.c                     |   2 +-
+ include/linux/device.h                        |   4 +
+ include/linux/swiotlb.h                       |  41 ++-
+ kernel/dma/Kconfig                            |  14 +
+ kernel/dma/direct.c                           |  63 +++--
+ kernel/dma/direct.h                           |   9 +-
+ kernel/dma/swiotlb.c                          | 242 +++++++++++++-----
+ 15 files changed, 356 insertions(+), 97 deletions(-)
+
+-- 
+2.31.1.607.g51e8a6a459-goog
+
