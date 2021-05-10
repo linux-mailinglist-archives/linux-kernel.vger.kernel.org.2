@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79DA378676
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75653789A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236494AbhEJLIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:08:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59424 "EHLO mail.kernel.org"
+        id S236043AbhEJLae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:30:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231975AbhEJKrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:47:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 862B8619B8;
-        Mon, 10 May 2021 10:37:39 +0000 (UTC)
+        id S234817AbhEJK5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 449AF6162D;
+        Mon, 10 May 2021 10:49:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643060;
-        bh=OiVkr2U5Omt7baOtEMh3LQxKl7nKQ3eY6sFFrL9m7fE=;
+        s=korg; t=1620643770;
+        bh=9PNRs/NqtnqsZodPRpjt5A1cV1aiyd4RkqOemCQ4w8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XSz+nIq5/ddTXenGS7FqfkPMbJY8XGwHpzRAiO+KNhTM4BEE4V3qEefY3aaP55At4
-         q5WhjN9qF26C/oO3LGsBGHHQGKN1lAlsNlkqibBdgo8Px/9ZLlVBuBF1n3+6WLd1ak
-         ueRj7knORJH8s9wN1rzOYbg5GAgXqUgCVCtFMei4=
+        b=XkNYxB88IK6GVMjmN96fln6Ghkixs3sthBS7KUwTFnok5waVG0+szYe265Ole1OqW
+         Lch3D3JUi9udzLXBbZDWqzdEsYaP3Q7POhHYO2N7VdJo5f91PXrtW3w5SdfZG4YwUW
+         avSWcG/VV4upQhyg+Sb7MqQ7b42JGucWVmwYgm0g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Eric Yang <eric.yang2@amd.com>,
+        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 126/299] sched/pelt: Fix task util_est update filtering
-Date:   Mon, 10 May 2021 12:18:43 +0200
-Message-Id: <20210510102009.141358382@linuxfoundation.org>
+Subject: [PATCH 5.11 134/342] drm/amd/display: Fix MPC OGAM power on/off sequence
+Date:   Mon, 10 May 2021 12:18:44 +0200
+Message-Id: <20210510102014.503058966@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,92 +44,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Donnefort <vincent.donnefort@arm.com>
+From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
 
-[ Upstream commit b89997aa88f0b07d8a6414c908af75062103b8c9 ]
+[ Upstream commit 737b2b536a30a467c405d75f2287e17828838a13 ]
 
-Being called for each dequeue, util_est reduces the number of its updates
-by filtering out when the EWMA signal is different from the task util_avg
-by less than 1%. It is a problem for a sudden util_avg ramp-up. Due to the
-decay from a previous high util_avg, EWMA might now be close enough to
-the new util_avg. No update would then happen while it would leave
-ue.enqueued with an out-of-date value.
+[Why]
+Color corruption can occur on bootup into a login
+manager that applies a non-linear gamma LUT because
+the LUT may not actually be powered on before writing.
 
-Taking into consideration the two util_est members, EWMA and enqueued for
-the filtering, ensures, for both, an up-to-date value.
+It's cleared on the next full pipe reprogramming as
+we switch to LUTB from LUTA and the pipe accessing
+the LUT has taken it out of light sleep mode.
 
-This is for now an issue only for the trace probe that might return the
-stale value. Functional-wise, it isn't a problem, as the value is always
-accessed through max(enqueued, ewma).
+[How]
+The MPCC_OGAM_MEM_PWR_FORCE register does not force
+the current power mode when set to 0. It only forces
+when set light sleep, deep sleep or shutdown.
 
-This problem has been observed using LISA's UtilConvergence:test_means on
-the sd845c board.
+The register to actually force power on and ignore
+sleep modes is MPCC_OGAM_MEM_PWR_DIS - a value of 0
+will enable power requests and a value of 1 will
+disable them.
 
-No regression observed with Hackbench on sd845c and Perf-bench sched pipe
-on hikey/hikey960.
+When PWR_FORCE!=0 is combined with PWR_DIS=0 then
+MPCC OGAM memory is forced into the state specified
+by the force bits.
 
-Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/20210225165820.1377125-1-vincent.donnefort@arm.com
+If PWR_FORCE is 0 then it respects the mode specified
+by MPCC_OGAM_MEM_LOW_PWR_MODE if the RAM LUT is not
+in use.
+
+We set that bit to shutdown on low power, but otherwise
+it inherits from bootup defaults.
+
+So for the fix:
+
+1. Update the sequence to "force" power on when needed
+
+We can use MPCC_OGAM_MEM_PWR_DIS for this to turn on the
+memory even when the block is in bypass and pending to be
+enabled for the next frame.
+
+We need this for both low power enabled or disabled.
+
+If we don't set this then we can run into issues when we
+first program the LUT from bootup.
+
+2. Don't apply FORCE_SEL
+
+Once we enable power requests with DIS=0 we run into the
+issue of the RAM being forced into light sleep and being
+unusable for display output. Leave this 0 like we used to
+for DCN20.
+
+3. Rely on MPCC OGAM init to determine light sleep/deep sleep
+
+MPC low power debug mode isn't enabled on any ASIC currently
+but we'll respect the setting determined during init if it
+is.
+
+Lightly tested as working with IGT tests and desktop color
+adjustment.
+
+4. Change the MPC resource default for DCN30
+
+It was interleaving the dcn20 and dcn30 versions before
+depending on the sequence.
+
+5. REG_WAIT for it to be on whenever we're powering up the
+memory
+
+Otherwise we can write register values too early and we'll
+get corruption.
+
+Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Reviewed-by: Eric Yang <eric.yang2@amd.com>
+Acked-by: Qingqing Zhuo <Qingqing.Zhuo@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/fair.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ .../gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c  | 24 ++++++++++---------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 348605306027..8f5bbc1469ed 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3948,6 +3948,8 @@ static inline void util_est_dequeue(struct cfs_rq *cfs_rq,
- 	trace_sched_util_est_cfs_tp(cfs_rq);
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c
+index 3e6f76096119..a7598356f37d 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c
+@@ -143,16 +143,18 @@ static void mpc3_power_on_ogam_lut(
+ {
+ 	struct dcn30_mpc *mpc30 = TO_DCN30_MPC(mpc);
+ 
+-	if (mpc->ctx->dc->debug.enable_mem_low_power.bits.mpc) {
+-		// Force power on
+-		REG_UPDATE(MPCC_MEM_PWR_CTRL[mpcc_id], MPCC_OGAM_MEM_PWR_DIS, power_on == true ? 1:0);
+-		// Wait for confirmation when powering on
+-		if (power_on)
+-			REG_WAIT(MPCC_MEM_PWR_CTRL[mpcc_id], MPCC_OGAM_MEM_PWR_STATE, 0, 10, 10);
+-	} else {
+-		REG_SET(MPCC_MEM_PWR_CTRL[mpcc_id], 0,
+-				MPCC_OGAM_MEM_PWR_FORCE, power_on == true ? 0 : 1);
+-	}
++	/*
++	 * Powering on: force memory active so the LUT can be updated.
++	 * Powering off: allow entering memory low power mode
++	 *
++	 * Memory low power mode is controlled during MPC OGAM LUT init.
++	 */
++	REG_UPDATE(MPCC_MEM_PWR_CTRL[mpcc_id],
++		   MPCC_OGAM_MEM_PWR_DIS, power_on != 0);
++
++	/* Wait for memory to be powered on - we won't be able to write to it otherwise. */
++	if (power_on)
++		REG_WAIT(MPCC_MEM_PWR_CTRL[mpcc_id], MPCC_OGAM_MEM_PWR_STATE, 0, 10, 10);
  }
  
-+#define UTIL_EST_MARGIN (SCHED_CAPACITY_SCALE / 100)
-+
- /*
-  * Check if a (signed) value is within a specified (unsigned) margin,
-  * based on the observation that:
-@@ -3965,7 +3967,7 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
- 				   struct task_struct *p,
- 				   bool task_sleep)
- {
--	long last_ewma_diff;
-+	long last_ewma_diff, last_enqueued_diff;
- 	struct util_est ue;
+ static void mpc3_configure_ogam_lut(
+@@ -1427,7 +1429,7 @@ const struct mpc_funcs dcn30_mpc_funcs = {
+ 	.acquire_rmu = mpcc3_acquire_rmu,
+ 	.program_3dlut = mpc3_program_3dlut,
+ 	.release_rmu = mpcc3_release_rmu,
+-	.power_on_mpc_mem_pwr = mpc20_power_on_ogam_lut,
++	.power_on_mpc_mem_pwr = mpc3_power_on_ogam_lut,
+ 	.get_mpc_out_mux = mpc1_get_mpc_out_mux,
  
- 	if (!sched_feat(UTIL_EST))
-@@ -3986,6 +3988,8 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
- 	if (ue.enqueued & UTIL_AVG_UNCHANGED)
- 		return;
- 
-+	last_enqueued_diff = ue.enqueued;
-+
- 	/*
- 	 * Reset EWMA on utilization increases, the moving average is used only
- 	 * to smooth utilization decreases.
-@@ -3999,12 +4003,17 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
- 	}
- 
- 	/*
--	 * Skip update of task's estimated utilization when its EWMA is
-+	 * Skip update of task's estimated utilization when its members are
- 	 * already ~1% close to its last activation value.
- 	 */
- 	last_ewma_diff = ue.enqueued - ue.ewma;
--	if (within_margin(last_ewma_diff, (SCHED_CAPACITY_SCALE / 100)))
-+	last_enqueued_diff -= ue.enqueued;
-+	if (within_margin(last_ewma_diff, UTIL_EST_MARGIN)) {
-+		if (!within_margin(last_enqueued_diff, UTIL_EST_MARGIN))
-+			goto done;
-+
- 		return;
-+	}
- 
- 	/*
- 	 * To avoid overestimation of actual task utilization, skip updates if
+ };
 -- 
 2.30.2
 
