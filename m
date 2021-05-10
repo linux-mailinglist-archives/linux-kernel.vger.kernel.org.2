@@ -2,561 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A51DC377E30
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFAC377E2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 10:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbhEJIa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 04:30:29 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:48123 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230193AbhEJIa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 04:30:26 -0400
-Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14A8Sl1j2371572
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Mon, 10 May 2021 01:28:59 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14A8Sl1j2371572
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1620635340;
-        bh=9V0kQPP5FzaAuYMVyaS592vyfOkukQiHybFuyX7MU6s=;
-        h=From:To:Cc:Subject:Date:From;
-        b=InJ7PXUNF42uq2WpiIJzTABobso6nyITWNBkrEjp9P0X7i3zlgxt3A26m9NmsTxM/
-         0emarJuPLuL7tLuB3HtXjslFR8MCk+dykMxl1WJT8tfZjbHXEvFa4y8pDEXbWXz36q
-         egMtO4JjsfT2xAwKYAG2AUyYAd0JnKnOUOFvhM/kGDOC99hRjroD5ScwbibxqONMjp
-         wUN9rsT3wtvHNzR/YDsM9/DBKrFH/WpsEczraPq8ERXNjh92ZlCQbfwqhOe3seOBKU
-         J4GbORijZIsClPDglxRxeSaUcjihG0vuaBwuOV0grhZDLsBHnIPGoNeHFb2C7KyPm9
-         ZF3nqm5RHPlPQ==
-From:   "H. Peter Anvin (Intel)" <hpa@zytor.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] x86/boot: modernize genimage script; hdimage+EFI support
-Date:   Mon, 10 May 2021 01:28:40 -0700
-Message-Id: <20210510082840.628372-1-hpa@zytor.com>
-X-Mailer: git-send-email 2.31.1
+        id S230098AbhEJIaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 04:30:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32904 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230106AbhEJIaH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 04:30:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620635342;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wLO002ZAEDwCPEMDUCoBTt5K/2IsD96rah29IFBQCrw=;
+        b=jIPIMB1IP0yFj713Rs6gGCSHwGIqvEpXc9GQlUO299kugatSPiMIMHZfgPjNdZB+XamUYt
+        iG8+EGGrwuRSbs6yJGSpnS3rK0pRXK7l+f5O0xC+3gQRUtExdzA9H2ma7wdBLDWzgKK7oh
+        5UGiscuT/IVJP7WD6NF4pCVxPF7L/GM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-86-k6p99uKkPXChk1_Yembhcw-1; Mon, 10 May 2021 04:29:00 -0400
+X-MC-Unique: k6p99uKkPXChk1_Yembhcw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B72A107ACCA;
+        Mon, 10 May 2021 08:28:58 +0000 (UTC)
+Received: from starship (unknown [10.40.194.86])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 87B395D9F2;
+        Mon, 10 May 2021 08:28:55 +0000 (UTC)
+Message-ID: <f3a4ae84a227d131540762c55d357c6d7f48ac48.camel@redhat.com>
+Subject: Re: [PATCH 13/15] KVM: x86: Move uret MSR slot management to common
+ x86
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Reiji Watanabe <reijiw@google.com>
+Date:   Mon, 10 May 2021 11:28:54 +0300
+In-Reply-To: <20210504171734.1434054-14-seanjc@google.com>
+References: <20210504171734.1434054-1-seanjc@google.com>
+         <20210504171734.1434054-14-seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The image generation scripts in arch/x86/boot are pretty out of date,
-except for the isoimage target. Update and clean up the
-genimage.sh script, and make it support an arbitrary number of
-initramfs files in the image.
+On Tue, 2021-05-04 at 10:17 -0700, Sean Christopherson wrote:
+> Now that SVM and VMX both probe MSRs before "defining" user return slots
+> for them, consolidate the code for probe+define into common x86 and
+> eliminate the odd behavior of having the vendor code define the slot for
+> a given MSR.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  3 +--
+>  arch/x86/kvm/svm/svm.c          |  5 +----
+>  arch/x86/kvm/vmx/vmx.c          | 19 ++++---------------
+>  arch/x86/kvm/x86.c              | 19 +++++++++++--------
+>  4 files changed, 17 insertions(+), 29 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 10663610f105..a4b912f7e427 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1778,9 +1778,8 @@ int kvm_pv_send_ipi(struct kvm *kvm, unsigned long ipi_bitmap_low,
+>  		    unsigned long ipi_bitmap_high, u32 min,
+>  		    unsigned long icr, int op_64_bit);
+>  
+> -void kvm_define_user_return_msr(unsigned index, u32 msr);
+> +int kvm_add_user_return_msr(u32 msr);
+>  int kvm_find_user_return_msr(u32 msr);
+> -int kvm_probe_user_return_msr(u32 msr);
+>  int kvm_set_user_return_msr(unsigned index, u64 val, u64 mask);
+>  
+>  u64 kvm_scale_tsc(struct kvm_vcpu *vcpu, u64 tsc);
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 231b9650d864..de921935e8de 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -959,10 +959,7 @@ static __init int svm_hardware_setup(void)
+>  		kvm_tsc_scaling_ratio_frac_bits = 32;
+>  	}
+>  
+> -	if (!kvm_probe_user_return_msr(MSR_TSC_AUX)) {
+> -		tsc_aux_uret_slot = 0;
+> -		kvm_define_user_return_msr(tsc_aux_uret_slot, MSR_TSC_AUX);
+> -	}
+> +	tsc_aux_uret_slot = kvm_add_user_return_msr(MSR_TSC_AUX);
+>  
+>  	/* Check for pause filtering support */
+>  	if (!boot_cpu_has(X86_FEATURE_PAUSEFILTER)) {
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 7a53568b34fc..26f82f302391 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -454,9 +454,6 @@ static inline void vmx_segment_cache_clear(struct vcpu_vmx *vmx)
+>  
+>  static unsigned long host_idt_base;
+>  
+> -/* Number of user return MSRs that are actually supported in hardware. */
+> -static int vmx_nr_uret_msrs;
+> -
+>  #if IS_ENABLED(CONFIG_HYPERV)
+>  static bool __read_mostly enlightened_vmcs = true;
+>  module_param(enlightened_vmcs, bool, 0444);
+> @@ -1218,7 +1215,7 @@ void vmx_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
+>  	 */
+>  	if (!vmx->guest_uret_msrs_loaded) {
+>  		vmx->guest_uret_msrs_loaded = true;
+> -		for (i = 0; i < vmx_nr_uret_msrs; ++i) {
+> +		for (i = 0; i < kvm_nr_uret_msrs; ++i) {
+>  			if (!vmx->guest_uret_msrs[i].load_into_hardware)
+>  				continue;
+>  
+> @@ -6921,7 +6918,7 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+>  			goto free_vpid;
+>  	}
+>  
+> -	for (i = 0; i < vmx_nr_uret_msrs; ++i) {
+> +	for (i = 0; i < kvm_nr_uret_msrs; ++i) {
+>  		vmx->guest_uret_msrs[i].data = 0;
+>  		vmx->guest_uret_msrs[i].mask = -1ull;
+>  	}
+> @@ -7810,20 +7807,12 @@ static __init void vmx_setup_user_return_msrs(void)
+>  		MSR_EFER, MSR_TSC_AUX, MSR_STAR,
+>  		MSR_IA32_TSX_CTRL,
+>  	};
+> -	u32 msr;
+>  	int i;
+>  
+>  	BUILD_BUG_ON(ARRAY_SIZE(vmx_uret_msrs_list) != MAX_NR_USER_RETURN_MSRS);
+>  
+> -	for (i = 0; i < ARRAY_SIZE(vmx_uret_msrs_list); ++i) {
+> -		msr = vmx_uret_msrs_list[i];
+> -
+> -		if (kvm_probe_user_return_msr(msr))
+> -			continue;
+> -
+> -		kvm_define_user_return_msr(vmx_nr_uret_msrs, msr);
+> -		vmx_nr_uret_msrs++;
+> -	}
+> +	for (i = 0; i < ARRAY_SIZE(vmx_uret_msrs_list); ++i)
+> +		kvm_add_user_return_msr(vmx_uret_msrs_list[i]);
+>  }
+>  
+>  static __init int hardware_setup(void)
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 2fd46e917666..adca491d3b4b 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -336,7 +336,7 @@ static void kvm_on_user_return(struct user_return_notifier *urn)
+>  	}
+>  }
+>  
+> -int kvm_probe_user_return_msr(u32 msr)
+> +static int kvm_probe_user_return_msr(u32 msr)
+>  {
+>  	u64 val;
+>  	int ret;
+> @@ -350,16 +350,18 @@ int kvm_probe_user_return_msr(u32 msr)
+>  	preempt_enable();
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL_GPL(kvm_probe_user_return_msr);
+>  
+> -void kvm_define_user_return_msr(unsigned slot, u32 msr)
+> +int kvm_add_user_return_msr(u32 msr)
+>  {
+> -	BUG_ON(slot >= KVM_MAX_NR_USER_RETURN_MSRS);
+> -	kvm_uret_msrs_list[slot] = msr;
+> -	if (slot >= kvm_nr_uret_msrs)
+> -		kvm_nr_uret_msrs = slot + 1;
+> +	BUG_ON(kvm_nr_uret_msrs >= KVM_MAX_NR_USER_RETURN_MSRS);
+> +
+> +	if (kvm_probe_user_return_msr(msr))
+> +		return -1;
+> +
+> +	kvm_uret_msrs_list[kvm_nr_uret_msrs] = msr;
+> +	return kvm_nr_uret_msrs++;
+>  }
+> -EXPORT_SYMBOL_GPL(kvm_define_user_return_msr);
+> +EXPORT_SYMBOL_GPL(kvm_add_user_return_msr);
+>  
+>  int kvm_find_user_return_msr(u32 msr)
+>  {
+> @@ -8169,6 +8171,7 @@ int kvm_arch_init(void *opaque)
+>  		printk(KERN_ERR "kvm: failed to allocate percpu kvm_user_return_msrs\n");
+>  		goto out_free_x86_emulator_cache;
+>  	}
+> +	kvm_nr_uret_msrs = 0;
+>  
+>  	r = kvm_mmu_module_init();
+>  	if (r)
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
-Add a "hdimage" target, which can be booted by either BIOS or
-EFI (if the kernel is compiled with the EFI stub.) For EFI to be able
-to pass the command line to the kernel, we need the EFI shell, but the
-firmware builtin EFI shell, if it even exists, is pretty much always
-the last resort boot option, so search for OVMF or EDK2 and explicitly
-include a copy of the EFI shell.
+Best regards,
+	Maxim Levitsky
 
-To make this all work, use bash features in the script.  Furthermore,
-this version of the script makes use of some mtools features,
-especially mpartition, that might not exist in very old version of
-mtools, but given all the other dependencies on this script this
-doesn't seem such a big deal.
 
-Finally, put a volume label ("LINUX_BOOT") on all generated images.
 
-Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
----
-
-Version 3:
-* Add LINUX_BOOT label to generated images
-* Do not bundle with modules.img generation (not x86 specific)
-
- arch/x86/Makefile            |   5 +-
- arch/x86/boot/.gitignore     |   1 +
- arch/x86/boot/Makefile       |  44 ++---
- arch/x86/boot/genimage.sh    | 303 +++++++++++++++++++++++++----------
- arch/x86/boot/mtools.conf.in |   3 +
- 5 files changed, 252 insertions(+), 104 deletions(-)
-
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 9a85eae37b17..943f26a32834 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -247,7 +247,7 @@ drivers-$(CONFIG_FB) += arch/x86/video/
- 
- boot := arch/x86/boot
- 
--BOOT_TARGETS = bzdisk fdimage fdimage144 fdimage288 isoimage
-+BOOT_TARGETS = bzdisk fdimage fdimage144 fdimage288 hdimage isoimage
- 
- PHONY += bzImage $(BOOT_TARGETS)
- 
-@@ -305,8 +305,9 @@ define archhelp
-   echo  '  fdimage		- Create 1.4MB boot floppy image (arch/x86/boot/fdimage)'
-   echo  '  fdimage144		- Create 1.4MB boot floppy image (arch/x86/boot/fdimage)'
-   echo  '  fdimage288		- Create 2.8MB boot floppy image (arch/x86/boot/fdimage)'
-+  echo  '  hdimage		- Create a BIOS/EFI hard disk image (arch/x86/boot/hdimage)'
-   echo  '  isoimage		- Create a boot CD-ROM image (arch/x86/boot/image.iso)'
--  echo  '			  bzdisk/fdimage*/isoimage also accept:'
-+  echo  '			  bzdisk/fdimage*/hdimage/isoimage also accept:'
-   echo  '			  FDARGS="..."  arguments for the booted kernel'
-   echo  '                  	  FDINITRD=file initrd for the booted kernel'
-   echo  ''
-diff --git a/arch/x86/boot/.gitignore b/arch/x86/boot/.gitignore
-index 9cc7f1357b9b..1189be057ebd 100644
---- a/arch/x86/boot/.gitignore
-+++ b/arch/x86/boot/.gitignore
-@@ -11,3 +11,4 @@ setup.elf
- fdimage
- mtools.conf
- image.iso
-+hdimage
-diff --git a/arch/x86/boot/Makefile b/arch/x86/boot/Makefile
-index fe605205b4ce..dfbc26a8e924 100644
---- a/arch/x86/boot/Makefile
-+++ b/arch/x86/boot/Makefile
-@@ -29,7 +29,7 @@ KCOV_INSTRUMENT		:= n
- SVGA_MODE	:= -DSVGA_MODE=NORMAL_VGA
- 
- targets		:= vmlinux.bin setup.bin setup.elf bzImage
--targets		+= fdimage fdimage144 fdimage288 image.iso mtools.conf
-+targets		+= fdimage fdimage144 fdimage288 image.iso hdimage
- subdir-		:= compressed
- 
- setup-y		+= a20.o bioscall.o cmdline.o copy.o cpu.o cpuflags.o cpucheck.o
-@@ -115,47 +115,49 @@ $(obj)/compressed/vmlinux: FORCE
- 	$(Q)$(MAKE) $(build)=$(obj)/compressed $@
- 
- # Set this if you want to pass append arguments to the
--# bzdisk/fdimage/isoimage kernel
-+# bzdisk/fdimage/hdimage/isoimage kernel
- FDARGS =
--# Set this if you want an initrd included with the
--# bzdisk/fdimage/isoimage kernel
-+# Set this if you want one or more initrds included in the image
- FDINITRD =
- 
--image_cmdline = default linux $(FDARGS) $(if $(FDINITRD),initrd=initrd.img,)
-+imgdeps = $(obj)/bzImage $(obj)/mtools.conf $(src)/genimage.sh
- 
- $(obj)/mtools.conf: $(src)/mtools.conf.in
- 	sed -e 's|@OBJ@|$(obj)|g' < $< > $@
- 
-+targets += mtools.conf
-+
-+# genimage.sh requires bash, but it also has a bunch of other
-+# external dependencies.
- quiet_cmd_genimage = GENIMAGE $3
--cmd_genimage = sh $(srctree)/$(src)/genimage.sh $2 $3 $(obj)/bzImage \
--			$(obj)/mtools.conf '$(image_cmdline)' $(FDINITRD)
-+cmd_genimage = $(BASH) $(srctree)/$(src)/genimage.sh $2 $3 $(obj)/bzImage \
-+		$(obj)/mtools.conf '$(FDARGS)' $(FDINITRD)
- 
--PHONY += bzdisk fdimage fdimage144 fdimage288 isoimage bzlilo install
-+PHONY += bzdisk fdimage fdimage144 fdimage288 hdimage isoimage install
- 
- # This requires write access to /dev/fd0
--bzdisk: $(obj)/bzImage $(obj)/mtools.conf
-+# All images require syslinux to be installed; hdimage also requires
-+# EDK2/OVMF if the kernel is compiled with the EFI stub.
-+bzdisk: $(imgdeps)
- 	$(call cmd,genimage,bzdisk,/dev/fd0)
- 
--# These require being root or having syslinux 2.02 or higher installed
--fdimage fdimage144: $(obj)/bzImage $(obj)/mtools.conf
-+fdimage fdimage144: $(imgdeps)
- 	$(call cmd,genimage,fdimage144,$(obj)/fdimage)
- 	@$(kecho) 'Kernel: $(obj)/fdimage is ready'
- 
--fdimage288: $(obj)/bzImage $(obj)/mtools.conf
-+fdimage288: $(imgdeps)
- 	$(call cmd,genimage,fdimage288,$(obj)/fdimage)
- 	@$(kecho) 'Kernel: $(obj)/fdimage is ready'
- 
--isoimage: $(obj)/bzImage
-+hdimage: $(imgdeps)
-+	$(call cmd,genimage,hdimage,$(obj)/hdimage)
-+	@$(kecho) 'Kernel: $(obj)/hdimage is ready'
-+
-+isoimage: $(imgdeps)
- 	$(call cmd,genimage,isoimage,$(obj)/image.iso)
- 	@$(kecho) 'Kernel: $(obj)/image.iso is ready'
- 
--bzlilo:
--	if [ -f $(INSTALL_PATH)/vmlinuz ]; then mv $(INSTALL_PATH)/vmlinuz $(INSTALL_PATH)/vmlinuz.old; fi
--	if [ -f $(INSTALL_PATH)/System.map ]; then mv $(INSTALL_PATH)/System.map $(INSTALL_PATH)/System.old; fi
--	cat $(obj)/bzImage > $(INSTALL_PATH)/vmlinuz
--	cp System.map $(INSTALL_PATH)/
--	if [ -x /sbin/lilo ]; then /sbin/lilo; else /etc/lilo/install; fi
--
- install:
--	sh $(srctree)/$(src)/install.sh $(KERNELRELEASE) $(obj)/bzImage \
-+	$(CONFIG_SHELL) $(srctree)/$(src)/install.sh \
-+		$(KERNELRELEASE) $(obj)/bzImage \
- 		System.map "$(INSTALL_PATH)"
-diff --git a/arch/x86/boot/genimage.sh b/arch/x86/boot/genimage.sh
-index 6a10d52a4145..0673fdfc1a11 100644
---- a/arch/x86/boot/genimage.sh
-+++ b/arch/x86/boot/genimage.sh
-@@ -1,4 +1,4 @@
--#!/bin/sh
-+#!/bin/bash
- #
- # This file is subject to the terms and conditions of the GNU General Public
- # License.  See the file "COPYING" in the main directory of this archive
-@@ -8,15 +8,24 @@
- #
- # Adapted from code in arch/x86/boot/Makefile by H. Peter Anvin and others
- #
--# "make fdimage/fdimage144/fdimage288/isoimage" script for x86 architecture
-+# "make fdimage/fdimage144/fdimage288/hdimage/isoimage"
-+# script for x86 architecture
- #
- # Arguments:
--#   $1 - fdimage format
--#   $2 - target image file
--#   $3 - kernel bzImage file
--#   $4 - mtool configuration file
--#   $5 - kernel cmdline
--#   $6 - inird image file
-+#   $1  - fdimage format
-+#   $2  - target image file
-+#   $3  - kernel bzImage file
-+#   $4  - mtools configuration file
-+#   $5  - kernel cmdline
-+#   $6+ - initrd image file(s)
-+#
-+# This script requires:
-+#   bash
-+#   syslinux
-+#   mtools (for fdimage* and hdimage)
-+#   edk2/OVMF (for hdimage)
-+#
-+# Otherwise try to stick to POSIX shell commands...
- #
- 
- # Use "make V=1" to debug this script
-@@ -26,105 +35,237 @@ case "${KBUILD_VERBOSE}" in
-         ;;
- esac
- 
--verify () {
--	if [ ! -f "$1" ]; then
--		echo ""                                                   1>&2
--		echo " *** Missing file: $1"                              1>&2
--		echo ""                                                   1>&2
--		exit 1
-+# Exit the top-level shell with an error
-+topshell=$$
-+trap 'exit 1' USR1
-+die() {
-+	echo ""        1>&2
-+	echo " *** $*" 1>&2
-+	echo ""        1>&2
-+	kill -USR1 $topshell
-+}
-+
-+# Verify the existence and readability of a file
-+verify() {
-+	if [ ! -f "$1" -o ! -r "$1" ]; then
-+		die "Missing file: $1"
- 	fi
- }
- 
-+diskfmt="$1"
-+FIMAGE="$2"
-+FBZIMAGE="$3"
-+MTOOLSRC="$4"
-+KCMDLINE="$5"
-+shift 5				# Remaining arguments = initrd files
-+
-+export MTOOLSRC
- 
--export MTOOLSRC=$4
--FIMAGE=$2
--FBZIMAGE=$3
--KCMDLINE=$5
--FDINITRD=$6
-+# common options for dd
-+dd='dd iflag=fullblock'
- 
- # Make sure the files actually exist
- verify "$FBZIMAGE"
- 
--genbzdisk() {
--	verify "$MTOOLSRC"
--	mformat a:
--	syslinux $FIMAGE
--	echo "$KCMDLINE" | mcopy - a:syslinux.cfg
--	if [ -f "$FDINITRD" ] ; then
--		mcopy "$FDINITRD" a:initrd.img
-+declare -a FDINITRDS
-+irdpfx=' initrd='
-+initrdopts_syslinux=''
-+initrdopts_efi=''
-+for f in "$@"; do
-+	if [ -f "$f" -a -r "$f" ]; then
-+	    FDINITRDS=("${FDINITRDS[@]}" "$f")
-+	    fname="$(basename "$f")"
-+	    initrdopts_syslinux="${initrdopts_syslinux}${irdpfx}${fname}"
-+	    irdpfx=,
-+	    initrdopts_efi="${initrdopts_efi} initrd=${fname}"
- 	fi
--	mcopy $FBZIMAGE a:linux
-+done
-+
-+# Read a $3-byte littleendian unsigned value at offset $2 from file $1
-+le() {
-+	local n=0
-+	local m=1
-+	for b in $(od -A n -v -j $2 -N $3 -t u1 "$1"); do
-+		n=$((n + b*m))
-+		m=$((m * 256))
-+	done
-+	echo $n
- }
- 
--genfdimage144() {
--	verify "$MTOOLSRC"
--	dd if=/dev/zero of=$FIMAGE bs=1024 count=1440 2> /dev/null
--	mformat v:
--	syslinux $FIMAGE
--	echo "$KCMDLINE" | mcopy - v:syslinux.cfg
--	if [ -f "$FDINITRD" ] ; then
--		mcopy "$FDINITRD" v:initrd.img
--	fi
--	mcopy $FBZIMAGE v:linux
-+# Get the EFI architecture name such that boot{name}.efi is the default
-+# boot file name. Returns false with no output if the file is not an
-+# EFI image or otherwise unknown.
-+efiarch() {
-+	[ -f "$1" ] || return
-+	[ $(le "$1" 0 2) -eq 23117 ] || return		# MZ magic
-+	peoffs=$(le "$1" 60 4)				# PE header offset
-+	[ $peoffs -ge 64 ] || return
-+	[ $(le "$1" $peoffs 4) -eq 17744 ] || return	# PE magic
-+	case $(le "$1" $((peoffs+4+20)) 2) in		# PE type
-+		267)	;;				# PE32
-+		523)	;;				# PE32+
-+		*) return 1 ;;				# Invalid
-+	esac
-+	[ $(le "$1" $((peoffs+4+20+68)) 2) -eq 10 ] || return # EFI app
-+	case $(le "$1" $((peoffs+4)) 2) in		# Machine type
-+		 332)	echo i386	;;
-+		 450)	echo arm	;;
-+		 512)	echo ia64	;;
-+		20530)	echo riscv32	;;
-+		20580)	echo riscv64	;;
-+		20776)	echo riscv128	;;
-+		34404)	echo x64	;;
-+		43620)	echo aa64	;;
-+	esac
- }
- 
--genfdimage288() {
--	verify "$MTOOLSRC"
--	dd if=/dev/zero of=$FIMAGE bs=1024 count=2880 2> /dev/null
--	mformat w:
--	syslinux $FIMAGE
--	echo "$KCMDLINE" | mcopy - W:syslinux.cfg
--	if [ -f "$FDINITRD" ] ; then
--		mcopy "$FDINITRD" w:initrd.img
--	fi
--	mcopy $FBZIMAGE w:linux
-+# Get the combined sizes in bytes of the files given, counting sparse
-+# files as full length, and padding each file to a 4K block size
-+filesizes() {
-+	local t=0
-+	local s
-+	for s in $(ls -lnL "$@" 2>/dev/null | awk '/^-/{ print $5; }'); do
-+		t=$((t + ((s+4095)/4096)*4096))
-+	done
-+	echo $t
- }
- 
--geniso() {
--	tmp_dir=`dirname $FIMAGE`/isoimage
--	rm -rf $tmp_dir
--	mkdir $tmp_dir
--	for i in lib lib64 share ; do
--		for j in syslinux ISOLINUX ; do
--			if [ -f /usr/$i/$j/isolinux.bin ] ; then
--				isolinux=/usr/$i/$j/isolinux.bin
--			fi
-+# Expand directory names which should be in /usr/share into a list
-+# of possible alternatives
-+sharedirs() {
-+	local dir file
-+	for dir in /usr/share /usr/lib64 /usr/lib; do
-+		for file; do
-+			echo "$dir/$file"
-+			echo "$dir/${file^^}"
- 		done
--		for j in syslinux syslinux/modules/bios ; do
--			if [ -f /usr/$i/$j/ldlinux.c32 ]; then
--				ldlinux=/usr/$i/$j/ldlinux.c32
--			fi
-+	done
-+}
-+efidirs() {
-+	local dir file
-+	for dir in /usr/share /boot /usr/lib64 /usr/lib; do
-+		for file; do
-+			echo "$dir/$file"
-+			echo "$dir/${file^^}"
- 		done
--		if [ -n "$isolinux" -a -n "$ldlinux" ] ; then
--			break
-+	done
-+}
-+
-+findsyslinux() {
-+	local f="$(find -L $(sharedirs syslinux isolinux) \
-+		    -name "$1" -readable -type f -print -quit 2>/dev/null)"
-+	if [ ! -f "$f" ]; then
-+		die "Need a $1 file, please install syslinux/isolinux."
-+	fi
-+	echo "$f"
-+	return 0
-+}
-+
-+findovmf() {
-+	local arch="$1"
-+	shift
-+	local -a names=(-false)
-+	local name f
-+	for name; do
-+		names=("${names[@]}" -or -iname "$name")
-+	done
-+	for f in $(find -L $(efidirs edk2 ovmf) \
-+			\( "${names[@]}" \) -readable -type f \
-+			-print 2>/dev/null); do
-+		if [ "$(efiarch "$f")" = "$arch" ]; then
-+			echo "$f"
-+			return 0
- 		fi
- 	done
--	if [ -z "$isolinux" ] ; then
--		echo 'Need an isolinux.bin file, please install syslinux/isolinux.'
--		exit 1
-+	die "Need a $1 file for $arch, please install EDK2/OVMF."
-+}
-+
-+do_mcopy() {
-+	if [ ${#FDINITRDS[@]} -gt 0 ]; then
-+		mcopy "${FDINITRDS[@]}" "$1"
-+	fi
-+	if [ -n "$efishell" ]; then
-+		mmd "$1"EFI "$1"EFI/Boot
-+		mcopy "$efishell" "$1"EFI/Boot/boot${kefiarch}.efi
- 	fi
--	if [ -z "$ldlinux" ] ; then
--		echo 'Need an ldlinux.c32 file, please install syslinux/isolinux.'
--		exit 1
-+	if [ -n "$kefiarch" ]; then
-+		echo linux "$KCMDLINE$initrdopts_efi" | \
-+			mcopy - "$1"startup.nsh
- 	fi
--	cp $isolinux $tmp_dir
--	cp $ldlinux $tmp_dir
--	cp $FBZIMAGE $tmp_dir/linux
--	echo "$KCMDLINE" > $tmp_dir/isolinux.cfg
--	if [ -f "$FDINITRD" ] ; then
--		cp "$FDINITRD" $tmp_dir/initrd.img
-+	echo default linux "$KCMDLINE$initrdopts_syslinux" | \
-+		mcopy - "$1"syslinux.cfg
-+	mcopy "$FBZIMAGE" "$1"linux
-+}
-+
-+genbzdisk() {
-+	verify "$MTOOLSRC"
-+	mformat -v 'LINUX_BOOT' a:
-+	syslinux "$FIMAGE"
-+	do_mcopy a:
-+}
-+
-+genfdimage144() {
-+	verify "$MTOOLSRC"
-+	$dd if=/dev/zero of="$FIMAGE" bs=1024 count=1440 2>/dev/null
-+	mformat -v 'LINUX_BOOT' v:
-+	syslinux "$FIMAGE"
-+	do_mcopy v:
-+}
-+
-+genfdimage288() {
-+	verify "$MTOOLSRC"
-+	$dd if=/dev/zero of="$FIMAGE" bs=1024 count=2880 2>/dev/null
-+	mformat -v 'LINUX_BOOT' w:
-+	syslinux "$FIMAGE"
-+	do_mcopy w:
-+}
-+
-+genhdimage() {
-+	verify "$MTOOLSRC"
-+	mbr="$(findsyslinux mbr.bin)"
-+	kefiarch="$(efiarch "$FBZIMAGE")"
-+	if [ -n "$kefiarch" ]; then
-+		# The efishell provides command line handling
-+		efishell="$(findovmf $kefiarch shell.efi shell${kefiarch}.efi)"
-+		ptype='-T 0xef'	# EFI system partition, no GPT
- 	fi
--	genisoimage -J -r -input-charset=utf-8 -quiet -o $FIMAGE \
--		-b isolinux.bin -c boot.cat -no-emul-boot -boot-load-size 4 \
--		-boot-info-table $tmp_dir
--	isohybrid $FIMAGE 2>/dev/null || true
--	rm -rf $tmp_dir
-+	sizes=$(filesizes "$FBZIMAGE" "${FDINITRDS[@]}" "$efishell")
-+	# Allow 1% + 1 MiB for filesystem and partition table overhead,
-+	# syslinux, and config files
-+	megs=$(((sizes + sizes/100 + 2*1024*1024 - 1)/(1024*1024)))
-+	$dd if=/dev/zero of="$FIMAGE" bs=$((1024*1024)) count=$megs 2>/dev/null
-+	mpartition -I -c -s 32 -h 64 -t $megs $ptype -b 512 -a h:
-+	$dd if="$mbr" of="$FIMAGE" bs=440 count=1 conv=notrunc 2>/dev/null
-+	mformat -v 'LINUX_BOOT' -s 32 -h 64 -t $megs h:
-+	syslinux --offset $((512*512)) "$FIMAGE"
-+	do_mcopy h:
-+}
-+
-+geniso() {
-+	tmp_dir="$(dirname "$FIMAGE")/isoimage"
-+	rm -rf "$tmp_dir"
-+	mkdir "$tmp_dir"
-+	isolinux=$(findsyslinux isolinux.bin)
-+	ldlinux=$(findsyslinux  ldlinux.c32)
-+	cp "$isolinux" "$ldlinux" "$tmp_dir"
-+	cp "$FBZIMAGE" "$tmp_dir"/linux
-+	echo default linux "$KCMDLINE" > "$tmp_dir"/isolinux.cfg
-+	cp "${FDINITRDS[@]}" "$tmp_dir"/
-+	genisoimage -J -r -appid 'LINUX_BOOT' -input-charset=utf-8 \
-+		    -quiet -o "$FIMAGE" -b isolinux.bin \
-+		    -c boot.cat -no-emul-boot -boot-load-size 4 \
-+		    -boot-info-table "$tmp_dir"
-+	isohybrid "$FIMAGE" 2>/dev/null || true
-+	rm -rf "$tmp_dir"
- }
- 
--case $1 in
-+rm -f "$FIMAGE"
-+
-+case "$diskfmt" in
- 	bzdisk)     genbzdisk;;
- 	fdimage144) genfdimage144;;
- 	fdimage288) genfdimage288;;
-+	hdimage)    genhdimage;;
- 	isoimage)   geniso;;
--	*)          echo 'Unknown image format'; exit 1;
-+	*)          die "Unknown image format: $diskfmt";;
- esac
-diff --git a/arch/x86/boot/mtools.conf.in b/arch/x86/boot/mtools.conf.in
-index efd6d2490c1d..9e2662d01364 100644
---- a/arch/x86/boot/mtools.conf.in
-+++ b/arch/x86/boot/mtools.conf.in
-@@ -14,4 +14,7 @@ drive v:
- drive w:
-   file="@OBJ@/fdimage" cylinders=80 heads=2 sectors=36 filter
- 
-+# Hard disk
-+drive h:
-+  file="@OBJ@/hdimage" partition=1 mformat_only
- 
--- 
-2.31.1
 
