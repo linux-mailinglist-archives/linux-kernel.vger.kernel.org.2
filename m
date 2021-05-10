@@ -2,220 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB60377EDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05235377EEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhEJJDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbhEJJDw (ORCPT
+        id S230187AbhEJJG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:06:59 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2482 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230050AbhEJJG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:03:52 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B5B7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 02:02:48 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lg1oF-0002FD-B8; Mon, 10 May 2021 11:02:39 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lg1oD-0003wE-N7; Mon, 10 May 2021 11:02:37 +0200
-Date:   Mon, 10 May 2021 11:02:37 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        kernel@pengutronix.de, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>
-Subject: Re: [RFC PATCH v1 2/9] net: dsa: microchip: ksz8795: add phylink
- support
-Message-ID: <20210510090237.dbrkpfd7eioi5eat@pengutronix.de>
-References: <20210505092025.8785-1-o.rempel@pengutronix.de>
- <20210505092025.8785-3-o.rempel@pengutronix.de>
- <20210506132855.fv4dqagjg3zfue3i@skbuf>
+        Mon, 10 May 2021 05:06:58 -0400
+Received: from dggeml703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fdw7x2rdHzRfHC;
+        Mon, 10 May 2021 17:03:25 +0800 (CST)
+Received: from dggemi760-chm.china.huawei.com (10.1.198.146) by
+ dggeml703-chm.china.huawei.com (10.3.17.136) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 10 May 2021 17:05:51 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggemi760-chm.china.huawei.com (10.1.198.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 10 May 2021 17:05:51 +0800
+From:   Hui Tang <tanghui20@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] crypto: hisilicon/hpre - fix unmapping invalid dma address
+Date:   Mon, 10 May 2021 17:02:55 +0800
+Message-ID: <1620637375-39155-1-git-send-email-tanghui20@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210506132855.fv4dqagjg3zfue3i@skbuf>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 10:50:04 up 158 days, 22:56, 47 users,  load average: 0.34, 0.16,
- 0.06
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggemi760-chm.china.huawei.com (10.1.198.146)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
+Currently, an invalid dma address may be unmapped when calling
+'xx_data_clr_all' in error path, so check dma address of sqe in/out
+if initialized before calling 'dma_free_coherent' or 'dma_unmap_single'.
 
-On Thu, May 06, 2021 at 04:28:55PM +0300, Vladimir Oltean wrote:
-> On Wed, May 05, 2021 at 11:20:18AM +0200, Oleksij Rempel wrote:
-> > From: Michael Grzeschik <m.grzeschik@pengutronix.de>
-> > 
-> > This patch adds the phylink support to the ksz8795 driver, since
-> > phylib is obsolete for dsa drivers.
-> > 
-> > Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > ---
-> >  drivers/net/dsa/microchip/ksz8795.c | 73 +++++++++++++++++++++++++++++
-> >  1 file changed, 73 insertions(+)
-> > 
-> > diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-> > index 4ca352fbe81c..0ddaf2547f18 100644
-> > --- a/drivers/net/dsa/microchip/ksz8795.c
-> > +++ b/drivers/net/dsa/microchip/ksz8795.c
-> > @@ -18,6 +18,7 @@
-> >  #include <linux/micrel_phy.h>
-> >  #include <net/dsa.h>
-> >  #include <net/switchdev.h>
-> > +#include <linux/phylink.h>
-> >  
-> >  #include "ksz_common.h"
-> >  #include "ksz8795_reg.h"
-> > @@ -1420,11 +1421,83 @@ static int ksz8_setup(struct dsa_switch *ds)
-> >  	return 0;
-> >  }
-> >  
-> > +static int ksz_get_state(struct dsa_switch *ds, int port,
-> > +					  struct phylink_link_state *state)
-> > +{
-> > +	struct ksz_device *dev = ds->priv;
-> > +	struct ksz8 *ksz8 = dev->priv;
-> > +	const u8 *regs = ksz8->regs;
-> > +	u8 speed, link;
-> > +
-> > +	ksz_pread8(dev, port, regs[P_LINK_STATUS], &link);
-> > +	ksz_pread8(dev, port, regs[P_SPEED_STATUS], &speed);
-> > +
-> > +	state->link = !!(link & PORT_STAT_LINK_GOOD);
-> > +	if (state->link) {
-> > +		state->speed =
-> > +			(speed & PORT_STAT_SPEED_100MBIT) ? SPEED_100 : SPEED_10;
-> > +		state->duplex =
-> > +			(speed & PORT_STAT_FULL_DUPLEX) ? DUPLEX_FULL : DUPLEX_HALF;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> 
-> How does the port know the speed?
+Fixes: a9214b0b6ed2(crypto: hisilicon - fix the check on dma address)
+Signed-off-by: Hui Tang <tanghui20@huawei.com>
+---
+v1 -> v2: Fix sparse warning.
+---
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-PHY and switch control registers are mixed on this switch, so we have
-access to the PHY bits directly over switch control registers.
-On other hand, we provide proper PHY abstraction and there is no need to
-provide this function at all. I'll remove it.
-
-> > +
-> > +static void ksz_validate(struct dsa_switch *ds, int port,
-> > +			       unsigned long *supported,
-> > +			       struct phylink_link_state *state)
-> 
-> Indentation looks odd.
-> Also, I expect that not all KSZ PHYs to have the same validation
-> function, so maybe you should call this ksz8_phylink_validate.
-
-done
-
-> > +{
-> > +	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = { 0, };
-> > +	struct ksz_device *dev = ds->priv;
-> > +
-> > +	if (port == dev->cpu_port) {
-> > +		if ((state->interface != PHY_INTERFACE_MODE_RMII) &&
-> > +		   (state->interface != PHY_INTERFACE_MODE_MII))
-> > +			goto unsupported;
-> 
-> The phylink API says that when .validate is called with state->interface
-> as PHY_INTERFACE_MODE_NA, you should report all supported capabilities.
-
-done
-
-> > +	} else if (port > dev->port_cnt) {
-> > +		bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
-> > +		dev_err(ds->dev, "Unsupported port: %i\n", port);
-> > +		return;
-> > +	} else {
-> > +		if (state->interface != PHY_INTERFACE_MODE_INTERNAL)
-> > +			goto unsupported;
-> > +	}
-> > +
-> > +	/* Allow all the expected bits */
-> > +	phylink_set_port_modes(mask);
-> > +	phylink_set(mask, Autoneg);
-> > +
-> > +	phylink_set(mask, Pause);
-> > +	/* Silicon Errata Sheet (DS80000830A): Asym_Pause limit to port 2 */
-> > +	if (port || !ksz_is_ksz88x3(dev))
-> > +		phylink_set(mask, Asym_Pause);
-> 
-> The code doesn't seem to match the comment? If the switch is a KSZ88x3,
-> ASM_DIR will be advertised for all ports except port 0, is this what you
-> want?
-
-good point, no. Fixed.
-
-> > +
-> > +	/* 10M and 100M are only supported */
-> > +	phylink_set(mask, 10baseT_Half);
-> > +	phylink_set(mask, 10baseT_Full);
-> > +	phylink_set(mask, 100baseT_Half);
-> > +	phylink_set(mask, 100baseT_Full);
-> > +
-> > +	bitmap_and(supported, supported, mask,
-> > +		   __ETHTOOL_LINK_MODE_MASK_NBITS);
-> > +	bitmap_and(state->advertising, state->advertising, mask,
-> > +		   __ETHTOOL_LINK_MODE_MASK_NBITS);
-> > +
-> > +	return;
-> > +
-> > +unsupported:
-> > +	bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
-> > +	dev_err(ds->dev, "Unsupported interface: %d, port: %d\n",
-> > +		state->interface, port);
-> 
-> %s, phy_modes(state->interface)
-
-done
-
-> > +}
-> > +
-> >  static const struct dsa_switch_ops ksz8_switch_ops = {
-> >  	.get_tag_protocol	= ksz8_get_tag_protocol,
-> >  	.setup			= ksz8_setup,
-> >  	.phy_read		= ksz_phy_read16,
-> >  	.phy_write		= ksz_phy_write16,
-> > +	.phylink_validate	= ksz_validate,
-> > +	.phylink_mac_link_state	= ksz_get_state,
-> >  	.phylink_mac_link_down	= ksz_mac_link_down,
-> >  	.port_enable		= ksz_enable_port,
-> >  	.get_strings		= ksz8_get_strings,
-> > -- 
-> > 2.29.2
-> > 
-> 
-> 
-
-Regards,
-Oleksij
-
+diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+index a380087..782ddff 100644
+--- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
++++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+@@ -298,6 +298,8 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
+ 	dma_addr_t tmp;
+ 
+ 	tmp = le64_to_cpu(sqe->in);
++	if (unlikely(dma_mapping_error(dev, tmp)))
++		return;
+ 
+ 	if (src) {
+ 		if (req->src)
+@@ -307,6 +309,8 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
+ 	}
+ 
+ 	tmp = le64_to_cpu(sqe->out);
++	if (unlikely(dma_mapping_error(dev, tmp)))
++		return;
+ 
+ 	if (req->dst) {
+ 		if (dst)
+@@ -524,6 +528,8 @@ static int hpre_msg_request_set(struct hpre_ctx *ctx, void *req, bool is_rsa)
+ 		msg->key = cpu_to_le64(ctx->dh.dma_xa_p);
+ 	}
+ 
++	msg->in = cpu_to_le64(DMA_MAPPING_ERROR);
++	msg->out = cpu_to_le64(DMA_MAPPING_ERROR);
+ 	msg->dw0 |= cpu_to_le32(0x1 << HPRE_SQE_DONE_SHIFT);
+ 	msg->task_len1 = (ctx->key_sz >> HPRE_BITS_2_BYTES_SHIFT) - 1;
+ 	h_req->ctx = ctx;
+@@ -1372,11 +1378,15 @@ static void hpre_ecdh_hw_data_clr_all(struct hpre_ctx *ctx,
+ 	dma_addr_t dma;
+ 
+ 	dma = le64_to_cpu(sqe->in);
++	if (unlikely(dma_mapping_error(dev, dma)))
++		return;
+ 
+ 	if (src && req->src)
+ 		dma_free_coherent(dev, ctx->key_sz << 2, req->src, dma);
+ 
+ 	dma = le64_to_cpu(sqe->out);
++	if (unlikely(dma_mapping_error(dev, dma)))
++		return;
+ 
+ 	if (req->dst)
+ 		dma_free_coherent(dev, ctx->key_sz << 1, req->dst, dma);
+@@ -1431,6 +1441,8 @@ static int hpre_ecdh_msg_request_set(struct hpre_ctx *ctx,
+ 	h_req->areq.ecdh = req;
+ 	msg = &h_req->req;
+ 	memset(msg, 0, sizeof(*msg));
++	msg->in = cpu_to_le64(DMA_MAPPING_ERROR);
++	msg->out = cpu_to_le64(DMA_MAPPING_ERROR);
+ 	msg->key = cpu_to_le64(ctx->ecdh.dma_p);
+ 
+ 	msg->dw0 |= cpu_to_le32(0x1U << HPRE_SQE_DONE_SHIFT);
+@@ -1667,11 +1679,15 @@ static void hpre_curve25519_hw_data_clr_all(struct hpre_ctx *ctx,
+ 	dma_addr_t dma;
+ 
+ 	dma = le64_to_cpu(sqe->in);
++	if (unlikely(dma_mapping_error(dev, dma)))
++		return;
+ 
+ 	if (src && req->src)
+ 		dma_free_coherent(dev, ctx->key_sz, req->src, dma);
+ 
+ 	dma = le64_to_cpu(sqe->out);
++	if (unlikely(dma_mapping_error(dev, dma)))
++		return;
+ 
+ 	if (req->dst)
+ 		dma_free_coherent(dev, ctx->key_sz, req->dst, dma);
+@@ -1722,6 +1738,8 @@ static int hpre_curve25519_msg_request_set(struct hpre_ctx *ctx,
+ 	h_req->areq.curve25519 = req;
+ 	msg = &h_req->req;
+ 	memset(msg, 0, sizeof(*msg));
++	msg->in = cpu_to_le64(DMA_MAPPING_ERROR);
++	msg->out = cpu_to_le64(DMA_MAPPING_ERROR);
+ 	msg->key = cpu_to_le64(ctx->curve25519.dma_p);
+ 
+ 	msg->dw0 |= cpu_to_le32(0x1U << HPRE_SQE_DONE_SHIFT);
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.8.1
+
