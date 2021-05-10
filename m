@@ -2,89 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636DB3779A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 03:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8FE3779A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 03:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbhEJBL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 21:11:26 -0400
-Received: from mga01.intel.com ([192.55.52.88]:48552 "EHLO mga01.intel.com"
+        id S230134AbhEJBME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 21:12:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34484 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229941AbhEJBLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 21:11:20 -0400
-IronPort-SDR: 0RTbbDN2Ewlak3U54tFPsihd2eQs/sFxGZXJnsEwKhu5j33WkwB7UbMRq1WNyMdSrVk3gQNzzg
- brgziDFySVYg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="220024067"
-X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
-   d="scan'208";a="220024067"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2021 18:10:17 -0700
-IronPort-SDR: rTsmeD20ARgDXEz0Kl1zLM25fvP+Bhd6ba7hrWM/JOfQtfDVxpQW2ZmUz9WMnpMJP9b2w8wFIq
- nZsivOM2nWXg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
-   d="scan'208";a="460994377"
-Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.38])
-  by FMSMGA003.fm.intel.com with ESMTP; 09 May 2021 18:10:15 -0700
-Date:   Mon, 10 May 2021 09:10:14 +0800
-From:   Yuan Yao <yuan.yao@linux.intel.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     tkffaul@outlook.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfio/pci: Sanity check IGD OpRegion Size
-Message-ID: <20210510011014.q6xfcmqopbqgepbq@yy-desk-7060>
-References: <162041357421.21800.16214130780777455390.stgit@omen>
+        id S229941AbhEJBMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 21:12:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8656EAE63;
+        Mon, 10 May 2021 01:10:58 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162041357421.21800.16214130780777455390.stgit@omen>
-User-Agent: NeoMutt/20171215
+Date:   Sun, 09 May 2021 18:10:57 -0700
+From:   Davidlohr Bueso <dbueso@suse.de>
+To:     Manfred Spraul <manfred@colorfullife.com>
+Cc:     Varad Gautam <varad.gautam@suse.com>, linux-kernel@vger.kernel.org,
+        Matthias von Faber <matthias.vonfaber@aox-tech.de>,
+        stable@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Serge Hallyn <serge@hallyn.com>
+Subject: Re: [PATCH v3] ipc/mqueue: Avoid relying on a stack reference past
+ its expiry
+In-Reply-To: <71c74711-75d6-494e-6ff7-2be49b274477@colorfullife.com>
+References: <20210507133805.11678-1-varad.gautam@suse.com>
+ <71c74711-75d6-494e-6ff7-2be49b274477@colorfullife.com>
+User-Agent: Roundcube Webmail
+Message-ID: <6d36d89bc8f299a76efe8fce9c07e7b5@suse.de>
+X-Sender: dbueso@suse.de
+Organization: SUSE Labs
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 12:53:17PM -0600, Alex Williamson wrote:
-> The size field of the IGD OpRegion table is supposed to indicate table
-> size in KB, but we've seen at least one report of a BIOS that appears
-> to incorrectly report size in bytes.  The default size is 8 (*1024 =
-> 8KB), but an incorrect implementation may report 8192 (*1024 = 8MB)
-> and can cause a variety of mapping errors.
+On 2021-05-08 12:23, Manfred Spraul wrote:
+> Hi Varad,
 > 
-> It's believed that 8MB would be an implausible, if not absurd, actual
-> size, so we can probably be pretty safe in assuming this is a BIOS bug
-> where the intended size is likely 8KB.
+> On 5/7/21 3:38 PM, Varad Gautam wrote:
+>> @@ -1005,11 +1022,9 @@ static inline void __pipelined_op(struct 
+>> wake_q_head *wake_q,
+>>   				  struct ext_wait_queue *this)
+>>   {
+>>   	list_del(&this->list);
+>> -	get_task_struct(this->task);
+>> -
+>> +	wake_q_add(wake_q, this->task);
+>>   	/* see MQ_BARRIER for purpose/pairing */
+>>   	smp_store_release(&this->state, STATE_READY);
+>> -	wake_q_add_safe(wake_q, this->task);
+>>   }
+>>     /* pipelined_send() - send a message directly to the task waiting 
+>> in
 > 
-> Reported-by: Travis Faulhaber <tkffaul@outlook.com>
-> Tested-by: Travis Faulhaber <tkffaul@outlook.com>
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> ---
->  drivers/vfio/pci/vfio_pci_igd.c |   11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vfio/pci/vfio_pci_igd.c b/drivers/vfio/pci/vfio_pci_igd.c
-> index 228df565e9bc..c89a4797cd18 100644
-> --- a/drivers/vfio/pci/vfio_pci_igd.c
-> +++ b/drivers/vfio/pci/vfio_pci_igd.c
-> @@ -86,7 +86,16 @@ static int vfio_pci_igd_opregion_init(struct vfio_pci_device *vdev)
->  		return -EINVAL;
->  	}
->  
-> -	size *= 1024; /* In KB */
-> +	/*
-> +	 * The OpRegion size field is specified as size in KB, but there have been
-> +	 * user reports where this field appears to report size in bytes.  If we
-> +	 * read 8192, assume this is the case.
-> +	 */
-> +	if (size == OPREGION_SIZE)
+> First, I was too fast: I had assumed that wake_q_add() before
+> smp_store_release() would be a potential lost wakeup.
 
-Is "size >= OPREGION_SIZE" or "size >= smaller but still implausible value
-(like 4096)" better for covering more bad BIOS implementation cases ?
+Yeah you need wake_up_q() to actually wake anything up.
 
-> +		pci_warn(vdev->pdev,
-> +			 "BIOS Bug, IGD OpRegion reports invalid size, assuming default 8KB\n");
-> +	else
-> +		size *= 1024; /* In KB */
->  
->  	/*
->  	 * Support opregion v2.1+
 > 
-> 
+> As __pipelined_op() is called within spin_lock(&info->lock), and as
+> wq_sleep() will reread this->state after acquiring
+> spin_lock(&info->lock), I do not see a bug anymore.
+
+Right, and when I proposed this version of the fix I was mostly focusing 
+on STATE_READY
+being set as the last operation, but the fact of the matter is we had 
+moved to the
+wake_q_add_safe() version for two reasons:
+
+(1) Ensuring the ->state = STATE_READY is done after the reference count 
+and avoid
+racing with exit. In mqueue's original use of wake_q we were relying on 
+the call's
+implied barrier from wake_q_add() in order to avoid reordering of 
+setting the state.
+But this turned out to be insufficient hence the explicit 
+smp_store_release().
+
+(2) In order to prevent a potential lost wakeup when the blocked task is 
+already queued
+for wakeup by another task (the failed cmpxchg case in wake_q_add), and 
+therefore we need
+to set the return condition (->state = STATE_READY) before adding the 
+task to the wake_q.
+
+But I'm not seeing how race (2) can happen in mqueue. The race was 
+always theoretical to
+begin with, with the exception of rwsems[1] in which actually the wakee 
+task could end up in
+the waker's wake_q without actually blocking.
+
+So all in all I now agree that we should keep the order of how we 
+currently have things,
+just to be on the safer side, if nothing else.
+
+[1] 
+https://lore.kernel.org/lkml/1543495830-2644-1-git-send-email-xieyongji@baidu.com
+
+Thanks,
+Davidlohr
