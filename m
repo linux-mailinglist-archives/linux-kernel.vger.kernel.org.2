@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC94377F98
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 887C3377F99
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhEJJlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:41:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:51048 "EHLO foss.arm.com"
+        id S230431AbhEJJl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:41:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:51108 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230334AbhEJJls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:41:48 -0400
+        id S230229AbhEJJl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 05:41:56 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F8B3147A;
-        Mon, 10 May 2021 02:40:44 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 61E151509;
+        Mon, 10 May 2021 02:40:52 -0700 (PDT)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E9DF63F73B;
-        Mon, 10 May 2021 02:40:39 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 381F03F73B;
+        Mon, 10 May 2021 02:40:48 -0700 (PDT)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-kernel@vger.kernel.org, will@kernel.org,
         boqun.feng@gmail.com, peterz@infradead.org
@@ -32,9 +32,9 @@ Cc:     aou@eecs.berkeley.edu, arnd@arndb.de, bcain@codeaurora.org,
         rth@twiddle.net, shorne@gmail.com,
         stefan.kristiansson@saunalahti.fi, tsbogend@alpha.franken.de,
         vgupta@synopsys.com, ysato@users.sourceforge.jp
-Subject: [PATCH 11/33] locking/atomic: cmpxchg: make `generic` a prefix
-Date:   Mon, 10 May 2021 10:37:31 +0100
-Message-Id: <20210510093753.40683-12-mark.rutland@arm.com>
+Subject: [PATCH 12/33] locking/atomic: cmpxchg: support ARCH_ATOMIC
+Date:   Mon, 10 May 2021 10:37:32 +0100
+Message-Id: <20210510093753.40683-13-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210510093753.40683-1-mark.rutland@arm.com>
 References: <20210510093753.40683-1-mark.rutland@arm.com>
@@ -42,18 +42,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The asm-generic implementations of cmpxchg_local() and cmpxchg64_local()
-use a `_generic` suffix to distinguish themselves from arch code or
-wrappers used elsewhere.
+We'd like all architectures to convert to ARCH_ATOMIC, as this will
+enable functionality, and once all architectures are converted it will
+be possible to make significant cleanups to the atomic headers.
 
-Subsequent patches will add ARCH_ATOMIC support to these
-implementations, and will distinguish more functions with a `generic`
-portion. To align with how ARCH_ATOMIC uses an `arch_` prefix, it would
-be helpful to use a `generic_` prefix rather than a `_generic` suffix.
+A number of architectures use asm-generic/cmpxchg.h or
+asm-generic/cmpxhg-local.h, and it's impractical to convert the headers
+and all these architectures in one go. To make it possible to convert
+them one-by-one, let's make the asm-generic implementation function as
+either cmpxchg*() or arch_cmpxchg*() depending on whether ARCH_ATOMIC is
+selected. To do this, the generic implementations are prefixed as
+generic_cmpxchg_*(), and preprocessor definitions map
+cmpxchg_*()/arch_cmpxchg_*() onto these as appropriate.
 
-In preparation for this, this patch renames the existing functions to
-make `generic` a prefix rather than a suffix. There should be no
-functional change as a result of this patch.
+Once all users are moved over to ARCH_ATOMIC the ifdeffery in the header
+can be simplified and/or removed entirely.
+
+For existing users (none of which select ARCH_ATOMIC), there should be
+no functional change as a result of this patch.
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
@@ -61,203 +67,110 @@ Cc: Boqun Feng <boqun.feng@gmail.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Will Deacon <will@kernel.org>
 ---
- arch/arm/include/asm/cmpxchg.h      | 6 +++---
- arch/m68k/include/asm/cmpxchg.h     | 2 +-
- arch/mips/include/asm/cmpxchg.h     | 2 +-
- arch/parisc/include/asm/cmpxchg.h   | 4 ++--
- arch/powerpc/include/asm/cmpxchg.h  | 2 +-
- arch/sparc/include/asm/cmpxchg_32.h | 4 ++--
- arch/sparc/include/asm/cmpxchg_64.h | 2 +-
- arch/xtensa/include/asm/cmpxchg.h   | 6 +++---
- include/asm-generic/cmpxchg-local.h | 4 ++--
- include/asm-generic/cmpxchg.h       | 4 ++--
- 10 files changed, 18 insertions(+), 18 deletions(-)
+ include/asm-generic/cmpxchg.h | 61 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 44 insertions(+), 17 deletions(-)
 
-diff --git a/arch/arm/include/asm/cmpxchg.h b/arch/arm/include/asm/cmpxchg.h
-index 8b701f8e175c..06bd8cea861a 100644
---- a/arch/arm/include/asm/cmpxchg.h
-+++ b/arch/arm/include/asm/cmpxchg.h
-@@ -135,13 +135,13 @@ static inline unsigned long __xchg(unsigned long x, volatile void *ptr, int size
-  * them available.
+diff --git a/include/asm-generic/cmpxchg.h b/include/asm-generic/cmpxchg.h
+index b9d54c7afc52..98c931199089 100644
+--- a/include/asm-generic/cmpxchg.h
++++ b/include/asm-generic/cmpxchg.h
+@@ -14,16 +14,14 @@
+ #include <linux/types.h>
+ #include <linux/irqflags.h>
+ 
+-#ifndef xchg
+-
+ /*
+  * This function doesn't exist, so you'll get a linker error if
+  * something tries to do an invalidly-sized xchg().
   */
- #define cmpxchg_local(ptr, o, n) ({					\
--	(__typeof(*ptr))__cmpxchg_local_generic((ptr),			\
-+	(__typeof(*ptr))__generic_cmpxchg_local((ptr),			\
- 					        (unsigned long)(o),	\
- 					        (unsigned long)(n),	\
- 					        sizeof(*(ptr)));	\
- })
+-extern void __xchg_called_with_bad_pointer(void);
++extern void __generic_xchg_called_with_bad_pointer(void);
  
--#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
-+#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
+ static inline
+-unsigned long __xchg(unsigned long x, volatile void *ptr, int size)
++unsigned long __generic_xchg(unsigned long x, volatile void *ptr, int size)
+ {
+ 	unsigned long ret, flags;
  
- #include <asm-generic/cmpxchg.h>
+@@ -75,35 +73,64 @@ unsigned long __xchg(unsigned long x, volatile void *ptr, int size)
+ #endif /* CONFIG_64BIT */
  
-@@ -224,7 +224,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
- #ifdef CONFIG_CPU_V6	/* min ARCH == ARMv6 */
- 	case 1:
- 	case 2:
--		ret = __cmpxchg_local_generic(ptr, old, new, size);
-+		ret = __generic_cmpxchg_local(ptr, old, new, size);
- 		break;
- #endif
  	default:
-diff --git a/arch/m68k/include/asm/cmpxchg.h b/arch/m68k/include/asm/cmpxchg.h
-index a4aa82021d3b..7629c9c1ed5b 100644
---- a/arch/m68k/include/asm/cmpxchg.h
-+++ b/arch/m68k/include/asm/cmpxchg.h
-@@ -80,7 +80,7 @@ static inline unsigned long __xchg(unsigned long x, volatile void * ptr, int siz
- 
- #include <asm-generic/cmpxchg-local.h>
- 
--#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
-+#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
- 
- extern unsigned long __invalid_cmpxchg_size(volatile void *,
- 					    unsigned long, unsigned long, int);
-diff --git a/arch/mips/include/asm/cmpxchg.h b/arch/mips/include/asm/cmpxchg.h
-index ed8f3f3c4304..c7e0455d4d46 100644
---- a/arch/mips/include/asm/cmpxchg.h
-+++ b/arch/mips/include/asm/cmpxchg.h
-@@ -222,7 +222,7 @@ unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
- #else
- 
- # include <asm-generic/cmpxchg-local.h>
--# define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
-+# define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
- 
- # ifdef CONFIG_SMP
- 
-diff --git a/arch/parisc/include/asm/cmpxchg.h b/arch/parisc/include/asm/cmpxchg.h
-index 84ee232278a6..c2015654b684 100644
---- a/arch/parisc/include/asm/cmpxchg.h
-+++ b/arch/parisc/include/asm/cmpxchg.h
-@@ -98,7 +98,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
- #endif
- 	case 4:	return __cmpxchg_u32(ptr, old, new_);
- 	default:
--		return __cmpxchg_local_generic(ptr, old, new_, size);
-+		return __generic_cmpxchg_local(ptr, old, new_, size);
+-		__xchg_called_with_bad_pointer();
++		__generic_xchg_called_with_bad_pointer();
+ 		return x;
  	}
  }
  
-@@ -116,7 +116,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
- 	cmpxchg_local((ptr), (o), (n));					\
+-#define xchg(ptr, x) ({							\
+-	((__typeof__(*(ptr)))						\
+-		__xchg((unsigned long)(x), (ptr), sizeof(*(ptr))));	\
++#define generic_xchg(ptr, x) ({							\
++	((__typeof__(*(ptr)))							\
++		__generic_xchg((unsigned long)(x), (ptr), sizeof(*(ptr))));	\
  })
- #else
--#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
-+#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
- #endif
  
- #define cmpxchg64(ptr, o, n) __cmpxchg_u64(ptr, o, n)
-diff --git a/arch/powerpc/include/asm/cmpxchg.h b/arch/powerpc/include/asm/cmpxchg.h
-index cf091c4c22e5..69f52fdcf064 100644
---- a/arch/powerpc/include/asm/cmpxchg.h
-+++ b/arch/powerpc/include/asm/cmpxchg.h
-@@ -524,7 +524,7 @@ __cmpxchg_acquire(void *ptr, unsigned long old, unsigned long new,
- })
- #else
+-#endif /* xchg */
+-
+ /*
+  * Atomic compare and exchange.
+  */
  #include <asm-generic/cmpxchg-local.h>
--#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
-+#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
- #endif
  
- #endif /* __KERNEL__ */
-diff --git a/arch/sparc/include/asm/cmpxchg_32.h b/arch/sparc/include/asm/cmpxchg_32.h
-index a53d744d4212..86e3da1d973d 100644
---- a/arch/sparc/include/asm/cmpxchg_32.h
-+++ b/arch/sparc/include/asm/cmpxchg_32.h
-@@ -73,8 +73,8 @@ u64 __cmpxchg_u64(u64 *ptr, u64 old, u64 new);
-  * them available.
-  */
- #define cmpxchg_local(ptr, o, n)				  	       \
--	((__typeof__(*(ptr)))__cmpxchg_local_generic((ptr), (unsigned long)(o),\
-+	((__typeof__(*(ptr)))__generic_cmpxchg_local((ptr), (unsigned long)(o),\
- 			(unsigned long)(n), sizeof(*(ptr))))
--#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
-+#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
- 
- #endif /* __ARCH_SPARC_CMPXCHG__ */
-diff --git a/arch/sparc/include/asm/cmpxchg_64.h b/arch/sparc/include/asm/cmpxchg_64.h
-index 316faa0130ba..8915b577b92f 100644
---- a/arch/sparc/include/asm/cmpxchg_64.h
-+++ b/arch/sparc/include/asm/cmpxchg_64.h
-@@ -189,7 +189,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
- 	case 4:
- 	case 8:	return __cmpxchg(ptr, old, new, size);
- 	default:
--		return __cmpxchg_local_generic(ptr, old, new, size);
-+		return __generic_cmpxchg_local(ptr, old, new, size);
- 	}
- 
- 	return old;
-diff --git a/arch/xtensa/include/asm/cmpxchg.h b/arch/xtensa/include/asm/cmpxchg.h
-index a175f8aec3fb..9c4d6e5316ce 100644
---- a/arch/xtensa/include/asm/cmpxchg.h
-+++ b/arch/xtensa/include/asm/cmpxchg.h
-@@ -97,7 +97,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
- 	case 4:
- 		return __cmpxchg_u32(ptr, old, new);
- 	default:
--		return __cmpxchg_local_generic(ptr, old, new, size);
-+		return __generic_cmpxchg_local(ptr, old, new, size);
- 	}
- 
- 	return old;
-@@ -108,9 +108,9 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
-  * them available.
-  */
- #define cmpxchg_local(ptr, o, n)				  	       \
--	((__typeof__(*(ptr)))__cmpxchg_local_generic((ptr), (unsigned long)(o),\
-+	((__typeof__(*(ptr)))__generic_cmpxchg_local((ptr), (unsigned long)(o),\
- 			(unsigned long)(n), sizeof(*(ptr))))
--#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
-+#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
- #define cmpxchg64(ptr, o, n)    cmpxchg64_local((ptr), (o), (n))
- 
- /*
-diff --git a/include/asm-generic/cmpxchg-local.h b/include/asm-generic/cmpxchg-local.h
-index f17f14f84d09..380cdc824e4b 100644
---- a/include/asm-generic/cmpxchg-local.h
-+++ b/include/asm-generic/cmpxchg-local.h
-@@ -12,7 +12,7 @@ extern unsigned long wrong_size_cmpxchg(volatile void *ptr)
-  * Generic version of __cmpxchg_local (disables interrupts). Takes an unsigned
-  * long parameter, supporting various types of architectures.
-  */
--static inline unsigned long __cmpxchg_local_generic(volatile void *ptr,
-+static inline unsigned long __generic_cmpxchg_local(volatile void *ptr,
- 		unsigned long old, unsigned long new, int size)
- {
- 	unsigned long flags, prev;
-@@ -51,7 +51,7 @@ static inline unsigned long __cmpxchg_local_generic(volatile void *ptr,
- /*
-  * Generic version of __cmpxchg64_local. Takes an u64 parameter.
-  */
--static inline u64 __cmpxchg64_local_generic(volatile void *ptr,
-+static inline u64 __generic_cmpxchg64_local(volatile void *ptr,
- 		u64 old, u64 new)
- {
- 	u64 prev;
-diff --git a/include/asm-generic/cmpxchg.h b/include/asm-generic/cmpxchg.h
-index 9a24510cd8c1..b9d54c7afc52 100644
---- a/include/asm-generic/cmpxchg.h
-+++ b/include/asm-generic/cmpxchg.h
-@@ -94,13 +94,13 @@ unsigned long __xchg(unsigned long x, volatile void *ptr, int size)
- 
- #ifndef cmpxchg_local
- #define cmpxchg_local(ptr, o, n) ({					       \
--	((__typeof__(*(ptr)))__cmpxchg_local_generic((ptr), (unsigned long)(o),\
-+	((__typeof__(*(ptr)))__generic_cmpxchg_local((ptr), (unsigned long)(o),\
- 			(unsigned long)(n), sizeof(*(ptr))));		       \
+-#ifndef cmpxchg_local
+-#define cmpxchg_local(ptr, o, n) ({					       \
+-	((__typeof__(*(ptr)))__generic_cmpxchg_local((ptr), (unsigned long)(o),\
+-			(unsigned long)(n), sizeof(*(ptr))));		       \
++#define generic_cmpxchg_local(ptr, o, n) ({					\
++	((__typeof__(*(ptr)))__generic_cmpxchg_local((ptr), (unsigned long)(o),	\
++			(unsigned long)(n), sizeof(*(ptr))));			\
  })
++
++#define generic_cmpxchg64_local(ptr, o, n) \
++	__generic_cmpxchg64_local((ptr), (o), (n))
++
++
++#ifdef CONFIG_ARCH_ATOMIC
++
++#ifndef arch_xchg
++#define arch_xchg		generic_xchg
++#endif
++
++#ifndef arch_cmpxchg_local
++#define arch_cmpxchg_local	generic_cmpxchg_local
++#endif
++
++#ifndef arch_cmpxchg64_local
++#define arch_cmpxchg64_local	generic_cmpxchg64_local
++#endif
++
++#define arch_cmpxchg		arch_cmpxchg_local
++#define arch_cmpxchg64		arch_cmpxchg64_local
++
++#else /* CONFIG_ARCH_ATOMIC */
++
++#ifndef xchg
++#define xchg			generic_xchg
++#endif
++
++#ifndef cmpxchg_local
++#define cmpxchg_local		generic_cmpxchg_local
  #endif
  
  #ifndef cmpxchg64_local
--#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
-+#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
+-#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
++#define cmpxchg64_local		generic_cmpxchg64_local
  #endif
  
- #define cmpxchg(ptr, o, n)	cmpxchg_local((ptr), (o), (n))
+-#define cmpxchg(ptr, o, n)	cmpxchg_local((ptr), (o), (n))
+-#define cmpxchg64(ptr, o, n)	cmpxchg64_local((ptr), (o), (n))
++#define cmpxchg			cmpxchg_local
++#define cmpxchg64		cmpxchg64_local
++
++#endif /* CONFIG_ARCH_ATOMIC */
+ 
+ #endif /* __ASM_GENERIC_CMPXCHG_H */
 -- 
 2.11.0
 
