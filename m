@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B529E3784DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E48B37859A
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234182AbhEJK4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232876AbhEJKop (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:44:45 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFCEC06137D
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 03:34:00 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so8582466wmh.4
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 03:34:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=KfBhlxED/z8OAiqCMB0G+udAHqmSGRzT6CR07W8C+DQ=;
-        b=rhAjurvrBMlrXW64wFgbm82tI4lJ+SkX65++JBQa29vp7TqbZtVy1dxP8fm3bMWtMU
-         5LnLYmfS4gjF88Y1DHRoHqMsQ1Qv5CSizCA/wf/MSwPNXh+uBD6fm3XBJKRHZW5nZg1U
-         HtwIlVcsLyK5AbAhQSeZ3BBJc7g/YpgLpoVKgO8SL1bjxzqTEm2HR89U81nLb810HUKm
-         0cH6DvGA8tNW+JsazwQ0PmcmY5xn7C8oUa3K+j3whYkOyc1ja1N1KFOYFsRmqL9IN3pv
-         leiy03bR7vjVo72VaRwDwJ2SEr2+jzB3LFD7lt53nQ5MIuMkr79QJl2BAx3V/ms5Nj1A
-         snYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KfBhlxED/z8OAiqCMB0G+udAHqmSGRzT6CR07W8C+DQ=;
-        b=mAQXyUcnXYsT0wFqRFm41e8breGrN0Fqwu0mERyM+p7eHliMNynnqPGlwVGaHP+myO
-         nvoK6hsBGBPI9LzSg2CiPIRq6434hqhvRrjzxu5YwL9Oi5d6LqvWK2zcphDb+TOUZ9yj
-         WNpBI4tFERwUzH4uVgw+nVVvyhB/6N64SWIpTcaaWYevlwCOVTc7xOJMYuvvm5k9Hl7S
-         ODzJTKEyo9O+PwqpiMr0Owp5DkEquqEgBGHpXZNUKx3d73K/vpFBOHLLEXuaVZnwKzUc
-         dyxGpapUSfIJ8oVOi5jL4zQjPmDgL5+iw3ZB0aLNlChPtbrcVU+psPdafk9p8CddhZ53
-         Ayow==
-X-Gm-Message-State: AOAM530Fc+W/PQrPM8Kbj3h3OTvxgHZJvaCi32eSmlxppqz0VDS1lB4u
-        kbL4CU5k5s+Ht9IlW+kdwbo/Uw==
-X-Google-Smtp-Source: ABdhPJzPorWGLmcfj2n+wX3BMD0ncPs53HtRGgvM3tWFfn+JE+mErnP+KoT+Xkv4p7i5L0Bp3yVaQw==
-X-Received: by 2002:a05:600c:4f8b:: with SMTP id n11mr25018082wmq.11.1620642839569;
-        Mon, 10 May 2021 03:33:59 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id m184sm19040458wme.40.2021.05.10.03.33.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 10 May 2021 03:33:59 -0700 (PDT)
-Subject: Re: [PATCH] ASoC:q6dsp:q6afe-dai: Fix a typo in module description
-To:     Masanari Iida <standby24x7@gmail.com>,
-        linux-kernel@vger.kernel.org, dunlap@infradead.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        bgoswami@codeaurora.org
-References: <20210510102752.40620-1-standby24x7@gmail.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <db812ab6-ab13-7f37-68a2-4a3f351fba6b@linaro.org>
-Date:   Mon, 10 May 2021 11:33:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S235425AbhEJLBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:01:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233159AbhEJKpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:45:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 045A9619B4;
+        Mon, 10 May 2021 10:35:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620642903;
+        bh=a9r/SweXO9D14zFErMPAxQBy78bSI1FMSyuwH98aCE0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=YLeAckrq0eFN33LG/VQvScKWn8GV7OdKsw/qqeKk9SCPzyEB4SUJ4qQmws1fHnwPI
+         WyCveMa51gP2ZMDkNxJ2SAzT69rU+ragvjNhqkImXvfphTfCwESvn3jaIQvdogc8qi
+         6IQV+dS2RVek8fZB5jRa7OuusJiS7Pk9K96IibR9oYP9X1JY9zOIEACH3vAXinpJym
+         Xobxk4JH8asMFVm252z39u3j4st2j0Gkd8mGI+mQVmklSHa/7PzlRIHrQgTl8deeKo
+         5F2uQcQxRZsz+awHzg9JnwAYQajArknw84PORWfKDm18+BN10O7B4Mm7/JaZq/4oYi
+         chbQJdAfrmeiA==
+Date:   Mon, 10 May 2021 12:34:58 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
+Subject: bug at scripts/get_maintainer.pl with ARM KOMEDA DRM-KMS DRIVER
+Message-ID: <20210510123458.32f931c6@coco.lan>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210510102752.40620-1-standby24x7@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the patch,
+Hi Joe,
 
-On 10/05/2021 11:27, Masanari Iida wrote:
-> This patch fixes a spelling typo in MODULE_DESCRIPTION
-> in q6afe-dai.c
-> 
-> Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+While submitting today a patch series, I noticed that the
+./scripts/get_maintainer.pl script is not handling well the
+ARM KOMEDA DRM-KMS DRIVER open list entry at MAINTAINERS.
 
+I'm using v5.13-rc1 here.
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+See, it gets an empty e-mail for the ML:
 
-> ---
->   sound/soc/qcom/qdsp6/q6afe-dai.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-> index b539af86e8f7..2166fc305c8f 100644
-> --- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-> +++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-> @@ -1706,5 +1706,5 @@ static struct platform_driver q6afe_dai_platform_driver = {
->   };
->   module_platform_driver(q6afe_dai_platform_driver);
->   
-> -MODULE_DESCRIPTION("Q6 Audio Fronend dai driver");
-> +MODULE_DESCRIPTION("Q6 Audio Frontend dai driver");
->   MODULE_LICENSE("GPL v2");
-> 
+	$ git show a1c3be890440 --pretty=email|./scripts/get_maintainer.pl 
+	"James (Qian) Wang" <james.qian.wang@arm.com> (supporter:ARM KOMEDA DRM-KMS DRIVER)
+	Liviu Dudau <liviu.dudau@arm.com> (supporter:ARM KOMEDA DRM-KMS DRIVER)
+	Mihail Atanassov <mihail.atanassov@arm.com> (supporter:ARM KOMEDA DRM-KMS DRIVER)
+	Brian Starkey <brian.starkey@arm.com> (supporter:ARM MALI-DP DRM DRIVER)
+	David Airlie <airlied@linux.ie> (maintainer:DRM DRIVERS)
+	Daniel Vetter <daniel@ffwll.ch> (maintainer:DRM DRIVERS)
+	 (open list:ARM KOMEDA DRM-KMS DRIVER)
+	dri-devel@lists.freedesktop.org (open list:DRM DRIVERS)
+	linux-kernel@vger.kernel.org (open list)
+
+The entry at MAINTAINERS apparently looks OK:
+
+	ARM KOMEDA DRM-KMS DRIVER
+	M:      James (Qian) Wang <james.qian.wang@arm.com>
+	M:      Liviu Dudau <liviu.dudau@arm.com>
+	M:      Mihail Atanassov <mihail.atanassov@arm.com>
+	L:      Mali DP Maintainers <malidp@foss.arm.com>
+	S:      Supported
+	T:      git git://anongit.freedesktop.org/drm/drm-misc
+	F:      Documentation/devicetree/bindings/display/arm,komeda.txt
+	F:      Documentation/gpu/komeda-kms.rst
+	F:      drivers/gpu/drm/arm/display/include/
+	F:      drivers/gpu/drm/arm/display/komeda/
+
+Thanks,
+Mauro
