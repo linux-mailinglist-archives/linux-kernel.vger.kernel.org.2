@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CA9378D40
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13626378D27
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347859AbhEJMhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:37:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54898 "EHLO mail.kernel.org"
+        id S237305AbhEJMep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:34:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237718AbhEJLQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:16:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D7096143C;
-        Mon, 10 May 2021 11:11:21 +0000 (UTC)
+        id S233525AbhEJLMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:12:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B38E61139;
+        Mon, 10 May 2021 11:09:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620645082;
-        bh=3JC4aHN1cOtrTokfsLFr+sf9fBKzUi9zB+P0fCatCdI=;
+        s=korg; t=1620644997;
+        bh=nM82XFwB+Hv0Rbe30sfFpEmwyRJEFZjJt83JZ6zhF7s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g7KICew1qTRnuYf4K76AmfK7+5NUo8kx+Z8c90i5N+8tkscEDlyZDz2onIscoMmeA
-         NCs5i/pLHajW3njs61WDvVC/DY0RI0XiMQMj8jZGLNhC5m4O4zLVSOtVU7C627PPal
-         9ne6s04wmZNIUcHJnjZzsE6WAtZdbbHy//A+R2nM=
+        b=v9YSTGwGOaI0zWE7WIDJC3K4M2N4LjzeukiwhA7dT2yzgpbyUXH13azETGmXH0ubK
+         MI9MkGMdyKIOtCqhDd5eCtcvvqjMh7wICKDrknFc5ZJjv7W3Upptvwdc4XalPu9ABq
+         J7A+di50zfgg8rSTU6wvRJNHzcA4Dla1oNg7mmTk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Neuschaefer <j.neuschaefer@gmx.net>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        stable@vger.kernel.org, Rosen Penev <rosenp@gmail.com>,
+        Tony Ambardar <Tony.Ambardar@gmail.com>,
         Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.12 309/384] powerpc/32: Fix boot failure with CONFIG_STACKPROTECTOR
-Date:   Mon, 10 May 2021 12:21:38 +0200
-Message-Id: <20210510102024.988470336@linuxfoundation.org>
+Subject: [PATCH 5.12 310/384] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
+Date:   Mon, 10 May 2021 12:21:39 +0200
+Message-Id: <20210510102025.020262360@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -41,45 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Tony Ambardar <tony.ambardar@gmail.com>
 
-commit f5668260b872e89b8d3942a8b7d4278aa9c2c981 upstream.
+commit 7de21e679e6a789f3729e8402bc440b623a28eae upstream.
 
-Commit 7c95d8893fb5 ("powerpc: Change calling convention for
-create_branch() et. al.") complexified the frame of function
-do_feature_fixups(), leading to GCC setting up a stack
-guard when CONFIG_STACKPROTECTOR is selected.
+A few archs like powerpc have different errno.h values for macros
+EDEADLOCK and EDEADLK. In code including both libc and linux versions of
+errno.h, this can result in multiple definitions of EDEADLOCK in the
+include chain. Definitions to the same value (e.g. seen with mips) do
+not raise warnings, but on powerpc there are redefinitions changing the
+value, which raise warnings and errors (if using "-Werror").
 
-The problem is that do_feature_fixups() is called very early
-while 'current' in r2 is not set up yet and the code is still
-not at the final address used at link time.
+Guard against these redefinitions to avoid build errors like the following,
+first seen cross-compiling libbpf v5.8.9 for powerpc using GCC 8.4.0 with
+musl 1.1.24:
 
-So, like other instrumentation, stack protection needs to be
-deactivated for feature-fixups.c and code-patching.c
+  In file included from ../../arch/powerpc/include/uapi/asm/errno.h:5,
+                   from ../../include/linux/err.h:8,
+                   from libbpf.c:29:
+  ../../include/uapi/asm-generic/errno.h:40: error: "EDEADLOCK" redefined [-Werror]
+   #define EDEADLOCK EDEADLK
 
-Fixes: 7c95d8893fb5 ("powerpc: Change calling convention for create_branch() et. al.")
-Cc: stable@vger.kernel.org # v5.8+
-Reported-by: Jonathan Neuschaefer <j.neuschaefer@gmx.net>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Tested-by: Jonathan Neuschaefer <j.neuschaefer@gmx.net>
+  In file included from toolchain-powerpc_8540_gcc-8.4.0_musl/include/errno.h:10,
+                   from libbpf.c:26:
+  toolchain-powerpc_8540_gcc-8.4.0_musl/include/bits/errno.h:58: note: this is the location of the previous definition
+   #define EDEADLOCK       58
+
+  cc1: all warnings being treated as errors
+
+Cc: Stable <stable@vger.kernel.org>
+Reported-by: Rosen Penev <rosenp@gmail.com>
+Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/b688fe82927b330349d9e44553363fa451ea4d95.1619715114.git.christophe.leroy@csgroup.eu
+Link: https://lore.kernel.org/r/20200917135437.1238787-1-Tony.Ambardar@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/lib/Makefile |    3 +++
- 1 file changed, 3 insertions(+)
+ arch/powerpc/include/uapi/asm/errno.h |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/powerpc/lib/Makefile
-+++ b/arch/powerpc/lib/Makefile
-@@ -5,6 +5,9 @@
+--- a/arch/powerpc/include/uapi/asm/errno.h
++++ b/arch/powerpc/include/uapi/asm/errno.h
+@@ -2,6 +2,7 @@
+ #ifndef _ASM_POWERPC_ERRNO_H
+ #define _ASM_POWERPC_ERRNO_H
  
- ccflags-$(CONFIG_PPC64)	:= $(NO_MINIMAL_TOC)
++#undef	EDEADLOCK
+ #include <asm-generic/errno.h>
  
-+CFLAGS_code-patching.o += -fno-stack-protector
-+CFLAGS_feature-fixups.o += -fno-stack-protector
-+
- CFLAGS_REMOVE_code-patching.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_feature-fixups.o = $(CC_FLAGS_FTRACE)
- 
+ #undef	EDEADLOCK
 
 
