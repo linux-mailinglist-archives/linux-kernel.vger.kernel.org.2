@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3D5378A53
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CB3378C02
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242172AbhEJLk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:40:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52754 "EHLO mail.kernel.org"
+        id S1345095AbhEJMVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:21:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235049AbhEJK5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F3596101B;
-        Mon, 10 May 2021 10:51:33 +0000 (UTC)
+        id S235575AbhEJLKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:10:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91D106144F;
+        Mon, 10 May 2021 11:05:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643894;
-        bh=/PZsmNOAHWc+djAPVac4wuQz4zH8jRh/xYnwOEZUpFc=;
+        s=korg; t=1620644734;
+        bh=2NP5te+jZbVJI9Ngj88cWMuWA5RVvd7pvJ2s2BY2Bss=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zDjoRX89bVlUrxi9CyJ/BlhgXrogbaPdCEhsb7blH+LnKf1ziPOmxUhmvpSYXRxJ9
-         deIWPJrMxQ/lLfRyHdMCaD5ezm5C3145c/eTdxBYUt0UrEHRh5SglIxXhQ4cHLqpU/
-         v1nSraP7Wv9EDl8sSt3mQZUCwLSc87qoarlvcVy0=
+        b=aBwrG0yV4zZjdNh5C+qd0Pt5j2ZmQy2U6aItHf4nyLtWj3bM2NH7kaoGO8MkxYIEe
+         kXTYAXzWlNzlf8y4fGnGP2TCAyc/iu30BesTIM/+yZ8qX6cMDyjnzk4Hl6AVHjXM79
+         0WLt0foxdAuNRaXKd6gOhRhte2fl6NWERfJgmufI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 202/342] power: supply: s3c_adc_battery: fix possible use-after-free in s3c_adc_bat_remove()
+        stable@vger.kernel.org, Xingui Yang <yangxingui@huawei.com>,
+        Luo Jiaxing <luojiaxing@huawei.com>,
+        John Garry <john.garry@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 203/384] ata: ahci: Disable SXS for Hisilicon Kunpeng920
 Date:   Mon, 10 May 2021 12:19:52 +0200
-Message-Id: <20210510102016.761226310@linuxfoundation.org>
+Message-Id: <20210510102021.574609104@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
+References: <20210510102014.849075526@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +41,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Xingui Yang <yangxingui@huawei.com>
 
-[ Upstream commit 68ae256945d2abe9036a7b68af4cc65aff79d5b7 ]
+[ Upstream commit 234e6d2c18f5b080cde874483c4c361f3ae7cffe ]
 
-This driver's remove path calls cancel_delayed_work(). However, that
-function does not wait until the work function finishes. This means
-that the callback function may still be running after the driver's
-remove function has finished, which would result in a use-after-free.
+On Hisilicon Kunpeng920, ESP is set to 1 by default for all ports of
+SATA controller. In some scenarios, some ports are not external SATA ports,
+and it cause disks connected to these ports to be identified as removable
+disks. So disable the SXS capability on the software side to prevent users
+from mistakenly considering non-removable disks as removable disks and
+performing related operations.
 
-Fix by calling cancel_delayed_work_sync(), which ensures that
-the work is properly cancelled, no longer running, and unable
-to re-schedule itself.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Xingui Yang <yangxingui@huawei.com>
+Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+Reviewed-by: John Garry <john.garry@huawei.com>
+Link: https://lore.kernel.org/r/1615544676-61926-1-git-send-email-luojiaxing@huawei.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/s3c_adc_battery.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/ata/ahci.c    | 5 +++++
+ drivers/ata/ahci.h    | 1 +
+ drivers/ata/libahci.c | 5 +++++
+ 3 files changed, 11 insertions(+)
 
-diff --git a/drivers/power/supply/s3c_adc_battery.c b/drivers/power/supply/s3c_adc_battery.c
-index a2addc24ee8b..3e3a598f114d 100644
---- a/drivers/power/supply/s3c_adc_battery.c
-+++ b/drivers/power/supply/s3c_adc_battery.c
-@@ -395,7 +395,7 @@ static int s3c_adc_bat_remove(struct platform_device *pdev)
- 	if (main_bat.charge_finished)
- 		free_irq(gpiod_to_irq(main_bat.charge_finished), NULL);
+diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+index 00ba8e5a1ccc..33192a8f687d 100644
+--- a/drivers/ata/ahci.c
++++ b/drivers/ata/ahci.c
+@@ -1772,6 +1772,11 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		hpriv->flags |= AHCI_HFLAG_NO_DEVSLP;
  
--	cancel_delayed_work(&bat_work);
-+	cancel_delayed_work_sync(&bat_work);
+ #ifdef CONFIG_ARM64
++	if (pdev->vendor == PCI_VENDOR_ID_HUAWEI &&
++	    pdev->device == 0xa235 &&
++	    pdev->revision < 0x30)
++		hpriv->flags |= AHCI_HFLAG_NO_SXS;
++
+ 	if (pdev->vendor == 0x177d && pdev->device == 0xa01c)
+ 		hpriv->irq_handler = ahci_thunderx_irq_handler;
+ #endif
+diff --git a/drivers/ata/ahci.h b/drivers/ata/ahci.h
+index 98b8baa47dc5..d1f284f0c83d 100644
+--- a/drivers/ata/ahci.h
++++ b/drivers/ata/ahci.h
+@@ -242,6 +242,7 @@ enum {
+ 							suspend/resume */
+ 	AHCI_HFLAG_IGN_NOTSUPP_POWER_ON	= (1 << 27), /* ignore -EOPNOTSUPP
+ 							from phy_power_on() */
++	AHCI_HFLAG_NO_SXS		= (1 << 28), /* SXS not supported */
  
- 	if (pdata->exit)
- 		pdata->exit();
+ 	/* ap->flags bits */
+ 
+diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
+index ea5bf5f4cbed..fec2e9754aed 100644
+--- a/drivers/ata/libahci.c
++++ b/drivers/ata/libahci.c
+@@ -493,6 +493,11 @@ void ahci_save_initial_config(struct device *dev, struct ahci_host_priv *hpriv)
+ 		cap |= HOST_CAP_ALPM;
+ 	}
+ 
++	if ((cap & HOST_CAP_SXS) && (hpriv->flags & AHCI_HFLAG_NO_SXS)) {
++		dev_info(dev, "controller does not support SXS, disabling CAP_SXS\n");
++		cap &= ~HOST_CAP_SXS;
++	}
++
+ 	if (hpriv->force_port_map && port_map != hpriv->force_port_map) {
+ 		dev_info(dev, "forcing port_map 0x%x -> 0x%x\n",
+ 			 port_map, hpriv->force_port_map);
 -- 
 2.30.2
 
