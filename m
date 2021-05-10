@@ -2,154 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7BE379389
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9616137938B
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 18:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhEJQRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 12:17:23 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:42380 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231140AbhEJQRS (ORCPT
+        id S231140AbhEJQRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 12:17:48 -0400
+Received: from mailfilter06-out40.webhostingserver.nl ([195.211.73.79]:57633
+        "EHLO mailfilter06-out40.webhostingserver.nl" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231443AbhEJQRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 12:17:18 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lg8Zi-003wZY-PY; Mon, 10 May 2021 10:16:06 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lg8Zg-0006F8-2L; Mon, 10 May 2021 10:16:06 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jia He <justin.he@arm.com>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@ftp.linux.org.uk>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <20210508122530.1971-1-justin.he@arm.com>
-        <20210508122530.1971-2-justin.he@arm.com>
-        <CAHk-=wgSFUUWJKW1DXa67A0DXVzQ+OATwnC3FCwhqfTJZsvj1A@mail.gmail.com>
-        <YJbivrA4Awp4FXo8@zeniv-ca.linux.org.uk>
-        <CAHk-=whZhNXiOGgw8mXG+PTpGvxnRG1v5_GjtjHpoYXd2Fn_Ow@mail.gmail.com>
-        <YJdG8LhKBoFayOc+@zeniv-ca.linux.org.uk>
-Date:   Mon, 10 May 2021 11:16:00 -0500
-In-Reply-To: <YJdG8LhKBoFayOc+@zeniv-ca.linux.org.uk> (Al Viro's message of
-        "Sun, 9 May 2021 02:20:32 +0000")
-Message-ID: <m18s4mzhrz.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 10 May 2021 12:17:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=exalondelft.nl; s=whs1;
+        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
+         message-id:from:references:cc:to:subject:from;
+        bh=xQVqOe2YfwU7nf8E0VSAtMJ1Dn5xLDeGT6F0ClGgcEM=;
+        b=Tgretv5cPYHF/UGtI6y1LfWgp4MGq3J3k7E48Jf0vtCQ+KCoEJP9rLaYFKXjGCsHutpGcpqgSl++v
+         kdsxkSGK1Y42AVqW5g/54Ih4WK2tnPKNDyYuLQQuCgG35qpQV3oWGA7X/wmYLULYKNcn+JfGOaEwYG
+         iWWke6hN319SttTI66U765XfVoQ/gJkvFt8ECuS8RtbgtDYBXXd6QkTsH35BJOUA7hyUn8pzw4GW+t
+         jMwIrCtCHN8IEVXO0dS5/XfhAWk39dvD/5Iref6sDO8Whjz6uZal2OSqNriLQ8mRkM2l+UX7JANdzw
+         eYXV//YSVQq3P4sfWrii5L3/uWEMb7Q==
+X-Halon-ID: 14ddcd32-b1ab-11eb-894f-001a4a4cb958
+Received: from s188.webhostingserver.nl (s188.webhostingserver.nl [141.138.168.133])
+        by mailfilter06.webhostingserver.nl (Halon) with ESMTPSA
+        id 14ddcd32-b1ab-11eb-894f-001a4a4cb958;
+        Mon, 10 May 2021 18:16:31 +0200 (CEST)
+Received: from [2001:981:6fec:1:706e:68b:b43f:ea3]
+        by s188.webhostingserver.nl with esmtpa (Exim 4.94.2)
+        (envelope-from <ftoth@exalondelft.nl>)
+        id 1lg8a7-00EG6P-2G; Mon, 10 May 2021 18:16:31 +0200
+Subject: Re: [PATCH v2 1/1] usb: dwc3: pci: Enable usb2-gadget-lpm-disable for
+ Intel Merrifield
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Felipe Balbi <balbi@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20210425195452.94143-1-ftoth@exalondelft.nl>
+ <YJkp2ZfhB717CmT7@kroah.com>
+From:   Ferry Toth <ftoth@exalondelft.nl>
+Message-ID: <bb96ef4c-9cdf-c2d9-ab45-cc718aa30ddc@exalondelft.nl>
+Date:   Mon, 10 May 2021 18:16:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lg8Zg-0006F8-2L;;;mid=<m18s4mzhrz.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/yBPTimQoWRMQi9KZ501san+bfHriGOc0=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,T_TooManySym_03,XMNoVowels autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4851]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-        *  0.0 T_TooManySym_03 6+ unique symbols in subject
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Al Viro <viro@zeniv.linux.org.uk>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 450 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 10 (2.3%), b_tie_ro: 9 (2.0%), parse: 0.90 (0.2%),
-         extract_message_metadata: 10 (2.3%), get_uri_detail_list: 0.90 (0.2%),
-         tests_pri_-1000: 10 (2.2%), tests_pri_-950: 1.17 (0.3%),
-        tests_pri_-900: 0.96 (0.2%), tests_pri_-90: 201 (44.7%), check_bayes:
-        200 (44.4%), b_tokenize: 7 (1.6%), b_tok_get_all: 7 (1.5%),
-        b_comp_prob: 1.84 (0.4%), b_tok_touch_all: 181 (40.1%), b_finish: 0.85
-        (0.2%), tests_pri_0: 201 (44.6%), check_dkim_signature: 0.50 (0.1%),
-        check_dkim_adsp: 2.2 (0.5%), poll_dns_idle: 0.61 (0.1%), tests_pri_10:
-        3.1 (0.7%), tests_pri_500: 9 (1.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH RFC 1/3] fs: introduce helper d_path_fast()
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <YJkp2ZfhB717CmT7@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Antivirus-Scanner: Clean mail though you should still use an Antivirus
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Al Viro <viro@zeniv.linux.org.uk> writes:
+Hi,
+
+
+Op 10-05-2021 om 14:40 schreef Greg Kroah-Hartman:
+> On Sun, Apr 25, 2021 at 09:54:52PM +0200, Ferry Toth wrote:
+>> On Intel Merrifield LPM is causing the host to reset port after a timeout.
+>> By disabling LPM entirely this is prevented.
+>>
+>> Fixes: 066c09593454 ("usb: dwc3: pci: Enable extcon driver for Intel Merrifield")
+>> Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+>> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>> ---
+>>   drivers/usb/dwc3/dwc3-pci.c | 1 +
+>>   1 file changed, 1 insertion(+)
+> What changed from v1?  Always put that below the --- line.
 >
-> Another thing that keeps bugging me about prepend_path() is the
-> set of return values.  I mean, 0/1/2/3/-ENAMETOOLONG, and all
-> except 0 are unlikely?  Might as well make that 0/1/2/3/-1, if
-> not an outright 0/1/2/3/4.  And prepend() could return bool, while
-> we are at it (true - success, false - overflow)...
+Yes, my bad, sorry.
 
-I remember seeing that the different callers of prepend_path treated
-those different cases differently.
+In the above text "is causing host" was change to "is causing the host".
 
-But now that I look again the return value 3 (escaped) gets lumped
-together with 2(detached).
-
-
-On second look it appears that the two patterns that we actually have
-are basically:
-
-char *__d_path(const struct path *path,
-	       const struct path *root,
-	       char *buf, int buflen)
-{
-	error = prepend_path(path, root, &res, &buflen);
-
-	if (error < 0)
-		return ERR_PTR(error);
-	if (error > 0)
-		return NULL;
-	return res;
-}
-
-char *d_absolute_path(const struct path *path,
-	       char *buf, int buflen)
-{
-	error = prepend_path(path, &root, &res, &buflen);
-
-	if (error > 1)
-		error = -EINVAL;
-	if (error < 0)
-		return ERR_PTR(error);
-	return res;
-}
-
-With d_absolute_path deciding that return value 1 absolute is not an
-error.
-
-That does look like there is plenty of room to refactor and make things
-clearer.
-
-
-Eric
-
-
-
+Thanks for adding into your usb-linus branch anyway.
 
