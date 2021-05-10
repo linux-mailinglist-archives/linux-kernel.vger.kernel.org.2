@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC70E378C39
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEDF1378C31
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346124AbhEJM0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:26:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46208 "EHLO mail.kernel.org"
+        id S1346107AbhEJM0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:26:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237137AbhEJLL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237139AbhEJLL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 07:11:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AE8861864;
-        Mon, 10 May 2021 11:07:31 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4877F6101A;
+        Mon, 10 May 2021 11:07:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644852;
-        bh=Uue73P2CCD+HKmLk4FjmAwNtBdF6wSFYVPw16mUU0O0=;
+        s=korg; t=1620644854;
+        bh=PLHir7BlYJev2eOS/p8EW7LSggaowbYU+8cErOPa6sg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NVIV2CU5BnP1V0rmnTLBE2GDP6lIRIYakyu4orxF3mJJGRYQjdQkZZW6QxYvmFQrh
-         VFm3pPPkQ6UUtVujTCmdPbVAIq7mhiaav4X6TpM0F5SOlJlkm4RIhoUOIIJ5YTB9KW
-         0fEw1dU2TzmMaOja1m+tQt8g2GvRVSYP9vgQvCHg=
+        b=1y0QhzYCrOSreqlId7wkFL3MHLALQrBG/ayBxPlAzjrBkGClG2pRedlktxmqsx+Qu
+         UxZaZLUffEi2EJXpDTVVUNnjsvK356IKLEONcc+udCk+R3/jSJDj+ZpHFyEcYpYBoS
+         z8395le6lKppuBCntiz0t7KpRNW83KK3PdZPGKlE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Harry Wentland <harry.wentland@amd.com>,
-        Werner Sembach <wse@tuxedocomputers.com>,
+        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 250/384] drm/amd/display: Try YCbCr420 color when YCbCr444 fails
-Date:   Mon, 10 May 2021 12:20:39 +0200
-Message-Id: <20210510102023.124676468@linuxfoundation.org>
+Subject: [PATCH 5.12 251/384] drm/amdgpu: fix NULL pointer dereference
+Date:   Mon, 10 May 2021 12:20:40 +0200
+Message-Id: <20210510102023.158865963@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -41,50 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Werner Sembach <wse@tuxedocomputers.com>
+From: Guchun Chen <guchun.chen@amd.com>
 
-[ Upstream commit 68eb3ae3c63708f823aeeb63bb15197c727bd9bf ]
+[ Upstream commit 3c3dc654333f6389803cdcaf03912e94173ae510 ]
 
-When encoder validation of a display mode fails, retry with less bandwidth
-heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
-to support 4k60Hz output, which previously failed silently.
+ttm->sg needs to be checked before accessing its child member.
 
-On some setups, while the monitor and the gpu support display modes with
-pixel clocks of up to 600MHz, the link encoder might not. This prevents
-YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
-possible. However, which color mode is used is decided before the link
-encoder capabilities are checked. This patch fixes the problem by retrying
-to find a display mode with YCbCr420 enforced and using it, if it is
-valid.
+Call Trace:
+ amdgpu_ttm_backend_destroy+0x12/0x70 [amdgpu]
+ ttm_bo_cleanup_memtype_use+0x3a/0x60 [ttm]
+ ttm_bo_release+0x17d/0x300 [ttm]
+ amdgpu_bo_unref+0x1a/0x30 [amdgpu]
+ amdgpu_amdkfd_gpuvm_alloc_memory_of_gpu+0x78b/0x8b0 [amdgpu]
+ kfd_ioctl_alloc_memory_of_gpu+0x118/0x220 [amdgpu]
+ kfd_ioctl+0x222/0x400 [amdgpu]
+ ? kfd_dev_is_large_bar+0x90/0x90 [amdgpu]
+ __x64_sys_ioctl+0x8e/0xd0
+ ? __context_tracking_exit+0x52/0x90
+ do_syscall_64+0x33/0x80
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f97f264d317
+Code: b3 66 90 48 8b 05 71 4b 2d 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 41 4b 2d 00 f7 d8 64 89 01 48
+RSP: 002b:00007ffdb402c338 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f97f3cc63a0 RCX: 00007f97f264d317
+RDX: 00007ffdb402c380 RSI: 00000000c0284b16 RDI: 0000000000000003
+RBP: 00007ffdb402c380 R08: 00007ffdb402c428 R09: 00000000c4000004
+R10: 00000000c4000004 R11: 0000000000000246 R12: 00000000c0284b16
+R13: 0000000000000003 R14: 00007f97f3cc63a0 R15: 00007f8836200000
 
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+Signed-off-by: Guchun Chen <guchun.chen@amd.com>
+Acked-by: Christian König <christian.koenig@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 9c243f66867a..29ca1708458c 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -5872,6 +5872,15 @@ create_validate_stream_for_sink(struct amdgpu_dm_connector *aconnector,
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+index f61fd2cf3fee..383c178cf074 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@ -942,7 +942,7 @@ static void amdgpu_ttm_tt_unpin_userptr(struct ttm_bo_device *bdev,
+ 		DMA_BIDIRECTIONAL : DMA_TO_DEVICE;
  
- 	} while (stream == NULL && requested_bpc >= 6);
+ 	/* double check that we don't free the table twice */
+-	if (!ttm->sg->sgl)
++	if (!ttm->sg || !ttm->sg->sgl)
+ 		return;
  
-+	if (dc_result == DC_FAIL_ENC_VALIDATE && !aconnector->force_yuv420_output) {
-+		DRM_DEBUG_KMS("Retry forcing YCbCr420 encoding\n");
-+
-+		aconnector->force_yuv420_output = true;
-+		stream = create_validate_stream_for_sink(aconnector, drm_mode,
-+						dm_state, old_stream);
-+		aconnector->force_yuv420_output = false;
-+	}
-+
- 	return stream;
- }
- 
+ 	/* unmap the pages mapped to the device */
 -- 
 2.30.2
 
