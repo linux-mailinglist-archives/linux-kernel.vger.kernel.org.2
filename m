@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C85DE378A59
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC064378BF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242310AbhEJLlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:41:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52212 "EHLO mail.kernel.org"
+        id S245154AbhEJMUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:20:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231721AbhEJK5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12DF361C37;
-        Mon, 10 May 2021 10:51:54 +0000 (UTC)
+        id S233707AbhEJLJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:09:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6983B61926;
+        Mon, 10 May 2021 11:04:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643915;
-        bh=P1406Jpr8eiCFe4E8OCTMSlIbNSDkAouqN75tcgzYgc=;
+        s=korg; t=1620644675;
+        bh=Wh17wluSKUTBOWNzYuYLyW+TL60RDkDmKbWLKi2/MZc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kxpPbmg7UlBu0OHriwuDcysBX5PfgKLOieu2MI7oqEI6nB103PyuZ2sqcCw8wb442
-         VfWP8gtzkrRIeQ79px/KfeyxWXjLeUfAiQ5kwP9MGjZlekFX6gaSdh4bY2QeoNdGu7
-         U/8/YlpwsPRpEgVdOEi2qOJVR02we6rDn8YRwKzc=
+        b=p17mKUC8Fwm0eC82gB6YorWBTTYbvtbBTzUWL5jo8GjYqXrRYOBDRXa9DHhOCpKVN
+         AS/grZpcOxBj7j2V/wGpoihhwYCyPPoXM4ZcGK3cpnzFURMlzpzRolfv9X6TtciQN4
+         uuJ0wl4lr2vbWq9Rhcc2vjcIb/U+gYX8WalrQcs4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Quinn Tran <qutran@marvell.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Daniel Niv <danielniv3@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 177/342] scsi: qla2xxx: Fix use after free in bsg
+Subject: [PATCH 5.12 178/384] media: media/saa7164: fix saa7164_encoder_register() memory leak bugs
 Date:   Mon, 10 May 2021 12:19:27 +0200
-Message-Id: <20210510102015.951638916@linuxfoundation.org>
+Message-Id: <20210510102020.760715108@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
+References: <20210510102014.849075526@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,59 +41,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quinn Tran <qutran@marvell.com>
+From: Daniel Niv <danielniv3@gmail.com>
 
-[ Upstream commit 2ce35c0821afc2acd5ee1c3f60d149f8b2520ce8 ]
+[ Upstream commit c759b2970c561e3b56aa030deb13db104262adfe ]
 
-On bsg command completion, bsg_job_done() was called while qla driver
-continued to access the bsg_job buffer. bsg_job_done() would free up
-resources that ended up being reused by other task while the driver
-continued to access the buffers. As a result, driver was reading garbage
-data.
+Add a fix for the memory leak bugs that can occur when the
+saa7164_encoder_register() function fails.
+The function allocates memory without explicitly freeing
+it when errors occur.
+Add a better error handling that deallocate the unused buffers before the
+function exits during a fail.
 
-localhost kernel: BUG: KASAN: use-after-free in sg_next+0x64/0x80
-localhost kernel: Read of size 8 at addr ffff8883228a3330 by task swapper/26/0
-localhost kernel:
-localhost kernel: CPU: 26 PID: 0 Comm: swapper/26 Kdump:
-loaded Tainted: G          OE    --------- -  - 4.18.0-193.el8.x86_64+debug #1
-localhost kernel: Hardware name: HP ProLiant DL360
-Gen9/ProLiant DL360 Gen9, BIOS P89 08/12/2016
-localhost kernel: Call Trace:
-localhost kernel: <IRQ>
-localhost kernel: dump_stack+0x9a/0xf0
-localhost kernel: print_address_description.cold.3+0x9/0x23b
-localhost kernel: kasan_report.cold.4+0x65/0x95
-localhost kernel: debug_dma_unmap_sg.part.12+0x10d/0x2d0
-localhost kernel: qla2x00_bsg_sp_free+0xaf6/0x1010 [qla2xxx]
-
-Link: https://lore.kernel.org/r/20210329085229.4367-6-njavali@marvell.com
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Quinn Tran <qutran@marvell.com>
-Signed-off-by: Saurav Kashyap <skashyap@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Daniel Niv <danielniv3@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_bsg.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/media/pci/saa7164/saa7164-encoder.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_bsg.c b/drivers/scsi/qla2xxx/qla_bsg.c
-index 23b604832a54..7fa085969a63 100644
---- a/drivers/scsi/qla2xxx/qla_bsg.c
-+++ b/drivers/scsi/qla2xxx/qla_bsg.c
-@@ -24,10 +24,11 @@ void qla2x00_bsg_job_done(srb_t *sp, int res)
- 	struct bsg_job *bsg_job = sp->u.bsg_job;
- 	struct fc_bsg_reply *bsg_reply = bsg_job->reply;
+diff --git a/drivers/media/pci/saa7164/saa7164-encoder.c b/drivers/media/pci/saa7164/saa7164-encoder.c
+index 11e1eb6a6809..1d1d32e043f1 100644
+--- a/drivers/media/pci/saa7164/saa7164-encoder.c
++++ b/drivers/media/pci/saa7164/saa7164-encoder.c
+@@ -1008,7 +1008,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
+ 		printk(KERN_ERR "%s() failed (errno = %d), NO PCI configuration\n",
+ 			__func__, result);
+ 		result = -ENOMEM;
+-		goto failed;
++		goto fail_pci;
+ 	}
  
-+	sp->free(sp);
-+
- 	bsg_reply->result = res;
- 	bsg_job_done(bsg_job, bsg_reply->result,
- 		       bsg_reply->reply_payload_rcv_len);
--	sp->free(sp);
+ 	/* Establish encoder defaults here */
+@@ -1062,7 +1062,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
+ 			  100000, ENCODER_DEF_BITRATE);
+ 	if (hdl->error) {
+ 		result = hdl->error;
+-		goto failed;
++		goto fail_hdl;
+ 	}
+ 
+ 	port->std = V4L2_STD_NTSC_M;
+@@ -1080,7 +1080,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
+ 		printk(KERN_INFO "%s: can't allocate mpeg device\n",
+ 			dev->name);
+ 		result = -ENOMEM;
+-		goto failed;
++		goto fail_hdl;
+ 	}
+ 
+ 	port->v4l_device->ctrl_handler = hdl;
+@@ -1091,10 +1091,7 @@ int saa7164_encoder_register(struct saa7164_port *port)
+ 	if (result < 0) {
+ 		printk(KERN_INFO "%s: can't register mpeg device\n",
+ 			dev->name);
+-		/* TODO: We're going to leak here if we don't dealloc
+-		 The buffers above. The unreg function can't deal wit it.
+-		*/
+-		goto failed;
++		goto fail_reg;
+ 	}
+ 
+ 	printk(KERN_INFO "%s: registered device video%d [mpeg]\n",
+@@ -1116,9 +1113,14 @@ int saa7164_encoder_register(struct saa7164_port *port)
+ 
+ 	saa7164_api_set_encoder(port);
+ 	saa7164_api_get_encoder(port);
++	return 0;
+ 
+-	result = 0;
+-failed:
++fail_reg:
++	video_device_release(port->v4l_device);
++	port->v4l_device = NULL;
++fail_hdl:
++	v4l2_ctrl_handler_free(hdl);
++fail_pci:
+ 	return result;
  }
  
- void qla2x00_bsg_sp_free(srb_t *sp)
 -- 
 2.30.2
 
