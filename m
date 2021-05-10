@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F123D377D2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 09:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9FA377D2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 09:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhEJHfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 03:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55160 "EHLO
+        id S230156AbhEJHfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 03:35:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbhEJHfQ (ORCPT
+        with ESMTP id S230059AbhEJHfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 03:35:16 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE4CC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 00:34:11 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id p12so12648303pgj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 00:34:11 -0700 (PDT)
+        Mon, 10 May 2021 03:35:21 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED11FC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 00:34:12 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id z18so5106146plg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 00:34:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=vA3gf5U3qgSMXovfcB4UhmgzKIceIYSkZrJbqbnFQQs=;
-        b=TnymSowGCl8At/Z5vJjiv6UkoDI9j2N2BTdVmLCLCOKMpsMJulNPkSWZYc6yDKrvXU
-         yKbWB1niCmvzdg5oH7OBLZdRVTkvbkCTpoF0KeXI6Gi0a+ZJwcsXngGOJdw7IqLU+aJR
-         95UFJcfONNQPxssqx66EH8m4kWwWi+iDJwaGDtGuN8Sk+rNHrBQ5KmrsE04RYRv3/VSG
-         94INqG/VKbm96f5jrlb/FK6dyOX1CWATud+m/4qnve7TXFuVOkrDX6SEbRJ1gW6U+DRx
-         Z/7fQRIGJ39jY75K/HWCaIByNhj+rNsIptw+lzY7WEc+Z60Nm3/Tp9qlHrhRmLhA+Xiv
-         QiTA==
+        bh=7t7mKyriyEZX6HmajXTUz0XciwB1CpKo++Vww6ZeLk4=;
+        b=lcVUnde9dwDYb5DVrpPQCHlVJRpEVuRQdM+GtQJmozWIA0BbXRqoX2sSS4xizAXO7J
+         s+jgZSmHLoX7r9j50L8ULBvYCblKL/dWFVtgbA0JzCiKBo41P+M0RON9X6cbU+HRnkV9
+         AqA5edKB9S7yN0wOGwKTMUvpZcZqyXvAMKGOAoShTxLz5HmtdWTFrVCL4HF8pAo6T+hK
+         mhoXZlV3/t5P7TZ1UkJ3f6QBP8HdQ7JGGGyUfCnB/HJzh1QOrT/YzV+K6mufYBOM/M/e
+         Lta6pLxcjwTCXJKyFTvO9EtULCQ60uAaJDMZV7ReWPZWGYmBeCM9s2o5MM5YtsA33DdP
+         ecIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=vA3gf5U3qgSMXovfcB4UhmgzKIceIYSkZrJbqbnFQQs=;
-        b=bzKmZw2aXgtITHFtJqFa+F4VwFXOdbUNUetXZND2KNUUKyI+wzNfL7XbdZksleJEVP
-         bfaetqieayw6qFV4d5ySC6UVDTvnmuHmpr6zJ9J1O+jbRR5tpsIyjBx02EpOvC/47nXl
-         Q+XUt5u/sN4S1MbG+0cUgXJOhVz7UDuAhpe0QrE3cRurknLqWwdWYd0BoGIPQ1FjKx8G
-         62nDxK5AWjWDEP/nXLOnNW6+WqNpJ5eF+OoPA5f7Ss2X3RiJxJLiEu5VQ4ckXB1uv5sX
-         eSyfeVcWLyeBn1CU3ZaYT3mA+5zlyybr95c8dzGdhO4BhtEBuuyDY9cAv8ojGoPxD/r8
-         wXAA==
-X-Gm-Message-State: AOAM532aEBQAjLceCv9DnHLepOuq8pTec8258cK+grz6CZpH77D7BXd+
-        +u2WOyzAl1ZvSAiJMsq0gJNeDg==
-X-Google-Smtp-Source: ABdhPJzoWupZxWPbVtYgLa+kmwmlg4iI4EhPt8v8lypgPYnkfkeQ/6SdyDSS7bmttVEVYeQvrgTTCA==
-X-Received: by 2002:a63:2c92:: with SMTP id s140mr24065723pgs.39.1620632051387;
-        Mon, 10 May 2021 00:34:11 -0700 (PDT)
+        bh=7t7mKyriyEZX6HmajXTUz0XciwB1CpKo++Vww6ZeLk4=;
+        b=Q930GHcAOIfGUiDZI/lk6rg7fUNoOeKpV/ywA4z/1pqybDn5Wv1otkVUOH82KR0F8Z
+         bckvwkbxioz1VxbL6+8NrWM0kF6cTGjFNjRPRP4Kwql6qle76GaV5Q3hzTnUXaWpGNkd
+         OixVTZFI/cq3rsgTZ1fdL4wv377fxQfhvJX/2vTQHMdS/YXfS2J25NyRdZVs6RSuFJco
+         AERLl+JE0A81ih/3KKBefsHgHXO+W8/KTaDhVI7glDCQDywmT71OAZB+eQoxZFRLkXJi
+         QV44DDJtn7Jb56gwoWtGQQJJLgIrwfntL8n7/v0qYLbIg337M76YYAVAN+emWjS9bvu4
+         EWRg==
+X-Gm-Message-State: AOAM531yr3v9YZnqtgEeJjydzUrsk8YHL5AdzOYArz95b5+Nw4dzdRMB
+        J9pp5gxzQsEFRsu+WW9NlopD6g==
+X-Google-Smtp-Source: ABdhPJxzBS/xvhK6qt1VxLrH0Wtjt/2uS6AvqrWZTfgOJ8o8dAKn6xFflKMjndcaQkHnxmnawn54IA==
+X-Received: by 2002:a17:902:b947:b029:ec:b04d:c8a2 with SMTP id h7-20020a170902b947b02900ecb04dc8a2mr23768452pls.2.1620632052453;
+        Mon, 10 May 2021 00:34:12 -0700 (PDT)
 Received: from localhost (110-175-254-242.static.tpgi.com.au. [110.175.254.242])
-        by smtp.gmail.com with UTF8SMTPSA id s6sm10396487pgv.48.2021.05.10.00.34.07
+        by smtp.gmail.com with UTF8SMTPSA id w127sm7116905pfw.4.2021.05.10.00.34.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 00:34:10 -0700 (PDT)
-Message-ID: <e4984fa0-2afe-a987-4fb8-61b878431b1f@ozlabs.ru>
-Date:   Mon, 10 May 2021 17:34:04 +1000
+        Mon, 10 May 2021 00:34:12 -0700 (PDT)
+Message-ID: <c596779c-7664-f860-80c0-357e5e074801@ozlabs.ru>
+Date:   Mon, 10 May 2021 17:34:07 +1000
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
  Thunderbird/88.0
-Subject: Re: [PATCH v4 07/11] powerpc/pseries/iommu: Reorganize
- iommu_table_setparms*() with new helper
+Subject: Re: [PATCH v4 02/11] powerpc/kernel/iommu: Add new
+ iommu_table_in_use() helper
 Content-Language: en-US
 To:     Leonardo Bras <leobras.c@gmail.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
@@ -67,9 +67,9 @@ To:     Leonardo Bras <leobras.c@gmail.com>,
         Niklas Schnelle <schnelle@linux.ibm.com>
 Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 References: <20210430163145.146984-1-leobras.c@gmail.com>
- <20210430163145.146984-8-leobras.c@gmail.com>
+ <20210430163145.146984-3-leobras.c@gmail.com>
 From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-In-Reply-To: <20210430163145.146984-8-leobras.c@gmail.com>
+In-Reply-To: <20210430163145.146984-3-leobras.c@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -79,257 +79,187 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 5/1/21 02:31, Leonardo Bras wrote:
-> Add a new helper _iommu_table_setparms(), and use it in
-> iommu_table_setparms() and iommu_table_setparms_lpar() to avoid duplicated
-> code.
+> Having a function to check if the iommu table has any allocation helps
+> deciding if a tbl can be reset for using a new DMA window.
 > 
-> Also, setting tbl->it_ops was happening outsite iommu_table_setparms*(),
-> so move it to the new helper. Since we need the iommu_table_ops to be
-> declared before used, move iommu_table_lpar_multi_ops and
-> iommu_table_pseries_ops to before their respective iommu_table_setparms*().
+> It should be enough to replace all instances of !bitmap_empty(tbl...).
+> 
+> iommu_table_in_use() skips reserved memory, so we don't need to worry about
+> releasing it before testing. This causes iommu_table_release_pages() to
+> become unnecessary, given it is only used to remove reserved memory for
+> testing.
+> 
+> Also, only allow storing reserved memory values in tbl if they are valid
+> in the table, so there is no need to check it in the new helper.
 > 
 > Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-
-
-This does not apply anymore as it conflicts with my 4be518d838809e2135.
-
-
 > ---
->   arch/powerpc/platforms/pseries/iommu.c | 100 ++++++++++++-------------
->   1 file changed, 50 insertions(+), 50 deletions(-)
+>   arch/powerpc/include/asm/iommu.h |  1 +
+>   arch/powerpc/kernel/iommu.c      | 65 ++++++++++++++++----------------
+>   2 files changed, 34 insertions(+), 32 deletions(-)
 > 
-> diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
-> index 5a70ecd579b8..89cb6e9e9f31 100644
-> --- a/arch/powerpc/platforms/pseries/iommu.c
-> +++ b/arch/powerpc/platforms/pseries/iommu.c
-> @@ -53,6 +53,11 @@ enum {
->   	DDW_EXT_QUERY_OUT_SIZE = 2
->   };
+> diff --git a/arch/powerpc/include/asm/iommu.h b/arch/powerpc/include/asm/iommu.h
+> index deef7c94d7b6..bf3b84128525 100644
+> --- a/arch/powerpc/include/asm/iommu.h
+> +++ b/arch/powerpc/include/asm/iommu.h
+> @@ -154,6 +154,7 @@ extern int iommu_tce_table_put(struct iommu_table *tbl);
+>    */
+>   extern struct iommu_table *iommu_init_table(struct iommu_table *tbl,
+>   		int nid, unsigned long res_start, unsigned long res_end);
+> +bool iommu_table_in_use(struct iommu_table *tbl);
 >   
-> +#ifdef CONFIG_IOMMU_API
-> +static int tce_exchange_pseries(struct iommu_table *tbl, long index, unsigned long *tce,
-> +				enum dma_data_direction *direction, bool realmode);
-> +#endif
-
-
-Instead of declaring this so far from the the code which needs it, may 
-be add
-
-struct iommu_table_ops iommu_table_lpar_multi_ops;
-
-right before iommu_table_setparms() (as the sctruct is what you actually 
-want there), and you won't need to move iommu_table_pseries_ops as well.
-
-
-> +
->   static struct iommu_table *iommu_pseries_alloc_table(int node)
->   {
->   	struct iommu_table *tbl;
-> @@ -501,6 +506,28 @@ static int tce_setrange_multi_pSeriesLP_walk(unsigned long start_pfn,
->   	return tce_setrange_multi_pSeriesLP(start_pfn, num_pfn, arg);
->   }
+>   #define IOMMU_TABLE_GROUP_MAX_TABLES	2
 >   
-> +static inline void _iommu_table_setparms(struct iommu_table *tbl, unsigned long busno,
-
-
-The underscore is confusing, may be iommu_table_do_setparms()? 
-iommu_table_setparms_common()? Not sure. I cannot recall a single 
-function with just one leading underscore, I suspect I was pushed back 
-when I tried adding one ages ago :) "inline" seems excessive, the 
-compiler will probably figure it out anyway.
-
-
-
-> +					 unsigned long liobn, unsigned long win_addr,
-> +					 unsigned long window_size, unsigned long page_shift,
-> +					 unsigned long base, struct iommu_table_ops *table_ops)
-
-
-Make "base" a pointer. Or, better, just keep setting it directly in 
-iommu_table_setparms() rather than passing 0 around.
-
-The same comment about "liobn" - set it in iommu_table_setparms_lpar(). 
-The reviewer will see what field atters in what situation imho.
-
-
-
-> +{
-> +	tbl->it_busno = busno;
-> +	tbl->it_index = liobn;
-> +	tbl->it_offset = win_addr >> page_shift;
-> +	tbl->it_size = window_size >> page_shift;
-> +	tbl->it_page_shift = page_shift;
-> +	tbl->it_base = base;
-> +	tbl->it_blocksize = 16;
-> +	tbl->it_type = TCE_PCI;
-> +	tbl->it_ops = table_ops;
-> +}
-> +
-> +struct iommu_table_ops iommu_table_pseries_ops = {
-> +	.set = tce_build_pSeries,
-> +	.clear = tce_free_pSeries,
-> +	.get = tce_get_pseries
-> +};
-> +
->   static void iommu_table_setparms(struct pci_controller *phb,
->   				 struct device_node *dn,
->   				 struct iommu_table *tbl)
-> @@ -509,8 +536,13 @@ static void iommu_table_setparms(struct pci_controller *phb,
->   	const unsigned long *basep;
->   	const u32 *sizep;
+> diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
+> index ad82dda81640..5e168bd91401 100644
+> --- a/arch/powerpc/kernel/iommu.c
+> +++ b/arch/powerpc/kernel/iommu.c
+> @@ -691,32 +691,24 @@ static void iommu_table_reserve_pages(struct iommu_table *tbl,
+>   	if (tbl->it_offset == 0)
+>   		set_bit(0, tbl->it_map);
 >   
-> -	node = phb->dn;
-> +	/* Test if we are going over 2GB of DMA space */
-> +	if (phb->dma_window_base_cur + phb->dma_window_size > SZ_2G) {
-> +		udbg_printf("PCI_DMA: Unexpected number of IOAs under this PHB.\n");
-> +		panic("PCI_DMA: Unexpected number of IOAs under this PHB.\n");
+> -	tbl->it_reserved_start = res_start;
+> -	tbl->it_reserved_end = res_end;
+> -
+> -	/* Check if res_start..res_end isn't empty and overlaps the table */
+> -	if (res_start && res_end &&
+> -			(tbl->it_offset + tbl->it_size < res_start ||
+> -			 res_end < tbl->it_offset))
+> -		return;
+> +	if (res_start < tbl->it_offset)
+> +		res_start = tbl->it_offset;
+>   
+> -	for (i = tbl->it_reserved_start; i < tbl->it_reserved_end; ++i)
+> -		set_bit(i - tbl->it_offset, tbl->it_map);
+> -}
+> +	if (res_end > (tbl->it_offset + tbl->it_size))
+> +		res_end = tbl->it_offset + tbl->it_size;
+>   
+> -static void iommu_table_release_pages(struct iommu_table *tbl)
+> -{
+> -	int i;
+> +	/* Check if res_start..res_end is a valid range in the table */
+> +	if (res_start >= res_end) {
+> +		tbl->it_reserved_start = tbl->it_offset;
+> +		tbl->it_reserved_end = tbl->it_offset;
+> +		return;
 > +	}
 >   
-> +	node = phb->dn;
->   	basep = of_get_property(node, "linux,tce-base", NULL);
->   	sizep = of_get_property(node, "linux,tce-size", NULL);
->   	if (basep == NULL || sizep == NULL) {
-> @@ -519,33 +551,25 @@ static void iommu_table_setparms(struct pci_controller *phb,
->   		return;
+> -	/*
+> -	 * In case we have reserved the first bit, we should not emit
+> -	 * the warning below.
+> -	 */
+> -	if (tbl->it_offset == 0)
+> -		clear_bit(0, tbl->it_map);
+> +	tbl->it_reserved_start = res_start;
+> +	tbl->it_reserved_end = res_end;
+>   
+>   	for (i = tbl->it_reserved_start; i < tbl->it_reserved_end; ++i)
+> -		clear_bit(i - tbl->it_offset, tbl->it_map);
+> +		set_bit(i - tbl->it_offset, tbl->it_map);
+
+
+git produced a messy chunk here. The new logic is:
+
+
+static void iommu_table_reserve_pages(struct iommu_table *tbl,
+		unsigned long res_start, unsigned long res_end)
+{
+	int i;
+
+	WARN_ON_ONCE(res_end < res_start);
+	/*
+	 * Reserve page 0 so it will not be used for any mappings.
+	 * This avoids buggy drivers that consider page 0 to be invalid
+	 * to crash the machine or even lose data.
+	 */
+	if (tbl->it_offset == 0)
+		set_bit(0, tbl->it_map);
+
+	if (res_start < tbl->it_offset)
+		res_start = tbl->it_offset;
+
+	if (res_end > (tbl->it_offset + tbl->it_size))
+		res_end = tbl->it_offset + tbl->it_size;
+
+	/* Check if res_start..res_end is a valid range in the table */
+	if (res_start >= res_end) {
+		tbl->it_reserved_start = tbl->it_offset;
+		tbl->it_reserved_end = tbl->it_offset;
+		return;
+	}
+
+
+It is just hard to read. A code reviewer would assume res_end >= 
+res_start (as there is WARN_ON) but later we allow res_end to be lesser 
+than res_start.
+
+but may be it is just me :)
+Otherwise looks good.
+
+Reviewed-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+
+
+>   }
+>   
+>   /*
+> @@ -781,6 +773,22 @@ struct iommu_table *iommu_init_table(struct iommu_table *tbl, int nid,
+>   	return tbl;
+>   }
+>   
+> +bool iommu_table_in_use(struct iommu_table *tbl)
+> +{
+> +	unsigned long start = 0, end;
+> +
+> +	/* ignore reserved bit0 */
+> +	if (tbl->it_offset == 0)
+> +		start = 1;
+> +	end = tbl->it_reserved_start - tbl->it_offset;
+> +	if (find_next_bit(tbl->it_map, end, start) != end)
+> +		return true;
+> +
+> +	start = tbl->it_reserved_end - tbl->it_offset;
+> +	end = tbl->it_size;
+> +	return find_next_bit(tbl->it_map, end, start) != end;
+> +}
+> +
+>   static void iommu_table_free(struct kref *kref)
+>   {
+>   	unsigned long bitmap_sz;
+> @@ -799,10 +807,8 @@ static void iommu_table_free(struct kref *kref)
+>   
+>   	iommu_debugfs_del(tbl);
+>   
+> -	iommu_table_release_pages(tbl);
+> -
+>   	/* verify that table contains no entries */
+> -	if (!bitmap_empty(tbl->it_map, tbl->it_size))
+> +	if (iommu_table_in_use(tbl))
+>   		pr_warn("%s: Unexpected TCEs\n", __func__);
+>   
+>   	/* calculate bitmap size in bytes */
+> @@ -1108,18 +1114,13 @@ int iommu_take_ownership(struct iommu_table *tbl)
+>   	for (i = 0; i < tbl->nr_pools; i++)
+>   		spin_lock(&tbl->pools[i].lock);
+>   
+> -	iommu_table_release_pages(tbl);
+> -
+> -	if (!bitmap_empty(tbl->it_map, tbl->it_size)) {
+> +	if (iommu_table_in_use(tbl)) {
+>   		pr_err("iommu_tce: it_map is not empty");
+>   		ret = -EBUSY;
+> -		/* Undo iommu_table_release_pages, i.e. restore bit#0, etc */
+> -		iommu_table_reserve_pages(tbl, tbl->it_reserved_start,
+> -				tbl->it_reserved_end);
+> -	} else {
+> -		memset(tbl->it_map, 0xff, sz);
 >   	}
 >   
-> -	tbl->it_base = (unsigned long)__va(*basep);
-> +	_iommu_table_setparms(tbl, phb->bus->number, 0, phb->dma_window_base_cur,
-> +			      phb->dma_window_size, IOMMU_PAGE_SHIFT_4K,
-> +			      (unsigned long)__va(*basep), &iommu_table_pseries_ops);
->   
->   	if (!is_kdump_kernel())
->   		memset((void *)tbl->it_base, 0, *sizep);
->   
-> -	tbl->it_busno = phb->bus->number;
-> -	tbl->it_page_shift = IOMMU_PAGE_SHIFT_4K;
-> -
-> -	/* Units of tce entries */
-> -	tbl->it_offset = phb->dma_window_base_cur >> tbl->it_page_shift;
-> -
-> -	/* Test if we are going over 2GB of DMA space */
-> -	if (phb->dma_window_base_cur + phb->dma_window_size > 0x80000000ul) {
-> -		udbg_printf("PCI_DMA: Unexpected number of IOAs under this PHB.\n");
-> -		panic("PCI_DMA: Unexpected number of IOAs under this PHB.\n");
-> -	}
-> -
->   	phb->dma_window_base_cur += phb->dma_window_size;
-> -
-> -	/* Set the tce table size - measured in entries */
-> -	tbl->it_size = phb->dma_window_size >> tbl->it_page_shift;
-> -
-> -	tbl->it_index = 0;
-> -	tbl->it_blocksize = 16;
-> -	tbl->it_type = TCE_PCI;
->   }
->   
-> +struct iommu_table_ops iommu_table_lpar_multi_ops = {
-> +	.set = tce_buildmulti_pSeriesLP,
-> +#ifdef CONFIG_IOMMU_API
-> +	.xchg_no_kill = tce_exchange_pseries,
-> +#endif
-> +	.clear = tce_freemulti_pSeriesLP,
-> +	.get = tce_get_pSeriesLP
-> +};
+> +	memset(tbl->it_map, 0xff, sz);
 > +
->   /*
->    * iommu_table_setparms_lpar
->    *
-> @@ -557,28 +581,17 @@ static void iommu_table_setparms_lpar(struct pci_controller *phb,
->   				      struct iommu_table_group *table_group,
->   				      const __be32 *dma_window)
->   {
-> -	unsigned long offset, size;
-> +	unsigned long offset, size, liobn;
->   
-> -	of_parse_dma_window(dn, dma_window, &tbl->it_index, &offset, &size);
-> +	of_parse_dma_window(dn, dma_window, &liobn, &offset, &size);
->   
-> -	tbl->it_busno = phb->bus->number;
-> -	tbl->it_page_shift = IOMMU_PAGE_SHIFT_4K;
-> -	tbl->it_base   = 0;
-> -	tbl->it_blocksize  = 16;
-> -	tbl->it_type = TCE_PCI;
-> -	tbl->it_offset = offset >> tbl->it_page_shift;
-> -	tbl->it_size = size >> tbl->it_page_shift;
-> +	_iommu_table_setparms(tbl, phb->bus->number, liobn, offset, size, IOMMU_PAGE_SHIFT_4K, 0,
-> +			      &iommu_table_lpar_multi_ops);
->   
->   	table_group->tce32_start = offset;
->   	table_group->tce32_size = size;
->   }
->   
-> -struct iommu_table_ops iommu_table_pseries_ops = {
-> -	.set = tce_build_pSeries,
-> -	.clear = tce_free_pSeries,
-> -	.get = tce_get_pseries
-> -};
-> -
->   static void pci_dma_bus_setup_pSeries(struct pci_bus *bus)
->   {
->   	struct device_node *dn;
-> @@ -647,7 +660,6 @@ static void pci_dma_bus_setup_pSeries(struct pci_bus *bus)
->   	tbl = pci->table_group->tables[0];
->   
->   	iommu_table_setparms(pci->phb, dn, tbl);
-> -	tbl->it_ops = &iommu_table_pseries_ops;
->   	iommu_init_table(tbl, pci->phb->node, 0, 0);
->   
->   	/* Divide the rest (1.75GB) among the children */
-> @@ -664,7 +676,7 @@ static int tce_exchange_pseries(struct iommu_table *tbl, long index, unsigned
->   				bool realmode)
->   {
->   	long rc;
-> -	unsigned long ioba = (unsigned long) index << tbl->it_page_shift;
-> +	unsigned long ioba = (unsigned long)index << tbl->it_page_shift;
-
-
-Unrelated change, why, did checkpatch.pl complain?
-
-
->   	unsigned long flags, oldtce = 0;
->   	u64 proto_tce = iommu_direction_to_tce_perm(*direction);
->   	unsigned long newtce = *tce | proto_tce;
-> @@ -686,15 +698,6 @@ static int tce_exchange_pseries(struct iommu_table *tbl, long index, unsigned
->   }
->   #endif
->   
-> -struct iommu_table_ops iommu_table_lpar_multi_ops = {
-> -	.set = tce_buildmulti_pSeriesLP,
-> -#ifdef CONFIG_IOMMU_API
-> -	.xchg_no_kill = tce_exchange_pseries,
-> -#endif
-> -	.clear = tce_freemulti_pSeriesLP,
-> -	.get = tce_get_pSeriesLP
-> -};
-> -
->   static void pci_dma_bus_setup_pSeriesLP(struct pci_bus *bus)
->   {
->   	struct iommu_table *tbl;
-> @@ -729,7 +732,6 @@ static void pci_dma_bus_setup_pSeriesLP(struct pci_bus *bus)
->   		tbl = ppci->table_group->tables[0];
->   		iommu_table_setparms_lpar(ppci->phb, pdn, tbl,
->   				ppci->table_group, dma_window);
-> -		tbl->it_ops = &iommu_table_lpar_multi_ops;
->   		iommu_init_table(tbl, ppci->phb->node, 0, 0);
->   		iommu_register_group(ppci->table_group,
->   				pci_domain_nr(bus), 0);
-> @@ -758,7 +760,6 @@ static void pci_dma_dev_setup_pSeries(struct pci_dev *dev)
->   		PCI_DN(dn)->table_group = iommu_pseries_alloc_group(phb->node);
->   		tbl = PCI_DN(dn)->table_group->tables[0];
->   		iommu_table_setparms(phb, dn, tbl);
-> -		tbl->it_ops = &iommu_table_pseries_ops;
->   		iommu_init_table(tbl, phb->node, 0, 0);
->   		set_iommu_table_base(&dev->dev, tbl);
->   		return;
-> @@ -1436,7 +1437,6 @@ static void pci_dma_dev_setup_pSeriesLP(struct pci_dev *dev)
->   		tbl = pci->table_group->tables[0];
->   		iommu_table_setparms_lpar(pci->phb, pdn, tbl,
->   				pci->table_group, dma_window);
-> -		tbl->it_ops = &iommu_table_lpar_multi_ops;
->   		iommu_init_table(tbl, pci->phb->node, 0, 0);
->   		iommu_register_group(pci->table_group,
->   				pci_domain_nr(pci->phb->bus), 0);
+>   	for (i = 0; i < tbl->nr_pools; i++)
+>   		spin_unlock(&tbl->pools[i].lock);
+>   	spin_unlock_irqrestore(&tbl->large_pool.lock, flags);
 > 
 
 -- 
