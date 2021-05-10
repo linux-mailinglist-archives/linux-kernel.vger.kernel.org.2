@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0F7378420
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA541378422
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233701AbhEJKub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:50:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52756 "EHLO mail.kernel.org"
+        id S233765AbhEJKuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:50:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232976AbhEJKky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:40:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20F696191A;
-        Mon, 10 May 2021 10:31:28 +0000 (UTC)
+        id S232993AbhEJKk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:40:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 706CF6101A;
+        Mon, 10 May 2021 10:31:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642689;
-        bh=DkoOxMJz8YpuchWQL/RtRgbH0rxYa/FDFDv2JcYcdZo=;
+        s=korg; t=1620642695;
+        bh=OIG8iDHZQYt5/XvM2OIwQwaHViY9KNUCyqdEwXHsQLc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oP9rPBiTWDAlIbHLxMTGn38LlLemBBs7C4GIjdyVS/Ie/5GN9IU1Xt9n9mjLsHhcU
-         H0ItzIG3TV5QyAbLBJRjbci6xmBqxEO4EtdmAhMgetlwyMVCUQmfvLLpEC6EhDdpkg
-         z48SCGQQeZpo0jSlzhpJ924xGg9oVuIRnqzMm9+4=
+        b=IwEPbGGOH1yTymVKphyDPrz04wNOjdHEfJmndzpN+shLHHFksWaoDUh5fOrE9QlEW
+         TmpcLH/b/WbmlyMQizf/VaoZHhIJN7UPuoloGwPMB92eXh9ejYZcVlyYf4K+ydEflN
+         APVyhi3xaMh4ENF5VCVhggueXPs5i9NuJL8rJYdo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mathias Krause <minipli@grsecurity.net>,
-        Andra Paraschiv <andraprs@amazon.com>
-Subject: [PATCH 5.10 004/299] nitro_enclaves: Fix stale file descriptors on failed usercopy
-Date:   Mon, 10 May 2021 12:16:41 +0200
-Message-Id: <20210510102004.973967515@linuxfoundation.org>
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 5.10 006/299] s390/disassembler: increase ebpf disasm buffer size
+Date:   Mon, 10 May 2021 12:16:43 +0200
+Message-Id: <20210510102005.036994909@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
 References: <20210510102004.821838356@linuxfoundation.org>
@@ -39,121 +39,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Krause <minipli@grsecurity.net>
+From: Vasily Gorbik <gor@linux.ibm.com>
 
-commit f1ce3986baa62cffc3c5be156994de87524bab99 upstream.
+commit 6f3353c2d2b3eb4de52e9704cb962712033db181 upstream.
 
-A failing usercopy of the slot uid will lead to a stale entry in the
-file descriptor table as put_unused_fd() won't release it. This enables
-userland to refer to a dangling 'file' object through that still valid
-file descriptor, leading to all kinds of use-after-free exploitation
-scenarios.
+Current ebpf disassembly buffer size of 64 is too small. E.g. this line
+takes 65 bytes:
+01fffff8005822e: ec8100ed8065\tclgrj\t%r8,%r1,8,001fffff80058408\n\0
 
-Exchanging put_unused_fd() for close_fd(), ksys_close() or alike won't
-solve the underlying issue, as the file descriptor might have been
-replaced in the meantime, e.g. via userland calling close() on it
-(leading to a NULL pointer dereference in the error handling code as
-'fget(enclave_fd)' will return a NULL pointer) or by dup2()'ing a
-completely different file object to that very file descriptor, leading
-to the same situation: a dangling file descriptor pointing to a freed
-object -- just in this case to a file object of user's choosing.
+Double the buffer size like it is done for the kernel disassembly buffer.
 
-Generally speaking, after the call to fd_install() the file descriptor
-is live and userland is free to do whatever with it. We cannot rely on
-it to still refer to our enclave object afterwards. In fact, by abusing
-userfaultfd() userland can hit the condition without any racing and
-abuse the error handling in the nitro code as it pleases.
+Fixes the following KASAN finding:
 
-To fix the above issues, defer the call to fd_install() until all
-possible errors are handled. In this case it's just the usercopy, so do
-it directly in ne_create_vm_ioctl() itself.
+UG: KASAN: stack-out-of-bounds in print_fn_code+0x34c/0x380
+Write of size 1 at addr 001fff800ad5f970 by task test_progs/853
 
-Signed-off-by: Mathias Krause <minipli@grsecurity.net>
-Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210429165941.27020-2-andraprs@amazon.com
+CPU: 53 PID: 853 Comm: test_progs Not tainted
+5.12.0-rc7-23786-g23457d86b1f0-dirty #19
+Hardware name: IBM 3906 M04 704 (LPAR)
+Call Trace:
+ [<0000000cd8e0538a>] show_stack+0x17a/0x1668
+ [<0000000cd8e2a5d8>] dump_stack+0x140/0x1b8
+ [<0000000cd8e16e74>] print_address_description.constprop.0+0x54/0x260
+ [<0000000cd75a8698>] kasan_report+0xc8/0x130
+ [<0000000cd6e26da4>] print_fn_code+0x34c/0x380
+ [<0000000cd6ea0f4e>] bpf_int_jit_compile+0xe3e/0xe58
+ [<0000000cd72c4c88>] bpf_prog_select_runtime+0x5b8/0x9c0
+ [<0000000cd72d1bf8>] bpf_prog_load+0xa78/0x19c0
+ [<0000000cd72d7ad6>] __do_sys_bpf.part.0+0x18e/0x768
+ [<0000000cd6e0f392>] do_syscall+0x12a/0x220
+ [<0000000cd8e333f8>] __do_syscall+0x98/0xc8
+ [<0000000cd8e54834>] system_call+0x6c/0x94
+1 lock held by test_progs/853:
+ #0: 0000000cd9bf7460 (report_lock){....}-{2:2}, at:
+     kasan_report+0x96/0x130
+
+addr 001fff800ad5f970 is located in stack of task test_progs/853 at
+offset 96 in frame:
+ print_fn_code+0x0/0x380
+this frame has 1 object:
+ [32, 96) 'buffer'
+
+Memory state around the buggy address:
+ 001fff800ad5f800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ 001fff800ad5f880: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>001fff800ad5f900: 00 00 f1 f1 f1 f1 00 00 00 00 00 00 00 00 f3 f3
+                                                             ^
+ 001fff800ad5f980: f3 f3 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ 001fff800ad5fa00: 00 00 00 00 00 00 00 f1 f1 f1 f1 00 00 00 00 00
+
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/virt/nitro_enclaves/ne_misc_dev.c |   43 +++++++++++-------------------
- 1 file changed, 17 insertions(+), 26 deletions(-)
+ arch/s390/kernel/dis.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
-+++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-@@ -1524,7 +1524,8 @@ static const struct file_operations ne_e
-  *			  enclave file descriptor to be further used for enclave
-  *			  resources handling e.g. memory regions and CPUs.
-  * @ne_pci_dev :	Private data associated with the PCI device.
-- * @slot_uid:		Generated unique slot id associated with an enclave.
-+ * @slot_uid:		User pointer to store the generated unique slot id
-+ *			associated with an enclave to.
-  *
-  * Context: Process context. This function is called with the ne_pci_dev enclave
-  *	    mutex held.
-@@ -1532,7 +1533,7 @@ static const struct file_operations ne_e
-  * * Enclave fd on success.
-  * * Negative return value on failure.
-  */
--static int ne_create_vm_ioctl(struct ne_pci_dev *ne_pci_dev, u64 *slot_uid)
-+static int ne_create_vm_ioctl(struct ne_pci_dev *ne_pci_dev, u64 __user *slot_uid)
+--- a/arch/s390/kernel/dis.c
++++ b/arch/s390/kernel/dis.c
+@@ -563,7 +563,7 @@ void show_code(struct pt_regs *regs)
+ 
+ void print_fn_code(unsigned char *code, unsigned long len)
  {
- 	struct ne_pci_dev_cmd_reply cmd_reply = {};
- 	int enclave_fd = -1;
-@@ -1634,7 +1635,18 @@ static int ne_create_vm_ioctl(struct ne_
+-	char buffer[64], *ptr;
++	char buffer[128], *ptr;
+ 	int opsize, i;
  
- 	list_add(&ne_enclave->enclave_list_entry, &ne_pci_dev->enclaves_list);
- 
--	*slot_uid = ne_enclave->slot_uid;
-+	if (copy_to_user(slot_uid, &ne_enclave->slot_uid, sizeof(ne_enclave->slot_uid))) {
-+		/*
-+		 * As we're holding the only reference to 'enclave_file', fput()
-+		 * will call ne_enclave_release() which will do a proper cleanup
-+		 * of all so far allocated resources, leaving only the unused fd
-+		 * for us to free.
-+		 */
-+		fput(enclave_file);
-+		put_unused_fd(enclave_fd);
-+
-+		return -EFAULT;
-+	}
- 
- 	fd_install(enclave_fd, enclave_file);
- 
-@@ -1671,34 +1683,13 @@ static long ne_ioctl(struct file *file,
- 	switch (cmd) {
- 	case NE_CREATE_VM: {
- 		int enclave_fd = -1;
--		struct file *enclave_file = NULL;
- 		struct ne_pci_dev *ne_pci_dev = ne_devs.ne_pci_dev;
--		int rc = -EINVAL;
--		u64 slot_uid = 0;
-+		u64 __user *slot_uid = (void __user *)arg;
- 
- 		mutex_lock(&ne_pci_dev->enclaves_list_mutex);
--
--		enclave_fd = ne_create_vm_ioctl(ne_pci_dev, &slot_uid);
--		if (enclave_fd < 0) {
--			rc = enclave_fd;
--
--			mutex_unlock(&ne_pci_dev->enclaves_list_mutex);
--
--			return rc;
--		}
--
-+		enclave_fd = ne_create_vm_ioctl(ne_pci_dev, slot_uid);
- 		mutex_unlock(&ne_pci_dev->enclaves_list_mutex);
- 
--		if (copy_to_user((void __user *)arg, &slot_uid, sizeof(slot_uid))) {
--			enclave_file = fget(enclave_fd);
--			/* Decrement file refs to have release() called. */
--			fput(enclave_file);
--			fput(enclave_file);
--			put_unused_fd(enclave_fd);
--
--			return -EFAULT;
--		}
--
- 		return enclave_fd;
- 	}
- 
+ 	while (len) {
 
 
