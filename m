@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA6D3786C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F353378A00
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236828AbhEJLKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:10:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59374 "EHLO mail.kernel.org"
+        id S240566AbhEJLfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:35:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232951AbhEJKtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:49:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85268619C4;
-        Mon, 10 May 2021 10:38:13 +0000 (UTC)
+        id S234978AbhEJK5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA364619D1;
+        Mon, 10 May 2021 10:50:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643094;
-        bh=j5njG6kfjfeKS8Pe74lDvSoVoXEqAO/FDdLBo589vLg=;
+        s=korg; t=1620643844;
+        bh=Q/cYoiRK1U2NiiuwLVD/uZ7NVncO9dV/pNS5t0rS25E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hryk/7bqDAqz7a2F4P9IyUxmhMNdLiIEt4iyLrscpuECWSFL1WF7pkKWMKeyJc9xd
-         Bp+8fyy1r1QU13cOZdlXC0adjmgThdD+W0B/EV5C0jXJnZT6Tw4U4zdkxTBrjyhvea
-         ESen6qdwep58uETN00kuyzjXA4K4rsnsexJ2bVkc=
+        b=eiKYASrLpq0Q+4ErefCGCGLsQ3A5jCmDKX+8yIt2025you9g2lZnXwR2wcvAKktWc
+         SMqDuwX8jjhRpkoLnyQEwkTgWQlFDb6as8wVx83dPoY0V8efEAd1isIVWAB12OdYyA
+         R+khNhNdRP7VyzkT5gYZ8immGyAQMtuJnm31T4Dk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 176/299] media: tc358743: fix possible use-after-free in tc358743_remove()
+        stable@vger.kernel.org, Hou Pu <houpu.main@gmail.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 183/342] nvmet: return proper error code from discovery ctrl
 Date:   Mon, 10 May 2021 12:19:33 +0200
-Message-Id: <20210510102010.770371950@linuxfoundation.org>
+Message-Id: <20210510102016.138715702@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Hou Pu <houpu.main@gmail.com>
 
-[ Upstream commit 6107a4fdf8554a7aa9488bdc835bb010062fa8a9 ]
+[ Upstream commit 79695dcd9ad4463a82def7f42960e6d7baa76f0b ]
 
-This driver's remove path calls cancel_delayed_work(). However, that
-function does not wait until the work function finishes. This means
-that the callback function may still be running after the driver's
-remove function has finished, which would result in a use-after-free.
+Return NVME_SC_INVALID_FIELD from discovery controller like normal
+controller when executing identify or get log page command.
 
-Fix by calling cancel_delayed_work_sync(), which ensures that
-the work is properly cancelled, no longer running, and unable
-to re-schedule itself.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Hou Pu <houpu.main@gmail.com>
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/tc358743.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvme/target/discovery.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
-index 831b5b54fd78..1b309bb743c7 100644
---- a/drivers/media/i2c/tc358743.c
-+++ b/drivers/media/i2c/tc358743.c
-@@ -2193,7 +2193,7 @@ static int tc358743_remove(struct i2c_client *client)
- 		del_timer_sync(&state->timer);
- 		flush_work(&state->work_i2c_poll);
+diff --git a/drivers/nvme/target/discovery.c b/drivers/nvme/target/discovery.c
+index 682854e0e079..4845d12e374a 100644
+--- a/drivers/nvme/target/discovery.c
++++ b/drivers/nvme/target/discovery.c
+@@ -178,12 +178,14 @@ static void nvmet_execute_disc_get_log_page(struct nvmet_req *req)
+ 	if (req->cmd->get_log_page.lid != NVME_LOG_DISC) {
+ 		req->error_loc =
+ 			offsetof(struct nvme_get_log_page_command, lid);
+-		status = NVME_SC_INVALID_OPCODE | NVME_SC_DNR;
++		status = NVME_SC_INVALID_FIELD | NVME_SC_DNR;
+ 		goto out;
  	}
--	cancel_delayed_work(&state->delayed_work_enable_hotplug);
-+	cancel_delayed_work_sync(&state->delayed_work_enable_hotplug);
- 	cec_unregister_adapter(state->cec_adap);
- 	v4l2_async_unregister_subdev(sd);
- 	v4l2_device_unregister_subdev(sd);
+ 
+ 	/* Spec requires dword aligned offsets */
+ 	if (offset & 0x3) {
++		req->error_loc =
++			offsetof(struct nvme_get_log_page_command, lpo);
+ 		status = NVME_SC_INVALID_FIELD | NVME_SC_DNR;
+ 		goto out;
+ 	}
+@@ -250,7 +252,7 @@ static void nvmet_execute_disc_identify(struct nvmet_req *req)
+ 
+ 	if (req->cmd->identify.cns != NVME_ID_CNS_CTRL) {
+ 		req->error_loc = offsetof(struct nvme_identify, cns);
+-		status = NVME_SC_INVALID_OPCODE | NVME_SC_DNR;
++		status = NVME_SC_INVALID_FIELD | NVME_SC_DNR;
+ 		goto out;
+ 	}
+ 
 -- 
 2.30.2
 
