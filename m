@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C11377FBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 746CB377FC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbhEJJpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:45:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:52428 "EHLO foss.arm.com"
+        id S230452AbhEJJqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:46:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:52498 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230299AbhEJJpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:45:49 -0400
+        id S230448AbhEJJqE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 05:46:04 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 439C21682;
-        Mon, 10 May 2021 02:44:45 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8F161684;
+        Mon, 10 May 2021 02:44:59 -0700 (PDT)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 17C763F73B;
-        Mon, 10 May 2021 02:44:40 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4FC393F73B;
+        Mon, 10 May 2021 02:44:55 -0700 (PDT)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-kernel@vger.kernel.org, will@kernel.org,
         boqun.feng@gmail.com, peterz@infradead.org
@@ -32,9 +32,9 @@ Cc:     aou@eecs.berkeley.edu, arnd@arndb.de, bcain@codeaurora.org,
         rth@twiddle.net, shorne@gmail.com,
         stefan.kristiansson@saunalahti.fi, tsbogend@alpha.franken.de,
         vgupta@synopsys.com, ysato@users.sourceforge.jp
-Subject: [PATCH 32/33] locking/atomic: delete !ARCH_ATOMIC remnants
-Date:   Mon, 10 May 2021 10:37:52 +0100
-Message-Id: <20210510093753.40683-33-mark.rutland@arm.com>
+Subject: [PATCH 33/33] locking/atomics: atomic-instrumented: simplify ifdeffery
+Date:   Mon, 10 May 2021 10:37:53 +0100
+Message-Id: <20210510093753.40683-34-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210510093753.40683-1-mark.rutland@arm.com>
 References: <20210510093753.40683-1-mark.rutland@arm.com>
@@ -42,8 +42,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that all architectures implement ARCH_ATOMIC, we can make it
-mandatory, removing the Kconfig symbol and logic for !ARCH_ATOMIC.
+Now that all architectures implement ARCH_ATOMIC, the fallbacks are
+generated before the instrumented wrappers are generated. Due to this,
+in atomic-instrumented.h we can assume that the whole set of atomic
+functions has been generated. Likewise, atomic-instrumented.h doesn't
+need to provide a preprocessor definition for every atomic it wraps.
+
+This patch removes the redundant ifdeffery.
 
 There should be no functional change as a result of this patch.
 
@@ -52,544 +57,1886 @@ Cc: Boqun Feng <boqun.feng@gmail.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Will Deacon <will@kernel.org>
 ---
- arch/Kconfig                    |    3 -
- arch/alpha/Kconfig              |    1 -
- arch/arc/Kconfig                |    1 -
- arch/arm/Kconfig                |    1 -
- arch/arm64/Kconfig              |    1 -
- arch/csky/Kconfig               |    1 -
- arch/h8300/Kconfig              |    1 -
- arch/hexagon/Kconfig            |    1 -
- arch/ia64/Kconfig               |    1 -
- arch/m68k/Kconfig               |    1 -
- arch/microblaze/Kconfig         |    1 -
- arch/mips/Kconfig               |    1 -
- arch/nds32/Kconfig              |    1 -
- arch/nios2/Kconfig              |    1 -
- arch/openrisc/Kconfig           |    1 -
- arch/parisc/Kconfig             |    1 -
- arch/powerpc/Kconfig            |    1 -
- arch/riscv/Kconfig              |    1 -
- arch/s390/Kconfig               |    1 -
- arch/sh/Kconfig                 |    1 -
- arch/sparc/Kconfig              |    1 -
- arch/um/Kconfig                 |    1 -
- arch/x86/Kconfig                |    1 -
- arch/xtensa/Kconfig             |    1 -
- include/asm-generic/atomic.h    |   44 +-
- include/asm-generic/atomic64.h  |   29 -
- include/asm-generic/cmpxchg.h   |   21 -
- include/linux/atomic-fallback.h | 2595 ---------------------------------------
- include/linux/atomic.h          |    4 -
- scripts/atomic/check-atomics.sh |    1 -
- scripts/atomic/gen-atomics.sh   |    1 -
- 31 files changed, 3 insertions(+), 2718 deletions(-)
- delete mode 100644 include/linux/atomic-fallback.h
+ include/asm-generic/atomic-instrumented.h | 498 +-----------------------------
+ scripts/atomic/gen-atomic-instrumented.sh |  51 +--
+ 2 files changed, 3 insertions(+), 546 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 3fb3b12d4a95..c45b770d3579 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -11,9 +11,6 @@ source "arch/$(SRCARCH)/Kconfig"
- 
- menu "General architecture-dependent options"
- 
--config ARCH_ATOMIC
--	bool
--
- config CRASH_CORE
- 	bool
- 
-diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-index 7920fc2e2a2a..5998106faa60 100644
---- a/arch/alpha/Kconfig
-+++ b/arch/alpha/Kconfig
-@@ -2,7 +2,6 @@
- config ALPHA
- 	bool
- 	default y
--	select ARCH_ATOMIC
- 	select ARCH_32BIT_USTAT_F_TINODE
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_MIGHT_HAVE_PC_SERIO
-diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-index 098ecc72d048..2d98501c0897 100644
---- a/arch/arc/Kconfig
-+++ b/arch/arc/Kconfig
-@@ -6,7 +6,6 @@
- config ARC
- 	def_bool y
- 	select ARC_TIMERS
--	select ARCH_ATOMIC
- 	select ARCH_HAS_CACHE_LINE_SIZE
- 	select ARCH_HAS_DEBUG_VM_PGTABLE
- 	select ARCH_HAS_DMA_PREP_COHERENT
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index b7334a6643b9..24804f11302d 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -3,7 +3,6 @@ config ARM
- 	bool
- 	default y
- 	select ARCH_32BIT_OFF_T
--	select ARCH_ATOMIC
- 	select ARCH_HAS_BINFMT_FLAT
- 	select ARCH_HAS_DEBUG_VIRTUAL if MMU
- 	select ARCH_HAS_DMA_WRITE_COMBINE if !ARM_DMA_MEM_BUFFERABLE
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 62ab429d1f42..9f1d8566bbf9 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -9,7 +9,6 @@ config ARM64
- 	select ACPI_MCFG if (ACPI && PCI)
- 	select ACPI_SPCR_TABLE if ACPI
- 	select ACPI_PPTT if ACPI
--	select ARCH_ATOMIC
- 	select ARCH_HAS_DEBUG_WX
- 	select ARCH_BINFMT_ELF_STATE
- 	select ARCH_ENABLE_HUGEPAGE_MIGRATION if HUGETLB_PAGE && MIGRATION
-diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index 3521f14bcd96..8de5b987edb9 100644
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -2,7 +2,6 @@
- config CSKY
- 	def_bool y
- 	select ARCH_32BIT_OFF_T
--	select ARCH_ATOMIC
- 	select ARCH_HAS_DMA_PREP_COHERENT
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
-diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
-index bdf05ad3206a..3e3e0f16f7e0 100644
---- a/arch/h8300/Kconfig
-+++ b/arch/h8300/Kconfig
-@@ -2,7 +2,6 @@
- config H8300
-         def_bool y
- 	select ARCH_32BIT_OFF_T
--	select ARCH_ATOMIC
- 	select ARCH_HAS_BINFMT_FLAT
- 	select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
- 	select BINFMT_FLAT_OLD_ALWAYS_RAM
-diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
-index 1368954ef679..44a409967af1 100644
---- a/arch/hexagon/Kconfig
-+++ b/arch/hexagon/Kconfig
-@@ -5,7 +5,6 @@ comment "Linux Kernel Configuration for Hexagon"
- config HEXAGON
- 	def_bool y
- 	select ARCH_32BIT_OFF_T
--	select ARCH_ATOMIC
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
- 	select ARCH_NO_PREEMPT
- 	# Other pending projects/to-do items.
-diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-index c5414dcd5d0d..279252e3e0f7 100644
---- a/arch/ia64/Kconfig
-+++ b/arch/ia64/Kconfig
-@@ -8,7 +8,6 @@ menu "Processor type and features"
- 
- config IA64
- 	bool
--	select ARCH_ATOMIC
- 	select ARCH_HAS_DMA_MARK_CLEAN
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_MIGHT_HAVE_PC_SERIO
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index d1d91ac47f51..372e4e69c43a 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -3,7 +3,6 @@ config M68K
- 	bool
- 	default y
- 	select ARCH_32BIT_OFF_T
--	select ARCH_ATOMIC
- 	select ARCH_HAS_BINFMT_FLAT
- 	select ARCH_HAS_DMA_PREP_COHERENT if HAS_DMA && MMU && !COLDFIRE
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if HAS_DMA
-diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
-index 5a52922dc225..0660f47012bc 100644
---- a/arch/microblaze/Kconfig
-+++ b/arch/microblaze/Kconfig
-@@ -2,7 +2,6 @@
- config MICROBLAZE
- 	def_bool y
- 	select ARCH_32BIT_OFF_T
--	select ARCH_ATOMIC
- 	select ARCH_NO_SWAP
- 	select ARCH_HAS_DMA_PREP_COHERENT
- 	select ARCH_HAS_GCOV_PROFILE_ALL
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 55b4da96872f..ed51970c08e7 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -3,7 +3,6 @@ config MIPS
- 	bool
- 	default y
- 	select ARCH_32BIT_OFF_T if !64BIT
--	select ARCH_ATOMIC
- 	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
- 	select ARCH_HAS_DEBUG_VIRTUAL if !64BIT
- 	select ARCH_HAS_FORTIFY_SOURCE
-diff --git a/arch/nds32/Kconfig b/arch/nds32/Kconfig
-index 352913573aee..62313902d75d 100644
---- a/arch/nds32/Kconfig
-+++ b/arch/nds32/Kconfig
-@@ -7,7 +7,6 @@
- config NDS32
- 	def_bool y
- 	select ARCH_32BIT_OFF_T
--	select ARCH_ATOMIC
- 	select ARCH_HAS_DMA_PREP_COHERENT
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
-diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
-index 67dae88c5b53..c24955c81c92 100644
---- a/arch/nios2/Kconfig
-+++ b/arch/nios2/Kconfig
-@@ -2,7 +2,6 @@
- config NIOS2
- 	def_bool y
- 	select ARCH_32BIT_OFF_T
--	select ARCH_ATOMIC
- 	select ARCH_HAS_DMA_PREP_COHERENT
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
-diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
-index 8c50bc9674f5..591acc5990dc 100644
---- a/arch/openrisc/Kconfig
-+++ b/arch/openrisc/Kconfig
-@@ -7,7 +7,6 @@
- config OPENRISC
- 	def_bool y
- 	select ARCH_32BIT_OFF_T
--	select ARCH_ATOMIC
- 	select ARCH_HAS_DMA_SET_UNCACHED
- 	select ARCH_HAS_DMA_CLEAR_UNCACHED
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index bfa120a4add1..bde9907bc5b2 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -2,7 +2,6 @@
- config PARISC
- 	def_bool y
- 	select ARCH_32BIT_OFF_T if !64BIT
--	select ARCH_ATOMIC
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select HAVE_IDE
- 	select HAVE_FUNCTION_TRACER
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index d143c2b616f0..088dd2afcfe4 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -118,7 +118,6 @@ config PPC
- 	# Please keep this list sorted alphabetically.
- 	#
- 	select ARCH_32BIT_OFF_T if PPC32
--	select ARCH_ATOMIC
- 	select ARCH_ENABLE_MEMORY_HOTPLUG
- 	select ARCH_ENABLE_MEMORY_HOTREMOVE
- 	select ARCH_HAS_COPY_MC			if PPC64
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index c59b9f4a9d62..a8ad8eb76120 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -12,7 +12,6 @@ config 32BIT
- 
- config RISCV
- 	def_bool y
--	select ARCH_ATOMIC
- 	select ARCH_CLOCKSOURCE_INIT
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_SUPPORTS_DEBUG_PAGEALLOC if MMU
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 85374a36c69e..b4c7c34069f8 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -58,7 +58,6 @@ config S390
- 	# Note: keep this list sorted alphabetically
- 	#
- 	imply IMA_SECURE_AND_OR_TRUSTED_BOOT
--	select ARCH_ATOMIC
- 	select ARCH_32BIT_USTAT_F_TINODE
- 	select ARCH_BINFMT_ELF_STATE
- 	select ARCH_ENABLE_MEMORY_HOTPLUG if SPARSEMEM
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index d2925cbb6fa4..68129537e350 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -2,7 +2,6 @@
- config SUPERH
- 	def_bool y
- 	select ARCH_32BIT_OFF_T
--	select ARCH_ATOMIC
- 	select ARCH_ENABLE_MEMORY_HOTPLUG if SPARSEMEM && MMU
- 	select ARCH_ENABLE_MEMORY_HOTREMOVE if SPARSEMEM && MMU
- 	select ARCH_HAVE_CUSTOM_GPIO_H
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index 46790083e918..164a5254c91c 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -13,7 +13,6 @@ config 64BIT
- config SPARC
- 	bool
- 	default y
--	select ARCH_ATOMIC
- 	select ARCH_MIGHT_HAVE_PC_PARPORT if SPARC64 && PCI
- 	select ARCH_MIGHT_HAVE_PC_SERIO
- 	select DMA_OPS
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 4370a9521ea4..57cfd9a1c082 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -5,7 +5,6 @@ menu "UML-specific options"
- config UML
- 	bool
- 	default y
--	select ARCH_ATOMIC
- 	select ARCH_EPHEMERAL_INODES
- 	select ARCH_HAS_KCOV
- 	select ARCH_NO_PREEMPT
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 11a27563033d..0045e1b44190 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -58,7 +58,6 @@ config X86
- 	#
- 	select ACPI_LEGACY_TABLES_LOOKUP	if ACPI
- 	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
--	select ARCH_ATOMIC
- 	select ARCH_32BIT_OFF_T			if X86_32
- 	select ARCH_CLOCKSOURCE_INIT
- 	select ARCH_ENABLE_HUGEPAGE_MIGRATION if X86_64 && HUGETLB_PAGE && MIGRATION
-diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index 39bb9bdae6b1..2332b2156993 100644
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -2,7 +2,6 @@
- config XTENSA
- 	def_bool y
- 	select ARCH_32BIT_OFF_T
--	select ARCH_ATOMIC
- 	select ARCH_HAS_BINFMT_FLAT if !MMU
- 	select ARCH_HAS_DMA_PREP_COHERENT if MMU
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU if MMU
-diff --git a/include/asm-generic/atomic.h b/include/asm-generic/atomic.h
-index 649060fa0fe8..04b8be9f1a77 100644
---- a/include/asm-generic/atomic.h
-+++ b/include/asm-generic/atomic.h
-@@ -12,14 +12,6 @@
- #include <asm/cmpxchg.h>
- #include <asm/barrier.h>
- 
--#ifdef CONFIG_ARCH_ATOMIC
--#define __ga_cmpxchg	arch_cmpxchg
--#define __ga_xchg	arch_xchg
--#else
--#define __ga_cmpxchg	cmpxchg
--#define __ga_xchg	xchg
--#endif
--
- #ifdef CONFIG_SMP
- 
- /* we can build all atomic primitives from cmpxchg */
-@@ -30,7 +22,7 @@ static inline void generic_atomic_##op(int i, atomic_t *v)		\
- 	int c, old;							\
- 									\
- 	c = v->counter;							\
--	while ((old = __ga_cmpxchg(&v->counter, c, c c_op i)) != c)	\
-+	while ((old = arch_cmpxchg(&v->counter, c, c c_op i)) != c)	\
- 		c = old;						\
+diff --git a/include/asm-generic/atomic-instrumented.h b/include/asm-generic/atomic-instrumented.h
+index 888b6cfeed91..bc45af52c93b 100644
+--- a/include/asm-generic/atomic-instrumented.h
++++ b/include/asm-generic/atomic-instrumented.h
+@@ -27,17 +27,13 @@ atomic_read(const atomic_t *v)
+ 	instrument_atomic_read(v, sizeof(*v));
+ 	return arch_atomic_read(v);
  }
+-#define atomic_read atomic_read
  
-@@ -40,7 +32,7 @@ static inline int generic_atomic_##op##_return(int i, atomic_t *v)	\
- 	int c, old;							\
- 									\
- 	c = v->counter;							\
--	while ((old = __ga_cmpxchg(&v->counter, c, c c_op i)) != c)	\
-+	while ((old = arch_cmpxchg(&v->counter, c, c c_op i)) != c)	\
- 		c = old;						\
- 									\
- 	return c c_op i;						\
-@@ -52,7 +44,7 @@ static inline int generic_atomic_fetch_##op(int i, atomic_t *v)		\
- 	int c, old;							\
- 									\
- 	c = v->counter;							\
--	while ((old = __ga_cmpxchg(&v->counter, c, c c_op i)) != c)	\
-+	while ((old = arch_cmpxchg(&v->counter, c, c c_op i)) != c)	\
- 		c = old;						\
- 									\
- 	return c;							\
-@@ -120,11 +112,6 @@ ATOMIC_OP(xor, ^)
- #undef ATOMIC_OP_RETURN
- #undef ATOMIC_OP
- 
--#undef __ga_cmpxchg
--#undef __ga_xchg
--
--#ifdef CONFIG_ARCH_ATOMIC
--
- #define arch_atomic_add_return			generic_atomic_add_return
- #define arch_atomic_sub_return			generic_atomic_sub_return
- 
-@@ -146,29 +133,4 @@ ATOMIC_OP(xor, ^)
- #define arch_atomic_xchg(ptr, v)		(arch_xchg(&(ptr)->counter, (v)))
- #define arch_atomic_cmpxchg(v, old, new)	(arch_cmpxchg(&((v)->counter), (old), (new)))
- 
--#else /* CONFIG_ARCH_ATOMIC */
--
--#define atomic_add_return		generic_atomic_add_return
--#define atomic_sub_return		generic_atomic_sub_return
--
--#define atomic_fetch_add		generic_atomic_fetch_add
--#define atomic_fetch_sub		generic_atomic_fetch_sub
--#define atomic_fetch_and		generic_atomic_fetch_and
--#define atomic_fetch_or			generic_atomic_fetch_or
--#define atomic_fetch_xor		generic_atomic_fetch_xor
--
--#define atomic_add			generic_atomic_add
--#define atomic_sub			generic_atomic_sub
--#define atomic_and			generic_atomic_and
--#define atomic_or			generic_atomic_or
--#define atomic_xor			generic_atomic_xor
--
--#define atomic_read(v)			READ_ONCE((v)->counter)
--#define atomic_set(v, i)		WRITE_ONCE(((v)->counter), (i))
--
--#define atomic_xchg(ptr, v)		(xchg(&(ptr)->counter, (v)))
--#define atomic_cmpxchg(v, old, new)	(cmpxchg(&((v)->counter), (old), (new)))
--
--#endif /* CONFIG_ARCH_ATOMIC */
--
- #endif /* __ASM_GENERIC_ATOMIC_H */
-diff --git a/include/asm-generic/atomic64.h b/include/asm-generic/atomic64.h
-index c8c7d9fae820..100d24b02e52 100644
---- a/include/asm-generic/atomic64.h
-+++ b/include/asm-generic/atomic64.h
-@@ -49,8 +49,6 @@ extern s64 generic_atomic64_cmpxchg(atomic64_t *v, s64 o, s64 n);
- extern s64 generic_atomic64_xchg(atomic64_t *v, s64 new);
- extern s64 generic_atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u);
- 
--#ifdef CONFIG_ARCH_ATOMIC
--
- #define arch_atomic64_read		generic_atomic64_read
- #define arch_atomic64_set		generic_atomic64_set
- #define arch_atomic64_set_release	generic_atomic64_set
-@@ -74,31 +72,4 @@ extern s64 generic_atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u);
- #define arch_atomic64_xchg		generic_atomic64_xchg
- #define arch_atomic64_fetch_add_unless	generic_atomic64_fetch_add_unless
- 
--#else /* CONFIG_ARCH_ATOMIC */
--
--#define atomic64_read			generic_atomic64_read
--#define atomic64_set			generic_atomic64_set
--#define atomic64_set_release		generic_atomic64_set
--
--#define atomic64_add			generic_atomic64_add
--#define atomic64_add_return		generic_atomic64_add_return
--#define atomic64_fetch_add		generic_atomic64_fetch_add
--#define atomic64_sub			generic_atomic64_sub
--#define atomic64_sub_return		generic_atomic64_sub_return
--#define atomic64_fetch_sub		generic_atomic64_fetch_sub
--
--#define atomic64_and			generic_atomic64_and
--#define atomic64_fetch_and		generic_atomic64_fetch_and
--#define atomic64_or			generic_atomic64_or
--#define atomic64_fetch_or		generic_atomic64_fetch_or
--#define atomic64_xor			generic_atomic64_xor
--#define atomic64_fetch_xor		generic_atomic64_fetch_xor
--
--#define atomic64_dec_if_positive	generic_atomic64_dec_if_positive
--#define atomic64_cmpxchg		generic_atomic64_cmpxchg
--#define atomic64_xchg			generic_atomic64_xchg
--#define atomic64_fetch_add_unless	generic_atomic64_fetch_add_unless
--
--#endif /* CONFIG_ARCH_ATOMIC */
--
- #endif  /*  _ASM_GENERIC_ATOMIC64_H  */
-diff --git a/include/asm-generic/cmpxchg.h b/include/asm-generic/cmpxchg.h
-index 98c931199089..dca4419922a9 100644
---- a/include/asm-generic/cmpxchg.h
-+++ b/include/asm-generic/cmpxchg.h
-@@ -97,8 +97,6 @@ unsigned long __generic_xchg(unsigned long x, volatile void *ptr, int size)
- 	__generic_cmpxchg64_local((ptr), (o), (n))
- 
- 
--#ifdef CONFIG_ARCH_ATOMIC
--
- #ifndef arch_xchg
- #define arch_xchg		generic_xchg
- #endif
-@@ -114,23 +112,4 @@ unsigned long __generic_xchg(unsigned long x, volatile void *ptr, int size)
- #define arch_cmpxchg		arch_cmpxchg_local
- #define arch_cmpxchg64		arch_cmpxchg64_local
- 
--#else /* CONFIG_ARCH_ATOMIC */
--
--#ifndef xchg
--#define xchg			generic_xchg
+-#if defined(arch_atomic_read_acquire)
+ static __always_inline int
+ atomic_read_acquire(const atomic_t *v)
+ {
+ 	instrument_atomic_read(v, sizeof(*v));
+ 	return arch_atomic_read_acquire(v);
+ }
+-#define atomic_read_acquire atomic_read_acquire
 -#endif
--
--#ifndef cmpxchg_local
--#define cmpxchg_local		generic_cmpxchg_local
+ 
+ static __always_inline void
+ atomic_set(atomic_t *v, int i)
+@@ -45,17 +41,13 @@ atomic_set(atomic_t *v, int i)
+ 	instrument_atomic_write(v, sizeof(*v));
+ 	arch_atomic_set(v, i);
+ }
+-#define atomic_set atomic_set
+ 
+-#if defined(arch_atomic_set_release)
+ static __always_inline void
+ atomic_set_release(atomic_t *v, int i)
+ {
+ 	instrument_atomic_write(v, sizeof(*v));
+ 	arch_atomic_set_release(v, i);
+ }
+-#define atomic_set_release atomic_set_release
 -#endif
--
--#ifndef cmpxchg64_local
--#define cmpxchg64_local		generic_cmpxchg64_local
+ 
+ static __always_inline void
+ atomic_add(int i, atomic_t *v)
+@@ -63,87 +55,62 @@ atomic_add(int i, atomic_t *v)
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic_add(i, v);
+ }
+-#define atomic_add atomic_add
+ 
+-#if !defined(arch_atomic_add_return_relaxed) || defined(arch_atomic_add_return)
+ static __always_inline int
+ atomic_add_return(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_add_return(i, v);
+ }
+-#define atomic_add_return atomic_add_return
 -#endif
--
--#define cmpxchg			cmpxchg_local
--#define cmpxchg64		cmpxchg64_local
--
--#endif /* CONFIG_ARCH_ATOMIC */
--
- #endif /* __ASM_GENERIC_CMPXCHG_H */
-diff --git a/include/linux/atomic-fallback.h b/include/linux/atomic-fallback.h
-deleted file mode 100644
-index 2a3f55d98be9..000000000000
-diff --git a/include/linux/atomic.h b/include/linux/atomic.h
-index 4f8d83f9e480..ed1d3ffd5b9d 100644
---- a/include/linux/atomic.h
-+++ b/include/linux/atomic.h
-@@ -77,12 +77,8 @@
- 	__ret;								\
+ 
+-#if defined(arch_atomic_add_return_acquire)
+ static __always_inline int
+ atomic_add_return_acquire(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_add_return_acquire(i, v);
+ }
+-#define atomic_add_return_acquire atomic_add_return_acquire
+-#endif
+ 
+-#if defined(arch_atomic_add_return_release)
+ static __always_inline int
+ atomic_add_return_release(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_add_return_release(i, v);
+ }
+-#define atomic_add_return_release atomic_add_return_release
+-#endif
+ 
+-#if defined(arch_atomic_add_return_relaxed)
+ static __always_inline int
+ atomic_add_return_relaxed(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_add_return_relaxed(i, v);
+ }
+-#define atomic_add_return_relaxed atomic_add_return_relaxed
+-#endif
+ 
+-#if !defined(arch_atomic_fetch_add_relaxed) || defined(arch_atomic_fetch_add)
+ static __always_inline int
+ atomic_fetch_add(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_add(i, v);
+ }
+-#define atomic_fetch_add atomic_fetch_add
+-#endif
+ 
+-#if defined(arch_atomic_fetch_add_acquire)
+ static __always_inline int
+ atomic_fetch_add_acquire(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_add_acquire(i, v);
+ }
+-#define atomic_fetch_add_acquire atomic_fetch_add_acquire
+-#endif
+ 
+-#if defined(arch_atomic_fetch_add_release)
+ static __always_inline int
+ atomic_fetch_add_release(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_add_release(i, v);
+ }
+-#define atomic_fetch_add_release atomic_fetch_add_release
+-#endif
+ 
+-#if defined(arch_atomic_fetch_add_relaxed)
+ static __always_inline int
+ atomic_fetch_add_relaxed(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_add_relaxed(i, v);
+ }
+-#define atomic_fetch_add_relaxed atomic_fetch_add_relaxed
+-#endif
+ 
+ static __always_inline void
+ atomic_sub(int i, atomic_t *v)
+@@ -151,267 +118,188 @@ atomic_sub(int i, atomic_t *v)
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic_sub(i, v);
+ }
+-#define atomic_sub atomic_sub
+ 
+-#if !defined(arch_atomic_sub_return_relaxed) || defined(arch_atomic_sub_return)
+ static __always_inline int
+ atomic_sub_return(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_sub_return(i, v);
+ }
+-#define atomic_sub_return atomic_sub_return
+-#endif
+ 
+-#if defined(arch_atomic_sub_return_acquire)
+ static __always_inline int
+ atomic_sub_return_acquire(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_sub_return_acquire(i, v);
+ }
+-#define atomic_sub_return_acquire atomic_sub_return_acquire
+-#endif
+ 
+-#if defined(arch_atomic_sub_return_release)
+ static __always_inline int
+ atomic_sub_return_release(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_sub_return_release(i, v);
+ }
+-#define atomic_sub_return_release atomic_sub_return_release
+-#endif
+ 
+-#if defined(arch_atomic_sub_return_relaxed)
+ static __always_inline int
+ atomic_sub_return_relaxed(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_sub_return_relaxed(i, v);
+ }
+-#define atomic_sub_return_relaxed atomic_sub_return_relaxed
+-#endif
+ 
+-#if !defined(arch_atomic_fetch_sub_relaxed) || defined(arch_atomic_fetch_sub)
+ static __always_inline int
+ atomic_fetch_sub(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_sub(i, v);
+ }
+-#define atomic_fetch_sub atomic_fetch_sub
+-#endif
+ 
+-#if defined(arch_atomic_fetch_sub_acquire)
+ static __always_inline int
+ atomic_fetch_sub_acquire(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_sub_acquire(i, v);
+ }
+-#define atomic_fetch_sub_acquire atomic_fetch_sub_acquire
+-#endif
+ 
+-#if defined(arch_atomic_fetch_sub_release)
+ static __always_inline int
+ atomic_fetch_sub_release(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_sub_release(i, v);
+ }
+-#define atomic_fetch_sub_release atomic_fetch_sub_release
+-#endif
+ 
+-#if defined(arch_atomic_fetch_sub_relaxed)
+ static __always_inline int
+ atomic_fetch_sub_relaxed(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_sub_relaxed(i, v);
+ }
+-#define atomic_fetch_sub_relaxed atomic_fetch_sub_relaxed
+-#endif
+ 
+-#if defined(arch_atomic_inc)
+ static __always_inline void
+ atomic_inc(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic_inc(v);
+ }
+-#define atomic_inc atomic_inc
+-#endif
+ 
+-#if defined(arch_atomic_inc_return)
+ static __always_inline int
+ atomic_inc_return(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_inc_return(v);
+ }
+-#define atomic_inc_return atomic_inc_return
+-#endif
+ 
+-#if defined(arch_atomic_inc_return_acquire)
+ static __always_inline int
+ atomic_inc_return_acquire(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_inc_return_acquire(v);
+ }
+-#define atomic_inc_return_acquire atomic_inc_return_acquire
+-#endif
+ 
+-#if defined(arch_atomic_inc_return_release)
+ static __always_inline int
+ atomic_inc_return_release(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_inc_return_release(v);
+ }
+-#define atomic_inc_return_release atomic_inc_return_release
+-#endif
+ 
+-#if defined(arch_atomic_inc_return_relaxed)
+ static __always_inline int
+ atomic_inc_return_relaxed(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_inc_return_relaxed(v);
+ }
+-#define atomic_inc_return_relaxed atomic_inc_return_relaxed
+-#endif
+ 
+-#if defined(arch_atomic_fetch_inc)
+ static __always_inline int
+ atomic_fetch_inc(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_inc(v);
+ }
+-#define atomic_fetch_inc atomic_fetch_inc
+-#endif
+ 
+-#if defined(arch_atomic_fetch_inc_acquire)
+ static __always_inline int
+ atomic_fetch_inc_acquire(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_inc_acquire(v);
+ }
+-#define atomic_fetch_inc_acquire atomic_fetch_inc_acquire
+-#endif
+ 
+-#if defined(arch_atomic_fetch_inc_release)
+ static __always_inline int
+ atomic_fetch_inc_release(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_inc_release(v);
+ }
+-#define atomic_fetch_inc_release atomic_fetch_inc_release
+-#endif
+ 
+-#if defined(arch_atomic_fetch_inc_relaxed)
+ static __always_inline int
+ atomic_fetch_inc_relaxed(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_inc_relaxed(v);
+ }
+-#define atomic_fetch_inc_relaxed atomic_fetch_inc_relaxed
+-#endif
+ 
+-#if defined(arch_atomic_dec)
+ static __always_inline void
+ atomic_dec(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic_dec(v);
+ }
+-#define atomic_dec atomic_dec
+-#endif
+ 
+-#if defined(arch_atomic_dec_return)
+ static __always_inline int
+ atomic_dec_return(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_dec_return(v);
+ }
+-#define atomic_dec_return atomic_dec_return
+-#endif
+ 
+-#if defined(arch_atomic_dec_return_acquire)
+ static __always_inline int
+ atomic_dec_return_acquire(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_dec_return_acquire(v);
+ }
+-#define atomic_dec_return_acquire atomic_dec_return_acquire
+-#endif
+ 
+-#if defined(arch_atomic_dec_return_release)
+ static __always_inline int
+ atomic_dec_return_release(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_dec_return_release(v);
+ }
+-#define atomic_dec_return_release atomic_dec_return_release
+-#endif
+ 
+-#if defined(arch_atomic_dec_return_relaxed)
+ static __always_inline int
+ atomic_dec_return_relaxed(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_dec_return_relaxed(v);
+ }
+-#define atomic_dec_return_relaxed atomic_dec_return_relaxed
+-#endif
+ 
+-#if defined(arch_atomic_fetch_dec)
+ static __always_inline int
+ atomic_fetch_dec(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_dec(v);
+ }
+-#define atomic_fetch_dec atomic_fetch_dec
+-#endif
+ 
+-#if defined(arch_atomic_fetch_dec_acquire)
+ static __always_inline int
+ atomic_fetch_dec_acquire(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_dec_acquire(v);
+ }
+-#define atomic_fetch_dec_acquire atomic_fetch_dec_acquire
+-#endif
+ 
+-#if defined(arch_atomic_fetch_dec_release)
+ static __always_inline int
+ atomic_fetch_dec_release(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_dec_release(v);
+ }
+-#define atomic_fetch_dec_release atomic_fetch_dec_release
+-#endif
+ 
+-#if defined(arch_atomic_fetch_dec_relaxed)
+ static __always_inline int
+ atomic_fetch_dec_relaxed(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_dec_relaxed(v);
+ }
+-#define atomic_fetch_dec_relaxed atomic_fetch_dec_relaxed
+-#endif
+ 
+ static __always_inline void
+ atomic_and(int i, atomic_t *v)
+@@ -419,97 +307,69 @@ atomic_and(int i, atomic_t *v)
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic_and(i, v);
+ }
+-#define atomic_and atomic_and
+ 
+-#if !defined(arch_atomic_fetch_and_relaxed) || defined(arch_atomic_fetch_and)
+ static __always_inline int
+ atomic_fetch_and(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_and(i, v);
+ }
+-#define atomic_fetch_and atomic_fetch_and
+-#endif
+ 
+-#if defined(arch_atomic_fetch_and_acquire)
+ static __always_inline int
+ atomic_fetch_and_acquire(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_and_acquire(i, v);
+ }
+-#define atomic_fetch_and_acquire atomic_fetch_and_acquire
+-#endif
+ 
+-#if defined(arch_atomic_fetch_and_release)
+ static __always_inline int
+ atomic_fetch_and_release(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_and_release(i, v);
+ }
+-#define atomic_fetch_and_release atomic_fetch_and_release
+-#endif
+ 
+-#if defined(arch_atomic_fetch_and_relaxed)
+ static __always_inline int
+ atomic_fetch_and_relaxed(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_and_relaxed(i, v);
+ }
+-#define atomic_fetch_and_relaxed atomic_fetch_and_relaxed
+-#endif
+ 
+-#if defined(arch_atomic_andnot)
+ static __always_inline void
+ atomic_andnot(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic_andnot(i, v);
+ }
+-#define atomic_andnot atomic_andnot
+-#endif
+ 
+-#if defined(arch_atomic_fetch_andnot)
+ static __always_inline int
+ atomic_fetch_andnot(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_andnot(i, v);
+ }
+-#define atomic_fetch_andnot atomic_fetch_andnot
+-#endif
+ 
+-#if defined(arch_atomic_fetch_andnot_acquire)
+ static __always_inline int
+ atomic_fetch_andnot_acquire(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_andnot_acquire(i, v);
+ }
+-#define atomic_fetch_andnot_acquire atomic_fetch_andnot_acquire
+-#endif
+ 
+-#if defined(arch_atomic_fetch_andnot_release)
+ static __always_inline int
+ atomic_fetch_andnot_release(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_andnot_release(i, v);
+ }
+-#define atomic_fetch_andnot_release atomic_fetch_andnot_release
+-#endif
+ 
+-#if defined(arch_atomic_fetch_andnot_relaxed)
+ static __always_inline int
+ atomic_fetch_andnot_relaxed(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_andnot_relaxed(i, v);
+ }
+-#define atomic_fetch_andnot_relaxed atomic_fetch_andnot_relaxed
+-#endif
+ 
+ static __always_inline void
+ atomic_or(int i, atomic_t *v)
+@@ -517,47 +377,34 @@ atomic_or(int i, atomic_t *v)
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic_or(i, v);
+ }
+-#define atomic_or atomic_or
+ 
+-#if !defined(arch_atomic_fetch_or_relaxed) || defined(arch_atomic_fetch_or)
+ static __always_inline int
+ atomic_fetch_or(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_or(i, v);
+ }
+-#define atomic_fetch_or atomic_fetch_or
+-#endif
+ 
+-#if defined(arch_atomic_fetch_or_acquire)
+ static __always_inline int
+ atomic_fetch_or_acquire(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_or_acquire(i, v);
+ }
+-#define atomic_fetch_or_acquire atomic_fetch_or_acquire
+-#endif
+ 
+-#if defined(arch_atomic_fetch_or_release)
+ static __always_inline int
+ atomic_fetch_or_release(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_or_release(i, v);
+ }
+-#define atomic_fetch_or_release atomic_fetch_or_release
+-#endif
+ 
+-#if defined(arch_atomic_fetch_or_relaxed)
+ static __always_inline int
+ atomic_fetch_or_relaxed(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_or_relaxed(i, v);
+ }
+-#define atomic_fetch_or_relaxed atomic_fetch_or_relaxed
+-#endif
+ 
+ static __always_inline void
+ atomic_xor(int i, atomic_t *v)
+@@ -565,129 +412,91 @@ atomic_xor(int i, atomic_t *v)
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic_xor(i, v);
+ }
+-#define atomic_xor atomic_xor
+ 
+-#if !defined(arch_atomic_fetch_xor_relaxed) || defined(arch_atomic_fetch_xor)
+ static __always_inline int
+ atomic_fetch_xor(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_xor(i, v);
+ }
+-#define atomic_fetch_xor atomic_fetch_xor
+-#endif
+ 
+-#if defined(arch_atomic_fetch_xor_acquire)
+ static __always_inline int
+ atomic_fetch_xor_acquire(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_xor_acquire(i, v);
+ }
+-#define atomic_fetch_xor_acquire atomic_fetch_xor_acquire
+-#endif
+ 
+-#if defined(arch_atomic_fetch_xor_release)
+ static __always_inline int
+ atomic_fetch_xor_release(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_xor_release(i, v);
+ }
+-#define atomic_fetch_xor_release atomic_fetch_xor_release
+-#endif
+ 
+-#if defined(arch_atomic_fetch_xor_relaxed)
+ static __always_inline int
+ atomic_fetch_xor_relaxed(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_xor_relaxed(i, v);
+ }
+-#define atomic_fetch_xor_relaxed atomic_fetch_xor_relaxed
+-#endif
+ 
+-#if !defined(arch_atomic_xchg_relaxed) || defined(arch_atomic_xchg)
+ static __always_inline int
+ atomic_xchg(atomic_t *v, int i)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_xchg(v, i);
+ }
+-#define atomic_xchg atomic_xchg
+-#endif
+ 
+-#if defined(arch_atomic_xchg_acquire)
+ static __always_inline int
+ atomic_xchg_acquire(atomic_t *v, int i)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_xchg_acquire(v, i);
+ }
+-#define atomic_xchg_acquire atomic_xchg_acquire
+-#endif
+ 
+-#if defined(arch_atomic_xchg_release)
+ static __always_inline int
+ atomic_xchg_release(atomic_t *v, int i)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_xchg_release(v, i);
+ }
+-#define atomic_xchg_release atomic_xchg_release
+-#endif
+ 
+-#if defined(arch_atomic_xchg_relaxed)
+ static __always_inline int
+ atomic_xchg_relaxed(atomic_t *v, int i)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_xchg_relaxed(v, i);
+ }
+-#define atomic_xchg_relaxed atomic_xchg_relaxed
+-#endif
+ 
+-#if !defined(arch_atomic_cmpxchg_relaxed) || defined(arch_atomic_cmpxchg)
+ static __always_inline int
+ atomic_cmpxchg(atomic_t *v, int old, int new)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_cmpxchg(v, old, new);
+ }
+-#define atomic_cmpxchg atomic_cmpxchg
+-#endif
+ 
+-#if defined(arch_atomic_cmpxchg_acquire)
+ static __always_inline int
+ atomic_cmpxchg_acquire(atomic_t *v, int old, int new)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_cmpxchg_acquire(v, old, new);
+ }
+-#define atomic_cmpxchg_acquire atomic_cmpxchg_acquire
+-#endif
+ 
+-#if defined(arch_atomic_cmpxchg_release)
+ static __always_inline int
+ atomic_cmpxchg_release(atomic_t *v, int old, int new)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_cmpxchg_release(v, old, new);
+ }
+-#define atomic_cmpxchg_release atomic_cmpxchg_release
+-#endif
+ 
+-#if defined(arch_atomic_cmpxchg_relaxed)
+ static __always_inline int
+ atomic_cmpxchg_relaxed(atomic_t *v, int old, int new)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_cmpxchg_relaxed(v, old, new);
+ }
+-#define atomic_cmpxchg_relaxed atomic_cmpxchg_relaxed
+-#endif
+ 
+-#if defined(arch_atomic_try_cmpxchg)
+ static __always_inline bool
+ atomic_try_cmpxchg(atomic_t *v, int *old, int new)
+ {
+@@ -695,10 +504,7 @@ atomic_try_cmpxchg(atomic_t *v, int *old, int new)
+ 	instrument_atomic_read_write(old, sizeof(*old));
+ 	return arch_atomic_try_cmpxchg(v, old, new);
+ }
+-#define atomic_try_cmpxchg atomic_try_cmpxchg
+-#endif
+ 
+-#if defined(arch_atomic_try_cmpxchg_acquire)
+ static __always_inline bool
+ atomic_try_cmpxchg_acquire(atomic_t *v, int *old, int new)
+ {
+@@ -706,10 +512,7 @@ atomic_try_cmpxchg_acquire(atomic_t *v, int *old, int new)
+ 	instrument_atomic_read_write(old, sizeof(*old));
+ 	return arch_atomic_try_cmpxchg_acquire(v, old, new);
+ }
+-#define atomic_try_cmpxchg_acquire atomic_try_cmpxchg_acquire
+-#endif
+ 
+-#if defined(arch_atomic_try_cmpxchg_release)
+ static __always_inline bool
+ atomic_try_cmpxchg_release(atomic_t *v, int *old, int new)
+ {
+@@ -717,10 +520,7 @@ atomic_try_cmpxchg_release(atomic_t *v, int *old, int new)
+ 	instrument_atomic_read_write(old, sizeof(*old));
+ 	return arch_atomic_try_cmpxchg_release(v, old, new);
+ }
+-#define atomic_try_cmpxchg_release atomic_try_cmpxchg_release
+-#endif
+ 
+-#if defined(arch_atomic_try_cmpxchg_relaxed)
+ static __always_inline bool
+ atomic_try_cmpxchg_relaxed(atomic_t *v, int *old, int new)
+ {
+@@ -728,108 +528,76 @@ atomic_try_cmpxchg_relaxed(atomic_t *v, int *old, int new)
+ 	instrument_atomic_read_write(old, sizeof(*old));
+ 	return arch_atomic_try_cmpxchg_relaxed(v, old, new);
+ }
+-#define atomic_try_cmpxchg_relaxed atomic_try_cmpxchg_relaxed
+-#endif
+ 
+-#if defined(arch_atomic_sub_and_test)
+ static __always_inline bool
+ atomic_sub_and_test(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_sub_and_test(i, v);
+ }
+-#define atomic_sub_and_test atomic_sub_and_test
+-#endif
+ 
+-#if defined(arch_atomic_dec_and_test)
+ static __always_inline bool
+ atomic_dec_and_test(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_dec_and_test(v);
+ }
+-#define atomic_dec_and_test atomic_dec_and_test
+-#endif
+ 
+-#if defined(arch_atomic_inc_and_test)
+ static __always_inline bool
+ atomic_inc_and_test(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_inc_and_test(v);
+ }
+-#define atomic_inc_and_test atomic_inc_and_test
+-#endif
+ 
+-#if defined(arch_atomic_add_negative)
+ static __always_inline bool
+ atomic_add_negative(int i, atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_add_negative(i, v);
+ }
+-#define atomic_add_negative atomic_add_negative
+-#endif
+ 
+-#if defined(arch_atomic_fetch_add_unless)
+ static __always_inline int
+ atomic_fetch_add_unless(atomic_t *v, int a, int u)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_fetch_add_unless(v, a, u);
+ }
+-#define atomic_fetch_add_unless atomic_fetch_add_unless
+-#endif
+ 
+-#if defined(arch_atomic_add_unless)
+ static __always_inline bool
+ atomic_add_unless(atomic_t *v, int a, int u)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_add_unless(v, a, u);
+ }
+-#define atomic_add_unless atomic_add_unless
+-#endif
+ 
+-#if defined(arch_atomic_inc_not_zero)
+ static __always_inline bool
+ atomic_inc_not_zero(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_inc_not_zero(v);
+ }
+-#define atomic_inc_not_zero atomic_inc_not_zero
+-#endif
+ 
+-#if defined(arch_atomic_inc_unless_negative)
+ static __always_inline bool
+ atomic_inc_unless_negative(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_inc_unless_negative(v);
+ }
+-#define atomic_inc_unless_negative atomic_inc_unless_negative
+-#endif
+ 
+-#if defined(arch_atomic_dec_unless_positive)
+ static __always_inline bool
+ atomic_dec_unless_positive(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_dec_unless_positive(v);
+ }
+-#define atomic_dec_unless_positive atomic_dec_unless_positive
+-#endif
+ 
+-#if defined(arch_atomic_dec_if_positive)
+ static __always_inline int
+ atomic_dec_if_positive(atomic_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic_dec_if_positive(v);
+ }
+-#define atomic_dec_if_positive atomic_dec_if_positive
+-#endif
+ 
+ static __always_inline s64
+ atomic64_read(const atomic64_t *v)
+@@ -837,17 +605,13 @@ atomic64_read(const atomic64_t *v)
+ 	instrument_atomic_read(v, sizeof(*v));
+ 	return arch_atomic64_read(v);
+ }
+-#define atomic64_read atomic64_read
+ 
+-#if defined(arch_atomic64_read_acquire)
+ static __always_inline s64
+ atomic64_read_acquire(const atomic64_t *v)
+ {
+ 	instrument_atomic_read(v, sizeof(*v));
+ 	return arch_atomic64_read_acquire(v);
+ }
+-#define atomic64_read_acquire atomic64_read_acquire
+-#endif
+ 
+ static __always_inline void
+ atomic64_set(atomic64_t *v, s64 i)
+@@ -855,17 +619,13 @@ atomic64_set(atomic64_t *v, s64 i)
+ 	instrument_atomic_write(v, sizeof(*v));
+ 	arch_atomic64_set(v, i);
+ }
+-#define atomic64_set atomic64_set
+ 
+-#if defined(arch_atomic64_set_release)
+ static __always_inline void
+ atomic64_set_release(atomic64_t *v, s64 i)
+ {
+ 	instrument_atomic_write(v, sizeof(*v));
+ 	arch_atomic64_set_release(v, i);
+ }
+-#define atomic64_set_release atomic64_set_release
+-#endif
+ 
+ static __always_inline void
+ atomic64_add(s64 i, atomic64_t *v)
+@@ -873,87 +633,62 @@ atomic64_add(s64 i, atomic64_t *v)
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic64_add(i, v);
+ }
+-#define atomic64_add atomic64_add
+ 
+-#if !defined(arch_atomic64_add_return_relaxed) || defined(arch_atomic64_add_return)
+ static __always_inline s64
+ atomic64_add_return(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_add_return(i, v);
+ }
+-#define atomic64_add_return atomic64_add_return
+-#endif
+ 
+-#if defined(arch_atomic64_add_return_acquire)
+ static __always_inline s64
+ atomic64_add_return_acquire(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_add_return_acquire(i, v);
+ }
+-#define atomic64_add_return_acquire atomic64_add_return_acquire
+-#endif
+ 
+-#if defined(arch_atomic64_add_return_release)
+ static __always_inline s64
+ atomic64_add_return_release(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_add_return_release(i, v);
+ }
+-#define atomic64_add_return_release atomic64_add_return_release
+-#endif
+ 
+-#if defined(arch_atomic64_add_return_relaxed)
+ static __always_inline s64
+ atomic64_add_return_relaxed(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_add_return_relaxed(i, v);
+ }
+-#define atomic64_add_return_relaxed atomic64_add_return_relaxed
+-#endif
+ 
+-#if !defined(arch_atomic64_fetch_add_relaxed) || defined(arch_atomic64_fetch_add)
+ static __always_inline s64
+ atomic64_fetch_add(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_add(i, v);
+ }
+-#define atomic64_fetch_add atomic64_fetch_add
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_add_acquire)
+ static __always_inline s64
+ atomic64_fetch_add_acquire(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_add_acquire(i, v);
+ }
+-#define atomic64_fetch_add_acquire atomic64_fetch_add_acquire
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_add_release)
+ static __always_inline s64
+ atomic64_fetch_add_release(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_add_release(i, v);
+ }
+-#define atomic64_fetch_add_release atomic64_fetch_add_release
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_add_relaxed)
+ static __always_inline s64
+ atomic64_fetch_add_relaxed(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_add_relaxed(i, v);
+ }
+-#define atomic64_fetch_add_relaxed atomic64_fetch_add_relaxed
+-#endif
+ 
+ static __always_inline void
+ atomic64_sub(s64 i, atomic64_t *v)
+@@ -961,267 +696,188 @@ atomic64_sub(s64 i, atomic64_t *v)
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic64_sub(i, v);
+ }
+-#define atomic64_sub atomic64_sub
+ 
+-#if !defined(arch_atomic64_sub_return_relaxed) || defined(arch_atomic64_sub_return)
+ static __always_inline s64
+ atomic64_sub_return(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_sub_return(i, v);
+ }
+-#define atomic64_sub_return atomic64_sub_return
+-#endif
+ 
+-#if defined(arch_atomic64_sub_return_acquire)
+ static __always_inline s64
+ atomic64_sub_return_acquire(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_sub_return_acquire(i, v);
+ }
+-#define atomic64_sub_return_acquire atomic64_sub_return_acquire
+-#endif
+ 
+-#if defined(arch_atomic64_sub_return_release)
+ static __always_inline s64
+ atomic64_sub_return_release(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_sub_return_release(i, v);
+ }
+-#define atomic64_sub_return_release atomic64_sub_return_release
+-#endif
+ 
+-#if defined(arch_atomic64_sub_return_relaxed)
+ static __always_inline s64
+ atomic64_sub_return_relaxed(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_sub_return_relaxed(i, v);
+ }
+-#define atomic64_sub_return_relaxed atomic64_sub_return_relaxed
+-#endif
+ 
+-#if !defined(arch_atomic64_fetch_sub_relaxed) || defined(arch_atomic64_fetch_sub)
+ static __always_inline s64
+ atomic64_fetch_sub(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_sub(i, v);
+ }
+-#define atomic64_fetch_sub atomic64_fetch_sub
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_sub_acquire)
+ static __always_inline s64
+ atomic64_fetch_sub_acquire(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_sub_acquire(i, v);
+ }
+-#define atomic64_fetch_sub_acquire atomic64_fetch_sub_acquire
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_sub_release)
+ static __always_inline s64
+ atomic64_fetch_sub_release(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_sub_release(i, v);
+ }
+-#define atomic64_fetch_sub_release atomic64_fetch_sub_release
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_sub_relaxed)
+ static __always_inline s64
+ atomic64_fetch_sub_relaxed(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_sub_relaxed(i, v);
+ }
+-#define atomic64_fetch_sub_relaxed atomic64_fetch_sub_relaxed
+-#endif
+ 
+-#if defined(arch_atomic64_inc)
+ static __always_inline void
+ atomic64_inc(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic64_inc(v);
+ }
+-#define atomic64_inc atomic64_inc
+-#endif
+ 
+-#if defined(arch_atomic64_inc_return)
+ static __always_inline s64
+ atomic64_inc_return(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_inc_return(v);
+ }
+-#define atomic64_inc_return atomic64_inc_return
+-#endif
+ 
+-#if defined(arch_atomic64_inc_return_acquire)
+ static __always_inline s64
+ atomic64_inc_return_acquire(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_inc_return_acquire(v);
+ }
+-#define atomic64_inc_return_acquire atomic64_inc_return_acquire
+-#endif
+ 
+-#if defined(arch_atomic64_inc_return_release)
+ static __always_inline s64
+ atomic64_inc_return_release(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_inc_return_release(v);
+ }
+-#define atomic64_inc_return_release atomic64_inc_return_release
+-#endif
+ 
+-#if defined(arch_atomic64_inc_return_relaxed)
+ static __always_inline s64
+ atomic64_inc_return_relaxed(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_inc_return_relaxed(v);
+ }
+-#define atomic64_inc_return_relaxed atomic64_inc_return_relaxed
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_inc)
+ static __always_inline s64
+ atomic64_fetch_inc(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_inc(v);
+ }
+-#define atomic64_fetch_inc atomic64_fetch_inc
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_inc_acquire)
+ static __always_inline s64
+ atomic64_fetch_inc_acquire(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_inc_acquire(v);
+ }
+-#define atomic64_fetch_inc_acquire atomic64_fetch_inc_acquire
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_inc_release)
+ static __always_inline s64
+ atomic64_fetch_inc_release(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_inc_release(v);
+ }
+-#define atomic64_fetch_inc_release atomic64_fetch_inc_release
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_inc_relaxed)
+ static __always_inline s64
+ atomic64_fetch_inc_relaxed(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_inc_relaxed(v);
+ }
+-#define atomic64_fetch_inc_relaxed atomic64_fetch_inc_relaxed
+-#endif
+ 
+-#if defined(arch_atomic64_dec)
+ static __always_inline void
+ atomic64_dec(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic64_dec(v);
+ }
+-#define atomic64_dec atomic64_dec
+-#endif
+ 
+-#if defined(arch_atomic64_dec_return)
+ static __always_inline s64
+ atomic64_dec_return(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_dec_return(v);
+ }
+-#define atomic64_dec_return atomic64_dec_return
+-#endif
+ 
+-#if defined(arch_atomic64_dec_return_acquire)
+ static __always_inline s64
+ atomic64_dec_return_acquire(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_dec_return_acquire(v);
+ }
+-#define atomic64_dec_return_acquire atomic64_dec_return_acquire
+-#endif
+ 
+-#if defined(arch_atomic64_dec_return_release)
+ static __always_inline s64
+ atomic64_dec_return_release(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_dec_return_release(v);
+ }
+-#define atomic64_dec_return_release atomic64_dec_return_release
+-#endif
+ 
+-#if defined(arch_atomic64_dec_return_relaxed)
+ static __always_inline s64
+ atomic64_dec_return_relaxed(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_dec_return_relaxed(v);
+ }
+-#define atomic64_dec_return_relaxed atomic64_dec_return_relaxed
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_dec)
+ static __always_inline s64
+ atomic64_fetch_dec(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_dec(v);
+ }
+-#define atomic64_fetch_dec atomic64_fetch_dec
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_dec_acquire)
+ static __always_inline s64
+ atomic64_fetch_dec_acquire(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_dec_acquire(v);
+ }
+-#define atomic64_fetch_dec_acquire atomic64_fetch_dec_acquire
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_dec_release)
+ static __always_inline s64
+ atomic64_fetch_dec_release(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_dec_release(v);
+ }
+-#define atomic64_fetch_dec_release atomic64_fetch_dec_release
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_dec_relaxed)
+ static __always_inline s64
+ atomic64_fetch_dec_relaxed(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_dec_relaxed(v);
+ }
+-#define atomic64_fetch_dec_relaxed atomic64_fetch_dec_relaxed
+-#endif
+ 
+ static __always_inline void
+ atomic64_and(s64 i, atomic64_t *v)
+@@ -1229,97 +885,69 @@ atomic64_and(s64 i, atomic64_t *v)
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic64_and(i, v);
+ }
+-#define atomic64_and atomic64_and
+ 
+-#if !defined(arch_atomic64_fetch_and_relaxed) || defined(arch_atomic64_fetch_and)
+ static __always_inline s64
+ atomic64_fetch_and(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_and(i, v);
+ }
+-#define atomic64_fetch_and atomic64_fetch_and
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_and_acquire)
+ static __always_inline s64
+ atomic64_fetch_and_acquire(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_and_acquire(i, v);
+ }
+-#define atomic64_fetch_and_acquire atomic64_fetch_and_acquire
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_and_release)
+ static __always_inline s64
+ atomic64_fetch_and_release(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_and_release(i, v);
+ }
+-#define atomic64_fetch_and_release atomic64_fetch_and_release
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_and_relaxed)
+ static __always_inline s64
+ atomic64_fetch_and_relaxed(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_and_relaxed(i, v);
+ }
+-#define atomic64_fetch_and_relaxed atomic64_fetch_and_relaxed
+-#endif
+ 
+-#if defined(arch_atomic64_andnot)
+ static __always_inline void
+ atomic64_andnot(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic64_andnot(i, v);
+ }
+-#define atomic64_andnot atomic64_andnot
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_andnot)
+ static __always_inline s64
+ atomic64_fetch_andnot(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_andnot(i, v);
+ }
+-#define atomic64_fetch_andnot atomic64_fetch_andnot
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_andnot_acquire)
+ static __always_inline s64
+ atomic64_fetch_andnot_acquire(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_andnot_acquire(i, v);
+ }
+-#define atomic64_fetch_andnot_acquire atomic64_fetch_andnot_acquire
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_andnot_release)
+ static __always_inline s64
+ atomic64_fetch_andnot_release(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_andnot_release(i, v);
+ }
+-#define atomic64_fetch_andnot_release atomic64_fetch_andnot_release
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_andnot_relaxed)
+ static __always_inline s64
+ atomic64_fetch_andnot_relaxed(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_andnot_relaxed(i, v);
+ }
+-#define atomic64_fetch_andnot_relaxed atomic64_fetch_andnot_relaxed
+-#endif
+ 
+ static __always_inline void
+ atomic64_or(s64 i, atomic64_t *v)
+@@ -1327,47 +955,34 @@ atomic64_or(s64 i, atomic64_t *v)
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic64_or(i, v);
+ }
+-#define atomic64_or atomic64_or
+ 
+-#if !defined(arch_atomic64_fetch_or_relaxed) || defined(arch_atomic64_fetch_or)
+ static __always_inline s64
+ atomic64_fetch_or(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_or(i, v);
+ }
+-#define atomic64_fetch_or atomic64_fetch_or
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_or_acquire)
+ static __always_inline s64
+ atomic64_fetch_or_acquire(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_or_acquire(i, v);
+ }
+-#define atomic64_fetch_or_acquire atomic64_fetch_or_acquire
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_or_release)
+ static __always_inline s64
+ atomic64_fetch_or_release(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_or_release(i, v);
+ }
+-#define atomic64_fetch_or_release atomic64_fetch_or_release
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_or_relaxed)
+ static __always_inline s64
+ atomic64_fetch_or_relaxed(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_or_relaxed(i, v);
+ }
+-#define atomic64_fetch_or_relaxed atomic64_fetch_or_relaxed
+-#endif
+ 
+ static __always_inline void
+ atomic64_xor(s64 i, atomic64_t *v)
+@@ -1375,129 +990,91 @@ atomic64_xor(s64 i, atomic64_t *v)
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	arch_atomic64_xor(i, v);
+ }
+-#define atomic64_xor atomic64_xor
+ 
+-#if !defined(arch_atomic64_fetch_xor_relaxed) || defined(arch_atomic64_fetch_xor)
+ static __always_inline s64
+ atomic64_fetch_xor(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_xor(i, v);
+ }
+-#define atomic64_fetch_xor atomic64_fetch_xor
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_xor_acquire)
+ static __always_inline s64
+ atomic64_fetch_xor_acquire(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_xor_acquire(i, v);
+ }
+-#define atomic64_fetch_xor_acquire atomic64_fetch_xor_acquire
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_xor_release)
+ static __always_inline s64
+ atomic64_fetch_xor_release(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_xor_release(i, v);
+ }
+-#define atomic64_fetch_xor_release atomic64_fetch_xor_release
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_xor_relaxed)
+ static __always_inline s64
+ atomic64_fetch_xor_relaxed(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_xor_relaxed(i, v);
+ }
+-#define atomic64_fetch_xor_relaxed atomic64_fetch_xor_relaxed
+-#endif
+ 
+-#if !defined(arch_atomic64_xchg_relaxed) || defined(arch_atomic64_xchg)
+ static __always_inline s64
+ atomic64_xchg(atomic64_t *v, s64 i)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_xchg(v, i);
+ }
+-#define atomic64_xchg atomic64_xchg
+-#endif
+ 
+-#if defined(arch_atomic64_xchg_acquire)
+ static __always_inline s64
+ atomic64_xchg_acquire(atomic64_t *v, s64 i)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_xchg_acquire(v, i);
+ }
+-#define atomic64_xchg_acquire atomic64_xchg_acquire
+-#endif
+ 
+-#if defined(arch_atomic64_xchg_release)
+ static __always_inline s64
+ atomic64_xchg_release(atomic64_t *v, s64 i)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_xchg_release(v, i);
+ }
+-#define atomic64_xchg_release atomic64_xchg_release
+-#endif
+ 
+-#if defined(arch_atomic64_xchg_relaxed)
+ static __always_inline s64
+ atomic64_xchg_relaxed(atomic64_t *v, s64 i)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_xchg_relaxed(v, i);
+ }
+-#define atomic64_xchg_relaxed atomic64_xchg_relaxed
+-#endif
+ 
+-#if !defined(arch_atomic64_cmpxchg_relaxed) || defined(arch_atomic64_cmpxchg)
+ static __always_inline s64
+ atomic64_cmpxchg(atomic64_t *v, s64 old, s64 new)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_cmpxchg(v, old, new);
+ }
+-#define atomic64_cmpxchg atomic64_cmpxchg
+-#endif
+ 
+-#if defined(arch_atomic64_cmpxchg_acquire)
+ static __always_inline s64
+ atomic64_cmpxchg_acquire(atomic64_t *v, s64 old, s64 new)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_cmpxchg_acquire(v, old, new);
+ }
+-#define atomic64_cmpxchg_acquire atomic64_cmpxchg_acquire
+-#endif
+ 
+-#if defined(arch_atomic64_cmpxchg_release)
+ static __always_inline s64
+ atomic64_cmpxchg_release(atomic64_t *v, s64 old, s64 new)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_cmpxchg_release(v, old, new);
+ }
+-#define atomic64_cmpxchg_release atomic64_cmpxchg_release
+-#endif
+ 
+-#if defined(arch_atomic64_cmpxchg_relaxed)
+ static __always_inline s64
+ atomic64_cmpxchg_relaxed(atomic64_t *v, s64 old, s64 new)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_cmpxchg_relaxed(v, old, new);
+ }
+-#define atomic64_cmpxchg_relaxed atomic64_cmpxchg_relaxed
+-#endif
+ 
+-#if defined(arch_atomic64_try_cmpxchg)
+ static __always_inline bool
+ atomic64_try_cmpxchg(atomic64_t *v, s64 *old, s64 new)
+ {
+@@ -1505,10 +1082,7 @@ atomic64_try_cmpxchg(atomic64_t *v, s64 *old, s64 new)
+ 	instrument_atomic_read_write(old, sizeof(*old));
+ 	return arch_atomic64_try_cmpxchg(v, old, new);
+ }
+-#define atomic64_try_cmpxchg atomic64_try_cmpxchg
+-#endif
+ 
+-#if defined(arch_atomic64_try_cmpxchg_acquire)
+ static __always_inline bool
+ atomic64_try_cmpxchg_acquire(atomic64_t *v, s64 *old, s64 new)
+ {
+@@ -1516,10 +1090,7 @@ atomic64_try_cmpxchg_acquire(atomic64_t *v, s64 *old, s64 new)
+ 	instrument_atomic_read_write(old, sizeof(*old));
+ 	return arch_atomic64_try_cmpxchg_acquire(v, old, new);
+ }
+-#define atomic64_try_cmpxchg_acquire atomic64_try_cmpxchg_acquire
+-#endif
+ 
+-#if defined(arch_atomic64_try_cmpxchg_release)
+ static __always_inline bool
+ atomic64_try_cmpxchg_release(atomic64_t *v, s64 *old, s64 new)
+ {
+@@ -1527,10 +1098,7 @@ atomic64_try_cmpxchg_release(atomic64_t *v, s64 *old, s64 new)
+ 	instrument_atomic_read_write(old, sizeof(*old));
+ 	return arch_atomic64_try_cmpxchg_release(v, old, new);
+ }
+-#define atomic64_try_cmpxchg_release atomic64_try_cmpxchg_release
+-#endif
+ 
+-#if defined(arch_atomic64_try_cmpxchg_relaxed)
+ static __always_inline bool
+ atomic64_try_cmpxchg_relaxed(atomic64_t *v, s64 *old, s64 new)
+ {
+@@ -1538,218 +1106,161 @@ atomic64_try_cmpxchg_relaxed(atomic64_t *v, s64 *old, s64 new)
+ 	instrument_atomic_read_write(old, sizeof(*old));
+ 	return arch_atomic64_try_cmpxchg_relaxed(v, old, new);
+ }
+-#define atomic64_try_cmpxchg_relaxed atomic64_try_cmpxchg_relaxed
+-#endif
+ 
+-#if defined(arch_atomic64_sub_and_test)
+ static __always_inline bool
+ atomic64_sub_and_test(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_sub_and_test(i, v);
+ }
+-#define atomic64_sub_and_test atomic64_sub_and_test
+-#endif
+ 
+-#if defined(arch_atomic64_dec_and_test)
+ static __always_inline bool
+ atomic64_dec_and_test(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_dec_and_test(v);
+ }
+-#define atomic64_dec_and_test atomic64_dec_and_test
+-#endif
+ 
+-#if defined(arch_atomic64_inc_and_test)
+ static __always_inline bool
+ atomic64_inc_and_test(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_inc_and_test(v);
+ }
+-#define atomic64_inc_and_test atomic64_inc_and_test
+-#endif
+ 
+-#if defined(arch_atomic64_add_negative)
+ static __always_inline bool
+ atomic64_add_negative(s64 i, atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_add_negative(i, v);
+ }
+-#define atomic64_add_negative atomic64_add_negative
+-#endif
+ 
+-#if defined(arch_atomic64_fetch_add_unless)
+ static __always_inline s64
+ atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_fetch_add_unless(v, a, u);
+ }
+-#define atomic64_fetch_add_unless atomic64_fetch_add_unless
+-#endif
+ 
+-#if defined(arch_atomic64_add_unless)
+ static __always_inline bool
+ atomic64_add_unless(atomic64_t *v, s64 a, s64 u)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_add_unless(v, a, u);
+ }
+-#define atomic64_add_unless atomic64_add_unless
+-#endif
+ 
+-#if defined(arch_atomic64_inc_not_zero)
+ static __always_inline bool
+ atomic64_inc_not_zero(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_inc_not_zero(v);
+ }
+-#define atomic64_inc_not_zero atomic64_inc_not_zero
+-#endif
+ 
+-#if defined(arch_atomic64_inc_unless_negative)
+ static __always_inline bool
+ atomic64_inc_unless_negative(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_inc_unless_negative(v);
+ }
+-#define atomic64_inc_unless_negative atomic64_inc_unless_negative
+-#endif
+ 
+-#if defined(arch_atomic64_dec_unless_positive)
+ static __always_inline bool
+ atomic64_dec_unless_positive(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_dec_unless_positive(v);
+ }
+-#define atomic64_dec_unless_positive atomic64_dec_unless_positive
+-#endif
+ 
+-#if defined(arch_atomic64_dec_if_positive)
+ static __always_inline s64
+ atomic64_dec_if_positive(atomic64_t *v)
+ {
+ 	instrument_atomic_read_write(v, sizeof(*v));
+ 	return arch_atomic64_dec_if_positive(v);
+ }
+-#define atomic64_dec_if_positive atomic64_dec_if_positive
+-#endif
+ 
+-#if !defined(arch_xchg_relaxed) || defined(arch_xchg)
+ #define xchg(ptr, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+ 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+ 	arch_xchg(__ai_ptr, __VA_ARGS__); \
+ })
+-#endif
+ 
+-#if defined(arch_xchg_acquire)
+ #define xchg_acquire(ptr, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+ 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+ 	arch_xchg_acquire(__ai_ptr, __VA_ARGS__); \
+ })
+-#endif
+ 
+-#if defined(arch_xchg_release)
+ #define xchg_release(ptr, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+ 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+ 	arch_xchg_release(__ai_ptr, __VA_ARGS__); \
+ })
+-#endif
+ 
+-#if defined(arch_xchg_relaxed)
+ #define xchg_relaxed(ptr, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+ 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+ 	arch_xchg_relaxed(__ai_ptr, __VA_ARGS__); \
+ })
+-#endif
+ 
+-#if !defined(arch_cmpxchg_relaxed) || defined(arch_cmpxchg)
+ #define cmpxchg(ptr, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+ 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+ 	arch_cmpxchg(__ai_ptr, __VA_ARGS__); \
+ })
+-#endif
+ 
+-#if defined(arch_cmpxchg_acquire)
+ #define cmpxchg_acquire(ptr, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+ 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+ 	arch_cmpxchg_acquire(__ai_ptr, __VA_ARGS__); \
+ })
+-#endif
+ 
+-#if defined(arch_cmpxchg_release)
+ #define cmpxchg_release(ptr, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+ 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+ 	arch_cmpxchg_release(__ai_ptr, __VA_ARGS__); \
+ })
+-#endif
+ 
+-#if defined(arch_cmpxchg_relaxed)
+ #define cmpxchg_relaxed(ptr, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+ 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+ 	arch_cmpxchg_relaxed(__ai_ptr, __VA_ARGS__); \
+ })
+-#endif
+ 
+-#if !defined(arch_cmpxchg64_relaxed) || defined(arch_cmpxchg64)
+ #define cmpxchg64(ptr, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+ 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+ 	arch_cmpxchg64(__ai_ptr, __VA_ARGS__); \
+ })
+-#endif
+ 
+-#if defined(arch_cmpxchg64_acquire)
+ #define cmpxchg64_acquire(ptr, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+ 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+ 	arch_cmpxchg64_acquire(__ai_ptr, __VA_ARGS__); \
+ })
+-#endif
+ 
+-#if defined(arch_cmpxchg64_release)
+ #define cmpxchg64_release(ptr, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+ 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+ 	arch_cmpxchg64_release(__ai_ptr, __VA_ARGS__); \
+ })
+-#endif
+ 
+-#if defined(arch_cmpxchg64_relaxed)
+ #define cmpxchg64_relaxed(ptr, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+ 	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+ 	arch_cmpxchg64_relaxed(__ai_ptr, __VA_ARGS__); \
+ })
+-#endif
+ 
+-#if !defined(arch_try_cmpxchg_relaxed) || defined(arch_try_cmpxchg)
+ #define try_cmpxchg(ptr, oldp, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+@@ -1758,9 +1269,7 @@ atomic64_dec_if_positive(atomic64_t *v)
+ 	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
+ 	arch_try_cmpxchg(__ai_ptr, __ai_oldp, __VA_ARGS__); \
+ })
+-#endif
+ 
+-#if defined(arch_try_cmpxchg_acquire)
+ #define try_cmpxchg_acquire(ptr, oldp, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+@@ -1769,9 +1278,7 @@ atomic64_dec_if_positive(atomic64_t *v)
+ 	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
+ 	arch_try_cmpxchg_acquire(__ai_ptr, __ai_oldp, __VA_ARGS__); \
+ })
+-#endif
+ 
+-#if defined(arch_try_cmpxchg_release)
+ #define try_cmpxchg_release(ptr, oldp, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+@@ -1780,9 +1287,7 @@ atomic64_dec_if_positive(atomic64_t *v)
+ 	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
+ 	arch_try_cmpxchg_release(__ai_ptr, __ai_oldp, __VA_ARGS__); \
+ })
+-#endif
+ 
+-#if defined(arch_try_cmpxchg_relaxed)
+ #define try_cmpxchg_relaxed(ptr, oldp, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+@@ -1791,7 +1296,6 @@ atomic64_dec_if_positive(atomic64_t *v)
+ 	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
+ 	arch_try_cmpxchg_relaxed(__ai_ptr, __ai_oldp, __VA_ARGS__); \
+ })
+-#endif
+ 
+ #define cmpxchg_local(ptr, ...) \
+ ({ \
+@@ -1830,4 +1334,4 @@ atomic64_dec_if_positive(atomic64_t *v)
  })
  
--#ifdef CONFIG_ARCH_ATOMIC
- #include <linux/atomic-arch-fallback.h>
- #include <asm-generic/atomic-instrumented.h>
--#else
--#include <linux/atomic-fallback.h>
--#endif
+ #endif /* _ASM_GENERIC_ATOMIC_INSTRUMENTED_H */
+-// 4bec382e44520f4d8267e42620054db26a659ea3
++// 1d7c3a25aca5c7fb031c307be4c3d24c7b48fcd5
+diff --git a/scripts/atomic/gen-atomic-instrumented.sh b/scripts/atomic/gen-atomic-instrumented.sh
+index 5766ffcec7c5..b0c45aee19d7 100755
+--- a/scripts/atomic/gen-atomic-instrumented.sh
++++ b/scripts/atomic/gen-atomic-instrumented.sh
+@@ -41,34 +41,6 @@ gen_params_checks()
+ 	done
+ }
  
- #include <asm-generic/atomic-long.h>
+-# gen_guard(meta, atomic, pfx, name, sfx, order)
+-gen_guard()
+-{
+-	local meta="$1"; shift
+-	local atomic="$1"; shift
+-	local pfx="$1"; shift
+-	local name="$1"; shift
+-	local sfx="$1"; shift
+-	local order="$1"; shift
+-
+-	local atomicname="arch_${atomic}_${pfx}${name}${sfx}${order}"
+-
+-	local template="$(find_fallback_template "${pfx}" "${name}" "${sfx}" "${order}")"
+-
+-	# We definitely need a preprocessor symbol for this atomic if it is an
+-	# ordering variant, or if there's a generic fallback.
+-	if [ ! -z "${order}" ] || [ ! -z "${template}" ]; then
+-		printf "defined(${atomicname})"
+-		return
+-	fi
+-
+-	# If this is a base variant, but a relaxed variant *may* exist, then we
+-	# only have a preprocessor symbol if the relaxed variant isn't defined
+-	if meta_has_relaxed "${meta}"; then
+-		printf "!defined(${atomicname}_relaxed) || defined(${atomicname})"
+-	fi
+-}
+-
+ #gen_proto_order_variant(meta, pfx, name, sfx, order, atomic, int, arg...)
+ gen_proto_order_variant()
+ {
+@@ -82,16 +54,12 @@ gen_proto_order_variant()
  
-diff --git a/scripts/atomic/check-atomics.sh b/scripts/atomic/check-atomics.sh
-index 82748d42ecc5..9c7fbd4bcbce 100755
---- a/scripts/atomic/check-atomics.sh
-+++ b/scripts/atomic/check-atomics.sh
-@@ -17,7 +17,6 @@ cat <<EOF |
- asm-generic/atomic-instrumented.h
- asm-generic/atomic-long.h
- linux/atomic-arch-fallback.h
--linux/atomic-fallback.h
+ 	local atomicname="${atomic}_${pfx}${name}${sfx}${order}"
+ 
+-	local guard="$(gen_guard "${meta}" "${atomic}" "${pfx}" "${name}" "${sfx}" "${order}")"
+-
+ 	local ret="$(gen_ret_type "${meta}" "${int}")"
+ 	local params="$(gen_params "${int}" "${atomic}" "$@")"
+ 	local checks="$(gen_params_checks "${meta}" "$@")"
+ 	local args="$(gen_args "$@")"
+ 	local retstmt="$(gen_ret_stmt "${meta}")"
+ 
+-	[ ! -z "${guard}" ] && printf "#if ${guard}\n"
+-
+ cat <<EOF
+ static __always_inline ${ret}
+ ${atomicname}(${params})
+@@ -99,11 +67,8 @@ ${atomicname}(${params})
+ ${checks}
+ 	${retstmt}arch_${atomicname}(${args});
+ }
+-#define ${atomicname} ${atomicname}
  EOF
- while read header; do
- 	OLDSUM="$(tail -n 1 ${LINUXDIR}/include/${header})"
-diff --git a/scripts/atomic/gen-atomics.sh b/scripts/atomic/gen-atomics.sh
-index d29e159ef489..f776a574224d 100755
---- a/scripts/atomic/gen-atomics.sh
-+++ b/scripts/atomic/gen-atomics.sh
-@@ -11,7 +11,6 @@ cat <<EOF |
- gen-atomic-instrumented.sh      asm-generic/atomic-instrumented.h
- gen-atomic-long.sh              asm-generic/atomic-long.h
- gen-atomic-fallback.sh          linux/atomic-arch-fallback.h		arch_
--gen-atomic-fallback.sh          linux/atomic-fallback.h
- EOF
- while read script header args; do
- 	/bin/sh ${ATOMICDIR}/${script} ${ATOMICTBL} ${args} > ${LINUXDIR}/include/${header}
+ 
+-	[ ! -z "${guard}" ] && printf "#endif\n"
+-
+ 	printf "\n"
+ }
+ 
+@@ -139,19 +104,6 @@ EOF
+ 	fi
+ }
+ 
+-gen_optional_xchg()
+-{
+-	local name="$1"; shift
+-	local sfx="$1"; shift
+-	local guard="defined(arch_${name}${sfx})"
+-
+-	[ -z "${sfx}" ] && guard="!defined(arch_${name}_relaxed) || defined(arch_${name})"
+-
+-	printf "#if ${guard}\n"
+-	gen_xchg "${name}${sfx}" ""
+-	printf "#endif\n\n"
+-}
+-
+ cat << EOF
+ // SPDX-License-Identifier: GPL-2.0
+ 
+@@ -188,7 +140,8 @@ done
+ 
+ for xchg in "xchg" "cmpxchg" "cmpxchg64" "try_cmpxchg"; do
+ 	for order in "" "_acquire" "_release" "_relaxed"; do
+-		gen_optional_xchg "${xchg}" "${order}"
++		gen_xchg "${xchg}${order}" ""
++		printf "\n"
+ 	done
+ done
+ 
 -- 
 2.11.0
 
