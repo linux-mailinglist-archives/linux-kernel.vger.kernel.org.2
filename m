@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76BE0378339
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D7537833C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhEJKnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:43:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41272 "EHLO mail.kernel.org"
+        id S231787AbhEJKnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:43:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232819AbhEJKfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232825AbhEJKfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 06:35:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15FDD61922;
-        Mon, 10 May 2021 10:28:18 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DBB861928;
+        Mon, 10 May 2021 10:28:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642499;
-        bh=xaY0MHIR9143KmI75c50pWTwSZOaC+O3togLGV+jeGo=;
+        s=korg; t=1620642502;
+        bh=+YEct+Y8S7NbwlkbygDanQtv7V60BVLf9aTdtBUpt2w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MtWEI7VxJ5t1UMjg7Zdn7yYI1BqGh35SYbAFHsJ7u0rQjt7yo6xsvFHXXVG3k4xnX
-         jPdPgouCUWfx9d5P8/+GpdRYA5R7HkznVa89q8ADgwm7/egscUYWS+t177h4/9Vzbk
-         1gEIT3jHQ+C1YmDB4keCUqimnArQ1MBDk3yRZ0sk=
+        b=C30DiGLUwtwA8cKQm0M5fbMXJsOJeEGT79YU7iGIzmvev+D/cyIgYvO/lcXHRVw+f
+         73kFmjldNeer39j2SeUqjidBMtnLPdRgtMdVgC1K2utXbkbN+yhewm6Ya03E9tBoO2
+         pfj6rT6jbjVnHnJdgCIYsznzrZ14YNsl7jhJW8FU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
+        James Smart <jsmart2021@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 118/184] drm/amdgpu: fix NULL pointer dereference
-Date:   Mon, 10 May 2021 12:20:12 +0200
-Message-Id: <20210510101954.049055925@linuxfoundation.org>
+Subject: [PATCH 5.4 119/184] scsi: lpfc: Fix crash when a REG_RPI mailbox fails triggering a LOGO response
+Date:   Mon, 10 May 2021 12:20:13 +0200
+Message-Id: <20210510101954.078226382@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510101950.200777181@linuxfoundation.org>
 References: <20210510101950.200777181@linuxfoundation.org>
@@ -41,55 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guchun Chen <guchun.chen@amd.com>
+From: James Smart <jsmart2021@gmail.com>
 
-[ Upstream commit 3c3dc654333f6389803cdcaf03912e94173ae510 ]
+[ Upstream commit fffd18ec6579c2d9c72b212169259062fe747888 ]
 
-ttm->sg needs to be checked before accessing its child member.
+Fix a crash caused by a double put on the node when the driver completed an
+ACC for an unsolicted abort on the same node.  The second put was executed
+by lpfc_nlp_not_used() and is wrong because the completion routine executes
+the nlp_put when the iocbq was released.  Additionally, the driver is
+issuing a LOGO then immediately calls lpfc_nlp_set_state to put the node
+into NPR.  This call does nothing.
 
-Call Trace:
- amdgpu_ttm_backend_destroy+0x12/0x70 [amdgpu]
- ttm_bo_cleanup_memtype_use+0x3a/0x60 [ttm]
- ttm_bo_release+0x17d/0x300 [ttm]
- amdgpu_bo_unref+0x1a/0x30 [amdgpu]
- amdgpu_amdkfd_gpuvm_alloc_memory_of_gpu+0x78b/0x8b0 [amdgpu]
- kfd_ioctl_alloc_memory_of_gpu+0x118/0x220 [amdgpu]
- kfd_ioctl+0x222/0x400 [amdgpu]
- ? kfd_dev_is_large_bar+0x90/0x90 [amdgpu]
- __x64_sys_ioctl+0x8e/0xd0
- ? __context_tracking_exit+0x52/0x90
- do_syscall_64+0x33/0x80
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7f97f264d317
-Code: b3 66 90 48 8b 05 71 4b 2d 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 41 4b 2d 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffdb402c338 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f97f3cc63a0 RCX: 00007f97f264d317
-RDX: 00007ffdb402c380 RSI: 00000000c0284b16 RDI: 0000000000000003
-RBP: 00007ffdb402c380 R08: 00007ffdb402c428 R09: 00000000c4000004
-R10: 00000000c4000004 R11: 0000000000000246 R12: 00000000c0284b16
-R13: 0000000000000003 R14: 00007f97f3cc63a0 R15: 00007f8836200000
+Remove the lpfc_nlp_not_used call and additional set_state in the
+completion routine.  Remove the lpfc_nlp_set_state post issue_logo.  Isn't
+necessary.
 
-Signed-off-by: Guchun Chen <guchun.chen@amd.com>
-Acked-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Link: https://lore.kernel.org/r/20210412013127.2387-3-jsmart2021@gmail.com
+Co-developed-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/lpfc/lpfc_nportdisc.c | 2 --
+ drivers/scsi/lpfc/lpfc_sli.c       | 1 -
+ 2 files changed, 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-index c6a1dfe79e80..91e3a87b1de8 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-@@ -984,7 +984,7 @@ static void amdgpu_ttm_tt_unpin_userptr(struct ttm_tt *ttm)
- 		DMA_BIDIRECTIONAL : DMA_TO_DEVICE;
+diff --git a/drivers/scsi/lpfc/lpfc_nportdisc.c b/drivers/scsi/lpfc/lpfc_nportdisc.c
+index ea31711b1aeb..fdd87508c804 100644
+--- a/drivers/scsi/lpfc/lpfc_nportdisc.c
++++ b/drivers/scsi/lpfc/lpfc_nportdisc.c
+@@ -1961,8 +1961,6 @@ lpfc_cmpl_reglogin_reglogin_issue(struct lpfc_vport *vport,
+ 		ndlp->nlp_last_elscmd = ELS_CMD_PLOGI;
  
- 	/* double check that we don't free the table twice */
--	if (!ttm->sg->sgl)
-+	if (!ttm->sg || !ttm->sg->sgl)
- 		return;
+ 		lpfc_issue_els_logo(vport, ndlp, 0);
+-		ndlp->nlp_prev_state = NLP_STE_REG_LOGIN_ISSUE;
+-		lpfc_nlp_set_state(vport, ndlp, NLP_STE_NPR_NODE);
+ 		return ndlp->nlp_state;
+ 	}
  
- 	/* unmap the pages mapped to the device */
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index b9857d7b224f..79ae01bc7abf 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -17472,7 +17472,6 @@ lpfc_sli4_seq_abort_rsp_cmpl(struct lpfc_hba *phba,
+ 	if (cmd_iocbq) {
+ 		ndlp = (struct lpfc_nodelist *)cmd_iocbq->context1;
+ 		lpfc_nlp_put(ndlp);
+-		lpfc_nlp_not_used(ndlp);
+ 		lpfc_sli_release_iocbq(phba, cmd_iocbq);
+ 	}
+ 
 -- 
 2.30.2
 
