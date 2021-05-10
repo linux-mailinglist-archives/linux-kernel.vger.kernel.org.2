@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB28379121
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C053790D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239396AbhEJOl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:41:57 -0400
-Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:58289 "EHLO
-        herzl.nuvoton.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1343611AbhEJOjz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:39:55 -0400
-X-Greylist: delayed 533 seconds by postgrey-1.27 at vger.kernel.org; Mon, 10 May 2021 10:37:47 EDT
-Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
-        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 14AESvE2010698;
-        Mon, 10 May 2021 17:28:57 +0300
-Received: by taln60.nuvoton.co.il (Postfix, from userid 10140)
-        id 2582E63A17; Mon, 10 May 2021 17:29:03 +0300 (IDT)
-From:   amirmizi6@gmail.com
-To:     Eyal.Cohen@nuvoton.com, jarkko.sakkinen@linux.intel.com,
-        peterhuewe@gmx.de, jgg@ziepe.ca
-Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
-        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com,
-        Amir Mizinski <amirmizi6@gmail.com>
-Subject: [PATCH v1] tpm2: add longer timeout for verify signature command
-Date:   Mon, 10 May 2021 17:27:19 +0300
-Message-Id: <20210510142719.48153-2-amirmizi6@gmail.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20210510142719.48153-1-amirmizi6@gmail.com>
-References: <20210510142719.48153-1-amirmizi6@gmail.com>
+        id S236315AbhEJOc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:32:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234282AbhEJOao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 10:30:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2670C611CE;
+        Mon, 10 May 2021 14:29:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620656979;
+        bh=jXtawgAEql2mdBiBp3QIE60fK6xUJp5RjRSJRC/3OBA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nyhB93OH82HR274R7A4zGYpmBR4q4i+Ug09CSUECeTXg9rr/vCjvC0uPqCNysJVPF
+         hYcOEwe72vFXinK1jPech1xPs32LtQ37xsmilcWUrnk3TJEP44ISP45/nLX+rBskVw
+         bT8N/MLaHea+xWf+SH62CylqyyvJwebAtW/GTTmI=
+Date:   Mon, 10 May 2021 16:29:37 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH v1] usb: typec: tcpm: Don't block probing of consumers of
+ "connector" nodes
+Message-ID: <YJlDURS+6DHgDwEx@kroah.com>
+References: <20210506004423.345199-1-saravanak@google.com>
+ <CALAqxLU+Uf6OSDLG8OC_gHY9-VVHPgu0_bXxJcO8B4peFugtqw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALAqxLU+Uf6OSDLG8OC_gHY9-VVHPgu0_bXxJcO8B4peFugtqw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amir Mizinski <amirmizi6@gmail.com>
+On Wed, May 05, 2021 at 07:01:04PM -0700, John Stultz wrote:
+> On Wed, May 5, 2021 at 5:44 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > fw_devlink expects DT device nodes with "compatible" property to have
+> > struct devices created for them. Since the connector node might not be
+> > populated as a device, mark it as such so that fw_devlink knows not to
+> > wait on this fwnode being populated as a struct device.
+> >
+> > Without this patch, USB functionality can be broken on some boards.
+> >
+> > Fixes: f7514a663016 ("of: property: fw_devlink: Add support for remote-endpoint")
+> > Reported-by: John Stultz <john.stultz@linaro.org>
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> 
+> Tested-by: John Stultz <john.stultz@linaro.org>
+> 
+> Thanks so much for this fix! HiKey960 is back to booting properly!
+> -john
 
-TPM2_CC_VERIFY_SIGNATURE(0x177) Current timeout does not apply to usage with
-RSA 3070-bit keys.
-Additional time may be required for usage with RSA 3070-bit keys. Therefore, the
-timeout of TPM2_CC_VERIFY_SIGNATURE is set to 3 minutes (TPM_LONG_LONG).
+Now queued up, thanks.
 
-Signed-off-by: Amir Mizinski <amirmizi6@gmail.com>
----
- drivers/char/tpm/tpm2-cmd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
-index eff1f12..235a454 100644
---- a/drivers/char/tpm/tpm2-cmd.c
-+++ b/drivers/char/tpm/tpm2-cmd.c
-@@ -87,7 +87,7 @@ static u8 tpm2_ordinal_duration_index(u32 ordinal)
- 		return TPM_MEDIUM;
- 
- 	case TPM2_CC_VERIFY_SIGNATURE:        /* 177 */
--		return TPM_LONG;
-+		return TPM_LONG_LONG;
- 
- 	case TPM2_CC_PCR_EXTEND:              /* 182 */
- 		return TPM_MEDIUM;
--- 
-2.7.4
-
+greg k-h
