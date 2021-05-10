@@ -2,78 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1692378AF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75424378A91
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244005AbhEJL6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:58:04 -0400
-Received: from mga07.intel.com ([134.134.136.100]:23992 "EHLO mga07.intel.com"
+        id S242660AbhEJLr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:47:29 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:39075 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235773AbhEJLGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:06:06 -0400
-IronPort-SDR: +Bwl7WJm7HyERiF8ffGVOzKPyYjCLhItjstAnAwW3Til5si2D28IUbgc6ZaYYS3/egX5sTNwS4
- 0oYwbR/v53fw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="263097994"
-X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
-   d="scan'208";a="263097994"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 03:57:32 -0700
-IronPort-SDR: HnHmct7TUh4WaPUmbcRG7vgw6BcBlsPuR0mT4B95J8XeZ9oh4pJGNB4Gf6D7UzQrvUXcQX+VdQ
- ykg+vNymJLqQ==
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="436094109"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.237.180.87]) ([10.237.180.87])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 03:57:31 -0700
-Subject: Re: [PATCH] ALSA: hda: generic: Remove redundant assignment to dac
- and dacs[i]
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, perex@perex.cz
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.com,
-        linux-kernel@vger.kernel.org
-References: <1620643295-130162-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>
-Message-ID: <959dfc79-cac1-0bb6-e725-874e7f7af0cf@linux.intel.com>
-Date:   Mon, 10 May 2021 12:57:28 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S233646AbhEJK7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:59:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620644321; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=1V1hjNy0ikjEDcGsAysvLfVX9zgO6KrdzGI0V4yHr2Y=;
+ b=B/nRmcCcHIotBNMIZaaBkuskEBGydLlRR2rUikivGJu2kpS9sU2LHNCOk+4XpS2h9RRPgfvI
+ kA8v6mwpMoAgK4kkTg411n+qUlSm3jRDe9X6ggP0vjbgSsI4V1ng2ulOQQxeUftAU0L6IYcL
+ C+osmDgwNhbkj4IeRxa8HBT1Zng=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 609911e0e0e9c9a6b6adc929 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 10 May 2021 10:58:40
+ GMT
+Sender: mdalam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 585B3C43143; Mon, 10 May 2021 10:58:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdalam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 44379C43145;
+        Mon, 10 May 2021 10:58:33 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <1620643295-130162-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 10 May 2021 16:28:33 +0530
+From:   mdalam@codeaurora.org
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     mani@kernel.org, boris.brezillon@collabora.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        sricharan@codeaurora.org
+Subject: Re: [PATCH] mtd: rawnand: qcom: avoid write to obsolete register
+In-Reply-To: <20210504085805.73e60979@xps13>
+References: <1619205694-25645-1-git-send-email-mdalam@codeaurora.org>
+ <2667b47434a8f2892ea3d5f304380960@codeaurora.org>
+ <20210504085805.73e60979@xps13>
+Message-ID: <e5d79f2b18ffe2dcdaa7d2c827d8472f@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/2021 12:41 PM, Jiapeng Chong wrote:
-> Variable dac and dacs[i] is set to zero, but this value is never read as
-> it is overwritten or not used later on, hence it is a redundant assignment
-> and can be removed.
+On 2021-05-04 12:28, Miquel Raynal wrote:
+> Hello,
 > 
-> Clean up the following clang-analyzer warning:
+> mdalam@codeaurora.org wrote on Mon, 03 May 2021 20:24:54 +0530:
 > 
-> sound/pci/hda/hda_generic.c:1436:4: warning: Value stored to 'dac' is
-> never read [clang-analyzer-deadcode.DeadStores].
+>> On 2021-04-24 00:51, Md Sadre Alam wrote:
+>> > QPIC_EBI2_ECC_BUF_CFG register got obsolete from QPIC V2.0 onwards.
+>> > Avoid writing this register if QPIC version is V2.0 or newer.
+>> >
+>> > Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+>> > ---
+>> >  drivers/mtd/nand/raw/qcom_nandc.c | 17 +++++++++++------
+>> >  1 file changed, 11 insertions(+), 6 deletions(-)
+>> >
+>> > diff --git a/drivers/mtd/nand/raw/qcom_nandc.c
+>> > b/drivers/mtd/nand/raw/qcom_nandc.c
+>> > index fd4c318..8c5205c 100644
+>> > --- a/drivers/mtd/nand/raw/qcom_nandc.c
+>> > +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+>> > @@ -714,7 +714,8 @@ static void update_rw_regs(struct qcom_nand_host
+>> > *host, int num_cw, bool read)
+>> >  	nandc_set_reg(nandc, NAND_DEV0_CFG0, cfg0);
+>> >  	nandc_set_reg(nandc, NAND_DEV0_CFG1, cfg1);
+>> >  	nandc_set_reg(nandc, NAND_DEV0_ECC_CFG, ecc_bch_cfg);
+>> > -	nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
+>> > +	if (!nandc->props->qpic_v2)
+>> > +		nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
+>> >  	nandc_set_reg(nandc, NAND_FLASH_STATUS, host->clrflashstatus);
+>> >  	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
+>> >  	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+>> > @@ -1083,7 +1084,8 @@ static void config_nand_page_read(struct
+>> > qcom_nand_controller *nandc)
+>> >  {
+>> >  	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+>> >  	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+>> > -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
+>> > +	if (!nandc->props->qpic_v2)
+>> > +		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
+>> >  	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
+>> >  	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1,
+>> >  		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
+>> > @@ -1132,8 +1134,9 @@ static void config_nand_page_write(struct
+>> > qcom_nand_controller *nandc)
+>> >  {
+>> >  	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+>> >  	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+>> > -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
+>> > -		      NAND_BAM_NEXT_SGL);
+>> > +	if (!nandc->props->qpic_v2)
+>> > +		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
+>> > +			      NAND_BAM_NEXT_SGL);
+>> >  }
+>> >
+>> >  /*
+>> > @@ -1187,7 +1190,8 @@ static int nandc_param(struct qcom_nand_host > *host)
+>> >  					| 2 << WR_RD_BSY_GAP
+>> >  					| 0 << WIDE_FLASH
+>> >  					| 1 << DEV0_CFG1_ECC_DISABLE);
+>> > -	nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, 1 << > ECC_CFG_ECC_DISABLE);
+>> > +	if (!nandc->props->qpic_v2)
+>> > +		nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, 1 << > ECC_CFG_ECC_DISABLE);
+>> >
+>> >  	/* configure CMD1 and VLD for ONFI param probing in QPIC v1 */
+>> >  	if (!nandc->props->qpic_v2) {
+>> > @@ -2628,7 +2632,8 @@ static int qcom_nand_attach_chip(struct nand_chip > *chip)
+>> >  				| ecc_mode << ECC_MODE
+>> >  				| host->ecc_bytes_hw << ECC_PARITY_SIZE_BYTES_BCH;
+>> >
+>> > -	host->ecc_buf_cfg = 0x203 << NUM_STEPS;
+>> > +	if (!nandc->props->qpic_v2)
+>> > +		host->ecc_buf_cfg = 0x203 << NUM_STEPS;
+>> >
+>> >  	host->clrflashstatus = FS_READY_BSY_N;
+>> >  	host->clrreadstatus = 0xc0;
+>> 
+>> 
+>> ping! Hi Miquel could you review this change and let me know if more 
+>> info needed.
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->   sound/pci/hda/hda_generic.c | 1 -
->   1 file changed, 1 deletion(-)
+> Come on, that's only 6 days of work and we are in the middle of the
+> merge window...
 > 
-> diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-> index b638fc2..cce1bf7 100644
-> --- a/sound/pci/hda/hda_generic.c
-> +++ b/sound/pci/hda/hda_generic.c
-> @@ -1433,7 +1433,6 @@ static int try_assign_dacs(struct hda_codec *codec, int num_outs,
->   			path = snd_hda_add_new_path(codec, dac, pin, 0);
->   		}
->   		if (!path) {
-> -			dac = dacs[i] = 0;
->   			badness += bad->no_dac;
->   		} else {
->   			/* print_nid_path(codec, "output", path); */
-> 
+> BTW "avoid write to" in the title is incorrect "writing to" would be
+> nicer.
 
-Not entirely true... dacs is passed by pointer, so value assigned to it 
-can be used somewhere else.
+  Updated commit message in V2 patch.
+> 
+> Thanks,
+> Miquèl
