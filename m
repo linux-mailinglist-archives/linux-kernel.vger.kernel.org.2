@@ -2,90 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42871377A3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 04:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B653F377A3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 04:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhEJCzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 22:55:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhEJCzW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 22:55:22 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBEEC061573
-        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 19:54:17 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id v22so9646757oic.2
-        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 19:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tcWX/pXHbSOvakEgT3NpvBMoIP10Mwx5q6UOsylrZuk=;
-        b=dCuQSLy08OgdrUNEtroNPxppJ7c/gmIlQzyM1EVjCMPAmqjEiVo09bsNjhfxuVqlXW
-         XwicWs2zzuGrMeyLi8OYvuu+N8WnuGvr6ssyuL1ywh+BKbsYSfo+n/wcBdE7du0JdMOP
-         v5PRWtuic+EukkhpOgop/xwtxVgKwJRPf4W6YF/1zOII9tB4CzQ81injK82CkuA2aMvQ
-         L5F7XDBXYxumsFTm2sAuZma54vm+wAMBEOk/Im3YytWaOm2VtxzkDdUZdr/nfD1m/xhe
-         2yURdoMX6EkuV1MEGZrW7jQSlK3jZX9dW0R/fMx1FwV3Jc0pc+TsY+tOJpiOVtM4YfXW
-         9+wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=tcWX/pXHbSOvakEgT3NpvBMoIP10Mwx5q6UOsylrZuk=;
-        b=ho3+LlNB/lM5BUbJEFKuBMVJUUWRBvndcgH1M8pUhb4VZKHnKyoHzkpdjthn95Kbb/
-         MZPckkNHMft0TejQ7GqiA8WKryrPQ6k8QJX3BlJTMYIq0oGC/biOySh9pKRoNZkA2p68
-         5X3Qjk3uO5bLg6/xyZacyzXplG8qULQxTdX74UQ5+yrxN0qxFPYi2kwKOxyHQsNZLSR4
-         SBHmBEfa+zvs+6tdEwfNFaRyf1usorKtany2OMpUm3Zk+lwvMMluYov5ztNwStqJpFd1
-         NvD14J4zkAWQsgx+wGOnniFdbkV24V0BGpAdw9OCijNbqYauV1wwfT+7wKtJ2oukHo25
-         5LWg==
-X-Gm-Message-State: AOAM5310K0ihVtTETrD23g1eZnqHZPCqnqPQbiSJM416Z0oJFS2HI/ux
-        NfFGNqukBdeJkwCRvfT6+bBG4WHpKQg=
-X-Google-Smtp-Source: ABdhPJx++Z2kC9Q1JKjOegiwavSsLQfXSTwoGYvq3p7YkR/1rheaUxrZJfpCGsPVI7dM3iPSv/Y/tw==
-X-Received: by 2002:a05:6808:14cc:: with SMTP id f12mr8645713oiw.115.1620615256749;
-        Sun, 09 May 2021 19:54:16 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r19sm2472615ooj.5.2021.05.09.19.54.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 May 2021 19:54:16 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 9 May 2021 19:54:14 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.13-rc1
-Message-ID: <20210510025414.GA2041281@roeck-us.net>
-References: <CAHk-=wiWTU+=wK9pv_YG01rXSqApCS_oY+78Ztz5-ORH5a-kvg@mail.gmail.com>
+        id S230188AbhEJC6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 22:58:31 -0400
+Received: from mga07.intel.com ([134.134.136.100]:51083 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229670AbhEJC6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 22:58:30 -0400
+IronPort-SDR: E6BOKqRC3jD8z47qhsrPSJiparxwyQBM0KDe7bSBSM5f61ZqzO2FJ99grDOktqP00D80wojYJw
+ h8p8idKlE0Yw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="263030892"
+X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
+   d="scan'208";a="263030892"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2021 19:57:26 -0700
+IronPort-SDR: 6K91kGL+MSn6CKe/D+S+5wlos8v6m0M5XDa+qOzvai4vrihr7gv1hyF8fEllhvE+Z003sBqTg7
+ jQhqlwfqP/xg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
+   d="scan'208";a="621044664"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga006.fm.intel.com with ESMTP; 09 May 2021 19:57:21 -0700
+Cc:     baolu.lu@linux.intel.com, Jason Gunthorpe <jgg@nvidia.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+References: <20210421162307.GM1370958@nvidia.com>
+ <20210421105451.56d3670a@redhat.com> <20210421175203.GN1370958@nvidia.com>
+ <20210421133312.15307c44@redhat.com> <20210421230301.GP1370958@nvidia.com>
+ <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210422121020.GT1370958@nvidia.com>
+ <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210423114944.GF1370958@nvidia.com>
+ <MWHPR11MB18861FE6982D73AFBF173E048C439@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210426123817.GQ1370958@nvidia.com>
+ <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210428090625.5a05dae8@redhat.com>
+ <MWHPR11MB1886E0A7897758AA7BE509058C579@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210507110614.7b8e6998@redhat.com>
+ <MWHPR11MB18862452FD4172DCA70C89B88C569@MWHPR11MB1886.namprd11.prod.outlook.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <b0b5b9b3-083e-1c77-276d-d6eef84806a6@linux.intel.com>
+Date:   Mon, 10 May 2021 10:56:37 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiWTU+=wK9pv_YG01rXSqApCS_oY+78Ztz5-ORH5a-kvg@mail.gmail.com>
+In-Reply-To: <MWHPR11MB18862452FD4172DCA70C89B88C569@MWHPR11MB1886.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 09, 2021 at 02:43:40PM -0700, Linus Torvalds wrote:
-[ ... ]
+On 5/8/21 3:31 PM, Tian, Kevin wrote:
+>> From: Alex Williamson<alex.williamson@redhat.com>
+>> Sent: Saturday, May 8, 2021 1:06 AM
+>>
+>>>> Those are the main ones I can think of.  It is nice to have a simple
+>>>> map/unmap interface, I'd hope that a new /dev/ioasid interface wouldn't
+>>>> raise the barrier to entry too high, but the user needs to have the
+>>>> ability to have more control of their mappings and locked page
+>>>> accounting should probably be offloaded somewhere.  Thanks,
+>>>>
+>>> Based on your feedbacks I feel it's probably reasonable to start with
+>>> a type1v2 semantics for the new interface. Locked accounting could
+>>> also start with the same VFIO restriction and then improve it
+>>> incrementally, if a cleaner way is intrusive (if not affecting uAPI).
+>>> But I didn't get the suggestion on "more control of their mappings".
+>>> Can you elaborate?
+>> Things like I note above, userspace cannot currently specify mapping
+>> granularity nor has any visibility to the granularity they get from the
+>> IOMMU.  What actually happens in the IOMMU is pretty opaque to the user
+>> currently.  Thanks,
+>>
+> It's much clearer. Based on all the discussions so far I'm thinking about
+> a staging approach when building the new interface, basically following
+> the model that Jason pointed out - generic stuff first, then platform
+> specific extension:
 > 
-> Go test,
+> Phase 1: /dev/ioasid with core ingredients and vfio type1v2 semantics
+>      - ioasid is the software handle representing an I/O page table
 
-Build results:
-	total: 151 pass: 151 fail: 0
-Qemu test results:
-	total: 462 pass: 460 fail: 2
-Failed tests:
-	arm:raspi2:multi_v7_defconfig:net,usb:bcm2836-rpi-2-b:initrd
-	arm:raspi2:multi_v7_defconfig:sd:net,usb:bcm2836-rpi-2-b:rootfs
+A trivial proposal, is it possible to use /dev/ioas? Conceptually, it's
+an IO address space representation and has nothing to do with any ID.
 
-The raspi2 problem (a crash in of_clk_add_hw_provider) is well known.
-It was introduced with commit 6579c8d97ad7 ("clk: Mark fwnodes when
-their clock provider is added"). Unfortunately it appears that there
-is still no agreement on how to fix it.
-
-There is also a repeated warning
-
-WARNING: CPU: 0 PID: 1 at kernel/irq/irqdomain.c:550 irq_domain_associate+0x194/0x1f0
-
-in some pxa boot tests. It looks like that problem has been fixed in -next.
-
-Guenter
+Best regards,
+baolu
