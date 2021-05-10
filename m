@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2953782E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8918237852F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhEJKi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:38:58 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2549 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232304AbhEJKeU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:34:20 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fdy4W51KszkY1f;
-        Mon, 10 May 2021 18:30:35 +0800 (CST)
-Received: from localhost.localdomain (10.175.101.6) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Mon, 10 May 2021 18:33:09 +0800
-Date:   Tue, 11 May 2021 10:44:40 +0800
-From:   Lv Ying <lvying6@huawei.com>
-To:     Borislav Petkov <bp@alien8.de>
-CC:     <tony.luck@intel.com>, <linux-edac@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <mchehab+huawei@kernel.org>
-Subject: Re: [RFC PATCH] x86/mce/inject: Fix printk deadlock causing
- mce_timed_out panic
-Message-ID: <20210511024440.GA186630@localhost.localdomain>
-References: <20210509053229.GA2477949@localhost.localdomain>
- <YJahM9PaZ7Jefkbi@zn.tnic>
- <20210510200424.GA4056660@localhost.localdomain>
- <YJj+hHBEi8sYMp79@zn.tnic>
- <YJkAikroIpzN1Fl3@zn.tnic>
+        id S233575AbhEJK7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:59:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231951AbhEJKnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:43:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A66561985;
+        Mon, 10 May 2021 10:33:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620642785;
+        bh=Zrn6PZ/vD053kAqHNW7k7BCKX5TpMdTryt4Px1tVa7U=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=caQvE+15NjmW4w8L3AiK/fL5XJB9r8w4BF2dQteUhsuXCdvDLxiuc3BcnBvvP76cf
+         YonWqcSkdCdABreL1nOIHj0CauGxZ86bdeBqh4OisXcSsuJuvb0QKpusBEzvmMTHjh
+         KYXqOLyiNBDAqmBypgR+l8MoTn4KQIi20jO1CUno=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Shuo Chen <shuochen@google.com>,
+        Jason Baron <jbaron@akamai.com>
+Subject: [PATCH 5.10 005/299] dyndbg: fix parsing file query without a line-range suffix
+Date:   Mon, 10 May 2021 12:16:42 +0200
+Message-Id: <20210510102005.004525410@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YJkAikroIpzN1Fl3@zn.tnic>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 11:44:42AM +0200, Borislav Petkov wrote:
-> + Mauro.
-> 
-> On Mon, May 10, 2021 at 11:36:04AM +0200, Borislav Petkov wrote:
-> > On Tue, May 11, 2021 at 09:33:10AM +0800, Lv Ying wrote:
-> > > This panic happend on 4.18 kernel
-> > 
-> > When you report bugs and send patches to lkml and maintainers, *always*
-> > do that against the latest upstream version.
-> > 
-> > This is not the first time people from Huawei send bug reports and
-> > "fixes" for old kernels.
-> > 
-> > Please let your colleagues and whoever else at Huawei is sending patches
-> > and reporting bugs - *always* test and report bugs against the latest
-> > upstream kernel - not some old version!
-> > 
-> > If you want bugs against
-> > 
-> > 4.18.0-147.5.1.6.h429.eulerosv2r10.x86_64
-> > 
-> > fixed, go report that to whoever has made that kernel - not upstream.
-> > 
-> > Now, if you want to improve the upstream kernel and can trigger the same
-> > thing with the upstream kernel, pls give the *exact* full information I
-> > asked you before so that I am able to reproduce that here independently
-> > and then we can take it from there.
-> > 
-> > HTH.
->
+From: Shuo Chen <shuochen@google.com>
 
-Boris, thanks again for your time to explain the detailed and standard
-upstream bug report process.
-Next, I will test on the latest upstream kernel(indpendent to any distro).
-If I can reproduce this problem, I will send detailed test script.
+commit 7b1ae248279bea33af9e797a93c35f49601cb8a0 upstream.
 
-Thanks
-Lv Ying
+Query like 'file tcp_input.c line 1234 +p' was broken by
+commit aaebe329bff0 ("dyndbg: accept 'file foo.c:func1' and 'file
+foo.c:10-100'") because a file name without a ':' now makes the loop in
+ddebug_parse_query() exits early before parsing the 'line 1234' part.
+As a result, all pr_debug() in tcp_input.c will be enabled, instead of only
+the one on line 1234.  Changing 'break' to 'continue' fixes this.
+
+Fixes: aaebe329bff0 ("dyndbg: accept 'file foo.c:func1' and 'file foo.c:10-100'")
+Cc: stable <stable@vger.kernel.org>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Shuo Chen <shuochen@google.com>
+Acked-by: Jason Baron <jbaron@akamai.com>
+Link: https://lore.kernel.org/r/20210414212400.2927281-1-giantchen@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ lib/dynamic_debug.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -396,7 +396,7 @@ static int ddebug_parse_query(char *word
+ 			/* tail :$info is function or line-range */
+ 			fline = strchr(query->filename, ':');
+ 			if (!fline)
+-				break;
++				continue;
+ 			*fline++ = '\0';
+ 			if (isalpha(*fline) || *fline == '*' || *fline == '?') {
+ 				/* take as function name */
+
+
