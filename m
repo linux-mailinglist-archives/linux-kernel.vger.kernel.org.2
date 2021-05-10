@@ -2,69 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B973780D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9723780DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhEJKJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:09:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51522 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230002AbhEJKJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:09:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A9CFCB034;
-        Mon, 10 May 2021 10:08:19 +0000 (UTC)
-Date:   Mon, 10 May 2021 12:08:14 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
-        willy@infradead.org, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com, naoya.horiguchi@nec.com,
-        joao.m.martins@oracle.com, duanxiongchun@bytedance.com,
-        fam.zheng@bytedance.com, zhengqi.arch@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v23 8/9] mm: memory_hotplug: disable memmap_on_memory
- when hugetlb_free_vmemmap enabled
-Message-ID: <20210510100809.GA22664@linux>
-References: <20210510030027.56044-1-songmuchun@bytedance.com>
- <20210510030027.56044-9-songmuchun@bytedance.com>
+        id S230235AbhEJKKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:10:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229566AbhEJKKK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:10:10 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56357C061574;
+        Mon, 10 May 2021 03:09:05 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id m11so6067656lfg.3;
+        Mon, 10 May 2021 03:09:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Z0LOLJf4NELTeN88Cp5IZblgLz2ynJBm7Lo6dCI4QmY=;
+        b=U22GdFAp6GV5W1SWd17smnRmeJWW5Muf966MLaSSeBYQArR3gZnPoAztB9626gDLwV
+         ZG13r/aaLGTi5MrZd4H6pywv9hYLFl1oryuTiOtBlZX5zbb5gDHoOm9wHd7F4alaFdVl
+         oFBhSHOSM/Bn8fQMtUTNzEZ+DB7aJbOAqtjZpcGbXKWMyGv8OgVpFG62ge46DY/gJ4tl
+         xRNCkrURBkI+KTmPKbdymDtLlWA+JmtVvuRNdz69c4Y2SQ5rXlG9pVNZugiIdwNyCYhL
+         phW3laEqPn2VZMw8DeKEyhEOYocl1zse9a+S46XfnGwTlHJJMGJYyFk6tOzMM1caOhaZ
+         TGfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Z0LOLJf4NELTeN88Cp5IZblgLz2ynJBm7Lo6dCI4QmY=;
+        b=j0gVuI6mgh2GAxTBIYyXpojU+jbbIjRpkI7mxz/qi/CUN151cbih0Q1dMPqlpZtpj7
+         Rd9m6AD9lv3JNugCdw2kaeSrWx9WC4MydRC2Svyxe/bSYSOmVxADf3b49undQrmK4Tgv
+         lmtiQU3UCH/5ogTs6ILufnlO+2qlz3SHsU6bXO/mgod2pnrbCzQZqqgOTh/x9sm6P+rA
+         yIxOY+AuRebhEVIQsEwSk77ImjdVklHb9sNcV6KbvanLTFGa+R7XpBrD6I901ddcwntg
+         J/opzHEQZTmcr26LDv9c9h2+YvND2nqRaZSbT0QCYMWaAV9gJ0NYzWA0+qt0qbU2+bKk
+         qPjQ==
+X-Gm-Message-State: AOAM533KWEhn0hDFpiiGKyYVNDhd9+3DFaNpwx199D4pTom8zLh/aI1P
+        DbJOLpQC8DYDTrcpHd06HjQ=
+X-Google-Smtp-Source: ABdhPJwCdLdAk3miHXGdXJjhG6QtXR/cGKt74SaASdNE8kmYh5ZO2kZs3po/siQCQo4AduyiziNZLg==
+X-Received: by 2002:a05:6512:686:: with SMTP id t6mr14025327lfe.51.1620641343900;
+        Mon, 10 May 2021 03:09:03 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id x26sm3173576ljj.46.2021.05.10.03.09.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 03:09:03 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 10 May 2021 12:09:01 +0200
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michal Hocko <mhocko@suse.com>, Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH v1 4/5] kvfree_rcu: Refactor kfree_rcu_monitor() function
+Message-ID: <20210510100901.GA2019@pc638.lan>
+References: <20210428134422.1894-1-urezki@gmail.com>
+ <20210428134422.1894-4-urezki@gmail.com>
+ <20210509165954.347dd3cd8e8815b9dce67cfb@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510030027.56044-9-songmuchun@bytedance.com>
+In-Reply-To: <20210509165954.347dd3cd8e8815b9dce67cfb@linux-foundation.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 11:00:26AM +0800, Muchun Song wrote:
-> diff --git a/drivers/acpi/acpi_memhotplug.c b/drivers/acpi/acpi_memhotplug.c
-> index 8cc195c4c861..0d7f595ee441 100644
-> --- a/drivers/acpi/acpi_memhotplug.c
-> +++ b/drivers/acpi/acpi_memhotplug.c
-> @@ -15,6 +15,7 @@
->  #include <linux/acpi.h>
->  #include <linux/memory.h>
->  #include <linux/memory_hotplug.h>
-> +#include <linux/hugetlb.h>
->  
->  #include "internal.h"
+On Sun, May 09, 2021 at 04:59:54PM -0700, Andrew Morton wrote:
+> On Wed, 28 Apr 2021 15:44:21 +0200 "Uladzislau Rezki (Sony)" <urezki@gmail.com> wrote:
+> 
+> > Rearm the monitor work directly from its own function that
+> > is kfree_rcu_monitor(). So this patch puts the invocation
+> > timing control in one place.
+> >
+> > ...
+> >
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3415,37 +3415,44 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+> >  	return !repeat;
+> >  }
+> >  
+> > -static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+> > -					  unsigned long flags)
+> > +/*
+> > + * This function queues a new batch. If success or nothing to
+> > + * drain it returns 1. Otherwise 0 is returned indicating that
+> > + * a reclaim kthread has not processed a previous batch.
+> > + */
+> > +static inline int kfree_rcu_drain(struct kfree_rcu_cpu *krcp)
+> >  {
+> > +	unsigned long flags;
+> > +	int ret;
+> > +
+> > +	raw_spin_lock_irqsave(&krcp->lock, flags);
+> > +
+> >  	// Attempt to start a new batch.
+> > -	if (queue_kfree_rcu_work(krcp)) {
+> > +	ret = queue_kfree_rcu_work(krcp);
+> 
+> This code has changed slightly in mainline.  Can you please redo,
+> retest and resend?
+> 
+> > +	if (ret)
+> >  		// Success! Our job is done here.
+> >  		krcp->monitor_todo = false;
+> > -		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > -		return;
+> > -	}
+> 
+> It's conventional to retain the braces here, otherwise the code looks
+> weird.  Unless you're a python programmer ;)
+> 
+> 
+Hello, Anrew.
 
-Uhm, I am confused.
-Why do we need this here? AFAICS, we do not.
+This refactoring is not up to date and is obsolete, instead we have done 
+bigger rework of kfree_rcu_monitor(). It is located here:
 
-The function is in memory_hotplug.c, and that alrady has that include.
-What am I missing?
+https://kernel.googlesource.com/pub/scm/linux/kernel/git/paulmck/linux-rcu/+/2349a35d39e7af5eef9064cbd0e42309040551da%5E%21/#F0
 
-
--- 
-Oscar Salvador
-SUSE L3
+--
+Vlad Rezki
