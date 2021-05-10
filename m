@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53AFB378796
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC42378797
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237750AbhEJLQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:16:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41914 "EHLO mail.kernel.org"
+        id S237773AbhEJLQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:16:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231609AbhEJKum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:50:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8171061964;
-        Mon, 10 May 2021 10:40:21 +0000 (UTC)
+        id S232734AbhEJKuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:50:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E11A46195E;
+        Mon, 10 May 2021 10:40:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643222;
-        bh=vyc+nJ14+lnmbhVlGuewjiHY/sqNuE9+DBlk5Cv7qy4=;
+        s=korg; t=1620643224;
+        bh=j+yJxaDaNg+0dsAfuh4blpsx95zm7XMjaysqroZ6ZpI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NEgvgswoXzZ0D63EPx0kRQPL1Y5BHOHY8xRxIv8MyUAt6CJ0v8qlzh4txPQJOYFE9
-         KgvHSNUxd3t5YwIT4ME3r2ZpFczzIZE75Q+EGIGF9XOw83fy8p4VmcvcIGdCM4HkKe
-         ql0Y/tFG+Q0WuzusZD0w9h/PRpWgdmxeNUdWj/8E=
+        b=jkXipbe9nzmOxV0ATMSB9UM6u+W6lZG+re74GQuZJBr7fHtir7NqpwgSa7CUlPG2s
+         fKX5NI0wF6mky5qh4NQ2AUqFpTCZoooBYEnG2XNb0RBAOH2GJJt82awbnxixfEi09u
+         QPZsZ+ZeNc7XKxlmbUwtIy3EOhwmdG95GIoPiMrI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH 5.10 226/299] kcsan, debugfs: Move debugfs file creation out of early init
-Date:   Mon, 10 May 2021 12:20:23 +0200
-Message-Id: <20210510102012.418091716@linuxfoundation.org>
+        stable@vger.kernel.org, Guochun Mao <guochun.mao@mediatek.com>,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH 5.10 227/299] ubifs: Only check replay with inode type to judge if inode linked
+Date:   Mon, 10 May 2021 12:20:24 +0200
+Message-Id: <20210510102012.449612872@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
 References: <20210510102004.821838356@linuxfoundation.org>
@@ -40,69 +39,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco Elver <elver@google.com>
+From: Guochun Mao <guochun.mao@mediatek.com>
 
-commit e36299efe7d749976fbdaaf756dee6ef32543c2c upstream.
+commit 3e903315790baf4a966436e7f32e9c97864570ac upstream.
 
-Commit 56348560d495 ("debugfs: do not attempt to create a new file
-before the filesystem is initalized") forbids creating new debugfs files
-until debugfs is fully initialized.  This means that KCSAN's debugfs
-file creation, which happened at the end of __init(), no longer works.
-And was apparently never supposed to work!
+Conside the following case, it just write a big file into flash,
+when complete writing, delete the file, and then power off promptly.
+Next time power on, we'll get a replay list like:
+...
+LEB 1105:211344 len 4144 deletion 0 sqnum 428783 key type 1 inode 80
+LEB 15:233544 len 160 deletion 1 sqnum 428785 key type 0 inode 80
+LEB 1105:215488 len 4144 deletion 0 sqnum 428787 key type 1 inode 80
+...
+In the replay list, data nodes' deletion are 0, and the inode node's
+deletion is 1. In current logic, the file's dentry will be removed,
+but inode and the flash space it occupied will be reserved.
+User will see that much free space been disappeared.
 
-However, there is no reason to create KCSAN's debugfs file so early.
-This commit therefore moves its creation to a late_initcall() callback.
+We only need to check the deletion value of the following inode type
+node of the replay entry.
 
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: stable <stable@vger.kernel.org>
-Fixes: 56348560d495 ("debugfs: do not attempt to create a new file before the filesystem is initalized")
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Marco Elver <elver@google.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Fixes: e58725d51fa8 ("ubifs: Handle re-linking of inodes correctly while recovery")
+Cc: stable@vger.kernel.org
+Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/kcsan/core.c    |    2 --
- kernel/kcsan/debugfs.c |    4 +++-
- kernel/kcsan/kcsan.h   |    5 -----
- 3 files changed, 3 insertions(+), 8 deletions(-)
+ fs/ubifs/replay.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/kernel/kcsan/core.c
-+++ b/kernel/kcsan/core.c
-@@ -639,8 +639,6 @@ void __init kcsan_init(void)
+--- a/fs/ubifs/replay.c
++++ b/fs/ubifs/replay.c
+@@ -223,7 +223,8 @@ static bool inode_still_linked(struct ub
+ 	 */
+ 	list_for_each_entry_reverse(r, &c->replay_list, list) {
+ 		ubifs_assert(c, r->sqnum >= rino->sqnum);
+-		if (key_inum(c, &r->key) == key_inum(c, &rino->key))
++		if (key_inum(c, &r->key) == key_inum(c, &rino->key) &&
++		    key_type(c, &r->key) == UBIFS_INO_KEY)
+ 			return r->deletion == 0;
  
- 	BUG_ON(!in_task());
- 
--	kcsan_debugfs_init();
--
- 	for_each_possible_cpu(cpu)
- 		per_cpu(kcsan_rand_state, cpu) = (u32)get_cycles();
- 
---- a/kernel/kcsan/debugfs.c
-+++ b/kernel/kcsan/debugfs.c
-@@ -261,7 +261,9 @@ static const struct file_operations debu
- 	.release = single_release
- };
- 
--void __init kcsan_debugfs_init(void)
-+static void __init kcsan_debugfs_init(void)
- {
- 	debugfs_create_file("kcsan", 0644, NULL, NULL, &debugfs_ops);
- }
-+
-+late_initcall(kcsan_debugfs_init);
---- a/kernel/kcsan/kcsan.h
-+++ b/kernel/kcsan/kcsan.h
-@@ -31,11 +31,6 @@ void kcsan_save_irqtrace(struct task_str
- void kcsan_restore_irqtrace(struct task_struct *task);
- 
- /*
-- * Initialize debugfs file.
-- */
--void kcsan_debugfs_init(void);
--
--/*
-  * Statistics counters displayed via debugfs; should only be modified in
-  * slow-paths.
-  */
+ 	}
 
 
