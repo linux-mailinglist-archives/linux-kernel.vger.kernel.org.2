@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39973786D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EBD378A07
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237256AbhEJLLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:11:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41710 "EHLO mail.kernel.org"
+        id S240719AbhEJLgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:36:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233208AbhEJKtv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:49:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE428619CD;
-        Mon, 10 May 2021 10:38:32 +0000 (UTC)
+        id S235026AbhEJK5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0A7861C3A;
+        Mon, 10 May 2021 10:51:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643113;
-        bh=MUVpAbIDpHgX4tBtKUQo8bni9gOy8VJ4MiQLiHFiun0=;
+        s=korg; t=1620643865;
+        bh=ac/ECm5ssDNwfZVOirucWzBGrSsQR/PGlfv7yDn6bOs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bg+6Fk/Ui2YzCz0VeebQDcDzl8EIMJS15Hf6N4q5tVX85bKX+nnwTGW97OoCr/Dl6
-         ts+XeODsr+h7sMaRZeNE1odDM5iHA6mV7gBYpqon3JvQER/pyEEqzgTAbX1IhITyCo
-         qdpGPoC7rdk0wNi5UXhFxhZzs3KyI4fx2akRRe3E=
+        b=JtfOCjw76re1uJ94T7hBdkmeg8fJxwHljBpwNr1JCrus2RheW0TbZw1oxYP6Vi9cI
+         w2+Gem+je/3TS+blnqn835GF2JJbHbZGMULu231whUCoUO/zjYmiem8OgYQiuBC5JG
+         1Qjd3GsujG2Xdc4SrhuY8m/eyMLFqOxW5kbGGqV8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+3c2be7424cea3b932b0e@syzkaller.appspotmail.com,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 183/299] media: dvb-usb: fix memory leak in dvb_usb_adapter_init
-Date:   Mon, 10 May 2021 12:19:40 +0200
-Message-Id: <20210510102011.008455848@linuxfoundation.org>
+Subject: [PATCH 5.11 191/342] selftests/resctrl: Fix checking for < 0 for unsigned values
+Date:   Mon, 10 May 2021 12:19:41 +0200
+Message-Id: <20210510102016.404242129@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,81 +42,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Fenghua Yu <fenghua.yu@intel.com>
 
-[ Upstream commit b7cd0da982e3043f2eec7235ac5530cb18d6af1d ]
+[ Upstream commit 1205b688c92558a04d8dd4cbc2b213e0fceba5db ]
 
-syzbot reported memory leak in dvb-usb. The problem was
-in invalid error handling in dvb_usb_adapter_init().
+Dan reported following static checker warnings
 
-for (n = 0; n < d->props.num_adapters; n++) {
-....
-	if ((ret = dvb_usb_adapter_stream_init(adap)) ||
-		(ret = dvb_usb_adapter_dvb_init(adap, adapter_nrs)) ||
-		(ret = dvb_usb_adapter_frontend_init(adap))) {
-		return ret;
-	}
-...
-	d->num_adapters_initialized++;
-...
-}
+tools/testing/selftests/resctrl/resctrl_val.c:545 measure_vals()
+warn: 'bw_imc' unsigned <= 0
 
-In case of error in dvb_usb_adapter_dvb_init() or
-dvb_usb_adapter_dvb_init() d->num_adapters_initialized won't be
-incremented, but dvb_usb_adapter_exit() relies on it:
+tools/testing/selftests/resctrl/resctrl_val.c:549 measure_vals()
+warn: 'bw_resc_end' unsigned <= 0
 
-	for (n = 0; n < d->num_adapters_initialized; n++)
+These warnings are reported because
+1. measure_vals() declares 'bw_imc' and 'bw_resc_end' as unsigned long
+   variables
+2. Return value of get_mem_bw_imc() and get_mem_bw_resctrl() are assigned
+   to 'bw_imc' and 'bw_resc_end' respectively
+3. The returned values are checked for <= 0 to see if the calls failed
 
-So, allocated objects won't be freed.
+Checking for < 0 for an unsigned value doesn't make any sense.
 
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Reported-by: syzbot+3c2be7424cea3b932b0e@syzkaller.appspotmail.com
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fix this issue by changing the implementation of get_mem_bw_imc() and
+get_mem_bw_resctrl() such that they now accept reference to a variable
+and set the variable appropriately upon success and return 0, else return
+< 0 on error.
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Tested-by: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb/dvb-usb-init.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ tools/testing/selftests/resctrl/resctrl_val.c | 41 +++++++++++--------
+ 1 file changed, 23 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/media/usb/dvb-usb/dvb-usb-init.c b/drivers/media/usb/dvb-usb/dvb-usb-init.c
-index c1a7634e27b4..adc8b287326b 100644
---- a/drivers/media/usb/dvb-usb/dvb-usb-init.c
-+++ b/drivers/media/usb/dvb-usb/dvb-usb-init.c
-@@ -79,11 +79,17 @@ static int dvb_usb_adapter_init(struct dvb_usb_device *d, short *adapter_nrs)
- 			}
- 		}
- 
--		if ((ret = dvb_usb_adapter_stream_init(adap)) ||
--			(ret = dvb_usb_adapter_dvb_init(adap, adapter_nrs)) ||
--			(ret = dvb_usb_adapter_frontend_init(adap))) {
-+		ret = dvb_usb_adapter_stream_init(adap);
-+		if (ret)
- 			return ret;
--		}
-+
-+		ret = dvb_usb_adapter_dvb_init(adap, adapter_nrs);
-+		if (ret)
-+			goto dvb_init_err;
-+
-+		ret = dvb_usb_adapter_frontend_init(adap);
-+		if (ret)
-+			goto frontend_init_err;
- 
- 		/* use exclusive FE lock if there is multiple shared FEs */
- 		if (adap->fe_adap[1].fe)
-@@ -103,6 +109,12 @@ static int dvb_usb_adapter_init(struct dvb_usb_device *d, short *adapter_nrs)
+diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
+index 5478c23c62ba..8df557894059 100644
+--- a/tools/testing/selftests/resctrl/resctrl_val.c
++++ b/tools/testing/selftests/resctrl/resctrl_val.c
+@@ -300,9 +300,9 @@ static int initialize_mem_bw_imc(void)
+  * Memory B/W utilized by a process on a socket can be calculated using
+  * iMC counters. Perf events are used to read these counters.
+  *
+- * Return: >= 0 on success. < 0 on failure.
++ * Return: = 0 on success. < 0 on failure.
+  */
+-static float get_mem_bw_imc(int cpu_no, char *bw_report)
++static int get_mem_bw_imc(int cpu_no, char *bw_report, float *bw_imc)
+ {
+ 	float reads, writes, of_mul_read, of_mul_write;
+ 	int imc, j, ret;
+@@ -373,13 +373,18 @@ static float get_mem_bw_imc(int cpu_no, char *bw_report)
+ 		close(imc_counters_config[imc][WRITE].fd);
  	}
  
- 	return 0;
-+
-+frontend_init_err:
-+	dvb_usb_adapter_dvb_exit(adap);
-+dvb_init_err:
-+	dvb_usb_adapter_stream_exit(adap);
-+	return ret;
+-	if (strcmp(bw_report, "reads") == 0)
+-		return reads;
++	if (strcmp(bw_report, "reads") == 0) {
++		*bw_imc = reads;
++		return 0;
++	}
+ 
+-	if (strcmp(bw_report, "writes") == 0)
+-		return writes;
++	if (strcmp(bw_report, "writes") == 0) {
++		*bw_imc = writes;
++		return 0;
++	}
+ 
+-	return (reads + writes);
++	*bw_imc = reads + writes;
++	return 0;
  }
  
- static int dvb_usb_adapter_exit(struct dvb_usb_device *d)
+ void set_mbm_path(const char *ctrlgrp, const char *mongrp, int resource_id)
+@@ -438,9 +443,8 @@ static void initialize_mem_bw_resctrl(const char *ctrlgrp, const char *mongrp,
+  * 1. If con_mon grp is given, then read from it
+  * 2. If con_mon grp is not given, then read from root con_mon grp
+  */
+-static unsigned long get_mem_bw_resctrl(void)
++static int get_mem_bw_resctrl(unsigned long *mbm_total)
+ {
+-	unsigned long mbm_total = 0;
+ 	FILE *fp;
+ 
+ 	fp = fopen(mbm_total_path, "r");
+@@ -449,7 +453,7 @@ static unsigned long get_mem_bw_resctrl(void)
+ 
+ 		return -1;
+ 	}
+-	if (fscanf(fp, "%lu", &mbm_total) <= 0) {
++	if (fscanf(fp, "%lu", mbm_total) <= 0) {
+ 		perror("Could not get mbm local bytes");
+ 		fclose(fp);
+ 
+@@ -457,7 +461,7 @@ static unsigned long get_mem_bw_resctrl(void)
+ 	}
+ 	fclose(fp);
+ 
+-	return mbm_total;
++	return 0;
+ }
+ 
+ pid_t bm_pid, ppid;
+@@ -549,7 +553,8 @@ static void initialize_llc_occu_resctrl(const char *ctrlgrp, const char *mongrp,
+ static int
+ measure_vals(struct resctrl_val_param *param, unsigned long *bw_resc_start)
+ {
+-	unsigned long bw_imc, bw_resc, bw_resc_end;
++	unsigned long bw_resc, bw_resc_end;
++	float bw_imc;
+ 	int ret;
+ 
+ 	/*
+@@ -559,13 +564,13 @@ measure_vals(struct resctrl_val_param *param, unsigned long *bw_resc_start)
+ 	 * Compare the two values to validate resctrl value.
+ 	 * It takes 1sec to measure the data.
+ 	 */
+-	bw_imc = get_mem_bw_imc(param->cpu_no, param->bw_report);
+-	if (bw_imc <= 0)
+-		return bw_imc;
++	ret = get_mem_bw_imc(param->cpu_no, param->bw_report, &bw_imc);
++	if (ret < 0)
++		return ret;
+ 
+-	bw_resc_end = get_mem_bw_resctrl();
+-	if (bw_resc_end <= 0)
+-		return bw_resc_end;
++	ret = get_mem_bw_resctrl(&bw_resc_end);
++	if (ret < 0)
++		return ret;
+ 
+ 	bw_resc = (bw_resc_end - *bw_resc_start) / MB;
+ 	ret = print_results_bw(param->filename, bm_pid, bw_imc, bw_resc);
 -- 
 2.30.2
 
