@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632C63789B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95DA37866F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234803AbhEJLbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:31:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52682 "EHLO mail.kernel.org"
+        id S236235AbhEJLHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:07:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234840AbhEJK5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1FF96194D;
-        Mon, 10 May 2021 10:49:51 +0000 (UTC)
+        id S232850AbhEJKrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:47:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6230619B0;
+        Mon, 10 May 2021 10:37:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643792;
-        bh=68IAiojGTqdlEEmbV+6OLViD4ckdZJ2dRbHFp8ldvfY=;
+        s=korg; t=1620643043;
+        bh=gXiOxhMbUGRqAdnAYW3ioYWMt2JDeB0OfgFadacRKuM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WANEOc3DhbWYpzQYrqr/fEHA0IIBqHbDikqA02+OcLsitORV2WyLiNLHzgYiWpHYo
-         oalWjU00IZiY15LFE+5PSHugOB/0m4ulB1CBt1dGd77kxTk2TIhw103Jc+bsU5KCZO
-         53AdGCJTEF9HwM4DdQ5VU+mYf/pHidytArMEbUMk=
+        b=yEhqKOTXrvR/oHWrmW/CPLSVpQ+DjHzJBEBxAEIMRdPKDh2LJFBI0yyZUJv8cu8sj
+         IrXSZlV79uNNQBYy3b05leKCr78qtnL6iXtqobLfVuF0rsbrzfKzwvALLBppVv8PDp
+         rvIgiHTkNAFMwRhbYUiN1mpRvxrM1iM2WuJQwiIw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Al Cooper <alcooperx@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 160/342] extcon: arizona: Fix various races on driver unbind
+Subject: [PATCH 5.10 153/299] mmc: sdhci-brcmstb: Remove CQE quirk
 Date:   Mon, 10 May 2021 12:19:10 +0200
-Message-Id: <20210510102015.382191451@linuxfoundation.org>
+Message-Id: <20210510102010.004502600@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,130 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Al Cooper <alcooperx@gmail.com>
 
-[ Upstream commit e5b499f6fb17bc95a813e85d0796522280203806 ]
+[ Upstream commit f0bdf98fab058efe7bf49732f70a0f26d1143154 ]
 
-We must free/disable all interrupts and cancel all pending works
-before doing further cleanup.
+Remove the CQHCI_QUIRK_SHORT_TXFR_DESC_SZ quirk because the
+latest chips have this fixed and earlier chips have other
+CQE problems that prevent the feature from being enabled.
 
-Before this commit arizona_extcon_remove() was doing several
-register writes to shut things down before disabling the IRQs
-and it was cancelling only 1 of the 3 different works used.
-
-Move all the register-writes shutting things down to after
-the disabling of the IRQs and add the 2 missing
-cancel_delayed_work_sync() calls.
-
-This fixes various possible races on driver unbind. One of which
-would always trigger on devices using the mic-clamp feature for
-jack detection. The ARIZONA_MICD_CLAMP_MODE_MASK update was
-done before disabling the IRQs, causing:
-1. arizona_jackdet() to run
-2. detect a jack being inserted (clamp disabled means jack inserted)
-3. call arizona_start_mic() which:
-3.1 Enables the MICVDD regulator
-3.2 takes a pm_runtime_reference
-
-And this was all happening after the ARIZONA_MICD_ENA bit clearing,
-which would undo 3.1 and 3.2 because the ARIZONA_MICD_CLAMP_MODE_MASK
-update was being done after the ARIZONA_MICD_ENA bit clearing.
-
-So this means that arizona_extcon_remove() would exit with
-1. MICVDD enabled and 2. The pm_runtime_reference being unbalanced.
-
-MICVDD still being enabled caused the following oops when the
-regulator is released by the devm framework:
-
-[ 2850.745757] ------------[ cut here ]------------
-[ 2850.745827] WARNING: CPU: 2 PID: 2098 at drivers/regulator/core.c:2123 _regulator_put.part.0+0x19f/0x1b0
-[ 2850.745835] Modules linked in: extcon_arizona ...
-...
-[ 2850.746909] Call Trace:
-[ 2850.746932]  regulator_put+0x2d/0x40
-[ 2850.746946]  release_nodes+0x22a/0x260
-[ 2850.746984]  __device_release_driver+0x190/0x240
-[ 2850.747002]  driver_detach+0xd4/0x120
-...
-[ 2850.747337] ---[ end trace f455dfd7abd9781f ]---
-
-Note this oops is just one of various theoretically possible races caused
-by the wrong ordering inside arizona_extcon_remove(), this fixes the
-ordering fixing all possible races, including the reported oops.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Al Cooper <alcooperx@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20210325192834.42955-1-alcooperx@gmail.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/extcon/extcon-arizona.c | 40 +++++++++++++++++----------------
- 1 file changed, 21 insertions(+), 19 deletions(-)
+ drivers/mmc/host/sdhci-brcmstb.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
-index f7ef247de46a..76aacbac5869 100644
---- a/drivers/extcon/extcon-arizona.c
-+++ b/drivers/extcon/extcon-arizona.c
-@@ -1760,25 +1760,6 @@ static int arizona_extcon_remove(struct platform_device *pdev)
- 	bool change;
- 	int ret;
+diff --git a/drivers/mmc/host/sdhci-brcmstb.c b/drivers/mmc/host/sdhci-brcmstb.c
+index f9780c65ebe9..f24623aac2db 100644
+--- a/drivers/mmc/host/sdhci-brcmstb.c
++++ b/drivers/mmc/host/sdhci-brcmstb.c
+@@ -199,7 +199,6 @@ static int sdhci_brcmstb_add_host(struct sdhci_host *host,
+ 	if (dma64) {
+ 		dev_dbg(mmc_dev(host->mmc), "Using 64 bit DMA\n");
+ 		cq_host->caps |= CQHCI_TASK_DESC_SZ_128;
+-		cq_host->quirks |= CQHCI_QUIRK_SHORT_TXFR_DESC_SZ;
+ 	}
  
--	ret = regmap_update_bits_check(arizona->regmap, ARIZONA_MIC_DETECT_1,
--				       ARIZONA_MICD_ENA, 0,
--				       &change);
--	if (ret < 0) {
--		dev_err(&pdev->dev, "Failed to disable micd on remove: %d\n",
--			ret);
--	} else if (change) {
--		regulator_disable(info->micvdd);
--		pm_runtime_put(info->dev);
--	}
--
--	gpiod_put(info->micd_pol_gpio);
--
--	pm_runtime_disable(&pdev->dev);
--
--	regmap_update_bits(arizona->regmap,
--			   ARIZONA_MICD_CLAMP_CONTROL,
--			   ARIZONA_MICD_CLAMP_MODE_MASK, 0);
--
- 	if (info->micd_clamp) {
- 		jack_irq_rise = ARIZONA_IRQ_MICD_CLAMP_RISE;
- 		jack_irq_fall = ARIZONA_IRQ_MICD_CLAMP_FALL;
-@@ -1794,10 +1775,31 @@ static int arizona_extcon_remove(struct platform_device *pdev)
- 	arizona_free_irq(arizona, jack_irq_rise, info);
- 	arizona_free_irq(arizona, jack_irq_fall, info);
- 	cancel_delayed_work_sync(&info->hpdet_work);
-+	cancel_delayed_work_sync(&info->micd_detect_work);
-+	cancel_delayed_work_sync(&info->micd_timeout_work);
-+
-+	ret = regmap_update_bits_check(arizona->regmap, ARIZONA_MIC_DETECT_1,
-+				       ARIZONA_MICD_ENA, 0,
-+				       &change);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "Failed to disable micd on remove: %d\n",
-+			ret);
-+	} else if (change) {
-+		regulator_disable(info->micvdd);
-+		pm_runtime_put(info->dev);
-+	}
-+
-+	regmap_update_bits(arizona->regmap,
-+			   ARIZONA_MICD_CLAMP_CONTROL,
-+			   ARIZONA_MICD_CLAMP_MODE_MASK, 0);
- 	regmap_update_bits(arizona->regmap, ARIZONA_JACK_DETECT_ANALOGUE,
- 			   ARIZONA_JD1_ENA, 0);
- 	arizona_clk32k_disable(arizona);
- 
-+	gpiod_put(info->micd_pol_gpio);
-+
-+	pm_runtime_disable(&pdev->dev);
-+
- 	return 0;
- }
- 
+ 	ret = cqhci_init(cq_host, host->mmc, dma64);
 -- 
 2.30.2
 
