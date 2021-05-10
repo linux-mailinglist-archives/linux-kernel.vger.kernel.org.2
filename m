@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A00378D17
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D78378D3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347217AbhEJMdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:33:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46278 "EHLO mail.kernel.org"
+        id S1347842AbhEJMhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:37:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232793AbhEJLLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:11:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E60461938;
-        Mon, 10 May 2021 11:09:35 +0000 (UTC)
+        id S237723AbhEJLQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:16:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0A5D6145C;
+        Mon, 10 May 2021 11:11:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644975;
-        bh=C1l21XK72hRsuz8PCOavxVI3pVZMJ9hB26W5tSOAJV4=;
+        s=korg; t=1620645084;
+        bh=Z3l4YmwAXxTeVKaGMy/bTcNl0d4GDdy4twdeXag1rbg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KJExCCSFQsBVR4n/kCJQUGp1ZzUd5Qm8EWUutzKopvNGLOVNtwB1Dx5xVIrykYZPP
-         RjoOOwK520PIHmBVFf9d1NFN4RZ4G8zKlrn/n4OsTR5xpRlWJJu4PWs93Bopv5tIEj
-         zQJoPMcwn3RvU7XwQqfBvyqhim3pATV1uw+Im9gI=
+        b=MonjUAQEg+Gb28LC9Wwu2CvtrMJ3epfckL3XjBINydOV9me/eLjo7EUXAiLk5nMvU
+         QHuR/43SbrbX4KqVzJVB+XmcxClrlO5yDBAF780wU2LXRSoirOPkGXzmAzkaXB1DZY
+         UdJyCbsfIiddcc9utxFbMi8DeAC5j2HLRaGc03XM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.12 299/384] NFS: Dont discard pNFS layout segments that are marked for return
-Date:   Mon, 10 May 2021 12:21:28 +0200
-Message-Id: <20210510102024.659826540@linuxfoundation.org>
+Subject: [PATCH 5.12 300/384] NFSv4: Dont discard segments marked for return in _pnfs_return_layout()
+Date:   Mon, 10 May 2021 12:21:29 +0200
+Message-Id: <20210510102024.698036932@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -41,41 +41,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-commit 39fd01863616964f009599e50ca5c6ea9ebf88d6 upstream.
+commit de144ff4234f935bd2150108019b5d87a90a8a96 upstream.
 
 If the pNFS layout segment is marked with the NFS_LSEG_LAYOUTRETURN
 flag, then the assumption is that it has some reporting requirement
 to perform through a layoutreturn (e.g. flexfiles layout stats or error
 information).
 
-Fixes: e0b7d420f72a ("pNFS: Don't discard layout segments that are marked for return")
+Fixes: 6d597e175012 ("pnfs: only tear down lsegs that precede seqid in LAYOUTRETURN args")
 Cc: stable@vger.kernel.org
 Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/pnfs.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ fs/nfs/pnfs.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/fs/nfs/pnfs.c
 +++ b/fs/nfs/pnfs.c
-@@ -2468,6 +2468,9 @@ pnfs_mark_matching_lsegs_return(struct p
+@@ -1344,7 +1344,7 @@ _pnfs_return_layout(struct inode *ino)
+ 	}
+ 	valid_layout = pnfs_layout_is_valid(lo);
+ 	pnfs_clear_layoutcommit(ino, &tmp_list);
+-	pnfs_mark_matching_lsegs_invalid(lo, &tmp_list, NULL, 0);
++	pnfs_mark_matching_lsegs_return(lo, &tmp_list, NULL, 0);
  
- 	assert_spin_locked(&lo->plh_inode->i_lock);
- 
-+	if (test_bit(NFS_LAYOUT_RETURN_REQUESTED, &lo->plh_flags))
-+		tmp_list = &lo->plh_return_segs;
-+
- 	list_for_each_entry_safe(lseg, next, &lo->plh_segs, pls_list)
- 		if (pnfs_match_lseg_recall(lseg, return_range, seq)) {
- 			dprintk("%s: marking lseg %p iomode %d "
-@@ -2475,6 +2478,8 @@ pnfs_mark_matching_lsegs_return(struct p
- 				lseg, lseg->pls_range.iomode,
- 				lseg->pls_range.offset,
- 				lseg->pls_range.length);
-+			if (test_bit(NFS_LSEG_LAYOUTRETURN, &lseg->pls_flags))
-+				tmp_list = &lo->plh_return_segs;
- 			if (mark_lseg_invalid(lseg, tmp_list))
- 				continue;
- 			remaining++;
+ 	if (NFS_SERVER(ino)->pnfs_curr_ld->return_range) {
+ 		struct pnfs_layout_range range = {
 
 
