@@ -2,179 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4D9377FC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 631DB377FC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbhEJJsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:48:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33602 "EHLO mail.kernel.org"
+        id S230292AbhEJJtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:49:21 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:47758 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230093AbhEJJsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:48:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35184610CC;
-        Mon, 10 May 2021 09:47:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620640031;
-        bh=vbT0CJnb5jNv7EzhGN3Xiroc5UAq23c1lIkvSnH7RQw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cONtVYMmyv72CFAhbmElAAmIO+U9/ctxFfSFMHhT2OjPIol7wuKIcBxPm4r7fOU3k
-         LXK84Skdi17mEuhgv3VIIpvDckaYhXD4Kwbh/rTq6DPDuIZiiXWSlIr0dti1kCXYgy
-         EdfYVFmN/Sz8xblgGx99xkgPbM0HFU3u37ozi4bBkCKyZ63wv1Y3tW4hRbXXqzsK2i
-         mvzgC58iLMvBc2rRk9mwtslf4Z3skQH91LWho1SmDq1ka0kKf1Tw0RVFqAb7JXheOA
-         ewKeKel2DeNFTY0+RbuQgcIpmoydF8DQgzi7950VqXf4FCo1xAuzVm1oJ91LO8AJEo
-         fJHEzEX2MtGmw==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lg2VO-00025q-A8; Mon, 10 May 2021 11:47:14 +0200
-Date:   Mon, 10 May 2021 11:47:14 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v2 34/35] tty: make tty_get_byte_size available
-Message-ID: <YJkBIm4IiaZSrSPw@hovoldconsulting.com>
-References: <20210505091928.22010-35-jslaby@suse.cz>
- <20210510070054.5397-1-jslaby@suse.cz>
+        id S230098AbhEJJtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 05:49:19 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 24EF020016E;
+        Mon, 10 May 2021 11:48:14 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 15CE5200165;
+        Mon, 10 May 2021 11:48:14 +0200 (CEST)
+Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 0024420340;
+        Mon, 10 May 2021 11:48:13 +0200 (CEST)
+Date:   Mon, 10 May 2021 12:48:13 +0300
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        p.zabel@pengutronix.de, l.stach@pengutronix.de, krzk@kernel.org,
+        agx@sigxcpu.org, marex@denx.de, andrew.smirnov@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ping.bai@nxp.com,
+        frieder.schrempf@kontron.de, aford173@gmail.com,
+        Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V4 4/4] soc: imx: Add blk-ctl driver for i.MX8MM
+Message-ID: <20210510094813.vye2yjdspuqkiocd@fsr-ub1664-175>
+References: <20210510040704.14997-1-peng.fan@oss.nxp.com>
+ <20210510040704.14997-5-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510070054.5397-1-jslaby@suse.cz>
+In-Reply-To: <20210510040704.14997-5-peng.fan@oss.nxp.com>
+User-Agent: NeoMutt/20180622
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 09:00:54AM +0200, Jiri Slaby wrote:
-> Many tty drivers contain code to compute bits count depending on termios
-> cflags. So extract this code from serial core to a separate tty helper
-> function called tty_get_byte_size.
+On 21-05-10 12:07:04, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> In the next patch, call to this new function will replace many copies of
-> this code.
+> The i.MX8MM SoC has dispmix BLK-CTL and vpumix BLK-CTL, so we add
+> that support in this driver.
 > 
-> [v2] simplified the code flow as suggested by Joe and Andy
-> 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Cc: Joe Perches <joe@perches.com>
+> Reviewed-by: Abel Vesa <abel.vesa@nxp.com>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 > ---
->  drivers/tty/serial/serial_core.c | 30 +++--------------------
->  drivers/tty/tty_ioctl.c          | 42 ++++++++++++++++++++++++++++++++
->  include/linux/tty.h              |  2 ++
->  3 files changed, 47 insertions(+), 27 deletions(-)
+>  drivers/soc/imx/Makefile         |   2 +-
+>  drivers/soc/imx/blk-ctl-imx8mm.c | 138 +++++++++++++++++++++++++++++++
+>  2 files changed, 139 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/soc/imx/blk-ctl-imx8mm.c
 > 
-> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-> index d29329eb52f4..b3fc2b02a705 100644
-> --- a/drivers/tty/serial/serial_core.c
-> +++ b/drivers/tty/serial/serial_core.c
-> @@ -334,39 +334,15 @@ void
->  uart_update_timeout(struct uart_port *port, unsigned int cflag,
->  		    unsigned int baud)
->  {
-> -	unsigned int bits;
-> +	unsigned int size;
->  
-> -	/* byte size and parity */
-> -	switch (cflag & CSIZE) {
-> -	case CS5:
-> -		bits = 7;
-> -		break;
-> -	case CS6:
-> -		bits = 8;
-> -		break;
-> -	case CS7:
-> -		bits = 9;
-> -		break;
-> -	default:
-> -		bits = 10;
-> -		break; /* CS8 */
-> -	}
-> -
-> -	if (cflag & CSTOPB)
-> -		bits++;
-> -	if (cflag & PARENB)
-> -		bits++;
-> -
-> -	/*
-> -	 * The total number of bits to be transmitted in the fifo.
-> -	 */
-> -	bits = bits * port->fifosize;
-> +	size = tty_get_byte_size(cflag, true) * port->fifosize;
->
->  	/*
->  	 * Figure the timeout to send the above number of bits.
->  	 * Add .02 seconds of slop
->  	 */
-> -	port->timeout = (HZ * bits) / baud + HZ/50;
-> +	port->timeout = (HZ * size) / baud + HZ/50;
->  }
->  
->  EXPORT_SYMBOL(uart_update_timeout);
-> diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
-> index aa9ecc8be990..13acc3decd87 100644
-> --- a/drivers/tty/tty_ioctl.c
-> +++ b/drivers/tty/tty_ioctl.c
-> @@ -300,6 +300,48 @@ int tty_termios_hw_change(const struct ktermios *a, const struct ktermios *b)
->  }
->  EXPORT_SYMBOL(tty_termios_hw_change);
->  
-> +/**
-> + *	tty_get_byte_size	-	get size of a byte
-> + *	@cflag: termios cflag value
-> + *	@account_flags: account for start and stop bits, second stop bit (if
-> + *			set), and parity (if set)
-> + *
-> + *	Get the size of a byte in bits depending on @cflag. Depending on
-> + *	@account_flags parameter, the result also accounts start and stop bits,
-> + *	the second stop bit, and parity bit.
+> diff --git a/drivers/soc/imx/Makefile b/drivers/soc/imx/Makefile
+> index d3d2b49a386c..c260b962f495 100644
+> --- a/drivers/soc/imx/Makefile
+> +++ b/drivers/soc/imx/Makefile
+> @@ -4,4 +4,4 @@ obj-$(CONFIG_ARCH_MXC) += soc-imx.o
+>  endif
+>  obj-$(CONFIG_HAVE_IMX_GPC) += gpc.o
+>  obj-$(CONFIG_IMX_GPCV2_PM_DOMAINS) += gpcv2.o
+> -obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o blk-ctl.o
+> +obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o blk-ctl.o blk-ctl-imx8mm.o
+> diff --git a/drivers/soc/imx/blk-ctl-imx8mm.c b/drivers/soc/imx/blk-ctl-imx8mm.c
+> new file mode 100644
+> index 000000000000..5ca8d6c52917
+> --- /dev/null
+> +++ b/drivers/soc/imx/blk-ctl-imx8mm.c
+> @@ -0,0 +1,138 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright 2021 NXP
 > + */
-> +unsigned char tty_get_byte_size(unsigned int cflag, bool account_flags)
+> +
+> +#include <dt-bindings/clock/imx8mm-clock.h>
+> +#include <dt-bindings/power/imx8mm-power.h>
+> +#include <linux/clk.h>
+> +#include <linux/err.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <linux/types.h>
+> +#include <linux/pm_domain.h>
+> +#include <linux/regmap.h>
+> +
+> +#include "blk-ctl.h"
+> +
+> +#define MEDIA_BLK_BUS_RSTN_BLK_SYNC_SFT_EN			BIT(6)
+> +#define MEDIA_BLK_MIPI_DSI_I_PRESETN_SFT_EN			BIT(5)
+> +#define MEDIA_BLK_MIPI_CSI_I_PRESETN_SFT_EN			BIT(4)
+> +#define MEDIA_BLK_CAMERA_PIXEL_RESET_N_SFT_EN			BIT(3)
+> +#define MEDIA_BLK_CSI_BRIDGE_SFT_EN				GENMASK(2, 0)
+> +
+> +#define MEDIA_BLK_BUS_PD_MASK					BIT(12)
+> +#define MEDIA_BLK_MIPI_CSI_PD_MASK				GENMASK(11, 10)
+> +#define MEDIA_BLK_MIPI_DSI_PD_MASK				GENMASK(9, 8)
+> +#define MEDIA_BLK_LCDIF_PD_MASK					GENMASK(7, 6)
+> +#define MEDIA_BLK_CSI_BRIDGE_PD_MASK				GENMASK(5, 0)
+> +
+> +static struct imx_blk_ctl_hw imx8mm_dispmix_blk_ctl_pds[] = {
+> +	IMX_BLK_CTL_PD("CSI_BRIDGE", "dispmix", IMX8MM_BLK_CTL_PD_DISPMIX_CSI_BRIDGE, 0x4,
+> +		       MEDIA_BLK_CSI_BRIDGE_PD_MASK, 0, MEDIA_BLK_CSI_BRIDGE_SFT_EN,
+> +		       IMX_BLK_CTL_PD_RESET),
+> +	IMX_BLK_CTL_PD("LCDIF", "dispmix", IMX8MM_BLK_CTL_PD_DISPMIX_LCDIF, 0x4,
+> +		       MEDIA_BLK_LCDIF_PD_MASK, -1, -1, 0),
+> +	IMX_BLK_CTL_PD("MIPI_DSI", "mipi", IMX8MM_BLK_CTL_PD_DISPMIX_MIPI_DSI, 0x4,
+> +		       MEDIA_BLK_MIPI_DSI_PD_MASK, 0, MEDIA_BLK_MIPI_DSI_I_PRESETN_SFT_EN,
+> +		       IMX_BLK_CTL_PD_RESET),
+> +	IMX_BLK_CTL_PD("MIPI_CSI", "mipi", IMX8MM_BLK_CTL_PD_DISPMIX_MIPI_CSI, 0x4,
+> +		       MEDIA_BLK_MIPI_CSI_PD_MASK, 0,
+> +		       MEDIA_BLK_MIPI_CSI_I_PRESETN_SFT_EN | MEDIA_BLK_CAMERA_PIXEL_RESET_N_SFT_EN,
+> +		       IMX_BLK_CTL_PD_RESET)
+> +};
+> +
+> +static struct imx_blk_ctl_hw imx8mm_vpumix_blk_ctl_pds[] = {
+> +	IMX_BLK_CTL_PD("VPU_BLK_CTL_G2", "vpu-g2", IMX8MM_BLK_CTL_PD_VPU_G2, 0x4,
+> +		       BIT(0), 0, BIT(0), IMX_BLK_CTL_PD_RESET),
+> +	IMX_BLK_CTL_PD("VPU_BLK_CTL_G1", "vpu-g1", IMX8MM_BLK_CTL_PD_VPU_G1, 0x4,
+> +		       BIT(1), 0, BIT(1), IMX_BLK_CTL_PD_RESET),
+> +	IMX_BLK_CTL_PD("VPU_BLK_CTL_H1", "vpu-h1", IMX8MM_BLK_CTL_PD_VPU_H1, 0x4,
+> +		       BIT(2), 0, BIT(2), IMX_BLK_CTL_PD_HANDSHAKE | IMX_BLK_CTL_PD_RESET),
+> +};
+> +
+> +static const struct regmap_config imx8mm_blk_ctl_regmap_config = {
+> +	.reg_bits		= 32,
+> +	.reg_stride		= 4,
+> +	.val_bits		= 32,
+> +	.max_register		= 0x30,
+> +	.fast_io		= true,
+> +};
+> +
+> +static const struct imx_blk_ctl_dev_data imx8mm_vpumix_blk_ctl_dev_data = {
+> +	.pds = imx8mm_vpumix_blk_ctl_pds,
+> +	.pds_num = ARRAY_SIZE(imx8mm_vpumix_blk_ctl_pds),
+> +	.hw_hsk = IMX_BLK_CTL_PD(NULL, NULL, IMX8MM_BLK_CTL_PD_VPU_H1, 0x4, BIT(2), 0, BIT(2),
+> +				 IMX_BLK_CTL_PD_HANDSHAKE),
+> +	.config = imx8mm_blk_ctl_regmap_config,
+> +	.active_pd_names = (char*[]){"vpumix", "g1", "g2", "h1"},
+> +	.num_active_pd = 4,
+> +};
+> +
+> +static const struct imx_blk_ctl_dev_data imx8mm_dispmix_blk_ctl_dev_data = {
+> +	.pds = imx8mm_dispmix_blk_ctl_pds,
+> +	.pds_num = ARRAY_SIZE(imx8mm_dispmix_blk_ctl_pds),
+> +	.hw_hsk = IMX_BLK_CTL_PD(NULL, NULL, -1, 0x4, MEDIA_BLK_BUS_PD_MASK, 0,
+> +				 MEDIA_BLK_BUS_RSTN_BLK_SYNC_SFT_EN,
+> +				 IMX_BLK_CTL_PD_HANDSHAKE | IMX_BLK_CTL_PD_RESET),
+> +	.config = imx8mm_blk_ctl_regmap_config,
+> +	.active_pd_names = (char*[]){"dispmix", "mipi"},
+> +	.num_active_pd = 2,
+> +};
+> +
+> +static int imx8mm_blk_ctl_probe(struct platform_device *pdev)
 > +{
-> +	unsigned char bits;
+> +	struct device *dev = &pdev->dev;
+> +	const struct imx_blk_ctl_dev_data *dev_data = of_device_get_match_data(dev);
+> +	struct regmap *regmap;
+> +	struct imx_blk_ctl *ctl;
+> +	void __iomem *base;
 > +
-> +	switch (cflag & CSIZE) {
-> +	case CS5:
-> +		bits = 5;
-> +		break;
-> +	case CS6:
-> +		bits = 6;
-> +		break;
-> +	case CS7:
-> +		bits = 7;
-> +		break;
-> +	case CS8:
-> +	default:
-> +		bits = 8;
-> +		break;
-> +	}
+> +	ctl = devm_kzalloc(dev, sizeof(*ctl), GFP_KERNEL);
+> +	if (!ctl)
+> +		return -ENOMEM;
 > +
-> +	if (!account_flags)
-> +		return bits;
+> +	base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(base))
+> +		return PTR_ERR(base);
 > +
-> +	if (cflag & CSTOPB)
-> +		bits++;
-> +	if (cflag & PARENB)
-> +		bits++;
+> +	regmap = devm_regmap_init_mmio(dev, base, &dev_data->config);
+> +	if (IS_ERR(regmap))
+> +		return PTR_ERR(regmap);
 > +
-> +	return bits + 2;
+> +	ctl->regmap = regmap;
+> +	ctl->dev = dev;
+> +	ctl->power_count = 0;
+> +	mutex_init(&ctl->lock);
+> +
+> +	ctl->num_clks = devm_clk_bulk_get_all(dev, &ctl->clks);
+> +	if (ctl->num_clks < 0)
+> +		return ctl->num_clks;
+> +
+> +	dev_set_drvdata(dev, ctl);
+> +	ctl->dev_data = dev_data;
+> +
+> +	return imx_blk_ctl_register(dev);
 > +}
-> +EXPORT_SYMBOL_GPL(tty_get_byte_size);
 
-This should really be two functions rather than passing a bool argument.
+Nitpick:
 
-I think naming them
+Pretty sure all the other platforms will have a similar probe function.
+So maybe we can move this into the generic and call it imx8_blk_ctl_register
+and pass on the PDs, dev data and regmap_config. 
 
-	tty_get_word_size()
+We could also do this later on when i.MX8MP variant will be done. 
 
-and
-
-	tty_get_frame_size()
-
-would be much more clear than than "byte size" + flag.
-
-I realise that the serial-driver interface only uses a cflag argument,
-but I think we should consider passing a pointer to the termios
-structure instead.
-
-Johan
+> +
+> +static const struct of_device_id imx_blk_ctl_of_match[] = {
+> +	{ .compatible = "fsl,imx8mm-vpumix-blk-ctl", .data = &imx8mm_vpumix_blk_ctl_dev_data },
+> +	{ .compatible = "fsl,imx8mm-dispmix-blk-ctl", .data = &imx8mm_dispmix_blk_ctl_dev_data },
+> +	{ /* Sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, imx_blk_ctl_of_match);
+> +
+> +static struct platform_driver imx_blk_ctl_driver = {
+> +	.probe = imx8mm_blk_ctl_probe,
+> +	.driver = {
+> +		.name = "imx8mm-blk-ctl",
+> +		.of_match_table = of_match_ptr(imx_blk_ctl_of_match),
+> +		.pm = &imx_blk_ctl_pm_ops,
+> +	},
+> +};
+> +module_platform_driver(imx_blk_ctl_driver);
+> -- 
+> 2.30.0
+> 
