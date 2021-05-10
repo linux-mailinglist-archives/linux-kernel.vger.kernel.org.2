@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 938153789FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC5B37867E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240534AbhEJLfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:35:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52682 "EHLO mail.kernel.org"
+        id S236748AbhEJLIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:08:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234950AbhEJK5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 856D961C33;
-        Mon, 10 May 2021 10:50:36 +0000 (UTC)
+        id S232776AbhEJKtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:49:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B98B6613D3;
+        Mon, 10 May 2021 10:38:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643837;
-        bh=gXiOxhMbUGRqAdnAYW3ioYWMt2JDeB0OfgFadacRKuM=;
+        s=korg; t=1620643089;
+        bh=v7Y0wNr23gfihcKJRdFlfl9Db4iABnZHp/ley6aKNiM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xuBD5dnvEVkPLHFfw2Ywe0OX3huBmdxwZyZheuXSTkxcx6UoQpuAtgseYJzwN37Gr
-         2RcqPRM5KEc8i8sara9VIbPvczHe6zpTNNfs9h+45GUsM52Q7KTuJs0q2MwmFAbEvl
-         If6gjU5ZbDHQYeOmTKXHw5Xv4bSKwFOfQ+xYLHI0=
+        b=eRVa2aVbW25MMjX5r6I3qOiSJ/ZLphzBS4/fUbwRtim73Tw8/C7GxhSroICxOXzSp
+         MfjzIFOjh3K+FUUJrojLEvbO3jtrLv6ImMDWFObQEaBmDVo4RfnuYlW5K7lkjSlPFR
+         Fj0HubBPHwBg/AuYPwYY/uPpaQIlhXQnxhhDw7vU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Cooper <alcooperx@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 180/342] mmc: sdhci-brcmstb: Remove CQE quirk
-Date:   Mon, 10 May 2021 12:19:30 +0200
-Message-Id: <20210510102016.047500206@linuxfoundation.org>
+Subject: [PATCH 5.10 174/299] power: supply: generic-adc-battery: fix possible use-after-free in gab_remove()
+Date:   Mon, 10 May 2021 12:19:31 +0200
+Message-Id: <20210510102010.710547540@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Cooper <alcooperx@gmail.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit f0bdf98fab058efe7bf49732f70a0f26d1143154 ]
+[ Upstream commit b6cfa007b3b229771d9588970adb4ab3e0487f49 ]
 
-Remove the CQHCI_QUIRK_SHORT_TXFR_DESC_SZ quirk because the
-latest chips have this fixed and earlier chips have other
-CQE problems that prevent the feature from being enabled.
+This driver's remove path calls cancel_delayed_work(). However, that
+function does not wait until the work function finishes. This means
+that the callback function may still be running after the driver's
+remove function has finished, which would result in a use-after-free.
 
-Signed-off-by: Al Cooper <alcooperx@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20210325192834.42955-1-alcooperx@gmail.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fix by calling cancel_delayed_work_sync(), which ensures that
+the work is properly cancelled, no longer running, and unable
+to re-schedule itself.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-brcmstb.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/power/supply/generic-adc-battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/sdhci-brcmstb.c b/drivers/mmc/host/sdhci-brcmstb.c
-index f9780c65ebe9..f24623aac2db 100644
---- a/drivers/mmc/host/sdhci-brcmstb.c
-+++ b/drivers/mmc/host/sdhci-brcmstb.c
-@@ -199,7 +199,6 @@ static int sdhci_brcmstb_add_host(struct sdhci_host *host,
- 	if (dma64) {
- 		dev_dbg(mmc_dev(host->mmc), "Using 64 bit DMA\n");
- 		cq_host->caps |= CQHCI_TASK_DESC_SZ_128;
--		cq_host->quirks |= CQHCI_QUIRK_SHORT_TXFR_DESC_SZ;
+diff --git a/drivers/power/supply/generic-adc-battery.c b/drivers/power/supply/generic-adc-battery.c
+index caa829738ef7..58f09314741a 100644
+--- a/drivers/power/supply/generic-adc-battery.c
++++ b/drivers/power/supply/generic-adc-battery.c
+@@ -382,7 +382,7 @@ static int gab_remove(struct platform_device *pdev)
  	}
  
- 	ret = cqhci_init(cq_host, host->mmc, dma64);
+ 	kfree(adc_bat->psy_desc.properties);
+-	cancel_delayed_work(&adc_bat->bat_work);
++	cancel_delayed_work_sync(&adc_bat->bat_work);
+ 	return 0;
+ }
+ 
 -- 
 2.30.2
 
