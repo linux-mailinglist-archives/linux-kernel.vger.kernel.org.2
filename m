@@ -2,81 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101A03792E9
+	by mail.lfdr.de (Postfix) with ESMTP id 87F313792EA
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232935AbhEJPk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 11:40:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234490AbhEJPju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 11:39:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4A7D60FE4;
-        Mon, 10 May 2021 15:38:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620661121;
-        bh=1Zsl9SztvxaW6X5yybQdHiTY0J0WjKFNG3noiaEUXQQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OF5j/FVpcPcGwdaOBA/s3TbLmd8a7l+K09QjFCyscBSuOGMFXXhv/feNa4mF+8ryo
-         n0KzaCREFZN/zqNC0xENKxBaC4z7ZswREiNIH4NulcS7j1w1F/OCltsZY0oHDvX8Tj
-         TLO1g1Ex2WMEFst6LKOZd2AaRFigXknWTGTR9kLhgIMUEQL1nEUBC2iddPhWI1oi8w
-         LIdUX9kzzCDQP87ejxW0D8OOZ5SDsYp84QTmJOGtyReIOen0hC0E8UMWEQy3KLzokM
-         NQWiIg9UcH+aedKbchBNJZEnIsh0JETNrqhEVC47yfEi/ptsvpguH7Qkxp91ph49pz
-         TsmuJEa9ZFscg==
-Received: by mail-oi1-f179.google.com with SMTP id b25so10923321oic.0;
-        Mon, 10 May 2021 08:38:41 -0700 (PDT)
-X-Gm-Message-State: AOAM531QBFCbxRDhHrhlOZIkAWNXUWQVJh2mcdDhlPffZvSzMsMRm46c
-        XzyBMK3Kj1R1ipbruSX57zPPJGZRWLVBPTnYUbY=
-X-Google-Smtp-Source: ABdhPJyzL1Eyc5r70XnrgnFSkdgDVnk8oWZUFRX1A3dchBwdZpihODX/nbKKUaWX6vR16z6SR9rq6Mli+P1KA7DzDH8=
-X-Received: by 2002:aca:4056:: with SMTP id n83mr26631363oia.47.1620661121088;
- Mon, 10 May 2021 08:38:41 -0700 (PDT)
+        id S233318AbhEJPkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 11:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234669AbhEJPj5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 11:39:57 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D240FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 08:38:52 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id p17so10003340pjz.3
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 08:38:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TPvcQCXvDX0U7RDZdZH95k1gUsIcweRlVHc3KTXarJk=;
+        b=WnjtfBz40ML+d5x7ADRLmiMm02c4xlccwyOfB7T0FwayBGuUM6iJs8p80tPE3oWU9Z
+         odiz7lrk8BpAQpTqXOX5PrvaUtObz0ueImqdLyv/ZdhkSMoBTBbe3VXkbXUdDOpw3MRe
+         52iLnbOmREYc7yXY44Ns+VBgu9NyYP6NhJgQ7FSsTLXtsNKvXGCueGEbyWxv5/sbXAMY
+         LS9ctApBNtOrFPewoFktTYCApjymEO339L8mGvFnIc21e7zr9pM/boKZESypGRjqGzYP
+         vmeh36hX6xqOg558QkZuAG+Oc9dK3mu3BDghGEUq1PpvIBXuUwqoxLyTwflreugeZBf9
+         iixg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TPvcQCXvDX0U7RDZdZH95k1gUsIcweRlVHc3KTXarJk=;
+        b=iU4VbjjCZXEBCxltt9EkHqQ1Y8G8trXSLemGj483JzagPDFCVMVKIj8QPXPAQwWl5d
+         w9uTEP5Y6M8S/4W5o3+iQ6BZw7RySrr04jo0dKAYURKVg7USBmwO9K1qu4L+OWi5gpFR
+         +3SHOYqJbEK8GLa6GQCyusYS26d3E8R+iSN3xZFD5HLo7btTJShaVugrCXJlxw7wVrQX
+         gdLZkTW/YOPm/X+XihVtPVcTUT+ussMTv7v8X/h9Y1uEJMjcxN/QO9vMP18hnd1c+13F
+         /5qkZxKOVo4c5WVp6wJjZRy4Mh1d0RIec18m4ZujqHJdfpGVmWUyRlxxJPlsr23dwQdj
+         85gw==
+X-Gm-Message-State: AOAM5339Xq1tjijRJnW6PU+YasSjXGt6k0v+CNsRCG8RNx2r0ZDr1yz1
+        fu6zuXqNChOoqdQerXPbauk=
+X-Google-Smtp-Source: ABdhPJyynsLokTt/82/HW6Tevuk0fqq3BYQm0YcYjS4dmODSbGZ5VnnetREWJxRuS2iPTVsmiB0VIg==
+X-Received: by 2002:a17:90a:55c5:: with SMTP id o5mr27742585pjm.169.1620661132340;
+        Mon, 10 May 2021 08:38:52 -0700 (PDT)
+Received: from hyeyoo ([183.99.11.150])
+        by smtp.gmail.com with ESMTPSA id 79sm11530219pfz.202.2021.05.10.08.38.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 08:38:52 -0700 (PDT)
+Date:   Tue, 11 May 2021 00:38:46 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Matthew Wilcox <willy@infradead.org>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: kmalloc_index: make compiler break when size is
+ not supported
+Message-ID: <20210510153846.GA77398@hyeyoo>
+References: <20210508221328.7338-1-42.hyeyoo@gmail.com>
+ <YJccjBMBiwLqFrB8@casper.infradead.org>
+ <CAB=+i9QyxOu_1QDfX5QA=pOxxnRURPnwd2Y0EbhoO1u0e=irBA@mail.gmail.com>
+ <c305ec02-a7d6-dd0c-bfee-e5b571d9ca9a@suse.cz>
+ <20210510135857.GA3594@hyeyoo>
+ <9d0ffe49-a2e2-6c81-377b-4c8d2147dff8@suse.cz>
+ <20210510150230.GA74915@hyeyoo>
+ <90591d7e-41e4-9ae5-54ae-ded467c498cf@suse.cz>
 MIME-Version: 1.0
-References: <YIK0D1JyV6ZeDMSS@mwanda>
-In-Reply-To: <YIK0D1JyV6ZeDMSS@mwanda>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 10 May 2021 17:38:30 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHELn=t9H4z2SK7u5kkTuqh-TnW9YtY6PJs8Q=j-PLVTg@mail.gmail.com>
-Message-ID: <CAMj1kXHELn=t9H4z2SK7u5kkTuqh-TnW9YtY6PJs8Q=j-PLVTg@mail.gmail.com>
-Subject: Re: [PATCH] efi/libstub: prevent read overflow in find_file_option()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Philipp Fent <fent@in.tum.de>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <90591d7e-41e4-9ae5-54ae-ded467c498cf@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Apr 2021 at 13:48, Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> If the buffer has slashes up to the end then this will read past the end
-> of the array.  I don't anticipate that this is an issue for many people
-> in real life, but it's the right thing to do and it makes static
-> checkers happy.
->
-> Fixes: 7a88a6227dc7 ("efi/libstub: Fix path separator regression")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/firmware/efi/libstub/file.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/firmware/efi/libstub/file.c b/drivers/firmware/efi/libstub/file.c
-> index 4e81c6077188..dd95f330fe6e 100644
-> --- a/drivers/firmware/efi/libstub/file.c
-> +++ b/drivers/firmware/efi/libstub/file.c
-> @@ -103,7 +103,7 @@ static int find_file_option(const efi_char16_t *cmdline, int cmdline_len,
->                 return 0;
->
->         /* Skip any leading slashes */
-> -       while (cmdline[i] == L'/' || cmdline[i] == L'\\')
-> +       while (i < cmdline_len && (cmdline[i] == L'/' || cmdline[i] == L'\\'))
->                 i++;
->
->         while (--result_len > 0 && i < cmdline_len) {
-> --
-> 2.30.2
+On Mon, May 10, 2021 at 05:19:58PM +0200, Vlastimil Babka wrote:
+
+> I'd rephrase the subject:
+> mm, slub: change run-time assertion in kmalloc_index() to compile-time
 >
 
-Thanks Dan, I will queue this up.
+> "... compiler will generate a run-time BUG() while a compile-time error is also
+> possible, and better"
+
+> "there's no need to..."
+>       kmalloc-32M
+
+
+Vlastimil Babka and Christoph Lameter, thank you for reviewing the patch.
+
+I'm not familiar with kernel community yet. should I send patch v3 again,
+or can you update it directly?
