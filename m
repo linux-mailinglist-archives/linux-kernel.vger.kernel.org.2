@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E69378706
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CF13786CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234452AbhEJLM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:12:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41768 "EHLO mail.kernel.org"
+        id S236954AbhEJLLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:11:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233528AbhEJKuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:50:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A00F61A0F;
-        Mon, 10 May 2021 10:39:27 +0000 (UTC)
+        id S233546AbhEJKuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:50:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC67F61948;
+        Mon, 10 May 2021 10:39:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643168;
-        bh=zdyythD21HvJgoFCj/9ADYkiuDf0zulSgc++zqebsM8=;
+        s=korg; t=1620643170;
+        bh=kwOyVJpLtd8gheGbQRqdFlIORGINOYnXM+3NvNS/wfs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q+ALVM29J+YGmloPRGI1UJvhZtcVfzkXNy9XKlD/ZL+UGqPWOCBYWZC6L9J3YxTat
-         tPZT3HeS+ehVcrwT/YTzSsBnZfXhlt5crtSgYXlZsw9hpy59Y8kpmJprOVsR7+Z1ZK
-         Y5x4Erz8b2WdVaOesOP4bx6fcaPFNQEdwtm0myOU=
+        b=Gyi4m4Qrbd6WyosYs2jMk9nkIOQawpfipyz1LhHjBdJht3Khm0iC2OUvsiW1y3kSe
+         EXvz3Po9BeE8h2PL85WDQME9e0bSp/YlmrxlbLhQbBkM5pT//b6QGOHurLfdDf+oMg
+         6u0mLrqQssqZvhhPZRMgk8YGLB6+uAT5KpsjFhEw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
+        stable@vger.kernel.org,
+        Charan Teja Reddy <charante@codeaurora.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 206/299] s390/archrandom: add parameter check for s390_arch_random_generate
-Date:   Mon, 10 May 2021 12:20:03 +0200
-Message-Id: <20210510102011.748799311@linuxfoundation.org>
+Subject: [PATCH 5.10 207/299] sched,psi: Handle potential task count underflow bugs more gracefully
+Date:   Mon, 10 May 2021 12:20:04 +0200
+Message-Id: <20210510102011.779777963@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
 References: <20210510102004.821838356@linuxfoundation.org>
@@ -41,43 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harald Freudenberger <freude@linux.ibm.com>
+From: Charan Teja Reddy <charante@codeaurora.org>
 
-[ Upstream commit 28096067686c5a5cbd4c35b079749bd805df5010 ]
+[ Upstream commit 9d10a13d1e4c349b76f1c675a874a7f981d6d3b4 ]
 
-A review of the code showed, that this function which is exposed
-within the whole kernel should do a parameter check for the
-amount of bytes requested. If this requested bytes is too high
-an unsigned int overflow could happen causing this function to
-try to memcpy a really big memory chunk.
+psi_group_cpu->tasks, represented by the unsigned int, stores the
+number of tasks that could be stalled on a psi resource(io/mem/cpu).
+Decrementing these counters at zero leads to wrapping which further
+leads to the psi_group_cpu->state_mask is being set with the
+respective pressure state. This could result into the unnecessary time
+sampling for the pressure state thus cause the spurious psi events.
+This can further lead to wrong actions being taken at the user land
+based on these psi events.
 
-This is not a security issue as there are only two invocations
-of this function from arch/s390/include/asm/archrandom.h and both
-are not exposed to userland.
+Though psi_bug is set under these conditions but that just for debug
+purpose. Fix it by decrementing the ->tasks count only when it is
+non-zero.
 
-Reported-by: Sven Schnelle <svens@linux.ibm.com>
-Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Link: https://lkml.kernel.org/r/1618585336-37219-1-git-send-email-charante@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/crypto/arch_random.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ kernel/sched/psi.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/s390/crypto/arch_random.c b/arch/s390/crypto/arch_random.c
-index dd95cdbd22ce..4cbb4b6d85a8 100644
---- a/arch/s390/crypto/arch_random.c
-+++ b/arch/s390/crypto/arch_random.c
-@@ -53,6 +53,10 @@ static DECLARE_DELAYED_WORK(arch_rng_work, arch_rng_refill_buffer);
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 967732c0766c..651218ded981 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -711,14 +711,15 @@ static void psi_group_change(struct psi_group *group, int cpu,
+ 	for (t = 0, m = clear; m; m &= ~(1 << t), t++) {
+ 		if (!(m & (1 << t)))
+ 			continue;
+-		if (groupc->tasks[t] == 0 && !psi_bug) {
++		if (groupc->tasks[t]) {
++			groupc->tasks[t]--;
++		} else if (!psi_bug) {
+ 			printk_deferred(KERN_ERR "psi: task underflow! cpu=%d t=%d tasks=[%u %u %u %u] clear=%x set=%x\n",
+ 					cpu, t, groupc->tasks[0],
+ 					groupc->tasks[1], groupc->tasks[2],
+ 					groupc->tasks[3], clear, set);
+ 			psi_bug = 1;
+ 		}
+-		groupc->tasks[t]--;
+ 	}
  
- bool s390_arch_random_generate(u8 *buf, unsigned int nbytes)
- {
-+	/* max hunk is ARCH_RNG_BUF_SIZE */
-+	if (nbytes > ARCH_RNG_BUF_SIZE)
-+		return false;
-+
- 	/* lock rng buffer */
- 	if (!spin_trylock(&arch_rng_lock))
- 		return false;
+ 	for (t = 0; set; set &= ~(1 << t), t++)
 -- 
 2.30.2
 
