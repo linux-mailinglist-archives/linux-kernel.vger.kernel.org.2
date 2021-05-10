@@ -2,119 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18C7377B8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 07:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6911377B96
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 07:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbhEJFcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 01:32:46 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:55060 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhEJFcn (ORCPT
+        id S230085AbhEJFkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 01:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229943AbhEJFkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 01:32:43 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14A5VU8Z081177;
-        Mon, 10 May 2021 00:31:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620624690;
-        bh=CdW+YRXLk3uk5cWZMxSMVSm607ddrQRwN9EUo67GHoU=;
-        h=Subject:CC:References:From:Date:In-Reply-To;
-        b=pZw4ZfNGu/LI6x30dgWiJozhK3BJ/kQct6DXHqouVnCRQGw3nX9sEegZzTBXe9KZe
-         tx4sCda87g3Gn4y50rC2Wq33JVlWSQi0uJ7fT+Yuczj/ZKHG0Cdb4PrUbmGf09OxQ0
-         OgfYCK8ReLYiTeY8A01veuU8LMG9YF6tkGrMOGE4=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14A5VT4r093051
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 10 May 2021 00:31:29 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 10
- May 2021 00:31:29 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 10 May 2021 00:31:29 -0500
-Received: from [10.250.235.117] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14A5VM3U057050;
-        Mon, 10 May 2021 00:31:24 -0500
-Subject: Re: [PATCH v3 0/2] MCAN: Add support for implementing transceiver as
- a phy
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>
-References: <20210416114245.24829-1-a-govindraju@ti.com>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <2ac62e0b-58e0-0a5c-06c9-c2d5052c7a5d@ti.com>
-Date:   Mon, 10 May 2021 11:01:22 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 10 May 2021 01:40:16 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25554C061574
+        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 22:39:12 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id m190so12541311pga.2
+        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 22:39:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9QjThyFdbfEEV7YSdHD2NDT9j0pnbAN4OFRmYnpNSIo=;
+        b=DKMxWczXLRPdyDMhH+2pAoS1NdrO047RvAa8WncZUx2FUyJuMKjct6U1MGuwcKf7cr
+         VauDMDqhf9NmEQWm/wEECCvM0nJ6eWzC4eQW/JCOEbe/5z9wPzf8O4tpoHyNqS77XW3Q
+         SXK2fmtlAJP9gZ1PSj6n9xgvxdJNy3ZQGBPpP9CP9kfFaLvIloQlrCviSCBR303IlpSb
+         KAuQZpfBuBLzPQQ3zhW9s9gN9NzVcC767e8xv4kOG9Ef56xbU6cFnmznaN3GQ2H1IJJv
+         GDDtlOxpsWr8tfspvWLM25f2JO2oi0KTKfnNvTZrRCaPBOKt1m7J4+bZ6sWs/MwkAGPn
+         i6sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9QjThyFdbfEEV7YSdHD2NDT9j0pnbAN4OFRmYnpNSIo=;
+        b=oJ3dnCyQR9D/znAkjW4wm3T23bJ9AX3tqf9MUzh+1xrhRAuoFwDEuCdivTfSooU6eM
+         +KkQ+WNjtwiCfrE8eT46zxwy0HxeOD3YEnPkf10SkfOt7WqkJtaBA044GTqpmdP3PF2k
+         1Y2Scmj8aVEqtO/y0kfmyLUYbuoITJkacro85qFwQ6+TrS/6Io1AebjXhZJkDdBV9OMh
+         vktL85LrAl1E8Ti3vg/PL7146xv9bb29DjTDfyK+iWavv5+lbLZ4oDt+yDCdBs05Fm0i
+         xCgOcwIR1NmZet+WpTRaYiqWsAg/VrB+ddiwTGLsdaYzrzdzv4h7A/YUmENy+Qv4MFHT
+         Kgmw==
+X-Gm-Message-State: AOAM531EbZC9U5vHjeoIrQdwcBYsBo3Dkwz5jB3zqwIGKkq7XB4Ex1MJ
+        A/49Itnlt84zBnK2C3w3t37XVA==
+X-Google-Smtp-Source: ABdhPJxL55uYLzlLBONLZRKY3c1FonDeJ3FtOdbAxVYVL+2eHBP7EPjqAldCxGZF7Kptg6CqOMgSAA==
+X-Received: by 2002:a63:175e:: with SMTP id 30mr23397809pgx.48.1620625151365;
+        Sun, 09 May 2021 22:39:11 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([103.207.71.35])
+        by smtp.gmail.com with ESMTPSA id gw7sm10270030pjb.57.2021.05.09.22.39.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 May 2021 22:39:10 -0700 (PDT)
+Date:   Mon, 10 May 2021 13:39:04 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     coresight@lists.linaro.org, mathieu.poirier@linaro.org,
+        al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
+        Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] perf cs-etm: Handle valid-but-zero timestamps
+Message-ID: <20210510053904.GB4835@leoy-ThinkPad-X240s>
+References: <20210507095814.17933-1-james.clark@arm.com>
+ <3926c523-3fdb-66de-8b9c-b68290a5053e@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210416114245.24829-1-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3926c523-3fdb-66de-8b9c-b68290a5053e@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Hi James,
 
-On 16/04/21 5:12 pm, Aswath Govindraju wrote:
-> The following series of patches add support for implementing the
-> transceiver as a phy of m_can_platform driver.
+On Fri, May 07, 2021 at 01:02:35PM +0300, James Clark wrote:
 > 
-> TCAN1042 has a standby signal that needs to be pulled high for
-> sending/receiving messages[1]. TCAN1043 has a enable signal along with
-> standby signal that needs to be pulled up for sending/receiving
-> messages[2], and other combinations of the two lines can be used to put the
-> transceiver in different states to reduce power consumption. On boards
-> like the AM654-idk and J721e-evm these signals are controlled using gpios.
 > 
-> These gpios are set in phy driver, and the transceiver can be put in
-> different states using phy API. The phy driver is added in the series [3].
+> On 07/05/2021 12:58, James Clark wrote:
+> > There is an intermittent issue on Trogdor devices that
+> > results in all Coresight timestamps having a value of zero.
 > 
-> This patch series is dependent on [4].
+> I've attached a file here that has the issue. From the dump you 
+> can see the zero timestamps:
 > 
-> changes since v2:
-> - changed dev_err to dev_err_probe in patch 2
-> - used mcan_class instead of priv to assign max bit rate
-> - Picked up  Rob Herring's acked-by for patch 1
+>         Idx:69; ID:10;  I_TIMESTAMP : Timestamp.; Updated val = 0x0
+>         Idx:71; ID:10;  I_ATOM_F1 : Atom format 1.; E
+>         Idx:72; ID:10;  I_ADDR_S_IS0 : Address, Short, IS0.; Addr=0xFFFFFFE723C65824 ~[0x5824]
 > 
-> changes since v1:
-> - Used the API devm_phy_get_optional() instead of 
->   devm_of_phy_get_optional_by_index()
-> > [1] - https://www.ti.com/lit/ds/symlink/tcan1042h.pdf
-> [2] - https://www.ti.com/lit/ds/symlink/tcan1043-q1.pdf
-> [3] - https://lore.kernel.org/patchwork/project/lkml/list/?series=495511
-> [4] - https://lore.kernel.org/patchwork/patch/1413286/
-> 
+> This doesn't have an impact on decoding as they end up being
+> decoded in file order as in with timeless mode.
 
-Posted v4 for this series after adding phy_power_off in the path when
-there is an error.
+Just remind, as Mike has mentioned that if the timestamp is zero, it
+means the hardware setting for timestamp is not enabled properly.  So
+for system wide or per CPU mode tracing, it's better to double check
+what's the reason the timestamp is not enabled properly.
+
+IIUC, this patch breaks the existed rational in the code.  Let's think
+about there have 4 CPUs, every CPU has its own AUX trace buffer, and
+when decode the trace data, it will use 4 queues to track the packets
+and every queue has its timestamp.
+
+  CPU0: cs_etm_queue -> ... -> packet_queue->timestamp
+  CPU1: cs_etm_queue -> ... -> packet_queue->timestamp
+  CPU2: cs_etm_queue -> ... -> packet_queue->timestamp
+  CPU3: cs_etm_queue -> ... -> packet_queue->timestamp
+
+The issue is if all CPUs' timestamp are zero, it's impossible to find
+a way to synthesize samples in the right time order.
+
+[...]
+
+> > diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> > index b01d363b9301..947e44413c6e 100644
+> > --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> > +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> > @@ -320,7 +320,10 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
+> >  	 * which instructions started by subtracting the number of instructions
+> >  	 * executed to the timestamp.
+> >  	 */
+> > -	packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
+> > +	if (packet_queue->instr_count >= elem->timestamp)
+> > +		packet_queue->cs_timestamp = 0;
+> > +	else
+> > +		packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
+
+Actually here have two situations: one case is "elem->timestamp" is zero,
+another case is the overflow for "elem->timestamp".
+
+So the change should be like:
+
+   if (!elem->timestamp)
+       packet_queue->cs_timestamp = 0;
+   else if (packet_queue->instr_count >= elem->timestamp)
+       /* handle overflow? */
+   else
+      packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
+
+It's better to think about how to handle the overflow in this case.
 
 Thanks,
-Aswath
-
-> Faiz Abbas (2):
->   dt-bindings: net: can: Document transceiver implementation as phy
->   can: m_can: Add support for transceiver as phy
-> 
->  .../devicetree/bindings/net/can/bosch,m_can.yaml    |  3 +++
->  drivers/net/can/m_can/m_can.c                       | 10 ++++++++++
->  drivers/net/can/m_can/m_can.h                       |  2 ++
->  drivers/net/can/m_can/m_can_platform.c              | 13 +++++++++++++
->  4 files changed, 28 insertions(+)
-> 
-
+Leo
