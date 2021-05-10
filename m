@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FAE378AB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAAD8378C37
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234619AbhEJLtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:49:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36544 "EHLO mail.kernel.org"
+        id S235596AbhEJM1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:27:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233290AbhEJLBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:01:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D797161C53;
-        Mon, 10 May 2021 10:53:42 +0000 (UTC)
+        id S237190AbhEJLLc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:11:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CB0B6191E;
+        Mon, 10 May 2021 11:07:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644023;
-        bh=vyc+nJ14+lnmbhVlGuewjiHY/sqNuE9+DBlk5Cv7qy4=;
+        s=korg; t=1620644876;
+        bh=MhnKdDO3EoebFgSsizSZjcagHXoeCi2YwTd5PJAXvaU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YwseD4rltGn6X5tvB/ivVJTnVsvoF7pzW/bCvCmP970Wt9i+Eebb9rbRzPwRbVyWF
-         UIWVw7KBTef7ItmnyQmMfzK4l7BZq4XSY7/92kceon58W6AiRi5uVZGd9cMKW9gJ9L
-         QLO/dDxDNWB+uDZjNVMr266omcS1VS3EMvifKJIw=
+        b=T1Mel0hc5/ss000/jh6EOU6tI/o4B6WFYDw9m7K3RcnpuWIpxRPEViATr0w4RXYxn
+         NYwpHY7pC5Ij0agH5DF00UTDdUt4wgC4q9GyGk2josKJUfmSbifWZWaXX1G3zCpR5S
+         +eDo5t+YxU12ofuihSVEgfeooJLk3s2A5aROTX6E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH 5.11 257/342] kcsan, debugfs: Move debugfs file creation out of early init
-Date:   Mon, 10 May 2021 12:20:47 +0200
-Message-Id: <20210510102018.591963804@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Hubert Streidl <hubert.streidl@de.bosch.com>,
+        Mark Jonas <mark.jonas@de.bosch.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 259/384] mfd: da9063: Support SMBus and I2C mode
+Date:   Mon, 10 May 2021 12:20:48 +0200
+Message-Id: <20210510102023.407071527@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
+References: <20210510102014.849075526@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,69 +43,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco Elver <elver@google.com>
+From: Hubert Streidl <hubert.streidl@de.bosch.com>
 
-commit e36299efe7d749976fbdaaf756dee6ef32543c2c upstream.
+[ Upstream commit 586478bfc9f7e16504d6f64cf18bcbdf6fd0cbc9 ]
 
-Commit 56348560d495 ("debugfs: do not attempt to create a new file
-before the filesystem is initalized") forbids creating new debugfs files
-until debugfs is fully initialized.  This means that KCSAN's debugfs
-file creation, which happened at the end of __init(), no longer works.
-And was apparently never supposed to work!
+By default the PMIC DA9063 2-wire interface is SMBus compliant. This
+means the PMIC will automatically reset the interface when the clock
+signal ceases for more than the SMBus timeout of 35 ms.
 
-However, there is no reason to create KCSAN's debugfs file so early.
-This commit therefore moves its creation to a late_initcall() callback.
+If the I2C driver / device is not capable of creating atomic I2C
+transactions, a context change can cause a ceasing of the clock signal.
+This can happen if for example a real-time thread is scheduled. Then
+the DA9063 in SMBus mode will reset the 2-wire interface. Subsequently
+a write message could end up in the wrong register. This could cause
+unpredictable system behavior.
 
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: stable <stable@vger.kernel.org>
-Fixes: 56348560d495 ("debugfs: do not attempt to create a new file before the filesystem is initalized")
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Marco Elver <elver@google.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The DA9063 PMIC also supports an I2C compliant mode for the 2-wire
+interface. This mode does not reset the interface when the clock
+signal ceases. Thus the problem depicted above does not occur.
+
+This patch tests for the bus functionality "I2C_FUNC_I2C". It can
+reasonably be assumed that the bus cannot obey SMBus timings if
+this functionality is set. SMBus commands most probably are emulated
+in this case which is prone to the latency issue described above.
+
+This patch enables the I2C bus mode if I2C_FUNC_I2C is set or
+otherwise keeps the default SMBus mode.
+
+Signed-off-by: Hubert Streidl <hubert.streidl@de.bosch.com>
+Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/kcsan/core.c    |    2 --
- kernel/kcsan/debugfs.c |    4 +++-
- kernel/kcsan/kcsan.h   |    5 -----
- 3 files changed, 3 insertions(+), 8 deletions(-)
+ drivers/mfd/da9063-i2c.c             | 10 ++++++++++
+ include/linux/mfd/da9063/registers.h |  3 +++
+ 2 files changed, 13 insertions(+)
 
---- a/kernel/kcsan/core.c
-+++ b/kernel/kcsan/core.c
-@@ -639,8 +639,6 @@ void __init kcsan_init(void)
+diff --git a/drivers/mfd/da9063-i2c.c b/drivers/mfd/da9063-i2c.c
+index 3781d0bb7786..783a14af18e2 100644
+--- a/drivers/mfd/da9063-i2c.c
++++ b/drivers/mfd/da9063-i2c.c
+@@ -442,6 +442,16 @@ static int da9063_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
  
- 	BUG_ON(!in_task());
- 
--	kcsan_debugfs_init();
--
- 	for_each_possible_cpu(cpu)
- 		per_cpu(kcsan_rand_state, cpu) = (u32)get_cycles();
- 
---- a/kernel/kcsan/debugfs.c
-+++ b/kernel/kcsan/debugfs.c
-@@ -261,7 +261,9 @@ static const struct file_operations debu
- 	.release = single_release
- };
- 
--void __init kcsan_debugfs_init(void)
-+static void __init kcsan_debugfs_init(void)
- {
- 	debugfs_create_file("kcsan", 0644, NULL, NULL, &debugfs_ops);
- }
++	/* If SMBus is not available and only I2C is possible, enter I2C mode */
++	if (i2c_check_functionality(i2c->adapter, I2C_FUNC_I2C)) {
++		ret = regmap_clear_bits(da9063->regmap, DA9063_REG_CONFIG_J,
++					DA9063_TWOWIRE_TO);
++		if (ret < 0) {
++			dev_err(da9063->dev, "Failed to set Two-Wire Bus Mode.\n");
++			return -EIO;
++		}
++	}
 +
-+late_initcall(kcsan_debugfs_init);
---- a/kernel/kcsan/kcsan.h
-+++ b/kernel/kcsan/kcsan.h
-@@ -31,11 +31,6 @@ void kcsan_save_irqtrace(struct task_str
- void kcsan_restore_irqtrace(struct task_struct *task);
+ 	return da9063_device_init(da9063, i2c->irq);
+ }
  
- /*
-- * Initialize debugfs file.
-- */
--void kcsan_debugfs_init(void);
--
--/*
-  * Statistics counters displayed via debugfs; should only be modified in
-  * slow-paths.
-  */
+diff --git a/include/linux/mfd/da9063/registers.h b/include/linux/mfd/da9063/registers.h
+index 1dbabf1b3cb8..6e0f66a2e727 100644
+--- a/include/linux/mfd/da9063/registers.h
++++ b/include/linux/mfd/da9063/registers.h
+@@ -1037,6 +1037,9 @@
+ #define		DA9063_NONKEY_PIN_AUTODOWN	0x02
+ #define		DA9063_NONKEY_PIN_AUTOFLPRT	0x03
+ 
++/* DA9063_REG_CONFIG_J (addr=0x10F) */
++#define DA9063_TWOWIRE_TO			0x40
++
+ /* DA9063_REG_MON_REG_5 (addr=0x116) */
+ #define DA9063_MON_A8_IDX_MASK			0x07
+ #define		DA9063_MON_A8_IDX_NONE		0x00
+-- 
+2.30.2
+
 
 
