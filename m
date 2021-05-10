@@ -2,101 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D206C378DB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD0C378DAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241526AbhEJMuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244233AbhEJL6m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:58:42 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D0DC07E5FF
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 04:52:25 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 5675322239;
-        Mon, 10 May 2021 13:52:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1620647543;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yO4AK8WNlzpOysSwYhMdNTxh6p0zS+xaRzCx4D02VTA=;
-        b=aJ87l8l+za7++bQhHM8uOwBLK2wipB1v1+sZx34XkEkmjZHOv75oGC1IDaKjYhbCW71sEx
-        pumTU78vNkCc0/3mJpbDWKIuAN9pKWtEZKYHgp+s552bdDH5W9F4pN9yl3O7xwd2dNhHPZ
-        Xt/zqwgvO0o4O2tu8faj/8U4oUrSDKI=
+        id S1349718AbhEJMt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:49:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243600AbhEJL4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:56:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 383C061260;
+        Mon, 10 May 2021 11:55:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620647729;
+        bh=dyIPtb49LgFnCoKazyq+bQhPSj3PCobNssG21KHdoK4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=S4cpkndG9UuTYGkhKfO3hJLbYIHDWve5Su3QQFRXInDkMRoAu9bVjsNPKBQQExFiA
+         MH/LvEqboPFe5Mg323DsrqgW7WJPZfjJ5OWh3KcGd7Kzb/Ed/OuhsjfzebDsCLf+jo
+         Z2y3h21hX1f0r0znndE/gsvI3+7MfvcFNE3R9vJ3F6eSaoK3rYc9HAxpysQKCzq2nw
+         XliTZNXkMCNQpYy6ormSrp00pDOW21OImF+xXBpjWC/JIXAZfq/wrXo3rh38peS5/g
+         BQeri8Wl+fs0ihvm/Fcaw0vxpMvqk7Fkm7kctYIMuGKithMKv3Kd8J2NMAGsk2M1IJ
+         Z8/9XzwZufeKA==
+Date:   Mon, 10 May 2021 13:55:18 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fpga@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
+        rcu@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as
+ ASCII
+Message-ID: <20210510135518.305cc03d@coco.lan>
+In-Reply-To: <2ae366fdff4bd5910a2270823e8da70521c859af.camel@infradead.org>
+References: <cover.1620641727.git.mchehab+huawei@kernel.org>
+        <2ae366fdff4bd5910a2270823e8da70521c859af.camel@infradead.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 10 May 2021 13:52:22 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        kernelci-results@groups.io, Heiko Thiery <heiko.thiery@gmail.com>,
-        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Thierry Reding <treding@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>, linux-kernel@vger.kernel.org
-Subject: Re: broonie-sound/for-next bisection:
- baseline.bootrr.asoc-simple-card-probed on kontron-sl28-var3-ads2
-In-Reply-To: <87o8djcxas.wl-kuninori.morimoto.gx@renesas.com>
-References: <6080e82c.1c69fb81.cd60c.2a13@mx.google.com>
- <3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com>
- <877dkp5141.wl-kuninori.morimoto.gx@renesas.com>
- <20210426144242.GF4590@sirena.org.uk>
- <8735vc4r59.wl-kuninori.morimoto.gx@renesas.com>
- <20210427101926.GA4605@sirena.org.uk>
- <ea2b6dae-3087-67d3-8473-410255a51e23@collabora.com>
- <e20b9c8a2715b5d091a8d1f37ba890b4@walle.cc>
- <20210427135703.GH4605@sirena.org.uk>
- <cc9a39f977c3765d1060ab1b0038bc79@walle.cc>
- <a1ec388def4febd9af6ef477245ef2d3@walle.cc>
- <1aa3a8716d2416f0cc127737dcff092a@walle.cc>
- <87o8djcxas.wl-kuninori.morimoto.gx@renesas.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <99b3cd8db134d9682c16784f75f40bae@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi David,
 
-Am 2021-05-10 01:16, schrieb Kuninori Morimoto:
-> I'm sorry for my late response. Japan was holiday
-> 
->>  _But_ later
->> asoc_simple_canonicalize_cpu() will reset the dai_name pointer to
->> NULL in simple_parse_node() if "single" is 1 and then we end up
->> having two links with the same name.
-> 
-> Ahh, OK thanks.
-> I think understand that why my posted patch
-> (= 59c35c44a9cf89a83a9 "ASoC: simple-card: add simple_parse_node()")
-> breaks your board.
-> 
-> I will try to fixup the issue.
-> 
-> Thank you for your help !!
+Em Mon, 10 May 2021 11:54:02 +0100
+David Woodhouse <dwmw2@infradead.org> escreveu:
 
-I've just tested your new patches. Unfortunately, it was very
-successful. I've also traced the is_single_links and it is still
-1 for this board. Is this correct?
+> On Mon, 2021-05-10 at 12:26 +0200, Mauro Carvalho Chehab wrote:
+> > There are several UTF-8 characters at the Kernel's documentation.
+> >=20
+> > Several of them were due to the process of converting files from
+> > DocBook, LaTeX, HTML and Markdown. They were probably introduced
+> > by the conversion tools used on that time.
+> >=20
+> > Other UTF-8 characters were added along the time, but they're easily
+> > replaceable by ASCII chars.
+> >=20
+> > As Linux developers are all around the globe, and not everybody has UTF=
+-8
+> > as their default charset, better to use UTF-8 only on cases where it is=
+ really
+> > needed. =20
+>=20
+> No, that is absolutely the wrong approach.
+>=20
+> If someone has a local setup which makes bogus assumptions about text
+> encodings, that is their own mistake.
+>=20
+> We don't do them any favours by trying to *hide* it in the common case
+> so that they don't notice it for longer.
+>=20
+> There really isn't much excuse for such brokenness, this far into the
+> 21st century.
+>=20
+> Even *before* UTF-8 came along in the final decade of the last
+> millennium, it was important to know which character set a given piece
+> of text was encoded in.
+>=20
+> In fact it was even *more* important back then, we couldn't just assume
+> UTF-8 everywhere like we can in modern times.
+>=20
+> Git can already do things like CRLF conversion on checking files out to
+> match local conventions; if you want to teach it to do character set
+> conversions too then I suppose that might be useful to a few developers
+> who've fallen through a time warp and still need it. But nobody's ever
+> bothered before because it just isn't necessary these days.
+>=20
+> Please *don't* attempt to address this anachronistic and esoteric
+> "requirement" by dragging the kernel source back in time by three
+> decades.
 
-Still these two questions are open:
->> Which begs the two questions:
->> (1) What is "single" actually and when should it be 1?
->> (2) If single is 1, then the sysfs file will be named 
->> "(null)-codec-name".
->>     Do we want that?
+No. The idea is not to go back three decades ago.=20
 
--michael
+The goal is just to avoid use UTF-8 where it is not needed. See, the vast
+majority of UTF-8 chars are kept:
+
+	- Non-ASCII Latin and Greek chars;
+	- Box drawings;
+	- arrows;
+	- most symbols.
+
+There, it makes perfect sense to keep using UTF-8.
+
+We should keep using UTF-8 on Kernel. This is something that it shouldn't
+be changed.
+
+---
+
+This patch series is doing conversion only when using ASCII makes
+more sense than using UTF-8.=20
+
+See, a number of converted documents ended with weird characters
+like ZERO WIDTH NO-BREAK SPACE (U+FEFF) character. This specific
+character doesn't do any good.
+
+Others use NO-BREAK SPACE (U+A0) instead of 0x20. Harmless, until
+someone tries to use grep[1].
+
+[1] try to run:
+
+    $ git grep "CPU 0 has been" Documentation/RCU/
+
+    it will return nothing with current upstream.
+
+    But it will work fine after the series is applied:
+
+    $ git grep "CPU 0 has been" Documentation/RCU/
+      Documentation/RCU/Design/Data-Structures/Data-Structures.rst:| #. CPU=
+ 0 has been in dyntick-idle mode for quite some time. When it   |
+      Documentation/RCU/Design/Data-Structures/Data-Structures.rst:|    not=
+ices that CPU 0 has been in dyntick idle mode, which qualifies  |
+
+The main point on this series is to replace just the occurrences
+where ASCII represents the symbol equally well, e. g. it is limited
+for those chars:
+
+	- U+2010 ('=E2=80=90'): HYPHEN
+	- U+00ad ('=C2=AD'): SOFT HYPHEN
+	- U+2013 ('=E2=80=93'): EN DASH
+	- U+2014 ('=E2=80=94'): EM DASH
+
+	- U+2018 ('=E2=80=98'): LEFT SINGLE QUOTATION MARK
+	- U+2019 ('=E2=80=99'): RIGHT SINGLE QUOTATION MARK
+	- U+00b4 ('=C2=B4'): ACUTE ACCENT
+
+	- U+201c ('=E2=80=9C'): LEFT DOUBLE QUOTATION MARK
+	- U+201d ('=E2=80=9D'): RIGHT DOUBLE QUOTATION MARK
+
+	- U+00d7 ('=C3=97'): MULTIPLICATION SIGN
+	- U+2212 ('=E2=88=92'): MINUS SIGN
+
+	- U+2217 ('=E2=88=97'): ASTERISK OPERATOR
+	  (this one used as a pointer reference like "*foo" on C code
+	   example inside a document converted from LaTeX)
+
+	- U+00bb ('=C2=BB'): RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+	  (this one also used wrongly on an ABI file, meaning '>')
+
+	- U+00a0 ('=C2=A0'): NO-BREAK SPACE
+	- U+feff ('=EF=BB=BF'): ZERO WIDTH NO-BREAK SPACE
+
+Using the above symbols will just trick tools like grep for no good
+reason.
+
+Thanks,
+Mauro
