@@ -2,92 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841723792EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2315E3792F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232820AbhEJPk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 11:40:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231845AbhEJPko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 11:40:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D848C611C1;
-        Mon, 10 May 2021 15:39:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620661179;
-        bh=CudXjd0hQkvW0675tw9uDcMFK77kr+Yf/Cpj1A3k0ws=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=l8PSD+ZoAScwk8qp8Lntnu/ZV0qrcPXNjNKCwuN5A75ajOKvRYCOwjVx614CGy6e+
-         7LEBzW3wPyL8YPOCLBOW85lGUd649nUgR+owzNH0Nl05zFyRiREuuCxacHjCYJHrFq
-         cCbtDKIBq/zGWQbbqHx3XvvYz/x9jZdbnkGVtM1DxNqQpZiEHixqKpFvFbTwhJIcMV
-         BhhRkEchhrUN2dr2KMgcUOpXbapydyxrqAU9EGDAneweikYcD10s+qgINcuIRQ7fpf
-         SCGGhuClC8fo0VZnt5IBX0s9/2loaDxeFZLitxJkmloWoZZgGoqu7+bF0lvfUubOin
-         aR+zZcKcRunaQ==
-Received: by mail-oo1-f50.google.com with SMTP id i8-20020a4aa1080000b0290201edd785e7so3560885ool.1;
-        Mon, 10 May 2021 08:39:39 -0700 (PDT)
-X-Gm-Message-State: AOAM533STcQQOFuQl4A6BAKGAYY44lCsGtX9oYJC232s3nxA7PqqBDVr
-        wkIC8ZuGhiNDV0UHwgxf78vuvlqqGsG49Ddqrvc=
-X-Google-Smtp-Source: ABdhPJwOfNMKZ24sY/aXHzYc5zvDGIwk1+GBWD3EPBDZmfFULQUgBO8gIOkxhhHWdtFyWhIYgiISwzZkEoBbTYtDXcI=
-X-Received: by 2002:a4a:b997:: with SMTP id e23mr19330421oop.13.1620661179176;
- Mon, 10 May 2021 08:39:39 -0700 (PDT)
+        id S231409AbhEJPqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 11:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231389AbhEJPqj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 11:46:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23705C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 08:45:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Flo9l/jYDkRKwx0f14g3k6U8nqbHT13bVIHshVunBVM=; b=gujTuZIsMzIdK8d25Kl1FvLEEb
+        nlA8vBvFfU8SvSQhTMVA2CmdHJffyObUCHMeV+VywGbf0oHAjVxz9s4/F9Eg03L50I8ud0n8GLdFn
+        xkss71KzHy1YbzOB8Pz69/AqtkgkDugtVNPhcKce4+WXDxqIv1IL9BG/8NdBbwmV+Pz5IfdwVHXXS
+        u4xcakk04MW9kx0dZ3CHLm9e37hqI08KFVG0BM32h7oajOtKIb25WDP5dYUYrsSk0iKO/SvGsIqq2
+        Xr5biMYWvey86Dp/R5reHBkDbLw/ZAHvsm20rwi1b+IgVIaK064zKvdvuIyNeVs3OCXefoNkOuik5
+        +8q+vX0Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lg84n-006KCh-T2; Mon, 10 May 2021 15:44:25 +0000
+Date:   Mon, 10 May 2021 16:44:09 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: kmalloc_index: make compiler break when size is
+ not supported
+Message-ID: <YJlUyc8t7MoGTFTe@casper.infradead.org>
+References: <20210508221328.7338-1-42.hyeyoo@gmail.com>
+ <YJccjBMBiwLqFrB8@casper.infradead.org>
+ <CAB=+i9QyxOu_1QDfX5QA=pOxxnRURPnwd2Y0EbhoO1u0e=irBA@mail.gmail.com>
+ <c305ec02-a7d6-dd0c-bfee-e5b571d9ca9a@suse.cz>
+ <20210510135857.GA3594@hyeyoo>
+ <9d0ffe49-a2e2-6c81-377b-4c8d2147dff8@suse.cz>
+ <20210510150230.GA74915@hyeyoo>
 MIME-Version: 1.0
-References: <20210421194636.1540448-1-linux@rasmusvillemoes.dk>
-In-Reply-To: <20210421194636.1540448-1-linux@rasmusvillemoes.dk>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 10 May 2021 17:39:28 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXE9MjzoQdt+ZHjmrf6MmVXXmkoJAm1y6qunLkQLDz+yKw@mail.gmail.com>
-Message-ID: <CAMj1kXE9MjzoQdt+ZHjmrf6MmVXXmkoJAm1y6qunLkQLDz+yKw@mail.gmail.com>
-Subject: Re: [PATCH] efi: cper: fix snprintf() use in cper_dimm_err_location()
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Alex Kluver <alex.kluver@hpe.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510150230.GA74915@hyeyoo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021 at 21:46, Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
->
-> snprintf() should be given the full buffer size, not one less. And it
-> guarantees nul-termination, so doing it manually afterwards is
-> pointless.
->
-> It's even potentially harmful (though probably not in practice because
-> CPER_REC_LEN is 256), due to the "return how much would have been
-> written had the buffer been big enough" semantics. I.e., if the bank
-> and/or device strings are long enough that the "DIMM location ..."
-> output gets truncated, writing to msg[n] is a buffer overflow.
->
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> ---
->  drivers/firmware/efi/cper.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
-> index e15d484b6a5a..ea7ca74fc173 100644
-> --- a/drivers/firmware/efi/cper.c
-> +++ b/drivers/firmware/efi/cper.c
-> @@ -276,8 +276,7 @@ static int cper_dimm_err_location(struct cper_mem_err_compact *mem, char *msg)
->         if (!msg || !(mem->validation_bits & CPER_MEM_VALID_MODULE_HANDLE))
->                 return 0;
->
-> -       n = 0;
-> -       len = CPER_REC_LEN - 1;
-> +       len = CPER_REC_LEN;
->         dmi_memdev_name(mem->mem_dev_handle, &bank, &device);
->         if (bank && device)
->                 n = snprintf(msg, len, "DIMM location: %s %s ", bank, device);
-> @@ -286,7 +285,6 @@ static int cper_dimm_err_location(struct cper_mem_err_compact *mem, char *msg)
->                              "DIMM location: not present. DMI handle: 0x%.4x ",
->                              mem->mem_dev_handle);
->
-> -       msg[n] = '\0';
->         return n;
->  }
->
-> --
-> 2.29.2
->
+On Tue, May 11, 2021 at 12:02:30AM +0900, Hyeonggon Yoo wrote:
+> @@ -382,8 +385,8 @@ static __always_inline unsigned int kmalloc_index(size_t size)
+>  	if (size <=  8 * 1024 * 1024) return 23;
+>  	if (size <=  16 * 1024 * 1024) return 24;
+>  	if (size <=  32 * 1024 * 1024) return 25;
+> -	if (size <=  64 * 1024 * 1024) return 26;
+> -	BUG();
+> +
+> +	BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
 
-Thanks, I will queue this up.
+we're being encouraged to use static_assert() these days.
+https://en.cppreference.com/w/c/language/_Static_assert
+
