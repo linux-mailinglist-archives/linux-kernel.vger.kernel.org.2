@@ -2,89 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87BE0379A7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 01:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B753379A7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 01:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbhEJXJa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 10 May 2021 19:09:30 -0400
-Received: from mail-qv1-f41.google.com ([209.85.219.41]:34478 "EHLO
-        mail-qv1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhEJXJ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 19:09:29 -0400
-Received: by mail-qv1-f41.google.com with SMTP id g5so3625279qvk.1;
-        Mon, 10 May 2021 16:08:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=XoLFrsEl1Ol7mx9IJ1xXcxMfYXgvQVgH9HnAP+FHILI=;
-        b=GXd/egm0MrC3zHNPmnwMavC+EvAUiA1Di25LFNE7fOxo1h2ohCNrUTS8WrjxlL1zW4
-         bTab14XnNpmW8OAtux2zEXcNSqgfrzsF286F2EyrgeeDHzZUvP9EntyB7we5Yj83eqm/
-         3cNp8rG2M+alxgJOksBzEeD9omMNd2+g2itVo5PQCw6F8qwQibuTRc5aTBfQ4ntxcM9P
-         DUPXek9jRZwf0vA52KcVeavwXxCaze3A/wU6hjiwMZZ1aTVr8NEPXy3Syo01NALBvSo/
-         6/F6j2pHRoe2B9yhLWYbrqa54SEOcTGwDzs3K34fhHicOyBGOxxcYA8G+76KqmewcjI2
-         ZwjA==
-X-Gm-Message-State: AOAM530IXRMO970ksH2s9Z2lNwomXEmyzXAf9MjRRjpLouBtjfbVkmc6
-        8nM/OJqp4ELNEL0URP7HyX8QpLp9AuY=
-X-Google-Smtp-Source: ABdhPJw6tqv0qtRxinnrnLyaJSFWJn1dsO3VTjxvekKsV7I42dBfaYwaxHc28AxuTpEKXeJrtqgxsA==
-X-Received: by 2002:a0c:cd10:: with SMTP id b16mr26513948qvm.0.1620688103757;
-        Mon, 10 May 2021 16:08:23 -0700 (PDT)
-Received: from ?IPv6:2601:184:417f:5b5f::557e:48ed? ([2601:184:417f:5b5f::557e:48ed])
-        by smtp.gmail.com with ESMTPSA id l16sm12784260qtj.30.2021.05.10.16.08.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 16:08:23 -0700 (PDT)
-Subject: Re: linux-next: Fixes tag needs some work in the amdgpu tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Alex Deucher <alexdeucher@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210511084206.3de50d5b@canb.auug.org.au>
-From:   David Ward <david.ward@gatech.edu>
-Message-ID: <f2fd1c01-d559-b8ac-b342-897c74ae852b@gatech.edu>
-Date:   Mon, 10 May 2021 19:08:21 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229954AbhEJXJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 19:09:53 -0400
+Received: from mga07.intel.com ([134.134.136.100]:17989 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229502AbhEJXJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 19:09:51 -0400
+IronPort-SDR: X8HV9nn+rTJFTWoweLiAj+4HhXDeX6lsAMAqirBUuou4Y8cYj8jd+Zs5KtNvgjBLv+DoJy7eUf
+ EsLSqaTQHK/A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="263239092"
+X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
+   d="scan'208";a="263239092"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 16:08:43 -0700
+IronPort-SDR: E2KqVgeupgma0ACp6LRa582YaTCbDKsP6QiK26M+uvBvb2xS26/sA0EHioJUlpAoRNjaix0I3H
+ tJMkXThKZ1dQ==
+X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
+   d="scan'208";a="434020287"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.32.217]) ([10.209.32.217])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 16:08:42 -0700
+Subject: Re: [RFC v2 14/32] x86/tdx: Handle port I/O
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <0e7e94d1ee4bae49dfd0dd441dc4f2ab6df76668.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4jPLGs6p0PNZQB6yKB3QDtEcGb234zcgCbJutXxZZEGnA@mail.gmail.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <e8ac31bc-e307-f277-f928-24ebba4cbca7@linux.intel.com>
+Date:   Mon, 10 May 2021 16:08:41 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210511084206.3de50d5b@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAPcyv4jPLGs6p0PNZQB6yKB3QDtEcGb234zcgCbJutXxZZEGnA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/21 6:42 PM, Stephen Rothwell wrote:
-> Hi all,
->
-> In commit
->
->    0b62b6ed6959 ("drm/amd/display: Initialize attribute for hdcp_srm sysfs file")
->
-> Fixes tag
->
->    Fixes: a193ed2094ba ("drm/amd/display: Add sysfs interface for set/get srm")
->
-> has these problem(s):
->
->    - Subject does not match target commit subject
->      Just use
-> 	git log -1 --format='Fixes: %h ("%s")'
->
-> Maybe you meant
->
-> Fixes: 9037246bb2da ("drm/amd/display: Add sysfs interface for set/get srm")
->
-My apologies. The correct hash is in fact 9037246bb2da. (Commit 
-a193ed2094ba introduced HDCP handling in amdgpu_pm, but did not include 
-the sysfs file.) It seems I inadvertently copied the wrong hash when 
-preparing the commit message.
 
-Please let me know if I need to resubmit this patch.
+On 5/10/2021 2:57 PM, Dan Williams wrote:
+>
+> There is a mix of direct-TDVMCALL usage and handling #VE when and why
+> is either approached used?
 
-Thank you,
+For the really early code in the decompressor or the main kernel we 
+can't use #VE because the IDT needed for handling the exception is not 
+set up, and some other infrastructure needed by the handler is missing. 
+The early code needs to do port IO to be able to write the early serial 
+console. To keep it all common it ended up that all port IO is paravirt. 
+Actually for most the main kernel port IO calls we could just use #VE 
+and it would result in smaller binaries, but then we would need to 
+annotate all early portio with some special name. That's why port IO is 
+all TDCALL.
 
-David
+For some others the only thing that really has to be #VE is MMIO because 
+we don't want to annotate every MMIO read*/write* with an alternative 
+(which would result in incredible binary bloat) For the others they have 
+mostly become now direct calls.
 
+
+>
+>> Decompression code uses port IO for earlyprintk. We must use
+>> paravirt calls there too if we want to allow earlyprintk.
+> What is the tradeoff between teaching the decompression code to handle
+> #VE (the implied assumption) vs teaching it to avoid #VE with direct
+> TDVMCALLs (the chosen direction)?
+
+The decompression code only really needs it to output something. But you 
+couldn't debug anything until #VE is set up. Also the decompression code 
+has a very basic environment that doesn't supply most kernel services, 
+and the #VE handler is relatively complicated. It would probably need to 
+be duplicated and the instruction decoder be ported to work in this 
+environment. It would be all a lot of work, just to make the debug 
+output work.
+
+>
+>> Co-developed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+>> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+>> ---
+>>   arch/x86/boot/compressed/Makefile |   1 +
+>>   arch/x86/boot/compressed/tdcall.S |   9 ++
+>>   arch/x86/include/asm/io.h         |   5 +-
+>>   arch/x86/include/asm/tdx.h        |  46 ++++++++-
+>>   arch/x86/kernel/tdcall.S          | 154 ++++++++++++++++++++++++++++++
+> Why is this named "tdcall" when it is implementing tdvmcalls? I must
+> say those names don't really help me understand what they do. Can we
+> have Linux names that don't mandate keeping the spec terminology in my
+> brain's translation cache?
+
+The instruction is called TDCALL. It's always the same instruction
+
+TDVMCALL is the variant when the host processes it (as opposed to the 
+TDX module), but it's just a different name space in the call number.
+
+
+             \
+
+> Is there a unified Linux name these can be given to stop the
+> proliferation of poor vendor names for similar concepts?
+
+We could use protected_guest()
+
+
+>
+> Does it also not know how to handle #VE to keep it aligned with the
+> runtime code?
+
+
+Not sure I understand the question, but the decompression code supports 
+neither alternatives nor #VE. It's a very limited environment.
+
+>
+> Outside the boot decompression code isn't this branch of the "ifdef
+> BOOT_COMPRESSED_MISC_H"  handled by #VE? I also don't see any usage of
+> __{in,out}() in this patch.
+
+I thought it was all alternative after decompression, so the #VE code 
+shouldn't be called. We still have it for some reason though.
+
+
+>
+> Perhaps "PAYLOAD_SIZE" since it is used for both input and output?
+>
+> If the ABI does not include the size of the payload then how would
+> code detect if even 80 bytes was violated in the future?
+
+
+The payload in memory is just a Linux concept. At the TDCALL level it's 
+only registers.
+
+
+>
+> 5
+> Surely there's an existing macro for this pattern? Would
+> PUSH_AND_CLEAR_REGS + POP_REGS be suitable? Besides code sharing it
+> would eliminate clearing of %r8.
+
+
+There used to be SAVE_ALL/SAVE_REGS, but they have been all removed in 
+some past refactorings.
+
+
+-Andi
 
