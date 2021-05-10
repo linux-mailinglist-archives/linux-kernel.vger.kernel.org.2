@@ -2,74 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B5737912C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BF3379135
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236992AbhEJOp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:45:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237585AbhEJOne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:43:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE505613B6;
-        Mon, 10 May 2021 14:42:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620657748;
-        bh=+zaTw2MyhWZVx6mLMle52nf82JFa4RkhC/eaBmVOGqw=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=EuS1/s50iuxWebKL/qEe+XTto+YydQ8k9+cOQralxHFdsGYn4lcfefmtE0MLmhpjN
-         65ihnBZX4cwS0FywI3zAO2P5Vf9FbtUqeAKaLywFdU3vk56ThylUJCT0OUtzdh1H79
-         n9/0l9ab6ZlBq8zjz3pAMwxLN3BSwfDgSmoY7gzNqAwy2mH/ErmJNt/BFp7VTKpFUO
-         31EFACexSkoBxucPDd75Pqn54ZGitKtHTyPBDJTm+BQJq4fYbLlhXc5tMI9qxHdiwz
-         a/9XHR4uY10VOmFtSOtD9nyLLR7TXM2isNp3llFom4Z8aBCd/9NdxUqXJbzyNPrUjn
-         Rfj62WVuqptTQ==
-Date:   Mon, 10 May 2021 07:42:27 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH v2] f2fs: support iflag change given the mask
-Message-ID: <YJlGU+STYD5geyIc@google.com>
-References: <20210506191347.1242802-1-jaegeuk@kernel.org>
+        id S239509AbhEJOqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:46:07 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:36272 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343800AbhEJOo3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 10:44:29 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14AEhDhI058741;
+        Mon, 10 May 2021 09:43:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620657793;
+        bh=J/dyqansxN5JKHd75Nozq5aC4QIjOnuXKswbpvsBbB4=;
+        h=From:To:CC:Subject:Date;
+        b=BhEk+Ay+3Z5NqXKtg2QaYthZjP0BKLKpHR7P1RlAnsLDeEZnHPxBajTpJifVSl2l5
+         PLU4qzGtEfceZ5lKsGsdhbeVarFtBD5QTlxk0FjznbIKIP0F7lD+uZfnt8FsHQiUaJ
+         njuTBv/WSw0xsrENPeklWLGBZMqYjlsOVhQKtWSI=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14AEhDcg117450
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 10 May 2021 09:43:13 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 10
+ May 2021 09:43:12 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 10 May 2021 09:43:12 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14AEhCmj126632;
+        Mon, 10 May 2021 09:43:12 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Santosh Shilimkar <ssantosh@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kristo@kernel.org>,
+        Nishanth Menon <nm@ti.com>
+Subject: [PATCH 0/4] ARM: dts: keystone: k2g: Update dts node for yaml
+Date:   Mon, 10 May 2021 09:43:08 -0500
+Message-ID: <20210510144312.986-1-nm@ti.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210506191347.1242802-1-jaegeuk@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In f2fs_fileattr_set(),
+Hi,
 
-	if (!fa->flags_valid)
-		mask &= FS_COMMON_FL;
+Series of patches to cleanup the dts for k2g to sync the dts
+with yaml fixups (information provided per patch)
 
-In this case, we can set supported flags by mask only instead of BUG_ON.
 
-/* Flags shared betwen flags/xflags */
-	(FS_SYNC_FL | FS_IMMUTABLE_FL | FS_APPEND_FL | \
-	 FS_NODUMP_FL |	FS_NOATIME_FL | FS_DAX_FL | \
-	 FS_PROJINHERIT_FL)
+Basic tests performed on k2g-evm. Series has been based on v5.13-rc1 -
+will be good to get it in the 5.13 window if possible.
 
-Fixes: 4c5b47997521 ("vfs: add fileattr ops")
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/file.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Nishanth Menon (4):
+  ARM: dts: keystone: k2g: Rename message-manager node
+  ARM: dts: keystone: k2g: Rename the TI-SCI node
+  ARM: dts: keystone: k2g: Rename the TI-SCI clocks node name
+  ARM: dts: keystone: k2g-evm: Move audio oscillator assigned clock to
+    mcasp
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 44a4650aea7b..ceb575f99048 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -1817,7 +1817,8 @@ static int f2fs_setflags_common(struct inode *inode, u32 iflags, u32 mask)
- 	struct f2fs_inode_info *fi = F2FS_I(inode);
- 	u32 masked_flags = fi->i_flags & mask;
- 
--	f2fs_bug_on(F2FS_I_SB(inode), (iflags & ~mask));
-+	/* mask can be shrunk by flags_valid selector */
-+	iflags &= mask;
- 
- 	/* Is it quota file? Do not allow user to mess with it */
- 	if (IS_NOQUOTA(inode))
+ arch/arm/boot/dts/keystone-k2g-evm.dts | 11 +++--------
+ arch/arm/boot/dts/keystone-k2g.dtsi    |  6 +++---
+ 2 files changed, 6 insertions(+), 11 deletions(-)
+
 -- 
-2.31.1.607.g51e8a6a459-goog
+2.31.0
 
