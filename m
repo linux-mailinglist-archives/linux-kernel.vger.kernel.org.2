@@ -2,38 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513C23787A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272953787AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238077AbhEJLRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:17:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41454 "EHLO mail.kernel.org"
+        id S238212AbhEJLRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:17:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233253AbhEJKwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:52:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71FDD61876;
-        Mon, 10 May 2021 10:40:53 +0000 (UTC)
+        id S232825AbhEJKxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:53:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30ACF6101D;
+        Mon, 10 May 2021 10:41:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643254;
-        bh=SqM/N6JzNeVkkCEtOVfKCgRU/lkUPfSXPQSHx4t8blo=;
+        s=korg; t=1620643280;
+        bh=dLFfrv2Rnc1w6xd+moC1xTPCS/G+3bi3y8QCG6nK6U0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tl1wi8pcg2zcxMzIkIUxD7b5ml4BmEEJvZjQKXhkuPtJ1N0M6Aaw0wvyi2SUtM3t1
-         zsB+BDKWFoUf9RUab1eROh3/KXwGoRlw/PcFBwuK9OIQO/YZALKpTUjxr+qzaO4mrv
-         KvZPTBaN2jarxa0lANnHl8inAKJfqSDqOQeB9Me0=
+        b=cc36IM3vGskuVk4JPWXjXZJRIMSl/kMl7Zh0CzoquLtwPi0OXgBMLpYa7jSnJ7it7
+         6IQjJqhq0DuZK8iVioCskzMJYNIYcL54qkbF6QJiROpzppIlfU8Von3gzhVdw623vR
+         cnLkw1UqgCWHQiga7mJiuOQpHOOaielx0K00a/yQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com,
-        syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-nfs@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 5.10 233/299] NFS: fs_context: validate UDP retrans to prevent shift out-of-bounds
-Date:   Mon, 10 May 2021 12:20:30 +0200
-Message-Id: <20210510102012.656313062@linuxfoundation.org>
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 5.10 234/299] NFS: Dont discard pNFS layout segments that are marked for return
+Date:   Mon, 10 May 2021 12:20:31 +0200
+Message-Id: <20210510102012.686488629@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
 References: <20210510102004.821838356@linuxfoundation.org>
@@ -45,61 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-commit c09f11ef35955785f92369e25819bf0629df2e59 upstream.
+commit 39fd01863616964f009599e50ca5c6ea9ebf88d6 upstream.
 
-Fix shift out-of-bounds in xprt_calc_majortimeo(). This is caused
-by a garbage timeout (retrans) mount option being passed to nfs mount,
-in this case from syzkaller.
+If the pNFS layout segment is marked with the NFS_LSEG_LAYOUTRETURN
+flag, then the assumption is that it has some reporting requirement
+to perform through a layoutreturn (e.g. flexfiles layout stats or error
+information).
 
-If the protocol is XPRT_TRANSPORT_UDP, then 'retrans' is a shift
-value for a 64-bit long integer, so 'retrans' cannot be >= 64.
-If it is >= 64, fail the mount and return an error.
-
-Fixes: 9954bf92c0cd ("NFS: Move mount parameterisation bits into their own file")
-Reported-by: syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com
-Reported-by: syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc: Anna Schumaker <anna.schumaker@netapp.com>
-Cc: linux-nfs@vger.kernel.org
-Cc: David Howells <dhowells@redhat.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
+Fixes: e0b7d420f72a ("pNFS: Don't discard layout segments that are marked for return")
 Cc: stable@vger.kernel.org
 Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/fs_context.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ fs/nfs/pnfs.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/fs/nfs/fs_context.c
-+++ b/fs/nfs/fs_context.c
-@@ -938,6 +938,15 @@ static int nfs23_parse_monolithic(struct
- 			       sizeof(mntfh->data) - mntfh->size);
+--- a/fs/nfs/pnfs.c
++++ b/fs/nfs/pnfs.c
+@@ -2470,6 +2470,9 @@ pnfs_mark_matching_lsegs_return(struct p
  
- 		/*
-+		 * for proto == XPRT_TRANSPORT_UDP, which is what uses
-+		 * to_exponential, implying shift: limit the shift value
-+		 * to BITS_PER_LONG (majortimeo is unsigned long)
-+		 */
-+		if (!(data->flags & NFS_MOUNT_TCP)) /* this will be UDP */
-+			if (data->retrans >= 64) /* shift value is too large */
-+				goto out_invalid_data;
+ 	assert_spin_locked(&lo->plh_inode->i_lock);
+ 
++	if (test_bit(NFS_LAYOUT_RETURN_REQUESTED, &lo->plh_flags))
++		tmp_list = &lo->plh_return_segs;
 +
-+		/*
- 		 * Translate to nfs_fs_context, which nfs_fill_super
- 		 * can deal with.
- 		 */
-@@ -1037,6 +1046,9 @@ out_no_address:
- 
- out_invalid_fh:
- 	return nfs_invalf(fc, "NFS: invalid root filehandle");
-+
-+out_invalid_data:
-+	return nfs_invalf(fc, "NFS: invalid binary mount data");
- }
- 
- #if IS_ENABLED(CONFIG_NFS_V4)
+ 	list_for_each_entry_safe(lseg, next, &lo->plh_segs, pls_list)
+ 		if (pnfs_match_lseg_recall(lseg, return_range, seq)) {
+ 			dprintk("%s: marking lseg %p iomode %d "
+@@ -2477,6 +2480,8 @@ pnfs_mark_matching_lsegs_return(struct p
+ 				lseg, lseg->pls_range.iomode,
+ 				lseg->pls_range.offset,
+ 				lseg->pls_range.length);
++			if (test_bit(NFS_LSEG_LAYOUTRETURN, &lseg->pls_flags))
++				tmp_list = &lo->plh_return_segs;
+ 			if (mark_lseg_invalid(lseg, tmp_list))
+ 				continue;
+ 			remaining++;
 
 
