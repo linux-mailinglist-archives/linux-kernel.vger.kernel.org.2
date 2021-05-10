@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5950A378346
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C12AA37834F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 12:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbhEJKnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 06:43:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41610 "EHLO mail.kernel.org"
+        id S231352AbhEJKnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 06:43:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232867AbhEJKfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:35:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A3B261883;
-        Mon, 10 May 2021 10:28:33 +0000 (UTC)
+        id S232884AbhEJKfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:35:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03BA461923;
+        Mon, 10 May 2021 10:28:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620642514;
-        bh=824zE0rW/yPrvO3PXdHhW5y4S8d96Kv2EdrQ4kkGRnE=;
+        s=korg; t=1620642516;
+        bh=L61/bZfk/FS2BkIv6Kyc1k2J94TpXSL7UnCZS7U1WUE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pu2b4/zCggwt7EMnhU4Xkrr1fA34EREJv7E1YiNyC+xwbOwdgKgy8xbXyQ4ePhjjY
-         fSCldpYc66ZvoE4ezKw5PF1iHaMyLSm09puzH/WwnEii9rKImiX0oni3j61ogaY3me
-         1GU+fOYQoTM5o1Rh2GuDoOAUsZlBeDP7J33LtiXY=
+        b=qa1cSNIY8LEWQiSVLz3t6f2yf3gSzCzUZT6FDoqZFryn810OCj+HWksdZSwFva8PK
+         tfYTfHqX34fIxoNE2vobcMT7cMTy0RxIUrmO2cIkqPGF2RKiTNVA6DO4YGNSkwaErN
+         jzUqAbREAQohEs4XIKaoxUaAK9Va2QoeKc12Lbx0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Anson Jacob <Anson.Jacob@amd.com>,
-        Aurabindo Jayamohanan Pillai <Aurabindo.Pillai@amd.com>,
+        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
+        Eric Bernstein <Eric.Bernstein@amd.com>,
         Solomon Chiu <solomon.chiu@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 090/184] drm/amd/display: Fix UBSAN warning for not a valid value for type _Bool
-Date:   Mon, 10 May 2021 12:19:44 +0200
-Message-Id: <20210510101953.122540051@linuxfoundation.org>
+Subject: [PATCH 5.4 091/184] drm/amd/display: fix dml prefetch validation
+Date:   Mon, 10 May 2021 12:19:45 +0200
+Message-Id: <20210510101953.157026605@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510101950.200777181@linuxfoundation.org>
 References: <20210510101950.200777181@linuxfoundation.org>
@@ -44,55 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anson Jacob <Anson.Jacob@amd.com>
+From: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
 
-[ Upstream commit 6a30a92997eee49554f72b462dce90abe54a496f ]
+[ Upstream commit 8ee0fea4baf90e43efe2275de208a7809f9985bc ]
 
-[Why]
-dc_cursor_position do not initialise position.translate_by_source when
-crtc or plane->state->fb is NULL. UBSAN caught this error in
-dce110_set_cursor_position, as the value was garbage.
-
-[How]
-Initialise dc_cursor_position structure elements to 0 in handle_cursor_update
-before calling get_cursor_position.
+Incorrect variable used, missing initialization during validation.
 
 Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1471
-Reported-by: Lyude Paul <lyude@redhat.com>
-Signed-off-by: Anson Jacob <Anson.Jacob@amd.com>
-Reviewed-by: Aurabindo Jayamohanan Pillai <Aurabindo.Pillai@amd.com>
+Signed-off-by: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
+Reviewed-by: Eric Bernstein <Eric.Bernstein@amd.com>
 Acked-by: Solomon Chiu <solomon.chiu@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20.c   | 1 +
+ drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20v2.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 2626aacf492f..1aec841fda35 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -5372,10 +5372,6 @@ static int get_cursor_position(struct drm_plane *plane, struct drm_crtc *crtc,
- 	int x, y;
- 	int xorigin = 0, yorigin = 0;
- 
--	position->enable = false;
--	position->x = 0;
--	position->y = 0;
--
- 	if (!crtc || !plane->state->fb)
- 		return 0;
- 
-@@ -5427,7 +5423,7 @@ static void handle_cursor_update(struct drm_plane *plane,
- 	struct dm_crtc_state *crtc_state = crtc ? to_dm_crtc_state(crtc->state) : NULL;
- 	struct amdgpu_crtc *amdgpu_crtc = to_amdgpu_crtc(crtc);
- 	uint64_t address = afb ? afb->address : 0;
--	struct dc_cursor_position position;
-+	struct dc_cursor_position position = {0};
- 	struct dc_cursor_attributes attributes;
- 	int ret;
- 
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20.c b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20.c
+index 6c6c486b774a..945d23ca3677 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20.c
++++ b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20.c
+@@ -3435,6 +3435,7 @@ void dml20_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_l
+ 			mode_lib->vba.DCCEnabledInAnyPlane = true;
+ 		}
+ 	}
++	mode_lib->vba.UrgentLatency = mode_lib->vba.UrgentLatencyPixelDataOnly;
+ 	for (i = 0; i <= mode_lib->vba.soc.num_states; i++) {
+ 		locals->FabricAndDRAMBandwidthPerState[i] = dml_min(
+ 				mode_lib->vba.DRAMSpeedPerState[i] * mode_lib->vba.NumberOfChannels
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20v2.c b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20v2.c
+index 0fafd693ffb4..5b5ed1be19ba 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20v2.c
++++ b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20v2.c
+@@ -3467,6 +3467,7 @@ void dml20v2_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode
+ 			mode_lib->vba.DCCEnabledInAnyPlane = true;
+ 		}
+ 	}
++	mode_lib->vba.UrgentLatency = mode_lib->vba.UrgentLatencyPixelDataOnly;
+ 	for (i = 0; i <= mode_lib->vba.soc.num_states; i++) {
+ 		locals->FabricAndDRAMBandwidthPerState[i] = dml_min(
+ 				mode_lib->vba.DRAMSpeedPerState[i] * mode_lib->vba.NumberOfChannels
 -- 
 2.30.2
 
