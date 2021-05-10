@@ -2,126 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B215377CB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 09:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A391377CBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 09:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhEJHBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 03:01:14 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:50012 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhEJHBK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 03:01:10 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14A6xjvj118442;
-        Mon, 10 May 2021 06:59:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=4e7dQppKfNIV7YVAFBbupKmBJtQcsa0sycuBhEJrB08=;
- b=f9a+II+4xilHF+3C2FBIoI0hgNKODGJYn5fXqlzQcv9FOvY2mE/AFcZE9yaWDErFzkUN
- vLRy5XrWIpSHqRaH+dJb5SMs2Mw2VzQnenNvDDkY0rheEEkI6CYfl40aIoRPIhWSv9Nh
- 4fjrwGFYVFA92fTULbOxnBlxRyTHSzfHOIhKds3mDiu5J0cdGYbhsLh+YCPHz0gneD9B
- dJa3Rl1QCQzWinHnBEqeheoEdUt8B2n7vyd9tI0sHmSxhIx2LJplOExBOtRmb44Rq002
- 01VY+2bHnhI7E8k3Azg+kwKnAtxJMBh7J3HXPSGn6F1Us9BPlfJVMSfegiCTwftFz8gy Tw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 38dg5ba5ru-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 May 2021 06:59:45 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14A6pX3Q017400;
-        Mon, 10 May 2021 06:59:42 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 38dfrusufx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 May 2021 06:59:42 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14A6xfRt042804;
-        Mon, 10 May 2021 06:59:41 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 38dfrusuew-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 May 2021 06:59:41 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14A6xaPL019927;
-        Mon, 10 May 2021 06:59:39 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 09 May 2021 23:59:36 -0700
-Date:   Mon, 10 May 2021 09:59:28 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Colin King <colin.king@canonical.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jon Brenner <jbrenner@taosinc.com>, linux-iio@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: tsl2583: Fix division by a zero lux_val
-Message-ID: <20210510065928.GR1955@kadam>
-References: <20210507183041.115864-1-colin.king@canonical.com>
- <20210508171258.2ef71a70@jic23-huawei>
- <1eb0428d352be2498739de71eb65746309c90f4c.camel@perches.com>
+        id S230157AbhEJHCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 03:02:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58810 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230009AbhEJHCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 03:02:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4901CB180;
+        Mon, 10 May 2021 07:00:55 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiri Slaby <jslaby@suse.cz>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Joe Perches <joe@perches.com>
+Subject: [PATCH v2 34/35] tty: make tty_get_byte_size available
+Date:   Mon, 10 May 2021 09:00:54 +0200
+Message-Id: <20210510070054.5397-1-jslaby@suse.cz>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210505091928.22010-35-jslaby@suse.cz>
+References: <20210505091928.22010-35-jslaby@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1eb0428d352be2498739de71eb65746309c90f4c.camel@perches.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: Wofz6Vl8vwk6Pcbex2r8_g2sHLoUZkQg
-X-Proofpoint-ORIG-GUID: Wofz6Vl8vwk6Pcbex2r8_g2sHLoUZkQg
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9979 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
- bulkscore=0 spamscore=0 clxscore=1011 priorityscore=1501 adultscore=0
- mlxlogscore=980 mlxscore=0 suspectscore=0 impostorscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105100049
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 10:01:14AM -0700, Joe Perches wrote:
-> On Sat, 2021-05-08 at 17:12 +0100, Jonathan Cameron wrote:
-> > On Fri,  7 May 2021 19:30:41 +0100 Colin King <colin.king@canonical.com> wrote:
-> []
-> > > The lux_val returned from tsl2583_get_lux can potentially be zero,
-> > > so check for this to avoid a division by zero and an overflowed
-> > > gain_trim_val.
-> []
-> > > Fixes: ac4f6eee8fe8 ("staging: iio: TAOS tsl258x: Device driver")
-> > > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > Definitely looks like it could happen so applied to the fixes-togreg branch of
-> > iio.git and marked for stable.
-> []
-> > > diff --git a/drivers/iio/light/tsl2583.c b/drivers/iio/light/tsl2583.c
-> []
-> > > @@ -341,6 +341,14 @@ static int tsl2583_als_calibrate(struct iio_dev *indio_dev)
-> > >  		return lux_val;
-> > >  	}
-> > > 
-> > > +	/* Avoid division by zero of lux_value later on */
-> > > +	if (lux_val == 0) {
-> > > +		dev_err(&chip->client->dev,
-> > > +			"%s: lux_val of 0 will produce out of range trim_value\n",
-> > > +			__func__);
-> > > +		return -ENODATA;
-> > > +	}
-> > > +
-> > >  	gain_trim_val = (unsigned int)(((chip->als_settings.als_cal_target)
-> > >  			* chip->als_settings.als_gain_trim) / lux_val);
-> 
-> Is a multiplication overflow possible here?
+Many tty drivers contain code to compute bits count depending on termios
+cflags. So extract this code from serial core to a separate tty helper
+function called tty_get_byte_size.
 
-These are chip->foo values and they ought to be trustworthy.
+In the next patch, call to this new function will replace many copies of
+this code.
 
-Of course, in real life, they can be set to INT_MAX in
-in_illuminance_input_target_store() and tsl2583_write_raw so they can
-overflow...  Anyway, if we were going to add a check it would be at
-the point where we get the number from the user and before we save it
-to chip->
+[v2] simplified the code flow as suggested by Joe and Andy
 
-regards,
-dan carpenter
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Joe Perches <joe@perches.com>
+---
+ drivers/tty/serial/serial_core.c | 30 +++--------------------
+ drivers/tty/tty_ioctl.c          | 42 ++++++++++++++++++++++++++++++++
+ include/linux/tty.h              |  2 ++
+ 3 files changed, 47 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+index d29329eb52f4..b3fc2b02a705 100644
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -334,39 +334,15 @@ void
+ uart_update_timeout(struct uart_port *port, unsigned int cflag,
+ 		    unsigned int baud)
+ {
+-	unsigned int bits;
++	unsigned int size;
+ 
+-	/* byte size and parity */
+-	switch (cflag & CSIZE) {
+-	case CS5:
+-		bits = 7;
+-		break;
+-	case CS6:
+-		bits = 8;
+-		break;
+-	case CS7:
+-		bits = 9;
+-		break;
+-	default:
+-		bits = 10;
+-		break; /* CS8 */
+-	}
+-
+-	if (cflag & CSTOPB)
+-		bits++;
+-	if (cflag & PARENB)
+-		bits++;
+-
+-	/*
+-	 * The total number of bits to be transmitted in the fifo.
+-	 */
+-	bits = bits * port->fifosize;
++	size = tty_get_byte_size(cflag, true) * port->fifosize;
+ 
+ 	/*
+ 	 * Figure the timeout to send the above number of bits.
+ 	 * Add .02 seconds of slop
+ 	 */
+-	port->timeout = (HZ * bits) / baud + HZ/50;
++	port->timeout = (HZ * size) / baud + HZ/50;
+ }
+ 
+ EXPORT_SYMBOL(uart_update_timeout);
+diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
+index aa9ecc8be990..13acc3decd87 100644
+--- a/drivers/tty/tty_ioctl.c
++++ b/drivers/tty/tty_ioctl.c
+@@ -300,6 +300,48 @@ int tty_termios_hw_change(const struct ktermios *a, const struct ktermios *b)
+ }
+ EXPORT_SYMBOL(tty_termios_hw_change);
+ 
++/**
++ *	tty_get_byte_size	-	get size of a byte
++ *	@cflag: termios cflag value
++ *	@account_flags: account for start and stop bits, second stop bit (if
++ *			set), and parity (if set)
++ *
++ *	Get the size of a byte in bits depending on @cflag. Depending on
++ *	@account_flags parameter, the result also accounts start and stop bits,
++ *	the second stop bit, and parity bit.
++ */
++unsigned char tty_get_byte_size(unsigned int cflag, bool account_flags)
++{
++	unsigned char bits;
++
++	switch (cflag & CSIZE) {
++	case CS5:
++		bits = 5;
++		break;
++	case CS6:
++		bits = 6;
++		break;
++	case CS7:
++		bits = 7;
++		break;
++	case CS8:
++	default:
++		bits = 8;
++		break;
++	}
++
++	if (!account_flags)
++		return bits;
++
++	if (cflag & CSTOPB)
++		bits++;
++	if (cflag & PARENB)
++		bits++;
++
++	return bits + 2;
++}
++EXPORT_SYMBOL_GPL(tty_get_byte_size);
++
+ /**
+  *	tty_set_termios		-	update termios values
+  *	@tty: tty to update
+diff --git a/include/linux/tty.h b/include/linux/tty.h
+index 5cf6b2e7331b..a14b4588368c 100644
+--- a/include/linux/tty.h
++++ b/include/linux/tty.h
+@@ -496,6 +496,8 @@ static inline speed_t tty_get_baud_rate(struct tty_struct *tty)
+ 	return tty_termios_baud_rate(&tty->termios);
+ }
+ 
++unsigned char tty_get_byte_size(unsigned int cflag, bool account_flags);
++
+ extern void tty_termios_copy_hw(struct ktermios *new, struct ktermios *old);
+ extern int tty_termios_hw_change(const struct ktermios *a, const struct ktermios *b);
+ extern int tty_set_termios(struct tty_struct *tty, struct ktermios *kt);
+-- 
+2.31.1
 
