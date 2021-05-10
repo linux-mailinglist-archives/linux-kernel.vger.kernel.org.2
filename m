@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9F83789E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B493786C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236648AbhEJLde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:33:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53006 "EHLO mail.kernel.org"
+        id S236903AbhEJLK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:10:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234910AbhEJK5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E108761940;
-        Mon, 10 May 2021 10:50:12 +0000 (UTC)
+        id S233510AbhEJKuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:50:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 641436194D;
+        Mon, 10 May 2021 10:39:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643813;
-        bh=6SZ9VbDmdYWkxPim/GHW/e26KKZS/got/wGz+DLlaDs=;
+        s=korg; t=1620643145;
+        bh=+wccCjzA60YTh/aYIuzJXLgDe3FSQk+9jQJ1eYJtsCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S/QVE8LF5+a6SvXgrQZ7py/en1zYfvpOR6JgHRFsz36llh86yAAPnFXVq1+u7deM3
-         9Wn/1ZLsCt3lods3Tmlk1xRKB9TPz1OjveVKkB0leDksMKYhYXhUCnGlr6nNSahHkv
-         vfrPbThaxTD3JPH/8U+qbGq44u6pDwmmTYkrBcI4=
+        b=t8X9vSnma7UDqS284GfyadUSL7LwgiVL86DM7iOzVdcuBYc0E9wzczD5RkKrScBfH
+         4niohhigBETgtnc2uQGfTYZwwk1Le5/PIeb2OVv0Tot/6RJQNUPd7iOmN/wqrxb3KN
+         JIlgbk8zQ6vUuzez0AO9PdJ5AnQnKnTjnQv7Bvuc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lyude Paul <lyude@redhat.com>,
-        Anson Jacob <Anson.Jacob@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
+        stable@vger.kernel.org, Babu Moger <babu.moger@amd.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 168/342] drm/amdkfd: Fix UBSAN shift-out-of-bounds warning
+Subject: [PATCH 5.10 161/299] selftests/resctrl: Fix missing options "-n" and "-p"
 Date:   Mon, 10 May 2021 12:19:18 +0200
-Message-Id: <20210510102015.645394367@linuxfoundation.org>
+Message-Id: <20210510102010.276959842@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,65 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anson Jacob <Anson.Jacob@amd.com>
+From: Fenghua Yu <fenghua.yu@intel.com>
 
-[ Upstream commit 50e2fc36e72d4ad672032ebf646cecb48656efe0 ]
+[ Upstream commit d7af3d0d515cbdf63b6c3398a3c15ecb1bc2bd38 ]
 
-If get_num_sdma_queues or get_num_xgmi_sdma_queues is 0, we end up
-doing a shift operation where the number of bits shifted equals
-number of bits in the operand. This behaviour is undefined.
+resctrl test suite accepts command line arguments (like -b, -t, -n and -p)
+as documented in the help. But passing -n and -p throws an invalid option
+error. This happens because -n and -p are missing in the list of
+characters that getopt() recognizes as valid arguments. Hence, they are
+treated as invalid options.
 
-Set num_sdma_queues or num_xgmi_sdma_queues to ULLONG_MAX, if the
-count is >= number of bits in the operand.
+Fix this by adding them to the list of characters that getopt() recognizes
+as valid arguments. Please note that the main() function already has the
+logic to deal with the values passed as part of these arguments and hence
+no changes are needed there.
 
-Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1472
-
-Reported-by: Lyude Paul <lyude@redhat.com>
-Signed-off-by: Anson Jacob <Anson.Jacob@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Tested-by: Lyude Paul <lyude@redhat.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Tested-by: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/amdkfd/kfd_device_queue_manager.c   | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ tools/testing/selftests/resctrl/resctrl_tests.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-index 4598a9a58125..a4266c4bca13 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-@@ -1128,6 +1128,9 @@ static int set_sched_resources(struct device_queue_manager *dqm)
+diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
+index 4b109a59f72d..ac2269610aa9 100644
+--- a/tools/testing/selftests/resctrl/resctrl_tests.c
++++ b/tools/testing/selftests/resctrl/resctrl_tests.c
+@@ -73,7 +73,7 @@ int main(int argc, char **argv)
+ 		}
+ 	}
  
- static int initialize_cpsch(struct device_queue_manager *dqm)
- {
-+	uint64_t num_sdma_queues;
-+	uint64_t num_xgmi_sdma_queues;
-+
- 	pr_debug("num of pipes: %d\n", get_pipes_per_mec(dqm));
+-	while ((c = getopt(argc_new, argv, "ht:b:")) != -1) {
++	while ((c = getopt(argc_new, argv, "ht:b:n:p:")) != -1) {
+ 		char *token;
  
- 	mutex_init(&dqm->lock_hidden);
-@@ -1136,8 +1139,18 @@ static int initialize_cpsch(struct device_queue_manager *dqm)
- 	dqm->active_cp_queue_count = 0;
- 	dqm->gws_queue_count = 0;
- 	dqm->active_runlist = false;
--	dqm->sdma_bitmap = ~0ULL >> (64 - get_num_sdma_queues(dqm));
--	dqm->xgmi_sdma_bitmap = ~0ULL >> (64 - get_num_xgmi_sdma_queues(dqm));
-+
-+	num_sdma_queues = get_num_sdma_queues(dqm);
-+	if (num_sdma_queues >= BITS_PER_TYPE(dqm->sdma_bitmap))
-+		dqm->sdma_bitmap = ULLONG_MAX;
-+	else
-+		dqm->sdma_bitmap = (BIT_ULL(num_sdma_queues) - 1);
-+
-+	num_xgmi_sdma_queues = get_num_xgmi_sdma_queues(dqm);
-+	if (num_xgmi_sdma_queues >= BITS_PER_TYPE(dqm->xgmi_sdma_bitmap))
-+		dqm->xgmi_sdma_bitmap = ULLONG_MAX;
-+	else
-+		dqm->xgmi_sdma_bitmap = (BIT_ULL(num_xgmi_sdma_queues) - 1);
- 
- 	INIT_WORK(&dqm->hw_exception_work, kfd_process_hw_exception);
- 
+ 		switch (c) {
 -- 
 2.30.2
 
