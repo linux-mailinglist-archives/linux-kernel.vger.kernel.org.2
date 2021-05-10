@@ -2,223 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A584B378E79
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBDF378E89
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242639AbhEJN3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:29:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59078 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240717AbhEJNW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 09:22:58 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1620652912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=76XvVApBB4h7nYMX/HL+xbx3l2IPhYwz78pPaYpWgyE=;
-        b=C8nlywMgxfVWPNWbEBDWDlHZEKozXTkQlJe7DpH5o5yxrObUopaUDcW4dfdspP8psx9zqU
-        +i1sWoejZSL9c8im6svLSdKAvsh1k4aGdA189j9+Pt0WEMi4ZzJs1d/S2wxiaaL/qsofqB
-        Y07lur/mzuiVkCyGmKk6df3pWjGtanI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 98A17B0BE;
-        Mon, 10 May 2021 13:21:52 +0000 (UTC)
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210422151007.2205-1-jgross@suse.com>
- <20210422151007.2205-2-jgross@suse.com>
- <4282bb6f-1d19-4d00-d468-f5d4c7fb0f90@oracle.com>
-From:   Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH 1/3] xen: check required Xen features
-Message-ID: <d53d6b83-2730-1ab6-7dba-236e86e247b3@suse.com>
-Date:   Mon, 10 May 2021 15:21:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S243079AbhEJNaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242507AbhEJNYt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 09:24:49 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF105C06138E
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:22:07 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id f8so7678030qth.6
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:22:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GpFk/RkXBcsoO0wjPghj5V+HTZlbdeYCbg4hpqoR7F4=;
+        b=Pil67YhbGH4k848YkpNUI7ff0wbhTu1avhC0npp39qUZd2aH6/Hvak9xaun3//Q1zI
+         rppyLJC0n4yY6mid/0pUg/Ev7siK6oJEz/9AVk0n2YULFE292TUXNS30Jb0m7Rj012nu
+         EvU404mZI+HFp2LeysmtuzV/IpDEKMgRdd5r0i7/hufWJQ7p+TK0CYiqcqFL3rYAZSrE
+         V8h+B21x8mR+LKElImsMTmTa4vV3G1y7HzbpIBnt1QLnGNZEf6pLkq2pqlqZ/R9GHmwI
+         QAqom9R8gbz1hMkIk6z8zIBfBW6oDhVVSNNlSHhIF0YdGUYi49sH+7ExsYxJUQJ7rUQS
+         9CWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GpFk/RkXBcsoO0wjPghj5V+HTZlbdeYCbg4hpqoR7F4=;
+        b=Q6jzmE/9txGC+8w3OUljj5YzFfCUYjxV79vmgg6Kw7guRMrOPeFx0OsjLgluOWlQMK
+         pf/HE/jGPHMmhbBey5ZGkwasV1GjV0ffh7v0hEIW+yB1aG8lOQ56dSvjPTEdsfl0heP+
+         trZXmj+ILbchM1/YrO1DYf4whpqAoXSfl4FHa9QtTeglc3hCEighPN01MfMIjqWpqg6i
+         Dr0J0v0psxNvppQDXw1I2fyzBaIl4qpfO5HR4dyCVfUNk3SAqGiZuRQpL6rIdfjXw8HH
+         9e7fvwtalPlE1pdTaSgW2EizDR8tUgndVyfRjcpvclgO9UEbkIs+laA/72HEAWMmvl/k
+         XA+A==
+X-Gm-Message-State: AOAM532DT8Dc+4GQOQ/gyXx28GWOKGLVuLgIuR5KTWYd/Ogd0VPSWXMv
+        XcD3Zo8sdhcY+Q3UtfynMoMLcg==
+X-Google-Smtp-Source: ABdhPJzfMtCtpMrBDgKuhauvsJ3pKVof7af9u5XGO1kS0J1bHHqd/zgau+HJQUh5MDDV6kHs27Ag4w==
+X-Received: by 2002:a05:622a:2c9:: with SMTP id a9mr7875046qtx.38.1620652926969;
+        Mon, 10 May 2021 06:22:06 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id m16sm11298430qkm.100.2021.05.10.06.22.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 06:22:06 -0700 (PDT)
+Subject: Re: [PATCH v2 15/17] crypto: qce: Defer probing if BAM dma is not yet
+ initialized
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bhupesh.linux@gmail.com
+References: <20210505213731.538612-1-bhupesh.sharma@linaro.org>
+ <20210505213731.538612-16-bhupesh.sharma@linaro.org>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <7d8bc623-ef12-c7ae-0d12-16b0b1c48ffe@linaro.org>
+Date:   Mon, 10 May 2021 09:22:05 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <4282bb6f-1d19-4d00-d468-f5d4c7fb0f90@oracle.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="v0xJqlEx16PQDex2Ji9eivWzhreV2gsI3"
+In-Reply-To: <20210505213731.538612-16-bhupesh.sharma@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---v0xJqlEx16PQDex2Ji9eivWzhreV2gsI3
-Content-Type: multipart/mixed; boundary="7atwZJqHbxCWQIe1gx0HLOWsAMaPzFtob";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc: Stefano Stabellini <sstabellini@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>
-Message-ID: <d53d6b83-2730-1ab6-7dba-236e86e247b3@suse.com>
-Subject: Re: [PATCH 1/3] xen: check required Xen features
-References: <20210422151007.2205-1-jgross@suse.com>
- <20210422151007.2205-2-jgross@suse.com>
- <4282bb6f-1d19-4d00-d468-f5d4c7fb0f90@oracle.com>
-In-Reply-To: <4282bb6f-1d19-4d00-d468-f5d4c7fb0f90@oracle.com>
-
---7atwZJqHbxCWQIe1gx0HLOWsAMaPzFtob
-Content-Type: multipart/mixed;
- boundary="------------EB1D33D114EA20FD47EBA1F0"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------EB1D33D114EA20FD47EBA1F0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 10.05.21 14:11, Boris Ostrovsky wrote:
->=20
-> On 4/22/21 11:10 AM, Juergen Gross wrote:
->>  =20
->> +/*
->> + * Linux kernel expects at least Xen 4.0.
->> + *
->> + * Assume some features to be available for that reason (depending on=
- guest
->> + * mode, of course).
->> + */
->> +#define chk_feature(f) {						\
->> +		if (!xen_feature(f))					\
->> +			pr_err("Xen: feature %s not available!\n", #f);	\
->> +	}
->=20
->=20
-> With your changes in the subsequent patches, are we still going to func=
-tion properly without those features? (i.e. maybe we should just panic)
-
-Depends on the use case.
-
-XENFEAT_gnttab_map_avail_bits is relevant for driver domains using
-user space backends only. In case it is not available "interesting"
-things might happen.
-
-XENFEAT_mmu_pt_update_preserve_ad not being present would result in
-a subsequent mmu-update function using that feature returning -ENOSYS,
-so this wouldn't be unrecognized.
-
-So panic() might be a good idea in case the features are not available.
-
-> (Also, chk_required_features() perhaps?)
-
-Fine with me.
 
 
-Juergen
+On 5/5/21 5:37 PM, Bhupesh Sharma wrote:
+> Since the Qualcomm qce crypto driver needs the BAM dma driver to be
+> setup first (to allow crypto operations), it makes sense to defer
+> the qce crypto driver probing in case the BAM dma driver is not yet
+> probed.
+> 
+> This fixes the qce probe failure issues when both qce and BMA dma
+> are compiled as static part of the kernel.
+> 
+> Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: dmaengine@vger.kernel.org
+> Cc: linux-clk@vger.kernel.org
+> Cc: linux-crypto@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: bhupesh.linux@gmail.com
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>   drivers/crypto/qce/core.c  | 4 ++++
+>   drivers/dma/qcom/bam_dma.c | 7 +++++++
+>   2 files changed, 11 insertions(+)
+> 
+> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
+> index 9a7d7ef94687..3e742e9911fa 100644
+> --- a/drivers/crypto/qce/core.c
+> +++ b/drivers/crypto/qce/core.c
+> @@ -15,6 +15,7 @@
+>   #include <linux/types.h>
+>   #include <crypto/algapi.h>
+>   #include <crypto/internal/hash.h>
+> +#include <soc/qcom/bam_dma.h>
+>   
+>   #include "core.h"
+>   #include "cipher.h"
+> @@ -201,6 +202,9 @@ static int qce_crypto_probe(struct platform_device *pdev)
+>   			of_match_device(qce_crypto_of_match, &pdev->dev);
+>   	int ret;
+>   
+> +	/* qce driver requires BAM dma driver to be setup first */
+> +	if (!bam_is_probed())
+> +		return -EPROBE_DEFER;
 
---------------EB1D33D114EA20FD47EBA1F0
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Hi Bhupesh,
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+You don't need this here. qce_dma_request returns -EPROBE_DEFER if the 
+dma controller is not probed yet.
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+-- 
+Warm Regards
+Thara
+>   
+>   	qce = devm_kzalloc(dev, sizeof(*qce), GFP_KERNEL);
+>   	if (!qce)
+> diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
+> index 2bc3b7c7ee5a..c854fcc82dbf 100644
+> --- a/drivers/dma/qcom/bam_dma.c
+> +++ b/drivers/dma/qcom/bam_dma.c
+> @@ -935,6 +935,12 @@ static void bam_channel_init(struct bam_device *bdev, struct bam_chan *bchan,
+>   	INIT_LIST_HEAD(&bchan->desc_list);
+>   }
+>   
+> +bool bam_is_probed(void)
+> +{
+> +	return bam_probed;
+> +}
+> +EXPORT_SYMBOL_GPL(bam_is_probed);
+> +
+>   static const struct of_device_id bam_of_match[] = {
+>   	{ .compatible = "qcom,bam-v1.3.0", .data = &bam_v1_3_reg_info },
+>   	{ .compatible = "qcom,bam-v1.4.0", .data = &bam_v1_4_reg_info },
+> @@ -1084,6 +1090,7 @@ static int bam_dma_probe(struct platform_device *pdev)
+>   	if (ret)
+>   		goto err_unregister_dma;
+>   
+> +	bam_probed = true;
+>   	if (!bdev->bamclk) {
+>   		pm_runtime_disable(&pdev->dev);
+>   		return 0;
+> 
 
---------------EB1D33D114EA20FD47EBA1F0--
-
---7atwZJqHbxCWQIe1gx0HLOWsAMaPzFtob--
-
---v0xJqlEx16PQDex2Ji9eivWzhreV2gsI3
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmCZM28FAwAAAAAACgkQsN6d1ii/Ey9a
-UAf9GTiuYSXEqCcah/973qkXKYOKNSnvm+avImO9swd3uYJZEAzIsV8KUReYqWnFefWwlJ9IMOZr
-Y2yRjS/LQPuwNZl5giuqzrrPouYNbLhtfYFEaEx7zxNINQeQwB1tWCP6RI69jR1iowIAPuLhLUyN
-+qj8+K8EhK+4Z1dfaBtOYAzBJMlWSyJvFIJ+RanRt3xQCn5TUoBegImkFWvTXH7rVKHpaBDY9rUq
-u0C2ac9aIJQRffg9WN5HK54poy9Mydsj6Ny0/d7yPNFskUZrdPNVL9ptsKkMsWUyLbWgYFVTAex1
-OjM52H2OtsHh73FzHNPvJUq4FYrHOEjIiIBKeIaZ2A==
-=XdOU
------END PGP SIGNATURE-----
-
---v0xJqlEx16PQDex2Ji9eivWzhreV2gsI3--
