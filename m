@@ -2,97 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0246E37970D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D78379715
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 20:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbhEJScc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 14:32:32 -0400
-Received: from mout.gmx.net ([212.227.17.20]:48911 "EHLO mout.gmx.net"
+        id S232282AbhEJSgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 14:36:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231400AbhEJSca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 14:32:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1620671474;
-        bh=yed0YzBjgjohaBfaix3PjUoWhDcykU3KCCY0bWzyjyI=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=NnQdoEH/HuTVFV5tPZ0PzGIhI5gPuCLzdAQIxoB8Mg/haTDvsEW0iZN+eRWACUG/C
-         0M+AngNCr+Yb67Amt5+fJnJuVh+uJthTkmXPW/kaZdlWBKFGxD+OsCr8kD17yjZoxI
-         Zn/xA30oRSKI8SWevDKZsvnsaYoPQiAaAyfo91CU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.126]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MBUqF-1lo6V43WaF-00D12H; Mon, 10
- May 2021 20:31:13 +0200
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>
-Subject: [PATCH] MAINTAINERS: De-duplicate INTEL MAX 10 BMC MFD DRIVER entry
-Date:   Mon, 10 May 2021 20:30:56 +0200
-Message-Id: <20210510183056.810753-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.30.2
+        id S230186AbhEJSgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 14:36:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06E6C61424;
+        Mon, 10 May 2021 18:35:09 +0000 (UTC)
+Date:   Mon, 10 May 2021 19:35:07 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v11 2/6] arm64: kvm: Introduce MTE VM feature
+Message-ID: <20210510183506.GA10910@arm.com>
+References: <20210416154309.22129-1-steven.price@arm.com>
+ <20210416154309.22129-3-steven.price@arm.com>
+ <20210428170705.GB4022@arm.com>
+ <c3293d47-a5f2-ea4a-6730-f5cae26d8a7e@arm.com>
+ <YJGHApOCXl811VK3@arm.com>
+ <329286e8-a8f3-ea1a-1802-58813255a4a5@arm.com>
+ <20210507182538.GF26528@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Gdl++FMm2DGDZatLRDX8S8izqi+YXGsZEF9cslmYyjjSVWKqrHm
- SS5kn+pR3kFw0Ejl1Fzqm2VHo4tG56kyjyBJUKYSmvvZzPbFL6D7ajCBxhKVw7sb/v7CI6K
- GMordSTDz/t6IXQ/H7gcV37IwtuWLRRl4p1NjSvDYOeuNWhoyaPoaK9gq9y0HjjhtVvRGip
- pBE9dbbEHV2e739ddnnMg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6QdcJHu5bqc=:CfeMtMctJzrBwrOsoifNy0
- EqhXYrPr2xBJqJEsfhrQ3yMkGdCcoht0ceedqdku+D9XoDwPr+bG+iHFKA+Fas8McwZoy+tjw
- apeTRx3i3/a/sjg0LoOBiX25G0IQvhk38vFeQ3i1wZ78HaI40MZKjd0N0ZRgJ2+n20se15YME
- n8AVCLo6iR8A2RO9JqAYtDW184xmEOXgZfbdumf+fax5ZErKn7h2kHJMfayuA7lEOy/QwLfsO
- B1jOTic0D3POKLd+7IgfTsmIQXRW/Fi/0pMnJe+3QTJHqO1YRTXiU10jU29tlCNKi5/mZWOPD
- aIbDrlE0VNecge3gmW6XeUZqeDmi38QhLS4Ji9r9pq5DXoEyLOmdSmQxYIVaQ5oWniIO7XVlF
- SowsQoKAak4i6CD4V3YUHKLEt/oFJ2QOt5F0h7+j7QHMlrpGiLrI3jsAmbO2E6Q70ujeJa8on
- MFiJRbatQc8PAPRTwmvnipB5SmGdbNyxKzWEW9+sv3dcrII2nOPLdkzs1bpW0XuyC9PsW00A8
- NWS+GP+H+H5pWjBPviPwyy+2gdlX5MfPlSFXd6NdVuneW2M3Qgv5+Y66BA527ad6fzFzz8WWx
- yH9a5eeD/6zatPbdC27PihGu+Dw4vgpmoqjsgKz8N9nUf1x5oGxJQ1okvvXTdxBANGIGmgGXi
- OUFGsDyTEsfKfik3GscqSVoQq7KgkTW2kElheVmfTUlz8xjzqBst4xdrxDGgaiEzY4xULKxdu
- RNrtmkrtpUqKE6CbDz4Mhjtq614WchR7KQUdXYukdhk/EWrytzA8eE0uMllCcJXvaJglWLPPO
- 8xVupapHuAY6WKfFMIG61D4BYvMogMOm0gETNn7IU7fgbx5/obImMgSmjTKqOVQ9YPj+x3o92
- 7LiisJLS25p2rYf2YhJN+fKMYpp8zvtaU8+ttidZ/t006pwOLY9SpW6R2ymxzfcsYQ0Ry7Gi2
- 8/lK1QH7Z4QuxoUPQW+n36D0sNQA+3esSRVV/GRNXJQUDAFifezPmq6q7xS/2NFb1iyM6srIf
- 52h6wV06k7GNYb+v3/lHH8J9VBQ7zLB7lcZOevAZNomD+bht9Do98c24XvDDf+eVxQ0M5sWTM
- RZEsDUM7EA6CPQYwW07ZCaWT6VSa542dTD3/sPd32H+STwdzohqm24yiPtsnUaxcD1yroI2/I
- 3P7fwnpcS2XOxrFphIZRQQZfzkPhR2JwPtUvY1ezOSgOWbRq3W6qj5oR1uNzJxH3znCMROJd7
- tBSkqt25Z7h/jt9ji
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210507182538.GF26528@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xu Yilin's patch "MAINTAINERS: Add entry for Intel MAX 10 mfd driver"
-was applied twice, resulting in a duplicate entry. De-duplicate it.
+On Fri, May 07, 2021 at 07:25:39PM +0100, Catalin Marinas wrote:
+> On Thu, May 06, 2021 at 05:15:25PM +0100, Steven Price wrote:
+> > On 04/05/2021 18:40, Catalin Marinas wrote:
+> > > On Thu, Apr 29, 2021 at 05:06:41PM +0100, Steven Price wrote:
+> > > > Given the changes to set_pte_at() which means that tags are restored from
+> > > > swap even if !PROT_MTE, the only race I can see remaining is the creation of
+> > > > new PROT_MTE mappings. As you mention an attempt to change mappings in the
+> > > > VMM memory space should involve a mmu notifier call which I think serialises
+> > > > this. So the remaining issue is doing this in a separate address space.
+> > > > 
+> > > > So I guess the potential problem is:
+> > > > 
+> > > >   * allocate memory MAP_SHARED but !PROT_MTE
+> > > >   * fork()
+> > > >   * VM causes a fault in parent address space
+> > > >   * child does a mprotect(PROT_MTE)
+> > > > 
+> > > > With the last two potentially racing. Sadly I can't see a good way of
+> > > > handling that.
+> > > 
+> > > Ah, the mmap lock doesn't help as they are different processes
+> > > (mprotect() acquires it as a writer).
+> > > 
+> > > I wonder whether this is racy even in the absence of KVM. If both parent
+> > > and child do an mprotect(PROT_MTE), one of them may be reading stale
+> > > tags for a brief period.
+> > > 
+> > > Maybe we should revisit whether shared MTE pages are of any use, though
+> > > it's an ABI change (not bad if no-one is relying on this). However...
+[...]
+> > > Thinking about this, we have a similar problem with the PG_dcache_clean
+> > > and two processes doing mprotect(PROT_EXEC). One of them could see the
+> > > flag set and skip the I-cache maintenance while the other executes
+> > > stale instructions. change_pte_range() could acquire the page lock if
+> > > the page is VM_SHARED (my preferred core mm fix). It doesn't immediately
+> > > solve the MTE/KVM case but we could at least take the page lock via
+> > > user_mem_abort().
+[...]
+> > This is the real issue I see - the race in PROT_MTE case is either a data
+> > leak (syncing after setting the bit) or data loss (syncing before setting
+> > the bit).
+[...]
+> > But without serialising through a spinlock (in mte_sync_tags()) I haven't
+> > been able to come up with any way of closing the race. But with the change
+> > to set_pte_at() to call mte_sync_tags() even if the PTE isn't PROT_MTE that
+> > is likely to seriously hurt performance.
+> 
+> Yeah. We could add another page flag as a lock though I think it should
+> be the core code that prevents the race.
+> 
+> If we are to do it in the arch code, maybe easier with a custom
+> ptep_modify_prot_start/end() where we check if it's VM_SHARED and
+> VM_MTE, take a (big) lock.
 
-Fixes: 58d91f1c1701d ("MAINTAINERS: Add entry for Intel MAX 10 mfd driver"=
-)
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- MAINTAINERS | 10 ----------
- 1 file changed, 10 deletions(-)
+I think in the general case we don't even need VM_SHARED. For example,
+we have two processes mapping a file, read-only. An mprotect() call in
+both processes will race on the page->flags via the corresponding
+set_pte_at(). I think an mprotect() with a page fault in different
+processes can also race.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bd7aff0c120f2..7d6e44b9f4664 100644
-=2D-- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9299,16 +9299,6 @@ F:	drivers/hwmon/intel-m10-bmc-hwmon.c
- F:	drivers/mfd/intel-m10-bmc.c
- F:	include/linux/mfd/intel-m10-bmc.h
+The PROT_EXEC case can be easily fixed, as you said already. The
+PROT_MTE with MAP_PRIVATE I think can be made safe by a similar
+approach: test flag, clear tags, set flag. A subsequent write would
+trigger a CoW, so different page anyway.
 
--INTEL MAX 10 BMC MFD DRIVER
--M:	Xu Yilun <yilun.xu@intel.com>
--R:	Tom Rix <trix@redhat.com>
--S:	Maintained
--F:	Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
--F:	Documentation/hwmon/intel-m10-bmc-hwmon.rst
--F:	drivers/hwmon/intel-m10-bmc-hwmon.c
--F:	drivers/mfd/intel-m10-bmc.c
--F:	include/linux/mfd/intel-m10-bmc.h
--
- INTEL MENLOW THERMAL DRIVER
- M:	Sujith Thomas <sujith.thomas@intel.com>
- L:	platform-driver-x86@vger.kernel.org
-=2D-
-2.30.2
+Anyway, I don't think ptep_modify_prot_start/end would buy us much, it
+probably makes the code even harder to read.
 
+> In the core code, something like below (well, a partial hack, not tested
+> and it doesn't handle huge pages but just to give an idea):
+> 
+> diff --git a/mm/mprotect.c b/mm/mprotect.c
+> index 94188df1ee55..6ba96ff141a6 100644
+> --- a/mm/mprotect.c
+> +++ b/mm/mprotect.c
+> @@ -114,6 +113,10 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
+>  			}
+>  
+>  			oldpte = ptep_modify_prot_start(vma, addr, pte);
+> +			if (vma->vm_flags & VM_SHARED) {
+> +				page = vm_normal_page(vma, addr, oldpte);
+> +				lock_page(page);
+> +			}
+>  			ptent = pte_modify(oldpte, newprot);
+>  			if (preserve_write)
+>  				ptent = pte_mk_savedwrite(ptent);
+> @@ -138,6 +141,8 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
+>  				ptent = pte_mkwrite(ptent);
+>  			}
+>  			ptep_modify_prot_commit(vma, addr, pte, oldpte, ptent);
+> +			if (page)
+> +				unlock_page(page);
+>  			pages++;
+>  		} else if (is_swap_pte(oldpte)) {
+>  			swp_entry_t entry = pte_to_swp_entry(oldpte);
+
+That's bogus: lock_page() might sleep but this whole code sequence is
+under the ptl spinlock. There are some lock_page_* variants but that
+would involve either a busy loop on this path or some bailing out,
+waiting for a release.
+
+Options:
+
+1. Change the mte_sync_tags() code path to set the flag after clearing
+   and avoid reading stale tags. We document that mprotect() on
+   MAP_SHARED may lead to tag loss. Maybe we can intercept this in the
+   arch code and return an error.
+
+2. Figure out some other locking in the core code. However, if
+   mprotect() in one process can race with a handle_pte_fault() in
+   another, on the same shared mapping, it's not trivial.
+   filemap_map_pages() would take the page lock before calling
+   do_set_pte(), so mprotect() would need the same page lock.
+
+3. Use another PG_arch_3 bit as a lock to spin on in the arch code (i.e.
+   set it around the other PG_arch_* bit setting).
+
+I ran out of ideas.
+
+-- 
+Catalin
