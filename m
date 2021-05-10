@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61DAC378667
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A013789A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235996AbhEJLHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:07:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57348 "EHLO mail.kernel.org"
+        id S240507AbhEJLau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:30:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231527AbhEJKqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:46:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02B1C619B5;
-        Mon, 10 May 2021 10:37:04 +0000 (UTC)
+        id S234828AbhEJK5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 610B361946;
+        Mon, 10 May 2021 10:49:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643025;
-        bh=bDM2BXsWVu4ZVNspegVRKj6qbKmdCaTTVNDThDY1VSE=;
+        s=korg; t=1620643777;
+        bh=AZe2vZ5ADJJaJ4xV8wf/15PTru8F8h0rROcmQxBeQO8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lbj9hhoPn+KRbH5SaCOcxIr80BDo9pq827P1fDzPypfmt7XAHd9q4+UnWI867420P
-         xgGTN1xrMkxQeMPoofjToXZEchJbxiGxOcOO2PHf4xa1mvAp8UpMUWtHwnrS1xmmnY
-         eLO+HSMe1szqh13SuziIomP0r5X+ezrsiNlzOAo8=
+        b=ZwPUq2jF8BTW9d9fQNTPJWksn/Kne2ROidAyx56U4h5an/gmfsEOlbf1TwTBxNKDl
+         ZyzL20PgPJ9tvGku9BvmA9I+I1sYtes/tZpXXxnOR/uMbO+VrmiNta0PKy3+kugSiq
+         Ky+gaDngOJIHPJqmdBrjth+PMkee8tTetXNI7GNw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
-        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
-        Eric Bernstein <Eric.Bernstein@amd.com>,
-        Solomon Chiu <solomon.chiu@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org,
+        syzbot+efe9aefc31ae1e6f7675@syzkaller.appspotmail.com,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 147/299] drm/amd/display: fix dml prefetch validation
+Subject: [PATCH 5.11 154/342] media: drivers/media/usb: fix memory leak in zr364xx_probe
 Date:   Mon, 10 May 2021 12:19:04 +0200
-Message-Id: <20210510102009.818572493@linuxfoundation.org>
+Message-Id: <20210510102015.181417815@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,47 +43,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 8ee0fea4baf90e43efe2275de208a7809f9985bc ]
+[ Upstream commit 9c39be40c0155c43343f53e3a439290c0fec5542 ]
 
-Incorrect variable used, missing initialization during validation.
+syzbot reported memory leak in zr364xx_probe()[1].
+The problem was in invalid error handling order.
+All error conditions rigth after v4l2_ctrl_handler_init()
+must call v4l2_ctrl_handler_free().
 
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
-Reviewed-by: Eric Bernstein <Eric.Bernstein@amd.com>
-Acked-by: Solomon Chiu <solomon.chiu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Reported-by: syzbot+efe9aefc31ae1e6f7675@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20.c   | 1 +
- drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20v2.c | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/media/usb/zr364xx/zr364xx.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20.c b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20.c
-index 45f028986a8d..b3f0476899d3 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20.c
-@@ -3437,6 +3437,7 @@ void dml20_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_l
- 			mode_lib->vba.DCCEnabledInAnyPlane = true;
- 		}
+diff --git a/drivers/media/usb/zr364xx/zr364xx.c b/drivers/media/usb/zr364xx/zr364xx.c
+index d29b861367ea..1ef611e08323 100644
+--- a/drivers/media/usb/zr364xx/zr364xx.c
++++ b/drivers/media/usb/zr364xx/zr364xx.c
+@@ -1430,7 +1430,7 @@ static int zr364xx_probe(struct usb_interface *intf,
+ 	if (hdl->error) {
+ 		err = hdl->error;
+ 		dev_err(&udev->dev, "couldn't register control\n");
+-		goto unregister;
++		goto free_hdlr_and_unreg_dev;
  	}
-+	mode_lib->vba.UrgentLatency = mode_lib->vba.UrgentLatencyPixelDataOnly;
- 	for (i = 0; i <= mode_lib->vba.soc.num_states; i++) {
- 		locals->FabricAndDRAMBandwidthPerState[i] = dml_min(
- 				mode_lib->vba.DRAMSpeedPerState[i] * mode_lib->vba.NumberOfChannels
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20v2.c b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20v2.c
-index 80170f9721ce..1bcda7eba4a6 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20v2.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn20/display_mode_vba_20v2.c
-@@ -3510,6 +3510,7 @@ void dml20v2_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode
- 			mode_lib->vba.DCCEnabledInAnyPlane = true;
- 		}
+ 	/* save the init method used by this camera */
+ 	cam->method = id->driver_info;
+@@ -1503,7 +1503,7 @@ static int zr364xx_probe(struct usb_interface *intf,
+ 	if (!cam->read_endpoint) {
+ 		err = -ENOMEM;
+ 		dev_err(&intf->dev, "Could not find bulk-in endpoint\n");
+-		goto unregister;
++		goto free_hdlr_and_unreg_dev;
  	}
-+	mode_lib->vba.UrgentLatency = mode_lib->vba.UrgentLatencyPixelDataOnly;
- 	for (i = 0; i <= mode_lib->vba.soc.num_states; i++) {
- 		locals->FabricAndDRAMBandwidthPerState[i] = dml_min(
- 				mode_lib->vba.DRAMSpeedPerState[i] * mode_lib->vba.NumberOfChannels
+ 
+ 	/* v4l */
+@@ -1515,7 +1515,7 @@ static int zr364xx_probe(struct usb_interface *intf,
+ 	/* load zr364xx board specific */
+ 	err = zr364xx_board_init(cam);
+ 	if (err)
+-		goto unregister;
++		goto free_hdlr_and_unreg_dev;
+ 	err = v4l2_ctrl_handler_setup(hdl);
+ 	if (err)
+ 		goto board_uninit;
+@@ -1533,7 +1533,7 @@ static int zr364xx_probe(struct usb_interface *intf,
+ 	err = video_register_device(&cam->vdev, VFL_TYPE_VIDEO, -1);
+ 	if (err) {
+ 		dev_err(&udev->dev, "video_register_device failed\n");
+-		goto free_handler;
++		goto board_uninit;
+ 	}
+ 	cam->v4l2_dev.release = zr364xx_release;
+ 
+@@ -1541,11 +1541,10 @@ static int zr364xx_probe(struct usb_interface *intf,
+ 		 video_device_node_name(&cam->vdev));
+ 	return 0;
+ 
+-free_handler:
+-	v4l2_ctrl_handler_free(hdl);
+ board_uninit:
+ 	zr364xx_board_uninit(cam);
+-unregister:
++free_hdlr_and_unreg_dev:
++	v4l2_ctrl_handler_free(hdl);
+ 	v4l2_device_unregister(&cam->v4l2_dev);
+ free_cam:
+ 	kfree(cam);
 -- 
 2.30.2
 
