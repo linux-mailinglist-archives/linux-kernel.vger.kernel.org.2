@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C4E378A4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E3F3786CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242113AbhEJLks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:40:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53004 "EHLO mail.kernel.org"
+        id S236921AbhEJLK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:10:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235044AbhEJK5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B87446195D;
-        Mon, 10 May 2021 10:51:28 +0000 (UTC)
+        id S233504AbhEJKuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:50:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D98B61946;
+        Mon, 10 May 2021 10:39:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643889;
-        bh=VYfmhFt2W1DZcgIXrOOh7ooiC4aHcLCuxvOApxAU6hY=;
+        s=korg; t=1620643143;
+        bh=7d52yvzQRY/k+BwM4YxoCYqGDwd4rZevmOR1LPQG+X4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FI5mHc2ZuS9n9J/F5M/VREyxlAVDB+P2LRrjIY2GAVLliC9iI10FIipVuLaIO9lMH
-         Uoazj5ljqhmhj2ayQp7dhAG4plBtFF+J4S0B9sL5CdEiPixO3g1x6fA+kBue7Ka1BU
-         U9Q7kDYDj7XjPjo7N2mwarTuAbbx6smU9ZIjrZXs=
+        b=kWtXAK4h5sCOQ1akfcfbJugttGS0xtyBPr3h8zchIDbSk2lP7WmCIQWE45g/ZUbel
+         VwUa/SqEcIAt7KoiJ4k0MOUPVw5tGAHuPioj8LLdnFz7EAILDtFaLNxIAPoVrYjb6N
+         E+KpaGrpJ67CYxEendn9NY7OhufZhPDp/9T3caBw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Harry Wentland <harry.wentland@amd.com>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 200/342] clk: socfpga: arria10: Fix memory leak of socfpga_clk on error return
-Date:   Mon, 10 May 2021 12:19:50 +0200
-Message-Id: <20210510102016.697160074@linuxfoundation.org>
+Subject: [PATCH 5.10 194/299] drm/amd/display: Try YCbCr420 color when YCbCr444 fails
+Date:   Mon, 10 May 2021 12:19:51 +0200
+Message-Id: <20210510102011.355656279@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Werner Sembach <wse@tuxedocomputers.com>
 
-[ Upstream commit 657d4d1934f75a2d978c3cf2086495eaa542e7a9 ]
+[ Upstream commit 68eb3ae3c63708f823aeeb63bb15197c727bd9bf ]
 
-There is an error return path that is not kfree'ing socfpga_clk leading
-to a memory leak. Fix this by adding in the missing kfree call.
+When encoder validation of a display mode fails, retry with less bandwidth
+heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
+to support 4k60Hz output, which previously failed silently.
 
-Addresses-Coverity: ("Resource leak")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20210406170115.430990-1-colin.king@canonical.com
-Acked-by: Dinh Nguyen <dinguyen@kernel.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+On some setups, while the monitor and the gpu support display modes with
+pixel clocks of up to 600MHz, the link encoder might not. This prevents
+YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
+possible. However, which color mode is used is decided before the link
+encoder capabilities are checked. This patch fixes the problem by retrying
+to find a display mode with YCbCr420 enforced and using it, if it is
+valid.
+
+Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/socfpga/clk-gate-a10.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/clk/socfpga/clk-gate-a10.c b/drivers/clk/socfpga/clk-gate-a10.c
-index cd5df9103614..d62778884208 100644
---- a/drivers/clk/socfpga/clk-gate-a10.c
-+++ b/drivers/clk/socfpga/clk-gate-a10.c
-@@ -146,6 +146,7 @@ static void __init __socfpga_gate_init(struct device_node *node,
- 		if (IS_ERR(socfpga_clk->sys_mgr_base_addr)) {
- 			pr_err("%s: failed to find altr,sys-mgr regmap!\n",
- 					__func__);
-+			kfree(socfpga_clk);
- 			return;
- 		}
- 	}
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 12a4f0675fb0..d18341b7daac 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -5328,6 +5328,15 @@ create_validate_stream_for_sink(struct amdgpu_dm_connector *aconnector,
+ 
+ 	} while (stream == NULL && requested_bpc >= 6);
+ 
++	if (dc_result == DC_FAIL_ENC_VALIDATE && !aconnector->force_yuv420_output) {
++		DRM_DEBUG_KMS("Retry forcing YCbCr420 encoding\n");
++
++		aconnector->force_yuv420_output = true;
++		stream = create_validate_stream_for_sink(aconnector, drm_mode,
++						dm_state, old_stream);
++		aconnector->force_yuv420_output = false;
++	}
++
+ 	return stream;
+ }
+ 
 -- 
 2.30.2
 
