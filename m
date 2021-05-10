@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41112378D16
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1C5378D19
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347188AbhEJMdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:33:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48686 "EHLO mail.kernel.org"
+        id S1347281AbhEJMdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:33:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232468AbhEJLLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:11:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 707FA60FEF;
-        Mon, 10 May 2021 11:09:30 +0000 (UTC)
+        id S232852AbhEJLLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:11:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10B216192A;
+        Mon, 10 May 2021 11:09:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644971;
-        bh=8TUX8ebQCnnosyGIob6anlDtDbTdnqT6huL51mjRUGc=;
+        s=korg; t=1620644973;
+        bh=79VM/OOuYJbqaRc+zfcvIsTNDJKV6sK5o0e9mKn0K+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nvY6VMTIEEAyRqsv6012+0xZw2KGmcPeNO2DKfKgDmeqAtst4dZUlWhOIi4vs3Cws
-         Z1j5qhsIDcYBXpN/gUrWviqOy0yc2emwJoEI3yM6ZoMhctLtXibE5RFNLq+fsGnSY4
-         9t2YMW1CJD+9owJsZBU2iCYFyTCMFfLOjlv71IB4=
+        b=TnHvmkAgPFQWZyJfOpFlX+vFghCMu8O3qUfUPaTuTmi9twTt5pp3a9vo/h4Ta0Pkq
+         BZZtFzuJyj2vbcJQC1EuRwXm/SqgZTBE5bmNvsfd7+SDBBddns/psO7aMj9Y2yn261
+         8I6s1f1vyUDy7j51/wN4v7jkGXNi/bs7m74Di09M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, dann frazier <dann.frazier@canonical.com>,
-        Marc Zyngier <maz@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 5.12 297/384] ACPI: GTDT: Dont corrupt interrupt mappings on watchdow probe failure
-Date:   Mon, 10 May 2021 12:21:26 +0200
-Message-Id: <20210510102024.600221970@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com,
+        syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-nfs@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 5.12 298/384] NFS: fs_context: validate UDP retrans to prevent shift out-of-bounds
+Date:   Mon, 10 May 2021 12:21:27 +0200
+Message-Id: <20210510102024.630129669@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -43,82 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit 1ecd5b129252249b9bc03d7645a7bda512747277 upstream.
+commit c09f11ef35955785f92369e25819bf0629df2e59 upstream.
 
-When failing the driver probe because of invalid firmware properties,
-the GTDT driver unmaps the interrupt that it mapped earlier.
+Fix shift out-of-bounds in xprt_calc_majortimeo(). This is caused
+by a garbage timeout (retrans) mount option being passed to nfs mount,
+in this case from syzkaller.
 
-However, it never checks whether the mapping of the interrupt actially
-succeeded. Even more, should the firmware report an illegal interrupt
-number that overlaps with the GIC SGI range, this can result in an
-IPI being unmapped, and subsequent fireworks (as reported by Dann
-Frazier).
+If the protocol is XPRT_TRANSPORT_UDP, then 'retrans' is a shift
+value for a 64-bit long integer, so 'retrans' cannot be >= 64.
+If it is >= 64, fail the mount and return an error.
 
-Rework the driver to have a slightly saner behaviour and actually
-check whether the interrupt has been mapped before unmapping things.
-
-Reported-by: dann frazier <dann.frazier@canonical.com>
-Fixes: ca9ae5ec4ef0 ("acpi/arm64: Add SBSA Generic Watchdog support in GTDT driver")
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/YH87dtTfwYgavusz@xps13.dannf
-Cc: <stable@vger.kernel.org>
-Cc: Fu Wei <wefu@redhat.com>
-Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
-Tested-by: dann frazier <dann.frazier@canonical.com>
-Tested-by: Hanjun Guo <guohanjun@huawei.com>
-Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
-Reviewed-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Link: https://lore.kernel.org/r/20210421164317.1718831-2-maz@kernel.org
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Fixes: 9954bf92c0cd ("NFS: Move mount parameterisation bits into their own file")
+Reported-by: syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com
+Reported-by: syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Anna Schumaker <anna.schumaker@netapp.com>
+Cc: linux-nfs@vger.kernel.org
+Cc: David Howells <dhowells@redhat.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: stable@vger.kernel.org
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/acpi/arm64/gtdt.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ fs/nfs/fs_context.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/drivers/acpi/arm64/gtdt.c
-+++ b/drivers/acpi/arm64/gtdt.c
-@@ -329,7 +329,7 @@ static int __init gtdt_import_sbsa_gwdt(
- 					int index)
- {
- 	struct platform_device *pdev;
--	int irq = map_gt_gsi(wd->timer_interrupt, wd->timer_flags);
-+	int irq;
+--- a/fs/nfs/fs_context.c
++++ b/fs/nfs/fs_context.c
+@@ -974,6 +974,15 @@ static int nfs23_parse_monolithic(struct
+ 			       sizeof(mntfh->data) - mntfh->size);
  
- 	/*
- 	 * According to SBSA specification the size of refresh and control
-@@ -338,7 +338,7 @@ static int __init gtdt_import_sbsa_gwdt(
- 	struct resource res[] = {
- 		DEFINE_RES_MEM(wd->control_frame_address, SZ_4K),
- 		DEFINE_RES_MEM(wd->refresh_frame_address, SZ_4K),
--		DEFINE_RES_IRQ(irq),
-+		{},
- 	};
- 	int nr_res = ARRAY_SIZE(res);
+ 		/*
++		 * for proto == XPRT_TRANSPORT_UDP, which is what uses
++		 * to_exponential, implying shift: limit the shift value
++		 * to BITS_PER_LONG (majortimeo is unsigned long)
++		 */
++		if (!(data->flags & NFS_MOUNT_TCP)) /* this will be UDP */
++			if (data->retrans >= 64) /* shift value is too large */
++				goto out_invalid_data;
++
++		/*
+ 		 * Translate to nfs_fs_context, which nfs_fill_super
+ 		 * can deal with.
+ 		 */
+@@ -1073,6 +1082,9 @@ out_no_address:
  
-@@ -348,10 +348,11 @@ static int __init gtdt_import_sbsa_gwdt(
+ out_invalid_fh:
+ 	return nfs_invalf(fc, "NFS: invalid root filehandle");
++
++out_invalid_data:
++	return nfs_invalf(fc, "NFS: invalid binary mount data");
+ }
  
- 	if (!(wd->refresh_frame_address && wd->control_frame_address)) {
- 		pr_err(FW_BUG "failed to get the Watchdog base address.\n");
--		acpi_unregister_gsi(wd->timer_interrupt);
- 		return -EINVAL;
- 	}
- 
-+	irq = map_gt_gsi(wd->timer_interrupt, wd->timer_flags);
-+	res[2] = (struct resource)DEFINE_RES_IRQ(irq);
- 	if (irq <= 0) {
- 		pr_warn("failed to map the Watchdog interrupt.\n");
- 		nr_res--;
-@@ -364,7 +365,8 @@ static int __init gtdt_import_sbsa_gwdt(
- 	 */
- 	pdev = platform_device_register_simple("sbsa-gwdt", index, res, nr_res);
- 	if (IS_ERR(pdev)) {
--		acpi_unregister_gsi(wd->timer_interrupt);
-+		if (irq > 0)
-+			acpi_unregister_gsi(wd->timer_interrupt);
- 		return PTR_ERR(pdev);
- 	}
- 
+ #if IS_ENABLED(CONFIG_NFS_V4)
 
 
