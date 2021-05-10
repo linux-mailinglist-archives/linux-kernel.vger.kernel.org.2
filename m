@@ -2,158 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0B237906F
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE491379075
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhEJORq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:17:46 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46480 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245089AbhEJOPO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:15:14 -0400
-Received: from mail-ed1-f70.google.com ([209.85.208.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <juerg.haefliger@canonical.com>)
-        id 1lg6fg-0004Ft-QQ
-        for linux-kernel@vger.kernel.org; Mon, 10 May 2021 14:14:08 +0000
-Received: by mail-ed1-f70.google.com with SMTP id c21-20020a0564021015b029038c3f08ce5aso3618485edu.18
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:14:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version;
-        bh=fbZHevFPK4kJ3Oy/1nhCAJSC3PFsFtZgI6Obl9f93YE=;
-        b=dibgx2Ek2oDXxuGAQl9vpOyvQAQjwBQIdBoBR8ORUzULYw4mnAJfDad/rfo4y5SB9M
-         pfF/A64HNh6wpch4aHBptBAy36aoEo6mnWnHnnNmO2Bu6JMMIgwo2R375pBtvXfpd845
-         bcAo443wfaP/4EZ4UJxp/hZwGL2WCRMU5YaASFr7JfB/+vWqe6LHk8KV56jf+QikRnrR
-         +vFBJaq2vdG0s7LSy3NOcEWHKuO5SPx+4WVbA9vnNck9p5wZq7aPSB2mvau4NjpFeq4N
-         Vyn8QJnZxMCdmgdcj5X2K75n0SDR4GDIIvtZTE7ko+a5KELeVolAKNMwk3p+mMBcukVk
-         KL3w==
-X-Gm-Message-State: AOAM531Scf3LiFrlcqbAfDOUeb290g9fMKtkvorKARIjsCex/Gylheyk
-        NN7X9x+rsd3FdAYlWbqL+dqb0iMumWgTDlIYgPSsUNZeid+4vhBG6Y7ETIxv89KVMoWZ1V6KWSD
-        QrfAmud/pwZZI+cPstOhNE1mXxxiNiT/aRKYshXPR4Q==
-X-Received: by 2002:a17:906:5a83:: with SMTP id l3mr26000940ejq.50.1620656048554;
-        Mon, 10 May 2021 07:14:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJziN7V8IF+eETtey6eCBiXKyTYKjZfq7RMKqvrr5GQJnMf4337zoLzjpbQG+k7mxZa1ZX8iZA==
-X-Received: by 2002:a17:906:5a83:: with SMTP id l3mr26000915ejq.50.1620656048370;
-        Mon, 10 May 2021 07:14:08 -0700 (PDT)
-Received: from gollum ([194.191.244.86])
-        by smtp.gmail.com with ESMTPSA id l11sm11223540eds.75.2021.05.10.07.14.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 07:14:07 -0700 (PDT)
-From:   Juerg Haefliger <juerg.haefliger@canonical.com>
-X-Google-Original-From: Juerg Haefliger <juergh@canonical.com>
-Date:   Mon, 10 May 2021 16:14:06 +0200
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Juerg Haefliger <juerg.haefliger@canonical.com>,
-        wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] watchdog: Add {min,max}_timeout sysfs nodes
-Message-ID: <20210510161406.1b32debd@gollum>
-In-Reply-To: <695dfd0f-f090-653e-7580-e45484228781@roeck-us.net>
-References: <20210510131625.21506-1-juergh@canonical.com>
-        <695dfd0f-f090-653e-7580-e45484228781@roeck-us.net>
-Organization: Canonical Ltd
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S241865AbhEJOSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:18:52 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:59686 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232009AbhEJORD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 10:17:03 -0400
+Received: from zn.tnic (p200300ec2f066d00159cc50318b4d41b.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:6d00:159c:c503:18b4:d41b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3CCFD1EC0350;
+        Mon, 10 May 2021 16:15:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1620656146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=o2aoaH2RymU6wxi8X7V+6fjKICNEkCYu8vfZLJTg/WM=;
+        b=r4xTua/evyV7MIbUF+KfrYv8m7oot0Y5Z+nHZRk9uPtU1XfbM2yO8UnOjpCQOMi8FzBIwA
+        PUewBV0RTv/uqtgZbIlCXnskJ1wspzZu6DiFOn9gKpKLxni5yqrf3Pk2xKgia/oY21j8pf
+        PjDV2UJsf4y20ufm418bw+P+7VMh8O4=
+Date:   Mon, 10 May 2021 16:15:43 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v26 23/30] x86/cet/shstk: Handle thread shadow stack
+Message-ID: <YJlADyc/9pn8Sjkn@zn.tnic>
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
+ <20210427204315.24153-24-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ryNewuZSjVJeL.p+oeOWUl2";
- protocol="application/pgp-signature"; micalg=pgp-sha512
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210427204315.24153-24-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ryNewuZSjVJeL.p+oeOWUl2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Apr 27, 2021 at 01:43:08PM -0700, Yu-cheng Yu wrote:
+> @@ -181,6 +184,12 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+>  	if (clone_flags & CLONE_SETTLS)
+>  		ret = set_new_tls(p, tls);
+>  
+> +#ifdef CONFIG_X86_64
 
-On Mon, 10 May 2021 06:45:15 -0700
-Guenter Roeck <linux@roeck-us.net> wrote:
+IS_ENABLED
 
-> On 5/10/21 6:16 AM, Juerg Haefliger wrote:
-> > The valid range for the 'timeout' value is useful information so expose
-> > the min and max timeout values via sysfs.
-> >=20
-> > Signed-off-by: Juerg Haefliger <juergh@canonical.com>
-> > ---
-> >   drivers/watchdog/watchdog_dev.c | 20 ++++++++++++++++++++
-> >   1 file changed, 20 insertions(+)
-> >=20
-> > diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdo=
-g_dev.c
-> > index 2946f3a63110..b84d53a79618 100644
-> > --- a/drivers/watchdog/watchdog_dev.c
-> > +++ b/drivers/watchdog/watchdog_dev.c
-> > @@ -525,6 +525,24 @@ static ssize_t timeout_show(struct device *dev, st=
-ruct device_attribute *attr,
-> >   }
-> >   static DEVICE_ATTR_RO(timeout);
-> >  =20
-> > +static ssize_t min_timeout_show(struct device *dev,
-> > +				struct device_attribute *attr, char *buf)
-> > +{
-> > +	struct watchdog_device *wdd =3D dev_get_drvdata(dev);
-> > +
-> > +	return sprintf(buf, "%u\n", wdd->min_timeout);
-> > +}
-> > +static DEVICE_ATTR_RO(min_timeout);
-> > +
-> > +static ssize_t max_timeout_show(struct device *dev,
-> > +				struct device_attribute *attr, char *buf)
-> > +{
-> > +	struct watchdog_device *wdd =3D dev_get_drvdata(dev);
-> > +
-> > +	return sprintf(buf, "%u\n", wdd->max_timeout); =20
->=20
-> Makes sense, but please use sysfs_emit().
+> +	/* Allocate a new shadow stack for pthread */
+> +	if (!ret)
+> +		ret = shstk_setup_thread(p, clone_flags, stack_size);
+> +#endif
+> +
 
-OK. And maybe I should send a patch to convert the other occurrences of
-sprintf as well?
+And why is this addition here...
 
-...Juerg
+>  	if (!ret && unlikely(test_tsk_thread_flag(current, TIF_IO_BITMAP)))
+>  		io_bitmap_share(p);
 
+... instead of here?
 
-> Guenter
->=20
-> > +}
-> > +static DEVICE_ATTR_RO(max_timeout);
-> > +
-> >   static ssize_t pretimeout_show(struct device *dev,
-> >   			       struct device_attribute *attr, char *buf)
-> >   {
-> > @@ -609,6 +627,8 @@ static struct attribute *wdt_attrs[] =3D {
-> >   	&dev_attr_state.attr,
-> >   	&dev_attr_identity.attr,
-> >   	&dev_attr_timeout.attr,
-> > +	&dev_attr_min_timeout.attr,
-> > +	&dev_attr_max_timeout.attr,
-> >   	&dev_attr_pretimeout.attr,
-> >   	&dev_attr_timeleft.attr,
-> >   	&dev_attr_bootstatus.attr,
-> >  =20
->=20
+<---
 
+>  
+> diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
+> index c815c7507830..d387df84b7f1 100644
+> --- a/arch/x86/kernel/shstk.c
+> +++ b/arch/x86/kernel/shstk.c
+> @@ -70,6 +70,55 @@ int shstk_setup(void)
+>  	return 0;
+>  }
 
---Sig_/ryNewuZSjVJeL.p+oeOWUl2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> +int shstk_setup_thread(struct task_struct *tsk, unsigned long clone_flags,
 
------BEGIN PGP SIGNATURE-----
+Judging by what this function does, its name wants to be
 
-iQIzBAEBCgAdFiEEhZfU96IuprviLdeLD9OLCQumQrcFAmCZP64ACgkQD9OLCQum
-QreCZA//WV4QDVPBwEjUkBJk1mhwNSpVnnXN+KP9wLFeHqf6zIBu+LFdULXUNvc5
-lJKoGEXdouTk7Zp7Tfa4GMNJ+sL3AfCuToUpQmKDJaR9Hq27HF1BptBtRAPhP5rQ
-hkQFc00bRyD7aG/MC1xh53R4AGIu97Wn40ZocCZh3EZk0jJnInlhR/gGqUmvqxyX
-ZimWBAFP6gQt9P2HXanB5488tenH9FbbTXjPUzOJY3QcKLTh5rXmF8l2HMqE+B8K
-meM43PFGuDyWK4+2O4VRkY725wrWxqpbNa9VhxYK1gjutteAaCI829ePAOt/fMG3
-Wir2uH8QP7eN4Hc1AaAaPq2QEXIjW9PlMWDTfsCN9FtXMWA1nVr5hx345M0TCaN5
-FQe+w2gD4yvi2aBo29xg93yHO2HXwDhHxDAq+KvHm2raf4OO/17R5KSFDy9ZTdq6
-e63SSs0o1fId9TA0GE5+7x12Wlr6sQyt4HtejGqoC/NQW7u13dakwjdt23Wb2g97
-S89wl5guRHVcheTtDTrmFWoVx4qOKMZfxCI8Ybp4EDPS/L9pqqQupl2P69Flpevn
-p57VQG1dMLIfO8g2P2+vokrqOy3+wRVkml9W9ol6HGkQgghXGDDnRSr0T2ebEZBW
-I/RfTeV9XyQ8xB2LWwpoNmNgVldjfzFJgf6lDImZSnaxXmn37Tc=
-=0plC
------END PGP SIGNATURE-----
+shstk_alloc_thread_stack()
 
---Sig_/ryNewuZSjVJeL.p+oeOWUl2--
+or so?
+
+> +		       unsigned long stack_size)
+> +{
+> +	unsigned long addr, size;
+> +	struct cet_user_state *state;
+> +	struct cet_status *cet = &tsk->thread.cet;
+
+The tip-tree preferred ordering of variable declarations at the
+beginning of a function is reverse fir tree order::
+
+	struct long_struct_name *descriptive_name;
+	unsigned long foo, bar;
+	unsigned int tmp;
+	int ret;
+
+The above is faster to parse than the reverse ordering::
+
+	int ret;
+	unsigned int tmp;
+	unsigned long foo, bar;
+	struct long_struct_name *descriptive_name;
+
+And even more so than random ordering::
+
+	unsigned long foo, bar;
+	int ret;
+	struct long_struct_name *descriptive_name;
+	unsigned int tmp;
+
+> +
+> +	if (!cet->shstk_size)
+> +		return 0;
+> +
+
+This check needs a comment.
+
+> +	if ((clone_flags & (CLONE_VFORK | CLONE_VM)) != CLONE_VM)
+> +		return 0;
+> +
+> +	state = get_xsave_addr(&tsk->thread.fpu.state.xsave,
+> +			       XFEATURE_CET_USER);
+
+Let that line stick out.
+
+> +
+> +	if (!state)
+> +		return -EINVAL;
+> +
+> +	if (stack_size == 0)
+
+	if (!stack_size)
+
+> +		return -EINVAL;
+
+and that test needs to be done first in the function.
+
+> +
+> +	/* Cap shadow stack size to 4 GB */
+
+Why?
+
+> +	size = min_t(unsigned long long, rlimit(RLIMIT_STACK), SZ_4G);
+> +	size = min(size, stack_size);
+> +
+> +	/*
+> +	 * Compat-mode pthreads share a limited address space.
+> +	 * If each function call takes an average of four slots
+> +	 * stack space, allocate 1/4 of stack size for shadow stack.
+> +	 */
+> +	if (in_compat_syscall())
+> +		size /= 4;
+
+<---- newline here.
+
+> +	size = round_up(size, PAGE_SIZE);
+> +	addr = alloc_shstk(size);
+> +
+
+^ Superfluous newline.
+
+> +	if (IS_ERR_VALUE(addr)) {
+> +		cet->shstk_base = 0;
+> +		cet->shstk_size = 0;
+> +		return PTR_ERR((void *)addr);
+> +	}
+> +
+> +	fpu__prepare_write(&tsk->thread.fpu);
+> +	state->user_ssp = (u64)(addr + size);
+
+cet_user_state has u64, cet_status has unsigned longs. Make them all u64.
+
+And since cet_status is per thread, but I had suggested struct
+shstk_desc, I think now that that should be called
+
+struct thread_shstk
+
+or so to denote *exactly* what it is.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
