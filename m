@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01882378C01
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87EF378A54
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345075AbhEJMV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:21:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46278 "EHLO mail.kernel.org"
+        id S242193AbhEJLlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:41:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235414AbhEJLKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:10:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF86C6145F;
-        Mon, 10 May 2021 11:05:28 +0000 (UTC)
+        id S235052AbhEJK5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C92261964;
+        Mon, 10 May 2021 10:51:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644729;
-        bh=aoZGLU3h/i0WadM2DxxNm7/BB1+HyOgT5g3s4onk+jI=;
+        s=korg; t=1620643891;
+        bh=QjSBw+Y6XhXQaB/vrBFpm1kDfUcD7FqR92r8Xtah6ww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gYI48RRrGXI6+WhzH+34JFmbI01lvOgVdJ+mqEQA2lVAeJyy+u6HHC/Bx+hEX+hE6
-         eBjLfbOd+F666eHD/SgB3sWu4O820rz8xQ1Yo5OvQv3799O++aqDu646fj13bhwpHC
-         oqYAguMfBUDgSdtT5/r3JdJB+knfQv8CcIoIuCbc=
+        b=KxgVmi3bSc8BVAkOtLIUsZDRQgG3LWWBsElBtqeFCkU6XTT/pn4B1KbWzHB9mkp9x
+         f9mp5WYXKSfZPGWnKJnG8SzlHR+ETxM1uHhSH+2Y4wVqDlm8NYU5RNi22B7qtaGbni
+         9HajbyuZqt7XmdqshZfVgmFEXpnyvMDzztePwwsQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 201/384] mmc: sdhci-pci: Add PCI IDs for Intel LKF
-Date:   Mon, 10 May 2021 12:19:50 +0200
-Message-Id: <20210510102021.506006255@linuxfoundation.org>
+Subject: [PATCH 5.11 201/342] power: supply: generic-adc-battery: fix possible use-after-free in gab_remove()
+Date:   Mon, 10 May 2021 12:19:51 +0200
+Message-Id: <20210510102016.729175727@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
-References: <20210510102014.849075526@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit ee629112be8b4eff71d4d3d108a28bc7dc877e13 ]
+[ Upstream commit b6cfa007b3b229771d9588970adb4ab3e0487f49 ]
 
-Add PCI IDs for Intel LKF eMMC and SD card host controllers.
+This driver's remove path calls cancel_delayed_work(). However, that
+function does not wait until the work function finishes. This means
+that the callback function may still be running after the driver's
+remove function has finished, which would result in a use-after-free.
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Link: https://lore.kernel.org/r/20210322055356.24923-1-adrian.hunter@intel.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fix by calling cancel_delayed_work_sync(), which ensures that
+the work is properly cancelled, no longer running, and unable
+to re-schedule itself.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-pci-core.c | 2 ++
- drivers/mmc/host/sdhci-pci.h      | 2 ++
- 2 files changed, 4 insertions(+)
+ drivers/power/supply/generic-adc-battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
-index 936e4db9060f..bf04a08eeba1 100644
---- a/drivers/mmc/host/sdhci-pci-core.c
-+++ b/drivers/mmc/host/sdhci-pci-core.c
-@@ -1930,6 +1930,8 @@ static const struct pci_device_id pci_ids[] = {
- 	SDHCI_PCI_DEVICE(INTEL, CMLH_SD,   intel_byt_sd),
- 	SDHCI_PCI_DEVICE(INTEL, JSL_EMMC,  intel_glk_emmc),
- 	SDHCI_PCI_DEVICE(INTEL, JSL_SD,    intel_byt_sd),
-+	SDHCI_PCI_DEVICE(INTEL, LKF_EMMC,  intel_glk_emmc),
-+	SDHCI_PCI_DEVICE(INTEL, LKF_SD,    intel_byt_sd),
- 	SDHCI_PCI_DEVICE(O2, 8120,     o2),
- 	SDHCI_PCI_DEVICE(O2, 8220,     o2),
- 	SDHCI_PCI_DEVICE(O2, 8221,     o2),
-diff --git a/drivers/mmc/host/sdhci-pci.h b/drivers/mmc/host/sdhci-pci.h
-index d0ed232af0eb..8f90c4163bb5 100644
---- a/drivers/mmc/host/sdhci-pci.h
-+++ b/drivers/mmc/host/sdhci-pci.h
-@@ -57,6 +57,8 @@
- #define PCI_DEVICE_ID_INTEL_CMLH_SD	0x06f5
- #define PCI_DEVICE_ID_INTEL_JSL_EMMC	0x4dc4
- #define PCI_DEVICE_ID_INTEL_JSL_SD	0x4df8
-+#define PCI_DEVICE_ID_INTEL_LKF_EMMC	0x98c4
-+#define PCI_DEVICE_ID_INTEL_LKF_SD	0x98f8
+diff --git a/drivers/power/supply/generic-adc-battery.c b/drivers/power/supply/generic-adc-battery.c
+index 0032069fbc2b..66039c665dd1 100644
+--- a/drivers/power/supply/generic-adc-battery.c
++++ b/drivers/power/supply/generic-adc-battery.c
+@@ -373,7 +373,7 @@ static int gab_remove(struct platform_device *pdev)
+ 	}
  
- #define PCI_DEVICE_ID_SYSKONNECT_8000	0x8000
- #define PCI_DEVICE_ID_VIA_95D0		0x95d0
+ 	kfree(adc_bat->psy_desc.properties);
+-	cancel_delayed_work(&adc_bat->bat_work);
++	cancel_delayed_work_sync(&adc_bat->bat_work);
+ 	return 0;
+ }
+ 
 -- 
 2.30.2
 
