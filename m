@@ -2,32 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F78B378D88
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 710BF378D2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348900AbhEJMrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:47:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49920 "EHLO mail.kernel.org"
+        id S1347562AbhEJMgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:36:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233618AbhEJLOA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:14:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28A9E61364;
-        Mon, 10 May 2021 11:10:35 +0000 (UTC)
+        id S233269AbhEJLOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:14:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 831EB610A0;
+        Mon, 10 May 2021 11:10:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620645036;
-        bh=HYPQr5De+BztxcVMQkTJ1B1kSN3YQXCcudGHqQcosso=;
+        s=korg; t=1620645039;
+        bh=8VikAt3YSecImfYBfomlhEJb3RSTeVARhmkcfe9AGyU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i4lKYZMhXX2R5vGzunDwZFZOSZAsZUdRipKAk+pEWVuIgaeZLlKZ2HNwBCO74EeyL
-         wf/m8TjMV3hL4o5IVkZc7nVIpT7hYzZkQRgRIea4WoygA1xDol4RUMojf4GEKF2qyV
-         hbAcYOnsu1/s8TD0MEF/XJH1DX5iRgARwQqRUqLE=
+        b=DR9y/MqNk7iT694CaEqulmsbM4RGev+n7oy0L1n9ijXTjAVWeYmaD52y9ReJyJv/h
+         jDbx2py9ff/9roTnHydOp6mBrDeV29/gL9qbpMNnuElTHUqgBGkpfxRoqXq4sGr86q
+         pLim601fSdoo+szWGNaKq7/pRNk5H4x4b0+B0Yqg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ignat Korchagin <ignat@cloudflare.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.12 325/384] sfc: adjust efx->xdp_tx_queue_count with the real number of initialized queues
-Date:   Mon, 10 May 2021 12:21:54 +0200
-Message-Id: <20210510102025.510535787@linuxfoundation.org>
+        stable@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 5.12 326/384] rcu/nocb: Fix missed nocb_timer requeue
+Date:   Mon, 10 May 2021 12:21:55 +0200
+Message-Id: <20210510102025.542777967@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -39,62 +44,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ignat Korchagin <ignat@cloudflare.com>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-commit 99ba0ea616aabdc8e26259fd722503e012199a76 upstream.
+commit b2fcf2102049f6e56981e0ab3d9b633b8e2741da upstream.
 
-efx->xdp_tx_queue_count is initially initialized to num_possible_cpus() and is
-later used to allocate and traverse efx->xdp_tx_queues lookup array. However,
-we may end up not initializing all the array slots with real queues during
-probing. This results, for example, in a NULL pointer dereference, when running
-"# ethtool -S <iface>", similar to below
+This sequence of events can lead to a failure to requeue a CPU's
+->nocb_timer:
 
-[2570283.664955][T4126959] BUG: kernel NULL pointer dereference, address: 00000000000000f8
-[2570283.681283][T4126959] #PF: supervisor read access in kernel mode
-[2570283.695678][T4126959] #PF: error_code(0x0000) - not-present page
-[2570283.710013][T4126959] PGD 0 P4D 0
-[2570283.721649][T4126959] Oops: 0000 [#1] SMP PTI
-[2570283.734108][T4126959] CPU: 23 PID: 4126959 Comm: ethtool Tainted: G           O      5.10.20-cloudflare-2021.3.1 #1
-[2570283.752641][T4126959] Hardware name: <redacted>
-[2570283.781408][T4126959] RIP: 0010:efx_ethtool_get_stats+0x2ca/0x330 [sfc]
-[2570283.796073][T4126959] Code: 00 85 c0 74 39 48 8b 95 a8 0f 00 00 48 85 d2 74 2d 31 c0 eb 07 48 8b 95 a8 0f 00 00 48 63 c8 49 83 c4 08 83 c0 01 48 8b 14 ca <48> 8b 92 f8 00 00 00 49 89 54 24 f8 39 85 a0 0f 00 00 77 d7 48 8b
-[2570283.831259][T4126959] RSP: 0018:ffffb79a77657ce8 EFLAGS: 00010202
-[2570283.845121][T4126959] RAX: 0000000000000019 RBX: ffffb799cd0c9280 RCX: 0000000000000018
-[2570283.860872][T4126959] RDX: 0000000000000000 RSI: ffff96dd970ce000 RDI: 0000000000000005
-[2570283.876525][T4126959] RBP: ffff96dd86f0a000 R08: ffff96dd970ce480 R09: 000000000000005f
-[2570283.892014][T4126959] R10: ffffb799cd0c9fff R11: ffffb799cd0c9000 R12: ffffb799cd0c94f8
-[2570283.907406][T4126959] R13: ffffffffc11b1090 R14: ffff96dd970ce000 R15: ffffffffc11cd66c
-[2570283.922705][T4126959] FS:  00007fa7723f8740(0000) GS:ffff96f51fac0000(0000) knlGS:0000000000000000
-[2570283.938848][T4126959] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[2570283.952524][T4126959] CR2: 00000000000000f8 CR3: 0000001a73e6e006 CR4: 00000000007706e0
-[2570283.967529][T4126959] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[2570283.982400][T4126959] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[2570283.997308][T4126959] PKRU: 55555554
-[2570284.007649][T4126959] Call Trace:
-[2570284.017598][T4126959]  dev_ethtool+0x1832/0x2830
+1.	There are no callbacks queued for any CPU covered by CPU 0-2's
+	->nocb_gp_kthread.  Note that ->nocb_gp_kthread is associated
+	with CPU 0.
 
-Fix this by adjusting efx->xdp_tx_queue_count after probing to reflect the true
-value of initialized slots in efx->xdp_tx_queues.
+2.	CPU 1 enqueues its first callback with interrupts disabled, and
+	thus must defer awakening its ->nocb_gp_kthread.  It therefore
+	queues its rcu_data structure's ->nocb_timer.  At this point,
+	CPU 1's rdp->nocb_defer_wakeup is RCU_NOCB_WAKE.
 
-Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
-Fixes: e26ca4b53582 ("sfc: reduce the number of requested xdp ev queues")
-Cc: <stable@vger.kernel.org> # 5.12.x
-Signed-off-by: David S. Miller <davem@davemloft.net>
+3.	CPU 2, which shares the same ->nocb_gp_kthread, also enqueues a
+	callback, but with interrupts enabled, allowing it to directly
+	awaken the ->nocb_gp_kthread.
+
+4.	The newly awakened ->nocb_gp_kthread associates both CPU 1's
+	and CPU 2's callbacks with a future grace period and arranges
+	for that grace period to be started.
+
+5.	This ->nocb_gp_kthread goes to sleep waiting for the end of this
+	future grace period.
+
+6.	This grace period elapses before the CPU 1's timer fires.
+	This is normally improbably given that the timer is set for only
+	one jiffy, but timers can be delayed.  Besides, it is possible
+	that kernel was built with CONFIG_RCU_STRICT_GRACE_PERIOD=y.
+
+7.	The grace period ends, so rcu_gp_kthread awakens the
+	->nocb_gp_kthread, which in turn awakens both CPU 1's and
+	CPU 2's ->nocb_cb_kthread.  Then ->nocb_gb_kthread sleeps
+	waiting for more newly queued callbacks.
+
+8.	CPU 1's ->nocb_cb_kthread invokes its callback, then sleeps
+	waiting for more invocable callbacks.
+
+9.	Note that neither kthread updated any ->nocb_timer state,
+	so CPU 1's ->nocb_defer_wakeup is still set to RCU_NOCB_WAKE.
+
+10.	CPU 1 enqueues its second callback, this time with interrupts
+ 	enabled so it can wake directly	->nocb_gp_kthread.
+	It does so with calling wake_nocb_gp() which also cancels the
+	pending timer that got queued in step 2. But that doesn't reset
+	CPU 1's ->nocb_defer_wakeup which is still set to RCU_NOCB_WAKE.
+	So CPU 1's ->nocb_defer_wakeup and its ->nocb_timer are now
+	desynchronized.
+
+11.	->nocb_gp_kthread associates the callback queued in 10 with a new
+	grace period, arranges for that grace period to start and sleeps
+	waiting for it to complete.
+
+12.	The grace period ends, rcu_gp_kthread awakens ->nocb_gp_kthread,
+	which in turn wakes up CPU 1's ->nocb_cb_kthread which then
+	invokes the callback queued in 10.
+
+13.	CPU 1 enqueues its third callback, this time with interrupts
+	disabled so it must queue a timer for a deferred wakeup. However
+	the value of its ->nocb_defer_wakeup is RCU_NOCB_WAKE which
+	incorrectly indicates that a timer is already queued.  Instead,
+	CPU 1's ->nocb_timer was cancelled in 10.  CPU 1 therefore fails
+	to queue the ->nocb_timer.
+
+14.	CPU 1 has its pending callback and it may go unnoticed until
+	some other CPU ever wakes up ->nocb_gp_kthread or CPU 1 ever
+	calls an explicit deferred wakeup, for example, during idle entry.
+
+This commit fixes this bug by resetting rdp->nocb_defer_wakeup everytime
+we delete the ->nocb_timer.
+
+It is quite possible that there is a similar scenario involving
+->nocb_bypass_timer and ->nocb_defer_wakeup.  However, despite some
+effort from several people, a failure scenario has not yet been located.
+However, that by no means guarantees that no such scenario exists.
+Finding a failure scenario is left as an exercise for the reader, and the
+"Fixes:" tag below relates to ->nocb_bypass_timer instead of ->nocb_timer.
+
+Fixes: d1b222c6be1f (rcu/nocb: Add bypass callback queueing)
+Cc: <stable@vger.kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/sfc/efx_channels.c |    2 ++
- 1 file changed, 2 insertions(+)
+ kernel/rcu/tree_plugin.h |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/sfc/efx_channels.c
-+++ b/drivers/net/ethernet/sfc/efx_channels.c
-@@ -914,6 +914,8 @@ int efx_set_channels(struct efx_nic *efx
- 			}
- 		}
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1646,7 +1646,11 @@ static bool wake_nocb_gp(struct rcu_data
+ 		rcu_nocb_unlock_irqrestore(rdp, flags);
+ 		return false;
  	}
-+	if (xdp_queue_number)
-+		efx->xdp_tx_queue_count = xdp_queue_number;
+-	del_timer(&rdp->nocb_timer);
++
++	if (READ_ONCE(rdp->nocb_defer_wakeup) > RCU_NOCB_WAKE_NOT) {
++		WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
++		del_timer(&rdp->nocb_timer);
++	}
+ 	rcu_nocb_unlock_irqrestore(rdp, flags);
+ 	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
+ 	if (force || READ_ONCE(rdp_gp->nocb_gp_sleep)) {
+@@ -2265,7 +2269,6 @@ static bool do_nocb_deferred_wakeup_comm
+ 		return false;
+ 	}
+ 	ndw = READ_ONCE(rdp->nocb_defer_wakeup);
+-	WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
+ 	ret = wake_nocb_gp(rdp, ndw == RCU_NOCB_WAKE_FORCE, flags);
+ 	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("DeferredWake"));
  
- 	rc = netif_set_real_num_tx_queues(efx->net_dev, efx->n_tx_channels);
- 	if (rc)
 
 
