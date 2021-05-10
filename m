@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09879378CF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E85378CF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346502AbhEJMbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:31:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48686 "EHLO mail.kernel.org"
+        id S1346449AbhEJMba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:31:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237186AbhEJLLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:11:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B9F861878;
-        Mon, 10 May 2021 11:07:53 +0000 (UTC)
+        id S237200AbhEJLLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:11:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4661B61285;
+        Mon, 10 May 2021 11:08:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644874;
-        bh=NFNyn395/FhS4xHrSmlek6QktLX55yar9YDy+li1T5c=;
+        s=korg; t=1620644881;
+        bh=/zM04TnIe3i8ugoTjV5c3/lmKk8e7uKbmdy3oHOQvAQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IFVMzM+uCpzsCcEgEMclRGOAJsI58i7dnqfvM5KX0hBt/C0uiKld/hLfAbfZRZL0R
-         3RpUP8pemZqO41ZAUNJPhAfQqrIB3OOynWdzft4O2vwQA01Ul5UY848npIh44fhcB+
-         hJUQQMWvJ87D01cwREKPG6KaCtOprSO4uE1LgvIo=
+        b=GtJ46Cj1nI07Ls54AaxhC+n93l3W9z+HXaM+eTiR5cu64ilr0DWnXB/yXffMfKF76
+         T4N84FmKrb+Q8/bP1VChs4v0YLCKDvzz3Xu/Fzvc7nXrbnsUzVSri3Zl/xJOjviFgr
+         Wt4Clip4VgjwsV6V54y2aoQMpbpj8Qm/boRFGU6w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xu Yilun <yilun.xu@intel.com>,
-        Tom Rix <trix@redhat.com>, Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 258/384] mfd: intel-m10-bmc: Fix the register access range
-Date:   Mon, 10 May 2021 12:20:47 +0200
-Message-Id: <20210510102023.376470534@linuxfoundation.org>
+Subject: [PATCH 5.12 261/384] scsi: libfc: Fix a format specifier
+Date:   Mon, 10 May 2021 12:20:50 +0200
+Message-Id: <20210510102023.467113404@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -40,35 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xu Yilun <yilun.xu@intel.com>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit d9b326b2c3673f939941806146aee38e5c635fd0 ]
+[ Upstream commit 90d6697810f06aceea9de71ad836a8c7669789cd ]
 
-This patch fixes the max register address of MAX 10 BMC. The range
-0x20000000 ~ 0x200000fc are for control registers of the QSPI flash
-controller, which are not accessible to host.
+Since the 'mfs' member has been declared as 'u32' in include/scsi/libfc.h,
+use the %u format specifier instead of %hu. This patch fixes the following
+clang compiler warning:
 
-Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+warning: format specifies type
+      'unsigned short' but the argument has type 'u32' (aka 'unsigned int')
+      [-Wformat]
+                             "lport->mfs:%hu\n", mfs, lport->mfs);
+                                         ~~~          ^~~~~~~~~~
+                                         %u
+
+Link: https://lore.kernel.org/r/20210415220826.29438-8-bvanassche@acm.org
+Cc: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/mfd/intel-m10-bmc.h | 2 +-
+ drivers/scsi/libfc/fc_lport.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
-index 74d4e193966a..9b54ca13eac3 100644
---- a/include/linux/mfd/intel-m10-bmc.h
-+++ b/include/linux/mfd/intel-m10-bmc.h
-@@ -11,7 +11,7 @@
+diff --git a/drivers/scsi/libfc/fc_lport.c b/drivers/scsi/libfc/fc_lport.c
+index 22826544da7e..9989669beec3 100644
+--- a/drivers/scsi/libfc/fc_lport.c
++++ b/drivers/scsi/libfc/fc_lport.c
+@@ -1731,7 +1731,7 @@ void fc_lport_flogi_resp(struct fc_seq *sp, struct fc_frame *fp,
  
- #define M10BMC_LEGACY_SYS_BASE		0x300400
- #define M10BMC_SYS_BASE			0x300800
--#define M10BMC_MEM_END			0x200000fc
-+#define M10BMC_MEM_END			0x1fffffff
- 
- /* Register offset of system registers */
- #define NIOS2_FW_VERSION		0x0
+ 	if (mfs < FC_SP_MIN_MAX_PAYLOAD || mfs > FC_SP_MAX_MAX_PAYLOAD) {
+ 		FC_LPORT_DBG(lport, "FLOGI bad mfs:%hu response, "
+-			     "lport->mfs:%hu\n", mfs, lport->mfs);
++			     "lport->mfs:%u\n", mfs, lport->mfs);
+ 		fc_lport_error(lport, fp);
+ 		goto out;
+ 	}
 -- 
 2.30.2
 
