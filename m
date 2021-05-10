@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A6B379218
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D41537922E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240693AbhEJPHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 11:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42814 "EHLO
+        id S237217AbhEJPNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 11:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236860AbhEJPFz (ORCPT
+        with ESMTP id S234322AbhEJPNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 11:05:55 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CB1C0612A8;
-        Mon, 10 May 2021 07:25:10 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so8249925oth.8;
-        Mon, 10 May 2021 07:25:10 -0700 (PDT)
+        Mon, 10 May 2021 11:13:01 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5D9C0515C3;
+        Mon, 10 May 2021 07:31:43 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id t2-20020a17090ae502b029015b0fbfbc50so10172662pjy.3;
+        Mon, 10 May 2021 07:31:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EYkIUvzFJ/x19hX03NM711t2Q8qmIUmkaVEh5NmA7zk=;
-        b=uNFXfQuFIa834q925snTaXh041OPnfoWhZobxOAY7URCZ/2YXE8r+mjfQbfJpAJsiB
-         PrrsIR1zNwQXnPfnGrUrhbJIkqsQu3RoVuo1fINYpMVPsoDjTSGVM2SxZycYuNTh1RBd
-         HiUUgn/EVkofnFy9qvgPZZrSpzyMwVdEdEcTnsud3EYP1AiJe/4T6zr/RPBlryesvk2J
-         WI2Zu7hq/afniuU6mhvvKxft5i6nOYTY/ch/qQVnZDpj7C1jmOjP5jwaMdkPtygSP9t9
-         ZPPeRLHTKFJKQwgeKiNMeyn738HtozKIBL8/tWB7Db3SUEWEfK4M5HncbRoLFpqwlhXO
-         zFwA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9kClovlLUzpEzdz9iQ8IeZeld5vvQVt6iXPVE+HL4YM=;
+        b=u48VD+hwED7xcX38VtJhi47WwAO9cQG6I8MLVYZZtbQb+DGl/lw3YK0RP8xV2rxAB2
+         LSEQyuvFTO7dD7f5k6cO3DRHdGTrg8pCnjPj07HlqhiJFzJg0lzJt7yX1qPsr6pI3fKU
+         aeMcmQ12nPYXZMvhmG2iWcLV6y147M/Vnke0nByx/tFoBI+gkSajnCZtZQQ1FlKjZsEz
+         2oipMwl5CYWulA4kbM3iHbCoYw+w0Q5GdvAv2LxcM99NK64OgVqd1SehQFXnxLmdDXWk
+         ZANG+gp6x1BilL8e3VYZlCx8QqCwRB+A1aQHkC6EkZu//fW4llyk9MJV+8JWeXnZF0lf
+         xRfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EYkIUvzFJ/x19hX03NM711t2Q8qmIUmkaVEh5NmA7zk=;
-        b=QPhRPW9XevD3dCAHJsNxhAN0lwU7y/tNKwSQFoVyFCCJ6TagvOTtVpXhIwVgnnTq/p
-         bdqqWMqowwqV4Cr+qszEKg0FepMkeVRsxXlsmtlErie2Ru7Uw4DAH7tUIxUWtHwzAl75
-         WzDdMZlRkoup5CNb6VNZ5dPlGrDenuHi3wrth/udIFRI7ejTpxtTPvnXKMh/UN4YXjmN
-         UqLzPNSQrPRnAO2IQV7eXKze8/ZdR7U9NLmW0q8GzGaSMLBL2or3wG92cs4o6mbTdwtm
-         TlWc53u9lXH062ox3DkM07j24HZUb6w/4fANcPrb823AirQilGuShKPxlH2RrGsBzdfw
-         fxhg==
-X-Gm-Message-State: AOAM531CSFWlnkxc7uaEDH97y78JOVGc9XPlmBiGKLkWtZU9a76N1Zdx
-        xA4ietzUI8Qd2KPoqreCUiuY5Wvg5xhjCElD8uQ=
-X-Google-Smtp-Source: ABdhPJz2ghgexgkKkDyP+5Yj5566vPSJOh7e117kRSAf6UADg8Yc84KIcPNO+l93ev3XOL+uC/IjZrDjlY2YwPbm4Z8=
-X-Received: by 2002:a9d:51c6:: with SMTP id d6mr15164044oth.311.1620656709689;
- Mon, 10 May 2021 07:25:09 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9kClovlLUzpEzdz9iQ8IeZeld5vvQVt6iXPVE+HL4YM=;
+        b=b7zsUtTuKE4kRK2FQ65n6+7SucKe9TYOZQaST/kUEK7whNqwzvfsTVOQN8cc9jhsEN
+         DK8mJ48maLS2qJCVk1NBG9P/yBvcrC+6gAXlDhww4wSzxS+ktWkbW4Ics630wJblVJBH
+         j8ewqFQtBLh1uQvcWJcxcjsTKasMXgvvFMpn3D7qRnHu8EF4vgO8n7G+NhGwCjG0KRy1
+         7u9rIAdbV42W7OSCWHoEbI7VdG/ldzBmR39vEilYvc/sqC24H4++HbHktLodCmlWbtut
+         yijkC473Jikb9kG68gWDZidZAEtFyxZh34PTEuRoDjE8/ebb8FC9cEwJyhdeyuRuUWPD
+         FsXw==
+X-Gm-Message-State: AOAM532r2ZtLZNuUhMMKPjmmPlsHq1EPLyY8EwQTED4jnp+Lyu/2Vm4g
+        oSvWqqpjdDjnNiiHYC+9WHQQV+Kanw4=
+X-Google-Smtp-Source: ABdhPJwMkiz1inLmeKZ8K3a5VA9LgixaPhrWIfS9KKuelLIyliIRMWh/Ia39J8oZ89BUW1ucktKKdg==
+X-Received: by 2002:a17:90a:b389:: with SMTP id e9mr16116612pjr.56.1620657102532;
+        Mon, 10 May 2021 07:31:42 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id j27sm11836247pgb.54.2021.05.10.07.31.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 07:31:41 -0700 (PDT)
+Subject: Re: [PATCH 5.4 000/184] 5.4.118-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210510101950.200777181@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <4f9ee283-0b79-74ed-7bde-e8bb09675978@gmail.com>
+Date:   Mon, 10 May 2021 07:31:34 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210505093458.23efd0ee@canb.auug.org.au> <20210510084628.0d4bbd6c@canb.auug.org.au>
-In-Reply-To: <20210510084628.0d4bbd6c@canb.auug.org.au>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 10 May 2021 10:24:58 -0400
-Message-ID: <CADnq5_OqX6EBWyt5TR1N2Fcwdq-0hWBzcRFnBSej=vCoPmZCrg@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the amdgpu tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jude Shih <shenshih@amd.com>, Hanghong Ma <Hanghong.Ma@amd.com>,
-        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Dave Airlie <airlied@linux.ie>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210510101950.200777181@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 9, 2021 at 6:46 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> On Wed, 5 May 2021 09:34:58 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > After merging the amdgpu tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this:
-> >
-> > drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: In function 'amdgpu_dm_initialize_drm_device':
-> > drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:3728:7: error: implicit declaration of function 'register_outbox_irq_handlers'; did you mean 'register_hpd_handlers'? [-Werror=implicit-function-declaration]
-> >  3728 |   if (register_outbox_irq_handlers(dm->adev)) {
-> >       |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >       |       register_hpd_handlers
-> >
-> > Caused by commit
-> >
-> >   77a49c458931 ("drm/amd/display: Support for DMUB AUX")
-> >
-> > I have used the amdgpu tree from next-20210504 for today.
->
-> This has now been broken for 6 days ... please fix or revert.
 
-Fixed in this patch set:
-https://patchwork.freedesktop.org/series/89890/
 
-Alex
+On 5/10/2021 3:18 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.118 release.
+> There are 184 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.118-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
->
-> --
-> Cheers,
-> Stephen Rothwell
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
