@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1DD378700
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC183789D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234083AbhEJLMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:12:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41704 "EHLO mail.kernel.org"
+        id S236446AbhEJLcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:32:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233535AbhEJKuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:50:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37F6E6194A;
-        Mon, 10 May 2021 10:39:20 +0000 (UTC)
+        id S234859AbhEJK5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BBF56194C;
+        Mon, 10 May 2021 10:50:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643160;
-        bh=/xf+7x4AEiy/zFNMH/8OOITRPwL2zDSYp2kW7m6GlWg=;
+        s=korg; t=1620643804;
+        bh=kZ0q9YGabM3J/o0LN3EKKSVXsyyUbL6NpGeKKOOayeo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OsxMPtfvpsSnxaJoZclG5Zs9UHdjTbFKRhbT2q1zYl5cka9Hn3GWWwuBMk+wiBd7I
-         C9jJXTiuF7dBQe7hVDzkAdpEuzTd9jo8Min+vNffNw8BgsWWOsHwLsw2tjh1kyeIQk
-         YH7BgrUnpN/yi37Gn3sl+dFpVyi2hD4pWUEXx0lY=
+        b=gbI7J1Zzu5QDhYl66WVI5gplCPPXYsJ4h09r0DBcrQkl2UBAA6f7yqAesvzloVWSP
+         YI3HkJkX7NPWvXC2QI9QNQzbYkJ+CvyK1DpiLbP2Mpf5kg80BRJKrlafeViU7NVikI
+         I28laZHC2vV3IyIFJDgAASkx6swCWQab4R9vGiDY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Binderman <dcb314@hotmail.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org, dongjian <dongjian@yulong.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 157/299] selftests/resctrl: Enable gcc checks to detect buffer overflows
+Subject: [PATCH 5.11 164/342] power: supply: Use IRQF_ONESHOT
 Date:   Mon, 10 May 2021 12:19:14 +0200
-Message-Id: <20210510102010.148494804@linuxfoundation.org>
+Message-Id: <20210510102015.509758446@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,78 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fenghua Yu <fenghua.yu@intel.com>
+From: dongjian <dongjian@yulong.com>
 
-[ Upstream commit a9d26a302dea29eb84f491b1340a57e56c631a71 ]
+[ Upstream commit 2469b836fa835c67648acad17d62bc805236a6ea ]
 
-David reported a buffer overflow error in the check_results() function of
-the cmt unit test and he suggested enabling _FORTIFY_SOURCE gcc compiler
-option to automatically detect any such errors.
+Fixes coccicheck error:
 
-Feature Test Macros man page describes_FORTIFY_SOURCE as below
+drivers/power/supply/pm2301_charger.c:1089:7-27: ERROR:
+drivers/power/supply/lp8788-charger.c:502:8-28: ERROR:
+drivers/power/supply/tps65217_charger.c:239:8-33: ERROR:
+drivers/power/supply/tps65090-charger.c:303:8-33: ERROR:
 
-"Defining this macro causes some lightweight checks to be performed to
-detect some buffer overflow errors when employing various string and memory
-manipulation functions (for example, memcpy, memset, stpcpy, strcpy,
-strncpy, strcat, strncat, sprintf, snprintf, vsprintf, vsnprintf, gets, and
-wide character variants thereof). For some functions, argument consistency
-is checked; for example, a check is made that open has been supplied with a
-mode argument when the specified flags include O_CREAT. Not all problems
-are detected, just some common cases.
+Threaded IRQ with no primary handler requested without IRQF_ONESHOT
 
-If _FORTIFY_SOURCE is set to 1, with compiler optimization level 1 (gcc
--O1) and above, checks that shouldn't change the behavior of conforming
-programs are performed.
-
-With _FORTIFY_SOURCE set to 2, some more checking is added, but some
-conforming programs might fail.
-
-Some of the checks can be performed at compile time (via macros logic
-implemented in header files), and result in compiler warnings; other checks
-take place at run time, and result in a run-time error if the check fails.
-
-Use of this macro requires compiler support, available with gcc since
-version 4.0."
-
-Fix the buffer overflow error in the check_results() function of the cmt
-unit test and enable _FORTIFY_SOURCE gcc check to catch any future buffer
-overflow errors.
-
-Reported-by: David Binderman <dcb314@hotmail.com>
-Suggested-by: David Binderman <dcb314@hotmail.com>
-Tested-by: Babu Moger <babu.moger@amd.com>
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: dongjian <dongjian@yulong.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/resctrl/Makefile   | 2 +-
- tools/testing/selftests/resctrl/cqm_test.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/power/supply/lp8788-charger.c   | 2 +-
+ drivers/power/supply/pm2301_charger.c   | 2 +-
+ drivers/power/supply/tps65090-charger.c | 2 +-
+ drivers/power/supply/tps65217_charger.c | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/resctrl/Makefile b/tools/testing/selftests/resctrl/Makefile
-index d585cc1948cc..6bcee2ec91a9 100644
---- a/tools/testing/selftests/resctrl/Makefile
-+++ b/tools/testing/selftests/resctrl/Makefile
-@@ -1,5 +1,5 @@
- CC = $(CROSS_COMPILE)gcc
--CFLAGS = -g -Wall
-+CFLAGS = -g -Wall -O2 -D_FORTIFY_SOURCE=2
- SRCS=$(wildcard *.c)
- OBJS=$(SRCS:.c=.o)
+diff --git a/drivers/power/supply/lp8788-charger.c b/drivers/power/supply/lp8788-charger.c
+index e7931ffb7151..397e5a03b7d9 100644
+--- a/drivers/power/supply/lp8788-charger.c
++++ b/drivers/power/supply/lp8788-charger.c
+@@ -501,7 +501,7 @@ static int lp8788_set_irqs(struct platform_device *pdev,
  
-diff --git a/tools/testing/selftests/resctrl/cqm_test.c b/tools/testing/selftests/resctrl/cqm_test.c
-index c8756152bd61..5e7308ac63be 100644
---- a/tools/testing/selftests/resctrl/cqm_test.c
-+++ b/tools/testing/selftests/resctrl/cqm_test.c
-@@ -86,7 +86,7 @@ static int check_results(struct resctrl_val_param *param, int no_of_bits)
- 		return errno;
+ 		ret = request_threaded_irq(virq, NULL,
+ 					lp8788_charger_irq_thread,
+-					0, name, pchg);
++					IRQF_ONESHOT, name, pchg);
+ 		if (ret)
+ 			break;
  	}
+diff --git a/drivers/power/supply/pm2301_charger.c b/drivers/power/supply/pm2301_charger.c
+index ac06ecf7fc9c..a3bfb9612b17 100644
+--- a/drivers/power/supply/pm2301_charger.c
++++ b/drivers/power/supply/pm2301_charger.c
+@@ -1089,7 +1089,7 @@ static int pm2xxx_wall_charger_probe(struct i2c_client *i2c_client,
+ 	ret = request_threaded_irq(gpio_to_irq(pm2->pdata->gpio_irq_number),
+ 				NULL,
+ 				pm2xxx_charger_irq[0].isr,
+-				pm2->pdata->irq_type,
++				pm2->pdata->irq_type | IRQF_ONESHOT,
+ 				pm2xxx_charger_irq[0].name, pm2);
  
--	while (fgets(temp, 1024, fp)) {
-+	while (fgets(temp, sizeof(temp), fp)) {
- 		char *token = strtok(temp, ":\t");
- 		int fields = 0;
+ 	if (ret != 0) {
+diff --git a/drivers/power/supply/tps65090-charger.c b/drivers/power/supply/tps65090-charger.c
+index 6b0098e5a88b..0990b2fa6cd8 100644
+--- a/drivers/power/supply/tps65090-charger.c
++++ b/drivers/power/supply/tps65090-charger.c
+@@ -301,7 +301,7 @@ static int tps65090_charger_probe(struct platform_device *pdev)
  
+ 	if (irq != -ENXIO) {
+ 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+-			tps65090_charger_isr, 0, "tps65090-charger", cdata);
++			tps65090_charger_isr, IRQF_ONESHOT, "tps65090-charger", cdata);
+ 		if (ret) {
+ 			dev_err(cdata->dev,
+ 				"Unable to register irq %d err %d\n", irq,
+diff --git a/drivers/power/supply/tps65217_charger.c b/drivers/power/supply/tps65217_charger.c
+index 814c2b81fdfe..ba33d1617e0b 100644
+--- a/drivers/power/supply/tps65217_charger.c
++++ b/drivers/power/supply/tps65217_charger.c
+@@ -238,7 +238,7 @@ static int tps65217_charger_probe(struct platform_device *pdev)
+ 	for (i = 0; i < NUM_CHARGER_IRQS; i++) {
+ 		ret = devm_request_threaded_irq(&pdev->dev, irq[i], NULL,
+ 						tps65217_charger_irq,
+-						0, "tps65217-charger",
++						IRQF_ONESHOT, "tps65217-charger",
+ 						charger);
+ 		if (ret) {
+ 			dev_err(charger->dev,
 -- 
 2.30.2
 
