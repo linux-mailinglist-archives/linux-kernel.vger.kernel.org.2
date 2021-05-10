@@ -2,168 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1CB3797B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 21:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E54B3797B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 21:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231824AbhEJT3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 15:29:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46716 "EHLO
+        id S232011AbhEJTau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 15:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231183AbhEJT3j (ORCPT
+        with ESMTP id S231651AbhEJTat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 15:29:39 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 122A2C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 12:28:34 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id b14-20020a17090a6e0eb0290155c7f6a356so65684pjk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 12:28:34 -0700 (PDT)
+        Mon, 10 May 2021 15:30:49 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4541CC061574;
+        Mon, 10 May 2021 12:29:44 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so10955506pjv.1;
+        Mon, 10 May 2021 12:29:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=M6r3DxlNPkhf3OhaNDcaTGeOLH6RJOY6MQ8JuEMMRNM=;
-        b=YVcybWWsu7oECIEqY0eEpQTKr6s6lwa3FSiHPeDPAK2x9lqLcMQHbkxX4J2SYORT5L
-         4qFl61PaPMXY5VNonjTPU0olAfYur8XLRxytz2Enww7aHEdpvtfhot62LymVipbXRQev
-         QBdD+TxtQXT+wgwxwWLwDpdORhRskJfZxT7gqRbfSXGNDsDIpwR3H+ySgHdcMcpPMsPR
-         OlMlIGxZ1GqNwptG16p+mp5AN9XJp/1AF0fFYWwiMVN7SjXtJqMj2n6la/8Irw4XSK0y
-         JugyKoO1onEPUsm1K4rqswIse+jtB4TzSzdwbyaxzbcCE3sM1hjJQXYZLpvII1xdrFrn
-         l+nQ==
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=TimIegD9bo/1/rxa4xiNPvMI0cG64gd1Y2PHAJLQe2M=;
+        b=XAS7/bsHM8uNuJQ/d/vZ3J4IRzxcFtOpCxyMcNEyznxgSUfhusASZXL/tS8yX6Lirv
+         Bn6j0qMobSfAeEWLgaU6AtIbxDKbNClLmxDO9J45yXFfVSDy2ndQN+vGspFL4kxeG1vu
+         Rx1DXmxL/Yz8ispj9PgHJ3FCE/Cv4LDBlGO+wxriymdffnlF2s3Fvjb51L71B+WvYywb
+         We5Pz2JyxSLYnqkyWL3JDNXk7CWuVYDY3nr0Gkx73icGqBIRgdozZH29bg+9AAD/66M4
+         HMSpCiHvtwubknZuDjEC0y15tkWH6+NpsCCGrQCNpLDDr4OllcI9+cE9XnaQlXv10hEp
+         8LbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=M6r3DxlNPkhf3OhaNDcaTGeOLH6RJOY6MQ8JuEMMRNM=;
-        b=rr8DUYcvMefwtIajG8JtIPWxk/bc0yWwmgiGwp+o8XQviuUYyRGBKu475gl6mNTpar
-         Lq36/7W6n+WeTS6wi0m7fhKHWOLdkIkR+kOxKkVx3vRglwEuGW7fqMH8Q6wXAKuXNDZ4
-         +9lnlxk+qzHIxBqkeTNdKMqPV7hPY61mGiSdYeo9wSJCqXXWfyiv19G1HQIt8c8D1rAa
-         e7Efo1SUQUrB1xNVmOpd4fdQqVysgBGtSK0u9BPbu/xahjRDHwDoRzOC48vVO+vsfvDm
-         y9W1pq4nUwUqBFzE/lVrknEUB3wGsAtk7sBdsAVOqbQ9vY69n6Vg06s93fnZXpr+7L/t
-         4nUw==
-X-Gm-Message-State: AOAM531AyEJzE5oOEMtay4CbeXLhhitcrtDx/l1DpIJq/P+6CtnVyQs4
-        XkQtMsGs1jKVFap3Ak59nXjTHg==
-X-Google-Smtp-Source: ABdhPJyOAvl6ZVZvajZL73lLVLm5p37MJ4skw/vdQnrqNxMUbXsiz/M2+1a8utNEdtgKFYrdN8UrVg==
-X-Received: by 2002:a17:90a:d246:: with SMTP id o6mr29771057pjw.57.1620674913422;
-        Mon, 10 May 2021 12:28:33 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id n8sm11649402pgm.7.2021.05.10.12.28.31
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=TimIegD9bo/1/rxa4xiNPvMI0cG64gd1Y2PHAJLQe2M=;
+        b=eNTsMKHWbqxS3aTv9eftDwEESvJWrYjWRjhUA+5gNRwnFALGs9B3xutzxup6VFFeq2
+         H5g4ctEC7X8z92ZVvZKM95ak9n1O9MPP8Lg+niry2Q+yTArLZjTEEEi4QNIt4zIUownS
+         QwyBveRFRAC2RLcAzhvBsuLXuXEvY8LhJUBnMrr/6nZeET8VwiO/egccdmQ+TE3s/8J5
+         gpJGCDIdD6SvYxmTGFOFlhJ9LFqgUu3nFMaElbstiDEEXxkKKBDlDilc4auimUIAugIP
+         0raT+XuNUuL0Hk+ebbLcdgnc+RxiIiazDvApny7Cuop4KskiQJM+Xo5Q0CsEMuSNBKZ/
+         USmw==
+X-Gm-Message-State: AOAM531mZ9dLv4QvamoKcCDNa+AFoZemxQzLHL8NGpALZANyzSJoBS9h
+        zSwRqOT6RXiFFdxNkosPh2mdNMA2RNQE/LabEJW1Vg==
+X-Google-Smtp-Source: ABdhPJzAbQ85iL81S5UD9jZOXC6O7KJB5FQqt68QyEka1MCJs3FOwZIU5/c/7nMQGMC+Z6T/lXgFWA==
+X-Received: by 2002:a17:902:44:b029:ee:9107:4242 with SMTP id 62-20020a1709020044b02900ee91074242mr26320026pla.18.1620674983413;
+        Mon, 10 May 2021 12:29:43 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id y23sm11432527pfb.83.2021.05.10.12.29.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 12:28:32 -0700 (PDT)
-Date:   Mon, 10 May 2021 13:28:30 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Leo Yan <leo.yan@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 11/53] docs: trace: coresight:
- coresight-etm4x-reference.rst: avoid using UTF-8 chars
-Message-ID: <20210510192830.GA7232@xps15>
-References: <cover.1620641727.git.mchehab+huawei@kernel.org>
- <859218d35d495d5d2c2893bf8e6e087394a107a7.1620641727.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <859218d35d495d5d2c2893bf8e6e087394a107a7.1620641727.git.mchehab+huawei@kernel.org>
+        Mon, 10 May 2021 12:29:43 -0700 (PDT)
+Message-ID: <609989a7.1c69fb81.36799.2c5e@mx.google.com>
+Date:   Mon, 10 May 2021 12:29:43 -0700 (PDT)
+X-Google-Original-Date: Mon, 10 May 2021 19:29:42 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
+Subject: RE: [PATCH 5.12 000/384] 5.12.3-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 12:26:23PM +0200, Mauro Carvalho Chehab wrote:
-> While UTF-8 characters can be used at the Linux documentation,
-> the best is to use them only when ASCII doesn't offer a good replacement.
-> So, replace the occurences of the following UTF-8 characters:
+On Mon, 10 May 2021 12:16:29 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.12.3 release.
+> There are 384 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> 	- U+00a0 (' '): NO-BREAK SPACE
-> 	- U+2018 ('‘'): LEFT SINGLE QUOTATION MARK
-> 	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
+> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.3-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+5.12.3-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-> ---
->  .../coresight/coresight-etm4x-reference.rst      | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/trace/coresight/coresight-etm4x-reference.rst b/Documentation/trace/coresight/coresight-etm4x-reference.rst
-> index b64d9a9c79df..e8ddfc144d9a 100644
-> --- a/Documentation/trace/coresight/coresight-etm4x-reference.rst
-> +++ b/Documentation/trace/coresight/coresight-etm4x-reference.rst
-> @@ -15,14 +15,14 @@ Root: ``/sys/bus/coresight/devices/etm<N>``
->  
->  The following paragraphs explain the association between sysfs files and the
->  ETMv4 registers that they effect. Note the register names are given without
-> -the ‘TRC’ prefix.
-> +the 'TRC' prefix.
->  
->  ----
->  
->  :File:            ``mode`` (rw)
->  :Trace Registers: {CONFIGR + others}
->  :Notes:
-> -    Bit select trace features. See ‘mode’ section below. Bits
-> +    Bit select trace features. See 'mode' section below. Bits
->      in this will cause equivalent programming of trace config and
->      other registers to enable the features requested.
->  
-> @@ -89,7 +89,7 @@ the ‘TRC’ prefix.
->  :Notes:
->      Pair of addresses for a range selected by addr_idx. Include
->      / exclude according to the optional parameter, or if omitted
-> -    uses the current ‘mode’ setting. Select comparator range in
-> +    uses the current 'mode' setting. Select comparator range in
->      control register. Error if index is odd value.
->  
->  :Depends: ``mode, addr_idx``
-> @@ -277,7 +277,7 @@ the ‘TRC’ prefix.
->  :Trace Registers: VICTLR{23:20}
->  :Notes:
->      Program non-secure exception level filters. Set / clear NS
-> -    exception filter bits. Setting ‘1’ excludes trace from the
-> +    exception filter bits. Setting '1' excludes trace from the
->      exception level.
->  
->  :Syntax:
-> @@ -427,7 +427,7 @@ the ‘TRC’ prefix.
->  :Syntax:
->      ``echo idx > vmid_idx``
->  
-> -    Where idx <  numvmidc
-> +    Where idx <  numvmidc
->  
->  ----
->  
-> @@ -628,7 +628,7 @@ the reset parameter::
->  
->  
->  
-> -The ‘mode’ sysfs parameter.
-> +The 'mode' sysfs parameter.
->  ---------------------------
->  
->  This is a bitfield selection parameter that sets the overall trace mode for the
-> @@ -696,7 +696,7 @@ Bit assignments shown below:-
->      ETM_MODE_QELEM(val)
->  
->  **description:**
-> -    ‘val’ determines level of Q element support enabled if
-> +    'val' determines level of Q element support enabled if
->      implemented by the ETM [IDR0]
->  
->  
-> @@ -780,7 +780,7 @@ Bit assignments shown below:-
->  ----
->  
->  *Note a)* On startup the ETM is programmed to trace the complete address space
-> -using address range comparator 0. ‘mode’ bits 30 / 31 modify this setting to
-> +using address range comparator 0. 'mode' bits 30 / 31 modify this setting to
->  set EL exclude bits for NS state in either user space (EL0) or kernel space
->  (EL1) in the address range comparator. (the default setting excludes all
->  secure EL, and NS EL2)
-> -- 
-> 2.30.2
-> 
