@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0303B378674
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A7137897D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236431AbhEJLIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:08:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59672 "EHLO mail.kernel.org"
+        id S233938AbhEJL3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:29:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232373AbhEJKrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:47:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBFA56193E;
-        Mon, 10 May 2021 10:37:34 +0000 (UTC)
+        id S234744AbhEJK47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:56:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29FA9619B2;
+        Mon, 10 May 2021 10:48:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643055;
-        bh=lKWxNTOWjPG44IWEhdFXKE9eCDYo0NONZEZVahLVNNQ=;
+        s=korg; t=1620643724;
+        bh=qzBd5KFoOot3ymsfol1NFk7ANSu/74D3rjHu6RHVPIg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KVCnoiB0LmSLFDVom3nJJI6tmMKEMoeYKb1mPxp7+b9544ngUyuwgoK95uH48FA7I
-         F2LP/0P0dqKXpblVV9lTeSemj5zuZWWinxGKTsxDwy2vHP1BQCLNFckKvtpi4j/ZvT
-         Fg/ow/NPHotsOOVi2u/SEe2eTYsgNRT5KVIn+wnc=
+        b=jWSL/BNx5m+DPrz+bryKa5amfI04O/Fe7hsQ1EfycSPCGODvlbT4mYshC8Zlmqe23
+         vat96VVOZTNUMa6sWutmqFpvDunI0GW3LyQdBqiZWUY6OyFIDpmTmMWsb9QCgwwjJV
+         Cgfx0jKI6Pq2RHomgCZtSIJnHXtOC2pOzGXkAzvs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <jsmart2021@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Gerd Hoffmann <kraxel@redhat.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 124/299] scsi: lpfc: Fix pt2pt connection does not recover after LOGO
+Subject: [PATCH 5.11 131/342] drm/qxl: release shadow on shutdown
 Date:   Mon, 10 May 2021 12:18:41 +0200
-Message-Id: <20210510102009.075255492@linuxfoundation.org>
+Message-Id: <20210510102014.405938176@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+From: Gerd Hoffmann <kraxel@redhat.com>
 
-[ Upstream commit bd4f5100424d17d4e560d6653902ef8e49b2fc1f ]
+[ Upstream commit 4ca77c513537700d3fae69030879f781dde1904c ]
 
-On a pt2pt setup, between 2 initiators, if one side issues a a LOGO, there
-is no relogin attempt. The FC specs are grey in this area on which port
-(higher wwn or not) is to re-login.
+In case we have a shadow surface on shutdown release
+it so it doesn't leak.
 
-As there is no spec guidance, unconditionally re-PLOGI after the logout to
-ensure a login is re-established.
-
-Link: https://lore.kernel.org/r/20210301171821.3427-8-jsmart2021@gmail.com
-Co-developed-by: Dick Kennedy <dick.kennedy@broadcom.com>
-Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+Link: http://patchwork.freedesktop.org/patch/msgid/20210204145712.1531203-6-kraxel@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_nportdisc.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/qxl/qxl_display.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/scsi/lpfc/lpfc_nportdisc.c b/drivers/scsi/lpfc/lpfc_nportdisc.c
-index 92d6e7b98770..17be94496110 100644
---- a/drivers/scsi/lpfc/lpfc_nportdisc.c
-+++ b/drivers/scsi/lpfc/lpfc_nportdisc.c
-@@ -903,9 +903,14 @@ lpfc_rcv_logo(struct lpfc_vport *vport, struct lpfc_nodelist *ndlp,
- 		}
- 	} else if ((!(ndlp->nlp_type & NLP_FABRIC) &&
- 		((ndlp->nlp_type & NLP_FCP_TARGET) ||
--		!(ndlp->nlp_type & NLP_FCP_INITIATOR))) ||
-+		(ndlp->nlp_type & NLP_NVME_TARGET) ||
-+		(vport->fc_flag & FC_PT2PT))) ||
- 		(ndlp->nlp_state == NLP_STE_ADISC_ISSUE)) {
--		/* Only try to re-login if this is NOT a Fabric Node */
-+		/* Only try to re-login if this is NOT a Fabric Node
-+		 * AND the remote NPORT is a FCP/NVME Target or we
-+		 * are in pt2pt mode. NLP_STE_ADISC_ISSUE is a special
-+		 * case for LOGO as a response to ADISC behavior.
-+		 */
- 		mod_timer(&ndlp->nlp_delayfunc,
- 			  jiffies + msecs_to_jiffies(1000 * 1));
- 		spin_lock_irq(shost->host_lock);
+diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qxl_display.c
+index 10738e04c09b..56e0c6c625e9 100644
+--- a/drivers/gpu/drm/qxl/qxl_display.c
++++ b/drivers/gpu/drm/qxl/qxl_display.c
+@@ -1228,6 +1228,10 @@ int qxl_modeset_init(struct qxl_device *qdev)
+ 
+ void qxl_modeset_fini(struct qxl_device *qdev)
+ {
++	if (qdev->dumb_shadow_bo) {
++		drm_gem_object_put(&qdev->dumb_shadow_bo->tbo.base);
++		qdev->dumb_shadow_bo = NULL;
++	}
+ 	qxl_destroy_monitors_object(qdev);
+ 	drm_mode_config_cleanup(&qdev->ddev);
+ }
 -- 
 2.30.2
 
