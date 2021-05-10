@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E723789FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 688763786CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239518AbhEJLfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:35:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53004 "EHLO mail.kernel.org"
+        id S236981AbhEJLLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:11:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234960AbhEJK5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 340DA6162E;
-        Mon, 10 May 2021 10:50:34 +0000 (UTC)
+        id S233521AbhEJKuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:50:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA085619EE;
+        Mon, 10 May 2021 10:39:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643834;
-        bh=7UHw/pNCJlVRwJ5CrNe4drOoPke6e+nk1r28fBaF5zY=;
+        s=korg; t=1620643153;
+        bh=ac/ECm5ssDNwfZVOirucWzBGrSsQR/PGlfv7yDn6bOs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2hcj8WF1+qb3v9DoFoa4KqP7JiiidaZHFX+x6BQd3p8HX/UQ8AMLR9lS3jFvaX2QA
-         w90eTp9Rgw+7d/Wni0p1o3FOcjv+Nlw/wpHMytE345Gctl3YJ0vFeF8oQJFvo/abCU
-         h3fRQ7h6sMvTj4WOc1ij8+Lsa7R7vnjQ2cpH2eBA=
+        b=XJVCqrMhsMTjTnxonD3ne2dRv7NLpD0gEaryw69a97dR/Udls/ki7oJTe4lvogAxR
+         aFHjX0TMXrorIKkwS68SOptUTXSXi0x5kZ3NNU01pfl55X3xRX9AxSqVkjVSkfwKf4
+         tkdQPgsGCTORaKWcmK4icvFsJ84VDuUngdESY5Is=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Anson Jacob <Anson.Jacob@amd.com>,
-        Aurabindo Jayamohanan Pillai <Aurabindo.Pillai@amd.com>,
-        Solomon Chiu <solomon.chiu@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 171/342] drm/amd/display: Fix UBSAN warning for not a valid value for type _Bool
+Subject: [PATCH 5.10 164/299] selftests/resctrl: Fix checking for < 0 for unsigned values
 Date:   Mon, 10 May 2021 12:19:21 +0200
-Message-Id: <20210510102015.760993537@linuxfoundation.org>
+Message-Id: <20210510102010.371693121@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +42,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anson Jacob <Anson.Jacob@amd.com>
+From: Fenghua Yu <fenghua.yu@intel.com>
 
-[ Upstream commit 6a30a92997eee49554f72b462dce90abe54a496f ]
+[ Upstream commit 1205b688c92558a04d8dd4cbc2b213e0fceba5db ]
 
-[Why]
-dc_cursor_position do not initialise position.translate_by_source when
-crtc or plane->state->fb is NULL. UBSAN caught this error in
-dce110_set_cursor_position, as the value was garbage.
+Dan reported following static checker warnings
 
-[How]
-Initialise dc_cursor_position structure elements to 0 in handle_cursor_update
-before calling get_cursor_position.
+tools/testing/selftests/resctrl/resctrl_val.c:545 measure_vals()
+warn: 'bw_imc' unsigned <= 0
 
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1471
-Reported-by: Lyude Paul <lyude@redhat.com>
-Signed-off-by: Anson Jacob <Anson.Jacob@amd.com>
-Reviewed-by: Aurabindo Jayamohanan Pillai <Aurabindo.Pillai@amd.com>
-Acked-by: Solomon Chiu <solomon.chiu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+tools/testing/selftests/resctrl/resctrl_val.c:549 measure_vals()
+warn: 'bw_resc_end' unsigned <= 0
+
+These warnings are reported because
+1. measure_vals() declares 'bw_imc' and 'bw_resc_end' as unsigned long
+   variables
+2. Return value of get_mem_bw_imc() and get_mem_bw_resctrl() are assigned
+   to 'bw_imc' and 'bw_resc_end' respectively
+3. The returned values are checked for <= 0 to see if the calls failed
+
+Checking for < 0 for an unsigned value doesn't make any sense.
+
+Fix this issue by changing the implementation of get_mem_bw_imc() and
+get_mem_bw_resctrl() such that they now accept reference to a variable
+and set the variable appropriately upon success and return 0, else return
+< 0 on error.
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Tested-by: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ tools/testing/selftests/resctrl/resctrl_val.c | 41 +++++++++++--------
+ 1 file changed, 23 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index fc2763745ae1..2b957d60c7b5 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -7250,10 +7250,6 @@ static int get_cursor_position(struct drm_plane *plane, struct drm_crtc *crtc,
- 	int x, y;
- 	int xorigin = 0, yorigin = 0;
+diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
+index 5478c23c62ba..8df557894059 100644
+--- a/tools/testing/selftests/resctrl/resctrl_val.c
++++ b/tools/testing/selftests/resctrl/resctrl_val.c
+@@ -300,9 +300,9 @@ static int initialize_mem_bw_imc(void)
+  * Memory B/W utilized by a process on a socket can be calculated using
+  * iMC counters. Perf events are used to read these counters.
+  *
+- * Return: >= 0 on success. < 0 on failure.
++ * Return: = 0 on success. < 0 on failure.
+  */
+-static float get_mem_bw_imc(int cpu_no, char *bw_report)
++static int get_mem_bw_imc(int cpu_no, char *bw_report, float *bw_imc)
+ {
+ 	float reads, writes, of_mul_read, of_mul_write;
+ 	int imc, j, ret;
+@@ -373,13 +373,18 @@ static float get_mem_bw_imc(int cpu_no, char *bw_report)
+ 		close(imc_counters_config[imc][WRITE].fd);
+ 	}
  
--	position->enable = false;
--	position->x = 0;
--	position->y = 0;
--
- 	if (!crtc || !plane->state->fb)
- 		return 0;
+-	if (strcmp(bw_report, "reads") == 0)
+-		return reads;
++	if (strcmp(bw_report, "reads") == 0) {
++		*bw_imc = reads;
++		return 0;
++	}
  
-@@ -7300,7 +7296,7 @@ static void handle_cursor_update(struct drm_plane *plane,
- 	struct dm_crtc_state *crtc_state = crtc ? to_dm_crtc_state(crtc->state) : NULL;
- 	struct amdgpu_crtc *amdgpu_crtc = to_amdgpu_crtc(crtc);
- 	uint64_t address = afb ? afb->address : 0;
--	struct dc_cursor_position position;
-+	struct dc_cursor_position position = {0};
- 	struct dc_cursor_attributes attributes;
+-	if (strcmp(bw_report, "writes") == 0)
+-		return writes;
++	if (strcmp(bw_report, "writes") == 0) {
++		*bw_imc = writes;
++		return 0;
++	}
+ 
+-	return (reads + writes);
++	*bw_imc = reads + writes;
++	return 0;
+ }
+ 
+ void set_mbm_path(const char *ctrlgrp, const char *mongrp, int resource_id)
+@@ -438,9 +443,8 @@ static void initialize_mem_bw_resctrl(const char *ctrlgrp, const char *mongrp,
+  * 1. If con_mon grp is given, then read from it
+  * 2. If con_mon grp is not given, then read from root con_mon grp
+  */
+-static unsigned long get_mem_bw_resctrl(void)
++static int get_mem_bw_resctrl(unsigned long *mbm_total)
+ {
+-	unsigned long mbm_total = 0;
+ 	FILE *fp;
+ 
+ 	fp = fopen(mbm_total_path, "r");
+@@ -449,7 +453,7 @@ static unsigned long get_mem_bw_resctrl(void)
+ 
+ 		return -1;
+ 	}
+-	if (fscanf(fp, "%lu", &mbm_total) <= 0) {
++	if (fscanf(fp, "%lu", mbm_total) <= 0) {
+ 		perror("Could not get mbm local bytes");
+ 		fclose(fp);
+ 
+@@ -457,7 +461,7 @@ static unsigned long get_mem_bw_resctrl(void)
+ 	}
+ 	fclose(fp);
+ 
+-	return mbm_total;
++	return 0;
+ }
+ 
+ pid_t bm_pid, ppid;
+@@ -549,7 +553,8 @@ static void initialize_llc_occu_resctrl(const char *ctrlgrp, const char *mongrp,
+ static int
+ measure_vals(struct resctrl_val_param *param, unsigned long *bw_resc_start)
+ {
+-	unsigned long bw_imc, bw_resc, bw_resc_end;
++	unsigned long bw_resc, bw_resc_end;
++	float bw_imc;
  	int ret;
  
+ 	/*
+@@ -559,13 +564,13 @@ measure_vals(struct resctrl_val_param *param, unsigned long *bw_resc_start)
+ 	 * Compare the two values to validate resctrl value.
+ 	 * It takes 1sec to measure the data.
+ 	 */
+-	bw_imc = get_mem_bw_imc(param->cpu_no, param->bw_report);
+-	if (bw_imc <= 0)
+-		return bw_imc;
++	ret = get_mem_bw_imc(param->cpu_no, param->bw_report, &bw_imc);
++	if (ret < 0)
++		return ret;
+ 
+-	bw_resc_end = get_mem_bw_resctrl();
+-	if (bw_resc_end <= 0)
+-		return bw_resc_end;
++	ret = get_mem_bw_resctrl(&bw_resc_end);
++	if (ret < 0)
++		return ret;
+ 
+ 	bw_resc = (bw_resc_end - *bw_resc_start) / MB;
+ 	ret = print_results_bw(param->filename, bm_pid, bw_imc, bw_resc);
 -- 
 2.30.2
 
