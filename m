@@ -2,210 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3BE8378E17
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7452D378E10
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348663AbhEJNFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 09:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350948AbhEJNCW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 09:02:22 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D964BC061574;
-        Mon, 10 May 2021 05:52:02 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id a4so16519845wrr.2;
-        Mon, 10 May 2021 05:52:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=w4QsKbQf5+/HIa7q0DIrIxImUQp3y28m2a4dwOLfss8=;
-        b=Xa/V6eERmkf/DsqegmbcoTNmq9En83Y84l0AQa3ghO0vxJf9bDl/83dc2nck/F5GhZ
-         EocYyWFZYw1Cg8WAtrPMuG4bTW45dWlSGm6TKwb2CnNMcluIWnv9HcR82awLptp3A02X
-         gvVbbjgMJ4xPonh5rUsHFn76wke+y///6v0Ow4XtaMnzTAVC8XwjkE6jggIpUVmNAT6p
-         RUtPVUaKER6Q448WhQRrg04OLH3OL68qm49sK4lfF5xJ168r71/wpxI965G85KAkvkha
-         ESro4mRTybwCM9o2NexMfGIJOPe6BBlDdbAzf7P7fu5FSQb9ouApoVtPP76soaVdx6eX
-         Cuiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=w4QsKbQf5+/HIa7q0DIrIxImUQp3y28m2a4dwOLfss8=;
-        b=AD4vcKrj2OOpQ+3RikdTeB1IKqL2CpzDfPhMIGqi0C/SHLkRj8dmNLKH1x8x5l22Jy
-         46izD8TMPHoJXL62eVpJBNeV6IXvXUsE6HF66SwKEN88N0eyIbHBOzoFCq/5O/srLsOT
-         4i6qHh7XYJTnqCo211SnVeqQxgzAziR0mpYAp5eLgU8ROd/L0jkg7Ig6zKcumlyqpD6I
-         LTP6szsF4ARx5Mta6BDRx1sTU2hHs9f6WWxlmdlcYwIHUHZ8q6SJoZ61v1rCKtt3p8et
-         piMMN5PsdLgYb9J/HKEDGzqajabI23zxnger5vQd69Hedf2VKKnkfhXULeRUMyEBQuua
-         fFMg==
-X-Gm-Message-State: AOAM532eRAOx/rGJVPYigXo2GjoQtqZUBONqCELBJ1JkTAlhvgS8KGLn
-        9gSuE1DD2tItvMRv3skUP/SigZnYYnfnXw==
-X-Google-Smtp-Source: ABdhPJy+RjwtO8rF41oQPcV/rlTfxQCfr1SnePR0tjxzgBWAH2uqPN0GBR1zbQYmhrajpCBzr64H5Q==
-X-Received: by 2002:adf:d4ca:: with SMTP id w10mr31873427wrk.244.1620651121486;
-        Mon, 10 May 2021 05:52:01 -0700 (PDT)
-Received: from michael-VirtualBox ([31.168.255.170])
-        by smtp.gmail.com with ESMTPSA id y17sm25582507wrw.90.2021.05.10.05.51.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 05:52:00 -0700 (PDT)
-Date:   Mon, 10 May 2021 15:51:58 +0300
-From:   Michael Zaidman <michael.zaidman@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        jikos@kernel.org, dan.carpenter@oracle.com,
-        linux-input@vger.kernel.org, michael.zaidman@gmail.com
-Subject: Re: [PATCH] HID: ft260: fix format type warning in ft260_word_show()
-Message-ID: <20210510125158.GB2276@michael-VirtualBox>
-References: <202105060637.LeEC6ztp-lkp@intel.com>
- <20210509193213.5974-1-michael.zaidman@gmail.com>
- <26e1929386babea33d4a320b506c5247caacde77.camel@perches.com>
- <20210510091730.GA2276@michael-VirtualBox>
- <7c0f57c1208b09742c839b1c1e54e2b79c83b8af.camel@perches.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7c0f57c1208b09742c839b1c1e54e2b79c83b8af.camel@perches.com>
+        id S235848AbhEJNDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 09:03:43 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:56454 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241723AbhEJMx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 08:53:28 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxH+9wLJlguH4UAA--.15168S2;
+        Mon, 10 May 2021 20:52:00 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] bpf: arm64: Replace STACK_ALIGN() with round_up() to align stack size
+Date:   Mon, 10 May 2021 20:51:59 +0800
+Message-Id: <1620651119-5663-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxH+9wLJlguH4UAA--.15168S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xr4UCF1UAFy3WF4rAFWfGrg_yoWkWwb_tw
+        1SkF97Gwn8CrsY9r18Ca15JryIk3ykGa4kXryagr12y343Xw4fAry09ryxur1UXr4DKFWr
+        ZFs7GFy2vw42gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbsxYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z2
+        80aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
+        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx
+        8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7
+        MxkIecxEwVAFwVW5JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+        Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+        vEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2
+        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
+        ZFpf9x07j7sqXUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 02:52:14AM -0700, Joe Perches wrote:
-> On Mon, 2021-05-10 at 12:17 +0300, Michael Zaidman wrote:
-> > On Sun, May 09, 2021 at 01:39:29PM -0700, Joe Perches wrote:
-> > > On Sun, 2021-05-09 at 22:32 +0300, Michael Zaidman wrote:
-> > > > Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
-> > > > 
-> > > > Fix warning reported by static analysis when built with W=1 for arm64 by
-> > > > clang version 13.0.0
-> > > > 
-> > > > > > drivers/hid/hid-ft260.c:794:44: warning: format specifies type 'short' but
-> > > >    the argument has type 'int' [-Wformat]
-> > > >            return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
-> > > >                                              ~~~     ^~~~~~~~~~~~~~~~~~~
-> > > >                                              %i
-> > > >    include/linux/byteorder/generic.h:91:21: note: expanded from
-> > > >                                             macro 'le16_to_cpu'
-> > > >    #define le16_to_cpu __le16_to_cpu
-> > > >                        ^
-> > > >    include/uapi/linux/byteorder/big_endian.h:36:26: note: expanded from
-> > > >                                                     macro '__le16_to_cpu'
-> > > >    #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
-> > > >                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > >    include/uapi/linux/swab.h:105:2: note: expanded from macro '__swab16'
-> > > >            (__builtin_constant_p((__u16)(x)) ?     \
-> > > >            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > 
-> > > > Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
-> > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > ---
-> > > >  drivers/hid/hid-ft260.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
-> > > > index 047aa85a7c83..38794a29599c 100644
-> > > > --- a/drivers/hid/hid-ft260.c
-> > > > +++ b/drivers/hid/hid-ft260.c
-> > > > @@ -791,7 +791,7 @@ static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
-> > > >  	if (ret != len && ret >= 0)
-> > > >  		return -EIO;
-> > > >  
-> > > > 
-> > > > -	return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
-> > > > +	return scnprintf(buf, PAGE_SIZE, "%d\n", le16_to_cpu(*field));
-> > > >  }
-> > > 
-> > > There are 2 of these so I wonder about the static analysis.
-> > 
-> > There is nothing wrong with the static analysis. The first scnprintf format
-> > type is perfectly valid as far as its size is greater than the size of the
-> > data pointed by the *field pointer, which is a one byte size in our case.
-> > The static analysis warned about the second scnprintf case, where the format
-> > type was shorter than the integer returned by the __builtin_constant_p.
-> > This warning can be considered as a false positive since the le16_to_cpu is
-> > all about the 16 bits numbers, but to silence it, I submitted the above fix.
-> 
-> $ git grep __arch_swab16 arch/arm*/
-> arch/arm/include/asm/swab.h:#define __arch_swab16(x) ((__u16)__arch_swahb32(x))
-> 
-> otherwise:
-> 
-> static inline __attribute_const__ __u16 __fswab16(__u16 val)
-> {
-> #if defined (__arch_swab16)
-> 	return __arch_swab16(val);
-> #else
-> 	return ___constant_swab16(val);
-> #endif
-> }
-> 
-> #define ___constant_swab16(x) ((__u16)(				\
-> 	(((__u16)(x) & (__u16)0x00ffU) << 8) |			\
-> 	(((__u16)(x) & (__u16)0xff00U) >> 8)))
-> 
-> /**
->  * __swab16 - return a byteswapped 16-bit value
->  * @x: value to byteswap
->  */
-> #ifdef __HAVE_BUILTIN_BSWAP16__
-> #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
-> #else
-> #define __swab16(x)				\
-> 	(__builtin_constant_p((__u16)(x)) ?	\
-> 	___constant_swab16(x) :			\
-> 	__fswab16(x))
-> #endif
-> 
-> Under what condition does the ?: return an int sized value
-> rather than a u16 sized value?  I fail to see a path where
-> the compiler should promote the returned value to int _before_
-> the promotion done for the varargs use.
+Use the common function round_up() directly to show the align size
+explicitly, the function STACK_ALIGN() is needless, remove it.
 
-Oh, I see your point. Might it be that the static analysis misinterpreted
-the __builtin_constant_p function which has a `int __builtin_constant_p (exp)`
-prototype according to the GCC and clang built-in functions description?
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/arm64/net/bpf_jit_comp.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-> 
-> If it's for the varargs use, then both instances are promoted.
-> 
-> > > It's probably better to use sysfs_emit as well.
-> > 
-> > The sysfs_emit was introduced in the 5.10 kernel:
-> > 2efc459d06f16 (Joe Perches 2020-09-16 13:40:38 -0700 335) int sysfs_emit(...)
-> > 
-> > But, the hid-ft260 driver will be used mostly with older kernels, at least,
-> > for the next couple of years. Since older kernel versions do not have this API,
-> > it will require patching the driver or kernel that I would like to avoid.
-> > Nevertheless, we can reconsider the sysfs_emit usage in this driver in the
-> > future, upon wider 5.10+ kernels' adoption.
-> 
-> If this is only for older kernels, then it's not really useful
-> upstream IMO.
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index f7b1948..81c380f 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -178,9 +178,6 @@ static bool is_addsub_imm(u32 imm)
+ 	return !(imm & ~0xfff) || !(imm & ~0xfff000);
+ }
+ 
+-/* Stack must be multiples of 16B */
+-#define STACK_ALIGN(sz) (((sz) + 15) & ~15)
+-
+ /* Tail call offset to jump into */
+ #if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL)
+ #define PROLOGUE_OFFSET 8
+@@ -255,7 +252,7 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+ 			emit(A64_BTI_J, ctx);
+ 	}
+ 
+-	ctx->stack_size = STACK_ALIGN(prog->aux->stack_depth);
++	ctx->stack_size = round_up(prog->aux->stack_depth, 16);
+ 
+ 	/* Set up function call stack */
+ 	emit(A64_SUB_I(1, A64_SP, A64_SP, ctx->stack_size), ctx);
+-- 
+2.1.0
 
-Under "mostly", I meant that the majority of the kernels used in the existing and
-currently developing electronic appliances (not necessarily computers) are older
-than the 5.10 version at the moment, and this driver should be usable also by them.
-
-The scnprintf enables the hid-ft260 driver reuse by virtually any kernel version.
-
-$ git grep scnprintf | wc -l
-6121
-
-> 
-> any sprintf style use of %h or %hh for a sub int sized value isn't
-> particularly useful as integer promotion is done on the value so it
-> should use %d (or %i, but %i is atypical) anyway.
-> 
-> https://lore.kernel.org/lkml/CAHk-=wgoxnmsj8GEVFJSvTwdnWm8wVJthefNk2n6+4TC=20e0Q@mail.gmail.com/
-
-Thanks for sharing this info. I will replace the %hi with %d as you
-suggested.
-> 
-> $ git grep '%d\b' | wc -l
-> 109922
-> $ git grep '%i\b' | wc -l
-> 3508
-> 
-> 
