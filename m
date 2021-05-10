@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67FDD378AFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32543378BAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244077AbhEJL6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:58:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36910 "EHLO mail.kernel.org"
+        id S1344191AbhEJMPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:15:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235809AbhEJLGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:06:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97532614A7;
-        Mon, 10 May 2021 10:56:23 +0000 (UTC)
+        id S236029AbhEJLHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:07:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C94661936;
+        Mon, 10 May 2021 10:57:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644184;
-        bh=fv4anlzDpP6hMcyLFnxxphDWL1hisyfY/aZq70Zqxxg=;
+        s=korg; t=1620644255;
+        bh=w56GKKRSKsUXp2KwYjgoI/xukSB8s82weg6AdfZw8fE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W212EQvUBBBuEYdgV+tjI4jHGmpel74t4RnroQfCJmBHa+vdr03Kr+UoLd9SaGHYj
-         vN91X+ffLwVukfDn3CaZSPlOjHYHsgbPLCY34TWYVdVS2E5wAyLVAMxagdCj7yXVje
-         +AmBfrE0mGQAnu29myOUiLuU3cwkmc2+sLw2s5Wg=
+        b=R7WylEerVNtDBtjac9Lzo/8pIc+BR/1rEFHV559btb8UC7LgCPMj9wEDAx+KXdQPy
+         nMZfl+/LEqZPFsPzwG2rhTF5ZwKua2ZYCXK0SIkL6mjEXFvy0NEv5tPGnlbmhnuITT
+         AaJfi3+YuAM7Zb4QlFTIdhtwiZGDzbjbKjW/Nq2I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.11 320/342] media: coda: fix macroblocks count control usage
-Date:   Mon, 10 May 2021 12:21:50 +0200
-Message-Id: <20210510102020.691293597@linuxfoundation.org>
+Subject: [PATCH 5.11 321/342] media: venus: hfi_parser: Dont initialize parser on v1
+Date:   Mon, 10 May 2021 12:21:51 +0200
+Message-Id: <20210510102020.724146053@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
 References: <20210510102010.096403571@linuxfoundation.org>
@@ -41,40 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco Felsch <m.felsch@pengutronix.de>
+From: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 
-commit 0b276e470a4d43e1365d3eb53c608a3d208cabd4 upstream.
+commit 834124c596e2dddbbdba06620835710ccca32fd0 upstream.
 
-Commit b2d3bef1aa78 ("media: coda: Add a V4L2 user for control error
-macroblocks count") add the control for the decoder devices. But
-during streamon() this ioctl gets called for all (encoder and decoder)
-devices and on encoder devices this causes a null pointer exception.
+The Venus v1 behaves differently comparing with the other Venus
+version in respect to capability parsing and when they are send
+to the driver. So we don't need to initialize hfi parser for
+multiple invocations like what we do for > v1 Venus versions.
 
-Fix this by setting the control only if it is really accessible.
-
-Fixes: b2d3bef1aa78 ("media: coda: Add a V4L2 user for control error macroblocks count")
-Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Fixes: 10865c98986b ("media: venus: parser: Prepare parser for multiple invocations")
+Cc: stable@vger.kernel.org # v5.10+
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/platform/coda/coda-common.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/media/platform/qcom/venus/hfi_parser.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/media/platform/coda/coda-common.c
-+++ b/drivers/media/platform/coda/coda-common.c
-@@ -2062,7 +2062,9 @@ static int coda_start_streaming(struct v
- 	if (q_data_dst->fourcc == V4L2_PIX_FMT_JPEG)
- 		ctx->params.gop_size = 1;
- 	ctx->gopcounter = ctx->params.gop_size - 1;
--	v4l2_ctrl_s_ctrl(ctx->mb_err_cnt_ctrl, 0);
-+	/* Only decoders have this control */
-+	if (ctx->mb_err_cnt_ctrl)
-+		v4l2_ctrl_s_ctrl(ctx->mb_err_cnt_ctrl, 0);
+--- a/drivers/media/platform/qcom/venus/hfi_parser.c
++++ b/drivers/media/platform/qcom/venus/hfi_parser.c
+@@ -239,8 +239,10 @@ u32 hfi_parser(struct venus_core *core,
  
- 	ret = ctx->ops->start_streaming(ctx);
- 	if (ctx->inst_type == CODA_INST_DECODER) {
+ 	parser_init(inst, &codecs, &domain);
+ 
+-	core->codecs_count = 0;
+-	memset(core->caps, 0, sizeof(core->caps));
++	if (core->res->hfi_version > HFI_VERSION_1XX) {
++		core->codecs_count = 0;
++		memset(core->caps, 0, sizeof(core->caps));
++	}
+ 
+ 	while (words_count) {
+ 		data = word + 1;
 
 
