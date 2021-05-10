@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0FAC378CE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED3B378CEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343983AbhEJM36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:29:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46932 "EHLO mail.kernel.org"
+        id S1346317AbhEJMaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:30:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233324AbhEJLI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:08:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30D8161A1D;
-        Mon, 10 May 2021 11:04:25 +0000 (UTC)
+        id S237061AbhEJLLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:11:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 060CB61601;
+        Mon, 10 May 2021 11:06:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644665;
-        bh=hFJ4e1Trr9DHNcMpjLkrcuRY5tumV4fL07Gqx5LGkak=;
+        s=korg; t=1620644807;
+        bh=6SZ9VbDmdYWkxPim/GHW/e26KKZS/got/wGz+DLlaDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dzb04j9OTV86jgnXUThYWdzq4DL1RUTYBq0fNORGYalybjOhx0UCg9bvrq1I/0vHA
-         XXsV3eV5K0ejENVNbE84fhSarffBbfMH/Csmy5t1FdQ9WrqPcNKqw2E3YFyfTWAHSA
-         E0hFGZMTEMz3i+x9OfkLGwOlUf/pm8tiYL2xHFLE=
+        b=sBCp9Kg+kaOSMybuXY7KY28jiP+Pyo5nTDmXGAlOjEUUyAY3XoM2hMBMgB1bBvKFa
+         4faLuBM/0vteAKKRxiWk0kADFwTdiPTpi9NIlZPGNZVDz29pQ65+Yziv1t9Nj4td5e
+         mFpRumRLuVpEViUJXUrXAq+BBDZb9NvPgTZAyyIo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Lyude Paul <lyude@redhat.com>,
+        Anson Jacob <Anson.Jacob@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 174/384] extcon: arizona: Fix some issues when HPDET IRQ fires after the jack has been unplugged
-Date:   Mon, 10 May 2021 12:19:23 +0200
-Message-Id: <20210510102020.619018608@linuxfoundation.org>
+Subject: [PATCH 5.12 187/384] drm/amdkfd: Fix UBSAN shift-out-of-bounds warning
+Date:   Mon, 10 May 2021 12:19:36 +0200
+Message-Id: <20210510102021.050252981@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -43,93 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Anson Jacob <Anson.Jacob@amd.com>
 
-[ Upstream commit c309a3e8793f7e01c4a4ec7960658380572cb576 ]
+[ Upstream commit 50e2fc36e72d4ad672032ebf646cecb48656efe0 ]
 
-When the jack is partially inserted and then removed again it may be
-removed while the hpdet code is running. In this case the following
-may happen:
+If get_num_sdma_queues or get_num_xgmi_sdma_queues is 0, we end up
+doing a shift operation where the number of bits shifted equals
+number of bits in the operand. This behaviour is undefined.
 
-1. The "JACKDET rise" or ""JACKDET fall" IRQ triggers
-2. arizona_jackdet runs and takes info->lock
-3. The "HPDET" IRQ triggers
-4. arizona_hpdet_irq runs, blocks on info->lock
-5. arizona_jackdet calls arizona_stop_mic() and clears info->hpdet_done
-6. arizona_jackdet releases info->lock
-7. arizona_hpdet_irq now can continue running and:
-7.1 Calls arizona_start_mic() (if a mic was detected)
-7.2 sets info->hpdet_done
+Set num_sdma_queues or num_xgmi_sdma_queues to ULLONG_MAX, if the
+count is >= number of bits in the operand.
 
-Step 7 is undesirable / a bug:
-7.1 causes the device to stay in a high power-state (with MICVDD enabled)
-7.2 causes hpdet to not run on the next jack insertion, which in turn
-    causes the EXTCON_JACK_HEADPHONE state to never get set
+Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1472
 
-This fixes both issues by skipping these 2 steps when arizona_hpdet_irq
-runs after the jack has been unplugged.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Reported-by: Lyude Paul <lyude@redhat.com>
+Signed-off-by: Anson Jacob <Anson.Jacob@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Tested-by: Lyude Paul <lyude@redhat.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/extcon/extcon-arizona.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ .../drm/amd/amdkfd/kfd_device_queue_manager.c   | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
-index aae82db542a5..f7ef247de46a 100644
---- a/drivers/extcon/extcon-arizona.c
-+++ b/drivers/extcon/extcon-arizona.c
-@@ -601,7 +601,7 @@ static irqreturn_t arizona_hpdet_irq(int irq, void *data)
- 	struct arizona *arizona = info->arizona;
- 	int id_gpio = arizona->pdata.hpdet_id_gpio;
- 	unsigned int report = EXTCON_JACK_HEADPHONE;
--	int ret, reading;
-+	int ret, reading, state;
- 	bool mic = false;
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+index 4598a9a58125..a4266c4bca13 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+@@ -1128,6 +1128,9 @@ static int set_sched_resources(struct device_queue_manager *dqm)
  
- 	mutex_lock(&info->lock);
-@@ -614,12 +614,11 @@ static irqreturn_t arizona_hpdet_irq(int irq, void *data)
- 	}
+ static int initialize_cpsch(struct device_queue_manager *dqm)
+ {
++	uint64_t num_sdma_queues;
++	uint64_t num_xgmi_sdma_queues;
++
+ 	pr_debug("num of pipes: %d\n", get_pipes_per_mec(dqm));
  
- 	/* If the cable was removed while measuring ignore the result */
--	ret = extcon_get_state(info->edev, EXTCON_MECHANICAL);
--	if (ret < 0) {
--		dev_err(arizona->dev, "Failed to check cable state: %d\n",
--			ret);
-+	state = extcon_get_state(info->edev, EXTCON_MECHANICAL);
-+	if (state < 0) {
-+		dev_err(arizona->dev, "Failed to check cable state: %d\n", state);
- 		goto out;
--	} else if (!ret) {
-+	} else if (!state) {
- 		dev_dbg(arizona->dev, "Ignoring HPDET for removed cable\n");
- 		goto done;
- 	}
-@@ -667,7 +666,7 @@ done:
- 		gpio_set_value_cansleep(id_gpio, 0);
+ 	mutex_init(&dqm->lock_hidden);
+@@ -1136,8 +1139,18 @@ static int initialize_cpsch(struct device_queue_manager *dqm)
+ 	dqm->active_cp_queue_count = 0;
+ 	dqm->gws_queue_count = 0;
+ 	dqm->active_runlist = false;
+-	dqm->sdma_bitmap = ~0ULL >> (64 - get_num_sdma_queues(dqm));
+-	dqm->xgmi_sdma_bitmap = ~0ULL >> (64 - get_num_xgmi_sdma_queues(dqm));
++
++	num_sdma_queues = get_num_sdma_queues(dqm);
++	if (num_sdma_queues >= BITS_PER_TYPE(dqm->sdma_bitmap))
++		dqm->sdma_bitmap = ULLONG_MAX;
++	else
++		dqm->sdma_bitmap = (BIT_ULL(num_sdma_queues) - 1);
++
++	num_xgmi_sdma_queues = get_num_xgmi_sdma_queues(dqm);
++	if (num_xgmi_sdma_queues >= BITS_PER_TYPE(dqm->xgmi_sdma_bitmap))
++		dqm->xgmi_sdma_bitmap = ULLONG_MAX;
++	else
++		dqm->xgmi_sdma_bitmap = (BIT_ULL(num_xgmi_sdma_queues) - 1);
  
- 	/* If we have a mic then reenable MICDET */
--	if (mic || info->mic)
-+	if (state && (mic || info->mic))
- 		arizona_start_mic(info);
+ 	INIT_WORK(&dqm->hw_exception_work, kfd_process_hw_exception);
  
- 	if (info->hpdet_active) {
-@@ -675,7 +674,9 @@ done:
- 		info->hpdet_active = false;
- 	}
- 
--	info->hpdet_done = true;
-+	/* Do not set hp_det done when the cable has been unplugged */
-+	if (state)
-+		info->hpdet_done = true;
- 
- out:
- 	mutex_unlock(&info->lock);
 -- 
 2.30.2
 
