@@ -2,91 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90A63794E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0717A37951E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbhEJRDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 13:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41468 "EHLO
+        id S232513AbhEJRM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 13:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231381AbhEJRBX (ORCPT
+        with ESMTP id S232326AbhEJRMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 13:01:23 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5DAC06138C;
-        Mon, 10 May 2021 09:59:53 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id t2-20020a17090ae502b029015b0fbfbc50so10432921pjy.3;
-        Mon, 10 May 2021 09:59:53 -0700 (PDT)
+        Mon, 10 May 2021 13:12:53 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8AFC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:11:48 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id v5so8526329edc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:11:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=NWytwvpuLWzV9HVQrhdljev4Gwim1gcczRTeJN1g2EY=;
-        b=FUIrLiM74VTIaaNi1qJUfWnCmMnVZYmko1Mm4MK891XZzCVmglLdO7QS0IrEavdvB7
-         2mwN4o2UR0Z7PG/GX0F1rFaKWHGNgkDbnywhpI7qbPL5Qi+JzK5VV/MBe7E/A+UJvF9q
-         FOPTf5CkFmeUP2i0TfwZlxRNXU/sccqU0BAOinTZvl7XiLLhXe5VqHjIUFnQO8wiw9QN
-         N3r40Yvq6yv1A+QpYeifux7R/A+BRmJd+YyZJbNCE8Xm8RGABJF0sSDP9vGtVONga28f
-         BXeCL8CIOFqeQfX6o7fGMyYIevLW0s3sd+oS1cBXnbpUUJd2C7BdAqOCTFLCpkVKqK6E
-         Bz3A==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M1eiob8yefqeM/4lQ3qAm9Yi0Ncpt48q5ul29v+Xq2c=;
+        b=F5KPsThm+B/hNJwfEfSsphP6+tJzOvUUoyRJDzDPpWJ5+M81YHmp5q6kc3NHXwI+NX
+         Mc6fNZ9gODek4bDptwj3D+Ka+Ar0jPnltod+iKxngn/yVax6lIBjujOZoyRHkKXW1rdK
+         ijaTUd6bNrV69ZmFpNnh7JIb7M++aRgC7xK14=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=NWytwvpuLWzV9HVQrhdljev4Gwim1gcczRTeJN1g2EY=;
-        b=WbZMbe9cnd03LE4I4x2udQ7UEa4Zy1/A3hixCq1WThTk5HhAa8V6bKUj9QSqItu1kt
-         ksL4Jldi0yzA1khyFwsUsNRo2JW64UDNzmloMGNTLmmIy2zoLtp/6D+7hT/ZUWtpsk6d
-         2M977D91NtA5eBzKGqjrsFlvcYWmaOuJaIbxYRNINyP4Wp5kbRFYmCT9LLwBWjvGh8C+
-         ZtCWtA5RY1KizBHyJftjOb5YK3gozI9DLAaVQ51TvauuwWGwEilhwNe02GMiBZBUElex
-         4nr6aU50PIFqoxiKq3pqex4tAkUYUmwh+6Pa3KmR3T1+l52BYJyT6Cu3yQm/VrP0L/Wk
-         xG9w==
-X-Gm-Message-State: AOAM531KrrStvg8e4yLN56qPnqIv/0qhbxj9LMGCt98UVCZ/ypBKjGif
-        LorOn+B+aVf0EWif5Djp8vXgWHAgsQvPRZcaFMpHCg==
-X-Google-Smtp-Source: ABdhPJyD6CZI/Hc87OKWakDAQ+Li0u8HCi9AuQRtbLVhFBA+aanDqY6Fq46hFwINcPB4z+n0+eJjag==
-X-Received: by 2002:a17:90a:d98b:: with SMTP id d11mr91751pjv.33.1620665992661;
-        Mon, 10 May 2021 09:59:52 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
-        by smtp.gmail.com with ESMTPSA id a129sm12193519pfa.36.2021.05.10.09.59.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 09:59:52 -0700 (PDT)
-Message-ID: <60996688.1c69fb81.a305c.4fa9@mx.google.com>
-Date:   Mon, 10 May 2021 09:59:52 -0700 (PDT)
-X-Google-Original-Date: Mon, 10 May 2021 16:59:46 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 000/299] 5.10.36-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M1eiob8yefqeM/4lQ3qAm9Yi0Ncpt48q5ul29v+Xq2c=;
+        b=kZSowbbxhgGRrMHvQHIZ2bRgDcWsrZywfZDaSVt58eR2IQqbbANSBAWpY3B/GRSdoL
+         Kt4MsVdJpYarlGMlr0wqWVse2RcvsnxmkFwGXTOb16Ye8IYVW13BKL9yypL0GtWnvdtK
+         v0llmcTGMvPvSlRMjQ8x0P9QSi9Or+ja4wFdIuMO+JKg9IjjrDrSl83DN88/6pfnKcN3
+         nEDUHp/sD1iTZF1JCobvmB3f2tQtkxor1mC6kseA54V5AGV3F3qPkG58Cr8niokMyKCM
+         N5m9Hs2AnUeO2nBowOozXVM+XWtfGgHqrFEnD0hoMG+/ToaM8rjZXY0wiM+NJKZmYPqX
+         r4qg==
+X-Gm-Message-State: AOAM531yMlGfb0/RKkfKE7LE9WhwCRw01A7lINkn2uLXmEyefFLsssle
+        WIaKJ7jb2W8ZYRvMHmEi77tMa7DJQGeCffqHmUY=
+X-Google-Smtp-Source: ABdhPJzbOW52aRMXlUSXsNt7IUGcQK4A/v8ehTb2aDTPuwdn2TArjtjZ9RCurMyNM0M6A2Gzmxc9dg==
+X-Received: by 2002:aa7:c782:: with SMTP id n2mr31225360eds.77.1620666707203;
+        Mon, 10 May 2021 10:11:47 -0700 (PDT)
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com. [209.85.221.41])
+        by smtp.gmail.com with ESMTPSA id i8sm7945875ejj.68.2021.05.10.10.11.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 10:11:47 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id l13so17379792wru.11
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 10:11:47 -0700 (PDT)
+X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr17210794lfs.377.1620666218738;
+ Mon, 10 May 2021 10:03:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210508122530.1971-1-justin.he@arm.com> <20210508122530.1971-2-justin.he@arm.com>
+ <CAHk-=wgSFUUWJKW1DXa67A0DXVzQ+OATwnC3FCwhqfTJZsvj1A@mail.gmail.com>
+ <YJbivrA4Awp4FXo8@zeniv-ca.linux.org.uk> <CAHk-=whZhNXiOGgw8mXG+PTpGvxnRG1v5_GjtjHpoYXd2Fn_Ow@mail.gmail.com>
+ <AM6PR08MB43763B43D0965E36937022F2F7549@AM6PR08MB4376.eurprd08.prod.outlook.com>
+In-Reply-To: <AM6PR08MB43763B43D0965E36937022F2F7549@AM6PR08MB4376.eurprd08.prod.outlook.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 10 May 2021 10:03:22 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi5G9yZxd9rrNvfZPmVdGW2=2jznD9r8+Xjjz0zQSCUuw@mail.gmail.com>
+Message-ID: <CAHk-=wi5G9yZxd9rrNvfZPmVdGW2=2jznD9r8+Xjjz0zQSCUuw@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/3] fs: introduce helper d_path_fast()
+To:     Justin He <Justin.He@arm.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@ftp.linux.org.uk>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021 12:16:37 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.36 release.
-> There are 299 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.36-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Mon, May 10, 2021 at 8:08 AM Justin He <Justin.He@arm.com> wrote:
+>
+> >
+> > char *dentry_path(const struct dentry *dentry, char *buf, int buflen)
+> > {
+> >-      char *p = NULL;
+> >+      struct prepend_buffer b = { buf + buflen, buflen };
+> >       char *retval;
+> >+      char *p = NULL;
+> >
+> >       if (d_unlinked(dentry)) {
+> >-              p = buf + buflen;
+> >-              if (prepend(&p, &buflen, "//deleted", 10) != 0)
+> >+              if (prepend(&b, "//deleted", 10) != 0)
+> >                       goto Elong;
+> >-              buflen++;
+> >+
+> >+              // save away beginning of "//deleted" string
+> >+              // and let "__dentry_path()" overwrite one byte
+> >+              // with the terminating NUL that we'll restore
+> >+              // below.
+> >+              p = b.ptr;
+> >+              b.ptr++;
+> >+              b.len++;
+> >       }
+> >-      retval = __dentry_path(dentry, buf, buflen);
+> >+      retval = __dentry_path(dentry, b.ptr, b.len);
+>
+> I didn't quite understand the logic here. Seems it is not equal to
+> the previous. Should it be s/b.ptr/buf here? Otherwise, in __dentry_path,
+> it will use the range [b.ptr, b.ptr+b.len] instead of [buf, buf+b.len].
+> Am I missing anything here?
 
-5.10.36-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+No, you're right. That __dentry_path() call should get "buf, b.len" as
+arguments.
 
+I knew it was squirrelly, but didn't think it through. I actually
+wanted to change "__dentry_path()" to take a "struct prepend_buffer",
+and not add the NUL at the end (so that the caller would have to do it
+first), because that would have made the logic much more
+straightforward (and made the semantics the same as the other internal
+helpers).
+
+And that would have fixed that bug of mine too. But then I didn't do
+it, and just mentioned it  as a later cleanup.
+
+Good catch.
+
+                  Linus
