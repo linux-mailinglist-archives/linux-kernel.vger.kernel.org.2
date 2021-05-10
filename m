@@ -2,81 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4FD378AEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5C9378A9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243609AbhEJL4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:56:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235660AbhEJLFu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:05:50 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DF8C03463D;
-        Mon, 10 May 2021 03:52:52 -0700 (PDT)
-Received: from ip4d14bd53.dynamic.kabel-deutschland.de ([77.20.189.83] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1lg3Wn-0008EG-Lc; Mon, 10 May 2021 12:52:45 +0200
-Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as ASCII
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
-        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fpga@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
-        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, x86@kernel.org
-References: <cover.1620641727.git.mchehab+huawei@kernel.org>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Message-ID: <c4479ced-f4d8-1a1e-ee54-9abc55344187@leemhuis.info>
-Date:   Mon, 10 May 2021 12:52:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232900AbhEJLsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:48:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234016AbhEJLCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:02:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E974061108;
+        Mon, 10 May 2021 10:54:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620644043;
+        bh=TLLlvGAs4hL4JF1E9xTbjkLlvWbBt4JKhCr2YX0T1BU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vEBxY3xvjoJF9tu3AylZTlYt1tS/kQxluqU1dNLC4opoQ+uu6DayCj/lgRWgZfyv3
+         Ui9W0XVxPmlfX1nAUMYeNyi0oETEGRADwo+q/E3RJOMWZb8Kk1ZeHVqpbqvpf0ybO0
+         ioc258bAQqmEwjsQshtXz5FMGkvWxwuWgf5LlERprgDBwA+R249uB67sjNeYAad+uA
+         6PbmZWc3BgbTtTF2emiuW1ll4VhJwMZeniywTHU51sjEs3eKZT7JqBJhrxmwodgigS
+         S/wQ+ZKv7UJZRfAH66nwOHT8tUfqQo8BNpIwc4P2aw2svZHhuKB8tJdjuqROIQgzvM
+         ayRjEg/2EB0tA==
+Date:   Mon, 10 May 2021 12:54:00 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Yunfeng Ye <yeyunfeng@huawei.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH 6/8] tick/nohz: Only wakeup a single target cpu when
+ kicking a task
+Message-ID: <20210510105400.GC97481@lothringen>
+References: <20210422120158.33629-1-frederic@kernel.org>
+ <20210422120158.33629-7-frederic@kernel.org>
+ <YJKhAFAbOXzopp6/@hirez.programming.kicks-ass.net>
+ <20210510103901.GA97481@lothringen>
+ <YJkPbkMiteUCYFru@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <cover.1620641727.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-BS
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1620643984;4efe7956;
-X-HE-SMSGID: 1lg3Wn-0008EG-Lc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJkPbkMiteUCYFru@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10.05.21 12:26, Mauro Carvalho Chehab wrote:
->
-> As Linux developers are all around the globe, and not everybody has UTF-8
-> as their default charset, better to use UTF-8 only on cases where it is really
-> needed.
-> […]
-> The remaining patches on series address such cases on *.rst files and 
-> inside the Documentation/ABI, using this perl map table in order to do the
-> charset conversion:
+On Mon, May 10, 2021 at 12:48:14PM +0200, Peter Zijlstra wrote:
+> On Mon, May 10, 2021 at 12:39:01PM +0200, Frederic Weisbecker wrote:
+> > On Wed, May 05, 2021 at 03:43:28PM +0200, Peter Zijlstra wrote:
+> > > That had me looking at tick_nohz_task_switch(), does we want the below?
+> > > 
+> > > 
+> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > > index 9143163fa678..ff45fc513ba7 100644
+> > > --- a/kernel/sched/core.c
+> > > +++ b/kernel/sched/core.c
+> > > @@ -4207,6 +4207,7 @@ static struct rq *finish_task_switch(struct task_struct *prev)
+> > >  	vtime_task_switch(prev);
+> > >  	perf_event_task_sched_in(prev, current);
+> > >  	finish_task(prev);
+> > > +	tick_nohz_task_switch();
+> > >  	finish_lock_switch(rq);
+> > >  	finish_arch_post_lock_switch();
+> > >  	kcov_finish_switch(current);
+> > > @@ -4252,7 +4253,6 @@ static struct rq *finish_task_switch(struct task_struct *prev)
+> > >  		put_task_struct_rcu_user(prev);
+> > >  	}
+> > >  
+> > > -	tick_nohz_task_switch();
+> > >  	return rq;
+> > >  }
+> > >  
+> > > diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> > > index 828b091501ca..ea079be9097f 100644
+> > > --- a/kernel/time/tick-sched.c
+> > > +++ b/kernel/time/tick-sched.c
+> > > @@ -447,13 +447,10 @@ void tick_nohz_dep_clear_signal(struct signal_struct *sig, enum tick_dep_bits bi
+> > >   */
+> > >  void __tick_nohz_task_switch(void)
+> > >  {
+> > > -	unsigned long flags;
+> > >  	struct tick_sched *ts;
+> > >  
+> > > -	local_irq_save(flags);
+> > > -
+> > >  	if (!tick_nohz_full_cpu(smp_processor_id()))
+> > > -		goto out;
+> > > +		return;
+> > >  
+> > >  	ts = this_cpu_ptr(&tick_cpu_sched);
+> > >  
+> > > @@ -462,8 +459,6 @@ void __tick_nohz_task_switch(void)
+> > >  		    atomic_read(&current->signal->tick_dep_mask))
+> > >  			tick_nohz_full_kick();
+> > >  	}
+> > > -out:
+> > > -	local_irq_restore(flags);
+> > >  }
+> > >  
+> > >  /* Get the boot-time nohz CPU list from the kernel parameters. */
+> > 
+> > 
+> > Sure, I'll take your SoB on that too, ok?
 > 
-> my %char_map = (
-> […]
-> 	0x2013 => '-',		# EN DASH
-> 	0x2014 => '-',		# EM DASH
+> OK, but please also test it :-) I didn't even ask a compiler it's
+> opinion on the thing.
 
-I might be performing bike shedding here, but wouldn't it be better to
-replace those two with "--", as explained in
-https://en.wikipedia.org/wiki/Dash#Approximating_the_em_dash_with_two_or_three_hyphens
-
-For EM DASH there seems to be even "---", but I'd say that is a bit too
-much.
-
-Or do you fear the extra work as some lines then might break the
-80-character limit then?
-
-Ciao, Thorsten
+Of course, there will be another version of the patchset + usual testing :-)
