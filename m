@@ -2,97 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956B2379A01
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92E1379A02
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231223AbhEJWZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58098 "EHLO
+        id S231159AbhEJWZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbhEJWZf (ORCPT
+        with ESMTP id S230271AbhEJWZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:25:35 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187D0C061574;
-        Mon, 10 May 2021 15:24:26 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id z13so25733203lft.1;
-        Mon, 10 May 2021 15:24:26 -0700 (PDT)
+        Mon, 10 May 2021 18:25:51 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56737C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:24:45 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id u25so3760436pgl.9
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 15:24:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UB7STX+2BxkjlcmPswGdadDbZZquPtBCCQkaCzIDE+k=;
-        b=tPKvon4TXZcQUmVNIMXsbJNJJfRhE8yBGDSSU1l2CObWZ6JvokUJMkr4Y0pG4jnU0m
-         pJHdDDxlftKQbdiIkBsrQHk+9in+js7ZwPOK3T/OtTlhT9rMuXbRwBzSw1ZCgg4uLWve
-         bphsC/Abi4M3nkWnXGopGbLCiPU+omE+YKixVjfPBs67M5TcLZuVluRyEsT9GJgP4vH7
-         BOb3tWDFEYYHmu9aBSCR9SUQcOeQ8DDpqiMYh5Q8ZDQYsWcwA4PM/e6xHwkAepVD9pF3
-         sUPbAc84hitbwheGjhtRZwTj3P3bFgcHM/wwnBYUdsKxP4iLQE2/uZjP6MIQj0byMB2c
-         xkAg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0+mh725yIUtYYOJWyWKBZZGohhQapyMCbceBHpcyi3s=;
+        b=BV7FbteezdN0qg5Kvm+qQ30InqPTQwfexHQ93icSnJ4OIKYj9f2aRwopTOpbTaUDCH
+         VCiGDCspzjXjlBGb1Ar9PoEn1/P1TuRNI3zUKg6SulqsY3z+ek1VCV8O5/UAiYsoHJTR
+         qvo0IeUAt3q5VMZsDXD3jC2WG4Mcf9UWp0g84=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UB7STX+2BxkjlcmPswGdadDbZZquPtBCCQkaCzIDE+k=;
-        b=m8eM26pp6vLvhKMBnpl7MPrFu5TdPXj/FEr5cTGxGiYTyd5q/0gm1ZkIiAM+Wbwv4r
-         RAkFyyZeEUWjBQNp8cxHsRo4aGsRB1cArtULPRP3qXij2fwf73B1WbIuOiwcNPaxIiHh
-         QJxWC/hIYGOKK5zyHaHWWPuDlLEVO9N2p+i9yaqjgL4oF+FCC20CfcIFfvxkVBs/UgEo
-         otzyuWqifQ7x6Jk2+G7judDB7BnLXRh1q0IF0C9a2jjMvpPv/QIuAqCKaFzvHBIPsaQu
-         Yx080i6AfDlbHRU4c7Rew2wXDJfqfeB27QHRnBrSiE2zvnBM5uinB3RHNJg6IZVgwCJ7
-         SXmA==
-X-Gm-Message-State: AOAM532RmJWgWZnCLQWLRpLBMr4RGBbWl42YtoB3qybgEsITxOjAu4ni
-        /PxiPqO+qHTIRbi2LAex7PdWqrYAw0k=
-X-Google-Smtp-Source: ABdhPJwz1nXqStPCyV4kW/r7tJbrKbNs1e+uZx5KRX66nTHku4J3LhN5phbEJ2JfUGc2GVv6Ww1p5Q==
-X-Received: by 2002:a19:6a07:: with SMTP id u7mr18725829lfu.579.1620685464366;
-        Mon, 10 May 2021 15:24:24 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.googlemail.com with ESMTPSA id x62sm2388400lff.295.2021.05.10.15.24.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 15:24:24 -0700 (PDT)
-Subject: Re: [PATCH v1] brcmfmac: Silence error messages about unsupported
- firmware features
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "brcm80211-dev-list.pdl@broadcom.com" 
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        "brcm80211-dev-list@cypress.com" <brcm80211-dev-list@cypress.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210510221148.12134-1-digetx@gmail.com>
- <CAHp75VdbFDxQy6vxDheTzcQhYEoodwbjD_LTOCyoiuLUoj4DXQ@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <34330b8c-1c9d-de77-8f7f-4400855777fb@gmail.com>
-Date:   Tue, 11 May 2021 01:24:23 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0+mh725yIUtYYOJWyWKBZZGohhQapyMCbceBHpcyi3s=;
+        b=C/1GqwyDeUR16OhgL/4D56iEK8mgdn96MyIwA9iVW5vnetdqsFszcvCesm5EcUYHFy
+         CVzkwozlhIU1k4vcgmvPg+PJLavzxQpHxo190BRfkdh9fBedbQwAp2kIPoiajCtand4O
+         8l8VNhX1/oGBUTHr4c50AMbn2UanEwLNPrh5BzqI4SDs842xpQ79+Bks0NQu1dpK//cp
+         coPbNtyfC4ie0wlJtOx0SRN0cGMGiuiQG3xfztlIfYPdspnjTidWq9XkGxHJDTDzDeRY
+         IJxBXcq3JsbU38//ocd19ni3c7EXVL4DHc6NyHsGoVd5afojcMvG5FMYdaefcNESZEst
+         JCTg==
+X-Gm-Message-State: AOAM532EpV1up+WcJvOtW3JXc53d33lim3yD1NZwcGcEttu0v7piIhEe
+        eCUn7SSqrvk7NLVopjBbes1wpg==
+X-Google-Smtp-Source: ABdhPJy+TRl5aBjNmyjjDntF/JE7l7PZlvLVxZ5SOiYuM+PXsLxtOHOX0luy+jMYpfQGa0LT1IIlKw==
+X-Received: by 2002:a65:48cd:: with SMTP id o13mr27291390pgs.249.1620685484925;
+        Mon, 10 May 2021 15:24:44 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id w23sm7090150pfn.63.2021.05.10.15.24.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 15:24:44 -0700 (PDT)
+Date:   Mon, 10 May 2021 15:24:43 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Saripalli, RK" <rsaripal@amd.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        Jonathan Corbet <corbet@lwn.net>, bsd@redhat.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v5 1/1] x86/cpufeatures: Implement Predictive Store
+ Forwarding control.
+Message-ID: <202105101524.3B76F77AB@keescook>
+References: <20210505190923.276051-1-rsaripal@amd.com>
+ <20210505190923.276051-2-rsaripal@amd.com>
+ <87wnsamvaa.ffs@nanos.tec.linutronix.de>
+ <d134cbb1-a8a5-161a-1927-2a04df6b4b4a@amd.com>
+ <87h7jagt7g.ffs@nanos.tec.linutronix.de>
+ <202105101508.BC6CC99FAD@keescook>
+ <878s4mgrqz.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VdbFDxQy6vxDheTzcQhYEoodwbjD_LTOCyoiuLUoj4DXQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878s4mgrqz.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-11.05.2021 01:18, Andy Shevchenko пишет:
-> On Tuesday, May 11, 2021, Dmitry Osipenko <digetx@gmail.com
-> <mailto:digetx@gmail.com>> wrote:
+On Tue, May 11, 2021 at 12:15:32AM +0200, Thomas Gleixner wrote:
+> On Mon, May 10 2021 at 15:09, Kees Cook wrote:
+> > On Mon, May 10, 2021 at 11:44:03PM +0200, Thomas Gleixner wrote:
+> >> Kees, any opinions?
+> >
+> > I agree: if PSF is a subset of SSBD, there's no need for the additional
+> > machinery.
+> >
+> > On a related topic, what happened to Andi's patch to switch the seccomp
+> > defaults? I can't find it now...
 > 
->     KMSG is flooded with error messages about unsupported firmware
->     features on BCM4329 chip. The GET_ASSOCLIST error became especially
->     noisy with a newer NetworkManager version of Ubuntu 21.04. Let's print
->     the noisy error messages only once.
+> You mean this one:
 > 
+>   https://lore.kernel.org/r/20200312231222.81861-1-andi@firstfloor.org
 > 
-> Seems like you are reinventing *_once() printing methods. Please use
-> them instead
+> If so, then it has lacks a follow up.
 
-Indeed, I see now that it won't be difficult to add the new
-wiphy_err_once() helper that will use the generic dev_err_once(). I'll
-make a v2, thank you for taking a look at the patch.
+I swear there was a follow-up to this. I will try to find it again.
+
+-- 
+Kees Cook
