@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDB1378C34
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0857378ADE
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346205AbhEJM0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:26:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53450 "EHLO mail.kernel.org"
+        id S238369AbhEJLzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:55:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237151AbhEJLL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:11:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97B5C61944;
-        Mon, 10 May 2021 11:07:41 +0000 (UTC)
+        id S234581AbhEJLEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:04:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FD2460FEF;
+        Mon, 10 May 2021 10:55:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644862;
-        bh=H5vO1PhcR9KCes3dqydKMHs2i98QgjcTxW8llFMZEOM=;
+        s=korg; t=1620644102;
+        bh=5DoIjNRWGTHQ1LbjM+5SuLfMXIljz9gPnSE8Kzb6UQM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bWpwIOMo7MkGqBgjGLeIBJi2JiCSh95s1cztBvS3U8aHFAkHM/HJx6tBtxmf4VGRa
-         woA8BmdDgTJxbCL1YSPRWttNYBiMvkPiSu2pWxOFdQ5pFROy6B1KPVPRAisEnvw/ZP
-         6Edf1s+PU5J79b6uapDHabGqHc4ClD/D5mi7q8z0=
+        b=1EYg+g5jD05W+wAQBrV+nVgN4YK//POEt16izxgHwyapcIKQFZaaNU/PNghXqpj7i
+         GysLObNMOWd+XRMGgNmpJDfGfK2iHR1Ao4XBsxfGsm2xQuktSnGk5AZKVylk8NG//5
+         BMqCLgT4UYZt5nTyT9UIPFrUFHsmpqGh5mkPFIHY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
-        James Smart <jsmart2021@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Bill Wendling <morbo@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 254/384] scsi: lpfc: Fix crash when a REG_RPI mailbox fails triggering a LOGO response
+Subject: [PATCH 5.11 253/342] arm64/vdso: Discard .note.gnu.property sections in vDSO
 Date:   Mon, 10 May 2021 12:20:43 +0200
-Message-Id: <20210510102023.250461776@linuxfoundation.org>
+Message-Id: <20210510102018.458429937@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
-References: <20210510102014.849075526@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+From: Bill Wendling <morbo@google.com>
 
-[ Upstream commit fffd18ec6579c2d9c72b212169259062fe747888 ]
+[ Upstream commit 388708028e6937f3fc5fc19aeeb847f8970f489c ]
 
-Fix a crash caused by a double put on the node when the driver completed an
-ACC for an unsolicted abort on the same node.  The second put was executed
-by lpfc_nlp_not_used() and is wrong because the completion routine executes
-the nlp_put when the iocbq was released.  Additionally, the driver is
-issuing a LOGO then immediately calls lpfc_nlp_set_state to put the node
-into NPR.  This call does nothing.
+The arm64 assembler in binutils 2.32 and above generates a program
+property note in a note section, .note.gnu.property, to encode used x86
+ISAs and features. But the kernel linker script only contains a single
+NOTE segment:
 
-Remove the lpfc_nlp_not_used call and additional set_state in the
-completion routine.  Remove the lpfc_nlp_set_state post issue_logo.  Isn't
-necessary.
+  PHDRS
+  {
+    text    PT_LOAD    FLAGS(5) FILEHDR PHDRS; /* PF_R|PF_X */
+    dynamic PT_DYNAMIC FLAGS(4);               /* PF_R */
+    note    PT_NOTE    FLAGS(4);               /* PF_R */
+  }
 
-Link: https://lore.kernel.org/r/20210412013127.2387-3-jsmart2021@gmail.com
-Co-developed-by: Justin Tee <justin.tee@broadcom.com>
-Signed-off-by: Justin Tee <justin.tee@broadcom.com>
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+The NOTE segment generated by the vDSO linker script is aligned to 4 bytes.
+But the .note.gnu.property section must be aligned to 8 bytes on arm64.
+
+  $ readelf -n vdso64.so
+
+  Displaying notes found in: .note
+    Owner                Data size      Description
+    Linux                0x00000004     Unknown note type: (0x00000000)
+     description data: 06 00 00 00
+  readelf: Warning: note with invalid namesz and/or descsz found at offset 0x20
+  readelf: Warning:  type: 0x78, namesize: 0x00000100, descsize: 0x756e694c, alignment: 8
+
+Since the note.gnu.property section in the vDSO is not checked by the
+dynamic linker, discard the .note.gnu.property sections in the vDSO.
+
+Similar to commit 4caffe6a28d31 ("x86/vdso: Discard .note.gnu.property
+sections in vDSO"), but for arm64.
+
+Signed-off-by: Bill Wendling <morbo@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Link: https://lore.kernel.org/r/20210423205159.830854-1-morbo@google.com
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_nportdisc.c | 2 --
- drivers/scsi/lpfc/lpfc_sli.c       | 1 -
- 2 files changed, 3 deletions(-)
+ arch/arm64/kernel/vdso/vdso.lds.S | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_nportdisc.c b/drivers/scsi/lpfc/lpfc_nportdisc.c
-index 7fc796905a7a..9f05f5e329c6 100644
---- a/drivers/scsi/lpfc/lpfc_nportdisc.c
-+++ b/drivers/scsi/lpfc/lpfc_nportdisc.c
-@@ -1891,8 +1891,6 @@ lpfc_cmpl_reglogin_reglogin_issue(struct lpfc_vport *vport,
- 		ndlp->nlp_last_elscmd = ELS_CMD_PLOGI;
+diff --git a/arch/arm64/kernel/vdso/vdso.lds.S b/arch/arm64/kernel/vdso/vdso.lds.S
+index 61dbb4c838ef..a5e61e09ea92 100644
+--- a/arch/arm64/kernel/vdso/vdso.lds.S
++++ b/arch/arm64/kernel/vdso/vdso.lds.S
+@@ -31,6 +31,13 @@ SECTIONS
+ 	.gnu.version_d	: { *(.gnu.version_d) }
+ 	.gnu.version_r	: { *(.gnu.version_r) }
  
- 		lpfc_issue_els_logo(vport, ndlp, 0);
--		ndlp->nlp_prev_state = NLP_STE_REG_LOGIN_ISSUE;
--		lpfc_nlp_set_state(vport, ndlp, NLP_STE_NPR_NODE);
- 		return ndlp->nlp_state;
- 	}
++	/*
++	 * Discard .note.gnu.property sections which are unused and have
++	 * different alignment requirement from vDSO note sections.
++	 */
++	/DISCARD/	: {
++		*(.note.GNU-stack .note.gnu.property)
++	}
+ 	.note		: { *(.note.*) }		:text	:note
  
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index 071a13d4d14a..8e34d6076fbc 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -18074,7 +18074,6 @@ lpfc_sli4_seq_abort_rsp_cmpl(struct lpfc_hba *phba,
- 	if (cmd_iocbq) {
- 		ndlp = (struct lpfc_nodelist *)cmd_iocbq->context1;
- 		lpfc_nlp_put(ndlp);
--		lpfc_nlp_not_used(ndlp);
- 		lpfc_sli_release_iocbq(phba, cmd_iocbq);
- 	}
+ 	. = ALIGN(16);
+@@ -48,7 +55,6 @@ SECTIONS
+ 	PROVIDE(end = .);
  
+ 	/DISCARD/	: {
+-		*(.note.GNU-stack)
+ 		*(.data .data.* .gnu.linkonce.d.* .sdata*)
+ 		*(.bss .sbss .dynbss .dynsbss)
+ 		*(.eh_frame .eh_frame_hdr)
 -- 
 2.30.2
 
