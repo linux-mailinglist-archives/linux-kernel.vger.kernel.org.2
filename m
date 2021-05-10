@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FF937985C
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 22:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C07E37985D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 22:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232593AbhEJU3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 16:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59976 "EHLO
+        id S232745AbhEJU3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 16:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232199AbhEJU3M (ORCPT
+        with ESMTP id S232177AbhEJU3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 16:29:12 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665B0C061574;
-        Mon, 10 May 2021 13:28:07 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id j10so25266325lfb.12;
+        Mon, 10 May 2021 16:29:14 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC23C06175F;
+        Mon, 10 May 2021 13:28:08 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id w15so22381485ljo.10;
         Mon, 10 May 2021 13:28:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Dw+QlXrsFBiM0zWqW8M+Hk3AOAvI8eXnbQfBtso36FY=;
-        b=eoYvWHwVMh+bc2fyZJpdD1jWbKQ7oDtVWB43tLb8YXwUdA1HkdEAuDhvJbczeXXxN6
-         5xBQX4bZJ8ipZ8L/AniL2l6I+LpDbb1p8BvQ+YAwzi/VWe0ksN/UYs9+APyeSvo3oO0g
-         cjuxUY0AwqktEFxrchzz7i1JV8mc1QQkjrM3hFRlTODB2kEpWv0WC3xlyyJ57vQu3yEX
-         QZpDNlAi7wCVECsbptdC5K704AF6Swx8DLiQ0/YbiRMgT7PIvHwKk6iftg4RTFXayQC2
-         sQfQIApc0VJVMeufMzQbrzKQdzIz7t+ijgf91GdWGXvCWhGAmW3QGLDM2wCWKtHgZRAu
-         DFYw==
+        bh=t+WD7sR6NnA+8LPB9Rjuc/jlkdohjKwrq/YbpcReCR4=;
+        b=lRmIkUME4h/s1s94BsBmqvpZ7QliVphNZbQWYy0hToSOLLDDvdEFCXNesfPohVDkN9
+         ORXkgPuwZK0IgKFvVy+HZ/pBhm5jmimrc0UiJRDBeebJ6/gnWtf2umxxJTTQ8nSEWtgX
+         MHiSMdkycRcchltref32cpw1h8dhcPEJ3PDwTVHL+CsNthuvhQPcwy/yNmsMRzEg7PUg
+         G5vTgYEyKcAKR6IcMhdM0pz4QHqzWC9t+ZAOj8euf/R0eqBPdzr2Y7MSpvM0ynP2RoGC
+         Edj9HZA6g3NW0CQLat9KKQEzCbidFCXt8y/AXYjBTQ96hJc4NeD2tF2N2yXelVAk5n8m
+         0NYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Dw+QlXrsFBiM0zWqW8M+Hk3AOAvI8eXnbQfBtso36FY=;
-        b=ptNhc23mQFopqqvGUomGPBdrQtiiYYUjX4R6uUY7bSi472a5+1o83KwkuadpVW/6vq
-         R7G5exfafez7fuXj8RsxIULOXXiC7BZD/Tyy/vt5lVkgx9EsdJFEs33jzIW12ZiTLu3O
-         PBmDVAR6GPa0fq7R42pmi/9YOypmb/13DoznfYU6NKZf6sP4s8xMTpLOdyiE0eVVpYwN
-         xRcl/XtiM2rALrQJ6MeXnWJCNdyyIXs/qoUtJItXyfi9gBEoQsnko1M4Y53VmmwFEWX3
-         CuWFCcy9S/aqL/geZ1bcCSKhj7jpspIcdS/MKwUAmN+NGQGfv4QvYNuuTwPe98E5OudJ
-         +/bA==
-X-Gm-Message-State: AOAM5303qfjwF9ayWLQNQ2qI6eZ/jYgOVPcH7NECqRt03qm9CS8TOvF3
-        aotKkaucyM6UjBHSH/ZgauzkBEtLFhQ=
-X-Google-Smtp-Source: ABdhPJwpGNm/kNL1UdBVp5V5rUJOGVIvn8KK8Immcm2wXvyStQnG9sGeJfwamPShpvJZeX7C4LhB1Q==
-X-Received: by 2002:ac2:4246:: with SMTP id m6mr18215649lfl.611.1620678485998;
-        Mon, 10 May 2021 13:28:05 -0700 (PDT)
+        bh=t+WD7sR6NnA+8LPB9Rjuc/jlkdohjKwrq/YbpcReCR4=;
+        b=AMZ1JHSgwc7OMyRnWUUhMUCaejxwkVnk6isYjqDmfkGd7rfOJUH+W0cIfBQhmrXilq
+         waXMFdYirmfiJXK/knVfMNs2Qu1PxdrmwvWV7gPNcMWRvUZ1J5NrecB4eRaCmFSNdvQB
+         DsOH3lI+IgBSS/VRXsC5UNhAynUDhtLP233HD3fDCWik6qjh/Ju4S3tAUcgTVDovB3S5
+         ccLw6Q4SdCrbzbx2zZ8fjWY/7CwzKy2W2mP+Kib1DmuowRbwKfj/4ray5SKsNJr26o6G
+         QDZ1H3Bi53+hvDjU2wxmGH/byGl1NeJQHVgL/krYlyhkfxhWJf2EK5ZWNn6/BEL3VU3b
+         VImQ==
+X-Gm-Message-State: AOAM533rnQrgYdVou2m1suQlPkE9GK4vRrAZcDqIENJRirP3xpVqNyyb
+        wJsnABNFTApt5urckWwzJ9g=
+X-Google-Smtp-Source: ABdhPJytMyKC+G55rwrpjBnIZk7X6RcpxnmhBK14Hs0aMRl7piKiAUKN0m+N7jTQbCTF2ReewzJhwQ==
+X-Received: by 2002:a05:651c:1311:: with SMTP id u17mr20858527lja.48.1620678486609;
+        Mon, 10 May 2021 13:28:06 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.gmail.com with ESMTPSA id z23sm2360662lfq.241.2021.05.10.13.28.05
+        by smtp.gmail.com with ESMTPSA id z23sm2360662lfq.241.2021.05.10.13.28.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 13:28:05 -0700 (PDT)
+        Mon, 10 May 2021 13:28:06 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Agneli <poczt@protonmail.ch>, Paul Fertser <fercerpav@gmail.com>,
         Svyatoslav Ryhel <clamor95@gmail.com>
 Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 03/10] ARM: tegra: acer-a500: Bump thermal trips by 10C
-Date:   Mon, 10 May 2021 23:25:53 +0300
-Message-Id: <20210510202600.12156-4-digetx@gmail.com>
+Subject: [PATCH v1 04/10] ARM: tegra: Add reg property to Tegra20 EMC table device-tree nodes
+Date:   Mon, 10 May 2021 23:25:54 +0300
+Message-Id: <20210510202600.12156-5-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210510202600.12156-1-digetx@gmail.com>
 References: <20210510202600.12156-1-digetx@gmail.com>
@@ -66,43 +66,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's possible to hit the temperature of the thermal zone in a very warm
-environment under a constant load, like watching a video using software
-decoding. It's even easier to hit the limit with a slightly overclocked
-CPU. Bump the temperature limit by 10C in order to improve user
-experience. Acer A500 has a large board and 10" display panel which are
-used for the heat dissipation, the SoC is placed far away from battery,
-hence we can safely bump the temperature limit.
+The reg property is now specified for the emc-tables nodes in the Tegra20
+device-tree binding. Add reg property to the EMC table device-tree nodes
+of Tegra20 board device-trees in order to silence dt_binding_check warning
+about the missing property.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 4 ++++
+ arch/arm/boot/dts/tegra20-paz00.dts             | 1 +
+ 2 files changed, 5 insertions(+)
 
 diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-index eff9bfb2d442..15b7965599ee 100644
+index 15b7965599ee..883b76f1039b 100644
 --- a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
 +++ b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-@@ -1059,15 +1059,15 @@ cpu-thermal {
+@@ -1088,6 +1088,7 @@ memory-controller@7000f400 {
  
- 			trips {
- 				trip0: cpu-alert0 {
--					/* start throttling at 50C */
--					temperature = <50000>;
-+					/* start throttling at 60C */
-+					temperature = <60000>;
- 					hysteresis = <200>;
- 					type = "passive";
- 				};
+ 		emc-tables@0 {
+ 			nvidia,ram-code = <0>; /* elpida-8gb */
++			reg = <0>;
  
- 				trip1: cpu-crit {
--					/* shut down at 60C */
--					temperature = <60000>;
-+					/* shut down at 70C */
-+					temperature = <70000>;
- 					hysteresis = <2000>;
- 					type = "critical";
- 				};
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+@@ -1185,6 +1186,7 @@ emc-table@300000 {
+ 
+ 		emc-tables@1 {
+ 			nvidia,ram-code = <1>; /* elpida-4gb */
++			reg = <1>;
+ 
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+@@ -1282,6 +1284,7 @@ emc-table@300000 {
+ 
+ 		emc-tables@2 {
+ 			nvidia,ram-code = <2>; /* hynix-8gb */
++			reg = <2>;
+ 
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+@@ -1379,6 +1382,7 @@ emc-table@300000 {
+ 
+ 		emc-tables@3 {
+ 			nvidia,ram-code = <3>; /* hynix-4gb */
++			reg = <3>;
+ 
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+diff --git a/arch/arm/boot/dts/tegra20-paz00.dts b/arch/arm/boot/dts/tegra20-paz00.dts
+index 940a9f31cd86..63d62418d4b8 100644
+--- a/arch/arm/boot/dts/tegra20-paz00.dts
++++ b/arch/arm/boot/dts/tegra20-paz00.dts
+@@ -318,6 +318,7 @@ emc-tables@0 {
+ 			nvidia,ram-code = <0x0>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
++			reg = <0>;
+ 
+ 			emc-table@166500 {
+ 				reg = <166500>;
 -- 
 2.30.2
 
