@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C68E3786EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C4E378A4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232805AbhEJLMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:12:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42196 "EHLO mail.kernel.org"
+        id S242113AbhEJLks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:40:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233491AbhEJKuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:50:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9316A61944;
-        Mon, 10 May 2021 10:39:00 +0000 (UTC)
+        id S235044AbhEJK5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B87446195D;
+        Mon, 10 May 2021 10:51:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643141;
-        bh=zEaw3zcLJD+oaYX/gXnVh3nZV+0dX9pjyV3rpI/3UX8=;
+        s=korg; t=1620643889;
+        bh=VYfmhFt2W1DZcgIXrOOh7ooiC4aHcLCuxvOApxAU6hY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S5X790rmXteUJN0xbLvx2weH4y17skxqnKgnex7yOW1jjGMB10SDCWfDqO+Fpy+Qv
-         1z1vcNDsPzFAlwGu4zFu6UbQux4MzV/PqgmCFwDelXZgfn7dzE+44os81vMUIRPZGK
-         Yo1L8Nkwas98nF1UNcZ1oVJKbs/hGaW9NDYe7gkk=
+        b=FI5mHc2ZuS9n9J/F5M/VREyxlAVDB+P2LRrjIY2GAVLliC9iI10FIipVuLaIO9lMH
+         Uoazj5ljqhmhj2ayQp7dhAG4plBtFF+J4S0B9sL5CdEiPixO3g1x6fA+kBue7Ka1BU
+         U9Q7kDYDj7XjPjo7N2mwarTuAbbx6smU9ZIjrZXs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Tom Rix <trix@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 193/299] amdgpu: avoid incorrect %hu format string
+Subject: [PATCH 5.11 200/342] clk: socfpga: arria10: Fix memory leak of socfpga_clk on error return
 Date:   Mon, 10 May 2021 12:19:50 +0200
-Message-Id: <20210510102011.324065512@linuxfoundation.org>
+Message-Id: <20210510102016.697160074@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 7d98d416c2cc1c1f7d9508e887de4630e521d797 ]
+[ Upstream commit 657d4d1934f75a2d978c3cf2086495eaa542e7a9 ]
 
-clang points out that the %hu format string does not match the type
-of the variables here:
+There is an error return path that is not kfree'ing socfpga_clk leading
+to a memory leak. Fix this by adding in the missing kfree call.
 
-drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c:263:7: warning: format specifies type 'unsigned short' but the argument has type 'unsigned int' [-Wformat]
-                                  version_major, version_minor);
-                                  ^~~~~~~~~~~~~
-include/drm/drm_print.h:498:19: note: expanded from macro 'DRM_ERROR'
-        __drm_err(fmt, ##__VA_ARGS__)
-                  ~~~    ^~~~~~~~~~~
-
-Change it to a regular %u, the same way a previous patch did for
-another instance of the same warning.
-
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Addresses-Coverity: ("Resource leak")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20210406170115.430990-1-colin.king@canonical.com
+Acked-by: Dinh Nguyen <dinguyen@kernel.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/socfpga/clk-gate-a10.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-index f8bebf18ee36..665ead139c30 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-@@ -259,7 +259,7 @@ int amdgpu_uvd_sw_init(struct amdgpu_device *adev)
- 		if ((adev->asic_type == CHIP_POLARIS10 ||
- 		     adev->asic_type == CHIP_POLARIS11) &&
- 		    (adev->uvd.fw_version < FW_1_66_16))
--			DRM_ERROR("POLARIS10/11 UVD firmware version %hu.%hu is too old.\n",
-+			DRM_ERROR("POLARIS10/11 UVD firmware version %u.%u is too old.\n",
- 				  version_major, version_minor);
- 	} else {
- 		unsigned int enc_major, enc_minor, dec_minor;
+diff --git a/drivers/clk/socfpga/clk-gate-a10.c b/drivers/clk/socfpga/clk-gate-a10.c
+index cd5df9103614..d62778884208 100644
+--- a/drivers/clk/socfpga/clk-gate-a10.c
++++ b/drivers/clk/socfpga/clk-gate-a10.c
+@@ -146,6 +146,7 @@ static void __init __socfpga_gate_init(struct device_node *node,
+ 		if (IS_ERR(socfpga_clk->sys_mgr_base_addr)) {
+ 			pr_err("%s: failed to find altr,sys-mgr regmap!\n",
+ 					__func__);
++			kfree(socfpga_clk);
+ 			return;
+ 		}
+ 	}
 -- 
 2.30.2
 
