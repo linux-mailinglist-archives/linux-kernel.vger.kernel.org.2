@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BBA378DD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79491378DE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349820AbhEJMzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:55:04 -0400
-Received: from mga06.intel.com ([134.134.136.31]:30707 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243429AbhEJMTj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 08:19:39 -0400
-IronPort-SDR: Evd8opFPGzhCVFT1ay/CUKsm3Tu+v47ZN2tc3UMlS7kshakAmpVo4VxpOkgu1dZQ+THJzUITPC
- glLbxSgFpqEg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9979"; a="260444372"
-X-IronPort-AV: E=Sophos;i="5.82,286,1613462400"; 
-   d="scan'208";a="260444372"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 05:18:24 -0700
-IronPort-SDR: IRU+4kJB9UCczVymR3GBVIkbepiApWDkwC6FafTPRDfJ6V8R8VbqaIbgHlKguFrqphC+dNLBXo
- BWg7KDYnXWMg==
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="468101379"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 05:18:23 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lg4rc-00BAFN-NV; Mon, 10 May 2021 15:18:20 +0300
-Date:   Mon, 10 May 2021 15:18:20 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     rjw@rjwysocki.net, lenb@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ACPI: scan: Fix a memory leak in an error handling path
-Message-ID: <YJkkjI6+k34ZoQ69@smile.fi.intel.com>
-References: <63bf4e87eb42fa3fff2cd87eb605ebcc01f4b2f7.1620458525.git.christophe.jaillet@wanadoo.fr>
+        id S1350049AbhEJMzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345788AbhEJMZ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 08:25:28 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3EFC0613ED
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 05:18:43 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:f937:4595:45ff:bcbf])
+        by baptiste.telenet-ops.be with bizsmtp
+        id 30Je250094jQ7kl010JexR; Mon, 10 May 2021 14:18:41 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lg4rt-004QlC-K0; Mon, 10 May 2021 14:18:37 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lg4rs-00HQPg-TJ; Mon, 10 May 2021 14:18:36 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc:     devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2 0/2] dt-bindings: renesas,tpu: Improve and json-schema conversion
+Date:   Mon, 10 May 2021 14:18:33 +0200
+Message-Id: <cover.1620648868.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <63bf4e87eb42fa3fff2cd87eb605ebcc01f4b2f7.1620458525.git.christophe.jaillet@wanadoo.fr>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 09:23:09AM +0200, Christophe JAILLET wrote:
-> If 'acpi_device_set_name()' fails, we must free
-> 'acpi_device_bus_id->bus_id' or there is a (potential) memory leak.
+	Hi all,
 
-Good catch!
-I guess I have lost it somewhere in the middle of developing the mentioned fix.
+There are two different device tree bindings defined for the Renesas
+Timer Pulse Unit:
+  - one for using the TPU as a PWM controller (used on ARM), already
+    using json-schema, and
+  - a second one for using the TPU as a clock source (used on H8/300).
+The first has already been converted to json-schema.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+This series improves the former, and converts the latter to json-schema.
+As both bindings using "renesas,tpu", both bindings are marked with the
+appropriate "select" logic, to check for the presence respectively
+absence of the "#pwm-cells" property.
 
-Thanks!
+Changes compared to v1:
+  - Keep additionalProperties, as pwm.yaml doesn't add any other
+    properties,
+  - Drop unneeded "'#pwm-cells': true" from "select" section in
+    renesas,tpu-pwm.yaml,
+  - Add Reviewed-by.
 
-> Fixes: eb50aaf960e3 ("ACPI: scan: Use unique number for instance_no")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/acpi/scan.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index a22778e880c2..651a431e2bbf 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -700,6 +700,7 @@ int acpi_device_add(struct acpi_device *device,
->  
->  		result = acpi_device_set_name(device, acpi_device_bus_id);
->  		if (result) {
-> +			kfree_const(acpi_device_bus_id->bus_id);
->  			kfree(acpi_device_bus_id);
->  			goto err_unlock;
->  		}
-> -- 
-> 2.30.2
-> 
+Thanks for your comments!
+
+Geert Uytterhoeven (2):
+  dt-bindings: pwm: renesas,tpu-pwm: Improve json-schema
+  dt-bindings: timer: renesas,tpu: Convert to json-schema
+
+ .../bindings/pwm/renesas,tpu-pwm.yaml         | 26 +++++++++
+ .../devicetree/bindings/timer/renesas,tpu.txt | 21 -------
+ .../bindings/timer/renesas,tpu.yaml           | 56 +++++++++++++++++++
+ 3 files changed, 82 insertions(+), 21 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/timer/renesas,tpu.txt
+ create mode 100644 Documentation/devicetree/bindings/timer/renesas,tpu.yaml
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
 
+Gr{oetje,eeting}s,
 
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
