@@ -2,32 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804DA378ADD
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D81A378BA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238182AbhEJLzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:55:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37324 "EHLO mail.kernel.org"
+        id S1344071AbhEJMO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:14:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233322AbhEJLEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 07:04:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36BC061972;
-        Mon, 10 May 2021 10:54:50 +0000 (UTC)
+        id S234090AbhEJLEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:04:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F58061925;
+        Mon, 10 May 2021 10:54:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644090;
-        bh=B+d/HMwJwK+LTT8jqMhAP0iUKjA1x0huLN614HZVKkE=;
+        s=korg; t=1620644093;
+        bh=GP313qOubS9rto88V4AxPe+esMFnkQi8JAn6FdOn3f8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KnfdGg1T2rZ5sEnICR1pj1RdVtFT/KocZO0zXZJhVTKOBqRoW8w8Afkmkk9Y0Cg4L
-         Rp/Z3pCnEdywXyGdWa3hSAFhCi7HhZQZPiPRdmt2ZzD6+ytz/befO7XhuHj63TpWtg
-         zDMcK7+kyXx+YMHMsyCH2GyNgOw5Nd04z3D30tvE=
+        b=FjkEi5eo4Hjmc/ebfDNjxbbngZ15fIk2TNU59d6NDVDbXQGCvn4K4g8+1C9FEvxud
+         H4rVxpvNLJ1tOmRNiMyDg1oIDTrV0Oln77OzFEZfM1fcoDouXqW4J5zDj3T/Is2TCN
+         OAGuOF2yi+bopBua3OoS+P14Hd+r3xUdhsW/zQ7c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Berger <stefanb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: [PATCH 5.11 282/342] tpm: vtpm_proxy: Avoid reading host log when using a virtual device
-Date:   Mon, 10 May 2021 12:21:12 +0200
-Message-Id: <20210510102019.422906795@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jessica Clarke <jrtc27@jrtc27.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 5.11 283/342] crypto: arm/curve25519 - Move .fpu after .arch
+Date:   Mon, 10 May 2021 12:21:13 +0200
+Message-Id: <20210510102019.459895727@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
 References: <20210510102010.096403571@linuxfoundation.org>
@@ -39,36 +43,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+From: Nathan Chancellor <nathan@kernel.org>
 
-commit 9716ac65efc8f780549b03bddf41e60c445d4709 upstream.
+commit 44200f2d9b8b52389c70e6c7bbe51e0dc6eaf938 upstream.
 
-Avoid allocating memory and reading the host log when a virtual device
-is used since this log is of no use to that driver. A virtual
-device can be identified through the flag TPM_CHIP_FLAG_VIRTUAL, which
-is only set for the tpm_vtpm_proxy driver.
+Debian's clang carries a patch that makes the default FPU mode
+'vfp3-d16' instead of 'neon' for 'armv7-a' to avoid generating NEON
+instructions on hardware that does not support them:
+
+https://salsa.debian.org/pkg-llvm-team/llvm-toolchain/-/raw/5a61ca6f21b4ad8c6ac4970e5ea5a7b5b4486d22/debian/patches/clang-arm-default-vfp3-on-armv7a.patch
+https://bugs.debian.org/841474
+https://bugs.debian.org/842142
+https://bugs.debian.org/914268
+
+This results in the following build error when clang's integrated
+assembler is used because the '.arch' directive overrides the '.fpu'
+directive:
+
+arch/arm/crypto/curve25519-core.S:25:2: error: instruction requires: NEON
+ vmov.i32 q0, #1
+ ^
+arch/arm/crypto/curve25519-core.S:26:2: error: instruction requires: NEON
+ vshr.u64 q1, q0, #7
+ ^
+arch/arm/crypto/curve25519-core.S:27:2: error: instruction requires: NEON
+ vshr.u64 q0, q0, #8
+ ^
+arch/arm/crypto/curve25519-core.S:28:2: error: instruction requires: NEON
+ vmov.i32 d4, #19
+ ^
+
+Shuffle the order of the '.arch' and '.fpu' directives so that the code
+builds regardless of the default FPU mode. This has been tested against
+both clang with and without Debian's patch and GCC.
 
 Cc: stable@vger.kernel.org
-Fixes: 6f99612e2500 ("tpm: Proxy driver for supporting multiple emulated TPMs")
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Fixes: d8f1308a025f ("crypto: arm/curve25519 - wire up NEON implementation")
+Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/118
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Suggested-by: Jessica Clarke <jrtc27@jrtc27.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/char/tpm/eventlog/common.c |    3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm/crypto/curve25519-core.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/char/tpm/eventlog/common.c
-+++ b/drivers/char/tpm/eventlog/common.c
-@@ -107,6 +107,9 @@ void tpm_bios_log_setup(struct tpm_chip
- 	int log_version;
- 	int rc = 0;
+--- a/arch/arm/crypto/curve25519-core.S
++++ b/arch/arm/crypto/curve25519-core.S
+@@ -10,8 +10,8 @@
+ #include <linux/linkage.h>
  
-+	if (chip->flags & TPM_CHIP_FLAG_VIRTUAL)
-+		return;
-+
- 	rc = tpm_read_log(chip);
- 	if (rc < 0)
- 		return;
+ .text
+-.fpu neon
+ .arch armv7-a
++.fpu neon
+ .align 4
+ 
+ ENTRY(curve25519_neon)
 
 
