@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2F73799AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 205D13799AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 00:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhEJWI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 18:08:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
+        id S231213AbhEJWI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 18:08:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229807AbhEJWIY (ORCPT
+        with ESMTP id S230186AbhEJWIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 18:08:24 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA12AC06175F;
-        Mon, 10 May 2021 15:07:18 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id v6so22679207ljj.5;
-        Mon, 10 May 2021 15:07:18 -0700 (PDT)
+        Mon, 10 May 2021 18:08:25 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974A7C061760;
+        Mon, 10 May 2021 15:07:19 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id w4so22677258ljw.9;
+        Mon, 10 May 2021 15:07:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ilcrEifGqalrK7A7bBBtHS0TKbUU9cT7sHuMPy0qljU=;
-        b=aHK8dZiR30/8lRK3z2+LGJlXRLGlX6GkhapyI3JqJhandAoRw/2EtWaIwzYISt+nMQ
-         di7fZVwYZN+B+0NqIMl/9RbWEMuja0cw20gfSp+t62jczmC2L9LCzEVwR8ZweqpIbOs3
-         7aC0G9jTc/HW67H0Ubx3tvCrWZqmqQnzEPKDT6makcOL8P7bS18bZ9FKqR4wipbQYOTe
-         J7fN+dgJ7oRowP1DHVlzt4xrG10ZUdTXUsNT8BzPsfNNfNmKQIdYVrZg3G/kpDVYKGse
-         6w1SLyOn/Nl3WZNHoHLTlwsW1Mols25pBuXAoWitWgqoQtObAZ0pH2iAOJnm+sd1e2zR
-         RRaw==
+        bh=SCUHjLezGOSYgdMDmUZ9lrsTkgiruZl3MogFURlEJ9Q=;
+        b=j1n+Hoh3eQg7qrrGj+35pqOiCbB1t+XawliKITmQAdK4MIHp8g5VhoGQEYfKlciU1T
+         Hh/zC9vtsUaf0Yq3tcTg/Mqfpq93pSITyM54IHEClyeYIsFqjoOfNoM9CkHtztjYOhzZ
+         ElOH8oABQtd7shq7GZ/3AQFhDW/wADFh1CvoWPfJysE017PXAc5glnW5Yuj/FK+HA/n8
+         oRpYGSbE1H1yR/CgypMv3WzHhzkxF2GB1VbUOjtxVs0vw/gYyGQnFxxtw/wKFsPTdKHD
+         sam0yjxg+LM0r6OcQHqd1yArIQZuaY0ziFvi+Lt3R/g1DZ4U+zeCmk3P4I5VJJVnWECn
+         ih8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ilcrEifGqalrK7A7bBBtHS0TKbUU9cT7sHuMPy0qljU=;
-        b=gsdjxQVBOuiNcwzcEJcVoAGW3JqhBDXOMB1i9vh3RCjOD8WuaH1CDy88qpUrFWotHZ
-         PBnU7Btw+l3d7T5AdCCaRWPMrqNkYdwmmTJ55NDhC4O5pVzNP+/lGyjNsEi0dFoBsw1P
-         5sLMIdwNyVZeLKagnkQE1jXvLMVMz7WeZ3cPNsPGecAWwWMyCz7+Wpe/lsE2XGhrEOHQ
-         I/JsFxHjE5ApTR2vreXJc/9XZMJkTQfFJ/bP1adlKXhrWj1Igo1G6p9YktlS0+PtPr0N
-         HogZ63ErfA62GNAlhbUJlTa7L/jsCa/l+MHrOU8m8+u4OvFiKOYyR1EqAl3M9614ZLzN
-         Bz4A==
-X-Gm-Message-State: AOAM532+Mjos7PxqBFVlkzTlC3vgP8VVaX/4chXOfMcnCr4Yz49tl6ch
-        tDY2x8gPCk5TcTrOOygZeTQ=
-X-Google-Smtp-Source: ABdhPJzHGEbCDM9SxLdRq64G0N07VXSJckyF8w0rHbFZzdPlAaWCeEjtnG4HysPzdYBTIfInStEU1w==
-X-Received: by 2002:a2e:9919:: with SMTP id v25mr21350238lji.189.1620684437442;
-        Mon, 10 May 2021 15:07:17 -0700 (PDT)
+        bh=SCUHjLezGOSYgdMDmUZ9lrsTkgiruZl3MogFURlEJ9Q=;
+        b=qAAT8tMsXSI0uoj/daFxtXuFDG/1Cp0OsM+AXKBv3A7YO6NVoxcRwXc0Ep8mseoFcq
+         /9fYKXzEAPnx6Qx/cbY7Fwj3frPeqPPhOgIMY55ppD/FiyAiIZHdWasIX1kopqDzxOyO
+         3jvUMVy+hIt1mS5N5uigd/UXbzvEyHGkC6x8iyTdwGL3/+OU50m5r0M273x4W3KWjDus
+         zQI7f/EuETSxmbuf9ojvBqMRbVMAbDvEbOJpQbrcGzddS+w8qInUnd5NzvmRIgSfHLLJ
+         eP5TA1StmK4/RKPCtfCYKOkbTT7+K9ig0qBJ+CCaHmvey3mqYTNMmW/ziypm0jAcFdss
+         CYLA==
+X-Gm-Message-State: AOAM531CPArcVrjB2aelxAXuyqpgHLHtSYFYIAmoLb+FFS8pZEZWRikM
+        dgVlaM9ji/YIg9RpyzEBmUE=
+X-Google-Smtp-Source: ABdhPJySzGJhfuE92UftyShMjDQCxnI9mIfBTIb4ii1zBz6jR03XsFma9EQhU4e05Jy2oLGCNOiXZQ==
+X-Received: by 2002:a05:651c:118c:: with SMTP id w12mr21668267ljo.405.1620684438119;
+        Mon, 10 May 2021 15:07:18 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.gmail.com with ESMTPSA id v14sm2390850lfb.201.2021.05.10.15.07.16
+        by smtp.gmail.com with ESMTPSA id v14sm2390850lfb.201.2021.05.10.15.07.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 10 May 2021 15:07:17 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
@@ -55,76 +55,335 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
         =?UTF-8?q?Nikola=20Milosavljevi=C4=87?= <mnidza@outlook.com>
 Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v1 1/2] regulator: core: Add regulator_sync_voltage_rdev()
-Date:   Tue, 11 May 2021 01:05:25 +0300
-Message-Id: <20210510220526.11113-2-digetx@gmail.com>
+Subject: [PATCH v1 2/2] soc/tegra: regulators: Bump voltages on system reboot
+Date:   Tue, 11 May 2021 01:05:26 +0300
+Message-Id: <20210510220526.11113-3-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210510220526.11113-1-digetx@gmail.com>
 References: <20210510220526.11113-1-digetx@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some NVIDIA Tegra devices use a CPU soft-reset method for the reboot and
-in this case we need to restore the coupled voltages to the state that is
-suitable for hardware during boot. Add new regulator_sync_voltage_rdev()
-helper which is needed by regulator drivers in order to sync voltage of
-a coupled regulators.
+Ensure that SoC voltages are at a level suitable for a system reboot.
+This is important for some devices that use CPU reset method for the
+rebooting. SoC CPU and core voltages now are be restored to a level
+that is suitable for rebooting. This patch fixes hang on reboot on
+Asus Transformer TF101, it was also reported as fixing some of reboot
+issues on Toshiba AC100.
 
+Reported-by: Nikola Milosavljević <mnidza@outlook.com>
+Tested-by: Nikola Milosavljević <mnidza@outlook.com> # TF101
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/regulator/core.c         | 23 +++++++++++++++++++++++
- include/linux/regulator/driver.h |  1 +
- 2 files changed, 24 insertions(+)
+ drivers/soc/tegra/regulators-tegra20.c | 77 ++++++++++++++++++++++++-
+ drivers/soc/tegra/regulators-tegra30.c | 80 +++++++++++++++++++++++++-
+ 2 files changed, 153 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index f192bf19492e..ead0b6d2af45 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -4105,6 +4105,29 @@ int regulator_set_voltage_time_sel(struct regulator_dev *rdev,
- }
- EXPORT_SYMBOL_GPL(regulator_set_voltage_time_sel);
+diff --git a/drivers/soc/tegra/regulators-tegra20.c b/drivers/soc/tegra/regulators-tegra20.c
+index e2c11d442591..81787ae3d03e 100644
+--- a/drivers/soc/tegra/regulators-tegra20.c
++++ b/drivers/soc/tegra/regulators-tegra20.c
+@@ -12,6 +12,7 @@
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/of.h>
++#include <linux/reboot.h>
+ #include <linux/regulator/coupler.h>
+ #include <linux/regulator/driver.h>
+ #include <linux/regulator/machine.h>
+@@ -23,7 +24,10 @@ struct tegra_regulator_coupler {
+ 	struct regulator_dev *core_rdev;
+ 	struct regulator_dev *cpu_rdev;
+ 	struct regulator_dev *rtc_rdev;
+-	int core_min_uV;
++	struct notifier_block reboot_notifier;
++	int core_min_uV, cpu_min_uV;
++	bool sys_reboot_mode_req;
++	bool sys_reboot_mode;
+ };
  
-+int regulator_sync_voltage_rdev(struct regulator_dev *rdev)
+ static inline struct tegra_regulator_coupler *
+@@ -50,7 +54,7 @@ static int tegra20_core_limit(struct tegra_regulator_coupler *tegra,
+ 	 * This means that we can't fully allow CORE voltage scaling until
+ 	 * the state of all DVFS-critical CORE devices is synced.
+ 	 */
+-	if (tegra_soc_core_domain_state_synced()) {
++	if (tegra_soc_core_domain_state_synced() && !tegra->sys_reboot_mode) {
+ 		pr_info_once("voltage state synced\n");
+ 		return 0;
+ 	}
+@@ -259,6 +263,10 @@ static int tegra20_cpu_voltage_update(struct tegra_regulator_coupler *tegra,
+ 	if (cpu_uV < 0)
+ 		return cpu_uV;
+ 
++	/* store boot voltage level */
++	if (!tegra->cpu_min_uV)
++		tegra->cpu_min_uV = cpu_uV;
++
+ 	/*
+ 	 * CPU's regulator may not have any consumers, hence the voltage
+ 	 * must not be changed in that case because CPU simply won't
+@@ -267,6 +275,10 @@ static int tegra20_cpu_voltage_update(struct tegra_regulator_coupler *tegra,
+ 	if (!cpu_min_uV_consumers)
+ 		cpu_min_uV = cpu_uV;
+ 
++	/* restore boot voltage level */
++	if (tegra->sys_reboot_mode)
++		cpu_min_uV = max(cpu_min_uV, tegra->cpu_min_uV);
++
+ 	if (cpu_min_uV > cpu_uV) {
+ 		err = tegra20_core_rtc_update(tegra, core_rdev, rtc_rdev,
+ 					      cpu_uV, cpu_min_uV);
+@@ -307,6 +319,8 @@ static int tegra20_regulator_balance_voltage(struct regulator_coupler *coupler,
+ 		return -EINVAL;
+ 	}
+ 
++	tegra->sys_reboot_mode = READ_ONCE(tegra->sys_reboot_mode_req);
++
+ 	if (rdev == cpu_rdev)
+ 		return tegra20_cpu_voltage_update(tegra, cpu_rdev,
+ 						  core_rdev, rtc_rdev);
+@@ -320,6 +334,51 @@ static int tegra20_regulator_balance_voltage(struct regulator_coupler *coupler,
+ 	return -EPERM;
+ }
+ 
++static int tegra20_regulator_prepare_reboot(struct tegra_regulator_coupler *tegra,
++					    bool sys_reboot_mode)
 +{
-+	int ret;
++	int err;
 +
-+	regulator_lock(rdev);
++	if (!tegra->core_rdev || !tegra->rtc_rdev || !tegra->cpu_rdev)
++		return 0;
 +
-+	if (!rdev->desc->ops->set_voltage &&
-+	    !rdev->desc->ops->set_voltage_sel) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
++	WRITE_ONCE(tegra->sys_reboot_mode_req, true);
 +
-+	/* balance only, if regulator is coupled */
-+	if (rdev->coupling_desc.n_coupled > 1)
-+		ret = regulator_balance_voltage(rdev, PM_SUSPEND_ON);
-+	else
-+		ret = -EOPNOTSUPP;
++	/*
++	 * Some devices use CPU soft-reboot method and in this case we
++	 * should ensure that voltages are sane for the reboot by restoring
++	 * the minimum boot levels.
++	 */
++	err = regulator_sync_voltage_rdev(tegra->cpu_rdev);
++	if (err)
++		return err;
 +
-+out:
-+	regulator_unlock(rdev);
-+	return ret;
++	err = regulator_sync_voltage_rdev(tegra->core_rdev);
++	if (err)
++		return err;
++
++	WRITE_ONCE(tegra->sys_reboot_mode_req, sys_reboot_mode);
++
++	return 0;
 +}
 +
- /**
-  * regulator_sync_voltage - re-apply last regulator output voltage
-  * @regulator: regulator source
-diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/driver.h
-index 4ea520c248e9..35e5a611db81 100644
---- a/include/linux/regulator/driver.h
-+++ b/include/linux/regulator/driver.h
-@@ -540,6 +540,7 @@ int regulator_set_current_limit_regmap(struct regulator_dev *rdev,
- int regulator_get_current_limit_regmap(struct regulator_dev *rdev);
- void *regulator_get_init_drvdata(struct regulator_init_data *reg_init_data);
- int regulator_set_ramp_delay_regmap(struct regulator_dev *rdev, int ramp_delay);
-+int regulator_sync_voltage_rdev(struct regulator_dev *rdev);
++static int tegra20_regulator_reboot(struct notifier_block *notifier,
++				    unsigned long event, void *cmd)
++{
++	struct tegra_regulator_coupler *tegra;
++	int ret;
++
++	if (event != SYS_RESTART)
++		return NOTIFY_DONE;
++
++	tegra = container_of(notifier, struct tegra_regulator_coupler,
++			     reboot_notifier);
++
++	ret = tegra20_regulator_prepare_reboot(tegra, true);
++
++	return notifier_from_errno(ret);
++}
++
+ static int tegra20_regulator_attach(struct regulator_coupler *coupler,
+ 				    struct regulator_dev *rdev)
+ {
+@@ -352,6 +411,14 @@ static int tegra20_regulator_detach(struct regulator_coupler *coupler,
+ {
+ 	struct tegra_regulator_coupler *tegra = to_tegra_coupler(coupler);
  
- /*
-  * Helper functions intended to be used by regulator drivers prior registering
++	/*
++	 * We don't expect regulators to be decoupled during reboot,
++	 * this may race with the reboot handler and shouldn't ever
++	 * happen in practice.
++	 */
++	if (WARN_ON_ONCE(system_state > SYSTEM_RUNNING))
++		return -EPERM;
++
+ 	if (tegra->core_rdev == rdev) {
+ 		tegra->core_rdev = NULL;
+ 		return 0;
+@@ -376,13 +443,19 @@ static struct tegra_regulator_coupler tegra20_coupler = {
+ 		.detach_regulator = tegra20_regulator_detach,
+ 		.balance_voltage = tegra20_regulator_balance_voltage,
+ 	},
++	.reboot_notifier.notifier_call = tegra20_regulator_reboot,
+ };
+ 
+ static int __init tegra_regulator_coupler_init(void)
+ {
++	int err;
++
+ 	if (!of_machine_is_compatible("nvidia,tegra20"))
+ 		return 0;
+ 
++	err = register_reboot_notifier(&tegra20_coupler.reboot_notifier);
++	WARN_ON(err);
++
+ 	return regulator_coupler_register(&tegra20_coupler.coupler);
+ }
+ arch_initcall(tegra_regulator_coupler_init);
+diff --git a/drivers/soc/tegra/regulators-tegra30.c b/drivers/soc/tegra/regulators-tegra30.c
+index 42d675b79fa3..e0203f78b396 100644
+--- a/drivers/soc/tegra/regulators-tegra30.c
++++ b/drivers/soc/tegra/regulators-tegra30.c
+@@ -12,6 +12,7 @@
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/of.h>
++#include <linux/reboot.h>
+ #include <linux/regulator/coupler.h>
+ #include <linux/regulator/driver.h>
+ #include <linux/regulator/machine.h>
+@@ -23,7 +24,10 @@ struct tegra_regulator_coupler {
+ 	struct regulator_coupler coupler;
+ 	struct regulator_dev *core_rdev;
+ 	struct regulator_dev *cpu_rdev;
+-	int core_min_uV;
++	struct notifier_block reboot_notifier;
++	int core_min_uV, cpu_min_uV;
++	bool sys_reboot_mode_req;
++	bool sys_reboot_mode;
+ };
+ 
+ static inline struct tegra_regulator_coupler *
+@@ -50,7 +54,7 @@ static int tegra30_core_limit(struct tegra_regulator_coupler *tegra,
+ 	 * This means that we can't fully allow CORE voltage scaling until
+ 	 * the state of all DVFS-critical CORE devices is synced.
+ 	 */
+-	if (tegra_soc_core_domain_state_synced()) {
++	if (tegra_soc_core_domain_state_synced() && !tegra->sys_reboot_mode) {
+ 		pr_info_once("voltage state synced\n");
+ 		return 0;
+ 	}
+@@ -188,6 +192,10 @@ static int tegra30_voltage_update(struct tegra_regulator_coupler *tegra,
+ 	if (cpu_uV < 0)
+ 		return cpu_uV;
+ 
++	/* store boot voltage level */
++	if (!tegra->cpu_min_uV)
++		tegra->cpu_min_uV = cpu_uV;
++
+ 	/*
+ 	 * CPU's regulator may not have any consumers, hence the voltage
+ 	 * must not be changed in that case because CPU simply won't
+@@ -211,6 +219,10 @@ static int tegra30_voltage_update(struct tegra_regulator_coupler *tegra,
+ 	if (err)
+ 		return err;
+ 
++	/* restore boot voltage level */
++	if (tegra->sys_reboot_mode)
++		cpu_min_uV = max(cpu_min_uV, tegra->cpu_min_uV);
++
+ 	if (core_min_limited_uV > core_uV) {
+ 		pr_err("core voltage constraint violated: %d %d %d\n",
+ 		       core_uV, core_min_limited_uV, cpu_uV);
+@@ -279,9 +291,56 @@ static int tegra30_regulator_balance_voltage(struct regulator_coupler *coupler,
+ 		return -EINVAL;
+ 	}
+ 
++	tegra->sys_reboot_mode = READ_ONCE(tegra->sys_reboot_mode_req);
++
+ 	return tegra30_voltage_update(tegra, cpu_rdev, core_rdev);
+ }
+ 
++static int tegra30_regulator_prepare_reboot(struct tegra_regulator_coupler *tegra,
++					    bool sys_reboot_mode)
++{
++	int err;
++
++	if (!tegra->core_rdev || !tegra->cpu_rdev)
++		return 0;
++
++	WRITE_ONCE(tegra->sys_reboot_mode_req, true);
++
++	/*
++	 * Some devices use CPU soft-reboot method and in this case we
++	 * should ensure that voltages are sane for the reboot by restoring
++	 * the minimum boot levels.
++	 */
++	err = regulator_sync_voltage_rdev(tegra->cpu_rdev);
++	if (err)
++		return err;
++
++	err = regulator_sync_voltage_rdev(tegra->core_rdev);
++	if (err)
++		return err;
++
++	WRITE_ONCE(tegra->sys_reboot_mode_req, sys_reboot_mode);
++
++	return 0;
++}
++
++static int tegra30_regulator_reboot(struct notifier_block *notifier,
++				    unsigned long event, void *cmd)
++{
++	struct tegra_regulator_coupler *tegra;
++	int ret;
++
++	if (event != SYS_RESTART)
++		return NOTIFY_DONE;
++
++	tegra = container_of(notifier, struct tegra_regulator_coupler,
++			     reboot_notifier);
++
++	ret = tegra30_regulator_prepare_reboot(tegra, true);
++
++	return notifier_from_errno(ret);
++}
++
+ static int tegra30_regulator_attach(struct regulator_coupler *coupler,
+ 				    struct regulator_dev *rdev)
+ {
+@@ -308,6 +367,17 @@ static int tegra30_regulator_detach(struct regulator_coupler *coupler,
+ {
+ 	struct tegra_regulator_coupler *tegra = to_tegra_coupler(coupler);
+ 
++	/*
++	 * We don't expect regulators to be decoupled during reboot,
++	 * this may race with the reboot handler and shouldn't ever
++	 * happen in practice.
++	 */
++	if (WARN_ON_ONCE(system_state > SYSTEM_RUNNING))
++		return -EPERM;
++
++	/* bring regulators to the state that is safe for reboot */
++	tegra30_regulator_prepare_reboot(tegra, false);
++
+ 	if (tegra->core_rdev == rdev) {
+ 		tegra->core_rdev = NULL;
+ 		return 0;
+@@ -327,13 +397,19 @@ static struct tegra_regulator_coupler tegra30_coupler = {
+ 		.detach_regulator = tegra30_regulator_detach,
+ 		.balance_voltage = tegra30_regulator_balance_voltage,
+ 	},
++	.reboot_notifier.notifier_call = tegra30_regulator_reboot,
+ };
+ 
+ static int __init tegra_regulator_coupler_init(void)
+ {
++	int err;
++
+ 	if (!of_machine_is_compatible("nvidia,tegra30"))
+ 		return 0;
+ 
++	err = register_reboot_notifier(&tegra30_coupler.reboot_notifier);
++	WARN_ON(err);
++
+ 	return regulator_coupler_register(&tegra30_coupler.coupler);
+ }
+ arch_initcall(tegra_regulator_coupler_init);
 -- 
 2.30.2
 
