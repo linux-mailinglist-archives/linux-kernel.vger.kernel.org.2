@@ -2,144 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F13C3792AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A683792AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 17:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234581AbhEJP2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 11:28:09 -0400
-Received: from mga04.intel.com ([192.55.52.120]:26962 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237874AbhEJP0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 11:26:09 -0400
-IronPort-SDR: 3eHyPsmBMqXsOcGxu67xAJm9gg6RqgwDfK8a2yi+BJX3RNJVIe9sUMnGXNQFaz5vi+M6COLUOr
- or4JepUYMaqQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="197234725"
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="197234725"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 08:25:05 -0700
-IronPort-SDR: GjXRpWxI0GTq9EfqsAr0hz2jjpbs5onS2DLUgUp5jeCZ4ykKcxn/jUUXM/nI3Zw1v9kib0m8MB
- voaWFDGgutcg==
-X-IronPort-AV: E=Sophos;i="5.82,287,1613462400"; 
-   d="scan'208";a="536454725"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 08:25:03 -0700
-Date:   Mon, 10 May 2021 08:25:02 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210510152502.GA90095@otc-nc-03>
-References: <20210504151154.02908c63@jacob-builder>
- <20210504231530.GE1370958@nvidia.com>
- <20210505102259.044cafdf@jacob-builder>
- <20210505180023.GJ1370958@nvidia.com>
- <20210505130446.3ee2fccd@jacob-builder>
- <YJOZhPGheTSlHtQc@myrica>
- <20210506122730.GQ1370958@nvidia.com>
- <20210506163240.GA9058@otc-nc-03>
- <MWHPR11MB188698FBEE62AF1313E0F7AC8C569@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210510123729.GA1002214@nvidia.com>
+        id S233017AbhEJP2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 11:28:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49360 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237561AbhEJP0Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 11:26:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620660310;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=K2CGR/IDsHtbZ5Y9P6c1L3DtRTFVjRlsHsiyPl4p12Q=;
+        b=eyd+iaeOaeMbcWAKXEM7/8/SS3RBSr/UyY0wkaqZKRms2Rt2pJnfk+HL95uvHox7rtSRkU
+        IekN39Gesy4yJA6HHw0n9xmuVVw8/AQ92EQ8eIC84DNxHKVw4hvMpw6qMeoMXK6I776/TM
+        idO25mlW/A8TjZ6yYsovzpu4s7WesMU=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-546-cQboupKvO5-fSpMZQ1gFzQ-1; Mon, 10 May 2021 11:25:09 -0400
+X-MC-Unique: cQboupKvO5-fSpMZQ1gFzQ-1
+Received: by mail-qk1-f198.google.com with SMTP id d201-20020ae9efd20000b02902e9e9d8d9dcso11891107qkg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 08:25:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=K2CGR/IDsHtbZ5Y9P6c1L3DtRTFVjRlsHsiyPl4p12Q=;
+        b=Km7enlJSw2jvZAXSo3JZPZezxmP7xSK1D3jYMOhOCNzLxPnu+ZaRfVCOAm1S4WtqRz
+         rgdPJ7iC4qPnDTh8hVS13ua0KwezrIJK8a4cs7wcVr6ZdnvwJjmQc1CXaaOU1sLo0GN+
+         vNEi7HxRuWDp59Rej9EhiS0s1YsRRI1ZxDCvY/hiTFAKF9k0D6XmIHE9aYTSrXgGZ7S0
+         SN1WVgz2WptjXcLpQg5dcWaEoQcLc1QufRHbnHPUCnHOgee+BI+MNivvbEE5vosNQz5c
+         4cD7/b6RKaono2jE3Nku+jYziPWN19f+GlN359ooW1fHlRmwKFnJmCOPPqSuZo6PGQyu
+         hSsQ==
+X-Gm-Message-State: AOAM532Hh6zey829Yr0hybsL+kG6UnNy7zp4ix+r0rYmh+UwGL9RkKgg
+        WNGB9hyQYg2dg7H6j0ZGDjjQUBO4+pidOW0VED6m66TzVQr82NpB8nn78u7MuwO16g3EV6knMr7
+        B3LDphLMvjB5/Kg1/I8HiLJaG
+X-Received: by 2002:a37:4017:: with SMTP id n23mr21753960qka.338.1620660308754;
+        Mon, 10 May 2021 08:25:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxf+1jFnLT/UbwYtkRupiUPmDiPqdUTk6gWY3qtL/u/wOC2u18ZkK0Q8NmQNcSkgGbQ0jbSXQ==
+X-Received: by 2002:a37:4017:: with SMTP id n23mr21753938qka.338.1620660308550;
+        Mon, 10 May 2021 08:25:08 -0700 (PDT)
+Received: from horse (pool-173-76-174-238.bstnma.fios.verizon.net. [173.76.174.238])
+        by smtp.gmail.com with ESMTPSA id 28sm6715878qkr.36.2021.05.10.08.25.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 08:25:08 -0700 (PDT)
+Date:   Mon, 10 May 2021 11:25:06 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Connor Kuehl <ckuehl@redhat.com>
+Cc:     virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Subject: Re: [PATCH] virtiofs: Enable multiple request queues
+Message-ID: <20210510152506.GC150402@horse>
+References: <20210507221527.699516-1-ckuehl@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510123729.GA1002214@nvidia.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210507221527.699516-1-ckuehl@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 09:37:29AM -0300, Jason Gunthorpe wrote:
-> On Sat, May 08, 2021 at 09:56:59AM +0000, Tian, Kevin wrote:
-> > > From: Raj, Ashok <ashok.raj@intel.com>
-> > > Sent: Friday, May 7, 2021 12:33 AM
-> > > 
-> > > > Basically it means when the guest's top level IOASID is created for
-> > > > nesting that IOASID claims all PASID's on the RID and excludes any
-> > > > PASID IOASIDs from existing on the RID now or in future.
-> > > 
-> > > The way to look at it this is as follows:
-> > > 
-> > > For platforms that do not have a need to support shared work queue model
-> > > support for ENQCMD or similar, PASID space is naturally per RID. There is no
-> > > complication with this. Every RID has the full range of PASID's and no need
-> > > for host to track which PASIDs are allocated now or in future in the guest.
-> > > 
-> > > For platforms that support ENQCMD, it is required to mandate PASIDs are
-> > > global across the entire system. Maybe its better to call them gPASID for
-> > > guest and hPASID for host. Short reason being gPASID->hPASID is a guest
-> > > wide mapping for ENQCMD and not a per-RID based mapping. (We covered
-> > > that
-> > > in earlier responses)
-> > > 
-> > > In our current implementation we actually don't separate this space, and
-> > > gPASID == hPASID. The iommu driver enforces that by using the custom
-> > > allocator and the architected interface that allows all guest vIOMMU
-> > > allocations to be proxied to host. Nothing but a glorified hypercall like
-> > > interface. In fact some OS's do use hypercall to get a hPASID vs using
-> > > the vCMD style interface.
-> > > 
-> > 
-> > After more thinking about the new interface, I feel gPASID==hPASID 
-> > actually causes some confusion in uAPI design. In concept an ioasid
-> > is not active until it's attached to a device, because it's just an ID
-> > if w/o a device. So supposedly an ioasid should reject all user commands
-> > before attach. However an guest likely asks for a new gPASID before
-> > attaching it to devices and vIOMMU. if gPASID==hPASID then Qemu 
-> > must request /dev/ioasid to allocate a hw_id for an ioasid which hasn't 
-> > been attached to any device, with the assumption on kernel knowledge 
-> > that this hw_id is from an global allocator w/o dependency on any 
-> > device. This doesn't sound a clean design, not to say it also conflicts 
-> > with live migration.
+On Fri, May 07, 2021 at 03:15:27PM -0700, Connor Kuehl wrote:
+> Distribute requests across the multiqueue complex automatically based
+> on the IRQ affinity.
+
+Hi Connor,
+
+Thanks for the patch. I will look into it and also test it.
+
+How did you test it? Did you modify vitiofsd to support multiqueue. Did
+you also run some performance numbers. Does it provide better/worse
+performance as compared to single queue.
+
+Thanks
+Vivek
+
 > 
-> Everything must be explicit. The situation David pointed to of
-> qemu emulating a vIOMMU while running on a host with a different
-> platform/physical IOMMU must be considered.
+> Suggested-by: Stefan Hajnoczi <stefanha@redhat.com>
+> Signed-off-by: Connor Kuehl <ckuehl@redhat.com>
+> ---
+>  fs/fuse/virtio_fs.c | 30 ++++++++++++++++++++++++------
+>  1 file changed, 24 insertions(+), 6 deletions(-)
 > 
-> If the vIOMMU needs specific behavior it must use /dev/iommu to ask
-> for it specifically and not just make wild assumptions about how the
-> platform works.
+> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+> index bcb8a02e2d8b..dcdc8b7b1ad5 100644
+> --- a/fs/fuse/virtio_fs.c
+> +++ b/fs/fuse/virtio_fs.c
+> @@ -30,6 +30,10 @@
+>  static DEFINE_MUTEX(virtio_fs_mutex);
+>  static LIST_HEAD(virtio_fs_instances);
+>  
+> +struct virtio_fs_vq;
+> +
+> +DEFINE_PER_CPU(struct virtio_fs_vq *, this_cpu_fsvq);
+> +
+>  enum {
+>  	VQ_HIPRIO,
+>  	VQ_REQUEST
+> @@ -673,6 +677,7 @@ static int virtio_fs_setup_vqs(struct virtio_device *vdev,
+>  	struct virtqueue **vqs;
+>  	vq_callback_t **callbacks;
+>  	const char **names;
+> +	struct irq_affinity desc = { .pre_vectors = 1, .nr_sets = 1, };
+>  	unsigned int i;
+>  	int ret = 0;
+>  
+> @@ -681,6 +686,9 @@ static int virtio_fs_setup_vqs(struct virtio_device *vdev,
+>  	if (fs->num_request_queues == 0)
+>  		return -EINVAL;
+>  
+> +	fs->num_request_queues = min_t(unsigned int, nr_cpu_ids,
+> +				       fs->num_request_queues);
+> +
+>  	fs->nvqs = VQ_REQUEST + fs->num_request_queues;
+>  	fs->vqs = kcalloc(fs->nvqs, sizeof(fs->vqs[VQ_HIPRIO]), GFP_KERNEL);
+>  	if (!fs->vqs)
+> @@ -710,12 +718,24 @@ static int virtio_fs_setup_vqs(struct virtio_device *vdev,
+>  		names[i] = fs->vqs[i].name;
+>  	}
+>  
+> -	ret = virtio_find_vqs(vdev, fs->nvqs, vqs, callbacks, names, NULL);
+> +	ret = virtio_find_vqs(vdev, fs->nvqs, vqs, callbacks, names, &desc);
+>  	if (ret < 0)
+>  		goto out;
+>  
+> -	for (i = 0; i < fs->nvqs; i++)
+> +	for (i = 0; i < fs->nvqs; i++) {
+> +		const struct cpumask *mask;
+> +		unsigned int cpu;
+> +
+>  		fs->vqs[i].vq = vqs[i];
+> +		if (i == VQ_HIPRIO)
+> +			continue;
+> +
+> +		mask = vdev->config->get_vq_affinity(vdev, i);
+> +		for_each_cpu(cpu, mask) {
+> +			struct virtio_fs_vq **cpu_vq = per_cpu_ptr(&this_cpu_fsvq, cpu);
+> +			*cpu_vq = &fs->vqs[i];
+> +		}
+> +	}
+>  
+>  	virtio_fs_start_all_queues(fs);
+>  out:
+> @@ -877,8 +897,6 @@ static int virtio_fs_probe(struct virtio_device *vdev)
+>  	if (ret < 0)
+>  		goto out;
+>  
+> -	/* TODO vq affinity */
+> -
+>  	ret = virtio_fs_setup_dax(vdev, fs);
+>  	if (ret < 0)
+>  		goto out_vqs;
+> @@ -1225,7 +1243,6 @@ static int virtio_fs_enqueue_req(struct virtio_fs_vq *fsvq,
+>  static void virtio_fs_wake_pending_and_unlock(struct fuse_iqueue *fiq)
+>  __releases(fiq->lock)
+>  {
+> -	unsigned int queue_id = VQ_REQUEST; /* TODO multiqueue */
+>  	struct virtio_fs *fs;
+>  	struct fuse_req *req;
+>  	struct virtio_fs_vq *fsvq;
+> @@ -1245,7 +1262,8 @@ __releases(fiq->lock)
+>  		 req->in.h.nodeid, req->in.h.len,
+>  		 fuse_len_args(req->args->out_numargs, req->args->out_args));
+>  
+> -	fsvq = &fs->vqs[queue_id];
+> +	fsvq = this_cpu_read(this_cpu_fsvq);
+> +
+>  	ret = virtio_fs_enqueue_req(fsvq, req, false);
+>  	if (ret < 0) {
+>  		if (ret == -ENOMEM || ret == -ENOSPC) {
+> -- 
+> 2.30.2
+> 
 
-I think the right way is for pIOMMU to enforce the right behavior. vIOMMU
-can ask for a PASID and physical IOMMU driver would give what is optimal
-for the platform. if vIOMMU says give me per-device PASID, but that can
-lead to conflicts in PASID name space, its best to avoid it. 
-
-Global PASID doesn't break anything, but giving that control to vIOMMU
-doesn't seem right. When we have mixed uses cases like hardware that
-supports shared wq and SRIOV devices that need PASIDs we need to 
-comprehend how they will work without having a backend to migrate PASIDs 
-to new destination.
-
-for ENQCMD we have the gPASID->hPASID translation in the VMCS control.
-For devices that support SIOV, programming a PASID to  a device is also
-mediated, so its possible for something like the mediated interface to
-assist with that migration for the dedicated WQ.
-
-
-When we have both SRIOV and shared WQ exposed to the same guest, we 
-do have an issue. The simplest way that I thought was to have a guest 
-and host PASID separation.  Where the guest has its own PASID  space 
-and host has its own carved out.  Guest can do what ever it wants within 
-that allocated space without fear of any collition with any other device. 
-
-Cheers,
-Ashok
