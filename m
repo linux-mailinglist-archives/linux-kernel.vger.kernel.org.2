@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C28378754
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA3C378792
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237449AbhEJLPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:15:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41710 "EHLO mail.kernel.org"
+        id S237710AbhEJLQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:16:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233721AbhEJKuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:50:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F21061A3E;
-        Mon, 10 May 2021 10:40:11 +0000 (UTC)
+        id S233749AbhEJKud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:50:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 793BE61A19;
+        Mon, 10 May 2021 10:40:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643212;
-        bh=lnU9WlUijGhjw3cdCIlNG3OKsXm7PyqbstikCcPPNwE=;
+        s=korg; t=1620643215;
+        bh=C1dqAl8yM/FcmpKUv7/eSkotv/kH+Fip/4XB2HDQ1OA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BhlxYa2Kv3Ydiu8E2OQ35ZHdvgyhBNhfGeBBJ4etWsexGk8V5hu1UDFgmRLy0L4Io
-         MxWafDi70THhJ592UlN8PDrzMmHFCdK4uXaFhhnpLvJIH3fARlXblnJjTFv4+egESb
-         6nFNiTcdLMwurwqYpzU4T58DPvlbbCaBpz0jk0Ng=
+        b=Whj+j/+3pSFyZHlshcqLNG7Vz2mcAaEWSqO0MUuff/lNXlQNh39cQ3bewGZoTpj8h
+         A3i7vHeGofRrESMr7qez8MacaTe9f9lOSW2HCbUsVkvzoZbE2r+G4FtvE35jPNu3qe
+         FLKGjqJaLB4RXduWT45yUjYSixjtZlsubHLi9wa8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 5.10 223/299] Makefile: Move -Wno-unused-but-set-variable out of GCC only block
-Date:   Mon, 10 May 2021 12:20:20 +0200
-Message-Id: <20210510102012.306764360@linuxfoundation.org>
+        stable@vger.kernel.org, stable@kernel.org,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.10 224/299] fs: fix reporting supported extra file attributes for statx()
+Date:   Mon, 10 May 2021 12:20:21 +0200
+Message-Id: <20210510102012.337598131@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
 References: <20210510102004.821838356@linuxfoundation.org>
@@ -40,49 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Theodore Ts'o <tytso@mit.edu>
 
-commit 885480b084696331bea61a4f7eba10652999a9c1 upstream.
+commit 5afa7e8b70d65819245fece61a65fd753b4aae33 upstream.
 
-Currently, -Wunused-but-set-variable is only supported by GCC so it is
-disabled unconditionally in a GCC only block (it is enabled with W=1).
-clang currently has its implementation for this warning in review so
-preemptively move this statement out of the GCC only block and wrap it
-with cc-disable-warning so that both compilers function the same.
+statx(2) notes that any attribute that is not indicated as supported
+by stx_attributes_mask has no usable value.  Commits 801e523796004
+("fs: move generic stat response attr handling to vfs_getattr_nosec")
+and 712b2698e4c02 ("fs/stat: Define DAX statx attribute") sets
+STATX_ATTR_AUTOMOUNT and STATX_ATTR_DAX, respectively, without setting
+stx_attributes_mask, which can cause xfstests generic/532 to fail.
 
-Cc: stable@vger.kernel.org
-Link: https://reviews.llvm.org/D100581
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Fix this in the same way as commit 1b9598c8fb99 ("xfs: fix reporting
+supported extra file attributes for statx()")
+
+Fixes: 801e523796004 ("fs: move generic stat response attr handling to vfs_getattr_nosec")
+Fixes: 712b2698e4c02 ("fs/stat: Define DAX statx attribute")
+Cc: stable@kernel.org
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- Makefile |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/stat.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/Makefile
-+++ b/Makefile
-@@ -775,16 +775,16 @@ KBUILD_CFLAGS += -Wno-gnu
- KBUILD_CFLAGS += -mno-global-merge
- else
- 
--# These warnings generated too much noise in a regular build.
--# Use make W=1 to enable them (see scripts/Makefile.extrawarn)
--KBUILD_CFLAGS += -Wno-unused-but-set-variable
--
- # Warn about unmarked fall-throughs in switch statement.
- # Disabled for clang while comment to attribute conversion happens and
- # https://github.com/ClangBuiltLinux/linux/issues/636 is discussed.
- KBUILD_CFLAGS += $(call cc-option,-Wimplicit-fallthrough,)
- endif
- 
-+# These warnings generated too much noise in a regular build.
-+# Use make W=1 to enable them (see scripts/Makefile.extrawarn)
-+KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
+--- a/fs/stat.c
++++ b/fs/stat.c
+@@ -77,12 +77,20 @@ int vfs_getattr_nosec(const struct path
+ 	/* SB_NOATIME means filesystem supplies dummy atime value */
+ 	if (inode->i_sb->s_flags & SB_NOATIME)
+ 		stat->result_mask &= ~STATX_ATIME;
 +
- KBUILD_CFLAGS += $(call cc-disable-warning, unused-const-variable)
- ifdef CONFIG_FRAME_POINTER
- KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
++	/*
++	 * Note: If you add another clause to set an attribute flag, please
++	 * update attributes_mask below.
++	 */
+ 	if (IS_AUTOMOUNT(inode))
+ 		stat->attributes |= STATX_ATTR_AUTOMOUNT;
+ 
+ 	if (IS_DAX(inode))
+ 		stat->attributes |= STATX_ATTR_DAX;
+ 
++	stat->attributes_mask |= (STATX_ATTR_AUTOMOUNT |
++				  STATX_ATTR_DAX);
++
+ 	if (inode->i_op->getattr)
+ 		return inode->i_op->getattr(path, stat, request_mask,
+ 					    query_flags);
 
 
