@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10986379081
+	by mail.lfdr.de (Postfix) with ESMTP id 7D078379082
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236501AbhEJOVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60164 "EHLO
+        id S236576AbhEJOVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238831AbhEJORw (ORCPT
+        with ESMTP id S236321AbhEJOTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:17:52 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904C4C061378
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:54:48 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id r9so24665626ejj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:54:48 -0700 (PDT)
+        Mon, 10 May 2021 10:19:05 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA4B3C0612EF
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:55:21 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id r9so24668431ejj.3
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:55:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=N/tsR4FPpi1SMa4JphRzoqbRD642hzPRhRehPxfLE8I=;
-        b=FPrJVgd7V/a2zz2Q0otP08sQFNf/w1p+kVWgnWsOnyKsYCck2v8rIeWPnFO2FuYhuI
-         bE2RHp92aBVZ6n4NZ4rz7Kg1aiRJQf2/EXF+OlgXmVhxhlDFQeVASC/NuoaNhQqd4y6K
-         eEZ8IpC6c0yXpubstKGcroxL6vZ6Vvg8920GalWCq/BAbUgMSK848W/e0xXI2u/FF2Wc
-         vANQekUzQlLLjYdwyGc9ID0Y9UiqrbpgiS4rGltEP4GlJtAZjO6YoErvirmwVdb5eScx
-         M4rjJzY1C/75EVAd9XX9gBT+1w5poDKuWYut+ufz8O3zndjtkL57z4F9xiAxX410Kq4V
-         bYmQ==
+        bh=R3I+cJ/HNa43p7O9IqL92rD0/3nTNS0rycYZ/LuBU0c=;
+        b=a5K0KhtKct36+xmqlnSZCPapHdDRa/7O2xijP3DJyGTifut0orPMQplJgVpY8dflRM
+         X6curX44OHAJQs0s3JLI1UC6uKsQnPUVcEZPZkzrUQCEHRHEtN6ZCmVXrSFKjUoRPSKa
+         7+iVXt8bwOd3UYXjgoidPxkezauz7k0Wh0Q0NTPwGyi/+8zZWEqOUXRlA6ehSnmYieiw
+         Nqlw45izMHuDyY312MsU0v/ri+jSfsY4j00gCTb4gYZJW66tK9+SkiXpGVpAFWlN7Aom
+         Bu2Mvp26Uewx+HeVfAr5wJy/JCKsSZshHddl+w6zwR01BwtcQotdDNo+cB0VGjPQ6wGs
+         Bv9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=N/tsR4FPpi1SMa4JphRzoqbRD642hzPRhRehPxfLE8I=;
-        b=f/RW3NL0nmlsLutrNoR3HNBGYeLMqoyERSxdMwFYyGedJFlqSI4LWMjCHyXmfYaXHO
-         sA52O2bljHnTZZ0ydW+wKvsBO3Llq0tCMv6EtTEaWIK6G8XUYWF/GVyaeeZaU95LyQVj
-         l3fH10Vrr9vJk1Tw4Afcosj5F9mFOUToB0sp+myZL1GGNMVNN8FkkFDEeeuFiy4Va8iz
-         hlxJ9R2MhlTcMywA7Opy/pQ/2guUQRt40MYc7y75mKWPw5BtiUwsOnkOWbv3xhZ4zyO9
-         01TAtKD07xmlraJgufz1uorkQnP9g7fjU5YGa1Me8TrjZBIePKYM9d0AekFyyToJvkgH
-         r4iw==
-X-Gm-Message-State: AOAM532LaKe6aIIxas0r8xEt31nHjHhcbikt3aqEHo1P1YNSI8bbUi7l
-        8uvEkrIaffkwsJxvyvJUW3gPAg==
-X-Google-Smtp-Source: ABdhPJx4OsN4bcqkQbOKWXhTyPn2+tTamYNiif8kVzvyu0hItzjNmFGr6lyBRCAfCvz2Y20of3O3mQ==
-X-Received: by 2002:a17:906:4809:: with SMTP id w9mr22916796ejq.401.1620654887266;
-        Mon, 10 May 2021 06:54:47 -0700 (PDT)
+        bh=R3I+cJ/HNa43p7O9IqL92rD0/3nTNS0rycYZ/LuBU0c=;
+        b=Mu0MfOglIKfpw/XBnzQYq6W6ZpYJ5gbzRnlqpd4scuwGYua1RICF4q2sPM/mGadi7o
+         qsFB/crz1zuh2NjZmTNBhknJEjEUm1GfV4hek63BA8avlcyL4XULS+PmczpZn4+sbE7N
+         ItAAzJM7+rFjZOyxKKqFxoSOO/fFWAJZ+Z+4kMfMnxkN0Ik7WVOFWdThnMbulkFtiuBw
+         +y3fpVoZyr04jj4SE2mkxejAz/7r72+ToDFW40UcmGaGtpHeyGWfb3ULAfJ5IaKyWAks
+         LoYAJuSKXJk+5IYFocFhRP1sTRof3iQAfCdPf4aJUECKUjMfGNl+9qti5po8XjVei5X3
+         qxgA==
+X-Gm-Message-State: AOAM533S6NI9VZEWLjPTVD458HRH2IAaidxIJn4xEOFejcqDmnFqaUr8
+        67R0fYG/uyzlnLnh1Ds2ym3LSw==
+X-Google-Smtp-Source: ABdhPJxFCtXatqzsLV0AO+XHmKPYNCl9ZBBC1u1OV6OrJIyxJb57jDU/1J8Dicgytd4+prFSbT2dag==
+X-Received: by 2002:a17:906:1d0a:: with SMTP id n10mr8841967ejh.341.1620654920502;
+        Mon, 10 May 2021 06:55:20 -0700 (PDT)
 Received: from [192.168.1.14] ([195.24.90.54])
-        by smtp.googlemail.com with ESMTPSA id v14sm11444780edx.5.2021.05.10.06.54.44
+        by smtp.googlemail.com with ESMTPSA id z9sm2341077edb.51.2021.05.10.06.55.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 06:54:46 -0700 (PDT)
-Subject: Re: [PATCH v5 13/25] media: venus: core: use
+        Mon, 10 May 2021 06:55:20 -0700 (PDT)
+Subject: Re: [PATCH v5 14/25] media: venus: vdec: use
  pm_runtime_resume_and_get()
 To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
@@ -60,14 +60,14 @@ Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-media@vger.kernel.org
 References: <cover.1620314616.git.mchehab+huawei@kernel.org>
- <492e148ae1c7b0a8858c1670037925d3e4adb719.1620314616.git.mchehab+huawei@kernel.org>
+ <76b4daa74ae49576d37235916d687c36991351eb.1620314616.git.mchehab+huawei@kernel.org>
 From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <adb102ab-c197-fdc8-4858-5683bd97baf4@linaro.org>
-Date:   Mon, 10 May 2021 16:54:43 +0300
+Message-ID: <129734bc-d50c-e149-0e8c-ac84573b151f@linaro.org>
+Date:   Mon, 10 May 2021 16:55:17 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <492e148ae1c7b0a8858c1670037925d3e4adb719.1620314616.git.mchehab+huawei@kernel.org>
+In-Reply-To: <76b4daa74ae49576d37235916d687c36991351eb.1620314616.git.mchehab+huawei@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -84,31 +84,17 @@ On 5/6/21 6:25 PM, Mauro Carvalho Chehab wrote:
 > 
 > Use the new API, in order to cleanup the error check logic.
 > 
+> As a bonus, there's no need to check if ret == 1, as
+> pm_runtime_resume_and_get() always return 0 on success.
+> 
 > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  drivers/media/platform/qcom/venus/pm_helpers.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  drivers/media/platform/qcom/venus/vdec.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
 Tested-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 Acked-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 
-> 
-> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-> index c7e1ebec47ee..d0fddf5e9a69 100644
-> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
-> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-> @@ -990,9 +990,8 @@ static int core_power_v4(struct venus_core *core, int on)
->  
->  	if (on == POWER_ON) {
->  		if (pmctrl) {
-> -			ret = pm_runtime_get_sync(pmctrl);
-> +			ret = pm_runtime_resume_and_get(pmctrl);
->  			if (ret < 0) {
-> -				pm_runtime_put_noidle(pmctrl);
->  				return ret;
->  			}
->  		}
-> 
 
 -- 
 regards,
