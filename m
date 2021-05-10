@@ -2,140 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB67377C0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 08:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D2C377C18
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 08:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhEJGGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 02:06:01 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:55259 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhEJGF5 (ORCPT
+        id S230085AbhEJGLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 02:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229653AbhEJGK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 02:05:57 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 14A5pcM7033952;
-        Mon, 10 May 2021 13:51:39 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 10 May
- 2021 14:03:41 +0800
-Date:   Mon, 10 May 2021 14:03:39 +0800
-From:   Steven Lee <steven_lee@aspeedtech.com>
-To:     Andrew Jeffery <andrew@aj.id.au>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ryan Chen <ryanchen.aspeed@gmail.com>,
-        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
-Subject: Re: [PATCH v3 5/5] mmc: sdhci-of-aspeed: Assert/Deassert reset
- signal before probing eMMC
-Message-ID: <20210510060338.GB6883@aspeedtech.com>
-References: <20210506100312.1638-1-steven_lee@aspeedtech.com>
- <20210506100312.1638-6-steven_lee@aspeedtech.com>
- <20210506102458.GA20777@pengutronix.de>
- <19a81e25-dfa1-4ad3-9628-19f43f4230d2@www.fastmail.com>
- <20210507062416.GD23749@aspeedtech.com>
- <2a339218-19d7-4eea-a734-8053dd553dbb@www.fastmail.com>
+        Mon, 10 May 2021 02:10:59 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A200C06175F
+        for <linux-kernel@vger.kernel.org>; Sun,  9 May 2021 23:09:55 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id p6so11167149qtk.13
+        for <linux-kernel@vger.kernel.org>; Sun, 09 May 2021 23:09:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eGZtaov/2jLp363MbdipRXDLJ+YxSvxBrC/OhuvnYEY=;
+        b=Tv8XwToGZImRnH+ZMmuLTzHnVD5UsM8Ex7xEdqPm1D286RgzDjkHSFL0rdq9Uztdcm
+         JKvFQjM9F6f3o3Edwo3OuHurfKBFErCcapmgs0Rk92eOaFWQ3WWXHM54dbH+bSk+l3ih
+         EaeWoHl1D7IbFxHdBPgNQdDRqiR4X3JIXrYFss6a1TeAV98Z/tc1QJEAJEND5qfAQ7nE
+         BJK+uRT2WRin8d3NqVW71PZxNHSzckNzDtUPnF8N96GpRdhvXRwUmAcBEgPvRyXjtvf/
+         eV65vqynzK4bNnmHBUkr2Ab9QZ9AOxK0VTC2iL7nqSy5LcjR4e2NOK9qYcuoYPJKiSQz
+         tKbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eGZtaov/2jLp363MbdipRXDLJ+YxSvxBrC/OhuvnYEY=;
+        b=hdjDwaFVFtkV5Td6L4ahtUPL4ETIAMN62g4qvuYtyl0L7GVx3enodim8oZL6Ousb3v
+         59MYydJ5MtiFrfHyeHhkQ3tmH6U0gtnhXRBo5Fo3eaYbHTfH0Kni9clLKrWzeccr0ASo
+         fBFNfhTeMfrMp1vQxEgYEN2MWuKhNR2w1zWvkD6E4vL+XnmH14EMLtbbPATJyWMRw4DF
+         Nc6YMNjC8IM3JZ08GyTmBjADYY4u/xIWRbpIsWkkskbYct++t2TivH/udQbQ4w6/ntNt
+         IlzoO6xlFwlv+hyRu8Fb9mnqVdfx2oYZiOonx14zEYhFCyFV0M2lanm51ez4PEjFRcVX
+         Bdug==
+X-Gm-Message-State: AOAM5332Or3Tjl3M0tPVn/tV1EoMH34KFmDRp0yGMiZn/jotXlBUoo0/
+        OFhmarAN0Bpw3f1DANyCU/PJfq9wLRd7spZiIK/ljg==
+X-Google-Smtp-Source: ABdhPJwDXNAJ7rqPdsxdvS37L/b6fPAlZK2aUqvtF7QMNjEjv477/3kILJBGFyURKDos3ry5nTQ9UROQCms1gkuN9xY=
+X-Received: by 2002:ac8:110d:: with SMTP id c13mr20896043qtj.337.1620626993742;
+ Sun, 09 May 2021 23:09:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <2a339218-19d7-4eea-a734-8053dd553dbb@www.fastmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 14A5pcM7033952
+References: <0000000000009f94c1057e772431@google.com> <000000000000e5b92105c1e723d5@google.com>
+In-Reply-To: <000000000000e5b92105c1e723d5@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 10 May 2021 08:09:42 +0200
+Message-ID: <CACT4Y+a-WdDEJEx=E7gr2ci0F6U8ncvMgVSzph00H7U_qmc+_Q@mail.gmail.com>
+Subject: Re: [syzbot] WARNING in hsr_forward_skb
+To:     syzbot <syzbot+fdce8f2a8903f3ba0e6b@syzkaller.appspotmail.com>
+Cc:     arvid.brodin@alten.se, Jens Axboe <axboe@fb.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jakub Kicinski <kuba@kernel.org>, kurt@linutronix.de,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        m-karicheri2@ti.com, Ming Lei <ming.lei@redhat.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        netdev <netdev@vger.kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 05/07/2021 15:36, Andrew Jeffery wrote:
-> 
-> 
-> On Fri, 7 May 2021, at 15:54, Steven Lee wrote:
-> > The 05/07/2021 09:32, Andrew Jeffery wrote:
-> > > 
-> > > 
-> > > On Thu, 6 May 2021, at 19:54, Philipp Zabel wrote:
-> > > > Hi Steven,
-> > > > 
-> > > > On Thu, May 06, 2021 at 06:03:12PM +0800, Steven Lee wrote:
-> > > > > +	if (info) {
-> > > > > +		if (info->flag & PROBE_AFTER_ASSET_DEASSERT) {
-> > > > > +			sdc->rst = devm_reset_control_get(&pdev->dev, NULL);
-> > > > 
-> > > > Please use devm_reset_control_get_exclusive() or
-> > > > devm_reset_control_get_optional_exclusive().
-> > > > 
-> > > > > +			if (!IS_ERR(sdc->rst)) {
-> > > > 
-> > > > Please just return errors here instead of ignoring them.
-> > > > The reset_control_get_optional variants return NULL in case the
-> > > > device node doesn't contain a resets phandle, in case you really
-> > > > consider this reset to be optional even though the flag is set?
-> > > 
-> > > It feels like we should get rid of the flag and leave it to the 
-> > > devicetree.
-> > > 
-> > 
-> > Do you mean adding a flag, for instance, "mmc-reset" in the
-> > device tree and call of_property_read_bool() in aspeed_sdc_probe()?
-> > 
-> > > I'm still kind of surprised it's not something we want to do for the 
-> > > 2400 and 2500 as well.
-> > > 
-> > 
-> > Per discussion with the chip designer, AST2400 and AST2500 doesn't need
-> > this implementation since the chip design is different to AST2600.
-> 
-> So digging a bit more deeply on this, it looks like the reset is 
-> already taken care of by drivers/clk/clk-ast2600.c in the 
-> clk_prepare_enable() path.
-> 
-> clk-ast2600 handles resets when enabling the clock for most peripherals:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/clk-ast2600.c?h=v5.12#n276
-> 
-> and this is true for both the SD controller and the eMMC controller:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/clk-ast2600.c?h=v5.12#n94
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/clk-ast2600.c?h=v5.12#n88
-> 
-> If this weren't the case you'd specify a reset property in the SD/eMMC 
-> devicetree nodes for the 2600 and then use 
-> devm_reset_control_get_optional_exclusive() as Philipp suggested. See 
-> the reset binding here:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/reset/reset.txt?h=v5.12
-> 
-> So on the surface it seems the reset handling in this patch is 
-> unnecessary. Have you observed an issue with the SoC that means it's 
-> required?
-> 
+On Sun, May 9, 2021 at 5:16 PM syzbot
+<syzbot+fdce8f2a8903f3ba0e6b@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit 9d6803921a16f4d768dc41a75375629828f4d91e
+> Author: Kurt Kanzenbach <kurt@linutronix.de>
+> Date:   Tue Apr 6 07:35:09 2021 +0000
+>
+>     net: hsr: Reset MAC header for Tx path
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=119c7fedd00000
+> start commit:   3af409ca net: enetc: fix destroyed phylink dereference dur..
+> git tree:       net
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8cb23303ddb9411f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=fdce8f2a8903f3ba0e6b
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1525467ad00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=114c0b12d00000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: net: hsr: Reset MAC header for Tx path
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-Yes, you are right, aspeed_sdc_probe() calls clk_prepare_enable(),
-aspeed_g6_clk_enable() does reset eMMC.
+The patch references this exact warning.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/mmc/host/sdhci-of-aspeed.c#n496
-
-However, the clock of eMMC is enabled in my u-boot(2019.04).
-So it is retruned in the condition of aspeed_g6_clk_is_enabled() below
-and doesn't reset eMMC.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/clk-ast2600.c?h=v5.12#n285
-
-
-> Andrew
+#syz fix: net: hsr: Reset MAC header for Tx path
