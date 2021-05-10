@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33479378C2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 381E1378C32
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346024AbhEJM0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:26:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53306 "EHLO mail.kernel.org"
+        id S1346148AbhEJM0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:26:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237132AbhEJLL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237136AbhEJLL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 07:11:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8F1C616EC;
-        Mon, 10 May 2021 11:07:26 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 195C1617ED;
+        Mon, 10 May 2021 11:07:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620644847;
-        bh=U2phoJE4h+M3Npxv3Av0LVnX6uds6j6AcKMURa1/aew=;
+        s=korg; t=1620644849;
+        bh=0TbRy66sZ4R1vqsd8auMee9yRY592CCfcWWA3/EZ9Tg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DD3gk8iYbnO2yekdfz/KNA48Lc/Dn8JWdvwh1eZ/3ebOBhSe6HmlDvrL1iwidiR5+
-         CayC59XAuLbsnmpn6fdZuFJ+m3qqr3CGaKtTB/sY1I8atjxpQ0GdICntMbmFCr9Eoz
-         Y+YSsq2tGyZsiZuOFUu4h5r74VRSm+E3JPVmIK6M=
+        b=au1zegmqDY6/R+uGmeCiTpah6mWM9MPzMBLXYlx3TWBnkry0bEPA8aw6iFGGarYR6
+         O7ybNLX75UGpuVtiiWk2HecandnsFPk5+Fnpv4i4QncgidkhYc36iCdb32LHikPXN7
+         qSG6ePhuoiZD2mdCrCNgTN4EUblTxz5ikIVGrJ5I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Tom Rix <trix@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        stable@vger.kernel.org, Nirmoy Das <nirmoy.das@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 248/384] amdgpu: avoid incorrect %hu format string
-Date:   Mon, 10 May 2021 12:20:37 +0200
-Message-Id: <20210510102023.061939113@linuxfoundation.org>
+Subject: [PATCH 5.12 249/384] drm/amdgpu/display: fix memory leak for dimgrey cavefish
+Date:   Mon, 10 May 2021 12:20:38 +0200
+Message-Id: <20210510102023.094120004@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
 References: <20210510102014.849075526@linuxfoundation.org>
@@ -42,45 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Alex Deucher <alexander.deucher@amd.com>
 
-[ Upstream commit 7d98d416c2cc1c1f7d9508e887de4630e521d797 ]
+[ Upstream commit 42b599732ee1d4ac742760050603fb6046789011 ]
 
-clang points out that the %hu format string does not match the type
-of the variables here:
+We need to clean up the dcn3 clk_mgr.
 
-drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c:263:7: warning: format specifies type 'unsigned short' but the argument has type 'unsigned int' [-Wformat]
-                                  version_major, version_minor);
-                                  ^~~~~~~~~~~~~
-include/drm/drm_print.h:498:19: note: expanded from macro 'DRM_ERROR'
-        __drm_err(fmt, ##__VA_ARGS__)
-                  ~~~    ^~~~~~~~~~~
-
-Change it to a regular %u, the same way a previous patch did for
-another instance of the same warning.
-
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Nirmoy Das <nirmoy.das@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/clk_mgr/clk_mgr.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-index e2ed4689118a..c6dbc0801604 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-@@ -259,7 +259,7 @@ int amdgpu_uvd_sw_init(struct amdgpu_device *adev)
- 		if ((adev->asic_type == CHIP_POLARIS10 ||
- 		     adev->asic_type == CHIP_POLARIS11) &&
- 		    (adev->uvd.fw_version < FW_1_66_16))
--			DRM_ERROR("POLARIS10/11 UVD firmware version %hu.%hu is too old.\n",
-+			DRM_ERROR("POLARIS10/11 UVD firmware version %u.%u is too old.\n",
- 				  version_major, version_minor);
- 	} else {
- 		unsigned int enc_major, enc_minor, dec_minor;
+diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/clk_mgr.c
+index 995ffbbf64e7..1ee27f2f28f1 100644
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/clk_mgr.c
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/clk_mgr.c
+@@ -217,6 +217,9 @@ void dc_destroy_clk_mgr(struct clk_mgr *clk_mgr_base)
+ 		if (ASICREV_IS_SIENNA_CICHLID_P(clk_mgr_base->ctx->asic_id.hw_internal_rev)) {
+ 			dcn3_clk_mgr_destroy(clk_mgr);
+ 		}
++		if (ASICREV_IS_DIMGREY_CAVEFISH_P(clk_mgr_base->ctx->asic_id.hw_internal_rev)) {
++			dcn3_clk_mgr_destroy(clk_mgr);
++		}
+ 		break;
+ 
+ 	case FAMILY_VGH:
 -- 
 2.30.2
 
