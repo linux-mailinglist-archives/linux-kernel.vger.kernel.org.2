@@ -2,155 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10DA378DA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C23378DA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 15:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349402AbhEJMtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 08:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236422AbhEJLcQ (ORCPT
+        id S1349386AbhEJMtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:49:11 -0400
+Received: from mail-lj1-f178.google.com ([209.85.208.178]:35759 "EHLO
+        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236411AbhEJLcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 07:32:16 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB3AC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 04:31:11 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id h7so8993436plt.1
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 04:31:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DEr92TvElNvZVVwVBlsQXXoLkEg1JG5K3b9rpvwFvvA=;
-        b=C2letRqlZ0atjYe3hWGu+e9vEWQ/lTVGq7e/qswos0srnGnsNcRvb1bvB+ivmTiwfC
-         CDDoSnwzm1ZAE4yHs6sCS84t8xCvLpAwuaGzxsW/JmwONoMLt7/saZWqNd3nvnneLuOs
-         j0nweoXuskRg+HHBf6wX+YHs4w0S7Rqk6pdFqcH7yEaXFC1fy60U5yZ4e6vFl8UYhzv/
-         yMZ/U07pC/9IZcI2ZdRncNQLtiGKbwLKbtP/mwNvy6A1wLW1Cwbp6SQlgiG4+umjzeuk
-         LCPz2q6CXJRzl+eSP1lJmx5qPoIYr3dSf7xvABy5CmXYbnDxCc7byr9+PStWmZ1BGibJ
-         0QlQ==
+Received: by mail-lj1-f178.google.com with SMTP id f12so7783125ljp.2;
+        Mon, 10 May 2021 04:31:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=DEr92TvElNvZVVwVBlsQXXoLkEg1JG5K3b9rpvwFvvA=;
-        b=S/Js7ZgJ/4yBR2BHmiE0jS4HSfyStdLozJmrIk/o31ZKrBR4Y+/EySbA44cFZagbbF
-         ewqiWZjpqRvUxDUXvf8MhrNtJgvZNdEjQoWNKUSeaiB2QBMZlP0Ws9jPleXn0K3Xtb8l
-         oALDx2wTmlyQ5+NWiBaWEEftmX4tRr1XeUMydUkm7NdF8Hex7p3BVyF1Dgw8tbqd3R9Y
-         4eAivUOatiUf/GSnbrZR6CFVnp/9+o8e/MPxJBeDZTH74NDf8LGWu/r4Nz96KvKD6o5s
-         h7KU3MrGf0bc2KM9DA5TkQbI7+gKxyf65Z8V+KBkvSuctJIsxLHtSfcdjpkC+wKAH2mM
-         HsNw==
-X-Gm-Message-State: AOAM532Y37sZa/QogiCXsdFpT+/nwnMmNAk02BxGgSjSzaBguPNu/t2o
-        /54motgH5llBCR1jWlJ9wpk=
-X-Google-Smtp-Source: ABdhPJzYnn5Z1dKTAQNappRr/V5T1nb82BZzhzvdcRFxmpT2JVxf5za4BAdBG+Rc+B087RSmsHFPEw==
-X-Received: by 2002:a17:902:be02:b029:e6:bb0d:6c1e with SMTP id r2-20020a170902be02b02900e6bb0d6c1emr23553793pls.77.1620646270881;
+        bh=HO0OZAR8RDePAfoi+bjAtVFFyQna6RuzpHMHunE+bLg=;
+        b=ZW2D4XibwjVwu9IXYmoQMfnVY3MT+y7ZfePSAB4gvtQVoECGovUeA5Xavw/5GpSALg
+         XGYFvVNmaVdF/DUPkMtZ6YA28E9j5uuW4u3h26ojVRBPm5VpbZN/Vhj2juYW0UwX+Xoj
+         +Y7sgfcsevLL9hI1jV6InoinhBONGihSn1rHjKr65QUpIFCgodx963SXeA2CEWJfVzPc
+         ArOBj2jdpdHU//iI7GVLeyLiuJEX3NtXIvOatawiZDfo3o+y6gr4kL/lMF+8yIhKKHvK
+         C9SS4A19QGXjh67VfKzDrGCFY590mwZ3xZQwkrAcM++Uw7IlzGfAj9ZTFVBc7SQvQ7cn
+         Dy0w==
+X-Gm-Message-State: AOAM532T8nH7h27Fk/yj+X5MQXDJsubQhrlMSmCm+JENQMQTjZIgDRzb
+        Y38+jxs7tMMzWmg/owwRiP8=
+X-Google-Smtp-Source: ABdhPJzWPDuzHPL2aeqOptQcSZLppX3hckXvnkL4pzQVAfc7K+EPfvPRhwOPfLvzQm8Ja1HxqrxEBg==
+X-Received: by 2002:a05:651c:1068:: with SMTP id y8mr19797926ljm.59.1620646270008;
         Mon, 10 May 2021 04:31:10 -0700 (PDT)
-Received: from ojas ([122.177.206.92])
-        by smtp.gmail.com with ESMTPSA id 3sm10347744pff.132.2021.05.10.04.31.08
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
+        by smtp.gmail.com with ESMTPSA id s23sm3214369ljh.16.2021.05.10.04.31.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 04:31:10 -0700 (PDT)
-Date:   Mon, 10 May 2021 17:01:01 +0530
-From:   Ojaswin Mujoo <ojaswin98@gmail.com>
-To:     linux-staging@lists.linux.dev
-Cc:     linux-kernel@vger.kernel.org, ojaswin98@gmail.com,
-        gregkh@linuxfoundation.org, atulgopinathan@gmail.com,
-        yashsri421@gmail.com
-Subject: [PATCH 1/3] staging: rtl8192e: Avoid multiple line dereference
-Message-ID: <435b60bd8874f8105b4af6e7eb9ee5bdbfe3112f.1620642396.git.ojaswin98@gmail.com>
-References: <cover.1620642396.git.ojaswin98@gmail.com>
+        Mon, 10 May 2021 04:31:09 -0700 (PDT)
+Date:   Mon, 10 May 2021 14:31:03 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: [PATCH v9 09/10] regulator: bd9576: Fix the driver name in id table
+Message-ID: <2f287fb014fd67bf1dc59e9d3f66f7f4f0a82daa.1620645507.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1620645507.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
 Content-Disposition: inline
-In-Reply-To: <cover.1620642396.git.ojaswin98@gmail.com>
+In-Reply-To: <cover.1620645507.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid multiple line dereference to make the code more readable, as
-suggested by checkpatch.pl
 
-This patch fixes the following checkpatch.pl warning:
+--zhXaljGHf11kAtnf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-- WARNING: Avoid multiple line dereference
-    prefer 'priv->rtllib->swcamtable[4].key_buf[0]'
-  FILE: ./rtl8192e/rtl8192e/rtl_cam.c:189
+Driver name was changed in MFD cell:
+https://lore.kernel.org/lkml/560b9748094392493ebf7af11b6cc558776c4fd5.16130=
+31055.git.matti.vaittinen@fi.rohmeurope.com/
+Fix the ID table to match this.
 
-- WARNING: Avoid multiple line dereference
-    prefer 'priv->rtllib->swcamtable[4].key_buf[0]'
-  FILE: ./rtl8192e/rtl8192e/rtl_cam.c:195
-
-- WARNING: Avoid multiple line dereference
-    prefer 'priv->rtllib->swcamtable[4].key_buf[0]'
-  FILE: ./rtl8192e/rtl8192e/rtl_cam.c:204
-
-- WARNING: Avoid multiple line dereference
-    prefer 'priv->rtllib->swcamtable[4].key_buf[0]'
-  FILE: ./rtl8192e/rtl8192e/rtl_cam.c:209
-
-- WARNING: Avoid multiple line dereference
-    prefer 'info_element->data[info_element->len]'
-  FILE: ./rtl8192e/rtllib_rx.c:2287
-
-Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 ---
-These changes cause some of the lines to cross 80 characters however I
-believe that they improve the readability and provide a good trade off.
-Would love to hear your thoughts and suggestions on this.
+No changes since RFC-v2
+---
+ drivers/regulator/bd9576-regulator.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/staging/rtl8192e/rtl8192e/rtl_cam.c | 12 ++++--------
- drivers/staging/rtl8192e/rtllib_rx.c        |  3 +--
- 2 files changed, 5 insertions(+), 10 deletions(-)
+diff --git a/drivers/regulator/bd9576-regulator.c b/drivers/regulator/bd957=
+6-regulator.c
+index 6ba12af4c632..d78d6127c573 100644
+--- a/drivers/regulator/bd9576-regulator.c
++++ b/drivers/regulator/bd9576-regulator.c
+@@ -1114,8 +1114,8 @@ static int bd957x_probe(struct platform_device *pdev)
+ }
+=20
+ static const struct platform_device_id bd957x_pmic_id[] =3D {
+-	{ "bd9573-pmic", ROHM_CHIP_TYPE_BD9573 },
+-	{ "bd9576-pmic", ROHM_CHIP_TYPE_BD9576 },
++	{ "bd9573-regulator", ROHM_CHIP_TYPE_BD9573 },
++	{ "bd9576-regulator", ROHM_CHIP_TYPE_BD9576 },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(platform, bd957x_pmic_id);
+--=20
+2.25.4
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_cam.c b/drivers/staging/rtl8192e/rtl8192e/rtl_cam.c
-index c8506517cc8d..f75a12543781 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_cam.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_cam.c
-@@ -185,14 +185,12 @@ void rtl92e_cam_restore(struct net_device *dev)
- 			rtl92e_set_key(dev, 4, 0,
- 				       priv->rtllib->pairwise_key_type,
- 				       (u8 *)dev->dev_addr, 0,
--				       (u32 *)(&priv->rtllib->swcamtable[4].
--				       key_buf[0]));
-+				       (u32 *)(&priv->rtllib->swcamtable[4].key_buf[0]));
- 		} else {
- 			rtl92e_set_key(dev, 4, 0,
- 				       priv->rtllib->pairwise_key_type,
- 				       MacAddr, 0,
--				       (u32 *)(&priv->rtllib->swcamtable[4].
--				       key_buf[0]));
-+				       (u32 *)(&priv->rtllib->swcamtable[4].key_buf[0]));
- 		}
- 
- 	} else if (priv->rtllib->pairwise_key_type == KEY_TYPE_CCMP) {
-@@ -200,13 +198,11 @@ void rtl92e_cam_restore(struct net_device *dev)
- 			rtl92e_set_key(dev, 4, 0,
- 				       priv->rtllib->pairwise_key_type,
- 				       (u8 *)dev->dev_addr, 0,
--				       (u32 *)(&priv->rtllib->swcamtable[4].
--				       key_buf[0]));
-+				       (u32 *)(&priv->rtllib->swcamtable[4].key_buf[0]));
- 		} else {
- 			rtl92e_set_key(dev, 4, 0,
- 				       priv->rtllib->pairwise_key_type, MacAddr,
--				       0, (u32 *)(&priv->rtllib->swcamtable[4].
--				       key_buf[0]));
-+				       0, (u32 *)(&priv->rtllib->swcamtable[4].key_buf[0]));
- 			}
- 	}
- 
-diff --git a/drivers/staging/rtl8192e/rtllib_rx.c b/drivers/staging/rtl8192e/rtllib_rx.c
-index 15bbb63ca130..16931a4fae5d 100644
---- a/drivers/staging/rtl8192e/rtllib_rx.c
-+++ b/drivers/staging/rtl8192e/rtllib_rx.c
-@@ -2283,8 +2283,7 @@ int rtllib_parse_info_param(struct rtllib_device *ieee,
- 
- 		length -= sizeof(*info_element) + info_element->len;
- 		info_element =
--		    (struct rtllib_info_element *)&info_element->
--		    data[info_element->len];
-+		    (struct rtllib_info_element *)&info_element->data[info_element->len];
- 	}
- 
- 	if (!network->atheros_cap_exist && !network->broadcom_cap_exist &&
--- 
-2.25.1
 
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--zhXaljGHf11kAtnf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmCZGXcACgkQeFA3/03a
+ocVKBQf/Xi2lIzJHSz65RusNPNChegG1NM7TQp7j3bzxjd3e46GZQeMDhfTfGRzx
++Ih+xhHtWHq/G99osjjJ4CBsFjrIwtnDuJr5gGDRMF52OdHrL5B0NKO4JqFHpst+
+2CuqBCfjX0upXURfzJ3NUWdyvVj4ay4/i8yeK364I0N37nQ/YGcyhcSzroAo8DZ5
+qnXvgsZI+GUVAX1yCGJK0UskKj0VGkax7ySea2YtlUqruzCc7CNyozHrA0Dyg2k4
+gjkpJrBfz24X7ixdYmhw5/AFt5eDctlmmbK4+q0XNnx8qY75J8t1PGTnCYS0BzgR
+x9c6MhIGpm/BR5+pzn2ssxZCY5DzWA==
+=NhL8
+-----END PGP SIGNATURE-----
+
+--zhXaljGHf11kAtnf--
