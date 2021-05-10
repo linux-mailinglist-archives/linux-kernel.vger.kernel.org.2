@@ -2,177 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F85F377D27
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 09:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F123D377D2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 09:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbhEJHdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 03:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
+        id S230093AbhEJHfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 03:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbhEJHdI (ORCPT
+        with ESMTP id S229684AbhEJHfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 03:33:08 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B0BC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 00:32:03 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id o127so8553958wmo.4
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 00:32:03 -0700 (PDT)
+        Mon, 10 May 2021 03:35:16 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE4CC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 00:34:11 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id p12so12648303pgj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 00:34:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BVveX40oG3+XF8F3OG1N2nxD1/wOLxHS/eZqKO4cLNY=;
-        b=hak7OcI+2EohJWa34x3onUaOptc78CN+rzeDOpF+qf/7EeCpRqmBDXDxBXb5JjeUwP
-         fpn09bNifT8+fQCPHJAs24Pt5tH3KOtPGZB0zNKEgvy10D61Lb9kqh4UC9oKQUl9VdeO
-         WgeQuuMbxFNui4umOCTrT2b60LME46jU2jZtznHHqMSegw6HLV10BtT8URu1zqM68ItR
-         W6YHRO/vUuM+6TFaWESJb06QxyLBNLQ6//H2fQo5Po/JgOyoOwNlFAKleFyFIcl2Y2Un
-         6fk6Crh0zHVg06CLVSFgHJIJkWsP+JuTZ9Y3zrD4L66/NXw/zfbU+q0YeQDduMFFMtZt
-         x8Yw==
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=vA3gf5U3qgSMXovfcB4UhmgzKIceIYSkZrJbqbnFQQs=;
+        b=TnymSowGCl8At/Z5vJjiv6UkoDI9j2N2BTdVmLCLCOKMpsMJulNPkSWZYc6yDKrvXU
+         yKbWB1niCmvzdg5oH7OBLZdRVTkvbkCTpoF0KeXI6Gi0a+ZJwcsXngGOJdw7IqLU+aJR
+         95UFJcfONNQPxssqx66EH8m4kWwWi+iDJwaGDtGuN8Sk+rNHrBQ5KmrsE04RYRv3/VSG
+         94INqG/VKbm96f5jrlb/FK6dyOX1CWATud+m/4qnve7TXFuVOkrDX6SEbRJ1gW6U+DRx
+         Z/7fQRIGJ39jY75K/HWCaIByNhj+rNsIptw+lzY7WEc+Z60Nm3/Tp9qlHrhRmLhA+Xiv
+         QiTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BVveX40oG3+XF8F3OG1N2nxD1/wOLxHS/eZqKO4cLNY=;
-        b=mUhZgRb9Wvkmex42J0NJERM6yZooYYyVcoi6NMjBl0ABxlJc6dPe9++WmVn1ehx8LV
-         0wbwI5tfZFUktzTEfD7vs2uemr1i5vY6Hgusg45cOYjlo0z5xGhZBMRcXW5wi3hFHOJ/
-         +6WUrNoPm0/wx7gAQLK2o7Fj8nBFVsIGKRqkEwXbaaP5NweCLRayr4yXi4+zsPcm6ZAB
-         Uh14pCOlpdcweCPxL1GNYnI42L78XFi9jy0Z+Wj2HxWeuEStvulVAiZquaLfdeVoGKq8
-         aj3aEhWIUkqPuyLnXq9kfkP1Jg7h2wHbCNZI7gc8g0KsDfzsIgnatDieBs3dULLD6Ke8
-         24uA==
-X-Gm-Message-State: AOAM532iibFKvP1IXQF9zWQNupMHNoM9Unxcm/3wo/iGjilu44mOy76B
-        MH1tE52Nz4TxjbF1jIbLGTZFClPFha6qc8NHLRfWKA==
-X-Google-Smtp-Source: ABdhPJxt7PlX6HJzw+MGjCsX+tnVWLmWZDLHwcgxN0cQG5JP5Sdkfot8LM7/BIwFigBJgOWWs1VBAEpr3YlorXPISgo=
-X-Received: by 2002:a7b:c8ca:: with SMTP id f10mr24785123wml.118.1620631922323;
- Mon, 10 May 2021 00:32:02 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=vA3gf5U3qgSMXovfcB4UhmgzKIceIYSkZrJbqbnFQQs=;
+        b=bzKmZw2aXgtITHFtJqFa+F4VwFXOdbUNUetXZND2KNUUKyI+wzNfL7XbdZksleJEVP
+         bfaetqieayw6qFV4d5ySC6UVDTvnmuHmpr6zJ9J1O+jbRR5tpsIyjBx02EpOvC/47nXl
+         Q+XUt5u/sN4S1MbG+0cUgXJOhVz7UDuAhpe0QrE3cRurknLqWwdWYd0BoGIPQ1FjKx8G
+         62nDxK5AWjWDEP/nXLOnNW6+WqNpJ5eF+OoPA5f7Ss2X3RiJxJLiEu5VQ4ckXB1uv5sX
+         eSyfeVcWLyeBn1CU3ZaYT3mA+5zlyybr95c8dzGdhO4BhtEBuuyDY9cAv8ojGoPxD/r8
+         wXAA==
+X-Gm-Message-State: AOAM532aEBQAjLceCv9DnHLepOuq8pTec8258cK+grz6CZpH77D7BXd+
+        +u2WOyzAl1ZvSAiJMsq0gJNeDg==
+X-Google-Smtp-Source: ABdhPJzoWupZxWPbVtYgLa+kmwmlg4iI4EhPt8v8lypgPYnkfkeQ/6SdyDSS7bmttVEVYeQvrgTTCA==
+X-Received: by 2002:a63:2c92:: with SMTP id s140mr24065723pgs.39.1620632051387;
+        Mon, 10 May 2021 00:34:11 -0700 (PDT)
+Received: from localhost (110-175-254-242.static.tpgi.com.au. [110.175.254.242])
+        by smtp.gmail.com with UTF8SMTPSA id s6sm10396487pgv.48.2021.05.10.00.34.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 00:34:10 -0700 (PDT)
+Message-ID: <e4984fa0-2afe-a987-4fb8-61b878431b1f@ozlabs.ru>
+Date:   Mon, 10 May 2021 17:34:04 +1000
 MIME-Version: 1.0
-References: <20210225090610.242623-1-allen.lkml@gmail.com> <20210507035816.426585-1-tyhicks@linux.microsoft.com>
- <720CDF03-42F9-43C3-B3B3-999E4A5E2864@linux.microsoft.com>
- <CAHUa44FHo2_EUzFzHnakkm3o7H-Nn+k4hgqT2WNFezZO6D8mxA@mail.gmail.com> <20210507131722.GI4967@sequoia>
-In-Reply-To: <20210507131722.GI4967@sequoia>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Mon, 10 May 2021 09:31:51 +0200
-Message-ID: <CAHUa44F7AzRQ0ZUBtJV2Y39tk1mPGAbetn7i8-DVAsSFLbFgEg@mail.gmail.com>
-Subject: Re: [PATCH] optee: Disable shm cache when booting the crash kernel
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Allen Pais <apais@linux.microsoft.com>, zajec5@gmail.com,
-        Allen Pais <allen.lkml@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
+ Thunderbird/88.0
+Subject: Re: [PATCH v4 07/11] powerpc/pseries/iommu: Reorganize
+ iommu_table_setparms*() with new helper
+Content-Language: en-US
+To:     Leonardo Bras <leobras.c@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210430163145.146984-1-leobras.c@gmail.com>
+ <20210430163145.146984-8-leobras.c@gmail.com>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <20210430163145.146984-8-leobras.c@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 7, 2021 at 3:17 PM Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
->
-> On 2021-05-07 11:23:17, Jens Wiklander wrote:
-> > On Fri, May 7, 2021 at 9:00 AM Allen Pais <apais@linux.microsoft.com> wrote:
-> > >
-> > >
-> > >
-> > > > On 07-May-2021, at 9:28 AM, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
-> > > >
-> > > > The .shutdown hook is not called after a kernel crash when a kdump
-> > > > kernel is pre-loaded. A kexec into the kdump kernel takes place as
-> > > > quickly as possible without allowing drivers to clean up.
-> > > >
-> > > > That means that the OP-TEE shared memory cache, which was initialized by
-> > > > the kernel that crashed, is still in place when the kdump kernel is
-> > > > booted. As the kdump kernel is shutdown, the .shutdown hook is called,
-> > > > which calls optee_disable_shm_cache(), and OP-TEE's
-> > > > OPTEE_SMC_DISABLE_SHM_CACHE API returns virtual addresses that are not
-> > > > mapped for the kdump kernel since the cache was set up by the previous
-> > > > kernel. Trying to dereference the tee_shm pointer or otherwise translate
-> > > > the address results in a fault that cannot be handled:
-> > > >
-> > > > Unable to handle kernel paging request at virtual address ffff4317b9c09744
-> > > > Mem abort info:
-> > > >   ESR = 0x96000004
-> > > >   EC = 0x25: DABT (current EL), IL = 32 bits
-> > > >   SET = 0, FnV = 0
-> > > >   EA = 0, S1PTW = 0
-> > > > Data abort info:
-> > > >   ISV = 0, ISS = 0x00000004
-> > > >   CM = 0, WnR = 0
-> > > > swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000970b1e000
-> > > > [ffff4317b9c09744] pgd=0000000000000000, p4d=0000000000000000
-> > > > Internal error: Oops: 96000004 [#1] SMP
-> > > > Modules linked in: bnxt_en pcie_iproc_platform pcie_iproc diagbe(O)
-> > > > CPU: 4 PID: 1 Comm: systemd-shutdow Tainted: G           O      5.10.19.8 #1
-> > > > Hardware name: Redacted (DT)
-> > > > pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-> > > > pc : tee_shm_free (/usr/src/kernel/drivers/tee/tee_shm.c:363)
-> > > > lr : optee_disable_shm_cache (/usr/src/kernel/drivers/tee/optee/call.c:441)
-> > > > sp : ffff80001005bb70
-> > > > x29: ffff80001005bb70 x28: ffff608e74648e00
-> > > > x27: ffff80001005bb98 x26: dead000000000100
-> > > > x25: ffff80001005bbb8 x24: aaaaaaaaaaaaaaaa
-> > > > x23: ffff608e74cf8818 x22: ffff608e738be600
-> > > > x21: ffff80001005bbc8 x20: ffff608e738be638
-> > > > x19: ffff4317b9c09700 x18: ffffffffffffffff
-> > > > x17: 0000000000000041 x16: ffffba61b5171764
-> > > > x15: 0000000000000004 x14: 0000000000000fff
-> > > > x13: ffffba61b5c9dfc8 x12: 0000000000000003
-> > > > x11: 0000000000000000 x10: 0000000000000000
-> > > > x9 : ffffba61b5413824 x8 : 00000000ffff4317
-> > > > x7 : 0000000000000000 x6 : 0000000000000000
-> > > > x5 : 0000000000000000 x4 : 0000000000000000
-> > > > x3 : 0000000000000000 x2 : ffff4317b9c09700
-> > > > x1 : 00000000ffff4317 x0 : ffff4317b9c09700
-> > > > Call trace:
-> > > > tee_shm_free (/usr/src/kernel/drivers/tee/tee_shm.c:363)
-> > > > optee_disable_shm_cache (/usr/src/kernel/drivers/tee/optee/call.c:441)
-> > > > optee_shutdown (/usr/src/kernel/drivers/tee/optee/core.c:636)
-> > > > platform_drv_shutdown (/usr/src/kernel/drivers/base/platform.c:800)
-> > > > device_shutdown (/usr/src/kernel/include/linux/device.h:758 /usr/src/kernel/drivers/base/core.c:4078)
-> > > > kernel_restart (/usr/src/kernel/kernel/reboot.c:221 /usr/src/kernel/kernel/reboot.c:248)
-> > > > __arm64_sys_reboot (/usr/src/kernel/kernel/reboot.c:349 /usr/src/kernel/kernel/reboot.c:312 /usr/src/kernel/kernel/reboot.c:312)
-> > > > do_el0_svc (/usr/src/kernel/arch/arm64/kernel/syscall.c:56 /usr/src/kernel/arch/arm64/kernel/syscall.c:158 /usr/src/kernel/arch/arm64/kernel/syscall.c:197)
-> > > > el0_svc (/usr/src/kernel/arch/arm64/kernel/entry-common.c:368)
-> > > > el0_sync_handler (/usr/src/kernel/arch/arm64/kernel/entry-common.c:428)
-> > > > el0_sync (/usr/src/kernel/arch/arm64/kernel/entry.S:671)
-> > > > Code: aa0003f3 b5000060 12800003 14000002 (b9404663)
-> > > >
-> > > > When booting the kdump kernel, drain the shared memory cache while being
-> > > > careful to not translate the addresses returned from
-> > > > OPTEE_SMC_DISABLE_SHM_CACHE. Once the invalid cache objects are drained
-> > > > and the cache is disabled, proceed with re-enabling the cache so that we
-> > > > aren't dealing with invalid addresses while shutting down the kdump
-> > > > kernel.
-> > > >
-> > > > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > > > ---
-> > > >
-> > > > This patch fixes a crash introduced by "optee: fix tee out of memory
-> > > > failure seen during kexec reboot"[1]. However, I don't think that the
-> > > > original two patch series[2] plus this patch is the full solution to
-> > > > properly handling OP-TEE shared memory across kexec.
-> > > >
-> > > > While testing this fix, I did about 10 kexec reboots and then triggered
-> > > > a kernel crash by writing 'c' to /proc/sysrq-trigger. The kdump kernel
-> > > > became unresponsive during boot while steadily streaming the following
-> > > > errors to the serial console:
-> > > >
-> > > > arm-smmu 64000000.mmu: Blocked unknown Stream ID 0x2000; boot with "arm-smmu.disable_bypass=0" to allow, but this may have security implications
-> > > > arm-smmu 64000000.mmu:     GFSR 0x00000002, GFSYNR0 0x00000002, GFSYNR1 0x00002000, GFSYNR2 0x00000000
-> > > >
-> > > > I suspect that this is related to the problems of OP-TEE shared memory
-> > > > handling across kexec. My current hunch is that while we've disabled the
-> > > > shared memory cache with this patch, we haven't unregistered all of the
-> > > > addresses that the previous kernel (which crashed) had registered with
-> > > > OP-TEE and that perhaps OP-TEE OS is still trying to make use those
-> > > > addresses?
->
-> @Jens did you have any thoughts on what could be happening here with the
-> arm-smmu errors? Do I need to try to unregister the cached shared memory
-> addresses when booting the kdump kernel, rather than just disabling the
-> caches?
 
-No idea. There's no support for SMMU in upstream OP-TEE. Just
-disabling the caches should be good enough. You could try to never
-enable the cache so see if it makes any difference.
 
-Cheers,
-Jens
+On 5/1/21 02:31, Leonardo Bras wrote:
+> Add a new helper _iommu_table_setparms(), and use it in
+> iommu_table_setparms() and iommu_table_setparms_lpar() to avoid duplicated
+> code.
+> 
+> Also, setting tbl->it_ops was happening outsite iommu_table_setparms*(),
+> so move it to the new helper. Since we need the iommu_table_ops to be
+> declared before used, move iommu_table_lpar_multi_ops and
+> iommu_table_pseries_ops to before their respective iommu_table_setparms*().
+> 
+> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+
+
+This does not apply anymore as it conflicts with my 4be518d838809e2135.
+
+
+> ---
+>   arch/powerpc/platforms/pseries/iommu.c | 100 ++++++++++++-------------
+>   1 file changed, 50 insertions(+), 50 deletions(-)
+> 
+> diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
+> index 5a70ecd579b8..89cb6e9e9f31 100644
+> --- a/arch/powerpc/platforms/pseries/iommu.c
+> +++ b/arch/powerpc/platforms/pseries/iommu.c
+> @@ -53,6 +53,11 @@ enum {
+>   	DDW_EXT_QUERY_OUT_SIZE = 2
+>   };
+>   
+> +#ifdef CONFIG_IOMMU_API
+> +static int tce_exchange_pseries(struct iommu_table *tbl, long index, unsigned long *tce,
+> +				enum dma_data_direction *direction, bool realmode);
+> +#endif
+
+
+Instead of declaring this so far from the the code which needs it, may 
+be add
+
+struct iommu_table_ops iommu_table_lpar_multi_ops;
+
+right before iommu_table_setparms() (as the sctruct is what you actually 
+want there), and you won't need to move iommu_table_pseries_ops as well.
+
+
+> +
+>   static struct iommu_table *iommu_pseries_alloc_table(int node)
+>   {
+>   	struct iommu_table *tbl;
+> @@ -501,6 +506,28 @@ static int tce_setrange_multi_pSeriesLP_walk(unsigned long start_pfn,
+>   	return tce_setrange_multi_pSeriesLP(start_pfn, num_pfn, arg);
+>   }
+>   
+> +static inline void _iommu_table_setparms(struct iommu_table *tbl, unsigned long busno,
+
+
+The underscore is confusing, may be iommu_table_do_setparms()? 
+iommu_table_setparms_common()? Not sure. I cannot recall a single 
+function with just one leading underscore, I suspect I was pushed back 
+when I tried adding one ages ago :) "inline" seems excessive, the 
+compiler will probably figure it out anyway.
+
+
+
+> +					 unsigned long liobn, unsigned long win_addr,
+> +					 unsigned long window_size, unsigned long page_shift,
+> +					 unsigned long base, struct iommu_table_ops *table_ops)
+
+
+Make "base" a pointer. Or, better, just keep setting it directly in 
+iommu_table_setparms() rather than passing 0 around.
+
+The same comment about "liobn" - set it in iommu_table_setparms_lpar(). 
+The reviewer will see what field atters in what situation imho.
+
+
+
+> +{
+> +	tbl->it_busno = busno;
+> +	tbl->it_index = liobn;
+> +	tbl->it_offset = win_addr >> page_shift;
+> +	tbl->it_size = window_size >> page_shift;
+> +	tbl->it_page_shift = page_shift;
+> +	tbl->it_base = base;
+> +	tbl->it_blocksize = 16;
+> +	tbl->it_type = TCE_PCI;
+> +	tbl->it_ops = table_ops;
+> +}
+> +
+> +struct iommu_table_ops iommu_table_pseries_ops = {
+> +	.set = tce_build_pSeries,
+> +	.clear = tce_free_pSeries,
+> +	.get = tce_get_pseries
+> +};
+> +
+>   static void iommu_table_setparms(struct pci_controller *phb,
+>   				 struct device_node *dn,
+>   				 struct iommu_table *tbl)
+> @@ -509,8 +536,13 @@ static void iommu_table_setparms(struct pci_controller *phb,
+>   	const unsigned long *basep;
+>   	const u32 *sizep;
+>   
+> -	node = phb->dn;
+> +	/* Test if we are going over 2GB of DMA space */
+> +	if (phb->dma_window_base_cur + phb->dma_window_size > SZ_2G) {
+> +		udbg_printf("PCI_DMA: Unexpected number of IOAs under this PHB.\n");
+> +		panic("PCI_DMA: Unexpected number of IOAs under this PHB.\n");
+> +	}
+>   
+> +	node = phb->dn;
+>   	basep = of_get_property(node, "linux,tce-base", NULL);
+>   	sizep = of_get_property(node, "linux,tce-size", NULL);
+>   	if (basep == NULL || sizep == NULL) {
+> @@ -519,33 +551,25 @@ static void iommu_table_setparms(struct pci_controller *phb,
+>   		return;
+>   	}
+>   
+> -	tbl->it_base = (unsigned long)__va(*basep);
+> +	_iommu_table_setparms(tbl, phb->bus->number, 0, phb->dma_window_base_cur,
+> +			      phb->dma_window_size, IOMMU_PAGE_SHIFT_4K,
+> +			      (unsigned long)__va(*basep), &iommu_table_pseries_ops);
+>   
+>   	if (!is_kdump_kernel())
+>   		memset((void *)tbl->it_base, 0, *sizep);
+>   
+> -	tbl->it_busno = phb->bus->number;
+> -	tbl->it_page_shift = IOMMU_PAGE_SHIFT_4K;
+> -
+> -	/* Units of tce entries */
+> -	tbl->it_offset = phb->dma_window_base_cur >> tbl->it_page_shift;
+> -
+> -	/* Test if we are going over 2GB of DMA space */
+> -	if (phb->dma_window_base_cur + phb->dma_window_size > 0x80000000ul) {
+> -		udbg_printf("PCI_DMA: Unexpected number of IOAs under this PHB.\n");
+> -		panic("PCI_DMA: Unexpected number of IOAs under this PHB.\n");
+> -	}
+> -
+>   	phb->dma_window_base_cur += phb->dma_window_size;
+> -
+> -	/* Set the tce table size - measured in entries */
+> -	tbl->it_size = phb->dma_window_size >> tbl->it_page_shift;
+> -
+> -	tbl->it_index = 0;
+> -	tbl->it_blocksize = 16;
+> -	tbl->it_type = TCE_PCI;
+>   }
+>   
+> +struct iommu_table_ops iommu_table_lpar_multi_ops = {
+> +	.set = tce_buildmulti_pSeriesLP,
+> +#ifdef CONFIG_IOMMU_API
+> +	.xchg_no_kill = tce_exchange_pseries,
+> +#endif
+> +	.clear = tce_freemulti_pSeriesLP,
+> +	.get = tce_get_pSeriesLP
+> +};
+> +
+>   /*
+>    * iommu_table_setparms_lpar
+>    *
+> @@ -557,28 +581,17 @@ static void iommu_table_setparms_lpar(struct pci_controller *phb,
+>   				      struct iommu_table_group *table_group,
+>   				      const __be32 *dma_window)
+>   {
+> -	unsigned long offset, size;
+> +	unsigned long offset, size, liobn;
+>   
+> -	of_parse_dma_window(dn, dma_window, &tbl->it_index, &offset, &size);
+> +	of_parse_dma_window(dn, dma_window, &liobn, &offset, &size);
+>   
+> -	tbl->it_busno = phb->bus->number;
+> -	tbl->it_page_shift = IOMMU_PAGE_SHIFT_4K;
+> -	tbl->it_base   = 0;
+> -	tbl->it_blocksize  = 16;
+> -	tbl->it_type = TCE_PCI;
+> -	tbl->it_offset = offset >> tbl->it_page_shift;
+> -	tbl->it_size = size >> tbl->it_page_shift;
+> +	_iommu_table_setparms(tbl, phb->bus->number, liobn, offset, size, IOMMU_PAGE_SHIFT_4K, 0,
+> +			      &iommu_table_lpar_multi_ops);
+>   
+>   	table_group->tce32_start = offset;
+>   	table_group->tce32_size = size;
+>   }
+>   
+> -struct iommu_table_ops iommu_table_pseries_ops = {
+> -	.set = tce_build_pSeries,
+> -	.clear = tce_free_pSeries,
+> -	.get = tce_get_pseries
+> -};
+> -
+>   static void pci_dma_bus_setup_pSeries(struct pci_bus *bus)
+>   {
+>   	struct device_node *dn;
+> @@ -647,7 +660,6 @@ static void pci_dma_bus_setup_pSeries(struct pci_bus *bus)
+>   	tbl = pci->table_group->tables[0];
+>   
+>   	iommu_table_setparms(pci->phb, dn, tbl);
+> -	tbl->it_ops = &iommu_table_pseries_ops;
+>   	iommu_init_table(tbl, pci->phb->node, 0, 0);
+>   
+>   	/* Divide the rest (1.75GB) among the children */
+> @@ -664,7 +676,7 @@ static int tce_exchange_pseries(struct iommu_table *tbl, long index, unsigned
+>   				bool realmode)
+>   {
+>   	long rc;
+> -	unsigned long ioba = (unsigned long) index << tbl->it_page_shift;
+> +	unsigned long ioba = (unsigned long)index << tbl->it_page_shift;
+
+
+Unrelated change, why, did checkpatch.pl complain?
+
+
+>   	unsigned long flags, oldtce = 0;
+>   	u64 proto_tce = iommu_direction_to_tce_perm(*direction);
+>   	unsigned long newtce = *tce | proto_tce;
+> @@ -686,15 +698,6 @@ static int tce_exchange_pseries(struct iommu_table *tbl, long index, unsigned
+>   }
+>   #endif
+>   
+> -struct iommu_table_ops iommu_table_lpar_multi_ops = {
+> -	.set = tce_buildmulti_pSeriesLP,
+> -#ifdef CONFIG_IOMMU_API
+> -	.xchg_no_kill = tce_exchange_pseries,
+> -#endif
+> -	.clear = tce_freemulti_pSeriesLP,
+> -	.get = tce_get_pSeriesLP
+> -};
+> -
+>   static void pci_dma_bus_setup_pSeriesLP(struct pci_bus *bus)
+>   {
+>   	struct iommu_table *tbl;
+> @@ -729,7 +732,6 @@ static void pci_dma_bus_setup_pSeriesLP(struct pci_bus *bus)
+>   		tbl = ppci->table_group->tables[0];
+>   		iommu_table_setparms_lpar(ppci->phb, pdn, tbl,
+>   				ppci->table_group, dma_window);
+> -		tbl->it_ops = &iommu_table_lpar_multi_ops;
+>   		iommu_init_table(tbl, ppci->phb->node, 0, 0);
+>   		iommu_register_group(ppci->table_group,
+>   				pci_domain_nr(bus), 0);
+> @@ -758,7 +760,6 @@ static void pci_dma_dev_setup_pSeries(struct pci_dev *dev)
+>   		PCI_DN(dn)->table_group = iommu_pseries_alloc_group(phb->node);
+>   		tbl = PCI_DN(dn)->table_group->tables[0];
+>   		iommu_table_setparms(phb, dn, tbl);
+> -		tbl->it_ops = &iommu_table_pseries_ops;
+>   		iommu_init_table(tbl, phb->node, 0, 0);
+>   		set_iommu_table_base(&dev->dev, tbl);
+>   		return;
+> @@ -1436,7 +1437,6 @@ static void pci_dma_dev_setup_pSeriesLP(struct pci_dev *dev)
+>   		tbl = pci->table_group->tables[0];
+>   		iommu_table_setparms_lpar(pci->phb, pdn, tbl,
+>   				pci->table_group, dma_window);
+> -		tbl->it_ops = &iommu_table_lpar_multi_ops;
+>   		iommu_init_table(tbl, pci->phb->node, 0, 0);
+>   		iommu_register_group(pci->table_group,
+>   				pci_domain_nr(pci->phb->bus), 0);
+> 
+
+-- 
+Alexey
