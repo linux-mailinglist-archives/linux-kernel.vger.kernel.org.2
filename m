@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B493786C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71833789EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236903AbhEJLK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:10:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32906 "EHLO mail.kernel.org"
+        id S234742AbhEJLeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:34:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233510AbhEJKuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:50:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 641436194D;
-        Mon, 10 May 2021 10:39:05 +0000 (UTC)
+        id S234924AbhEJK5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:57:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B43E619BF;
+        Mon, 10 May 2021 10:50:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643145;
-        bh=+wccCjzA60YTh/aYIuzJXLgDe3FSQk+9jQJ1eYJtsCc=;
+        s=korg; t=1620643815;
+        bh=oNXefUNI6BSL8PDpVsrn6TLhE4EQ2tji/ziN2mPER+0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t8X9vSnma7UDqS284GfyadUSL7LwgiVL86DM7iOzVdcuBYc0E9wzczD5RkKrScBfH
-         4niohhigBETgtnc2uQGfTYZwwk1Le5/PIeb2OVv0Tot/6RJQNUPd7iOmN/wqrxb3KN
-         JIlgbk8zQ6vUuzez0AO9PdJ5AnQnKnTjnQv7Bvuc=
+        b=n2UdE2FpeCUN/DLz0F1+C08ASTR05A4qTrCpL6++ocqc+AcSA13MRXkhdUgEq+YsZ
+         hYLQyZI+0Txggq6aZ0CauUkVat14f10tr9W1c6nSUPIdqSq2m/zN8EmyVcLtEjXz/O
+         o5U/5ik4ji1ZNFQbzPNgTOz+ZEPTCgAqxStB6yT8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Babu Moger <babu.moger@amd.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org, shaoyunl <shaoyun.liu@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 161/299] selftests/resctrl: Fix missing options "-n" and "-p"
-Date:   Mon, 10 May 2021 12:19:18 +0200
-Message-Id: <20210510102010.276959842@linuxfoundation.org>
+Subject: [PATCH 5.11 169/342] drm/amdgpu : Fix asic reset regression issue introduce by 8f211fe8ac7c4f
+Date:   Mon, 10 May 2021 12:19:19 +0200
+Message-Id: <20210510102015.685727282@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fenghua Yu <fenghua.yu@intel.com>
+From: shaoyunl <shaoyun.liu@amd.com>
 
-[ Upstream commit d7af3d0d515cbdf63b6c3398a3c15ecb1bc2bd38 ]
+[ Upstream commit c8941550aa66b2a90f4b32c45d59e8571e33336e ]
 
-resctrl test suite accepts command line arguments (like -b, -t, -n and -p)
-as documented in the help. But passing -n and -p throws an invalid option
-error. This happens because -n and -p are missing in the list of
-characters that getopt() recognizes as valid arguments. Hence, they are
-treated as invalid options.
+This recent change introduce SDMA interrupt info printing with irq->process function.
+These functions do not require a set function to enable/disable the irq
 
-Fix this by adding them to the list of characters that getopt() recognizes
-as valid arguments. Please note that the main() function already has the
-logic to deal with the values passed as part of these arguments and hence
-no changes are needed there.
-
-Tested-by: Babu Moger <babu.moger@amd.com>
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: shaoyunl <shaoyun.liu@amd.com>
+Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/resctrl/resctrl_tests.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
-index 4b109a59f72d..ac2269610aa9 100644
---- a/tools/testing/selftests/resctrl/resctrl_tests.c
-+++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-@@ -73,7 +73,7 @@ int main(int argc, char **argv)
- 		}
- 	}
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c
+index bea57e8e793f..b535f7c6c61b 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c
+@@ -534,7 +534,7 @@ void amdgpu_irq_gpu_reset_resume_helper(struct amdgpu_device *adev)
+ 		for (j = 0; j < AMDGPU_MAX_IRQ_SRC_ID; ++j) {
+ 			struct amdgpu_irq_src *src = adev->irq.client[i].sources[j];
  
--	while ((c = getopt(argc_new, argv, "ht:b:")) != -1) {
-+	while ((c = getopt(argc_new, argv, "ht:b:n:p:")) != -1) {
- 		char *token;
- 
- 		switch (c) {
+-			if (!src)
++			if (!src || !src->funcs || !src->funcs->set)
+ 				continue;
+ 			for (k = 0; k < src->num_types; k++)
+ 				amdgpu_irq_update(adev, src, k);
 -- 
 2.30.2
 
