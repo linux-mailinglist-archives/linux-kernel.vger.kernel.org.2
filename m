@@ -2,78 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C27983794FF
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4113794FE
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 19:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231993AbhEJRH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 13:07:28 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:40737 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231190AbhEJRHR (ORCPT
+        id S231936AbhEJRHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 13:07:19 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:63725 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231230AbhEJRHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 13:07:17 -0400
-Received: by mail-ot1-f43.google.com with SMTP id t4-20020a05683014c4b02902ed26dd7a60so4916699otq.7;
-        Mon, 10 May 2021 10:06:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h9Y41nhmPOPBNqykP2dYU1c45pvJNiEXKTzaxOZu5Kw=;
-        b=ch/ZgthLF01epyu3TNz7zZLNEwMdbhRUk313+H+SIxklWVGNdQsJGvnnsF++1FC6lQ
-         /tXEkgItGKQ2rDYxVKPvDAx8w4wWjCvFoBuJaXRY9b7zGqry+GXLSbhQgDjGPgE9L8rV
-         aKepmf1feGCi7hTAkwFwAxz44NOnygzl2Ib/iNUbZmx0Tw9+01jPiLMQ8oh+0aDvtd85
-         oKY5VNCspUOYExK2L3G4jKfRmRgDEKmAAg/1iEgEnFaPdRV7ylc4QQaw/C0Z56NDP3Ks
-         nRLYyjcUyz9kTfAcazCxGwoDVciT9d6dUT08RFhE35J3mDvHKBVZT+/wKF42UX0Jui1d
-         t+nA==
-X-Gm-Message-State: AOAM531octmHWu0cDaRACBMrrbl+5mtRcl6fPc4ugVEqP3h9YYvvLBfT
-        QcG8rlHJTTs4vrh97iNVRBta2bq9gu6EkgmpK9s=
-X-Google-Smtp-Source: ABdhPJwXO1Jw0S4KQ/r/4CDdG06ee9HkhBEDrEUr3U13N8JuX70ha4RZNP2j2SuBwqJfzk5ake1vcXx10Au8gE+5XOU=
-X-Received: by 2002:a9d:5a7:: with SMTP id 36mr22420958otd.321.1620666372712;
- Mon, 10 May 2021 10:06:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210506124912.7725-1-jj251510319013@gmail.com>
-In-Reply-To: <20210506124912.7725-1-jj251510319013@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 10 May 2021 19:06:01 +0200
-Message-ID: <CAJZ5v0hNXrh04yP3JA0OuvKx9v6b+BKROfX03RZYTC2-m4zkRg@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: Use fallthrough pseudo-keyword
-To:     Wei Ming Chen <jj251510319013@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Robert Moore <robert.moore@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 6706a4c6;
+        Mon, 10 May 2021 19:06:10 +0200 (CEST)
+Date:   Mon, 10 May 2021 19:06:10 +0200 (CEST)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Rob Herring <robh@kernel.org>
+Cc:     kettenis@openbsd.org, devicetree@vger.kernel.org, marcan@marcan.st,
+        linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210510141955.GA58072@robh.at.kernel.org> (message from Rob
+        Herring on Mon, 10 May 2021 09:19:55 -0500)
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: Add DT bindings for
+ apple,pinctrl
+References: <20210508142000.85116-1-kettenis@openbsd.org>
+ <20210508142000.85116-2-kettenis@openbsd.org> <20210510141955.GA58072@robh.at.kernel.org>
+Message-ID: <5612be5a12568600@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 2:49 PM Wei Ming Chen <jj251510319013@gmail.com> wrote:
->
-> Replace /* FALLTHROUGH */ comment with pseudo-keyword macro fallthrough[1]
->
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
->
-> Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
-> ---
->  drivers/acpi/acpica/utprint.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/acpica/utprint.c b/drivers/acpi/acpica/utprint.c
-> index e37d612e8db5..0b511434b80b 100644
-> --- a/drivers/acpi/acpica/utprint.c
-> +++ b/drivers/acpi/acpica/utprint.c
-> @@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const char *format, va_list args)
->                 case 'X':
->
->                         type |= ACPI_FORMAT_UPPER;
-> -                       /* FALLTHROUGH */
-> +                       fallthrough;
->
->                 case 'x':
->
-> --
+> Date: Mon, 10 May 2021 09:19:55 -0500
+> From: Rob Herring <robh@kernel.org>
 
-This is ACPICA material, so I'm leaving it to Erik and Bob.
+Hi Rob,
 
-Thanks!
+> On Sat, May 08, 2021 at 04:19:55PM +0200, Mark Kettenis wrote:
+> > The Apple GPIO controller is a simple combined pin and GPIO conroller
+> > present on Apple ARM SoC platforms, including various iPhone and iPad
+> > devices and the "Apple Silicon" Macs.
+> > 
+> > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> > ---
+> >  .../bindings/pinctrl/apple,pinctrl.yaml       | 103 ++++++++++++++++++
+> >  MAINTAINERS                                   |   2 +
+> >  include/dt-bindings/pinctrl/apple.h           |  13 +++
+> >  3 files changed, 118 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+> >  create mode 100644 include/dt-bindings/pinctrl/apple.h
+> > 
+> > diff --git a/Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+> > new file mode 100644
+> > index 000000000000..cc7805ca6ba1
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+> > @@ -0,0 +1,103 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/pinctrl/apple,pinctrl.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Apple GPIO controller
+> > +
+> > +maintainers:
+> > +  - Mark Kettenis <kettenis@openbsd.org>
+> > +
+> > +description: |
+> > +  The Apple GPIO controller is a simple combined pin and GPIO conroller
+> > +  present on Apple ARM SoC platforms, including various iPhone and iPad
+> > +  devices and the "Apple Silicon" Macs.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: apple,t8103-pinctrl
+> > +      - const: apple,pinctrl
+> 
+> A genericish fallback is maybe questionable for pinctrl. That's not 
+> often the same from one SoC to the next.
+
+Krzysztof raised a similar point.  It seems that Apple isn't in the
+habit of changing this aspect of their SoCs.  Judging from
+
+  https://github.com/corellium/linux-sandcastle/blob/sandcastle-5.4/drivers/pinctrl/pinctrl-hx-gpio.c
+
+Apple has been using a controller with the same register layout and
+the same known bits in those registers since the T8010 SoC (the A10
+used in the iPhone 7).  So there is some confidence that a single
+driver will work for many generations of the SoC.  Of course we don't
+have any authoritative documentaton on these SoCs so I can't be 100%
+sure that there aren't any subtle differences in the behaviour of the
+hardware.  That's why I also include a more specific compatible for
+the T8103 SoC (the M1 used in the current Macs).
+
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    maxItems: 1
+> > +
+> > +  gpio-controller: true
+> > +
+> > +  '#gpio-cells':
+> > +    const: 2
+> > +
+> > +  gpio-ranges:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    minItems: 1
+> > +    maxItems: 7
+> > +
+> > +  interrupt-controller: true
+> > +
+> > +patternProperties:
+> > +  '-pins$':
+> > +    type: object
+> > +    $ref: pinmux-node.yaml#
+> > +
+> > +    properties:
+> > +      pinmux:
+> > +        description:
+> > +          Values are constructed from pin number and alternate function
+> > +          configuration number using the APPLE_PINMUX() helper macro
+> > +          defined in include/dt-bindings/pinctrl/apple.h.
+> > +
+> > +    required:
+> > +      - pinmux
+> > +
+> > +    additionalProperties: false
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - gpio-controller
+> > +  - '#gpio-cells'
+> > +  - gpio-ranges
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/apple-aic.h>
+> > +    #include <dt-bindings/pinctrl/apple.h>
+> > +
+> > +    soc {
+> > +      #address-cells = <2>;
+> > +      #size-cells = <2>;
+> > +
+> > +      pinctrl: pinctrl@23c100000 {
+> > +        compatible = "apple,t8103-pinctrl", "apple,pinctrl";
+> > +        reg = <0x2 0x3c100000 0x0 0x100000>;
+> > +        clocks = <&gpio_clk>;
+> > +
+> > +        gpio-controller;
+> > +        #gpio-cells = <2>;
+> > +        gpio-ranges = <&pinctrl 0 0 212>;
+> > +
+> > +        interrupt-controller;
+> > +        interrupt-parent = <&aic>;
+> > +        interrupts = <AIC_IRQ 16 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 17 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 18 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 19 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 20 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 21 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 22 IRQ_TYPE_LEVEL_HIGH>;
+> > +
+> > +        pcie_pins: pcie-pins {
+> > +          pinmux = <APPLE_PINMUX(150, 1)>,
+> > +                   <APPLE_PINMUX(151, 1)>,
+> > +                   <APPLE_PINMUX(32, 1)>;
+> > +        };
+> > +      };
+> > +    };
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index ad0e9be66885..7327c9b778f1 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -1654,9 +1654,11 @@ C:	irc://chat.freenode.net/asahi-dev
+> >  T:	git https://github.com/AsahiLinux/linux.git
+> >  F:	Documentation/devicetree/bindings/arm/apple.yaml
+> >  F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+> > +F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+> >  F:	arch/arm64/boot/dts/apple/
+> >  F:	drivers/irqchip/irq-apple-aic.c
+> >  F:	include/dt-bindings/interrupt-controller/apple-aic.h
+> > +F:	include/dt-bindings/pinctrl/apple.h
+> >  
+> >  ARM/ARTPEC MACHINE SUPPORT
+> >  M:	Jesper Nilsson <jesper.nilsson@axis.com>
+> > diff --git a/include/dt-bindings/pinctrl/apple.h b/include/dt-bindings/pinctrl/apple.h
+> > new file mode 100644
+> > index 000000000000..ea0a6f466592
+> > --- /dev/null
+> > +++ b/include/dt-bindings/pinctrl/apple.h
+> > @@ -0,0 +1,13 @@
+> > +/* SPDX-License-Identifier: GPL-2.0+ OR MIT */
+> > +/*
+> > + * This header provides constants for Apple pinctrl bindings.
+> > + */
+> > +
+> > +#ifndef _DT_BINDINGS_PINCTRL_APPLE_H
+> > +#define _DT_BINDINGS_PINCTRL_APPLE_H
+> > +
+> > +#define APPLE_PINMUX(pin, func) ((pin) | ((func) << 16))
+> > +#define APPLE_PIN(pinmux) ((pinmux) & 0xffff)
+> > +#define APPLE_FUNC(pinmux) ((pinmux) >> 16)
+> > +
+> > +#endif /* _DT_BINDINGS_PINCTRL_APPLE_H */
+> > -- 
+> > 2.31.1
+> > 
+> 
