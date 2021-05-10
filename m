@@ -2,65 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 509A037797D
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 02:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2DD377980
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 02:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhEJANe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 9 May 2021 20:13:34 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:55884 "EHLO gloria.sntech.de"
+        id S230074AbhEJAS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 9 May 2021 20:18:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229853AbhEJANd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 9 May 2021 20:13:33 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.fritz.box)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lftX4-00085c-Uk; Mon, 10 May 2021 02:12:23 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     xxm@rock-chips.com, robh+dt@kernel.org, will@kernel.org,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        joro@8bytes.org
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: (subset) [PATCH v4 0/6] Add IOMMU driver for rk356x
-Date:   Mon, 10 May 2021 02:12:20 +0200
-Message-Id: <162060552750.1271206.175954480906958099.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210507090232.233049-1-benjamin.gaignard@collabora.com>
-References: <20210507090232.233049-1-benjamin.gaignard@collabora.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S229853AbhEJASy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 9 May 2021 20:18:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C262A610CC;
+        Mon, 10 May 2021 00:17:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1620605869;
+        bh=i+YJLqFNH50CIrJgOP6blmezF+nf9yUjSX5iWGJKM1c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Cc2LoCTnOfNVzw8V4AFywY6mT9DyhBwsacADhMkAGYrceCN6/6xJcTs4cM7y3O8RQ
+         pFtZ72D7/rz7oTpSSWElYfFWY6bnDgtSTBWVULYyVHhArMrK8HbWjm6BRq61V5B0Ad
+         tEW8mJ39FHtXFK3vcD4J1ZJTIdC19DfRbHMxi6t0=
+Date:   Sun, 9 May 2021 17:17:48 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     chukaiping <chukaiping@baidu.com>
+Cc:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        vbabka@suse.cz, nigupta@nvidia.com, bhe@redhat.com,
+        khalid.aziz@oracle.com, iamjoonsoo.kim@lge.com,
+        mateusznosek0@gmail.com, sh_def@163.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>,
+        David Rientjes <rientjes@google.com>
+Subject: Re: [PATCH v4] mm/compaction: let proactive compaction order
+ configurable
+Message-Id: <20210509171748.8dbc70ceccc5cc1ae61fe41c@linux-foundation.org>
+In-Reply-To: <1619576901-9531-1-git-send-email-chukaiping@baidu.com>
+References: <1619576901-9531-1-git-send-email-chukaiping@baidu.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 7 May 2021 11:02:26 +0200, Benjamin Gaignard wrote:
-> This series adds the IOMMU driver for rk356x SoC.
-> Since a new compatible is needed to distinguish this second version of
-> IOMMU hardware block from the first one, it is an opportunity to convert
-> the binding to DT schema.
-> 
-> version 4:
->  - Add description for reg items
->  - Remove useless interrupt-names properties
->  - Add description for interrupts items
->  - Remove interrupt-names properties from DST files
-> 
-> [...]
+On Wed, 28 Apr 2021 10:28:21 +0800 chukaiping <chukaiping@baidu.com> wrote:
 
-Applied, thanks!
+> Currently the proactive compaction order is fixed to
+> COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
+> normal 4KB memory, but it's too high for the machines with small
+> normal memory, for example the machines with most memory configured
+> as 1GB hugetlbfs huge pages. In these machines the max order of
+> free pages is often below 9, and it's always below 9 even with hard
+> compaction. This will lead to proactive compaction be triggered very
+> frequently. In these machines we only care about order of 3 or 4.
+> This patch export the oder to proc and let it configurable
+> by user, and the default value is still COMPACTION_HPAGE_ORDER.
 
-[3/6] ARM: dts: rockchip: rk322x: Fix IOMMU nodes properties
-      commit: 6b023929666f0be5df75f5e0278d1b70effadf42
-[4/6] ARM: dts: rockchip: rk3036: Remove useless interrupt-names on IOMMU node
-      commit: 304b8fbc950bae102f29ee1e8e8557f2fd08d69a
-[5/6] ARM64: dts: rockchip: rk3036: Remove useless interrupt-names properties
-      commit: 2bf375982f4a58a95e8b5184565b23677900012c
+It would be great to do this automatically?  It's quite simple to see
+when memory is being handed out to hugetlbfs - so can we tune
+proactive_compaction_order in response to this?  That would be far
+better than adding a manual tunable.
 
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+But from having read Khalid's comments, that does sound quite involved.
+Is there some partial solution that we can come up with that will get
+most people out of trouble?
+
+That being said, this patch is super-super-simple so perhaps we should
+just merge it just to get one person (and hopefully a few more) out of
+trouble.  But on the other hand, once we add a /proc tunable we must
+maintain that tunable for ever (or at least a very long time) even if
+the internal implementations change a lot.
