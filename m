@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E863780A7
+	by mail.lfdr.de (Postfix) with ESMTP id 765DF3780A8
 	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 11:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbhEJJ56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 05:57:58 -0400
-Received: from fgw20-7.mail.saunalahti.fi ([62.142.5.81]:14268 "EHLO
-        fgw20-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230473AbhEJJ52 (ORCPT
+        id S230526AbhEJJ6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 05:58:00 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:42156 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231140AbhEJJ5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 05:57:28 -0400
-Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
-        by fgw20.mail.saunalahti.fi (Halon) with ESMTP
-        id f96e6081-b175-11eb-ba24-005056bd6ce9;
-        Mon, 10 May 2021 12:56:22 +0300 (EEST)
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v1 2/2] device property: Don't check for NULL twice in the loops
-Date:   Mon, 10 May 2021 12:56:13 +0300
-Message-Id: <20210510095613.3302755-2-andy.shevchenko@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510095613.3302755-1-andy.shevchenko@gmail.com>
-References: <20210510095613.3302755-1-andy.shevchenko@gmail.com>
+        Mon, 10 May 2021 05:57:36 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 9AE791C0B79; Mon, 10 May 2021 11:56:30 +0200 (CEST)
+Date:   Mon, 10 May 2021 11:56:29 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kael_w@yeah.net
+Subject: Re: [PATCH] leds: Fix reference file name of documentation
+Message-ID: <20210510095629.GA14728@amd>
+References: <20210506070824.10965-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
+Content-Disposition: inline
+In-Reply-To: <20210506070824.10965-1-wanjiabing@vivo.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In fwnode_get_next_available_child_node() we check next_child for NULL
-twice. All the same in fwnode_get_next_parent_dev() we may avoid checking
-fwnode for NULL twice.
 
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/base/property.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+--gBBFr7Ir9EOA20Yy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/base/property.c b/drivers/base/property.c
-index dd98759d688b..62285f1b79e3 100644
---- a/drivers/base/property.c
-+++ b/drivers/base/property.c
-@@ -632,9 +632,10 @@ struct device *fwnode_get_next_parent_dev(struct fwnode_handle *fwnode)
- 	fwnode_handle_get(fwnode);
- 	do {
- 		fwnode = fwnode_get_next_parent(fwnode);
--		if (fwnode)
--			dev = get_dev_from_fwnode(fwnode);
--	} while (fwnode && !dev);
-+		if (!fwnode)
-+			break;
-+		dev = get_dev_from_fwnode(fwnode);
-+	} while (!dev);
- 	fwnode_handle_put(fwnode);
- 	return dev;
- }
-@@ -742,10 +743,9 @@ fwnode_get_next_available_child_node(const struct fwnode_handle *fwnode,
- 
- 	do {
- 		next_child = fwnode_get_next_child_node(fwnode, next_child);
--
--		if (!next_child || fwnode_device_is_available(next_child))
-+		if (!next_child)
- 			break;
--	} while (next_child);
-+	} while (!fwnode_device_is_available(next_child));
- 
- 	return next_child;
- }
--- 
-2.31.1
+On Thu 2021-05-06 15:08:24, Wan Jiabing wrote:
+> In commit 56b01acc1c79a ("dt-bindings: gpio: fairchild,74hc595:
+> Convert to json-schema"), gpio-74x164.txt was deleted and replaced
+> by fairchild,74hc595.yaml. Fix the reference file name.
+>=20
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 
+Acked-by: Pavel Machek <pavel@ucw.cz>
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--gBBFr7Ir9EOA20Yy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmCZA0wACgkQMOfwapXb+vIxEgCeJcCOXUpDIRw9jY3lxihLArGX
+k6EAn2KJDQ7NG3/gMF6p2v1DvdD6DAjF
+=l7nT
+-----END PGP SIGNATURE-----
+
+--gBBFr7Ir9EOA20Yy--
