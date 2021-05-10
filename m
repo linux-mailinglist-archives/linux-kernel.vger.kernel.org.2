@@ -2,125 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6702B379041
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09775379058
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232769AbhEJOKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:10:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57452 "EHLO
+        id S232677AbhEJOKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238649AbhEJOEC (ORCPT
+        with ESMTP id S244839AbhEJOFc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:04:02 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650C2C0611AA;
-        Mon, 10 May 2021 06:45:18 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so1007189otc.6;
-        Mon, 10 May 2021 06:45:18 -0700 (PDT)
+        Mon, 10 May 2021 10:05:32 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50955C06138F
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:47:08 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id t4so24687902ejo.0
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:47:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hedE3GT8Rl3Rz//B6pu/A3NCqNNmR97yKYteAby+mXg=;
-        b=URpcRw9JjpPvhG2bydpcqdwp2X4UGZLZ7AKk4p8oCL90Sb6t+VKbadMK/EAiq7v/bB
-         n16eOuoEw3M5BJhyjMjQ45JTjxyhlmX7QmvSfd04gJaUrh5F6Uugd0+w476T0Hjny7i+
-         WQHcsUlg8X+mPtpShFIrhtpNolUv4JbR0PfaifIOErt2atSecaK7YwpELeVbtqE/RUDA
-         7FrY6LH67QdbO46h54/6dEIZ/A3ihuiU66DDUIWSH4eEqqo5XqIPeMh6Gwf12I+ZtiTa
-         mUT3PRDb2n+m1bPkK0QXZs6qb9XhT9W4Ymq5ZDKZ5HF7R7Baxon4VLbyWKWoXnLLYhge
-         SH3w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y090JTi5u7L+I2zANuVu8piJZcdJ8sLCVab3Loo8HmE=;
+        b=Il76HL0QGBMxpyekRa88oVy+JUeZ43TQn0NZ2TMfuRFHZHX6ILVZUphgUPet3WV+yZ
+         WupKE1kDUh8uWBEuf6Y6pcvdniqtR6uAMrLClBAxb9tR5OjAzjPL60OZLK36rw6mxctB
+         nkVT17PqtqHU30rfWNAGs/xGf7NXjpMqa/VzTtoBpLlwYCVlBbO1Uo9ltJbisxGIlbQq
+         tyfv5cLNSYZHt9x0a1Ro1/r8P4q/EskdDqQko+YNhiuQIo7w/U2+g/NQMHVqDL5ZWIR5
+         Y6KjXPMz4yQ4HNrJbc83UbhnQxGVpx+lP47VVD1dQHq9Ou737laTgsOW4Di5lMpmx/bk
+         kqXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hedE3GT8Rl3Rz//B6pu/A3NCqNNmR97yKYteAby+mXg=;
-        b=c6CN5K7Jl9hgqQ9IQVBpNxl6/PDX5vbdGZeBdr81E9JKiAJpHyCZv/YvBAGjZqFOaa
-         H9xpXfg/OxKNKy0ptxT1eB4K6pvH+ZsNTtVCqA++Sc00TsptR6mbZu8vAO9UofHn4/rj
-         rcoGonSZJroaS3qSDTyeYh1gyCZIGmKPmxcDXtVjAUI2BwMX60/ptoZGMkFBEq86XtIg
-         Si3XoBuIzDmIlOS95faPMhzsSKbj+SYet2S4O8cLe7kDO+x2Dho0GdtSnRpxvWdRVcmb
-         ph22nI75JrHDFpibekG6h237IYtiKZBEvhNSUYhYNdHLwWA4/Y9xfmyS3z3z7D6YJ0Sa
-         SZIQ==
-X-Gm-Message-State: AOAM53116eiu0JgR0TDAeJnpgZQtiEJzHuPhmEM9kk3j/4RRGcWeF7Nj
-        oOYtGZFoFyAR7hn3PfrhkB4=
-X-Google-Smtp-Source: ABdhPJw92pktAl/LolRgtY75mG0KjPVHGiVbVJT4ZH5ZzzUFqD8QuNZZ2woJhiRsc+VG57WoaG21QQ==
-X-Received: by 2002:a05:6830:18f3:: with SMTP id d19mr8334556otf.369.1620654317881;
-        Mon, 10 May 2021 06:45:17 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x30sm2717960ott.41.2021.05.10.06.45.16
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y090JTi5u7L+I2zANuVu8piJZcdJ8sLCVab3Loo8HmE=;
+        b=Re2ifcIchW9RWWqrmoFwn8ZqXn4+brU1WG/+jwnQWcndBPtmVvj0K9EiUB02l1qpUp
+         04flvxGBs+qhcueRt23HASlVe5LjZnvR648EkhQu0eInl7ncyjYt2vlaDvT1Yql4FmZz
+         SzMhMaPxzuHQX+YgzPK7WCBPKBvxrv0SQdcXayajAG90jpJIP8opxutAuotvCPPb1DqH
+         IrneoZFHDqPF8xcfQD+exglFocbDJ3z0ZoPEY9CstluWr83REp/5lgsQEc1Ebh6JN4ZS
+         idkqDBxgyGGf6Sk1uviYQiZOpCmRTnwSFlR1GlKsPuVqJpobPvVheK8fy7X5m4u6rpvH
+         GdZA==
+X-Gm-Message-State: AOAM531xbjXxRZahmPIUXNNB5oAyVzm+9k5OBWp39IrvURreAMD9qx66
+        nA69ZV4nFqZ6tlqlfyQ9ug4iGhid1x+Ung==
+X-Google-Smtp-Source: ABdhPJxBIF+UHe98NRT12Y+84P1c+c5lrBHzGpuW0Fpuly6W7WV7EundCrpeXblDIfJZ4HA8vo9clQ==
+X-Received: by 2002:a17:906:a295:: with SMTP id i21mr25426896ejz.160.1620654426318;
+        Mon, 10 May 2021 06:47:06 -0700 (PDT)
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com. [209.85.221.47])
+        by smtp.gmail.com with ESMTPSA id aj8sm9169597ejc.64.2021.05.10.06.47.04
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 06:45:17 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] watchdog: Add {min,max}_timeout sysfs nodes
-To:     Juerg Haefliger <juerg.haefliger@canonical.com>,
-        wim@linux-watchdog.org, linux-watchdog@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Juerg Haefliger <juergh@canonical.com>
-References: <20210510131625.21506-1-juergh@canonical.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <695dfd0f-f090-653e-7580-e45484228781@roeck-us.net>
-Date:   Mon, 10 May 2021 06:45:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 10 May 2021 06:47:04 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id l13so16677546wru.11
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 06:47:04 -0700 (PDT)
+X-Received: by 2002:adf:e750:: with SMTP id c16mr31309348wrn.50.1620654423753;
+ Mon, 10 May 2021 06:47:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210510131625.21506-1-juergh@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
+ <1619690903-1138-1-git-send-email-dseok.yi@samsung.com> <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
+ <02bf01d74211$0ff4aed0$2fde0c70$@samsung.com> <CA+FuTScC96R5o24c-sbY-CEV4EYOVFepFR85O4uGtCLwOjnzEw@mail.gmail.com>
+ <02c801d7421f$65287a90$2f796fb0$@samsung.com> <CA+FuTScUJwqEpYim0hG27k39p_yEyzuW2A8RFKuBndctgKjWZw@mail.gmail.com>
+ <001801d742db$68ab8060$3a028120$@samsung.com> <CAF=yD-KtJvyjHgGVwscoQpFX3e+DmQCYeO_HVGwyGAp3ote00A@mail.gmail.com>
+ <436dbc62-451b-9b29-178d-9da28f47ef24@huawei.com> <CAF=yD-+d0QYj+812joeuEx1HKPzDyhMpkZP5aP=yNBzrQT5usw@mail.gmail.com>
+ <007001d7431a$96281960$c2784c20$@samsung.com> <CAF=yD-L9pxAFoT+c1Xk5YS42ZaJ+YLVQVnV+fvtqn-gLxq9ENg@mail.gmail.com>
+ <00c901d74543$57fa3620$07eea260$@samsung.com> <CA+FuTSepShKoXUJo7ELMMJ4La11J6CsZggJWsQ5MB2_uhAi+OQ@mail.gmail.com>
+In-Reply-To: <CA+FuTSepShKoXUJo7ELMMJ4La11J6CsZggJWsQ5MB2_uhAi+OQ@mail.gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 10 May 2021 09:46:25 -0400
+X-Gmail-Original-Message-ID: <CA+FuTSeyuUvKC==Mo7L+u3PS0BQyea+EdLLYjhGFrP7FQZsbEQ@mail.gmail.com>
+Message-ID: <CA+FuTSeyuUvKC==Mo7L+u3PS0BQyea+EdLLYjhGFrP7FQZsbEQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: check for data_len before upgrading mss when 6
+ to 4
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Dongseok Yi <dseok.yi@samsung.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/21 6:16 AM, Juerg Haefliger wrote:
-> The valid range for the 'timeout' value is useful information so expose
-> the min and max timeout values via sysfs.
-> 
-> Signed-off-by: Juerg Haefliger <juergh@canonical.com>
-> ---
->   drivers/watchdog/watchdog_dev.c | 20 ++++++++++++++++++++
->   1 file changed, 20 insertions(+)
-> 
-> diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
-> index 2946f3a63110..b84d53a79618 100644
-> --- a/drivers/watchdog/watchdog_dev.c
-> +++ b/drivers/watchdog/watchdog_dev.c
-> @@ -525,6 +525,24 @@ static ssize_t timeout_show(struct device *dev, struct device_attribute *attr,
->   }
->   static DEVICE_ATTR_RO(timeout);
->   
-> +static ssize_t min_timeout_show(struct device *dev,
-> +				struct device_attribute *attr, char *buf)
-> +{
-> +	struct watchdog_device *wdd = dev_get_drvdata(dev);
-> +
-> +	return sprintf(buf, "%u\n", wdd->min_timeout);
-> +}
-> +static DEVICE_ATTR_RO(min_timeout);
-> +
-> +static ssize_t max_timeout_show(struct device *dev,
-> +				struct device_attribute *attr, char *buf)
-> +{
-> +	struct watchdog_device *wdd = dev_get_drvdata(dev);
-> +
-> +	return sprintf(buf, "%u\n", wdd->max_timeout);
+On Mon, May 10, 2021 at 9:19 AM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> > > That generates TCP packets with different MSS within the same stream.
+> > >
+> > > My suggestion remains to just not change MSS at all. But this has to
+> > > be a new flag to avoid changing established behavior.
+> >
+> > I don't understand why the mss size should be kept in GSO step. Will
+> > there be any issue with different mss?
+>
+> This issue has come up before and that has been the feedback from
+> TCP experts at one point.
+>
+> > In general, upgrading mss make sense when 6 to 4. The new flag would be
+> > set by user to not change mss. What happened if user does not set the
+> > flag? I still think we should fix the issue with a general approach. Or
+> > can we remove the skb_increase_gso_size line?
+>
+> Admins that insert such BPF packets should be aware of these issues.
+> And likely be using clamping. This is a known issue.
+>
+> We arrived that the flag approach in bpf_skb_net_shrink. Extending
+> that  to bpf_skb_change_proto would be consistent.
 
-Makes sense, but please use sysfs_emit().
-
-Guenter
-
-> +}
-> +static DEVICE_ATTR_RO(max_timeout);
-> +
->   static ssize_t pretimeout_show(struct device *dev,
->   			       struct device_attribute *attr, char *buf)
->   {
-> @@ -609,6 +627,8 @@ static struct attribute *wdt_attrs[] = {
->   	&dev_attr_state.attr,
->   	&dev_attr_identity.attr,
->   	&dev_attr_timeout.attr,
-> +	&dev_attr_min_timeout.attr,
-> +	&dev_attr_max_timeout.attr,
->   	&dev_attr_pretimeout.attr,
->   	&dev_attr_timeleft.attr,
->   	&dev_attr_bootstatus.attr,
-> 
-
+As for more generic approach: does downgrading to non-TSO by clearing
+gso_size work for this edge case?
