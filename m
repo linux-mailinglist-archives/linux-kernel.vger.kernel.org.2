@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FD2378A7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693E7378C1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 14:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236200AbhEJLpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:45:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53004 "EHLO mail.kernel.org"
+        id S1345669AbhEJMZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 08:25:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231256AbhEJK5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:57:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1631961960;
-        Mon, 10 May 2021 10:52:16 +0000 (UTC)
+        id S237031AbhEJLLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 07:11:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2DC861574;
+        Mon, 10 May 2021 11:06:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643937;
-        bh=0TbRy66sZ4R1vqsd8auMee9yRY592CCfcWWA3/EZ9Tg=;
+        s=korg; t=1620644788;
+        bh=E81XsKLIq3tXn1p9KGS0c/UKL92M806Q/8Ap/KlSHgM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=erqXxWKyNl1nj48HGx8nLv7SZzvGDiKyfwV0fQrS/dPcbQJp1Yhm8mONfgenTd76h
-         5zo6w1lvFkInd7INwQCqPXocRUf2HkBm/+CQagUb0dzaqu5jsiveWKvjFnc7Auwe1W
-         UTd16BwAsiEfA1uEdh7XNPEOYhdjhRHSqgbaNFpY=
+        b=TWTDU0KnU2milNiUrqbD0+ssNPEB28yqs7n7NG8sCeiMlwI8IB8L4hWEnKcOPsUbs
+         pse7YUpKH6ys8OvTSZC5Lm2gX6Q74YZv6KRHZ329yrdefLVLs5P+BvryJl0Oox6QhU
+         0GIpuSag572XgBxC50xaOk6w7JmZQ5ROc5ovkw4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nirmoy Das <nirmoy.das@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 222/342] drm/amdgpu/display: fix memory leak for dimgrey cavefish
+        stable@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, John Nealy <jnealy3@yahoo.com>
+Subject: [PATCH 5.12 223/384] media: uvcvideo: Support devices that report an OT as an entity source
 Date:   Mon, 10 May 2021 12:20:12 +0200
-Message-Id: <20210510102017.431562162@linuxfoundation.org>
+Message-Id: <20210510102022.256673879@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
+References: <20210510102014.849075526@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +42,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Deucher <alexander.deucher@amd.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-[ Upstream commit 42b599732ee1d4ac742760050603fb6046789011 ]
+[ Upstream commit 4ca052b4ea621d0002a5e5feace51f60ad5e6b23 ]
 
-We need to clean up the dcn3 clk_mgr.
+Some devices reference an output terminal as the source of extension
+units. This is incorrect, as output terminals only have an input pin,
+and thus can't be connected to any entity in the forward direction. The
+resulting topology would cause issues when registering the media
+controller graph. To avoid this problem, connect the extension unit to
+the source of the output terminal instead.
 
-Acked-by: Nirmoy Das <nirmoy.das@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+While at it, and while no device has been reported to be affected by
+this issue, also handle forward scans where two output terminals would
+be connected together, and skip the terminals found through such an
+invalid connection.
+
+Reported-and-tested-by: John Nealy <jnealy3@yahoo.com>
+
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/clk_mgr/clk_mgr.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/media/usb/uvc/uvc_driver.c | 32 ++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/clk_mgr.c
-index 995ffbbf64e7..1ee27f2f28f1 100644
---- a/drivers/gpu/drm/amd/display/dc/clk_mgr/clk_mgr.c
-+++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/clk_mgr.c
-@@ -217,6 +217,9 @@ void dc_destroy_clk_mgr(struct clk_mgr *clk_mgr_base)
- 		if (ASICREV_IS_SIENNA_CICHLID_P(clk_mgr_base->ctx->asic_id.hw_internal_rev)) {
- 			dcn3_clk_mgr_destroy(clk_mgr);
- 		}
-+		if (ASICREV_IS_DIMGREY_CAVEFISH_P(clk_mgr_base->ctx->asic_id.hw_internal_rev)) {
-+			dcn3_clk_mgr_destroy(clk_mgr);
-+		}
- 		break;
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index e55cf02baad6..9a791d8ef200 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -1716,6 +1716,31 @@ static int uvc_scan_chain_forward(struct uvc_video_chain *chain,
+ 				return -EINVAL;
+ 			}
  
- 	case FAMILY_VGH:
++			/*
++			 * Some devices reference an output terminal as the
++			 * source of extension units. This is incorrect, as
++			 * output terminals only have an input pin, and thus
++			 * can't be connected to any entity in the forward
++			 * direction. The resulting topology would cause issues
++			 * when registering the media controller graph. To
++			 * avoid this problem, connect the extension unit to
++			 * the source of the output terminal instead.
++			 */
++			if (UVC_ENTITY_IS_OTERM(entity)) {
++				struct uvc_entity *source;
++
++				source = uvc_entity_by_id(chain->dev,
++							  entity->baSourceID[0]);
++				if (!source) {
++					uvc_dbg(chain->dev, DESCR,
++						"Can't connect extension unit %u in chain\n",
++						forward->id);
++					break;
++				}
++
++				forward->baSourceID[0] = source->id;
++			}
++
+ 			list_add_tail(&forward->chain, &chain->entities);
+ 			if (!found)
+ 				uvc_dbg_cont(PROBE, " (->");
+@@ -1735,6 +1760,13 @@ static int uvc_scan_chain_forward(struct uvc_video_chain *chain,
+ 				return -EINVAL;
+ 			}
+ 
++			if (UVC_ENTITY_IS_OTERM(entity)) {
++				uvc_dbg(chain->dev, DESCR,
++					"Unsupported connection between output terminals %u and %u\n",
++					entity->id, forward->id);
++				break;
++			}
++
+ 			list_add_tail(&forward->chain, &chain->entities);
+ 			if (!found)
+ 				uvc_dbg_cont(PROBE, " (->");
 -- 
 2.30.2
 
