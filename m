@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7810F378978
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC5C378668
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240377AbhEJL25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:28:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53006 "EHLO mail.kernel.org"
+        id S236016AbhEJLHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:07:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234736AbhEJK45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:56:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 057C7613D6;
-        Mon, 10 May 2021 10:48:36 +0000 (UTC)
+        id S232191AbhEJKqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:46:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AA6961943;
+        Mon, 10 May 2021 10:37:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643717;
-        bh=Wm6JspxkzxF3Cfp0fZil21rw4Y+hepvR/gttYOPuVPg=;
+        s=korg; t=1620643030;
+        bh=9IKPaB906Djut97p5MwTWhhrS8i29IzcBxZyrY37QIA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JYlm+/i99uN/4dHUQjV1sCwzsj4FJJCok42+5cZSu5e22pB5n0Xe/Njz5tOMAQkGu
-         vtyEbE2hE/Nl6O33PL/G/th7ZLdKGR1UuIsLv7vIKh4cjSCmVf8DwsjJRGuvmtdUse
-         qicWvh7v908ufp/p4RTCibYJ+gYFB83waBHMP47s=
+        b=yNxn1iK+I1FehDzmOLQF9r0FX9oLtfw+XE0KEKNNnPlH1unpF/OaaeiTwIQp+Z+n0
+         87ADYXKTK+NaepT6rolIHAfhHQe+pAYkPfeaZqdNYW5pXXldMo7R0yCUWBUXyahXYI
+         5naCYs1MpreXb/+TBdM56bloRkYNsAsQy1ZhVQqo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Adam Ward <Adam.Ward.opensource@diasemi.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 128/342] regulator: da9121: automotive variants identity fix
-Date:   Mon, 10 May 2021 12:18:38 +0200
-Message-Id: <20210510102014.305821980@linuxfoundation.org>
+Subject: [PATCH 5.10 122/299] drm/amd/display/dc/dce/dce_aux: Remove duplicate line causing field overwritten issue
+Date:   Mon, 10 May 2021 12:18:39 +0200
+Message-Id: <20210510102009.010406493@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,190 +45,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adam Ward <Adam.Ward.opensource@diasemi.com>
+From: Lee Jones <lee.jones@linaro.org>
 
-[ Upstream commit 013592be146a10d3567c0062cd1416faab060704 ]
+[ Upstream commit 89adc10178fd6cb68c8ef1905d269070a4d3bd64 ]
 
-This patch fixes identification of DA913x parts by the DA9121 driver,
-where a lack of clarity lead to implementation on the basis that variant
-IDs were to be identical to the equivalent rated non-automotive parts.
+Fixes the following W=1 kernel build warning(s):
 
-There is a new emphasis on the DT identity to cope with overlap in these
-ID's - this is not considered to be problematic, because projects would
-be exclusively using automotive or consumer grade parts.
+ In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:59:
+ drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10014:58: warning: initialized field overwritten [-Woverride-init]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_aux.h:214:16: note: in expansion of macro ‘AUX_SW_DATA__AUX_SW_AUTOINCREMENT_DISABLE__SHIFT’
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_aux.h:127:2: note: in expansion of macro ‘AUX_SF’
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:177:2: note: in expansion of macro ‘DCE_AUX_MASK_SH_LIST’
+ drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10014:58: note: (near initialization for ‘aux_shift.AUX_SW_AUTOINCREMENT_DISABLE’)
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_aux.h:214:16: note: in expansion of macro ‘AUX_SW_DATA__AUX_SW_AUTOINCREMENT_DISABLE__SHIFT’
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_aux.h:127:2: note: in expansion of macro ‘AUX_SF’
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:177:2: note: in expansion of macro ‘DCE_AUX_MASK_SH_LIST’
+ drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10013:56: warning: initialized field overwritten [-Woverride-init]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_aux.h:214:16: note: in expansion of macro ‘AUX_SW_DATA__AUX_SW_AUTOINCREMENT_DISABLE_MASK’
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_aux.h:127:2: note: in expansion of macro ‘AUX_SF’
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:181:2: note: in expansion of macro ‘DCE_AUX_MASK_SH_LIST’
+ drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10013:56: note: (near initialization for ‘aux_mask.AUX_SW_AUTOINCREMENT_DISABLE’)
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_aux.h:214:16: note: in expansion of macro ‘AUX_SW_DATA__AUX_SW_AUTOINCREMENT_DISABLE_MASK’
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_aux.h:127:2: note: in expansion of macro ‘AUX_SF’
 
-Signed-off-by: Adam Ward <Adam.Ward.opensource@diasemi.com>
-Link: https://lore.kernel.org/r/20210421120306.DB5B880007F@slsrvapps-01.diasemi.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: Harry Wentland <harry.wentland@amd.com>
+Cc: Leo Li <sunpeng.li@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/da9121-regulator.c | 80 ++++++++++++++++++----------
- drivers/regulator/da9121-regulator.h | 13 +++++
- 2 files changed, 65 insertions(+), 28 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dce/dce_aux.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/regulator/da9121-regulator.c b/drivers/regulator/da9121-regulator.c
-index a2ede7d7897e..08cbf688e14d 100644
---- a/drivers/regulator/da9121-regulator.c
-+++ b/drivers/regulator/da9121-regulator.c
-@@ -40,6 +40,7 @@ struct da9121 {
- 	unsigned int passive_delay;
- 	int chip_irq;
- 	int variant_id;
-+	int subvariant_id;
- };
- 
- /* Define ranges for different variants, enabling translation to/from
-@@ -812,7 +813,6 @@ static struct regmap_config da9121_2ch_regmap_config = {
- static int da9121_check_device_type(struct i2c_client *i2c, struct da9121 *chip)
- {
- 	u32 device_id;
--	u8 chip_id = chip->variant_id;
- 	u32 variant_id;
- 	u8 variant_mrc, variant_vrc;
- 	char *type;
-@@ -839,22 +839,34 @@ static int da9121_check_device_type(struct i2c_client *i2c, struct da9121 *chip)
- 
- 	variant_vrc = variant_id & DA9121_MASK_OTP_VARIANT_ID_VRC;
- 
--	switch (variant_vrc) {
--	case DA9121_VARIANT_VRC:
--		type = "DA9121/DA9130";
--		config_match = (chip_id == DA9121_TYPE_DA9121_DA9130);
-+	switch (chip->subvariant_id) {
-+	case DA9121_SUBTYPE_DA9121:
-+		type = "DA9121";
-+		config_match = (variant_vrc == DA9121_VARIANT_VRC);
- 		break;
--	case DA9220_VARIANT_VRC:
--		type = "DA9220/DA9132";
--		config_match = (chip_id == DA9121_TYPE_DA9220_DA9132);
-+	case DA9121_SUBTYPE_DA9130:
-+		type = "DA9130";
-+		config_match = (variant_vrc == DA9130_VARIANT_VRC);
- 		break;
--	case DA9122_VARIANT_VRC:
--		type = "DA9122/DA9131";
--		config_match = (chip_id == DA9121_TYPE_DA9122_DA9131);
-+	case DA9121_SUBTYPE_DA9220:
-+		type = "DA9220";
-+		config_match = (variant_vrc == DA9220_VARIANT_VRC);
- 		break;
--	case DA9217_VARIANT_VRC:
-+	case DA9121_SUBTYPE_DA9132:
-+		type = "DA9132";
-+		config_match = (variant_vrc == DA9132_VARIANT_VRC);
-+		break;
-+	case DA9121_SUBTYPE_DA9122:
-+		type = "DA9122";
-+		config_match = (variant_vrc == DA9122_VARIANT_VRC);
-+		break;
-+	case DA9121_SUBTYPE_DA9131:
-+		type = "DA9131";
-+		config_match = (variant_vrc == DA9131_VARIANT_VRC);
-+		break;
-+	case DA9121_SUBTYPE_DA9217:
- 		type = "DA9217";
--		config_match = (chip_id == DA9121_TYPE_DA9217);
-+		config_match = (variant_vrc == DA9217_VARIANT_VRC);
- 		break;
- 	default:
- 		type = "Unknown";
-@@ -892,15 +904,27 @@ static int da9121_assign_chip_model(struct i2c_client *i2c,
- 
- 	chip->dev = &i2c->dev;
- 
--	switch (chip->variant_id) {
--	case DA9121_TYPE_DA9121_DA9130:
--		fallthrough;
--	case DA9121_TYPE_DA9217:
-+	/* Use configured subtype to select the regulator descriptor index and
-+	 * register map, common to both consumer and automotive grade variants
-+	 */
-+	switch (chip->subvariant_id) {
-+	case DA9121_SUBTYPE_DA9121:
-+	case DA9121_SUBTYPE_DA9130:
-+		chip->variant_id = DA9121_TYPE_DA9121_DA9130;
- 		regmap = &da9121_1ch_regmap_config;
- 		break;
--	case DA9121_TYPE_DA9122_DA9131:
--		fallthrough;
--	case DA9121_TYPE_DA9220_DA9132:
-+	case DA9121_SUBTYPE_DA9217:
-+		chip->variant_id = DA9121_TYPE_DA9217;
-+		regmap = &da9121_1ch_regmap_config;
-+		break;
-+	case DA9121_SUBTYPE_DA9122:
-+	case DA9121_SUBTYPE_DA9131:
-+		chip->variant_id = DA9121_TYPE_DA9122_DA9131;
-+		regmap = &da9121_2ch_regmap_config;
-+		break;
-+	case DA9121_SUBTYPE_DA9220:
-+	case DA9121_SUBTYPE_DA9132:
-+		chip->variant_id = DA9121_TYPE_DA9220_DA9132;
- 		regmap = &da9121_2ch_regmap_config;
- 		break;
- 	}
-@@ -975,13 +999,13 @@ regmap_error:
- }
- 
- static const struct of_device_id da9121_dt_ids[] = {
--	{ .compatible = "dlg,da9121", .data = (void *) DA9121_TYPE_DA9121_DA9130 },
--	{ .compatible = "dlg,da9130", .data = (void *) DA9121_TYPE_DA9121_DA9130 },
--	{ .compatible = "dlg,da9217", .data = (void *) DA9121_TYPE_DA9217 },
--	{ .compatible = "dlg,da9122", .data = (void *) DA9121_TYPE_DA9122_DA9131 },
--	{ .compatible = "dlg,da9131", .data = (void *) DA9121_TYPE_DA9122_DA9131 },
--	{ .compatible = "dlg,da9220", .data = (void *) DA9121_TYPE_DA9220_DA9132 },
--	{ .compatible = "dlg,da9132", .data = (void *) DA9121_TYPE_DA9220_DA9132 },
-+	{ .compatible = "dlg,da9121", .data = (void *) DA9121_SUBTYPE_DA9121 },
-+	{ .compatible = "dlg,da9130", .data = (void *) DA9121_SUBTYPE_DA9130 },
-+	{ .compatible = "dlg,da9217", .data = (void *) DA9121_SUBTYPE_DA9217 },
-+	{ .compatible = "dlg,da9122", .data = (void *) DA9121_SUBTYPE_DA9122 },
-+	{ .compatible = "dlg,da9131", .data = (void *) DA9121_SUBTYPE_DA9131 },
-+	{ .compatible = "dlg,da9220", .data = (void *) DA9121_SUBTYPE_DA9220 },
-+	{ .compatible = "dlg,da9132", .data = (void *) DA9121_SUBTYPE_DA9132 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, da9121_dt_ids);
-@@ -1011,7 +1035,7 @@ static int da9121_i2c_probe(struct i2c_client *i2c,
- 	}
- 
- 	chip->pdata = i2c->dev.platform_data;
--	chip->variant_id = da9121_of_get_id(&i2c->dev);
-+	chip->subvariant_id = da9121_of_get_id(&i2c->dev);
- 
- 	ret = da9121_assign_chip_model(i2c, chip);
- 	if (ret < 0)
-diff --git a/drivers/regulator/da9121-regulator.h b/drivers/regulator/da9121-regulator.h
-index 3c34cb889ca8..357f416e17c1 100644
---- a/drivers/regulator/da9121-regulator.h
-+++ b/drivers/regulator/da9121-regulator.h
-@@ -29,6 +29,16 @@ enum da9121_variant {
- 	DA9121_TYPE_DA9217
- };
- 
-+enum da9121_subvariant {
-+	DA9121_SUBTYPE_DA9121,
-+	DA9121_SUBTYPE_DA9130,
-+	DA9121_SUBTYPE_DA9220,
-+	DA9121_SUBTYPE_DA9132,
-+	DA9121_SUBTYPE_DA9122,
-+	DA9121_SUBTYPE_DA9131,
-+	DA9121_SUBTYPE_DA9217
-+};
-+
- /* Minimum, maximum and default polling millisecond periods are provided
-  * here as an example. It is expected that any final implementation will
-  * include a modification of these settings to match the required
-@@ -279,6 +289,9 @@ enum da9121_variant {
- #define DA9220_VARIANT_VRC	0x0
- #define DA9122_VARIANT_VRC	0x2
- #define DA9217_VARIANT_VRC	0x7
-+#define DA9130_VARIANT_VRC	0x0
-+#define DA9131_VARIANT_VRC	0x1
-+#define DA9132_VARIANT_VRC	0x2
- 
- /* DA9121_REG_OTP_CUSTOMER_ID */
- 
+diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_aux.h b/drivers/gpu/drm/amd/display/dc/dce/dce_aux.h
+index 382465862f29..f72f02e016ae 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce/dce_aux.h
++++ b/drivers/gpu/drm/amd/display/dc/dce/dce_aux.h
+@@ -99,7 +99,6 @@ struct dce110_aux_registers {
+ 	AUX_SF(AUX_SW_CONTROL, AUX_SW_GO, mask_sh),\
+ 	AUX_SF(AUX_SW_DATA, AUX_SW_AUTOINCREMENT_DISABLE, mask_sh),\
+ 	AUX_SF(AUX_SW_DATA, AUX_SW_DATA_RW, mask_sh),\
+-	AUX_SF(AUX_SW_DATA, AUX_SW_AUTOINCREMENT_DISABLE, mask_sh),\
+ 	AUX_SF(AUX_SW_DATA, AUX_SW_INDEX, mask_sh),\
+ 	AUX_SF(AUX_SW_DATA, AUX_SW_DATA, mask_sh),\
+ 	AUX_SF(AUX_SW_STATUS, AUX_SW_REPLY_BYTE_COUNT, mask_sh),\
 -- 
 2.30.2
 
