@@ -2,94 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C02F379118
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98015379128
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 16:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242173AbhEJOkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 10:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37048 "EHLO
+        id S234418AbhEJOpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 10:45:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235503AbhEJOhY (ORCPT
+        with ESMTP id S233098AbhEJOnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 10:37:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D84CC08E8A9;
-        Mon, 10 May 2021 07:00:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=i6vAxLOytNOYwyM1NYfARO0i+7jkuFK7y9pYt7pXuwE=; b=djb3CWn/LU378IzapvABLkn8Gd
-        Mp82QkScestEUeQW2L+zqtEN7XvYp31eFRebvjBEITr//+6YOo6+SYheq9BxF7YMTeqbS+RN1ORYU
-        WcTwnub1JAhAEwo1EbdH4ZtDbzKRVhVt7KKBx8eH43WzT6ZsZkO7OQPiITlB671P2UStmst5kwHpO
-        oLDGkct+Pf7s4vCchonkHPjgJ2dHAgGdY9eEvhnNfgt0nMzg4EJ/N8O7mpCEUjiq1yDlLopkoOUQy
-        tCb7mahOMAZ84vugzBeIjfIYkNlViOtJdTlUAmJVQy5eePLrQct4R8yXLPW7Hy+DjovMg5jAZGdoa
-        yuW/o03A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lg6RA-006DIB-7H; Mon, 10 May 2021 13:59:19 +0000
-Date:   Mon, 10 May 2021 14:59:08 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Edward Cree <ecree.xilinx@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
-        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fpga@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
-        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as ASCII
-Message-ID: <YJk8LMFViV7Z3Uu7@casper.infradead.org>
-References: <cover.1620641727.git.mchehab+huawei@kernel.org>
- <2ae366fdff4bd5910a2270823e8da70521c859af.camel@infradead.org>
- <20210510135518.305cc03d@coco.lan>
- <df6b4567-030c-a480-c5a6-fe579830e8c0@gmail.com>
+        Mon, 10 May 2021 10:43:01 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F06C08EAC9
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:01:50 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id o16so20959107ljp.3
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 07:01:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DQsuL10ttGgvUSSdwEEABCcNLhZF92QzGWTDfsTdZC0=;
+        b=qNtWaLjGIXQMeTIChrMNYPp2/WjHnGPearQQprE05w3lsIY390FY2r1cFDsNdyxCNZ
+         jrXtwIa2MpTAokF2DjIfBEnGEnFcNeKYhs/jcoPOwoWKck8/JKhBYwPkLF+7hPxoCSie
+         WvdtEleVqiDOuLhvesR3tOU4j8ErY0Hxzn6dCO2MZ8Pr0I7BabiZpd1qQwKAE/+hxSY3
+         nknoLINClx20aEJImVjqx37XthuTT1uHfzMX2Tt5c37QBi00j991nCh0BrlPoRevPo55
+         I4W84RAKkx+qkHsUG7mmdZpFhUW4jCYGkFJ0Nxhg+ZFFjj6pOIzn5jPKD89sKNyn1/xB
+         z6kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DQsuL10ttGgvUSSdwEEABCcNLhZF92QzGWTDfsTdZC0=;
+        b=E9uz84M19LkgPiKYYdxF6pmXIJVIzrVvKmd7ibcPsMAH+nDRQc6zPLvzPCw4xYAvq5
+         3zrppFbHBzrZatHRuIDOuacQZIySsO5THwLJ9+0yzzLE7OrnUJlcRFNy7sHmRE3KT+4g
+         gssOG4jrCdPynrxgRMK/J126rH3XXlu+2uO30KTtfcsgw0ft5qkH3mLUvAB8u8eLInp+
+         QDk94En1cYcH0XaxE7axtvDx6JkCja7A7lQzb0fcbVCYtqbUnz4NdaMo9VI6qRK8bq53
+         ii3b23LXx+1/fqz/GkCFWw6CHVVWSLg8oRCBIUhr48frT1aQH8qHIMNspGGqqexi/dlh
+         RtlA==
+X-Gm-Message-State: AOAM530tC2PGsYH+oDAWHrJu53umGaE5322dIdTfhSoLuyMHSbKEDstR
+        m6n4xiR704krs4rSapACI/2kcnmlHDeJkas66JZ3CQ==
+X-Google-Smtp-Source: ABdhPJzTAghL8Sdb1Gw9MPXcbmOW24XGnOJcMCgtYTxm5f97ovoej8TmEINBWT+FiI25beskbGWOdasTt0AKNmWY6l8=
+X-Received: by 2002:a05:651c:22b:: with SMTP id z11mr19730326ljn.182.1620655306896;
+ Mon, 10 May 2021 07:01:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <df6b4567-030c-a480-c5a6-fe579830e8c0@gmail.com>
+References: <20210319121357.255176-1-huobean@gmail.com> <20210319121357.255176-3-huobean@gmail.com>
+ <CAPDyKFrU591aeH5GyuuQW8tPeNc9wav=t8wqF1EdTBbCc9xheg@mail.gmail.com>
+ <79ec60974875d4ac17589ea4575e36ec1204f881.camel@gmail.com> <9b7ecf8a74e7e04174181aed0c5f0e356d0ed280.camel@gmail.com>
+In-Reply-To: <9b7ecf8a74e7e04174181aed0c5f0e356d0ed280.camel@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 10 May 2021 16:01:10 +0200
+Message-ID: <CAPDyKFqd03GZVtxmoiY3NFS_EggLQLMGk62AneZLoOn_20BDJQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] mmc: cavium: Remove redundant if-statement checkup
+To:     Bean Huo <huobean@gmail.com>
+Cc:     rric@kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Bean Huo (beanhuo)" <beanhuo@micron.com>,
+        "# 4.0+" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 02:16:16PM +0100, Edward Cree wrote:
-> On 10/05/2021 12:55, Mauro Carvalho Chehab wrote:
-> > The main point on this series is to replace just the occurrences
-> > where ASCII represents the symbol equally well
-> 
-> > 	- U+2014 ('—'): EM DASH
-> Em dash is not the same thing as hyphen-minus, and the latter does not
->  serve 'equally well'.  People use em dashes because — even in
->  monospace fonts — they make text easier to read and comprehend, when
->  used correctly.
-> I accept that some of the other distinctions — like en dashes — are
->  needlessly pedantic (though I don't doubt there is someone out there
->  who will gladly defend them with the same fervour with which I argue
->  for the em dash) and I wouldn't take the trouble to use them myself;
->  but I think there is a reasonable assumption that when someone goes
->  to the effort of using a Unicode punctuation mark that is semantic
->  (rather than merely typographical), they probably had a reason for
->  doing so.
+On Thu, 29 Apr 2021 at 22:30, Bean Huo <huobean@gmail.com> wrote:
+>
+> On Fri, 2021-03-19 at 16:42 +0100, Bean Huo wrote:
+> > On Fri, 2021-03-19 at 15:09 +0100, Ulf Hansson wrote:
+> >
+> > > On Fri, 19 Mar 2021 at 13:14, Bean Huo <huobean@gmail.com> wrote:
+> > > > From: Bean Huo <beanhuo@micron.com>
+> > > > Currently, we have two ways to issue multiple-block read/write
+> > > > the
+> > > > command to the eMMC. One is by normal IO request path fs->block-
+> > > > > mmc.
+> > > > Another one is that we can issue multiple-block read/write
+> > > > through
+> > > > MMC ioctl interface. For the first path, mrq->stop, and mrq-
+> > > > >stop-
+> > > > > opcode
+> > > > will be initialized in mmc_blk_data_prep(). However, for the
+> > > > second
+> > > > IO
+> > > > path, mrq->stop is not initialized since it is a pre-defined
+> > > > multiple
+> > > > blocks read/write.
+> > > As a matter of fact this way is also supported for the regular
+> > > block
+> > > I/O path. To make the mmc block driver to use it, mmc host drivers
+> > > need to announce that it's supported by setting MMC_CAP_CMD23.
+> > > It looks like that is what your patch should be targeted towards,
+> > > can
+> > > you have a look at this instead?
+> >
+> >
+> > Hi Ulf,
+> >
+> > Thanks for your comments. I will look at that as your suggestion.
+> >
+> > The patch [1/2] is accepted, so I will just update this patch to
+> >
+> > the next version.
+> >
+> >
+> >
+> > Kind regards,
+> >
+> > Bean
+>
+>
+> Hi Uffe,
+> Could you please firstly accept this patch? let the customer update
+> their kernel. As I tried to develop the next version of the patch
+> according to your suggestion, more changes will be involved. Also, no
+> matter how to make the change general, below mrq->stop checkup should
+> be deleted since it is obsolete. In the data transmission completion
+> interrupt, mrq->stop will be checked again.
+>
+> -       if (!mrq->data || !mrq->data->sg || !mrq->data->sg_len ||
+> -           !mrq->stop || mrq->stop->opcode != MMC_STOP_TRANSMISSION) {
+> +       if (!mrq->data || !mrq->data->sg || !mrq->data->sg_len) {
+>
 
-I think you're overestimating the amount of care and typographical
-knowledge that your average kernel developer has.  Most of these
-UTF-8 characters come from latex conversions and really aren't
-necessary (and are being used incorrectly).
+Well, I don't think the above checks are incorrect. Instead I think it
+points out that the cavium mmc driver lacks support for CMD23, while
+only open ended data transfers are supported.
 
-You seem quite knowedgeable about the various differences.  Perhaps
-you'd be willing to write a document for Documentation/doc-guide/
-that provides guidance for when to use which kinds of horizontal
-line?  https://www.punctuationmatters.com/hyphen-dash-n-dash-and-m-dash/
-talks about it in the context of publications, but I think we need
-something more suited to our needs for kernel documentation.
+The proper way forward is instead to implement CMD23 support to the
+cavium mmc driver. In the same patch adding that support, you should
+be able to remove the above checks.
+
+Kind regards
+Uffe
