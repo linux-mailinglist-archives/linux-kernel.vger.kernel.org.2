@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A6C378979
-	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E137B378671
+	for <lists+linux-kernel@lfdr.de>; Mon, 10 May 2021 13:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240426AbhEJL3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 07:29:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52794 "EHLO mail.kernel.org"
+        id S236309AbhEJLHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 07:07:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234742AbhEJK47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 06:56:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B7FD61C2D;
-        Mon, 10 May 2021 10:48:39 +0000 (UTC)
+        id S230185AbhEJKrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 06:47:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6321E61941;
+        Mon, 10 May 2021 10:37:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620643719;
-        bh=GECd6ZWGOLxXk6I6RpW1NsCGUbeOBhdBjmOBiu+231s=;
+        s=korg; t=1620643052;
+        bh=fRP3g17GIT7FXpO3sRJycJ0l79WL4vpifiTY6o4F18w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CWc1N6brFZGd70xmJiWJBv0XB0aj+8GdJqN1zNjjGcKTP825hrBnin+8w+b4dIVGi
-         ytVMKdIx0p6kBLJx2/zJ+sc9R9c4wHRq4FSolAYacxBAWNH4zNR+JBPyO/QInewFq9
-         gpXpLup3mexmM8znEiE3u4qAz3+kGJK/nixffol0=
+        b=ldIn2uWbTVhXPsc+UeeLR3oB3UALdOJ4Ihz65pvgjnbKNz/BeSJS0xvCCSMa/X87f
+         SP4gQtKYf95sd4uvvTOGw1kex0yVEP94UUh4/huoI2GSn4lOG5JaKQQ8PmXM6Nuenw
+         AdOONEtja65OQ/heGbxpJ2PAl7gsTr/mb6jMsUWM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jared Baldridge <jrb@expunge.us>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <jsmart2021@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 129/342] drm: Added orientation quirk for OneGX1 Pro
-Date:   Mon, 10 May 2021 12:18:39 +0200
-Message-Id: <20210510102014.334410861@linuxfoundation.org>
+Subject: [PATCH 5.10 123/299] scsi: lpfc: Fix incorrect dbde assignment when building target abts wqe
+Date:   Mon, 10 May 2021 12:18:40 +0200
+Message-Id: <20210510102009.040311992@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210510102010.096403571@linuxfoundation.org>
-References: <20210510102010.096403571@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+References: <20210510102004.821838356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jared Baldridge <jrb@expunge.us>
+From: James Smart <jsmart2021@gmail.com>
 
-[ Upstream commit 81ad7f9f78e4ff80e95be8282423f511b84f1166 ]
+[ Upstream commit 9302154c07bff4e7f7f43c506a1ac84540303d06 ]
 
-The OneGX1 Pro has a fairly unique combination of generic strings,
-but we additionally match on the BIOS date just to be safe.
+The wqe_dbde field indicates whether a Data BDE is present in Words 0:2 and
+should therefore should be clear in the abts request wqe. By setting the
+bit we can be misleading fw into error cases.
 
-Signed-off-by: Jared Baldridge <jrb@expunge.us>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/41288ccb-1012-486b-81c1-a24c31850c91@www.fastmail.com
+Clear the wqe_dbde field.
+
+Link: https://lore.kernel.org/r/20210301171821.3427-2-jsmart2021@gmail.com
+Co-developed-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_panel_orientation_quirks.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/scsi/lpfc/lpfc_nvmet.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-index 58f5dc2f6dd5..f6bdec7fa925 100644
---- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
-+++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-@@ -84,6 +84,13 @@ static const struct drm_dmi_panel_orientation_data itworks_tw891 = {
- 	.orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
- };
+diff --git a/drivers/scsi/lpfc/lpfc_nvmet.c b/drivers/scsi/lpfc/lpfc_nvmet.c
+index d4ade7cdb93a..deab8931ab48 100644
+--- a/drivers/scsi/lpfc/lpfc_nvmet.c
++++ b/drivers/scsi/lpfc/lpfc_nvmet.c
+@@ -3300,7 +3300,6 @@ lpfc_nvmet_unsol_issue_abort(struct lpfc_hba *phba,
+ 	bf_set(wqe_rcvoxid, &wqe_abts->xmit_sequence.wqe_com, xri);
  
-+static const struct drm_dmi_panel_orientation_data onegx1_pro = {
-+	.width = 1200,
-+	.height = 1920,
-+	.bios_dates = (const char * const []){ "12/17/2020", NULL },
-+	.orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
-+};
-+
- static const struct drm_dmi_panel_orientation_data lcd720x1280_rightside_up = {
- 	.width = 720,
- 	.height = 1280,
-@@ -211,6 +218,13 @@ static const struct dmi_system_id orientation_data[] = {
- 		  DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "Lenovo ideapad D330-10IGM"),
- 		},
- 		.driver_data = (void *)&lcd1200x1920_rightside_up,
-+	}, {	/* OneGX1 Pro */
-+		.matches = {
-+		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "SYSTEM_MANUFACTURER"),
-+		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "SYSTEM_PRODUCT_NAME"),
-+		  DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "Default string"),
-+		},
-+		.driver_data = (void *)&onegx1_pro,
- 	}, {	/* VIOS LTH17 */
- 		.matches = {
- 		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "VIOS"),
+ 	/* Word 10 */
+-	bf_set(wqe_dbde, &wqe_abts->xmit_sequence.wqe_com, 1);
+ 	bf_set(wqe_iod, &wqe_abts->xmit_sequence.wqe_com, LPFC_WQE_IOD_WRITE);
+ 	bf_set(wqe_lenloc, &wqe_abts->xmit_sequence.wqe_com,
+ 	       LPFC_WQE_LENLOC_WORD12);
 -- 
 2.30.2
 
