@@ -2,78 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835B437AE60
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF31537AE62
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbhEKSXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:23:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232122AbhEKSXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:23:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D6E76186A;
-        Tue, 11 May 2021 18:22:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620757350;
-        bh=tzQI48qc4TkUQ9zo4+5oAMZas2lYgB+Myx5nBcxQpTs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=httCx7EG90o9MOPSzN/WR939X0OGMA8jnVChiuZ9cPRtXtAsRDtbhQu42Cv7icpz3
-         IQgLaigUM87hzAXUVHsXY98IWez+N47v+KAFFMbJjWiFZp79yx61+WvPbV0hJziWtG
-         ouRFyLItoAgvRzDc5ncY5BRSQlhIST4zgcnzd2BTmNpLwWkLLMDLi4PbDH8CFSKekf
-         LgLukSN+bb4R7XEoiCEJEp91DagsGI1cD7ddV5op4IwJByDqVRvCAAyFR+W6K1YGGd
-         9+rEORLV0xiy+JGbXGKvqI5vhJzpdBl+cOFLZp6vV3X28gRjd/nqTP3TLop9UDGTB/
-         /RIqA+AXpYJIQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ASoC: cs42l42: Regmap must use_single_read/write
-Date:   Tue, 11 May 2021 19:21:29 +0100
-Message-Id: <162075713910.17925.13540340521558879999.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210511132855.27159-1-rf@opensource.cirrus.com>
-References: <20210511132855.27159-1-rf@opensource.cirrus.com>
+        id S231868AbhEKSYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231329AbhEKSYe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 14:24:34 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B43C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:23:26 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id h4so30072523lfv.0
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:23:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rRP2V1owQtURI7uacfJAlhnG1X+WN+T4pPIUW785E68=;
+        b=PwDCzHqvhpsGIY6ZKdMW7kNMfcas8us/yvacKvftleIg6L/4CL6sRhErvfpVMFwtS6
+         Tt3DepBYVPE7yWyt6kSumiYOzI6psP5DiRxw1+v1eH7KCLDcVVuWYe+WCjmzQDUsDfIO
+         S1CtBgYonS3r3gbSHa1nas5JfGL+PVsc3KKDnjEPB5bQmf7aKfJETFrbBIPwECqt9dpk
+         8+npwsdRppv2Z+/VKhzRmbi0MO/rYtfXiWYruWdTLuxXs90An5Hce7jtwziZQHIC7bDz
+         C0j77R3WQH2iB6RdRIX+fv28eBrXBWtxbH9njgLl+Bmkr9pB21TN+u28RVWouDBahdAq
+         EuPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rRP2V1owQtURI7uacfJAlhnG1X+WN+T4pPIUW785E68=;
+        b=NobQzuGeQccHljL3fdXQm48b+Nhk52g8x9SnspVp4QQuIw3YriZ1Phkj6S7cGFmFbr
+         S8/L9CsZs4oN5KJTRSxR7rxKivpKRVRXezFJJH6rCgfTfvXZvvGU+825gT0M/fDpLUBs
+         nV4dJFMsrTadYRKXTcHP7Ep6o69q+ttlxyIDQkj4106psO33PT1Hbyxq98qwyxAt9+cR
+         IVD5gfyr3lk6U3ORmyotuTrnvkh/7grJ1QVJSh8few8/6spGL6ElXBJZ/l7qWHW+HSyo
+         0apgGSo3HH3JQ1yW2sSYvjo95F8l75GUNaf9sU+FC2XHQmLYsDuq/HLE1vVvSlFpLvE1
+         JAbg==
+X-Gm-Message-State: AOAM532XerlMNnoAt0MsX9sSrbcfdEhy0g3wQCO4COmkf1E6UFybZJZ6
+        Ya8CYh70JkwYpcFbnc2U0TqEuUaUQJ9MLEXPDchgYLAelNg=
+X-Google-Smtp-Source: ABdhPJwMH7H0oisPlzng7AD8k94POgJBsFNjAPlQ/TtfiNQz2y8UpjVarfuboxmOJCJBPzPKV4Zb5IfRU35reZKQwyE=
+X-Received: by 2002:a19:ac09:: with SMTP id g9mr22055658lfc.547.1620757402020;
+ Tue, 11 May 2021 11:23:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <162074534493.289757.1243545574686276554.stgit@devnote2> <162074536334.289757.5292387320537578325.stgit@devnote2>
+In-Reply-To: <162074536334.289757.5292387320537578325.stgit@devnote2>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 11 May 2021 11:23:10 -0700
+Message-ID: <CAKwvOdkWxb+yJisafjFzy1FxbRZjdxhLqfwG=ryAQ10-j5ZhcA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] tools: Add -Wno-missing-field-initializers to for clang
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 14:28:55 +0100, Richard Fitzgerald wrote:
-> cs42l42 does not support standard burst transfers so the use_single_read
-> and use_single_write flags must be set in the regmap config.
-> 
-> Because of this bug, the patch:
-> 
-> commit 0a0eb567e1d4 ("ASoC: cs42l42: Minor error paths fixups")
-> 
-> [...]
+On Tue, May 11, 2021 at 8:02 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> Since clang's -Wmissing-field-initializers warns valid syntax of
+> initializing data structure (e.g. initializing static data
+> structure with single NULL, the rest of fields are initialized
+> with zero), it is better to disable this warning option
+> for clang for now.
+> This can stop building perf because -Werror is also specified.
+>
+> Note that same issue on gcc has been fixed in 4.7.0, so we don't need
+> this for gcc.
+>
+>  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=36750
+>
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-Applied to
+Seems fine, it's only enabled for the kernel at W=2 anyways.
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> ---
+>  tools/scripts/Makefile.include |    4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+> index f9271f3ea912..4fd5d33ded03 100644
+> --- a/tools/scripts/Makefile.include
+> +++ b/tools/scripts/Makefile.include
+> @@ -89,6 +89,10 @@ ifeq ($(CC_NO_CLANG), 1)
+>  EXTRA_WARNINGS += -Wstrict-aliasing=3
+>  endif
+>
+> +ifneq ($(CC_NO_CLANG), 1)
+> +EXTRA_WARNINGS += -Wno-missing-field-initializers
+> +endif
+> +
+>  # Hack to avoid type-punned warnings on old systems such as RHEL5:
+>  # We should be changing CFLAGS and checking gcc version, but this
+>  # will do for now and keep the above -Wstrict-aliasing=3 in place
+>
 
-Thanks!
 
-[1/1] ASoC: cs42l42: Regmap must use_single_read/write
-      commit: 0fad605fb0bdc00d8ad78696300ff2fbdee6e048
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
+-- 
 Thanks,
-Mark
+~Nick Desaulniers
