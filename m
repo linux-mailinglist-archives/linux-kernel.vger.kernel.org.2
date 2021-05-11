@@ -2,377 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 822D737ACF2
+	by mail.lfdr.de (Postfix) with ESMTP id 0C05B37ACF1
 	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbhEKRSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:18:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58802 "EHLO
+        id S232101AbhEKRSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231961AbhEKRRo (ORCPT
+        with ESMTP id S232000AbhEKRRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:17:44 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A163C06134A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:16:33 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id d14-20020a056a00198eb029028eb1d4a555so13310100pfl.7
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:16:33 -0700 (PDT)
+        Tue, 11 May 2021 13:17:43 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472D2C061348
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:16:32 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id f1so1551122edt.4
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:16:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=TWWCfHtJ7dAMyS3acFddqhtxUhh+dvvTZddd2oq7ipY=;
-        b=rTTAfkmvOv9y8Zg2CokZ0tnQalra/fAWBvyAQdf/UZFxn0yVOMbclF8uWJ/Cg0Ik6h
-         ImOQMK2+QNShN4XVSugfliJc6NrKQKVyJNXuqDh0IH4fF3uCIEn7PjioROVkH1KHACCM
-         c1a1CE+VWrkPYaJa8azgxz9+TBraum7kC7A1UCZbEAl23RlufXWObewGq7Z7wH8LniIT
-         UD2Vy3wmQPCuKAG3yutVNUiOAJ0/zwZvXEoGfI/qzYgq3SCo41wEoyA4g3GgR4wGFFh9
-         x4YCjPPZhKUwObl1qfgdv9NxG3YdpmUWOwU47ajWYk2EvVNxUvv1PHT8JEdcgh93gzQZ
-         LFtA==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gJ4QXLOi5qYQcWsKhnhYHHHN84GDlI0qyOMz9LJ9MJA=;
+        b=NAHQH1OXA4z8A3ywZoUPLx5PZOjYmtpy3Kvd0nDQV2Ehv6Pq4POjIhL0k8pP+J6W+3
+         Qsb5UVXY2TnQuCH72qYKa0w4e4thRDVppRcqJmjc3OMYxCHFW75FUpzVbAAa0xrdBJ4I
+         jPQXapvhkl5itLg62egldnLCWd0n+GZGQAsGE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=TWWCfHtJ7dAMyS3acFddqhtxUhh+dvvTZddd2oq7ipY=;
-        b=AsR2ifgoj7fGc7ldGTJMV5tYKnjYF81PJiACMQCl/RZNQp828c//0BQ8AV1lw3zY8V
-         YIIIwnX1UIak+wLkRCbvn7CrryLXUJqHlc6RNqQEPezWhD7nTf3ZbcwHKbdgKe3lfvVf
-         I6jNo5ArvNAnLH/4yxHxXiFu0rwe5m/b2DBuN6j2qUJ3plXCP06FTQQnNqvRElLwLnui
-         OVlOH+JNqC2BloB5GgtbSgpDfJoeEPBH9mwhan1MeQWUMUvB1/alTbpMrnaPdKTjpbtt
-         PUxpOsOikiSqVuHL9Q1YC+xa2I1ZeL9FrbglOSz+yDF3OoBMeLsD0jpIkEU+9CVS5HAH
-         7gVg==
-X-Gm-Message-State: AOAM531AgOxdaQVkNP5/IATizZ4kkYSS1+3+xi6SMvTSJuaOYv9np5ph
-        RdejtMAVUmks1bnZlkuvwdrlkyqIdc1dEOrPFsrDAhfzlVm78xsP/DW+/chJ8A35cy9Ui8pZnwN
-        0j9momhhL/obwvHj7HefszA5myB9ke1DVAGe4maiuPpJsijlmcZH9ZNTOLMl/0/n4M4jqublk
-X-Google-Smtp-Source: ABdhPJxY6f2bkMBlWqTSNAB/QIrzqzDMTxJbmKRiRmgG/RLWZooxFyOTmEfAdP8wzCOOG+XgwjFtrBpn/CAr
-X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:e050:3342:9ea6:6859])
- (user=bgardon job=sendgmr) by 2002:a62:8744:0:b029:2cb:6fd1:b809 with SMTP id
- i65-20020a6287440000b02902cb6fd1b809mr2635500pfe.80.1620753393021; Tue, 11
- May 2021 10:16:33 -0700 (PDT)
-Date:   Tue, 11 May 2021 10:16:10 -0700
-In-Reply-To: <20210511171610.170160-1-bgardon@google.com>
-Message-Id: <20210511171610.170160-8-bgardon@google.com>
-Mime-Version: 1.0
-References: <20210511171610.170160-1-bgardon@google.com>
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-Subject: [PATCH v4 7/7] KVM: x86/mmu: Lazily allocate memslot rmaps
-From:   Ben Gardon <bgardon@google.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>,
-        Ben Gardon <bgardon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=gJ4QXLOi5qYQcWsKhnhYHHHN84GDlI0qyOMz9LJ9MJA=;
+        b=XsKRESoKh73j3U05gdvNXO3jqRXbYhRf13lDBX0/BT5KBFJxM66XmUJ7XjCGrRYgnk
+         VwTOdHvULxI/aE0DgrPPNSF3HbD37NpAyRtgKLO9lW8MNt40YYtfULuzCadnoI6+aAfi
+         O20O1XqF338BM4hTGU1VYWNiO65j+910WTVvDX1JOdBXDBLfHJDS/e4KHMi9IGVXqQQo
+         S97ZHE58lzJdLYg7yI+zkrsRoS8bX5h2UfQOg3tgt2gm764zQwaA06UZNeHT3Z8Tynyd
+         UU6CsNVFpkYO351BLOSm9q3ZjD7bK75A4BdGMub8DTCo/NQ2/yKW9NmwL2eY1+zJRAi8
+         vGPA==
+X-Gm-Message-State: AOAM531ZMe7ifpP5Pu7CqD3g7ZXoVbWj3rjZS3kQNhGbnM4XkDVUX5k1
+        3dVGs21bzxBeohl0fdiDjN+qQQ==
+X-Google-Smtp-Source: ABdhPJyxfQ58c7ka6SeEs+UawelflG7pWufRwVy5W/GQh4+rGazpGzJlf2TwRNN8Q1JvNbfW3bYa2A==
+X-Received: by 2002:aa7:d0c9:: with SMTP id u9mr37437114edo.43.1620753391002;
+        Tue, 11 May 2021 10:16:31 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id u6sm12175280ejn.14.2021.05.11.10.16.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 10:16:30 -0700 (PDT)
+Date:   Tue, 11 May 2021 19:16:28 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH] Documentation: gpu: Mention the requirements for new
+ properties
+Message-ID: <YJq77Kep8aTJxSdh@phenom.ffwll.local>
+Mail-Followup-To: Maxime Ripard <maxime@cerno.tech>,
+        dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+References: <20210511155512.582798-1-maxime@cerno.tech>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511155512.582798-1-maxime@cerno.tech>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the TDP MMU is in use, wait to allocate the rmaps until the shadow
-MMU is actually used. (i.e. a nested VM is launched.) This saves memory
-equal to 0.2% of guest memory in cases where the TDP MMU is used and
-there are no nested guests involved.
+On Tue, May 11, 2021 at 05:55:12PM +0200, Maxime Ripard wrote:
+> New KMS properties come with a bunch of requirements to avoid each
+> driver from running their own, inconsistent, set of properties,
+> eventually leading to issues like property conflicts, inconsistencies
+> between drivers and semantics, etc.
+> 
+> Let's document what we expect.
+> 
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> ---
+>  Documentation/gpu/drm-kms.rst | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/Documentation/gpu/drm-kms.rst b/Documentation/gpu/drm-kms.rst
+> index 87e5023e3f55..30f4c376f419 100644
+> --- a/Documentation/gpu/drm-kms.rst
+> +++ b/Documentation/gpu/drm-kms.rst
+> @@ -463,6 +463,24 @@ KMS Properties
+>  This section of the documentation is primarily aimed at user-space developers.
+>  For the driver APIs, see the other sections.
+>  
+> +Requirements
+> +------------
+> +
+> +KMS drivers might need to add extra properties to support new features.
+> +Each new property introduced in a driver need to meet a few
+> +requirements, in addition to the one mentioned above.:
+> +
+> +- It must be standardized, with some documentation to describe the
+> +  property can be used.
+> +
+> +- It must provide a generic helper in the core code to register that
+> +  property on the object it attaches to.
 
-Signed-off-by: Ben Gardon <bgardon@google.com>
----
- arch/x86/include/asm/kvm_host.h |  2 ++
- arch/x86/kvm/mmu/mmu.c          | 53 +++++++++++++++++++++++----------
- arch/x86/kvm/mmu/tdp_mmu.c      |  6 ++--
- arch/x86/kvm/mmu/tdp_mmu.h      |  4 +--
- arch/x86/kvm/x86.c              | 45 +++++++++++++++++++++++++++-
- 5 files changed, 89 insertions(+), 21 deletions(-)
+Maybe also include anything that drivers might want to precompute, e.g. we
+have helpers for cliprects.
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index fc75ed49bfee..7b65f82ade1c 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1868,4 +1868,6 @@ static inline int kvm_cpu_get_apicid(int mps_cpu)
- 
- int kvm_cpu_dirty_log_size(void);
- 
-+int alloc_all_memslots_rmaps(struct kvm *kvm);
-+
- #endif /* _ASM_X86_KVM_HOST_H */
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index b0bdb924d519..183afccd2944 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1190,7 +1190,8 @@ static void kvm_mmu_write_protect_pt_masked(struct kvm *kvm,
- 		kvm_tdp_mmu_clear_dirty_pt_masked(kvm, slot,
- 				slot->base_gfn + gfn_offset, mask, true);
- 
--	if (!kvm->arch.memslots_have_rmaps)
-+	/* Read memslots_have_rmaps before the rmaps themselves */
-+	if (!smp_load_acquire(&kvm->arch.memslots_have_rmaps))
- 		return;
- 
- 	while (mask) {
-@@ -1223,7 +1224,8 @@ static void kvm_mmu_clear_dirty_pt_masked(struct kvm *kvm,
- 		kvm_tdp_mmu_clear_dirty_pt_masked(kvm, slot,
- 				slot->base_gfn + gfn_offset, mask, false);
- 
--	if (!kvm->arch.memslots_have_rmaps)
-+	/* Read memslots_have_rmaps before the rmaps themselves */
-+	if (!smp_load_acquire(&kvm->arch.memslots_have_rmaps))
- 		return;
- 
- 	while (mask) {
-@@ -1268,7 +1270,8 @@ bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm,
- 	int i;
- 	bool write_protected = false;
- 
--	if (kvm->arch.memslots_have_rmaps) {
-+	/* Read memslots_have_rmaps before the rmaps themselves */
-+	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps)) {
- 		for (i = PG_LEVEL_4K; i <= KVM_MAX_HUGEPAGE_LEVEL; ++i) {
- 			rmap_head = __gfn_to_rmap(gfn, i, slot);
- 			write_protected |= __rmap_write_protect(kvm, rmap_head,
-@@ -1446,7 +1449,8 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
- {
- 	bool flush = false;
- 
--	if (kvm->arch.memslots_have_rmaps)
-+	/* Read memslots_have_rmaps before the rmaps themselves */
-+	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps))
- 		flush = kvm_handle_gfn_range(kvm, range, kvm_unmap_rmapp);
- 
- 	if (is_tdp_mmu_enabled(kvm))
-@@ -1459,7 +1463,8 @@ bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
- {
- 	bool flush = false;
- 
--	if (kvm->arch.memslots_have_rmaps)
-+	/* Read memslots_have_rmaps before the rmaps themselves */
-+	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps))
- 		flush = kvm_handle_gfn_range(kvm, range, kvm_set_pte_rmapp);
- 
- 	if (is_tdp_mmu_enabled(kvm))
-@@ -1515,7 +1520,8 @@ bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
- {
- 	bool young = false;
- 
--	if (kvm->arch.memslots_have_rmaps)
-+	/* Read memslots_have_rmaps before the rmaps themselves */
-+	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps))
- 		young = kvm_handle_gfn_range(kvm, range, kvm_age_rmapp);
- 
- 	if (is_tdp_mmu_enabled(kvm))
-@@ -1528,7 +1534,8 @@ bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
- {
- 	bool young = false;
- 
--	if (kvm->arch.memslots_have_rmaps)
-+	/* Read memslots_have_rmaps before the rmaps themselves */
-+	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps))
- 		young = kvm_handle_gfn_range(kvm, range, kvm_test_age_rmapp);
- 
- 	if (is_tdp_mmu_enabled(kvm))
-@@ -3295,6 +3302,10 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
- 		}
- 	}
- 
-+	r = alloc_all_memslots_rmaps(vcpu->kvm);
-+	if (r)
-+		return r;
-+
- 	write_lock(&vcpu->kvm->mmu_lock);
- 	r = make_mmu_pages_available(vcpu);
- 	if (r < 0)
-@@ -5455,7 +5466,8 @@ static void kvm_mmu_zap_all_fast(struct kvm *kvm)
- 	 */
- 	kvm_reload_remote_mmus(kvm);
- 
--	if (kvm->arch.memslots_have_rmaps)
-+	/* Read memslots_have_rmaps before the rmaps themselves */
-+	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps))
- 		kvm_zap_obsolete_pages(kvm);
- 
- 	write_unlock(&kvm->mmu_lock);
-@@ -5483,9 +5495,13 @@ void kvm_mmu_init_vm(struct kvm *kvm)
- {
- 	struct kvm_page_track_notifier_node *node = &kvm->arch.mmu_sp_tracker;
- 
--	kvm_mmu_init_tdp_mmu(kvm);
--
--	kvm->arch.memslots_have_rmaps = true;
-+	if (!kvm_mmu_init_tdp_mmu(kvm))
-+		/*
-+		 * No smp_load/store wrappers needed here as we are in
-+		 * VM init and there cannot be any memslots / other threads
-+		 * accessing this struct kvm yet.
-+		 */
-+		kvm->arch.memslots_have_rmaps = true;
- 
- 	node->track_write = kvm_mmu_pte_write;
- 	node->track_flush_slot = kvm_mmu_invalidate_zap_pages_in_memslot;
-@@ -5508,7 +5524,8 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
- 	int i;
- 	bool flush = false;
- 
--	if (kvm->arch.memslots_have_rmaps) {
-+	/* Read memslots_have_rmaps before the rmaps themselves */
-+	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps)) {
- 		write_lock(&kvm->mmu_lock);
- 		for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
- 			slots = __kvm_memslots(kvm, i);
-@@ -5559,7 +5576,8 @@ void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
- {
- 	bool flush = false;
- 
--	if (kvm->arch.memslots_have_rmaps) {
-+	/* Read memslots_have_rmaps before the rmaps themselves */
-+	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps)) {
- 		write_lock(&kvm->mmu_lock);
- 		flush = slot_handle_level(kvm, memslot, slot_rmap_write_protect,
- 					  start_level, KVM_MAX_HUGEPAGE_LEVEL,
-@@ -5635,7 +5653,8 @@ void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
- 	struct kvm_memory_slot *slot = (struct kvm_memory_slot *)memslot;
- 	bool flush;
- 
--	if (kvm->arch.memslots_have_rmaps) {
-+	/* Read memslots_have_rmaps before the rmaps themselves */
-+	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps)) {
- 		write_lock(&kvm->mmu_lock);
- 		flush = slot_handle_leaf(kvm, slot, kvm_mmu_zap_collapsible_spte, true);
- 		if (flush)
-@@ -5672,7 +5691,8 @@ void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
- {
- 	bool flush = false;
- 
--	if (kvm->arch.memslots_have_rmaps) {
-+	/* Read memslots_have_rmaps before the rmaps themselves */
-+	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps)) {
- 		write_lock(&kvm->mmu_lock);
- 		flush = slot_handle_leaf(kvm, memslot, __rmap_clear_dirty,
- 					 false);
-@@ -5705,7 +5725,8 @@ void kvm_mmu_zap_all(struct kvm *kvm)
- 	if (is_tdp_mmu_enabled(kvm))
- 		kvm_tdp_mmu_zap_all(kvm);
- 
--	if (!kvm->arch.memslots_have_rmaps) {
-+	/* Read memslots_have_rmaps before the rmaps themselves */
-+	if (!smp_load_acquire(&kvm->arch.memslots_have_rmaps)) {
- 		write_unlock(&kvm->mmu_lock);
- 		return;
- 	}
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 95eeb5ac6a8a..ea00c9502ba1 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -14,10 +14,10 @@ static bool __read_mostly tdp_mmu_enabled = false;
- module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
- 
- /* Initializes the TDP MMU for the VM, if enabled. */
--void kvm_mmu_init_tdp_mmu(struct kvm *kvm)
-+bool kvm_mmu_init_tdp_mmu(struct kvm *kvm)
- {
- 	if (!tdp_enabled || !READ_ONCE(tdp_mmu_enabled))
--		return;
-+		return false;
- 
- 	/* This should not be changed for the lifetime of the VM. */
- 	kvm->arch.tdp_mmu_enabled = true;
-@@ -25,6 +25,8 @@ void kvm_mmu_init_tdp_mmu(struct kvm *kvm)
- 	INIT_LIST_HEAD(&kvm->arch.tdp_mmu_roots);
- 	spin_lock_init(&kvm->arch.tdp_mmu_pages_lock);
- 	INIT_LIST_HEAD(&kvm->arch.tdp_mmu_pages);
-+
-+	return true;
- }
- 
- static __always_inline void kvm_lockdep_assert_mmu_lock_held(struct kvm *kvm,
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index 5fdf63090451..b046ab5137a1 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -80,12 +80,12 @@ int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes,
- 			 int *root_level);
- 
- #ifdef CONFIG_X86_64
--void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
-+bool kvm_mmu_init_tdp_mmu(struct kvm *kvm);
- void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
- static inline bool is_tdp_mmu_enabled(struct kvm *kvm) { return kvm->arch.tdp_mmu_enabled; }
- static inline bool is_tdp_mmu_page(struct kvm_mmu_page *sp) { return sp->tdp_mmu_page; }
- #else
--static inline void kvm_mmu_init_tdp_mmu(struct kvm *kvm) {}
-+static inline bool kvm_mmu_init_tdp_mmu(struct kvm *kvm) { return false; }
- static inline void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm) {}
- static inline bool is_tdp_mmu_enabled(struct kvm *kvm) { return false; }
- static inline bool is_tdp_mmu_page(struct kvm_mmu_page *sp) { return false; }
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 03b6bcff2a53..fdc1b2759771 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10920,6 +10920,8 @@ static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
- 		int lpages;
- 		int level = i + 1;
- 
-+		WARN_ON(slot->arch.rmap[i]);
-+
- 		lpages = gfn_to_index(slot->base_gfn + npages - 1,
- 				      slot->base_gfn, level) + 1;
- 
-@@ -10935,6 +10937,46 @@ static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
- 	return 0;
- }
- 
-+int alloc_all_memslots_rmaps(struct kvm *kvm)
-+{
-+	struct kvm_memslots *slots;
-+	struct kvm_memory_slot *slot;
-+	int r = 0;
-+	int i;
-+
-+	/*
-+	 * Check memslots_have_rmaps early before acquiring the
-+	 * slots_arch_lock below.
-+	 */
-+	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps))
-+		return 0;
-+
-+	mutex_lock(&kvm->slots_arch_lock);
-+
-+	/*
-+	 * Read memslots_have_rmaps again, under the slots arch lock,
-+	 * before allocating the rmaps
-+	 */
-+	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps))
-+		return 0;
-+
-+	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-+		slots = __kvm_memslots(kvm, i);
-+		kvm_for_each_memslot(slot, slots) {
-+			r = memslot_rmap_alloc(slot, slot->npages);
-+			if (r) {
-+				mutex_unlock(&kvm->slots_arch_lock);
-+				return r;
-+			}
-+		}
-+	}
-+
-+	/* Write rmap pointers before memslots_have_rmaps */
-+	smp_store_release(&kvm->arch.memslots_have_rmaps, true);
-+	mutex_unlock(&kvm->slots_arch_lock);
-+	return 0;
-+}
-+
- static int kvm_alloc_memslot_metadata(struct kvm *kvm,
- 				      struct kvm_memory_slot *slot,
- 				      unsigned long npages)
-@@ -10949,7 +10991,8 @@ static int kvm_alloc_memslot_metadata(struct kvm *kvm,
- 	 */
- 	memset(&slot->arch, 0, sizeof(slot->arch));
- 
--	if (kvm->arch.memslots_have_rmaps) {
-+	/* Read memslots_have_rmaps before allocating the rmaps */
-+	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps)) {
- 		r = memslot_rmap_alloc(slot, npages);
- 		if (r)
- 			return r;
+> +
+> +- Its content must be decoded by the core and provided in the object
+
+								object's
+> +  associated state structure.
+> +
+> +- An IGT test must be submitted.
+
+				"... where reasonable."
+
+We have that disclaimer already here:
+
+https://dri.freedesktop.org/docs/drm/gpu/drm-uapi.html#testing-requirements-for-userspace-api
+
+I think would be good to cross-reference the uapi rules in general
+
+https://dri.freedesktop.org/docs/drm/gpu/drm-uapi.html#open-source-userspace-requirements
+
+With the bikesheds addressed:
+
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+
+But this needs ideally a pile of acks from most display driver teams.
+-Daniel
+
+> +
+>  Property Types and Blob Property Support
+>  ----------------------------------------
+>  
+> -- 
+> 2.31.1
+> 
+
 -- 
-2.31.1.607.g51e8a6a459-goog
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
