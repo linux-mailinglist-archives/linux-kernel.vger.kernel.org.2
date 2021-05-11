@@ -2,54 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A9E37AC92
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8969537AC97
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbhEKRCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:02:22 -0400
-Received: from verein.lst.de ([213.95.11.211]:37566 "EHLO verein.lst.de"
+        id S231825AbhEKRCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:02:39 -0400
+Received: from ms.lwn.net ([45.79.88.28]:59890 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231437AbhEKRCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:02:10 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 14EDB67373; Tue, 11 May 2021 19:01:02 +0200 (CEST)
-Date:   Tue, 11 May 2021 19:01:01 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Stefano Stabellini <sstabellini@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Julien Grall <julien@xen.org>,
-        f.fainelli@gmail.com,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        id S231230AbhEKRCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 13:02:36 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d:444a:d152:279d:1dbb])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 6C8034BF;
+        Tue, 11 May 2021 17:01:27 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6C8034BF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1620752487; bh=QmVYJvT1Kzq68R+QLKACGPLdolv6eNZVx9knetb0KFs=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=irQf+xtmaDJZYLKwq3hA8ztA2UhPkWaMvlGfMCect35HeamgThOzqqCroC26BP/Sl
+         CZ5fyVVCGLDX5hEb0cnVXCWNegwA+Xs245fqJaayhz/QOZsSyLbOEm6eAcMMVYm6OY
+         KYssjOyi8tvqVhDlU9yQOg3yj6ggq5zhGjo6YGvleqEvR4QvYakpL6DYodSr6ne5p2
+         POLXDUg/aNRvtMVVTSEj+i7YB0HcWdlIM/5xZz2XEUDjPiyFKgjrJG+D5PIfW0A/ku
+         jf3zV8C5QT23k16fFmU0Sd0ej651gdEPXtb2eRRgDOFPAPrnQiy6aPBFrlggpfHlaH
+         YTUqF86upi5qg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org,
-        osstest service owner <osstest-admin@xenproject.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        iommu@lists.linux-foundation.org
-Subject: Re: Regression when booting 5.15 as dom0 on arm64 (WAS: Re:
- [linux-linus test] 161829: regressions - FAIL)]
-Message-ID: <20210511170101.GA20936@lst.de>
-References: <osstest-161829-mainreport@xen.org> <4ea1e89f-a7a0-7664-470c-b3cf773a1031@xen.org> <20210510084057.GA933@lst.de> <alpine.DEB.2.21.2105101818260.5018@sstabellini-ThinkPad-T480s> <20210511063558.GA7605@lst.de> <alpine.DEB.2.21.2105110925430.5018@sstabellini-ThinkPad-T480s> <20210511164933.GA19775@lst.de> <alpine.DEB.2.21.2105110950580.5018@sstabellini-ThinkPad-T480s>
+        "David S. Miller" <davem@davemloft.net>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        intel-wired-lan@lists.osuosl.org, linux-hwmon@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH 0/5] Fix some UTF-8 bad usages
+In-Reply-To: <cover.1620744606.git.mchehab+huawei@kernel.org>
+References: <cover.1620744606.git.mchehab+huawei@kernel.org>
+Date:   Tue, 11 May 2021 11:01:26 -0600
+Message-ID: <87fsytdx21.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2105110950580.5018@sstabellini-ThinkPad-T480s>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 09:51:20AM -0700, Stefano Stabellini wrote:
-> On Tue, 11 May 2021, Christoph Hellwig wrote:
-> > On Tue, May 11, 2021 at 09:47:33AM -0700, Stefano Stabellini wrote:
-> > > That's a much better plan. It is also not super urgent, so maybe for now
-> > > we could add an explicit check for io_tlb_default_mem != NULL at the
-> > > beginning of xen_swiotlb_init? So that at least we can fail explicitly
-> > > or ignore it explicitly rather than by accident.
-> > 
-> > Fine with me.  Do you want to take over from here and test and submit
-> > your version?
-> 
-> I can do that. Can I add your signed-off-by for your original fix?
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
 
-Sure:
+> This series follow up this past series:
+> 	https://lore.kernel.org/lkml/cover.1620641727.git.mchehab+huawei@kernel.org/
+>
+> Containing just the manual fixes from it. I'll respin the remaining
+> patches on a separate series.
+>
+> Please note that patches 1 to 3 are identical to the ones posted
+> on the original series.
+>
+> Patch 1 is special: it fixes some left-overs from a convertion
+> from cdrom-standard.tex: there, some characters that are
+> valid in C were converted to some visually similar UTF-8 by LaTeX.
+>
+> Patch 2 remove U+00ac (''): NOT SIGN characters at the end of
+> the first line of two files. No idea why those ended being there :-p
+>
+> Patch 3 replaces:
+> 	KernelVersion:3.3
+> by:
+> 	KernelVersion:	3.3
+>
+> which is the expected format for the KernelVersion field;
+>
+> Patches 4 and 5 fix some bad usages of EM DASH/EN DASH on
+> places that it should be, instead, a normal hyphen. I suspect
+> that they ended being there due to the usage of some conversion
+> toolset.
+>
+> Mauro Carvalho Chehab (5):
+>   docs: cdrom-standard.rst: get rid of uneeded UTF-8 chars
+>   docs: ABI: remove a meaningless UTF-8 character
+>   docs: ABI: remove some spurious characters
+>   docs: hwmon: tmp103.rst: fix bad usage of UTF-8 chars
+>   docs: networking: device_drivers: fix bad usage of UTF-8 chars
+>
+>  .../obsolete/sysfs-kernel-fadump_registered   |  2 +-
+>  .../obsolete/sysfs-kernel-fadump_release_mem  |  2 +-
+>  Documentation/ABI/testing/sysfs-module        |  4 +--
+>  Documentation/cdrom/cdrom-standard.rst        | 30 +++++++++----------
+>  Documentation/hwmon/tmp103.rst                |  4 +--
+>  .../device_drivers/ethernet/intel/i40e.rst    |  4 +--
+>  .../device_drivers/ethernet/intel/iavf.rst    |  2 +-
+>  7 files changed, 24 insertions(+), 24 deletions(-)
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+These seem pretty straightforward; I've applied the set, thanks.
+
+jon
