@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998D237B2D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D356537B2D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhEKX5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:57:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhEKX5k (ORCPT
+        id S229996AbhEKX7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:59:42 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:50435 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229637AbhEKX7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:57:40 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B9D6C061574;
-        Tue, 11 May 2021 16:56:33 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id j75so20642362oih.10;
-        Tue, 11 May 2021 16:56:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GVd0C6U+pOQCTdpKsYSoAOdkAaViQw9tGJFeL10a/eo=;
-        b=KooqjuH3XsHQYC26jxJKyYTleW1BaqZqY802qbXkRoIY2LtGSZnQgHyasKc61dauDC
-         Jjq+XZ8lwg237j5X7DPryg+6bHjmjRx1c7zXKe/507Z5+84KyXCp9TgYztCd9l792ljt
-         5EvCi0MhR3HPD5qxnOwOalKNdFS0WQ+LeYeHOu4Rnp3CXJfixNgHplqxHmFLt1ddqpO8
-         mxeQpF7pnMqOidm/WsDhbyBVDrGaVBYBjLmYOsly0UaODsRbw9l6dSbZymNY/4WwjUlk
-         tNvXPdKJbkXWOhUnHczgYTw7qO/j6nbLCgLD58T+wH+LH4ilF3m1PGIcbqmdswVjtRkd
-         lwmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=GVd0C6U+pOQCTdpKsYSoAOdkAaViQw9tGJFeL10a/eo=;
-        b=Gx4A+H81q/F4lCGIVEJ13PA/g5xWdmckhtfVQAPkog/Gn4WfEmGVd5JzGepQaa4CEq
-         2A5iZ9DmVm6aIOC59+kVPMp8rzb4XpaqqtXCANXmgD8T3U8bp5gl7qPcm5Wev0G80PHH
-         AQLp3G0ZuLSyzgh5piqaGwfXq+gRsRo+Qw98qPH3uFuzylOrwkNgtpaKb70z2/7YiDI8
-         p9n2xonP1ZrrOlpPu937zfVQc/irSl2JTxdWKYsH2LGK7djHIlW5CJWjpO24xqZniEBV
-         TIpQy1UJlzf+QmVdMKl9tC1b33i1WAIM4q997lSdf5xoaFV8HonqbdVU0s8P80RlOdpY
-         j1Ig==
-X-Gm-Message-State: AOAM532LAJuKpPEuGGIAu0HfN7zBPU6AJO/JLFlpQQWDKwPsFcjJu2r6
-        aGjO+DlsSsbCzbtoB0E6GGI=
-X-Google-Smtp-Source: ABdhPJz2Y4w7cSHleO+dJO2wqq43bsT3xrmZ5a5uadkZOaLIzG20LSakA2d2PWBg14X6XPqXuhtklA==
-X-Received: by 2002:aca:4acf:: with SMTP id x198mr24019150oia.111.1620777392722;
-        Tue, 11 May 2021 16:56:32 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d19sm3610578oop.26.2021.05.11.16.56.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 16:56:32 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Arend van Spriel <aspriel@gmail.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] brcm80211: Drop unnecessary NULL check after container_of
-Date:   Tue, 11 May 2021 16:56:29 -0700
-Message-Id: <20210511235629.1686038-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.25.1
+        Tue, 11 May 2021 19:59:41 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 21CC45C0150;
+        Tue, 11 May 2021 19:58:34 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 11 May 2021 19:58:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
+         h=date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=F405VTvvDsLYnK6i0Qg9HJcn6wq
+        Vw6Lc1ypuVa795h4=; b=d0mjyYNmUtfM63vRox75IS7DSosOcuQ8PmFHqVoOx6e
+        2HYM2UltloGTeodM11l2042yiRXp5Qw7lTEWzJIexX8RsqvlF/Gyv2/jpPfq6Duo
+        dOYFybU7CkYRte1gBWKn0EYcYELAYgISKxsZD/XARLGsDwXyuZmEWvxnVIcTmHVw
+        CLs8zbjUl0SC508mKnPENnWBEXclvg/77DAtp7w447n+uPfkl1mEJs6lQp+Ryw6A
+        Ge9q7NLgCWjIpm6ljbfLHBLuDmB8Flxp+SDstaLlgjFUeqxC2GMojk9VqJfIZzqi
+        Gq4QbzhUMNZsS5LELWckvBwYAAXLTh0Etn47RkW/b/A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=F405VT
+        vvDsLYnK6i0Qg9HJcn6wqVw6Lc1ypuVa795h4=; b=Y/ON5KOjz7C/clVFtc7JfR
+        uwRgZvKJ5iOAfP7dsQQIA6my/yzmJHAH5CncMDrxDEoVkf2XDS+mey9FT2a4/A55
+        /pBrynjp9hw4KJpZ0TtRjnyrRohd5Z+HCkgoB71chS+U1Wd/gwCqhH8koLss8fpm
+        pwTgB/lPoqxZqOVGYgVuZXhVYNNAvm5Ic/92rvl8fm3pBpo09lDQCtwSJuBFUXHb
+        DYp76Jzqz8nIM5OpgRqkTPFzLgtEnctoIUSGcUnQLNYt1IC09JHDUyW+77IEh2Y0
+        13zMDMqCAimftbr8I3vExtAoiXo3n92NHSPLLcw1I85NuvM5uUf0oLdJqZkMzg8A
+        ==
+X-ME-Sender: <xms:KRqbYGEqWd28FAatUEyD2c8w0srsPvySHT46odRIUxqLK1hy81RxbQ>
+    <xme:KRqbYHVNbNLWegh-0usJqHTdxBTFibJ62WUAqQFyT368Orbyuj_78smqYmMRrg3f3
+    oqXekm7vHwv6EU4GU0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehuddgvdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjfgesthdtrodttderjeenucfhrhhomhepuegvnhcu
+    uehovggtkhgvlhcuoehmvgessggvnhgsohgvtghkvghlrdhnvghtqeenucggtffrrghtth
+    gvrhhnpedtveetgfehfeekvddthffgkeelheduudeffefggedvjedvkeekueetgffhudfh
+    jeenucfkphepvdegrdduieelrddvtddrvdehheenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmvgessggvnhgsohgvtghkvghlrdhnvght
+X-ME-Proxy: <xmx:KRqbYAJx8LpXVPTBahbQB-np72Eca0UHTnynH-DjbgS2CFck7u_Qnw>
+    <xmx:KRqbYAFWo8wUQ0aUhIx0D3JmGN5eQFCXJSyerNDZ3gtrscD8tiFXew>
+    <xmx:KRqbYMVIAESeoqHH_GXVE9bUgzlYeXiocve1edk6TamrE_8pQGsfyQ>
+    <xmx:KhqbYGe38-L3BMU3a5sNE3jpnNypSNX2sbB8603XbL6eklx7I5XLkA>
+Received: from localhost (unknown [24.169.20.255])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Tue, 11 May 2021 19:58:33 -0400 (EDT)
+Date:   Tue, 11 May 2021 19:58:32 -0400
+From:   Ben Boeckel <me@benboeckel.net>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     keyrings@vger.kernel.org, Ben Boeckel <mathstuf@gmail.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v2 1/1] trusted-keys: match tpm_get_ops on all return
+ paths
+Message-ID: <YJsaKJvgExLmjhoH@erythro.dev.benboeckel.internal>
+References: <20210429192156.770145-1-list.lkml.keyrings@me.benboeckel.net>
+ <20210429192156.770145-2-list.lkml.keyrings@me.benboeckel.net>
+ <YJmf4Q0l+MTFEaEo@erythro.dev.benboeckel.internal>
+ <YJsXN47MTF/TpsKX@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YJsXN47MTF/TpsKX@kernel.org>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The parameter passed to ai_detach() is guaranteed to never be NULL
-because it is checked by the caller. Consequently, the result of
-container_of() on it is also never NULL, and a NULL check on it
-is unnecessary. Even without that, the NULL check would still be
-unnecessary because the subsequent kfree() can handle NULL arguments.
-On top of all that, it is misleading to check the result of container_of()
-against NULL because the position of the contained element could change,
-which would make the check invalid. Remove it.
+On Wed, May 12, 2021 at 02:45:59 +0300, Jarkko Sakkinen wrote:
+> I applied it, probably will do additional PR for v5.13 in order to fix
+> some urgent tpm_tis issues, so I'll include this to the same pull
+> request. Thanks for fixing this!
 
-This change was made automatically with the following Coccinelle script.
+Thanks for the update :) .
 
-@@
-type t;
-identifier v;
-statement s;
-@@
-
-<+...
-(
-  t v = container_of(...);
-|
-  v = container_of(...);
-)
-  ...
-  when != v
-- if (\( !v \| v == NULL \) ) s
-...+>
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/net/wireless/broadcom/brcm80211/brcmsmac/aiutils.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/aiutils.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/aiutils.c
-index 53365977bfd6..2084b506a450 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/aiutils.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/aiutils.c
-@@ -531,9 +531,6 @@ void ai_detach(struct si_pub *sih)
- 
- 	sii = container_of(sih, struct si_info, pub);
- 
--	if (sii == NULL)
--		return;
--
- 	kfree(sii);
- }
- 
--- 
-2.25.1
-
+--Ben
