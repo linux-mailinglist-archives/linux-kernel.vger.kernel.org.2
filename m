@@ -2,72 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C5C37A956
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE5F37A958
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbhEKOcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:32:47 -0400
-Received: from mga14.intel.com ([192.55.52.115]:32906 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231154AbhEKOcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:32:41 -0400
-IronPort-SDR: iH4gk33J4A9XjfMEBwy5vLkq3wBh5PEIp4n0qsDzK/7hAH3psz+8ADpMfnmnfFKkPzzAEj0t1f
- N6tShNC8+GCQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="199136065"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="199136065"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:31:34 -0700
-IronPort-SDR: qCrlyJaXV9SkWdyIBZnuzQfHfOzwIA2iGRu3+gEIzlGkGc3Hzn1V4Z7U4hKBYsQ7qAhxmQvSay
- n9icrFIsSrtQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="434471084"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by fmsmga008.fm.intel.com with SMTP; 11 May 2021 07:31:31 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Tue, 11 May 2021 17:31:30 +0300
-Date:   Tue, 11 May 2021 17:31:30 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Werner Sembach <wse@tuxedocomputers.com>
-Cc:     airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 0/3] drm/i915/display: Try YCbCr420 color when RGB
- fails
-Message-ID: <YJqVQsnuQR7nVrnW@intel.com>
-References: <20210510133349.14491-1-wse@tuxedocomputers.com>
+        id S231858AbhEKOcu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 May 2021 10:32:50 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:58028 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231154AbhEKOct (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:32:49 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-32-ksxxKfZ1MOGdNqOWBkuFfw-1; Tue, 11 May 2021 15:31:40 +0100
+X-MC-Unique: ksxxKfZ1MOGdNqOWBkuFfw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Tue, 11 May 2021 15:31:38 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Tue, 11 May 2021 15:31:38 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Petr Mladek' <pmladek@suse.com>
+CC:     'Steven Rostedt' <rostedt@goodmis.org>,
+        'Stephen Boyd' <swboyd@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baoquan He <bhe@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Young <dyoung@redhat.com>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Ingo Molnar <mingo@redhat.com>, Jessica Yu <jeyu@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Rasmus Villemoes" <linux@rasmusvillemoes.dk>,
+        Sasha Levin <sashal@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vivek Goyal <vgoyal@redhat.com>, Will Deacon <will@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        peter enderborg <peter.enderborg@sony.com>
+Subject: RE: [PATCH v6 00/13] Add build ID to stacktraces
+Thread-Topic: [PATCH v6 00/13] Add build ID to stacktraces
+Thread-Index: AQHXRf4HnT90HedmH0WFx6bjKadex6reN/jQ///0T4CAABGGcIAAB3WAgAASvAA=
+Date:   Tue, 11 May 2021 14:31:38 +0000
+Message-ID: <f09e9d68e4b14de58e881050a3c78ec1@AcuMS.aculab.com>
+References: <20210511003845.2429846-1-swboyd@chromium.org>
+ <b30f6d396edf4db5974a2b90364b6314@AcuMS.aculab.com>
+ <20210511085235.09bc38a7@gandalf.local.home>
+ <37ca7834a8514a5695ed002e073a83b6@AcuMS.aculab.com> <YJqTB5pJiRqS1yGY@alley>
+In-Reply-To: <YJqTB5pJiRqS1yGY@alley>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210510133349.14491-1-wse@tuxedocomputers.com>
-X-Patchwork-Hint: comment
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 03:33:46PM +0200, Werner Sembach wrote:
-> When encoder validation of a display mode fails, retry with less bandwidth
-> heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
-> to support 4k60Hz output, which previously failed silently.
+From: Petr Mladek
+> Sent: 11 May 2021 15:22
 > 
-> AMDGPU had nearly the exact same issue. This problem description is
-> therefore copied from my commit message of the AMDGPU patch.
+> On Tue 2021-05-11 12:58:47, David Laight wrote:
+> > From: Steven Rostedt
+> > > Sent: 11 May 2021 13:53
+> > >
+> > > On Tue, 11 May 2021 12:36:06 +0000
+> > > David Laight <David.Laight@ACULAB.COM> wrote:
+> > >
+> > > > >  x1 : ffffff93fef15788 x0 : ffffffe3622352e0
+> > > > >  Call trace:
+> > > > >   lkdtm_WARNING+0x28/0x30 [lkdtm ed5019fdf5e53be37cb1ba7899292d7e143b259e]
+> > > > >   direct_entry+0x16c/0x1b4 [lkdtm ed5019fdf5e53be37cb1ba7899292d7e143b259e]
+> > > > >   full_proxy_write+0x74/0xa4
+> > > >
+> > > > Is there any way to get it to print each module ID only once?
+> > >
+> > > If there's a trivial way to do that, then perhaps it should be done, but for
+> > > now, this patch series isn't as obnoxious as the previous versions. It only
+> > > affects stack traces, and I'm fine with that.
+> >
+> > True. Printing the id in the module list was horrid.
+> >
+> > The real downside is all the extra text that will overflow the
+> > in-kernel buffer.
+> > At least it shouldn't be extra lines causing screen wrap.
+> > Unless the variable names are long - hi rust :-)
 > 
-> On some setups, while the monitor and the gpu support display modes with
-> pixel clocks of up to 600MHz, the link encoder might not. This prevents
-> YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
-> possible. However, which color mode is used is decided before the link
-> encoder capabilities are checked. This patch fixes the problem by retrying
-> to find a display mode with YCbCr420 enforced and using it, if it is
-> valid.
-> 
-> This patchset is revision 7. Fixed a rebase issue in 1/3 and moved message
-> from error output to debug output in 2/3.
+> Note that the ID is printed only when CONFIG_STACKTRACE_BUILD_ID
+> is enabled. It will be used only by some distros/vendors that
+> use it to download the debuginfo packages.
 
-Looks good and CI seem shappy. 
+Until Ubuntu decide to turn it on :-)
 
-Series pushed to drm-intel-next. Thanks.
+Actually, for the use case, the id could be trimmed significantly.
+It is only trying to differentiate between builds of a specific module.
+So even 8 digits would be plenty.
 
--- 
-Ville Syrjälä
-Intel
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
