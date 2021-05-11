@@ -2,129 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E50837ACB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C5F37ACB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbhEKRJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:09:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29320 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231445AbhEKRJS (ORCPT
+        id S231753AbhEKRK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230315AbhEKRKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:09:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620752891;
+        Tue, 11 May 2021 13:10:53 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521CBC061574;
+        Tue, 11 May 2021 10:09:47 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ec70020ab858661d7f414.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:c700:20ab:8586:61d7:f414])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 134C61EC02E6;
+        Tue, 11 May 2021 19:09:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1620752985;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y/O0ej2NcOY86TRKShKCBi1CW9Ph72+cFotAeokd3co=;
-        b=RcBiwis8BHASH7wlsvVJxDR4o19dVvJjLo2jila03ecSEveELBOoRtV7XWRMTvRMz0eG+C
-        6MUdo6SgqH4qZx9RWUM6DQMHzNmuSh5oImBjZdGbYPxsJZ9FTk/2l497nuo1lAP1zIJPvi
-        0EOLTvJVxfxTOAUYA6gSYzXvBG/Ohb4=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-536-ndMPp7OrP_GETY-zx-Ad5w-1; Tue, 11 May 2021 13:08:10 -0400
-X-MC-Unique: ndMPp7OrP_GETY-zx-Ad5w-1
-Received: by mail-ej1-f69.google.com with SMTP id yh1-20020a17090706e1b029038d0f848c7aso6263891ejb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:08:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y/O0ej2NcOY86TRKShKCBi1CW9Ph72+cFotAeokd3co=;
-        b=L1ef5tFoa8gPYMYEHnGNFqKBqATsRP0p3JhtXdk1xGO8TFCqDAzUcuN86Lg5z64HD1
-         ALeUQD3TwYCMNOuOAri9SDSUjHPJW/AoNw8HXC1JB8+PDqO4VArEquAMMEMxuH7ElcL1
-         q1ZoOk1Av6gu4t0E3BHS3a/g+p1744pjYmO4bY/fC4589TVH1VeOTAPPs/+4PDwao16k
-         eoNYe54rRPXwf8yfIpJDjRbv1q8KIU2HGfc4KArizX39cUKqOSBaCk6VPOJze3z88qDl
-         Hme1bQErk/6m2isDaMTtK9QE3k2r+WrStsI5hUDwvDKsLKN4H3dS0dPWQ8kYVDBLTUFl
-         k8Uw==
-X-Gm-Message-State: AOAM533+GlbESIvzOFrIlAtXlfBEiTj2snelLJWxCEUIvSrmvdsynJGB
-        XNnc68JWFMZne7QboJIZcLnrIcIEBmUmOytowaXEhpdiJL04oLwcVwXKvJn979VkRwtEg4Htrq2
-        6Sct1uYfIZ85CEQ9p0YpDruVD
-X-Received: by 2002:a17:907:d27:: with SMTP id gn39mr32747780ejc.389.1620752889084;
-        Tue, 11 May 2021 10:08:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzHL65UmHr+40ZydsbeP1XaOSmKOo1QTVQipNWaixaGRIOiaAE8Cs988k5gMsXqRa0g9r0dzg==
-X-Received: by 2002:a17:907:d27:: with SMTP id gn39mr32747752ejc.389.1620752888909;
-        Tue, 11 May 2021 10:08:08 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id sb20sm12114420ejb.100.2021.05.11.10.08.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 10:08:08 -0700 (PDT)
-Subject: Re: [PATCH v2] KVM: x86: use wrpkru directly in
- kvm_load_{guest|host}_xsave_state
-To:     Dave Hansen <dave.hansen@intel.com>, Jon Kohler <jon@nutanix.com>
-Cc:     Babu Moger <babu.moger@amd.com>,
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=oXj+aT1NLTLdq4xvPpDkmK4mlSpKcyX1kXRzqY9sy/I=;
+        b=bLcn8++CHPCwI1r2+fGHgbqQmPMj0/Kw1DAyubBcNj+IKE9PD5aHN82t0EOQYgw9zkmX8U
+        VMpPrqq8dwdNUvdWd3XkPDW+VrSH9QT2L5Yp2JzKL44ITn0WeVVb2mlJjcR4IxfCdcZh0e
+        tVqiaLj/s+Svo/KGRT6NwRVyr9HxLRg=
+Date:   Tue, 11 May 2021 19:09:41 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Petteri Aimonen <jpa@git.mail.kapsi.fi>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Benjamin Thiel <b.thiel@posteo.de>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Juergen Gross <jgross@suse.com>,
-        Fan Yang <Fan_Yang@sjtu.edu.cn>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210511155922.36693-1-jon@nutanix.com>
- <ab09f739-89fa-901d-9ee3-27a6c674d9a0@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <95947b5c-9add-e5d3-16a5-a40ab6d24978@redhat.com>
-Date:   Tue, 11 May 2021 19:08:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v26 23/30] x86/cet/shstk: Handle thread shadow stack
+Message-ID: <YJq6VZ/XMAtfkrMc@zn.tnic>
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
+ <20210427204315.24153-24-yu-cheng.yu@intel.com>
+ <YJlADyc/9pn8Sjkn@zn.tnic>
+ <89598d32-4bf8-b989-ee77-5b4b55a138a9@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <ab09f739-89fa-901d-9ee3-27a6c674d9a0@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <89598d32-4bf8-b989-ee77-5b4b55a138a9@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/05/21 18:45, Dave Hansen wrote:
-> On 5/11/21 8:59 AM, Jon Kohler wrote:
->> diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
->> index b1099f2d9800..20f1fb8be7ef 100644
->> --- a/arch/x86/include/asm/pgtable.h
->> +++ b/arch/x86/include/asm/pgtable.h
->> @@ -151,7 +151,7 @@ static inline void write_pkru(u32 pkru)
->>   	fpregs_lock();
->>   	if (pk)
->>   		pk->pkru = pkru;
->> -	__write_pkru(pkru);
->> +	wrpkru(pkru);
->>   	fpregs_unlock();
->>   }
+On Mon, May 10, 2021 at 03:57:56PM -0700, Yu, Yu-cheng wrote:
+> So this struct will be:
+>
+> struct thread_shstk {
+> 	u64 shstk_base;
+> 	u64 shstk_size;
+> 	u64 locked:1;
+> 	u64 ibt:1;
+> };
 > 
-> This removes the:
-> 
-> 	if (pkru == rdpkru())
-> 		return;
-> 
-> optimization from a couple of write_pkru() users:
-> arch_set_user_pkey_access() and copy_init_pkru_to_fpregs().
-> 
-> Was that intentional?  Those aren't the hottest paths in the kernel, but
-> copy_init_pkru_to_fpregs() is used in signal handling and exeve().
+> Ok?
 
-Yeah, you should move it from __write_pkru() to write_pkru() but not 
-remove it completely.
+Pretty much.
 
-Paolo
+You can even remove the "shstk_" from the members and when you call the
+pointer "shstk", accessing the members will read
 
+	shstk->base
+	shstk->size
+	...
+
+and all is organic and readable :)
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
