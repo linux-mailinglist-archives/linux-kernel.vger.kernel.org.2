@@ -2,394 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED9437AF45
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EACFD37AF4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232262AbhEKTXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 15:23:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232060AbhEKTXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 15:23:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16666616EA;
-        Tue, 11 May 2021 19:22:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620760924;
-        bh=RfAHJkAN5yf5bPipmM9SUEd3amhb2kzTxYmIRtWCdKA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=n4LwSqZPK84X9XKEdRC7BURWTYOvpGRbvdWM4s0xqKUrF2aMUHOkm2wraYwHbbxce
-         ni6FW9bl9GhNqfDSjd/YJg1yBqWZvU2FmSYPDLFN4D6M/TLjZtdasfoFptgXRtrmbY
-         5to8iHgrT0ot2EanHMp2hJpZ7UMrTMTzXFm8FqlvwUMPJir+K61w5eNsTeBNkO6PbH
-         fgWJbLQ06QFS/q2+ExBUY6GEgSv4s8RxZuTPm9ovEplfhl7f9W5oAu73v8BBdzRY6a
-         Zh0IdXuyQvW6XlfttNzQes3d2s9Yco3jehoCUT79M4DiWDlgcDC/4uixP90VFU6bT1
-         MquO3Iz9MiMdA==
-Date:   Tue, 11 May 2021 14:22:02 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-usb@vger.kernel.org, rajatxjain@gmail.com,
-        jsbarnes@google.com, dtor@google.com
-Subject: Re: [PATCH v2 1/2] driver core: Move the "removable" attribute from
- USB to core
-Message-ID: <20210511192202.GA2388133@bjorn-Precision-5520>
+        id S232137AbhEKTZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 15:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231454AbhEKTZs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 15:25:48 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4452C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:24:41 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id m9so27834230ybm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:24:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IGvENOkuPQ559q07czqF9FsW+spU/J7SZEV8cH6j+EE=;
+        b=FauppU6Ec0LOUyUySrkI+Lq3o/D/R7+A7VeThEup/AQGMw3Qsbt1/l6bBzkCFCzb2v
+         MCGAt1jmpFZvP9ri8RFVJ1LM53hy7+cmQe/u1eSWBDRudCKJl9W4eQkiuVNWlg6IueIu
+         nX1HWwRZ1a2q6qTyc0+KbOrS/0C6u3T2dWyHcIdp6rXhRRmVERVOWTizsDdgwK6MMXnr
+         ndk6pGUDfGcapol6kSFTQBL+0N/O77f8HsuBhcU8X412H0YxKhRcskQ7q3oESOAG8X2L
+         9mSnv5thVKpA4V6QoqIl7dm/AzswGxQKioVIzicR+bzdPAB9q00gmujNr6XhlQSLQAMZ
+         Y2kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IGvENOkuPQ559q07czqF9FsW+spU/J7SZEV8cH6j+EE=;
+        b=isoWFeEEXEjiWCoGwHJljLhMBltbbXy78Q7lmEzFFwInPQQGzjbqAoo2ISy6GgSi1O
+         i+koCFvDPquFFyseEoLFqOnhamqQueMytl2apnfGxgoz/2q6vQ3T0f/lBPDq368YnduR
+         HpkRd7rym9un58LIDZXw1PWfA11ofZJZTXuNnoP1JC+19HdEy4sxTPx86Klcbbhamibm
+         gp+S7Nz7SWq8WqpI/MaEJfTU5WK/1KsKvemuJbVcWMzJcQIoPRqmXGKOT0ChhPlAcxJc
+         3YD7oyUe289vHMIvRBMo6Ugee1MDi2oBhO5pJt0Wp3VpPPRJ3/JBabrk6GXvXqt1QWUW
+         3PtQ==
+X-Gm-Message-State: AOAM533H7jqLD4g/RkqF2yGF2z2Ss2Qc9yxjItf5n4ikv4RZ2mKrzaNi
+        O7oGmH4g6PDsBMfPkNvezYOZZ2TyHSU+hKO8XnsVng==
+X-Google-Smtp-Source: ABdhPJzRmyhNrK0J72B+ihLn26S+i1IyLaH3RYB9ty1Gnx3DCEh2LBq12SpYyvLtbpUItHK7t/npmc0ziCTcdOxWdlM=
+X-Received: by 2002:a5b:8cc:: with SMTP id w12mr44063557ybq.32.1620761080662;
+ Tue, 11 May 2021 12:24:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210424021631.1972022-1-rajatja@google.com>
+References: <3c88cf35-6725-1bfa-9e1e-8e9d69147e3b@hisilicon.com>
+ <d16058fc-9876-f6a3-d5e8-ff06b5193f2c@intel.com> <2149723.iZASKD2KPV@kreacher>
+In-Reply-To: <2149723.iZASKD2KPV@kreacher>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 11 May 2021 12:24:04 -0700
+Message-ID: <CAGETcx-tRh45ZJzmbGvHay1htnjeE-EZc3CG9P3=qFfi75owHA@mail.gmail.com>
+Subject: Re: Qestion about device link
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     "chenxiang (M)" <chenxiang66@hisilicon.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        John Garry <john.garry@huawei.com>, linuxarm@huawei.com,
+        linux-scsi@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 07:16:30PM -0700, Rajat Jain wrote:
-> Move the "removable" attribute from USB to core in order to allow
-> it to be supported by other subsystem / buses. Individual buses
-> that want to support this attribute can opt-in by setting the
-> supports_removable flag, and then populating the removable property
-> of the device while enumerating it. The ABI for the attribute remains
-> unchanged.
-
-Thanks for confirming that the sysfs ABI is unchanged -- it wasn't
-obvious to me from the doc descriptions below that the "removable"
-file appears in the exact same place it did before.
-
-Wrap above to fill 75 columns.
-
-> Signed-off-by: Rajat Jain <rajatja@google.com>
-
-Looks reasonable to me.  Trivial comments below.
-
-Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
-
+On Tue, May 11, 2021 at 12:16 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+>
+> On Tuesday, May 11, 2021 4:39:31 PM CEST Rafael J. Wysocki wrote:
+> > On 5/11/2021 5:59 AM, chenxiang (M) wrote:
+> > > Hi Rafael and other guys,
+> > >
+> > > I am trying to add a device link between scsi_host->shost_gendev and
+> > > hisi_hba->dev to support runtime PM for hisi_hba driver
+> > >
+> > > (as it supports runtime PM for scsi host in some scenarios such as
+> > > error handler etc, we can avoid to do them again if adding a
+> > >
+> > > device link between scsi_host->shost_gendev and hisi_hba->dev) as
+> > > follows (hisi_sas driver is under directory drivers/scsi/hisi_sas):
+> > >
+> > > device_link_add(&shost->shost_gendev, hisi_hba->dev,
+> > > DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE)
+> > >
+> > > We have a full test on it, and it works well except when rmmod the
+> > > driver, some call trace occurs as follows:
+> > >
+> > > [root@localhost ~]# rmmod hisi_sas_v3_hw
+> > > [  105.377944] BUG: scheduling while atomic: kworker/113:1/811/0x00000201
+> > > [  105.384469] Modules linked in: bluetooth rfkill ib_isert
+> > > iscsi_target_mod ib_ipoib ib_umad iptable_filter vfio_iommu_type1
+> > > vfio_pci vfio_virqfd vfio rpcrdma ib_is                         er
+> > > libiscsi scsi_transport_iscsi crct10dif_ce sbsa_gwdt hns_roce_hw_v2
+> > > hisi_sec2 hisi_hpre hisi_zip hisi_qm uacce spi_hisi_sfc_v3xx
+> > > hisi_trng_v2 rng_core hisi_uncore                         _hha_pmu
+> > > hisi_uncore_ddrc_pmu hisi_uncore_l3c_pmu spi_dw_mmio hisi_uncore_pmu
+> > > hns3 hclge hnae3 hisi_sas_v3_hw(-) hisi_sas_main libsas
+> > > [  105.424841] CPU: 113 PID: 811 Comm: kworker/113:1 Kdump: loaded
+> > > Tainted: G        W         5.12.0-rc1+ #1
+> > > [  105.434454] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS
+> > > 2280-V2 CS V5.B143.01 04/22/2021
+> > > [  105.443287] Workqueue: rcu_gp srcu_invoke_callbacks
+> > > [  105.448154] Call trace:
+> > > [  105.450593]  dump_backtrace+0x0/0x1a4
+> > > [  105.454245]  show_stack+0x24/0x40
+> > > [  105.457548]  dump_stack+0xc8/0x104
+> > > [  105.460939]  __schedule_bug+0x68/0x80
+> > > [  105.464590]  __schedule+0x73c/0x77c
+> > > [  105.465700] BUG: scheduling while atomic: kworker/96:1/791/0x00000201
+> > > [  105.468066]  schedule+0x7c/0x110
+> > > [  105.468068]  schedule_timeout+0x194/0x1d4
+> > > [  105.474490] Modules linked in:
+> > > [  105.477692]  wait_for_completion+0x8c/0x12c
+> > > [  105.477695]  rcu_barrier+0x1e0/0x2fc
+> > > [  105.477697]  scsi_host_dev_release+0x50/0xf0
+> > > [  105.477701]  device_release+0x40/0xa0
+> > > [  105.477704]  kobject_put+0xac/0x100
+> > > [  105.477707]  __device_link_free_srcu+0x50/0x74
+> > > [  105.477709]  srcu_invoke_callbacks+0x108/0x1a4
+> > > [  105.484743]  process_one_work+0x1dc/0x48c
+> > > [  105.492468]  worker_thread+0x7c/0x464
+> > > [  105.492471]  kthread+0x168/0x16c
+> > > [  105.492473]  ret_from_fork+0x10/0x18
+> > > ...
+> > >
+> > > After analyse the process, we find that it will
+> > > device_del(&shost->gendev) in function scsi_remove_host() and then
+> > >
+> > > put_device(&shost->shost_gendev) in function scsi_host_put() when
+> > > removing the driver, if there is a link between shost and hisi_hba->dev,
+> > >
+> > > it will try to delete the link in device_del(), and also will
+> > > call_srcu(__device_link_free_srcu) to put_device() link->consumer and
+> > > supplier.
+> > >
+> > > But if put device() for shost_gendev in device_link_free() is later
+> > > than in scsi_host_put(), it will call scsi_host_dev_release() in
+> > >
+> > > srcu_invoke_callbacks() while it is atomic and there are scheduling in
+> > > scsi_host_dev_release(),
+> > >
+> > > so it reports the BUG "scheduling while atomic:...".
+> > >
+> > > thread 1                                                   thread2
+> > > hisi_sas_v3_remove
+> > >     ...
+> > >     sas_remove_host()
+> > >         ...
+> > >         scsi_remove_host()
+> > >             ...
+> > >             device_del(&shost->shost_gendev)
+> > >                 ...
+> > >                 device_link_purge()
+> > >                     __device_link_del()
+> > >                         device_unregister(&link->link_dev)
+> > >                             devlink_dev_release
+> > > call_srcu(__device_link_free_srcu)    ----------->
+> > > srcu_invoke_callbacks  (atomic)
+> > >         __device_link_free_srcu
+> > >     ...
+> > >     scsi_host_put()
+> > >         put_device(&shost->shost_gendev) (ref = 1)
+> > >                 device_link_free()
+> > >                               put_device(link->consumer)
+> > > //shost->gendev ref = 0
+> > >                                           ...
+> > >                                           scsi_host_dev_release
+> > >                                                       ...
+> > > rcu_barrier
+> > > kthread_stop()
+> > >
+> > >
+> > > We can check kref of shost->shost_gendev to make sure scsi_host_put()
+> > > to release scsi host device in LLDD driver to avoid the issue,
+> > >
+> > > but it seems be a common issue:  function __device_link_free_srcu
+> > > calls put_device() for consumer and supplier,
+> > >
+> > > but if it's ref =0 at that time and there are scheduling or sleep in
+> > > dev_release, it may have the issue.
+> > >
+> > > Do you have any idea about the issue?
+> > >
+> > Yes, this is a general issue.
+> >
+> > If I'm not mistaken, it can be addressed by further deferring the
+> > device_link_free() invocation through a workqueue.
+> >
+> > Let me cut a patch doing this.
+>
+> Please test the patch below and let me know if it works for you.
+>
 > ---
-> v2: Add documentation
-> 
->  Documentation/ABI/testing/sysfs-bus-usb       | 11 ------
->  .../ABI/testing/sysfs-devices-removable       | 17 +++++++++
->  drivers/base/core.c                           | 28 +++++++++++++++
->  drivers/usb/core/hub.c                        |  8 ++---
->  drivers/usb/core/sysfs.c                      | 24 -------------
->  drivers/usb/core/usb.c                        |  1 +
->  include/linux/device.h                        | 36 +++++++++++++++++++
->  include/linux/usb.h                           |  7 ----
->  8 files changed, 86 insertions(+), 46 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-devices-removable
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-usb b/Documentation/ABI/testing/sysfs-bus-usb
-> index bf2c1968525f..73eb23bc1f34 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-usb
-> +++ b/Documentation/ABI/testing/sysfs-bus-usb
-> @@ -154,17 +154,6 @@ Description:
->  		files hold a string value (enable or disable) indicating whether
->  		or not USB3 hardware LPM U1 or U2 is enabled for the device.
->  
-> -What:		/sys/bus/usb/devices/.../removable
-> -Date:		February 2012
-> -Contact:	Matthew Garrett <mjg@redhat.com>
-> -Description:
-> -		Some information about whether a given USB device is
-> -		physically fixed to the platform can be inferred from a
-> -		combination of hub descriptor bits and platform-specific data
-> -		such as ACPI. This file will read either "removable" or
-> -		"fixed" if the information is available, and "unknown"
-> -		otherwise.
-> -
->  What:		/sys/bus/usb/devices/.../ltm_capable
->  Date:		July 2012
->  Contact:	Sarah Sharp <sarah.a.sharp@linux.intel.com>
-> diff --git a/Documentation/ABI/testing/sysfs-devices-removable b/Documentation/ABI/testing/sysfs-devices-removable
-> new file mode 100644
-> index 000000000000..e13dddd547b5
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-devices-removable
-> @@ -0,0 +1,17 @@
-> +What:		/sys/devices/.../removable
-> +Date:		Apr 2021
-> +Contact:	Matthew Garrett <mjg@redhat.com>,
-> +		Rajat Jain <rajatja@google.com>
-> +Description:
-> +		Information about whether a given device is physically fixed to
-> +		the platform. This is determined by the device's subsystem in a
-> +		bus / platform specific way. This attribute is only present for
-
-s/platform specific/platform-specific/
-
-> +		buses that can support determining such information:
-> +
-> +		"removable": The device is external / removable from the system.
-> +		"fixed":     The device is internal / fixed to the system.
-> +		"unknown":   The information is unavailable.
-> +
-> +		Currently this is only supported by USB (which infers the
-> +		information from a combination of hub descriptor bits and
-> +		platform-specific data such as ACPI).
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index f29839382f81..b8ae4cc52805 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -2327,6 +2327,25 @@ static ssize_t online_store(struct device *dev, struct device_attribute *attr,
+>  drivers/base/core.c    |   18 ++++++++++++++++--
+>  include/linux/device.h |    5 ++++-
+>  2 files changed, 20 insertions(+), 3 deletions(-)
+>
+> Index: linux-pm/drivers/base/core.c
+> ===================================================================
+> --- linux-pm.orig/drivers/base/core.c
+> +++ linux-pm/drivers/base/core.c
+> @@ -455,16 +455,30 @@ static void device_link_free(struct devi
 >  }
->  static DEVICE_ATTR_RW(online);
->  
-> +static ssize_t removable_show(struct device *dev, struct device_attribute *attr,
-> +			      char *buf)
+>
+>  #ifdef CONFIG_SRCU
+> +static void __device_link_free_fn(struct work_struct *work)
 > +{
-> +	const char *state;
-> +
-> +	switch (dev->removable) {
-> +	case DEVICE_REMOVABLE:
-> +		state = "removable";
-> +		break;
-> +	case DEVICE_FIXED:
-> +		state = "fixed";
-> +		break;
-> +	default:
-> +		state = "unknown";
-> +	}
-> +	return sprintf(buf, "%s\n", state);
-
-Maybe sysfs_emit()?
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/filesystems/sysfs.rst?id=v5.12#n246
-
-Ironically, the example below the admonition to use sysfs_emit() still
-uses scnprintf() :)
-
+> +       device_link_free(container_of(work, struct device_link, srcu.work));
 > +}
-> +static DEVICE_ATTR_RO(removable);
 > +
->  int device_add_groups(struct device *dev, const struct attribute_group **groups)
+>  static void __device_link_free_srcu(struct rcu_head *rhead)
 >  {
->  	return sysfs_create_groups(&dev->kobj, groups);
-> @@ -2504,8 +2523,16 @@ static int device_add_attrs(struct device *dev)
->  			goto err_remove_dev_online;
->  	}
->  
-> +	if (type && type->supports_removable) {
-> +		error = device_create_file(dev, &dev_attr_removable);
-> +		if (error)
-> +			goto err_remove_dev_waiting_for_supplier;
-> +	}
+> -       device_link_free(container_of(rhead, struct device_link, rcu_head));
+> +       struct device_link *link = container_of(rhead, struct device_link,
+> +                                               srcu.rhead);
+> +       struct work_struct *work = &link->srcu.work;
 > +
->  	return 0;
->  
-> + err_remove_dev_waiting_for_supplier:
-> +	device_remove_file(dev, &dev_attr_waiting_for_supplier);
->   err_remove_dev_online:
->  	device_remove_file(dev, &dev_attr_online);
->   err_remove_dev_groups:
-> @@ -2525,6 +2552,7 @@ static void device_remove_attrs(struct device *dev)
->  	struct class *class = dev->class;
->  	const struct device_type *type = dev->type;
->  
-> +	device_remove_file(dev, &dev_attr_removable);
->  	device_remove_file(dev, &dev_attr_waiting_for_supplier);
->  	device_remove_file(dev, &dev_attr_online);
->  	device_remove_groups(dev, dev->groups);
-> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-> index 7f71218cc1e5..500e5648de04 100644
-> --- a/drivers/usb/core/hub.c
-> +++ b/drivers/usb/core/hub.c
-> @@ -2442,11 +2442,11 @@ static void set_usb_port_removable(struct usb_device *udev)
->  	 */
->  	switch (hub->ports[udev->portnum - 1]->connect_type) {
->  	case USB_PORT_CONNECT_TYPE_HOT_PLUG:
-> -		udev->removable = USB_DEVICE_REMOVABLE;
-> +		dev_set_removable(&udev->dev, DEVICE_REMOVABLE);
->  		return;
->  	case USB_PORT_CONNECT_TYPE_HARD_WIRED:
->  	case USB_PORT_NOT_USED:
-> -		udev->removable = USB_DEVICE_FIXED;
-> +		dev_set_removable(&udev->dev, DEVICE_FIXED);
->  		return;
->  	default:
->  		break;
-> @@ -2471,9 +2471,9 @@ static void set_usb_port_removable(struct usb_device *udev)
->  	}
->  
->  	if (removable)
-> -		udev->removable = USB_DEVICE_REMOVABLE;
-> +		dev_set_removable(&udev->dev, DEVICE_REMOVABLE);
->  	else
-> -		udev->removable = USB_DEVICE_FIXED;
-> +		dev_set_removable(&udev->dev, DEVICE_FIXED);
->  
+> +       /*
+> +        * Because device_link_free() may sleep in some cases, schedule the
+> +        * execution of it instead of invoking it directly.
+> +        */
+> +       INIT_WORK(work, __device_link_free_fn);
+> +       schedule_work(work);
 >  }
->  
-> diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
-> index d85699bee671..e8ff3afdf7af 100644
-> --- a/drivers/usb/core/sysfs.c
-> +++ b/drivers/usb/core/sysfs.c
-> @@ -298,29 +298,6 @@ static ssize_t urbnum_show(struct device *dev, struct device_attribute *attr,
->  }
->  static DEVICE_ATTR_RO(urbnum);
->  
-> -static ssize_t removable_show(struct device *dev, struct device_attribute *attr,
-> -			      char *buf)
-> -{
-> -	struct usb_device *udev;
-> -	char *state;
-> -
-> -	udev = to_usb_device(dev);
-> -
-> -	switch (udev->removable) {
-> -	case USB_DEVICE_REMOVABLE:
-> -		state = "removable";
-> -		break;
-> -	case USB_DEVICE_FIXED:
-> -		state = "fixed";
-> -		break;
-> -	default:
-> -		state = "unknown";
-> -	}
-> -
-> -	return sprintf(buf, "%s\n", state);
-> -}
-> -static DEVICE_ATTR_RO(removable);
-> -
->  static ssize_t ltm_capable_show(struct device *dev,
->  				struct device_attribute *attr, char *buf)
+>
+>  static void devlink_dev_release(struct device *dev)
 >  {
-> @@ -825,7 +802,6 @@ static struct attribute *dev_attrs[] = {
->  	&dev_attr_avoid_reset_quirk.attr,
->  	&dev_attr_authorized.attr,
->  	&dev_attr_remove.attr,
-> -	&dev_attr_removable.attr,
->  	&dev_attr_ltm_capable.attr,
->  #ifdef CONFIG_OF
->  	&dev_attr_devspec.attr,
-> diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
-> index a566bb494e24..5a0f73a28196 100644
-> --- a/drivers/usb/core/usb.c
-> +++ b/drivers/usb/core/usb.c
-> @@ -523,6 +523,7 @@ struct device_type usb_device_type = {
->  #ifdef CONFIG_PM
->  	.pm =		&usb_device_pm_ops,
->  #endif
-> +	.supports_removable = true,
->  };
->  
->  
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index ba660731bd25..d6442b811607 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -93,6 +93,12 @@ struct device_type {
->  	void (*release)(struct device *dev);
->  
->  	const struct dev_pm_ops *pm;
-> +
-> +	/*
-> +	 * Determines whether the subsystem supports classifying the devices of
-> +	 * this type into removable vs fixed.
-> +	 */
-
-Doesn't really match comment style in rest of the file.  Seems pretty
-self-explanatory, maybe doesn't even need a comment, or perhaps a
-short comment like this:
-
-	bool supports_removable:1;  /* subsystem supplies info */
-
-> +	bool supports_removable;
-
-Most boolean structure members in this file are bitfields, e.g.,
-"bool offline:1".
-
->  };
->  
->  /* interface for exporting device attributes */
-> @@ -350,6 +356,19 @@ enum dl_dev_state {
->  	DL_DEV_UNBINDING,
->  };
->  
-> +/**
-> + * enum device_removable - Whether the device is removable. The criteria for a
-> + * device to be classified as removable, is determined by its subsystem or bus.
-
-s/removable,/removable/
-
-Or maybe drop the whole "The criteria ..." sentence?  Not sure it adds
-much useful info.
-
-> + * @DEVICE_REMOVABLE_UNKNOWN:  Device location is Unknown (default).
-> + * @DEVICE_REMOVABLE: Device is removable by the user.
-> + * @DEVICE_FIXED: Device is not removable by the user.
-> + */
-> +enum device_removable {
-> +	DEVICE_REMOVABLE_UNKNOWN = 0,
-> +	DEVICE_REMOVABLE,
-> +	DEVICE_FIXED,
-> +};
-> +
->  /**
->   * struct dev_links_info - Device data related to device links.
->   * @suppliers: List of links to supplier devices.
-> @@ -431,6 +450,9 @@ struct dev_links_info {
->   * 		device (i.e. the bus driver that discovered the device).
->   * @iommu_group: IOMMU group the device belongs to.
->   * @iommu:	Per device generic IOMMU runtime data
-> + * @removable:  Whether the device can be removed from the system. This
-> + *              should be set by the subsystem / bus driver that discovered
-> + *              the device.
->   *
->   * @offline_disabled: If set, the device is permanently online.
->   * @offline:	Set after successful invocation of bus type's .offline().
-> @@ -541,6 +563,8 @@ struct device {
->  	struct iommu_group	*iommu_group;
->  	struct dev_iommu	*iommu;
->  
-> +	enum device_removable	removable;
-> +
->  	bool			offline_disabled:1;
->  	bool			offline:1;
->  	bool			of_node_reused:1;
-> @@ -778,6 +802,18 @@ static inline bool dev_has_sync_state(struct device *dev)
->  	return false;
+>         struct device_link *link = to_devlink(dev);
+>
+> -       call_srcu(&device_links_srcu, &link->rcu_head, __device_link_free_srcu);
+> +       call_srcu(&device_links_srcu, &link->srcu.rhead, __device_link_free_srcu);
 >  }
->  
-> +static inline void dev_set_removable(struct device *dev,
-> +				     enum device_removable removable)
-> +{
-> +	dev->removable = removable;
-> +}
-> +
-> +static inline bool dev_is_removable(struct device *dev)
-> +{
-> +	return dev && dev->type && dev->type->supports_removable
-> +	    && dev->removable == DEVICE_REMOVABLE;
-> +}
-> +
->  /*
->   * High level routines for use by the bus drivers
->   */
-> diff --git a/include/linux/usb.h b/include/linux/usb.h
-> index d6a41841b93e..0bbb9e8b18c7 100644
-> --- a/include/linux/usb.h
-> +++ b/include/linux/usb.h
-> @@ -473,12 +473,6 @@ struct usb_dev_state;
->  
->  struct usb_tt;
->  
-> -enum usb_device_removable {
-> -	USB_DEVICE_REMOVABLE_UNKNOWN = 0,
-> -	USB_DEVICE_REMOVABLE,
-> -	USB_DEVICE_FIXED,
-> -};
-> -
->  enum usb_port_connect_type {
->  	USB_PORT_CONNECT_TYPE_UNKNOWN = 0,
->  	USB_PORT_CONNECT_TYPE_HOT_PLUG,
-> @@ -701,7 +695,6 @@ struct usb_device {
->  #endif
->  	struct wusb_dev *wusb_dev;
->  	int slot_id;
-> -	enum usb_device_removable removable;
->  	struct usb2_lpm_parameters l1_params;
->  	struct usb3_lpm_parameters u1_params;
->  	struct usb3_lpm_parameters u2_params;
-> -- 
-> 2.31.1.498.g6c1eba8ee3d-goog
-> 
+>  #else
+>  static void devlink_dev_release(struct device *dev)
+> Index: linux-pm/include/linux/device.h
+> ===================================================================
+> --- linux-pm.orig/include/linux/device.h
+> +++ linux-pm/include/linux/device.h
+> @@ -584,7 +584,10 @@ struct device_link {
+>         refcount_t rpm_active;
+>         struct kref kref;
+>  #ifdef CONFIG_SRCU
+> -       struct rcu_head rcu_head;
+> +       union {
+> +               struct rcu_head rhead;
+> +               struct work_struct work;
+> +       } srcu;
+
+I'll do the actual review on a more final patch? I see you are trying
+to save space, but is this worth the readability reduction?
+
+-Saravana
