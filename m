@@ -2,199 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8540537B1F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE2737B1F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhEKW4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 18:56:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229980AbhEKW40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 18:56:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7A1F61939;
-        Tue, 11 May 2021 22:55:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620773718;
-        bh=/MJUwVofubq6Zyah+Fq1Gx9CcMJRrCkJYTJTjNCxQR4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rFfWGyVtaOQ7BNktldhxiD3V8Tz9HbfBNLlanO24o6eYrNuX9Q3YtH5T37/6VranQ
-         6BaEo+P/xssPtVkIM+Zgtd/zYduY06TLjP0u+r1BJBXqInPQz8M3U00gGkkpkkult3
-         gnUtqKEwdVV0hNMWoeoK8sPbadG0XFMEnKaz8rmQhd254WXkqlYqi6dTm/NhSAzVd7
-         GsMS48QTpqJR5n8xP0prad9F2Jw4kV3N+/++hKuHadqpW69qBOmB1RN7kMsLDrE06O
-         Y9W9gQTuNGkiXueygF8eMf/dVkOLA5Bpe96f796GCjOJMEvaBkbz4s+3sikJX0b0fE
-         PRrO9+c5+BiEQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 129BD5C0DD7; Tue, 11 May 2021 15:55:18 -0700 (PDT)
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 7/7] kvfree_rcu: Refactor kfree_rcu_monitor()
-Date:   Tue, 11 May 2021 15:55:16 -0700
-Message-Id: <20210511225516.2893420-7-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20210511225450.GA2893337@paulmck-ThinkPad-P17-Gen-1>
-References: <20210511225450.GA2893337@paulmck-ThinkPad-P17-Gen-1>
+        id S230097AbhEKW5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:57:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhEKW5t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 18:57:49 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA634C061574;
+        Tue, 11 May 2021 15:56:42 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id g38so28453388ybi.12;
+        Tue, 11 May 2021 15:56:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xyJsr5+GU6OwmtbK8l0br93cj/vlkcS6F2ecLZDOOUw=;
+        b=rWUpmSmO26Ym2+SrQlRqIz2mpWdRvsw/gaBtPdipg5SId8RboUQCy8TKew5ARWnnO4
+         MRhqXDJ7GQFISDXt0yEF9HlAQlHqya8CPZa/s8TUwJRYT9NGPyodcTenVHxaZPylISXu
+         MYiBfVktTjdS18KL/MlJx92mPeG8mLTLY9AwNKn4087o2l3zemO/lXP4qomLmgB3dJXv
+         OtakumQPDJkapyMmqfE5jsj8CNL6Q7NrwLyf0Zi19hIXZ1/2WdgCuqKOE5XUl8gzv32x
+         f5ss0HfomCSV+b3WxIkrFGo8FbeVXxJKjb7y5p0vmWbzhp4zHdGgoVgPp8Q/iSZD3WiS
+         eujw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xyJsr5+GU6OwmtbK8l0br93cj/vlkcS6F2ecLZDOOUw=;
+        b=P5J+WVR53runzxrGPvqcxZtFCeg7Sdueu8b1zCpzUj/yRvFMMuSBk93GYlQC2Sg/K7
+         ENKR7V4n3ZPYv2zwBcVxO6x9DUO+ZuYbzapL3DQ1R/sbszWYOwNCcaxYuDkE+wi4Iu9b
+         Fv1c9HviPZh63k0l7PwHqcNScCU4+zvEMJzAdGr+JljhtMYNJ3lg+B12rMOAGer52HYt
+         fRDheHu6Xw15j2fcl9+ihJ/ZT2S0ldqfnwGZKBdTOeXj29xXwPzkdnMdtqO8AnoPRl5b
+         881pUjFg3k8iQJytG4eh0Wz/WtKOxJgFHgCqGff2DC6g3kdOeapDar6V2kBKHsd02Gw4
+         pBjg==
+X-Gm-Message-State: AOAM533pwRXY+DX7cKHkhJJm8NWMNU9Gu5ZC/VjqtZJukizygCoL0BWb
+        z5PahX571jOZtK5TdXpaIWR0JBnZxJ3DQ5fAsO0=
+X-Google-Smtp-Source: ABdhPJxOJZq72lv83XITy6KKMDBkZMUV1JsOyUKmrwI3/5stYIVXL+jKGpVgHRkOvEq4dklqzJSD5C6XiyPth1TW3Gk=
+X-Received: by 2002:a5b:3c2:: with SMTP id t2mr43272548ybp.39.1620773802086;
+ Tue, 11 May 2021 15:56:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210511214605.2937099-1-pgwipeout@gmail.com> <20210511215644.GO1336@shell.armlinux.org.uk>
+In-Reply-To: <20210511215644.GO1336@shell.armlinux.org.uk>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Tue, 11 May 2021 18:56:31 -0400
+Message-ID: <CAMdYzYon+uscEXS=ntmQWD-ROr4owvbQwuWdb2DLmh74Gri1mA@mail.gmail.com>
+Subject: Re: [PATCH] net: phy: add driver for Motorcomm yt8511 phy
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+On Tue, May 11, 2021 at 5:56 PM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+>
+> Hi,
+>
+> On Tue, May 11, 2021 at 05:46:06PM -0400, Peter Geis wrote:
+> > +static int yt8511_config_init(struct phy_device *phydev)
+> > +{
+> > +     int ret, val, oldpage;
+> > +
+> > +     /* set clock mode to 125mhz */
+> > +     oldpage = phy_select_page(phydev, YT8511_EXT_CLK_GATE);
+> > +     if (oldpage < 0)
+> > +             goto err_restore_page;
+> > +
+> > +     val = __phy_read(phydev, YT8511_PAGE);
+> > +     val |= (YT8511_CLK_125M);
+> > +     ret = __phy_write(phydev, YT8511_PAGE, val);
+>
+> Please consider __phy_modify(), and handle any error it returns.
 
-Currently we have three functions which depend on each other.
-Two of them are quite tiny and the last one where the most
-work is done. All of them are related to queuing RCU batches
-to reclaim objects after a GP.
+Hey that's really neat, thanks!
 
-1. kfree_rcu_monitor(). It consist of few lines. It acquires a spin-lock
-   and calls kfree_rcu_drain_unlock().
+>
+> > +
+> > +     /* disable auto sleep */
+> > +     ret = __phy_write(phydev, YT8511_PAGE_SELECT, YT8511_EXT_SLEEP_CTRL);
+>
+> Please consider handling a failure to write here.
 
-2. kfree_rcu_drain_unlock(). It also consists of few lines of code. It
-   calls queue_kfree_rcu_work() to queue the batch.  If this fails,
-   it rearms the monitor work to try again later.
+Will do.
 
-3. queue_kfree_rcu_work(). This provides the bulk of the functionality,
-   attempting to start a new batch to free objects after a GP.
+>
+> > +     val = __phy_read(phydev, YT8511_PAGE);
+> > +     val &= (~BIT(15));
+> > +     ret = __phy_write(phydev, YT8511_PAGE, val);
+>
+> Also a use for __phy_modify().
+>
+> > +
+> > +err_restore_page:
+> > +     return phy_restore_page(phydev, oldpage, ret);
+> > +}
+> > +
+> > +static struct phy_driver motorcomm_phy_drvs[] = {
+> > +     {
+> > +             PHY_ID_MATCH_EXACT(PHY_ID_YT8511),
+> > +             .name           = "YT8511 Gigabit Ethernet",
+> > +             .config_init    = &yt8511_config_init,
+>
+> Please drop the '&' here, it's unnecessary.
 
-Since there are no external users of functions [2] and [3], both
-can eliminated by moving all logic directly into [1], which both
-shrinks and simplifies the code.
+Will do, thank you.
 
-Also replace comments which start with "/*" to "//" format to make it
-unified across the file.
-
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree.c | 84 +++++++++++++++--------------------------------
- 1 file changed, 26 insertions(+), 58 deletions(-)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index b043af7b0212..618ec9152e5e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3379,29 +3379,26 @@ static void kfree_rcu_work(struct work_struct *work)
- }
- 
- /*
-- * Schedule the kfree batch RCU work to run in workqueue context after a GP.
-- *
-- * This function is invoked by kfree_rcu_monitor() when the KFREE_DRAIN_JIFFIES
-- * timeout has been reached.
-+ * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
-  */
--static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
-+static void kfree_rcu_monitor(struct work_struct *work)
- {
--	struct kfree_rcu_cpu_work *krwp;
--	bool repeat = false;
-+	struct kfree_rcu_cpu *krcp = container_of(work,
-+		struct kfree_rcu_cpu, monitor_work.work);
-+	unsigned long flags;
- 	int i, j;
- 
--	lockdep_assert_held(&krcp->lock);
-+	raw_spin_lock_irqsave(&krcp->lock, flags);
- 
-+	// Attempt to start a new batch.
- 	for (i = 0; i < KFREE_N_BATCHES; i++) {
--		krwp = &(krcp->krw_arr[i]);
-+		struct kfree_rcu_cpu_work *krwp = &(krcp->krw_arr[i]);
- 
--		/*
--		 * Try to detach bkvhead or head and attach it over any
--		 * available corresponding free channel. It can be that
--		 * a previous RCU batch is in progress, it means that
--		 * immediately to queue another one is not possible so
--		 * return false to tell caller to retry.
--		 */
-+		// Try to detach bkvhead or head and attach it over any
-+		// available corresponding free channel. It can be that
-+		// a previous RCU batch is in progress, it means that
-+		// immediately to queue another one is not possible so
-+		// in that case the monitor work is rearmed.
- 		if ((krcp->bkvhead[0] && !krwp->bkvhead_free[0]) ||
- 			(krcp->bkvhead[1] && !krwp->bkvhead_free[1]) ||
- 				(krcp->head && !krwp->head_free)) {
-@@ -3423,57 +3420,28 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
- 
- 			WRITE_ONCE(krcp->count, 0);
- 
--			/*
--			 * One work is per one batch, so there are three
--			 * "free channels", the batch can handle. It can
--			 * be that the work is in the pending state when
--			 * channels have been detached following by each
--			 * other.
--			 */
-+			// One work is per one batch, so there are three
-+			// "free channels", the batch can handle. It can
-+			// be that the work is in the pending state when
-+			// channels have been detached following by each
-+			// other.
- 			queue_rcu_work(system_wq, &krwp->rcu_work);
- 		}
--
--		// Repeat if any "free" corresponding channel is still busy.
--		if (krcp->bkvhead[0] || krcp->bkvhead[1] || krcp->head)
--			repeat = true;
- 	}
- 
--	return !repeat;
--}
--
--static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
--					  unsigned long flags)
--{
--	// Attempt to start a new batch.
--	if (queue_kfree_rcu_work(krcp)) {
--		// Success! Our job is done here.
-+	// If there is nothing to detach, it means that our job is
-+	// successfully done here. In case of having at least one
-+	// of the channels that is still busy we should rearm the
-+	// work to repeat an attempt. Because previous batches are
-+	// still in progress.
-+	if (!krcp->bkvhead[0] && !krcp->bkvhead[1] && !krcp->head)
- 		krcp->monitor_todo = false;
--		raw_spin_unlock_irqrestore(&krcp->lock, flags);
--		return;
--	}
-+	else
-+		schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
- 
--	// Previous RCU batch still in progress, try again later.
--	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- }
- 
--/*
-- * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
-- * It invokes kfree_rcu_drain_unlock() to attempt to start another batch.
-- */
--static void kfree_rcu_monitor(struct work_struct *work)
--{
--	unsigned long flags;
--	struct kfree_rcu_cpu *krcp = container_of(work, struct kfree_rcu_cpu,
--						 monitor_work.work);
--
--	raw_spin_lock_irqsave(&krcp->lock, flags);
--	if (krcp->monitor_todo)
--		kfree_rcu_drain_unlock(krcp, flags);
--	else
--		raw_spin_unlock_irqrestore(&krcp->lock, flags);
--}
--
- static enum hrtimer_restart
- schedule_page_work_fn(struct hrtimer *t)
- {
--- 
-2.31.1.189.g2e36527f23
-
+>
+> Thanks.
+>
+> --
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
