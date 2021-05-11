@@ -2,138 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC1B37A2A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C321037A2C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhEKIye convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 May 2021 04:54:34 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:58245 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbhEKIya (ORCPT
+        id S231166AbhEKI6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 04:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230458AbhEKI6n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 04:54:30 -0400
-X-Originating-IP: 90.89.138.59
-Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id B0AE32000D;
-        Tue, 11 May 2021 08:53:20 +0000 (UTC)
-Date:   Tue, 11 May 2021 10:53:19 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     YouChing Lin <ycllin@mxic.com.tw>
-Cc:     richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, juliensu@mxic.com.tw
-Subject: Re: [PATCH 0/2] Fix double counting of S/W ECC engines' ECC stat
-Message-ID: <20210511105319.0c077fd5@xps13>
-In-Reply-To: <1620697235-7829-1-git-send-email-ycllin@mxic.com.tw>
-References: <1620697235-7829-1-git-send-email-ycllin@mxic.com.tw>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 11 May 2021 04:58:43 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE996C061574;
+        Tue, 11 May 2021 01:57:36 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id w22so4518433oiw.9;
+        Tue, 11 May 2021 01:57:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2GM5UN9N24TQvJTRoFkZQ64/JJ8nZjyWhhkhtInsOWQ=;
+        b=phW4jI5FWU5J/1V4aHBF/X5nVB8sHBgZgsExEgakm52L4Lx/1PZhKqOMItQKwLhEXz
+         olyE1J3ovC/tCl4FjkFsH/J0IJ47FBTp1UISEHGW4jrOEfLqGjFeqwYhao2nF5xnQ5Q9
+         FDjQIdUnEo/0oCxR5Jilb+lZJvVE3cO22LbvWE2kynxNQhbsLbqFWksnvw0eHCHlhzQU
+         e5qGA60wKUTJPs5aLYdmgKeBFaNs8GxnyHJ6bmUW6whJQy8/YEZyInubYE8ak1frkX3Q
+         3htpy1+uK/2QwCMmhc2YTl1/XWL2ZtHIXyYESQ02AF2uyHIYahtHV1xfNLF/7w2Q5V0Z
+         J/Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2GM5UN9N24TQvJTRoFkZQ64/JJ8nZjyWhhkhtInsOWQ=;
+        b=Gd7pryfBZSjSnw1t1cYojEP8yDiFlu4DLgVC0upm1BzD1MBJEpJof3F8zHMLGS6LiR
+         MheJBgAK8XY4QmXaAvOr31Lx4i9T9dzTE7m7VXpNF71h2IlVlzrqSxBY0ssq4rz+SxCJ
+         kISEkxg9cdgKTh/Vv0z0PTRsnQeYWGqZk8U2BSEuqne+FTqMb4aah4KhvSuAqyq/RRL5
+         mkRfFpf4wEvE9gvd/CwreDFfqQ27AocazLTEu0XuRK7KEQM/HWpbR+wLCDTqouUWr0sq
+         uxlPfBJmXQNBPCyfpzqpaqojSl3/XtllWEkxnLE4HmDQsg7QEdM8SyXM1OOO7j+SVIT7
+         Zh5w==
+X-Gm-Message-State: AOAM531DJOpBmn35yHAJFxX3y4u46uPzaUS6YuQAuRWQklLo5+Qg49u5
+        9iHgxBTXOL8uZDYSUYqRzbI5MsvXRDg/m/Cnr3A=
+X-Google-Smtp-Source: ABdhPJx/vyly/xsGQfudk5VwYktpK3p0PqF9PqTV+9LnINR2W7IrCsW//tJAUqYRTaZs0E6G3NwJIrtoJkRS1IdAsk0=
+X-Received: by 2002:aca:c30f:: with SMTP id t15mr21358226oif.145.1620723456379;
+ Tue, 11 May 2021 01:57:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20201209094916.17383-1-zong.li@sifive.com> <87v99qyjaz.fsf@igel.home>
+ <CANXhq0oLxFK1431WmTj5HRO5k_omYkQZCBTG+HORTk9=W_XyNg@mail.gmail.com>
+ <CANXhq0p90Cgha_zLzxamK9mxmVPn3effh_cZq_CTLrcAkKZg2Q@mail.gmail.com>
+ <87lfaj7cki.fsf@igel.home> <871rc4on36.fsf@igel.home> <CANXhq0pDge0BPgAjoLrX7Y2qtofb3dhV1_CPHBaCg0o4cEMrbQ@mail.gmail.com>
+ <87a6qrk2pw.fsf@igel.home> <CANXhq0rOeAWnRYHAYKJfDeY4kYz6+5mU_dJSqU67+2p9u0STHQ@mail.gmail.com>
+ <874kgyfetu.fsf@igel.home> <CANXhq0rE-ZcPBp02Pvozpk_s-j6NhxHUmso75uz6ji9bejO8gA@mail.gmail.com>
+ <87h7kukzy4.fsf@igel.home> <CANXhq0r5_xhFu3W9mUFkp_7BYUVBzvHZE1A6jpBDcL_KwTc1cA@mail.gmail.com>
+ <87tuob7n8g.fsf@igel.home> <CANXhq0rTC8grpRe_Q0vG6_52b-41OuN4vHum8RvouMbE6xiXpQ@mail.gmail.com>
+In-Reply-To: <CANXhq0rTC8grpRe_Q0vG6_52b-41OuN4vHum8RvouMbE6xiXpQ@mail.gmail.com>
+From:   Yixun Lan <yixun.lan@gmail.com>
+Date:   Tue, 11 May 2021 08:53:58 +0000
+Message-ID: <CALecT5jQ7_-d7j+MXrG++Bnr_wYmbWgCK20Ju5Pgjbu9xmwQBA@mail.gmail.com>
+Subject: Re: [PATCH v7 0/5] clk: add driver for the SiFive FU740
+To:     Zong Li <zong.li@sifive.com>
+Cc:     Andreas Schwab <schwab@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Pragnesh Patel <pragnesh.patel@openfive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-clk@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi YouChing,
+On Wed, Apr 14, 2021 at 2:25 PM Zong Li <zong.li@sifive.com> wrote:
+>
+> On Mon, Apr 12, 2021 at 7:31 PM Andreas Schwab <schwab@linux-m68k.org> wr=
+ote:
+> >
+> > On M=C3=A4r 31 2021, Zong Li wrote:
+> >
+> > > I found that the gemgxlpll was disabled immediately by power
+> > > management after macb driver install. The mainline's defconfig doesn'=
+t
+> > > enable CONFIG_PM, so the network is fine on it. The opensuse defconfi=
+g
+> > > enables CONFIG_PM, and the patch
+> > > 732374a0b440d9a79c8412f318a25cd37ba6f4e2 added the enable/disable
+> > > callback functions, so the gemgxlpll PLL, I have no idea why power
+> > > management disable it, I would keep trace it.
+> >
+> > Does that mean that CONFIG_PM also affects the FU740?
+> >
+>
+> Yes, we got the same problem on the FU740. We are checking the issue.
+>
+Just a mild ping, any progress regarding this issue?
 
-YouChing Lin <ycllin@mxic.com.tw> wrote on Tue, 11 May 2021 09:40:33
-+0800:
-
-> Hello,
-> 
-> This series fix the double counting of S/W ECC engines' ECC stat 
-> 
-> If you use SPI-NAND with SW-ECC engine, the ECC related statistics
-> (ecc_stats.failed & ecc_stats.corrected) will be doubled, because
-> those numbers will be double-counted in ecc-sw-[bch/hamming].c and
-> drivers/mtd/nand/spi/core.c.
->     
-> This can be found by using nandtest/nandbiterrs validation.
-
-Good catch!
-
-However I don't think the current fix is valid because these engines
-are meant to be used by the raw NAND core as well, I propose something
-like the below, can you please tell me if it works as expected? (not
-even build tested)
-
-Thanks,
-Miquèl
-
-
-----8<----
-
-Author: Miquel Raynal <miquel.raynal@bootlin.com>
-Date:   Tue May 11 10:41:56 2021 +0200
-
-    mtd: spinand: Fix double counting of ECC stats
-    
-    In the raw NAND world, ECC engines increment ecc_stats and the final
-    caller is responsible for returning -EBADMSG if the verification
-    failed.
-    
-    In the SPI-NAND world it was a bit different until now because there was
-    only one possible ECC engine: the on-die one. Indeed, the
-    spinand_mtd_read() call was incrementing the ecc_stats counters
-    depending on the outcome of spinand_check_ecc_status() directly.
-    
-    So now let's split the logic like this:
-    - spinand_check_ecc_status() is specific to the SPI-NAND on-die engine
-      and is kept very simple: it just returns the ECC status (bonus point:
-      the content of this helper can be overloaded).
-    - spinand_ondie_ecc_finish_io_req() is the caller of
-      spinand_check_ecc_status() and will increment the counters and
-      eventually return -EBADMSG.
-    - spinand_mtd_read() is not tied to the on-die ECC implementation and
-      should be able to handle results coming from other ECC engines: it has
-      the responsibility of returning the maximum number of bitflips which
-      happened during the entire operation as this is the only helper that
-      is aware that several pages may be read in a row.
-    
-    Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 61d932c1b718..df134c61853e 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -290,6 +290,8 @@ static int spinand_ondie_ecc_finish_io_req(struct nand_device *nand,
- {
-        struct spinand_ondie_ecc_conf *engine_conf = nand->ecc.ctx.priv;
-        struct spinand_device *spinand = nand_to_spinand(nand);
-+       struct mtd_info *mtd = spinand_to_mtd(spinand);
-+       int ret;
- 
-        if (req->mode == MTD_OPS_RAW)
-                return 0;
-@@ -299,7 +301,13 @@ static int spinand_ondie_ecc_finish_io_req(struct nand_device *nand,
-                return 0;
- 
-        /* Finish a page write: check the status, report errors/bitflips */
--       return spinand_check_ecc_status(spinand, engine_conf->status);
-+       ret = spinand_check_ecc_status(spinand, engine_conf->status);
-+       if (ret == -EBADMSG)
-+               mtd->ecc_stats.failed++;
-+       else if (ret > 0)
-+               mtd->ecc_stats.corrected += ret;
-+
-+       return ret;
- }
- 
- static struct nand_ecc_engine_ops spinand_ondie_ecc_engine_ops = {
-@@ -620,13 +628,10 @@ static int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
-                if (ret < 0 && ret != -EBADMSG)
-                        break;
- 
--               if (ret == -EBADMSG) {
-+               if (ret == -EBADMSG)
-                        ecc_failed = true;
--                       mtd->ecc_stats.failed++;
--               } else {
--                       mtd->ecc_stats.corrected += ret;
-+               else
-                        max_bitflips = max_t(unsigned int, max_bitflips, ret);
--               }
- 
-                ret = 0;
-                ops->retlen += iter.req.datalen;
+Yxun
