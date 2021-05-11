@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA7A37A0CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32CA37A0CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbhEKH1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:27:47 -0400
-Received: from smtpcmd04132.aruba.it ([62.149.158.132]:58153 "EHLO
-        smtpcmd04132.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhEKH1q (ORCPT
+        id S230248AbhEKH3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhEKH3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:27:46 -0400
-Received: from [192.168.1.128] ([79.0.204.227])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id gMmqlBMMF8ee9gMmqlihSO; Tue, 11 May 2021 09:26:39 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1620717999; bh=kEaSU4SIBYA1oeKhe8QqIpUWvEBjftWiyVsrsWAfXWI=;
-        h=Subject:To:From:Date:MIME-Version:Content-Type;
-        b=bDT7EP6/XxNUuWH82gVVadEXsxBKwv11eA6HyaRgFUJR3yJ33jCjZ9epz+ad6nUHS
-         amdjZ2DkqhLNF5D9bA23PjOsNbCcXjgA9IxbhPceQ1msRTYKM7gE7e5DhOjS9TN0n0
-         GfOAzIx9lToklaNRGcvjUnk+mRkZWgVaCiZxd6SoevX71X0kkmNXn+zg+OXSNTH74s
-         btEgnLpxjRprMydUCO095XRpD4HU9EGv/eTPhIOmAtooh3D8NpCGDxdIqZYV4sp9QG
-         v2WvACUdDXPSKX+/GyVb9l6VZpO+BgC2zvu8j27i8VZX9fGfslnxGfXUkPYU0/b9mK
-         5jF+XR++9ssAg==
-Subject: Re: [PATCH v1 1/1] pps: clients: parport: Switch to use
- module_parport_driver()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        Alexander Gordeev <lasaine@lvk.cs.msu.su>
-References: <20210510141302.56654-1-andriy.shevchenko@linux.intel.com>
- <77c821e1-adc7-4088-0dcb-da65ba7a39a2@enneenne.com>
- <YJovqMqJj3mBeRE8@smile.fi.intel.com>
-From:   Rodolfo Giometti <giometti@enneenne.com>
-Message-ID: <55aeec09-63c7-7d1a-13c9-cd8f4b7dc1f9@enneenne.com>
-Date:   Tue, 11 May 2021 09:26:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 11 May 2021 03:29:48 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E557C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:28:42 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1lgMom-0005Yq-51; Tue, 11 May 2021 09:28:36 +0200
+Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1lgMok-0007xy-4w; Tue, 11 May 2021 09:28:34 +0200
+Date:   Tue, 11 May 2021 09:28:34 +0200
+From:   Michael Tretter <m.tretter@pengutronix.de>
+To:     Yuri Savinykh <s02190703@gse.cs.msu.ru>
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+Subject: Re: [bug report] media: allegro: possible NULL pointer dereference.
+Message-ID: <20210511072834.GC17882@pengutronix.de>
+Mail-Followup-To: Michael Tretter <m.tretter@pengutronix.de>,
+        Yuri Savinykh <s02190703@gse.cs.msu.ru>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+References: <20210508160455.86976-1-s02190703@gse.cs.msu.ru>
 MIME-Version: 1.0
-In-Reply-To: <YJovqMqJj3mBeRE8@smile.fi.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfOcdBtU7s4JCopLSwY3HU6rOfStrOEgIxac0K/bnFmBTOJl8st9DqopeVEVH2ddKX61uonG4scB0t/dOdUf+f0Cdt14/HWlsfM7hOFxN4PxNlmABoe1v
- 57hZ+by4eVZqGuLzDT9yommQR84nlgn44baW3EUlzi/saVVb9YeOIOLthUhMyVGpR209+FQRfT2FIrxRZWqp+688EldFp/SLQCbjUbHSA3i7W0lfwy/9xXD3
- 5p+KlB+mhWg1kzEhVGtmUl1ihhO9pevlfoeWUckD1pinUejIfT6upGDeFzYbBts1TA/Cvk+qz7aC1mlBbkI0wA==
+Content-Disposition: inline
+In-Reply-To: <20210508160455.86976-1-s02190703@gse.cs.msu.ru>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 09:08:13 up 82 days, 10:32, 91 users,  load average: 0.08, 0.27,
+ 0.27
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mtr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/05/21 09:18, Andy Shevchenko wrote:
-> On Tue, May 11, 2021 at 09:05:00AM +0200, Rodolfo Giometti wrote:
->> On 10/05/21 16:13, Andy Shevchenko wrote:
->>> Switch to use module_parport_driver() to reduce boilerplate code.
->>>
->>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>> ---
->>>  drivers/pps/clients/pps_parport.c | 42 ++++++-------------------------
->>>  1 file changed, 8 insertions(+), 34 deletions(-)
->>>
->>> diff --git a/drivers/pps/clients/pps_parport.c b/drivers/pps/clients/pps_parport.c
->>> index 7a41fb7b0dec..42f93d4c6ee3 100644
->>> --- a/drivers/pps/clients/pps_parport.c
->>> +++ b/drivers/pps/clients/pps_parport.c
->>> @@ -22,8 +22,6 @@
->>>  #include <linux/parport.h>
->>>  #include <linux/pps_kernel.h>
->>>  
->>> -#define DRVDESC "parallel port PPS client"
->>> -
->>>  /* module parameters */
->>>  
->>>  #define CLEAR_WAIT_MAX		100
->>> @@ -138,6 +136,12 @@ static void parport_attach(struct parport *port)
->>>  		.dev		= NULL
->>>  	};
->>>  
->>> +	if (clear_wait > CLEAR_WAIT_MAX) {
->>> +		pr_err("clear_wait value should be not greater then %d\n",
->>> +		       CLEAR_WAIT_MAX);
->>> +		return;
->>> +	}
->>> +
->>
->> Why do you need to do so? Maybe a comment would be welcomed.
+Hello Yuri,
+
+On Sat, 08 May 2021 19:04:55 +0300, Yuri Savinykh wrote:
+> At the moment of enabling irq handling:
 > 
-> It's in original code, I just moved it to ->probe().
+> 3166     ret = devm_request_threaded_irq(&pdev->dev, irq,
+> 3167                     allegro_hardirq,
+> 3168                     allegro_irq_thread,
+> 3169                     IRQF_SHARED, dev_name(&pdev->dev), dev);
 > 
-> What comment do you want to have here, because original code has no comment (I
-> think in any case it's out of scope of this change, but may be prepended or
-> appended to the series)?
+> there is still uninitialized field mbox_status of struct allegro_dev *dev.
+> If an interrupt occurs in the interval between the installation of the
+> interrupt handler and the initialization of this field, NULL pointer
+> dereference happens.
+> 
+> This field is dereferenced in the handler function without any check:
+> 
+> 1801 static irqreturn_t allegro_irq_thread(int irq, void *data)
+> 1802 {
+> 1803     struct allegro_dev *dev = data;
+> 1804
+> 1805     allegro_mbox_notify(dev->mbox_status);
+> 
+> 
+> and then:
+> 
+> 752 static void allegro_mbox_notify(struct allegro_mbox *mbox)
+> 753 {
+> 754     struct allegro_dev *dev = mbox->dev;
+> 
+> The initialization of the mbox_status field happens asynchronously in
+> allegro_fw_callback() via allegro_mcu_hw_init(). 
+> 
+> Is it guaranteed that an interrupt does not occur in this interval?
+> If it is not, is it better to move interrupt handler installation
+> after initialization of this field has been completed?
 
-Mmm... these functions can be called at different times, so I don't know if we
-can just move the code safely.
+Thanks for the report. The interrupt is triggered by the firmware, which is
+only loaded in allegro_fw_callback(), and is enabled only after the
+initialization of mbox_status in allegro_mcu_hw_init():
 
-Maybe Alexander (in CC) can help us? :)
+3507	allegro_mcu_enable_interrupts(dev)
 
-Ciao,
+The interrupt handler is installed in probe(), because that's where all the
+platform information is retrieved. Unfortunately, at that time, the driver is
+not able to setup the mailboxes, because the mailbox configuration depends on
+the firmware and is only known in allegro_fw_callback().
 
-Rodolfo
+It might be interesting to tie the interrupt more closely to the mailboxes,
+because it is actually only used to notify the driver about mails in the
+mailbox, but that's something I have not yet considered worth the effort.
 
--- 
-GNU/Linux Solutions                  e-mail: giometti@enneenne.com
-Linux Device Driver                          giometti@linux.it
-Embedded Systems                     phone:  +39 349 2432127
-UNIX programming                     skype:  rodolfo.giometti
+Michael
