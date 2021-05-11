@@ -2,156 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C23237A0C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0374637A0CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhEKH1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:27:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhEKH1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:27:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 540826186A;
-        Tue, 11 May 2021 07:26:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620717969;
-        bh=3JMzIMeQzxE5DWUbQRLHd4TyQ7AtkcTds4O1YHSswGI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=l+wWFa58UfPIq9uamJkAFlrtebZCUwpiPeFp36SlYHSJEmKo6FW/jBkMFuVC3Ngt8
-         NWpDdzWGekpMmPkV4QoukaycoyMIvajuJnSOJViiG0ApdCEwoiYiidvJPISVU7g+TQ
-         UKBwNfQZQ5gUUVmUOTvE5pPfwqSw2eRzxvzAEXqXPpzL+N6Ahel2JJEWFGb2bxsnWN
-         VQkY6OlXZeV7gsWVs2bw/1cQxmK6oIU4cqCTX3qnw0syvhhNMDTBCEkK55zcbAG3cI
-         UgrjdwssXaFIM1Aih0wwIgH5bVP5ZJ2aJf8/aq/icJf/ielpmWefTWHftCt3ZAxTvB
-         brDN+bQzfWdZw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Moni Shoua <monis@mellanox.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com
-Subject: [PATCH rdma-rc] RDMA/rxe: Clear all QP fields if creation failed
-Date:   Tue, 11 May 2021 10:26:03 +0300
-Message-Id: <7bf8d548764d406dbbbaf4b574960ebfd5af8387.1620717918.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S230424AbhEKH1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:27:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230357AbhEKH1v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 03:27:51 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D43C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:26:45 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id gx5so28229273ejb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:26:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yQUbhz7/E0lEtqCvmWvWa4PResjc+TajMFwGZfaN1M0=;
+        b=ZhNP9Zja5NU6NpiGCaZ50LvYsMQt1kCvPFezLCYyFPH/gNyWaNX1r9v88P8G0hNyU/
+         arjjOWQmAJLpxx7MI/JxoL67XzvmC3o9hi7ALxOLSVZ6rMWKtUnLI+jncozRRXS5iek1
+         /7AG4Fngpq1zcr23d0Lxo7CHnA4K/WYVFf/OuPL907PippiP/GBPeLnqsNn/CnBCskh3
+         WyY1vvsFcc2dGukV1v++f7cwmdlv+lzE9a0iF4M7O8Zd/6ILn7KpfTobMe3KKuI2MTZp
+         nU9u52v+fsd93pkKCBsHIxn0WXPYJvFcqdE2IrqFAf3TZ+2uMjd9UrQbz2no3yubUTP1
+         ysTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yQUbhz7/E0lEtqCvmWvWa4PResjc+TajMFwGZfaN1M0=;
+        b=jdIrbzdBsKL3T8NKKRjmKKSDaxZu+wsgM7r7imAxgZD5jSvqeqpDYrSSvcLwyEhQpg
+         ZcS9tNzEWruilRobn5e8ZqF+8n5pCNJObDvH7QD+yB7yWsvCg2wHFXlYWBIUiMrINk7L
+         vw5JLoqwWsPl7mkofoxY9qH+ipyoLtnl4OX33n5Hn7FS3zH2GqWdkHZXDuSAjvpI6p8C
+         P04opaCW/D3g6HLpcceYyIO9WkBKcmIPbLZJhfCXnwMGvRrJDmPxPUXlqJekeBRbLJk/
+         3b7cxClIPg+rzkp84jUn2JI+mAUExHRwQGSg2V+GR3DMICiWrUpGaWlWH57ZmWj68BpL
+         Bglw==
+X-Gm-Message-State: AOAM532oNRpBIGcIdN9LdYwJ/nVpPLZKGawMzlzXlNPfburwzPuR4PPw
+        2K11oasUVQosVBhrMR3Xc0ZaKDHn0oq5fo4j35z1UeA5hk5Ck+yh
+X-Google-Smtp-Source: ABdhPJwbsaDcTM51zcSzyqxeFri7oUU6LjsfE6BfGESLkYeAgVA+O68N5hKg71kj2kWczEJ5QmAb227UflYnYsmSv9Y=
+X-Received: by 2002:a17:906:11d4:: with SMTP id o20mr30114432eja.247.1620718003845;
+ Tue, 11 May 2021 00:26:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210510102004.821838356@linuxfoundation.org>
+In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 11 May 2021 12:56:31 +0530
+Message-ID: <CA+G9fYtPHaM5Dsdfh8ci8-+bL4YwdbW2SJ72D4t727qOOpV4XA@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/299] 5.10.36-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Mon, 10 May 2021 at 16:01, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.36 release.
+> There are 299 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.36-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-rxe_qp_do_cleanup() relies on valid pointer values in QP for the
-properly created ones, but in case rxe_qp_from_init() failed it was
-filled with garbage and caused tot the following error.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-------------[ cut here ]------------
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 1 PID: 12560 at lib/refcount.c:28 refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
-Modules linked in:
-CPU: 1 PID: 12560 Comm: syz-executor.4 Not tainted 5.12.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
-Code: e9 db fe ff ff 48 89 df e8 2c c2 ea fd e9 8a fe ff ff e8 72 6a a7 fd 48 c7 c7 e0 b2 c1 89 c6 05 dc 3a e6 09 01 e8 ee 74 fb 04 <0f> 0b e9 af fe ff ff 0f 1f 84 00 00 00 00 00 41 56 41 55 41 54 55
-RSP: 0018:ffffc900097ceba8 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000040000 RSI: ffffffff815bb075 RDI: fffff520012f9d67
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815b4eae R11: 0000000000000000 R12: ffff8880322a4800
-R13: ffff8880322a4940 R14: ffff888033044e00 R15: 0000000000000000
-FS:  00007f6eb2be3700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fdbe5d41000 CR3: 000000001d181000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __refcount_sub_and_test include/linux/refcount.h:283 [inline]
- __refcount_dec_and_test include/linux/refcount.h:315 [inline]
- refcount_dec_and_test include/linux/refcount.h:333 [inline]
- kref_put include/linux/kref.h:64 [inline]
- rxe_qp_do_cleanup+0x96f/0xaf0 drivers/infiniband/sw/rxe/rxe_qp.c:805
- execute_in_process_context+0x37/0x150 kernel/workqueue.c:3327
- rxe_elem_release+0x9f/0x180 drivers/infiniband/sw/rxe/rxe_pool.c:391
- kref_put include/linux/kref.h:65 [inline]
- rxe_create_qp+0x2cd/0x310 drivers/infiniband/sw/rxe/rxe_verbs.c:425
- _ib_create_qp drivers/infiniband/core/core_priv.h:331 [inline]
- ib_create_named_qp+0x2ad/0x1370 drivers/infiniband/core/verbs.c:1231
- ib_create_qp include/rdma/ib_verbs.h:3644 [inline]
- create_mad_qp+0x177/0x2d0 drivers/infiniband/core/mad.c:2920
- ib_mad_port_open drivers/infiniband/core/mad.c:3001 [inline]
- ib_mad_init_device+0xd6f/0x1400 drivers/infiniband/core/mad.c:3092
- add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:717
- enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1331
- ib_register_device drivers/infiniband/core/device.c:1413 [inline]
- ib_register_device+0x7c7/0xa50 drivers/infiniband/core/device.c:1365
- rxe_register_device+0x3d5/0x4a0 drivers/infiniband/sw/rxe/rxe_verbs.c:1147
- rxe_add+0x12fe/0x16d0 drivers/infiniband/sw/rxe/rxe.c:247
- rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:503
- rxe_newlink drivers/infiniband/sw/rxe/rxe.c:269 [inline]
- rxe_newlink+0xb7/0xe0 drivers/infiniband/sw/rxe/rxe.c:250
- nldev_newlink+0x30e/0x550 drivers/infiniband/core/nldev.c:1555
- rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
- rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
- rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f6eb2be3188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 00000000004665f9
-RDX: 0000000000000000 RSI: 0000000020000600 RDI: 0000000000000003
-RBP: 00000000004bfce1 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
-R13: 00007ffc54e34f4f R14: 00007f6eb2be3300 R15: 0000000000022000
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Reported-by: syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/sw/rxe/rxe_qp.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+## Build
+* kernel: 5.10.36-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.10.y
+* git commit: 4edc8f7e8676bbfdec9d67dc6b90ec72fd3bacaa
+* git describe: v5.10.35-300-g4edc8f7e8676
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.35-300-g4edc8f7e8676
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index 34ae957a315c..b0f350d674fd 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -242,6 +242,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
- 	if (err) {
- 		vfree(qp->sq.queue->buf);
- 		kfree(qp->sq.queue);
-+		qp->sq.queue = NULL;
- 		return err;
- 	}
- 
-@@ -295,6 +296,7 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
- 		if (err) {
- 			vfree(qp->rq.queue->buf);
- 			kfree(qp->rq.queue);
-+			qp->rq.queue = NULL;
- 			return err;
- 		}
- 	}
-@@ -355,6 +357,11 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
- err2:
- 	rxe_queue_cleanup(qp->sq.queue);
- err1:
-+	qp->pd = NULL;
-+	qp->rcq = NULL;
-+	qp->scq = NULL;
-+	qp->srq = NULL;
-+
- 	if (srq)
- 		rxe_drop_ref(srq);
- 	rxe_drop_ref(scq);
--- 
-2.31.1
+## No regressions (compared to v5.10.35-221-gbb0eba64e018)
 
+## No fixes (compared to v5.10.35-221-gbb0eba64e018)
+
+## Test result summary
+ total: 78630, pass: 64381, fail: 2948, skip: 11032, xfail: 269,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
