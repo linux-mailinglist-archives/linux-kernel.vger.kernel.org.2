@@ -2,66 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00979379F08
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 07:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B5E379F09
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 07:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbhEKFO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 01:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36266 "EHLO
+        id S230166AbhEKFPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 01:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbhEKFO0 (ORCPT
+        with ESMTP id S229885AbhEKFPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 01:14:26 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF0EC061574;
-        Mon, 10 May 2021 22:13:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=92vbIUnZWAAzNpY967Q6Gm7dIUmOdX6k9EiMXw1tTKg=; b=ttzagEansgjXWY/vsH58Pyp6AX
-        vg7t4xB5Pz58MVHJO2nA37pw13znKkgtP5SHXBW7etr7Eg7dWXMHkvdw9bSDgfyE+mhsRUiknwRcJ
-        nnL9D3p183JaQo94WBhc5LLgneKKSa4D05K6YposgJFQXjalzb3pSIh/54qty6MJLLXPTp2gl0jYm
-        oYv2+ShfIL1CVWMXM++3HWHgS0OxwDV/4p1gPG7n3SoaKVzQJG9mziPHEm6lfsXMi1baHgLiUU3bo
-        SQcJfSRxR1x4+jeQnzC5MBsr33K53HJBZj20206NSWzC0j37vZcg5MLCbMhL1tn15BJlLO2ntd9DN
-        7MFtF6VQ==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgKhr-009JM9-Eb; Tue, 11 May 2021 05:13:19 +0000
-Subject: Re: linux-next: Tree for May 11 (btrfs)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>
-References: <20210511133551.09bfd39c@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <56cef5d3-cfb4-abe2-1cbc-f146b720396c@infradead.org>
-Date:   Mon, 10 May 2021 22:13:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 11 May 2021 01:15:42 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26931C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 22:14:37 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id p17so10231862plf.12
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 22:14:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MI+V6ZShvdbkwISuLfksjDLzYwAzKXs9zAMdnm3Yy60=;
+        b=d82t5SbHs1szecvhujWELTzUNhxydPO3pP3Nal5cdWRvlO/KXGh8mNtHWcBnKGHpsf
+         Fi3JUhzTqih3rJuEdQPnKIvEWjn3+1PTCixG826zy7DQwAWdQ9Podiau4xbjiub3cvZI
+         iNStYDI53+rXjsHFYwOSH1NA1w3pwKHczTfOQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MI+V6ZShvdbkwISuLfksjDLzYwAzKXs9zAMdnm3Yy60=;
+        b=gA1XfbKW8HG//s+8UDxjZkwsA0C+H/xz8QTQlB4luiS1M44xorNy8HchTWpnBZtLYW
+         3stufQqlEb5NKgB9R0TkiuyL2bqWPc2sCDpVmJHyko0bpRS2FEpBWXoE4JImxWtgVM6K
+         KoAgmZTRiAEhAK5l6Xbfg89S7JMjzba0JDh7JZvzJLm++PWyVhprBAempa9MIQ7Ps0aP
+         7yvMFxj6aOQONUr0MVGA8Z1hkeMyhkhQSXIqVHxtzDFB0rRoy/hoVXvpnNSK1uVkax+7
+         o8Y6dFFVJDYHRtcnD2fETv6cQfGRWhf8IziukkNX6NT2lltGlZisPJQmGkIsXHgeB6jB
+         ROoA==
+X-Gm-Message-State: AOAM533qfE938aDnCH01niOcH8PYvZ0Fqexs79qIW+I1YEl0jjdhfClp
+        rBacA1ngiTVbR6NT3GUEaiuR4Q==
+X-Google-Smtp-Source: ABdhPJy60v1x65k6zv+d9FdhbcM/hM+FaHFWvFhC8MMj4/8WxP0fzZD12H7nMT+60BVb7PCdBAabAw==
+X-Received: by 2002:a17:90a:b388:: with SMTP id e8mr2976456pjr.167.1620710076662;
+        Mon, 10 May 2021 22:14:36 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:6765:417e:19fc:9756])
+        by smtp.gmail.com with ESMTPSA id c195sm12501075pfb.5.2021.05.10.22.14.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 22:14:36 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        Jingle Wu <jingle.wu@emc.com.tw>
+Subject: [PATCH v2] Input: elan_i2c: Disable irq on shutdown
+Date:   Mon, 10 May 2021 22:14:35 -0700
+Message-Id: <20210511051435.2454848-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
 MIME-Version: 1.0
-In-Reply-To: <20210511133551.09bfd39c@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/21 8:35 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20210510:
-> 
+Touching an elan trackpad while shutting down the system sometimes leads
+to the following warning from i2c core. This is because the irq is still
+active and working, but the i2c bus for the device has been shutdown
+already. If the bus has been taken down then we shouldn't expect
+transfers to work. Disable the irq on shutdown so that this driver
+doesn't try to get the report in the irq handler after the i2c bus is
+shutdown.
 
-on i386:
+ i2c i2c-7: Transfer while suspended
+ WARNING: CPU: 0 PID: 196 at drivers/i2c/i2c-core.h:54 __i2c_transfer+0xb8/0x38c
+ Modules linked in: rfcomm algif_hash algif_skcipher af_alg uinput xt_cgroup
+ CPU: 0 PID: 196 Comm: irq/166-ekth300 Not tainted 5.4.115 #96
+ Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
+ pstate: 60c00009 (nZCv daif +PAN +UAO)
+ pc : __i2c_transfer+0xb8/0x38c
+ lr : __i2c_transfer+0xb8/0x38c
+ sp : ffffffc011793c20
+ x29: ffffffc011793c20 x28: 0000000000000000
+ x27: ffffff85efd60348 x26: ffffff85efdb8040
+ x25: ffffffec39d579cc x24: ffffffec39d57bac
+ x23: ffffffec3aab17b9 x22: ffffff85f02d6400
+ x21: 0000000000000001 x20: ffffff85f02aa190
+ x19: ffffff85f02aa100 x18: 00000000ffff0a10
+ x17: 0000000000000044 x16: 00000000000000ec
+ x15: ffffffec3a0b9174 x14: 0000000000000006
+ x13: 00000000003fe680 x12: 0000000000000000
+ x11: 0000000000000000 x10: 00000000ffffffff
+ x9 : 806da3cb9f8c1d00 x8 : 806da3cb9f8c1d00
+ x7 : 0000000000000000 x6 : ffffffec3afd3bef
+ x5 : 0000000000000000 x4 : 0000000000000000
+ x3 : 0000000000000000 x2 : fffffffffffffcc7
+ x1 : 0000000000000000 x0 : 0000000000000023
+ Call trace:
+  __i2c_transfer+0xb8/0x38c
+  i2c_transfer+0xa0/0xf4
+  i2c_transfer_buffer_flags+0x64/0x98
+  elan_i2c_get_report+0x2c/0x88
+  elan_isr+0x68/0x3e4
+  irq_thread_fn+0x2c/0x70
+  irq_thread+0xf8/0x148
+  kthread+0x140/0x17c
+  ret_from_fork+0x10/0x18
 
-ld: fs/btrfs/extent_io.o: in function `btrfs_submit_read_repair':
-extent_io.c:(.text+0x624f): undefined reference to `__udivdi3'
+Cc: Jingle Wu <jingle.wu@emc.com.tw>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/input/mouse/elan_i2c_core.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
+diff --git a/drivers/input/mouse/elan_i2c_core.c b/drivers/input/mouse/elan_i2c_core.c
+index bef73822315d..2a0b54a35fc5 100644
+--- a/drivers/input/mouse/elan_i2c_core.c
++++ b/drivers/input/mouse/elan_i2c_core.c
+@@ -1338,6 +1338,12 @@ static int elan_probe(struct i2c_client *client,
+ 	return 0;
+ }
+ 
++static void elan_shutdown(struct i2c_client *client)
++{
++	/* Make sure we don't access i2c bus after it is shutdown. */
++	disable_irq(client->irq);
++}
++
+ static int __maybe_unused elan_suspend(struct device *dev)
+ {
+ 	struct i2c_client *client = to_i2c_client(dev);
+@@ -1423,6 +1429,7 @@ static struct i2c_driver elan_driver = {
+ 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+ 	},
+ 	.probe		= elan_probe,
++	.shutdown	= elan_shutdown,
+ 	.id_table	= elan_id,
+ };
+ 
 
+base-commit: 9f4ad9e425a1d3b6a34617b8ea226d56a119a717
 -- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+https://chromeos.dev
 
