@@ -2,121 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42EBE37AB4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FE637AB50
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231233AbhEKQF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 12:05:57 -0400
-Received: from mga02.intel.com ([134.134.136.20]:22768 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229921AbhEKQF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:05:56 -0400
-IronPort-SDR: lJgNnWvJaVyDw/UpdDj4LrcCkCtAf/3U3aPf7cF2MpXa0KV+22IEYgoKUukK7ki4cDIQ8bXiRF
- +G5UFLGEB9dA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="186614292"
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="186614292"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 09:04:41 -0700
-IronPort-SDR: DxcqpCR3rJHM1sp0RRZmHzIZq6qg3UZ8ePtdaXVAxvQY17mz5YLwmtSHYrurUoJ7G4aHj/QvIw
- 72Z/Rl5MKWLg==
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="537084176"
-Received: from unknown (HELO [10.251.0.45]) ([10.251.0.45])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 09:04:40 -0700
-Subject: Re: [RFC v2 16/32] x86/tdx: Handle MWAIT, MONITOR and WBINVD
-To:     Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <d6ca05720290060e909c1f4d12858f900f1be0e7.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4jGmhkrd+Zr4RNcZ5qfXkYO-416Bw2_idVbrgij41yvYg@mail.gmail.com>
- <0e577692-101e-38f7-ebe2-2e7222016a9f@linux.intel.com>
- <CAPcyv4jLMA=jehxdFi=A-xtjSRQ_v7XxSVYrZPAU3XKC39qWRA@mail.gmail.com>
- <43e0a5cc-721a-04f1-50b6-b1319da10bac@intel.com>
- <CAPcyv4gEROpgvf+3Drgso1O6ENQ=2xBoKHqC6d4fWvdDNVSNjA@mail.gmail.com>
- <01b0e007-6af6-ca2e-2a0d-7ff4ca2a2927@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <4456b0d0-c392-4691-2963-c349369158c3@intel.com>
-Date:   Tue, 11 May 2021 09:04:38 -0700
+        id S231352AbhEKQGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 12:06:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29085 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229921AbhEKQGg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 12:06:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620749129;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=te4j0CaO/GGwAePTvy9qf9MhnS54BQnLL/PFFRuQ1v8=;
+        b=Tjk9GDoFHru0zETY1y/uUNd80eyvddrw2EVs95oEQiiaC3nbuHPK0vqllPhRsmepEzkju4
+        btGthwNWgOObN2YXrkWRnDy/1rbcd1GeSK+eSZ/33en/ybgP15Qix+5cZhH102c0dXcPUM
+        ++cSGMN5NG1bB0N127Nldh/rmPprTNE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-362-36MVrBJfO1-KLhYh32wKtA-1; Tue, 11 May 2021 12:05:25 -0400
+X-MC-Unique: 36MVrBJfO1-KLhYh32wKtA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2629D805F03;
+        Tue, 11 May 2021 16:05:22 +0000 (UTC)
+Received: from [10.3.115.19] (ovpn-115-19.phx2.redhat.com [10.3.115.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 895785D9F2;
+        Tue, 11 May 2021 16:05:17 +0000 (UTC)
+Subject: Re: [PATCH 00/16] Add new DMA mapping operation for P2PDMA
+To:     Logan Gunthorpe <logang@deltatee.com>,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org
+Cc:     Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20210408170123.8788-1-logang@deltatee.com>
+From:   Don Dutile <ddutile@redhat.com>
+Message-ID: <cc7eab6b-2189-7b6a-d119-d653211cd1fb@redhat.com>
+Date:   Tue, 11 May 2021 12:05:16 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <01b0e007-6af6-ca2e-2a0d-7ff4ca2a2927@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210408170123.8788-1-logang@deltatee.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 8:52 AM, Andi Kleen wrote:
->> The 'default' case in this 'switch' prints the exit reason and faults,
->> can't that also trigger a backtrace that dumps the exception stack and
->> the faulting instruction? In other words shouldn't this just fail with
->> a common way to provide better debug on any unhandled #VE and not try
->> to continue running past something that "can't" happen?
-> 
-> It will use the #GP common code which will do all the backtracing etc.
-> 
-> We didn't think we would need anything else than what #GP already does.
+On 4/8/21 1:01 PM, Logan Gunthorpe wrote:
+> Hi,
+>
+> This patchset continues my work to to add P2PDMA support to the common
+> dma map operations. This allows for creating SGLs that have both P2PDMA
+> and regular pages which is a necessary step to allowing P2PDMA pages in
+> userspace.
+>
+> The earlier RFC[1] generated a lot of great feedback and I heard no show
+> stopping objections. Thus, I've incorporated all the feedback and have
+> decided to post this as a proper patch series with hopes of eventually
+> getting it in mainline.
+>
+> I'm happy to do a few more passes if anyone has any further feedback
+> or better ideas.
+>
+> This series is based on v5.12-rc6 and a git branch can be found here:
+>
+>    https://github.com/sbates130272/linux-p2pmem/  p2pdma_map_ops_v1
+>
+> Thanks,
+>
+> Logan
+>
+> [1] https://lore.kernel.org/linux-block/20210311233142.7900-1-logang@deltatee.com/
+>
+>
+> Changes since the RFC:
+>   * Added comment and fixed up the pci_get_slot patch. (per Bjorn)
+>   * Fixed glaring sg_phys() double offset bug. (per Robin)
+>   * Created a new map operation (dma_map_sg_p2pdma()) with a new calling
+>     convention instead of modifying the calling convention of
+>     dma_map_sg(). (per Robin)
+>   * Integrated the two similar pci_p2pdma_dma_map_type() and
+>     pci_p2pdma_map_type() functions into one (per Ira)
+>   * Reworked some of the logic in the map_sg() implementations into
+>     helpers in the p2pdma code. (per Christoph)
+>   * Dropped a bunch of unnecessary symbol exports (per Christoph)
+>   * Expanded the code in dma_pci_p2pdma_supported() for clarity. (per
+>     Ira and Christoph)
+>   * Finished off using the new dma_map_sg_p2pdma() call in rdma_rw
+>     and removed the old pci_p2pdma_[un]map_sg(). (per Jason)
+>
+> --
+>
+> Logan Gunthorpe (16):
+>    PCI/P2PDMA: Pass gfp_mask flags to upstream_bridge_distance_warn()
+>    PCI/P2PDMA: Avoid pci_get_slot() which sleeps
+>    PCI/P2PDMA: Attempt to set map_type if it has not been set
+>    PCI/P2PDMA: Refactor pci_p2pdma_map_type() to take pagmap and device
+>    dma-mapping: Introduce dma_map_sg_p2pdma()
+>    lib/scatterlist: Add flag for indicating P2PDMA segments in an SGL
+>    PCI/P2PDMA: Make pci_p2pdma_map_type() non-static
+>    PCI/P2PDMA: Introduce helpers for dma_map_sg implementations
+>    dma-direct: Support PCI P2PDMA pages in dma-direct map_sg
+>    dma-mapping: Add flags to dma_map_ops to indicate PCI P2PDMA support
+>    iommu/dma: Support PCI P2PDMA pages in dma-iommu map_sg
+>    nvme-pci: Check DMA ops when indicating support for PCI P2PDMA
+>    nvme-pci: Convert to using dma_map_sg_p2pdma for p2pdma pages
+>    nvme-rdma: Ensure dma support when using p2pdma
+>    RDMA/rw: use dma_map_sg_p2pdma()
+>    PCI/P2PDMA: Remove pci_p2pdma_[un]map_sg()
+>
+>   drivers/infiniband/core/rw.c |  50 +++-------
+>   drivers/iommu/dma-iommu.c    |  66 ++++++++++--
+>   drivers/nvme/host/core.c     |   3 +-
+>   drivers/nvme/host/nvme.h     |   2 +-
+>   drivers/nvme/host/pci.c      |  39 ++++----
+>   drivers/nvme/target/rdma.c   |   3 +-
+>   drivers/pci/Kconfig          |   2 +-
+>   drivers/pci/p2pdma.c         | 188 +++++++++++++++++++----------------
+>   include/linux/dma-map-ops.h  |   3 +
+>   include/linux/dma-mapping.h  |  20 ++++
+>   include/linux/pci-p2pdma.h   |  53 ++++++----
+>   include/linux/scatterlist.h  |  49 ++++++++-
+>   include/rdma/ib_verbs.h      |  32 ++++++
+>   kernel/dma/direct.c          |  25 ++++-
+>   kernel/dma/mapping.c         |  70 +++++++++++--
+>   15 files changed, 416 insertions(+), 189 deletions(-)
+>
+>
+> base-commit: e49d033bddf5b565044e2abe4241353959bc9120
+> --
+> 2.20.1
+>
+Apologies in the delay to provide feedback; climbing out of several deep trenches at the mother ship :-/
 
-How do these end up in practice?  Do they still say "general protection
-fault..."?
+Replying to some directly, and indirectly (mostly through JohH's reply's).
 
-Isn't that really mean for anyone that goes trying to figure out what
-caused these?  If they see a "general protection fault" from WBINVD and
-go digging in the SDM for how a #GP can come from WBINVD, won't they be
-sorely disappointed?
+General comments:
+1) nits in 1,2,3,5;
+    4: I agree w/JohnH & JasonG -- seems like it needs a device-layer that gets to a bus-layer, but I'm wearing my 'broader then PCI' hat in this review; I see a (classic) ChristophH refactoring and cleanup in this area, and wondering if we ought to clean it up now, since CH has done so much to clean it up and make the dma-mapping system so much easier to add/modify/review due to the broad arch (& bus) cleanup that has been done.  If that delays it too much, then add a TODO to do so.
+2) 6: yes! let's not worry or even both supporting 32-bit anything wrt p2pdma.
+3) 7:nit
+4) 8: ok;
+5) 9: ditto to JohnH's feedback on added / clearer comment & code flow (if-else).
+6) 10: nits; q: should p2pdma mapping go through dma-ops so it is generalized for future interconnects (CXL, GenZ)?
+7) 11: It says it is supporting p2pdma in dma-iommu's map_sg, but it seems like it is just leveraging shared code and short-circuiting IOMMU use.
+8) 12-14: didn't review; letting the block/nvme/direct-io folks cover this space
+9) 15: Looking to JasonG to sanitize
+10) 16: cleanup; a-ok.
+
+- DonD
+
