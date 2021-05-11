@@ -2,237 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0374637A0CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA7A37A0CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbhEKH1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230357AbhEKH1v (ORCPT
+        id S230333AbhEKH1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:27:47 -0400
+Received: from smtpcmd04132.aruba.it ([62.149.158.132]:58153 "EHLO
+        smtpcmd04132.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhEKH1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:27:51 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D43C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:26:45 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id gx5so28229273ejb.11
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:26:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yQUbhz7/E0lEtqCvmWvWa4PResjc+TajMFwGZfaN1M0=;
-        b=ZhNP9Zja5NU6NpiGCaZ50LvYsMQt1kCvPFezLCYyFPH/gNyWaNX1r9v88P8G0hNyU/
-         arjjOWQmAJLpxx7MI/JxoL67XzvmC3o9hi7ALxOLSVZ6rMWKtUnLI+jncozRRXS5iek1
-         /7AG4Fngpq1zcr23d0Lxo7CHnA4K/WYVFf/OuPL907PippiP/GBPeLnqsNn/CnBCskh3
-         WyY1vvsFcc2dGukV1v++f7cwmdlv+lzE9a0iF4M7O8Zd/6ILn7KpfTobMe3KKuI2MTZp
-         nU9u52v+fsd93pkKCBsHIxn0WXPYJvFcqdE2IrqFAf3TZ+2uMjd9UrQbz2no3yubUTP1
-         ysTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yQUbhz7/E0lEtqCvmWvWa4PResjc+TajMFwGZfaN1M0=;
-        b=jdIrbzdBsKL3T8NKKRjmKKSDaxZu+wsgM7r7imAxgZD5jSvqeqpDYrSSvcLwyEhQpg
-         ZcS9tNzEWruilRobn5e8ZqF+8n5pCNJObDvH7QD+yB7yWsvCg2wHFXlYWBIUiMrINk7L
-         vw5JLoqwWsPl7mkofoxY9qH+ipyoLtnl4OX33n5Hn7FS3zH2GqWdkHZXDuSAjvpI6p8C
-         P04opaCW/D3g6HLpcceYyIO9WkBKcmIPbLZJhfCXnwMGvRrJDmPxPUXlqJekeBRbLJk/
-         3b7cxClIPg+rzkp84jUn2JI+mAUExHRwQGSg2V+GR3DMICiWrUpGaWlWH57ZmWj68BpL
-         Bglw==
-X-Gm-Message-State: AOAM532oNRpBIGcIdN9LdYwJ/nVpPLZKGawMzlzXlNPfburwzPuR4PPw
-        2K11oasUVQosVBhrMR3Xc0ZaKDHn0oq5fo4j35z1UeA5hk5Ck+yh
-X-Google-Smtp-Source: ABdhPJwbsaDcTM51zcSzyqxeFri7oUU6LjsfE6BfGESLkYeAgVA+O68N5hKg71kj2kWczEJ5QmAb227UflYnYsmSv9Y=
-X-Received: by 2002:a17:906:11d4:: with SMTP id o20mr30114432eja.247.1620718003845;
- Tue, 11 May 2021 00:26:43 -0700 (PDT)
+        Tue, 11 May 2021 03:27:46 -0400
+Received: from [192.168.1.128] ([79.0.204.227])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id gMmqlBMMF8ee9gMmqlihSO; Tue, 11 May 2021 09:26:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1620717999; bh=kEaSU4SIBYA1oeKhe8QqIpUWvEBjftWiyVsrsWAfXWI=;
+        h=Subject:To:From:Date:MIME-Version:Content-Type;
+        b=bDT7EP6/XxNUuWH82gVVadEXsxBKwv11eA6HyaRgFUJR3yJ33jCjZ9epz+ad6nUHS
+         amdjZ2DkqhLNF5D9bA23PjOsNbCcXjgA9IxbhPceQ1msRTYKM7gE7e5DhOjS9TN0n0
+         GfOAzIx9lToklaNRGcvjUnk+mRkZWgVaCiZxd6SoevX71X0kkmNXn+zg+OXSNTH74s
+         btEgnLpxjRprMydUCO095XRpD4HU9EGv/eTPhIOmAtooh3D8NpCGDxdIqZYV4sp9QG
+         v2WvACUdDXPSKX+/GyVb9l6VZpO+BgC2zvu8j27i8VZX9fGfslnxGfXUkPYU0/b9mK
+         5jF+XR++9ssAg==
+Subject: Re: [PATCH v1 1/1] pps: clients: parport: Switch to use
+ module_parport_driver()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        Alexander Gordeev <lasaine@lvk.cs.msu.su>
+References: <20210510141302.56654-1-andriy.shevchenko@linux.intel.com>
+ <77c821e1-adc7-4088-0dcb-da65ba7a39a2@enneenne.com>
+ <YJovqMqJj3mBeRE8@smile.fi.intel.com>
+From:   Rodolfo Giometti <giometti@enneenne.com>
+Message-ID: <55aeec09-63c7-7d1a-13c9-cd8f4b7dc1f9@enneenne.com>
+Date:   Tue, 11 May 2021 09:26:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210510102004.821838356@linuxfoundation.org>
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 11 May 2021 12:56:31 +0530
-Message-ID: <CA+G9fYtPHaM5Dsdfh8ci8-+bL4YwdbW2SJ72D4t727qOOpV4XA@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/299] 5.10.36-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YJovqMqJj3mBeRE8@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfOcdBtU7s4JCopLSwY3HU6rOfStrOEgIxac0K/bnFmBTOJl8st9DqopeVEVH2ddKX61uonG4scB0t/dOdUf+f0Cdt14/HWlsfM7hOFxN4PxNlmABoe1v
+ 57hZ+by4eVZqGuLzDT9yommQR84nlgn44baW3EUlzi/saVVb9YeOIOLthUhMyVGpR209+FQRfT2FIrxRZWqp+688EldFp/SLQCbjUbHSA3i7W0lfwy/9xXD3
+ 5p+KlB+mhWg1kzEhVGtmUl1ihhO9pevlfoeWUckD1pinUejIfT6upGDeFzYbBts1TA/Cvk+qz7aC1mlBbkI0wA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021 at 16:01, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.36 release.
-> There are 299 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.36-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 11/05/21 09:18, Andy Shevchenko wrote:
+> On Tue, May 11, 2021 at 09:05:00AM +0200, Rodolfo Giometti wrote:
+>> On 10/05/21 16:13, Andy Shevchenko wrote:
+>>> Switch to use module_parport_driver() to reduce boilerplate code.
+>>>
+>>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>> ---
+>>>  drivers/pps/clients/pps_parport.c | 42 ++++++-------------------------
+>>>  1 file changed, 8 insertions(+), 34 deletions(-)
+>>>
+>>> diff --git a/drivers/pps/clients/pps_parport.c b/drivers/pps/clients/pps_parport.c
+>>> index 7a41fb7b0dec..42f93d4c6ee3 100644
+>>> --- a/drivers/pps/clients/pps_parport.c
+>>> +++ b/drivers/pps/clients/pps_parport.c
+>>> @@ -22,8 +22,6 @@
+>>>  #include <linux/parport.h>
+>>>  #include <linux/pps_kernel.h>
+>>>  
+>>> -#define DRVDESC "parallel port PPS client"
+>>> -
+>>>  /* module parameters */
+>>>  
+>>>  #define CLEAR_WAIT_MAX		100
+>>> @@ -138,6 +136,12 @@ static void parport_attach(struct parport *port)
+>>>  		.dev		= NULL
+>>>  	};
+>>>  
+>>> +	if (clear_wait > CLEAR_WAIT_MAX) {
+>>> +		pr_err("clear_wait value should be not greater then %d\n",
+>>> +		       CLEAR_WAIT_MAX);
+>>> +		return;
+>>> +	}
+>>> +
+>>
+>> Why do you need to do so? Maybe a comment would be welcomed.
+> 
+> It's in original code, I just moved it to ->probe().
+> 
+> What comment do you want to have here, because original code has no comment (I
+> think in any case it's out of scope of this change, but may be prepended or
+> appended to the series)?
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Mmm... these functions can be called at different times, so I don't know if we
+can just move the code safely.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Maybe Alexander (in CC) can help us? :)
 
-## Build
-* kernel: 5.10.36-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.10.y
-* git commit: 4edc8f7e8676bbfdec9d67dc6b90ec72fd3bacaa
-* git describe: v5.10.35-300-g4edc8f7e8676
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.35-300-g4edc8f7e8676
+Ciao,
 
-## No regressions (compared to v5.10.35-221-gbb0eba64e018)
+Rodolfo
 
-## No fixes (compared to v5.10.35-221-gbb0eba64e018)
-
-## Test result summary
- total: 78630, pass: 64381, fail: 2948, skip: 11032, xfail: 269,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+GNU/Linux Solutions                  e-mail: giometti@enneenne.com
+Linux Device Driver                          giometti@linux.it
+Embedded Systems                     phone:  +39 349 2432127
+UNIX programming                     skype:  rodolfo.giometti
