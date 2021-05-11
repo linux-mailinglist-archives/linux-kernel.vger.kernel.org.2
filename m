@@ -2,152 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E36A37A89C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3C637A89F
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231734AbhEKOM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231696AbhEKOM1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:12:27 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2DAC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:11:20 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id t4so30056220ejo.0
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:11:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=h+QS57uiDcNTSUqHWnANazOKg81NGt/aGf/q6ieH1nA=;
-        b=nBT0KcVBFdLuioxxcGs1zFZbBCuEmIA5PEK7t++BbscRfg1vcTUhh3lSqa+QW55LI7
-         s7FBc50qHrBEbDhdSygfrqqf4/IwC9UhdDBTzufvA5dHY/Qkya3JV6QTnB+krBEsdXE0
-         9CJ/4ylMQSbN8nUrHFXh+FlybG4pvnlxenZwPdv/79v5kJ5iopwKJJVQxrKwa21Bnqdt
-         JTFKwEqHDhitRoFZqq/OnsDXPJD+Cqai3kHhcSJYo2ZgRWMNnd9TqKkb30UnIfDm6+r6
-         6ERYqfNvRAll4JfCrnrPGUOBmDdO0bXGvWHPsrF8jpXkVLv81EZ4d63Y1HGf0QPxWI1x
-         1/Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=h+QS57uiDcNTSUqHWnANazOKg81NGt/aGf/q6ieH1nA=;
-        b=XQjcphxm5OOa+tFfEjhHwMT+E42bo8Wbj539TaG6HuUbezSvqkqXbpBkO9A2qHhWEw
-         wiI9Zhq/ShfthctpE4O4lwaWm/ldqLixpzs4QbaOUGFfprPOYsxnnh3SJ9FInZKmOZ4n
-         qYxyJWOigcOMU0ucSPXzGtxGrapnjbuLivUPgg7CAlWfBtPaPNi+BLmsMuyrmsk3HG//
-         QPw8Vs3Olr0650LvKFwpVQy4wF1tY7QlsTzLh4m3mm7g3Prys5UgRZwcS6PWfoG4Z5tp
-         /8sVRhYutGeBIRSvDnK1Jbdtpp+S8OIfb4yyQCEaQeKpZPAlvEyvecBqMT322ALK7yau
-         4WAA==
-X-Gm-Message-State: AOAM533fTAUabVd+MDHtUjm9KDJUBbRtmT2OCcDlp1IXvdgozRpUmI0o
-        2QyrGJMIvNY5E04xIwq7lpJRZQ==
-X-Google-Smtp-Source: ABdhPJyde4XpzdeyCjbJoxHs1iN8giKGPqKQdQE8vE7bc3fW9JukYGeNAo8nJr9s6SFzEog6CVswzA==
-X-Received: by 2002:a17:906:594c:: with SMTP id g12mr3983010ejr.267.1620742279612;
-        Tue, 11 May 2021 07:11:19 -0700 (PDT)
-Received: from apalos.home ([94.69.77.156])
-        by smtp.gmail.com with ESMTPSA id v12sm15108949edb.81.2021.05.11.07.11.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 07:11:19 -0700 (PDT)
-Date:   Tue, 11 May 2021 17:11:13 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v4 1/4] mm: add a signature in struct page
-Message-ID: <YJqQgYSWH2qan1GS@apalos.home>
-References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
- <20210511133118.15012-2-mcroce@linux.microsoft.com>
- <YJqKfNh6l3yY2daM@casper.infradead.org>
+        id S231781AbhEKOMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:12:42 -0400
+Received: from mga12.intel.com ([192.55.52.136]:39052 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231740AbhEKOMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:12:40 -0400
+IronPort-SDR: nIpA2S2ypTkC51tHQ4ODD5y8uHkz2c9UAykMPJgZQJr0CHQHFqA7h4cPkfYWf/axICPEwV8GQK
+ GSLZyEQN2aaQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179044132"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="179044132"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:11:34 -0700
+IronPort-SDR: V7GrQEfQsFjN+DWzOkb5DLz1EaBBY3grFEDntmwP7UbwJC4VOPqhtq/cB8zn9D937X2nNi3UT2
+ afTQWr+iMYSQ==
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="434463993"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:11:33 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lgT6g-00BSpA-Kj; Tue, 11 May 2021 17:11:30 +0300
+Date:   Tue, 11 May 2021 17:11:30 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Rodolfo Giometti <giometti@enneenne.com>
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        Alexander Gordeev <lasaine@lvk.cs.msu.su>
+Subject: Re: [PATCH v1 1/1] pps: clients: parport: Switch to use
+ module_parport_driver()
+Message-ID: <YJqQkvqGUScrrWoL@smile.fi.intel.com>
+References: <20210510141302.56654-1-andriy.shevchenko@linux.intel.com>
+ <77c821e1-adc7-4088-0dcb-da65ba7a39a2@enneenne.com>
+ <YJovqMqJj3mBeRE8@smile.fi.intel.com>
+ <55aeec09-63c7-7d1a-13c9-cd8f4b7dc1f9@enneenne.com>
+ <YJo3LoDSqr18YiNh@smile.fi.intel.com>
+ <04e6d0e4-4ef1-b27b-0b10-7e57280d5c9f@enneenne.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJqKfNh6l3yY2daM@casper.infradead.org>
+In-Reply-To: <04e6d0e4-4ef1-b27b-0b10-7e57280d5c9f@enneenne.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew,
+On Tue, May 11, 2021 at 10:46:01AM +0200, Rodolfo Giometti wrote:
+> On 11/05/21 09:50, Andy Shevchenko wrote:
+> > On Tue, May 11, 2021 at 09:26:36AM +0200, Rodolfo Giometti wrote:
+> >> On 11/05/21 09:18, Andy Shevchenko wrote:
+> >>> On Tue, May 11, 2021 at 09:05:00AM +0200, Rodolfo Giometti wrote:
+> >>>> On 10/05/21 16:13, Andy Shevchenko wrote:
 
-On Tue, May 11, 2021 at 02:45:32PM +0100, Matthew Wilcox wrote:
-> On Tue, May 11, 2021 at 03:31:15PM +0200, Matteo Croce wrote:
-> > @@ -101,6 +101,7 @@ struct page {
-> >  			 * 32-bit architectures.
-> >  			 */
-> >  			unsigned long dma_addr[2];
-> > +			unsigned long signature;
-> >  		};
-> >  		struct {	/* slab, slob and slub */
-> >  			union {
-> 
-> No.  Signature now aliases with page->mapping, which is going to go
-> badly wrong for drivers which map this page into userspace.
-> 
-> I had this as:
-> 
-> +                       unsigned long pp_magic;
-> +                       unsigned long xmi;
-> +                       unsigned long _pp_mapping_pad;
->                         unsigned long dma_addr[2];
-> 
-> and pp_magic needs to be set to something with bits 0&1 clear and
-> clearly isn't a pointer.  I went with POISON_POINTER_DELTA + 0x40.
+...
 
-Regardless to the changes required, there's another thing we'd like your
-opinion on.
-There was a change wrt to the previous patchset. We used to store the
-struct xdp_mem_info into page->private.  On the new version we store the
-page_pool ptr address in page->private (there's an explanation why on the
-mail thread, but the tl;dr is that we can get some more speed and keeping
-xdp_mem_info is not that crucial). So since we can just store the page_pool
-address directly, should we keep using page->private or it's better to
-do: 
+> >>>>> +	if (clear_wait > CLEAR_WAIT_MAX) {
+> >>>>> +		pr_err("clear_wait value should be not greater then %d\n",
+> >>>>> +		       CLEAR_WAIT_MAX);
+> >>>>> +		return;
+> >>>>> +	}
+> >>>>> +
+> >>>>
+> >>>> Why do you need to do so? Maybe a comment would be welcomed.
+> >>>
+> >>> It's in original code, I just moved it to ->probe().
+> >>>
+> >>> What comment do you want to have here, because original code has no comment (I
+> >>> think in any case it's out of scope of this change, but may be prepended or
+> >>> appended to the series)?
+> >>
+> >> Mmm... these functions can be called at different times, so I don't know if we
+> >> can just move the code safely.
+> > 
+> > I do not see any issue here. TL;DR: it won't be worse, but might even give an
+> > improvement.
+> > 
+> > Before it prevented to module to be initialized,
+> > now one may amend this at run time. the downside is that now it will require
+> > module removal and inserting versus just two attempts of inserting in a row.
+> > 
+> > For the built-in case it shouldn't change much (but if
+> > /sys/module/.../parameters/... is writable for this, then it will allow to do
+> > the similar trick as above, so extending functionality with the flexibility,
+> > means direct improvement).
+> > 
+> > Okay, permissions are 0 there, I don't remember what it means, maybe the
+> > parameter won't be available under /sysfs at all, but again, it won't change
+> > the functional behaviour, the downside is the memory consumed by the 'built-in'
+> > code at run time.
+> 
+> OK, I see. If so
 
-+                       unsigned long pp_magic;
-+                       unsigned long pp_ptr;
-+                       unsigned long _pp_mapping_pad;
-                        unsigned long dma_addr[2];
-and use pp_ptr?
+At least this is my understanding how it works before and after the change.
+If anybody has something to clarify here, I would be glad to learn!
 
-Thanks
-/Ilias
+> it's OK for me:
+> 
+> Acked-by: Rodolfo Giometti <giometti@enneenne.com>
+
+Thanks!
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
