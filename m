@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0269837B22B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B254437B229
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhEKXI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:08:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45560 "EHLO mail.kernel.org"
+        id S230166AbhEKXI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:08:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230012AbhEKXIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229637AbhEKXIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 19:08:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 414A061928;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 338B361626;
         Tue, 11 May 2021 23:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620774468;
-        bh=2w8SNOnj4hUbptaRDHT+py87ltYdjWVG+fK7QN6uEiY=;
+        bh=E0gmLJvxyAnv6Mg9LTaM5QzAhb1R3n/zNTGJbx6TRvk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tZtp29qsj09uO0/gUFbG+6yNBUGpFRE4fK7qILnRrVmB17R7Z8KshKVUixPEAAeUe
-         I7l1Xtr3iDlbxB1LXv1EYRKx/In9/9BWrEta/DAPC2L+R6j/RGaXhDfShXYE462Q6u
-         Fm32z0BiZvqZEhLEP3FjcBAeGQazquW9PJtx5ja0tAa9bhWY8aYZEr0SZKm9bdBNd/
-         5x0bfKroRh6c8X91n6pqd5ER7+ZVI5ODLk9rB6RwAxhsMC8rbjfhLtkaDybD8p6qK/
-         Q1PBmwiF/NHhOIBJGo2M3CHVQagqrwO7XdNN0+ztLeMznHQITrl0eDvcTIThFaw33Y
-         vsiYajgDHdqDQ==
+        b=PXw65D/7XS3zkNQBjf7fWOqK0J/xafe9jSy9kTVENtwCG1nSHSsJEsDYf+hRjeO5H
+         Klnr/a7J+2TWfWSxzoroaswTxaxj9Wz5LkYLkn88/pmRJ3NxL9cIpcQq+FrybWajY6
+         idMk/gEPy5reF8N+uNGkC/74nv3x3rgJFzxCettVfCFTurRiGaJwkZTtgkORc//1cR
+         7KIlC2ziET3mfCdqa/9dRQfMvIfODmn9IHPpYXFUnQ7FjSf1vbHCvNFBAd3ItWrbXV
+         0DavslqyafzjdDg8nq/Ym+wvZI6KrcZonfz9frzeIXJKYc8Q/dRTh9oVrEnTkGhGti
+         2IWHzKaJ5yfTQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DC6565C014E; Tue, 11 May 2021 16:07:47 -0700 (PDT)
+        id DEB065C09EF; Tue, 11 May 2021 16:07:47 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,13 +34,13 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         Frederic Weisbecker <frederic@kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
         Boqun Feng <boqun.feng@gmail.com>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 2/6] srcu: Remove superfluous ssp initialization for early callbacks
-Date:   Tue, 11 May 2021 16:07:41 -0700
-Message-Id: <20210511230745.2894650-2-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 3/6] srcu: Unconditionally embed struct lockdep_map
+Date:   Tue, 11 May 2021 16:07:42 -0700
+Message-Id: <20210511230745.2894650-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511230720.GA2894512@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511230720.GA2894512@paulmck-ThinkPad-P17-Gen-1>
@@ -52,36 +52,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-Pre-srcu_init() invocations of call_srcu() initialize the srcu_struct
-structure in question, so there is no need to check this initialization
-in srcu_init() when initiating grace periods for srcu_struct structures
-that had early call_srcu() invocations.  This commit therefore drops
-the calls to check_init_srcu_struct() in srcu_init().
+Since struct lockdep_map has zero size when CONFIG_DEBUG_LOCK_ALLOC=n,
+this commit removes the #ifdef from the srcu_struct structure's ->dep_map.
+This change will simplify further manipulations of this field.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>
 Cc: Boqun Feng <boqun.feng@gmail.com>
 Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Josh Triplett <josh@joshtriplett.org>
 Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/srcutree.c | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/srcutree.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 3414aff2a4b0..f4f0cbf7a02b 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1388,7 +1388,6 @@ void __init srcu_init(void)
- 	while (!list_empty(&srcu_boot_list)) {
- 		ssp = list_first_entry(&srcu_boot_list, struct srcu_struct,
- 				      work.work.entry);
--		check_init_srcu_struct(ssp);
- 		list_del_init(&ssp->work.work.entry);
- 		queue_work(rcu_gp_wq, &ssp->work.work);
- 	}
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index 9cfcc8a756ae..cb1f4351e8ba 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -82,9 +82,7 @@ struct srcu_struct {
+ 						/*  callback for the barrier */
+ 						/*  operation. */
+ 	struct delayed_work work;
+-#ifdef CONFIG_DEBUG_LOCK_ALLOC
+ 	struct lockdep_map dep_map;
+-#endif /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+ };
+ 
+ /* Values for state variable (bottom bits of ->srcu_gp_seq). */
 -- 
 2.31.1.189.g2e36527f23
 
