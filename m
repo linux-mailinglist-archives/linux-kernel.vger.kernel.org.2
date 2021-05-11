@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A74B37B1DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A5337B1DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbhEKWy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 18:54:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33638 "EHLO mail.kernel.org"
+        id S230395AbhEKWyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:54:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230166AbhEKWyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230172AbhEKWyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 18:54:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF98161421;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6DEB6192B;
         Tue, 11 May 2021 22:53:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620773586;
-        bh=JVZ4K6AwP1wfBYd0STTrYWVB7kKFGknxFXL/doxIKrg=;
+        bh=YTmkCZi2/uwcp+0lPCpWWxdI96DueAEbjEKyymxKsM4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VYJ/JKSnG1UIfmQiOxRnT1YC08K0xs8ESMT4tn7AvIPqMBEefsInA7mayKs/g48gi
-         DQO7tweKo9gop3n82wF6vRerXpP7ts8khe68VcXPmG7bJHeBWhfmbAE0y0VBQuElH7
-         yTlCOAUct0Tb5Bb4P8ICQy+RDcJXUYu5auhtXewchBFWWREZDNGmVW7yNAI6ZAzhmp
-         A5ebj7rV5JfSigo/GAVuBsswm3rUqO4ainZVqGV4FmQAsf+Ot5pa1OTiM0lWwgPInk
-         BT/y4jHIlRquPv6da9tc7xjYjGFSQraNn71ZWrDDSfuQht4Qa6t5JD6ZotbN/czruX
-         VNtNg2Lv55eIQ==
+        b=OPpIENIAWdNGH2RIb1cV2QMToQoCy2Unyc/VZs9VDTE8alVYVin+ES8PyzL55igvu
+         ba0B7CYyIqnL5N2Y04bAzzgWLrvfxLC/C2oaYN2G+JeEwSRslj+KERxlGUqhVWazJ/
+         TokSlW3mfHEfWtRz/MmRzvBKxMtQCu+iekCHIKpJIkzhqAcABsSaZwbqDvuVW6fSlZ
+         xD/fWFa1V4WxONS1d48olLd1wdIivijDs/3H/bRf+JhWsVvl6z4fZ5n/1wXDYL1Piy
+         a+ZUfYxRl8XLaBZGJIZ9R5yu9dVyqsgtyjVlO65zuMGXr+PuzmCJaHBMyMqKWg5fLH
+         TV3QIGZGykQoA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8CF245C09EF; Tue, 11 May 2021 15:53:06 -0700 (PDT)
+        id 8ECB85C0B55; Tue, 11 May 2021 15:53:06 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,11 +33,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 03/19] rcu: Improve tree.c comments and add code cleanups
-Date:   Tue, 11 May 2021 15:52:48 -0700
-Message-Id: <20210511225304.2893154-3-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 04/19] rcu: Invoke rcu_spawn_core_kthreads() from rcu_spawn_gp_kthread()
+Date:   Tue, 11 May 2021 15:52:49 -0700
+Message-Id: <20210511225304.2893154-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
@@ -47,100 +46,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Currently, rcu_spawn_core_kthreads() is invoked via an early_initcall(),
+which works, except that rcu_spawn_gp_kthread() is also invoked via an
+early_initcall() and rcu_spawn_core_kthreads() relies on adjustments to
+kthread_prio that are carried out by rcu_spawn_gp_kthread().  There is
+no guaranttee of ordering among early_initcall() handlers, and thus no
+guarantee that kthread_prio will be properly checked and range-limited
+at the time that rcu_spawn_core_kthreads() needs it.
 
-This commit cleans up some comments and code in kernel/rcu/tree.c.
+In most cases, this bug is harmless.  After all, the only reason that
+rcu_spawn_gp_kthread() adjusts the value of kthread_prio is if the user
+specified a nonsensical value for this boot parameter, which experience
+indicates is rare.
 
-Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Nevertheless, a bug is a bug.  This commit therefore causes the
+rcu_spawn_core_kthreads() function to be invoked directly from
+rcu_spawn_gp_kthread() after any needed adjustments to kthread_prio have
+been carried out.
+
+Fixes: 48d07c04b4cc ("rcu: Enable elimination of Tree-RCU softirq processing")
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index f6543b8004c0..06f3de96997c 100644
+index 06f3de96997c..2532e584e95f 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -202,7 +202,7 @@ EXPORT_SYMBOL_GPL(rcu_get_gp_kthreads_prio);
-  * the need for long delays to increase some race probabilities with the
-  * need for fast grace periods to increase other race probabilities.
-  */
--#define PER_RCU_NODE_PERIOD 3	/* Number of grace periods between delays. */
-+#define PER_RCU_NODE_PERIOD 3	/* Number of grace periods between delays for debugging. */
- 
- /*
-  * Compute the mask of online CPUs for the specified rcu_node structure.
-@@ -937,7 +937,7 @@ EXPORT_SYMBOL_GPL(rcu_idle_exit);
-  */
- void noinstr rcu_user_exit(void)
- {
--	rcu_eqs_exit(1);
-+	rcu_eqs_exit(true);
+@@ -2889,7 +2889,6 @@ static int __init rcu_spawn_core_kthreads(void)
+ 		  "%s: Could not start rcuc kthread, OOM is now expected behavior\n", __func__);
+ 	return 0;
  }
- 
- /**
-@@ -1203,7 +1203,7 @@ EXPORT_SYMBOL_GPL(rcu_lockdep_current_cpu_online);
- #endif /* #if defined(CONFIG_PROVE_RCU) && defined(CONFIG_HOTPLUG_CPU) */
+-early_initcall(rcu_spawn_core_kthreads);
  
  /*
-- * We are reporting a quiescent state on behalf of some other CPU, so
-+ * When trying to report a quiescent state on behalf of some other CPU,
-  * it is our responsibility to check for and handle potential overflow
-  * of the rcu_node ->gp_seq counter with respect to the rcu_data counters.
-  * After all, the CPU might be in deep idle state, and thus executing no
-@@ -2607,7 +2607,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
-  * state, for example, user mode or idle loop.  It also schedules RCU
-  * core processing.  If the current grace period has gone on too long,
-  * it will ask the scheduler to manufacture a context switch for the sole
-- * purpose of providing a providing the needed quiescent state.
-+ * purpose of providing the needed quiescent state.
-  */
- void rcu_sched_clock_irq(int user)
- {
-@@ -3236,7 +3236,7 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
- 
- /*
-  * This function is invoked in workqueue context after a grace period.
-- * It frees all the objects queued on ->bhead_free or ->head_free.
-+ * It frees all the objects queued on ->bkvhead_free or ->head_free.
-  */
- static void kfree_rcu_work(struct work_struct *work)
- {
-@@ -3263,7 +3263,7 @@ static void kfree_rcu_work(struct work_struct *work)
- 	krwp->head_free = NULL;
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 
--	// Handle two first channels.
-+	// Handle the first two channels.
- 	for (i = 0; i < FREE_N_CHANNELS; i++) {
- 		for (; bkvhead[i]; bkvhead[i] = bnext) {
- 			bnext = bkvhead[i]->next;
-@@ -3530,11 +3530,11 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+  * Handle any core-RCU processing required by a call_rcu() invocation.
+@@ -4450,6 +4449,7 @@ static int __init rcu_spawn_gp_kthread(void)
+ 	wake_up_process(t);
+ 	rcu_spawn_nocb_kthreads();
+ 	rcu_spawn_boost_kthreads();
++	rcu_spawn_core_kthreads();
+ 	return 0;
  }
- 
- /*
-- * Queue a request for lazy invocation of appropriate free routine after a
-- * grace period. Please note there are three paths are maintained, two are the
-- * main ones that use array of pointers interface and third one is emergency
-- * one, that is used only when the main path can not be maintained temporary,
-- * due to memory pressure.
-+ * Queue a request for lazy invocation of the appropriate free routine
-+ * after a grace period.  Please note that three paths are maintained,
-+ * two for the common case using arrays of pointers and a third one that
-+ * is used only when the main paths cannot be used, for example, due to
-+ * memory pressure.
-  *
-  * Each kvfree_call_rcu() request is added to a batch. The batch will be drained
-  * every KFREE_DRAIN_JIFFIES number of jiffies. All the objects in the batch will
-@@ -4708,7 +4708,7 @@ void __init rcu_init(void)
- 		rcutree_online_cpu(cpu);
- 	}
- 
--	/* Create workqueue for expedited GPs and for Tree SRCU. */
-+	/* Create workqueue for Tree SRCU and for expedited GPs. */
- 	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
- 	WARN_ON(!rcu_gp_wq);
- 	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
+ early_initcall(rcu_spawn_gp_kthread);
 -- 
 2.31.1.189.g2e36527f23
 
