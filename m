@@ -2,92 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F6A37A47E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAEA37A480
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbhEKKYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 06:24:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24643 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230481AbhEKKY2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 06:24:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620728600;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=G0adrujpDKweoPEjP1QQ9qf3v1VudDZ63lGTmNiMcrI=;
-        b=XIwT+5IOqNPtHwJocydOTitvF8vbFuON6hWMvGJVznM4bRVDnGznjL/meoV/+RkJ3MwA4e
-        8aJ4N5OXDIV4qQJV1gDPd/SLEQ8jAJwmS8pjqkeJkI0/gCnxHL+9/bceW//IkvC1Rnjzwu
-        CoS1yPOgHBRnqrulKAPk6DIVH1R6DiY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-Rsk5ItyUN_-KF78s2Vmb2g-1; Tue, 11 May 2021 06:23:17 -0400
-X-MC-Unique: Rsk5ItyUN_-KF78s2Vmb2g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EAB8A1006C84;
-        Tue, 11 May 2021 10:23:16 +0000 (UTC)
-Received: from localhost (ovpn-112-6.ams2.redhat.com [10.36.112.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 557D2100164C;
-        Tue, 11 May 2021 10:23:13 +0000 (UTC)
-Date:   Tue, 11 May 2021 11:23:12 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Connor Kuehl <ckuehl@redhat.com>
-Cc:     virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [PATCH] virtiofs: Enable multiple request queues
-Message-ID: <YJpbEMePhQ88EWWR@stefanha-x1.localdomain>
-References: <20210507221527.699516-1-ckuehl@redhat.com>
+        id S231438AbhEKKY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 06:24:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230481AbhEKKY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 06:24:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA42C61937
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:23:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620728629;
+        bh=LgxMI8vj288DChfG7lFtdchD2fE1dwuejwGWa+sggCk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=R+bdeO7MezX3F1V357elWgM4sW2CkCVIxT5pTuXNHE83llBmmysMYE1tPhjgxT5QO
+         aJFMU2497UdjGOOwTRnyBD2OMm6mxSBZAKnFlXT82UDFCmr480DibvrwbWGAxADB2c
+         JjJpSvsQE1Uo2vYSGpS8Atj/L0lFn8Y6SHyAK4ZeueE59BlcPNR1mUK9YF2mNKQQJm
+         DKmqRYwotraRpe1onAVNgbXbiIV0Ktw9oRHtHgJt8Fc0JXzZt5L0vP1T8F6ehuLlli
+         CHnIMaF9xCSZU0u2O7F5giJeKSJxMKr26C2osLg2kXY41OhksE0I60Oob3MMiuOIsf
+         K1D4M9wUcqVaA==
+Received: by mail-oi1-f170.google.com with SMTP id d21so18542575oic.11
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 03:23:49 -0700 (PDT)
+X-Gm-Message-State: AOAM5337CXUkWiEBpxR99zX5n8P4Wht4YaW2uvmcN9zD5bZVYVIyI2nI
+        TsZPp/72aETOsiH3CQj3IHgzKT2prNfvO9pBxto=
+X-Google-Smtp-Source: ABdhPJyaKNLfHKqYziYG6xr+MMNfOFcPMyPRkI4YOXyAGKtGLduxWKsNWMu7qKDSpiPSpDef4WSFbSD7BiuPJbAkYdA=
+X-Received: by 2002:aca:4056:: with SMTP id n83mr2978231oia.47.1620728629131;
+ Tue, 11 May 2021 03:23:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="A7V9ozvfxmSnLtjw"
-Content-Disposition: inline
-In-Reply-To: <20210507221527.699516-1-ckuehl@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20210511100550.28178-1-rppt@kernel.org> <20210511100550.28178-3-rppt@kernel.org>
+In-Reply-To: <20210511100550.28178-3-rppt@kernel.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 11 May 2021 12:23:38 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGTDAryboM-xQuFTXDQ9eiauOyPPdWcYfeMT2fcyMcKSw@mail.gmail.com>
+Message-ID: <CAMj1kXGTDAryboM-xQuFTXDQ9eiauOyPPdWcYfeMT2fcyMcKSw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/4] memblock: update initialization of reserved pages
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 11 May 2021 at 12:06, Mike Rapoport <rppt@kernel.org> wrote:
+>
+> From: Mike Rapoport <rppt@linux.ibm.com>
+>
+> The struct pages representing a reserved memory region are initialized
+> using reserve_bootmem_range() function. This function is called for each
+> reserved region just before the memory is freed from memblock to the buddy
+> page allocator.
+>
+> The struct pages for MEMBLOCK_NOMAP regions are kept with the default
+> values set by the memory map initialization which makes it necessary to
+> have a special treatment for such pages in pfn_valid() and
+> pfn_valid_within().
+>
+> Split out initialization of the reserved pages to a function with a
+> meaningful name and treat the MEMBLOCK_NOMAP regions the same way as the
+> reserved regions and mark struct pages for the NOMAP regions as
+> PageReserved.
+>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
---A7V9ozvfxmSnLtjw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-On Fri, May 07, 2021 at 05:15:27PM -0500, Connor Kuehl wrote:
-> @@ -1245,7 +1262,8 @@ __releases(fiq->lock)
->  		 req->in.h.nodeid, req->in.h.len,
->  		 fuse_len_args(req->args->out_numargs, req->args->out_args));
-> =20
-> -	fsvq =3D &fs->vqs[queue_id];
-> +	fsvq =3D this_cpu_read(this_cpu_fsvq);
-
-Please check how CPU hotplug affects this patch. If the current CPU
-doesn't have a vq because it was hotplugged, then it may be necessary to
-pick another vq.
-
-Stefan
-
---A7V9ozvfxmSnLtjw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmCaWxAACgkQnKSrs4Gr
-c8gaYQf/ZbGTh/PBCw1PB2OJDsg9sJ/qLNSeJAXsrq1soajsgMZNL5qaCxFxca96
-7Ct1XtEelrvOEivymGbnjYFnL3kDuTeYhPzlyPBwG9heVxBReVxmKaC18hm5GwKk
-Qd481XSuaAF2gVk1B55pgfK4NwX/smvCgHpWvkP8vakZttXFUgMYcXM7Mi7V9XcJ
-4f3EWA0m0iaWAkVJY2R+luPJtvc403igrv4QpUrw0kgn7iYw424W9O819g+Na4dO
-8QdFtUmFHQsgwNVy6hKMnbhc7V0m3Hdwr2JVNXb2cd+yXqwVX+8xP3KeZOvBb5gX
-hUibZHl+yf0GfluxoJUfjT8JXVtBDg==
-=VnK4
------END PGP SIGNATURE-----
-
---A7V9ozvfxmSnLtjw--
-
+> ---
+>  include/linux/memblock.h |  4 +++-
+>  mm/memblock.c            | 28 ++++++++++++++++++++++++++--
+>  2 files changed, 29 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index 5984fff3f175..1b4c97c151ae 100644
+> --- a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -30,7 +30,9 @@ extern unsigned long long max_possible_pfn;
+>   * @MEMBLOCK_NONE: no special request
+>   * @MEMBLOCK_HOTPLUG: hotpluggable region
+>   * @MEMBLOCK_MIRROR: mirrored region
+> - * @MEMBLOCK_NOMAP: don't add to kernel direct mapping
+> + * @MEMBLOCK_NOMAP: don't add to kernel direct mapping and treat as
+> + * reserved in the memory map; refer to memblock_mark_nomap() description
+> + * for further details
+>   */
+>  enum memblock_flags {
+>         MEMBLOCK_NONE           = 0x0,  /* No special request */
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index afaefa8fc6ab..3abf2c3fea7f 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -906,6 +906,11 @@ int __init_memblock memblock_mark_mirror(phys_addr_t base, phys_addr_t size)
+>   * @base: the base phys addr of the region
+>   * @size: the size of the region
+>   *
+> + * The memory regions marked with %MEMBLOCK_NOMAP will not be added to the
+> + * direct mapping of the physical memory. These regions will still be
+> + * covered by the memory map. The struct page representing NOMAP memory
+> + * frames in the memory map will be PageReserved()
+> + *
+>   * Return: 0 on success, -errno on failure.
+>   */
+>  int __init_memblock memblock_mark_nomap(phys_addr_t base, phys_addr_t size)
+> @@ -2002,6 +2007,26 @@ static unsigned long __init __free_memory_core(phys_addr_t start,
+>         return end_pfn - start_pfn;
+>  }
+>
+> +static void __init memmap_init_reserved_pages(void)
+> +{
+> +       struct memblock_region *region;
+> +       phys_addr_t start, end;
+> +       u64 i;
+> +
+> +       /* initialize struct pages for the reserved regions */
+> +       for_each_reserved_mem_range(i, &start, &end)
+> +               reserve_bootmem_region(start, end);
+> +
+> +       /* and also treat struct pages for the NOMAP regions as PageReserved */
+> +       for_each_mem_region(region) {
+> +               if (memblock_is_nomap(region)) {
+> +                       start = region->base;
+> +                       end = start + region->size;
+> +                       reserve_bootmem_region(start, end);
+> +               }
+> +       }
+> +}
+> +
+>  static unsigned long __init free_low_memory_core_early(void)
+>  {
+>         unsigned long count = 0;
+> @@ -2010,8 +2035,7 @@ static unsigned long __init free_low_memory_core_early(void)
+>
+>         memblock_clear_hotplug(0, -1);
+>
+> -       for_each_reserved_mem_range(i, &start, &end)
+> -               reserve_bootmem_region(start, end);
+> +       memmap_init_reserved_pages();
+>
+>         /*
+>          * We need to use NUMA_NO_NODE instead of NODE_DATA(0)->node_id
+> --
+> 2.28.0
+>
