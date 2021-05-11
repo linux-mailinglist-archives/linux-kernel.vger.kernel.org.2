@@ -2,173 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3378737A13A
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC28637A13D
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhEKHy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:54:26 -0400
-Received: from mail-mw2nam10on2064.outbound.protection.outlook.com ([40.107.94.64]:50240
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229917AbhEKHyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:54:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ct1NoeuivRMkdE3UwAV1u8iq/ZmCGNNic65KZhl1RSB/JMsFCIDO2uOs6TOeMazR3lx6TgkAv6rPCdSjP4itjkR5NVwtuRZ/kktzrwND6SKbuSngb40DFnAFPBAr7Ghb1pHEkx3UmnCuT0BNJ945Dfmb/XOj1z9jrtlUI4sIllNDR/HX8PuXrU8PIdfJONUAtch9lqdDZmjpZ1lhlNBCVu932GEphmUvf49Njh+8tvHwnlZc8f+Oja5NXiZVkA9cJhTSfDRQV3eFZhX+XbNwOU6p5U6fwPPZ1wc00JJMIMoluGd0ys0Nx0rmXoxykgxc3F2oMqJsglrU+BX3qp/NmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6jTccCSG1v6NdPO13+pxp2A7JULnoKd4YxjikWkJNQo=;
- b=hgzS2U/2PhroYcm2lxm6tY8CkZDCoMWNMngbed/DOgLbYU5pHaVR9pWh/P92TBM8g8/3FerujqoEpD+lpCH7g66itvuq/QV5kVv1Obo+6KG6wyKzJwY+YJPg4kjBG4YwcET3M+1GtJ3335fIEO99d6u7N5gyYSfMGz/2W+Env+5bU6a/NvKZ9ZusUEgQzba7bb+iALoJtR1UBCEp6HhIOAonMHzwrjAsS6DKg0ppJByj579LMvj3hkFHMZuZrQ8iARvYS1cXbqLMtoOr38mWT3u4RUyaKGQn0axK0Fnby02J2PG0wL+6/OUWFU3k96T/j6m29bvR+e3VmwWvS574Cw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+        id S230319AbhEKH6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229917AbhEKH6f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 03:58:35 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369E8C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:57:28 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id i190so15427675pfc.12
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:57:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6jTccCSG1v6NdPO13+pxp2A7JULnoKd4YxjikWkJNQo=;
- b=Key0pbAk4dKiwQ0x04P0B6JVhxlFJpBrp33o9l6/nxHmnoVynzB/mV/l8rc0nSIYHWTdLteBopZ5GlhtXILhSOWjxXCVza3dPEb3Wh9MdTBvefGg7wj2klgWGcUreyd05CoSbE7R/lgxBnDsoCtPXFqCbbysCVPP6W5ZDNTqFf4=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=synaptics.com;
-Received: from BN9PR03MB6058.namprd03.prod.outlook.com (2603:10b6:408:137::15)
- by BN3PR03MB2196.namprd03.prod.outlook.com (2a01:111:e400:7bb2::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.27; Tue, 11 May
- 2021 07:53:18 +0000
-Received: from BN9PR03MB6058.namprd03.prod.outlook.com
- ([fe80::308b:9168:78:9791]) by BN9PR03MB6058.namprd03.prod.outlook.com
- ([fe80::308b:9168:78:9791%4]) with mapi id 15.20.4108.031; Tue, 11 May 2021
- 07:53:18 +0000
-Date:   Tue, 11 May 2021 15:53:08 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Zou Wei <zou_wei@huawei.com>, <mark.rutland@arm.com>,
-        <daniel.lezcano@linaro.org>, <tglx@linutronix.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] clocksource/drivers/arm_arch_timer: Make symbol
- 'arch_timer_rate1' static
-Message-ID: <20210511155308.0f66b6b0@xhacker.debian>
-In-Reply-To: <87pmxxoi71.wl-maz@kernel.org>
-References: <1620715583-107670-1-git-send-email-zou_wei@huawei.com>
-        <87pmxxoi71.wl-maz@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: BYAPR05CA0106.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::47) To BN9PR03MB6058.namprd03.prod.outlook.com
- (2603:10b6:408:137::15)
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=WkHXZovC6q4P6RMUrDdIlC4m9PUWN46i6uHcGaxj1/I=;
+        b=JoLr8/6zuHvXp8VhvnOdFe0d/FbQSgKHRS0MhrF9DOHnBUuM1Si535/iOSbckeGnNh
+         sYJ7AqAJJrxu4o2X7ltvmCsFptukbkNTYJLY3nIhkuyNycDbHy4x7ImTJU0JzXyP9pKr
+         USYZ5C7v0pNd+ditc1eEZs1pxM95u4ifkG9a1JZJ6tpyfWT+lR13kE7ZOey5OtehqrEs
+         6Duyn6q6elLTxQmc+j/L8ktoMzbshrYvMOLRRsChwwXCc6kUMgfoKdxsawdTR/X51KeD
+         9sEh/HoZfJaBTwI6lSxd/oFNSqbRKN6mZ6rU8fRxGFT1k16hwIm0BaUN0oW/ctD0LK/q
+         R/Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=WkHXZovC6q4P6RMUrDdIlC4m9PUWN46i6uHcGaxj1/I=;
+        b=fV73VgpdS3dfa7KQo+mARH7KVJKiwfHjRSkeBz1XVqoVWkyWtO4PJI6v41XEce0ohw
+         SGN56lmns5JqxaGB4EEY2KKGNW9nYeRyBFGuSu25UIc6FiQW+fegzZC4vxNPUT+qYkee
+         Vk+knR1YCxhou78f8IsbBkgPmTnAV2XnZeyBN283ZAtQThSzgxip+MBcPoW76a2RO/cZ
+         F3kmsiEWyrQECcnPhnS4/fW44xeSVmwGSYmsJdRdIwUW+FEK0biXH2rqlNy5kvr5X6/J
+         zc9aRhmGopLFQhowwVewMHmTJBlRL5pVSTaZWjK7MDTHBr/xRaeRFYvcoi7/hM6pCgvQ
+         1jmA==
+X-Gm-Message-State: AOAM530oxirSqBIaKIkBG5rpGmo49MvBRwBfx8xd/bSmU2Ov0DuWUrJo
+        At4t96f1fPEkRSmfG4j/6L13KQ==
+X-Google-Smtp-Source: ABdhPJwWlTMYbnvsayEbOhbaUuTO7jmCQuB55trieqvmuma8cagfh5JKOZ8Z4eHF4K4vodhNxrAZHQ==
+X-Received: by 2002:a63:a709:: with SMTP id d9mr3677848pgf.143.1620719847510;
+        Tue, 11 May 2021 00:57:27 -0700 (PDT)
+Received: from localhost (ppp121-45-194-51.cbr-trn-nor-bras38.tpg.internode.on.net. [121.45.194.51])
+        by smtp.gmail.com with UTF8SMTPSA id y17sm12558988pfb.183.2021.05.11.00.57.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 00:57:26 -0700 (PDT)
+Message-ID: <95ac11e9-a709-e0a2-9690-ef13c4a2cd43@ozlabs.ru>
+Date:   Tue, 11 May 2021 17:57:20 +1000
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by BYAPR05CA0106.namprd05.prod.outlook.com (2603:10b6:a03:e0::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.11 via Frontend Transport; Tue, 11 May 2021 07:53:15 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3a5466a3-9659-4b0c-cfc5-08d91451d6ea
-X-MS-TrafficTypeDiagnostic: BN3PR03MB2196:
-X-Microsoft-Antispam-PRVS: <BN3PR03MB21968E6411749105B3A93D7FED539@BN3PR03MB2196.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PAtAkgdfEQpcL8LMweMqOLTPwl35cQAmDHJez2v7CQ62EHCLHVsppHNmMQ281j1w8DLSRRReAG/kxCN1LEa4GIETv26t+QNYiqIGuS5vW+g+VHwyJL8VdzkMsycXs47UN9e6Ma0ipRADmztONner6XZlr05x3HFus+bIZ4NBmlUGeYndPO0cWs5XTwpVbiLXL+EKCOSzdHKo5Q+leMQOcjH2NboMP2alVbgMK50W+hLXVYks5yXkQGlo3RkAojyms5OCWDsltIqQyePvWpl2sZz2m1ZYIwndca81/WUuosYh33nf8hoGzR3W6QaYgfGVDRIADBqogoYuaLu+phcTVhcHTPlEpcCSvVjoxSUtRJfAbxaUskOKdHQnBm5BTGLPzVQ8IwUzaBTkUTgcjDiiC7DeG7DK9Af52962rMNj4rLMRiXShpAEZXYRL3+9fKqS5GViZqJ52y9HYPro6mflohIZM+cqKu5cM4L9g0FMh6kJcTBbXRioFheHmGSNVbHPrHYd0RLI1BYXiU9c3SNDkQ5xDAMDoVQfJewmab0YaP9gnXpUvdYSPXjVCx8B6kI76FlZGv5/+o9f3kxlRnlkjqbHhoTm66RQXNhYXwW9mg208Fjp3Td8W/irbYf+bTZMYdU7pVwHFygyhjITEEXlXB0fje3f0WXYUXeHImkgK1c=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR03MB6058.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(39840400004)(136003)(346002)(366004)(66476007)(66946007)(66556008)(956004)(38100700002)(54906003)(8936002)(4326008)(6506007)(316002)(8676002)(6916009)(6666004)(55016002)(478600001)(86362001)(83380400001)(186003)(16526019)(26005)(38350700002)(52116002)(7696005)(9686003)(5660300002)(1076003)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Tdg+TMJye91VXQI4N4BZik3er3/zW/9M0PcKq+cQpDakJ1HBw0ezWhDLu7f4?=
- =?us-ascii?Q?yJUPRxKk9WG4/bbLGU91/009qnA8Sv02dOLKIIhdTFcYqjOyLAVHnZ+GJXv4?=
- =?us-ascii?Q?lmrs87nnOzKl+qd0542bhmOsw3WqltcykK3adDxcqcCCECXOHRMuObvoTC60?=
- =?us-ascii?Q?6scSO3urZtBy90cN+ZvYoWYHO0I674SJrRHBkVHosKrMKSJIUwuzFuQjv4d5?=
- =?us-ascii?Q?B8GWtcYrPSNU/EESlvi+/tjK5nGrLtNskCjRBJK3Dh8EN3mVIk4rzzIEws2r?=
- =?us-ascii?Q?i9eSk2d3OV8i8BTv5YGNtFaJ10MFvf+yKsSnxTq3RPF6UmbmhECYSHdO/32T?=
- =?us-ascii?Q?KWsLRvFoxtLy69HgUIulCTucLRxIYtgLB09ZlVPnWb4H2MJdpV/g9xY0osRn?=
- =?us-ascii?Q?LlxChnr/5H1jC+DmNI55gs80rKsZKHTrFIk+cFK35qSl59iaveCK63fWUwtU?=
- =?us-ascii?Q?YO3g6TtQAcDHNcwo3jzToE9ZjMsMQTBX7bpY4pOj5IkpipPcTx+LnSgzrKGJ?=
- =?us-ascii?Q?GjZFhzDD6MCpe5EUl4WKQBmxGiHhxMw2Q6CuWiFo8s+OZxNP00PeEgZ7fbI2?=
- =?us-ascii?Q?Kf25oNZCD46cbpcCTHH6EFNX0MlxL/ivNKvZzs05fnEJdL7DjpAWSxiYQ0xt?=
- =?us-ascii?Q?i+cyBKoiLvJA65WI+AemibMrh+1C1oihBVXlp7XYwWRxODHTlK9Vddd6Jplu?=
- =?us-ascii?Q?9FHOawAWbUlt1doYuPCLcnEhiLv+7SdOgSTLSjCzGoJfRb429A3qXJfpDTJ1?=
- =?us-ascii?Q?arPgKidjIqvZvg3jwPSimr7gVXRhCOCKnvSFiHIoXCoP9qbL+oT/zBBZ1Mcg?=
- =?us-ascii?Q?jrSaSDgm6pIjAAfXh/FbdWWWaH3ynFQ+qm2hmr/oJSNt3tVNP5P0I0rp5/ra?=
- =?us-ascii?Q?I6s7EyMaDsV4F+7X3jS7t2tFqI8aTdFMkvONLal9SS/HrTb1xvUkeRWbe/sP?=
- =?us-ascii?Q?R1xAXwihm5SyWl29NtilgdFeX01dD8/1IGogz6aFEdwbREtEaOFWTIag9hTp?=
- =?us-ascii?Q?mWTea7MdQaH3LL/YMvxXSqLBaiOBWm7tXEsjeN6nDrVTvsGLhIBYnEzgCyQ3?=
- =?us-ascii?Q?EuO5744BZQ30ewM3YYA+CYAbk/dfVFQj75F9jAvH5TzEPVBLw5iHHDLHiP9n?=
- =?us-ascii?Q?6rzYte5LuTp5CjOcBfoHfrsM4BHsS8Xm7piaTRdUAXgtRsR5Ijfisxs9Zxcw?=
- =?us-ascii?Q?yvRTS4HjjEOBW1sTC2pu14MxJIeJKwtRMn2qSq/1NQ97IgPf4EAVllDoRG46?=
- =?us-ascii?Q?kTtoCEPDwi9R3nN1NZEG24yM0/LVxMD5F80kYqhE9k6Ww8GMxFR7JVG19O1e?=
- =?us-ascii?Q?cZngdZ6HW3G9EVOjD35/artq?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a5466a3-9659-4b0c-cfc5-08d91451d6ea
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR03MB6058.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 07:53:18.1718
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PP6TiTMCTl6hAxdhQwazsval4iXdMzhxaLxHWUtBxZTwhMvVGy6DQ08raBAP/JGelzIJTY2nclSLppHmnldP+g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN3PR03MB2196
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
+ Thunderbird/88.0
+Subject: Re: [PATCH v4 10/11] powerpc/pseries/iommu: Make use of DDW for
+ indirect mapping
+Content-Language: en-US
+To:     Leonardo Bras <leobras.c@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210430163145.146984-1-leobras.c@gmail.com>
+ <20210430163145.146984-11-leobras.c@gmail.com>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <20210430163145.146984-11-leobras.c@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 08:14:42 +0100 Marc Zyngier wrote:
 
 
+On 01/05/2021 02:31, Leonardo Bras wrote:
+> So far it's assumed possible to map the guest RAM 1:1 to the bus, which
+> works with a small number of devices. SRIOV changes it as the user can
+> configure hundreds VFs and since phyp preallocates TCEs and does not
+> allow IOMMU pages bigger than 64K, it has to limit the number of TCEs
+> per a PE to limit waste of physical pages.
 > 
+> As of today, if the assumed direct mapping is not possible, DDW creation
+> is skipped and the default DMA window "ibm,dma-window" is used instead.
 > 
-> [+ Jisheng Zhang]
+> By using DDW, indirect mapping  can get more TCEs than available for the
+> default DMA window, and also get access to using much larger pagesizes
+> (16MB as implemented in qemu vs 4k from default DMA window), causing a
+> significant increase on the maximum amount of memory that can be IOMMU
+> mapped at the same time.
 > 
-> On Tue, 11 May 2021 07:46:23 +0100,
-> Zou Wei <zou_wei@huawei.com> wrote:
-> >
-> > The sparse tool complains as follows:
-> >
-> > drivers/clocksource/arm_arch_timer.c:67:5: warning:
-> >  symbol 'arch_timer_rate1' was not declared. Should it be static?
-> >
-> > This symbol is not used outside of arm_arch_timer.c, so marks it
-> > static.  
+> Indirect mapping will only be used if direct mapping is not a
+> possibility.
 > 
-> It is worse than that. This variable is not used *at all*, and has
-> been added by e2bf384d4329 ("clocksource/drivers/arm_arch_timer: Add
-> __ro_after_init and __init"). Not sure how we missed that.
+> For indirect mapping, it's necessary to re-create the iommu_table with
+> the new DMA window parameters, so iommu_alloc() can use it.
+> 
+> Removing the default DMA window for using DDW with indirect mapping
+> is only allowed if there is no current IOMMU memory allocated in
+> the iommu_table. enable_ddw() is aborted otherwise.
+> 
+> Even though there won't be both direct and indirect mappings at the
+> same time, we can't reuse the DIRECT64_PROPNAME property name, or else
+> an older kexec()ed kernel can assume direct mapping, and skip
+> iommu_alloc(), causing undesirable behavior.
+> So a new property name DMA64_PROPNAME "linux,dma64-ddr-window-info"
+> was created to represent a DDW that does not allow direct mapping.
+> 
+> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+> ---
+>   arch/powerpc/platforms/pseries/iommu.c | 87 +++++++++++++++++++++-----
+>   1 file changed, 72 insertions(+), 15 deletions(-)
+> 
+> diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
+> index de54ddd9decd..572879af0211 100644
+> --- a/arch/powerpc/platforms/pseries/iommu.c
+> +++ b/arch/powerpc/platforms/pseries/iommu.c
+> @@ -53,6 +53,7 @@ enum {
+>   	DDW_EXT_QUERY_OUT_SIZE = 2
+>   };
+>   
+> +static phys_addr_t ddw_memory_hotplug_max(void);
+>   #ifdef CONFIG_IOMMU_API
+>   static int tce_exchange_pseries(struct iommu_table *tbl, long index, unsigned long *tce,
+>   				enum dma_data_direction *direction, bool realmode);
+> @@ -380,6 +381,7 @@ static DEFINE_SPINLOCK(direct_window_list_lock);
+>   /* protects initializing window twice for same device */
+>   static DEFINE_MUTEX(direct_window_init_mutex);
+>   #define DIRECT64_PROPNAME "linux,direct64-ddr-window-info"
+> +#define DMA64_PROPNAME "linux,dma64-ddr-window-info"
+>   
+>   static int tce_clearrange_multi_pSeriesLP(unsigned long start_pfn,
+>   					unsigned long num_pfn, const void *arg)
+> @@ -918,6 +920,7 @@ static int find_existing_ddw_windows(void)
+>   		return 0;
+>   
+>   	find_existing_ddw_windows_named(DIRECT64_PROPNAME);
+> +	find_existing_ddw_windows_named(DMA64_PROPNAME);
+>   
+>   	return 0;
+>   }
+> @@ -1207,10 +1210,13 @@ static bool enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+>   	struct device_node *dn;
+>   	u32 ddw_avail[DDW_APPLICABLE_SIZE];
+>   	struct direct_window *window;
+> +	const char *win_name;
+>   	struct property *win64 = NULL;
+>   	struct failed_ddw_pdn *fpdn;
+> -	bool default_win_removed = false;
+> +	bool default_win_removed = false, direct_mapping = false;
+>   	bool pmem_present;
+> +	struct pci_dn *pci = PCI_DN(pdn);
+> +	struct iommu_table *tbl = pci->table_group->tables[0];
+>   
+>   	dn = of_find_node_by_type(NULL, "ibm,pmemory");
+>   	pmem_present = dn != NULL;
+> @@ -1218,8 +1224,12 @@ static bool enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+>   
+>   	mutex_lock(&direct_window_init_mutex);
+>   
+> -	if (find_existing_ddw(pdn, &dev->dev.archdata.dma_offset, &len))
+> -		goto out_unlock;
+> +	if (find_existing_ddw(pdn, &dev->dev.archdata.dma_offset, &len)) {
+> +		direct_mapping = (len >= max_ram_len);
+> +
+> +		mutex_unlock(&direct_window_init_mutex);
+> +		return direct_mapping;
 
-Oops, my mistake. Sorry for that. IIRC, I added the __ro_after_init
-marker, then want to prove the effectiveness of __ro_after_init with
-a new and non-used variable. But later forgot to remove it.
+Does not this break the existing case when direct_mapping==true by 
+skipping setting dev->dev.bus_dma_limit before returning?
 
-> 
-> Please post a patch removing this variable altogether.
 
-Just sent out a patch to remove this variable.
 
-> 
-> Thanks,
-> 
->         M.
-> 
-> >
-> > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> > ---
-> >  drivers/clocksource/arm_arch_timer.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-> > index fe1a826..800aaa9 100644
-> > --- a/drivers/clocksource/arm_arch_timer.c
-> > +++ b/drivers/clocksource/arm_arch_timer.c
-> > @@ -64,7 +64,7 @@ struct arch_timer {
-> >  #define to_arch_timer(e) container_of(e, struct arch_timer, evt)
-> >
-> >  static u32 arch_timer_rate __ro_after_init;
-> > -u32 arch_timer_rate1 __ro_after_init;
-> > +static u32 arch_timer_rate1 __ro_after_init;
-> >  static int arch_timer_ppi[ARCH_TIMER_MAX_TIMER_PPI] __ro_after_init;
-> >
-> >  static const char *arch_timer_ppi_names[ARCH_TIMER_MAX_TIMER_PPI] = {
-> > --
-> > 2.6.2
-> >
-> >  
-> 
-> --
-> Without deviation from the norm, progress is not possible.
+> +	}
+>   
+>   	/*
+>   	 * If we already went through this for a previous function of
+> @@ -1298,7 +1308,6 @@ static bool enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+>   		goto out_failed;
+>   	}
+>   	/* verify the window * number of ptes will map the partition */
+> -	/* check largest block * page size > max memory hotplug addr */
+>   	/*
+>   	 * The "ibm,pmemory" can appear anywhere in the address space.
+>   	 * Assuming it is still backed by page structs, try MAX_PHYSMEM_BITS
+> @@ -1320,6 +1329,17 @@ static bool enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+>   			1ULL << len,
+>   			query.largest_available_block,
+>   			1ULL << page_shift);
+> +
+> +		len = order_base_2(query.largest_available_block << page_shift);
+> +		win_name = DMA64_PROPNAME;
 
+[1] ....
+
+
+> +	} else {
+> +		direct_mapping = true;
+> +		win_name = DIRECT64_PROPNAME;
+> +	}
+> +
+> +	/* DDW + IOMMU on single window may fail if there is any allocation */
+> +	if (default_win_removed && !direct_mapping && iommu_table_in_use(tbl)) {
+> +		dev_dbg(&dev->dev, "current IOMMU table in use, can't be replaced.\n");
+
+
+... remove !direct_mapping and move to [1]?
+
+
+>   		goto out_failed;
+>   	}
+>   
+> @@ -1331,8 +1351,7 @@ static bool enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+>   		  create.liobn, dn);
+>   
+>   	win_addr = ((u64)create.addr_hi << 32) | create.addr_lo;
+> -	win64 = ddw_property_create(DIRECT64_PROPNAME, create.liobn, win_addr,
+> -				    page_shift, len);
+> +	win64 = ddw_property_create(win_name, create.liobn, win_addr, page_shift, len);
+>   	if (!win64) {
+>   		dev_info(&dev->dev,
+>   			 "couldn't allocate property, property name, or value\n");
+> @@ -1350,12 +1369,47 @@ static bool enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+>   	if (!window)
+>   		goto out_del_prop;
+>   
+> -	ret = walk_system_ram_range(0, memblock_end_of_DRAM() >> PAGE_SHIFT,
+> -			win64->value, tce_setrange_multi_pSeriesLP_walk);
+> -	if (ret) {
+> -		dev_info(&dev->dev, "failed to map direct window for %pOF: %d\n",
+> -			 dn, ret);
+> -		goto out_del_list;
+> +	if (direct_mapping) {
+> +		/* DDW maps the whole partition, so enable direct DMA mapping */
+> +		ret = walk_system_ram_range(0, memblock_end_of_DRAM() >> PAGE_SHIFT,
+> +					    win64->value, tce_setrange_multi_pSeriesLP_walk);
+> +		if (ret) {
+> +			dev_info(&dev->dev, "failed to map direct window for %pOF: %d\n",
+> +				 dn, ret);
+> +			goto out_del_list;
+> +		}
+> +	} else {
+> +		struct iommu_table *newtbl;
+> +		int i;
+> +
+> +		/* New table for using DDW instead of the default DMA window */
+> +		newtbl = iommu_pseries_alloc_table(pci->phb->node);
+> +		if (!newtbl) {
+> +			dev_dbg(&dev->dev, "couldn't create new IOMMU table\n");
+> +			goto out_del_list;
+> +		}
+> +
+> +		for (i = 0; i < ARRAY_SIZE(pci->phb->mem_resources); i++) {
+> +			const unsigned long mask = IORESOURCE_MEM_64 | IORESOURCE_MEM;
+> +
+> +			/* Look for MMIO32 */
+> +			if ((pci->phb->mem_resources[i].flags & mask) == IORESOURCE_MEM)
+> +				break;
+
+What if there is no IORESOURCE_MEM? pci->phb->mem_resources[i].start 
+below will have garbage.
+
+
+> +		}
+> +
+> +		_iommu_table_setparms(newtbl, pci->phb->bus->number, create.liobn, win_addr,
+> +				      1UL << len, page_shift, 0, &iommu_table_lpar_multi_ops);
+> +		iommu_init_table(newtbl, pci->phb->node, pci->phb->mem_resources[i].start,
+> +				 pci->phb->mem_resources[i].end);
+> +
+> +		if (default_win_removed)
+> +			iommu_tce_table_put(tbl);
+
+
+iommu_tce_table_put() should have been called when the window was removed.
+
+Also after some thinking - what happens if there were 2 devices in the 
+PE and one requested 64bit DMA? This will only update 
+set_iommu_table_base() for the 64bit one but not for the other.
+
+I think the right thing to do is:
+
+1. check if table[0] is in use, if yes => fail (which this does already)
+
+2. remove default dma window but keep the iommu_table struct with one 
+change - set it_size to 0 (and free it_map) so the 32bit device won't 
+look at a stale structure and think there is some window (imaginery 
+situation for phyp but easy to recreate in qemu).
+
+3. use table[1] for newly created indirect DDW window.
+
+4. change get_iommu_table_base() to return a usable table (or may be not 
+needed?).
+
+If this sounds reasonable (does it?), the question is now if you have 
+time to do that and the hardware to test that, or I'll have to finish 
+the work :)
+
+
+> +		else
+> +			pci->table_group->tables[1] = tbl;
+
+
+What is this for?
+
+> +
+> +		pci->table_group->tables[0] = newtbl;
+> +
+> +		set_iommu_table_base(&dev->dev, newtbl);
+>   	}
+>   
+>   	spin_lock(&direct_window_list_lock);
+> @@ -1398,10 +1452,10 @@ static bool enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+>   	 * as RAM, then we failed to create a window to cover persistent
+>   	 * memory and need to set the DMA limit.
+>   	 */
+> -	if (pmem_present && win64 && (len == max_ram_len))
+> +	if (pmem_present && direct_mapping && len == max_ram_len)
+>   		dev->dev.bus_dma_limit = dev->dev.archdata.dma_offset + (1ULL << len);
+>   
+> -	return win64;
+> +	return win64 && direct_mapping;
+>   }
+>   
+>   static void pci_dma_dev_setup_pSeriesLP(struct pci_dev *dev)
+> @@ -1542,7 +1596,10 @@ static int iommu_reconfig_notifier(struct notifier_block *nb, unsigned long acti
+>   		 * we have to remove the property when releasing
+>   		 * the device node.
+>   		 */
+> -		remove_ddw(np, false, DIRECT64_PROPNAME);
+> +
+> +		if (remove_ddw(np, false, DIRECT64_PROPNAME))
+> +			remove_ddw(np, false, DMA64_PROPNAME);
+> +
+>   		if (pci && pci->table_group)
+>   			iommu_pseries_free_group(pci->table_group,
+>   					np->full_name);
+> 
+
+-- 
+Alexey
