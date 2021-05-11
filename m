@@ -2,183 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D7537B0FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FA437B10C
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhEKVsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 17:48:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55314 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhEKVsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 17:48:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84F26611F1;
-        Tue, 11 May 2021 21:47:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620769644;
-        bh=ETXRZR/HWxVHGLjQE9b0GOv3YJdjBNysrbBoj0QJ/6o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UmJFotuJwk2WmkbYL5Kt2j3aShJLYIDMBGhT5K4Mocz8QoSUTyFA7Pj1fyITdGoz6
-         4VUdVeXSQnAPgJ04SZwzGktrX+h+zYebkQ3C6CpJDirIp2XQfOz8HnqzfIkBalnUWb
-         f9CyuxpSJwBehh4+ttZgOneF+z1IBXhNjDvo0+Ac0WStE1lkJx76nZ0/FoU8ydPnXI
-         PGrqgQ/oH00u4r/g8ZDq3yNNOTWpZ7BchBDUd+IZ+wYFC0BWHHrUVNsdVUDNEulTer
-         Ce8Ak7VFG8eYqMy8DUhQMDux/tUVs9Mv9oVvppELuFSmdLNQT2WSecSqZNEfJp0/yu
-         JUSH7WZLAI5Bg==
-Date:   Tue, 11 May 2021 14:47:23 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     daejun7.park@samsung.com, "chao@kernel.org" <chao@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>
-Subject: Re: [PATCH] f2fs: set file as cold when file defragmentation
-Message-ID: <YJr7axIRZcTDrAWE@google.com>
-References: <20210429062005epcms2p352ef77f96ab66cbffe0c0ab6c1b62d8a@epcms2p3>
- <3a0ab201-9546-d523-abc7-79df5f637f14@huawei.com>
- <YJN0nTgadoq8vDaG@google.com>
- <bd0fa15b-01c3-9f70-3eb8-ec2b54a0ee8f@huawei.com>
- <YJlHmP/ej8/IsHL3@google.com>
- <6e95edca-4802-7650-4771-5389067935dc@huawei.com>
- <YJoRcIpW1g/OgHZn@google.com>
- <CGME20210429062005epcms2p352ef77f96ab66cbffe0c0ab6c1b62d8a@epcms2p1>
- <20210511064156epcms2p1351480bea36733f2e00022bd295e829e@epcms2p1>
- <771a05fe-e26f-d635-5f8d-5be72f82345f@huawei.com>
+        id S230145AbhEKVwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 17:52:04 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:34205 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229637AbhEKVvh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 17:51:37 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 411CF179C;
+        Tue, 11 May 2021 17:50:16 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 11 May 2021 17:50:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=iTB27FskG3qCZ/2+bDx/QlZWQqb
+        cFgHZ/tiyid5nlZI=; b=7wOTtwaBCKi2Ph3V7Bp4qMNOOqG+9iAw7K2WYx0ZMY2
+        1DJxVEVwVrm/LLM6oNsp07CN/qc76Y3WgW5m0N4XKnLYzv6JyTWWiDo3iONQT3z4
+        FrTsdhnCwS1a2AyHoRbt8AkaX7GEZFBKyXd1VK3stqcR/TYac1qKew+mVG0yj+ox
+        2Y0TfZ6nQTn7ntugviIRC/z5HmmzHdtR0JOmvo2TsWOGIeZxHtKWPSx+ylG72eCj
+        IRiMjThdighylcMGhbs/obPyynJWta2Ac8tsGBUrYWP7296Kl9dS65bV5gCO9d1L
+        WKiSiHlDsucoM2IzKXJZ4l6d/M60tJa4dZmIIegsKzg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=iTB27F
+        skG3qCZ/2+bDx/QlZWQqbcFgHZ/tiyid5nlZI=; b=gfRlOifrWLAtiISTbrk8TX
+        MhLuJ0GVYscP6MPJVvVP9NbMBg7jLtyka6pVCQ/Hq8y6tgrYrxDGoYjO/QnGKPw8
+        DcBuZPw5pWPiTvMGeFvfHi0VZpqoraH5cfs0YawHI1gHJc9++EmGjhas/sXltSjL
+        jinfgoV7vdqXpqUut7ZUFLGvmcxTT/diAVUlSFIUhviJrpiAs4ov9ILXFrxPRcQ4
+        HWJPmMJ8i+prsdypFG7Y7XVCEu9dJmV+dc6okplURcuxFbJtpGcb86MRLBbGQ6QK
+        BsfF8aDj8B8qrLLeFdRbrFFFdYiB53mpz4/b0G98EzV6EBC/NgtIQPV8SZY/QMcA
+        ==
+X-ME-Sender: <xms:F_yaYJ-IXBmopj3q39YpU_7Svquf8PwQTGtLVz6eNjzlo-pGmK6hJw>
+    <xme:F_yaYNshrwshbFYUDXGK4l9Pl_I8Kz-ZuMB2KE3w2wICM5avCvDrWf104GgOMXrQW
+    8XMI_Kt0h6p5OTkBbY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehuddgtddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
+    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
+    htthgvrhhnpeegkeefjeegkedtjefgfeduleekueetjeeghffhuefgffefleehgeeifedv
+    gfethfenucfkphepuddvkedruddtjedrvdeguddrudejieenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehthigthhhosehthigthhhordhpihii
+    iigr
+X-ME-Proxy: <xmx:F_yaYHCEQGkr_49ALjrWzFHv2hSaMaKUdLRbow1YEX4KV7kzdUHAJg>
+    <xmx:F_yaYNdvmEOUAzcYtgn52UB95jJAO1NUa2K3yckU3_49t7fCmQOnmA>
+    <xmx:F_yaYOOM2oQxNCLYH5EUNRG4bg5cK3XqmgIWYiUNK7XUgXkm6OaxVA>
+    <xmx:F_yaYNfYYL_nrzbe4OnTWDVsHzie_VwKWLYMSbVxc-S49DBtcFBUbg>
+Received: from cisco (unknown [128.107.241.176])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Tue, 11 May 2021 17:50:12 -0400 (EDT)
+Date:   Tue, 11 May 2021 15:50:10 -0600
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux.dev>,
+        Andy Lutomirski <luto@kernel.org>,
+        Rodrigo Campos <rodrigo@kinvolk.io>,
+        Mauricio =?iso-8859-1?Q?V=E1squez?= Bernal 
+        <mauricio@kinvolk.io>, Giuseppe Scrivano <gscrivan@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH 3/4] seccomp: Support atomic "addfd + send reply"
+Message-ID: <20210511215010.GB1964106@cisco>
+References: <20210502001851.3346-1-sargun@sargun.me>
+ <20210502001851.3346-4-sargun@sargun.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <771a05fe-e26f-d635-5f8d-5be72f82345f@huawei.com>
+In-Reply-To: <20210502001851.3346-4-sargun@sargun.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/11, Chao Yu wrote:
-> On 2021/5/11 14:41, Daejun Park wrote:
-> > > On 2021/5/11 13:09, Jaegeuk Kim wrote:
-> > > > On 05/11, Chao Yu wrote:
-> > > > > On 2021/5/10 22:47, Jaegeuk Kim wrote:
-> > > > > > On 05/06, Chao Yu wrote:
-> > > > > > > On 2021/5/6 12:46, Jaegeuk Kim wrote:
-> > > > > > > > On 05/06, Chao Yu wrote:
-> > > > > > > > > On 2021/4/29 14:20, Daejun Park wrote:
-> > > > > > > > > > In file defragmentation by ioctl, all data blocks in the file are
-> > > > > > > > > > re-written out-of-place. File defragmentation implies user will not update
-> > > > > > > > > > and mostly read the file. So before the defragmentation, we set file
-> > > > > > > > > > temperature as cold for better block allocation.
-> > > > > > > > > 
-> > > > > > > > > I don't think all fragmented files are cold, e.g. db file.
-> > > > > > > > 
-> > > > > > > > I have a bit different opinion. I think one example would be users want to
-> > > > > > > > defragment a file, when the they want to get higher read bandwidth for
-> > > > > > > 
-> > > > > > > Multimedia file was already defined as cold file now via default extension
-> > > > > > > list?
-> > > > > > 
-> > > > > > I just gave an example. And default is default.
-> > > > > > 
-> > > > > > > 
-> > > > > > > > usually multimedia files. That's likely to be cold files. Moreover, I don't
-> > > > > > > > think they want to defragment db files which will be fragmented soon?
-> > > > > > > 
-> > > > > > > I guess like db files have less update but more access?
-> > > > > > 
-> > > > > > I think both, and we set it as hot.
-> > > > > 
-> > > > > Then hot and cold bit will set to the same db file after defragmentation?
-> > > > 
-> > > > Do you set cold bit to db files? I mean, generally db is not cold, but hot.
-> > > 
-> > > I never set cold bit to db files, I mean if we defragment db file which
-> > > has less update and more access, db file may have bot hot and cold bit.
-> > > 
-> > > To Daejun, may I ask that is Samsung planning to use this defragment ioctl
-> > > in products? what's the user scenario?
-> > 
-> > It is just my idea for defragmentation, not Samsung.
-> 
-> Alright,
-> 
-> > I think the user will call the defrag ioctl for the files that have been updated.
-> 
-> Sadly, I don't see there is any user of this defragment interface since it was
-> been introduced... so I really don't know the real use scenario of this interface
-> now.
-> 
-> > 
-> > On the other hand, I think FS should be able to support defrag file even
-> > when in-place update is applied. What do you think?
-> 
-> bool f2fs_should_update_inplace(struct inode *inode, struct f2fs_io_info *fio)
-> {
-> 	if (f2fs_is_pinned_file(inode))
-> 		return true;
-> 
-> 	/* if this is cold file, we should overwrite to avoid fragmentation */
-> 	if (file_is_cold(inode))
-> 		return true;
-> 
-> If cold bit was set, later rewrite in defragment interface can only trigger
-> IPU due to above IPU policy check, so after this interface, file is still
-> fragmented... what's the difference compared to just setting cold bit via
-> setxattr?
-> 
-> And if user know that he will trigger less update and more read in the file,
-> why not just calling setxattr("system.advise", cold_bit) to set the file as
-> cold before it becomes fragmented, e.g. at the time of file creation?
+Hi,
 
-yea, actually user can set it whatever they want after defragment. :P
+On Sat, May 01, 2021 at 05:18:50PM -0700, Sargun Dhillon wrote:
 
+[snip]
+
+> Other patches in this series add a way to block signals when a syscall
+> is put to wait by seccomp.
+
+I guess we can drop this bit from the message if the series is split.
+
+> The struct seccomp_notif_resp, used when doing SECCOMP_IOCTL_NOTIF_SEND
+> ioctl() to send a response to the target, has three more fields that we
+> don't allow to set when doing the addfd ioctl() to also return. The
+> reasons to disallow each field are:
+>  * val: This will be set to the new allocated fd. No point taking it
+>    from userspace in this case.
+>  * error: If this is non-zero, the value is ignored. Therefore,
+>    it is pointless in this case as we want to return the value.
+>  * flags: The only flag is to let userspace continue to execute the
+>    syscall. This seems pointless, as we want the syscall to return the
+>    allocated fd.
 > 
-> Thanks,
-> 
-> > 
-> > Thanks,
-> > Daejun
-> > > 
-> > > Thanks,
-> > > 
-> > > > 
-> > > > > 
-> > > > > Thanks,
-> > > > > 
-> > > > > > 
-> > > > > > > 
-> > > > > > > Thanks,
-> > > > > > > 
-> > > > > > > > 
-> > > > > > > > > 
-> > > > > > > > > We have separated interface (via f2fs_xattr_advise_handler, e.g. setfattr -n
-> > > > > > > > > "system.advise" -v value) to indicate this file is a hot/cold file, so my
-> > > > > > > > > suggestion is after file defragmentation, if you think this file is cold, and
-> > > > > > > > > use setxattr() to set it as cold.
-> > > > > > > > > 
-> > > > > > > > > Thanks,
-> > > > > > > > > 
-> > > > > > > > > > 
-> > > > > > > > > > Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> > > > > > > > > > ---
-> > > > > > > > > >       fs/f2fs/file.c | 3 +++
-> > > > > > > > > >       1 file changed, 3 insertions(+)
-> > > > > > > > > > 
-> > > > > > > > > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > > > > > > > > > index d697c8900fa7..dcac965a05fe 100644
-> > > > > > > > > > --- a/fs/f2fs/file.c
-> > > > > > > > > > +++ b/fs/f2fs/file.c
-> > > > > > > > > > @@ -2669,6 +2669,9 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
-> > > > > > > > > >               map.m_len = pg_end - pg_start;
-> > > > > > > > > >               total = 0;
-> > > > > > > > > > +        if (!file_is_cold(inode))
-> > > > > > > > > > +                file_set_cold(inode);
-> > > > > > > > > > +
-> > > > > > > > > >               while (map.m_lblk < pg_end) {
-> > > > > > > > > >                       pgoff_t idx;
-> > > > > > > > > >                       int cnt = 0;
-> > > > > > > > > > 
-> > > > > > > > .
-> > > > > > > > 
-> > > > > > .
-> > > > > > 
-> > > > .
-> > > > 
-> > > 
-> > > 
-> > .
-> > 
+> This is why those fields are not possible to set when using this new
+> flag.
+
+I don't quite understand this; you don't need a NOTIF_SEND at all
+with the way this currently works, right?
+
+> @@ -1113,7 +1136,7 @@ static int seccomp_do_user_notification(int this_syscall,
+>  						 struct seccomp_kaddfd, list);
+>  		/* Check if we were woken up by a addfd message */
+>  		if (addfd)
+> -			seccomp_handle_addfd(addfd);
+> +			seccomp_handle_addfd(addfd, &n);
+>  
+>  	}  while (n.state != SECCOMP_NOTIFY_REPLIED);
+>  
+
+This while() bit is introduced in the previous patch, can we fold this
+deletion into that somehow?
+
+Thanks,
+
+Tycho
