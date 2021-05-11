@@ -2,95 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0AD37B051
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603FF37B056
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhEKUv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 16:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51026 "EHLO
+        id S229948AbhEKUyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 16:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhEKUvx (ORCPT
+        with ESMTP id S229637AbhEKUyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 16:51:53 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032B8C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 13:50:46 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id i5so11873613pgm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 13:50:45 -0700 (PDT)
+        Tue, 11 May 2021 16:54:53 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D44EC061574;
+        Tue, 11 May 2021 13:53:46 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id q10so16049497qkc.5;
+        Tue, 11 May 2021 13:53:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8D2YP0VWQtVIqmK8vpJ8Ty/EggLMSFB+zMrWQFuUve0=;
-        b=oEdQSWyJw78yuxYX8C60AcmqlF3e3R3Ru0Qs4R2YeDmRItwsvEWL+pjcBe9fIlzFX2
-         jCPnmH7+djm7C6Ksm/ka1aRITIV73yiQNFgLFVsokeqrbDoeOaIwQnhHDe1IcW+UzU84
-         F49hZQybDLEef560Vtx8qrqfae4m+ly60tL3gkZRRfoDx9vHQeb54ff+1QvQJcvIGzP0
-         TcZtlCtL5EzTkXRB0HK4iwdyGeO9bB6R6sYR73ekSigcslSS9bWd1W9/+AsN84t1re41
-         YyDcDiiAOnB32yxdRviuRZc7GuxfAq8SwbNZI5neAQXn/HGoNkJMvfFWr2bJF6C46iea
-         gP/g==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=r8GpdZWOTFpi9O+rI32Nwxa8bsE6E39ijBiAWv0y/n0=;
+        b=eHLBb8VtEYa9FAPtg1iUGl/yOgPHSTXs50Dipi0itrbcf7EgwYaB5a56rZgCuT1QCo
+         cQXwI7USV/IaMSHamV8oJwr+fy/KwCxq7m7wrVR4Gg+QHpkMFMCI7/VoAzYWDZOEaxCf
+         216zz+p8ncAryTRcvRWFtbvMdr33LVjhZdmMzQsAhGVh1P2TsHDSumnXRk/cxSzfgUFS
+         Cfwf07Rx5eksiwqaDl1b6HAsaw1sT9nbWuGv9lGCL+1I23c/MF60ABjpc+HJxi4RODi/
+         JDHPQSkh2UvJSWoc9kX7Q4VTAFPjBRa90vxVsFb96Wt7BZpcLyFv7KvpMFdBca+44w9R
+         Y10w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8D2YP0VWQtVIqmK8vpJ8Ty/EggLMSFB+zMrWQFuUve0=;
-        b=tLR3Vw+gUR1ScFoEknGsNiaq4WnJHCtDAXJr1CW2HSLQF/mgpGP70gzhE2+tPekt3f
-         rdGg7F0E+J+AmJpB/oNms1GfVSXzyeT9nxaEY/kOADc5whZT4tG+fmmTviKLxIYJ3lgP
-         Tfs1ivqY4BIXIxaSuHOvruPTJGNXOXQinP4GIGALikKzt8ETNPVl4eXDEIGggvLYuCGv
-         GbW3WbC6i5FrqVGq/3/+fIJiJgGfN+u0+DGXqW2Fa8SUeWI1fAyA0i7pn3m1So713oA8
-         Kx4qCE7D5kefSN872I2iKX96PdD6o38eqJ2ynVpBRXqBSykBnxP7/4HoWAYy3ZOLpWxL
-         Shqw==
-X-Gm-Message-State: AOAM531GqLFi63wjTVRM6JSJLjatqnYCnW5CD5/j7ExsI8ojDkXut3AT
-        nwBvEDPag4r5ss39waVohN+K9Lixl8l49lixzD5Mzg==
-X-Google-Smtp-Source: ABdhPJyiwRs7eXwx2v1c+NfO3xFR7LzHb4B2R9cp/VR4S5DCkfe/DReu5VpGCC7JlPVDEc2xg6k3WLePeD8w9ChSx5Q=
-X-Received: by 2002:a63:4e01:: with SMTP id c1mr19206289pgb.265.1620766245583;
- Tue, 11 May 2021 13:50:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=r8GpdZWOTFpi9O+rI32Nwxa8bsE6E39ijBiAWv0y/n0=;
+        b=YL8VX0PdjTaT0Hm8zEdkfgguGmkyzk4dJs184LIG8TIJI42EJclXrDGb3f8cMsoMGh
+         r/ONiHOmLkVjBImdjsDqGE5ZxCGeGD++tUf+hi85oNY3Gp7HR9fgdvkms+0m4S57qEX7
+         wphu4+U6/yZ7vO4WrClfd3daXMJqd2joNGGFwMtP4TlTwvhEmPHLL2h8MZAaLizkL0Gj
+         73ln3zfNxhAWVRBV9fa+wNB9FbDHqPqcrX6kdLhDInpZpQumMnvjtTIX4UqtbYaagg55
+         EY7t+QDIzGQ5/VC6gsb+jJfwG8+xP1+DtOgPvGJe+IPTPMD+Ax48nrPC6iw+PzpuQWvH
+         5nbQ==
+X-Gm-Message-State: AOAM531aEsMl/c9OnKTNkK96asRxlz55b1h2qsNFFmw5PXOtG+CVIUdQ
+        J1eqoH0N7nMTLwqL+Xs2Fxc=
+X-Google-Smtp-Source: ABdhPJyaHVyOgPTYNozxyXu0MHMgueYWTMAaKhF7eXCeAFh2xiWQ6PAZKqh90LDMOYdRWgBuK+Z6DQ==
+X-Received: by 2002:a37:648e:: with SMTP id y136mr30027346qkb.391.1620766425619;
+        Tue, 11 May 2021 13:53:45 -0700 (PDT)
+Received: from smtp.gmail.com ([2804:14c:73:9a01::1002])
+        by smtp.gmail.com with ESMTPSA id j6sm15303621qti.4.2021.05.11.13.53.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 13:53:45 -0700 (PDT)
+Date:   Tue, 11 May 2021 17:53:41 -0300
+From:   Lucas Stankus <lucas.p.stankus@gmail.com>
+To:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] staging: iio: cdc: ad7746: initial effort to move out of
+ staging
+Message-ID: <cover.1620766020.git.lucas.p.stankus@gmail.com>
 MIME-Version: 1.0
-References: <20210511193601.2584324-1-adrien.grassein@gmail.com> <20210511193601.2584324-5-adrien.grassein@gmail.com>
-In-Reply-To: <20210511193601.2584324-5-adrien.grassein@gmail.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 11 May 2021 22:50:34 +0200
-Message-ID: <CAG3jFyt+t0+ep7_eaWmoEC-M31W62qE0qbtE_G9Sonor=SLrdg@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] arm64: defconfig: Enable LT8912B DRM bridge driver
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de,
-        Fabio Estevam <festevam@gmail.com>, linux-imx@nxp.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Adrien,
+Cleans up the driver by removing vague comments, fixing code alignment and
+refactoring the probe function return. This patch set also contains a small
+bug fix when setting the amount of iio channels in AD7745 devices.
 
-On Tue, 11 May 2021 at 21:36, Adrien Grassein <adrien.grassein@gmail.com> wrote:
->
-> This driver is used by the Nitrogen8 SBC.
->
-> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> ---
->  arch/arm64/configs/defconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> index 08c6f769df9a..45db77d1a657 100644
-> --- a/arch/arm64/configs/defconfig
-> +++ b/arch/arm64/configs/defconfig
-> @@ -701,6 +701,7 @@ CONFIG_DRM_PANEL_RAYDIUM_RM67191=m
->  CONFIG_DRM_PANEL_SITRONIX_ST7703=m
->  CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
->  CONFIG_DRM_DISPLAY_CONNECTOR=m
-> +CONFIG_DRM_LONTIUM_LT8912B=m
->  CONFIG_DRM_NWL_MIPI_DSI=m
->  CONFIG_DRM_LONTIUM_LT9611=m
->  CONFIG_DRM_PARADE_PS8640=m
+These small patches are a starting point for improving the ad7746 driver,
+hopefully to a point where it's possible to get it out of staging. I'm
+looking up to feedback on what could be improved to accomplish that.
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+Lucas Stankus (2):
+  staging: iio: cdc: clean up driver comments and probe return
+  staging: iio: cdc: avoid overwrite of num_channels
+
+ drivers/staging/iio/cdc/ad7746.c | 32 ++++++++++----------------------
+ 1 file changed, 10 insertions(+), 22 deletions(-)
+
+-- 
+2.31.1
+
