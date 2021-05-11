@@ -2,141 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C4237A045
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870D737A06C
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhEKHFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:05:09 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:34449 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230268AbhEKHFH (ORCPT
+        id S230129AbhEKHNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:13:13 -0400
+Received: from smtpcmd04132.aruba.it ([62.149.158.132]:50155 "EHLO
+        smtpcmd04132.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230268AbhEKHNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:05:07 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620716641; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=/3St8vspwlaMJv2fv4wvq0SBdS7FrQGyxt0HzhIqFZQ=; b=fTSHJVu/Fd+aVJ1CW4337WtU/U2dPY008ZyjQ4AIH+EuWso4gffo246gvt1IcOqhdQZ2feJL
- JJ6xKMR5fDN1BgpCN4H0vQxHlXOE5amZM0H8gVVJfFisaQ2q7CVVwKgoKkQDeNnY8CoP5FwC
- m/xHfe85Ydr/j7c7Q1ElLoTmJ2A=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 609a2c60da4b8b1332fca687 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 11 May 2021 07:04:00
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1E8C8C433D3; Tue, 11 May 2021 07:04:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B40BAC43145;
-        Tue, 11 May 2021 07:03:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B40BAC43145
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org, peter.chen@kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH v2] usb: dwc3: gadget: Replace list_for_each_entry_safe() if using giveback
-Date:   Tue, 11 May 2021 00:03:56 -0700
-Message-Id: <1620716636-12422-1-git-send-email-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 11 May 2021 03:13:11 -0400
+X-Greylist: delayed 420 seconds by postgrey-1.27 at vger.kernel.org; Tue, 11 May 2021 03:13:11 EDT
+Received: from [192.168.1.128] ([79.0.204.227])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id gMRwlAtSu8ee9gMRxliGkB; Tue, 11 May 2021 09:05:04 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1620716704; bh=c/Km+mdUICAL7NmRB1mqs9sU9/yeFUfBCQg6JYdl0R8=;
+        h=Subject:To:From:Date:MIME-Version:Content-Type;
+        b=aLhpRX+ySwqOn2uJHCL3ntlqQ3rUrk+y6EjiTB0uuUZjVvOQqHs6ZZJ4XNXlpDJeN
+         QJGJrDUBlWbZc7L0+10tXNEhBPtXU4UT6gw31QtNa4mKTsFBAqGXnF2lXD325V9lcm
+         O9odkeqwIAoVOJbMSYtDWDf2Oifj970kKoiF3RqV/lqCLIWgZkfq5n9xzLCwOHYMXA
+         TEqOwjeySBVJfEJ9WK3h1/g849pw0osFtvbE1vBXanqGI+0UYCqoC+jD68KlPsf+7O
+         TjqcLdoogPsfS+FVNYFQHuSDudVGCQwEQzaBeQTrIStF/bTYiKsRjQdElXJJRoRMDX
+         k957OpthJWACA==
+Subject: Re: [PATCH v1 1/1] pps: clients: parport: Switch to use
+ module_parport_driver()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org
+References: <20210510141302.56654-1-andriy.shevchenko@linux.intel.com>
+From:   Rodolfo Giometti <giometti@enneenne.com>
+Message-ID: <77c821e1-adc7-4088-0dcb-da65ba7a39a2@enneenne.com>
+Date:   Tue, 11 May 2021 09:05:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210510141302.56654-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfMRIVLhQEkv5QOCWXRTcfb/hiKOZx+nfEeQCZBN9R8WCuSJ+0TNtD6CstuIiM6VC/WNUFD7pDyUtGha+beRaJ5MbMax1xA+/xWBw8CBNOM0BjXGIx3yy
+ Fr+d/Q2OhG1ObFy56/NXETWlPL8BxSzWVRsCBTVNYoQrultNpHAR2YZEfD5Iad7cgG5iHj+V3E7qcjtG2jdbiAsseeeOkCNgStf6O19rkel/yXqucoKkO4gL
+ mabAbvu0W1Ftl0uUH96OeLUSriL45vZ28KY5O89DVbo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The list_for_each_entry_safe() macro saves the current item (n) and
-the item after (n+1), so that n can be safely removed without
-corrupting the list.  However, when traversing the list and removing
-items using gadget giveback, the DWC3 lock is briefly released,
-allowing other routines to execute.  There is a situation where, while
-items are being removed from the cancelled_list using
-dwc3_gadget_ep_cleanup_cancelled_requests(), the pullup disable
-routine is running in parallel (due to UDC unbind).  As the cleanup
-routine removes n, and the pullup disable removes n+1, once the
-cleanup retakes the DWC3 lock, it references a request who was already
-removed/handled.  With list debug enabled, this leads to a panic.
-Ensure all instances of the macro are replaced where gadget giveback
-is used.
+On 10/05/21 16:13, Andy Shevchenko wrote:
+> Switch to use module_parport_driver() to reduce boilerplate code.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/pps/clients/pps_parport.c | 42 ++++++-------------------------
+>  1 file changed, 8 insertions(+), 34 deletions(-)
+> 
+> diff --git a/drivers/pps/clients/pps_parport.c b/drivers/pps/clients/pps_parport.c
+> index 7a41fb7b0dec..42f93d4c6ee3 100644
+> --- a/drivers/pps/clients/pps_parport.c
+> +++ b/drivers/pps/clients/pps_parport.c
+> @@ -22,8 +22,6 @@
+>  #include <linux/parport.h>
+>  #include <linux/pps_kernel.h>
+>  
+> -#define DRVDESC "parallel port PPS client"
+> -
+>  /* module parameters */
+>  
+>  #define CLEAR_WAIT_MAX		100
+> @@ -138,6 +136,12 @@ static void parport_attach(struct parport *port)
+>  		.dev		= NULL
+>  	};
+>  
+> +	if (clear_wait > CLEAR_WAIT_MAX) {
+> +		pr_err("clear_wait value should be not greater then %d\n",
+> +		       CLEAR_WAIT_MAX);
+> +		return;
+> +	}
+> +
 
-Example call stack:
+Why do you need to do so? Maybe a comment would be welcomed.
 
-Thread#1:
-__dwc3_gadget_ep_set_halt() - CLEAR HALT
-  -> dwc3_gadget_ep_cleanup_cancelled_requests()
-    ->list_for_each_entry_safe()
-    ->dwc3_gadget_giveback(n)
-      ->dwc3_gadget_del_and_unmap_request()- n deleted[cancelled_list]
-      ->spin_unlock
-      ->Thread#2 executes
-      ...
-    ->dwc3_gadget_giveback(n+1)
-      ->Already removed!
+>  	device = kzalloc(sizeof(struct pps_client_pp), GFP_KERNEL);
+>  	if (!device) {
+>  		pr_err("memory allocation failed, not attaching\n");
+> @@ -214,38 +218,8 @@ static struct parport_driver pps_parport_driver = {
+>  	.detach = parport_detach,
+>  	.devmodel = true,
+>  };
+> -
+> -/* module staff */
+> -
+> -static int __init pps_parport_init(void)
+> -{
+> -	int ret;
+> -
+> -	pr_info(DRVDESC "\n");
+> -
+> -	if (clear_wait > CLEAR_WAIT_MAX) {
+> -		pr_err("clear_wait value should be not greater"
+> -				" then %d\n", CLEAR_WAIT_MAX);
+> -		return -EINVAL;
+> -	}
+> -
+> -	ret = parport_register_driver(&pps_parport_driver);
+> -	if (ret) {
+> -		pr_err("unable to register with parport\n");
+> -		return ret;
+> -	}
+> -
+> -	return  0;
+> -}
+> -
+> -static void __exit pps_parport_exit(void)
+> -{
+> -	parport_unregister_driver(&pps_parport_driver);
+> -}
+> -
+> -module_init(pps_parport_init);
+> -module_exit(pps_parport_exit);
+> +module_parport_driver(pps_parport_driver);
+>  
+>  MODULE_AUTHOR("Alexander Gordeev <lasaine@lvk.cs.msu.su>");
+> -MODULE_DESCRIPTION(DRVDESC);
+> +MODULE_DESCRIPTION("parallel port PPS client");
+>  MODULE_LICENSE("GPL");
+> 
 
-Thread#2:
-dwc3_gadget_pullup()
-  ->waiting for dwc3 spin_lock
-  ...
-  ->Thread#1 released lock
-  ->dwc3_stop_active_transfers()
-    ->dwc3_remove_requests()
-      ->fetches n+1 item from cancelled_list (n removed by Thread#1)
-      ->dwc3_gadget_giveback()
-        ->dwc3_gadget_del_and_unmap_request()- n+1 deleted[cancelled_list]
-        ->spin_unlock
+Ciao,
 
-Fixes: d4f1afe5e896 ("usb: dwc3: gadget: move requests to cancelled_list")
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-Reviewed-by: Peter Chen <peter.chen@kernel.org>
----
-Changes in v2:
- - Updated commit message with context call stack of an example scenario
-   seen on device.
+Rodolfo
 
- drivers/usb/dwc3/gadget.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index dd80e5c..efa939b 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1737,10 +1737,10 @@ static void dwc3_gadget_ep_skip_trbs(struct dwc3_ep *dep, struct dwc3_request *r
- static void dwc3_gadget_ep_cleanup_cancelled_requests(struct dwc3_ep *dep)
- {
- 	struct dwc3_request		*req;
--	struct dwc3_request		*tmp;
- 	struct dwc3			*dwc = dep->dwc;
- 
--	list_for_each_entry_safe(req, tmp, &dep->cancelled_list, list) {
-+	while (!list_empty(&dep->cancelled_list)) {
-+		req = next_request(&dep->cancelled_list);
- 		dwc3_gadget_ep_skip_trbs(dep, req);
- 		switch (req->status) {
- 		case DWC3_REQUEST_STATUS_DISCONNECTED:
-@@ -2935,11 +2935,11 @@ static void dwc3_gadget_ep_cleanup_completed_requests(struct dwc3_ep *dep,
- 		const struct dwc3_event_depevt *event, int status)
- {
- 	struct dwc3_request	*req;
--	struct dwc3_request	*tmp;
- 
--	list_for_each_entry_safe(req, tmp, &dep->started_list, list) {
-+	while (!list_empty(&dep->started_list)) {
- 		int ret;
- 
-+		req = next_request(&dep->started_list);
- 		ret = dwc3_gadget_ep_cleanup_completed_request(dep, event,
- 				req, status);
- 		if (ret)
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+GNU/Linux Solutions                  e-mail: giometti@enneenne.com
+Linux Device Driver                          giometti@linux.it
+Embedded Systems                     phone:  +39 349 2432127
+UNIX programming                     skype:  rodolfo.giometti
