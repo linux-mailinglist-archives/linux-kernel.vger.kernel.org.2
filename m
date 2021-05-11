@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9C137A423
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F9837A428
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231255AbhEKJ7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 05:59:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:44170 "EHLO foss.arm.com"
+        id S231266AbhEKKBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 06:01:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:44258 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229935AbhEKJ7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 05:59:04 -0400
+        id S229935AbhEKKBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 06:01:25 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A9044168F;
-        Tue, 11 May 2021 02:57:57 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.29.91])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6E9103F719;
-        Tue, 11 May 2021 02:57:40 -0700 (PDT)
-Date:   Tue, 11 May 2021 10:57:37 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org, will@kernel.org,
-        boqun.feng@gmail.com, peterz@infradead.org
-Cc:     aou@eecs.berkeley.edu, arnd@arndb.de, bcain@codeaurora.org,
-        benh@kernel.crashing.org, chris@zankel.net, dalias@libc.org,
-        davem@davemloft.net, deanbo422@gmail.com, deller@gmx.de,
-        geert@linux-m68k.org, green.hu@gmail.com, guoren@kernel.org,
-        ink@jurassic.park.msu.ru, James.Bottomley@HansenPartnership.com,
-        jcmvbkbc@gmail.com, jonas@southpole.se, ley.foon.tan@intel.com,
-        linux@armlinux.org.uk, mattst88@gmail.com, monstr@monstr.eu,
-        mpe@ellerman.id.au, nickhu@andestech.com, palmer@dabbelt.com,
-        paulus@samba.org, paul.walmsley@sifive.com, rth@twiddle.net,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tsbogend@alpha.franken.de, vgupta@synopsys.com,
-        ysato@users.sourceforge.jp
-Subject: Re: [PATCH 27/33] locking/atomic: powerpc: move to ARCH_ATOMIC
-Message-ID: <20210511095737.GC6152@C02TD0UTHF1T.local>
-References: <20210510093753.40683-1-mark.rutland@arm.com>
- <20210510093753.40683-28-mark.rutland@arm.com>
- <20210511091621.GA6152@C02TD0UTHF1T.local>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5C02F169C;
+        Tue, 11 May 2021 03:00:19 -0700 (PDT)
+Received: from [10.57.81.122] (unknown [10.57.81.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5DC2C3F719;
+        Tue, 11 May 2021 03:00:16 -0700 (PDT)
+Subject: Re: [RFC PATCH] perf cs-etm: Handle valid-but-zero timestamps
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     coresight@lists.linaro.org, mathieu.poirier@linaro.org,
+        al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
+        Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210507095814.17933-1-james.clark@arm.com>
+ <3926c523-3fdb-66de-8b9c-b68290a5053e@arm.com>
+ <20210510053904.GB4835@leoy-ThinkPad-X240s>
+ <20210511080504.GC8273@leoy-ThinkPad-X240s>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <35fbbead-167a-51d5-f781-a7b9890857b2@arm.com>
+Date:   Tue, 11 May 2021 13:00:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511091621.GA6152@C02TD0UTHF1T.local>
+In-Reply-To: <20210511080504.GC8273@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 10:16:21AM +0100, Mark Rutland wrote:
-> On Mon, May 10, 2021 at 10:37:47AM +0100, Mark Rutland wrote:
-> > We'd like all architectures to convert to ARCH_ATOMIC, as once all
-> > architectures are converted it will be possible to make significant
-> > cleanups to the atomics headers, and this will make it much easier to
-> > generically enable atomic functionality (e.g. debug logic in the
-> > instrumented wrappers).
-> > 
-> > As a step towards that, this patch migrates powerpc to ARCH_ATOMIC. The
-> > arch code provides arch_{atomic,atomic64,xchg,cmpxchg}*(), and common
-> > code wraps these with optional instrumentation to provide the regular
-> > functions.
-> > 
-> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> > Cc: Boqun Feng <boqun.feng@gmail.com>
-> > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > Cc: Paul Mackerras <paulus@samba.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Will Deacon <will@kernel.org>
-> > ---
-> >  arch/powerpc/Kconfig               |   1 +
-> >  arch/powerpc/include/asm/atomic.h  | 140 +++++++++++++++++++------------------
-> >  arch/powerpc/include/asm/cmpxchg.h |  30 ++++----
-> >  3 files changed, 89 insertions(+), 82 deletions(-)
-> 
-> The kbuild test robot spotted a couple of bits I'd got wrong; I've noted
-> those below (and both are now fixed in my kernel.org branch).
-> 
-> >  static __always_inline bool
-> > -atomic_try_cmpxchg_lock(atomic_t *v, int *old, int new)
-> > +arch_atomic_try_cmpxchg_lock(atomic_t *v, int *old, int new)
-> 
-> Since this isn't part of the core atomic API, and is used directly by
-> powerpc's spinlock implementation, this should have stayed as-is (or we
-> should use the `arch_` prefix consitently and update the spinlock code).
-> 
-> I've dropped the `arch_` prefix for now.
 
-On second thought (and having hit a similar issue on m68k), I've added
-the `arch_` prefix and updated the caller, to more clearly separate the
-common atomic API and the arch-specific bits.
 
-Thanks,
-Mark.
+On 11/05/2021 11:05, Leo Yan wrote:
+> On Mon, May 10, 2021 at 01:39:04PM +0800, Leo Yan wrote:
+>> On Fri, May 07, 2021 at 01:02:35PM +0300, James Clark wrote:
+>>>
+>>>
+>>> On 07/05/2021 12:58, James Clark wrote:
+>>>> There is an intermittent issue on Trogdor devices that
+>>>> results in all Coresight timestamps having a value of zero.
+>>>
+>>> I've attached a file here that has the issue. From the dump you 
+>>> can see the zero timestamps:
+>>>
+>>>         Idx:69; ID:10;  I_TIMESTAMP : Timestamp.; Updated val = 0x0
+>>>         Idx:71; ID:10;  I_ATOM_F1 : Atom format 1.; E
+>>>         Idx:72; ID:10;  I_ADDR_S_IS0 : Address, Short, IS0.; Addr=0xFFFFFFE723C65824 ~[0x5824]
+>>>
+>>> This doesn't have an impact on decoding as they end up being
+>>> decoded in file order as in with timeless mode.
+>>
+>> Just remind, as Mike has mentioned that if the timestamp is zero, it
+>> means the hardware setting for timestamp is not enabled properly.  So
+>> for system wide or per CPU mode tracing, it's better to double check
+>> what's the reason the timestamp is not enabled properly.
+>>
+>> IIUC, this patch breaks the existed rational in the code.  Let's think
+>> about there have 4 CPUs, every CPU has its own AUX trace buffer, and
+>> when decode the trace data, it will use 4 queues to track the packets
+>> and every queue has its timestamp.
+>>
+>>   CPU0: cs_etm_queue -> ... -> packet_queue->timestamp
+>>   CPU1: cs_etm_queue -> ... -> packet_queue->timestamp
+>>   CPU2: cs_etm_queue -> ... -> packet_queue->timestamp
+>>   CPU3: cs_etm_queue -> ... -> packet_queue->timestamp
+>>
+>> The issue is if all CPUs' timestamp are zero, it's impossible to find
+>> a way to synthesize samples in the right time order.
+> 
+> I saw Denis's replying for the hardware issue for timestamp, wander if
+> can add a new option "--force-aux-ts-zero" to override the hardware
+> timestamp issue.  Without the option "--force-aux-ts-zero", the
+> developers still have chance to observe the failure case caused by the
+> abnormal timestamps.
+> 
+
+Hi Leo,
+
+Now that you mention arguments, I remembered that you already can force something like that
+with --disable-order.
+
+There is also a recent commit "perf intel-pt: Support Z itrace option for timeless decoding"
+which introduces this option:
+
+	@@ -869,6 +869,7 @@ The letters are:
+	     	L	synthesize last branch entries on existing event records
+	 	s	skip initial number of events
+	 	q	quicker (less detailed) decoding
+	+	Z	prefer to ignore timestamps (so-called "timeless" decoding)
+
+I will investigate if these are more relevant to fix this issue.
+
+
+Thanks
+James
+
+> Thanks,
+> Leo
+> 
