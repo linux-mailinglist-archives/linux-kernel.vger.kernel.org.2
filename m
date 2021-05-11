@@ -2,138 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144BC37A96E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B89737A984
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbhEKOfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
+        id S231920AbhEKOhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:37:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231713AbhEKOfi (ORCPT
+        with ESMTP id S231652AbhEKOhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:35:38 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474EAC061574;
-        Tue, 11 May 2021 07:34:32 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id t18so20396837wry.1;
-        Tue, 11 May 2021 07:34:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PXtPDTLm5lAmEEo1F+1j1JYK4vr+oWqHQk1zSFGYnJA=;
-        b=WY8zyzJ1q8iOm/RM61mp2jF2p5Yx7Bw3lAXG1NG3rDhbQmWJN4MvH8A4atjO7UcFCv
-         7sqxw8mAXqmn2ZV2FdysgrVSk7HMESwU/mZhii/nsCR+5pVEyG0+mWKMTD+Kcv/3LD0m
-         h0ywVSHh/f+PZvqzkxfNI2geuZaJ9z0RCChLjLmgwP8QP+PWyvkV8QJaKnq8+Jb9TZ1w
-         5APgHcN+Ipm1XPU/Rlaw4nOzSw9ja2tXbkMP99OdjREpnbBX/R9zHSPBGVxuxAKEwmRM
-         8EgOELnUDz9Bpz2yoduwzwDfOe7PnxqRY3DliSeUaXLakBaa8l/8OIttxmyTjjrdb6ZE
-         1cQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PXtPDTLm5lAmEEo1F+1j1JYK4vr+oWqHQk1zSFGYnJA=;
-        b=eu30IOFIfhQY7fGKuRxcfhYzzFNwumNIQvEFO0wvao1v71YDp2+dn8bsAmptG5n/lN
-         OxTq4Se2cFDegbzqS/43zZ50JeClXVE27iAxme8eukfjnW2mKdDCAIHQUYHn7HaWvlXt
-         VvpYkEhZ7bbFDmokAIecFRwfbpFXNWcSnfuAp0aUyihlb27AG+WLEaVmgVFhdM1Bs1yO
-         6jQ2enpCBluRIlkhjVC6qCcFyaJDG2sKdzp+jkzCaMw+dpk73UsdWLhFtFa2LCTcbUAa
-         uc8I033+C87jwYnJdBITWUF9DE2bWzju3dK/jX4WywSppWm+yjrZeIYPEeMpKWiWay3d
-         QVZw==
-X-Gm-Message-State: AOAM533DFSaszxoEwTQ0Jqeq9A6X3WgPeM2Wpi1nsVlDg92mS28Fkh7N
-        BLo1kdhS/YQ9dQOdV/EHBKE=
-X-Google-Smtp-Source: ABdhPJz0TY1qphO7VFZfcOkgffX1zZgifdrOE4yivByGJYeoXhBCM1C9KE8SCznYzcqsuLsSAL0wsA==
-X-Received: by 2002:a5d:6386:: with SMTP id p6mr38112104wru.36.1620743670984;
-        Tue, 11 May 2021 07:34:30 -0700 (PDT)
-Received: from michael-VirtualBox (cbl217-132-244-50.bb.netvision.net.il. [217.132.244.50])
-        by smtp.gmail.com with ESMTPSA id z8sm27458765wrw.74.2021.05.11.07.34.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 07:34:30 -0700 (PDT)
-Date:   Tue, 11 May 2021 17:34:27 +0300
-From:   Michael Zaidman <michael.zaidman@gmail.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, michael.zaidman@gmail.com
-Subject: Re: [PATCH v4] HID: ft260: improve error handling of
- ft260_hid_feature_report_get()
-Message-ID: <20210511143427.GA1572@michael-VirtualBox>
-References: <20210511101208.16401-1-michael.zaidman@gmail.com>
- <30c2857d-5094-402e-25a8-48f5be83fa3f@redhat.com>
+        Tue, 11 May 2021 10:37:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227A1C061574;
+        Tue, 11 May 2021 07:36:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=INAkIN4SBQvoIBYvJ03SumbjRNWdtamuLnKi9O35Hxc=; b=Uv1dwxn5bh2d/tg/FP0HBf+mqY
+        NEQBgZwWFCoph900CFGJ6NE4qFrtVmwssRC92hw4fjI9xfykBbinku1r+3waXe3hGG0igMHXtlQcf
+        84vEFr/lv1EkydVj+IbjB6z4DcDMtoTXr0csjCfDN7hHsYqR3t9wFlYSUOdC4X+NLypjuyDnKPxVf
+        Oxib7suJdC08HbdjrkyqO1l6zeDvwNhd+zt1xGOzNIb7A4Kbdi306RN+5ajt5qfLoO1+KIPE2EBol
+        hcB5/IL1rZPgO++DBXlz5tiN9wYSyjDrvbqjKfHYaTjexZMo5F1G5uemEgUTpPtkqsPN6l+MgWQwF
+        Gt0T+LQQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgTTu-007Mpv-Ly; Tue, 11 May 2021 14:35:39 +0000
+Date:   Tue, 11 May 2021 15:35:30 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Petr Mladek' <pmladek@suse.com>,
+        'Steven Rostedt' <rostedt@goodmis.org>,
+        'Stephen Boyd' <swboyd@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Young <dyoung@redhat.com>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Ingo Molnar <mingo@redhat.com>, Jessica Yu <jeyu@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sasha Levin <sashal@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vivek Goyal <vgoyal@redhat.com>, Will Deacon <will@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        peter enderborg <peter.enderborg@sony.com>
+Subject: Re: [PATCH v6 00/13] Add build ID to stacktraces
+Message-ID: <YJqWMgiirWPNNvnX@casper.infradead.org>
+References: <20210511003845.2429846-1-swboyd@chromium.org>
+ <b30f6d396edf4db5974a2b90364b6314@AcuMS.aculab.com>
+ <20210511085235.09bc38a7@gandalf.local.home>
+ <37ca7834a8514a5695ed002e073a83b6@AcuMS.aculab.com>
+ <YJqTB5pJiRqS1yGY@alley>
+ <f09e9d68e4b14de58e881050a3c78ec1@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <30c2857d-5094-402e-25a8-48f5be83fa3f@redhat.com>
+In-Reply-To: <f09e9d68e4b14de58e881050a3c78ec1@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 06:10:36AM -0700, Tom Rix wrote:
-> Generally change is fine.
-> 
-> a nit below.
-> 
-> On 5/11/21 3:12 AM, Michael Zaidman wrote:
-> > Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
-> > 
-> > The ft260_hid_feature_report_get() checks if the return size matches
-> > the requested size. But the function can also fail with at least -ENOMEM.
-> > Add the < 0 checks.
-> > 
-> > In ft260_hid_feature_report_get(), do not do the memcpy to the caller's
-> > buffer if there is an error.
-> > 
-> > ---
-> > v4   Fixed commit message
-> > ---
-> > v3   Simplify and optimize the changes
-> > ---
-> > v2:  add unlikely()'s for error conditions
-> > ---
-> > 
-> > Signed-off-by: Tom Rix <trix@redhat.com>
-> > Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
-> > ---
-> >   drivers/hid/hid-ft260.c | 24 ++++++++++++------------
-> >   1 file changed, 12 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
-> > index 047aa85a7c83..7f4cb823129e 100644
-> > --- a/drivers/hid/hid-ft260.c
-> > +++ b/drivers/hid/hid-ft260.c
-> > @@ -249,7 +249,10 @@ static int ft260_hid_feature_report_get(struct hid_device *hdev,
-> >   	ret = hid_hw_raw_request(hdev, report_id, buf, len, HID_FEATURE_REPORT,
-> >   				 HID_REQ_GET_REPORT);
-> > -	memcpy(data, buf, len);
-> > +	if (likely(ret == len))
-> > +		memcpy(data, buf, len);
-> > +	else if (ret >= 0)
-> > +		ret = -EIO;
-> >   	kfree(buf);
-> >   	return ret;
-> >   }
-> > @@ -298,7 +301,7 @@ static int ft260_xfer_status(struct ft260_device *dev)
-> >   	ret = ft260_hid_feature_report_get(hdev, FT260_I2C_STATUS,
-> >   					   (u8 *)&report, sizeof(report));
-> > -	if (ret < 0) {
-> > +	if (unlikely(ret < 0)) {
-> >   		hid_err(hdev, "failed to retrieve status: %d\n", ret);
-> >   		return ret;
-> >   	}
-> > @@ -720,10 +723,9 @@ static int ft260_get_system_config(struct hid_device *hdev,
-> >   	ret = ft260_hid_feature_report_get(hdev, FT260_SYSTEM_SETTINGS,
-> >   					   (u8 *)cfg, len);
-> > -	if (ret != len) {
-> > +	if (ret < 0) {
-> 
-> nit: should be consistent and use unlikely(ret < 0) for this and other
-> similar checks.
-> 
-> Tom
+On Tue, May 11, 2021 at 02:31:38PM +0000, David Laight wrote:
+> Actually, for the use case, the id could be trimmed significantly.
+> It is only trying to differentiate between builds of a specific module.
+> So even 8 digits would be plenty.
 
-I preserved the likely/unlikely hints in the critical path where the
-performance matters. And for the sake of consistency, I removed them from
-the rest of the places that are called rarely and are not performance-critical
-to be aligned to the other "if" statements in the code.
-
-Michael
-
+asked and answered.  please review the bidding.
