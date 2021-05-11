@@ -2,133 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB52637A546
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C11537A549
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231509AbhEKK61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 06:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
+        id S231493AbhEKK6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 06:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231442AbhEKK6P (ORCPT
+        with ESMTP id S231482AbhEKK6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 06:58:15 -0400
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C68C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 03:57:08 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id x9so6221808uao.3
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 03:57:08 -0700 (PDT)
+        Tue, 11 May 2021 06:58:22 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1933CC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 03:57:15 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id t6so7501346vsp.13
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 03:57:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H3TFuIrc3Mj7EWsSB5KHDQrg/psdazR0cVvA5Agy22s=;
-        b=BI5betzphHV53YRAHo1kbf3qtN5EZ+oJQvqpn4XXUNTvjtju9UI5Wxwcu/qn0vpzMa
-         l8lD+g5mD22XYfa4O8a/DkbtdqMxftpPoCgk3EzFxlgMa9475q6tweCGnyLgcCpSu8ue
-         poRgY190B4IYUbsx23WRK7dsxuPfKqFzfOElVB1Ti0fK7UgpND6B/TIlH7Ez2Ztt/UZw
-         X9ChYwX5o5XMrZarBxHM9k9fuDXw7GeXfg0wQeftAJktbg8FdqoErJmdZxTz9ySB9ljp
-         5kzgCqLZ8a1IL5VP4fZ8V/3eoLv/D//8lDoYt4CeIJg/ADMwinFvoAgj3MdlTZUA2vJ8
-         V+KQ==
+         :cc:content-transfer-encoding;
+        bh=B87i3Oa6xMCU9YtCHJvcY9CfMfp14jmlxZEy1wOAtO8=;
+        b=qoVNtKHlb34ZCkHkI5bASg5apG9Td2/enRlbvfW/GfadtXg+xAde42utpjilMCWisK
+         ZF4Youv0ZFdCv8cIYgVV/qp4ODYiXgAgGngo3w3wPAvuls6fKFOP5Uu5P/RGeRubBvRE
+         lgyozLkgvZ0U70JdWMPR7+Ge1cK7350ka2M7xqOBDzWB2bClNxiNpaX2b9tt9k6ZK4GT
+         DDfkmTKJFxNpEYt59hL6fyk9L6Gtt++nz/qGdH3qf/Sddrg81Vn8D/R9TmIG/7QWCFNX
+         ti2kzqesbuQlrHjigc5QjiMPj+pUV71RPeGkR0LFqjRBX9/H71oje970CMxfyz/x4/tC
+         +1yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H3TFuIrc3Mj7EWsSB5KHDQrg/psdazR0cVvA5Agy22s=;
-        b=jxVR83h2hCe0KwKD8BP091E6cp3IHM3bS2QxYpVnchUhbzEMh2onuAvHT9iUX6g8iq
-         teMIC7g6NlfyoVZg+1tKdLt9MMJuojy04tEGNgfWk0J8X7qv0t+fxwSicQee2il19m6X
-         xDvgdOnEz75rEILI4lPQBIbzwjh6PsQeqhDZJigNvR8bA0RDZ3kgHmdiy0fyPr9JhrUB
-         EYd++dB+xqj/kP81j6qnaKtsnq8x3mtPGNS7OOuyTrqzB5fVSQ8LyFmiMLnnYOXP8avV
-         NUagmUvsTGZgZZPiRe6MYr5rJVTZGk13U5+hyWrszHt1xGQXMKqKInKdxId+H5qzuifD
-         kK9A==
-X-Gm-Message-State: AOAM5308YHKvvsTxPOZTXd3zHVjYQzkhr+2V/QU4/G8JiDb4kNtAeNgf
-        i2tzxlc/t62bjDEO4Ly2dC1PllXf8/6FulE/rRVFfA==
-X-Google-Smtp-Source: ABdhPJwynumHCSzbxs9fEYhSTsTQNyquQmA9nby0MfgarYqJoMGRF7eJ8B5GdcKLxBd8RzpG4b/jdGZAXltAK2YZE4E=
-X-Received: by 2002:ab0:7002:: with SMTP id k2mr25127013ual.104.1620730627962;
- Tue, 11 May 2021 03:57:07 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=B87i3Oa6xMCU9YtCHJvcY9CfMfp14jmlxZEy1wOAtO8=;
+        b=GRO/UVPQISHn5GH3cuqj0ekILSTqvM4tV5L2NlAUMeoSVB957N9v0Sf4bQqo9MYFkQ
+         D0XRJ0fM/vX0pCINIIrycZIXoNHM/Rlw5/ew5G5GmplMf7oqVCmZ0pHFN8KIzBdtWj36
+         mvopn2TWqTPA3plQcieHsDbs+YE7ceJPKusZBawuoUUkgOcNmZZZJkmuCCkf/UCuiT2C
+         67o0GVqRJkvoYMEWjKhi8xARTp9p4Uns9ibqDzyvPWjGXSvP/0hbgQSfQXzmkT8Ij4O4
+         4YpCYJmaUrp4CO8hSnjjM/dLhcN5RK1KJXIp9DCYzi0QGh64vr8i5/kB5G2iGOwboBoB
+         8uqw==
+X-Gm-Message-State: AOAM531vkojkm4YOsIPMz3EUzcczVwGXsTXJQQq4XFQyr6P06+7pXLih
+        8hSqkSCVsh0UCgQs3tqOiM+6CTs2cF93KtC+9Mj5xw==
+X-Google-Smtp-Source: ABdhPJz+PiEzDQL3eclDugXhEH4Et/OShZWE5XPY9Y5wuzjF0QenUZi8BQTWG6efS/ZDfiab8yHeeRd/wIv9FcQ1PEQ=
+X-Received: by 2002:a05:6102:7c1:: with SMTP id y1mr24494399vsg.34.1620730634292;
+ Tue, 11 May 2021 03:57:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210429081151.17558-1-cl@rock-chips.com> <20210429081151.17558-4-cl@rock-chips.com>
-In-Reply-To: <20210429081151.17558-4-cl@rock-chips.com>
+References: <20210504203209.361597-1-huobean@gmail.com>
+In-Reply-To: <20210504203209.361597-1-huobean@gmail.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 11 May 2021 12:56:29 +0200
-Message-ID: <CAPDyKFr3cpARwxZPUfnFfJT-=UMynUNK-Jb0NLNJG=k9O-=R9g@mail.gmail.com>
-Subject: Re: [PATCH v4 03/10] dt-bindings: mmc: rockchip-dw-mshc: add
- description for rk3568
-To:     cl@rock-chips.com
-Cc:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Chen-Yu Tsai <wens@csie.org>, uwe@kleine-koenig.org,
-        mail@david-bauer.net, Johan Jonker <jbx6244@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        jensenhuang@friendlyarm.com,
-        Michael Trimarchi <michael@amarulasolutions.com>,
-        cnsztl@gmail.com, DTML <devicetree@vger.kernel.org>,
+Date:   Tue, 11 May 2021 12:56:37 +0200
+Message-ID: <CAPDyKFq-9G9M0HZjdBgCbrfPJTvq35eqy4NazsJeG8PH5YioPw@mail.gmail.com>
+Subject: Re: [PATCH v1] mmc: block: Disable CMDQ on the ioctl path
+To:     Bean Huo <huobean@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         linux-mmc <linux-mmc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Jianqun Xu <jay.xu@rock-chips.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        David Wu <david.wu@rock-chips.com>,
-        zhangqing <zhangqing@rock-chips.com>,
-        Tao Huang <huangtao@rock-chips.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jamie Iles <jamie@jamieiles.com>,
-        linux-watchdog@vger.kernel.org, Marc Zyngier <maz@kernel.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bean Huo <beanhuo@micron.com>,
+        Michael Brunner <Michael.Brunner@kontron.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Apr 2021 at 10:12, <cl@rock-chips.com> wrote:
+On Tue, 4 May 2021 at 22:32, Bean Huo <huobean@gmail.com> wrote:
 >
-> From: Liang Chen <cl@rock-chips.com>
+> From: Bean Huo <beanhuo@micron.com>
 >
-> add "rockchip,rk3568-dw-mshc", "rockchip,rk3288-dw-mshc" for mmc nodes on
-> a rk3568 platform to rockchip-dw-mshc.yaml.
+> According to the eMMC Spec:
+> "When command queuing is enabled (CMDQ Mode En bit in CMDQ_MODE_EN
+> field is set to =E2=80=981=E2=80=99) class 11 commands are the only metho=
+d through
+> which data transfer tasks can be issued. Existing data transfer
+> commands, namely CMD18/CMD17 and CMD25/CMD24, are not supported when
+> command queuing is enabled."
+> which means if CMDQ is enabled, the FFU commands will not be supported.
+> To fix this issue, just simply disable CMDQ on the ioctl path, and
+> re-enable CMDQ once ioctl request is completed.
 >
-> Signed-off-by: Liang Chen <cl@rock-chips.com>
+> Tested-by: Michael Brunner <Michael.Brunner@kontron.com>
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
 
-Applied for next (and by amending the commit message according to
-Rob's suggestion), thanks!
+Applied for next and by adding a fixes/stable tag, thanks!
 
 Kind regards
 Uffe
 
-
 > ---
->  .../devicetree/bindings/mmc/rockchip-dw-mshc.yaml        | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
+>  drivers/mmc/core/block.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 >
-> diff --git a/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml b/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
-> index 3762f1c8de96..eaa3b0ef24f6 100644
-> --- a/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
-> @@ -29,21 +29,14 @@ properties:
->        - const: rockchip,rk3288-dw-mshc
->        - items:
->            - enum:
-> -            # for Rockchip PX30
->                - rockchip,px30-dw-mshc
-> -            # for Rockchip RK3036
->                - rockchip,rk3036-dw-mshc
-> -            # for Rockchip RK322x
->                - rockchip,rk3228-dw-mshc
-> -            # for Rockchip RK3308
->                - rockchip,rk3308-dw-mshc
-> -            # for Rockchip RK3328
->                - rockchip,rk3328-dw-mshc
-> -            # for Rockchip RK3368
->                - rockchip,rk3368-dw-mshc
-> -            # for Rockchip RK3399
->                - rockchip,rk3399-dw-mshc
-> -            # for Rockchip RV1108
-> +              - rockchip,rk3568-dw-mshc
->                - rockchip,rv1108-dw-mshc
->            - const: rockchip,rk3288-dw-mshc
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index 689eb9afeeed..21fb99883b1e 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -1004,6 +1004,11 @@ static void mmc_blk_issue_drv_op(struct mmc_queue =
+*mq, struct request *req)
 >
+>         switch (mq_rq->drv_op) {
+>         case MMC_DRV_OP_IOCTL:
+> +               if (card->ext_csd.cmdq_en) {
+> +                       ret =3D mmc_cmdq_disable(card);
+> +                       if (ret)
+> +                               break;
+> +               }
+
+This should have a "fallthrough;" statement. No need for a respin, I
+have amended the change this time.
+
+>         case MMC_DRV_OP_IOCTL_RPMB:
+>                 idata =3D mq_rq->drv_op_data;
+>                 for (i =3D 0, ret =3D 0; i < mq_rq->ioc_count; i++) {
+> @@ -1014,6 +1019,8 @@ static void mmc_blk_issue_drv_op(struct mmc_queue *=
+mq, struct request *req)
+>                 /* Always switch back to main area after RPMB access */
+>                 if (rpmb_ioctl)
+>                         mmc_blk_part_switch(card, 0);
+> +               else if (card->reenable_cmdq && !card->ext_csd.cmdq_en)
+> +                       mmc_cmdq_enable(card);
+>                 break;
+>         case MMC_DRV_OP_BOOT_WP:
+>                 ret =3D mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_=
+BOOT_WP,
 > --
-> 2.17.1
+> 2.25.1
 >
->
->
+
+Kind regards
+Uffe
