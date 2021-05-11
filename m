@@ -2,142 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB48F37AEF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBA837AEF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbhEKS7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
+        id S232198AbhEKS7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232106AbhEKS7H (ORCPT
+        with ESMTP id S232265AbhEKS7O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:59:07 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8535CC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:58:00 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id ge1so12193240pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:58:00 -0700 (PDT)
+        Tue, 11 May 2021 14:59:14 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A25AC061574;
+        Tue, 11 May 2021 11:58:07 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id j11so15380541qtn.12;
+        Tue, 11 May 2021 11:58:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oLyk2sgqTL5Vn/TKBovsUc1DwhBNmb78942+z6JgkFk=;
-        b=VY6g8j2sEMXzCcSYW74rKGa5U9UpB5xe1yY6CRFpyuD+pNCkDDeO/JH1RtSF5Y95nj
-         RdJmSVGXGoMyYryeRQbkzfdhDP4t5I+3HP1mS/q7QAOlf/c/BRPjh7W0W/xupnLY1dDm
-         PNCG4m8kYULgCDgLwXOVeL3u3G16aj/oYDP18LOVCWPKVOPzC9usudGj47t3Gq7HWSAb
-         Kq6TyFmTIMe8IaMVps9eNuO1Fm4P3qaA2fGyXN8R7KQHVuPwy5m7YKRL6/t6Kr5GOkre
-         W7NXOvr7qgk4wOqGu8fOHfjDVlaJd1MsbKI5PEUHix5HRh7m3ZTpydWrxiQcD+R3sVuY
-         A1bw==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=qrWx6sjrboqnBhgfkwaqiWCcjg2j1hn+sj/P7ANiDEQ=;
+        b=VhaL9ar4vHEFuRBodILW3Z9252xy4gbmzIwc5+HQoTYuHxHQZb8Tn86ySjUQWcfTxv
+         Jda1GCta3+RuqdKYgAza3hJzciwKLDHDLiAljKpc+FTQs5jKkIjpw3kMb8hWoav3DiJb
+         XKZdQ+XwerqLOCodGauVENdP1vynUmFtGMmJuemOZh0Wu7lhPvAfctk85ne+P/WaclIA
+         vvMR/MlsRNbyQAJC2dAQQgzjMtvZ8Wqh4y4H/N8xg8TqQqjTYs4ffY6thjYD90bqtEDe
+         p8WGQK1GMS7/15GSHhBcVyipZFVOXunx6rkvi/k0fAqguQEX3AQoHI/eeNFxbpG3j+6D
+         +v+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oLyk2sgqTL5Vn/TKBovsUc1DwhBNmb78942+z6JgkFk=;
-        b=OfSC+M93JiaU6W+itWXW4ExYr6W67qa9gKqlLcqenMcKIwCzHLqStpQeTnBd+KNdRh
-         iFfQx/9gH8JeW1HlrjkAbUqv4mBUJyi2F7MyJF9DIdG4r6R0bjqE+5ODPkfmqjvbUQfZ
-         +OByXeQ5LCVTI5rRUZW64D3AItzgSwsABPwSUbpyr2pDQLxsixI5rSxQYLkHv1VlUWlD
-         i/2kRA9ZLkJdTtW7VCWwIQA+RnvRIR/Hj8oSRuz9mJRAmZSaBVGApb9sX4WTdVdCcxlL
-         1fjGtdEcQGy0P1U7N3UaEVYR9BZeThP0OaxQIwEPmc6AwpFZik1YETuVyT45LSgDLy5l
-         TfMA==
-X-Gm-Message-State: AOAM531zq4bA44gTO4xFzUMC95U1gMpFzxkXb49/LqtvTz1HwslsJJM3
-        bdqkuWfclp7YM2IYmRkKBq+zOw==
-X-Google-Smtp-Source: ABdhPJxOmU8XVtfPkJEbrBQRMNcmKDLmTjhnp407EL2ZJE/UpgkfYOAaR51m44vi5Yh8cmWDEsb79Q==
-X-Received: by 2002:a17:902:e986:b029:ee:d430:6bf9 with SMTP id f6-20020a170902e986b02900eed4306bf9mr31780254plb.0.1620759479901;
-        Tue, 11 May 2021 11:57:59 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id 130sm13473105pfy.75.2021.05.11.11.57.59
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=qrWx6sjrboqnBhgfkwaqiWCcjg2j1hn+sj/P7ANiDEQ=;
+        b=M+Uij2Wk01fyA1bBzX4h98LFEu0Y4pse09HCAlwCb+tc4Za2dinHAldoI6OT9+LmOX
+         kptKfTTqB3khvE3N1ZuNgTC8jTGdbRXMapn/sEGmshng59M4LqZQWzIs/7b2jvlH3euv
+         HyXyd82TPAZwRHcqjPuyNeMG8SYiIJU+3X1QnEZKppcm9iKkhfgGNEMUZ9ekP9b4KdUH
+         FxXcBk6f9+/TavD66b3oCUSB/iFVpWLvuW0uOIHnf0n6pciXTa987dHONoM/odVN+JaR
+         F0dsyOyB/wh7q/sYgFhynJCYSWV4mLZhLRpvX/b1U4UUGxcZ9k1MAzi9O1PODahQ3lYo
+         EaCQ==
+X-Gm-Message-State: AOAM531QCD+R69FmQo9JION9AEvMD8KMd1JBgfYdcovseaqk+Rgfb0mT
+        6ClUuzBdooGF9C2btnT8iLo=
+X-Google-Smtp-Source: ABdhPJwePo0OHjxAzMWLKGdycYB9j73g7VcAfncP+Rr1cPoLt7oRcMwOt41qSK4oGjQrfRSPt00sVw==
+X-Received: by 2002:a05:622a:449:: with SMTP id o9mr9317315qtx.145.1620759486475;
+        Tue, 11 May 2021 11:58:06 -0700 (PDT)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
+        by smtp.gmail.com with ESMTPSA id b188sm14479099qkc.11.2021.05.11.11.58.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 11:57:59 -0700 (PDT)
-Date:   Tue, 11 May 2021 18:57:55 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v4 7/7] KVM: x86/mmu: Lazily allocate memslot rmaps
-Message-ID: <YJrTs6LlHFWSdGc7@google.com>
-References: <20210511171610.170160-1-bgardon@google.com>
- <20210511171610.170160-8-bgardon@google.com>
+        Tue, 11 May 2021 11:58:05 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 11 May 2021 14:58:04 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Begunkov <asml.silence@gmail.com>
+Subject: [PATCH for-5.14/block] blkcg: drop CLONE_IO check in
+ blkcg_can_attach()
+Message-ID: <YJrTvHbrRDbJjw+S@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210511171610.170160-8-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021, Ben Gardon wrote:
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> @@ -10935,6 +10937,46 @@ static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
->  	return 0;
->  }
->  
-> +int alloc_all_memslots_rmaps(struct kvm *kvm)
-> +{
-> +	struct kvm_memslots *slots;
-> +	struct kvm_memory_slot *slot;
-> +	int r = 0;
+blkcg has always rejected to attach if any of the member tasks has shared
+io_context. The rationale was that io_contexts can be shared across
+different cgroups making it impossible to define what the appropriate
+control behavior should be. However, this check causes more problems than it
+solves:
 
-No need to initialize r.  And then it makes sense to put i and r on the same
-line.
+* The check prevents controller enable and migrations but not CLONE_IO
+  itself, which can lead to surprises as the outcome changes depending on
+  the order of operations.
 
-> +	int i;
-> +
-> +	/*
-> +	 * Check memslots_have_rmaps early before acquiring the
-> +	 * slots_arch_lock below.
-> +	 */
-> +	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps))
-> +		return 0;
-> +
-> +	mutex_lock(&kvm->slots_arch_lock);
-> +
-> +	/*
-> +	 * Read memslots_have_rmaps again, under the slots arch lock,
-> +	 * before allocating the rmaps
-> +	 */
-> +	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps))
-> +		return 0;
+* Sharing within a cgroup is fine but the check can't distinguish that. This
+  leads to unnecessary conflicts with the recent CLONE_IO usage in io_uring.
 
-This fails to drop slots_arch_lock.
+io_context sharing doesn't make any difference for rq_qos based controllers
+and the way it's used is safe as long as tasks aren't migrated dynamically
+which is the vast majority of use cases. While we can try to make the check
+more precise to avoid false positives, the added complexity doesn't seem
+worthwhile. Let's just drop blkcg_can_attach().
 
-> +
-> +	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> +		slots = __kvm_memslots(kvm, i);
-> +		kvm_for_each_memslot(slot, slots) {
-> +			r = memslot_rmap_alloc(slot, slot->npages);
-> +			if (r) {
-> +				mutex_unlock(&kvm->slots_arch_lock);
-> +				return r;
-> +			}
-> +		}
-> +	}
-> +
-> +	/* Write rmap pointers before memslots_have_rmaps */
-> +	smp_store_release(&kvm->arch.memslots_have_rmaps, true);
-> +	mutex_unlock(&kvm->slots_arch_lock);
-> +	return 0;
-> +}
-> +
->  static int kvm_alloc_memslot_metadata(struct kvm *kvm,
->  				      struct kvm_memory_slot *slot,
->  				      unsigned long npages)
-> @@ -10949,7 +10991,8 @@ static int kvm_alloc_memslot_metadata(struct kvm *kvm,
->  	 */
->  	memset(&slot->arch, 0, sizeof(slot->arch));
->  
-> -	if (kvm->arch.memslots_have_rmaps) {
-> +	/* Read memslots_have_rmaps before allocating the rmaps */
-> +	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps)) {
->  		r = memslot_rmap_alloc(slot, npages);
->  		if (r)
->  			return r;
-> -- 
-> 2.31.1.607.g51e8a6a459-goog
-> 
+Signed-off-by: Tejun Heo <tj@kernel.org>
+---
+ block/blk-cgroup.c |   27 ---------------------------
+ 1 file changed, 27 deletions(-)
+
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 582d2f18717ee..d169e20551588 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1217,32 +1217,6 @@ void blkcg_exit_queue(struct request_queue *q)
+ 	blk_throtl_exit(q);
+ }
+ 
+-/*
+- * We cannot support shared io contexts, as we have no mean to support
+- * two tasks with the same ioc in two different groups without major rework
+- * of the main cic data structures.  For now we allow a task to change
+- * its cgroup only if it's the only owner of its ioc.
+- */
+-static int blkcg_can_attach(struct cgroup_taskset *tset)
+-{
+-	struct task_struct *task;
+-	struct cgroup_subsys_state *dst_css;
+-	struct io_context *ioc;
+-	int ret = 0;
+-
+-	/* task_lock() is needed to avoid races with exit_io_context() */
+-	cgroup_taskset_for_each(task, dst_css, tset) {
+-		task_lock(task);
+-		ioc = task->io_context;
+-		if (ioc && atomic_read(&ioc->nr_tasks) > 1)
+-			ret = -EINVAL;
+-		task_unlock(task);
+-		if (ret)
+-			break;
+-	}
+-	return ret;
+-}
+-
+ static void blkcg_bind(struct cgroup_subsys_state *root_css)
+ {
+ 	int i;
+@@ -1275,7 +1249,6 @@ struct cgroup_subsys io_cgrp_subsys = {
+ 	.css_online = blkcg_css_online,
+ 	.css_offline = blkcg_css_offline,
+ 	.css_free = blkcg_css_free,
+-	.can_attach = blkcg_can_attach,
+ 	.css_rstat_flush = blkcg_rstat_flush,
+ 	.bind = blkcg_bind,
+ 	.dfl_cftypes = blkcg_files,
