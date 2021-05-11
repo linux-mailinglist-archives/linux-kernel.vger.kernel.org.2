@@ -2,89 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA1137A477
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9EEC37A46E
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbhEKKXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 06:23:04 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:53708 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231177AbhEKKXB (ORCPT
+        id S231339AbhEKKTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 06:19:01 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:2628 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230482AbhEKKS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 06:23:01 -0400
-X-UUID: 47969499ed354987aa47aa5c2a350a36-20210511
-X-UUID: 47969499ed354987aa47aa5c2a350a36-20210511
-Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1309709353; Tue, 11 May 2021 18:21:54 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 11 May 2021 18:21:52 +0800
-Received: from mtkslt301.mediatek.inc (10.21.14.114) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 11 May 2021 18:21:52 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Bixuan Cui <cuibixuan@huawei.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Oliver Neukum <oneukum@suse.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Tianping Fang <tianping.fang@mediatek.com>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        Ikjoon Jang <ikjn@chromium.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: [PATCH] usb: core: hub: fix race condition about TRSMRCY of resume
-Date:   Tue, 11 May 2021 18:15:22 +0800
-Message-ID: <20210511101522.34193-1-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 11 May 2021 06:18:56 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FfYhp4p5hzlcfM;
+        Tue, 11 May 2021 18:15:38 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 11 May 2021 18:17:42 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>,
+        Sahitya Tummala <stummala@codeaurora.org>
+Subject: [PATCH 1/2] f2fs: atgc: fix to set default age threshold
+Date:   Tue, 11 May 2021 18:17:34 +0800
+Message-ID: <20210511101735.15573-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This may happen if the port becomes resume status exactly
-when usb_port_resume() gets port status, it still need provide
-a TRSMCRY time before access the device.
+Default age threshold value is missed to set, fix it.
 
-Reported-by: Tianping Fang <tianping.fang@mediatek.com>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Fixes: 093749e296e2 ("f2fs: support age threshold based garbage collection")
+Reported-by: Sahitya Tummala <stummala@codeaurora.org>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
 ---
- drivers/usb/core/hub.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/f2fs/gc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index b2bc4b7c4289..fc7d6cdacf16 100644
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -3642,9 +3642,6 @@ int usb_port_resume(struct usb_device *udev, pm_message_t msg)
- 		 * sequence.
- 		 */
- 		status = hub_port_status(hub, port1, &portstatus, &portchange);
--
--		/* TRSMRCY = 10 msec */
--		msleep(10);
- 	}
+diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+index 1105c02d6768..40c2af91ccb1 100644
+--- a/fs/f2fs/gc.c
++++ b/fs/f2fs/gc.c
+@@ -1823,6 +1823,7 @@ static void init_atgc_management(struct f2fs_sb_info *sbi)
+ 	am->candidate_ratio = DEF_GC_THREAD_CANDIDATE_RATIO;
+ 	am->max_candidate_count = DEF_GC_THREAD_MAX_CANDIDATE_COUNT;
+ 	am->age_weight = DEF_GC_THREAD_AGE_WEIGHT;
++	am->age_threshold = DEF_GC_THREAD_AGE_THRESHOLD;
+ }
  
-  SuspendCleared:
-@@ -3659,6 +3656,9 @@ int usb_port_resume(struct usb_device *udev, pm_message_t msg)
- 				usb_clear_port_feature(hub->hdev, port1,
- 						USB_PORT_FEAT_C_SUSPEND);
- 		}
-+
-+		/* TRSMRCY = 10 msec */
-+		msleep(10);
- 	}
- 
- 	if (udev->persist_enabled)
+ void f2fs_build_gc_manager(struct f2fs_sb_info *sbi)
 -- 
-2.18.0
+2.29.2
 
