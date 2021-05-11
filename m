@@ -2,141 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C9B37AEA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DD237AEA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbhEKSsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51362 "EHLO
+        id S232051AbhEKSuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:50:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231693AbhEKSsc (ORCPT
+        with ESMTP id S231561AbhEKSuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:48:32 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3B5C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:47:24 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id n16so11267407plf.7
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:47:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PUfD2hUn3KDMj/HYtm6y3Z3XD5hUc0CS8SfLuKj/HzM=;
-        b=hH8iZ5uGg4DljK1HEHhLdreVMW5K51visxVgKumGRH38RbTsi3BTytZLhStmDbQ4uF
-         h53yWZqjuULTlImML+ZiT0MVhbrfviY0KnVR1MipAvU43rvHh4Y/1CpvF9jVlxa8d2hN
-         6KtOwEmXbdzHxwnpQ0Z5c49tNpWvzrZ2Fpj89ALnnKjQIqQcUzC6JktdGHwnSo1n7AA3
-         UHVT8j6ckH6x3ZPtj0xzBxA1kTk4wd7ASvHx8CgzuqGj9M8CjfT+cQJKfKg08r22Zs84
-         wqowq7p7x6pBqe4YACHao4OBFlFrFjh/1qycJKCDQzomPgmoKBhMyjhhCTaH9q/UHq85
-         Nxow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PUfD2hUn3KDMj/HYtm6y3Z3XD5hUc0CS8SfLuKj/HzM=;
-        b=g43Yta0VRMOPK1ERk6uNFWB2fo8Z2pbaiKSzO80uAIe75rojdRJTcfIqb/7Pyd+iBM
-         vaDkVcMg5nhapFG0hu8uTmq4+iDcaHtQCpQb2mLGHYf4H6cHz1+0vjTMBOxp89A7soTt
-         UC3IGUVA29ZGEyG2M40BbvyrQGX7mtb9fQj3dEgerL0Qv/zIO4VPxwt4lK+ILsnUon+k
-         YN2CQcPu4ya/vxhfEZ9h31irvpYsxXb0n2nH6tMXlY1nV6ek18Ij61E5dULbpTq40M/k
-         O7eWYQ5z1zhwJDZ6IQlW8eqiwtJ8Z/APozuYR8mY5CJFC1fOkWjmd5IVGAWoArnNh2y+
-         cHsw==
-X-Gm-Message-State: AOAM5331WWFoiRTkSPJFBgJIurGgPcatwCdoVqSkB4HbFnNhMAAJNgg8
-        +nUl69o+G+F3T7nzRrxdZE+Gtg==
-X-Google-Smtp-Source: ABdhPJyJXjVPc7O99wKXfMTd5Ucm7ji44HBjrPgZP13aR2e1NJRgR8Tywj+LrdHY+pCgd3ONM6a+ug==
-X-Received: by 2002:a17:90a:390d:: with SMTP id y13mr9283273pjb.52.1620758843332;
-        Tue, 11 May 2021 11:47:23 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id i8sm7089806pgt.58.2021.05.11.11.47.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 11:47:22 -0700 (PDT)
-Date:   Tue, 11 May 2021 18:47:19 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v4 3/7] KVM: mmu: Refactor memslot copy
-Message-ID: <YJrRN2S3EJI/S01o@google.com>
-References: <20210511171610.170160-1-bgardon@google.com>
- <20210511171610.170160-4-bgardon@google.com>
+        Tue, 11 May 2021 14:50:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DAEC061574;
+        Tue, 11 May 2021 11:48:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=ZkOT+h7IwVrb/g/jzXBMqGF7GJVTbVn2CyQ5yD1dGC0=; b=ob16GH3+IUlXSVCRaH6KiTLg7W
+        KVGr+qMse8+2g2wZdN5XpCzI8gx5fFedBPPM7a0rOUni9p45nSoKas8LoTGRgHGNdkGawym72lhqM
+        wJbSskCAJ6pc2JLqZ19l1wZaFi+zkpp51vBlynJg4PBatQf22v1P4WdbiiA7PqNpj7tXatV247aE2
+        21UgpSPrBZpRsGMfHIgOaz02Ys+BYCWvtFjxa9JaCK0gBNYJHLasByutmseHgF2XExtnxn+lpHG3w
+        WA3D4PNCmFk+6mL1JXUn9rz1vDUXpsZ/V7mW3lf+BHtLXAPoZnwv53hS1vP1JcbO5oRf8GsV9VHsT
+        j4deW4PQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgXQY-007ZFN-Mj; Tue, 11 May 2021 18:48:20 +0000
+Date:   Tue, 11 May 2021 19:48:18 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH 5/5] docs: networking: device_drivers: fix bad usage of
+ UTF-8 chars
+Message-ID: <YJrRcgmrqJLSOjR5@casper.infradead.org>
+References: <cover.1620744606.git.mchehab+huawei@kernel.org>
+ <95eb2a48d0ca3528780ce0dfce64359977fa8cb3.1620744606.git.mchehab+huawei@kernel.org>
+ <YJq9abOeuBla3Jiw@lunn.ch>
+ <8735utdt6z.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210511171610.170160-4-bgardon@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8735utdt6z.fsf@meer.lwn.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021, Ben Gardon wrote:
-> Factor out copying kvm_memslots from allocating the memory for new ones
-> in preparation for adding a new lock to protect the arch-specific fields
-> of the memslots.
+On Tue, May 11, 2021 at 12:24:52PM -0600, Jonathan Corbet wrote:
+> Andrew Lunn <andrew@lunn.ch> writes:
 > 
-> No functional change intended.
+> >> -monitoring tools such as ifstat or sar –n DEV [interval] [number of samples]
+> >> +monitoring tools such as `ifstat` or `sar -n DEV [interval] [number of samples]`
+> >
+> > ...
+> >
+> >>  For example: min_rate 1Gbit 3Gbit: Verify bandwidth limit using network
+> >> -monitoring tools such as ifstat or sar –n DEV [interval] [number of samples]
+> >> +monitoring tools such as ``ifstat`` or ``sar -n DEV [interval] [number of samples]``
+> >
+> > Is there a difference between ` and `` ? Does it make sense to be
+> > consistent?
 > 
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->  virt/kvm/kvm_main.c | 23 ++++++++++++++++-------
->  1 file changed, 16 insertions(+), 7 deletions(-)
-> 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 6b4feb92dc79..9e106742b388 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -1306,6 +1306,18 @@ static struct kvm_memslots *install_new_memslots(struct kvm *kvm,
->  	return old_memslots;
->  }
->  
-> +static size_t kvm_memslots_size(int slots)
+> This is `just weird quotes`
 
-Can we call this kvm_calc_memslots_size()?  This doesn't actually return the
-true size of a given memslots instance since the allocated size may be greater
-than the size computed by looking at used_slots.
+umm ... `this` is supposed to be "interpreted text"
+https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#inline-markup
 
-> +{
-> +	return sizeof(struct kvm_memslots) +
-> +	       (sizeof(struct kvm_memory_slot) * slots);
-> +}
-> +
-> +static void kvm_copy_memslots(struct kvm_memslots *from,
-> +			      struct kvm_memslots *to)
-> +{
-> +	memcpy(to, from, kvm_memslots_size(from->used_slots));
-> +}
-> +
->  /*
->   * Note, at a minimum, the current number of used slots must be allocated, even
->   * when deleting a memslot, as we need a complete duplicate of the memslots for
-> @@ -1315,19 +1327,16 @@ static struct kvm_memslots *kvm_dup_memslots(struct kvm_memslots *old,
->  					     enum kvm_mr_change change)
->  {
->  	struct kvm_memslots *slots;
-> -	size_t old_size, new_size;
-> -
-> -	old_size = sizeof(struct kvm_memslots) +
-> -		   (sizeof(struct kvm_memory_slot) * old->used_slots);
-> +	size_t new_size;
->  
->  	if (change == KVM_MR_CREATE)
-> -		new_size = old_size + sizeof(struct kvm_memory_slot);
-> +		new_size = kvm_memslots_size(old->used_slots + 1);
->  	else
-> -		new_size = old_size;
-> +		new_size = kvm_memslots_size(old->used_slots);
->  
->  	slots = kvzalloc(new_size, GFP_KERNEL_ACCOUNT);
->  	if (likely(slots))
-> -		memcpy(slots, old, old_size);
-> +		kvm_copy_memslots(old, slots);
->  
->  	return slots;
->  }
-> -- 
-> 2.31.1.607.g51e8a6a459-goog
+Maybe we don't actually interpret it.
+
+> This is ``literal text`` set in monospace in processed output.
 > 
+> There is a certain tension between those who want to see liberal use of
+> literal-text markup, and those who would rather have less markup in the
+> text overall; certainly, it's better not to go totally nuts with it.
+
+I really appreciate the work you did to reduce the amount of
+markup that's needed!
