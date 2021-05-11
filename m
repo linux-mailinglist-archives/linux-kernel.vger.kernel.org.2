@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D80837A80D
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5950737A80E
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbhEKNtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 09:49:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231476AbhEKNtc (ORCPT
+        id S231663AbhEKNtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 09:49:46 -0400
+Received: from mail-il1-f181.google.com ([209.85.166.181]:37641 "EHLO
+        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231476AbhEKNtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 09:49:32 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4500BC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 06:48:26 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id y32so15767713pga.11
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 06:48:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Mo+U9QAR21yaX72b0ALo/LmNCSm3uwdtfXj48gyyn9s=;
-        b=rHpv6wiFztE9P7VXL2P+E3fTJwJku3yR5LcPHyCr3OqTjbdS5jo7JCEpXkIhYPhy+2
-         3R/dR3Xq9y+68SrRyHhe1uBBqGl1FBCtc98HXr3J2Yt4kPKjie0mPUeBByBgx4v0Yd8q
-         GYAblKoOfaxjS/8KYACqefENPPz8pVrknqxywsz+HzK1GfpRO6OxMNpvgUB0Fq0xKdUw
-         FjAwoM+qnnVc9Us2n+YBHtMZ7rKrMnoWW4k2UTdxrhIkOPq9mxxt6NjlqU/niQDDfwOm
-         egXJw0csmOBjblajxkrlzSmDkKIEU8jxFUixb4ACA16gRHJ+2+G1EjjuR2b5e+kt9yQW
-         0/pg==
+        Tue, 11 May 2021 09:49:45 -0400
+Received: by mail-il1-f181.google.com with SMTP id j12so17213110ils.4
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 06:48:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Mo+U9QAR21yaX72b0ALo/LmNCSm3uwdtfXj48gyyn9s=;
-        b=mpasNIGpYAiIb81JaCi8MrJeB3zlJCN6vP+ZMUOXd+JSV4lkfK4qgbDrfUOzYXPjc7
-         nfH/0GYOkF5bcNarB3GRXuWlfcFIqM/jBYddQVpw4xYHe+xa8NlUu2lVNxzm/rw0xASQ
-         Edoectn/nUaepu2jkQaw25Srkzo++Qy8HOXS6YD83Bh9W+ZMKwebBHsJtphnRJkinmkc
-         /lVYpYjLcqoIv9IS73c77INVeOAeliLzcDZ0OXVhBIesbelr7Qi8XYawRvs0dmqIdYH4
-         f+sQGtnbQTUWjf+2uq6i0G3Ec3q4HsEbHxPzyoxnRabM4c9wb+rWY+n/MqxL7FNwAifC
-         kVFw==
-X-Gm-Message-State: AOAM530aKvV5zya6XqMOej2+tEoqOGsNgMl9jDibAF65wL7psp7Ist4y
-        WNLVP8XDr/IUWhdpm4ztHnUyz9FB9eNttg==
-X-Google-Smtp-Source: ABdhPJzOdeKU451hMKMemeI66d1trTy70/4aIUBfcyyoHV9k1KCJ59/fvR3Ky6gc319AF7TEhidLxg==
-X-Received: by 2002:a05:6a00:78e:b029:28e:62a4:5f3 with SMTP id g14-20020a056a00078eb029028e62a405f3mr30302561pfu.19.1620740905302;
-        Tue, 11 May 2021 06:48:25 -0700 (PDT)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id e20sm2314126pjt.8.2021.05.11.06.48.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 06:48:24 -0700 (PDT)
-Subject: Re: [PATCH v6 0/2] fix a NULL pointer bug and simplify the code
-To:     Sun Ke <sunke32@huawei.com>, josef@toxicpanda.com,
-        Markus.Elfring@web.de
-Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org
-References: <20210218122620.228375-1-sunke32@huawei.com>
- <6df9a13d-b876-976f-ad48-884c88815269@kernel.dk>
- <aa80f848-c895-4478-f582-10a57a1166c3@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <6ab031d5-f836-77c9-8be0-7b3e82a087a8@kernel.dk>
-Date:   Tue, 11 May 2021 07:48:24 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dBIuGgxpOHh5H6g1Y8ow6Rq8BnvVrWVHf5D1vJH2MIE=;
+        b=DZ84NQcscmmIDwcvjTRnBSnvSPr13ag2Gz5D/9sOfI64bZEL4dJcjhHjkKwG4YifTX
+         nbcXGXfq90A7853gqrT6NIxBDyf8gRssLhTN4CuVqTaa6nLWAqosJfPY+b41KtnFxOfF
+         p52tGQSfFEP73evqZ10zQtDFtvBn4OkCbiapU1YKkGKZLxp0Z7Gu2PV+1Ye/1GStjxES
+         dvcOz5hnkE3df85OKiI2W2J9WaCgKf/Z1XiKdEPdy3itWZlHyz0kSnFVxaCxwCAvxhbK
+         /U/jZREQgn/wAWmftlzFV7tUryCnvixCgUB1ijtLoN/1q73pN0+OuytL3SBDKYbZkREF
+         VvlA==
+X-Gm-Message-State: AOAM532zrN+5Dc88p4WeP+IHwxH39D01WO0he7PWOtGKxg+hWUF623j1
+        AdS5CLBebc2NL2w+xaJRQD+g4CCUvtM=
+X-Google-Smtp-Source: ABdhPJxsJRRVHYUbtLD5mBz1DHZ1HaC2t1XKxLgFibnn573/egetLDuHR7SILNkJiC07l1NCsPhdlA==
+X-Received: by 2002:a05:6e02:ee1:: with SMTP id j1mr13051867ilk.105.1620740918040;
+        Tue, 11 May 2021 06:48:38 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id x13sm9629935ilq.85.2021.05.11.06.48.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 06:48:37 -0700 (PDT)
+Date:   Tue, 11 May 2021 13:48:36 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-kernel@vger.kernel.org, tj@kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Add lib/percpu* as part of percpu entry
+Message-ID: <YJqLNBLRP1+wMSWZ@google.com>
+References: <20210511131737.185726-1-nborisov@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <aa80f848-c895-4478-f582-10a57a1166c3@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511131737.185726-1-nborisov@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 12:59 AM, Sun Ke wrote:
-> 
-> 在 2021/2/19 9:07, Jens Axboe 写道:
->> On 2/18/21 5:26 AM, Sun Ke wrote:
->>> fix a NULL pointer bug and simplify the code
->>>
->>> v6: Just add if (nbd->recv_workq) to nbd_disconnect_and_put().
->>> v5: Adjust the title and add “Suggested-by”.
->>> v4: Share exception handling code for if branches and 
->>> 	move put_nbd adjustment to a separate patch.
->>> v3: Do not use unlock and add put_nbd.
->>> v2: Use jump target unlock.
->>>
->>> Sun Ke (2):
->>>   nbd: Fix NULL pointer in flush_workqueue
->>>   nbd: share nbd_put and return by goto put_nbd
->>>
->>>  drivers/block/nbd.c | 10 +++++-----
->>>  1 file changed, 5 insertions(+), 5 deletions(-)
->> Applied for 5.12, thanks.
-> 
-> Hi Jens,
-> 
-> I do not see the patches merged yet, is there anything wrong?
+Hello,
 
-Huh, that's very strange. Not sure what happened here, care to
-resend them?
+On Tue, May 11, 2021 at 04:17:37PM +0300, Nikolay Borisov wrote:
+> Without this patch get_maintainers.pl on a patch which modified
+> lib/percpu_refcount.c produces:
+> 
+> Jens Axboe <axboe@kernel.dk> (commit_signer:2/5=40%)
+> Ming Lei <ming.lei@redhat.com> (commit_signer:2/5=40%,authored:2/5=40%,added_lines:99/114=87%,removed_lines:34/43=79%)
+> "Paul E. McKenney" <paulmck@kernel.org> (commit_signer:1/5=20%,authored:1/5=20%,added_lines:9/114=8%,removed_lines:3/43=7%)
+> Tejun Heo <tj@kernel.org> (commit_signer:1/5=20%)
+> Andrew Morton <akpm@linux-foundation.org> (commit_signer:1/5=20%)
+> Nikolay Borisov <nborisov@suse.com> (authored:1/5=20%,removed_lines:3/43=7%)
+> Joe Perches <joe@perches.com> (authored:1/5=20%,removed_lines:3/43=7%)
+> linux-kernel@vger.kernel.org (open list)
+> 
+> Whereas with the patch applied it now (properly) prints:
+> 
+> Dennis Zhou <dennis@kernel.org> (maintainer:PER-CPU MEMORY ALLOCATOR)
+> Tejun Heo <tj@kernel.org> (maintainer:PER-CPU MEMORY ALLOCATOR)
+> Christoph Lameter <cl@linux.com> (maintainer:PER-CPU MEMORY ALLOCATOR)
+> linux-kernel@vger.kernel.org (open list)
+> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d92f85ca831d..b18fed606ddd 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14004,6 +14004,7 @@ S:	Maintained
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git
+>  F:	arch/*/include/asm/percpu.h
+>  F:	include/linux/percpu*.h
+> +F:	lib/percpu*.c
+>  F:	mm/percpu*.c
+>  
+>  PER-TASK DELAY ACCOUNTING
+> -- 
+> 2.25.1
+> 
 
--- 
-Jens Axboe
+Yeah, in the past I've taken percpu_ref stuff, so I think this makes
+sense. If no one has any objections I'll pick this up and your other
+patch.
 
+Thanks,
+Dennis
