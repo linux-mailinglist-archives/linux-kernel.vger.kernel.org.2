@@ -2,111 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3FE37AB7C
+	by mail.lfdr.de (Postfix) with ESMTP id F2A9137AB7E
 	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhEKQIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 12:08:13 -0400
-Received: from sonic307-15.consmr.mail.ne1.yahoo.com ([66.163.190.38]:35990
-        "EHLO sonic307-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231269AbhEKQIL (ORCPT
+        id S231951AbhEKQIQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 May 2021 12:08:16 -0400
+Received: from de-smtp-delivery-105.mimecast.com ([194.104.109.105]:58109 "EHLO
+        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231916AbhEKQIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:08:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1620749225; bh=Enu/4VpigXahAHzpvfI9ItrovKMhKUZDViLNdG2sehk=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=a5ow1uG09fCmqFCJmKoTbOQYrDWc1D6oDwrxYKzmfyFkLpPRtdlihTquCby5cu/J9qAeXBZnI8nT434BdKmoVe/IyEG7Znjdc7VAGfGJbUAkT8ZKsF4lbJbgcY0TGpZV7Dima+RcQ24chArfwFP+NiR9X98AJDZW/68TQtlbicLD0LnHhiOJo02du0ZQuXnQfnABhiQ+gcmyUss/qJ9FxexDdIP1j0zvH/eNM2Im19GPGszc6LV9+9L2sJOReLa+i0K+0JfMm0+yvk3W1AzwnUTCbyJqxFKl1lWvWWkaXtSxNwdxzmoRMjGLmrb7YetGOWu5bEQrFAPySOhSbnL1MA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1620749225; bh=TQOtRQ9NBbYAokHCm30WRGNpYXPcZ8QiRAY+ajJV9gi=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=VkiyQtFfgapfTZqDcMtr07Q9k2bg2BWgewr1sCx6lcyxVlTVmJ5Aj6rZd4TE6Yar3vNoDdQBawLgY3qbeghLtwPbff+0SrbGP2RAJn0lWzVj91w0OAAbev1G5/MMUaV/v2RvJJIOj6skSC3VrFiPKS5g0UQNXzWY0IdcKtfXlnZYU0RtB1p6FHyOV5EQl+SEfTNOlJZ/LIp7AekrLdbpBGOXjVB4IZ+OX9+MHBVovaS6CJev17K0NhBg9vYNu4NGs3rffaTpFi4fJ//PqCPlJbE0fgEBw1vGtLLPvsb3mTUnbWItjtE8sNVDwCNTDj+NRDaafTf8JBdry9QsWf3G4w==
-X-YMail-OSG: C18H2sIVM1mKT0tUzW5eHo_GOX_F1Z759yWun4_4i56RuNpzJOuBE.phtrQ_3Ba
- cSmvI4ofoJMduIcfV0YaMt24v3mnEfbVK6cN.0rE_eyghhTmchOjojcjUrltVGlVvWROy7LR2CN.
- M5kKk0Hfwjd_TV91tGhCsdCjlBq18cnmtXnWuWWsX4.k0SV1H8dbEYrvTDAhVSYqHZB.2gzoHECj
- CNlJAHhZeuhriLPTMaryx.YBXPq4RRgtnOcNkDz.Y7GUH.u._Hg_5rDF_c6vdIK29Zt_r0vTEMr9
- dDEd21oPfkha9RRK2NOodyU2QKFm9OTv7wTMB3Cz6MdvP5bIK6JQLeW_E0ek6cp6sJwz9cHkaJod
- GzqjyPasZYr_ZACk2w3Egg2R_o2zHYSZ4THZbaqxou8Kf3Dbm4Oo1FvmVYaYoNwiyJc8rdbbPAhc
- vSekgh9E3EFvF.FMkaaG3sk.KZ8qNb6HGdw56ChG.FXbZHIt1rLi_qYj5I8ZR7x1Ry0BjrpPKI57
- aoXjRLa_kqOkaW4jYrOk874xDvYcD96S2U6K3jYibGS27RzWLd9wTNbgrgsR.a5DqnjlDl02xBq5
- ywJ90RPI1daHHGn01XLyyad9dwPZ3DXG2uq9Vezf7q6hoLrzNWhc2kxLmG.TgWBtw60pUnEY.B_l
- O3oWDyxrQaAgTsQLlHIYlUBnppt2KYv3xSUGBWaeRDSLM5vuxePLDc.4LzSuDdx6zdHt9Lxijkzc
- nlAAtUNdqHTReAa35idDgHfc7Gq48rMdr29WRiezkREaAOXEbJ1qdEKEg_l5bMK_AmJ03xDdwli5
- 4x.VSO5YN4eidkd9sL3bauKIU4CrymIRhtXmT724WshJLQuGQTMqEO5f3XUBiUbpH6dfobH1QbYV
- C1lPH8Q6eJEjdbWIn1geyaqxG_YsmeYye0XNcQhf3BjXd25CJsnTFpHB22CfADlGuLa8avHdcWoQ
- DiCVMuV0EAW5jorcnqP0q_1LprUmeKH6QTDVDxWJ9r58dVS6juJKf58TRHad3uW6VMdyh35SNn5g
- Wc0i627LzVimc_jdKwRlon_PVIW583lLq8I5N8fv9sbGvLDM6o5VhLqmwDPbLWtw62Pb3_.LAn_c
- VHK2o3JUvFqAm37QdXZJgo5O_QXVSYabE7pitpf1F6CspiqiHs2EnzRYPi1kQJINIZeSH_rSlK20
- .VHgTPuMgNaU2OkGdfLUBXk2s58IkcUrYfEzLnpXdRXkMNM9m9RVf45PWcCYpkntcIkKKlaM0W3b
- jiPqWHDCUnM6So5ukXQsskslx0GB8weWQuDRoAAL73.GLnOnpsXH1f0yh3imLi98HAnM.AxK2xDK
- 9JeRYruqPCltRvFIaKnlMZ3IaRmofoSLORD3edM.9oF0aLGHIuRuq1XhOr._x5ZlCjYYFcoJYuKv
- Rv4KP5YhISo2EB7mcZEsnDN7F5P3qURKFGZYBsRj7wX6VnjfpJhrBYVcxFxyj89WW6UrR8w41ysB
- S1IW7mxTAiPDWDYoZwfvQqWnRmbBSigiT01yU_W_e7udKE7LCTwfQ4laqwlnB6ykPZoBLptAkG0U
- _m_xtUtSw3_0RUyZUx38oQBJSh01dzT64z8flG2R1ri88QaW.ng3m2M0E0UQuX15KgwyflVeGBIF
- ArVMmxULRv9JKuztW8mjoY25OheQpaX63sXTS1izCQS7DN8PNYtQ_bSgsupB3x2Uj6xcvKwi.0Px
- tw_zNyYhEI3muHO5ths8WNWli6eOUbtx0hAa_90P_GfqmDXxu_.DbDFxNkw13BvOXLwkwq9NnBD1
- SCCJ2FUnpYsITaQLaANu2sUt.mgGspH474obpv_USF.Wbdixmr2FoV0iagb9YqLA6ExZ7owAbPGL
- WqUNH.FrNUh_2AXGo.6J7vUtxrHv_Fg6TMr_op6PfsyfbUCtOJ5Tep1rr0YcbLcx9zgqZN8Ndh0D
- Dv3wVHiGZ_LVJ4ILhdqhIwPh93Vi8hnaxxEp5S7mNgTgHU.vKKVyGguKLsGfp0thKUyMuvjsog11
- nOos3wUoqohsk9p5OCDzzvItYPbhgKJpPKCFJ6sq8gLUAkBMnD2g7oBF1grnOjCj0Z71nr_B30O6
- SpX1FDQslfhq1oQkIsruGyRxjHlZtBxC5hax3_I.GsCqavimMhRf9QSe24IIZujmk.PTvmS7XWsK
- YhpcCG1FsAese64BME6UgPHpyHQebbEN0Oy6cIs4LszIapktETzutP7I3Gf_v_nPlMjqR66pBVs1
- .2VC6IqkEdF03qSjBGHoU8EzaXAO3kvT2WypJABmUxJkhZYLbMYFdmVn6Bj5YNCsFivmA0S.n0oe
- p738mRXv1SrWIf1QLOB.IWs28BpVw8GHspnmcuZeXHQ5ztnoMb9YKGNLd5eCpKpCcZaPviNd6eQT
- M7vnYUs2fZrgbiDPz7BdqAgfJzjMn6VxcfWhoZpLgPkXWKypRj9VjycISRm4.skymrmA9CGxvau2
- X5rW6FIx8jAIzJ13KsAVn2_XRl1RJ34E.x5OC6RznAo1ZOrdlFciw_BHgVDzSO1Gg10mpCUwFkN2
- 8KLubmQVyaLlyD7_d0SiLMd30qnx4FSZe0faMxEQtGo.hZkqiSOSaX6laJ8xS.F6S3E4Mls17ngz
- rCSSk9PccRE88VIQEqeK51YDjo2eFnm8UuYJ_A7foY5kKHOnqmUCbHpwTb_PcsoAwutHUbE98.dF
- l6q_Vi7eexVeI0k37uhH6nGw6ZYt.NWL30ATQJc95I7U0N26ilKteWwwcDtXCXx6keIZHHMMwZ7Z
- wjnXwD464_scrou3cdW6SmZf50wrnv8U6uQr_bLmDUInd3Wf6a_j3bTFd31pAsgMo_nJJHwKfwe3
- 1tcqyoLIrW5MVmrJmMI0qCmPBEXoNO93vA51U8zspyJnc9T7BgNVXmyMKXZUuwmzq7E7.wgEvHc6
- R5na6LeHNY_d5Suuuz_uYLamntoatkqgHFuVl6mte9K1pcHdvPIQZmMhfjGm9LtgNkxqHBhG6jc0
- .BP6TpuWfeYxpIO3Lk6yb0x0L4ly5rYwB4Y8ip6LKG5bfSxlyrkUBlzjrurYFf5ntDGQN025D
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Tue, 11 May 2021 16:07:05 +0000
-Received: by kubenode575.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID c050a91aeed93f70d3a5ab397ada3264;
-          Tue, 11 May 2021 16:07:01 +0000 (UTC)
-Subject: Re: [syzbot] WARNING in smk_set_cipso (2)
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     jmorris@namei.org, linux-kernel@vger.kernel.org, serge@hallyn.com,
-        linux-security-module@vger.kernel.org,
-        syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>,
-        syzkaller-bugs@googlegroups.com,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <000000000000d06f2605bfc110e4@google.com>
- <d1d73239-c549-c6c0-5b24-5d701b69e3f1@i-love.sakura.ne.jp>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <9d3b4454-a12c-7578-c079-80338ccfbc2a@schaufler-ca.com>
-Date:   Tue, 11 May 2021 09:07:01 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 11 May 2021 12:08:13 -0400
+Received: from GBR01-LO2-obe.outbound.protection.outlook.com
+ (mail-lo2gbr01lp2056.outbound.protection.outlook.com [104.47.21.56]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-35-9c7pdnARP3assXMDarw6Yg-1; Tue, 11 May 2021 18:07:04 +0200
+X-MC-Unique: 9c7pdnARP3assXMDarw6Yg-1
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
+ by CWLP265MB2450.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:92::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Tue, 11 May
+ 2021 16:07:02 +0000
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a91f:361d:5554:3958]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a91f:361d:5554:3958%5]) with mapi id 15.20.4129.025; Tue, 11 May 2021
+ 16:07:02 +0000
+From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     Avri Altman <Avri.Altman@wdc.com>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Subject: Re: [PATCH v2] mmc: block: ioctl: No busywaiting of non-TRAN CMDs
+Thread-Topic: [PATCH v2] mmc: block: ioctl: No busywaiting of non-TRAN CMDs
+Thread-Index: AQHXQyyR8BdSxkDtf0eUDDANXygamarX43qAgAaVTzw=
+Date:   Tue, 11 May 2021 16:07:02 +0000
+Message-ID: <CWXP265MB2680EC0A980A794C3B520DBBC4539@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+References: <CWXP265MB2680DC98B32CD4B49AA8A224C4599@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+ <DM6PR04MB657570DB58E7ABBE2C3B0449FC589@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <CWXP265MB2680A8DD0FFA6FECBFDFB027C4579@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<CAPDyKFqZ580uHgfob5wfn7a_+Y-q3h0YrvirrNYSFT5Q_St2SA@mail.gmail.com>
+In-Reply-To: <CAPDyKFqZ580uHgfob5wfn7a_+Y-q3h0YrvirrNYSFT5Q_St2SA@mail.gmail.com>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [185.80.168.10]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 99e004ca-937f-4469-ef7d-08d91496d08d
+x-ms-traffictypediagnostic: CWLP265MB2450:
+x-microsoft-antispam-prvs: <CWLP265MB2450A02188DEB7F1C50134BBC4539@CWLP265MB2450.GBRP265.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:7219
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: O6WnOLj6U7AuYflxhn0LuLvLxDnDg/C/f1qaJ1MK3mb46FwWcw85s5EVHs5gO7vTs7LXTJILvKv7KCIPU0OKgg9mF/heEDPZoX0jvG0V1TXTkFSltP6atM7qeEYWlmg78RIrZrhtiOp1SVNmT1il0pjFPytzs3y0v92QOVRiUz6JTD4ic7GGSZrWh9/PZEf0zQCX/btUQZq8Qk7gySTm3lFkkVoyFfNBnSKnfPSHNHLE6iaygmcHS1+i7Ya2PqE2dsdG4HD/dpXDdMOmR6bPq8nUrwE7qWwaSVWFVDYD0TdXz8o4v7rensDYDUbsT907iyOuWePAAfU/bpLaZn53DYzjZnYB+amCKam5AvF3M0Cm2WBnI8VmxtYowsKJDQ20UbAVCWXyF2nCjWQY7adjFRIp6EEJuEU6wuIVVov66kYqfWSHKXwRKg8bD0QiHDPgQxBEzF0HJT+EiwrqHX+VwrxERSDWoihHF+Go2j+kYD10RPpLvOyNKAKE1wNsEt7KO0VTklw01atAr+ewQBesswsYA5ppNc7n+JHlcEP41l6KBLOHAwIPqOrw1PAaVpw1NSrPrqw+ByJBIAvDVWKOilzfoP/PuhkDRFB/7UiM9p4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(366004)(346002)(66446008)(4326008)(54906003)(6506007)(33656002)(53546011)(86362001)(186003)(38100700002)(5660300002)(4744005)(122000001)(71200400001)(64756008)(26005)(8676002)(76116006)(7696005)(508600001)(55016002)(2906002)(66556008)(66476007)(8936002)(6916009)(66946007)(91956017)(52536014)(9686003);DIR:OUT;SFP:1101
+x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?MvIvAHmadLXiA9f7jzMO0H8mKkTpr+ozSwylT73njW7LOEeBtw9nlFUjUW?=
+ =?iso-8859-1?Q?c/hII55SBNjzt4MIQu+t5LDREIqwnYcZyW0b1+MyQtxz9PrkEezIxJwH2J?=
+ =?iso-8859-1?Q?ZW131ZL0bN3mXSClqu9aughazd1OpW9t8cDThKRXnzt6U9Qtq3rZaXmbeh?=
+ =?iso-8859-1?Q?pgMM1efxh+2HCbQ59Rwc1f3BnBHrxd7khegMppR54Kcitc+4kbzHtllW+U?=
+ =?iso-8859-1?Q?B9mNyCNuRysjmGLceVwebYdNHOQc3g0TL7OPz7zP3+n+LHFi6YRh9Ho1Ey?=
+ =?iso-8859-1?Q?t/9uZbine0DX9kHA0ooIAVPYWhnEedL1qAj+j4uqQDCB4PSOYIJG+7vF2Q?=
+ =?iso-8859-1?Q?fhfbMqAu0ljYRJ3Gc2ZYvEzWgIwmaMHfIRJ4kqJSKFLkVl7bCf8D6GK4vK?=
+ =?iso-8859-1?Q?CZ9Gby9Gm0EZuUMWk4gdCInzF+Mba+JFCDbUE/Yuuw/uG9KxoZ/NRug9bj?=
+ =?iso-8859-1?Q?rws11a6c7D8KKgI0C//T42Ww9o94n9BqPeJScsk7vAAv2mAk4Z6xG+kJFi?=
+ =?iso-8859-1?Q?AJVCZrTVUxl6SEELxlhP3+G2GYPOH4527sn/ssnzLxMUv/rD4mfC+JBYkU?=
+ =?iso-8859-1?Q?R0HrwekMjWzigB+kBBASYVFUnpaf+aHRWnsI/VMgqltatmEBcJwPCvItfv?=
+ =?iso-8859-1?Q?4plB3pDq6CbjPB9sqYckmPoqu7ySwlDpaLTR0eHmvD3DAVgF3tq6HO2vFK?=
+ =?iso-8859-1?Q?/NJAs3IfwQbu3HGTpQlYOPEl+jW0TAZVbmeQh3qlWVIB96tsBCJNXnfrW6?=
+ =?iso-8859-1?Q?DnT9Y0Y4mnU2XuSwqrBfz2vqW6rEYIYgWCFHlsci49Bol6IWO78NSRv6F3?=
+ =?iso-8859-1?Q?X3xEfkFKncLow8AgoACNzQWQNulu8fO8j74amOZ+HVaoAegTaOnC5s27h1?=
+ =?iso-8859-1?Q?6q8h4dtvdRMJLx7trxlZiA37hvaBCwDSI5nUJBE8tE+g4JjmR7OeRyPUoG?=
+ =?iso-8859-1?Q?MhQY2aayywT4kE5dSBHDtNlX3I4/WMTTRngvqbzNnQBiyR6rSq8JsHxMNR?=
+ =?iso-8859-1?Q?hzGqju1rr4JqXt99ktU7sVLkScRBdSEHvG1RtEufk1LN66HDm3sy6+iayB?=
+ =?iso-8859-1?Q?eEc2BNYcex3To+7rCqMTIc70ala8rz6aGpSeIKFy07Ovfhns/rjlYvX1hh?=
+ =?iso-8859-1?Q?aCHLtQFOJBtY1P+VP7iFDTinHxrzsKEpGdnG9agfM5kY4fHeU3+xkND5Fa?=
+ =?iso-8859-1?Q?0u1x3pUZJdcdls3XhOaIGRoX6KnDrpb3YnOkOKpsg7ZlLNwSo9BMlGZJzE?=
+ =?iso-8859-1?Q?rE/kOmsYyOf1Y7WNJWz+o6qhJSXKRVVen6k/sG1qrJZHwABH11TuqT84Af?=
+ =?iso-8859-1?Q?4kn0Jc3Tysla45NmtP2AZew3JjCssRTD9cZCVgoopQIquHA=3D?=
+x-ms-exchange-transport-forked: True
 MIME-Version: 1.0
-In-Reply-To: <d1d73239-c549-c6c0-5b24-5d701b69e3f1@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: hyperstone.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99e004ca-937f-4469-ef7d-08d91496d08d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2021 16:07:02.5242
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CnOaCYyBN3fOq4cCAOkzoy956pwPl88zc7kaJ70pmk6virhLgyeElPBXK8CFCgZuSEA3Daq++oCHG4+FABjnzA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB2450
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hyperstone.com
 Content-Language: en-US
-X-Mailer: WebService/1.1.18295 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/16)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/2021 6:28 AM, Tetsuo Handa wrote:
-> Commit 7ef4c19d245f3dc2 ("smackfs: restrict bytes count in smackfs write
-> functions") missed that count > SMK_CIPSOMAX check applies to only
-> format == SMK_FIXED24_FMT case.
+On Friday, May 7, 2021 1:34 PM,Ulf Hansson <ulf.hansson@linaro.org> wrote:
 >
-> Reported-by: syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> None of the commands you are checking for should have an R1B response
+> according to the spec, I think.
+> 
+> That said, I don't think we should do these kinds of sanity checks in
+> the kernel for the mmc ioctls, that just doesn't scale.
 
-Added to smack-next. Thank you.
+You are absolutely correct, my bad, I had a userspace program setting the
+flags wrong.
+Even for a SEND_STATUS R1B is only expected if the card was not selected
+and should be set accordingly by the userspace.
 
-> ---
->  security/smack/smackfs.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
-> index 22ded2c26089..1ad7d0d1ea62 100644
-> --- a/security/smack/smackfs.c
-> +++ b/security/smack/smackfs.c
-> @@ -855,6 +855,8 @@ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
->  	if (format == SMK_FIXED24_FMT &&
->  	    (count < SMK_CIPSOMIN || count > SMK_CIPSOMAX))
->  		return -EINVAL;
-> +	if (count > PAGE_SIZE)
-> +		return -EINVAL;
->  
->  	data = memdup_user_nul(buf, count);
->  	if (IS_ERR(data))
+Regards,
+Christian
+Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+Managing Directors: Dr. Jan Peter Berns.
+Commercial register of local courts: Freiburg HRB381782
+
