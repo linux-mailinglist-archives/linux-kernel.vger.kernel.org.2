@@ -2,92 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14A937AD25
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8591137AD29
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbhEKRf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbhEKRf4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:35:56 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721D0C061574;
-        Tue, 11 May 2021 10:34:49 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0ec70091f309bcd5e4258d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:c700:91f3:9bc:d5e4:258d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E18211EC0301;
-        Tue, 11 May 2021 19:34:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1620754488;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=3/bXis5NaA7RX5+1HMGPhmVKaplL2A5rrRK2DTP1lwk=;
-        b=acI2tZYyZobSwgFD1A6t5aJoJZjOjElQRSIFuMg2eSFVnRHruARSwVF+2BoJG4/vCLPcnb
-        mmCjt8Jf0uouuT0ycqg+uTyb6E4/CGSCh0ofKvGRtZmNi3fagNnbTrTE/VUpDJfEQJWlAh
-        ksJCPJKrHLmuOYoWSNj3NmOC0u9ltHU=
-Date:   Tue, 11 May 2021 19:34:49 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Naveen Krishna Chatradhi <nchatrad@amd.com>
-Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
-        Mukul Joshi <mukul.joshi@amd.com>
-Subject: Re: [PATCH 2/3] x86/MCE/AMD: Helper function to check UMC v2
-Message-ID: <YJrAOXEcyUvs/WvY@zn.tnic>
-References: <20210511152538.148084-1-nchatrad@amd.com>
- <20210511152538.148084-2-nchatrad@amd.com>
+        id S231851AbhEKRgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:36:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231329AbhEKRgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 13:36:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20864611CA;
+        Tue, 11 May 2021 17:35:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620754509;
+        bh=YPhRLTxOgdPzo1iZN2FPl/ndFofc60gotWgeCGFIYOg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UmtMPRNKB5D7IhY0pfXWfAi/zQ0QvTZ7GRfUhVUWWGpcIBbl/c6RxnpfXoqyHX1tq
+         4ypfMShci2envDbJXDBdPQlzKaG7lwQwlgOmU5y8GhZxdldjl3h/EZxMFJrBryYA8g
+         Xy4OfvGRFoOmsbaz7x7yGXuNWarikVqwuybXdrT51dvPkKxe6mjHctxcaBTdM522I9
+         +rjFLXPW1pbTkxvOYaVEjwKiuIgs3+/niVpMrJywj9ML8deTOaGjjL8vdsD1SM9AFh
+         MWMlxx/KSH4aaH7nvSjs6GLxYHv37/YgFKUJLEI+yufvxDaMtyaShMEMAW33omxRoV
+         P4qOnCVsyK6tA==
+Date:   Tue, 11 May 2021 10:35:03 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        kernel test robot <lkp@intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] memory: tegra: Enable compile testing for all
+ drivers
+Message-ID: <YJrARxhVD7QM/GPv@archlinux-ax161>
+References: <20210510213729.7095-3-digetx@gmail.com>
+ <202105112125.VctfC6sX-lkp@intel.com>
+ <dd0b550e-76a0-bfbc-9d6f-5d867812046d@gmail.com>
+ <06addbf3-0090-b76f-65cf-e0c10d284c69@canonical.com>
+ <3ab5d50b-4955-7144-5d1d-d44cb0892d65@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210511152538.148084-2-nchatrad@amd.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3ab5d50b-4955-7144-5d1d-d44cb0892d65@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 08:55:37PM +0530, Naveen Krishna Chatradhi wrote:
+On Tue, May 11, 2021 at 07:00:34PM +0300, Dmitry Osipenko wrote:
+> 11.05.2021 18:31, Krzysztof Kozlowski пишет:
+> ...
+>                                       ~~~~~~~~~~~~~~~~~~~~~^
+> >>>>> drivers/memory/tegra/tegra124-emc.c:802:26: warning: implicit conversion from 'unsigned long' to 'u32' (aka 'unsigned int') changes value from 18446744071562067985 to 2147483665 [-Wconstant-conversion]
+> >>>                    emc_ccfifo_writel(emc, EMC_ZQ_CAL_LONG_CMD_DEV0, EMC_ZQ_CAL);
+> >>>                    ~~~~~~~~~~~~~~~~~      ^~~~~~~~~~~~~~~~~~~~~~~~
+> >>>    drivers/memory/tegra/tegra124-emc.c:154:36: note: expanded from macro 'EMC_ZQ_CAL_LONG_CMD_DEV0'
+> >>>            (DRAM_DEV_SEL_0 | EMC_ZQ_CAL_LONG | EMC_ZQ_CAL_CMD)
+> >>>             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+> >>>    13 warnings generated.
+> >>
+> >> This doesn't look like a useful warning from clang, it should see that
+> >> the constant value itself isn't truncated, hence it should be a problem
+> >> of clang. Do you think it's okay to ignore this nonsense?
+> > 
+> > I admit I also do not see the real issue here. The DRAM_DEV_SEL_0 fits
+> > in u32 and there is no other bitwise arithmetic than just OR, so why
+> > clang assumes it can have 32 most signifcant bits toggled on?
+> > 
+> > +Cc Nathan and Nick,
+> > Maybe you could shed some light here on this warning?
+> > 
+> > Dmitry,
+> > In general you should not ignore it because:
+> > 1. This breaks allyesconfig with clang on powerpc (or it is one of the
+> > stoppers),
+> > 2. We might want in some future to build it with clang.
+> 
+> I meant to ignore it from the perspective of the memory drivers, i.e. it
+> likely should be fixed in clang and not worked around in the code. Thank
+> you for pinging the right people.
 
-> Subject: Re: [PATCH 2/3] x86/MCE/AMD: Helper function to check UMC v2
+I do not think this is a bug in clang, gcc warns the same (just not here
+in this case): https://godbolt.org/z/e9GWobMnd
 
-The condensed patch description in the subject line should start with a
-uppercase letter and should be written in imperative tone:
+DRAM_DEV_SEL_0 and DRAM_DEV_SEL_1 are implicitly signed integers because
+there is no suffix on the literal 1. DRAM_DEV_SEL_0 is 2 << 30, which
+can be turned into 1 << 31. That is equal to INT_MAX + 1, which then
+overflows and becomes INT_MIN (undefined behavior). INT_MIN is then
+promoted to unsigned long because EMC_ZQ_CAL_LONG and EMC_ZQ_CAL_CMD are
+unsigned long due to the BIT macro, resulting in the gigantic number
+that clang reports above.
 
-"x86/MCE/AMD: Add a helper function... "
+I assume that this driver only runs on hardware where unsigned int is
+the same size as unsigned long, meaning this problem is merely
+theoretical?
 
-> Signed-off-by: Mukul Joshi <mukul.joshi@amd.com>
-> Reviewed-by: John Clements <John.Clements@amd.com>
-> Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+Regardless, defining DRAM_DEV_SEL_{0,1} with the BIT macro fixes the
+warning for me and should make everything work as expected.
 
-This is all fine and dandy but it needs your SOB too when you send the
-patch.
-
-Please read Documentation/process/submitting-patches.rst
-
-sections
-
-Sign your work - the Developer's Certificate of Origin
-When to use Acked-by:, Cc:, and Co-developed-by:
-
-> +bool is_smca_umc_v2(int bank)
-> +{
-> +	return (smca_get_bank_type(bank) == SMCA_UMC_V2);
-> +}
-> +EXPORT_SYMBOL_GPL(is_smca_umc_v2);
-
-This addition looks useless when it doesn't have any users.
-
-Also, I'm pretty sceptical this even makes sense to have it exported -
-I'm guessing this is for mce_amd.c but I can't say without seeing it in
-use.
-
-The same remarks hold true for your patch 3.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+diff --git a/drivers/memory/tegra/tegra124-emc.c b/drivers/memory/tegra/tegra124-emc.c
+index 5699d909abc2..a21ca8e0841a 100644
+--- a/drivers/memory/tegra/tegra124-emc.c
++++ b/drivers/memory/tegra/tegra124-emc.c
+@@ -272,8 +272,8 @@
+ #define EMC_PUTERM_ADJ				0x574
+ 
+ #define DRAM_DEV_SEL_ALL			0
+-#define DRAM_DEV_SEL_0				(2 << 30)
+-#define DRAM_DEV_SEL_1				(1 << 30)
++#define DRAM_DEV_SEL_0				BIT(31)
++#define DRAM_DEV_SEL_1				BIT(30)
+ 
+ #define EMC_CFG_POWER_FEATURES_MASK		\
+ 	(EMC_CFG_DYN_SREF | EMC_CFG_DRAM_ACPD | EMC_CFG_DRAM_CLKSTOP_SR | \
