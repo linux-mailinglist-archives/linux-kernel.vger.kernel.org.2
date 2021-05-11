@@ -2,233 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3E237A127
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CB337A128
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230474AbhEKHtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:49:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbhEKHtp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:49:45 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A49C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:48:39 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id n205so10549688wmf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:48:39 -0700 (PDT)
+        id S230410AbhEKHuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:50:25 -0400
+Received: from mail-bn8nam11on2058.outbound.protection.outlook.com ([40.107.236.58]:41683
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229935AbhEKHuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 03:50:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JhKsdJqdFyAwWCm6drGJ4HC/LqZK5jizOaJvOLz+UurhpXczc3sVBmU3cPAhyPeHCpyX0i0lO8iuf+LSGHFTjtiOdMiHnz00imrRWZBbYfkktI4ACvfQFdkZMl1T3YHJxtTZpShuToCu5lGyPOJT7GSsDU2AtrOJ4FejB16pksWlQtGLxnlEnIDoagGrqmJSYVatI+V8Bbg9Wuor4Pq5KoVSkI1N8/cHAhIPbacWrLVZkKnqjSbWi/uSeq10f6BZslkAJ8HOgcZapHdESL5GGWgof7tZZACE86BskP6J+kongH/G5z0A3/wBfP8lB896QaKsH4fEu5Efj9L3omlogg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4fwgXfYDjwFNC4mZ3tXONWogCB2KQ08YrvSGVEzmArM=;
+ b=E1HBhUs0U3RdGAmj5S94nxitHfBV9nNa5R620WdSqwz7xnNKw6I2HZCpOuXjEN8MNQefvRGr0SEpxmrPGiYibDgLnMy6bKswXDifF/u+1gPHcBK9d5cQzNYpawukV+RMYY/gVnNBT2fSbtAJ32+0jd9pZYT7Ia+cYKZq2XbheiOcmF3x8/PF0XqDackmEmjV2pxWhxTQWr6/e7V36WXHjZgHGgI+Qq68X8p2ws+TW5PbmCLylSXSwrlS1k4ddvUbRf4ueeOxPZHtnR29x7jkWMsGETh4NnH38cYhEFE1nW7g6/r/G+BgssRyA+lhH5/7la9p9cFdn7iMfKCD7TJjhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RL5m146+QHuS6iRVfkXUrgZThwGYmN8qLX2jZ6PtJgs=;
-        b=o2+cx3K/+/HtbZhWSq8RmPZcQUkXHvdgOq2PYkKyYfnHeyABiEIyjIxf6+7xdxrJVO
-         Zh4qJ8ozc3K4qTX2WgoM8srd3oBguFJKKJsYk0RmZQ2ak9mhblGsRruZ4CLcG/VTOCAp
-         gIILHqefPl3urOd5yKCdiyF24HBGMyARpl4oP04w1m+cotRRTAm+/W2WMifA5Gd445kv
-         MMePrVw/vzWD+md4FRqQMyRRG7Y8m89x4uKRLkoA3vxPyfsSklF3mrCl6+hU28F0HZ8J
-         dW2ahvzfr722dE0tj9kM10MOip2yAOHEXMqLxY+AEZHiE41HYEPoNwfcWF/MCqQ82nQL
-         iZjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RL5m146+QHuS6iRVfkXUrgZThwGYmN8qLX2jZ6PtJgs=;
-        b=fhm7dF3iHtzYNX9YwErX0x8xxuxaQx9M+WI0YzjL4GbiPNiQIi940eAyUQEopJSsjC
-         AXVJYTsKOsZKGSPkaXZslVhADoU+sKVzfniu2GLwVCZPBBN3VRxFyVg8RRbfNVb3Gxb+
-         WMqoX5kYdGeATtDuwzxXtIdJlLZMboHeejtyBDn5qxl9egzo7rHM+zvKCpMzDIGK5axc
-         NDN3NMoY4g7Fxi1npnRtUO5uMC5bMZ0DZz4cIJD4LWT+j8jBQ8XpucA82dXkQU79N3KH
-         qPn0ZHZeVBpc0FjtUO3TqDRNO+j20kfSp4oLEnp323A++cmPxlwZEb7zI3wZxxmzln1a
-         jtag==
-X-Gm-Message-State: AOAM532iAschw8mOvYrjcx4fcFOFum0DIKoTv6JM4WsYrRGCCRxwOWOU
-        vXFxLz9BGm7dUgcuZU9fuGqSXg==
-X-Google-Smtp-Source: ABdhPJxOr7LBMZ49i0bwIQ/5ZIJDPKhHzlVc62DD9UqhFLNaZwqgT4EwFvn5NXTNQVoqpB8eRxcJmA==
-X-Received: by 2002:a05:600c:47d7:: with SMTP id l23mr3760403wmo.95.1620719317929;
-        Tue, 11 May 2021 00:48:37 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:90c:e290:ce08:6145:b4e3:5a23])
-        by smtp.gmail.com with ESMTPSA id f6sm28371111wru.72.2021.05.11.00.48.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 00:48:37 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     jbrunet@baylibre.com, broonie@kernel.org
-Cc:     alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH v3 2/2] ASoC: meson: g12a-toacodec: add support for SM1 TOACODEC
-Date:   Tue, 11 May 2021 09:48:29 +0200
-Message-Id: <20210511074829.4110036-3-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210511074829.4110036-1-narmstrong@baylibre.com>
-References: <20210511074829.4110036-1-narmstrong@baylibre.com>
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4fwgXfYDjwFNC4mZ3tXONWogCB2KQ08YrvSGVEzmArM=;
+ b=GSpT4azzoRkhqbcO3Zi18/egPfP67QEt/m5fVnSkIpqiPgfGiqyO2Ix+raZOKtTJaquZaeC8szBv6qqg3gxGv4HyxPpkb2wnu7e2+NvgYcsRGaP3975aO7dEgohd0Ey1kBL+EB8dbnDYJL6DM5wiVuqHsvRCmY+1mjInknzFPvE=
+Authentication-Results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=synaptics.com;
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com (2603:10b6:408:137::15)
+ by BN7PR03MB3841.namprd03.prod.outlook.com (2603:10b6:408:24::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.26; Tue, 11 May
+ 2021 07:49:15 +0000
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::308b:9168:78:9791]) by BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::308b:9168:78:9791%4]) with mapi id 15.20.4108.031; Tue, 11 May 2021
+ 07:49:15 +0000
+Date:   Tue, 11 May 2021 15:48:56 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        zou_wei@huawei.com
+Subject: [PATCH] clocksource/drivers/arm_arch_timer: Remove arch_timer_rate1
+Message-ID: <20210511154856.6afbcb65@xhacker.debian>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: SJ0PR05CA0078.namprd05.prod.outlook.com
+ (2603:10b6:a03:332::23) To BN9PR03MB6058.namprd03.prod.outlook.com
+ (2603:10b6:408:137::15)
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; i=vFgn4HeF6fYyIrfNSO2XBhPEbABG+KXl/lGRiyykmRg=; m=qGwWmF5o4d9qBXb6Klih2uuRcBA5bhVPUwJGlRovDlc=; p=o6hiWh4C4SQvoRuJIWWUTHT1h2owx6EhVDRPkT/w0kU=; g=657f59579537e84fb82ba27b1e356e028d9bf9bd
-X-Patch-Sig: m=pgp; i=narmstrong@baylibre.com; s=0xA4CFF8AE; b=iQIzBAABCgAdFiEEPVPGJshWBf4d9CyLd9zb2sjISdEFAmCaNrIACgkQd9zb2sjISdGuXhAAzhC 5ygHxZlSszj5dy7wZxzYyX2qY/uVvi4+0ayVrvup5eU7IY6yQVfl3t99dmfvkCPKpUY+bEYecfyhq dgVZe1qORcMpC02prr5TCZo/ILeXBpAu7GX4lNYktIL8b+zd3qcHShM4r/vE97YtYQGGtDBw/Dd9/ KS+dXkK0qv4ZNtM1neMgKcCWprpL3O03HHNIKxRCHyF2d+u/LSn0Uu/wjVS4fk87Zl5L+MdaYFBoG Le2Z7qDeFfIY+aANYOrW0IB7V23w6TpurzabwytBJWKB7/N0bn6XnQdtUB0+t1PdFS5CY0Od9O+vi icBP5SfAZMDZxxJhk4IXJDi5Q7rFXVVFU8y309IICdXyXKUlHXEQZ6aGyzysXRwzl7eSgTt/DDFsK ME8UP96SbXDDp5LgvKyac+u94K4tSn4cAJNwS3aYH7Tufxssr4Cz11t2Grg70rcNHUXMcS8uhKrRt dWv1cKqyDfmUXRMD8YZqQBDeTpONjP3CwIGQ2HiA3bToFYebozVW2UNeG7h9FmD4IqIQreAINIlyT pyWA6yh5EOI/lEygqSVWJKCi5tv0jPX2sDWoo0S+t0Ti1CvPjf0eVwmsjKbs5MEnwlA04f5KxXEq1 IJYZFkDnnGAYfCm1fljVB8IKlFKqkh3CyUKQIftbIvUcLpXC5J5Di9qr8vWVT604=
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by SJ0PR05CA0078.namprd05.prod.outlook.com (2603:10b6:a03:332::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.12 via Frontend Transport; Tue, 11 May 2021 07:49:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 92950bb8-1f55-4dc8-5315-08d9145145d6
+X-MS-TrafficTypeDiagnostic: BN7PR03MB3841:
+X-Microsoft-Antispam-PRVS: <BN7PR03MB3841D3C06116D8C8E860A72CED539@BN7PR03MB3841.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: X1RHyqzpVjTU4ffJGbRsrJda2o1qNgyXa5tugymShGtY5M8G4Ghukct3gzT2oVAAoO/z+KvHDgmyma0cmadc+EmW2t1rN6Ejdsh/DEIyTgHzAyLVT2aeOGjx8P0Z2GNncJQMkfWOr8HGkHeudx5FNwmsk+fWhbn3RkKAKFMb8Os7FjaIxlnq+pqzaG0LPREOyxUxhgymqbPd4EojwEy+nXVUUjZrvDPt0UI5CA8Qfg4byirvJpmRgRyAuXOYwYPPmazKtCGRLA0LleN9QWQDMDD2Aoq6F9hepoEKkOz+JZudg+WkPuBBKU8oLzE1Y3whYu7oTRLNiGSJGi4IAAiSEwT+VVn1eesMdoNiZttKEw9zH+3VP4/o08Zbt+xNBS1v6x8zGFVexXgJGlhI+8zAZF5gfTMPpaSwl1XLsqD+Ij3DV1kLoM9tVftKZGQB/h1acJzhkjeoU8hBf+4ud22xOa079boSc+0tpaCD+cN5ubdy2YSk/cvlArStdX5FZirZSzmJoT/0aZywTlD/AO/OLyM+36Z5zDMPcy3xDVMlNrgxRbG4RDhF6VzZRm/AMJRlEz25SCLjA99LQ1TqGxZWsjG9h7QpShxPDPUv2NXe1Js00JTFGnFgVENIMkg/DI2KY6fknyIqHslO2GYJX9DYKUVfCo8LpXib5et4fHEHV4E=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR03MB6058.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39850400004)(376002)(366004)(396003)(136003)(8936002)(8676002)(110136005)(83380400001)(38350700002)(38100700002)(4744005)(478600001)(86362001)(1076003)(316002)(186003)(26005)(5660300002)(2906002)(956004)(55016002)(4326008)(16526019)(6666004)(6506007)(7696005)(52116002)(66476007)(66556008)(9686003)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?h9t8uMosFNPN8VBMlzGiJaxdHjc2oXm69F9L7la8BN4qxfmameL24qaQB2MK?=
+ =?us-ascii?Q?5Mbba4HhTfCkoCTwZpxrqYrgAxgLpiZjdmV8uAgZPz+8u0cINIvr47jm9tIE?=
+ =?us-ascii?Q?yk05Ll7aeVkxd24hk7IWNP2PhsaBDNLIhOtnEdfkBFs+9/9enl7EhQKPbqYp?=
+ =?us-ascii?Q?uJXe0uR9FTTD8u51AcnSuzOQXshr7m6dX/N6fs2aATB0HOUWpGWEyVtkImTi?=
+ =?us-ascii?Q?pG8W/M7oUxqTQmqQhY2vSTuUO2iJApVhnbfESSTK2NjwriojQ3iqnvGNso4P?=
+ =?us-ascii?Q?3slnUCGTsD03T4RApi09d5vIxg0V/3jq4GDadO00Iqhzg+njVk/ISAO0rQWT?=
+ =?us-ascii?Q?bDPCeothWiPeRAonpp5hIrSjPrIy6wv5DJyPvQ2nSGAUSn6sTtwuFzwS1T+0?=
+ =?us-ascii?Q?HwN2g1EC5ZAmDhIkH0dzDexUXNJxuVsxOJBcd1UoNWIbnOSjbU0jbubf0B/p?=
+ =?us-ascii?Q?1OLIQoORZQkyj124PwBFU1eULMnt2DX8RH4g0eMpS4EXcgs0pH8McjiZpeJI?=
+ =?us-ascii?Q?dDADty6kpjD8xwu5eIlndm5AMUxlcusqVWdFFehdLjvPfw8BgOobDubVOcJZ?=
+ =?us-ascii?Q?yl8PYjpUva8XRFFA5nflj7cHkF/kFgAWeFKWJeXqDEn5Paf/5j7AgnU60oEG?=
+ =?us-ascii?Q?n75gCZ045TWmVghjRYW4rTCMlo6g2Ucat5DTsfPjkRIiYvVGI4jMJBjs/inx?=
+ =?us-ascii?Q?i4kIM1dxZfotpKEvRQcKIuYB7qtvAdbvyZtQCTJFXJ7ptLwirT8hi69+e0hb?=
+ =?us-ascii?Q?sIihixokfnVN4R6nZ1je5O3mdiRD88MQN8j5QrJFg62gUIcHXmVcOhP5j5sY?=
+ =?us-ascii?Q?CU+YDzpuI32ENdQJhd0adiXnlkCdK3kgrr6fIwDi5RPcPG+CH2+deCcZj7af?=
+ =?us-ascii?Q?OwtzTSdc0YdhehLhzfCKNAmP9x08xL9XYF9e3954dNIjqJd7iclDxDLAppMm?=
+ =?us-ascii?Q?p8G+aDFCULcyx9TixzP5kfhLeGBtjyXIkCEDuhb5prspXMK9Tb+UwkeQG7gp?=
+ =?us-ascii?Q?UvVX0Q+sYifRRSMBbmrlhWpaJ7PWNIxC4SQGAOfapMhbUymPU5hgsmsYNmOf?=
+ =?us-ascii?Q?LIGYXVJjvMYwxVA2K5uB9j5NTR+N/b6mIHJsFRoQszMRNJQuYY9M7fyJIEfF?=
+ =?us-ascii?Q?G6IJBLrP0MMnHLmeYK4Hlaf+RowL0EzjOyvA5WvsNKQHQ+34Y4yulfpTEAkK?=
+ =?us-ascii?Q?ZTSDFyqp9kNZlA3EZkFhMKzSt5oc1yqhslKBIsF4cdpinAsPYdOcGBjZR0pd?=
+ =?us-ascii?Q?dTDASNRHez6omzV6VWBchEednQxAotsf/Xjsh3Qbo+mcM6LlYLs/HSsZziL0?=
+ =?us-ascii?Q?hz3BW2E5tW7ITynqO+1rHdih?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92950bb8-1f55-4dc8-5315-08d9145145d6
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR03MB6058.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 07:49:14.8466
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oCi34nTIOlCFJguXJNixOCIfvUd46MqHfoUqRiL5Su1ULtdTCpkq+llJpA/391O6XVLhKMMGCMxhmGZxsaOotA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR03MB3841
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for the TOACODEC found in Amlogic SM1 SoCs.
+This variable is added by my mistake, it's not used at all.
 
-The bits are shifted for more selection of clock sources, so this only
-maps the same support for G12A to the SM1 bits.
-
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Fixes: e2bf384d4329 ("clocksource/drivers/arm_arch_timer: Add __ro_after_init and __init")
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
 ---
- sound/soc/meson/g12a-toacodec.c | 63 ++++++++++++++++++++++++++++++++-
- 1 file changed, 62 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/meson/g12a-toacodec.c b/sound/soc/meson/g12a-toacodec.c
-index 6317bd9c86f4..1dfee1396843 100644
---- a/sound/soc/meson/g12a-toacodec.c
-+++ b/sound/soc/meson/g12a-toacodec.c
-@@ -21,13 +21,22 @@
+ drivers/clocksource/arm_arch_timer.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+index fe1a82627d57..89a9e0524555 100644
+--- a/drivers/clocksource/arm_arch_timer.c
++++ b/drivers/clocksource/arm_arch_timer.c
+@@ -64,7 +64,6 @@ struct arch_timer {
+ #define to_arch_timer(e) container_of(e, struct arch_timer, evt)
  
- #define TOACODEC_CTRL0			0x0
- #define  CTRL0_ENABLE_SHIFT		31
-+#define  CTRL0_DAT_SEL_SM1_MSB		19
-+#define  CTRL0_DAT_SEL_SM1_LSB		18
- #define  CTRL0_DAT_SEL_MSB		15
- #define  CTRL0_DAT_SEL_LSB		14
-+#define  CTRL0_LANE_SEL_SM1		16
- #define  CTRL0_LANE_SEL			12
-+#define  CTRL0_LRCLK_SEL_SM1_MSB	14
-+#define  CTRL0_LRCLK_SEL_SM1_LSB	12
- #define  CTRL0_LRCLK_SEL_MSB		9
- #define  CTRL0_LRCLK_SEL_LSB		8
-+#define  CTRL0_LRCLK_INV_SM1		BIT(10)
-+#define  CTRL0_BLK_CAP_INV_SM1		BIT(9)
- #define  CTRL0_BLK_CAP_INV		BIT(7)
-+#define  CTRL0_BCLK_O_INV_SM1		BIT(8)
- #define  CTRL0_BCLK_O_INV		BIT(6)
-+#define  CTRL0_BCLK_SEL_SM1_MSB		6
- #define  CTRL0_BCLK_SEL_MSB		5
- #define  CTRL0_BCLK_SEL_LSB		4
- #define  CTRL0_MCLK_SEL			GENMASK(2, 0)
-@@ -41,6 +50,7 @@ struct g12a_toacodec {
- };
+ static u32 arch_timer_rate __ro_after_init;
+-u32 arch_timer_rate1 __ro_after_init;
+ static int arch_timer_ppi[ARCH_TIMER_MAX_TIMER_PPI] __ro_after_init;
  
- struct g12a_toacodec_match_data {
-+	const struct snd_soc_component_driver *component_drv;
- 	struct reg_field field_dat_sel;
- 	struct reg_field field_lrclk_sel;
- 	struct reg_field field_bclk_sel;
-@@ -98,11 +108,20 @@ static SOC_ENUM_SINGLE_DECL(g12a_toacodec_mux_enum, TOACODEC_CTRL0,
- 			    CTRL0_DAT_SEL_LSB,
- 			    g12a_toacodec_mux_texts);
- 
-+static SOC_ENUM_SINGLE_DECL(sm1_toacodec_mux_enum, TOACODEC_CTRL0,
-+			    CTRL0_DAT_SEL_SM1_LSB,
-+			    g12a_toacodec_mux_texts);
-+
- static const struct snd_kcontrol_new g12a_toacodec_mux =
- 	SOC_DAPM_ENUM_EXT("Source", g12a_toacodec_mux_enum,
- 			  snd_soc_dapm_get_enum_double,
- 			  g12a_toacodec_mux_put_enum);
- 
-+static const struct snd_kcontrol_new sm1_toacodec_mux =
-+	SOC_DAPM_ENUM_EXT("Source", sm1_toacodec_mux_enum,
-+			  snd_soc_dapm_get_enum_double,
-+			  g12a_toacodec_mux_put_enum);
-+
- static const struct snd_kcontrol_new g12a_toacodec_out_enable =
- 	SOC_DAPM_SINGLE_AUTODISABLE("Switch", TOACODEC_CTRL0,
- 				    CTRL0_ENABLE_SHIFT, 1, 0);
-@@ -114,6 +133,13 @@ static const struct snd_soc_dapm_widget g12a_toacodec_widgets[] = {
- 			    &g12a_toacodec_out_enable),
- };
- 
-+static const struct snd_soc_dapm_widget sm1_toacodec_widgets[] = {
-+	SND_SOC_DAPM_MUX("SRC", SND_SOC_NOPM, 0, 0,
-+			 &sm1_toacodec_mux),
-+	SND_SOC_DAPM_SWITCH("OUT EN", SND_SOC_NOPM, 0, 0,
-+			    &g12a_toacodec_out_enable),
-+};
-+
- static int g12a_toacodec_input_hw_params(struct snd_pcm_substream *substream,
- 					 struct snd_pcm_hw_params *params,
- 					 struct snd_soc_dai *dai)
-@@ -184,6 +210,13 @@ static int g12a_toacodec_component_probe(struct snd_soc_component *c)
- 				       CTRL0_BLK_CAP_INV);
- }
- 
-+static int sm1_toacodec_component_probe(struct snd_soc_component *c)
-+{
-+	/* Initialize the static clock parameters */
-+	return snd_soc_component_write(c, TOACODEC_CTRL0,
-+				       CTRL0_BLK_CAP_INV_SM1);
-+}
-+
- static const struct snd_soc_dapm_route g12a_toacodec_routes[] = {
- 	{ "SRC", "I2S A", "IN A Playback" },
- 	{ "SRC", "I2S B", "IN B Playback" },
-@@ -196,6 +229,10 @@ static const struct snd_kcontrol_new g12a_toacodec_controls[] = {
- 	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL, 3, 0),
- };
- 
-+static const struct snd_kcontrol_new sm1_toacodec_controls[] = {
-+	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_SM1, 3, 0),
-+};
-+
- static const struct snd_soc_component_driver g12a_toacodec_component_drv = {
- 	.probe			= g12a_toacodec_component_probe,
- 	.controls		= g12a_toacodec_controls,
-@@ -208,6 +245,18 @@ static const struct snd_soc_component_driver g12a_toacodec_component_drv = {
- 	.non_legacy_dai_naming	= 1,
- };
- 
-+static const struct snd_soc_component_driver sm1_toacodec_component_drv = {
-+	.probe			= sm1_toacodec_component_probe,
-+	.controls		= sm1_toacodec_controls,
-+	.num_controls		= ARRAY_SIZE(sm1_toacodec_controls),
-+	.dapm_widgets		= sm1_toacodec_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(sm1_toacodec_widgets),
-+	.dapm_routes		= g12a_toacodec_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(g12a_toacodec_routes),
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
-+};
-+
- static const struct regmap_config g12a_toacodec_regmap_cfg = {
- 	.reg_bits	= 32,
- 	.val_bits	= 32,
-@@ -215,16 +264,28 @@ static const struct regmap_config g12a_toacodec_regmap_cfg = {
- };
- 
- static const struct g12a_toacodec_match_data g12a_toacodec_match_data = {
-+	.component_drv	= &g12a_toacodec_component_drv,
- 	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, 14, 15),
- 	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, 8, 9),
- 	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, 4, 5),
- };
- 
-+static const struct g12a_toacodec_match_data sm1_toacodec_match_data = {
-+	.component_drv	= &sm1_toacodec_component_drv,
-+	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, 18, 19),
-+	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, 12, 14),
-+	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, 4, 6),
-+};
-+
- static const struct of_device_id g12a_toacodec_of_match[] = {
- 	{
- 		.compatible = "amlogic,g12a-toacodec",
- 		.data = &g12a_toacodec_match_data,
- 	},
-+	{
-+		.compatible = "amlogic,sm1-toacodec",
-+		.data = &sm1_toacodec_match_data,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, g12a_toacodec_of_match);
-@@ -278,7 +339,7 @@ static int g12a_toacodec_probe(struct platform_device *pdev)
- 		return PTR_ERR(priv->field_bclk_sel);
- 
- 	return devm_snd_soc_register_component(dev,
--			&g12a_toacodec_component_drv, g12a_toacodec_dai_drv,
-+			data->component_drv, g12a_toacodec_dai_drv,
- 			ARRAY_SIZE(g12a_toacodec_dai_drv));
- }
- 
+ static const char *arch_timer_ppi_names[ARCH_TIMER_MAX_TIMER_PPI] = {
 -- 
-2.25.1
+2.31.0
 
