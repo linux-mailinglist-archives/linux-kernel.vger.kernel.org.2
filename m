@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18D3379BAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F72379BAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbhEKAkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 20:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59892 "EHLO
+        id S230393AbhEKAkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 20:40:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230227AbhEKAkF (ORCPT
+        with ESMTP id S230285AbhEKAkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 20:40:05 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA80AC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 17:38:59 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id k19so14826142pfu.5
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 17:38:59 -0700 (PDT)
+        Mon, 10 May 2021 20:40:06 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA24FC061761
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 17:39:00 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id y32so14516175pga.11
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 17:39:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=h/ZASyQfX+/tqRIkOrBGq/AZs5OIA35OUiNyEj7G8I4=;
-        b=UABmLGa86YKY8UY25Ew/P+Do/oOF1ylDP+T1fpwJCHj65bEStDLFMj5R522Iexrcs8
-         R89Z53QA7d9gafkZdC2q2WU/Ml/rdAVgLNU7TTDCdIZ1y9W25LQbsyXOqPZ3jHl6v7Zp
-         7/kGquGcTkbJ2JqqzLhYjeglvZQjv/85yEBEE=
+        bh=ThM+lz6jsS3ZEXtls72L3mRvVuWcXx5lk52kSqNPD+U=;
+        b=FsZhbGYDLA4AtcPJIUv0lMZ9F5iOzaGWOwHt+KIa5S/W9Ry2hc51VQV8F6MA5K3oRD
+         q28S2rMN5Ug6tTlk+liOkObCj1VhEZfWAjXrfaqNNJ/h1cpD0pN849vxsUJqySq79/lF
+         4rAx4Aqco7ZUHbTcyRRL+uSv6D1GCkdGl+Bcs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=h/ZASyQfX+/tqRIkOrBGq/AZs5OIA35OUiNyEj7G8I4=;
-        b=NdUZkKjJAeQkFVZn13R3KpAneUkkljMDwEa5KukRgk8nq1kBLh3ra93+KqtFf0SuFl
-         9oJaS6v6ppFogyEfuf0WjR+cVdQtrIPMBzBPyDvRVIzI+WhPaffbnI1F1NpIIb7lm3AB
-         JGjSUZs3AiLB4u0VS9pvkdVqGiQ0vIFmFX1A0i/9dRIVS2vJuAWoMAfg8vzmyImkDZLC
-         Hzzq4Y/SsOjHJLK2cQ1tvbkLGuZDxA4dR9/pgvG1cLN7+EZYdpJy1L3j8vMV3Px8VHDC
-         A9gNTiWlM1YaRoNnvzP8wnN3bW5H/NqtfeQFP+F3T+wx9XlFi4PYypzYKWyxJ8LyHYCC
-         qUsQ==
-X-Gm-Message-State: AOAM533M6ssBwm2yj0hlL784N92gtPrrq/qHUTrFTRo8QHIrHK98iX4e
-        yYXm+V1It78GDQPWz3jk3D7S7g==
-X-Google-Smtp-Source: ABdhPJwlbq5Erysg4tR1GRvEjxnsVbOdM7Rat44//6Fybw/5Dl3hHIOD1jz0PXDKCcYRxxdGxPQdgw==
-X-Received: by 2002:a65:640c:: with SMTP id a12mr27448438pgv.229.1620693539278;
-        Mon, 10 May 2021 17:38:59 -0700 (PDT)
+        bh=ThM+lz6jsS3ZEXtls72L3mRvVuWcXx5lk52kSqNPD+U=;
+        b=Y19QbfZCgTw90JrsWvlQW9tSOJabrVGxt018ZySa24jNEFQDGJ6DbQSEhshhl7uPNV
+         ohzMFBITZoY6pGt9BOQtZY8yLiqGTxefl1VgPhlN+PV4RaHIaTX+o99hpOTrWCiEsBa8
+         Jau90Fx0PfGZdadK0fbylQQjlpN/rICjLNl4bFARSDe7xQSIbu3M48drkH0mQQTAMmoL
+         Q4WLTqkybR4WTN4rY+y9Hkc/XDE2JiCqo23t/uDL4zni9bn7URlf/F5f+6Zim6LLq5nK
+         BqHLgqo0R2ypCC2zDoWVPXxTXVpO0y48uQCv5Ib1TXeMjDmDngCRX2qr+CVpsA7t59Ig
+         XhSQ==
+X-Gm-Message-State: AOAM532P0u9DEaKWOhe1tx/lCoIkpyqcpzLaOG5fw/NUcr7xNs2pmv+0
+        mAAmm/aRTUkQrDswU86cowr2xg==
+X-Google-Smtp-Source: ABdhPJwxtSZwFWRRTxXJoxJZ01mYXLEQk7vzAsrUH3//RiP20FeL80yQwVlKCel8qSm7EFNuh9hsQA==
+X-Received: by 2002:a62:ee09:0:b029:211:1113:2e7c with SMTP id e9-20020a62ee090000b029021111132e7cmr27472397pfi.49.1620693540445;
+        Mon, 10 May 2021 17:39:00 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:202:201:6765:417e:19fc:9756])
-        by smtp.gmail.com with ESMTPSA id d26sm12142539pfq.215.2021.05.10.17.38.58
+        by smtp.gmail.com with ESMTPSA id d26sm12142539pfq.215.2021.05.10.17.38.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 17:38:58 -0700 (PDT)
+        Mon, 10 May 2021 17:39:00 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Petr Mladek <pmladek@suse.com>
@@ -55,9 +55,9 @@ Cc:     linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
         Hsin-Yi Wang <hsinyi@chromium.org>,
         Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH v6 09/13] scripts/decode_stacktrace.sh: Silence stderr messages from addr2line/nm
-Date:   Mon, 10 May 2021 17:38:41 -0700
-Message-Id: <20210511003845.2429846-10-swboyd@chromium.org>
+Subject: [PATCH v6 10/13] scripts/decode_stacktrace.sh: Indicate 'auto' can be used for base path
+Date:   Mon, 10 May 2021 17:38:42 -0700
+Message-Id: <20210511003845.2429846-11-swboyd@chromium.org>
 X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
 In-Reply-To: <20210511003845.2429846-1-swboyd@chromium.org>
 References: <20210511003845.2429846-1-swboyd@chromium.org>
@@ -67,10 +67,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sometimes if you're using tools that have linked things improperly or
-have new features/sections that older tools don't expect you'll see
-warnings printed to stderr. We don't really care about these warnings,
-so let's just silence these messages to cleanup output of this script.
+Add "auto" to the usage message so that it's a little clearer that you
+can pass "auto" as the second argument. When passing "auto" the script
+tries to find the base path automatically instead of requiring it be
+passed on the commandline. Also use [<variable>] to indicate the
+variable argument and that it is optional so that we can differentiate
+from the literal "auto" that should be passed.
 
 Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>
@@ -81,40 +83,22 @@ Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 Cc: Sasha Levin <sashal@kernel.org>
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- scripts/decode_stacktrace.sh | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ scripts/decode_stacktrace.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/scripts/decode_stacktrace.sh b/scripts/decode_stacktrace.sh
-index ca21f8bdf5f2..20b5af1ebe5e 100755
+index 20b5af1ebe5e..5fbad61fe490 100755
 --- a/scripts/decode_stacktrace.sh
 +++ b/scripts/decode_stacktrace.sh
-@@ -74,7 +74,7 @@ find_module() {
- 	find_module && return
+@@ -5,7 +5,7 @@
  
- 	if [[ $release == "" ]] ; then
--		release=$(gdb -ex 'print init_uts_ns.name.release' -ex 'quit' -quiet -batch "$vmlinux" | sed -n 's/\$1 = "\(.*\)".*/\1/p')
-+		release=$(gdb -ex 'print init_uts_ns.name.release' -ex 'quit' -quiet -batch "$vmlinux" 2>/dev/null | sed -n 's/\$1 = "\(.*\)".*/\1/p')
- 	fi
+ usage() {
+ 	echo "Usage:"
+-	echo "	$0 -r <release> | <vmlinux> [base path] [modules path]"
++	echo "	$0 -r <release> | <vmlinux> [<base path>|auto] [<modules path>]"
+ }
  
- 	for dn in {/usr/lib/debug,}/lib/modules/$release ; do
-@@ -128,7 +128,7 @@ parse_symbol() {
- 	if [[ "${cache[$module,$name]+isset}" == "isset" ]]; then
- 		local base_addr=${cache[$module,$name]}
- 	else
--		local base_addr=$(nm "$objfile" | awk '$3 == "'$name'" && ($2 == "t" || $2 == "T") {print $1; exit}')
-+		local base_addr=$(nm "$objfile" 2>/dev/null | awk '$3 == "'$name'" && ($2 == "t" || $2 == "T") {print $1; exit}')
- 		if [[ $base_addr == "" ]] ; then
- 			# address not found
- 			return
-@@ -152,7 +152,7 @@ parse_symbol() {
- 	if [[ "${cache[$module,$address]+isset}" == "isset" ]]; then
- 		local code=${cache[$module,$address]}
- 	else
--		local code=$(${CROSS_COMPILE}addr2line -i -e "$objfile" "$address")
-+		local code=$(${CROSS_COMPILE}addr2line -i -e "$objfile" "$address" 2>/dev/null)
- 		cache[$module,$address]=$code
- 	fi
- 
+ if [[ $1 == "-r" ]] ; then
 -- 
 https://chromeos.dev
 
