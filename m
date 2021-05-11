@@ -2,203 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508A537B0B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B2137B0CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhEKVWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 17:22:08 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:48271 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbhEKVWG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 17:22:06 -0400
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 2114C891B1;
-        Wed, 12 May 2021 09:20:56 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1620768056;
-        bh=Gbh5Hq8cFLe7sHg6877yUHfJTLnJ0lbE1WXVQxvk2xs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=xr5qNTRTGRHkFh3fc957QOCSy/4nCoQSB+iVpRvPwT6yFv/FE2F9jz6Vmh8ltlnUG
-         EoM3XCySGX6wacChM5VrRN8H6uCg9TpHHYUzztAqzAklppPPNz3zuwOeF+i3bsanpo
-         q+9hnB5h0twX2yAToLaKRZELCw+M8spxOSBNjTXChLr+H1STaQs9gEpFCHQDB9gjiv
-         qwHkTVh9NfK3KDOqffEvQl+clB91uQebwXepT8WOpGXvAzWMIaFSHCdkjM/kbwrAQr
-         lnRvs1oEPPgpd5FW3PuOzkSJU6i3Tq04KWlnCL1c4u0s37mCmQvZxF217ar7M4FUH/
-         v/sYT3A7z/ZYg==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B609af5370004>; Wed, 12 May 2021 09:20:55 +1200
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
-        by pat.atlnz.lc (Postfix) with ESMTP id C8D5D13ECA6;
-        Wed, 12 May 2021 09:20:55 +1200 (NZST)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id C5E5E283A61; Wed, 12 May 2021 09:20:55 +1200 (NZST)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     wsa@kernel.org, andriy.shevchenko@linux.intel.com,
-        andy.shevchenko@gmail.com, robh+dt@kernel.org, mpe@ellerman.id.au
-Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v3 4/4] i2c: mpc: implement erratum A-004447 workaround
-Date:   Wed, 12 May 2021 09:20:52 +1200
-Message-Id: <20210511212052.27242-5-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210511212052.27242-1-chris.packham@alliedtelesis.co.nz>
-References: <20210511212052.27242-1-chris.packham@alliedtelesis.co.nz>
+        id S229968AbhEKVb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 17:31:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229784AbhEKVbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 17:31:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E3B061919;
+        Tue, 11 May 2021 21:30:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620768649;
+        bh=ZqExC12JpkhpWz/CkibWvB0TO3ks/bAKORvyV1kk7HA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Pnd5g0Eo7h+9XqH3dSvC9FF40a74EIu55uNt/vkGYHiV8sT/hGqOwL3dpt3uZl+xM
+         nUOEwYUtR5BkuuEBSDosOrKrjA5iju9qfS9S7Dq6gYUwIf3uswbOnLjHzUH39fWgc2
+         xwQpOtoJ0uepO3kwsOF+v80jAfh5HPgupXGaULmGztv3Fv2oXfFX9xdl3dGWaSk5vB
+         6inU1PEivqnunT2e88QnXE5/x/qdziTLsBisTyJqCWnlZvh7MJwCUdO6WCNOqMDWJE
+         vqMJhhcVfmGF1U5MYJr/32/AmCQ9k+pAe+CZmEWzZC1ddKD09rM8Pmk+mz05NPNj4S
+         Mtz5Vb4wtnlfA==
+Date:   Tue, 11 May 2021 16:30:47 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Rajat Jain <rajatja@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-usb@vger.kernel.org, Rajat Jain <rajatxjain@gmail.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Dmitry Torokhov <dtor@google.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        David Laight <David.Laight@ACULAB.COM>
+Subject: Re: [PATCH v2 2/2] pci: Support "removable" attribute for PCI devices
+Message-ID: <20210511213047.GA2417208@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=K6Jc4BeI c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=5FLXtPjwQuUA:10 a=w4j1xu5M8ypyE8uBZIYA:9
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210424021631.1972022-2-rajatja@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The P2040/P2041 has an erratum where the normal i2c recovery mechanism
-does not work. Implement the alternative recovery mechanism documented
-in the P2040 Chip Errata Rev Q.
+[+cc Oliver, David]
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
+Please update the subject line, e.g.,
 
-Notes:
-    Changes in v3:
-    - Further code reduction in i2c_mpc_wait_sr()
-    Changes in v2:
-    - Use readb_poll_timeout instead of open-coded loop
+  PCI: Add sysfs "removable" attribute
 
- drivers/i2c/busses/i2c-mpc.c | 81 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 79 insertions(+), 2 deletions(-)
+On Fri, Apr 23, 2021 at 07:16:31PM -0700, Rajat Jain wrote:
+> Export the already available info, to the userspace via the
+> device core, so that userspace can implement whatever policies it
+> wants to, for external removable devices.
 
-diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
-index 30d9e89a3db2..dcca9c2396db 100644
---- a/drivers/i2c/busses/i2c-mpc.c
-+++ b/drivers/i2c/busses/i2c-mpc.c
-@@ -19,6 +19,7 @@
-=20
- #include <linux/clk.h>
- #include <linux/io.h>
-+#include <linux/iopoll.h>
- #include <linux/fsl_devices.h>
- #include <linux/i2c.h>
- #include <linux/interrupt.h>
-@@ -45,6 +46,7 @@
- #define CCR_MTX  0x10
- #define CCR_TXAK 0x08
- #define CCR_RSTA 0x04
-+#define CCR_RSVD 0x02
-=20
- #define CSR_MCF  0x80
- #define CSR_MAAS 0x40
-@@ -97,7 +99,7 @@ struct mpc_i2c {
- 	u32 block;
- 	int rc;
- 	int expect_rxack;
--
-+	bool has_errata_A004447;
- };
-=20
- struct mpc_i2c_divider {
-@@ -136,6 +138,75 @@ static void mpc_i2c_fixup(struct mpc_i2c *i2c)
- 	}
- }
-=20
-+static int i2c_mpc_wait_sr(struct mpc_i2c *i2c, int mask)
-+{
-+	void __iomem *addr =3D i2c->base + MPC_I2C_SR;
-+	u8 val;
-+
-+	return readb_poll_timeout(addr, val, val & mask, 0, 100);
-+}
-+
-+/*
-+ * Workaround for Erratum A004447. From the P2040CE Rev Q
-+ *
-+ * 1.  Set up the frequency divider and sampling rate.
-+ * 2.  I2CCR - a0h
-+ * 3.  Poll for I2CSR[MBB] to get set.
-+ * 4.  If I2CSR[MAL] is set (an indication that SDA is stuck low), then =
-go to
-+ *     step 5. If MAL is not set, then go to step 13.
-+ * 5.  I2CCR - 00h
-+ * 6.  I2CCR - 22h
-+ * 7.  I2CCR - a2h
-+ * 8.  Poll for I2CSR[MBB] to get set.
-+ * 9.  Issue read to I2CDR.
-+ * 10. Poll for I2CSR[MIF] to be set.
-+ * 11. I2CCR - 82h
-+ * 12. Workaround complete. Skip the next steps.
-+ * 13. Issue read to I2CDR.
-+ * 14. Poll for I2CSR[MIF] to be set.
-+ * 15. I2CCR - 80h
-+ */
-+static void mpc_i2c_fixup_A004447(struct mpc_i2c *i2c)
-+{
-+	int ret;
-+	u32 val;
-+
-+	writeccr(i2c, CCR_MEN | CCR_MSTA);
-+	ret =3D i2c_mpc_wait_sr(i2c, CSR_MBB);
-+	if (ret) {
-+		dev_err(i2c->dev, "timeout waiting for CSR_MBB\n");
-+		return;
-+	}
-+
-+	val =3D readb(i2c->base + MPC_I2C_SR);
-+
-+	if (val & CSR_MAL) {
-+		writeccr(i2c, 0x00);
-+		writeccr(i2c, CCR_MSTA | CCR_RSVD);
-+		writeccr(i2c, CCR_MEN | CCR_MSTA | CCR_RSVD);
-+		ret =3D i2c_mpc_wait_sr(i2c, CSR_MBB);
-+		if (ret) {
-+			dev_err(i2c->dev, "timeout waiting for CSR_MBB\n");
-+			return;
-+		}
-+		val =3D readb(i2c->base + MPC_I2C_DR);
-+		ret =3D i2c_mpc_wait_sr(i2c, CSR_MIF);
-+		if (ret) {
-+			dev_err(i2c->dev, "timeout waiting for CSR_MIF\n");
-+			return;
-+		}
-+		writeccr(i2c, CCR_MEN | CCR_RSVD);
-+	} else {
-+		val =3D readb(i2c->base + MPC_I2C_DR);
-+		ret =3D i2c_mpc_wait_sr(i2c, CSR_MIF);
-+		if (ret) {
-+			dev_err(i2c->dev, "timeout waiting for CSR_MIF\n");
-+			return;
-+		}
-+		writeccr(i2c, CCR_MEN);
-+	}
-+}
-+
- #if defined(CONFIG_PPC_MPC52xx) || defined(CONFIG_PPC_MPC512x)
- static const struct mpc_i2c_divider mpc_i2c_dividers_52xx[] =3D {
- 	{20, 0x20}, {22, 0x21}, {24, 0x22}, {26, 0x23},
-@@ -670,7 +741,10 @@ static int fsl_i2c_bus_recovery(struct i2c_adapter *=
-adap)
- {
- 	struct mpc_i2c *i2c =3D i2c_get_adapdata(adap);
-=20
--	mpc_i2c_fixup(i2c);
-+	if (i2c->has_errata_A004447)
-+		mpc_i2c_fixup_A004447(i2c);
-+	else
-+		mpc_i2c_fixup(i2c);
-=20
- 	return 0;
- }
-@@ -767,6 +841,9 @@ static int fsl_i2c_probe(struct platform_device *op)
- 	}
- 	dev_info(i2c->dev, "timeout %u us\n", mpc_ops.timeout * 1000000 / HZ);
-=20
-+	if (of_property_read_bool(op->dev.of_node, "fsl,i2c-erratum-a004447"))
-+		i2c->has_errata_A004447 =3D true;
-+
- 	i2c->adap =3D mpc_ops;
- 	scnprintf(i2c->adap.name, sizeof(i2c->adap.name),
- 		  "MPC adapter (%s)", of_node_full_name(op->dev.of_node));
---=20
-2.31.1
+I know it's not strictly part of *this* patch, but I think we should
+connect the dots a little here, something like this:
 
+  PCI: Add sysfs "removable" attribute
+
+  A PCI device is "external_facing" if it's a Root Port with the ACPI
+  "ExternalFacingPort" property or if it has the DT "external-facing"
+  property.  We consider everything downstream from such a device to
+  be removable.
+
+  Set pci_dev_type.supports_removable so the device core exposes the
+  "removable" file in sysfs, and tell the device core about removable
+  devices.
+
+Wrap to fill 75 columns.
+
+> Signed-off-by: Rajat Jain <rajatja@google.com>
+
+This looks like a good start.  I think it would be useful to have a
+more concrete example of how this information will be used.  I know
+that use would be in userspace, so an example probably would not be a
+kernel patch.  If you have user code published anywhere, that would
+help.  Or even a patch to an existing daemon.  Or pointers to how
+"removable" is used for USB devices.
+
+> ---
+> v2: Add documentation
+> 
+>  Documentation/ABI/testing/sysfs-devices-removable |  3 ++-
+>  drivers/pci/pci-sysfs.c                           |  1 +
+>  drivers/pci/probe.c                               | 12 ++++++++++++
+>  3 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-devices-removable b/Documentation/ABI/testing/sysfs-devices-removable
+> index e13dddd547b5..daac4f007619 100644
+> --- a/Documentation/ABI/testing/sysfs-devices-removable
+> +++ b/Documentation/ABI/testing/sysfs-devices-removable
+> @@ -14,4 +14,5 @@ Description:
+>  
+>  		Currently this is only supported by USB (which infers the
+>  		information from a combination of hub descriptor bits and
+> -		platform-specific data such as ACPI).
+> +		platform-specific data such as ACPI) and PCI (which gets this
+> +		from ACPI / device tree).
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index f8afd54ca3e1..9302f0076e73 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -1582,4 +1582,5 @@ static const struct attribute_group *pci_dev_attr_groups[] = {
+>  
+>  const struct device_type pci_dev_type = {
+>  	.groups = pci_dev_attr_groups,
+> +	.supports_removable = true,
+>  };
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 953f15abc850..d1cceee62e1b 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -1575,6 +1575,16 @@ static void set_pcie_untrusted(struct pci_dev *dev)
+>  		dev->untrusted = true;
+>  }
+>  
+> +static void set_pci_dev_removable(struct pci_dev *dev)
+
+Maybe just "pci_set_removable()"?  These "set_pci*" functions look a
+little weird.
+
+> +{
+> +	struct pci_dev *parent = pci_upstream_bridge(dev);
+> +	if (parent &&
+> +	    (parent->external_facing || dev_is_removable(&parent->dev)))
+> +		dev_set_removable(&dev->dev, DEVICE_REMOVABLE);
+> +	else
+> +		dev_set_removable(&dev->dev, DEVICE_FIXED);
+> +}
+> +
+>  /**
+>   * pci_ext_cfg_is_aliased - Is ext config space just an alias of std config?
+>   * @dev: PCI device
+> @@ -1819,6 +1829,8 @@ int pci_setup_device(struct pci_dev *dev)
+>  	/* "Unknown power state" */
+>  	dev->current_state = PCI_UNKNOWN;
+>  
+> +	set_pci_dev_removable(dev);
+
+So this *only* sets the "removable" attribute based on the
+ExternalFacingPort or external-facing properties.  I think Oliver and
+David were hinting that maybe we should also set it for devices in
+hotpluggable slots.  What do you think?
+
+I wonder if this (and similar hooks like set_pcie_port_type(),
+set_pcie_untrusted(), set_pcie_thunderbolt(), etc) should go *after*
+the early fixups so we could use fixups to work around issues?
+
+>  	/* Early fixups, before probing the BARs */
+>  	pci_fixup_device(pci_fixup_early, dev);
+>  
+> -- 
+> 2.31.1.498.g6c1eba8ee3d-goog
+> 
