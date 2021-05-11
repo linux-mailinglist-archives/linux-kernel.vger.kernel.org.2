@@ -2,125 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE2737B1F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1558037B202
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhEKW5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 18:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhEKW5t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 18:57:49 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA634C061574;
-        Tue, 11 May 2021 15:56:42 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id g38so28453388ybi.12;
-        Tue, 11 May 2021 15:56:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xyJsr5+GU6OwmtbK8l0br93cj/vlkcS6F2ecLZDOOUw=;
-        b=rWUpmSmO26Ym2+SrQlRqIz2mpWdRvsw/gaBtPdipg5SId8RboUQCy8TKew5ARWnnO4
-         MRhqXDJ7GQFISDXt0yEF9HlAQlHqya8CPZa/s8TUwJRYT9NGPyodcTenVHxaZPylISXu
-         MYiBfVktTjdS18KL/MlJx92mPeG8mLTLY9AwNKn4087o2l3zemO/lXP4qomLmgB3dJXv
-         OtakumQPDJkapyMmqfE5jsj8CNL6Q7NrwLyf0Zi19hIXZ1/2WdgCuqKOE5XUl8gzv32x
-         f5ss0HfomCSV+b3WxIkrFGo8FbeVXxJKjb7y5p0vmWbzhp4zHdGgoVgPp8Q/iSZD3WiS
-         eujw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xyJsr5+GU6OwmtbK8l0br93cj/vlkcS6F2ecLZDOOUw=;
-        b=P5J+WVR53runzxrGPvqcxZtFCeg7Sdueu8b1zCpzUj/yRvFMMuSBk93GYlQC2Sg/K7
-         ENKR7V4n3ZPYv2zwBcVxO6x9DUO+ZuYbzapL3DQ1R/sbszWYOwNCcaxYuDkE+wi4Iu9b
-         Fv1c9HviPZh63k0l7PwHqcNScCU4+zvEMJzAdGr+JljhtMYNJ3lg+B12rMOAGer52HYt
-         fRDheHu6Xw15j2fcl9+ihJ/ZT2S0ldqfnwGZKBdTOeXj29xXwPzkdnMdtqO8AnoPRl5b
-         881pUjFg3k8iQJytG4eh0Wz/WtKOxJgFHgCqGff2DC6g3kdOeapDar6V2kBKHsd02Gw4
-         pBjg==
-X-Gm-Message-State: AOAM533pwRXY+DX7cKHkhJJm8NWMNU9Gu5ZC/VjqtZJukizygCoL0BWb
-        z5PahX571jOZtK5TdXpaIWR0JBnZxJ3DQ5fAsO0=
-X-Google-Smtp-Source: ABdhPJxOJZq72lv83XITy6KKMDBkZMUV1JsOyUKmrwI3/5stYIVXL+jKGpVgHRkOvEq4dklqzJSD5C6XiyPth1TW3Gk=
-X-Received: by 2002:a5b:3c2:: with SMTP id t2mr43272548ybp.39.1620773802086;
- Tue, 11 May 2021 15:56:42 -0700 (PDT)
+        id S230018AbhEKW6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:58:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhEKW6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 18:58:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 614B561184;
+        Tue, 11 May 2021 22:57:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620773864;
+        bh=29BJ5jKwJmL1eYq5ancpxySsTkLb14sEcY447w50rMU=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=lRBFgrc8Unke7LA1xPcRJIeN38Bs0e3c/KzcegmkUoDoV+/bhBJ+fsrFu4ELedFaw
+         820oAzGdwtVZIChiqXopFKdIiS6Cb+LPRBLKgv//epO7v4RKRzU68Ru1SBu047DkB2
+         /4UA4QesMuJR76KxI6ml7Fkl3LgngrMsughi2YZBv1hUIheWNsqNjjUBydsz6LP9+R
+         YqKAGs7RxTt552HeQjDBfSmvSW0DHE7+INWTT31CfN0QFh6QC2uMLuW+n4BuMBMeaX
+         wny/lw48nSf+MR/QGBrFm/xaXZxQp9uja4qJG8upTm2TZP9Tot9cSKes7W1AnShpvp
+         x84rRfeZCN6Yg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2756C5C0138; Tue, 11 May 2021 15:57:44 -0700 (PDT)
+Date:   Tue, 11 May 2021 15:57:44 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/2] mem_dump_obj() updates for v5.14
+Message-ID: <20210511225744.GA2893615@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-References: <20210511214605.2937099-1-pgwipeout@gmail.com> <20210511215644.GO1336@shell.armlinux.org.uk>
-In-Reply-To: <20210511215644.GO1336@shell.armlinux.org.uk>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Tue, 11 May 2021 18:56:31 -0400
-Message-ID: <CAMdYzYon+uscEXS=ntmQWD-ROr4owvbQwuWdb2DLmh74Gri1mA@mail.gmail.com>
-Subject: Re: [PATCH] net: phy: add driver for Motorcomm yt8511 phy
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 5:56 PM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> Hi,
->
-> On Tue, May 11, 2021 at 05:46:06PM -0400, Peter Geis wrote:
-> > +static int yt8511_config_init(struct phy_device *phydev)
-> > +{
-> > +     int ret, val, oldpage;
-> > +
-> > +     /* set clock mode to 125mhz */
-> > +     oldpage = phy_select_page(phydev, YT8511_EXT_CLK_GATE);
-> > +     if (oldpage < 0)
-> > +             goto err_restore_page;
-> > +
-> > +     val = __phy_read(phydev, YT8511_PAGE);
-> > +     val |= (YT8511_CLK_125M);
-> > +     ret = __phy_write(phydev, YT8511_PAGE, val);
->
-> Please consider __phy_modify(), and handle any error it returns.
+Hello!
 
-Hey that's really neat, thanks!
+This series provides updates for the mem_dump_obj() functionality.
 
->
-> > +
-> > +     /* disable auto sleep */
-> > +     ret = __phy_write(phydev, YT8511_PAGE_SELECT, YT8511_EXT_SLEEP_CTRL);
->
-> Please consider handling a failure to write here.
+1.	Fix backtrace of objects to handle redzone adjustment, courtesy
+	of Maninder Singh.
 
-Will do.
+2.	Add Support for free path information of an object, courtesy of
+	Maninder Singh.
 
->
-> > +     val = __phy_read(phydev, YT8511_PAGE);
-> > +     val &= (~BIT(15));
-> > +     ret = __phy_write(phydev, YT8511_PAGE, val);
->
-> Also a use for __phy_modify().
->
-> > +
-> > +err_restore_page:
-> > +     return phy_restore_page(phydev, oldpage, ret);
-> > +}
-> > +
-> > +static struct phy_driver motorcomm_phy_drvs[] = {
-> > +     {
-> > +             PHY_ID_MATCH_EXACT(PHY_ID_YT8511),
-> > +             .name           = "YT8511 Gigabit Ethernet",
-> > +             .config_init    = &yt8511_config_init,
->
-> Please drop the '&' here, it's unnecessary.
+						Thanx, Paul
 
-Will do, thank you.
+------------------------------------------------------------------------
 
->
-> Thanks.
->
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+ b/mm/slab.h        |    1 +
+ b/mm/slab_common.c |   12 +++++++++++-
+ b/mm/slub.c        |    1 +
+ b/mm/util.c        |    2 +-
+ mm/slub.c          |    7 +++++++
+ 5 files changed, 21 insertions(+), 2 deletions(-)
