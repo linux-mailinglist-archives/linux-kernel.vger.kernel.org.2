@@ -2,228 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D971A37B207
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0744A37B210
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbhEKXA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:00:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhEKXA0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:00:26 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45D9C061574;
-        Tue, 11 May 2021 15:59:18 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id q136so20493039qka.7;
-        Tue, 11 May 2021 15:59:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zIhPXLlFIfi7x+16X/rcVq/+DBuEAWSYMuS7Kv6syAE=;
-        b=OnhYPgRZBl8D6pX3UPsh3ZvHXH6gC/p3RU7Yr7dkzYXvnyx6i+6SJaP1dgZj2v7oIa
-         scw4DNrujyZBLBAxXdx+OTjpTI0hHx9silDcxVTW/dK20zTlKRKifj5xcEEhpbpaH07L
-         WLkzIsy2r+RD7rexCRYj6YK+HlJgIvAyPWNUq9/WDOyJAIjeKOIH+ycQjIypFMexD0eC
-         +YnDkePEEV/JBU5wa5yD5NQe/Rm/rWFIyHL6TyFrvha4lS32XV/oIoLKgZQI9vIOt2fS
-         wJcb3DWUut4pqVzf8EIA98Ai59DsGMa2OgyrnOV2S5FnMQ1SyWGmgbnt5srutBbH3Arh
-         x0eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zIhPXLlFIfi7x+16X/rcVq/+DBuEAWSYMuS7Kv6syAE=;
-        b=BfETNwQQH9a1HbYWIJ9GFWVyZPccJ1qCWDhqH9G3YAZfV9r2qdF+Uu0md2rFq48WOb
-         z2XM5xFbOYDdNq6qKizDUk5gkWuXbEmDGIVwl+If6pxnDCULU1Z6tqOsdf0gwO53gyQI
-         +7icyc47VBleqorA7lkZmvQMXSknsGsjVt9NI9bstGEVE3ga4SE8+7l6Ca+n8W9om6we
-         4gWPT84HnwbsrVDr/0SNYey590XPQjhychuM9eY/vo2nI42+wR+u/5MQxYdFcscPpI1y
-         PadWuopf/ZKgMIe7qV+11b2EaYzVKgd0FxV6asL6tqHVf9Cpk0Au87mKqhUiW/BPyz+f
-         PNnA==
-X-Gm-Message-State: AOAM533aJ3LiSaYRZnWMjIxCsf+lr+vzClxUmN5ezyMBsmaLQrj1gmLf
-        laOcPG1Y7282ex4ydWZ/ZkY=
-X-Google-Smtp-Source: ABdhPJxDPfMiMA+7RUHRgdPIRvMxKuUHTo07lpk4YegTL+cGeFCG06MDib3Q5G/BnOYU6hL+xrvuSA==
-X-Received: by 2002:a05:620a:40ce:: with SMTP id g14mr9495703qko.149.1620773957869;
-        Tue, 11 May 2021 15:59:17 -0700 (PDT)
-Received: from master-laptop.sparksnet ([2601:153:980:85b1:f9ba:6614:640b:eee1])
-        by smtp.gmail.com with ESMTPSA id m10sm13459172qtq.83.2021.05.11.15.59.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 15:59:17 -0700 (PDT)
-From:   Peter Geis <pgwipeout@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Peter Geis <pgwipeout@gmail.com>
-Subject: [PATCH v2] net: phy: add driver for Motorcomm yt8511 phy
-Date:   Tue, 11 May 2021 18:59:13 -0400
-Message-Id: <20210511225913.2951922-1-pgwipeout@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S229984AbhEKXDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:03:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhEKXDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 19:03:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3541561624;
+        Tue, 11 May 2021 23:02:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620774155;
+        bh=BIKyXFoa74TTi5KNBShiCcyApEkI7I0Isisr4tY8eTs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=V8pmrmEg/hRJTMOS1agePsx4onbtt4kay/0LeUCfitI3vveS/rfSEUxQY5WbM5v66
+         ZeYrz7JsSMd8vGt5vQzNl+pz/YFIbsr/kKCEU9e9rc+qqpp97VHlyZYoJI4IpYKL8b
+         9Gljda93u6s+oD6SKywj6dFoZiHMdvCVTCqtdP2x1W49wFCKKzbpTxefI4oa7eu16Z
+         /VM72FHdfRxDQipx82hG06AGmTAQLyBdCPyltNk5w7jx/oFBkIINcfev7Sk3L3ZGss
+         +Oq2rREBf5DOekyX+hVFe/3YT2T3tEEBkMB/KJdnmzrLOkBaXVYIy+1pH8ESOCiqul
+         OXE+R6F24jz7A==
+Date:   Tue, 11 May 2021 18:02:28 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Rajat Jain <rajatja@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>, Rajat Jain <rajatxjain@gmail.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Dmitry Torokhov <dtor@google.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        David Laight <David.Laight@aculab.com>
+Subject: Re: [PATCH v2 2/2] pci: Support "removable" attribute for PCI devices
+Message-ID: <20210511230228.GA2429744@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACK8Z6GP415hmDUYU74LRrGYKCN4aAXGD-B=ctN8R7P3LnFUrw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a driver for the Motorcomm yt8511 phy that will be used in the
-production Pine64 rk3566-quartz64 development board.
-It supports gigabit transfer speeds, rgmii, and 125mhz clk output.
+On Tue, May 11, 2021 at 03:15:11PM -0700, Rajat Jain wrote:
+> On Tue, May 11, 2021 at 2:30 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Fri, Apr 23, 2021 at 07:16:31PM -0700, Rajat Jain wrote:
+> > ...
+> > This looks like a good start.  I think it would be useful to have a
+> > more concrete example of how this information will be used.  I know
+> > that use would be in userspace, so an example probably would not be a
+> > kernel patch.  If you have user code published anywhere, that would
+> > help.  Or even a patch to an existing daemon.  Or pointers to how
+> > "removable" is used for USB devices.
+> 
+> Sure, I'll point to some existing user space code (which will be using
+> a similar attribute we are carrying internally).
 
-Signed-off-by: Peter Geis <pgwipeout@gmail.com>
----
-Changes v2:
-- Change to __phy_modify
-- Handle return errors
-- Remove unnecessary &
+Great, thanks!
 
- MAINTAINERS                 |  6 +++
- drivers/net/phy/Kconfig     |  6 +++
- drivers/net/phy/Makefile    |  1 +
- drivers/net/phy/motorcomm.c | 87 +++++++++++++++++++++++++++++++++++++
- 4 files changed, 100 insertions(+)
- create mode 100644 drivers/net/phy/motorcomm.c
+> > > +     set_pci_dev_removable(dev);
+> >
+> > So this *only* sets the "removable" attribute based on the
+> > ExternalFacingPort or external-facing properties.  I think Oliver and
+> > David were hinting that maybe we should also set it for devices in
+> > hotpluggable slots.  What do you think?
+> 
+> I did think about it. So I have a mixed feeling about this. Primarily
+> because I have seen the use of hotpluggable slots in situations where
+> we wouldn't want to classify the device as removable:
+> 
+> - Using link-state based hotplug as a way to work around unstable PCIe
+> links. I have seen PCIe devices marked as hot-pluggable only to ensure
+> that if the PCIe device falls off PCI bus due to some reason (e.g. due
+> to SI issues or device firmware bugs), the kernel should be able to
+> detect it if it does come back up (remember quick "Link-Down" /
+> "Link-Up" events in succession?).
+> 
+> - Internal hot-pluggable PCI devices. In my past life, I was working
+> on a large system that would have hot-pluggable daughter cards, but
+> those wouldn't be user removable. Also, it is conceivable to have
+> hot-pluggable M.2 slots for PCIe devices such as NVMEs etc, but they
+> may still not be removable by user. I don't think these should be
+> treated as "removable". I was also looking at USB as an example where
+> this originally came from, USB does ensure that only devices that are
+> "user visible" devices are marked as "removable":
+> 
+> 54d3f8c63d69 ("usb: Set device removable state based on ACPI USB data")
+> d35e70d50a06 ("usb: Use hub port data to determine whether a port is removable")
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 601b5ae0368a..2a2e406238fc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12388,6 +12388,12 @@ F:	Documentation/userspace-api/media/drivers/meye*
- F:	drivers/media/pci/meye/
- F:	include/uapi/linux/meye.h
- 
-+MOTORCOMM PHY DRIVER
-+M:	Peter Geis <pgwipeout@gmail.com>
-+L:	netdev@vger.kernel.org
-+S:	Maintained
-+F:	drivers/net/phy/motorcomm.c
-+
- MOXA SMARTIO/INDUSTIO/INTELLIO SERIAL CARD
- S:	Orphan
- F:	Documentation/driver-api/serial/moxa-smartio.rst
-diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-index 288bf405ebdb..16db9f8037b5 100644
---- a/drivers/net/phy/Kconfig
-+++ b/drivers/net/phy/Kconfig
-@@ -229,6 +229,12 @@ config MICROSEMI_PHY
- 	help
- 	  Currently supports VSC8514, VSC8530, VSC8531, VSC8540 and VSC8541 PHYs
- 
-+config MOTORCOMM_PHY
-+	tristate "Motorcomm PHYs"
-+	help
-+	  Enables support for Motorcomm network PHYs.
-+	  Currently supports the YT8511 gigabit PHY.
-+
- config NATIONAL_PHY
- 	tristate "National Semiconductor PHYs"
- 	help
-diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
-index bcda7ed2455d..37ffbc6e3c87 100644
---- a/drivers/net/phy/Makefile
-+++ b/drivers/net/phy/Makefile
-@@ -70,6 +70,7 @@ obj-$(CONFIG_MICREL_PHY)	+= micrel.o
- obj-$(CONFIG_MICROCHIP_PHY)	+= microchip.o
- obj-$(CONFIG_MICROCHIP_T1_PHY)	+= microchip_t1.o
- obj-$(CONFIG_MICROSEMI_PHY)	+= mscc/
-+obj-$(CONFIG_MOTORCOMM_PHY)	+= motorcomm.o
- obj-$(CONFIG_NATIONAL_PHY)	+= national.o
- obj-$(CONFIG_NXP_C45_TJA11XX_PHY)	+= nxp-c45-tja11xx.o
- obj-$(CONFIG_NXP_TJA11XX_PHY)	+= nxp-tja11xx.o
-diff --git a/drivers/net/phy/motorcomm.c b/drivers/net/phy/motorcomm.c
-new file mode 100644
-index 000000000000..580926f25dfc
---- /dev/null
-+++ b/drivers/net/phy/motorcomm.c
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Driver for Motorcomm PHYs
-+ *
-+ * Author: Peter Geis <pgwipeout@gmail.com>
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/phy.h>
-+
-+#define PHY_ID_YT8511		0x0000010a
-+
-+#define YT8511_PAGE_SELECT	0x1e
-+#define YT8511_PAGE		0x1f
-+#define YT8511_EXT_CLK_GATE	0x0c
-+#define YT8511_EXT_SLEEP_CTRL	0x27
-+
-+/* 2b00 25m from pll
-+ * 2b01 25m from xtl *default*
-+ * 2b10 62.m from pll
-+ * 2b11 125m from pll
-+ */
-+#define YT8511_CLK_125M		(BIT(2) | BIT(1))
-+
-+static int yt8511_read_page(struct phy_device *phydev)
-+{
-+	return __phy_read(phydev, YT8511_PAGE_SELECT);
-+};
-+
-+static int yt8511_write_page(struct phy_device *phydev, int page)
-+{
-+	return __phy_write(phydev, YT8511_PAGE_SELECT, page);
-+};
-+
-+static int yt8511_config_init(struct phy_device *phydev)
-+{
-+	int ret, oldpage;
-+
-+	/* set clock mode to 125mhz */
-+	oldpage = phy_select_page(phydev, YT8511_EXT_CLK_GATE);
-+	if (oldpage < 0)
-+		goto err_restore_page;
-+
-+	ret = __phy_modify(phydev, YT8511_PAGE, 0, YT8511_CLK_125M);
-+	if (ret < 0)
-+		goto err_restore_page;
-+
-+	/* disable auto sleep */
-+	ret = __phy_write(phydev, YT8511_PAGE_SELECT, YT8511_EXT_SLEEP_CTRL);
-+	if (ret < 0)
-+		goto err_restore_page;
-+	ret = __phy_modify(phydev, YT8511_PAGE, BIT(15), 0);
-+	if (ret < 0)
-+		goto err_restore_page;
-+
-+err_restore_page:
-+	return phy_restore_page(phydev, oldpage, ret);
-+}
-+
-+static struct phy_driver motorcomm_phy_drvs[] = {
-+	{
-+		PHY_ID_MATCH_EXACT(PHY_ID_YT8511),
-+		.name		= "YT8511 Gigabit Ethernet",
-+		.config_init	= yt8511_config_init,
-+		.get_features	= genphy_read_abilities,
-+		.config_aneg	= genphy_config_aneg,
-+		.read_status	= genphy_read_status,
-+		.suspend	= genphy_suspend,
-+		.resume		= genphy_resume,
-+		.read_page	= yt8511_read_page,
-+		.write_page	= yt8511_write_page,
-+	},
-+};
-+
-+module_phy_driver(motorcomm_phy_drvs);
-+
-+MODULE_DESCRIPTION("Motorcomm PHY driver");
-+MODULE_AUTHOR("Peter Geis");
-+MODULE_LICENSE("GPL");
-+
-+static const struct mdio_device_id __maybe_unused motorcomm_tbl[] = {
-+	{ PHY_ID_MATCH_EXACT(PHY_ID_YT8511) },
-+	{ /* sentinal */ }
-+};
-+
-+MODULE_DEVICE_TABLE(mdio, motorcomm_tbl);
--- 
-2.25.1
+IIUC your main concern is consumer platforms where PCI devices would
+be hotplugged via a Thunderbolt or similar cable, and that port
+would be marked as an "ExternalFacingPort" so we'd mark them as
+"removable".
 
+A device in a server hotplug slot would probably *not* be marked as
+"removable".  The same device in an external chassis connected via an
+iPass or similar cable *might* be "removable" depending on whether the
+firmware calls the iPass port an "ExternalFacingPort".
+
+Does the following capture some of what you're thinking?  Maybe some
+wordsmithed version of it would be useful in a comment and/or commit
+log?
+
+  We're mainly concerned with consumer platforms with accessible
+  Thunderbolt ports that are vulnerable to DMA attacks, and we expect
+  those ports to be identified as "ExternalFacingPort".
+
+  Devices in traditional hotplug slots are also "removable," but not
+  as vulnerable because these slots are less accessible to users.
+
+> > I wonder if this (and similar hooks like set_pcie_port_type(),
+> > set_pcie_untrusted(), set_pcie_thunderbolt(), etc) should go *after*
+> > the early fixups so we could use fixups to work around issues?
+> 
+> I agree. We can do that if none of the early fixups actually use the
+> fields set by these functions. I think it should be ok to move
+> set_pcie_untrusted(), set_pcie_thunderbolt(), but I wonder if any
+> early fixups already use the pcie_cap or any other fields set by
+> set_pcie_port_type().
+
+I think you should move the one you're adding
+(set_pci_dev_removable()) and leave the others where they are for now.
+
+No need to expand the scope of your patch; I was just thinking they're
+all basically similar and should ideally be done at similar times.
+
+> > >       /* Early fixups, before probing the BARs */
+> > >       pci_fixup_device(pci_fixup_early, dev);
+> > >
+> > > --
+> > > 2.31.1.498.g6c1eba8ee3d-goog
+> > >
