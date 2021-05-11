@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AA737B099
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB3A37B09A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhEKVO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 17:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56150 "EHLO
+        id S230114AbhEKVO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 17:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhEKVOw (ORCPT
+        with ESMTP id S230095AbhEKVOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 17:14:52 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C144C061574
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CA1C06175F
         for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 14:13:43 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id v4so6936497qtp.1
+Received: by mail-qk1-x730.google.com with SMTP id f29so8027553qka.0
         for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 14:13:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gqxX6Vz+pymSRyXtv27QA0TQ7GwQhPZuzfC0VUoUs5Q=;
-        b=emlCbxgPQhBW6tBKZBOZ5Xop6Uu8DAj7/0wu3WbzVPRLh7QVGxetZVVFTfGKTKSO52
-         PNcQq/BtN7c5ggwO9pg42Tadw7e9853RiVacQNxfpqn9QZTcyD1+wZYAv2fDycTobf3A
-         dj8/8vw7e9vOpGIABvXx+g/WGf5L4qA6klTZAzw6WlbpawznXSK7kPfREcAz4/hgSzlM
-         wXu6jGMiUsvpx/w0oOd2Axu+F7HFnnklLM44sroX4OaFSNe4k34sSl+ctAiyY91HCozX
-         pLVTG4GDVAeEefdJLiMv+R6AfaUxvdFpl/l8kZyhRvPxGLcws++vS4gQzedfhNPv1aoF
-         g36A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=MIxnRK41Dgin4k+YEmUeZP4hcWluFOzQ6jiu6YLQGXo=;
+        b=hPBzHd0PAN1kHhgfMk3w9N/mFcR0Ucuk5lQRISA2OeXDXSjj5KNfQx+ZQqypxm3Ygh
+         Zdaq1cvdWKOhWJT+jl7t12YLh42scADTtEcAhflIp6Zrsm8Eru2aEfV06ep3VFvkSVv7
+         JLlk8OuvppcQ21BZLlcCffF9/YE5GHZx1jMie5I/859XOtbRluvSyJUfSkIwRj11w7qp
+         EbufvORqmLYNjpw1cfc1/XiyFi1tAVXbkq5EFmtTb1ru6SB9kcJkZamQB6fIBGJb20f3
+         q5mbd/w42CImwCHS//cG4KYxr1XtW6SAH2TKHscrAkrU9PmfBXaas8lRjBWa9uPtjyvX
+         /Dsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gqxX6Vz+pymSRyXtv27QA0TQ7GwQhPZuzfC0VUoUs5Q=;
-        b=RHkhbn14IML+R02EBQfZR+uoCkhdaj6uc4eAY7tAIqX4uvpuePGy8x1R/BVlhPckUR
-         cNaqweJhfxjQj8d3AjOtAcHUpCTIDNSSLNMTV8vWl3Tbi0wZTl25Z1IYedWWZ8KEFtC7
-         p7PTOz+x5i0VQS0G4oK8wQwONDGBCXHztOG2/CNP3pH8j7kQFbQiiAdsiQRDipTgnMqE
-         8rO4ItxgW5JEfLONU1NGfsUPZr/6wzQcaus6hIiYEKC2px1tr3cquIZaTAMiKE92AvN7
-         RkrAWEoV3lr6hbCUtZcsHGuua5e+fbG9L5lKiG6vn5YNcB+2hftxmyFDRXq8y01PJ/98
-         aaGg==
-X-Gm-Message-State: AOAM531a9GMxGVz31Xb3szcSRiyIOg22HXiT7dXAHFjaqh3eWMA8JVtz
-        iJ/nHHFKzKoQI0cuztQkHRk=
-X-Google-Smtp-Source: ABdhPJyucclwtqzlHg1LsYabINNWi2wv63iyqGfcntmYPwSs39gtBwGdSfdvi3uoBwg/u8teCvzMyg==
-X-Received: by 2002:ac8:5253:: with SMTP id y19mr10835480qtn.380.1620767622402;
-        Tue, 11 May 2021 14:13:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MIxnRK41Dgin4k+YEmUeZP4hcWluFOzQ6jiu6YLQGXo=;
+        b=RqnaayZXSGrGds2NjJEfapGdX19d8KZD6mFs0VkXq6IocEn1d5DolewcKQHSUCE1Jv
+         64Kt0zFNYIgOHW4yxmJtxivM3s+WcBpkmp604MdFSszpOL+QqHNMg4lXZmffT7LMRCGI
+         n/wld77+2lthoFKcBT1NI/vvnzl79f3WZKD7XwdTQSmpzY5eA4FHZqKu4TC5JQe83I7H
+         DBRhLbd/dft6OvqjwCHjxweToxqF138ya0if+t+4Hjl4PQWlGfEek7ZJUtYQx5TlVOWE
+         hu/IH4rwaZOulfO7U04A81Z8j88OC66D+C0XibVAaYT732swjKHgMCXqYaHHzS6t6LQK
+         ZFNA==
+X-Gm-Message-State: AOAM531cPfhsPnaXjvKvH5Uf6lc0Qp3I5+UvvHwPcoOGb3cCXiaOwHNs
+        M0hSPxHS5JuRnN5m/dLP1BNiz10Gv0GZfg==
+X-Google-Smtp-Source: ABdhPJxzBTmfrlh6QgTAlodB1O9HSHlGdWG9yawn0/jQBiedyKexwztdbdSyC8LVv+lE04Dv8PxMHQ==
+X-Received: by 2002:a37:ae44:: with SMTP id x65mr30033599qke.9.1620767623042;
+        Tue, 11 May 2021 14:13:43 -0700 (PDT)
 Received: from master-laptop.sparksnet ([2601:153:980:85b1:f9ba:6614:640b:eee1])
-        by smtp.gmail.com with ESMTPSA id g64sm14780392qkf.41.2021.05.11.14.13.41
+        by smtp.gmail.com with ESMTPSA id g64sm14780392qkf.41.2021.05.11.14.13.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 11 May 2021 14:13:42 -0700 (PDT)
 From:   Peter Geis <pgwipeout@gmail.com>
@@ -53,30 +53,52 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>
 Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
         linux-kernel@vger.kernel.org, Peter Geis <pgwipeout@gmail.com>
-Subject: [PATCH 0/3] regulator: fan53555: tcs4525 fix and cleanup
-Date:   Tue, 11 May 2021 17:13:32 -0400
-Message-Id: <20210511211335.2935163-1-pgwipeout@gmail.com>
+Subject: [PATCH 1/3] regulator: fan53555: fix TCS4525 voltage calulation
+Date:   Tue, 11 May 2021 17:13:33 -0400
+Message-Id: <20210511211335.2935163-2-pgwipeout@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210511211335.2935163-1-pgwipeout@gmail.com>
+References: <20210511211335.2935163-1-pgwipeout@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tcs4525 voltage calculation is incorrect, which leads to a deadlock
-on the rk3566-quartz64 board when loading cpufreq.
-Fix the voltage calculation to correct the deadlock.
-While we are at it, add a safety check and clean up the function names
-to be more accurate.
+The TCS4525 has 128 voltage steps. With the calculation set to 127 the
+most significant bit is disregarded which leads to a miscalculation of
+the voltage by about 200mv.
 
-Peter Geis (3):
-  regulator: fan53555: fix TCS4525 voltage calulation
-  regulator: fan53555: only bind tcs4525 to correct chip id
-  regulator: fan53555: fix tcs4525 function names
+Fix the calculation to end deadlock on the rk3566-quartz64 which uses
+this as the cpu regulator.
 
- drivers/regulator/fan53555.c | 44 ++++++++++++++++++++++--------------
- 1 file changed, 27 insertions(+), 17 deletions(-)
+Fixes: 914df8faa7d6 ("regulator: fan53555: Add TCS4525 DCDC support")
+Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+---
+ drivers/regulator/fan53555.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
+diff --git a/drivers/regulator/fan53555.c b/drivers/regulator/fan53555.c
+index f3918f03aaf3..26f06f685b1b 100644
+--- a/drivers/regulator/fan53555.c
++++ b/drivers/regulator/fan53555.c
+@@ -55,7 +55,6 @@
+ 
+ #define FAN53555_NVOLTAGES	64	/* Numbers of voltages */
+ #define FAN53526_NVOLTAGES	128
+-#define TCS4525_NVOLTAGES	127	/* Numbers of voltages */
+ 
+ #define TCS_VSEL_NSEL_MASK	0x7f
+ #define TCS_VSEL0_MODE		(1 << 7)
+@@ -376,7 +375,7 @@ static int fan53555_voltages_setup_tcs(struct fan53555_device_info *di)
+ 	/* Init voltage range and step */
+ 	di->vsel_min = 600000;
+ 	di->vsel_step = 6250;
+-	di->vsel_count = TCS4525_NVOLTAGES;
++	di->vsel_count = FAN53526_NVOLTAGES;
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
