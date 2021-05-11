@@ -2,121 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496C437A8EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B727A37A8FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231786AbhEKOTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:19:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231523AbhEKOTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:19:47 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3647B611BE;
-        Tue, 11 May 2021 14:18:39 +0000 (UTC)
-Date:   Tue, 11 May 2021 15:19:45 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Peter Rosin <peda@axentia.se>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: iio: afe: current-sense-shunt: add
- io-channel-cells
-Message-ID: <20210511151945.1c3fd6e0@jic23-huawei>
-In-Reply-To: <1e8651a3-e730-411b-18a8-800e9bd9304e@canonical.com>
-References: <20210506150637.35288-1-krzysztof.kozlowski@canonical.com>
-        <0e68ca18-7d8c-12ab-59b1-56404b29be77@axentia.se>
-        <20210508165944.2e3d8d91@jic23-huawei>
-        <1e8651a3-e730-411b-18a8-800e9bd9304e@canonical.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231784AbhEKOWi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 May 2021 10:22:38 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3061 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231154AbhEKOWg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:22:36 -0400
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FffvS4G8Sz6wkkD;
+        Tue, 11 May 2021 22:10:12 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 11 May 2021 16:21:28 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Tue, 11 May 2021 16:21:28 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        "mjg59@google.com" <mjg59@google.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        kernel test robot <lkp@intel.com>
+Subject: RE: [PATCH v6 08/11] evm: Allow setxattr() and setattr() for
+ unmodified metadata
+Thread-Topic: [PATCH v6 08/11] evm: Allow setxattr() and setattr() for
+ unmodified metadata
+Thread-Index: AQHXQaKHvFPvOA7oV0m5qAvk17yFuareOl6AgAAjMeA=
+Date:   Tue, 11 May 2021 14:21:28 +0000
+Message-ID: <c281b39bdbaa4b5ab921a2e9cece83b4@huawei.com>
+References: <20210505112935.1410679-1-roberto.sassu@huawei.com>
+         <20210505113329.1410943-4-roberto.sassu@huawei.com>
+ <735bae46f0772b40ef6ecfb3c6fe0267b3ebbee8.camel@linux.ibm.com>
+In-Reply-To: <735bae46f0772b40ef6ecfb3c6fe0267b3ebbee8.camel@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021 08:17:17 -0400
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote:
-
-> On 08/05/2021 11:59, Jonathan Cameron wrote:
-> > On Sat, 8 May 2021 00:44:58 +0200
-> > Peter Rosin <peda@axentia.se> wrote:
-> >   
-> >> Hi!
-> >>
-> >> On 2021-05-06 17:06, Krzysztof Kozlowski wrote:  
-> >>> The current-sense-shunt is an IIO provider thus can be referenced by IIO
-> >>> consumers (via "io-channels" property in consumer device node).
-> >>> Such provider is required to describe number of cells used in phandle
-> >>> lookup with "io-channel-cells" property.  This also fixes dtbs_check
-> >>> warnings like:
-> >>>
-> >>>   arch/arm/boot/dts/s5pv210-fascinate4g.dt.yaml: current-sense-shunt:
-> >>>     '#io-channel-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
-> >>>
-> >>> Fixes: ce66e52b6c16 ("dt-bindings:iio:afe:current-sense-shunt: txt to yaml conversion.")
-> >>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> >>> ---
-> >>>  .../devicetree/bindings/iio/afe/current-sense-shunt.yaml     | 5 +++++
-> >>>  1 file changed, 5 insertions(+)
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml b/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
-> >>> index 90439a8dc785..05166d8a3124 100644
-> >>> --- a/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
-> >>> +++ b/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
-> >>> @@ -24,12 +24,16 @@ properties:
-> >>>      description: |
-> >>>        Channel node of a voltage io-channel.
-> >>>  
-> >>> +  "#io-channel-cells":
-> >>> +    const: 0
-> >>> +
-> >>>    shunt-resistor-micro-ohms:
-> >>>      description: The shunt resistance.
-> >>>  
-> >>>  required:
-> >>>    - compatible
-> >>>    - io-channels
-> >>> +  - "#io-channel-cells"
-> >>>    - shunt-resistor-micro-ohms    
-> >>
-> >> I know I'm listed as maintainer and all, but I have not kept up with the yaml
-> >> conversion. Sorry. So, given that I might very well fundamentally misunderstand
-> >> something, it does not sound correct that #io-channel-cells is now "required".
-> >> I regard it as optional, and only needed if some other in-kernel driver is
-> >> consuming the sensed current. What am I missing?
-> >>  
-> > 
-> > Agreed. This should be optional and I have deliberately not introduced it
-> > into all the bindings that could in theory support being used as providers.
-> > 
-> > So far I've not pushed it out in a blanket fashion into existing bindings
-> > even as optional.
-> >   
-> >> Also, whatever is done in this binding should preferably also be done in the
-> >> two "sister" afe bindings, i.e. current-sense-amplifier and voltage-divider.  
-> > 
-> > This particular case is squashing an error, so whilst I'm happy to have those
-> > gain the binding addition, I would like to see them in a separate patch as
-> > less likely they'd get back ported.
-> > 
-> > If Kryysztof is fine with me just dropping the required I can pick up this patch.  
+> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> Sent: Tuesday, May 11, 2021 4:12 PM
+> Hi Roberto,
 > 
-> Having here required number of cells helps any DT-user to seamlessly
-> integrate with it (e.g. with his in-tree or out-of-tree DTS, with
-> overlays). However it also can be added with such DTS or overlay, so in
-> general I don't mind dropping the required piece. Thanks!
-I dropped the required and applied to the togreg branch of iio.git.
-
-Thanks,
-
-Jonathan
-
+> On Wed, 2021-05-05 at 13:33 +0200, Roberto Sassu wrote:
+> > With the patch to allow xattr/attr operations if a portable signature
+> > verification fails, cp and tar can copy all xattrs/attrs so that at the
+> > end of the process verification succeeds.
+> >
+> > However, it might happen that the xattrs/attrs are already set to the
+> > correct value (taken at signing time) and signature verification succeeds
+> > before the copy has completed. For example, an archive might contains files
+> > owned by root and the archive is extracted by root.
+> >
+> > Then, since portable signatures are immutable, all subsequent operations
+> > fail (e.g. fchown()), even if the operation is legitimate (does not alter
+> > the current value).
+> >
+> > This patch avoids this problem by reporting successful operation to user
+> > space when that operation does not alter the current value of xattrs/attrs.
 > 
-> Best regards,
-> Krzysztof
+> I must be missing something.  If both the IMA and EVM status flags are
+> reset after xattr or attr modification, do we really need to prevent
+> any metadata - same or different - changes?  Both evm_protect_xattr()
+> and evm_inode_setattr() would need to be modified to allow
+> INTEGRITY_PASS_IMMUTABLE.
+
+Hi Mimi
+
+yes, given that the IMA and EVM flags are reset, it should not be
+a problem to allow changes. However, I think it is useful to keep
+the current behavior. For example, it would prevent an accidental
+change of the SELinux label during the relabeling process.
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
+
+> thanks,
+> 
+> Mimi
 
