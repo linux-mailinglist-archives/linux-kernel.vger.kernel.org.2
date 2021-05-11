@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9539B379DCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60436379DC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhEKDbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 23:31:35 -0400
-Received: from gateway33.websitewelcome.com ([192.185.146.130]:26044 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229465AbhEKDbd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 23:31:33 -0400
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id ECDE9481AE5
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 22:30:26 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id gJ6Il2HJNAEP6gJ6Il2uR9; Mon, 10 May 2021 22:30:26 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=0T6q/WobVSrKEX00/Jpr82hwjxlRylETOPsQdVzHh0U=; b=azPwngBrgVv9uGzfbKYrK7WYeN
-        rqjxV33JsNrLRV4thGTP0bOxTEo5Jq5gzt9Rb1TNw3HzVjpYYmFVXVxOYTX4y7HN22dXVU450TyT4
-        K6g8M77ESL80DooqTvhHCnOnw3MJSci2kaNnhoZP8mjr4z5fjCo5gWA92071Q7QrRb0BNI2V7nUZ2
-        nX1F1GVjji1GNoXjWbiCPqaenViXmifiFHkRwzOGK4lPVfZIysy02Mro2czEz8odvhFgKAh8vipU8
-        PjT4R+mhEOSwHmhKlyzblS+huuEIfSpls6bVrGqM3324iYMmS9ytSpGfCN8y3in6KgIjhnpCzi0J0
-        DVolRIoQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:43694 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lgJ6F-003Pgb-Gu; Mon, 10 May 2021 22:30:23 -0500
-Subject: Re: [PATCH v3][next] scsi: aacraid: Replace one-element array with
- flexible-array member
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210421185611.GA105224@embeddedor>
- <162070348784.27567.4297596089347883095.b4-ty@oracle.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <65719db1-b1ec-8466-5f39-27af16d8a701@embeddedor.com>
-Date:   Mon, 10 May 2021 22:30:54 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229996AbhEKDac convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 10 May 2021 23:30:32 -0400
+Received: from mga09.intel.com ([134.134.136.24]:27291 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229920AbhEKDa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 23:30:27 -0400
+IronPort-SDR: NlyUZ2m1UehV7iVXdKTNH0tj/pZBS0B1KVQtNdM31ULfQ8Fr2cMho3NC3HiOxQ4ki6IbM0qDPP
+ kI7n6CTBOBIg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="199413708"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="199413708"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 20:29:21 -0700
+IronPort-SDR: Uhpb1DvDD4VWPvQUKBbuZtT0+KRdRivARUbZUC56WRz1l0s45RJxsvGjfZ0Rq+c/5mOehZQAfH
+ TrML/fzG6MxA==
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="436443967"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 20:29:21 -0700
+Date:   Mon, 10 May 2021 20:31:45 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
+        zhangfei.gao@linaro.org, vkoul@kernel.org,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
+ flags
+Message-ID: <20210510203145.086835cc@jacob-builder>
+In-Reply-To: <20210510233749.GG1002214@nvidia.com>
+References: <1620653108-44901-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1620653108-44901-2-git-send-email-jacob.jun.pan@linux.intel.com>
+        <20210510233749.GG1002214@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <162070348784.27567.4297596089347883095.b4-ty@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lgJ6F-003Pgb-Gu
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:43694
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 6
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jason,
 
+On Mon, 10 May 2021 20:37:49 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-On 5/10/21 22:25, Martin K. Petersen wrote:
-> On Wed, 21 Apr 2021 13:56:11 -0500, Gustavo A. R. Silva wrote:
+> On Mon, May 10, 2021 at 06:25:07AM -0700, Jacob Pan wrote:
 > 
->> There is a regular need in the kernel to provide a way to declare having
->> a dynamically sized set of trailing elements in a structure. Kernel code
->> should always use “flexible array members”[1] for these cases. The older
->> style of one-element or zero-length arrays should no longer be used[2].
->>
->> Refactor the code according to the use of a flexible-array member in
->> struct aac_raw_io2 instead of one-element array, and use the
->> struct_size() helper.
->>
->> [...]
+> > +/*
+> > + * The IOMMU_SVA_BIND_SUPERVISOR flag requests a PASID which can be
+> > used only
+> > + * for access to kernel addresses. No IOTLB flushes are automatically
+> > done
+> > + * for kernel mappings; it is valid only for access to the kernel's
+> > static
+> > + * 1:1 mapping of physical memory — not to vmalloc or even module
+> > mappings.
+> > + * A future API addition may permit the use of such ranges, by means
+> > of an
+> > + * explicit IOTLB flush call (akin to the DMA API's unmap method).
+> > + *
+> > + * It is unlikely that we will ever hook into flush_tlb_kernel_range()
+> > to
+> > + * do such IOTLB flushes automatically.
+> > + */
+> > +#define IOMMU_SVA_BIND_SUPERVISOR       BIT(0)  
 > 
-> Applied to 5.14/scsi-queue, thanks!
+> Huh? That isn't really SVA, can you call it something saner please?
 > 
-> [1/1] scsi: aacraid: Replace one-element array with flexible-array member
->       https://git.kernel.org/mkp/scsi/c/39107e8577ad
+This is shared kernel virtual address, I am following the SVA lib naming
+since this is where the flag will be used. Why this is not SVA? Kernel
+virtual address is still virtual address. Is it due to direct map?
 
-Awesome. :)
+> Is it really a PASID that always has all of physical memory mapped
+> into it? Sounds dangerous. What is it for?
+> 
 
-Thanks, Martin.
---
-Gustavo
+Yes. It is to bind DMA request w/ PASID with init_mm/init_top_pgt. Per PCIe
+spec PASID TLP prefix has "Privileged Mode Requested" bit. VT-d supports
+this with "Privileged-mode-Requested (PR) flag (to distinguish user versus
+supervisor access)". Each PASID entry has a SRE (Supervisor Request Enable)
+bit.
 
+Perhaps we should limit that to trusted device, e.g. RCIEP device?
+
+> Jason
+
+
+Thanks,
+
+Jacob
