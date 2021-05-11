@@ -2,148 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F03E37ACCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A9E37AC92
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhEKROW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:14:22 -0400
-Received: from gateway30.websitewelcome.com ([192.185.148.2]:27605 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231230AbhEKROV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:14:21 -0400
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 32C591116E;
-        Tue, 11 May 2021 12:13:14 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id gVwYli7YL8uM0gVwYl31A0; Tue, 11 May 2021 12:13:14 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=tmFUjvyLjHNNWd54VOt/C+CgPE1E8GgZos/1KIo2bTQ=; b=TCJoBI3DFaFtUFUneJOq+bMesr
-        zXO+uNceXFPo3XtCljhPcs4qLxn91tcJL1SiB0fDThrrwpqO03RWnanv+IZy2CAiJp45SvGtI+JKe
-        BTosuWla2fDJE6DXw+qB+8kPHfpD9J/1zFHlL7FEBqhM/Qp1wGHeMxZo0Zp62NNvacJTOcTrVI5iO
-        KY3+ycYyTnvxXfuxV5HM2M9c07K3X5fsFlhS1JmHSxgw/WF1lL9HdQcJeL2k3V9InvAgc6JKT9ye0
-        cjusBwIA7NVVuRFQ24MeswCbWwQXusJrporo23lV412s4e4r5DweZkyN2OBmny0X82c19iDE/2FOf
-        d/QHvLWA==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:58998 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lgUa5-000RYq-Tc; Tue, 11 May 2021 10:45:57 -0500
-Subject: Re: [PATCH][next] media: venus: hfi_msgs.h: Replace one-element
- arrays with flexible-array members
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210211001044.GA69612@embeddedor>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <bf31beab-dc36-23e9-757f-9729be59f7b2@embeddedor.com>
-Date:   Tue, 11 May 2021 10:46:29 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231764AbhEKRCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:02:22 -0400
+Received: from verein.lst.de ([213.95.11.211]:37566 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231437AbhEKRCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 13:02:10 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 14EDB67373; Tue, 11 May 2021 19:01:02 +0200 (CEST)
+Date:   Tue, 11 May 2021 19:01:01 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Stefano Stabellini <sstabellini@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Julien Grall <julien@xen.org>,
+        f.fainelli@gmail.com,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        linux-kernel@vger.kernel.org,
+        osstest service owner <osstest-admin@xenproject.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        iommu@lists.linux-foundation.org
+Subject: Re: Regression when booting 5.15 as dom0 on arm64 (WAS: Re:
+ [linux-linus test] 161829: regressions - FAIL)]
+Message-ID: <20210511170101.GA20936@lst.de>
+References: <osstest-161829-mainreport@xen.org> <4ea1e89f-a7a0-7664-470c-b3cf773a1031@xen.org> <20210510084057.GA933@lst.de> <alpine.DEB.2.21.2105101818260.5018@sstabellini-ThinkPad-T480s> <20210511063558.GA7605@lst.de> <alpine.DEB.2.21.2105110925430.5018@sstabellini-ThinkPad-T480s> <20210511164933.GA19775@lst.de> <alpine.DEB.2.21.2105110950580.5018@sstabellini-ThinkPad-T480s>
 MIME-Version: 1.0
-In-Reply-To: <20210211001044.GA69612@embeddedor>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lgUa5-000RYq-Tc
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:58998
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 0
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2105110950580.5018@sstabellini-ThinkPad-T480s>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Tue, May 11, 2021 at 09:51:20AM -0700, Stefano Stabellini wrote:
+> On Tue, 11 May 2021, Christoph Hellwig wrote:
+> > On Tue, May 11, 2021 at 09:47:33AM -0700, Stefano Stabellini wrote:
+> > > That's a much better plan. It is also not super urgent, so maybe for now
+> > > we could add an explicit check for io_tlb_default_mem != NULL at the
+> > > beginning of xen_swiotlb_init? So that at least we can fail explicitly
+> > > or ignore it explicitly rather than by accident.
+> > 
+> > Fine with me.  Do you want to take over from here and test and submit
+> > your version?
+> 
+> I can do that. Can I add your signed-off-by for your original fix?
 
-Friendly ping:
+Sure:
 
-We are about to be able to globally enable -Warray-bounds and, these are one of
-the last out-of-bounds warnings in linux-next.
-
-Could someone take this, please?
-
-Thanks
---
-Gustavo
-
-On 2/10/21 18:10, Gustavo A. R. Silva wrote:
-> There is a regular need in the kernel to provide a way to declare having
-> a dynamically sized set of trailing elements in a structure. Kernel code
-> should always use “flexible array members”[1] for these cases. The older
-> style of one-element or zero-length arrays should no longer be used[2].
-> 
-> Use flexible-array members in struct hfi_msg_sys_property_info_pkt and
-> hfi_msg_session_property_info_pkt instead of one-element arrays.
-> 
-> Also, this helps with the ongoing efforts to enable -Warray-bounds by
-> fixing the following warnings:
-> 
->   CC [M]  drivers/media/platform/qcom/venus/hfi_msgs.o
-> drivers/media/platform/qcom/venus/hfi_msgs.c: In function ‘hfi_sys_property_info’:
-> drivers/media/platform/qcom/venus/hfi_msgs.c:246:35: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
->   246 |  if (req_bytes < 128 || !pkt->data[1] || pkt->num_properties > 1)
->       |                          ~~~~~~~~~^~~
-> drivers/media/platform/qcom/venus/hfi_msgs.c: In function ‘hfi_session_prop_info’:
-> drivers/media/platform/qcom/venus/hfi_msgs.c:342:62: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
->   342 |  if (!req_bytes || req_bytes % sizeof(*buf_req) || !pkt->data[1])
->       |                                                     ~~~~~~~~~^~~
-> 
-> [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
-> 
-> Link: https://github.com/KSPP/linux/issues/79
-> Link: https://github.com/KSPP/linux/issues/109
-> Build-tested-by: <lkp@intel.com>
-> Link: https://lore.kernel.org/lkml/6023dd80.MmTeFf8SzwX0iK7%2F%25lkp@intel.com/
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/media/platform/qcom/venus/hfi_msgs.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.h b/drivers/media/platform/qcom/venus/hfi_msgs.h
-> index 526d9f5b487b..e2d2ccfbdd24 100644
-> --- a/drivers/media/platform/qcom/venus/hfi_msgs.h
-> +++ b/drivers/media/platform/qcom/venus/hfi_msgs.h
-> @@ -113,7 +113,7 @@ struct hfi_msg_sys_ping_ack_pkt {
->  struct hfi_msg_sys_property_info_pkt {
->  	struct hfi_pkt_hdr hdr;
->  	u32 num_properties;
-> -	u32 data[1];
-> +	u32 data[];
->  };
->  
->  struct hfi_msg_session_load_resources_done_pkt {
-> @@ -233,7 +233,7 @@ struct hfi_msg_session_parse_sequence_header_done_pkt {
->  struct hfi_msg_session_property_info_pkt {
->  	struct hfi_session_hdr_pkt shdr;
->  	u32 num_properties;
-> -	u32 data[1];
-> +	u32 data[];
->  };
->  
->  struct hfi_msg_session_release_resources_done_pkt {
-> 
+Signed-off-by: Christoph Hellwig <hch@lst.de>
