@@ -2,107 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A482837AD58
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED4137AD5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231777AbhEKRtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:49:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbhEKRtO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:49:14 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6E5C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:48:06 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id c22so2906384ejd.12
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:48:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tXU/u/oI0c/X+zEdSbjxSjUwDdEq6XptIKJISi7rLG4=;
-        b=MW+jnvnJIKnOGEtUwz3fsZFljt3ifuyz+WcJOv9QbqR3U2V0/NEvqymsIPF5umUnPa
-         n33vPvd5/pV04hDrPogIfeHSHw3/5t/Tw18SowZjV5KRFhEqo53ycPeWzNXZJK0vrygI
-         2vdof3xPopC/8A3cK/cyPI92FtKVLjcJgCgI92yRKI3fSL1MbWf7DXTC5nmlSh7k7bKT
-         xKx/RDXI2UpE63LVp7qr+/fbudVqiymDhuwPb2LQOgahSE9OAOqxqh/qSlAecMo9Niyv
-         flgWhOIljYicY1kR15yAy7mDnLQkVAaueQyvWsVLdf5nBNIQKWydzX3qygCukvXMZKnR
-         i3sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tXU/u/oI0c/X+zEdSbjxSjUwDdEq6XptIKJISi7rLG4=;
-        b=ehLi0YikOs6gEeYWrnOCzemlNXetCrObYZG8azSnEPPyXNF9/J5PF2mrdY/IkI6YLN
-         eFk+fG/ztm1ZRSwrJ1oSMjb7P/aXwUxEZBrs5fpufK5H1kx3lyaUJWSLqRV2LqfXal9r
-         nKHNpv5DEnhsHir9hEfm0RtiEuODQ8h0WX4WX4HgzFWQU3NtMY3ZW2dVM+ID0L3TmPnu
-         +heZ9bx7ZyaXg7J/UsTxQSogwy1cUJa2Ixb9YvOE7McAv+roisJKEid09kw+rcjxh8TE
-         C8Mt4A0V/X9SazMNCDgRszLzrFaBrCioCILLqcFSolPE+8xjV3AI5abifAalH1SQmJlN
-         LM+w==
-X-Gm-Message-State: AOAM530ioJemRE5U84c6LjoM00A08wxshK2nFBdvIdBcN2J8wLgXC4bf
-        IJSFoMxavWs0PjW7qkaOvIocN3wnEjk=
-X-Google-Smtp-Source: ABdhPJwibWCnHGvfKBZLJu/OfjAmrSrzkCaUBspTRqA4VdyQSuse8vMp1EDUyGfmlQ+R2Za43mTUqQ==
-X-Received: by 2002:a17:906:8a51:: with SMTP id gx17mr32743866ejc.549.1620755284410;
-        Tue, 11 May 2021 10:48:04 -0700 (PDT)
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com. [209.85.221.52])
-        by smtp.gmail.com with ESMTPSA id y20sm15060236edw.45.2021.05.11.10.48.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 10:48:03 -0700 (PDT)
-Received: by mail-wr1-f52.google.com with SMTP id l14so21002771wrx.5
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:48:03 -0700 (PDT)
-X-Received: by 2002:a5d:6285:: with SMTP id k5mr4589508wru.50.1620755283209;
- Tue, 11 May 2021 10:48:03 -0700 (PDT)
+        id S231865AbhEKRt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:49:57 -0400
+Received: from mga14.intel.com ([192.55.52.115]:49851 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231329AbhEKRtz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 13:49:55 -0400
+IronPort-SDR: 8jauGyadY6V+E0devMv0uF8u4vO4CfxyeOmmsqpsoqFO++phs/iBXB/YuhscetadyCKnPlWqvt
+ uMpQxlbdgTYg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="199185957"
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
+   d="scan'208";a="199185957"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 10:48:48 -0700
+IronPort-SDR: 72faQjpAY4lKRNahWBGfO9AC6niJ6R39iKz6fqXAImoeSwx0a8EHZxde2uQdH8GICoxa+Rm0ML
+ UAMeiwGSs5fA==
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
+   d="scan'208";a="434704547"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.131.161]) ([10.212.131.161])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 10:48:47 -0700
+Subject: Re: [RFC v2 16/32] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <d6ca05720290060e909c1f4d12858f900f1be0e7.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4jGmhkrd+Zr4RNcZ5qfXkYO-416Bw2_idVbrgij41yvYg@mail.gmail.com>
+ <0e577692-101e-38f7-ebe2-2e7222016a9f@linux.intel.com>
+ <CAPcyv4jLMA=jehxdFi=A-xtjSRQ_v7XxSVYrZPAU3XKC39qWRA@mail.gmail.com>
+ <43e0a5cc-721a-04f1-50b6-b1319da10bac@intel.com>
+ <CAPcyv4gEROpgvf+3Drgso1O6ENQ=2xBoKHqC6d4fWvdDNVSNjA@mail.gmail.com>
+ <01b0e007-6af6-ca2e-2a0d-7ff4ca2a2927@linux.intel.com>
+ <4456b0d0-c392-4691-2963-c349369158c3@intel.com>
+ <497d9293-9111-5d2e-2d19-7343467ff9cd@linux.intel.com>
+ <55fd7fbe-4d36-1c1d-532b-bfa876542cd7@intel.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <37ad50ca-f568-4c62-56e2-9e9b1f34084c@linux.intel.com>
+Date:   Tue, 11 May 2021 10:48:46 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210511044253.469034-1-yuri.benditovich@daynix.com> <20210511044253.469034-3-yuri.benditovich@daynix.com>
-In-Reply-To: <20210511044253.469034-3-yuri.benditovich@daynix.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Tue, 11 May 2021 13:47:26 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSdfA6sT68AJNpa=VPBdwRFHvEY+=C-B_mS=y=WMpTyc=Q@mail.gmail.com>
-Message-ID: <CA+FuTSdfA6sT68AJNpa=VPBdwRFHvEY+=C-B_mS=y=WMpTyc=Q@mail.gmail.com>
-Subject: Re: [PATCH 2/4] virtio-net: add support of UDP segmentation (USO) on
- the host
-To:     Yuri Benditovich <yuri.benditovich@daynix.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Yan Vugenfirer <yan@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <55fd7fbe-4d36-1c1d-532b-bfa876542cd7@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 12:43 AM Yuri Benditovich
-<yuri.benditovich@daynix.com> wrote:
->
-> Large UDP packet provided by the guest with GSO type set to
-> VIRTIO_NET_HDR_GSO_UDP_L4 will be divided to several UDP
-> packets according to the gso_size field.
->
-> Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
-> ---
->  include/linux/virtio_net.h | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
-> index b465f8f3e554..4ecf9a1ca912 100644
-> --- a/include/linux/virtio_net.h
-> +++ b/include/linux/virtio_net.h
-> @@ -51,6 +51,11 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
->                         ip_proto = IPPROTO_UDP;
->                         thlen = sizeof(struct udphdr);
->                         break;
-> +               case VIRTIO_NET_HDR_GSO_UDP_L4:
-> +                       gso_type = SKB_GSO_UDP_L4;
-> +                       ip_proto = IPPROTO_UDP;
-> +                       thlen = sizeof(struct udphdr);
-> +                       break;
 
-If adding a new VIRTIO_NET_HDR type I suggest adding separate IPv4 and
-IPv6 variants, analogous to VIRTIO_NET_HDR_GSO_TCPV[46]. To avoid
-having to infer protocol again, as for UDP fragmentation offload (the
-retry case below this code).
+> Is there a good reason for the enduring "general protection fault..."
+> message other than an aversion to refactoring the code?
+
+You're the first ever to think it's a problem.
+
+We're assuming that kernel developers are smart enough to understand this.
+
+Please I implore everyone to move on from this patch. This is my last 
+email on this topic.
+
+-Andi
+
