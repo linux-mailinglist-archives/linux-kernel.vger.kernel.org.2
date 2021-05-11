@@ -2,100 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125E837AADD
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 078E137AAF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbhEKPk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 11:40:56 -0400
-Received: from mga01.intel.com ([192.55.52.88]:7459 "EHLO mga01.intel.com"
+        id S231812AbhEKPmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 11:42:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231609AbhEKPkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 11:40:53 -0400
-IronPort-SDR: jeBFSRI0bkMXc5yh/osi/PRbTUGaBGcZ3d4dB/M9tOzj1rxkwu4Z7f4Kr9XLNj6VY0WokeZ7HY
- 5yj3vK84iuDQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="220433998"
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="220433998"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 08:39:45 -0700
-IronPort-SDR: H0wVXfxBhyMTLxPORoRiL0GnwHWcL0KfaEQ+ZRG155yFSNIbKZcSiYONnGFdlcZEH261hShfCJ
- HoA0Aa/0BeHg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="537074076"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 11 May 2021 08:39:40 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4EF67338; Tue, 11 May 2021 18:40:01 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Petr Mladek <pmladek@suse.com>, JC Kuo <jckuo@nvidia.com>,
-        Joe Perches <joe@perches.com>,
-        Sumit Garg <sumit.garg@linaro.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH v2 4/4] usb: host: xhci-tegra: Switch to use %ptTs
-Date:   Tue, 11 May 2021 18:39:58 +0300
-Message-Id: <20210511153958.34527-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210511153958.34527-1-andriy.shevchenko@linux.intel.com>
-References: <20210511153958.34527-1-andriy.shevchenko@linux.intel.com>
+        id S231561AbhEKPmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 11:42:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E16E60C3D;
+        Tue, 11 May 2021 15:41:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620747692;
+        bh=/EPbcYfji1lEHhTEH1Bcafubtr2dJNCMyzbjwXE3Z9A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=T+KUSYpr/3SdAc4eDxgD611IL580M2UtrGzNDnTe6NbJCFTwAvnRtUA6Jhn/jT3V9
+         nw6XL9xkdvxmpKFM0G68+NLNkCcYdIuEQsqjXCPSO7YeQunEAI/1BMYd4nL1Kzxvzs
+         VPvRSKDLTDpiU7lyxVXhfDPHEzsy3WHaavoacIXI8N3UXQDeuOGrj6/gQsqeA8uyyi
+         s2CrOFVYAB436oaRrL/NgCecY6rXQGFK/l+QQGUJ9s9G1DXV2m2RIvMxuF9SzCqPry
+         FofHJ5tzf/s+6dr4OKgbZIVOsL7EBzbHLg7lRQrrcnEjwzIMD2HgwWdMCAjpOondyp
+         tkKlyJG/JHQGQ==
+Date:   Tue, 11 May 2021 10:41:30 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Subject: Re: [PATCH] MAINTAINERS: Add Krzysztof as PCI host/endpoint
+ controllers reviewer
+Message-ID: <20210511154130.GA2379240@bjorn-Precision-5520>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210511150003.1592-1-lorenzo.pieralisi@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use %ptTs instead of open coded variant to print contents
-of time64_t type in human readable form.
+On Tue, May 11, 2021 at 04:00:03PM +0100, Lorenzo Pieralisi wrote:
+> Krzysztof has been carrying out PCI patches review for a long time and
+> he has been instrumental in driving PCI host/endpoint controller drivers
+> improvements.
+> 
+> Make his role official.
+> 
+> Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> CC: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> Cc: Krzysztof Wilczyński <kw@linux.com>
 
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: Jonathan Hunter <jonathanh@nvidia.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
----
-v2: collected tags
- drivers/usb/host/xhci-tegra.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Great, thanks for all your work, Krzysztof!
 
-diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
-index ce97ff054c68..937b78cba89b 100644
---- a/drivers/usb/host/xhci-tegra.c
-+++ b/drivers/usb/host/xhci-tegra.c
-@@ -890,7 +890,6 @@ static int tegra_xusb_load_firmware(struct tegra_xusb *tegra)
- 	struct xhci_op_regs __iomem *op;
- 	unsigned long timeout;
- 	time64_t timestamp;
--	struct tm time;
- 	u64 address;
- 	u32 value;
- 	int err;
-@@ -987,11 +986,8 @@ static int tegra_xusb_load_firmware(struct tegra_xusb *tegra)
- 	}
- 
- 	timestamp = le32_to_cpu(header->fwimg_created_time);
--	time64_to_tm(timestamp, 0, &time);
- 
--	dev_info(dev, "Firmware timestamp: %ld-%02d-%02d %02d:%02d:%02d UTC\n",
--		 time.tm_year + 1900, time.tm_mon + 1, time.tm_mday,
--		 time.tm_hour, time.tm_min, time.tm_sec);
-+	dev_info(dev, "Firmware timestamp: %ptTs UTC\n", &timestamp);
- 
- 	return 0;
- }
--- 
-2.30.2
+Love how your subject contains all the relevant information,
+Lorenzo :)
 
+Applied to for-linus for v5.13, thanks!
+
+> ---
+>  MAINTAINERS | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index bd7aff0c120f..9755bf97658d 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14110,6 +14110,7 @@ F:	drivers/pci/controller/pci-v3-semi.c
+>  PCI ENDPOINT SUBSYSTEM
+>  M:	Kishon Vijay Abraham I <kishon@ti.com>
+>  M:	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> +R:	Krzysztof Wilczyński <kw@linux.com>
+>  L:	linux-pci@vger.kernel.org
+>  S:	Supported
+>  F:	Documentation/PCI/endpoint/*
+> @@ -14158,6 +14159,7 @@ F:	drivers/pci/controller/pci-xgene-msi.c
+>  PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS
+>  M:	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+>  R:	Rob Herring <robh@kernel.org>
+> +R:	Krzysztof Wilczyński <kw@linux.com>
+>  L:	linux-pci@vger.kernel.org
+>  S:	Supported
+>  Q:	http://patchwork.ozlabs.org/project/linux-pci/list/
+> -- 
+> 2.26.1
+> 
