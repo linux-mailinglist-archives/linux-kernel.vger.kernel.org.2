@@ -2,102 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D206337ABC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A6737ABC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbhEKQWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 12:22:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231451AbhEKQWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:22:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D93761919;
-        Tue, 11 May 2021 16:21:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620750076;
-        bh=Cn3ACvm/0DEZQWq3vsRFDc7XaLRknxn7nJqnZw2JE8Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Hpat+hR/a0DpakGNA4KJY/x15t4/P5bUzqXxo3ukJHN7NBk+grTUAV3zpxaBdp5MF
-         3ugmQ/jSD0dnJV31fsPpC3GsicpCM8K7mba88i3iR/8GG+sdk4+KVng97Iab4gkwtu
-         MFidujA+Tg7w77xQ/9k4Urt6DNsFGUYnCqXhgXkxkW/wmWajOqcgGGU8sMGm5ASJvm
-         4Dw22nueg/NRmgCKnDsAoi4C+eyFGL1pPnpOdSY9lX2EuElg5M8NvwLz36ozFJL5en
-         v/u6rzmqRIzxhKf06PGwKDYukjxHEdFHppYwQ4Xsqm14Q/+nj78ccq//8qtbnPLPH9
-         iqy5I1bjIe/0Q==
-Received: by mail-ej1-f48.google.com with SMTP id f24so30642131ejc.6;
-        Tue, 11 May 2021 09:21:16 -0700 (PDT)
-X-Gm-Message-State: AOAM533qdtaT2a5dOW8ZanMi1mzq3buOxGJCT6yKILyQlo/0xQtRsOdn
-        AiaaMwqk+6zEkys6SkoAyxywDOIhlx9JFxR02Q==
-X-Google-Smtp-Source: ABdhPJxnKH+9sRFG4bOGXa5OAw5Qi4cQmVDFCJeva0RME9sa0QQOwDhf1+v79OaUZ7s+OQyBtYYcJy4eSNT2dOS+TdY=
-X-Received: by 2002:a17:906:a48:: with SMTP id x8mr32395056ejf.127.1620750074915;
- Tue, 11 May 2021 09:21:14 -0700 (PDT)
+        id S231753AbhEKQXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 12:23:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229921AbhEKQXe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 12:23:34 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F2EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 09:22:28 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id p8so18661267iol.11
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 09:22:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4jXZs11HGH/EBNKvji1vJOWsgckIXclQ4pDhYDnWyh8=;
+        b=K2ME3kMtsLEUOJHmWigd7iBeW3kUpwwkNwrk+bKCUi/GAasFcn1ZjPJxEIfRUxKkzo
+         XRE8SZWXoPSy5xuqDorvmCuof0ODWKu/NdabOTyAcWb7p+aUwc1tjXljnZdNnx1AYUMi
+         K9Hwu53wrQporys+PQgWjJpUROgDva5Yr49pRar93gWXGvHUd0CtDGbRZMXD2mGzHyoE
+         XVElnc5EEp9MpIkPo0gJ1x0jdQv3K7wXFDJgZr57Xw/TPT/I7yCAVa4dJ2dYoS3pX4PA
+         uxp/UYSQYsNgvutVCPQZ1nAA+4UVrXiUaeQ4grJfNjcnce9ZoYU+C+vE6bJ8WENSY3Og
+         83aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4jXZs11HGH/EBNKvji1vJOWsgckIXclQ4pDhYDnWyh8=;
+        b=fsMGXYpKXRYlkHMQrjj58MEnZ5Xl4nYL40h7YJIFVGGs5Z543If1J+SrIGq5URw51H
+         NzyEOdk4HsZHqvC/H/c7PG/fyZC39r1nyBQ1WswZVHJcBuyB57AcLtPwUOdHtMKk+cT6
+         dNFjPfPcg8NJ710DQPbTqiOwPwFUUXZXcObRZxMAv1i/Rk/yR4Vq/c/TeGxO0x7sSFmm
+         9YekJWVlmBMcjpsS4GQKC41Q3UVhLxrcsBJ3znHK24+uRljxNvHmJjDN+XLmhiRpHE+k
+         ALUwnqCFsSi2V4ek0KsjYxiQaASnaK4D3SA8DrRB2FhGSw8fH/S20dZAvuAH9Hh/M2qV
+         /LHQ==
+X-Gm-Message-State: AOAM533F9wihitqDYCwGccDZnSt+ev8hEg3LRdpY6ZGuSZKldTKP7oEq
+        uLBOvtXDqt3/Hhcr9WsNTNCYHJ4Wfvc1xpV1u9VW1w==
+X-Google-Smtp-Source: ABdhPJwPBgeUZszq6WtkQ7MowJX6W0BoxxcJ1gkJMdfAryvl2OZHfqw9y2B4Otj8D1fRSZddbjMa83cW8UiK+o7WKZM=
+X-Received: by 2002:a5d:850c:: with SMTP id q12mr23352649ion.189.1620750147514;
+ Tue, 11 May 2021 09:22:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210429042834.1127456-1-hsinyi@chromium.org> <20210429042834.1127456-2-hsinyi@chromium.org>
-In-Reply-To: <20210429042834.1127456-2-hsinyi@chromium.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 12 May 2021 00:21:04 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-qM6e_yuokOxgct_sUs_e=jknX3k+WpGQfs0RjnOPi1A@mail.gmail.com>
-Message-ID: <CAAOTY_-qM6e_yuokOxgct_sUs_e=jknX3k+WpGQfs0RjnOPi1A@mail.gmail.com>
-Subject: Re: [PATCH v6 2/3] drm/mediatek: init panel orientation property
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Sean Paul <sean@poorly.run>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
+References: <20210506184241.618958-1-bgardon@google.com> <20210506184241.618958-8-bgardon@google.com>
+ <e2e73709-f247-1a60-4835-f3fad37ab736@redhat.com> <YJlxQe1AXljq5yhQ@google.com>
+ <a13b6960-3628-2899-5fbf-0765f97aa9eb@redhat.com> <YJl7V1arDXyC6i5P@google.com>
+In-Reply-To: <YJl7V1arDXyC6i5P@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Tue, 11 May 2021 09:22:16 -0700
+Message-ID: <CANgfPd9LDnEs1EoEu2tXZVvLGkFhNSByJ-oLCkqb02xxmgkifQ@mail.gmail.com>
+Subject: Re: [PATCH v3 7/8] KVM: x86/mmu: Protect rmaps independently with SRCU
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Hsin-Yi:
+On Mon, May 10, 2021 at 11:28 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Mon, May 10, 2021, Paolo Bonzini wrote:
+> > On 10/05/21 19:45, Sean Christopherson wrote:
+> > > >
+> > > > ---------
+> > > > Currently, rmaps are always allocated and published together with a new
+> > > > memslot, so the srcu_dereference for the memslots array already ensures that
+> > > > the memory pointed to by slots->arch.rmap is zero at the time
+> > > > slots->arch.rmap.  However, they still need to be accessed in an SRCU
+> > > > read-side critical section, as the whole memslot can be deleted outside
+> > > > SRCU.
+> > > > --------
+> > > I disagree, sprinkling random and unnecessary __rcu/SRCU annotations does more
+> > > harm than good.  Adding the unnecessary tag could be quite misleading as it
+> > > would imply the rmap pointers can_change_  independent of the memslots.
+> > >
+> > > Similary, adding rcu_assign_pointer() in alloc_memslot_rmap() implies that its
+> > > safe to access the rmap after its pointer is assigned, and that's simply not
+> > > true since an rmap array can be freed if rmap allocation for a different memslot
+> > > fails.  Accessing the rmap is safe if and only if all rmaps are allocated, i.e.
+> > > if arch.memslots_have_rmaps is true, as you pointed out.
+> >
+> > This about freeing is a very good point.
+> >
+> > > Furthermore, to actually gain any protection from SRCU, there would have to be
+> > > an synchronize_srcu() call after assigning the pointers, and that _does_  have an
+> > > associated.
+> >
+> > ... but this is incorrect (I was almost going to point out the below in my
+> > reply to Ben, then decided I was pointing out the obvious; lesson learned).
+> >
+> > synchronize_srcu() is only needed after *deleting* something, which in this
+>
+> No, synchronization is required any time the writer needs to ensure readers have
+> recognized the change.  E.g. making a memslot RO, moving a memslot's gfn base,
+> adding an MSR to the filter list.  I suppose you could frame any modification as
+> "deleting" something, but IMO that's cheating :-)
+>
+> > case is done as part of deleting the memslots---it's perfectly fine to batch
+> > multiple synchronize_*() calls given how expensive some of them are.
+>
+> Yes, but the shortlog says "Protect rmaps _independently_ with SRCU", emphasis
+> mine.  If the rmaps are truly protected independently, then they need to have
+> their own synchronization.  Setting all rmaps could be batched under a single
+> synchronize_srcu(), but IMO batching the rmaps with the memslot itself would be
+> in direct contradiction with the shortlog.
+>
+> > (BTW an associated what?)
+>
+> Doh.  "associated memslot."
+>
+> > So they still count as RCU-protected in my opinion, just because reading
+> > them outside SRCU is a big no and ought to warn (it's unlikely that it
+> > happens with rmaps, but then we just had 2-3 bugs like this being reported
+> > in a short time for memslots so never say never).
+>
+> Yes, but that interpretation holds true for literally everything that is hidden
+> behind an SRCU-protected pointer.  E.g. this would also be wrong, it's just much
+> more obviously broken:
+>
+> bool kvm_is_gfn_writable(struct kvm* kvm, gfn_t gfn)
+> {
+>         struct kvm_memory_slot *slot;
+>         int idx;
+>
+>         idx = srcu_read_lock(&kvm->srcu);
+>         slot = gfn_to_memslot(kvm, gfn);
+>         srcu_read_unlock(&kvm->srcu);
+>
+>         return slot && !(slot->flags & KVM_MEMSLOT_INVALID) &&
+>                !(slot->flags & KVM_MEM_READONLY);
+> }
+>
+>
+> > However, rcu_assign_pointer is not needed because the visibility of the rmaps
+> > is further protected by the have-rmaps flag (to be accessed with
+> > load-acquire/store-release) and not just by the pointer being there and
+> > non-NULL.
+>
+> Yes, and I'm arguing that annotating the rmaps as __rcu is wrong because they
+> themselves are not protected by SRCU.  The memslot that contains the rmaps is
+> protected by SRCU, and because of that asserting SRCU is held for read will hold
+> true.  But, if the memslot code were changed to use a different protection scheme,
+> e.g. a rwlock for argument's sake, then the SRCU assertion would fail even though
+> the rmap logic itself didn't change.
 
-Hsin-Yi Wang <hsinyi@chromium.org> =E6=96=BC 2021=E5=B9=B44=E6=9C=8829=E6=
-=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8812:28=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> Init panel orientation property after connector is initialized. Let the
-> panel driver decides the orientation value later.
-
-Acked-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-
->
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->  drivers/gpu/drm/mediatek/mtk_dsi.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
-k/mtk_dsi.c
-> index ae403c67cbd9..9da1fd649131 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-> @@ -964,6 +964,13 @@ static int mtk_dsi_encoder_init(struct drm_device *d=
-rm, struct mtk_dsi *dsi)
->                 ret =3D PTR_ERR(dsi->connector);
->                 goto err_cleanup_encoder;
->         }
-> +
-> +       ret =3D drm_connector_init_panel_orientation_property(dsi->connec=
-tor);
-> +       if (ret) {
-> +               DRM_ERROR("Unable to init panel orientation\n");
-> +               goto err_cleanup_encoder;
-> +       }
-> +
->         drm_connector_attach_encoder(dsi->connector, &dsi->encoder);
->
->         return 0;
-> --
-> 2.31.1.498.g6c1eba8ee3d-goog
->
+I'm inclined to agree with Sean that the extra RCU annotations are
+probably unnecessary since we're already doing the srcu dereference
+for all the slots. I'll move all these RCU annotations to their own
+patch and put it at the end of the series when I send v4.
