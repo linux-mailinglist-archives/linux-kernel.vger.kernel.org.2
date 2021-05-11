@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3E337A9B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B4937A9BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhEKOmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:42:51 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:42450 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231154AbhEKOmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:42:49 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Ffgbm5xsrz9C;
-        Tue, 11 May 2021 16:41:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1620744101; bh=alDLovz9iqFt3O77cStCTYCIAdPi55MO/8EF8bUpQ3s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Sa2q+cby28kKsaAx3hfbOXDavD4tPAJ9t3BYIMh4qRzvK4tTH+4BvZjUH/LVk+SFK
-         PGTKiUzPvgWG1A18jyRLp7kQRFJJmSLmD9SO9WsA6Lonv8fkU+swRmkbLlux5G0FiM
-         TILAT+Y75EbkFvlDTGN27R/4XKbXpO+csCT7XyD7xb3NChIQ2vpDYQR9x4Jjh5wwXi
-         mLmFdUY3D8yVk9l1pt4BANuU8Y5malxWuP0dQFZopsgd+KH+bfJK6bwvFAHlWyepNY
-         x7N1B/wGyn3d3ep/Mh2DeNHlWwuX5M3JwoIegv59AkyUfFQxSOJMtODkuJVDsknMyT
-         tUZ3ykevttXVQ==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.2 at mail
-Date:   Tue, 11 May 2021 16:41:39 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v7 6/8] clk: tegra: cclk: Handle thermal DIV2 CPU
- frequency throttling
-Message-ID: <20210511144139.GB4413@qmqm.qmqm.pl>
-References: <20210510231737.30313-1-digetx@gmail.com>
- <20210510231737.30313-7-digetx@gmail.com>
+        id S231879AbhEKOnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:43:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50414 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231728AbhEKOnK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:43:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620744123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=k/z7NrUJTKIBdoAINSyBpZ9NunsNsM6n4BDyTwrTstY=;
+        b=CEU9bA4oAX1zOyq2nwJM3WWSt4ghcxxhh3LYBcPRXEERkcvnaAoblJQu2dkfPWaHk3Ob/n
+        G3P2+txI/yackUUV5tyrQX0Aw72RfoM13RGsKqcitOck+S9zKDEIajAwjoRxYn8HdyKfh9
+        jHmXR0BUwLOVIP14lMyAYej3oV9JxXg=
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
+ [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-556-CY8m1caGPR2pz8DScuZglw-1; Tue, 11 May 2021 10:42:01 -0400
+X-MC-Unique: CY8m1caGPR2pz8DScuZglw-1
+Received: by mail-oo1-f70.google.com with SMTP id i13-20020a4ad68d0000b0290204d5557d50so6702483oot.12
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:42:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=k/z7NrUJTKIBdoAINSyBpZ9NunsNsM6n4BDyTwrTstY=;
+        b=eKQYRm60blACtJXzQKV1QdbD4MzW6e9bJPVW22QCMDkZn86+Vo+trBsopuaL5Uc5qW
+         Qahvzw0xk2esRaHqU6/3C/VXk282CTlr7u6ZRBfLsJo22ixhkHZW/snHyRIAtn0CYaAQ
+         fdxTmf5CmjWFnnD2QwcHtEGrOhJ/GqlDHOO2bR8MzUdr0Q6Kl8RPg+Mw6q6m4zdOgtgk
+         sxKY0UKjLpg8ScYfkKON3fokQt6NsnlsrWiIDrvqiALK10CRi9QP5bVU0nvjvjxhemsc
+         fNWfIj/5KKmzfQfN8SwA5q1Eq+WM250y1ys4uzbq24yRhFuyOuw/FmPbP+UGActRUB8V
+         IgMg==
+X-Gm-Message-State: AOAM533LPBMuNusQ/cuDDxq8Ek3QLgTpaaE2U+L+gx8dlh1Sa5KIeHDs
+        5lIuxbQ4xpeupgTi6IJlaQNAHab1/QSN1mPZuTgE/JAYrU2vwz2IkR9whUMTRONFFcdNaqvYpIA
+        EEfrSGugJEOyo0JcLIpLH2Won
+X-Received: by 2002:a4a:ab83:: with SMTP id m3mr10122762oon.2.1620744120814;
+        Tue, 11 May 2021 07:42:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyiqcX0afnpWZRWy60CV/jDkD2+4bdEWed+5anrz6ezPzlAoWGMEGtTJiX4q+FFlUrQrMxegg==
+X-Received: by 2002:a4a:ab83:: with SMTP id m3mr10122743oon.2.1620744120577;
+        Tue, 11 May 2021 07:42:00 -0700 (PDT)
+Received: from [192.168.0.173] (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
+        by smtp.gmail.com with ESMTPSA id o6sm3917266ote.14.2021.05.11.07.41.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 07:42:00 -0700 (PDT)
+Subject: Re: [PATCH] virtiofs: Enable multiple request queues
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Vivek Goyal <vgoyal@redhat.com>
+References: <20210507221527.699516-1-ckuehl@redhat.com>
+ <YJpbEMePhQ88EWWR@stefanha-x1.localdomain>
+From:   Connor Kuehl <ckuehl@redhat.com>
+Message-ID: <290eaac8-45d9-0bfb-94f5-9fb41e5a3e42@redhat.com>
+Date:   Tue, 11 May 2021 09:41:59 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210510231737.30313-7-digetx@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YJpbEMePhQ88EWWR@stefanha-x1.localdomain>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 02:17:35AM +0300, Dmitry Osipenko wrote:
-> Check whether thermal DIV2 throttle is active in order to report
-> the CPU frequency properly. This very useful for userspace tools
-> like cpufreq-info which show actual frequency asserted from hardware.
+On 5/11/21 5:23 AM, Stefan Hajnoczi wrote:
+> On Fri, May 07, 2021 at 05:15:27PM -0500, Connor Kuehl wrote:
+>> @@ -1245,7 +1262,8 @@ __releases(fiq->lock)
+>>  		 req->in.h.nodeid, req->in.h.len,
+>>  		 fuse_len_args(req->args->out_numargs, req->args->out_args));
+>>  
+>> -	fsvq = &fs->vqs[queue_id];
+>> +	fsvq = this_cpu_read(this_cpu_fsvq);
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/clk/tegra/clk-tegra-super-cclk.c | 16 ++++++++++++++--
->  drivers/clk/tegra/clk-tegra30.c          |  2 +-
->  2 files changed, 15 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/clk/tegra/clk-tegra-super-cclk.c b/drivers/clk/tegra/clk-tegra-super-cclk.c
-> index a03119c30456..f75822b71d0e 100644
-> --- a/drivers/clk/tegra/clk-tegra-super-cclk.c
-> +++ b/drivers/clk/tegra/clk-tegra-super-cclk.c
-> @@ -25,6 +25,8 @@
->  
->  #define SUPER_CDIV_ENB		BIT(31)
->  
-> +#define TSENSOR_SLOWDOWN	BIT(23)
-> +
->  static struct tegra_clk_super_mux *cclk_super;
->  static bool cclk_on_pllx;
->  
-> @@ -47,10 +49,20 @@ static int cclk_super_set_rate(struct clk_hw *hw, unsigned long rate,
->  static unsigned long cclk_super_recalc_rate(struct clk_hw *hw,
->  					    unsigned long parent_rate)
->  {
-> +	struct tegra_clk_super_mux *super = to_clk_super_mux(hw);
-> +	u32 val = readl_relaxed(super->reg);
-> +	unsigned int div2;
-> +
-> +	/* check whether thermal throttling is active */
-> +	if (val & TSENSOR_SLOWDOWN)
-> +		div2 = 2;
-> +	else
-> +		div2 = 1;
-> +
->  	if (cclk_super_get_parent(hw) == PLLX_INDEX)
-> -		return parent_rate;
-> +		return parent_rate / div2;
->  
-> -	return tegra_clk_super_ops.recalc_rate(hw, parent_rate);
-> +	return tegra_clk_super_ops.recalc_rate(hw, parent_rate) / div2;
->  }
+> Please check how CPU hotplug affects this patch. If the current CPU
+> doesn't have a vq because it was hotplugged, then it may be necessary to
+> pick another vq.
 
-Could you check if the compiler can optimize out the division? I know this
-is a slow path, but nevertheless the 'shr' version would be the same amount
-of source code.
+I'll fix this in the next revision.
 
-Best Regrads
-Micha³ Miros³aw
+Thanks,
+
+Connor
+
