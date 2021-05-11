@@ -2,99 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029AA37A3E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D29437A3EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhEKJlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 05:41:22 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:40620 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230434AbhEKJlU (ORCPT
+        id S231314AbhEKJmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 05:42:53 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2621 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230434AbhEKJmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 05:41:20 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14B9e3Zl105496;
-        Tue, 11 May 2021 04:40:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620726003;
-        bh=Er4e3Wlwj5BM2A9N1DSRChljXHG2w+7/nDeq1nnE1Ho=;
-        h=From:To:CC:Subject:Date;
-        b=W3ixTAsBPbdwW7z+9UNrCAgwKgSqS3KWm7nTlTsiuNA4oHhEU3yhG+G1BswDq5Dbr
-         9HII/L497t1Eq4E4zKU720az38HZLQS4PQvV33NAmjyEBH/65WAcr49UBaJRs3URu3
-         Xzo5UH5ZaUHQFmSRv98j+eAGzjoDotbECvXxSl84=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14B9e2c2067204
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 11 May 2021 04:40:03 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 11
- May 2021 04:40:02 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 11 May 2021 04:40:02 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14B9dxBK039609;
-        Tue, 11 May 2021 04:40:00 -0500
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>
-CC:     Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: spi-nor: Add documentation for spi_nor_soft_reset()
-Date:   Tue, 11 May 2021 15:09:58 +0530
-Message-ID: <20210511093958.17258-1-p.yadav@ti.com>
-X-Mailer: git-send-email 2.30.0
+        Tue, 11 May 2021 05:42:52 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FfXsp1y28zPwtk;
+        Tue, 11 May 2021 17:38:22 +0800 (CST)
+Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 11 May 2021 17:41:38 +0800
+From:   "Longpeng(Mike)" <longpeng2@huawei.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <arei.gonglei@huawei.com>, <subo7@huawei.com>,
+        "Longpeng(Mike)" <longpeng2@huawei.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Jorgen Hansen" <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        "Andra Paraschiv" <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        lixianming <lixianming5@huawei.com>
+Subject: [RFC] vsock: notify server to shutdown when client has pending signal
+Date:   Tue, 11 May 2021 17:41:27 +0800
+Message-ID: <20210511094127.724-1-longpeng2@huawei.com>
+X-Mailer: git-send-email 2.25.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.148.223]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document what the function does and that it should only be used when it
-is known that the device supports it. This will avoid unaware
-programmers thinking that they can arbitrarily use it to reset the
-device.
+The client's sk_state will be set to TCP_ESTABLISHED if the
+server replay the client's connect request.
+However, if the client has pending signal, its sk_state will
+be set to TCP_CLOSE without notify the server, so the server
+will hold the corrupt connection.
 
-Suggested-by: Michael Walle <michael@walle.cc>
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+            client                        server
 
+1. sk_state=TCP_SYN_SENT         |
+2. call ->connect()              |
+3. wait reply                    |
+                                 | 4. sk_state=TCP_ESTABLISHED
+                                 | 5. insert to connected list
+                                 | 6. reply to the client
+7. sk_state=TCP_ESTABLISHED      |
+8. insert to connected list      |
+9. *signal pending* <--------------------- the user kill client
+10. sk_state=TCP_CLOSE           |
+client is exiting...             |
+11. call ->release()             |
+     virtio_transport_close
+      if (!(sk->sk_state == TCP_ESTABLISHED ||
+	      sk->sk_state == TCP_CLOSING))
+		return true; <------------- return at here
+As a result, the server cannot notice the connection is corrupt.
+So the client should notify the peer in this case.
+
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Stefano Garzarella <sgarzare@redhat.com>
+Cc: Jorgen Hansen <jhansen@vmware.com>
+Cc: Norbert Slusarek <nslusarek@gmx.net>
+Cc: Andra Paraschiv <andraprs@amazon.com>
+Cc: Colin Ian King <colin.king@canonical.com>
+Cc: David Brazdil <dbrazdil@google.com>
+Cc: Alexander Popov <alex.popov@linux.com>
+Signed-off-by: lixianming <lixianming5@huawei.com>
+Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
 ---
+ net/vmw_vsock/af_vsock.c | 1 +
+ 1 file changed, 1 insertion(+)
 
- drivers/mtd/spi-nor/core.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 265d8b25fc7f..59e207f2e0e3 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2988,6 +2988,21 @@ static int spi_nor_init(struct spi_nor *nor)
- 	return 0;
- }
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index 92a72f0..d5df908 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -1368,6 +1368,7 @@ static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
+ 		lock_sock(sk);
  
-+/**
-+ * spi_nor_soft_reset() - Perform a software reset
-+ * @nor:	pointer to 'struct spi_nor'
-+ *
-+ * Performs a "Soft Reset and Enter Default Protocol Mode" sequence which resets
-+ * the device to its power-on-reset state. This is useful when the software has
-+ * made some changes to device (volatile) registers and needs to reset it before
-+ * shutting down, for example.
-+ *
-+ * Not every flash supports this sequence. The same set of opcodes might be used
-+ * for some other operation on a flash that does not support this. Support for
-+ * this sequence can be discovered via SFDP in the BFPT table.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
- static void spi_nor_soft_reset(struct spi_nor *nor)
- {
- 	struct spi_mem_op op;
+ 		if (signal_pending(current)) {
++			vsock_send_shutdown(sk, SHUTDOWN_MASK);
+ 			err = sock_intr_errno(timeout);
+ 			sk->sk_state = TCP_CLOSE;
+ 			sock->state = SS_UNCONNECTED;
 -- 
-2.30.0
+1.8.3.1
 
