@@ -2,267 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCD2379F18
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 07:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93FD1379F20
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 07:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbhEKFXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 01:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38264 "EHLO
+        id S230252AbhEKF2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 01:28:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbhEKFXa (ORCPT
+        with ESMTP id S230061AbhEKF2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 01:23:30 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34D1C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 22:22:22 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso16535272otm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 22:22:22 -0700 (PDT)
+        Tue, 11 May 2021 01:28:15 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FD5C061761
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 22:26:33 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id n16so10261223plf.7
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 22:26:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=1XYo/HH08xj1HbCG0QyRSLOCzZ3tgzrX+Sqs15Va+8g=;
-        b=E6rFtJRbG+dAnqTEZhIOQA12ebJrYBaa84KcAWCbtejuM56Hr7s+KkcQi+lcNP7odQ
-         xavNkxUgUazOv+LtElBePp5d4+SXjHRiAR3QtmP1Wr2c6AdmujRRVYzw3xdI+T4t+zqC
-         ei10I8KDBH7Ob7E7WwbH4/HU/5XvrraaDvyHQ=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ePbl2StuMgS3kMOhK/vbMkJmhxQ3BQ9xukEhDTTEmg0=;
+        b=MZqW3y4CsBnOhRaswOVhIkQroLtAvqMreUHmyI99x0hDMZ4ylsD5+Tt1xM3bgx30HM
+         OZhavu0OEPfVQ7ZkYCG9OcgcFaYewNW8Q07fESDByDYG7XscJeHjnLJdo42fTypkYx3E
+         kxPjMxA8B8PnALl21haxcLxBElb/Ls0ERwemlGjB2F77CZ/SphEQrs1WxIjW7d0in8no
+         AagxUSSx0cKkxyoqWnODEMfKHa3foR+lQhMCiY3WrRn2WteyKDUywn5zC4QqS3d6qgKo
+         nJ+3PFHOfA05gEdOXu0ncI/MZaEsNidzFef5huj8I2gu9UoZUga4PIKsJYz5hTGg9PN+
+         Z9mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=1XYo/HH08xj1HbCG0QyRSLOCzZ3tgzrX+Sqs15Va+8g=;
-        b=hBjyK1is1cwGse89rp/DblpFhI7DIycQC/2JXscCgMb3Prgz0uxcvwBcH3tq8c0pvr
-         2BuAeKn4jLQFiLfTs+9VBpScXO4K3abqs+7XcFWhcMopf1ITRYkgqEFe+GEpeMkD7Yow
-         q6glY9v5o9lFi3anwzu2Ru+8F1IQthbqXj5zO8v/SKcJYfEh6z6HII9TH/bE9pVrvk5y
-         vsy6ocklduyBVMPdeuB+TiIYyAeCpqk0UcOxZNjp2fdTCBD2PC3oi1u+AU+qeZRnjhO3
-         cEPgWqgb+SxJxFS1VdgUl+AjoRBrtoIBO4aQuyKXQXYoIubY1SiokQiCPV8tdZyvQSPv
-         Jsow==
-X-Gm-Message-State: AOAM531CfRxx1gblZybl2a8lG8O1KYOh2Uttif5uVMjvQm1f7iv8dN0C
-        tlxW5QugdSdJWbxe9V3lzemwuMG7kmzVCMTHqtzHhg==
-X-Google-Smtp-Source: ABdhPJy8D3AkEO7Rc/9a8rsCucdMVNPYVvuTKW5AD5jeNWw9ldBq6C1BFBpWSPmw8mdZ9Szx1p2QYuOaNOxG4kkypeo=
-X-Received: by 2002:a9d:1ea9:: with SMTP id n38mr25358780otn.233.1620710541992;
- Mon, 10 May 2021 22:22:21 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 10 May 2021 22:22:21 -0700
-MIME-Version: 1.0
-In-Reply-To: <20210511041930.592483-2-bjorn.andersson@linaro.org>
-References: <20210511041930.592483-1-bjorn.andersson@linaro.org> <20210511041930.592483-2-bjorn.andersson@linaro.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 10 May 2021 22:22:21 -0700
-Message-ID: <CAE-0n50qWuny_1oYEMSZ+cfmCvnumk_UTPxUvZ-3wWdgOCioNA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] phy: qcom: Introduce new eDP PHY driver
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, sbillaka@codeaurora.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ePbl2StuMgS3kMOhK/vbMkJmhxQ3BQ9xukEhDTTEmg0=;
+        b=EE74lQT+qc5VOOCTYdDgSEpPM2xVngo0sl/eLdc5t2weZUfpBFq1tKnIqF/aAaseMM
+         Rc/ozkjzVUT6i72x6lLj7lKZv64qMtFXQxHGJauXrTwhHKly4SivHFLOHEeowGujETg+
+         4brfmfy9gyj1t5uaMum6m+lar1Cv/4wYcGEu043+IgGfPI+UyPvWXoDbLDzJMmps+MW0
+         nZBkDlaw37qm1nS7lkdYE4SMYe9SqULzC6D8xXm/4Ul5AR9nan6wc0z9jsKXaA43Bhr/
+         EK7GfpTwywctB/64a5av+DYNbzXi4R21HVaqTec8FWmHK0nXBiV1dXRHgQyLyUehXizt
+         1ptQ==
+X-Gm-Message-State: AOAM532fCDP1PcdqSR0V5KKPbaSaqBPrxXIUUWWxQWveVtJIzUecqy0L
+        IFmP4Il8HQiR2hFtFrGHoyI=
+X-Google-Smtp-Source: ABdhPJx8aK2TSrsgp0BBw53roHeqSzu31iBo/BquKPW/bOlvxYQq6d+vNg9WjTDhREj3HbdJDaQo4w==
+X-Received: by 2002:a17:90a:c203:: with SMTP id e3mr31012066pjt.168.1620710792997;
+        Mon, 10 May 2021 22:26:32 -0700 (PDT)
+Received: from wuchi.mioffice.cn ([209.9.72.213])
+        by smtp.gmail.com with ESMTPSA id e23sm12506423pfd.104.2021.05.10.22.26.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 22:26:32 -0700 (PDT)
+From:   Chi Wu <wuchi.zero@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, tj@kernel.org,
+        mszeredi@redhat.com, sedat.dilek@gmail.com, axboe@fb.com,
+        jack@suse.cz, hcochran@kernelspring.com,
+        Chi Wu <wuchi.zero@gmail.com>
+Subject: [PATCH] mm/page-writeback: Update the comment of Dirty position control
+Date:   Tue, 11 May 2021 13:26:26 +0800
+Message-Id: <20210511052626.19005-1-wuchi.zero@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-05-10 21:19:30)
-> Many recent Qualcomm platforms comes with native DP and eDP support.
-> This consists of a controller int he MDSS and a QMP-like PHY.
->
-> While similar to the well known QMP block, the eDP PHY only has TX lanes
-> and the programming sequences are slightly different. Rather than
-> continuing the trend of parameterize the QMP driver to pieces, this
-> introduces the support as a new driver.
+As the value of pos_ratio_polynom() clamp between 0 and
+2LL << RATELIMIT_CALC_SHIFT, the global control line should be
+consistent with it.
 
-Thank you for not slamming it into the same mega driver.
+Signed-off-by: Chi Wu <wuchi.zero@gmail.com>
+---
+ mm/page-writeback.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> The registration of link and pixel clocks are borrowed from the QMP
-> driver. The non-DP link frequencies are omitted for now.
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index 0062d5c57d41..e9a4f6cf12bb 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -845,7 +845,7 @@ static long long pos_ratio_polynom(unsigned long setpoint,
+  *     ^ pos_ratio
+  *     |
+  *     |            |<===== global dirty control scope ======>|
+- * 2.0 .............*
++ * 2.0 * * * * * * *
+  *     |            .*
+  *     |            . *
+  *     |            .   *
+-- 
+2.17.1
 
-Can we make some library code for "DP" stuff in qmp that the two can
-call to share the logic?
-
->
-> The eDP PHY is very similar to the dedicated (non-USB) DP PHY, but only
-> the prior is supported for now.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/phy/qualcomm/Kconfig        |  10 +
->  drivers/phy/qualcomm/Makefile       |   1 +
->  drivers/phy/qualcomm/phy-qcom-edp.c | 750 ++++++++++++++++++++++++++++
->  3 files changed, 761 insertions(+)
->  create mode 100644 drivers/phy/qualcomm/phy-qcom-edp.c
->
-> diff --git a/drivers/phy/qualcomm/Kconfig b/drivers/phy/qualcomm/Kconfig
-> index 7f6fcb8ec5ba..13ae6f4f3112 100644
-> --- a/drivers/phy/qualcomm/Kconfig
-> +++ b/drivers/phy/qualcomm/Kconfig
-> @@ -114,3 +114,13 @@ config PHY_QCOM_IPQ806X_USB
->           This option enables support for the Synopsis PHYs present inside the
->           Qualcomm USB3.0 DWC3 controller on ipq806x SoC. This driver supports
->           both HS and SS PHY controllers.
-> +
-> +config PHY_QCOM_EDP
-
-Can this come somewhere alphabet sorted?
-
-> +       tristate "Qualcomm eDP PHY driver"
-> +       depends on ARCH_QCOM || COMPILE_TEST
-
-I wonder if this could be pulled up above for the whole file.
-
-> +       depends on OF
-> +       depends on COMMON_CLK
-> +       select GENERIC_PHY
-> +       help
-> +         Enable this driver to support the Qualcomm eDP PHY found in various
-> +         Qualcomm chipsets.
-> diff --git a/drivers/phy/qualcomm/Makefile b/drivers/phy/qualcomm/Makefile
-> index 47acbd7daa3a..1afd0882dbcc 100644
-> --- a/drivers/phy/qualcomm/Makefile
-> +++ b/drivers/phy/qualcomm/Makefile
-> @@ -12,3 +12,4 @@ obj-$(CONFIG_PHY_QCOM_USB_HS_28NM)    += phy-qcom-usb-hs-28nm.o
->  obj-$(CONFIG_PHY_QCOM_USB_SS)          += phy-qcom-usb-ss.o
->  obj-$(CONFIG_PHY_QCOM_USB_SNPS_FEMTO_V2)+= phy-qcom-snps-femto-v2.o
->  obj-$(CONFIG_PHY_QCOM_IPQ806X_USB)             += phy-qcom-ipq806x-usb.o
-> +obj-$(CONFIG_PHY_QCOM_EDP)             += phy-qcom-edp.o
-
-Also alphabet sorted instead of tacked onto the end?
-
-> diff --git a/drivers/phy/qualcomm/phy-qcom-edp.c b/drivers/phy/qualcomm/phy-qcom-edp.c
-> new file mode 100644
-> index 000000000000..ff0508e49548
-> --- /dev/null
-> +++ b/drivers/phy/qualcomm/phy-qcom-edp.c
-> @@ -0,0 +1,750 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2017, 2020, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2021, Linaro Ltd.
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/delay.h>
-> +#include <linux/err.h>
-> +#include <linux/io.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-> +#include <linux/of_address.h>
-> +#include <linux/phy/phy.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regulator/consumer.h>
-> +#include <linux/reset.h>
-> +#include <linux/slab.h>
-> +
-> +#include <dt-bindings/phy/phy.h>
-> +
-> +#define DP_PHY_PD_CTL_PWRDN                    0x001
-> +#define DP_PHY_PD_CTL_PSR_PWRDN                        0x002
-> +#define DP_PHY_PD_CTL_AUX_PWRDN                        0x004
-> +#define DP_PHY_PD_CTL_LANE_0_1_PWRDN           0x008
-> +#define DP_PHY_PD_CTL_LANE_2_3_PWRDN           0x010
-> +#define DP_PHY_PD_CTL_PLL_PWRDN                        0x020
-> +#define DP_PHY_PD_CTL_DP_CLAMP_EN              0x040
-> +
-> +#define DP_PHY_CFG                              0x0010
-> +#define DP_PHY_CFG_1                            0x0014
-> +#define DP_PHY_PD_CTL                           0x001C
-> +#define DP_PHY_MODE                             0x0020
-> +
-> +#define DP_PHY_AUX_CFG0                                0x0020
-> +#define DP_PHY_AUX_CFG1                                0x0024
-> +#define DP_PHY_AUX_CFG2                                0x0028
-> +#define DP_PHY_AUX_CFG3                                0x002c
-> +#define DP_PHY_AUX_CFG4                                0x0030
-> +#define DP_PHY_AUX_CFG5                                0x0034
-> +#define DP_PHY_AUX_CFG6                                0x0038
-> +#define DP_PHY_AUX_CFG7                                0x003c
-> +#define DP_PHY_AUX_CFG8                                0x0040
-> +#define DP_PHY_AUX_CFG9                                0x0044
-> +
-> +#define DP_PHY_VCO_DIV                          0x0074
-> +#define DP_PHY_TX0_TX1_LANE_CTL                 0x007C
-> +#define DP_PHY_TX2_TX3_LANE_CTL                 0x00A0
-> +
-> +#define DP_PHY_SPARE0                           0x00CC
-> +#define DP_PHY_STATUS                           0x00E0
-> +
-> +/* Tx registers */
-> +#define TXn_CLKBUF_ENABLE                       0x0000
-> +#define TXn_TX_EMP_POST1_LVL                    0x0004
-> +
-> +#define TXn_TX_DRV_LVL                          0x0014
-> +#define TXn_TX_DRV_LVL_OFFSET                   0x0018
-> +#define TXn_RESET_TSYNC_EN                      0x001C
-> +//#define TXn_PRE_STALL_LDO_BOOST_EN            0x0020
-> +#define TXn_LDO_CONFIG                          0x0084
-> +#define TXn_TX_BAND                             0x0028
-> +#define TXn_INTERFACE_SELECT                    0x0024
-> +
-> +#define TXn_RES_CODE_LANE_OFFSET_TX0            0x0044
-> +#define TXn_RES_CODE_LANE_OFFSET_TX1            0x0048
-> +//#define TXn_RES_CODE_LANE_OFFSET_RX           0x0040
-> +
-> +#define TXn_TRANSCEIVER_BIAS_EN                 0x0054
-> +#define TXn_HIGHZ_DRVR_EN                       0x0058
-> +#define TXn_TX_POL_INV                          0x005C
-> +#define TXn_PARRATE_REC_DETECT_IDLE_EN          0x0060
-> +#define TXn_LANE_MODE_1                         0x0064
-> +
-> +#define TXn_TRAN_DRVR_EMP_EN                    0x0078
-> +//#define TXn_TX_INTERFACE_MODE                 0x00BC
-
-Future work? Maybe add a TODO?
-
-> +
-> +#define TXn_VMODE_CTRL1                         0x007C
-> +
-> +/* PLL register offset */
-> +#define QSERDES_COM_BG_TIMER                    0x000C
-> +#define QSERDES_COM_BIAS_EN_CLKBUFLR_EN         0x0044
-> +#define QSERDES_COM_CLK_ENABLE1                 0x0048
-> +#define QSERDES_COM_SYS_CLK_CTRL                0x004C
-[..]
-> +static int qcom_edp_clks_register(struct qcom_edp *edp, struct device_node *np)
-> +{
-> +       struct clk_init_data init = { };
-> +       int ret;
-> +
-> +       init.ops = &qcom_edp_dp_link_clk_ops;
-> +       init.name = "edp_phy_pll_link_clk";
-> +       edp->dp_link_hw.init = &init;
-> +       ret = devm_clk_hw_register(edp->dev, &edp->dp_link_hw);
-> +       if (ret)
-> +               return ret;
-> +
-> +       init.ops = &qcom_edp_dp_pixel_clk_ops;
-> +       init.name = "edp_phy_pll_vco_div_clk";
-> +       edp->dp_pixel_hw.init = &init;
-> +       ret = devm_clk_hw_register(edp->dev, &edp->dp_pixel_hw);
-> +       if (ret)
-> +               return ret;
-> +
-> +       ret = of_clk_add_hw_provider(np, qcom_edp_dp_clks_hw_get, edp);
-> +       if (ret)
-> +               return ret;
-> +
-> +       /*
-> +        * Roll a devm action because the clock provider is the child node, but
-
-Is it still a child node?
-
-> +        * the child node is not actually a device.
-> +        */
-> +       ret = devm_add_action(edp->dev, phy_clk_release_provider, np);
-> +       if (ret)
-> +               phy_clk_release_provider(np);
-> +
-> +       return ret;
-> +}
-> +
