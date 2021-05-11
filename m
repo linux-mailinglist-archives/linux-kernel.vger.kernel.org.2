@@ -2,275 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9FF37AF69
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3DB37AF6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbhEKThi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 15:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232116AbhEKThf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 15:37:35 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EC0C061761;
-        Tue, 11 May 2021 12:36:27 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id u21so31414300ejo.13;
-        Tue, 11 May 2021 12:36:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=05zZZjc7y6WQTTPW2NVb4ONKI0/ly7nNr9xWWzLqImw=;
-        b=UR+cNc7m19yoK94EtOFOiwy4y38mH3SoS/2MjVXwyuTYFaO0esWb94Tf/10mN8OQdl
-         TeF7QmiLyRnz9skbSL2/78CpG9Rs/FjwtLJjDaNYJH0Z9ksQHFX+6Unan+J9UBadTQSw
-         Avy2XOK7M7fedMbrdarqKG7eUeXBFKNZ9XnmCOqsdZiLJZD8fBMa4+SIime1/67QK7Ik
-         fnYuStK7JWc201t5qEls0dqP+VFKjwkUzzfb4zlqeZDxohHyRFHmCmnKITckKtc7ihh8
-         IFBINs3PXjWZ+HELF4KkJFLk8nlsWF0jjh/szJ85ZK9KmytxvtGrS6s7+BLUqVxjZBy5
-         SnYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=05zZZjc7y6WQTTPW2NVb4ONKI0/ly7nNr9xWWzLqImw=;
-        b=rdIfTYm/4cTh9Ie/niBJX8WzxSd5kW8ABVU6bKKy2vf6JNswsj70Fo1wZEE5/xS0St
-         rcJLi4oB+IXkfRoePVJXNRH386neSDmnhjyDXl7k/Bm9dbEjyyTGRq/vcqIzaW6kEniu
-         StT8X+yYkvliFvwMESf1ncQIJF0zdCVYDl9fPLkAkiOIo6OdxpVQ3EapBEvempuZzCgf
-         Lw8+W3PKExgossGTWc/kSn/+gyPxwW/HEd2WpghJbxu+CnpcAsoDz27JJr2+ctCF0VuN
-         dNPYvOaP9k2LmerM/j92eJU9JfkC7pd982F0LJCjImLRMEMCSawveVljbqKkwWEFGJll
-         5llA==
-X-Gm-Message-State: AOAM533oiF9IllucbeQm5wU0nWLhodUaRvietWRCYxkjcDxK6k3tKnC9
-        9pYZoLXk1ocJEZsxFiG+jwoaGgzrEIu3p74g2Kc=
-X-Google-Smtp-Source: ABdhPJxHY6GRA0dJoJzZoKeRf9MaAI3VfRY0rnMJR/x2PcXGFZupMdAB/pmjWboB8R4mFZCz+WEphATULaGvHctI6nk=
-X-Received: by 2002:a17:907:75f6:: with SMTP id jz22mr32971508ejc.504.1620761786072;
- Tue, 11 May 2021 12:36:26 -0700 (PDT)
+        id S232171AbhEKTi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 15:38:28 -0400
+Received: from mail-bn8nam11on2048.outbound.protection.outlook.com ([40.107.236.48]:59114
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232058AbhEKTi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 15:38:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FNyzCMS/gjtwrGSY4tnAfUDvvZsOLZQuQcZACFaQH4SyqZhxi945JniIVH31SpXAoDPJocnL4Qs7U/T67sp87vd5a5ds5zIR0/UvUxBvagt4hucGKct4ax+zcXmOwDw8pe+K6v63nQj6XcTuT1MaREOVLWdZkR7SQQYZUMmKUFHwPwW/O4I5bkig10L0CoZJSpEsCW7INP51mQqRONe7vrm43Izs1SR1G1sCVj+gM4gG+8JajZATxKvsoahr2ut/2nOefcxJLYEGoNso05DW4CNmTamyBpE62waWk5FVpyVrTwCziA25SDlWT2wg7ruqVrA8tzpOXmYPpbEAaFZVpg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3KmTvATioAwskqM+DXBwXUPKA3TcSomeZYoKplvN43A=;
+ b=CiGxhPsFqAAUHk2nHcEfZpXqrr604KdfmuULc3ZuEiuLOyryHslnNPTBtl8GJXmMx05oz/j2g4HqWZSv7E9a5VUduSsIS7JelRGPeI4r27HPBmWv66FLE4qt0yIlZCVok/QPuu+m1VH8vLO+ucQjk0h7yLc6FNqmuqNCyUDgxM8YTGJkAR4UpJaxKj7qR1/NpqmAQIFyhjfWmUMwThfzmXyNRPm71vbv3syYurSK8/7IFwRjgRoW0UBtR085L009+LTvB48eB9a7UtgW312F1HPnuwTEMiT3qeKZDJst1iM9jM5SQ8yt+jy8s5sH6KBAsfyhiym0kci6csbM/zpDBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3KmTvATioAwskqM+DXBwXUPKA3TcSomeZYoKplvN43A=;
+ b=g51QMOGHgn1lFAiS7Lw5v8DE2gx6VMIfAaUg9Rco/86M4202GVnWe/oabbpUs6un8zRBGCcqWbn+ag/Bdb7bPz2wh34lYmdMjHcuQRQ9/6MBJQ2m/9Vhm/OsH3kHLF9kz2AE65qwaZLkRmwk+G5ngLXtOTuQyI+Xb5ikzgr+7U4bzoh6zO14LHMBIlNW4I2h1lDVLsl49KM9aLTPoZjPV3eYj8j6FuHMfL2PAiCL4n28aTQOm2/BRYJvRyJx65UW2iBthWtoRrTq93yXJm5tfhW71Dpc0GR4fP4ulK8io61mH+CHrCCo9gmlqqjUWMfCAdQf78yOqQJyrQD+12VFuQ==
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3835.namprd12.prod.outlook.com (2603:10b6:5:1c7::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24; Tue, 11 May
+ 2021 19:37:19 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4108.031; Tue, 11 May 2021
+ 19:37:19 +0000
+Date:   Tue, 11 May 2021 16:37:17 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Xiaofei Tan <tanxiaofei@huawei.com>
+Cc:     leon@kernel.org, liweihang@huawei.com, liangwenpeng@huawei.com,
+        shiju.jose@huawei.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@openeuler.org
+Subject: Re: [PATCH] RDMA/ucma: Cleanup to reduce duplicate code
+Message-ID: <20210511193717.GB1316147@nvidia.com>
+References: <1620291106-3675-1-git-send-email-tanxiaofei@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620291106-3675-1-git-send-email-tanxiaofei@huawei.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL1PR13CA0212.namprd13.prod.outlook.com
+ (2603:10b6:208:2bf::7) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20210331232356.2204476-1-adrien.grassein@gmail.com>
- <20210331232356.2204476-4-adrien.grassein@gmail.com> <20210511022725.GC3425@dragon>
-In-Reply-To: <20210511022725.GC3425@dragon>
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Date:   Tue, 11 May 2021 21:36:14 +0200
-Message-ID: <CABkfQAHLttLVgOv29T0DRY1F=2z3k_K1f=40ZURLX4gE_tLXoQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] arm64: dts: imx8mq-nitrogen: add lt8912 MIPI-DSI
- to HDMI
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>, catalin.marinas@arm.com,
-        will@kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0212.namprd13.prod.outlook.com (2603:10b6:208:2bf::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.9 via Frontend Transport; Tue, 11 May 2021 19:37:19 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lgYBx-005WP8-UG; Tue, 11 May 2021 16:37:17 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 155308fd-7c90-4a51-6488-08d914b4308b
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3835:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3835FA813901DD6DD5D32C99C2539@DM6PR12MB3835.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xTLgULiBWKLCqPCusqKDmf45FtJQRskhyR/cby2Juifu/L7cgb7lH8kZMfJyuJblmp95gIfVsg3G8zuSv2i4gWjTNneMaeYQj1ertJSdxBOw++bOD09X/gYIoJhaIK4HQ4Wu9RVD1SJtAIOKM4Fknk3cHwovfMWa6b/GvHLPuQQ72DJ1FkTOFJEL8l9rPW1wUu8MjRI4/MoHFPeh8GuWd/kwMuRCGx9dMGQAEn7n8qsaDKQ/tgcaDHWfiOGEanKHt67UsPDDYpB2vxH3DnQ0XiJDF8Q9qARUz0v4vAtcm4rrkeWwSJ8M7IerXv/P+rmqVi8sMCfQ0j8ZdUE1wpiy2+KgH+M+/gUWeXsAttcFzr1CYMnC/Sk3XPlHXbrT7HPiBPRwxqPbjK61Lw/FxiJchCyFwL8EkI05rZOQno7DLC08kVPw6Eedaqp35J9tSfHgatceSMTZ359KIT6RS0WCZQrrqS0J9Hr8AeURVq/0bnBpBccJMBWe/I5O8LXkmOMhZdjEam41FiGtKmG6d9CVp7kz/Wccu0T0bX9F4D01lpGIxCOErl0vtC9ShOWikjPw5J1TzzhJO8+qoVWywpG2iSMwGw+fF23LcaYq5ezwTSo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(39860400002)(366004)(136003)(9746002)(9786002)(4326008)(66476007)(5660300002)(4744005)(86362001)(66556008)(66946007)(33656002)(8936002)(83380400001)(316002)(426003)(1076003)(6916009)(2906002)(8676002)(38100700002)(36756003)(186003)(26005)(478600001)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?+qwWH4D1kHxeqbl80qVH2cyd4iDEmrEoNp5nEI/lMQbh4LmUSuby4CH2JBJw?=
+ =?us-ascii?Q?NmbXdHSgdVEuidyWBFS5BW9OVoTCdbB/TjXaNexv3gMrsxJrv/1ZQYE1ig9T?=
+ =?us-ascii?Q?ufTd1dpWNKo3h7k0CN/fEmgjF/qQNtats1OVf246GZSzAaGCcCtOtkOH63ec?=
+ =?us-ascii?Q?QV+lWumDM47a+vAZ7frEsPelYxCJq3OfcpNJM02qgKhGmYKuKElzjBTK8sft?=
+ =?us-ascii?Q?JFPChfRb/YNcFpLvUdUdbb6mDCD6/ZGRIL7ZZiOL//BISbUO1BBkF8d6V8BF?=
+ =?us-ascii?Q?0pSKE3UFmdLMBa30fAm6pLxYnmtbgPujZeOAQ4uirXd7xF9FVc55qQ+kZk2t?=
+ =?us-ascii?Q?mllk9WpEOI/NSXQPN0kXBHcFkkusVcQoWZM6W4Rivr8WBi8gPgsNDCpqKE27?=
+ =?us-ascii?Q?6ZOkBPSaBwOUg0tpTUpwU+n0hSd2Xi6l3E78BZ7i7eECslvHcRnn3n86OC2i?=
+ =?us-ascii?Q?IvtriLDDX2RfF6i9SZ3A58Eysv2AOmADzdTR2XDzBLcArmbcXLCFmGnUbGfx?=
+ =?us-ascii?Q?zbM0VP/UB2wDG9POz085OYA2bdPXNWKOqrIX5kiYUMh7ggqJjWpkq1uMxLa4?=
+ =?us-ascii?Q?7NXbUKBnNvElcAcW5aNuAQevcj6CAt3tUV3f+KEN/dG7LlJdYcqdx3ke7EiF?=
+ =?us-ascii?Q?48iLzHwvMOO45LfjO/KvhmmDP7YYewIjinDYdaFhIB9GUu/hAS0X/oJSu6nf?=
+ =?us-ascii?Q?osqEK+6CUOjf1zRm0Onoyzh/2aKLY4s7jPOnHVXHk2Sss/cTEnlFqLVaHv4F?=
+ =?us-ascii?Q?VyBfTQxAheZ7RsFcZBjGZj2nQ2JR1Fk7IYydVQ9XLTLu5M0yhD5nuYAiPwVZ?=
+ =?us-ascii?Q?RUhpz1QRDvdbsB4ApFBHBwHlz7fHTDtFQikBY0wujzRN6eZ2V7swjfQvFcB2?=
+ =?us-ascii?Q?r0p6f32s67Ap7BWYRRSoJ9MprMYwsHGlzrIGhty63m4A5Yjxrf0UwmvIXaf8?=
+ =?us-ascii?Q?Qu/sCNRzDxxK0rMwip4K5l/OF+uAxGVD4GFrr6/X3ZV/NN40T+8L5LQ9FGSC?=
+ =?us-ascii?Q?UVI+i3cpUhz0gG32Qpjsy0E/W75D0q78Bg9Db7BRQweRv6DJrN0CzvDh4s4a?=
+ =?us-ascii?Q?Aaiwo2JsBus1bzlGeTlA+quTwx1+KyjrGZpbxvwg0xZdy90fbsstNYTGymj9?=
+ =?us-ascii?Q?uz6JFC19Reibgs8vwtv/PkwUzbYg+N8CJMWy0toqflWJ6Zzj0AQpTBFILDTk?=
+ =?us-ascii?Q?PevC3+oxfmcIY7V+9xsQVpAdLjq/9PsS0LQUk6YORNKCcPbG6vDvzorYpyvD?=
+ =?us-ascii?Q?r7RhR0EMmq38K9woc9ainITap0EyTKrYqr1bT+46oc/vp6HfwPVhD87mzEwz?=
+ =?us-ascii?Q?7eeNtJ3Atv1pZUkdIStI/0fN?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 155308fd-7c90-4a51-6488-08d914b4308b
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 19:37:19.3194
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 52uMGZIrXNDVXkIX0Kg8lqIN91iyytPwPjrtO86VW7QlwVkEiRVwxNJEFHOf3LP7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3835
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shawn,
+On Thu, May 06, 2021 at 04:51:46PM +0800, Xiaofei Tan wrote:
+> The lable "err1" does the same thing as the branch of copy_to_user()
+> failed in the function ucma_create_id(). Just jump to the label directly
+> to reduce duplicate code.
+> 
+> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/infiniband/core/ucma.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks for your review.
+Applied to for-next, thanks
 
-Le mar. 11 mai 2021 =C3=A0 04:27, Shawn Guo <shawnguo@kernel.org> a =C3=A9c=
-rit :
->
-> On Thu, Apr 01, 2021 at 01:23:55AM +0200, Adrien Grassein wrote:
-> > Add support of the lt8912b in the DTB.
-> > This adds the support of the DB_DSIHD daugther board from
-> > Boundary Devices.
-> >
-> > Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> > ---
-> >  .../boot/dts/freescale/imx8mq-nitrogen.dts    | 120 ++++++++++++++++++
-> >  1 file changed, 120 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts b/arch/a=
-rm64/boot/dts/freescale/imx8mq-nitrogen.dts
-> > index 04992cbba56e..4ffd23ea705f 100644
-> > --- a/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
-> > +++ b/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
-> > @@ -34,6 +34,19 @@ power {
-> >               };
-> >       };
-> >
-> > +     hdmi-connector {
-> > +             compatible =3D "hdmi-connector";
-> > +             ddc-i2c-bus =3D <&ddc_i2c_bus>;
-> > +             label =3D "hdmi";
-> > +             type =3D "a";
-> > +
-> > +             port {
-> > +                     hdmi_connector_in: endpoint {
-> > +                             remote-endpoint =3D <&lt8912_out>;
-> > +                     };
-> > +             };
-> > +     };
-> > +
-> >       reg_usb_otg_vbus: regulator-usb-otg-vbus {
-> >               compatible =3D "regulator-fixed";
-> >               pinctrl-names =3D "default";
-> > @@ -81,6 +94,9 @@ reg_vref_5v: regulator-vref-5v {
-> >       };
-> >  };
-> >
-> > +&dphy {
-> > +     status =3D "okay";
-> > +};
-> >
-> >  &fec1 {
-> >       pinctrl-names =3D "default";
-> > @@ -193,6 +209,97 @@ rtc@68 {
-> >       };
-> >  };
-> >
-> > +&i2c4 {
-> > +     clock-frequency =3D <100000>;
-> > +     pinctrl-names =3D "default";
-> > +     pinctrl-0 =3D <&pinctrl_i2c4>;
-> > +     status =3D "okay";
-> > +
-> > +     pca9546: i2cmux9546@70 {
->
-> Node name should be generic, so 9546 should be dropped from there?
->
-> > +             compatible =3D "nxp,pca9546";
-> > +             reg =3D <0x70>;
-> > +             #address-cells =3D <1>;
-> > +             #size-cells =3D <0>;
-> > +
-> > +             i2c4@0 {
->
-> Is number 4 really needed in node name?
->
-I add 4 to keep it coherent with the DTS file (i2c1@0 for example).
-
-> > +                     reg =3D <0>;
-> > +                     #address-cells =3D <1>;
-> > +                     #size-cells =3D <0>;
-> > +                     clock-frequency =3D <100000>;
-> > +
-> > +                     hdmi-bridge@48 {
-> > +                             compatible =3D "lontium,lt8912b";
-> > +                             reg =3D <0x48> ;
-> > +                             reset-gpios =3D <&max7323 0 GPIO_ACTIVE_L=
-OW>;
-> > +
-> > +                             ports {
-> > +                                     #address-cells =3D <1>;
-> > +                                     #size-cells =3D <0>;
-> > +
-> > +                                     port@0 {
-> > +                                             reg =3D <0>;
-> > +
-> > +                                             hdmi_out_in: endpoint {
-> > +                                                     data-lanes =3D <1=
- 2 3 4>;
-> > +                                                     remote-endpoint =
-=3D <&mipi_dsi_out>;
-> > +                                             };
-> > +                                     };
-> > +
-> > +                                     port@1 {
-> > +                                             reg =3D <1>;
-> > +
-> > +                                             lt8912_out: endpoint {
-> > +                                                     remote-endpoint =
-=3D <&hdmi_connector_in>;
-> > +                                             };
-> > +                                     };
-> > +                             };
-> > +                     };
-> > +             };
-> > +
-> > +             ddc_i2c_bus: i2c4@1 {
-> > +                     reg =3D <1>;
-> > +                     #address-cells =3D <1>;
-> > +                     #size-cells =3D <0>;
-> > +                     clock-frequency =3D <100000>;
-> > +             };
-> > +
-> > +             i2c4@3 {
-> > +                     reg =3D <3>;
-> > +                     #address-cells =3D <1>;
-> > +                     #size-cells =3D <0>;
-> > +                     clock-frequency =3D <100000>;
-> > +
-> > +                     max7323: max7323@68 {
->
-> Can we have a generic node name for this device?
->
-> > +                             compatible =3D "maxim,max7323";
-> > +                             pinctrl-names =3D "default";
-> > +                             pinctrl-0 =3D <&pinctrl_max7323>;
-> > +                             gpio-controller;
-> > +                             reg =3D <0x68>;
-> > +                             #gpio-cells =3D <2>;
-> > +                     };
-> > +             };
-> > +     };
-> > +};
-> > +
-> > +&lcdif {
-> > +     status =3D "okay";
-> > +};
-> > +
-> > +&mipi_dsi {
-> > +     status =3D "okay";
->
-> Move it to end of property list.
->
-> > +     #address-cells =3D <1>;
-> > +     #size-cells =3D <0>;
-> > +
-> > +     ports {
-> > +             port@1 {
-> > +                     reg =3D <1>;
->
-> Newline between property and child node.
->
-> Shawn
->
-> > +                     mipi_dsi_out: endpoint {
-> > +                             remote-endpoint =3D <&hdmi_out_in>;
-> > +                     };
-> > +             };
-> > +     };
-> > +};
-> > +
-> >  &uart1 { /* console */
-> >       pinctrl-names =3D "default";
-> >       pinctrl-0 =3D <&pinctrl_uart1>;
-> > @@ -368,6 +475,19 @@ MX8MQ_IOMUXC_GPIO1_IO06_GPIO1_IO6                0=
-x49
-> >               >;
-> >       };
-> >
-> > +     pinctrl_i2c4: i2c4grp {
-> > +             fsl,pins =3D <
-> > +                     MX8MQ_IOMUXC_I2C4_SCL_I2C4_SCL                  0=
-x4000007f
-> > +                     MX8MQ_IOMUXC_I2C4_SDA_I2C4_SDA                  0=
-x4000007f
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_max7323: max7323grp {
-> > +             fsl,pins =3D <
-> > +                     MX8MQ_IOMUXC_NAND_RE_B_GPIO3_IO15 0x19
-> > +             >;
-> > +     };
-> > +
-> >       pinctrl_reg_arm_dram: reg-arm-dramgrp {
-> >               fsl,pins =3D <
-> >                       MX8MQ_IOMUXC_SAI5_RXD3_GPIO3_IO24       0x16
-> > --
-> > 2.25.1
-> >
-
-The other comments are OK.
-I will send you an updated patch set.
-
-Thanks again,
+Jason
