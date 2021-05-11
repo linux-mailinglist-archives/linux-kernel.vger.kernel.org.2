@@ -2,163 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 874B937A8DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDA037A8F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbhEKOSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:18:34 -0400
-Received: from mga17.intel.com ([192.55.52.151]:11128 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231835AbhEKOSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:18:23 -0400
-IronPort-SDR: vPVcruXzKue/5uh/tm/bmzYlZ+dk7PQEYtUal3IusEWgqqXVIe6QAFm4KPAe0t4Y5zmymzCFGJ
- IjlOSHaNr80A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179714748"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="179714748"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:17:14 -0700
-IronPort-SDR: VyT/2y6qXkkJZi0XmfugZaBYQh1RuvWOKYyLo2yIbq4v7qYat3PQxf6f2epjveWEOfaQpmFbuf
- pmOsVCIKIjfQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="541661836"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 11 May 2021 07:17:10 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 9F61450E; Tue, 11 May 2021 17:17:27 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v3 8/8] spi: Convert to use predefined time multipliers
-Date:   Tue, 11 May 2021 17:17:25 +0300
-Message-Id: <20210511141725.32097-9-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210511141725.32097-1-andriy.shevchenko@linux.intel.com>
-References: <20210511141725.32097-1-andriy.shevchenko@linux.intel.com>
+        id S231801AbhEKOUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231305AbhEKOUi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:20:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB87C061574;
+        Tue, 11 May 2021 07:19:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vXY92xiVcSCoihG0TT6zFgFAzGF0aHK+j0EPAjfDpt4=; b=GMAgJT78CAXSRvHzqCyBh72c44
+        yKnOTdDeHdG8MpUntZdbv433uwQHd5/RqHWIbL6HmnYEwz3QL2KB8QuTc1gEegMHPB22ANVAU1B1f
+        flJ5JdHESdxoJTK+gdCHe0f8B65Y7XohT+lruo0VVuHPIo5JYEp2Pz7mMNCu6O4573R1j9grt5KNM
+        0wnFsoyIDcNw+1betYYDi7JkSvSq7pqnIWz66UzWFXWnQrk3QIs0x6I3vCh0XDFvi0IvCoan7dwyt
+        fEYmYsFekF+oqKr+5rANQZlGBFzvFBpd1tWHNl0S5rqeaAgumymOuP4ixa6eYpfV15tjeLh7R2HWo
+        Wo6RbevA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgTDP-007LsX-8r; Tue, 11 May 2021 14:18:38 +0000
+Date:   Tue, 11 May 2021 15:18:27 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: Re: [PATCH net-next v4 1/4] mm: add a signature in struct page
+Message-ID: <YJqSM79sOk1PRFPT@casper.infradead.org>
+References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
+ <20210511133118.15012-2-mcroce@linux.microsoft.com>
+ <YJqKfNh6l3yY2daM@casper.infradead.org>
+ <YJqQgYSWH2qan1GS@apalos.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJqQgYSWH2qan1GS@apalos.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have a lot of hard coded values in nanoseconds or other units.
-Use predefined constants to make it more clear.
+On Tue, May 11, 2021 at 05:11:13PM +0300, Ilias Apalodimas wrote:
+> Hi Matthew,
+> 
+> On Tue, May 11, 2021 at 02:45:32PM +0100, Matthew Wilcox wrote:
+> > On Tue, May 11, 2021 at 03:31:15PM +0200, Matteo Croce wrote:
+> > > @@ -101,6 +101,7 @@ struct page {
+> > >  			 * 32-bit architectures.
+> > >  			 */
+> > >  			unsigned long dma_addr[2];
+> > > +			unsigned long signature;
+> > >  		};
+> > >  		struct {	/* slab, slob and slub */
+> > >  			union {
+> > 
+> > No.  Signature now aliases with page->mapping, which is going to go
+> > badly wrong for drivers which map this page into userspace.
+> > 
+> > I had this as:
+> > 
+> > +                       unsigned long pp_magic;
+> > +                       unsigned long xmi;
+> > +                       unsigned long _pp_mapping_pad;
+> >                         unsigned long dma_addr[2];
+> > 
+> > and pp_magic needs to be set to something with bits 0&1 clear and
+> > clearly isn't a pointer.  I went with POISON_POINTER_DELTA + 0x40.
+> 
+> Regardless to the changes required, there's another thing we'd like your
+> opinion on.
+> There was a change wrt to the previous patchset. We used to store the
+> struct xdp_mem_info into page->private.  On the new version we store the
+> page_pool ptr address in page->private (there's an explanation why on the
+> mail thread, but the tl;dr is that we can get some more speed and keeping
+> xdp_mem_info is not that crucial). So since we can just store the page_pool
+> address directly, should we keep using page->private or it's better to
+> do: 
+> 
+> +                       unsigned long pp_magic;
+> +                       unsigned long pp_ptr;
+> +                       unsigned long _pp_mapping_pad;
+>                         unsigned long dma_addr[2];
+> and use pp_ptr?
 
-While at it, add or amend comments in the corresponding functions.
+I'd rather you didn't use page_private ... Any reason not to use:
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/spi/spi.c | 41 ++++++++++++++++++++++++++++-------------
- 1 file changed, 28 insertions(+), 13 deletions(-)
+			unsigned long pp_magic;
+			struct page_pool *pp;
+			unsigned long _pp_mapping_pad;
+			unsigned long dma_addr[2];
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 2350d131871b..9160e9e52aae 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -1118,10 +1118,20 @@ static int spi_transfer_wait(struct spi_controller *ctlr,
- 		if (!speed_hz)
- 			speed_hz = 100000;
- 
--		ms = 8LL * 1000LL * xfer->len;
-+		/*
-+		 * For each byte we wait for 8 cycles of the SPI clock.
-+		 * Since speed is defined in Hz and we want milliseconds,
-+		 * use respective multiplier, but before the division,
-+		 * otherwise we may get 0 for short transfers.
-+		 */
-+		ms = 8LL * MSEC_PER_SEC * xfer->len;
- 		do_div(ms, speed_hz);
--		ms += ms + 200; /* some tolerance */
- 
-+		/*
-+		 * Increase it twice and add 200 ms tolerance, use
-+		 * predefined maximum in case of overflow.
-+		 */
-+		ms += ms + 200;
- 		if (ms > UINT_MAX)
- 			ms = UINT_MAX;
- 
-@@ -1144,10 +1154,10 @@ static void _spi_transfer_delay_ns(u32 ns)
- {
- 	if (!ns)
- 		return;
--	if (ns <= 1000) {
-+	if (ns <= NSEC_PER_USEC) {
- 		ndelay(ns);
- 	} else {
--		u32 us = DIV_ROUND_UP(ns, 1000);
-+		u32 us = DIV_ROUND_UP(ns, NSEC_PER_USEC);
- 
- 		if (us <= 10)
- 			udelay(us);
-@@ -1167,21 +1177,25 @@ int spi_delay_to_ns(struct spi_delay *_delay, struct spi_transfer *xfer)
- 
- 	switch (unit) {
- 	case SPI_DELAY_UNIT_USECS:
--		delay *= 1000;
-+		delay *= NSEC_PER_USEC;
- 		break;
--	case SPI_DELAY_UNIT_NSECS: /* nothing to do here */
-+	case SPI_DELAY_UNIT_NSECS:
-+		/* Nothing to do here */
- 		break;
- 	case SPI_DELAY_UNIT_SCK:
- 		/* clock cycles need to be obtained from spi_transfer */
- 		if (!xfer)
- 			return -EINVAL;
--		/* if there is no effective speed know, then approximate
--		 * by underestimating with half the requested hz
-+		/*
-+		 * If there is unknown effective speed, approximate it
-+		 * by underestimating with half of the requested hz.
- 		 */
- 		hz = xfer->effective_speed_hz ?: xfer->speed_hz / 2;
- 		if (!hz)
- 			return -EINVAL;
--		delay *= DIV_ROUND_UP(1000000000, hz);
-+
-+		/* Convert delay to nanoseconds */
-+		delay *= DIV_ROUND_UP(NSEC_PER_SEC, hz);
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -1213,6 +1227,7 @@ EXPORT_SYMBOL_GPL(spi_delay_exec);
- static void _spi_transfer_cs_change_delay(struct spi_message *msg,
- 					  struct spi_transfer *xfer)
- {
-+	u32 default_delay_ns = 10 * NSEC_PER_USEC;
- 	u32 delay = xfer->cs_change_delay.value;
- 	u32 unit = xfer->cs_change_delay.unit;
- 	int ret;
-@@ -1220,16 +1235,16 @@ static void _spi_transfer_cs_change_delay(struct spi_message *msg,
- 	/* return early on "fast" mode - for everything but USECS */
- 	if (!delay) {
- 		if (unit == SPI_DELAY_UNIT_USECS)
--			_spi_transfer_delay_ns(10000);
-+			_spi_transfer_delay_ns(default_delay_ns);
- 		return;
- 	}
- 
- 	ret = spi_delay_exec(&xfer->cs_change_delay, xfer);
- 	if (ret) {
- 		dev_err_once(&msg->spi->dev,
--			     "Use of unsupported delay unit %i, using default of 10us\n",
--			     unit);
--		_spi_transfer_delay_ns(10000);
-+			     "Use of unsupported delay unit %i, using default of %luus\n",
-+			     unit, default_delay_ns / NSEC_PER_USEC);
-+		_spi_transfer_delay_ns(default_delay_ns);
- 	}
- }
- 
--- 
-2.30.2
-
+?
