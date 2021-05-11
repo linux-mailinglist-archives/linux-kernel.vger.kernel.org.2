@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D2F37A1D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9079937A1D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhEKI22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 04:28:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36744 "EHLO mail.kernel.org"
+        id S231189AbhEKI2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 04:28:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231156AbhEKI2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 04:28:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D85061432;
-        Tue, 11 May 2021 08:27:08 +0000 (UTC)
+        id S230338AbhEKI2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 04:28:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1804761107;
+        Tue, 11 May 2021 08:27:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620721628;
-        bh=Av6ODrArdaRyklq5h81aFEAyRwi1Zqxxq8VsieTEPwc=;
+        s=k20201202; t=1620721637;
+        bh=33gomDD/LsBo48p0ujPwB4ZMY/SnqXxbXoNeyGfnFI4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rnqD5y5awUoCzDztVqE7CeesfCzLk6Gz3oinRh2ZmUDKeQraocy8gnv0LYOqtwFpP
-         6xn1jv62HDunW9Bg4kVolb6XSnxxifD+R4heNr0YmkQvpmwXX1WnRjfXz2ma5iBa0h
-         kKESGJBZyMTFU1z4H9+ym1I/P0RKYP/hIPS42qVwyLko2lU7y2nMG1FaAnIB6Y/OIb
-         ZqVBgkJQEQl1CjQAwfddwNoxcVfyGRdM1VmVv1a/kTI6IZlr4eXRn5NczC0CSi2OUh
-         rFmzXuYcrJzydmqXJji1WZvQG1yZkInhlc/Lk1ENo9t7M/HoUoIVrv/lY3rIQSh3RM
-         sCSB8jdpKozpA==
+        b=bdE/vh5PnP+PAfw4nvR7MEgcOZNojCP8xPCQwpfMvSb2W5v06mjRzjofihhr+gOZv
+         0+l5Jcj+3awOtJyl7DjlbbV6pYLBfs3gpuB1bLtLR7QG55jV6Va2L8FtNDvB2jBLdu
+         OnFpL8QXLwRyH5mLbHk9l7PmwLlnteL/54YHPE59W39pWzFm4G4TgZSxTeiTQ0sgye
+         3K8KBBh0cadamAJSWcxhhybugCKsJW+goZBuUQZJ+pWcLw7lW+scqZdgQ3ygiO8RC5
+         AP9RandUf5806Rxs/va3aQgNIcxxg7E3Ecb4Vux5WapGj8am+TCEYyx9/tPHMwdrHG
+         sGvFwsC2sKCog==
 From:   Mark Brown <broonie@kernel.org>
-To:     Leilk Liu <leilk.liu@mediatek.com>
+To:     Axel Lin <axel.lin@ingics.com>
 Cc:     Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH] spi: take the SPI IO-mutex in the spi_set_cs_timing method
-Date:   Tue, 11 May 2021 09:25:38 +0100
-Message-Id: <162072071982.33404.18025194443786909424.b4-ty@kernel.org>
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Guodong Xu <guodong.xu@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regulator: hi6421v600: Remove unneeded *pmic from struct hi6421_spmi_reg_info
+Date:   Tue, 11 May 2021 09:25:41 +0100
+Message-Id: <162072067395.33366.7122964867023650977.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210508060214.1485-1-leilk.liu@mediatek.com>
-References: <20210508060214.1485-1-leilk.liu@mediatek.com>
+In-Reply-To: <20210430085555.1127994-1-axel.lin@ingics.com>
+References: <20210430085555.1127994-1-axel.lin@ingics.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,18 +43,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 8 May 2021 14:02:14 +0800, Leilk Liu wrote:
-> this patch takes the io_mutex to prevent an unprotected HW
-> register modification in the set_cs_timing callback.
+On Fri, 30 Apr 2021 16:55:55 +0800, Axel Lin wrote:
+> Use rdev->regmap instead of pmic->regmap.
+> With this change, hi6421_spmi_regulator_disable can be removed and use
+> regulator_disable_regmap instead.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] spi: take the SPI IO-mutex in the spi_set_cs_timing method
-      commit: dc5fa590273890a8541ce6e999d606bfb2d73797
+[1/1] regulator: hi6421v600: Remove unneeded *pmic from struct hi6421_spmi_reg_info
+      commit: 4446e6f3bd5c97c312833b445d0eb2ea638c7e98
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
