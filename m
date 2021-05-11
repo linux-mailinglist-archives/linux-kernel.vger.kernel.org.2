@@ -2,96 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43C8C37AD6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C6C37AD70
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbhEKRzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:55:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23027 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231439AbhEKRzD (ORCPT
+        id S231891AbhEKR53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231439AbhEKR5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:55:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620755636;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TMmnYi2R2rpijnadia4P/sKG3RmewE+fpb6vPJAQNH4=;
-        b=ZiiAoLYF0/wwuWwZzzDeAk027Az9FnVUVoRP2WgEdjawXdF5rVJNXX1kiHlnMHq9GW/Rk+
-        EWCpr3FhnLwf0fRBY5JI26yvdjwWH5V/HHdSAFyZq0s/ofxUP0BSC3sOZIqNF3wi9e32aP
-        4fQKM+om6wfc0WzJZOMT2ZUf0yOebOo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-165-0Ghno32cNDCf2rniGd5djw-1; Tue, 11 May 2021 13:53:55 -0400
-X-MC-Unique: 0Ghno32cNDCf2rniGd5djw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 55ED3106BB24;
-        Tue, 11 May 2021 17:53:53 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.124])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C8EAF2B431;
-        Tue, 11 May 2021 17:53:43 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue, 11 May 2021 19:53:52 +0200 (CEST)
-Date:   Tue, 11 May 2021 19:53:42 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Pedro Alves <palves@redhat.com>,
-        Simon Marchi <simon.marchi@efficios.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RESEND2] ptrace: make ptrace() fail if the tracee changed
- its pid unexpectedly
-Message-ID: <20210511175341.GA14488@redhat.com>
-References: <20210511165626.GA13720@redhat.com>
- <CAHk-=whLqbTNc1T+rHCm-kxbVAuhK3hjo5fOgDVf5-z--x1mvQ@mail.gmail.com>
+        Tue, 11 May 2021 13:57:22 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19E5C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:56:14 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id gj14so12093353pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:56:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OE8q1BG05EipQ/1YaoTFUtsd5Q+5n/JYZoA2VhfSjZU=;
+        b=JhS+rcoDkQIqCU/PlBh5dmly1teXaDDZ4NNTzngHUkSjOcqPmik2eavfBztQGJnkid
+         ZAbGDaTNBSN6Z0MUh6JR41JQxlgcjP95pshxWy5nk0tqEeOoerqY6aMUO1cs9b7+WH4p
+         w/ZQnVrUPbvyMGctuPzObY2GMvlMz8qV0pkSonqbBEl/sxYb+6QQ0kfjEoCEx5a+cg0R
+         ZUjr/6aa0ENfZqLct5o1Ho8tlCg45fKr2wY9E6A4NgPgiiIqewt8NFEKkAdEA19hM8WC
+         BoC9OVHlQyVccMpNu12is+nE768jLMvOD0X5k/kOANjJpFfVkSbO46fmq5y4B9JoLxBy
+         4pzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OE8q1BG05EipQ/1YaoTFUtsd5Q+5n/JYZoA2VhfSjZU=;
+        b=akrSi1Lg8yqMksULjyo6mkmv2J8ROhUml/BddD6MwCM4FugaUoqr07/VYWcugdyH3/
+         tv/pvOaYsDiucK+fJgtkk2YmA8TPbe4SOoSih57O/3RfGLKrtKYqs++gzomLzWq/KaVZ
+         V2MkhAy3Zp7va0CraY/hYFANAe4gMXiS0zanBFcxG2EdO179sCpSZ9TqKsKE2A4crMXH
+         28kkTHthR+oJUtYkbVibN66jzNCnqavP6CiV+SrJrHrq5nqkG73qp3fIpX/FVesj5t3k
+         1HQbG3StllvvOC+YkmS2/TDCR4NNS0TY7kxp3seUEcTXPTEoa+lQQMszJOzrotPUASfn
+         H7vA==
+X-Gm-Message-State: AOAM530h9UtkuU0ZeQkRnUwOJBVzhtMz5AMORcTMnvJhNHaAsZLp6KIp
+        7USA3PQ8jJSu4ERO3LEBDp3f4g==
+X-Google-Smtp-Source: ABdhPJwKnqsuiVy53IbxV1xe7q0waugKjy+GJJddrAPrI/2uA8Um7W3MTpXxgXhaN+YY1xR3SPyT4w==
+X-Received: by 2002:a17:902:70c2:b029:ee:b4e5:64d5 with SMTP id l2-20020a17090270c2b02900eeb4e564d5mr30266317plt.77.1620755774157;
+        Tue, 11 May 2021 10:56:14 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id o12sm14138270pjr.43.2021.05.11.10.56.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 10:56:13 -0700 (PDT)
+Date:   Tue, 11 May 2021 17:56:09 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v4 2/7] KVM: x86/mmu: Factor out allocating memslot rmap
+Message-ID: <YJrFOXW3mM3WjGT5@google.com>
+References: <20210511171610.170160-1-bgardon@google.com>
+ <20210511171610.170160-3-bgardon@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whLqbTNc1T+rHCm-kxbVAuhK3hjo5fOgDVf5-z--x1mvQ@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210511171610.170160-3-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/11, Linus Torvalds wrote:
->
-> On Tue, May 11, 2021 at 9:56 AM Oleg Nesterov <oleg@redhat.com> wrote:
-> >
-> > This patch makes ptrace() fail in this case until debugger does wait()
-> > and consumes PTHREAD_EVENT_EXEC which reports old_pid.
->
-> I'm ok with the patch, just wondering which way it's supposed to come
-> to me. Should I just apply it directly?
+On Tue, May 11, 2021, Ben Gardon wrote:
+> Small refactor to facilitate allocating rmaps for all memslots at once.
+> 
+> No functional change expected.
+> 
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>  arch/x86/kvm/x86.c | 39 ++++++++++++++++++++++++++++++---------
+>  1 file changed, 30 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 1e1f4f31e586..cc0440b5b35d 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10911,10 +10911,35 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
+>  	kvm_page_track_free_memslot(slot);
+>  }
+>  
+> +static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
+> +			      unsigned long npages)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
+> +		int lpages;
+> +		int level = i + 1;
+> +
+> +		lpages = gfn_to_index(slot->base_gfn + npages - 1,
+> +				      slot->base_gfn, level) + 1;
 
-would be nice!
+Might as well assign lpages at its declaration, i.e.
 
-> That said, why this:
->
-> > +       rcu_read_lock();
-> > +       pid = task_pid_nr_ns(task, task_active_pid_ns(task->parent));
-> > +       rcu_read_unlock();
->
-> I don't see why the RCU read lock would be needed? task_pid_nr_ns()
-> does any required locking itself, afaik.
->
-> And even if it wasn't, this all happens with siglock held, can
-> anything actually change.
+		int lpages = gfn_to_index(slot->base_gfn + npages - 1,
+					  slot->base_gfn, level) + 1;
+> +
+> +		slot->arch.rmap[i] =
+> +			kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
+> +				 GFP_KERNEL_ACCOUNT);
 
-... and with tasklist_lock held.
+Eh, I don't think avoiding a 3 char overrun is worth splitting across three lines.
+E.g. this is perfectly readable
 
-Hmm. Linus, I am shy to admit I can't answer immediately, I'll recheck
-tomorrow after sleep. But it seems you are right.
+		slot->arch.rmap[i] = kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
+					      GFP_KERNEL_ACCOUNT);
 
-Thanks!
+Alternatively, the rmap size could be captured in a local var, e.g.
 
-Oleg.
+	const int sz = sizeof(*slot->arch.rmap[0]);
 
+	...
+
+		slot->arch.rmap[i] = kvcalloc(lpages, sz, GFP_KERNEL_ACCOUNT);
+		if (!slot->arch.rmap[i]) {
+			memslot_rmap_free(slot);
+			return -ENOMEM;
+		}
+
+> +		if (!slot->arch.rmap[i]) {
+> +			memslot_rmap_free(slot);
+> +			return -ENOMEM;
+
+Reaaaally getting into nitpicks, what do you think about changing this to a goto
+with the error handling at the bottom?  Obviously not necessary by any means,
+but for me it makes it easier to see that all rmaps are freed on failure.  My
+eyes skipped over that on the first read through.  E.g.
+
+		if (!slot_arch.rmap[i])
+			goto err;
+	}
+
+	return 0;
+
+err:
+	memslot_rmap_free(slot);
+	return -ENOMEM;
+
+
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+>  				      unsigned long npages)
+>  {
+>  	int i;
+> +	int r;
+
+Personal preference, for short declarations like this I like putting 'em on a
+single line.
+
+>  	/*
+>  	 * Clear out the previous array pointers for the KVM_MR_MOVE case.  The
+> @@ -10923,7 +10948,11 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+>  	 */
+>  	memset(&slot->arch, 0, sizeof(slot->arch));
+>  
+> -	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
+> +	r = memslot_rmap_alloc(slot, npages);
+> +	if (r)
+> +		return r;
+> +
+> +	for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
+>  		struct kvm_lpage_info *linfo;
+>  		unsigned long ugfn;
+>  		int lpages;
+> @@ -10932,14 +10961,6 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+>  		lpages = gfn_to_index(slot->base_gfn + npages - 1,
+>  				      slot->base_gfn, level) + 1;
+>  
+> -		slot->arch.rmap[i] =
+> -			kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
+> -				 GFP_KERNEL_ACCOUNT);
+> -		if (!slot->arch.rmap[i])
+> -			goto out_free;
+> -		if (i == 0)
+> -			continue;
+> -
+>  		linfo = kvcalloc(lpages, sizeof(*linfo), GFP_KERNEL_ACCOUNT);
+>  		if (!linfo)
+>  			goto out_free;
+> -- 
+> 2.31.1.607.g51e8a6a459-goog
+> 
