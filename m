@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024A7379E42
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 06:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A77B379E4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 06:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbhEKEVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 00:21:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52576 "EHLO
+        id S229548AbhEKEWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 00:22:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhEKEVP (ORCPT
+        with ESMTP id S230347AbhEKEV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 00:21:15 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5486FC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 21:20:10 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id h127so15125041pfe.9
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 21:20:10 -0700 (PDT)
+        Tue, 11 May 2021 00:21:58 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB88DC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 21:20:52 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id j75so17847839oih.10
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 21:20:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=NMrDcvVUEo+HujvVPjWV2EcDsSyNyhVfg9VVJSr3No0=;
-        b=jGli3YI5umWvQIidY2apKrgMwCP9TIKRPT3NUKfKFDHsMsWOn88wH6+BghaFg4XkOh
-         1wAzUhOJ7r6MXd8XqtFa57xv4Z9KOXsGk7lO3AKZAYvp/579zilnCAbx/oofVMuJwK0a
-         gbHE65vk8kJl8ntboSexC0ljylEtPPWFGXR8ZZApldp9AboPO4wa8+gUOoFHE1SBdJSk
-         f1DpX9BLmk/qVLANC3Ej1drceXT9rra6vy8yO8kJHLCvS07Tof5F6Hq1XeSvOvj0xzXs
-         nyQa5DUpWbgaI3aJuEECLfrcLQ6pl6np3YElRyb3kmkj9hKYWM1DTDZfoBCQz6S3ZPZy
-         4pmw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3sAnreHKyEqLrxBWePiwhRu930iTUs8+45ufhMRReXo=;
+        b=zH6hgGNYjGqj2IMIUj5mNl+3TVZadxNEV50zVtX+0J6nuVggTisVFFsYuN3EHs4u0z
+         21UOgf2M3zYl7eB7JIStzDf4Q8V3hoMWES4S3L9PLuG5S3cAiueFXZJFnwDe/ozFoQ2F
+         ocqEPPY9E4EiMsLr3PESgaSifyp4zDW6DbkcqDwr1On0rlb/Rw/G4tpEj8DPilF8EUVc
+         TVIxN42CAf5ndDM677Hb92pXr+3bHwG9xi6MRrRG/xwgjvxWdkGlrfZL8mklS7tRiZZV
+         LctmGTxJ8w34HuduKQPjX/POXOUVnkWrAqdYNAlPtsMbBGzMnni7B+f969XFI79k7a+5
+         5rPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=NMrDcvVUEo+HujvVPjWV2EcDsSyNyhVfg9VVJSr3No0=;
-        b=NuB5MSQFRjbRP3qVpSCy4c4aPhW8tCN3H5ty5+VxkfP8Ppg6AvYo+1nSjXsjT33eCg
-         eYWngSSkj7UuZrC2TwGVr/S94JnYsyH2TGAICFV7xNeBb18ZMywXAXrZTuE5slHaLopl
-         E++LIhdkc5JMi+gY2c8j8ZmX78BiDkAoL2VjuT2kbUOw0aVl/cvc6mw+q8+lHbB57Si5
-         sSlH1grFQwP4WkSJP3PC6JNvxakOcPvPGuVVcnaajgOv5l47hjfuHCPRozsQ7j5YDCrK
-         vv2BgwgtqMKiQgsDpvTn+65HUkOYe5itHlMzwBpdy60gUMuDb0bNsllH/SX+f/q+qWZm
-         rgYg==
-X-Gm-Message-State: AOAM531a4+bocgq4mkB/mHO6/2dyr0WXC5ItkolpWvdBOyRhbfN3CcKX
-        HaX5B7tctATMiaiMFSY60Qp0Fg==
-X-Google-Smtp-Source: ABdhPJzr2ZvBFl7f7NYeLHZPOcYFlD9ARgxPRHHb8kRKfPBmaiTjRuf/5YfYFGwJ8b/ClPjXG1KZiw==
-X-Received: by 2002:a62:1b97:0:b029:24e:44e9:a8c1 with SMTP id b145-20020a621b970000b029024e44e9a8c1mr29201702pfb.19.1620706809625;
-        Mon, 10 May 2021 21:20:09 -0700 (PDT)
-Received: from [2620:15c:17:3:2a0a:b96a:de1c:f12c] ([2620:15c:17:3:2a0a:b96a:de1c:f12c])
-        by smtp.gmail.com with ESMTPSA id v123sm12302620pfb.80.2021.05.10.21.20.08
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3sAnreHKyEqLrxBWePiwhRu930iTUs8+45ufhMRReXo=;
+        b=eVewh2cfccaVC0xLSC1QTUXZ1b6MzPOcJkIBsecIrMIwSPWFz4BqWh+EjeQvcs83pq
+         EOJYwS1EV89xdAY1KiVruvQn/oRJoTPvS4cJcF04QEIhH4N7+zdm1+CdSxl8BCFMGGz1
+         qKNWB3qxDoRsquY1i/OfrxXSk4C1tnxOfY70bdyYZnkojvWamJPeA3RaRZmAIl5EZd3g
+         CHQpNHIyujbmrF+LV/LHK0BJWcQ3dxP8kor2vUGvXYARqdOwFbc4fzsT6pQ1o+lHTwVh
+         AIRHBZiHPkvucqQ/6GRzG96fVVpB7hlgLdS4UcaucXBIFQwi8aFLr3J/AanzSm5I+D1J
+         cXBA==
+X-Gm-Message-State: AOAM530PnJG+Y0KCmyYjlht+zr2uAeJu7YsmDKhJZzk0t0Or4nAK0LcU
+        3F37j/9sFVTNzFKzNwi8Hlu8YQ==
+X-Google-Smtp-Source: ABdhPJwojnmqufg0lJ4akmfDWkkObUb4HRQ0v8GMtG0dAG2Vf9ooU4W4IGX+N8IzuFQ1r8r8SyJnsQ==
+X-Received: by 2002:aca:d8d5:: with SMTP id p204mr1967717oig.151.1620706852170;
+        Mon, 10 May 2021 21:20:52 -0700 (PDT)
+Received: from localhost.localdomain ([2607:fb90:e623:42c1:10df:adff:fec2:f1d])
+        by smtp.gmail.com with ESMTPSA id r124sm3042294oig.38.2021.05.10.21.20.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 21:20:08 -0700 (PDT)
-Date:   Mon, 10 May 2021 21:20:08 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     chukaiping <chukaiping@baidu.com>, mcgrof@kernel.org,
-        keescook@chromium.org, yzaikin@google.com, vbabka@suse.cz,
-        nigupta@nvidia.com, bhe@redhat.com, khalid.aziz@oracle.com,
-        iamjoonsoo.kim@lge.com, mateusznosek0@gmail.com, sh_def@163.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [PATCH v4] mm/compaction: let proactive compaction order
- configurable
-In-Reply-To: <20210509171748.8dbc70ceccc5cc1ae61fe41c@linux-foundation.org>
-Message-ID: <bedd6e68-bb9b-2f3b-7aaf-a0877e025a7@google.com>
-References: <1619576901-9531-1-git-send-email-chukaiping@baidu.com> <20210509171748.8dbc70ceccc5cc1ae61fe41c@linux-foundation.org>
+        Mon, 10 May 2021 21:20:51 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Stephen Boyd <swboyd@chromium.org>, sbillaka@codeaurora.org
+Cc:     Tanmay Shah <tanmay@codeaurora.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] drm/msm/dp: Add support for SC8180x eDP controller
+Date:   Mon, 10 May 2021 23:20:39 -0500
+Message-Id: <20210511042043.592802-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 9 May 2021, Andrew Morton wrote:
+The first patch in the series is somewhat unrelated to the support, but
+simplifies reasoning and debugging of timing related issues.
 
-> > Currently the proactive compaction order is fixed to
-> > COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
-> > normal 4KB memory, but it's too high for the machines with small
-> > normal memory, for example the machines with most memory configured
-> > as 1GB hugetlbfs huge pages. In these machines the max order of
-> > free pages is often below 9, and it's always below 9 even with hard
-> > compaction. This will lead to proactive compaction be triggered very
-> > frequently. In these machines we only care about order of 3 or 4.
-> > This patch export the oder to proc and let it configurable
-> > by user, and the default value is still COMPACTION_HPAGE_ORDER.
-> 
-> It would be great to do this automatically?  It's quite simple to see
-> when memory is being handed out to hugetlbfs - so can we tune
-> proactive_compaction_order in response to this?  That would be far
-> better than adding a manual tunable.
-> 
-> But from having read Khalid's comments, that does sound quite involved.
-> Is there some partial solution that we can come up with that will get
-> most people out of trouble?
-> 
-> That being said, this patch is super-super-simple so perhaps we should
-> just merge it just to get one person (and hopefully a few more) out of
-> trouble.  But on the other hand, once we add a /proc tunable we must
-> maintain that tunable for ever (or at least a very long time) even if
-> the internal implementations change a lot.
-> 
+The second patch introduces support for dealing with different register block
+layouts, which is used in the forth patch to describe the hardware blocks found
+in the SC8180x eDP block.
 
-As mentioned in v3 of the patch, I'm not sure why this belongs in the 
-kernel at all.
+The third patch configures the INTF_CONFIG register, which carries the
+configuration for widebus handling. As with the DPU the bootloader enables
+widebus and we need to disable it, or implement support for adjusting the
+timing.
 
-I understand that the system is largely consumed by 1GB gigantic pages and 
-that a small percentage of memory is left for native pages.  Thus, 
-fragmentation readily occurs and can affect large order allocations even 
-at the levels of order-3 or order-4.
+Bjorn Andersson (4):
+  drm/msm/dp: Simplify the mvid/nvid calculation
+  drm/msm/dp: Store each subblock in the io region
+  drm/msm/dp: Initialize the INTF_CONFIG register
+  drm/msm/dp: Add support for SC8180x eDP
 
-So it seems like the ideal solution would be to monitor the fragmentation 
-index at the order you care about (the same order you would use for this 
-new tunable) and root userspace would manually trigger compaction when 
-necessary.  When this was brought up, it was commented that explicitly 
-triggered compaction is too expensive to do all in one iteration.  That's 
-fair enough, but shouldn't that be an improvement on explicitly triggered 
-compaction through sysfs to provide a shorter term (or weaker form) of 
-compaction rather than build additional policy decisions into the kernel?
+ drivers/gpu/drm/msm/dp/dp_catalog.c | 99 +++++++----------------------
+ drivers/gpu/drm/msm/dp/dp_display.c |  1 +
+ drivers/gpu/drm/msm/dp/dp_parser.c  | 22 +++++++
+ drivers/gpu/drm/msm/dp/dp_parser.h  |  8 +++
+ 4 files changed, 53 insertions(+), 77 deletions(-)
 
-If done this way, there would be a clear separation between mechanism and 
-policy and the kernel would not need to carry these sysctls to tune very 
-niche areas.
+-- 
+2.29.2
+
