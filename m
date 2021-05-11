@@ -2,84 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5790337ACAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E50837ACB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231645AbhEKRIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:08:30 -0400
-Received: from mga02.intel.com ([134.134.136.20]:28322 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230315AbhEKRI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:08:29 -0400
-IronPort-SDR: 6SY2a8gniQ5+PYMG/Oc3v3DhIUGgKdPyQ8p7qaQLcWdJeGtgV1yTSKmpw2ixyIyNhp40LNv5BV
- 6fLvtDSuNBGw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="186630991"
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="186630991"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 10:06:04 -0700
-IronPort-SDR: weymawFcanMxkM6LY4sr8WB9ZE8k5jsqr5i1HbyWA8RJwWYBl3PL6utJRuiyppqhJRw5gGLrX0
- 1icAVvzumQIQ==
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="434688159"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.131.161]) ([10.212.131.161])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 10:06:03 -0700
-Subject: Re: [RFC v2 16/32] x86/tdx: Handle MWAIT, MONITOR and WBINVD
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
+        id S231745AbhEKRJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:09:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29320 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231445AbhEKRJS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 13:09:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620752891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y/O0ej2NcOY86TRKShKCBi1CW9Ph72+cFotAeokd3co=;
+        b=RcBiwis8BHASH7wlsvVJxDR4o19dVvJjLo2jila03ecSEveELBOoRtV7XWRMTvRMz0eG+C
+        6MUdo6SgqH4qZx9RWUM6DQMHzNmuSh5oImBjZdGbYPxsJZ9FTk/2l497nuo1lAP1zIJPvi
+        0EOLTvJVxfxTOAUYA6gSYzXvBG/Ohb4=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-536-ndMPp7OrP_GETY-zx-Ad5w-1; Tue, 11 May 2021 13:08:10 -0400
+X-MC-Unique: ndMPp7OrP_GETY-zx-Ad5w-1
+Received: by mail-ej1-f69.google.com with SMTP id yh1-20020a17090706e1b029038d0f848c7aso6263891ejb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:08:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y/O0ej2NcOY86TRKShKCBi1CW9Ph72+cFotAeokd3co=;
+        b=L1ef5tFoa8gPYMYEHnGNFqKBqATsRP0p3JhtXdk1xGO8TFCqDAzUcuN86Lg5z64HD1
+         ALeUQD3TwYCMNOuOAri9SDSUjHPJW/AoNw8HXC1JB8+PDqO4VArEquAMMEMxuH7ElcL1
+         q1ZoOk1Av6gu4t0E3BHS3a/g+p1744pjYmO4bY/fC4589TVH1VeOTAPPs/+4PDwao16k
+         eoNYe54rRPXwf8yfIpJDjRbv1q8KIU2HGfc4KArizX39cUKqOSBaCk6VPOJze3z88qDl
+         Hme1bQErk/6m2isDaMTtK9QE3k2r+WrStsI5hUDwvDKsLKN4H3dS0dPWQ8kYVDBLTUFl
+         k8Uw==
+X-Gm-Message-State: AOAM533+GlbESIvzOFrIlAtXlfBEiTj2snelLJWxCEUIvSrmvdsynJGB
+        XNnc68JWFMZne7QboJIZcLnrIcIEBmUmOytowaXEhpdiJL04oLwcVwXKvJn979VkRwtEg4Htrq2
+        6Sct1uYfIZ85CEQ9p0YpDruVD
+X-Received: by 2002:a17:907:d27:: with SMTP id gn39mr32747780ejc.389.1620752889084;
+        Tue, 11 May 2021 10:08:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzHL65UmHr+40ZydsbeP1XaOSmKOo1QTVQipNWaixaGRIOiaAE8Cs988k5gMsXqRa0g9r0dzg==
+X-Received: by 2002:a17:907:d27:: with SMTP id gn39mr32747752ejc.389.1620752888909;
+        Tue, 11 May 2021 10:08:08 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id sb20sm12114420ejb.100.2021.05.11.10.08.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 10:08:08 -0700 (PDT)
+Subject: Re: [PATCH v2] KVM: x86: use wrpkru directly in
+ kvm_load_{guest|host}_xsave_state
+To:     Dave Hansen <dave.hansen@intel.com>, Jon Kohler <jon@nutanix.com>
+Cc:     Babu Moger <babu.moger@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <d6ca05720290060e909c1f4d12858f900f1be0e7.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4jGmhkrd+Zr4RNcZ5qfXkYO-416Bw2_idVbrgij41yvYg@mail.gmail.com>
- <0e577692-101e-38f7-ebe2-2e7222016a9f@linux.intel.com>
- <CAPcyv4jLMA=jehxdFi=A-xtjSRQ_v7XxSVYrZPAU3XKC39qWRA@mail.gmail.com>
- <43e0a5cc-721a-04f1-50b6-b1319da10bac@intel.com>
- <CAPcyv4gEROpgvf+3Drgso1O6ENQ=2xBoKHqC6d4fWvdDNVSNjA@mail.gmail.com>
- <01b0e007-6af6-ca2e-2a0d-7ff4ca2a2927@linux.intel.com>
- <4456b0d0-c392-4691-2963-c349369158c3@intel.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <497d9293-9111-5d2e-2d19-7343467ff9cd@linux.intel.com>
-Date:   Tue, 11 May 2021 10:06:02 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Petteri Aimonen <jpa@git.mail.kapsi.fi>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Benjamin Thiel <b.thiel@posteo.de>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Juergen Gross <jgross@suse.com>,
+        Fan Yang <Fan_Yang@sjtu.edu.cn>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20210511155922.36693-1-jon@nutanix.com>
+ <ab09f739-89fa-901d-9ee3-27a6c674d9a0@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <95947b5c-9add-e5d3-16a5-a40ab6d24978@redhat.com>
+Date:   Tue, 11 May 2021 19:08:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <4456b0d0-c392-4691-2963-c349369158c3@intel.com>
+In-Reply-To: <ab09f739-89fa-901d-9ee3-27a6c674d9a0@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/05/21 18:45, Dave Hansen wrote:
+> On 5/11/21 8:59 AM, Jon Kohler wrote:
+>> diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+>> index b1099f2d9800..20f1fb8be7ef 100644
+>> --- a/arch/x86/include/asm/pgtable.h
+>> +++ b/arch/x86/include/asm/pgtable.h
+>> @@ -151,7 +151,7 @@ static inline void write_pkru(u32 pkru)
+>>   	fpregs_lock();
+>>   	if (pk)
+>>   		pk->pkru = pkru;
+>> -	__write_pkru(pkru);
+>> +	wrpkru(pkru);
+>>   	fpregs_unlock();
+>>   }
+> 
+> This removes the:
+> 
+> 	if (pkru == rdpkru())
+> 		return;
+> 
+> optimization from a couple of write_pkru() users:
+> arch_set_user_pkey_access() and copy_init_pkru_to_fpregs().
+> 
+> Was that intentional?  Those aren't the hottest paths in the kernel, but
+> copy_init_pkru_to_fpregs() is used in signal handling and exeve().
 
-need anything else than what #GP already does.
+Yeah, you should move it from __write_pkru() to write_pkru() but not 
+remove it completely.
 
-> How do these end up in practice?  Do they still say "general protection
-> fault..."?
-
-Yes, but there's a #VE specific message before it that prints the exit 
-reason.
-
-
->
-> Isn't that really mean for anyone that goes trying to figure out what
-> caused these?  If they see a "general protection fault" from WBINVD and
-> go digging in the SDM for how a #GP can come from WBINVD, won't they be
-> sorely disappointed?
-
-They'll see both the message and also that it isn't a true #VE in the 
-backtrace.
-
-
--Andi
-
+Paolo
 
