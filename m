@@ -2,151 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7C937B1C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC37637B1CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhEKWxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 18:53:31 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:41691 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhEKWx3 (ORCPT
+        id S230289AbhEKWxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:53:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230183AbhEKWxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 18:53:29 -0400
-Received: by mail-io1-f70.google.com with SMTP id e18-20020a5d92520000b02903c332995d1eso14075509iol.8
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:52:22 -0700 (PDT)
+        Tue, 11 May 2021 18:53:41 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D5BC06138A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:52:33 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id c21so16812139pgg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:52:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8aKnVtIxlUG/2eUQmNl0qPhaQg9l3TplAhr5B7EOd6U=;
+        b=LvzERiaiALvJFXjzftXoHUCyKmzQ4UBbwHeONAJXlRmCEFlO7I1pPQBoo51KsymSOC
+         izVUQGDqJF43p1PMQqu3RTbUEknJP2LEoPusHVkm35IFDHE1EcXzm+DDGZ9PnIg4GVln
+         ZePnFPrFMA0JsA1+JnW4vWXx0HQ5ISkwnuUXg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=iFvBW93H3GxUz4ol2a9eUiJ+8eQ+nf3gAZme2mIPX/E=;
-        b=gb6FV+w1D/mElkWJKLrw/jPTjCl5ElCxye+KCLGl+hNQQBJyECMEG9O79RAQf6tOHu
-         8drl591b5OiBBrTNniIZ3FxX0QygLOexioxkM4YUrcjI6Cv8oIHdNAm8faaRMBfN2Zhb
-         b8F/1LZFWB865SNZg5fW1HW1PLG0a5ocftzRCK4ttg3kCloIVt6eSNRPP1QmsQCaZEXt
-         XWevcJZFYY8XS6Moj9h67mwIqfgiUdNGnM77LDohactzSPHckPJbtkVzpJdoVlgC0Led
-         2NWEBbIs1Gy0R3yGIaK7V6uwZpilRTO0QBoCMKJ/lEm/Zehotc7TpLH2EPwv1+TZh/MR
-         icpw==
-X-Gm-Message-State: AOAM532l8yDjfoXxpYSIrpYGHkZCBPvT7Oq7TGPQjCxb96SDNle8dHyp
-        eZzbcfA+6s6PEPflYD779EzeStkKVLBkuXSg1IBKqYNAfzfh
-X-Google-Smtp-Source: ABdhPJzWUIhx2Xap9qjWbL8cjYSMk3mpxrzNRcBcbhmz9E5r4oCmfTDrNWlBQ9nf/6/iZ1JoOfu9HvuGnPOpNFXaggg9bAMIvKY4
-MIME-Version: 1.0
-X-Received: by 2002:a92:2c02:: with SMTP id t2mr28306034ile.233.1620773541828;
- Tue, 11 May 2021 15:52:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8aKnVtIxlUG/2eUQmNl0qPhaQg9l3TplAhr5B7EOd6U=;
+        b=r+DH7nC6lEEiNkMd3Tt6CUSRDS4Q4E+FDlQJ5qlQSUesaWuCRwwF5IMjhrYP4L9eEE
+         KZGRq0kLD0rTrPBZ77CVxSNLBZ+xjr0+3R75+faBuQOx0Wh9UTy2q90TcnhqWPvUoKbY
+         fBSGEtd5O4JXXtX7JIpLQpkru54x9uoUqOD4kbNL9vCTWog9WZwzM+qipmGtnfDfTn9Y
+         k9r/UBHN0MG+oNhbBloYTkqsCLDTDLKOsp+X1etS/PYTx0yCkRWAISjKVA0OvWBZTXx1
+         KrGKgOjdoZkKFsmIVu0k5tiJXVyxIBU2AG4UkLXv5nb+safAwz+3XH1/LufqFonpfTFw
+         76+A==
+X-Gm-Message-State: AOAM532FPWBJCEns4LHcfPkrn1k8ydQvVZIkIH67AfNyYQUI1OWpy/Te
+        mU68K1CvDVHTQgKBOjdDmnUrwg==
+X-Google-Smtp-Source: ABdhPJzcc0HOveQxurQucFIXSEwc1uBL9OYa3E78PzbfuEgM9Oc9XcjLr/Ej3fQt4k23AWDj8Izisg==
+X-Received: by 2002:a63:540b:: with SMTP id i11mr33172485pgb.44.1620773553616;
+        Tue, 11 May 2021 15:52:33 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:f1d7:673a:456e:c653])
+        by smtp.gmail.com with UTF8SMTPSA id x22sm14230968pfa.24.2021.05.11.15.52.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 15:52:33 -0700 (PDT)
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     Michal Simek <michal.simek@xilinx.com>, devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-usb@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v10 3/5] of/platform: Add stubs for of_platform_device_create/destroy()
 Date:   Tue, 11 May 2021 15:52:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000038de1d05c215bf23@google.com>
-Subject: [syzbot] KASAN: out-of-bounds Read in i801_isr
-From:   syzbot <syzbot+b4d3fd1dfd53e90afd79@syzkaller.appspotmail.com>
-To:     jdelvare@suse.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <20210511155152.v10.3.I08fd2e1c775af04f663730e9fb4d00e6bbb38541@changeid>
+X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
+In-Reply-To: <20210511225223.550762-1-mka@chromium.org>
+References: <20210511225223.550762-1-mka@chromium.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Code for platform_device_create() and of_platform_device_destroy() is
+only generated if CONFIG_OF_ADDRESS=y. Add stubs to avoid unresolved
+symbols when CONFIG_OF_ADDRESS is not set.
 
-syzbot found the following issue on:
-
-HEAD commit:    e1381380 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10be778ad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5adab0bdee099d7a
-dashboard link: https://syzkaller.appspot.com/bug?extid=b4d3fd1dfd53e90afd79
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b4d3fd1dfd53e90afd79@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: out-of-bounds in i801_isr_byte_done drivers/i2c/busses/i2c-i801.c:608 [inline]
-BUG: KASAN: out-of-bounds in i801_isr drivers/i2c/busses/i2c-i801.c:668 [inline]
-BUG: KASAN: out-of-bounds in i801_isr+0xc70/0xd60 drivers/i2c/busses/i2c-i801.c:649
-Read of size 1 at addr ffffc90004237d68 by task systemd-udevd/5027
-
-CPU: 2 PID: 5027 Comm: systemd-udevd Not tainted 5.12.0-rc4-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5/0x2f8 mm/kasan/report.c:232
- __kasan_report mm/kasan/report.c:399 [inline]
- kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
- i801_isr_byte_done drivers/i2c/busses/i2c-i801.c:608 [inline]
- i801_isr drivers/i2c/busses/i2c-i801.c:668 [inline]
- i801_isr+0xc70/0xd60 drivers/i2c/busses/i2c-i801.c:649
- __handle_irq_event_percpu+0x303/0x8f0 kernel/irq/handle.c:156
- handle_irq_event_percpu kernel/irq/handle.c:196 [inline]
- handle_irq_event+0x102/0x290 kernel/irq/handle.c:213
- handle_fasteoi_irq+0x22f/0x9f0 kernel/irq/chip.c:714
- generic_handle_irq_desc include/linux/irqdesc.h:158 [inline]
- handle_irq arch/x86/kernel/irq.c:231 [inline]
- __common_interrupt+0x9e/0x200 arch/x86/kernel/irq.c:250
- common_interrupt+0x4c/0xd0 arch/x86/kernel/irq.c:240
- asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:623
-RIP: 0010:__do_softirq+0x196/0x9f6 kernel/softirq.c:331
-Code: 00 48 01 f0 48 89 44 24 18 48 c7 c7 80 39 6a 89 e8 7f 8d c6 ff 65 66 c7 05 35 46 c3 76 00 00 e8 00 df 39 f8 fb b8 ff ff ff ff <48> c7 c3 c0 a0 c0 8b 41 0f bc c5 41 89 c7 41 83 c7 01 75 47 e9 d2
-RSP: 0018:ffffc90000550f78 EFLAGS: 00000216
-RAX: 00000000ffffffff RBX: ffff888018491c40 RCX: 1ffffffff1b8be19
-RDX: 0000000000000000 RSI: 0000000000000100 RDI: 0000000000000000
-RBP: ffff888011159c40 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffffff8179e0c8 R11: 0000000000000001 R12: 0000000000000000
-R13: 0000000000000200 R14: 0000000000000000 R15: 0000000000000000
- invoke_softirq kernel/softirq.c:221 [inline]
- __irq_exit_rcu kernel/softirq.c:422 [inline]
- irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
- sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
-RIP: 0010:check_kcov_mode kernel/kcov.c:163 [inline]
-RIP: 0010:__sanitizer_cov_trace_pc+0x7/0x60 kernel/kcov.c:197
-Code: ff ff b9 ff ff ff ff ba 08 00 00 00 4d 8b 03 48 0f bd ca 49 8b 45 00 48 63 c9 e9 64 ff ff ff 0f 1f 40 00 65 8b 05 49 fe 8d 7e <89> c1 48 8b 34 24 81 e1 00 01 00 00 65 48 8b 14 25 00 f0 01 00 a9
-RSP: 0018:ffffc90009ff7868 EFLAGS: 00000283
-RAX: 0000000080000000 RBX: 0000000000000004 RCX: ffff888018491c40
-RDX: 0000000000000000 RSI: ffff888018491c40 RDI: 0000000000000003
-RBP: ffff8880143aa100 R08: 0000000000000000 R09: 0000000000000004
-R10: ffffffff8392c68a R11: 0000000000000010 R12: 0000000000000002
-R13: 00000000000003e4 R14: dffffc0000000000 R15: 0000000000000000
- tomoyo_domain_quota_is_ok+0x2f1/0x550 security/tomoyo/util.c:1093
- tomoyo_supervisor+0x2f2/0xf00 security/tomoyo/common.c:2089
- tomoyo_audit_path_log security/tomoyo/file.c:168 [inline]
- tomoyo_path_permission security/tomoyo/file.c:587 [inline]
- tomoyo_path_permission+0x270/0x3a0 security/tomoyo/file.c:573
- tomoyo_path_perm+0x2f0/0x400 security/tomoyo/file.c:838
- security_inode_getattr+0xcf/0x140 security/security.c:1288
- vfs_getattr fs/stat.c:131 [inline]
- vfs_statx+0x164/0x390 fs/stat.c:199
- vfs_fstatat fs/stat.c:217 [inline]
- vfs_lstat include/linux/fs.h:3240 [inline]
- __do_sys_newlstat+0x91/0x110 fs/stat.c:372
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fc3c1a88335
-Code: 69 db 2b 00 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 83 ff 01 48 89 f0 77 30 48 89 c7 48 89 d6 b8 06 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 03 f3 c3 90 48 8b 15 31 db 2b 00 f7 d8 64 89
-RSP: 002b:00007ffd4b6fa5c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000006
-RAX: ffffffffffffffda RBX: 0000558fa852a210 RCX: 00007fc3c1a88335
-RDX: 00007ffd4b6fa600 RSI: 00007ffd4b6fa600 RDI: 0000558fa8529210
-RBP: 00007ffd4b6fa6c0 R08: 00007fc3c1d472c8 R09: 0000000000001010
-R10: 0000000000000020 R11: 0000000000000246 R12: 0000558fa8529210
-R13: 0000558fa852923a R14: 0000558fa8501ed1 R15: 0000558fa8501eda
-
-
-Memory state around the buggy address:
- ffffc90004237c00: f2 f2 f2 00 00 f3 f3 00 00 00 00 00 00 00 00 00
- ffffc90004237c80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffffc90004237d00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-                                                          ^
- ffffc90004237d80: 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1
- ffffc90004237e00: 00 f2 f2 f2 00 00 00 00 00 00 00 00 00 00 00 f3
-==================================================================
-
-
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Changes in v10:
+- none
+
+Changes in v9:
+- added Rob's 'Acked-by' tag
+
+Changes in v8:
+- fixed C&P error in commit message
+
+Changes in v7:
+- none
+
+Changes in v6:
+- patch added to the series
+
+ include/linux/of_platform.h | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/of_platform.h b/include/linux/of_platform.h
+index 84a966623e78..d15b6cd5e1c3 100644
+--- a/include/linux/of_platform.h
++++ b/include/linux/of_platform.h
+@@ -61,16 +61,18 @@ static inline struct platform_device *of_find_device_by_node(struct device_node
+ }
+ #endif
+ 
++extern int of_platform_bus_probe(struct device_node *root,
++				 const struct of_device_id *matches,
++				 struct device *parent);
++
++#ifdef CONFIG_OF_ADDRESS
+ /* Platform devices and busses creation */
+ extern struct platform_device *of_platform_device_create(struct device_node *np,
+ 						   const char *bus_id,
+ 						   struct device *parent);
+ 
+ extern int of_platform_device_destroy(struct device *dev, void *data);
+-extern int of_platform_bus_probe(struct device_node *root,
+-				 const struct of_device_id *matches,
+-				 struct device *parent);
+-#ifdef CONFIG_OF_ADDRESS
++
+ extern int of_platform_populate(struct device_node *root,
+ 				const struct of_device_id *matches,
+ 				const struct of_dev_auxdata *lookup,
+@@ -84,6 +86,18 @@ extern int devm_of_platform_populate(struct device *dev);
+ 
+ extern void devm_of_platform_depopulate(struct device *dev);
+ #else
++/* Platform devices and busses creation */
++static inline struct platform_device *of_platform_device_create(struct device_node *np,
++								const char *bus_id,
++								struct device *parent)
++{
++	return NULL;
++}
++static inline int of_platform_device_destroy(struct device *dev, void *data)
++{
++	return -ENODEV;
++}
++
+ static inline int of_platform_populate(struct device_node *root,
+ 					const struct of_device_id *matches,
+ 					const struct of_dev_auxdata *lookup,
+-- 
+2.31.1.607.g51e8a6a459-goog
+
