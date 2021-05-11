@@ -2,176 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5649637AD45
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2D537AD35
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbhEKRod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:44:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36658 "EHLO
+        id S231868AbhEKRka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:40:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231589AbhEKRob (ORCPT
+        with ESMTP id S231329AbhEKRk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:44:31 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733DAC06174A;
-        Tue, 11 May 2021 10:43:23 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id 1so15236604qtb.0;
-        Tue, 11 May 2021 10:43:23 -0700 (PDT)
+        Tue, 11 May 2021 13:40:28 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F47C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:39:18 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id t18so20987229wry.1
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:39:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7EoUwhxShyIjUyxLCtqm6mHgvtxIMHzCgGW7d5l2nII=;
-        b=Z8Avlf4zif1fDxOvVfulUCrBxUGi0vw/phtCGHU+xuYH2PWJ3jqAMa49iFrwbn0n0G
-         FI7GdYFCpOnZu3N3k16QhPDJOzhGC/zTqsqWgDQ5TwXf/vY0HJ+yzA1xxzTcq2XSjydN
-         of/8IpRrIe/4ptn5UAJYl06+RnLehe9MFV4KMY2pQPomtc/f7ePRq6GNF2jeU5q0ISk7
-         jr833Uwh5BOpGMIPpbwC87QTDfQUEtVm9xW6eAemUqjN0fQRAY16NhXyg01z8x5wa8cz
-         lY3sEnLGaaeLN602aGywPFu9jNHMYeQ5gpfVK+3Yc9T+PN/5QvvhQ+FeD/5H8f4WQqBe
-         GCYA==
+        bh=4Iip13muq1NYXw8ciJ4gZx7sLT2i59LHm3b1xhb3qro=;
+        b=l0I/l9irc0L33+3w+vShxZyAO9/CKiQR0T+VECzaTKU4TJFiZJMNe0Csx99AWQKMQT
+         GW7fxShroooRhKQ1FFVZuV63BkI25ij7VJ0n78MYAWEbPu5dounOLMpogEsKo7yUJaor
+         jNFx+ClrGCFK3ycq0eJevgyLSsunK9jbkjFY7hr4FwAhlB/S1kSp6X2QWmscwA3Bnqed
+         qpnisUHdd1yLawQxLD7EAukbXIdDimWGCKMpqOJYgECzqnpVLH6TmUzIaDlZiihYQQgp
+         z1DU/uJV9GO16Qmls0Q7TNyRGE5rVkjgFa6+6FtJYkyCBq1/8xdIRcNZEEVS3mcjQpt3
+         36Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7EoUwhxShyIjUyxLCtqm6mHgvtxIMHzCgGW7d5l2nII=;
-        b=eMZ/dOQyB37qE9nWMSve4MDjbdEygkxTz8hiGHuet1abJ/q9FwwFUGcJfV53FoSlnF
-         S/GXiKbN+tUllurrmUD7dPwI+rpZ6qlGkTSHJji8kRNZ1kkDGLFwT2+l/j82EJLx0uKN
-         Jwzr57djov5GxGDRUFRUzqe0dDYI0LZA6zpvPVFt9f+N9R06srZuwWmuqZpgE0a1lJQj
-         VHDZ+yUORTo0szT3kvyUOlIohnVkUEpsGgZQguDUWjsQB36bSGFn+xfWLvIcrM7zJHU0
-         CzyLm9Ymqg16WJPZX8Le6Xxk1r3fmevTngi6ASuSNXX/H5rhrbC52jSSRlRCRDG1tIRh
-         AhGQ==
-X-Gm-Message-State: AOAM532AwVtiPafcjdcBBDv6dUS/r8LGC1aXlCYtKdvjTmMfjz6/9Wn8
-        458jUkwmXenSiFYTHvlmU/zBlyaORzLLph454bKTddXU
-X-Google-Smtp-Source: ABdhPJzcSeFwz9wTQoYIJ5UZhwyJBLphpG+3DMqQdRF0jRSh3zIYTl6mJ2ByBIVkQjMXHgdU9LLV5Z1LM0mvlYNTSjI=
-X-Received: by 2002:ac8:5c86:: with SMTP id r6mr28941238qta.216.1620755002701;
- Tue, 11 May 2021 10:43:22 -0700 (PDT)
+        bh=4Iip13muq1NYXw8ciJ4gZx7sLT2i59LHm3b1xhb3qro=;
+        b=AWh5UCOVL8kLyYnOqC1NkS7dERKpIahIh2jQ7PGIRf9vHHNCTS65ZdBak7AoGtSv/h
+         saYATrUJzDoYKDw/ieEk3HXz/W82yfHS1EjijlV1NvvAsZavXRsyu2nqNi6avDJXknDH
+         JlYOyhO4mWc54ACJ1dpaMM9BqkS0bhwBzWSA/aNPv1qHnWk8A734aNg4e0tOiBe9wffI
+         EZtb695mM/dsZZEpQAk+VjnPrF16uYJY1Ph9rTglJ9L8Q6qAV1ghh94pJ0MzlTPvdBrw
+         95V2KgyLByHSyuKEiTpGjNAYIHPiZElSS+Ofk71+g9gJK1khqTQxY+Nq1hafAvrd9s71
+         kn6g==
+X-Gm-Message-State: AOAM533JE1uynsKL+RV+jxK26xtko3kRnHCb5mijyp5OKY9FJU1uw6Co
+        9gJMGcNHtfbJvLrKpXTsOPFMbSdxaaDQMJwARNQ=
+X-Google-Smtp-Source: ABdhPJzYMvuNrr+jKZP2j9T/AEwSf1ceIS80ZkuSWU4TS1NzmOCkyDXJZ8gf+jTC3BafXMone2nr6GP2T34Y3clyWJM=
+X-Received: by 2002:a5d:64cf:: with SMTP id f15mr38403209wri.327.1620754757270;
+ Tue, 11 May 2021 10:39:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <CGME20210511065056epcas2p1788505019deb274f5c57650a2f5d7ef0@epcas2p1.samsung.com>
- <1619690903-1138-1-git-send-email-dseok.yi@samsung.com> <1620714998-120657-1-git-send-email-dseok.yi@samsung.com>
-In-Reply-To: <1620714998-120657-1-git-send-email-dseok.yi@samsung.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Tue, 11 May 2021 13:42:46 -0400
-Message-ID: <CAF=yD-+8676QHiKD2ZA4e0kVE+11cOi6sa+M-vmx0+05tm1GfQ@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] bpf: check BPF_F_ADJ_ROOM_FIXED_GSO when upgrading
- mss in 6 to 4
-To:     Dongseok Yi <dseok.yi@samsung.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20210508195641.397198-1-robdclark@gmail.com> <20210508195641.397198-2-robdclark@gmail.com>
+ <YJlb3GO41hiu4pWw@phenom.ffwll.local> <CAF6AEGsGb1jZgRRUqDvf+j+E6pNEtSck=r3xh4VL7FmZMPszBQ@mail.gmail.com>
+ <CAKMK7uGPGbOPRtJaiG5oNCDhYQ27+V3bO5Wcgv7C9fqdyp8LeA@mail.gmail.com>
+ <CAF6AEGto1PQcEbYeWfXqMatK0z3dW-mpLNVh=VJb=9gwrPfCWg@mail.gmail.com>
+ <YJq0YVi4O4zGkb3j@phenom.ffwll.local> <CAF6AEGsMk-wO=3iYbW9rS0FJ7760P++vpPgVMFHR9+Q8sWsXQQ@mail.gmail.com>
+ <YJq9M71yiASVKPtJ@phenom.ffwll.local>
+In-Reply-To: <YJq9M71yiASVKPtJ@phenom.ffwll.local>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 11 May 2021 10:42:58 -0700
+Message-ID: <CAF6AEGs1YcRAYAH0TFFS7-RPNDJhvogSACrZp0itzq_RiTBiTA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drm: Fix dirtyfb stalls
+To:     Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 2:51 AM Dongseok Yi <dseok.yi@samsung.com> wrote:
+On Tue, May 11, 2021 at 10:21 AM Daniel Vetter <daniel@ffwll.ch> wrote:
 >
-> In the forwarding path GRO -> BPF 6 to 4 -> GSO for TCP traffic, the
-> coalesced packet payload can be > MSS, but < MSS + 20.
-> bpf_skb_proto_6_to_4 will increase the MSS and it can be > the payload
-> length. After then tcp_gso_segment checks for the payload length if it
-> is <= MSS. The condition is causing the packet to be dropped.
+> On Tue, May 11, 2021 at 10:19:57AM -0700, Rob Clark wrote:
+> > On Tue, May 11, 2021 at 9:44 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > >
+> > > On Mon, May 10, 2021 at 12:06:05PM -0700, Rob Clark wrote:
+> > > > On Mon, May 10, 2021 at 10:44 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > >
+> > > > > On Mon, May 10, 2021 at 6:51 PM Rob Clark <robdclark@gmail.com> wrote:
+> > > > > >
+> > > > > > On Mon, May 10, 2021 at 9:14 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > > > >
+> > > > > > > On Sat, May 08, 2021 at 12:56:38PM -0700, Rob Clark wrote:
+> > > > > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > > > > >
+> > > > > > > > drm_atomic_helper_dirtyfb() will end up stalling for vblank on "video
+> > > > > > > > mode" type displays, which is pointless and unnecessary.  Add an
+> > > > > > > > optional helper vfunc to determine if a plane is attached to a CRTC
+> > > > > > > > that actually needs dirtyfb, and skip over them.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > > > > >
+> > > > > > > So this is a bit annoying because the idea of all these "remap legacy uapi
+> > > > > > > to atomic constructs" helpers is that they shouldn't need/use anything
+> > > > > > > beyond what userspace also has available. So adding hacks for them feels
+> > > > > > > really bad.
+> > > > > >
+> > > > > > I suppose the root problem is that userspace doesn't know if dirtyfb
+> > > > > > (or similar) is actually required or is a no-op.
+> > > > > >
+> > > > > > But it is perhaps less of a problem because this essentially boils
+> > > > > > down to "x11 vs wayland", and it seems like wayland compositors for
+> > > > > > non-vsync'd rendering just pageflips and throws away extra frames from
+> > > > > > the app?
+> > > > >
+> > > > > Yeah it's about not adequately batching up rendering and syncing with
+> > > > > hw. bare metal x11 is just especially stupid about it :-)
+> > > > >
+> > > > > > > Also I feel like it's not entirely the right thing to do here either.
+> > > > > > > We've had this problem already on the fbcon emulation side (which also
+> > > > > > > shouldn't be able to peek behind the atomic kms uapi curtain), and the fix
+> > > > > > > there was to have a worker which batches up all the updates and avoids any
+> > > > > > > stalls in bad places.
+> > > > > >
+> > > > > > I'm not too worried about fbcon not being able to render faster than
+> > > > > > vblank.  OTOH it is a pretty big problem for x11
+> > > > >
+> > > > > That's why we'd let the worker get ahead at most one dirtyfb. We do
+> > > > > the same with fbcon, which trivially can get ahead of vblank otherwise
+> > > > > (if sometimes flushes each character, so you have to pile them up into
+> > > > > a single update if that's still pending).
+> > > > >
+> > > > > > > Since this is for frontbuffer rendering userspace only we can probably get
+> > > > > > > away with assuming there's only a single fb, so the implementation becomes
+> > > > > > > pretty simple:
+> > > > > > >
+> > > > > > > - 1 worker, and we keep track of a single pending fb
+> > > > > > > - if there's already a dirty fb pending on a different fb, we stall for
+> > > > > > >   the worker to start processing that one already (i.e. the fb we track is
+> > > > > > >   reset to NULL)
+> > > > > > > - if it's pending on the same fb we just toss away all the updates and go
+> > > > > > >   with a full update, since merging the clip rects is too much work :-) I
+> > > > > > >   think there's helpers so you could be slightly more clever and just have
+> > > > > > >   an overall bounding box
+> > > > > >
+> > > > > > This doesn't really fix the problem, you still end up delaying sending
+> > > > > > the next back-buffer to mesa
+> > > > >
+> > > > > With this the dirtyfb would never block. Also glorious frontbuffer
+> > > > > tracking corruption is possible, but that's not the kernel's problem.
+> > > > > So how would anything get held up in userspace.
+> > > >
+> > > > the part about stalling if a dirtyfb is pending was what I was worried
+> > > > about.. but I suppose you meant the worker stalling, rather than
+> > > > userspace stalling (where I had interpreted it the other way around).
+> > > > As soon as userspace needs to stall, you're losing again.
+> > >
+> > > Nah, I did mean userspace stalling, so we can't pile up unlimited amounts
+> > > of dirtyfb request in the kernel.
+> > >
+> > > But also I never expect userspace that uses dirtyfb to actually hit this
+> > > stall point (otherwise we'd need to look at this again). It would really
+> > > be only there as defense against abuse.
+> >
+> > I don't believe modesetting ddx throttles dirtyfb, it (indirectly)
+> > calls this from it's BlockHandler.. so if you do end up blocking after
+> > the N'th dirtyfb, you are still going to end up stalling for vblank,
+> > you are just deferring that for a frame or two..
 >
-> tcp_gso_segment():
->         [...]
->         mss = skb_shinfo(skb)->gso_size;
->         if (unlikely(skb->len <= mss))
->                 goto out;
->         [...]
+> Nope, that's not what I mean.
 >
-> Allow to increase MSS when BPF_F_ADJ_ROOM_FIXED_GSO is not set.
+> By default we pile up the updates, so you _never_ stall. The worker then
+> takes the entire update every time it runs and batches them up.
 >
-> Fixes: 6578171a7ff0 (bpf: add bpf_skb_change_proto helper)
-> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+> We _only_ stall when we get a dirtyfb with a different fb. Because that's
+> much harder to pile up, plus frontbuffer rendering userspace uses a single
+> fb across all screens anyway.
 >
-> ---
+> So really I don't expect X to ever stall in it's BlockHandler with this.
 
-Thanks. Note that this feature does not preclude the alternatives
-discussed, of converting the packet to non-TSO (by clearing gso_size)
-or optionally modifying MSS (but that should get okay from TCP
-experts).
+ok, sorry, I missed the "different fb" part..
 
-I would target this for bpf-next and drop the Fixes. But that is
-admittedly debatable.
+but I could see a userspace that uses multiple fb's wanting to do
+front buffer rendering.. although they are probably only going to do
+it on a single display at a time, so maybe that is a bit of an edge
+case
 
->  net/core/filter.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
+> > The thing is, for a push style panel, you don't necessarily have to
+> > wait for "vblank" (because "vblank" isn't necessarily a real thing),
+> > so in that scenario dirtyfb could in theory be fast.  What you want to
+> > do is fundamentally different for push vs pull style displays.
 >
-> v2:
-> per Willem de Bruijn request,
-> checked the flag instead of a generic approach.
+> Yeah, but we'd only stall if userspace does a modeset (which means
+> different fb) and at that point you'll stall anyway a bit. So shouldn't
+> hurt.
 >
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index cae56d0..a98b28d 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -3276,7 +3276,7 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
->         return 0;
->  }
+> Well you can do frontbuffer rendering even with atomic ioctl. Just don't
+> use dirtyfb.
 >
-> -static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
-> +static int bpf_skb_proto_6_to_4(struct sk_buff *skb, u64 flags)
->  {
->         const u32 len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr);
->         u32 off = skb_mac_header_len(skb);
-> @@ -3305,7 +3305,8 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
->                 }
->
->                 /* Due to IPv4 header, MSS can be upgraded. */
-> -               skb_increase_gso_size(shinfo, len_diff);
-> +               if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
-> +                       skb_increase_gso_size(shinfo, len_diff);
->                 /* Header must be checked, and gso_segs recomputed. */
->                 shinfo->gso_type |= SKB_GSO_DODGY;
->                 shinfo->gso_segs = 0;
-> @@ -3317,7 +3318,7 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
->         return 0;
->  }
->
-> -static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto)
-> +static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto, u64 flags)
->  {
->         __be16 from_proto = skb->protocol;
->
-> @@ -3327,7 +3328,7 @@ static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto)
->
->         if (from_proto == htons(ETH_P_IPV6) &&
->               to_proto == htons(ETH_P_IP))
-> -               return bpf_skb_proto_6_to_4(skb);
-> +               return bpf_skb_proto_6_to_4(skb, flags);
->
->         return -ENOTSUPP;
->  }
-> @@ -3337,7 +3338,7 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
->  {
->         int ret;
->
-> -       if (unlikely(flags))
-> +       if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO)))
->                 return -EINVAL;
+> But also you really shouldn't use frontbuffer rendering right now, since
+> we don't have the interfaces right now to tell userspace whether it's
+> cmd-mode or something else and what kind of corruption (if any) to expect
+> when they do that.
 
-Once allowing this flag, please immediately support it for both
-bpf_skb_proto_6_to_4 and bpf_skb_4_to_6.
+Compressed formats and front-buffer rendering don't really work out in
+a pleasant way.. minigbm has a usage flag to indicate that the surface
+will be used for front-buffer rendering (and it is a thing we should
+probably port to real gbm).  I think this aspect of it is better
+solved in userspace.
 
-We cannot do that later if we ignore the second case now.
+> > > > > > But we could re-work drm_framebuffer_funcs::dirty to operate on a
+> > > > > > per-crtc basis and hoist the loop and check if dirtyfb is needed out
+> > > > > > of drm_atomic_helper_dirtyfb()
+> > > > >
+> > > > > That's still using information that userspace doesn't have, which is a
+> > > > > bit irky. We might as well go with your thing here then.
+> > > >
+> > > > arguably, this is something we should expose to userspace.. for DSI
+> > > > command-mode panels, you probably want to make a different decision
+> > > > with regard to how many buffers in your flip-chain..
+> > > >
+> > > > Possibly we should add/remove the fb_damage_clips property depending
+> > > > on the display type (ie. video/pull vs cmd/push mode)?
+> > >
+> > > I'm not sure whether atomic actually needs this exposed:
+> > > - clients will do full flips for every frame anyway, I've not heard of
+> > >   anyone seriously doing frontbuffer rendering.
+> >
+> > Frontbuffer rendering is actually a thing, for ex. to reduce latency
+> > for stylus (android and CrOS do this.. fortunately AFAICT CrOS never
+> > uses the dirtyfb ioctl.. but as soon as someone has the nice idea to
+> > add that we'd be running into the same problem)
+> >
+> > Possibly one idea is to treat dirty-clip updates similarly to cursor
+> > updates, and let the driver accumulate the updates and then wait until
+> > vblank to apply them
+>
+> Yeah that's what I mean. Except implemented cheaper. fbcon code already
+> does it. I think we're seriously talking past each another.
 
+Hmm, well 'state->async_update = true' is a pretty cheap implementation..
 
->         /* General idea is that this helper does the basic groundwork
-> @@ -3357,7 +3358,7 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
->          * that. For offloads, we mark packet as dodgy, so that headers
->          * need to be verified first.
->          */
-> -       ret = bpf_skb_proto_xlat(skb, proto);
-> +       ret = bpf_skb_proto_xlat(skb, proto, flags);
->         bpf_compute_data_pointers(skb);
->         return ret;
->  }
+BR,
+-R
+
+> -Daniel
+>
+> >
+> > BR,
+> > -R
+> >
+> > > - transporting the cliprects around and then tossing them if the driver
+> > >   doesn't need them in their flip is probably not a measurable win
+> > >
+> > > But yeah if I'm wrong and we have a need here and it's useful, then
+> > > exposing this to userspace should be done. Meanwhile I think a "offload to
+> > > worker like fbcon" trick for this legacy interface is probabyl the best
+> > > option. Plus it will fix things not just for the case where you don't need
+> > > dirty uploading, it will also fix things for the case where you _do_ need
+> > > dirty uploading (since right now we stall in a few bad places for that I
+> > > think).
+> > > -Daniel
+> > >
+> > > >
+> > > > BR,
+> > > > -R
+> > > >
+> > > > > -Daniel
+> > > > >
+> > > > > > BR,
+> > > > > > -R
+> > > > > >
+> > > > > > >
+> > > > > > > Could probably steal most of the implementation.
+> > > > > > >
+> > > > > > > This approach here feels a tad too much in the hacky area ...
+> > > > > > >
+> > > > > > > Thoughts?
+> > > > > > > -Daniel
+> > > > > > >
+> > > > > > > > ---
+> > > > > > > >  drivers/gpu/drm/drm_damage_helper.c      |  8 ++++++++
+> > > > > > > >  include/drm/drm_modeset_helper_vtables.h | 14 ++++++++++++++
+> > > > > > > >  2 files changed, 22 insertions(+)
+> > > > > > > >
+> > > > > > > > diff --git a/drivers/gpu/drm/drm_damage_helper.c b/drivers/gpu/drm/drm_damage_helper.c
+> > > > > > > > index 3a4126dc2520..a0bed1a2c2dc 100644
+> > > > > > > > --- a/drivers/gpu/drm/drm_damage_helper.c
+> > > > > > > > +++ b/drivers/gpu/drm/drm_damage_helper.c
+> > > > > > > > @@ -211,6 +211,7 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
+> > > > > > > >  retry:
+> > > > > > > >       drm_for_each_plane(plane, fb->dev) {
+> > > > > > > >               struct drm_plane_state *plane_state;
+> > > > > > > > +             struct drm_crtc *crtc;
+> > > > > > > >
+> > > > > > > >               ret = drm_modeset_lock(&plane->mutex, state->acquire_ctx);
+> > > > > > > >               if (ret)
+> > > > > > > > @@ -221,6 +222,13 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
+> > > > > > > >                       continue;
+> > > > > > > >               }
+> > > > > > > >
+> > > > > > > > +             crtc = plane->state->crtc;
+> > > > > > > > +             if (crtc->helper_private->needs_dirtyfb &&
+> > > > > > > > +                             !crtc->helper_private->needs_dirtyfb(crtc)) {
+> > > > > > > > +                     drm_modeset_unlock(&plane->mutex);
+> > > > > > > > +                     continue;
+> > > > > > > > +             }
+> > > > > > > > +
+> > > > > > > >               plane_state = drm_atomic_get_plane_state(state, plane);
+> > > > > > > >               if (IS_ERR(plane_state)) {
+> > > > > > > >                       ret = PTR_ERR(plane_state);
+> > > > > > > > diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
+> > > > > > > > index eb706342861d..afa8ec5754e7 100644
+> > > > > > > > --- a/include/drm/drm_modeset_helper_vtables.h
+> > > > > > > > +++ b/include/drm/drm_modeset_helper_vtables.h
+> > > > > > > > @@ -487,6 +487,20 @@ struct drm_crtc_helper_funcs {
+> > > > > > > >                                    bool in_vblank_irq, int *vpos, int *hpos,
+> > > > > > > >                                    ktime_t *stime, ktime_t *etime,
+> > > > > > > >                                    const struct drm_display_mode *mode);
+> > > > > > > > +
+> > > > > > > > +     /**
+> > > > > > > > +      * @needs_dirtyfb
+> > > > > > > > +      *
+> > > > > > > > +      * Optional callback used by damage helpers to determine if fb_damage_clips
+> > > > > > > > +      * update is needed.
+> > > > > > > > +      *
+> > > > > > > > +      * Returns:
+> > > > > > > > +      *
+> > > > > > > > +      * True if fb_damage_clips update is needed to handle DIRTYFB, False
+> > > > > > > > +      * otherwise.  If this callback is not implemented, then True is
+> > > > > > > > +      * assumed.
+> > > > > > > > +      */
+> > > > > > > > +     bool (*needs_dirtyfb)(struct drm_crtc *crtc);
+> > > > > > > >  };
+> > > > > > > >
+> > > > > > > >  /**
+> > > > > > > > --
+> > > > > > > > 2.30.2
+> > > > > > > >
+> > > > > > >
+> > > > > > > --
+> > > > > > > Daniel Vetter
+> > > > > > > Software Engineer, Intel Corporation
+> > > > > > > http://blog.ffwll.ch
+> > > > >
+> > > > >
+> > > > >
+> > > > > --
+> > > > > Daniel Vetter
+> > > > > Software Engineer, Intel Corporation
+> > > > > http://blog.ffwll.ch
+> > >
+> > > --
+> > > Daniel Vetter
+> > > Software Engineer, Intel Corporation
+> > > http://blog.ffwll.ch
+>
 > --
-> 2.7.4
->
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
