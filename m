@@ -2,87 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5F037A0C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE1037A0C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbhEKHYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:24:13 -0400
-Received: from mga14.intel.com ([192.55.52.115]:1964 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229917AbhEKHYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:24:12 -0400
-IronPort-SDR: RS5zs9K4Z+TSwsIjzo4aqzZ6tZQXLYbTElFwEI34io4tuuhY63SaxxAycPkpESArfTNZt6mS7g
- 627iYgqyy15Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="199054576"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="199054576"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 00:23:05 -0700
-IronPort-SDR: yq4KAV5YYtORNFKctyjJedbKsYkUglbPYIcvkQdl1p8CupKbX/JT8h80lKOg5qCp3JW71jIYzz
- lyz6gaiu+58Q==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="609388919"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 00:23:02 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lgMjL-00BNLu-DV; Tue, 11 May 2021 10:22:59 +0300
-Date:   Tue, 11 May 2021 10:22:59 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v1 1/1] gpiolib: Introduce for_each_gpio_desc() macro
-Message-ID: <YJow03/jdelIoywx@smile.fi.intel.com>
-References: <20210510195242.12443-1-andriy.shevchenko@linux.intel.com>
- <202105110723.VQRv6lJT-lkp@intel.com>
+        id S230355AbhEKHYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:24:17 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2358 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229945AbhEKHYQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 03:24:16 -0400
+Received: from dggemx753-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FfTnt0NQFz60Yw;
+        Tue, 11 May 2021 15:19:46 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by
+ dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 11 May 2021 15:23:06 +0800
+Subject: Re: [PATCH] f2fs: set file as cold when file defragmentation
+To:     <daejun7.park@samsung.com>, Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     "chao@kernel.org" <chao@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <fc7f1b2b-60ea-eb12-3195-7b3ad0b3adc2@huawei.com>
+ <20210429062005epcms2p352ef77f96ab66cbffe0c0ab6c1b62d8a@epcms2p3>
+ <3a0ab201-9546-d523-abc7-79df5f637f14@huawei.com>
+ <YJN0nTgadoq8vDaG@google.com>
+ <bd0fa15b-01c3-9f70-3eb8-ec2b54a0ee8f@huawei.com>
+ <YJlHmP/ej8/IsHL3@google.com>
+ <6e95edca-4802-7650-4771-5389067935dc@huawei.com>
+ <YJoRcIpW1g/OgHZn@google.com>
+ <CGME20210429062005epcms2p352ef77f96ab66cbffe0c0ab6c1b62d8a@epcms2p1>
+ <20210511064156epcms2p1351480bea36733f2e00022bd295e829e@epcms2p1>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <771a05fe-e26f-d635-5f8d-5be72f82345f@huawei.com>
+Date:   Tue, 11 May 2021 15:23:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202105110723.VQRv6lJT-lkp@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210511064156epcms2p1351480bea36733f2e00022bd295e829e@epcms2p1>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-ClientProxiedBy: dggemx704-chm.china.huawei.com (10.1.199.51) To
+ dggemx753-chm.china.huawei.com (10.0.44.37)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 07:36:58AM +0800, kernel test robot wrote:
-> Hi Andy,
+On 2021/5/11 14:41, Daejun Park wrote:
+>> On 2021/5/11 13:09, Jaegeuk Kim wrote:
+>>> On 05/11, Chao Yu wrote:
+>>>> On 2021/5/10 22:47, Jaegeuk Kim wrote:
+>>>>> On 05/06, Chao Yu wrote:
+>>>>>> On 2021/5/6 12:46, Jaegeuk Kim wrote:
+>>>>>>> On 05/06, Chao Yu wrote:
+>>>>>>>> On 2021/4/29 14:20, Daejun Park wrote:
+>>>>>>>>> In file defragmentation by ioctl, all data blocks in the file are
+>>>>>>>>> re-written out-of-place. File defragmentation implies user will not update
+>>>>>>>>> and mostly read the file. So before the defragmentation, we set file
+>>>>>>>>> temperature as cold for better block allocation.
+>>>>>>>>
+>>>>>>>> I don't think all fragmented files are cold, e.g. db file.
+>>>>>>>
+>>>>>>> I have a bit different opinion. I think one example would be users want to
+>>>>>>> defragment a file, when the they want to get higher read bandwidth for
+>>>>>>
+>>>>>> Multimedia file was already defined as cold file now via default extension
+>>>>>> list?
+>>>>>
+>>>>> I just gave an example. And default is default.
+>>>>>
+>>>>>>
+>>>>>>> usually multimedia files. That's likely to be cold files. Moreover, I don't
+>>>>>>> think they want to defragment db files which will be fragmented soon?
+>>>>>>
+>>>>>> I guess like db files have less update but more access?
+>>>>>
+>>>>> I think both, and we set it as hot.
+>>>>
+>>>> Then hot and cold bit will set to the same db file after defragmentation?
+>>>
+>>> Do you set cold bit to db files? I mean, generally db is not cold, but hot.
+>>
+>> I never set cold bit to db files, I mean if we defragment db file which
+>> has less update and more access, db file may have bot hot and cold bit.
+>>
+>> To Daejun, may I ask that is Samsung planning to use this defragment ioctl
+>> in products? what's the user scenario?
 > 
-> I love your patch! Perhaps something to improve:
+> It is just my idea for defragmentation, not Samsung.
+
+Alright,
+
+> I think the user will call the defrag ioctl for the files that have been updated.
+
+Sadly, I don't see there is any user of this defragment interface since it was
+been introduced... so I really don't know the real use scenario of this interface
+now.
+
 > 
-> [auto build test WARNING on gpio/for-next]
-> [also build test WARNING on v5.13-rc1 next-20210510]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
+> On the other hand, I think FS should be able to support defrag file even
+> when in-place update is applied. What do you think?
+
+bool f2fs_should_update_inplace(struct inode *inode, struct f2fs_io_info *fio)
+{
+	if (f2fs_is_pinned_file(inode))
+		return true;
+
+	/* if this is cold file, we should overwrite to avoid fragmentation */
+	if (file_is_cold(inode))
+		return true;
+
+If cold bit was set, later rewrite in defragment interface can only trigger
+IPU due to above IPU policy check, so after this interface, file is still
+fragmented... what's the difference compared to just setting cold bit via
+setxattr?
+
+And if user know that he will trigger less update and more read in the file,
+why not just calling setxattr("system.advise", cold_bit) to set the file as
+cold before it becomes fragmented, e.g. at the time of file creation?
+
+Thanks,
+
 > 
-> url:    https://github.com/0day-ci/linux/commits/Andy-Shevchenko/gpiolib-Introduce-for_each_gpio_desc-macro/20210511-035305
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git for-next
-> config: arm-randconfig-s031-20210510 (attached as .config)
-> compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # apt-get install sparse
->         # sparse version: v0.6.3-341-g8af24329-dirty
->         # https://github.com/0day-ci/linux/commit/ceaf41face19ca3a36b81b3b866c1708a90cb4e2
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Andy-Shevchenko/gpiolib-Introduce-for_each_gpio_desc-macro/20210511-035305
->         git checkout ceaf41face19ca3a36b81b3b866c1708a90cb4e2
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' W=1 ARCH=arm 
+> Thanks,
+> Daejun
+>>
+>> Thanks,
+>>
+>>>
+>>>>
+>>>> Thanks,
+>>>>
+>>>>>
+>>>>>>
+>>>>>> Thanks,
+>>>>>>
+>>>>>>>
+>>>>>>>>
+>>>>>>>> We have separated interface (via f2fs_xattr_advise_handler, e.g. setfattr -n
+>>>>>>>> "system.advise" -v value) to indicate this file is a hot/cold file, so my
+>>>>>>>> suggestion is after file defragmentation, if you think this file is cold, and
+>>>>>>>> use setxattr() to set it as cold.
+>>>>>>>>
+>>>>>>>> Thanks,
+>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+>>>>>>>>> ---
+>>>>>>>>>       fs/f2fs/file.c | 3 +++
+>>>>>>>>>       1 file changed, 3 insertions(+)
+>>>>>>>>>
+>>>>>>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>>>>>>>>> index d697c8900fa7..dcac965a05fe 100644
+>>>>>>>>> --- a/fs/f2fs/file.c
+>>>>>>>>> +++ b/fs/f2fs/file.c
+>>>>>>>>> @@ -2669,6 +2669,9 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
+>>>>>>>>>               map.m_len = pg_end - pg_start;
+>>>>>>>>>               total = 0;
+>>>>>>>>> +        if (!file_is_cold(inode))
+>>>>>>>>> +                file_set_cold(inode);
+>>>>>>>>> +
+>>>>>>>>>               while (map.m_lblk < pg_end) {
+>>>>>>>>>                       pgoff_t idx;
+>>>>>>>>>                       int cnt = 0;
+>>>>>>>>>
+>>>>>>> .
+>>>>>>>
+>>>>> .
+>>>>>
+>>> .
+>>>
+>>
+>>
+>>   
+> .
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-
-Right, I missed OF part compilation, thanks for reminder, I'll fix my kernel
-configuration and the patch in v2.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
