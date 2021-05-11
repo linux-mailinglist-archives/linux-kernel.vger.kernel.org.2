@@ -2,185 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237C337B026
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B69637B02A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhEKUig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 16:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48028 "EHLO
+        id S230134AbhEKUjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 16:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230011AbhEKUic (ORCPT
+        with ESMTP id S229716AbhEKUjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 16:38:32 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3BEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 13:37:22 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id z13so30556545lft.1
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 13:37:22 -0700 (PDT)
+        Tue, 11 May 2021 16:39:10 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF38C061574;
+        Tue, 11 May 2021 13:38:03 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id z9so30503124lfu.8;
+        Tue, 11 May 2021 13:38:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=e3jFdsng7MNLqQkqqc30EAOm2kSsehax2jXaaI+7Irg=;
-        b=dKtSPyiDwJGuayW4AO74qQwi1HkhNNYeVjn5SblBn46APoVlDvJt0fkfucnHJlD8dO
-         DB44RmSrSgehmARnU4relLQx/GR50jy5TRwZ2B81kB+j4DXFfTvpOa3YCrYgM+RNyNCw
-         f3zU6Nru5Q2TkVOpHHq/udx/YBYsBushoOSQy+YqRjuTmiPm1nP73DLSPRSmMIYA8FCC
-         Pz70bA3Z2BL3Pg4Iz3A7y50FcWIE4mv1OelEYFX6AH76vrFSBMZ8yMfbz9VLFrKQgScy
-         mN4GnJjofW7ksCNP98FLG9RhH2X5ahAZof3GzMNZAkuighAANX4KXbGJWboiSOvOSxa2
-         GT1Q==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DK5tJmmDmMugyANGMz6uGMnaLAd2KYOdGC6b7FxAiPM=;
+        b=DoPsmcM0KMuwfSZoXP7+nCQ7uK43uv743oLY70bnV1QUOvnfM4y5EHwQaKkPWi1VES
+         SxtAnBgAZMdaJFYgPmdUQUv8TH4AiQXQHWo7O+/1Pfn4h5Up20uBgbaaacNWop3q5UKg
+         Ylf/U1gg6eXP87OZsGStjMPh/9kY3JO4zR4/vJEa6/dQojwHrn7lzZlVGwzwYDlQgkdv
+         Ni33StgwcAh/hZcDa3bWYvGxfZuXrmeNH1lpn5AmlIZkY+tk1Chiv/AgineevkA0s+Pr
+         0rdE227eoKrvXDJklMEC2k8R6Iz8F0ruvSMz/4YKaWXxiijC5i7HPm3GEOkvup3N+NG6
+         S15A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=e3jFdsng7MNLqQkqqc30EAOm2kSsehax2jXaaI+7Irg=;
-        b=PgiYEYmG4fdRgJQ0054KppsHlTJVHficUEVS3i4z91lTj8XYSs14QeejCYAYIEViKo
-         FE5GJjDmh0o3dc8Xxew0cOTZ12Z4jUkbpC9KKescv4qyXOWQk42EY3f+QfIqKwKc/vsU
-         /8m6v/yZ/ypMZuWnlNEF9oqz+u+R8BNMVsq2YQMrhGYly3EHLg4LO9oQHLLKKzv8nYup
-         yjTxt1kxG4FlepE7fqbauqrz/gPebUejFLc9OyTbiWrydVfC06qdsDOLWsPD5oErCMQY
-         zWPHh2Gq522oT4D3uitG18qE5v4lC4k2of/WA2rVxKu3Now79pUKvR/EICrynvzfNPwR
-         Dt5Q==
-X-Gm-Message-State: AOAM530W8x3L92a0g2iObHR8hIHG47OSARqCEoMeLcf/bc2ZKPoFW6KG
-        PgOHxTOYZ2HKsX4bCoUqkBjWELKSfZAlaA==
-X-Google-Smtp-Source: ABdhPJxX5SEZ/cHaaWrcr5eVJAyamlCH4JvHjp0uFsGruBhnvwfQ/WcYrirUB8Prm5vrXYoMapc92A==
-X-Received: by 2002:a05:6512:3e14:: with SMTP id i20mr21585257lfv.142.1620765441335;
-        Tue, 11 May 2021 13:37:21 -0700 (PDT)
-Received: from localhost.localdomain (h-158-174-22-223.NA.cust.bahnhof.se. [158.174.22.223])
-        by smtp.gmail.com with ESMTPSA id f17sm2701613lfu.215.2021.05.11.13.37.20
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DK5tJmmDmMugyANGMz6uGMnaLAd2KYOdGC6b7FxAiPM=;
+        b=WWN8/FULwNE6vElDSyC4nCXF9Nk6hLVHDSv026HJYQYlx8IZ5ciaRYTHALGfcq7HcW
+         FAyl7o0blcLU8ITKQfRCpMSeLNjfDXRL5uBNw/sMzLV0BmwDYnje+a2naRvS5yqsK3jn
+         Y7b1ApMjJb45rp0KwpjIqisAb40SzoSQmMGXnfbyIcJhAMpBx17LifeG1t6xHwR9wOUt
+         SL0ys2WUH8YtLTSfcmyVa6AVNJkzymDcZmmUxwsbFOBe64nwclAxgQlkW2YU/fB5ihMD
+         kmEHgeuObrYfGgmpglh/jnS+df9uhKKX4dVklnfHjMeCoybJihZvxjD0UNnChm4CJcar
+         kidQ==
+X-Gm-Message-State: AOAM532RnyhZlyHsGAGIC2fdCEOHM3pmBKdP8ldiLKfokBAK6b+S7TpM
+        Kx/+6xU6v9Wlihtf43rjgZs=
+X-Google-Smtp-Source: ABdhPJxtflci7Mz+vugabPHlCz0Q0Gx5fwa6L+2OG/Z8QYy5+y8O3N6sL1J9naRsa6hASsDD5zduvA==
+X-Received: by 2002:a05:6512:3e14:: with SMTP id i20mr21586920lfv.142.1620765481818;
+        Tue, 11 May 2021 13:38:01 -0700 (PDT)
+Received: from rikard (h-158-174-22-223.NA.cust.bahnhof.se. [158.174.22.223])
+        by smtp.gmail.com with ESMTPSA id f24sm834191ljc.80.2021.05.11.13.38.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 13:37:20 -0700 (PDT)
+        Tue, 11 May 2021 13:38:01 -0700 (PDT)
 From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH] linux/bits.h: Fix compilation error with GENMASK
-Date:   Tue, 11 May 2021 22:37:15 +0200
-Message-Id: <20210511203716.117010-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.31.1
+X-Google-Original-From: Rikard Falkeborn <rikard.falkeborn>
+Date:   Tue, 11 May 2021 22:37:58 +0200
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux-SH <linux-sh@vger.kernel.org>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH 11/12] tools: sync lib/find_bit implementation
+Message-ID: <YJrrJhvwq7RUvDXD@rikard>
+References: <20210401003153.97325-1-yury.norov@gmail.com>
+ <20210401003153.97325-12-yury.norov@gmail.com>
+ <1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp>
+ <CAHp75Vea0Y_LfWC7LNDoDZqO4t+SVHV5HZMzErfyMPoBAjjk1g@mail.gmail.com>
+ <YJm5Dpo+RspbAtye@rikard>
+ <YJoyMrqRtB3GSAny@smile.fi.intel.com>
+ <YJpePAHS3EDw6PK1@rikard>
+ <151de51e-9302-1f59-407a-e0d68bbaf11c@i-love.sakura.ne.jp>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <151de51e-9302-1f59-407a-e0d68bbaf11c@i-love.sakura.ne.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GENMASK() has an input check which uses __builtin_choose_expr() to enable
-a compile time sanity check of its inputs if they are known at compile
-time. However, it turns out that __builtin_constant_p() does not always
-return a compile time constant [0]. It was thought this problem was fixed
-with gcc 4.9 [1], but apparently this is not the case [2].
+On Tue, May 11, 2021 at 08:53:53PM +0900, Tetsuo Handa wrote:
+> On 2021/05/11 0:44, Andy Shevchenko wrote:
+> > And I'm a bit lost here, because I can't imagine the offset being
+> > constant along with a size of bitmap. What do we want to achieve by
+> > this? Any examples to better understand the case?
+> 
+> Because I feel that the GENMASK() macro cannot be evaluated without
+> both arguments being a constant.
+> 
+> The usage is
+> 
+>  unsigned long find_next_bit(const unsigned long *addr, unsigned long size,
+>                             unsigned long offset)
+>  {
+> +       if (small_const_nbits(size)) {
+> +               unsigned long val;
+> +
+> +               if (unlikely(offset >= size))
+> +                       return size;
+> +
+> +               val = *addr & GENMASK(size - 1, offset);
+> +               return val ? __ffs(val) : size;
+> +       }
+> +
+>         return _find_next_bit(addr, NULL, size, offset, 0UL, 0);
+>  }
+> 
+> where GENMASK() might be called even if "offset" is not a constant.
+> 
+> #define GENMASK(h, l) \
+>      (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+> 
+> #define __GENMASK(h, l) \
+>      (((~UL(0)) - (UL(1) << (l)) + 1) & \
+>        (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
+> 
+> #define GENMASK_INPUT_CHECK(h, l) \
+>      (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+>           __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+> 
+> __GENMASK() does not need "h" and "l" being a constant.
+> 
+> Yes, small_const_nbits(size) in find_next_bit() can guarantee that "size" is a
+> constant and hence "h" argument in GENMASK_INPUT_CHECK() call is also a constant.
+> But nothing can guarantee that "offset" is a constant, and hence nothing can
+> guarantee that "l" argument in GENMASK_INPUT_CHECK() call is also a constant.
+> 
+> Then, how can (l) > (h) in __builtin_constant_p((l) > (h)) be evaluated at build time
+> if either l or h (i.e. "offset" and "size - 1" in find_next_bit()) lacks a guarantee of
+> being a constant?
+> 
 
-Switch to use __is_constexpr() instead which always returns a compile
-time constant, regardless of its inputs.
+So the idea is that if (l > h) is constant, __builtin_constant_p should
+evaluate that, and if it is not it should use zero instead as input to
+__builtin_chose_expr(). This works with non-const inputs in many other
+places in the kernel, but apparently in this case with a certain
+compiler, it doesn't so I guess we need to work around it.
 
-[0]: https://lore.kernel.org/lkml/42b4342b-aefc-a16a-0d43-9f9c0d63ba7a@rasmusvillemoes.dk
-[1]: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=19449
-[2]: https://lore.kernel.org/lkml/1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp
+> But what a surprise,
+> 
+> On 2021/05/11 7:51, Rikard Falkeborn wrote:
+> > Does the following work for you? For simplicity, I copied__is_constexpr from
+> > include/linux/minmax.h (which isn't available in tools/). A proper patch
+> > would reuse __is_constexpr (possibly refactoring it to a separate
+> > header since bits.h including minmax.h for that only seems smelly) and fix
+> > bits.h in the kernel header as well, to keep the files in sync.
+> 
+> this works for me.
+> 
 
-Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
-Feedback on placing __is_constexpr() in const.h is welcome, at least the
-name is appropriate...
+Great, thanks for testing!
 
- include/linux/bits.h        |  2 +-
- include/linux/const.h       |  8 ++++++++
- include/linux/minmax.h      | 10 ++--------
- tools/include/linux/bits.h  |  2 +-
- tools/include/linux/const.h |  8 ++++++++
- 5 files changed, 20 insertions(+), 10 deletions(-)
+I sent a patch for this here:
+https://lore.kernel.org/lkml/20210511203716.117010-1-rikard.falkeborn@gmail.com/
 
-diff --git a/include/linux/bits.h b/include/linux/bits.h
-index 7f475d59a097..87d112650dfb 100644
---- a/include/linux/bits.h
-+++ b/include/linux/bits.h
-@@ -22,7 +22,7 @@
- #include <linux/build_bug.h>
- #define GENMASK_INPUT_CHECK(h, l) \
- 	(BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
--		__builtin_constant_p((l) > (h)), (l) > (h), 0)))
-+		__is_constexpr((l) > (h)), (l) > (h), 0)))
- #else
- /*
-  * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
-diff --git a/include/linux/const.h b/include/linux/const.h
-index 81b8aae5a855..435ddd72d2c4 100644
---- a/include/linux/const.h
-+++ b/include/linux/const.h
-@@ -3,4 +3,12 @@
- 
- #include <vdso/const.h>
- 
-+/*
-+ * This returns a constant expression while determining if an argument is
-+ * a constant expression, most importantly without evaluating the argument.
-+ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-+ */
-+#define __is_constexpr(x) \
-+	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-+
- #endif /* _LINUX_CONST_H */
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index c0f57b0c64d9..5433c08fcc68 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -2,6 +2,8 @@
- #ifndef _LINUX_MINMAX_H
- #define _LINUX_MINMAX_H
- 
-+#include <linux/const.h>
-+
- /*
-  * min()/max()/clamp() macros must accomplish three things:
-  *
-@@ -17,14 +19,6 @@
- #define __typecheck(x, y) \
- 	(!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
- 
--/*
-- * This returns a constant expression while determining if an argument is
-- * a constant expression, most importantly without evaluating the argument.
-- * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-- */
--#define __is_constexpr(x) \
--	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
--
- #define __no_side_effects(x, y) \
- 		(__is_constexpr(x) && __is_constexpr(y))
- 
-diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
-index 7f475d59a097..87d112650dfb 100644
---- a/tools/include/linux/bits.h
-+++ b/tools/include/linux/bits.h
-@@ -22,7 +22,7 @@
- #include <linux/build_bug.h>
- #define GENMASK_INPUT_CHECK(h, l) \
- 	(BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
--		__builtin_constant_p((l) > (h)), (l) > (h), 0)))
-+		__is_constexpr((l) > (h)), (l) > (h), 0)))
- #else
- /*
-  * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
-diff --git a/tools/include/linux/const.h b/tools/include/linux/const.h
-index 81b8aae5a855..435ddd72d2c4 100644
---- a/tools/include/linux/const.h
-+++ b/tools/include/linux/const.h
-@@ -3,4 +3,12 @@
- 
- #include <vdso/const.h>
- 
-+/*
-+ * This returns a constant expression while determining if an argument is
-+ * a constant expression, most importantly without evaluating the argument.
-+ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-+ */
-+#define __is_constexpr(x) \
-+	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-+
- #endif /* _LINUX_CONST_H */
--- 
-2.31.1
+Rikard
 
+> > 
+> > diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
+> > index 7f475d59a097..7bc4c31a7df0 100644
+> > --- a/tools/include/linux/bits.h
+> > +++ b/tools/include/linux/bits.h
+> > @@ -19,10 +19,13 @@
+> >   * GENMASK_ULL(39, 21) gives us the 64bit vector 0x000000ffffe00000.
+> >   */
+> >  #if !defined(__ASSEMBLY__)
+> > +
+> > +#define __is_constexpr(x) \
+> > +       (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
+> >  #include <linux/build_bug.h>
+> >  #define GENMASK_INPUT_CHECK(h, l) \
+> >         (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+> > -               __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+> > +               __is_constexpr((l) > (h)), (l) > (h), 0)))
+> >  #else
+> >  /*
+> >   * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
+> > 
+> 
+> 
+> 
+> On 2021/05/11 7:52, Yury Norov wrote:
+> > I tested the objtool build with the 8.4.0 and 7.5.0 compilers from
+> > ubuntu 21 distro, and it looks working. Can you please share more
+> > details about your system? 
+> 
+> Nothing special. A plain x86_64 CentOS 7.9 system with devtoolset-8.
+> 
+> $ /opt/rh/devtoolset-8/root/bin/gcc --version
+> gcc (GCC) 8.3.1 20190311 (Red Hat 8.3.1-3)
+> Copyright (C) 2018 Free Software Foundation, Inc.
+> This is free software; see the source for copying conditions.  There is NO
+> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> 
+> $ rpm -qi devtoolset-8-gcc
+> Name        : devtoolset-8-gcc
+> Version     : 8.3.1
+> Release     : 3.2.el7
+> Architecture: x86_64
+> Install Date: Wed Apr 22 07:58:16 2020
+> Group       : Development/Languages
+> Size        : 74838011
+> License     : GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
+> Signature   : RSA/SHA1, Thu Apr 16 19:44:43 2020, Key ID 4eb84e71f2ee9d55
+> Source RPM  : devtoolset-8-gcc-8.3.1-3.2.el7.src.rpm
+> Build Date  : Sat Mar 28 00:06:45 2020
+> Build Host  : c1be.rdu2.centos.org
+> Relocations : (not relocatable)
+> Packager    : CBS <cbs@centos.org>
+> Vendor      : CentOS
+> URL         : http://gcc.gnu.org
+> Summary     : GCC version 8
+> Description :
+> The devtoolset-8-gcc package contains the GNU Compiler Collection version 7.
+> 
