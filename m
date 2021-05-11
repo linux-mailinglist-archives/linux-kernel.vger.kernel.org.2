@@ -2,91 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 413F937A043
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C4237A045
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbhEKHEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:04:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhEKHEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:04:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5624616EB;
-        Tue, 11 May 2021 07:03:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620716616;
-        bh=IB3pb9y+maLrxdpuRV+w6YTrpg0ZTbK2FjvnZHsu5ig=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JcUBZbIM/WpwGCkWXs7hyDsONqSUwW+swP8CR6sOj6LoQ3o9pR1wjtuxAaN/WXVzA
-         QJzPVvzAxiXNfHJl81Nm85lBzW+gqdiSBgJOTZQpv62+gXQpvWg5zDtkI9qtywVynn
-         MR4b5M6czaWbOTaPCWpjU0kmQfU8DHd2yxPjG3BI=
-Date:   Tue, 11 May 2021 09:03:34 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] misc: alcor_pci: fix null-ptr-deref when there is no PCI
- bridge
-Message-ID: <YJosRuXcSKiFemC8@kroah.com>
-References: <20210426220728.1230340-1-ztong0001@gmail.com>
- <YJlE+Z2VKhamVWaw@kroah.com>
- <CAA5qM4CAdb_Aaay1_gjy_AC48Doxtga0f69E1P36=8vscsR9Eg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA5qM4CAdb_Aaay1_gjy_AC48Doxtga0f69E1P36=8vscsR9Eg@mail.gmail.com>
+        id S230350AbhEKHFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:05:09 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:34449 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230268AbhEKHFH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 03:05:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620716641; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=/3St8vspwlaMJv2fv4wvq0SBdS7FrQGyxt0HzhIqFZQ=; b=fTSHJVu/Fd+aVJ1CW4337WtU/U2dPY008ZyjQ4AIH+EuWso4gffo246gvt1IcOqhdQZ2feJL
+ JJ6xKMR5fDN1BgpCN4H0vQxHlXOE5amZM0H8gVVJfFisaQ2q7CVVwKgoKkQDeNnY8CoP5FwC
+ m/xHfe85Ydr/j7c7Q1ElLoTmJ2A=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 609a2c60da4b8b1332fca687 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 11 May 2021 07:04:00
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1E8C8C433D3; Tue, 11 May 2021 07:04:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B40BAC43145;
+        Tue, 11 May 2021 07:03:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B40BAC43145
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org, peter.chen@kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH v2] usb: dwc3: gadget: Replace list_for_each_entry_safe() if using giveback
+Date:   Tue, 11 May 2021 00:03:56 -0700
+Message-Id: <1620716636-12422-1-git-send-email-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 03:20:02PM -0700, Tong Zhang wrote:
-> On Mon, May 10, 2021 at 7:36 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Mon, Apr 26, 2021 at 06:07:27PM -0400, Tong Zhang wrote:
-> > > the PCI bridge might be NULL, so we'd better check before use it
-> > >
-> > > [    1.246492] BUG: kernel NULL pointer dereference, address: 00000000000000c0
-> > > [    1.248731] RIP: 0010:pci_read_config_byte+0x5/0x40
-> > > [    1.253998] Call Trace:
-> > > [    1.254131]  ? alcor_pci_find_cap_offset.isra.0+0x3a/0x100 [alcor_pci]
-> > > [    1.254476]  alcor_pci_probe+0x169/0x2d5 [alcor_pci]
-> > >
-> > > Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-> > > ---
-> > >  drivers/misc/cardreader/alcor_pci.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >
-> > > diff --git a/drivers/misc/cardreader/alcor_pci.c b/drivers/misc/cardreader/alcor_pci.c
-> > > index cd402c89189e..1c33453fd5c7 100644
-> > > --- a/drivers/misc/cardreader/alcor_pci.c
-> > > +++ b/drivers/misc/cardreader/alcor_pci.c
-> > > @@ -102,6 +102,9 @@ static int alcor_pci_find_cap_offset(struct alcor_pci_priv *priv,
-> > >       u8 val8;
-> > >       u32 val32;
-> > >
-> > > +     if (!pci)
-> > > +             return 0;
-> > > +
-> > >       where = ALCOR_CAP_START_OFFSET;
-> > >       pci_read_config_byte(pci, where, &val8);
-> > >       if (!val8)
-> > > --
-> > > 2.25.1
-> > >
-> >
-> > I do not understand, how can pci ever be NULL?  There is only 1 way this
-> 
-> Hi Greg,
-> I think the problem is with
->     priv->parent_pdev = pdev->bus->self
-> where bus->self can be NULL. when bus->self is NULL, calling
+The list_for_each_entry_safe() macro saves the current item (n) and
+the item after (n+1), so that n can be safely removed without
+corrupting the list.  However, when traversing the list and removing
+items using gadget giveback, the DWC3 lock is briefly released,
+allowing other routines to execute.  There is a situation where, while
+items are being removed from the cancelled_list using
+dwc3_gadget_ep_cleanup_cancelled_requests(), the pullup disable
+routine is running in parallel (due to UDC unbind).  As the cleanup
+routine removes n, and the pullup disable removes n+1, once the
+cleanup retakes the DWC3 lock, it references a request who was already
+removed/handled.  With list debug enabled, this leads to a panic.
+Ensure all instances of the macro are replaced where gadget giveback
+is used.
 
-How can bus->self be NULL?
+Example call stack:
 
-Did you see this on a real system?  How did you duplicate the error
-listed here?
+Thread#1:
+__dwc3_gadget_ep_set_halt() - CLEAR HALT
+  -> dwc3_gadget_ep_cleanup_cancelled_requests()
+    ->list_for_each_entry_safe()
+    ->dwc3_gadget_giveback(n)
+      ->dwc3_gadget_del_and_unmap_request()- n deleted[cancelled_list]
+      ->spin_unlock
+      ->Thread#2 executes
+      ...
+    ->dwc3_gadget_giveback(n+1)
+      ->Already removed!
 
-thanks,
+Thread#2:
+dwc3_gadget_pullup()
+  ->waiting for dwc3 spin_lock
+  ...
+  ->Thread#1 released lock
+  ->dwc3_stop_active_transfers()
+    ->dwc3_remove_requests()
+      ->fetches n+1 item from cancelled_list (n removed by Thread#1)
+      ->dwc3_gadget_giveback()
+        ->dwc3_gadget_del_and_unmap_request()- n+1 deleted[cancelled_list]
+        ->spin_unlock
 
-greg k-h
+Fixes: d4f1afe5e896 ("usb: dwc3: gadget: move requests to cancelled_list")
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+Reviewed-by: Peter Chen <peter.chen@kernel.org>
+---
+Changes in v2:
+ - Updated commit message with context call stack of an example scenario
+   seen on device.
+
+ drivers/usb/dwc3/gadget.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index dd80e5c..efa939b 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -1737,10 +1737,10 @@ static void dwc3_gadget_ep_skip_trbs(struct dwc3_ep *dep, struct dwc3_request *r
+ static void dwc3_gadget_ep_cleanup_cancelled_requests(struct dwc3_ep *dep)
+ {
+ 	struct dwc3_request		*req;
+-	struct dwc3_request		*tmp;
+ 	struct dwc3			*dwc = dep->dwc;
+ 
+-	list_for_each_entry_safe(req, tmp, &dep->cancelled_list, list) {
++	while (!list_empty(&dep->cancelled_list)) {
++		req = next_request(&dep->cancelled_list);
+ 		dwc3_gadget_ep_skip_trbs(dep, req);
+ 		switch (req->status) {
+ 		case DWC3_REQUEST_STATUS_DISCONNECTED:
+@@ -2935,11 +2935,11 @@ static void dwc3_gadget_ep_cleanup_completed_requests(struct dwc3_ep *dep,
+ 		const struct dwc3_event_depevt *event, int status)
+ {
+ 	struct dwc3_request	*req;
+-	struct dwc3_request	*tmp;
+ 
+-	list_for_each_entry_safe(req, tmp, &dep->started_list, list) {
++	while (!list_empty(&dep->started_list)) {
+ 		int ret;
+ 
++		req = next_request(&dep->started_list);
+ 		ret = dwc3_gadget_ep_cleanup_completed_request(dep, event,
+ 				req, status);
+ 		if (ret)
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
