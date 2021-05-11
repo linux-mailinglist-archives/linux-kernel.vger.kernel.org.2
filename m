@@ -2,49 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E78C37A629
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1F237A628
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbhEKL6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 07:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230400AbhEKL6m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 07:58:42 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED32C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 04:57:35 -0700 (PDT)
-Received: from [2a02:fe0:c700:2:559d:4a7b:2050:4789] (port=59858)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Ywe_C@ra7de-7.eu>)
-        id 1lgR12-0003aL-7L
-        for linux-kernel@vger.kernel.org; Tue, 11 May 2021 13:57:32 +0200
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C@ra7de-7.eu>
-Subject: L-, L Dash, Naming Convention, and Desktop Nix concluded (Fair Pay..)
-Message-ID: <eec0a53c-32c2-5046-112b-cf92885f0eaa@ra7de-7.eu>
-Date:   Tue, 11 May 2021 13:57:15 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231460AbhEKL6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 07:58:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231132AbhEKL6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 07:58:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E97161007;
+        Tue, 11 May 2021 11:57:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620734247;
+        bh=6WMcv2xd6VsBSIHKu0Ob2YKNaIqY4ZBocnGR8jWPXfg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Velce/SBQYGXz4Bg/7MEcnrC8mePdPHBrP4IMe4Tpsax5sLl6YyaI71oMDf3fz+kg
+         ygCu/riXXrPEFlt8H0bnpxiOEjpI74RMzM6Ck7hSb8hnBv6BN8JxnfKRwl6iwbyawV
+         3iFX9unUIIRRf70XxgGvOnAODX+8wsSURNF6FWuA=
+Date:   Tue, 11 May 2021 13:57:24 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "David E. Box" <david.e.box@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 108/299] platform/x86: intel_pmc_core: Dont use
+ global pmcdev in quirks
+Message-ID: <YJpxJPVLp803CaBt@kroah.com>
+References: <20210510102004.821838356@linuxfoundation.org>
+ <20210510102008.507160403@linuxfoundation.org>
+ <20210510121240.GD3547@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510121240.GD3547@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looking at unix/linux naming convention and expectations for a desktop 
-os, we see a simplification is called for, and toning out the 
-fragmentation likeness. L- implies a fine granularity instead, and that 
-you can do anything you want with this OS.
+On Mon, May 10, 2021 at 02:12:40PM +0200, Pavel Machek wrote:
+> Hi!
+> 
+> > From: David E. Box <david.e.box@linux.intel.com>
+> > 
+> > [ Upstream commit c9f86d6ca6b5e23d30d16ade4b9fff5b922a610a ]
+> > 
+> > The DMI callbacks, used for quirks, currently access the PMC by getting
+> > the address a global pmc_dev struct. Instead, have the callbacks set a
+> > global quirk specific variable. In probe, after calling dmi_check_system(),
+> > pass pmc_dev to a function that will handle each quirk if its variable
+> > condition is met. This allows removing the global pmc_dev later.
+> 
+> This does not fix a bug.. it is preparation for further cleanups that
+> are not queued to 5.10 stable. So this should not be in 5.10 either.
 
-Going beyond the typical corporate mindset, which is really what many 
-want in this days, and the answer to breaking up Microsoft in smaller 
-parts. And really the lacking level of this OS. (Instead supporting 
-school to the degree of going into the source oneself).
+I'll leave this for now, it will be helpful for later.
 
-Serenity,
-Ywe Cærlyn.
-https://ra7de-7.eu/
+thanks,
+
+greg k-h
