@@ -2,198 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8156B379D83
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E544E379D87
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhEKDLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 23:11:48 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:41093 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230252AbhEKDLk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 23:11:40 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A+lD4Rq1utQ0JgGlxWavvzAqjBFQkLtp133Aq?=
- =?us-ascii?q?2lEZdPRUGvb4qynIpoVj6faUskdoZJhOo6HiBEDtexzhHNtOkO0s1NSZLW/bUQ?=
- =?us-ascii?q?mTXeNfBOLZqlWKcUCTygce79YGT0EUMr3N5DZB4/oSmDPIdurI3uP3jJyAtKPP?=
- =?us-ascii?q?yWt3VwF2Z+VF5wd9MAySFUp7X2B9dOAEPavZ9sxavCChZHhSSsy6A0MOV+/Fq8?=
- =?us-ascii?q?aOu4nhZXc9dmMawTjLnTW186T7DhTd+h8fVglEybAk/XOAsyGR3NTZj82G?=
-X-IronPort-AV: E=Sophos;i="5.82,290,1613404800"; 
-   d="scan'208";a="108110580"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 11 May 2021 11:10:29 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id 80FF94D0B8A5;
-        Tue, 11 May 2021 11:10:26 +0800 (CST)
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Tue, 11 May 2021 11:10:17 +0800
-Received: from irides.mr.mr.mr (10.167.225.141) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Tue, 11 May 2021 11:10:14 +0800
-From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-fsdevel@vger.kernel.org>
-CC:     <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <willy@infradead.org>, <viro@zeniv.linux.org.uk>,
-        <david@fromorbit.com>, <hch@lst.de>, <rgoldwyn@suse.de>
-Subject: [PATCH v5 7/7] fs/xfs: Add dax dedupe support
-Date:   Tue, 11 May 2021 11:09:33 +0800
-Message-ID: <20210511030933.3080921-8-ruansy.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210511030933.3080921-1-ruansy.fnst@fujitsu.com>
-References: <20210511030933.3080921-1-ruansy.fnst@fujitsu.com>
+        id S229920AbhEKDOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 23:14:15 -0400
+Received: from mga07.intel.com ([134.134.136.100]:26066 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229465AbhEKDOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 23:14:07 -0400
+IronPort-SDR: KkcvMG3ElJBVcXePNnIfJLlIiB3QmYdqp6Uysg1y7FTtFHOz5e6kNNsnHDKbgLEj6mO7XF9EN6
+ Q0yOgf3A6kTw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="263273556"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="263273556"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 20:12:58 -0700
+IronPort-SDR: stKccw6CyTiwgY6Z4oynDLYVZ9iolDqy5GJI2whakNs9xp75faAiZ3QlNCdDdLhdiWlAPMdVj9
+ pZkA/PEv8pfQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="621641217"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga006.fm.intel.com with ESMTP; 10 May 2021 20:12:52 -0700
+Cc:     baolu.lu@linux.intel.com,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
+        yuzenghui@huawei.com, lushenming@huawei.com
+Subject: Re: [RFC PATCH v4 01/13] iommu: Introduce dirty log tracking
+ framework
+To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yi Sun <yi.y.sun@linux.intel.com>,
+        Tian Kevin <kevin.tian@intel.com>
+References: <20210507102211.8836-1-zhukeqian1@huawei.com>
+ <20210507102211.8836-2-zhukeqian1@huawei.com>
+ <efc2d868-28ba-8ed9-1d6b-610b67d671b5@linux.intel.com>
+ <18ac787a-179e-71f7-728b-c43feda80a16@huawei.com>
+ <55fda826-9ab6-a3a0-b17e-a4d4879f00bc@linux.intel.com>
+ <a8df289a-47c2-c193-cd6f-8415f68b900f@huawei.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <f47e90c6-f3c4-b28f-a810-e03afe79e62d@linux.intel.com>
+Date:   Tue, 11 May 2021 11:12:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 80FF94D0B8A5.A153C
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
-X-Spam-Status: No
+In-Reply-To: <a8df289a-47c2-c193-cd6f-8415f68b900f@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce xfs_mmaplock_two_inodes_and_break_dax_layout() for dax files
-who are going to be deduped.  After that, call compare range function
-only when files are both DAX or not.
+Hi Keqian,
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
----
- fs/xfs/xfs_file.c    |  2 +-
- fs/xfs/xfs_inode.c   | 66 +++++++++++++++++++++++++++++++++++++++++++-
- fs/xfs/xfs_inode.h   |  1 +
- fs/xfs/xfs_reflink.c |  4 +--
- 4 files changed, 69 insertions(+), 4 deletions(-)
+On 5/10/21 7:07 PM, Keqian Zhu wrote:
+>>>> I suppose this interface is to ask the vendor IOMMU driver to check
+>>>> whether each device/iommu in the domain supports dirty bit tracking.
+>>>> But what will happen if new devices with different tracking capability
+>>>> are added afterward?
+>>> Yep, this is considered in the vfio part. We will query again after attaching or
+>>> detaching devices from the domain.  When the domain becomes capable, we enable
+>>> dirty log for it. When it becomes not capable, we disable dirty log for it.
+>> If that's the case, why not putting this logic in the iommu subsystem so
+>> that it doesn't need to be duplicate in different upper layers?
+>>
+>> For example, add something like dirty_page_trackable in the struct of
+>> iommu_domain and ask the vendor iommu driver to update it once any
+>> device is added/removed to/from the domain. It's also better to disallow
+> If we do it, the upper layer still needs to query the capability from domain and switch
+> dirty log tracking for it. Or do you mean the domain can switch dirty log tracking automatically
+> when its capability change? If so, I think we're lack of some flexibility. The upper layer
+> may have it's own policy, such as only enable dirty log tracking when all domains are capable,
+> and disable dirty log tracking when just one domain is not capable.
 
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index 38d8eca05aee..bd5002d38df4 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -823,7 +823,7 @@ xfs_wait_dax_page(
- 	xfs_ilock(ip, XFS_MMAPLOCK_EXCL);
- }
- 
--static int
-+int
- xfs_break_dax_layouts(
- 	struct inode		*inode,
- 	bool			*retry)
-diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-index 0369eb22c1bb..0774b6e2b940 100644
---- a/fs/xfs/xfs_inode.c
-+++ b/fs/xfs/xfs_inode.c
-@@ -3711,6 +3711,64 @@ xfs_iolock_two_inodes_and_break_layout(
- 	return 0;
- }
- 
-+static int
-+xfs_mmaplock_two_inodes_and_break_dax_layout(
-+	struct inode		*src,
-+	struct inode		*dest)
-+{
-+	int			error, attempts = 0;
-+	bool			retry;
-+	struct xfs_inode	*ip0, *ip1;
-+	struct page		*page;
-+	struct xfs_log_item	*lp;
-+
-+	if (src > dest)
-+		swap(src, dest);
-+	ip0 = XFS_I(src);
-+	ip1 = XFS_I(dest);
-+
-+again:
-+	retry = false;
-+	/* Lock the first inode */
-+	xfs_ilock(ip0, XFS_MMAPLOCK_EXCL);
-+	error = xfs_break_dax_layouts(src, &retry);
-+	if (error || retry) {
-+		xfs_iunlock(ip0, XFS_MMAPLOCK_EXCL);
-+		goto again;
-+	}
-+
-+	if (src == dest)
-+		return 0;
-+
-+	/* Nested lock the second inode */
-+	lp = &ip0->i_itemp->ili_item;
-+	if (lp && test_bit(XFS_LI_IN_AIL, &lp->li_flags)) {
-+		if (!xfs_ilock_nowait(ip1,
-+		    xfs_lock_inumorder(XFS_MMAPLOCK_EXCL, 1))) {
-+			xfs_iunlock(ip0, XFS_MMAPLOCK_EXCL);
-+			if ((++attempts % 5) == 0)
-+				delay(1); /* Don't just spin the CPU */
-+			goto again;
-+		}
-+	} else
-+		xfs_ilock(ip1, xfs_lock_inumorder(XFS_MMAPLOCK_EXCL, 1));
-+	/*
-+	 * We cannot use xfs_break_dax_layouts() directly here because it may
-+	 * need to unlock & lock the XFS_MMAPLOCK_EXCL which is not suitable
-+	 * for this nested lock case.
-+	 */
-+	page = dax_layout_busy_page(dest->i_mapping);
-+	if (page) {
-+		if (page_ref_count(page) != 1) {
-+			xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-+			xfs_iunlock(ip0, XFS_MMAPLOCK_EXCL);
-+			goto again;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Lock two inodes so that userspace cannot initiate I/O via file syscalls or
-  * mmap activity.
-@@ -3721,10 +3779,16 @@ xfs_ilock2_io_mmap(
- 	struct xfs_inode	*ip2)
- {
- 	int			ret;
-+	struct inode		*ino1 = VFS_I(ip1);
-+	struct inode		*ino2 = VFS_I(ip2);
- 
--	ret = xfs_iolock_two_inodes_and_break_layout(VFS_I(ip1), VFS_I(ip2));
-+	ret = xfs_iolock_two_inodes_and_break_layout(ino1, ino2);
- 	if (ret)
- 		return ret;
-+
-+	if (IS_DAX(ino1) && IS_DAX(ino2))
-+		return xfs_mmaplock_two_inodes_and_break_dax_layout(ino1, ino2);
-+
- 	if (ip1 == ip2)
- 		xfs_ilock(ip1, XFS_MMAPLOCK_EXCL);
- 	else
-diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
-index ca826cfba91c..2d0b344fb100 100644
---- a/fs/xfs/xfs_inode.h
-+++ b/fs/xfs/xfs_inode.h
-@@ -457,6 +457,7 @@ enum xfs_prealloc_flags {
- 
- int	xfs_update_prealloc_flags(struct xfs_inode *ip,
- 				  enum xfs_prealloc_flags flags);
-+int	xfs_break_dax_layouts(struct inode *inode, bool *retry);
- int	xfs_break_layouts(struct inode *inode, uint *iolock,
- 		enum layout_break_reason reason);
- 
-diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-index 9a780948dbd0..ff308304c5cd 100644
---- a/fs/xfs/xfs_reflink.c
-+++ b/fs/xfs/xfs_reflink.c
-@@ -1324,8 +1324,8 @@ xfs_reflink_remap_prep(
- 	if (XFS_IS_REALTIME_INODE(src) || XFS_IS_REALTIME_INODE(dest))
- 		goto out_unlock;
- 
--	/* Don't share DAX file data for now. */
--	if (IS_DAX(inode_in) || IS_DAX(inode_out))
-+	/* Don't share DAX file data with non-DAX file. */
-+	if (IS_DAX(inode_in) != IS_DAX(inode_out))
- 		goto out_unlock;
- 
- 	if (!IS_DAX(inode_in))
--- 
-2.31.1
+I may not get you.
 
+Assume that dirty_page_trackable is an attribution of an iommu_domain.
+This attribution might be changed once a new device (with different
+capability) added or removed. So it should be updated every time a new
+device is attached or detached. This work could be done by the vendor
+iommu driver on the path of dev_attach/dev_detach callback.
 
+For upper layers, before starting page tracking, they check the
+dirty_page_trackable attribution of the domain and start it only it's
+capable. Once the page tracking is switched on the vendor iommu driver
+(or iommu core) should block further device attach/detach operations
+until page tracking is stopped.
 
+> 
+>> any domain attach/detach once the dirty page tracking is on.
+> Yep, this can greatly simplify our code logic, but I don't know whether our maintainers
+> agree that, as they may think that IOMMU dirty logging should not change original domain
+> behaviors.
+
+The maintainer owns the last word, but we need to work out a generic and
+self-contained API set.
+
+Best regards,
+baolu
