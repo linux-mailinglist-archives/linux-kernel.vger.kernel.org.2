@@ -2,104 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAA337AD59
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D721237AD41
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbhEKRtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbhEKRti (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:49:38 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C280AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=gNbV2evxtF39QMDw6yzbvkVK2nPO0DcmjBsDBPMap9A=; b=feAP/FbZZOdXx
-        3CelCeZURgCsqdbnpcd71oKy5e3FDLcK0+YWq4ZLJHlTJyDYKX8TJ5QzMwem9ZMP
-        wdGq7kfckBJ3fyjBqcb0+Pnlr+68dDSPmseQloMqN/DknM4mb5fVr+42gDp+XOxw
-        oLetZFhLSNNl79bAnQqMwGRdRttdlk=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDX3JhFw5pgIoPBAA--.62566S2;
-        Wed, 12 May 2021 01:47:50 +0800 (CST)
-Date:   Wed, 12 May 2021 01:42:31 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: Optimize switch_mm by passing "cpu" to
- flush_icache_deferred()
-Message-ID: <20210512014231.466aff04@xhacker>
+        id S231851AbhEKRn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:43:56 -0400
+Received: from mga14.intel.com ([192.55.52.115]:49412 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231329AbhEKRnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 13:43:55 -0400
+IronPort-SDR: +Dm74jAqCBMtNoDJoftO/Bxz6mTrJHRNeYvv3kixvxG07bgVcXRljunBgjclzTRRxUZlknIDDL
+ O228978gi4aw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="199184287"
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
+   d="scan'208";a="199184287"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 10:42:46 -0700
+IronPort-SDR: Ea4cLbr6ETYdPxZ7aWNeoc3pzBfiyRZlOG1Q3rKEXchgYUu0UpHR7mThRuq7ZCNBeUU9bMQsW3
+ ZG9L50l0jwEg==
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
+   d="scan'208";a="537121197"
+Received: from unknown (HELO [10.251.0.45]) ([10.251.0.45])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 10:42:40 -0700
+Subject: Re: [RFC v2 16/32] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+To:     Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <d6ca05720290060e909c1f4d12858f900f1be0e7.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4jGmhkrd+Zr4RNcZ5qfXkYO-416Bw2_idVbrgij41yvYg@mail.gmail.com>
+ <0e577692-101e-38f7-ebe2-2e7222016a9f@linux.intel.com>
+ <CAPcyv4jLMA=jehxdFi=A-xtjSRQ_v7XxSVYrZPAU3XKC39qWRA@mail.gmail.com>
+ <43e0a5cc-721a-04f1-50b6-b1319da10bac@intel.com>
+ <CAPcyv4gEROpgvf+3Drgso1O6ENQ=2xBoKHqC6d4fWvdDNVSNjA@mail.gmail.com>
+ <01b0e007-6af6-ca2e-2a0d-7ff4ca2a2927@linux.intel.com>
+ <4456b0d0-c392-4691-2963-c349369158c3@intel.com>
+ <497d9293-9111-5d2e-2d19-7343467ff9cd@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <55fd7fbe-4d36-1c1d-532b-bfa876542cd7@intel.com>
+Date:   Tue, 11 May 2021 10:42:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygDX3JhFw5pgIoPBAA--.62566S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFy3uFW7GF1kZw18KF4DArb_yoW8GF4rpr
-        W7Ca1qyr4rJF1I9a9F9FW8ZFyS9a9Yga4xK348Cwn0vF15t34jgr1xXanYyw4UCFyrurW3
-        CF4Yyw15Wr42v3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyIb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2Iq
-        xVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r
-        106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AK
-        xVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7
-        xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWU
-        JVW8JbIYCTnIWIevJa73UjIFyTuYvjxUgg_TUUUUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+In-Reply-To: <497d9293-9111-5d2e-2d19-7343467ff9cd@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+On 5/11/21 10:06 AM, Andi Kleen wrote:
+>> How do these end up in practice?  Do they still say "general protection
+>> fault..."?
+> 
+> Yes, but there's a #VE specific message before it that prints the exit
+> reason.
+> 
+>> Isn't that really mean for anyone that goes trying to figure out what
+>> caused these?  If they see a "general protection fault" from WBINVD and
+>> go digging in the SDM for how a #GP can come from WBINVD, won't they be
+>> sorely disappointed?
+> 
+> They'll see both the message and also that it isn't a true #VE in the
+> backtrace.
 
-Directly passing the cpu to flush_icache_deferred() rather than calling
-smp_processor_id() again.
-
-Here are some performance numbers:
-
-With a run of hackbench 30 times on a single core riscv64 Qemu instance
-with 1GB memory:
-
-without this patch: mean 36.934
-with this patch: mean 36.104 (improved by 2.24%)
-
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/riscv/mm/context.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-index 68aa312fc352..6d445f2888ec 100644
---- a/arch/riscv/mm/context.c
-+++ b/arch/riscv/mm/context.c
-@@ -281,10 +281,9 @@ static inline void set_mm(struct mm_struct *mm, unsigned int cpu)
-  * actually performs that local instruction cache flush, which implicitly only
-  * refers to the current hart.
-  */
--static inline void flush_icache_deferred(struct mm_struct *mm)
-+static inline void flush_icache_deferred(struct mm_struct *mm, unsigned int cpu)
- {
- #ifdef CONFIG_SMP
--	unsigned int cpu = smp_processor_id();
- 	cpumask_t *mask = &mm->context.icache_stale_mask;
- 
- 	if (cpumask_test_cpu(cpu, mask)) {
-@@ -320,5 +319,5 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 
- 	set_mm(next, cpu);
- 
--	flush_icache_deferred(next);
-+	flush_icache_deferred(next, cpu);
- }
--- 
-2.31.0
-
-
+Is there a good reason for the enduring "general protection fault..."
+message other than an aversion to refactoring the code?
