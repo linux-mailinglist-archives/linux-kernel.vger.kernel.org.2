@@ -2,189 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1356937A61E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA4237A61C
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhEKL4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 07:56:25 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:57102 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbhEKL4R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 07:56:17 -0400
-Received: from fsav304.sakura.ne.jp (fsav304.sakura.ne.jp [153.120.85.135])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 14BBrwGp025007;
-        Tue, 11 May 2021 20:53:58 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav304.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp);
- Tue, 11 May 2021 20:53:58 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 14BBrvka024961
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 11 May 2021 20:53:57 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH 11/12] tools: sync lib/find_bit implementation
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux-SH <linux-sh@vger.kernel.org>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-References: <20210401003153.97325-1-yury.norov@gmail.com>
- <20210401003153.97325-12-yury.norov@gmail.com>
- <1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp>
- <CAHp75Vea0Y_LfWC7LNDoDZqO4t+SVHV5HZMzErfyMPoBAjjk1g@mail.gmail.com>
- <YJm5Dpo+RspbAtye@rikard> <YJoyMrqRtB3GSAny@smile.fi.intel.com>
- <YJpePAHS3EDw6PK1@rikard>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <151de51e-9302-1f59-407a-e0d68bbaf11c@i-love.sakura.ne.jp>
-Date:   Tue, 11 May 2021 20:53:53 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231352AbhEKL4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 07:56:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43266 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230519AbhEKL4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 07:56:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B978611CE;
+        Tue, 11 May 2021 11:55:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620734107;
+        bh=tmtzaEnnQ53WPoq28nQwKpDaKHGtSVcdQWAFnV8IjgI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=enIE1IheTE/n/jkU7UV6Eay3I77tqcJO5VZBvPAbJR1eIJNoCRtBWERpmcyN7iJJL
+         JNZnMl67nyIelq2ZsxMO3d8kbsb/zz+j11kce2L8UgA533kVXkfVgqVwZKTe1sGmlC
+         pOdC6+uOO7fhcv/lkWdRcyR1iRv9D31Xf1umPk14=
+Date:   Tue, 11 May 2021 13:55:05 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc:     Holger Kiehl <Holger.Kiehl@dwd.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>, Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.12 195/384] drm/amdgpu: Fix memory leak
+Message-ID: <YJpwmbfnQIYZFgXD@kroah.com>
+References: <20210510102014.849075526@linuxfoundation.org>
+ <20210510102021.305484238@linuxfoundation.org>
+ <8681a9f2-62e6-3aa-d169-653db617f60@diagnostix.dwd.de>
+ <MN2PR12MB4488A0EC34EBCE766199AB3DF7549@MN2PR12MB4488.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <YJpePAHS3EDw6PK1@rikard>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MN2PR12MB4488A0EC34EBCE766199AB3DF7549@MN2PR12MB4488.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/05/11 0:44, Andy Shevchenko wrote:
-> And I'm a bit lost here, because I can't imagine the offset being
-> constant along with a size of bitmap. What do we want to achieve by
-> this? Any examples to better understand the case?
-
-Because I feel that the GENMASK() macro cannot be evaluated without
-both arguments being a constant.
-
-The usage is
-
- unsigned long find_next_bit(const unsigned long *addr, unsigned long size,
-                            unsigned long offset)
- {
-+       if (small_const_nbits(size)) {
-+               unsigned long val;
-+
-+               if (unlikely(offset >= size))
-+                       return size;
-+
-+               val = *addr & GENMASK(size - 1, offset);
-+               return val ? __ffs(val) : size;
-+       }
-+
-        return _find_next_bit(addr, NULL, size, offset, 0UL, 0);
- }
-
-where GENMASK() might be called even if "offset" is not a constant.
-
-#define GENMASK(h, l) \
-     (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-
-#define __GENMASK(h, l) \
-     (((~UL(0)) - (UL(1) << (l)) + 1) & \
-       (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-
-#define GENMASK_INPUT_CHECK(h, l) \
-     (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-          __builtin_constant_p((l) > (h)), (l) > (h), 0)))
-
-__GENMASK() does not need "h" and "l" being a constant.
-
-Yes, small_const_nbits(size) in find_next_bit() can guarantee that "size" is a
-constant and hence "h" argument in GENMASK_INPUT_CHECK() call is also a constant.
-But nothing can guarantee that "offset" is a constant, and hence nothing can
-guarantee that "l" argument in GENMASK_INPUT_CHECK() call is also a constant.
-
-Then, how can (l) > (h) in __builtin_constant_p((l) > (h)) be evaluated at build time
-if either l or h (i.e. "offset" and "size - 1" in find_next_bit()) lacks a guarantee of
-being a constant?
-
-But what a surprise,
-
-On 2021/05/11 7:51, Rikard Falkeborn wrote:
-> Does the following work for you? For simplicity, I copied__is_constexpr from
-> include/linux/minmax.h (which isn't available in tools/). A proper patch
-> would reuse __is_constexpr (possibly refactoring it to a separate
-> header since bits.h including minmax.h for that only seems smelly) and fix
-> bits.h in the kernel header as well, to keep the files in sync.
-
-this works for me.
-
+On Mon, May 10, 2021 at 07:56:30PM +0000, Deucher, Alexander wrote:
+> [AMD Public Use]
 > 
-> diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
-> index 7f475d59a097..7bc4c31a7df0 100644
-> --- a/tools/include/linux/bits.h
-> +++ b/tools/include/linux/bits.h
-> @@ -19,10 +19,13 @@
->   * GENMASK_ULL(39, 21) gives us the 64bit vector 0x000000ffffe00000.
->   */
->  #if !defined(__ASSEMBLY__)
-> +
-> +#define __is_constexpr(x) \
-> +       (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
->  #include <linux/build_bug.h>
->  #define GENMASK_INPUT_CHECK(h, l) \
->         (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-> -               __builtin_constant_p((l) > (h)), (l) > (h), 0)))
-> +               __is_constexpr((l) > (h)), (l) > (h), 0)))
->  #else
->  /*
->   * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
+> > -----Original Message-----
+> > From: Holger Kiehl <Holger.Kiehl@dwd.de>
+> > Sent: Monday, May 10, 2021 2:21 PM
+> > To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: linux-kernel@vger.kernel.org; stable@vger.kernel.org; Pan, Xinhui
+> > <Xinhui.Pan@amd.com>; Deucher, Alexander
+> > <Alexander.Deucher@amd.com>; Sasha Levin <sashal@kernel.org>
+> > Subject: Re: [PATCH 5.12 195/384] drm/amdgpu: Fix memory leak
+> > 
+> > On Mon, 10 May 2021, Greg Kroah-Hartman wrote:
+> > 
+> > > From: xinhui pan <xinhui.pan@amd.com>
+> > >
+> > > [ Upstream commit 79fcd446e7e182c52c2c808c76f8de3eb6714349 ]
+> > >
+> > > drm_gem_object_put() should be paired with drm_gem_object_lookup().
+> > >
+> > > All gem objs are saved in fb->base.obj[]. Need put the old first
+> > > before assign a new obj.
+> > >
+> > > Trigger VRAM leak by running command below $ service gdm restart
+> > >
+> > > Signed-off-by: xinhui pan <xinhui.pan@amd.com>
+> > > Acked-by: Alex Deucher <alexander.deucher@amd.com>
+> > > Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > ---
+> > >  drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+> > > b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+> > > index f753e04fee99..cbe050436c7b 100644
+> > > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+> > > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+> > > @@ -910,8 +910,9 @@ int amdgpu_display_framebuffer_init(struct
+> > drm_device *dev,
+> > >  	}
+> > >
+> > >  	for (i = 1; i < rfb->base.format->num_planes; ++i) {
+> > > +		drm_gem_object_get(rfb->base.obj[0]);
+> > > +		drm_gem_object_put(rfb->base.obj[i]);
+> > >  		rfb->base.obj[i] = rfb->base.obj[0];
+> > > -		drm_gem_object_get(rfb->base.obj[i]);
+> > >  	}
+> > >
+> > >  	return 0;
+> > > @@ -960,6 +961,7 @@ amdgpu_display_user_framebuffer_create(struct
+> > drm_device *dev,
+> > >  		return ERR_PTR(ret);
+> > >  	}
+> > >
+> > > +	drm_gem_object_put(obj);
+> > >  	return &amdgpu_fb->base;
+> > >  }
+> > >
+> > > --
+> > > 2.30.2
+> > >
+> > This causes the following error on a AMD APU Ryzen 7 4750G:
+> > 
+> >    May 10 19:29:50 bb8 kernel: [    2.730473] [drm] Initialized amdgpu 3.40.0
+> > 20150101 for 0000:04:00.0 on minor 0
+> >    May 10 19:29:50 bb8 kernel: [    2.748000] ------------[ cut here ]------------
+> >    May 10 19:29:50 bb8 kernel: [    2.748003] refcount_t: underflow; use-after-
+> > free.
+> >    May 10 19:29:50 bb8 kernel: [    2.748008] WARNING: CPU: 10 PID: 513 at
+> > lib/refcount.c:28 refcount_warn_saturate+0xa6/0xf0
+> >    May 10 19:29:50 bb8 kernel: [    2.748014] Modules linked in: amdgpu raid1
+> > raid0 md_mod drm_ttm_helper ttm mfd_core iommu_v2 gpu_sched
+> > i2c_algo_bit crct10dif_pclmul crc32_pclmul crc32c_intel drm_kms_helper
+> > syscopyarea sysfillrect sysimgblt fb_sys_fops cec ghash_clmulni_intel drm
+> > r8169 ccp realtek pinctrl_amd fuse ecryptfs
+> >    May 10 19:29:50 bb8 kernel: [    2.748029] CPU: 10 PID: 513 Comm:
+> > plymouthd Not tainted 5.12.3 #1
+> >    May 10 19:29:50 bb8 kernel: [    2.748031] Hardware name: To Be Filled By
+> > O.E.M. To Be Filled By O.E.M./X300M-STX, BIOS P1.60 04/29/2021
+> >    May 10 19:29:50 bb8 kernel: [    2.748032] RIP:
+> > 0010:refcount_warn_saturate+0xa6/0xf0
+> >    May 10 19:29:50 bb8 kernel: [    2.748034] Code: 05 79 34 17 01 01 e8 cd 51 4a
+> > 00 0f 0b c3 80 3d 67 34 17 01 00 75 95 48 c7 c7 a0 90 13 99 c6 05 57 34 17 01 01 e8
+> > ae 51 4a 00 <0f> 0b c3 80 3d 46 34 17 01 00 0f 85 72 ff ff ff 48 c7 c7 f8 90 13
+> >    May 10 19:29:50 bb8 kernel: [    2.748036] RSP: 0018:ffffb2ccc07f7d58
+> > EFLAGS: 00010292
+> >    May 10 19:29:50 bb8 kernel: [    2.748038] RAX: 0000000000000026 RBX:
+> > ffff90d28d313000 RCX: 0000000000000027
+> >    May 10 19:29:50 bb8 kernel: [    2.748039] RDX: ffff90e081c975c8 RSI:
+> > 0000000000000001 RDI: ffff90e081c975c0
+> >    May 10 19:29:50 bb8 kernel: [    2.748040] RBP: ffff90d290b1b458 R08:
+> > 0000000000000000 R09: ffffb2ccc07f7b98
+> >    May 10 19:29:50 bb8 kernel: [    2.748040] R10: 0000000000000001 R11:
+> > 0000000000000001 R12: ffff90d28d313000
+> >    May 10 19:29:50 bb8 kernel: [    2.748041] R13: ffff90d28d313128 R14:
+> > ffff90d28d313050 R15: ffff90d28d313000
+> >    May 10 19:29:50 bb8 kernel: [    2.748042] FS:  00007fa31f454800(0000)
+> > GS:ffff90e081c80000(0000) knlGS:0000000000000000
+> >    May 10 19:29:50 bb8 kernel: [    2.748043] CS:  0010 DS: 0000 ES: 0000 CR0:
+> > 0000000080050033
+> >    May 10 19:29:50 bb8 kernel: [    2.748044] CR2: 00007fa31f42e000 CR3:
+> > 000000010e1d2000 CR4: 0000000000350ee0
+> >    May 10 19:29:50 bb8 kernel: [    2.748046] Call Trace:
+> >    May 10 19:29:50 bb8 kernel: [    2.748049]
+> > drm_gem_object_release_handle+0x6b/0x80 [drm]
+> >    May 10 19:29:50 bb8 kernel: [    2.748068]  ?
+> > drm_mode_destroy_dumb+0x40/0x40 [drm]
+> >    May 10 19:29:50 bb8 kernel: [    2.748086]
+> > drm_gem_handle_delete+0x4f/0x80 [drm]
+> >    May 10 19:29:50 bb8 kernel: [    2.748101]  ?
+> > drm_mode_destroy_dumb+0x40/0x40 [drm]
+> >    May 10 19:29:50 bb8 kernel: [    2.748117]  drm_ioctl_kernel+0x87/0xd0
+> > [drm]
+> >    May 10 19:29:50 bb8 kernel: [    2.748133]  drm_ioctl+0x205/0x3a0 [drm]
+> >    May 10 19:29:50 bb8 kernel: [    2.748149]  ?
+> > drm_mode_destroy_dumb+0x40/0x40 [drm]
+> >    May 10 19:29:50 bb8 kernel: [    2.748164]  amdgpu_drm_ioctl+0x49/0x80
+> > [amdgpu]
+> >    May 10 19:29:50 bb8 kernel: [    2.748263]  __x64_sys_ioctl+0x82/0xb0
+> >    May 10 19:29:50 bb8 kernel: [    2.748266]  do_syscall_64+0x33/0x40
+> >    May 10 19:29:50 bb8 kernel: [    2.748269]
+> > entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >    May 10 19:29:50 bb8 kernel: [    2.748271] RIP: 0033:0x7fa31f7d30ab
+> >    May 10 19:29:50 bb8 kernel: [    2.748273] Code: ff ff ff 85 c0 79 9b 49 c7 c4 ff
+> > ff ff ff 5b 5d 4c 89 e0 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa b8 10 00 00 00
+> > 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 95 bd 0c 00 f7 d8 64 89 01 48
+> >    May 10 19:29:50 bb8 kernel: [    2.748274] RSP: 002b:00007ffe145fb638
+> > EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> >    May 10 19:29:50 bb8 kernel: [    2.748275] RAX: ffffffffffffffda RBX:
+> > 00007ffe145fb67c RCX: 00007fa31f7d30ab
+> >    May 10 19:29:50 bb8 kernel: [    2.748276] RDX: 00007ffe145fb67c RSI:
+> > 00000000c00464b4 RDI: 000000000000000a
+> >    May 10 19:29:50 bb8 kernel: [    2.748277] RBP: 00000000c00464b4 R08:
+> > 00005620f7832c40 R09: 0000000000000007
+> >    May 10 19:29:50 bb8 kernel: [    2.748278] R10: 00005620f7832c40 R11:
+> > 0000000000000246 R12: 0000000000000001
+> >    May 10 19:29:50 bb8 kernel: [    2.748278] R13: 000000000000000a R14:
+> > 000000000000000b R15: 00007fa31f8c6e20
+> >    May 10 19:29:50 bb8 kernel: [    2.748280] ---[ end trace 57825da3e46ebfc7 ]-
+> > --
+> > 
+> > On another system with a Ryzen 5 3400G a reboot will hang.
+> > 
+> > If I remove this patch the system boots fine and there is no error message.
 > 
+> This patch is a fix specifically for:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f258907fdd835e1aed6d666b00cdd0f186676b7c
+> It does not make sense on it's own.
 
+Thanks for the information, now dropped.
 
-
-On 2021/05/11 7:52, Yury Norov wrote:
-> I tested the objtool build with the 8.4.0 and 7.5.0 compilers from
-> ubuntu 21 distro, and it looks working. Can you please share more
-> details about your system? 
-
-Nothing special. A plain x86_64 CentOS 7.9 system with devtoolset-8.
-
-$ /opt/rh/devtoolset-8/root/bin/gcc --version
-gcc (GCC) 8.3.1 20190311 (Red Hat 8.3.1-3)
-Copyright (C) 2018 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-$ rpm -qi devtoolset-8-gcc
-Name        : devtoolset-8-gcc
-Version     : 8.3.1
-Release     : 3.2.el7
-Architecture: x86_64
-Install Date: Wed Apr 22 07:58:16 2020
-Group       : Development/Languages
-Size        : 74838011
-License     : GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
-Signature   : RSA/SHA1, Thu Apr 16 19:44:43 2020, Key ID 4eb84e71f2ee9d55
-Source RPM  : devtoolset-8-gcc-8.3.1-3.2.el7.src.rpm
-Build Date  : Sat Mar 28 00:06:45 2020
-Build Host  : c1be.rdu2.centos.org
-Relocations : (not relocatable)
-Packager    : CBS <cbs@centos.org>
-Vendor      : CentOS
-URL         : http://gcc.gnu.org
-Summary     : GCC version 8
-Description :
-The devtoolset-8-gcc package contains the GNU Compiler Collection version 7.
-
+greg k-h
