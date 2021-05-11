@@ -2,292 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA62F37B074
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A45137B081
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhEKVFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 17:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54106 "EHLO
+        id S229970AbhEKVIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 17:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhEKVFr (ORCPT
+        with ESMTP id S229736AbhEKVIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 17:05:47 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B7B1C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 14:04:40 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id o27so20236273qkj.9
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 14:04:40 -0700 (PDT)
+        Tue, 11 May 2021 17:08:39 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC35C061574;
+        Tue, 11 May 2021 14:07:32 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id i9so24080832lfe.13;
+        Tue, 11 May 2021 14:07:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=edLVmjzTGYFDILBRsx2JiRtEVDibeAgER4zaH14Tzkw=;
-        b=sGSHyK9pd9h6jVZP1jjG8rI6wi+fFoTokfcHIo8ktlR8kvWuti5Eg8Kb8JcvOG+o/F
-         OIsc4K322GJ4AEgZTIkQPtPPJBXJWOluvoTArr5q8IT8K258sxHyFrY8EQO8eb43VKXu
-         kcqxC6JPg+udx1C6lsUBPfWPfVng1hXzTKPnP6Y0Ka1vaaQcrtuF0AbZ7omik2Fx+sfY
-         LDPb/YJ4MvL6UPUD+8Dl0px+bvTf/VAhe6HZtCn6PgelI3zh6Oz2myHVvASI0dAll1c7
-         ysyOJ58RdvJi4XdvIgYY2ClN2wiW0xX5VdP1W5VQ9P55FI/WTj+wGxJhoVjjtwLq5FFi
-         wTkw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CxkCjpyVTgAvYrFtnrZrEueuxhsHKne885eSCkZ9jts=;
+        b=At5yBczqo8f9k+X/AaeWpNzVia95KOdYlw3S2nIBmrJrmUFE+ExVwCMMHMxwlVC9h5
+         jMOmFVvSY6G5bdAk8OC+Krk1ciP+5s+w4x5s9R4m7mhxHS1wQ6K/VP9vCedM/6dMoBd+
+         GqeApr1rJ2tHJIuAJCrbSeNgGeK4s0qsMnzZKEevXmBBqAPO0drgwmsLk5ItxQ+H7iEQ
+         EXjQ/YnQzJLhlQwiHOnNeM2uah9QZyeB4OlLegEIo5rP1/vqNPlZUSMRHWU0Rly6rfoK
+         OOL6TA27ayR+BjxivLhYy0svr2xPW3vqonNDBNS0KuaKZyssR1a/cHN5t5lC4HX/Ct6J
+         Rhdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=edLVmjzTGYFDILBRsx2JiRtEVDibeAgER4zaH14Tzkw=;
-        b=WDBLF1AKbiVqYgHhZzc6BO8oxH9FmZCT5BJLlzWjTWow4g4xO4Bq7iuTMlNgoxczUj
-         Tq3ISP0LY7qjKPlAMu521rxTgHj0UUtKdznlhDB78NTr10zHW3z+5BvCbpTj+xvn/KFV
-         S7uYc+cvIvyx+vMWF/qbpDkLb9iG5tHU4yWMHrWgeCKVi9LyGY5+L6bPVGZZRGY7q3yU
-         sWCCU0axGlCD/D91OERY3mAalD364ARY3OyjMFERIrCv4+gokhI+SjY/C2eVBmvo3Yf0
-         P0jPkK5Cz7guwF1WPspcQaruEWvCUSTd8WtuBl+bA9F0tGflJuMEI0uPe64yIhY1jiX4
-         WWEg==
-X-Gm-Message-State: AOAM532ScZQIG5pFcX/kri2s3Q5s5NF4BNf00o0uD7IN7/sidIkyKOG4
-        B3GtC/xG4RYvXvuP8nbm5LQ=
-X-Google-Smtp-Source: ABdhPJy8jwZS0mnuoqs6Vwm+/BBw8ftkx1xLuYvT0hDq+he8yqRye7/9z1nC0SwfnvJu3muDYNXJ6w==
-X-Received: by 2002:a37:a756:: with SMTP id q83mr28925320qke.134.1620767079414;
-        Tue, 11 May 2021 14:04:39 -0700 (PDT)
-Received: from crazyoreo0-latitudee7440.myfiosgateway.com (pool-138-88-168-130.washdc.fios.verizon.net. [138.88.168.130])
-        by smtp.gmail.com with ESMTPSA id t5sm14610749qtr.19.2021.05.11.14.04.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 14:04:39 -0700 (PDT)
-From:   uroshm <uroshm@gmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org
-Cc:     uroshm <uroshm@gmail.com>
-Subject: [PATCH] The following files had their respective file names in comments, and /scripts/checkpatch.pl flagged these. I went into each file, removed the respective filename from the leading comment from the following files in /drivers/wlan:
-Date:   Tue, 11 May 2021 17:04:31 -0400
-Message-Id: <20210511210431.3789-1-uroshm@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CxkCjpyVTgAvYrFtnrZrEueuxhsHKne885eSCkZ9jts=;
+        b=f5hO2gSUM8vQ4q9GbTsI8xU+SvQ4hGfdJMaeH0PhAEpnj0BSXZ6HNzWLWqtpuOmNcC
+         RD9Apwziz1JGy2Ur6kWS5EnWXNm+R+9i6cJUzfNUEyL87I0gPjRHgLtYgFpMsrv45NwK
+         KQm30mk7b06yk0rHcJJELa09IMkiptrHskTGQy2LvbWpZqUZyqA6HZ2XD2YbNrXuxWLz
+         s9j3TnH5JA3RWaBLZqLHEHX9cb0ZBJmUg+QSId3Nizht4F815AEdpzUoTXpCsLn/z4aX
+         0147kpsI3gvVq+spLVNvLTkdJYKZ5AAn1URzsnXByzWd+kEa5PcYFvok9uEyLxFSqpyd
+         r4EA==
+X-Gm-Message-State: AOAM530sCh9gMLBa4VpHe9BrDb2aM5uT/xSgmVZkJ6F3ADlf+IPJPMsP
+        MwL5V7/hfzijbyNHSp8YkaUBUrrxPZEbGR7A5jc=
+X-Google-Smtp-Source: ABdhPJzn602oVRfm9+oMv9sUiaslUHsTAnEEoDBmCvqlhSv4t2eIY934073yVXcbciePrir/wRIFwwOAVk9AziwTLwc=
+X-Received: by 2002:ac2:5b1a:: with SMTP id v26mr22697382lfn.534.1620767250846;
+ Tue, 11 May 2021 14:07:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210511081054.2125874-1-revest@chromium.org>
+In-Reply-To: <20210511081054.2125874-1-revest@chromium.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 11 May 2021 14:07:19 -0700
+Message-ID: <CAADnVQKq+b7uJb0J32swWEZmoDfdrUfx=f8ndSM4vicTCtYebA@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] bpf: Fix nested bpf_bprintf_prepare with more
+ per-cpu buffers
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzbot+63122d0bc347f18c1884@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hfa384x.h
-hfa384x_usb.c
-p80211conv.c
-p80211conv.h
-p80211hdr.h
-p80211ioctl.h
-p80211mgmt.h
-p80211msg.h
-p80211netdev.h
-p80211req.c
-p80211req.h
-p80211types.h
-p80211wep.c
-prism2mgmt.c
-prism2mgmt.h
-prism2mib.c
-prism2sta.c
+On Tue, May 11, 2021 at 1:12 AM Florent Revest <revest@chromium.org> wrote:
+>
+> The bpf_seq_printf, bpf_trace_printk and bpf_snprintf helpers share one
+> per-cpu buffer that they use to store temporary data (arguments to
+> bprintf). They "get" that buffer with try_get_fmt_tmp_buf and "put" it
+> by the end of their scope with bpf_bprintf_cleanup.
+>
+> If one of these helpers gets called within the scope of one of these
+> helpers, for example: a first bpf program gets called, uses
+> bpf_trace_printk which calls raw_spin_lock_irqsave which is traced by
+> another bpf program that calls bpf_snprintf, then the second "get"
+> fails. Essentially, these helpers are not re-entrant. They would return
+> -EBUSY and print a warning message once.
+>
+> This patch triples the number of bprintf buffers to allow three levels
+> of nesting. This is very similar to what was done for tracepoints in
+> "9594dc3c7e7 bpf: fix nested bpf tracepoints with per-cpu data"
+>
+> Fixes: d9c9e4db186a ("bpf: Factorize bpf_trace_printk and bpf_seq_printf")
+> Reported-by: syzbot+63122d0bc347f18c1884@syzkaller.appspotmail.com
+> Signed-off-by: Florent Revest <revest@chromium.org>
+> ---
+>  kernel/bpf/helpers.c | 27 ++++++++++++++-------------
+>  1 file changed, 14 insertions(+), 13 deletions(-)
+>
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 544773970dbc..ef658a9ea5c9 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -696,34 +696,35 @@ static int bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
+>   */
+>  #define MAX_PRINTF_BUF_LEN     512
+>
+> -struct bpf_printf_buf {
+> -       char tmp_buf[MAX_PRINTF_BUF_LEN];
+> +/* Support executing three nested bprintf helper calls on a given CPU */
+> +struct bpf_bprintf_buffers {
+> +       char tmp_bufs[3][MAX_PRINTF_BUF_LEN];
+>  };
+> -static DEFINE_PER_CPU(struct bpf_printf_buf, bpf_printf_buf);
+> -static DEFINE_PER_CPU(int, bpf_printf_buf_used);
+> +static DEFINE_PER_CPU(struct bpf_bprintf_buffers, bpf_bprintf_bufs);
+> +static DEFINE_PER_CPU(int, bpf_bprintf_nest_level);
+>
+>  static int try_get_fmt_tmp_buf(char **tmp_buf)
+>  {
+> -       struct bpf_printf_buf *bufs;
+> -       int used;
+> +       struct bpf_bprintf_buffers *bufs;
+> +       int nest_level;
+>
+>         preempt_disable();
+> -       used = this_cpu_inc_return(bpf_printf_buf_used);
+> -       if (WARN_ON_ONCE(used > 1)) {
+> -               this_cpu_dec(bpf_printf_buf_used);
+> +       nest_level = this_cpu_inc_return(bpf_bprintf_nest_level);
+> +       if (WARN_ON_ONCE(nest_level > ARRAY_SIZE(bufs->tmp_bufs))) {
+> +               this_cpu_dec(bpf_bprintf_nest_level);
 
-Signed-off-by: uroshm <uroshm@gmail.com>
----
- drivers/staging/wlan-ng/hfa384x.h      | 2 +-
- drivers/staging/wlan-ng/hfa384x_usb.c  | 2 +-
- drivers/staging/wlan-ng/p80211conv.c   | 2 +-
- drivers/staging/wlan-ng/p80211conv.h   | 2 +-
- drivers/staging/wlan-ng/p80211hdr.h    | 2 +-
- drivers/staging/wlan-ng/p80211ioctl.h  | 2 +-
- drivers/staging/wlan-ng/p80211mgmt.h   | 2 +-
- drivers/staging/wlan-ng/p80211msg.h    | 2 +-
- drivers/staging/wlan-ng/p80211netdev.h | 2 +-
- drivers/staging/wlan-ng/p80211req.c    | 2 +-
- drivers/staging/wlan-ng/p80211req.h    | 2 +-
- drivers/staging/wlan-ng/p80211types.h  | 2 +-
- drivers/staging/wlan-ng/p80211wep.c    | 2 +-
- drivers/staging/wlan-ng/prism2mgmt.c   | 2 +-
- drivers/staging/wlan-ng/prism2mgmt.h   | 2 +-
- drivers/staging/wlan-ng/prism2mib.c    | 2 +-
- drivers/staging/wlan-ng/prism2sta.c    | 2 +-
- 17 files changed, 17 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/staging/wlan-ng/hfa384x.h b/drivers/staging/wlan-ng/hfa384x.h
-index 88e894dd3568..700ec58ef35a 100644
---- a/drivers/staging/wlan-ng/hfa384x.h
-+++ b/drivers/staging/wlan-ng/hfa384x.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
--/* hfa384x.h
-+/*
-  *
-  * Defines the constants and data structures for the hfa384x
-  *
-diff --git a/drivers/staging/wlan-ng/hfa384x_usb.c b/drivers/staging/wlan-ng/hfa384x_usb.c
-index f2a0e16b0318..a483c61092cc 100644
---- a/drivers/staging/wlan-ng/hfa384x_usb.c
-+++ b/drivers/staging/wlan-ng/hfa384x_usb.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
--/* src/prism2/driver/hfa384x_usb.c
-+/*
-  *
-  * Functions that talk to the USB variant of the Intersil hfa384x MAC
-  *
-diff --git a/drivers/staging/wlan-ng/p80211conv.c b/drivers/staging/wlan-ng/p80211conv.c
-index 0ff5fda81b05..f2661157e87c 100644
---- a/drivers/staging/wlan-ng/p80211conv.c
-+++ b/drivers/staging/wlan-ng/p80211conv.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
--/* src/p80211/p80211conv.c
-+/*
-  *
-  * Ether/802.11 conversions and packet buffer routines
-  *
-diff --git a/drivers/staging/wlan-ng/p80211conv.h b/drivers/staging/wlan-ng/p80211conv.h
-index 15fd635d9770..b640a475e302 100644
---- a/drivers/staging/wlan-ng/p80211conv.h
-+++ b/drivers/staging/wlan-ng/p80211conv.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
--/* p80211conv.h
-+/*
-  *
-  * Ether/802.11 conversions and packet buffer routines
-  *
-diff --git a/drivers/staging/wlan-ng/p80211hdr.h b/drivers/staging/wlan-ng/p80211hdr.h
-index 6564810fd026..77ba16c65774 100644
---- a/drivers/staging/wlan-ng/p80211hdr.h
-+++ b/drivers/staging/wlan-ng/p80211hdr.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
--/* p80211hdr.h
-+/*
-  *
-  * Macros, types, and functions for handling 802.11 MAC headers
-  *
-diff --git a/drivers/staging/wlan-ng/p80211ioctl.h b/drivers/staging/wlan-ng/p80211ioctl.h
-index ed65ac57adbe..bb1188cc25d7 100644
---- a/drivers/staging/wlan-ng/p80211ioctl.h
-+++ b/drivers/staging/wlan-ng/p80211ioctl.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
--/* p80211ioctl.h
-+/*
-  *
-  * Declares constants and types for the p80211 ioctls
-  *
-diff --git a/drivers/staging/wlan-ng/p80211mgmt.h b/drivers/staging/wlan-ng/p80211mgmt.h
-index c045c08e1991..5033fffadfce 100644
---- a/drivers/staging/wlan-ng/p80211mgmt.h
-+++ b/drivers/staging/wlan-ng/p80211mgmt.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
--/* p80211mgmt.h
-+/*
-  *
-  * Macros, types, and functions to handle 802.11 mgmt frames
-  *
-diff --git a/drivers/staging/wlan-ng/p80211msg.h b/drivers/staging/wlan-ng/p80211msg.h
-index 114066526df4..f68d8b7d5ad8 100644
---- a/drivers/staging/wlan-ng/p80211msg.h
-+++ b/drivers/staging/wlan-ng/p80211msg.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
--/* p80211msg.h
-+/*
-  *
-  * Macros, constants, types, and funcs for req and ind messages
-  *
-diff --git a/drivers/staging/wlan-ng/p80211netdev.h b/drivers/staging/wlan-ng/p80211netdev.h
-index d48466d943b4..3b6d12665c9a 100644
---- a/drivers/staging/wlan-ng/p80211netdev.h
-+++ b/drivers/staging/wlan-ng/p80211netdev.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
--/* p80211netdev.h
-+/*
-  *
-  * WLAN net device structure and functions
-  *
-diff --git a/drivers/staging/wlan-ng/p80211req.c b/drivers/staging/wlan-ng/p80211req.c
-index 9f5c1267d829..809cf3d480e9 100644
---- a/drivers/staging/wlan-ng/p80211req.c
-+++ b/drivers/staging/wlan-ng/p80211req.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
--/* src/p80211/p80211req.c
-+/*
-  *
-  * Request/Indication/MacMgmt interface handling functions
-  *
-diff --git a/drivers/staging/wlan-ng/p80211req.h b/drivers/staging/wlan-ng/p80211req.h
-index c04053f3b02b..bc45cd5f91e4 100644
---- a/drivers/staging/wlan-ng/p80211req.h
-+++ b/drivers/staging/wlan-ng/p80211req.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
--/* p80211req.h
-+/*
-  *
-  * Request handling functions
-  *
-diff --git a/drivers/staging/wlan-ng/p80211types.h b/drivers/staging/wlan-ng/p80211types.h
-index 3dcdd022da61..6486612a8f31 100644
---- a/drivers/staging/wlan-ng/p80211types.h
-+++ b/drivers/staging/wlan-ng/p80211types.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
- /*
-- * p80211types.h
-+ *
-  *
-  * Macros, constants, types, and funcs for p80211 data types
-  *
-diff --git a/drivers/staging/wlan-ng/p80211wep.c b/drivers/staging/wlan-ng/p80211wep.c
-index 51d917c8cdc8..3ff7ee7011df 100644
---- a/drivers/staging/wlan-ng/p80211wep.c
-+++ b/drivers/staging/wlan-ng/p80211wep.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
--/* src/p80211/p80211wep.c
-+/*
-  *
-  * WEP encode/decode for P80211.
-  *
-diff --git a/drivers/staging/wlan-ng/prism2mgmt.c b/drivers/staging/wlan-ng/prism2mgmt.c
-index 1bd36dc2b7ff..9030a8939a9b 100644
---- a/drivers/staging/wlan-ng/prism2mgmt.c
-+++ b/drivers/staging/wlan-ng/prism2mgmt.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
--/* src/prism2/driver/prism2mgmt.c
-+/*
-  *
-  * Management request handler functions.
-  *
-diff --git a/drivers/staging/wlan-ng/prism2mgmt.h b/drivers/staging/wlan-ng/prism2mgmt.h
-index 17bc1ee0d498..7132cec2d7eb 100644
---- a/drivers/staging/wlan-ng/prism2mgmt.h
-+++ b/drivers/staging/wlan-ng/prism2mgmt.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
--/* prism2mgmt.h
-+/*
-  *
-  * Declares the mgmt command handler functions
-  *
-diff --git a/drivers/staging/wlan-ng/prism2mib.c b/drivers/staging/wlan-ng/prism2mib.c
-index 875812a391c9..37654169c62f 100644
---- a/drivers/staging/wlan-ng/prism2mib.c
-+++ b/drivers/staging/wlan-ng/prism2mib.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
--/* src/prism2/driver/prism2mib.c
-+/*
-  *
-  * Management request for mibset/mibget
-  *
-diff --git a/drivers/staging/wlan-ng/prism2sta.c b/drivers/staging/wlan-ng/prism2sta.c
-index e6dcb687e7a1..0e0a7708bbd2 100644
---- a/drivers/staging/wlan-ng/prism2sta.c
-+++ b/drivers/staging/wlan-ng/prism2sta.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
--/* src/prism2/driver/prism2sta.c
-+/*
-  *
-  * Implements the station functionality for prism2
-  *
--- 
-2.31.1
-
+Applied to bpf tree.
+I think at the end the fix is simple enough and much better than an
+on-stack buffer.
