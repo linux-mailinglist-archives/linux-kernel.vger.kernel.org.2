@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB32E37B247
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E994537B245
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhEKXN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:13:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48066 "EHLO mail.kernel.org"
+        id S231142AbhEKXNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:13:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230184AbhEKXNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230210AbhEKXNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 19:13:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18E2C6193B;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 213A261938;
         Tue, 11 May 2021 23:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620774745;
-        bh=wjk2s4YWaQbHPJvGdZeE0p7NCLjpy5t270Td5bLn5HQ=;
+        bh=iWXTpS2pnGDGYtJUs36apiXqRUVCVQkeopZ/uk8CMCY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MEhGZStO7e+QfQf5Rq56lBL6zq6oXkV4iszoL4pZe6pLpCVfCzIdeescho2kHQQHO
-         98PfzfAaYMJdo2nxrS3NxvtmxvtRQj1H2h9yjACq6VZylhkXrtPGb7+o1ZmliynX9s
-         hkrcZh16abYZimpi+t0rdCCO8WiceargmYe3/0v6RjjkokxsQvM5acJ3l1mFbN/SqA
-         JRB6DAniJJMqnvWtBCyt8jvVk3hIPlCwV4S3nzRIIQkq7oLOKQil8y/oAsLwk87Jbh
-         /6Ur+P16sDoDv3xux47DKax6+DWbjpVeJAP+HKa/gLHtr2A7pWjXnEZ1KYoS73wk4X
-         f9Ggs3NEPpXng==
+        b=cUKkA3rdlXIOl01ZyNHCdLoDG5ScKqiylymd73C6pXW42rcWFbBYXAwtVnoRrxmjA
+         zJNNdvRsTPr9J42asVd+AvLgy2Qg3o76om5XkDTsgxvrVg34KHCUAaqVeFsrosZgWA
+         8Eoh5dHORKXyppA2QswclW+bQ9Xij2Plnloba8qdTxn8guMwigd09NJef4WIsyz1Hx
+         ZgztJGsMI2USYp89H53YycerNnm7QWolGOdwV9VuG3XBnrt7WXhLe4OJeUDEv3ADcT
+         LXI7AmvBacW6B1xgXB7uyZCI2nXoS/PzCFmjKJb97XvLRQxlKhUaaadpmTAwvkRmGd
+         7zHS6i8aG5ClA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7D4E05C0DF3; Tue, 11 May 2021 16:12:24 -0700 (PDT)
+        id 7F1155C0DF5; Tue, 11 May 2021 16:12:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 11/26] torture: Make kvm.sh use abstracted kvm-end-run-stats.sh
-Date:   Tue, 11 May 2021 16:12:08 -0700
-Message-Id: <20210511231223.2895398-11-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 12/26] torture:  Make the build machine control N in "make -jN"
+Date:   Tue, 11 May 2021 16:12:09 -0700
+Message-Id: <20210511231223.2895398-12-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
@@ -46,49 +46,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit reduces duplicate code by making kvm.sh use the new
-kvm-end-run-stats.sh script rather than taking its historical approach
-of open-coding it.
+Given remote rcutorture runs, it is quite possible that the build system
+will have fewer CPUs than the system(s) running the actual test scenarios.
+In such cases, using the number of CPUs on the test systems can overload
+the build system, slowing down the build or, worse, OOMing the build
+system.  This commit therefore uses the build system's CPU count to set
+N in "make -jN", and by tradition sets "N" to double the CPU count.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm.sh | 16 +---------------
- 1 file changed, 1 insertion(+), 15 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm-build.sh | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 3bd523a33700..fab3bd9cf9d1 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -550,20 +550,7 @@ END {
- 	if (ncpus != 0)
- 		dump(first, i, batchnum);
- }' >> $T/script
--
--cat << '___EOF___' >> $T/script
--echo | tee -a $TORTURE_RESDIR/log
--echo | tee -a $TORTURE_RESDIR/log
--echo " --- `date` Test summary:" | tee -a $TORTURE_RESDIR/log
--___EOF___
--cat << ___EOF___ >> $T/script
--echo Results directory: $resdir/$ds | tee -a $resdir/$ds/log
--kcsan-collapse.sh $resdir/$ds | tee -a $resdir/$ds/log
--kvm-recheck.sh $resdir/$ds > $T/kvm-recheck.sh.out 2>&1
--___EOF___
--echo 'ret=$?' >> $T/script
--echo "cat $T/kvm-recheck.sh.out | tee -a $resdir/$ds/log" >> $T/script
--echo 'exit $ret' >> $T/script
-+echo kvm-end-run-stats.sh "$resdir/$ds" "$starttime" >> $T/script
- 
- # Extract the tests and their batches from the script.
- egrep 'Start batch|Starting build\.' $T/script | grep -v ">>" |
-@@ -627,7 +614,6 @@ else
- 	cp $T/batches $resdir/$ds/batches
- 	cp $T/scenarios $resdir/$ds/scenarios
- 	echo '#' cpus=$cpus >> $resdir/$ds/batches
--	echo " --- Done at `date` (`get_starttime_duration $starttime`) exitcode $ret" | tee -a $resdir/$ds/log
- 	exit $ret
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-build.sh b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
+index 115e1822b26f..55f4fc102624 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-build.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
+@@ -40,8 +40,10 @@ if test $retval -gt 1
+ then
+ 	exit 2
  fi
- 
+-ncpus=`cpus2use.sh`
+-make -j$ncpus $TORTURE_KMAKE_ARG > $resdir/Make.out 2>&1
++
++# Tell "make" to use double the number of real CPUs on the build system.
++ncpus="`lscpu | grep '^CPU(' | awk '{ print $2 }'`"
++make -j$((2 * ncpus)) $TORTURE_KMAKE_ARG > $resdir/Make.out 2>&1
+ retval=$?
+ if test $retval -ne 0 || grep "rcu[^/]*": < $resdir/Make.out | egrep -q "Stop|Error|error:|warning:" || egrep -q "Stop|Error|error:" < $resdir/Make.out
+ then
 -- 
 2.31.1.189.g2e36527f23
 
