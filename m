@@ -2,110 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E544E379D87
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EAD379D8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbhEKDOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 23:14:15 -0400
-Received: from mga07.intel.com ([134.134.136.100]:26066 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229465AbhEKDOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 23:14:07 -0400
-IronPort-SDR: KkcvMG3ElJBVcXePNnIfJLlIiB3QmYdqp6Uysg1y7FTtFHOz5e6kNNsnHDKbgLEj6mO7XF9EN6
- Q0yOgf3A6kTw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="263273556"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="263273556"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 20:12:58 -0700
-IronPort-SDR: stKccw6CyTiwgY6Z4oynDLYVZ9iolDqy5GJI2whakNs9xp75faAiZ3QlNCdDdLhdiWlAPMdVj9
- pZkA/PEv8pfQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="621641217"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga006.fm.intel.com with ESMTP; 10 May 2021 20:12:52 -0700
-Cc:     baolu.lu@linux.intel.com,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
-        yuzenghui@huawei.com, lushenming@huawei.com
-Subject: Re: [RFC PATCH v4 01/13] iommu: Introduce dirty log tracking
- framework
-To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yi Sun <yi.y.sun@linux.intel.com>,
-        Tian Kevin <kevin.tian@intel.com>
-References: <20210507102211.8836-1-zhukeqian1@huawei.com>
- <20210507102211.8836-2-zhukeqian1@huawei.com>
- <efc2d868-28ba-8ed9-1d6b-610b67d671b5@linux.intel.com>
- <18ac787a-179e-71f7-728b-c43feda80a16@huawei.com>
- <55fda826-9ab6-a3a0-b17e-a4d4879f00bc@linux.intel.com>
- <a8df289a-47c2-c193-cd6f-8415f68b900f@huawei.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <f47e90c6-f3c4-b28f-a810-e03afe79e62d@linux.intel.com>
-Date:   Tue, 11 May 2021 11:12:07 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229961AbhEKDRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 23:17:43 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2764 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229465AbhEKDRm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 23:17:42 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FfNKP69qJzmg6H;
+        Tue, 11 May 2021 11:13:13 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 11 May
+ 2021 11:16:29 +0800
+Subject: Re: [f2fs-dev] [PATCH 27/53] docs: filesystems: f2fs.rst: avoid using
+ UTF-8 chars
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+CC:     Jonathan Corbet <corbet@lwn.net>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+References: <cover.1620641727.git.mchehab+huawei@kernel.org>
+ <c320db751bc326efbd1d619c0f8007d9965a32ab.1620641727.git.mchehab+huawei@kernel.org>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <5454cb69-1193-83e2-754d-7d8807ad12e5@huawei.com>
+Date:   Tue, 11 May 2021 11:16:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <a8df289a-47c2-c193-cd6f-8415f68b900f@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <c320db751bc326efbd1d619c0f8007d9965a32ab.1620641727.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Keqian,
-
-On 5/10/21 7:07 PM, Keqian Zhu wrote:
->>>> I suppose this interface is to ask the vendor IOMMU driver to check
->>>> whether each device/iommu in the domain supports dirty bit tracking.
->>>> But what will happen if new devices with different tracking capability
->>>> are added afterward?
->>> Yep, this is considered in the vfio part. We will query again after attaching or
->>> detaching devices from the domain.  When the domain becomes capable, we enable
->>> dirty log for it. When it becomes not capable, we disable dirty log for it.
->> If that's the case, why not putting this logic in the iommu subsystem so
->> that it doesn't need to be duplicate in different upper layers?
->>
->> For example, add something like dirty_page_trackable in the struct of
->> iommu_domain and ask the vendor iommu driver to update it once any
->> device is added/removed to/from the domain. It's also better to disallow
-> If we do it, the upper layer still needs to query the capability from domain and switch
-> dirty log tracking for it. Or do you mean the domain can switch dirty log tracking automatically
-> when its capability change? If so, I think we're lack of some flexibility. The upper layer
-> may have it's own policy, such as only enable dirty log tracking when all domains are capable,
-> and disable dirty log tracking when just one domain is not capable.
-
-I may not get you.
-
-Assume that dirty_page_trackable is an attribution of an iommu_domain.
-This attribution might be changed once a new device (with different
-capability) added or removed. So it should be updated every time a new
-device is attached or detached. This work could be done by the vendor
-iommu driver on the path of dev_attach/dev_detach callback.
-
-For upper layers, before starting page tracking, they check the
-dirty_page_trackable attribution of the domain and start it only it's
-capable. Once the page tracking is switched on the vendor iommu driver
-(or iommu core) should block further device attach/detach operations
-until page tracking is stopped.
-
+On 2021/5/10 18:26, Mauro Carvalho Chehab wrote:
+> While UTF-8 characters can be used at the Linux documentation,
+> the best is to use them only when ASCII doesn't offer a good replacement.
+> So, replace the occurences of the following UTF-8 characters:
 > 
->> any domain attach/detach once the dirty page tracking is on.
-> Yep, this can greatly simplify our code logic, but I don't know whether our maintainers
-> agree that, as they may think that IOMMU dirty logging should not change original domain
-> behaviors.
+> 	- U+2013 ('–'): EN DASH
+> 	- U+201c ('“'): LEFT DOUBLE QUOTATION MARK
+> 	- U+201d ('”'): RIGHT DOUBLE QUOTATION MARK
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-The maintainer owns the last word, but we need to work out a generic and
-self-contained API set.
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-Best regards,
-baolu
+Thanks,
