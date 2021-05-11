@@ -2,29 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBAD37B1B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8EE337B1B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbhEKWmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 18:42:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55034 "EHLO mail.kernel.org"
+        id S229968AbhEKWpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:45:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhEKWmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 18:42:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A4A861139;
-        Tue, 11 May 2021 22:41:48 +0000 (UTC)
+        id S229714AbhEKWpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 18:45:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30B6161928;
+        Tue, 11 May 2021 22:44:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620772908;
-        bh=vdAgi26FJPAMLFViCxdAqQtScDX/RYmsLmTqCNSzZPE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t4BAYlTM8QqIs0OYD4kss7VkuHY0bq33vwytpQcN0AiUSggPsFEy891vydKvbxSSt
-         mW8Gd+TJyJTunEfLwWJjYUzSusGMnSWr0sB9qbh3aLoNgvmyher4i11yXCaT4lF0Ib
-         N/Kk0viIXLQigW5lhKXq7omqei+qnDY0rRaQP2adS8S+t5XlWuPjLurDeBCBKdmPKJ
-         yditdLrkALv5ntBnCh/O89sYaBIByK5XfaYOo27go6wMwkW8wz4v19X5vTOpbSOXLf
-         iEe3yrALiyKnOtu1bPfIwpuNVI5+Ntlbo12xMQc5R1i4leHDOnZl6E3qakHOHZpp2+
-         FJzx50vIPOyOg==
+        s=k20201202; t=1620773043;
+        bh=tjdENYeLio88+ega8csnSeNPJ3P6QtDb8foHFp7KLhE=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=ktGZhzotwRkQdLbd7eP47KB6+daJQBmsIDmg89DYYIzdWCPOvtv0reU074w/PNAzV
+         AZzFM7qWWvuTIwGuPa/Y9Tegjn08rzXqrqM8ikpxax786+2+uHXyBQIkO15KBCliOE
+         1wxP4rsvftQnNhT27cDwY44tUd1gnDf+UdTmlzZBQ9mhWZniZXEjqOeDjgP5EJWiGf
+         XvX1bcU9y9KunudLj1syKrDafNSe1EwoM08TY+m5YHtYqbPFih/Odtvg2p8rkysW05
+         8mCILZSCj2l5oy1YPdn0GQbK/IfZH6bxSRz7CHZL+bpJcVcPa2JBrtSO0dA6QXljHS
+         JLvfXXNReQ1AQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DBF2B5C014E; Tue, 11 May 2021 15:41:47 -0700 (PDT)
+        id CBF785C0138; Tue, 11 May 2021 15:44:02 -0700 (PDT)
+Date:   Tue, 11 May 2021 15:44:02 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,58 +33,33 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 2/2] rcu/tree_plugin: Don't handle the case of 'all' CPU range
-Date:   Tue, 11 May 2021 15:41:46 -0700
-Message-Id: <20210511224146.2892226-2-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20210511224115.GA2892092@paulmck-ThinkPad-P17-Gen-1>
-References: <20210511224115.GA2892092@paulmck-ThinkPad-P17-Gen-1>
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/3] Documentation updates for v5.14
+Message-ID: <20210511224402.GA2892361@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yury Norov <yury.norov@gmail.com>
+Hello!
 
-The 'all' semantics is now supported by the bitmap_parselist() so we can
-drop supporting it as a special case in RCU code.  Since 'all' is properly
-supported in core bitmap code, also drop legacy comment in RCU for it.
+This series provides documentation updates:
 
-This patch does not make any functional changes for existing users.
+1.	Fix statement of RCU's memory-ordering requirements.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree_plugin.h | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+2.	Fix diagram references in memory-ordering document, courtesy of
+	Frederic Weisbecker.
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index ad0156b86937..3f7a345b3814 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1535,13 +1535,10 @@ static void rcu_cleanup_after_idle(void)
- static int __init rcu_nocb_setup(char *str)
- {
- 	alloc_bootmem_cpumask_var(&rcu_nocb_mask);
--	if (!strcasecmp(str, "all"))		/* legacy: use "0-N" instead */
-+	if (cpulist_parse(str, rcu_nocb_mask)) {
-+		pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
- 		cpumask_setall(rcu_nocb_mask);
--	else
--		if (cpulist_parse(str, rcu_nocb_mask)) {
--			pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
--			cpumask_setall(rcu_nocb_mask);
--		}
-+	}
- 	return 1;
- }
- __setup("rcu_nocbs=", rcu_nocb_setup);
--- 
-2.31.1.189.g2e36527f23
+3.	Add drgn script to dump number of RCU callbacks.
 
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst   |    4 
+ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst |    2 
+ b/tools/rcu/rcu-cbs.py                                                  |   46 ++++++++++
+ 3 files changed, 49 insertions(+), 3 deletions(-)
