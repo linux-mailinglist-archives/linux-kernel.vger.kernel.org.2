@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D3537ACE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951C837ACE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231949AbhEKRRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
+        id S231987AbhEKRRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231896AbhEKRRa (ORCPT
+        with ESMTP id S231951AbhEKRRb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:17:30 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604CCC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:16:22 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id 9-20020a056a000729b029025d0d3c2062so13268017pfm.1
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:16:22 -0700 (PDT)
+        Tue, 11 May 2021 13:17:31 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57297C06138A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:16:24 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id j12-20020ac8550c0000b02901dae492d1f2so7384793qtq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:16:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=uuu17mHGt/KubHNv6B4Puz8KNLHKsb7X5PjppcGXfqw=;
-        b=lLwwzQ4KPOuibe32HUV2T1sr9kwP5TBQNFzot9w74MdDyGsF+uiGVnb8qWE+Hz0L08
-         Yy5l7q6D5aOucPbnlpg7EQmY63WEIly0gHlowClLZoJMFDnNPAtH8L9IqX5q0hAsYy/m
-         K5ShsqUGAbWzxwUT/d1NVm5+2YILtS+08fmvwYCjy7E99MRTPPV1Ify7JSD/dAjOSikI
-         ufrwCi6dhW5ebSptucOd4bYo/iJ5YaVyrgFDLk3mUDXVAi/Q1Hk+BdGWtaeFScgqFqGN
-         kJKHMOhPn+EhQ3+a+oR3itJYc8kqZNntih+7gA3i49cZFlJRsjg/kr0g+GaUrXXTn2BD
-         +WyA==
+        bh=vif4ChP6To9MWPr0GWQdazmHQ6h3mcBFCGbXkm6wl94=;
+        b=P/9QDdCt1kHWngOw1na6Leu2JD7lekSdtGS7VAKUvXhmzY9JyF+b20NH7WSINqjtY9
+         TVgyzyuMtSqoZuS2N0QU8d8wK1wW+eRtmwMPCQPR6cRllkjzF2UAXY/EkKKXbzxMYf6Q
+         yqzL9wOyPj6AoF5thN1a/FveVoDQIAFnA6kkUED7+aZvNwn++Yv5Kzp0qCAli/OFoMN/
+         Fj5IaZKVYkrTwW5/SVayGF5zZDZXIecK89NpPRjEui1GpmU/BionmPZyNqcH1t9dAS2d
+         46FzS8hsuleBN/9yoFR+8OotcHAR04y4AMJoI3pRyzNOy9qkgxtJqzjTqGxfzf2tRwc/
+         AkbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=uuu17mHGt/KubHNv6B4Puz8KNLHKsb7X5PjppcGXfqw=;
-        b=b96dtvCo4tSDgM3Lxeq9VDu6v6sFrT7I0+T3dP1Wgb0Yu+X9lqJ5I6WyA1m3Dylgzb
-         5JxOevrefxt72phMn2OdTzoN7IURYDtEoDLJq+6rjs/vKnZ8LuhHoerfpsqjwqEsPmuN
-         IuJY39ZrueyhmzUrE6dHBQVdquH1tc/5ogC1byrL4mQwcRc07NG1mUQ0NTDYLIyWpimP
-         0Tb3lAEfSlShwxBg+c4yA6C083zn5/VXCs7zcK9BHnjn5GipCx5+DWw8wNP9tHDHMgIj
-         w1jsLqL1MVAvCk3yIeuH370DhZ5zw7RlwWv3qq1xENPtpVvhFR1JNtVwUgWx7DJWSVjg
-         Clbw==
-X-Gm-Message-State: AOAM533FVWPdBlM/oIZefxDU+TD2yF6LxVoiOI9frIXRvTxNPGEGCCsv
-        TKGgN9n6I3vDVB2mXjOBLB+U35nbaPqXP3mmrXNYGJErM1lU7r69bWCDzQ4N75Fab87MCyxz+bX
-        U1b5gwVUX3JKVQMr9v1rQmRcvzTnto0MQgjyTmlqNm19UEpA/KmyJn0KdfzA5IhY/B0TOOjqk
-X-Google-Smtp-Source: ABdhPJy/zQy0Jp1q7PjF3Oca69HRcxr3KMDVVo5y/U32nEDcmmanHHzxoBXFOioLLCo5qEQsbDlZmigT8XPF
+        bh=vif4ChP6To9MWPr0GWQdazmHQ6h3mcBFCGbXkm6wl94=;
+        b=QfTGnaofzulX81i37Q0qx7y74qFr4cJtjfZh2bpaZ/QtoBxNp1XoVM5OQDGi4m4CBR
+         5uBxY6IHwHCNEfNeAKhra4GDIHEBN4tpk2D3OWldmih4yheoXXvSWKCmHm4aUeChiXzp
+         C/xKObJWiiwwBd8VXPxVRX2XuybekhLJWDhhQIOTJXR6KWfCafqGlq0az2WqKNfi9VeW
+         9ySKbyMU4ORChgBLaeaapl/L87fMIux0Wiy0I/iTQ014GfRNvfqE3MgGp+MIWKstFjXO
+         Jk1NpZyKirner7lYwRIa/Qk/vv7wNLX2k8cq+SP7SCmRBlb/uz5xg3jsaVKtEiya7yeF
+         XTrQ==
+X-Gm-Message-State: AOAM533jWcTIQQJNtj4WKQoSWxvw2DGg8NSW1a9XqOVrWUGiwltsZ9Ft
+        Vde1l0FhDRrj5O9ukwjbIQ0ZXXTeYM2TUO0SFf7Zds8Az1r0QnAiPu5Obz8dl6fthV/p7t8WE6t
+        VhaJzj8/eNJ4CFW9ZfXtOWESExXJhicN41IyDUEkzISGvv0W5emRbgsw5DTIg1bQ3pRtXEBef
+X-Google-Smtp-Source: ABdhPJwF0MHjjGkQgiXGGKjAOLsCjfCFkwMayfPENgVt1BXQ00ZLJTllQOHuDP2+BN97CyKPmMQUaMzi9FMk
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:e050:3342:9ea6:6859])
- (user=bgardon job=sendgmr) by 2002:a17:90a:4487:: with SMTP id
- t7mr298411pjg.1.1620753380897; Tue, 11 May 2021 10:16:20 -0700 (PDT)
-Date:   Tue, 11 May 2021 10:16:05 -0700
+ (user=bgardon job=sendgmr) by 2002:ad4:4dc8:: with SMTP id
+ cw8mr29820482qvb.16.1620753383411; Tue, 11 May 2021 10:16:23 -0700 (PDT)
+Date:   Tue, 11 May 2021 10:16:06 -0700
 In-Reply-To: <20210511171610.170160-1-bgardon@google.com>
-Message-Id: <20210511171610.170160-3-bgardon@google.com>
+Message-Id: <20210511171610.170160-4-bgardon@google.com>
 Mime-Version: 1.0
 References: <20210511171610.170160-1-bgardon@google.com>
 X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-Subject: [PATCH v4 2/7] KVM: x86/mmu: Factor out allocating memslot rmap
+Subject: [PATCH v4 3/7] KVM: mmu: Refactor memslot copy
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
@@ -70,83 +70,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Small refactor to facilitate allocating rmaps for all memslots at once.
+Factor out copying kvm_memslots from allocating the memory for new ones
+in preparation for adding a new lock to protect the arch-specific fields
+of the memslots.
 
-No functional change expected.
+No functional change intended.
 
+Reviewed-by: David Hildenbrand <david@redhat.com>
 Signed-off-by: Ben Gardon <bgardon@google.com>
 ---
- arch/x86/kvm/x86.c | 39 ++++++++++++++++++++++++++++++---------
- 1 file changed, 30 insertions(+), 9 deletions(-)
+ virt/kvm/kvm_main.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 1e1f4f31e586..cc0440b5b35d 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10911,10 +10911,35 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
- 	kvm_page_track_free_memslot(slot);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 6b4feb92dc79..9e106742b388 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1306,6 +1306,18 @@ static struct kvm_memslots *install_new_memslots(struct kvm *kvm,
+ 	return old_memslots;
  }
  
-+static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
-+			      unsigned long npages)
++static size_t kvm_memslots_size(int slots)
 +{
-+	int i;
-+
-+	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
-+		int lpages;
-+		int level = i + 1;
-+
-+		lpages = gfn_to_index(slot->base_gfn + npages - 1,
-+				      slot->base_gfn, level) + 1;
-+
-+		slot->arch.rmap[i] =
-+			kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
-+				 GFP_KERNEL_ACCOUNT);
-+		if (!slot->arch.rmap[i]) {
-+			memslot_rmap_free(slot);
-+			return -ENOMEM;
-+		}
-+	}
-+
-+	return 0;
++	return sizeof(struct kvm_memslots) +
++	       (sizeof(struct kvm_memory_slot) * slots);
 +}
 +
- static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
- 				      unsigned long npages)
- {
- 	int i;
-+	int r;
- 
- 	/*
- 	 * Clear out the previous array pointers for the KVM_MR_MOVE case.  The
-@@ -10923,7 +10948,11 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
- 	 */
- 	memset(&slot->arch, 0, sizeof(slot->arch));
- 
--	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
-+	r = memslot_rmap_alloc(slot, npages);
-+	if (r)
-+		return r;
++static void kvm_copy_memslots(struct kvm_memslots *from,
++			      struct kvm_memslots *to)
++{
++	memcpy(to, from, kvm_memslots_size(from->used_slots));
++}
 +
-+	for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
- 		struct kvm_lpage_info *linfo;
- 		unsigned long ugfn;
- 		int lpages;
-@@ -10932,14 +10961,6 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
- 		lpages = gfn_to_index(slot->base_gfn + npages - 1,
- 				      slot->base_gfn, level) + 1;
- 
--		slot->arch.rmap[i] =
--			kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
--				 GFP_KERNEL_ACCOUNT);
--		if (!slot->arch.rmap[i])
--			goto out_free;
--		if (i == 0)
--			continue;
+ /*
+  * Note, at a minimum, the current number of used slots must be allocated, even
+  * when deleting a memslot, as we need a complete duplicate of the memslots for
+@@ -1315,19 +1327,16 @@ static struct kvm_memslots *kvm_dup_memslots(struct kvm_memslots *old,
+ 					     enum kvm_mr_change change)
+ {
+ 	struct kvm_memslots *slots;
+-	size_t old_size, new_size;
 -
- 		linfo = kvcalloc(lpages, sizeof(*linfo), GFP_KERNEL_ACCOUNT);
- 		if (!linfo)
- 			goto out_free;
+-	old_size = sizeof(struct kvm_memslots) +
+-		   (sizeof(struct kvm_memory_slot) * old->used_slots);
++	size_t new_size;
+ 
+ 	if (change == KVM_MR_CREATE)
+-		new_size = old_size + sizeof(struct kvm_memory_slot);
++		new_size = kvm_memslots_size(old->used_slots + 1);
+ 	else
+-		new_size = old_size;
++		new_size = kvm_memslots_size(old->used_slots);
+ 
+ 	slots = kvzalloc(new_size, GFP_KERNEL_ACCOUNT);
+ 	if (likely(slots))
+-		memcpy(slots, old, old_size);
++		kvm_copy_memslots(old, slots);
+ 
+ 	return slots;
+ }
 -- 
 2.31.1.607.g51e8a6a459-goog
 
