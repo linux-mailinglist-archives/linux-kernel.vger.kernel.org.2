@@ -2,134 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBCE837AF7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF17737AF84
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232008AbhEKTly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 15:41:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21067 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231944AbhEKTlx (ORCPT
+        id S232241AbhEKTnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 15:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232180AbhEKTng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 15:41:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620762046;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rj6L9PURkNx4/ivnoPgM1A+pOZdnCZXr7aAOI6YcF60=;
-        b=Y8IfC/pxbvbLdHUNHo1zQ8qjKX5HNi99jDSQset5AQWty5fLukkjciSRCTo3R8y2JUBpkn
-        G/ECXdozC/uLw56pG+IIvWtyZi8wLBJ/7eQSHctZnAhfGwjds45wSpxAS9rIB/bsd2V1P8
-        mQkxlpO9HCbITMqLd3psj8GWq/X6W3Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-UKPH0FMIM-CilANLQZdxuQ-1; Tue, 11 May 2021 15:40:40 -0400
-X-MC-Unique: UKPH0FMIM-CilANLQZdxuQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9416B1854E25;
-        Tue, 11 May 2021 19:40:39 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.3.128.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 881A71037F34;
-        Tue, 11 May 2021 19:40:31 +0000 (UTC)
-Date:   Tue, 11 May 2021 15:40:28 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Michael =?iso-8859-1?Q?Wei=DF?= 
-        <michael.weiss@aisec.fraunhofer.de>,
-        Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] audit: allow logging of user events in non-initial
- namespace.
-Message-ID: <20210511194028.GQ3141668@madcap2.tricolour.ca>
-References: <20210509183319.20298-1-michael.weiss@aisec.fraunhofer.de>
- <CAHC9VhRkh3uySjZ1qg07Fgky+R3jSmfJ80BLCFOK+LCPvZVrOA@mail.gmail.com>
+        Tue, 11 May 2021 15:43:36 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6656C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:42:29 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id s37so3366129ybi.6
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:42:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4HaFVpEtFrWdih4zuNGE9Q1f9zE42ljQv2KzL0/SZg4=;
+        b=DHC/+a4uNbTQF70FhiC5twYyGPonPbkff8n3WwAYu6EyqcatlgxR5vtMdZcRNYLDsk
+         nihWYomR51WCKe3g5OUcE5LQozK07c+TGNixVd/iSA2flYALYjy0RKUHKaX1sXcxjXkp
+         JW/4hAj4dHNGC8Hr1QTcE50s6e/MRJuttPjVLJ3I41uiXvQeUvZw2lrIg0aVhjm0BWC1
+         SZP3J26zo1S9XcrDlrhX+6O06c5m3fNf7JWnAI/DuHdnjm/bc6dzneEX+vrkpQ5HqNe7
+         HQbL/djmJGlaZVRuoFOw72WhaVzMN/f8/UHVrjJ/AWU/6sCV4pYIQRjDYK24lumCOzwE
+         lf6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4HaFVpEtFrWdih4zuNGE9Q1f9zE42ljQv2KzL0/SZg4=;
+        b=cPMF/rl/QTG9fvIzyjHMuvTxSUq/bbCh4Af/TPWug65i2mV/Z4owilSQO3SujqaCog
+         quhBm+Gk/hCFap12fZcPqBXQo+KnDb6VVHkd5LN4N4jMMopz82sXWejJuyctgEiiqt4M
+         5Mv1W55ojIwxIiYJS0FF78+p1wl+kxCduUeBvC+iSOch0FTbWy6xTzeW8OGKiAPSCVfQ
+         vA1EnJyYyK6fjjag5dC5bq0Fy+6SMgw6Y8HESiELuZnQAbvXcilIunuNNLajgrrjGw6a
+         Bw3HkJSsZE3IiZII2+SLL05lB59uYeGSakynijMBaLaW6wl6IbSewWw4B+HedC9Lgws2
+         H/UA==
+X-Gm-Message-State: AOAM531myF7+NmEokI+P/L8guP68YtiAvMe0GEfcaPTHEW5Obuc6GkxU
+        NVGGBeomQ0MKt19ymGGZruEurCHRR5usbZSvaIRCvA==
+X-Google-Smtp-Source: ABdhPJzY2muPky7bmsJLRqbQyPZeYYjZNpXbYjXPW66yL3be4Ruaq8grrpeZO14QJfwa7fGHMRtegwGoFphnUbuEdRE=
+X-Received: by 2002:a25:aa14:: with SMTP id s20mr32344643ybi.228.1620762148772;
+ Tue, 11 May 2021 12:42:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHC9VhRkh3uySjZ1qg07Fgky+R3jSmfJ80BLCFOK+LCPvZVrOA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <3c88cf35-6725-1bfa-9e1e-8e9d69147e3b@hisilicon.com>
+ <2e69efb9-a563-251f-2161-5546324a9587@hisilicon.com> <CAGETcx9FLixotMcyJmCATSoz7aB2VbYSr8o5jyM5HDd9-6LaYQ@mail.gmail.com>
+ <11749ea2-777c-e200-9c5a-eab531c7e69a@intel.com>
+In-Reply-To: <11749ea2-777c-e200-9c5a-eab531c7e69a@intel.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 11 May 2021 12:41:52 -0700
+Message-ID: <CAGETcx_iXjYUOipQ1ky-J=4TSx+HJePeYcPkuGkuv7=JYsiaVQ@mail.gmail.com>
+Subject: Re: Question about device link//Re: Qestion about device link
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     "chenxiang (M)" <chenxiang66@hisilicon.com>,
+        John Garry <john.garry@huawei.com>, linuxarm@huawei.com,
+        linux-scsi@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-10 18:48, Paul Moore wrote:
-> On Sun, May 9, 2021 at 2:33 PM Michael Weiﬂ
-> <michael.weiss@aisec.fraunhofer.de> wrote:
+On Tue, May 11, 2021 at 12:13 PM Rafael J. Wysocki
+<rafael.j.wysocki@intel.com> wrote:
+>
+> On 5/11/2021 8:23 PM, Saravana Kannan wrote:
+> > On Tue, May 11, 2021 at 3:42 AM chenxiang (M) <chenxiang66@hisilicon.co=
+m> wrote:
+> >> Re-edit the non-aligned flowchart and add CC to Greg-KH and Saravanna.
+> >>
+> >>
+> >> =E5=9C=A8 2021/5/11 11:59, chenxiang (M) =E5=86=99=E9=81=93:
+> >>> Hi Rafael and other guys,
+> >>>
+> >>> I am trying to add a device link between scsi_host->shost_gendev and
+> >>> hisi_hba->dev to support runtime PM for hisi_hba driver
+> >>>
+> >>> (as it supports runtime PM for scsi host in some scenarios such as
+> >>> error handler etc, we can avoid to do them again if adding a
+> >>>
+> >>> device link between scsi_host->shost_gendev and hisi_hba->dev) as
+> >>> follows (hisi_sas driver is under directory drivers/scsi/hisi_sas):
+> >>>
+> >>> device_link_add(&shost->shost_gendev, hisi_hba->dev,
+> >>> DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE)
+> >>>
+> >>> We have a full test on it, and it works well except when rmmod the
+> >>> driver, some call trace occurs as follows:
+> >>>
+> >>> [root@localhost ~]# rmmod hisi_sas_v3_hw
+> >>> [  105.377944] BUG: scheduling while atomic: kworker/113:1/811/0x0000=
+0201
+> >>> [  105.384469] Modules linked in: bluetooth rfkill ib_isert
+> >>> iscsi_target_mod ib_ipoib ib_umad iptable_filter vfio_iommu_type1
+> >>> vfio_pci vfio_virqfd vfio rpcrdma ib_is                         er
+> >>> libiscsi scsi_transport_iscsi crct10dif_ce sbsa_gwdt hns_roce_hw_v2
+> >>> hisi_sec2 hisi_hpre hisi_zip hisi_qm uacce spi_hisi_sfc_v3xx
+> >>> hisi_trng_v2 rng_core hisi_uncore                         _hha_pmu
+> >>> hisi_uncore_ddrc_pmu hisi_uncore_l3c_pmu spi_dw_mmio hisi_uncore_pmu
+> >>> hns3 hclge hnae3 hisi_sas_v3_hw(-) hisi_sas_main libsas
+> >>> [  105.424841] CPU: 113 PID: 811 Comm: kworker/113:1 Kdump: loaded
+> >>> Tainted: G        W         5.12.0-rc1+ #1
+> >>> [  105.434454] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS
+> >>> 2280-V2 CS V5.B143.01 04/22/2021
+> >>> [  105.443287] Workqueue: rcu_gp srcu_invoke_callbacks
+> >>> [  105.448154] Call trace:
+> >>> [  105.450593]  dump_backtrace+0x0/0x1a4
+> >>> [  105.454245]  show_stack+0x24/0x40
+> >>> [  105.457548]  dump_stack+0xc8/0x104
+> >>> [  105.460939]  __schedule_bug+0x68/0x80
+> >>> [  105.464590]  __schedule+0x73c/0x77c
+> >>> [  105.465700] BUG: scheduling while atomic: kworker/96:1/791/0x00000=
+201
+> >>> [  105.468066]  schedule+0x7c/0x110
+> >>> [  105.468068]  schedule_timeout+0x194/0x1d4
+> >>> [  105.474490] Modules linked in:
+> >>> [  105.477692]  wait_for_completion+0x8c/0x12c
+> >>> [  105.477695]  rcu_barrier+0x1e0/0x2fc
+> >>> [  105.477697]  scsi_host_dev_release+0x50/0xf0
+> >>> [  105.477701]  device_release+0x40/0xa0
+> >>> [  105.477704]  kobject_put+0xac/0x100
+> >>> [  105.477707]  __device_link_free_srcu+0x50/0x74
+> >>> [  105.477709]  srcu_invoke_callbacks+0x108/0x1a4
+> >>> [  105.484743]  process_one_work+0x1dc/0x48c
+> >>> [  105.492468]  worker_thread+0x7c/0x464
+> >>> [  105.492471]  kthread+0x168/0x16c
+> >>> [  105.492473]  ret_from_fork+0x10/0x18
+> >>> ...
+> >>>
+> >>> After analyse the process, we find that it will
+> >>> device_del(&shost->gendev) in function scsi_remove_host() and then
+> >>>
+> >>> put_device(&shost->shost_gendev) in function scsi_host_put() when
+> >>> removing the driver, if there is a link between shost and hisi_hba->d=
+ev,
+> >>>
+> >>> it will try to delete the link in device_del(), and also will
+> >>> call_srcu(__device_link_free_srcu) to put_device() link->consumer and
+> >>> supplier.
+> >>>
+> >>> But if put device() for shost_gendev in device_link_free() is later
+> >>> than in scsi_host_put(), it will call scsi_host_dev_release() in
+> >>>
+> >>> srcu_invoke_callbacks() while it is atomic and there are scheduling i=
+n
+> >>> scsi_host_dev_release(),
+> >>>
+> >>> so it reports the BUG "scheduling while atomic:...".
+> >>>
+> >>> thread 1                                                   thread2
+> >>> hisi_sas_v3_remove
+> >>>      ...
+> >>>      sas_remove_host()
+> >>>          ...
+> >>>          scsi_remove_host()
+> >>>              ...
+> >>>              device_del(&shost->shost_gendev)
+> >>>                  ...
+> >>>                  device_link_purge()
+> >>>                      __device_link_del()
+> >>>                          device_unregister(&link->link_dev)
+> >>>                              devlink_dev_release
+> >>> call_srcu(__device_link_free_srcu)    ----------->
+> >>> srcu_invoke_callbacks  (atomic)
+> >>>          __device_link_free_srcu
+> >>>      ...
+> >>>      scsi_host_put()
+> >>>          put_device(&shost->shost_gendev) (ref =3D 1)
+> >>>                  device_link_free()
+> >>>                                put_device(link->consumer)
+> >>> //shost->gendev ref =3D 0
+> >>>                                            ...
+> >>>                                            scsi_host_dev_release
+> >>>                                                        ...
+> >>> rcu_barrier
+> >>> kthread_stop()
+> >> Re-edit the non-aligned flowchart
+> >>       thread 1 thread 2
+> >>       hisi_sas_v3_remove()
+> >>               ...
+> >>               sas_remove_host()
+> >>                       ...
+> >>                       device_del(&shost->shost_gendev)
+> >>                               ...
+> >>                               device_link_purge()
+> >>                                       __device_link_del()
+> >> device_unregister(&link->link_dev)
+> >> devlink_dev_release
+> >> call_srcu(__device_link_free_srcu)    ----------->
+> >> srcu_invoke_callbacks  (atomic)
+> >>               __device_link_free_srcu()
+> >>               ...
+> >>               scsi_host_put()
+> >>                       put_device(&shost->shost_gendev) (ref =3D 1)
+> >>                           device_link_free()
+> >>                                       put_device(link->consumer)
+> >> //shost->gendev ref =3D 0
+> >>                                                   ...
+> >> scsi_host_dev_release()
+> >>                                                               ...
+> >> rcu_barrier()
+> >> kthread_stop()
+> >>
+> >>>
+> >>> We can check kref of shost->shost_gendev to make sure scsi_host_put()
+> >>> to release scsi host device in LLDD driver to avoid the issue,
+> >>>
+> >>> but it seems be a common issue:  function __device_link_free_srcu
+> >>> calls put_device() for consumer and supplier,
+> >>>
+> >>> but if it's ref =3D0 at that time and there are scheduling or sleep i=
+n
+> >>> dev_release, it may have the issue.
+> >>>
+> >>> Do you have any idea about the issue?
+> > Another report for the same issue.
+> > https://lore.kernel.org/lkml/CAGETcx80xSZ8d4JbZqiSz4L0VNtL+HCnFCS2u3F9a=
+NC0QQoQjg@mail.gmail.com/
 > >
-> > Audit subsystem was disabled in total for user namespaces other than
-> > the initial namespace.
+> > I don't have enough context yet about the need for SRCU (I haven't
+> > read up all the runtime PM code), but this is a real issue that needs
+> > to be solved.
 > >
-> > If audit is enabled by kernel command line or audtid in initial namespace,
-> > it is now possible to allow at least logging of userspace applications
-> > inside of non-initial namespaces if CAP_AUDIT_WRITE in the corresponding
-> > namespace is held.
-> >
-> > This allows logging of, e.g., PAM or opensshd inside user namespaced
-> > system containers.
-> >
-> > Signed-off-by: Michael Weiﬂ <michael.weiss@aisec.fraunhofer.de>
-> > ---
-> >  kernel/audit.c | 10 ++++++++--
-> >  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> I think this needs to wait on the audit container ID patchset to land.
+> > Dirty/terrible hack is to kick off another work to do the
+> > put_device().
+>
+> I wouldn't call it dirty or terrible, but it may just be the thing that
+> needs to be done here.
+>
+>
+> > But is there any SRCU option that'll try to do the
+> > release in a non-atomic context?
+>
+> No, the callbacks are run from a softirq if I'm not mistaken.
 
-That will interact with this, for sure and others related.
+Right, I meant that this seems like a common thing some SRCU callbacks
+might want to do. So, I thought that there might be a flag or option
+to kick off work for srcu callbacks. Also, the stack trace shows that
+this is already running in a work context but the callback is wrapped
+with local_bh_disable/enable() and that's the reason for this warning.
+But I don't know enough about SRCU implementation to make a comment on
+whether "run stuff in a work queue" can be a generic SRCU feature.
 
-Given that there are non-init namespaces involved that may not be part
-of containers, I would prefer to wait until namespaces are also
-optionally documentable in audit events before permitting this change.
-A patchset exists, but it has been deferred until the audit container
-identifier patchset is settled.
-(See https://github.com/linux-audit/audit-kernel/issues/32 )
+Anyway, if kicking off a new work is what you want to do, I'm not
+going to oppose that.
 
-> > diff --git a/kernel/audit.c b/kernel/audit.c
-> > index 121d37e700a6..b5cc0669c3d7 100644
-> > --- a/kernel/audit.c
-> > +++ b/kernel/audit.c
-> > @@ -1012,7 +1012,13 @@ static int audit_netlink_ok(struct sk_buff *skb, u16 msg_type)
-> >          * userspace will reject all logins.  This should be removed when we
-> >          * support non init namespaces!!
-> >          */
-> > -       if (current_user_ns() != &init_user_ns)
-> > +       /*
-> > +        * If audit is enabled by kernel command line or audtid in the initial
-> > +        * namespace allow at least logging of userspace applications inside of
-> > +        * non-initial namespaces according to CAP_AUDIT_WRITE is held in the
-> > +        * corresponding namespace.
-> > +        */
-> > +       if ((current_user_ns() != &init_user_ns) && !audit_enabled)
-> >                 return -ECONNREFUSED;
-> >
-> >         switch (msg_type) {
-> > @@ -1043,7 +1049,7 @@ static int audit_netlink_ok(struct sk_buff *skb, u16 msg_type)
-> >         case AUDIT_USER:
-> >         case AUDIT_FIRST_USER_MSG ... AUDIT_LAST_USER_MSG:
-> >         case AUDIT_FIRST_USER_MSG2 ... AUDIT_LAST_USER_MSG2:
-> > -               if (!netlink_capable(skb, CAP_AUDIT_WRITE))
-> > +               if (!netlink_ns_capable(skb, current_user_ns(), CAP_AUDIT_WRITE))
-> >                         err = -EPERM;
-> >                 break;
-> >         default:  /* bad msg */
-> > --
-> > 2.20.1
-> 
-> -- 
-> paul moore
-> www.paul-moore.com
-> 
-
-- RGB
-
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
-
+-Saravana
