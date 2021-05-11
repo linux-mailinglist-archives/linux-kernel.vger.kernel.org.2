@@ -2,105 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12D637B126
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E8237B13A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230181AbhEKV56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 17:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
+        id S230134AbhEKWCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhEKV5z (ORCPT
+        with ESMTP id S229637AbhEKWC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 17:57:55 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A8FC061574;
-        Tue, 11 May 2021 14:56:48 -0700 (PDT)
+        Tue, 11 May 2021 18:02:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BA0C061574;
+        Tue, 11 May 2021 15:01:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=RKf0jhjqNyYKa1rwLYcbF4xtKVI/z4lp0gDi5eHVKyw=; b=xhdV61NXfHaovmyP1GOMVMIqz
-        QjCVo7lOaj+nCCq9P4erUTr+/yU4fr2EsAOcWvwerLlNfjxNETg2mUnKotlQWCpXE/4dF8rR51bl2
-        5AynBeYQmksC+PMcyeH0O7oy2EzZyP32gPSIJTejJhp3jdgCWiuhmZkOzl4aOdCRClRouIpouA9Sz
-        PZgNtrq8Fy+JMmEr7VnYy62LYx+LqV+XHt3GLz9pHvk2J5Vp0yOgL6nTpH1Q+Gq1/PheSPYzNBNnS
-        VmVPs+S2t3/K8a0vVi2cf9Px25/iLHZnLzDn/wcLimAoK8S/p56tqDVeO03Q/fe5Lfhrhzch4aC6F
-        +nK2xpdTg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43874)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lgaMv-0003Fx-Gv; Tue, 11 May 2021 22:56:45 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lgaMu-0001Qg-7M; Tue, 11 May 2021 22:56:44 +0100
-Date:   Tue, 11 May 2021 22:56:44 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH] net: phy: add driver for Motorcomm yt8511 phy
-Message-ID: <20210511215644.GO1336@shell.armlinux.org.uk>
-References: <20210511214605.2937099-1-pgwipeout@gmail.com>
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=yfML7SavDkIkjZXUgHczC8N3+tfPU5+Z+pOmElUsXRI=; b=bo+7A3inm6BgR9nU8FSZfphtgU
+        XhPG8UnveciQZS353c/9xacza7oNrRMxZz0T0esCNMeeh0n0JkQOnNlKlAXzprD9wkyZTgaGae4Wl
+        VE0Ssv88MCdqKC7Gjibhx8Sfx0Sg+3TZ1e3oTXYhs0q0S0G/Xs5zn7p3Kvz4eWjwnQQB4lWQTID+U
+        GeHdcUBo0arA6dWOzFoP801mvyIY4qlDPBo3w3tT/AZQy6al5K2EbpveClwybfOyEkzbRHFl2zvFO
+        Urg9UaXsSxiHr2adaMCStYyOVBs4IXYGqJBI+3AsYJt1MAyjwqYbg3dt+LuyHyfLCPj1fqj4uArpX
+        ld7pxu6Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgaPi-007iIv-CZ; Tue, 11 May 2021 21:59:48 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     akpm@linux-foundation.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH v10 18/33] mm/filemap: Add folio_unlock
+Date:   Tue, 11 May 2021 22:47:20 +0100
+Message-Id: <20210511214735.1836149-19-willy@infradead.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210511214735.1836149-1-willy@infradead.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511214605.2937099-1-pgwipeout@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Convert unlock_page() to call folio_unlock().  By using a folio we
+avoid a call to compound_head().  This shortens the function from 39
+bytes to 25 and removes 4 instructions on x86-64.  Because we still
+have unlock_page(), it's a net increase of 24 bytes of text for the
+kernel as a whole, but any path that uses folio_unlock() will execute
+4 fewer instructions.
 
-On Tue, May 11, 2021 at 05:46:06PM -0400, Peter Geis wrote:
-> +static int yt8511_config_init(struct phy_device *phydev)
-> +{
-> +	int ret, val, oldpage;
-> +
-> +	/* set clock mode to 125mhz */
-> +	oldpage = phy_select_page(phydev, YT8511_EXT_CLK_GATE);
-> +	if (oldpage < 0)
-> +		goto err_restore_page;
-> +
-> +	val = __phy_read(phydev, YT8511_PAGE);
-> +	val |= (YT8511_CLK_125M);
-> +	ret = __phy_write(phydev, YT8511_PAGE, val);
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Jeff Layton <jlayton@kernel.org>
+---
+ include/linux/pagemap.h |  3 ++-
+ mm/filemap.c            | 27 ++++++++++-----------------
+ mm/folio-compat.c       |  6 ++++++
+ 3 files changed, 18 insertions(+), 18 deletions(-)
 
-Please consider __phy_modify(), and handle any error it returns.
-
-> +
-> +	/* disable auto sleep */
-> +	ret = __phy_write(phydev, YT8511_PAGE_SELECT, YT8511_EXT_SLEEP_CTRL);
-
-Please consider handling a failure to write here.
-
-> +	val = __phy_read(phydev, YT8511_PAGE);
-> +	val &= (~BIT(15));
-> +	ret = __phy_write(phydev, YT8511_PAGE, val);
-
-Also a use for __phy_modify().
-
-> +
-> +err_restore_page:
-> +	return phy_restore_page(phydev, oldpage, ret);
-> +}
-> +
-> +static struct phy_driver motorcomm_phy_drvs[] = {
-> +	{
-> +		PHY_ID_MATCH_EXACT(PHY_ID_YT8511),
-> +		.name		= "YT8511 Gigabit Ethernet",
-> +		.config_init	= &yt8511_config_init,
-
-Please drop the '&' here, it's unnecessary.
-
-Thanks.
-
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index 1f37d7656955..8dbba0074536 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -643,7 +643,8 @@ extern int __lock_page_killable(struct page *page);
+ extern int __lock_page_async(struct page *page, struct wait_page_queue *wait);
+ extern int __lock_page_or_retry(struct page *page, struct mm_struct *mm,
+ 				unsigned int flags);
+-extern void unlock_page(struct page *page);
++void unlock_page(struct page *page);
++void folio_unlock(struct folio *folio);
+ 
+ /*
+  * Return true if the page was successfully locked
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 817a47059bd0..e7a6a58d6cd9 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -1435,29 +1435,22 @@ static inline bool clear_bit_unlock_is_negative_byte(long nr, volatile void *mem
+ #endif
+ 
+ /**
+- * unlock_page - unlock a locked page
+- * @page: the page
++ * folio_unlock - Unlock a locked folio.
++ * @folio: The folio.
+  *
+- * Unlocks the page and wakes up sleepers in wait_on_page_locked().
+- * Also wakes sleepers in wait_on_page_writeback() because the wakeup
+- * mechanism between PageLocked pages and PageWriteback pages is shared.
+- * But that's OK - sleepers in wait_on_page_writeback() just go back to sleep.
++ * Unlocks the folio and wakes up any thread sleeping on the page lock.
+  *
+- * Note that this depends on PG_waiters being the sign bit in the byte
+- * that contains PG_locked - thus the BUILD_BUG_ON(). That allows us to
+- * clear the PG_locked bit and test PG_waiters at the same time fairly
+- * portably (architectures that do LL/SC can test any bit, while x86 can
+- * test the sign bit).
++ * Context: May be called from interrupt or process context.  May not be
++ * called from NMI context.
+  */
+-void unlock_page(struct page *page)
++void folio_unlock(struct folio *folio)
+ {
+ 	BUILD_BUG_ON(PG_waiters != 7);
+-	page = compound_head(page);
+-	VM_BUG_ON_PAGE(!PageLocked(page), page);
+-	if (clear_bit_unlock_is_negative_byte(PG_locked, &page->flags))
+-		wake_up_page_bit(page, PG_locked);
++	VM_BUG_ON_FOLIO(!folio_locked(folio), folio);
++	if (clear_bit_unlock_is_negative_byte(PG_locked, folio_flags(folio, 0)))
++		wake_up_page_bit(&folio->page, PG_locked);
+ }
+-EXPORT_SYMBOL(unlock_page);
++EXPORT_SYMBOL(folio_unlock);
+ 
+ /**
+  * end_page_private_2 - Clear PG_private_2 and release any waiters
+diff --git a/mm/folio-compat.c b/mm/folio-compat.c
+index 5e107aa30a62..91b3d00a92f7 100644
+--- a/mm/folio-compat.c
++++ b/mm/folio-compat.c
+@@ -11,3 +11,9 @@ struct address_space *page_mapping(struct page *page)
+ 	return folio_mapping(page_folio(page));
+ }
+ EXPORT_SYMBOL(page_mapping);
++
++void unlock_page(struct page *page)
++{
++	return folio_unlock(page_folio(page));
++}
++EXPORT_SYMBOL(unlock_page);
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.30.2
+
