@@ -2,132 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE38937AC4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A3937AC4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhEKQsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 12:48:30 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:34749 "EHLO pegase2.c-s.fr"
+        id S231812AbhEKQsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 12:48:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231377AbhEKQs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:48:29 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4FfkNn4x37z9scw;
-        Tue, 11 May 2021 18:47:21 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id FdPnrTcrlk03; Tue, 11 May 2021 18:47:21 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4FfkNn3x2sz9sb1;
-        Tue, 11 May 2021 18:47:21 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 686EB8B7CC;
-        Tue, 11 May 2021 18:47:21 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id m3XhbXdmu7Jo; Tue, 11 May 2021 18:47:21 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D77BD8B7C2;
-        Tue, 11 May 2021 18:47:20 +0200 (CEST)
-Subject: Re: arch/powerpc/kernel/optprobes.c:34:1: error: unused function
- 'is_kprobe_ppc_optinsn_slot'
-To:     kernel test robot <lkp@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
-References: <202105120059.uTLH58Lm-lkp@intel.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <48747467-cb93-c66d-4cf9-097be0568488@csgroup.eu>
-Date:   Tue, 11 May 2021 18:47:10 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230484AbhEKQsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 12:48:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D8BB613CF;
+        Tue, 11 May 2021 16:47:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620751654;
+        bh=hU+yLFeBxlaW2RjWGMkuL1C1oCUtCvrztFZPdNLLPBs=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=dQ7Nr6QvpTPOXyPELC3zxv3QGr57GJrhhYd3bGSTX0Iei81QLLsBw4ch3MIBZsVMj
+         5dhtEb+zrDfe8NTwEI0pwv6ZPuUNSRued0gn56rDquIg1cLKdu+jfBwsBL1m3PKI9j
+         vD28w5PlnJi1O7OV7Tnu+QUBbbV3bVW5u8CTn2jFK8rNp8Yfpb6m5H8S//XvS9hM9Z
+         wmUYWjtqadwsU6qbSoUcenWgfVa5CQncuRi5yNGPkOVpnwGDweg5OoEwI6DPhdI/QD
+         VLF64GgmnZfE/ldwBKK4pEPd+pf2uH2oaott7rrYZ2/WxAxxhp7MThGl3/yOAfvqXu
+         liiCAYj1dXyvA==
+Date:   Tue, 11 May 2021 09:47:33 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Christoph Hellwig <hch@lst.de>
+cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Julien Grall <julien@xen.org>, f.fainelli@gmail.com,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        linux-kernel@vger.kernel.org,
+        osstest service owner <osstest-admin@xenproject.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        iommu@lists.linux-foundation.org
+Subject: Re: Regression when booting 5.15 as dom0 on arm64 (WAS: Re: [linux-linus
+ test] 161829: regressions - FAIL)]
+In-Reply-To: <20210511063558.GA7605@lst.de>
+Message-ID: <alpine.DEB.2.21.2105110925430.5018@sstabellini-ThinkPad-T480s>
+References: <osstest-161829-mainreport@xen.org> <4ea1e89f-a7a0-7664-470c-b3cf773a1031@xen.org> <20210510084057.GA933@lst.de> <alpine.DEB.2.21.2105101818260.5018@sstabellini-ThinkPad-T480s> <20210511063558.GA7605@lst.de>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <202105120059.uTLH58Lm-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+On Tue, 11 May 2021, Christoph Hellwig wrote:
+> On Mon, May 10, 2021 at 06:46:34PM -0700, Stefano Stabellini wrote:
+> > On Mon, 10 May 2021, Christoph Hellwig wrote:
+> > > On Sat, May 08, 2021 at 12:32:37AM +0100, Julien Grall wrote:
+> > > > The pointer dereferenced seems to suggest that the swiotlb hasn't been 
+> > > > allocated. From what I can tell, this may be because swiotlb_force is set 
+> > > > to SWIOTLB_NO_FORCE, we will still enable the swiotlb when running on top 
+> > > > of Xen.
+> > > >
+> > > > I am not entirely sure what would be the correct fix. Any opinions?
+> > > 
+> > > Can you try something like the patch below (not even compile tested, but
+> > > the intent should be obvious?
+> > > 
+> > > 
+> > > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> > > index 16a2b2b1c54d..7671bc153fb1 100644
+> > > --- a/arch/arm64/mm/init.c
+> > > +++ b/arch/arm64/mm/init.c
+> > > @@ -44,6 +44,8 @@
+> > >  #include <asm/tlb.h>
+> > >  #include <asm/alternative.h>
+> > >  
+> > > +#include <xen/arm/swiotlb-xen.h>
+> > > +
+> > >  /*
+> > >   * We need to be able to catch inadvertent references to memstart_addr
+> > >   * that occur (potentially in generic code) before arm64_memblock_init()
+> > > @@ -482,7 +484,7 @@ void __init mem_init(void)
+> > >  	if (swiotlb_force == SWIOTLB_FORCE ||
+> > >  	    max_pfn > PFN_DOWN(arm64_dma_phys_limit))
+> > >  		swiotlb_init(1);
+> > > -	else
+> > > +	else if (!IS_ENABLED(CONFIG_XEN) || !xen_swiotlb_detect())
+> > >  		swiotlb_force = SWIOTLB_NO_FORCE;
+> > >  
+> > >  	set_max_mapnr(max_pfn - PHYS_PFN_OFFSET);
+> > 
+> > The "IS_ENABLED(CONFIG_XEN)" is not needed as the check is already part
+> > of xen_swiotlb_detect().
+> 
+> As far as I can tell the x86 version of xen_swiotlb_detect has a
+> !CONFIG_XEN stub.  The arm/arm64 version in uncoditionally declared, but
+> the implementation only compiled when Xen support is enabled.
 
-Le 11/05/2021 à 18:30, kernel test robot a écrit :
-> Hi Christophe,
-> 
-> First bad commit (maybe != root cause):
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   1140ab592e2ebf8153d2b322604031a8868ce7a5
-> commit: eacf4c0202654adfa94bbb17b5c5c77c0be14af8 powerpc: Enable OPTPROBES on PPC32
-> date:   3 weeks ago
-> config: powerpc-randconfig-r033-20210511 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project a0fed635fe1701470062495a6ffee1c608f3f1bc)
+The implementation of xen_swiotlb_detect should work fine if
+!CONFIG_XEN, but the issue is that it is implemented in
+arch/arm/xen/mm.c, so it is not going to be available.
 
-A clang issue ?
+I think it would be good to turn it into a static inline so that we can
+call it from arch/arm64/mm/init.c and other similar places with or
+without CONFIG_XEN, see appended patch below. It compiles without
+CONFIG_XEN.
 
 
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # install powerpc cross compiling tool for clang build
->          # apt-get install binutils-powerpc-linux-gnu
->          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eacf4c0202654adfa94bbb17b5c5c77c0be14af8
->          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->          git fetch --no-tags linus master
->          git checkout eacf4c0202654adfa94bbb17b5c5c77c0be14af8
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=powerpc
+> > But let me ask another question first. Do you think it makes sense to have:
+> > 
+> > 	if (swiotlb_force == SWIOTLB_NO_FORCE)
+> > 		return 0;
+> > 
+> > at the beginning of swiotlb_late_init_with_tbl? I am asking because
+> > swiotlb_late_init_with_tbl is meant for special late initializations,
+> > right? It shouldn't really matter the presence or absence of
+> > SWIOTLB_NO_FORCE in regards to swiotlb_late_init_with_tbl. Also the
+> > commit message for "swiotlb: Make SWIOTLB_NO_FORCE perform no
+> > allocation" says that "If a platform was somehow setting
+> > swiotlb_no_force and a later call to swiotlb_init() was to be made we
+> > would still be proceeding with allocating the default SWIOTLB size
+> > (64MB)." Our case here is very similar, right? So the allocation should
+> > proceed?
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->>> arch/powerpc/kernel/optprobes.c:34:1: error: unused function 'is_kprobe_ppc_optinsn_slot' [-Werror,-Wunused-function]
->     DEFINE_INSN_CACHE_OPS(ppc_optinsn);
->     ^
->     include/linux/kprobes.h:306:20: note: expanded from macro 'DEFINE_INSN_CACHE_OPS'
->     static inline bool is_kprobe_##__name##_slot(unsigned long addr)        \
+> Well, right now SWIOTLB_NO_FORCE is checked in dma_direct_map_page.
+> We need to clean all this up a bit, especially with the work to support
+> multiple swiotlb buffers, but I think for now this is the best we can
+> do.
 
-That's a 'static inline', shouldn't generate an 'unused function' warning.
+OK
 
->                        ^
->     <scratch space>:16:1: note: expanded from here
->     is_kprobe_ppc_optinsn_slot
->     ^
->     1 error generated.
+
+> > Which brings me to a separate unrelated issue, still affecting the path
+> > xen_swiotlb_init -> swiotlb_late_init_with_tbl. If swiotlb_init(1) is
+> > called by mem_init then swiotlb_late_init_with_tbl will fail due to the
+> > check:
+> > 
+> >     /* protect against double initialization */
+> >     if (WARN_ON_ONCE(io_tlb_default_mem))
+> >         return -ENOMEM;
+> > 
+> > xen_swiotlb_init is meant to ask Xen to make a bunch of pages physically
+> > contiguous. Then, it initializes the swiotlb buffer based on those
+> > pages. So it is a problem that swiotlb_late_init_with_tbl refuses to
+> > continue. However, in practice it is not a problem today because on ARM
+> > we don't actually make any special requests to Xen to make the pages
+> > physically contiguous (yet). See the empty implementation of
+> > arch/arm/xen/mm.c:xen_create_contiguous_region. I don't know about x86.
+> > 
+> > So maybe we should instead do something like the appended?
 > 
-> 
-> vim +/is_kprobe_ppc_optinsn_slot +34 arch/powerpc/kernel/optprobes.c
-> 
-> 51c9c084399352 Anju T 2017-02-08  20
-> 51c9c084399352 Anju T 2017-02-08  21  #define TMPL_CALL_HDLR_IDX	\
-> 51c9c084399352 Anju T 2017-02-08  22  	(optprobe_template_call_handler - optprobe_template_entry)
-> 51c9c084399352 Anju T 2017-02-08  23  #define TMPL_EMULATE_IDX	\
-> 51c9c084399352 Anju T 2017-02-08  24  	(optprobe_template_call_emulate - optprobe_template_entry)
-> 51c9c084399352 Anju T 2017-02-08  25  #define TMPL_RET_IDX		\
-> 51c9c084399352 Anju T 2017-02-08  26  	(optprobe_template_ret - optprobe_template_entry)
-> 51c9c084399352 Anju T 2017-02-08  27  #define TMPL_OP_IDX		\
-> 51c9c084399352 Anju T 2017-02-08  28  	(optprobe_template_op_address - optprobe_template_entry)
-> 51c9c084399352 Anju T 2017-02-08  29  #define TMPL_INSN_IDX		\
-> 51c9c084399352 Anju T 2017-02-08  30  	(optprobe_template_insn - optprobe_template_entry)
-> 51c9c084399352 Anju T 2017-02-08  31  #define TMPL_END_IDX		\
-> 51c9c084399352 Anju T 2017-02-08  32  	(optprobe_template_end - optprobe_template_entry)
-> 51c9c084399352 Anju T 2017-02-08  33
-> 51c9c084399352 Anju T 2017-02-08 @34  DEFINE_INSN_CACHE_OPS(ppc_optinsn);
-> 51c9c084399352 Anju T 2017-02-08  35
-> 
-> :::::: The code at line 34 was first introduced by commit
-> :::::: 51c9c0843993528bffc920c54c2121d9e6f8b090 powerpc/kprobes: Implement Optprobes
-> 
-> :::::: TO: Anju T <anju@linux.vnet.ibm.com>
-> :::::: CC: Michael Ellerman <mpe@ellerman.id.au>
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
+> So I'd like to change the core swiotlb initialization to just use
+> a callback into the arch/xen code to make the pages contigous and
+> kill all that code duplication.  Together with the multiple swiotlb
+> buffer work I'd rather avoid churn that goes into a different direction
+> if possible.
+
+That's a much better plan. It is also not super urgent, so maybe for now
+we could add an explicit check for io_tlb_default_mem != NULL at the
+beginning of xen_swiotlb_init? So that at least we can fail explicitly
+or ignore it explicitly rather than by accident.
+
+
+---
+
+
+diff --git a/arch/arm/xen/mm.c b/arch/arm/xen/mm.c
+index f8f07469d259..223b1151fd7d 100644
+--- a/arch/arm/xen/mm.c
++++ b/arch/arm/xen/mm.c
+@@ -135,18 +135,6 @@ void xen_destroy_contiguous_region(phys_addr_t pstart, unsigned int order)
+ 	return;
+ }
+ 
+-int xen_swiotlb_detect(void)
+-{
+-	if (!xen_domain())
+-		return 0;
+-	if (xen_feature(XENFEAT_direct_mapped))
+-		return 1;
+-	/* legacy case */
+-	if (!xen_feature(XENFEAT_not_direct_mapped) && xen_initial_domain())
+-		return 1;
+-	return 0;
+-}
+-
+ static int __init xen_mm_init(void)
+ {
+ 	struct gnttab_cache_flush cflush;
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 16a2b2b1c54d..e55409caaee3 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -43,6 +43,7 @@
+ #include <linux/sizes.h>
+ #include <asm/tlb.h>
+ #include <asm/alternative.h>
++#include <asm/xen/swiotlb-xen.h>
+ 
+ /*
+  * We need to be able to catch inadvertent references to memstart_addr
+@@ -482,7 +483,7 @@ void __init mem_init(void)
+ 	if (swiotlb_force == SWIOTLB_FORCE ||
+ 	    max_pfn > PFN_DOWN(arm64_dma_phys_limit))
+ 		swiotlb_init(1);
+-	else
++	else if (!xen_swiotlb_detect())
+ 		swiotlb_force = SWIOTLB_NO_FORCE;
+ 
+ 	set_max_mapnr(max_pfn - PHYS_PFN_OFFSET);
+diff --git a/include/xen/arm/swiotlb-xen.h b/include/xen/arm/swiotlb-xen.h
+index 2994fe6031a0..33336ab58afc 100644
+--- a/include/xen/arm/swiotlb-xen.h
++++ b/include/xen/arm/swiotlb-xen.h
+@@ -2,6 +2,19 @@
+ #ifndef _ASM_ARM_SWIOTLB_XEN_H
+ #define _ASM_ARM_SWIOTLB_XEN_H
+ 
+-extern int xen_swiotlb_detect(void);
++#include <xen/features.h>
++#include <xen/xen.h>
++
++static inline int xen_swiotlb_detect(void)
++{
++	if (!xen_domain())
++		return 0;
++	if (xen_feature(XENFEAT_direct_mapped))
++		return 1;
++	/* legacy case */
++	if (!xen_feature(XENFEAT_not_direct_mapped) && xen_initial_domain())
++		return 1;
++	return 0;
++}
+ 
+ #endif /* _ASM_ARM_SWIOTLB_XEN_H */
