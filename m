@@ -2,187 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B5E37A606
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D12837A60A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231516AbhEKLuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231538AbhEKLuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 07:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231518AbhEKLuA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 07:50:00 -0400
-Received: from mail-bn1nam07on2082.outbound.protection.outlook.com ([40.107.212.82]:30855
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230400AbhEKLt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 07:49:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n2I1hR35i+cuyqYtw1xdqNojy/qm4jubiBDDqSaRZQkD86Kvhggdh18qWLqaOAXAC+Ma2JcUfJ5woNehq+FIzXDVK8NW1gXqIrXnDW+yYgssz51s3R3Vd9mWZzBFiBprti+oNQAi3VOyWB3R1kuMAXVFtzAhP5kjrA9jBE4sMggCQjkYpO+p1tDDPXgXc0HuTPltHfyt18tSK+M9Of08JJPW6iPgcQDWJ0rBB1pNvpfP8eN/XZ003Fe0woXVm0iC3g+04VRu42uS+weCqMVXjgBVz7on9hkvOszu+bT84gNBWkpqi6D5Fo+Yr+rDYcgDXLQmSIOI9nDfiFDjB9wyfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X1uu4WWF+Y9oEfI7PCwJNR8A1DC0pNqF02DFNORbzQs=;
- b=GgZ2w3EkfGJkwquE7SHp/4Zf8O8A5uaIBuUMW8zpxwTBCmcRbMp8uaBKCTdKv/VMCLv2FzxNtQQr1+DMoXuxoTrKOEtTe2Y43GLrD9kF9FWMGi0UImRFGfvEOK2CofKcbrP1gsUxp6ab6tQlae2RsZPxcnIfjM/F73sUqRXKw/t/byu2CKV0MId2zKSxrdU+iY2viVtCBh0S4Aw7a9puHwSKcC8ltl6CzXjyQPw3EZK9uhrOsMJkAE8aUyLGmqvX8zes8EL2vRmBkahdGbThMB7gZ8mxUUQJ4Cp/fCL3xScn1QmUuB7L4CvTLb5QjeHpMhjQ31CWpV9GS5LuO2jBWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X1uu4WWF+Y9oEfI7PCwJNR8A1DC0pNqF02DFNORbzQs=;
- b=Zy6FMHgY3Vi7PQufVLqBcfw+D11c8ORDYx/uLjSHo7qzhKOff9wShBlZgRUUe9GzwGeP5A8s9ydDGuMQfC38Ncd+iRC+ujDk1IyLNAHCEpIrXvxYWZgakda/pE7f32GD5943Ly5XNyM0G9RKtnlbPI48x3PYxmIEWJ1kqphPd7GDahdMcL0ImWApOHR9GiJNOJbDfDndBkIMrwvcreeqw3Mrsz4s7kMX2h6AkY6Z/R5yVEGvIKs8RO3iXGZ3qOwBsOQwRV+s36qgwK0L2VV2aRIxKWFwzOtkJcTFaNwBj9iE1OYQcALXbgAJAjjIEuu4N8Mqo3jS2tNwofWRfJ4fsQ==
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2860.namprd12.prod.outlook.com (2603:10b6:5:186::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Tue, 11 May
- 2021 11:48:50 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4108.031; Tue, 11 May 2021
- 11:48:49 +0000
-Date:   Tue, 11 May 2021 08:48:48 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
-        zhangfei.gao@linaro.org, vkoul@kernel.org
-Subject: Re: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
- flags
-Message-ID: <20210511114848.GK1002214@nvidia.com>
-References: <1620653108-44901-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1620653108-44901-2-git-send-email-jacob.jun.pan@linux.intel.com>
- <20210510233749.GG1002214@nvidia.com>
- <20210510203145.086835cc@jacob-builder>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210510203145.086835cc@jacob-builder>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0199.namprd13.prod.outlook.com
- (2603:10b6:208:2be::24) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C55C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 04:48:53 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id j10so28150974lfb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 04:48:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OxdoaKPOQuUdKzkVcLxQZyyXBdgyHiRS3tUGaZINUts=;
+        b=pu5+cwzEKuzc6EKXsqJ7EaWSkxB7rCn6gNQ30VMCpZCLAPn9ir6RnzaGipRTyxVm+K
+         pSnBAdAG4NNgwEkwdQTxjhsKwtxFqJ99SznjFTuhezxvdIHgaI6BBv3p+8p0XsHszG+V
+         RQaHASxm9Et0cxJy0qUKzFBFViubxluBaNVVg45aQybB/7wIbjaw1IMMvZVohB06z+O9
+         3s8uL1JLKzVYvB1RZkPBju2l4gzFHKeK2tL7LkbfaYQ8lrlvI566AMHvwhvFVbRBso9Z
+         tDguC2zPMdW7HGa4bDpl5xh98LNl9ydjJwxQSDPvWhWqmX6vFAPsI2/5z5P21MbGsP3t
+         13iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OxdoaKPOQuUdKzkVcLxQZyyXBdgyHiRS3tUGaZINUts=;
+        b=XAwn/BUHzD4T/+zgiXLLKW2wg1olk7BoCXOgyPZWq89hfdysnqi9AmzdoQ4Y277beQ
+         lvyC+Wtu/3aFQhTkY4CzMkN7Y/6qj2giaOfS1CfuS5YGVGdQCE6+5kccMkXJklopIFb0
+         0fOSpras+lqKdC3/0AP8htHU4ob29FEDzor7u7/Tc1NcAPtClQdBp9PZoQ/GHKN3ghTZ
+         1RYncUXRlaOxFZPeAt4jjIvke4ixdZxi+oA+RUeEbl5mnTtWGXFALbfhet0g733iLhaW
+         ASamkLKs+B+BdSuGdE/0uhNQ1zEydJWWQcICvYFbkyhtJAtp5ismOXAAALB5FtW0kXfi
+         PIIQ==
+X-Gm-Message-State: AOAM533URk/suo0R8GvG6tAZScl++/Int4ER3loOD5x39Ve64WWHlP6R
+        6yNG9SpHsDNOvjqi066vMS0W6w==
+X-Google-Smtp-Source: ABdhPJydVEzMQLCZSWLjQHEgnr+jpAeuIOL0TV29D90uqoPSgdYZuwn5zByK9Fy6Y0UQztu1N5pypA==
+X-Received: by 2002:a05:6512:b8e:: with SMTP id b14mr20299532lfv.404.1620733732151;
+        Tue, 11 May 2021 04:48:52 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id x19sm2604242lfa.22.2021.05.11.04.48.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 04:48:51 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 40BD0102615; Tue, 11 May 2021 14:48:52 +0300 (+03)
+Date:   Tue, 11 May 2021 14:48:52 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v26 30/30] mm: Introduce PROT_SHADOW_STACK for shadow
+ stack
+Message-ID: <20210511114852.5wm6a5z72xjlqc4c@box>
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
+ <20210427204315.24153-31-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0199.namprd13.prod.outlook.com (2603:10b6:208:2be::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.12 via Frontend Transport; Tue, 11 May 2021 11:48:49 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lgQsa-005GS9-AN; Tue, 11 May 2021 08:48:48 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5318360c-f9f2-47c4-3aeb-08d91472bdee
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2860:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB2860B063A97B0C2D85D735A6C2539@DM6PR12MB2860.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 55XKXK9sDad7oO6+tkQ+RZbquJVHGOzskbCqsAjDhHmnLyRsqBPv5xWfkw5y4cOSTT/zH8bv2sBBVhH78TZoN+GEpMiT346RaJzdxvBMaYtOgxtw1YZEb8+6R1137IRNzUVUEawwbfsx+BeXnu+dY4DAl9YFZXAMm9XBqS3uzyXS3+/PMYzHKMVDwZCN1JB/3VCICBhDZLefE0KlR0v9q48TTnPTHlxtW+Oc21RmZnQEsbLIatVXva8LNO8NPnjeUO8syRJnnv++Od3Sk5hlB/SAsljvS14ibQxciTU5pZbNWVNArpm3gM9cgd8Nm/SKhNzl3BsaEIdE4WH2Nk+4GAHLngrhuBL9FPN1L5PM231BQ2b0uqqLOcTozEV5klJTbJoRuuEQfMVKPwvH8XNsqhWWARaofmjcTb3vQyPcOXIEucLBV3CKrftIrf8UQy43PcM168csgd6GxrJHfPhO227Y3pdp4SqM7EqD0q6NQMTr5kX/4PzjTiLhhT/jg+KYflMHgcX4no3cA4b4EOgmZUa/2uxWrd5QkbwfxoxHLLN+5d/0BZzM9RAyn8L6Veot1MumO1YauUrl8UmYAlrFIX2ypLWE3Z99rnjhOKJPkjA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(366004)(346002)(376002)(39850400004)(8676002)(86362001)(4326008)(26005)(54906003)(33656002)(8936002)(66556008)(478600001)(66476007)(36756003)(7416002)(9786002)(426003)(66946007)(38100700002)(1076003)(2616005)(6916009)(2906002)(316002)(5660300002)(186003)(83380400001)(9746002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UUM4TmhmN0pHN09nbWx1d3RoakI4RmlaK1BvUG1IeCtYTVFaTjdTWXpZTWow?=
- =?utf-8?B?clRNY0M4eDdIQVd4N3hWUzIzU0xpSjl5MkxySUhBaWNxYW1XWXQrQjIxUjBP?=
- =?utf-8?B?Q3NTUGs4QTNmbkh6SWlNNTlsNW9iWVdWbW5HZlkzcGlDcGU2cnZIQVE1QWtK?=
- =?utf-8?B?RTB2VVlaWDgrdFo2R0tYQzVrcDQzVUFlKzBNS1hQdndUSTU1eWJmOUJxbEQ5?=
- =?utf-8?B?bmtiLzBhRzlmYXI0aXM5WU40OHRQQmFOQjIvVW9OWHVtSWM2ZXJLR3dieW1I?=
- =?utf-8?B?MC9nWHJvVm01ZVhxektiYjlWVklSQk05V3hUQ2VoMzloSzEvNFVSa0hwV0pn?=
- =?utf-8?B?enpHdUc3V1VLT09hNjh2bzRDQWVJeTRyWlJvN3E3azhabzBKREMwMWFxaUJv?=
- =?utf-8?B?M3ZiS2tZeVFCTGFkbW9OWmdMRzZLS1NkRFM3V3NZOSsvQ3Q5R29iNGdYUlFZ?=
- =?utf-8?B?TFlhQnVIcWVubkVLb0hYS3lxNTdPdmkrNzdjaEpEb0I1Sko4TnVRSDNYUVB3?=
- =?utf-8?B?dDBLenlEQTh3UWdxWlJkS1NYVkpnd0U2RWFzeGhyaHVqUnhvZDJVOTNvelQ4?=
- =?utf-8?B?b3NoT0laWGVyWUFTTFBDTjY1ajlRM2dNaEgvVXlKSzErTVNHZE01a291dUZI?=
- =?utf-8?B?cWFJakZPM21nZE1VbURCKzZPRkRBejNteWxRTUxQZGY2T2hNYWdvUFRWc2xj?=
- =?utf-8?B?dDdhVEtJUk12ZXlnNVlxRzdqV0cxR095K2RCUHd4bmJPRHdnREVSZWx0QXNZ?=
- =?utf-8?B?N2JMRnRXWHNTRDBLbGVzYVYvcU1FVklySDNyWmp5azgvMHFIS0tWRHl4VGk4?=
- =?utf-8?B?Q0FxSEEycDJ5b09ROU1aRGZtSXFKZkV1cWpZK0gzS0RteEp4ZHVoVHpWYVhX?=
- =?utf-8?B?bkNzT2htelRHNkttRVczWXlEblFFR0NPTEc2VzJqYjV0TTRRdFdqekdFMWU4?=
- =?utf-8?B?Mlc5RDdjYjJWL3RST2VkTlNvVEx5bnNtWDZFL0Z0cFJYZE45cTNLNXlFWVFV?=
- =?utf-8?B?UDBDWko2blY1MmtaMW84Y1lOZG9pWVdXY3YzaWwvdnRPTnVwT2dxaVJLaXpO?=
- =?utf-8?B?TmlOK1NJS1N2UnJOb2lhTUN2V2hkcDBlRjM3dmVLMDZBNEVLa1lZWFFhSU04?=
- =?utf-8?B?eWFEaldZK3lPWm14WHc0R1JSaWVhbTVLRjJwMjh2T0p4ZTN6M3lUb0ZrVXlX?=
- =?utf-8?B?SUtVQTVaM3pibG5aZ0JzalRTS3Y0cGVhczBvcDNnUUZ3QU9pSzArVXlLNGx0?=
- =?utf-8?B?ZVAwT1F4T2dINlpBRnJ0RldBRjJhRGhTQ2VVWkhNZmNTdkdnNlZZR1JWM0px?=
- =?utf-8?B?U20vTTVKTzkzL0hvKzdJcFFHL1NlRzkxWVRkMUpicmd6cGFDdnFFQWQybGpZ?=
- =?utf-8?B?RjBNa2J1NnFlTWgvNkI5VFJwYzYydEdxVDJVOS9SRDIwa3Y5MzRtMTR1L2tU?=
- =?utf-8?B?R3lUY2N3ZzM5ZnJWQWEwdFloVytnRXAzSkUrWllEbmVQbWtKZ1NvNWkrOXNX?=
- =?utf-8?B?OG9zNm9UclJFMEd0M3pudDJXQ2czVHE1anZiRDFpRzA3aFFmdGVoUmRzdTVQ?=
- =?utf-8?B?V0RlWTUwdTZ1bjdZcmUza0NwbUFJMGxIcW5IR01HZGsxZGt5VWRBOXFTNVhO?=
- =?utf-8?B?dVFlVkpCWWw5UnNDTVkrVVE1UlpvRjJDVHduNzAySmprbDU1TEFkeWlBMjR0?=
- =?utf-8?B?d1Mvb3FqdlowalpuRnNQMEFneGdnWVZGaGRvRXVtT2x0UzBwMnFjWDFyVEQ2?=
- =?utf-8?Q?LaE+zNzoUZOK2u3lTlZ/GSaf1ywmjiWOxRH16SD?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5318360c-f9f2-47c4-3aeb-08d91472bdee
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 11:48:49.7158
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ir6URekscKE0P7ddugSm8A/8yKTAGVvOa/ZP2BFJuHjlFm9tJ7/no9f4wIoq2f+H
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2860
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210427204315.24153-31-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 08:31:45PM -0700, Jacob Pan wrote:
-> Hi Jason,
+On Tue, Apr 27, 2021 at 01:43:15PM -0700, Yu-cheng Yu wrote:
+> There are three possible options to create a shadow stack allocation API:
+> an arch_prctl, a new syscall, or adding PROT_SHADOW_STACK to mmap() and
+> mprotect().  Each has its advantages and compromises.
 > 
-> On Mon, 10 May 2021 20:37:49 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+> An arch_prctl() is the least intrusive.  However, the existing x86
+> arch_prctl() takes only two parameters.  Multiple parameters must be
+> passed in a memory buffer.  There is a proposal to pass more parameters in
+> registers [1], but no active discussion on that.
 > 
-> > On Mon, May 10, 2021 at 06:25:07AM -0700, Jacob Pan wrote:
-> > 
-> > > +/*
-> > > + * The IOMMU_SVA_BIND_SUPERVISOR flag requests a PASID which can be
-> > > used only
-> > > + * for access to kernel addresses. No IOTLB flushes are automatically
-> > > done
-> > > + * for kernel mappings; it is valid only for access to the kernel's
-> > > static
-> > > + * 1:1 mapping of physical memory — not to vmalloc or even module
-> > > mappings.
-> > > + * A future API addition may permit the use of such ranges, by means
-> > > of an
-> > > + * explicit IOTLB flush call (akin to the DMA API's unmap method).
-> > > + *
-> > > + * It is unlikely that we will ever hook into flush_tlb_kernel_range()
-> > > to
-> > > + * do such IOTLB flushes automatically.
-> > > + */
-> > > +#define IOMMU_SVA_BIND_SUPERVISOR       BIT(0)  
-> > 
-> > Huh? That isn't really SVA, can you call it something saner please?
-> > 
-> This is shared kernel virtual address, I am following the SVA lib naming
-> since this is where the flag will be used. Why this is not SVA? Kernel
-> virtual address is still virtual address. Is it due to direct map?
-
-As the above explains it doesn't actually synchronize the kernel's
-address space it just shoves the direct map into the IOMMU.
-
-I suppose a different IOMMU implementation might point the PASID directly
-at the kernel's page table and avoid those limitations - but since
-that isn't portable it seems irrelevant.
-
-Since the only thing it really maps is the direct map I would just
-call it direct_map, or all physical or something.
-
-How does this interact with the DMA APIs? How do you get CPU cache
-flushing/etc into PASID operations that don't trigger IOMMU updates?
-
-Honestly, I'm not convinced we should have "kernel SVA" at all.. Why
-does IDXD use normal DMA on the RID for kernel controlled accesses?
-
-> > Is it really a PASID that always has all of physical memory mapped
-> > into it? Sounds dangerous. What is it for?
+> A new syscall minimizes compatibility issues and offers an extensible frame
+> work to other architectures, but this will likely result in some overlap of
+> mmap()/mprotect().
 > 
-> Yes. It is to bind DMA request w/ PASID with init_mm/init_top_pgt. Per PCIe
-> spec PASID TLP prefix has "Privileged Mode Requested" bit. VT-d supports
-> this with "Privileged-mode-Requested (PR) flag (to distinguish user versus
-> supervisor access)". Each PASID entry has a SRE (Supervisor Request Enable)
-> bit.
+> The introduction of PROT_SHADOW_STACK to mmap()/mprotect() takes advantage
+> of existing APIs.  The x86-specific PROT_SHADOW_STACK is translated to
+> VM_SHADOW_STACK and a shadow stack mapping is created without reinventing
+> the wheel.  There are potential pitfalls though.  The most obvious one
+> would be using this as a bypass to shadow stack protection.  However, the
+> attacker would have to get to the syscall first.
+> 
+> [1] https://lore.kernel.org/lkml/20200828121624.108243-1-hjl.tools@gmail.com/
+> 
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> ---
+> v26:
+> - Change PROT_SHSTK to PROT_SHADOW_STACK.
+> - Remove (vm_flags & VM_SHARED) check, since it is covered by
+>   !vma_is_anonymous().
+> 
+> v24:
+> - Update arch_calc_vm_prot_bits(), leave PROT* checking to
+>   arch_validate_prot().
+> - Update arch_validate_prot(), leave vma flags checking to
+>   arch_validate_flags().
+> - Add arch_validate_flags().
+> 
+>  arch/x86/include/asm/mman.h      | 60 +++++++++++++++++++++++++++++++-
+>  arch/x86/include/uapi/asm/mman.h |  2 ++
+>  include/linux/mm.h               |  1 +
+>  3 files changed, 62 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/mman.h b/arch/x86/include/asm/mman.h
+> index 629f6c81263a..fbb90f1b02c0 100644
+> --- a/arch/x86/include/asm/mman.h
+> +++ b/arch/x86/include/asm/mman.h
+> @@ -20,11 +20,69 @@
+>  		((vm_flags) & VM_PKEY_BIT2 ? _PAGE_PKEY_BIT2 : 0) |	\
+>  		((vm_flags) & VM_PKEY_BIT3 ? _PAGE_PKEY_BIT3 : 0))
+>  
+> -#define arch_calc_vm_prot_bits(prot, key) (		\
+> +#define pkey_vm_prot_bits(prot, key) (			\
+>  		((key) & 0x1 ? VM_PKEY_BIT0 : 0) |      \
+>  		((key) & 0x2 ? VM_PKEY_BIT1 : 0) |      \
+>  		((key) & 0x4 ? VM_PKEY_BIT2 : 0) |      \
+>  		((key) & 0x8 ? VM_PKEY_BIT3 : 0))
+> +#else
+> +#define pkey_vm_prot_bits(prot, key) (0)
+>  #endif
+>  
+> +static inline unsigned long arch_calc_vm_prot_bits(unsigned long prot,
+> +						   unsigned long pkey)
+> +{
+> +	unsigned long vm_prot_bits = pkey_vm_prot_bits(prot, pkey);
+> +
+> +	if (prot & PROT_SHADOW_STACK)
+> +		vm_prot_bits |= VM_SHADOW_STACK;
+> +
+> +	return vm_prot_bits;
+> +}
+> +
+> +#define arch_calc_vm_prot_bits(prot, pkey) arch_calc_vm_prot_bits(prot, pkey)
+> +
+> +#ifdef CONFIG_X86_SHADOW_STACK
+> +static inline bool arch_validate_prot(unsigned long prot, unsigned long addr)
+> +{
+> +	unsigned long valid = PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM |
+> +			      PROT_SHADOW_STACK;
+> +
+> +	if (prot & ~valid)
+> +		return false;
+> +
+> +	if (prot & PROT_SHADOW_STACK) {
+> +		if (!current->thread.cet.shstk_size)
+> +			return false;
+> +
+> +		/*
+> +		 * A shadow stack mapping is indirectly writable by only
+> +		 * the CALL and WRUSS instructions, but not other write
+> +		 * instructions).  PROT_SHADOW_STACK and PROT_WRITE are
+> +		 * mutually exclusive.
+> +		 */
+> +		if (prot & PROT_WRITE)
+> +			return false;
+> +	}
+> +
+> +	return true;
+> +}
+> +
+> +#define arch_validate_prot arch_validate_prot
+> +
+> +static inline bool arch_validate_flags(struct vm_area_struct *vma, unsigned long vm_flags)
+> +{
+> +	/*
+> +	 * Shadow stack must be anonymous and not shared.
+> +	 */
+> +	if ((vm_flags & VM_SHADOW_STACK) && !vma_is_anonymous(vma))
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +#define arch_validate_flags(vma, vm_flags) arch_validate_flags(vma, vm_flags)
+> +
+> +#endif /* CONFIG_X86_SHADOW_STACK */
+> +
+>  #endif /* _ASM_X86_MMAN_H */
+> diff --git a/arch/x86/include/uapi/asm/mman.h b/arch/x86/include/uapi/asm/mman.h
+> index f28fa4acaeaf..4c36b263cf0a 100644
+> --- a/arch/x86/include/uapi/asm/mman.h
+> +++ b/arch/x86/include/uapi/asm/mman.h
+> @@ -4,6 +4,8 @@
+>  
+>  #define MAP_32BIT	0x40		/* only give out 32bit addresses */
+>  
+> +#define PROT_SHADOW_STACK	0x10	/* shadow stack pages */
+> +
+>  #include <asm-generic/mman.h>
+>  
+>  #endif /* _UAPI_ASM_X86_MMAN_H */
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 1ccec5cc399b..9a7652eea207 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -342,6 +342,7 @@ extern unsigned int kobjsize(const void *objp);
+>  
+>  #if defined(CONFIG_X86)
+>  # define VM_PAT		VM_ARCH_1	/* PAT reserves whole VMA at once (x86) */
+> +# define VM_ARCH_CLEAR	VM_SHADOW_STACK
 
-The PR flag is only needed if the underlying IOMMU is directly
-processing the CPU page tables. For cases where the IOMMU is using its
-own page table format and has its own copies the PR flag shouldn't be
-used.
+Nit: you can put VM_SHADOW_STACK directly into VM_FLAGS_CLEAR. It's
+already conditinal on the feature enabled and VM_NONE otherwise.
 
-Jason
+Up to you.
+
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+
+-- 
+ Kirill A. Shutemov
