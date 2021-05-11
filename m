@@ -2,115 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5321F37A7F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B0937A7FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbhEKNng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 09:43:36 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33772 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231623AbhEKNne (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 09:43:34 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14BDYP3X009593;
-        Tue, 11 May 2021 09:42:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=f9vO9RefB+oUE3iXwZ90+gEsfMSU8YiKItNlbfwzQus=;
- b=a7S3v/ZkYvVr7PIvaZMea7V0MB5uhuZC28n31LfFwLL4CiEBbnNn570YG8wT7TgkYUsZ
- 34jhs5U3I+vrk/4Etla71ylsYs5uQAGp2fHIoBp/KLegDSZyWiNLv0ERO8AmcJsyyE/K
- 7KdgU3Z7D6fueKe6AsY8PVkSs8LdZb+LdPQ+2e087gv22jrmByg53uuYqxHidCj5GKZw
- TVyi5P9Ege/1VJ6U+FIPNpLnNiXLiiXUDG5tvJie8za0X/aSwmrK0ufj26Ff5DQbRxyd
- dQm1skG8rQmvlH8WkHaDh+FwhqmA1MCZ1hn6AzQd189zphUy6uJg0pbagIcoqwCN8FdS pQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38fsrvttc2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 11 May 2021 09:42:22 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14BDb0pn020296;
-        Tue, 11 May 2021 09:42:21 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38fsrvttbe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 11 May 2021 09:42:21 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14BDfve1023047;
-        Tue, 11 May 2021 13:42:20 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 38dj989pxx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 11 May 2021 13:42:19 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14BDgH1D63570222
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 May 2021 13:42:17 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AA9A611C052;
-        Tue, 11 May 2021 13:42:17 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7241711C04C;
-        Tue, 11 May 2021 13:42:16 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.116.76])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 11 May 2021 13:42:16 +0000 (GMT)
-Message-ID: <956020eb1babea38fa904aadfdbc4c81b9fb7baa.camel@linux.ibm.com>
-Subject: Re: [RESEND][PATCH v6 05/11] evm: Introduce evm_hmac_disabled() to
- safely ignore verification errors
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@google.com
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 11 May 2021 09:42:15 -0400
-In-Reply-To: <20210507133114.2138653-1-roberto.sassu@huawei.com>
-References: <20210505113329.1410943-1-roberto.sassu@huawei.com>
-         <20210507133114.2138653-1-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: qDkpqTL3z5NsS3aQuUgasGcRbsgbs9kP
-X-Proofpoint-GUID: t1GGushV9RgWfXjWKUFDQ8VKgfhyIstr
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-11_02:2021-05-11,2021-05-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 bulkscore=0
- clxscore=1015 malwarescore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- mlxscore=0 adultscore=0 impostorscore=0 suspectscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105110104
+        id S231609AbhEKNpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 09:45:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230435AbhEKNpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 09:45:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B210B6192C;
+        Tue, 11 May 2021 13:44:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620740680;
+        bh=0gtK+SJNoRroYqpZxXO9QMth9hd9b/rKhnd/XoT38YQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XtdoiP0gZ+rKX79UqZPd20HGXRIIbHAbEat0dyEaoYEILdlS7NTlzecb0ZNAtTz+D
+         QTDQkI0+IFO2bK7Gp75kyGNNquowuM0or1pc1U7lsQChETi7OpkSn0jUhptHGIEnuH
+         fSdw21N1Yy6a9RLCO7nrCsICecGVd2N6ChqqFHCqWExI/x6vruXZbT7pkWi7ybGBL/
+         yjkCaW74hzx3vMwWBNPk068VZOFOOY4qtl4Fa1n7tsmN7cSzKlxpF537QtwpZEIN+2
+         HE5PQ+TCm45etli8n07f9d11NoKPQFtNGbsUSyvk63KV+eD5UNOX08H3g78nzwvkz/
+         nmLkXeJudMjqw==
+Received: by mail-ej1-f48.google.com with SMTP id l4so29826903ejc.10;
+        Tue, 11 May 2021 06:44:40 -0700 (PDT)
+X-Gm-Message-State: AOAM531Zv7GmCgnjue9eC2Gtvm/hWAcrIcWByrtay8A9SUWNrpGQlOA+
+        v9Ek+SBLAOePWx35qvwNm4IO9Q7V1wgyYHpdWA==
+X-Google-Smtp-Source: ABdhPJyrWgIUlnOMhVp7YSyR/CWZOr54gf3UNB1vwdQnelxzeEkHmRrxQ841ilXDozmbXutGgeZtxVaJ2xxtGRrkxgg=
+X-Received: by 2002:a17:906:dbdc:: with SMTP id yc28mr11876880ejb.130.1620740679070;
+ Tue, 11 May 2021 06:44:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210510204524.617390-1-robh@kernel.org> <d3aae746-284b-b0bc-0d52-a76c361d3592@lucaceresoli.net>
+In-Reply-To: <d3aae746-284b-b0bc-0d52-a76c361d3592@lucaceresoli.net>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 11 May 2021 08:44:25 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLhwifngoNK0ciO=yuVqpEbMGOSWMHyT=5DcYcO9jcuCw@mail.gmail.com>
+Message-ID: <CAL_JsqLhwifngoNK0ciO=yuVqpEbMGOSWMHyT=5DcYcO9jcuCw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: More removals of type references on common properties
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        Alex Elder <elder@kernel.org>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Input <linux-input@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-05-07 at 15:31 +0200, Roberto Sassu wrote:
-> When a file is being created, LSMs can set the initial label with the
-> inode_init_security hook. If no HMAC key is loaded, the new file will have
-> LSM xattrs but not the HMAC. It is also possible that the file remains
-> without protected xattrs after creation if no active LSM provided it.
-> 
-> Unfortunately, EVM will deny any further metadata operation on new files,
-> as evm_protect_xattr() will always return the INTEGRITY_NOLABEL error, or
-> INTEGRITY_NOXATTRS if no protected xattrs exist. This would limit the
-> usability of EVM when only a public key is loaded, as commands such as cp
-> or tar with the option to preserve xattrs won't work.
-> 
-> This patch introduces the evm_hmac_disabled() function to determine whether
-> or not it is safe to ignore verification errors, based on the ability of
-> EVM to calculate HMACs. If the HMAC key is not loaded, and it cannot be
-> loaded in the future due to the EVM_SETUP_COMPLETE initialization flag,
-> allowing an operation despite the attrs/xattrs being found invalid will not
-> make them valid.
-> 
-> Since the post hooks can be executed even when the HMAC key is not loaded,
-> this patch also ensures that the EVM_INIT_HMAC initialization flag is set
-> before the post hooks call evm_update_evmxattr().
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
+On Tue, May 11, 2021 at 2:20 AM Luca Ceresoli <luca@lucaceresoli.net> wrote:
+>
+> Hi,
+>
+> On 10/05/21 22:45, Rob Herring wrote:
+> > Users of common properties shouldn't have a type definition as the
+> > common schemas already have one. A few new ones slipped in and
+> > *-names was missed in the last clean-up pass. Drop all the unnecessary
+> > type references in the tree.
+> >
+> > A meta-schema update to catch these is pending.
+> >
+> > Cc: Luca Ceresoli <luca@lucaceresoli.net>
+> > Cc: Stephen Boyd <sboyd@kernel.org>
+> > Cc: Olivier Moysan <olivier.moysan@foss.st.com>
+> > Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> > Cc: Jonathan Cameron <jic23@kernel.org>
+> > Cc: Lars-Peter Clausen <lars@metafoo.de>
+> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Cc: Georgi Djakov <djakov@kernel.org>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: Jakub Kicinski <kuba@kernel.org>
+> > Cc: Sebastian Reichel <sre@kernel.org>
+> > Cc: Orson Zhai <orsonzhai@gmail.com>
+> > Cc: Baolin Wang <baolin.wang7@gmail.com>
+> > Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> > Cc: Liam Girdwood <lgirdwood@gmail.com>
+> > Cc: Mark Brown <broonie@kernel.org>
+> > Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
+> > Cc: Odelu Kukatla <okukatla@codeaurora.org>
+> > Cc: Alex Elder <elder@kernel.org>
+> > Cc: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > Cc: linux-clk@vger.kernel.org
+> > Cc: alsa-devel@alsa-project.org
+> > Cc: linux-iio@vger.kernel.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-input@vger.kernel.org
+> > Cc: linux-pm@vger.kernel.org
+> > Cc: netdev@vger.kernel.org
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  Documentation/devicetree/bindings/clock/idt,versaclock5.yaml    | 2 --
+> >  .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml         | 1 -
+> >  Documentation/devicetree/bindings/input/input.yaml              | 1 -
+> >  Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml   | 1 -
+> >  Documentation/devicetree/bindings/net/qcom,ipa.yaml             | 1 -
+> >  .../devicetree/bindings/power/supply/sc2731-charger.yaml        | 2 +-
+> >  Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml          | 2 +-
+> >  7 files changed, 2 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> > index c268debe5b8d..28675b0b80f1 100644
+> > --- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> > +++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> > @@ -60,7 +60,6 @@ properties:
+> >      maxItems: 2
+> >
+> >    idt,xtal-load-femtofarads:
+> > -    $ref: /schemas/types.yaml#/definitions/uint32
+> >      minimum: 9000
+> >      maximum: 22760
+> >      description: Optional load capacitor for XTAL1 and XTAL2
+> > @@ -84,7 +83,6 @@ patternProperties:
+> >          enum: [ 1800000, 2500000, 3300000 ]
+> >        idt,slew-percent:
+> >          description: The Slew rate control for CMOS single-ended.
+> > -        $ref: /schemas/types.yaml#/definitions/uint32
+> >          enum: [ 80, 85, 90, 100 ]
+>
+> Ok, but shouldn't "percent" be listed in
+> Documentation/devicetree/bindings/property-units.txt?
 
-Thanks, Robert!
+It is in the schema already[1].
 
-Reviewed-by:  Mimi Zohar <zohar@linux.ibm.com>
+> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
 
+Thanks.
+
+Rob
+
+[1] https://github.com/devicetree-org/dt-schema/blob/master/schemas/property-units.yaml
