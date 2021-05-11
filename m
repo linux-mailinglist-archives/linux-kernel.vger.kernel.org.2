@@ -2,87 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1188837B08B
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D67537B091
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhEKVJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 17:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbhEKVIv (ORCPT
+        id S229935AbhEKVMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 17:12:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40112 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229736AbhEKVMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 17:08:51 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E09C061761
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 14:07:43 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id h4so21460927wrt.12
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 14:07:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sbKIRmrOmcl+u/rxAwo2Al1Qol8WlT1/5GsgyCqqF4g=;
-        b=DTHfQaLiLMsK8++hKEIE611yGiUCJ05dtoLlcI8nww8VVwfze2472TOBCzFcf8iH9G
-         CtHM7h+oXdIIOaUKuhHz2EvGehc+qMAGastvZFg2NjszdtD+r+Ae7y6aES8DKiZ56/7M
-         3pRY5IAprWdFQwhrWGkAqY+608315exDVucRk=
+        Tue, 11 May 2021 17:12:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620767466;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+K3jFlFWTr2zex2iB2tfI8ow+Rha1HU7+6e+CF7Cupw=;
+        b=DlpzL79mFUfgzrsnvrZ4icbDRVz/5lemcI6AVuxOMLU1OlSpqm+oPKwZ+22Y95rAxTM1zm
+        vAi/QuHpBjZjsxNfF5JMs5HJhagR1JJYf/21o3lgymg3AhYGzjaFEOVQADyR/tPGZZdAj/
+        EQffgInuHeqSH7aq11MHsd1C9GO3KsA=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-536-ACQkZgm8N7Sa6939JSfuZg-1; Tue, 11 May 2021 17:11:04 -0400
+X-MC-Unique: ACQkZgm8N7Sa6939JSfuZg-1
+Received: by mail-il1-f199.google.com with SMTP id h8-20020a92c2680000b02901646ecac1e5so17752409ild.20
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 14:11:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sbKIRmrOmcl+u/rxAwo2Al1Qol8WlT1/5GsgyCqqF4g=;
-        b=ZfcNxKgPuV1GS6ioy072jTs7jv0xvlEXnOJ8A7s6u/qzgqrGVxDcHC7FqMo3B/9w5T
-         08vu+GJ7JUbn044VsqdpbOFmW7m0G+GbA6ggWWg3Z4NRH9oSAfhsA1npZe7ZYFrv61VC
-         ho9Vup9/64LdLRrDVfBCgo/IG32BTeG/2mHhA1K2AQjDNZc/YmxFURLbp3Ylq6SpuNOK
-         jvUpsFF8DUPmS2L0m2kMx6maUyVfPwW6ApsmVGE50FfO33rjbXsOeMQoxNl7SmDhOwcg
-         vf6DofC63bMAFFM4GSYKchBHre/8H/k7+BxLIC/L43pct18b+NefzHHXTVUich4FJrMO
-         xV3Q==
-X-Gm-Message-State: AOAM531GdIyiwd9JCe0M79p6IAg9zVrPPXU9z9hVvfZ5g5xanuo8yjOA
-        w+Oet2FyDeMGob4WBLW6dZfcDelnLtHbu5mJb9i9Ew==
-X-Google-Smtp-Source: ABdhPJzC2Q9UxpNmIchezZOh2txOxVPSjPGlPyH9VS2cIgY/MjDauz10NsHnwacwHfAfabMSNde/gVfXxSgzrd1ELzM=
-X-Received: by 2002:a5d:6752:: with SMTP id l18mr39437393wrw.422.1620767262631;
- Tue, 11 May 2021 14:07:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+K3jFlFWTr2zex2iB2tfI8ow+Rha1HU7+6e+CF7Cupw=;
+        b=H7vv/XT+FU25AHWWQX6ifbSQ8vuVMf8sYhNYuawx4kTR0e6gCmIQxl456BftEiY5um
+         uLxIl/Dyw/DvpzRufg1HI6pXyv0w8UVICv+N9mLm6IW30G3ddokbp73wAgqAp4Y69c0b
+         g/RNMCEdRdZpJqNEpwEUhTEuuys+VMKBqniijEUe/yYrDggwxaLPScbIWgZ/ZpZ49vvt
+         LfwSOCVDeOvXreTGeTqRhIr0c7S/KQeG9hYB0vSgeSA0cQLaTs6xhRuC4rP8lyZChSJt
+         NdCL6eSHZ/25n5wv+zo4zex3QOz4rBGUQewkH4Mx1zYmhN392VzSUirOAUIGcb4Dr/ay
+         IqMg==
+X-Gm-Message-State: AOAM532TKc2H9NC3vh6kupGgu/xnvud7+lk5+qOv3Ls+4GgFBA7v+QKg
+        hFgIW/ZZqLTYfTl5D4bSaEUHgM5p1o1q8a4wPgvDikiBIX6mFy0cIAP3ibOdtbpwJWI23rRC/QN
+        yiShn5rPYSJ5b4UWB6Xtwmdd1
+X-Received: by 2002:a5d:88cf:: with SMTP id i15mr23802064iol.45.1620767463722;
+        Tue, 11 May 2021 14:11:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyhsnBLVhmxvZEiRjZQLNi0xC8XKJaIQPGHGpRvKvjgMOWroevRllIYsPwO64fMWUNVuIr4qQ==
+X-Received: by 2002:a5d:88cf:: with SMTP id i15mr23802051iol.45.1620767463555;
+        Tue, 11 May 2021 14:11:03 -0700 (PDT)
+Received: from halaneylaptop.redhat.com (068-184-200-203.res.spectrum.com. [68.184.200.203])
+        by smtp.gmail.com with ESMTPSA id i13sm9906571ilu.59.2021.05.11.14.11.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 14:11:02 -0700 (PDT)
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH v2] init: Print out unknown kernel parameters
+Date:   Tue, 11 May 2021 16:10:09 -0500
+Message-Id: <20210511211009.42259-1-ahalaney@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210510102014.849075526@linuxfoundation.org>
-In-Reply-To: <20210510102014.849075526@linuxfoundation.org>
-From:   Justin Forbes <jmforbes@linuxtx.org>
-Date:   Tue, 11 May 2021 16:07:31 -0500
-Message-ID: <CAFxkdApQS6WhHhci0jvDyxakXBNL7vhn2LtpV7QYEqkpMMxskA@mail.gmail.com>
-Subject: Re: [PATCH 5.12 000/384] 5.12.3-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        Stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 6:17 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.12.3 release.
-> There are 384 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.3-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+It is easy to foobar setting a kernel parameter on the command line
+without realizing it, there's not much output that you can use to
+assess what the kernel did with that parameter by default.
 
-Tested rc2 against the Fedora build system (aarch64, armv7, ppc64le,
-s390x, x86_64), and boot tested x86_64. No regressions.
+Make it a little more explicit which parameters on the command line
+_looked_ like a valid parameter for the kernel, but did not match
+anything and ultimately got tossed to init. This is very similar to the
+unknown parameter message received when loading a module.
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+This assumes the parameters are processed in a normal fashion, some
+parameters (dyndbg= for example) don't register their
+parameter with the rest of the kernel's parameters, and therefore
+always show up in this list (and are also given to init - like the
+rest of this list).
+
+Another example is BOOT_IMAGE= is highlighted as an offender, which it
+technically is, but is passed by LILO and GRUB so most systems will see
+that complaint.
+
+An example output where "foobared" and "unrecognized" are intentionally
+invalid parameters:
+
+  Kernel command line: BOOT_IMAGE=/boot/vmlinuz-5.12-dirty debug log_buf_len=4M foobared unrecognized=foo
+  Unknown command line parameters: foobared BOOT_IMAGE=/boot/vmlinuz-5.12-dirty unrecognized=foo
+
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+Suggested-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+---
+
+It's my first time sending a v2 via email, please let me know if I've
+messed that up in anyway. I decided it wasn't worth the effort to do
+"autocorrect" functionality Borislav was pondering about, feel free to
+disagree on that if you have a strong opinion.
+
+v2: make output on a single line, make function static and __init,
+    include example output in commit message
+
+ init/main.c | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+
+diff --git a/init/main.c b/init/main.c
+index dd11bfd10ead..ac7b364ae8eb 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -872,6 +872,47 @@ void __init __weak arch_call_rest_init(void)
+ 	rest_init();
+ }
+ 
++static void __init print_unknown_bootoptions(void)
++{
++	char *unknown_options;
++	char *end;
++	const char *const *p;
++	size_t len;
++
++	if (panic_later || (!argv_init[1] && !envp_init[2]))
++		return;
++
++	/*
++	 * Determine how many options we have to print out, plus a space
++	 * before each
++	 */
++	len = 1; /* null terminator */
++	for (p = &argv_init[1]; *p; p++) {
++		len++;
++		len += strlen(*p);
++	}
++	for (p = &envp_init[2]; *p; p++) {
++		len++;
++		len += strlen(*p);
++	}
++
++	unknown_options = memblock_alloc(len, SMP_CACHE_BYTES);
++	if (!unknown_options) {
++		pr_err("%s: Failed to allocate %zu bytes\n",
++			__func__, len);
++		return;
++	}
++	end = unknown_options;
++
++	for (p = &argv_init[1]; *p; p++)
++		end += sprintf(end, " %s", *p);
++	for (p = &envp_init[2]; *p; p++)
++		end += sprintf(end, " %s", *p);
++
++	pr_notice("Unknown command line parameters:%s\n", unknown_options);
++	memblock_free(__pa(unknown_options), len);
++}
++
+ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
+ {
+ 	char *command_line;
+@@ -913,6 +954,7 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
+ 				  static_command_line, __start___param,
+ 				  __stop___param - __start___param,
+ 				  -1, -1, NULL, &unknown_bootoption);
++	print_unknown_bootoptions();
+ 	if (!IS_ERR_OR_NULL(after_dashes))
+ 		parse_args("Setting init args", after_dashes, NULL, 0, -1, -1,
+ 			   NULL, set_init_arg);
+-- 
+2.31.1
+
