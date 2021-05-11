@@ -2,60 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15FE37AEC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB6237AEC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbhEKSxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52346 "EHLO
+        id S232290AbhEKSxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232198AbhEKSwq (ORCPT
+        with ESMTP id S232230AbhEKSwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:52:46 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C27EC06138B
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:51:34 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id v13so18058188ilj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:51:34 -0700 (PDT)
+        Tue, 11 May 2021 14:52:49 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE48C06138E
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:51:35 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id n10so19157804ion.8
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:51:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=aWjz67jruSBa3AfnJK6T0K+rhp52me264VjeXl1/Rrw=;
-        b=tcmZbpv4N7BmdgE/VhMdKYX5VajzQkXZ9HM9JhHaPQegrpCIW6+E8YvZtCfgkdj/1q
-         uCKZCSoPJb84nkdfmWQpXyFsga/opJNb0sc0Lm1lPgBD83G7Ab964HZMQxHXmk9g3NBY
-         Csth1IFzOhyIUsjpkJ6BBIriMaY8S5e4meZjdOoOfCbIKa9/OTa5NImaId8UNpVh1GRq
-         YTjVInNQ7c7romCCF2Pj0ujgveX/KhTfhzZJ8OdPY6ECAo+4PbszxPqjbhlPMQRDAYR8
-         8C1aQWMs7JJ2qqOmzjb7HRUXiBwTTtzviJ99li2XUuJ7wSQrTgSVTRiaT0hxXNF8zMsD
-         7Fzw==
+        bh=be8g977AZ5bDeKF0B08Lx0EuPmyTmMUIPQ9/ceBeosg=;
+        b=Gza6ZZPlOYH97az7teoGtiOBvrypZ4gz6Tq+qYV+S8QHwAQaCNulTaH2rSWVCpxiWP
+         qtSkgTVNXomxSj0Y+DmNarQrJb7SaAitApc+zebdIuEl1BQsDE+76uSoFjKRYRT+M9fx
+         hM1G8Z+UGi7f7W5+4ZW/w3ghxFXMxL2sH6jW+zO9lHXUzorUbaJMuHRgubxpWYKSX9HM
+         FQge0xqiMm/vma34WvNR5JNXrFdem0pvvc4GiAW6p4xd4b6A0eTt0OhQ+c1GF3/AxEcJ
+         RO1ntb1Osnr1f2Ge1F91Dl01j2YPFowmGLQqj2GrKwekrldxmzBn68GM8MlxKtBzAzsE
+         Tsxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aWjz67jruSBa3AfnJK6T0K+rhp52me264VjeXl1/Rrw=;
-        b=kUFC5KknAcgU7ygERyO+w7w0r1s2qR4zYDv3c/NJyaYgIvi0glAdK7c5VYshHEBoE5
-         W5LjXgyshpchlVAuLw03Re0KHHEPvhra+3T5BoBcHnxNDMM69oTq1XiDceh8CMOw1ifT
-         DnoQCNONCOZyZTkTno3duLiejzy/maGDp24n4k6hZrhHtQVDzyelZc+a2YAFc19OaKaQ
-         cYxsuyUPx0vw9g82WPZCAlbsBigrDpVOw5BD3AKePGyIR67/G7slaxtVlIblfXIrgbXl
-         vU3KyVQz2p46q0ppIu4OEETjZjnglH4TSsb1yvnTwFGkPBKgrD5V4Z5LolLR3+SZEKyf
-         JtFA==
-X-Gm-Message-State: AOAM533vgT2bv9F9oQRQNp5D51jvzWoCIuY+GTTY4Ruh0us+4z0INn3J
-        6VLuxs5tap+5p4ESRmbOClw=
-X-Google-Smtp-Source: ABdhPJyHyeXZ+uUGCw0gMpIlqjjffT+dvi62Suw1jrSBFF3VZEqbivUlNjZAqyX6XfY4bgsVNK6m/g==
-X-Received: by 2002:a92:c7a9:: with SMTP id f9mr26182241ilk.255.1620759093805;
-        Tue, 11 May 2021 11:51:33 -0700 (PDT)
+        bh=be8g977AZ5bDeKF0B08Lx0EuPmyTmMUIPQ9/ceBeosg=;
+        b=RKwGfcFaewWR4TWvMiFGQzE/Tdg8ZWX17yAf67JAxfLOloageO21rBEZ+br6qlci+4
+         hEJeY7egAzxPkSDjHCo6fcQJQAEgBVJQgVafx566iFqc05SxfngTHP0dTROMQFswl7D9
+         qsULROPscwYyY0xRD3cMB+fmeF53N1WY/gZm+MujtduG121VsbVMXrCJkFjy9oTA+WYl
+         Thz1AmzgdmAknETpR4n+kbl7fPnDetZ+wmyZtXIDtsCEEDSinKqK+sCK/IXJhZ9XgTUd
+         NU+8iJ0rMxgDxdTAx/fWbqGL5Bvh3JnQZuVHKmwnk/chpAp5BRsd8jNWvoRDt+2Nxked
+         szDA==
+X-Gm-Message-State: AOAM530xSuxh/0rzvf3Tm1ZNMqa0U/GPRsIY0hTEYtofKYkFYI8is7V2
+        03pC9gmWdFbkyUNnPaI6Z0I=
+X-Google-Smtp-Source: ABdhPJwJEnJHsn2AEinRleOhYeJoPFdY8E7nfKDfQwU6fZnspnBCl/X3CxKfV0FIu2/z9S8AG6OguA==
+X-Received: by 2002:a05:6638:3c8:: with SMTP id r8mr27928630jaq.112.1620759094788;
+        Tue, 11 May 2021 11:51:34 -0700 (PDT)
 Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id t10sm405096ils.36.2021.05.11.11.51.32
+        by smtp.googlemail.com with ESMTPSA id t10sm405096ils.36.2021.05.11.11.51.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 11:51:33 -0700 (PDT)
+        Tue, 11 May 2021 11:51:34 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
-To:     Jason Baron <jbaron@akamai.com>, Jessica Yu <jeyu@kernel.org>,
-        "GitAuthor: Jim Cromie" <jim.cromie@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, kernel test robot <lkp@intel.com>
-Subject: [RFC PATCH v5 13/28] dyndbg+module: expose ddebug_sites to modules
-Date:   Tue, 11 May 2021 12:50:42 -0600
-Message-Id: <20210511185057.3815777-14-jim.cromie@gmail.com>
+To:     Jason Baron <jbaron@akamai.com>, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Jim Cromie <jim.cromie@gmail.com>
+Subject: [RFC PATCH v5 14/28] dyndbg: add ddebug_site(_get|_put) abstraction
+Date:   Tue, 11 May 2021 12:50:43 -0600
+Message-Id: <20210511185057.3815777-15-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210511185057.3815777-1-jim.cromie@gmail.com>
 References: <20210511185057.3815777-1-jim.cromie@gmail.com>
@@ -65,178 +63,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Up until now, the "__dyndbg_sites" section was kinda dangling.
-
-Unlike the "__dyndbg" section, it was not explicitly loaded by
-module.c:load_info(); but it came along quietly, perhaps because of
-the per .site initialization (by DEFINE_DYNAMIC_DEBUG_METADATA)
-across the section boundary, or maybe because x86 is more permissive.
-ISTM we need to treat "__dyndbg_sites" section just like "__dyndbg",
-on basic principles.  (And maybe do this with commit that splits the
-sections, if robot tests indicate problems between).
-
-The changes to load_info propagated out to ddebug_add_module's
-prototype, which needs to manage the 2nd section like the 1st.
-
-RFC: Maybe the 2 sections/arrays should be a single item/tuple, but I
-didn't see any real benefit to adding something; recapitulating the
-previous pattern was straightforward.
-
--v5 fix !CONFIG_DYNAMIC_DEBUG fn-stub
-Reported-by: kernel test robot <lkp@intel.com>
+Replace direct ->site refs with _get(),_put() internal API.  Right
+now, _get() just returns ->site and _put() does nothing.  Later we can
+replace this implementation with one using ->_index to fetch site data
+then forget or keep it selectively.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- include/linux/dynamic_debug.h |  8 ++++----
- kernel/module-internal.h      |  1 +
- kernel/module.c               |  9 ++++++---
- lib/dynamic_debug.c           | 20 ++++++++++++--------
- 4 files changed, 23 insertions(+), 15 deletions(-)
+ lib/dynamic_debug.c | 31 +++++++++++++++++++++++++------
+ 1 file changed, 25 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
-index bc4e778b755c..868e0769b72d 100644
---- a/include/linux/dynamic_debug.h
-+++ b/include/linux/dynamic_debug.h
-@@ -66,8 +66,8 @@ struct _ddebug {
- /* exported for module authors to exercise >control */
- int dynamic_debug_exec_queries(const char *query, const char *modname);
- 
--int ddebug_add_module(struct _ddebug *tab, unsigned int n,
--				const char *modname);
-+int ddebug_add_module(struct _ddebug *tab, struct _ddebug_site *sites,
-+		      unsigned int numdbgs, const char *modname);
- extern int ddebug_remove_module(const char *mod_name);
- extern __printf(2, 3)
- void __dynamic_pr_debug(struct _ddebug *descriptor, const char *fmt, ...);
-@@ -199,8 +199,8 @@ void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
- #include <linux/errno.h>
- #include <linux/printk.h>
- 
--static inline int ddebug_add_module(struct _ddebug *tab, unsigned int n,
--				    const char *modname)
-+static inline int ddebug_add_module(struct _ddebug *tab, struct _ddebug_site *sites,
-+				    unsigned int numdbgs, const char *modname)
- {
- 	return 0;
- }
-diff --git a/kernel/module-internal.h b/kernel/module-internal.h
-index 33783abc377b..fb61eb2f8032 100644
---- a/kernel/module-internal.h
-+++ b/kernel/module-internal.h
-@@ -18,6 +18,7 @@ struct load_info {
- 	char *secstrings, *strtab;
- 	unsigned long symoffs, stroffs, init_typeoffs, core_typeoffs;
- 	struct _ddebug *debug;
-+	struct _ddebug_site *sites;
- 	unsigned int num_debug;
- 	bool sig_ok;
- #ifdef CONFIG_KALLSYMS
-diff --git a/kernel/module.c b/kernel/module.c
-index 30479355ab85..792903230acd 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2780,11 +2780,12 @@ static void add_kallsyms(struct module *mod, const struct load_info *info)
- }
- #endif /* CONFIG_KALLSYMS */
- 
--static void dynamic_debug_setup(struct module *mod, struct _ddebug *debug, unsigned int num)
-+static void dynamic_debug_setup(struct module *mod, struct _ddebug *debug,
-+				struct _ddebug_site *sites, unsigned int num)
- {
- 	if (!debug)
- 		return;
--	ddebug_add_module(debug, num, mod->name);
-+	ddebug_add_module(debug, sites, num, mod->name);
- }
- 
- static void dynamic_debug_remove(struct module *mod, struct _ddebug *debug)
-@@ -3333,6 +3334,8 @@ static int find_module_sections(struct module *mod, struct load_info *info)
- 
- 	info->debug = section_objs(info, "__dyndbg",
- 				   sizeof(*info->debug), &info->num_debug);
-+	info->sites = section_objs(info, "__dyndbg_sites",
-+				   sizeof(*info->sites), &info->num_debug);
- 
- 	return 0;
- }
-@@ -4004,7 +4007,7 @@ static int load_module(struct load_info *info, const char __user *uargs,
- 		goto free_arch_cleanup;
- 	}
- 
--	dynamic_debug_setup(mod, info->debug, info->num_debug);
-+	dynamic_debug_setup(mod, info->debug, info->sites, info->num_debug);
- 
- 	/* Ftrace init must be called in the MODULE_STATE_UNFORMED state */
- 	ftrace_module_init(mod);
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 76315d20672a..1441b31915e7 100644
+index 1441b31915e7..90bea97c0da1 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -49,6 +49,7 @@ struct ddebug_table {
- 	const char *mod_name;
- 	unsigned int num_ddebugs;
- 	struct _ddebug *ddebugs;
-+	struct _ddebug_site *sites;
- };
+@@ -144,6 +144,14 @@ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
+ 		 query->first_lineno, query->last_lineno);
+ }
  
- struct ddebug_query {
-@@ -1008,14 +1009,14 @@ static const struct proc_ops proc_fops = {
-  * Allocate a new ddebug_table for the given module
-  * and add it to the global list.
-  */
--int ddebug_add_module(struct _ddebug *tab, unsigned int n,
--			     const char *name)
-+int ddebug_add_module(struct _ddebug *tab, struct _ddebug_site *sites,
-+		      unsigned int numdbgs, const char *modname)
- {
- 	struct ddebug_table *dt;
++static struct _ddebug_site *ddebug_site_get(struct _ddebug *dp)
++{
++	return dp->site; /* passthru abstraction */
++}
++static inline void ddebug_site_put(struct _ddebug *dp)
++{
++}
++
+ static int ddebug_match_site(const struct ddebug_query *query,
+ 			     const struct _ddebug *dp,
+ 			     const struct _ddebug_site *dc)
+@@ -239,16 +247,18 @@ static int ddebug_change(const struct ddebug_query *query,
  
- 	dt = kzalloc(sizeof(*dt), GFP_KERNEL);
- 	if (dt == NULL) {
--		pr_err("error adding module: %s\n", name);
-+		pr_err("error adding module: %s\n", modname);
- 		return -ENOMEM;
+ 		for (i = 0; i < dt->num_ddebugs; i++) {
+ 			struct _ddebug *dp = &dt->ddebugs[i];
+-			struct _ddebug_site *dc = dp->site;
++			struct _ddebug_site *dc;
++
++			dc = ddebug_site_get(dp);
+ 
+ 			if (!ddebug_match_site(query, dp, dc))
+-				continue;
++				goto skipsite;
+ 
+ 			nfound++;
+ 
+ 			newflags = (dp->flags & modifiers->mask) | modifiers->flags;
+ 			if (newflags == dp->flags)
+-				continue;
++				goto skipsite;
+ 
+ 			ddebug_alter_site(dp, modifiers);
+ 
+@@ -264,6 +274,9 @@ static int ddebug_change(const struct ddebug_query *query,
+ 					  dt->mod_name, dp->lineno,
+ 					  ddebug_describe_flags(dp->flags, &fbuf),
+ 					  dp->format);
++
++skipsite:
++			ddebug_site_put(dp);
+ 		}
  	}
- 	/*
-@@ -1024,15 +1025,16 @@ int ddebug_add_module(struct _ddebug *tab, unsigned int n,
- 	 * member of struct module, which lives at least as long as
- 	 * this struct ddebug_table.
- 	 */
--	dt->mod_name = name;
--	dt->num_ddebugs = n;
-+	dt->mod_name = modname;
-+	dt->num_ddebugs = numdbgs;
- 	dt->ddebugs = tab;
-+	dt->sites = sites;
- 
- 	mutex_lock(&ddebug_lock);
- 	list_add(&dt->link, &ddebug_tables);
  	mutex_unlock(&ddebug_lock);
- 
--	v2pr_info("%3u debug prints in module %s\n", n, dt->mod_name);
-+	v2pr_info("%3u debug prints in module %s\n", numdbgs, modname);
+@@ -633,11 +646,11 @@ static int remaining(int wrote)
  	return 0;
  }
  
-@@ -1172,7 +1174,9 @@ static int __init dynamic_debug_init(void)
+-static char *__dynamic_emit_prefix(const struct _ddebug *dp, char *buf)
++static char *__dynamic_emit_prefix(struct _ddebug *dp, char *buf)
+ {
+ 	int pos_after_tid;
+ 	int pos = 0;
+-	const struct _ddebug_site *desc = dp->site;
++	const struct _ddebug_site *desc;
  
- 		if (strcmp(modname, site->modname)) {
- 			modct++;
--			ret = ddebug_add_module(iter_mod_start, site_ct, modname);
-+
-+			ret = ddebug_add_module(iter_mod_start, site_mod_start,
-+						site_ct, modname);
- 			if (ret)
- 				goto out_err;
- 			site_ct = 0;
-@@ -1182,7 +1186,7 @@ static int __init dynamic_debug_init(void)
- 		}
- 		site_ct++;
+ 	if (dp->flags & _DPRINTK_FLAGS_INCL_TID) {
+ 		if (in_interrupt())
+@@ -648,6 +661,7 @@ static char *__dynamic_emit_prefix(const struct _ddebug *dp, char *buf)
  	}
--	ret = ddebug_add_module(iter_mod_start, site_ct, modname);
-+	ret = ddebug_add_module(iter_mod_start, site_mod_start, site_ct, modname);
- 	if (ret)
- 		goto out_err;
+ 	pos_after_tid = pos;
+ 
++	desc = ddebug_site_get(dp);
+ 	if (desc) {
+ 		if (dp->flags & _DPRINTK_FLAGS_INCL_MODNAME)
+ 			pos += snprintf(buf + pos, remaining(pos), "%s:",
+@@ -665,6 +679,8 @@ static char *__dynamic_emit_prefix(const struct _ddebug *dp, char *buf)
+ 	if (pos >= PREFIX_SIZE)
+ 		buf[PREFIX_SIZE - 1] = '\0';
+ 
++	ddebug_site_put(dp);
++
+ 	return buf;
+ }
+ 
+@@ -947,7 +963,8 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
+ 		return 0;
+ 	}
+ 
+-	dc = dp->site;
++	dc = ddebug_site_get(dp);
++
+ 	if (dc) {
+ 		seq_printf(m, "%s:%u [%s]%s =%s \"",
+ 			   trim_prefix(dc->filename), dp->lineno,
+@@ -963,6 +980,8 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
+ 		seq_puts(m, "\"\n");
+ 	}
+ 
++	ddebug_site_put(dp);
++
+ 	return 0;
+ }
  
 -- 
 2.31.1
