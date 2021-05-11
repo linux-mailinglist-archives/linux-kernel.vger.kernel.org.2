@@ -2,99 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D2B37AD3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C4A37AD5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbhEKRm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:42:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56440 "EHLO mail.kernel.org"
+        id S231789AbhEKRws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:52:48 -0400
+Received: from mga06.intel.com ([134.134.136.31]:39236 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231502AbhEKRmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:42:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB623613C3;
-        Tue, 11 May 2021 17:41:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620754906;
-        bh=/y24nuaxa3ahuPNyDsX+pUzlA7FV7W7+VmIh+phhWv4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aLZ+AS1gA5cMZ8RVBKoIqDIZcfszquu/ab7Ff6SE7rkRnIPa1yGD2Wv1/kGeFyZ2s
-         KTKehYlE2EUwCF9G4rnoyYlJ7fZKBBdXEwh0VBqARwd8gn0iA0AUJcR8NWIxsiD36S
-         hnENri5ucimFD/OOKF3SQJ3xLPKR7GMFxJr0mH5IYSAhPVEgIJlYKyxepqOeINvD6B
-         hbzLGO4L4D/Vzw2gjBofuadHnoqU0rF5Vn+NF0QYlcYB2fM0CVcCtM2y9eg5oROn8G
-         X2w6XtAJQagQb7QGiiHjRpxbG3HmR9xROVxxsx5qW0OHbSO3sp4gcYF5EfVvEemxZA
-         cpgazArg1UgDA==
-From:   Stefano Stabellini <sstabellini@kernel.org>
-To:     xen-devel@lists.xenproject.org
-Cc:     sstabellini@kernel.org, hch@lst.de, linux-kernel@vger.kernel.org,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com
-Subject: [PATCH 2/2] xen/swiotlb: check if the swiotlb has already been initialized
-Date:   Tue, 11 May 2021 10:41:42 -0700
-Message-Id: <20210511174142.12742-2-sstabellini@kernel.org>
+        id S231329AbhEKRwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 13:52:47 -0400
+IronPort-SDR: PxktPzZjqriqbrVgftT7fPmmBJXC15MgGt9CT6dzgWT+lKa/P2BrCv3MMoqDOYyqD0gY55ZcO2
+ HhzTiDtNbqiw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="260769166"
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
+   d="scan'208";a="260769166"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 10:51:40 -0700
+IronPort-SDR: EUHjuP8Qoeb8DrTp7qivB2I8eD2xmTSNjOtq/k2GKDxLK+FJ+fpLGtJYDgGvTtW4P7o1loXg7e
+ KPSASuQeZjog==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
+   d="scan'208";a="436775556"
+Received: from srpawnik-nuc8i7beh.iind.intel.com ([10.223.107.144])
+  by orsmga008.jf.intel.com with ESMTP; 11 May 2021 10:51:38 -0700
+From:   Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+To:     rjw@rjwysocki.net, lenb@kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rui.zhang@intel.com, srinivas.pandruvada@linux.intel.com,
+        sumeet.r.pawnikar@intel.com
+Subject: [PATCH] ACPI: PM: Add APCI ID of Alder Lake Fan
+Date:   Tue, 11 May 2021 23:12:26 +0530
+Message-Id: <20210511174226.28185-1-sumeet.r.pawnikar@intel.com>
 X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Stabellini <stefano.stabellini@xilinx.com>
+Add a new unique fan ACPI device ID for Alder Lake to
+support it in acpi_dev_pm_attach() function.
 
-xen_swiotlb_init calls swiotlb_late_init_with_tbl, which fails with
--ENOMEM if the swiotlb has already been initialized.
-
-Add an explicit check io_tlb_default_mem != NULL at the beginning of
-xen_swiotlb_init. If the swiotlb is already initialized print a warning
-and return -EEXIST.
-
-On x86, the error propagates.
-
-On ARM, we don't actually need a special swiotlb buffer (yet), any
-buffer would do. So ignore the error and continue.
-
-CC: boris.ostrovsky@oracle.com
-CC: jgross@suse.com
-Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
+Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
 ---
- arch/arm/xen/mm.c         | 8 +++++++-
- drivers/xen/swiotlb-xen.c | 5 +++++
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ drivers/acpi/device_pm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/xen/mm.c b/arch/arm/xen/mm.c
-index 223b1151fd7d..a7e54a087b80 100644
---- a/arch/arm/xen/mm.c
-+++ b/arch/arm/xen/mm.c
-@@ -138,9 +138,15 @@ void xen_destroy_contiguous_region(phys_addr_t pstart, unsigned int order)
- static int __init xen_mm_init(void)
- {
- 	struct gnttab_cache_flush cflush;
-+	int rc;
-+
- 	if (!xen_swiotlb_detect())
- 		return 0;
--	xen_swiotlb_init();
-+
-+	rc = xen_swiotlb_init();
-+	/* we can work with the default swiotlb */
-+	if (rc < 0 && rc != -EEXIST)
-+		return rc;
- 
- 	cflush.op = 0;
- 	cflush.a.dev_bus_addr = 0;
-diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
-index 4c89afc0df62..6412d59ce7f8 100644
---- a/drivers/xen/swiotlb-xen.c
-+++ b/drivers/xen/swiotlb-xen.c
-@@ -164,6 +164,11 @@ int __ref xen_swiotlb_init(void)
- 	int rc = -ENOMEM;
- 	char *start;
- 
-+	if (io_tlb_default_mem != NULL) {
-+		printk(KERN_WARNING "Xen-SWIOTLB: swiotlb buffer already initialized\n");
-+		return -EEXIST;
-+	}
-+
- retry:
- 	m_ret = XEN_SWIOTLB_ENOMEM;
- 	order = get_order(bytes);
+diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
+index 16c0fe8a72a7..d260bc1f3e6e 100644
+--- a/drivers/acpi/device_pm.c
++++ b/drivers/acpi/device_pm.c
+@@ -1313,6 +1313,7 @@ int acpi_dev_pm_attach(struct device *dev, bool power_on)
+ 		{"PNP0C0B", }, /* Generic ACPI fan */
+ 		{"INT3404", }, /* Fan */
+ 		{"INTC1044", }, /* Fan for Tiger Lake generation */
++		{"INTC1048", }, /* Fan for Alder Lake generation */
+ 		{}
+ 	};
+ 	struct acpi_device *adev = ACPI_COMPANION(dev);
 -- 
 2.17.1
 
