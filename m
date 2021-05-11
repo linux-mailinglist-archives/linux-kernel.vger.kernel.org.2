@@ -2,77 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5625437A014
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4224379FBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbhEKGxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 02:53:55 -0400
-Received: from mail-vs1-f43.google.com ([209.85.217.43]:37690 "EHLO
-        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhEKGxy (ORCPT
+        id S230377AbhEKGhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 02:37:52 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2557 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229807AbhEKGhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 02:53:54 -0400
-Received: by mail-vs1-f43.google.com with SMTP id s15so6869354vsi.4;
-        Mon, 10 May 2021 23:52:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e1OOiDVz4jUv/IlYBZXTh18pllXdMKyAArvIddCeWMw=;
-        b=qxrzr2fswzdCK32nZtBCGQiNuL67NB68/5YBr1sCK+ZMO32XysL4XCf8eMZYVzyYtW
-         EPHr2lHW2zA8YCHNGCqCIwAHpkLeZwjbrZo2YeO/LNdFDu2u++SxQgoLzICZ7p+O7tGp
-         ViiC5xSgcTwtUXgDPTFq3DSEeF4Wq06V250IZzhaL4zzdC+P4PFpPYLEALmcWeOW40Bp
-         cticRI/TU8I3HO8W6axJHN9yu8cIp1q+95feiNB0w72hOQEXrbhDuPDU0uwXS74eh9em
-         yq5Dfg3sQz3Ah+53iXuU4KBLwubCzBDlhm80hbVJb4v6mrDgoAF4YLFvwHqT8ryifUN+
-         /A0w==
-X-Gm-Message-State: AOAM5302s6VNW3GcGSP3LP7ZMzX9ESXiGNWicwbScBKZQR+8e5Jpcky9
-        Q6DoCNKop2gVPaA54vmUmJbYS9MPodA17TcOJec=
-X-Google-Smtp-Source: ABdhPJzmQm74z77d6kfTHhr+3dxao5oa02U1uG8ObktOEbUD9Y7O2VfS1+Xgi4Gagh9y9h8CawKu2tIm8ydW2bCdA+U=
-X-Received: by 2002:a67:8745:: with SMTP id j66mr24499434vsd.18.1620715968302;
- Mon, 10 May 2021 23:52:48 -0700 (PDT)
+        Tue, 11 May 2021 02:37:52 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FfSn942d1zkWMx;
+        Tue, 11 May 2021 14:34:05 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 11 May 2021 14:36:33 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <3chas3@gmail.com>
+CC:     <linux-atm-general@lists.sourceforge.net>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] atm: iphase: fix possible use-after-free in ia_module_exit()
+Date:   Tue, 11 May 2021 14:53:36 +0800
+Message-ID: <1620716016-107941-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-References: <20210511133551.09bfd39c@canb.auug.org.au> <56cef5d3-cfb4-abe2-1cbc-f146b720396c@infradead.org>
-In-Reply-To: <56cef5d3-cfb4-abe2-1cbc-f146b720396c@infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 11 May 2021 08:52:37 +0200
-Message-ID: <CAMuHMdWuz9oy2Xnb=9vMZD2q_-JU5XoSZb373CDTpBDLRZaviw@mail.gmail.com>
-Subject: Re: linux-next: Tree for May 11 (btrfs)
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+This module's remove path calls del_timer(). However, that function
+does not wait until the timer handler finishes. This means that the
+timer handler may still be running after the driver's remove function
+has finished, which would result in a use-after-free.
 
-On Tue, May 11, 2021 at 7:13 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> On 5/10/21 8:35 PM, Stephen Rothwell wrote:
-> > Changes since 20210510:
-> >
->
-> on i386:
->
-> ld: fs/btrfs/extent_io.o: in function `btrfs_submit_read_repair':
-> extent_io.c:(.text+0x624f): undefined reference to `__udivdi3'
+Fix by calling del_timer_sync(), which makes sure the timer handler
+has finished, and unable to re-schedule itself.
 
-I received a similar report from kisskb for m68k.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/atm/iphase.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I assume the next version will fix this, cfr.
-https://lore.kernel.org/linux-btrfs/751b7396-d0fd-d3b2-f14d-e730e6b08222@gmx.com/
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/atm/iphase.c b/drivers/atm/iphase.c
+index 933e3ff..3f2ebfb 100644
+--- a/drivers/atm/iphase.c
++++ b/drivers/atm/iphase.c
+@@ -3279,7 +3279,7 @@ static void __exit ia_module_exit(void)
+ {
+ 	pci_unregister_driver(&ia_driver);
+ 
+-        del_timer(&ia_timer);
++	del_timer_sync(&ia_timer);
+ }
+ 
+ module_init(ia_module_init);
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.6.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
