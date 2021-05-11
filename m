@@ -2,98 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F44C37A78F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66A7A37A7A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbhEKNa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 09:30:28 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:53638 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231305AbhEKNaX (ORCPT
+        id S231495AbhEKNcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 09:32:51 -0400
+Received: from mail-ed1-f43.google.com ([209.85.208.43]:36530 "EHLO
+        mail-ed1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231305AbhEKNcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 09:30:23 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14BDQoux022683;
-        Tue, 11 May 2021 08:29:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=bzqrVrM9xmJqVMzON06i42Dfv5kRx48381tnaoZJZNo=;
- b=Nqy5mVmT1iXyXnG1c/w3i0CMrqgBVypsQl0w4kkXvr0nOuKDWqNQ+t3bpplGHsio64BC
- ZXZ4Dj2WWIj13/AVmyuScXoXCLapQM2X+D+I7Oa2IoeBqolaTrENdf8ncP3l5ZsBYWkK
- q0pNyl/61sBK4tO5ZzLHBM2t51UjtYHHW6LAbEksnEzLTOR25+YfYtjjPyfC8v+kG/oR
- A9zrdGnECIuzAR2fkMV9rSxTkX+WANDUu057aOsL8j4jGhvLCIWbDSJF+OtF0MqyV40f
- st0uK9nPIEJErLWYWN+0Wkh2ZlWLAwC+N8gSNHQP/7a58IUaSmKuhz/cVJqLdvuQ9N8/ yA== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 38f2d4sjyd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 11 May 2021 08:29:01 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 11 May
- 2021 14:29:00 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Tue, 11 May 2021 14:29:00 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.125])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0ACD311CF;
-        Tue, 11 May 2021 13:29:00 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] ASoC: cs42l42: Regmap must use_single_read/write
-Date:   Tue, 11 May 2021 14:28:55 +0100
-Message-ID: <20210511132855.27159-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
+        Tue, 11 May 2021 09:32:46 -0400
+Received: by mail-ed1-f43.google.com with SMTP id u13so22893147edd.3;
+        Tue, 11 May 2021 06:31:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oIa86m56V7D9OxvaRCpHAzJ1pFfZnNHw5kUPaITumU0=;
+        b=C+S3ihU08qAh15hEvssLpVKhYNfESpgjVG1huNuXKUjmOR2CrF+lxBF6lxn0hxLxWs
+         EE0DURJJiSBjF6O1AIoryrV4ZXJ+1zdqVu+/p8HtI7TpFUPCzeQhZqe9BZW5sjQjPGlF
+         n6QaS8V3K5sUXMExOdEUky4z/Zlcwp6duTLFfJMxcdFURLye1TFDNrgywC1D2zbcGmM0
+         icwJoCt4Bqv5pYE75l40DNqE4ZvwrPKei8jAiVdJFB+QHr6d4ZTClW48KY9MD9+QbAfI
+         865glb6LkUoyw463DJOHvDVjc78ZRktQ/nPcNkkhUDreOUeVS1NypL8Gq8je51nNDzo2
+         BlLg==
+X-Gm-Message-State: AOAM531EkmMC2DcZMiGMA6ZOyf9F8Knhf6Kltme0Hq7TTF03PDe0msWf
+        yIPJ9YY1ajYa4BGabvmURXlUkFZhE05+Oy1v
+X-Google-Smtp-Source: ABdhPJxdcawn9TncpLMKVjYBQqwkA4w+GCL74vYFB+ERi6r8YHQrSwr9ybTvxZ/U/SAq58/0humi3g==
+X-Received: by 2002:a05:6402:2712:: with SMTP id y18mr37816019edd.41.1620739897451;
+        Tue, 11 May 2021 06:31:37 -0700 (PDT)
+Received: from msft-t490s.teknoraver.net (net-5-94-253-60.cust.vodafonedsl.it. [5.94.253.60])
+        by smtp.gmail.com with ESMTPSA id b12sm14577136eds.23.2021.05.11.06.31.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 06:31:36 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     netdev@vger.kernel.org, linux-mm@kvack.org
+Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: [PATCH net-next v4 0/4] page_pool: recycle buffers
+Date:   Tue, 11 May 2021 15:31:14 +0200
+Message-Id: <20210511133118.15012-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: XcBi5beSO0DhnWP_9TGAh6jYrGzhXj7f
-X-Proofpoint-ORIG-GUID: XcBi5beSO0DhnWP_9TGAh6jYrGzhXj7f
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 spamscore=0
- lowpriorityscore=0 suspectscore=0 bulkscore=0 adultscore=0 impostorscore=0
- malwarescore=0 mlxscore=0 phishscore=0 priorityscore=1501 mlxlogscore=575
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105110103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cs42l42 does not support standard burst transfers so the use_single_read
-and use_single_write flags must be set in the regmap config.
+From: Matteo Croce <mcroce@microsoft.com>
 
-Because of this bug, the patch:
+This is a respin of [1]
 
-commit 0a0eb567e1d4 ("ASoC: cs42l42: Minor error paths fixups")
+This patchset shows the plans for allowing page_pool to handle and
+maintain DMA map/unmap of the pages it serves to the driver. For this
+to work a return hook in the network core is introduced.
 
-broke cs42l42 probe() because without the use_single_* flags it causes
-regmap to issue a burst read.
+The overall purpose is to simplify drivers, by providing a page
+allocation API that does recycling, such that each driver doesn't have
+to reinvent its own recycling scheme. Using page_pool in a driver
+does not require implementing XDP support, but it makes it trivially
+easy to do so. Instead of allocating buffers specifically for SKBs
+we now allocate a generic buffer and either wrap it on an SKB
+(via build_skb) or create an XDP frame.
+The recycling code leverages the XDP recycle APIs.
 
-However, the missing use_single_* could cause problems anyway because the
-regmap cache can attempt burst transfers if these flags are not set.
+The Marvell mvpp2 and mvneta drivers are used in this patchset to
+demonstrate how to use the API, and tested on a MacchiatoBIN
+and EspressoBIN boards respectively.
 
-Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 3 +++
- 1 file changed, 3 insertions(+)
+Please let this going in on a future -rc1 so to allow enough time
+to have wider tests.
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index d7fb6b38fd7c..e4b058a1d6af 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -400,6 +400,9 @@ static const struct regmap_config cs42l42_regmap = {
- 	.reg_defaults = cs42l42_reg_defaults,
- 	.num_reg_defaults = ARRAY_SIZE(cs42l42_reg_defaults),
- 	.cache_type = REGCACHE_RBTREE,
-+
-+	.use_single_read = true,
-+	.use_single_write = true,
- };
- 
- static DECLARE_TLV_DB_SCALE(adc_tlv, -9600, 100, false);
+Note that this series depends on the change "mm: fix struct page layout
+on 32-bit systems"[2] which is not yet in master.
+
+[1] https://lore.kernel.org/netdev/154413868810.21735.572808840657728172.stgit@firesoul/
+[2] https://lore.kernel.org/linux-mm/20210510153211.1504886-1-willy@infradead.org/
+
+Ilias Apalodimas (1):
+  page_pool: Allow drivers to hint on SKB recycling
+
+Matteo Croce (3):
+  mm: add a signature in struct page
+  mvpp2: recycle buffers
+  mvneta: recycle buffers
+
+ drivers/net/ethernet/marvell/mvneta.c         | 11 +++---
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 17 +++++-----
+ drivers/net/ethernet/marvell/sky2.c           |  2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
+ include/linux/mm_types.h                      |  1 +
+ include/linux/skbuff.h                        | 34 ++++++++++++++++---
+ include/net/page_pool.h                       | 11 ++++++
+ net/core/page_pool.c                          | 27 +++++++++++++++
+ net/core/skbuff.c                             | 20 +++++++++--
+ net/tls/tls_device.c                          |  2 +-
+ 10 files changed, 105 insertions(+), 22 deletions(-)
+
 -- 
-2.20.1
+2.31.1
 
