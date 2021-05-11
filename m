@@ -2,174 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582DA37A6E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A32F937A6E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbhEKMj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 08:39:26 -0400
-Received: from mail-co1nam11on2068.outbound.protection.outlook.com ([40.107.220.68]:11008
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231669AbhEKMjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 08:39:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A3P/JoRiGPyNhbEYNHIzinVXi78Ab/803TT5/zJ/cs8paKzt6ksNzCFAVgy97XMELemePjoBv2EZgu5xIqzY53GMRkyTFgmixFG/GTw3ePqO6LD6W2NGSkz6e+YPJWB+Ki3Ix42ZIHEG+OVnC4SZBAfcSLOPEX39+IGuIQ/fVzsLpqsq7em4JI1hsuGeVIag9miiBVSUTNHnWzigeeiHgjibIUtyPw2vfl7vHkTtEHEAIvjljqdV9ulxEYJJbTOL+upZLHKADBVvcotcxkh8q7dfdCumaILsDyskjBWM75LObwZykQ6uPViCi/oYgAX55ZSulN8ApHumtUmH73p5Sw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rEs0b95P8RAtVBmSqWD8Ygrv276hC+eyK2iWbu7IAyU=;
- b=KChy65bHcfLDPaFqwoYxT791JLlD2+3xhupZjI3MW7OKQwVImJ3utHzJDXer3aDaOKEiyeRhhpdqLVe0sEoluV9z4e9pYVrwpyw8jhztfhQ18UAMmEV3hfzcJc7pMO5PjAujxzbh2Ju12eI8bns4S3Uj4zy24TNKTwPdnb4NS0XDlbb7+WEEeNabqa01pXgEuzNpQudqsdet0Sg028FmQwd3+kbA67bRnUjuUQvcr/IYQvyrNmzShsqtMFay060r8WfheaqdcaPT5PuouFw8IS66aPZ2NNe2trEnBK3hmgj0Q5qFBV8ZqMe9sZzpNO6ctD1H94mZG5jOuBFE4deihA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rEs0b95P8RAtVBmSqWD8Ygrv276hC+eyK2iWbu7IAyU=;
- b=Kl4APPXNCzuuhCgjKRtyV9/GySh5EUhwxoZS5c02w0vaLotzKJI4EsxPvUVFww1v7HX6wpkt+JtMskm0TNax3BVNhcWS8ZYG//ddNonyoU11xGmSxmesqYmVR2Acv32idvo8dd8UCDFeHRy4q4QArw2Ex5jK/IdVNz/cxd67p4E=
-Received: from DM5PR02MB3877.namprd02.prod.outlook.com (2603:10b6:4:b9::34) by
- DM6PR02MB7018.namprd02.prod.outlook.com (2603:10b6:5:259::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4108.25; Tue, 11 May 2021 12:38:12 +0000
-Received: from DM5PR02MB3877.namprd02.prod.outlook.com
- ([fe80::53:31a3:2e23:75e1]) by DM5PR02MB3877.namprd02.prod.outlook.com
- ([fe80::53:31a3:2e23:75e1%5]) with mapi id 15.20.4108.031; Tue, 11 May 2021
- 12:38:12 +0000
-From:   Sai Krishna Potthuri <lakshmis@xilinx.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michal Simek <michals@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        git <git@xilinx.com>,
-        "saikrishna12468@gmail.com" <saikrishna12468@gmail.com>
-Subject: RE: [PATCH v6 3/3] pinctrl: Add Xilinx ZynqMP pinctrl driver support
-Thread-Topic: [PATCH v6 3/3] pinctrl: Add Xilinx ZynqMP pinctrl driver support
-Thread-Index: AQHXN1HnJ1dD/z2380CasZDNOXc+DarCQxoAgAQix4CAAHWwAIAAH53ggBdJowA=
-Date:   Tue, 11 May 2021 12:38:12 +0000
-Message-ID: <DM5PR02MB38771A8BEEB3E01006B14E46BD539@DM5PR02MB3877.namprd02.prod.outlook.com>
-References: <1619080202-31924-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <1619080202-31924-4-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <CAHp75VfCbbnN-TBJiYFb=6Rhf30jA-Hz1p1UORsubF7UG6-ATw@mail.gmail.com>
- <DM5PR02MB3877B234F85F3B4887DF3A95BD429@DM5PR02MB3877.namprd02.prod.outlook.com>
- <CAHp75VfugGqLNU8LKJ_K3dPr=-eh6LHx75eV=33jH9OnryBoGA@mail.gmail.com>
- <DM5PR02MB387726AB4144F0DB28105007BD409@DM5PR02MB3877.namprd02.prod.outlook.com>
-In-Reply-To: <DM5PR02MB387726AB4144F0DB28105007BD409@DM5PR02MB3877.namprd02.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=xilinx.com;
-x-originating-ip: [149.199.50.129]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0708a1b2-5cd6-4562-b131-08d91479a3eb
-x-ms-traffictypediagnostic: DM6PR02MB7018:
-x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR02MB7018267001BB7EE9D0A68837BD539@DM6PR02MB7018.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3173;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: aFaPMz8Tf0nxIl/EXYQCktu0KVy2mbV5cy1GoVpP1B0443CSzA0MSZYB1UEnkzVOPaO5TVQa2YriRkjs6iQ7Wz9svF7K7Qk6LF1sNEInwmFrUhxo3Fjujcp0Oo04nlVnxXkPDeECDi+BO88zi/VBTG6QKDpnuS4OV1k97xq55PD9HMeUeqlUsf274A/kce767RkN29eyDJGKzWr7AVOgY3TdGtNhtmCdAiqJgLPcoKq1DtLr2aZgkLF4f6spanJrcONYlNpynpswqO7UQk+PWlxe7JfW8Qft3SfHGVYPGV9Y3iYzEbH5pX/igiposFZ46RE6xECmoyY4TxDlYQnGF1nPZIdqM/jIKGNSwvR9soRoWuZgqQhvuydCVWyw8XEFZSD3xl5mMk/SiYJwntKXYHCVsdRZvKEi6oni4mzYXXP3ZwOgK/Aq9bJ+mIXkqlpouxDuCXrpX6Y1Yy0gjkFbvaEftgzVxgw+MQucCNovImKkq3ycjT5YUQC024zmjG6YSxnBW4LktGP7amhYah0tykjlXi7aSSrh2J1cWjkUi6apKC6cS5atIFUAeXJtVN9n8Ppit3GqSWBizGXpycqMP/crQQxMCHmL07pg+LLoQT4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR02MB3877.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(136003)(346002)(396003)(376002)(366004)(66946007)(76116006)(26005)(55016002)(52536014)(7416002)(316002)(4326008)(8676002)(64756008)(478600001)(33656002)(54906003)(9686003)(66556008)(66446008)(8936002)(83380400001)(5660300002)(6506007)(53546011)(2906002)(71200400001)(66476007)(86362001)(122000001)(38100700002)(186003)(7696005)(6916009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NjRVV3RnTW5aOGRyc2lJYm9ZcjgydnUrdkJ5NFJNMi9Oa0tSOFpBS1RkMlRt?=
- =?utf-8?B?Ui8wYjBPT283S1NlaHhET1N4STNqM1p6VXlqSjNTT3lOSnF2VnBRVHY4Tlps?=
- =?utf-8?B?UlFwV2Vmc3JCSEsrYklLMVc2czF1Q2haQ1ZSTnFYRWx3UGsvSDRFMVBqN3Fo?=
- =?utf-8?B?cUxQcHdaT1I4SHZseTM2am1QZzcyY2dSalVHbUJJK1JlSHQya012bXI3SldQ?=
- =?utf-8?B?UFdmQWhhbUk1WVBzbFdTVWpPQ2VKdElzM1k0UVpSWXRnSGw0QmpHNUJWTjQz?=
- =?utf-8?B?R0NxNTAydHEydUxCOStjUUFyRkZpUG50NGljVXVOSnRISnl1YnQ4d2ZUYUFJ?=
- =?utf-8?B?N3kvZHN4R1B2T2Vad2ZhUDdvUURxOXhXUjRYLzJaRHBuSFMzSGpRQmRmQkIr?=
- =?utf-8?B?SE16TXRPUTloTHJhQ3FJS2xKVm1odGFJRC9HNy8yc2Rjd3FNUythV0l4WThI?=
- =?utf-8?B?RlNSdlh2TUNFZzBGSXpseVpQK3VzTkt5c0l6LzhrUEQ3Y3ZwWXJlNnBGV3o4?=
- =?utf-8?B?MGY2UGJKdjkwUlVkUkVCK2d0OStuREE1RjJSM1pBYVVudEhNNkhteTFKdUF1?=
- =?utf-8?B?NTFCVEFodG13ODlSak5DQ29qcXYrUGlycWxVQUZKRmUzK1M4Q25UOG9mSHFy?=
- =?utf-8?B?OVE2OFh2MnlkN3ZEdmJSUjVFN2pXV0pWazd3OGFnYU1VWGhQUkNMdXJJTDlC?=
- =?utf-8?B?cWFLUUpKNXpwM2FyWEJ3K2hrcExueHBlMzBISFhVNnZOVnZIK2pTallJS1g4?=
- =?utf-8?B?SGxwMnJ6bEtKZHZYbENqcXZWZGZiQ1VJendWeG1hSzQrUkhpQ0dDU1o3L3Vs?=
- =?utf-8?B?ZWMzN1ovbk1TS2xwQlNKY1lvNitMaWNHbTFHR2JuNU9JV1VwMXR4R25lQjhY?=
- =?utf-8?B?eTBKQjVWeUIwYnllM2sxd2ptQncyRjdRMWFicW9XVThsc2p1MkkyaHV2QWpO?=
- =?utf-8?B?VVJXVnc3cEtFSVd4Qy9HV0FSWUF5aGV3a3BRbDczVm9uYkdCSDhTTUYzMDJO?=
- =?utf-8?B?Y3Y5N3FjOWpJa3hqN0pJUGp0bFhjWkdpZ250ODR5cTBtUzUvKzZ0SzRFQUVU?=
- =?utf-8?B?K0xTQUpGT0NJcERkdlBtOE1RZlJ5YVVyaTlEVlVjQkJxWldmUWFKVGxyOFht?=
- =?utf-8?B?bjRCaFhST1NuWm5VeGJhcXYxOWdkeWFOV0FuVVhxc05SVmViMFFPSlRmbXU4?=
- =?utf-8?B?Q1ZVOEp4dHU4MlcvTkl1c1M3MjR5dS9pYXIrT0l5aFNkaGlzMkFJa3BLYis2?=
- =?utf-8?B?aUZXRXZKUm1DVFFMNkp1VUxPUlVUUU9KRDd6ZHorOFlGbm9XWGg2cDhEZzZv?=
- =?utf-8?B?Q1M4VDNXNW5maFA2VW9IVWV2OWhEaE9ZL1VGdTMrNUFpbnJjaUJZK212ZCtF?=
- =?utf-8?B?NUdjVkl3cEFZOTZYTEp2YmlXN0lkdHVkalVka1NBdEpscVFodXFIZEVnZUFm?=
- =?utf-8?B?RS9ZWlBmSmQvZnhPNXk5Q29JTDNmc1l6TE1xeWFtWUtGZzg0YklNaVhQbjdY?=
- =?utf-8?B?ZzM4YTFncEtWR1hRVmRCSGgxWW43WkNoSFoyMC9tNDZnd2U3Um9wRzhuS01G?=
- =?utf-8?B?RGplM1B3TVVOdzNQcXcxblV2dml3NkNaOWdncmVoV1Vjcm03WE4zWi8zRTB1?=
- =?utf-8?B?N0RUMlZURitVS1lXck5TdU12UWtHVDRlQ3Q1eG96bkQ1eUdwWUozUW5kY1h4?=
- =?utf-8?B?MTNhemg5U0pTSEg3WXdHcTNRMkNYTmlZeVJLckMrLzNTeDVrK1hJTVhBZktv?=
- =?utf-8?Q?ESOsn9NiMv3gmQeGbxuUSqTbfmrdJumFCfOmv9b?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S231648AbhEKMj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 08:39:59 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2699 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230436AbhEKMj6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 08:39:58 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Ffcpz6rlcz1BLNt;
+        Tue, 11 May 2021 20:36:11 +0800 (CST)
+Received: from [10.67.110.238] (10.67.110.238) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 11 May 2021 20:38:43 +0800
+Subject: Re: Virtio-scsi multiqueue irq affinity
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ming Lei <ming.lei@redhat.com>
+CC:     Peter Xu <peterx@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Jason Wang <jasowang@redhat.com>,
+        Luiz Capitulino <lcapitulino@redhat.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>, <minlei@redhat.com>,
+        <liaochang1@huawei.com>
+References: <20190318062150.GC6654@xz-x1>
+ <alpine.DEB.2.21.1903231805310.1798@nanos.tec.linutronix.de>
+ <20190325050213.GH9149@xz-x1> <20190325070616.GA9642@ming.t460p>
+ <alpine.DEB.2.21.1903250948490.1798@nanos.tec.linutronix.de>
+ <20190325095011.GA23225@ming.t460p>
+ <0f6c8a5f-ad33-1199-f313-53fe9187a672@huawei.com>
+ <87zgx5l8ck.ffs@nanos.tec.linutronix.de>
+ <963e38b0-a7d6-0b13-af89-81b03028d1ae@huawei.com>
+ <87wns6gy67.ffs@nanos.tec.linutronix.de>
+From:   xuyihang <xuyihang@huawei.com>
+Message-ID: <6ab54d90-dcfb-c913-0b09-f5c6c9141081@huawei.com>
+Date:   Tue, 11 May 2021 20:38:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR02MB3877.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0708a1b2-5cd6-4562-b131-08d91479a3eb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2021 12:38:12.2687
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: s67UbOYhGZ/JxrMs9RZGGTRwXcgIZfRcXfZtNhcM9+K18DoQ6FEoj2hebomJj/dZaPQwbDXNZOgoHYY0JyTQ9w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB7018
+In-Reply-To: <87wns6gy67.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.238]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQW5keSBTaGV2Y2hlbmtvLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZy
-b206IFNhaSBLcmlzaG5hIFBvdHRodXJpDQo+IFNlbnQ6IFdlZG5lc2RheSwgQXByaWwgMjgsIDIw
-MjEgMTE6MDQgQU0NCj4gVG86IEFuZHkgU2hldmNoZW5rbyA8YW5keS5zaGV2Y2hlbmtvQGdtYWls
-LmNvbT4NCj4gQ2M6IExpbnVzIFdhbGxlaWogPGxpbnVzLndhbGxlaWpAbGluYXJvLm9yZz47IFJv
-YiBIZXJyaW5nDQo+IDxyb2JoK2R0QGtlcm5lbC5vcmc+OyBNaWNoYWwgU2ltZWsgPG1pY2hhbHNA
-eGlsaW54LmNvbT47IEdyZWcgS3JvYWgtDQo+IEhhcnRtYW4gPGdyZWdraEBsaW51eGZvdW5kYXRp
-b24ub3JnPjsgbGludXgtYXJtIE1haWxpbmcgTGlzdCA8bGludXgtYXJtLQ0KPiBrZXJuZWxAbGlz
-dHMuaW5mcmFkZWFkLm9yZz47IExpbnV4IEtlcm5lbCBNYWlsaW5nIExpc3QgPGxpbnV4LQ0KPiBr
-ZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgZGV2aWNldHJlZSA8ZGV2aWNldHJlZUB2Z2VyLmtlcm5l
-bC5vcmc+OyBvcGVuDQo+IGxpc3Q6R1BJTyBTVUJTWVNURU0gPGxpbnV4LWdwaW9Admdlci5rZXJu
-ZWwub3JnPjsgZ2l0IDxnaXRAeGlsaW54LmNvbT47DQo+IHNhaWtyaXNobmExMjQ2OEBnbWFpbC5j
-b20NCj4gU3ViamVjdDogUkU6IFtQQVRDSCB2NiAzLzNdIHBpbmN0cmw6IEFkZCBYaWxpbnggWnlu
-cU1QIHBpbmN0cmwgZHJpdmVyIHN1cHBvcnQNCj4gDQo+IEhpIEFuZHkgU2hldmNoZW5rbywNCj4g
-DQo+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiBGcm9tOiBBbmR5IFNoZXZjaGVu
-a28gPGFuZHkuc2hldmNoZW5rb0BnbWFpbC5jb20+DQo+ID4gU2VudDogTW9uZGF5LCBBcHJpbCAy
-NiwgMjAyMSA3OjM1IFBNDQo+ID4gVG86IFNhaSBLcmlzaG5hIFBvdHRodXJpIDxsYWtzaG1pc0B4
-aWxpbnguY29tPg0KPiA+IENjOiBMaW51cyBXYWxsZWlqIDxsaW51cy53YWxsZWlqQGxpbmFyby5v
-cmc+OyBSb2IgSGVycmluZw0KPiA+IDxyb2JoK2R0QGtlcm5lbC5vcmc+OyBNaWNoYWwgU2ltZWsg
-PG1pY2hhbHNAeGlsaW54LmNvbT47IEdyZWcgS3JvYWgtDQo+ID4gSGFydG1hbiA8Z3JlZ2toQGxp
-bnV4Zm91bmRhdGlvbi5vcmc+OyBsaW51eC1hcm0gTWFpbGluZyBMaXN0IDxsaW51eC1hcm0tDQo+
-ID4ga2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc+OyBMaW51eCBLZXJuZWwgTWFpbGluZyBMaXN0
-IDxsaW51eC0NCj4gPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgZGV2aWNldHJlZSA8ZGV2aWNl
-dHJlZUB2Z2VyLmtlcm5lbC5vcmc+OyBvcGVuDQo+ID4gbGlzdDpHUElPIFNVQlNZU1RFTSA8bGlu
-dXgtZ3Bpb0B2Z2VyLmtlcm5lbC5vcmc+OyBnaXQgPGdpdEB4aWxpbnguY29tPjsNCj4gPiBzYWlr
-cmlzaG5hMTI0NjhAZ21haWwuY29tDQo+ID4gU3ViamVjdDogUmU6IFtQQVRDSCB2NiAzLzNdIHBp
-bmN0cmw6IEFkZCBYaWxpbnggWnlucU1QIHBpbmN0cmwgZHJpdmVyDQo+IHN1cHBvcnQNCi4uLg0K
-PiA+DQo+ID4gPiA+ID4gKyAgICAgICAgICAgICAgIHJldCA9IHp5bnFtcF9wbV9waW5jdHJsX2dl
-dF9jb25maWcocGluLCBwYXJhbSwgJmFyZyk7DQo+ID4gPiA+ID4gKyAgICAgICAgICAgICAgIGlm
-IChhcmcgIT0gUE1fUElOQ1RSTF9CSUFTX1BVTExfVVApDQo+ID4gPiA+ID4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7DQo+ID4gPiA+DQo+ID4gPiA+IEVycm9yIGNvZGUg
-YmVpbmcgc2hhZG93ZWQuIEluc3RlYWQgY2hlY2sgaXQgaGVyZSBwcm9wZXJseS4NCj4gPg0KPiA+
-ID4gQXJlIHlvdSBtZW50aW9uaW5nIHRoZSBjYXNlIHdoZXJlIHJldCBpcyBhbHNvIGEgbm9uLXpl
-cm8/DQo+ID4gPiBJZiB5ZXMsIHRoZW4gSSB3aWxsIHVwZGF0ZSB0aGlzIGNoZWNrIHRvDQo+ID4g
-PiBpZiAoIXJldCAmJiBhcmcgIT0gUE1fUElOQ1RSTF9CSUFTX1BVTExfVVApDQo+ID4gPiAgICAg
-ICAgIHJldHVybiAtRUlOVkFMOw0KPiA+DQo+ID4gTm8sIHRoaXMgaXMgd3JvbmcgaW4gdGhlIHNh
-bWUgd2F5Lg0KPiA+DQo+ID4gPiByZXQgbm9uLXplcm8gY2FzZSwgd2UgYXJlIGhhbmRsaW5nIGF0
-IHRoZSBlbmQgb2Ygc3dpdGNoIGNhc2UuDQo+ID4NCj4gPiBJIG1lYW50IHRoYXQgeW91IG5lZWQg
-dG8gcGFzcyB0aGUgcmVhbCByZXR1cm4gY29kZSB0byB0aGUgKHVwcGVyKSBjYWxsZXIuDQo+IEhl
-cmUgd2UgYXJlIGNoZWNraW5nIGZvciB2YWxpZCBhcmd1bWVudCBhbmQgbm90IHRoZSByZXR1cm4g
-dmFsdWUgb2YgdGhlIEFQSS4NCj4gSWYgdGhlIHJlYWQgdmFsdWUoYXJndW1lbnQpIGlzIG5vdCB2
-YWxpZCBhbmQgcmV0dXJuIHZhbHVlIG9mIHRoZSBBUEkgaXMNCj4gemVybyAoU1VDQ0VTUykgdGhl
-biBmcmFtZXdvcmsgZXhwZWN0cyBkcml2ZXIgdG8gYmUgcmV0dXJuZWQgd2l0aA0KPiAnLUVJTlZB
-TCcgYW5kIGl0IGlzIGEgbGVnYWwgZXJyb3IgY29kZSBpbiB0aGlzIGNhc2UuDQpEbyB5b3UgYWdy
-ZWUgb24gdGhpcz8NCkkgYW0gcmVhZHkgd2l0aCB0aGUgb3RoZXIgY2hhbmdlcywgd2lsbCBzZW5k
-IG91dCB0aGUgcGF0Y2ggdG8gYWRkcmVzcyB5b3VyIGNvbW1lbnRzLg0KDQpSZWdhcmRzDQpTYWkg
-S3Jpc2huYQ0KDQo=
+Hi Thomas,
+
+
+The previous experiment require a device driver to enable managed irq,
+
+which I could not easily install on a most recent branch of OS.
+
+Actually what I was asking is whether we could change the managed irq
+
+behaviour a little bit, rather than reporting a bug.
+
+So, to better illustrate this problem I do another test to simulate this 
+scenario.
+
+
+This time I wrote a kernel module, and in the module_init function, I use
+
+request_irq to register a irq. In the irq_handler it put a work in the 
+workqueue.
+
+And the work_handler would print "work handler called".
+
+
+1. Register a irq for a fake new deivce and queue a work_handler
+
+when irq arrives.
+
+/ # insmod request_irq.ko
+
+2. Bind the irq to CPU3
+
+/ # echo 8 > /proc/irq/7/smp_affinity
+
+3. Start a full CPU usage RT process and bind to CPU3
+
+./test.sh &
+
+/ # taskset -p 8 100
+pid 100's current affinity mask: f
+pid 100's new affinity mask: 8
+
+/ # chrt -f -p 1 100
+pid 100's current scheduling policy: SCHED_OTHER
+pid 100's current scheduling priority: 0
+pid 100's new scheduling policy: SCHED_FIFO
+pid 100's new scheduling priority: 1
+/ # echo -1 >/proc/sys/kernel/sched_rt_runtime_us
+/ # echo -1 >/proc/sys/kernel/sched_rt_period_us
+
+/ # top
+
+Mem: 27376K used, 73224K free, 0K shrd, 0K buff, 8368K cached
+CPU0:  0.0% usr  0.0% sys  0.0% nic  100% idle  0.0% io  0.0% irq 0.0% sirq
+CPU1:  0.0% usr  0.0% sys  0.0% nic  100% idle  0.0% io  0.0% irq 0.0% sirq
+CPU2:  0.0% usr  0.0% sys  0.0% nic  100% idle  0.0% io  0.0% irq 0.0% sirq
+CPU3:  100% usr  0.0% sys  0.0% nic  0.0% idle  0.0% io  0.0% irq 0.0% sirq
+Load average: 4.00 4.00 4.00 5/62 126
+   PID  PPID USER     STAT   VSZ %VSZ CPU %CPU COMMAND
+   100     1 0        R     3252  3.2   3 26.3 {exe} ash ./test.sh
+   126     1 0        R     3252  3.2   1  0.8 top
+
+...
+
+/ # echo -n trigger > /sys/kernel/debug/irq/irqs/7
+
+ From the demsg we can tell the queued work_handler is not called.
+
+
+I could understand the behaviour is as expected, but in pratice, let's say
+
+people work on the RT team could be a totally different team for device
+
+driver. It feels like it is nice to have a feature to exclude some CPU from
+
+managed irq driver.
+
+
+在 2021/5/11 3:56, Thomas Gleixner 写道:
+>
+> Again. Please provide reports against the most recent mainline version
+> and not against some randomly picked kernel variant.
+This time I try it on current master branch.
+Linux (none) 5.12.0-next-20210506+ #3 SMP Tue May 11 14:53:58 HKT 2021 
+x86_64 GNU/Linux
+
+>> If we make some change on this experiment:
+>>
+>> 1.  Make this RT application use less CPU time instead of 100%, the problem
+>> disappear.
+>>
+>> 2, If we change rq_affinity to 2, in order to avoid handle softirq on
+>> the same core of RT thread, the problem also disappear. However, this approach
+>> result in about 10%-30% random write proformance deduction comparing
+>> to rq_affinity = 1, since it may has better cache utilization.
+>> echo 2 > /sys/block/sda/queue/rq_affinity
+>>
+>> Therefore, I want to exclude some CPU from managed irq on boot
+>> parameter,
+> Why has this realtime thread to run on CPU0 and cannot move to some
+> other CPU?
+
+Yes, this realtime thread could move to other CPU, but I think maybe it's
+
+not so good to dodge the managed irq CPU. It also seems OS does not
+
+give so much hint to indicate RT thread should not run on this CPU. I
+
+think the kernel should be able to schedule the irq workqueue handler
+
+a little bit, since RT thread is more like a user application and driver 
+works
+
+within kernel space.
+
+>> which has simliar approach to 11ea68f553e2 ("genirq, sched/isolation:
+>> Isolate from handling managed interrupts").
+> Why can't you use the existing isolation mechanisms?
+
+Isolation of CPU forbids other process from utilizing this CPU. Sometimes
+
+the RT thread may not use up all CPU time, so other process could schedule
+
+to this CPU and run for a little while.
+
+
+Thanks for your time,
+
+Yihang
+
