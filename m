@@ -2,242 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA4E37A0F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816B437A0F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhEKHlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbhEKHlM (ORCPT
+        id S230343AbhEKHlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:41:24 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2052 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229892AbhEKHlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:41:12 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 142A1C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:40:05 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id i14so15169030pgk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:40:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cIBNpTle/O27myJCmciNO53uHzWamFB21GPf0L/RmPo=;
-        b=RJtRHgCKZRK4QDHewRkfyYxrwhOpxj8yV1yb8Iv7z/oCATNbCl2sph+jtGJx4rKymC
-         ZRRX1kwKn8Gn0AqITdMIyhCS10fPRafujEF7imKLjE8fJVsnj9oTxjYTLt2IAk6K4ZVz
-         TLUCsU4ELi6LFUedIWg+2HKKBZgxqHA0ZXYphpDAGDpdoqXvY7RH3pt/9Pp5IZh+Iw4I
-         Cz/apFCxmIAZkYitJ6Ziml3T8uNOaW2exysG+KdKS44aWoAIyqPoiNCBmrK9XbCxjeyF
-         6XjNrhBHgdfsbIBykMWbZ35H/dzVjWnJGqkvmgYrI4hzDYO+TfBFmXmIr4D/l2VyZrQb
-         BdKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cIBNpTle/O27myJCmciNO53uHzWamFB21GPf0L/RmPo=;
-        b=SOElC4fiT+loTKpzZc3N37q5ISLCK+8i9XAzpa1yDZxo/vxrgMOp+HzqlNN6A9qS+K
-         kic7UhNFuAGt6ab+4jTkloyA2G5R0yB/8Q+RxCosedMZpibchdl9UU9/dXqCxNq5lTDX
-         BPD4ubU8eCAvC58diP2k9PCqOBMUq1u4lP4ndCHrrME/IiecoK5NQnwOPAbwrdOzbilp
-         gNgbvuvp2V+6LqQ2WvdW+MTfugXObNTtyb81Ss51PisIBerTgkGE3Qe8M8/iaj7RmE/I
-         O3GDf3wbZp6CSwPhkW7wb2s5y4N+rf1hMfi2ta0ZxzDGNyBDMfh+2nQucdTnKMaq4Z2S
-         z4xw==
-X-Gm-Message-State: AOAM531kyBVFo616awxFAWKimNaNE+l2XnJxKLpZSKtqG/4ikglARRmM
-        Q1qZ2Cp/f5RmZpEYLu8reDGMd8yKM6AVwYht+IxZ+A==
-X-Google-Smtp-Source: ABdhPJz2KPy/gL564iw8c6ONdAwkuLnoO5vN1LyC29mdrcPXPSatL3wtEnYgoO4l2pHCSUK/06y8FNQU+cGUKrKLT5I=
-X-Received: by 2002:aa7:9907:0:b029:28e:ab99:2a75 with SMTP id
- z7-20020aa799070000b029028eab992a75mr28153237pff.36.1620718804296; Tue, 11
- May 2021 00:40:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210507095814.17933-1-james.clark@arm.com> <3926c523-3fdb-66de-8b9c-b68290a5053e@arm.com>
- <CAJ9a7VjAvr9uKYqo9VJhFRB74vt6Jxf0G+Fm2OFm-dxAVdbpsw@mail.gmail.com>
-In-Reply-To: <CAJ9a7VjAvr9uKYqo9VJhFRB74vt6Jxf0G+Fm2OFm-dxAVdbpsw@mail.gmail.com>
-From:   Denis Nikitin <denik@google.com>
-Date:   Tue, 11 May 2021 00:39:52 -0700
-Message-ID: <CAOYpmdHGRyyXVOjgbYqUFB8BnPdaQiRC+gnuQhY+iSyhF_FP7Q@mail.gmail.com>
-Subject: Re: [RFC PATCH] perf cs-etm: Handle valid-but-zero timestamps
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     James Clark <james.clark@arm.com>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Al Grant <al.grant@arm.com>,
-        Branislav Rankov <branislav.rankov@arm.com>,
-        Denis Nikitin <denik@chromium.org>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
+        Tue, 11 May 2021 03:41:22 -0400
+Received: from dggeml764-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FfV8c1LbKzWhXN;
+        Tue, 11 May 2021 15:36:00 +0800 (CST)
+Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
+ dggeml764-chm.china.huawei.com (10.1.199.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 11 May 2021 15:40:13 +0800
+Received: from [10.174.187.224] (10.174.187.224) by
+ dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 11 May 2021 15:40:13 +0800
+Subject: Re: [RFC PATCH v4 01/13] iommu: Introduce dirty log tracking
+ framework
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
         Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-perf-users@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "Joerg Roedel" <joro@8bytes.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yi Sun <yi.y.sun@linux.intel.com>,
+        Tian Kevin <kevin.tian@intel.com>
+References: <20210507102211.8836-1-zhukeqian1@huawei.com>
+ <20210507102211.8836-2-zhukeqian1@huawei.com>
+ <efc2d868-28ba-8ed9-1d6b-610b67d671b5@linux.intel.com>
+ <18ac787a-179e-71f7-728b-c43feda80a16@huawei.com>
+ <55fda826-9ab6-a3a0-b17e-a4d4879f00bc@linux.intel.com>
+ <a8df289a-47c2-c193-cd6f-8415f68b900f@huawei.com>
+ <f47e90c6-f3c4-b28f-a810-e03afe79e62d@linux.intel.com>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
+        <yuzenghui@huawei.com>, <lushenming@huawei.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <60182a35-e151-7150-3708-4e58dd8e78da@huawei.com>
+Date:   Tue, 11 May 2021 15:40:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
+MIME-Version: 1.0
+In-Reply-To: <f47e90c6-f3c4-b28f-a810-e03afe79e62d@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.224]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm000003.china.huawei.com (7.185.36.128)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+Hi Baolu,
 
-1. This is a different issue and it's already confirmed as the hw bug.
-Reset of the coresight generator may happen at any time and
-it goes to normal only after the device reboot.
+On 2021/5/11 11:12, Lu Baolu wrote:
+> Hi Keqian,
+> 
+> On 5/10/21 7:07 PM, Keqian Zhu wrote:
+>>>>> I suppose this interface is to ask the vendor IOMMU driver to check
+>>>>> whether each device/iommu in the domain supports dirty bit tracking.
+>>>>> But what will happen if new devices with different tracking capability
+>>>>> are added afterward?
+>>>> Yep, this is considered in the vfio part. We will query again after attaching or
+>>>> detaching devices from the domain.  When the domain becomes capable, we enable
+>>>> dirty log for it. When it becomes not capable, we disable dirty log for it.
+>>> If that's the case, why not putting this logic in the iommu subsystem so
+>>> that it doesn't need to be duplicate in different upper layers?
+>>>
+>>> For example, add something like dirty_page_trackable in the struct of
+>>> iommu_domain and ask the vendor iommu driver to update it once any
+>>> device is added/removed to/from the domain. It's also better to disallow
+>> If we do it, the upper layer still needs to query the capability from domain and switch
+>> dirty log tracking for it. Or do you mean the domain can switch dirty log tracking automatically
+>> when its capability change? If so, I think we're lack of some flexibility. The upper layer
+>> may have it's own policy, such as only enable dirty log tracking when all domains are capable,
+>> and disable dirty log tracking when just one domain is not capable.
+> 
+> I may not get you.
+> 
+> Assume that dirty_page_trackable is an attribution of an iommu_domain.
+> This attribution might be changed once a new device (with different
+> capability) added or removed. So it should be updated every time a new
+> device is attached or detached. This work could be done by the vendor
+> iommu driver on the path of dev_attach/dev_detach callback.
+Yes, this is what I understand you.
+
+> 
+> For upper layers, before starting page tracking, they check the
+> dirty_page_trackable attribution of the domain and start it only it's
+> capable. Once the page tracking is switched on the vendor iommu driver
+> (or iommu core) should block further device attach/detach operations
+> until page tracking is stopped.
+But when a domain becomes capable after detaching a device, the upper layer
+still needs to query it and enable dirty log for it...
+
+To make things coordinated, maybe the upper layer can register a notifier,
+when the domain's capability change, the upper layer do not need to query, instead
+they just need to realize a callback, and do their specific policy in the callback.
+What do you think?
+
+> 
+>>
+>>> any domain attach/detach once the dirty page tracking is on.
+>> Yep, this can greatly simplify our code logic, but I don't know whether our maintainers
+>> agree that, as they may think that IOMMU dirty logging should not change original domain
+>> behaviors.
+> 
+> The maintainer owns the last word, but we need to work out a generic and
+> self-contained API set.
+OK, I see.
 
 Thanks,
-Denis
-
-
-On Fri, May 7, 2021 at 7:09 AM Mike Leach <mike.leach@linaro.org> wrote:
->
-> Hi James,
->
-> 1) Not sure about this particular target - but previously all 0
-> timestamps have been the result of not enabling a clock or the
-> coresight timestamp generator.
->
-> 2) Given that you can synthesise timestamps when all the values are
-> all 0 - does this not imply that they could be synthesised when they
-> are not present at all?
->
-> Cheers
->
-> Mike
->
-> On Fri, 7 May 2021 at 11:02, James Clark <james.clark@arm.com> wrote:
-> >
-> >
-> >
-> > On 07/05/2021 12:58, James Clark wrote:
-> > > There is an intermittent issue on Trogdor devices that
-> > > results in all Coresight timestamps having a value of zero.
-> >
-> > I've attached a file here that has the issue. From the dump you
-> > can see the zero timestamps:
-> >
-> >         Idx:69; ID:10;  I_TIMESTAMP : Timestamp.; Updated val = 0x0
-> >         Idx:71; ID:10;  I_ATOM_F1 : Atom format 1.; E
-> >         Idx:72; ID:10;  I_ADDR_S_IS0 : Address, Short, IS0.; Addr=0xFFFFFFE723C65824 ~[0x5824]
-> >
-> > This doesn't have an impact on decoding as they end up being
-> > decoded in file order as in with timeless mode.
-> >
-> > James
-> >
-> > > Because zero is currently treated as "not found" rather
-> > > than "found but zero", this breaks the decoding flow
-> > > when it would otherwise work.
-> > >
-> > > This patch adds an out parameter and return code so
-> > > the difference between zero and non-existent timestamps
-> > > can be determined.
-> > >
-> > > There is also a change to fix an underflow.
-> > >
-> > > Although this is a workaround, the change is technically
-> > > a valid way of writing the cs_etm__etmq_get_timestamp()
-> > > function. It could have been written similarly to this
-> > > without trying to work around this issue, so it's no less
-> > > correct. But, because it's a workaround to a problem
-> > > elsewhere, I will submit this as an RFC for feedback.
-> > >
-> > > This patch applies on top of the "[PATCH v2 0/2] perf
-> > > cs-etm: Set time on synthesised samples to preserve ordering"
-> > > patchset.
-> > >
-> > > Co-developed-by: Denis Nikitin <denik@chromium.org>
-> > > Signed-off-by: Denis Nikitin <denik@chromium.org>
-> > > Signed-off-by: James Clark <james.clark@arm.com>
-> > > ---
-> > >  .../perf/util/cs-etm-decoder/cs-etm-decoder.c |  5 ++++-
-> > >  tools/perf/util/cs-etm.c                      | 22 +++++++++----------
-> > >  2 files changed, 15 insertions(+), 12 deletions(-)
-> > >
-> > > diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> > > index b01d363b9301..947e44413c6e 100644
-> > > --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> > > +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> > > @@ -320,7 +320,10 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
-> > >        * which instructions started by subtracting the number of instructions
-> > >        * executed to the timestamp.
-> > >        */
-> > > -     packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
-> > > +     if (packet_queue->instr_count >= elem->timestamp)
-> > > +             packet_queue->cs_timestamp = 0;
-> > > +     else
-> > > +             packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
-> > >       packet_queue->next_cs_timestamp = elem->timestamp;
-> > >       packet_queue->instr_count = 0;
-> > >
-> > > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> > > index e5c1a1b22a2a..1969921c406a 100644
-> > > --- a/tools/perf/util/cs-etm.c
-> > > +++ b/tools/perf/util/cs-etm.c
-> > > @@ -210,13 +210,14 @@ void cs_etm__etmq_set_traceid_queue_timestamp(struct cs_etm_queue *etmq,
-> > >       etmq->pending_timestamp_chan_id = trace_chan_id;
-> > >  }
-> > >
-> > > -static u64 cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
-> > > +static int cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
-> > > +                                   u64 *timestamp,
-> > >                                     u8 *trace_chan_id)
-> > >  {
-> > >       struct cs_etm_packet_queue *packet_queue;
-> > >
-> > >       if (!etmq->pending_timestamp_chan_id)
-> > > -             return 0;
-> > > +             return -ENODATA;
-> > >
-> > >       if (trace_chan_id)
-> > >               *trace_chan_id = etmq->pending_timestamp_chan_id;
-> > > @@ -224,13 +225,15 @@ static u64 cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
-> > >       packet_queue = cs_etm__etmq_get_packet_queue(etmq,
-> > >                                                    etmq->pending_timestamp_chan_id);
-> > >       if (!packet_queue)
-> > > -             return 0;
-> > > +             return -ENODATA;
-> > >
-> > >       /* Acknowledge pending status */
-> > >       etmq->pending_timestamp_chan_id = 0;
-> > >
-> > >       /* See function cs_etm_decoder__do_{hard|soft}_timestamp() */
-> > > -     return packet_queue->cs_timestamp;
-> > > +     if (timestamp)
-> > > +             *timestamp = packet_queue->cs_timestamp;
-> > > +     return 0;
-> > >  }
-> > >
-> > >  static void cs_etm__clear_packet_queue(struct cs_etm_packet_queue *queue)
-> > > @@ -864,11 +867,10 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
-> > >                * Function cs_etm_decoder__do_{hard|soft}_timestamp() does all
-> > >                * the timestamp calculation for us.
-> > >                */
-> > > -             cs_timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
-> > > -
-> > > -             /* We found a timestamp, no need to continue. */
-> > > -             if (cs_timestamp)
-> > > +             if (!cs_etm__etmq_get_timestamp(etmq, &cs_timestamp, &trace_chan_id)) {
-> > > +                     /* We found a timestamp, no need to continue. */
-> > >                       break;
-> > > +             }
-> > >
-> > >               /*
-> > >                * We didn't find a timestamp so empty all the traceid packet
-> > > @@ -2286,9 +2288,7 @@ static int cs_etm__process_queues(struct cs_etm_auxtrace *etm)
-> > >               if (ret)
-> > >                       goto out;
-> > >
-> > > -             cs_timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
-> > > -
-> > > -             if (!cs_timestamp) {
-> > > +             if (cs_etm__etmq_get_timestamp(etmq, &cs_timestamp, &trace_chan_id)) {
-> > >                       /*
-> > >                        * Function cs_etm__decode_data_block() returns when
-> > >                        * there is no more traces to decode in the current
-> > >
->
->
->
-> --
-> Mike Leach
-> Principal Engineer, ARM Ltd.
-> Manchester Design Centre. UK
+Keqian
