@@ -2,95 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B4937A9BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2525F37A9C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbhEKOnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:43:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50414 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231728AbhEKOnK (ORCPT
+        id S231922AbhEKOnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231907AbhEKOnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:43:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620744123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k/z7NrUJTKIBdoAINSyBpZ9NunsNsM6n4BDyTwrTstY=;
-        b=CEU9bA4oAX1zOyq2nwJM3WWSt4ghcxxhh3LYBcPRXEERkcvnaAoblJQu2dkfPWaHk3Ob/n
-        G3P2+txI/yackUUV5tyrQX0Aw72RfoM13RGsKqcitOck+S9zKDEIajAwjoRxYn8HdyKfh9
-        jHmXR0BUwLOVIP14lMyAYej3oV9JxXg=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-556-CY8m1caGPR2pz8DScuZglw-1; Tue, 11 May 2021 10:42:01 -0400
-X-MC-Unique: CY8m1caGPR2pz8DScuZglw-1
-Received: by mail-oo1-f70.google.com with SMTP id i13-20020a4ad68d0000b0290204d5557d50so6702483oot.12
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:42:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k/z7NrUJTKIBdoAINSyBpZ9NunsNsM6n4BDyTwrTstY=;
-        b=eKQYRm60blACtJXzQKV1QdbD4MzW6e9bJPVW22QCMDkZn86+Vo+trBsopuaL5Uc5qW
-         Qahvzw0xk2esRaHqU6/3C/VXk282CTlr7u6ZRBfLsJo22ixhkHZW/snHyRIAtn0CYaAQ
-         fdxTmf5CmjWFnnD2QwcHtEGrOhJ/GqlDHOO2bR8MzUdr0Q6Kl8RPg+Mw6q6m4zdOgtgk
-         sxKY0UKjLpg8ScYfkKON3fokQt6NsnlsrWiIDrvqiALK10CRi9QP5bVU0nvjvjxhemsc
-         fNWfIj/5KKmzfQfN8SwA5q1Eq+WM250y1ys4uzbq24yRhFuyOuw/FmPbP+UGActRUB8V
-         IgMg==
-X-Gm-Message-State: AOAM533LPBMuNusQ/cuDDxq8Ek3QLgTpaaE2U+L+gx8dlh1Sa5KIeHDs
-        5lIuxbQ4xpeupgTi6IJlaQNAHab1/QSN1mPZuTgE/JAYrU2vwz2IkR9whUMTRONFFcdNaqvYpIA
-        EEfrSGugJEOyo0JcLIpLH2Won
-X-Received: by 2002:a4a:ab83:: with SMTP id m3mr10122762oon.2.1620744120814;
-        Tue, 11 May 2021 07:42:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyiqcX0afnpWZRWy60CV/jDkD2+4bdEWed+5anrz6ezPzlAoWGMEGtTJiX4q+FFlUrQrMxegg==
-X-Received: by 2002:a4a:ab83:: with SMTP id m3mr10122743oon.2.1620744120577;
-        Tue, 11 May 2021 07:42:00 -0700 (PDT)
-Received: from [192.168.0.173] (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
-        by smtp.gmail.com with ESMTPSA id o6sm3917266ote.14.2021.05.11.07.41.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 07:42:00 -0700 (PDT)
-Subject: Re: [PATCH] virtiofs: Enable multiple request queues
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Vivek Goyal <vgoyal@redhat.com>
-References: <20210507221527.699516-1-ckuehl@redhat.com>
- <YJpbEMePhQ88EWWR@stefanha-x1.localdomain>
-From:   Connor Kuehl <ckuehl@redhat.com>
-Message-ID: <290eaac8-45d9-0bfb-94f5-9fb41e5a3e42@redhat.com>
-Date:   Tue, 11 May 2021 09:41:59 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 11 May 2021 10:43:46 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531D8C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:42:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=VpdWWPVwCDuLCQx48KbKcWauncgjWTUPNT/nkVmSq+A=; b=SY5mhMbtH/IaXs+wEFCoh9Q0X
+        ZO+jjAzbV+jlgKtzJuoZZo4GheG7V8l45AD1VbRUJqjpjOCYgny5YoGeu0kE8U4+LQ+hgKqQePbrY
+        sjfUDxWO/whyJLJAnJOmyl/6SNY6649Q9L4PeWoMAZ5DePOAssq0DZz1w45ZBHJmbohyNzZZt+RoG
+        FePwHQQmmNwoLeniH4L60tglhKGP0W/bx5qe/485ze5uQpHyIU0wy/VM52nLQAJMqJ4oz2wlsjdmD
+        xLsXIfraewgVZNVNRMbSXRODnM49GoPQOLv3uh1nmPz9vNMewplbOiFxZDdoGEUnjEgVujSb+0l9V
+        xWBg6znvg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43862)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lgTan-0002k7-NT; Tue, 11 May 2021 15:42:37 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lgTan-0001AK-3C; Tue, 11 May 2021 15:42:37 +0100
+Date:   Tue, 11 May 2021 15:42:37 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] component: Move host device to end of device lists on
+ binding
+Message-ID: <20210511144236.GL1336@shell.armlinux.org.uk>
+References: <20210508074118.1621729-1-swboyd@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <YJpbEMePhQ88EWWR@stefanha-x1.localdomain>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210508074118.1621729-1-swboyd@chromium.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 5:23 AM, Stefan Hajnoczi wrote:
-> On Fri, May 07, 2021 at 05:15:27PM -0500, Connor Kuehl wrote:
->> @@ -1245,7 +1262,8 @@ __releases(fiq->lock)
->>  		 req->in.h.nodeid, req->in.h.len,
->>  		 fuse_len_args(req->args->out_numargs, req->args->out_args));
->>  
->> -	fsvq = &fs->vqs[queue_id];
->> +	fsvq = this_cpu_read(this_cpu_fsvq);
-> 
-> Please check how CPU hotplug affects this patch. If the current CPU
-> doesn't have a vq because it was hotplugged, then it may be necessary to
-> pick another vq.
+On Sat, May 08, 2021 at 12:41:18AM -0700, Stephen Boyd wrote:
+> Within the component device framework this usually isn't that bad
+> because the real driver work is done at bind time via
+> component{,master}_ops::bind(). It becomes a problem when the driver
+> core, or host driver, wants to operate on the component device outside
+> of the bind/unbind functions, e.g. via 'remove' or 'shutdown'. The
+> driver core doesn't understand the relationship between the host device
+> and the component devices and could possibly try to operate on component
+> devices when they're already removed from the system or shut down.
 
-I'll fix this in the next revision.
+You really are not supposed to be doing anything with component devices
+once they have been unbound. You can do stuff with them only between the
+bind() and the unbind() callbacks for the host device.
 
-Thanks,
+Access to the host devices outside of that is totally undefined and
+should not be done.
 
-Connor
+The shutdown callback should be fine as long as the other devices are
+still bound, but there will be implications if the shutdown order
+matters.
 
+However, randomly pulling devices around in the DPM list sounds to me
+like a very bad idea. What happens if such re-orderings result in a
+child device being shutdown after a parent device has been shut down?
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
