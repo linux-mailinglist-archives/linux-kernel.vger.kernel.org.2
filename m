@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D24037A3C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7DF37A3D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbhEKJhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 05:37:37 -0400
-Received: from mail-wr1-f48.google.com ([209.85.221.48]:43620 "EHLO
-        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231224AbhEKJh2 (ORCPT
+        id S231393AbhEKJiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 05:38:16 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2774 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230434AbhEKJiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 05:37:28 -0400
-Received: by mail-wr1-f48.google.com with SMTP id s8so19430824wrw.10;
-        Tue, 11 May 2021 02:36:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lKvDqLFt4pSvW/UjUfuGxRK9wnc82UFlNv4lfSox3SQ=;
-        b=TuyL4C/k18fwrHfpsEM15BqzMjJ0K5QlHBgddl7GgePT54vrlRCE2nCbfrp28DynJR
-         HemxwqOyXkaHDiXWD6vtKozmUPiKKVitfk5QTnI7HbGG8/ZamX9hBETmnocFfRYsiees
-         OQYm22RW55dKFChV4bhJQNQtx+uojImviXyFei47WYhRph0xULgJswc/Jt+Noag+PCTO
-         H3+eu0796nKRCz9bTv3QhZpFB8SBfOoX3HHH0WdP0+a/RMQn8KxXilqARFq5jXhv6No8
-         NCFFBbwIj5lTnBYisaTXhXWLfjObEnkY6agLOBnlwYX+rtBaCgGjt/MCSOhhWRhCtdEG
-         LfeA==
-X-Gm-Message-State: AOAM532DLtNOevsO8HRlaDCnKVllYRCRJRpKVDhe4Over0VqWhnF9aiG
-        FQIIppJKVloRUhs4UC7yvjo=
-X-Google-Smtp-Source: ABdhPJzoPFT2EMMBDiIncbIHfUAbvXVf3ZD01iti4VHoAS+8gLGYEXHj0HcWmLvh5qXK2Pv0JB5KYg==
-X-Received: by 2002:a5d:400f:: with SMTP id n15mr32595880wrp.274.1620725780762;
-        Tue, 11 May 2021 02:36:20 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id e17sm1256536wme.9.2021.05.11.02.36.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 02:36:20 -0700 (PDT)
-Date:   Tue, 11 May 2021 09:36:18 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        linux-kernel@vger.kernel.org, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, mikelley@microsoft.com
-Subject: Re: [PATCH v2] scsi: storvsc: Use blk_mq_unique_tag() to generate
- requestIDs
-Message-ID: <20210511093618.fqcbno4iuvhnl66g@liuwe-devbox-debian-v2>
-References: <20210510210841.370472-1-parri.andrea@gmail.com>
- <yq1k0o6ez1h.fsf@ca-mkp.ca.oracle.com>
+        Tue, 11 May 2021 05:38:14 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FfXmS522wzmg6X;
+        Tue, 11 May 2021 17:33:44 +0800 (CST)
+Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 11 May 2021 17:36:58 +0800
+From:   "Longpeng(Mike)" <longpeng2@huawei.com>
+To:     <longpeng2@huawei.com>
+CC:     Gonglei <arei.gonglei@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "Jason Wang" <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: [PATCH v3 0/3] crypto: virtio: Fix three  issues                   
+Date:   Tue, 11 May 2021 17:36:54 +0800
+Message-ID: <20210511093654.596-1-longpeng2@huawei.com>
+X-Mailer: git-send-email 2.25.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <yq1k0o6ez1h.fsf@ca-mkp.ca.oracle.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.148.223]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 11:22:25PM -0400, Martin K. Petersen wrote:
-> 
-> Andrea,
-> 
-> > Use blk_mq_unique_tag() to generate requestIDs for StorVSC, avoiding
-> > all issues with allocating enough entries in the VMbus requestor.
-> 
-> Dropped v1 from the SCSI staging tree. OK with this change going through
-> hv if that is easier.
-> 
-> Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
+Patch 1 & 2: fix two crash issues, Link: https://lkml.org/lkml/2020/1/23/205
+Patch 3: fix another functional issue
 
-Thanks Martin.
+Changes since v2:
+ - put another bugfix together
 
-> 
-> -- 
-> Martin K. Petersen	Oracle Linux Engineering
+Changes since v1:
+ - remove some redundant checks [Jason]
+ - normalize the commit message [Markus]
+
+Cc: Gonglei <arei.gonglei@huawei.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: virtualization@lists.linux-foundation.org
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+
+Longpeng(Mike) (3):
+  crypto: virtio: Fix src/dst scatterlist calculation in
+    __virtio_crypto_skcipher_do_req()
+  crypto: virtio: Fix use-after-free in
+    virtio_crypto_skcipher_finalize_req()
+  crypto: virtio: Fix dest length calculation in
+    __virtio_crypto_skcipher_do_req()
+
+ drivers/crypto/virtio/virtio_crypto_algs.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
+
+-- 
+1.8.3.1
+
