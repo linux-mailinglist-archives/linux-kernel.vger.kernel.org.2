@@ -2,173 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE3C37A831
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C164637A833
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231684AbhEKNys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 09:54:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:48240 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231599AbhEKNyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 09:54:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4AC7101E;
-        Tue, 11 May 2021 06:53:40 -0700 (PDT)
-Received: from [10.57.81.122] (unknown [10.57.81.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 561543F718;
-        Tue, 11 May 2021 06:53:37 -0700 (PDT)
-Subject: Re: [RFC PATCH] perf cs-etm: Handle valid-but-zero timestamps
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     coresight@lists.linaro.org, mathieu.poirier@linaro.org,
-        al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
-        Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210507095814.17933-1-james.clark@arm.com>
- <3926c523-3fdb-66de-8b9c-b68290a5053e@arm.com>
- <20210510053904.GB4835@leoy-ThinkPad-X240s>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <da07f930-ccd7-2b46-7b0f-0e9da3bf9482@arm.com>
-Date:   Tue, 11 May 2021 16:53:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231703AbhEKNz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 09:55:27 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:44100 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231539AbhEKNzY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 09:55:24 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14BDj4gn147896;
+        Tue, 11 May 2021 13:54:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=jDeQisHV5eJ4djdXX1wmkmp8ulHDhbp0k1CxqmYYk78=;
+ b=cNizvRr4NInK6ZRQpGSItahz75bO67G/h1cVuK2m/PO1R6cWvkeUaKRQEsFKgXpNOqk9
+ 4gjqnb5DT5wbIHUlLGVfKAz1vSK47ZR8V9cliAc1HYGDSWIVfn/9D5mxRL0nSnRlU7Jp
+ sbNsBwLwN7LWQxixAECSlU4DCYjpEdaHBxbkZfFIPXAWLwAAgdZiqfNNZkdRNtgQr3XJ
+ ZI0yX/xm71DStAGBFdeA1O29nrvD40Trn4Kb8xcjZtFCXRQLS4Y8y88EYZrH9wwe8RIQ
+ XyhGdq5dQd0U70cxBk2tCGT/HJnOGzAhqfGs7FVVGQTZeNsbN7IO6PGL+I4J8GEYa9A/ fw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 38dk9nernp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 May 2021 13:54:00 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14BDpbNb018275;
+        Tue, 11 May 2021 13:53:59 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 38dfrxa3mx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 May 2021 13:53:59 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14BDrxQC028423;
+        Tue, 11 May 2021 13:53:59 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 38dfrxa3ks-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 May 2021 13:53:59 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14BDrw1Y004638;
+        Tue, 11 May 2021 13:53:58 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 11 May 2021 06:53:57 -0700
+Date:   Tue, 11 May 2021 16:53:50 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Mark Fasheh <mark@fasheh.com>
+Cc:     Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Gang He <ghe@suse.com>, ocfs2-devel@oss.oracle.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] ocfs2: fix snprintf() checking
+Message-ID: <20210511135350.GV1955@kadam>
 MIME-Version: 1.0
-In-Reply-To: <20210510053904.GB4835@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd7ddc22-11c4-3e88-120a-d68f153f573d@linux.alibaba.com>
+X-Mailer: git-send-email haha only kidding
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: efFoIHRT_ml8Agg4yGbMP-uJov8FiyN_
+X-Proofpoint-GUID: efFoIHRT_ml8Agg4yGbMP-uJov8FiyN_
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9980 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 clxscore=1015 bulkscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105110106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The snprintf() function returns the number of bytes which would have
+been printed if the buffer was large enough.  In other words it can
+return ">= remain" but this code assumes it returns "== remain".
 
+The run time impact of this bug is not very severe.  The next iteration
+through the loop would trigger a WARN() when we pass a negative limit
+to snprintf().  We would then return success instead of -E2BIG.
 
-On 10/05/2021 08:39, Leo Yan wrote:
-> Hi James,
-> 
+The kernel implementation of snprintf() will never return negatives so
+there is no need to check and I have deleted that dead code.
 
-[...]
-> 
->>> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
->>> index b01d363b9301..947e44413c6e 100644
->>> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
->>> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
->>> @@ -320,7 +320,10 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
->>>  	 * which instructions started by subtracting the number of instructions
->>>  	 * executed to the timestamp.
->>>  	 */
->>> -	packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
->>> +	if (packet_queue->instr_count >= elem->timestamp)
->>> +		packet_queue->cs_timestamp = 0;
->>> +	else
->>> +		packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
-> 
-> Actually here have two situations: one case is "elem->timestamp" is zero,
-> another case is the overflow for "elem->timestamp".
-> 
-> So the change should be like:
-> 
->    if (!elem->timestamp)
->        packet_queue->cs_timestamp = 0;
->    else if (packet_queue->instr_count >= elem->timestamp)
->        /* handle overflow? */
->    else
->       packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
-> 
-> It's better to think about how to handle the overflow in this case.
+Fixes: a860f6eb4c6a ("ocfs2: sysfile interfaces for online file check")
+Fixes: 74ae4e104dfc ("ocfs2: Create stack glue sysfs files.")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+---
+v2: update the Fixes tag, add Joseph's R-b tag.
 
-Do you have any idea about what to do in the overflow case? I think I will submit a
-new patchset that makes the new 'Z' timeless --itrace option work, because that also
-fixes this issue, without having to do the original workaround change in this RFC.
+ fs/ocfs2/filecheck.c | 6 +-----
+ fs/ocfs2/stackglue.c | 8 ++------
+ 2 files changed, 3 insertions(+), 11 deletions(-)
 
-But I'd also like to fix this overflow because it masks the issue by making non-zero
-timestamps appear even though they aren't valid ones.
-
-I was thinking that printing a warning in the overflow case would work, but then I would
-also print a warning for the zero timestamps, and that would make just a single case,
-rather than two. Unless we just have slightly different warning text?
-
-Something like this? Without the zero timestamp issue, the underflow issue probably wouldn't
-be encountered. But at least there would be some visibility if it did:
-
-diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-index 059bcec3f651..5d8abccd34ab 100644
---- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-+++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-@@ -17,6 +17,7 @@
- 
- #include "cs-etm.h"
- #include "cs-etm-decoder.h"
-+#include "debug.h"
- #include "intlist.h"
- 
- /* use raw logging */
-@@ -294,9 +295,11 @@ cs_etm_decoder__do_soft_timestamp(struct cs_etm_queue *etmq,
- static ocsd_datapath_resp_t
- cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
-                                  const ocsd_generic_trace_elem *elem,
--                                 const uint8_t trace_chan_id)
-+                                 const uint8_t trace_chan_id,
-+                                 const ocsd_trc_index_t indx)
- {
-        struct cs_etm_packet_queue *packet_queue;
-+       static bool warned_timestamp_zero = false;
- 
-        /* First get the packet queue for this traceID */
-        packet_queue = cs_etm__etmq_get_packet_queue(etmq, trace_chan_id);
-@@ -320,7 +323,20 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
-         * which instructions started by subtracting the number of instructions
-         * executed to the timestamp.
-         */
--       packet_queue->timestamp = elem->timestamp - packet_queue->instr_count;
-+       if (!elem->timestamp) {
-+               packet_queue->timestamp = 0;
-+               if (!warned_timestamp_zero) {
-+                       pr_err("Zero Coresight timestamp found at Idx:%" OCSD_TRC_IDX_STR
-+                               ". Decoding may be improved with --itrace=Z...\n", indx);
-+                       warned_timestamp_zero = true;
-+               }
-+       }
-+       else if (packet_queue->instr_count >= elem->timestamp) {
-+               packet_queue->timestamp = 0;
-+               pr_err("Timestamp calculation underflow at Idx:%" OCSD_TRC_IDX_STR "\n", indx);
-+       }
-+       else
-+               packet_queue->timestamp = elem->timestamp - packet_queue->instr_count;
-        packet_queue->next_timestamp = elem->timestamp;
-        packet_queue->instr_count = 0;
- 
-@@ -542,7 +558,7 @@ cs_etm_decoder__set_tid(struct cs_etm_queue *etmq,
- 
- static ocsd_datapath_resp_t cs_etm_decoder__gen_trace_elem_printer(
-                                const void *context,
--                               const ocsd_trc_index_t indx __maybe_unused,
-+                               const ocsd_trc_index_t indx,
-                                const u8 trace_chan_id __maybe_unused,
-                                const ocsd_generic_trace_elem *elem)
- {
-@@ -579,7 +595,8 @@ static ocsd_datapath_resp_t cs_etm_decoder__gen_trace_elem_printer(
-                break;
-        case OCSD_GEN_TRC_ELEM_TIMESTAMP:
-                resp = cs_etm_decoder__do_hard_timestamp(etmq, elem,
--                                                        trace_chan_id);
-+                                                        trace_chan_id,
-+                                                         indx);
-                break;
-        case OCSD_GEN_TRC_ELEM_PE_CONTEXT:
-                resp = cs_etm_decoder__set_tid(etmq, packet_queue,
-
-
-James
-
-> 
-> Thanks,
-> Leo
-> 
+diff --git a/fs/ocfs2/filecheck.c b/fs/ocfs2/filecheck.c
+index 90b8d300c1ee..de56e6231af8 100644
+--- a/fs/ocfs2/filecheck.c
++++ b/fs/ocfs2/filecheck.c
+@@ -326,11 +326,7 @@ static ssize_t ocfs2_filecheck_attr_show(struct kobject *kobj,
+ 		ret = snprintf(buf + total, remain, "%lu\t\t%u\t%s\n",
+ 			       p->fe_ino, p->fe_done,
+ 			       ocfs2_filecheck_error(p->fe_status));
+-		if (ret < 0) {
+-			total = ret;
+-			break;
+-		}
+-		if (ret == remain) {
++		if (ret >= remain) {
+ 			/* snprintf() didn't fit */
+ 			total = -E2BIG;
+ 			break;
+diff --git a/fs/ocfs2/stackglue.c b/fs/ocfs2/stackglue.c
+index d50e8b8dfea4..16f1bfc407f2 100644
+--- a/fs/ocfs2/stackglue.c
++++ b/fs/ocfs2/stackglue.c
+@@ -500,11 +500,7 @@ static ssize_t ocfs2_loaded_cluster_plugins_show(struct kobject *kobj,
+ 	list_for_each_entry(p, &ocfs2_stack_list, sp_list) {
+ 		ret = snprintf(buf, remain, "%s\n",
+ 			       p->sp_name);
+-		if (ret < 0) {
+-			total = ret;
+-			break;
+-		}
+-		if (ret == remain) {
++		if (ret >= remain) {
+ 			/* snprintf() didn't fit */
+ 			total = -E2BIG;
+ 			break;
+@@ -531,7 +527,7 @@ static ssize_t ocfs2_active_cluster_plugin_show(struct kobject *kobj,
+ 	if (active_stack) {
+ 		ret = snprintf(buf, PAGE_SIZE, "%s\n",
+ 			       active_stack->sp_name);
+-		if (ret == PAGE_SIZE)
++		if (ret >= PAGE_SIZE)
+ 			ret = -E2BIG;
+ 	}
+ 	spin_unlock(&ocfs2_stack_lock);
+-- 
+2.30.2
