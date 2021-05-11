@@ -2,110 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C800037AB42
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC3837AB5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhEKQBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 12:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231561AbhEKQBn (ORCPT
+        id S231540AbhEKQGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 12:06:55 -0400
+Received: from gateway36.websitewelcome.com ([192.185.193.12]:30446 "EHLO
+        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231462AbhEKQGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:01:43 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA520C061574;
-        Tue, 11 May 2021 09:00:36 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id p20so1782304ljj.8;
-        Tue, 11 May 2021 09:00:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AWqrTKMIPcNBCl3MksIMFmTbGs76+AqqH4j4wDV18mo=;
-        b=HewY0gL6QX8Y7+yAM2vlr5EPUoTG9cQL+XMBpt7h2wxE4c8aKD6WhiSGO+WU3A6ZnE
-         p8rTd6+tgq+AKQibgdQZgLFX4GHZhdJjnMx23HGcgMeqJlbaCZOCbSqf2JlkIogF9HrQ
-         mv+Cv3gYRsd7AALBqHTO1HQeBGUC9dFzXSUDqEJskRmv/j4PHowAnGEItbozeNH7HTHD
-         WdcwMMrabLn2rMQ7zXOMpS0PN/Rh753hbTOhJ4Rj84kBCsO9hOg2xMKGNal3JUQ5qUPN
-         2/GI0nybiDz82sii8bfMl/xjEfCu/2tSRfXrqHOGjCY8mto9KXv1wOfGuNBnLAymxmwc
-         2FKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AWqrTKMIPcNBCl3MksIMFmTbGs76+AqqH4j4wDV18mo=;
-        b=ddeJFDvO957APd5j9iPolaeGaUWHJIs0CI0ZPHWtz32OuHDD2Q0g61lEr5/wd7YF+r
-         NsmZ1wynWH54NTLz8/atERrSByncwdb6q4TBMLjcY1VhVa0rqHQMFzsU9sQ6zuQkkxTF
-         VMwitmfA6WNhdZsRRbbgzZ7fI2TYi0fazalStx0C/WQG9Kw99uyftf1jQxR38hEqMgi9
-         nb1wLx3bgevU7tnqNrQKwZLbmx/INpIWcJqTwicjDSpmpRGnwXC/D/LKNF1CTrVT1G4W
-         wBPTvBa4YGbzi3wW2SdAxyrp0Pee+7tFdmELIy26rPyQ6lrdagRQQnlZVakXnxugMWwA
-         Svhg==
-X-Gm-Message-State: AOAM532FDYPrHULXIao6CVGZGHir2WbSd3YirYB/xQ1QGf03+qjbLcpw
-        e/zQuvxOoeLX8hGxUiOiIRoxJzfLXkA=
-X-Google-Smtp-Source: ABdhPJy/bCq4q07DGd7y2jIeoEBSastioov4RihtWi64suwNaNxdIkFiorVZ4opRwK1cBUsNCzZ1bQ==
-X-Received: by 2002:a2e:5c7:: with SMTP id 190mr24393620ljf.174.1620748835287;
-        Tue, 11 May 2021 09:00:35 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.googlemail.com with ESMTPSA id n16sm2656522lfe.245.2021.05.11.09.00.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 09:00:35 -0700 (PDT)
-Subject: Re: [PATCH v1 2/2] memory: tegra: Enable compile testing for all
- drivers
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        kernel test robot <lkp@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20210510213729.7095-3-digetx@gmail.com>
- <202105112125.VctfC6sX-lkp@intel.com>
- <dd0b550e-76a0-bfbc-9d6f-5d867812046d@gmail.com>
- <06addbf3-0090-b76f-65cf-e0c10d284c69@canonical.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <3ab5d50b-4955-7144-5d1d-d44cb0892d65@gmail.com>
-Date:   Tue, 11 May 2021 19:00:34 +0300
+        Tue, 11 May 2021 12:06:53 -0400
+X-Greylist: delayed 1300 seconds by postgrey-1.27 at vger.kernel.org; Tue, 11 May 2021 12:06:53 EDT
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway36.websitewelcome.com (Postfix) with ESMTP id 430A0400DCA6D
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:43:59 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id gUYBlEVRNAEP6gUYBlEn4r; Tue, 11 May 2021 10:43:59 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=dkHmssWkYSnVX6EaXwJj4jSdOD0P55hQ4BkXIHn4CG8=; b=N8eN31bmt9ZiD1VFibgDMDvHZ5
+        ynVgEp4RMnUrMJHFDEMLWpeToOganlH95/nuzt090KSLSgx2hIsF8lo5cbwH0xcg022y1G1/bylu+
+        Ubv7dm+JAo+9ekKqb7LgLqjOWUmhNzQRWYvsLy8UNgot8Uw7C5rFbXxdM+ty8o8QZ40dp7GdEO6qH
+        l2dZxruwmT9DDr0UtBG75DlBvXCuIs4V0EXOLqbSaXGlNkmdsbrrO3CkORrMTAqYk7PZ9m7uofOkR
+        +AXwdQ1MinKFxFU0WBIns5m+KCuhrAiBaV2Zv8LNUg3qQZGJruSQKFgPCJ19T0xOWUf1FhZZMvcSD
+        DzHFzLEQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:58992 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lgUY7-000Ozb-UF; Tue, 11 May 2021 10:43:55 -0500
+Subject: Re: [PATCH][next] media: venus: hfi_cmds.h: Replace one-element array
+ with flexible-array member
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210210225720.GA13710@embeddedor>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <6081fb66-7f43-cab4-b7ff-ce4b291b8865@embeddedor.com>
+Date:   Tue, 11 May 2021 10:44:27 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <06addbf3-0090-b76f-65cf-e0c10d284c69@canonical.com>
+In-Reply-To: <20210210225720.GA13710@embeddedor>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lgUY7-000Ozb-UF
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:58992
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 14
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-11.05.2021 18:31, Krzysztof Kozlowski пишет:
-...
-                                      ~~~~~~~~~~~~~~~~~~~~~^
->>>>> drivers/memory/tegra/tegra124-emc.c:802:26: warning: implicit conversion from 'unsigned long' to 'u32' (aka 'unsigned int') changes value from 18446744071562067985 to 2147483665 [-Wconstant-conversion]
->>>                    emc_ccfifo_writel(emc, EMC_ZQ_CAL_LONG_CMD_DEV0, EMC_ZQ_CAL);
->>>                    ~~~~~~~~~~~~~~~~~      ^~~~~~~~~~~~~~~~~~~~~~~~
->>>    drivers/memory/tegra/tegra124-emc.c:154:36: note: expanded from macro 'EMC_ZQ_CAL_LONG_CMD_DEV0'
->>>            (DRAM_DEV_SEL_0 | EMC_ZQ_CAL_LONG | EMC_ZQ_CAL_CMD)
->>>             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
->>>    13 warnings generated.
->>
->> This doesn't look like a useful warning from clang, it should see that
->> the constant value itself isn't truncated, hence it should be a problem
->> of clang. Do you think it's okay to ignore this nonsense?
-> 
-> I admit I also do not see the real issue here. The DRAM_DEV_SEL_0 fits
-> in u32 and there is no other bitwise arithmetic than just OR, so why
-> clang assumes it can have 32 most signifcant bits toggled on?
-> 
-> +Cc Nathan and Nick,
-> Maybe you could shed some light here on this warning?
-> 
-> Dmitry,
-> In general you should not ignore it because:
-> 1. This breaks allyesconfig with clang on powerpc (or it is one of the
-> stoppers),
-> 2. We might want in some future to build it with clang.
+Hi all,
 
-I meant to ignore it from the perspective of the memory drivers, i.e. it
-likely should be fixed in clang and not worked around in the code. Thank
-you for pinging the right people.
+Friendly ping:
+
+We are about to be able to globally enable -Warray-bounds and, this is one of the
+last out-of-bounds warnings in linux-next.
+
+Could someone take this, please?
+
+Thanks
+--
+Gustavo
+
+On 2/10/21 16:57, Gustavo A. R. Silva wrote:
+> There is a regular need in the kernel to provide a way to declare having
+> a dynamically sized set of trailing elements in a structure. Kernel code
+> should always use “flexible array members”[1] for these cases. The older
+> style of one-element or zero-length arrays should no longer be used[2].
+> 
+> Use flexible-array member in struct hfi_sys_set_property_pkt instead of
+> one-element array.
+> 
+> Also, this helps with the ongoing efforts to enable -Warray-bounds and
+> fix the following warnings:
+> 
+> drivers/media/platform/qcom/venus/hfi_cmds.c: In function ‘pkt_sys_coverage_config’:
+> drivers/media/platform/qcom/venus/hfi_cmds.c:57:11: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>    57 |  pkt->data[1] = mode;
+>       |  ~~~~~~~~~^~~
+> 
+> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
+> 
+> Link: https://github.com/KSPP/linux/issues/79
+> Link: https://github.com/KSPP/linux/issues/109
+> Build-tested-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/lkml/602416da.iZqae7Dbk7nyl6OY%25lkp@intel.com/
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/media/platform/qcom/venus/hfi_cmds.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.h b/drivers/media/platform/qcom/venus/hfi_cmds.h
+> index 83705e237f1c..327ed90a2788 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_cmds.h
+> +++ b/drivers/media/platform/qcom/venus/hfi_cmds.h
+> @@ -68,7 +68,7 @@ struct hfi_sys_release_resource_pkt {
+>  struct hfi_sys_set_property_pkt {
+>  	struct hfi_pkt_hdr hdr;
+>  	u32 num_properties;
+> -	u32 data[1];
+> +	u32 data[];
+>  };
+>  
+>  struct hfi_sys_get_property_pkt {
+> 
