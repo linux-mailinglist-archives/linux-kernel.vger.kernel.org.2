@@ -2,166 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74413379F8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A77D379F8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbhEKGJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 02:09:16 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:32979 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229840AbhEKGJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 02:09:15 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4FfSCC6tq1z9sdc;
-        Tue, 11 May 2021 08:08:07 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id yc6tN5eH3jks; Tue, 11 May 2021 08:08:07 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4FfSCC5vYHz9sdb;
-        Tue, 11 May 2021 08:08:07 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A6C1E8B7A0;
-        Tue, 11 May 2021 08:08:07 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id CSUn8zOMSxbO; Tue, 11 May 2021 08:08:07 +0200 (CEST)
-Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2DFC28B766;
-        Tue, 11 May 2021 08:08:07 +0200 (CEST)
-Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id E5E386492B; Tue, 11 May 2021 06:08:06 +0000 (UTC)
-Message-Id: <f7f4d4e364de6e473da874468b903da6e5d97adc.1620713272.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc: Force inlining of csum_add()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 11 May 2021 06:08:06 +0000 (UTC)
+        id S230355AbhEKGK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 02:10:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35997 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229840AbhEKGK5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 02:10:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620713391;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=iCqlWXsYzQ4M50g/8LZgXjNs7GwMMEWU8lAHhEw1x0I=;
+        b=fxnrSE85q1DFrLiM0VIz9XemJEf2rHHk1I1Jckwf2zJ9BcnHMBg4l0QOCLyJ5NN4SlwoD+
+        k65lcYr9EcFABfvLNpAQBcpsshjCuCcebPcr6x5YLJj+QES/kRQZW+rGVGxyI60F/STRKP
+        RLuoMJ4zCuy7e0Wdjdi+5CuRdL0JeJQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-383-eAfJlhXFMBO7BWksRNcTVg-1; Tue, 11 May 2021 02:09:47 -0400
+X-MC-Unique: eAfJlhXFMBO7BWksRNcTVg-1
+Received: by mail-ed1-f71.google.com with SMTP id q18-20020a0564025192b02903888712212fso10316980edd.19
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 23:09:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=iCqlWXsYzQ4M50g/8LZgXjNs7GwMMEWU8lAHhEw1x0I=;
+        b=oVbEvJwzUU8zVC4vlC3qkomRGu1b4731kzOAy3GmmCP2OQxxAge6piMU9GhI3k04Gd
+         ukPdMatzjDxbneGvCk3Nels8L8vQGMibayItxcSNJcVlgwsA3XTxu8Lpfj0Wt3+iNRNw
+         cS4upfp+tIvHyV1Se5d402F8819GV2I6mpyEUEPyL5GC9pjbMQ46MadocP1kYfORvzd6
+         aN76hbK3jfCE+2vWbYQUvdXuyCERcbxfn/4aiQ6foEPofjxvECmuUnbhPzAUWVWtlQML
+         zsF6KEeXbqs8U9V6C+IGdF4SYwJvkHToCYZ3h/0I7EaH2JOdvQieQq8xik0jz38ObJCA
+         Hcow==
+X-Gm-Message-State: AOAM53085sUjP0N1wWLW7SKdrT4CqCJJl2Vtio7eus1IyupD2L/jeUSu
+        0eMikyBr6mRsUeD7mIu17mKUKNCU1ToMH1AbxNlxKWtfVQ4INkd+OTSnhKi3kQpNMEu1mH4R15m
+        T70qTUge6XUp+qX144bi4iZIP
+X-Received: by 2002:a05:6402:177c:: with SMTP id da28mr33312011edb.135.1620713385499;
+        Mon, 10 May 2021 23:09:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyRZlDgHMwqPw6Hh/70Be2C5J22YJG9jLtexJBcsEd/38SWL5S6OQfC3T7Je+jRAjd8TxM+MQ==
+X-Received: by 2002:a05:6402:177c:: with SMTP id da28mr33311991edb.135.1620713385294;
+        Mon, 10 May 2021 23:09:45 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.103.229])
+        by smtp.gmail.com with ESMTPSA id h23sm10808283ejx.90.2021.05.10.23.09.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 23:09:44 -0700 (PDT)
+Date:   Tue, 11 May 2021 08:09:42 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-rt-users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, sassmann@redhat.com
+Subject: [RT] Question about i40e threaded irq
+Message-ID: <YJofplWBz8dT7xiw@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 328e7e487a46 ("powerpc: force inlining of csum_partial() to
-avoid multiple csum_partial() with GCC10") inlined csum_partial().
+Hi,
 
-Now that csum_partial() is inlined, GCC outlines csum_add() when
-called by csum_partial().
+The following has been reported on RT.
 
-c064fb28 <csum_add>:
-c064fb28:	7c 63 20 14 	addc    r3,r3,r4
-c064fb2c:	7c 63 01 94 	addze   r3,r3
-c064fb30:	4e 80 00 20 	blr
+[ 2007.106483] list_add corruption. next->prev should be prev (ffff8d86a0aadd00), but was ffff8d86a0aadec8. (next=ffff8d86a0aadd00).
+[ 2007.118155] ------------[ cut here ]------------
+[ 2007.118156] kernel BUG at lib/list_debug.c:25!
+[ 2007.118160] invalid opcode: 0000 [#1] PREEMPT_RT SMP NOPTI
+[ 2007.118162] CPU: 36 PID: 4651 Comm: irq/429-i40e-en Kdump: loaded Tainted: G          I  #1
+[ 2007.118163] Hardware name: Dell Inc. PowerEdge R740xd/04FC42, BIOS 2.6.4 04/09/2020
+[ 2007.118168] RIP: 0010:__list_add_valid.cold.0+0x12/0x28
+[ 2007.118169] Code: 85 5d 00 00 00 48 8b 50 08 48 39 f2 0f 85 42 00 00 00 b8 01 00 00 00 c3 48 89 d1 48 c7 c7 20 1e 6e ad 48 89 c2 e8 e0 11 cd ff <0f> 0b 48 89 c1 4c 89 c6 48 c7 c7 78 1e 6e ad e8 cc 11 cd ff 0f 0b
+[ 2007.118170] RSP: 0018:ffffa598d9b0be68 EFLAGS: 00010246
+[ 2007.118171] RAX: 0000000000000075 RBX: ffff8d86a0aadd00 RCX: 0000000000000001
+[ 2007.118171] RDX: 0000000000000000 RSI: ffffffffad6cf723 RDI: 00000000ffffffff
+[ 2007.118172] RBP: ffff8d8694112010 R08: 0000000000000000 R09: 0000000000000a36
+[ 2007.118173] R10: 0000000000000000 R11: 0000000000000001 R12: ffff8d86a0aadd00
+[ 2007.118173] R13: ffffffffac71f240 R14: ffff8d869d3758a0 R15: ffff8d993af88000
+[ 2007.118174] FS:  0000000000000000(0000) GS:ffff8d86a0a80000(0000) knlGS:0000000000000000
+[ 2007.118174] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2007.118175] CR2: 00007fa2d29211a0 CR3: 00000011d8c0e002 CR4: 00000000007606e0
+[ 2007.118175] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 2007.118176] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[ 2007.118176] PKRU: 55555554
+[ 2007.118176] Call Trace:
+[ 2007.118180]  __napi_schedule_irqoff+0x34/0x60
+[ 2007.118191]  i40e_msix_clean_rings+0x3f/0x50 [i40e]
+[ 2007.118195]  irq_forced_thread_fn+0x30/0x80
+[ 2007.118196]  irq_thread+0xdd/0x180
+[ 2007.118198]  ? wake_threads_waitq+0x30/0x30
+[ 2007.118198]  ? irq_thread_check_affinity+0x20/0x20
+[ 2007.118202]  kthread+0x112/0x130
+[ 2007.118203]  ? kthread_flush_work_fn+0x10/0x10
+[ 2007.118207]  ret_from_fork+0x1f/0x40
 
-c0665fb8 <csum_add>:
-c0665fb8:	7c 63 20 14 	addc    r3,r3,r4
-c0665fbc:	7c 63 01 94 	addze   r3,r3
-c0665fc0:	4e 80 00 20 	blr
+The following tracing bits have been then collected, which seem
+relevant.
 
-c066719c:	7c 9a c0 2e 	lwzx    r4,r26,r24
-c06671a0:	38 60 00 00 	li      r3,0
-c06671a4:	7f 1a c2 14 	add     r24,r26,r24
-c06671a8:	4b ff ee 11 	bl      c0665fb8 <csum_add>
-c06671ac:	80 98 00 04 	lwz     r4,4(r24)
-c06671b0:	4b ff ee 09 	bl      c0665fb8 <csum_add>
-c06671b4:	80 98 00 08 	lwz     r4,8(r24)
-c06671b8:	4b ff ee 01 	bl      c0665fb8 <csum_add>
-c06671bc:	a0 98 00 0c 	lhz     r4,12(r24)
-c06671c0:	4b ff ed f9 	bl      c0665fb8 <csum_add>
-c06671c4:	7c 63 18 f8 	not     r3,r3
-c06671c8:	81 3f 00 68 	lwz     r9,104(r31)
-c06671cc:	81 5f 00 a0 	lwz     r10,160(r31)
-c06671d0:	7d 29 18 14 	addc    r9,r9,r3
-c06671d4:	7d 29 01 94 	addze   r9,r9
-c06671d8:	91 3f 00 68 	stw     r9,104(r31)
-c06671dc:	7d 1a 50 50 	subf    r8,r26,r10
-c06671e0:	83 01 00 10 	lwz     r24,16(r1)
-c06671e4:	83 41 00 18 	lwz     r26,24(r1)
+irq/532--4667   36....2 13343.788389: softirq_raise:        vec=3 [action=NET_RX]
+irq/532--4667   36....2 13343.788391: kernel_stack:         <stack trace>
+=> trace_event_raw_event_softirq (ffffffff83eb6f77)
+=> __raise_softirq_irqoff (ffffffff83eb7acd)
+=> i40e_msix_clean_rings (ffffffffc03fe6ef)
+=> irq_forced_thread_fn (ffffffff83f1f2a0)
+=> irq_thread (ffffffff83f1f58d)
+=> kthread (ffffffff83ed5f42)
+=> ret_from_fork (ffffffff8480023f)
 
-The sum with 0 is useless, should have been skipped.
-And there is even one completely unused instance of csum_add().
+irq/529--4664   36d.h.2 13343.788402: softirq_raise:        vec=3 [action=NET_RX]
+irq/529--4664   36d.h.2 13343.788404: kernel_stack:         <stack trace>
+=> trace_event_raw_event_softirq (ffffffff83eb6f77)
+=> __raise_softirq_irqoff (ffffffff83eb7acd)
+=> rps_trigger_softirq (ffffffff8452fa49)
+=> flush_smp_call_function_queue (ffffffff83f591c3)
+=> smp_call_function_single_interrupt (ffffffff8480294b)
+=> call_function_single_interrupt (ffffffff84801c3f)
+=> __list_add_valid (ffffffff8424b050)
+=> __napi_schedule_irqoff (ffffffff8452fa94)
+=> i40e_msix_clean_rings (ffffffffc03fe6ef)
+=> irq_forced_thread_fn (ffffffff83f1f2a0)
+=> irq_thread (ffffffff83f1f58d)
+=> kthread (ffffffff83ed5f42)
+=> ret_from_fork (ffffffff8480023f)
 
-In file included from ./include/net/checksum.h:22,
-                 from ./include/linux/skbuff.h:28,
-                 from ./include/linux/icmp.h:16,
-                 from net/ipv6/ip6_tunnel.c:23:
-./arch/powerpc/include/asm/checksum.h: In function '__ip6_tnl_rcv':
-./arch/powerpc/include/asm/checksum.h:94:22: warning: inlining failed in call to 'csum_add': call is unlikely and code size would grow [-Winline]
-   94 | static inline __wsum csum_add(__wsum csum, __wsum addend)
-      |                      ^~~~~~~~
-./arch/powerpc/include/asm/checksum.h:172:31: note: called from here
-  172 |                         sum = csum_add(sum, (__force __wsum)*(const u32 *)buff);
-      |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-./arch/powerpc/include/asm/checksum.h:94:22: warning: inlining failed in call to 'csum_add': call is unlikely and code size would grow [-Winline]
-   94 | static inline __wsum csum_add(__wsum csum, __wsum addend)
-      |                      ^~~~~~~~
-./arch/powerpc/include/asm/checksum.h:177:31: note: called from here
-  177 |                         sum = csum_add(sum, (__force __wsum)
-      |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  178 |                                             *(const u32 *)(buff + 4));
-      |                                             ~~~~~~~~~~~~~~~~~~~~~~~~~
-./arch/powerpc/include/asm/checksum.h:94:22: warning: inlining failed in call to 'csum_add': call is unlikely and code size would grow [-Winline]
-   94 | static inline __wsum csum_add(__wsum csum, __wsum addend)
-      |                      ^~~~~~~~
-./arch/powerpc/include/asm/checksum.h:183:31: note: called from here
-  183 |                         sum = csum_add(sum, (__force __wsum)
-      |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  184 |                                             *(const u32 *)(buff + 8));
-      |                                             ~~~~~~~~~~~~~~~~~~~~~~~~~
-./arch/powerpc/include/asm/checksum.h:94:22: warning: inlining failed in call to 'csum_add': call is unlikely and code size would grow [-Winline]
-   94 | static inline __wsum csum_add(__wsum csum, __wsum addend)
-      |                      ^~~~~~~~
-./arch/powerpc/include/asm/checksum.h:186:31: note: called from here
-  186 |                         sum = csum_add(sum, (__force __wsum)
-      |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  187 |                                             *(const u16 *)(buff + 12));
-      |                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~
+My understanding is that rps_trigger_softirq() sneaked in while
+i40e_msix_clean_rings() threaded irq was running and, since the latter is
+using napi_schedule_irqoff(), the softnet_data poll_list got eventually
+corrupted.
 
-Force inlining of csum_add().
+Now, doing s/napi_schedule_irqoff/napi_schedule/ in the i40e driver seem
+to cure the problem. I'm not sure that there isn't a more general
+solution, though. Is it expected that napi_schedule_irqoff users in RT
+know what they are doing or do we want/need to fix this in a more
+general way?
 
-     94c:	80 df 00 a0 	lwz     r6,160(r31)
-     950:	7d 28 50 2e 	lwzx    r9,r8,r10
-     954:	7d 48 52 14 	add     r10,r8,r10
-     958:	80 aa 00 04 	lwz     r5,4(r10)
-     95c:	80 ff 00 68 	lwz     r7,104(r31)
-     960:	7d 29 28 14 	addc    r9,r9,r5
-     964:	7d 29 01 94 	addze   r9,r9
-     968:	7d 08 30 50 	subf    r8,r8,r6
-     96c:	80 aa 00 08 	lwz     r5,8(r10)
-     970:	a1 4a 00 0c 	lhz     r10,12(r10)
-     974:	7d 29 28 14 	addc    r9,r9,r5
-     978:	7d 29 01 94 	addze   r9,r9
-     97c:	7d 29 50 14 	addc    r9,r9,r10
-     980:	7d 29 01 94 	addze   r9,r9
-     984:	7d 29 48 f8 	not     r9,r9
-     988:	7c e7 48 14 	addc    r7,r7,r9
-     98c:	7c e7 01 94 	addze   r7,r7
-     990:	90 ff 00 68 	stw     r7,104(r31)
+Thanks!
 
-In the non-inlined version, the first sum with 0 was performed.
-Here it is skipped.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/checksum.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/include/asm/checksum.h b/arch/powerpc/include/asm/checksum.h
-index d5da7ddbf0fc..350de8f90250 100644
---- a/arch/powerpc/include/asm/checksum.h
-+++ b/arch/powerpc/include/asm/checksum.h
-@@ -91,7 +91,7 @@ static inline __sum16 csum_tcpudp_magic(__be32 saddr, __be32 daddr, __u32 len,
- }
- 
- #define HAVE_ARCH_CSUM_ADD
--static inline __wsum csum_add(__wsum csum, __wsum addend)
-+static __always_inline __wsum csum_add(__wsum csum, __wsum addend)
- {
- #ifdef __powerpc64__
- 	u64 res = (__force u64)csum;
--- 
-2.25.0
+Juri
 
