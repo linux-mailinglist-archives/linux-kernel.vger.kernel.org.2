@@ -2,232 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D20379D9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D42379D9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhEKDX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 23:23:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhEKDX2 (ORCPT
+        id S230153AbhEKDXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 23:23:48 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:39998 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229465AbhEKDXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 23:23:28 -0400
-Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [IPv6:2620:100:9001:583::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96DD9C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 20:22:22 -0700 (PDT)
-Received: from pps.filterd (m0122333.ppops.net [127.0.0.1])
-        by mx0a-00190b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14B3FMX0000964;
-        Tue, 11 May 2021 04:22:00 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=jan2016.eng;
- bh=VaSGbf7mK2t0E1+6GDUmmtbk/pYy7pQ0HxQpXVhdAW8=;
- b=euC+wdBE4OsxvSVwkM5xF22cGdZUAZvsndyLZeWm7wFWAx4L+MELmreWSAm+CjrIora9
- DfR1dfJ2jz0Xazs941MEaWE+2Vb9OmvHwyklZvBLu+ECmBmBrY4Wd8SdxddtH45jbgCP
- sLNXq610fj5b2bww7OuYJZHe85Gc+qVrtmzE1PMrq9rlw8bWp2cxIh/CDWoJ3uUxrhzV
- 8AlpDLKQ1NIMswr58lLazjutI1HpeAQBCP8siKF5K6JtJpLNIAkaXV0/Jo1y8A0hsWbi
- 0s7MEPLj//9ACtDZYZ3wMfF2vI+FxiKcitRMCr+HEwl/5f/lRZgojqadeRlUjEjOBA9L RQ== 
-Received: from prod-mail-ppoint2 (prod-mail-ppoint2.akamai.com [184.51.33.19] (may be forged))
-        by mx0a-00190b01.pphosted.com with ESMTP id 38ex0s8988-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 11 May 2021 04:22:00 +0100
-Received: from pps.filterd (prod-mail-ppoint2.akamai.com [127.0.0.1])
-        by prod-mail-ppoint2.akamai.com (8.16.1.2/8.16.1.2) with SMTP id 14B3KGa3026010;
-        Mon, 10 May 2021 23:21:58 -0400
-Received: from prod-mail-relay10.akamai.com ([172.27.118.251])
-        by prod-mail-ppoint2.akamai.com with ESMTP id 38ervvmyuf-1;
-        Mon, 10 May 2021 23:21:58 -0400
-Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
-        by prod-mail-relay10.akamai.com (Postfix) with ESMTP id A565644E67;
-        Tue, 11 May 2021 03:21:58 +0000 (GMT)
-Subject: Re: [PATCH 2/2] x86/e820: Use pr_debug to avoid spamming dmesg log
- with debug messages
-To:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <f527618e-54f2-c2fb-e267-8065ac34e462@gmail.com>
- <6d55670d-2f06-d768-699f-5a79cece6ce0@gmail.com>
- <d181b674-66fb-1719-e3c6-e4217cf5519c@akamai.com>
- <59985635-665b-773f-de8f-b15fe3f60196@gmail.com>
-From:   Jason Baron <jbaron@akamai.com>
-Message-ID: <1789b1da-7a0f-9fc9-6ed2-ff68e2306342@akamai.com>
-Date:   Mon, 10 May 2021 23:21:58 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 10 May 2021 23:23:46 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14B3EdWb149463;
+        Tue, 11 May 2021 03:22:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=a+MD6hh56eTfkKemIOm2LT5qws3mCdfceRKvU2oOqhg=;
+ b=RnjazZMwD9h2uE4ABOBoKUf/oGspjn8L7voT4EtNU18PaKIMSJJASvukdSzPzCdUO/Q+
+ 1hQsHuKz30LVheRhBdIQ8tJSb/gWftF2JOPB2coGmjDRwAUaYQE2jIgGIvx9csuMmAxC
+ 8hAP4qDEJZzSuHz3GZkHu2Pz0LFQyidxfsvhNLvEawqQ0gSvMTDv9+lCdmuZC0ULMsz+
+ xlHEtM/x2o2+z1n128mrqsY+foCG7oW6WL3a9AAc3FqKbf3VZrR1LWLfg9FqUl/v5RVF
+ ox8sjq0cZNHM5NCvJpoxuoI5uRHs4G7LVjbpsF8p7fa9Vr37qw1vR8ifEpfMIWvw0OKq +Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 38dk9nd78t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 May 2021 03:22:32 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14B3FoYa103115;
+        Tue, 11 May 2021 03:22:31 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2102.outbound.protection.outlook.com [104.47.58.102])
+        by aserp3030.oracle.com with ESMTP id 38e5pwfgat-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 May 2021 03:22:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LheGFj4KgdwoVpZhRBYOlYQo8NsjK4ireb9hzEb6XRo5smi2qZkc+El09y7CR2pCz1R2FtVSVHR+jM3FQkwOIRCWXYGlsojCGatSiEst/5GyYhfQVZ1N+wzaVfviwyW62C4SMvfAzfxl8aK9Tm0eidgBBYGKFe6tmkciAanfp7R9SywLr3l382P3EMTbdSkuwp6D2Zu7eBXGTQbUgZL0PHNkKo+bhlBnjEuwgb6xlyIpRSIxbGA4saU+Hqxd9tSw4EhUiSsYo21OPARWRtwufXG1JVsHTqWLgPluuyqXG3BSldC0BdMNWLkevbPip8vUA551ybX3GCHLBlPT5hEjBQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a+MD6hh56eTfkKemIOm2LT5qws3mCdfceRKvU2oOqhg=;
+ b=GbcZBKe9bm7h5D7L4Iz/qQJ/nqYK3akUvfTiNL2ieW/XflUcTBfTLfrEx1p2h66n7Bqn4SKvATTtZFi0daByO0al2y1VKwV4anlYdl0kt/FlHACwox8X5kjZFdm7pcwNnlO046AvQGJgHGW0Azq7E8Zm/45jCsZ01D0GDxTdIAHTEQ3jHSd+0D5hcTdhtdS46L20emqMrK5Hlm7DhFWf8HOVAK/uWqYSz3eN2uuy4G9eDs4N596KEs+1BMUA7JoS8kdF5OXaQPRx3Uh12SD04ejHj6L1WZf9DLMOXqrwz+o2u//Da44zOLXGTuw4gk17iVPXGPjA2c9+T2QCtYZEXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a+MD6hh56eTfkKemIOm2LT5qws3mCdfceRKvU2oOqhg=;
+ b=qp17pTEV/ilksJshwWmpwVzf9w4YtcqMEAe4yVRutPk/26S1znXa+dwNZJuXBwry0P6xxFNMXXkAn70STjtV2n5z0g4VF8xY7+v4sxqcEe6Yy5v8AR9PBXTot27dniFB5MgbLNtuZrSj8jkbTzHwXHx8UkBpb3+NEnxV7z9O9Nw=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4789.namprd10.prod.outlook.com (2603:10b6:510:3c::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.29; Tue, 11 May
+ 2021 03:22:28 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4108.031; Tue, 11 May 2021
+ 03:22:28 +0000
+To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-scsi@vger.kernel.org,
+        mikelley@microsoft.com
+Subject: Re: [PATCH v2] scsi: storvsc: Use blk_mq_unique_tag() to generate
+ requestIDs
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1k0o6ez1h.fsf@ca-mkp.ca.oracle.com>
+References: <20210510210841.370472-1-parri.andrea@gmail.com>
+Date:   Mon, 10 May 2021 23:22:25 -0400
+In-Reply-To: <20210510210841.370472-1-parri.andrea@gmail.com> (Andrea Parri's
+        message of "Mon, 10 May 2021 23:08:41 +0200")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: SN4PR0701CA0023.namprd07.prod.outlook.com
+ (2603:10b6:803:28::33) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-In-Reply-To: <59985635-665b-773f-de8f-b15fe3f60196@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-10_14:2021-05-10,2021-05-10 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
- mlxlogscore=999 phishscore=0 malwarescore=0 bulkscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105110024
-X-Proofpoint-GUID: pGUStvxl6ZF_9mKiUPeRy7h5XmJPw7Uk
-X-Proofpoint-ORIG-GUID: pGUStvxl6ZF_9mKiUPeRy7h5XmJPw7Uk
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-10_14:2021-05-10,2021-05-10 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 lowpriorityscore=0
- mlxlogscore=999 bulkscore=0 phishscore=0 malwarescore=0 impostorscore=0
- adultscore=0 priorityscore=1501 suspectscore=0 spamscore=0 clxscore=1015
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SN4PR0701CA0023.namprd07.prod.outlook.com (2603:10b6:803:28::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Tue, 11 May 2021 03:22:28 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3e8db0f4-a211-42be-60eb-08d9142c0181
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4789:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB478912C8C84E7D1100910FB88E539@PH0PR10MB4789.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: leeH3yB+Od1IT3lxPg8M9W7uQ0nHG/u9S7FGKQP15HzgzBtnZuatQRjaJ+m+Jz1RRd4GMJgvJJaqxC04Lb/ipQ/6lw+oJ/3GbEQPc8r7sHb2qnoY5ASEkxPw65wskNZP9OU/f63bVH5g3KgbllMeNzsyfhXpBFG058reLFmvJ4S4Kw/Ip0gfyATEWh8MpZRt7FzOyefrRdt3sD+K5Lq5VP7wcHRmUhU1vWQ1/Os/w6P2Z7cNKDkowGA3CT3vLPMMJP+Z4PAmh3D89JUZl5Y8MdmlPfPlgz0uUDkaEYEPP7JIyHfYPqft4usuaOwTtprdcgQHYVh2VskPYti4evaP+JueMwFgiUfiWfckQFodn+lMA4J8y1NdPpa39XBwkAq2vHVunOFJUOO50U1JbH+YdaE/ViPXb3m5bUidB9cUuf+PRXBDtNfU4E0EnMnrggQL3wG0DVCIQfMJ8jnXvL46PtnQ8r9rg+klNZ2to9RsVmohYCS1PuPu6GXMzoMn1rpth8D3dREN0PdvU6WRnOhFYDDHaUStsNQQwgyO1nFMF8NdW1rZXT/lxn1PIuRphFdnkA9DXcwg7v5KFaHd6cVRn4V1rZZC0mMX5RjSYJg07yoFdAF/CpTCspshFiR2JJUFnvfsU7kKpLUiClmpT5IcglnwzOuXblWxJ5JD57R4wtk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(396003)(39860400002)(346002)(376002)(86362001)(38100700002)(7696005)(478600001)(956004)(7416002)(83380400001)(2906002)(38350700002)(8676002)(6666004)(16526019)(186003)(8936002)(26005)(6916009)(66556008)(66476007)(55016002)(4326008)(4744005)(5660300002)(316002)(52116002)(66946007)(36916002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?RYDHc/l18aJL0nFbpjzPQsBPEWmJAMk/CId2saSQCPrvBRr9ftNJtuqEV0rg?=
+ =?us-ascii?Q?yoNmkyMInXaTi8p4z4qB64QmgyaI09IdeUT1PR9qamoWg5uNXZ+WhwDaOJtc?=
+ =?us-ascii?Q?kxWntgCiY1cQ/07qJDTQo1es9mHb0W0LNoOkTsJsuo+I/kDiPdn+Y/+yxkp9?=
+ =?us-ascii?Q?j9lwupgD+gX739jpYdJsinCDcViI7a4CrAbBaoV2gLgV84RA4I80EI2mDXp+?=
+ =?us-ascii?Q?RPoGQlBfFKKCxTJFK3qZr1Avm2sRF2JJuyy11LurNUIUn0gpI9r9XsrWM7XQ?=
+ =?us-ascii?Q?oihX7u14Fu3vDeluDZvpH6eZ4pesAEGzEfkkmcqJ7xw9Q9zZIuvWqtc+fhem?=
+ =?us-ascii?Q?W0NgSoaAD28o368VReirJgvXXMU+M1Oc4SzXt+IBymXhuQOTQcfUGPf2ZiBB?=
+ =?us-ascii?Q?hif/vSQBWJ9RrwYIo+FaZCFtgyLjW7tmwwZtp+AYnRjq10qMaq9AzD2dxEUb?=
+ =?us-ascii?Q?SyjeboFaTm13lL4ENF2qgBUZMV25IT9FX1++i1dp00VQxF68PuMCSRssWZO7?=
+ =?us-ascii?Q?xWD/iIBkcgNFA+RVmoEoqb0DgNFaWnoo1gisd1HfqZ6s7vmcjT3nkLsenku3?=
+ =?us-ascii?Q?BZ3IjXHRDFvNIdCLGVXGZ3k/B4ptbvUYwG3TBe0UF1zU5WVRc1VxxW+qasc5?=
+ =?us-ascii?Q?h6zckKi7qeloFMoL3BlodJsQKwHU6/nN+SiHbPX4FzBLe/eIgCuYXR/QstTU?=
+ =?us-ascii?Q?8PthTjN/nFzKLmDv62ByjCw4ZPlwNfpz/1L5gUVNY12xHFyDLbdmHA5xkVP3?=
+ =?us-ascii?Q?RJhE0zjg1OOlgp6I0sVH5NPbMKv912K+VXSxsotd0wsLwH1/XOth8lxnUwlA?=
+ =?us-ascii?Q?S7vreBh4n2Jl5p+xrmGklLoED/Ikjde3l6BW+qUuKcVTgOhGGNJYVvAKaDF5?=
+ =?us-ascii?Q?HCHnn9W+QOP/xchsW2Z86sOcKXyne3RuIBw3lbNyp0wNmwrTXRkE91qeHSEj?=
+ =?us-ascii?Q?gRfsYv44bgUUz4pELbcGvAFgyINwPAnIkXeFXTBnB1x4dhQCPOLXhTqu6AVl?=
+ =?us-ascii?Q?nysRIwwTvMHHydjyxvpi+/E/TmAq8UMeFHp94aXlJB4+lWTVtgRmq1ZBEJfr?=
+ =?us-ascii?Q?3/GFLC3nOMfFhfCu13iIN+V/i4RNJjk3PN8FgJPNWqoQEC9mozRPdbQ7/hBn?=
+ =?us-ascii?Q?4QHGJHW4TT8yIx+VKX4rc61LvuVDvyuFs+Icg6Dr16NTRc9cmi783ezaO7+8?=
+ =?us-ascii?Q?5Wa807/d5bDLEo9hiVAlP4BZSY9Ibs5C75Q+2aHHTyFkbAl1lWgPtYwSziup?=
+ =?us-ascii?Q?XmuW5EUEVFxV7EUQiHGGZXpk4YzEaH9ZRb436a0GegTkhlq6mjPPcLtmuLf5?=
+ =?us-ascii?Q?0I96lnGrjfo+ZT2Bo1VAS0K0?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3e8db0f4-a211-42be-60eb-08d9142c0181
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 03:22:28.6994
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zgvylhueUvxlNu/2CCs2tHvUljV0SN9pIVtxg8RVbhAFgo5VahMah2vzeWDwYxlqxoyRejNEnARmvnLgJrOn8JzsAt9XtdM5PPKAmCSaLUo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4789
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9980 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 spamscore=0
+ mlxscore=0 adultscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
  definitions=main-2105110024
-X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 184.51.33.19)
- smtp.mailfrom=jbaron@akamai.com smtp.helo=prod-mail-ppoint2
+X-Proofpoint-ORIG-GUID: QxpgEUlWxNHEGs-WcLG3fTPuwxXfSGel
+X-Proofpoint-GUID: QxpgEUlWxNHEGs-WcLG3fTPuwxXfSGel
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9980 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 clxscore=1011 bulkscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105110024
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Andrea,
 
-On 5/5/21 2:40 PM, Heiner Kallweit wrote:
-> On 05.05.2021 18:58, Jason Baron wrote:
->>
->>
->> On 5/3/21 3:40 PM, Heiner Kallweit wrote:
->>> e820 emits quite some debug messages to the dmesg log. Let's restrict
->>> this to cases where the debug output is actually requested. Switch to
->>> pr_debug() for this purpose and make sure by checking the return code
->>> that pr_cont() is only called if applicable.
->>>
->>> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
->>> ---
->>>  arch/x86/kernel/e820.c | 27 ++++++++++++++++-----------
->>>  1 file changed, 16 insertions(+), 11 deletions(-)
->>>
->>> diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
->>> index bc0657f0d..67ad4d8f0 100644
->>> --- a/arch/x86/kernel/e820.c
->>> +++ b/arch/x86/kernel/e820.c
->>> @@ -465,6 +465,7 @@ __e820__range_update(struct e820_table *table, u64 start, u64 size, enum e820_ty
->>>  	u64 end;
->>>  	unsigned int i;
->>>  	u64 real_updated_size = 0;
->>> +	int printed;
->>>  
->>>  	BUG_ON(old_type == new_type);
->>>  
->>> @@ -472,11 +473,13 @@ __e820__range_update(struct e820_table *table, u64 start, u64 size, enum e820_ty
->>>  		size = ULLONG_MAX - start;
->>>  
->>>  	end = start + size;
->>> -	printk(KERN_DEBUG "e820: update [mem %#010Lx-%#010Lx] ", start, end - 1);
->>> -	e820_print_type(old_type);
->>> -	pr_cont(" ==> ");
->>> -	e820_print_type(new_type);
->>> -	pr_cont("\n");
->>> +	printed = pr_debug("e820: update [mem %#010Lx-%#010Lx] ", start, end - 1);
->>> +	if (printed > 0) {
->>> +		e820_print_type(old_type);
->>> +		pr_cont(" ==> ");
->>> +		e820_print_type(new_type);
->>> +		pr_cont("\n");
->>> +	}
->>
->>
->> Hi Heiner,
->>
->> We've been doing these like:
->>
->> DEFINE_DYNAMIC_DEBUG_METADATA(e820_dbg, "e820 verbose mode");
->>
->> .
->> .
->> .
->>
->> if (DYNAMIC_DEBUG_BRANCH(e820_debg)) {
->>     printk(KERN_DEBUG "e820: update [mem %#010Lx-%#010Lx] ", start, end - 1);
->>     e820_print_type(old_type);
->>     pr_cont(" ==> ");
->>     e820_print_type(new_type);
->>     pr_cont("\n");
->> }
->>
->>
->> You could then have one DEFINE_DYNAMIC_DEBUG_METADATA statement - such that it enables
->> it all in one go, or do separate ones that enable it how you see fit.
->>
->> Would that work here?
->>
-> 
-> How would we handle the case that CONFIG_DYNAMIC_DEBUG_CORE isn't defined?
-> Then also DEFINE_DYNAMIC_DEBUG_METADATA isn't defined and we'd need to
-> duplicate the logic used here:
-> 
-> #if defined(CONFIG_DYNAMIC_DEBUG) || \
-> 	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> #include <linux/dynamic_debug.h>
-> #define pr_debug(fmt, ...)			\
-> 	dynamic_pr_debug(fmt, ##__VA_ARGS__)
-> #elif defined(DEBUG)
-> #define pr_debug(fmt, ...) \
-> 	printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-> #else
-> #define pr_debug(fmt, ...) \
-> 	no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-> #endif
-> 
+> Use blk_mq_unique_tag() to generate requestIDs for StorVSC, avoiding
+> all issues with allocating enough entries in the VMbus requestor.
 
-I'm not sure we need to duplicate all that I think we just need something
-like the following for the !CONFIG_DYNAMIC_DEBUG_CORE case. Would this
-help?
+Dropped v1 from the SCSI staging tree. OK with this change going through
+hv if that is easier.
 
-diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
-index a57ee75..91ede70 100644
---- a/include/linux/dynamic_debug.h
-+++ b/include/linux/dynamic_debug.h
-@@ -182,6 +182,15 @@ void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
- #include <linux/errno.h>
- #include <linux/printk.h>
+Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
 
-+#ifdef DEBUG
-+#define DYNAMIC_DEBUG_BRANCH(descriptor) true
-+#else
-+#define DYNAMIC_DEBUG_BRANCH(descriptor) false
-+#if
-+
-+#define DEFINE_DYNAMIC_DEBUG_METADATA(name, fmt)
-+
-+
- static inline int ddebug_add_module(struct _ddebug *tab, unsigned int n,
-                                    const char *modname)
- {
-
-
-
-> IMO it's better to have the complexity of using DEFINE_DYNAMIC_DEBUG_METADATA
-> only once in the implementation of dynamic_pr_debug(), and not in every
-> code that wants to use pr_debug() in combination with pr_cont().
-
-I think for your use-case it would just require one DEFINE_DYNAMIC_DEBUG_METADATA()
-statement?
-
-> 
-> Also I think that to a certain extent pr_debug() is broken currently in case
-> of dynamic debugging because it has no return value, one drawback of
-> using not type-safe macros. This doesn't hurt so far because no caller seems to
-> check the return value or very few people have dynamic debugging enabled.
-
-The model of:
-
-DEFINE_DYNAMIC_DEBUG_METADATA(foo, "enble_foo");
-
-.
-.
-.
-
-if (DYNAMIC_DEBUG_BRANCH(foo) {
-	do debugging stuff;
-}
-
-Seems more general since the 'do debugging stuff' doesn't have to be limited
-to printk, it can be anything. So if we add another different model for this
-use-case, it seems like it might be less general.
-
-Thanks,
-
--Jason
+-- 
+Martin K. Petersen	Oracle Linux Engineering
