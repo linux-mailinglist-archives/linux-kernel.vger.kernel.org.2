@@ -2,144 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B74C37AC81
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC5337AC83
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhEKQ5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 12:57:17 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16496 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231329AbhEKQ5Q (ORCPT
+        id S231549AbhEKQ6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 12:58:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35998 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230315AbhEKQ6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:57:16 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14BGkPVu145439;
-        Tue, 11 May 2021 12:55:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : content-type : in-reply-to
- : mime-version; s=pp1; bh=QczvyUxovq0nnjKxWPpABlzPN2pcnKz91kSpxLMHe2g=;
- b=cWa5b7f2e3C9X8R3XKZ7Pyd/OVfKIu02F1N69+o6ZP3TeBBut1bQ9aqWsyTPHis3KEfV
- rfy0nwhoygaC8pKKKSJoiMmCYPmWopXPaHVS3iETb9u8xutJUw4dtXb4ZkSt7am4eZUH
- lyHs8pzJ/bXthivK1fWPefR49pkSU4NsDM08MivGTxrQHe3EQBk5TqISfOgKm8yXk2n2
- iV9G3xlNt3na/R1NM72vUotdcIU/N6hlM/f1gyrqRth+A4yIQgEpf+lzFIIyJIAKg1l3
- DX9f6Mfow1A8zQ93LrHhA6tuNfBA5rGcuAo7TCtqB+nLsyAd+rGX/tQiqHDRHD4Cx6hr +g== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38fwqyg673-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 11 May 2021 12:55:47 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14BGrFVC012847;
-        Tue, 11 May 2021 16:55:44 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma02fra.de.ibm.com with ESMTP id 38dj988yaq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 11 May 2021 16:55:44 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14BGtgVI24183124
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 May 2021 16:55:42 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4BEC6A4054;
-        Tue, 11 May 2021 16:55:42 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 14DFAA405B;
-        Tue, 11 May 2021 16:55:40 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue, 11 May 2021 16:55:39 +0000 (GMT)
-Date:   Tue, 11 May 2021 22:25:39 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Parth Shah <parth@linux.ibm.com>,
-        Aubrey Li <aubrey.li@intel.com>
-Subject: Re: [PATCH v2 6/8] sched/idle: Move busy_cpu accounting to idle
- callback
-Message-ID: <20210511165539.GU2633526@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20210506164543.90688-1-srikar@linux.vnet.ibm.com>
- <20210506164543.90688-7-srikar@linux.vnet.ibm.com>
- <87tun91oaa.mognet@arm.com>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <87tun91oaa.mognet@arm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: sZTLpUEKv8sUNR82uLc9OeY2rsi15WQO
-X-Proofpoint-ORIG-GUID: sZTLpUEKv8sUNR82uLc9OeY2rsi15WQO
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 11 May 2021 12:58:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620752214;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=+Hqn4DDA9smOSapKsY68DCe6CLiWVB/h93X9znormXA=;
+        b=B05OGYVcFQoGI7aX4RxmYjEuhllgk+1KXkHHsvcS5RfUh+Vx9SEnv1FPaCkiWGNU3OHrC0
+        IrCMzwhPeTd9iCCG1ec8u2B/5TPSK/cwA+VnqdxJiWjNgsTuUj6MVybS7fB+DXbdSS1CAk
+        VhbZHWU9Ed9WzkBQpIh0SKk7BZzHLRI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-546-b1WzxQLeOhOwEhx5W93XLA-1; Tue, 11 May 2021 12:56:52 -0400
+X-MC-Unique: b1WzxQLeOhOwEhx5W93XLA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 85133800D55;
+        Tue, 11 May 2021 16:56:51 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.185])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 02BED1893C;
+        Tue, 11 May 2021 16:56:28 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 11 May 2021 18:56:50 +0200 (CEST)
+Date:   Tue, 11 May 2021 18:56:26 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Pedro Alves <palves@redhat.com>,
+        Simon Marchi <simon.marchi@efficios.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND2] ptrace: make ptrace() fail if the tracee changed its
+ pid unexpectedly
+Message-ID: <20210511165626.GA13720@redhat.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-11_04:2021-05-11,2021-05-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- malwarescore=0 suspectscore=0 priorityscore=1501 bulkscore=0 clxscore=1011
- spamscore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105110117
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Valentin Schneider <valentin.schneider@arm.com> [2021-05-11 12:51:41]:
+Suppose we have 2 threads, the group-leader L and a sub-theread T,
+both parked in ptrace_stop(). Debugger tries to resume both threads
+and does
 
-> On 06/05/21 22:15, Srikar Dronamraju wrote:
-> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> > index 8db40c8a6ad0..00e4669bb241 100644
-> > --- a/kernel/sched/topology.c
-> > +++ b/kernel/sched/topology.c
-> > @@ -647,6 +647,7 @@ DEFINE_PER_CPU(int, sd_llc_id);
-> >  #ifdef CONFIG_SCHED_SMT
-> >  DEFINE_PER_CPU(int, smt_id);
-> >  #endif
-> > +DEFINE_PER_CPU(int, is_idle);
-> 
-> This + patch 8 immediately reminds me of Aubrey's patch:
-> 
->   http://lore.kernel.org/r/1615872606-56087-1-git-send-email-aubrey.li@intel.com
-> 
-> last I looked it seemed OK, even the test bot seems happy. Aubrey, did you
-> have any more work to do on that one (other than rebasing)?
-> 
+	ptrace(PTRACE_CONT, T);
+	ptrace(PTRACE_CONT, L);
 
-The above patch also is aimed at similar problems.
+If the sub-thread T execs in between, the 2nd PTRACE_CONT doesn not
+resume the old leader L, it resumes the post-exec thread T which was
+actually now stopped in PTHREAD_EVENT_EXEC. In this case the
+PTHREAD_EVENT_EXEC event is lost, and the tracer can't know that the
+tracee changed its pid.
 
-However I feel this patch has few differences.
-- We use the nr_busy_cpus in this patchset in the wake_affine_idler_llc() to
-  differentiate between 2 LLCs and choose a LLC that is lightly loaded.
+This patch makes ptrace() fail in this case until debugger does wait()
+and consumes PTHREAD_EVENT_EXEC which reports old_pid. This affects all
+ptrace requests except the "asynchronous" PTRACE_INTERRUPT/KILL.
 
-- Except for the per-cpu is_idle, it gets it done with the existing
-  infrastructure. (And we could move the is_idle in the rq struct too.)
+The patch doesn't add the new PTRACE_ option to not complicate the API,
+and I _hope_ this won't cause any noticeable regression:
 
-- Mel had reservations on per-LLC idlecore, I would think the per-LLC idle
-  mask would mean more updates and dirty. Everytime a CPU goes to idle,
-  comes out of idle, the mask would be dirtied. Though the number of times
-  this new per LLC CPU mask is read is probably going to be lesser than
-  idle-cores with this patch series.
+	- If debugger uses PTRACE_O_TRACEEXEC and the thread did an exec
+	  and the tracer does a ptrace request without having consumed
+	  the exec event, it's 100% sure that the thread the ptracer
+	  thinks it is targeting does not exist anymore, or isn't the
+	  same as the one it thinks it is targeting.
 
-- In the said implementation, the idleness of a CPU is done at every check
-  which may not be necessary if handled in the callbacks.
+	- To some degree this patch adds nothing new. In the scenario
+	  above ptrace(L) can fail with -ESRCH if it is called after the
+	  execing sub-thread wakes the leader up and before it "steals"
+	  the leader's pid.
 
-> >  DEFINE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
-> >  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_numa);
-> >  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
-> > @@ -673,6 +674,7 @@ static void update_top_cache_domain(int cpu)
-> >  #ifdef CONFIG_SCHED_SMT
-> >       per_cpu(smt_id, cpu) = cpumask_first(cpu_smt_mask(cpu));
-> >  #endif
-> > +	per_cpu(is_idle, cpu) = 1;
-> >       rcu_assign_pointer(per_cpu(sd_llc_shared, cpu), sds);
-> >
-> >       sd = lowest_flag_domain(cpu, SD_NUMA);
-> > --
-> > 2.18.2
+Test-case:
 
+	#include <stdio.h>
+	#include <unistd.h>
+	#include <signal.h>
+	#include <sys/ptrace.h>
+	#include <sys/wait.h>
+	#include <errno.h>
+	#include <pthread.h>
+	#include <assert.h>
+
+	void *tf(void *arg)
+	{
+		execve("/usr/bin/true", NULL, NULL);
+		assert(0);
+
+		return NULL;
+	}
+
+	int main(void)
+	{
+		int leader = fork();
+		if (!leader) {
+			kill(getpid(), SIGSTOP);
+
+			pthread_t th;
+			pthread_create(&th, NULL, tf, NULL);
+			for (;;)
+				pause();
+
+			return 0;
+		}
+
+		waitpid(leader, NULL, WSTOPPED);
+
+		ptrace(PTRACE_SEIZE, leader, 0,
+				PTRACE_O_TRACECLONE | PTRACE_O_TRACEEXEC);
+		waitpid(leader, NULL, 0);
+
+		ptrace(PTRACE_CONT, leader, 0,0);
+		waitpid(leader, NULL, 0);
+
+		int status, thread = waitpid(-1, &status, 0);
+		assert(thread > 0 && thread != leader);
+		assert(status == 0x80137f);
+
+		ptrace(PTRACE_CONT, thread, 0,0);
+		/*
+		 * waitid() because waitpid(leader, &status, WNOWAIT) does not
+		 * report status. Why ????
+		 *
+		 * Why WEXITED? because we have another kernel problem connected
+		 * to mt-exec.
+		 */
+		siginfo_t info;
+		assert(waitid(P_PID, leader, &info, WSTOPPED|WEXITED|WNOWAIT) == 0);
+		assert(info.si_pid == leader && info.si_status == 0x0405);
+
+		/* OK, it sleeps in ptrace(PTRACE_EVENT_EXEC == 0x04) */
+		assert(ptrace(PTRACE_CONT, leader, 0,0) == -1);
+		assert(errno == ESRCH);
+
+		assert(leader == waitpid(leader, &status, WNOHANG));
+		assert(status == 0x04057f);
+
+		assert(ptrace(PTRACE_CONT, leader, 0,0) == 0);
+
+		return 0;
+	}
+
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Reported-by: Simon Marchi <simon.marchi@efficios.com>
+Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Acked-by: Pedro Alves <palves@redhat.com>
+Acked-by: Simon Marchi <simon.marchi@efficios.com>
+Acked-by: Jan Kratochvil <jan.kratochvil@redhat.com>
+---
+ kernel/ptrace.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 43d6179508d6..1037251ae4a5 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -169,6 +169,27 @@ void __ptrace_unlink(struct task_struct *child)
+ 	spin_unlock(&child->sighand->siglock);
+ }
+ 
++static bool looks_like_a_spurious_pid(struct task_struct *task)
++{
++	int pid;
++
++	if (task->exit_code != ((PTRACE_EVENT_EXEC << 8) | SIGTRAP))
++		return false;
++
++	rcu_read_lock();
++	pid = task_pid_nr_ns(task, task_active_pid_ns(task->parent));
++	rcu_read_unlock();
++
++	if (pid == task->ptrace_message)
++		return false;
++	/*
++	 * The tracee changed its pid but the PTRACE_EVENT_EXEC event
++	 * was not wait()'ed, most probably debugger targets the old
++	 * leader which was destroyed in de_thread().
++	 */
++	return true;
++}
++
+ /* Ensure that nothing can wake it up, even SIGKILL */
+ static bool ptrace_freeze_traced(struct task_struct *task)
+ {
+@@ -179,7 +200,8 @@ static bool ptrace_freeze_traced(struct task_struct *task)
+ 		return ret;
+ 
+ 	spin_lock_irq(&task->sighand->siglock);
+-	if (task_is_traced(task) && !__fatal_signal_pending(task)) {
++	if (task_is_traced(task) && !looks_like_a_spurious_pid(task) &&
++	    !__fatal_signal_pending(task)) {
+ 		task->state = __TASK_TRACED;
+ 		ret = true;
+ 	}
 -- 
-Thanks and Regards
-Srikar Dronamraju
+2.25.1.362.g51ebf55
+
+
