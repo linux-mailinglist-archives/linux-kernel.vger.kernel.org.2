@@ -2,102 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1350337A8B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BF337A8B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbhEKOOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:14:41 -0400
-Received: from mga12.intel.com ([192.55.52.136]:39313 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231154AbhEKOOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:14:37 -0400
-IronPort-SDR: Ox2ATWqhoTEbygqkU67iwcz+HZiJLwcXd6qgdK8CbAM3I/j3c8Mhd7KDZRV/QasEMZ/4EruHdv
- a/Pbs4PyzBwQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179044594"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="179044594"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:13:30 -0700
-IronPort-SDR: XWeliyNGUr1fBJgpmzQTk+wnAEIVoQ1NpxHUGgP7CmAWCiSgGYYn/E7tC/qPno4JAxIXTlmLzj
- GElIT6wMfHhw==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="541660559"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:13:27 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lgT8W-00BSqe-Oy; Tue, 11 May 2021 17:13:24 +0300
-Date:   Tue, 11 May 2021 17:13:24 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Daniel Mack <daniel@zonque.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>
-Subject: Re: [PATCH v2 00/14] spi: pxa2xx: Set of cleanups
-Message-ID: <YJqRBIdTlvnsCYsn@smile.fi.intel.com>
-References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
- <162072071980.33404.13031284441613044277.b4-ty@kernel.org>
- <CAHp75Vck5izDB4mTRV5hTaknpx5Bm+OA4rNLVznQxVaEwigBZg@mail.gmail.com>
- <20210511134706.GI4496@sirena.org.uk>
- <CAHp75VdPHYEq+Xn5yQ+TyQn5uerc+afcVaHj22OmVzsBW2jcaQ@mail.gmail.com>
- <CAHp75Vca2KT4kd9zw3ECqym1rRDSg2NNbwRRVVA1L7vyD3VCJQ@mail.gmail.com>
+        id S231663AbhEKOQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:16:03 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44332 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231740AbhEKOP4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:15:56 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620742488;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nE/xF6QQ6jy94Wje4Pn+qtr6n9UALuR/dYQUtBqieqc=;
+        b=JmA4cUivwLl2pXz6tgkRIMdw+s0eK1DrJM77NK1wELBhpUwvy+4PpFU1Arx5sdJnBbUEdL
+        hWiKDwJLUlAs+fNV5hSnnd8amECGXvyFSnpisE2pV1r2Bk6v/cEeqfRZhV/2eNm9f91CD1
+        4NXHPmWeffxbh+ng4TwE291xCTivpZqRUL1o2a6jTcjXsxfwGAk+Bwe6bRYfuIAfdQuHPd
+        9MtELQL416tbFdpH5ow664QrPBxo35jLXq1HgIGHPzIq7llyRNC5QAF/9h5IYAqPoFlxcX
+        FVNQ4UgdXCmzOjwc/8x2XwUsyKGMgjbLQEtpTarCebhLXgDADFpin9uweZV/nQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620742488;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nE/xF6QQ6jy94Wje4Pn+qtr6n9UALuR/dYQUtBqieqc=;
+        b=6Uk50/dhz52RlccDbVG6qKDjQCsUFpeDVQAcRulQqoaeLAJ9JqfBw59FVqKKBbN4zr/uMg
+        ZMPDK6tuLuP8UfAw==
+To:     "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Steve Wahl <steve.wahl@hpe.com>, Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "H. Peter Anvin \(Intel\)" <hpa@zytor.com>
+Subject: Re: [PATCH 3/6] x86/idt: remove address argument to idt_invalidate()
+In-Reply-To: <20210511005531.1065536-4-hpa@zytor.com>
+References: <20210511005531.1065536-1-hpa@zytor.com> <20210511005531.1065536-4-hpa@zytor.com>
+Date:   Tue, 11 May 2021 16:14:47 +0200
+Message-ID: <87o8dhfjc8.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vca2KT4kd9zw3ECqym1rRDSg2NNbwRRVVA1L7vyD3VCJQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 04:56:05PM +0300, Andy Shevchenko wrote:
-> On Tue, May 11, 2021 at 4:52 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Tue, May 11, 2021 at 4:47 PM Mark Brown <broonie@kernel.org> wrote:
-> > >
-> > > On Tue, May 11, 2021 at 03:28:18PM +0300, Andy Shevchenko wrote:
-> > > > On Tue, May 11, 2021 at 11:27 AM Mark Brown <broonie@kernel.org> wrote:
-> > >
-> > > > > On Fri, 23 Apr 2021 21:24:27 +0300, Andy Shevchenko wrote:
-> > > > > > Set of cleanups here and there related to the SPI PXA2xx driver.
-> > > > > > On top of them, adding the special type for Intel Merrifield.
-> > >
-> > > > > [07/14] spi: pxa2xx: Introduce int_stop_and_reset() helper
-> > > > >         (no commit info)
-> > >
-> > > > The above patches are effectively missed.
-> > > > Anything to fix in your scripts / my patches?
-> > >
-> > > Like I said, patch 7 didn't apply so you should check and resend.
-> >
-> > I didn't get it. I have effectively rebased the entire series and resend as v2.
-> 
-> v2 --> v3
-> 
-> v3
-> https://lore.kernel.org/linux-spi/20210510124134.24638-1-andriy.shevchenko@linux.intel.com/T/#t
-> 
-> 
-> > I can speculate that your scripts have a bug since they might try v1
-> 
-> v1 --> v1 and / or v2
-> 
-> > as well (as far as I can see they usually send a confirmation of
-> > application for all versions of the series in question).
-> >
-> > Sorry, but I do not see an issue.
+On Mon, May 10 2021 at 17:55, H. Peter Anvin wrote:
+> diff --git a/arch/x86/kernel/machine_kexec_32.c b/arch/x86/kernel/machine_kexec_32.c
+> index 64b00b0d7fe8..6ba90f47d8c3 100644
+> --- a/arch/x86/kernel/machine_kexec_32.c
+> +++ b/arch/x86/kernel/machine_kexec_32.c
+> @@ -232,8 +232,8 @@ void machine_kexec(struct kimage *image)
+>  	 * The gdt & idt are now invalid.
+>  	 * If you want to load them you must set up your own idt & gdt.
+>  	 */
+> -	idt_invalidate(phys_to_virt(0));
+> -	set_gdt(phys_to_virt(0), 0);
+> +	idt_invalidate();
+> +	set_gdt(0, 0);
 
-Just in case I'll send a v4 with only patches that missed.
-Otherwise it will be the same as in v3 (see above).
+  (NULL, 0)
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+first argument it a pointer...
+  
