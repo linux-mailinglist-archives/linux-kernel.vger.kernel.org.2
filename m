@@ -2,29 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2846637B1EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F4937B1F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhEKWyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 18:54:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33970 "EHLO mail.kernel.org"
+        id S230005AbhEKWz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:55:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230347AbhEKWyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 18:54:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B6FF61958;
-        Tue, 11 May 2021 22:53:07 +0000 (UTC)
+        id S229925AbhEKWz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 18:55:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88B7161260;
+        Tue, 11 May 2021 22:54:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620773587;
-        bh=EotQ6cg7YP76P2IiUcgViwV/juVh+1b5V3AQ01poaqM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sjVhl1SYcF/nSFYdhPCGq2qvIXT/fxMkEvg7YDg5Rjqv2t8dV7M7zhdXZZD0+5PQl
-         dJjBqeX5Jcdgi2wDdGQLBQCvWMY/r31gZOwP2UL7348Yax0fbGF6m5MjzK92x46BKE
-         KLXZdMHcIc9x212F6/w0JsFeoaQHqQx18m2mLrgO6WNR5hsZtvUg64DSl/3xIoZXh5
-         wylgTxbyHJ5oUWfxhg/ZzY3VpehLuDcXiOofvtkj3nQIjj0ZNXcv31qj3y9kgTvWvG
-         8Ig2/c9cV8jLiFtUWzUM1ULfQzr0K4QjIbuCUGhC4/7TOd4dQ+5r0FTBwxfkuUsHkU
-         MyZyBd+5SE/Nw==
+        s=k20201202; t=1620773690;
+        bh=A72CbQhZAawT5X/NaQJ3qlXdfpWHfSuXJCpS4j20Pfc=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=kHAx5A3837baT4x7gRdzksryIW4nvO6vRh7Z8j/4sXbuWzqAb2oKS9ovQFX86RHUJ
+         McPxhx9K+UL4MAvw437cqaqAJR/3ROTrkLZPPpoGvG+kikIVysB2t0q4t+oDBrKybr
+         VUmhzzF9idrR7hqhgs2ZYa2E4PPAkjrx0HaNhpoygGmPk1btvIaXQ5P+pfcytOM/8Y
+         6Q1jjzyIkis2ErHLpVZcnhfDxNk+tGSCwdNEOhz0zMtMVVcSSf3y6vAryZFeb/7PTt
+         ufxLAdIg9egvljsMWpKhjS6q3zMxp3z/SFG9ErBIF9KjBmZtbjd84zQZ5il4j8BiBj
+         TnV9jYiDwUXPQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A9D2D5C0E5C; Tue, 11 May 2021 15:53:06 -0700 (PDT)
+        id 4D5715C0138; Tue, 11 May 2021 15:54:50 -0700 (PDT)
+Date:   Tue, 11 May 2021 15:54:50 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,49 +33,47 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Jules Irenge <jbi.octave@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 19/19] rcu: Add missing __releases() annotation
-Date:   Tue, 11 May 2021 15:53:04 -0700
-Message-Id: <20210511225304.2893154-19-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
-References: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/7] kvfree_rcu() updates for v5.14
+Message-ID: <20210511225450.GA2893337@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jules Irenge <jbi.octave@gmail.com>
+Hello!
 
-Sparse reports a warning at rcu_print_task_stall():
+This series contains kfree_rcu() updates.
 
-"warning: context imbalance in rcu_print_task_stall - unexpected unlock"
+1.	kvfree_rcu: Release a page cache under memory pressure, courtesy
+	of Zhang Qiang.
 
-The root cause is a missing annotation on rcu_print_task_stall().
+2.	kvfree_rcu: Use [READ/WRITE]_ONCE() macros to access to
+	nr_bkv_objs, courtesy of "Uladzislau Rezki (Sony)".
 
-This commit therefore adds the missing __releases(rnp->lock) annotation.
+3.	kvfree_rcu: Add a bulk-list check when a scheduler is run,
+	courtesy of "Uladzislau Rezki (Sony)".
 
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree_stall.h | 1 +
- 1 file changed, 1 insertion(+)
+4.	kvfree_rcu: Update "monitor_todo" once a batch is started,
+	courtesy of "Uladzislau Rezki (Sony)".
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index e6bd518e0bc4..ffb8cf6c6437 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -314,6 +314,7 @@ static void rcu_print_detail_task_stall_rnp(struct rcu_node *rnp)
-  * tasks blocked within RCU read-side critical sections.
-  */
- static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
-+	__releases(rnp->lock)
- {
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	return 0;
--- 
-2.31.1.189.g2e36527f23
+5.	kvfree_rcu: Use kfree_rcu_monitor() instead of open-coded variant,
+	courtesy of "Uladzislau Rezki (Sony)".
 
+6.	kvfree_rcu: Fix comments according to current code, courtesy of
+	"Uladzislau Rezki (Sony)".
+
+7.	kvfree_rcu: Refactor kfree_rcu_monitor(), courtesy of "Uladzislau
+	Rezki (Sony)".
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/Documentation/admin-guide/kernel-parameters.txt |    5 
+ b/kernel/rcu/tree.c                               |   82 ++++++++++++--
+ kernel/rcu/tree.c                                 |  127 +++++++---------------
+ 3 files changed, 121 insertions(+), 93 deletions(-)
