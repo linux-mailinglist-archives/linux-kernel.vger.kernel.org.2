@@ -2,76 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E35A379C5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A48379C53
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbhEKCAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 22:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbhEKCAN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 22:00:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27DCC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 18:59:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=94dTxvf+dfWqWALs6j6WFSSXBzIqjxhol9xgA8vTt+s=; b=JZix6jWG46gP2Y9OnRBmly+QdW
-        tBFpXe0LFPUut4WOC2m0bhh15+ZFMSzqcifpwuOHKbn14vc7HzGbhyvePxjAJHHvx7WmcYwa29n6H
-        MOC6M8Frywqs8q01YlCKUzeeGWZmgkEl/rOrZdPiF3QX6J5R9Du7/1/IhSwzJh1KMZS+kIIxCiHEc
-        Oxk+YUrE+ef+Vr/razzvxRGDuy3H40QgNlJSySblcUPsKjFQMpmdEWUaRwS+ic9BaaiJFAFcO5s4V
-        PmiRn6w3iB9icgpjQsIyzxnBIBbKmOVtOW/+ZD26ECbGe7PUQMET1tXCYfzblbYu1+YxzrSVkAp5K
-        TXL/eW+Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgHf8-006nC6-Pe; Tue, 11 May 2021 01:58:25 +0000
-Date:   Tue, 11 May 2021 02:58:18 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
+        id S230433AbhEKB5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 21:57:51 -0400
+Received: from mga05.intel.com ([192.55.52.43]:35576 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229948AbhEKB5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 21:57:50 -0400
+IronPort-SDR: BavRm09k8GY8b8cFjrzN7FflLn3ceHCUnjI/asrcpQMhRUnAgsMKe8qU70i3nbyA3lKTmbxBEs
+ xp6e+z1gqOpA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="284819771"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="284819771"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 18:56:41 -0700
+IronPort-SDR: SQphaNSnTY+2ExKDYQSdheFzJeELZxKuiRd2Zuof1+nV40+Ch5d0Fe3AqcdEJnUJYq8CqqOMZe
+ XvlU9aCf0KFQ==
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="470975445"
+Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 18:56:11 -0700
+Date:   Tue, 11 May 2021 10:13:06 +0800
+From:   Oliver Sang <oliver.sang@intel.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Dennis Zhou <dennis@kernel.org>,
+        Pratik Sampat <psampat@linux.ibm.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Mel Gorman <mgorman@suse.de>, Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2 2/2] mm/vmalloc: Print a warning message first on
- failure
-Message-ID: <YJnkurvLPolj+RHU@casper.infradead.org>
-References: <20210509193844.2562-1-urezki@gmail.com>
- <20210509193844.2562-2-urezki@gmail.com>
- <YJg8QO2JXm0+8UH6@casper.infradead.org>
- <20210509200519.GA3016@pc638.lan>
- <YJhDpkpdUKiNEAnt@casper.infradead.org>
- <20210509212641.GA3220@pc638.lan>
- <20210510103342.GA2169@pc638.lan>
- <20210510185238.787adc7378bc6d82262399d2@linux-foundation.org>
+        "lkp@lists.01.org" <lkp@lists.01.org>,
+        "lkp@intel.com" <lkp@intel.com>,
+        "ying.huang@intel.com" <ying.huang@intel.com>,
+        "feng.tang@intel.com" <feng.tang@intel.com>,
+        "zhengjun.xing@intel.com" <zhengjun.xing@intel.com>
+Subject: Re: [percpu]  ace7e70901:  aim9.sync_disk_rw.ops_per_sec -2.3%
+ regression
+Message-ID: <20210511021306.GA8539@xsang-OptiPlex-9020>
+References: <20210427073448.GD32408@xsang-OptiPlex-9020>
+ <YItcfQfZlNZTmQKR@carbon.dhcp.thefacebook.com>
+ <40632FBD-8874-4B6C-A945-F2EBC96CF12B@fb.com>
+ <20210507030606.GA27263@xsang-OptiPlex-9020>
+ <YJV+Vn9eGfIlxDQE@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510185238.787adc7378bc6d82262399d2@linux-foundation.org>
+In-Reply-To: <YJV+Vn9eGfIlxDQE@carbon.dhcp.thefacebook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 06:52:38PM -0700, Andrew Morton wrote:
-> On Mon, 10 May 2021 12:33:42 +0200 Uladzislau Rezki <urezki@gmail.com> wrote:
-> 
-> > Please find the v4 version of the patch that is in question:
-> > 
-> > >From 7e27e4ac8f299ae244e9e0e90e0292ae2c08d37d Mon Sep 17 00:00:00 2001
-> > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-> > Date: Sat, 8 May 2021 23:41:21 +0200
-> > Subject: [PATCH v4 1/1] mm/vmalloc: Print a warning message first on failure
-> 
-> Added, thanks.
-> 
-> Matthew has a point of course, but I do think that any console driver
-> which tries to allocate memory within the cotext of printk() is so
-> pathetic that it isn't worth compromising core code to cater for it...
+Hi Roman,
 
-I'm fine with v4 of this patch, fwiw.  I saw no advantage to the earlier
-version, but now that the advantage has been explained, the advantage
-outweighs the disadvantage.
+On Fri, May 07, 2021 at 10:52:22AM -0700, Roman Gushchin wrote:
+> On Fri, May 07, 2021 at 11:06:06AM +0800, Oliver Sang wrote:
+> > hi Roman,
+> >  
+> > On Thu, May 06, 2021 at 12:54:59AM +0000, Roman Gushchin wrote:
+> > > Ping
+> > 
+> > sorry for late.
+> > 
+> > the new patch makes the performance a little better but still has
+> > 1.9% regression comparing to
+> > f183324133 ("percpu: implement partial chunk depopulation")
+> 
+> Hi Oliver!
+> 
+> Thank you for testing it!
+> 
+> Btw, can you, please, confirm that the regression is coming specifically
+> from ace7e70901 ("percpu: use reclaim threshold instead of running for every page")?
+> I do see *some* regression in my setup, but the data is very noisy, so I'm not sure
+> I can confirm it.
+> 
+> Thanks!
+
+sorry for late. according to our tests, the answer seems be yes.
+let me explain our test a little, we found the KPI (here is aim9)
+droped, then an automatic bisection was triggered. the ace7e70901
+was finally recognized as the commit introduced the change.
+
+since it's a bisection result, we have test data for both parent
+and this commit. (BTW, we make sure the config for both kernels are
+same)
+
+for this bisect, we tested 6 times for both parent and ace7e70901,
+and the data is stable, as below:
+
+parent:
+f183324133ea535db4127f9fad3e19725ca88bf3/avg.json:  "aim9.sync_disk_rw.ops_per_sec": 103531.76166666666,
+
+f183324133ea535db4127f9fad3e19725ca88bf3/matrix.json:  "aim9.sync_disk_rw.ops_per_sec": [
+f183324133ea535db4127f9fad3e19725ca88bf3/matrix.json-    103673.09,
+f183324133ea535db4127f9fad3e19725ca88bf3/matrix.json-    102188.39,
+f183324133ea535db4127f9fad3e19725ca88bf3/matrix.json-    104325.06,
+f183324133ea535db4127f9fad3e19725ca88bf3/matrix.json-    104038.4,
+f183324133ea535db4127f9fad3e19725ca88bf3/matrix.json-    102908.57,
+f183324133ea535db4127f9fad3e19725ca88bf3/matrix.json-    104057.06
+f183324133ea535db4127f9fad3e19725ca88bf3/matrix.json-  ],
+
+ace7e70901:
+ace7e7090137ee996757eb5eebc94439b0e2803a/avg.json:  "aim9.sync_disk_rw.ops_per_sec": 101102.73857142858,
+
+ace7e7090137ee996757eb5eebc94439b0e2803a/matrix.json:  "aim9.sync_disk_rw.ops_per_sec": [
+ace7e7090137ee996757eb5eebc94439b0e2803a/matrix.json-    101193.43,
+ace7e7090137ee996757eb5eebc94439b0e2803a/matrix.json-    100689.98,
+ace7e7090137ee996757eb5eebc94439b0e2803a/matrix.json-    100988.63,
+ace7e7090137ee996757eb5eebc94439b0e2803a/matrix.json-    100732.64,
+ace7e7090137ee996757eb5eebc94439b0e2803a/matrix.json-    101389.69,
+ace7e7090137ee996757eb5eebc94439b0e2803a/matrix.json-    101662.74,
+ace7e7090137ee996757eb5eebc94439b0e2803a/matrix.json-    101062.06
+ace7e7090137ee996757eb5eebc94439b0e2803a/matrix.json-  ],
+
