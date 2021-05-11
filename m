@@ -2,106 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1058037A001
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5625437A014
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhEKGvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 02:51:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26254 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229456AbhEKGvU (ORCPT
+        id S230385AbhEKGxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 02:53:55 -0400
+Received: from mail-vs1-f43.google.com ([209.85.217.43]:37690 "EHLO
+        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhEKGxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 02:51:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620715814;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=umA1WrHOFiVlBbjKzKntHglDQdg2BgS3oCexgpceoV4=;
-        b=C3hZ1C9ZulrWTPUKToIwD6r37MfnNgVc4uCAa4DH0Yenaq2lqYqGxSdTOZ0DjNp7iYuqUR
-        p3OigLjZUlG2K1Pm+gVHZMXqRPODIyoydNZlERGKSkhrEKg234Mo7nfTJyNjV4DdqTR1+c
-        DeojI2FANWxh6RK9dl+eHvv0pC4gvoQ=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-548-KRntNO8cMueaNrSayMngAQ-1; Tue, 11 May 2021 02:50:11 -0400
-X-MC-Unique: KRntNO8cMueaNrSayMngAQ-1
-Received: by mail-pl1-f197.google.com with SMTP id n18-20020a170902d0d2b02900ed5de16a2dso7132709pln.13
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 23:50:11 -0700 (PDT)
+        Tue, 11 May 2021 02:53:54 -0400
+Received: by mail-vs1-f43.google.com with SMTP id s15so6869354vsi.4;
+        Mon, 10 May 2021 23:52:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=umA1WrHOFiVlBbjKzKntHglDQdg2BgS3oCexgpceoV4=;
-        b=GcFox3kBf981sHfNDWh/nyxat7+qMQ+1bhF1iZNTxUanUxE2th/6tTrAl3t6f1Z8sV
-         mOssA2K3dbDvGW9vIEhZtNu1wAX6ZhmW7JGZgnpd7QKmaSEANMu4G0BkxaedmZwovTH4
-         FhFKZH0CvsaccFSDJ5oGPI4FWfM8Jr8vafSTzeRsxyNdbKA/WlFWL8s0KHh4nuPRHev3
-         HYWxlFeH4GznBVzGhDkdAPKurBxXRiVXQMs834ROGhRhIZ2TcKgEsG4GimIyA3XX9I0q
-         56pIdP+Fudf9vqzCa6alawE5HXLpum1WFsx71yXV4Zm0aBJSmCgFShJxdjY/prCxITNe
-         f4xQ==
-X-Gm-Message-State: AOAM532sXzJZLu+y6vQTqZp0nMaKcCN74x6p5mY1Bp9VSowulkvAWzT1
-        teWNe5DpffhASis7co/413rSBumkiiWmj9hvXAEskizygU0hEumAtY+Y39odpn/yA6skY0ajdlL
-        DSpi7l314gDqzP6d4KbDPUHxf
-X-Received: by 2002:a17:90b:184:: with SMTP id t4mr3416779pjs.223.1620715810243;
-        Mon, 10 May 2021 23:50:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy0nIA3fflnZGCrCpbroOw85DYJI2FzsmmyMHTk1Ihc+KFfaCk0aGqGfPaWbSRNEdOwp4oOXg==
-X-Received: by 2002:a17:90b:184:: with SMTP id t4mr3416761pjs.223.1620715810062;
-        Mon, 10 May 2021 23:50:10 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id j16sm13601256pgh.69.2021.05.10.23.50.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 23:50:09 -0700 (PDT)
-Subject: Re: [PATCH 4/4] tun: indicate support for USO feature
-To:     Yuri Benditovich <yuri.benditovich@daynix.com>,
-        davem@davemloft.net, kuba@kernel.org, mst@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Cc:     yan@daynix.com
-References: <20210511044253.469034-1-yuri.benditovich@daynix.com>
- <20210511044253.469034-5-yuri.benditovich@daynix.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <eb8c4984-f0cc-74ee-537f-fc60deaaaa73@redhat.com>
-Date:   Tue, 11 May 2021 14:50:01 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e1OOiDVz4jUv/IlYBZXTh18pllXdMKyAArvIddCeWMw=;
+        b=qxrzr2fswzdCK32nZtBCGQiNuL67NB68/5YBr1sCK+ZMO32XysL4XCf8eMZYVzyYtW
+         EPHr2lHW2zA8YCHNGCqCIwAHpkLeZwjbrZo2YeO/LNdFDu2u++SxQgoLzICZ7p+O7tGp
+         ViiC5xSgcTwtUXgDPTFq3DSEeF4Wq06V250IZzhaL4zzdC+P4PFpPYLEALmcWeOW40Bp
+         cticRI/TU8I3HO8W6axJHN9yu8cIp1q+95feiNB0w72hOQEXrbhDuPDU0uwXS74eh9em
+         yq5Dfg3sQz3Ah+53iXuU4KBLwubCzBDlhm80hbVJb4v6mrDgoAF4YLFvwHqT8ryifUN+
+         /A0w==
+X-Gm-Message-State: AOAM5302s6VNW3GcGSP3LP7ZMzX9ESXiGNWicwbScBKZQR+8e5Jpcky9
+        Q6DoCNKop2gVPaA54vmUmJbYS9MPodA17TcOJec=
+X-Google-Smtp-Source: ABdhPJzmQm74z77d6kfTHhr+3dxao5oa02U1uG8ObktOEbUD9Y7O2VfS1+Xgi4Gagh9y9h8CawKu2tIm8ydW2bCdA+U=
+X-Received: by 2002:a67:8745:: with SMTP id j66mr24499434vsd.18.1620715968302;
+ Mon, 10 May 2021 23:52:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210511044253.469034-5-yuri.benditovich@daynix.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210511133551.09bfd39c@canb.auug.org.au> <56cef5d3-cfb4-abe2-1cbc-f146b720396c@infradead.org>
+In-Reply-To: <56cef5d3-cfb4-abe2-1cbc-f146b720396c@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 11 May 2021 08:52:37 +0200
+Message-ID: <CAMuHMdWuz9oy2Xnb=9vMZD2q_-JU5XoSZb373CDTpBDLRZaviw@mail.gmail.com>
+Subject: Re: linux-next: Tree for May 11 (btrfs)
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Randy,
 
-ÔÚ 2021/5/11 ÏÂÎç12:42, Yuri Benditovich Ð´µÀ:
-> Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
-> ---
->   drivers/net/tun.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, May 11, 2021 at 7:13 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 5/10/21 8:35 PM, Stephen Rothwell wrote:
+> > Changes since 20210510:
+> >
 >
-> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> index 84f832806313..a35054f9d941 100644
-> --- a/drivers/net/tun.c
-> +++ b/drivers/net/tun.c
-> @@ -2812,7 +2812,7 @@ static int set_offload(struct tun_struct *tun, unsigned long arg)
->   			arg &= ~(TUN_F_TSO4|TUN_F_TSO6);
->   		}
->   
-> -		arg &= ~TUN_F_UFO;
-> +		arg &= ~(TUN_F_UFO|TUN_F_USO);
+> on i386:
+>
+> ld: fs/btrfs/extent_io.o: in function `btrfs_submit_read_repair':
+> extent_io.c:(.text+0x624f): undefined reference to `__udivdi3'
 
+I received a similar report from kisskb for m68k.
 
-It looks to me kernel doesn't use "USO", so TUN_F_UDP_GSO_L4 is a better 
-name for this and I guess we should toggle NETIF_F_UDP_GSO_l4 here?
+I assume the next version will fix this, cfr.
+https://lore.kernel.org/linux-btrfs/751b7396-d0fd-d3b2-f14d-e730e6b08222@gmx.com/
 
-And how about macvtap?
+Gr{oetje,eeting}s,
 
-Thanks
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
->   	}
->   
->   	/* This gives the user a way to test for new features in future by
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
