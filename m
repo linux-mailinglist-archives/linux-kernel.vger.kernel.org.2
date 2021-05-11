@@ -2,97 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0E937A6FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E838237A702
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbhEKMp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 08:45:57 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:35982 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbhEKMp4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 08:45:56 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14BCifrQ033227;
-        Tue, 11 May 2021 07:44:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620737081;
-        bh=rnLxLj7u+SRLP5C+EjI1XluTvjiwwG/phu5Ue2Vyc5o=;
-        h=From:To:CC:Subject:Date;
-        b=WkEK4G8UxDxAtcIk6gW/8aa83MBphi8eovNJOxd/BmA0yF0TP+HSlUoVCHE+FofTu
-         b62t2BTWAr9KMCBz9kI61bXVoYBtog5CMUIZe5vgWwmoZZE+9aRsGvFpNkK7/PNw1z
-         FQoBZekF+mCmxwkaT5VjoxbSezLL1gaAjWw1tdK4=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14BCifir115752
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 11 May 2021 07:44:41 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 11
- May 2021 07:44:40 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 11 May 2021 07:44:40 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14BCicYt110487;
-        Tue, 11 May 2021 07:44:38 -0500
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>
-Subject: [PATCH] media: i2c: ov5648: Plug runtime pm counter leak
-Date:   Tue, 11 May 2021 18:14:37 +0530
-Message-ID: <20210511124437.9930-1-p.yadav@ti.com>
-X-Mailer: git-send-email 2.30.0
+        id S231665AbhEKMrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 08:47:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39460 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231645AbhEKMrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 08:47:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D5014AF3E;
+        Tue, 11 May 2021 12:46:32 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 59D211F2B6D; Tue, 11 May 2021 14:46:32 +0200 (CEST)
+Date:   Tue, 11 May 2021 14:46:32 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     kernel test robot <oliver.sang@intel.com>, Jan Kara <jack@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kbuild test robot <lkp@intel.com>, ying.huang@intel.com,
+        feng.tang@intel.com, zhengjun.xing@intel.com,
+        Matthew Bobrowski <mbobrowski@mbobrowski.org>
+Subject: Re: [fanotify] 7cea2a3c50: stress-ng.fanotify.ops_per_sec -23.4%
+ regression
+Message-ID: <20210511124632.GL24154@quack2.suse.cz>
+References: <20210511070805.GE8539@xsang-OptiPlex-9020>
+ <CAOQ4uxhoR8h0Mw=LJGSxMYWC1krjbwgzxbYNDjMmeo3sBAey1w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxhoR8h0Mw=LJGSxMYWC1krjbwgzxbYNDjMmeo3sBAey1w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the stream is being enabled, the runtime pm usage counter is
-incremented. Then if ov5648_sw_standby() fails, the function returns
-error without decrementing the counter, leaking it.
+On Tue 11-05-21 14:13:38, Amir Goldstein wrote:
+> On Tue, May 11, 2021 at 9:51 AM kernel test robot <oliver.sang@intel.com> wrote:
+> >
+> >
+> >
+> > Greeting,
+> >
+> > FYI, we noticed a -23.4% regression of stress-ng.fanotify.ops_per_sec due to commit:
+> >
+> >
+> > commit: 7cea2a3c505e87a9d6afc78be4a7f7be636a73a7 ("fanotify: support limited functionality for unprivileged users")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> >
+> 
+> I am not sure how this is possible.
+> This commit only changes permissions to perform the operation.
+> Is the test not being run as root?
 
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
----
+Yeah, I've stared at it for some time and didn't come up with a sensible
+explanation either. I guess we need to try to reproduce and see...
 
-Hi,
-
-I spotted this when converting OV5640 driver to use runtime PM using
-this driver as reference. I only have a very surface level understanding
-of runtime PM system as of now so please review with that in mind.
-
-This patch is only compile-tested since I don't have the hardware with
-me.
-
- drivers/media/i2c/ov5648.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/i2c/ov5648.c b/drivers/media/i2c/ov5648.c
-index 3ecb4a3e8773..6aa2c950f505 100644
---- a/drivers/media/i2c/ov5648.c
-+++ b/drivers/media/i2c/ov5648.c
-@@ -2143,8 +2143,12 @@ static int ov5648_s_stream(struct v4l2_subdev *subdev, int enable)
- 	ret = ov5648_sw_standby(sensor, !enable);
- 	mutex_unlock(&sensor->mutex);
-
--	if (ret)
-+	if (ret) {
-+		if (enable)
-+			pm_runtime_put(sensor->dev);
-+
- 		return ret;
-+	}
-
- 	state->streaming = !!enable;
-
---
-2.30.0
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
