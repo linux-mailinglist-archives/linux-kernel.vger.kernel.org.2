@@ -2,182 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBB537A303
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD0D37A305
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhEKJJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 05:09:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34754 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230445AbhEKJJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 05:09:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1620724119; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LdtRtvGpqx0UjvlPenaRbREiHOWvrepxRdYwPspw0wY=;
-        b=SYZE8VW/mebjvcX8eFpjs6yTy5+5aAy+m8d+v2iPRrciXP+3YY5kKnrUlVj6xdJO4vo1mb
-        MqGKq83i8ex1KyJQqgph5//S48Ak9jFpkXGeIPG3Uo1FmJxVWG1XyVxuarxpbkkyBhJ9TK
-        p7aY8RxfVecQKIm09ydIRWowH7rp0Qs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DDAB6B15B;
-        Tue, 11 May 2021 09:08:38 +0000 (UTC)
-Date:   Tue, 11 May 2021 11:08:38 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     luojiaxing <luojiaxing@huawei.com>
-Cc:     sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        john.ogness@linutronix.de, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        linuxarm@huawei.com, bobo.shaobowang@huawei.com
-Subject: Re: [PATCH] printk: stop spining waiter when console resume to flush
- prb
-Message-ID: <YJpJlsw6860gZhIt@alley>
-References: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
- <YJPxj83F1sBjHHAE@alley>
- <f38cd7b9-22a4-b65d-fd37-2d95fe95fc00@huawei.com>
- <YJj9JdhgL88ivHVy@alley>
- <cf883de9-0fd9-5b84-88e8-1bd73b9ee28a@huawei.com>
+        id S231271AbhEKJJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 05:09:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230474AbhEKJJ4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 05:09:56 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C7BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 02:08:49 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1lgONh-0001KM-7G; Tue, 11 May 2021 11:08:45 +0200
+Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1lgONg-00066K-Ow; Tue, 11 May 2021 11:08:44 +0200
+Date:   Tue, 11 May 2021 11:08:44 +0200
+From:   Michael Tretter <m.tretter@pengutronix.de>
+To:     Lucas Stach <l.stach@pengutronix.de>
+Cc:     Yuri Savinykh <s02190703@gse.cs.msu.ru>,
+        ldv-project@linuxtesting.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-media@vger.kernel.org
+Subject: Re: [bug report] media: allegro: possible NULL pointer dereference.
+Message-ID: <20210511090844.GD17882@pengutronix.de>
+Mail-Followup-To: Michael Tretter <m.tretter@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Yuri Savinykh <s02190703@gse.cs.msu.ru>,
+        ldv-project@linuxtesting.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-media@vger.kernel.org
+References: <20210508160455.86976-1-s02190703@gse.cs.msu.ru>
+ <20210511072834.GC17882@pengutronix.de>
+ <776c6e34877537fb1612a8e37e8ebaeae545bb62.camel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cf883de9-0fd9-5b84-88e8-1bd73b9ee28a@huawei.com>
+In-Reply-To: <776c6e34877537fb1612a8e37e8ebaeae545bb62.camel@pengutronix.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 10:57:51 up 82 days, 12:21, 106 users,  load average: 0.43, 0.72,
+ 0.52
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mtr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-05-11 15:32:13, luojiaxing wrote:
+Hi Lucas,
+
+On Tue, 11 May 2021 10:49:16 +0200, Lucas Stach wrote:
+> Am Dienstag, dem 11.05.2021 um 09:28 +0200 schrieb Michael Tretter:
+> > On Sat, 08 May 2021 19:04:55 +0300, Yuri Savinykh wrote:
+> > > At the moment of enabling irq handling:
+> > > 
+> > > 3166     ret = devm_request_threaded_irq(&pdev->dev, irq,
+> > > 3167                     allegro_hardirq,
+> > > 3168                     allegro_irq_thread,
+> > > 3169                     IRQF_SHARED, dev_name(&pdev->dev), dev);
+> > > 
+> > > there is still uninitialized field mbox_status of struct allegro_dev *dev.
+> > > If an interrupt occurs in the interval between the installation of the
+> > > interrupt handler and the initialization of this field, NULL pointer
+> > > dereference happens.
+> > > 
+> > > This field is dereferenced in the handler function without any check:
+> > > 
+> > > 1801 static irqreturn_t allegro_irq_thread(int irq, void *data)
+> > > 1802 {
+> > > 1803     struct allegro_dev *dev = data;
+> > > 1804
+> > > 1805     allegro_mbox_notify(dev->mbox_status);
+> > > 
+> > > 
+> > > and then:
+> > > 
+> > > 752 static void allegro_mbox_notify(struct allegro_mbox *mbox)
+> > > 753 {
+> > > 754     struct allegro_dev *dev = mbox->dev;
+> > > 
+> > > The initialization of the mbox_status field happens asynchronously in
+> > > allegro_fw_callback() via allegro_mcu_hw_init(). 
+> > > 
+> > > Is it guaranteed that an interrupt does not occur in this interval?
+> > > If it is not, is it better to move interrupt handler installation
+> > > after initialization of this field has been completed?
+> > 
+> > Thanks for the report. The interrupt is triggered by the firmware, which is
+> > only loaded in allegro_fw_callback(), and is enabled only after the
+> > initialization of mbox_status in allegro_mcu_hw_init():
+> > 
+> > 3507	allegro_mcu_enable_interrupts(dev)
+> > 
+> > The interrupt handler is installed in probe(), because that's where all the
+> > platform information is retrieved. Unfortunately, at that time, the driver is
+> > not able to setup the mailboxes, because the mailbox configuration depends on
+> > the firmware and is only known in allegro_fw_callback().
+> > 
+> > It might be interesting to tie the interrupt more closely to the mailboxes,
+> > because it is actually only used to notify the driver about mails in the
+> > mailbox, but that's something I have not yet considered worth the effort.
+> > 
 > 
-> On 2021/5/10 17:30, Petr Mladek wrote:
-> > On Mon 2021-05-10 15:41:31, luojiaxing wrote:
-> > > On 2021/5/6 21:39, Petr Mladek wrote:
-> To facilitate debugging, I replaced the implementation code of the kernel
-> thread with the debugfs interface.
-> 
-> It's possible that my simulations test were not designed clearly enough, and
-> you might be misunderstood. Sorry.
+> The interrupt is installed with IRQF_SHARED, so your IRQ handler must
+> be prepared to be called even if your device did not trigger an IRQ and
+> even before your initialization is done, as another device on the same
+> IRQ line might trigger the IRQ. In that case you must at least be able
+> to return IRQ_NONE from your handler without crashing the kernel.
 
-No problem. The simulation is not that important. We all agree that
-printk() has this problem. I was just curios how much the simulation
-did meet the real life problem.
+The allegro_hardirq() handler already checks the irq status register
+(AL5_ITC_CPU_IRQ_STA) for the device and returns IRQ_NONE before even
+dispatching the interrupt to the irq thread. In this case, the mailbox is not
+read at all.
 
-
-> > Also, do you see this problem in the real life, please?
-> 
-> Yes, the following is part of log found when the user performs S4 suspend
-> and resume on the PC:
-> 
-> [  1368979] PM: thaw_processes over
-> [  146.369606] PM: __pm_notifier_call_chain over
-> [  146.374285] cpu1 pid4321 irq0 hisi_sas_debug_I_T_nexus_reset 1844 phy5
-> unlock mutex
-> [  146.374287] cpu1 pid4321 irq0 hisi_sas_debug_I_T_nexus_reset 1845 phy5
-> reset over
-> [  146.374288] cpu2 pid4256 irq0 hisi_sas_debug_I_T_nexus_reset 1780 phy4
-> get mutex
-> [  146.374297] hisi_sas_v3_hw 0000:74:02.0: phydown: phy4 phy_state=0x21
-> [  146.531336] cpu2 pid4256 irq0 hisi_sas_debug_I_T_nexus_reset 1810 phy4
-> wait start 2
-> [  146.533523] hisi_sas_v3_hw 0000:74:02.0: ignore flutter phy4 down
-
-So, here is the delay caused by flushing the accumulated printk()
-messages. Am I right, please?
-
-
-> [  148.551332] cpu2 pid4256 irq0 hisi_sas_debug_I_T_nexus_reset 1812 phy4
-> wait over 2
-> [  148.552442] cpu0 pid302 irq128 phy_up_v3_hw 1586 phy4
-> [  148.552449] sas: sas_form_port: phy4 belongs to port0 already(1)!
-> [  148.559980] cpu2 pid4256 irq0 hisi_sas_debug_I_T_nexus_reset 182reset
-> timeout
-> [  148.567480] ata5.00: configured for UDMA/133
-> [  148.574743] cpu2 pid4256 irq0 hisi_sas_debug_I_T_nexus_reset 14 phy4
-> unlock mut  148.574744] cpu2 pid4250 hisi_sas_debug_I_T_nexus_reset 1845
-> phy4 reset over
-> [  148.734754] PM: pm_restore_console over
-
-I am a bit confused that pm_restore_console is mentioned after the
-problematic delay.
-
-I guess that "over" means that the function returned here.
-Does it mean that resume_console() was called earlier before
-the above delay?
-
-
-> [  148.738587] PM: atomic_inc over
-> [  148.738588] PM: hibernation exit
-> [  148.738714] PM: hibernation entry
-> 
-> 
-> You can see "hisi_sas_debug_I_T_nexus_reset 182reset timeout" in the above
-> print, which we added to the kernel.
-> 
-> The mean to wait for a phy up interrupt, as the interrupt didn't come back
-> for more than 2s, so driver report a timeout.
-> 
-> However, when we check the hardware register, the flag of phy up interrupt
-> has been set, So the interrupt should have returned.
-> 
-> After analysis,  we found that dev_info() called by phy up interrupt is
-> blocked for more than 2s. We proved that this dev_info() takes over
-> 
-> the job of flushing the prb from console_resume(), and unfortunately, no
-> other kthread call printk() at this moment.
-> 
-> So it take more than 2 seconds before returning and prolong phy up interrupt
-> callback func's handle duration, finally misjudgment leading to timeout.
-
-OK.
-
-
-> > What motivated you to investigate this scenario, please?
-> 
-> 
-> I also try to modify it in my own driver to prolong the timeout judgment by
-> several seconds. However, since the time to flush the prb depends
-> 
-> on the number of caches in the logbuf, I cannot determine how many seconds
-> to extend the timeout judgment.
-
-Unfortunately. there is no hard limit at the moment. There are
-situations where printk() causes softlockups which means that the
-console work takes longer than 30 sec.
-
-
-> In addition, I understand that many kernel drivers do not expect printk() to
-> be blocked for more than a few seconds when calling printk(). And,
-> 
-> printk is blocked only in a few specific scenarios, and the framework does
-> not need to be modified, so may be it's simple to be fixed.
-
-This is very old problem. If I remember correctly, the first attempts
-to offload the console handling started in 2012. The main problem is
-that offloading increases the risk that the messages will never reach
-the console. This blocked any change for years.
-
-There is finally a consensus to give it a chance. RT people are
-working hard on it. They put a lot of effort to make lockless
-ringbuffer. Offload is the next step. But it requires implementing
-atomic console(s), serialize backtraces from all CPUs in NMI,
-and try to push the messages immediately when things go wrong
-or when the kthreads could not get scheduled by definition,
-for example, early boot, suspend, shutdown, panic.
-
-> Therefore, I proposed this bugfix.
-
-The fix is rather a workaround. And it helps only in one particular
-scenario. It will get obsolete when the console work is offloaded.
-I would like to be sure that it is important enough.
-
-Does the fix prevent "only" an extra reset?
-Is the system functional in the end?
-Is it acceptable to keep it as is and wait for the proper solution?
-
-To be honest, it might take a long time (even > 1 year) until
-the kthreads are upstream. As I already wrote, there was a pushback
-against it and we need to do it properly.
-
-Best Regards,
-Petr
+Michael
