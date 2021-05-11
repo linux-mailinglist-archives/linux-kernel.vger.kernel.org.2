@@ -2,77 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D860737A5C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED7E37A5C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231489AbhEKLaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 07:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbhEKLaG (ORCPT
+        id S231510AbhEKLbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 07:31:24 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2776 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231393AbhEKLbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 07:30:06 -0400
-Received: from mail.aperture-lab.de (mail.aperture-lab.de [IPv6:2a01:4f8:c2c:665b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E35C061574;
-        Tue, 11 May 2021 04:28:59 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 711293E8F5;
-        Tue, 11 May 2021 13:28:56 +0200 (CEST)
-Date:   Tue, 11 May 2021 13:28:54 +0200
-From:   Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
-To:     The list for a Better Approach To Mobile Ad-hoc
-         Networking <b.a.t.m.a.n@lists.open-mesh.org>
-Cc:     netdev@vger.kernel.org, Roopa Prabhu <roopa@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next v2 09/11] net: bridge: mcast: split multicast router
- state for IPv4 and IPv6
-Message-ID: <20210511112854.GA2222@otheros>
-References: <20210509194509.10849-1-linus.luessing@c0d3.blue>
- <20210509194509.10849-10-linus.luessing@c0d3.blue>
- <f2f1c811-0502-bde4-8ece-e47b3e30dc66@nvidia.com>
+        Tue, 11 May 2021 07:31:19 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FfbGx73YHzmgJV;
+        Tue, 11 May 2021 19:26:49 +0800 (CST)
+Received: from [10.174.184.135] (10.174.184.135) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 11 May 2021 19:30:02 +0800
+Subject: Re: [RFC PATCH v3 0/8] Add IOPF support for VFIO passthrough
+From:   Shenming Lu <lushenming@huawei.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     Cornelia Huck <cohuck@redhat.com>, Will Deacon <will@kernel.org>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
+        Eric Auger <eric.auger@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <linux-api@vger.kernel.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>, <yi.l.liu@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Barry Song" <song.bao.hua@hisilicon.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20210409034420.1799-1-lushenming@huawei.com>
+ <cb9584fd-c7f5-8cac-8c63-219ded2ef9db@huawei.com>
+Message-ID: <b7fbb6a3-8777-d46a-af6c-5b3243e8b00c@huawei.com>
+Date:   Tue, 11 May 2021 19:30:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f2f1c811-0502-bde4-8ece-e47b3e30dc66@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Last-TLS-Session-Version: TLSv1.2
+In-Reply-To: <cb9584fd-c7f5-8cac-8c63-219ded2ef9db@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.135]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 12:29:41PM +0300, Nikolay Aleksandrov wrote:
-> [...]
-> > -static void br_multicast_mark_router(struct net_bridge *br,
-> > -				     struct net_bridge_port *port)
-> > +#if IS_ENABLED(CONFIG_IPV6)
-> > +struct hlist_node *
-> > +br_ip6_multicast_get_rport_slot(struct net_bridge *br, struct net_bridge_port *port)
-> > +{
-> > +	struct hlist_node *slot = NULL;
-> > +	struct net_bridge_port *p;
-> > +
-> > +	hlist_for_each_entry(p, &br->ip6_mc_router_list, ip6_rlist) {
-> > +		if ((unsigned long)port >= (unsigned long)p)
-> > +			break;
-> > +		slot = &p->ip6_rlist;
-> > +	}
-> > +
-> > +	return slot;
-> > +}
+Hi Alex,
+
+Hope for some suggestions or comments from you since there seems to be many unsure
+points in this series. :-)
+
+Thanks,
+Shenming
+
+
+On 2021/4/26 9:41, Shenming Lu wrote:
+> On 2021/4/9 11:44, Shenming Lu wrote:
+>> Hi,
+>>
+>> Requesting for your comments and suggestions. :-)
 > 
-> The ip4/ip6 get_rport_slot functions are identical, why not add a list pointer
-> and use one function ?
-
-Hi Nikolay,
-
-Thanks for all the feedback and reviewing again! I'll
-remove (most of) the inlines as the router list modifications are
-not in the fast path.
-
-For the get_rport_slot functions, maybe I'm missing a simple
-solution. Note that "ip6_rlist" in hlist_for_each_entry() is not a
-pointer but will be expanded by the macro. I currently don't see
-how I could solve this with just one hlist_for_each_entry().
-
-Regards, Linus
+> Kind ping...
+> 
+>>
+>> The static pinning and mapping problem in VFIO and possible solutions
+>> have been discussed a lot [1, 2]. One of the solutions is to add I/O
+>> Page Fault support for VFIO devices. Different from those relatively
+>> complicated software approaches such as presenting a vIOMMU that provides
+>> the DMA buffer information (might include para-virtualized optimizations),
+>> IOPF mainly depends on the hardware faulting capability, such as the PCIe
+>> PRI extension or Arm SMMU stall model. What's more, the IOPF support in
+>> the IOMMU driver has already been implemented in SVA [3]. So we add IOPF
+>> support for VFIO passthrough based on the IOPF part of SVA in this series.
+>>
+>> We have measured its performance with UADK [4] (passthrough an accelerator
+>> to a VM(1U16G)) on Hisilicon Kunpeng920 board (and compared with host SVA):
+>>
+>> Run hisi_sec_test...
+>>  - with varying sending times and message lengths
+>>  - with/without IOPF enabled (speed slowdown)
+>>
+>> when msg_len = 1MB (and PREMAP_LEN (in Patch 4) = 1):
+>>             slowdown (num of faults)
+>>  times      VFIO IOPF      host SVA
+>>  1          63.4% (518)    82.8% (512)
+>>  100        22.9% (1058)   47.9% (1024)
+>>  1000       2.6% (1071)    8.5% (1024)
+>>
+>> when msg_len = 10MB (and PREMAP_LEN = 512):
+>>             slowdown (num of faults)
+>>  times      VFIO IOPF
+>>  1          32.6% (13)
+>>  100        3.5% (26)
+>>  1000       1.6% (26)
+>>
+>> History:
+>>
+>> v2 -> v3
+>>  - Nit fixes.
+>>  - No reason to disable reporting the unrecoverable faults. (baolu)
+>>  - Maintain a global IOPF enabled group list.
+>>  - Split the pre-mapping optimization to be a separate patch.
+>>  - Add selective faulting support (use vfio_pin_pages to indicate the
+>>    non-faultable scope and add a new struct vfio_range to record it,
+>>    untested). (Kevin)
+>>
+>> v1 -> v2
+>>  - Numerous improvements following the suggestions. Thanks a lot to all
+>>    of you.
+>>
+>> Note that PRI is not supported at the moment since there is no hardware.
+>>
+>> Links:
+>> [1] Lesokhin I, et al. Page Fault Support for Network Controllers. In ASPLOS,
+>>     2016.
+>> [2] Tian K, et al. coIOMMU: A Virtual IOMMU with Cooperative DMA Buffer Tracking
+>>     for Efficient Memory Management in Direct I/O. In USENIX ATC, 2020.
+>> [3] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210401154718.307519-1-jean-philippe@linaro.org/
+>> [4] https://github.com/Linaro/uadk
+>>
+>> Thanks,
+>> Shenming
+>>
+>>
+>> Shenming Lu (8):
+>>   iommu: Evolve the device fault reporting framework
+>>   vfio/type1: Add a page fault handler
+>>   vfio/type1: Add an MMU notifier to avoid pinning
+>>   vfio/type1: Pre-map more pages than requested in the IOPF handling
+>>   vfio/type1: VFIO_IOMMU_ENABLE_IOPF
+>>   vfio/type1: No need to statically pin and map if IOPF enabled
+>>   vfio/type1: Add selective DMA faulting support
+>>   vfio: Add nested IOPF support
+>>
+>>  .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |    3 +-
+>>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |   18 +-
+>>  drivers/iommu/iommu.c                         |   56 +-
+>>  drivers/vfio/vfio.c                           |   85 +-
+>>  drivers/vfio/vfio_iommu_type1.c               | 1000 ++++++++++++++++-
+>>  include/linux/iommu.h                         |   19 +-
+>>  include/linux/vfio.h                          |   13 +
+>>  include/uapi/linux/iommu.h                    |    4 +
+>>  include/uapi/linux/vfio.h                     |    6 +
+>>  9 files changed, 1181 insertions(+), 23 deletions(-)
+>>
