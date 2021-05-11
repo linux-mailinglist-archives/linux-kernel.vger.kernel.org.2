@@ -2,75 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183A137A91A
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A5237A92B
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbhEKO0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
+        id S231848AbhEKO1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231673AbhEKO0B (ORCPT
+        with ESMTP id S231713AbhEKO1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:26:01 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DE6C061574;
-        Tue, 11 May 2021 07:24:55 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id n40so2564219ioz.4;
-        Tue, 11 May 2021 07:24:55 -0700 (PDT)
+        Tue, 11 May 2021 10:27:19 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCADC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:26:13 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id i4so26565729ybe.2
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:26:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1EMn+ug4jk4cL2SkKvI78d9MzgAfHXacPRek3Et9YsI=;
-        b=TuMNCdx68RMCsdfYeAnUoJcBw0Ji9IGAhacmYc96OyAcoDi6hLo0O3E7Wg0CrW8Tq+
-         TtLx7Xgi4YKMrRk9KtHl0gAmpXJyEvwf6YIIK4dpTmeyoFufLIKBCpyzzK6PKqOFmKGE
-         JjkSIxqjYfdXIgQ1t0HG25Iabtz8eTD3Kq/FDmHL+1rLvye9K6vGFyDfzuYFMY4npMYz
-         7a+DFOUqys9avImy+v+L7CvC2QH5DkrsXxPZuLM7I17G/pqORgwMi/zZBv1hIDS5v2tH
-         cu1bQ4JWRpwlyF+TPFgTg4sY5v6Z7QwUBmv+8PczSb+7Lf2aO558AxgmoC08lePPnSrk
-         5QtQ==
+        bh=CEaJC4cb5Y4A+8IsZZEeBM2QdsYN5Y7DFCllFllvi+8=;
+        b=zHX1LMvKjHtyR4sV+y0aqvfoFcsp0EjIHx5Pt5zG+iVHvcxKYTo3vrUGTaAWwd8n54
+         Sfqn8OV7GElBxhfBXlUssjujJWtAC4qSGRQRUdjhpxxfIF/QhMZuc4qpQhRqMR2wxO35
+         PUJFZ124qF2EtUdMTmUBpVLFUQUtq2V0+5HEOB02MRwMRFtF2H0ypRhbY9hAsMcY5VaX
+         NMWRowJcerYr/hEpfCDq56QNJVhvrpZzyFRgGaLU7Od2GT34GNf6kMsyWrhX+phrvlrk
+         he7jEFsGAUZVNd7E0mAorNTJN4vbw3juF/pR8H2tEAQ/4MVq5x3yPsBcSeKS4v/uiUHB
+         uX1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1EMn+ug4jk4cL2SkKvI78d9MzgAfHXacPRek3Et9YsI=;
-        b=hGutQjjwRScYBzsdYryMbZo2jjHOOaiBgXQBc1/3WvIFDOSWcUhn+3Iu1F6PujcBmt
-         vnwlzIqoRVWTM0ykjiDCccprcpdF8czhS1lEWgCkv6wD8y2cxYoVGZQNVDsfy8hD8ZWd
-         FY4RF8lEjr1Pinj9XfI3AwBcWanYjuCuhK0cmkFHKOq+NPSmHdRZW07se1Z/meLFQmO+
-         HB/eS+n5sqxUxQGCJrvh0BLRaiLBdRSqzQ0x1p4ec4aF+eG8Yf2L7l8J7hPEPv5yWDeT
-         Qnru6MMSoQev8kj0oH3srPNF4jHP9ditmP58epnm8g9XquyzyI0sNaoZACCOTyRcjSbz
-         mJoQ==
-X-Gm-Message-State: AOAM531Z/JRaXz4VPLPgaw5BRuKDlmBukQSvyIgJ7dnA2eVPjVMmnFKo
-        7fVbjQ6pRYuog3bbIxIUtFQ42Y+ZsZxen0uguXY=
-X-Google-Smtp-Source: ABdhPJxuDTFCQqh/u7tpwKhKnCbOYxIzzy3KdeEps13QOeZpdnAnVfgSTnfyacPf2SkeCmFaQZmqHisgBCF6VssmBmc=
-X-Received: by 2002:a6b:4f07:: with SMTP id d7mr22042896iob.160.1620743094970;
- Tue, 11 May 2021 07:24:54 -0700 (PDT)
+        bh=CEaJC4cb5Y4A+8IsZZEeBM2QdsYN5Y7DFCllFllvi+8=;
+        b=UMHbKzBFQsdah5B/5KG9lSinV0wI2I6IyJvq1pSRur4xN+3thUtmKueBWOpJuDwEq5
+         kfTYebpOXtSzJbqIojaG3lbF1v+wGOMEd7dcOgBFbR9QLKtTXhnf+jmgpdhlE32NZVOc
+         F3Lw1bY7g8jUEUGfX/8+7INw6d5zKPiFM3xcERX+en1PLeHgGRAY5Nn7jUEInFkcv/LG
+         XHBLRle1JPDxJ9zjdDoTGo8sFNG9qgYMxc9pQajA34Esy0u1TsZ/d1bqaDd2WRzwVQD/
+         pbILCUaFVEepaFDMQTN1JI8MfFlU4md5LW04v+DtVP2C1czBVhwcA+BtGGIschg3nhND
+         7yJA==
+X-Gm-Message-State: AOAM530CEndczRz9Vwm/tjU74oBuql8rfm8BeqabXzR7yP6K5DpAC8EN
+        IpdLI6dTUJhtVd0KD0/J297sMelJGEi+3FIua0gCEw==
+X-Google-Smtp-Source: ABdhPJzh4VjKqBeHWbxCHf0TChJFitLGXDaA/GUpbzyFXfVL/53v7XHycwNEzDPWQyzljYzsrL3I6khv5C0KKCJRTSQ=
+X-Received: by 2002:a25:d0cb:: with SMTP id h194mr28426645ybg.408.1620743172546;
+ Tue, 11 May 2021 07:26:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210511041930.592483-1-bjorn.andersson@linaro.org> <20210511041930.592483-2-bjorn.andersson@linaro.org>
-In-Reply-To: <20210511041930.592483-2-bjorn.andersson@linaro.org>
-From:   Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Date:   Tue, 11 May 2021 08:24:43 -0600
-Message-ID: <CAOCk7Nr9jAUjt9nLN=52xwsXP00=7mTV6HcdGzr5D2LTzBepLQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] phy: qcom: Introduce new eDP PHY driver
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, sbillaka@codeaurora.org,
-        Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        linux-phy@lists.infradead.org, DTML <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
+References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
+ <20210511133118.15012-2-mcroce@linux.microsoft.com> <YJqKfNh6l3yY2daM@casper.infradead.org>
+ <YJqQgYSWH2qan1GS@apalos.home> <YJqSM79sOk1PRFPT@casper.infradead.org>
+In-Reply-To: <YJqSM79sOk1PRFPT@casper.infradead.org>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Tue, 11 May 2021 17:25:36 +0300
+Message-ID: <CAC_iWj+Tw9DzzzVj-F9AwzBN_OJV_HN2miJT4KTBH_Uei_V2ZA@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 1/4] mm: add a signature in struct page
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
+        Networking <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 10:21 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
+On Tue, 11 May 2021 at 17:19, Matthew Wilcox <willy@infradead.org> wrote:
 >
-> Many recent Qualcomm platforms comes with native DP and eDP support.
-> This consists of a controller int he MDSS and a QMP-like PHY.
+> On Tue, May 11, 2021 at 05:11:13PM +0300, Ilias Apalodimas wrote:
+> > Hi Matthew,
+> >
+> > On Tue, May 11, 2021 at 02:45:32PM +0100, Matthew Wilcox wrote:
+> > > On Tue, May 11, 2021 at 03:31:15PM +0200, Matteo Croce wrote:
+> > > > @@ -101,6 +101,7 @@ struct page {
+> > > >                    * 32-bit architectures.
+> > > >                    */
+> > > >                   unsigned long dma_addr[2];
+> > > > +                 unsigned long signature;
+> > > >           };
+> > > >           struct {        /* slab, slob and slub */
+> > > >                   union {
+> > >
+> > > No.  Signature now aliases with page->mapping, which is going to go
+> > > badly wrong for drivers which map this page into userspace.
+> > >
+> > > I had this as:
+> > >
+> > > +                       unsigned long pp_magic;
+> > > +                       unsigned long xmi;
+> > > +                       unsigned long _pp_mapping_pad;
+> > >                         unsigned long dma_addr[2];
+> > >
+> > > and pp_magic needs to be set to something with bits 0&1 clear and
+> > > clearly isn't a pointer.  I went with POISON_POINTER_DELTA + 0x40.
+> >
+> > Regardless to the changes required, there's another thing we'd like your
+> > opinion on.
+> > There was a change wrt to the previous patchset. We used to store the
+> > struct xdp_mem_info into page->private.  On the new version we store the
+> > page_pool ptr address in page->private (there's an explanation why on the
+> > mail thread, but the tl;dr is that we can get some more speed and keeping
+> > xdp_mem_info is not that crucial). So since we can just store the page_pool
+> > address directly, should we keep using page->private or it's better to
+> > do:
+> >
+> > +                       unsigned long pp_magic;
+> > +                       unsigned long pp_ptr;
+> > +                       unsigned long _pp_mapping_pad;
+> >                         unsigned long dma_addr[2];
+> > and use pp_ptr?
+>
+> I'd rather you didn't use page_private ... Any reason not to use:
+>
+>                         unsigned long pp_magic;
+>                         struct page_pool *pp;
+>                         unsigned long _pp_mapping_pad;
+>                         unsigned long dma_addr[2];
+>
+> ?
 
-"in the"
+Nope not at all, either would work. we'll switch to that
