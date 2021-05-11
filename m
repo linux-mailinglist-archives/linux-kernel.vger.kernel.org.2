@@ -2,84 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E70D337AC1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318C137AC24
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbhEKQkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 12:40:15 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:35313 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230435AbhEKQkO (ORCPT
+        id S231506AbhEKQlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 12:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231162AbhEKQls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:40:14 -0400
-Received: (qmail 903532 invoked by uid 1000); 11 May 2021 12:39:07 -0400
-Date:   Tue, 11 May 2021 12:39:07 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Bixuan Cui <cuibixuan@huawei.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Oliver Neukum <oneukum@suse.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Tianping Fang <tianping.fang@mediatek.com>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        Ikjoon Jang <ikjn@chromium.org>
-Subject: Re: [PATCH] usb: core: hub: fix race condition about TRSMRCY of
- resume
-Message-ID: <20210511163907.GB901897@rowland.harvard.edu>
-References: <20210511101522.34193-1-chunfeng.yun@mediatek.com>
+        Tue, 11 May 2021 12:41:48 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29548C061574;
+        Tue, 11 May 2021 09:40:41 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id b21so11134993plz.0;
+        Tue, 11 May 2021 09:40:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=iMR8WD6pU0NgmzbKxZ9ZDVZnU/TZYHWSHLJfw06DwoU=;
+        b=Fg3HZT0lr9muekMYyvXb7zwn6yZgOKZkIyGh+f1M5M9/OgaCozy2Eg4+DB60ez8ccc
+         3PYnyEK/tRL8YoKBMVsWZr4mUY0Ez8edPGOY441HQhAutNaslrI4ateikJk4dgXn5sOq
+         pd4lgRAR3Q/fdvCrQcJGukRXCM5NQdub5D1OGFkU818s5MO/+4yADDjiBj7sqQxDEVmi
+         TiS4vVqCE5e+tYWKvIxWVZsksUNS2tN0u+6An6UJ9gdVUw5kSw5cG7iD3uXgifQI6wfX
+         oHroduRtWyHmWrP22vzIRLqz799/+WWnGwYXlBvU5eYohwQ9azVGta/hoCKDYgfChA9U
+         Ip6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=iMR8WD6pU0NgmzbKxZ9ZDVZnU/TZYHWSHLJfw06DwoU=;
+        b=dxptx2grdQEHzdZGSun/nbojm4gBnl1oWO9rBijVTbD0nQIefk+3xbOvvk5ryx4wiE
+         Fu7WSVJGz3FMyFSiRj5Nn0mm7gLcFyhMqGKsyv9i5/2cfV9xSkUV87BaXQWNDb7tD0uZ
+         kpK1z6HbiwvAuZ+rHhjvV5VXpFfTY6od1IVEJj3X+7xzsGRotgjtqK5+tbzcAEbJCAEp
+         vCMQnUimaT+ikzJURWrHP/Y/QwXMC8eNA5KHe/Cf4R66XtkuICF+d0ZG1OhBgLLo7tCw
+         HR8PAlTNEV1jgiUIEIDEAbne11INwGNZcy8b1lgcChe3XtZwnVTkXAxMCnqP7k1PIXvf
+         4fvQ==
+X-Gm-Message-State: AOAM530gsGYD8lfGKy21DU4YZUU58jpNorTCvwGUwuiXZRQxpZgYqd8y
+        4wQ9rFCM/oQylYnxMzrhhwl5lVB0HqmgRXXc
+X-Google-Smtp-Source: ABdhPJy6cmDWedlqBjH2+mmjFOC5Ers4EzbuHwxHL8uXjuIUMsMDRMtPssbUnFO4DFpDwqsdzrjCGg==
+X-Received: by 2002:a17:902:e353:b029:ed:866b:7624 with SMTP id p19-20020a170902e353b02900ed866b7624mr31155821plc.25.1620751240606;
+        Tue, 11 May 2021 09:40:40 -0700 (PDT)
+Received: from tong-desktop.local ([2601:647:4200:13:d881:ad86:9c3b:8492])
+        by smtp.googlemail.com with ESMTPSA id n6sm14436512pgq.72.2021.05.11.09.40.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 09:40:40 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Tong Zhang <ztong0001@gmail.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] memstick: rtsx_usb_ms: fix UAF
+Date:   Tue, 11 May 2021 12:39:45 -0400
+Message-Id: <20210511163944.1233295-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAPDyKFrFGo9gmG+EH2hS4oXPn5Jx9v8Pk8jKgvm9KW4Mdk+85A@mail.gmail.com>
+References: <CAPDyKFrFGo9gmG+EH2hS4oXPn5Jx9v8Pk8jKgvm9KW4Mdk+85A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511101522.34193-1-chunfeng.yun@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 06:15:22PM +0800, Chunfeng Yun wrote:
-> This may happen if the port becomes resume status exactly
-> when usb_port_resume() gets port status, it still need provide
-> a TRSMCRY time before access the device.
-> 
-> Reported-by: Tianping Fang <tianping.fang@mediatek.com>
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+This patch fixes the following issues:
+1. memstick_free_host() will free the host, so the use of ms_dev(host) after
+it will be a problem. To fix this, move memstick_free_host() after when we
+are done with ms_dev(host).
+2. In rtsx_usb_ms_drv_remove(), pm need to be disabled before we remove
+and free host otherwise memstick_check will be called and UAF will
+happen.
 
-This should also say:
+[   11.351173] BUG: KASAN: use-after-free in rtsx_usb_ms_drv_remove+0x94/0x140 [rtsx_usb_ms]
+[   11.357077]  rtsx_usb_ms_drv_remove+0x94/0x140 [rtsx_usb_ms]
+[   11.357376]  platform_remove+0x2a/0x50
+[   11.367531] Freed by task 298:
+[   11.368537]  kfree+0xa4/0x2a0
+[   11.368711]  device_release+0x51/0xe0
+[   11.368905]  kobject_put+0xa2/0x120
+[   11.369090]  rtsx_usb_ms_drv_remove+0x8c/0x140 [rtsx_usb_ms]
+[   11.369386]  platform_remove+0x2a/0x50
 
-CC: <stable@vger.kernel.org>
+[   12.038408] BUG: KASAN: use-after-free in __mutex_lock.isra.0+0x3ec/0x7c0
+[   12.045432]  mutex_lock+0xc9/0xd0
+[   12.046080]  memstick_check+0x6a/0x578 [memstick]
+[   12.046509]  process_one_work+0x46d/0x750
+[   12.052107] Freed by task 297:
+[   12.053115]  kfree+0xa4/0x2a0
+[   12.053272]  device_release+0x51/0xe0
+[   12.053463]  kobject_put+0xa2/0x120
+[   12.053647]  rtsx_usb_ms_drv_remove+0xc4/0x140 [rtsx_usb_ms]
+[   12.053939]  platform_remove+0x2a/0x50
 
-> ---
->  drivers/usb/core/hub.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-> index b2bc4b7c4289..fc7d6cdacf16 100644
-> --- a/drivers/usb/core/hub.c
-> +++ b/drivers/usb/core/hub.c
-> @@ -3642,9 +3642,6 @@ int usb_port_resume(struct usb_device *udev, pm_message_t msg)
->  		 * sequence.
->  		 */
->  		status = hub_port_status(hub, port1, &portstatus, &portchange);
-> -
-> -		/* TRSMRCY = 10 msec */
-> -		msleep(10);
->  	}
->  
->   SuspendCleared:
-> @@ -3659,6 +3656,9 @@ int usb_port_resume(struct usb_device *udev, pm_message_t msg)
->  				usb_clear_port_feature(hub->hdev, port1,
->  						USB_PORT_FEAT_C_SUSPEND);
->  		}
-> +
-> +		/* TRSMRCY = 10 msec */
-> +		msleep(10);
->  	}
->  
->  	if (udev->persist_enabled)
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Co-Developed-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+v2: remove useless code in err_out label
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
+ drivers/memstick/host/rtsx_usb_ms.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/memstick/host/rtsx_usb_ms.c b/drivers/memstick/host/rtsx_usb_ms.c
+index 102dbb8080da..29271ad4728a 100644
+--- a/drivers/memstick/host/rtsx_usb_ms.c
++++ b/drivers/memstick/host/rtsx_usb_ms.c
+@@ -799,9 +799,9 @@ static int rtsx_usb_ms_drv_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ err_out:
+-	memstick_free_host(msh);
+ 	pm_runtime_disable(ms_dev(host));
+ 	pm_runtime_put_noidle(ms_dev(host));
++	memstick_free_host(msh);
+ 	return err;
+ }
+ 
+@@ -828,9 +828,6 @@ static int rtsx_usb_ms_drv_remove(struct platform_device *pdev)
+ 	}
+ 	mutex_unlock(&host->host_mutex);
+ 
+-	memstick_remove_host(msh);
+-	memstick_free_host(msh);
+-
+ 	/* Balance possible unbalanced usage count
+ 	 * e.g. unconditional module removal
+ 	 */
+@@ -838,10 +835,11 @@ static int rtsx_usb_ms_drv_remove(struct platform_device *pdev)
+ 		pm_runtime_put(ms_dev(host));
+ 
+ 	pm_runtime_disable(ms_dev(host));
+-	platform_set_drvdata(pdev, NULL);
+-
++	memstick_remove_host(msh);
+ 	dev_dbg(ms_dev(host),
+ 		": Realtek USB Memstick controller has been removed\n");
++	memstick_free_host(msh);
++	platform_set_drvdata(pdev, NULL);
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
+
