@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B405F379BAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28815379BAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhEKAkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 20:40:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59920 "EHLO
+        id S230434AbhEKAko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 20:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230198AbhEKAkJ (ORCPT
+        with ESMTP id S230308AbhEKAkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 20:40:09 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08050C06138E
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 17:39:02 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id h127so14803231pfe.9
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 17:39:02 -0700 (PDT)
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B144C06138F
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 17:39:03 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id q15so10289206pgg.12
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 17:39:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=J8xF92PparIxztbt4SChu73xFaTVW2RGRWa+Ds/uypI=;
-        b=BOwtpvbwDPuv3fKhGWLdChHX9yqlnD5sQABCARi2uggmarwZ4kpmIiteRLcNXNwCw1
-         W/C3n8A02ZSv8GmySfJ04YXsf57shR/gEbZqjshqQI6Q/tMtZfe8NZcvGeUysz7yIyrE
-         Xl/u5hAYrCbObQHVj6xVm96X5A9Icrr5E26hE=
+        bh=q3sRXTqmvNTkwzCcfbg+W/8e2QpKOzbCanuAM4oEImw=;
+        b=I598oJEAvuviab8XWMvhr9ISs5W2haOF//A4qHYRX5xG7Y5prghqC7gdQt2UebPWVJ
+         tKV3p2YsX+CHK++UJ77UOa4sSATvu0oqs03gB2GQ1f+zguUAd/heWbhoPoYPBj3sxfZ4
+         NuQxGMDru4TK92BEXEYjnHs//ENcMIpQQAAIM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=J8xF92PparIxztbt4SChu73xFaTVW2RGRWa+Ds/uypI=;
-        b=gZ82LWg79XBvPA+rEdz3azrbo1/32/c8jKXyawiY4Mgrw8dCQmzjEVtg+lXL+XepnB
-         GK8yNO2dYLckW1rNYYoLoYeFjzVRsisuPZXTZtJgpG3yutqjqbndvWwE8t+S9hZrtwzO
-         xeeh+S2b67luzchErdtFc+ggsxg3a+DP1nktzHxbmkMXcmA5YRYHlT5RFpC64/oPxq4E
-         zCnIOCktvusbKHoFodeLEVbakGG/F+/e+sMm5M/LyS6yXfjEEIjyZCXtRkby96aOolhV
-         5cpG+r4Q3RNHcyC6ScLvuCiJZ7p3A63ymOgDltXDGIrtTCF+80FpVunzKc/ro1QHjMOU
-         JEeg==
-X-Gm-Message-State: AOAM532pSGTqATL4ma2soeX5WVCylt/P800Js9/AvM7XeVH/kJPJ39h9
-        Ie7OGzsayY1SPNxwoARpj96Hag==
-X-Google-Smtp-Source: ABdhPJwbzz3K0Vj2A5bxLHH6Gg7UHqtma3oeoCN1QMcOKFxigoeFEQ+utE7Y5e/tcKKS7XjiYteqWg==
-X-Received: by 2002:a62:7c45:0:b029:27f:f30e:f0df with SMTP id x66-20020a627c450000b029027ff30ef0dfmr28250043pfc.49.1620693541502;
-        Mon, 10 May 2021 17:39:01 -0700 (PDT)
+        bh=q3sRXTqmvNTkwzCcfbg+W/8e2QpKOzbCanuAM4oEImw=;
+        b=m3kLOtNNkoS144I62mGbhv3r8LJvzBbgjvvUBzJ0X89F2vNasG/IhBfGPlefee6Xz+
+         WtDhupXhxvFJL3qbZlOaj83u5F4T7dNmA3BtytH67USirVcmm7whotEe1bxK3tb8tuj5
+         ORQ1LcA+tYf0PHwVWboL496MHgGrfoi13xAbrMr8fUiDykpZm428pCAQuXfzDuVzOjVk
+         V/b2NbirRBxi5gF5rl9NN0GfoEMz7ffOs7nwwb/g7fAn/saoAoerAipqu3x56Ztcab1V
+         Xw3KBJSMXYUV0SuXyGwyEoz7rBDRx9v0mHA1Z6bf6ay1DQ0PBNZZKp6CsDvjVBAsshMJ
+         KjvA==
+X-Gm-Message-State: AOAM5339WP0Xy5ZJR3Ha1pbEteniZ5+J2iSjjGVGYXlowBQQ4fe633ej
+        l2YIBUCZ1m2nbr8KCZPVLyuswQ==
+X-Google-Smtp-Source: ABdhPJxfwpoiJCa9N/lAk/cJBZKWjHvzALJuKmUtcVotRupBwVK/0fy0OI3ThQ5gh0wJA+vCRC12ZQ==
+X-Received: by 2002:a65:47c9:: with SMTP id f9mr28253258pgs.78.1620693542708;
+        Mon, 10 May 2021 17:39:02 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:202:201:6765:417e:19fc:9756])
-        by smtp.gmail.com with ESMTPSA id d26sm12142539pfq.215.2021.05.10.17.39.00
+        by smtp.gmail.com with ESMTPSA id d26sm12142539pfq.215.2021.05.10.17.39.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 17:39:01 -0700 (PDT)
+        Mon, 10 May 2021 17:39:02 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Petr Mladek <pmladek@suse.com>
@@ -53,9 +53,9 @@ Cc:     linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
         Jessica Yu <jeyu@kernel.org>,
         Evan Green <evgreen@chromium.org>,
         Hsin-Yi Wang <hsinyi@chromium.org>
-Subject: [PATCH v6 11/13] buildid: Mark some arguments const
-Date:   Mon, 10 May 2021 17:38:43 -0700
-Message-Id: <20210511003845.2429846-12-swboyd@chromium.org>
+Subject: [PATCH v6 12/13] buildid: Fix kernel-doc notation
+Date:   Mon, 10 May 2021 17:38:44 -0700
+Message-Id: <20210511003845.2429846-13-swboyd@chromium.org>
 X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
 In-Reply-To: <20210511003845.2429846-1-swboyd@chromium.org>
 References: <20210511003845.2429846-1-swboyd@chromium.org>
@@ -65,8 +65,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These arguments are never modified so they can be marked const to
-indicate as such.
+Kernel doc should use "Return:" instead of "Returns" to properly reflect
+the return values.
 
 Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>
@@ -75,44 +75,22 @@ Cc: Evan Green <evgreen@chromium.org>
 Cc: Hsin-Yi Wang <hsinyi@chromium.org>
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- lib/buildid.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ lib/buildid.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/lib/buildid.c b/lib/buildid.c
-index 6f1e2903740b..8fe24d6c0925 100644
+index 8fe24d6c0925..180a1a9b3b76 100644
 --- a/lib/buildid.c
 +++ b/lib/buildid.c
-@@ -48,10 +48,10 @@ static int parse_build_id_buf(unsigned char *build_id,
- 	return -EINVAL;
- }
- 
--static inline int parse_build_id(void *page_addr,
-+static inline int parse_build_id(const void *page_addr,
- 				 unsigned char *build_id,
- 				 __u32 *size,
--				 void *note_start,
-+				 const void *note_start,
- 				 Elf32_Word note_size)
- {
- 	/* check for overflow */
-@@ -66,7 +66,7 @@ static inline int parse_build_id(void *page_addr,
- }
- 
- /* Parse build ID from 32-bit ELF */
--static int get_build_id_32(void *page_addr, unsigned char *build_id,
-+static int get_build_id_32(const void *page_addr, unsigned char *build_id,
- 			   __u32 *size)
- {
- 	Elf32_Ehdr *ehdr = (Elf32_Ehdr *)page_addr;
-@@ -91,7 +91,7 @@ static int get_build_id_32(void *page_addr, unsigned char *build_id,
- }
- 
- /* Parse build ID from 64-bit ELF */
--static int get_build_id_64(void *page_addr, unsigned char *build_id,
-+static int get_build_id_64(const void *page_addr, unsigned char *build_id,
- 			   __u32 *size)
- {
- 	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)page_addr;
+@@ -121,7 +121,7 @@ static int get_build_id_64(const void *page_addr, unsigned char *build_id,
+  * @build_id: buffer to store build id, at least BUILD_ID_SIZE long
+  * @size:     returns actual build id size in case of success
+  *
+- * Returns 0 on success, otherwise error (< 0).
++ * Return: 0 on success, -EINVAL otherwise
+  */
+ int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
+ 		   __u32 *size)
 -- 
 https://chromeos.dev
 
