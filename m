@@ -2,81 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3127437A5FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8407B37A602
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhEKLtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 07:49:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59398 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230400AbhEKLtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 07:49:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1620733687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S231482AbhEKLtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 07:49:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20180 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230400AbhEKLtU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 07:49:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620733694;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=E77vEFrSkLVZEEYzBk3YTtVmGYYbCEngbIKXJXgn1lE=;
-        b=FNKlUt0qKP32FkKDSjrlOl6Sj4jbJTnqDhgVkis/5HueyFUMy8THzXQVH+tlqPzA6eAp+4
-        AXbvT6dCpaGb/pCnMLjaokfdl4GXL5yqkWfD2wmXCC7jZqel7+xnUKJXK3JmahwhZ3Z/72
-        5KgGPpFq70MJRQXZ0D0W3XZdygmA7AQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2EC02B1B5;
-        Tue, 11 May 2021 11:48:07 +0000 (UTC)
-Date:   Tue, 11 May 2021 13:48:06 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Young <dyoung@redhat.com>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Ingo Molnar <mingo@redhat.com>, Jessica Yu <jeyu@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, kexec@lists.infradead.org,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sasha Levin <sashal@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vivek Goyal <vgoyal@redhat.com>, Will Deacon <will@kernel.org>,
-        x86@kernel.org, Christoph Hellwig <hch@infradead.org>,
-        peter enderborg <peter.enderborg@sony.com>
-Subject: Re: [PATCH v6 00/13] Add build ID to stacktraces
-Message-ID: <YJpu9mC8J+Kb6qWg@alley>
-References: <20210511003845.2429846-1-swboyd@chromium.org>
+        bh=tCTd+S2Axg2X1q7f2AmsrNqMwgII9y4Yy/+j9XgTu+E=;
+        b=Fj5+kR1LJgadz7sTIhDZjJ2YVjyRGrbmTl4MXsm9A/Ea/t9Mh//IZbpzY9NaZ6SMsEmUja
+        102W88HF+4bboXUXLGFasAymz7fbFtDgG7GIAirIL9PqArLpSeDKAyWXRqwbqxVh42shbo
+        HSEaWuDEMswxEpiWP0urDsJj6s+IPWY=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-6X5TAWltMBuGSiXgk7Lgig-1; Tue, 11 May 2021 07:48:12 -0400
+X-MC-Unique: 6X5TAWltMBuGSiXgk7Lgig-1
+Received: by mail-ed1-f72.google.com with SMTP id i19-20020a05640242d3b0290388cea34ed3so10753932edc.15
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 04:48:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tCTd+S2Axg2X1q7f2AmsrNqMwgII9y4Yy/+j9XgTu+E=;
+        b=r+W4oI+OZi67krI+PzWiuAzgefffqD6mtxPwzStFmoUIlOjsFNGwLweHMbFIRcUMeQ
+         BsF0yn13t3TUuAD89FTfwUQCLh8yIo0eK8NXmoZP4NDdN1TQ3G0jmEalQpdOXG0bWQ65
+         9NEO/8j8WY1uKfLekZ/te3nguifIXr2r4W6Za93t0hqasyTP/asf3PzFhg4/Wu63rHtd
+         ZuwOhQDNTvrFRcxjFHnrZyrmk7AiOW3Hkzo/3+vOUPcbP6ZPiBpALQdVd4G3PUMGJFRW
+         AUQRaFUyj7174hCpltVa3lry46E4s01lC7w/Lel6dlTDwy/7aoDp/wn0OiV3BgXadjb/
+         wW4g==
+X-Gm-Message-State: AOAM533/WqWYSHZDZtGcJTaJvVtbD4L4OPB359GlhTOo6GSF7esP2K+i
+        VQEP3oTMGBsw7OdK4Eb/JM9lev8izCz9xz3Zfql95nK8cjD1tnxKO0F/QeDEOLz1XH5Ux9TQ1e1
+        l6egT41gLxPodCFLG2rfFo7t9
+X-Received: by 2002:a17:907:f91:: with SMTP id kb17mr30722704ejc.521.1620733691343;
+        Tue, 11 May 2021 04:48:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyK1wG8GPs1uiWXaXij0uLW/nSHZ5xv/Mp/aP4/ksfEpDozfyQJa04/xi8Vel+362v042qcCA==
+X-Received: by 2002:a17:907:f91:: with SMTP id kb17mr30722691ejc.521.1620733691162;
+        Tue, 11 May 2021 04:48:11 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id ga28sm11316864ejc.20.2021.05.11.04.48.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 04:48:10 -0700 (PDT)
+Subject: Re: [PATCH v7 1/7] MAINTAINERS: Add Advantech AHC1EC0 embedded
+ controller entry
+To:     Campion Kang <campion.kang@advantech.com.tw>
+Cc:     andy.shevchenko@gmail.com, chia-lin.kao@canonical.com,
+        corbet@lwn.net, devicetree@vger.kernel.org, jdelvare@suse.com,
+        lee.jones@linaro.org, linux-doc@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux@roeck-us.net,
+        mgross@linux.intel.com, platform-driver-x86@vger.kernel.org,
+        robh+dt@kernel.org, wim@linux-watchdog.org
+References: <cf181436-152c-7cd8-76cf-350705cd2bcb@redhat.com>
+ <20210507115319.22109-1-campion.kang@advantech.com.tw>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <0a64dcbd-25d6-ddcd-4a4e-18619e8270ba@redhat.com>
+Date:   Tue, 11 May 2021 13:48:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511003845.2429846-1-swboyd@chromium.org>
+In-Reply-To: <20210507115319.22109-1-campion.kang@advantech.com.tw>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-05-10 17:38:32, Stephen Boyd wrote:
-> This series adds the kernel's build ID[1] to the stacktrace header
-> printed in oops messages, warnings, etc. and the build ID for any module
-> that appears in the stacktrace after the module name. The goal is to
-> make the stacktrace more self-contained and descriptive by including the
-> relevant build IDs in the kernel logs when something goes wrong. This
-> can be used by post processing tools like script/decode_stacktrace.sh
-> and kernel developers to easily locate the debug info associated with a
-> kernel crash and line up what line and file things started falling apart
-> at.
+Hi,
 
-The entire series looks good to me.
+On 5/7/21 1:53 PM, Campion Kang wrote:
+> Hi, Very thanks your time for reviewing.
+> 
+>> -----Original Message-----
+>> From: Hans de Goede <hdegoede@redhat.com>
+>> Sent: Thursday, May 6, 2021 5:39 PM
+>> Subject: Re: [PATCH v7 1/7] MAINTAINERS: Add Advantech AHC1EC0 embedded
+>> controller entry
+>>
+>> Hi,
+>>
+>> On 5/6/21 11:23 AM, Andy Shevchenko wrote:
+>>> On Thu, May 6, 2021 at 11:48 AM Hans de Goede <hdegoede@redhat.com>
+>> wrote:
+>>>> I'm replying here since this series has no cover-letter, for
+>>>> the next version for a series touching so many different
+>>>> sub-systems it would be good to start with a cover-letter
+>>>> providing some background info on the series.
+>>>>
+> 
+> Sorry about that, i will study what is cover-letter and its content.
+> Would you kindly provide me a good reference?
+> Can I resend a [Patch v7 0/7] for these patch or provide it in next version?
 
-I reviewed carefully only the 5th patch touching printk/kallsyms/module
-code. I just scanned over the other patches touching kernel code
-and did not notice any obvious problem. I did not check the changes
-in decode_stacktrace.sh at all.
+Please add a cover letter to the next version, which will hopefully
+also address some of the other remarks already made.
 
-I tried to get stacktraces on x86_64 and it worked as expected.
+Regards,
 
-Best Regards,
-Petr
+Hans
+
+
+> 
+> 
+>>>> I see this is binding to an ACPI device, yet it is also using
+>>>> devicetree bindings and properties.
+>>>>
+>>>> So I take it this means that your ACPI tables are using the
+>>>> optional capability of embedded device-tree blobs inside the
+>>>> ACPI tables ?
+>>>>
+>>>> That is an unusual combination on a x86 device, note it is
+>>>> not wrong
+>>>
+>>> It's actually not okay. We have agreed at some point with DT people,
+>>> that ACPI should not use non-native variants of natively supported
+>>> things. For example, it shouldn't use "interrupt" property for IOxAPIC
+>>> (or xIC) provided interrupts, rather Interrupt() has to be used and so
+>>> on.
+> 
+> In our experience, most risc platforms are using devicetree, and x86/64 platforms
+> are using ACPI table or grub configure for their specific settings in different HW paltform.
+> In this case, EC chip is a LPC interface that can be integrated in whenever risc or x86/64.
+> So in my understand, I think it is not conflict.
+> (please correct me if i am misunderstanding, i will try to describe more)
+> 
+> If the EC chip is connected to the risc processor, we will bind its properties in the device-tree without modifing the source.
+> If the EC chip is connected to the X86/64 processor, we bind its the properties in the ACPI table and also without modifing the source.
+> Why do we need to bind the properties in ACPI or in the device-tree? Because it is an LPC interface, it cannot automatically load the driver like a USB or PCI device.
+> In the early days, we had to install the EC driver module in our HW platform and manually load it at every boot. Different Advantech HW platforms have different properties for HWMON and others sub-systems. This causes the EC source to be a bit dirty. It is necessary to obtain the hardware platform name from the BIOS DMI table and determine its attributes according to its platform name.
+> Now bind the attributes to ACPI table or device-tree, the EC source is more clear and universal for Advantech devices, and it is important that if the ACPI table matches, it can be automatically loaded.
+> 
+>>
+>> Right, but that is not the case here, they are using 2 device-tree
+>> properties (1), from patch 3/7:
+>>
+>> +properties:
+>> +  compatible:
+>> +    const: advantech,ahc1ec0
+>> +
+>> +  advantech,hwmon-profile:
+>> +    description:
+>> +      The number of sub-devices specified in the platform. Defines for the
+>> +      hwmon profiles can found in dt-bindings/mfd/ahc1ec0-dt.
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    maxItems: 1
+>> +
+>> +  advantech,has-watchdog:
+>> +    description:
+>> +      Some implementations of the EC include a watchdog used to monitor
+>> the
+>> +      system. This boolean flag is used to specify whether this watchdog is
+>> +      present or not. Default is true, otherwise set to false.
+>> +    type: boolean
+>>
+>>
+>>>> but AFAIK you are the first to do this on x86.
+>>>
+>>> No, not the first. Once Intel tried to invent the pin control
+>>> configuration and muxing properties in ACPI, it was luckily rejected
+>>> (ACPI 6.x OTOH provides a set of special resources for that).
+>>>
+>>> So, NAK from me, *if* it's really the case. ACPI tables must be revisited.
+>>
+> 
+> I am not sure it supports vendor self-defined attributes for ACPI table?
+> 
+>> AFAIK Advantech are not defining things for which an ACPI standard exists,
+>> although these 2 properties might just as well may be 2 simple ACPI integer
+>> methods, which would actually make things a bit simpler (.e.g it would
+>> allow dropping patch 2/7 and 3/7 from the set).
+>>
+>> Campion, any reason why you went this route; and can the ACPI tables
+>> still be changed?
+>>
+> 
+> If patches 2/7 and 3/7 are removed, it will be even simpler.
+> This means that there is no device-tree binding designed, in fact, the EC chip only be integrated in the x86/64 platform at present.
+> Sorry, ACPI table now is integrated in the BIOS for Advantech UNO device, 
+> it may be revert to previous rule, that is, there is no ACPI table binding and manually loaded the EC driver. If you have any suggestons I would be very grateful.
+> 
+>> Regards,
+>>
+>> Hans
+> 
+
