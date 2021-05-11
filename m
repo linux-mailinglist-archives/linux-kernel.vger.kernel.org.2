@@ -2,102 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A637037ED73
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C6A37ED65
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344452AbhELUXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:23:07 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:43654 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1385242AbhELUHs (ORCPT
+        id S1386806AbhELUWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:22:13 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:40525 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1385225AbhELUHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 16:07:48 -0400
-Received: by mail-ot1-f44.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso20889892ots.10;
-        Wed, 12 May 2021 13:06:39 -0700 (PDT)
+        Wed, 12 May 2021 16:07:30 -0400
+Received: by mail-ot1-f47.google.com with SMTP id t4-20020a05683014c4b02902ed26dd7a60so11526553otq.7;
+        Wed, 12 May 2021 13:06:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=y75a+npHzYnAcEOmEtDKotRbA7WzUvRLx11YfyY+WUU=;
-        b=fOnNwwkQoz1aeXd1g78+C/sgX6prwYfmni/oxUbPW+c3nKuFAvgYzEzQ9JxLXSLdAw
-         1/NmdkTp7oO31UDiwl8cB72LBJeiisD4wQQFHgR0CyARAFWfTCEaAjl7GaSBDjAtRnGD
-         CpRrONmloydX2rCi24i3FK/3VeIKIRjdyKlMwiRJrOVyHp2QVHb4wV4W3LOFIaFj+cxd
-         289i41PI5zikr3TNZqoD5SWDSkTxK2gjOQN9G4zz6HHl9K0qgYEeCGMzCFWo6cwVnTjJ
-         YT84I7CdJ1qRPzbm+Z/NnUAX5yZwB+nSrYORhLME/Yg4EAVAdC4/o0miMYHrl/VT8E+j
-         L6NA==
-X-Gm-Message-State: AOAM532NqUXylFHyZdnOHkLOGSfY6+gDyDBs8O8J/VAXt4kw+9NZkOky
-        T5AgKLZg2IAbVturXbiQCw==
-X-Google-Smtp-Source: ABdhPJxoDGfKmXXaK6iKVaWIMgHWAwaXQ+vvdi96PtmRwBpqWzU3YEAOkWPn3koqCfhG8RemFU1aVw==
-X-Received: by 2002:a9d:614b:: with SMTP id c11mr32075996otk.59.1620849998823;
-        Wed, 12 May 2021 13:06:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Yb2F6IpQtcrjLpnZ8OUqSNETCWUG2Y/cxmrONnX/qQ0=;
+        b=mJwSG8HRzyUm6D0CaR70aVwF0UK/fWVWzawWiuVacm4DQz4xPZoBErRL4snCUcXZW+
+         U9hAk4sbaOo+c+xMWaZT4CWuYh6ot5E90HUQiY/J6rTqs1RyxRRuDZITA30gAevobNTh
+         bIkq7J7lLqJwYZO7wz9IOdAYZLavsrl7A2Cq7EemUDmH6vJc5n291aw5Ccc1BFfkTbh7
+         ZTgFcagmE/avgVjfG8THkXFqzpYKSDbW0tIGCczacyIIC4izNl08nKsDkksdp9jPSM15
+         cQUjSb8RBjLAT4Q9upjCdV/AiEqySWrokklddZQppJXPXPw/k3e3V3yeM8Vu2xL4zu+H
+         5bDA==
+X-Gm-Message-State: AOAM532LvOymdZZq8QxpHCPEeFi3xNjo78t+RedaQP1wfE/jQeY8TS+y
+        8WEUsozcJqOLBSp2IMYtrQ==
+X-Google-Smtp-Source: ABdhPJwSUe0ziOmWy8JIXkBvGhsOb0+2ofLxLoozk1rPU8UTv2OYA5P1SoJOTqSefVxMYBy7MquboA==
+X-Received: by 2002:a05:6830:1556:: with SMTP id l22mr32038786otp.34.1620849981456;
+        Wed, 12 May 2021 13:06:21 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q1sm192057otc.21.2021.05.12.13.06.37
+        by smtp.gmail.com with ESMTPSA id q26sm185669otn.0.2021.05.12.13.06.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 13:06:38 -0700 (PDT)
-Received: (nullmailer pid 2020688 invoked by uid 1000);
-        Tue, 11 May 2021 13:40:20 -0000
+        Wed, 12 May 2021 13:06:20 -0700 (PDT)
+Received: (nullmailer pid 2225064 invoked by uid 1000);
+        Tue, 11 May 2021 16:23:00 -0000
+Date:   Tue, 11 May 2021 11:23:00 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        =?utf-8?b?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-In-Reply-To: <20210510231737.30313-9-digetx@gmail.com>
-References: <20210510231737.30313-1-digetx@gmail.com> <20210510231737.30313-9-digetx@gmail.com>
-Subject: Re: [PATCH v7 8/8] dt-bindings: clock: tegra: Convert to schema
-Date:   Tue, 11 May 2021 08:40:20 -0500
-Message-Id: <1620740420.957803.2020687.nullmailer@robh.at.kernel.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH net-next v5 21/25] devicetree: bindings: dsa: qca8k:
+ Document internal mdio definition
+Message-ID: <20210511162300.GA2221810@robh.at.kernel.org>
+References: <20210511020500.17269-1-ansuelsmth@gmail.com>
+ <20210511020500.17269-22-ansuelsmth@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511020500.17269-22-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 02:17:37 +0300, Dmitry Osipenko wrote:
-> Convert NVIDIA Tegra clock bindings to schema.
+On Tue, May 11, 2021 at 04:04:56AM +0200, Ansuel Smith wrote:
+> Document new way of declare mapping of internal PHY to port.
+> The new implementation directly declare the PHY connected to the port
+> by adding a node in the switch node. The driver detect this and register
+> an internal mdiobus using the mapping defined in the mdio node.
 > 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 > ---
->  .../bindings/clock/nvidia,tegra114-car.txt    |  63 ----------
->  .../bindings/clock/nvidia,tegra124-car.txt    | 107 ----------------
->  .../bindings/clock/nvidia,tegra124-car.yaml   | 115 ++++++++++++++++++
->  .../bindings/clock/nvidia,tegra20-car.txt     |  63 ----------
->  .../bindings/clock/nvidia,tegra20-car.yaml    |  69 +++++++++++
->  .../bindings/clock/nvidia,tegra210-car.txt    |  56 ---------
->  .../bindings/clock/nvidia,tegra30-car.txt     |  63 ----------
->  7 files changed, 184 insertions(+), 352 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra114-car.txt
->  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra124-car.txt
->  create mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra124-car.yaml
->  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra20-car.txt
->  create mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
->  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra210-car.txt
->  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra30-car.txt
+>  .../devicetree/bindings/net/dsa/qca8k.txt     | 39 +++++++++++++++++++
+>  1 file changed, 39 insertions(+)
 > 
+> diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> index 1daf68e7ae19..3973a9d3e426 100644
+> --- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> +++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> @@ -21,6 +21,10 @@ described in dsa/dsa.txt. If the QCA8K switch is connect to a SoC's external
+>  mdio-bus each subnode describing a port needs to have a valid phandle
+>  referencing the internal PHY it is connected to. This is because there's no
+>  N:N mapping of port and PHY id.
+> +To declare the internal mdio-bus configuration, declare a mdio node in the
+> +switch node and declare the phandle for the port referencing the internal
+> +PHY is connected to. In this config a internal mdio-bus is registred and
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+registered
 
-yamllint warnings/errors:
+Otherwise,
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/clock/nvidia,tegra20-car.example.dt.yaml:0:0: /example-0/usb-controller@c5004000: failed to match any schema with compatible: ['nvidia,tegra20-ehci']
-Documentation/devicetree/bindings/clock/nvidia,tegra124-car.example.dt.yaml:0:0: /example-0/usb-controller@c5004000: failed to match any schema with compatible: ['nvidia,tegra20-ehci']
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-See https://patchwork.ozlabs.org/patch/1476773
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+> +the mdio MASTER is used as communication.
+>  
+>  Don't use mixed external and internal mdio-bus configurations, as this is
+>  not supported by the hardware.
+> @@ -150,26 +154,61 @@ for the internal master mdio-bus configuration:
+>  				port@1 {
+>  					reg = <1>;
+>  					label = "lan1";
+> +					phy-mode = "internal";
+> +					phy-handle = <&phy_port1>;
+>  				};
+>  
+>  				port@2 {
+>  					reg = <2>;
+>  					label = "lan2";
+> +					phy-mode = "internal";
+> +					phy-handle = <&phy_port2>;
+>  				};
+>  
+>  				port@3 {
+>  					reg = <3>;
+>  					label = "lan3";
+> +					phy-mode = "internal";
+> +					phy-handle = <&phy_port3>;
+>  				};
+>  
+>  				port@4 {
+>  					reg = <4>;
+>  					label = "lan4";
+> +					phy-mode = "internal";
+> +					phy-handle = <&phy_port4>;
+>  				};
+>  
+>  				port@5 {
+>  					reg = <5>;
+>  					label = "wan";
+> +					phy-mode = "internal";
+> +					phy-handle = <&phy_port5>;
+> +				};
+> +			};
+> +
+> +			mdio {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +
+> +				phy_port1: phy@0 {
+> +					reg = <0>;
+> +				};
+> +
+> +				phy_port2: phy@1 {
+> +					reg = <1>;
+> +				};
+> +
+> +				phy_port3: phy@2 {
+> +					reg = <2>;
+> +				};
+> +
+> +				phy_port4: phy@3 {
+> +					reg = <3>;
+> +				};
+> +
+> +				phy_port5: phy@4 {
+> +					reg = <4>;
+>  				};
+>  			};
+>  		};
+> -- 
+> 2.30.2
+> 
