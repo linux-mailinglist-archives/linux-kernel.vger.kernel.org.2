@@ -2,87 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BD937AC44
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE38937AC4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhEKQrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 12:47:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58510 "EHLO mail.kernel.org"
+        id S231789AbhEKQsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 12:48:30 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:34749 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230315AbhEKQrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:47:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AE2C61182;
-        Tue, 11 May 2021 16:46:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620751562;
-        bh=F8BGR6j49ixjR/v9I+J3FJp99JvGLqznTDTsYVAXsfI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=x/5hMCMoiIHhcuWVE5hhEhSkBLFkjRvM+ceZRJn59hENeVUlTxNgAD2lg4lFHEKwA
-         Rty44pc0p/EXFGrlyEb3zCsqAgPfzGsOWdMK3VYSlUEReSaECaVOQGMTO26kR+8Ccm
-         Ju7P4XHY6xsEatT/0xSrddIc6PsxhJblBukFq9rk=
-Date:   Tue, 11 May 2021 18:46:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.11 000/342] 5.11.20-rc1 review
-Message-ID: <YJq0yCirpEV+bgC/@kroah.com>
-References: <20210510102010.096403571@linuxfoundation.org>
- <396382a7-9a50-7ea1-53a9-8898bf640c46@linuxfoundation.org>
- <YJqIOajso0EyqgjO@kroah.com>
- <3244bd40-3afa-8386-3378-220ff2e2527d@linuxfoundation.org>
+        id S231377AbhEKQs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 12:48:29 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4FfkNn4x37z9scw;
+        Tue, 11 May 2021 18:47:21 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id FdPnrTcrlk03; Tue, 11 May 2021 18:47:21 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4FfkNn3x2sz9sb1;
+        Tue, 11 May 2021 18:47:21 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 686EB8B7CC;
+        Tue, 11 May 2021 18:47:21 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id m3XhbXdmu7Jo; Tue, 11 May 2021 18:47:21 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D77BD8B7C2;
+        Tue, 11 May 2021 18:47:20 +0200 (CEST)
+Subject: Re: arch/powerpc/kernel/optprobes.c:34:1: error: unused function
+ 'is_kprobe_ppc_optinsn_slot'
+To:     kernel test robot <lkp@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+References: <202105120059.uTLH58Lm-lkp@intel.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <48747467-cb93-c66d-4cf9-097be0568488@csgroup.eu>
+Date:   Tue, 11 May 2021 18:47:10 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3244bd40-3afa-8386-3378-220ff2e2527d@linuxfoundation.org>
+In-Reply-To: <202105120059.uTLH58Lm-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 10:16:00AM -0600, Shuah Khan wrote:
-> On 5/11/21 7:35 AM, Greg Kroah-Hartman wrote:
-> > On Mon, May 10, 2021 at 04:48:01PM -0600, Shuah Khan wrote:
-> > > On 5/10/21 4:16 AM, Greg Kroah-Hartman wrote:
-> > > > This is the start of the stable review cycle for the 5.11.20 release.
-> > > > There are 342 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > > 
-> > > > Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
-> > > > Anything received after that time might be too late.
-> > > > 
-> > > > The whole patch series can be found in one patch at:
-> > > > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.20-rc1.gz
-> > > > or in the git tree and branch at:
-> > > > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
-> > > > and the diffstat can be found below.
-> > > > 
-> > > > thanks,
-> > > > 
-> > > > greg k-h
-> > > > 
-> > > 
-> > > Compiled and doesn't boot. Dies in kmem_cache_alloc_node() called
-> > > from alloc_skb_with_frags()
-> > > 
-> > > I will start bisect.
-> > > 
-> > > Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-> > 
-> > It might be due to 79fcd446e7e1 ("drm/amdgpu: Fix memory leak") which I
-> > have reverted from 5.12 and 5.11 queues now and pushed out a -rc2.  If
-> > you could test those to verify this or not, that would be great.
-> > 
-> 
-> I am seeing other display issues as well. This might be it.
-> 
-> I couldn't find rc2. Checking out
-> git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> linux-5.11.y
+Hi All,
 
-Ah, sorry, pushed the -rc2 patch out now, but the -rc git tree has it as
-well.
+Le 11/05/2021 à 18:30, kernel test robot a écrit :
+> Hi Christophe,
+> 
+> First bad commit (maybe != root cause):
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   1140ab592e2ebf8153d2b322604031a8868ce7a5
+> commit: eacf4c0202654adfa94bbb17b5c5c77c0be14af8 powerpc: Enable OPTPROBES on PPC32
+> date:   3 weeks ago
+> config: powerpc-randconfig-r033-20210511 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project a0fed635fe1701470062495a6ffee1c608f3f1bc)
 
-greg k-h
+A clang issue ?
+
+
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # install powerpc cross compiling tool for clang build
+>          # apt-get install binutils-powerpc-linux-gnu
+>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eacf4c0202654adfa94bbb17b5c5c77c0be14af8
+>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>          git fetch --no-tags linus master
+>          git checkout eacf4c0202654adfa94bbb17b5c5c77c0be14af8
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=powerpc
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>>> arch/powerpc/kernel/optprobes.c:34:1: error: unused function 'is_kprobe_ppc_optinsn_slot' [-Werror,-Wunused-function]
+>     DEFINE_INSN_CACHE_OPS(ppc_optinsn);
+>     ^
+>     include/linux/kprobes.h:306:20: note: expanded from macro 'DEFINE_INSN_CACHE_OPS'
+>     static inline bool is_kprobe_##__name##_slot(unsigned long addr)        \
+
+That's a 'static inline', shouldn't generate an 'unused function' warning.
+
+>                        ^
+>     <scratch space>:16:1: note: expanded from here
+>     is_kprobe_ppc_optinsn_slot
+>     ^
+>     1 error generated.
+> 
+> 
+> vim +/is_kprobe_ppc_optinsn_slot +34 arch/powerpc/kernel/optprobes.c
+> 
+> 51c9c084399352 Anju T 2017-02-08  20
+> 51c9c084399352 Anju T 2017-02-08  21  #define TMPL_CALL_HDLR_IDX	\
+> 51c9c084399352 Anju T 2017-02-08  22  	(optprobe_template_call_handler - optprobe_template_entry)
+> 51c9c084399352 Anju T 2017-02-08  23  #define TMPL_EMULATE_IDX	\
+> 51c9c084399352 Anju T 2017-02-08  24  	(optprobe_template_call_emulate - optprobe_template_entry)
+> 51c9c084399352 Anju T 2017-02-08  25  #define TMPL_RET_IDX		\
+> 51c9c084399352 Anju T 2017-02-08  26  	(optprobe_template_ret - optprobe_template_entry)
+> 51c9c084399352 Anju T 2017-02-08  27  #define TMPL_OP_IDX		\
+> 51c9c084399352 Anju T 2017-02-08  28  	(optprobe_template_op_address - optprobe_template_entry)
+> 51c9c084399352 Anju T 2017-02-08  29  #define TMPL_INSN_IDX		\
+> 51c9c084399352 Anju T 2017-02-08  30  	(optprobe_template_insn - optprobe_template_entry)
+> 51c9c084399352 Anju T 2017-02-08  31  #define TMPL_END_IDX		\
+> 51c9c084399352 Anju T 2017-02-08  32  	(optprobe_template_end - optprobe_template_entry)
+> 51c9c084399352 Anju T 2017-02-08  33
+> 51c9c084399352 Anju T 2017-02-08 @34  DEFINE_INSN_CACHE_OPS(ppc_optinsn);
+> 51c9c084399352 Anju T 2017-02-08  35
+> 
+> :::::: The code at line 34 was first introduced by commit
+> :::::: 51c9c0843993528bffc920c54c2121d9e6f8b090 powerpc/kprobes: Implement Optprobes
+> 
+> :::::: TO: Anju T <anju@linux.vnet.ibm.com>
+> :::::: CC: Michael Ellerman <mpe@ellerman.id.au>
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
