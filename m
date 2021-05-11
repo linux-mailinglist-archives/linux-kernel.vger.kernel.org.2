@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D4C37A5A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1ABE37A5A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbhEKLVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 07:21:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59006 "EHLO
+        id S230501AbhEKLWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 07:22:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30203 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231536AbhEKLVi (ORCPT
+        by vger.kernel.org with ESMTP id S231515AbhEKLVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 07:21:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620732031;
+        s=mimecast20190719; t=1620732032;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=I0ueWWk8MA4qCwUdyosYoBxKBlQEKK7nPY4khneXt80=;
-        b=OTZBCaDYwpdi5TycQWCxihLsquq6jl2cSLMrXJdT1kqD0ihMp6TS2BWtftTa0rpyPNWhrk
-        vxw/9OpkVxJCA/8BI4lq5d8KfxgTM9MN+W1Bu6Q89GHnyTC7xPOS+fwtkbk7LPNKwXfuCk
-        C6+xI9jnuBkQAQnMZSNSqgpz2KMb2PQ=
+        bh=jgezwu+Ka/2x1z5dm2QC7G75OxkPVMK5k1J0nHkF7Ds=;
+        b=DX23Msvhd1pcZvvfWOb8nh3mvQhPydQfNx1ekYH+ngu7U1V/LNvzq5yJ0Z6dZa0wfT3Zej
+        3cauGoKUjCmhuYzJBeX4q8nt/R6TpX31u2OXnV4PqCCB8WsS5ztCjFRJF3TvTfUOGZnUmS
+        I7H7PFBvyavTAuiooPVRY7U13cB9ZHY=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-409-Uc0eZisCPJam2FS0GxlbuA-1; Tue, 11 May 2021 07:20:28 -0400
-X-MC-Unique: Uc0eZisCPJam2FS0GxlbuA-1
+ us-mta-23-UVUDOauwOq-nIxbW-5YncQ-1; Tue, 11 May 2021 07:20:31 -0400
+X-MC-Unique: UVUDOauwOq-nIxbW-5YncQ-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0C291006C83;
-        Tue, 11 May 2021 11:20:26 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 393831922038;
+        Tue, 11 May 2021 11:20:29 +0000 (UTC)
 Received: from vitty.brq.redhat.com (unknown [10.40.193.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 93BCD63C40;
-        Tue, 11 May 2021 11:20:24 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 286D463C40;
+        Tue, 11 May 2021 11:20:26 +0000 (UTC)
 From:   Vitaly Kuznetsov <vkuznets@redhat.com>
 To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
 Cc:     linux-kernel@vger.kernel.org,
@@ -41,9 +41,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Wanpeng Li <wanpengli@tencent.com>,
         Jim Mattson <jmattson@google.com>,
         Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 6/7] KVM: nVMX: Request to sync eVMCS from VMCS12 after migration
-Date:   Tue, 11 May 2021 13:19:55 +0200
-Message-Id: <20210511111956.1555830-7-vkuznets@redhat.com>
+Subject: [PATCH 7/7] KVM: selftests: evmcs_test: Test that KVM_STATE_NESTED_EVMCS is never lost
+Date:   Tue, 11 May 2021 13:19:56 +0200
+Message-Id: <20210511111956.1555830-8-vkuznets@redhat.com>
 In-Reply-To: <20210511111956.1555830-1-vkuznets@redhat.com>
 References: <20210511111956.1555830-1-vkuznets@redhat.com>
 MIME-Version: 1.0
@@ -53,43 +53,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VMCS12 is used to keep the authoritative state during nested state
-migration. In case 'need_vmcs12_to_shadow_sync' flag is set, we're
-in between L2->L1 vmexit and L1 guest run when actual sync to
-enlightened (or shadow) VMCS happens. Nested state, however, has
-no flag for 'need_vmcs12_to_shadow_sync' so vmx_set_nested_state()->
-set_current_vmptr() always sets it. Enlightened vmptrld path, however,
-doesn't have the quirk so some VMCS12 changes may not get properly
-reflected to eVMCS and L1 will see an incorrect state.
-
-Note, during L2 execution or when need_vmcs12_to_shadow_sync is not
-set the change is effectively a nop: in the former case all changes
-will get reflected during the first L2->L1 vmexit and in the later
-case VMCS12 and eVMCS are already in sync (thanks to
-copy_enlightened_to_vmcs12() in vmx_get_nested_state()).
+Do KVM_GET_NESTED_STATE/KVM_SET_NESTED_STATE for a freshly restored VM
+(before the first KVM_RUN) to check that KVM_STATE_NESTED_EVMCS is not
+lost.
 
 Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 ---
- arch/x86/kvm/vmx/nested.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ .../testing/selftests/kvm/x86_64/evmcs_test.c | 64 +++++++++++--------
+ 1 file changed, 38 insertions(+), 26 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 1661e2e19560..0a422c6091dc 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -3135,6 +3135,12 @@ static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu)
- 		if (evmptrld_status == EVMPTRLD_VMFAIL ||
- 		    evmptrld_status == EVMPTRLD_ERROR)
- 			return false;
+diff --git a/tools/testing/selftests/kvm/x86_64/evmcs_test.c b/tools/testing/selftests/kvm/x86_64/evmcs_test.c
+index 63096cea26c6..fcef347a681a 100644
+--- a/tools/testing/selftests/kvm/x86_64/evmcs_test.c
++++ b/tools/testing/selftests/kvm/x86_64/evmcs_test.c
+@@ -121,14 +121,38 @@ void inject_nmi(struct kvm_vm *vm)
+ 	vcpu_events_set(vm, VCPU_ID, &events);
+ }
+ 
++static void save_restore_vm(struct kvm_vm *vm)
++{
++	struct kvm_regs regs1, regs2;
++	struct kvm_x86_state *state;
++
++	state = vcpu_save_state(vm, VCPU_ID);
++	memset(&regs1, 0, sizeof(regs1));
++	vcpu_regs_get(vm, VCPU_ID, &regs1);
++
++	kvm_vm_release(vm);
++
++	/* Restore state in a new VM.  */
++	kvm_vm_restart(vm, O_RDWR);
++	vm_vcpu_add(vm, VCPU_ID);
++	vcpu_set_hv_cpuid(vm, VCPU_ID);
++	vcpu_enable_evmcs(vm, VCPU_ID);
++	vcpu_load_state(vm, VCPU_ID, state);
++	free(state);
++
++	memset(&regs2, 0, sizeof(regs2));
++	vcpu_regs_get(vm, VCPU_ID, &regs2);
++	TEST_ASSERT(!memcmp(&regs1, &regs2, sizeof(regs2)),
++		    "Unexpected register values after vcpu_load_state; rdi: %lx rsi: %lx",
++		    (ulong) regs2.rdi, (ulong) regs2.rsi);
++}
++
+ int main(int argc, char *argv[])
+ {
+ 	vm_vaddr_t vmx_pages_gva = 0;
+ 
+-	struct kvm_regs regs1, regs2;
+ 	struct kvm_vm *vm;
+ 	struct kvm_run *run;
+-	struct kvm_x86_state *state;
+ 	struct ucall uc;
+ 	int stage;
+ 
+@@ -145,10 +169,6 @@ int main(int argc, char *argv[])
+ 	vcpu_set_hv_cpuid(vm, VCPU_ID);
+ 	vcpu_enable_evmcs(vm, VCPU_ID);
+ 
+-	run = vcpu_state(vm, VCPU_ID);
+-
+-	vcpu_regs_get(vm, VCPU_ID, &regs1);
+-
+ 	vcpu_alloc_vmx(vm, &vmx_pages_gva);
+ 	vcpu_args_set(vm, VCPU_ID, 1, vmx_pages_gva);
+ 
+@@ -160,6 +180,7 @@ int main(int argc, char *argv[])
+ 	pr_info("Running L1 which uses EVMCS to run L2\n");
+ 
+ 	for (stage = 1;; stage++) {
++		run = vcpu_state(vm, VCPU_ID);
+ 		_vcpu_run(vm, VCPU_ID);
+ 		TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
+ 			    "Stage %d: unexpected exit reason: %u (%s),\n",
+@@ -184,32 +205,23 @@ int main(int argc, char *argv[])
+ 			    uc.args[1] == stage, "Stage %d: Unexpected register values vmexit, got %lx",
+ 			    stage, (ulong)uc.args[1]);
+ 
+-		state = vcpu_save_state(vm, VCPU_ID);
+-		memset(&regs1, 0, sizeof(regs1));
+-		vcpu_regs_get(vm, VCPU_ID, &regs1);
+-
+-		kvm_vm_release(vm);
+-
+-		/* Restore state in a new VM.  */
+-		kvm_vm_restart(vm, O_RDWR);
+-		vm_vcpu_add(vm, VCPU_ID);
+-		vcpu_set_hv_cpuid(vm, VCPU_ID);
+-		vcpu_enable_evmcs(vm, VCPU_ID);
+-		vcpu_load_state(vm, VCPU_ID, state);
+-		run = vcpu_state(vm, VCPU_ID);
+-		free(state);
+-
+-		memset(&regs2, 0, sizeof(regs2));
+-		vcpu_regs_get(vm, VCPU_ID, &regs2);
+-		TEST_ASSERT(!memcmp(&regs1, &regs2, sizeof(regs2)),
+-			    "Unexpected register values after vcpu_load_state; rdi: %lx rsi: %lx",
+-			    (ulong) regs2.rdi, (ulong) regs2.rsi);
++		save_restore_vm(vm);
+ 
+ 		/* Force immediate L2->L1 exit before resuming */
+ 		if (stage == 8) {
+ 			pr_info("Injecting NMI into L1 before L2 had a chance to run after restore\n");
+ 			inject_nmi(vm);
+ 		}
 +
 +		/*
-+		 * Post migration VMCS12 always provides the most actual
-+		 * information, copy it to eVMCS upon entry.
++		 * Do KVM_GET_NESTED_STATE/KVM_SET_NESTED_STATE for a freshly
++		 * restored VM (before the first KVM_RUN) to check that
++		 * KVM_STATE_NESTED_EVMCS is not lost.
 +		 */
-+		vmx->nested.need_vmcs12_to_shadow_sync = true;
++		if (stage == 9) {
++			pr_info("Trying extra KVM_GET_NESTED_STATE/KVM_SET_NESTED_STATE cycle\n");
++			save_restore_vm(vm);
++		}
  	}
  
- 	return true;
+ done:
 -- 
 2.30.2
 
