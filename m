@@ -2,121 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A9137AB7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2E737AB86
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbhEKQIQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 May 2021 12:08:16 -0400
-Received: from de-smtp-delivery-105.mimecast.com ([194.104.109.105]:58109 "EHLO
-        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231916AbhEKQIN (ORCPT
+        id S230505AbhEKQLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 12:11:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230484AbhEKQK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:08:13 -0400
-Received: from GBR01-LO2-obe.outbound.protection.outlook.com
- (mail-lo2gbr01lp2056.outbound.protection.outlook.com [104.47.21.56]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-35-9c7pdnARP3assXMDarw6Yg-1; Tue, 11 May 2021 18:07:04 +0200
-X-MC-Unique: 9c7pdnARP3assXMDarw6Yg-1
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
- by CWLP265MB2450.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:92::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Tue, 11 May
- 2021 16:07:02 +0000
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a91f:361d:5554:3958]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a91f:361d:5554:3958%5]) with mapi id 15.20.4129.025; Tue, 11 May 2021
- 16:07:02 +0000
-From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     Avri Altman <Avri.Altman@wdc.com>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Subject: Re: [PATCH v2] mmc: block: ioctl: No busywaiting of non-TRAN CMDs
-Thread-Topic: [PATCH v2] mmc: block: ioctl: No busywaiting of non-TRAN CMDs
-Thread-Index: AQHXQyyR8BdSxkDtf0eUDDANXygamarX43qAgAaVTzw=
-Date:   Tue, 11 May 2021 16:07:02 +0000
-Message-ID: <CWXP265MB2680EC0A980A794C3B520DBBC4539@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-References: <CWXP265MB2680DC98B32CD4B49AA8A224C4599@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
- <DM6PR04MB657570DB58E7ABBE2C3B0449FC589@DM6PR04MB6575.namprd04.prod.outlook.com>
- <CWXP265MB2680A8DD0FFA6FECBFDFB027C4579@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<CAPDyKFqZ580uHgfob5wfn7a_+Y-q3h0YrvirrNYSFT5Q_St2SA@mail.gmail.com>
-In-Reply-To: <CAPDyKFqZ580uHgfob5wfn7a_+Y-q3h0YrvirrNYSFT5Q_St2SA@mail.gmail.com>
-Accept-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [185.80.168.10]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 99e004ca-937f-4469-ef7d-08d91496d08d
-x-ms-traffictypediagnostic: CWLP265MB2450:
-x-microsoft-antispam-prvs: <CWLP265MB2450A02188DEB7F1C50134BBC4539@CWLP265MB2450.GBRP265.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:7219
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0
-x-microsoft-antispam-message-info: O6WnOLj6U7AuYflxhn0LuLvLxDnDg/C/f1qaJ1MK3mb46FwWcw85s5EVHs5gO7vTs7LXTJILvKv7KCIPU0OKgg9mF/heEDPZoX0jvG0V1TXTkFSltP6atM7qeEYWlmg78RIrZrhtiOp1SVNmT1il0pjFPytzs3y0v92QOVRiUz6JTD4ic7GGSZrWh9/PZEf0zQCX/btUQZq8Qk7gySTm3lFkkVoyFfNBnSKnfPSHNHLE6iaygmcHS1+i7Ya2PqE2dsdG4HD/dpXDdMOmR6bPq8nUrwE7qWwaSVWFVDYD0TdXz8o4v7rensDYDUbsT907iyOuWePAAfU/bpLaZn53DYzjZnYB+amCKam5AvF3M0Cm2WBnI8VmxtYowsKJDQ20UbAVCWXyF2nCjWQY7adjFRIp6EEJuEU6wuIVVov66kYqfWSHKXwRKg8bD0QiHDPgQxBEzF0HJT+EiwrqHX+VwrxERSDWoihHF+Go2j+kYD10RPpLvOyNKAKE1wNsEt7KO0VTklw01atAr+ewQBesswsYA5ppNc7n+JHlcEP41l6KBLOHAwIPqOrw1PAaVpw1NSrPrqw+ByJBIAvDVWKOilzfoP/PuhkDRFB/7UiM9p4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(366004)(346002)(66446008)(4326008)(54906003)(6506007)(33656002)(53546011)(86362001)(186003)(38100700002)(5660300002)(4744005)(122000001)(71200400001)(64756008)(26005)(8676002)(76116006)(7696005)(508600001)(55016002)(2906002)(66556008)(66476007)(8936002)(6916009)(66946007)(91956017)(52536014)(9686003);DIR:OUT;SFP:1101
-x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?MvIvAHmadLXiA9f7jzMO0H8mKkTpr+ozSwylT73njW7LOEeBtw9nlFUjUW?=
- =?iso-8859-1?Q?c/hII55SBNjzt4MIQu+t5LDREIqwnYcZyW0b1+MyQtxz9PrkEezIxJwH2J?=
- =?iso-8859-1?Q?ZW131ZL0bN3mXSClqu9aughazd1OpW9t8cDThKRXnzt6U9Qtq3rZaXmbeh?=
- =?iso-8859-1?Q?pgMM1efxh+2HCbQ59Rwc1f3BnBHrxd7khegMppR54Kcitc+4kbzHtllW+U?=
- =?iso-8859-1?Q?B9mNyCNuRysjmGLceVwebYdNHOQc3g0TL7OPz7zP3+n+LHFi6YRh9Ho1Ey?=
- =?iso-8859-1?Q?t/9uZbine0DX9kHA0ooIAVPYWhnEedL1qAj+j4uqQDCB4PSOYIJG+7vF2Q?=
- =?iso-8859-1?Q?fhfbMqAu0ljYRJ3Gc2ZYvEzWgIwmaMHfIRJ4kqJSKFLkVl7bCf8D6GK4vK?=
- =?iso-8859-1?Q?CZ9Gby9Gm0EZuUMWk4gdCInzF+Mba+JFCDbUE/Yuuw/uG9KxoZ/NRug9bj?=
- =?iso-8859-1?Q?rws11a6c7D8KKgI0C//T42Ww9o94n9BqPeJScsk7vAAv2mAk4Z6xG+kJFi?=
- =?iso-8859-1?Q?AJVCZrTVUxl6SEELxlhP3+G2GYPOH4527sn/ssnzLxMUv/rD4mfC+JBYkU?=
- =?iso-8859-1?Q?R0HrwekMjWzigB+kBBASYVFUnpaf+aHRWnsI/VMgqltatmEBcJwPCvItfv?=
- =?iso-8859-1?Q?4plB3pDq6CbjPB9sqYckmPoqu7ySwlDpaLTR0eHmvD3DAVgF3tq6HO2vFK?=
- =?iso-8859-1?Q?/NJAs3IfwQbu3HGTpQlYOPEl+jW0TAZVbmeQh3qlWVIB96tsBCJNXnfrW6?=
- =?iso-8859-1?Q?DnT9Y0Y4mnU2XuSwqrBfz2vqW6rEYIYgWCFHlsci49Bol6IWO78NSRv6F3?=
- =?iso-8859-1?Q?X3xEfkFKncLow8AgoACNzQWQNulu8fO8j74amOZ+HVaoAegTaOnC5s27h1?=
- =?iso-8859-1?Q?6q8h4dtvdRMJLx7trxlZiA37hvaBCwDSI5nUJBE8tE+g4JjmR7OeRyPUoG?=
- =?iso-8859-1?Q?MhQY2aayywT4kE5dSBHDtNlX3I4/WMTTRngvqbzNnQBiyR6rSq8JsHxMNR?=
- =?iso-8859-1?Q?hzGqju1rr4JqXt99ktU7sVLkScRBdSEHvG1RtEufk1LN66HDm3sy6+iayB?=
- =?iso-8859-1?Q?eEc2BNYcex3To+7rCqMTIc70ala8rz6aGpSeIKFy07Ovfhns/rjlYvX1hh?=
- =?iso-8859-1?Q?aCHLtQFOJBtY1P+VP7iFDTinHxrzsKEpGdnG9agfM5kY4fHeU3+xkND5Fa?=
- =?iso-8859-1?Q?0u1x3pUZJdcdls3XhOaIGRoX6KnDrpb3YnOkOKpsg7ZlLNwSo9BMlGZJzE?=
- =?iso-8859-1?Q?rE/kOmsYyOf1Y7WNJWz+o6qhJSXKRVVen6k/sG1qrJZHwABH11TuqT84Af?=
- =?iso-8859-1?Q?4kn0Jc3Tysla45NmtP2AZew3JjCssRTD9cZCVgoopQIquHA=3D?=
-x-ms-exchange-transport-forked: True
+        Tue, 11 May 2021 12:10:58 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7E1C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 09:09:52 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id q15so11846065pgg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 09:09:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IjrFFPJC53lebLPOH5QRUVXmz4ihOhkij0I7QzCDBI0=;
+        b=XcGb4jGjlJ6JO4vxlkNoZxxV11pXvU+oFMTV1r5oyRYzZo8CUqM0TxvcFJPRKg5lVf
+         xFA6Eu8mHcLmEu3dplxBuNpOTarryk+zCnR0rOpd+YVIBuXQmYxs2IDA3byQmFrJQafI
+         yMlWWBA7M/GOuE06gP0n4Seifx2RFiE+aztMDMkSy+wFaJuLr1QVK2/8bT7JKs0+KMmj
+         vByvezV2m79Gi5LZfYDzv2xotK+3Hx+UhggOogV05Pm41AEZBD1RViip+bbidHfjLx61
+         Bjjnmg/z226fxULvxCFRlpvyl8MWreccXUXvb1npKvoXVjEh2MeQtTF83cAg5gBz9yCq
+         OmLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IjrFFPJC53lebLPOH5QRUVXmz4ihOhkij0I7QzCDBI0=;
+        b=nJNwOjmTH+tUfLc9CA2cbyego4EOttfpAw+Ujtw04NA25hE2+s5dSKazGeJDtS3rLR
+         GCcxQNRA3a7Yng/lO+Zi/BYldzDlih4+skPdDoPbhAkf1B0desDXsSY0R8JYMUabfpJz
+         Gjxzuu0ZTVOwYfaOUfCrBZSAfHR14HlatM8k1a1RlWr2OIH3lMtPUE/xOIHQmtUj6eot
+         TpfOw9BrrLxxDlOEf8OJY1JZxaxErbuCe1TnhGydyDmIPtQCJEdvF+azq6O+ydxzEm2/
+         usnPVKHIqiEB7mB94c4gMboIYv/Oi+SIHjBzeeIMmR64c7b/ogUtiedsJ6YV0Y43V8Ew
+         2r6Q==
+X-Gm-Message-State: AOAM530CCjUwxF+FeSurS2r4j5YgrUhsB0G5pYUkVEDD6dJOwI4knj9H
+        wr+cxbftVB6GspGsueT7xwXsbw==
+X-Google-Smtp-Source: ABdhPJzmmsIpuYEnKafc4HRT84mFXJz/TW3XfLuQ6ixT3txxj4R5VRjY5pgVYaRIjUQ0cu1nHQoCjQ==
+X-Received: by 2002:a62:30c2:0:b029:289:116c:ec81 with SMTP id w185-20020a6230c20000b0290289116cec81mr31331906pfw.42.1620749391561;
+        Tue, 11 May 2021 09:09:51 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id i3sm2468601pjv.30.2021.05.11.09.09.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 09:09:51 -0700 (PDT)
+Date:   Tue, 11 May 2021 16:09:45 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC v2 16/32] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+Message-ID: <YJqsScgPlFx9j5qA@google.com>
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <d6ca05720290060e909c1f4d12858f900f1be0e7.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4jGmhkrd+Zr4RNcZ5qfXkYO-416Bw2_idVbrgij41yvYg@mail.gmail.com>
+ <22d56f70-c69c-b3d2-51d6-962abdbc2882@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: hyperstone.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99e004ca-937f-4469-ef7d-08d91496d08d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2021 16:07:02.5242
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CnOaCYyBN3fOq4cCAOkzoy956pwPl88zc7kaJ70pmk6virhLgyeElPBXK8CFCgZuSEA3Daq++oCHG4+FABjnzA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB2450
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: hyperstone.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <22d56f70-c69c-b3d2-51d6-962abdbc2882@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, May 7, 2021 1:34 PM,Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> None of the commands you are checking for should have an R1B response
-> according to the spec, I think.
+On Tue, May 11, 2021, Dave Hansen wrote:
+> On 5/10/21 6:23 PM, Dan Williams wrote:
+> >> To prevent TD guest from using MWAIT/MONITOR instructions,
+> >> support for these instructions are already disabled by TDX
+> >> module (SEAM). So CPUID flags for these instructions should
+> >> be in disabled state.
+> > Why does this not result in a #UD if the instruction is disabled by
+> > SEAM? How is it possible to execute a disabled instruction (one
+> > precluded by CPUID) to the point where it triggers #VE instead of #UD?
 > 
-> That said, I don't think we should do these kinds of sanity checks in
-> the kernel for the mmc ioctls, that just doesn't scale.
+> This is actually a vestige of VMX.  It's quite possible toady to have a
+> feature which isn't enumerated in CPUID which still exists and "works"
+> in the silicon.
 
-You are absolutely correct, my bad, I had a userspace program setting the
-flags wrong.
-Even for a SEND_STATUS R1B is only expected if the card was not selected
-and should be set accordingly by the userspace.
+No, virtualization holes are something else entirely.  
 
-Regards,
-Christian
-Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-Managing Directors: Dr. Jan Peter Berns.
-Commercial register of local courts: Freiburg HRB381782
+MONITOR/MWAIT are a bit weird; they do have an enable bit in IA32_MISC_ENABLE,
+but most VMMs don't context switch IA32_MISC_ENABLE (load guest value on entry,
+load host value on exit) because that would add ~250 cycles to every host<->guest
+transition.  And IA32_MISC_ENABLE is shared between SMT siblings, which further
+complicates loading the guest's value into hardware.  In the end, it's easier to
+leave MONITOR/MWAIT enabled in hardware and instead force a VM-Exit.
 
+As for why TDX injects #VE instead of #UD, I suspect it's for the same reason
+that KVM emulates MONITOR/MWAIT as nops instead of injecting a #UD.  The CPUID
+bit for MONITOR/MWAIT reflects their enabling in IA32_MISC_ENABLE, not raw
+support in hardware.  That means there's no definitive way to enumerate to BIOS
+that MONITOR/MWAIT are not supported, e.g. AFAICT, EDKII blindly assumes it can
+enable MONITOR/MWAIT in IA32_MISC_ENABLE.  To justify #UD instead of #VE, TDX
+would have to inject #GP on WRMSR to set IA32_MISC_ENABLE.ENABLE_MONITOR, and
+even then there would be weirdness with respect to VMM behavior in response to
+TDVMCALL(WRMSR) since the VMM could allow the virtual write.  In the end, it's
+again simpler to inject #VE.
+
+> There are all kinds of pitfalls to doing this, but folks evidently do it in
+> public clouds all the time.
+
+Virtualization holes are when instructions/features are enumerated via CPUID,
+but don't have a control to hide the feature from the guest (or in the case of
+CET, multiple feature are buried behind a single control).  So even if the VMM
+hides the feature via CPUID, the guest can still _cleanly_ execute the
+instruction if it's supported by the underlying hardware.
+
+> The CPUID virtualization basically just traps into the hypervisor and
+> lets the hypervisor set whatever register values it wants to appear when
+> CPUID "returns".
+> 
+> But, the controls for what instructions generate #UD are actually quite
+> separate and unrelated to CPUID itself.
+
+Eh, any sane VMM will accurately represent its virtual CPU model via CPUID
+insofar as possible, there are just too many creaky corners in x86 to make things
+100% bombproof.
