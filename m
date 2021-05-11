@@ -2,128 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754CF37A7C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2E337A7CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhEKNgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 09:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231396AbhEKNgs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 09:36:48 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AEFAC061574;
-        Tue, 11 May 2021 06:35:42 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id v22so14149129oic.2;
-        Tue, 11 May 2021 06:35:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7bCvijUWet6cLTH1ROcBoC9SaXhDDg8tibdm/SSOFjc=;
-        b=l5csFblyhcqmIxcneIJvOs+169tU+WVqWDtw2dKeD50I994vKtURyxiYa1It/pRfEz
-         Wwb2MWOoTqybjz1aXKBy+OetMziJREHHmDGAD7Ihp7Q6MKp+9bwBFuQ1HBXXEOkqgTsa
-         w/60ZsWCoLn3Bmxbe5jOxirGv6wXt5FZZYAnZWTZeHZzkXC4RbFFwx0Gkw+SdDQmsAEr
-         Cq4cEjHcBZQqWKNmQmEx+vGmAusf63+ci9zyWPBKN2NOOO47J1N8/blLIzNJplLFK+23
-         BxpvuCzOoycVejxebbLiQm2rsqTZ+fTxymOy3wIimMBucZzMIWCMu8I/2SHVefVfHMMZ
-         zGmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7bCvijUWet6cLTH1ROcBoC9SaXhDDg8tibdm/SSOFjc=;
-        b=P+gcsBDf+Vb79Zhj9aVGiP3qpeecUkv9cOYlRaz8+Aq9+cbRtb6VHmwORWXvJJgnjU
-         nz1Kok8q0xtYO5wL039Mnrs3MbznX16yh7HxnGKMi0Eu7ClYrPKkxWee6926kNg5bsDS
-         t1F26GTSltLAw5L9mJlSoFoG7gh1evYI812dROrY52bIqqXo19zpemZOiPZmtDznRxMa
-         /PKCzyZrUyVcoPCw5Yp/+UdUc6AR95gT95gUDH0jSVPPXy4HBx0EpjX4940/MEJzamGY
-         XyPFnEion6raXl+rREgEmk3cwhucR8TaVs+PW8kODmfITX6oaWdIwyoMdw+UdXkucX6a
-         UNFA==
-X-Gm-Message-State: AOAM533lgbiiJ4PcPX/UcAYNGZwhTVvN7UcDVXI86sx3XdYaskqF9Wky
-        0iN1sH0MXTFzL5dl/xR0tjyFG8J5CgA=
-X-Google-Smtp-Source: ABdhPJxZ/5UP6PfxDkP94zfD74SOVugTC3FpCRq7tP/0c09HtRw5s4EHG2Lz8+jNRtulYBOvG1MUIg==
-X-Received: by 2002:aca:628a:: with SMTP id w132mr3601969oib.147.1620740141575;
-        Tue, 11 May 2021 06:35:41 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y13sm3271871oon.32.2021.05.11.06.35.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 06:35:41 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v2] watchdog: Add {min,max}_timeout sysfs nodes
-To:     Juerg Haefliger <juerg.haefliger@canonical.com>,
-        wim@linux-watchdog.org, linux-watchdog@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Juerg Haefliger <juergh@canonical.com>
-References: <20210510131625.21506-1-juergh@canonical.com>
- <20210511062953.485252-1-juergh@canonical.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <d85c4b92-17a7-67bb-d53b-38577dc10b00@roeck-us.net>
-Date:   Tue, 11 May 2021 06:35:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231590AbhEKNhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 09:37:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231308AbhEKNhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 09:37:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D1996127A;
+        Tue, 11 May 2021 13:35:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620740156;
+        bh=LoRRBt3uMpGZwnypK29hLeIUk7x+fJp97jk/ZpSNk8I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oHZ9L5nAX+0e0JBNsdhoJ+sJsjMagt2BnyJ63BGqzNCKOYABO6oTa9chFD0n5kdYx
+         Mymb+Wv3v8Oz0lGIoD3Z8aUYBbac1BNgqTn7eWi7m81UBAtKZPqQ5t+y/FJZgomAj7
+         RsPghGCmICDuk4QxyBzmUFsenXGqPAE7OZjSODx0=
+Date:   Tue, 11 May 2021 15:35:53 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.11 000/342] 5.11.20-rc1 review
+Message-ID: <YJqIOajso0EyqgjO@kroah.com>
+References: <20210510102010.096403571@linuxfoundation.org>
+ <396382a7-9a50-7ea1-53a9-8898bf640c46@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210511062953.485252-1-juergh@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <396382a7-9a50-7ea1-53a9-8898bf640c46@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/21 11:29 PM, Juerg Haefliger wrote:
-> The valid range for the 'timeout' value is useful information so expose
-> the min and max timeout values via sysfs.
+On Mon, May 10, 2021 at 04:48:01PM -0600, Shuah Khan wrote:
+> On 5/10/21 4:16 AM, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.11.20 release.
+> > There are 342 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.20-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > 
 > 
-> Signed-off-by: Juerg Haefliger <juergh@canonical.com>
+> Compiled and doesn't boot. Dies in kmem_cache_alloc_node() called
+> from alloc_skb_with_frags()
+> 
+> I will start bisect.
+> 
+> Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+It might be due to 79fcd446e7e1 ("drm/amdgpu: Fix memory leak") which I
+have reverted from 5.12 and 5.11 queues now and pushed out a -rc2.  If
+you could test those to verify this or not, that would be great.
 
-> ---
-> 
-> v1->v2:
->   - replace sprintf() with sysfs_emit().
-> 
->   drivers/watchdog/watchdog_dev.c | 20 ++++++++++++++++++++
->   1 file changed, 20 insertions(+)
-> 
-> diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
-> index fe68a97973a5..7c1007ab1b71 100644
-> --- a/drivers/watchdog/watchdog_dev.c
-> +++ b/drivers/watchdog/watchdog_dev.c
-> @@ -526,6 +526,24 @@ static ssize_t timeout_show(struct device *dev, struct device_attribute *attr,
->   }
->   static DEVICE_ATTR_RO(timeout);
->   
-> +static ssize_t min_timeout_show(struct device *dev,
-> +				struct device_attribute *attr, char *buf)
-> +{
-> +	struct watchdog_device *wdd = dev_get_drvdata(dev);
-> +
-> +	return sysfs_emit(buf, "%u\n", wdd->min_timeout);
-> +}
-> +static DEVICE_ATTR_RO(min_timeout);
-> +
-> +static ssize_t max_timeout_show(struct device *dev,
-> +				struct device_attribute *attr, char *buf)
-> +{
-> +	struct watchdog_device *wdd = dev_get_drvdata(dev);
-> +
-> +	return sysfs_emit(buf, "%u\n", wdd->max_timeout);
-> +}
-> +static DEVICE_ATTR_RO(max_timeout);
-> +
->   static ssize_t pretimeout_show(struct device *dev,
->   			       struct device_attribute *attr, char *buf)
->   {
-> @@ -610,6 +628,8 @@ static struct attribute *wdt_attrs[] = {
->   	&dev_attr_state.attr,
->   	&dev_attr_identity.attr,
->   	&dev_attr_timeout.attr,
-> +	&dev_attr_min_timeout.attr,
-> +	&dev_attr_max_timeout.attr,
->   	&dev_attr_pretimeout.attr,
->   	&dev_attr_timeleft.attr,
->   	&dev_attr_bootstatus.attr,
-> 
+thanks,
 
+greg k-h
