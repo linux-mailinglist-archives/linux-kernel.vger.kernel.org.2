@@ -2,111 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2DC37AAC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB2637AAC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhEKPfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 11:35:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33526 "EHLO mail.kernel.org"
+        id S231824AbhEKPhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 11:37:05 -0400
+Received: from mga12.intel.com ([192.55.52.136]:46653 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231609AbhEKPe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 11:34:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B017C6191C;
-        Tue, 11 May 2021 15:33:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620747232;
-        bh=0ycZJyo5rPknGQbcP1uAKYtdIN0dctFP9qaEHA1Lmtk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZjsrZAwbc/lBKJzT5Qnk9hhA7hlNe9/+wsYAaQ2hCTHDuuS714UHT6/PWDkPLtFVN
-         PGNsYrLkQZQ1njQMFNmrF+rY39q/TgojalbAiTiTFUb8PZp5nbjHm2FQrAyGecNVnb
-         EFjtdDxosV0WEHHZtJzjScukgd4H65tzu8ct8/DgkOWVpEXiQRX93jUgit8bPoBFw8
-         4UaZJ8n36ZGgLFTGYdVNhCLgSUAdMe+PK32kf2pkJ+5uBrTdO+Lm2MfL5TkWLGYyuF
-         UzXOSq495Yh6kMMp2pjKebGAlUkklNesbZGSBbHQ6dUDDZshlwFG4FA61TEF9kzj8H
-         s2J+Xs12uTA1Q==
-Received: by mail-qk1-f176.google.com with SMTP id 76so19114845qkn.13;
-        Tue, 11 May 2021 08:33:52 -0700 (PDT)
-X-Gm-Message-State: AOAM531i5nLTX5InfGMpwo1rUGeWyOyKyHeWQrLpkLuNcifHdLcedA5Z
-        I08mCcw4lGzUvuJ5zWyZX8uM0ETDp4xHgr3I5A==
-X-Google-Smtp-Source: ABdhPJzgBwoKu9MHPdLj91APOY8pzFmxS2DLOE3Q2ktzZ0fUiNWOhbcxKfUo1JHMW7OvuM894BUmNNo5VnEbhOJ8/vY=
-X-Received: by 2002:a37:6116:: with SMTP id v22mr14616810qkb.464.1620747229748;
- Tue, 11 May 2021 08:33:49 -0700 (PDT)
+        id S231561AbhEKPg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 11:36:58 -0400
+IronPort-SDR: u57Yf6MdQW8edvsHbkxpRCTll7Ya/zLVriI71LEsme9Xm6w7tQsnQSoCuI6+wgwvUr+BeYZhDO
+ oUig/rw1QspQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179066086"
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
+   d="scan'208";a="179066086"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 08:35:50 -0700
+IronPort-SDR: G4ioOF2EVFhF5y55l6mr2s6ZxVROHW63pIJyOXyQovVcYv+ZtvS7YKfC5aVAf9cUGPUvBHUiqu
+ Wvz4ijeVPoQA==
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
+   d="scan'208";a="537072993"
+Received: from unknown (HELO [10.251.0.45]) ([10.251.0.45])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 08:35:47 -0700
+Subject: Re: [RFC v2 14/32] x86/tdx: Handle port I/O
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <0e7e94d1ee4bae49dfd0dd441dc4f2ab6df76668.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4jPLGs6p0PNZQB6yKB3QDtEcGb234zcgCbJutXxZZEGnA@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <6ea92e98-a243-ef7c-4263-bafb8946feef@intel.com>
+Date:   Tue, 11 May 2021 08:35:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210507004047.4454-1-chris.packham@alliedtelesis.co.nz>
- <20210507004047.4454-2-chris.packham@alliedtelesis.co.nz> <20210507214936.GA2944698@robh.at.kernel.org>
- <c5d6f8d0-9b8a-b3bf-b7c3-884f03f7ecee@alliedtelesis.co.nz>
-In-Reply-To: <c5d6f8d0-9b8a-b3bf-b7c3-884f03f7ecee@alliedtelesis.co.nz>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 11 May 2021 10:33:37 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKaeubNxYwGNOJYv=VcwR_6NzwkXnQ4DjOwXDudEmZ2Rg@mail.gmail.com>
-Message-ID: <CAL_JsqKaeubNxYwGNOJYv=VcwR_6NzwkXnQ4DjOwXDudEmZ2Rg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: i2c: mpc: Add fsl,i2c-erratum-a004447 flag
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc:     "wsa@kernel.org" <wsa@kernel.org>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAPcyv4jPLGs6p0PNZQB6yKB3QDtEcGb234zcgCbJutXxZZEGnA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 9, 2021 at 4:08 PM Chris Packham
-<Chris.Packham@alliedtelesis.co.nz> wrote:
->
->
-> On 8/05/21 9:49 am, Rob Herring wrote:
-> > On Fri, May 07, 2021 at 12:40:45PM +1200, Chris Packham wrote:
-> >> Document the fsl,i2c-erratum-a004447 flag which indicates the presence
-> >> of an i2c erratum on some QorIQ SoCs.
-> >>
-> >> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> >> ---
-> >>   Documentation/devicetree/bindings/i2c/i2c-mpc.yaml | 7 +++++++
-> >>   1 file changed, 7 insertions(+)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml b/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
-> >> index 7b553d559c83..98c6fcf7bf26 100644
-> >> --- a/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
-> >> +++ b/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
-> >> @@ -46,6 +46,13 @@ properties:
-> >>       description: |
-> >>         I2C bus timeout in microseconds
-> >>
-> >> +  fsl,i2c-erratum-a004447:
-> >> +    $ref: /schemas/types.yaml#/definitions/flag
-> >> +    description: |
-> >> +      Indicates the presence of QorIQ erratum A-004447, which
-> >> +      says that the standard i2c recovery scheme mechanism does
-> >> +      not work and an alternate implementation is needed.
-> > The problem with adding a property for an errata is you have to update
-> > the dtb. If you use the compatible string, then only an OS update is
-> > needed. That assumes you have specific enough compatible strings.
->
-> I was following the style of the existing fsl,usb-erratum-a007792 or
-> fsl,erratum-a008585 properties. But that's not really a compelling reason.
->
-> The existing compatible string is "fsl-i2c" and it's used by pretty much
-> every powerpc QorIQ SoC. There are some specific compatible strings in
-> the driver for some of the older mpc SoCs. A more specific compatible
-> string will work although determining which ones are affected might be a
-> bit troublesome. That we know of the P2041 and P1010 are affected but I
-> suspect there may be more. One disadvantage of using the compatible
-> string is that as affected SoCs are identified we'll have to update the
-> driver to know that SoC is affected and update the dtb to use it. With
-> the property we'd just have to update the dtb.
+On 5/10/21 2:57 PM, Dan Williams wrote:
+>> Decompression code uses port IO for earlyprintk. We must use
+>> paravirt calls there too if we want to allow earlyprintk.
+> What is the tradeoff between teaching the decompression code to handle
+> #VE (the implied assumption) vs teaching it to avoid #VE with direct
+> TDVMCALLs (the chosen direction)?
 
-If you don't have specific compatibles in the dtb already, then it's
-mute as the point was to avoid the dtb update.
+To me, the tradeoff is not just "teaching" the code to handle a #VE, but
+ensuring that the entire architecture works.
 
-> I'm not too fussed either way so if that's a hard NACK on the property I
-> can send a version that uses compatible strings instead.
+Intentionally invoking a #VE is like making a function call that *MIGHT*
+recurse on itself.  Sure, you can try to come up with a story about
+bounding the recursion.  But, I don't see any semblance of that in this
+series.
 
-Acked-by: Rob Herring <robh@kernel.org>
-
-You could still add compatibles for the next time...
+Exception-based recursion is really nasty because it's implicit, not
+explicit.  That's why I'm advocating for a design where the kernel never
+intentionally causes a #VE: it never intentionally recurses without bounds.
