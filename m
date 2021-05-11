@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C4637A399
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 413CD37A3AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhEKJ3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 05:29:04 -0400
-Received: from mail-vs1-f45.google.com ([209.85.217.45]:39503 "EHLO
-        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230427AbhEKJ3D (ORCPT
+        id S231346AbhEKJar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 05:30:47 -0400
+Received: from mail-vk1-f173.google.com ([209.85.221.173]:37784 "EHLO
+        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230333AbhEKJaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 05:29:03 -0400
-Received: by mail-vs1-f45.google.com with SMTP id v188so9861524vsb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 02:27:57 -0700 (PDT)
+        Tue, 11 May 2021 05:30:46 -0400
+Received: by mail-vk1-f173.google.com with SMTP id b21so3926060vkb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 02:29:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Jm/AD7ayc9IZjTKCnS+p+8DytAX/uGO/+aOztTY9HLY=;
-        b=S28tPzizlbDjlCGklqhWJJSYp502nFEhW7ixPm14roDf+QM8lJf1GVApK83Zkm4Bgw
-         1eoLZZysG0TCwHw+7vBdbPGkdJrRctAVkLOzwUqt579wAGM/Geet54aXMGIOVuQyQFWa
-         KTM20zDvl7V754eisvDYzvwi1BlyBxftSAGwC1D6v2UimK63+PLAs2S3d/ltLXQBLIqC
-         KvCLmJVJmi+O9rmlWpQDywSFztvHRT5+BhDHxYuu9NF9pHtxrvC4fKXHzuG2tU7lws4b
-         51gKEGxnubY4QpB65evPvIPawdasKSj8ZE+e1qA4R2fCma4mJV52QtfithI7kOHGe3zm
-         +Qkg==
-X-Gm-Message-State: AOAM530I/5qYbLv8pFUPRGio+jolxr4tGCPcL/SwQT4RjEyD7YZs8hdH
-        RYgF6sqgiTN+FAVmJcjMg74JoI/MMxtM9AdUJ9I=
-X-Google-Smtp-Source: ABdhPJxgeV0LlF1txVEIfV/80dAE9f/Fr7NVtiuskYQ6Ym/9W6Hi49TokwjhogXCVzi7TjFDvmP87S1mf4Rh5AX+Rb8=
-X-Received: by 2002:a05:6102:392:: with SMTP id m18mr24519460vsq.40.1620725276793;
- Tue, 11 May 2021 02:27:56 -0700 (PDT)
+        bh=Ri/VsEyJ9iCvBdMBfq5AClEwg5h2TFv5KazhQYFgC+Q=;
+        b=GiNZ4kIZeElWMCNobA333l7CA51/b0JFq70D6Pl5GyI6kKLRvzZzV5RZGY76mafFRk
+         6LtfIHanJsnS3VpROn4i1sxD+iAojX9r3cgoFvmwiGO3CX3EtQ+jTnIe0VMtZb5LsM4M
+         dzaNvHbxQZSsyhdTO5Hw3W9HU4PLFqeEp6NDJttLHD1s9uvT1PKWKS0qfJDRAGQ+sMSw
+         EY4uXOs94eNsJ1cWxCLtJy6EXlQGQOWlKx7JDCioKn3SCfLjtaRfrJxmCzoUzY/ojFDT
+         XW9GciB5/nITxog8DwqdIyXyZWLbkmg1/k6K9t17sLflLtTGHEJckA5AKwNJYNCLUASH
+         RYyQ==
+X-Gm-Message-State: AOAM532aHbqspW7wbBSfuqbw7lUZ2vUF5AMPqnrC9/z3IrYjNWVahUM5
+        ZKISLGBUvW8b8ugtvV4X0a/IMI81EAgmmBGwBME=
+X-Google-Smtp-Source: ABdhPJyG5UkMQHHBhxYIf1c0EG5UM2xylsxQ4opKnhwoSt/KAdAZWizuT9yAk+f67+Imi4z+6ml5hHMX6CEcajRdm8I=
+X-Received: by 2002:a1f:a388:: with SMTP id m130mr21519415vke.1.1620725380281;
+ Tue, 11 May 2021 02:29:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210510093753.40683-1-mark.rutland@arm.com> <20210510093753.40683-21-mark.rutland@arm.com>
-In-Reply-To: <20210510093753.40683-21-mark.rutland@arm.com>
+References: <20210510093753.40683-1-mark.rutland@arm.com> <20210510093753.40683-12-mark.rutland@arm.com>
+In-Reply-To: <20210510093753.40683-12-mark.rutland@arm.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 11 May 2021 11:27:45 +0200
-Message-ID: <CAMuHMdVFOvyQYBn45QSb-jHA3G5Guv0hRb-LO1n8L_gWzcZm8w@mail.gmail.com>
-Subject: Re: [PATCH 20/33] locking/atomic: m68k: move to ARCH_ATOMIC
+Date:   Tue, 11 May 2021 11:29:29 +0200
+Message-ID: <CAMuHMdV2yChVgErXwYeMi=uNqBfjWLcVBgxbU4pfDni_oRN4ZQ@mail.gmail.com>
+Subject: Re: [PATCH 11/33] locking/atomic: cmpxchg: make `generic` a prefix
 To:     Mark Rutland <mark.rutland@arm.com>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Will Deacon <will@kernel.org>,
@@ -75,27 +75,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
-
-On Mon, May 10, 2021 at 11:42 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> We'd like all architectures to convert to ARCH_ATOMIC, as once all
-> architectures are converted it will be possible to make significant
-> cleanups to the atomics headers, and this will make it much easier to
-> generically enable atomic functionality (e.g. debug logic in the
-> instrumented wrappers).
+On Mon, May 10, 2021 at 11:40 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> The asm-generic implementations of cmpxchg_local() and cmpxchg64_local()
+> use a `_generic` suffix to distinguish themselves from arch code or
+> wrappers used elsewhere.
 >
-> As a step towards that, this patch migrates m68k to ARCH_ATOMIC. The
-> arch code provides arch_{atomic,atomic64,xchg,cmpxchg}*(), and common
-> code wraps these with optional instrumentation to provide the regular
-> functions.
+> Subsequent patches will add ARCH_ATOMIC support to these
+> implementations, and will distinguish more functions with a `generic`
+> portion. To align with how ARCH_ATOMIC uses an `arch_` prefix, it would
+> be helpful to use a `generic_` prefix rather than a `_generic` suffix.
+>
+> In preparation for this, this patch renames the existing functions to
+> make `generic` a prefix rather than a suffix. There should be no
+> functional change as a result of this patch.
 >
 > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>  arch/m68k/include/asm/cmpxchg.h     | 2 +-
 
-I even gave this series a spin on ARAnyM and QEMU, and everything
-seems to be fine.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Gr{oetje,eeting}s,
 
