@@ -2,171 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04E037AF37
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44FB37AF39
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbhEKTTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 15:19:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231454AbhEKTTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 15:19:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2272611F1;
-        Tue, 11 May 2021 19:18:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620760694;
-        bh=OEnC+hTQkqd18So/wAQnB6c5Bc/i2RbUX1zbz1arhhM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=DlAB3HoTjseavUnS2iWpqzVp7iI+FGpuo3z1Iw8dvfHiwc3qsbyzTpNcoRNuMpfyc
-         NHUxSdQ9vUjtlHZwhJ74sM9NSMbXeQ9jI+2whGuHcSvGYE/cDUzNaqh5uII7qgRpOY
-         kFDksDPmWamkc/cld+/dGFj5KK2HAWrIy7D+fjV8WZediM6CH72zje/QeWtwpMh18K
-         ZD5t7qgYp+dSi2NlfgjFh7mUcgHWi59oP7nAn25w35U762ymMGZqxiQrTzt2HoMGG7
-         6pUj629YTT7Tjsd2TY36wBoOzQjhqCThTkUrO0+IH8YdLJoceeCv8aRLYixKSODBhV
-         TijhJavRzV9eA==
-Subject: Re: [PATCH kernel v2] powerpc/makefile: Do not redefine $(CPP) for
- preprocessor
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>, linuxppc-dev@lists.ozlabs.org
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210511044812.267965-1-aik@ozlabs.ru>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <3579aa0d-0470-9a6b-e35b-48f997a5b48b@kernel.org>
-Date:   Tue, 11 May 2021 12:18:12 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S232253AbhEKTT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 15:19:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36288 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231808AbhEKTT2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 15:19:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620760701;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ASevTwJo9RjR5FJ3MgTE2V9jTzfajAcmo8SCFELc9CM=;
+        b=GXpgHQ4wouo2QI01cc7SneCn1ClNhv6neDAc2UtVh9pK+YbgqMXuNw8AHkKaMrDobOQbnK
+        GzQqPLvJVG/2o/05ng5UbRp+UNaprzHhC2hXS+vOVq+pSM3gXx2hlYnRsMYpwgVw1Fb0kn
+        5pqJiUbiBXPCjYaXsVjEe5HF2y2WTBs=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-iEyV9gotMKO50adi6LWJVg-1; Tue, 11 May 2021 15:18:19 -0400
+X-MC-Unique: iEyV9gotMKO50adi6LWJVg-1
+Received: by mail-ej1-f71.google.com with SMTP id z6-20020a17090665c6b02903700252d1ccso6333371ejn.10
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:18:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ASevTwJo9RjR5FJ3MgTE2V9jTzfajAcmo8SCFELc9CM=;
+        b=br8YevOE4wfGiPAdly++HSMZECfRjIfzVhG9Fdj/2OrXNIyIB0mN/ezax4SgMlOlIZ
+         mNWSa2akSv6EsecZpAw5IoGJQu6rLGi3lDN8ChE6uUAaJi1oHK00FkPHPFkFDlffieJ3
+         4zA0cXs9SFmd4MGGxebGJhCSka5OTPfCBr7fFEvhAJd3PtNLiUvDmiWEMQ9XKQhD7t4e
+         B59KRym7D1+q0uri59Np/YU3M/gRcLNhcMHMu5OCJ65Y3akkdyNXjAM7EnNx34v0P+eI
+         eKfMDws2Myd/AaWB4cIhrMeG5hSctGuEtqoPjIXLnwJQ2825kWFzG68dRClSiUOByfaj
+         yEeA==
+X-Gm-Message-State: AOAM530nrK1FVf4DrpobIRAQZUYRhflsGrjR9lq795mc5fjq8/OWIs1N
+        xECrFZUgoHQ+KJvh1v/QJ1/0WPWGRJhalu2u+At3OGkV9nlUKWXpdGRsl5VUfh3Wj6lSp/2ZmHz
+        AuVcpccI7wVYiavTVeEdJSZyY
+X-Received: by 2002:a50:f41a:: with SMTP id r26mr38166511edm.339.1620760698617;
+        Tue, 11 May 2021 12:18:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwEgndHOF+FNcJBpFdohiUsrh2jxtvw70fQLY6ZJfG5npvkMy2xKCx4y7FbS6l4FDVEiMNZgw==
+X-Received: by 2002:a50:f41a:: with SMTP id r26mr38166482edm.339.1620760698379;
+        Tue, 11 May 2021 12:18:18 -0700 (PDT)
+Received: from gator (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
+        by smtp.gmail.com with ESMTPSA id h4sm13971430edv.97.2021.05.11.12.18.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 12:18:18 -0700 (PDT)
+Date:   Tue, 11 May 2021 21:18:16 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Zhenzhong Duan <zhenzhong.duan@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kvm@vger.kernel.org, pbonzini@redhat.com, shuah@kernel.org
+Subject: Re: [PATCH] selftests: kvm: make allocation of extra memory take
+ effect
+Message-ID: <20210511191816.v3zoukkq7la5a4pw@gator>
+References: <20210512043107.30076-1-zhenzhong.duan@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210511044812.267965-1-aik@ozlabs.ru>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210512043107.30076-1-zhenzhong.duan@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/2021 9:48 PM, Alexey Kardashevskiy wrote:
-> The $(CPP) (do only preprocessing) macro is already defined in Makefile.
-> However POWERPC redefines it and adds $(KBUILD_CFLAGS) which results
-> in flags duplication. Which is not a big deal by itself except for
-> the flags which depend on other flags and the compiler checks them
-> as it parses the command line.
+On Wed, May 12, 2021 at 12:31:06PM +0800, Zhenzhong Duan wrote:
+> The extra memory pages is missed to be allocated during VM creating.
+> perf_test_util and kvm_page_table_test use it to alloc extra memory
+> currently.
 > 
-> Specifically, scripts/Makefile.build:304 generates ksyms for .S files.
-> If clang+llvm+sanitizer are enabled, this results in
+> Fix it by adding extra_mem_pages to the total memory calculation before
+> allocate.
 > 
-> -emit-llvm-bc -fno-lto -flto -fvisibility=hidden \
->   -fsanitize=cfi-mfcall -fno-lto  ...
-> 
-> in the clang command line and triggers error:
-> 
-> clang-13: error: invalid argument '-fsanitize=cfi-mfcall' only allowed with '-flto'
-> 
-> This removes unnecessary CPP redefinition. Which works fine as in most
-> place KBUILD_CFLAGS is passed to $CPP except
-> arch/powerpc/kernel/vdso64/vdso(32|64).lds (and probably some others,
-> not yet detected). To fix vdso, we do:
-> 1. explicitly add -m(big|little)-endian to $CPP
-> 2. (for clang) add $CLANG_FLAGS to $KBUILD_CPPFLAGS as otherwise clang
-> silently ignores -m(big|little)-endian if the building platform does not
-> support big endian (such as x86) so --prefix= is required.
-> 
-> While at this, remove some duplication from CPPFLAGS_vdso(32|64)
-> as cmd_cpp_lds_S has them anyway. It still puzzles me why we need -C
-> (preserve comments in the preprocessor output) flag here.
-> 
-> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+> Signed-off-by: Zhenzhong Duan <zhenzhong.duan@intel.com>
 > ---
-> Changes:
-> v2:
-> * fix KBUILD_CPPFLAGS
-> * add CLANG_FLAGS to CPPFLAGS
-> ---
->   Makefile                            | 1 +
->   arch/powerpc/Makefile               | 3 ++-
->   arch/powerpc/kernel/vdso32/Makefile | 2 +-
->   arch/powerpc/kernel/vdso64/Makefile | 2 +-
->   4 files changed, 5 insertions(+), 3 deletions(-)
+>  tools/testing/selftests/kvm/lib/kvm_util.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/Makefile b/Makefile
-> index 72af8e423f11..13acd2183d55 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -591,6 +591,7 @@ CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
->   endif
->   CLANG_FLAGS	+= -Werror=unknown-warning-option
->   KBUILD_CFLAGS	+= $(CLANG_FLAGS)
-> +KBUILD_CPPFLAGS	+= $(CLANG_FLAGS)
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index fc83f6c5902d..159f4d62241d 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -295,7 +295,7 @@ struct kvm_vm *vm_create_with_vcpus(enum vm_guest_mode mode, uint32_t nr_vcpus,
+>  	 */
+>  	uint64_t vcpu_pages = (DEFAULT_STACK_PGS + num_percpu_pages) * nr_vcpus;
+>  	uint64_t extra_pg_pages = (extra_mem_pages + vcpu_pages) / PTES_PER_MIN_PAGE * 2;
+> -	uint64_t pages = DEFAULT_GUEST_PHY_PAGES + vcpu_pages + extra_pg_pages;
+> +	uint64_t pages = DEFAULT_GUEST_PHY_PAGES + extra_mem_pages + vcpu_pages + extra_pg_pages;
+>  	struct kvm_vm *vm;
+>  	int i;
+>  
+> -- 
+> 2.25.1
+>
 
-This is going to cause flag duplication, which would be nice to avoid. I 
-do not know if we can get away with just adding $(CLANG_FLAGS) to 
-KBUILD_CPPFLAGS instead of KBUILD_CFLAGS though. It seems like this 
-assignment might be better in arch/powerpc/Makefile with the 
-KBUILD_CPPFLAGS additions there.
+Reviewed-by: Andrew Jones <drjones@redhat.com>
 
-Cheers,
-Nathan
-
->   KBUILD_AFLAGS	+= $(CLANG_FLAGS)
->   export CLANG_FLAGS
->   endif
-> diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
-> index 3212d076ac6a..306bfd2797ad 100644
-> --- a/arch/powerpc/Makefile
-> +++ b/arch/powerpc/Makefile
-> @@ -76,6 +76,7 @@ endif
->   
->   ifdef CONFIG_CPU_LITTLE_ENDIAN
->   KBUILD_CFLAGS	+= -mlittle-endian
-> +KBUILD_CPPFLAGS	+= -mlittle-endian
->   KBUILD_LDFLAGS	+= -EL
->   LDEMULATION	:= lppc
->   GNUTARGET	:= powerpcle
-> @@ -83,6 +84,7 @@ MULTIPLEWORD	:= -mno-multiple
->   KBUILD_CFLAGS_MODULE += $(call cc-option,-mno-save-toc-indirect)
->   else
->   KBUILD_CFLAGS += $(call cc-option,-mbig-endian)
-> +KBUILD_CPPFLAGS += $(call cc-option,-mbig-endian)
->   KBUILD_LDFLAGS	+= -EB
->   LDEMULATION	:= ppc
->   GNUTARGET	:= powerpc
-> @@ -208,7 +210,6 @@ KBUILD_CPPFLAGS	+= -I $(srctree)/arch/$(ARCH) $(asinstr)
->   KBUILD_AFLAGS	+= $(AFLAGS-y)
->   KBUILD_CFLAGS	+= $(call cc-option,-msoft-float)
->   KBUILD_CFLAGS	+= -pipe $(CFLAGS-y)
-> -CPP		= $(CC) -E $(KBUILD_CFLAGS)
->   
->   CHECKFLAGS	+= -m$(BITS) -D__powerpc__ -D__powerpc$(BITS)__
->   ifdef CONFIG_CPU_BIG_ENDIAN
-> diff --git a/arch/powerpc/kernel/vdso32/Makefile b/arch/powerpc/kernel/vdso32/Makefile
-> index 7d9a6fee0e3d..ea001c6df1fa 100644
-> --- a/arch/powerpc/kernel/vdso32/Makefile
-> +++ b/arch/powerpc/kernel/vdso32/Makefile
-> @@ -44,7 +44,7 @@ asflags-y := -D__VDSO32__ -s
->   
->   obj-y += vdso32_wrapper.o
->   targets += vdso32.lds
-> -CPPFLAGS_vdso32.lds += -P -C -Upowerpc
-> +CPPFLAGS_vdso32.lds += -C
->   
->   # link rule for the .so file, .lds has to be first
->   $(obj)/vdso32.so.dbg: $(src)/vdso32.lds $(obj-vdso32) $(obj)/vgettimeofday.o FORCE
-> diff --git a/arch/powerpc/kernel/vdso64/Makefile b/arch/powerpc/kernel/vdso64/Makefile
-> index 2813e3f98db6..07eadba48c7a 100644
-> --- a/arch/powerpc/kernel/vdso64/Makefile
-> +++ b/arch/powerpc/kernel/vdso64/Makefile
-> @@ -30,7 +30,7 @@ ccflags-y := -shared -fno-common -fno-builtin -nostdlib \
->   asflags-y := -D__VDSO64__ -s
->   
->   targets += vdso64.lds
-> -CPPFLAGS_vdso64.lds += -P -C -U$(ARCH)
-> +CPPFLAGS_vdso64.lds += -C
->   
->   # link rule for the .so file, .lds has to be first
->   $(obj)/vdso64.so.dbg: $(src)/vdso64.lds $(obj-vdso64) $(obj)/vgettimeofday.o FORCE
-> 
+Thanks,
+drew
 
