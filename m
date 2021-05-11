@@ -2,197 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B83537A4C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44C837A4CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230501AbhEKKn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 06:43:56 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:2441 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbhEKKnw (ORCPT
+        id S231273AbhEKKoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 06:44:21 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:43904 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229892AbhEKKoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 06:43:52 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FfZF00hhlzCqw5;
-        Tue, 11 May 2021 18:40:04 +0800 (CST)
-Received: from [127.0.0.1] (10.40.193.166) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Tue, 11 May 2021
- 18:42:36 +0800
-Subject: Question about device link//Re: Qestion about device link
-To:     <rafael.j.wysocki@intel.com>
-References: <3c88cf35-6725-1bfa-9e1e-8e9d69147e3b@hisilicon.com>
-CC:     John Garry <john.garry@huawei.com>, <linuxarm@huawei.com>,
-        <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        <saravanak@google.com>, <gregkh@linuxfoundation.org>
-From:   "chenxiang (M)" <chenxiang66@hisilicon.com>
-Message-ID: <2e69efb9-a563-251f-2161-5546324a9587@hisilicon.com>
-Date:   Tue, 11 May 2021 18:42:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.2.0
+        Tue, 11 May 2021 06:44:20 -0400
+Received: by mail-io1-f71.google.com with SMTP id r2-20020a5e95020000b0290435b891bacbso12581595ioj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 03:43:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=COpkcbc4tsn4BsAybQi0AotbbwVNE+lIfJJM2BJUhSw=;
+        b=X6PR295ygub1ViFgQOn+2oLO50UXI1qvS1ixjgPvevj05Yegv6YToULIpU70X6QX+O
+         KVFIboGt/nAaA3iMrprBJTeRfyK4MCVcLqHfqVo1oXdoZmwhJiLrrYGfl35ODMaAjTyH
+         3NTBLJu4luUo4rwu5corfWvN4cxX8cr4GBdgD718/9x6GoJf2FimXb/qs+xu18i6hOMl
+         ydAIlNDV46EB8xsywhTgtwqKyPQAJLeyCt4mPoadHtaA2tnujCBQOmhSxg2vtejZtaNT
+         2HWJIjKumfSM0+mmuqql9P9SLjFjg0idOmve2IaBbiTfMd/4rsCUEarjwyOZppBos8M2
+         sfsA==
+X-Gm-Message-State: AOAM533AKmiLw4unaCu5QccU+RFxMtvgLxqMnvOf8kURDn9lWPg1zK/S
+        j+DGPO3NrfDoLPxQYicCoApFl8QL13KPSiDrXqm2p02qyRR8
+X-Google-Smtp-Source: ABdhPJzgN4KvmhGG1pPkaFSfUuR6gNcB6bePlAC9DE5o7XKEwDUBOocFKCpN4lNOWtqxn+LwBHdhdvpoRS4olhP86nING7WLhObI
 MIME-Version: 1.0
-In-Reply-To: <3c88cf35-6725-1bfa-9e1e-8e9d69147e3b@hisilicon.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.40.193.166]
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a6b:6905:: with SMTP id e5mr21972403ioc.100.1620729794152;
+ Tue, 11 May 2021 03:43:14 -0700 (PDT)
+Date:   Tue, 11 May 2021 03:43:14 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a84c4c05c20b8f12@google.com>
+Subject: [syzbot] WARNING: ODEBUG bug in wdm_release
+From:   syzbot <syzbot+3e04448a4d634f32306d@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, lee.jones@linaro.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        oneukum@suse.com, penguin-kernel@i-love.sakura.ne.jp,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Re-edit the non-aligned flowchart and add CC to Greg-KH and Saravanna.
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    4676be28 usb: xhci-mtk: use first-fit for LS/FS
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=123857c3d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5308902274df0f54
+dashboard link: https://syzkaller.appspot.com/bug?extid=3e04448a4d634f32306d
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3e04448a4d634f32306d@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+ODEBUG: free active (active state 0) object type: work_struct hint: service_interrupt_work+0x0/0x110 arch/x86/include/asm/bitops.h:207
+WARNING: CPU: 1 PID: 7231 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+Modules linked in:
+CPU: 1 PID: 7231 Comm: syz-executor.0 Not tainted 5.13.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd 80 f2 1f 86 4c 89 ee 48 c7 c7 80 e6 1f 86 e8 44 01 8a 03 <0f> 0b 83 05 95 43 ce 06 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
+RSP: 0018:ffffc90012c3fcd8 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
+RDX: ffff88811438d1c0 RSI: ffffffff812a5f73 RDI: fffff52002587f8d
+RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
+R10: ffffffff814b963b R11: 0000000000000000 R12: ffffffff86068800
+R13: ffffffff861fecc0 R14: ffffffff811a26a0 R15: dffffc0000000000
+FS:  0000000003408400(0000) GS:ffff8881f6b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055a7dd6ea998 CR3: 000000014d27d000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __debug_check_no_obj_freed lib/debugobjects.c:987 [inline]
+ debug_check_no_obj_freed+0x301/0x420 lib/debugobjects.c:1018
+ slab_free_hook mm/slub.c:1556 [inline]
+ slab_free_freelist_hook+0x13b/0x1b0 mm/slub.c:1606
+ slab_free mm/slub.c:3166 [inline]
+ kfree+0xdb/0x3b0 mm/slub.c:4225
+ wdm_release+0x288/0x370 drivers/usb/class/cdc-wdm.c:752
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+ exit_to_user_mode_prepare+0x218/0x220 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+ do_syscall_64+0x47/0xb0 arch/x86/entry/common.c:57
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x41940b
+Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 63 fc ff ff 8b 7c 24 0c 41 89 c0 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 a1 fc ff ff 8b 44
+RSP: 002b:00007ffd5a6f57a0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: ffffffffffffffed RBX: 0000000000000007 RCX: 000000000041940b
+RDX: 0000000000570d98 RSI: 000000000b35c238 RDI: 0000000000000006
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000001b2d32b6e4
+R10: 00007ffd5a6f5890 R11: 0000000000000293 R12: 0000000000259050
+R13: 00000000000003e8 R14: 000000000056bf60 R15: 00000000002587eb
 
 
-在 2021/5/11 11:59, chenxiang (M) 写道:
-> Hi Rafael and other guys,
->
-> I am trying to add a device link between scsi_host->shost_gendev and 
-> hisi_hba->dev to support runtime PM for hisi_hba driver
->
-> (as it supports runtime PM for scsi host in some scenarios such as 
-> error handler etc, we can avoid to do them again if adding a
->
-> device link between scsi_host->shost_gendev and hisi_hba->dev) as 
-> follows (hisi_sas driver is under directory drivers/scsi/hisi_sas):
->
-> device_link_add(&shost->shost_gendev, hisi_hba->dev, 
-> DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE)
->
-> We have a full test on it, and it works well except when rmmod the 
-> driver, some call trace occurs as follows:
->
-> [root@localhost ~]# rmmod hisi_sas_v3_hw
-> [  105.377944] BUG: scheduling while atomic: kworker/113:1/811/0x00000201
-> [  105.384469] Modules linked in: bluetooth rfkill ib_isert 
-> iscsi_target_mod ib_ipoib ib_umad iptable_filter vfio_iommu_type1 
-> vfio_pci vfio_virqfd vfio rpcrdma ib_is                         er 
-> libiscsi scsi_transport_iscsi crct10dif_ce sbsa_gwdt hns_roce_hw_v2 
-> hisi_sec2 hisi_hpre hisi_zip hisi_qm uacce spi_hisi_sfc_v3xx 
-> hisi_trng_v2 rng_core hisi_uncore                         _hha_pmu 
-> hisi_uncore_ddrc_pmu hisi_uncore_l3c_pmu spi_dw_mmio hisi_uncore_pmu 
-> hns3 hclge hnae3 hisi_sas_v3_hw(-) hisi_sas_main libsas
-> [  105.424841] CPU: 113 PID: 811 Comm: kworker/113:1 Kdump: loaded 
-> Tainted: G        W         5.12.0-rc1+ #1
-> [  105.434454] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS 
-> 2280-V2 CS V5.B143.01 04/22/2021
-> [  105.443287] Workqueue: rcu_gp srcu_invoke_callbacks
-> [  105.448154] Call trace:
-> [  105.450593]  dump_backtrace+0x0/0x1a4
-> [  105.454245]  show_stack+0x24/0x40
-> [  105.457548]  dump_stack+0xc8/0x104
-> [  105.460939]  __schedule_bug+0x68/0x80
-> [  105.464590]  __schedule+0x73c/0x77c
-> [  105.465700] BUG: scheduling while atomic: kworker/96:1/791/0x00000201
-> [  105.468066]  schedule+0x7c/0x110
-> [  105.468068]  schedule_timeout+0x194/0x1d4
-> [  105.474490] Modules linked in:
-> [  105.477692]  wait_for_completion+0x8c/0x12c
-> [  105.477695]  rcu_barrier+0x1e0/0x2fc
-> [  105.477697]  scsi_host_dev_release+0x50/0xf0
-> [  105.477701]  device_release+0x40/0xa0
-> [  105.477704]  kobject_put+0xac/0x100
-> [  105.477707]  __device_link_free_srcu+0x50/0x74
-> [  105.477709]  srcu_invoke_callbacks+0x108/0x1a4
-> [  105.484743]  process_one_work+0x1dc/0x48c
-> [  105.492468]  worker_thread+0x7c/0x464
-> [  105.492471]  kthread+0x168/0x16c
-> [  105.492473]  ret_from_fork+0x10/0x18
-> ...
->
-> After analyse the process, we find that it will 
-> device_del(&shost->gendev) in function scsi_remove_host() and then
->
-> put_device(&shost->shost_gendev) in function scsi_host_put() when 
-> removing the driver, if there is a link between shost and hisi_hba->dev,
->
-> it will try to delete the link in device_del(), and also will 
-> call_srcu(__device_link_free_srcu) to put_device() link->consumer and 
-> supplier.
->
-> But if put device() for shost_gendev in device_link_free() is later 
-> than in scsi_host_put(), it will call scsi_host_dev_release() in
->
-> srcu_invoke_callbacks() while it is atomic and there are scheduling in 
-> scsi_host_dev_release(),
->
-> so it reports the BUG "scheduling while atomic:...".
->
-> thread 1                                                   thread2
-> hisi_sas_v3_remove
->     ...
->     sas_remove_host()
->         ...
->         scsi_remove_host()
->             ...
->             device_del(&shost->shost_gendev)
->                 ...
->                 device_link_purge()
->                     __device_link_del()
->                         device_unregister(&link->link_dev)
->                             devlink_dev_release
-> call_srcu(__device_link_free_srcu)    -----------> 
-> srcu_invoke_callbacks  (atomic)
->         __device_link_free_srcu
->     ...
->     scsi_host_put()
->         put_device(&shost->shost_gendev) (ref = 1)
->                 device_link_free()
->                               put_device(link->consumer) 
-> //shost->gendev ref = 0
->                                           ...
->                                           scsi_host_dev_release
->                                                       ...
-> rcu_barrier
-> kthread_stop()
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Re-edit the non-aligned flowchart
-     thread 1 thread 2
-     hisi_sas_v3_remove()
-             ...
-             sas_remove_host()
-                     ...
-                     device_del(&shost->shost_gendev)
-                             ...
-                             device_link_purge()
-                                     __device_link_del()
-device_unregister(&link->link_dev)
-devlink_dev_release
-call_srcu(__device_link_free_srcu)    -----------> 
-srcu_invoke_callbacks  (atomic)
-             __device_link_free_srcu()
-             ...
-             scsi_host_put()
-                     put_device(&shost->shost_gendev) (ref = 1)
-                         device_link_free()
-                                     put_device(link->consumer) 
-//shost->gendev ref = 0
-                                                 ...
-scsi_host_dev_release()
-                                                             ...
-rcu_barrier()
-kthread_stop()
-
->
->
-> We can check kref of shost->shost_gendev to make sure scsi_host_put() 
-> to release scsi host device in LLDD driver to avoid the issue,
->
-> but it seems be a common issue:  function __device_link_free_srcu 
-> calls put_device() for consumer and supplier,
->
-> but if it's ref =0 at that time and there are scheduling or sleep in 
-> dev_release, it may have the issue.
->
-> Do you have any idea about the issue?
->
->
-> Best regards,
->
-> Xiang Chen
->
->
->
-> .
->
-
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
