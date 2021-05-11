@@ -2,103 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60436379DC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 998FF379D99
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhEKDac convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 10 May 2021 23:30:32 -0400
-Received: from mga09.intel.com ([134.134.136.24]:27291 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229920AbhEKDa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 23:30:27 -0400
-IronPort-SDR: NlyUZ2m1UehV7iVXdKTNH0tj/pZBS0B1KVQtNdM31ULfQ8Fr2cMho3NC3HiOxQ4ki6IbM0qDPP
- kI7n6CTBOBIg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="199413708"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="199413708"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 20:29:21 -0700
-IronPort-SDR: Uhpb1DvDD4VWPvQUKBbuZtT0+KRdRivARUbZUC56WRz1l0s45RJxsvGjfZ0Rq+c/5mOehZQAfH
- TrML/fzG6MxA==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="436443967"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 20:29:21 -0700
-Date:   Mon, 10 May 2021 20:31:45 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
-        zhangfei.gao@linaro.org, vkoul@kernel.org,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
- flags
-Message-ID: <20210510203145.086835cc@jacob-builder>
-In-Reply-To: <20210510233749.GG1002214@nvidia.com>
-References: <1620653108-44901-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1620653108-44901-2-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20210510233749.GG1002214@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230143AbhEKDVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 23:21:54 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2051 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhEKDVx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 23:21:53 -0400
+Received: from dggeml767-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FfNPD15sXzWhLv;
+        Tue, 11 May 2021 11:16:32 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggeml767-chm.china.huawei.com (10.1.199.177) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 11 May 2021 11:20:45 +0800
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 11 May 2021 11:20:45 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <sre@kernel.org>, <orsonzhai@gmail.com>, <baolin.wang7@gmail.com>,
+        <zhang.lyra@gmail.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] power: supply: sc27xx: Add missing MODULE_DEVICE_TABLE
+Date:   Tue, 11 May 2021 11:37:45 +0800
+Message-ID: <1620704265-104090-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-On Mon, 10 May 2021 20:37:49 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/power/supply/sc27xx_fuel_gauge.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> On Mon, May 10, 2021 at 06:25:07AM -0700, Jacob Pan wrote:
-> 
-> > +/*
-> > + * The IOMMU_SVA_BIND_SUPERVISOR flag requests a PASID which can be
-> > used only
-> > + * for access to kernel addresses. No IOTLB flushes are automatically
-> > done
-> > + * for kernel mappings; it is valid only for access to the kernel's
-> > static
-> > + * 1:1 mapping of physical memory — not to vmalloc or even module
-> > mappings.
-> > + * A future API addition may permit the use of such ranges, by means
-> > of an
-> > + * explicit IOTLB flush call (akin to the DMA API's unmap method).
-> > + *
-> > + * It is unlikely that we will ever hook into flush_tlb_kernel_range()
-> > to
-> > + * do such IOTLB flushes automatically.
-> > + */
-> > +#define IOMMU_SVA_BIND_SUPERVISOR       BIT(0)  
-> 
-> Huh? That isn't really SVA, can you call it something saner please?
-> 
-This is shared kernel virtual address, I am following the SVA lib naming
-since this is where the flag will be used. Why this is not SVA? Kernel
-virtual address is still virtual address. Is it due to direct map?
+diff --git a/drivers/power/supply/sc27xx_fuel_gauge.c b/drivers/power/supply/sc27xx_fuel_gauge.c
+index 9c62761..1ae8374 100644
+--- a/drivers/power/supply/sc27xx_fuel_gauge.c
++++ b/drivers/power/supply/sc27xx_fuel_gauge.c
+@@ -1342,6 +1342,7 @@ static const struct of_device_id sc27xx_fgu_of_match[] = {
+ 	{ .compatible = "sprd,sc2731-fgu", },
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(of, sc27xx_fgu_of_match);
+ 
+ static struct platform_driver sc27xx_fgu_driver = {
+ 	.probe = sc27xx_fgu_probe,
+-- 
+2.6.2
 
-> Is it really a PASID that always has all of physical memory mapped
-> into it? Sounds dangerous. What is it for?
-> 
-
-Yes. It is to bind DMA request w/ PASID with init_mm/init_top_pgt. Per PCIe
-spec PASID TLP prefix has "Privileged Mode Requested" bit. VT-d supports
-this with "Privileged-mode-Requested (PR) flag (to distinguish user versus
-supervisor access)". Each PASID entry has a SRE (Supervisor Request Enable)
-bit.
-
-Perhaps we should limit that to trusted device, e.g. RCIEP device?
-
-> Jason
-
-
-Thanks,
-
-Jacob
