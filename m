@@ -2,92 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689CB37A38D
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C580937A390
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhEKJ0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 05:26:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230427AbhEKJ00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 05:26:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAA5561469;
-        Tue, 11 May 2021 09:25:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620725119;
-        bh=SxEDkhQ4NDmmQJU/qD2f8WKt2ZN30zjdTiLd/JmT63A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qYIzsO6/tiOl8TGJ6a2eiShRAv5ZaMzH0UMz1Okj8KRt9xtY+LR/anIcVUrTbZiX4
-         89BZ53+EXyXMYuHsL+U06kiuxNXt/5HwXMQCdDP/VjD4quHGFE+7gbD3gJVXax5DaY
-         uPQ39ZXYcixN6FyJ12+nOvdmqwpol10wPiVFzbtkGhu9sXEQXyPXQcHwYGaPn1WAFe
-         4EHVQRoUTs78Ah0GJIhGex565u4aOD5+o97KCk6BlvJCrZe2QVlJEyby3BUR9BJh2D
-         ihJkCCdqkHc4Kaa3576AZpMqo1MX3GKHjJMVLdhoGH+hccpOnzojw8qINBpykxkRxP
-         IMzqRB+GVylEA==
-Date:   Tue, 11 May 2021 11:25:08 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
-        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fpga@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
-        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as
- ASCII
-Message-ID: <20210511112508.4547bca8@coco.lan>
-In-Reply-To: <de6d1fa5b7934f4afd61370d9c58502bef588466.camel@infradead.org>
-References: <cover.1620641727.git.mchehab+huawei@kernel.org>
-        <2ae366fdff4bd5910a2270823e8da70521c859af.camel@infradead.org>
-        <20210510135518.305cc03d@coco.lan>
-        <de6d1fa5b7934f4afd61370d9c58502bef588466.camel@infradead.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S231391AbhEKJ0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 05:26:46 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:58506 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231409AbhEKJ0o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 05:26:44 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R951e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UYXcT31_1620725135;
+Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UYXcT31_1620725135)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 11 May 2021 17:25:36 +0800
+Subject: Re: [patch 1/2 v2] x86/cpu: Init AP exception handling from
+ cpu_init_secondary()
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@suse.de>
+References: <20210507110210.147106915@linutronix.de>
+ <20210507114000.429303187@linutronix.de>
+ <ccbd2f11-bb74-19bd-cf5c-d524625f9a0d@linux.alibaba.com>
+ <87wns8ko48.ffs@nanos.tec.linutronix.de>
+ <87k0o6gtvu.ffs@nanos.tec.linutronix.de>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <d5a7434c-9205-b6c6-c7ad-423e7050bc62@linux.alibaba.com>
+Date:   Tue, 11 May 2021 17:25:35 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87k0o6gtvu.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 10 May 2021 14:49:44 +0100
-David Woodhouse <dwmw2@infradead.org> escreveu:
 
-> On Mon, 2021-05-10 at 13:55 +0200, Mauro Carvalho Chehab wrote:
-> > This patch series is doing conversion only when using ASCII makes
-> > more sense than using UTF-8.=20
-> >=20
-> > See, a number of converted documents ended with weird characters
-> > like ZERO WIDTH NO-BREAK SPACE (U+FEFF) character. This specific
-> > character doesn't do any good.
-> >=20
-> > Others use NO-BREAK SPACE (U+A0) instead of 0x20. Harmless, until
-> > someone tries to use grep[1]. =20
->=20
-> Replacing those makes sense. But replacing emdashes =E2=80=94 which are a
-> distinct character that has no direct replacement in ASCII and which
-> people do *deliberately* use instead of hyphen-minus =E2=80=94 does not.
->=20
-> Perhaps stick to those two, and any cases where an emdash or endash has
-> been used where U+002D HYPHEN-MINUS *should* have been used.
 
-Ok. I'll rework the series excluding EM/EN DASH chars from it.
-I'll then apply manually the changes for EM/EN DASH chars=20
-(probably on a separate series) where it seems to fit. That should
-make easier to discuss such replacements.
+On 2021/5/11 05:29, Thomas Gleixner wrote:
+> From: Borislav Petkov <bp@suse.de>
+> 
+> SEV-ES guests require properly setup task register with which the TSS
+> descriptor in the GDT can be located so that the IST-type #VC exception
+> handler which they need to function properly, can be executed.
+> 
+> This setup needs to happen before attempting to load microcode in
+> ucode_cpu_init() on secondary CPUs which can cause such #VC exceptions.
+> 
+> Simplify the machinery by running that exception setup from a new function
+> cpu_init_secondary() and explicitly call cpu_init_exception_handling() for
+> the boot CPU before cpu_init(). The latter prepares for fixing and
+> simplifying the exception/IST setup on the boot CPU.
+> 
+> There should be no functional changes resulting from this patch.
+> 
+> [ tglx: Reworked it so cpu_init_exception_handling() stays seperate ]
+> 
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-> And please fix your cover letter which made no reference to 'grep', and
-> only presented a completely bogus argument for the change instead.
 
-OK!
+For both patches:
 
-Regards,
-Mauro
+Reviewed-by: Lai Jiangshan <laijs@linux.alibaba.com>
+
+> ---
+> V2: Utilize cpu_init_secondary() - Lai
+> ---
+>   arch/x86/include/asm/processor.h |    1 +
+>   arch/x86/kernel/cpu/common.c     |   24 +++++++++++-------------
+>   arch/x86/kernel/smpboot.c        |    3 +--
+>   arch/x86/kernel/traps.c          |    4 +---
+>   4 files changed, 14 insertions(+), 18 deletions(-)
+> 
+> --- a/arch/x86/include/asm/processor.h
+> +++ b/arch/x86/include/asm/processor.h
+> @@ -663,6 +663,7 @@ extern void load_direct_gdt(int);
+>   extern void load_fixmap_gdt(int);
+>   extern void load_percpu_segment(int);
+>   extern void cpu_init(void);
+> +extern void cpu_init_secondary(void);
+>   extern void cpu_init_exception_handling(void);
+>   extern void cr4_init(void);
+>   
+> --- a/arch/x86/kernel/cpu/common.c
+> +++ b/arch/x86/kernel/cpu/common.c
+> @@ -1938,13 +1938,12 @@ void cpu_init_exception_handling(void)
+>   
+>   /*
+>    * cpu_init() initializes state that is per-CPU. Some data is already
+> - * initialized (naturally) in the bootstrap process, such as the GDT
+> - * and IDT. We reload them nevertheless, this function acts as a
+> - * 'CPU state barrier', nothing should get across.
+> + * initialized (naturally) in the bootstrap process, such as the GDT.  We
+> + * reload it nevertheless, this function acts as a 'CPU state barrier',
+> + * nothing should get across.
+>    */
+>   void cpu_init(void)
+>   {
+> -	struct tss_struct *tss = this_cpu_ptr(&cpu_tss_rw);
+>   	struct task_struct *cur = current;
+>   	int cpu = raw_smp_processor_id();
+>   
+> @@ -1957,8 +1956,6 @@ void cpu_init(void)
+>   	    early_cpu_to_node(cpu) != NUMA_NO_NODE)
+>   		set_numa_node(early_cpu_to_node(cpu));
+>   #endif
+> -	setup_getcpu(cpu);
+> -
+>   	pr_debug("Initializing CPU#%d\n", cpu);
+>   
+>   	if (IS_ENABLED(CONFIG_X86_64) || cpu_feature_enabled(X86_FEATURE_VME) ||
+> @@ -1970,7 +1967,6 @@ void cpu_init(void)
+>   	 * and set up the GDT descriptor:
+>   	 */
+>   	switch_to_new_gdt(cpu);
+> -	load_current_idt();
+>   
+>   	if (IS_ENABLED(CONFIG_X86_64)) {
+>   		loadsegment(fs, 0);
+> @@ -1990,12 +1986,6 @@ void cpu_init(void)
+>   	initialize_tlbstate_and_flush();
+>   	enter_lazy_tlb(&init_mm, cur);
+>   
+> -	/* Initialize the TSS. */
+> -	tss_setup_ist(tss);
+> -	tss_setup_io_bitmap(tss);
+> -	set_tss_desc(cpu, &get_cpu_entry_area(cpu)->tss.x86_tss);
+> -
+> -	load_TR_desc();
+>   	/*
+>   	 * sp0 points to the entry trampoline stack regardless of what task
+>   	 * is running.
+> @@ -2017,6 +2007,14 @@ void cpu_init(void)
+>   	load_fixmap_gdt(cpu);
+>   }
+>   
+> +#ifdef CONFIG_SMP
+> +void cpu_init_secondary(void)
+> +{
+> +	cpu_init_exception_handling();
+> +	cpu_init();
+> +}
+> +#endif
+> +
+>   /*
+>    * The microcode loader calls this upon late microcode load to recheck features,
+>    * only when microcode has been updated. Caller holds microcode_mutex and CPU
+> --- a/arch/x86/kernel/smpboot.c
+> +++ b/arch/x86/kernel/smpboot.c
+> @@ -232,8 +232,7 @@ static void notrace start_secondary(void
+>   	load_cr3(swapper_pg_dir);
+>   	__flush_tlb_all();
+>   #endif
+> -	cpu_init_exception_handling();
+> -	cpu_init();
+> +	cpu_init_secondary();
+>   	rcu_cpu_starting(raw_smp_processor_id());
+>   	x86_cpuinit.early_percpu_clock_init();
+>   	preempt_disable();
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+> @@ -1162,9 +1162,7 @@ void __init trap_init(void)
+>   
+>   	idt_setup_traps();
+>   
+> -	/*
+> -	 * Should be a barrier for any external CPU state:
+> -	 */
+> +	cpu_init_exception_handling();
+>   	cpu_init();
+>   
+>   	idt_setup_ist_traps();
+> 
