@@ -2,109 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84DA437AEEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB48F37AEF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232170AbhEKS6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
+        id S232019AbhEKS7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:59:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbhEKS6X (ORCPT
+        with ESMTP id S232106AbhEKS7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:58:23 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9CA5C061574;
-        Tue, 11 May 2021 11:57:16 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id ADA844F7D; Tue, 11 May 2021 14:57:15 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org ADA844F7D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1620759435;
-        bh=tUqknlWsgROfdv3iv4KKpW4cm/9wKvzJqu96VZqELeQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aMPIF83OTCZrEEqZ62vTLcYusLCO7dTLhVprJIH3a1ZbEQlqs+nVOcfyCRRMhbF8h
-         7pgN68AWdh49HD6zRC5mDonW6Vo5KenX0nCLWivmIAqz4VFiju74IW5aOmB+gN4ZOm
-         btWcgXa23PuqLYKuNXRlWObyvtBKmpji4iKi6eoo=
-Date:   Tue, 11 May 2021 14:57:15 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "J. Bruce Fields" <bfields@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Shevchenko <andy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 00/15] lib/string_helpers: get rid of ugly
- *_escape_mem_ascii()
-Message-ID: <20210511185715.GE5416@fieldses.org>
-References: <20210504180819.73127-1-andriy.shevchenko@linux.intel.com>
+        Tue, 11 May 2021 14:59:07 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8535CC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:58:00 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id ge1so12193240pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:58:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oLyk2sgqTL5Vn/TKBovsUc1DwhBNmb78942+z6JgkFk=;
+        b=VY6g8j2sEMXzCcSYW74rKGa5U9UpB5xe1yY6CRFpyuD+pNCkDDeO/JH1RtSF5Y95nj
+         RdJmSVGXGoMyYryeRQbkzfdhDP4t5I+3HP1mS/q7QAOlf/c/BRPjh7W0W/xupnLY1dDm
+         PNCG4m8kYULgCDgLwXOVeL3u3G16aj/oYDP18LOVCWPKVOPzC9usudGj47t3Gq7HWSAb
+         Kq6TyFmTIMe8IaMVps9eNuO1Fm4P3qaA2fGyXN8R7KQHVuPwy5m7YKRL6/t6Kr5GOkre
+         W7NXOvr7qgk4wOqGu8fOHfjDVlaJd1MsbKI5PEUHix5HRh7m3ZTpydWrxiQcD+R3sVuY
+         A1bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oLyk2sgqTL5Vn/TKBovsUc1DwhBNmb78942+z6JgkFk=;
+        b=OfSC+M93JiaU6W+itWXW4ExYr6W67qa9gKqlLcqenMcKIwCzHLqStpQeTnBd+KNdRh
+         iFfQx/9gH8JeW1HlrjkAbUqv4mBUJyi2F7MyJF9DIdG4r6R0bjqE+5ODPkfmqjvbUQfZ
+         +OByXeQ5LCVTI5rRUZW64D3AItzgSwsABPwSUbpyr2pDQLxsixI5rSxQYLkHv1VlUWlD
+         i/2kRA9ZLkJdTtW7VCWwIQA+RnvRIR/Hj8oSRuz9mJRAmZSaBVGApb9sX4WTdVdCcxlL
+         1fjGtdEcQGy0P1U7N3UaEVYR9BZeThP0OaxQIwEPmc6AwpFZik1YETuVyT45LSgDLy5l
+         TfMA==
+X-Gm-Message-State: AOAM531zq4bA44gTO4xFzUMC95U1gMpFzxkXb49/LqtvTz1HwslsJJM3
+        bdqkuWfclp7YM2IYmRkKBq+zOw==
+X-Google-Smtp-Source: ABdhPJxOmU8XVtfPkJEbrBQRMNcmKDLmTjhnp407EL2ZJE/UpgkfYOAaR51m44vi5Yh8cmWDEsb79Q==
+X-Received: by 2002:a17:902:e986:b029:ee:d430:6bf9 with SMTP id f6-20020a170902e986b02900eed4306bf9mr31780254plb.0.1620759479901;
+        Tue, 11 May 2021 11:57:59 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id 130sm13473105pfy.75.2021.05.11.11.57.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 11:57:59 -0700 (PDT)
+Date:   Tue, 11 May 2021 18:57:55 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v4 7/7] KVM: x86/mmu: Lazily allocate memslot rmaps
+Message-ID: <YJrTs6LlHFWSdGc7@google.com>
+References: <20210511171610.170160-1-bgardon@google.com>
+ <20210511171610.170160-8-bgardon@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210504180819.73127-1-andriy.shevchenko@linux.intel.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20210511171610.170160-8-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These look good to me, thanks for doing this!
+On Tue, May 11, 2021, Ben Gardon wrote:
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> @@ -10935,6 +10937,46 @@ static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
+>  	return 0;
+>  }
+>  
+> +int alloc_all_memslots_rmaps(struct kvm *kvm)
+> +{
+> +	struct kvm_memslots *slots;
+> +	struct kvm_memory_slot *slot;
+> +	int r = 0;
 
---b.
+No need to initialize r.  And then it makes sense to put i and r on the same
+line.
 
-On Tue, May 04, 2021 at 09:08:04PM +0300, Andy Shevchenko wrote:
-> Get rid of ugly *_escape_mem_ascii() API since it's not flexible and
-> has the only single user. Provide better approach based on usage of the
-> string_escape_mem() with appropriate flags.
-> 
-> Test cases has been expanded accordingly to cover new functionality.
-> 
-> This is assumed to go either thru VFS or Andrew's tree. I don't expect
-> too many changes in string_helpers.
-> 
-> Changelog v3:
-> - dropped moving seq_escape() to the header due to a lot of complaints from
->   the (very) old code
-> - added seq_escape_str() inliner
-> - converted seq_escape() to use seq_escape_str() instead of seq_escape_mem()
-> 
-> Changelog v2:
-> - introduced seq_escape_mem() instead of poking seq_get_buf() (Al)
-> - to keep balance of seq_get_buf() usage, convert seq_escape() to use above
-> - added missed ESCAPE_APPEND flag in NFSv4 patch
-> - moved indentation patch closer to the beginning of the series
-> - reshuffled series to be in two groups: generic library extension
->   followed by seq_file updates
-> 
-> Andy Shevchenko (15):
->   lib/string_helpers: Switch to use BIT() macro
->   lib/string_helpers: Move ESCAPE_NP check inside 'else' branch in a
->     loop
->   lib/string_helpers: Drop indentation level in string_escape_mem()
->   lib/string_helpers: Introduce ESCAPE_NA for escaping non-ASCII
->   lib/string_helpers: Introduce ESCAPE_NAP to escape non-ASCII and
->     non-printable
->   lib/string_helpers: Allow to append additional characters to be
->     escaped
->   lib/test-string_helpers: Print flags in hexadecimal format
->   lib/test-string_helpers: Get rid of trailing comma in terminators
->   lib/test-string_helpers: Add test cases for new features
->   MAINTAINERS: Add myself as designated reviewer for generic string
->     library
->   seq_file: Introduce seq_escape_mem()
->   seq_file: Add seq_escape_str() as replica of string_escape_str()
->   seq_file: Convert seq_escape() to use seq_escape_str()
->   nfsd: Avoid non-flexible API in seq_quote_mem()
->   seq_file: Drop unused *_escape_mem_ascii()
-> 
->  MAINTAINERS                    |   8 ++
->  fs/nfsd/nfs4state.c            |   2 +-
->  fs/seq_file.c                  |  43 +++++----
->  include/linux/seq_file.h       |  10 ++-
->  include/linux/string_helpers.h |  31 ++++---
->  lib/string_helpers.c           | 102 ++++++++++++---------
->  lib/test-string_helpers.c      | 157 +++++++++++++++++++++++++++++----
->  7 files changed, 264 insertions(+), 89 deletions(-)
-> 
+> +	int i;
+> +
+> +	/*
+> +	 * Check memslots_have_rmaps early before acquiring the
+> +	 * slots_arch_lock below.
+> +	 */
+> +	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps))
+> +		return 0;
+> +
+> +	mutex_lock(&kvm->slots_arch_lock);
+> +
+> +	/*
+> +	 * Read memslots_have_rmaps again, under the slots arch lock,
+> +	 * before allocating the rmaps
+> +	 */
+> +	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps))
+> +		return 0;
+
+This fails to drop slots_arch_lock.
+
+> +
+> +	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+> +		slots = __kvm_memslots(kvm, i);
+> +		kvm_for_each_memslot(slot, slots) {
+> +			r = memslot_rmap_alloc(slot, slot->npages);
+> +			if (r) {
+> +				mutex_unlock(&kvm->slots_arch_lock);
+> +				return r;
+> +			}
+> +		}
+> +	}
+> +
+> +	/* Write rmap pointers before memslots_have_rmaps */
+> +	smp_store_release(&kvm->arch.memslots_have_rmaps, true);
+> +	mutex_unlock(&kvm->slots_arch_lock);
+> +	return 0;
+> +}
+> +
+>  static int kvm_alloc_memslot_metadata(struct kvm *kvm,
+>  				      struct kvm_memory_slot *slot,
+>  				      unsigned long npages)
+> @@ -10949,7 +10991,8 @@ static int kvm_alloc_memslot_metadata(struct kvm *kvm,
+>  	 */
+>  	memset(&slot->arch, 0, sizeof(slot->arch));
+>  
+> -	if (kvm->arch.memslots_have_rmaps) {
+> +	/* Read memslots_have_rmaps before allocating the rmaps */
+> +	if (smp_load_acquire(&kvm->arch.memslots_have_rmaps)) {
+>  		r = memslot_rmap_alloc(slot, npages);
+>  		if (r)
+>  			return r;
 > -- 
-> 2.30.2
+> 2.31.1.607.g51e8a6a459-goog
+> 
