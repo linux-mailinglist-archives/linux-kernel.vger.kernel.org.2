@@ -2,229 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B4437B008
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABBD37B014
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbhEKURh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 16:17:37 -0400
-Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:37966 "EHLO
-        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229984AbhEKURX (ORCPT
+        id S229924AbhEKUbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 16:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhEKUbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 16:17:23 -0400
-Received: by luna.linkmauve.fr (Postfix, from userid 1000)
-        id D7217F4063D; Tue, 11 May 2021 22:16:14 +0200 (CEST)
-From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-To:     linux-input@vger.kernel.org
-Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-        Ash Logan <ash@heyquark.com>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        =?UTF-8?q?Barnab=C3=A1s=20P=C5=91cze?= <pobrn@protonmail.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] HID: wiiu-drc: Add battery reporting
-Date:   Tue, 11 May 2021 22:16:04 +0200
-Message-Id: <20210511201604.23204-5-linkmauve@linkmauve.fr>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210511201604.23204-1-linkmauve@linkmauve.fr>
-References: <20210511201604.23204-1-linkmauve@linkmauve.fr>
+        Tue, 11 May 2021 16:31:44 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB2CC061574;
+        Tue, 11 May 2021 13:30:36 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id q2so16866276pfh.13;
+        Tue, 11 May 2021 13:30:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PE0hBBCsTSQSvfTQ721B04IeihNT2na4KBLVRKgcCLI=;
+        b=WFFym+04S4Z0uF0S3cDzq5Q6YA5rIStWQUyrAFQ/I5IlARlHEnD4CJTwLaj4uuRLg5
+         Gfrqxc2mvE4oRUF/yv/4QGwgga5FVNhHH7alaIqqtDr5VopLApJ2MzvXsdkzYUSbzzli
+         fqilQjJdc/xAN7IEJIYtUsfIeEu9AMXwV/DP3lpNCwnM5lvraW4h38YKgPJGr6ubuaXs
+         qGVO0YVV6acLiW4uFYhGs1AwEWqnsbPgI87N1cMbx/JOx4s3nrBC2FXkuFLTwZnOPhgp
+         mN64cPSovn3vH5C04kmqOeVesv6Xlv7YmQElNwSzINDnFVj/gXSrbn8tU9yXnkjJvcI4
+         w9ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PE0hBBCsTSQSvfTQ721B04IeihNT2na4KBLVRKgcCLI=;
+        b=pSZV+ICRle3mwr41Mi9z4/tISXFEP14XIaNBZYeTdTfevzkZBRlfaw2QELx8zJWnKB
+         SUPS3vdjekTn6fIZfwbl9irY+WN7+rlNwTTRhaICMdEcJH7s7ZOtlfH/teTsk/yAMxcD
+         5TJxAd+mgZSr6sMdCKgtGAsN3E6VmGfPFdGOX+K01dvMlPntO9EPtwjHexbpmXmVTmqC
+         frNPMQieawv6I+xNbZRVhUXkQjxVu2XVNtuNtxLYEMq7xnUo+mJZ5kmLvkC4H7jGGP9e
+         JYOB/HZrAIWPIw/CJ5QG8HFznMJsCHWNn5PYSaDgedgvU3GIbTXD9qIm5GtqEiT7svAt
+         EWNw==
+X-Gm-Message-State: AOAM531Hz5AtcjjArSAGH/e367uMglAQOoKnJcBRL4TYeFQVoo8REdz3
+        9qvcj/qcM7VfDPoi2JNmN06EdGZIWVl+Tpd0KRA=
+X-Google-Smtp-Source: ABdhPJwC9UcaPeugGzfuAkqp1gC2UZLZfooxjBhAlcCJJQAdGkEiXR8MaCcybAct9gGJazxIk0X76A9WiblbtUdmJi8=
+X-Received: by 2002:a62:528e:0:b029:1f5:c5ee:a487 with SMTP id
+ g136-20020a62528e0000b02901f5c5eea487mr31508886pfb.7.1620765035680; Tue, 11
+ May 2021 13:30:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210505164734.175546-1-saravanak@google.com> <CAHp75VeDzOZ_j30v=rgec2d9f6pPXHXE8BqJN1ARoYkfGL=d6g@mail.gmail.com>
+ <20210511155726.GN4496@sirena.org.uk>
+In-Reply-To: <20210511155726.GN4496@sirena.org.uk>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 11 May 2021 23:30:19 +0300
+Message-ID: <CAHp75VcttCbC2Ete7NvTt7_w_DxcRFNJm-Y-zSU5wzCw85DL3g@mail.gmail.com>
+Subject: Re: [PATCH v2] spi: Don't have controller clean up spi device before
+ driver unbind
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Android Kernel Team <kernel-team@android.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On my DRC the values only go between 142 (battery LED blinking red
-before shutdown) and 178 (charge LED stopping), it seems to be the same
-on other units according to other testers.  This might be the raw
-voltage value as reported by an ADC, so adding a linear interpolation
-between two common battery voltage values.
+On Tue, May 11, 2021 at 6:58 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Wed, May 05, 2021 at 08:53:14PM +0300, Andy Shevchenko wrote:
+> > On Wed, May 5, 2021 at 8:26 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> > > Can you test this one your end to make sure you don't have issues
+> > > anymore?
+>
+> > Do you need a test on my setup?
+>
+> It wouldn't hurt.
 
-A spinlock is used to avoid the battery level and status from being
-reported unsynchronised.
+Okay, I have reverted first the "spi: Fix spi device unregister flow"
+to be sure I can reproduce the lockdep warning, indeed, it's there.
 
-Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
----
- drivers/hid/hid-wiiu-drc.c | 123 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 123 insertions(+)
+After applying the above mentioned patch it's gone.
 
-diff --git a/drivers/hid/hid-wiiu-drc.c b/drivers/hid/hid-wiiu-drc.c
-index a631d405119e..c1c883641b67 100644
---- a/drivers/hid/hid-wiiu-drc.c
-+++ b/drivers/hid/hid-wiiu-drc.c
-@@ -17,6 +17,8 @@
- #include <linux/input.h>
- #include <linux/minmax.h>
- #include <linux/module.h>
-+#include <linux/power_supply.h>
-+#include <linux/spinlock.h>
- #include "hid-ids.h"
- 
- #define DEVICE_NAME	"Nintendo Wii U gamepad (DRC)"
-@@ -71,6 +73,13 @@
- #define MAGNET_MIN	-(1 << 15)
- #define MAGNET_MAX	((1 << 15) - 1)
- 
-+/* ADC constants for the battery */
-+#define BATTERY_CHARGING_BIT	BIT(6)
-+#define BATTERY_MIN	142
-+#define BATTERY_MAX	178
-+#define VOLTAGE_MIN	3270000
-+#define VOLTAGE_MAX	4100000
-+
- /*
-  * The device is setup with multiple input devices:
-  * - A joypad with the buttons and sticks.
-@@ -83,6 +92,12 @@ struct drc {
- 	struct input_dev *touch_input_dev;
- 	struct input_dev *accel_input_dev;
- 	struct hid_device *hdev;
-+
-+	struct power_supply *battery;
-+	struct power_supply_desc battery_desc;
-+	spinlock_t battery_lock;
-+	u8 battery_energy;
-+	int battery_status;
- };
- 
- /*
-@@ -99,6 +114,7 @@ static int drc_raw_event(struct hid_device *hdev, struct hid_report *report,
- 	struct drc *drc = hid_get_drvdata(hdev);
- 	int i, x, y, z, pressure, base;
- 	u32 buttons;
-+	unsigned long flags;
- 
- 	if (len != 128)
- 		return -EINVAL;
-@@ -217,6 +233,17 @@ static int drc_raw_event(struct hid_device *hdev, struct hid_report *report,
- 	input_report_abs(drc->accel_input_dev, ABS_WHEEL, (int16_t)z);
- 	input_sync(drc->accel_input_dev);
- 
-+	/* battery */
-+	spin_lock_irqsave(&drc->battery_lock, flags);
-+	drc->battery_energy = data[5];
-+	if (drc->battery_energy == BATTERY_MAX)
-+		drc->battery_status = POWER_SUPPLY_STATUS_FULL;
-+	else if (data[4] & BATTERY_CHARGING_BIT)
-+		drc->battery_status = POWER_SUPPLY_STATUS_CHARGING;
-+	else
-+		drc->battery_status = POWER_SUPPLY_STATUS_DISCHARGING;
-+	spin_unlock_irqrestore(&drc->battery_lock, flags);
-+
- 	/* let hidraw and hiddev handle the report */
- 	return 0;
- }
-@@ -366,6 +393,96 @@ static bool drc_setup_accel(struct drc *drc,
- 	return true;
- }
- 
-+static enum power_supply_property drc_battery_props[] = {
-+	POWER_SUPPLY_PROP_STATUS,
-+	POWER_SUPPLY_PROP_PRESENT,
-+	POWER_SUPPLY_PROP_VOLTAGE_MAX,
-+	POWER_SUPPLY_PROP_VOLTAGE_MIN,
-+	POWER_SUPPLY_PROP_VOLTAGE_NOW,
-+	POWER_SUPPLY_PROP_CAPACITY,
-+	POWER_SUPPLY_PROP_SCOPE,
-+};
-+
-+static int drc_battery_get_property(struct power_supply *psy,
-+				    enum power_supply_property psp,
-+				    union power_supply_propval *val)
-+{
-+	struct drc *drc = power_supply_get_drvdata(psy);
-+	unsigned long flags;
-+	int ret = 0;
-+	u8 battery_energy;
-+	int battery_status;
-+
-+	spin_lock_irqsave(&drc->battery_lock, flags);
-+	battery_energy = drc->battery_energy;
-+	battery_status = drc->battery_status;
-+	spin_unlock_irqrestore(&drc->battery_lock, flags);
-+
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_STATUS:
-+		val->intval = battery_status;
-+		break;
-+	case POWER_SUPPLY_PROP_PRESENT:
-+		val->intval = 1;
-+		break;
-+	case POWER_SUPPLY_PROP_VOLTAGE_MAX:
-+		val->intval = VOLTAGE_MAX;
-+		break;
-+	case POWER_SUPPLY_PROP_VOLTAGE_MIN:
-+		val->intval = VOLTAGE_MIN;
-+		break;
-+	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
-+		val->intval = fixp_linear_interpolate(BATTERY_MIN, VOLTAGE_MIN,
-+						      BATTERY_MAX, VOLTAGE_MAX,
-+						      battery_energy);
-+		break;
-+	case POWER_SUPPLY_PROP_CAPACITY:
-+		val->intval = fixp_linear_interpolate(BATTERY_MIN, 0,
-+						      BATTERY_MAX, 100,
-+						      battery_energy);
-+		break;
-+	case POWER_SUPPLY_PROP_SCOPE:
-+		val->intval = POWER_SUPPLY_SCOPE_DEVICE;
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+	return ret;
-+}
-+
-+static int drc_setup_battery(struct drc *drc,
-+			     struct hid_device *hdev)
-+{
-+	struct power_supply_config psy_cfg = { .drv_data = drc, };
-+	static atomic_t drc_num = ATOMIC_INIT(0);
-+	int ret;
-+
-+	spin_lock_init(&drc->battery_lock);
-+
-+	drc->battery_desc.properties = drc_battery_props;
-+	drc->battery_desc.num_properties = ARRAY_SIZE(drc_battery_props);
-+	drc->battery_desc.get_property = drc_battery_get_property;
-+	drc->battery_desc.type = POWER_SUPPLY_TYPE_BATTERY;
-+	drc->battery_desc.use_for_apm = 0;
-+
-+	drc->battery_desc.name = devm_kasprintf(&hdev->dev, GFP_KERNEL,
-+						"wiiu-drc-%i-battery", atomic_fetch_inc(&drc_num));
-+	if (!drc->battery_desc.name)
-+		return -ENOMEM;
-+
-+	drc->battery = devm_power_supply_register(&hdev->dev, &drc->battery_desc, &psy_cfg);
-+	if (IS_ERR(drc->battery)) {
-+		ret = PTR_ERR(drc->battery);
-+		hid_err(hdev, "Unable to register battery device\n");
-+		return ret;
-+	}
-+
-+	power_supply_powers(drc->battery, &hdev->dev);
-+
-+	return 0;
-+}
-+
- static int drc_probe(struct hid_device *hdev, const struct hid_device_id *id)
- {
- 	struct drc *drc;
-@@ -392,6 +509,12 @@ static int drc_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 		return -ENOMEM;
- 	}
- 
-+	ret = drc_setup_battery(drc, hdev);
-+	if (ret) {
-+		hid_err(hdev, "could not allocate battery interface\n");
-+		return ret;
-+	}
-+
- 	ret = hid_hw_start(hdev, HID_CONNECT_HIDRAW | HID_CONNECT_DRIVER);
- 	if (ret) {
- 		hid_err(hdev, "hw start failed\n");
+On top I applied this ("spi: Don't have controller clean up spi device
+before driver unbind") patch to see if there is any changes,
+nope, seems everything is fine.
+
+FWIW,
+Tested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+
 -- 
-2.31.1
-
+With Best Regards,
+Andy Shevchenko
