@@ -2,84 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3268537A91C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183A137A91A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhEKO0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:26:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231305AbhEKO0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:26:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2336B61376;
-        Tue, 11 May 2021 14:25:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620743113;
-        bh=cYKm6HVUSnlFpYItm/yTuj98lPr3iKAOjcgTiF6rZq4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PsG2FuIq3Ck8y3US1ag35agxE88VEuQwZehX6D0TlMq1JASIKEiF9vUNCUO8uw3Px
-         Sur8BGfFnnBYgsFCgR6PNaf45yhze1jrDBunl1J/KkoFefP3Tbpp0dJg8vAvfGct96
-         6z8rvZVXNcd7Xb7gan2AOYSdOyvuSBzi1XsJ+dSgXm9UghLMSIUwZ+WjuhKoGP6T50
-         C43SR9bxDMeSIcryWTuNyKhzHtsMKpyy6ZHUyQFGneP+D59gMaPgFvFOwvmvAuoWs/
-         EHJZbHp8114QfSw7g/EP0uuFf+KmwjT7CBzN9sofGC6py/feYBr63nXnlRSMwZtZe1
-         HTEA2eG/MNyCQ==
-Date:   Tue, 11 May 2021 15:24:33 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Daniel Mack <daniel@zonque.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>
-Subject: Re: [PATCH v2 00/14] spi: pxa2xx: Set of cleanups
-Message-ID: <20210511142433.GK4496@sirena.org.uk>
-References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
- <162072071980.33404.13031284441613044277.b4-ty@kernel.org>
- <CAHp75Vck5izDB4mTRV5hTaknpx5Bm+OA4rNLVznQxVaEwigBZg@mail.gmail.com>
- <20210511134706.GI4496@sirena.org.uk>
- <CAHp75VdPHYEq+Xn5yQ+TyQn5uerc+afcVaHj22OmVzsBW2jcaQ@mail.gmail.com>
- <CAHp75Vca2KT4kd9zw3ECqym1rRDSg2NNbwRRVVA1L7vyD3VCJQ@mail.gmail.com>
- <YJqRBIdTlvnsCYsn@smile.fi.intel.com>
+        id S231808AbhEKO0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231673AbhEKO0B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:26:01 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DE6C061574;
+        Tue, 11 May 2021 07:24:55 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id n40so2564219ioz.4;
+        Tue, 11 May 2021 07:24:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1EMn+ug4jk4cL2SkKvI78d9MzgAfHXacPRek3Et9YsI=;
+        b=TuMNCdx68RMCsdfYeAnUoJcBw0Ji9IGAhacmYc96OyAcoDi6hLo0O3E7Wg0CrW8Tq+
+         TtLx7Xgi4YKMrRk9KtHl0gAmpXJyEvwf6YIIK4dpTmeyoFufLIKBCpyzzK6PKqOFmKGE
+         JjkSIxqjYfdXIgQ1t0HG25Iabtz8eTD3Kq/FDmHL+1rLvye9K6vGFyDfzuYFMY4npMYz
+         7a+DFOUqys9avImy+v+L7CvC2QH5DkrsXxPZuLM7I17G/pqORgwMi/zZBv1hIDS5v2tH
+         cu1bQ4JWRpwlyF+TPFgTg4sY5v6Z7QwUBmv+8PczSb+7Lf2aO558AxgmoC08lePPnSrk
+         5QtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1EMn+ug4jk4cL2SkKvI78d9MzgAfHXacPRek3Et9YsI=;
+        b=hGutQjjwRScYBzsdYryMbZo2jjHOOaiBgXQBc1/3WvIFDOSWcUhn+3Iu1F6PujcBmt
+         vnwlzIqoRVWTM0ykjiDCccprcpdF8czhS1lEWgCkv6wD8y2cxYoVGZQNVDsfy8hD8ZWd
+         FY4RF8lEjr1Pinj9XfI3AwBcWanYjuCuhK0cmkFHKOq+NPSmHdRZW07se1Z/meLFQmO+
+         HB/eS+n5sqxUxQGCJrvh0BLRaiLBdRSqzQ0x1p4ec4aF+eG8Yf2L7l8J7hPEPv5yWDeT
+         Qnru6MMSoQev8kj0oH3srPNF4jHP9ditmP58epnm8g9XquyzyI0sNaoZACCOTyRcjSbz
+         mJoQ==
+X-Gm-Message-State: AOAM531Z/JRaXz4VPLPgaw5BRuKDlmBukQSvyIgJ7dnA2eVPjVMmnFKo
+        7fVbjQ6pRYuog3bbIxIUtFQ42Y+ZsZxen0uguXY=
+X-Google-Smtp-Source: ABdhPJxuDTFCQqh/u7tpwKhKnCbOYxIzzy3KdeEps13QOeZpdnAnVfgSTnfyacPf2SkeCmFaQZmqHisgBCF6VssmBmc=
+X-Received: by 2002:a6b:4f07:: with SMTP id d7mr22042896iob.160.1620743094970;
+ Tue, 11 May 2021 07:24:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="IA03tywDYuoVKXrw"
-Content-Disposition: inline
-In-Reply-To: <YJqRBIdTlvnsCYsn@smile.fi.intel.com>
-X-Cookie: Beam me up, Scotty!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210511041930.592483-1-bjorn.andersson@linaro.org> <20210511041930.592483-2-bjorn.andersson@linaro.org>
+In-Reply-To: <20210511041930.592483-2-bjorn.andersson@linaro.org>
+From:   Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Date:   Tue, 11 May 2021 08:24:43 -0600
+Message-ID: <CAOCk7Nr9jAUjt9nLN=52xwsXP00=7mTV6HcdGzr5D2LTzBepLQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] phy: qcom: Introduce new eDP PHY driver
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, sbillaka@codeaurora.org,
+        Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        linux-phy@lists.infradead.org, DTML <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 10, 2021 at 10:21 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> Many recent Qualcomm platforms comes with native DP and eDP support.
+> This consists of a controller int he MDSS and a QMP-like PHY.
 
---IA03tywDYuoVKXrw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, May 11, 2021 at 05:13:24PM +0300, Andy Shevchenko wrote:
-
-> Just in case I'll send a v4 with only patches that missed.
-> Otherwise it will be the same as in v3 (see above).
-
-Please stop.
-
---IA03tywDYuoVKXrw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCak6EACgkQJNaLcl1U
-h9BzfAf+JkN8G2rlBgCENlamTmALPdNW3irdn7hPyTC4DM9BFCiQ9erqn4QE+bnA
-tysguWfrDHJbYsdP69f9edgfJNDbsICh1x0lDWqh5nWrpUXVFoyxe+gwqH+2BsnS
-32yNepXNDijBa4thZTEfGO5IRNt6xGRfNZCh3osEOyJUDpvSt6WRaK1HQSJ++f6o
-nt2m9dhUM3fvScGGrnGjT95aPynrtHW76YoY48nUTv3dXtJJn8v7DHCGFIKvFmI7
-DW4m2xsqQLW5SvuSMe/ikwVkso9MDNOqD1iAy5A/eElH4pCbRAiK7wy+w4Sz5NrM
-V39IAC49EXHnhcAUE0wbZoS/M0bz7A==
-=69fW
------END PGP SIGNATURE-----
-
---IA03tywDYuoVKXrw--
+"in the"
