@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C633737B24F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA32B37B251
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbhEKXOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:14:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48066 "EHLO mail.kernel.org"
+        id S230293AbhEKXOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:14:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230336AbhEKXNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230349AbhEKXNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 19:13:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90FB561963;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A29AD61970;
         Tue, 11 May 2021 23:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620774745;
-        bh=ooQpLhakMF+iC+06mvjV16KpkMzrtX0sKaEg6443Vp0=;
+        bh=HUeol4gFdWksleT74+GMDrTPrwvwDRevaKoSi42xkG0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qbzlOW/dTaZfj3bXtw/hVUHgmSSJMxMXwJqXtXCr0DWMFn+PtRyZYr0cuGcaWsvwM
-         xWb3wIeHH8mZb1lbDXTvXDT8YPMrG6yiqJLEbc4JFx6fhjiEaLBmFJOQp3RqA94aXR
-         spvm5rXf11Ocm4xbWL1aZZN8g/T7dHQYBY/6Ugyj7yxGPzh0sxeGh6N/GmIrtDIzyy
-         kg+f8zOAVrg4m3TM42I/PyGBV8P/7sEofqyuiUQkFVhBKcMTMsvfzrO92mqNNspLLA
-         NlfOwsE2B4fnqq7BKpeoOV44+dLobcN1f8zfaoo1v97HC4vV7zYTDPwQD6uEF4YaE/
-         N7IScI7TSCmmg==
+        b=axaYhOU0RJ8fivPYyVtVQtkDU2Mu67r8Sq8ybTSwtUvrdj/2Ip/2u+tOryZORcqnv
+         tQBJmbRh/9xs76HAZ6UDuMyubm/M9Yot+Aj/PETAzDXWHmkYortus6dpOqAwGHxgFo
+         WeN6k8R1S6ctyVIr6UYMYTOuyrCWHOXZ1IKBOhvW9pKzykN9oB8Oo9bf6v165/bYm2
+         2X9UW9R6J4NidvvYwrkBOwLJLzhnW1GQFWAOdt1ulbUrIR14GP+OJE592LbFMfEKFP
+         9FsKXuXnQuL2f6HA1sx4lqrnFafL7jEGbz7/kAj/XgaCJ4OzqzkwJcEZqGxw6NYJ+R
+         vrqaooWBPOpEA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 974735C0EBE; Tue, 11 May 2021 16:12:24 -0700 (PDT)
+        id 9925A5C0EBF; Tue, 11 May 2021 16:12:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 25/26] rcutorture: Move mem_dump_obj() tests into separate function
-Date:   Tue, 11 May 2021 16:12:22 -0700
-Message-Id: <20210511231223.2895398-25-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 26/26] rcu: Don't penalize priority boosting when there is nothing to boost
+Date:   Tue, 11 May 2021 16:12:23 -0700
+Message-Id: <20210511231223.2895398-26-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
@@ -46,117 +46,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To make the purpose of the code more apparent, this commit moves the
-tests of mem_dump_obj() to a new rcu_torture_mem_dump_obj() function
-and calls it from rcu_torture_cleanup().
+RCU priority boosting cannot do anything unless there is at least one
+task blocking the current RCU grace period that was preempted within
+the RCU read-side critical section that it still resides in.  However,
+the current rcu_torture_boost_failed() code will count this as an RCU
+priority-boosting failure if there were no CPUs blocking the current
+grace period.  This situation can happen (for example) if the last CPU
+blocking the current grace period was subjected to vCPU preemption,
+which is always a risk for rcutorture guest OSes.
+
+This commit therefore causes rcu_torture_boost_failed() to refrain from
+reporting failure unless there is at least one task blocking the current
+RCU grace period that was preempted within the RCU read-side critical
+section that it still resides in.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 81 +++++++++++++++++++++--------------------
- 1 file changed, 42 insertions(+), 39 deletions(-)
+ kernel/rcu/tree_stall.h | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 8b347b9659aa..ec69273898af 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1868,48 +1868,49 @@ rcu_torture_stats(void *arg)
- 		torture_shutdown_absorb("rcu_torture_stats");
- 	} while (!torture_must_stop());
- 	torture_kthread_stopping("rcu_torture_stats");
--
--	{
--		struct rcu_head *rhp;
--		struct kmem_cache *kcp;
--		static int z;
--
--		kcp = kmem_cache_create("rcuscale", 136, 8, SLAB_STORE_USER, NULL);
--		rhp = kmem_cache_alloc(kcp, GFP_KERNEL);
--		pr_alert("mem_dump_obj() slab test: rcu_torture_stats = %px, &rhp = %px, rhp = %px, &z = %px\n", stats_task, &rhp, rhp, &z);
--		pr_alert("mem_dump_obj(ZERO_SIZE_PTR):");
--		mem_dump_obj(ZERO_SIZE_PTR);
--		pr_alert("mem_dump_obj(NULL):");
--		mem_dump_obj(NULL);
--		pr_alert("mem_dump_obj(%px):", &rhp);
--		mem_dump_obj(&rhp);
--		pr_alert("mem_dump_obj(%px):", rhp);
--		mem_dump_obj(rhp);
--		pr_alert("mem_dump_obj(%px):", &rhp->func);
--		mem_dump_obj(&rhp->func);
--		pr_alert("mem_dump_obj(%px):", &z);
--		mem_dump_obj(&z);
--		kmem_cache_free(kcp, rhp);
--		kmem_cache_destroy(kcp);
--		rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
--		pr_alert("mem_dump_obj() kmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
--		pr_alert("mem_dump_obj(kmalloc %px):", rhp);
--		mem_dump_obj(rhp);
--		pr_alert("mem_dump_obj(kmalloc %px):", &rhp->func);
--		mem_dump_obj(&rhp->func);
--		kfree(rhp);
--		rhp = vmalloc(4096);
--		pr_alert("mem_dump_obj() vmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
--		pr_alert("mem_dump_obj(vmalloc %px):", rhp);
--		mem_dump_obj(rhp);
--		pr_alert("mem_dump_obj(vmalloc %px):", &rhp->func);
--		mem_dump_obj(&rhp->func);
--		vfree(rhp);
--	}
--
- 	return 0;
- }
- 
-+/* Test mem_dump_obj() and friends.  */
-+static void rcu_torture_mem_dump_obj(void)
-+{
-+	struct rcu_head *rhp;
-+	struct kmem_cache *kcp;
-+	static int z;
-+
-+	kcp = kmem_cache_create("rcuscale", 136, 8, SLAB_STORE_USER, NULL);
-+	rhp = kmem_cache_alloc(kcp, GFP_KERNEL);
-+	pr_alert("mem_dump_obj() slab test: rcu_torture_stats = %px, &rhp = %px, rhp = %px, &z = %px\n", stats_task, &rhp, rhp, &z);
-+	pr_alert("mem_dump_obj(ZERO_SIZE_PTR):");
-+	mem_dump_obj(ZERO_SIZE_PTR);
-+	pr_alert("mem_dump_obj(NULL):");
-+	mem_dump_obj(NULL);
-+	pr_alert("mem_dump_obj(%px):", &rhp);
-+	mem_dump_obj(&rhp);
-+	pr_alert("mem_dump_obj(%px):", rhp);
-+	mem_dump_obj(rhp);
-+	pr_alert("mem_dump_obj(%px):", &rhp->func);
-+	mem_dump_obj(&rhp->func);
-+	pr_alert("mem_dump_obj(%px):", &z);
-+	mem_dump_obj(&z);
-+	kmem_cache_free(kcp, rhp);
-+	kmem_cache_destroy(kcp);
-+	rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
-+	pr_alert("mem_dump_obj() kmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
-+	pr_alert("mem_dump_obj(kmalloc %px):", rhp);
-+	mem_dump_obj(rhp);
-+	pr_alert("mem_dump_obj(kmalloc %px):", &rhp->func);
-+	mem_dump_obj(&rhp->func);
-+	kfree(rhp);
-+	rhp = vmalloc(4096);
-+	pr_alert("mem_dump_obj() vmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
-+	pr_alert("mem_dump_obj(vmalloc %px):", rhp);
-+	mem_dump_obj(rhp);
-+	pr_alert("mem_dump_obj(vmalloc %px):", &rhp->func);
-+	mem_dump_obj(&rhp->func);
-+	vfree(rhp);
-+}
-+
- static void
- rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 8bde1b53b0c9..65302518e006 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -723,6 +723,10 @@ static void check_cpu_stall(struct rcu_data *rdp)
+  * count this as an RCU priority boosting failure.  A return of true says
+  * RCU priority boosting is to blame, and false says otherwise.  If false
+  * is returned, the first of the CPUs to blame is stored through cpup.
++ * If there was no CPU blocking the current grace period, but also nothing
++ * in need of being boosted, *cpup is set to -1.  This can happen in case
++ * of vCPU preemption while the last CPU is reporting its quiscent state,
++ * for example.
+  *
+  * If cpup is NULL, then a lockless quick check is carried out, suitable
+  * for high-rate usage.  On the other hand, if cpup is non-NULL, each
+@@ -730,18 +734,25 @@ static void check_cpu_stall(struct rcu_data *rdp)
+  */
+ bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
  {
-@@ -2825,6 +2826,8 @@ rcu_torture_cleanup(void)
- 	if (cur_ops->cleanup != NULL)
- 		cur_ops->cleanup();
++	bool atb = false;
+ 	int cpu;
+ 	unsigned long flags;
+ 	struct rcu_node *rnp;
  
-+	rcu_torture_mem_dump_obj();
-+
- 	rcu_torture_stats_print();  /* -After- the stats thread is stopped! */
+ 	rcu_for_each_leaf_node(rnp) {
+ 		if (!cpup) {
+-			if (READ_ONCE(rnp->qsmask))
++			if (READ_ONCE(rnp->qsmask)) {
+ 				return false;
+-			else
++			} else {
++				if (READ_ONCE(rnp->gp_tasks))
++					atb = true;
+ 				continue;
++			}
+ 		}
++		*cpup = -1;
+ 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
++		if (rnp->gp_tasks)
++			atb = true;
+ 		if (!rnp->qsmask) {
+ 			// No CPUs without quiescent states for this rnp.
+ 			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+@@ -758,7 +769,7 @@ bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	}
+ 	// Can't blame CPUs, so must blame RCU priority boosting.
+-	return true;
++	return atb;
+ }
+ EXPORT_SYMBOL_GPL(rcu_check_boost_fail);
  
- 	if (err_segs_recorded) {
 -- 
 2.31.1.189.g2e36527f23
 
