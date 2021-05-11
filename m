@@ -2,314 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9CB37AE24
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A6C37AE25
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232032AbhEKSNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:13:34 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:21188 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231948AbhEKSNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:13:30 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620756743; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=DzEJfa/vKLf61btyzX4T5WVRRfcXyjWJ4T0YA1U8UFA=;
- b=X1pEOHRB3RpIFbGuSywTY6U85jFjqkoDl6y2DtWnpciCFFxPsEz8YmXUtLfcnwLxlDL/dF7j
- GhvtIR6gnoQiiIk20e0euCr/CZs7BgfPg7XwgpsCO6FGpbKnA7x05kPEiz3GjSrBSjqSufE9
- yDbXQZGYEBsQIdzq4cwNchP2rMw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 609ac8efd951beb69eddcc18 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 11 May 2021 18:11:59
- GMT
-Sender: rajeevny=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 32615C43149; Tue, 11 May 2021 18:11:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rajeevny)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 43309C4338A;
-        Tue, 11 May 2021 18:11:57 +0000 (UTC)
+        id S232051AbhEKSNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:13:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232079AbhEKSNo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 14:13:44 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9AC0C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:12:35 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id z24so19082806ioj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:12:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PCQFRYKnpEWO7nMBCUi8YB2CYHmyNOt7CgGjrmkkW68=;
+        b=jZDsQCz5XwmQC2L6QfYDJCIE6p1QmWi6VzUofsPkBsNYP+Rg+MZ6XYpnZIbsPPmdP6
+         jMwheKL1jFTf7dNLBaQePPbqDXK/YTxGdsvSNtYqtw9xNxJjBVgoAXINz18T1ct2yw1j
+         aL9a6USIRweParzL8U+hZU/kSf9zY+NWmealwJiLpoH4E3MGPdvvYixJV4p2X6EzcaQI
+         sUvkCIuGq32HGGEKj73HmW6kkOrIDXgsggwPDuVzD6DzzZh2UGjmzlP+KgpeusaRbD/j
+         mIBRQdJ8i9WJ94hy7u8LjLmEGoDvevqtN7bMsID8p82S2w32FcnGg7YzGQYMv9/7k8TA
+         ZF6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PCQFRYKnpEWO7nMBCUi8YB2CYHmyNOt7CgGjrmkkW68=;
+        b=P7Os7jwz9uW+CuqtVFHVMhirHXOwkg3SAq6MKoOPNgssqMmfyO5rFW2ZGjsEqH+FoH
+         sSl9IC9+ndFDRFvH0GI/bD2YaQLqv65SbeVxdM9fR8/Yrnk3G3prMM2/eyKR98o+Y3XH
+         Ncvol5J40D4u5CPN8xxjMwRlUsHqWU5bsDGnrQDCIGzNMAZnge4Y9ozVuwy0Ggh+DZ1T
+         FwHoUBn9Lsnjz18BzG8oBswx3POWkvtYUyti8mbV0nqvUPX+cgYy/CY0BajVENb+ExIt
+         64+yCEIRSTHk9Kbvr3epVi+mTaNi4O3IXtYjOq+l+dgSvrlgV8XQ1HopRkhSjEOJIsVm
+         Ckjw==
+X-Gm-Message-State: AOAM530XXusvCYSTMtF6QYozGdxOsrbnU9qS/MHVX7vRJHvvGLwsldWv
+        UwgQ8M8ySB8fl1qG6u1o8DHUk1eGqG6KaLSr2z8rhg==
+X-Google-Smtp-Source: ABdhPJzBFvo3VcEWCSO2q7hhXnROuFVAiGLe4L0aS0tsYpBErdoa3yP92qxbXyMkx746h31X4FPqm9yVtN74IW6oJiE=
+X-Received: by 2002:a6b:cd08:: with SMTP id d8mr23698430iog.86.1620756755061;
+ Tue, 11 May 2021 11:12:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 11 May 2021 23:41:57 +0530
-From:   rajeevny@codeaurora.org
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Rob Clark <robdclark@gmail.com>, mkrishn@codeaurora.org,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Lyude Paul <lyude@redhat.com>,
-        "Lankhorst, Maarten" <maarten.lankhorst@intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>
-Subject: Re: [v3 1/2] dt-bindings: backlight: add DisplayPort aux backlight
-In-Reply-To: <CAD=FV=XW90L6or8NKA-Rjjp3s3fRno1xSkD+X0PA1rTyeKgpMw@mail.gmail.com>
-References: <1619416756-3533-1-git-send-email-rajeevny@codeaurora.org>
- <1619416756-3533-2-git-send-email-rajeevny@codeaurora.org>
- <20210429180435.GA1385465@robh.at.kernel.org>
- <CAD=FV=V-kdySH5Pp-Fb-PRYk60Ha_UOTXJHcvMp+uV3P1oo7Uw@mail.gmail.com>
- <78c4bd291bd4a17ae2a1d02d0217de43@codeaurora.org>
- <CAD=FV=XW90L6or8NKA-Rjjp3s3fRno1xSkD+X0PA1rTyeKgpMw@mail.gmail.com>
-Message-ID: <c867b2e59e90899e6c1648e06f5f9cd2@codeaurora.org>
-X-Sender: rajeevny@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <CAOp6jLZ8GR8DKCZLQJKPS7oeP1CX4L3ijBFDBePGX4q6z-DQhg@mail.gmail.com>
+In-Reply-To: <CAOp6jLZ8GR8DKCZLQJKPS7oeP1CX4L3ijBFDBePGX4q6z-DQhg@mail.gmail.com>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Tue, 11 May 2021 11:11:58 -0700
+Message-ID: <CAJHvVci_q5rxuo-N+EH_CNxX_M3oxWcLyitvbdySa_PMH3e_Dg@mail.gmail.com>
+Subject: Re: Userspace notifications for observing userfaultfd faults
+To:     "Robert O'Callahan" <roc@pernos.co>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, Peter Xu <peterx@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, Kyle Huey <khuey@pernos.co>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-05-2021 03:08, Doug Anderson wrote:
-> Hi,
-> 
-> On Fri, Apr 30, 2021 at 8:10 AM <rajeevny@codeaurora.org> wrote:
->> 
->> On 30-04-2021 02:33, Doug Anderson wrote:
->> > Hi,
->> >
->> > On Thu, Apr 29, 2021 at 11:04 AM Rob Herring <robh@kernel.org> wrote:
->> >>
->> >> On Mon, Apr 26, 2021 at 11:29:15AM +0530, Rajeev Nandan wrote:
->> >> > Add bindings for DisplayPort aux backlight driver.
->> >> >
->> >> > Changes in v2:
->> >> > - New
->> >> >
->> >> > Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
->> >> > ---
->> >> >  .../bindings/leds/backlight/dp-aux-backlight.yaml  | 49 ++++++++++++++++++++++
->> >> >  1 file changed, 49 insertions(+)
->> >> >  create mode 100644 Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml
->> >> >
->> >> > diff --git a/Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml
->> >> > new file mode 100644
->> >> > index 00000000..0fa8bf0
->> >> > --- /dev/null
->> >> > +++ b/Documentation/devicetree/bindings/leds/backlight/dp-aux-backlight.yaml
->> >> > @@ -0,0 +1,49 @@
->> >> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> >> > +%YAML 1.2
->> >> > +---
->> >> > +$id: http://devicetree.org/schemas/leds/backlight/dp-aux-backlight.yaml#
->> >> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> >> > +
->> >> > +title: DisplayPort aux backlight driver bindings
->> >> > +
->> >> > +maintainers:
->> >> > +  - Rajeev Nandan <rajeevny@codeaurora.org>
->> >> > +
->> >> > +description:
->> >> > +  Backlight driver to control the brightness over DisplayPort aux channel.
->> >> > +
->> >> > +allOf:
->> >> > +  - $ref: common.yaml#
->> >> > +
->> >> > +properties:
->> >> > +  compatible:
->> >> > +    const: dp-aux-backlight
->> >> > +
->> >> > +  ddc-i2c-bus:
->> >> > +    $ref: /schemas/types.yaml#/definitions/phandle
->> >> > +    description:
->> >> > +      A phandle to the system I2C controller connected to the DDC bus used
->> >> > +      for the DisplayPort AUX channel.
->> >> > +
->> >> > +  enable-gpios:
->> >> > +    maxItems: 1
->> >> > +    description: GPIO specifier for backlight enable pin.
->> >> > +
->> >> > +  max-brightness: true
->> >> > +
->> >> > +required:
->> >> > +  - compatible
->> >> > +  - ddc-i2c-bus
->> >> > +
->> >> > +additionalProperties: false
->> >> > +
->> >> > +examples:
->> >> > +  - |
->> >> > +    backlight {
->> >> > +        compatible = "dp-aux-backlight";
->> >> > +        ddc-i2c-bus = <&sn65dsi86_bridge>;
->> >> > +        enable-gpios = <&tlmm 12 GPIO_ACTIVE_HIGH>;
->> >>
->> >> So the DDC bus is connected to a backlight and also a panel? This
->> >> binding is not reflecting the h/w, but rather what you want for some
->> >> driver.
->> >>
->> >> There's only one thing here and that's an eDP panel which supports
->> >> backlight control via DP aux channel. You can figure all that out from
->> >> the panel's compatible and/or reading the EDID.
->> >>
->> >> You might also be interested in this thread:
->> >>
->> >> https://lore.kernel.org/lkml/YIKsDtjcIHGNvW0u@orome.fritz.box/
->> >
->> > I think Rajeev needs to rework everything anyway as per:
->> >
->> > https://lore.kernel.org/r/87zgxl5qar.fsf@intel.com
->> >
->> > ...but you're right that it makes sense not to model the backlight as
->> > a separate node in the device tree. The panel driver can handle
->> > setting up the backlight.
->> >
->> > -Doug
->> 
->> It was not a good idea to create a separate backlight driver and use
->> ddc-i2c-bus to get access to DP aux. I am working to move the code
->> to the panel driver and to utilize the new DRM helper functions
->> (drm_edp_backlight_*) Lyude has added [1].
->> 
->> To use these helper functions, the panel driver should have access to
->> the
->> "struct drm_dp_aux *". The simple-panel has a "ddc-i2c-bus" property
->> to give the panel access to the DDC bus and is currently being used to
->> get the EDID from the panel. Can I use the same ddc bus i2c_adapter to
->> get
->> the "struct drm_dp_aux *"?
->> 
->> As per the suggestion [2], I get the "struct drm_dp_aux *" from the
->> i2c_adapter of ddc bus (maybe I didn't understand the suggestion
->> correctly),
->> and, it turned out, the way I have implemented is not the right way 
->> [3].
->> So, I am afraid to use the same method in the panel driver.
->> 
->> 
->> [1] https://lore.kernel.org/dri-devel/871rb5bcf9.fsf@intel.com/
->> [2] https://www.spinics.net/lists/dri-devel/msg295429.html
->> [3]
->> https://lore.kernel.org/dri-devel/20210426111116.4lc3ekxjugjr3oho@maple.lan/
-> 
-> So it's definitely up to maintainers, not me. ...but I guess I would
-> have expected something like a new property called "ddc-aux-bus". Then
-> you'd have to create a new API call called something like
-> "of_find_ddc_aux_adapter_by_node()" that would allow you to find it.
-> 
+On Mon, May 10, 2021 at 5:38 PM Robert O'Callahan <roc@pernos.co> wrote:
+>
+> For rr (https://rr-project.org) to support recording and replaying
+> applications that use userfaultfd, we need to observe that a task we
+> are controlling has blocked on a userfault. Currently this is very
+> difficult to do, especially if a task blocks on a userfault on a page
+> where some other task has already triggered a userfault, so no new
+> userfaultfd event is generated. We also need to observe which page has
+> been faulted on so we can determine when the fault has been serviced
+> and the task is ready to run again.
+>
+> I've tried to find workarounds with existing APIs and it doesn't seem
+> tractable. See https://github.com/rr-debugger/rr/issues/2852#issuecomment-837514946
+> for some thoughts about that.
+>
+> It seems to me that a sufficient API for us would be a new software
+> perf event, e.g. PERF_COUNT_SW_USERFAULTS, with an associated
+> PERF_SAMPLE_ADDR that would give us the address of the page. Does that
+> sounds like a reasonable thing to add?
 
-To implement the first suggestion, I can think of the following way
-to get the "struct drm_dp_aux" in the panel_simple_probe function:
+Is some combination of bpf and kprobes a possible solution? There are
+some seemingly relevant examples here:
+https://github.com/iovisor/bpftrace/blob/master/docs/tutorial_one_liners.md
 
-- Create a new panel-simple DT property "ddc-aux-bus", a phandle to the
-platform device that implements the AUX channel.
+I haven't tried it, but it seems like attaching to handle_userfault()
+would give similar information to perf_count_sw_page_faults, but for
+userfaults.
 
-- Create a global list of drm_dp_aux in drm_dp_helper.c. Initialize list 
-head
-in drm_dp_aux_init(), add the drm_dp_aux onto the list in 
-drm_dp_aux_register().
-Similarly, remove the drm_dp_aux from list in drm_dp_aux_unregister().
-
-- Create a new function of_drm_find_dp_aux_by_node() to get the expected
-drm_dp_aux from this global list.
-
-Please let me know your views on this implementation.
-
-Below is the summary of the changes in drm dp helper:
-
----
-
-// drm_dp_helper.h
-
-struct drm_dp_aux {
-	...
-	struct list_head list;
-	...
-}
-
-// drm_dp_helper.c
-
-static DEFINE_MUTEX(dp_aux_lock);
-static LIST_HEAD(dp_aux_list);
-
-static void drm_dp_aux_add(struct drm_dp_aux *aux)
-{
-     mutex_lock(&dp_aux_lock);
-     list_add_tail(&aux->list, &dp_aux_list);
-     mutex_unlock(&dp_aux_lock);
-}
-
-static void drm_dp_aux_remove(struct drm_dp_aux *aux)
-{
-     mutex_lock(&dp_aux_lock);
-     list_del_init(&aux->list);
-     mutex_unlock(&dp_aux_lock);
-}
-
-#ifdef CONFIG_OF
-struct drm_dp_aux *of_drm_find_dp_aux_by_node(struct device_node *np)
-{
-     struct drm_dp_aux *aux;
-     mutex_lock(&dp_aux_lock);
-
-     list_for_each_entry(aux, &dp_aux_list, list) {
-         if (aux->dev->of_node == np) {
-             mutex_unlock(&dp_aux_lock);
-             return aux;
-         }
-     }
-
-     mutex_unlock(&dp_aux_lock);
-     return NULL;
-}
-EXPORT_SYMBOL(of_drm_find_dp_aux_by_node);
-#endif
-
-
-int drm_dp_aux_init(struct drm_dp_aux *aux)
-{
-     INIT_LIST_HEAD(&aux->list);
-     ...
-}
-
-int drm_dp_aux_register(struct drm_dp_aux *aux)
-{
-     ...
-     drm_dp_aux_add(aux);
-
-     return 0;
-}
-
-void drm_dp_aux_unregister(struct drm_dp_aux *aux)
-{
-     drm_dp_aux_remove(aux);
-     ...
-}
----
-
-Thanks,
-Rajeev
-
-> I guess an alternate way to solve this (I'm not totally sure whether
-> it's better or worse) would be to add a function that would walk up
-> the chain of parent bridges and ask them for a pointer to the aux bus.
-> I definitely haven't thought it all the way through, but I'd imagine
-> something like drm_bridge_chain_get_ddc_aux(). This is _probably_
-> better than adding the "ddc-aux-bus" property but it assumes that the
-> aux bus is provided by one of our parents. Hrm, looking at this
-> briefly, though, I'm not sure how to do it. It doesn't seem possible
-> to get the parent bridges from the panel structure. Even if you assume
-> that your parent is wrapping you with a panel_bridge it still doesn't
-> seem possible?
-> 
-> This probably needs more drm-expertise.
-> 
-> -Doug
+>
+> Robert O'Callahan
