@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D3E37AA1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA8537AA16
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbhEKPCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 11:02:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35094 "EHLO mail.kernel.org"
+        id S231839AbhEKPCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 11:02:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231519AbhEKPCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231684AbhEKPCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 11:02:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 726A56128E;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7471861363;
         Tue, 11 May 2021 15:01:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620745297;
-        bh=jePJiKnUrenmcW2bcjH1VDz5dQntzoSjJz/YCuEOB5o=;
+        bh=ql3fH9YF+Tp5Cdc+ks9xGMNWAcomJ3IyUAsw5MhHPbI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kh6ICxcSVd2zJ2oJEljCBT1eCLje54LiNkCq9jR0RBqoxhaR4XXWw4YJ2eksFa8oH
-         AzdsinQpqMkey8cdCQHwbPTNaZP3Xa5jtK54s0/HRROhqbVWjOy9Csta8MltYfw9mm
-         mH1USoHiJ7oLj5UjcZgusB2HnnaeffdYbO9rfKUgYZ8yRMIFFb9h0JRv88H9KU3hqv
-         Ws9LexjFSnE7MzuJE/qhBveeOz7N5fgLwIgcm8k7izTifAGhqqg3W7pqiLYONQMqFk
-         cUwceWaB8yraRL7ujgOv+iK0aKzrx4+56pXv//S1lGRxfmRBLXDdEzxCY1poWk7gr0
-         4EWBWrK9PoD+Q==
+        b=hHtpyBNisnriqDe3uxmTK4KqCU2B5H7tfIvgqTFnV5/kA9l3mKN0afwMpfL2kI/rU
+         nGkSaAC+U0T6sEfgOrtaQ2BeP6+KaBG4kE3B72Nf4UsnFsrgTSFVwOGQWfm7EB7ovM
+         OQj0Zr+dOQe+OUtonQA2G4pDnllcJfXJks2u5IpwtwQ7lcBOMw1v9PHjRcgmhIdWKz
+         GThl4CTzJ1+DPXPxTmjyAJtQ3N7vkNJ30QoqAI1TXSh7xpUyueu/CWbyz/d/P25VRU
+         DnRT6FaHWGBd+/Z7iPOoV7IJSi34QYez8Amfg7fYWqjaE0pgRrkoXXgtSS6gdcj0+S
+         k15XVMB3dIlsg==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lgTt7-000k15-Rt; Tue, 11 May 2021 17:01:33 +0200
+        id 1lgTt7-000k18-T5; Tue, 11 May 2021 17:01:33 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/5] docs: ABI: remove a meaningless UTF-8 character
-Date:   Tue, 11 May 2021 17:01:29 +0200
-Message-Id: <6cd3f0b47568fecb7889fd18d1d744c3aaf73866.1620744606.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Oded Gabbay <oded.gabbay@gmail.com>, Tom Rix <trix@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 3/5] docs: ABI: remove some spurious characters
+Date:   Tue, 11 May 2021 17:01:30 +0200
+Message-Id: <6d774ad6cb3795a177309503a39f8f1b5e309d64.1620744606.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620744606.git.mchehab+huawei@kernel.org>
 References: <cover.1620744606.git.mchehab+huawei@kernel.org>
@@ -44,37 +48,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Those two files have this character:
-	- U+00ac ('¬'): NOT SIGN
-
-at the end of the first line, apparently for no reason. Drop them.
+The KernelVersion tag contains some spurious UTF-8 characters
+for no reason. Drop them.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/ABI/obsolete/sysfs-kernel-fadump_registered  | 2 +-
- Documentation/ABI/obsolete/sysfs-kernel-fadump_release_mem | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ Documentation/ABI/testing/sysfs-module | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/ABI/obsolete/sysfs-kernel-fadump_registered b/Documentation/ABI/obsolete/sysfs-kernel-fadump_registered
-index 0360be39c98e..dae880b1a5d5 100644
---- a/Documentation/ABI/obsolete/sysfs-kernel-fadump_registered
-+++ b/Documentation/ABI/obsolete/sysfs-kernel-fadump_registered
-@@ -1,4 +1,4 @@
--This ABI is renamed and moved to a new location /sys/kernel/fadump/registered.¬
-+This ABI is renamed and moved to a new location /sys/kernel/fadump/registered.
+diff --git a/Documentation/ABI/testing/sysfs-module b/Documentation/ABI/testing/sysfs-module
+index a485434d2a0f..88bddf192ceb 100644
+--- a/Documentation/ABI/testing/sysfs-module
++++ b/Documentation/ABI/testing/sysfs-module
+@@ -37,13 +37,13 @@ Description:	Maximum time allowed for periodic transfers per microframe (μs)
  
- What:		/sys/kernel/fadump_registered
- Date:		Feb 2012
-diff --git a/Documentation/ABI/obsolete/sysfs-kernel-fadump_release_mem b/Documentation/ABI/obsolete/sysfs-kernel-fadump_release_mem
-index 6ce0b129ab12..ca2396edb5f1 100644
---- a/Documentation/ABI/obsolete/sysfs-kernel-fadump_release_mem
-+++ b/Documentation/ABI/obsolete/sysfs-kernel-fadump_release_mem
-@@ -1,4 +1,4 @@
--This ABI is renamed and moved to a new location /sys/kernel/fadump/release_mem.¬
-+This ABI is renamed and moved to a new location /sys/kernel/fadump/release_mem.
+ What:		/sys/module/*/{coresize,initsize}
+ Date:		Jan 2012
+-KernelVersion:»·3.3
++KernelVersion:	3.3
+ Contact:	Kay Sievers <kay.sievers@vrfy.org>
+ Description:	Module size in bytes.
  
- What:		/sys/kernel/fadump_release_mem
- Date:		Feb 2012
+ What:		/sys/module/*/taint
+ Date:		Jan 2012
+-KernelVersion:»·3.3
++KernelVersion:	3.3
+ Contact:	Kay Sievers <kay.sievers@vrfy.org>
+ Description:	Module taint flags:
+ 			==  =====================
 -- 
 2.30.2
 
