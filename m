@@ -2,46 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F0837B03C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82B837B048
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhEKUsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 16:48:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhEKUsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 16:48:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C9BA6162B;
-        Tue, 11 May 2021 20:47:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1620766026;
-        bh=5ajF/e3Oh50kmOZO7dH7OG9SReKgDJLtmpQBJCZ7sr8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Q7d6sDUuiRdvqhu7T5xq/+QwC+3+6FncciMgCmK21iJKRy6tDx4nniAv6S6qt3wC2
-         bt510CCdp4XPAe7vXWyIkTt2OxMp7Vh3xVFjLAg9oyq8p/mHqBYdcwQ2LZbguek4KT
-         Vf3wen2MEyKJBVjhx4mThCqf1VCiGtszaQXFO1ws=
-Date:   Tue, 11 May 2021 13:47:05 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
-Subject: Re: mmotm 2021-05-10-21-46 uploaded (mm/*)
-Message-Id: <20210511134705.ef543a2ff6022f1ad0154a30@linux-foundation.org>
-In-Reply-To: <e50de603-ab1d-72f7-63f5-c1fc92c5c7be@infradead.org>
-References: <20210511044719.tWGZA2U3A%akpm@linux-foundation.org>
-        <e50de603-ab1d-72f7-63f5-c1fc92c5c7be@infradead.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230002AbhEKUuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 16:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhEKUua (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 16:50:30 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF434C061574;
+        Tue, 11 May 2021 13:49:23 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id t3so19460149iol.5;
+        Tue, 11 May 2021 13:49:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I8R7x1c7Hd6UBScR8nVqjaGtYPLLSsOUFoINPtQV2yI=;
+        b=nH7wOQdjKYb6s7Jy1bbcA4JVN4rsIiE/FQuQl16w8lbYz5f6TFsrGR8fk5ZVF6Sj17
+         aGZKzanmmNSniNwaJlLRF2bpJNIpsswoiT351XfQYh+Tj1DkUF7P9znJvknEj6umSkC5
+         jlGzeBA6wsSQ3dFSKz5hMA1Na0nELiOw6DsLyCZ5yo3WE6yINdKrNFA6atMlOU5hajWj
+         LPrAQdSfV7jz+Oxg0x6rsVUS9oMDdWOVRE7Ri96BeCC1B+DfpeCIWaNOZKbzEFT/C8PO
+         /iNyFyS/3Lw7ufHD+hw2QM/ZMUgGkP34JOhJyRes3eMAfg83EettB12z3JnV5bYg5tXE
+         UlYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I8R7x1c7Hd6UBScR8nVqjaGtYPLLSsOUFoINPtQV2yI=;
+        b=MCZv8BUGTvhj3fBmJI2CVVSeAvp+Q1o329uRwJy0cgnmlJeAfPuyWDq9Ux7MVO2mzA
+         UvK4K6Vn+eZgrBXS4fua14vhRKNH9XcTe8rFJ9aEpoiPX91PS7hk9V+2Uw1u8l5IvcNt
+         WbH5ayoL4sPhh/Z9c9kNUf/FwT+pL6KlrhtPFVvFcHYb0x5Fd1lqwTE94yIdgDUCj8WA
+         M3fHsWpENYam3xCpZgY5d2v2QgEivnu5ZkWHDRbquNifvhYnAMm/XohVWGCAQOyOMSf3
+         vcYnUJKsH5hKfdnQo9nYLtcoHrWRytF73sPjcEFLFZ0MhcV+nTrvJZzI7Zx9SQVV4/4i
+         8kRw==
+X-Gm-Message-State: AOAM531xkpaEZ902WjfqHPsUD7OR39JE71B4E7K6+Rhli78Wp0yRE0qT
+        3Da4bq5R3ygKCjua1X43GJs=
+X-Google-Smtp-Source: ABdhPJxYyQFIyIPsZJxqXizYf8eK9bBtTD7v1lyx7UXns4BGxPzgRzvrMt768UJ0rsUSLQk3z4l2xA==
+X-Received: by 2002:a6b:d10c:: with SMTP id l12mr23715805iob.179.1620766163490;
+        Tue, 11 May 2021 13:49:23 -0700 (PDT)
+Received: from zobel.corp.climate.com ([76.232.4.204])
+        by smtp.gmail.com with ESMTPSA id p25sm4535851ioh.39.2021.05.11.13.49.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 13:49:23 -0700 (PDT)
+From:   Doug Zobel <dougdev334@gmail.com>
+To:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Doug Zobel <dougdev334@gmail.com>
+Subject: [PATCH 0/2] Device Tree support for LP5562 predefined patterns
+Date:   Tue, 11 May 2021 15:48:32 -0500
+Message-Id: <20210511204834.2675271-1-dougdev334@gmail.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 12:39:00 -0700 Randy Dunlap <rdunlap@infradead.org> wrote:
+Add support for the LP5562 pre-defined LED patterns in Device Tree.
 
-> Lots of various mm/ build errors:
+Doug Zobel (2):
+  leds: lp55xx: support predefined pattern in Device Tree
+  dt: bindings: lp55xx: Add predefined LED pattern
 
-Huh, It Worked For Me (tm).   Can you please share the .config?
+ .../devicetree/bindings/leds/leds-lp55xx.yaml | 103 +++++++++++++++++-
+ drivers/leds/leds-lp55xx-common.c             |  94 ++++++++++++++--
+ 2 files changed, 186 insertions(+), 11 deletions(-)
+
+-- 
+2.20.1
+
