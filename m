@@ -2,132 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34B7379C09
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92B3379C0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhEKB2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 21:28:16 -0400
-Received: from mail-io1-f45.google.com ([209.85.166.45]:46941 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhEKB2O (ORCPT
+        id S230318AbhEKBaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 21:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229970AbhEKBaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 21:28:14 -0400
-Received: by mail-io1-f45.google.com with SMTP id o21so16244984iow.13
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 18:27:08 -0700 (PDT)
+        Mon, 10 May 2021 21:30:18 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDE7C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 18:29:12 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id j10so233256ejb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 18:29:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g4ykbhAVmu+lXpVg7ewOOB3sVM/0k4gHK4Q6G0qH+bc=;
+        b=UPsaHnlkav5P0ZHYqlH+T0ewxbzji8mbzKICq6hQ9GdnRYCgG7Uo0NdIdiW8GfM0xq
+         t0Ff6/lBW8zel5SU0MbZSyT8tFGKlV3jNEhk1WcAMncse7VGsDIafgxrVL3wgXcm6XLC
+         CMR5J/jVTSQX3DOrdnJCFyE+tCvTt1Hk42ttAgwNdCHkb1LykDbjYXmVRP2LYvgNtwRD
+         VeUV7PldVfTNESp1yiVu2cAt8mH4+ODyFDDEhCqtmmQCenmCv9Qq4fJmx6lMn+rR3eWZ
+         vxeLC4m98H+5OYZvMP0gg2GLr3rhOETmvLDxsu3If9QSiTNHACYaMSiAPJ4vQscGUemR
+         MgXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=50IDS4YNVOO9SbXJy8hRyOLGmUiMw8zqjB0WM/shXKM=;
-        b=F7Bjlxb9fuZuUtrvPmrj8eRIZ9rFzltWDgzBz89DBqDANRXcuounVYsi1nBypa+M6f
-         CTqi/PyCk71QVd6dw3ks4cME+t/POxZuMr6DE4p/jQ6PtoPzj1whePkpmNqqCWDQirxC
-         onomi1Snepor9GoJlfQcfb2cqd0ZTiRcA0Ap4sj1JTEac15u7Eu9u8eKkzCUfKReSe9G
-         vJQU1wyepQhlZZkVA1GJLDpk6fqAC/wPd2aEc+uRTANjcGM/ZkWygubDmCaZ0daNSeJq
-         dLWqGJje6+dOLR/0qPsTpB9t4BAiUvQplWwkv6RT27/zqRbXo4F4wPkTeOL4xdFw1CkL
-         hVeQ==
-X-Gm-Message-State: AOAM533S3P2UR1q6IIWvPgoH51KryK+1/nGwRhVYW79XrkxtSpvs7jUk
-        KvLVNtxbPeVqMcUR83GzHxY=
-X-Google-Smtp-Source: ABdhPJzbL46eucq58mJvJLkkoszaiKz0cTBC+AZRiIRUj0MZyz3tQJzYmxj7slPYslfXnIObLYwNmA==
-X-Received: by 2002:a6b:b48d:: with SMTP id d135mr20507815iof.107.1620696427992;
-        Mon, 10 May 2021 18:27:07 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id l9sm4443015iop.34.2021.05.10.18.27.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 18:27:07 -0700 (PDT)
-Date:   Tue, 11 May 2021 01:27:06 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Oliver Sang <oliver.sang@intel.com>,
-        Pratik Sampat <psampat@linux.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>,
-        "lkp@intel.com" <lkp@intel.com>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "zhengjun.xing@intel.com" <zhengjun.xing@intel.com>
-Subject: Re: [percpu]  ace7e70901:  aim9.sync_disk_rw.ops_per_sec -2.3%
- regression
-Message-ID: <YJndaqy7AbBYnjPh@google.com>
-References: <20210427073448.GD32408@xsang-OptiPlex-9020>
- <YItcfQfZlNZTmQKR@carbon.dhcp.thefacebook.com>
- <40632FBD-8874-4B6C-A945-F2EBC96CF12B@fb.com>
- <20210507030606.GA27263@xsang-OptiPlex-9020>
- <YJV+Vn9eGfIlxDQE@carbon.dhcp.thefacebook.com>
- <YJWQE8AFjyYpsLYA@google.com>
- <YJnRHhK+2AVTMOfh@carbon.DHCP.thefacebook.com>
- <YJnTYicu2TaVqVmi@google.com>
- <YJnaQcgZaC8qJhOB@carbon.DHCP.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g4ykbhAVmu+lXpVg7ewOOB3sVM/0k4gHK4Q6G0qH+bc=;
+        b=gx9gCCCUFEY17yeBi9bTxu6dGvRbUTbcrafO75MdEB2fuzb/CxBgxKa5UlKplFFkr8
+         C3C22Y67KvcVZcedGclYCIDonxUGW6pK8eYkfB4SzYFSlLB3ypsaYNYqyS/zU8/WAGeF
+         gfJ/y0F1vv9otFc3IIJMQehlAQWe6J9hXtHPeRQc36qMf3inuSStqWj3VbRCOONE/dLG
+         Usd45l69K+rRlOOKlzyPYuXGPbwv0Jsp5JmH+VBRWBBS1gfxtmE0lBm8hC3C4zV7Fjp2
+         5q1tAm3ZwKdtfuMahB9ayZJMWqCxyaTxbf4zvmHA3u22ujkBF0ov2hboWrNo4RZQQvGL
+         OVcA==
+X-Gm-Message-State: AOAM530FRvJ8vK7fpNJVuGVYoO4XKCIcSTRqL/SJc5MsubGA1noIsUup
+        KgE10zKKzCCHCFomNE0Gw3iB75aODVcUabSLi8TM
+X-Google-Smtp-Source: ABdhPJz3C7SNoneUreqQu3pSZrumUXJNi5gdNEgQTffzpXY31zuDcPbVqpJ7GKH8ZXirUtDVMppuZqKyPoxWdYoc06Y=
+X-Received: by 2002:a17:906:2510:: with SMTP id i16mr28682731ejb.488.1620696550709;
+ Mon, 10 May 2021 18:29:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJnaQcgZaC8qJhOB@carbon.DHCP.thefacebook.com>
+References: <604ceafd516b0785fea120f552d6336054d196af.1620414949.git.rgb@redhat.com>
+ <7ee601c2-4009-b354-1899-3c8f582bf6ae@schaufler-ca.com> <20210508015443.GA447005@madcap2.tricolour.ca>
+ <242f107a-3b74-c1c2-abd6-b3f369170023@schaufler-ca.com> <CAHC9VhQdV93G5N_BKsxuDCtFbm9-xvAkve02t5sGOi9Mam2Wtg@mail.gmail.com>
+ <195ac224-00fa-b1be-40c8-97e823796262@schaufler-ca.com>
+In-Reply-To: <195ac224-00fa-b1be-40c8-97e823796262@schaufler-ca.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 10 May 2021 21:28:59 -0400
+Message-ID: <CAHC9VhTPQ-LoqUYJ4HGsFF-sAXR+mYqGga7TxRZOG7BUD-55FQ@mail.gmail.com>
+Subject: Re: [PATCH V1] audit: log xattr args not covered by syscall record
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Richard Guy Briggs <rgb@redhat.com>, linux-api@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 06:13:37PM -0700, Roman Gushchin wrote:
-> On Tue, May 11, 2021 at 12:44:18AM +0000, Dennis Zhou wrote:
-> > On Mon, May 10, 2021 at 05:34:38PM -0700, Roman Gushchin wrote:
-> > > On Fri, May 07, 2021 at 07:08:03PM +0000, Dennis Zhou wrote:
-> > > > On Fri, May 07, 2021 at 10:52:22AM -0700, Roman Gushchin wrote:
-> > > > > On Fri, May 07, 2021 at 11:06:06AM +0800, Oliver Sang wrote:
-> > > > > > hi Roman,
-> > > > > >  
-> > > > > > On Thu, May 06, 2021 at 12:54:59AM +0000, Roman Gushchin wrote:
-> > > > > > > Ping
-> > > > > > 
-> > > > > > sorry for late.
-> > > > > > 
-> > > > > > the new patch makes the performance a little better but still has
-> > > > > > 1.9% regression comparing to
-> > > > > > f183324133 ("percpu: implement partial chunk depopulation")
-> > > > > 
-> > > > > Hi Oliver!
-> > > > > 
-> > > > > Thank you for testing it!
-> > > > > 
-> > > > > Btw, can you, please, confirm that the regression is coming specifically
-> > > > > from ace7e70901 ("percpu: use reclaim threshold instead of running for every page")?
-> > > > > I do see *some* regression in my setup, but the data is very noisy, so I'm not sure
-> > > > > I can confirm it.
-> > > > > 
-> > > > > Thanks!
-> > > > 
-> > > > Thanks Oliver and Roman. If this is the case, I'll drop the final patch
-> > > > and just merge up to f183324133 ("percpu: implement partial chunk
-> > > > depopulation") into for-next as this is v5.14 anyway.
-> > > 
-> > > I doubt it's a good idea. I reran the test with some debug added and it looks
-> > > like it doesn't  trigger any depopulation at all. Everything else looked sane
-> > > too.
-> > > 
-> > 
-> > Well that's awkward...
-> > 
-> > > Dropping a reasonable patch doing a good thing without any understandinding how
-> > > it affects (or even can affect in theory) some benchmark sounds like a bad idea.
-> > > We'll never learn this. It could be that the regression is caused my some
-> > > tiny alignment difference or something like this, so any other change can
-> > > trigger it too (I can be totally wrong here, but I don't have any better
-> > > explanation either).
-> > > 
-> > 
-> > So I'm not 100% thrilled with the final patch anyway. Particularly the
-> > lock dancing I'd rather figure something out a little cleaner. I'm going
-> > to take some time later this week and sort it out. If I can't think of
-> > anthing better I'll just reapply the final patch.
-> > 
-> > I've currently merged everything up into the last patch for-5.14. Should
-> > at least give us some very preliminary testing.
-> 
-> Sounds good to me!
-> 
-> But if under final you mean the batching, I'd include my locking optimization
-> patch or something similar to it. We shouldn't grab and release the pcpu_lock
-> many times for no reason.
+On Mon, May 10, 2021 at 8:37 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> On 5/10/2021 4:52 PM, Paul Moore wrote:
+> > On Mon, May 10, 2021 at 12:30 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >> On 5/7/2021 6:54 PM, Richard Guy Briggs wrote:
+> >>> On 2021-05-07 14:03, Casey Schaufler wrote:
+> >>>> On 5/7/2021 12:55 PM, Richard Guy Briggs wrote:
+> >>>>> The *setxattr syscalls take 5 arguments.  The SYSCALL record only lists
+> >>>>> four arguments and only lists pointers of string values.  The xattr name
+> >>>>> string, value string and flags (5th arg) are needed by audit given the
+> >>>>> syscall's main purpose.
+> >>>>>
+> >>>>> Add the auxiliary record AUDIT_XATTR (1336) to record the details not
+> >>>>> available in the SYSCALL record including the name string, value string
+> >>>>> and flags.
+> >>>>>
+> >>>>> Notes about field names:
+> >>>>> - name is too generic, use xattr precedent from ima
+> >>>>> - val is already generic value field name
+> >>>>> - flags used by mmap, xflags new name
+> >>>>>
+> >>>>> Sample event with new record:
+> >>>>> type=PROCTITLE msg=audit(05/07/2021 12:58:42.176:189) : proctitle=filecap /tmp/ls dac_override
+> >>>>> type=PATH msg=audit(05/07/2021 12:58:42.176:189) : item=0 name=(null) inode=25 dev=00:1e mode=file,755 ouid=root ogid=root rdev=00:00 obj=unconfined_u:object_r:user_tmp_t:s0 nametype=NORMAL cap_fp=none cap_fi=none cap_fe=0 cap_fver=0 cap_frootid=0
+> >>>>> type=CWD msg=audit(05/07/2021 12:58:42.176:189) : cwd=/root
+> >>>>> type=XATTR msg=audit(05/07/2021 12:58:42.176:189) : xattr="security.capability" val=01 xflags=0x0
+> >>>> Would it be sensible to break out the namespace from the attribute?
+> >>>>
+> >>>>      attrspace="security" attrname="capability"
+> >>> Do xattrs always follow this nomenclature?  Or only the ones we care
+> >>> about?
+> >> Xattrs always have a namespace (man 7 xattr) of "user", "trusted",
+> >> "system" or "security". It's possible that additional namespaces will
+> >> be created in the future, although it seems unlikely given that only
+> >> "security" is widely used today.
+> > Why should audit care about separating the name into two distinct
+> > fields, e.g. "attrspace" and "attrname", instead of just a single
+> > "xattr" field with a value that follows the "namespace.attribute"
+> > format that is commonly seen by userspace?
+>
+> I asked if it would be sensible. I don't much care myself.
 
-Yeah, I have that in mind + a few renamings in addition to the batching
-batch.
+I was *asking* a question - why would we want separate fields?  I
+guess I thought there might be some reason for asking if it was
+sensible; if not, I think I'd rather see it as a single field.
 
-> 
-> Thanks!
+> >>>> Why isn't val= quoted?
+> >>> Good question.  I guessed it should have been since it used
+> >>> audit_log_untrustedstring(), but even the raw output is unquoted unless
+> >>> it was converted by auditd to unquoted before being stored to disk due
+> >>> to nothing offensive found in it since audit_log_n_string() does add
+> >>> quotes.  (hmmm, bit of a run-on sentence there...)
+> >>>
+> >>>> The attribute value can be a .jpg or worse. I could even see it being an eBPF
+> >>>> program (although That Would Be Wrong) so including it in an audit record could
+> >>>> be a bit of a problem.
+> >>> In these cases it would almost certainly get caught by the control
+> >>> character test audit_string_contains_control() in
+> >>> audit_log_n_untrustedstring() called from audit_log_untrustedstring()
+> >>> and deliver it as hex.
+> >> In that case I'm more concerned with the potential size than with
+> >> quoting. One of original use cases proposed for xattrs (back in the
+> >> SGI Irix days) was to attach a bitmap to be used as the icon in file
+> >> browsers as an xattr. Another was to attach the build instructions
+> >> and source used to create a binary. None of that is information you'd
+> >> want to see in a audit record. On the other hand, if the xattr was an
+> >> eBPF program used to make access control decisions, you would want at
+> >> least a reference to it in the audit record.
+> > It would be interesting to see how this code would handle arbitrarily
+> > large xattr values, or at the very least large enough values to blow
+> > up the audit record size.
+> >
+> > As pointed out elsewhere in this thread, and brought up again above
+> > (albeit indirectly), I'm guessing we don't really care about *all*
+> > xattrs, just the "special" xattrs that are security relevant, in which
+> > case I think we need to reconsider how we collect this data.
+>
+> Right. And you can't know in advance which xattrs are relevant in the
+> face of "security=". We might want something like
+>
+>         bool security_auditable_attribute(struct xattr *xattr)
+>
+> which returns true if the passed xattr is one that an LSM in the stack
+> considers relevant. Much like security_ismaclabel(). I don't think that
+> we can just reuse security_ismaclabel() because there are xattrs that
+> are security relevant but are not MAC labels. SMACK64TRANSMUTE is one.
+> File capability sets are another. I also suggest passing the struct xattr
+> rather than the name because it seems reasonable that an LSM might
+> consider "user.execbyroot=never" relevant while "user.execbyroot=possible"
+> isn't.
+
+Perhaps instead of having the audit code call into the LSM to
+determine if an xattr is worth recording in the audit event, we leave
+it to the LSMs themselves to add a record to the event?
+
+-- 
+paul moore
+www.paul-moore.com
