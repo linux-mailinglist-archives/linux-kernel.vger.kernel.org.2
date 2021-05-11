@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5C837A1E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C5037A1E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231255AbhEKI30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 04:29:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38190 "EHLO mail.kernel.org"
+        id S231215AbhEKI3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 04:29:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231253AbhEKI27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 04:28:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40BA061942;
-        Tue, 11 May 2021 08:27:53 +0000 (UTC)
+        id S230487AbhEKI3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 04:29:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25F4B61622;
+        Tue, 11 May 2021 08:27:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620721673;
-        bh=rVZx4H7SLhEfY9uZaZksv7D3ECMJkUkfL2J6l5EyOKc=;
+        s=k20201202; t=1620721676;
+        bh=eBWDJluRsgCeGLDxW3y4rXxNqKj35vzOmjiWuK+aSzk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a7L85Q6oK67wz+PpJvPdesYqBNI6/Ua6fNPiZBQIUfRO/xM0SxJTmgmeuILQ8lwt4
-         6Y8x7tvptZvOHTmWNddPVDaJkOExChnXAcVauKTZcr5PK8YgAe7V+5gEM8SsFxatH9
-         37MIeoMu9OM7RP/SFiNyDulq6z7gCdXTarmTvcrxqLe+CAHdHbEOy6si9KMNCCDmzt
-         eA8puvHhI/SmkyauOq2SeQOFptIngcejZV5qhm8mLhXLj9O3CliK+QpveQkbAruTRo
-         40W6cM9DHtK++5M+do4uIUHJ1Ej7qs7lbPCQfEmgx9A6ZycvEsQhDP3RkOeNNf8/RP
-         zoMctCAu65VrQ==
+        b=JpIaOKhCczlAl6rHb4epjZIWhn5KIZPAnA6vaFt2vznxIlKgA48nC7lQG7dqj3KHV
+         AMU/bqvwla4tIXNYRMc81eCdYICHZ0pLVxRtYnHIIPuJA9O3Gwa0lWSpYFGaJWvy75
+         C53CPUVnntNbEpfc6WUVBo47L3CbM1W9OlQXYlBDnS05LNQBZrRJAUvqqGg0xv6jyo
+         aT21nOJUG7BUyEDzGeTGx6pQiOmyxgrvRqXUJJUAogSE69rIiQYHNmfIw05YXyazGy
+         wmKt+pnmCIV1nkva3eI6YpO6ogqTQc70p0ml5PaHfrwu1Q6JC8NQpo6chRY4EqQ6Y8
+         48H00vcwKOqbg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Ye Bin <yebin10@huawei.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Jaroslav Kysela <perex@perex.cz>
-Cc:     Mark Brown <broonie@kernel.org>, kael_w@yeah.net
-Subject: Re: [PATCH] ASoC: codecs: lpass-rx-macro: Remove unneeded semicolon
-Date:   Tue, 11 May 2021 09:25:53 +0100
-Message-Id: <162072058169.33157.72791432961188955.b4-ty@kernel.org>
+        Bixuan Cui <cuibixuan@huawei.com>,
+        Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
+Cc:     Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH -next] ASoC: codecs: lpass-tx-macro: add missing MODULE_DEVICE_TABLE
+Date:   Tue, 11 May 2021 09:25:54 +0100
+Message-Id: <162072058170.33157.14915696599003634030.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210506021005.4897-1-wanjiabing@vivo.com>
-References: <20210506021005.4897-1-wanjiabing@vivo.com>
+In-Reply-To: <20210508031512.53783-1-cuibixuan@huawei.com>
+References: <20210508031512.53783-1-cuibixuan@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,10 +44,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 6 May 2021 10:09:49 +0800, Wan Jiabing wrote:
-> Fix the following coccicheck warning:
-> 
-> ./sound/soc/codecs/lpass-rx-macro.c:2631:2-3: Unneeded semicolon
+On Sat, 8 May 2021 11:15:12 +0800, Bixuan Cui wrote:
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
 
 Applied to
 
@@ -58,8 +55,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: lpass-rx-macro: Remove unneeded semicolon
-      commit: f758b9ef9a1abeea37086b8da0073c27eebf74aa
+[1/1] ASoC: codecs: lpass-tx-macro: add missing MODULE_DEVICE_TABLE
+      commit: 14c0c423746fe7232a093a68809a4bc6233eed60
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
