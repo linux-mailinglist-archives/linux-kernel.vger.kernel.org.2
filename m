@@ -2,98 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE4E37A917
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32A737A914
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbhEKOZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:25:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231797AbhEKOZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231830AbhEKOZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 11 May 2021 10:25:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1E196191D;
-        Tue, 11 May 2021 14:24:02 +0000 (UTC)
+Received: from mail.kernel.org ([198.145.29.99]:60488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231773AbhEKOZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:25:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BF676187E;
+        Tue, 11 May 2021 14:24:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620743043;
-        bh=wJ+4cBBj7zHK6XS8zc7+fNwV8ORjVAMlWIuJ5Iuzs8o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mragve0FOBm1OVcs9ENSktykBXpTAlvDdbY6U6NYXsL4GRjFXu/8qzKrerur8//8v
-         //lUW+7b6CzoMSfZ3UtBghu6ZHq2tRYyjq7uY/uhGh4l6QbnKy5eAe/PJkdhoO5hHe
-         LgttsgFY2Nyso/RvJUs2oSgI4YOS2uPkS477/K9r1UwoK2R9VxwU8ovbJjeAdAnA+F
-         cPFqPA66I0uf/Y9izmGbWyvYZNNN/mU6vHh9P4tco+aZBSOn8rBFmEn+6ocX6JikH0
-         zKx+aFAc/FiG/AXOsmci4gnArTYyeVPYR8458InI8s35fqJfIKwircEu3f770mNoOb
-         fWejAlhMINwRw==
-Date:   Tue, 11 May 2021 15:23:23 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Daniel Mack <daniel@zonque.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>
-Subject: Re: [PATCH v2 00/14] spi: pxa2xx: Set of cleanups
-Message-ID: <20210511142323.GJ4496@sirena.org.uk>
-References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
- <162072071980.33404.13031284441613044277.b4-ty@kernel.org>
- <CAHp75Vck5izDB4mTRV5hTaknpx5Bm+OA4rNLVznQxVaEwigBZg@mail.gmail.com>
- <20210511134706.GI4496@sirena.org.uk>
- <CAHp75VdPHYEq+Xn5yQ+TyQn5uerc+afcVaHj22OmVzsBW2jcaQ@mail.gmail.com>
+        s=k20201202; t=1620743040;
+        bh=K5dIHfa4f6iByDzBZIlrjQRjF6/bEjxWK1nUAqzRpew=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JwaonazL7mHtxi37clzYyAaTtim9WYGe0jNdHlIfH66KDgGwD7QSLjEbrzvQMGgxj
+         cDxVGdxsCSttt8JIk8CkX28GzepNyrYgvBI1JuvlFOJaMgtQqfDezEAUokTzNj9Di/
+         AXk99SIB1YVQuMhT8u6c+PflBGCBBVOhpYgwe9cQWyML9PY1iJv974grpxFQf2Zlfk
+         aUGvNVSxIAiuPtI40JwsNp54vhkyiWFA7kZoGWTVhKJA8n9Wz1XL4k007CFv87+k2k
+         ie6Ts3jvb6fuJ96vpOt+4eetlT3LXFNfFHwPDzEMeFWHkETQEygR474DDgvL+Oc1l/
+         9cZVdIGiRgynA==
+Received: by mail-ed1-f53.google.com with SMTP id v5so12032451edc.8;
+        Tue, 11 May 2021 07:24:00 -0700 (PDT)
+X-Gm-Message-State: AOAM5336IfGGHK4WvHXBJwJ1DkR9FDCNaG8F6ys88Kmm2uB8QC8lGEBv
+        7Kemzwb5+bFmJnTumAKG56ABR7gqI57cF0v2Aw==
+X-Google-Smtp-Source: ABdhPJxvejkoMRuepYDfIZklCbkFbvR1TbNfZ2DNIhf0/HxlULmwCrdyYucaU8vfjuT695OoYvWsI5knsrz4cgRv3yU=
+X-Received: by 2002:a50:c446:: with SMTP id w6mr33152086edf.62.1620743038881;
+ Tue, 11 May 2021 07:23:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5me2qT3T17SWzdxI"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdPHYEq+Xn5yQ+TyQn5uerc+afcVaHj22OmVzsBW2jcaQ@mail.gmail.com>
-X-Cookie: Beam me up, Scotty!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210510204524.617390-1-robh@kernel.org> <d3aae746-284b-b0bc-0d52-a76c361d3592@lucaceresoli.net>
+ <CAL_JsqLhwifngoNK0ciO=yuVqpEbMGOSWMHyT=5DcYcO9jcuCw@mail.gmail.com> <2b09c4ed-758d-6eed-8fc1-39653d10e844@lucaceresoli.net>
+In-Reply-To: <2b09c4ed-758d-6eed-8fc1-39653d10e844@lucaceresoli.net>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 11 May 2021 09:23:44 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKEdtJ=NndWAR4j1WEBnzML_UkGFzKd6fkKOiV1SLFczg@mail.gmail.com>
+Message-ID: <CAL_JsqKEdtJ=NndWAR4j1WEBnzML_UkGFzKd6fkKOiV1SLFczg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: More removals of type references on common properties
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        Alex Elder <elder@kernel.org>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Input <linux-input@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 11, 2021 at 9:09 AM Luca Ceresoli <luca@lucaceresoli.net> wrote:
+>
+> Hi Rob,
+>
+> On 11/05/21 15:44, Rob Herring wrote:
+> > On Tue, May 11, 2021 at 2:20 AM Luca Ceresoli <luca@lucaceresoli.net> wrote:
+> >>
+> >> Hi,
+> >>
+> >> On 10/05/21 22:45, Rob Herring wrote:
+> >>> Users of common properties shouldn't have a type definition as the
+> >>> common schemas already have one. A few new ones slipped in and
+> >>> *-names was missed in the last clean-up pass. Drop all the unnecessary
+> >>> type references in the tree.
+> >>>
+> >>> A meta-schema update to catch these is pending.
+> >>>
+> >>> Cc: Luca Ceresoli <luca@lucaceresoli.net>
+> >>> Cc: Stephen Boyd <sboyd@kernel.org>
+> >>> Cc: Olivier Moysan <olivier.moysan@foss.st.com>
+> >>> Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> >>> Cc: Jonathan Cameron <jic23@kernel.org>
+> >>> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> >>> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> >>> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> >>> Cc: Georgi Djakov <djakov@kernel.org>
+> >>> Cc: "David S. Miller" <davem@davemloft.net>
+> >>> Cc: Jakub Kicinski <kuba@kernel.org>
+> >>> Cc: Sebastian Reichel <sre@kernel.org>
+> >>> Cc: Orson Zhai <orsonzhai@gmail.com>
+> >>> Cc: Baolin Wang <baolin.wang7@gmail.com>
+> >>> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> >>> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> >>> Cc: Mark Brown <broonie@kernel.org>
+> >>> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
+> >>> Cc: Odelu Kukatla <okukatla@codeaurora.org>
+> >>> Cc: Alex Elder <elder@kernel.org>
+> >>> Cc: Shengjiu Wang <shengjiu.wang@nxp.com>
+> >>> Cc: linux-clk@vger.kernel.org
+> >>> Cc: alsa-devel@alsa-project.org
+> >>> Cc: linux-iio@vger.kernel.org
+> >>> Cc: linux-arm-kernel@lists.infradead.org
+> >>> Cc: linux-input@vger.kernel.org
+> >>> Cc: linux-pm@vger.kernel.org
+> >>> Cc: netdev@vger.kernel.org
+> >>> Signed-off-by: Rob Herring <robh@kernel.org>
+> >>> ---
+> >>>  Documentation/devicetree/bindings/clock/idt,versaclock5.yaml    | 2 --
+> >>>  .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml         | 1 -
+> >>>  Documentation/devicetree/bindings/input/input.yaml              | 1 -
+> >>>  Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml   | 1 -
+> >>>  Documentation/devicetree/bindings/net/qcom,ipa.yaml             | 1 -
+> >>>  .../devicetree/bindings/power/supply/sc2731-charger.yaml        | 2 +-
+> >>>  Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml          | 2 +-
+> >>>  7 files changed, 2 insertions(+), 8 deletions(-)
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> >>> index c268debe5b8d..28675b0b80f1 100644
+> >>> --- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> >>> +++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> >>> @@ -60,7 +60,6 @@ properties:
+> >>>      maxItems: 2
+> >>>
+> >>>    idt,xtal-load-femtofarads:
+> >>> -    $ref: /schemas/types.yaml#/definitions/uint32
+> >>>      minimum: 9000
+> >>>      maximum: 22760
+> >>>      description: Optional load capacitor for XTAL1 and XTAL2
+> >>> @@ -84,7 +83,6 @@ patternProperties:
+> >>>          enum: [ 1800000, 2500000, 3300000 ]
+> >>>        idt,slew-percent:
+> >>>          description: The Slew rate control for CMOS single-ended.
+> >>> -        $ref: /schemas/types.yaml#/definitions/uint32
+> >>>          enum: [ 80, 85, 90, 100 ]
+> >>
+> >> Ok, but shouldn't "percent" be listed in
+> >> Documentation/devicetree/bindings/property-units.txt?
+> >
+> > It is in the schema already[1].
+>
+> Sure, but having an incomplete file in the kernel is poorly useful, if
+> not misleading. What about any of these options:
+>
+> - add to property-units.txt the missing units
+> - delete property-units.txt from the kernel sources
+> - replace the entire content of property-units.txt with a link to the
+>   schema file, stating it is the authoritative and complete source
+>
+> I would feel a lot better with any of these. I can prepare the patch too.
 
---5me2qT3T17SWzdxI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes, we should remove it. I just hadn't gotten around to it. Note
+there is one reference to it in writing-bindings.rst.
 
-On Tue, May 11, 2021 at 04:52:40PM +0300, Andy Shevchenko wrote:
-> On Tue, May 11, 2021 at 4:47 PM Mark Brown <broonie@kernel.org> wrote:
-> > On Tue, May 11, 2021 at 03:28:18PM +0300, Andy Shevchenko wrote:
-> > > On Tue, May 11, 2021 at 11:27 AM Mark Brown <broonie@kernel.org> wrote:
-
-> > > The above patches are effectively missed.
-> > > Anything to fix in your scripts / my patches?
-
-> > Like I said, patch 7 didn't apply so you should check and resend.
-
-> I didn't get it. I have effectively rebased the entire series and resend as v2.
-
-No, you resent it again as v3.  This was me applying the bits of v2 that
-would actually apply.
-
-> I can speculate that your scripts have a bug since they might try v1
-> as well (as far as I can see they usually send a confirmation of
-> application for all versions of the series in question).
-
-They end up sending confirmations for every version of the series I've
-tried to queue unless I go and explicitly delete the older versions.
-
---5me2qT3T17SWzdxI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCak1oACgkQJNaLcl1U
-h9BuxQf+OegOJM0y6NfKvrOgJTzp2GmTk4h80iy95DznuLEjuM5uqMUHLkySbAsF
-ACndImPyX0HcJr1YWqWDnBjsp/f24gcAeWXyUYvFNUEtAyk+dBD5cagzHrRXX5ZU
-WQOXqJtpO6ergLfANl22xwENmHcKyWlGVzcw3WWZjp1s1+fkp/T+p1pjC84+3IBb
-v1PqVn0ozqU5ndAUVlpTWFWJ7codivp6LMPawIszqpXY5QL0j6cZlnxdLj6RJzjb
-u6aZ7HlN+GIDDqfv9x/FrnLC1m0DtFw3SGKGJ/grF1iF9k25fMzP1YPu/vQokKUv
-yqdh5VXfN8s2EVGn6IXTk1aqrKUWqw==
-=SINU
------END PGP SIGNATURE-----
-
---5me2qT3T17SWzdxI--
+Rob
