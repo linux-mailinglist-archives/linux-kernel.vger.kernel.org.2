@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141BF379CD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 04:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A44379CD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 04:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbhEKCS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 22:18:57 -0400
-Received: from mga07.intel.com ([134.134.136.100]:22295 "EHLO mga07.intel.com"
+        id S230487AbhEKCU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 22:20:26 -0400
+Received: from mga01.intel.com ([192.55.52.88]:13354 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230417AbhEKCSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 22:18:55 -0400
-IronPort-SDR: qIayvEk7c+FDP87tDcgGYEw/b0lweMrr6P27XIAMIKEY+XxnEb6AL89Uew3x/wIXbW+6hQFu0u
- X+lHi+RIsrOQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="263266245"
+        id S230417AbhEKCUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 22:20:25 -0400
+IronPort-SDR: 8RWUe7W8jqX16NB4wgz9Y8Qz8fAFpgVjhOEKri6h/N/RAR4P3WcnXMMtYWQuEfM5W0LWhLND67
+ juV8Q/L/150g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="220288820"
 X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="263266245"
+   d="scan'208";a="220288820"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 19:17:50 -0700
-IronPort-SDR: 74Iox4+owTMOh6QJP713UCXNVvNhqGa/MnU8MGdf2Y5uskxwdsJRBBsN9eFhAQc75gEpHgHyKE
- uFusT8xxhomQ==
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 19:19:19 -0700
+IronPort-SDR: FLN5JysCA+Gp5Oc3E4ZlMPbIVXuZ078nnQ1dj4cmnyZTtO81lkHOAFUSkrV7NLxaP+StjhuAQN
+ Sjjvf87FUNnQ==
 X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="434075293"
+   d="scan'208";a="434075669"
 Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.32.217]) ([10.209.32.217])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 19:17:49 -0700
-Subject: Re: [RFC v2 16/32] x86/tdx: Handle MWAIT, MONITOR and WBINVD
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 19:19:18 -0700
+Subject: Re: [RFC v2 14/32] x86/tdx: Handle port I/O
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Andy Lutomirski <luto@kernel.org>,
         Dave Hansen <dave.hansen@intel.com>,
@@ -38,15 +38,18 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sean Christopherson <seanjc@google.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <d6ca05720290060e909c1f4d12858f900f1be0e7.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4jGmhkrd+Zr4RNcZ5qfXkYO-416Bw2_idVbrgij41yvYg@mail.gmail.com>
+ <0e7e94d1ee4bae49dfd0dd441dc4f2ab6df76668.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4jPLGs6p0PNZQB6yKB3QDtEcGb234zcgCbJutXxZZEGnA@mail.gmail.com>
+ <e8ac31bc-e307-f277-f928-24ebba4cbca7@linux.intel.com>
+ <CAPcyv4iuRdXooQvCzEWd9babzPij4nXpM-z5fai9+SGaeFYswQ@mail.gmail.com>
+ <648fe68f-c521-dbba-4495-9a4d0498a3be@linux.intel.com>
 From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <0e577692-101e-38f7-ebe2-2e7222016a9f@linux.intel.com>
-Date:   Mon, 10 May 2021 19:17:48 -0700
+Message-ID: <96ffe033-9f60-b56e-d159-c1d0e8ae532b@linux.intel.com>
+Date:   Mon, 10 May 2021 19:19:18 -0700
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4jGmhkrd+Zr4RNcZ5qfXkYO-416Bw2_idVbrgij41yvYg@mail.gmail.com>
+In-Reply-To: <648fe68f-c521-dbba-4495-9a4d0498a3be@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -54,91 +57,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> To prevent TD guest from using MWAIT/MONITOR instructions,
->> support for these instructions are already disabled by TDX
->> module (SEAM). So CPUID flags for these instructions should
->> be in disabled state.
-> Why does this not result in a #UD if the instruction is disabled by
-> SEAM?
 
-It's just the TDX module (SEAM is the execution mode used by the TDX module)
-
-
-> How is it possible to execute a disabled instruction (one
-> precluded by CPUID) to the point where it triggers #VE instead of #UD?
-
-That's how the TDX module works. It never injects anything else other 
-than #VE. You can still get other exceptions of course, but they won't 
-come from the TDX module.
-
->> After the above mentioned preventive measures, if TD guests still
->> execute these instructions, add appropriate warning messages in #VE
->> handler. For WBIND instruction, since it's related to memory writeback
->> and cache flushes, it's mainly used in context of IO devices. Since
->> TDX 1.0 does not support non-virtual I/O devices, skipping it should
->> not cause any fatal issues.
-> WBINVD is in a different class than MWAIT/MONITOR since it is not
-> identified by CPUID, it can't possibly have the same #UD behaviour.
-> It's not clear why WBINVD is included in the same patch as
-> MWAIT/MONITOR?
-
-Because these are all instructions we never expect to execute, so 
-nothing special is needed for them. That's a unique class that logically 
-fits together.
-
-
+On 5/10/2021 5:56 PM, Kuppuswamy, Sathyanarayanan wrote:
 >
-> I disagree with the assertion that WBINVD is mainly used in the
-> context of I/O devices, it's also used for ACPI power management
-> paths.
-
-You mean S3? That's of course also not supported inside TDX.
-
-
->   WBINVD dependent functionality should be dynamically disabled
-> rather than warned about.
 >
-> Does a TDX guest support out-of-tree modules?  The kernel is already
-> tainted when out-of-tree modules are loaded. In other words in-tree
-> modules preclude forbidden instructions because they can just be
-> audited, and out-of-tree modules are ok to trigger abrupt failure if
-> they attempt to use forbidden instructions.
-
-We already did a lot of bi^wdiscussion on this on the last review.
-
-Originally we had a different handling, this was the result of previous 
-feedback.
-
-It doesn't really matter because it should never happen.
-
-
+> On 5/10/21 4:34 PM, Dan Williams wrote:
+>>>> Surely there's an existing macro for this pattern? Would
+>>>> PUSH_AND_CLEAR_REGS + POP_REGS be suitable? Besides code sharing it
+>>>> would eliminate clearing of %r8.
+>>>
+>>> There used to be SAVE_ALL/SAVE_REGS, but they have been all removed in
+>>> some past refactorings.
+>> Not a huge deal, but at a minimum it seems a generic construct that
+>> deserves to be declared centrally rather than tdx-guest-port-io local.
 >
->> But to let users know about its usage, use
->> WARN() to report about it.. For MWAIT/MONITOR instruction, since its
->> unsupported use WARN() to report unsupported usage.
-> I'm not sure how useful warning is outside of a kernel developer's
-> debug environment. The kernel should know what instructions are
-> disabled and which are available. WBINVD in particular has potential
-> data integrity implications. Code that might lead to a WBINVD usage
-> should be disabled, not run all the way up to where WBINVD is
-> attempted and then trigger an after-the-fact WARN_ONCE().
+> I can define SAVE_ALL_REGS/RESTORE_ALL_REGS. Do you want to move it 
+> outside
+> TDX code? I don't know if there will be other users for it?
 
-We don't expect the warning to ever happen. Yes all of this will be 
-disabled. Nearly all are in code paths that cannot happen inside TDX 
-anyways due to missing PCI-IDs or different cpuids, and S3 is explicitly 
-disabled and would be impossible anyways due to lack of BIOS support.
+The old name was SAVE_ALL / SAVE_REGS.
 
-
-
-
->
-> The WBINVD change deserves to be split off from MWAIT/MONITOR, and
-> more thought needs to be put into where these spurious instruction
-> usages are arising.
-
-I disagree. We already spent a lot of cycles on this. WBINVD makes never 
-sense in current TDX and all the code will be disabled.
-
+Yes please put it outside tdx code into some include file.
 
 -Andi
+
 
