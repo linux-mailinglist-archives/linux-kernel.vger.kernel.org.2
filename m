@@ -2,80 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A8E37AECC
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA5337AECD
 	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbhEKSxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:53:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
+        id S232053AbhEKSx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:53:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232269AbhEKSwx (ORCPT
+        with ESMTP id S232274AbhEKSwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:52:53 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F16C061761;
-        Tue, 11 May 2021 11:51:45 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id e14so18027070ils.12;
-        Tue, 11 May 2021 11:51:45 -0700 (PDT)
+        Tue, 11 May 2021 14:52:54 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE947C06138A;
+        Tue, 11 May 2021 11:51:46 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id r5so18069842ilb.2;
+        Tue, 11 May 2021 11:51:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=a/h54JdNC5kR17fX7/LoX7g8+9V1SkM6LPGM//jz9YE=;
-        b=TyuPG2wOFQrgKxI20nIja2mzk8NJAyGwIiLGj/NpdzrU1nuGJ3oPGW2TGiZg9bh6wd
-         30l/Phnddorg+Dvatg6e2gDVLUG7R3rAPN2Tgd3NmEqqFan8p6PHC/BHRVy8iRfaJKO/
-         amPeFT9M8GsyJElzvFaLAn6XDBv4c2LfW0nsjuUlmr8W6BpEzw+zMNtu2oMoNGHvcG8n
-         gogAnm+letvJoMK/VTjaueLYu4SHHfVbY1uWf04y/zmGK7thYghUd94dqrU5FliesezB
-         8v5dWnyTDFWI0iz9wFXKfwg5Mi5uV4qoD9KMqGpRrSNSx29CnxRTbSnLd/H57hp6QPlO
-         bPRw==
+        bh=UmFJIyUaXJT257OL/LmtMVaV16lked49orHA6dOpiLw=;
+        b=XRpp9WtoJag16JQlFNYd3Z4dVHrz7VWz/k2R1ZNTPMXy38+H1Rp1iygfzynxNNf6y9
+         RcI0C7QVxcOcfqWKLIM7fhQQN06WyIgsHiQwdt9tOIqFzEnPQh3pKC5JIU884IBR7wYu
+         MtcoBTyEAHy9SFqqAMShxbCn7sdQjukd2qZAwGPO6Y/+Jj0zZ+MDO/JI2VPbCspmaXk4
+         n5iWvrKC7dXHZ8kqmUQfd/ejuxK2Vcfn6dlTLSmpI1AyZ5BXWFO6UlSzGj0XykiTLESx
+         WLRZD/db8Ut9PcS/uXO9iBaNNnvhaxOzj/rDo0PnEJPcdXNXvAuhTrwHhollK+kr/Efv
+         Ne1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=a/h54JdNC5kR17fX7/LoX7g8+9V1SkM6LPGM//jz9YE=;
-        b=SfWk9/dohsluSxgFdf5l+Kxz3LNJB8yVCuDYi4H2rnapxnnX4LUGCNU5UD1sOjkPr1
-         YEsUPQX/CoIyL5A3T7294VMPA1VRD6z4lC6cD/94R9HJibkqoZX30radqRg2EZkl2nS7
-         ms+nadk3Cg9TEN7YPweySogjxOe5B1nxfEOo/c5LxIrS08iwoys4SxbHWPpHQtCNrjxj
-         XAYLG98lvCzSri7Cxvc21a67Cst3pzpV3BnOqdnwPe2LbAu9w1Vp8ZNdT/j8HXgZIQ49
-         64qJ//Xsm35MhnjSSMHLPSzW6h6d6OguVETypu91Uh5Ert3LFWPTLkkXpYjWjJrcf2sj
-         ZECg==
-X-Gm-Message-State: AOAM5333cGgU7JUFGwU9WOc6l03JfH9ZbZe0ahd4Ie7zRX3Efu9BMBD0
-        e0TLIU9pt7o+uc97R4JMlOg=
-X-Google-Smtp-Source: ABdhPJzcb33bvz5DI0nPKr87rXTBl99c1OgYhzBNlqj59Pxj7WEvcQRq6DDiruZk26m5IctEX86qCA==
-X-Received: by 2002:a05:6e02:1b85:: with SMTP id h5mr186059ili.303.1620759105380;
-        Tue, 11 May 2021 11:51:45 -0700 (PDT)
+        bh=UmFJIyUaXJT257OL/LmtMVaV16lked49orHA6dOpiLw=;
+        b=QSl/BnvdggYaR2pM5XWzaaOSkAUTDZ+RYsUpVvQ5Ubac5dBgKPtXOC/EKTmQyjyAUv
+         0gpnjs8cPlGHsWFqpQnumhbrjmPPOeFUERNrWqi5S/eI9EhR8c1urgfbRE/PA/i/Gvr8
+         nrhPp8yRTQTFToeg4x/QT3qdi3EVuNdbAMqAJ6bE6LiOvpyeiQOWv+CGai2CNyQc5rUp
+         B+YtvdLZEjN+Qp5iMOalZB3UVbMX9Bdqa+kQPOr8ykaWZYb2gOhHnvvfVBeZp/PY5bE+
+         q5tJu2QFRZYbSonGtz8rSeZ3iGcnfDx3fU23DH/aoVonKUNEz/FKEvBvsmc+vlnCcroe
+         FMxQ==
+X-Gm-Message-State: AOAM532Cj7RnJQrOGPfpdxj3xzDbXOUh2Xqx3bAzxmzhkfzZz4AlZM2g
+        Egcg56aRTgpDK4G3t8ryhGE=
+X-Google-Smtp-Source: ABdhPJwAIWEWqcGtjz/0v8UZKqFhezkQ4HVghcAKCXOZQSajWCJQ1PG5ZoVf78BE73tfRClYkjyiwA==
+X-Received: by 2002:a05:6e02:e0a:: with SMTP id a10mr26327480ilk.271.1620759106391;
+        Tue, 11 May 2021 11:51:46 -0700 (PDT)
 Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id t10sm405096ils.36.2021.05.11.11.51.43
+        by smtp.googlemail.com with ESMTPSA id t10sm405096ils.36.2021.05.11.11.51.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 11:51:44 -0700 (PDT)
+        Tue, 11 May 2021 11:51:46 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bill Wendling <morbo@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Jim Cromie <jim.cromie@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joerg Roedel <jroedel@suse.de>, Nick Terrell <terrelln@fb.com>,
-        Dave Young <dyoung@redhat.com>,
-        Pingfan Liu <kernelfans@gmail.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-efi@vger.kernel.org
-Cc:     linux-mm@kvack.org, lkp@intel.com
-Subject: [RFC PATCH v5 17/28] dyndbg: prevent build bugs via -DNO_DYNAMIC_DEBUG_TABLE
-Date:   Tue, 11 May 2021 12:50:46 -0600
-Message-Id: <20210511185057.3815777-18-jim.cromie@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Jason Baron <jbaron@akamai.com>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Jim Cromie <jim.cromie@gmail.com>
+Subject: [RFC PATCH v5 18/28] dyndbg: RFC - DEFINE_DYNAMIC_DEBUG_TABLE
+Date:   Tue, 11 May 2021 12:50:47 -0600
+Message-Id: <20210511185057.3815777-19-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210511185057.3815777-1-jim.cromie@gmail.com>
 References: <20210511185057.3815777-1-jim.cromie@gmail.com>
@@ -85,104 +64,245 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The next patch adds DEFINE_DYNAMIC_DEBUG_TABLE(), which broke several
-subtrees, including efi, vdso, and some of arch/*/boot/compressed,
-with various relocation errors, iirc.
+DEFINE_DYNAMIC_DEBUG_TABLE is based on DEFINE_DYNAMIC_DEBUG_METADATA.
+Like its model, it creates/allocates a pair of structs: _ddebug &
+_ddebug_site.  It inits them distinctively, so is_dyndbg_header_pair()
+macro can verify them.
 
-Avoid those problems by adding a define to suppress the "transparent"
-DEFINE_DYNAMIC_DEBUG_TABLE() invocation.  I found the x86 problems
-myself, lkp@intel.com found arm & sparc problems, and may yet find
-others.
+Its purpose is to reserve a single pair of header records in the front
+of the "__dyndbg" & "__dyndbg_sites" sections.  This has several parts;
 
-Reported-by: <lkp@intel.com> # on [jimc:lkp-test/dyndbg-diet] recently
+- the pair of structs are placed into 2 .gnu.linkonce.dyndbg* sections
+  corresponding to the 2 dyndbg* sections populated by _METADATA
+
+- vmlinux.lds.h places these 2 new sections into the dyndbg* sections,
+  at the start___dyndbg*s.
+
+- the pair has "__used __weak" to qualm compiler concerns.
+  explicit externs were problematic with initialization, static decls too.
+
+With this, the header record is now really __dyndbg[0].
+
+Notes:
+
+DYNAMIC_DEBUG is a 'transparent' facility, in that pr_debug() users
+get extra features without additional api.  Because of this,
+DEFINE_DYNAMIC_DEBUG_TABLE is invoked by dynamic_debug.h on behalf of
+all its (indirect) users, including printk.h.
+
+IOW this has wide effects; it results in multiple redundant
+declarations of header records, even single object files may get
+multiple copies.  Placing these records into .gnu.linkonce. sections
+with "__used __weak " seems to resolve the redundancies.  This may
+well be the cause of the need for HEAD~1.
+
+In vmlinux-lds.h, I added 2 more KEEPs to place the .gnu.linkonce.*
+headers at the front of their respective __dyndbg* sections.  I moved
+the __dyndbg lines into a new macro, which maybe should be done as a
+separate commit, or in the earlier commit that touched it. RFC.
+
+The headers are really just struct _ddebug*s, they are initialized
+distinctively so that they're recogizable by code, using macro
+is_dyndbg_header_pair(dbg, dbgsite).
+
+DECLARE_DYNAMIC_DEBUG_TABLE() initializes the header record pairs with
+values which are "impossible" for pr_debug()s:
+
+- lineno == 0
+- site == iter->site
+- modname == function		not possible in proper linkage
+- modname == format		not possible in normal linkage
+- filename = (void*) iter	forced loopback
+
+Next:
+
+Get __dyndbg[0] from any *dp within __dyndbg[N].  Then with
+__dyndbg[0].site, we can get __dyndbg_sites[N].  This is a little
+slower than a direct pointer, but this is an unlikely debug path, so
+this 'up-N-over-down-N' access is ok.
+
+Eventually we can adapt the header (as a new struct/union) to keep its
+pointer to the __dyndbg_sites[] section/block, while allowing us to
+drop it from struct _ddebug, regaining memory parity with master.  But
+for now, we keep .site, and will soon use it to validate the
+'up-N-over-down-N' computation.
+
+For clarity, N is _ddebug._index.  For both builtins & loadable
+modules, it is init'd to remember the fixed offset from the beginning
+of the section/block/memory-allocation (actual elf sections for *ko's,
+and a __start/__stop delineated part of .data for builtins).
+
+N/_index will be used solely to get to __debugs[0] and over to
+__debug_sites[N].  It is distinct from a module's numdbgs, which is
+used mainly when walking control, and is kept in struct _ddeug_table.
+
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- arch/arm/boot/compressed/Makefile     | 2 ++
- arch/sparc/vdso/Makefile              | 2 ++
- arch/x86/boot/compressed/Makefile     | 1 +
- arch/x86/entry/vdso/Makefile          | 3 +++
- arch/x86/purgatory/Makefile           | 1 +
- drivers/firmware/efi/libstub/Makefile | 3 ++-
- 6 files changed, 11 insertions(+), 1 deletion(-)
+ include/asm-generic/vmlinux.lds.h | 27 ++++++++++++-------
+ include/linux/dynamic_debug.h     | 45 +++++++++++++++++++++++++++++++
+ lib/dynamic_debug.c               | 18 ++++++-------
+ 3 files changed, 72 insertions(+), 18 deletions(-)
 
-diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
-index fd94e27ba4fa..72f056a00ad4 100644
---- a/arch/arm/boot/compressed/Makefile
-+++ b/arch/arm/boot/compressed/Makefile
-@@ -82,6 +82,8 @@ compress-$(CONFIG_KERNEL_LZMA) = lzma
- compress-$(CONFIG_KERNEL_XZ)   = xzkern
- compress-$(CONFIG_KERNEL_LZ4)  = lz4
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index 4f2af9de2f03..189286405b40 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -335,6 +335,22 @@
+ 	KEEP(*(.dtb.init.rodata))					\
+ 	__dtb_end = .;
  
-+KBUILD_CFLAGS += -DNO_DYNAMIC_DEBUG_TABLE
++/* implement dynamic printk debug */
++#if defined(CONFIG_DYNAMIC_DEBUG) || defined(CONFIG_DYNAMIC_DEBUG_CORE)
++#define DYNAMIC_DEBUG_DATA()						\
++	. = ALIGN(8);							\
++	__start___dyndbg_sites = .;					\
++	KEEP(*(.gnu.linkonce.dyndbg_site))				\
++	KEEP(*(__dyndbg_sites))						\
++	__stop___dyndbg_sites = .;					\
++	__start___dyndbg = .;						\
++	KEEP(*(.gnu.linkonce.dyndbg))					\
++	KEEP(*(__dyndbg))						\
++	__stop___dyndbg = .;
++#else
++#define DYNAMIC_DEBUG_DATA()
++#endif
 +
- libfdt_objs := fdt_rw.o fdt_ro.o fdt_wip.o fdt.o
+ /*
+  * .data section
+  */
+@@ -351,15 +367,8 @@
+ 	__end_once = .;							\
+ 	STRUCT_ALIGN();							\
+ 	*(__tracepoints)						\
+-	/* implement dynamic printk debug */				\
+-	. = ALIGN(8);							\
+-	__start___dyndbg_sites = .;					\
+-	KEEP(*(__dyndbg_sites))					\
+-	__stop___dyndbg_sites = .;					\
+-	__start___dyndbg = .;						\
+-	KEEP(*(__dyndbg))						\
+-	__stop___dyndbg = .;						\
+-	LIKELY_PROFILE()		       				\
++	DYNAMIC_DEBUG_DATA()						\
++	LIKELY_PROFILE()						\
+ 	BRANCH_PROFILE()						\
+ 	TRACE_PRINTKS()							\
+ 	BPF_RAW_TP()							\
+diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
+index a15e417cbba8..06ae1d8d8c10 100644
+--- a/include/linux/dynamic_debug.h
++++ b/include/linux/dynamic_debug.h
+@@ -113,6 +113,43 @@ void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
+ 		_DPRINTK_KEY_INIT				\
+ 	}
  
- ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
-diff --git a/arch/sparc/vdso/Makefile b/arch/sparc/vdso/Makefile
-index c5e1545bc5cf..960ed0fb6804 100644
---- a/arch/sparc/vdso/Makefile
-+++ b/arch/sparc/vdso/Makefile
-@@ -30,6 +30,8 @@ obj-y += $(vdso_img_objs)
- targets += $(vdso_img_cfiles)
- targets += $(vdso_img_sodbg) $(vdso_img-y:%=vdso%.so)
- 
-+KBUILD_CFLAGS += -DNO_DYNAMIC_DEBUG_TABLE
++/*
++ * DEFINE_DYNAMIC_DEBUG_TABLE(): This is a special version of
++ * DEFINE_DYNAMIC_DEBUG_METADATA().  It creates a single pair of
++ * header records, which linker scripts place into __dyndbg[0] &
++ * __dyndbg_sites[0].
++ * To allow a robust runtime test for is_dyndbg_header_pair(I,S),
++ * force-initialize S->filename to point back to I, an otherwize
++ * pathological condition.
++ */
++#define DEFINE_DYNAMIC_DEBUG_TABLE()				\
++	/* forward decl, allowing loopback pointer */		\
++	__weak struct _ddebug __used __aligned(8)		\
++		__section(".gnu.linkonce.dyndbg")		\
++		_LINKONCE_dyndbg_header;			\
++	__weak struct _ddebug_site __used __aligned(8)		\
++		__section(".gnu.linkonce.dyndbg_site")		\
++	_LINKONCE_dyndbg_site_header = {			\
++		.modname = KBUILD_MODNAME,			\
++		.function = KBUILD_MODNAME,			\
++		/* forced pointer loopback, for distinction */	\
++		.filename = (void *) &_LINKONCE_dyndbg_header	\
++	};							\
++	__weak struct _ddebug __used __aligned(8)		\
++		__section(".gnu.linkonce.dyndbg")		\
++	_LINKONCE_dyndbg_header = {				\
++		.site = &_LINKONCE_dyndbg_site_header,		\
++		.format = KBUILD_MODNAME			\
++	}
 +
- CPPFLAGS_vdso.lds += -P -C
- 
- VDSO_LDFLAGS_vdso.lds = -m elf64_sparc -soname linux-vdso.so.1 --no-undefined \
-diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-index e0bc3988c3fa..ada4eb960d95 100644
---- a/arch/x86/boot/compressed/Makefile
-+++ b/arch/x86/boot/compressed/Makefile
-@@ -31,6 +31,7 @@ targets := vmlinux vmlinux.bin vmlinux.bin.gz vmlinux.bin.bz2 vmlinux.bin.lzma \
- KBUILD_CFLAGS := -m$(BITS) -O2
- KBUILD_CFLAGS += -fno-strict-aliasing -fPIE
- KBUILD_CFLAGS += -DDISABLE_BRANCH_PROFILING
-+KBUILD_CFLAGS += -DNO_DYNAMIC_DEBUG_TABLE
- cflags-$(CONFIG_X86_32) := -march=i386
- cflags-$(CONFIG_X86_64) := -mcmodel=small -mno-red-zone
- KBUILD_CFLAGS += $(cflags-y)
-diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-index 05c4abc2fdfd..619878f2c427 100644
---- a/arch/x86/entry/vdso/Makefile
-+++ b/arch/x86/entry/vdso/Makefile
-@@ -29,6 +29,9 @@ vobjs32-y := vdso32/note.o vdso32/system_call.o vdso32/sigreturn.o
- vobjs32-y += vdso32/vclock_gettime.o
- vobjs-$(CONFIG_X86_SGX)	+= vsgx.o
- 
-+# avoid a x86_64_RELATIVE error
-+KBUILD_CFLAGS += -DNO_DYNAMIC_DEBUG_TABLE
++/* The header initializations as a distinguishing predicate */
++#define is_dyndbg_header_pair(iter, sitep)			\
++	(sitep == iter->site					\
++	 && (!iter->lineno)					\
++	 && (iter->format == sitep->modname)			\
++	 && (sitep->modname == sitep->function)			\
++	 && ((void *)sitep->filename == (void *)iter))
 +
- # files to link into kernel
- obj-y				+= vma.o extable.o
- KASAN_SANITIZE_vma.o		:= y
-diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
-index 95ea17a9d20c..95ba7b18410f 100644
---- a/arch/x86/purgatory/Makefile
-+++ b/arch/x86/purgatory/Makefile
-@@ -35,6 +35,7 @@ PURGATORY_CFLAGS_REMOVE := -mcmodel=kernel
- PURGATORY_CFLAGS := -mcmodel=large -ffreestanding -fno-zero-initialized-in-bss -g0
- PURGATORY_CFLAGS += $(DISABLE_STACKLEAK_PLUGIN) -DDISABLE_BRANCH_PROFILING
- PURGATORY_CFLAGS += -fno-stack-protector
-+PURGATORY_CFLAGS += -DNO_DYNAMIC_DEBUG_TABLE
+ #ifdef CONFIG_JUMP_LABEL
  
- # Default KBUILD_CFLAGS can have -pg option set when FTRACE is enabled. That
- # in turn leaves some undefined symbols like __fentry__ in purgatory and not
-diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-index c23466e05e60..def8febefbd3 100644
---- a/drivers/firmware/efi/libstub/Makefile
-+++ b/drivers/firmware/efi/libstub/Makefile
-@@ -13,7 +13,8 @@ cflags-$(CONFIG_X86)		+= -m$(BITS) -D__KERNEL__ \
- 				   -Wno-pointer-sign \
- 				   $(call cc-disable-warning, address-of-packed-member) \
- 				   $(call cc-disable-warning, gnu) \
--				   -fno-asynchronous-unwind-tables
-+				   -fno-asynchronous-unwind-tables \
-+				   -DNO_DYNAMIC_DEBUG_TABLE
+ #ifdef DEBUG
+@@ -243,4 +280,12 @@ static inline int dynamic_debug_exec_queries(const char *query, const char *modn
  
- # arm64 uses the full KBUILD_CFLAGS so it's necessary to explicitly
- # disable the stackleak plugin
+ #endif /* !CONFIG_DYNAMIC_DEBUG_CORE */
+ 
++#if ((defined(CONFIG_DYNAMIC_DEBUG) ||						\
++      (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE)))	\
++     && defined(KBUILD_MODNAME) && !defined(NO_DYNAMIC_DEBUG_TABLE))
++
++/* transparently invoked, except when -DNO_DYNAMIC_DEBUG_TABLE */
++DEFINE_DYNAMIC_DEBUG_TABLE();
++#endif
++
+ #endif
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index c5927b6c1c0c..9d9cb36f40a6 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -1190,8 +1190,7 @@ static int __init dynamic_debug_init(void)
+ 	const char *modname = NULL;
+ 	char *cmdline;
+ 	int ret = 0;
+-	int site_ct = 0, entries = 0, modct = 0;
+-	int mod_index = 0;
++	int i, site_ct = 0, modct = 0, mod_index = 0;
+ 
+ 	if (&__start___dyndbg == &__stop___dyndbg) {
+ 		if (IS_ENABLED(CONFIG_DYNAMIC_DEBUG)) {
+@@ -1207,10 +1206,9 @@ static int __init dynamic_debug_init(void)
+ 	site = site_mod_start = __start___dyndbg_sites;
+ 	modname = site->modname;
+ 
+-	for (; iter < __stop___dyndbg; iter++, site++) {
++	for (i = 0; iter < __stop___dyndbg; iter++, site++, i++) {
+ 
+-		BUG_ON(site != iter->site);
+-		entries++;
++		WARN_ON(site != iter->site);
+ 
+ 		if (strcmp(modname, site->modname)) {
+ 			modct++;
+@@ -1219,10 +1217,12 @@ static int __init dynamic_debug_init(void)
+ 						  site_ct, mod_index, modname);
+ 			if (ret)
+ 				goto out_err;
+-			site_ct = 0;
++
+ 			modname = site->modname;
+ 			iter_mod_start = iter;
+ 			site_mod_start = site;
++			mod_index += site_ct;
++			site_ct = 0;
+ 		}
+ 		site_ct++;
+ 	}
+@@ -1232,9 +1232,9 @@ static int __init dynamic_debug_init(void)
+ 
+ 	ddebug_init_success = 1;
+ 	vpr_info("%d modules, %d entries and %d bytes in ddebug tables, %d bytes in __dyndbg section, %d bytes in __dyndbg_sites section\n",
+-		 modct, entries, (int)(modct * sizeof(struct ddebug_table)),
+-		 (int)(entries * sizeof(struct _ddebug)),
+-		 (int)(entries * sizeof(struct _ddebug_site)));
++		 modct, i, (int)(modct * sizeof(struct ddebug_table)),
++		 (int)(i * sizeof(struct _ddebug)),
++		 (int)(i * sizeof(struct _ddebug_site)));
+ 
+ 	/* apply ddebug_query boot param, dont unload tables on err */
+ 	if (ddebug_setup_string[0] != '\0') {
 -- 
 2.31.1
 
