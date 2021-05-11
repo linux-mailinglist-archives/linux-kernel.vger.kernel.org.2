@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C1C37B254
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C633737B24F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhEKXO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:14:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48154 "EHLO mail.kernel.org"
+        id S231175AbhEKXOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:14:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230361AbhEKXNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230336AbhEKXNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 19:13:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A54A961972;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90FB561963;
         Tue, 11 May 2021 23:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620774745;
-        bh=0GWhW/hCulbARv7+j0XEFQtQlx4ol+9OsgZn7m0LbX0=;
+        bh=ooQpLhakMF+iC+06mvjV16KpkMzrtX0sKaEg6443Vp0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DoMcg1Ye25S+wzlfBrtKkpgQydx7z4zc22FqiiZMMZZUznXFTmNeQ2V/mGLNOxKtF
-         38zQmImlexYRop50lJSqZWnTknRlDjLt8GS+mDRaV27SoGJ1uw42Sx9OUPk9ClSY99
-         UPhp+R0HyYJDsWPWp/yb0ubyximK/iMm3UadtiI2c3ukdwa5xsh+88tMP0rmChddXY
-         QXYbLOmUFoX2Zv0+If/Tcw3/qcos5+hAZxEAA2dGE8DBIdRnkTTYN6kA+NZNqUYx6c
-         unMkhfH56xsnbkvxnH4gAuQK5dnxB8wfPgXvkO0DXDLSH6P4ABgMyIL64ipzjP1yYT
-         0xhHpRPdy7gBA==
+        b=qbzlOW/dTaZfj3bXtw/hVUHgmSSJMxMXwJqXtXCr0DWMFn+PtRyZYr0cuGcaWsvwM
+         xWb3wIeHH8mZb1lbDXTvXDT8YPMrG6yiqJLEbc4JFx6fhjiEaLBmFJOQp3RqA94aXR
+         spvm5rXf11Ocm4xbWL1aZZN8g/T7dHQYBY/6Ugyj7yxGPzh0sxeGh6N/GmIrtDIzyy
+         kg+f8zOAVrg4m3TM42I/PyGBV8P/7sEofqyuiUQkFVhBKcMTMsvfzrO92mqNNspLLA
+         NlfOwsE2B4fnqq7BKpeoOV44+dLobcN1f8zfaoo1v97HC4vV7zYTDPwQD6uEF4YaE/
+         N7IScI7TSCmmg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 957545C0EB2; Tue, 11 May 2021 16:12:24 -0700 (PDT)
+        id 974735C0EBE; Tue, 11 May 2021 16:12:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 24/26] torture: Don't cap remote runs by build-system number of CPUs
-Date:   Tue, 11 May 2021 16:12:21 -0700
-Message-Id: <20210511231223.2895398-24-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 25/26] rcutorture: Move mem_dump_obj() tests into separate function
+Date:   Tue, 11 May 2021 16:12:22 -0700
+Message-Id: <20210511231223.2895398-25-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
@@ -46,81 +46,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, if a torture scenario requires more CPUs than are present
-on the build system, kvm.sh and friends limit the CPUs available to
-that scenario.  This makes total sense when the build system and the
-system running the scenarios are one and the same, but not so much when
-remote systems might well have more CPUs.
-
-This commit therefore introduces a --remote flag to kvm.sh that suppresses
-this CPU-limiting behavior, and causes kvm-remote.sh to use this flag.
+To make the purpose of the code more apparent, this commit moves the
+tests of mem_dump_obj() to a new rcu_torture_mem_dump_obj() function
+and calls it from rcu_torture_cleanup().
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../testing/selftests/rcutorture/bin/kvm-remote.sh |  2 +-
- tools/testing/selftests/rcutorture/bin/kvm.sh      | 14 +++++++++++---
- 2 files changed, 12 insertions(+), 4 deletions(-)
+ kernel/rcu/rcutorture.c | 81 +++++++++++++++++++++--------------------
+ 1 file changed, 42 insertions(+), 39 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-index 20e848d2c0bb..79e680e0e7bf 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-@@ -66,7 +66,7 @@ then
- 		if (ds != "")
- 			print "--datestamp " ds;
- 	}'`"
--	kvm.sh "$@" $datestamp --buildonly > $T/kvm.sh.out 2>&1
-+	kvm.sh --remote "$@" $datestamp --buildonly > $T/kvm.sh.out 2>&1
- 	ret=$?
- 	if test "$ret" -ne 0
- 	then
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 390bb97b07d8..b4ac4ee33222 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -44,6 +44,7 @@ TORTURE_KCONFIG_KASAN_ARG=""
- TORTURE_KCONFIG_KCSAN_ARG=""
- TORTURE_KMAKE_ARG=""
- TORTURE_QEMU_MEM=512
-+TORTURE_REMOTE=
- TORTURE_SHUTDOWN_GRACE=180
- TORTURE_SUITE=rcu
- TORTURE_MOD=rcutorture
-@@ -80,6 +81,7 @@ usage () {
- 	echo "       --no-initrd"
- 	echo "       --qemu-args qemu-arguments"
- 	echo "       --qemu-cmd qemu-system-..."
-+	echo "       --remote"
- 	echo "       --results absolute-pathname"
- 	echo "       --torture lock|rcu|rcuscale|refscale|scf"
- 	echo "       --trust-make"
-@@ -115,10 +117,13 @@ do
- 		checkarg --cpus "(number)" "$#" "$2" '^[0-9]*$' '^--'
- 		cpus=$2
- 		TORTURE_ALLOTED_CPUS="$2"
--		max_cpus="`identify_qemu_vcpus`"
--		if test "$TORTURE_ALLOTED_CPUS" -gt "$max_cpus"
-+		if test -z "$TORTURE_REMOTE"
- 		then
--			TORTURE_ALLOTED_CPUS=$max_cpus
-+			max_cpus="`identify_qemu_vcpus`"
-+			if test "$TORTURE_ALLOTED_CPUS" -gt "$max_cpus"
-+			then
-+				TORTURE_ALLOTED_CPUS=$max_cpus
-+			fi
- 		fi
- 		shift
- 		;;
-@@ -209,6 +214,9 @@ do
- 		TORTURE_QEMU_CMD="$2"
- 		shift
- 		;;
-+	--remote)
-+		TORTURE_REMOTE=1
-+		;;
- 	--results)
- 		checkarg --results "(absolute pathname)" "$#" "$2" '^/' '^error'
- 		resdir=$2
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 8b347b9659aa..ec69273898af 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1868,48 +1868,49 @@ rcu_torture_stats(void *arg)
+ 		torture_shutdown_absorb("rcu_torture_stats");
+ 	} while (!torture_must_stop());
+ 	torture_kthread_stopping("rcu_torture_stats");
+-
+-	{
+-		struct rcu_head *rhp;
+-		struct kmem_cache *kcp;
+-		static int z;
+-
+-		kcp = kmem_cache_create("rcuscale", 136, 8, SLAB_STORE_USER, NULL);
+-		rhp = kmem_cache_alloc(kcp, GFP_KERNEL);
+-		pr_alert("mem_dump_obj() slab test: rcu_torture_stats = %px, &rhp = %px, rhp = %px, &z = %px\n", stats_task, &rhp, rhp, &z);
+-		pr_alert("mem_dump_obj(ZERO_SIZE_PTR):");
+-		mem_dump_obj(ZERO_SIZE_PTR);
+-		pr_alert("mem_dump_obj(NULL):");
+-		mem_dump_obj(NULL);
+-		pr_alert("mem_dump_obj(%px):", &rhp);
+-		mem_dump_obj(&rhp);
+-		pr_alert("mem_dump_obj(%px):", rhp);
+-		mem_dump_obj(rhp);
+-		pr_alert("mem_dump_obj(%px):", &rhp->func);
+-		mem_dump_obj(&rhp->func);
+-		pr_alert("mem_dump_obj(%px):", &z);
+-		mem_dump_obj(&z);
+-		kmem_cache_free(kcp, rhp);
+-		kmem_cache_destroy(kcp);
+-		rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
+-		pr_alert("mem_dump_obj() kmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
+-		pr_alert("mem_dump_obj(kmalloc %px):", rhp);
+-		mem_dump_obj(rhp);
+-		pr_alert("mem_dump_obj(kmalloc %px):", &rhp->func);
+-		mem_dump_obj(&rhp->func);
+-		kfree(rhp);
+-		rhp = vmalloc(4096);
+-		pr_alert("mem_dump_obj() vmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
+-		pr_alert("mem_dump_obj(vmalloc %px):", rhp);
+-		mem_dump_obj(rhp);
+-		pr_alert("mem_dump_obj(vmalloc %px):", &rhp->func);
+-		mem_dump_obj(&rhp->func);
+-		vfree(rhp);
+-	}
+-
+ 	return 0;
+ }
+ 
++/* Test mem_dump_obj() and friends.  */
++static void rcu_torture_mem_dump_obj(void)
++{
++	struct rcu_head *rhp;
++	struct kmem_cache *kcp;
++	static int z;
++
++	kcp = kmem_cache_create("rcuscale", 136, 8, SLAB_STORE_USER, NULL);
++	rhp = kmem_cache_alloc(kcp, GFP_KERNEL);
++	pr_alert("mem_dump_obj() slab test: rcu_torture_stats = %px, &rhp = %px, rhp = %px, &z = %px\n", stats_task, &rhp, rhp, &z);
++	pr_alert("mem_dump_obj(ZERO_SIZE_PTR):");
++	mem_dump_obj(ZERO_SIZE_PTR);
++	pr_alert("mem_dump_obj(NULL):");
++	mem_dump_obj(NULL);
++	pr_alert("mem_dump_obj(%px):", &rhp);
++	mem_dump_obj(&rhp);
++	pr_alert("mem_dump_obj(%px):", rhp);
++	mem_dump_obj(rhp);
++	pr_alert("mem_dump_obj(%px):", &rhp->func);
++	mem_dump_obj(&rhp->func);
++	pr_alert("mem_dump_obj(%px):", &z);
++	mem_dump_obj(&z);
++	kmem_cache_free(kcp, rhp);
++	kmem_cache_destroy(kcp);
++	rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
++	pr_alert("mem_dump_obj() kmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
++	pr_alert("mem_dump_obj(kmalloc %px):", rhp);
++	mem_dump_obj(rhp);
++	pr_alert("mem_dump_obj(kmalloc %px):", &rhp->func);
++	mem_dump_obj(&rhp->func);
++	kfree(rhp);
++	rhp = vmalloc(4096);
++	pr_alert("mem_dump_obj() vmalloc test: rcu_torture_stats = %px, &rhp = %px, rhp = %px\n", stats_task, &rhp, rhp);
++	pr_alert("mem_dump_obj(vmalloc %px):", rhp);
++	mem_dump_obj(rhp);
++	pr_alert("mem_dump_obj(vmalloc %px):", &rhp->func);
++	mem_dump_obj(&rhp->func);
++	vfree(rhp);
++}
++
+ static void
+ rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
+ {
+@@ -2825,6 +2826,8 @@ rcu_torture_cleanup(void)
+ 	if (cur_ops->cleanup != NULL)
+ 		cur_ops->cleanup();
+ 
++	rcu_torture_mem_dump_obj();
++
+ 	rcu_torture_stats_print();  /* -After- the stats thread is stopped! */
+ 
+ 	if (err_segs_recorded) {
 -- 
 2.31.1.189.g2e36527f23
 
