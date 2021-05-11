@@ -2,141 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C7D37B185
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38EB37B188
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhEKWSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 18:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42372 "EHLO
+        id S230115AbhEKWS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhEKWSq (ORCPT
+        with ESMTP id S229848AbhEKWS6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 18:18:46 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB8FC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:17:39 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id x5so21611951wrv.13
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:17:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rIMnU3pEMyzESxwl/9HGpb60VQFyauRdmgB1fZ2i0PQ=;
-        b=lbQ/0T7CfsdayyPHbn5j4LU/IELNGNpn0EpNuxTYaaWR39f9MgG9/y4+g0Cm2GjRQV
-         QQRZGDOKRn+tYKQc9u7XzQtJPqzXCuFixHfaFoMsgRqaBYAoGdPCNgRUX9yS1PO1QkLU
-         Vtj96GjtmCI+Z1hZ5/bCnNBjuGeRAXQ0uoAf2E738XJ0O4KJh9JBzsyJnm5cZxQqQBcj
-         cNYzAulxov0Vl5Vy6WIA8qON2WvpFmHCxcx8mYKYeetbMunHQxoysUbXjxM24/QraVCt
-         QbUfnodLLtx9SATocntwK/2mWPtMFNYAAEuNlroBdkfm5vBBm69LIW9yUNv6l2ng4zbl
-         usBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rIMnU3pEMyzESxwl/9HGpb60VQFyauRdmgB1fZ2i0PQ=;
-        b=czgnI+lXH4LWuul+Xg9/5tjpt+o9LnNaYGixtmWAgGNWHCFrnIgMPHwTXlbSvQPVVW
-         1BRosvNimK+EnkiLkeTf2GSxygxCR1f9yccVZ2JAuRUEQk3CeUOJVIKyQg/vi9Xe5Ji1
-         H7OFVNBKFQaN9Z99//VGdnv8U1zwU1CAanJH2nGCxKuiWC14FX3Y9gFdVM/2bGvlhWm1
-         ihHI3hNt/nn8b3GJcVq7NEHccmsTkfDTOtG7k44ZhLYdtPrKMLb7Rp5QrCkZo9IwXPCF
-         /zoMhdwdjrJYoV2OPN/PJEtyVtTSANu8Nu3sxLNbdNwcAMmkZCW9z7oqsTeQDtb8oZ8P
-         Ah6A==
-X-Gm-Message-State: AOAM531BMOq5Ou3SiV5adHR9SDcBCmVwNcYVdO5liq9G0k2OjMbWBH25
-        OiGp0E3xUDUxlDC6LXC8H4qw5g==
-X-Google-Smtp-Source: ABdhPJwwI0m+O3Uja0c3Zn0UnwEmXQbJiNj29lXSpWpDwn3GIlYWdZnmmVFJR09jRPv3joVkZ6uiOg==
-X-Received: by 2002:a05:6000:180a:: with SMTP id m10mr40452470wrh.215.1620771458027;
-        Tue, 11 May 2021 15:17:38 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id r7sm4207518wmq.3.2021.05.11.15.17.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 15:17:37 -0700 (PDT)
-Date:   Tue, 11 May 2021 23:17:35 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     davem@davemloft.net, kuba@kernel.org, yhs@fb.com, ast@kernel.org,
-        johannes.berg@intel.com, rdunlap@infradead.org,
-        0x7f454c46@gmail.com, yangyingliang@huawei.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] netlink: netlink_sendmsg: memset unused tail bytes in skb
-Message-ID: <YJsCf0tFub3YXKvh@equinox>
-References: <20210509121858.1232583-1-phil@philpotter.co.uk>
- <20210509131051.GD4038@breakpoint.cc>
+        Tue, 11 May 2021 18:18:58 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F79FC061574;
+        Tue, 11 May 2021 15:17:51 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ffsk52vKzz9sVt;
+        Wed, 12 May 2021 08:17:49 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620771469;
+        bh=Jqtc1vFQyuxnUe/GPLE56YVT/lmzi75J3r2+XEKI+vY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mEa/5o4VqZpQ/DrR8YHOwB2FtNHD3Rxp7SFm4cq1WXqokBaKgbIbGIqKWmiuQbSFA
+         hbk8FUZJG3NGp16Elyiao8NDT2SjR89rJPgIvaido6BjBLMqLJD6ipVpFcQDf30/Ag
+         11eStIKioVeSndQm1YJr8ujyP/7BTAvYmS03hlPleM6fQOAS/t9M4PE2vGKzn4P6Mp
+         ayrDH5A76ifTb9yRx63Dpk90REiETLnYgBut5C0cqX76VOU6ES6kon4k6yJ8deMGMF
+         YhYBwVgWpTOBD1MHOKmgYlzOe6FMl0FyaijDk69d9RPvZdkudTS/2eu06vXFmBhB84
+         MvTmWE+vWN1TA==
+Date:   Wed, 12 May 2021 08:17:48 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the amdgpu tree
+Message-ID: <20210512081748.0f122ac4@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210509131051.GD4038@breakpoint.cc>
+Content-Type: multipart/signed; boundary="Sig_/EwfZD7h=Y_S_AvfUmDGwTeX";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 09, 2021 at 03:10:51PM +0200, Florian Westphal wrote:
-> Phillip Potter <phil@philpotter.co.uk> wrote:
-> > When allocating the skb within netlink_sendmsg, with certain supplied
-> > len arguments, extra bytes are allocated at the end of the data buffer,
-> > due to SKB_DATA_ALIGN giving a larger size within __alloc_skb for
-> > alignment reasons. This means that after using skb_put with the same
-> > len value and then copying data into the skb, the skb tail area is
-> > non-zero in size and contains uninitialised bytes. Wiping this area
-> > (if it exists) fixes a KMSAN-found uninit-value bug reported by syzbot at:
-> > https://syzkaller.appspot.com/bug?id=3e63bcec536b7136b54c72e06adeb87dc6519f69
-> 
-> This patch papers over the real bug.
-> 
-> Please fix TIPC instead.
-> Incomplete patch as a starting point:
-> 
-> diff --git a/net/tipc/node.c b/net/tipc/node.c
-> --- a/net/tipc/node.c
-> +++ b/net/tipc/node.c
-> @@ -2481,7 +2481,6 @@ int tipc_nl_node_get_link(struct sk_buff *skb, struct genl_info *info)
->  	struct net *net = genl_info_net(info);
->  	struct nlattr *attrs[TIPC_NLA_LINK_MAX + 1];
->  	struct tipc_nl_msg msg;
-> -	char *name;
->  	int err;
->  
->  	msg.portid = info->snd_portid;
-> @@ -2499,13 +2498,11 @@ int tipc_nl_node_get_link(struct sk_buff *skb, struct genl_info *info)
->  	if (!attrs[TIPC_NLA_LINK_NAME])
->  		return -EINVAL;
->  
-> -	name = nla_data(attrs[TIPC_NLA_LINK_NAME]);
-> -
->  	msg.skb = nlmsg_new(NLMSG_GOODSIZE, GFP_KERNEL);
->  	if (!msg.skb)
->  		return -ENOMEM;
->  
-> -	if (strcmp(name, tipc_bclink_name) == 0) {
-> +	if (nla_strcmp(attrs[TIPC_NLA_LINK_NAME], tipc_bclink_name) == 0) {
->  		err = tipc_nl_add_bc_link(net, &msg, tipc_net(net)->bcl);
->  		if (err)
->  			goto err_free;
-> 
-> 
-> You will also need to change tipc_node_find_by_name() to pass the nla
-> attr.
-> 
-> Alternatively TIPC_NLA_LINK_NAME policy can be changed:
-> 
-> diff --git a/net/tipc/netlink.c b/net/tipc/netlink.c
-> --- a/net/tipc/netlink.c
-> +++ b/net/tipc/netlink.c
-> @@ -88,7 +88,7 @@ const struct nla_policy tipc_nl_net_policy[TIPC_NLA_NET_MAX + 1] = {
->  
->  const struct nla_policy tipc_nl_link_policy[TIPC_NLA_LINK_MAX + 1] = {
->         [TIPC_NLA_LINK_UNSPEC]          = { .type = NLA_UNSPEC },
-> -       [TIPC_NLA_LINK_NAME]            = { .type = NLA_STRING,
-> +       [TIPC_NLA_LINK_NAME]            = { .type = NLA_NUL_STRING,
-> 
-> 
-> ... which makes it safe to treat the raw attribute payload as a c-string,
-> but this might break existing userspace applications.
-> 
-> Its probably a good idea to audit all NLA_STRING attributes in tipc for
-> similar problems.
+--Sig_/EwfZD7h=Y_S_AvfUmDGwTeX
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Dear Florian,
+Hi all,
 
-Thank you for your feedback and code + suggestions, I will take a look at this over
-the next few days and then resubmit.
+In commit
 
-Regards,
-Phil
+  337142ee10ca ("drm/amdgpu/display: fix build when CONFIG_DRM_AMD_DC_DCN i=
+s not defined")
+
+Fixes tag
+
+  Fixes: 77a49c458931 ("drm/amd/display: Support for DMUB AUX")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you ment
+
+Fixes: 81927e2808be ("drm/amd/display: Support for DMUB AUX")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/EwfZD7h=Y_S_AvfUmDGwTeX
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCbAowACgkQAVBC80lX
+0GxW2wf/TuTStdXPHufJplyLplGn3jsG6PZmuICLsf187pOYTfsRaNGs+HIY7z5F
+wAozZZ/6dA34pwYkLlOLgOAasE7mVGSpYfhLbUXotkEmXIkcc9sUSfyb+PnxaALf
+IPRi6E2zNLIHraDMRUjaT4nSmHk538txKMCf6gthmObOIarxzH3R0KpwhHPs1Yrw
+wm1ZoN2ZPWEOVIf/ZHvZNr6Y96fhlPDFE5A3dZln7tB52OSJnQ8gTsjqexyYlZhJ
+A3h+loq/4UyTtRnFdwzjy7NwhLa6YzvmQmvmRYL4q1LNpYmLe9CRQ5y4qo/CRIo6
+qCjGqVv6pvIwt27JVsCwtLn6zLCAHw==
+=eAeV
+-----END PGP SIGNATURE-----
+
+--Sig_/EwfZD7h=Y_S_AvfUmDGwTeX--
