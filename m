@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B727A37A8FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1130037A902
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231784AbhEKOWi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 May 2021 10:22:38 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3061 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbhEKOWg (ORCPT
+        id S231804AbhEKOWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:22:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43753 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231154AbhEKOWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:22:36 -0400
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FffvS4G8Sz6wkkD;
-        Tue, 11 May 2021 22:10:12 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 11 May 2021 16:21:28 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Tue, 11 May 2021 16:21:28 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        "mjg59@google.com" <mjg59@google.com>
-CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        kernel test robot <lkp@intel.com>
-Subject: RE: [PATCH v6 08/11] evm: Allow setxattr() and setattr() for
- unmodified metadata
-Thread-Topic: [PATCH v6 08/11] evm: Allow setxattr() and setattr() for
- unmodified metadata
-Thread-Index: AQHXQaKHvFPvOA7oV0m5qAvk17yFuareOl6AgAAjMeA=
-Date:   Tue, 11 May 2021 14:21:28 +0000
-Message-ID: <c281b39bdbaa4b5ab921a2e9cece83b4@huawei.com>
-References: <20210505112935.1410679-1-roberto.sassu@huawei.com>
-         <20210505113329.1410943-4-roberto.sassu@huawei.com>
- <735bae46f0772b40ef6ecfb3c6fe0267b3ebbee8.camel@linux.ibm.com>
-In-Reply-To: <735bae46f0772b40ef6ecfb3c6fe0267b3ebbee8.camel@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Tue, 11 May 2021 10:22:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620742905;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MaXr32jxJy36c2DV6JqmjMB2rJjnpxQV3cgHFLstwPo=;
+        b=UeJ/k5Sqd+AHsMpGGnZZsg7UOHLvLdAIVj9p+3LjMThEqR6w9VrOoLkD/i5IIqlLGfWiN1
+        PDgdxF/FsVumTGk15H7oqKlzqg3ZyQZaKCaeX9tQITQwU+d8/NONmiF1I8bZbyvWeBXZz4
+        UrMR/nGZoo7YCGCslMjGEgY1Hp0BvvA=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-385-XjB27L3fNb2G6nq0qGMInw-1; Tue, 11 May 2021 10:21:44 -0400
+X-MC-Unique: XjB27L3fNb2G6nq0qGMInw-1
+Received: by mail-qt1-f200.google.com with SMTP id k13-20020ac8140d0000b02901bad0e39d8fso13079090qtj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:21:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MaXr32jxJy36c2DV6JqmjMB2rJjnpxQV3cgHFLstwPo=;
+        b=tT9GLNBQyI0t9RuLvKbV8uF3hT4Yqwsgyu+dyVqXjRew8Ndiq+IDQwtR9xZZbaMoJH
+         rcUSZwF/S1Of65xD/xgnguIU5S5sNVTmBY8CTo3kpnrqBF0sWlDF1t4T5Rk+3WzH5sgY
+         Hyv5Znl6rwuSEyatb249XDURuRe/roEulLN6vbS2V02SEUMgUWEsunsSfeAs5JFwkk9G
+         cpFVEOCINuIzCgf0OD+W6P1NqDrPOD4oXFFL5c7srBAXP4rtyZzzMklmDwtG52zEMUtV
+         5oyMojzSTM3CFrW0h695jlNnVLltFJ7ch+OjIdxrNAenuSlt4RSm53Isuosw5Bjzt5Z9
+         eIXA==
+X-Gm-Message-State: AOAM531VnXyXL+33fIKsPn9uA79jnKE8+4ay/SmpeblOU9b+jwx4wxJX
+        YdO6cTXFwv0G5Y5j/I6V3gR7XnB3IfRCu3zPSZt2fkrlzYaMCmtvCZu3lirkTimYuq79PxXMgqt
+        Ra/m7UpbFCIDK5D0cjEMQYguTJjMDxkhKSbaEadOO
+X-Received: by 2002:a37:a8cb:: with SMTP id r194mr28834690qke.349.1620742903560;
+        Tue, 11 May 2021 07:21:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyEx3DOtXTVNCdTLwgAjAM9wZtAC0PHHLdvpjh/ChvYvBN9gc0U2MeRS4qYxHvxOi6HL2OaZiRtoLYV/z/b0e0=
+X-Received: by 2002:a37:a8cb:: with SMTP id r194mr28834671qke.349.1620742903375;
+ Tue, 11 May 2021 07:21:43 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <202105032112.SJqOaXpO-lkp@intel.com>
+In-Reply-To: <202105032112.SJqOaXpO-lkp@intel.com>
+From:   Miklos Szeredi <mszeredi@redhat.com>
+Date:   Tue, 11 May 2021 16:21:32 +0200
+Message-ID: <CAOssrKcwq_wFc+B72Vvkaai-TgXoZPTJ9fvBu+BzUg4idnFoZw@mail.gmail.com>
+Subject: Re: [kbuild] fs/fuse/dax.c:113 fuse_setup_one_mapping() warn: should
+ 'start_idx << 21' be a 64 bit type?
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, Vivek Goyal <vgoyal@redhat.com>,
+        lkp@intel.com, kbuild-all@lists.01.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Liu Bo <bo.liu@linux.alibaba.com>,
+        Peng Tao <tao.peng@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> Sent: Tuesday, May 11, 2021 4:12 PM
-> Hi Roberto,
-> 
-> On Wed, 2021-05-05 at 13:33 +0200, Roberto Sassu wrote:
-> > With the patch to allow xattr/attr operations if a portable signature
-> > verification fails, cp and tar can copy all xattrs/attrs so that at the
-> > end of the process verification succeeds.
-> >
-> > However, it might happen that the xattrs/attrs are already set to the
-> > correct value (taken at signing time) and signature verification succeeds
-> > before the copy has completed. For example, an archive might contains files
-> > owned by root and the archive is extracted by root.
-> >
-> > Then, since portable signatures are immutable, all subsequent operations
-> > fail (e.g. fchown()), even if the operation is legitimate (does not alter
-> > the current value).
-> >
-> > This patch avoids this problem by reporting successful operation to user
-> > space when that operation does not alter the current value of xattrs/attrs.
-> 
-> I must be missing something.  If both the IMA and EVM status flags are
-> reset after xattr or attr modification, do we really need to prevent
-> any metadata - same or different - changes?  Both evm_protect_xattr()
-> and evm_inode_setattr() would need to be modified to allow
-> INTEGRITY_PASS_IMMUTABLE.
+On Mon, May 3, 2021 at 3:27 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+> head:   9ccce092fc64d19504fa54de4fd659e279cc92e7
+> commit: c2d0ad00d948de73c78f05d2b3e5bdfa605035cc virtiofs: implement dax read/write operations
+> config: i386-randconfig-m031-20210503 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+>
+> New smatch warnings:
+> fs/fuse/dax.c:113 fuse_setup_one_mapping() warn: should 'start_idx << 21' be a 64 bit type?
 
-Hi Mimi
+Yes.
 
-yes, given that the IMA and EVM flags are reset, it should not be
-a problem to allow changes. However, I think it is useful to keep
-the current behavior. For example, it would prevent an accidental
-change of the SELinux label during the relabeling process.
+But does it make any sense to enable virtiofs and/or dax on 32bit
+guest? We sure aren't testing it, as seen from this bug report.
 
-Roberto
+Vivek, what do you think?
 
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
-
-> thanks,
-> 
-> Mimi
+Thanks,
+Miklos
 
