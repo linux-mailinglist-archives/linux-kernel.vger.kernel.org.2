@@ -2,97 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A938A379C47
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E6F379C49
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbhEKBuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 21:50:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230334AbhEKBun (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 21:50:43 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EFD3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 18:49:36 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id y26so20944727eds.4
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 18:49:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GC+jcwYuSlGwJ2d485mepP4KelpwOyaTe94c08xajfQ=;
-        b=xZeeTRD1Py3Ep5O8bkGrjjCbMORAPBblaI9SG5G7RNQvcwF81lU7VKMHEEx/RZbbis
-         H+eTlm5BQh3XW4suI5xn6He5ui1geRSvdmxGw4kDXGHZMKzThcUNQBrc+QPsOjF7ecNi
-         X3Ks+DVHKy+IDRyoi+WPFcJLy86hLZar9QnLg9lHmteELQIN38+03VEyGnZOpOfUBFEr
-         iibOmzhCeqDu4tLZCsCNDGf622ynCiSOu+5B6xFKtD7kxriPKDFGNwFqs8a/FQOAV/PT
-         eoJMf0C+Q7LrtUzVpQk4L8TK50IWSjEPOjPhbzqV2bBicMp2n2Ty6nLRMnISFyJfAxqm
-         huCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GC+jcwYuSlGwJ2d485mepP4KelpwOyaTe94c08xajfQ=;
-        b=YovvBN/1yTjVB3Ff9IvGgj+w1HNcmHzEf572fUKTbepJL7cr+Gsyl0b7fZNwz+r2Yf
-         hgMAT/NGxJlsfFx8JBNGoRBwmLVKYoa2g4nK4NnvisQnwYBf6HOFLoBR7JMPYVc+lcV1
-         mJN0MX4oWDkCzcBLbZgoVF+XmkLI+1hgBxPOPjOnXYlXoj7ITCaNVPCRGTWTNjyCl1Km
-         Q5yThEfeBlTytTK0VKJToHYVydIGLB4iUN1efn9sp2nolFaHPyh0EEH7EXTcNiS8oY4r
-         WcUvD5g95f1XigvGh1zK9SXasUukoFIdFffPDmfR8x5cjognUBmky1Url1t5UnswDlQA
-         GMLQ==
-X-Gm-Message-State: AOAM530Vbj86LF3xa8yOyEAlJdSqw+pS39BxAq3hGU/R+BdlGBdu0Qj4
-        LSJTTypyNU8nF0Gl/+QfoPONgQVfUSyOQdUrvR8P
-X-Google-Smtp-Source: ABdhPJwjVnamGG/jYjAW0Ym/j+pyybJ9iee8648B3crpa2HR6Of28omAtKhJZFw8AuC+pWNa7k/q/lNaLnMvtk51mew=
-X-Received: by 2002:aa7:de9a:: with SMTP id j26mr10088284edv.269.1620697775288;
- Mon, 10 May 2021 18:49:35 -0700 (PDT)
+        id S230436AbhEKBux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 21:50:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230334AbhEKBuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 21:50:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71510616E8;
+        Tue, 11 May 2021 01:49:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620697787;
+        bh=eZrzgpTyyO5Blp6/LDxMMaLmtZs1tELZ4/7dFk3gLco=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fJhqWJRLw+CPWIVo4ulxbq2qE/g1QN3h3r11Vp/Jrcyc84wwvshpmdybYw4zbjkCD
+         ufFdxlbGMpcx+F3VCg1qrmeX+TTLVTs9KdID8jea2Dt6lMOW1dyxdytXKfySQx35BD
+         R7Fn5WBNRIvF8fvh66TrYbDd7MeEBNoSuOiB8kzeaLd0Xq/+2ZCyvCin7eeLs736P7
+         kNSuoih4e1Q7bh3s/blHmggB3QvT82rhy6dzIYPuMAWha6mbVufGMABde7DmPL14li
+         DvPN5hhZSAU7Jp46KX0l2aw4xQ5BOp1BmNICcf+HY5ZlBzW4yhHlS7Ovwc1yQTNiZ6
+         H48LHRPBY2kqQ==
+Date:   Tue, 11 May 2021 09:49:41 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        kernel@pengutronix.de, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, Fabio Estevam <festevam@gmail.com>,
+        David Jander <david@protonic.nl>,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH v2 1/7] ARM: imx6q: remove PHY fixup for KSZ9031
+Message-ID: <20210511014937.GK27585@dragon>
+References: <20210309112615.625-1-o.rempel@pengutronix.de>
+ <20210309112615.625-2-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-References: <1619604015-117734-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1619604015-117734-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 10 May 2021 21:49:24 -0400
-Message-ID: <CAHC9VhSxDoxnKrw+bZQ18YVMm56ajza4wzFv=3L3SZf7qd5QgA@mail.gmail.com>
-Subject: Re: [PATCH] selinux: Remove redundant assignment to rc
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210309112615.625-2-o.rempel@pengutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 6:00 AM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> Variable rc is set to '-EINVAL' but this value is never read as
-> it is overwritten or not used later on, hence it is a redundant
-> assignment and can be removed.
->
-> Cleans up the following clang-analyzer warning:
->
-> security/selinux/ss/services.c:2103:3: warning: Value stored to 'rc' is
-> never read [clang-analyzer-deadcode.DeadStores].
->
-> security/selinux/ss/services.c:2079:2: warning: Value stored to 'rc' is
-> never read [clang-analyzer-deadcode.DeadStores].
->
-> security/selinux/ss/services.c:2071:2: warning: Value stored to 'rc' is
-> never read [clang-analyzer-deadcode.DeadStores].
->
-> security/selinux/ss/services.c:2062:2: warning: Value stored to 'rc' is
-> never read [clang-analyzer-deadcode.DeadStores].
->
-> security/selinux/ss/policydb.c:2592:3: warning: Value stored to 'rc' is
-> never read [clang-analyzer-deadcode.DeadStores].
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+On Tue, Mar 09, 2021 at 12:26:09PM +0100, Oleksij Rempel wrote:
+> Starting with:
+> 
+>     bcf3440c6dd7 ("net: phy: micrel: add phy-mode support for the KSZ9031 PHY")
+> 
+> the micrel phy driver started respecting phy-mode for the KSZ9031 PHY.
+> At least with kernel v5.8 configuration provided by this fixup was
+> overwritten by the micrel driver.
+> 
+> This fixup was providing following configuration:
+> 
+> RX path: 2.58ns delay
+>     rx -0.42 (left shift) + rx_clk  +0.96ns (right shift) =
+>         1,38 + 1,2 internal RX delay = 2.58ns
+> TX path: 0.96ns delay
+>     tx (no delay) + tx_clk 0.96ns (right shift) = 0.96ns
+> 
+> This configuration is outside of the recommended RGMII clock skew delays
+> and about in the middle of: rgmii-idrx and rgmii-id
+> 
+> Since most embedded systems do not have enough place to introduce
+> significant clock skew, rgmii-id is the way to go.
+> 
+> In case this patch breaks network functionality on your system, build
+> kernel with enabled MICREL_PHY. If it is still not working then try
+> following device tree options:
+> 1. Set (or change) phy-mode in DT to:
+>    phy-mode = "rgmii-id";
+>    This actives internal delay for both RX and TX.
+> 1. Set (or change) phy-mode in DT to:
+>    phy-mode = "rgmii-idrx";
+>    This actives internal delay for RX only.
+> 3. Use following DT properties:
+>    phy-mode = "rgmii";
+>    txen-skew-psec = <0>;
+>    rxdv-skew-psec = <0>;
+>    rxd0-skew-psec = <0>;
+>    rxd1-skew-psec = <0>;
+>    rxd2-skew-psec = <0>;
+>    rxd3-skew-psec = <0>;
+>    rxc-skew-psec = <1860>;
+>    txc-skew-psec = <1860>;
+>    This activates the internal delays for RX and TX, with the value as
+>    the fixup that is removed in this patch.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Acked-by: Philippe Schenker <philippe.schenker@toradex.com>
 > ---
->  security/selinux/ss/policydb.c | 1 -
->  security/selinux/ss/services.c | 4 ----
->  2 files changed, 5 deletions(-)
+>  arch/arm/boot/dts/imx6q-dmo-edmqmx6.dts |  2 +-
+>  arch/arm/mach-imx/mach-imx6q.c          | 23 -----------------------
 
-Merged into selinux/next, thanks.
+I have different branch for DTS and mach-imx change.  Please split the
+changes.
 
--- 
-paul moore
-www.paul-moore.com
+Shawn
+
+>  2 files changed, 1 insertion(+), 24 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/imx6q-dmo-edmqmx6.dts b/arch/arm/boot/dts/imx6q-dmo-edmqmx6.dts
+> index fa2307d8ce86..c713ac03b3b9 100644
+> --- a/arch/arm/boot/dts/imx6q-dmo-edmqmx6.dts
+> +++ b/arch/arm/boot/dts/imx6q-dmo-edmqmx6.dts
+> @@ -112,7 +112,7 @@ flash: m25p80@0 {
+>  &fec {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_enet>;
+> -	phy-mode = "rgmii";
+> +	phy-mode = "rgmii-id";
+>  	phy-reset-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
+>  	phy-supply = <&vgen2_1v2_eth>;
+>  	status = "okay";
+> diff --git a/arch/arm/mach-imx/mach-imx6q.c b/arch/arm/mach-imx/mach-imx6q.c
+> index 703998ebb52e..78205f90da27 100644
+> --- a/arch/arm/mach-imx/mach-imx6q.c
+> +++ b/arch/arm/mach-imx/mach-imx6q.c
+> @@ -40,27 +40,6 @@ static int ksz9021rn_phy_fixup(struct phy_device *phydev)
+>  	return 0;
+>  }
+>  
+> -static void mmd_write_reg(struct phy_device *dev, int device, int reg, int val)
+> -{
+> -	phy_write(dev, 0x0d, device);
+> -	phy_write(dev, 0x0e, reg);
+> -	phy_write(dev, 0x0d, (1 << 14) | device);
+> -	phy_write(dev, 0x0e, val);
+> -}
+> -
+> -static int ksz9031rn_phy_fixup(struct phy_device *dev)
+> -{
+> -	/*
+> -	 * min rx data delay, max rx/tx clock delay,
+> -	 * min rx/tx control delay
+> -	 */
+> -	mmd_write_reg(dev, 2, 4, 0);
+> -	mmd_write_reg(dev, 2, 5, 0);
+> -	mmd_write_reg(dev, 2, 8, 0x003ff);
+> -
+> -	return 0;
+> -}
+> -
+>  /*
+>   * fixup for PLX PEX8909 bridge to configure GPIO1-7 as output High
+>   * as they are used for slots1-7 PERST#
+> @@ -152,8 +131,6 @@ static void __init imx6q_enet_phy_init(void)
+>  	if (IS_BUILTIN(CONFIG_PHYLIB)) {
+>  		phy_register_fixup_for_uid(PHY_ID_KSZ9021, MICREL_PHY_ID_MASK,
+>  				ksz9021rn_phy_fixup);
+> -		phy_register_fixup_for_uid(PHY_ID_KSZ9031, MICREL_PHY_ID_MASK,
+> -				ksz9031rn_phy_fixup);
+>  		phy_register_fixup_for_uid(PHY_ID_AR8031, 0xffffffef,
+>  				ar8031_phy_fixup);
+>  		phy_register_fixup_for_uid(PHY_ID_AR8035, 0xffffffef,
+> -- 
+> 2.29.2
+> 
