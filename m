@@ -2,63 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6556C37A948
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C5C37A956
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231854AbhEKOaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:30:06 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:22994 "EHLO rere.qmqm.pl"
+        id S231793AbhEKOcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:32:47 -0400
+Received: from mga14.intel.com ([192.55.52.115]:32906 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231695AbhEKOaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:30:01 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4FfgJz6vpgz9C;
-        Tue, 11 May 2021 16:28:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1620743332; bh=g0uzjO2epbVe4ZYIqc5bZyHsR0KkcBusnVcUP8KYD5A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d6ZYWYn8OWXAuhGqNe0FDYL89QP+I/MSbA99WWJx9187OcT/+V1WGN5rWBynmwM8V
-         iTEHQfXvGqZeRfHQRXJnmZaODFAaWrvOiF0dLe0mbkkijlf6oUImvrwwPeXmyUQwA2
-         0F/vS8V8CS/1mCLfTMPP/XVyvyfeGg0P/4aZ6og6a39O7y8pWjxlM1RV0wXXtzMBPV
-         PqLk4arqhO5e8j9uEAo2WTxPAKYI/uyr+th3x9fMbGCjtvSHW0OLB29L+xU55+v6dG
-         55mYK2Mrp1aK7FR2YC7Y7u/4rmySKOX2daM55vJWRlYK2HD6waRwhlx8mlV30h1Dem
-         Vu818fjKExtZA==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.2 at mail
-Date:   Tue, 11 May 2021 16:28:47 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robert Yang <decatf@gmail.com>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 0/3] iio: accel: kxcjk-1013: Add support for KX023-1025
-Message-ID: <20210511142847.GA4413@qmqm.qmqm.pl>
-References: <20210511095409.9290-1-stephan@gerhold.net>
+        id S231154AbhEKOcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:32:41 -0400
+IronPort-SDR: iH4gk33J4A9XjfMEBwy5vLkq3wBh5PEIp4n0qsDzK/7hAH3psz+8ADpMfnmnfFKkPzzAEj0t1f
+ N6tShNC8+GCQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="199136065"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="199136065"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:31:34 -0700
+IronPort-SDR: qCrlyJaXV9SkWdyIBZnuzQfHfOzwIA2iGRu3+gEIzlGkGc3Hzn1V4Z7U4hKBYsQ7qAhxmQvSay
+ n9icrFIsSrtQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="434471084"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by fmsmga008.fm.intel.com with SMTP; 11 May 2021 07:31:31 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Tue, 11 May 2021 17:31:30 +0300
+Date:   Tue, 11 May 2021 17:31:30 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 0/3] drm/i915/display: Try YCbCr420 color when RGB
+ fails
+Message-ID: <YJqVQsnuQR7nVrnW@intel.com>
+References: <20210510133349.14491-1-wse@tuxedocomputers.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210511095409.9290-1-stephan@gerhold.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210510133349.14491-1-wse@tuxedocomputers.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 11:54:06AM +0200, Stephan Gerhold wrote:
-> KX023-1025 [1] is another accelerometer from Kionix that has lots
-> of additional functionality compared to KXCJK-1013. It combines the
-> motion interrupt functionality from KXCJK with the tap detection
-> from KXTF9, plus a lot more other functionality.
+On Mon, May 10, 2021 at 03:33:46PM +0200, Werner Sembach wrote:
+> When encoder validation of a display mode fails, retry with less bandwidth
+> heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
+> to support 4k60Hz output, which previously failed silently.
+> 
+> AMDGPU had nearly the exact same issue. This problem description is
+> therefore copied from my commit message of the AMDGPU patch.
+> 
+> On some setups, while the monitor and the gpu support display modes with
+> pixel clocks of up to 600MHz, the link encoder might not. This prevents
+> YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
+> possible. However, which color mode is used is decided before the link
+> encoder capabilities are checked. This patch fixes the problem by retrying
+> to find a display mode with YCbCr420 enforced and using it, if it is
+> valid.
+> 
+> This patchset is revision 7. Fixed a rebase issue in 1/3 and moved message
+> from error output to debug output in 2/3.
 
-When I researched KXTF9 support it occurred to me that the -10xx part is
-duplicating the information in 'KXyyy' - it seems to be a project number
-or something. I would suggest to use just 'kx023' prefix for the code
-and DT but leave the full identification in the comments/description.
+Looks good and CI seem shappy. 
 
-Best Regards
-Micha³ Miros³aw
+Series pushed to drm-intel-next. Thanks.
+
+-- 
+Ville Syrjälä
+Intel
