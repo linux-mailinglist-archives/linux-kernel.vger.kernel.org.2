@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58CE379EAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 06:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A230379EA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 06:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhEKEj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 00:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
+        id S229548AbhEKEjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 00:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbhEKEjP (ORCPT
+        with ESMTP id S230009AbhEKEjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 00:39:15 -0400
+        Tue, 11 May 2021 00:39:14 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE2EC0613ED
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 21:37:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CE4C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 21:37:43 -0700 (PDT)
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1lgK9K-0005c2-3A; Tue, 11 May 2021 06:37:38 +0200
+        id 1lgK9K-0005c3-39; Tue, 11 May 2021 06:37:38 +0200
 Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1lgK9J-0007y8-4A; Tue, 11 May 2021 06:37:37 +0200
+        id 1lgK9J-0007yH-5B; Tue, 11 May 2021 06:37:37 +0200
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
@@ -36,9 +36,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
         David Jander <david@protonic.nl>,
         Russell King <linux@armlinux.org.uk>,
         Philippe Schenker <philippe.schenker@toradex.com>
-Subject: [PATCH v3 2/7] ARM i.MX6q: remove part of ar8031_phy_fixup()
-Date:   Tue, 11 May 2021 06:37:30 +0200
-Message-Id: <20210511043735.30557-3-o.rempel@pengutronix.de>
+Subject: [PATCH v3 3/7] ARM i.MX6q: remove BMCR_PDOWN handler in ar8035_phy_fixup()
+Date:   Tue, 11 May 2021 06:37:31 +0200
+Message-Id: <20210511043735.30557-4-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210511043735.30557-1-o.rempel@pengutronix.de>
 References: <20210511043735.30557-1-o.rempel@pengutronix.de>
@@ -52,27 +52,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This part of this fixup is overwritten by at803x_config_init() in
-drivers/net/phy/at803x.c. No additional devicetree fixes are needed.
+BMCR_PDOWN is removed by resume handler at803x_resume() in
+drivers/net/phy/at803x.c
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- arch/arm/mach-imx/mach-imx6q.c | 6 ------
- 1 file changed, 6 deletions(-)
+ arch/arm/mach-imx/mach-imx6q.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/arch/arm/mach-imx/mach-imx6q.c b/arch/arm/mach-imx/mach-imx6q.c
-index 78205f90da27..1abefe7e1c3a 100644
+index 1abefe7e1c3a..4c840e116003 100644
 --- a/arch/arm/mach-imx/mach-imx6q.c
 +++ b/arch/arm/mach-imx/mach-imx6q.c
-@@ -82,12 +82,6 @@ static int ar8031_phy_fixup(struct phy_device *dev)
- 	val |= 0x18;
- 	phy_write(dev, 0xe, val);
+@@ -110,11 +110,6 @@ static int ar8035_phy_fixup(struct phy_device *dev)
+ 	 */
+ 	ar8031_phy_fixup(dev);
  
--	/* introduce tx clock delay */
--	phy_write(dev, 0x1d, 0x5);
--	val = phy_read(dev, 0x1e);
--	val |= 0x0100;
--	phy_write(dev, 0x1e, val);
+-	/*check phy power*/
+-	val = phy_read(dev, 0x0);
+-	if (val & BMCR_PDOWN)
+-		phy_write(dev, 0x0, val & ~BMCR_PDOWN);
 -
  	return 0;
  }
