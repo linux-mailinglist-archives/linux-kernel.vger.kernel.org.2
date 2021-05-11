@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9197437B250
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C1C37B254
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbhEKXOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:14:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48064 "EHLO mail.kernel.org"
+        id S230500AbhEKXO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:14:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230329AbhEKXNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230361AbhEKXNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 19:13:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AE0661959;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A54A961972;
         Tue, 11 May 2021 23:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620774745;
-        bh=+Y7Brkq4QGlRK9gl7dUiYWEuSh/16iUBzFPRbSF+lUg=;
+        bh=0GWhW/hCulbARv7+j0XEFQtQlx4ol+9OsgZn7m0LbX0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J2exsFq0kcylHjxT61lhA0UurGZb1nDKNnorPTKzOlW399nkyq5BlKnarEpc1Rucx
-         DXAU1W/Uc2q/cLVkG5VSP52cs9+zlDLyeHwjHeIRcXlMLlLJLLAwY374SfzsrHjDaM
-         /Brhp70OiK/CyCJe/cya2gd7z9Wh19g8Wv8ySpv+6C1/tvBrRH86shs/1ld3NU7xAO
-         ZzoRmlLNZFnnjoJMVc97qkG44yZZuGIpgKGh+hgf11w1AFoAJhdZXMw3DYvA2pgt6E
-         KIiNf/dHvwp9QzIdSXEsI3ivjtD7Pld4QbZnnnLG82UDWnZOEjQm8Wp86JnOd0Tkd+
-         pbkKYe39xQ5hw==
+        b=DoMcg1Ye25S+wzlfBrtKkpgQydx7z4zc22FqiiZMMZZUznXFTmNeQ2V/mGLNOxKtF
+         38zQmImlexYRop50lJSqZWnTknRlDjLt8GS+mDRaV27SoGJ1uw42Sx9OUPk9ClSY99
+         UPhp+R0HyYJDsWPWp/yb0ubyximK/iMm3UadtiI2c3ukdwa5xsh+88tMP0rmChddXY
+         QXYbLOmUFoX2Zv0+If/Tcw3/qcos5+hAZxEAA2dGE8DBIdRnkTTYN6kA+NZNqUYx6c
+         unMkhfH56xsnbkvxnH4gAuQK5dnxB8wfPgXvkO0DXDLSH6P4ABgMyIL64ipzjP1yYT
+         0xhHpRPdy7gBA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 93B115C0EAD; Tue, 11 May 2021 16:12:24 -0700 (PDT)
+        id 957545C0EB2; Tue, 11 May 2021 16:12:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 23/26] torture: Make kvm-remote.sh account for network failure in pathname checks
-Date:   Tue, 11 May 2021 16:12:20 -0700
-Message-Id: <20210511231223.2895398-23-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 24/26] torture: Don't cap remote runs by build-system number of CPUs
+Date:   Tue, 11 May 2021 16:12:21 -0700
+Message-Id: <20210511231223.2895398-24-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
@@ -46,71 +46,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a long-duration kvm-remote.sh run, almost all of the remote accesses will
-be simple file-existence checks.  These are thus the most likely to be caught
-out by network failures, which do happen from time to time.
+Currently, if a torture scenario requires more CPUs than are present
+on the build system, kvm.sh and friends limit the CPUs available to
+that scenario.  This makes total sense when the build system and the
+system running the scenarios are one and the same, but not so much when
+remote systems might well have more CPUs.
 
-This commit therefore takes a first step towards tolerating temporary
-network outages by making the file-existence checks repeat in the face of
-such an outage.  They also print a message every minute during a outage,
-allowing the user to take appropriate action.
+This commit therefore introduces a --remote flag to kvm.sh that suppresses
+this CPU-limiting behavior, and causes kvm-remote.sh to use this flag.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/kvm-remote.sh    | 26 +++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+ .../testing/selftests/rcutorture/bin/kvm-remote.sh |  2 +-
+ tools/testing/selftests/rcutorture/bin/kvm.sh      | 14 +++++++++++---
+ 2 files changed, 12 insertions(+), 4 deletions(-)
 
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-index f08d415d4f99..20e848d2c0bb 100755
+index 20e848d2c0bb..79e680e0e7bf 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-@@ -159,6 +159,28 @@ do
- 	fi
- done
- 
-+# Function to check for presence of a file on the specified system.
-+# Complain if the system cannot be reached, and retry after a wait.
-+# Currently just waits forever if a machine disappears.
-+#
-+# Usage: checkremotefile system pathname
-+checkremotefile () {
-+	local ret
-+	local sleeptime=60
-+
-+	while :
-+	do
-+		ssh $1 "test -f \"$2\""
-+		ret=$?
-+		if test "$ret" -ne 255
-+		then
-+			return $ret
-+		fi
-+		echo " ---" ssh failure to $1 checking for file $2, retry after $sleeptime seconds. `date`
-+		sleep $sleeptime
-+	done
-+}
-+
- # Function to start batches on idle remote $systems
- #
- # Usage: startbatches curbatch nbatches
-@@ -178,7 +200,7 @@ startbatches () {
- 			echo $((nbatches + 1))
- 			return 0
- 		fi
--		if ssh "$i" "test -f \"$resdir/$ds/remote.run\"" 1>&2
-+		if checkremotefile "$i" "$resdir/$ds/remote.run" 1>&2
+@@ -66,7 +66,7 @@ then
+ 		if (ds != "")
+ 			print "--datestamp " ds;
+ 	}'`"
+-	kvm.sh "$@" $datestamp --buildonly > $T/kvm.sh.out 2>&1
++	kvm.sh --remote "$@" $datestamp --buildonly > $T/kvm.sh.out 2>&1
+ 	ret=$?
+ 	if test "$ret" -ne 0
+ 	then
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index 390bb97b07d8..b4ac4ee33222 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -44,6 +44,7 @@ TORTURE_KCONFIG_KASAN_ARG=""
+ TORTURE_KCONFIG_KCSAN_ARG=""
+ TORTURE_KMAKE_ARG=""
+ TORTURE_QEMU_MEM=512
++TORTURE_REMOTE=
+ TORTURE_SHUTDOWN_GRACE=180
+ TORTURE_SUITE=rcu
+ TORTURE_MOD=rcutorture
+@@ -80,6 +81,7 @@ usage () {
+ 	echo "       --no-initrd"
+ 	echo "       --qemu-args qemu-arguments"
+ 	echo "       --qemu-cmd qemu-system-..."
++	echo "       --remote"
+ 	echo "       --results absolute-pathname"
+ 	echo "       --torture lock|rcu|rcuscale|refscale|scf"
+ 	echo "       --trust-make"
+@@ -115,10 +117,13 @@ do
+ 		checkarg --cpus "(number)" "$#" "$2" '^[0-9]*$' '^--'
+ 		cpus=$2
+ 		TORTURE_ALLOTED_CPUS="$2"
+-		max_cpus="`identify_qemu_vcpus`"
+-		if test "$TORTURE_ALLOTED_CPUS" -gt "$max_cpus"
++		if test -z "$TORTURE_REMOTE"
  		then
- 			continue # System still running last test, skip.
+-			TORTURE_ALLOTED_CPUS=$max_cpus
++			max_cpus="`identify_qemu_vcpus`"
++			if test "$TORTURE_ALLOTED_CPUS" -gt "$max_cpus"
++			then
++				TORTURE_ALLOTED_CPUS=$max_cpus
++			fi
  		fi
-@@ -216,7 +238,7 @@ echo All batches started. `date`
- # Wait for all remaining scenarios to complete and collect results.
- for i in $systems
- do
--	while ssh "$i" "test -f \"$resdir/$ds/remote.run\""
-+	while checkremotefile "$i" "$resdir/$ds/remote.run"
- 	do
- 		sleep 30
- 	done
+ 		shift
+ 		;;
+@@ -209,6 +214,9 @@ do
+ 		TORTURE_QEMU_CMD="$2"
+ 		shift
+ 		;;
++	--remote)
++		TORTURE_REMOTE=1
++		;;
+ 	--results)
+ 		checkarg --results "(absolute pathname)" "$#" "$2" '^/' '^error'
+ 		resdir=$2
 -- 
 2.31.1.189.g2e36527f23
 
