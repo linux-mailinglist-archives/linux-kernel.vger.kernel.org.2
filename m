@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C41937A878
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 812A137A884
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbhEKOIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:08:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:48478 "EHLO foss.arm.com"
+        id S231724AbhEKOI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:08:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:48490 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231661AbhEKOIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:08:20 -0400
+        id S231661AbhEKOI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:08:26 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9FB2E101E;
-        Tue, 11 May 2021 07:07:13 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.29.91])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1BB9C3F718;
-        Tue, 11 May 2021 07:07:10 -0700 (PDT)
-Date:   Tue, 11 May 2021 15:07:08 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/mm: Remove [PUD|PMD]_TABLE_BIT from [pud|pmd]_bad()
-Message-ID: <20210511140708.GC8933@C02TD0UTHF1T.local>
-References: <1620644871-26280-1-git-send-email-anshuman.khandual@arm.com>
- <20210510144337.GA92897@C02TD0UTHF1T.local>
- <4a36d7b7-6b27-31cc-d701-ebe3c6e4946e@arm.com>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 92D0E101E;
+        Tue, 11 May 2021 07:07:19 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 251A53F718;
+        Tue, 11 May 2021 07:07:18 -0700 (PDT)
+Date:   Tue, 11 May 2021 15:07:12 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        kbuild-all@lists.01.org, LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        khilman@kernel.org, robherring2@gmail.com,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: arm-linux-gnueabi-ld: warning: orphan section
+ `__cpuidle_method_of_table' from `arch/arm/mach-omap2/pm33xx-core.o' being
+ placed in section `__cpuidle_method_of_table'
+Message-ID: <20210511140712.GA24463@lpieralisi>
+References: <202105010813.KwuE0a5t-lkp@intel.com>
+ <CAKwvOdnQ+hiGxfsG5VeJO4qGqfRPvf=Mp7TRgjKzZnTspZjntA@mail.gmail.com>
+ <CAKwvOd=0_KbumyVLS2dn2DiKes50oG3te4Cd4aTAxnc5moERuw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4a36d7b7-6b27-31cc-d701-ebe3c6e4946e@arm.com>
+In-Reply-To: <CAKwvOd=0_KbumyVLS2dn2DiKes50oG3te4Cd4aTAxnc5moERuw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 09:21:46AM +0530, Anshuman Khandual wrote:
-> 
-> On 5/10/21 8:13 PM, Mark Rutland wrote:
-> > On Mon, May 10, 2021 at 04:37:51PM +0530, Anshuman Khandual wrote:
-> >> Semantics wise, [pud|pmd]_bad() have always implied that a given [PUD|PMD]
-> >> entry does not have a pointer to the next level page table. This had been
-> >> made clear in the commit a1c76574f345 ("arm64: mm: use *_sect to check for
-> >> section maps"). Hence explicitly check for a table entry rather than just
-> >> testing a single bit. This basically redefines [pud|pmd]_bad() in terms of
-> >> [pud|pmd]_table() making the semantics clear.
-> >>
-> >> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> >> Cc: Will Deacon <will@kernel.org>
-> >> Cc: Mark Rutland <mark.rutland@arm.com>
-> >> Cc: linux-arm-kernel@lists.infradead.org
-> >> Cc: linux-kernel@vger.kernel.org
-> >> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> > 
-> > I have no strong feelings either way, so: 
-> > 
-> > Acked-by: Mark Rutland <mark.rutland@arm.com>
-> > 
-> > ... that said, I think that the "bad" naming is unclear and misleading,
-> > and it'd be really nice if we could clean that up treewide with
-> > something clearer than "bad".
-> 
-> Agreed, the name is misleading.
-> 
-> > It does seem that would roughly fit p??_leaf() if we had
-> 
-> But what if the platform does not support huge page aka leaf mapping
-> at the given level ? Also a non table i.e bad entry might not always
-> mean a leaf/section/huge page mapping, it could simply imply that the
-> entry is not just pointing to next level and might be just in an bad
-> intermediate or invalid state.
+On Thu, May 06, 2021 at 12:09:46PM -0700, Nick Desaulniers wrote:
+> + folks from commit 449e056c76cc ("ARM: cpuidle: Add a cpuidle ops
+> structure to be used for DT")
 
-Ah, so that's also covering swap entries, too? It's not entirely clear
-to me what "bad intermediate or invalid state" means, because I assume
-it's not arbitrary junk or this wouldn't be sound genrally.
+Hi Nick,
 
-I had assumed it was only covering *valid* non-table entries.
+I thought this patch was meant to be merged upstream to fix it:
 
-> > p??_clear_leaf() and p??_none_or_clear_leaf() helpers.
-> 
-> Could you please elaborate how these new helpers might help define
-> pxx_bad() ?
+https://lore.kernel.org/linux-arm-kernel/20201230155506.1085689-1-arnd@kernel.org
 
-This was based on my (evidently wrong) prior understanding above.
+I can add a review tag to it but I don't think that's necessary, just
+let me know please.
 
 Thanks,
-Mark.
+Lorenzo
+
+> On Thu, May 6, 2021 at 12:05 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Fri, Apr 30, 2021 at 5:11 PM kernel test robot <lkp@intel.com> wrote:
+> > >
+> > > Hi Kees,
+> > >
+> > > FYI, the error/warning still remains.
+> > >
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > > head:   65ec0a7d24913b146cd1500d759b8c340319d55e
+> > > commit: 5a17850e251a55bba6d65aefbfeacfa9888cd2cd arm/build: Warn on orphan section placement
+> > > date:   8 months ago
+> > > config: arm-randconfig-r024-20210501 (attached as .config)
+> > > compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
+> > > reproduce (this is a W=1 build):
+> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > >         chmod +x ~/bin/make.cross
+> > >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5a17850e251a55bba6d65aefbfeacfa9888cd2cd
+> > >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> > >         git fetch --no-tags linus master
+> > >         git checkout 5a17850e251a55bba6d65aefbfeacfa9888cd2cd
+> > >         # save the attached .config to linux build tree
+> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross W=1 ARCH=arm
+> > >
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > >
+> > > All warnings (new ones prefixed by >>):
+> > >
+> > > >> arm-linux-gnueabi-ld: warning: orphan section `__cpuidle_method_of_table' from `arch/arm/mach-omap2/pm33xx-core.o' being placed in section `__cpuidle_method_of_table'
+> > > >> arm-linux-gnueabi-ld: warning: orphan section `__cpuidle_method_of_table' from `arch/arm/mach-omap2/pm33xx-core.o' being placed in section `__cpuidle_method_of_table'
+> > > >> arm-linux-gnueabi-ld: warning: orphan section `__cpuidle_method_of_table' from `arch/arm/mach-omap2/pm33xx-core.o' being placed in section `__cpuidle_method_of_table'
+> >
+> > Filed: https://github.com/ClangBuiltLinux/linux/issues/1372 (though
+> > this isn't specific to clang).
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
+> 
+> 
+> 
+> -- 
+> Thanks,
+> ~Nick Desaulniers
