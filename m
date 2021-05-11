@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2371737B248
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3962337B255
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhEKXOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:14:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48182 "EHLO mail.kernel.org"
+        id S231351AbhEKXOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:14:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230225AbhEKXNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:13:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E8F76192B;
+        id S230322AbhEKXNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 19:13:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D03161954;
         Tue, 11 May 2021 23:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620774745;
-        bh=g+6d3phEhzedyJwNDVwtwj0AAwQ7beVUbSC1enFErhQ=;
+        bh=U4HSy9n8wC4qfQJ+6wc/qNxwpq3Y+Rj0l00awjo/XK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H34P+mC6HMkBbKSA0bxnO4hhM3ZXzXHo+8PIKiEKU3ZMcmbU1jSmyslPP3AY31HIs
-         5YUcl8ZHKdE8F8jTBcW0pl3ZGe8J2fhRMYHaiKE7EwJuUrHMurLoI0B5RqzRXdD0Bj
-         Vru4Y0eH7Q7KysschYFBQ3o5mhLGh6YIqn+uUw/eqy4DbOcVhm5EJVuwLm1BogoGGE
-         E5/nejWDXvtp2ywJHPNHwo2GMXOsE1eYqjjKXkufG7FGkdZirG1ZicgNpejD6AeHCB
-         LhEZfefyWPJTXTn7bwvztkSBhTBvuapgAtLstFpxo+poOfGVicrTRfEqIAcJyoRIc3
-         ivxtCDdMdu5MQ==
+        b=UwIjGS1xHn9YnGHwSaqRHSppRbqiWZSapCgibaw+1l/gZdTeX3d/2O2Nf78r+5EW2
+         AQScjRGBE3pKWZbGv6/Fv+YQg7nsoOut3Ek58q5Q+RjSdp/xNdAHSRky+3uRoFj0hX
+         +h3SE5y2h0u49T4ONmQjTltygee66TQ+mRftIsluDW2dHQjJGoxWslMuHn7ys77H0h
+         zsctTQZbQ2Cw/W4+SHbNMClx+gfygg6f21xzDcU1967GiTlFnEdXy6i/2iSQHjmIVE
+         wrS7WjlK7WbVNkDDp8Y1FlJ37weikWE/gkQKsJ41m7uER9GIPWhGYSR+9UunQfTK0D
+         GF5bHr63tv7FA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 867A45C0E3F; Tue, 11 May 2021 16:12:24 -0700 (PDT)
+        id 8872A5C0E59; Tue, 11 May 2021 16:12:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,11 +33,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH tip/core/rcu 16/26] torture:  Set kvm.sh language to English
-Date:   Tue, 11 May 2021 16:12:13 -0700
-Message-Id: <20210511231223.2895398-16-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 17/26] rcutorture: Delay-based false positives for RCU priority boosting tests
+Date:   Tue, 11 May 2021 16:12:14 -0700
+Message-Id: <20210511231223.2895398-17-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
@@ -47,33 +46,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of the code invoked directly and indirectly from kvm.sh parses
-the output of commands.  This parsing assumes English, which can cause
-failures if the user has set some other language.  In a few cases,
-there are language-independent commands available, but this is not
-always the case.  Therefore, as an alternative to polyglot parsing,
-this commit sets the LANG environment variable to en_US.UTF-8.
+If an rcu_torture_boost() kthread determines that its grace period
+has not yet ended, it invokes rcu_torture_boost_failed() which checks
+whether enough time has elapsed for this to be considered a failure of
+RCU priority boosting, and, if so, flags the error.
 
-Reported-by: Frederic Weisbecker <frederic@kernel.org>
+Unfortunately, that kthread might be preempted for some seconds between
+the time that it checks the grace period and the time that it checks the
+time.  This delay can result in a false positive, featuring a complaint
+that a particular grace period has not ended, followed by a diagnostic
+dump featuring a much later grace period.
+
+This commit avoids these false positives by rechecking for the end of
+the grace period after the time check.
+
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm.sh | 3 +++
- 1 file changed, 3 insertions(+)
+ kernel/rcu/rcutorture.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index fab3bd9cf9d1..390bb97b07d8 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -20,6 +20,9 @@ mkdir $T
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 06d08f4f3e52..3defd0febe15 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -921,6 +921,10 @@ static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long start
+ 	static int dbg_done;
  
- cd `dirname $scriptname`/../../../../../
+ 	if (end - start > test_boost_duration * HZ - HZ / 2) {
++		// Recheck after checking time to avoid false positives.
++		smp_mb(); // Time check before grace-period check.
++		if (cur_ops->poll_gp_state(gp_state))
++			return false; // passed, though perhaps just barely
+ 		VERBOSE_TOROUT_STRING("rcu_torture_boost boosting failed");
+ 		n_rcu_torture_boost_failure++;
+ 		if (!xchg(&dbg_done, 1) && cur_ops->gp_kthread_dbg) {
+@@ -929,10 +933,10 @@ static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long start
+ 			cur_ops->gp_kthread_dbg();
+ 		}
  
-+# This script knows only English.
-+LANG=en_US.UTF-8; export LANG
-+
- dur=$((30*60))
- dryrun=""
- KVM="`pwd`/tools/testing/selftests/rcutorture"; export KVM
+-		return true; /* failed */
++		return true; // failed
+ 	}
+ 
+-	return false; /* passed */
++	return false; // passed
+ }
+ 
+ static int rcu_torture_boost(void *arg)
 -- 
 2.31.1.189.g2e36527f23
 
