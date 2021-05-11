@@ -2,94 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD18A37A88C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4DE37A89A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbhEKOKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:10:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231663AbhEKOKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:10:18 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63F81613F7;
-        Tue, 11 May 2021 14:09:07 +0000 (UTC)
-Date:   Tue, 11 May 2021 15:10:14 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Stephan Gerhold <stephan@gerhold.net>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robert Yang <decatf@gmail.com>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH 0/3] iio: accel: kxcjk-1013: Add support for KX023-1025
-Message-ID: <20210511151014.3d9d6768@jic23-huawei>
-In-Reply-To: <91258724-09cc-ed39-2277-6fbcca0c53e9@redhat.com>
-References: <20210511095409.9290-1-stephan@gerhold.net>
-        <91258724-09cc-ed39-2277-6fbcca0c53e9@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231684AbhEKOMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231488AbhEKOMR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:12:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA7A9C061574;
+        Tue, 11 May 2021 07:11:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ns8g+nbJuyOh7gET8cGtylgrkk3eWd9nQ8qX/kCPn/g=; b=OwhXZQ5On+tzASMhUb2984kocS
+        1Frf3mPfcEpNd55eNxRrmNjwPhGF7elCZstOL2y+a1YvHvfNj/1c3cM1PL27yCVgV3zQmpuHYAGrd
+        XAGS1wSxtU8NW+O3rQfhSHkWK5SHoJqfzodt4BuARecYiQWd3pVF1EYXknqsoE/0DXASJ7Oatycb7
+        nJXL1d1eYjPmh/ebfV+LVQZKScTgfbI+IthIciBMJ50mpO4XFxUvuQ54zVrcZpZyTJwZHtKkVOneY
+        mnmE5GZCh3Xw6WC+7iVDwTXiY9UprnqEnfDP0ufc6Bfu0o4UYUst1u1xunaIwpbWuph0RQkXUAjLl
+        xIuqA6Dw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgT6C-007LRP-4h; Tue, 11 May 2021 14:11:04 +0000
+Date:   Tue, 11 May 2021 15:11:00 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] [RFC] Trigger retry from fault vm operation
+Message-ID: <YJqQdKmBHz6oEqD1@casper.infradead.org>
+References: <20210511140113.1225981-1-agruenba@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511140113.1225981-1-agruenba@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 12:44:23 +0200
-Hans de Goede <hdegoede@redhat.com> wrote:
+On Tue, May 11, 2021 at 04:01:13PM +0200, Andreas Gruenbacher wrote:
+> we have a locking problem in gfs2 that I don't have a proper solution for, so
+> I'm looking for suggestions.
+> 
+> What's happening is that a page fault triggers during a read or write
+> operation, while we're holding a glock (the cluster-wide gfs2 inode
+> lock), and the page fault requires another glock.  We can recognize and
+> handle the case when both glocks are the same, but when the page fault requires
+> another glock, there is a chance that taking that other glock would deadlock.
 
-> Hi,
-> 
-> On 5/11/21 11:54 AM, Stephan Gerhold wrote:
-> > KX023-1025 [1] is another accelerometer from Kionix that has lots
-> > of additional functionality compared to KXCJK-1013. It combines the
-> > motion interrupt functionality from KXCJK with the tap detection
-> > from KXTF9, plus a lot more other functionality.
-> > 
-> > This patch set does not add support for any of the extra functionality,
-> > but makes basic functionality work with the existing kxcjk-1013 driver.
-> > 
-> > At first, the register map for the KX023-1025 seems quite different
-> > from the other accelerometers supported by the kxcjk-1013.
-> > However, it turns out that at least most of the register bits
-> > still mean the same for KX023-1025.
-> > 
-> > This patch set refactors the kxcjk-1013 driver a little bit
-> > to get the register addresses from a chip-specific struct.
-> > The register bits can be re-used for all the different chips.
-> > 
-> > The KX023-1025 is used in several smartphones from Huawei.
-> > I tested these changes on a Huawei Ascend G7, someone else reported
-> > they also work fine on the Huawei Honor 5X (codename "kiwi").
-> > 
-> > [1]: https://kionixfs.azureedge.net/en/datasheet/KX023-1025%20Specifications%20Rev%2012.0.pdf
-> > 
-> > Stephan Gerhold (3):
-> >   dt-bindings: iio: kionix,kxcjk1013: Document kionix,kx023-1025
-> >   iio: accel: kxcjk-1013: Refactor configuration registers into struct
-> >   iio: accel: kxcjk-1013: Add support for KX023-1025  
-> 
-> Thanks, the entire series looks good to me:
-> 
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> 
+So we're looking at something like one file on a gfs2 filesystem being
+mmaped() and then doing read() or write() to another gfs2 file with the
+mmaped address being the passed to read()/write()?
 
-Other than those things 0-day found which would be good to tidy up for a v2
-looks good to me.
+Have you looked at iov_iter_fault_in_readable() as a solution to
+your locking order?  That way, you bring the mmaped page in first
+(see generic_perform_write()).
 
-Thanks,
+> When we realize that we may not be able to take the other glock in gfs2_fault,
+> we need to communicate that to the read or write operation, which will then
+> drop and re-acquire the "outer" glock and retry.  However, there doesn't seem
+> to be a good way to do that; we can only indicate that a page fault should fail
+> by returning VM_FAULT_SIGBUS or similar; that will then be mapped to -EFAULT.
+> We'd need something like VM_FAULT_RESTART that can be mapped to -EBUSY so that
+> we can tell the retry case apart from genuine -EFAULT errors.
 
-Jonathan
-
-> for the series.
-> 
-> Regards,
-> 
-> Hans
-> 
+We do have VM_FAULT_RETRY ... does that retry at the wrong level?
 
