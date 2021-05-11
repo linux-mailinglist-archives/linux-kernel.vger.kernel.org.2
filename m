@@ -2,56 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5234379EDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 06:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8006379EDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 06:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbhEKE4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 00:56:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230169AbhEKE4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 00:56:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D02BA6191D;
-        Tue, 11 May 2021 04:55:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620708927;
-        bh=RIFK/PTnpqzjwd06ZD8D2fdlb5wl0fYV98WQSJOC/xU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zii1JXNdixeez4YLjpqpbbdSkNJFFIdcglffWdF3PVwGhDc8HZWcJOyw9F9dZ0etH
-         YOqpoYP2zHXO/IfU0O+EhlQVeejzqE60Bz5+e7jps/NTquO5SUrz12Sc2vnypf6Izn
-         r2Dm2FcZzPPl31IQfO6qlTeRqjoZevypY3JRTtPIBoI0LgaH5LpiBIMWVEIb1kugXt
-         Xe9cHqedTX6g3lFWXY4r6iiyQOKCijOGJNurpokbIImFN5rNh4NVA4tgfHYrAVPpEc
-         7iBp6408YNc+sjnwimIIjFvD3+mTZWAKXnJh+54vrmQQUfcCroARAjXiERTcgfCMkx
-         66ZnVZZNgk1Pg==
-Date:   Tue, 11 May 2021 07:55:23 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kael_w@yeah.net
-Subject: Re: [PATCH] RDMA: Remove unnecessary struct declaration
-Message-ID: <YJoOO+WMuy9x9Ets@unreal>
-References: <20210510062843.15707-1-wanjiabing@vivo.com>
+        id S230316AbhEKE50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 00:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230295AbhEKE5O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 00:57:14 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FAACC061761
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 21:55:54 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so3053592otc.6
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 21:55:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LRkUu5LCFvquDlyLgAggMIQvj0PMUIKV3fzj8HPK4n8=;
+        b=Qv5FC1Qu1CtsXR1UyCXrkd3H3IdtGC0FvhcKvPZ2AVZy6EW/FOgLXMLu+gyFmPcicr
+         tbGyiy8k25+sfaBK0EQBbMtgKmjrgvFtrASptwxobVuTYK/ju6Ge/V0GrQ6tqRS+6Aj+
+         N73461M8vfuTpjuSyUqtPHVSa2JKd8j9MwOsgPmHkTF/PgG66p1gQy3fIrRMvzDgBesy
+         nq3i75AVJNhoPnPxj0DwICnLO9LRd6JM8HWSNkXgXQ/UWUfq3xada1j8Rk9k+EkexBKl
+         fim5b9j/oBKZveH8XAiSoCM9yyuyw4IIWc3RWnR/9OOBEer3SUh7sXV7QIIDTyqMKLau
+         pcew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LRkUu5LCFvquDlyLgAggMIQvj0PMUIKV3fzj8HPK4n8=;
+        b=E1cSdZv8PatZoBGu8DMqqkmHUlN9cvscRi5oPJohH5ljIhKo/tIwwNecpykJQgwo8r
+         +MO5FaOT7DDNJHhHZl+qMvLLVCCwpRIFNdUSv4bpj7kPKJUPAq9Omro8C/ZmXX8wr0c5
+         ZWXYlzc1GeXprFo556OYmnBmO8EDeTt+bAaANYdb+pKjqEGZq9OydhiM/FGV/RsHevPQ
+         adiJvWxJw1GKNBBvR24weVDo/DNeVr3F1pxFpWB0nRRIDJ8cPVgpXbvulCvQmK8tHBbf
+         cvU/qY4zX+xKJCsosR+GNv918h+bMfNeetQD2gifJ1RxGxfujfH8kfE7cRN/VOZCngiS
+         d4vA==
+X-Gm-Message-State: AOAM532cqYToVmbVC4YGdSn3xQ7FHQibGBRNhefhRqqtz7LgRGtLNyt4
+        4xp+b1yG/jgjlmF43IMo7m9avA==
+X-Google-Smtp-Source: ABdhPJwn2ZRr/gjRSK8ClIz3ilxOMtFbJ2lD+fzPmX3FeDD9T3M0Pl0j3Uuro/ae7a/eiv8xtTSnZg==
+X-Received: by 2002:a9d:721b:: with SMTP id u27mr15693822otj.95.1620708954195;
+        Mon, 10 May 2021 21:55:54 -0700 (PDT)
+Received: from yoga ([2607:fb90:e623:42c1:10df:adff:fec2:f1d])
+        by smtp.gmail.com with ESMTPSA id x18sm3024293oix.28.2021.05.10.21.55.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 21:55:53 -0700 (PDT)
+Date:   Mon, 10 May 2021 23:55:50 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     sbillaka@codeaurora.org
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>
+Subject: Re: [PATCH v1 0/3] Add support for next gen eDP driver on SnapDragon
+Message-ID: <20210511045550.GL2484@yoga>
+References: <1620202579-19066-1-git-send-email-sbillaka@codeaurora.org>
+ <CAA8EJpqZXHNvBySL0Vm-CmsrAh8Z85SoQHn97TqWLYeFW-Q=UA@mail.gmail.com>
+ <3398f9a1f985ccd6bb6a44646f7bea24@codeaurora.org>
+ <CAF6AEGuPpihBj9GQbuPKXuZvY=+Bid-pSB9XPP2ZXNQvHEm-Ag@mail.gmail.com>
+ <3d96a5be6c6f0140b738a302befc25b5@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510062843.15707-1-wanjiabing@vivo.com>
+In-Reply-To: <3d96a5be6c6f0140b738a302befc25b5@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 02:28:42PM +0800, Wan Jiabing wrote:
-> The declaration of struct ib_grh is uncessary here,
-> because it is defined at line 766.
+On Mon 10 May 07:16 CDT 2021, sbillaka@codeaurora.org wrote:
+
+> On 2021-05-06 20:32, Rob Clark wrote:
+> > On Wed, May 5, 2021 at 11:47 PM <sbillaka@codeaurora.org> wrote:
+> > > 
+> > > On 2021-05-05 15:31, Dmitry Baryshkov wrote:
+> > > > Hi,
+> > > >
+> > > > On Wed, 5 May 2021 at 11:17, Sankeerth Billakanti
+> > > > <sbillaka@codeaurora.org> wrote:
+> > > >>
+> > > >> These patches add support for the next generation eDP driver on
+> > > >> SnapDragon
+> > > >> with dpu support. The existing eDP driver cannot support the new eDP
+> > > >> hardware. So, to maintain backward compatibility, the older eDP driver
+> > > >> is
+> > > >> moved to v200 folder and the new generation eDP driver is added in
+> > > >> the v510 folder.
+> > > >
+> > > > What exactly does this version correspond to?
+> > > > I assume that v510 corresponds to sdmshrike/sc8180x. Is it right?
+> > > [Sankeerth] This is for sc7280.
+> > > 
+> > > > Is it really so specific, or just v2/v5 would be enough? Not to
+> > > > mention that this is the MDP/ version, while other blocks tend to use
+> > > > block-specific versions/ids.
+> > > [Sankeerth] I can rename it as edp-v1 and edp-v2. Edp v1 is very old
+> > > chip and there is considerable HW delta between v1 and v2. So, we want
+> > > to separate the driver. We followed similar model for DPU driver
+> > > where,
+> > > MDP4, MDP5 and DPU have separate folders. EDP v1 belongs to MDP4
+> > > generation.
+> > 
+> > Bjorn brought up the idea of just dropping the existing drm/msm/edp..
+> > since the efforts to upstream the platform it worked on (8084?)
+> > fizzled out, I don't think there is any device which uses it.
+> > 
+> > But it does sound like edp is a subset of the the newer dp driver, so
+> > seems sort of like the better approach would be to add edp support to
+> > dp.  I believe Bjorn has something based on this approach which is
+> > working for sc8280 (although not sure if it is in shape to post
+> > patches yet)
+> > 
+> > BR,
+> > -R
+> Hi Rob,
+> I will explore to integrate native eDP driver as part of DP driver. Will
+> follow up with new patchsets.
 > 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  include/rdma/ib_verbs.h | 1 -
->  1 file changed, 1 deletion(-)
+> Hi Dmitry,
+> I will move the eDP phy to qmp drivers folder in the new patchsets so that
+> it can reuse the dp core driver.
 > 
 
-I'm pretty sure that my ROB is not needed, but anyway.
+Hi Sankeerth,
 
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+I've been working on eDP support for sc8180x recently, which afaict is
+identical to sc7280 in this regard. I finally got the patches cleaned up
+and posted here:
+https://lore.kernel.org/linux-arm-msm/20210511042043.592802-1-bjorn.andersson@linaro.org/T/#t
+https://lore.kernel.org/linux-arm-msm/20210511041930.592483-1-bjorn.andersson@linaro.org/T/#t
 
-Thanks
+My initial patches added widebus support, rather than disabling it. But
+those patches needs a little bit more polishing - and I finally figured
+was able to disable the feature. So I will get back to this.
+
+There's currently a few seconds delay on plug detection, so this needs
+to be investigated further and I haven't looked at backlight handling
+yet.
+
+Regards,
+Bjorn
