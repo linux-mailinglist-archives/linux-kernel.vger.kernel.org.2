@@ -2,115 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D1E37A3E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 029AA37A3E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbhEKJin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 05:38:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52066 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230434AbhEKJif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 05:38:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A14E161925;
-        Tue, 11 May 2021 09:37:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620725848;
-        bh=6o759ShUxJ4M0iPoewavcBs0joP5lvg0/UyuatoupKw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VmShZQzrJkNUYpzDiT8lkPsxOAMSd9Mve7i5gQll5qndGWVpx/umg+CXxAKGpoNMA
-         r3FMkUmVknRLOM40Or9NWwNOL92NSwkHrq/d0ndNeQRTu32uCCDHx2IbSd5VG2b4ul
-         nosZAixjCj57nhk32NpeqSVxAJnPk2eny4EB88KTc/gQGnVuXNqo0yWlzvNXSmu4ZF
-         mRycl9aLbRnBPpCgKOBrtmqpOvb6P16yZBfRn67Vau0A0Tq2FleVuS/QpC4INaUcg7
-         P/ifJQg2MpIKloJneBuh4wLQ19EHMgDmJrDBTumwAHsRVeIkB/VjkEIaNgqi+q08au
-         3pae3xKzjvu8Q==
-Date:   Tue, 11 May 2021 11:37:17 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
-        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fpga@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
-        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as
- ASCII
-Message-ID: <20210511113717.5c8b68f7@coco.lan>
-In-Reply-To: <YJmH2irxoRsyNudb@mit.edu>
-References: <cover.1620641727.git.mchehab+huawei@kernel.org>
-        <2ae366fdff4bd5910a2270823e8da70521c859af.camel@infradead.org>
-        <20210510135518.305cc03d@coco.lan>
-        <de6d1fa5b7934f4afd61370d9c58502bef588466.camel@infradead.org>
-        <YJmH2irxoRsyNudb@mit.edu>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S231285AbhEKJlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 05:41:22 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:40620 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230434AbhEKJlU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 05:41:20 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14B9e3Zl105496;
+        Tue, 11 May 2021 04:40:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620726003;
+        bh=Er4e3Wlwj5BM2A9N1DSRChljXHG2w+7/nDeq1nnE1Ho=;
+        h=From:To:CC:Subject:Date;
+        b=W3ixTAsBPbdwW7z+9UNrCAgwKgSqS3KWm7nTlTsiuNA4oHhEU3yhG+G1BswDq5Dbr
+         9HII/L497t1Eq4E4zKU720az38HZLQS4PQvV33NAmjyEBH/65WAcr49UBaJRs3URu3
+         Xzo5UH5ZaUHQFmSRv98j+eAGzjoDotbECvXxSl84=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14B9e2c2067204
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 11 May 2021 04:40:03 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 11
+ May 2021 04:40:02 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 11 May 2021 04:40:02 -0500
+Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14B9dxBK039609;
+        Tue, 11 May 2021 04:40:00 -0500
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>
+CC:     Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: spi-nor: Add documentation for spi_nor_soft_reset()
+Date:   Tue, 11 May 2021 15:09:58 +0530
+Message-ID: <20210511093958.17258-1-p.yadav@ti.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 10 May 2021 15:22:02 -0400
-"Theodore Ts'o" <tytso@mit.edu> escreveu:
+Document what the function does and that it should only be used when it
+is known that the device supports it. This will avoid unaware
+programmers thinking that they can arbitrarily use it to reset the
+device.
 
-> On Mon, May 10, 2021 at 02:49:44PM +0100, David Woodhouse wrote:
-> > On Mon, 2021-05-10 at 13:55 +0200, Mauro Carvalho Chehab wrote: =20
-> > > This patch series is doing conversion only when using ASCII makes
-> > > more sense than using UTF-8.=20
-> > >=20
-> > > See, a number of converted documents ended with weird characters
-> > > like ZERO WIDTH NO-BREAK SPACE (U+FEFF) character. This specific
-> > > character doesn't do any good.
-> > >=20
-> > > Others use NO-BREAK SPACE (U+A0) instead of 0x20. Harmless, until
-> > > someone tries to use grep[1]. =20
-> >=20
-> > Replacing those makes sense. But replacing emdashes =E2=80=94 which are=
- a
-> > distinct character that has no direct replacement in ASCII and which
-> > people do *deliberately* use instead of hyphen-minus =E2=80=94 does not=
-. =20
->=20
-> I regularly use --- for em-dashes and -- for en-dashes.  Markdown will
-> automatically translate 3 ASCII hypens to em-dashes, and 2 ASCII
-> hyphens to en-dashes.  It's much, much easier for me to type 2 or 3
-> hypens into my text editor of choice than trying to enter the UTF-8
-> characters.=20
+Suggested-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 
-Yeah, typing those UTF-8 chars are a lot harder than typing -- and ---
-on several text editors ;-)
+---
 
-Here, I only type UTF-8 chars for accents (my US-layout keyboards are=20
-all set to US international, so typing those are easy).
+ drivers/mtd/spi-nor/core.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-> If we can make sphinx do this translation, maybe that's
-> the best way of dealing with these two characters?
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 265d8b25fc7f..59e207f2e0e3 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2988,6 +2988,21 @@ static int spi_nor_init(struct spi_nor *nor)
+ 	return 0;
+ }
+ 
++/**
++ * spi_nor_soft_reset() - Perform a software reset
++ * @nor:	pointer to 'struct spi_nor'
++ *
++ * Performs a "Soft Reset and Enter Default Protocol Mode" sequence which resets
++ * the device to its power-on-reset state. This is useful when the software has
++ * made some changes to device (volatile) registers and needs to reset it before
++ * shutting down, for example.
++ *
++ * Not every flash supports this sequence. The same set of opcodes might be used
++ * for some other operation on a flash that does not support this. Support for
++ * this sequence can be discovered via SFDP in the BFPT table.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
+ static void spi_nor_soft_reset(struct spi_nor *nor)
+ {
+ 	struct spi_mem_op op;
+-- 
+2.30.0
 
-Sphinx already does that by default[1], using smartquotes:
-
-	https://docutils.sourceforge.io/docs/user/smartquotes.html
-
-Those are the conversions that are done there:
-
-      - Straight quotes (" and ') turned into "curly" quote characters;
-      - dashes (-- and ---) turned into en- and em-dash entities;
-      - three consecutive dots (... or . . .) turned into an ellipsis char.
-
-So, we can simply use single/double commas, hyphens and dots for
-curly commas and ellipses.
-
-[1] There's a way to disable it at conf.py, but at the Kernel this is
-    kept on its default: to automatically do such conversions.=20
-
-Thanks,
-Mauro
