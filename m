@@ -2,111 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3C637A89F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F06F37A8A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231781AbhEKOMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:12:42 -0400
-Received: from mga12.intel.com ([192.55.52.136]:39052 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231740AbhEKOMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:12:40 -0400
-IronPort-SDR: nIpA2S2ypTkC51tHQ4ODD5y8uHkz2c9UAykMPJgZQJr0CHQHFqA7h4cPkfYWf/axICPEwV8GQK
- GSLZyEQN2aaQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179044132"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="179044132"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:11:34 -0700
-IronPort-SDR: V7GrQEfQsFjN+DWzOkb5DLz1EaBBY3grFEDntmwP7UbwJC4VOPqhtq/cB8zn9D937X2nNi3UT2
- afTQWr+iMYSQ==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="434463993"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:11:33 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lgT6g-00BSpA-Kj; Tue, 11 May 2021 17:11:30 +0300
-Date:   Tue, 11 May 2021 17:11:30 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Rodolfo Giometti <giometti@enneenne.com>
-Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        Alexander Gordeev <lasaine@lvk.cs.msu.su>
-Subject: Re: [PATCH v1 1/1] pps: clients: parport: Switch to use
- module_parport_driver()
-Message-ID: <YJqQkvqGUScrrWoL@smile.fi.intel.com>
-References: <20210510141302.56654-1-andriy.shevchenko@linux.intel.com>
- <77c821e1-adc7-4088-0dcb-da65ba7a39a2@enneenne.com>
- <YJovqMqJj3mBeRE8@smile.fi.intel.com>
- <55aeec09-63c7-7d1a-13c9-cd8f4b7dc1f9@enneenne.com>
- <YJo3LoDSqr18YiNh@smile.fi.intel.com>
- <04e6d0e4-4ef1-b27b-0b10-7e57280d5c9f@enneenne.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <04e6d0e4-4ef1-b27b-0b10-7e57280d5c9f@enneenne.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S231740AbhEKONP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:13:15 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:57176 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231305AbhEKONN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:13:13 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14BE3FlI018223;
+        Tue, 11 May 2021 10:11:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=Rd9kBmCBoHoD21lvLz9FYE3OvjHLwEsadf0ipH0W7LQ=;
+ b=FiDl4r22AXRRofJp+oVCTl6CkpWfggE7JtDxW87mtLw8oAae52QpAfG1fZMnWdqWLrGj
+ 0ZB6ySYN1qmJ9nXetXwrTNvoVEPRrw3dz/HN8XnnVS5veDk9AGkaE5FMMLLbAvROdcvs
+ vBbwaf1kGIYxIqneo0d85Vgkcg07jR28A/Fgj05746CJEIxnu5ZJ8Gwk5lHhMYOk8SgE
+ qw4lWORF+ynBUQtZ4dAXjohsVyR5mbvH1wGXTnYgspDQ2oWeHPmWrWNBBYFv6rRdl7Vm
+ nRNaL3B3J0RAFt52GIjmXCOM9+aMpYFmhJALNiz65nndsaZ0LltcpjrfWkPMqx5q0nRZ nA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38frm9dxb9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 11 May 2021 10:11:58 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14BE3UDa019864;
+        Tue, 11 May 2021 10:11:57 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38frm9dxa4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 11 May 2021 10:11:57 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14BDw27e012704;
+        Tue, 11 May 2021 14:11:55 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04fra.de.ibm.com with ESMTP id 38ef37gqp9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 11 May 2021 14:11:55 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14BEBr3i19202412
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 May 2021 14:11:53 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F8CA11C058;
+        Tue, 11 May 2021 14:11:53 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D9D611C064;
+        Tue, 11 May 2021 14:11:50 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.116.76])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 11 May 2021 14:11:50 +0000 (GMT)
+Message-ID: <735bae46f0772b40ef6ecfb3c6fe0267b3ebbee8.camel@linux.ibm.com>
+Subject: Re: [PATCH v6 08/11] evm: Allow setxattr() and setattr() for
+ unmodified metadata
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@google.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        kernel test robot <lkp@intel.com>
+Date:   Tue, 11 May 2021 10:11:49 -0400
+In-Reply-To: <20210505113329.1410943-4-roberto.sassu@huawei.com>
+References: <20210505112935.1410679-1-roberto.sassu@huawei.com>
+         <20210505113329.1410943-4-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 2gHa9IKMeQPDBAZQELyLLsM0tVznr4kK
+X-Proofpoint-ORIG-GUID: VQjWT_i38fDwTtr2tpp3kYIfBtfrhWJL
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-11_02:2021-05-11,2021-05-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=892 phishscore=0
+ mlxscore=0 priorityscore=1501 bulkscore=0 adultscore=0 impostorscore=0
+ spamscore=0 clxscore=1011 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105110108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 10:46:01AM +0200, Rodolfo Giometti wrote:
-> On 11/05/21 09:50, Andy Shevchenko wrote:
-> > On Tue, May 11, 2021 at 09:26:36AM +0200, Rodolfo Giometti wrote:
-> >> On 11/05/21 09:18, Andy Shevchenko wrote:
-> >>> On Tue, May 11, 2021 at 09:05:00AM +0200, Rodolfo Giometti wrote:
-> >>>> On 10/05/21 16:13, Andy Shevchenko wrote:
+Hi Roberto,
 
-...
-
-> >>>>> +	if (clear_wait > CLEAR_WAIT_MAX) {
-> >>>>> +		pr_err("clear_wait value should be not greater then %d\n",
-> >>>>> +		       CLEAR_WAIT_MAX);
-> >>>>> +		return;
-> >>>>> +	}
-> >>>>> +
-> >>>>
-> >>>> Why do you need to do so? Maybe a comment would be welcomed.
-> >>>
-> >>> It's in original code, I just moved it to ->probe().
-> >>>
-> >>> What comment do you want to have here, because original code has no comment (I
-> >>> think in any case it's out of scope of this change, but may be prepended or
-> >>> appended to the series)?
-> >>
-> >> Mmm... these functions can be called at different times, so I don't know if we
-> >> can just move the code safely.
-> > 
-> > I do not see any issue here. TL;DR: it won't be worse, but might even give an
-> > improvement.
-> > 
-> > Before it prevented to module to be initialized,
-> > now one may amend this at run time. the downside is that now it will require
-> > module removal and inserting versus just two attempts of inserting in a row.
-> > 
-> > For the built-in case it shouldn't change much (but if
-> > /sys/module/.../parameters/... is writable for this, then it will allow to do
-> > the similar trick as above, so extending functionality with the flexibility,
-> > means direct improvement).
-> > 
-> > Okay, permissions are 0 there, I don't remember what it means, maybe the
-> > parameter won't be available under /sysfs at all, but again, it won't change
-> > the functional behaviour, the downside is the memory consumed by the 'built-in'
-> > code at run time.
+On Wed, 2021-05-05 at 13:33 +0200, Roberto Sassu wrote:
+> With the patch to allow xattr/attr operations if a portable signature
+> verification fails, cp and tar can copy all xattrs/attrs so that at the
+> end of the process verification succeeds.
 > 
-> OK, I see. If so
-
-At least this is my understanding how it works before and after the change.
-If anybody has something to clarify here, I would be glad to learn!
-
-> it's OK for me:
+> However, it might happen that the xattrs/attrs are already set to the
+> correct value (taken at signing time) and signature verification succeeds
+> before the copy has completed. For example, an archive might contains files
+> owned by root and the archive is extracted by root.
 > 
-> Acked-by: Rodolfo Giometti <giometti@enneenne.com>
+> Then, since portable signatures are immutable, all subsequent operations
+> fail (e.g. fchown()), even if the operation is legitimate (does not alter
+> the current value).
+> 
+> This patch avoids this problem by reporting successful operation to user
+> space when that operation does not alter the current value of xattrs/attrs.
 
-Thanks!
+I must be missing something.  If both the IMA and EVM status flags are
+reset after xattr or attr modification, do we really need to prevent
+any metadata - same or different - changes?  Both evm_protect_xattr()
+and evm_inode_setattr() would need to be modified to allow
+INTEGRITY_PASS_IMMUTABLE.
 
--- 
-With Best Regards,
-Andy Shevchenko
+thanks,
 
+Mimi
 
