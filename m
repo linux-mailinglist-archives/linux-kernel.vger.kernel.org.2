@@ -2,159 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A6737ABC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF8737ABD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhEKQXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 12:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbhEKQXe (ORCPT
+        id S231860AbhEKQY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 12:24:27 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11464 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231920AbhEKQYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:23:34 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F2EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 09:22:28 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id p8so18661267iol.11
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 09:22:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4jXZs11HGH/EBNKvji1vJOWsgckIXclQ4pDhYDnWyh8=;
-        b=K2ME3kMtsLEUOJHmWigd7iBeW3kUpwwkNwrk+bKCUi/GAasFcn1ZjPJxEIfRUxKkzo
-         XRE8SZWXoPSy5xuqDorvmCuof0ODWKu/NdabOTyAcWb7p+aUwc1tjXljnZdNnx1AYUMi
-         K9Hwu53wrQporys+PQgWjJpUROgDva5Yr49pRar93gWXGvHUd0CtDGbRZMXD2mGzHyoE
-         XVElnc5EEp9MpIkPo0gJ1x0jdQv3K7wXFDJgZr57Xw/TPT/I7yCAVa4dJ2dYoS3pX4PA
-         uxp/UYSQYsNgvutVCPQZ1nAA+4UVrXiUaeQ4grJfNjcnce9ZoYU+C+vE6bJ8WENSY3Og
-         83aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4jXZs11HGH/EBNKvji1vJOWsgckIXclQ4pDhYDnWyh8=;
-        b=fsMGXYpKXRYlkHMQrjj58MEnZ5Xl4nYL40h7YJIFVGGs5Z543If1J+SrIGq5URw51H
-         NzyEOdk4HsZHqvC/H/c7PG/fyZC39r1nyBQ1WswZVHJcBuyB57AcLtPwUOdHtMKk+cT6
-         dNFjPfPcg8NJ710DQPbTqiOwPwFUUXZXcObRZxMAv1i/Rk/yR4Vq/c/TeGxO0x7sSFmm
-         9YekJWVlmBMcjpsS4GQKC41Q3UVhLxrcsBJ3znHK24+uRljxNvHmJjDN+XLmhiRpHE+k
-         ALUwnqCFsSi2V4ek0KsjYxiQaASnaK4D3SA8DrRB2FhGSw8fH/S20dZAvuAH9Hh/M2qV
-         /LHQ==
-X-Gm-Message-State: AOAM533F9wihitqDYCwGccDZnSt+ev8hEg3LRdpY6ZGuSZKldTKP7oEq
-        uLBOvtXDqt3/Hhcr9WsNTNCYHJ4Wfvc1xpV1u9VW1w==
-X-Google-Smtp-Source: ABdhPJwPBgeUZszq6WtkQ7MowJX6W0BoxxcJ1gkJMdfAryvl2OZHfqw9y2B4Otj8D1fRSZddbjMa83cW8UiK+o7WKZM=
-X-Received: by 2002:a5d:850c:: with SMTP id q12mr23352649ion.189.1620750147514;
- Tue, 11 May 2021 09:22:27 -0700 (PDT)
+        Tue, 11 May 2021 12:24:24 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14BG441W147301;
+        Tue, 11 May 2021 12:22:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=MX/pe2X8Lj0OwytIdDUlgjVyW5DRpANBNnHL+GxaeGY=;
+ b=GAAaYEjxsSDePPo8O89YTaPoijyZch88ly0N8gYvJrHYjrd38lvvH9VdAeoHZmCFEuJN
+ NOCv7SSQ5MX0oLw89ami3sUnfx4boJFS65LiAx3Z8Nt0IMS6AQIf/QADCIjha7Ucfgmr
+ n8FAH0VAy4PGDl1MJ7XhVfIth8wFkWWToUKUCQIWbEoQDjWaI8XakLshbeoVOUHNw/rS
+ BadFy+WNCy89HW5wH7lVsLFdAY2eue4TxKbCllB7hvXC8ao8B9cMFyfWjUj510LYbiRx
+ NINc+lwTRZtESjxqUjJzkfBX6R+xAWQVryWokHpfyrx7cSDnynZ5hr5C6C8t7TPrF50z nw== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38fve320r9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 11 May 2021 12:22:54 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14BGI9ud016942;
+        Tue, 11 May 2021 16:22:52 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 38dj989s3g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 11 May 2021 16:22:52 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14BGMN9U34144600
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 May 2021 16:22:23 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 30B404203F;
+        Tue, 11 May 2021 16:22:50 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 28A9942049;
+        Tue, 11 May 2021 16:22:48 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue, 11 May 2021 16:22:47 +0000 (GMT)
+Date:   Tue, 11 May 2021 21:52:47 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Parth Shah <parth@linux.ibm.com>
+Subject: Re: [PATCH v2 1/8] sched/fair: Update affine statistics when needed
+Message-ID: <20210511162247.GS2633526@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20210506164543.90688-1-srikar@linux.vnet.ibm.com>
+ <20210506164543.90688-2-srikar@linux.vnet.ibm.com>
+ <87sg2yil1q.mognet@arm.com>
+ <20210507170542.GQ2633526@linux.vnet.ibm.com>
+ <87sg2t1o9z.mognet@arm.com>
 MIME-Version: 1.0
-References: <20210506184241.618958-1-bgardon@google.com> <20210506184241.618958-8-bgardon@google.com>
- <e2e73709-f247-1a60-4835-f3fad37ab736@redhat.com> <YJlxQe1AXljq5yhQ@google.com>
- <a13b6960-3628-2899-5fbf-0765f97aa9eb@redhat.com> <YJl7V1arDXyC6i5P@google.com>
-In-Reply-To: <YJl7V1arDXyC6i5P@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Tue, 11 May 2021 09:22:16 -0700
-Message-ID: <CANgfPd9LDnEs1EoEu2tXZVvLGkFhNSByJ-oLCkqb02xxmgkifQ@mail.gmail.com>
-Subject: Re: [PATCH v3 7/8] KVM: x86/mmu: Protect rmaps independently with SRCU
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <87sg2t1o9z.mognet@arm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: EVXYIadUXl2Szavm1yEXLxubzyQP1STB
+X-Proofpoint-ORIG-GUID: EVXYIadUXl2Szavm1yEXLxubzyQP1STB
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-11_02:2021-05-11,2021-05-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ suspectscore=0 mlxlogscore=847 spamscore=0 bulkscore=0 phishscore=0
+ lowpriorityscore=0 malwarescore=0 adultscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105110114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 11:28 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Mon, May 10, 2021, Paolo Bonzini wrote:
-> > On 10/05/21 19:45, Sean Christopherson wrote:
-> > > >
-> > > > ---------
-> > > > Currently, rmaps are always allocated and published together with a new
-> > > > memslot, so the srcu_dereference for the memslots array already ensures that
-> > > > the memory pointed to by slots->arch.rmap is zero at the time
-> > > > slots->arch.rmap.  However, they still need to be accessed in an SRCU
-> > > > read-side critical section, as the whole memslot can be deleted outside
-> > > > SRCU.
-> > > > --------
-> > > I disagree, sprinkling random and unnecessary __rcu/SRCU annotations does more
-> > > harm than good.  Adding the unnecessary tag could be quite misleading as it
-> > > would imply the rmap pointers can_change_  independent of the memslots.
-> > >
-> > > Similary, adding rcu_assign_pointer() in alloc_memslot_rmap() implies that its
-> > > safe to access the rmap after its pointer is assigned, and that's simply not
-> > > true since an rmap array can be freed if rmap allocation for a different memslot
-> > > fails.  Accessing the rmap is safe if and only if all rmaps are allocated, i.e.
-> > > if arch.memslots_have_rmaps is true, as you pointed out.
-> >
-> > This about freeing is a very good point.
-> >
-> > > Furthermore, to actually gain any protection from SRCU, there would have to be
-> > > an synchronize_srcu() call after assigning the pointers, and that _does_  have an
-> > > associated.
-> >
-> > ... but this is incorrect (I was almost going to point out the below in my
-> > reply to Ben, then decided I was pointing out the obvious; lesson learned).
-> >
-> > synchronize_srcu() is only needed after *deleting* something, which in this
->
-> No, synchronization is required any time the writer needs to ensure readers have
-> recognized the change.  E.g. making a memslot RO, moving a memslot's gfn base,
-> adding an MSR to the filter list.  I suppose you could frame any modification as
-> "deleting" something, but IMO that's cheating :-)
->
-> > case is done as part of deleting the memslots---it's perfectly fine to batch
-> > multiple synchronize_*() calls given how expensive some of them are.
->
-> Yes, but the shortlog says "Protect rmaps _independently_ with SRCU", emphasis
-> mine.  If the rmaps are truly protected independently, then they need to have
-> their own synchronization.  Setting all rmaps could be batched under a single
-> synchronize_srcu(), but IMO batching the rmaps with the memslot itself would be
-> in direct contradiction with the shortlog.
->
-> > (BTW an associated what?)
->
-> Doh.  "associated memslot."
->
-> > So they still count as RCU-protected in my opinion, just because reading
-> > them outside SRCU is a big no and ought to warn (it's unlikely that it
-> > happens with rmaps, but then we just had 2-3 bugs like this being reported
-> > in a short time for memslots so never say never).
->
-> Yes, but that interpretation holds true for literally everything that is hidden
-> behind an SRCU-protected pointer.  E.g. this would also be wrong, it's just much
-> more obviously broken:
->
-> bool kvm_is_gfn_writable(struct kvm* kvm, gfn_t gfn)
-> {
->         struct kvm_memory_slot *slot;
->         int idx;
->
->         idx = srcu_read_lock(&kvm->srcu);
->         slot = gfn_to_memslot(kvm, gfn);
->         srcu_read_unlock(&kvm->srcu);
->
->         return slot && !(slot->flags & KVM_MEMSLOT_INVALID) &&
->                !(slot->flags & KVM_MEM_READONLY);
-> }
->
->
-> > However, rcu_assign_pointer is not needed because the visibility of the rmaps
-> > is further protected by the have-rmaps flag (to be accessed with
-> > load-acquire/store-release) and not just by the pointer being there and
-> > non-NULL.
->
-> Yes, and I'm arguing that annotating the rmaps as __rcu is wrong because they
-> themselves are not protected by SRCU.  The memslot that contains the rmaps is
-> protected by SRCU, and because of that asserting SRCU is held for read will hold
-> true.  But, if the memslot code were changed to use a different protection scheme,
-> e.g. a rwlock for argument's sake, then the SRCU assertion would fail even though
-> the rmap logic itself didn't change.
+* Valentin Schneider <valentin.schneider@arm.com> [2021-05-11 12:51:52]:
 
-I'm inclined to agree with Sean that the extra RCU annotations are
-probably unnecessary since we're already doing the srcu dereference
-for all the slots. I'll move all these RCU annotations to their own
-patch and put it at the end of the series when I send v4.
+> On 07/05/21 22:35, Srikar Dronamraju wrote:
+> > * Valentin Schneider <valentin.schneider@arm.com> [2021-05-07 17:08:17]:
+> >
+> >> On 06/05/21 22:15, Srikar Dronamraju wrote:
+> >> > wake_affine_idle() can return prev_cpu. Even in such a scenario,
+> >> > scheduler was going ahead and updating schedstats related to wake
+> >> > affine. i.e even if the task is not moved across LLC domains,
+> >> > schedstats would have accounted.
+> >
+<snip>
+> > Lets say if prev CPU and this CPU were part of the same LLC, and the prev
+> > CPU was busy (or busier than this CPU), should consider this as a wake
+> > affine? If prev was idle, we would have surely consider prev CPU. Also since
+> > both are part of same LLC, we cant say this CPU is more affine than prev
+> > CPU. Or may be I am confusing wake_affine with cache_affine.
+> >
+> 
+> SD_WAKE_AFFINE says: "Consider waking task on waking CPU.", with that I
+> read wake_affine() as: "should I place the wakee close to the waker or
+> close to its previous CPU?". This can be yes or no even if both are in the
+> same LLC.
+> 
+
+Okay.
+
+<snip>
+
+> >> > --- a/kernel/sched/fair.c
+> >> > +++ b/kernel/sched/fair.c
+> >> > @@ -5884,8 +5884,10 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p,
+> >> >       if (target == nr_cpumask_bits)
+> >> >               return prev_cpu;
+> >> >
+> >> > -	schedstat_inc(sd->ttwu_move_affine);
+> >> > -	schedstat_inc(p->se.statistics.nr_wakeups_affine);
+> >> > +	if (!cpus_share_cache(prev_cpu, target)) {
+> >>
+> >> Per the above, why? Why not just if(target == this_cpu) ?
+> >
+> > We could use target == this_cpu. However if prev CPU and this CPU share the
+> > same LLC, then should we consider moving to this_cpu as an affine wakeup?
+> >
+> 
+> It would make sense if it's a sync wakeup, which wake_affine() does try to
+> do ATM (regardless of LLC actually, if I'm reading it correctly).
+
+Okay, I will replace the cpus_share_cache check with target == this_cpu.
+
+-- 
+Thanks and Regards
+Srikar Dronamraju
