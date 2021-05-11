@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76EA037B110
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C12D637B126
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhEKVxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 17:53:05 -0400
-Received: from ozlabs.org ([203.11.71.1]:41627 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhEKVxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 17:53:04 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ffs8C5cVqz9sX2;
-        Wed, 12 May 2021 07:51:55 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1620769915;
-        bh=+PD2qb3jBwgaVAk7Hbw3sZGE+74JyVqVwMasNr2ztZM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KWpL2eCzpBLRkaP55d/B8hWG1mq/Vhk0uwsYaY8YviDFCZkbePP3Ct7IFSmbqI/eA
-         OUWAKMe7BeLCiYjXflSmTW7pQsIKTENiVjmArNz265MLvUsuiEdRokoaNyQqKTK4vt
-         8aC516hqKRhtfkwkbGo/e3MwHkHwWvBTWOeSZ7wBTAw+cPnjXZoUpKWEk8D/BPNaxf
-         t73PT7vzn9lxgUCO27rkHjB8WEHIrBEbA9DDH7WsYTR8VQ2h3fYmNSw8rs2AlF8vIN
-         WwyOUnD25HFeHEoulaG0rTbKZol19JafDR4VpyKSsTmhjhxYWltti5pv0k1DWP2Ioo
-         30Nar75aYSwAA==
-Date:   Wed, 12 May 2021 07:51:55 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the soundwire tree
-Message-ID: <20210512075155.5b93c7c3@canb.auug.org.au>
-In-Reply-To: <20210512075055.69047ec0@canb.auug.org.au>
-References: <20210512075055.69047ec0@canb.auug.org.au>
+        id S230181AbhEKV56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 17:57:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhEKV5z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 17:57:55 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A8FC061574;
+        Tue, 11 May 2021 14:56:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=RKf0jhjqNyYKa1rwLYcbF4xtKVI/z4lp0gDi5eHVKyw=; b=xhdV61NXfHaovmyP1GOMVMIqz
+        QjCVo7lOaj+nCCq9P4erUTr+/yU4fr2EsAOcWvwerLlNfjxNETg2mUnKotlQWCpXE/4dF8rR51bl2
+        5AynBeYQmksC+PMcyeH0O7oy2EzZyP32gPSIJTejJhp3jdgCWiuhmZkOzl4aOdCRClRouIpouA9Sz
+        PZgNtrq8Fy+JMmEr7VnYy62LYx+LqV+XHt3GLz9pHvk2J5Vp0yOgL6nTpH1Q+Gq1/PheSPYzNBNnS
+        VmVPs+S2t3/K8a0vVi2cf9Px25/iLHZnLzDn/wcLimAoK8S/p56tqDVeO03Q/fe5Lfhrhzch4aC6F
+        +nK2xpdTg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43874)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lgaMv-0003Fx-Gv; Tue, 11 May 2021 22:56:45 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lgaMu-0001Qg-7M; Tue, 11 May 2021 22:56:44 +0100
+Date:   Tue, 11 May 2021 22:56:44 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] net: phy: add driver for Motorcomm yt8511 phy
+Message-ID: <20210511215644.GO1336@shell.armlinux.org.uk>
+References: <20210511214605.2937099-1-pgwipeout@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Cqj7OV_K4yHz5kSNYcJQOYD";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511214605.2937099-1-pgwipeout@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Cqj7OV_K4yHz5kSNYcJQOYD
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi all,
+On Tue, May 11, 2021 at 05:46:06PM -0400, Peter Geis wrote:
+> +static int yt8511_config_init(struct phy_device *phydev)
+> +{
+> +	int ret, val, oldpage;
+> +
+> +	/* set clock mode to 125mhz */
+> +	oldpage = phy_select_page(phydev, YT8511_EXT_CLK_GATE);
+> +	if (oldpage < 0)
+> +		goto err_restore_page;
+> +
+> +	val = __phy_read(phydev, YT8511_PAGE);
+> +	val |= (YT8511_CLK_125M);
+> +	ret = __phy_write(phydev, YT8511_PAGE, val);
 
-On Wed, 12 May 2021 07:50:55 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> In commit
->=20
->   f136f3279d85 ("soundwire: qcom: fix handling of qcom,ports-block-pack-m=
-ode")
->=20
-> Fixes tag
->=20
->   Fixes: 5943e4fb14e3 ("soundwire: qcom: check of_property_read status")
->=20
-> has these problem(s):
->=20
->   - Target SHA1 does not exist
->=20
-> Maybe you meant
->=20
-> Fixes: a5943e4fb14e ("soundwire: qcom: check of_property_read status")
+Please consider __phy_modify(), and handle any error it returns.
 
-Actually this is in the soundwire-fixes tree.
+> +
+> +	/* disable auto sleep */
+> +	ret = __phy_write(phydev, YT8511_PAGE_SELECT, YT8511_EXT_SLEEP_CTRL);
 
---=20
-Cheers,
-Stephen Rothwell
+Please consider handling a failure to write here.
 
---Sig_/Cqj7OV_K4yHz5kSNYcJQOYD
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> +	val = __phy_read(phydev, YT8511_PAGE);
+> +	val &= (~BIT(15));
+> +	ret = __phy_write(phydev, YT8511_PAGE, val);
 
------BEGIN PGP SIGNATURE-----
+Also a use for __phy_modify().
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCa/HsACgkQAVBC80lX
-0GzjjAf/XRcmmDHA0PwdF9t5wVdyuSMqHuWfXFt+4OAZT0LBF7CGy+5B7oQoB0cf
-4LDYnYTi6aBxvzGyZ5sIgqxy1bKfhdAqe1FMNMd+DCYqKXiRmDCG0Gr75B+v3OFQ
-ewQ1k4XU1B4ZWnLp53W2mvQ+8Aj1aTirpcCfo19E8hn8fMnFpDXuYnzXM2iJZXxV
-zr7DLIZ7gF1PvJQRaZv2xJAD3Kgk5MJ9Lmr5Cq7JEqEyycgvgTUYCnK7mRSIPgUk
-9wdZRj+AgD6/NVVRG6vAi/M0u486jZi1ffs3G1YKQgIcWCRacJ+zPS14MuXvyINw
-+8IT4Z6RMxJxT4uP8fftuqpRDGa/WA==
-=3btS
------END PGP SIGNATURE-----
+> +
+> +err_restore_page:
+> +	return phy_restore_page(phydev, oldpage, ret);
+> +}
+> +
+> +static struct phy_driver motorcomm_phy_drvs[] = {
+> +	{
+> +		PHY_ID_MATCH_EXACT(PHY_ID_YT8511),
+> +		.name		= "YT8511 Gigabit Ethernet",
+> +		.config_init	= &yt8511_config_init,
 
---Sig_/Cqj7OV_K4yHz5kSNYcJQOYD--
+Please drop the '&' here, it's unnecessary.
+
+Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
