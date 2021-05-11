@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB96437A680
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A5A37A681
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhEKMYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 08:24:45 -0400
-Received: from mga14.intel.com ([192.55.52.115]:23097 "EHLO mga14.intel.com"
+        id S231577AbhEKMYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 08:24:46 -0400
+Received: from mga18.intel.com ([134.134.136.126]:36363 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231442AbhEKMYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 08:24:37 -0400
-IronPort-SDR: I2lD96FD/wWYF5accgUOr6LSjNfrTUUNppSXmXoMUYG3md3EteLlVlEa/oWcA/jFXpoD4ZcKbK
- BAiFHLv1KvdA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="199107925"
+        id S231513AbhEKMYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 08:24:40 -0400
+IronPort-SDR: xmYD0Ym3qk3oEVU5ufMroz+kkWG5j8vLQVmlzT9coHLZb5Kom/PCOdbhREdIBEDJu7Svvk7DoT
+ 2IR4notjI+OA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="186867257"
 X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="199107925"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 05:23:30 -0700
-IronPort-SDR: KKsGvNiL7kblYbkH/YQ1mN1bUwTfSTbRlW+s7/4P5Y1Pjq38YdqAYmt0l/Cly2R+m9l7YugUNn
- x1D697WZ/B7Q==
+   d="scan'208";a="186867257"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 05:23:31 -0700
+IronPort-SDR: m+PQ81zOrInK7O7kKzyU58cNzmRHgT4ZsQiRbDDS43QBIKWpCiAzj8PYkK993w1S/b3rgXs9Jl
+ dxd8IeMGY4WA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="609465960"
+   d="scan'208";a="541628883"
 Received: from lkp-server01.sh.intel.com (HELO f375d57c4ed4) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 11 May 2021 05:23:28 -0700
+  by orsmga004.jf.intel.com with ESMTP; 11 May 2021 05:23:28 -0700
 Received: from kbuild by f375d57c4ed4 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lgRQ8-0000hC-3v; Tue, 11 May 2021 12:23:28 +0000
-Date:   Tue, 11 May 2021 20:22:59 +0800
+        id 1lgRQ8-0000h9-1J; Tue, 11 May 2021 12:23:28 +0000
+Date:   Tue, 11 May 2021 20:23:02 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:kcsan] BUILD SUCCESS
- 84276ad2747ded97568872dadcff8173d0826221
-Message-ID: <609a7723.vNWvj7BsesYqAVpe%lkp@intel.com>
+Subject: [rcu:clocksource] BUILD SUCCESS
+ 9f5c5a88cedc9051c8f358a16b3c879c79b41393
+Message-ID: <609a7726.J6QQ3o9f61VpGvNn%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +43,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git kcsan
-branch HEAD: 84276ad2747ded97568872dadcff8173d0826221  kcsan: Document "value changed" line
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git clocksource
+branch HEAD: 9f5c5a88cedc9051c8f358a16b3c879c79b41393  clocksource: Print deviation in nanoseconds for unstable case
 
 elapsed time: 728m
 
-configs tested: 211
+configs tested: 194
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -64,12 +64,6 @@ x86_64                           allyesconfig
 riscv                            allmodconfig
 i386                             allyesconfig
 riscv                            allyesconfig
-mips                           gcw0_defconfig
-xtensa                         virt_defconfig
-sh                          urquell_defconfig
-arm                         at91_dt_defconfig
-powerpc                 mpc8560_ads_defconfig
-mips                    maltaup_xpa_defconfig
 powerpc                    amigaone_defconfig
 nios2                            allyesconfig
 mips                      malta_kvm_defconfig
@@ -85,10 +79,6 @@ sparc                       sparc64_defconfig
 powerpc                   currituck_defconfig
 m68k                        mvme147_defconfig
 sh                             shx3_defconfig
-riscv                            alldefconfig
-arm                         lpc32xx_defconfig
-mips                      maltaaprp_defconfig
-sh                     magicpanelr2_defconfig
 arm                          gemini_defconfig
 arm                          pcm027_defconfig
 powerpc                     tqm8540_defconfig
@@ -107,48 +97,43 @@ openrisc                    or1ksim_defconfig
 powerpc                      mgcoge_defconfig
 m68k                         amcore_defconfig
 powerpc                     tqm8555_defconfig
+mips                    maltaup_xpa_defconfig
 powerpc                      ppc40x_defconfig
 sh                        sh7757lcr_defconfig
-arm                             mxs_defconfig
-parisc                generic-64bit_defconfig
-arm                          simpad_defconfig
-mips                     decstation_defconfig
-arm                            xcep_defconfig
-mips                         tb0226_defconfig
+sh                          polaris_defconfig
+mips                     loongson1c_defconfig
+mips                       capcella_defconfig
+arm                           sunxi_defconfig
 sh                           se7705_defconfig
 arm                       mainstone_defconfig
 mips                            ar7_defconfig
 powerpc                      bamboo_defconfig
 parisc                generic-32bit_defconfig
 arm                        mvebu_v7_defconfig
-sh                           se7751_defconfig
-powerpc                     tqm5200_defconfig
-powerpc                      walnut_defconfig
-sh                           se7712_defconfig
-arm                            hisi_defconfig
-x86_64                              defconfig
-sh                          sdk7780_defconfig
-mips                     loongson1c_defconfig
-arm                      footbridge_defconfig
-h8300                            alldefconfig
+powerpc                 mpc834x_itx_defconfig
+mips                     decstation_defconfig
+arm                        magician_defconfig
+powerpc                 mpc85xx_cds_defconfig
+mips                           ip28_defconfig
+powerpc                    adder875_defconfig
+arc                              alldefconfig
+powerpc                     tqm8560_defconfig
 nios2                               defconfig
 mips                        workpad_defconfig
 csky                             alldefconfig
 riscv             nommu_k210_sdcard_defconfig
 powerpc                     skiroot_defconfig
-nios2                         10m50_defconfig
-arm                             rpc_defconfig
-arc                           tb10x_defconfig
-mips                        nlm_xlp_defconfig
-powerpc                     ep8248e_defconfig
-sh                        sh7763rdp_defconfig
-sh                             espt_defconfig
-powerpc                 mpc837x_mds_defconfig
 arm                         cm_x300_defconfig
 arm                         socfpga_defconfig
 sh                   sh7724_generic_defconfig
 arc                        nsim_700_defconfig
 arm                         nhk8815_defconfig
+i386                             alldefconfig
+sh                        sh7763rdp_defconfig
+x86_64                            allnoconfig
+mips                            gpr_defconfig
+arm                         orion5x_defconfig
+mips                   sb1250_swarm_defconfig
 nios2                         3c120_defconfig
 arm                           stm32_defconfig
 sh                        dreamcast_defconfig
@@ -164,6 +149,7 @@ powerpc                     pq2fads_defconfig
 arm                           sama5_defconfig
 powerpc                   lite5200b_defconfig
 arc                        vdk_hs38_defconfig
+sh                           se7751_defconfig
 mips                          rm200_defconfig
 powerpc                     pseries_defconfig
 arm                          iop32x_defconfig
@@ -182,20 +168,16 @@ arm                      pxa255-idp_defconfig
 arm                         assabet_defconfig
 powerpc                     kilauea_defconfig
 mips                        bcm63xx_defconfig
-sh                          polaris_defconfig
-xtensa                    xip_kc705_defconfig
-mips                        maltaup_defconfig
-mips                         mpc30x_defconfig
 powerpc                 mpc836x_rdk_defconfig
 mips                         tb0287_defconfig
 m68k                            q40_defconfig
 arm                            pleb_defconfig
 m68k                           sun3_defconfig
+mips                           gcw0_defconfig
 sh                        edosk7760_defconfig
 mips                      pistachio_defconfig
 mips                  decstation_64_defconfig
 arm                      jornada720_defconfig
-x86_64                            allnoconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -257,6 +239,7 @@ um                                allnoconfig
 um                               allyesconfig
 um                                  defconfig
 x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
 x86_64                               rhel-8.3
 x86_64                      rhel-8.3-kbuiltin
 x86_64                                  kexec
