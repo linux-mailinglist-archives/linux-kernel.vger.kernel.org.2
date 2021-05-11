@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C0237B1EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B55737B1E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhEKWy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 18:54:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33932 "EHLO mail.kernel.org"
+        id S230367AbhEKWyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:54:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230305AbhEKWyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 18:54:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3175061946;
+        id S230291AbhEKWyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 18:54:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 113246193F;
         Tue, 11 May 2021 22:53:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620773587;
-        bh=wUdaSFc5MlL9R/weJL4BK5WyqaGeP7pB4eQbiGMG6yE=;
+        bh=0zvL868RbLnDBhdNNXkDTbR3Z2jBxOtL487by24P1Ss=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z/fr6QW0V/VZdgWxNBBpjHn4Lk1HYwNkpQgZK/q+Fn1A1baU3cjUDes4GebZnmDrn
-         Mc2e0K2VIV/Lclr78u9W83aAD3GZAp2RgOK9TNqBejOaT61rRccZ8DB/whFRldmVk3
-         5blJOq8xvZjHcOs8fBlrgiqjBq+LKE1fWmgf9m40JF9qXf57nXsTu4kuI4kF5gk+PR
-         i9KD6Rx10XA6OXZtPCOXCo/rZuvuPE2RAYwR/V9pcfueEKSxpKJ5V2tdAjaRQ3w7Yb
-         jzOBPjxLm88b1yXDGuM2Aa1UplWGGgwWEGRTMqO4L3u23iJYBdD8yy0fU1sdA8xIuZ
-         93K99Itz0hehQ==
+        b=hGAiEIBnDv/W8n1d+nPT+INxssGlEzVGruW4451VoohL7UqcRWFsOm0OI0zva8ENP
+         EhA2tbGayte8uMJXQqjn1NZY/CGfRHrVZmrwKzrY7a4KgjVMN8bbOGauMt/sxQU7im
+         5QDcHdmrDiQCgxYMDlBneIKnPuxDt8mOfCtvnKDWnSpZZ6hgRLQ3kKk3c/DD3eipwZ
+         8JjZxGHov1LH/SMWylfOwQt0ckUoRehE4LByTJIQeCD+6Gb/jvyIrEIiP5p5WJieX6
+         SKgHZyBtBt+grIdBNF4gGFsZN1ztPad57wIQAj3vtrR3kWKJMJBLTlOH+r9pDFM3GA
+         bcG6sLbmrUVtA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9B26B5C0DF3; Tue, 11 May 2021 15:53:06 -0700 (PDT)
+        id 9CC835C0DF5; Tue, 11 May 2021 15:53:06 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 11/19] rcu: Make show_rcu_gp_kthreads() dump rcu_node structures blocking GP
-Date:   Tue, 11 May 2021 15:52:56 -0700
-Message-Id: <20210511225304.2893154-11-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 12/19] rcu: Restrict RCU_STRICT_GRACE_PERIOD to at most four CPUs
+Date:   Tue, 11 May 2021 15:52:57 -0700
+Message-Id: <20210511225304.2893154-12-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
@@ -46,32 +46,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, show_rcu_gp_kthreads() only dumps rcu_node structures that
-have outdated ideas of the current grace-period number.  This commit
-also dumps those that are in any way blocking the current grace period.
-This helps diagnose RCU priority boosting failures.
+Kernels built with CONFIG_RCU_STRICT_GRACE_PERIOD=y can experience
+significant lock contention due to RCU's resulting focus on ending grace
+periods as soon as possible.  This is OK, but only if there are not very
+many CPUs.  This commit therefore puts this Kconfig option off-limits
+to systems with more than four CPUs.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ kernel/rcu/Kconfig.debug | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index c1f83864a18e..e6bd518e0bc4 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -746,8 +746,9 @@ void show_rcu_gp_kthreads(void)
- 		data_race(rcu_state.gp_max),
- 		data_race(rcu_state.gp_flags));
- 	rcu_for_each_node_breadth_first(rnp) {
--		if (ULONG_CMP_GE(READ_ONCE(rcu_state.gp_seq),
--				 READ_ONCE(rnp->gp_seq_needed)))
-+		if (ULONG_CMP_GE(READ_ONCE(rcu_state.gp_seq), READ_ONCE(rnp->gp_seq_needed)) &&
-+		    !data_race(rnp->qsmask) && !data_race(rnp->boost_tasks) &&
-+		    !data_race(rnp->exp_tasks) && !data_race(rnp->gp_tasks))
- 			continue;
- 		pr_info("\trcu_node %d:%d ->gp_seq %ld ->gp_seq_needed %ld ->qsmask %#lx %c%c%c%c ->n_boosts %ld\n",
- 			rnp->grplo, rnp->grphi,
+diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
+index 1942c1f1bb65..4fd64999300f 100644
+--- a/kernel/rcu/Kconfig.debug
++++ b/kernel/rcu/Kconfig.debug
+@@ -116,7 +116,7 @@ config RCU_EQS_DEBUG
+ 
+ config RCU_STRICT_GRACE_PERIOD
+ 	bool "Provide debug RCU implementation with short grace periods"
+-	depends on DEBUG_KERNEL && RCU_EXPERT
++	depends on DEBUG_KERNEL && RCU_EXPERT && NR_CPUS <= 4
+ 	default n
+ 	select PREEMPT_COUNT if PREEMPT=n
+ 	help
 -- 
 2.31.1.189.g2e36527f23
 
