@@ -2,435 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5785937AA9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B1B37AAA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231941AbhEKP0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 11:26:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231735AbhEKP0A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 11:26:00 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9894C061574;
-        Tue, 11 May 2021 08:24:53 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 4-20020a05600c26c4b0290146e1feccd8so1462728wmv.1;
-        Tue, 11 May 2021 08:24:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nkZera96zbcBM7Vm5uQSpS98+SshUK9uSe/ii9Nlgc4=;
-        b=WbhlOVkvGlk4A2A9azaj7pa4rB9115onN3arNS+jqaxx7Cz9+DpGNcb27gEBszbKKg
-         x/jWW0VGZ4edMW5RJc6N7U5A+pf6JqKaA3THemqEg+qhOdB3QLW38EvwjTWBejAXaCnT
-         oecDDqmxaA5NPyLWfslRyiU4ezQs00tDSDo0Dpx379dmGEHQxL3d3sDSl5TPAANW6PfM
-         Mpif3TJKAUR4KjBCLlTxFqWLSTOwtDwmjo0GpTlTrKq98BngrM6iz8+fOkkyGerfRzS2
-         tais3zPLV4oFyFF/ulHQmEcvPnqrbFT4JB6FNUnfFvDHaxhdAr8mdg7g/CKD9NdqVGHd
-         k5tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nkZera96zbcBM7Vm5uQSpS98+SshUK9uSe/ii9Nlgc4=;
-        b=gITxliJNkiK5L55nJ/d11Stn8MgABNbZqnGIG8Q69Fgja5keAO0R9iOK9pirIybUNT
-         FiSh1DqU+yrtqPFe5g3SkSCOYAO6YBwP15mUREsJgmK9zw4rzVUuLgF/bOnxn3NddvAu
-         Me5xU98YobA2e3O65TkMsrNLvlnFdYxcm79X6qobpSAaBo1KtwOlD03h1cHYYFR/CmP9
-         av0wh9FPG5cs2zsLLK+0IaNwKpqeNySRqnk7NMu7J3LelW8RcGJax5AhfkTGttDbXZMP
-         kQTES+NiWvMyaLSZaBiFDKtmHVhQN5SeFCSnRig3X08TwXd/fFkaWR6OrToVC1fIW+jU
-         1CnA==
-X-Gm-Message-State: AOAM530Oz/0+kogXTKO/KYnMU0XVyyWzU4PqTI0dhcD8DIz6YDUMTYwp
-        B3qlUu5jE2dfbDlTm6eLOgekIBxtb20=
-X-Google-Smtp-Source: ABdhPJy76Al3nIzdmlivoBEGZKPsPaLwlvoZxZIdeFYGIk7/fwl8xjbbcRkwjT3fYIGmMQslJKF1MA==
-X-Received: by 2002:a7b:c093:: with SMTP id r19mr33235759wmh.35.1620746692371;
-        Tue, 11 May 2021 08:24:52 -0700 (PDT)
-Received: from [10.0.0.2] ([37.168.96.32])
-        by smtp.gmail.com with ESMTPSA id c14sm28185792wrt.77.2021.05.11.08.24.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 08:24:51 -0700 (PDT)
-Subject: Re: [PATCH net-next v4 2/4] page_pool: Allow drivers to hint on SKB
- recycling
-To:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
- <20210511133118.15012-3-mcroce@linux.microsoft.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <fa93976a-3460-0f7f-7af4-e78bfe55900a@gmail.com>
-Date:   Tue, 11 May 2021 17:24:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231876AbhEKP1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 11:27:07 -0400
+Received: from mail-dm6nam12on2070.outbound.protection.outlook.com ([40.107.243.70]:41440
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231808AbhEKP1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 11:27:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P8tKIxtwbVK1kxdo0dOKY7MuCPsHwmEdEKH2ww8Q5OkxupyT1zuZP7NGlX3r/576ONeP0OW0PdU5pbSYvHt8SNZPg1MzFsg4Mq8NAhjwShScApj5VyydVCpqZYE7PEtZHgTfYMs6NF8TrMwtSlyzJYReCzfts0I9OQ0NtpHlCSvQtdRmWoiAPI/dAdBu67oMEOe4Xb9WxCCYcDKfjxDHrMkDGLv06waHgrdhvjRB1QjI/JaP7ryADkKIw/6X9EPTeQs6vGbFpovQ9W6c7W7omvfhtpaSCuov64JU8jEkn4s30jQRW/gqlAERktTGES0kRCnKO5mnkmnycrknDZCkvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iARQkXFQ7NBH2v1fFXaU9jJp3UwPCmAp0PSYviHQ3Kw=;
+ b=TKOgL5cCApqr6nD+3sSLBylM6hES8pVb1uK5k0CWG1RWWUFlBjft7GnPuUtleZ2MwYv+yBzl9uYbY5PCjubW6zeDOFa1YePTKOZ6Zh8r63e7SS5MW65qSovnniVS3/ZYhO5HgGqDx78ECqE6Lu/ID2n+ux0puvYEHYO88eQs3ygEEvfRKx0sxN98tHJf9MejtKx2ums0DvqDu2ZuwXUdHhRKk5KbnpoFVjSjsyNGnks71iokGR1DLFbcUn0lrLL+Qvl5xbovz6KXOZPYY8hsrXKJBdKXK9RzMTF6KzwGo7OLFar/VyV7iEJeaoDVqSJhsj28rwUWNFB7PSBdU/6EfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iARQkXFQ7NBH2v1fFXaU9jJp3UwPCmAp0PSYviHQ3Kw=;
+ b=etnrHELkKgxkr0WFHdT+B0PbXBT5LIHgEJ2Kg7uY/wNV3OWNNboXaIFiE5cecX/S5puDebCTqd0MuhALsNxL/xs34Qr1tyNPyg4v5qqLy3UitN3FzSid+fMfOpoEk9WWaJk1NDyn3ZAofBbTbyoiBjsrjOd689jaTnQSsCuju+g=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB4388.namprd12.prod.outlook.com (2603:10b6:5:2a9::10)
+ by DM6PR12MB3020.namprd12.prod.outlook.com (2603:10b6:5:11f::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Tue, 11 May
+ 2021 15:25:57 +0000
+Received: from DM6PR12MB4388.namprd12.prod.outlook.com
+ ([fe80::9030:4dbb:df11:c961]) by DM6PR12MB4388.namprd12.prod.outlook.com
+ ([fe80::9030:4dbb:df11:c961%5]) with mapi id 15.20.4108.032; Tue, 11 May 2021
+ 15:25:57 +0000
+From:   Naveen Krishna Chatradhi <nchatrad@amd.com>
+To:     linux-edac@vger.kernel.org, x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, bp@alien8.de, mingo@redhat.com,
+        mchehab@kernel.org, Muralidhara M K <muralimk@amd.com>
+Subject: [PATCH 1/3] x86/MCE/AMD, EDAC/mce_amd: Add new SMCA bank types.
+Date:   Tue, 11 May 2021 20:55:36 +0530
+Message-Id: <20210511152538.148084-1-nchatrad@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [165.204.156.251]
+X-ClientProxiedBy: MA1PR0101CA0004.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:21::14) To DM6PR12MB4388.namprd12.prod.outlook.com
+ (2603:10b6:5:2a9::10)
 MIME-Version: 1.0
-In-Reply-To: <20210511133118.15012-3-mcroce@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from milan-ETHANOL-X.amd.com (165.204.156.251) by MA1PR0101CA0004.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:21::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Tue, 11 May 2021 15:25:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 541d3d88-3640-4b31-0ab8-08d9149112ca
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3020:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3020BAF1BE61BFC7B2DAEA09E8539@DM6PR12MB3020.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PrjT4HOKPjDkBURVv23AHX4iyP7S4iCWCbSFoC4TlAS7Lkl7kpqerN/4lebryUwTUoWHBwHXJ/JEiMfTNUQBPDL6G1wkQHzduvd2C3j6xVI66+pyikWYvZn+qkqBcEQHkOGxpZr3wxmxf9dZDGemSfj6kB1lcEW7Qwx75ZgCY7H1BRVxOj2Ep+GOMHkfx02Vq7pb2V4r3x23Y7Tm4cB/wwOx+ngwP7tzMLUjjVHsqVvPpnUeVHCmFXR0OBZF/lcDQJUgm+OAPZ+Uo52upbwhStDT/ti7/gTQhE5Z7UrLgIOKbkW1XSQ6QQR/z1zWvMUbSlzfABKoaWTDZLqY2Kuc+qJncXq9fNYzRLRc+dXTPBanfY9CCalQ/uTkGIIdo+bfvc4/2aeZRtysWl4xwAPiiJuUanXAWR0NVmMBg8oZ3t4pJ4pI/PZWN1mdVEnIKlsis2AqPS4m03GLVTTrgE2E+iUmNLtycOA1otWzGVw0avq3pPZVkYz2YupqMzJNzQXmVIpEYcIV+R5NnfHAPOeuW9G1PKiRyVWdrVPGYENJdHBkcxVjOAzeHrb57yPhLwQ8pfxq9lxNffUKELSOH+54/R89kyt7ZAbz5e//yhcxJaSpzNj9HdH/9B2p7uBTGMsOmk0/EWroqqSOQQ0yyqhlSw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4388.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(39860400002)(376002)(366004)(66476007)(7696005)(16526019)(186003)(66556008)(1076003)(52116002)(15650500001)(66946007)(2906002)(316002)(83380400001)(478600001)(36756003)(5660300002)(6666004)(38350700002)(38100700002)(6486002)(8676002)(26005)(4326008)(956004)(2616005)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?TUgZkdawxoOb/Ym4oZ5DgbAlzacY9hJwArjcn00gUqBFIK2cq8Hno4qltkBk?=
+ =?us-ascii?Q?Znm+WORR53AiFMqrf9+aLxiASzqLa9Y9ksBzabidnVQ85uZPDqTApawTvrD8?=
+ =?us-ascii?Q?Zs0yUB85VO7jkdqD6AQ0RcXUTKUHM+1dV+yENN9VTHdTHZFqi1XkjpyUFN1z?=
+ =?us-ascii?Q?uohayc9avohx4N2VP6zsA/vNtGRUUnhpWYC+ckE7bLLpcR1YW3kCWGW2qIdw?=
+ =?us-ascii?Q?A+aF9BAMgPXCbprB42DoOxK1ZODoVQdPcCcMJ6C6nIcyh35sxmCFIdVclJV3?=
+ =?us-ascii?Q?ZHCHOInoJO/c1ZzyognBoifVU9h7hH6OY0l2S3CkEzjXAybaJbWsTgHZy3p4?=
+ =?us-ascii?Q?S3Z9b+/aLGmZ0pWedX8FkuxvXs8lktCuBZU1hbvn6PIyQ76AVezHLL2ZLFWn?=
+ =?us-ascii?Q?puazDqdFqzm0yzc62/8QI3pVTQaHvdGp3SrZbkXl5gtSn60/N1jj5VenDjsW?=
+ =?us-ascii?Q?AwLgeaITS0IuQlx0T5nOEwy2QXJpawLcXLveQabBvHOQlejiY4BA/L/dg1+w?=
+ =?us-ascii?Q?Bf5hBMUoSrOieeocsD44FPIMOc7WsoeHvFAunofKi6qoocdFsR/dYZjWF4tP?=
+ =?us-ascii?Q?2MLsAt8PjWKmDgjq7HgeUe1KsUzfpijzVNLq0DpXUTxSw5ovUSQpxFZ3d8kl?=
+ =?us-ascii?Q?xQmv98Gh0Y9UnPsUIQ+BHOzyvCONZGDzgV/MSiR1RRQbctu23pPrrxiLvQgz?=
+ =?us-ascii?Q?ZhER9BNIXwS6fJ8IZUieOqaqPtyZPvCtYPLLPPxHJOXEsmZVNjtLUgulTujv?=
+ =?us-ascii?Q?i/b3QZ/2iSo99U2tJS7g/6ZkRHtLNp6p19WC3FDq0ULGOnGfJiPSqgxsc0CU?=
+ =?us-ascii?Q?XYPnHYsNAr10Al3LRuwx+XnrlD6ww6iwKKmNOsLwbIYcmoGLSQIZf90yAvbQ?=
+ =?us-ascii?Q?Yvxmk4VKTQejPAluukfgHIt2NFt8wBpzJeUbp7OYTxEjZO3kw4kHvjq/CGkY?=
+ =?us-ascii?Q?ptyYnFh1pjOf3XoYL6y0QIBocG7MqoMetCEEudVoDLJU2HydcdLpHxl49G2D?=
+ =?us-ascii?Q?/pkg9HM3JZN1hB6u5u4tm3OkiODAW20t686rY47yihHDzORnnGnVqW3OkC+W?=
+ =?us-ascii?Q?E+V1h+y2LIOHPMAuSYYbPq2a0Tie9GiIfNKxgyvQ8MMa5vz/5wRY4gkQHEZR?=
+ =?us-ascii?Q?MdnstTDwscBulRNt3a/NGNOG/Yggozde1S7wJnMTziq2Kv3Xf0tJDeEOUbRT?=
+ =?us-ascii?Q?kw0BDBL7XtFywFwV6H5Ta3Tjvs7ecAQtWUyRjyS9PAM12e4O9oCaUpA3yBH9?=
+ =?us-ascii?Q?0l6z2sI4MpVzquwDs9TG8+R3YQn8WRgKRogODPqwvnzguotPW99iykzlaTZ0?=
+ =?us-ascii?Q?OwtQli8Dm5oXR5mPK3X3W+Xz?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 541d3d88-3640-4b31-0ab8-08d9149112ca
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4388.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 15:25:57.1682
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: P0tSUNDrZeaQjcM+mb7aFAhYT5mkdBHlmpfmmH3fBcNrublvbJrffh2WJSp40Ef4tibFXyYNPt5KNXzqFzxUdg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3020
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Muralidhara M K <muralimk@amd.com>
 
+Add the (HWID, MCATYPE) tuples and names for new
+SMCA bank types.
 
-On 5/11/21 3:31 PM, Matteo Croce wrote:
-> From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> 
-> Up to now several high speed NICs have custom mechanisms of recycling
-> the allocated memory they use for their payloads.
-> Our page_pool API already has recycling capabilities that are always
-> used when we are running in 'XDP mode'. So let's tweak the API and the
-> kernel network stack slightly and allow the recycling to happen even
-> during the standard operation.
-> The API doesn't take into account 'split page' policies used by those
-> drivers currently, but can be extended once we have users for that.
-> 
-> The idea is to be able to intercept the packet on skb_release_data().
-> If it's a buffer coming from our page_pool API recycle it back to the
-> pool for further usage or just release the packet entirely.
-> 
-> To achieve that we introduce a bit in struct sk_buff (pp_recycle:1) and
-> store the page_pool pointer in page->private. Storing the information in
-> page->private allows us to recycle both SKBs and their fragments.
-> The SKB bit is needed for a couple of reasons. First of all in an
-> effort to affect the free path as less as possible, reading a single bit,
-> is better that trying to derive identical information for the page stored
-> data. Moreover page->private is used by skb_copy_ubufs. We do have a
-> special mark in the page, that won't allow this to happen, but again
-> deciding without having to read the entire page is preferable.
-> 
-> The driver has to take care of the sync operations on it's own
-> during the buffer recycling since the buffer is, after opting-in to the
-> recycling, never unmapped.
-> 
-> Since the gain on the drivers depends on the architecture, we are not
-> enabling recycling by default if the page_pool API is used on a driver.
-> In order to enable recycling the driver must call skb_mark_for_recycle()
-> to store the information we need for recycling in page->private and
-> enabling the recycling bit, or page_pool_store_mem_info() for a fragment.
-> 
-> Since we added an extra argument on __skb_frag_unref() to handle
-> recycling, update the current users of the function with that.
+Also, add their respective error descriptions to the MCE
+decoding module edac_mce_amd.
 
-This part could be done with a preliminary patch, only adding this
-extra boolean, this would keep the 'complex' patch smaller.
+Signed-off-by: Muralidhara M K <muralimk@amd.com>
+Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+---
+ arch/x86/include/asm/mce.h    |  5 +++
+ arch/x86/kernel/cpu/mce/amd.c | 16 ++++++++
+ drivers/edac/mce_amd.c        | 70 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 91 insertions(+)
 
-> 
-> Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Co-developed-by: Matteo Croce <mcroce@microsoft.com>
-> Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
-> ---
->  drivers/net/ethernet/marvell/sky2.c        |  2 +-
->  drivers/net/ethernet/mellanox/mlx4/en_rx.c |  2 +-
->  include/linux/skbuff.h                     | 34 ++++++++++++++++++----
->  include/net/page_pool.h                    |  9 ++++++
->  net/core/page_pool.c                       | 23 +++++++++++++++
->  net/core/skbuff.c                          | 20 +++++++++++--
->  net/tls/tls_device.c                       |  2 +-
->  7 files changed, 82 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/marvell/sky2.c b/drivers/net/ethernet/marvell/sky2.c
-> index 222c32367b2c..aa0cde1dc5c0 100644
-> --- a/drivers/net/ethernet/marvell/sky2.c
-> +++ b/drivers/net/ethernet/marvell/sky2.c
-> @@ -2503,7 +2503,7 @@ static void skb_put_frags(struct sk_buff *skb, unsigned int hdr_space,
->  
->  		if (length == 0) {
->  			/* don't need this page */
-> -			__skb_frag_unref(frag);
-> +			__skb_frag_unref(frag, false);
->  			--skb_shinfo(skb)->nr_frags;
->  		} else {
->  			size = min(length, (unsigned) PAGE_SIZE);
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> index e35e4d7ef4d1..cea62b8f554c 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> @@ -526,7 +526,7 @@ static int mlx4_en_complete_rx_desc(struct mlx4_en_priv *priv,
->  fail:
->  	while (nr > 0) {
->  		nr--;
-> -		__skb_frag_unref(skb_shinfo(skb)->frags + nr);
-> +		__skb_frag_unref(skb_shinfo(skb)->frags + nr, false);
->  	}
->  	return 0;
->  }
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index dbf820a50a39..1a2ce52c29f9 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -40,6 +40,9 @@
->  #if IS_ENABLED(CONFIG_NF_CONNTRACK)
->  #include <linux/netfilter/nf_conntrack_common.h>
->  #endif
-> +#if IS_BUILTIN(CONFIG_PAGE_POOL)
-> +#include <net/page_pool.h>
-> +#endif
->  
->  /* The interface for checksum offload between the stack and networking drivers
->   * is as follows...
-> @@ -667,6 +670,8 @@ typedef unsigned char *sk_buff_data_t;
->   *	@head_frag: skb was allocated from page fragments,
->   *		not allocated by kmalloc() or vmalloc().
->   *	@pfmemalloc: skbuff was allocated from PFMEMALLOC reserves
-> + *	@pp_recycle: mark the packet for recycling instead of freeing (implies
-> + *		page_pool support on driver)
->   *	@active_extensions: active extensions (skb_ext_id types)
->   *	@ndisc_nodetype: router type (from link layer)
->   *	@ooo_okay: allow the mapping of a socket to a queue to be changed
-> @@ -791,10 +796,12 @@ struct sk_buff {
->  				fclone:2,
->  				peeked:1,
->  				head_frag:1,
-> -				pfmemalloc:1;
-> +				pfmemalloc:1,
-> +				pp_recycle:1; /* page_pool recycle indicator */
->  #ifdef CONFIG_SKB_EXTENSIONS
->  	__u8			active_extensions;
->  #endif
-> +
->  	/* fields enclosed in headers_start/headers_end are copied
->  	 * using a single memcpy() in __copy_skb_header()
->  	 */
-> @@ -3081,12 +3088,20 @@ static inline void skb_frag_ref(struct sk_buff *skb, int f)
->  /**
->   * __skb_frag_unref - release a reference on a paged fragment.
->   * @frag: the paged fragment
-> + * @recycle: recycle the page if allocated via page_pool
->   *
-> - * Releases a reference on the paged fragment @frag.
-> + * Releases a reference on the paged fragment @frag
-> + * or recycles the page via the page_pool API.
->   */
-> -static inline void __skb_frag_unref(skb_frag_t *frag)
-> +static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
->  {
-> -	put_page(skb_frag_page(frag));
-> +	struct page *page = skb_frag_page(frag);
-> +
-> +#if IS_BUILTIN(CONFIG_PAGE_POOL)
-> +	if (recycle && page_pool_return_skb_page(page_address(page)))
-> +		return;
-> +#endif
-> +	put_page(page);
->  }
->  
->  /**
-> @@ -3098,7 +3113,7 @@ static inline void __skb_frag_unref(skb_frag_t *frag)
->   */
->  static inline void skb_frag_unref(struct sk_buff *skb, int f)
->  {
-> -	__skb_frag_unref(&skb_shinfo(skb)->frags[f]);
-> +	__skb_frag_unref(&skb_shinfo(skb)->frags[f], skb->pp_recycle);
->  }
->  
->  /**
-> @@ -4697,5 +4712,14 @@ static inline u64 skb_get_kcov_handle(struct sk_buff *skb)
->  #endif
->  }
->  
-> +#if IS_BUILTIN(CONFIG_PAGE_POOL)
-> +static inline void skb_mark_for_recycle(struct sk_buff *skb, struct page *page,
-> +					struct page_pool *pp)
-> +{
-> +	skb->pp_recycle = 1;
-> +	page_pool_store_mem_info(page, pp);
-> +}
-> +#endif
-> +
->  #endif	/* __KERNEL__ */
->  #endif	/* _LINUX_SKBUFF_H */
-> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> index 9814e36becc1..b34b8b128206 100644
-> --- a/include/net/page_pool.h
-> +++ b/include/net/page_pool.h
-> @@ -148,6 +148,8 @@ inline enum dma_data_direction page_pool_get_dma_dir(struct page_pool *pool)
->  	return pool->p.dma_dir;
->  }
->  
-> +bool page_pool_return_skb_page(void *data);
-> +
->  struct page_pool *page_pool_create(const struct page_pool_params *params);
->  
->  #ifdef CONFIG_PAGE_POOL
-> @@ -253,4 +255,11 @@ static inline void page_pool_ring_unlock(struct page_pool *pool)
->  		spin_unlock_bh(&pool->ring.producer_lock);
->  }
->  
-> +/* Store mem_info on struct page and use it while recycling skb frags */
-> +static inline
-> +void page_pool_store_mem_info(struct page *page, struct page_pool *pp)
-> +{
-> +	set_page_private(page, (unsigned long)pp);
-> +}
-> +
->  #endif /* _NET_PAGE_POOL_H */
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index 2e5e2b8c3a02..52e4f16b5e92 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -626,3 +626,26 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
->  	}
->  }
->  EXPORT_SYMBOL(page_pool_update_nid);
-> +
-> +bool page_pool_return_skb_page(void *data)
-> +{
-> +	struct page_pool *pp;
-> +	struct page *page;
-> +
-> +	page = virt_to_head_page(data);
-> +	if (unlikely(page->signature != PP_SIGNATURE))
-> +		return false;
-> +
-> +	pp = (struct page_pool *)page_private(page);
-> +
-> +	/* Driver set this to memory recycling info. Reset it on recycle.
-> +	 * This will *not* work for NIC using a split-page memory model.
-> +	 * The page will be returned to the pool here regardless of the
-> +	 * 'flipped' fragment being in use or not.
-> +	 */
-> +	set_page_private(page, 0);
-> +	page_pool_put_full_page(pp, virt_to_head_page(data), false);
-> +
-> +	return true;
-> +}
-> +EXPORT_SYMBOL(page_pool_return_skb_page);
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 3ad22870298c..dc4a5c56b8dc 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -70,6 +70,9 @@
->  #include <net/xfrm.h>
->  #include <net/mpls.h>
->  #include <net/mptcp.h>
-> +#if IS_BUILTIN(CONFIG_PAGE_POOL)
-> +#include <net/page_pool.h>
-> +#endif
->  
->  #include <linux/uaccess.h>
->  #include <trace/events/skb.h>
-> @@ -645,6 +648,11 @@ static void skb_free_head(struct sk_buff *skb)
->  {
->  	unsigned char *head = skb->head;
->  
-> +#if IS_BUILTIN(CONFIG_PAGE_POOL)
+diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
+index ddfb3cad8dff..cf7f35fdf2c8 100644
+--- a/arch/x86/include/asm/mce.h
++++ b/arch/x86/include/asm/mce.h
+@@ -317,6 +317,7 @@ enum smca_bank_types {
+ 	SMCA_CS_V2,	/* Coherent Slave */
+ 	SMCA_PIE,	/* Power, Interrupts, etc. */
+ 	SMCA_UMC,	/* Unified Memory Controller */
++	SMCA_UMC_V2,	/* Unified Memory Controller */
+ 	SMCA_PB,	/* Parameter Block */
+ 	SMCA_PSP,	/* Platform Security Processor */
+ 	SMCA_PSP_V2,	/* Platform Security Processor */
+@@ -325,6 +326,10 @@ enum smca_bank_types {
+ 	SMCA_MP5,	/* Microprocessor 5 Unit */
+ 	SMCA_NBIO,	/* Northbridge IO Unit */
+ 	SMCA_PCIE,	/* PCI Express Unit */
++	SMCA_PCIE_V2,	/* PCI Express Unit */
++	SMCA_XGMI_PCS,	/* xGMI PCS Unit */
++	SMCA_XGMI_PHY,	/* xGMI PHY Unit */
++	SMCA_WAFL_PHY,	/* WAFL PHY Unit */
+ 	N_SMCA_BANK_TYPES
+ };
+ 
+diff --git a/arch/x86/kernel/cpu/mce/amd.c b/arch/x86/kernel/cpu/mce/amd.c
+index e486f96b3cb3..055f3a0acf5e 100644
+--- a/arch/x86/kernel/cpu/mce/amd.c
++++ b/arch/x86/kernel/cpu/mce/amd.c
+@@ -90,6 +90,7 @@ static struct smca_bank_name smca_names[] = {
+ 	[SMCA_CS_V2]	= { "coherent_slave",	"Coherent Slave" },
+ 	[SMCA_PIE]	= { "pie",		"Power, Interrupts, etc." },
+ 	[SMCA_UMC]	= { "umc",		"Unified Memory Controller" },
++	[SMCA_UMC_V2]	= { "umc_v2",		"Unified Memory Controller" },
+ 	[SMCA_PB]	= { "param_block",	"Parameter Block" },
+ 	[SMCA_PSP]	= { "psp",		"Platform Security Processor" },
+ 	[SMCA_PSP_V2]	= { "psp",		"Platform Security Processor" },
+@@ -98,6 +99,10 @@ static struct smca_bank_name smca_names[] = {
+ 	[SMCA_MP5]	= { "mp5",		"Microprocessor 5 Unit" },
+ 	[SMCA_NBIO]	= { "nbio",		"Northbridge IO Unit" },
+ 	[SMCA_PCIE]	= { "pcie",		"PCI Express Unit" },
++	[SMCA_PCIE_V2]	= { "pcie",		"PCI Express Unit" },
++	[SMCA_XGMI_PCS]	= { "xgmi_pcs",		"Ext Global Memory Interconnect PCS Unit" },
++	[SMCA_XGMI_PHY]	= { "xgmi_phy",		"Ext Global Memory Interconnect PHY Unit" },
++	[SMCA_WAFL_PHY]	= { "wafl_phy",		"WAFL PHY Unit" },
+ };
+ 
+ static const char *smca_get_name(enum smca_bank_types t)
+@@ -155,6 +160,7 @@ static struct smca_hwid smca_hwid_mcatypes[] = {
+ 
+ 	/* Unified Memory Controller MCA type */
+ 	{ SMCA_UMC,	 HWID_MCATYPE(0x96, 0x0)	},
++	{ SMCA_UMC_V2,	 HWID_MCATYPE(0x96, 0x1)	},
+ 
+ 	/* Parameter Block MCA type */
+ 	{ SMCA_PB,	 HWID_MCATYPE(0x05, 0x0)	},
+@@ -175,6 +181,16 @@ static struct smca_hwid smca_hwid_mcatypes[] = {
+ 
+ 	/* PCI Express Unit MCA type */
+ 	{ SMCA_PCIE,	 HWID_MCATYPE(0x46, 0x0)	},
++	{ SMCA_PCIE_V2,	 HWID_MCATYPE(0x46, 0x1)	},
++
++	/* xGMI PCS MCA type */
++	{ SMCA_XGMI_PCS, HWID_MCATYPE(0x50, 0x0)	},
++
++	/* xGMI PHY MCA type */
++	{ SMCA_XGMI_PHY, HWID_MCATYPE(0x259, 0x0)	},
++
++	/* WAFL PHY MCA type */
++	{ SMCA_WAFL_PHY, HWID_MCATYPE(0x267, 0x0)	},
+ };
+ 
+ struct smca_bank smca_banks[MAX_NR_BANKS];
+diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
+index 5dd905a3f30c..5515fd9336b1 100644
+--- a/drivers/edac/mce_amd.c
++++ b/drivers/edac/mce_amd.c
+@@ -323,6 +323,21 @@ static const char * const smca_umc_mce_desc[] = {
+ 	"AES SRAM ECC error",
+ };
+ 
++static const char * const smca_umc2_mce_desc[] = {
++	"DRAM ECC error",
++	"Data poison error",
++	"SDP parity error",
++	"Reserved",
++	"Address/Command parity error",
++	"Write data parity error",
++	"DCQ SRAM ECC error",
++	"Reserved",
++	"Read data parity error",
++	"Rdb SRAM ECC error",
++	"RdRsp SRAM ECC error",
++	"LM32 MP errors",
++};
++
+ static const char * const smca_pb_mce_desc[] = {
+ 	"An ECC error in the Parameter Block RAM array",
+ };
+@@ -400,6 +415,56 @@ static const char * const smca_pcie_mce_desc[] = {
+ 	"CCIX Non-okay write response with data error",
+ };
+ 
++static const char * const smca_pcie2_mce_desc[] = {
++	"SDP Parity Error logging",
++};
++
++static const char * const smca_xgmipcs_mce_desc[] = {
++	"DataLossErr",
++	"TrainingErr",
++	"FlowCtrlAckErr",
++	"RxFifoUnderflowErr",
++	"RxFifoOverflowErr",
++	"CRCErr",
++	"BERExceededErr",
++	"TxVcidDataErr",
++	"ReplayBufParityErr",
++	"DataParityErr",
++	"ReplayFifoOverflowErr",
++	"ReplayFIfoUnderflowErr",
++	"ElasticFifoOverflowErr",
++	"DeskewErr",
++	"FlowCtrlCRCErr",
++	"DataStartupLimitErr",
++	"FCInitTimeoutErr",
++	"RecoveryTimeoutErr",
++	"ReadySerialTimeoutErr",
++	"ReadySerialAttemptErr",
++	"RecoveryAttemptErr",
++	"RecoveryRelockAttemptErr",
++	"ReplayAttemptErr",
++	"SyncHdrErr",
++	"TxReplayTimeoutErr",
++	"RxReplayTimeoutErr",
++	"LinkSubTxTimeoutErr",
++	"LinkSubRxTimeoutErr",
++	"RxCMDPktErr",
++};
++
++static const char * const smca_xgmiphy_mce_desc[] = {
++	"RAM ECC Error",
++	"ARC instruction buffer parity error",
++	"ARC data buffer parity error",
++	"PHY APB error",
++};
++
++static const char * const smca_waflphy_mce_desc[] = {
++	"RAM ECC Error",
++	"ARC instruction buffer parity error",
++	"ARC data buffer parity error",
++	"PHY APB error",
++};
++
+ struct smca_mce_desc {
+ 	const char * const *descs;
+ 	unsigned int num_descs;
+@@ -418,6 +483,7 @@ static struct smca_mce_desc smca_mce_descs[] = {
+ 	[SMCA_CS_V2]	= { smca_cs2_mce_desc,	ARRAY_SIZE(smca_cs2_mce_desc)	},
+ 	[SMCA_PIE]	= { smca_pie_mce_desc,	ARRAY_SIZE(smca_pie_mce_desc)	},
+ 	[SMCA_UMC]	= { smca_umc_mce_desc,	ARRAY_SIZE(smca_umc_mce_desc)	},
++	[SMCA_UMC_V2]	= { smca_umc2_mce_desc,	ARRAY_SIZE(smca_umc2_mce_desc)	},
+ 	[SMCA_PB]	= { smca_pb_mce_desc,	ARRAY_SIZE(smca_pb_mce_desc)	},
+ 	[SMCA_PSP]	= { smca_psp_mce_desc,	ARRAY_SIZE(smca_psp_mce_desc)	},
+ 	[SMCA_PSP_V2]	= { smca_psp2_mce_desc,	ARRAY_SIZE(smca_psp2_mce_desc)	},
+@@ -426,6 +492,10 @@ static struct smca_mce_desc smca_mce_descs[] = {
+ 	[SMCA_MP5]	= { smca_mp5_mce_desc,	ARRAY_SIZE(smca_mp5_mce_desc)	},
+ 	[SMCA_NBIO]	= { smca_nbio_mce_desc,	ARRAY_SIZE(smca_nbio_mce_desc)	},
+ 	[SMCA_PCIE]	= { smca_pcie_mce_desc,	ARRAY_SIZE(smca_pcie_mce_desc)	},
++	[SMCA_PCIE_V2]	= { smca_pcie2_mce_desc,   ARRAY_SIZE(smca_pcie2_mce_desc)	},
++	[SMCA_XGMI_PCS]	= { smca_xgmipcs_mce_desc, ARRAY_SIZE(smca_xgmipcs_mce_desc)	},
++	[SMCA_XGMI_PHY]	= { smca_xgmiphy_mce_desc, ARRAY_SIZE(smca_xgmiphy_mce_desc)	},
++	[SMCA_WAFL_PHY]	= { smca_waflphy_mce_desc, ARRAY_SIZE(smca_waflphy_mce_desc)	},
+ };
+ 
+ static bool f12h_mc0_mce(u16 ec, u8 xec)
+-- 
+2.17.1
 
-Why IS_BUILTIN() ? 
-
-PAGE_POOL is either y or n
-
-IS_ENABLED() would look better, since we use IS_BUILTIN() for the cases where a module might be used.
-
-Or simply #ifdef CONFIG_PAGE_POOL
-
-> +	if (skb->pp_recycle && page_pool_return_skb_page(head))
-
-This probably should be attempted only in the (skb->head_frag) case ?
-
-Also this patch misses pskb_expand_head()
-
-> +		return;
-> +#endif
-> +
->  	if (skb->head_frag)
->  		skb_free_frag(head);
->  	else
-> @@ -664,7 +672,7 @@ static void skb_release_data(struct sk_buff *skb)
->  	skb_zcopy_clear(skb, true);
->  
->  	for (i = 0; i < shinfo->nr_frags; i++)
-> -		__skb_frag_unref(&shinfo->frags[i]);
-> +		__skb_frag_unref(&shinfo->frags[i], skb->pp_recycle);
->  
->  	if (shinfo->frag_list)
->  		kfree_skb_list(shinfo->frag_list);
-> @@ -1046,6 +1054,7 @@ static struct sk_buff *__skb_clone(struct sk_buff *n, struct sk_buff *skb)
->  	n->nohdr = 0;
->  	n->peeked = 0;
->  	C(pfmemalloc);
-> +	C(pp_recycle);
->  	n->destructor = NULL;
->  	C(tail);
->  	C(end);
-> @@ -3495,7 +3504,7 @@ int skb_shift(struct sk_buff *tgt, struct sk_buff *skb, int shiftlen)
->  		fragto = &skb_shinfo(tgt)->frags[merge];
->  
->  		skb_frag_size_add(fragto, skb_frag_size(fragfrom));
-> -		__skb_frag_unref(fragfrom);
-> +		__skb_frag_unref(fragfrom, skb->pp_recycle);
->  	}
->  
->  	/* Reposition in the original skb */
-> @@ -5285,6 +5294,13 @@ bool skb_try_coalesce(struct sk_buff *to, struct sk_buff *from,
->  	if (skb_cloned(to))
->  		return false;
->  
-> +	/* We can't coalesce skb that are allocated from slab and page_pool
-> +	 * The recycle mark is on the skb, so that might end up trying to
-> +	 * recycle slab allocated skb->head
-> +	 */
-> +	if (to->pp_recycle != from->pp_recycle)
-> +		return false;
-> +
->  	if (len <= skb_tailroom(to)) {
->  		if (len)
->  			BUG_ON(skb_copy_bits(from, 0, skb_put(to, len), len));
-> diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
-> index 76a6f8c2eec4..ad11db2c4f63 100644
-> --- a/net/tls/tls_device.c
-> +++ b/net/tls/tls_device.c
-> @@ -127,7 +127,7 @@ static void destroy_record(struct tls_record_info *record)
->  	int i;
->  
->  	for (i = 0; i < record->num_frags; i++)
-> -		__skb_frag_unref(&record->frags[i]);
-> +		__skb_frag_unref(&record->frags[i], false);
->  	kfree(record);
->  }
->  
-> 
