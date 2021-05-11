@@ -2,182 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30562379B95
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D923D379B9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhEKAf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 20:35:57 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:16444 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231537AbhEKAf4 (ORCPT
+        id S230144AbhEKAid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 20:38:33 -0400
+Received: from sonic309-28.consmr.mail.ne1.yahoo.com ([66.163.184.154]:37589
+        "EHLO sonic309-28.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229642AbhEKAib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 20:35:56 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14B0NakS004767;
-        Mon, 10 May 2021 17:34:46 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=b6Whvk3b6i7DS2SZqhOm32c4UmnjeaxO4JoiSw1LqW4=;
- b=bllsHLMJ17x0oqXellMu9d65w6nC/1MnF+yo47ocRUCuzw8bgYYy652lxapRPcm30u9/
- gYPnmy624LwHSOT2R0JtAxSqn8EZk2T2gBPmUVH9RAyUca43vzk0hi3gFlYLcu1Du/uM
- AnYQAsWG+kKbvWM9CGNXmOnj0rx2zXKmpUQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 38fahjhu0y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 10 May 2021 17:34:45 -0700
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 10 May 2021 17:34:44 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R3uMauaDVXce7nHmKSSmIH+tFq/MvfhGYw2xYZLj4e0NsBzhOwp2KlKcXmTOFIXtwyttD1Xuw9SUvZHgkAw6Etqd073hk55YWxe/4M9jqDH0GPKlU7Y1PX++fHryoBFyzXqC4nw0LvR61DTRm1RCWeKjTssYMGQjMiflmX1SCHYN9Y3sVYuePmdnD1LUEqcCmUrl1nY2Ir0NNLCoYdaBZgxoVnCwK09h+HeerjPLC2JDuT1k++tLgus1ADPtABefHnCXkuiaTBrR8GsEabnO9ljXDiNQziq0ymq+jU9wfcymWTQliWnnPAIY4aDzBcSXTxpM35Wx2Dczu/aWB3wXXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b6Whvk3b6i7DS2SZqhOm32c4UmnjeaxO4JoiSw1LqW4=;
- b=aapLyo0BZkAJbP/gsO/m4iclmiv3hA4jvQ1IIsMTNNsOIkDMZFCZpdy1ni32Kf8K/MDyG8E6lxXyUIEpPeFAtJeH53ctbX0/40UtqGUDfXie3aKxLh8RakCOrkhDXj2QZcNtjMWM5/wfGpfdZYTFEBGTKLSu2edPKBu5vxC10EIZZWFxV5xEoqPflvJVjc4MJs+YpfbG3evfBGTbH1zPKO367bG2iDx4yJfB/7gY78N9e6GDcdDqvsiQKv5aMWQC2cuiuMXNf7Qj7icTZROgH02HyEf0LI9xOuYtH+M8sUDoa3r5YNsnj3gzQVsOpMwvzksxhmYOAPgTKA4PQWvUHw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3029.namprd15.prod.outlook.com (2603:10b6:a03:fd::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24; Tue, 11 May
- 2021 00:34:43 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::dd03:6ead:be0f:eca0]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::dd03:6ead:be0f:eca0%5]) with mapi id 15.20.4108.031; Tue, 11 May 2021
- 00:34:43 +0000
-Date:   Mon, 10 May 2021 17:34:38 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Dennis Zhou <dennis@kernel.org>
-CC:     Oliver Sang <oliver.sang@intel.com>,
-        Pratik Sampat <psampat@linux.ibm.com>,
+        Mon, 10 May 2021 20:38:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1620693446; bh=VhS6D9r/U0waDHDfl+JnejLkwpTcId9f5wic8LdH+Uc=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=kBiuon/SIFevtxPQma9xKHVBfZtm/Lu3A33dc8kt7h6vM807hpn+/FX/PYqZVCIe5cdAXwJrJWdY/UZCAW0wY0kotl2a+C9b+aycKXumv+c3pAJhPEysKcK3X1FYvrjQDTUkX0u3DlMB4Nzo9iNmWuntZZ8RJ2gk+BzeEELM+xvYHACPAB9Uu52wY9JU2D1bfbVhYrpI81UVr8/J4elj4S6q9A/GRzQ15BEaTKfbc9X36Y8lmiT0pgBN6xjgKkrVRkHAzsWiswcHDAvf/SBfOk8PiUbJ+hIDar/VWvEBMcbyhaQNNNhuCM2EW7c+VL8pccME75vF0eQGQBTJsbz+0A==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1620693446; bh=7QyMiJLb0InDhEDqzlXWCnI432T1MQ2c8uFzPXx1/71=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=KETLGbQfn4MjKhmSwR0WXOJsTQe0gQ1tWUFQq/ZMl7DqccXNqwao3yT5sq35Ujg0NwEE+PFgpEW5VeXrx6pJ2Jocce2QfiVZfF6B8HgHMzYKze4EP5vrXHKrpOeTNULFfuQg8B0uvItuPUcnY/sZ4vT7CqhWYQ7koOZyDvMpmIpuLj5xQyyzoZ0lS5MuvLd5zth/VG3L0KhKbl7qvlQCmBRv7sMe2QWIQVY96q+R7m/27kTqslmZZveAIjWG8EicWhfgliNjccAaIhWpU+GghD00h3gczaE6Fve6TcUB52POGk1lBjtp+sp/vHEzmBy07SGEFn4BsCXOGnnUJmdCew==
+X-YMail-OSG: .RH6drsVM1kH4x1ugPUwqHXSrlEesu.M_rPDRULOh71Zh2v.2rT_zPKhvvlWj5G
+ oQwP4m14pewg23VlYGo6F2HJugviucA89rUXB6wrQDFmdQFUHtqIlMAglxdVpGjPYVSW8GZjESH.
+ lfYzo0VD1XDdgRI30SrBH2xn5rorHpWUd8E7wf0jgRoye.apRZfWHmiDKyRXc7OEes1m7oTmTclp
+ hRimXuFTV1WDcBibNad9aPDdqDbQcvVlzho_XDeEsoDte0kZsm9IX0hnO1bYA1lp16lB5WI2wwtL
+ 7Jv7cfX.HpQjPGCAmy5poS2Ep5DVlDYWrRIqQ4RAiDoEHpEFLPi04VNdJxX_WN4jiUmGoWeQZKkh
+ QeiJZvbpsoLFfk.H3pS1SL4O.V9ZDlZuuzOxZEhe7EpEaVjEXEz3Ih6vj2P1aTDqFP4VldFHHXkb
+ 6JMZ.x.DKEvgTUuNwxGlfg9vLcoQYrrIa5PwsYXdSuPBj3rLgXCd38uIx_iFIq_fI69_qqnsRRiF
+ .83qEMl2BAWEmr8wRwaJcmuFs8O0eKtbJ5qal90Qsk2s1c2kwjD7t7ziRqPAhyrNOEHummfe4Dm4
+ V7j9UUOJ9k6aFBLgvhElhdnhcDdsREk_H4FRHRtdBPpjs1W6iKuus2f7ExiVz6aAmuxWy7meWHbt
+ Yhv1OemlFEW3GlMNLziUVlP2E7XJQvfgBghfPSuv2uAReAy_6gOvUrBu3cR54k3YkpixthL8CPDa
+ mIIeu6JBxGsJh8Tyd8OPnm60dW3NJ9kXxw1cGwlY7GReQIUeAu.mgULWMCiD.brhO8jIfUbvobeg
+ TPpB__m2p9j8XcJ5Plz5zbaoLEFIpUArd1JtNritvbPIGT5uPu5EWxuF4J3USUPucfvKGCvL8nQC
+ FHkqY4Pes8qE7DBWyXbGRYToSYbt6bR00dNor7K7c4yXDD_8UQMctbugwpHpSOcDY8e.DEuiqbnj
+ kG2gXqNAN6Sc3oKJ_D7NTaPa4Qn388IWOzeAqVtISvasqzpau.K41JcBxxCGTTdqIU1IUgXbP6sP
+ 3yqpvVQpCSAJIkecStVLRmhF4bUK8CRIlTkQM4jLGbQt0YfmudL31XkeYNCP8NvzBRvk.PEtdEtt
+ T8GQ2.cJwFjhyDXv54Aq1cqMz4H8aOYk4pQUcwkCnYB3Eza6ZFTFf4pqUZQutHcb02o.gt6NLE_s
+ tYRctt_woUW8wYOokeOUfReJgHV.X46DUEVMINsQjlLBSjZ2SMxzXH3amVH5_vwnsFjQwL2oSg_E
+ qbsSFENpOMs6c3bSpvvy2dBI9pIVj1eF9Nu0..YpJSt3FV7AhDFB6FBVo6ppkLQUaSmup1HK7THT
+ uPThxMCUQfK.8GS4h8frWbaxsEpAdrtDX_6ehR.FNe_KEJDK0mxxLrCIgPEOXcluuzTTtAQDmVM4
+ NrwSJTe73n14uKCIFRZgEMaaioPfM6GFPF2qamVcajNBripRleehdt526fDyC_5virjmthCo3jld
+ tBmchdtNBXG1_nNKW7fGNhQdmpykuNK98qZvOwYXZaXJR_jnu7M51CAuQdKd0EGz7eRFTtXoyKcS
+ PJFdQrURUoTCsR0R2pYdya8XzKUDWSIgrcEzUqEjU4GZQl0WcWIBdxwXiYqX_hl8jXui994BdiKL
+ KdL2.UNMIH3WjczGAMvdpsLIrfasMvmmmdkb2sUtCUioU46Ut1s7aij_dCHsHt.ses7KKZ_ZPt5f
+ _KdRUll9XlCbteRmDFn44.UQw3Ci.zIdD0DfBvLvHS5vwlsZjTgpbPlBcrvu_8IkZ0OYQ3Dur5qb
+ o2xNVKW3khVTRGkpkTamf3NTg3CVpsfSycnUbHogxrcXXbwyFkThle3Ccfrp2Y7.eqzyVt9E.rMp
+ ld__EY2SWpOjgNlI9IMMrRYx.nsaA0uTGk0Ih.dHfUGHLzkgtLv6mxbpH9OW2zKnJt5dIFDLL4g9
+ rnLN9Mv861I0xUD83L3KM14Zd2GrUsq9Bl0t1Vky8XjeeieYcTEa2TFqzc37hCjpaJE_UoM8z_TR
+ vZZ6ZbwB1faT2iyU_qgLAwoIOonFIyJoZxVU3FC1d9XZL9JFa54AGKP6xvSWuhwCxfTpzEvjeAVT
+ mAlNhQuWT22Xqu7xizKzVvDhgb.rWe1Ksc1PBx3MBNg50lma1Hx6Ygn82gYMzqEZ856y57WAndvz
+ R1NHho9PaZjc_uWtv0XJrfOBK8QKCCY73wb2AiJ9ALWCvNFxkpSKX_JEKDVrFI4taIPdR50H7hyH
+ hF2TkfoaP8Ot_MOxCRqPgP2n3hVQPtqxLmlge6fDyc0BZI9dqXQ4CMfAGYVCY4Aujf4S7YkzBKQd
+ 9OzVgxejtF3.bXO_Wt3pEvIcWYuUHcflzr0Vi5masV8XuR6myZBJNoJQd41po5v1AqMfcn2w8s81
+ 7Pj5KFyH1.nCgV4.cllMCej0NPQ3LgcutQWqfD9V4ruRr6pS03a4Ug2hA3PAG1mSKuZHfz0cRxIN
+ C4X1Bgdt8AIMeAT2xrwHK3AhDJzZRif9hgoJZGxscZmuOQU9rsUZFejZoyLIXXWTMNsEVc.Z1Rmm
+ OQOZkAL5R5wK4ZrTS.LP93Fr8CNtkNRDY_k8nv4Sl3E_4a6OmrCztEJv4u2D6oFx_y6I7imNmsFZ
+ gU_a00dgh3iohwg6FhBa.4BJgXVuh0h6u7xd24SncZ5gkuCNyW3XLhM0EwIECrYR6RgQSnTErMwx
+ O7jxFmmGNXnpOtyX1wdPSYMvxt7aTGqo4LN75lNP_OuRIBDgUFtWZySx4npK7rbjK1NpAEUGCoya
+ AO7lCUlF798ypuDR5aUIF8cWq5HVNZnDAnumdc.7OcymhmFpiOayr8MhFk8_5REWyxkJK8DYVdSZ
+ RvRVLvFE32s3Ha6vpMECTGcK19UJb5ek6TrxU3VjpFlbrAOV9JJRjAxQC2Tb3ngroiF4S2nFIrC.
+ b6K8vgHI0wwKMdiOGVBsWWhq_JmjqJaWWZqa.mONCCCL.B2UmtJPlFYjb4XVTBoC5nHO._rSaSUv
+ TW9uFdMHpyQMAaUvw71fo5nClMTpgE_Fo0sExMUD9ngT1drNXAY8824Gzh_Y9rSqVdrNeLytjmtv
+ txrbb7D.ZtprNyA--
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Tue, 11 May 2021 00:37:26 +0000
+Received: by kubenode568.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 753037fa619a7dc4ecf1ea9886ed825c;
+          Tue, 11 May 2021 00:37:20 +0000 (UTC)
+Subject: Re: [PATCH V1] audit: log xattr args not covered by syscall record
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Richard Guy Briggs <rgb@redhat.com>, linux-api@vger.kernel.org,
         LKML <linux-kernel@vger.kernel.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>,
-        "lkp@intel.com" <lkp@intel.com>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "zhengjun.xing@intel.com" <zhengjun.xing@intel.com>
-Subject: Re: [percpu]  ace7e70901:  aim9.sync_disk_rw.ops_per_sec -2.3%
- regression
-Message-ID: <YJnRHhK+2AVTMOfh@carbon.DHCP.thefacebook.com>
-References: <20210427073448.GD32408@xsang-OptiPlex-9020>
- <YItcfQfZlNZTmQKR@carbon.dhcp.thefacebook.com>
- <40632FBD-8874-4B6C-A945-F2EBC96CF12B@fb.com>
- <20210507030606.GA27263@xsang-OptiPlex-9020>
- <YJV+Vn9eGfIlxDQE@carbon.dhcp.thefacebook.com>
- <YJWQE8AFjyYpsLYA@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YJWQE8AFjyYpsLYA@google.com>
-X-Originating-IP: [2620:10d:c090:400::5:6bfa]
-X-ClientProxiedBy: MWHPR13CA0008.namprd13.prod.outlook.com
- (2603:10b6:300:16::18) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <604ceafd516b0785fea120f552d6336054d196af.1620414949.git.rgb@redhat.com>
+ <7ee601c2-4009-b354-1899-3c8f582bf6ae@schaufler-ca.com>
+ <20210508015443.GA447005@madcap2.tricolour.ca>
+ <242f107a-3b74-c1c2-abd6-b3f369170023@schaufler-ca.com>
+ <CAHC9VhQdV93G5N_BKsxuDCtFbm9-xvAkve02t5sGOi9Mam2Wtg@mail.gmail.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <195ac224-00fa-b1be-40c8-97e823796262@schaufler-ca.com>
+Date:   Mon, 10 May 2021 17:37:19 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:6bfa) by MWHPR13CA0008.namprd13.prod.outlook.com (2603:10b6:300:16::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.20 via Frontend Transport; Tue, 11 May 2021 00:34:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1bf97e33-c396-45bf-e11f-08d9141491c5
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3029:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3029F91BEBF1EAA7F4B1FEB0BE539@BYAPR15MB3029.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JgZhRVnLGfQ2Ex4gFT2K4i+/sIsINwnGQ2iXrQJ+KT44DeeVyZq/TZNlKgvaXEMhbLsMCtdgve8XptbCoRoJ27ACCmRDfDSEGDZKMXRgwnFJILTsLSbxMBlS+AwmR3rLERhwLKdW0R9oE1fUQ17ml+jJn5qihFdjeU9Ek8DXNofGR+/X9g9kqkbAnyw2AI9t+/6yNJLw3D1YNZ2f14lm+jrA6UxBb0JdrXF3F0+sfVS0au0gxHjxD0Y0ENCE1VYMO6bNkXnMie0MyJuSQxxe0znaQ8adifSUQuUsg5Zp/VNiQaG1WpWslwSEa6mLWqAMULpB+DcyJ6N9apzJk2qTZIiJOaDsItOlNOEUmXwXt0mu7qtGHmyLtvT0bLi4DkjnuC8CqH4A406IQI0tjH8ygsJ22Hh29cK8L5mwuQ2N503Sk0f4BChGSKiIBBCiwufbZUbp15zAAhvbZCya4FcBImCZYJOY7wbspe6sAY7u6Px6N9K4nBbzQR0H33T2R5aHeN3haUq/bjpV2rseurVEXlmP4/d9O1lERd1/Zi7i8wkbsI0rT0qRNS6MUa4uoMHk4cmXxsNYk3KWWZfCasBfcRAFRFfK+6zEp4iCBhQPLi5XoD/fPvVap+Sn1JjiyyHAeX4bY3ZliXjBz47IqHrVaA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(376002)(346002)(396003)(8676002)(9686003)(54906003)(16526019)(6666004)(55016002)(316002)(6506007)(7696005)(52116002)(478600001)(186003)(5660300002)(6916009)(66476007)(66946007)(2906002)(38100700002)(4326008)(8936002)(86362001)(83380400001)(66556008)(67856001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Tn0ugLtWbZ1SwQEE8oirgyW7M0pO03yMizY7OiHP9nziWpLv4BeJsS3zAgfA?=
- =?us-ascii?Q?IMafDWqIf5EAOSUlXWUTVHnyyBduauVKTF4LyEjrRFlW47GvGLAeKR6/TAxI?=
- =?us-ascii?Q?5iRwWLbcToivtli8YAWRc7z++5UjEbRYTycs3kxKwXAYnor1Z42C3q4Cn9Ja?=
- =?us-ascii?Q?fTRy3GpQBrKfE4twMspXSEed5dLEuLNTTtxoSwjZN1QlGX4gq7A6kyzYyt1f?=
- =?us-ascii?Q?pCoCYfL2DNbkXsu5ek8qZQwUn3BoquFxOheMYu39mIlgprezq3/8ZiV8wBMT?=
- =?us-ascii?Q?+U4NbVwAg6ACfd4KSuTdhBll8GouEfgX67726Qpy3T25d171inNPqM2z39J1?=
- =?us-ascii?Q?ZdoYeCKofOj9BaKGKYgag3rR1D7dcHsisoHsei8VcEQ3H4WIMXBUk72jL0Iy?=
- =?us-ascii?Q?Kamk+8yyurpeB/PyUNJ6ByBW1Y7lt1ZpTOa417rh+hkrPCCMWZwrrx7ga9ZG?=
- =?us-ascii?Q?sEgnN53XXzORnfm/yq3rDYMbi9xZdCZTzMzJ2/T2qlOm7Bc188pOtgdwOsqO?=
- =?us-ascii?Q?kIdolZlUMk+MRczb6hWlF34JOAO6ZOSJpvP9Xz+NyX3TJhyX7azs2NMSC8Fv?=
- =?us-ascii?Q?ADuUJOJckQJXmf9RutLbxC8+3QFLJKhoG3LLYCuhR05xBBtWN9iWVabvAUYp?=
- =?us-ascii?Q?8bMDVzZG5lyBWZBZw3OkYMNnOmsNB8/xDL1UA1g0btik1gyfCsNYWHnhCWfs?=
- =?us-ascii?Q?nItjwSllECvFKCkLrv7ez9WGFuqSVO3y+lapbQ0hgCUt9zOev8BaQhivcx9+?=
- =?us-ascii?Q?gGig1wsTOzCCXqq17EPjtVIuWG+ikO83LrHyhWx9bU6ZcqpPm5LyavTlyUOT?=
- =?us-ascii?Q?TpTPErzqGousLgm3sXlzamoqq2G83E+Utzbvdz0Rnqks3o0zBxoS/zhGTwak?=
- =?us-ascii?Q?pRwKekg52o0ZwFAxQI0QJTALs4AhSyZ3Ynn1ZwryNrkt+n3elhY6VRBFh2+w?=
- =?us-ascii?Q?cu6pa6yjE6OiueLBZ6qhe3O6Oy6HAIwKTgeIwWyAL8cFojNoUc9XgXBPWa1M?=
- =?us-ascii?Q?MnT5Fy20FF0oAO1n8FzQ4GOA0hJdh7X4qog2LYuCqo0fpLJDUmBwttQDsR3e?=
- =?us-ascii?Q?+l/e/G0REJB8ut2/V5anYu8F68XgxLKu6x8ACNcd+WlLqg4TujXvbPIH3sfc?=
- =?us-ascii?Q?PKKOwrtLYV2YrV7bkqunxA/jTJu0n5cOsHIjo4SIByaWUBatGlgHyeh8I7aY?=
- =?us-ascii?Q?oNzl6eXRbv7Yvt1bX7dCP3P/05Guy4bR02ir9gdPvMXlbmWJaKK5rCQ9HzcA?=
- =?us-ascii?Q?/A3SV8knhCpB8gIbzSQZUzPlYV2QXEAtad+GBukODuW+EVDXVMmESw0xs55m?=
- =?us-ascii?Q?ExiyodgWWq8wx/gf7U7KF0LXJCK9ChPIguBI3ybnMIBZfw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1bf97e33-c396-45bf-e11f-08d9141491c5
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 00:34:43.0415
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NndhdCqisqxhVlXUli1zMQ70HzHdPaxaQUjUMLbxU7APMEXM0oxLBypBex4PCUtR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3029
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: L38iZvf17_xdtds648jehE4ia5yO6QNv
-X-Proofpoint-ORIG-GUID: L38iZvf17_xdtds648jehE4ia5yO6QNv
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-10_14:2021-05-10,2021-05-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
- phishscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
- lowpriorityscore=0 priorityscore=1501 suspectscore=0 spamscore=0
- clxscore=1015 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2105110000
-X-FB-Internal: deliver
+In-Reply-To: <CAHC9VhQdV93G5N_BKsxuDCtFbm9-xvAkve02t5sGOi9Mam2Wtg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Mailer: WebService/1.1.18295 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/16)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 07:08:03PM +0000, Dennis Zhou wrote:
-> On Fri, May 07, 2021 at 10:52:22AM -0700, Roman Gushchin wrote:
-> > On Fri, May 07, 2021 at 11:06:06AM +0800, Oliver Sang wrote:
-> > > hi Roman,
-> > >  
-> > > On Thu, May 06, 2021 at 12:54:59AM +0000, Roman Gushchin wrote:
-> > > > Ping
-> > > 
-> > > sorry for late.
-> > > 
-> > > the new patch makes the performance a little better but still has
-> > > 1.9% regression comparing to
-> > > f183324133 ("percpu: implement partial chunk depopulation")
-> > 
-> > Hi Oliver!
-> > 
-> > Thank you for testing it!
-> > 
-> > Btw, can you, please, confirm that the regression is coming specifically
-> > from ace7e70901 ("percpu: use reclaim threshold instead of running for every page")?
-> > I do see *some* regression in my setup, but the data is very noisy, so I'm not sure
-> > I can confirm it.
-> > 
-> > Thanks!
-> 
-> Thanks Oliver and Roman. If this is the case, I'll drop the final patch
-> and just merge up to f183324133 ("percpu: implement partial chunk
-> depopulation") into for-next as this is v5.14 anyway.
+On 5/10/2021 4:52 PM, Paul Moore wrote:
+> On Mon, May 10, 2021 at 12:30 PM Casey Schaufler <casey@schaufler-ca.co=
+m> wrote:
+>> On 5/7/2021 6:54 PM, Richard Guy Briggs wrote:
+>>> On 2021-05-07 14:03, Casey Schaufler wrote:
+>>>> On 5/7/2021 12:55 PM, Richard Guy Briggs wrote:
+>>>>> The *setxattr syscalls take 5 arguments.  The SYSCALL record only l=
+ists
+>>>>> four arguments and only lists pointers of string values.  The xattr=
+ name
+>>>>> string, value string and flags (5th arg) are needed by audit given =
+the
+>>>>> syscall's main purpose.
+>>>>>
+>>>>> Add the auxiliary record AUDIT_XATTR (1336) to record the details n=
+ot
+>>>>> available in the SYSCALL record including the name string, value st=
+ring
+>>>>> and flags.
+>>>>>
+>>>>> Notes about field names:
+>>>>> - name is too generic, use xattr precedent from ima
+>>>>> - val is already generic value field name
+>>>>> - flags used by mmap, xflags new name
+>>>>>
+>>>>> Sample event with new record:
+>>>>> type=3DPROCTITLE msg=3Daudit(05/07/2021 12:58:42.176:189) : proctit=
+le=3Dfilecap /tmp/ls dac_override
+>>>>> type=3DPATH msg=3Daudit(05/07/2021 12:58:42.176:189) : item=3D0 nam=
+e=3D(null) inode=3D25 dev=3D00:1e mode=3Dfile,755 ouid=3Droot ogid=3Droot=
+ rdev=3D00:00 obj=3Dunconfined_u:object_r:user_tmp_t:s0 nametype=3DNORMAL=
+ cap_fp=3Dnone cap_fi=3Dnone cap_fe=3D0 cap_fver=3D0 cap_frootid=3D0
+>>>>> type=3DCWD msg=3Daudit(05/07/2021 12:58:42.176:189) : cwd=3D/root
+>>>>> type=3DXATTR msg=3Daudit(05/07/2021 12:58:42.176:189) : xattr=3D"se=
+curity.capability" val=3D01 xflags=3D0x0
+>>>> Would it be sensible to break out the namespace from the attribute?
+>>>>
+>>>>      attrspace=3D"security" attrname=3D"capability"
+>>> Do xattrs always follow this nomenclature?  Or only the ones we care
+>>> about?
+>> Xattrs always have a namespace (man 7 xattr) of "user", "trusted",
+>> "system" or "security". It's possible that additional namespaces will
+>> be created in the future, although it seems unlikely given that only
+>> "security" is widely used today.
+> Why should audit care about separating the name into two distinct
+> fields, e.g. "attrspace" and "attrname", instead of just a single
+> "xattr" field with a value that follows the "namespace.attribute"
+> format that is commonly seen by userspace?
 
-I doubt it's a good idea. I reran the test with some debug added and it looks
-like it doesn't  trigger any depopulation at all. Everything else looked sane
-too.
+I asked if it would be sensible. I don't much care myself.
 
-Dropping a reasonable patch doing a good thing without any understandinding how
-it affects (or even can affect in theory) some benchmark sounds like a bad idea.
-We'll never learn this. It could be that the regression is caused my some
-tiny alignment difference or something like this, so any other change can
-trigger it too (I can be totally wrong here, but I don't have any better
-explanation either).
+>>>> Why isn't val=3D quoted?
+>>> Good question.  I guessed it should have been since it used
+>>> audit_log_untrustedstring(), but even the raw output is unquoted unle=
+ss
+>>> it was converted by auditd to unquoted before being stored to disk du=
+e
+>>> to nothing offensive found in it since audit_log_n_string() does add
+>>> quotes.  (hmmm, bit of a run-on sentence there...)
+>>>
+>>>> The attribute value can be a .jpg or worse. I could even see it bein=
+g an eBPF
+>>>> program (although That Would Be Wrong) so including it in an audit r=
+ecord could
+>>>> be a bit of a problem.
+>>> In these cases it would almost certainly get caught by the control
+>>> character test audit_string_contains_control() in
+>>> audit_log_n_untrustedstring() called from audit_log_untrustedstring()=
 
-Btw, do we have any similar tests?
+>>> and deliver it as hex.
+>> In that case I'm more concerned with the potential size than with
+>> quoting. One of original use cases proposed for xattrs (back in the
+>> SGI Irix days) was to attach a bitmap to be used as the icon in file
+>> browsers as an xattr. Another was to attach the build instructions
+>> and source used to create a binary. None of that is information you'd
+>> want to see in a audit record. On the other hand, if the xattr was an
+>> eBPF program used to make access control decisions, you would want at
+>> least a reference to it in the audit record.
+> It would be interesting to see how this code would handle arbitrarily
+> large xattr values, or at the very least large enough values to blow
+> up the audit record size.
+>
+> As pointed out elsewhere in this thread, and brought up again above
+> (albeit indirectly), I'm guessing we don't really care about *all*
+> xattrs, just the "special" xattrs that are security relevant, in which
+> case I think we need to reconsider how we collect this data.
 
-Thanks!
+Right. And you can't know in advance which xattrs are relevant in the
+face of "security=3D". We might want something like
+
+	bool security_auditable_attribute(struct xattr *xattr)
+
+which returns true if the passed xattr is one that an LSM in the stack
+considers relevant. Much like security_ismaclabel(). I don't think that
+we can just reuse security_ismaclabel() because there are xattrs that
+are security relevant but are not MAC labels. SMACK64TRANSMUTE is one.
+File capability sets are another. I also suggest passing the struct xattr=
+
+rather than the name because it seems reasonable that an LSM might
+consider "user.execbyroot=3Dnever" relevant while "user.execbyroot=3Dposs=
+ible"
+isn't.
+
+> I think it would also be very good to see what requirements may be
+> driving this work.  Is it purely a "gee, this seems important" or is
+> it a hard requirement in a security certification for example.
+>
+
