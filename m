@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0761337AB98
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDA737AB96
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231589AbhEKQPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 12:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44460 "EHLO
+        id S231489AbhEKQPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 12:15:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231512AbhEKQPR (ORCPT
+        with ESMTP id S229921AbhEKQPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:15:17 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF85CC061574;
-        Tue, 11 May 2021 09:14:09 -0700 (PDT)
-Received: from dslb-094-219-032-254.094.219.pools.vodafone-ip.de ([94.219.32.254] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1lgV1B-0002rQ-EN; Tue, 11 May 2021 18:13:57 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v3] rtc: imxdi: add wakeup support
-Date:   Tue, 11 May 2021 18:12:44 +0200
-Message-Id: <20210511161244.16111-1-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210430093210.7034-1-martin@kaiser.cx>
-References: <20210430093210.7034-1-martin@kaiser.cx>
+        Tue, 11 May 2021 12:15:06 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46997C061574;
+        Tue, 11 May 2021 09:14:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=yoyxdL14+RHHBfspbtObR7ZjIkqw7Y80PNE65Db6waQ=; b=iJoE7tMXNcXRUeShByCFIzl/9M
+        4dH5QpY7g+MAHQO1Unhr2TC25ienks2Wm/5X6ia+euxmQbuHhJDLjug3g9j9Ns4iDmagPf/fetzRv
+        BugqwIzjfFCvKOuEIy8ZBYbf34GeTOeip3FyirFnBhvWmXsTEqI2j9dDiCChEnV+BZZoQ4PLyz/MZ
+        02yRYrg80hcpUsjiWq1VaGxzi7HcrSW9mkVzi+MIm5m841BtY1XDqZywbVbGF5v/uTAfpyI3Rce/J
+        AEtJ9DvgBKKYpau9oaZOoQQM7/eRIpjbJwaryizKftkg2UGrQQEZDr9Y84M2EUBIlKD1gFyCmQsg5
+        R9XxB+fA==;
+Received: from [2601:1c0:6280:3f0:d7c4:8ab4:31d7:f0ba]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgV1C-009kc9-1z; Tue, 11 May 2021 16:13:58 +0000
+Subject: Re: [PATCH 00/25] AMD MCA Address Translation Updates
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tony.luck@intel.com, x86@kernel.org,
+        Smita.KoralahalliChannabasappa@amd.com
+References: <20210507190140.18854-1-Yazen.Ghannam@amd.com>
+ <1bd2362b-9bbd-c813-e678-66119b53859f@infradead.org>
+ <20210511154232.GA17213@aus-x-yghannam.amd.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ed4953c7-542e-7d57-7787-9bb53dad71b4@infradead.org>
+Date:   Tue, 11 May 2021 09:13:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210511154232.GA17213@aus-x-yghannam.amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DryIce-based RTC supports alarms that trigger an interrupt.
+On 5/11/21 8:42 AM, Yazen Ghannam wrote:
+> On Fri, May 07, 2021 at 01:32:28PM -0700, Randy Dunlap wrote:
+>> On 5/7/21 12:01 PM, Yazen Ghannam wrote:
+>>> From: Yazen Ghannam <yazen.ghannam@amd.com>
+>>>
+>> ...
+>>>
+>>> Rome:
+>>>   No interleaving
+>>>   Nodes-per-Socket 0 (NPS0)
+>>>   Nodes-per-Socket 1 (NPS1)
+>>>   Nodes-per-Socket 2 (NPS2)
+>>>   Nodes-per-Socket 4 (NPS4)
+>>>   NPS2 w/o hashing
+>>>   NPS4 w/o hashing
+>>>
+>>> Thanks,
+>>> Yazen
+>>
+>> Hi Yazen,
+>>
+>> It appears that you need to provide a glossary of acronyms, e.g.:
+>>
+>> DF = (Data Fabric ?)
+>> CS =
+>> MCE =
+>> NPS = Nodes per Socket
+>> etc.
+>>
+>>
+> 
+> Hi Randy,
+> 
+> That's a good idea. Should it be in the cover letter, patches, or
+> somewhere else?
 
-Configure this interrupt as a wakeup source that wakes the system up
-from standby mode.
+Cover letter seems good to me.
+Thanks.
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
-v3:
- - fix the commit message, the interrupt is always a wakeup source
-
-v2:
- - unconditionally declare rtc-imxdi as wakeup source
- - use dev_pm_set_wake_irq instead of manually coding suspend and resume
-
- drivers/rtc/rtc-imxdi.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/rtc/rtc-imxdi.c b/drivers/rtc/rtc-imxdi.c
-index c1806f4d68e7..4b712e5ab08a 100644
---- a/drivers/rtc/rtc-imxdi.c
-+++ b/drivers/rtc/rtc-imxdi.c
-@@ -24,6 +24,7 @@
- #include <linux/delay.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_wakeirq.h>
- #include <linux/rtc.h>
- #include <linux/sched.h>
- #include <linux/spinlock.h>
-@@ -811,6 +812,9 @@ static int __init dryice_rtc_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, imxdi);
- 
-+	device_init_wakeup(&pdev->dev, true);
-+	dev_pm_set_wake_irq(&pdev->dev, norm_irq);
-+
- 	imxdi->rtc->ops = &dryice_rtc_ops;
- 	imxdi->rtc->range_max = U32_MAX;
- 
 -- 
-2.20.1
+~Randy
 
