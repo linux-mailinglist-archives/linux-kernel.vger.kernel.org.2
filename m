@@ -2,56 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58A4379DD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A06C379DDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229465AbhEKDeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 23:34:15 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36500 "EHLO
+        id S230160AbhEKDeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 23:34:31 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36510 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbhEKDeN (ORCPT
+        with ESMTP id S229736AbhEKDea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 23:34:13 -0400
-Received: from mail-lj1-f198.google.com ([209.85.208.198])
+        Mon, 10 May 2021 23:34:30 -0400
+Received: from mail-lj1-f197.google.com ([209.85.208.197])
         by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lgJ8p-0006CQ-Ma
-        for linux-kernel@vger.kernel.org; Tue, 11 May 2021 03:33:05 +0000
-Received: by mail-lj1-f198.google.com with SMTP id a14-20020a2e7f0e0000b02900b9011db00cso10208161ljd.8
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 20:33:03 -0700 (PDT)
+        id 1lgJ99-0006FH-Lb
+        for linux-kernel@vger.kernel.org; Tue, 11 May 2021 03:33:23 +0000
+Received: by mail-lj1-f197.google.com with SMTP id a23-20020a05651c2117b02900e9751e7410so5063337ljq.6
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 20:33:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qpZ1o8BZbVj97ScJ5uIe5Iz8N7aLUvfNU9S9Nz3IzwM=;
-        b=rNzTqLPO5VyhfVSDmg9BuR8B1OFGk9d9I4XkuSd+aO0NuVo6c36hxq1mvBgz+FT5Yd
-         lEblpdGP9cI6mQyEogLvtdkA2zKGTCvQlVdn0Z/UlBc/v3qGaANrJ3E58wLS6LqugdQn
-         FX3K79cMMIWIx8abdKyfStVnckYW+ixEXaKZCPQHWmDNt/nrWbrz4eDhxGWXSbHMmtt+
-         ZNPYKwNLuSymiQt66VLsTyX7mPt1KDGbFU+SPYhirGzT0ljkYdBqJpT/sC8NdYsuvE6k
-         q+ENlmJgbO37fpHrNF94V9Ax62VgpRTnMpoJHyF693c21jl5Kt0r0+7c1KIU4HfcnYDD
-         um2w==
-X-Gm-Message-State: AOAM530YuHOXcogDreL3Y2e1ciSaZRy5w+640xROl7s6TYSUlpwjd7Ya
-        +hZiirijDsNHAYj0sZvlmaAuc0OageAUWip+IzBLRSwWbs/9d3E/6gcm6YeSgZNJyoqd7RxdCLy
-        28nHDvFZxhtOKR8lV13HS4KwamHnSyZiqAr0sXsj83BvzDXEKMys/IHxvsg==
-X-Received: by 2002:a05:6512:3b93:: with SMTP id g19mr19441658lfv.548.1620703983109;
-        Mon, 10 May 2021 20:33:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzJ3I3h7WqnNP7SEfWG7sKaQkaYZUkTMSdI76PL8q58FqDBzKUFS9tR8ZJAqHuO5+E46Kf0NlHlj83wxal64HY=
-X-Received: by 2002:a05:6512:3b93:: with SMTP id g19mr19441646lfv.548.1620703982869;
- Mon, 10 May 2021 20:33:02 -0700 (PDT)
+        bh=Ip8+k4Q+8oYoZf8LzKq65TnS2j8rrqsqavYRFDb50M4=;
+        b=VE1xIlO0kVzrn9KYckI0IxHwAnEkfcTMwwblljNJi2CoO2z9qI7PVcI8+cbBZMEqXz
+         Hv0JmO7VNkjUsEg5kUpXaS7oYW2J2iFGJ5+aj3XS/mtuNeD9WRmN4S49s/PgwtBzBttA
+         R0AHbGBpUl9dZkRlgmWbsT6kKpcg/xgBO/+EJj2an6+MdESRQHR/OqDtP2iRzG7NOihi
+         1qi5V1Y+rvQkTQx/D+g1fFPObLuSwaDyO22kTsu3vmczT+5iX9TBsadVfuGN0S+otxdv
+         XRMF1Yc9BNcrhdtwChEV0zk39eyRCfERnzF9q3GK0Khown5oSBr2WrQsGG82kYmbAc1z
+         R+0Q==
+X-Gm-Message-State: AOAM5329b3ofv0M5WZ9QC9yQbfZ78SlCxzjf3sRd8Qai6iVaydGKjXHf
+        zylDKNID2FEGD/uJIjzLeMov88m10IazvohdI8y714RX6QSpyA+5aUtN9XPgOlN1/O1vDJvIrkR
+        qXo9mgvzytNAv9x5E3/4LfRaSccUljQjMLfPLDRy6WhOpDYTzdwcJTtZvqA==
+X-Received: by 2002:a05:6512:3f8c:: with SMTP id x12mr18725336lfa.622.1620704002974;
+        Mon, 10 May 2021 20:33:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyEqfE/8NOyvDUHxwlkXYRjY0rz57HVuO6OnwojyPBP7+xcHUEkXqdEf4uDx5MJW2t2UDMEgCnyGFvlCRTu3WQ=
+X-Received: by 2002:a05:6512:3f8c:: with SMTP id x12mr18725318lfa.622.1620704002705;
+ Mon, 10 May 2021 20:33:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210430045656.577395-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20210430045656.577395-1-kai.heng.feng@canonical.com>
+References: <20210426152420.359402-1-kai.heng.feng@canonical.com>
+In-Reply-To: <20210426152420.359402-1-kai.heng.feng@canonical.com>
 From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Tue, 11 May 2021 11:32:50 +0800
-Message-ID: <CAAd53p4fLYXB0z7OQOmAS_BkACARTrrfRf+QwWd3MYQhk5oFTw@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/radeon/dpm: Disable sclk switching on Oland when
- two 4K 60Hz monitors are connected
-To:     "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>
+Date:   Tue, 11 May 2021 11:33:09 +0800
+Message-ID: <CAAd53p4JgjAkHnBkGz20HM2uL8rCJUD6p0bZj+MLd7sbcq5=8A@mail.gmail.com>
+Subject: Re: [PATCH v3] drm/i915: Invoke another _DSM to enable MUX on HP
+ Workstation laptops
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
 Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        "open list:RADEON and AMDGPU DRM DRIVERS" 
-        <amd-gfx@lists.freedesktop.org>,
+        Takashi Iwai <tiwai@suse.de>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        =?UTF-8?Q?Jos=C3=A9_Roberto_de_Souza?= <jose.souza@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Imre Deak <imre.deak@intel.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Karthik B S <karthik.b.s@intel.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
         "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
         open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -59,91 +69,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 12:57 PM Kai-Heng Feng
+On Mon, Apr 26, 2021 at 11:24 PM Kai-Heng Feng
 <kai.heng.feng@canonical.com> wrote:
 >
-> Screen flickers rapidly when two 4K 60Hz monitors are in use. This issue
-> doesn't happen when one monitor is 4K 60Hz (pixelclock 594MHz) and
-> another one is 4K 30Hz (pixelclock 297MHz).
+> On HP Fury G7 Workstations, graphics output is re-routed from Intel GFX
+> to discrete GFX after S3. This is not desirable, because userspace will
+> treat connected display as a new one, losing display settings.
 >
-> The issue is gone after setting "power_dpm_force_performance_level" to
-> "high". Following the indication, we found that the issue occurs when
-> sclk is too low.
+> The expected behavior is to let discrete GFX drives all external
+> displays.
 >
-> So resolve the issue by disabling sclk switching when there are two
-> monitors requires high pixelclock (> 297MHz).
+> The platform in question uses ACPI method \_SB.PCI0.HGME to enable MUX.
+> The method is inside the another _DSM, so add the _DSM and call it
+> accordingly.
+>
+> I also tested some MUX-less and iGPU only laptops with that _DSM, no
+> regression was found.
+>
+> v3:
+>  - Remove BXT from names.
+>  - Change the parameter type.
+>  - Fold the function into intel_modeset_init_hw().
 >
 > v2:
->  - Only apply the fix to Oland.
+>  - Forward declare struct pci_dev.
+>
+> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3113
+> References: https://lore.kernel.org/intel-gfx/1460040732-31417-4-git-send-email-animesh.manna@intel.com/
 > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
 A gentle ping...
 
 > ---
->  drivers/gpu/drm/radeon/radeon.h    | 1 +
->  drivers/gpu/drm/radeon/radeon_pm.c | 8 ++++++++
->  drivers/gpu/drm/radeon/si_dpm.c    | 3 +++
->  3 files changed, 12 insertions(+)
+>  drivers/gpu/drm/i915/display/intel_acpi.c    | 18 ++++++++++++++++++
+>  drivers/gpu/drm/i915/display/intel_acpi.h    |  3 +++
+>  drivers/gpu/drm/i915/display/intel_display.c |  2 ++
+>  3 files changed, 23 insertions(+)
 >
-> diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/radeon.h
-> index 42281fce552e6..56ed5634cebef 100644
-> --- a/drivers/gpu/drm/radeon/radeon.h
-> +++ b/drivers/gpu/drm/radeon/radeon.h
-> @@ -1549,6 +1549,7 @@ struct radeon_dpm {
->         void                    *priv;
->         u32                     new_active_crtcs;
->         int                     new_active_crtc_count;
-> +       int                     high_pixelclock_count;
->         u32                     current_active_crtcs;
->         int                     current_active_crtc_count;
->         bool single_display;
-> diff --git a/drivers/gpu/drm/radeon/radeon_pm.c b/drivers/gpu/drm/radeon/radeon_pm.c
-> index 0c1950f4e146f..3861c0b98fcf3 100644
-> --- a/drivers/gpu/drm/radeon/radeon_pm.c
-> +++ b/drivers/gpu/drm/radeon/radeon_pm.c
-> @@ -1767,6 +1767,7 @@ static void radeon_pm_compute_clocks_dpm(struct radeon_device *rdev)
->         struct drm_device *ddev = rdev->ddev;
->         struct drm_crtc *crtc;
->         struct radeon_crtc *radeon_crtc;
-> +       struct radeon_connector *radeon_connector;
+> diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
+> index 833d0c1be4f1..d008d3976261 100644
+> --- a/drivers/gpu/drm/i915/display/intel_acpi.c
+> +++ b/drivers/gpu/drm/i915/display/intel_acpi.c
+> @@ -13,12 +13,17 @@
+>  #include "intel_display_types.h"
 >
->         if (!rdev->pm.dpm_enabled)
+>  #define INTEL_DSM_REVISION_ID 1 /* For Calpella anyway... */
+> +#define INTEL_DSM_FN_PLATFORM_MUX_ENABLE 0 /* No args */
+>  #define INTEL_DSM_FN_PLATFORM_MUX_INFO 1 /* No args */
+>
+>  static const guid_t intel_dsm_guid =
+>         GUID_INIT(0x7ed873d3, 0xc2d0, 0x4e4f,
+>                   0xa8, 0x54, 0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c);
+>
+> +static const guid_t intel_dsm_guid2 =
+> +       GUID_INIT(0x3e5b41c6, 0xeb1d, 0x4260,
+> +                 0x9d, 0x15, 0xc7, 0x1f, 0xba, 0xda, 0xe4, 0x14);
+> +
+>  static char *intel_dsm_port_name(u8 id)
+>  {
+>         switch (id) {
+> @@ -176,6 +181,19 @@ void intel_unregister_dsm_handler(void)
+>  {
+>  }
+>
+> +void intel_dsm_enable_mux(struct drm_i915_private *i915)
+> +{
+> +       struct pci_dev *pdev = i915->drm.pdev;
+> +       acpi_handle dhandle;
+> +
+> +       dhandle = ACPI_HANDLE(&pdev->dev);
+> +       if (!dhandle)
+> +               return;
+> +
+> +       acpi_evaluate_dsm(dhandle, &intel_dsm_guid2, INTEL_DSM_REVISION_ID,
+> +                         INTEL_DSM_FN_PLATFORM_MUX_ENABLE, NULL);
+> +}
+> +
+>  /*
+>   * ACPI Specification, Revision 5.0, Appendix B.3.2 _DOD (Enumerate All Devices
+>   * Attached to the Display Adapter).
+> diff --git a/drivers/gpu/drm/i915/display/intel_acpi.h b/drivers/gpu/drm/i915/display/intel_acpi.h
+> index e8b068661d22..def013cf6308 100644
+> --- a/drivers/gpu/drm/i915/display/intel_acpi.h
+> +++ b/drivers/gpu/drm/i915/display/intel_acpi.h
+> @@ -11,11 +11,14 @@ struct drm_i915_private;
+>  #ifdef CONFIG_ACPI
+>  void intel_register_dsm_handler(void);
+>  void intel_unregister_dsm_handler(void);
+> +void intel_dsm_enable_mux(struct drm_i915_private *i915);
+>  void intel_acpi_device_id_update(struct drm_i915_private *i915);
+>  #else
+>  static inline void intel_register_dsm_handler(void) { return; }
+>  static inline void intel_unregister_dsm_handler(void) { return; }
+>  static inline
+> +void intel_dsm_enable_mux(struct drm_i915_private *i915) { return; }
+> +static inline
+>  void intel_acpi_device_id_update(struct drm_i915_private *i915) { return; }
+>  #endif /* CONFIG_ACPI */
+>
+> diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
+> index a10e26380ef3..d79dae370b20 100644
+> --- a/drivers/gpu/drm/i915/display/intel_display.c
+> +++ b/drivers/gpu/drm/i915/display/intel_display.c
+> @@ -11472,6 +11472,8 @@ void intel_modeset_init_hw(struct drm_i915_private *i915)
+>  {
+>         struct intel_cdclk_state *cdclk_state;
+>
+> +       intel_dsm_enable_mux(i915);
+> +
+>         if (!HAS_DISPLAY(i915))
 >                 return;
-> @@ -1776,6 +1777,7 @@ static void radeon_pm_compute_clocks_dpm(struct radeon_device *rdev)
->         /* update active crtc counts */
->         rdev->pm.dpm.new_active_crtcs = 0;
->         rdev->pm.dpm.new_active_crtc_count = 0;
-> +       rdev->pm.dpm.high_pixelclock_count = 0;
->         if (rdev->num_crtc && rdev->mode_info.mode_config_initialized) {
->                 list_for_each_entry(crtc,
->                                     &ddev->mode_config.crtc_list, head) {
-> @@ -1783,6 +1785,12 @@ static void radeon_pm_compute_clocks_dpm(struct radeon_device *rdev)
->                         if (crtc->enabled) {
->                                 rdev->pm.dpm.new_active_crtcs |= (1 << radeon_crtc->crtc_id);
->                                 rdev->pm.dpm.new_active_crtc_count++;
-> +                               if (!radeon_crtc->connector)
-> +                                       continue;
-> +
-> +                               radeon_connector = to_radeon_connector(radeon_crtc->connector);
-> +                               if (radeon_connector->pixelclock_for_modeset > 297000)
-> +                                       rdev->pm.dpm.high_pixelclock_count++;
->                         }
->                 }
->         }
-> diff --git a/drivers/gpu/drm/radeon/si_dpm.c b/drivers/gpu/drm/radeon/si_dpm.c
-> index 9186095518047..3cc2b96a7f368 100644
-> --- a/drivers/gpu/drm/radeon/si_dpm.c
-> +++ b/drivers/gpu/drm/radeon/si_dpm.c
-> @@ -2979,6 +2979,9 @@ static void si_apply_state_adjust_rules(struct radeon_device *rdev,
->                     (rdev->pdev->device == 0x6605)) {
->                         max_sclk = 75000;
->                 }
-> +
-> +               if (rdev->pm.dpm.high_pixelclock_count > 1)
-> +                       disable_sclk_switching = true;
->         }
 >
->         if (rps->vce_active) {
 > --
 > 2.30.2
 >
