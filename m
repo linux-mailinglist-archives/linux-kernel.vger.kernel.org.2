@@ -2,29 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F7E37B231
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8123637B230
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbhEKXJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:09:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45636 "EHLO mail.kernel.org"
+        id S230124AbhEKXKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:10:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230023AbhEKXIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:08:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8523061939;
-        Tue, 11 May 2021 23:07:48 +0000 (UTC)
+        id S229920AbhEKXKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 19:10:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B68361626;
+        Tue, 11 May 2021 23:09:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620774468;
-        bh=dCeesBPD8EQLQ5NTaAbs0FYY7oV3gGlAfJXafP/iE/U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L25Lg3jh7hOSF0jNM51XuL216lJeC+lmJRNEk3BqlafqUqiCC7Plkg4sW2e1MIi90
-         sZWonatKKiEh3ejh6W/UAWMjFD2rMAzDmzOJtUzh3TF/FFF8lXyS1HSHWEVlKahUXu
-         oLhFPtjsIZHar8krNVHNIxwh7H/qMro0AtEZ1PyrDDuWRDZz8er1nPHLP21Lqvvzxy
-         5AeipXmjr81N8QQUNvZFd8bnyl7Vuks5jW8O5KP0hTIQ3DJBbvaim1+ihzls3H9caf
-         OOqjPa+ykooEqbF1XujQQarzJnNqkEEMUS6AmVEmEPVKMAig8u/DtGogdcWE+qqpwq
-         9IYvrY7C9fO0Q==
+        s=k20201202; t=1620774564;
+        bh=f7yVnIcNg9JX9ov8g3wDGlv/bRhnW+rugvwUG0H3tNk=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=htYy12xdloOhp2RyYTN+E1gh069+k2O0NDwsLEbuRe4ug/Odm4sUmlTPBM9sAI35h
+         bP20BiXo+DBqDznVDgSIonB49l0ScNelpDWdNkcw50FvSM2Ff1cSRZ+fytu1FXodDS
+         bNexLbtF0haEwqpSUf3MrGp7g5qBHOaf7+5M+Vhn0jVdoczjv9HLUbugEM/R05iLdC
+         PNPGyTfLtraSX1N/TdIUzRkf2IBgZFqtj2GCQMwJHtRsdRXLCxc6octnEk7ErimSE8
+         PPNyt/88JVnBCnwprmH2PPQrf8aAkQOw1+zSjV3d8ywfw5RGG5xHGJ6F/S8M4q82kj
+         OcmhVDIQBkg8A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E58995C0DB3; Tue, 11 May 2021 16:07:47 -0700 (PDT)
+        id 2B38F5C0138; Tue, 11 May 2021 16:09:24 -0700 (PDT)
+Date:   Tue, 11 May 2021 16:09:24 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,77 +33,35 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 6/6] srcu: Early test SRCU polling start
-Date:   Tue, 11 May 2021 16:07:45 -0700
-Message-Id: <20210511230745.2894650-6-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20210511230720.GA2894512@paulmck-ThinkPad-P17-Gen-1>
-References: <20210511230720.GA2894512@paulmck-ThinkPad-P17-Gen-1>
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/4] Tasks-RCU updates for v5.14
+Message-ID: <20210511230924.GA2894768@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+Hello!
 
-Place an early call to start_poll_synchronize_srcu() before the the
-invocation of call_srcu() on the same srcu_struct structure.
+This series provides Tasks-RCU updates.
 
-After the later call to srcu_barrier(), the completion of the
-first grace period should be visible to a subsequent invocation of
-poll_state_synchronize_srcu(), and if not, warn.
+1.	rcu-tasks: Add block comment laying out RCU Tasks design.
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/update.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+2.	rcu-tasks: Add block comment laying out RCU Rude design.
 
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index b95ae86c40a7..0aa118ac37ba 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -524,6 +524,7 @@ static void test_callback(struct rcu_head *r)
- }
- 
- DEFINE_STATIC_SRCU(early_srcu);
-+static unsigned long early_srcu_cookie;
- 
- struct early_boot_kfree_rcu {
- 	struct rcu_head rh;
-@@ -536,8 +537,10 @@ static void early_boot_test_call_rcu(void)
- 	struct early_boot_kfree_rcu *rhp;
- 
- 	call_rcu(&head, test_callback);
--	if (IS_ENABLED(CONFIG_SRCU))
-+	if (IS_ENABLED(CONFIG_SRCU)) {
-+		early_srcu_cookie = start_poll_synchronize_srcu(&early_srcu);
- 		call_srcu(&early_srcu, &shead, test_callback);
-+	}
- 	rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
- 	if (!WARN_ON_ONCE(!rhp))
- 		kfree_rcu(rhp, rh);
-@@ -563,6 +566,7 @@ static int rcu_verify_early_boot_tests(void)
- 		if (IS_ENABLED(CONFIG_SRCU)) {
- 			early_boot_test_counter++;
- 			srcu_barrier(&early_srcu);
-+			WARN_ON_ONCE(!poll_state_synchronize_srcu(&early_srcu, early_srcu_cookie));
- 		}
- 	}
- 	if (rcu_self_test_counter != early_boot_test_counter) {
--- 
-2.31.1.189.g2e36527f23
+3.	rcu-tasks: Make ksoftirqd provide RCU Tasks quiescent states.
 
+4.	tasks-rcu: Make show_rcu_tasks_gp_kthreads() be static inline.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/kernel/rcu/rcu.h   |    4 ++++
+ b/kernel/rcu/tasks.h |   40 ++++++++++++++++++++++++++++++++++++++++
+ b/kernel/rcu/tree.c  |    1 +
+ kernel/rcu/tasks.h   |   10 +++++++---
+ 4 files changed, 52 insertions(+), 3 deletions(-)
