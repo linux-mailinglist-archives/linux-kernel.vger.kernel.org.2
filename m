@@ -2,79 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243AD37ED75
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF94E37ED74
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384630AbhELUZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:25:09 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:40570 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1385262AbhELUHy (ORCPT
+        id S1344804AbhELUXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:23:19 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:34681 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1385253AbhELUHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 16:07:54 -0400
-Received: by mail-ot1-f47.google.com with SMTP id t4-20020a05683014c4b02902ed26dd7a60so11527574otq.7;
-        Wed, 12 May 2021 13:06:44 -0700 (PDT)
+        Wed, 12 May 2021 16:07:51 -0400
+Received: by mail-oi1-f176.google.com with SMTP id u11so2262995oiv.1;
+        Wed, 12 May 2021 13:06:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=cU36NcYiaevsm5YlhwbHu9nUioXD99KMHMa6mXtBEzU=;
-        b=FTCRDCCJgRMMuV6AE3ub1dMbTxY3upINxTMhfMth5dRSO3WSn7Kc5p9UNS9POAnxq3
-         ptnThgw0bHrk15S7V/zUlMlJAoM81ip2Fy0PEY6+vJx6Kj3imUb46TEB8K4lzordgZr5
-         YE2twd5PrRn8uW0uPN50A2n4GGf//wDVy0Vt2ZsGcdsyMKFFBNb6aFiMET5ABtIn2Deu
-         GHbjsWnGhDtRyb+NQBfQA0R4rTqVAB9ifsaU7M6/R/UWYSZsmIvE3tpe7sYo85p+gn85
-         Y7JQ+z99lLXnTCt46zhKmRJDjjbfOGRXJqgwZOSzgt0C86wwll4ModgeuRUzGqJX2q8F
-         8+JQ==
-X-Gm-Message-State: AOAM532v7Ytx7c3qxdWg6sXKwLaD0VNJPHPwXV0siXb70Zg1N0UznMZ/
-        3N4Mi4/9kviUy3yVLBFjLw==
-X-Google-Smtp-Source: ABdhPJxphN0GtiN334k/QK1IpY2uMD31NqkpC+sYSNf2GEWM4vRsewoEDUE8VzouS6MEFbjCrNHvLA==
-X-Received: by 2002:a05:6830:1e70:: with SMTP id m16mr25022703otr.340.1620850004228;
-        Wed, 12 May 2021 13:06:44 -0700 (PDT)
+        bh=G314866YQpgK6Og9SPK+7F1yLW6LxWxUdwMljvXz8GA=;
+        b=ntS1mHXkqk3pEdLJ8WoYnJ9bFVv4l5t98IzytclKC4aOoMekUirmmBCPnPDroLckTj
+         /wMt3hE1K/DF5N8k6FwkHAQuTZKZXERsnKTssbeoyjTUTcBDp73vaES6QtvXZfOMJtx+
+         cZYAhkC66111ZaRvfiZ79d339Q/4Aue7gbC7UFjUGtDTs7Kp6OqdwPcPmJN3PL8fiMqr
+         HsuaIAG73N5lvBwfihCa7uykzHb/2Bu8VRECt42YnvGybuI6MiUNwPrazU0moQI3d6A7
+         L5FYgRcX36g22BFioMrEqv5+1EqFLZK5w7zjBunZY3HXU9UZAQXDDZUyKdTRP2D5OEYn
+         4erw==
+X-Gm-Message-State: AOAM530f7dKn12hl+yRsUMIyLVvSRaPLhuBM//Y/l/l/24LeUcyW7PYi
+        jxZqauP2KfBFNXtdqqMQTw==
+X-Google-Smtp-Source: ABdhPJwxNouj8PhjvD5RQRalpsF56HCQ4sFcehx28dXWzUBDKpftaaS5YowOQ3Pe+GG7+R6Wi5KHlw==
+X-Received: by 2002:aca:b8d4:: with SMTP id i203mr155393oif.61.1620850002606;
+        Wed, 12 May 2021 13:06:42 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r19sm229021ooj.5.2021.05.12.13.06.43
+        by smtp.gmail.com with ESMTPSA id x141sm195890oif.13.2021.05.12.13.06.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 13:06:43 -0700 (PDT)
-Received: (nullmailer pid 2230906 invoked by uid 1000);
-        Tue, 11 May 2021 16:27:11 -0000
-Date:   Tue, 11 May 2021 11:27:11 -0500
+        Wed, 12 May 2021 13:06:41 -0700 (PDT)
+Received: (nullmailer pid 2232127 invoked by uid 1000);
+        Tue, 11 May 2021 16:28:02 -0000
+Date:   Tue, 11 May 2021 11:28:02 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v4] dt-bindings: memory: tegra20: emc: Convert to schema
-Message-ID: <20210511162711.GA2230846@robh.at.kernel.org>
-References: <20210510212320.3255-1-digetx@gmail.com>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     linus.walleij@linaro.org, huangtao@rock-chips.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, bgolaszewski@baylibre.com,
+        shawn.lin@rock-chips.com, linux-gpio@vger.kernel.org,
+        zhangqing@rock-chips.com, heiko@sntech.de,
+        devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        jay.xu@rock-chips.com, cl@rock-chips.com, david.wu@rock-chips.com
+Subject: Re: [PATCH v4 2/4] dt-bindings: soc: rockchip: convert grf.txt to
+ YAML
+Message-ID: <20210511162802.GA2232097@robh.at.kernel.org>
+References: <20210511050511.5973-1-jbx6244@gmail.com>
+ <20210511050511.5973-3-jbx6244@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510212320.3255-1-digetx@gmail.com>
+In-Reply-To: <20210511050511.5973-3-jbx6244@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 00:23:20 +0300, Dmitry Osipenko wrote:
-> Convert Tegra20 External Memory Controller binding to schema.
+On Tue, 11 May 2021 07:05:09 +0200, Johan Jonker wrote:
+> Current dts files with 'grf' nodes are manually verified.
+> In order to automate this process grf.txt has to be
+> converted to YAML.
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Most compatibility strings are in use with "simple-mfd" added.
+> 
+> Add description already in use:
+> "rockchip,rv1108-pmugrf", "syscon"
+> 
+> Add new descriptions for:
+> "rockchip,rk3568-grf", "syscon", "simple-mfd"
+> "rockchip,rk3568-pmugrf", "syscon", "simple-mfd"
+> 
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 > ---
 > 
-> Changelog:
+> Changed V4:
+>   revert separate schemas for each 'if' subset
+>   add additionalProperties
+>   move properties to top level
 > 
-> v4: - Doesn't have duplicated properties by making use of $defs/$ref,
->       which was suggested by Rob Herring in a review comment to v3.
+> Changed V3:
+>   remove select
+>   change unevaluatedProperties
+>   add separate schemas for each 'if' subset
 > 
-> v3: - Fixed dt_binding_check warning about the missing reg property.
-> 
->     - Became a standalone patch since other v2 patches were applied.
-> 
->  .../memory-controllers/nvidia,tegra20-emc.txt | 130 ----------
->  .../nvidia,tegra20-emc.yaml                   | 230 ++++++++++++++++++
->  2 files changed, 230 insertions(+), 130 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
+> Changed V2:
+>   add rockchip,rk3328-grf-gpio.yaml
+>   rename grf-gpio nodename
+> ---
+>  .../devicetree/bindings/soc/rockchip/grf.txt       |  61 -----
+>  .../devicetree/bindings/soc/rockchip/grf.yaml      | 246 +++++++++++++++++++++
+>  2 files changed, 246 insertions(+), 61 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.txt
+>  create mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.yaml
 > 
 
-Applied, thanks!
+Reviewed-by: Rob Herring <robh@kernel.org>
