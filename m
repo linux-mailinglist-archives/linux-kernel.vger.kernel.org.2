@@ -2,190 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF60137A25A
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0546237A25E
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbhEKImi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 04:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54564 "EHLO
+        id S230442AbhEKInb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 04:43:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhEKImg (ORCPT
+        with ESMTP id S230370AbhEKInZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 04:42:36 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7895DC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 01:41:30 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id g14so21914665edy.6
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 01:41:30 -0700 (PDT)
+        Tue, 11 May 2021 04:43:25 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D094BC061574;
+        Tue, 11 May 2021 01:42:16 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id d11so19232106wrw.8;
+        Tue, 11 May 2021 01:42:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DBeVQ+DbzVOqheKpDE6b/l8xGHNgrrKmzCyeg4MY9MM=;
-        b=H3Vh0QtHbME6isjyak/fqgO1goM8VONv7XU0YXMAPQLdU6UuWv+3oBPI7jY4t2CneN
-         SMOLlmHljBNrs5MNsFp9KmTtTgcZjgAILR6/z0e9S+esC5zunVNqcbjGbksG5i9kfqXY
-         rvoSyY0KFxeVSUWRAMZlfhOOPc5ZgRVGbosfSdzAyX+Al6QmkNZbpVgfycj18NeTncEg
-         I6LAlWymuOFttSd3GMTry/9cWsWU/pTXXw8FKcbou7hoGgzDuzEA7Tdswuy6o3EcNH3T
-         lSDrAwZIAkrCgJd1FkzdDnpFdMBSK/w+j2AjZ6QJkgnqvZi5kcqPY+tEWFr2jycq0CfH
-         7h6g==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tXnJhPK1FADLbH/EXZbWk8gnh9IOj/tx9NT7IBJWZIg=;
+        b=cZVO/0otPsNR8D5c/CorG0TW2rkM2F3cpMnryKGBxXaM2nYoIYZU02rmneGXH0r76/
+         uC7wefZNl2FuJ6dtFChNP0CHzagAMvZME+5zDmFpHoKchxSn7Xb2zmP/F7SnFSQLZLFU
+         t1sbth+J9W/jLgcp6eJUt2foIjPR7aY0/zet/IP/E8K+ALWVSMsZNYn6LcEa6vJaoQAJ
+         cz23MRoBdi5aHzREPXdmyudVinP5UfVC7q05U98QPdy7vNQnrWzZgmi2km8X7NK2rs55
+         h37/mlV4Fs4E1QAA03h6BhmGvhkBmJJmLuAfgfqN+KIkXaPoTyOSiLOxP8xhkGlGib8T
+         BNsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DBeVQ+DbzVOqheKpDE6b/l8xGHNgrrKmzCyeg4MY9MM=;
-        b=GS2VnEksP49M9qpgxJuMk7gJEJtfXWzwkKPJu7nQB2A7xSaiar1kS2MuB3bTjPqg4u
-         fGk/qCVEre6bwb5pBtmsPNA4yOmk3zXB5QQXPep8xcgAhuaTDTRKapKckKrdOGNtvMZJ
-         BI4Vzz8Ig14Sbl0n20e86KoT4IT490eZAqdPcF1oHXkpsqNWT4bTqbU661w/fn5e87X2
-         T/8uVd6Vy4bKIObRvKnt7oDzkwO7cQ9pxLFX4mkWN3uTaGqwGRYqDFSy82Ws9ZUAdrIY
-         OuVD34BO+vRzmDXKoqONyzB8RG4pX8pY1ZH4BqDkxZzW4LwKXpEyHVl28gfXRnE7eu+V
-         jQtA==
-X-Gm-Message-State: AOAM5306pvbL0DbQaU+k4pLRlJNw7bJW74HVQCp5AtsqPl4DPXVJc8/4
-        5OEIBzh8hjhmIcBU3IAw+bjWuQ==
-X-Google-Smtp-Source: ABdhPJyk1DjUXXkr6mF3j2Ysv/fMzGsrok8fiyPMtBUheYMHXlhk4hlvbY3ypUShk/aetQ5cK9agQA==
-X-Received: by 2002:aa7:c390:: with SMTP id k16mr31251270edq.97.1620722489173;
-        Tue, 11 May 2021 01:41:29 -0700 (PDT)
-Received: from apalos.home ([94.69.77.156])
-        by smtp.gmail.com with ESMTPSA id w6sm8263246edc.25.2021.05.11.01.41.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 01:41:28 -0700 (PDT)
-Date:   Tue, 11 May 2021 11:41:23 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Shay Agroskin <shayagr@amazon.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
-Message-ID: <YJpDMwhX3OJrdjDd@apalos.home>
-References: <YIsAIzecktXXBlxn@apalos.home>
- <9bf7c5b3-c3cf-e669-051f-247aa8df5c5a@huawei.com>
- <YIwvI5/ygBvZG5sy@apalos.home>
- <33b02220-cc50-f6b2-c436-f4ec041d6bc4@huawei.com>
- <YJPn5t2mdZKC//dp@apalos.home>
- <75a332fa-74e4-7b7b-553e-3a1a6cb85dff@huawei.com>
- <YJTm4uhvqCy2lJH8@apalos.home>
- <bdd97ac5-f932-beec-109e-ace9cd62f661@huawei.com>
- <20210507121953.59e22aa8@carbon>
- <pj41zl4kfclce0.fsf@u570694869fb251.ant.amazon.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tXnJhPK1FADLbH/EXZbWk8gnh9IOj/tx9NT7IBJWZIg=;
+        b=asSzgTV2ZIVUOtAc+epEVOqJLX6lE8A34bmRXAd7hCTw/3IjB9uKpQz8Kg0WYsPoQa
+         2X32tDSWgXUNrITiluD7tSyzMNxPsxHcJnZXHPCqcklBZKlSuid9ySwhnoCzIeOcFAoC
+         HEVTzuBYCL9YZCq2ex2giZGpAaIf3uXbA90d8NP3ITNPyVdmRBQ+QRzwbcY9JmWJBMdq
+         abPvmr0shbgNEioRoXvbdpyJjg4dX0IF0iyFtYeHiZ9wTWPbHFTT0r5oj5L92yAkWPs8
+         YOD2bSqZqdrW7FrUo2+vfkVRQbyfeBV8+qWvA74prUo5NEZvEPVyWMNAVLN7RkAIDo2C
+         1Few==
+X-Gm-Message-State: AOAM533mLADq/Re/YSoG6tD/X9lFtqvT2gNEawZXDbOtE7elYXnQF8r7
+        v07SDJB9VjWAAv0QjQW3TTRPzxO47PQ=
+X-Google-Smtp-Source: ABdhPJxNFN20cSoAE51Czy+t07NtQS6C9XwX+cxq/GdVWJa1NPpp9tblZl5ezqNBt1VicIAE1skkAw==
+X-Received: by 2002:a05:6000:1051:: with SMTP id c17mr35528000wrx.43.1620722535379;
+        Tue, 11 May 2021 01:42:15 -0700 (PDT)
+Received: from [192.168.2.202] (p5487be9d.dip0.t-ipconnect.de. [84.135.190.157])
+        by smtp.gmail.com with ESMTPSA id f3sm25952628wrp.7.2021.05.11.01.42.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 01:42:14 -0700 (PDT)
+Subject: Re: [PATCH] usb: xhci: Increase timeout for HC halt
+To:     Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Mathias Nyman <mathias.nyman@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210511002933.1612871-1-luzmaximilian@gmail.com>
+ <828bf140-1be6-9d92-1598-bfdf689bbdae@linux.intel.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <c1b24d1a-497d-a303-7b54-e1d65402f08c@gmail.com>
+Date:   Tue, 11 May 2021 10:42:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <pj41zl4kfclce0.fsf@u570694869fb251.ant.amazon.com>
+In-Reply-To: <828bf140-1be6-9d92-1598-bfdf689bbdae@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shay,
+On 5/11/21 9:19 AM, Mathias Nyman wrote:
+> On 11.5.2021 3.29, Maximilian Luz wrote:
+>> On some devices (specifically the SC8180x based Surface Pro X with
+>> QCOM04A6) HC halt / xhci_halt() times out during boot. Manually binding
+>> the xhci-hcd driver at some point later does not exhibit this behavior.
+>> To work around this, double XHCI_MAX_HALT_USEC, which also resolves this
+>> issue.
+>>
+>> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+>> ---
+>>   drivers/usb/host/xhci-ext-caps.h | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/usb/host/xhci-ext-caps.h b/drivers/usb/host/xhci-ext-caps.h
+>> index fa59b242cd51..fb591e41cd50 100644
+>> --- a/drivers/usb/host/xhci-ext-caps.h
+>> +++ b/drivers/usb/host/xhci-ext-caps.h
+>> @@ -7,8 +7,8 @@
+>>    * Author: Sarah Sharp
+>>    * Some code borrowed from the Linux EHCI driver.
+>>    */
+>> -/* Up to 16 ms to halt an HC */
+>> -#define XHCI_MAX_HALT_USEC	(16*1000)
+>> +/* Up to 32 ms to halt an HC */
+>> +#define XHCI_MAX_HALT_USEC	(32 * 1000)
+> 
+> xHCI spec has a 16ms limit stated in several places, for example section 5.4.1
+> "xHC is forced to halt within 16 ms. of software clearing the R/S bit to ‘0’,
+> irrespective of any queued Transfer or Command Ring activity"
 
-On Sun, May 09, 2021 at 08:11:35AM +0300, Shay Agroskin wrote:
-> 
-> Jesper Dangaard Brouer <brouer@redhat.com> writes:
-> 
-> > On Fri, 7 May 2021 16:28:30 +0800
-> > Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> > 
-> > > On 2021/5/7 15:06, Ilias Apalodimas wrote:
-> > > > On Fri, May 07, 2021 at 11:23:28AM +0800, Yunsheng Lin wrote:  >>
-> > > On 2021/5/6 20:58, Ilias Apalodimas wrote:  >>>>>>  >>>>>
-> > ...
-> > > > > > I think both choices are sane.  What I am trying to explain >
-> > > here, is
-> > > > regardless of what we choose now, we can change it in the > future
-> > > without
-> > > > affecting the API consumers at all.  What will change > internally
-> > > is the way we
-> > > > lookup the page pool pointer we are trying to recycle.
-> > > 
-> > > It seems the below API need changing?
-> > > +static inline void skb_mark_for_recycle(struct sk_buff *skb, struct
-> > > page *page,
-> > > +					struct xdp_mem_info *mem)
-> > 
-> > I don't think we need to change this API, to support future memory
-> > models.  Notice that xdp_mem_info have a 'type' member.
-> 
-> Hi,
-> Providing that we will (possibly as a future optimization) store the pointer
-> to the page pool in struct page instead of strcut xdp_mem_info, passing
-> xdp_mem_info * instead of struct page_pool * would mean that for every
-> packet we'll need to call
->             xa = rhashtable_lookup(mem_id_ht, &mem->id,
-> mem_id_rht_params);
->             xa->page_pool;
-> 
-> which might pressure the Dcache to fetch a pointer that might be present
-> already in cache as part of driver's data-structures.
-> 
-> I tend to agree with Yunsheng that it makes more sense to adjust the API for
-> the clear use-case now rather than using xdp_mem_info indirection. It seems
-> to me like
-> the page signature provides the same information anyway and allows to
-> support different memory types.
+Right, thanks, I wasn't aware of this.
 
-We've switched the patches already.  We didn't notice any performance boost
-by doing so (tested on a machiattobin), but I agree as well.  As I
-explained the only thing that will change if we ever the need the struct
-xdp_mem_info in struct page is the internal contract between struct page
-and the recycling function, so let's start clean and see if we ever need
-that.
+> To make sure hosts work we could increase it to 32, but comment could be
+> changed to make sure it doean't get optimized back to 16 ms later.
+> 
+> How about:
+> /* HC should halt within 16 ms, but use 32 ms as some in reality take longer */
+> 
+> If that's ok I can take this and modify the comment
 
+That makes sense, yes. Please feel free to change that comment as you wish.
 
-Cheers
-/Ilias
-> 
-> Shay
-> 
-> > 
-> > Naming in Computer Science is a hard problem ;-). Something that seems
-> > to confuse a lot of people is the naming of the struct "xdp_mem_info".
-> > Maybe we should have named it "mem_info" instead or "net_mem_info", as
-> > it doesn't indicate that the device is running XDP.
-> > 
-> > I see XDP as the RX-layer before the network stack, that helps drivers
-> > to support different memory models, also for handling normal packets
-> > that doesn't get process by XDP, and the drivers doesn't even need to
-> > support XDP to use the "xdp_mem_info" type.
-> 
+Regards,
+Max
