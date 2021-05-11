@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88893379E0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 06:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEEA379E1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 06:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhEKEKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 00:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50178 "EHLO
+        id S229957AbhEKESe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 00:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhEKEKh (ORCPT
+        with ESMTP id S229456AbhEKESa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 00:10:37 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3244C061574;
-        Mon, 10 May 2021 21:09:30 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id b14-20020a17090a6e0eb0290155c7f6a356so687691pjk.0;
-        Mon, 10 May 2021 21:09:30 -0700 (PDT)
+        Tue, 11 May 2021 00:18:30 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9DCC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 21:17:23 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id n184so17835831oia.12
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 21:17:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=V5cc8gqWmhgI8hymJnMxwJpjQF8i+VU2pCJJ8axwstk=;
-        b=dXYTVILtW0smoS+ZCCp5EKDoSxqxtkmkBGghPetrKwjOh7CMyDUtvatt+o49mlEC+p
-         VCC5qxBMsKrHzec9wcE7cP/ZtBa5s1n5ezpdPDXEX+52xnqqeFma9lOeCczZr4fnozhc
-         o2EAGXFhRjzQpTKXGjRiR/oMXUoyBeesKN2rr+QyW7VYX9SUiUEWcdLXHrgA7C+GDWkE
-         lL8on+iYUS4iGpa3tiXuPqqBnpl517Y83MhhrWrS9SYU3R1DFFMcZumQ4HxmiGOdVTkk
-         Sp9q5PoLoL/CS4wmXnjWPNkzHMIEMB1ItjXny6mpsrlRUyKLrq023pTah9W8ehYDxkQZ
-         8HUw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YvC5nf7k+zrK5xWC4RDKTwoK+EY80CWdjHtrEnmOMoE=;
+        b=q0tsCRjFghXORwNbjdqUGRBvoO1woiRrfKvI4/Ex5IY3XtemQkhdq1cpeNwWTwstpd
+         00aUKnOGwv7hqL+3gphyC6GOCvBtHwrj5+EqQqWfd6FXkjc/4luFzX7AQ9X0mxOwDarP
+         FynZp5vkMRK/EJ3PNtXuAqco/Hu/aXdpWtBB+MmfmseXv1cX2RXCN/DPYSykv9GYaT6e
+         REw8tsQ5XoaS1DAqxx13m06kE01EKKxdM3pKa0+6TiZqxZD9hgAT5I6Uv7tEtcmetsCE
+         yyiyaqz9XPaMOQNVHZXvaVb407CjWE4FYRcRrlR/8iPdQVrnOaJYcY5jFVqo5qgI0JPo
+         Chng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=V5cc8gqWmhgI8hymJnMxwJpjQF8i+VU2pCJJ8axwstk=;
-        b=rFGqJ2BxLgyjhydRlLyyMXpyRkSPSziPcypBP4NTLH5Mx+ls61m8OKe19l6EynonQy
-         vw0DfeoSAe1Uj4nxzczgXnmjggM74wi4D8gMU8iyBkb/Y9O3Fn/ImRIw/9kiElawmuxQ
-         UL8C7S9BQdIdLbCvD6/59BzC7HQD7ArwgbZ1CYx+R+kUD+w9bI5kIIFlJYumz3Ym/D4J
-         2benIxvWzgH3rymzqgzcCmR+ViSXFeY2fh14rrBg+zz/VTvYHuoTD5A1kGFAq98uOGPT
-         A8p8t0glRg4iCXqaJm5V7N882CpFGmgl3opNsPR19NJiXwB2KgRruRlsz50GmpY5mteH
-         g1+w==
-X-Gm-Message-State: AOAM532Yot9ZWWZDZS5Uh9zTymWb9kOk+Fo+KUw7hPyJBGuwuMDXEOPB
-        u3Pv/gp/fo/s1ulotRJagYM=
-X-Google-Smtp-Source: ABdhPJx92pj68s8jJWnq2LdkDNdYrQb2lFiDBdLcfgK3rBeuv9O5qgLHeqYSp905RMzgPA5h8BA2SQ==
-X-Received: by 2002:a17:90a:488a:: with SMTP id b10mr31428392pjh.2.1620706170503;
-        Mon, 10 May 2021 21:09:30 -0700 (PDT)
-Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
-        by smtp.gmail.com with ESMTPSA id g18sm12531352pfb.178.2021.05.10.21.09.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 10 May 2021 21:09:30 -0700 (PDT)
-From:   dillon.minfei@gmail.com
-To:     mchehab+huawei@kernel.org, hverkuil-cisco@xs4all.nl,
-        a.hajda@samsung.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Dillon Min <dillon.minfei@gmail.com>
-Subject: [PATCH] media: s5p-g2d: Fix a memory leak on ctx->fh.m2m_ctx
-Date:   Tue, 11 May 2021 12:09:24 +0800
-Message-Id: <1620706164-28856-1-git-send-email-dillon.minfei@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YvC5nf7k+zrK5xWC4RDKTwoK+EY80CWdjHtrEnmOMoE=;
+        b=FUUV1W//UJ1aIVoXXZXeK2mSmximeR0+Ow8WKToBswXx3ytmRRRGefE2tdfyMrImWt
+         e1e0JzpAlsnYhRMYktIgefVgyDevNxJ4sfPsGkDrHzwNxQXrpouO6y8wu5wxFo1AUtJI
+         LrG+9ct8zgnKqm1BHFR50T7XAWhu4UU2I4RnmkybtO3IDRpKegugiyBu4UZdE0GLOiXL
+         jF+K0oyiKlrEcDV6PimEe6objOlAqB7EsvOpRQf8Eu2XSlRvuzpl4nVt2Vw2iXY4aUtY
+         6oGlse2UQcQ1YU61JSDpuX41GaFMpGWk3tXY7ZGzjK0pI2lXZTT9okUokiGWllcL4QtJ
+         C2eQ==
+X-Gm-Message-State: AOAM532anKkKyKy3VsfDC7lsQcgpqALaazqlMTyezUBioRhFHl9XBkj8
+        KOVBIw9j6xQAMrFHzDGaJexj4A==
+X-Google-Smtp-Source: ABdhPJx6KSP5d9a5oHmEKCqxtRP1plW7IDaQtDhXQyrc537PKVx8NrelBd+Suas4TNYEuITlIshdUA==
+X-Received: by 2002:aca:da04:: with SMTP id r4mr1974968oig.123.1620706642271;
+        Mon, 10 May 2021 21:17:22 -0700 (PDT)
+Received: from localhost.localdomain ([2607:fb90:e623:42c1:10df:adff:fec2:f1d])
+        by smtp.gmail.com with ESMTPSA id v79sm1367168oia.14.2021.05.10.21.17.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 21:17:21 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] clk: qcom: dispcc-sm8250: Add sc8180x support
+Date:   Mon, 10 May 2021 23:17:18 -0500
+Message-Id: <20210511041719.591969-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dillon Min <dillon.minfei@gmail.com>
+The display clock controller in SC8180x is reused from SM8150, so add
+the necessary compatible and wire up the driver to enable this.
 
-The m2m_ctx resources was allocated by v4l2_m2m_ctx_init() in g2d_open()
-should be freed from g2d_release() when it's not used.
-
-Fix it
-
-Fixes: 918847341af0 ("[media] v4l: add G2D driver for s5p device family")
-Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
- drivers/media/platform/s5p-g2d/g2d.c | 3 +++
- 1 file changed, 3 insertions(+)
+ .../devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml         | 1 +
+ drivers/clk/qcom/dispcc-sm8250.c                              | 4 +++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/s5p-g2d/g2d.c b/drivers/media/platform/s5p-g2d/g2d.c
-index 15bcb7f6e113..0818fdd3e984 100644
---- a/drivers/media/platform/s5p-g2d/g2d.c
-+++ b/drivers/media/platform/s5p-g2d/g2d.c
-@@ -279,6 +279,9 @@ static int g2d_release(struct file *file)
- 	v4l2_ctrl_handler_free(&ctx->ctrl_handler);
- 	v4l2_fh_del(&ctx->fh);
- 	v4l2_fh_exit(&ctx->fh);
-+	mutex_lock(&dev->mutex);
-+	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
-+	mutex_unlock(&dev->mutex);
- 	kfree(ctx);
- 	v4l2_info(&dev->v4l2_dev, "instance closed\n");
- 	return 0;
+diff --git a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+index 0cdf53f41f84..6667261dc665 100644
+--- a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
++++ b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+@@ -20,6 +20,7 @@ description: |
+ properties:
+   compatible:
+     enum:
++      - qcom,sc8180x-dispcc
+       - qcom,sm8150-dispcc
+       - qcom,sm8250-dispcc
+ 
+diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispcc-sm8250.c
+index de09cd5c209f..12ef6f1d5c62 100644
+--- a/drivers/clk/qcom/dispcc-sm8250.c
++++ b/drivers/clk/qcom/dispcc-sm8250.c
+@@ -1037,6 +1037,7 @@ static const struct qcom_cc_desc disp_cc_sm8250_desc = {
+ };
+ 
+ static const struct of_device_id disp_cc_sm8250_match_table[] = {
++	{ .compatible = "qcom,sc8180x-dispcc" },
+ 	{ .compatible = "qcom,sm8150-dispcc" },
+ 	{ .compatible = "qcom,sm8250-dispcc" },
+ 	{ }
+@@ -1053,7 +1054,8 @@ static int disp_cc_sm8250_probe(struct platform_device *pdev)
+ 
+ 	/* note: trion == lucid, except for the prepare() op */
+ 	BUILD_BUG_ON(CLK_ALPHA_PLL_TYPE_TRION != CLK_ALPHA_PLL_TYPE_LUCID);
+-	if (of_device_is_compatible(pdev->dev.of_node, "qcom,sm8150-dispcc")) {
++	if (of_device_is_compatible(pdev->dev.of_node, "qcom,sc8180x-dispcc") ||
++	    of_device_is_compatible(pdev->dev.of_node, "qcom,sm8150-dispcc")) {
+ 		disp_cc_pll0_config.config_ctl_hi_val = 0x00002267;
+ 		disp_cc_pll0_config.config_ctl_hi1_val = 0x00000024;
+ 		disp_cc_pll0_config.user_ctl_hi1_val = 0x000000D0;
 -- 
-2.7.4
+2.29.2
 
