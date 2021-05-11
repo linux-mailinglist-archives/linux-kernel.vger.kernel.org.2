@@ -2,71 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C69337AD00
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B405B37AD02
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbhEKRVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:21:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230315AbhEKRVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:21:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A28261261;
-        Tue, 11 May 2021 17:20:23 +0000 (UTC)
-Date:   Tue, 11 May 2021 18:20:20 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Luo Longjun <luolongjun@huawei.com>
-Cc:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, sangyan@huawei.com,
-        ningyu9@huawei.com, luchunhua@huawei.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: Re: [PATCH] arm64: configs: remove redundant CONFIG_MTK_PMIC_WRAP
-Message-ID: <20210511172020.GB21033@arm.com>
-References: <20210507182410.10515-1-luolongjun@huawei.com>
+        id S231512AbhEKRXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231304AbhEKRXG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 13:23:06 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9622DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:21:59 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id r11so8962799edt.13
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:21:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zk/PQYLI6r98lI1cdIyu8CLft4Ubu+MP3PrXG4cBFsw=;
+        b=Wqg/TMarC8uFHtzYy49P8GuLvbfhexnaq9tiTRNUd4yECPAm2dHallyjBW060syeb2
+         bYjEQKah/7MPSWDzUtNUS26fIGXGC0UJcg6W3QmSgEpNIEcopmXwyRFO+BsIFdhPyehk
+         4YcVGOjsTRIuMG2LkmPuJiE4F28gmq35g9Tsw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=zk/PQYLI6r98lI1cdIyu8CLft4Ubu+MP3PrXG4cBFsw=;
+        b=fanzpcNCGZrbrdiMrqLni2Hx2FEWRfI+huC/l2ryh0miZQMG3+TAKUAYKfQcRuMW4k
+         zjnuhDiy6B0sIxwVJ0MpP+b7FHjD7aCM+GetUG85sEIeIuSq61QYcLAvsZPXGGQGhofF
+         FzRLcpnopB4po9+YxlaKAofELg7TTTNO9uNxqKcTtJ+wC4mKCXdppaemEFUmAIHKnhIb
+         qdWl3yecataR6eEZ1PlF3VrAP0pwG6oYXYZV7xFQ0fFV/Ddy8zCDG+sItG1BrZ2Cu8sI
+         2CC+4tO7sm4VtU34JTb+2Qu+sCowEUZytzDFepQvmGw67iqoZCDpNUrKFIrTDQVW5UIr
+         GQYA==
+X-Gm-Message-State: AOAM5333MdaSQKL2+SQyvIpqufP7KX7uVwj2ABca0R0OsiWJBDDmWcno
+        rLN+FzrKB3dI/xWdAFDF+80GQQ==
+X-Google-Smtp-Source: ABdhPJyaLnMp7T8up/rfe339I6KE+L9Mz+/UbIqYNm2cqyXkl/ZUPleqkgC7gPzADhv7O3u+4s2dlw==
+X-Received: by 2002:a05:6402:702:: with SMTP id w2mr23113078edx.85.1620753718264;
+        Tue, 11 May 2021 10:21:58 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id y8sm2980266edo.90.2021.05.11.10.21.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 10:21:57 -0700 (PDT)
+Date:   Tue, 11 May 2021 19:21:55 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH 1/2] drm: Fix dirtyfb stalls
+Message-ID: <YJq9M71yiASVKPtJ@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210508195641.397198-1-robdclark@gmail.com>
+ <20210508195641.397198-2-robdclark@gmail.com>
+ <YJlb3GO41hiu4pWw@phenom.ffwll.local>
+ <CAF6AEGsGb1jZgRRUqDvf+j+E6pNEtSck=r3xh4VL7FmZMPszBQ@mail.gmail.com>
+ <CAKMK7uGPGbOPRtJaiG5oNCDhYQ27+V3bO5Wcgv7C9fqdyp8LeA@mail.gmail.com>
+ <CAF6AEGto1PQcEbYeWfXqMatK0z3dW-mpLNVh=VJb=9gwrPfCWg@mail.gmail.com>
+ <YJq0YVi4O4zGkb3j@phenom.ffwll.local>
+ <CAF6AEGsMk-wO=3iYbW9rS0FJ7760P++vpPgVMFHR9+Q8sWsXQQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210507182410.10515-1-luolongjun@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAF6AEGsMk-wO=3iYbW9rS0FJ7760P++vpPgVMFHR9+Q8sWsXQQ@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 02:24:10AM +0800, Luo Longjun wrote:
-> When I compile kernel in ARM64, it produces the following output:
+On Tue, May 11, 2021 at 10:19:57AM -0700, Rob Clark wrote:
+> On Tue, May 11, 2021 at 9:44 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Mon, May 10, 2021 at 12:06:05PM -0700, Rob Clark wrote:
+> > > On Mon, May 10, 2021 at 10:44 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > >
+> > > > On Mon, May 10, 2021 at 6:51 PM Rob Clark <robdclark@gmail.com> wrote:
+> > > > >
+> > > > > On Mon, May 10, 2021 at 9:14 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > > >
+> > > > > > On Sat, May 08, 2021 at 12:56:38PM -0700, Rob Clark wrote:
+> > > > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > > > >
+> > > > > > > drm_atomic_helper_dirtyfb() will end up stalling for vblank on "video
+> > > > > > > mode" type displays, which is pointless and unnecessary.  Add an
+> > > > > > > optional helper vfunc to determine if a plane is attached to a CRTC
+> > > > > > > that actually needs dirtyfb, and skip over them.
+> > > > > > >
+> > > > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > > > >
+> > > > > > So this is a bit annoying because the idea of all these "remap legacy uapi
+> > > > > > to atomic constructs" helpers is that they shouldn't need/use anything
+> > > > > > beyond what userspace also has available. So adding hacks for them feels
+> > > > > > really bad.
+> > > > >
+> > > > > I suppose the root problem is that userspace doesn't know if dirtyfb
+> > > > > (or similar) is actually required or is a no-op.
+> > > > >
+> > > > > But it is perhaps less of a problem because this essentially boils
+> > > > > down to "x11 vs wayland", and it seems like wayland compositors for
+> > > > > non-vsync'd rendering just pageflips and throws away extra frames from
+> > > > > the app?
+> > > >
+> > > > Yeah it's about not adequately batching up rendering and syncing with
+> > > > hw. bare metal x11 is just especially stupid about it :-)
+> > > >
+> > > > > > Also I feel like it's not entirely the right thing to do here either.
+> > > > > > We've had this problem already on the fbcon emulation side (which also
+> > > > > > shouldn't be able to peek behind the atomic kms uapi curtain), and the fix
+> > > > > > there was to have a worker which batches up all the updates and avoids any
+> > > > > > stalls in bad places.
+> > > > >
+> > > > > I'm not too worried about fbcon not being able to render faster than
+> > > > > vblank.  OTOH it is a pretty big problem for x11
+> > > >
+> > > > That's why we'd let the worker get ahead at most one dirtyfb. We do
+> > > > the same with fbcon, which trivially can get ahead of vblank otherwise
+> > > > (if sometimes flushes each character, so you have to pile them up into
+> > > > a single update if that's still pending).
+> > > >
+> > > > > > Since this is for frontbuffer rendering userspace only we can probably get
+> > > > > > away with assuming there's only a single fb, so the implementation becomes
+> > > > > > pretty simple:
+> > > > > >
+> > > > > > - 1 worker, and we keep track of a single pending fb
+> > > > > > - if there's already a dirty fb pending on a different fb, we stall for
+> > > > > >   the worker to start processing that one already (i.e. the fb we track is
+> > > > > >   reset to NULL)
+> > > > > > - if it's pending on the same fb we just toss away all the updates and go
+> > > > > >   with a full update, since merging the clip rects is too much work :-) I
+> > > > > >   think there's helpers so you could be slightly more clever and just have
+> > > > > >   an overall bounding box
+> > > > >
+> > > > > This doesn't really fix the problem, you still end up delaying sending
+> > > > > the next back-buffer to mesa
+> > > >
+> > > > With this the dirtyfb would never block. Also glorious frontbuffer
+> > > > tracking corruption is possible, but that's not the kernel's problem.
+> > > > So how would anything get held up in userspace.
+> > >
+> > > the part about stalling if a dirtyfb is pending was what I was worried
+> > > about.. but I suppose you meant the worker stalling, rather than
+> > > userspace stalling (where I had interpreted it the other way around).
+> > > As soon as userspace needs to stall, you're losing again.
+> >
+> > Nah, I did mean userspace stalling, so we can't pile up unlimited amounts
+> > of dirtyfb request in the kernel.
+> >
+> > But also I never expect userspace that uses dirtyfb to actually hit this
+> > stall point (otherwise we'd need to look at this again). It would really
+> > be only there as defense against abuse.
 > 
-> *** Default configuration is based on 'defconfig'
-> arch/arm64/configs/defconfig:1018:warning: override: reassigning to
-> symbol MTK_PMIC_WRAP
-> 
-> After checking defcofnig, I found two CONFIG_MTK_PMIC_WRAP options.
-> 
-> Signed-off-by: Luo Longjun <luolongjun@huawei.com>
-> ---
->  arch/arm64/configs/defconfig | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> index 08c6f769df9a..9907a431db0d 100644
-> --- a/arch/arm64/configs/defconfig
-> +++ b/arch/arm64/configs/defconfig
-> @@ -491,7 +491,6 @@ CONFIG_SPI_S3C64XX=y
->  CONFIG_SPI_SH_MSIOF=m
->  CONFIG_SPI_SUN6I=y
->  CONFIG_SPI_SPIDEV=m
-> -CONFIG_MTK_PMIC_WRAP=m
->  CONFIG_SPMI=y
->  CONFIG_PINCTRL_SINGLE=y
->  CONFIG_PINCTRL_MAX77620=y
+> I don't believe modesetting ddx throttles dirtyfb, it (indirectly)
+> calls this from it's BlockHandler.. so if you do end up blocking after
+> the N'th dirtyfb, you are still going to end up stalling for vblank,
+> you are just deferring that for a frame or two..
 
-Adding Matthias and Enric. This change looks fine to me but I think it
-should go in via the arm-soc tree. Commit 9fd5449e061e introduced the =m
-option while commit fbbe38309d56 introduced the =y variant.
+Nope, that's not what I mean.
 
-You could add:
+By default we pile up the updates, so you _never_ stall. The worker then
+takes the entire update every time it runs and batches them up.
 
-Fixes: fbbe38309d56 ("arm64: defconfig: Allow mt8173-based boards to boot from usb")
+We _only_ stall when we get a dirtyfb with a different fb. Because that's
+much harder to pile up, plus frontbuffer rendering userspace uses a single
+fb across all screens anyway.
+
+So really I don't expect X to ever stall in it's BlockHandler with this.
+
+> The thing is, for a push style panel, you don't necessarily have to
+> wait for "vblank" (because "vblank" isn't necessarily a real thing),
+> so in that scenario dirtyfb could in theory be fast.  What you want to
+> do is fundamentally different for push vs pull style displays.
+
+Yeah, but we'd only stall if userspace does a modeset (which means
+different fb) and at that point you'll stall anyway a bit. So shouldn't
+hurt.
+
+Well you can do frontbuffer rendering even with atomic ioctl. Just don't
+use dirtyfb.
+
+But also you really shouldn't use frontbuffer rendering right now, since
+we don't have the interfaces right now to tell userspace whether it's
+cmd-mode or something else and what kind of corruption (if any) to expect
+when they do that.
+
+> > > > > But we could re-work drm_framebuffer_funcs::dirty to operate on a
+> > > > > per-crtc basis and hoist the loop and check if dirtyfb is needed out
+> > > > > of drm_atomic_helper_dirtyfb()
+> > > >
+> > > > That's still using information that userspace doesn't have, which is a
+> > > > bit irky. We might as well go with your thing here then.
+> > >
+> > > arguably, this is something we should expose to userspace.. for DSI
+> > > command-mode panels, you probably want to make a different decision
+> > > with regard to how many buffers in your flip-chain..
+> > >
+> > > Possibly we should add/remove the fb_damage_clips property depending
+> > > on the display type (ie. video/pull vs cmd/push mode)?
+> >
+> > I'm not sure whether atomic actually needs this exposed:
+> > - clients will do full flips for every frame anyway, I've not heard of
+> >   anyone seriously doing frontbuffer rendering.
+> 
+> Frontbuffer rendering is actually a thing, for ex. to reduce latency
+> for stylus (android and CrOS do this.. fortunately AFAICT CrOS never
+> uses the dirtyfb ioctl.. but as soon as someone has the nice idea to
+> add that we'd be running into the same problem)
+> 
+> Possibly one idea is to treat dirty-clip updates similarly to cursor
+> updates, and let the driver accumulate the updates and then wait until
+> vblank to apply them
+
+Yeah that's what I mean. Except implemented cheaper. fbcon code already
+does it. I think we're seriously talking past each another.
+-Daniel
+
+> 
+> BR,
+> -R
+> 
+> > - transporting the cliprects around and then tossing them if the driver
+> >   doesn't need them in their flip is probably not a measurable win
+> >
+> > But yeah if I'm wrong and we have a need here and it's useful, then
+> > exposing this to userspace should be done. Meanwhile I think a "offload to
+> > worker like fbcon" trick for this legacy interface is probabyl the best
+> > option. Plus it will fix things not just for the case where you don't need
+> > dirty uploading, it will also fix things for the case where you _do_ need
+> > dirty uploading (since right now we stall in a few bad places for that I
+> > think).
+> > -Daniel
+> >
+> > >
+> > > BR,
+> > > -R
+> > >
+> > > > -Daniel
+> > > >
+> > > > > BR,
+> > > > > -R
+> > > > >
+> > > > > >
+> > > > > > Could probably steal most of the implementation.
+> > > > > >
+> > > > > > This approach here feels a tad too much in the hacky area ...
+> > > > > >
+> > > > > > Thoughts?
+> > > > > > -Daniel
+> > > > > >
+> > > > > > > ---
+> > > > > > >  drivers/gpu/drm/drm_damage_helper.c      |  8 ++++++++
+> > > > > > >  include/drm/drm_modeset_helper_vtables.h | 14 ++++++++++++++
+> > > > > > >  2 files changed, 22 insertions(+)
+> > > > > > >
+> > > > > > > diff --git a/drivers/gpu/drm/drm_damage_helper.c b/drivers/gpu/drm/drm_damage_helper.c
+> > > > > > > index 3a4126dc2520..a0bed1a2c2dc 100644
+> > > > > > > --- a/drivers/gpu/drm/drm_damage_helper.c
+> > > > > > > +++ b/drivers/gpu/drm/drm_damage_helper.c
+> > > > > > > @@ -211,6 +211,7 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
+> > > > > > >  retry:
+> > > > > > >       drm_for_each_plane(plane, fb->dev) {
+> > > > > > >               struct drm_plane_state *plane_state;
+> > > > > > > +             struct drm_crtc *crtc;
+> > > > > > >
+> > > > > > >               ret = drm_modeset_lock(&plane->mutex, state->acquire_ctx);
+> > > > > > >               if (ret)
+> > > > > > > @@ -221,6 +222,13 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
+> > > > > > >                       continue;
+> > > > > > >               }
+> > > > > > >
+> > > > > > > +             crtc = plane->state->crtc;
+> > > > > > > +             if (crtc->helper_private->needs_dirtyfb &&
+> > > > > > > +                             !crtc->helper_private->needs_dirtyfb(crtc)) {
+> > > > > > > +                     drm_modeset_unlock(&plane->mutex);
+> > > > > > > +                     continue;
+> > > > > > > +             }
+> > > > > > > +
+> > > > > > >               plane_state = drm_atomic_get_plane_state(state, plane);
+> > > > > > >               if (IS_ERR(plane_state)) {
+> > > > > > >                       ret = PTR_ERR(plane_state);
+> > > > > > > diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
+> > > > > > > index eb706342861d..afa8ec5754e7 100644
+> > > > > > > --- a/include/drm/drm_modeset_helper_vtables.h
+> > > > > > > +++ b/include/drm/drm_modeset_helper_vtables.h
+> > > > > > > @@ -487,6 +487,20 @@ struct drm_crtc_helper_funcs {
+> > > > > > >                                    bool in_vblank_irq, int *vpos, int *hpos,
+> > > > > > >                                    ktime_t *stime, ktime_t *etime,
+> > > > > > >                                    const struct drm_display_mode *mode);
+> > > > > > > +
+> > > > > > > +     /**
+> > > > > > > +      * @needs_dirtyfb
+> > > > > > > +      *
+> > > > > > > +      * Optional callback used by damage helpers to determine if fb_damage_clips
+> > > > > > > +      * update is needed.
+> > > > > > > +      *
+> > > > > > > +      * Returns:
+> > > > > > > +      *
+> > > > > > > +      * True if fb_damage_clips update is needed to handle DIRTYFB, False
+> > > > > > > +      * otherwise.  If this callback is not implemented, then True is
+> > > > > > > +      * assumed.
+> > > > > > > +      */
+> > > > > > > +     bool (*needs_dirtyfb)(struct drm_crtc *crtc);
+> > > > > > >  };
+> > > > > > >
+> > > > > > >  /**
+> > > > > > > --
+> > > > > > > 2.30.2
+> > > > > > >
+> > > > > >
+> > > > > > --
+> > > > > > Daniel Vetter
+> > > > > > Software Engineer, Intel Corporation
+> > > > > > http://blog.ffwll.ch
+> > > >
+> > > >
+> > > >
+> > > > --
+> > > > Daniel Vetter
+> > > > Software Engineer, Intel Corporation
+> > > > http://blog.ffwll.ch
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
 
 -- 
-Catalin
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
