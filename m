@@ -2,104 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1322E37A6D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D282837A6D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231563AbhEKMhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 08:37:06 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:2444 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230436AbhEKMhE (ORCPT
+        id S231644AbhEKMhW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 May 2021 08:37:22 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:34740 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230436AbhEKMhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 08:37:04 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Ffclc1cMrzCr9G;
-        Tue, 11 May 2021 20:33:16 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 11 May 2021 20:35:48 +0800
-Subject: Re: [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide ZONE_DMA
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>
-CC:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <akpm@linux-foundation.org>, <paul.walmsley@sifive.com>,
-        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>, <rppt@kernel.org>,
-        <lorenzo.pieralisi@arm.com>, <guohanjun@huawei.com>,
-        <sudeep.holla@arm.com>, <rjw@rjwysocki.net>, <lenb@kernel.org>,
-        <song.bao.hua@hisilicon.com>, <ardb@kernel.org>,
-        <anshuman.khandual@arm.com>, <bhelgaas@google.com>, <guro@fb.com>,
-        <robh+dt@kernel.org>, <stable@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <frowand.list@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-riscv@lists.infradead.org>
-References: <20210303073319.2215839-1-jingxiangfeng@huawei.com>
- <YEDkmj6cchMPAq2h@kroah.com>
- <9bc396116372de5b538d71d8f9ae9c3259f1002e.camel@suse.de>
- <YEDr/lYZHew88/Ip@kroah.com>
- <827b317d7f5da6e048806922098291faacdb19f9.camel@suse.de>
- <YETwL6QGWFyJTAzk@kroah.com> <604597E3.5000605@huawei.com>
- <YEX1OcbVNSqwwusF@kroah.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <31cd8432-2466-555d-7617-ae48cbcd4244@huawei.com>
-Date:   Tue, 11 May 2021 20:35:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Tue, 11 May 2021 08:37:19 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-102-AdSWJMpLMF6zU1JX4ZDi6A-1; Tue, 11 May 2021 13:36:08 +0100
+X-MC-Unique: AdSWJMpLMF6zU1JX4ZDi6A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Tue, 11 May 2021 13:36:06 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Tue, 11 May 2021 13:36:06 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Stephen Boyd' <swboyd@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baoquan He <bhe@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Young <dyoung@redhat.com>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Ingo Molnar <mingo@redhat.com>, Jessica Yu <jeyu@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Rasmus Villemoes" <linux@rasmusvillemoes.dk>,
+        Sasha Levin <sashal@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vivek Goyal <vgoyal@redhat.com>, Will Deacon <will@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        peter enderborg <peter.enderborg@sony.com>
+Subject: RE: [PATCH v6 00/13] Add build ID to stacktraces
+Thread-Topic: [PATCH v6 00/13] Add build ID to stacktraces
+Thread-Index: AQHXRf4HnT90HedmH0WFx6bjKadex6reN/jQ
+Date:   Tue, 11 May 2021 12:36:06 +0000
+Message-ID: <b30f6d396edf4db5974a2b90364b6314@AcuMS.aculab.com>
+References: <20210511003845.2429846-1-swboyd@chromium.org>
+In-Reply-To: <20210511003845.2429846-1-swboyd@chromium.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <YEX1OcbVNSqwwusF@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/3/8 17:58, Greg KH wrote:
-> On Mon, Mar 08, 2021 at 11:20:03AM +0800, Jing Xiangfeng wrote:
->>
->>
->> On 2021/3/7 23:24, Greg KH wrote:
->>> On Thu, Mar 04, 2021 at 04:09:28PM +0100, Nicolas Saenz Julienne wrote:
->>>> On Thu, 2021-03-04 at 15:17 +0100, Greg KH wrote:
->>>>> On Thu, Mar 04, 2021 at 03:05:32PM +0100, Nicolas Saenz Julienne wrote:
->>>>>> Hi Greg.
->>>>>>
->>>>>> On Thu, 2021-03-04 at 14:46 +0100, Greg KH wrote:
->>>>>>> On Wed, Mar 03, 2021 at 03:33:12PM +0800, Jing Xiangfeng wrote:
->>>>>>>> Using two distinct DMA zones turned out to be problematic. Here's an
->>>>>>>> attempt go back to a saner default.
->>>>>>> What problem does this solve?  How does this fit into the stable kernel
->>>>>>> rules?
->>>>>> We changed the way we setup memory zones in arm64 in order to cater for
->>>>>> Raspberry Pi 4's weird DMA constraints: ZONE_DMA spans the lower 1GB of memory
->>>>>> and ZONE_DMA32 the rest of the 32bit address space. Since you can't allocate
->>>>>> memory that crosses zone boundaries, this broke crashkernel allocations on big
->>>>>> machines. This series fixes all this by parsing the HW description and checking
->>>>>> for DMA constrained buses. When not found, the unnecessary zone creation is
->>>>>> skipped.
->>>>> What kernel/commit caused this "breakage"?
->>>> 1a8e1cef7603 arm64: use both ZONE_DMA and ZONE_DMA32
->>> Thanks for the info, all now queued up.
->> There is a fix in 5.11. Please consider applying the following commit to
->> 5.10.y:
->>
->> aed5041ef9a3 of: unittest: Fix build on architectures without
->> CONFIG_OF_ADDRES
+From: Stephen Boyd
+> Sent: 11 May 2021 01:39
 > 
-> Thanks, now queued up.
-
-Hi Grep, another commit d78050ee3544 "arm64: Remove 
-arm64_dma32_phys_limit and its uses" should be involved, thanks.
-
-"Prior to this patch, disabling CONFIG_ZONE_DMA32 leads to CMA
-allocation from the whole RAM as arm64_dma32_phys_limit becomes
-PHYS_MASK+1." from Catalin, see more from the link
-https://www.spinics.net/lists/arm-kernel/msg867356.html
+> This series adds the kernel's build ID[1] to the stacktrace header
+> printed in oops messages, warnings, etc. and the build ID for any module
+> that appears in the stacktrace after the module name. The goal is to
+> make the stacktrace more self-contained and descriptive by including the
+> relevant build IDs in the kernel logs when something goes wrong. This
+> can be used by post processing tools like script/decode_stacktrace.sh
+> and kernel developers to easily locate the debug info associated with a
+> kernel crash and line up what line and file things started falling apart
+> at.
 > 
-> greg k-h
-> .
+> To show how this can be used I've included a patch to
+> decode_stacktrace.sh that downloads the debuginfo from a debuginfod
+> server. 
+...
+> Here's an example lkdtm stacktrace on arm64.
 > 
+>  WARNING: CPU: 4 PID: 3255 at drivers/misc/lkdtm/bugs.c:83 lkdtm_WARNING+0x28/0x30 [lkdtm]
+>  Modules linked in: lkdtm rfcomm algif_hash algif_skcipher af_alg xt_cgroup uinput xt_MASQUERADE
+>  CPU: 4 PID: 3255 Comm: bash Not tainted 5.11 #3 aa23f7a1231c229de205662d5a9e0d4c580f19a1
+>  Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
+...
+>  x1 : ffffff93fef15788 x0 : ffffffe3622352e0
+>  Call trace:
+>   lkdtm_WARNING+0x28/0x30 [lkdtm ed5019fdf5e53be37cb1ba7899292d7e143b259e]
+>   direct_entry+0x16c/0x1b4 [lkdtm ed5019fdf5e53be37cb1ba7899292d7e143b259e]
+>   full_proxy_write+0x74/0xa4
+
+Is there any way to get it to print each module ID only once?
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
