@@ -2,85 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FD937B223
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6A437B21B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230154AbhEKXGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:06:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhEKXGy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:06:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19443C061574;
-        Tue, 11 May 2021 16:05:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=p90x9jEmQHND6fT7ufpXCKutOlzP8zjwAk/wUNBLalg=; b=U8SozuRvdhbYdNEKn+H/SqM6pR
-        j31ruaTHW/AhJl8hSkM10yLKM/b8XqCa+aX4G4eg/6/vQgo69mxwNtIgiRtJD6tKQIqE51zXxGi8Z
-        tku0eiD1yfoSJ3xNwIHV7++0vuQCFPCwgUCChBv0MiuvqKHF7Mr0q/vvyNKHGqIn353bMZRdKn1j4
-        be2BJYeT+JMlhnupBDlT2ANFfIVAm/8F5SPL56ujiiIjfI/d7/6QFhF513bG3Sker7cv3uyaJw3Zq
-        VjDRbgxhEa+9DiIqXBs7XFLrhLuXtM5l6LDr1m0SjRMj5CepfvilFtDf9b474sw7eYytMm1aoCqxz
-        4sQhcsvQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgbPa-007l6k-Jc; Tue, 11 May 2021 23:03:42 +0000
-Date:   Wed, 12 May 2021 00:03:34 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, ziy@nvidia.com,
-        william.kucharski@oracle.com, yang.shi@linux.alibaba.com,
-        aneesh.kumar@linux.ibm.com, rcampbell@nvidia.com,
-        songliubraving@fb.com, kirill.shutemov@linux.intel.com,
-        riel@surriel.com, hannes@cmpxchg.org, minchan@kernel.org,
-        hughd@google.com, adobriyan@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] mm/huge_memory.c: use page->deferred_list
-Message-ID: <YJsNRtg5IcMY7V/F@casper.infradead.org>
-References: <20210511134857.1581273-1-linmiaohe@huawei.com>
- <20210511134857.1581273-3-linmiaohe@huawei.com>
+        id S230253AbhEKXE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:04:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230075AbhEKXEq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 19:04:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4ECC6193D;
+        Tue, 11 May 2021 23:03:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620774219;
+        bh=S584U/Dk19pD+/taRcc/AvDWoI2l3ETMMGeYEvusrNQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=iMfUz9bkenzwdrE5F6zFfw9681YCsHSlIsWyzttvQm3B6nxjEvWa+SZm/yUqQ88Oo
+         c1K5UTb1fIonX4Fsdaoq942dh97+Rg+RXqHRPGWB5tQHQlkR9s4vt7TUqVw0cyNGo9
+         LQOBFYWaW0bX89vHMqehHZgTPxvhCJSSzYBwSLIi9Mujai33ulpPe9AYC3GsEZImi0
+         4jKYkOBN93qly3sPPdNEqH4jCsg7Ny4PGx8CmRwwgYZLLWmCBiadJicX5aSyf2p2C4
+         /6Su2u1E5aPMqu4/fVBBsWP5Dspb6YKAV7CqiNfha++lFB/OZfdBnHM4XakMmeuk/n
+         hurS9ad6U1jQw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 693205C0DE7; Tue, 11 May 2021 16:03:38 -0700 (PDT)
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 09/10] rcu/nocb: Unify timers
+Date:   Tue, 11 May 2021 16:03:35 -0700
+Message-Id: <20210511230336.2894314-9-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20210511230244.GA2894061@paulmck-ThinkPad-P17-Gen-1>
+References: <20210511230244.GA2894061@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511134857.1581273-3-linmiaohe@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 09:48:54PM +0800, Miaohe Lin wrote:
-> Now that we can represent the location of ->deferred_list instead of
-> ->mapping + ->index, make use of it to improve readability.
-> 
-> Reviewed-by: Yang Shi <shy828301@gmail.com>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  mm/huge_memory.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 63ed6b25deaa..76ca1eb2a223 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2868,7 +2868,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
->  	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
->  	/* Take pin on all head pages to avoid freeing them under us */
->  	list_for_each_safe(pos, next, &ds_queue->split_queue) {
-> -		page = list_entry((void *)pos, struct page, mapping);
-> +		page = list_entry((void *)pos, struct page, deferred_list);
->  		page = compound_head(page);
+From: Frederic Weisbecker <frederic@kernel.org>
 
-This is an equivalent transformation, but it doesn't really go far
-enough.  I think you want something like this:
+Now that ->nocb_timer and ->nocb_bypass_timer have become quite similar,
+this commit merges them together.  A new RCU_NOCB_WAKE_BYPASS wake level
+is introduced.  As a result, timers perform all kinds of deferred wake
+ups but other deferred wakeup callsites only handle non-bypass wakeups
+in order not to wake up rcuo too early.
 
-	struct page *page, *next;
+The timer also unconditionally executes a full barrier so as to order
+timer_pending() and callback enqueue although the path performing
+RCU_NOCB_WAKE_FORCE that makes use of it is debatable. It should also
+test against the rdp leader instead of the current rdp.
 
-	list_for_each_entry_safe(page, next, &ds_queue->split_queue,
-							deferred_list) {
-		struct page *head = page - 1;
-		... then use head throughout ...
-	}
+This unconditional full barrier shouldn't bring visible overhead since
+these timers almost never fire.
+
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ include/trace/events/rcu.h |  1 +
+ kernel/rcu/tree.h          |  6 +--
+ kernel/rcu/tree_plugin.h   | 92 ++++++++++++++++----------------------
+ 3 files changed, 43 insertions(+), 56 deletions(-)
+
+diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+index 6768b64bc738..670e41783edd 100644
+--- a/include/trace/events/rcu.h
++++ b/include/trace/events/rcu.h
+@@ -278,6 +278,7 @@ TRACE_EVENT_RCU(rcu_exp_funnel_lock,
+  * "WakeNot": Don't wake rcuo kthread.
+  * "WakeNotPoll": Don't wake rcuo kthread because it is polling.
+  * "WakeOvfIsDeferred": Wake rcuo kthread later, CB list is huge.
++ * "WakeBypassIsDeferred": Wake rcuo kthread later, bypass list is contended.
+  * "WokeEmpty": rcuo CB kthread woke to find empty list.
+  */
+ TRACE_EVENT_RCU(rcu_nocb_wake,
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 2510e86265c1..9a16487edfca 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -218,7 +218,6 @@ struct rcu_data {
+ 
+ 	/* The following fields are used by GP kthread, hence own cacheline. */
+ 	raw_spinlock_t nocb_gp_lock ____cacheline_internodealigned_in_smp;
+-	struct timer_list nocb_bypass_timer; /* Force nocb_bypass flush. */
+ 	u8 nocb_gp_sleep;		/* Is the nocb GP thread asleep? */
+ 	u8 nocb_gp_bypass;		/* Found a bypass on last scan? */
+ 	u8 nocb_gp_gp;			/* GP to wait for on last scan? */
+@@ -258,8 +257,9 @@ struct rcu_data {
+ 
+ /* Values for nocb_defer_wakeup field in struct rcu_data. */
+ #define RCU_NOCB_WAKE_NOT	0
+-#define RCU_NOCB_WAKE		1
+-#define RCU_NOCB_WAKE_FORCE	2
++#define RCU_NOCB_WAKE_BYPASS	1
++#define RCU_NOCB_WAKE		2
++#define RCU_NOCB_WAKE_FORCE	3
+ 
+ #define RCU_JIFFIES_TILL_FORCE_QS (1 + (HZ > 250) + (HZ > 500))
+ 					/* For jiffies_till_first_fqs and */
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index e2e5e4968f43..dfb048ec559f 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1701,8 +1701,6 @@ static bool __wake_nocb_gp(struct rcu_data *rdp_gp,
+ 		del_timer(&rdp_gp->nocb_timer);
+ 	}
+ 
+-	del_timer(&rdp_gp->nocb_bypass_timer);
+-
+ 	if (force || READ_ONCE(rdp_gp->nocb_gp_sleep)) {
+ 		WRITE_ONCE(rdp_gp->nocb_gp_sleep, false);
+ 		needwake = true;
+@@ -1740,10 +1738,19 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
+ 
+ 	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
+ 
+-	if (rdp_gp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT)
+-		mod_timer(&rdp_gp->nocb_timer, jiffies + 1);
+-	if (rdp_gp->nocb_defer_wakeup < waketype)
++	/*
++	 * Bypass wakeup overrides previous deferments. In case
++	 * of callback storm, no need to wake up too early.
++	 */
++	if (waketype == RCU_NOCB_WAKE_BYPASS) {
++		mod_timer(&rdp_gp->nocb_timer, jiffies + 2);
+ 		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
++	} else {
++		if (rdp_gp->nocb_defer_wakeup < RCU_NOCB_WAKE)
++			mod_timer(&rdp_gp->nocb_timer, jiffies + 1);
++		if (rdp_gp->nocb_defer_wakeup < waketype)
++			WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
++	}
+ 
+ 	raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
+ 
+@@ -1995,7 +2002,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+ 		smp_mb(); /* Enqueue before timer_pending(). */
+ 		if ((rdp->nocb_cb_sleep ||
+ 		     !rcu_segcblist_ready_cbs(&rdp->cblist)) &&
+-		    !timer_pending(&rdp->nocb_bypass_timer)) {
++		    !timer_pending(&rdp->nocb_timer)) {
+ 			rcu_nocb_unlock_irqrestore(rdp, flags);
+ 			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_FORCE,
+ 					   TPS("WakeOvfIsDeferred"));
+@@ -2010,19 +2017,6 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+ 	return;
+ }
+ 
+-/* Wake up the no-CBs GP kthread to flush ->nocb_bypass. */
+-static void do_nocb_bypass_wakeup_timer(struct timer_list *t)
+-{
+-	unsigned long flags;
+-	struct rcu_data *rdp = from_timer(rdp, t, nocb_bypass_timer);
+-
+-	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Timer"));
+-
+-	raw_spin_lock_irqsave(&rdp->nocb_gp_lock, flags);
+-	smp_mb__after_spinlock(); /* Timer expire before wakeup. */
+-	__wake_nocb_gp(rdp, rdp, false, flags);
+-}
+-
+ /*
+  * Check if we ignore this rdp.
+  *
+@@ -2175,19 +2169,12 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+ 	my_rdp->nocb_gp_bypass = bypass;
+ 	my_rdp->nocb_gp_gp = needwait_gp;
+ 	my_rdp->nocb_gp_seq = needwait_gp ? wait_gp_seq : 0;
+-	if (bypass) {
+-		if (!rcu_nocb_poll) {
+-			raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
+-			// Avoid race with first bypass CB.
+-			if (my_rdp->nocb_defer_wakeup > RCU_NOCB_WAKE_NOT) {
+-				WRITE_ONCE(my_rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
+-				del_timer(&my_rdp->nocb_timer);
+-			}
+-			// At least one child with non-empty ->nocb_bypass, so set
+-			// timer in order to avoid stranding its callbacks.
+-			mod_timer(&my_rdp->nocb_bypass_timer, j + 2);
+-			raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
+-		}
++
++	if (bypass && !rcu_nocb_poll) {
++		// At least one child with non-empty ->nocb_bypass, so set
++		// timer in order to avoid stranding its callbacks.
++		wake_nocb_gp_defer(my_rdp, RCU_NOCB_WAKE_BYPASS,
++				   TPS("WakeBypassIsDeferred"));
+ 	}
+ 	if (rcu_nocb_poll) {
+ 		/* Polling, so trace if first poll in the series. */
+@@ -2211,8 +2198,6 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+ 	}
+ 	if (!rcu_nocb_poll) {
+ 		raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
+-		if (bypass)
+-			del_timer(&my_rdp->nocb_bypass_timer);
+ 		if (my_rdp->nocb_defer_wakeup > RCU_NOCB_WAKE_NOT) {
+ 			WRITE_ONCE(my_rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
+ 			del_timer(&my_rdp->nocb_timer);
+@@ -2358,16 +2343,14 @@ static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp, int level)
+ }
+ 
+ /* Do a deferred wakeup of rcu_nocb_kthread(). */
+-static bool do_nocb_deferred_wakeup_common(struct rcu_data *rdp,
+-					   int level)
++static bool do_nocb_deferred_wakeup_common(struct rcu_data *rdp_gp,
++					   struct rcu_data *rdp, int level,
++					   unsigned long flags)
++	__releases(rdp_gp->nocb_gp_lock)
+ {
+-	unsigned long flags;
+ 	int ndw;
+-	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+ 	int ret;
+ 
+-	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
+-
+ 	if (!rcu_nocb_need_deferred_wakeup(rdp_gp, level)) {
+ 		raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
+ 		return false;
+@@ -2383,9 +2366,15 @@ static bool do_nocb_deferred_wakeup_common(struct rcu_data *rdp,
+ /* Do a deferred wakeup of rcu_nocb_kthread() from a timer handler. */
+ static void do_nocb_deferred_wakeup_timer(struct timer_list *t)
+ {
++	unsigned long flags;
+ 	struct rcu_data *rdp = from_timer(rdp, t, nocb_timer);
+ 
+-	do_nocb_deferred_wakeup_common(rdp, RCU_NOCB_WAKE);
++	WARN_ON_ONCE(rdp->nocb_gp_rdp != rdp);
++	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Timer"));
++
++	raw_spin_lock_irqsave(&rdp->nocb_gp_lock, flags);
++	smp_mb__after_spinlock(); /* Timer expire before wakeup. */
++	do_nocb_deferred_wakeup_common(rdp, rdp, RCU_NOCB_WAKE_BYPASS, flags);
+ }
+ 
+ /*
+@@ -2395,12 +2384,14 @@ static void do_nocb_deferred_wakeup_timer(struct timer_list *t)
+  */
+ static bool do_nocb_deferred_wakeup(struct rcu_data *rdp)
+ {
+-	if (!rdp->nocb_gp_rdp)
++	unsigned long flags;
++	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
++
++	if (!rdp_gp || !rcu_nocb_need_deferred_wakeup(rdp_gp, RCU_NOCB_WAKE))
+ 		return false;
+ 
+-	if (rcu_nocb_need_deferred_wakeup(rdp->nocb_gp_rdp, RCU_NOCB_WAKE))
+-		return do_nocb_deferred_wakeup_common(rdp, RCU_NOCB_WAKE);
+-	return false;
++	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
++	return do_nocb_deferred_wakeup_common(rdp_gp, rdp, RCU_NOCB_WAKE, flags);
+ }
+ 
+ void rcu_nocb_flush_deferred_wakeup(void)
+@@ -2644,7 +2635,6 @@ static void __init rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp)
+ 	raw_spin_lock_init(&rdp->nocb_bypass_lock);
+ 	raw_spin_lock_init(&rdp->nocb_gp_lock);
+ 	timer_setup(&rdp->nocb_timer, do_nocb_deferred_wakeup_timer, 0);
+-	timer_setup(&rdp->nocb_bypass_timer, do_nocb_bypass_wakeup_timer, 0);
+ 	rcu_cblist_init(&rdp->nocb_bypass);
+ }
+ 
+@@ -2803,13 +2793,12 @@ static void show_rcu_nocb_gp_state(struct rcu_data *rdp)
+ {
+ 	struct rcu_node *rnp = rdp->mynode;
+ 
+-	pr_info("nocb GP %d %c%c%c%c%c%c %c[%c%c] %c%c:%ld rnp %d:%d %lu %c CPU %d%s\n",
++	pr_info("nocb GP %d %c%c%c%c%c %c[%c%c] %c%c:%ld rnp %d:%d %lu %c CPU %d%s\n",
+ 		rdp->cpu,
+ 		"kK"[!!rdp->nocb_gp_kthread],
+ 		"lL"[raw_spin_is_locked(&rdp->nocb_gp_lock)],
+ 		"dD"[!!rdp->nocb_defer_wakeup],
+ 		"tT"[timer_pending(&rdp->nocb_timer)],
+-		"bB"[timer_pending(&rdp->nocb_bypass_timer)],
+ 		"sS"[!!rdp->nocb_gp_sleep],
+ 		".W"[swait_active(&rdp->nocb_gp_wq)],
+ 		".W"[swait_active(&rnp->nocb_gp_wq[0])],
+@@ -2830,7 +2819,6 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
+ 	char bufr[20];
+ 	struct rcu_segcblist *rsclp = &rdp->cblist;
+ 	bool waslocked;
+-	bool wastimer;
+ 	bool wassleep;
+ 
+ 	if (rdp->nocb_gp_rdp == rdp)
+@@ -2867,15 +2855,13 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
+ 		return;
+ 
+ 	waslocked = raw_spin_is_locked(&rdp->nocb_gp_lock);
+-	wastimer = timer_pending(&rdp->nocb_bypass_timer);
+ 	wassleep = swait_active(&rdp->nocb_gp_wq);
+-	if (!rdp->nocb_gp_sleep && !waslocked && !wastimer && !wassleep)
++	if (!rdp->nocb_gp_sleep && !waslocked && !wassleep)
+ 		return;  /* Nothing untowards. */
+ 
+-	pr_info("   nocb GP activity on CB-only CPU!!! %c%c%c%c %c\n",
++	pr_info("   nocb GP activity on CB-only CPU!!! %c%c%c %c\n",
+ 		"lL"[waslocked],
+ 		"dD"[!!rdp->nocb_defer_wakeup],
+-		"tT"[wastimer],
+ 		"sS"[!!rdp->nocb_gp_sleep],
+ 		".W"[wassleep]);
+ }
+-- 
+2.31.1.189.g2e36527f23
 
