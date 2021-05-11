@@ -2,181 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E87037A7BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7448A37A79F
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbhEKNfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 09:35:25 -0400
-Received: from mail-ed1-f51.google.com ([209.85.208.51]:37499 "EHLO
-        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231440AbhEKNfV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 09:35:21 -0400
-Received: by mail-ed1-f51.google.com with SMTP id f1so652377edt.4;
-        Tue, 11 May 2021 06:34:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=opbCv80kZO0WR00E8CvyXu7JXQ2Kf6zwvEyZ//vM1Tw=;
-        b=a0tLJmbXFy2Jbh0m0MsbqG+TNDnpXzBLj2kWXKUIvobDlq1Kc6K/osYtePuSiat5lp
-         CPEhiUquHVj9JagWjBABWdaPsY4gSWm6+zEZD89qYkNlRCGNfIDUmpqbVwVLaLIqSw+8
-         K4evr6SJHgNaNSvY5ujMypXSpphnglNUKlHxD+b97Xm9ZNctMBIuX5djj1vDLO8NaIn6
-         /V2ZKuw2/Q+347loXL2TVZVhIWRJa1UgBwWnwb383tOzLx3H5YifVnLlljhw+D01h71r
-         8Pp+XrMbm0XDBQ3pZIWgjLSuC3EHGDjfRvNLAmhF37CYyI+JHnrJ1RFaSPA7zz8VvhSH
-         uoYA==
-X-Gm-Message-State: AOAM530Q+QmPruUx3WnukvoDPlj66fVQu1npHSgOldCunZu2mIjDb2dG
-        FVWXEdsb4tbxDkCj0XUpHZZJjX6eXq2lBIni
-X-Google-Smtp-Source: ABdhPJxFON1iLvgj/qc5/xaXt8z19zepipzFxfFB7xkn4XGfCltkU60ur9IrBl/dtWY53DcWuTjY1A==
-X-Received: by 2002:aa7:d950:: with SMTP id l16mr36092015eds.374.1620740052002;
-        Tue, 11 May 2021 06:34:12 -0700 (PDT)
-Received: from msft-t490s.teknoraver.net (net-5-94-253-60.cust.vodafonedsl.it. [5.94.253.60])
-        by smtp.gmail.com with ESMTPSA id b12sm14577136eds.23.2021.05.11.06.34.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 06:34:11 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     netdev@vger.kernel.org, linux-mm@kvack.org
-Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: [PATCH net-next v4 4/4] mvneta: recycle buffers
-Date:   Tue, 11 May 2021 15:31:18 +0200
-Message-Id: <20210511133118.15012-5-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210511133118.15012-1-mcroce@linux.microsoft.com>
-References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
+        id S231501AbhEKNco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 09:32:44 -0400
+Received: from mail-dm6nam11on2049.outbound.protection.outlook.com ([40.107.223.49]:15297
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231305AbhEKNcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 09:32:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FHAhW1KBZdIK0hooVCDyRsy5TkwWFzuAzotMPEoh1rfteNGz3iF12v71tnPJ+LcNUeh57k2hpdjy2sg6Iksz0bUVbmEdO0rCF/zpUk7d89OMBxGrpZVXc9NWDBNk0egvDYcH0alWpN9b+sUHNOimE1aOSjDBDlWjJihdmMp72SaxoCISuPu2FD0o9+n6Hxz1t5AcKvZ9bjPPIEUautXwnyjMyLCK0IuGWM7gBposVsgc2rkHR/rGe6CVcM8T0E5twU/wl+SZT7T5ea1VSmVGS1Z4uzTkHtvkShd9SI7r1FonB1hJ/iDdF2bSRJiQJI8ezkndqQFYUe9Yf622oUaPNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ldwy0zp4YAN3jNCTbgRjLSIZyU3Z+jV24NiuF0DrsKQ=;
+ b=J1G+JVmFCjihUcy4597v8ucemqZo0DM229espC5eM4D8wPB8dG4BrERvAdSpdqXCIRy2X8/YkSMEnmdqvFFmUYq8g8EXenHwR7aavFKBAkH51prEd8ic7EX321C4i+u3K31Q8HKuVzftbDIdu6Ob7vtkGEp+UVUl51Tyy2nRKJ4NJvdgP1+OgOumzRBFlvp6XQYfc6rfxhSe3l0iYGBALqEo8oas/FtA7YffahQWyCBPTKU7LGgi5CiD8Zvk5l1zrzH6Wg5+5b110w/4UA/OLya6Sowc/5UTlUTCn9VBIza5N7rK7Uzg4KDvyHaXf3VDRlLAAIEib52fNkV6v5GoXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ldwy0zp4YAN3jNCTbgRjLSIZyU3Z+jV24NiuF0DrsKQ=;
+ b=jDUoI8Dro5BYQla9jt6sTWVo5EkFWeJlm9UCKxuJwAwgpUrEzIE5qKe4xe2gy6r6cVcyx41JeGHaNdgl3IRTzsVkAXzGyza7g3yOZK3bnS3E852WXnNS3URXLAidAvKrzbBpu+NaW+Ds+q6uy1MMnPxxV8daIONbF04cE/Etqu8=
+Received: from MWHPR02MB2623.namprd02.prod.outlook.com (10.168.206.9) by
+ MWHPR02MB2622.namprd02.prod.outlook.com (10.168.207.14) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4108.26; Tue, 11 May 2021 13:31:30 +0000
+Received: from MWHPR02MB2623.namprd02.prod.outlook.com
+ ([fe80::97d:165e:73af:bef8]) by MWHPR02MB2623.namprd02.prod.outlook.com
+ ([fe80::97d:165e:73af:bef8%11]) with mapi id 15.20.4108.031; Tue, 11 May 2021
+ 13:31:30 +0000
+From:   Nava kishore Manne <navam@xilinx.com>
+To:     Moritz Fischer <mdf@kernel.org>
+CC:     "trix@redhat.com" <trix@redhat.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Michal Simek <michals@xilinx.com>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git <git@xilinx.com>,
+        "chinnikishore369@gmail.com" <chinnikishore369@gmail.com>
+Subject: RE: [PATCH 1/2] fpga: mgr: Adds secure BitStream loading support
+Thread-Topic: [PATCH 1/2] fpga: mgr: Adds secure BitStream loading support
+Thread-Index: AQHW7UWZwDiwSbkqzUWMwmmZwUyntqozISAAgAgZmKCANxU1wIBrXauAgAFH0bA=
+Date:   Tue, 11 May 2021 13:31:30 +0000
+Message-ID: <MWHPR02MB2623E6E6759FA574129901E7C2539@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <20210118025058.10051-1-nava.manne@xilinx.com>
+ <YApf1jlEghbnDFo/@archbook>
+ <MWHPR02MB2623B63A5359BB35B89BF086C2BB9@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <BN6PR02MB2612733F9D85ED6A36BBF801C2989@BN6PR02MB2612.namprd02.prod.outlook.com>
+ <YJlw5fk0ORhioDb4@epycbox.lan>
+In-Reply-To: <YJlw5fk0ORhioDb4@epycbox.lan>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [149.199.50.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1a0a1a55-31c9-4e5a-f9a0-08d914811614
+x-ms-traffictypediagnostic: MWHPR02MB2622:
+x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR02MB262241318613C64D37CA9394C2539@MWHPR02MB2622.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:843;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pl19DEDx41a+Vz8I4PKcxcv04jZtRkyhOgJ+skN5ENjdEeuKMJZ0AZNx4OnvSn7JUK60RHBvMXvzlSBy5pWhsYu1XsP2w6vKBakFJWo5om6AfSWov/Sd2i5NF/PFfKttOHwiBPZGrClcOxAyOy4yzmJ8A54fwDwSpyruyhgochXL85d7x6R1S9hrABjYOJlHzUpjrf2fHOCjWf/odu+KEhauBsteQjFo+pJLoVdGi5w+byeJOGhm0dHw9isP3QHsI/+n2GiXV0tRNqEnCKIAU+NgKbG8PCGJjYHtXENFpZkbdyEChDj7fwLTnJrYC6VEXcde/2zbXYrQcdqFSqNTUMOtNZ63BjJ52WGfXRIKEvcDjcBa0HhKYvjJSeYkLQzxmcTf9ltlPOhmJRhSV9XNnDqjz9QLK3Ho2KQLUP+TlDUPaLd4dNDC2VfwiT7d6R/rT+SvYMQkTP2cZj1iTa1p/ZYhuyClgLfEjSpm8zsjFBG1ro5MvMWme2MbPZtJNkzJy6r3Fqww4jRiKC9RLBAtX3EKBX7JoFmepeME5CDFVxSU9KumFLt5CPuYSHv6q7X2rv/iNw/PeDuivhdX61DDWe22NdYNc9SeSByuZdQYHJg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR02MB2623.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(366004)(376002)(346002)(76116006)(26005)(6506007)(66476007)(66446008)(55016002)(53546011)(2906002)(66946007)(38100700002)(478600001)(316002)(6916009)(8936002)(64756008)(122000001)(33656002)(86362001)(66556008)(52536014)(7696005)(9686003)(8676002)(186003)(83380400001)(4326008)(5660300002)(54906003)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?l0QYJwhi44qtwqPUCwfQLlMQMPpNyiVvcucVIOxsEXT17qalpNW2EMyMLF5n?=
+ =?us-ascii?Q?qKp+yb21JLlJDlSFk1YCEYIdhgOU9mXPw4VH9LhnnEt1y5FHFuyeT4U9plI9?=
+ =?us-ascii?Q?b9agJ0jhBv56HF2ZYO1hWVTrLE611yZcCMnbUb+UOyOAAvaviFQZKvjcTUi5?=
+ =?us-ascii?Q?rE4sVGa+KjwZ5tbyPKTXwXnA9uaBoR6QROwJ7Pk44krUOLrHZ4XhVFk9KOL/?=
+ =?us-ascii?Q?iWf998bFWaQ55RzvkZ5I9oHjx1lmAuKDlB5M57KdY1BOcR/v9PYNDByYEJn/?=
+ =?us-ascii?Q?LaevtbEg6IYuRnaB+a5Wklb+JO/kBZIi2Ov43VRufcKltZNJGZsf8Tkdh11t?=
+ =?us-ascii?Q?PR2Mth2Jhcp4PPUiREHlxNNbZsuMxnBXIys0b9qPIqnjOtJgeM1P/XcCT83W?=
+ =?us-ascii?Q?YZ3Y8t1eVxVhCdubCdPKjNh0nJQALNXZAb4FR6tuXAj1Uvu2REqScPa/4YTL?=
+ =?us-ascii?Q?NTwkFVUjEgZoNjd98c21gsul+RljhcbnREvRAl15s0S39j4WV31qaZeh9q41?=
+ =?us-ascii?Q?NKYTGbcOIFwfRAaRsEqtN7a4Ds61hcOlnQL7kqyEFYn3SnDigW4e05f8d1ZK?=
+ =?us-ascii?Q?rqzMBSHhQk/Jb88MNaP3gkxiltbkSp6FdT0ZdezDKLN7YVIElghSvEagl/Nr?=
+ =?us-ascii?Q?kaHgmhQTTvMIVWJyHwh5JwB5yadSU7C1F16enXCrB8pkfqOahMW292GMbnfR?=
+ =?us-ascii?Q?HMOGrzHVGY9srwNm6XLnx1ZNCpKbNHE2gvFDQNLb0xe8admWkud+ESH4okwh?=
+ =?us-ascii?Q?2VWRpGrWkmCP+Msz4et27gxD+7te7ElnjbB/vFjKmcMKFmfySLeEUDsGrDeD?=
+ =?us-ascii?Q?F+HbAEYIUnK/L0gc2lU8ILZnoEcgoN6zWnckJ/490+chKf4k2dR/av5HHA2X?=
+ =?us-ascii?Q?VRlwnIsrO2J1/Wy3SuozSzbSQcvlsYRXPahFp1U91RXUsFGU26hgihca0tfa?=
+ =?us-ascii?Q?yLsVRLryAeCtGbSWYVV/02FClIErlUPV6issqI78r1k66AZoMJH7VvIE2ACK?=
+ =?us-ascii?Q?yq0HbEcZTBp16VsMbx3tHdBKq/3lbj4o9nT4jmp9FicGX4QNc1NcDmohtDGl?=
+ =?us-ascii?Q?NRPuNDYcqg7/qpJV3FGbAI6OboZ1WbNDjzgA5Bbn9x8q0HogQBOQeUVbP2Ek?=
+ =?us-ascii?Q?e2nYRxN1XVR1JCnuKNuL/I8PhoPETMzEV7Zw8WCPkHPN4pMynzm1UWYR8ToZ?=
+ =?us-ascii?Q?wIgzTN3ItCZ6BwWhfJvBz0D7q6mI6s7p5v3Rzc8ULSUEcATMKciC1T2CsB2g?=
+ =?us-ascii?Q?cx1v45TreRk2b/TIwv3Lv1fcDwVLXVBA84P6oyy+YjI3v0N/0R7CgimDvY9L?=
+ =?us-ascii?Q?ENJYRIE8uAsQkGD4uTsSQmgG?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR02MB2623.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a0a1a55-31c9-4e5a-f9a0-08d914811614
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2021 13:31:30.1056
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: D/s6SB/c4HxO0f9Fsi1Auioo0WDuWVKAlIEH1xxm85OGk/LruEjVINGPr1lP3aJtAFOCfIgoGp59uF2mDWWbPg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR02MB2622
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+Hi Moritz,
 
-Use the new recycling API for page_pool.
-In a drop rate test, the packet rate increased di 10%,
-from 269 Kpps to 296 Kpps.
+Please find my response inline.
 
-perf top on a stock system shows:
+> -----Original Message-----
+> From: Moritz Fischer <mdf@kernel.org>
+> Sent: Monday, May 10, 2021 11:14 PM
+> To: Nava kishore Manne <navam@xilinx.com>
+> Cc: Moritz Fischer <mdf@kernel.org>; trix@redhat.com;
+> robh+dt@kernel.org; Michal Simek <michals@xilinx.com>; linux-
+> fpga@vger.kernel.org; devicetree@vger.kernel.org; linux-arm-
+> kernel@lists.infradead.org; linux-kernel@vger.kernel.org; git
+> <git@xilinx.com>; chinnikishore369@gmail.com
+> Subject: Re: [PATCH 1/2] fpga: mgr: Adds secure BitStream loading support
+>=20
+> On Wed, Mar 03, 2021 at 10:11:51AM +0000, Nava kishore Manne wrote:
+> > Ping!
+> >
+> > > -----Original Message-----
+> > > From: Nava kishore Manne
+> > > Sent: Wednesday, January 27, 2021 2:43 PM
+> > > To: Moritz Fischer <mdf@kernel.org>
+> > > Cc: trix@redhat.com; robh+dt@kernel.org; Michal Simek
+> > > <michals@xilinx.com>; linux-fpga@vger.kernel.org;
+> > > devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
+> > > linux- kernel@vger.kernel.org; git <git@xilinx.com>;
+> > > chinnikishore369@gmail.com
+> > > Subject: RE: [PATCH 1/2] fpga: mgr: Adds secure BitStream loading
+> > > support
+> > >
+> > > Hi Moritz,
+> > >
+> > > 	Thanks for the review.
+> > > Please find my response inline.
+> > >
+> > > > -----Original Message-----
+> > > > From: Moritz Fischer <mdf@kernel.org>
+> > > > Sent: Friday, January 22, 2021 10:47 AM
+> > > > To: Nava kishore Manne <navam@xilinx.com>
+> > > > Cc: mdf@kernel.org; trix@redhat.com; robh+dt@kernel.org; Michal
+> > > > Simek <michals@xilinx.com>; linux-fpga@vger.kernel.org;
+> > > > devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
+> > > > linux- kernel@vger.kernel.org; git <git@xilinx.com>;
+> > > > chinnikishore369@gmail.com
+> > > > Subject: Re: [PATCH 1/2] fpga: mgr: Adds secure BitStream loading
+> > > > support
+> > > >
+> > > > On Mon, Jan 18, 2021 at 08:20:57AM +0530, Nava kishore Manne
+> wrote:
+> > > > > This commit adds secure flags to the framework to support secure
+> > > > > BitStream Loading.
+> > > > >
+> > > > > Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+> > > > > ---
+> > > > >  drivers/fpga/of-fpga-region.c | 10 ++++++++++
+> > > > > include/linux/fpga/fpga-mgr.h | 12 ++++++++++++
+> > > > >  2 files changed, 22 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/fpga/of-fpga-region.c
+> > > > > b/drivers/fpga/of-fpga-region.c index e405309baadc..3a5eb4808888
+> > > > > 100644
+> > > > > --- a/drivers/fpga/of-fpga-region.c
+> > > > > +++ b/drivers/fpga/of-fpga-region.c
+> > > > > @@ -228,6 +228,16 @@ static struct fpga_image_info
+> > > > *of_fpga_region_parse_ov(
+> > > > >  	if (of_property_read_bool(overlay, "encrypted-fpga-config"))
+> > > > >  		info->flags |=3D FPGA_MGR_ENCRYPTED_BITSTREAM;
+> > > > >
+> > > > > +	if (of_property_read_bool(overlay, "userkey-encrypted-fpga-
+> > > > config"))
+> > > > > +		info->flags |=3D
+> > > > FPGA_MGR_USERKEY_ENCRYPTED_BITSTREAM;
+> > > >
+> > > > Can this just be encrypted-fpga-config/FPGA_MGR_ENCRYPTED?
+> > >
+> > > In Encryption we have two kinds of use case one is Encrypted
+> > > Bitstream loading with Device-key and Other one is Encrypted
+> > > Bitstream loading with User-key. To differentiate both the use cases =
+this
+> Changes are needed.
+> > >
+> > > Regards,
+> > > Navakishore.
+>=20
+> Is this region specific, or could this be a sysfs attribute?
+>=20
 
-Overhead  Shared Object     Symbol
-  21.78%  [kernel]          [k] __pi___inval_dcache_area
-  21.66%  [mvneta]          [k] mvneta_rx_swbm
-   7.00%  [kernel]          [k] kmem_cache_alloc
-   6.05%  [kernel]          [k] eth_type_trans
-   4.44%  [kernel]          [k] kmem_cache_free.part.0
-   3.80%  [kernel]          [k] __netif_receive_skb_core
-   3.68%  [kernel]          [k] dev_gro_receive
-   3.65%  [kernel]          [k] get_page_from_freelist
-   3.43%  [kernel]          [k] page_pool_release_page
-   3.35%  [kernel]          [k] free_unref_page
+These changes are region specific.
 
-And this is the same output with recycling enabled:
-
-Overhead  Shared Object     Symbol
-  24.10%  [kernel]          [k] __pi___inval_dcache_area
-  23.02%  [mvneta]          [k] mvneta_rx_swbm
-   7.19%  [kernel]          [k] kmem_cache_alloc
-   6.50%  [kernel]          [k] eth_type_trans
-   4.93%  [kernel]          [k] __netif_receive_skb_core
-   4.77%  [kernel]          [k] kmem_cache_free.part.0
-   3.93%  [kernel]          [k] dev_gro_receive
-   3.03%  [kernel]          [k] build_skb
-   2.91%  [kernel]          [k] page_pool_put_page
-   2.85%  [kernel]          [k] __xdp_return
-
-The test was done with mausezahn on the TX side with 64 byte raw
-ethernet frames.
-
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- drivers/net/ethernet/marvell/mvneta.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 7d5cd9bc6c99..6d2f8dce4900 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -2320,7 +2320,7 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
- }
- 
- static struct sk_buff *
--mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
-+mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
- 		      struct xdp_buff *xdp, u32 desc_status)
- {
- 	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-@@ -2331,7 +2331,7 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
- 	if (!skb)
- 		return ERR_PTR(-ENOMEM);
- 
--	page_pool_release_page(rxq->page_pool, virt_to_page(xdp->data));
-+	skb_mark_for_recycle(skb, virt_to_page(xdp->data), pool);
- 
- 	skb_reserve(skb, xdp->data - xdp->data_hard_start);
- 	skb_put(skb, xdp->data_end - xdp->data);
-@@ -2343,7 +2343,10 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
- 		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
- 				skb_frag_page(frag), skb_frag_off(frag),
- 				skb_frag_size(frag), PAGE_SIZE);
--		page_pool_release_page(rxq->page_pool, skb_frag_page(frag));
-+		/* We don't need to reset pp_recycle here. It's already set, so
-+		 * just mark fragments for recycling.
-+		 */
-+		page_pool_store_mem_info(skb_frag_page(frag), pool);
- 	}
- 
- 	return skb;
-@@ -2425,7 +2428,7 @@ static int mvneta_rx_swbm(struct napi_struct *napi,
- 		    mvneta_run_xdp(pp, rxq, xdp_prog, &xdp_buf, frame_sz, &ps))
- 			goto next;
- 
--		skb = mvneta_swbm_build_skb(pp, rxq, &xdp_buf, desc_status);
-+		skb = mvneta_swbm_build_skb(pp, pp, &xdp_buf, desc_status);
- 		if (IS_ERR(skb)) {
- 			struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
- 
--- 
-2.31.1
+Regards,
+Navakishore.
 
