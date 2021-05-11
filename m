@@ -2,228 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B69637B02A
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D8E37B02F
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhEKUjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 16:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbhEKUjK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 16:39:10 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF38C061574;
-        Tue, 11 May 2021 13:38:03 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id z9so30503124lfu.8;
-        Tue, 11 May 2021 13:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DK5tJmmDmMugyANGMz6uGMnaLAd2KYOdGC6b7FxAiPM=;
-        b=DoPsmcM0KMuwfSZoXP7+nCQ7uK43uv743oLY70bnV1QUOvnfM4y5EHwQaKkPWi1VES
-         SxtAnBgAZMdaJFYgPmdUQUv8TH4AiQXQHWo7O+/1Pfn4h5Up20uBgbaaacNWop3q5UKg
-         Ylf/U1gg6eXP87OZsGStjMPh/9kY3JO4zR4/vJEa6/dQojwHrn7lzZlVGwzwYDlQgkdv
-         Ni33StgwcAh/hZcDa3bWYvGxfZuXrmeNH1lpn5AmlIZkY+tk1Chiv/AgineevkA0s+Pr
-         0rdE227eoKrvXDJklMEC2k8R6Iz8F0ruvSMz/4YKaWXxiijC5i7HPm3GEOkvup3N+NG6
-         S15A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DK5tJmmDmMugyANGMz6uGMnaLAd2KYOdGC6b7FxAiPM=;
-        b=WWN8/FULwNE6vElDSyC4nCXF9Nk6hLVHDSv026HJYQYlx8IZ5ciaRYTHALGfcq7HcW
-         FAyl7o0blcLU8ITKQfRCpMSeLNjfDXRL5uBNw/sMzLV0BmwDYnje+a2naRvS5yqsK3jn
-         Y7b1ApMjJb45rp0KwpjIqisAb40SzoSQmMGXnfbyIcJhAMpBx17LifeG1t6xHwR9wOUt
-         SL0ys2WUH8YtLTSfcmyVa6AVNJkzymDcZmmUxwsbFOBe64nwclAxgQlkW2YU/fB5ihMD
-         kmEHgeuObrYfGgmpglh/jnS+df9uhKKX4dVklnfHjMeCoybJihZvxjD0UNnChm4CJcar
-         kidQ==
-X-Gm-Message-State: AOAM532RnyhZlyHsGAGIC2fdCEOHM3pmBKdP8ldiLKfokBAK6b+S7TpM
-        Kx/+6xU6v9Wlihtf43rjgZs=
-X-Google-Smtp-Source: ABdhPJxtflci7Mz+vugabPHlCz0Q0Gx5fwa6L+2OG/Z8QYy5+y8O3N6sL1J9naRsa6hASsDD5zduvA==
-X-Received: by 2002:a05:6512:3e14:: with SMTP id i20mr21586920lfv.142.1620765481818;
-        Tue, 11 May 2021 13:38:01 -0700 (PDT)
-Received: from rikard (h-158-174-22-223.NA.cust.bahnhof.se. [158.174.22.223])
-        by smtp.gmail.com with ESMTPSA id f24sm834191ljc.80.2021.05.11.13.38.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 13:38:01 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-X-Google-Original-From: Rikard Falkeborn <rikard.falkeborn>
-Date:   Tue, 11 May 2021 22:37:58 +0200
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux-SH <linux-sh@vger.kernel.org>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 11/12] tools: sync lib/find_bit implementation
-Message-ID: <YJrrJhvwq7RUvDXD@rikard>
-References: <20210401003153.97325-1-yury.norov@gmail.com>
- <20210401003153.97325-12-yury.norov@gmail.com>
- <1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp>
- <CAHp75Vea0Y_LfWC7LNDoDZqO4t+SVHV5HZMzErfyMPoBAjjk1g@mail.gmail.com>
- <YJm5Dpo+RspbAtye@rikard>
- <YJoyMrqRtB3GSAny@smile.fi.intel.com>
- <YJpePAHS3EDw6PK1@rikard>
- <151de51e-9302-1f59-407a-e0d68bbaf11c@i-love.sakura.ne.jp>
+        id S230135AbhEKUkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 16:40:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhEKUkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 16:40:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0731761626
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 20:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620765566;
+        bh=H7zPe428dMDLvAoB1J+eA58qEWZhve5PDtDNRApAvUs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CpDsEm9TULe99bh1PErPdYGF3lOeX5qDgw+HwGEAFNXhMA6JhIEc1HSmTKVpO3eKT
+         0k+bnkXKtvCYcV9mlMui3+deevlzdkOZpPTTGcOzgE9wXbkeMrkYkWYKDGTnEIATom
+         yAWY4P4afTgzQre2Ciarh2nS3xYmP92XFzDwUgRVd9JilwN6NSKw1OcX/P8H0QV40i
+         lZ6GMNSRhxKjyEnyhQtG2RwcNmBi9uFcItkUCfUqo1xpiKb47Y+h9FiD+HfuMrA7hz
+         KS/vveDkglQXyiiffWKolKXLTfj9aM/dIF46aYny+szpyNdZxaQTpg+2nAIFjovU6W
+         cDOU55KjRgspg==
+Received: by mail-ed1-f50.google.com with SMTP id l7so24483957edb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 13:39:25 -0700 (PDT)
+X-Gm-Message-State: AOAM533PwzY07XmrQY084r+IWKSVED6CvPCqgn2C5Xb6xHDNDRBxsm3a
+        3v24RtXL9KgZw8nYSFyjjLb22NgZ4cHONKM2Lg==
+X-Google-Smtp-Source: ABdhPJwVHI2JH2pjuEaPD7fEYgbhmwQfxrKRxmNd022BltdEWNI6eUBjj2cZVxiwDU71WtLdQKlIsv7sLoV332/xLN8=
+X-Received: by 2002:a05:6402:84b:: with SMTP id b11mr38809784edz.289.1620765564404;
+ Tue, 11 May 2021 13:39:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <151de51e-9302-1f59-407a-e0d68bbaf11c@i-love.sakura.ne.jp>
+References: <1619115952-155809-1-git-send-email-kan.liang@linux.intel.com>
+ <20210510191811.GA21560@worktop.programming.kicks-ass.net>
+ <CAL_JsqKeVoBL6cn6CGUW17jnf8B+4aHKeyRdceaGCiKzsUsZwg@mail.gmail.com> <bbe76d64-f6ff-29eb-9f62-2d4f934463e3@linux.intel.com>
+In-Reply-To: <bbe76d64-f6ff-29eb-9f62-2d4f934463e3@linux.intel.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 11 May 2021 15:39:12 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJrrqbHbMXEpy++nGzZ5JD=mm4O2xPgL8g1MUXAQGk=Jw@mail.gmail.com>
+Message-ID: <CAL_JsqJrrqbHbMXEpy++nGzZ5JD=mm4O2xPgL8g1MUXAQGk=Jw@mail.gmail.com>
+Subject: Re: [PATCH V6] perf: Reset the dirty counter to prevent the leak for
+ an RDPMC task
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Stephane Eranian <eranian@google.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 08:53:53PM +0900, Tetsuo Handa wrote:
-> On 2021/05/11 0:44, Andy Shevchenko wrote:
-> > And I'm a bit lost here, because I can't imagine the offset being
-> > constant along with a size of bitmap. What do we want to achieve by
-> > this? Any examples to better understand the case?
-> 
-> Because I feel that the GENMASK() macro cannot be evaluated without
-> both arguments being a constant.
-> 
-> The usage is
-> 
->  unsigned long find_next_bit(const unsigned long *addr, unsigned long size,
->                             unsigned long offset)
->  {
-> +       if (small_const_nbits(size)) {
-> +               unsigned long val;
+On Tue, May 11, 2021 at 12:59 PM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>
+>
+>
+> On 5/10/2021 4:29 PM, Rob Herring wrote:
+> > On Mon, May 10, 2021 at 2:18 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >>
+> >> On Thu, Apr 22, 2021 at 11:25:52AM -0700, kan.liang@linux.intel.com wrote:
+> >>
+> >>> - Add a new method check_leakage() to check and clear dirty counters
+> >>>    to prevent potential leakage.
+> >>
+> >> I really dislike adding spurious callbacks, also because indirect calls
+> >> are teh suck, but also because it pollutes the interface so.
+> >>
+> >> That said, I'm not sure I actually like the below any better :/
+> >>
+>
+> Maybe we can add a atomic variable to track the number of
+> event_mapped(). Only invoke sched_task() when the number > 0.
+
+Except that it is only needed when mapped and user access is allowed/enabled.
+
+>
+> It looks like only X86 implements the event_mapped(). So it should not
+> impact other ARCHs.
+
+Arm will have one if we ever settle on the implementation.
+
+>
+> What do you think?
+>
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index c6fedd2..ae5b0e7 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -1636,6 +1636,8 @@ static void x86_pmu_del(struct perf_event *event,
+> int flags)
+>         if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
+>                 goto do_del;
+>
+> +       __set_bit(event->hw.idx, cpuc->dirty);
 > +
-> +               if (unlikely(offset >= size))
-> +                       return size;
+>         /*
+>          * Not a TXN, therefore cleanup properly.
+>          */
+> @@ -2484,6 +2486,31 @@ static int x86_pmu_event_init(struct perf_event
+> *event)
+>         return err;
+>   }
+>
+> +static void x86_pmu_clear_dirty_counters(void)
+> +{
+> +       struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> +       int i;
 > +
-> +               val = *addr & GENMASK(size - 1, offset);
-> +               return val ? __ffs(val) : size;
+> +        /* Don't need to clear the assigned counter. */
+> +       for (i = 0; i < cpuc->n_events; i++)
+> +               __clear_bit(cpuc->assign[i], cpuc->dirty);
+> +
+> +       if (bitmap_empty(cpuc->dirty, X86_PMC_IDX_MAX))
+> +               return;
+> +
+> +       for_each_set_bit(i, cpuc->dirty, X86_PMC_IDX_MAX) {
+> +               /* Metrics and fake events don't have corresponding HW counters. */
+> +               if (is_metric_idx(i) || (i == INTEL_PMC_IDX_FIXED_VLBR))
+> +                       continue;
+> +               else if (i >= INTEL_PMC_IDX_FIXED)
+> +                       wrmsrl(MSR_ARCH_PERFMON_FIXED_CTR0 + (i - INTEL_PMC_IDX_FIXED), 0);
+> +               else
+> +                       wrmsrl(x86_pmu_event_addr(i), 0);
 > +       }
 > +
->         return _find_next_bit(addr, NULL, size, offset, 0UL, 0);
->  }
-> 
-> where GENMASK() might be called even if "offset" is not a constant.
-> 
-> #define GENMASK(h, l) \
->      (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> 
-> #define __GENMASK(h, l) \
->      (((~UL(0)) - (UL(1) << (l)) + 1) & \
->        (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-> 
-> #define GENMASK_INPUT_CHECK(h, l) \
->      (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
->           __builtin_constant_p((l) > (h)), (l) > (h), 0)))
-> 
-> __GENMASK() does not need "h" and "l" being a constant.
-> 
-> Yes, small_const_nbits(size) in find_next_bit() can guarantee that "size" is a
-> constant and hence "h" argument in GENMASK_INPUT_CHECK() call is also a constant.
-> But nothing can guarantee that "offset" is a constant, and hence nothing can
-> guarantee that "l" argument in GENMASK_INPUT_CHECK() call is also a constant.
-> 
-> Then, how can (l) > (h) in __builtin_constant_p((l) > (h)) be evaluated at build time
-> if either l or h (i.e. "offset" and "size - 1" in find_next_bit()) lacks a guarantee of
-> being a constant?
-> 
+> +       bitmap_zero(cpuc->dirty, X86_PMC_IDX_MAX);
+> +}
+> +
+>   static void x86_pmu_event_mapped(struct perf_event *event, struct
+> mm_struct *mm)
+>   {
+>         if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+> @@ -2507,7 +2534,6 @@ static void x86_pmu_event_mapped(struct perf_event
+> *event, struct mm_struct *mm)
+>
+>   static void x86_pmu_event_unmapped(struct perf_event *event, struct
+> mm_struct *mm)
+>   {
+> -
+>         if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+>                 return;
+>
+> @@ -2616,6 +2642,14 @@ static const struct attribute_group
+> *x86_pmu_attr_groups[] = {
+>   static void x86_pmu_sched_task(struct perf_event_context *ctx, bool
+> sched_in)
+>   {
+>         static_call_cond(x86_pmu_sched_task)(ctx, sched_in);
+> +
+> +       /*
+> +        * If a new task has the RDPMC enabled, clear the dirty counters
+> +        * to prevent the potential leak.
+> +        */
+> +       if (sched_in && ctx && READ_ONCE(x86_pmu.attr_rdpmc) &&
+> +           current->mm && atomic_read(&current->mm->context.perf_rdpmc_allowed))
+> +               x86_pmu_clear_dirty_counters();
+>   }
+>
+>   static void x86_pmu_swap_task_ctx(struct perf_event_context *prev,
+> diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+> index 10c8171..55bd891 100644
+> --- a/arch/x86/events/perf_event.h
+> +++ b/arch/x86/events/perf_event.h
+> @@ -229,6 +229,7 @@ struct cpu_hw_events {
+>          */
+>         struct perf_event       *events[X86_PMC_IDX_MAX]; /* in counter order */
+>         unsigned long           active_mask[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
+> +       unsigned long           dirty[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
+>         int                     enabled;
+>
+>         int                     n_events; /* the # of events in the below arrays */
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 1574b70..ef8f6f4 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -384,6 +384,7 @@ DEFINE_STATIC_KEY_FALSE(perf_sched_events);
+>   static DECLARE_DELAYED_WORK(perf_sched_work, perf_sched_delayed);
+>   static DEFINE_MUTEX(perf_sched_mutex);
+>   static atomic_t perf_sched_count;
+> +static atomic_t perf_event_mmap_count;
 
-So the idea is that if (l > h) is constant, __builtin_constant_p should
-evaluate that, and if it is not it should use zero instead as input to
-__builtin_chose_expr(). This works with non-const inputs in many other
-places in the kernel, but apparently in this case with a certain
-compiler, it doesn't so I guess we need to work around it.
+A global count is not going to work. I think it needs to be per PMU at
+least. In the case of Arm big.LITTLE, user access is constrained to
+one subset of cores which is 1 PMU instance.
 
-> But what a surprise,
-> 
-> On 2021/05/11 7:51, Rikard Falkeborn wrote:
-> > Does the following work for you? For simplicity, I copied__is_constexpr from
-> > include/linux/minmax.h (which isn't available in tools/). A proper patch
-> > would reuse __is_constexpr (possibly refactoring it to a separate
-> > header since bits.h including minmax.h for that only seems smelly) and fix
-> > bits.h in the kernel header as well, to keep the files in sync.
-> 
-> this works for me.
-> 
-
-Great, thanks for testing!
-
-I sent a patch for this here:
-https://lore.kernel.org/lkml/20210511203716.117010-1-rikard.falkeborn@gmail.com/
-
-Rikard
-
-> > 
-> > diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
-> > index 7f475d59a097..7bc4c31a7df0 100644
-> > --- a/tools/include/linux/bits.h
-> > +++ b/tools/include/linux/bits.h
-> > @@ -19,10 +19,13 @@
-> >   * GENMASK_ULL(39, 21) gives us the 64bit vector 0x000000ffffe00000.
-> >   */
-> >  #if !defined(__ASSEMBLY__)
-> > +
-> > +#define __is_constexpr(x) \
-> > +       (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-> >  #include <linux/build_bug.h>
-> >  #define GENMASK_INPUT_CHECK(h, l) \
-> >         (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-> > -               __builtin_constant_p((l) > (h)), (l) > (h), 0)))
-> > +               __is_constexpr((l) > (h)), (l) > (h), 0)))
-> >  #else
-> >  /*
-> >   * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
-> > 
-> 
-> 
-> 
-> On 2021/05/11 7:52, Yury Norov wrote:
-> > I tested the objtool build with the 8.4.0 and 7.5.0 compilers from
-> > ubuntu 21 distro, and it looks working. Can you please share more
-> > details about your system? 
-> 
-> Nothing special. A plain x86_64 CentOS 7.9 system with devtoolset-8.
-> 
-> $ /opt/rh/devtoolset-8/root/bin/gcc --version
-> gcc (GCC) 8.3.1 20190311 (Red Hat 8.3.1-3)
-> Copyright (C) 2018 Free Software Foundation, Inc.
-> This is free software; see the source for copying conditions.  There is NO
-> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> 
-> $ rpm -qi devtoolset-8-gcc
-> Name        : devtoolset-8-gcc
-> Version     : 8.3.1
-> Release     : 3.2.el7
-> Architecture: x86_64
-> Install Date: Wed Apr 22 07:58:16 2020
-> Group       : Development/Languages
-> Size        : 74838011
-> License     : GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
-> Signature   : RSA/SHA1, Thu Apr 16 19:44:43 2020, Key ID 4eb84e71f2ee9d55
-> Source RPM  : devtoolset-8-gcc-8.3.1-3.2.el7.src.rpm
-> Build Date  : Sat Mar 28 00:06:45 2020
-> Build Host  : c1be.rdu2.centos.org
-> Relocations : (not relocatable)
-> Packager    : CBS <cbs@centos.org>
-> Vendor      : CentOS
-> URL         : http://gcc.gnu.org
-> Summary     : GCC version 8
-> Description :
-> The devtoolset-8-gcc package contains the GNU Compiler Collection version 7.
-> 
+>
+>   static DEFINE_PER_CPU(atomic_t, perf_cgroup_events);
+>   static DEFINE_PER_CPU(int, perf_sched_cb_usages);
+> @@ -3851,7 +3852,7 @@ static void perf_event_context_sched_in(struct
+> perf_event_context *ctx,
+>                 cpu_ctx_sched_out(cpuctx, EVENT_FLEXIBLE);
+>         perf_event_sched_in(cpuctx, ctx, task);
+>
+> -       if (cpuctx->sched_cb_usage && pmu->sched_task)
+> +       if (pmu->sched_task && (cpuctx->sched_cb_usage ||
+> atomic_read(&perf_event_mmap_count)))
+>                 pmu->sched_task(cpuctx->task_ctx, true);
+>
+>         perf_pmu_enable(pmu);
+> @@ -5988,8 +5989,10 @@ static void perf_mmap_open(struct vm_area_struct
+> *vma)
+>         if (vma->vm_pgoff)
+>                 atomic_inc(&event->rb->aux_mmap_count);
+>
+> -       if (event->pmu->event_mapped)
+> +       if (event->pmu->event_mapped) {
+> +               atomic_inc(&perf_event_mmap_count);
+>                 event->pmu->event_mapped(event, vma->vm_mm);
+> +       }
+>   }
+>
+>   static void perf_pmu_output_stop(struct perf_event *event);
+> @@ -6011,8 +6014,10 @@ static void perf_mmap_close(struct vm_area_struct
+> *vma)
+>         unsigned long size = perf_data_size(rb);
+>         bool detach_rest = false;
+>
+> -       if (event->pmu->event_unmapped)
+> +       if (event->pmu->event_unmapped) {
+> +               atomic_dec(&perf_event_mmap_count);
+>                 event->pmu->event_unmapped(event, vma->vm_mm);
+> +       }
+>
+>         /*
+>          * rb->aux_mmap_count will always drop before rb->mmap_count and
+> @@ -6329,8 +6334,10 @@ static int perf_mmap(struct file *file, struct
+> vm_area_struct *vma)
+>         vma->vm_flags |= VM_DONTCOPY | VM_DONTEXPAND | VM_DONTDUMP;
+>         vma->vm_ops = &perf_mmap_vmops;
+>
+> -       if (event->pmu->event_mapped)
+> +       if (event->pmu->event_mapped) {
+> +               atomic_inc(&perf_event_mmap_count);
+>                 event->pmu->event_mapped(event, vma->vm_mm);
+> +       }
+>
+>         return ret;
+>   }
+>
+>
+> Thanks,
+> Kan
