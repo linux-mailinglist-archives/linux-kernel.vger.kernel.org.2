@@ -2,66 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB25E379C3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370EA379C3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhEKBqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 21:46:31 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:39679 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhEKBq1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 21:46:27 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 6032920003;
-        Tue, 11 May 2021 01:45:20 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2] alarmtimer: check RTC features instead of ops
-Date:   Tue, 11 May 2021 03:45:16 +0200
-Message-Id: <20210511014516.563031-1-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.31.1
+        id S230396AbhEKBrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 21:47:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42580 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230023AbhEKBrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 21:47:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 416A161629;
+        Tue, 11 May 2021 01:46:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620697595;
+        bh=zRFH7hcgqBzuVJGwApqdrtTvpvj+GmXyjHWNsw6DGg8=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=SrbUmQ3XfUDBVScU7RGYGh+COsif34UcsKqoTgGV9vf8XRs8R1lfXDv2Rg8m5+EF9
+         CJPluc1/MQWvbLjpb0BVOfrQVGN/CpceyyrZMmsRnCPL3kqtV6OlO3OEzsslK/qv7R
+         zfl2Tf8Vw+0CIzNstymmxgXrqQa0cXQFMxMCpH3x+EScqVCBhtS+W0OWy9oXkU1Diw
+         G6RzBgQ9DfY0kzP1vEIMFq5Dn15X6EwBB3uZAB8JhvRKGL4JvgSEGm4RjP4loHchpQ
+         dnVwpyniLe2sjqdRGm4CgKX7WruGCQeIvlzp1r0kmQMvORLOQOTUtZolCtGmlfMEQH
+         t7e1j5rQsPpEw==
+Date:   Mon, 10 May 2021 18:46:34 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Christoph Hellwig <hch@lst.de>
+cc:     Julien Grall <julien@xen.org>, f.fainelli@gmail.com,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        linux-kernel@vger.kernel.org,
+        osstest service owner <osstest-admin@xenproject.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        iommu@lists.linux-foundation.org
+Subject: Re: Regression when booting 5.15 as dom0 on arm64 (WAS: Re: [linux-linus
+ test] 161829: regressions - FAIL)
+In-Reply-To: <20210510084057.GA933@lst.de>
+Message-ID: <alpine.DEB.2.21.2105101818260.5018@sstabellini-ThinkPad-T480s>
+References: <osstest-161829-mainreport@xen.org> <4ea1e89f-a7a0-7664-470c-b3cf773a1031@xen.org> <20210510084057.GA933@lst.de>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RTC drivers used to leave .set_alarm() NULL in order to signal the RTC
-device doesn't support alarms. The drivers are now clearing the
-RTC_FEATURE_ALARM bit for that purpose in order to keep the rtc_class_ops
-structure const. So now, .set_alarm() is set unconditionally and this
-possibly causes the alarmtimer code to select an RTC device that doesn't
-support alarms.
+On Mon, 10 May 2021, Christoph Hellwig wrote:
+> On Sat, May 08, 2021 at 12:32:37AM +0100, Julien Grall wrote:
+> > The pointer dereferenced seems to suggest that the swiotlb hasn't been 
+> > allocated. From what I can tell, this may be because swiotlb_force is set 
+> > to SWIOTLB_NO_FORCE, we will still enable the swiotlb when running on top 
+> > of Xen.
+> >
+> > I am not entirely sure what would be the correct fix. Any opinions?
+> 
+> Can you try something like the patch below (not even compile tested, but
+> the intent should be obvious?
+> 
+> 
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index 16a2b2b1c54d..7671bc153fb1 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -44,6 +44,8 @@
+>  #include <asm/tlb.h>
+>  #include <asm/alternative.h>
+>  
+> +#include <xen/arm/swiotlb-xen.h>
+> +
+>  /*
+>   * We need to be able to catch inadvertent references to memstart_addr
+>   * that occur (potentially in generic code) before arm64_memblock_init()
+> @@ -482,7 +484,7 @@ void __init mem_init(void)
+>  	if (swiotlb_force == SWIOTLB_FORCE ||
+>  	    max_pfn > PFN_DOWN(arm64_dma_phys_limit))
+>  		swiotlb_init(1);
+> -	else
+> +	else if (!IS_ENABLED(CONFIG_XEN) || !xen_swiotlb_detect())
+>  		swiotlb_force = SWIOTLB_NO_FORCE;
+>  
+>  	set_max_mapnr(max_pfn - PHYS_PFN_OFFSET);
 
-Test RTC_FEATURE_ALARM instead of relying on ops->set_alarm to determine
-whether alarms are available.
+The "IS_ENABLED(CONFIG_XEN)" is not needed as the check is already part
+of xen_swiotlb_detect().
 
-Fixes: 7ae41220ef58 ("rtc: introduce features bitfield")
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- kernel/time/alarmtimer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
-index bea9d08b1698..5897828b9d7e 100644
---- a/kernel/time/alarmtimer.c
-+++ b/kernel/time/alarmtimer.c
-@@ -92,7 +92,7 @@ static int alarmtimer_rtc_add_device(struct device *dev,
- 	if (rtcdev)
- 		return -EBUSY;
+But let me ask another question first. Do you think it makes sense to have:
+
+	if (swiotlb_force == SWIOTLB_NO_FORCE)
+		return 0;
+
+at the beginning of swiotlb_late_init_with_tbl? I am asking because
+swiotlb_late_init_with_tbl is meant for special late initializations,
+right? It shouldn't really matter the presence or absence of
+SWIOTLB_NO_FORCE in regards to swiotlb_late_init_with_tbl. Also the
+commit message for "swiotlb: Make SWIOTLB_NO_FORCE perform no
+allocation" says that "If a platform was somehow setting
+swiotlb_no_force and a later call to swiotlb_init() was to be made we
+would still be proceeding with allocating the default SWIOTLB size
+(64MB)." Our case here is very similar, right? So the allocation should
+proceed?
+
+
+Which brings me to a separate unrelated issue, still affecting the path
+xen_swiotlb_init -> swiotlb_late_init_with_tbl. If swiotlb_init(1) is
+called by mem_init then swiotlb_late_init_with_tbl will fail due to the
+check:
+
+    /* protect against double initialization */
+    if (WARN_ON_ONCE(io_tlb_default_mem))
+        return -ENOMEM;
+
+xen_swiotlb_init is meant to ask Xen to make a bunch of pages physically
+contiguous. Then, it initializes the swiotlb buffer based on those
+pages. So it is a problem that swiotlb_late_init_with_tbl refuses to
+continue. However, in practice it is not a problem today because on ARM
+we don't actually make any special requests to Xen to make the pages
+physically contiguous (yet). See the empty implementation of
+arch/arm/xen/mm.c:xen_create_contiguous_region. I don't know about x86.
+
+So maybe we should instead do something like the appended?
+
+
+diff --git a/arch/arm/xen/mm.c b/arch/arm/xen/mm.c
+index f8f07469d259..f5a3638d1dee 100644
+--- a/arch/arm/xen/mm.c
++++ b/arch/arm/xen/mm.c
+@@ -152,6 +152,7 @@ static int __init xen_mm_init(void)
+ 	struct gnttab_cache_flush cflush;
+ 	if (!xen_swiotlb_detect())
+ 		return 0;
++	swiotlb_exit();
+ 	xen_swiotlb_init();
  
--	if (!rtc->ops->set_alarm)
-+	if (!test_bit(RTC_FEATURE_ALARM, rtc->features))
- 		return -1;
- 	if (!device_may_wakeup(rtc->dev.parent))
- 		return -1;
--- 
-2.31.1
-
+ 	cflush.op = 0;
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 8ca7d505d61c..f17be37298a7 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -285,9 +285,6 @@ swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
+ 	unsigned long bytes = nslabs << IO_TLB_SHIFT, i;
+ 	struct io_tlb_mem *mem;
+ 
+-	if (swiotlb_force == SWIOTLB_NO_FORCE)
+-		return 0;
+-
+ 	/* protect against double initialization */
+ 	if (WARN_ON_ONCE(io_tlb_default_mem))
+ 		return -ENOMEM;
