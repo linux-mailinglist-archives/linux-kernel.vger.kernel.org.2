@@ -2,170 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF0C137A9B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B477537A9B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231967AbhEKOkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:40:49 -0400
-Received: from mga17.intel.com ([192.55.52.151]:13086 "EHLO mga17.intel.com"
+        id S231987AbhEKOlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:41:02 -0400
+Received: from mga03.intel.com ([134.134.136.65]:64173 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231781AbhEKOks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:40:48 -0400
-IronPort-SDR: 5ADUwAcgzh3D7fqFmoDn/mDxnoXxR5NfjALEgePGnYbgKIzWRshXNToOs358zXXhxt+cbNsY1i
- GQIfhU/3brsw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179719378"
+        id S231781AbhEKOlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:41:00 -0400
+IronPort-SDR: XAkxS6d8g+sflp8cTidaO5uAhX5/9ZA4VCt8nT63Ej/yHJ3sZJWEPtBaZh1Uc8BCcJwp0mRfug
+ 2w8dkvToRTHw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="199510634"
 X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="179719378"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:39:36 -0700
-IronPort-SDR: ckg1dfEy0QxtTIoB19epWyT5EWGKx5kXCQpWVEyNHjn4/wlutx0cXbVmRhtzdF+jGTA7dHAcsA
- jCDtmzbMz4mA==
+   d="scan'208";a="199510634"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:39:36 -0700
+IronPort-SDR: lrKdDO3hBV/t0wpH4Cl75xqd+QCi/dUBsTHwNXHDa18qTx3XbeIbZkQtmKQ6oBaZ7IHt2f54Mn
+ neE33GRv1bMw==
 X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="436687594"
-Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.129.50]) ([10.249.129.50])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:39:33 -0700
-Subject: Re: Qestion about device link
-To:     "chenxiang (M)" <chenxiang66@hisilicon.com>
-Cc:     John Garry <john.garry@huawei.com>, linuxarm@huawei.com,
-        linux-scsi@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-References: <3c88cf35-6725-1bfa-9e1e-8e9d69147e3b@hisilicon.com>
-From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
- 173, 80-298 Gdansk
-Message-ID: <d16058fc-9876-f6a3-d5e8-ff06b5193f2c@intel.com>
-Date:   Tue, 11 May 2021 16:39:31 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+   d="scan'208";a="537054480"
+Received: from unknown (HELO [10.251.0.45]) ([10.251.0.45])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:39:36 -0700
+Subject: Re: [RFC v2 14/32] x86/tdx: Handle port I/O
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <0e7e94d1ee4bae49dfd0dd441dc4f2ab6df76668.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4jPLGs6p0PNZQB6yKB3QDtEcGb234zcgCbJutXxZZEGnA@mail.gmail.com>
+ <e8ac31bc-e307-f277-f928-24ebba4cbca7@linux.intel.com>
+ <CAPcyv4iuRdXooQvCzEWd9babzPij4nXpM-z5fai9+SGaeFYswQ@mail.gmail.com>
+ <9f89a317-11fa-d784-87a8-37124891900c@linux.intel.com>
+ <CAPcyv4hymb73WZ7QqNsDyKiPzsFdPJF63+MLnOTfJMsQBFvSDg@mail.gmail.com>
+ <3059c7d3-8646-2e1a-3c9f-1de67f7ed382@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <609b1182-5629-0727-d174-849c113a3960@intel.com>
+Date:   Tue, 11 May 2021 07:39:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <3c88cf35-6725-1bfa-9e1e-8e9d69147e3b@hisilicon.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <3059c7d3-8646-2e1a-3c9f-1de67f7ed382@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/2021 5:59 AM, chenxiang (M) wrote:
-> Hi Rafael and other guys,
->
-> I am trying to add a device link between scsi_host->shost_gendev and 
-> hisi_hba->dev to support runtime PM for hisi_hba driver
->
-> (as it supports runtime PM for scsi host in some scenarios such as 
-> error handler etc, we can avoid to do them again if adding a
->
-> device link between scsi_host->shost_gendev and hisi_hba->dev) as 
-> follows (hisi_sas driver is under directory drivers/scsi/hisi_sas):
->
-> device_link_add(&shost->shost_gendev, hisi_hba->dev, 
-> DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE)
->
-> We have a full test on it, and it works well except when rmmod the 
-> driver, some call trace occurs as follows:
->
-> [root@localhost ~]# rmmod hisi_sas_v3_hw
-> [  105.377944] BUG: scheduling while atomic: kworker/113:1/811/0x00000201
-> [  105.384469] Modules linked in: bluetooth rfkill ib_isert 
-> iscsi_target_mod ib_ipoib ib_umad iptable_filter vfio_iommu_type1 
-> vfio_pci vfio_virqfd vfio rpcrdma ib_is                         er 
-> libiscsi scsi_transport_iscsi crct10dif_ce sbsa_gwdt hns_roce_hw_v2 
-> hisi_sec2 hisi_hpre hisi_zip hisi_qm uacce spi_hisi_sfc_v3xx 
-> hisi_trng_v2 rng_core hisi_uncore                         _hha_pmu 
-> hisi_uncore_ddrc_pmu hisi_uncore_l3c_pmu spi_dw_mmio hisi_uncore_pmu 
-> hns3 hclge hnae3 hisi_sas_v3_hw(-) hisi_sas_main libsas
-> [  105.424841] CPU: 113 PID: 811 Comm: kworker/113:1 Kdump: loaded 
-> Tainted: G        W         5.12.0-rc1+ #1
-> [  105.434454] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS 
-> 2280-V2 CS V5.B143.01 04/22/2021
-> [  105.443287] Workqueue: rcu_gp srcu_invoke_callbacks
-> [  105.448154] Call trace:
-> [  105.450593]  dump_backtrace+0x0/0x1a4
-> [  105.454245]  show_stack+0x24/0x40
-> [  105.457548]  dump_stack+0xc8/0x104
-> [  105.460939]  __schedule_bug+0x68/0x80
-> [  105.464590]  __schedule+0x73c/0x77c
-> [  105.465700] BUG: scheduling while atomic: kworker/96:1/791/0x00000201
-> [  105.468066]  schedule+0x7c/0x110
-> [  105.468068]  schedule_timeout+0x194/0x1d4
-> [  105.474490] Modules linked in:
-> [  105.477692]  wait_for_completion+0x8c/0x12c
-> [  105.477695]  rcu_barrier+0x1e0/0x2fc
-> [  105.477697]  scsi_host_dev_release+0x50/0xf0
-> [  105.477701]  device_release+0x40/0xa0
-> [  105.477704]  kobject_put+0xac/0x100
-> [  105.477707]  __device_link_free_srcu+0x50/0x74
-> [  105.477709]  srcu_invoke_callbacks+0x108/0x1a4
-> [  105.484743]  process_one_work+0x1dc/0x48c
-> [  105.492468]  worker_thread+0x7c/0x464
-> [  105.492471]  kthread+0x168/0x16c
-> [  105.492473]  ret_from_fork+0x10/0x18
-> ...
->
-> After analyse the process, we find that it will 
-> device_del(&shost->gendev) in function scsi_remove_host() and then
->
-> put_device(&shost->shost_gendev) in function scsi_host_put() when 
-> removing the driver, if there is a link between shost and hisi_hba->dev,
->
-> it will try to delete the link in device_del(), and also will 
-> call_srcu(__device_link_free_srcu) to put_device() link->consumer and 
-> supplier.
->
-> But if put device() for shost_gendev in device_link_free() is later 
-> than in scsi_host_put(), it will call scsi_host_dev_release() in
->
-> srcu_invoke_callbacks() while it is atomic and there are scheduling in 
-> scsi_host_dev_release(),
->
-> so it reports the BUG "scheduling while atomic:...".
->
-> thread 1                                                   thread2
-> hisi_sas_v3_remove
->     ...
->     sas_remove_host()
->         ...
->         scsi_remove_host()
->             ...
->             device_del(&shost->shost_gendev)
->                 ...
->                 device_link_purge()
->                     __device_link_del()
->                         device_unregister(&link->link_dev)
->                             devlink_dev_release
-> call_srcu(__device_link_free_srcu)    -----------> 
-> srcu_invoke_callbacks  (atomic)
->         __device_link_free_srcu
->     ...
->     scsi_host_put()
->         put_device(&shost->shost_gendev) (ref = 1)
->                 device_link_free()
->                               put_device(link->consumer) 
-> //shost->gendev ref = 0
->                                           ...
->                                           scsi_host_dev_release
->                                                       ...
-> rcu_barrier
-> kthread_stop()
->
->
-> We can check kref of shost->shost_gendev to make sure scsi_host_put() 
-> to release scsi host device in LLDD driver to avoid the issue,
->
-> but it seems be a common issue:  function __device_link_free_srcu 
-> calls put_device() for consumer and supplier,
->
-> but if it's ref =0 at that time and there are scheduling or sleep in 
-> dev_release, it may have the issue.
->
-> Do you have any idea about the issue?
->
-Yes, this is a general issue.
+On 5/10/21 7:29 PM, Kuppuswamy, Sathyanarayanan wrote:
+> On 5/10/21 6:07 PM, Dan Williams wrote:
+>> On Mon, May 10, 2021 at 5:30 PM Kuppuswamy, Sathyanarayanan
+>> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>> [..]
+>>> It is mainly used by functions like
+>>> __tdx_hypercall(),__tdx_hypercall_vendor_kvm()
+>>> and tdx_in{b,w,l}.
+>>>
+>>> u64 __tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15,
+>>>                       struct tdx_hypercall_output *out);
+>>> u64 __tdx_hypercall_vendor_kvm(u64 fn, u64 r12, u64 r13, u64 r14,
+>>>                                  u64 r15, struct tdx_hypercall_output
+>>> *out);
+>>>
+>>> struct tdx_hypercall_output {
+>>>           u64 r11;
+>>>           u64 r12;
+>>>           u64 r13;
+>>>           u64 r14;
+>>>           u64 r15;
+>>> };
+>>
+>> Why is this by register name and not something like:
+>>
+>> struct tdx_hypercall_payload {
+>>    u64 data[5];
+>> };
+>>
+>> ...because the code in this patch is reading the payload out of a
+>> stack relative offset, not r11.
+> 
+> Since this patch allocates this memory in ASM code, we read it via
+> offset. If you see other use cases in tdx.c, you will notice the use
+> of register names.
 
-If I'm not mistaken, it can be addressed by further deferring the 
-device_link_free() invocation through a workqueue.
+To what you do you refer by "this patch allocates this memory in ASM
+code"?  Could you point to the specific ASM code that "allocates memory"?
 
-Let me cut a patch doing this.
+Dan I'll try to answer your question.  TDX has both a "hypercall"
+interface for guests to call into hosts and a "seamcall" interface where
+guests or hosts can talk to the TDX/SEAM module.
 
+Both of these represent an ABI which _resembles_ a system call ABI.
+Values are placed in registers, including a "function" register which is
+very similar to a the system call number we place in RAX.
 
+*But* those ABIs was actually designed to (IIRC) resemble the
+Windows/Microsoft ABI, not the Linux ABI.  So the register conventions
+are unfamiliar.  There is assembly code to convert between the ELF
+function call ABI and the TDX ABIs.
+
+For instance, if you are in C code and you call:
+
+	__tdx_hypercall_vendor_kvm(u64 fn, u64 r12, ...
+
+The value for "fn" will be placed in RAX and "r12" will be placed in RDI
+for the function call itself.  The assembly code will, for instance,
+take the "r12" *VARIABLE* and ensure it gets into the R12 *REGISTER* for
+the hypercall.
+
+The same thing happens on the output side.  The TDX ABIs specify
+"return" values in certain registers (r11-r15).  However, those
+registers are not preserved in our function return ABI.  So, they must
+be stashed off in memory into a place where the caller can retrieve them.
+
+Rather than being unstructured "data[]", the value in
+tdx_hypercall_output->r11 was actually in register R11 at some point.
+If you look at the spec, you can see the functions that use R11.
+
+Let's say there's a hypercall to check for whether puppies are cute.
+Here's the kernel side:
+
+bool tdx_hypercall_puppies_are_cute()
+{
+	struct tdx_hypercall_output out;
+	u64 ret;
+
+	ret = __tdx_hypercall_vendor_kvm(HOST_LIKES_PUPPIES, ..., &out);
+
+	/* Did the hypercall even succeed? */
+	if (ret != SUCCESS)
+		return -EINVAL;
+
+	if (out->r11 == TDX_WHATEVER_CUTE_BIT)
+		return true;
+
+	// Nope, I guess puppies are not cute
+	return false;
+}
+
+The spec would actually say, "Blah blah, puppies are cute if
+TDX_WHATEVER_CUTE_BIT is set in r11".  So, this whole setup actually
+results in really nice C code that you can sit side-by-side with the
+spec and see if they agree.
