@@ -2,113 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE06437A48F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9581E37A495
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbhEKK1g convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 May 2021 06:27:36 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:35820 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbhEKK11 (ORCPT
+        id S231355AbhEKK2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 06:28:38 -0400
+Received: from mail-vs1-f50.google.com ([209.85.217.50]:45995 "EHLO
+        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229935AbhEKK2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 06:27:27 -0400
-Received: by mail-oi1-f175.google.com with SMTP id v22so13699036oic.2;
-        Tue, 11 May 2021 03:26:21 -0700 (PDT)
+        Tue, 11 May 2021 06:28:36 -0400
+Received: by mail-vs1-f50.google.com with SMTP id x188so4343011vsx.12
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 03:27:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Y/kVtDHIZKmMSzJqt2osYUZoKGVA0ReHyak/rU5cC5c=;
-        b=l+eBKx4VeyxVFcH6iRvG5yk3jceUS7TdXOOG88xabbPjT2uEKUzbmmJiYTBvM6Ly2B
-         /J/qnW38qtl/HbnAQzBJsu6asXITnJpPohtoOreZvtLLQO7QQk/WpeLhJLGjsfq5bqhj
-         XJ6sygWbTBBKlK3v0tyPZIPjqaQ6OkSCdPpTuFMpqZDgpeGr7RlGmFzk3Q4fd+LhvozO
-         g26bDbDXE6i1VWv5AxOnqS0J1KoE81DQMLHj+0vqI4ZjcmialHespJNIcdzu7m0c1HuX
-         QzeVR3xRrnGJGr8Mg0dqTpQUct0t/sZY+p3pksk1m/BUq/T05TrrQWq0dGA1FOKEp9oa
-         SSqg==
-X-Gm-Message-State: AOAM532eO28pqsMIQBF0nRXTn/Eoyg8ZmJRk7WVGCKoGHMCCAQFnY834
-        V+HAZiVknMrUIZkS/kkkwrFC4psmFldTblXL6zM=
-X-Google-Smtp-Source: ABdhPJyVc1Adj8xVyObdprPl2+PqCJObB0MAM6XfJz4JAIipmyLDXri3ba7YmDZvSK16PM6BYf++7Uytfb6IowgGI1w=
-X-Received: by 2002:a05:6808:90d:: with SMTP id w13mr6920337oih.71.1620728781037;
- Tue, 11 May 2021 03:26:21 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=qIkrxbqENVoInkWJDP+jiJxx4wRojWyFG0U09oYNhN8=;
+        b=NuVxPPXLHfPFb1M2wmgoaAJ7cAXVbUwmJe9LAS200wtwbhHYE+trTCzO9rQbT3xFUP
+         jIftc/Nxm3q1zjxtzaqtuY4mt/Geg7DxXe4VpKqgjyMSP6zIzHT+BN5mvHaxcKmJxZf6
+         MfvMndjbtC116PZUAomYGx1l+FyEVmquTl0ax+JR/30pbSgiQnQxLzkoDTX2ZbfdE3xI
+         FlLpZpfpjtYlV6tCh1I6yIuAjxJbUmv7aMrW7Njx1L2OJ9X1qPSkJAK1fardr++fEI9E
+         JD3pu3WB18P4mGZbOnYEZP9WWHL/rYS9KD5zhkC+cqeUZ4L4MsUdj+1RG3PcjLO0IU6R
+         84/g==
+X-Gm-Message-State: AOAM531R0a55Xknzzbpgyi4LWCMqQZLSFtP57N/A4DwHhBuChJeZ4S/z
+        946hjjd7N5yEVMpqz4k5cRo2Yvw+LUvq0V5bHXg=
+X-Google-Smtp-Source: ABdhPJwc+AOEQ8HwzUtQMWq36N66YaELie0ykqVUELPA2a1eR9TyG5GqCTuhkycnNJ5UGTc7OTKiBKcNbOcUrsZoaNw=
+X-Received: by 2002:a67:8745:: with SMTP id j66mr25322124vsd.18.1620728849817;
+ Tue, 11 May 2021 03:27:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210422192937.707500-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAJZ5v0hbAaFtRxuyR2B6YBUfV6eGWmDrZnTisd9j5H0UNurqrg@mail.gmail.com> <MWHPR11MB1599AD69C50EE40EF625C837F0539@MWHPR11MB1599.namprd11.prod.outlook.com>
-In-Reply-To: <MWHPR11MB1599AD69C50EE40EF625C837F0539@MWHPR11MB1599.namprd11.prod.outlook.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 11 May 2021 12:26:10 +0200
-Message-ID: <CAJZ5v0jFhX6Jy_Ws14BO3g35yCKnKncp5gBWCADTCdppbHQ55A@mail.gmail.com>
-Subject: Re: [PATCH 1/1] ACPICA: Add SVKL table headers
-To:     "Kaneda, Erik" <erik.kaneda@intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Rafael J Wysocki <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "Moore, Robert" <robert.moore@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
+References: <20210510093753.40683-1-mark.rutland@arm.com> <20210510093753.40683-21-mark.rutland@arm.com>
+ <CAMuHMdVFOvyQYBn45QSb-jHA3G5Guv0hRb-LO1n8L_gWzcZm8w@mail.gmail.com> <20210511100022.GD6152@C02TD0UTHF1T.local>
+In-Reply-To: <20210511100022.GD6152@C02TD0UTHF1T.local>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 11 May 2021 12:27:18 +0200
+Message-ID: <CAMuHMdV5LpRbDcbmQHP4gzXv6JiLzKNP8dAiMOa0GsfE5KgJzA@mail.gmail.com>
+Subject: Re: [PATCH 20/33] locking/atomic: m68k: move to ARCH_ATOMIC
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Brian Cain <bcain@codeaurora.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Chris Zankel <chris@zankel.net>, Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Greentime Hu <green.hu@gmail.com>, Guo Ren <guoren@kernel.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Matt Turner <mattst88@gmail.com>,
+        Michal Simek <monstr@monstr.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nick Hu <nickhu@andestech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Greg Ungerer <gerg@linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 2:17 AM Kaneda, Erik <erik.kaneda@intel.com> wrote:
->
->
->
-> > -----Original Message-----
-> > From: Rafael J. Wysocki <rafael@kernel.org>
-> > Sent: Monday, May 10, 2021 9:58 AM
-> > To: Kuppuswamy Sathyanarayanan
-> > <sathyanarayanan.kuppuswamy@linux.intel.com>; Kaneda, Erik
-> > <erik.kaneda@intel.com>
-> > Cc: Rafael J Wysocki <rjw@rjwysocki.net>; Len Brown <lenb@kernel.org>;
-> > Moore, Robert <robert.moore@intel.com>; ACPI Devel Maling List <linux-
-> > acpi@vger.kernel.org>; open list:ACPI COMPONENT ARCHITECTURE
-> > (ACPICA) <devel@acpica.org>; Linux Kernel Mailing List <linux-
-> > kernel@vger.kernel.org>; Wysocki, Rafael J <rafael.j.wysocki@intel.com>
-> > Subject: Re: [PATCH 1/1] ACPICA: Add SVKL table headers
-> >
-> > On Thu, Apr 22, 2021 at 9:29 PM Kuppuswamy Sathyanarayanan
-> > <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
-> > >
-> > > ACPICA commit b5e6bcf69dbb9877481992d5ce86008cfb94f5b8
-> > >
-> > > SVKL (Storage Volume Key Location Table) is used by BIOS/Firmware
-> > > to share storage volume encryption key's with OS. It will be used
-> > > by userspace to decrypt and mount encrypted drives.
-> > >
-> > > So add SVKL table signature and add it to known signatures array
-> > > support SVKL.
-> > >
-> > > You can find details about the SVKL table in TDX specfication
-> > > titled "Guest-Host-Communication Interface (GHCI) for Intel
-> > > Trust Domain Extensions (Intel® TDX)", sec 4.4 and in ACPI
-> > > specification r6.4, sec 5.2.6.
-> > >
-> > >
-> > https://software.intel.com/content/dam/develop/external/us/en/documen
-> > ts/intel-tdx-guest-hypervisor-communication-interface.pdf
-> > >
-> > > Cc: Robert Moore <robert.moore@intel.com>
-> > > Cc: Erik Kaneda <erik.kaneda@intel.com>
-> > > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > >
-> > > Link: https://github.com/acpica/acpica/commit/b5e6bcf6
-> > > Signed-off-by: Kuppuswamy Sathyanarayanan
-> > <sathyanarayanan.kuppuswamy@linux.intel.com>
-> > > Signed-off-by: Bob Moore <robert.moore@intel.com>
-> > > Signed-off-by: Erik Kaneda <erik.kaneda@intel.com>
-> >
-> > Erik, what's the plan regarding this patch and the other ACPICA change
-> > requisite for this series?
-> >
-> > Are they going to be part of the next ACPICA release and am I going to
-> > receive them the usual way?
->
-> Yes, we'll do this the usual way
+Hi Mark,
 
-OK, thanks!
+CC Greg
+
+On Tue, May 11, 2021 at 12:00 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> On Tue, May 11, 2021 at 11:27:45AM +0200, Geert Uytterhoeven wrote:
+> > On Mon, May 10, 2021 at 11:42 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > We'd like all architectures to convert to ARCH_ATOMIC, as once all
+> > > architectures are converted it will be possible to make significant
+> > > cleanups to the atomics headers, and this will make it much easier to
+> > > generically enable atomic functionality (e.g. debug logic in the
+> > > instrumented wrappers).
+> > >
+> > > As a step towards that, this patch migrates m68k to ARCH_ATOMIC. The
+> > > arch code provides arch_{atomic,atomic64,xchg,cmpxchg}*(), and common
+> > > code wraps these with optional instrumentation to provide the regular
+> > > functions.
+> > >
+> > > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> >
+> > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> >
+> > I even gave this series a spin on ARAnyM and QEMU, and everything
+> > seems to be fine.
+>
+> Thanks! That's much appreciated; I was able to build-test, but didn't
+> have a suitable setup for boot testing.
+>
+> The Kbuild test robot noticed I broke one configuration by renaming
+> atomic_dec_and_test_lt(), since it's not part of the common atomic API,
+> and is used in get_mmu_context() in <asm/mmu_context.h>.
+
+Ah, that's in the part for Coldfire, so I (and my builds) didn't notice.
+
+> On the primciple of keeping the common atomic API separate from
+> arch-specific bits, I've kept the `arch_` prefix and updated the caller.
+> Does that sound good to you?
+
+That's fine for me, but as this is Coldfire, I'd like to defer to Greg.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
