@@ -2,166 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3AE837A085
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972FD37A086
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbhEKHQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:16:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230333AbhEKHQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:16:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6AF061926;
-        Tue, 11 May 2021 07:14:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620717301;
-        bh=Ol3Y3NGUoh+XLbyDQdLjaDsjUT2yr2pIhlJoigW1IRI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=SlfDAwDlc2JbUfweLW37FbFNwsd086fIdg3r6tNg1yy2Atb8mdRA5xYtDzZfTLv8B
-         YkTocbqXLewhM1i+FjoUHMCDeB7E4e8fBB4z2v7yEEunQZpN/oajGRL3oZIdahCfCk
-         RjusI4cZNFOc2moNCgRsI+ednBAkNf0mHPMGMK4jKU0lObVKtQj/jjmewUuyralaco
-         DZTDWlE5KsCQP3VRvTtUQEW6SG98zBDB7W21cYJQJ08im4JGAbg5fnm5u+PZJ4uW1D
-         LJaPqZfZGXHGQepFlN+7kT99NL/zgrZZHUAjGAob8ZT3T5rWPm8jE6UpE2Ckluty0t
-         BxGZR3ikpflkQ==
-Subject: Re: [PATCH] arm64: dts: ti: k3-am65|j721e|am64: Map the dma /
- navigator subsystem via explicit ranges
-To:     Nishanth Menon <nm@ti.com>, vigneshr@ti.com,
-        grygorii.strashko@ti.com
-Cc:     lokeshvutla@ti.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20210510145429.8752-1-nm@ti.com>
-From:   Tero Kristo <kristo@kernel.org>
-Message-ID: <6efd1297-d174-d915-44f7-a4ad6ff46b52@kernel.org>
-Date:   Tue, 11 May 2021 10:14:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230493AbhEKHQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:16:48 -0400
+Received: from mail-vs1-f49.google.com ([209.85.217.49]:33642 "EHLO
+        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229945AbhEKHQm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 03:16:42 -0400
+Received: by mail-vs1-f49.google.com with SMTP id x17so5398423vsc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:15:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8UzqGBEnMFGPXHaRr6PfDxH2kRj2bejhyjTaWq+GqQo=;
+        b=ry0LNwzkmTCbUDuOFyo3vsuh6y259DrrFxr9aOlgrG7oH8RiRDMcdvNNy5xNVDz2uj
+         jGXs+HzIfgT9HZDyYQmtnbALxm9JABMOuLTGDB5dPE/VtQsqlghqqNyPnf6Fx1iRZPff
+         wlfIqvAPvgxmTcQ+dIVaLEcifAwOviMbJt1J09Mg8cCXMGGh4QpQHReEMckdypBb/E/j
+         MVeKaBgSRuMzuG6WvaFnSSCW20mYwrlckxNcHC8CDQSIdnLmeoDaq9CM7KYNnwkawy+2
+         clV/Aw8B99Jv5YFi1dq84RqOoPG6VMK9SNYzsNDx1BGynz0FSAPUqVAp1oZpZnuRjEG0
+         SiLw==
+X-Gm-Message-State: AOAM531YT+Gs7xMJFYsa3THMb3xbT0CwVxtwoSTm+nrIHXQ9+HrWnMss
+        tHew7UnBsYo2AGBMjgrHF3re06cg4N+zmS7+ALQ=
+X-Google-Smtp-Source: ABdhPJxVsF1sOuRSPzrf3UBF75hf4R7rdt7jGNl25prcZyh14Bv8oTFBMR2uDPDLfIhHo1EZP7Yi9mZbpj4Gz9F3MQo=
+X-Received: by 2002:a67:3113:: with SMTP id x19mr17588832vsx.40.1620717335728;
+ Tue, 11 May 2021 00:15:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210510145429.8752-1-nm@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210510165839.2692974-1-Liam.Howlett@Oracle.com> <20210510165839.2692974-9-Liam.Howlett@Oracle.com>
+In-Reply-To: <20210510165839.2692974-9-Liam.Howlett@Oracle.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 11 May 2021 09:15:24 +0200
+Message-ID: <CAMuHMdViObRA1H-yggx5M-dn2j+7rrMR1Z_SFBYJE2cHmX2=zQ@mail.gmail.com>
+Subject: Re: [PATCH 08/22] arch/m68k/kernel/sys_m68k: Use vma_lookup() in sys_cacheflush()
+To:     Liam Howlett <liam.howlett@oracle.com>
+Cc:     "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Song Liu <songliubraving@fb.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        David Rientjes <rientjes@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michel Lespinasse <michel@lespinasse.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/05/2021 17:54, Nishanth Menon wrote:
-> Instead of using empty ranges property, lets map explicitly the address
-> range that is mapped onto the dma / navigator subsystems (navss/dmss).
-> 
-> This is also exposed via the dtbs_check with dt-schema newer than
-> 2021.03 version by throwing out following:
-> arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml: bus@100000: main-navss:
-> {'type': 'object'} is not allowed for
-> {'compatible': ['simple-mfd'], '#address-cells': [[2]], .....
-> 
-> This has already been correctly done for J7200, however was missed for
-> other k3 SoCs. Fix that oversight.
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
+On Mon, May 10, 2021 at 7:04 PM Liam Howlett <liam.howlett@oracle.com> wrote:
+> Use vma_lookup() to find the VMA at a specific address.  As vma_lookup()
+> will return NULL if the address is not within any VMA, the start address
+> no longer needs to be validated.
+>
+> Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 
-Reviewed-by: Tero Kristo <kristo@kernel.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-> ---
-> 
-> if possible, I'd like to pick this fixup for 5.13 window..
-> 
->   arch/arm64/boot/dts/ti/k3-am64-main.dtsi        | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am65-main.dtsi        | 4 ++--
->   arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi         | 4 ++--
->   arch/arm64/boot/dts/ti/k3-j721e-main.dtsi       | 4 ++--
->   arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi | 4 ++--
->   5 files changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> index a49e41021573..bb19db04a746 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> @@ -42,12 +42,12 @@ gic_its: msi-controller@1820000 {
->   		};
->   	};
->   
-> -	dmss: dmss {
-> +	dmss: bus@48000000 {
->   		compatible = "simple-mfd";
->   		#address-cells = <2>;
->   		#size-cells = <2>;
->   		dma-ranges;
-> -		ranges;
-> +		ranges = <0x00 0x48000000 0x00 0x48000000 0x00 0x06400000>;
->   
->   		ti,sci-dev-id = <25>;
->   
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> index 037f9776c4c8..fea8260d33a8 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> @@ -445,11 +445,11 @@ intr_main_gpio: interrupt-controller@a00000 {
->   		ti,interrupt-ranges = <0 392 32>;
->   	};
->   
-> -	main-navss {
-> +	main_navss: bus@30800000 {
->   		compatible = "simple-mfd";
->   		#address-cells = <2>;
->   		#size-cells = <2>;
-> -		ranges;
-> +		ranges = <0x0 0x30800000 0x0 0x30800000 0x0 0xbc00000>;
->   		dma-coherent;
->   		dma-ranges;
->   
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
-> index 0388c02c2203..f5b8ef2f5f77 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
-> @@ -116,11 +116,11 @@ adc {
->   		};
->   	};
->   
-> -	mcu-navss {
-> +	mcu_navss: bus@28380000 {
->   		compatible = "simple-mfd";
->   		#address-cells = <2>;
->   		#size-cells = <2>;
-> -		ranges;
-> +		ranges = <0x00 0x28380000 0x00 0x28380000 0x00 0x03880000>;
->   		dma-coherent;
->   		dma-ranges;
->   
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> index 512371e36a30..b2d25af872e2 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> @@ -88,11 +88,11 @@ main_gpio_intr: interrupt-controller@a00000 {
->   		ti,interrupt-ranges = <8 392 56>;
->   	};
->   
-> -	main-navss {
-> +	main_navss: bus@30000000 {
->   		compatible = "simple-mfd";
->   		#address-cells = <2>;
->   		#size-cells = <2>;
-> -		ranges;
-> +		ranges = <0x00 0x30000000 0x00 0x30000000 0x00 0x0c400000>;
->   		dma-coherent;
->   		dma-ranges;
->   
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-> index ad12a5c9f209..172629fa3c7c 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-> @@ -250,11 +250,11 @@ adc {
->   		};
->   	};
->   
-> -	mcu-navss {
-> +	mcu_navss: bus@28380000 {
->   		compatible = "simple-mfd";
->   		#address-cells = <2>;
->   		#size-cells = <2>;
-> -		ranges;
-> +		ranges = <0x00 0x28380000 0x00 0x28380000 0x00 0x03880000>;
->   		dma-coherent;
->   		dma-ranges;
->   
-> 
+Gr{oetje,eeting}s,
 
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
