@@ -2,108 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEFA637AEDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F9F37AEE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbhEKS4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53280 "EHLO
+        id S232156AbhEKS5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:57:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232060AbhEKS4s (ORCPT
+        with ESMTP id S232123AbhEKS5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:56:48 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F53FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:55:42 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id q15so12173922pgg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:55:42 -0700 (PDT)
+        Tue, 11 May 2021 14:57:03 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5B1C06174A;
+        Tue, 11 May 2021 11:55:56 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id w22so6094280oiw.9;
+        Tue, 11 May 2021 11:55:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6CV/Ogv2k+2pDmDGhqvW2m8g2EESP7gyWTlebIXjFfA=;
-        b=LokGQ/5F+E/QlHM7wtqfs3lxNKOPqpwSPZ1fAcNxJtSUTegVrsoke3T5wOEAgFpV8c
-         pljKlJUuyXV/a1iKdeMuO5NGSokbEAEYY1G1AWNDbNF6wBLurD5SWhztTiIM53c0vanl
-         wbJ7Cporb4a5VkZBNI3pRcWSQhRIzFF3lMGAVsBV7ifdvZN200uAGrWx5Fb28nhordUk
-         azaHGbCizKsUe+bmcZd0wyApPKoLfPQJJd9FwxcibnVAsHSNhKQ0Qa57ZiDhw5Km9jE0
-         jxWRWJuaduVQABk7jSrTmIlbSb3wS+pf5P+gp9thLBaemgJ7pgOyuMf62Og38y1nSHQi
-         S9ZA==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=X/inxSdHa2xkHeZ/z/iFZSnWLzX3PF9gerUaj96qbOs=;
+        b=ZpFVCGh5PiOkgIx5BzNFjepdYuS7fWbiIC6yn6BChmzd7wGzfjVJYSyWKL0WEQBzd3
+         zKZ4hDBSYAZn18vJH4bHJiE1ubdFDM0+R8OoDaLU6uEn8sHWmfuwpv9+t7kQFnBBjeVL
+         ZQ9ukZqTomNH6tRY9nG4G+6pwR78QJaik0wEKoKvX9u/FVW6q0NQvxLw2SbLzg5G7gHm
+         MJCxbAUkGXvSkN3dD8bsScPjNcQdJZBNtGqAc5P+G9aiFWaifdqyhkz7exL4V2+DvNuJ
+         rk2sVsemkz33xxQktmxfmIaBBhaFhSIdoQSHMk+veyfUq1r5P2D2U1md39lIq0gsGAtE
+         g+Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6CV/Ogv2k+2pDmDGhqvW2m8g2EESP7gyWTlebIXjFfA=;
-        b=oYEUw40Uz/megt3I/O5ETp7PejIbEpVMrIAOkthZl3XpPSYgoI62ayB4nGvSs8dj7/
-         MeHozJgKRAORSqjG20X/xSlpGfBPvA6KFekXT8PSYhPVJArT9m3Dxt02qJVYKMVcVyHV
-         5+UYIlF+uYsKWoUaeV6xmUNAbnyogod66GbIdMvS6VRtSY/Ttvpm/6dOyYh563SrdLwq
-         oVopvqu1fqv49cqXxZTZgidUepkx53T6tDu7nz+zaR2Qie1wNeNDld7mOekb74E2xbDP
-         4geO1919P5jEyDSaFZNPrs6JjMi3rx5cA26L7g7b3Ttqu3Qtvi92CV1g6KKcResENC+B
-         s5sA==
-X-Gm-Message-State: AOAM531Kr1Yamo+2p9/vNjlo5Mernb55pGG4SzMRKHO5MNxhxncdXTzu
-        TuFk++6FcZ4XXCzcFODQLeZgtg==
-X-Google-Smtp-Source: ABdhPJzhJ/zdjZK416WtYXbwx5B97N0n976eoJV1tj2ZwV5gfKrg6ysVL2Ot9/jO1G94JH789tfn2g==
-X-Received: by 2002:a62:2901:0:b029:28e:ef3d:10d2 with SMTP id p1-20020a6229010000b029028eef3d10d2mr30934510pfp.45.1620759341453;
-        Tue, 11 May 2021 11:55:41 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id w81sm14021632pfc.106.2021.05.11.11.55.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 11:55:40 -0700 (PDT)
-Date:   Tue, 11 May 2021 18:55:37 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v4 4/7] KVM: mmu: Add slots_arch_lock for memslot arch
- fields
-Message-ID: <YJrTKWAIanZsjAW6@google.com>
-References: <20210511171610.170160-1-bgardon@google.com>
- <20210511171610.170160-5-bgardon@google.com>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=X/inxSdHa2xkHeZ/z/iFZSnWLzX3PF9gerUaj96qbOs=;
+        b=F2WwfrNDWLPH6uBcvSvye7o4PUSXEwQtELid7StVNxD0rJxpu90bXeFvsjNQsjb+dn
+         rDjsQJyIg0cja3aMuYZVfzReacas3Mn8bd8zP57bw7zEUzwaKU/f64KUkTtRple4YoAg
+         wSTqzeIEKk18t/BNyA/rFAeDAJ+YKfSVbM+bMSRFkXj6n6pKWXWtjGYmmm3C1hCWPOOZ
+         xO/0v6grdyv1fyRDAplpbFVe1iQwsy2MakUwWiySuI1WktHq1UlJpGi5v3VPINjGMkT2
+         pW0E3Zp+bxN0r52RswI8xbPFPeD/osbWEFu/G6YGDkMdDAjbyiR5xsGy6HKkwEzTSeTa
+         YZ6g==
+X-Gm-Message-State: AOAM531NkU0WR4bF8HlY3gfdFEiXw7dHaN1Un7gNEE+OQum7I3REPERo
+        VxmtJ4IavNMlUNu/MzGPuxiQZaknyHM=
+X-Google-Smtp-Source: ABdhPJx5wUxdHhc5LZFOzyHoYbCdHBlVGSvhyfJgo+SkJ6OArTs1D2AKrpAr8pFjZvXSOEZ/nqIQyA==
+X-Received: by 2002:a05:6808:309:: with SMTP id i9mr12450789oie.14.1620759355829;
+        Tue, 11 May 2021 11:55:55 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u14sm3418904oif.41.2021.05.11.11.55.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 11:55:55 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 4/5] docs: hwmon: tmp103.rst: fix bad usage of UTF-8 chars
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Jean Delvare <jdelvare@suse.com>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1620744606.git.mchehab+huawei@kernel.org>
+ <73b3c7c1eef5c12ddc941624d23689313bd56529.1620744606.git.mchehab+huawei@kernel.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <a4d0e1cf-20f1-d87c-0af6-b39f45afae5f@roeck-us.net>
+Date:   Tue, 11 May 2021 11:55:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511171610.170160-5-bgardon@google.com>
+In-Reply-To: <73b3c7c1eef5c12ddc941624d23689313bd56529.1620744606.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021, Ben Gardon wrote:
-> Add a new lock to protect the arch-specific fields of memslots if they
-> need to be modified in a kvm->srcu read critical section. A future
-> commit will use this lock to lazily allocate memslot rmaps for x86.
+On 5/11/21 8:01 AM, Mauro Carvalho Chehab wrote:
+> While UTF-8 characters can be used at the Linux documentation,
+> the best is to use them only when ASCII doesn't offer a good replacement.
+> So, replace the occurences of the following UTF-8 characters:
 > 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->  include/linux/kvm_host.h |  9 +++++++++
->  virt/kvm/kvm_main.c      | 31 ++++++++++++++++++++++++++-----
->  2 files changed, 35 insertions(+), 5 deletions(-)
+> 	- U+2013 ('–'): EN DASH
 > 
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 8895b95b6a22..2d5e797fbb08 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -472,6 +472,15 @@ struct kvm {
->  #endif /* KVM_HAVE_MMU_RWLOCK */
->  
->  	struct mutex slots_lock;
-> +
-> +	/*
-> +	 * Protects the arch-specific fields of struct kvm_memory_slots in
-> +	 * use by the VM. To be used under the slots_lock (above) or in a
-> +	 * kvm->srcu read cirtical section where acquiring the slots_lock
-                          ^^^^^^^^
-			  critical
+> In this specific case, EN DASH was used instead of a minus
+> sign. So, replace it by a single hyphen.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-> +	 * would lead to deadlock with the synchronize_srcu in
-> +	 * install_new_memslots.
-> +	 */
-> +	struct mutex slots_arch_lock;
->  	struct mm_struct *mm; /* userspace tied to this vm */
->  	struct kvm_memslots __rcu *memslots[KVM_ADDRESS_SPACE_NUM];
->  	struct kvm_vcpu *vcpus[KVM_MAX_VCPUS];
+Confused. Is that supposed to replace the earlier patch (docs: hwmon:
+avoid using UTF-8 chars) ? I thought that was more comprehensive
+and just as valid. Anyway, should I drop that patch ?
+
+Guenter
+
+> ---
+>   Documentation/hwmon/tmp103.rst | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/hwmon/tmp103.rst b/Documentation/hwmon/tmp103.rst
+> index e195a7d14309..b3ef81475cf8 100644
+> --- a/Documentation/hwmon/tmp103.rst
+> +++ b/Documentation/hwmon/tmp103.rst
+> @@ -21,10 +21,10 @@ Description
+>   The TMP103 is a digital output temperature sensor in a four-ball
+>   wafer chip-scale package (WCSP). The TMP103 is capable of reading
+>   temperatures to a resolution of 1°C. The TMP103 is specified for
+> -operation over a temperature range of –40°C to +125°C.
+> +operation over a temperature range of -40°C to +125°C.
+>   
+>   Resolution: 8 Bits
+> -Accuracy: ±1°C Typ (–10°C to +100°C)
+> +Accuracy: ±1°C Typ (-10°C to +100°C)
+>   
+>   The driver provides the common sysfs-interface for temperatures (see
+>   Documentation/hwmon/sysfs-interface.rst under Temperatures).
+> 
+
