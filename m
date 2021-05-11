@@ -2,92 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA78837B05B
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 836B537B060
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbhEKUzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 16:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51840 "EHLO
+        id S230114AbhEKU4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 16:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhEKUzb (ORCPT
+        with ESMTP id S229848AbhEKU4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 16:55:31 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B5AC061574;
-        Tue, 11 May 2021 13:54:23 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id v4so6892292qtp.1;
-        Tue, 11 May 2021 13:54:23 -0700 (PDT)
+        Tue, 11 May 2021 16:56:00 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DCAC061574;
+        Tue, 11 May 2021 13:54:53 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso17923663ots.10;
+        Tue, 11 May 2021 13:54:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AgQ2n9+6IeoVaWhLZCiArb6AeGJGZzOWQRj/aOD3WEo=;
-        b=tI8lM54Ig4ZEpd1yVxTqNQjEdAZ/Ew5lU8A5S6uPMke+7+KqWhNhJ3aInBN78lfoVU
-         rDweYDB2VrTUBJDyFrgenM+E0exe4vjN/5GahDOtsabouUTukm5LeEU+9zuUb1EJdl2Z
-         7/onCUq0aoe6fAYQkHXhK9AOYhqg4f5kuKCK0DBc/LSruU5a110n2MeXwyS9Dr7MXCfa
-         XrOiV25he75aevKQGLM3f9fEd/lK1j+45MFX5MWUUmxBzLxxROidIdWaBS3iay2/XEEa
-         dmC4qqTs5dE0ot0p+9tSUOlXx379iFinl+b/PbQAHN85qWi5A2sWb6in8g7vQGHvkl2j
-         +Cwg==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bP2618JY2DE3yj2d7g93gwrbJJQkvioNaEQ1U9UncYI=;
+        b=S/Q680UVMhXEh5mtozUsmjMmpQRedOJCMBczniCRFKgukQ4lSmnVPAcS0etdlvXizq
+         GB3o0HeTJwPjXOSs0yG+E+8w/iRJ0bE8M/mENTueh+mifvYRSGyaEw34467ep2rdtK+V
+         XpOUjMcUXFiqgnW8a7aqGP1DhfIiownQmBcsOpxJ/O8YuKxbAmRKTnIkoCzE4cJC9EpS
+         F46hZZxeRaoNab8PCFfXcIlFPZNBW1J+0scKhKEVb83R333maTOXlyWQ1K3nDjKxoPYU
+         uXx3QxGTqmwGDxn8aW6IavVapSi0NX2maQ2htNEbuJnFG1cp5Xr0tvNVq2DfuKG6CVaP
+         1oBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AgQ2n9+6IeoVaWhLZCiArb6AeGJGZzOWQRj/aOD3WEo=;
-        b=jQ+0Ee8Es5qkJ2WqFdOPoi/vg9JH1E8I0AlPgefhDKiZvOTz8V1ikk13tkWMaehJxF
-         +u2Ztyv9kBE9zoO/CwzRTH9H7Im/SKI5TRm9D7FPG4p2TKGYaBBOhXDdxqY5YrLJyu+V
-         8+nQhJLWGMj91QUflLF5Tpg9xEXRixi5nRagq7DrU52W468N4IEuBODlkJOcDRV3Eg9a
-         lLKH35xeK/LZK5FpFTmezSBnr2PoBW6mEKerFeZE+evMN34iHXIzuQVnX4JYWPmTzXJN
-         99j9j+S8TiCwf2JRETX/zT3VErKVTTd1JK641HtRDMCYoUToHAx6xLFvn+a1guyn88ba
-         siIg==
-X-Gm-Message-State: AOAM5332vH5nKe2XsnSpKXStZ4d2sqQowsSJNiW6NpCr30I2nmGEVVVP
-        eR1tSeEERIA3dVZEK08SefY=
-X-Google-Smtp-Source: ABdhPJzrlW5lo/tug8ic0QrjBCgy0r+P3AsCn/10snv0/LkF0zKsxj0+sJb11TkUGkgiCEEiYEZO9g==
-X-Received: by 2002:aed:306c:: with SMTP id 99mr29292534qte.352.1620766462799;
-        Tue, 11 May 2021 13:54:22 -0700 (PDT)
-Received: from smtp.gmail.com ([2804:14c:73:9a01::1002])
-        by smtp.gmail.com with ESMTPSA id c20sm16824280qtg.84.2021.05.11.13.54.20
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=bP2618JY2DE3yj2d7g93gwrbJJQkvioNaEQ1U9UncYI=;
+        b=sDrbB+Gvp7XRSdQOnQInEI1phJ6NemgqXYafdHN+ywdvX2agsI8tSkngIL5384kuMb
+         YTlvIP5R6SjlmQa+3usgDPEiaZHIO9Fm8Ad1Xp4XLk6D/zYRW6/InU7I29mc7JnDXrC2
+         a+y2Q1ZKIhVW5rf6AequU/dPfKChJnjg5PqwaXi5MykyYgH2m4XvnGEIrAqXkr6gGjHe
+         MzYWLvrk6hGEczD0fpgwKgTfcfMMSb5EVRuOBvGp32o+8hlR3Ml7eu4kHPZsEFvT89yn
+         eUee1sGbKu2XcRDz5FixyGp61jzjyQdVlWQq6eWIPgS6/eG33wblZibofngf42OtWcHC
+         011Q==
+X-Gm-Message-State: AOAM532Vpa9rNYNkEvUz7UlaZRz879QHUGqdK2fgDRHrCXMsqFSzNPU9
+        1+cw0yDAxnDd6o/KN7oNHYgjPUdw9i0=
+X-Google-Smtp-Source: ABdhPJwW3OReJrqrn6ICu6fJk++aFosn+n08kcHTvM7KgqDWqf2d5pHqYVvfczWQIa6f9pklZPmgrw==
+X-Received: by 2002:a9d:6c81:: with SMTP id c1mr14037459otr.248.1620766493103;
+        Tue, 11 May 2021 13:54:53 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q130sm3361498oif.40.2021.05.11.13.54.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 13:54:21 -0700 (PDT)
-Date:   Tue, 11 May 2021 17:54:18 -0300
-From:   Lucas Stankus <lucas.p.stankus@gmail.com>
-To:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] staging: iio: cdc: ad7746: avoid overwrite of
- num_channels
-Message-ID: <09e65d3a235febfc4c3ee172b573ba8c9cde94b8.1620766020.git.lucas.p.stankus@gmail.com>
-References: <cover.1620766020.git.lucas.p.stankus@gmail.com>
+        Tue, 11 May 2021 13:54:52 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Jamal Hadi Salim <jhs@mojatatu.com>
+Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] net/sched: taprio: Drop unnecessary NULL check after container_of
+Date:   Tue, 11 May 2021 13:54:49 -0700
+Message-Id: <20210511205449.1676407-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1620766020.git.lucas.p.stankus@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AD7745 devices don't have the CIN2 pins and therefore can't handle related
-channels. Forcing the number of AD7746 channels may lead to enabling more
-channels than what the hardware actually supports.
-Avoid num_channels being overwritten after first assignment.
+The rcu_head pointer passed to taprio_free_sched_cb is never NULL.
+That means that the result of container_of() operations on it is also
+never NULL, even though rcu_head is the first element of the structure
+embedding it. On top of that, it is misleading to perform a NULL check
+on the result of container_of() because the position of the contained
+element could change, which would make the check invalid. Remove the
+unnecessary NULL check.
 
-Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+This change was made automatically with the following Coccinelle script.
+
+@@
+type t;
+identifier v;
+statement s;
+@@
+
+<+...
+(
+  t v = container_of(...);
+|
+  v = container_of(...);
+)
+  ...
+  when != v
+- if (\( !v \| v == NULL \) ) s
+...+>
+
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/staging/iio/cdc/ad7746.c | 1 -
- 1 file changed, 1 deletion(-)
+ net/sched/sch_taprio.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
-index e03d010b2f4c..9e0da43b2871 100644
---- a/drivers/staging/iio/cdc/ad7746.c
-+++ b/drivers/staging/iio/cdc/ad7746.c
-@@ -693,7 +693,6 @@ static int ad7746_probe(struct i2c_client *client,
- 		indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
- 	else
- 		indio_dev->num_channels =  ARRAY_SIZE(ad7746_channels) - 2;
--	indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
- 	indio_dev->modes = INDIO_DIRECT_MODE;
+diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
+index 5c91df52b8c2..71e8a7a84841 100644
+--- a/net/sched/sch_taprio.c
++++ b/net/sched/sch_taprio.c
+@@ -114,9 +114,6 @@ static void taprio_free_sched_cb(struct rcu_head *head)
+ 	struct sched_gate_list *sched = container_of(head, struct sched_gate_list, rcu);
+ 	struct sched_entry *entry, *n;
  
- 	if (pdata) {
+-	if (!sched)
+-		return;
+-
+ 	list_for_each_entry_safe(entry, n, &sched->entries, list) {
+ 		list_del(&entry->list);
+ 		kfree(entry);
 -- 
-2.31.1
+2.25.1
 
