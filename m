@@ -2,106 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6068C37A0B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8385937A0BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230501AbhEKHVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:21:10 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:41536 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbhEKHUz (ORCPT
+        id S230437AbhEKHVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:21:42 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:55287 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229892AbhEKHVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:20:55 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14B7ALna151746;
-        Tue, 11 May 2021 07:19:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=eP1PwzhAIrvlXsQZtEzk+wE318PF26VjA6mVgLMKE1c=;
- b=QkNYxOLftcx/YSVxlXAhfHr1Cjv6nK0/eiOAkJJUBdYI0AZY7NoxT5Dfz0p8Y1ZhvzXR
- 1MTpxKG5g0aUEYHoi0gjWVgRW09pp/G/bpWK8YMaAwzMrT4Oxz5MV+upGXba970uBXWI
- 0Ztoy6GhyVDcpFMhhbut6tHECUDGS0rTYVH2hRF8CuafeJpuUcKUkDnJjgYQorlL3rld
- u0+KzxYbiojDDZL3IG0upwC/VHabbYrzQG5Hgqx2DK/S9BgG5eC0nyxovU1wv4zNgm6t
- g5tFk8iuCToqgr45UPXIki/6unj0hi2JbQbJ54+sH0G9UL6cLGD8kWudizbu0W6DDYQv wA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 38djkmdnaa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 May 2021 07:19:38 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14B7Ae3I171905;
-        Tue, 11 May 2021 07:19:38 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38djf8kprw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 May 2021 07:19:38 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14B7Jbbi018550;
-        Tue, 11 May 2021 07:19:37 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 38djf8kpr3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 May 2021 07:19:37 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14B7JXJl014687;
-        Tue, 11 May 2021 07:19:36 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 11 May 2021 00:19:32 -0700
-Date:   Tue, 11 May 2021 10:19:26 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        "Kim, Milo" <Milo.Kim@ti.com>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] rtc: fix snprintf() checking in is_rtc_hctosys()
-Message-ID: <YJov/pcGmhLi2pEl@mwanda>
+        Tue, 11 May 2021 03:21:40 -0400
+Received: from [77.244.183.192] (port=62410 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1lgMgv-000DLY-4S; Tue, 11 May 2021 09:20:29 +0200
+Subject: Re: [PATCH] dt-bindings: More removals of type references on common
+ properties
+To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        Alex Elder <elder@kernel.org>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        linux-clk@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20210510204524.617390-1-robh@kernel.org>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <d3aae746-284b-b0bc-0d52-a76c361d3592@lucaceresoli.net>
+Date:   Tue, 11 May 2021 09:20:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-GUID: 0nYgb_Re4wnEQ_R_YDXuSgcBS2L4nieV
-X-Proofpoint-ORIG-GUID: 0nYgb_Re4wnEQ_R_YDXuSgcBS2L4nieV
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9980 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
- suspectscore=0 clxscore=1011 bulkscore=0 adultscore=0 impostorscore=0
- spamscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105110054
+In-Reply-To: <20210510204524.617390-1-robh@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: it-IT
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The scnprintf() function silently truncates the printf() and returns
-the number bytes that it was able to copy (not counting the NUL
-terminator).  Thus, the highest value it can return here is
-"NAME_SIZE - 1" and the overflow check is dead code.  Fix this by
-using the snprintf() function which returns the number of bytes that
-would have been copied if there was enough space and changing the
-condition from "> NAME_SIZE" to ">= NAME_SIZE".
+Hi,
 
-Fixes: 92589c986b33 ("rtc-proc: permit the /proc/driver/rtc device to use other devices")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/rtc/proc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 10/05/21 22:45, Rob Herring wrote:
+> Users of common properties shouldn't have a type definition as the
+> common schemas already have one. A few new ones slipped in and
+> *-names was missed in the last clean-up pass. Drop all the unnecessary
+> type references in the tree.
+> 
+> A meta-schema update to catch these is pending.
+> 
+> Cc: Luca Ceresoli <luca@lucaceresoli.net>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Olivier Moysan <olivier.moysan@foss.st.com>
+> Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Georgi Djakov <djakov@kernel.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Sebastian Reichel <sre@kernel.org>
+> Cc: Orson Zhai <orsonzhai@gmail.com>
+> Cc: Baolin Wang <baolin.wang7@gmail.com>
+> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
+> Cc: Odelu Kukatla <okukatla@codeaurora.org>
+> Cc: Alex Elder <elder@kernel.org>
+> Cc: Shengjiu Wang <shengjiu.wang@nxp.com>
+> Cc: linux-clk@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-iio@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/clock/idt,versaclock5.yaml    | 2 --
+>  .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml         | 1 -
+>  Documentation/devicetree/bindings/input/input.yaml              | 1 -
+>  Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml   | 1 -
+>  Documentation/devicetree/bindings/net/qcom,ipa.yaml             | 1 -
+>  .../devicetree/bindings/power/supply/sc2731-charger.yaml        | 2 +-
+>  Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml          | 2 +-
+>  7 files changed, 2 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> index c268debe5b8d..28675b0b80f1 100644
+> --- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> +++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> @@ -60,7 +60,6 @@ properties:
+>      maxItems: 2
+>  
+>    idt,xtal-load-femtofarads:
+> -    $ref: /schemas/types.yaml#/definitions/uint32
+>      minimum: 9000
+>      maximum: 22760
+>      description: Optional load capacitor for XTAL1 and XTAL2
+> @@ -84,7 +83,6 @@ patternProperties:
+>          enum: [ 1800000, 2500000, 3300000 ]
+>        idt,slew-percent:
+>          description: The Slew rate control for CMOS single-ended.
+> -        $ref: /schemas/types.yaml#/definitions/uint32
+>          enum: [ 80, 85, 90, 100 ]
 
-diff --git a/drivers/rtc/proc.c b/drivers/rtc/proc.c
-index 73344598fc1b..cbcdbb19d848 100644
---- a/drivers/rtc/proc.c
-+++ b/drivers/rtc/proc.c
-@@ -23,8 +23,8 @@ static bool is_rtc_hctosys(struct rtc_device *rtc)
- 	int size;
- 	char name[NAME_SIZE];
- 
--	size = scnprintf(name, NAME_SIZE, "rtc%d", rtc->id);
--	if (size > NAME_SIZE)
-+	size = snprintf(name, NAME_SIZE, "rtc%d", rtc->id);
-+	if (size >= NAME_SIZE)
- 		return false;
- 
- 	return !strncmp(name, CONFIG_RTC_HCTOSYS_DEVICE, NAME_SIZE);
+Ok, but shouldn't "percent" be listed in
+Documentation/devicetree/bindings/property-units.txt?
+
+Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+
 -- 
-2.30.2
-
+Luca
