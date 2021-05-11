@@ -2,150 +2,404 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A9D37AB8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 137A437ABBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231476AbhEKQNh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 May 2021 12:13:37 -0400
-Received: from mga04.intel.com ([192.55.52.120]:54646 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229921AbhEKQNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:13:36 -0400
-IronPort-SDR: MH3VkuDoxBP2cuEePQFZZIvEwMOEUno6UvyAMapHNu+Fg2C2dd0Sq677lq1PfwmJ/B5YVNldfd
- i7w5bughUHKA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="197501467"
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="197501467"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 09:12:27 -0700
-IronPort-SDR: WkArB/mkxVj2txW3V/uTWHVEI7jMObfp61iG6B7af54As7VEc7oHkCnrfCOd8zLBMRJRaC5+Ac
- E8Qe34nHih6w==
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="541705233"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 09:12:27 -0700
-Date:   Tue, 11 May 2021 09:14:52 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
-        zhangfei.gao@linaro.org, vkoul@kernel.org,
-        jacob.jun.pan@linux.intel.com,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
- flags
-Message-ID: <20210511091452.721e9a03@jacob-builder>
-In-Reply-To: <20210511114848.GK1002214@nvidia.com>
-References: <1620653108-44901-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1620653108-44901-2-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20210510233749.GG1002214@nvidia.com>
-        <20210510203145.086835cc@jacob-builder>
-        <20210511114848.GK1002214@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S231435AbhEKQV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 12:21:28 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2705 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230401AbhEKQV0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 12:21:26 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FfjkQ5f7hz1BLM9;
+        Wed, 12 May 2021 00:17:34 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 12 May 2021 00:20:06 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>, <ming.lei@redhat.com>,
+        <kashyap.desai@broadcom.com>, <chenxiang66@hisilicon.com>,
+        <yama@redhat.com>, <dgilbert@interlog.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH v2] blk-mq: Use request queue-wide tags for tagset-wide sbitmap
+Date:   Wed, 12 May 2021 00:15:43 +0800
+Message-ID: <1620749743-36000-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+The tags used for an IO scheduler are currently per hctx.
 
-On Tue, 11 May 2021 08:48:48 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+As such, when q->nr_hw_queues grows, so does the request queue total IO
+scheduler tag depth.
 
-> On Mon, May 10, 2021 at 08:31:45PM -0700, Jacob Pan wrote:
-> > Hi Jason,
-> > 
-> > On Mon, 10 May 2021 20:37:49 -0300, Jason Gunthorpe <jgg@nvidia.com>
-> > wrote: 
-> > > On Mon, May 10, 2021 at 06:25:07AM -0700, Jacob Pan wrote:
-> > >   
-> > > > +/*
-> > > > + * The IOMMU_SVA_BIND_SUPERVISOR flag requests a PASID which can be
-> > > > used only
-> > > > + * for access to kernel addresses. No IOTLB flushes are
-> > > > automatically done
-> > > > + * for kernel mappings; it is valid only for access to the kernel's
-> > > > static
-> > > > + * 1:1 mapping of physical memory — not to vmalloc or even module
-> > > > mappings.
-> > > > + * A future API addition may permit the use of such ranges, by
-> > > > means of an
-> > > > + * explicit IOTLB flush call (akin to the DMA API's unmap method).
-> > > > + *
-> > > > + * It is unlikely that we will ever hook into
-> > > > flush_tlb_kernel_range() to
-> > > > + * do such IOTLB flushes automatically.
-> > > > + */
-> > > > +#define IOMMU_SVA_BIND_SUPERVISOR       BIT(0)    
-> > > 
-> > > Huh? That isn't really SVA, can you call it something saner please?
-> > >   
-> > This is shared kernel virtual address, I am following the SVA lib naming
-> > since this is where the flag will be used. Why this is not SVA? Kernel
-> > virtual address is still virtual address. Is it due to direct map?  
-> 
-> As the above explains it doesn't actually synchronize the kernel's
-> address space it just shoves the direct map into the IOMMU.
-> 
-There is no duplicated kernel direct map in IOMMU.
+This may cause problems for SCSI MQ HBAs whose total driver depth is
+fixed.
 
-> I suppose a different IOMMU implementation might point the PASID directly
-> at the kernel's page table and avoid those limitations - but since
-> that isn't portable it seems irrelevant.
-> 
-This is what we are doing here. We allocate a supervisor PASID and put
-the kernel page table (init_mm pgd) in this PASID entry.
+Ming and Yanhui report higher CPU usage and lower throughput in scenarios
+where the fixed total driver tag depth is appreciably lower than the total
+scheduler tag depth:
+https://lore.kernel.org/linux-block/440dfcfc-1a2c-bd98-1161-cec4d78c6dfc@huawei.com/T/#mc0d6d4f95275a2743d1c8c3e4dc9ff6c9aa3a76b
 
-> Since the only thing it really maps is the direct map I would just
-> call it direct_map, or all physical or something.
-> 
-Good idea. It makes things clear to the callers. They must only use direct
-map memory for DMA.
+In that scenario, since the scheduler tag is got first, much contention
+is introduced since a driver tag may not be available after we have got
+the sched tag.
 
-> How does this interact with the DMA APIs?
-DMA API would use RID2PASID (PASID 0), so it is separated by PASIDs.
+Improve this scenario by introducing request queue-wide tags for when
+a tagset-wide sbitmap is used. The static sched requests are still
+allocated per hctx, as requests are initialised per hctx, as in
+blk_mq_init_request(..., hctx_idx, ...) ->
+set->ops->init_request(.., hctx_idx, ...).
 
-> How do you get CPU cache
-> flushing/etc into PASID operations that don't trigger IOMMU updates?
-> 
-Sorry, I am not following. This is used for direct map only.
+For simplicity of resizing the request queue sbitmap when updating the
+request queue depth, just init at the max possible size, so we don't need
+to deal with the possibly with swapping out a new sbitmap for old if
+we need to grow.
 
-> Honestly, I'm not convinced we should have "kernel SVA" at all.. Why
-> does IDXD use normal DMA on the RID for kernel controlled accesses?
-> 
-Using SVA simplifies the work submission, there is no need to do map/unmap.
-Just bind PASID with init_mm, then submit work directly either with ENQCMDS
-(supervisor version of ENQCMD) to a shared workqueue or put the supervisor
-PASID in the descriptor for dedicated workqueue.
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
 
-> > > Is it really a PASID that always has all of physical memory mapped
-> > > into it? Sounds dangerous. What is it for?  
-> > 
-> > Yes. It is to bind DMA request w/ PASID with init_mm/init_top_pgt. Per
-> > PCIe spec PASID TLP prefix has "Privileged Mode Requested" bit. VT-d
-> > supports this with "Privileged-mode-Requested (PR) flag (to distinguish
-> > user versus supervisor access)". Each PASID entry has a SRE (Supervisor
-> > Request Enable) bit.  
-> 
-> The PR flag is only needed if the underlying IOMMU is directly
-> processing the CPU page tables. For cases where the IOMMU is using its
-> own page table format and has its own copies the PR flag shouldn't be
-> used.
-> 
-We are doing the former case. There is no IOMMU page tables for the direct
-map.
+Please retest, thanks! For some reason I could not recreate the original
+issue, but I am using qemu...
 
-> Jason
+Changes since v1:
+- Embed sbitmaps in request_queue struct
+- Relocate IO sched functions to blk-mq-sched.c
+- Fix error path code
 
+diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+index 42a365b1b9c0..9a012e0818cb 100644
+--- a/block/blk-mq-sched.c
++++ b/block/blk-mq-sched.c
+@@ -507,11 +507,9 @@ static void blk_mq_sched_free_tags(struct blk_mq_tag_set *set,
+ 				   struct blk_mq_hw_ctx *hctx,
+ 				   unsigned int hctx_idx)
+ {
+-	unsigned int flags = set->flags & ~BLK_MQ_F_TAG_HCTX_SHARED;
+-
+ 	if (hctx->sched_tags) {
+ 		blk_mq_free_rqs(set, hctx->sched_tags, hctx_idx);
+-		blk_mq_free_rq_map(hctx->sched_tags, flags);
++		blk_mq_free_rq_map(hctx->sched_tags, set->flags);
+ 		hctx->sched_tags = NULL;
+ 	}
+ }
+@@ -521,12 +519,10 @@ static int blk_mq_sched_alloc_tags(struct request_queue *q,
+ 				   unsigned int hctx_idx)
+ {
+ 	struct blk_mq_tag_set *set = q->tag_set;
+-	/* Clear HCTX_SHARED so tags are init'ed */
+-	unsigned int flags = set->flags & ~BLK_MQ_F_TAG_HCTX_SHARED;
+ 	int ret;
+ 
+ 	hctx->sched_tags = blk_mq_alloc_rq_map(set, hctx_idx, q->nr_requests,
+-					       set->reserved_tags, flags);
++					       set->reserved_tags, set->flags);
+ 	if (!hctx->sched_tags)
+ 		return -ENOMEM;
+ 
+@@ -544,16 +540,40 @@ static void blk_mq_sched_tags_teardown(struct request_queue *q)
+ 	int i;
+ 
+ 	queue_for_each_hw_ctx(q, hctx, i) {
+-		/* Clear HCTX_SHARED so tags are freed */
+-		unsigned int flags = hctx->flags & ~BLK_MQ_F_TAG_HCTX_SHARED;
+-
+ 		if (hctx->sched_tags) {
+-			blk_mq_free_rq_map(hctx->sched_tags, flags);
++			blk_mq_free_rq_map(hctx->sched_tags, hctx->flags);
+ 			hctx->sched_tags = NULL;
+ 		}
+ 	}
+ }
+ 
++static int blk_mq_init_sched_shared_sbitmap(struct request_queue *queue)
++{
++	struct blk_mq_tag_set *set = queue->tag_set;
++	int ret;
++
++	/*
++	 * Set initial depth at max so that we don't need to reallocate for
++	 * updating nr_requests.
++	 */
++	ret = blk_mq_init_bitmaps(&queue->sched_bitmap_tags,
++				  &queue->sched_breserved_tags,
++				  set, MAX_SCHED_RQ, set->reserved_tags);
++	if (ret)
++		return ret;
++
++	sbitmap_queue_resize(&queue->sched_bitmap_tags,
++			     queue->nr_requests - set->reserved_tags);
++
++	return 0;
++}
++
++static void blk_mq_exit_sched_shared_sbitmap(struct request_queue *queue)
++{
++	sbitmap_queue_free(&queue->sched_bitmap_tags);
++	sbitmap_queue_free(&queue->sched_breserved_tags);
++}
++
+ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
+ {
+ 	struct blk_mq_hw_ctx *hctx;
+@@ -578,12 +598,25 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
+ 	queue_for_each_hw_ctx(q, hctx, i) {
+ 		ret = blk_mq_sched_alloc_tags(q, hctx, i);
+ 		if (ret)
+-			goto err;
++			goto err_free_tags;
++	}
++
++	if (blk_mq_is_sbitmap_shared(q->tag_set->flags)) {
++		ret = blk_mq_init_sched_shared_sbitmap(q);
++		if (ret)
++			goto err_free_tags;
++
++		queue_for_each_hw_ctx(q, hctx, i) {
++			hctx->sched_tags->bitmap_tags =
++						&q->sched_bitmap_tags;
++			hctx->sched_tags->breserved_tags =
++						&q->sched_breserved_tags;
++		}
+ 	}
+ 
+ 	ret = e->ops.init_sched(q, e);
+ 	if (ret)
+-		goto err;
++		goto err_free_sbitmap;
+ 
+ 	blk_mq_debugfs_register_sched(q);
+ 
+@@ -603,7 +636,10 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
+ 
+ 	return 0;
+ 
+-err:
++err_free_sbitmap:
++	if (blk_mq_is_sbitmap_shared(q->tag_set->flags))
++		blk_mq_exit_sched_shared_sbitmap(q);
++err_free_tags:
+ 	blk_mq_sched_free_requests(q);
+ 	blk_mq_sched_tags_teardown(q);
+ 	q->elevator = NULL;
+@@ -641,5 +677,7 @@ void blk_mq_exit_sched(struct request_queue *q, struct elevator_queue *e)
+ 	if (e->type->ops.exit_sched)
+ 		e->type->ops.exit_sched(e);
+ 	blk_mq_sched_tags_teardown(q);
++	if (blk_mq_is_sbitmap_shared(q->tag_set->flags))
++		blk_mq_exit_sched_shared_sbitmap(q);
+ 	q->elevator = NULL;
+ }
+diff --git a/block/blk-mq-sched.h b/block/blk-mq-sched.h
+index 5b18ab915c65..aff037cfd8e7 100644
+--- a/block/blk-mq-sched.h
++++ b/block/blk-mq-sched.h
+@@ -5,6 +5,8 @@
+ #include "blk-mq.h"
+ #include "blk-mq-tag.h"
+ 
++#define MAX_SCHED_RQ (16 * BLKDEV_MAX_RQ)
++
+ void blk_mq_sched_assign_ioc(struct request *rq);
+ 
+ bool blk_mq_sched_try_merge(struct request_queue *q, struct bio *bio,
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 2a37731e8244..e3ab8631be22 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -13,6 +13,7 @@
+ #include <linux/delay.h>
+ #include "blk.h"
+ #include "blk-mq.h"
++#include "blk-mq-sched.h"
+ #include "blk-mq-tag.h"
+ 
+ /*
+@@ -466,19 +467,39 @@ static int blk_mq_init_bitmap_tags(struct blk_mq_tags *tags,
+ 	return -ENOMEM;
+ }
+ 
+-int blk_mq_init_shared_sbitmap(struct blk_mq_tag_set *set, unsigned int flags)
++int blk_mq_init_bitmaps(struct sbitmap_queue *bitmap_tags,
++			struct sbitmap_queue *breserved_tags,
++			struct blk_mq_tag_set *set,
++			unsigned int queue_depth, unsigned int reserved)
+ {
+-	unsigned int depth = set->queue_depth - set->reserved_tags;
++	unsigned int depth = queue_depth - reserved;
+ 	int alloc_policy = BLK_MQ_FLAG_TO_ALLOC_POLICY(set->flags);
+ 	bool round_robin = alloc_policy == BLK_TAG_ALLOC_RR;
+-	int i, node = set->numa_node;
+ 
+-	if (bt_alloc(&set->__bitmap_tags, depth, round_robin, node))
++	if (bt_alloc(bitmap_tags, depth, round_robin, set->numa_node))
+ 		return -ENOMEM;
+-	if (bt_alloc(&set->__breserved_tags, set->reserved_tags,
+-		     round_robin, node))
++	if (bt_alloc(breserved_tags, set->reserved_tags,
++		     round_robin, set->numa_node))
+ 		goto free_bitmap_tags;
+ 
++	return 0;
++
++free_bitmap_tags:
++	sbitmap_queue_free(bitmap_tags);
++	return -ENOMEM;
++}
++
++int blk_mq_init_shared_sbitmap(struct blk_mq_tag_set *set)
++{
++	int i, ret;
++
++	ret = blk_mq_init_bitmaps(&set->__bitmap_tags,
++				    &set->__breserved_tags,
++				    set, set->queue_depth,
++				    set->reserved_tags);
++	if (ret)
++		return ret;
++
+ 	for (i = 0; i < set->nr_hw_queues; i++) {
+ 		struct blk_mq_tags *tags = set->tags[i];
+ 
+@@ -487,9 +508,6 @@ int blk_mq_init_shared_sbitmap(struct blk_mq_tag_set *set, unsigned int flags)
+ 	}
+ 
+ 	return 0;
+-free_bitmap_tags:
+-	sbitmap_queue_free(&set->__bitmap_tags);
+-	return -ENOMEM;
+ }
+ 
+ void blk_mq_exit_shared_sbitmap(struct blk_mq_tag_set *set)
+@@ -551,8 +569,6 @@ int blk_mq_tag_update_depth(struct blk_mq_hw_ctx *hctx,
+ 	 */
+ 	if (tdepth > tags->nr_tags) {
+ 		struct blk_mq_tag_set *set = hctx->queue->tag_set;
+-		/* Only sched tags can grow, so clear HCTX_SHARED flag  */
+-		unsigned int flags = set->flags & ~BLK_MQ_F_TAG_HCTX_SHARED;
+ 		struct blk_mq_tags *new;
+ 		bool ret;
+ 
+@@ -563,21 +579,21 @@ int blk_mq_tag_update_depth(struct blk_mq_hw_ctx *hctx,
+ 		 * We need some sort of upper limit, set it high enough that
+ 		 * no valid use cases should require more.
+ 		 */
+-		if (tdepth > 16 * BLKDEV_MAX_RQ)
++		if (tdepth > MAX_SCHED_RQ)
+ 			return -EINVAL;
+ 
+ 		new = blk_mq_alloc_rq_map(set, hctx->queue_num, tdepth,
+-				tags->nr_reserved_tags, flags);
++				tags->nr_reserved_tags, set->flags);
+ 		if (!new)
+ 			return -ENOMEM;
+ 		ret = blk_mq_alloc_rqs(set, new, hctx->queue_num, tdepth);
+ 		if (ret) {
+-			blk_mq_free_rq_map(new, flags);
++			blk_mq_free_rq_map(new, set->flags);
+ 			return -ENOMEM;
+ 		}
+ 
+ 		blk_mq_free_rqs(set, *tagsptr, hctx->queue_num);
+-		blk_mq_free_rq_map(*tagsptr, flags);
++		blk_mq_free_rq_map(*tagsptr, set->flags);
+ 		*tagsptr = new;
+ 	} else {
+ 		/*
+diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
+index 7d3e6b333a4a..6be5124f6657 100644
+--- a/block/blk-mq-tag.h
++++ b/block/blk-mq-tag.h
+@@ -26,11 +26,13 @@ extern struct blk_mq_tags *blk_mq_init_tags(unsigned int nr_tags,
+ 					unsigned int reserved_tags,
+ 					int node, unsigned int flags);
+ extern void blk_mq_free_tags(struct blk_mq_tags *tags, unsigned int flags);
+-
+-extern int blk_mq_init_shared_sbitmap(struct blk_mq_tag_set *set,
+-				      unsigned int flags);
++extern int blk_mq_init_bitmaps(struct sbitmap_queue *bitmap_tags,
++				 struct sbitmap_queue *breserved_tags,
++				 struct blk_mq_tag_set *set,
++				 unsigned int queue_depth,
++				 unsigned int reserved);
++extern int blk_mq_init_shared_sbitmap(struct blk_mq_tag_set *set);
+ extern void blk_mq_exit_shared_sbitmap(struct blk_mq_tag_set *set);
+-
+ extern unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data);
+ extern void blk_mq_put_tag(struct blk_mq_tags *tags, struct blk_mq_ctx *ctx,
+ 			   unsigned int tag);
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 466676bc2f0b..8b5ecc801d3f 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -3488,7 +3488,7 @@ int blk_mq_alloc_tag_set(struct blk_mq_tag_set *set)
+ 	if (blk_mq_is_sbitmap_shared(set->flags)) {
+ 		atomic_set(&set->active_queues_shared_sbitmap, 0);
+ 
+-		if (blk_mq_init_shared_sbitmap(set, set->flags)) {
++		if (blk_mq_init_shared_sbitmap(set)) {
+ 			ret = -ENOMEM;
+ 			goto out_free_mq_rq_maps;
+ 		}
+@@ -3564,15 +3564,24 @@ int blk_mq_update_nr_requests(struct request_queue *q, unsigned int nr)
+ 		} else {
+ 			ret = blk_mq_tag_update_depth(hctx, &hctx->sched_tags,
+ 							nr, true);
++			if (blk_mq_is_sbitmap_shared(set->flags)) {
++				hctx->sched_tags->bitmap_tags =
++					&q->sched_bitmap_tags;
++				hctx->sched_tags->breserved_tags =
++					&q->sched_breserved_tags;
++			}
+ 		}
+ 		if (ret)
+ 			break;
+ 		if (q->elevator && q->elevator->type->ops.depth_updated)
+ 			q->elevator->type->ops.depth_updated(hctx);
+ 	}
+-
+-	if (!ret)
++	if (!ret) {
+ 		q->nr_requests = nr;
++		if (q->elevator && blk_mq_is_sbitmap_shared(set->flags))
++			sbitmap_queue_resize(&q->sched_bitmap_tags,
++					     nr - set->reserved_tags);
++	}
+ 
+ 	blk_mq_unquiesce_queue(q);
+ 	blk_mq_unfreeze_queue(q);
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 1255823b2bc0..4092c2a38f10 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -25,6 +25,7 @@
+ #include <linux/scatterlist.h>
+ #include <linux/blkzoned.h>
+ #include <linux/pm.h>
++#include <linux/sbitmap.h>
+ 
+ struct module;
+ struct scsi_ioctl_command;
+@@ -493,6 +494,9 @@ struct request_queue {
+ 
+ 	atomic_t		nr_active_requests_shared_sbitmap;
+ 
++	struct sbitmap_queue	sched_bitmap_tags;
++	struct sbitmap_queue	sched_breserved_tags;
++
+ 	struct list_head	icq_list;
+ #ifdef CONFIG_BLK_CGROUP
+ 	DECLARE_BITMAP		(blkcg_pols, BLKCG_MAX_POLS);
+-- 
+2.26.2
 
-Thanks,
-
-Jacob
