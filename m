@@ -2,191 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511F537AE47
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D87937AE4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231981AbhEKSV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:21:28 -0400
-Received: from mga04.intel.com ([192.55.52.120]:65002 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231462AbhEKSV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:21:27 -0400
-IronPort-SDR: cx9CPgVGjpcKmcZ5nR540jhLtdscY63I/BPUhuWxr2386S31bGBWpKcjtl32J9IOdAzWAYR0kX
- 55FhJ5BIyYxw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="197533684"
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="197533684"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 11:20:18 -0700
-IronPort-SDR: sNoJ44FPwDqH0PrROnGFEGDjMA3oXGcZLdZM0u6m/aOVGlvRTsyf6TQQgfl4lV99m1S0px08c4
- wEjrxanfJPNw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="434716089"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by fmsmga008.fm.intel.com with ESMTP; 11 May 2021 11:20:18 -0700
-Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 11 May 2021 11:20:17 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 11 May 2021 11:20:17 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Tue, 11 May 2021 11:20:17 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Tue, 11 May 2021 11:20:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KRbldM6akF8rGWO9N5nJwSAosu931i0N0H0EQwqUA+LnFl7qL89fVwIoJSLAUraxtaxaQX1jperpw7KwNWi2WdYt5U9z4bM+8SNv6l8SW/qiKCZ8pu6IPH2r4lv6LTGRzQDo+x92iZ6WvF9WEs+ocfTM4eoSGxfaxvNB6mCK6SSnOliRI//k3jNpbHHtq3X0/tO1XRg57VM3aGTfMu7ChJK+ibnUU2oRcXI+AZl/RmnY1cU9HmOWnfSWgzYQeGxuo5Dcx2WLSrjZhCvAytOPAYPaNj10xXzloWi0OgRG/UFxQGrm41AIXsNz0hmrkVwcEA0sHd/D83H5k+RbauhDeA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hhOLvQXiHHz/ECoS+f4AqPZ01QkeqdDb4z3y2pQmKA4=;
- b=ckvi2TskyF9+RYmW/WyFZCaw/mmP1II2pvR1syrvEXFu/5k8YCYQ9MzcdV5Tfqs0doUCGKKCF+auMUt3O2/L13ulznOmvsipnWfK7s0BbWOZFqyI7qKscm2bTOKG21o93bzxqM1WKP+QgTzu+PMUC5zlUgg7/vvqozFu08mb63NJXvLKoK8WfsbNpd7GrfdUsLK/LQg+MWoOQHuHzpmG0/ozs+EJGAAUA2+B4BwTui1UTLU4OP2iIcS/qOiClMNyiE0jrO+tHlsiTNKmdzZNB+6BjqfqY54nvXHCHvea6bLhaYbLPW9JgZicAt2HULSD1sQPK/s5tj5oiktaSCnKRA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hhOLvQXiHHz/ECoS+f4AqPZ01QkeqdDb4z3y2pQmKA4=;
- b=oP2/Iu049xvOmn8qbKyhin328oGZKT+xpZMKa24XQCztsSDORb1ofXuqJz8T3dfYgTwW81l/NQpfQF0Rx4K/5tRjbLvE7vFnaxcf4R+RLsOSAqscXgPWWS8Ra2lAKa0o/dQtk2dUkTE1Vsmx8EKyyzV5EWOXxazpemT4oafQi+U=
-Received: from MWHPR11MB1599.namprd11.prod.outlook.com (2603:10b6:301:e::16)
- by CO1PR11MB5057.namprd11.prod.outlook.com (2603:10b6:303:6c::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24; Tue, 11 May
- 2021 18:20:16 +0000
-Received: from MWHPR11MB1599.namprd11.prod.outlook.com
- ([fe80::48df:6af5:afe:ea7e]) by MWHPR11MB1599.namprd11.prod.outlook.com
- ([fe80::48df:6af5:afe:ea7e%7]) with mapi id 15.20.4108.031; Tue, 11 May 2021
- 18:20:16 +0000
-From:   "Kaneda, Erik" <erik.kaneda@intel.com>
-To:     Wei Ming Chen <jj251510319013@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: RE: [PATCH] ACPICA: Use fallthrough pseudo-keyword
-Thread-Topic: [PATCH] ACPICA: Use fallthrough pseudo-keyword
-Thread-Index: AQHXQnZJJRYKSXe4kUW+3iw540Yyuqreny+g
-Date:   Tue, 11 May 2021 18:20:16 +0000
-Message-ID: <MWHPR11MB1599BD99469D7F2157A4C27FF0539@MWHPR11MB1599.namprd11.prod.outlook.com>
-References: <20210506124912.7725-1-jj251510319013@gmail.com>
-In-Reply-To: <20210506124912.7725-1-jj251510319013@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [2600:6c55:4c7f:e63f:1d7d:df99:244d:2776]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 46fb13b1-07d6-4856-316b-08d914a96d10
-x-ms-traffictypediagnostic: CO1PR11MB5057:
-x-microsoft-antispam-prvs: <CO1PR11MB5057562C010D32E4386A9340F0539@CO1PR11MB5057.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:478;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2kp6+xuAj/9voBTKZxH/KjZAeZKSvtRtK85Qe2leAxT/fUhqEAJeCxJi6wIqxRK3QXJmSjw+dJEs0hg6zNW7i9yjGtz4L1dRr+0+q0u1pUue6KK3xTNzj/jTgTuKO9cyl+w7I+K0hxHUzR+EOWQkE0bpMJmATil7Rb8jxiBsxGmU4PIGfX6O7VTHktnVXNQWV6NfPaJihiC9pJY1oFwiNSebRmdn2nJ/2hwVehFOWkG5wJH6kZtaieo5DaUC+6Mm69tznRZQNcn/90KFNzyoqJhtJoGP4kvv1BZNMu6xj0IN9bGWHfaUyYGnelIfdKn3e7XGRXvc4yU6axlsoCQxeq3VQo904r5oievgrw9q31vdXq5a9cOvIpXf02u3IkzAjpDUmCWIWNFvJs+6IAbAsNAL13iT5ewX3NPWUaK5K3Jy43WO4Eh6WbYy9BfNtCAQSI//30t0rgnmLLUogB7EiSxtz+IXGb2fU9r5rEZsMuyQhMP3MQejQtlavUV63yGGKeGShXlzPo2f1sb4BiQrrJHjLq16c+guozgBtgxa+x21U2B2SEZnz63DM0wM1m5VpV9b4z939qoqlMBwdh+29jyWsuGw1pVIj/PDhu4yzzEt00aTVDn2232OyUlh6XYrCIHG+R1zjSc3KR9uWOWrkwxgIbWDHfY/8jHEWocgSZXQJcaLF4+lQ1s80Mk56rwoa9VX1hhfqKTkUfRPxj1lyWG7mjeEyWumnsoo+fdVOYS4SJxmeiuX4r4wn7HEvmCt
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1599.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(346002)(396003)(376002)(366004)(7696005)(186003)(966005)(53546011)(38100700002)(5660300002)(83380400001)(6506007)(86362001)(54906003)(478600001)(8936002)(66446008)(33656002)(66476007)(66556008)(71200400001)(122000001)(2906002)(55016002)(66946007)(64756008)(316002)(8676002)(76116006)(52536014)(9686003)(4326008)(110136005)(14701465002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?HIG+eAOBJOTzQJ8lRB1qkn+OR95Vu3MRN8AXVGnkCxjNVdJu6bG2pywdr2Zu?=
- =?us-ascii?Q?gc4bA63h8rKlkONUhneU2VGKPJ3kxHrAQEyJbDbGVInPMdVh8pkGoW++ZS4B?=
- =?us-ascii?Q?M5CtehWfqTA43RuDRkFw7aUCzqnv8hu+2nc4alMH/wmLdxDaIv0ixsWcVpl4?=
- =?us-ascii?Q?kX4nH3KalNreL0TnWyfcYFN0iedHrjonQzKr3Jdh4wnOJpRqUnI2M9N+1DFh?=
- =?us-ascii?Q?RrHulLdsRGZv8ze8nCo/TwGFaNvI446f0Qjq5jWYw1WTGY1wrfXkqnn6Rcqd?=
- =?us-ascii?Q?y6a9LLafyZwLZ68gVGUBN6Nnfh6k4IllRPGAJo5GEpPAOge+riF+a4fu5pX8?=
- =?us-ascii?Q?1n6OWamjgbT6FRtQlFuG1qB+OTntqP4ZNv0laebPFduYv+KVZZk1T3j+38CI?=
- =?us-ascii?Q?8YKCDhi4zA8MaZH5G6xfjGz8dy1DrhEQ8DPjFaEvERQA9BPb594JsfjnvZD4?=
- =?us-ascii?Q?KCT8MOgmhQnUZ5B2FMPebscymXRE7VtUrQ1Rxnd+F5DtlYuiz3imJJF9GUB1?=
- =?us-ascii?Q?6i+1QEeAOXIQ2qD/cajkr48MBQwjD3WfkTnO2231x5SYCpr/VfwDMB9CVgky?=
- =?us-ascii?Q?KsdL5KXX04+Jhf3x8A1+eZ47SZ7pHteMQfv1bVac/aW5tC229ash/7wuvQgT?=
- =?us-ascii?Q?sjkAsahXUsuu6N9JQFHZoySTmOfIm6F5BZUzIft+NaN7yjPt6/pn0ZDm3gTY?=
- =?us-ascii?Q?7D9nx+F2pLUmQzShRjht4e0IdABcGc5mlnNaUpjM/yPc1C/y/BkmUMDsIQ8N?=
- =?us-ascii?Q?ZM/ZUMFmkKO7jPKRExiUzCR0OblIj1E/0gUG871XE4ADODOuhLVhF9xWBdFQ?=
- =?us-ascii?Q?ux50PHWWVSMFRoYEgtu8Fzydyw1cYXPGSSlMbH01Ve7CydiKMe2SeFwCBBUZ?=
- =?us-ascii?Q?deJNAwCjkQR/5ItHtyE99mfF96ZSph7BytE2kVwx9kX99sIWhDHpCYGqp30b?=
- =?us-ascii?Q?5Pdykc2Xow26bQfz6VqPPzRErqEBRC6GEOve52Atx4ZvZzSn8+4Nof3k0LLs?=
- =?us-ascii?Q?/PBMGa5EW0PnWyEDWJfoCGsilTe7hHNtADJoeDw0gSrpxyeInChQTpc6adSE?=
- =?us-ascii?Q?ON8EsNbjzxj4KG9Y9B3r/n23Xr3XTD45833ganhDeaX+8P0qFtDav7NXquNn?=
- =?us-ascii?Q?XqVjGR+F8eG5mvXNpTP81xP0/eKyOg3DKN+MSz7z2Bq3409szGSSWK05cp52?=
- =?us-ascii?Q?+Ut7oZ9wlsPwfKgqfNUP0IDcGp8qjU9KviSJFkLIePw40hbTWk7MaDGMP3sZ?=
- =?us-ascii?Q?bsQpRtBoPkCKCiu2aIMXba9hpAe98mVyf4VbIE5W46Ljtn76t8B1+ykMXMD0?=
- =?us-ascii?Q?TPFt856YaQSjhWCrNKIU7htEfoVIo8x6lZQnXsp1enEIwT8MNZBVCKeYNmjm?=
- =?us-ascii?Q?LlmCVdJ1fjSAdin+J7CD8XWkWELr?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232008AbhEKSVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:21:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231329AbhEKSVv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 14:21:51 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D443C061574;
+        Tue, 11 May 2021 11:20:44 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so1744969wmh.4;
+        Tue, 11 May 2021 11:20:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ftGwwdNlFP05uVc9KwVMdLS0pcb01gK3FHHMMiTD974=;
+        b=Ld7Ty0gR7mB0MC6BwFBIXZ1oMjm0Vx3JhPA88ybxJEZ8SnAyqUdtpDYwU52MFzpSu+
+         HYIOMHM7OLkCChoZETc+D1EYGqRE5YKKxBq+JGeqDivGOXrm/wXDXrFhUgF3RMbCUeqA
+         9a/281b7bndzRt+2+dyQz7GQ/AMJl4OCoB39Qba3UmfMXUE/XtspKhDls1kp265NnBPi
+         oKU7nmAcTfx+7r9TxGxFMHhhgZjG7P2Pxumz0QCfiel2D/C1V6EjsWocDtplB2CCBBAM
+         PEt6q9RyEsTw78SHQ9av3ATRjWAVxulV+YvOR0p7sf8bmcfpvPesfe4qPh6q+Dvrfkby
+         92Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ftGwwdNlFP05uVc9KwVMdLS0pcb01gK3FHHMMiTD974=;
+        b=ZpRfc1Q8SwBEQjJEVsMpfzhGSLMYfAuwTe8KXrsq6PA4k/UinPKpumBQaGrriAs8pJ
+         bSyCBEykzkFMitnGCUIJOa56T61bEsjp33JwpQK+SVtM3mWwwzHvEtUWpgf2hdwbwNy9
+         RSLFXkMiLLqVPo+Js2CE9PidGD4NwBLQ+9ezUT6HO/HkqiU2mRZ9VX17tjU5Ley29hdQ
+         QPjxUZP1SfQHTHFyZJOoLj7pbo//OJsrqUWA9/gWN+hNJ886/KTzpyHRf73UY0XxzGRf
+         Qgj+bCEu3NCvN/zufKvxjYyGlArbmNngEFtf31L9OewfcpxQ1dAuSjJVnfw+c43TXNd3
+         dM3Q==
+X-Gm-Message-State: AOAM532j14ILRJpnCA4Wh2PiDoKcCdykGzWdCAuXVyNANDFIW+HhKoqv
+        AvLpkr3zV/jgiNlMbVD8hiJmJVE2/Gs5UG5p
+X-Google-Smtp-Source: ABdhPJzipI5ebtz47j0YHilq4cAeh11Vl1vmdK2VpW48eBO3BK6g0jUi56HbdgF94xivljSxcw/g3A==
+X-Received: by 2002:a7b:ce19:: with SMTP id m25mr33961850wmc.137.1620757243076;
+        Tue, 11 May 2021 11:20:43 -0700 (PDT)
+Received: from localhost.localdomain ([94.73.38.147])
+        by smtp.gmail.com with ESMTPSA id d15sm28012133wrw.71.2021.05.11.11.20.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 11:20:42 -0700 (PDT)
+From:   =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+To:     jikos@kernel.org
+Cc:     benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+Subject: [PATCH 1/5] HID: magicmouse: register power supply
+Date:   Tue, 11 May 2021 20:20:19 +0200
+Message-Id: <20210511182023.730524-1-jose.exposito89@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1599.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 46fb13b1-07d6-4856-316b-08d914a96d10
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2021 18:20:16.0282
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mIpAtPuapfDM2LVFbP3w+2Wvj9QuzyvOuwpmpUfALTFHsETMetO/Adbyu/PnK1x35RxPWdHiJyRIoOQG1GmnBA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5057
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Unlike the Apple Magic Mouse 1 and the Apple Magic Trackpad 1, the
+second generation of the devices don't report their battery status
+automatically.
 
+This patchset adds support for reporting the battery capacity and
+charging status for the Apple Magic Mouse 2 and Apple Magic Trackpad
+2 both over bluetooth and USB.
 
-> -----Original Message-----
-> From: Wei Ming Chen <jj251510319013@gmail.com>
-> Sent: Thursday, May 6, 2021 5:49 AM
-> To: linux-kernel@vger.kernel.org
-> Cc: linux-acpi@vger.kernel.org; devel@acpica.org; Wei Ming Chen
-> <jj251510319013@gmail.com>
-> Subject: [PATCH] ACPICA: Use fallthrough pseudo-keyword
->=20
-> Replace /* FALLTHROUGH */ comment with pseudo-keyword macro
-> fallthrough[1]
->=20
-> [1]
-> https://www.kernel.org/doc/html/latest/process/deprecated.html?highligh
-> t=3Dfallthrough#implicit-switch-case-fall-through
->=20
-> Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
-> ---
->  drivers/acpi/acpica/utprint.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/acpi/acpica/utprint.c b/drivers/acpi/acpica/utprint.=
-c
-> index e37d612e8db5..0b511434b80b 100644
-> --- a/drivers/acpi/acpica/utprint.c
-> +++ b/drivers/acpi/acpica/utprint.c
-> @@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const cha=
-r
-> *format, va_list args)
->  		case 'X':
->=20
-Hi,
+This patch:
 
->  			type |=3D ACPI_FORMAT_UPPER;
-> -			/* FALLTHROUGH */
-> +			fallthrough;
+Register the required power supply structs for the Apple Magic Mouse 2
+and the Apple Magic Trackpad 2 to be able to report battery capacity
+and status in future patches.
 
-Since fallthrough is specific to gcc, we use the macro ACPI_FALLTHROUGH for=
- code in drivers/acpi/acpica. Please resubmit using this keyword and I can =
-take the commit for upstream ACPICA.
+Signed-off-by: José Expósito <jose.exposito89@gmail.com>
+---
+ drivers/hid/hid-magicmouse.c | 90 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 90 insertions(+)
 
-Thanks,
-Erik
->=20
->  		case 'x':
->=20
-> --
-> 2.25.1
+diff --git a/drivers/hid/hid-magicmouse.c b/drivers/hid/hid-magicmouse.c
+index 2bb473d8c424..0f766bce4537 100644
+--- a/drivers/hid/hid-magicmouse.c
++++ b/drivers/hid/hid-magicmouse.c
+@@ -112,6 +112,9 @@ MODULE_PARM_DESC(report_undeciphered, "Report undeciphered multi-touch state fie
+  * @scroll_jiffies: Time of last scroll motion.
+  * @touches: Most recent data for a touch, indexed by tracking ID.
+  * @tracking_ids: Mapping of current touch input data to @touches.
++ * @battery: Required data to report the battery status of the Apple Magic
++ * Mouse 2 and Apple Magic Trackpad 2. Battery is reported automatically on the
++ * first generation of the devices.
+  */
+ struct magicmouse_sc {
+ 	struct input_dev *input;
+@@ -132,8 +135,89 @@ struct magicmouse_sc {
+ 
+ 	struct hid_device *hdev;
+ 	struct delayed_work work;
++
++	struct {
++		struct power_supply *ps;
++		struct power_supply_desc ps_desc;
++	} battery;
++};
++
++static enum power_supply_property magicmouse_ps_props[] = {
++	POWER_SUPPLY_PROP_PRESENT,
++	POWER_SUPPLY_PROP_SCOPE,
+ };
+ 
++static bool magicmouse_can_report_battery(struct magicmouse_sc *msc)
++{
++	return (msc->input->id.product == USB_DEVICE_ID_APPLE_MAGICTRACKPAD2) ||
++	       (msc->input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE2);
++}
++
++static int magicmouse_battery_get_property(struct power_supply *psy,
++					   enum power_supply_property psp,
++					   union power_supply_propval *val)
++{
++	struct magicmouse_sc *msc = power_supply_get_drvdata(psy);
++	int ret = 0;
++
++	if (!magicmouse_can_report_battery(msc))
++		return -EINVAL;
++
++	switch (psp) {
++	case POWER_SUPPLY_PROP_PRESENT:
++		val->intval = 1;
++		break;
++	case POWER_SUPPLY_PROP_SCOPE:
++		val->intval = POWER_SUPPLY_SCOPE_DEVICE;
++		break;
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	return ret;
++}
++
++static int magicmouse_battery_probe(struct hid_device *hdev)
++{
++	struct magicmouse_sc *msc = hid_get_drvdata(hdev);
++	struct power_supply *ps = NULL;
++	struct power_supply_config ps_cfg = { .drv_data = msc };
++	int ret;
++
++	if (!magicmouse_can_report_battery(msc))
++		return 0;
++
++	msc->battery.ps_desc.type = POWER_SUPPLY_TYPE_BATTERY;
++	msc->battery.ps_desc.properties = magicmouse_ps_props;
++	msc->battery.ps_desc.num_properties = ARRAY_SIZE(magicmouse_ps_props);
++	msc->battery.ps_desc.get_property = magicmouse_battery_get_property;
++	msc->battery.ps_desc.name = kasprintf(GFP_KERNEL, "magic_trackpad_2_%s",
++					      msc->input->uniq);
++	if (!msc->battery.ps_desc.name) {
++		hid_err(hdev, "unable to register ps_desc name, ENOMEM\n");
++		return -ENOMEM;
++	}
++
++	ps = devm_power_supply_register(&hdev->dev, &msc->battery.ps_desc,
++					&ps_cfg);
++	if (IS_ERR(ps)) {
++		ret = PTR_ERR(ps);
++		hid_err(hdev, "unable to register battery device: %d\n", ret);
++		return ret;
++	}
++
++	msc->battery.ps = ps;
++
++	ret = power_supply_powers(msc->battery.ps, &hdev->dev);
++	if (ret) {
++		hid_err(hdev, "unable to activate battery device: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
+ static int magicmouse_firm_touch(struct magicmouse_sc *msc)
+ {
+ 	int touch = -1;
+@@ -726,6 +810,12 @@ static int magicmouse_probe(struct hid_device *hdev,
+ 		goto err_stop_hw;
+ 	}
+ 
++	ret = magicmouse_battery_probe(hdev);
++	if (ret) {
++		hid_err(hdev, "battery not registered\n");
++		goto err_stop_hw;
++	}
++
+ 	if (id->product == USB_DEVICE_ID_APPLE_MAGICMOUSE)
+ 		report = hid_register_report(hdev, HID_INPUT_REPORT,
+ 			MOUSE_REPORT_ID, 0);
+-- 
+2.25.1
 
