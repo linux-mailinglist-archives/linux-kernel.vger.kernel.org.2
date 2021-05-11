@@ -2,192 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F8B37A404
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6008C37A40E
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhEKJuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 05:50:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231217AbhEKJuj (ORCPT
+        id S231296AbhEKJxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 05:53:44 -0400
+Received: from mail-wm1-f52.google.com ([209.85.128.52]:50855 "EHLO
+        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230434AbhEKJxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 05:50:39 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A19C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 02:49:31 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id j10so1773157ejb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 02:49:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YSPQb+nNhnbHjEsR3HVzuPYSWfg6mm9JCNCoWb+AMRM=;
-        b=X3g8K0/hKUdTNwUFXwDV4w0mAPHm0EmWP/RkTq825cV95ZXefEGwlmVoQdbTlYXfl8
-         C52wdhVHyB7ttOyRrjJpfYTHM2Gi0n+LmT+szHzDWuXeVKOazdD+1Bp7v2JDMwuVoXGw
-         ckDichZPITLgyE3V0dLTOhk+uofk8f7iXi5cHGo+Ns8SfvCiasBsNZ2K6FfCf8jiS4Dn
-         VjaSmbAcnVnfgV2u1Alkqfm142x/+gPRSYJQ5CM0eSWdIB9nKBhaH9bEzyzHM751AJYV
-         9+wUX9j7NQcRGiaVJvViTz0b3pSpCyXStYgonEPPqxnpSgDI8dxWkD+pVLHH6XPGuN3X
-         G8OA==
+        Tue, 11 May 2021 05:53:36 -0400
+Received: by mail-wm1-f52.google.com with SMTP id n84so10786448wma.0;
+        Tue, 11 May 2021 02:52:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YSPQb+nNhnbHjEsR3HVzuPYSWfg6mm9JCNCoWb+AMRM=;
-        b=dnaaPKha+kQ9rybmUOZleeYEAGhYCkzFZq1CMbXAb+Ef+YTu6bYB+g54Sle2NRHgs8
-         R2w/DWqIseO6/IFb/i7l9VY1XbYXSAqw5zJSnd4v/lcFzMUOn66KcqdJDg+Yn23KsgXv
-         BTDZwOUIAFpmlK9Kqp9NfN4d+YyDi5dLcOSWEUqyapM3VuO2x0RfmOu1tYAjKhUDchtm
-         Sbgva6XuIX0FHbrQHQQd3/JG6df0qTQ2BpVwBk+gCwiW3ixNc8sMsg9y+hzwsYBxrjpJ
-         TLkKTYb0uJsrAihztCJI4kROtHVgV9H+Gg/M/JJKo/BS8S4Kz3PlR71wadgww+ij/MMP
-         fkDg==
-X-Gm-Message-State: AOAM5337sQ5Ly6Dw8Tmcfg3gvYbxQ3SOOksycsHhtfLPwSL39my2tS0A
-        90qivhQZ7f/gPQ65mrMUWko=
-X-Google-Smtp-Source: ABdhPJxZa829+QL5jbwdtz3dPtohmnrtZI1I5h18ymDFnMn/Tnyq3hrwl5A8Ru1/XvIEBxZPjKD69w==
-X-Received: by 2002:a17:906:980a:: with SMTP id lm10mr1264055ejb.482.1620726570534;
-        Tue, 11 May 2021 02:49:30 -0700 (PDT)
-Received: from agape.jhs ([5.171.80.244])
-        by smtp.gmail.com with ESMTPSA id p5sm4431070ejm.115.2021.05.11.02.49.29
+         :mime-version:content-disposition:in-reply-to;
+        bh=RklOnvzK32YLQfMzsNoB451WXrK3neV8tKeIMCPlix0=;
+        b=cpp13s1427dOHaeJw793idhbHOkjz8h/vt3MtQ2Wf4p9AyKNo/JW14SrhpWYkz033B
+         WVdR5Ip62eoeh48pWKAP9LTnnZepV7f2DY214HWzniXwfcn3Erd/NYCxxClR0OEUmVLO
+         xg2Lg4PuYCB9DePsiKQ+gfUZXSIaGRu4MwjE1XTZAdweTeirFi95Iky0XTqh2QjQO3XK
+         BEsuRvj0hpVc0Qa//3zYI4k7MzgWrygaoypXyYUYm5ez3rjSw2ObKrKBCYJksmYN0BAJ
+         RWMWIQCgAwBF9zGxXUbnys7sd8hhLQOk5P0ofNQ25RQdImYIYDE/VDbG6frXwxmdZDec
+         JI+g==
+X-Gm-Message-State: AOAM5311mIMZ5yeDrHTB7GaiV6Cd1vuG2KN2gJTt+RVzSJxmqqZ9h2/r
+        fa6GMCaepXuolITKzXsAGBdFJpwd9Lc=
+X-Google-Smtp-Source: ABdhPJwaQpzAMwrj3Bn/NNytP+SaiZESwQSXt90F2I2+1DtFYCcXg897cvQMnvEaKE2yOIj60GNnbA==
+X-Received: by 2002:a05:600c:3596:: with SMTP id p22mr4493909wmq.34.1620726748906;
+        Tue, 11 May 2021 02:52:28 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id l22sm2904540wmq.28.2021.05.11.02.52.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 02:49:30 -0700 (PDT)
-Date:   Tue, 11 May 2021 11:49:27 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] staging: rtl8723bs: replace private CRC-32
- routines with in-kernel ones
-Message-ID: <20210511094927.GA1410@agape.jhs>
-References: <cover.1620652505.git.fabioaiuto83@gmail.com>
- <cdd9bc521b7119a9c2787b46109eb76f94bd295a.1620652505.git.fabioaiuto83@gmail.com>
- <29938747c82e4cf1837be5f1cdb803b7@AcuMS.aculab.com>
+        Tue, 11 May 2021 02:52:28 -0700 (PDT)
+Date:   Tue, 11 May 2021 09:52:27 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com,
+        gregkh@linuxfoundation.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 1/2] uio_hv_generic: Fix a memory leak in error handling
+ paths
+Message-ID: <20210511095227.ggrl3z6otjanwffz@liuwe-devbox-debian-v2>
+References: <4fdaff557deef6f0475d02ba7922ddbaa1ab08a6.1620544055.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <29938747c82e4cf1837be5f1cdb803b7@AcuMS.aculab.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <4fdaff557deef6f0475d02ba7922ddbaa1ab08a6.1620544055.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello David,
-
-On Mon, May 10, 2021 at 01:38:49PM +0000, David Laight wrote:
-> > replace private CRC-32 routines with in-kernel ones.
+On Sun, May 09, 2021 at 09:13:03AM +0200, Christophe JAILLET wrote:
+> If 'vmbus_establish_gpadl()' fails, the (recv|send)_gpadl will not be
+> updated and 'hv_uio_cleanup()' in the error handling path will not be
+> able to free the corresponding buffer.
 > 
-> Have you verified that they compute the same CRC?
+> In such a case, we need to free the buffer explicitly.
 > 
-> There are all sorts of subtle reasons why the outputs can differ.
+> Fixes: cdfa835c6e5e ("uio_hv_generic: defer opening vmbus until first use")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> Before commit cdfa835c6e5e, the 'vfree' were done unconditionally
+> in 'hv_uio_cleanup()'.
+> So, another way for fixing the potential leak is to modify
+> 'hv_uio_cleanup()' and revert to the previous behavior.
 > 
-> 	David
+
+I think this is cleaner.
+
+Stephen, you authored cdfa835c6e5e. What do you think?
+
+Christophe, OOI how did you discover these issues?
+
+> I don't know the underlying reason for this change so I don't know which is
+> the best way to fix this error handling path. Unless there is a specific
+> reason, changing 'hv_uio_cleanup()' could be better because it would keep
+> the error handling path of the probe cleaner, IMHO.
+> ---
+>  drivers/uio/uio_hv_generic.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 > 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
+> diff --git a/drivers/uio/uio_hv_generic.c b/drivers/uio/uio_hv_generic.c
+> index 0330ba99730e..eebc399f2cc7 100644
+> --- a/drivers/uio/uio_hv_generic.c
+> +++ b/drivers/uio/uio_hv_generic.c
+> @@ -296,8 +296,10 @@ hv_uio_probe(struct hv_device *dev,
+>  
+>  	ret = vmbus_establish_gpadl(channel, pdata->recv_buf,
+>  				    RECV_BUFFER_SIZE, &pdata->recv_gpadl);
+> -	if (ret)
+> +	if (ret) {
+> +		vfree(pdata->recv_buf);
+>  		goto fail_close;
+> +	}
+>  
+>  	/* put Global Physical Address Label in name */
+>  	snprintf(pdata->recv_name, sizeof(pdata->recv_name),
+> @@ -316,8 +318,10 @@ hv_uio_probe(struct hv_device *dev,
+>  
+>  	ret = vmbus_establish_gpadl(channel, pdata->send_buf,
+>  				    SEND_BUFFER_SIZE, &pdata->send_gpadl);
+> -	if (ret)
+> +	if (ret) {
+> +		vfree(pdata->send_buf);
+>  		goto fail_close;
+> +	}
+>  
+>  	snprintf(pdata->send_name, sizeof(pdata->send_name),
+>  		 "send:%u", pdata->send_gpadl);
+> -- 
+> 2.30.2
 > 
-
-I tried this:
-
-#include <linux/module.h>
-#include <linux/crc32poly.h>
-#include <linux/crc32.h>
-
-/* Copy pasted from rtl8723bs/core/rtw_security.c */
-static signed int bcrc32initialized;
-static u32 crc32_table[256];
-
-MODULE_LICENSE("GPL");
-MODULE_DESCRIPTION("CRC-32 verifier");
-MODULE_AUTHOR("Fabio Aiuto");
-
-/* Copy pasted from rtl8723bs/core/rtw_security.c */
-static u8 crc32_reverseBit(u8 data)
-{
-        return ((u8)((data<<7)&0x80) | 
-                ((data<<5)&0x40) | 
-                ((data<<3)&0x20) | 
-                ((data<<1)&0x10) | 
-                ((data>>1)&0x08) | 
-                ((data>>3)&0x04) | 
-                ((data>>5)&0x02) | 
-                ((data>>7)&0x01));
-}
-
-
-/* Copy pasted from rtl8723bs/core/rtw_security.c */
-static void crc32_init(void)
-{
-        if (bcrc32initialized == 1)
-                return;
-        else {
-                signed int i, j;
-                u32 c;
-                u8 *p = (u8 *)&c, *p1;
-                u8 k;
-
-                c = 0x12340000;
-
-                for (i = 0; i < 256; ++i) {
-                        k = crc32_reverseBit((u8)i);
-                        for (c = ((u32)k) << 24, j = 8; j > 0; --j)
-                                c = c & 0x80000000 ? (c << 1) ^ CRC32_POLY_BE : (c << 1);
-                        p1 = (u8 *)&crc32_table[i];
-
-                        p1[0] = crc32_reverseBit(p[3]);
-                        p1[1] = crc32_reverseBit(p[2]);
-                        p1[2] = crc32_reverseBit(p[1]);
-                        p1[3] = crc32_reverseBit(p[0]);
-                }
-                bcrc32initialized = 1;
-        }
-}
-
-/* Copy pasted from rtl8723bs/core/rtw_security.c */
-static __le32 getcrc32(u8 *buf, signed int len)
-{
-        u8 *p;
-        u32  crc;
-
-        if (bcrc32initialized == 0)
-                crc32_init();
-
-        crc = 0xffffffff;       /* preload shift register, per CRC-32 spec */
-
-        for (p = buf; len > 0; ++p, --len)
-                crc = crc32_table[(crc ^ *p) & 0xff] ^ (crc >> 8);
-        return cpu_to_le32(~crc);    /* transmit complement, per CRC-32 spec */
-}
-
-static int __init crc32_entry(void)
-{
-        u8 payload;
-        unsigned char crc_priv[4], crc_pub[4];
-
-        payload = (u8)1234;
-        /* private crc calculation used in rtl8723bs */
-        *((__le32 *)crc_priv) = getcrc32(&payload, 2);
-        pr_info("private rtl8723bs crc: %x", *crc_priv);
-        /* in-kernel public crc calculation */
-        *((__le32 *)crc_pub) = ~crc32_le(~0, &payload, 2);
-        pr_info("generic crc: %x", *crc_pub);
-
-        return 0;
-
-}
-
-static void __exit crc32_exit(void)
-{
-}
-
-module_init(crc32_entry);
-module_exit(crc32_exit);
-
-And run it on qemu. Don't know why to display the second pr_info()
-I have to rmmod it, but both methods give the same result (62)
-
-[   38.149979] crc32m: module is from the staging directory, the quality is unknown, you have been warned.
-[   38.169208] private rtl8723bs crc: 62
-[   38.169400] generic crc: 62
-
-thank you,
-
-fabio
