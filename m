@@ -2,126 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3963E37A907
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE4E37A917
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbhEKOXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:23:33 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44380 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbhEKOXc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:23:32 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620742945;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TcexFrF5RvItiV32i5dbLwb8XIl5kKRJt7Imzjq/iA4=;
-        b=Mv0fcxOMmkqOLc+JSkChRmhPdCxbpBcP6SrNZ+qdkJrB4gGt293J3cLJukPYe/QfI88t1k
-        BKWTqSeLbAJJUQyUon7qay4JA/Rr4vg9MgVrTJJZPueO0efw8jKG2kj6YIG44By7b2zlcA
-        53FSAkIOJst/bf2v/+q1X7SXmVh7J0vBKPvP+2DuRG+HvuaxgaUeTcMS6VPh9ykHOpQpcE
-        tEZ8v4mF9uVDvns8qfFoyP09lL1Xv2vUSNvBxmlrkaRIo8WsnA5Z0WRLYgVV6pbhCmysvr
-        +ZQmA05ngToMkIhRmXjRHEYAURHIfVagu3YxEVn4yg2N0//85xvlrtrA/F0CHA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620742945;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TcexFrF5RvItiV32i5dbLwb8XIl5kKRJt7Imzjq/iA4=;
-        b=WrkAMqEdRyP3brMubbgslHGCO+wGguG3P6QEz8cGWutI49JWDKNwZ5wNvzcul3dcq6o7kH
-        uiH/2AX6KBAOqICQ==
-To:     "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Steve Wahl <steve.wahl@hpe.com>, Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "H. Peter Anvin \(Intel\)" <hpa@zytor.com>
-Subject: Re: [PATCH 4/6] x86/irq: merge common code in DEFINE_IDTENTRY_SYSVEC[_SIMPLE]
-In-Reply-To: <20210511005531.1065536-5-hpa@zytor.com>
-References: <20210511005531.1065536-1-hpa@zytor.com> <20210511005531.1065536-5-hpa@zytor.com>
-Date:   Tue, 11 May 2021 16:22:24 +0200
-Message-ID: <87lf8lfizj.ffs@nanos.tec.linutronix.de>
+        id S231863AbhEKOZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:25:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231797AbhEKOZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:25:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1E196191D;
+        Tue, 11 May 2021 14:24:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620743043;
+        bh=wJ+4cBBj7zHK6XS8zc7+fNwV8ORjVAMlWIuJ5Iuzs8o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mragve0FOBm1OVcs9ENSktykBXpTAlvDdbY6U6NYXsL4GRjFXu/8qzKrerur8//8v
+         //lUW+7b6CzoMSfZ3UtBghu6ZHq2tRYyjq7uY/uhGh4l6QbnKy5eAe/PJkdhoO5hHe
+         LgttsgFY2Nyso/RvJUs2oSgI4YOS2uPkS477/K9r1UwoK2R9VxwU8ovbJjeAdAnA+F
+         cPFqPA66I0uf/Y9izmGbWyvYZNNN/mU6vHh9P4tco+aZBSOn8rBFmEn+6ocX6JikH0
+         zKx+aFAc/FiG/AXOsmci4gnArTYyeVPYR8458InI8s35fqJfIKwircEu3f770mNoOb
+         fWejAlhMINwRw==
+Date:   Tue, 11 May 2021 15:23:23 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Daniel Mack <daniel@zonque.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>
+Subject: Re: [PATCH v2 00/14] spi: pxa2xx: Set of cleanups
+Message-ID: <20210511142323.GJ4496@sirena.org.uk>
+References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
+ <162072071980.33404.13031284441613044277.b4-ty@kernel.org>
+ <CAHp75Vck5izDB4mTRV5hTaknpx5Bm+OA4rNLVznQxVaEwigBZg@mail.gmail.com>
+ <20210511134706.GI4496@sirena.org.uk>
+ <CAHp75VdPHYEq+Xn5yQ+TyQn5uerc+afcVaHj22OmVzsBW2jcaQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5me2qT3T17SWzdxI"
+Content-Disposition: inline
+In-Reply-To: <CAHp75VdPHYEq+Xn5yQ+TyQn5uerc+afcVaHj22OmVzsBW2jcaQ@mail.gmail.com>
+X-Cookie: Beam me up, Scotty!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10 2021 at 17:55, H. Peter Anvin wrote:
-> +/**
-> + * IDTENTRY_INVOKE_SYSVEC - Common code for system vector IDT entry points
-> + * @what:	What should be called
-> + *
-> + * Common code for DEFINE_IDTENTRY_SYSVEC and _SYSVEC_SIMPLE
-> + */
-> +#define IDTENTRY_INVOKE_SYSVEC(what)					\
-> +do {									\
-> +	irqentry_state_t state = irqentry_enter(regs);			\
-> +									\
-> +	instrumentation_begin();					\
-> +	kvm_set_cpu_l1tf_flush_l1d();					\
-> +	what;								\
-> +	instrumentation_end();						\
-> +	irqentry_exit(regs, state);					\
-> +} while (0)								\
-> +
->  /**
->   * DEFINE_IDTENTRY_SYSVEC - Emit code for system vector IDT entry points
->   * @func:	Function name of the entry point
-> @@ -233,13 +250,7 @@ static void __##func(struct pt_regs *regs);				\
->  									\
->  __visible noinstr void func(struct pt_regs *regs)			\
->  {									\
-> -	irqentry_state_t state = irqentry_enter(regs);			\
-> -									\
-> -	instrumentation_begin();					\
-> -	kvm_set_cpu_l1tf_flush_l1d();					\
-> -	run_sysvec_on_irqstack_cond(__##func, regs);			\
-> -	instrumentation_end();						\
-> -	irqentry_exit(regs, state);					\
-> +	IDTENTRY_INVOKE_SYSVEC(run_sysvec_on_irqstack_cond(__##func, regs)); \
->  }									\
->  									\
->  static noinline void __##func(struct pt_regs *regs)
-> @@ -260,15 +271,7 @@ static __always_inline void __##func(struct pt_regs *regs);		\
->  									\
->  __visible noinstr void func(struct pt_regs *regs)			\
->  {									\
-> -	irqentry_state_t state = irqentry_enter(regs);			\
-> -									\
-> -	instrumentation_begin();					\
-> -	__irq_enter_raw();						\
-> -	kvm_set_cpu_l1tf_flush_l1d();					\
-> -	__##func (regs);						\
-> -	__irq_exit_raw();						\
-> -	instrumentation_end();						\
-> -	irqentry_exit(regs, state);					\
-> +	IDTENTRY_INVOKE_SYSVEC(__irq_enter_raw(); __##func(regs); __irq_exit_raw()); \
 
-That's not really making the code more readable. Something like the
-below perhaps?
+--5me2qT3T17SWzdxI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-#define IDTENTRY_INVOKE_SYSVEC(func, regs, raw)				\
-do {									\
-	irqentry_state_t state = irqentry_enter(regs);			\
-									\
-	instrumentation_begin();					\
-	kvm_set_cpu_l1tf_flush_l1d();					\
-        if (raw) {							\
-		__irq_enter_raw();					\
-		func(regs);						\
-		__irq_exit_raw();			                \
-	} else {	                                                \
-		run_sysvec_on_irqstack_cond(func, regs);	        \
-        }                                                               \
-	instrumentation_end();						\
-        irqentry_exit(regs, state);					\
-} while (0)								\
+On Tue, May 11, 2021 at 04:52:40PM +0300, Andy Shevchenko wrote:
+> On Tue, May 11, 2021 at 4:47 PM Mark Brown <broonie@kernel.org> wrote:
+> > On Tue, May 11, 2021 at 03:28:18PM +0300, Andy Shevchenko wrote:
+> > > On Tue, May 11, 2021 at 11:27 AM Mark Brown <broonie@kernel.org> wrote:
 
-Thanks,
+> > > The above patches are effectively missed.
+> > > Anything to fix in your scripts / my patches?
 
-        tglx
+> > Like I said, patch 7 didn't apply so you should check and resend.
+
+> I didn't get it. I have effectively rebased the entire series and resend as v2.
+
+No, you resent it again as v3.  This was me applying the bits of v2 that
+would actually apply.
+
+> I can speculate that your scripts have a bug since they might try v1
+> as well (as far as I can see they usually send a confirmation of
+> application for all versions of the series in question).
+
+They end up sending confirmations for every version of the series I've
+tried to queue unless I go and explicitly delete the older versions.
+
+--5me2qT3T17SWzdxI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCak1oACgkQJNaLcl1U
+h9BuxQf+OegOJM0y6NfKvrOgJTzp2GmTk4h80iy95DznuLEjuM5uqMUHLkySbAsF
+ACndImPyX0HcJr1YWqWDnBjsp/f24gcAeWXyUYvFNUEtAyk+dBD5cagzHrRXX5ZU
+WQOXqJtpO6ergLfANl22xwENmHcKyWlGVzcw3WWZjp1s1+fkp/T+p1pjC84+3IBb
+v1PqVn0ozqU5ndAUVlpTWFWJ7codivp6LMPawIszqpXY5QL0j6cZlnxdLj6RJzjb
+u6aZ7HlN+GIDDqfv9x/FrnLC1m0DtFw3SGKGJ/grF1iF9k25fMzP1YPu/vQokKUv
+yqdh5VXfN8s2EVGn6IXTk1aqrKUWqw==
+=SINU
+-----END PGP SIGNATURE-----
+
+--5me2qT3T17SWzdxI--
