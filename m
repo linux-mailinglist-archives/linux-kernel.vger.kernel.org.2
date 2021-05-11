@@ -2,80 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689DF37A4D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D5E37A4D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbhEKKqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 06:46:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229892AbhEKKqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 06:46:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A4086192C;
-        Tue, 11 May 2021 10:44:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620729897;
-        bh=i1DOv+Mhp1oNF7Zq3P1l8wWaBsd1kPSHQTK219dAcnw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E0GsHKLLlQx+/HUuLdFc1RvnZeibnrPhC7WcsWBOq2nQwnNyLzhWY+2dSbvJf70gC
-         hsKVPZeASAf3QEDwkCHcwxbeTymtUD/fZUinN5Ds4syAuN5cBkT017W4RugxvrEfPi
-         DGfvrwm4OkOb69nuOxzw8dtYY/ka1iVzVyM52/8HXWmf1C+CWxYRowp5XqqRr9J2fu
-         z1MXCvU8uKASM+gzSPPZwE2aqM6BxlnqvPcC4a4OE1/u/RM0x1GbgOmKH5JSbRRWYy
-         +YJcS90HBtI42oRM9ADZ+aFHNvLe5TA5nBXkjE7SRR/rTimzyPhgyhdT0xkRZ/kNrD
-         YMM3YvEiTNHAw==
-Date:   Tue, 11 May 2021 11:44:18 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, vkoul@kernel.org,
-        vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
-        gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: Re: [PATCH] soundwire/ASoC: add leading zeroes in peripheral device
- name
-Message-ID: <20210511104418.GG4496@sirena.org.uk>
-References: <20210511060137.29856-1-yung-chuan.liao@linux.intel.com>
+        id S231283AbhEKKph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 06:45:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29838 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230237AbhEKKpf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 06:45:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620729867;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=a9YCTNzQqq3Nnca7i2b7kcNFhUAF6ByevzDuIX2ljPA=;
+        b=aU3l4xD89P64XKhPsj/N2e6fxssSdDEaY1LLXj1+KRINH5UbiZ1C+7X71UHNOLhsy3FjMd
+        uOfBrhllmjwr5fyxkdncggdTfTtuLpPOnR68gcqJ37NfWCa9ZHQndz5b+SUfdXc3V8u/rz
+        efj9/qinsWLFXSa5wwSM5YKMLvVFiPQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-23-gl0LBtmhOgCGrcPvTafqzQ-1; Tue, 11 May 2021 06:44:25 -0400
+X-MC-Unique: gl0LBtmhOgCGrcPvTafqzQ-1
+Received: by mail-ed1-f71.google.com with SMTP id d13-20020a056402144db0290387e63c95d8so10724133edx.11
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 03:44:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=a9YCTNzQqq3Nnca7i2b7kcNFhUAF6ByevzDuIX2ljPA=;
+        b=SLczYvGT3DqQrsbcItVfjji470hinmeXePDZy4IGVT9Lpyr02v8IS93/YoxtdlQPw7
+         xepW3DfSbm0KvRHeUmXTuE9rOS+87N6P6hig7dk1zpw6YrGIv9znQwsx9klGEppZ/zz3
+         izTfoKVTjTNUvgSLrELbjA8jWPQI/e94YYdW0AZb/e+lmH6tS3vo6T6p5KA0RBmydvHl
+         mXuo5/8L3P9qaid8dl1el3Ekvf9mQhtIlyJTpoWDAERDbxawbc6KfjzNhdZCjYXYzBSP
+         6ScAOkZVGqSCmiaGZYj8IQgJfEZ6Q16tnNFQDFl1PuXesRC/MczczqS68Wly87MC57xm
+         KflA==
+X-Gm-Message-State: AOAM533kuS3sRhcBLJSDwp5KkdYv+4K9L2fOG3VamK5JVxPxYLsr0CcT
+        PlyGEkFKM8FY01YAvCw+jlQKAljR8zwwv7+SOAh5vLdtYuCQafA7tkAk+cCOMxJtY/2/dVaCSyv
+        HSjdTKsbOEH0yeI9fjE4Ykj5q
+X-Received: by 2002:a17:907:93a:: with SMTP id au26mr2209521ejc.271.1620729864487;
+        Tue, 11 May 2021 03:44:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwV51LVSR8D2jr0aQfX6SMaIXLecAdVC3stzHo4XMOY59C4aPXhk95zXoM5nwQqDso0vtS4Zg==
+X-Received: by 2002:a17:907:93a:: with SMTP id au26mr2209504ejc.271.1620729864279;
+        Tue, 11 May 2021 03:44:24 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id cr21sm11105474ejc.2.2021.05.11.03.44.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 03:44:23 -0700 (PDT)
+Subject: Re: [PATCH 0/3] iio: accel: kxcjk-1013: Add support for KX023-1025
+To:     Stephan Gerhold <stephan@gerhold.net>,
+        Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robert Yang <decatf@gmail.com>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        ~postmarketos/upstreaming@lists.sr.ht
+References: <20210511095409.9290-1-stephan@gerhold.net>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <91258724-09cc-ed39-2277-6fbcca0c53e9@redhat.com>
+Date:   Tue, 11 May 2021 12:44:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="S5HS5MvDw4DmbRmb"
-Content-Disposition: inline
-In-Reply-To: <20210511060137.29856-1-yung-chuan.liao@linux.intel.com>
-X-Cookie: Beam me up, Scotty!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210511095409.9290-1-stephan@gerhold.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---S5HS5MvDw4DmbRmb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 5/11/21 11:54 AM, Stephan Gerhold wrote:
+> KX023-1025 [1] is another accelerometer from Kionix that has lots
+> of additional functionality compared to KXCJK-1013. It combines the
+> motion interrupt functionality from KXCJK with the tap detection
+> from KXTF9, plus a lot more other functionality.
+> 
+> This patch set does not add support for any of the extra functionality,
+> but makes basic functionality work with the existing kxcjk-1013 driver.
+> 
+> At first, the register map for the KX023-1025 seems quite different
+> from the other accelerometers supported by the kxcjk-1013.
+> However, it turns out that at least most of the register bits
+> still mean the same for KX023-1025.
+> 
+> This patch set refactors the kxcjk-1013 driver a little bit
+> to get the register addresses from a chip-specific struct.
+> The register bits can be re-used for all the different chips.
+> 
+> The KX023-1025 is used in several smartphones from Huawei.
+> I tested these changes on a Huawei Ascend G7, someone else reported
+> they also work fine on the Huawei Honor 5X (codename "kiwi").
+> 
+> [1]: https://kionixfs.azureedge.net/en/datasheet/KX023-1025%20Specifications%20Rev%2012.0.pdf
+> 
+> Stephan Gerhold (3):
+>   dt-bindings: iio: kionix,kxcjk1013: Document kionix,kx023-1025
+>   iio: accel: kxcjk-1013: Refactor configuration registers into struct
+>   iio: accel: kxcjk-1013: Add support for KX023-1025
 
-On Tue, May 11, 2021 at 02:01:37PM +0800, Bard Liao wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->=20
-> We recently added leading zeroes in dev_dbg() messages but forgot to
-> do the same for the peripheral device name. Adding leading zeroes
-> makes it easier to read manufacturer ID and part ID, e.g.:
+Thanks, the entire series looks good to me:
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
---S5HS5MvDw4DmbRmb
-Content-Type: application/pgp-signature; name="signature.asc"
+for the series.
 
------BEGIN PGP SIGNATURE-----
+Regards,
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCaYAEACgkQJNaLcl1U
-h9A9PQf9GxmcPe+vgFlr6JcfKL+2qC5EWADMO0W7l0JTdMEuY58BRW3fwbqm2bFu
-XuGRzHr1ChlW6Ths1ZbKq3xxJur8/qxXUIIS3CzNSNc5H1QeJmILZppQL7DipvHo
-bFnituIXXR4Aa2imqG6Zcogp5eDurHVjF8vTfPZNaJySnkUJLasVDsivh3YhZPP3
-7cJVoAC/tV7jRaVZvljyX7QTH9lO+3ymSnAqCyp8lUORuVPbzYU90YGYwkbPBTAw
-99f8ddtC2Ih22bKl/XOJI5EHykwrW2/TWpfH9PpRQ3oWILTlF5+5GaI4N5rIaBrm
-4Fs1DWR5MScqBVNZQAzy2zxR/wjqiw==
-=2b/5
------END PGP SIGNATURE-----
+Hans
 
---S5HS5MvDw4DmbRmb--
