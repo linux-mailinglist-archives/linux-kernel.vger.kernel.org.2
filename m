@@ -2,107 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE6D379CBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 04:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90A8379CED
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 04:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhEKCM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 22:12:27 -0400
-Received: from mga07.intel.com ([134.134.136.100]:21766 "EHLO mga07.intel.com"
+        id S229955AbhEKC2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 22:28:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231260AbhEKCLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 22:11:24 -0400
-IronPort-SDR: 99IAaSA8TVxYBFNSfAf7CkcEVomh8p6QZLeNfqyhXNvMyVypOaITWZxxTZPkXLGg3i4XkcJdPi
- cPRj7bv3kZiA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="263265370"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="263265370"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 19:09:15 -0700
-IronPort-SDR: 12UrCBllK/iUd3cIBR8EyB4znkBaqBjZYG4KZszFJKVgsjOk30T4wuMafdyH4Yk24bdiadvSZs
- cT35PbYaLaOw==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="434072610"
-Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 19:09:13 -0700
-Date:   Tue, 11 May 2021 10:26:14 +0800
-From:   Oliver Sang <oliver.sang@intel.com>
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     Roman Gushchin <guro@fb.com>,
-        Pratik Sampat <psampat@linux.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>,
-        "lkp@intel.com" <lkp@intel.com>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "zhengjun.xing@intel.com" <zhengjun.xing@intel.com>
-Subject: Re: [percpu]  ace7e70901:  aim9.sync_disk_rw.ops_per_sec -2.3%
- regression
-Message-ID: <20210511022614.GB8539@xsang-OptiPlex-9020>
-References: <20210427073448.GD32408@xsang-OptiPlex-9020>
- <YItcfQfZlNZTmQKR@carbon.dhcp.thefacebook.com>
- <40632FBD-8874-4B6C-A945-F2EBC96CF12B@fb.com>
- <20210507030606.GA27263@xsang-OptiPlex-9020>
- <YJV+Vn9eGfIlxDQE@carbon.dhcp.thefacebook.com>
- <YJWQE8AFjyYpsLYA@google.com>
+        id S229628AbhEKC2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 22:28:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FEF561466;
+        Tue, 11 May 2021 02:27:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620700051;
+        bh=0s5VHawRtxwlwlHKrz6cNOOfyLZenbHb07VdzgiSQao=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JoN7wK3NJoPA93GxMC4NV895JVH4+hH+bPAzIWmqlZjA9NtTihRw1kgg1VMNvhsoq
+         /HaRWgsJMEn2xRmw5Hp5dSPaHRu59ow5OjN8+1eX4GobVH4jPZ/PPcrJSh7yYtqb06
+         sYKp8XuIkzrAL6vrerPOorZLDoHRWWyBlc9JHUUlAiwdi9no9ksjGIipY4BC2vvbHK
+         eOMPyzOrkFzhwJB2j10fav3AgO1lofoZ1NLlF7C/D/jmlofYtiq5vze5//QvTkCSgo
+         DQrt1XHEcqitSYbPQZ+ptkJw0XcVBuwl2QWzbxI/HJvFWHlqmlNPwOCRq+igLcFgbG
+         1ApfrHfcYgXmA==
+Date:   Tue, 11 May 2021 10:27:25 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, catalin.marinas@arm.com,
+        will@kernel.org, bjorn.andersson@linaro.org, krzk@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] arm64: dts: imx8mq-nitrogen: add lt8912 MIPI-DSI
+ to HDMI
+Message-ID: <20210511022725.GC3425@dragon>
+References: <20210331232356.2204476-1-adrien.grassein@gmail.com>
+ <20210331232356.2204476-4-adrien.grassein@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJWQE8AFjyYpsLYA@google.com>
+In-Reply-To: <20210331232356.2204476-4-adrien.grassein@gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dennis,
-
-On Fri, May 07, 2021 at 07:08:03PM +0000, Dennis Zhou wrote:
-> On Fri, May 07, 2021 at 10:52:22AM -0700, Roman Gushchin wrote:
-> > On Fri, May 07, 2021 at 11:06:06AM +0800, Oliver Sang wrote:
-> > > hi Roman,
-> > >  
-> > > On Thu, May 06, 2021 at 12:54:59AM +0000, Roman Gushchin wrote:
-> > > > Ping
-> > > 
-> > > sorry for late.
-> > > 
-> > > the new patch makes the performance a little better but still has
-> > > 1.9% regression comparing to
-> > > f183324133 ("percpu: implement partial chunk depopulation")
-> > 
-> > Hi Oliver!
-> > 
-> > Thank you for testing it!
-> > 
-> > Btw, can you, please, confirm that the regression is coming specifically
-> > from ace7e70901 ("percpu: use reclaim threshold instead of running for every page")?
-> > I do see *some* regression in my setup, but the data is very noisy, so I'm not sure
-> > I can confirm it.
-> > 
-> > Thanks!
+On Thu, Apr 01, 2021 at 01:23:55AM +0200, Adrien Grassein wrote:
+> Add support of the lt8912b in the DTB.
+> This adds the support of the DB_DSIHD daugther board from
+> Boundary Devices.
 > 
-> Thanks Oliver and Roman. If this is the case, I'll drop the final patch
-> and just merge up to f183324133 ("percpu: implement partial chunk
-> depopulation") into for-next as this is v5.14 anyway.
+> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
+> ---
+>  .../boot/dts/freescale/imx8mq-nitrogen.dts    | 120 ++++++++++++++++++
+>  1 file changed, 120 insertions(+)
 > 
-> Oliver, is there a way to trigger the kernel test robot for a specific
-> test?
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts b/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
+> index 04992cbba56e..4ffd23ea705f 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
+> @@ -34,6 +34,19 @@ power {
+>  		};
+>  	};
+>  
+> +	hdmi-connector {
+> +		compatible = "hdmi-connector";
+> +		ddc-i2c-bus = <&ddc_i2c_bus>;
+> +		label = "hdmi";
+> +		type = "a";
+> +
+> +		port {
+> +			hdmi_connector_in: endpoint {
+> +				remote-endpoint = <&lt8912_out>;
+> +			};
+> +		};
+> +	};
+> +
+>  	reg_usb_otg_vbus: regulator-usb-otg-vbus {
+>  		compatible = "regulator-fixed";
+>  		pinctrl-names = "default";
+> @@ -81,6 +94,9 @@ reg_vref_5v: regulator-vref-5v {
+>  	};
+>  };
+>  
+> +&dphy {
+> +	status = "okay";
+> +};
+>  
+>  &fec1 {
+>  	pinctrl-names = "default";
+> @@ -193,6 +209,97 @@ rtc@68 {
+>  	};
+>  };
+>  
+> +&i2c4 {
+> +	clock-frequency = <100000>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_i2c4>;
+> +	status = "okay";
+> +
+> +	pca9546: i2cmux9546@70 {
 
-sorry for late.
-not sure what kind of specific test you want robot to do?
-if you mean for-next branch, if the branch is monitored by kernel test robot,
-after merge, it will be tested by robot automatically and the bisect will be
-triggered if there is still regression.
+Node name should be generic, so 9546 should be dropped from there?
 
-I found the ace7e70901 has already been dropped from original branch (dennis-percpu/for-5.14),
-and we have data for this branch as below. from data, the f183324133 (current
-branch tip) doesn't introduce regression comparing 5.12-rc7 in our tests.
+> +		compatible = "nxp,pca9546";
+> +		reg = <0x70>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		i2c4@0 {
 
-f183324133ea5 percpu: implement partial chunk depopulation                 103673.09 102188.39 104325.06 104038.4 102908.57 104057.06
-1c29a3ceaf5f0 percpu: use pcpu_free_slot instead of pcpu_nr_slots - 1      104777.31 102225.93 101657.6
-8ea2e1e35d1eb percpu: factor out pcpu_check_block_hint()                   102290.78 101853.87 102541.65
-d434405aaab7d Linux 5.12-rc7                                               102103.06 102248.12 101906.81 103033.13 102043.33
+Is number 4 really needed in node name?
 
+> +			reg = <0>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			clock-frequency = <100000>;
+> +
+> +			hdmi-bridge@48 {
+> +				compatible = "lontium,lt8912b";
+> +				reg = <0x48> ;
+> +				reset-gpios = <&max7323 0 GPIO_ACTIVE_LOW>;
+> +
+> +				ports {
+> +					#address-cells = <1>;
+> +					#size-cells = <0>;
+> +
+> +					port@0 {
+> +						reg = <0>;
+> +
+> +						hdmi_out_in: endpoint {
+> +							data-lanes = <1 2 3 4>;
+> +							remote-endpoint = <&mipi_dsi_out>;
+> +						};
+> +					};
+> +
+> +					port@1 {
+> +						reg = <1>;
+> +
+> +						lt8912_out: endpoint {
+> +							remote-endpoint = <&hdmi_connector_in>;
+> +						};
+> +					};
+> +				};
+> +			};
+> +		};
+> +
+> +		ddc_i2c_bus: i2c4@1 {
+> +			reg = <1>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			clock-frequency = <100000>;
+> +		};
+> +
+> +		i2c4@3 {
+> +			reg = <3>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			clock-frequency = <100000>;
+> +
+> +			max7323: max7323@68 {
 
+Can we have a generic node name for this device?
+
+> +				compatible = "maxim,max7323";
+> +				pinctrl-names = "default";
+> +				pinctrl-0 = <&pinctrl_max7323>;
+> +				gpio-controller;
+> +				reg = <0x68>;
+> +				#gpio-cells = <2>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&lcdif {
+> +	status = "okay";
+> +};
+> +
+> +&mipi_dsi {
+> +	status = "okay";
+
+Move it to end of property list.
+
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	ports {
+> +		port@1 {
+> +			reg = <1>;
+
+Newline between property and child node.
+
+Shawn
+
+> +			mipi_dsi_out: endpoint {
+> +				remote-endpoint = <&hdmi_out_in>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+>  &uart1 { /* console */
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_uart1>;
+> @@ -368,6 +475,19 @@ MX8MQ_IOMUXC_GPIO1_IO06_GPIO1_IO6		0x49
+>  		>;
+>  	};
+>  
+> +	pinctrl_i2c4: i2c4grp {
+> +		fsl,pins = <
+> +			MX8MQ_IOMUXC_I2C4_SCL_I2C4_SCL			0x4000007f
+> +			MX8MQ_IOMUXC_I2C4_SDA_I2C4_SDA			0x4000007f
+> +		>;
+> +	};
+> +
+> +	pinctrl_max7323: max7323grp {
+> +		fsl,pins = <
+> +			MX8MQ_IOMUXC_NAND_RE_B_GPIO3_IO15 0x19
+> +		>;
+> +	};
+> +
+>  	pinctrl_reg_arm_dram: reg-arm-dramgrp {
+>  		fsl,pins = <
+>  			MX8MQ_IOMUXC_SAI5_RXD3_GPIO3_IO24	0x16
+> -- 
+> 2.25.1
 > 
-> Thanks,
-> Dennis
