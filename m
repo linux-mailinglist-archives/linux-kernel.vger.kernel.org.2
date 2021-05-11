@@ -2,143 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F175F379AF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 01:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044AB379AFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhEJXx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 19:53:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49594 "EHLO
+        id S229892AbhEKABl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 20:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbhEJXx6 (ORCPT
+        with ESMTP id S229599AbhEKABk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 19:53:58 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A75C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 16:52:52 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id l7so20745777edb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 16:52:52 -0700 (PDT)
+        Mon, 10 May 2021 20:01:40 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A737C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 17:00:35 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id bf4so20732905edb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 17:00:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kx6oUauIPkvTk0qHjH/BPe+EKO5jgGnmsNTNs8OpwU4=;
-        b=F21AZa/gH7HoM02tMSQcpw1ye2WThR5tWbu3jPgycC//ZTah/jhb2Eker2Pob1NzOY
-         KTZN4aFjahDWC2jBl4NcPVq6/usj59m+aZD2T+vv9BA2lD9p9Y6NohofWw+QrYEIXfje
-         UR0JAM/0yV4lBB4RFaDn59u8nopOcbHzeLys9DQIi3M8iu2z/sSOt1J2XB4IN8+xsAZj
-         s+wV40kQ5pP7ZkRs98CGnT4dJ71FPel9+QMqcfEDzf3j+gqJDOfJLpLpCX4ewrtlIBuH
-         NHkodG3ElLe4CBWni87KEyyG3ouMFQAyVgvBdAjbKSSXzLYyOIRnl8QroPNi/GHkznt5
-         ULmA==
+        bh=COJ8NBBBzki8eCqYkhkubi396uoYtn+d54xPdf/XDGI=;
+        b=fH9edYhIhXNS45T3MKPNZuNyZ4Dr9Kbmj3SwoR11BHS2MVE+a5yRkITV4a69S0kjHu
+         o7S9NeYgpsPgfHtBs8nzvPaYYEcZ7URxyvTqudEr5eWUINuOTQDjXIFcTSgD1KPlf86I
+         4lD5FYlp4kKoYqU5yQJd9dwADWLWNUDiEjNFEHoUPIE/FzVZNqziWzHZlr7/U8TWv8xQ
+         6pTsrld5W085RCcnKL1jgP2ngyknZ11vYsFI0Y4XDkzLqFJJAtqxyok7tNqKpis0klXB
+         54Je8GGRJtt4olvZMQJaSujDP0tgo4TIR16tA8Ii9IdF2/HynKu8XhOwpVAoQklbK1fC
+         PanA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kx6oUauIPkvTk0qHjH/BPe+EKO5jgGnmsNTNs8OpwU4=;
-        b=ipo+9HTn7zArASKncfQXHHXiU0eNqzadHCWByIxwQSBPY518AHMnAi0BAh7L/QvMcB
-         uT55SLPMDa8EULWzkpzk8H8/ML2td3s17ZnQt6cDMkMWE3/fbSUVG35DRJ0fVI320wXq
-         zCkW2asTC5pdvaYb7eyzUCd8VDrRdfnHdf7eULqmS8sQUwkT3GtdoZeb8uzNaxQD3FhP
-         YsqR8lwJ5tB02y2uoMuPymBDblRAU/EU8rADShyokK0ezMBKB2/5w7hc6XAE4Z/eB9R4
-         vsk8nwh0ERpIxZTJ2bURBnLrPwBYWqn2D1sNB1IfAH+/sXSA9XLkOyY9qKg+llVg0XIJ
-         awPw==
-X-Gm-Message-State: AOAM533ZrZ604LPOXflfUeUoFUdNKypdr2q1OtRmVP7vYPt7z9hiyufS
-        pDekN7TobWxaodHKTReSf5MUhUYxjwP0jrT2WEojsTf2wA==
-X-Google-Smtp-Source: ABdhPJxWTIhe2HtbmanC5ezn2X9G/dioc2ajb3y0CBjEnZpejv+AMFdXJzAhgjSJj75EJvyNQrQazaSQR0An2wYQTCg=
-X-Received: by 2002:aa7:de9a:: with SMTP id j26mr9618343edv.269.1620690771015;
- Mon, 10 May 2021 16:52:51 -0700 (PDT)
+        bh=COJ8NBBBzki8eCqYkhkubi396uoYtn+d54xPdf/XDGI=;
+        b=G46/mcyvh4/9epX06GFO3lfMNZ2c6PhwwykjX9N6/7QHTbLErldSkl/alIPh4hc2jI
+         90lpNPy3h4sDarodD0J7JU2XtLXBCem3c0Gxjdz7Vf6WgKcyU2VE4gIojR/x+vhYNvvU
+         YCwlI7iyzdFr7MgmEelUGQiGtj7jb05wab9iWis+m7QMxqO2mi/cVSY4NJ33U6PKIFap
+         PeBKwvht9PuiV3RRWB9KPg3ApUz/WBGzFbmubX4NAHZngiqk2hsuwKDGNjl7WGNohPx0
+         UGKnTN17znT+Y7W78CHymLp0lRa/ZH+kF1FHOjQ7ZOmlJkrk1OXeLyl2BIlvO1YZ6s+y
+         CYQQ==
+X-Gm-Message-State: AOAM530JTf8M82l3lIQei4HE8EOBjmWa1YWTRSSNpD+Byk1U93274qAC
+        gOifS5vpYbn1ZF5/KGIuHu8snsXbhtz/7v5KAGM=
+X-Google-Smtp-Source: ABdhPJwMnW4d/P/eJMXyAPqHrDckrcImg4v7R2xNngA0QSNxtW4NN3Xb3qZk0Ph3lDWgq7Efq08BJMal5JOhjysYCxs=
+X-Received: by 2002:a05:6402:234b:: with SMTP id r11mr32402032eda.137.1620691233856;
+ Mon, 10 May 2021 17:00:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <604ceafd516b0785fea120f552d6336054d196af.1620414949.git.rgb@redhat.com>
- <7ee601c2-4009-b354-1899-3c8f582bf6ae@schaufler-ca.com> <20210508015443.GA447005@madcap2.tricolour.ca>
- <242f107a-3b74-c1c2-abd6-b3f369170023@schaufler-ca.com>
-In-Reply-To: <242f107a-3b74-c1c2-abd6-b3f369170023@schaufler-ca.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 10 May 2021 19:52:40 -0400
-Message-ID: <CAHC9VhQdV93G5N_BKsxuDCtFbm9-xvAkve02t5sGOi9Mam2Wtg@mail.gmail.com>
-Subject: Re: [PATCH V1] audit: log xattr args not covered by syscall record
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Richard Guy Briggs <rgb@redhat.com>, linux-api@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>
+References: <CAOVCmzGX54u4VLUSLt_yEM4E8MQNLwW4VTkNVurPXbCuQX6d_g@mail.gmail.com>
+In-Reply-To: <CAOVCmzGX54u4VLUSLt_yEM4E8MQNLwW4VTkNVurPXbCuQX6d_g@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 10 May 2021 17:00:22 -0700
+Message-ID: <CAHbLzko8rHfE-3k=e+fdW2+S1Cc0his8-=Ch08HuMMmf=RJsDg@mail.gmail.com>
+Subject: Re: Profiling execution time for __alloc_pages_nodemask
+To:     Shivank Garg <shivankgarg98@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        gregkh@linuxfoundation.org, sergey.senozhatsky@gmail.com,
+        pmladek@suse.com, David Hildenbrand <david@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 12:30 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> On 5/7/2021 6:54 PM, Richard Guy Briggs wrote:
-> > On 2021-05-07 14:03, Casey Schaufler wrote:
-> >> On 5/7/2021 12:55 PM, Richard Guy Briggs wrote:
-> >>> The *setxattr syscalls take 5 arguments.  The SYSCALL record only lists
-> >>> four arguments and only lists pointers of string values.  The xattr name
-> >>> string, value string and flags (5th arg) are needed by audit given the
-> >>> syscall's main purpose.
-> >>>
-> >>> Add the auxiliary record AUDIT_XATTR (1336) to record the details not
-> >>> available in the SYSCALL record including the name string, value string
-> >>> and flags.
-> >>>
-> >>> Notes about field names:
-> >>> - name is too generic, use xattr precedent from ima
-> >>> - val is already generic value field name
-> >>> - flags used by mmap, xflags new name
-> >>>
-> >>> Sample event with new record:
-> >>> type=PROCTITLE msg=audit(05/07/2021 12:58:42.176:189) : proctitle=filecap /tmp/ls dac_override
-> >>> type=PATH msg=audit(05/07/2021 12:58:42.176:189) : item=0 name=(null) inode=25 dev=00:1e mode=file,755 ouid=root ogid=root rdev=00:00 obj=unconfined_u:object_r:user_tmp_t:s0 nametype=NORMAL cap_fp=none cap_fi=none cap_fe=0 cap_fver=0 cap_frootid=0
-> >>> type=CWD msg=audit(05/07/2021 12:58:42.176:189) : cwd=/root
-> >>> type=XATTR msg=audit(05/07/2021 12:58:42.176:189) : xattr="security.capability" val=01 xflags=0x0
-> >> Would it be sensible to break out the namespace from the attribute?
-> >>
-> >>      attrspace="security" attrname="capability"
-> > Do xattrs always follow this nomenclature?  Or only the ones we care
-> > about?
+On Mon, May 10, 2021 at 7:57 AM Shivank Garg <shivankgarg98@gmail.com> wrote:
 >
-> Xattrs always have a namespace (man 7 xattr) of "user", "trusted",
-> "system" or "security". It's possible that additional namespaces will
-> be created in the future, although it seems unlikely given that only
-> "security" is widely used today.
-
-Why should audit care about separating the name into two distinct
-fields, e.g. "attrspace" and "attrname", instead of just a single
-"xattr" field with a value that follows the "namespace.attribute"
-format that is commonly seen by userspace?
-
-> >> Why isn't val= quoted?
-> > Good question.  I guessed it should have been since it used
-> > audit_log_untrustedstring(), but even the raw output is unquoted unless
-> > it was converted by auditd to unquoted before being stored to disk due
-> > to nothing offensive found in it since audit_log_n_string() does add
-> > quotes.  (hmmm, bit of a run-on sentence there...)
-> >
-> >> The attribute value can be a .jpg or worse. I could even see it being an eBPF
-> >> program (although That Would Be Wrong) so including it in an audit record could
-> >> be a bit of a problem.
-> > In these cases it would almost certainly get caught by the control
-> > character test audit_string_contains_control() in
-> > audit_log_n_untrustedstring() called from audit_log_untrustedstring()
-> > and deliver it as hex.
+> Hi Everyone!
 >
-> In that case I'm more concerned with the potential size than with
-> quoting. One of original use cases proposed for xattrs (back in the
-> SGI Irix days) was to attach a bitmap to be used as the icon in file
-> browsers as an xattr. Another was to attach the build instructions
-> and source used to create a binary. None of that is information you'd
-> want to see in a audit record. On the other hand, if the xattr was an
-> eBPF program used to make access control decisions, you would want at
-> least a reference to it in the audit record.
+> I want to profile the time taken to execute the __alloc_pages_nodemask
+> for different linux configurations/parameters.
+> To measure the execution time, I use the ktime_get() apis. I get the
+> ktime_get() on the top, and I want to do ktime_sub(ktime_get(),ktime)
+> and record it in a tracepoint.
+> However, the patch on implementation prevents the kernel from booting
+> up. I debugged the bug to find out that the issue recurs on adding
+> ktime_get() inside the __alloc_pages_nodemask path. So, that the
+> kernel fails to boot up ( and show the blank screen without any logs )
+> I'm using the Linux kernel 5.6.13 (5821a5593fa9f28eb6fcc95c35d00454d9bb8624)
 
-It would be interesting to see how this code would handle arbitrarily
-large xattr values, or at the very least large enough values to blow
-up the audit record size.
+Is there any reason that prevents you from using some advanced tools,
+i.e. perf, bcc/bpftrace, etc? They are much simpler than adding
+instrumentation in kernel.
 
-As pointed out elsewhere in this thread, and brought up again above
-(albeit indirectly), I'm guessing we don't really care about *all*
-xattrs, just the "special" xattrs that are security relevant, in which
-case I think we need to reconsider how we collect this data.
-
-I think it would also be very good to see what requirements may be
-driving this work.  Is it purely a "gee, this seems important" or is
-it a hard requirement in a security certification for example.
-
--- 
-paul moore
-www.paul-moore.com
+>
+> Is it an expected behavior? or a BUG? Has anyone else faced the same issue?
+>
+> Can you please suggest, what would be a good way to measure execution
+> time for page allocation (if not ktime_get)
+>
+> Stay Safe!
+> Best Regards,
+> Shivank Garg
+> Open-Source Enthusiast and Student, IIT Kanpur
+>
