@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A0037A7E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DA537A7E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbhEKNk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 09:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
+        id S231501AbhEKNmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 09:42:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbhEKNkz (ORCPT
+        with ESMTP id S229921AbhEKNmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 09:40:55 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22EF3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 06:39:48 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id x15so5273703oic.13
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 06:39:48 -0700 (PDT)
+        Tue, 11 May 2021 09:42:04 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BB3C061574;
+        Tue, 11 May 2021 06:40:58 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id l6so19075714oii.1;
+        Tue, 11 May 2021 06:40:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=DiQlUoRS1KcIp4jb80Idacb5jWTO0UHM89k4RPNvhAM=;
-        b=V0SPnP29kVRwVzyYu3yn381mPXr37L4GkNlTSpRf9Z1Lg+xnDbQdJV76vtPxr3dW8v
-         G8wcNTNdk/tqvS8IWkyzfV/1AMa1opftnowZP2pvmspSIGvp1WMjZIONfBoapA12eCEl
-         pif4tQNvizE6BFuH2BaDH4ht+YXXoHhWNA0fk=
+        bh=u0zqoJY9+XLKCnvlRfIASVv7tiUTgIrBxHTEpVSQbhA=;
+        b=uu4t+R6kaUZp8RlXk/Xxbth15iW6zgLgnVeCKLaiqYemeoCLWpfI7qDqSjYS585XjB
+         ZyzbivfhYYSSM4zuLtNH6EakbchJDrrJ4VEB5gzkJo0ycFjmGxXLDRCulc/OdbY7MVrZ
+         s8BFi9rrooCQ6bgOq17r7yamg/AWwBSnlw6clIA7DOq1OPQ/Kx2QzugQAfOzJzuZiqc8
+         r/XYE2o5grxono6hU3+RFLtSreKjsJy0M6ST1JU1gkUuVf0mKEVcjH+6ulgB/lfNn9rR
+         ta4yipc43eKF6A0MDlYNBj+/wS1zOvcSSLwUKf5s+3oHw33NujLpruTV/615pkE1ekna
+         JmsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DiQlUoRS1KcIp4jb80Idacb5jWTO0UHM89k4RPNvhAM=;
-        b=ZqEK9DfkMNeH8nm8ijSGg160cq7kh5Y3NJCfiB4yD3dI+DxgQifp7nE9e2iaSJ/rKw
-         k9f3rvHyXKNYSr9dl47JYAvBzpJWbH1aAV8w6oBayyvbb6az//ZJUSXWjwIqELYS1Jdm
-         byzKDPoUT/sole4DophkDEHBw8rQhP2kt6gZYN9gAtNkCFvIbaHkmhxTz20Y+Hb7A2Qd
-         LmO9/ua+UOguYFbFVhjh1+Z0bG1ZKgTfPBoAZ7VHKBTIVKQLQhJs+MchdfQKO+xYEwX9
-         oQcoTexffLz2LqPm/ejYdmANSwQFmsc0iMYjCOd1AiyXv3uvxKKD0TTngE9GoGIXWHI6
-         h/qQ==
-X-Gm-Message-State: AOAM532ZuEKMPbj4YsL6StidchVk3Djrv3qS3VpsXlFExjz2PB6EfDYE
-        e0HA7ogYgOBnXPHwr4jAFTl//jvXzDqLnmJGtRdQSA==
-X-Google-Smtp-Source: ABdhPJypOemzDTmFObHTWqXEMZiMoy0D4neOiUWh21fpySuirlm4zFsGDyTRcXNm9CEqwqwnkS3yp1efP8vxyCLQf5s=
-X-Received: by 2002:aca:df87:: with SMTP id w129mr22385363oig.128.1620740387581;
- Tue, 11 May 2021 06:39:47 -0700 (PDT)
+        bh=u0zqoJY9+XLKCnvlRfIASVv7tiUTgIrBxHTEpVSQbhA=;
+        b=W87r5oxRS52xsOcWAsQpWo/lwgv8eVjFzrVg0HfHR75BkId8NNPNnoOf+WqfVu93Oy
+         4vdHLwG5IGo/fJx8fzbKSn1yrjjBJ7ZzycReLIocQFD/DLt1YsH/mYezokerwite4W+M
+         DSmYiSZYURsLcWkYzWbZImRgEw4/aPv5klmTpumZPbVrMBAuUx6kJEZd3FMMYHYQiSEw
+         bBoxzhN49Me2ahtPAGnbzN+UD7sFzN84Dn8jANN7uK3LykwEwVQ/fmAJRjmWkBXkLuvz
+         o3SFNuz0im0nQhdSsf0rvw98cdHXBT9U5mKRUKI/Hwqyd216p/2Q4Ksj5bYyhbv3XSrk
+         /KWg==
+X-Gm-Message-State: AOAM531LT9vn87mmdgLPasqLTTKyHP+yIDuDiMu4iq+eUqku8fP5zjnd
+        h4Twv5x1PdSFlotgU1zDVGyLI4wAHpFU49KSWP1NTBLb
+X-Google-Smtp-Source: ABdhPJzAdt/19SmncD8g04TLdvUfe9O2hOGTMNT9cOTcdXWWFA1/EOROhg+JJ6pUIlEjUzG22F7c15q9pJ7wUcsGW7s=
+X-Received: by 2002:a05:6808:206:: with SMTP id l6mr1326604oie.5.1620740457614;
+ Tue, 11 May 2021 06:40:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210508074118.1621729-1-swboyd@chromium.org> <YJlZwYS+oH7W5WjO@phenom.ffwll.local>
- <CAE-0n52S=LFRx93qVyWBpF5PmdCEbWH_+HnN0Do9W45kiJLCbQ@mail.gmail.com>
- <CAKMK7uE_yrXNdEYTf-snNU9dS+=6AKOmUxRuLSHLWBTOtVwpmg@mail.gmail.com>
- <CAE-0n50d8_OtZTpBGaz0uhj6AO823_kwHg9+SJK6ar=e+rGxFA@mail.gmail.com> <CAJZ5v0h42fTKueFxrB6fpc9YBVNyDsCBryAf_geS-=0+OQQqjg@mail.gmail.com>
-In-Reply-To: <CAJZ5v0h42fTKueFxrB6fpc9YBVNyDsCBryAf_geS-=0+OQQqjg@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Tue, 11 May 2021 15:39:36 +0200
-Message-ID: <CAKMK7uHXon=k0AxF5fagz1_PW1WONppAZP1cbM72ujYN=pXn+A@mail.gmail.com>
-Subject: Re: [PATCH] component: Move host device to end of device lists on binding
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+References: <20210511084206.3de50d5b@canb.auug.org.au> <f2fd1c01-d559-b8ac-b342-897c74ae852b@gatech.edu>
+In-Reply-To: <f2fd1c01-d559-b8ac-b342-897c74ae852b@gatech.edu>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 11 May 2021 09:40:46 -0400
+Message-ID: <CADnq5_NNaOEe22WoyKmrXbe5rZMx-t7KoOZay-uSYa6s2eAv8A@mail.gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the amdgpu tree
+To:     David Ward <david.ward@gatech.edu>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Russell King <rmk+kernel@arm.linux.org.uk>,
-        Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 12:52 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Mon, May 10, 2021 at 9:08 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> [cut]
->
-> >
-> > >
-> > > > I will try it, but then I wonder about things like system wide
-> > > > suspend/resume too. The drm encoder chain would need to reimplement the
-> > > > logic for system wide suspend/resume so that any PM ops attached to the
-> > > > msm device run in the correct order. Right now the bridge PM ops will
-> > > > run, the i2c bus PM ops will run, and then the msm PM ops will run.
-> > > > After this change, the msm PM ops will run, the bridge PM ops will run,
-> > > > and then the i2c bus PM ops will run. It feels like that could be a
-> > > > problem if we're suspending the DSI encoder while the bridge is still
-> > > > active.
-> > >
-> > > Yup suspend/resume has the exact same problem as shutdown.
-> >
-> > I think suspend/resume has the exact opposite problem. At least I think
-> > the correct order is to suspend the bridge, then the encoder, i.e. DSI,
-> > like is happening today. It looks like drm_atomic_helper_shutdown()
-> > operates from the top down when we want bottom up? I admit I have no
-> > idea what is supposed to happen here.
->
-> Why would the system-wide suspend ordering be different from the
-> shutdown ordering?
+I'll fix it up.
 
-At least my point was that both shutdown and suspend/resume have the
-same problem, and the righ fix is (I think at least) to add these
-hooks to the component.c aggregate ops structure. Hence just adding
-new callbacks for shutdown will be an incomplete solution.
+Alex
 
-I don't feel like changing the global device order is the right
-approach, since essentially that's what component was meant to fix.
-Except it's incomplete since it only provides a solution for
-bind/unbind and not for shutdown or suspend/resume as other global
-state changes. I think some drivers "fixed" this by putting stuff like
-drm_atomic_helper_shutdown/suspend/resume into early/late hooks, to
-make sure that everything is ready with that trick. But that doesn't
-compose very well :-/
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+On Mon, May 10, 2021 at 7:08 PM David Ward <david.ward@gatech.edu> wrote:
+>
+> On 5/10/21 6:42 PM, Stephen Rothwell wrote:
+> > Hi all,
+> >
+> > In commit
+> >
+> >    0b62b6ed6959 ("drm/amd/display: Initialize attribute for hdcp_srm sysfs file")
+> >
+> > Fixes tag
+> >
+> >    Fixes: a193ed2094ba ("drm/amd/display: Add sysfs interface for set/get srm")
+> >
+> > has these problem(s):
+> >
+> >    - Subject does not match target commit subject
+> >      Just use
+> >       git log -1 --format='Fixes: %h ("%s")'
+> >
+> > Maybe you meant
+> >
+> > Fixes: 9037246bb2da ("drm/amd/display: Add sysfs interface for set/get srm")
+> >
+> My apologies. The correct hash is in fact 9037246bb2da. (Commit
+> a193ed2094ba introduced HDCP handling in amdgpu_pm, but did not include
+> the sysfs file.) It seems I inadvertently copied the wrong hash when
+> preparing the commit message.
+>
+> Please let me know if I need to resubmit this patch.
+>
+> Thank you,
+>
+> David
+>
+>
