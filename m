@@ -2,161 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A5237A92B
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32EE37A931
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhEKO1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231713AbhEKO1T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:27:19 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCADC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:26:13 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id i4so26565729ybe.2
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:26:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CEaJC4cb5Y4A+8IsZZEeBM2QdsYN5Y7DFCllFllvi+8=;
-        b=zHX1LMvKjHtyR4sV+y0aqvfoFcsp0EjIHx5Pt5zG+iVHvcxKYTo3vrUGTaAWwd8n54
-         Sfqn8OV7GElBxhfBXlUssjujJWtAC4qSGRQRUdjhpxxfIF/QhMZuc4qpQhRqMR2wxO35
-         PUJFZ124qF2EtUdMTmUBpVLFUQUtq2V0+5HEOB02MRwMRFtF2H0ypRhbY9hAsMcY5VaX
-         NMWRowJcerYr/hEpfCDq56QNJVhvrpZzyFRgGaLU7Od2GT34GNf6kMsyWrhX+phrvlrk
-         he7jEFsGAUZVNd7E0mAorNTJN4vbw3juF/pR8H2tEAQ/4MVq5x3yPsBcSeKS4v/uiUHB
-         uX1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CEaJC4cb5Y4A+8IsZZEeBM2QdsYN5Y7DFCllFllvi+8=;
-        b=UMHbKzBFQsdah5B/5KG9lSinV0wI2I6IyJvq1pSRur4xN+3thUtmKueBWOpJuDwEq5
-         kfTYebpOXtSzJbqIojaG3lbF1v+wGOMEd7dcOgBFbR9QLKtTXhnf+jmgpdhlE32NZVOc
-         F3Lw1bY7g8jUEUGfX/8+7INw6d5zKPiFM3xcERX+en1PLeHgGRAY5Nn7jUEInFkcv/LG
-         XHBLRle1JPDxJ9zjdDoTGo8sFNG9qgYMxc9pQajA34Esy0u1TsZ/d1bqaDd2WRzwVQD/
-         pbILCUaFVEepaFDMQTN1JI8MfFlU4md5LW04v+DtVP2C1czBVhwcA+BtGGIschg3nhND
-         7yJA==
-X-Gm-Message-State: AOAM530CEndczRz9Vwm/tjU74oBuql8rfm8BeqabXzR7yP6K5DpAC8EN
-        IpdLI6dTUJhtVd0KD0/J297sMelJGEi+3FIua0gCEw==
-X-Google-Smtp-Source: ABdhPJzh4VjKqBeHWbxCHf0TChJFitLGXDaA/GUpbzyFXfVL/53v7XHycwNEzDPWQyzljYzsrL3I6khv5C0KKCJRTSQ=
-X-Received: by 2002:a25:d0cb:: with SMTP id h194mr28426645ybg.408.1620743172546;
- Tue, 11 May 2021 07:26:12 -0700 (PDT)
+        id S231868AbhEKO2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:28:03 -0400
+Received: from mga18.intel.com ([134.134.136.126]:45472 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231305AbhEKO2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:28:02 -0400
+IronPort-SDR: hlje2w2MOfuUlsrIaihSbJT9iRc5NAQsFB0vt/p0HhjhZN9pdBF+qlMwclwBk+G8lAZycdLTIT
+ uF4bF05ZOQYg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="186894771"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="186894771"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:26:55 -0700
+IronPort-SDR: XW+NcED4qTFOB/IBnZCqXZFhli+dJOuN8su+/RFqCtkejCR5hm1hClhEoUgdqAxlwDoc7zo1pL
+ fYu4uDAa/8tw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="392319995"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga006.jf.intel.com with ESMTP; 11 May 2021 07:26:52 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id D3A06249; Tue, 11 May 2021 17:27:12 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v4 0/8] spi: pxa2xx: Set of cleanups (part 1+)
+Date:   Tue, 11 May 2021 17:27:03 +0300
+Message-Id: <20210511142711.23244-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
- <20210511133118.15012-2-mcroce@linux.microsoft.com> <YJqKfNh6l3yY2daM@casper.infradead.org>
- <YJqQgYSWH2qan1GS@apalos.home> <YJqSM79sOk1PRFPT@casper.infradead.org>
-In-Reply-To: <YJqSM79sOk1PRFPT@casper.infradead.org>
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date:   Tue, 11 May 2021 17:25:36 +0300
-Message-ID: <CAC_iWj+Tw9DzzzVj-F9AwzBN_OJV_HN2miJT4KTBH_Uei_V2ZA@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 1/4] mm: add a signature in struct page
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
-        Networking <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 at 17:19, Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Tue, May 11, 2021 at 05:11:13PM +0300, Ilias Apalodimas wrote:
-> > Hi Matthew,
-> >
-> > On Tue, May 11, 2021 at 02:45:32PM +0100, Matthew Wilcox wrote:
-> > > On Tue, May 11, 2021 at 03:31:15PM +0200, Matteo Croce wrote:
-> > > > @@ -101,6 +101,7 @@ struct page {
-> > > >                    * 32-bit architectures.
-> > > >                    */
-> > > >                   unsigned long dma_addr[2];
-> > > > +                 unsigned long signature;
-> > > >           };
-> > > >           struct {        /* slab, slob and slub */
-> > > >                   union {
-> > >
-> > > No.  Signature now aliases with page->mapping, which is going to go
-> > > badly wrong for drivers which map this page into userspace.
-> > >
-> > > I had this as:
-> > >
-> > > +                       unsigned long pp_magic;
-> > > +                       unsigned long xmi;
-> > > +                       unsigned long _pp_mapping_pad;
-> > >                         unsigned long dma_addr[2];
-> > >
-> > > and pp_magic needs to be set to something with bits 0&1 clear and
-> > > clearly isn't a pointer.  I went with POISON_POINTER_DELTA + 0x40.
-> >
-> > Regardless to the changes required, there's another thing we'd like your
-> > opinion on.
-> > There was a change wrt to the previous patchset. We used to store the
-> > struct xdp_mem_info into page->private.  On the new version we store the
-> > page_pool ptr address in page->private (there's an explanation why on the
-> > mail thread, but the tl;dr is that we can get some more speed and keeping
-> > xdp_mem_info is not that crucial). So since we can just store the page_pool
-> > address directly, should we keep using page->private or it's better to
-> > do:
-> >
-> > +                       unsigned long pp_magic;
-> > +                       unsigned long pp_ptr;
-> > +                       unsigned long _pp_mapping_pad;
-> >                         unsigned long dma_addr[2];
-> > and use pp_ptr?
->
-> I'd rather you didn't use page_private ... Any reason not to use:
->
->                         unsigned long pp_magic;
->                         struct page_pool *pp;
->                         unsigned long _pp_mapping_pad;
->                         unsigned long dma_addr[2];
->
-> ?
+Set of cleanups here and there related to the SPI PXA2xx driver.
+On top of them, adding the special type for Intel Merrifield.
 
-Nope not at all, either would work. we'll switch to that
+In v4:
+- dropped applied patches
+
+In v3:
+- rebased on top of v5.13-rc1 and/or spi/for-5,14
+
+In v2:
+- cover letter (Mark)
+- drop moving the header in patch 5 (Mark)
+
+Andy Shevchenko (8):
+  spi: pxa2xx: Introduce int_stop_and_reset() helper
+  spi: pxa2xx: Reuse int_error_stop() in pxa2xx_spi_slave_abort()
+  spi: pxa2xx: Use pxa_ssp_enable()/pxa_ssp_disable() in the driver
+  spi: pxa2xx: Extract pxa2xx_spi_update() helper
+  spi: pxa2xx: Extract clear_SSCR1_bits() helper
+  spi: pxa2xx: Extract read_SSSR_bits() helper
+  spi: pxa2xx: Constify struct driver_data parameter
+  spi: pxa2xx: Introduce special type for Merrifield SPIs
+
+ drivers/spi/spi-pxa2xx-dma.c |  17 +---
+ drivers/spi/spi-pxa2xx-pci.c |   2 +-
+ drivers/spi/spi-pxa2xx.c     | 171 ++++++++++++++++++-----------------
+ drivers/spi/spi-pxa2xx.h     |  16 +++-
+ include/linux/pxa2xx_ssp.h   |  32 +++++++
+ sound/soc/pxa/pxa-ssp.c      |  16 ----
+ 6 files changed, 140 insertions(+), 114 deletions(-)
+
+-- 
+2.30.2
+
