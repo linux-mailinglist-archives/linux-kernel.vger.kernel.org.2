@@ -2,145 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8385937A0BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A14B37A0BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbhEKHVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:21:42 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:55287 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229892AbhEKHVk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:21:40 -0400
-Received: from [77.244.183.192] (port=62410 helo=[192.168.178.41])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1lgMgv-000DLY-4S; Tue, 11 May 2021 09:20:29 +0200
-Subject: Re: [PATCH] dt-bindings: More removals of type references on common
- properties
-To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Odelu Kukatla <okukatla@codeaurora.org>,
-        Alex Elder <elder@kernel.org>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        linux-clk@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20210510204524.617390-1-robh@kernel.org>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <d3aae746-284b-b0bc-0d52-a76c361d3592@lucaceresoli.net>
-Date:   Tue, 11 May 2021 09:20:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230489AbhEKHV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:21:57 -0400
+Received: from mga17.intel.com ([192.55.52.151]:27863 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229892AbhEKHV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 03:21:56 -0400
+IronPort-SDR: Cm6er4fitZVHvPeaboeT/nxBu3qDUn8dBos8RktEyi4pKK1o+fLdbjDd5P2l3rWxW4/pb0rjAZ
+ aNtRGnRlf+Jw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="179639943"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="179639943"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 00:20:50 -0700
+IronPort-SDR: nZVmxloKpCeJWz6VllrIepWHZH3IFc5Se0cjV6eMWtBP2OVKyR+6lo7hN//4a0B6Mh8Dq21z1o
+ xdq0rwBtCZow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="536873648"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 11 May 2021 00:20:48 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 11 May 2021 10:20:47 +0300
+Date:   Tue, 11 May 2021 10:20:47 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kyle Tso <kyletso@google.com>
+Subject: Re: [PATCH] usb: typec: tcpm: Fix SINK_DISCOVERY current limit for
+ Rp-default
+Message-ID: <YJowT7Zhb0XwZOWf@kuha.fi.intel.com>
+References: <20210510211756.3346954-1-badhri@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210510204524.617390-1-robh@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: it-IT
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210510211756.3346954-1-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, May 10, 2021 at 02:17:56PM -0700, Badhri Jagan Sridharan wrote:
+> This is a regression introduced by
+> <1373fefc6243cc96b3565f0ffffadfac4ccfb977>
+> "Allow slow charging loops to comply to pSnkStby".
+> 
+> When Source advertises Rp-default, tcpm would request 500mA when in
+> SINK_DISCOVERY, Type-C spec advises the sink to follow BC1.2 current
+> limits when Rp-default is advertised.
+> [12750.503381] Requesting mux state 1, usb-role 2, orientation 1
+> [12750.503837] state change SNK_ATTACHED -> SNK_STARTUP [rev3 NONE_AMS]
+> [12751.003891] state change SNK_STARTUP -> SNK_DISCOVERY
+> [12751.003900] Setting voltage/current limit 5000 mV 500 mA
+> 
+> This patch restores the behavior where the tcpm would request 0mA when
+> Rp-default is advertised by the source.
+> [   73.174252] Requesting mux state 1, usb-role 2, orientation 1
+> [   73.174749] state change SNK_ATTACHED -> SNK_STARTUP [rev3 NONE_AMS]
+> [   73.674800] state change SNK_STARTUP -> SNK_DISCOVERY
+> [   73.674808] Setting voltage/current limit 5000 mV 0 mA
+> 
+> During SNK_DISCOVERY, Cap the current limit to PD_P_SNK_STDBY_MW / 5 only
+> for slow_charger_loop case.
+> 
+> Fixes: 1373fefc6243 ("Allow slow charging loops to comply to pSnkStby")
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
-On 10/05/21 22:45, Rob Herring wrote:
-> Users of common properties shouldn't have a type definition as the
-> common schemas already have one. A few new ones slipped in and
-> *-names was missed in the last clean-up pass. Drop all the unnecessary
-> type references in the tree.
-> 
-> A meta-schema update to catch these is pending.
-> 
-> Cc: Luca Ceresoli <luca@lucaceresoli.net>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Olivier Moysan <olivier.moysan@foss.st.com>
-> Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Georgi Djakov <djakov@kernel.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Orson Zhai <orsonzhai@gmail.com>
-> Cc: Baolin Wang <baolin.wang7@gmail.com>
-> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
-> Cc: Odelu Kukatla <okukatla@codeaurora.org>
-> Cc: Alex Elder <elder@kernel.org>
-> Cc: Shengjiu Wang <shengjiu.wang@nxp.com>
-> Cc: linux-clk@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-input@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
 > ---
->  Documentation/devicetree/bindings/clock/idt,versaclock5.yaml    | 2 --
->  .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml         | 1 -
->  Documentation/devicetree/bindings/input/input.yaml              | 1 -
->  Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml   | 1 -
->  Documentation/devicetree/bindings/net/qcom,ipa.yaml             | 1 -
->  .../devicetree/bindings/power/supply/sc2731-charger.yaml        | 2 +-
->  Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml          | 2 +-
->  7 files changed, 2 insertions(+), 8 deletions(-)
+>  drivers/usb/typec/tcpm/tcpm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-> index c268debe5b8d..28675b0b80f1 100644
-> --- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-> +++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-> @@ -60,7 +60,6 @@ properties:
->      maxItems: 2
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index c4fdc00a3bc8..a73299a08ef7 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -4055,7 +4055,7 @@ static void run_state_machine(struct tcpm_port *port)
+>  		if (port->vbus_present) {
+>  			u32 current_lim = tcpm_get_current_limit(port);
 >  
->    idt,xtal-load-femtofarads:
-> -    $ref: /schemas/types.yaml#/definitions/uint32
->      minimum: 9000
->      maximum: 22760
->      description: Optional load capacitor for XTAL1 and XTAL2
-> @@ -84,7 +83,6 @@ patternProperties:
->          enum: [ 1800000, 2500000, 3300000 ]
->        idt,slew-percent:
->          description: The Slew rate control for CMOS single-ended.
-> -        $ref: /schemas/types.yaml#/definitions/uint32
->          enum: [ 80, 85, 90, 100 ]
-
-Ok, but shouldn't "percent" be listed in
-Documentation/devicetree/bindings/property-units.txt?
-
-Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+> -			if (port->slow_charger_loop || (current_lim > PD_P_SNK_STDBY_MW / 5))
+> +			if (port->slow_charger_loop && (current_lim > PD_P_SNK_STDBY_MW / 5))
+>  				current_lim = PD_P_SNK_STDBY_MW / 5;
+>  			tcpm_set_current_limit(port, current_lim, 5000);
+>  			tcpm_set_charge(port, true);
+> -- 
+> 2.31.1.607.g51e8a6a459-goog
 
 -- 
-Luca
+heikki
