@@ -2,284 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A382037AC3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B51F37AC42
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231480AbhEKQp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 12:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbhEKQp2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:45:28 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C19FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 09:44:21 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id l4so30734756ejc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 09:44:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vjV0mzX/OYYldhTKbCzFjmA9xLTAvy1tenKPQWA9cMY=;
-        b=If8rh3oqxpTSWFl3K82m7bx4dXoQIZ7uG69gLBWBQd3/tmtaUu3UEMIAvpZIsXNbfR
-         k90MyiKwtrYw3oHVZsH1OxWjEO9pSM7x5bvLniYANfIhgYInOGb1+XtpRnW+3nWHqbA8
-         76tkN2+LPcKr2nZR7xBw8jf+YEnhWhXtGG2m0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=vjV0mzX/OYYldhTKbCzFjmA9xLTAvy1tenKPQWA9cMY=;
-        b=gJRcjhQYM/JuJqvz9VGFT2G+nTIk8jPlLm/EZT76HFZnbYdRMlPbbARy4kiNefBqWM
-         WPAddB66RFo/WbB5C491kXEfzRHKOfoEhfJtnWb4LtWmsQ54noONIk7+Hy1ijRdQU2Nm
-         T4iGCuXYsuZ/dV2nPlPWihXl3t8Xhpznirz4ZxOsFDA3VB1fiBklGOe1BvsIVe8Xsa3J
-         Ira6tgv8NApjrT3r9IEqeNEpUsisHaj+Ai+80UjIrvcbUdbmTzkGXoec6hbeQsFDLe42
-         /YeZBCVg7271+kqCCRR+RcQ5cZgTrM+PfEH2GxH9xUbaG14tLPI8tHlQDh8OaMu3mpkc
-         y2vQ==
-X-Gm-Message-State: AOAM533kf0gcZg4DGniop7Zk2iy8zsmgH00XDiAewyJi2VZAIYihiS0D
-        UGcy1CYbqNBgSTp2llQSQV/VkQ==
-X-Google-Smtp-Source: ABdhPJwP216Ldhe6W79xvbaQ0XmCjn1UuS/CGKUBuXyfbl2GBz9n+tGkrQmJpVVndQrF/JY9mjdPPg==
-X-Received: by 2002:a17:907:3e28:: with SMTP id hp40mr9818965ejc.523.1620751459752;
-        Tue, 11 May 2021 09:44:19 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id p18sm11919455ejb.19.2021.05.11.09.44.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 09:44:19 -0700 (PDT)
-Date:   Tue, 11 May 2021 18:44:17 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] drm: Fix dirtyfb stalls
-Message-ID: <YJq0YVi4O4zGkb3j@phenom.ffwll.local>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210508195641.397198-1-robdclark@gmail.com>
- <20210508195641.397198-2-robdclark@gmail.com>
- <YJlb3GO41hiu4pWw@phenom.ffwll.local>
- <CAF6AEGsGb1jZgRRUqDvf+j+E6pNEtSck=r3xh4VL7FmZMPszBQ@mail.gmail.com>
- <CAKMK7uGPGbOPRtJaiG5oNCDhYQ27+V3bO5Wcgv7C9fqdyp8LeA@mail.gmail.com>
- <CAF6AEGto1PQcEbYeWfXqMatK0z3dW-mpLNVh=VJb=9gwrPfCWg@mail.gmail.com>
+        id S231587AbhEKQq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 12:46:57 -0400
+Received: from mga05.intel.com ([192.55.52.43]:39629 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230315AbhEKQq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 12:46:56 -0400
+IronPort-SDR: u72LRWQzM2RiOFSFyQR3MVUVQPX3IDImeFgPPkKS1V3sEcEb67x0Ior849z7WPkG1S7ZGGdgg7
+ YXXApch+ZOVw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="284983073"
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
+   d="scan'208";a="284983073"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 09:45:48 -0700
+IronPort-SDR: WjljLsc5Bm/fe7eZg/2kAqvCOT6D56zwh5y1oC9tMldgFQTsg3MNL15joqCU0ru4bpK+aUyfJI
+ gMpXVjPsqerw==
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
+   d="scan'208";a="537102011"
+Received: from unknown (HELO [10.251.0.45]) ([10.251.0.45])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 09:45:46 -0700
+Subject: Re: [PATCH v2] KVM: x86: use wrpkru directly in
+ kvm_load_{guest|host}_xsave_state
+To:     Jon Kohler <jon@nutanix.com>
+Cc:     Babu Moger <babu.moger@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Petteri Aimonen <jpa@git.mail.kapsi.fi>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Benjamin Thiel <b.thiel@posteo.de>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Juergen Gross <jgross@suse.com>,
+        Fan Yang <Fan_Yang@sjtu.edu.cn>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20210511155922.36693-1-jon@nutanix.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <ab09f739-89fa-901d-9ee3-27a6c674d9a0@intel.com>
+Date:   Tue, 11 May 2021 09:45:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF6AEGto1PQcEbYeWfXqMatK0z3dW-mpLNVh=VJb=9gwrPfCWg@mail.gmail.com>
-X-Operating-System: Linux phenom 5.10.32scarlett+ 
+In-Reply-To: <20210511155922.36693-1-jon@nutanix.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 12:06:05PM -0700, Rob Clark wrote:
-> On Mon, May 10, 2021 at 10:44 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Mon, May 10, 2021 at 6:51 PM Rob Clark <robdclark@gmail.com> wrote:
-> > >
-> > > On Mon, May 10, 2021 at 9:14 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > >
-> > > > On Sat, May 08, 2021 at 12:56:38PM -0700, Rob Clark wrote:
-> > > > > From: Rob Clark <robdclark@chromium.org>
-> > > > >
-> > > > > drm_atomic_helper_dirtyfb() will end up stalling for vblank on "video
-> > > > > mode" type displays, which is pointless and unnecessary.  Add an
-> > > > > optional helper vfunc to determine if a plane is attached to a CRTC
-> > > > > that actually needs dirtyfb, and skip over them.
-> > > > >
-> > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > > >
-> > > > So this is a bit annoying because the idea of all these "remap legacy uapi
-> > > > to atomic constructs" helpers is that they shouldn't need/use anything
-> > > > beyond what userspace also has available. So adding hacks for them feels
-> > > > really bad.
-> > >
-> > > I suppose the root problem is that userspace doesn't know if dirtyfb
-> > > (or similar) is actually required or is a no-op.
-> > >
-> > > But it is perhaps less of a problem because this essentially boils
-> > > down to "x11 vs wayland", and it seems like wayland compositors for
-> > > non-vsync'd rendering just pageflips and throws away extra frames from
-> > > the app?
-> >
-> > Yeah it's about not adequately batching up rendering and syncing with
-> > hw. bare metal x11 is just especially stupid about it :-)
-> >
-> > > > Also I feel like it's not entirely the right thing to do here either.
-> > > > We've had this problem already on the fbcon emulation side (which also
-> > > > shouldn't be able to peek behind the atomic kms uapi curtain), and the fix
-> > > > there was to have a worker which batches up all the updates and avoids any
-> > > > stalls in bad places.
-> > >
-> > > I'm not too worried about fbcon not being able to render faster than
-> > > vblank.  OTOH it is a pretty big problem for x11
-> >
-> > That's why we'd let the worker get ahead at most one dirtyfb. We do
-> > the same with fbcon, which trivially can get ahead of vblank otherwise
-> > (if sometimes flushes each character, so you have to pile them up into
-> > a single update if that's still pending).
-> >
-> > > > Since this is for frontbuffer rendering userspace only we can probably get
-> > > > away with assuming there's only a single fb, so the implementation becomes
-> > > > pretty simple:
-> > > >
-> > > > - 1 worker, and we keep track of a single pending fb
-> > > > - if there's already a dirty fb pending on a different fb, we stall for
-> > > >   the worker to start processing that one already (i.e. the fb we track is
-> > > >   reset to NULL)
-> > > > - if it's pending on the same fb we just toss away all the updates and go
-> > > >   with a full update, since merging the clip rects is too much work :-) I
-> > > >   think there's helpers so you could be slightly more clever and just have
-> > > >   an overall bounding box
-> > >
-> > > This doesn't really fix the problem, you still end up delaying sending
-> > > the next back-buffer to mesa
-> >
-> > With this the dirtyfb would never block. Also glorious frontbuffer
-> > tracking corruption is possible, but that's not the kernel's problem.
-> > So how would anything get held up in userspace.
-> 
-> the part about stalling if a dirtyfb is pending was what I was worried
-> about.. but I suppose you meant the worker stalling, rather than
-> userspace stalling (where I had interpreted it the other way around).
-> As soon as userspace needs to stall, you're losing again.
+On 5/11/21 8:59 AM, Jon Kohler wrote:
+> diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+> index b1099f2d9800..20f1fb8be7ef 100644
+> --- a/arch/x86/include/asm/pgtable.h
+> +++ b/arch/x86/include/asm/pgtable.h
+> @@ -151,7 +151,7 @@ static inline void write_pkru(u32 pkru)
+>  	fpregs_lock();
+>  	if (pk)
+>  		pk->pkru = pkru;
+> -	__write_pkru(pkru);
+> +	wrpkru(pkru);
+>  	fpregs_unlock();
+>  }
 
-Nah, I did mean userspace stalling, so we can't pile up unlimited amounts
-of dirtyfb request in the kernel.
+This removes the:
 
-But also I never expect userspace that uses dirtyfb to actually hit this
-stall point (otherwise we'd need to look at this again). It would really
-be only there as defense against abuse.
+	if (pkru == rdpkru())
+		return;
 
-> > > But we could re-work drm_framebuffer_funcs::dirty to operate on a
-> > > per-crtc basis and hoist the loop and check if dirtyfb is needed out
-> > > of drm_atomic_helper_dirtyfb()
-> >
-> > That's still using information that userspace doesn't have, which is a
-> > bit irky. We might as well go with your thing here then.
-> 
-> arguably, this is something we should expose to userspace.. for DSI
-> command-mode panels, you probably want to make a different decision
-> with regard to how many buffers in your flip-chain..
-> 
-> Possibly we should add/remove the fb_damage_clips property depending
-> on the display type (ie. video/pull vs cmd/push mode)?
+optimization from a couple of write_pkru() users:
+arch_set_user_pkey_access() and copy_init_pkru_to_fpregs().
 
-I'm not sure whether atomic actually needs this exposed:
-- clients will do full flips for every frame anyway, I've not heard of
-  anyone seriously doing frontbuffer rendering.
-- transporting the cliprects around and then tossing them if the driver
-  doesn't need them in their flip is probably not a measurable win
-
-But yeah if I'm wrong and we have a need here and it's useful, then
-exposing this to userspace should be done. Meanwhile I think a "offload to
-worker like fbcon" trick for this legacy interface is probabyl the best
-option. Plus it will fix things not just for the case where you don't need
-dirty uploading, it will also fix things for the case where you _do_ need
-dirty uploading (since right now we stall in a few bad places for that I
-think).
--Daniel
-
-> 
-> BR,
-> -R
-> 
-> > -Daniel
-> >
-> > > BR,
-> > > -R
-> > >
-> > > >
-> > > > Could probably steal most of the implementation.
-> > > >
-> > > > This approach here feels a tad too much in the hacky area ...
-> > > >
-> > > > Thoughts?
-> > > > -Daniel
-> > > >
-> > > > > ---
-> > > > >  drivers/gpu/drm/drm_damage_helper.c      |  8 ++++++++
-> > > > >  include/drm/drm_modeset_helper_vtables.h | 14 ++++++++++++++
-> > > > >  2 files changed, 22 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/gpu/drm/drm_damage_helper.c b/drivers/gpu/drm/drm_damage_helper.c
-> > > > > index 3a4126dc2520..a0bed1a2c2dc 100644
-> > > > > --- a/drivers/gpu/drm/drm_damage_helper.c
-> > > > > +++ b/drivers/gpu/drm/drm_damage_helper.c
-> > > > > @@ -211,6 +211,7 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
-> > > > >  retry:
-> > > > >       drm_for_each_plane(plane, fb->dev) {
-> > > > >               struct drm_plane_state *plane_state;
-> > > > > +             struct drm_crtc *crtc;
-> > > > >
-> > > > >               ret = drm_modeset_lock(&plane->mutex, state->acquire_ctx);
-> > > > >               if (ret)
-> > > > > @@ -221,6 +222,13 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
-> > > > >                       continue;
-> > > > >               }
-> > > > >
-> > > > > +             crtc = plane->state->crtc;
-> > > > > +             if (crtc->helper_private->needs_dirtyfb &&
-> > > > > +                             !crtc->helper_private->needs_dirtyfb(crtc)) {
-> > > > > +                     drm_modeset_unlock(&plane->mutex);
-> > > > > +                     continue;
-> > > > > +             }
-> > > > > +
-> > > > >               plane_state = drm_atomic_get_plane_state(state, plane);
-> > > > >               if (IS_ERR(plane_state)) {
-> > > > >                       ret = PTR_ERR(plane_state);
-> > > > > diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
-> > > > > index eb706342861d..afa8ec5754e7 100644
-> > > > > --- a/include/drm/drm_modeset_helper_vtables.h
-> > > > > +++ b/include/drm/drm_modeset_helper_vtables.h
-> > > > > @@ -487,6 +487,20 @@ struct drm_crtc_helper_funcs {
-> > > > >                                    bool in_vblank_irq, int *vpos, int *hpos,
-> > > > >                                    ktime_t *stime, ktime_t *etime,
-> > > > >                                    const struct drm_display_mode *mode);
-> > > > > +
-> > > > > +     /**
-> > > > > +      * @needs_dirtyfb
-> > > > > +      *
-> > > > > +      * Optional callback used by damage helpers to determine if fb_damage_clips
-> > > > > +      * update is needed.
-> > > > > +      *
-> > > > > +      * Returns:
-> > > > > +      *
-> > > > > +      * True if fb_damage_clips update is needed to handle DIRTYFB, False
-> > > > > +      * otherwise.  If this callback is not implemented, then True is
-> > > > > +      * assumed.
-> > > > > +      */
-> > > > > +     bool (*needs_dirtyfb)(struct drm_crtc *crtc);
-> > > > >  };
-> > > > >
-> > > > >  /**
-> > > > > --
-> > > > > 2.30.2
-> > > > >
-> > > >
-> > > > --
-> > > > Daniel Vetter
-> > > > Software Engineer, Intel Corporation
-> > > > http://blog.ffwll.ch
-> >
-> >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Was that intentional?  Those aren't the hottest paths in the kernel, but
+copy_init_pkru_to_fpregs() is used in signal handling and exeve().
