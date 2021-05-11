@@ -2,210 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A6B379C15
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83CF4379C17
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhEKBcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 21:32:43 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2420 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbhEKBcm (ORCPT
+        id S230342AbhEKBc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 21:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229920AbhEKBc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 21:32:42 -0400
-Received: from dggeml718-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FfL133l0Tz5t6V;
-        Tue, 11 May 2021 09:28:55 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggeml718-chm.china.huawei.com (10.3.17.129) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 11 May 2021 09:31:34 +0800
-Received: from [127.0.0.1] (10.40.192.162) by dggpemm500001.china.huawei.com
- (7.185.36.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 11 May
- 2021 09:31:34 +0800
-Subject: Re: [PATCH v5] ACPI / APEI: fix the regression of synchronous
- external aborts occur in user-mode
-To:     <james.morse@arm.com>
-References: <1607602177-1507-1-git-send-email-tanxiaofei@huawei.com>
-CC:     <rafael@kernel.org>, <rjw@rjwysocki.net>, <lenb@kernel.org>,
-        <tony.luck@intel.com>, <bp@alien8.de>, <akpm@linux-foundation.org>,
-        <jroedel@suse.de>, <peterz@infradead.org>,
-        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-Message-ID: <0ed7329f-6580-dda7-5779-a6c89563746f@huawei.com>
-Date:   Tue, 11 May 2021 09:31:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 10 May 2021 21:32:56 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51AD0C061574;
+        Mon, 10 May 2021 18:31:51 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id y12so13509272qtx.11;
+        Mon, 10 May 2021 18:31:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wMM1uYkABc/20SZ/6uSwkCaIlAgHUrUFqx1Ttj/Zj20=;
+        b=fl8Y/qmXGzshoNtihZCE/CgHPw95cJzk6xptmmY5E2AtcCoYojhKFdxj9iTGgl2m3t
+         7dHVGPYFfpSvZsUzywY8nDT1uSIk154FjwzRPjbL+h43JyqTnDrSuT5dHWjo+bZczhGy
+         BxetRIJJYFhipZbN6zYXoe87GH5YViktkzGrM0VFlKk8rXaktmAJzYSD/azDV9BIKKS+
+         UrdoPJB5NSbbQZf+uvyP3+zenfuz8KuaDcwRwgz20fCJKQsx4pWyn/5jbDEYWadTIDdN
+         PKXGH0GOKBRGXnGRmCl3nt7mlkjc007rGLWNIFBgqnWyBSwyjVoJOcWaIOIqP+alvdmx
+         VE9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=wMM1uYkABc/20SZ/6uSwkCaIlAgHUrUFqx1Ttj/Zj20=;
+        b=lpAcDZT+4JlLQqGLH7ROa4znd9yqJmuvEEFunTYZipIAR7eYe4Fd5ezI9VCiQ3whqA
+         SZGahhGUUUXjjTRgH+kClGPXn1DeyNd2RCzWHKLZaX5OqLRsyaGwy17aEdRObb7TE0+/
+         oWwX2han19Fq5D4fUbaPiWEzAcv8mAL4Je3Jv96kICX8WkrY0n1/l/piE1Bz43Ug2wwx
+         rDbqTV8P532v7KEPEWuUkXLvqccyJSMiWfYKPWj4nHHc7xSYMxpqKcGYgFTzzMkFxdoY
+         Ru93uA1eX9ayyHh6QL73c3FDMDZd4JVRnDnulqktnNl4jmCWPJdBsyYIIIKhNp8lJR7j
+         axZA==
+X-Gm-Message-State: AOAM5311MyBIKUQoF2r2ISPptKRuWmAiwpz65sldUr8wvgAQ9IRMDc6P
+        jqrrQdNrjnMWw6ebNFbV9p4=
+X-Google-Smtp-Source: ABdhPJzcSK1BWCnVIo6WT3nekBiz7F72EvtUIiSHpvAbH+ki/oyiYBgifga9j9tO/rNogLU1sfUu8A==
+X-Received: by 2002:ac8:730c:: with SMTP id x12mr25056529qto.275.1620696710499;
+        Mon, 10 May 2021 18:31:50 -0700 (PDT)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
+        by smtp.gmail.com with ESMTPSA id i11sm12883884qtv.8.2021.05.10.18.31.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 18:31:50 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 10 May 2021 21:31:48 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the cgroup tree
+Message-ID: <YJnehL0+BbrZVeY6@slm.duckdns.org>
+References: <20210511105114.55e90534@canb.auug.org.au>
+ <YJnZjCXe7uPrJxFo@carbon.DHCP.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <1607602177-1507-1-git-send-email-tanxiaofei@huawei.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.192.162]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJnZjCXe7uPrJxFo@carbon.DHCP.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 10, 2021 at 06:10:36PM -0700, Roman Gushchin wrote:
+> On Tue, May 11, 2021 at 10:51:14AM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > After merging the cgroup tree, today's linux-next build (powerpc
+> > ppc64_defconfig) failed like this:
+> 
+> Hi Stephen!
+> 
+> I've noticed this error and sent v2 almost immediately after the first version,
+> however it looks like the first version got merged by a mistake.
+> 
+> Tejun, can you, please, drop the first version and replace it with v2?
+> There is a trivial s/task/tsk fix.
+> 
+> Thank you and sorry for the confusion!
 
-ping..
+Done, thanks.
 
-On 2020/12/10 20:09, Xiaofei Tan wrote:
-> After the commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
-> synchronise with APEI's irq work") applied, do_sea() return directly
-> for user-mode if apei_claim_sea() handled any error record. Therefore,
-> each error record reported by the user-mode SEA must be effectively
-> processed in APEI GHES driver.
->
-> Currently, GHES driver only processes Memory Error Section.(Ignore PCIe
-> Error Section, as it has nothing to do with SEA). It is not enough.
-> Because ARM Processor Error could also be used for SEA in some hardware
-> platforms, such as Kunpeng9xx series. We can't ask them to switch to
-> use Memory Error Section for two reasons:
-> 1)The server was delivered to customers, and it will introduce
-> compatibility issue.
-> 2)It make sense to use ARM Processor Error Section. Because either
-> cache or memory errors could generate SEA when consumed by a processor.
->
-> Do memory failure handling for ARM Processor Error Section just like
-> for Memory Error Section.
->
-> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
-> ---
-> Changes since v4:
-> - 1. Change the patch name from " ACPI / APEI: do memory failure on the
-> physical address reported by ARM processor error section" to this
-> more proper one.
-> - 2. Add a comment in the code to tell why not filter out corrected
-> error in an uncorrected section.
->
-> Changes since v3:
-> - Print unhandled error following James Morse's advice.
->
-> Changes since v2:
-> - Updated commit log
-> ---
->  drivers/acpi/apei/ghes.c | 76 +++++++++++++++++++++++++++++++++++++-----------
->  1 file changed, 59 insertions(+), 17 deletions(-)
->
-> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> index fce7ade..0893968 100644
-> --- a/drivers/acpi/apei/ghes.c
-> +++ b/drivers/acpi/apei/ghes.c
-> @@ -441,28 +441,35 @@ static void ghes_kick_task_work(struct callback_head *head)
->  	gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
->  }
->
-> -static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
-> -				       int sev)
-> +static bool ghes_do_memory_failure(u64 physical_addr, int flags)
->  {
->  	unsigned long pfn;
-> -	int flags = -1;
-> -	int sec_sev = ghes_severity(gdata->error_severity);
-> -	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
->
->  	if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
->  		return false;
->
-> -	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
-> -		return false;
-> -
-> -	pfn = mem_err->physical_addr >> PAGE_SHIFT;
-> +	pfn = PHYS_PFN(physical_addr);
->  	if (!pfn_valid(pfn)) {
->  		pr_warn_ratelimited(FW_WARN GHES_PFX
->  		"Invalid address in generic error data: %#llx\n",
-> -		mem_err->physical_addr);
-> +		physical_addr);
->  		return false;
->  	}
->
-> +	memory_failure_queue(pfn, flags);
-> +	return true;
-> +}
-> +
-> +static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
-> +				       int sev)
-> +{
-> +	int flags = -1;
-> +	int sec_sev = ghes_severity(gdata->error_severity);
-> +	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
-> +
-> +	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
-> +		return false;
-> +
->  	/* iff following two events can be handled properly by now */
->  	if (sec_sev == GHES_SEV_CORRECTED &&
->  	    (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
-> @@ -470,14 +477,51 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
->  	if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
->  		flags = 0;
->
-> -	if (flags != -1) {
-> -		memory_failure_queue(pfn, flags);
-> -		return true;
-> -	}
-> +	if (flags != -1)
-> +		return ghes_do_memory_failure(mem_err->physical_addr, flags);
->
->  	return false;
->  }
->
-> +static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
-> +{
-> +	struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
-> +	struct cper_arm_err_info *err_info;
-> +	bool queued = false;
-> +	int sec_sev, i;
-> +
-> +	log_arm_hw_error(err);
-> +
-> +	sec_sev = ghes_severity(gdata->error_severity);
-> +	if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
-> +		return false;
-> +
-> +	err_info = (struct cper_arm_err_info *) (err + 1);
-> +	for (i = 0; i < err->err_info_num; i++, err_info++) {
-> +		bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
-> +		bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR);
-> +
-> +		/*
-> +		 * The field (err_info->error_info & BIT(26)) is fixed to set to
-> +		 * 1 in some old firmware of HiSilicon Kunpeng920. We assume that
-> +		 * firmware won't mix corrected errors in an uncorrected section,
-> +		 * and don't filter out 'corrected' error here.
-> +		 */
-> +		if (!is_cache || !has_pa) {
-> +			pr_warn_ratelimited(FW_WARN GHES_PFX
-> +			"Unhandled processor error type %s\n",
-> +			err_info->type < ARRAY_SIZE(cper_proc_error_type_strs) ?
-> +			cper_proc_error_type_strs[err_info->type] : "unknown error");
-> +			continue;
-> +		}
-> +
-> +		if (ghes_do_memory_failure(err_info->physical_fault_addr, 0))
-> +			queued = true;
-> +	}
-> +
-> +	return queued;
-> +}
-> +
->  /*
->   * PCIe AER errors need to be sent to the AER driver for reporting and
->   * recovery. The GHES severities map to the following AER severities and
-> @@ -605,9 +649,7 @@ static bool ghes_do_proc(struct ghes *ghes,
->  			ghes_handle_aer(gdata);
->  		}
->  		else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
-> -			struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
-> -
-> -			log_arm_hw_error(err);
-> +			queued = ghes_handle_arm_hw_error(gdata, sev);
->  		} else {
->  			void *err = acpi_hest_get_payload(gdata);
->
->
-
+-- 
+tejun
