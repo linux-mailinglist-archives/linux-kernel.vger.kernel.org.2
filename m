@@ -2,64 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1F237A628
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8388237A620
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhEKL6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 07:58:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44850 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231132AbhEKL6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 07:58:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E97161007;
-        Tue, 11 May 2021 11:57:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620734247;
-        bh=6WMcv2xd6VsBSIHKu0Ob2YKNaIqY4ZBocnGR8jWPXfg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Velce/SBQYGXz4Bg/7MEcnrC8mePdPHBrP4IMe4Tpsax5sLl6YyaI71oMDf3fz+kg
-         ygCu/riXXrPEFlt8H0bnpxiOEjpI74RMzM6Ck7hSb8hnBv6BN8JxnfKRwl6iwbyawV
-         3iFX9unUIIRRf70XxgGvOnAODX+8wsSURNF6FWuA=
-Date:   Tue, 11 May 2021 13:57:24 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        "David E. Box" <david.e.box@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 108/299] platform/x86: intel_pmc_core: Dont use
- global pmcdev in quirks
-Message-ID: <YJpxJPVLp803CaBt@kroah.com>
-References: <20210510102004.821838356@linuxfoundation.org>
- <20210510102008.507160403@linuxfoundation.org>
- <20210510121240.GD3547@duo.ucw.cz>
+        id S231429AbhEKL5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 07:57:31 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2696 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230519AbhEKL5a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 07:57:30 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Ffbsy1kp7z1BKqR;
+        Tue, 11 May 2021 19:53:42 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Tue, 11 May 2021
+ 19:56:19 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <ocfs2-devel@oss.oracle.com>
+CC:     <mark@fasheh.com>, <akpm@linux-foundation.org>
+Subject: [PATCH -next] ocfs2: Remove unnecessary INIT_LIST_HEAD()
+Date:   Tue, 11 May 2021 19:58:47 +0800
+Message-ID: <20210511115847.3817395-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210510121240.GD3547@duo.ucw.cz>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 02:12:40PM +0200, Pavel Machek wrote:
-> Hi!
-> 
-> > From: David E. Box <david.e.box@linux.intel.com>
-> > 
-> > [ Upstream commit c9f86d6ca6b5e23d30d16ade4b9fff5b922a610a ]
-> > 
-> > The DMI callbacks, used for quirks, currently access the PMC by getting
-> > the address a global pmc_dev struct. Instead, have the callbacks set a
-> > global quirk specific variable. In probe, after calling dmi_check_system(),
-> > pass pmc_dev to a function that will handle each quirk if its variable
-> > condition is met. This allows removing the global pmc_dev later.
-> 
-> This does not fix a bug.. it is preparation for further cleanups that
-> are not queued to 5.10 stable. So this should not be in 5.10 either.
+The list_head o2hb_node_events is initialized statically.
+It is unnecessary to initialize by INIT_LIST_HEAD().
 
-I'll leave this for now, it will be helpful for later.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ fs/ocfs2/cluster/heartbeat.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-thanks,
+diff --git a/fs/ocfs2/cluster/heartbeat.c b/fs/ocfs2/cluster/heartbeat.c
+index e829c2595543..1169c8dc9106 100644
+--- a/fs/ocfs2/cluster/heartbeat.c
++++ b/fs/ocfs2/cluster/heartbeat.c
+@@ -1442,8 +1442,6 @@ void o2hb_init(void)
+ 	for (i = 0; i < ARRAY_SIZE(o2hb_live_slots); i++)
+ 		INIT_LIST_HEAD(&o2hb_live_slots[i]);
+ 
+-	INIT_LIST_HEAD(&o2hb_node_events);
+-
+ 	memset(o2hb_live_node_bitmap, 0, sizeof(o2hb_live_node_bitmap));
+ 	memset(o2hb_region_bitmap, 0, sizeof(o2hb_region_bitmap));
+ 	memset(o2hb_live_region_bitmap, 0, sizeof(o2hb_live_region_bitmap));
+-- 
+2.25.1
 
-greg k-h
