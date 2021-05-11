@@ -2,162 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92B3379C0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBEA1379C0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230318AbhEKBaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 21:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbhEKBaS (ORCPT
+        id S230139AbhEKBaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 21:30:16 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2683 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229628AbhEKBaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 21:30:18 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDE7C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 18:29:12 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id j10so233256ejb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 18:29:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g4ykbhAVmu+lXpVg7ewOOB3sVM/0k4gHK4Q6G0qH+bc=;
-        b=UPsaHnlkav5P0ZHYqlH+T0ewxbzji8mbzKICq6hQ9GdnRYCgG7Uo0NdIdiW8GfM0xq
-         t0Ff6/lBW8zel5SU0MbZSyT8tFGKlV3jNEhk1WcAMncse7VGsDIafgxrVL3wgXcm6XLC
-         CMR5J/jVTSQX3DOrdnJCFyE+tCvTt1Hk42ttAgwNdCHkb1LykDbjYXmVRP2LYvgNtwRD
-         VeUV7PldVfTNESp1yiVu2cAt8mH4+ODyFDDEhCqtmmQCenmCv9Qq4fJmx6lMn+rR3eWZ
-         vxeLC4m98H+5OYZvMP0gg2GLr3rhOETmvLDxsu3If9QSiTNHACYaMSiAPJ4vQscGUemR
-         MgXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g4ykbhAVmu+lXpVg7ewOOB3sVM/0k4gHK4Q6G0qH+bc=;
-        b=gx9gCCCUFEY17yeBi9bTxu6dGvRbUTbcrafO75MdEB2fuzb/CxBgxKa5UlKplFFkr8
-         C3C22Y67KvcVZcedGclYCIDonxUGW6pK8eYkfB4SzYFSlLB3ypsaYNYqyS/zU8/WAGeF
-         gfJ/y0F1vv9otFc3IIJMQehlAQWe6J9hXtHPeRQc36qMf3inuSStqWj3VbRCOONE/dLG
-         Usd45l69K+rRlOOKlzyPYuXGPbwv0Jsp5JmH+VBRWBBS1gfxtmE0lBm8hC3C4zV7Fjp2
-         5q1tAm3ZwKdtfuMahB9ayZJMWqCxyaTxbf4zvmHA3u22ujkBF0ov2hboWrNo4RZQQvGL
-         OVcA==
-X-Gm-Message-State: AOAM530FRvJ8vK7fpNJVuGVYoO4XKCIcSTRqL/SJc5MsubGA1noIsUup
-        KgE10zKKzCCHCFomNE0Gw3iB75aODVcUabSLi8TM
-X-Google-Smtp-Source: ABdhPJz3C7SNoneUreqQu3pSZrumUXJNi5gdNEgQTffzpXY31zuDcPbVqpJ7GKH8ZXirUtDVMppuZqKyPoxWdYoc06Y=
-X-Received: by 2002:a17:906:2510:: with SMTP id i16mr28682731ejb.488.1620696550709;
- Mon, 10 May 2021 18:29:10 -0700 (PDT)
+        Mon, 10 May 2021 21:30:16 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FfKyF6NNmz1BHww;
+        Tue, 11 May 2021 09:26:29 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 11 May
+ 2021 09:29:07 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: avoid null pointer access when handling
+ IPU error
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20210510142804.511265-1-jaegeuk@kernel.org>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <9df7d088-3580-122b-60a3-799ea665cfeb@huawei.com>
+Date:   Tue, 11 May 2021 09:29:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <604ceafd516b0785fea120f552d6336054d196af.1620414949.git.rgb@redhat.com>
- <7ee601c2-4009-b354-1899-3c8f582bf6ae@schaufler-ca.com> <20210508015443.GA447005@madcap2.tricolour.ca>
- <242f107a-3b74-c1c2-abd6-b3f369170023@schaufler-ca.com> <CAHC9VhQdV93G5N_BKsxuDCtFbm9-xvAkve02t5sGOi9Mam2Wtg@mail.gmail.com>
- <195ac224-00fa-b1be-40c8-97e823796262@schaufler-ca.com>
-In-Reply-To: <195ac224-00fa-b1be-40c8-97e823796262@schaufler-ca.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 10 May 2021 21:28:59 -0400
-Message-ID: <CAHC9VhTPQ-LoqUYJ4HGsFF-sAXR+mYqGga7TxRZOG7BUD-55FQ@mail.gmail.com>
-Subject: Re: [PATCH V1] audit: log xattr args not covered by syscall record
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Richard Guy Briggs <rgb@redhat.com>, linux-api@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210510142804.511265-1-jaegeuk@kernel.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 8:37 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> On 5/10/2021 4:52 PM, Paul Moore wrote:
-> > On Mon, May 10, 2021 at 12:30 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> >> On 5/7/2021 6:54 PM, Richard Guy Briggs wrote:
-> >>> On 2021-05-07 14:03, Casey Schaufler wrote:
-> >>>> On 5/7/2021 12:55 PM, Richard Guy Briggs wrote:
-> >>>>> The *setxattr syscalls take 5 arguments.  The SYSCALL record only lists
-> >>>>> four arguments and only lists pointers of string values.  The xattr name
-> >>>>> string, value string and flags (5th arg) are needed by audit given the
-> >>>>> syscall's main purpose.
-> >>>>>
-> >>>>> Add the auxiliary record AUDIT_XATTR (1336) to record the details not
-> >>>>> available in the SYSCALL record including the name string, value string
-> >>>>> and flags.
-> >>>>>
-> >>>>> Notes about field names:
-> >>>>> - name is too generic, use xattr precedent from ima
-> >>>>> - val is already generic value field name
-> >>>>> - flags used by mmap, xflags new name
-> >>>>>
-> >>>>> Sample event with new record:
-> >>>>> type=PROCTITLE msg=audit(05/07/2021 12:58:42.176:189) : proctitle=filecap /tmp/ls dac_override
-> >>>>> type=PATH msg=audit(05/07/2021 12:58:42.176:189) : item=0 name=(null) inode=25 dev=00:1e mode=file,755 ouid=root ogid=root rdev=00:00 obj=unconfined_u:object_r:user_tmp_t:s0 nametype=NORMAL cap_fp=none cap_fi=none cap_fe=0 cap_fver=0 cap_frootid=0
-> >>>>> type=CWD msg=audit(05/07/2021 12:58:42.176:189) : cwd=/root
-> >>>>> type=XATTR msg=audit(05/07/2021 12:58:42.176:189) : xattr="security.capability" val=01 xflags=0x0
-> >>>> Would it be sensible to break out the namespace from the attribute?
-> >>>>
-> >>>>      attrspace="security" attrname="capability"
-> >>> Do xattrs always follow this nomenclature?  Or only the ones we care
-> >>> about?
-> >> Xattrs always have a namespace (man 7 xattr) of "user", "trusted",
-> >> "system" or "security". It's possible that additional namespaces will
-> >> be created in the future, although it seems unlikely given that only
-> >> "security" is widely used today.
-> > Why should audit care about separating the name into two distinct
-> > fields, e.g. "attrspace" and "attrname", instead of just a single
-> > "xattr" field with a value that follows the "namespace.attribute"
-> > format that is commonly seen by userspace?
->
-> I asked if it would be sensible. I don't much care myself.
+On 2021/5/10 22:28, Jaegeuk Kim wrote:
+>   Unable to handle kernel NULL pointer dereference at virtual address 000000000000001a
+>   pc : f2fs_inplace_write_data+0x144/0x208
+>   lr : f2fs_inplace_write_data+0x134/0x208
+>   Call trace:
+>    f2fs_inplace_write_data+0x144/0x208
+>    f2fs_do_write_data_page+0x270/0x770
+>    f2fs_write_single_data_page+0x47c/0x830
+>    __f2fs_write_data_pages+0x444/0x98c
+>    f2fs_write_data_pages.llvm.16514453770497736882+0x2c/0x38
+>    do_writepages+0x58/0x118
+>    __writeback_single_inode+0x44/0x300
+>    writeback_sb_inodes+0x4b8/0x9c8
+>    wb_writeback+0x148/0x42c
+>    wb_do_writeback+0xc8/0x390
+>    wb_workfn+0xb0/0x2f4
+>    process_one_work+0x1fc/0x444
+>    worker_thread+0x268/0x4b4
+>    kthread+0x13c/0x158
+>    ret_from_fork+0x10/0x18
+> 
+> Fixes: 955772787667 ("f2fs: drop inplace IO if fs status is abnormal")
 
-I was *asking* a question - why would we want separate fields?  I
-guess I thought there might be some reason for asking if it was
-sensible; if not, I think I'd rather see it as a single field.
+My bad, thanks for fixing this.
 
-> >>>> Why isn't val= quoted?
-> >>> Good question.  I guessed it should have been since it used
-> >>> audit_log_untrustedstring(), but even the raw output is unquoted unless
-> >>> it was converted by auditd to unquoted before being stored to disk due
-> >>> to nothing offensive found in it since audit_log_n_string() does add
-> >>> quotes.  (hmmm, bit of a run-on sentence there...)
-> >>>
-> >>>> The attribute value can be a .jpg or worse. I could even see it being an eBPF
-> >>>> program (although That Would Be Wrong) so including it in an audit record could
-> >>>> be a bit of a problem.
-> >>> In these cases it would almost certainly get caught by the control
-> >>> character test audit_string_contains_control() in
-> >>> audit_log_n_untrustedstring() called from audit_log_untrustedstring()
-> >>> and deliver it as hex.
-> >> In that case I'm more concerned with the potential size than with
-> >> quoting. One of original use cases proposed for xattrs (back in the
-> >> SGI Irix days) was to attach a bitmap to be used as the icon in file
-> >> browsers as an xattr. Another was to attach the build instructions
-> >> and source used to create a binary. None of that is information you'd
-> >> want to see in a audit record. On the other hand, if the xattr was an
-> >> eBPF program used to make access control decisions, you would want at
-> >> least a reference to it in the audit record.
-> > It would be interesting to see how this code would handle arbitrarily
-> > large xattr values, or at the very least large enough values to blow
-> > up the audit record size.
-> >
-> > As pointed out elsewhere in this thread, and brought up again above
-> > (albeit indirectly), I'm guessing we don't really care about *all*
-> > xattrs, just the "special" xattrs that are security relevant, in which
-> > case I think we need to reconsider how we collect this data.
->
-> Right. And you can't know in advance which xattrs are relevant in the
-> face of "security=". We might want something like
->
->         bool security_auditable_attribute(struct xattr *xattr)
->
-> which returns true if the passed xattr is one that an LSM in the stack
-> considers relevant. Much like security_ismaclabel(). I don't think that
-> we can just reuse security_ismaclabel() because there are xattrs that
-> are security relevant but are not MAC labels. SMACK64TRANSMUTE is one.
-> File capability sets are another. I also suggest passing the struct xattr
-> rather than the name because it seems reasonable that an LSM might
-> consider "user.execbyroot=never" relevant while "user.execbyroot=possible"
-> isn't.
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>   fs/f2fs/segment.c | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index c605415840b5..ae875557d693 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -3577,9 +3577,11 @@ int f2fs_inplace_write_data(struct f2fs_io_info *fio)
+>   	if (fio->bio) {
+>   		struct bio *bio = *(fio->bio);
+>   
+> -		bio->bi_status = BLK_STS_IOERR;
+> -		bio_endio(bio);
+> -		fio->bio = NULL;
+> +		if (bio) {
+> +			bio->bi_status = BLK_STS_IOERR;
+> +			bio_endio(bio);
+> +			fio->bio = NULL;
 
-Perhaps instead of having the audit code call into the LSM to
-determine if an xattr is worth recording in the audit event, we leave
-it to the LSMs themselves to add a record to the event?
+fio->bio points a bio assigned in writepages(), so it should reset
+that bio to NULL by *(fio->bio) = NULL.
 
--- 
-paul moore
-www.paul-moore.com
+Thanks,
+
+> +		}
+>   	}
+>   	return err;
+>   }
+> 
