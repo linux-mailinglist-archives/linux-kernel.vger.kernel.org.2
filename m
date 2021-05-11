@@ -2,128 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFF937A491
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE06437A48F
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbhEKK1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 06:27:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33668 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231340AbhEKK12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 06:27:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29BA26192C
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:26:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620728782;
-        bh=95zZVK7qfIh+tOUiU4moyxlDwWV95Vmvl6IczEmpWaQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jB28dGoEQZhWVX4kG3NoWMrOUOJqKxtGnVTy20zjRDxZSYi5HDoH9X4KG04ToeloA
-         cDtUs47l0amh5owyQHo9Y71oQ4LjdMeLKiJKekCv6EqMBcFAvE6kFY+zLTpnzK2c02
-         7NweGlJAUMef4+eX+40tudEHBQhgb9TWfDjReYJgblgVGGMr9/GmZ/91vitXEd782t
-         g9xjaa2eZafJ5DzGUi2oT6AyQqRubnfU9TEwg5H9ElYCJfxuOahiwURSuGFYl4ZES1
-         rQXX3sG+FHbaG+SB1zpITPkwnC4j3iSe7CdYaT/+XuyT3ovBDEvX1eDXOge37ZUbm5
-         6GXvX4c06Mn7w==
-Received: by mail-ot1-f47.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso17061856otg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 03:26:22 -0700 (PDT)
-X-Gm-Message-State: AOAM533HyY+13MQi9DpLVqSBLVR5wEJgsb5C/LRAHGTgH5C5Etmx5SBW
-        rnLG14elyAXaitk8hbE7bgF2xI/lYdnvvm4p15M=
-X-Google-Smtp-Source: ABdhPJx7OAWZjUg75AH1MONFkX/rKqoEq6W+l0O8JhjgsRoszXYlOPWDD3ytFXdgmlzvdYrIN3iUwS6soQhwbypE0Tw=
-X-Received: by 2002:a9d:7cd8:: with SMTP id r24mr13558179otn.90.1620728781371;
+        id S231455AbhEKK1g convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 May 2021 06:27:36 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:35820 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231308AbhEKK11 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 06:27:27 -0400
+Received: by mail-oi1-f175.google.com with SMTP id v22so13699036oic.2;
+        Tue, 11 May 2021 03:26:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Y/kVtDHIZKmMSzJqt2osYUZoKGVA0ReHyak/rU5cC5c=;
+        b=l+eBKx4VeyxVFcH6iRvG5yk3jceUS7TdXOOG88xabbPjT2uEKUzbmmJiYTBvM6Ly2B
+         /J/qnW38qtl/HbnAQzBJsu6asXITnJpPohtoOreZvtLLQO7QQk/WpeLhJLGjsfq5bqhj
+         XJ6sygWbTBBKlK3v0tyPZIPjqaQ6OkSCdPpTuFMpqZDgpeGr7RlGmFzk3Q4fd+LhvozO
+         g26bDbDXE6i1VWv5AxOnqS0J1KoE81DQMLHj+0vqI4ZjcmialHespJNIcdzu7m0c1HuX
+         QzeVR3xRrnGJGr8Mg0dqTpQUct0t/sZY+p3pksk1m/BUq/T05TrrQWq0dGA1FOKEp9oa
+         SSqg==
+X-Gm-Message-State: AOAM532eO28pqsMIQBF0nRXTn/Eoyg8ZmJRk7WVGCKoGHMCCAQFnY834
+        V+HAZiVknMrUIZkS/kkkwrFC4psmFldTblXL6zM=
+X-Google-Smtp-Source: ABdhPJyVc1Adj8xVyObdprPl2+PqCJObB0MAM6XfJz4JAIipmyLDXri3ba7YmDZvSK16PM6BYf++7Uytfb6IowgGI1w=
+X-Received: by 2002:a05:6808:90d:: with SMTP id w13mr6920337oih.71.1620728781037;
  Tue, 11 May 2021 03:26:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210511100550.28178-1-rppt@kernel.org> <20210511100550.28178-5-rppt@kernel.org>
-In-Reply-To: <20210511100550.28178-5-rppt@kernel.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
+References: <20210422192937.707500-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAJZ5v0hbAaFtRxuyR2B6YBUfV6eGWmDrZnTisd9j5H0UNurqrg@mail.gmail.com> <MWHPR11MB1599AD69C50EE40EF625C837F0539@MWHPR11MB1599.namprd11.prod.outlook.com>
+In-Reply-To: <MWHPR11MB1599AD69C50EE40EF625C837F0539@MWHPR11MB1599.namprd11.prod.outlook.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
 Date:   Tue, 11 May 2021 12:26:10 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXE=XMhr6WB+DUZYN9Fr95azn6t_B7VS3BckMPNTn_ohkg@mail.gmail.com>
-Message-ID: <CAMj1kXE=XMhr6WB+DUZYN9Fr95azn6t_B7VS3BckMPNTn_ohkg@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] arm64: drop pfn_valid_within() and simplify pfn_valid()
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+Message-ID: <CAJZ5v0jFhX6Jy_Ws14BO3g35yCKnKncp5gBWCADTCdppbHQ55A@mail.gmail.com>
+Subject: Re: [PATCH 1/1] ACPICA: Add SVKL table headers
+To:     "Kaneda, Erik" <erik.kaneda@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Rafael J Wysocki <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "Moore, Robert" <robert.moore@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 at 12:06, Mike Rapoport <rppt@kernel.org> wrote:
+On Tue, May 11, 2021 at 2:17 AM Kaneda, Erik <erik.kaneda@intel.com> wrote:
 >
-> From: Mike Rapoport <rppt@linux.ibm.com>
 >
-> The arm64's version of pfn_valid() differs from the generic because of two
-> reasons:
 >
-> * Parts of the memory map are freed during boot. This makes it necessary to
->   verify that there is actual physical memory that corresponds to a pfn
->   which is done by querying memblock.
+> > -----Original Message-----
+> > From: Rafael J. Wysocki <rafael@kernel.org>
+> > Sent: Monday, May 10, 2021 9:58 AM
+> > To: Kuppuswamy Sathyanarayanan
+> > <sathyanarayanan.kuppuswamy@linux.intel.com>; Kaneda, Erik
+> > <erik.kaneda@intel.com>
+> > Cc: Rafael J Wysocki <rjw@rjwysocki.net>; Len Brown <lenb@kernel.org>;
+> > Moore, Robert <robert.moore@intel.com>; ACPI Devel Maling List <linux-
+> > acpi@vger.kernel.org>; open list:ACPI COMPONENT ARCHITECTURE
+> > (ACPICA) <devel@acpica.org>; Linux Kernel Mailing List <linux-
+> > kernel@vger.kernel.org>; Wysocki, Rafael J <rafael.j.wysocki@intel.com>
+> > Subject: Re: [PATCH 1/1] ACPICA: Add SVKL table headers
+> >
+> > On Thu, Apr 22, 2021 at 9:29 PM Kuppuswamy Sathyanarayanan
+> > <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+> > >
+> > > ACPICA commit b5e6bcf69dbb9877481992d5ce86008cfb94f5b8
+> > >
+> > > SVKL (Storage Volume Key Location Table) is used by BIOS/Firmware
+> > > to share storage volume encryption key's with OS. It will be used
+> > > by userspace to decrypt and mount encrypted drives.
+> > >
+> > > So add SVKL table signature and add it to known signatures array
+> > > support SVKL.
+> > >
+> > > You can find details about the SVKL table in TDX specfication
+> > > titled "Guest-Host-Communication Interface (GHCI) for Intel
+> > > Trust Domain Extensions (Intel® TDX)", sec 4.4 and in ACPI
+> > > specification r6.4, sec 5.2.6.
+> > >
+> > >
+> > https://software.intel.com/content/dam/develop/external/us/en/documen
+> > ts/intel-tdx-guest-hypervisor-communication-interface.pdf
+> > >
+> > > Cc: Robert Moore <robert.moore@intel.com>
+> > > Cc: Erik Kaneda <erik.kaneda@intel.com>
+> > > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > >
+> > > Link: https://github.com/acpica/acpica/commit/b5e6bcf6
+> > > Signed-off-by: Kuppuswamy Sathyanarayanan
+> > <sathyanarayanan.kuppuswamy@linux.intel.com>
+> > > Signed-off-by: Bob Moore <robert.moore@intel.com>
+> > > Signed-off-by: Erik Kaneda <erik.kaneda@intel.com>
+> >
+> > Erik, what's the plan regarding this patch and the other ACPICA change
+> > requisite for this series?
+> >
+> > Are they going to be part of the next ACPICA release and am I going to
+> > receive them the usual way?
 >
-> * There are NOMAP memory regions. These regions are not mapped in the
->   linear map and until the previous commit the struct pages representing
->   these areas had default values.
->
-> As the consequence of absence of the special treatment of NOMAP regions in
-> the memory map it was necessary to use memblock_is_map_memory() in
-> pfn_valid() and to have pfn_valid_within() aliased to pfn_valid() so that
-> generic mm functionality would not treat a NOMAP page as a normal page.
->
-> Since the NOMAP regions are now marked as PageReserved(), pfn walkers and
-> the rest of core mm will treat them as unusable memory and thus
-> pfn_valid_within() is no longer required at all and can be disabled by
-> removing CONFIG_HOLES_IN_ZONE on arm64.
->
-> pfn_valid() can be slightly simplified by replacing
-> memblock_is_map_memory() with memblock_is_memory().
->
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Acked-by: David Hildenbrand <david@redhat.com>
+> Yes, we'll do this the usual way
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-
-... and many thanks for cleaning this up.
-
-
-> ---
->  arch/arm64/Kconfig   | 3 ---
->  arch/arm64/mm/init.c | 2 +-
->  2 files changed, 1 insertion(+), 4 deletions(-)
->
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 9f1d8566bbf9..d7dc8698cf8e 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1052,9 +1052,6 @@ config NEED_PER_CPU_EMBED_FIRST_CHUNK
->         def_bool y
->         depends on NUMA
->
-> -config HOLES_IN_ZONE
-> -       def_bool y
-> -
->  source "kernel/Kconfig.hz"
->
->  config ARCH_SPARSEMEM_ENABLE
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index 798f74f501d5..fb07218da2c0 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -251,7 +251,7 @@ int pfn_valid(unsigned long pfn)
->         if (!early_section(ms))
->                 return pfn_section_valid(ms, pfn);
->
-> -       return memblock_is_map_memory(addr);
-> +       return memblock_is_memory(addr);
->  }
->  EXPORT_SYMBOL(pfn_valid);
->
-> --
-> 2.28.0
->
+OK, thanks!
