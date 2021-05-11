@@ -2,249 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A6337AF8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064A237AF8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232093AbhEKTti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 15:49:38 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34426 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231474AbhEKTth (ORCPT
+        id S232116AbhEKTub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 15:50:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230408AbhEKTua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 15:49:37 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14BJmNqg073029;
-        Tue, 11 May 2021 14:48:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620762503;
-        bh=hzvT5WuMiuQH1Vq1OyjpWEdZemybAFC+dULLzT8TK+0=;
-        h=From:To:CC:Subject:Date;
-        b=DOCgDjfP0U+445UQM1q1uy96lDviDZFl4w690lnILs5h16Vq5RJANgilUTF9fSRyI
-         JEg1R4j6xOvDU8+BIA6uevb4JrsNSLPVnis9cWy0Gsb/2pIajle+xq7unnTqlVZtz8
-         l4D2aqM51uLRJKBExidLzOmBnjitUGtw1/Kypb+U=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14BJmMKE031884
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 11 May 2021 14:48:22 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 11
- May 2021 14:48:22 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 11 May 2021 14:48:22 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14BJmMTr067209;
-        Tue, 11 May 2021 14:48:22 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     <kristo@kernel.org>, <lokeshvutla@ti.com>
-CC:     <grygorii.strashko@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>
-Subject: [PATCH V2] arm64: dts: ti: k3*: Introduce reg definition for interrupt routers
-Date:   Tue, 11 May 2021 14:48:21 -0500
-Message-ID: <20210511194821.13919-1-nm@ti.com>
-X-Mailer: git-send-email 2.31.0
+        Tue, 11 May 2021 15:50:30 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCC6C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:49:23 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so18517894otf.12
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:49:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pmkqgPMF5ceXIIKhSMwOqpjXSv0jHA6XJLmFaPUUq7Q=;
+        b=UD0NjasZFb44xuO9e2QIKz62+dpk+P9m8NklcStwlx3+Ah9FeF4emjrnQnqjsr7FrO
+         5vyI5jE0BQT2n1sCDpdpkF4T0lENVjepWIOpsLTc4gdP8rtgxykX2OHbymDZ9rzgCZJA
+         eG7+tXQhlvEk2XfWOOLPxX51HezQLOelubWVg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pmkqgPMF5ceXIIKhSMwOqpjXSv0jHA6XJLmFaPUUq7Q=;
+        b=RWDCrnyJHEGtbutyEJ8afvU9SNLTKFr/KpeFpAvjeEKXT/FZdm0brNfR590dLQMTVQ
+         RJjurvWXKCxXBdXo3qI36oM+p606r0HD6r268ybNnR/XmzbFUb9U7aH1bsb1WxYvZ2xd
+         iS8YIMa19KpXSD/xRJrbjbngb2kjzRxJ6g5E6Bzy0cUTgad6+DaMmE2cV1M2hLemkpef
+         uKdIV4masS2OZKVAKo5DxCDmGHhEkWsk0NatMI5baVw9MK5qKZae0QBILs/waWw+ovAB
+         PY3PIgfIh8LR4lh+ouVv5CW6wkexp8QQIuB6eRjOpjwZBzscwwONgtclLwRoBuUZWU+m
+         W6Rw==
+X-Gm-Message-State: AOAM532wl2zGbTlKj/0AoLomMBaA+dl2PpoEmrG47TxuI+oR7Hi+xSGn
+        /X/2n7rgguUKftaBol5t1l3lZA==
+X-Google-Smtp-Source: ABdhPJwJWMmsKBZ36Qw/UXEXFmR5kjq9X8PaGE8a2Xk4ECco0rZT34WOQRbXHVU1vS3J7bUlPN7QRQ==
+X-Received: by 2002:a9d:7b57:: with SMTP id f23mr27282453oto.150.1620762562505;
+        Tue, 11 May 2021 12:49:22 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id y11sm3450477ooq.2.2021.05.11.12.49.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 12:49:21 -0700 (PDT)
+Subject: Re: [PATCH 5.11 000/342] 5.11.20-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210510102010.096403571@linuxfoundation.org>
+ <396382a7-9a50-7ea1-53a9-8898bf640c46@linuxfoundation.org>
+ <YJqIOajso0EyqgjO@kroah.com>
+ <3244bd40-3afa-8386-3378-220ff2e2527d@linuxfoundation.org>
+ <YJq0yCirpEV+bgC/@kroah.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <01f12fb8-b4e0-189d-61fe-ace8c4c65b10@linuxfoundation.org>
+Date:   Tue, 11 May 2021 13:49:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <YJq0yCirpEV+bgC/@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Interrupt routers are memory mapped peripherals, that are organized
-in our dts bus hierarchy to closely represents the actual hardware
-behavior.
+On 5/11/21 10:46 AM, Greg Kroah-Hartman wrote:
+> On Tue, May 11, 2021 at 10:16:00AM -0600, Shuah Khan wrote:
+>> On 5/11/21 7:35 AM, Greg Kroah-Hartman wrote:
+>>> On Mon, May 10, 2021 at 04:48:01PM -0600, Shuah Khan wrote:
+>>>> On 5/10/21 4:16 AM, Greg Kroah-Hartman wrote:
+>>>>> This is the start of the stable review cycle for the 5.11.20 release.
+>>>>> There are 342 patches in this series, all will be posted as a response
+>>>>> to this one.  If anyone has any issues with these being applied, please
+>>>>> let me know.
+>>>>>
+>>>>> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
+>>>>> Anything received after that time might be too late.
+>>>>>
+>>>>> The whole patch series can be found in one patch at:
+>>>>> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.20-rc1.gz
+>>>>> or in the git tree and branch at:
+>>>>> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+>>>>> and the diffstat can be found below.
+>>>>>
+>>>>> thanks,
+>>>>>
+>>>>> greg k-h
+>>>>>
+>>>>
+>>>> Compiled and doesn't boot. Dies in kmem_cache_alloc_node() called
+>>>> from alloc_skb_with_frags()
+>>>>
+>>>> I will start bisect.
+>>>>
+>>>> Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+>>>
+>>> It might be due to 79fcd446e7e1 ("drm/amdgpu: Fix memory leak") which I
+>>> have reverted from 5.12 and 5.11 queues now and pushed out a -rc2.  If
+>>> you could test those to verify this or not, that would be great.
+>>>
+>>
+>> I am seeing other display issues as well. This might be it.
+>>
+>> I couldn't find rc2. Checking out
+>> git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+>> linux-5.11.y
+> 
+> Ah, sorry, pushed the -rc2 patch out now, but the -rc git tree has it as
+> well.
+> 
 
-However, without explicitly calling out the reg property, using
-2021.03+ dt-schema package, this exposes the following problem with
-dtbs_check:
+5.11.20-rc2 compiled and booted on my test system with 79fcd446e7e1
+reverted. No dmesg regressions.
 
-/arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml: bus@100000:
-interrupt-controller0: {'type': 'object'} is not allowed for
-{'compatible': ['ti,sci-intr'], .....
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Even though we don't use interrupt router directly via memory mapped
-registers and have to use it via the system controller, the hardware
-block is memory mapped, so describe the base address in device tree.
-
-This is a valid, comprehensive description of hardware and permitted
-by the existing ti,sci-intr schema.
-
-Reviewed-by: Tero Kristo <kristo@kernel.org>
-Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
-Signed-off-by: Nishanth Menon <nm@ti.com>
----
-
-Changes since v1:
-* updates to register to be consistent (use 0x%08x formatting).
-
-V1: https://lore.kernel.org/linux-arm-kernel/20210510145508.8994-1-nm@ti.com/
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi        | 3 ++-
- arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi         | 3 ++-
- arch/arm64/boot/dts/ti/k3-am65-main.dtsi        | 6 ++++--
- arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi      | 3 ++-
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi       | 6 ++++--
- arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi | 3 ++-
- arch/arm64/boot/dts/ti/k3-j721e-main.dtsi       | 6 ++++--
- arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi | 3 ++-
- 8 files changed, 22 insertions(+), 11 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-index b2bcbf23eefd..5075a2143641 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-@@ -373,8 +373,9 @@ main_spi4: spi@20140000 {
- 		clocks = <&k3_clks 145 0>;
- 	};
- 
--	main_gpio_intr: interrupt-controller0 {
-+	main_gpio_intr: interrupt-controller@a00000 {
- 		compatible = "ti,sci-intr";
-+		reg = <0x00 0x00a00000 0x00 0x800>;
- 		ti,intr-trigger-type = <1>;
- 		interrupt-controller;
- 		interrupt-parent = <&gic500>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
-index 99e94dee1bd4..deb19ae5e168 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
-@@ -74,8 +74,9 @@ mcu_spi1: spi@4b10000 {
- 		clocks = <&k3_clks 148 0>;
- 	};
- 
--	mcu_gpio_intr: interrupt-controller1 {
-+	mcu_gpio_intr: interrupt-controller@4210000 {
- 		compatible = "ti,sci-intr";
-+		reg = <0x00 0x04210000 0x00 0x200>;
- 		ti,intr-trigger-type = <1>;
- 		interrupt-controller;
- 		interrupt-parent = <&gic500>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-index cb340d1b401f..cbdb6331de11 100644
---- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-@@ -433,8 +433,9 @@ usb1_phy: phy@4110000 {
- 		#phy-cells = <0>;
- 	};
- 
--	intr_main_gpio: interrupt-controller0 {
-+	intr_main_gpio: interrupt-controller@a00000 {
- 		compatible = "ti,sci-intr";
-+		reg = <0x0 0x00a00000 0x0 0x400>;
- 		ti,intr-trigger-type = <1>;
- 		interrupt-controller;
- 		interrupt-parent = <&gic500>;
-@@ -454,8 +455,9 @@ main-navss {
- 
- 		ti,sci-dev-id = <118>;
- 
--		intr_main_navss: interrupt-controller1 {
-+		intr_main_navss: interrupt-controller@310e0000 {
- 			compatible = "ti,sci-intr";
-+			reg = <0x0 0x310e0000 0x0 0x2000>;
- 			ti,intr-trigger-type = <4>;
- 			interrupt-controller;
- 			interrupt-parent = <&gic500>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
-index ed42f13e7663..62a18b110c52 100644
---- a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
-@@ -69,8 +69,9 @@ wkup_i2c0: i2c@42120000 {
- 		power-domains = <&k3_pds 115 TI_SCI_PD_EXCLUSIVE>;
- 	};
- 
--	intr_wkup_gpio: interrupt-controller2 {
-+	intr_wkup_gpio: interrupt-controller@42200000 {
- 		compatible = "ti,sci-intr";
-+		reg = <0x42200000 0x200>;
- 		ti,intr-trigger-type = <1>;
- 		interrupt-controller;
- 		interrupt-parent = <&gic500>;
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-index f86c493a44f1..7a6c2054c5ed 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-@@ -68,8 +68,9 @@ gic_its: msi-controller@1820000 {
- 		};
- 	};
- 
--	main_gpio_intr: interrupt-controller0 {
-+	main_gpio_intr: interrupt-controller@a00000 {
- 		compatible = "ti,sci-intr";
-+		reg = <0x00 0x00a00000 0x00 0x800>;
- 		ti,intr-trigger-type = <1>;
- 		interrupt-controller;
- 		interrupt-parent = <&gic500>;
-@@ -86,8 +87,9 @@ main_navss: bus@30000000 {
- 		ranges = <0x00 0x30000000 0x00 0x30000000 0x00 0x0c400000>;
- 		ti,sci-dev-id = <199>;
- 
--		main_navss_intr: interrupt-controller1 {
-+		main_navss_intr: interrupt-controller@310e0000 {
- 			compatible = "ti,sci-intr";
-+			reg = <0x00 0x310e0000 0x00 0x4000>;
- 			ti,intr-trigger-type = <4>;
- 			interrupt-controller;
- 			interrupt-parent = <&gic500>;
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-index 5e74e43822c3..825b9f1931b7 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-@@ -96,8 +96,9 @@ mcu_uart0: serial@40a00000 {
- 		clock-names = "fclk";
- 	};
- 
--	wkup_gpio_intr: interrupt-controller2 {
-+	wkup_gpio_intr: interrupt-controller@42200000 {
- 		compatible = "ti,sci-intr";
-+		reg = <0x00 0x42200000 0x00 0x400>;
- 		ti,intr-trigger-type = <1>;
- 		interrupt-controller;
- 		interrupt-parent = <&gic500>;
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-index c2aa45a3ac79..d5e41f665794 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-@@ -76,8 +76,9 @@ gic_its: msi-controller@1820000 {
- 		};
- 	};
- 
--	main_gpio_intr: interrupt-controller0 {
-+	main_gpio_intr: interrupt-controller@a00000 {
- 		compatible = "ti,sci-intr";
-+		reg = <0x00 0x00a00000 0x00 0x800>;
- 		ti,intr-trigger-type = <1>;
- 		interrupt-controller;
- 		interrupt-parent = <&gic500>;
-@@ -97,8 +98,9 @@ main-navss {
- 
- 		ti,sci-dev-id = <199>;
- 
--		main_navss_intr: interrupt-controller1 {
-+		main_navss_intr: interrupt-controller@310e0000 {
- 			compatible = "ti,sci-intr";
-+			reg = <0x0 0x310e0000 0x0 0x4000>;
- 			ti,intr-trigger-type = <4>;
- 			interrupt-controller;
- 			interrupt-parent = <&gic500>;
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-index d56e3475aee7..ad12a5c9f209 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-@@ -96,8 +96,9 @@ mcu_uart0: serial@40a00000 {
- 		clock-names = "fclk";
- 	};
- 
--	wkup_gpio_intr: interrupt-controller2 {
-+	wkup_gpio_intr: interrupt-controller@42200000 {
- 		compatible = "ti,sci-intr";
-+		reg = <0x00 0x42200000 0x00 0x400>;
- 		ti,intr-trigger-type = <1>;
- 		interrupt-controller;
- 		interrupt-parent = <&gic500>;
--- 
-2.31.0
-
+thanks,
+-- Shuah
