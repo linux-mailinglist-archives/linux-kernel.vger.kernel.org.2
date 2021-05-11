@@ -2,151 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 370EA379C3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3E5379C42
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhEKBrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 21:47:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230023AbhEKBrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 21:47:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 416A161629;
-        Tue, 11 May 2021 01:46:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620697595;
-        bh=zRFH7hcgqBzuVJGwApqdrtTvpvj+GmXyjHWNsw6DGg8=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=SrbUmQ3XfUDBVScU7RGYGh+COsif34UcsKqoTgGV9vf8XRs8R1lfXDv2Rg8m5+EF9
-         CJPluc1/MQWvbLjpb0BVOfrQVGN/CpceyyrZMmsRnCPL3kqtV6OlO3OEzsslK/qv7R
-         zfl2Tf8Vw+0CIzNstymmxgXrqQa0cXQFMxMCpH3x+EScqVCBhtS+W0OWy9oXkU1Diw
-         G6RzBgQ9DfY0kzP1vEIMFq5Dn15X6EwBB3uZAB8JhvRKGL4JvgSEGm4RjP4loHchpQ
-         dnVwpyniLe2sjqdRGm4CgKX7WruGCQeIvlzp1r0kmQMvORLOQOTUtZolCtGmlfMEQH
-         t7e1j5rQsPpEw==
-Date:   Mon, 10 May 2021 18:46:34 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Christoph Hellwig <hch@lst.de>
-cc:     Julien Grall <julien@xen.org>, f.fainelli@gmail.com,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        linux-kernel@vger.kernel.org,
-        osstest service owner <osstest-admin@xenproject.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        iommu@lists.linux-foundation.org
-Subject: Re: Regression when booting 5.15 as dom0 on arm64 (WAS: Re: [linux-linus
- test] 161829: regressions - FAIL)
-In-Reply-To: <20210510084057.GA933@lst.de>
-Message-ID: <alpine.DEB.2.21.2105101818260.5018@sstabellini-ThinkPad-T480s>
-References: <osstest-161829-mainreport@xen.org> <4ea1e89f-a7a0-7664-470c-b3cf773a1031@xen.org> <20210510084057.GA933@lst.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S230413AbhEKBs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 21:48:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51611 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229736AbhEKBs4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 21:48:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620697670;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qE7Cs7117lYWLJD4CigwEwHnctBSgoDI1H0pJNx0a/k=;
+        b=fjPRraSWQHwMo0nIZbdsoAN/Wk1A5DyQSNYl71mGuhiUwZOeRiMOCnNHGaNxkghSzQTq2e
+        yXBDyi+Ng/l/wq38PsQPwyM63XZj4IQNwMqlEIgBX4PcfEEZbbM4304il7jq0goF83rigs
+        mekB0HL22Y7LKCAuzzXIkAhpW+lkC7A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-573-9Aj2Zn0wPkmWVUNN3vdpVg-1; Mon, 10 May 2021 21:47:49 -0400
+X-MC-Unique: 9Aj2Zn0wPkmWVUNN3vdpVg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 548BD801AE3;
+        Tue, 11 May 2021 01:47:47 +0000 (UTC)
+Received: from T590 (ovpn-12-106.pek2.redhat.com [10.72.12.106])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 393F360C17;
+        Tue, 11 May 2021 01:47:38 +0000 (UTC)
+Date:   Tue, 11 May 2021 09:47:34 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Douglas Gilbert <dgilbert@interlog.com>
+Cc:     John Garry <john.garry@huawei.com>, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, kashyap.desai@broadcom.com,
+        chenxiang66@hisilicon.com, yama@redhat.com
+Subject: Re: [PATCH] blk-mq: Use request queue-wide tags for tagset-wide
+ sbitmap
+Message-ID: <YJniNq6LYqiLFIlP@T590>
+References: <1620037333-2495-1-git-send-email-john.garry@huawei.com>
+ <YJnVasOcaVU+4+Au@T590>
+ <0faa2ad6-4ae9-02b2-2f34-cf58f1e23c5b@interlog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0faa2ad6-4ae9-02b2-2f34-cf58f1e23c5b@interlog.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021, Christoph Hellwig wrote:
-> On Sat, May 08, 2021 at 12:32:37AM +0100, Julien Grall wrote:
-> > The pointer dereferenced seems to suggest that the swiotlb hasn't been 
-> > allocated. From what I can tell, this may be because swiotlb_force is set 
-> > to SWIOTLB_NO_FORCE, we will still enable the swiotlb when running on top 
-> > of Xen.
-> >
-> > I am not entirely sure what would be the correct fix. Any opinions?
+On Mon, May 10, 2021 at 09:35:01PM -0400, Douglas Gilbert wrote:
+> On 2021-05-10 8:52 p.m., Ming Lei wrote:
+> > On Mon, May 03, 2021 at 06:22:13PM +0800, John Garry wrote:
+> > > The tags used for an IO scheduler are currently per hctx.
+> > > 
+> > > As such, when q->nr_hw_queues grows, so does the request queue total IO
+> > > scheduler tag depth.
+> > > 
+> > > This may cause problems for SCSI MQ HBAs whose total driver depth is
+> > > fixed.
+> > > 
+> > > Ming and Yanhui report higher CPU usage and lower throughput in scenarios
+> > > where the fixed total driver tag depth is appreciably lower than the total
+> > > scheduler tag depth:
+> > > https://lore.kernel.org/linux-block/440dfcfc-1a2c-bd98-1161-cec4d78c6dfc@huawei.com/T/#mc0d6d4f95275a2743d1c8c3e4dc9ff6c9aa3a76b
+> > > 
+> > 
+> > No difference any more wrt. fio running on scsi_debug with this patch in
+> > Yanhui's test machine:
+> > 
+> > 	modprobe scsi_debug host_max_queue=128 submit_queues=32 virtual_gb=256 delay=1
+> > vs.
+> > 	modprobe scsi_debug max_queue=128 submit_queues=1 virtual_gb=256 delay=1
+> > 
+> > Without this patch, the latter's result is 30% higher than the former's.
+> > 
+> > note: scsi_debug's queue depth needs to be updated to 128 for avoiding io hang,
+> > which is another scsi issue.
 > 
-> Can you try something like the patch below (not even compile tested, but
-> the intent should be obvious?
-> 
-> 
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index 16a2b2b1c54d..7671bc153fb1 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -44,6 +44,8 @@
->  #include <asm/tlb.h>
->  #include <asm/alternative.h>
->  
-> +#include <xen/arm/swiotlb-xen.h>
-> +
->  /*
->   * We need to be able to catch inadvertent references to memstart_addr
->   * that occur (potentially in generic code) before arm64_memblock_init()
-> @@ -482,7 +484,7 @@ void __init mem_init(void)
->  	if (swiotlb_force == SWIOTLB_FORCE ||
->  	    max_pfn > PFN_DOWN(arm64_dma_phys_limit))
->  		swiotlb_init(1);
-> -	else
-> +	else if (!IS_ENABLED(CONFIG_XEN) || !xen_swiotlb_detect())
->  		swiotlb_force = SWIOTLB_NO_FORCE;
->  
->  	set_max_mapnr(max_pfn - PHYS_PFN_OFFSET);
+> "scsi_debug: Fix cmd_per_lun, set to max_queue" made it into lk 5.13.0-rc1 as
+> commit fc09acb7de31badb2ea9e85d21e071be1a5736e4 . Is this the issue you are
+> referring to, or is there a separate issue in the wider scsi stack?
 
-The "IS_ENABLED(CONFIG_XEN)" is not needed as the check is already part
-of xen_swiotlb_detect().
+OK, that is it, then it isn't necessary to update scsi_debug's queue
+depth for the test.
 
 
-But let me ask another question first. Do you think it makes sense to have:
+Thanks,
+Ming
 
-	if (swiotlb_force == SWIOTLB_NO_FORCE)
-		return 0;
-
-at the beginning of swiotlb_late_init_with_tbl? I am asking because
-swiotlb_late_init_with_tbl is meant for special late initializations,
-right? It shouldn't really matter the presence or absence of
-SWIOTLB_NO_FORCE in regards to swiotlb_late_init_with_tbl. Also the
-commit message for "swiotlb: Make SWIOTLB_NO_FORCE perform no
-allocation" says that "If a platform was somehow setting
-swiotlb_no_force and a later call to swiotlb_init() was to be made we
-would still be proceeding with allocating the default SWIOTLB size
-(64MB)." Our case here is very similar, right? So the allocation should
-proceed?
-
-
-Which brings me to a separate unrelated issue, still affecting the path
-xen_swiotlb_init -> swiotlb_late_init_with_tbl. If swiotlb_init(1) is
-called by mem_init then swiotlb_late_init_with_tbl will fail due to the
-check:
-
-    /* protect against double initialization */
-    if (WARN_ON_ONCE(io_tlb_default_mem))
-        return -ENOMEM;
-
-xen_swiotlb_init is meant to ask Xen to make a bunch of pages physically
-contiguous. Then, it initializes the swiotlb buffer based on those
-pages. So it is a problem that swiotlb_late_init_with_tbl refuses to
-continue. However, in practice it is not a problem today because on ARM
-we don't actually make any special requests to Xen to make the pages
-physically contiguous (yet). See the empty implementation of
-arch/arm/xen/mm.c:xen_create_contiguous_region. I don't know about x86.
-
-So maybe we should instead do something like the appended?
-
-
-diff --git a/arch/arm/xen/mm.c b/arch/arm/xen/mm.c
-index f8f07469d259..f5a3638d1dee 100644
---- a/arch/arm/xen/mm.c
-+++ b/arch/arm/xen/mm.c
-@@ -152,6 +152,7 @@ static int __init xen_mm_init(void)
- 	struct gnttab_cache_flush cflush;
- 	if (!xen_swiotlb_detect())
- 		return 0;
-+	swiotlb_exit();
- 	xen_swiotlb_init();
- 
- 	cflush.op = 0;
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 8ca7d505d61c..f17be37298a7 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -285,9 +285,6 @@ swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
- 	unsigned long bytes = nslabs << IO_TLB_SHIFT, i;
- 	struct io_tlb_mem *mem;
- 
--	if (swiotlb_force == SWIOTLB_NO_FORCE)
--		return 0;
--
- 	/* protect against double initialization */
- 	if (WARN_ON_ONCE(io_tlb_default_mem))
- 		return -ENOMEM;
