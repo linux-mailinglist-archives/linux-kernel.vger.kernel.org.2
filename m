@@ -2,240 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A66EF37B1D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15C437B1D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhEKWx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 18:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230305AbhEKWxu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 18:53:50 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C637CC06138E
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:52:38 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id m190so16856337pga.2
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:52:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3dF8B31PNk7cPhkI1K+ifAM7LFjPxMuEN4CZDqsLjYs=;
-        b=hOncJ7KhKMk9l1BHT4qKfG3LEJOMXRnF3BEuGVJyKHbmLZuhbhoFvOiT2N3Zq0k/Cz
-         GTb6KrDlUHyCe99F/zw2L8+iV02SUphMf8pQzIZonTnlkk7JHOJG+CMhRbei9Af1iKK5
-         6VworG6f1jgx0QKBEta/hA0pIk13xe7gnjZlI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3dF8B31PNk7cPhkI1K+ifAM7LFjPxMuEN4CZDqsLjYs=;
-        b=l3q9/i6N2tvEdnqVAsult2y75Gpvv5S82cw1SmMJ1edviMLymRumW846EKObtj5kjD
-         HLjA5UR2jo+clbULPCCaCPwTzItlIfJZ5kYbZzo06HmmsodBTjlAezbwpnaPqonh9qEP
-         JrCRkMXmMTvGZ1hsR3VCwANQWRJFXpSgASBdavzuH3HUzbTotM8pswykNsZShLutC8xQ
-         WUGDuobo/VmiKSXVRbaVUXDDXDavepbvVDvxr5U2hHhQXnGNnYRVEHrFUpcRAcxHhh1i
-         KCLsfZMVk8SPjRfg8HVsaNBM/LcDaX4IktHdts1xS8J8QF5YrfxHYwXE2/AOFYotPM1Q
-         AkvA==
-X-Gm-Message-State: AOAM530vtkJK7RRaGr5eTWvPbeIIiHJbrAbgmzgXDbWrFJ+mmywelsTW
-        ks9zzKWm2Dx9aHSWCbynGXISZg==
-X-Google-Smtp-Source: ABdhPJzdwIoaihmRoDL6WGsLK7mSThzKjWrMJy63C9nRpC6zIzCkoV7CM+EFBQzvJcnkSYPIyma69w==
-X-Received: by 2002:a63:c13:: with SMTP id b19mr33088389pgl.198.1620773558275;
-        Tue, 11 May 2021 15:52:38 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:f1d7:673a:456e:c653])
-        by smtp.gmail.com with UTF8SMTPSA id c15sm14510132pfo.176.2021.05.11.15.52.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 15:52:37 -0700 (PDT)
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     Michal Simek <michal.simek@xilinx.com>, devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-usb@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
-        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH v10 5/5] arm64: dts: qcom: sc7180-trogdor: Add nodes for onboard USB hub
-Date:   Tue, 11 May 2021 15:52:23 -0700
-Message-Id: <20210511155152.v10.5.Ie0d2c1214b767bb5551dd4cad38398bd40e4466f@changeid>
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-In-Reply-To: <20210511225223.550762-1-mka@chromium.org>
-References: <20210511225223.550762-1-mka@chromium.org>
+        id S230198AbhEKWx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:53:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230167AbhEKWxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 18:53:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7387561184;
+        Tue, 11 May 2021 22:52:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620773561;
+        bh=Xn+AIPqTrejOU6g7pgGUlUjZH9nKVNH6Ey5HLiEnDe0=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=Zg7ih0ebJsGTkUEamP/QiJdiGyH8BF+ghE5Aalg1dF/DUh9unzPjdNL2BBlxiy26G
+         3SHpHsZuQ+46F9PKWT48EvfgKrxqyhkFEIeHu3maMTaBNFrNMs+gJ50H/dflj5O5kz
+         vbTVQ7+pBOufIGJbP+4yXjP4GFaAqnRalP5hPFHkDNZZZVFX7+Gr33sklNyvZ3/NPC
+         sx6AkuAH3YdTQROKG+7njwy4Ra3V9WHrYLprEwWRAnZ4GKQSpfCusziVwPRUaGuhXU
+         8m+WJDa44mxnx+BavgG+bUqYfovYVlurzFUqtcWxgeMZqxV7KwInrE4AoTohh/CaBs
+         VJiYd6poPvfLQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 43BE65C0138; Tue, 11 May 2021 15:52:41 -0700 (PDT)
+Date:   Tue, 11 May 2021 15:52:41 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/19] Miscellaneous fixes for v5.14
+Message-ID: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add nodes for the onboard USB hub on trogdor devices. Remove the
-'always-on' property from the hub regulator, since the regulator
-is now managed by the onboard_usb_hub driver.
+Hello!
 
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
----
+This series contains miscellaneous fixes, perhaps most notably the
+rescusitation of RCU priority boosting.
 
-Changes in v10:
-- keep 'regulator-boot-on' property
-- updated commit message
+1.	Fix typo in comment: kthead -> kthread, courtesy of Rolf Eike
+	Beer.
 
-Changes in v9:
-- none
+2.	Remove the unused rcu_irq_exit_preempt() function.
 
-Changes in v8:
-- none
+3.	Improve tree.c comments and add code cleanups, courtesy of
+	Zhouyi Zhou.
 
-Changes in v7:
-- rebased on qcom/arm64-for-5.13 (with the rest of the series)
+4.	Invoke rcu_spawn_core_kthreads() from rcu_spawn_gp_kthread().
 
-Changes in v6:
-- added 'companion-hub' entry to both USB devices
-- added 'vdd-supply' also to hub@2
+5.	Add ->rt_priority and ->gp_start to show_rcu_gp_kthreads() output.
 
-Changes in v5:
-- patch added to the series
+6.	Add ->gp_max to show_rcu_gp_kthreads() output.
 
- .../boot/dts/qcom/sc7180-trogdor-lazor-r0.dts | 19 ++++++++-----------
- .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts | 11 ++++-------
- .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts | 19 ++++++++-----------
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  | 19 ++++++++++++++++++-
- 4 files changed, 38 insertions(+), 30 deletions(-)
+7.	Explicitly flag likely false-positive report.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-index 5c997cd90069..bae85f6b2bfa 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-@@ -23,17 +23,6 @@ &charger_thermal {
- 	status = "disabled";
- };
- 
--&pp3300_hub {
--	/* pp3300_l7c is used to power the USB hub */
--	/delete-property/regulator-always-on;
--	/delete-property/regulator-boot-on;
--};
--
--&pp3300_l7c {
--	regulator-always-on;
--	regulator-boot-on;
--};
--
- &sn65dsi86_out {
- 	/*
- 	 * Lane 0 was incorrectly mapped on the cable, but we've now decided
-@@ -42,3 +31,11 @@ &sn65dsi86_out {
- 	 */
- 	lane-polarities = <1 0>;
- };
-+
-+&usb_hub_2_0 {
-+	 vdd-supply = <&pp3300_l7c>;
-+};
-+
-+&usb_hub_3_0 {
-+	 vdd-supply = <&pp3300_l7c>;
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
-index d9fbcc7bc5bd..45f014c3539d 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
-@@ -23,13 +23,10 @@ &charger_thermal {
- 	status = "disabled";
- };
- 
--&pp3300_hub {
--	/* pp3300_l7c is used to power the USB hub */
--	/delete-property/regulator-always-on;
--	/delete-property/regulator-boot-on;
-+&usb_hub_2_0 {
-+	 vdd-supply = <&pp3300_l7c>;
- };
- 
--&pp3300_l7c {
--	regulator-always-on;
--	regulator-boot-on;
-+&usb_hub_3_0 {
-+	 vdd-supply = <&pp3300_l7c>;
- };
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
-index 2b522f9e0d8f..2f5263e3d1b9 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-r1.dts
-@@ -42,17 +42,6 @@ &panel {
- 	compatible = "auo,b116xa01";
- };
- 
--&pp3300_hub {
--	/* pp3300_l7c is used to power the USB hub */
--	/delete-property/regulator-always-on;
--	/delete-property/regulator-boot-on;
--};
--
--&pp3300_l7c {
--	regulator-always-on;
--	regulator-boot-on;
--};
--
- &sdhc_2 {
- 	status = "okay";
- };
-@@ -61,6 +50,14 @@ &trackpad {
- 	interrupts = <58 IRQ_TYPE_EDGE_FALLING>;
- };
- 
-+&usb_hub_2_0 {
-+	 vdd-supply = <&pp3300_l7c>;
-+};
-+
-+&usb_hub_3_0 {
-+	 vdd-supply = <&pp3300_l7c>;
-+};
-+
- /* PINCTRL - modifications to sc7180-trogdor.dtsi */
- 
- &trackpad_int_1v8_odl {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 192e2e424fde..0d6a7447dc77 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -206,7 +206,6 @@ pp3300_hub: pp3300-hub {
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&en_pp3300_hub>;
- 
--		regulator-always-on;
- 		regulator-boot-on;
- 
- 		vin-supply = <&pp3300_a>;
-@@ -848,6 +847,24 @@ &usb_1 {
- 
- &usb_1_dwc3 {
- 	dr_mode = "host";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	/* 2.0 hub on port 1 */
-+	usb_hub_2_0: hub@1 {
-+		compatible = "usbbda,5411";
-+		reg = <1>;
-+		vdd-supply = <&pp3300_hub>;
-+		companion-hub = <&usb_hub_3_0>;
-+	};
-+
-+	/* 3.0 hub on port 2 */
-+	usb_hub_3_0: hub@2 {
-+		compatible = "usbbda,411";
-+		reg = <2>;
-+		vdd-supply = <&pp3300_hub>;
-+		companion-hub = <&usb_hub_2_0>;
-+	};
- };
- 
- &usb_1_hsphy {
--- 
-2.31.1.607.g51e8a6a459-goog
+8.	Reject RCU_LOCKDEP_WARN() false positives.
 
+9.	Add quiescent states and boost states to show_rcu_gp_kthreads()
+	output.
+
+10.	Make RCU priority boosting work on single-CPU rcu_node structures.
+
+11.	Make show_rcu_gp_kthreads() dump rcu_node structures blocking GP.
+
+12.	Restrict RCU_STRICT_GRACE_PERIOD to at most four CPUs.
+
+13.	Make rcu_gp_cleanup() be noinline for tracing.
+
+14.	Point to documentation of ordering guarantees.
+
+15.	Create an unrcu_pointer() to remove __rcu from a pointer.
+
+16.	reconcile rcu_nocbs= and nohz_full=, courtesy of Paul Gortmaker.
+
+17.	Improve comments describing RCU read-side critical sections.
+
+18.	Remove obsolete rcu_read_unlock() deadlock commentary.
+
+19.	Add missing __releases() annotation, courtesy of Jules Irenge.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/rcupdate.h |    2 -
+ b/include/linux/rcutiny.h  |    1 
+ b/include/linux/rcutree.h  |    1 
+ b/kernel/locking/lockdep.c |    6 ++-
+ b/kernel/rcu/Kconfig.debug |    2 -
+ b/kernel/rcu/srcutree.c    |    3 +
+ b/kernel/rcu/tree.c        |   22 ------------
+ b/kernel/rcu/tree.h        |    1 
+ b/kernel/rcu/tree_plugin.h |    2 -
+ b/kernel/rcu/tree_stall.h  |    8 ++--
+ b/kernel/rcu/update.c      |    2 -
+ b/kernel/sched/isolation.c |    4 --
+ b/mm/oom_kill.c            |    2 -
+ include/linux/rcupdate.h   |   82 ++++++++++++++++++++++++++-------------------
+ kernel/rcu/tree.c          |   74 +++++++++++++++++++++++++---------------
+ kernel/rcu/tree.h          |    2 -
+ kernel/rcu/tree_plugin.h   |   30 ++++------------
+ kernel/rcu/tree_stall.h    |   21 ++++++++---
+ 18 files changed, 138 insertions(+), 127 deletions(-)
