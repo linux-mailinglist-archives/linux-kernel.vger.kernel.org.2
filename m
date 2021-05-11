@@ -2,183 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE1037A0C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C23237A0C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhEKHYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:24:17 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2358 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhEKHYQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:24:16 -0400
-Received: from dggemx753-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FfTnt0NQFz60Yw;
-        Tue, 11 May 2021 15:19:46 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by
- dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 11 May 2021 15:23:06 +0800
-Subject: Re: [PATCH] f2fs: set file as cold when file defragmentation
-To:     <daejun7.park@samsung.com>, Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     "chao@kernel.org" <chao@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <fc7f1b2b-60ea-eb12-3195-7b3ad0b3adc2@huawei.com>
- <20210429062005epcms2p352ef77f96ab66cbffe0c0ab6c1b62d8a@epcms2p3>
- <3a0ab201-9546-d523-abc7-79df5f637f14@huawei.com>
- <YJN0nTgadoq8vDaG@google.com>
- <bd0fa15b-01c3-9f70-3eb8-ec2b54a0ee8f@huawei.com>
- <YJlHmP/ej8/IsHL3@google.com>
- <6e95edca-4802-7650-4771-5389067935dc@huawei.com>
- <YJoRcIpW1g/OgHZn@google.com>
- <CGME20210429062005epcms2p352ef77f96ab66cbffe0c0ab6c1b62d8a@epcms2p1>
- <20210511064156epcms2p1351480bea36733f2e00022bd295e829e@epcms2p1>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <771a05fe-e26f-d635-5f8d-5be72f82345f@huawei.com>
-Date:   Tue, 11 May 2021 15:23:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S230114AbhEKH1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:27:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhEKH1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 03:27:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 540826186A;
+        Tue, 11 May 2021 07:26:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620717969;
+        bh=3JMzIMeQzxE5DWUbQRLHd4TyQ7AtkcTds4O1YHSswGI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=l+wWFa58UfPIq9uamJkAFlrtebZCUwpiPeFp36SlYHSJEmKo6FW/jBkMFuVC3Ngt8
+         NWpDdzWGekpMmPkV4QoukaycoyMIvajuJnSOJViiG0ApdCEwoiYiidvJPISVU7g+TQ
+         UKBwNfQZQ5gUUVmUOTvE5pPfwqSw2eRzxvzAEXqXPpzL+N6Ahel2JJEWFGb2bxsnWN
+         VQkY6OlXZeV7gsWVs2bw/1cQxmK6oIU4cqCTX3qnw0syvhhNMDTBCEkK55zcbAG3cI
+         UgrjdwssXaFIM1Aih0wwIgH5bVP5ZJ2aJf8/aq/icJf/ielpmWefTWHftCt3ZAxTvB
+         brDN+bQzfWdZw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Moni Shoua <monis@mellanox.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com
+Subject: [PATCH rdma-rc] RDMA/rxe: Clear all QP fields if creation failed
+Date:   Tue, 11 May 2021 10:26:03 +0300
+Message-Id: <7bf8d548764d406dbbbaf4b574960ebfd5af8387.1620717918.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210511064156epcms2p1351480bea36733f2e00022bd295e829e@epcms2p1>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-ClientProxiedBy: dggemx704-chm.china.huawei.com (10.1.199.51) To
- dggemx753-chm.china.huawei.com (10.0.44.37)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/11 14:41, Daejun Park wrote:
->> On 2021/5/11 13:09, Jaegeuk Kim wrote:
->>> On 05/11, Chao Yu wrote:
->>>> On 2021/5/10 22:47, Jaegeuk Kim wrote:
->>>>> On 05/06, Chao Yu wrote:
->>>>>> On 2021/5/6 12:46, Jaegeuk Kim wrote:
->>>>>>> On 05/06, Chao Yu wrote:
->>>>>>>> On 2021/4/29 14:20, Daejun Park wrote:
->>>>>>>>> In file defragmentation by ioctl, all data blocks in the file are
->>>>>>>>> re-written out-of-place. File defragmentation implies user will not update
->>>>>>>>> and mostly read the file. So before the defragmentation, we set file
->>>>>>>>> temperature as cold for better block allocation.
->>>>>>>>
->>>>>>>> I don't think all fragmented files are cold, e.g. db file.
->>>>>>>
->>>>>>> I have a bit different opinion. I think one example would be users want to
->>>>>>> defragment a file, when the they want to get higher read bandwidth for
->>>>>>
->>>>>> Multimedia file was already defined as cold file now via default extension
->>>>>> list?
->>>>>
->>>>> I just gave an example. And default is default.
->>>>>
->>>>>>
->>>>>>> usually multimedia files. That's likely to be cold files. Moreover, I don't
->>>>>>> think they want to defragment db files which will be fragmented soon?
->>>>>>
->>>>>> I guess like db files have less update but more access?
->>>>>
->>>>> I think both, and we set it as hot.
->>>>
->>>> Then hot and cold bit will set to the same db file after defragmentation?
->>>
->>> Do you set cold bit to db files? I mean, generally db is not cold, but hot.
->>
->> I never set cold bit to db files, I mean if we defragment db file which
->> has less update and more access, db file may have bot hot and cold bit.
->>
->> To Daejun, may I ask that is Samsung planning to use this defragment ioctl
->> in products? what's the user scenario?
-> 
-> It is just my idea for defragmentation, not Samsung.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Alright,
+rxe_qp_do_cleanup() relies on valid pointer values in QP for the
+properly created ones, but in case rxe_qp_from_init() failed it was
+filled with garbage and caused tot the following error.
 
-> I think the user will call the defrag ioctl for the files that have been updated.
+------------[ cut here ]------------
+refcount_t: underflow; use-after-free.
+WARNING: CPU: 1 PID: 12560 at lib/refcount.c:28 refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
+Modules linked in:
+CPU: 1 PID: 12560 Comm: syz-executor.4 Not tainted 5.12.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
+Code: e9 db fe ff ff 48 89 df e8 2c c2 ea fd e9 8a fe ff ff e8 72 6a a7 fd 48 c7 c7 e0 b2 c1 89 c6 05 dc 3a e6 09 01 e8 ee 74 fb 04 <0f> 0b e9 af fe ff ff 0f 1f 84 00 00 00 00 00 41 56 41 55 41 54 55
+RSP: 0018:ffffc900097ceba8 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff815bb075 RDI: fffff520012f9d67
+RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815b4eae R11: 0000000000000000 R12: ffff8880322a4800
+R13: ffff8880322a4940 R14: ffff888033044e00 R15: 0000000000000000
+FS:  00007f6eb2be3700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fdbe5d41000 CR3: 000000001d181000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __refcount_sub_and_test include/linux/refcount.h:283 [inline]
+ __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+ refcount_dec_and_test include/linux/refcount.h:333 [inline]
+ kref_put include/linux/kref.h:64 [inline]
+ rxe_qp_do_cleanup+0x96f/0xaf0 drivers/infiniband/sw/rxe/rxe_qp.c:805
+ execute_in_process_context+0x37/0x150 kernel/workqueue.c:3327
+ rxe_elem_release+0x9f/0x180 drivers/infiniband/sw/rxe/rxe_pool.c:391
+ kref_put include/linux/kref.h:65 [inline]
+ rxe_create_qp+0x2cd/0x310 drivers/infiniband/sw/rxe/rxe_verbs.c:425
+ _ib_create_qp drivers/infiniband/core/core_priv.h:331 [inline]
+ ib_create_named_qp+0x2ad/0x1370 drivers/infiniband/core/verbs.c:1231
+ ib_create_qp include/rdma/ib_verbs.h:3644 [inline]
+ create_mad_qp+0x177/0x2d0 drivers/infiniband/core/mad.c:2920
+ ib_mad_port_open drivers/infiniband/core/mad.c:3001 [inline]
+ ib_mad_init_device+0xd6f/0x1400 drivers/infiniband/core/mad.c:3092
+ add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:717
+ enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1331
+ ib_register_device drivers/infiniband/core/device.c:1413 [inline]
+ ib_register_device+0x7c7/0xa50 drivers/infiniband/core/device.c:1365
+ rxe_register_device+0x3d5/0x4a0 drivers/infiniband/sw/rxe/rxe_verbs.c:1147
+ rxe_add+0x12fe/0x16d0 drivers/infiniband/sw/rxe/rxe.c:247
+ rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:503
+ rxe_newlink drivers/infiniband/sw/rxe/rxe.c:269 [inline]
+ rxe_newlink+0xb7/0xe0 drivers/infiniband/sw/rxe/rxe.c:250
+ nldev_newlink+0x30e/0x550 drivers/infiniband/core/nldev.c:1555
+ rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f6eb2be3188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 00000000004665f9
+RDX: 0000000000000000 RSI: 0000000020000600 RDI: 0000000000000003
+RBP: 00000000004bfce1 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 00007ffc54e34f4f R14: 00007f6eb2be3300 R15: 0000000000022000
 
-Sadly, I don't see there is any user of this defragment interface since it was
-been introduced... so I really don't know the real use scenario of this interface
-now.
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Reported-by: syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/sw/rxe/rxe_qp.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-> 
-> On the other hand, I think FS should be able to support defrag file even
-> when in-place update is applied. What do you think?
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index 34ae957a315c..b0f350d674fd 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -242,6 +242,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	if (err) {
+ 		vfree(qp->sq.queue->buf);
+ 		kfree(qp->sq.queue);
++		qp->sq.queue = NULL;
+ 		return err;
+ 	}
+ 
+@@ -295,6 +296,7 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 		if (err) {
+ 			vfree(qp->rq.queue->buf);
+ 			kfree(qp->rq.queue);
++			qp->rq.queue = NULL;
+ 			return err;
+ 		}
+ 	}
+@@ -355,6 +357,11 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
+ err2:
+ 	rxe_queue_cleanup(qp->sq.queue);
+ err1:
++	qp->pd = NULL;
++	qp->rcq = NULL;
++	qp->scq = NULL;
++	qp->srq = NULL;
++
+ 	if (srq)
+ 		rxe_drop_ref(srq);
+ 	rxe_drop_ref(scq);
+-- 
+2.31.1
 
-bool f2fs_should_update_inplace(struct inode *inode, struct f2fs_io_info *fio)
-{
-	if (f2fs_is_pinned_file(inode))
-		return true;
-
-	/* if this is cold file, we should overwrite to avoid fragmentation */
-	if (file_is_cold(inode))
-		return true;
-
-If cold bit was set, later rewrite in defragment interface can only trigger
-IPU due to above IPU policy check, so after this interface, file is still
-fragmented... what's the difference compared to just setting cold bit via
-setxattr?
-
-And if user know that he will trigger less update and more read in the file,
-why not just calling setxattr("system.advise", cold_bit) to set the file as
-cold before it becomes fragmented, e.g. at the time of file creation?
-
-Thanks,
-
-> 
-> Thanks,
-> Daejun
->>
->> Thanks,
->>
->>>
->>>>
->>>> Thanks,
->>>>
->>>>>
->>>>>>
->>>>>> Thanks,
->>>>>>
->>>>>>>
->>>>>>>>
->>>>>>>> We have separated interface (via f2fs_xattr_advise_handler, e.g. setfattr -n
->>>>>>>> "system.advise" -v value) to indicate this file is a hot/cold file, so my
->>>>>>>> suggestion is after file defragmentation, if you think this file is cold, and
->>>>>>>> use setxattr() to set it as cold.
->>>>>>>>
->>>>>>>> Thanks,
->>>>>>>>
->>>>>>>>>
->>>>>>>>> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
->>>>>>>>> ---
->>>>>>>>>       fs/f2fs/file.c | 3 +++
->>>>>>>>>       1 file changed, 3 insertions(+)
->>>>>>>>>
->>>>>>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->>>>>>>>> index d697c8900fa7..dcac965a05fe 100644
->>>>>>>>> --- a/fs/f2fs/file.c
->>>>>>>>> +++ b/fs/f2fs/file.c
->>>>>>>>> @@ -2669,6 +2669,9 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
->>>>>>>>>               map.m_len = pg_end - pg_start;
->>>>>>>>>               total = 0;
->>>>>>>>> +        if (!file_is_cold(inode))
->>>>>>>>> +                file_set_cold(inode);
->>>>>>>>> +
->>>>>>>>>               while (map.m_lblk < pg_end) {
->>>>>>>>>                       pgoff_t idx;
->>>>>>>>>                       int cnt = 0;
->>>>>>>>>
->>>>>>> .
->>>>>>>
->>>>> .
->>>>>
->>> .
->>>
->>
->>
->>   
-> .
-> 
