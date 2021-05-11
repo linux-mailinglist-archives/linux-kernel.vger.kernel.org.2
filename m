@@ -2,103 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 700FB379DF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E36379DFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbhEKDzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 23:55:18 -0400
-Received: from mga17.intel.com ([192.55.52.151]:36670 "EHLO mga17.intel.com"
+        id S230160AbhEKD6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 23:58:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229465AbhEKDzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 23:55:17 -0400
-IronPort-SDR: LqEMSbAqPHTjZvTYzvcaY2k7SAMAO/OAnS5s6JRTlGuasQSRN55t6V12VSrhiAuSLwxPR1+XtV
- DOdH5nJjqCEg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="179611174"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="179611174"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 20:54:08 -0700
-IronPort-SDR: BGkUROo0isoG62lW2JllWLXLCmesj1plEIE8OeOyfJmGo/B2YJ6alU7HCdoy+34HdAxDy4SOl8
- qxbcEgvx9lNw==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="408616471"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 20:54:08 -0700
-Date:   Mon, 10 May 2021 20:56:32 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210510205632.13ff7308@jacob-builder>
-In-Reply-To: <20210510234500.GI1002214@nvidia.com>
-References: <YJOZhPGheTSlHtQc@myrica>
-        <20210506122730.GQ1370958@nvidia.com>
-        <20210506163240.GA9058@otc-nc-03>
-        <MWHPR11MB188698FBEE62AF1313E0F7AC8C569@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210510123729.GA1002214@nvidia.com>
-        <20210510152502.GA90095@otc-nc-03>
-        <20210510153111.GB1002214@nvidia.com>
-        <20210510162212.GB90095@otc-nc-03>
-        <20210510163956.GD1002214@nvidia.com>
-        <20210510152854.793ee594@jacob-builder>
-        <20210510234500.GI1002214@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230096AbhEKD60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 23:58:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A87B66191A;
+        Tue, 11 May 2021 03:57:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620705427;
+        bh=KUxSfdHuT0OzxKcmushlCf+iiGLeisPcY+my+vMSNNA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XA4NRg2XadNBSNYtby2zm8km5MLfULMiSS8oFp/rowdp1wF4KaICxoyLe0XOXlSLQ
+         dAzqy1GaCwX0GXO2mQtRIgCFJbVNLR6YG7Wb51ID2ezfLw9ZU5D+E1UYmzTTiXU8/9
+         dK5oIlBZ9wzqFCsp9FvDDLJeD2klTKBCtqOOrg3ekFcl9rpQu95XyoyO3dT6b95LXA
+         okn07Xswk7QRewU03CuFaHwqWV02X5zBRnJZi9i78mPhu9whxd2l7o6lOnQvlnRjkr
+         Ksj2BOYzGH6Ji74D9XKC0tFZvmKUNgrxzOGqPYF6iadWOteVMQIeGHSerUCYeIeW+D
+         GDTXwujDTFTMw==
+Date:   Mon, 10 May 2021 20:57:06 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        darrick.wong@oracle.com, dan.j.williams@intel.com,
+        willy@infradead.org, viro@zeniv.linux.org.uk, david@fromorbit.com,
+        hch@lst.de, rgoldwyn@suse.de
+Subject: Re: [PATCH v5 0/7] fsdax,xfs: Add reflink&dedupe support for fsdax
+Message-ID: <20210511035706.GL8582@magnolia>
+References: <20210511030933.3080921-1-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511030933.3080921-1-ruansy.fnst@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+On Tue, May 11, 2021 at 11:09:26AM +0800, Shiyang Ruan wrote:
+> This patchset is attempt to add CoW support for fsdax, and take XFS,
+> which has both reflink and fsdax feature, as an example.
 
-On Mon, 10 May 2021 20:45:00 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+Slightly off topic, but I noticed all my pmem disappeared once I rolled
+forward to 5.13-rc1.  Am I the only lucky one?  Qemu 4.2, with fake
+memory devices backed by tmpfs files -- info qtree says they're there,
+but the kernel doesn't show anything in /proc/iomem.
 
-> On Mon, May 10, 2021 at 03:28:54PM -0700, Jacob Pan wrote:
+--D
+
+> Changes from V4:
+>  - Fix the mistake of breaking dax layout for two inodes
+>  - Add CONFIG_FS_DAX judgement for fsdax code in remap_range.c
+>  - Fix other small problems and mistakes
 > 
-> > To satisfy your "give me a PASID for this RID" proposal, can we just use
-> > the RID's struct device as the token? Also add a type field to
-> > explicitly indicate global vs per-set(per-RID). i.e.  
+> Changes from V3:
+>  - Take out the first 3 patches as a cleanup patchset[1], which has been
+>     sent yesterday.
+>  - Fix usage of code in dax_iomap_cow_copy()
+>  - Add comments for macro definitions
+>  - Fix other code style problems and mistakes
 > 
-> You've got it backwards, the main behavior should be to allocate PASID
-> per RID.
+> One of the key mechanism need to be implemented in fsdax is CoW.  Copy
+> the data from srcmap before we actually write data to the destance
+> iomap.  And we just copy range in which data won't be changed.
 > 
-Sure, we can make the local PASID as default. My point was that the
-ioasid_set infrastructure's opaque token can support RID-local allocation
-scheme. Anyway, this is a small detail as compared to uAPI.
-
-> The special behavior is to bundle a bunch of PASIDs into a grouping
-> and then say the PASID number space is shared between all the group
-> members. 
+> Another mechanism is range comparison.  In page cache case, readpage()
+> is used to load data on disk to page cache in order to be able to
+> compare data.  In fsdax case, readpage() does not work.  So, we need
+> another compare data with direct access support.
 > 
-> /dev/ioasid should create and own this grouping either implicitly or
-> explicitly. Jumping ahead to in-kernel APIs has missed the critical
-> step of defining the uAPI and all the behaviors together in a
-> completed RFC proposal.
+> With the two mechanisms implemented in fsdax, we are able to make reflink
+> and fsdax work together in XFS.
 > 
-Agreed, the requirements for kernel API should come from uAPI.
-
-> Jason
-
-
-Thanks,
-
-Jacob
+> Some of the patches are picked up from Goldwyn's patchset.  I made some
+> changes to adapt to this patchset.
+> 
+> 
+> (Rebased on v5.13-rc1 and patchset[1])
+> [1]: https://lkml.org/lkml/2021/4/22/575
+> 
+> Shiyang Ruan (7):
+>   fsdax: Introduce dax_iomap_cow_copy()
+>   fsdax: Replace mmap entry in case of CoW
+>   fsdax: Add dax_iomap_cow_copy() for dax_iomap_zero
+>   iomap: Introduce iomap_apply2() for operations on two files
+>   fsdax: Dedup file range to use a compare function
+>   fs/xfs: Handle CoW for fsdax write() path
+>   fs/xfs: Add dax dedupe support
+> 
+>  fs/dax.c               | 206 +++++++++++++++++++++++++++++++++++------
+>  fs/iomap/apply.c       |  52 +++++++++++
+>  fs/iomap/buffered-io.c |   2 +-
+>  fs/remap_range.c       |  57 ++++++++++--
+>  fs/xfs/xfs_bmap_util.c |   3 +-
+>  fs/xfs/xfs_file.c      |  11 +--
+>  fs/xfs/xfs_inode.c     |  66 ++++++++++++-
+>  fs/xfs/xfs_inode.h     |   1 +
+>  fs/xfs/xfs_iomap.c     |  61 +++++++++++-
+>  fs/xfs/xfs_iomap.h     |   4 +
+>  fs/xfs/xfs_iops.c      |   7 +-
+>  fs/xfs/xfs_reflink.c   |  15 +--
+>  include/linux/dax.h    |   7 +-
+>  include/linux/fs.h     |  12 ++-
+>  include/linux/iomap.h  |   7 +-
+>  15 files changed, 449 insertions(+), 62 deletions(-)
+> 
+> -- 
+> 2.31.1
+> 
+> 
+> 
