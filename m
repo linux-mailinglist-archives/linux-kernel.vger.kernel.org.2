@@ -2,251 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF17737AF84
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505D037AF80
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232241AbhEKTnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 15:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35644 "EHLO
+        id S231454AbhEKTnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 15:43:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232180AbhEKTng (ORCPT
+        with ESMTP id S231808AbhEKTnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 15:43:36 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6656C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:42:29 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id s37so3366129ybi.6
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:42:29 -0700 (PDT)
+        Tue, 11 May 2021 15:43:15 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472F7C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:42:09 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id w13so6033368ilv.11
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:42:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4HaFVpEtFrWdih4zuNGE9Q1f9zE42ljQv2KzL0/SZg4=;
-        b=DHC/+a4uNbTQF70FhiC5twYyGPonPbkff8n3WwAYu6EyqcatlgxR5vtMdZcRNYLDsk
-         nihWYomR51WCKe3g5OUcE5LQozK07c+TGNixVd/iSA2flYALYjy0RKUHKaX1sXcxjXkp
-         JW/4hAj4dHNGC8Hr1QTcE50s6e/MRJuttPjVLJ3I41uiXvQeUvZw2lrIg0aVhjm0BWC1
-         SZP3J26zo1S9XcrDlrhX+6O06c5m3fNf7JWnAI/DuHdnjm/bc6dzneEX+vrkpQ5HqNe7
-         HQbL/djmJGlaZVRuoFOw72WhaVzMN/f8/UHVrjJ/AWU/6sCV4pYIQRjDYK24lumCOzwE
-         lf6w==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OUH0FdBeW1WnRtCtReTmgR1inU25bGMEwO/oVzk72IY=;
+        b=RVHTN0z0CTnwSws52IqIFciBCI4uG+vGpfhMwu96/YF+df0LqBgOSSMhSzkxXxiL/a
+         MisbEK0ye3GOcwqozujkDgr4LFDPgSfqVPvhgFgRtDM+ZgUNs56dv9gBhPamQZbDkzSt
+         3MvlOWbL2P7hvcgMcpQEVK7U+n4bS+YmxpCYJc2eE1zDtsH3NW91cv15ID7sh6h1TME/
+         Ouhsdk6i4HcmmAhJAXPT68Hrpu9sq2BhRWZYHsOUL0wugcW+o466Tpz/lJEkFZNegAQ4
+         ibt7tmvAfGVmlqt8Nj50GLtdJUraz8W45UTTwNB2sLW/ga3G2eWphMoavkdlNa77udMW
+         4bYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4HaFVpEtFrWdih4zuNGE9Q1f9zE42ljQv2KzL0/SZg4=;
-        b=cPMF/rl/QTG9fvIzyjHMuvTxSUq/bbCh4Af/TPWug65i2mV/Z4owilSQO3SujqaCog
-         quhBm+Gk/hCFap12fZcPqBXQo+KnDb6VVHkd5LN4N4jMMopz82sXWejJuyctgEiiqt4M
-         5Mv1W55ojIwxIiYJS0FF78+p1wl+kxCduUeBvC+iSOch0FTbWy6xTzeW8OGKiAPSCVfQ
-         vA1EnJyYyK6fjjag5dC5bq0Fy+6SMgw6Y8HESiELuZnQAbvXcilIunuNNLajgrrjGw6a
-         Bw3HkJSsZE3IiZII2+SLL05lB59uYeGSakynijMBaLaW6wl6IbSewWw4B+HedC9Lgws2
-         H/UA==
-X-Gm-Message-State: AOAM531myF7+NmEokI+P/L8guP68YtiAvMe0GEfcaPTHEW5Obuc6GkxU
-        NVGGBeomQ0MKt19ymGGZruEurCHRR5usbZSvaIRCvA==
-X-Google-Smtp-Source: ABdhPJzY2muPky7bmsJLRqbQyPZeYYjZNpXbYjXPW66yL3be4Ruaq8grrpeZO14QJfwa7fGHMRtegwGoFphnUbuEdRE=
-X-Received: by 2002:a25:aa14:: with SMTP id s20mr32344643ybi.228.1620762148772;
- Tue, 11 May 2021 12:42:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OUH0FdBeW1WnRtCtReTmgR1inU25bGMEwO/oVzk72IY=;
+        b=kBFbzbXE7dWVjiZQK65U4dmRMtBYZvRsaZDetw1xVFqnLGa/X5L/ddedHUphHkzDe8
+         KcDPp1sMSfhiYzw/PnMZ2ss7S7h+op7l0s82TRGBVUgIif35NfycLN+zBtrUts22AAKE
+         hgpDGZv8Xp23clKx9oVV/GsnF36Is6HQUwxp01z6s8mafWz76e7XEqm7/g5RXHpybf+o
+         xCzYdY3zr2fuoeaKhrRCuwh/urQ+bzUopsEvn5/9gICv3GAaqIqiotYJwO4w6o9DJerA
+         SJLecbqQgYMJZEtmcIexyiSVpzH+MB+u4cUW1WaKVPGwRK+2hsfBkNB+Mnpol+YJKii6
+         bqiw==
+X-Gm-Message-State: AOAM530XhmK3sWwWDGIbaneGpfUmd4gDmm5KTcRp8LPHWXXdyN5XxaXj
+        Z3lc8Us8+3tL5Tlpf13S43wojQ==
+X-Google-Smtp-Source: ABdhPJy7UBz9VZgu9DYKSXdPxSNT0xTU+VRdoVwBpK0Yq6Zbx7gYMMs6U0NAZjPzVpfKfJaQnUALLw==
+X-Received: by 2002:a05:6e02:12aa:: with SMTP id f10mr27982600ilr.44.1620762128709;
+        Tue, 11 May 2021 12:42:08 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id f13sm9973600ila.62.2021.05.11.12.42.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 12:42:08 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net] net: ipa: memory region array is variable size
+Date:   Tue, 11 May 2021 14:42:04 -0500
+Message-Id: <20210511194204.863605-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <3c88cf35-6725-1bfa-9e1e-8e9d69147e3b@hisilicon.com>
- <2e69efb9-a563-251f-2161-5546324a9587@hisilicon.com> <CAGETcx9FLixotMcyJmCATSoz7aB2VbYSr8o5jyM5HDd9-6LaYQ@mail.gmail.com>
- <11749ea2-777c-e200-9c5a-eab531c7e69a@intel.com>
-In-Reply-To: <11749ea2-777c-e200-9c5a-eab531c7e69a@intel.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 11 May 2021 12:41:52 -0700
-Message-ID: <CAGETcx_iXjYUOipQ1ky-J=4TSx+HJePeYcPkuGkuv7=JYsiaVQ@mail.gmail.com>
-Subject: Re: Question about device link//Re: Qestion about device link
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc:     "chenxiang (M)" <chenxiang66@hisilicon.com>,
-        John Garry <john.garry@huawei.com>, linuxarm@huawei.com,
-        linux-scsi@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 12:13 PM Rafael J. Wysocki
-<rafael.j.wysocki@intel.com> wrote:
->
-> On 5/11/2021 8:23 PM, Saravana Kannan wrote:
-> > On Tue, May 11, 2021 at 3:42 AM chenxiang (M) <chenxiang66@hisilicon.co=
-m> wrote:
-> >> Re-edit the non-aligned flowchart and add CC to Greg-KH and Saravanna.
-> >>
-> >>
-> >> =E5=9C=A8 2021/5/11 11:59, chenxiang (M) =E5=86=99=E9=81=93:
-> >>> Hi Rafael and other guys,
-> >>>
-> >>> I am trying to add a device link between scsi_host->shost_gendev and
-> >>> hisi_hba->dev to support runtime PM for hisi_hba driver
-> >>>
-> >>> (as it supports runtime PM for scsi host in some scenarios such as
-> >>> error handler etc, we can avoid to do them again if adding a
-> >>>
-> >>> device link between scsi_host->shost_gendev and hisi_hba->dev) as
-> >>> follows (hisi_sas driver is under directory drivers/scsi/hisi_sas):
-> >>>
-> >>> device_link_add(&shost->shost_gendev, hisi_hba->dev,
-> >>> DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE)
-> >>>
-> >>> We have a full test on it, and it works well except when rmmod the
-> >>> driver, some call trace occurs as follows:
-> >>>
-> >>> [root@localhost ~]# rmmod hisi_sas_v3_hw
-> >>> [  105.377944] BUG: scheduling while atomic: kworker/113:1/811/0x0000=
-0201
-> >>> [  105.384469] Modules linked in: bluetooth rfkill ib_isert
-> >>> iscsi_target_mod ib_ipoib ib_umad iptable_filter vfio_iommu_type1
-> >>> vfio_pci vfio_virqfd vfio rpcrdma ib_is                         er
-> >>> libiscsi scsi_transport_iscsi crct10dif_ce sbsa_gwdt hns_roce_hw_v2
-> >>> hisi_sec2 hisi_hpre hisi_zip hisi_qm uacce spi_hisi_sfc_v3xx
-> >>> hisi_trng_v2 rng_core hisi_uncore                         _hha_pmu
-> >>> hisi_uncore_ddrc_pmu hisi_uncore_l3c_pmu spi_dw_mmio hisi_uncore_pmu
-> >>> hns3 hclge hnae3 hisi_sas_v3_hw(-) hisi_sas_main libsas
-> >>> [  105.424841] CPU: 113 PID: 811 Comm: kworker/113:1 Kdump: loaded
-> >>> Tainted: G        W         5.12.0-rc1+ #1
-> >>> [  105.434454] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS
-> >>> 2280-V2 CS V5.B143.01 04/22/2021
-> >>> [  105.443287] Workqueue: rcu_gp srcu_invoke_callbacks
-> >>> [  105.448154] Call trace:
-> >>> [  105.450593]  dump_backtrace+0x0/0x1a4
-> >>> [  105.454245]  show_stack+0x24/0x40
-> >>> [  105.457548]  dump_stack+0xc8/0x104
-> >>> [  105.460939]  __schedule_bug+0x68/0x80
-> >>> [  105.464590]  __schedule+0x73c/0x77c
-> >>> [  105.465700] BUG: scheduling while atomic: kworker/96:1/791/0x00000=
-201
-> >>> [  105.468066]  schedule+0x7c/0x110
-> >>> [  105.468068]  schedule_timeout+0x194/0x1d4
-> >>> [  105.474490] Modules linked in:
-> >>> [  105.477692]  wait_for_completion+0x8c/0x12c
-> >>> [  105.477695]  rcu_barrier+0x1e0/0x2fc
-> >>> [  105.477697]  scsi_host_dev_release+0x50/0xf0
-> >>> [  105.477701]  device_release+0x40/0xa0
-> >>> [  105.477704]  kobject_put+0xac/0x100
-> >>> [  105.477707]  __device_link_free_srcu+0x50/0x74
-> >>> [  105.477709]  srcu_invoke_callbacks+0x108/0x1a4
-> >>> [  105.484743]  process_one_work+0x1dc/0x48c
-> >>> [  105.492468]  worker_thread+0x7c/0x464
-> >>> [  105.492471]  kthread+0x168/0x16c
-> >>> [  105.492473]  ret_from_fork+0x10/0x18
-> >>> ...
-> >>>
-> >>> After analyse the process, we find that it will
-> >>> device_del(&shost->gendev) in function scsi_remove_host() and then
-> >>>
-> >>> put_device(&shost->shost_gendev) in function scsi_host_put() when
-> >>> removing the driver, if there is a link between shost and hisi_hba->d=
-ev,
-> >>>
-> >>> it will try to delete the link in device_del(), and also will
-> >>> call_srcu(__device_link_free_srcu) to put_device() link->consumer and
-> >>> supplier.
-> >>>
-> >>> But if put device() for shost_gendev in device_link_free() is later
-> >>> than in scsi_host_put(), it will call scsi_host_dev_release() in
-> >>>
-> >>> srcu_invoke_callbacks() while it is atomic and there are scheduling i=
-n
-> >>> scsi_host_dev_release(),
-> >>>
-> >>> so it reports the BUG "scheduling while atomic:...".
-> >>>
-> >>> thread 1                                                   thread2
-> >>> hisi_sas_v3_remove
-> >>>      ...
-> >>>      sas_remove_host()
-> >>>          ...
-> >>>          scsi_remove_host()
-> >>>              ...
-> >>>              device_del(&shost->shost_gendev)
-> >>>                  ...
-> >>>                  device_link_purge()
-> >>>                      __device_link_del()
-> >>>                          device_unregister(&link->link_dev)
-> >>>                              devlink_dev_release
-> >>> call_srcu(__device_link_free_srcu)    ----------->
-> >>> srcu_invoke_callbacks  (atomic)
-> >>>          __device_link_free_srcu
-> >>>      ...
-> >>>      scsi_host_put()
-> >>>          put_device(&shost->shost_gendev) (ref =3D 1)
-> >>>                  device_link_free()
-> >>>                                put_device(link->consumer)
-> >>> //shost->gendev ref =3D 0
-> >>>                                            ...
-> >>>                                            scsi_host_dev_release
-> >>>                                                        ...
-> >>> rcu_barrier
-> >>> kthread_stop()
-> >> Re-edit the non-aligned flowchart
-> >>       thread 1 thread 2
-> >>       hisi_sas_v3_remove()
-> >>               ...
-> >>               sas_remove_host()
-> >>                       ...
-> >>                       device_del(&shost->shost_gendev)
-> >>                               ...
-> >>                               device_link_purge()
-> >>                                       __device_link_del()
-> >> device_unregister(&link->link_dev)
-> >> devlink_dev_release
-> >> call_srcu(__device_link_free_srcu)    ----------->
-> >> srcu_invoke_callbacks  (atomic)
-> >>               __device_link_free_srcu()
-> >>               ...
-> >>               scsi_host_put()
-> >>                       put_device(&shost->shost_gendev) (ref =3D 1)
-> >>                           device_link_free()
-> >>                                       put_device(link->consumer)
-> >> //shost->gendev ref =3D 0
-> >>                                                   ...
-> >> scsi_host_dev_release()
-> >>                                                               ...
-> >> rcu_barrier()
-> >> kthread_stop()
-> >>
-> >>>
-> >>> We can check kref of shost->shost_gendev to make sure scsi_host_put()
-> >>> to release scsi host device in LLDD driver to avoid the issue,
-> >>>
-> >>> but it seems be a common issue:  function __device_link_free_srcu
-> >>> calls put_device() for consumer and supplier,
-> >>>
-> >>> but if it's ref =3D0 at that time and there are scheduling or sleep i=
-n
-> >>> dev_release, it may have the issue.
-> >>>
-> >>> Do you have any idea about the issue?
-> > Another report for the same issue.
-> > https://lore.kernel.org/lkml/CAGETcx80xSZ8d4JbZqiSz4L0VNtL+HCnFCS2u3F9a=
-NC0QQoQjg@mail.gmail.com/
-> >
-> > I don't have enough context yet about the need for SRCU (I haven't
-> > read up all the runtime PM code), but this is a real issue that needs
-> > to be solved.
-> >
-> > Dirty/terrible hack is to kick off another work to do the
-> > put_device().
->
-> I wouldn't call it dirty or terrible, but it may just be the thing that
-> needs to be done here.
->
->
-> > But is there any SRCU option that'll try to do the
-> > release in a non-atomic context?
->
-> No, the callbacks are run from a softirq if I'm not mistaken.
+IPA configuration data includes an array of memory region
+descriptors.  That was a fixed-size array at one time, but
+at some point we started defining it such that it was only
+as big as required for a given platform.  The actual number
+of entries in the array is recorded in the configuration data
+along with the array.
 
-Right, I meant that this seems like a common thing some SRCU callbacks
-might want to do. So, I thought that there might be a flag or option
-to kick off work for srcu callbacks. Also, the stack trace shows that
-this is already running in a work context but the callback is wrapped
-with local_bh_disable/enable() and that's the reason for this warning.
-But I don't know enough about SRCU implementation to make a comment on
-whether "run stuff in a work queue" can be a generic SRCU feature.
+A loop in ipa_mem_config() still assumes the array has entries
+for all defined memory region IDs.  As a result, this loop can
+go past the end of the actual array and attempt to write
+"canary" values based on nonsensical data.
 
-Anyway, if kicking off a new work is what you want to do, I'm not
-going to oppose that.
+Fix this, by stashing the number of entries in the array, and
+using that rather than IPA_MEM_COUNT in the initialization loop
+found in ipa_mem_config().
 
--Saravana
+The only remaining use of IPA_MEM_COUNT is in a validation check
+to ensure configuration data doesn't have too many entries.
+That's fine for now.
+
+Fixes: 3128aae8c439a ("net: ipa: redefine struct ipa_mem_data")
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/ipa.h     | 2 ++
+ drivers/net/ipa/ipa_mem.c | 3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ipa/ipa.h b/drivers/net/ipa/ipa.h
+index e7ff376cb5b7d..744406832a774 100644
+--- a/drivers/net/ipa/ipa.h
++++ b/drivers/net/ipa/ipa.h
+@@ -58,6 +58,7 @@ enum ipa_flag {
+  * @mem_virt:		Virtual address of IPA-local memory space
+  * @mem_offset:		Offset from @mem_virt used for access to IPA memory
+  * @mem_size:		Total size (bytes) of memory at @mem_virt
++ * @mem_count:		Number of entries in the mem array
+  * @mem:		Array of IPA-local memory region descriptors
+  * @imem_iova:		I/O virtual address of IPA region in IMEM
+  * @imem_size:		Size of IMEM region
+@@ -103,6 +104,7 @@ struct ipa {
+ 	void *mem_virt;
+ 	u32 mem_offset;
+ 	u32 mem_size;
++	u32 mem_count;
+ 	const struct ipa_mem *mem;
+ 
+ 	unsigned long imem_iova;
+diff --git a/drivers/net/ipa/ipa_mem.c b/drivers/net/ipa/ipa_mem.c
+index c5c3b1b7e67d5..1624125e7459f 100644
+--- a/drivers/net/ipa/ipa_mem.c
++++ b/drivers/net/ipa/ipa_mem.c
+@@ -180,7 +180,7 @@ int ipa_mem_config(struct ipa *ipa)
+ 	 * for the region, write "canary" values in the space prior to
+ 	 * the region's base address.
+ 	 */
+-	for (mem_id = 0; mem_id < IPA_MEM_COUNT; mem_id++) {
++	for (mem_id = 0; mem_id < ipa->mem_count; mem_id++) {
+ 		const struct ipa_mem *mem = &ipa->mem[mem_id];
+ 		u16 canary_count;
+ 		__le32 *canary;
+@@ -487,6 +487,7 @@ int ipa_mem_init(struct ipa *ipa, const struct ipa_mem_data *mem_data)
+ 	ipa->mem_size = resource_size(res);
+ 
+ 	/* The ipa->mem[] array is indexed by enum ipa_mem_id values */
++	ipa->mem_count = mem_data->local_count;
+ 	ipa->mem = mem_data->local;
+ 
+ 	ret = ipa_imem_init(ipa, mem_data->imem_addr, mem_data->imem_size);
+-- 
+2.27.0
+
