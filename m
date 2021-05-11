@@ -2,69 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1788C379BCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E63379BD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhEKBAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 21:00:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33888 "EHLO mail.kernel.org"
+        id S229961AbhEKBHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 21:07:06 -0400
+Received: from mga06.intel.com ([134.134.136.31]:26887 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229628AbhEKBAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 21:00:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3894661606;
-        Tue, 11 May 2021 00:59:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1620694754;
-        bh=jdOdclzw/y2dZw68vYzUkSZPl8203GmwimxVt6tXmag=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iAjiIyLpw1ECQkl+9LO3Qp7jqwgTPs14hv5T+Yv9DdTE+g6yBMA9jodqkIeGTD5Fu
-         ow/BF9JkAg2ZKAT1VoR+WRMcxZVgzjnRfBFlrHPckFREdnqVnTLNlIuEXrbFclf3W7
-         iSCwpkQEFGfw772uTfeeVHSe7CB2Z90qLlQXF5T8=
-Date:   Mon, 10 May 2021 17:59:12 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chris Zankel <chris@zankel.net>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Helge Deller <deller@gmx.de>, Hugh Dickins <hughd@google.com>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Jann Horn <jannh@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Xu <peterx@redhat.com>, Ram Pai <linuxram@us.ibm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Rik van Riel <riel@surriel.com>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v2 0/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE)
- to prefault page tables
-Message-Id: <20210510175912.50a1c27b281982cc3d5b6c8c@linux-foundation.org>
-In-Reply-To: <79bb75e1-4ee9-5fe2-e495-577518956e1f@redhat.com>
-References: <20210419135443.12822-1-david@redhat.com>
-        <20210509212105.d741b7026ca6dca86bdb56d2@linux-foundation.org>
-        <79bb75e1-4ee9-5fe2-e495-577518956e1f@redhat.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S229628AbhEKBHF (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 21:07:05 -0400
+IronPort-SDR: nbTtxPO4RufAUq5mrGrFwKdcuQgMk5pPOhtipduQ8L4yiaTnCuynnCtUh0dCo58k6s7fADbO84
+ RQST5NY9ZRKA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="260589852"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="260589852"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 18:05:59 -0700
+IronPort-SDR: cn6mZp9Rq541Qwp1ArrKZ0No10NFgU3COA0DaWzvJRZdlZe4/calH5eNDb0d6rgoE+s9a7sZ4U
+ M4Hd63/TVPJg==
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="436394540"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.82]) ([10.238.4.82])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 18:05:57 -0700
+Subject: Re: [PATCH v2 1/3] perf header: Support HYBRID_TOPOLOGY feature
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210507035230.3079-1-yao.jin@linux.intel.com>
+ <20210507035230.3079-2-yao.jin@linux.intel.com> <YJkxF8bycH8+w+N+@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <1a6a4580-598a-6774-74c1-58c04c2d3ad2@linux.intel.com>
+Date:   Tue, 11 May 2021 09:05:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <YJkxF8bycH8+w+N+@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021 16:52:33 +0200 David Hildenbrand <david@redhat.com> wrote:
+Hi Jiri,
 
-> I can just resend the series, thoughts?
+On 5/10/2021 9:11 PM, Jiri Olsa wrote:
+> On Fri, May 07, 2021 at 11:52:28AM +0800, Jin Yao wrote:
+>> It would be useful to let user know the hybrid topology.
+>> Adding HYBRID_TOPOLOGY feature in header to indicate the
+>> core cpus and the atom cpus.
+>>
+>> With this patch,
+>>
+>> For the perf.data generated on hybrid platform,
+>> reports the hybrid cpu list.
+>>
+>>    root@otcpl-adl-s-2:~# perf report --header-only -I
+>>    ...
+>>    # hybrid cpu system:
+>>    # cpu_core cpu list : 0-15
+>>    # cpu_atom cpu list : 16-23
+>>
+>> For the perf.data generated on non-hybrid platform,
+>> reports the message that HYBRID_TOPOLOGY is missing.
+>>
+>>    root@kbl-ppc:~# perf report --header-only -I
+>>    ...
+>>    # missing features: TRACING_DATA BRANCH_STACK GROUP_DESC AUXTRACE STAT CLOCKID DIR_FORMAT COMPRESSED CLOCK_DATA HYBRID_TOPOLOGY
+>>
+>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+>> ---
+>>   .../Documentation/perf.data-file-format.txt   | 14 +++
+>>   tools/perf/util/cputopo.c                     | 80 +++++++++++++++++
+>>   tools/perf/util/cputopo.h                     | 13 +++
+>>   tools/perf/util/env.c                         |  6 ++
+>>   tools/perf/util/env.h                         |  7 ++
+>>   tools/perf/util/header.c                      | 87 +++++++++++++++++++
+>>   tools/perf/util/header.h                      |  1 +
+>>   tools/perf/util/pmu-hybrid.h                  | 11 +++
+>>   8 files changed, 219 insertions(+)
+>>
+>> diff --git a/tools/perf/Documentation/perf.data-file-format.txt b/tools/perf/Documentation/perf.data-file-format.txt
+>> index 9ee96640744e..d9d82ca8aeb7 100644
+>> --- a/tools/perf/Documentation/perf.data-file-format.txt
+>> +++ b/tools/perf/Documentation/perf.data-file-format.txt
+>> @@ -402,6 +402,20 @@ struct {
+>>   	u64 clockid_time_ns;
+>>   };
+>>   
+>> +	HEADER_HYBRID_TOPOLOGY = 30,
+>> +
+>> +Indicate the hybrid CPUs. The format of data is as below.
+>> +
+>> +struct {
+>> +	char *pmu_name;
+>> +	char *cpus;
+>> +};
+> 
+> this is missing the nr count, should be like:
+> 
+> struct {
+> 	u32 nr;
+> 	struct {
+> 	     char *pmu_name;
+> 	     char *cpus;
+> 	} [nr]
+> }
+> 
+> jirka
+> 
 
-Sure, that makes it easier on folks.
+Yes, we should say the format of data is:
+
+struct {
+	u32 nr;
+	struct {
+		char *pmu_name;
+		char *cpus;
+	} [nr]
+}
+
+I will update 'perf.data-file-format.txt' in v3.
+
+Thanks
+Jin Yao
