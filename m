@@ -2,131 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A675637AD26
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14A937AD25
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhEKRgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34694 "EHLO
+        id S231551AbhEKRf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:35:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbhEKRgB (ORCPT
+        with ESMTP id S231329AbhEKRf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:36:01 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D15C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:34:54 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id h16so3832679pfk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:34:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=8TzPphX9fli4xVAxW0kVe0k/sUt3bHTl0oZV5LGdFX0=;
-        b=o8TcyGBuu/xqN9CD1W7SIKgpPvSiUZNKNqgzpKJ0cISTFNmxWSoLxyKVCyb+rgKM97
-         Z3JYm5RZRWqtPs6Xy7MYQTp7cVdm6I143KeuQsFcoLaJWoUqvVViGS9qrwUyrUVRJzNR
-         xx36APXiFD9FwbLsPqOEfhbFVQ0K1in3CO3IC1kX6Kr1FGL8GdfOPOaab577Aoqqsu2g
-         ZkfB+NwwuvKv5vZfFwbdBWiRoj4PzS6R1wk1FLLS76CucXmFRY8+amzoADEojfExMxYf
-         KWcXq49m2e7JWsDJtBbw6zy5cxAjs4/ft+jMmXaGNhOz371bsZaHWvUf7iOIebqtPnBn
-         NAhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=8TzPphX9fli4xVAxW0kVe0k/sUt3bHTl0oZV5LGdFX0=;
-        b=RmLRiCGbuHpYP6CgzpmjylZ4IU9YhaFH2ejA2usVZbJ4IW/C89nq+9j0FDdF7ny7nP
-         65TBeK5KyQRw4ORpPtFeAqJ47nd4Bp67sqv4b6RS0irp8VuGsLqTwy7QpB4HFJGLCYB3
-         AbchmkFlvrh9Bl6VquTatujsZrCYrxVBK9PpbE0g5BmIIE8AHrgz4Kg9pGrG4/zxlxlz
-         9TfqLua5xUS+Z1aBAA9iMg2jV6IRRnUjZUHgtCU8CP2PZu2zs4Eah2UhJeBUNCw0O7i0
-         p+Iv1OJTO/tPQN19XF3Jj8PdhB9ulPhXtKI536R8eNdLn4h/aLE/lQCGAmmzaXYhxpYR
-         gblQ==
-X-Gm-Message-State: AOAM531E8ZxMzRtCuMFcy/HENm4KImrYSEHgml/oW9avG+Yhst+n3JOl
-        SKlvpYi+kCLvqv919PVC0jiKcKli/tbnwg==
-X-Google-Smtp-Source: ABdhPJzUCtFgYMAmOanPYQGRfeTG8Fn0oSql+0cTgCk4RK2JBHfePXHdWaWq9gABUVwe1E+1ycWtoQ==
-X-Received: by 2002:a63:e60a:: with SMTP id g10mr31580737pgh.21.1620754493912;
-        Tue, 11 May 2021 10:34:53 -0700 (PDT)
-Received: from hyeyoo ([183.99.11.150])
-        by smtp.gmail.com with ESMTPSA id v22sm14007943pff.105.2021.05.11.10.34.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 10:34:53 -0700 (PDT)
-Date:   Wed, 12 May 2021 02:34:48 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     vbabka@suse.cz, akpm@linux-foundation.org, iamjoonsoo.kim@lge.com,
-        rientjes@google.com, penberg@kernel.org, cl@linux.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        42.hyeyoo@gmail.com
-Subject: [PATCH v3] mm, slub: change run-time assertion in kmalloc_index() to
- compile-time
-Message-ID: <20210511173448.GA54466@hyeyoo>
+        Tue, 11 May 2021 13:35:56 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721D0C061574;
+        Tue, 11 May 2021 10:34:49 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ec70091f309bcd5e4258d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:c700:91f3:9bc:d5e4:258d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E18211EC0301;
+        Tue, 11 May 2021 19:34:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1620754488;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=3/bXis5NaA7RX5+1HMGPhmVKaplL2A5rrRK2DTP1lwk=;
+        b=acI2tZYyZobSwgFD1A6t5aJoJZjOjElQRSIFuMg2eSFVnRHruARSwVF+2BoJG4/vCLPcnb
+        mmCjt8Jf0uouuT0ycqg+uTyb6E4/CGSCh0ofKvGRtZmNi3fagNnbTrTE/VUpDJfEQJWlAh
+        ksJCPJKrHLmuOYoWSNj3NmOC0u9ltHU=
+Date:   Tue, 11 May 2021 19:34:49 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Naveen Krishna Chatradhi <nchatrad@amd.com>
+Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
+        Mukul Joshi <mukul.joshi@amd.com>
+Subject: Re: [PATCH 2/3] x86/MCE/AMD: Helper function to check UMC v2
+Message-ID: <YJrAOXEcyUvs/WvY@zn.tnic>
+References: <20210511152538.148084-1-nchatrad@amd.com>
+ <20210511152538.148084-2-nchatrad@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <20210511152538.148084-2-nchatrad@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-currently when size is not supported by kmalloc_index, compiler will
-generate a run-time BUG() while compile-time error is also possible,
-and better. so changed BUG to BUILD_BUG_ON_MSG to make compile-time
-check possible.
+On Tue, May 11, 2021 at 08:55:37PM +0530, Naveen Krishna Chatradhi wrote:
 
-also removed code that allocates more than 32MB because current
-implementation supports only up to 32MB.
+> Subject: Re: [PATCH 2/3] x86/MCE/AMD: Helper function to check UMC v2
 
-Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
----
- include/linux/slab.h | 7 +++++--
- mm/slab_common.c     | 7 +++----
- 2 files changed, 8 insertions(+), 6 deletions(-)
+The condensed patch description in the subject line should start with a
+uppercase letter and should be written in imperative tone:
 
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index 6d454886bcaf..df1937309df2 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -345,6 +345,9 @@ static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
-  * 1 =  65 .. 96 bytes
-  * 2 = 129 .. 192 bytes
-  * n = 2^(n-1)+1 .. 2^n
-+ *
-+ * Note: there's no need to optimize kmalloc_index because it's evaluated
-+ * in compile-time.
-  */
- static __always_inline unsigned int kmalloc_index(size_t size)
- {
-@@ -381,8 +384,8 @@ static __always_inline unsigned int kmalloc_index(size_t size)
- 	if (size <=  8 * 1024 * 1024) return 23;
- 	if (size <=  16 * 1024 * 1024) return 24;
- 	if (size <=  32 * 1024 * 1024) return 25;
--	if (size <=  64 * 1024 * 1024) return 26;
--	BUG();
-+
-+	BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
- 
- 	/* Will never be reached. Needed because the compiler may complain */
- 	return -1;
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index fe8b68482670..97664bbe8147 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -1192,8 +1192,8 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
- 
- /*
-  * kmalloc_info[] is to make slub_debug=,kmalloc-xx option work at boot time.
-- * kmalloc_index() supports up to 2^26=64MB, so the final entry of the table is
-- * kmalloc-67108864.
-+ * kmalloc_index() supports up to 2^25=32MB, so the final entry of the table is
-+ * kmalloc-32M.
-  */
- const struct kmalloc_info_struct kmalloc_info[] __initconst = {
- 	INIT_KMALLOC_INFO(0, 0),
-@@ -1221,8 +1221,7 @@ const struct kmalloc_info_struct kmalloc_info[] __initconst = {
- 	INIT_KMALLOC_INFO(4194304, 4M),
- 	INIT_KMALLOC_INFO(8388608, 8M),
- 	INIT_KMALLOC_INFO(16777216, 16M),
--	INIT_KMALLOC_INFO(33554432, 32M),
--	INIT_KMALLOC_INFO(67108864, 64M)
-+	INIT_KMALLOC_INFO(33554432, 32M)
- };
- 
- /*
+"x86/MCE/AMD: Add a helper function... "
+
+> Signed-off-by: Mukul Joshi <mukul.joshi@amd.com>
+> Reviewed-by: John Clements <John.Clements@amd.com>
+> Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+
+This is all fine and dandy but it needs your SOB too when you send the
+patch.
+
+Please read Documentation/process/submitting-patches.rst
+
+sections
+
+Sign your work - the Developer's Certificate of Origin
+When to use Acked-by:, Cc:, and Co-developed-by:
+
+> +bool is_smca_umc_v2(int bank)
+> +{
+> +	return (smca_get_bank_type(bank) == SMCA_UMC_V2);
+> +}
+> +EXPORT_SYMBOL_GPL(is_smca_umc_v2);
+
+This addition looks useless when it doesn't have any users.
+
+Also, I'm pretty sceptical this even makes sense to have it exported -
+I'm guessing this is for mce_amd.c but I can't say without seeing it in
+use.
+
+The same remarks hold true for your patch 3.
+
+Thx.
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
