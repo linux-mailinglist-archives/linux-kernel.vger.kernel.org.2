@@ -2,88 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC7837B2C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419E237B2C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhEKXrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:47:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60732 "EHLO mail.kernel.org"
+        id S229951AbhEKXwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:52:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhEKXrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:47:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FE92616ED;
-        Tue, 11 May 2021 23:46:01 +0000 (UTC)
+        id S229637AbhEKXwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 19:52:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BA716187E;
+        Tue, 11 May 2021 23:50:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620776761;
-        bh=0dmp162/xsNE25srlIIbfhkW/kO41/gT68NUM2wciFs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nyTRZBucYOeqw2vkr6jt8K1K9YKPRokln6A0hKzWn6zXxu1PMhghuGw4iZRuGMbq8
-         F6hRFqUa/+D/pWZMg335CKhbZGN0mGL0TY7aRceEgJkCr6LQSj6VIF4kTzLRviRWhY
-         wX/x7vfChk+TN1rrR2N1NWQSxd4/iRKZclR99qHn9aFzOnO+BIkYvmO2ZFDT8We0hl
-         ZsOcHF0blzsikb++K6f3cWTuw1hn9SZ3izJlueCYIsTujlnX0ymBGI8eGST6DOCUpL
-         ZANYL/7tBJTDhUjew7u4m991kYau7sWkZhfak1Rc19lATHSsFhvSivRmQQleIFPtW3
-         7f2CqLAO8SJ5Q==
-Date:   Wed, 12 May 2021 02:45:59 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Ben Boeckel <me@benboeckel.net>
-Cc:     keyrings@vger.kernel.org, Ben Boeckel <mathstuf@gmail.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v2 1/1] trusted-keys: match tpm_get_ops on all return
- paths
-Message-ID: <YJsXN47MTF/TpsKX@kernel.org>
-References: <20210429192156.770145-1-list.lkml.keyrings@me.benboeckel.net>
- <20210429192156.770145-2-list.lkml.keyrings@me.benboeckel.net>
- <YJmf4Q0l+MTFEaEo@erythro.dev.benboeckel.internal>
+        s=k20201202; t=1620777058;
+        bh=F5ZEQuF0H9iy+oscjWcT5j+fhCa3iygNB9Kp4e81/pE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=O7IBcM/jHmtJjTBZ+0nNpaPPz/f2AOYcSHLOnCwFuwfnef1H4EhcK7xVOe0CMGTSQ
+         6cLI9+89r+sqpvNuNRk5ajcgk6RqNLtB0LBTeebiFKfq4z/BBLiMmS0F6Bo8kq7yS5
+         8iI9+YVEITzMoWx1LYhTnaFAPVjGEGjp+J2zt9O21ZsfijQqmckUcNUMIX8OozvwyQ
+         b1OsD/88PMWK6bz4Vn2HppEKMKaskLeBoFAZkCYYDU+h4tghUp6SGaMBjxPt2im7mu
+         mSchn0VcimtB33HQ+UGH+J+igGbTz/zZAv9+3dsTh4OCE4oLvMIS8Zkq5S4zYotr4w
+         YBLsXEmdx/Kbw==
+Received: by mail-ej1-f46.google.com with SMTP id m12so32323493eja.2;
+        Tue, 11 May 2021 16:50:58 -0700 (PDT)
+X-Gm-Message-State: AOAM531wroLBjTy0TZGPsn8f+TyA1dhXZll/aVatrnX+Si0omHPn43vW
+        htMdJGQ5S9cyz3+crHdnCCeZFEv34RKC6dggFw==
+X-Google-Smtp-Source: ABdhPJzjNs7/285LwkoeFSKYuqkSqbvIEBl87cc/Cda5/XkfKnqXdUrPzChXJP8JxwNkqt+qZOyNF1qaEMQ3Eu+lbWM=
+X-Received: by 2002:a17:906:b0cb:: with SMTP id bk11mr34935753ejb.310.1620777056572;
+ Tue, 11 May 2021 16:50:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJmf4Q0l+MTFEaEo@erythro.dev.benboeckel.internal>
+References: <20210429041641.11077-1-rex-bc.chen@mediatek.com> <20210429041641.11077-4-rex-bc.chen@mediatek.com>
+In-Reply-To: <20210429041641.11077-4-rex-bc.chen@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 12 May 2021 07:50:45 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__8=BhPScCSk4OMmJ3rYzfER0ZAqSVCn45ASs0LsM---w@mail.gmail.com>
+Message-ID: <CAAOTY__8=BhPScCSk4OMmJ3rYzfER0ZAqSVCn45ASs0LsM---w@mail.gmail.com>
+Subject: Re: [v3 RESEND,PATCH 3/3] drm/mediatek: dpi: add bus format negotiation
+To:     Rex-BC Chen <rex-bc.chen@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Jitao Shi <jitao.shi@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 05:04:33PM -0400, Ben Boeckel wrote:
-> On Thu, Apr 29, 2021 at 15:21:56 -0400, Ben Boeckel wrote:
-> > From: Ben Boeckel <mathstuf@gmail.com>
-> > 
-> > The `tpm_get_ops` call at the beginning of the function is not paired
-> > with a `tpm_put_ops` on this return path.
-> > 
-> > Fixes: f2219745250f ("security: keys: trusted: use ASN.1 TPM2 key format for the blobs")
-> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > Signed-off-by: Ben Boeckel <mathstuf@gmail.com>
-> > ---
-> >  security/keys/trusted-keys/trusted_tpm2.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
-> > index 617fabd4d913..0165da386289 100644
-> > --- a/security/keys/trusted-keys/trusted_tpm2.c
-> > +++ b/security/keys/trusted-keys/trusted_tpm2.c
-> > @@ -336,9 +336,9 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
-> >  			rc = -EPERM;
-> >  	}
-> >  	if (blob_len < 0)
-> > -		return blob_len;
-> > -
-> > -	payload->blob_len = blob_len;
-> > +		rc = blob_len;
-> > +	else
-> > +		payload->blob_len = blob_len;
-> >  
-> >  	tpm_put_ops(chip);
-> >  	return rc;
-> 
-> Ping? Is this going to make 5.13? This fixes an issue that is in
-> 5.13-rc1.
-> 
-> --Ben
+Hi, Rex:
 
-I applied it, probably will do additional PR for v5.13 in order to fix
-some urgent tpm_tis issues, so I'll include this to the same pull
-request. Thanks for fixing this!
+Rex-BC Chen <rex-bc.chen@mediatek.com> =E6=96=BC 2021=E5=B9=B44=E6=9C=8829=
+=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8812:16=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> Add the atomic_get_output_bus_fmts, atomic_get_input_bus_fmts to negotiat=
+e
+> the possible output and input formats for the current mode and monitor,
+> and use the negotiated formats in a basic atomic_check callback.
+>
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_dpi.c | 92 ++++++++++++++++++++++++++++--
+>  1 file changed, 87 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediate=
+k/mtk_dpi.c
+> index c548780dd3a5..8822d9448ae8 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
+> @@ -536,6 +536,87 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *=
+dpi,
+>         return 0;
+>  }
+>
+> +#define MAX_OUTPUT_SEL_FORMATS 2
+> +
+> +static u32 *mtk_dpi_bridge_atomic_get_output_bus_fmts(struct drm_bridge =
+*bridge,
+> +                                       struct drm_bridge_state *bridge_s=
+tate,
+> +                                       struct drm_crtc_state *crtc_state=
+,
+> +                                       struct drm_connector_state *conn_=
+state,
+> +                                       unsigned int *num_output_fmts)
+> +{
+> +       u32 *output_fmts;
+> +       struct mtk_dpi *dpi =3D bridge_to_dpi(bridge);
+> +
+> +       *num_output_fmts =3D 0;
+> +
+> +       output_fmts =3D kcalloc(MAX_OUTPUT_SEL_FORMATS, sizeof(*output_fm=
+ts),
+> +                             GFP_KERNEL);
+> +       if (!output_fmts)
+> +               return NULL;
+> +
+> +       /* Default 8bit RGB fallback */
+> +       if (dpi->conf->dual_edge) {
+> +               output_fmts[0] =3D  MEDIA_BUS_FMT_RGB888_2X12_LE;
+> +               output_fmts[1] =3D  MEDIA_BUS_FMT_RGB888_2X12_BE;
+> +               *num_output_fmts =3D 2;
 
-/Jarkko
+In the definition of dual_edge, it may imply that support
+MEDIA_BUS_FMT_BGR565_2X8_BE and MEDIA_BUS_FMT_BGR565_2X8_LE. So I
+would like dpi->conf to store output_fmts instead of dual_edge. The
+output_fmts could imply use dual_edge or not.
+
+Regards,
+Chun-Kuang.
+
+> +       } else {
+> +               output_fmts[0] =3D  MEDIA_BUS_FMT_RGB888_1X24;
+> +               *num_output_fmts =3D 1;
+> +       }
+> +
+> +       return output_fmts;
+> +}
+> +
+> +#define MAX_INPUT_SEL_FORMATS  1
+> +
+> +static u32 *mtk_dpi_bridge_atomic_get_input_bus_fmts(struct drm_bridge *=
+bridge,
+> +                                       struct drm_bridge_state *bridge_s=
+tate,
+> +                                       struct drm_crtc_state *crtc_state=
+,
+> +                                       struct drm_connector_state *conn_=
+state,
+> +                                       u32 output_fmt,
+> +                                       unsigned int *num_input_fmts)
+> +{
+> +       u32 *input_fmts;
+> +
+> +       *num_input_fmts =3D 0;
+> +
+> +       input_fmts =3D kcalloc(MAX_INPUT_SEL_FORMATS, sizeof(*input_fmts)=
+,
+> +                            GFP_KERNEL);
+> +       if (!input_fmts)
+> +               return NULL;
+> +
+> +       *num_input_fmts =3D 1;
+> +       input_fmts[0] =3D MEDIA_BUS_FMT_RGB888_1X24;
+> +
+> +       return input_fmts;
+> +}
+> +
+> +static int mtk_dpi_bridge_atomic_check(struct drm_bridge *bridge,
+> +                                      struct drm_bridge_state *bridge_st=
+ate,
+> +                                      struct drm_crtc_state *crtc_state,
+> +                                      struct drm_connector_state *conn_s=
+tate)
+> +{
+> +       struct mtk_dpi *dpi =3D bridge->driver_private;
+> +       unsigned int out_bus_format;
+> +
+> +       out_bus_format =3D bridge_state->output_bus_cfg.format;
+> +
+> +       dev_dbg(dpi->dev, "input format 0x%04x, output format 0x%04x\n",
+> +               bridge_state->input_bus_cfg.format,
+> +               bridge_state->output_bus_cfg.format);
+> +
+> +       dpi->ddr_edge_sel =3D (out_bus_format =3D=3D MEDIA_BUS_FMT_RGB888=
+_2X12_LE) ?
+> +                               true : false;
+> +
+> +       dpi->bit_num =3D MTK_DPI_OUT_BIT_NUM_8BITS;
+> +       dpi->channel_swap =3D MTK_DPI_OUT_CHANNEL_SWAP_RGB;
+> +       dpi->yc_map =3D MTK_DPI_OUT_YC_MAP_RGB;
+> +       dpi->color_format =3D MTK_DPI_COLOR_FORMAT_RGB;
+> +
+> +       return 0;
+> +}
+> +
+>  static int mtk_dpi_bridge_attach(struct drm_bridge *bridge,
+>                                  enum drm_bridge_attach_flags flags)
+>  {
+>
+> @@ -574,6 +655,12 @@ static const struct drm_bridge_funcs mtk_dpi_bridge_=
+funcs =3D {
+>         .mode_set =3D mtk_dpi_bridge_mode_set,
+>         .disable =3D mtk_dpi_bridge_disable,
+>         .enable =3D mtk_dpi_bridge_enable,
+> +       .atomic_check =3D mtk_dpi_bridge_atomic_check,
+> +       .atomic_get_output_bus_fmts =3D mtk_dpi_bridge_atomic_get_output_=
+bus_fmts,
+> +       .atomic_get_input_bus_fmts =3D mtk_dpi_bridge_atomic_get_input_bu=
+s_fmts,
+> +       .atomic_duplicate_state =3D drm_atomic_helper_bridge_duplicate_st=
+ate,
+> +       .atomic_destroy_state =3D drm_atomic_helper_bridge_destroy_state,
+> +       .atomic_reset =3D drm_atomic_helper_bridge_reset,
+>  };
+>
+>  void mtk_dpi_start(struct device *dev)
+> @@ -620,11 +707,6 @@ static int mtk_dpi_bind(struct device *dev, struct d=
+evice *master, void *data)
+>         }
+>         drm_connector_attach_encoder(dpi->connector, &dpi->encoder);
+>
+> -       dpi->bit_num =3D MTK_DPI_OUT_BIT_NUM_8BITS;
+> -       dpi->channel_swap =3D MTK_DPI_OUT_CHANNEL_SWAP_RGB;
+> -       dpi->yc_map =3D MTK_DPI_OUT_YC_MAP_RGB;
+> -       dpi->color_format =3D MTK_DPI_COLOR_FORMAT_RGB;
+> -
+>         return 0;
+>
+>  err_cleanup:
+> --
+> 2.18.0
+>
