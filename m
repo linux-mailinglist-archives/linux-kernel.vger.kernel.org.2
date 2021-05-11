@@ -2,119 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D5E37A4D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0078B37A4DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhEKKph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 06:45:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29838 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230237AbhEKKpf (ORCPT
+        id S231365AbhEKKqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 06:46:39 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:44740 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229892AbhEKKqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 06:45:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620729867;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a9YCTNzQqq3Nnca7i2b7kcNFhUAF6ByevzDuIX2ljPA=;
-        b=aU3l4xD89P64XKhPsj/N2e6fxssSdDEaY1LLXj1+KRINH5UbiZ1C+7X71UHNOLhsy3FjMd
-        uOfBrhllmjwr5fyxkdncggdTfTtuLpPOnR68gcqJ37NfWCa9ZHQndz5b+SUfdXc3V8u/rz
-        efj9/qinsWLFXSa5wwSM5YKMLvVFiPQ=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-23-gl0LBtmhOgCGrcPvTafqzQ-1; Tue, 11 May 2021 06:44:25 -0400
-X-MC-Unique: gl0LBtmhOgCGrcPvTafqzQ-1
-Received: by mail-ed1-f71.google.com with SMTP id d13-20020a056402144db0290387e63c95d8so10724133edx.11
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 03:44:25 -0700 (PDT)
+        Tue, 11 May 2021 06:46:36 -0400
+Received: by mail-oi1-f177.google.com with SMTP id d21so18587629oic.11;
+        Tue, 11 May 2021 03:45:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=a9YCTNzQqq3Nnca7i2b7kcNFhUAF6ByevzDuIX2ljPA=;
-        b=SLczYvGT3DqQrsbcItVfjji470hinmeXePDZy4IGVT9Lpyr02v8IS93/YoxtdlQPw7
-         xepW3DfSbm0KvRHeUmXTuE9rOS+87N6P6hig7dk1zpw6YrGIv9znQwsx9klGEppZ/zz3
-         izTfoKVTjTNUvgSLrELbjA8jWPQI/e94YYdW0AZb/e+lmH6tS3vo6T6p5KA0RBmydvHl
-         mXuo5/8L3P9qaid8dl1el3Ekvf9mQhtIlyJTpoWDAERDbxawbc6KfjzNhdZCjYXYzBSP
-         6ScAOkZVGqSCmiaGZYj8IQgJfEZ6Q16tnNFQDFl1PuXesRC/MczczqS68Wly87MC57xm
-         KflA==
-X-Gm-Message-State: AOAM533kuS3sRhcBLJSDwp5KkdYv+4K9L2fOG3VamK5JVxPxYLsr0CcT
-        PlyGEkFKM8FY01YAvCw+jlQKAljR8zwwv7+SOAh5vLdtYuCQafA7tkAk+cCOMxJtY/2/dVaCSyv
-        HSjdTKsbOEH0yeI9fjE4Ykj5q
-X-Received: by 2002:a17:907:93a:: with SMTP id au26mr2209521ejc.271.1620729864487;
-        Tue, 11 May 2021 03:44:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwV51LVSR8D2jr0aQfX6SMaIXLecAdVC3stzHo4XMOY59C4aPXhk95zXoM5nwQqDso0vtS4Zg==
-X-Received: by 2002:a17:907:93a:: with SMTP id au26mr2209504ejc.271.1620729864279;
-        Tue, 11 May 2021 03:44:24 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id cr21sm11105474ejc.2.2021.05.11.03.44.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 03:44:23 -0700 (PDT)
-Subject: Re: [PATCH 0/3] iio: accel: kxcjk-1013: Add support for KX023-1025
-To:     Stephan Gerhold <stephan@gerhold.net>,
-        Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robert Yang <decatf@gmail.com>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        ~postmarketos/upstreaming@lists.sr.ht
-References: <20210511095409.9290-1-stephan@gerhold.net>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <91258724-09cc-ed39-2277-6fbcca0c53e9@redhat.com>
-Date:   Tue, 11 May 2021 12:44:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G6u/v5pBgRg/r9/xunKJA/aeWT5HHENr+pYBgEABwaM=;
+        b=q/4k+4OGGYRDa9kbEsfj1VEhPY/iot2u8WacJO58PfbR0lBc3dm55m0xRG6DeIbPH2
+         oi9ygkjp4xo9fr/oFCQha7/he5s3JOvf+QwD5/t8uI1NNSzudkLWYqjZeSs1CWTSF4LR
+         F3e8upnpZ6a7ggux4tsHemuIEpyjXjBu0+4tX8A3peYfJlvsAIoD2gaUMlXlroKEVMS3
+         rfkCKzr9S5Gq4v5dQVD5ZNIJWCR8rVsLptTq0J8RdidzM5VF8wu8skEPdK+VLmH4Q++M
+         THwYjA+5KfzJcuo/DOnl8LxnDGP/VuqL2QuSdHhhjTKgN7sUBR6/tulVvz9ATQkwoPU+
+         HEzw==
+X-Gm-Message-State: AOAM5308nATc1dNf0f/lUopDZLtXSnAXo7Teu2f9j/LycHLktQgpAsGs
+        ksp4QLshuKeuXGWthEIVILlxnFW3HKNlE5IpsPs=
+X-Google-Smtp-Source: ABdhPJwdZXJ1ob0LZQ7EGgUCIILvcrD+X3ZUrC0FuYdEvHrdhEo5dPSceGjRdF/CLveke651T/GDoEkrNARhJEq2tH8=
+X-Received: by 2002:a05:6808:90d:: with SMTP id w13mr6972892oih.71.1620729928220;
+ Tue, 11 May 2021 03:45:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210511095409.9290-1-stephan@gerhold.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210426023941.729334-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210426023941.729334-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <97e14cdc-ea98-18b8-0c89-db52440a7716@linux.intel.com> <CAJZ5v0gsqyXSr+Kw603333PZ=gnsBizNhyLAcu588OChEHT=AQ@mail.gmail.com>
+ <4fa40e7a-bcb2-db0f-8dc5-28728b14377d@linux.intel.com> <20210510172237.GU4032392@tassilo.jf.intel.com>
+ <CAJZ5v0iFsBWwXhqtLbTMicBSFme0HCvg+2xgtMgpkFMupk_Rkw@mail.gmail.com> <bc14b461-6431-c5ce-7117-854af8454900@linux.intel.com>
+In-Reply-To: <bc14b461-6431-c5ce-7117-854af8454900@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 11 May 2021 12:45:17 +0200
+Message-ID: <CAJZ5v0hFfVCm25wUCetOm4YdZKwt5h2jknN9ad1nnpxuR16KkQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] x86/acpi, x86/boot: Add multiprocessor wake-up support
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Rafael J Wysocki <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, May 10, 2021 at 11:15 PM Kuppuswamy, Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>
+>
+>
+> On 5/10/21 10:24 AM, Rafael J. Wysocki wrote:
+> > The wakeup function can return an error when it is called for the
+> > second time on the same CPU.
+>
+> To do this, we can only maintain the wakeup status of the CPUs. Can
+> you check whether following physid_mask based status maintenance is
+> acceptable?
 
-On 5/11/21 11:54 AM, Stephan Gerhold wrote:
-> KX023-1025 [1] is another accelerometer from Kionix that has lots
-> of additional functionality compared to KXCJK-1013. It combines the
-> motion interrupt functionality from KXCJK with the tap detection
-> from KXTF9, plus a lot more other functionality.
-> 
-> This patch set does not add support for any of the extra functionality,
-> but makes basic functionality work with the existing kxcjk-1013 driver.
-> 
-> At first, the register map for the KX023-1025 seems quite different
-> from the other accelerometers supported by the kxcjk-1013.
-> However, it turns out that at least most of the register bits
-> still mean the same for KX023-1025.
-> 
-> This patch set refactors the kxcjk-1013 driver a little bit
-> to get the register addresses from a chip-specific struct.
-> The register bits can be re-used for all the different chips.
-> 
-> The KX023-1025 is used in several smartphones from Huawei.
-> I tested these changes on a Huawei Ascend G7, someone else reported
-> they also work fine on the Huawei Honor 5X (codename "kiwi").
-> 
-> [1]: https://kionixfs.azureedge.net/en/datasheet/KX023-1025%20Specifications%20Rev%2012.0.pdf
-> 
-> Stephan Gerhold (3):
->   dt-bindings: iio: kionix,kxcjk1013: Document kionix,kx023-1025
->   iio: accel: kxcjk-1013: Refactor configuration registers into struct
->   iio: accel: kxcjk-1013: Add support for KX023-1025
+It would work for me except for a couple of nits below.
 
-Thanks, the entire series looks good to me:
+> --- a/arch/x86/kernel/acpi/boot.c
+> +++ b/arch/x86/kernel/acpi/boot.c
+> @@ -67,6 +67,7 @@ static u64 acpi_lapic_addr __initdata = APIC_DEFAULT_PHYS_BASE;
+>
+>   static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
+>   static u64 acpi_mp_wake_mailbox_paddr;
+> +static physid_mask_t apic_id_wakemap = PHYSID_MASK_NONE;
+>
+>   #ifdef CONFIG_X86_IO_APIC
+>   /*
+> @@ -347,6 +348,13 @@ static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
+>
+>          acpi_mp_wake_mailbox_init();
+>
+> +       /* Check if the given CPU (apicid) is already awake */
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+The reason why is that the wakeup mechanism used here is only usable
+once per CPU by the spec, so I would add this information to the
+comment.  Maybe something like "According to the ACPI specification
+(ACPI 6.4, Section ...), the mailbox-based wakeup mechanism cannot be
+used more than once for the same CPU, so avoid doing that."
 
-for the series.
+> +       if (physid_isset(apicid, apic_id_wakemap)) {
+> +               pr_err("APIC ID %x is already awake, so failed to wakeup\n",
+> +                               apicid);
 
-Regards,
+And I would reword the message like this "CPU already awake (APIC ID
+%x), skipping wakeup\n".
 
-Hans
+> +               return -EINVAL;
+> +       }
+> +
+>          if (!acpi_mp_wake_mailbox)
 
+Note, though, that instead of having this additional flag, you may as
+well create a mask that is fully populated initially and clear the IDs
+of the woken-up CPUs in it.  Then, you'd only need one check here
+instead of two.
+
+>                  return -EINVAL;
+>
+> @@ -374,8 +382,18 @@ static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
+>          while (READ_ONCE(acpi_mp_wake_mailbox->command) && timeout--)
+>                  cpu_relax();
+>
+> -       /* If timedout, return error */
+> -       return timeout ? 0 : -EIO;
+> +       if (timeout) {
+> +               /*
+> +                * If the CPU wakeup process is successful, store the
+> +                * status in apic_id_wakemap to prevent re-wakeup
+> +                * requests.
+> +                */
+> +               physid_set(apicid, apic_id_wakemap);
+> +               return 0;
+> +       }
+> +
+> +       /* If timed out (timeout == 0), return error */
+> +       return -EIO;
+>   }
+>
+>
+> --
+> Sathyanarayanan Kuppuswamy
+> Linux Kernel Developer
