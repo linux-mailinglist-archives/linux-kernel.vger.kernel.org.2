@@ -2,86 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3EDC37B17B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C7D37B185
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhEKWQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 18:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41894 "EHLO
+        id S229736AbhEKWSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbhEKWQm (ORCPT
+        with ESMTP id S229637AbhEKWSq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 18:16:42 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA67FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:15:35 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id h1so6864219uar.0
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:15:35 -0700 (PDT)
+        Tue, 11 May 2021 18:18:46 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB8FC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:17:39 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id x5so21611951wrv.13
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:17:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pernos.co; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9APnGG9XDlJhvDOfUIsq0WVU3gMNJ2g3qgJEUxydNUg=;
-        b=I3q6I778Ko853XpTutbwmhvj2DKUu5ahO1ZPdz/ndvEFPNrXNJXKgpsDjpzdSwS3nR
-         ruVb+G6BDMDvMnC5REh4QVHaVDV/X2cEvZ/p7Q+wSh6jB48ZKgm+dsaDTDBbDvo219+F
-         QDVjRFr2vafsSx2o7fVZH0F4kYuSSVnK3e6uI=
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rIMnU3pEMyzESxwl/9HGpb60VQFyauRdmgB1fZ2i0PQ=;
+        b=lbQ/0T7CfsdayyPHbn5j4LU/IELNGNpn0EpNuxTYaaWR39f9MgG9/y4+g0Cm2GjRQV
+         QQRZGDOKRn+tYKQc9u7XzQtJPqzXCuFixHfaFoMsgRqaBYAoGdPCNgRUX9yS1PO1QkLU
+         Vtj96GjtmCI+Z1hZ5/bCnNBjuGeRAXQ0uoAf2E738XJ0O4KJh9JBzsyJnm5cZxQqQBcj
+         cNYzAulxov0Vl5Vy6WIA8qON2WvpFmHCxcx8mYKYeetbMunHQxoysUbXjxM24/QraVCt
+         QbUfnodLLtx9SATocntwK/2mWPtMFNYAAEuNlroBdkfm5vBBm69LIW9yUNv6l2ng4zbl
+         usBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9APnGG9XDlJhvDOfUIsq0WVU3gMNJ2g3qgJEUxydNUg=;
-        b=VFbo4fOfEg/u+lwMi7KzZNWRb+fFaSE0kss1wGM9hbDyPmfigS06Dug1rSWmlxRwjV
-         4zp7Fj3LGfJRlJCSrGJMryN+NIrgROx+J1BQl3fjgCtuE5kysE5ptE4EB6UPbY9q9w5W
-         HTLizFdyLk/tBqvUQiOBUH31D3mK+lb810sZoz/RypAiHLsxSsqFJkqP8Y+dBcEkV4FC
-         KzZBYjDxewdyUp9rsGcW6d5QXYSg1DN+pUpF4g4nqtieE8S10Xj8QUZDWRqGh3AeQyeS
-         d9SvhA0L9ylxL3du8jx7ODKSGE093U3yk+j+RVjuMxU9xcDyKxkjnC+PkYFcEUhL5dtn
-         hO0w==
-X-Gm-Message-State: AOAM531ofzP+YItndmRa/YcNFtASaSGxVPVdV2V+yXbZEpoxHbF6vTTS
-        8WZj1+9q1VMG6Tv6bhx5m2uwUDEShWRZIAvu
-X-Google-Smtp-Source: ABdhPJxtrehLzYqnQH4E8kpuLVYpP1Qg28iEllVh8gOiXEKMBtvwjtN0uljPQGBkHjwz+xJeR1tz5A==
-X-Received: by 2002:ab0:2a83:: with SMTP id h3mr5526425uar.18.1620771334569;
-        Tue, 11 May 2021 15:15:34 -0700 (PDT)
-Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com. [209.85.221.178])
-        by smtp.gmail.com with ESMTPSA id u140sm2410295vku.46.2021.05.11.15.15.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 15:15:33 -0700 (PDT)
-Received: by mail-vk1-f178.google.com with SMTP id b21so4375733vkb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:15:32 -0700 (PDT)
-X-Received: by 2002:a1f:fe0b:: with SMTP id l11mr5646538vki.24.1620771332590;
- Tue, 11 May 2021 15:15:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rIMnU3pEMyzESxwl/9HGpb60VQFyauRdmgB1fZ2i0PQ=;
+        b=czgnI+lXH4LWuul+Xg9/5tjpt+o9LnNaYGixtmWAgGNWHCFrnIgMPHwTXlbSvQPVVW
+         1BRosvNimK+EnkiLkeTf2GSxygxCR1f9yccVZ2JAuRUEQk3CeUOJVIKyQg/vi9Xe5Ji1
+         H7OFVNBKFQaN9Z99//VGdnv8U1zwU1CAanJH2nGCxKuiWC14FX3Y9gFdVM/2bGvlhWm1
+         ihHI3hNt/nn8b3GJcVq7NEHccmsTkfDTOtG7k44ZhLYdtPrKMLb7Rp5QrCkZo9IwXPCF
+         /zoMhdwdjrJYoV2OPN/PJEtyVtTSANu8Nu3sxLNbdNwcAMmkZCW9z7oqsTeQDtb8oZ8P
+         Ah6A==
+X-Gm-Message-State: AOAM531BMOq5Ou3SiV5adHR9SDcBCmVwNcYVdO5liq9G0k2OjMbWBH25
+        OiGp0E3xUDUxlDC6LXC8H4qw5g==
+X-Google-Smtp-Source: ABdhPJwwI0m+O3Uja0c3Zn0UnwEmXQbJiNj29lXSpWpDwn3GIlYWdZnmmVFJR09jRPv3joVkZ6uiOg==
+X-Received: by 2002:a05:6000:180a:: with SMTP id m10mr40452470wrh.215.1620771458027;
+        Tue, 11 May 2021 15:17:38 -0700 (PDT)
+Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id r7sm4207518wmq.3.2021.05.11.15.17.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 15:17:37 -0700 (PDT)
+Date:   Tue, 11 May 2021 23:17:35 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     davem@davemloft.net, kuba@kernel.org, yhs@fb.com, ast@kernel.org,
+        johannes.berg@intel.com, rdunlap@infradead.org,
+        0x7f454c46@gmail.com, yangyingliang@huawei.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] netlink: netlink_sendmsg: memset unused tail bytes in skb
+Message-ID: <YJsCf0tFub3YXKvh@equinox>
+References: <20210509121858.1232583-1-phil@philpotter.co.uk>
+ <20210509131051.GD4038@breakpoint.cc>
 MIME-Version: 1.0
-References: <CAOp6jLZ8GR8DKCZLQJKPS7oeP1CX4L3ijBFDBePGX4q6z-DQhg@mail.gmail.com>
- <CAJHvVci_q5rxuo-N+EH_CNxX_M3oxWcLyitvbdySa_PMH3e_Dg@mail.gmail.com>
-In-Reply-To: <CAJHvVci_q5rxuo-N+EH_CNxX_M3oxWcLyitvbdySa_PMH3e_Dg@mail.gmail.com>
-From:   "Robert O'Callahan" <roc@pernos.co>
-Date:   Wed, 12 May 2021 10:15:21 +1200
-X-Gmail-Original-Message-ID: <CAOp6jLaSLC4O0ZayFz1BiO6UqC7pK_umFUb29bgXDu6U5dUQgg@mail.gmail.com>
-Message-ID: <CAOp6jLaSLC4O0ZayFz1BiO6UqC7pK_umFUb29bgXDu6U5dUQgg@mail.gmail.com>
-Subject: Re: Userspace notifications for observing userfaultfd faults
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, Peter Xu <peterx@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, Kyle Huey <khuey@pernos.co>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210509131051.GD4038@breakpoint.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 6:12 AM Axel Rasmussen <axelrasmussen@google.com> wrote:
-> Is some combination of bpf and kprobes a possible solution? There are
-> some seemingly relevant examples here:
-> https://github.com/iovisor/bpftrace/blob/master/docs/tutorial_one_liners.md
->
-> I haven't tried it, but it seems like attaching to handle_userfault()
-> would give similar information to perf_count_sw_page_faults, but for
-> userfaults.
+On Sun, May 09, 2021 at 03:10:51PM +0200, Florian Westphal wrote:
+> Phillip Potter <phil@philpotter.co.uk> wrote:
+> > When allocating the skb within netlink_sendmsg, with certain supplied
+> > len arguments, extra bytes are allocated at the end of the data buffer,
+> > due to SKB_DATA_ALIGN giving a larger size within __alloc_skb for
+> > alignment reasons. This means that after using skb_put with the same
+> > len value and then copying data into the skb, the skb tail area is
+> > non-zero in size and contains uninitialised bytes. Wiping this area
+> > (if it exists) fixes a KMSAN-found uninit-value bug reported by syzbot at:
+> > https://syzkaller.appspot.com/bug?id=3e63bcec536b7136b54c72e06adeb87dc6519f69
+> 
+> This patch papers over the real bug.
+> 
+> Please fix TIPC instead.
+> Incomplete patch as a starting point:
+> 
+> diff --git a/net/tipc/node.c b/net/tipc/node.c
+> --- a/net/tipc/node.c
+> +++ b/net/tipc/node.c
+> @@ -2481,7 +2481,6 @@ int tipc_nl_node_get_link(struct sk_buff *skb, struct genl_info *info)
+>  	struct net *net = genl_info_net(info);
+>  	struct nlattr *attrs[TIPC_NLA_LINK_MAX + 1];
+>  	struct tipc_nl_msg msg;
+> -	char *name;
+>  	int err;
+>  
+>  	msg.portid = info->snd_portid;
+> @@ -2499,13 +2498,11 @@ int tipc_nl_node_get_link(struct sk_buff *skb, struct genl_info *info)
+>  	if (!attrs[TIPC_NLA_LINK_NAME])
+>  		return -EINVAL;
+>  
+> -	name = nla_data(attrs[TIPC_NLA_LINK_NAME]);
+> -
+>  	msg.skb = nlmsg_new(NLMSG_GOODSIZE, GFP_KERNEL);
+>  	if (!msg.skb)
+>  		return -ENOMEM;
+>  
+> -	if (strcmp(name, tipc_bclink_name) == 0) {
+> +	if (nla_strcmp(attrs[TIPC_NLA_LINK_NAME], tipc_bclink_name) == 0) {
+>  		err = tipc_nl_add_bc_link(net, &msg, tipc_net(net)->bcl);
+>  		if (err)
+>  			goto err_free;
+> 
+> 
+> You will also need to change tipc_node_find_by_name() to pass the nla
+> attr.
+> 
+> Alternatively TIPC_NLA_LINK_NAME policy can be changed:
+> 
+> diff --git a/net/tipc/netlink.c b/net/tipc/netlink.c
+> --- a/net/tipc/netlink.c
+> +++ b/net/tipc/netlink.c
+> @@ -88,7 +88,7 @@ const struct nla_policy tipc_nl_net_policy[TIPC_NLA_NET_MAX + 1] = {
+>  
+>  const struct nla_policy tipc_nl_link_policy[TIPC_NLA_LINK_MAX + 1] = {
+>         [TIPC_NLA_LINK_UNSPEC]          = { .type = NLA_UNSPEC },
+> -       [TIPC_NLA_LINK_NAME]            = { .type = NLA_STRING,
+> +       [TIPC_NLA_LINK_NAME]            = { .type = NLA_NUL_STRING,
+> 
+> 
+> ... which makes it safe to treat the raw attribute payload as a c-string,
+> but this might break existing userspace applications.
+> 
+> Its probably a good idea to audit all NLA_STRING attributes in tipc for
+> similar problems.
 
-That would probably work in some cases, but as Kyle said that requires
-privileges and currently rr can run unprivileged (if you set
-perf_event_paranoid to 1 or less) and usually does. Also, AFAIK,
-kprobing handle_userfault would not be a stable ABI.
+Dear Florian,
 
-Rob
+Thank you for your feedback and code + suggestions, I will take a look at this over
+the next few days and then resubmit.
+
+Regards,
+Phil
