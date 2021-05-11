@@ -2,138 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA6E37A5E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F09B37A5E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhEKLlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 07:41:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24838 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230501AbhEKLlF (ORCPT
+        id S231449AbhEKLnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 07:43:39 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:43930 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230501AbhEKLnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 07:41:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620733198;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yDB76Nuv1O481lcRSgt/kb99YqkhJkPgTfC3877PSJQ=;
-        b=RclnjgQ85VWsZFZlTf5Nj9xanLgLflsPBZuCmqPv9nZlbdMRocU3qA35WQuU/TBkGmb38j
-        dHsMLoNVbYJdBDep7as5GuhScgoiSqIFcfB6ttsbvrEcu2IcaMTOHwRl2AcO1D4yVAwplp
-        A/Y63KEa1twHkC1Ttv+AX2YmklGOFLw=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-367-hyc89mSEPXKiGa62RNiLSA-1; Tue, 11 May 2021 07:39:57 -0400
-X-MC-Unique: hyc89mSEPXKiGa62RNiLSA-1
-Received: by mail-ej1-f72.google.com with SMTP id h4-20020a1709067184b02903cbbd4c3d8fso1009955ejk.6
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 04:39:56 -0700 (PDT)
+        Tue, 11 May 2021 07:43:39 -0400
+Received: by mail-ot1-f49.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso16436237ots.10;
+        Tue, 11 May 2021 04:42:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yDB76Nuv1O481lcRSgt/kb99YqkhJkPgTfC3877PSJQ=;
-        b=ohMITQnPHwZR1chAY9/0+vqDJTa9y7hxykFBuROnVStgJJzSmX0g3SQ6Dr7+T4xLhR
-         iFyfpKLQrTCvTLbmTrN3R9Je/VdiETR+5VrkMo33cjKfOeftAkirbXxuQ+36US2zB/vc
-         F3cLi+E421g5FBr5etyZAzNkj7NB/B3sbMzkIEiI8z2d3LxdyLgDiY4Qg07OcZwXDN4j
-         kzfy0Dx7Pm5ifcNbVtxY03N8/0VmxiwfQCCY6Qo8mT/W+Y3j+Kj8swvRO0xNvMBIs3xl
-         l2Td80R3cxr2kKNdhax0UQ3Hk840I0CKd20Cm1quuRvtvlimWwK2Zk2f6kUyycVdW6d4
-         vm1Q==
-X-Gm-Message-State: AOAM530CtcqsRJgC39R75CmMCtN+krBf/6YKj1AKomzanqoDyP3berVQ
-        qtdtnab7hKcbKSXJlRR5v0cG9w0tscC9sfMquU1iXzYtwIUYm+FspJQIBvCvCZsUAipQ0s/UIY4
-        E0kTWrToqF1aX9dfTKdJYt/6hwJhXZCp2rrTWRNGOlppHeI2RbtI1ju5rvLqanJBTraY/ITxFSi
-        ok
-X-Received: by 2002:a17:906:36da:: with SMTP id b26mr31448632ejc.8.1620733195798;
-        Tue, 11 May 2021 04:39:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJweLh4EyNU8M/Z76zmGVlIevsMFuGyy66retPVlD4ZLn92YLUcGdHLVfvg0lZuWEc4O8+c/+Q==
-X-Received: by 2002:a17:906:36da:: with SMTP id b26mr31448616ejc.8.1620733195613;
-        Tue, 11 May 2021 04:39:55 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id g9sm11417543ejo.8.2021.05.11.04.39.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 04:39:54 -0700 (PDT)
-Subject: Re: [PATCH] platform/x86: ideapad-laptop: fix a NULL pointer
- dereference
-To:     Ike Panhc <ike.pan@canonical.com>,
-        Qiu Wenbo <qiuwenbo@kylinos.com.cn>, mgross@linux.intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210428050636.8003-1-qiuwenbo@kylinos.com.cn>
- <a95f27a5-bc5a-a195-09e4-db56d024629e@canonical.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <8253fa3a-6baa-1879-e928-1825878e7f88@redhat.com>
-Date:   Tue, 11 May 2021 13:39:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5unhwIaxg64Ebdi8tWGMUtJFaf6iQZK6L3spfzCmCIY=;
+        b=CxCGkNF3mp5ag1/tBdafzjMnGdFhPsWrtQ0+sElGs4rR92E8/oCazmFabUoq0Pmb3a
+         Atm6QOIQQafm0BywQNIpazOqW/9h3EJ9P2HEC18uc5kGnigVFmMYtntvh69zER1EmJlF
+         HsGi3PD/firVFAWdRHm5SCv7kk/X7xOL/nCOpcQRhb/+rQ7tsZFG4FEkok5fPymELJ9Y
+         9aQS4lZPg9cTzs1UmJnX6of1tZfbseOaPo6xUEEfBvL8c4PU8errKbg8Rarqp6nstvgv
+         DnbevLK3yoU9FoGWw+j4wa+sJJJzgewSLExhE+lrMtUNurHJgiVTlwe1luLw5+sTcGQ0
+         KuUA==
+X-Gm-Message-State: AOAM532IguipTF+SKcPIZ26hYowl6jJE6R8QcinD48KHmKidhYIkCr+r
+        E1NX/ubTTjNxqiZfyOBEz0Rs6rOO1u+EtorXFtg=
+X-Google-Smtp-Source: ABdhPJzFVTchCjDmnP+Sq3sU02RlxhGnOoZLDnUwPIJ6VCqdIvsysRKeYHyefWe7vAWqZ/TAF0X1ndNGYH43KfMpgnc=
+X-Received: by 2002:a05:6830:55b:: with SMTP id l27mr25430146otb.260.1620733351311;
+ Tue, 11 May 2021 04:42:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <a95f27a5-bc5a-a195-09e4-db56d024629e@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <2607573.mvXUDI8C0e@kreacher> <44ec7350-38ee-b880-bcaf-fba5ddc288e9@redhat.com>
+In-Reply-To: <44ec7350-38ee-b880-bcaf-fba5ddc288e9@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 11 May 2021 13:42:20 +0200
+Message-ID: <CAJZ5v0jSDq8nZEeFUZc3arHHqWhUjDfmwPrJ69U=aO5-FB_7iA@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: scan: Rearrange dep_unmet initialization
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, May 11, 2021 at 1:24 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Hi Rafael,
+>
+> On 5/10/21 7:53 PM, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > The dep_unmet field in struct acpi_device is used to store the
+> > number of unresolved _DEP dependencies (that is, operation region
+> > dependencies for which there are no drivers present) for the ACPI
+> > device object represented by it.
+> >
+> > That field is initialized to 1 for all ACPI device objects in
+> > acpi_add_single_object(), via acpi_init_device_object(), so as to
+> > avoid evaluating _STA prematurely for battery device objects in
+> > acpi_scan_init_status(), and it is "fixed up" in acpi_bus_check_add()
+> > after the acpi_add_single_object() called by it has returned.
+> >
+> > This is not particularly straightforward and causes dep_unmet to
+> > remain 1 for device objects without dependencies created by invoking
+> > acpi_add_single_object() directly, outside acpi_bus_check_add().
+> >
+> > For this reason, rearrange acpi_add_single_object() to initialize
+> > dep_unmet completely before calling acpi_scan_init_status(), which
+> > requires passing one extra bool argument to it, and update all of
+> > its callers accordingly.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> Thanks, one small nitpick below.
+>
+> > ---
+> >  drivers/acpi/scan.c |   62 +++++++++++++++++++++++++---------------------------
+> >  1 file changed, 30 insertions(+), 32 deletions(-)
+> >
+> > Index: linux-pm/drivers/acpi/scan.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/acpi/scan.c
+> > +++ linux-pm/drivers/acpi/scan.c
+> > @@ -1670,8 +1670,22 @@ void acpi_init_device_object(struct acpi
+> >       device_initialize(&device->dev);
+> >       dev_set_uevent_suppress(&device->dev, true);
+> >       acpi_init_coherency(device);
+> > -     /* Assume there are unmet deps to start with. */
+> > -     device->dep_unmet = 1;
+> > +}
+> > +
+> > +static void acpi_scan_dep_init(struct acpi_device *adev)
+> > +{
+> > +     struct acpi_dep_data *dep;
+> > +
+> > +     adev->dep_unmet = 0;
+>
+> Now that we don't set dep_unmet to 1 in acpi_init_device_object()
+> anymore this line is no longer necessary.
 
-On 4/30/21 10:45 AM, Ike Panhc wrote:
-> On 4/28/21 1:06 PM, Qiu Wenbo wrote:
->> The third parameter of dytc_cql_command should not be NULL since it will
->> be dereferenced immediately.
->>
->> Signed-off-by: Qiu Wenbo <qiuwenbo@kylinos.com.cn>
-> 
-> Fixes: ff36b0d953dc4 ("platform/x86: ideapad-laptop: rework and create new ACPI helpers")
-> Acked-by: Ike Panhc <ike.pan@canonical.com>
+Right.
 
-Thank you I've added this to my review-hans branch with the 2 above
-tags added. I'll also add this to my fixes branch and include it in
-a future pdx86 fixes pull-req for Linus for 5.13.
+I'll drop it before applying the patch.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+> dep_unmet is set to 0 by the kzalloc of the adev and we are already
+> relying on that in the case where the dep_init parameter to
+> acpi_add_single_object() is false.
+>
+> But if you want to keep this that is fine too, either way
+> this patch looks good to me:
+>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-
-> 
->> ---
->>  drivers/platform/x86/ideapad-laptop.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
->> index 6cb5ad4be231..8f871151f0cc 100644
->> --- a/drivers/platform/x86/ideapad-laptop.c
->> +++ b/drivers/platform/x86/ideapad-laptop.c
->> @@ -809,6 +809,7 @@ static int dytc_profile_set(struct platform_profile_handler *pprof,
->>  {
->>  	struct ideapad_dytc_priv *dytc = container_of(pprof, struct ideapad_dytc_priv, pprof);
->>  	struct ideapad_private *priv = dytc->priv;
->> +	unsigned long output;
->>  	int err;
->>  
->>  	err = mutex_lock_interruptible(&dytc->mutex);
->> @@ -829,7 +830,7 @@ static int dytc_profile_set(struct platform_profile_handler *pprof,
->>  
->>  		/* Determine if we are in CQL mode. This alters the commands we do */
->>  		err = dytc_cql_command(priv, DYTC_SET_COMMAND(DYTC_FUNCTION_MMC, perfmode, 1),
->> -				       NULL);
->> +				       &output);
->>  		if (err)
->>  			goto unlock;
->>  	}
->>
-> 
-
+Thank you!
