@@ -2,58 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA2E37A58F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E38F37A593
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbhEKLT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 07:19:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230401AbhEKLTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 07:19:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19CD561363;
-        Tue, 11 May 2021 11:18:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620731929;
-        bh=3965pDIxL3ePZ2py6vgy+3FF19ziZfQsspyiY3RjjYg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HEWeDWBkJCFFXTbE3xs724vpb7eYa3LrCSF3Lw+g8mQbYRHwjddabjl6rV11nKyAe
-         5ZMT4xYx5cZMXxOfzugimPrQu9LsBYDU+sNoqmR7ioRzQkft4tb3zf9La0JY3ZTswg
-         6X0SsIB6Zmn8sLkCCanPzVzlqcUQl658fBP+P4tci3n0ZenMJmtDAuhOKvwG06lCuS
-         avfcmU5dxkJo91JTv6x0xxyPswG6zwHqUfEEfUQPsBm+hv0deDT8dtFDf/zEb/HKG+
-         2P6j/loU6mCA+MWk7Q6WJNjSy8UwqWj4g0juHYqcH8iwCgR7VX+e7UXb1fhttdqAe9
-         Kl+6KefOpCu1g==
-Date:   Tue, 11 May 2021 16:48:45 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     yung-chuan.liao@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, amit.pundir@linaro.org
-Subject: Re: [PATCH] soundwire: qcom: fix handling of
- qcom,ports-block-pack-mode
-Message-ID: <YJpoFQkvbXLOe6ik@vkoul-mobl.Dlink>
-References: <20210504125909.16108-1-srinivas.kandagatla@linaro.org>
+        id S231407AbhEKLVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 07:21:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43286 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231126AbhEKLVL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 07:21:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620732004;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=R2FIcJy0FhG18L85AGaMz34fEcXRgkeJKI2TAP1uabE=;
+        b=KlogoGDKO1Pf4EcngUTgAmVTR7MMCzJFJpuK0vh1tHGDIp8ERxAQswpcpyLWU4iF67odJC
+        Rg7IhhwVwuntWKR1TRhtAOmL2qHvxd7kRhsyqMOUZOk52kn4C6d8TEM5QjtR6HeBJ69f6K
+        zTf1QmCF4wkxZuywY4UUNnRPDJy6LI4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-503-6w7aAOSuOMKj46QWvgFSyw-1; Tue, 11 May 2021 07:20:03 -0400
+X-MC-Unique: 6w7aAOSuOMKj46QWvgFSyw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A94AF8015F3;
+        Tue, 11 May 2021 11:20:01 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.193.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 520A163746;
+        Tue, 11 May 2021 11:19:57 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH 0/7] KVM: nVMX: Fixes for nested state migration when eVMCS is in use
+Date:   Tue, 11 May 2021 13:19:49 +0200
+Message-Id: <20210511111956.1555830-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210504125909.16108-1-srinivas.kandagatla@linaro.org>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-05-21, 13:59, Srinivas Kandagatla wrote:
-> Support to "qcom,ports-block-pack-mode" was added at later stages
-> to support a variant of Qualcomm SoundWire controllers available
-> on Apps processor. However the older versions of the SoundWire
-> controller which are embedded in WCD Codecs do not need this property.
-> 
-> So returning on error for those cases will break boards like DragonBoard
-> DB845c and Lenovo Yoga C630.
-> 
-> This patch fixes error handling on this property considering older usecases.
+Commit f5c7e8425f18 ("KVM: nVMX: Always make an attempt to map eVMCS after
+migration") fixed the most obvious reason why Hyper-V on KVM (e.g. Win10
+ + WSL2) was crashing immediately after migration. It was also reported
+that we have more issues to fix as, while the failure rate was lowered 
+signifincatly, it was still possible to observe crashes after several
+dozens of migration. Turns out, the issue arises when we manage to issue
+KVM_GET_NESTED_STATE right after L2->L2 VMEXIT but before L1 gets a chance
+to run. This state is tracked with 'need_vmcs12_to_shadow_sync' flag but
+the flag itself is not part of saved nested state. A few other less 
+significant issues are fixed along the way.
 
-Applied, thanks
+While there's no proof this series fixes all eVMCS related problems,
+Win10+WSL2 was able to survive 500 migrations without crashing in my
+testing.
+
+Patches are based on the current kvm/next tree.
+
+Vitaly Kuznetsov (7):
+  KVM: nVMX: Introduce nested_evmcs_is_used()
+  KVM: nVMX: Release enlightened VMCS on VMCLEAR
+  KVM: nVMX: Ignore 'hv_clean_fields' data when eVMCS data is copied in
+    vmx_get_nested_state()
+  KVM: nVMX: Force enlightened VMCS sync from nested_vmx_failValid()
+  KVM: nVMX: Reset eVMCS clean fields data from prepare_vmcs02()
+  KVM: nVMX: Request to sync eVMCS from VMCS12 after migration
+  KVM: selftests: evmcs_test: Test that KVM_STATE_NESTED_EVMCS is never
+    lost
+
+ arch/x86/kvm/vmx/nested.c                     | 99 +++++++++++++------
+ .../testing/selftests/kvm/x86_64/evmcs_test.c | 64 +++++++-----
+ 2 files changed, 109 insertions(+), 54 deletions(-)
 
 -- 
-~Vinod
+2.30.2
+
