@@ -2,103 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3908237AA84
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A27C37AA89
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbhEKPVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 11:21:16 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:60942 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbhEKPVP (ORCPT
+        id S231812AbhEKPW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 11:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231609AbhEKPWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 11:21:15 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14BFK1ID104690;
-        Tue, 11 May 2021 10:20:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620746401;
-        bh=Rz6bXU6XS7j+KrR9SbLWdgtPtvzU7RGsksFsLi91ok0=;
-        h=From:To:CC:Subject:Date;
-        b=aGhMb5FWFWTaB+lqKOUzIpi70y0df5odSGMm3gxUmY3H2wuyqV/q4tL7aK+EqChA7
-         5M+moxI73OJKm6pSoEHhZITbIZb71BloZfdcqOlCOb9r2oPNLzrmQKNvH2c+PWX+JA
-         EXP4z8UQQ1YpF9LzMdyk6dhoe39inqprq4uTr1HE=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14BFK1uJ062601
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 11 May 2021 10:20:01 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 11
- May 2021 10:20:01 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 11 May 2021 10:20:01 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14BFJwuG121251;
-        Tue, 11 May 2021 10:19:59 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        <linux-serial@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] serial: 8250: 8250_omap: Fix possible interrupt storm
-Date:   Tue, 11 May 2021 20:49:55 +0530
-Message-ID: <20210511151955.28071-1-vigneshr@ti.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 11 May 2021 11:22:23 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4970AC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 08:21:17 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id b21so9214442pft.10
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 08:21:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=V4LMkvrniJAvXU5xBJtPWHipHjdbSyBWhYEiZ+dOod0=;
+        b=y4/MogwDmaORtiOLwmXGVcCfVM0eb+52pG4AdHLjv5KE5RBUJET+oKZl2pvuxXOHlk
+         LLryLjnhfquSTGLYfA1kdDzV37qrFBQP6sF121xXPeKIjVaame/IW8MXvsEkVOyYuSvV
+         Qp5JuQpg/OFsYLOJmYd+Sokowdahqc8Wr+zCTMRJk/wcigaE3LWMQhWyMxKqBQPFdxq2
+         FKKCTmCf7iAyWjxknBb5tyrtVJ8WDU8/sIoJjR5MEKPk0foLgLzLTt9ANKOJIYTeCw2Z
+         SlDaw1t7FRtafqC2YXckhVoj7PVtBefsDz9ve/C77nPKfTGL2Cfwxh0qY1tD5TObSE4n
+         kKFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V4LMkvrniJAvXU5xBJtPWHipHjdbSyBWhYEiZ+dOod0=;
+        b=rXQQFNtVLE6DKjOx+6RLnQ25SYvyquANvtFSHFimy9sQiLRTTNHOABqKg7+KSf60ih
+         FmuQFExwMYhqkCgPAkSQvQNLd67L/cUG4hAcXH0lpnky/5Am5B9f7tTd+qD22+B2I+hY
+         Fy/u71LdCPHuP5HcXeAEAKSwJUEZX4ujumqpju6R9BVOXbQYmqf57w6UhFPx3NI9ZePk
+         pRopVprRzfbinmKvaKl7uJ0/9P4KUqirYwmfQKtgvTLaxwXOgCLGnlzgmO8sFuqZeTsU
+         50OGkSHYRI2i4lhBJddSl7mYJcR3STYbn1HGBprLQvGs1Q4VUG65I2+UiKLRvGdb1Drf
+         kkUg==
+X-Gm-Message-State: AOAM531ban4lIr5kcaznSZkL8658W/b8bF9lldM1XCpR5t8p9rF9qex2
+        9UcTATwpww/TI6dl9m22ffJJ1zfUujLstw==
+X-Google-Smtp-Source: ABdhPJxN0Um6faHA1gCmqjavnQ6o8dzaaki7KNEEljFxMpvN8az3x681fvXJa8AgcZP2A/WSLcqHmw==
+X-Received: by 2002:a63:4f4a:: with SMTP id p10mr31279585pgl.432.1620746476541;
+        Tue, 11 May 2021 08:21:16 -0700 (PDT)
+Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id o4sm14004075pfk.15.2021.05.11.08.21.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 08:21:15 -0700 (PDT)
+Subject: Re: [PATCH 1/5] docs: cdrom-standard.rst: get rid of uneeded UTF-8
+ chars
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
+References: <cover.1620744606.git.mchehab+huawei@kernel.org>
+ <79c3f482da17ea48d69b6e6ad1b7fb102b9dd7bf.1620744606.git.mchehab+huawei@kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <11b486e5-f663-e530-7b70-84563a92fb02@kernel.dk>
+Date:   Tue, 11 May 2021 09:21:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <79c3f482da17ea48d69b6e6ad1b7fb102b9dd7bf.1620744606.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible that RX TIMEOUT is signalled after RX FIFO has been
-drained, in which case a dummy read of RX FIFO is required to clear RX
-TIMEOUT condition. Otherwise, RX TIMEOUT condition is not cleared
-leading to an interrupt storm
+On 5/11/21 9:01 AM, Mauro Carvalho Chehab wrote:
+> This file was converted from a LaTeX one. The conversion used
+> some UTF-8 characters at the literal blocks. Replace them
+> by normal ASCII characters.
 
-Cc: stable@vger.kernel.org
-Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
- drivers/tty/serial/8250/8250_omap.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Acked-by: Jens Axboe <axboe@kernel.dk>
 
-diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
-index 8ac11eaeca51..c71bd766fa56 100644
---- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -104,6 +104,9 @@
- #define UART_OMAP_EFR2			0x23
- #define UART_OMAP_EFR2_TIMEOUT_BEHAVE	BIT(6)
- 
-+/* RX FIFO occupancy indicator */
-+#define UART_OMAP_RX_LVL		0x64
-+
- struct omap8250_priv {
- 	int line;
- 	u8 habit;
-@@ -625,6 +628,15 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
- 	serial8250_rpm_get(up);
- 	iir = serial_port_in(port, UART_IIR);
- 	ret = serial8250_handle_irq(port, iir);
-+	/*
-+	 * It is possible that RX TIMEOUT is signalled after FIFO
-+	 * has been drained, in which case a dummy read of RX FIFO is
-+	 * required to clear RX TIMEOUT condition.
-+	 */
-+	if ((iir & UART_IIR_RX_TIMEOUT) == UART_IIR_RX_TIMEOUT) {
-+		if (serial_port_in(port, UART_OMAP_RX_LVL) == 0)
-+			serial_port_in(port, UART_RX);
-+	}
- 	serial8250_rpm_put(up);
- 
- 	return IRQ_RETVAL(ret);
 -- 
-2.31.1
+Jens Axboe
 
