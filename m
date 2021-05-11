@@ -2,188 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BA337A157
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48B537A158
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhEKIGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 04:06:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46182 "EHLO
+        id S230422AbhEKIGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 04:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbhEKIGA (ORCPT
+        with ESMTP id S229995AbhEKIGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 04:06:00 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B1EC061574;
-        Tue, 11 May 2021 01:04:54 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id v22so13404458oic.2;
-        Tue, 11 May 2021 01:04:54 -0700 (PDT)
+        Tue, 11 May 2021 04:06:18 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEDDBC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 01:05:11 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id c17so15506433pfn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 01:05:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+s7Q6HeMDVe3VxU+zVpnFtWeMKWBHbhimZCBxLkHHCc=;
-        b=Dm6J034CLl7HowSsz0ys2fkOcajezjyRzkK9Ni67jTW5QWQogGeXE3szI3djZBxBKF
-         mgVOBKw4OhkNeLyEGoLw2FqEbpW42uhSVHpOGzGzvwjC2rgJrJF5hZRkg1uLnzR2AksN
-         kXHErr9P8Nr027H0b7ckqQLTx0cf85uVH+AAQVcHJQotoKDxpx3B4PGKQGhEF6Aftqfg
-         WzGl5NIqLeib7iwRt7Jw6IOIK8gKLKk4kVFYAGKNiU37X7AYnWhTIzjUBWXNFBKxjsPF
-         I+/+MOPJSKoy6hgRRIMEHSJYm79r2xwCI7B6gOU7jrVHKKP44VPhEvD3OZS5LOpdxxFM
-         Fd1g==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qowb1jCPuujd1IWsaK4vSQJT6KwxU2yyn+OfcNfTCs4=;
+        b=X8L8UnWsuHK5IGqp7KD23AjgSrJhNLM8XDx2FxDwsZezIyv7RhI+opaPcSv8+AeDn+
+         0t/thWkYZppBZn2Is3zdeMfElvob/hpiNoASEFxYSLyqB6KTti1XrYwGsLB3bYq28X4P
+         AqYO2SXjby8YR7S4g8VALCgvtnFyUUjWBsj+Q4WxUmn1V5arDt1mneDC7gJpIjsQB/M0
+         dlArazIN/Gt2tNbaiFKBtZn/nIpCWyZXCxQJcvXBx8pjTxyl8Fbg+NcqZA9VefIIdHE1
+         dGx2Ov0lKUjwGVijfqZS8b/8mIjNBfseHJHzew5Jot+OCW0aAqWhS7/AzQ+ZS36wTeFG
+         947Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+s7Q6HeMDVe3VxU+zVpnFtWeMKWBHbhimZCBxLkHHCc=;
-        b=VWKXNzZry891GHGXVmThtdqrTYyuBqShpHtXRwhYxRHunefLM4DDo6Q7FCVBEBl6EN
-         PxjWe/4POlb3675DiJdojuc+8Y2FOjN9uknJeluuScWJ6/3akvj22Zeyuv0wbJR0NLnF
-         zVuojFYxDOgsM5TgP3E5erMYW4dHz80d8r0xn+6fS6IKwsLxPu7uTWzNJwumQMIztnlw
-         89ydNCcks3BPqzwBSub3E+QliXoouCsqO1YBU1kMDJRZDqxI6Jeu18pmOLHnaZTXViiB
-         LKjedwAhdb/7IoWnFCR1aHW86qpotb2Z/1ca2Y3pkGv1Y3oJ2Cmv1+h1N8FgiU8RIX1K
-         LrKQ==
-X-Gm-Message-State: AOAM532tx7oM9o5sZKaBYz9adSQfjzvmEh7qbALdJU25kH9B2rkjO4Qi
-        PSpzKaO4RZJNVJMuJ2zca0Ivo6pm4mw4D4cPZdg=
-X-Google-Smtp-Source: ABdhPJyIsoHE2BnePrMyCHgxu9DgM6EVMCRPHXKBqQXRcLfhhUcWYPfM19EM+N+5v4gJKvqHE0nYasn7A1o0Zuhv8eI=
-X-Received: by 2002:aca:c685:: with SMTP id w127mr2550780oif.89.1620720293876;
- Tue, 11 May 2021 01:04:53 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qowb1jCPuujd1IWsaK4vSQJT6KwxU2yyn+OfcNfTCs4=;
+        b=YVmeILiI4/iMA+QvBymi6F/SaYzwsCqmix2w9/qvtJObq888m7cLrzpc7DUsEoTOQ5
+         dQWeXzVpRgMqNo+c1ju6oYW6EPzFi3Ez/QexQNWsk3hY9dqJbQCOT+WMU0qcCALZWFje
+         jONsEPHc3OqO1rNCQPsttBshHRX9HLW4VZZRQOhr3kjQ3okCaNJInTEjzKjhKir29Cuw
+         7/tFzKqvOaV9cf5sl0w8pZIATYj/Zx34f0xSY0/35dSbwTPLafe2WW9Z1DgYv7iBH+D2
+         6w+xvIO6qqCUQLk76Hm5U82j8K16+84VFUy62bR2E4DdqpPBcJlqvQCOSDrmKdIsrs4A
+         /Obg==
+X-Gm-Message-State: AOAM531ZwC9V9RlpdlwuN/4zRq/VHnFpscsveZN3B3wdGOGDjsvRMt2j
+        C+1RQD7hfPz/2p6qOwd1LUc6Pw==
+X-Google-Smtp-Source: ABdhPJztvCw2v+qMSbbFPGpcKYFa9G6eBPQdix7Cv3054DAxJ4x2xcjGBH4FewuCg580zoUHJu8X7w==
+X-Received: by 2002:a63:8149:: with SMTP id t70mr29797637pgd.299.1620720311243;
+        Tue, 11 May 2021 01:05:11 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s (ec2-18-167-90-4.ap-east-1.compute.amazonaws.com. [18.167.90.4])
+        by smtp.gmail.com with ESMTPSA id j7sm1482312pjw.4.2021.05.11.01.05.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 01:05:10 -0700 (PDT)
+Date:   Tue, 11 May 2021 16:05:04 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     coresight@lists.linaro.org, mathieu.poirier@linaro.org,
+        al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
+        Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] perf cs-etm: Handle valid-but-zero timestamps
+Message-ID: <20210511080504.GC8273@leoy-ThinkPad-X240s>
+References: <20210507095814.17933-1-james.clark@arm.com>
+ <3926c523-3fdb-66de-8b9c-b68290a5053e@arm.com>
+ <20210510053904.GB4835@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-References: <7bf8d548764d406dbbbaf4b574960ebfd5af8387.1620717918.git.leonro@nvidia.com>
-In-Reply-To: <7bf8d548764d406dbbbaf4b574960ebfd5af8387.1620717918.git.leonro@nvidia.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Tue, 11 May 2021 16:04:42 +0800
-Message-ID: <CAD=hENfsutV7Pig=64e52OADieLTxeQ=aCjNQ06xvUm_PM5JOQ@mail.gmail.com>
-Subject: Re: [PATCH rdma-rc] RDMA/rxe: Clear all QP fields if creation failed
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Moni Shoua <monis@mellanox.com>,
-        syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510053904.GB4835@leoy-ThinkPad-X240s>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 3:26 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> From: Leon Romanovsky <leonro@nvidia.com>
->
-> rxe_qp_do_cleanup() relies on valid pointer values in QP for the
-> properly created ones, but in case rxe_qp_from_init() failed it was
-> filled with garbage and caused tot the following error.
->
-> ------------[ cut here ]------------
-> refcount_t: underflow; use-after-free.
-> WARNING: CPU: 1 PID: 12560 at lib/refcount.c:28 refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
-> Modules linked in:
-> CPU: 1 PID: 12560 Comm: syz-executor.4 Not tainted 5.12.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
-> Code: e9 db fe ff ff 48 89 df e8 2c c2 ea fd e9 8a fe ff ff e8 72 6a a7 fd 48 c7 c7 e0 b2 c1 89 c6 05 dc 3a e6 09 01 e8 ee 74 fb 04 <0f> 0b e9 af fe ff ff 0f 1f 84 00 00 00 00 00 41 56 41 55 41 54 55
-> RSP: 0018:ffffc900097ceba8 EFLAGS: 00010286
-> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> RDX: 0000000000040000 RSI: ffffffff815bb075 RDI: fffff520012f9d67
-> RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-> R10: ffffffff815b4eae R11: 0000000000000000 R12: ffff8880322a4800
-> R13: ffff8880322a4940 R14: ffff888033044e00 R15: 0000000000000000
-> FS:  00007f6eb2be3700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fdbe5d41000 CR3: 000000001d181000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  __refcount_sub_and_test include/linux/refcount.h:283 [inline]
->  __refcount_dec_and_test include/linux/refcount.h:315 [inline]
->  refcount_dec_and_test include/linux/refcount.h:333 [inline]
->  kref_put include/linux/kref.h:64 [inline]
->  rxe_qp_do_cleanup+0x96f/0xaf0 drivers/infiniband/sw/rxe/rxe_qp.c:805
->  execute_in_process_context+0x37/0x150 kernel/workqueue.c:3327
->  rxe_elem_release+0x9f/0x180 drivers/infiniband/sw/rxe/rxe_pool.c:391
->  kref_put include/linux/kref.h:65 [inline]
->  rxe_create_qp+0x2cd/0x310 drivers/infiniband/sw/rxe/rxe_verbs.c:425
->  _ib_create_qp drivers/infiniband/core/core_priv.h:331 [inline]
->  ib_create_named_qp+0x2ad/0x1370 drivers/infiniband/core/verbs.c:1231
->  ib_create_qp include/rdma/ib_verbs.h:3644 [inline]
->  create_mad_qp+0x177/0x2d0 drivers/infiniband/core/mad.c:2920
->  ib_mad_port_open drivers/infiniband/core/mad.c:3001 [inline]
->  ib_mad_init_device+0xd6f/0x1400 drivers/infiniband/core/mad.c:3092
->  add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:717
->  enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1331
->  ib_register_device drivers/infiniband/core/device.c:1413 [inline]
->  ib_register_device+0x7c7/0xa50 drivers/infiniband/core/device.c:1365
->  rxe_register_device+0x3d5/0x4a0 drivers/infiniband/sw/rxe/rxe_verbs.c:1147
->  rxe_add+0x12fe/0x16d0 drivers/infiniband/sw/rxe/rxe.c:247
->  rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:503
->  rxe_newlink drivers/infiniband/sw/rxe/rxe.c:269 [inline]
->  rxe_newlink+0xb7/0xe0 drivers/infiniband/sw/rxe/rxe.c:250
->  nldev_newlink+0x30e/0x550 drivers/infiniband/core/nldev.c:1555
->  rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
->  rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
->  rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
->  netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
->  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
->  netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
->  sock_sendmsg_nosec net/socket.c:654 [inline]
->  sock_sendmsg+0xcf/0x120 net/socket.c:674
->  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
->  ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
->  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
->  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x4665f9
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f6eb2be3188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 00000000004665f9
-> RDX: 0000000000000000 RSI: 0000000020000600 RDI: 0000000000000003
-> RBP: 00000000004bfce1 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
-> R13: 00007ffc54e34f4f R14: 00007f6eb2be3300 R15: 0000000000022000
->
-> Fixes: 8700e3e7c485 ("Soft RoCE driver")
-> Reported-by: syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+On Mon, May 10, 2021 at 01:39:04PM +0800, Leo Yan wrote:
+> On Fri, May 07, 2021 at 01:02:35PM +0300, James Clark wrote:
+> > 
+> > 
+> > On 07/05/2021 12:58, James Clark wrote:
+> > > There is an intermittent issue on Trogdor devices that
+> > > results in all Coresight timestamps having a value of zero.
+> > 
+> > I've attached a file here that has the issue. From the dump you 
+> > can see the zero timestamps:
+> > 
+> >         Idx:69; ID:10;  I_TIMESTAMP : Timestamp.; Updated val = 0x0
+> >         Idx:71; ID:10;  I_ATOM_F1 : Atom format 1.; E
+> >         Idx:72; ID:10;  I_ADDR_S_IS0 : Address, Short, IS0.; Addr=0xFFFFFFE723C65824 ~[0x5824]
+> > 
+> > This doesn't have an impact on decoding as they end up being
+> > decoded in file order as in with timeless mode.
+> 
+> Just remind, as Mike has mentioned that if the timestamp is zero, it
+> means the hardware setting for timestamp is not enabled properly.  So
+> for system wide or per CPU mode tracing, it's better to double check
+> what's the reason the timestamp is not enabled properly.
+> 
+> IIUC, this patch breaks the existed rational in the code.  Let's think
+> about there have 4 CPUs, every CPU has its own AUX trace buffer, and
+> when decode the trace data, it will use 4 queues to track the packets
+> and every queue has its timestamp.
+> 
+>   CPU0: cs_etm_queue -> ... -> packet_queue->timestamp
+>   CPU1: cs_etm_queue -> ... -> packet_queue->timestamp
+>   CPU2: cs_etm_queue -> ... -> packet_queue->timestamp
+>   CPU3: cs_etm_queue -> ... -> packet_queue->timestamp
+> 
+> The issue is if all CPUs' timestamp are zero, it's impossible to find
+> a way to synthesize samples in the right time order.
 
-Thanks.
-Reviewed-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+I saw Denis's replying for the hardware issue for timestamp, wander if
+can add a new option "--force-aux-ts-zero" to override the hardware
+timestamp issue.  Without the option "--force-aux-ts-zero", the
+developers still have chance to observe the failure case caused by the
+abnormal timestamps.
 
-Zhu Yanjun
-
-> ---
->  drivers/infiniband/sw/rxe/rxe_qp.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-> index 34ae957a315c..b0f350d674fd 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-> @@ -242,6 +242,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
->         if (err) {
->                 vfree(qp->sq.queue->buf);
->                 kfree(qp->sq.queue);
-> +               qp->sq.queue = NULL;
->                 return err;
->         }
->
-> @@ -295,6 +296,7 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
->                 if (err) {
->                         vfree(qp->rq.queue->buf);
->                         kfree(qp->rq.queue);
-> +                       qp->rq.queue = NULL;
->                         return err;
->                 }
->         }
-> @@ -355,6 +357,11 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
->  err2:
->         rxe_queue_cleanup(qp->sq.queue);
->  err1:
-> +       qp->pd = NULL;
-> +       qp->rcq = NULL;
-> +       qp->scq = NULL;
-> +       qp->srq = NULL;
-> +
->         if (srq)
->                 rxe_drop_ref(srq);
->         rxe_drop_ref(scq);
-> --
-> 2.31.1
->
+Thanks,
+Leo
