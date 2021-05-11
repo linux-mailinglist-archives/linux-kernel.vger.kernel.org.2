@@ -2,139 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E3A37AF25
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8652637AF29
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232228AbhEKTOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 15:14:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231454AbhEKTOO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 15:14:14 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A4AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:13:07 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id l61-20020a0c84430000b02901a9a7e363edso16302792qva.16
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:13:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=p5OF8uCnVHGhsJH/LB13/zRAsll4eW+Rnf3hqCAjaGs=;
-        b=QGCnwNOfvwAHBlH2u/xTMVmWyzEi17mtrBYFHlBxWo/hJvrQ3gT69fp+5BHv7DhTwW
-         oMT15L7Cb+z2UKDXuhYZOfBOb9sDRo+WHINPY/Az8vtSPUemEpnxW5Iymj8rQbQd8Ccd
-         KhBTHIoKB4QVmEdDbq4YgrYJaWl2OZLSD0zy+yNfnmrBBMVZF71F+RDKK6LY/u17qQFX
-         xGy7dXAf5+onoDSAH1Q+v+BY8tGoqM/F1RLWmJBrljss13uGAiVUxb3Fhn4pFpD9zS2c
-         /W4ty0mfwt48QFOap46V50vwZqfFSrfF3H5tzlNdEZGtUGIdWzEbmq/x2ElnXj0yn4L0
-         lZLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=p5OF8uCnVHGhsJH/LB13/zRAsll4eW+Rnf3hqCAjaGs=;
-        b=YZVSn5yvayZyr2sHcfCEQ74mBdlslRJ0MCMjECkFfUIB2de442kRwzuSfjEyIohZpy
-         fXhOU3n84VvDljny6/ejheG0x0rWF0ORfDl/wSQLZEjnoNVFIT7/ZltX7LuwD3fxbEcB
-         36sjapqE9B1W5rVFudNn7Xh66YqGUCkQ9ibUjdG8xX80MAFmPEDiEhKHv6ijI61vlqCQ
-         hfBh2kEeTdK+JDcKJerdGUQlVazgdy0zz4ngY9Hp5GGuHzSW6wICyfafoqw4AHrXj2eJ
-         5xxX4Ld5wTOacyZJk9Pm6lztyU/Vd2sYilfLmBZLK003OqtaGKuCYuC4m9oeww9C6ccA
-         uOWA==
-X-Gm-Message-State: AOAM532brZhpNiYKw/PNTGMX7JYMVRJ5mVWpnR2hFq55tS8y6DR1/8u8
-        M5r4qWkIJw90MLnROikzECXuQ1wWZ61Uf3o=
-X-Google-Smtp-Source: ABdhPJwg7uMX+NWke5KhkxiXSzGh9CILFYm94jMx+Qr+MSyD42OBNjsGV3LXlQqaLV6aPqHqshLXb7ZyOmgItXQ=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:24c0:6742:b823:eafe])
- (user=saravanak job=sendgmr) by 2002:a0c:df08:: with SMTP id
- g8mr31455206qvl.12.1620760386837; Tue, 11 May 2021 12:13:06 -0700 (PDT)
-Date:   Tue, 11 May 2021 12:12:58 -0700
-In-Reply-To: <CAE-0n53AcL807G3WLp7phQUNN6umuwUikiz_5bNfcHdRbThu=Q@mail.gmail.com>
-Message-Id: <20210511191259.1139635-1-saravanak@google.com>
-Mime-Version: 1.0
-References: <CAE-0n53AcL807G3WLp7phQUNN6umuwUikiz_5bNfcHdRbThu=Q@mail.gmail.com>
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-Subject: Re: [PATCH] component: Move host device to end of device lists on binding
-From:   Saravana Kannan <saravanak@google.com>
-To:     swboyd@chromium.org
-Cc:     daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, rmk+kernel@arm.linux.org.uk,
-        robdclark@gmail.com, Saravana Kannan <saravanak@google.com>,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        id S232197AbhEKTOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 15:14:55 -0400
+Received: from mga12.intel.com ([192.55.52.136]:64361 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231454AbhEKTOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 15:14:54 -0400
+IronPort-SDR: l8YZfYsSZvD2XVP3gBgfHMZg1NBgxXRs55GjFDOOdMXtULs5ANJNz8AiFdmVatFgQ+hp9582Bb
+ 32ncXcGLRfNA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179119775"
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
+   d="scan'208";a="179119775"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 12:13:45 -0700
+IronPort-SDR: DmE+R1y/IxualhIKBmCcmjLws8UZvO71Y4XiyENx6K/aOVIc3oTOTLCIjlm9tN8iB0Fs0R7RWD
+ O6O+GUrQJC1w==
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
+   d="scan'208";a="436804966"
+Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.129.50]) ([10.249.129.50])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 12:13:42 -0700
+Subject: Re: Question about device link//Re: Qestion about device link
+To:     Saravana Kannan <saravanak@google.com>,
+        "chenxiang (M)" <chenxiang66@hisilicon.com>
+Cc:     John Garry <john.garry@huawei.com>, linuxarm@huawei.com,
+        linux-scsi@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <3c88cf35-6725-1bfa-9e1e-8e9d69147e3b@hisilicon.com>
+ <2e69efb9-a563-251f-2161-5546324a9587@hisilicon.com>
+ <CAGETcx9FLixotMcyJmCATSoz7aB2VbYSr8o5jyM5HDd9-6LaYQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
+ 173, 80-298 Gdansk
+Message-ID: <11749ea2-777c-e200-9c5a-eab531c7e69a@intel.com>
+Date:   Tue, 11 May 2021 21:13:40 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <CAGETcx9FLixotMcyJmCATSoz7aB2VbYSr8o5jyM5HDd9-6LaYQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Stephen Boyd <swboyd@chromium.org>:
-> Quoting Daniel Vetter (2021-05-11 06:39:36)
-> > On Tue, May 11, 2021 at 12:52 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > >
-> > > On Mon, May 10, 2021 at 9:08 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > >
-> > > [cut]
-> > >
-> > > >
-> > > > >
-> > > > > > I will try it, but then I wonder about things like system wide
-> > > > > > suspend/resume too. The drm encoder chain would need to reimplement the
-> > > > > > logic for system wide suspend/resume so that any PM ops attached to the
-> > > > > > msm device run in the correct order. Right now the bridge PM ops will
-> > > > > > run, the i2c bus PM ops will run, and then the msm PM ops will run.
-> > > > > > After this change, the msm PM ops will run, the bridge PM ops will run,
-> > > > > > and then the i2c bus PM ops will run. It feels like that could be a
-> > > > > > problem if we're suspending the DSI encoder while the bridge is still
-> > > > > > active.
-> > > > >
-> > > > > Yup suspend/resume has the exact same problem as shutdown.
-> > > >
-> > > > I think suspend/resume has the exact opposite problem. At least I think
-> > > > the correct order is to suspend the bridge, then the encoder, i.e. DSI,
-> > > > like is happening today. It looks like drm_atomic_helper_shutdown()
-> > > > operates from the top down when we want bottom up? I admit I have no
-> > > > idea what is supposed to happen here.
-> > >
-> > > Why would the system-wide suspend ordering be different from the
-> > > shutdown ordering?
-> >
-> > At least my point was that both shutdown and suspend/resume have the
-> > same problem, and the righ fix is (I think at least) to add these
-> > hooks to the component.c aggregate ops structure. Hence just adding
-> > new callbacks for shutdown will be an incomplete solution.
-> 
-> To add proper hooks to component.c we'll need to make the aggregate
-> device into a 'struct device' and make a bus for them that essentially
-> adds the aggregate device to the bus once all the components are
-> registered. The bind/unbind can be ported to probe/remove, and then the
-> aggregate driver can get PM ops that run before the component devices
-> run their PM ops.
-> 
-> Let me go try it out and see if I can make it minimally invasive so that
-> the migration path is simple.
+On 5/11/2021 8:23 PM, Saravana Kannan wrote:
+> On Tue, May 11, 2021 at 3:42 AM chenxiang (M) <chenxiang66@hisilicon.com> wrote:
+>> Re-edit the non-aligned flowchart and add CC to Greg-KH and Saravanna.
+>>
+>>
+>> 在 2021/5/11 11:59, chenxiang (M) 写道:
+>>> Hi Rafael and other guys,
+>>>
+>>> I am trying to add a device link between scsi_host->shost_gendev and
+>>> hisi_hba->dev to support runtime PM for hisi_hba driver
+>>>
+>>> (as it supports runtime PM for scsi host in some scenarios such as
+>>> error handler etc, we can avoid to do them again if adding a
+>>>
+>>> device link between scsi_host->shost_gendev and hisi_hba->dev) as
+>>> follows (hisi_sas driver is under directory drivers/scsi/hisi_sas):
+>>>
+>>> device_link_add(&shost->shost_gendev, hisi_hba->dev,
+>>> DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE)
+>>>
+>>> We have a full test on it, and it works well except when rmmod the
+>>> driver, some call trace occurs as follows:
+>>>
+>>> [root@localhost ~]# rmmod hisi_sas_v3_hw
+>>> [  105.377944] BUG: scheduling while atomic: kworker/113:1/811/0x00000201
+>>> [  105.384469] Modules linked in: bluetooth rfkill ib_isert
+>>> iscsi_target_mod ib_ipoib ib_umad iptable_filter vfio_iommu_type1
+>>> vfio_pci vfio_virqfd vfio rpcrdma ib_is                         er
+>>> libiscsi scsi_transport_iscsi crct10dif_ce sbsa_gwdt hns_roce_hw_v2
+>>> hisi_sec2 hisi_hpre hisi_zip hisi_qm uacce spi_hisi_sfc_v3xx
+>>> hisi_trng_v2 rng_core hisi_uncore                         _hha_pmu
+>>> hisi_uncore_ddrc_pmu hisi_uncore_l3c_pmu spi_dw_mmio hisi_uncore_pmu
+>>> hns3 hclge hnae3 hisi_sas_v3_hw(-) hisi_sas_main libsas
+>>> [  105.424841] CPU: 113 PID: 811 Comm: kworker/113:1 Kdump: loaded
+>>> Tainted: G        W         5.12.0-rc1+ #1
+>>> [  105.434454] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS
+>>> 2280-V2 CS V5.B143.01 04/22/2021
+>>> [  105.443287] Workqueue: rcu_gp srcu_invoke_callbacks
+>>> [  105.448154] Call trace:
+>>> [  105.450593]  dump_backtrace+0x0/0x1a4
+>>> [  105.454245]  show_stack+0x24/0x40
+>>> [  105.457548]  dump_stack+0xc8/0x104
+>>> [  105.460939]  __schedule_bug+0x68/0x80
+>>> [  105.464590]  __schedule+0x73c/0x77c
+>>> [  105.465700] BUG: scheduling while atomic: kworker/96:1/791/0x00000201
+>>> [  105.468066]  schedule+0x7c/0x110
+>>> [  105.468068]  schedule_timeout+0x194/0x1d4
+>>> [  105.474490] Modules linked in:
+>>> [  105.477692]  wait_for_completion+0x8c/0x12c
+>>> [  105.477695]  rcu_barrier+0x1e0/0x2fc
+>>> [  105.477697]  scsi_host_dev_release+0x50/0xf0
+>>> [  105.477701]  device_release+0x40/0xa0
+>>> [  105.477704]  kobject_put+0xac/0x100
+>>> [  105.477707]  __device_link_free_srcu+0x50/0x74
+>>> [  105.477709]  srcu_invoke_callbacks+0x108/0x1a4
+>>> [  105.484743]  process_one_work+0x1dc/0x48c
+>>> [  105.492468]  worker_thread+0x7c/0x464
+>>> [  105.492471]  kthread+0x168/0x16c
+>>> [  105.492473]  ret_from_fork+0x10/0x18
+>>> ...
+>>>
+>>> After analyse the process, we find that it will
+>>> device_del(&shost->gendev) in function scsi_remove_host() and then
+>>>
+>>> put_device(&shost->shost_gendev) in function scsi_host_put() when
+>>> removing the driver, if there is a link between shost and hisi_hba->dev,
+>>>
+>>> it will try to delete the link in device_del(), and also will
+>>> call_srcu(__device_link_free_srcu) to put_device() link->consumer and
+>>> supplier.
+>>>
+>>> But if put device() for shost_gendev in device_link_free() is later
+>>> than in scsi_host_put(), it will call scsi_host_dev_release() in
+>>>
+>>> srcu_invoke_callbacks() while it is atomic and there are scheduling in
+>>> scsi_host_dev_release(),
+>>>
+>>> so it reports the BUG "scheduling while atomic:...".
+>>>
+>>> thread 1                                                   thread2
+>>> hisi_sas_v3_remove
+>>>      ...
+>>>      sas_remove_host()
+>>>          ...
+>>>          scsi_remove_host()
+>>>              ...
+>>>              device_del(&shost->shost_gendev)
+>>>                  ...
+>>>                  device_link_purge()
+>>>                      __device_link_del()
+>>>                          device_unregister(&link->link_dev)
+>>>                              devlink_dev_release
+>>> call_srcu(__device_link_free_srcu)    ----------->
+>>> srcu_invoke_callbacks  (atomic)
+>>>          __device_link_free_srcu
+>>>      ...
+>>>      scsi_host_put()
+>>>          put_device(&shost->shost_gendev) (ref = 1)
+>>>                  device_link_free()
+>>>                                put_device(link->consumer)
+>>> //shost->gendev ref = 0
+>>>                                            ...
+>>>                                            scsi_host_dev_release
+>>>                                                        ...
+>>> rcu_barrier
+>>> kthread_stop()
+>> Re-edit the non-aligned flowchart
+>>       thread 1 thread 2
+>>       hisi_sas_v3_remove()
+>>               ...
+>>               sas_remove_host()
+>>                       ...
+>>                       device_del(&shost->shost_gendev)
+>>                               ...
+>>                               device_link_purge()
+>>                                       __device_link_del()
+>> device_unregister(&link->link_dev)
+>> devlink_dev_release
+>> call_srcu(__device_link_free_srcu)    ----------->
+>> srcu_invoke_callbacks  (atomic)
+>>               __device_link_free_srcu()
+>>               ...
+>>               scsi_host_put()
+>>                       put_device(&shost->shost_gendev) (ref = 1)
+>>                           device_link_free()
+>>                                       put_device(link->consumer)
+>> //shost->gendev ref = 0
+>>                                                   ...
+>> scsi_host_dev_release()
+>>                                                               ...
+>> rcu_barrier()
+>> kthread_stop()
+>>
+>>>
+>>> We can check kref of shost->shost_gendev to make sure scsi_host_put()
+>>> to release scsi host device in LLDD driver to avoid the issue,
+>>>
+>>> but it seems be a common issue:  function __device_link_free_srcu
+>>> calls put_device() for consumer and supplier,
+>>>
+>>> but if it's ref =0 at that time and there are scheduling or sleep in
+>>> dev_release, it may have the issue.
+>>>
+>>> Do you have any idea about the issue?
+> Another report for the same issue.
+> https://lore.kernel.org/lkml/CAGETcx80xSZ8d4JbZqiSz4L0VNtL+HCnFCS2u3F9aNC0QQoQjg@mail.gmail.com/
+>
+> I don't have enough context yet about the need for SRCU (I haven't
+> read up all the runtime PM code), but this is a real issue that needs
+> to be solved.
+>
+> Dirty/terrible hack is to kick off another work to do the
+> put_device().
 
-Yes, please! This is the right solution. We should put all these aggregate
-devices in some "aggregate" bus (needs a better name) and NOT a drm bus because
-AFAICT components are not specific to the drm framework.
+I wouldn't call it dirty or terrible, but it may just be the thing that 
+needs to be done here.
 
-You can also create device links (without the STATELESS flag, and a bunch of
-other flags) from the aggregate device to all the component devices and this
-will automatically fix all the ordering issues too.
 
-I'd be happy to help with this if you want and happy to review this too. Please
-Cc me when you send out this series.
+> But is there any SRCU option that'll try to do the
+> release in a non-atomic context?
 
--Saravana
+No, the callbacks are run from a softirq if I'm not mistaken.
 
-> 
-> >
-> > I don't feel like changing the global device order is the right
-> > approach, since essentially that's what component was meant to fix.
-> > Except it's incomplete since it only provides a solution for
-> > bind/unbind and not for shutdown or suspend/resume as other global
-> > state changes. I think some drivers "fixed" this by putting stuff like
-> > drm_atomic_helper_shutdown/suspend/resume into early/late hooks, to
-> > make sure that everything is ready with that trick. But that doesn't
-> > compose very well :-/
-> 
-> Yeah it looks like msm is using prepare/complete for this so that it can
-> jump in early and suspend the display pipeline before the components
-> suspend themselves. The shutdown path only has one callback so we can't
-> play the same games.
+Thanks!
+
+
