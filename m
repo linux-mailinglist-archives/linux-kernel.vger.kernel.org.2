@@ -2,120 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E177037A051
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C1A37A054
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhEKHID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:08:03 -0400
-Received: from mga02.intel.com ([134.134.136.20]:46811 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230124AbhEKHIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:08:01 -0400
-IronPort-SDR: bUV9DEyqdeaDPe/I80/8vPDjCiXSr5ri8ADzlvUKetNzzCvoNmKafFmqrhltGiB7l0IhOXnwqo
- UjuOdzo3fXfQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="186509564"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="186509564"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 00:06:52 -0700
-IronPort-SDR: l/DNnVZ1UyLOFlRAG2CLSSQJAU7n5Sp1GuZbQtCaWkzunBTtWncPMaLXi7Q34L0gue6QArcp8r
- VkJLFzp3FXcw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="536849445"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 11 May 2021 00:06:49 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 11 May 2021 10:06:49 +0300
-Date:   Tue, 11 May 2021 10:06:49 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, badhri@google.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] usb: typec: tcpm: Fix wrong handling for
- Not_Supported in VDM AMS
-Message-ID: <YJotCZU9TYg+EVrG@kuha.fi.intel.com>
-References: <20210507062300.1945009-1-kyletso@google.com>
- <20210507062300.1945009-3-kyletso@google.com>
+        id S230422AbhEKHIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:08:37 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:2624 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230129AbhEKHIe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 03:08:34 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FfTT66dx3zklfW;
+        Tue, 11 May 2021 15:05:14 +0800 (CST)
+Received: from [127.0.0.1] (10.40.188.87) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Tue, 11 May 2021
+ 15:07:16 +0800
+Subject: Re: [PATCH -next] crypto: hisilicon -: switch to memdup_user_nul()
+To:     Zou Wei <zou_wei@huawei.com>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>
+References: <1620715031-107265-1-git-send-email-zou_wei@huawei.com>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   Zhou Wang <wangzhou1@hisilicon.com>
+Message-ID: <c3bfff60-5e78-c0b0-797b-499c70da0ff2@hisilicon.com>
+Date:   Tue, 11 May 2021 15:07:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210507062300.1945009-3-kyletso@google.com>
+In-Reply-To: <1620715031-107265-1-git-send-email-zou_wei@huawei.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.188.87]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 02:23:00PM +0800, Kyle Tso wrote:
-> Not_Supported Message is acceptable in VDM AMS. Redirect the VDM state
-> machine to VDM_STATE_DONE when receiving Not_Supported and finish the
-> VDM AMS.
+On 2021/5/11 14:37, Zou Wei wrote:
+> Use memdup_user_nul() helper instead of open-coding to
+> simplify the code.
 > 
-> Also, after the loop in vdm_state_machine_work, add more conditions of
-> VDM states to clear the vdm_sm_running flag because those are all
-> stopping states when leaving the loop.
-> 
-> In addition, finish the VDM AMS if the port partner responds BUSY.
-> 
-> Fixes: 8dea75e11380 ("usb: typec: tcpm: Protocol Error handling")
-> Fixes: 8d3a0578ad1a ("usb: typec: tcpm: Respond Wait if VDM state machine is running")
-> Signed-off-by: Kyle Tso <kyletso@google.com>
-
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 > ---
-> Changes since v2:
-> - no changes
+>  drivers/crypto/hisilicon/qm.c | 11 ++---------
+>  1 file changed, 2 insertions(+), 9 deletions(-)
 > 
->  drivers/usb/typec/tcpm/tcpm.c | 14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 07a449f0e8fa..bf97db232f09 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -1897,7 +1897,6 @@ static void vdm_run_state_machine(struct tcpm_port *port)
+> diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+> index ce439a0..83a5d30 100644
+> --- a/drivers/crypto/hisilicon/qm.c
+> +++ b/drivers/crypto/hisilicon/qm.c
+> @@ -1570,17 +1570,10 @@ static ssize_t qm_cmd_write(struct file *filp, const char __user *buffer,
+>  	if (count > QM_DBG_WRITE_LEN)
+>  		return -ENOSPC;
 >  
->  			if (res < 0) {
->  				port->vdm_state = VDM_STATE_ERR_BUSY;
-> -				port->vdm_sm_running = false;
->  				return;
->  			}
->  		}
-> @@ -1913,6 +1912,7 @@ static void vdm_run_state_machine(struct tcpm_port *port)
->  		port->vdo_data[0] = port->vdo_retry;
->  		port->vdo_count = 1;
->  		port->vdm_state = VDM_STATE_READY;
-> +		tcpm_ams_finish(port);
->  		break;
->  	case VDM_STATE_BUSY:
->  		port->vdm_state = VDM_STATE_ERR_TMOUT;
-> @@ -1978,7 +1978,7 @@ static void vdm_state_machine_work(struct kthread_work *work)
->  		 port->vdm_state != VDM_STATE_BUSY &&
->  		 port->vdm_state != VDM_STATE_SEND_MESSAGE);
+> -	cmd_buf = kzalloc(count + 1, GFP_KERNEL);
+> -	if (!cmd_buf)
+> +	cmd_buf = memdup_user_nul(buffer, count);
+> +	if (IS_ERR(cmd_buf))
+>  		return -ENOMEM;
 >  
-> -	if (port->vdm_state == VDM_STATE_ERR_TMOUT)
-> +	if (port->vdm_state < VDM_STATE_READY)
->  		port->vdm_sm_running = false;
->  
->  	mutex_unlock(&port->lock);
-> @@ -2569,6 +2569,16 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  			port->sink_cap_done = true;
->  			tcpm_set_state(port, ready_state(port), 0);
->  			break;
-> +		case SRC_READY:
-> +		case SNK_READY:
-> +			if (port->vdm_state > VDM_STATE_READY) {
-> +				port->vdm_state = VDM_STATE_DONE;
-> +				if (tcpm_vdm_ams(port))
-> +					tcpm_ams_finish(port);
-> +				mod_vdm_delayed_work(port, 0);
-> +				break;
-> +			}
-> +			fallthrough;
->  		default:
->  			tcpm_pd_handle_state(port,
->  					     port->pwr_role == TYPEC_SOURCE ?
-> -- 
-> 2.31.1.527.g47e6f16901-goog
+> -	if (copy_from_user(cmd_buf, buffer, count)) {
+> -		kfree(cmd_buf);
+> -		return -EFAULT;
+> -	}
+> -
+> -	cmd_buf[count] = '\0';
+> -
+>  	cmd_buf_tmp = strchr(cmd_buf, '\n');
+>  	if (cmd_buf_tmp) {
+>  		*cmd_buf_tmp = '\0';
+>
 
--- 
-heikki
+It is fine to me, thanks!
+
+BTW, normally we use crypto: hisilicon - switch to memdup_user_nul() as the subject line,
+just like other patches :)
+
