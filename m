@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2883537A820
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA88937A823
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbhEKNun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 09:50:43 -0400
-Received: from mail-il1-f174.google.com ([209.85.166.174]:41960 "EHLO
-        mail-il1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbhEKNub (ORCPT
+        id S231591AbhEKNwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 09:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231472AbhEKNwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 09:50:31 -0400
-Received: by mail-il1-f174.google.com with SMTP id v13so17198967ilj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 06:49:24 -0700 (PDT)
+        Tue, 11 May 2021 09:52:16 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48093C061574;
+        Tue, 11 May 2021 06:51:09 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id p4so16168903pfo.3;
+        Tue, 11 May 2021 06:51:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LGbrTnG017iKJQPX5tTGAJAGa5rEnsm9gxB0y9eldqM=;
+        b=GKK0tRzTrRY+0cxV01p3/Y6xFH5FqJwCY/kmncFOTcxvCj9Q3vch08BoLxPCiEHFwh
+         f6Wm+3kP2xwVGZgDzhi4JuGEKU+CSJ4HUDzr+HG0LJAqHaIwzyodH+/+UKIt+SYumYzf
+         ID8hryk2MLTTj4o7O9zYaLjuB2HlspUeo148D9SvyGIOvzOHJHgnQGChwBUGt0/56+iH
+         blsLXsgHlUpbzv6YFcN6qzyAZS3Qbuag0cyljT68pkRXSm9BBj5y6rR3Bha75eL2ItgK
+         8rRUPu4evkGxVeCw56x+sHiv2OIBrUs1tMm1VZ9sZPp4K8vuMM6VqsFW/FIiTgDnLOK6
+         UkvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1d72fTnC6D6sy954r6wgqg5PV1w/QmBoE/c6bSmdBG4=;
-        b=KSaTjnRYSILKCOQXhZWCtdnaGl5UetxuiaAqctOGFuZ0KmtnQeUgI9Qbd2Tzy9vYzc
-         fyZ6HGtpEolenItkKFvQO/RE2U5tenCiBtof46W5Y6nDtMKWbhd7VJqyUWuNje4ESAFe
-         g9WtH51Ry52c5TcscPnRjC7HnfXMB6P+9gwRfANlXlCpLCTGwXBzHXb1WRrtTXUEw2QH
-         Eul/3M7aD52YZiYSpa3nuix2gh+zH70irxrXzea1E3qprhDRLOws12VYBrxRDitgwGk7
-         gy/3fqzKXX2I8m1agqsXy8DS1EPFwM8/+PweG0Lmp6p8OWcdX6MbEX+Bv4bYM0pHPqu5
-         wUrg==
-X-Gm-Message-State: AOAM5303RFtu7jBGMY7KO+GFljFJmumDEq9HqkbHv+fGoQQtDRc4BeAN
-        Hd//V/OgKIW+f8a66BeBueg25V39HD8=
-X-Google-Smtp-Source: ABdhPJz8x0ql92qKWogv73BZICmsXMr4+uGHIdkPXbVfMDwNYREAkokhftwG/6bjc5mKEdUOEKSvSg==
-X-Received: by 2002:a92:c544:: with SMTP id a4mr2022604ilj.207.1620740964636;
-        Tue, 11 May 2021 06:49:24 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id p5sm7636849iod.7.2021.05.11.06.49.24
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LGbrTnG017iKJQPX5tTGAJAGa5rEnsm9gxB0y9eldqM=;
+        b=qUCTXC2dGWSo+E11cTdnglu5x7UNIY+zW439/uBxD2vaqUtMiD/6BzLQz+0p9xH4ZK
+         1CUz+Q3eAIAzVqjD6COlCBqAaJQ8ElDDmEJIGsYkoEu5XFgzF08KTVO5FlLbnnMjd8cS
+         HBXSadumGPWoFUSWlHNbE49UufzbB5fqj5rjoPs4hLu62DJIkjOOxHfu/UJ6GGjPu4mu
+         GTxFFpVKYYLbiNsgcmcKW79/d6mmMnWx+odmch//MzSxZHOq7vdI8R5MSJz2XetN+1/b
+         O7EHMreJuiep37eOi2BbP8PRdQ3KfwtH9uNQl8QqZfDLm2RiYYjeH4quyzqROt9xV0dt
+         CVAQ==
+X-Gm-Message-State: AOAM530vvrmzmQQXEOBhzV9+uF3J0ShY9GWtPDomNhfmwrAHmqfbvu5n
+        xg9LPZE4LywbyrSMuRFMoxROVjBSqaF4Za5HaB10Ag==
+X-Google-Smtp-Source: ABdhPJxVtfjS4c7o+1/HaB7uOPcnPB1skyETDuUD7JjscREPsT9p/mlclzeYpixqjxMEzSD5Jzu9TA==
+X-Received: by 2002:a62:92d7:0:b029:2c7:faf1:b1bd with SMTP id o206-20020a6292d70000b02902c7faf1b1bdmr5150327pfd.41.1620741068797;
+        Tue, 11 May 2021 06:51:08 -0700 (PDT)
+Received: from localhost.localdomain ([111.223.96.126])
+        by smtp.gmail.com with ESMTPSA id a7sm7035607pfg.76.2021.05.11.06.51.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 06:49:24 -0700 (PDT)
-Date:   Tue, 11 May 2021 13:49:23 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     tj@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] percpu_ref: Don't opencode percpu_ref_is_dying
-Message-ID: <YJqLY1FsMSf1fDq3@google.com>
-References: <20210511131633.185463-1-nborisov@suse.com>
+        Tue, 11 May 2021 06:51:08 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org, corbet@lwn.net
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] Remove link to nonexistent rocket driver docs
+Date:   Tue, 11 May 2021 09:49:37 -0400
+Message-Id: <20210511134937.2442291-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511131633.185463-1-nborisov@suse.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Fixes: 3b00b6af7a5b ("tty: rocket, remove the driver")
+The rocket driver and documentation were removed in this commit, but
+the corresponding entry in index.rst was not removed.
 
-On Tue, May 11, 2021 at 04:16:33PM +0300, Nikolay Borisov wrote:
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
->  lib/percpu-refcount.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/lib/percpu-refcount.c b/lib/percpu-refcount.c
-> index a1071cdefb5a..af9302141bcf 100644
-> --- a/lib/percpu-refcount.c
-> +++ b/lib/percpu-refcount.c
-> @@ -275,7 +275,7 @@ static void __percpu_ref_switch_mode(struct percpu_ref *ref,
->  	wait_event_lock_irq(percpu_ref_switch_waitq, !data->confirm_switch,
->  			    percpu_ref_switch_lock);
->  
-> -	if (data->force_atomic || (ref->percpu_count_ptr & __PERCPU_REF_DEAD))
-> +	if (data->force_atomic || percpu_ref_is_dying(ref))
->  		__percpu_ref_switch_to_atomic(ref, confirm_switch);
->  	else
->  		__percpu_ref_switch_to_percpu(ref);
-> @@ -385,7 +385,7 @@ void percpu_ref_kill_and_confirm(struct percpu_ref *ref,
->  
->  	spin_lock_irqsave(&percpu_ref_switch_lock, flags);
->  
-> -	WARN_ONCE(ref->percpu_count_ptr & __PERCPU_REF_DEAD,
-> +	WARN_ONCE(percpu_ref_is_dying(ref),
->  		  "%s called more than once on %ps!", __func__,
->  		  ref->data->release);
->  
-> @@ -465,7 +465,7 @@ void percpu_ref_resurrect(struct percpu_ref *ref)
->  
->  	spin_lock_irqsave(&percpu_ref_switch_lock, flags);
->  
-> -	WARN_ON_ONCE(!(ref->percpu_count_ptr & __PERCPU_REF_DEAD));
-> +	WARN_ON_ONCE(!percpu_ref_is_dying(ref));
->  	WARN_ON_ONCE(__ref_is_percpu(ref, &percpu_count));
->  
->  	ref->percpu_count_ptr &= ~__PERCPU_REF_DEAD;
-> -- 
-> 2.25.1
-> 
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+---
+ Documentation/driver-api/serial/index.rst | 1 -
+ 1 file changed, 1 deletion(-)
 
-If no one has any objections to me officially taking percpu_ref, I'll
-pick this up.
+diff --git a/Documentation/driver-api/serial/index.rst b/Documentation/driver-api/serial/index.rst
+index 21351b8c95a4..8f7d7af3b90b 100644
+--- a/Documentation/driver-api/serial/index.rst
++++ b/Documentation/driver-api/serial/index.rst
+@@ -19,7 +19,6 @@ Serial drivers
+ 
+     moxa-smartio
+     n_gsm
+-    rocket
+     serial-iso7816
+     serial-rs485
+ 
+-- 
+2.25.1
 
-Thanks,
-Dennis
