@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B729537B2BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC7837B2C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhEKXl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:41:56 -0400
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:52466 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229848AbhEKXlz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:41:55 -0400
-Received: from dread.disaster.area (pa49-179-143-157.pa.nsw.optusnet.com.au [49.179.143.157])
-        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id ADB8A1082A9;
-        Wed, 12 May 2021 09:40:43 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lgbzV-00EYIv-Js; Wed, 12 May 2021 09:40:41 +1000
-Date:   Wed, 12 May 2021 09:40:41 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     willy@infradead.org, akpm@linux-foundation.org, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com, shakeelb@google.com,
-        guro@fb.com, shy828301@gmail.com, alexs@kernel.org,
-        richard.weiyang@gmail.com, trond.myklebust@hammerspace.com,
-        anna.schumaker@netapp.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org, zhengqi.arch@bytedance.com,
-        duanxiongchun@bytedance.com, fam.zheng@bytedance.com
-Subject: Re: [PATCH 10/17] fs: introduce alloc_inode_sb() to allocate
- filesystems specific inode
-Message-ID: <20210511234041.GP1872259@dread.disaster.area>
-References: <20210511104647.604-1-songmuchun@bytedance.com>
- <20210511104647.604-11-songmuchun@bytedance.com>
+        id S229952AbhEKXrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:47:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhEKXrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 19:47:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FE92616ED;
+        Tue, 11 May 2021 23:46:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620776761;
+        bh=0dmp162/xsNE25srlIIbfhkW/kO41/gT68NUM2wciFs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nyTRZBucYOeqw2vkr6jt8K1K9YKPRokln6A0hKzWn6zXxu1PMhghuGw4iZRuGMbq8
+         F6hRFqUa/+D/pWZMg335CKhbZGN0mGL0TY7aRceEgJkCr6LQSj6VIF4kTzLRviRWhY
+         wX/x7vfChk+TN1rrR2N1NWQSxd4/iRKZclR99qHn9aFzOnO+BIkYvmO2ZFDT8We0hl
+         ZsOcHF0blzsikb++K6f3cWTuw1hn9SZ3izJlueCYIsTujlnX0ymBGI8eGST6DOCUpL
+         ZANYL/7tBJTDhUjew7u4m991kYau7sWkZhfak1Rc19lATHSsFhvSivRmQQleIFPtW3
+         7f2CqLAO8SJ5Q==
+Date:   Wed, 12 May 2021 02:45:59 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Ben Boeckel <me@benboeckel.net>
+Cc:     keyrings@vger.kernel.org, Ben Boeckel <mathstuf@gmail.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v2 1/1] trusted-keys: match tpm_get_ops on all return
+ paths
+Message-ID: <YJsXN47MTF/TpsKX@kernel.org>
+References: <20210429192156.770145-1-list.lkml.keyrings@me.benboeckel.net>
+ <20210429192156.770145-2-list.lkml.keyrings@me.benboeckel.net>
+ <YJmf4Q0l+MTFEaEo@erythro.dev.benboeckel.internal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210511104647.604-11-songmuchun@bytedance.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0
-        a=I9rzhn+0hBG9LkCzAun3+g==:117 a=I9rzhn+0hBG9LkCzAun3+g==:17
-        a=kj9zAlcOel0A:10 a=5FLXtPjwQuUA:10 a=7-415B0cAAAA:8
-        a=eDM3njHHF8h-SXrJDeMA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <YJmf4Q0l+MTFEaEo@erythro.dev.benboeckel.internal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 06:46:40PM +0800, Muchun Song wrote:
-> The allocated inode cache will be added into its memcg lru list later,
-> but we do not allocate list_lru in the later patch. So the caller should
-> call kmem_cache_alloc_lru() to allocate inode and related list_lru.
-> Introduce alloc_inode_sb() to do that and convert all inodes allocation
-> to it.
+On Mon, May 10, 2021 at 05:04:33PM -0400, Ben Boeckel wrote:
+> On Thu, Apr 29, 2021 at 15:21:56 -0400, Ben Boeckel wrote:
+> > From: Ben Boeckel <mathstuf@gmail.com>
+> > 
+> > The `tpm_get_ops` call at the beginning of the function is not paired
+> > with a `tpm_put_ops` on this return path.
+> > 
+> > Fixes: f2219745250f ("security: keys: trusted: use ASN.1 TPM2 key format for the blobs")
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > Signed-off-by: Ben Boeckel <mathstuf@gmail.com>
+> > ---
+> >  security/keys/trusted-keys/trusted_tpm2.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
+> > index 617fabd4d913..0165da386289 100644
+> > --- a/security/keys/trusted-keys/trusted_tpm2.c
+> > +++ b/security/keys/trusted-keys/trusted_tpm2.c
+> > @@ -336,9 +336,9 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
+> >  			rc = -EPERM;
+> >  	}
+> >  	if (blob_len < 0)
+> > -		return blob_len;
+> > -
+> > -	payload->blob_len = blob_len;
+> > +		rc = blob_len;
+> > +	else
+> > +		payload->blob_len = blob_len;
+> >  
+> >  	tpm_put_ops(chip);
+> >  	return rc;
+> 
+> Ping? Is this going to make 5.13? This fixes an issue that is in
+> 5.13-rc1.
+> 
+> --Ben
 
-FWIW, this probably needs a documentation update to mention that
-inodes should always be allocated through alloc_inode_sb() rather
-than kmem_cache_alloc(). It's a "** mandatory **" requirement as per
-Documentation/filesytems/porting.rst.
+I applied it, probably will do additional PR for v5.13 in order to fix
+some urgent tpm_tis issues, so I'll include this to the same pull
+request. Thanks for fixing this!
 
-Also,
-
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index c3c88fdb9b2a..d8d5d4eb68d6 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -41,6 +41,7 @@
->  #include <linux/stddef.h>
->  #include <linux/mount.h>
->  #include <linux/cred.h>
-> +#include <linux/slab.h>
->  
->  #include <asm/byteorder.h>
->  #include <uapi/linux/fs.h>
-> @@ -3200,6 +3201,12 @@ extern void free_inode_nonrcu(struct inode *inode);
->  extern int should_remove_suid(struct dentry *);
->  extern int file_remove_privs(struct file *);
->  
-> +static inline void *
-> +alloc_inode_sb(struct super_block *sb, struct kmem_cache *cache, gfp_t gfp)
-> +{
-> +	return kmem_cache_alloc_lru(cache, &sb->s_inode_lru, gfp);
-> +}
-> +
-
-This really needs a kerneldoc comment explaining that it must be
-used for allocating inodes to set up the inode reclaim context
-correctly....
-
-/me wonders if we should add a BUG_ON() check in inode_init_always()
-to capture filesystems that don't call through
-kmem_cache_alloc_lru() for inodes?
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+/Jarkko
