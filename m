@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA8537AA16
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309EC37AA21
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbhEKPCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 11:02:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35096 "EHLO mail.kernel.org"
+        id S231948AbhEKPCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 11:02:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231684AbhEKPCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231561AbhEKPCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 11:02:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7471861363;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76936610FA;
         Tue, 11 May 2021 15:01:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620745297;
-        bh=ql3fH9YF+Tp5Cdc+ks9xGMNWAcomJ3IyUAsw5MhHPbI=;
+        bh=MtFihL4ObMWeoa+SfB0LUN/U9nJZVcN+hbmIOjgAsyY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hHtpyBNisnriqDe3uxmTK4KqCU2B5H7tfIvgqTFnV5/kA9l3mKN0afwMpfL2kI/rU
-         nGkSaAC+U0T6sEfgOrtaQ2BeP6+KaBG4kE3B72Nf4UsnFsrgTSFVwOGQWfm7EB7ovM
-         OQj0Zr+dOQe+OUtonQA2G4pDnllcJfXJks2u5IpwtwQ7lcBOMw1v9PHjRcgmhIdWKz
-         GThl4CTzJ1+DPXPxTmjyAJtQ3N7vkNJ30QoqAI1TXSh7xpUyueu/CWbyz/d/P25VRU
-         DnRT6FaHWGBd+/Z7iPOoV7IJSi34QYez8Amfg7fYWqjaE0pgRrkoXXgtSS6gdcj0+S
-         k15XVMB3dIlsg==
+        b=VFGbiWjeMDCf83D23jg4vr/+SOo65nJZhBa6wH11JIdNPN5G6q/ZDpz0TJIgpEuJr
+         CBdp0GfwWHtQvJvtNynAZOiHyQw34qJQcwdxz5IHhVxFt2DX+Gy3Ek39g+oOlLFVO/
+         IM9IQ5fbStYqKcren/UHsWYna+sWCRYwCrApQycdR0/9WEmyWnkrBZkqyg9zgeZGa1
+         JLe4vIx5rEpmrECxUYMPfuaKtxOaDeuP6b/HCQHpOLg7yMyPCKM3CfRcjGO3XQL57T
+         A7ag8uWDEUo58+vEioY2lEwUi/LFVIeSKFpGodtB8ELYG9CLafTKqnZ4y3wQIwuGw6
+         grL/X9VyH13Jg==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lgTt7-000k18-T5; Tue, 11 May 2021 17:01:33 +0200
+        id 1lgTt7-000k1E-UG; Tue, 11 May 2021 17:01:33 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Oded Gabbay <oded.gabbay@gmail.com>, Tom Rix <trix@redhat.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/5] docs: ABI: remove some spurious characters
-Date:   Tue, 11 May 2021 17:01:30 +0200
-Message-Id: <6d774ad6cb3795a177309503a39f8f1b5e309d64.1620744606.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 4/5] docs: hwmon: tmp103.rst: fix bad usage of UTF-8 chars
+Date:   Tue, 11 May 2021 17:01:31 +0200
+Message-Id: <73b3c7c1eef5c12ddc941624d23689313bd56529.1620744606.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620744606.git.mchehab+huawei@kernel.org>
 References: <cover.1620744606.git.mchehab+huawei@kernel.org>
@@ -48,34 +47,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The KernelVersion tag contains some spurious UTF-8 characters
-for no reason. Drop them.
+While UTF-8 characters can be used at the Linux documentation,
+the best is to use them only when ASCII doesn't offer a good replacement.
+So, replace the occurences of the following UTF-8 characters:
+
+	- U+2013 ('–'): EN DASH
+
+In this specific case, EN DASH was used instead of a minus
+sign. So, replace it by a single hyphen.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/ABI/testing/sysfs-module | 4 ++--
+ Documentation/hwmon/tmp103.rst | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-module b/Documentation/ABI/testing/sysfs-module
-index a485434d2a0f..88bddf192ceb 100644
---- a/Documentation/ABI/testing/sysfs-module
-+++ b/Documentation/ABI/testing/sysfs-module
-@@ -37,13 +37,13 @@ Description:	Maximum time allowed for periodic transfers per microframe (μs)
+diff --git a/Documentation/hwmon/tmp103.rst b/Documentation/hwmon/tmp103.rst
+index e195a7d14309..b3ef81475cf8 100644
+--- a/Documentation/hwmon/tmp103.rst
++++ b/Documentation/hwmon/tmp103.rst
+@@ -21,10 +21,10 @@ Description
+ The TMP103 is a digital output temperature sensor in a four-ball
+ wafer chip-scale package (WCSP). The TMP103 is capable of reading
+ temperatures to a resolution of 1°C. The TMP103 is specified for
+-operation over a temperature range of –40°C to +125°C.
++operation over a temperature range of -40°C to +125°C.
  
- What:		/sys/module/*/{coresize,initsize}
- Date:		Jan 2012
--KernelVersion:»·3.3
-+KernelVersion:	3.3
- Contact:	Kay Sievers <kay.sievers@vrfy.org>
- Description:	Module size in bytes.
+ Resolution: 8 Bits
+-Accuracy: ±1°C Typ (–10°C to +100°C)
++Accuracy: ±1°C Typ (-10°C to +100°C)
  
- What:		/sys/module/*/taint
- Date:		Jan 2012
--KernelVersion:»·3.3
-+KernelVersion:	3.3
- Contact:	Kay Sievers <kay.sievers@vrfy.org>
- Description:	Module taint flags:
- 			==  =====================
+ The driver provides the common sysfs-interface for temperatures (see
+ Documentation/hwmon/sysfs-interface.rst under Temperatures).
 -- 
 2.30.2
 
