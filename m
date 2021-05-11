@@ -2,167 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F347137AE31
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A0137AE2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbhEKSRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:17:32 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:60422 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231793AbhEKSRb (ORCPT
+        id S231789AbhEKSRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:17:20 -0400
+Received: from mail-pf1-f178.google.com ([209.85.210.178]:33586 "EHLO
+        mail-pf1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231329AbhEKSRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:17:31 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14BIEMO7057702;
-        Tue, 11 May 2021 18:16:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=hgctH0oSitkyxZDTbkS3bn45JVyf//Hvn92WkrPimiU=;
- b=UUgI++rPmxv6cZ480QfwrUN5SzWvs2Fq8Oa8O+oXeHtDQ1WWqYeecrj6Lz6G4XJJCvDu
- +f/0uLGufR4Jjh/iEqZwggeqvVI0aeF7oAOZvRTSdvtbaCoP/WPB9laQLFPArEypikG+
- uekjNXrXRklZyfmDnvasg7tD0YNx/o7JamdW7Fgn76UIfcQ9f2LBre29sV7v7uqkIKPt
- 2E+dtrzumH817c0PZSEyhO6M+yYoGwn3VSZ9E3Y3ySZG0m5MewCSKciGj77uei0wLYC+
- sVoCfKiGT8sPcII8+yO6adWLrSI0feqHNV095/edWDbBfWT5y4iwQdaA2Uvm5+MNXJUr Bw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 38djkmfnk1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 May 2021 18:16:20 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14BIG17J067879;
-        Tue, 11 May 2021 18:16:19 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 38fh3x4ejw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 May 2021 18:16:19 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14BIGI1W069108;
-        Tue, 11 May 2021 18:16:18 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 38fh3x4eje-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 May 2021 18:16:18 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14BIGE9X020661;
-        Tue, 11 May 2021 18:16:14 GMT
-Received: from gms-ol8-2.osdevelopmeniad.oraclevcn.com (/100.100.234.63)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 11 May 2021 11:16:14 -0700
-From:   Gulam Mohamed <gulam.mohamed@oracle.com>
-To:     viro@zeniv.linux.org.uk, axboe@kernel.dk,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hch@lst.de,
-        martin.petersen@oracle.com
-Cc:     junxiao.bi@oracle.com, gulam.mohamed@oracle.com
-Subject: [PATCH V1 1/1] Fix race between iscsi logout and systemd-udevd
-Date:   Tue, 11 May 2021 18:15:58 +0000
-Message-Id: <20210511181558.380764-1-gulam.mohamed@oracle.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 11 May 2021 14:17:20 -0400
+Received: by mail-pf1-f178.google.com with SMTP id h16so3915726pfk.0
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:16:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=b4PMiCif1x3iYDBqI6f5owLmB4HyczaNc9Vt8ePTfoA=;
+        b=PXtWKc2EKBOA1msX/QKI+2i7P/opdLxm0rxDYvXQi4MnwJdJ0pblMao0T+B75LyZzI
+         AKnROlRhExVI+GPeRpH1cLIHfGcbE8RfnfxR4L5Pa9u5WOFKGmGgAzkkyA94vST3HnN8
+         DYKW6UOTfC5NM4ptwrOq285BYOD6fIaYAcNdAaLDwbDmK2TyTYOdDvXGbLQdxx3t6r7U
+         GY2K1QxsVWXV3Rc1TegC3YRRODJqF9wHWLwcvBJWQmpVMqoh4iMFfxfdYLIa7omT6rqu
+         AsWrGpF8axRcJH7WzLuOY+wVlRMdN+miFjgoN+CcO2x7wSfbeVWfdAziAG5UVIs6UXdu
+         Q8Nw==
+X-Gm-Message-State: AOAM532b9eCG5I9fiwsSeYxlQECfNxkxDVF4uGNPgDtiHKmUYKvUl1hA
+        HFoyAMBU3gYOuZ1I1zHNbFs=
+X-Google-Smtp-Source: ABdhPJy/S0xkZUvf9TSn7lSiIEUJMHDcs7G0YskbAUaxpQZW5QBFsAoax93TgUAnoX0w0dLOnSHVnA==
+X-Received: by 2002:a63:5c4c:: with SMTP id n12mr11568471pgm.288.1620756973013;
+        Tue, 11 May 2021 11:16:13 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:57ce:f5c2:eedd:e35? ([2601:647:4802:9070:57ce:f5c2:eedd:e35])
+        by smtp.gmail.com with ESMTPSA id q19sm15729398pfl.171.2021.05.11.11.16.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 11:16:12 -0700 (PDT)
+Subject: Re: [PATCH v2] nvme-tcp: Check if request has started before
+ processing it
+To:     Hannes Reinecke <hare@suse.de>, Keith Busch <kbusch@kernel.org>
+Cc:     "Ewan D. Milne" <emilne@redhat.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>
+References: <20210301175601.116405-1-dwagner@suse.de>
+ <6b51a989-5551-e243-abda-5872411ec3ff@grimberg.me>
+ <20210311094345.ogm2lxqfuszktuhp@beryllium.lan>
+ <70af5b02-10c1-ab0b-1dfc-5906216871b4@grimberg.me>
+ <2fc7a320c86f75507584453dd2fbd744de5c170d.camel@redhat.com>
+ <ed3ccac0-79ed-fe10-89eb-d403820b4c6a@grimberg.me>
+ <20210330232813.GA1935968@dhcp-10-100-145-180.wdc.com>
+ <756aef10-e693-276f-82ac-514a2832b07f@grimberg.me>
+ <492b8393-fc35-f58a-3768-94632a083c93@suse.de>
+ <3156c563-94a4-4278-3835-b1f56f71869a@grimberg.me>
+ <20210507204052.GA1485586@dhcp-10-100-145-180.wdc.com>
+ <7a45dd7f-842b-4282-909b-082b501abcdc@grimberg.me>
+ <8a396f94-ac33-6bea-8d70-ded0188eb98a@suse.de>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <1989b8fe-7ef2-2145-75c5-5e938f74014c@grimberg.me>
+Date:   Tue, 11 May 2021 11:16:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <8a396f94-ac33-6bea-8d70-ded0188eb98a@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: 70ILg2-xPJRuhusHpsPZNpijzkulSzTZ
-X-Proofpoint-ORIG-GUID: 70ILg2-xPJRuhusHpsPZNpijzkulSzTZ
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9981 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
- suspectscore=0 clxscore=1011 bulkscore=0 adultscore=0 impostorscore=0
- spamscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105110123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Problem description:
 
-During the kernel patching, customer was switching between the iscsi
-disks. To switch between the iscsi disks, it was logging out the
-currently connected iscsi disk and then logging in to the new iscsi
-disk. This was being done using a script. Customer was also using the
-"parted" command in the script to list the partition details just
-before the iscsi logout. This usage of "parted" command was creating
-an issue and we were seeing stale links of the
-disks in /sys/class/block.
 
-Analysis:
+On 5/9/21 4:30 AM, Hannes Reinecke wrote:
+> On 5/8/21 1:22 AM, Sagi Grimberg wrote:
+>>
+>>>>> Well, that would require a modification to the CQE specification, no?
+>>>>> fmds was not amused when I proposed that :-(
+>>>>
+>>>> Why would that require a modification to the CQE? it's just using say
+>>>> 4 msbits of the command_id to a running sequence...
+>>>
+>>> I think Hannes was under the impression that the counter proposal wasn't
+>>> part of the "command_id". The host can encode whatever it wants in that
+>>> value, and the controller just has to return the same value.
+>>
+>> Yea, maybe something like this?
+>> -- 
+>> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+>> index e6612971f4eb..7af48827ea56 100644
+>> --- a/drivers/nvme/host/core.c
+>> +++ b/drivers/nvme/host/core.c
+>> @@ -1006,7 +1006,7 @@ blk_status_t nvme_setup_cmd(struct nvme_ns *ns, 
+>> struct request *req)
+>>                 return BLK_STS_IOERR;
+>>         }
+>>
+>> -       cmd->common.command_id = req->tag;
+>> +       cmd->common.command_id = nvme_cid(req);
+>>         trace_nvme_setup_cmd(req, cmd);
+>>         return ret;
+>> }
+>> diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
+>> index 05f31a2c64bb..96abfb0e2ddd 100644
+>> --- a/drivers/nvme/host/nvme.h
+>> +++ b/drivers/nvme/host/nvme.h
+>> @@ -158,6 +158,7 @@ enum nvme_quirks {
+>> struct nvme_request {
+>>         struct nvme_command     *cmd;
+>>         union nvme_result       result;
+>> +       u8                      genctr;
+>>         u8                      retries;
+>>         u8                      flags;
+>>         u16                     status;
+>> @@ -497,6 +498,48 @@ struct nvme_ctrl_ops {
+>>         int (*get_address)(struct nvme_ctrl *ctrl, char *buf, int size);
+>> };
+>>
+>> +/*
+>> + * nvme command_id is constructed as such:
+>> + * | xxxx | xxxxxxxxxxxx |
+>> + *   gen    request tag
+>> + */
+>> +#define nvme_cid_install_genctr(gen)           ((gen & 0xf) << 12)
+>> +#define nvme_genctr_from_cid(cid)              ((cid & 0xf000) >> 12)
+>> +#define nvme_tag_from_cid(cid)                 (cid & 0xfff)
+>> +
+> 
+> That is a good idea, but we should ensure to limit the number of 
+> commands a controller can request, too.
 
-As part of iscsi logout, the partitions and the disk will be removed
-in the function del_gendisk() which is done through a kworker. The
-parted command, used to list the partitions, will open the disk in
-RW mode which results in systemd-udevd re-reading the partitions. The
-ioctl used to re-read partitions is BLKRRPART. This will trigger the
-rescanning of partitions which will also delete and re-add the
-partitions. So, both iscsi logout processing (through kworker) and the
-"parted" command (through systemd-udevd) will be involved in
-add/delete of partitions. In our case, the following sequence of
-operations happened (the iscsi device is /dev/sdb with partition sdb1):
+We take the minimum between what the host does vs. what the controller
+supports anyways.
 
-1. sdb1 was removed by PARTED
-2. kworker, as part of iscsi logout, couldn't remove sdb1 as it was
-   already removed by PARTED
-3. sdb1 was added by parted
-4. sdb was NOW removed as part of iscsi logout (the last part of the
-   device removal after remoing the partitions)
+> As per spec each controller can support a full 32 bit worth of requests, 
+> and if we limit that arbitrarily from the stack we'll need to cap the 
+> number of requests a controller or fabrics driver can request.
 
-Since the symlink /sys/class/block/sdb1 points to
-/sys/class/devices/platform/hostx/sessionx/targetx:x/block/sdb/sdb1
-and since sdb is already removed, the symlink /sys/class/block/sdb1
-will be orphan and stale. So, this stale link is a result of the race
-condition in kernel between the systemd-udevd and iscsi-logout
-processing as described above. We were able to reproduce this even
-with latest upstream kernel.
+NVMF_MAX_QUEUE_SIZE is already 1024, you are right that we also need:
+--
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 92e03f15c9f6..66a4a7f7c504 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -60,6 +60,7 @@ MODULE_PARM_DESC(sgl_threshold,
+                 "Use SGLs when average request segment size is larger 
+or equal to "
+                 "this size. Use 0 to disable SGLs.");
 
-Fix:
++#define NVME_PCI_MAX_QUEUE_SIZE 4096
+  static int io_queue_depth_set(const char *val, const struct 
+kernel_param *kp);
+  static const struct kernel_param_ops io_queue_depth_ops = {
+         .set = io_queue_depth_set,
+@@ -68,7 +69,7 @@ static const struct kernel_param_ops 
+io_queue_depth_ops = {
 
-While Dropping/Adding partitions as part of BLKRRPART ioctl, take the
-read lock for "bdev_lookup_sem" to sync with del_gendisk().
+  static unsigned int io_queue_depth = 1024;
+  module_param_cb(io_queue_depth, &io_queue_depth_ops, &io_queue_depth, 
+0644);
+-MODULE_PARM_DESC(io_queue_depth, "set io queue depth, should >= 2");
++MODULE_PARM_DESC(io_queue_depth, "set io queue depth, should >= 2 and 
+<= 4096");
 
-Signed-off-by: Gulam Mohamed <gulam.mohamed@oracle.com>
----
- fs/block_dev.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+  static int io_queue_count_set(const char *val, const struct 
+kernel_param *kp)
+  {
+@@ -164,6 +165,9 @@ static int io_queue_depth_set(const char *val, const 
+struct kernel_param *kp)
+         if (ret != 0 || n < 2)
+                 return -EINVAL;
 
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 09d6f7229db9..e903a7edfd63 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -1245,9 +1245,17 @@ int bdev_disk_changed(struct block_device *bdev, bool invalidate)
- 	lockdep_assert_held(&bdev->bd_mutex);
- 
- rescan:
-+	down_read(&bdev_lookup_sem);
-+	if (!(disk->flags & GENHD_FL_UP)) {
-+		up_read(&bdev_lookup_sem);
-+		return -ENXIO;
-+	}
++       if (n > NVME_PCI_MAX_QUEUE_SIZE)
++               return -EINVAL;
 +
- 	ret = blk_drop_partitions(bdev);
--	if (ret)
-+	if (ret) {
-+		up_read(&bdev_lookup_sem);
- 		return ret;
-+	}
- 
- 	clear_bit(GD_NEED_PART_SCAN, &disk->state);
- 
-@@ -1270,8 +1278,10 @@ int bdev_disk_changed(struct block_device *bdev, bool invalidate)
- 
- 	if (get_capacity(disk)) {
- 		ret = blk_add_partitions(disk, bdev);
--		if (ret == -EAGAIN)
-+		if (ret == -EAGAIN) {
-+			up_read(&bdev_lookup_sem);
- 			goto rescan;
-+		}
- 	} else if (invalidate) {
- 		/*
- 		 * Tell userspace that the media / partition table may have
-@@ -1280,6 +1290,7 @@ int bdev_disk_changed(struct block_device *bdev, bool invalidate)
- 		kobject_uevent(&disk_to_dev(disk)->kobj, KOBJ_CHANGE);
- 	}
- 
-+	up_read(&bdev_lookup_sem);
- 	return ret;
- }
- /*
--- 
-2.27.0
+         return param_set_uint(val, kp);
+  }
 
+--
