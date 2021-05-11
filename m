@@ -2,72 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D05837A72E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C414E37A736
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231615AbhEKM4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 08:56:20 -0400
-Received: from mga09.intel.com ([134.134.136.24]:3548 "EHLO mga09.intel.com"
+        id S231592AbhEKM5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 08:57:51 -0400
+Received: from mga06.intel.com ([134.134.136.31]:14379 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230475AbhEKM4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 08:56:18 -0400
-IronPort-SDR: g3Z521J314bxV6/6Se9fUAju4VTFn3Vq1nw4BJX8z0XVnDVPySGdBiLEL1d/FTc/JyXvhjKeGK
- ahn3j2hrE2TQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="199497662"
+        id S230483AbhEKM5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 08:57:50 -0400
+IronPort-SDR: BqnuO4epzvQ8GCyO/XLfZObalOMJ3d282GVXWAxzfaQjPf0gL693Eu1S9B6989ovHC/ECUcfwG
+ BfIxzi5hd9Uw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="260694306"
 X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="199497662"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 05:55:12 -0700
-IronPort-SDR: paY5nt11JMPLo/R7PxT8KvmylfGEyj0erqLxvznsoYF093hI/T9ubgbtSGaOMftunmZj3R3IP5
- 3P2B52UGscBg==
-X-ExtLoop1: 1
+   d="scan'208";a="260694306"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 05:56:43 -0700
+IronPort-SDR: IuvjxKpluZHPFjuGczJEoD1k9qODbiH+ABvlrtGiH2pVsKJE6vXYYbNegVxKMCJ5BG5C8IMbnS
+ OCcX0gi53Rhg==
 X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="537014258"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 11 May 2021 05:55:07 -0700
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Eric Auger <eric.auger@redhat.com>,
-        Will Deacon <will@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ACPI/IORT: Handle device properties with software node API
-Date:   Tue, 11 May 2021 15:55:28 +0300
-Message-Id: <20210511125528.18525-1-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+   d="scan'208";a="434433649"
+Received: from ialvarez-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.32.67])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 05:56:40 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Paul Zimmerman <pauldzim@gmail.com>,
+        Timo Aaltonen <tjaalton@ubuntu.com>
+Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [Intel-gfx] [PATCH RFC] Revert "drm/i915: Try to use fast+narrow link on eDP again and fall back to the old max strategy on failure"
+In-Reply-To: <87a6p1v39b.fsf@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210509044330.4655-1-pauldzim@gmail.com> <02957632-b050-f9eb-fcd8-75db9c92b8e0@ubuntu.com> <CADBGO7_cH2e1-zgVNvwVPRogqeFjTfJhKcuTfdF=xc_GoMmknA@mail.gmail.com> <87a6p1v39b.fsf@intel.com>
+Date:   Tue, 11 May 2021 15:56:38 +0300
+Message-ID: <877dk5v37d.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The older device property API is going to be removed.
-Replacing the device_add_properties() call with software
-node API equivalent device_create_managed_software_node().
+On Tue, 11 May 2021, Jani Nikula <jani.nikula@linux.intel.com> wrote:
+> On Mon, 10 May 2021, Paul Zimmerman <pauldzim@gmail.com> wrote:
+>> On Mon, May 10, 2021 at 7:00 AM Timo Aaltonen <tjaalton@ubuntu.com> wrote:
+>>>
+>>> On 9.5.2021 7.43, Paul Zimmerman wrote:
+>>> > This reverts commit 2bbd6dba84d44219387df051a1c799b7bac46099.
+>>> >
+>>> > Since 5.12-rc2, my Dell XPS-15 laptop has had a blank screen on boot.
+>>> > The system seems to run fine other than having no display, I am able
+>>> > to ssh into the machine. I don't see anything interesting in the dmesg
+>>> > log. I bisected the problem down to this commit, and reverting it fixes
+>>> > the problem.
+>>>
+>>> Have you tried with drm-tip? It has acca7762eb71bc0 which hopefully
+>>> helps here.
+>>
+>> I picked that one commit from the drm-tip tree (wasn't sure how to merge
+>> the entire tree into the kernel) and can confirm that it does fix the problem.
+>> Thank you! I hope the fix will be sent to Linus pretty soon, and it will need
+>> backporting to the 5.12 kernel as well.
+>
+> I've picked up 2bbd6dba84d4 ("drm/i915: Try to use fast+narrow link on
+> eDP again and fall back to the old max strategy on failure") to
+> drm-intel-fixes, and it should find itself in v5.13-rc2 and subsequently
+> v5.12 stable in the coming weeks.
 
-Fixes: 434b73e61cc6 ("iommu/arm-smmu-v3: Use device properties for pasid-num-bits")
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/acpi/arm64/iort.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I mean I've picked up acca7762eb71 ("drm/i915/dp: Use slow and wide link
+training for everything").
 
-diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-index 3912a1f6058e5..e34937e11186a 100644
---- a/drivers/acpi/arm64/iort.c
-+++ b/drivers/acpi/arm64/iort.c
-@@ -976,7 +976,7 @@ static void iort_named_component_init(struct device *dev,
- 				      FIELD_GET(ACPI_IORT_NC_PASID_BITS,
- 						nc->node_flags));
- 
--	if (device_add_properties(dev, props))
-+	if (device_create_managed_software_node(dev, props, NULL))
- 		dev_warn(dev, "Could not add device properties\n");
- }
- 
+
+>
+> BR,
+> Jani.
+
 -- 
-2.30.2
-
+Jani Nikula, Intel Open Source Graphics Center
