@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA5B379EAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 06:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04ED9379EB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 06:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhEKEjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 00:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56620 "EHLO
+        id S230452AbhEKEkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 00:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230198AbhEKEjP (ORCPT
+        with ESMTP id S230458AbhEKEjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 00:39:15 -0400
+        Tue, 11 May 2021 00:39:42 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993CDC06138D
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 21:38:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98382C061346
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 21:38:30 -0700 (PDT)
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1lgK9K-0005c6-39; Tue, 11 May 2021 06:37:38 +0200
+        id 1lgK9K-0005c7-38; Tue, 11 May 2021 06:37:38 +0200
 Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1lgK9J-0007yj-8K; Tue, 11 May 2021 06:37:37 +0200
+        id 1lgK9J-0007ys-9N; Tue, 11 May 2021 06:37:37 +0200
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
@@ -36,9 +36,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
         David Jander <david@protonic.nl>,
         Russell King <linux@armlinux.org.uk>,
         Philippe Schenker <philippe.schenker@toradex.com>
-Subject: [PATCH v3 6/7] ARM: imx6sx: remove Atheros AR8031 PHY fixup
-Date:   Tue, 11 May 2021 06:37:34 +0200
-Message-Id: <20210511043735.30557-7-o.rempel@pengutronix.de>
+Subject: [PATCH v3 7/7] ARM: imx7d: remove Atheros AR8031 PHY fixup
+Date:   Tue, 11 May 2021 06:37:35 +0200
+Message-Id: <20210511043735.30557-8-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210511043735.30557-1-o.rempel@pengutronix.de>
 References: <20210511043735.30557-1-o.rempel@pengutronix.de>
@@ -52,14 +52,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If this patch breaks your system, enable AT803X_PHY driver and add a PHY
-node to the board device tree:
+This fixup configures the IO voltage and disables the SmartEEE
+functionality.
 
-	phy-connection-type = "rgmii-txid"; (or rgmii-id)
+If this patch breaks your system, enable AT803X_PHY driver and configure
+the PHY by the device tree:
+
+	phy-connection-type = "rgmii-id";
 	ethernet-phy@X {
 		reg = <0xX>;
 
-		qca,clk-out-frequency = <125000000>;
+		qca,smarteee-tw-us-1g = <24>;
 
 		vddio-supply = <&vddh>;
 
@@ -76,16 +79,16 @@ node to the board device tree:
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- arch/arm/mach-imx/mach-imx6sx.c | 26 --------------------------
- 1 file changed, 26 deletions(-)
+ arch/arm/mach-imx/mach-imx7d.c | 22 ----------------------
+ 1 file changed, 22 deletions(-)
 
-diff --git a/arch/arm/mach-imx/mach-imx6sx.c b/arch/arm/mach-imx/mach-imx6sx.c
-index 781e2a94fdd7..e65ed5218f53 100644
---- a/arch/arm/mach-imx/mach-imx6sx.c
-+++ b/arch/arm/mach-imx/mach-imx6sx.c
-@@ -15,31 +15,6 @@
+diff --git a/arch/arm/mach-imx/mach-imx7d.c b/arch/arm/mach-imx/mach-imx7d.c
+index 879c35929a13..ccf64ddf8b7e 100644
+--- a/arch/arm/mach-imx/mach-imx7d.c
++++ b/arch/arm/mach-imx/mach-imx7d.c
+@@ -14,25 +14,6 @@
+ 
  #include "common.h"
- #include "cpuidle.h"
  
 -static int ar8031_phy_fixup(struct phy_device *dev)
 -{
@@ -95,34 +98,35 @@ index 781e2a94fdd7..e65ed5218f53 100644
 -	phy_write(dev, 0x1d, 0x1f);
 -	phy_write(dev, 0x1e, 0x8);
 -
--	/* introduce tx clock delay */
--	phy_write(dev, 0x1d, 0x5);
--	val = phy_read(dev, 0x1e);
--	val |= 0x0100;
--	phy_write(dev, 0x1e, val);
+-	/* disable phy AR8031 SmartEEE function. */
+-	phy_write(dev, 0xd, 0x3);
+-	phy_write(dev, 0xe, 0x805d);
+-	phy_write(dev, 0xd, 0x4003);
+-	val = phy_read(dev, 0xe);
+-	val &= ~(0x1 << 8);
+-	phy_write(dev, 0xe, val);
 -
 -	return 0;
 -}
 -
--#define PHY_ID_AR8031   0x004dd074
--static void __init imx6sx_enet_phy_init(void)
--{
--	if (IS_BUILTIN(CONFIG_PHYLIB))
--		phy_register_fixup_for_uid(PHY_ID_AR8031, 0xffffffff,
--					   ar8031_phy_fixup);
--}
--
- static void __init imx6sx_enet_clk_sel(void)
+ static int bcm54220_phy_fixup(struct phy_device *dev)
  {
- 	struct regmap *gpr;
-@@ -57,7 +32,6 @@ static void __init imx6sx_enet_clk_sel(void)
- 
- static inline void imx6sx_enet_init(void)
- {
--	imx6sx_enet_phy_init();
- 	imx6sx_enet_clk_sel();
+ 	/* enable RXC skew select RGMII copper mode */
+@@ -44,14 +25,11 @@ static int bcm54220_phy_fixup(struct phy_device *dev)
+ 	return 0;
  }
  
+-#define PHY_ID_AR8031	0x004dd074
+ #define PHY_ID_BCM54220	0x600d8589
+ 
+ static void __init imx7d_enet_phy_init(void)
+ {
+ 	if (IS_BUILTIN(CONFIG_PHYLIB)) {
+-		phy_register_fixup_for_uid(PHY_ID_AR8031, 0xffffffff,
+-					   ar8031_phy_fixup);
+ 		phy_register_fixup_for_uid(PHY_ID_BCM54220, 0xffffffff,
+ 					   bcm54220_phy_fixup);
+ 	}
 -- 
 2.29.2
 
