@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F23637B1F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738E537B1F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhEKW41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 18:56:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36228 "EHLO mail.kernel.org"
+        id S230323AbhEKW4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:56:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230009AbhEKW4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230017AbhEKW4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 18:56:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6972D61184;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CDE661421;
         Tue, 11 May 2021 22:55:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620773718;
-        bh=+wNMvDFSm5zQM5DKXkwEgFct5QFOXlYkVHbBJ0esl5k=;
+        bh=lSGOxx3+YkiZSRfEEFSU9OlYaV3B+jh4/sXJDRwctj8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T4koPlP6+H89Nby0U2S4lg4qpUgidZxhPVLZNdWn+IPyZZwGT1gvK2GevfK0Rmwiu
-         3whq/d8D8Nxd8BSfTP/wXusg0RMYoAD2IxxZ4CorsUI9ZpGzg/gyHDc1n2zRt/G9EP
-         Ch7Z6EcOFvPrC7BuH7E9WqWt1QjvXmq/6oFfg82i1+qXxN0siTerFT0hLsqt7o5D/D
-         sKkL5BVub56q4w8cG0MMoZmLildBo4cWIprp3vnw3NJo+4VRjScIKnJzKxaPWowlI1
-         LGBvFofc9CCCQ6+DP6JEuqhD0LBosk2fO35nXKBWvnZ1iD95QRYHBak7K5+Sm1nPAt
-         63U4s8MkyFAuw==
+        b=EnZgMNPSd7yxriCalMHubFyLT0Du1ub8D96PCs2wIO5++xcyQxxD4VXq8VLqiibPj
+         UMnImQ0TYYx88d94aQRaKX0senxXimVCVrwnIpcLxTtGkMecKBPK5hlejA/VdOrJ2e
+         2pFNgmltMqg9BicAgHuf+COd/tG7VwoEiJclGc35PJAA2JpzFG28fq3W5A8NWTUyqg
+         dPB5S0N7ImkghapbbUYHhXAVBJQRwUSnGmAB8gnZNli+OeGQkoOpQCqesEdLoKnQJR
+         jYLbTNdjrHq5ecUAHLNHGPPA/nH7v/z6uu6iQcpknSCf/pEnkmrI1afHvTTwjbFlYV
+         JiZrZ7W5YUMMg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0CC965C0B55; Tue, 11 May 2021 15:55:18 -0700 (PDT)
+        id 0EB405C0D4A; Tue, 11 May 2021 15:55:18 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -35,9 +35,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         oleg@redhat.com, joel@joelfernandes.org,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 4/7] kvfree_rcu: Update "monitor_todo" once a batch is started
-Date:   Tue, 11 May 2021 15:55:13 -0700
-Message-Id: <20210511225516.2893420-4-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 5/7] kvfree_rcu: Use kfree_rcu_monitor() instead of open-coded variant
+Date:   Tue, 11 May 2021 15:55:14 -0700
+Message-Id: <20210511225516.2893420-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511225450.GA2893337@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511225450.GA2893337@paulmck-ThinkPad-P17-Gen-1>
@@ -49,40 +49,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 
-Before attempting to start a new batch the "monitor_todo" variable is
-set to "false" and set back to "true" when a previous RCU batch is still
-in progress.  This is at best confusing.
-
-Thus change this variable to "false" only when a new batch has been
-successfully queued, otherwise, just leave it be.
+Replace an open-coded version of the kfree_rcu_monitor() function body
+with a call to that function.
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/rcu/tree.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index e86f32d6b8f9..1ae5f88e475f 100644
+index 1ae5f88e475f..d643fd8327b6 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3442,15 +3442,14 @@ static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
- 					  unsigned long flags)
+@@ -3697,7 +3697,6 @@ static unsigned long
+ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
  {
- 	// Attempt to start a new batch.
--	krcp->monitor_todo = false;
- 	if (queue_kfree_rcu_work(krcp)) {
- 		// Success! Our job is done here.
-+		krcp->monitor_todo = false;
- 		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 		return;
- 	}
+ 	int cpu, freed = 0;
+-	unsigned long flags;
  
- 	// Previous RCU batch still in progress, try again later.
--	krcp->monitor_todo = true;
- 	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- }
+ 	for_each_possible_cpu(cpu) {
+ 		int count;
+@@ -3705,12 +3704,7 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 
+ 		count = krcp->count;
+ 		count += drain_page_cache(krcp);
+-
+-		raw_spin_lock_irqsave(&krcp->lock, flags);
+-		if (krcp->monitor_todo)
+-			kfree_rcu_drain_unlock(krcp, flags);
+-		else
+-			raw_spin_unlock_irqrestore(&krcp->lock, flags);
++		kfree_rcu_monitor(&krcp->monitor_work.work);
+ 
+ 		sc->nr_to_scan -= count;
+ 		freed += count;
 -- 
 2.31.1.189.g2e36527f23
 
