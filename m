@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A7637B2AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC8237B299
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhEKXjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:39:42 -0400
-Received: from bosmailout06.eigbox.net ([66.96.185.6]:54961 "EHLO
-        bosmailout06.eigbox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhEKXjl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:39:41 -0400
-X-Greylist: delayed 1819 seconds by postgrey-1.27 at vger.kernel.org; Tue, 11 May 2021 19:39:41 EDT
-Received: from bosmailscan03.eigbox.net ([10.20.15.3])
-        by bosmailout06.eigbox.net with esmtp (Exim)
-        id 1lgbU6-0007pZ-A4; Tue, 11 May 2021 19:08:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=loadcrop.com; s=dkim; h=Sender:Content-Transfer-Encoding:Content-Type:
-        Message-ID:Reply-To:Subject:To:From:Date:MIME-Version:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Cejx16tZa1zAFDXB4Sm5wS9QnxiDfGVcTo3rpqfWlQA=; b=sCF9vxSly5a51iHfrWOBg7tWlF
-        EAoRLNJ9LBYukFrIuGQGQ56QEb5b9Xv2VQQG49NHjaNwQfhc1JMwLTaLy2kPlwvL5IiRM1v/iQvDK
-        i5QdpRffTG7+IRfwf51K2bRvP1Cz3ojkOJK1m7577hQfksKrIyi2cYjTNXf5SqNtMVKWgGSPzmbux
-        3Rm2PEOPC0alagg3ZK0WccdYNvQ1mcZg0+itt4JvqEKMbMl4PomfMnSQyIwQqO2v5lnYwMm3KRRK8
-        fB/4UvUCKwQt0esI4Jcz01du631v6BdZC30jr/u2MePGzeuZt49a3UvQJgPFKdVGPRo34ZvLhDL0/
-        QSG+dOBQ==;
-Received: from [10.115.3.32] (helo=bosimpout12)
-        by bosmailscan03.eigbox.net with esmtp (Exim)
-        id 1lgbU2-0003UF-Tu; Tue, 11 May 2021 19:08:10 -0400
-Received: from boswebmail05.eigbox.net ([10.20.16.5])
-        by bosimpout12 with 
-        id 3b812500q06ZEP601b88cB; Tue, 11 May 2021 19:08:10 -0400
-X-EN-SP-DIR: OUT
-X-EN-SP-SQ: 1
-Received: from [127.0.0.1] (helo=homestead)
-        by boswebmail05.eigbox.net with esmtp (Exim)
-        id 1lgbTx-0001dY-KR; Tue, 11 May 2021 19:08:05 -0400
-Received: from [41.138.102.229]
- by emailmg.homestead.com
- with HTTP (HTTP/1.1 POST); Tue, 11 May 2021 19:08:05 -0400
+        id S230026AbhEKXeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:34:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229848AbhEKXeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 19:34:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id AD41E6187E;
+        Tue, 11 May 2021 23:33:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620775989;
+        bh=88jrK9I4Dq2eASyjtJDd2o/SrR6b7wEGFnNd0e2gnVY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=mutFrnM2nGBNORcV5hBPMKQJY/VJvXAMzDgWOYEsxQxfzBmgybmBOFOV32ozMuLVH
+         KTR2gK5At3VVoq5X+04TymHBWNke/ibILfYzujugVHmahRCsJuKO8ssf3u2swtEV0h
+         N6OPukQ1gYQyPih1odlvzQou3U7UC6LaTVBjXK58bAinuGN+WB6K5dyRZ2UR7pEls+
+         DoTr+VqfJ7i6u3i8IjkVdgszhIBF9MigYp0eLvo9N/3MmTZ86MMdns4Q5N2fLl0pZi
+         siFLgks7ly8aqR8e1cnYYC6kgHhhS3wTXLY2AG7rull7zkRBep736ITHqja8rdIdnB
+         DX8bV6K2umLMQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9797A60A0B;
+        Tue, 11 May 2021 23:33:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Date:   Wed, 12 May 2021 01:08:05 +0200
-From:   janete Moon <tomorrow@loadcrop.com>
-To:     undisclosed-recipients:;
-Subject: Partner with me
-Organization: financial institution
-Reply-To: janete.moon20@gmail.com
-Mail-Reply-To: janete.moon20@gmail.com
-Message-ID: <f05a6c6af4d8f52343c54511272fb0ae@loadcrop.com>
-X-Sender: tomorrow@loadcrop.com
-User-Agent: Roundcube Webmail/1.3.14
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-EN-AuthUser: tomorrow@loadcrop.com
-Sender:  janete Moon <tomorrow@loadcrop.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: ipa: memory region array is variable size
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162077598961.17752.12932657386514060582.git-patchwork-notify@kernel.org>
+Date:   Tue, 11 May 2021 23:33:09 +0000
+References: <20210511194204.863605-1-elder@linaro.org>
+In-Reply-To: <20210511194204.863605-1-elder@linaro.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
+
+This patch was applied to bpf/bpf.git (refs/heads/master):
+
+On Tue, 11 May 2021 14:42:04 -0500 you wrote:
+> IPA configuration data includes an array of memory region
+> descriptors.  That was a fixed-size array at one time, but
+> at some point we started defining it such that it was only
+> as big as required for a given platform.  The actual number
+> of entries in the array is recorded in the configuration data
+> along with the array.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net] net: ipa: memory region array is variable size
+    https://git.kernel.org/bpf/bpf/c/440c3247cba3
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-Hello Dear Friend,
-
-Greetings and how are you today?
-
-I am Miss Janete Moon an Oprhan from Ivory Coast but currently residing 
-in Ouagadougou Burkina Faso for fear of reprisal attack from my uncles 
-who killed my parents.
-
-I have a business proposal for you involving the claim of $15.5Million 
-Dollars which my late parents kept in a finance house before their 
-demise.
-
-Regards
-
-Janete.
