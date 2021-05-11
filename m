@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4921B379BC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1788C379BCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhEKA6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 20:58:06 -0400
-Received: from mga12.intel.com ([192.55.52.136]:41091 "EHLO mga12.intel.com"
+        id S229945AbhEKBAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 21:00:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229628AbhEKA6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 20:58:05 -0400
-IronPort-SDR: lqu/X6UteCN/t1XqVWaCN3x8EGa1HBXem+blhnWQ/o9GGkwDjOsJeTrqErGiQJrBcC6Etshjil
- dAfNmdXrtcbQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="178914936"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="178914936"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 17:57:00 -0700
-IronPort-SDR: WUv2E4eXYfwDyhrA/lvKTldiswLPuB87I6iCKNz96u+SrTOd2+mtfQJaca3kHBuYv6U3/iyKw2
- Ey5mSQRLZDow==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="609297151"
-Received: from kcmorris-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.213.165.53])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 17:56:59 -0700
-Subject: Re: [RFC v2 14/32] x86/tdx: Handle port I/O
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
+        id S229628AbhEKBAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 21:00:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3894661606;
+        Tue, 11 May 2021 00:59:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1620694754;
+        bh=jdOdclzw/y2dZw68vYzUkSZPl8203GmwimxVt6tXmag=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iAjiIyLpw1ECQkl+9LO3Qp7jqwgTPs14hv5T+Yv9DdTE+g6yBMA9jodqkIeGTD5Fu
+         ow/BF9JkAg2ZKAT1VoR+WRMcxZVgzjnRfBFlrHPckFREdnqVnTLNlIuEXrbFclf3W7
+         iSCwpkQEFGfw772uTfeeVHSe7CB2Z90qLlQXF5T8=
+Date:   Mon, 10 May 2021 17:59:12 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chris Zankel <chris@zankel.net>,
         Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <0e7e94d1ee4bae49dfd0dd441dc4f2ab6df76668.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4jPLGs6p0PNZQB6yKB3QDtEcGb234zcgCbJutXxZZEGnA@mail.gmail.com>
- <e8ac31bc-e307-f277-f928-24ebba4cbca7@linux.intel.com>
- <CAPcyv4iuRdXooQvCzEWd9babzPij4nXpM-z5fai9+SGaeFYswQ@mail.gmail.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <648fe68f-c521-dbba-4495-9a4d0498a3be@linux.intel.com>
-Date:   Mon, 10 May 2021 17:56:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <CAPcyv4iuRdXooQvCzEWd9babzPij4nXpM-z5fai9+SGaeFYswQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Helge Deller <deller@gmx.de>, Hugh Dickins <hughd@google.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Jann Horn <jannh@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Xu <peterx@redhat.com>, Ram Pai <linuxram@us.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Rik van Riel <riel@surriel.com>,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v2 0/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE)
+ to prefault page tables
+Message-Id: <20210510175912.50a1c27b281982cc3d5b6c8c@linux-foundation.org>
+In-Reply-To: <79bb75e1-4ee9-5fe2-e495-577518956e1f@redhat.com>
+References: <20210419135443.12822-1-david@redhat.com>
+        <20210509212105.d741b7026ca6dca86bdb56d2@linux-foundation.org>
+        <79bb75e1-4ee9-5fe2-e495-577518956e1f@redhat.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 10 May 2021 16:52:33 +0200 David Hildenbrand <david@redhat.com> wrote:
 
+> I can just resend the series, thoughts?
 
-On 5/10/21 4:34 PM, Dan Williams wrote:
->>> Surely there's an existing macro for this pattern? Would
->>> PUSH_AND_CLEAR_REGS + POP_REGS be suitable? Besides code sharing it
->>> would eliminate clearing of %r8.
->>
->> There used to be SAVE_ALL/SAVE_REGS, but they have been all removed in
->> some past refactorings.
-> Not a huge deal, but at a minimum it seems a generic construct that
-> deserves to be declared centrally rather than tdx-guest-port-io local.
-
-I can define SAVE_ALL_REGS/RESTORE_ALL_REGS. Do you want to move it outside
-TDX code? I don't know if there will be other users for it?
-
-
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Sure, that makes it easier on folks.
