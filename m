@@ -2,147 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4314E37A0D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2643C37A0D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhEKHdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:33:13 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:45122 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229637AbhEKHdM (ORCPT
+        id S230305AbhEKHdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:33:32 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2773 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhEKHda (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:33:12 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14B75CWW134387;
-        Tue, 11 May 2021 03:31:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=MIqjaZO00c7j96e3E5odnRjvjW8XfjRSMn2eBpvgxrI=;
- b=tgbhQ4QXHblEWshgsoq+Jv1TJ2u+55ZDak+wVdyyunnmPTBuhZPKXpmN+k/6bL+3iOLK
- nDbEFhwqhDmRJBtNZ03UKul3/RCez04esu5jc/vjXwE0fx/AnxUNIS3H7amAvy/2mH1C
- SU8Eiji68W2SDnUBzSumiCasjaGqDnSD9i/mWld7IpQb9m5EXvod1uMM2j2MX1usL4yL
- cIyiHQkWbGvhci/P2LThmi0enb8VV0npBN4dBeBfGXFggE/mlgLfD7E1u9eJ84etYJFd
- K5kJ5qUDHekG9yg1FLLryV9fvuysH/0u8IUgNxyrzqNoK6X1u6Uv+BwFGb57ifDTVPaZ OA== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38fm1tag1h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 11 May 2021 03:31:42 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14B7MW0a004054;
-        Tue, 11 May 2021 07:31:40 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 38dhwh9gyt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 11 May 2021 07:31:40 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14B7VcbM33030500
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 May 2021 07:31:38 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 01AED4C05C;
-        Tue, 11 May 2021 07:31:38 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A71774C07E;
-        Tue, 11 May 2021 07:31:37 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.34.120])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 11 May 2021 07:31:37 +0000 (GMT)
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org
-Cc:     nathanl@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Subject: [PATCH v2] ppc64/numa: consider the max numa node for migratable LPAR
-Date:   Tue, 11 May 2021 09:31:36 +0200
-Message-Id: <20210511073136.17795-1-ldufour@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 11 May 2021 03:33:30 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FfV0X73kWzmgB0;
+        Tue, 11 May 2021 15:29:00 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.131) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Tue, 11 May 2021
+ 15:32:14 +0800
+Subject: Re: [PATCH] printk: stop spining waiter when console resume to flush
+ prb
+To:     Petr Mladek <pmladek@suse.com>
+CC:     <sergey.senozhatsky@gmail.com>, <rostedt@goodmis.org>,
+        <john.ogness@linutronix.de>, <linux-kernel@vger.kernel.org>,
+        "Sergey Senozhatsky" <senozhatsky@chromium.org>,
+        <linuxarm@huawei.com>, <bobo.shaobowang@huawei.com>
+References: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
+ <YJPxj83F1sBjHHAE@alley> <f38cd7b9-22a4-b65d-fd37-2d95fe95fc00@huawei.com>
+ <YJj9JdhgL88ivHVy@alley>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <cf883de9-0fd9-5b84-88e8-1bd73b9ee28a@huawei.com>
+Date:   Tue, 11 May 2021 15:32:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
+In-Reply-To: <YJj9JdhgL88ivHVy@alley>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 3N0Xa6K1QIt-ipkp-Nt-4r7gxQiD8Eoy
-X-Proofpoint-GUID: 3N0Xa6K1QIt-ipkp-Nt-4r7gxQiD8Eoy
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-11_02:2021-05-10,2021-05-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 mlxscore=0 suspectscore=0 clxscore=1015 lowpriorityscore=0
- mlxlogscore=999 spamscore=0 impostorscore=0 adultscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105110053
+Content-Language: en-US
+X-Originating-IP: [10.40.192.131]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a LPAR is migratable, we should consider the maximum possible NUMA
-node instead the number of NUMA node from the actual system.
 
-The DT property 'ibm,current-associativity-domains' is defining the maximum
-number of nodes the LPAR can see when running on that box. But if the LPAR
-is being migrated on another box, it may seen up to the nodes defined by
-'ibm,max-associativity-domains'. So if a LPAR is migratable, that value
-should be used.
+On 2021/5/10 17:30, Petr Mladek wrote:
+> On Mon 2021-05-10 15:41:31, luojiaxing wrote:
+>> On 2021/5/6 21:39, Petr Mladek wrote:
+>> Hi, Petr, I test your patch and I think it needs to make some modifications
+>> to fix the problem.
+>>
+>>
+>> My test method is as follows:
+>> Kernel thread A causes the console to enter suspend and then resume it 10
+>> seconds later.
+>> Kernel thread B repeatedly invokes dev_info() for 15 seconds after the
+>> console suspend.
+> Could you please provide the test code?
 
-Unfortunately, there is no easy way to know if a LPAR is migratable or
-not. The hypervisor is exporting the property 'ibm,migratable-partition' in
-the case it set to migrate partition, but that would not mean that the
-current partition is migratable.
 
-Without this patch, when a LPAR is started on a 2 nodes box and then
-migrated to a 3 nodes box, the hypervisor may spread the LPAR's CPUs on the
-3rd node. In that case if a CPU from that 3rd node is added to the LPAR, it
-will be wrongly assigned to the node because the kernel has been set to use
-up to 2 nodes (the configuration of the departure node). With this patch
-applies, the CPU is correctly added to the 3rd node.
+To facilitate debugging, I replaced the implementation code of the 
+kernel thread with the debugfs interface.
 
-Fixes: f9f130ff2ec9 ("powerpc/numa: Detect support for coregroup")
-Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
----
-V2: Address Srikar's comments
- - Fix the commit message
- - Use pr_info instead printk(KERN_INFO..)
----
- arch/powerpc/mm/numa.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+debugfs_test_if_1_write（） corresponds to kernel thread A.
 
-diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
-index f2bf98bdcea2..094a1076fd1f 100644
---- a/arch/powerpc/mm/numa.c
-+++ b/arch/powerpc/mm/numa.c
-@@ -893,7 +893,7 @@ static void __init setup_node_data(int nid, u64 start_pfn, u64 end_pfn)
- static void __init find_possible_nodes(void)
- {
- 	struct device_node *rtas;
--	const __be32 *domains;
-+	const __be32 *domains = NULL;
- 	int prop_length, max_nodes;
- 	u32 i;
- 
-@@ -909,9 +909,14 @@ static void __init find_possible_nodes(void)
- 	 * it doesn't exist, then fallback on ibm,max-associativity-domains.
- 	 * Current denotes what the platform can support compared to max
- 	 * which denotes what the Hypervisor can support.
-+	 *
-+	 * If the LPAR is migratable, new nodes might be activated after a LPM,
-+	 * so we should consider the max number in that case.
- 	 */
--	domains = of_get_property(rtas, "ibm,current-associativity-domains",
--					&prop_length);
-+	if (!of_get_property(of_root, "ibm,migratable-partition", NULL))
-+		domains = of_get_property(rtas,
-+					  "ibm,current-associativity-domains",
-+					  &prop_length);
- 	if (!domains) {
- 		domains = of_get_property(rtas, "ibm,max-associativity-domains",
- 					&prop_length);
-@@ -920,6 +925,8 @@ static void __init find_possible_nodes(void)
- 	}
- 
- 	max_nodes = of_read_number(&domains[min_common_depth], 1);
-+	pr_info("Partition configured for %d NUMA nodes.\n", max_nodes);
+
++static ssize_t debugfs_test_if_1_write(struct file *file,
++                                               const char __user *user_buf,
++                                               size_t count, loff_t *ppos)
++{
++       struct hisi_hba *hisi_hba = file->f_inode->i_private;
++       char buf[DUMP_BUF_SIZE];
 +
- 	for (i = 0; i < max_nodes; i++) {
- 		if (!node_possible(i))
- 			node_set(i, node_possible_map);
--- 
-2.31.1
++       if (copy_from_user(buf, user_buf, count))
++               return -EFAULT;
++
++       if (buf[0] != '1')
++               return -EFAULT;
++
++       suspend_console();
++       mdelay(5000);
++       resume_console();
++
++       return count;
++}
+
+debugfs_test_if_2_write corresponds to kernel thread B.
+
++static ssize_t debugfs_test_if_2_write(struct file *file,
++                                               const char __user *user_buf,
++                                               size_t count, loff_t *ppos)
++{
++       struct hisi_hba *hisi_hba = file->f_inode->i_private;
++       char buf[DUMP_BUF_SIZE];
++       int i;
++
++       if (copy_from_user(buf, user_buf, count))
++               return -EFAULT;
++
++       if (buf[0] != '1')
++               return -EFAULT;
++
++       for (i = 0; i < 1000; i++){
++               dev_info(hisi_hba->dev, "print test");
++       }
++
++       return count;
++}
+
+
+Step：
+
+1.echo 1 > debugfs_test_if_1
+
+2.repeat to echo 1 > debugfs_test_if_2, until debugfs_test_if_1 return
+
+3.check timestamp by dmesg
+
+
+>
+> If kthread B starts invoking dev_info() after console_resume() then it
+> has nothing to do with suspend/resume.
+
+
+It's possible that my simulations test were not designed clearly enough, 
+and you might be misunderstood. Sorry.
+
+I should actually design a kthread C to send a print during the 
+console_resume process (when it hasn't been returned).
+
+But this was a litter more difficult to achieved, so I had kthread B 
+accomplish two test purposes. kthread B before console_resume
+
+is invoked is to simulate loading a large amount of cache into printk 
+logbuf. After the console_resume is invoked, kthread B is used to
+
+prove that it takes over the prb flushing task from console_resume, 
+causing Thread B to be blocked.
+
+
+> It can happen anytime that a
+> process starts a flood of printk() calls.
+>
+> Also, do you see this problem in the real life, please?
+
+
+Yes, the following is part of log found when the user performs S4 
+suspend and resume on the PC:
+
+[  1368979] PM: thaw_processes over
+[  146.369606] PM: __pm_notifier_call_chain over
+[  146.374285] cpu1 pid4321 irq0 hisi_sas_debug_I_T_nexus_reset 1844 
+phy5 unlock mutex
+[  146.374287] cpu1 pid4321 irq0 hisi_sas_debug_I_T_nexus_reset 1845 
+phy5 reset over
+[  146.374288] cpu2 pid4256 irq0 hisi_sas_debug_I_T_nexus_reset 1780 
+phy4 get mutex
+[  146.374297] hisi_sas_v3_hw 0000:74:02.0: phydown: phy4 phy_state=0x21
+[  146.531336] cpu2 pid4256 irq0 hisi_sas_debug_I_T_nexus_reset 1810 
+phy4 wait start 2
+[  146.533523] hisi_sas_v3_hw 0000:74:02.0: ignore flutter phy4 down
+[  148.551332] cpu2 pid4256 irq0 hisi_sas_debug_I_T_nexus_reset 1812 
+phy4 wait over 2
+[  148.552442] cpu0 pid302 irq128 phy_up_v3_hw 1586 phy4
+[  148.552449] sas: sas_form_port: phy4 belongs to port0 already(1)!
+[  148.559980] cpu2 pid4256 irq0 hisi_sas_debug_I_T_nexus_reset 182reset 
+timeout
+[  148.567480] ata5.00: configured for UDMA/133
+[  148.574743] cpu2 pid4256 irq0 hisi_sas_debug_I_T_nexus_reset 14 phy4 
+unlock mut  148.574744] cpu2 pid4250 hisi_sas_debug_I_T_nexus_reset 1845 
+phy4 reset over
+[  148.734754] PM: pm_restore_console over
+[  148.738587] PM: atomic_inc over
+[  148.738588] PM: hibernation exit
+[  148.738714] PM: hibernation entry
+
+
+You can see "hisi_sas_debug_I_T_nexus_reset 182reset timeout" in the 
+above print, which we added to the kernel.
+
+The mean to wait for a phy up interrupt, as the interrupt didn't come 
+back for more than 2s, so driver report a timeout.
+
+However, when we check the hardware register, the flag of phy up 
+interrupt has been set, So the interrupt should have returned.
+
+After analysis,  we found that dev_info() called by phy up interrupt is 
+blocked for more than 2s. We proved that this dev_info() takes over
+
+the job of flushing the prb from console_resume(), and unfortunately, no 
+other kthread call printk() at this moment.
+
+So it take more than 2 seconds before returning and prolong phy up 
+interrupt callback func's handle duration, finally misjudgment leading 
+to timeout.
+
+
+> What motivated you to investigate this scenario, please?
+
+
+I also try to modify it in my own driver to prolong the timeout judgment 
+by several seconds. However, since the time to flush the prb depends
+
+on the number of caches in the logbuf, I cannot determine how many 
+seconds to extend the timeout judgment.
+
+In addition, I understand that many kernel drivers do not expect 
+printk() to be blocked for more than a few seconds when calling 
+printk(). And,
+
+printk is blocked only in a few specific scenarios, and the framework 
+does not need to be modified, so may be it's simple to be fixed.
+
+Therefore, I proposed this bugfix.
+
+
+>
+>>> >From 574e844f512c9f450e64832f09cc389bc9915f83 Mon Sep 17 00:00:00 2001
+>>> From: Petr Mladek <pmladek@suse.com>
+>>> Date: Thu, 6 May 2021 12:40:56 +0200
+>>> Subject: [PATCH] printk: Prevent softlockup when resuming console
+>>>
+>>> Many printk messages might get accumulated when consoles were suspended.
+>>> They are proceed when console_unlock() is called in resume_console().
+>>>
+>>> --- a/kernel/printk/printk.c
+>>> +++ b/kernel/printk/printk.c
+>>> @@ -2637,13 +2636,15 @@ void console_unlock(void)
+>>>    		 * finish. This task can not be preempted if there is a
+>>>    		 * waiter waiting to take over.
+>>>    		 */
+>>> -		console_lock_spinning_enable();
+>>> +		if (spinning_enabled)
+>>> +			console_lock_spinning_enable();
+>>
+>> change to
+>>
+>>
+>> +               if (!spinning_enabled) {
+>> +                       raw_spin_lock(&console_owner_lock);
+>> +                       WRITE_ONCE(console_waiter, true);
+>> +                       raw_spin_unlock(&console_owner_lock);
+>> +               }
+>>
+> IMHO, both variants have the same result and behavior:
+
+
+Yes, you are right. If we set owner as NULL, it's the same with setting 
+waiter as true.
+
+
+Sorry for misunderstanding your purpose. It is ok to fix my problem.
+
+
+Tested-by: Luo Jiaxing <luojiaxing@huawei.com>
+
+
+Thanks
+
+Jiaxing
+
+
+>
+> console_trylock_spinning() has the following condition:
+>
+> 	if (!waiter && owner && owner != current) {
+> 		WRITE_ONCE(console_waiter, true);
+> 		spin = true;
+> 	}
+>
+> My variant causes that @owner will stay "NULL".
+> Your variant causes that @waiter will be "true"
+>
+> In both cases, the condition fails and spin will stay "false"
+> which means that any parallel printk() will not spin.
+>
+> Best Regards,
+> Petr
+>
+> .
+>
 
