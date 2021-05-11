@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCDA737AB96
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69CF937AB9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231489AbhEKQPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 12:15:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbhEKQPG (ORCPT
+        id S231684AbhEKQP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 12:15:57 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:53686 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231321AbhEKQPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:15:06 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46997C061574;
-        Tue, 11 May 2021 09:14:00 -0700 (PDT)
+        Tue, 11 May 2021 12:15:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=yoyxdL14+RHHBfspbtObR7ZjIkqw7Y80PNE65Db6waQ=; b=iJoE7tMXNcXRUeShByCFIzl/9M
-        4dH5QpY7g+MAHQO1Unhr2TC25ienks2Wm/5X6ia+euxmQbuHhJDLjug3g9j9Ns4iDmagPf/fetzRv
-        BugqwIzjfFCvKOuEIy8ZBYbf34GeTOeip3FyirFnBhvWmXsTEqI2j9dDiCChEnV+BZZoQ4PLyz/MZ
-        02yRYrg80hcpUsjiWq1VaGxzi7HcrSW9mkVzi+MIm5m841BtY1XDqZywbVbGF5v/uTAfpyI3Rce/J
-        AEtJ9DvgBKKYpau9oaZOoQQM7/eRIpjbJwaryizKftkg2UGrQQEZDr9Y84M2EUBIlKD1gFyCmQsg5
-        R9XxB+fA==;
-Received: from [2601:1c0:6280:3f0:d7c4:8ab4:31d7:f0ba]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgV1C-009kc9-1z; Tue, 11 May 2021 16:13:58 +0000
-Subject: Re: [PATCH 00/25] AMD MCA Address Translation Updates
-To:     Yazen Ghannam <yazen.ghannam@amd.com>
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tony.luck@intel.com, x86@kernel.org,
-        Smita.KoralahalliChannabasappa@amd.com
-References: <20210507190140.18854-1-Yazen.Ghannam@amd.com>
- <1bd2362b-9bbd-c813-e678-66119b53859f@infradead.org>
- <20210511154232.GA17213@aus-x-yghannam.amd.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ed4953c7-542e-7d57-7787-9bb53dad71b4@infradead.org>
-Date:   Tue, 11 May 2021 09:13:56 -0700
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=Ymx5jystW5s8EPZBRHR4WsTKIk8IQ3Uz4HGrVu+VdWc=; b=hX92MI8IYDAFgrof9DVT2uOU0b
+        8bPhv4kGORr76XEMFxwmACnHHa/fI3xZANPeMf8DFf2u+nfJFyyzXvvhEEx4cM9EGABLTEfGioqXt
+        Z/Sl8b/TrsPmc0Zdggnd6a4Aa071uVgQv70MVapxhACireL1cQkKucMJmIpHrHj7H3XZLFjeZjpTX
+        4FMfsVi3BiCcbaJ4tXOPM9w9r0P9oEz6cRAFuAhfOfKgHBHvXTSHQo7+X36DbFPQPvu2FECcfS/d7
+        5R+EqotBeW4C+luSP2De1znJnMp1NuFlq/yf+AFYQPXXq6/dorM+PRU3IbwblLDzIzkKcuqhJpKSR
+        pA8OJzOw==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1lgV1p-0006b5-VM; Tue, 11 May 2021 10:14:38 -0600
+To:     Don Dutile <ddutile@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org
+Cc:     Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20210408170123.8788-1-logang@deltatee.com>
+ <20210408170123.8788-3-logang@deltatee.com>
+ <09f6c713-5ae6-035c-c0ab-a8bd0fac7a79@redhat.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <70f58fff-c228-e637-aef8-f404af2d2f9d@deltatee.com>
+Date:   Tue, 11 May 2021 10:14:37 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210511154232.GA17213@aus-x-yghannam.amd.com>
+In-Reply-To: <09f6c713-5ae6-035c-c0ab-a8bd0fac7a79@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Language: en-CA
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, jhubbard@nvidia.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, ddutile@redhat.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH 02/16] PCI/P2PDMA: Avoid pci_get_slot() which sleeps
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 8:42 AM, Yazen Ghannam wrote:
-> On Fri, May 07, 2021 at 01:32:28PM -0700, Randy Dunlap wrote:
->> On 5/7/21 12:01 PM, Yazen Ghannam wrote:
->>> From: Yazen Ghannam <yazen.ghannam@amd.com>
->>>
->> ...
->>>
->>> Rome:
->>>   No interleaving
->>>   Nodes-per-Socket 0 (NPS0)
->>>   Nodes-per-Socket 1 (NPS1)
->>>   Nodes-per-Socket 2 (NPS2)
->>>   Nodes-per-Socket 4 (NPS4)
->>>   NPS2 w/o hashing
->>>   NPS4 w/o hashing
->>>
->>> Thanks,
->>> Yazen
->>
->> Hi Yazen,
->>
->> It appears that you need to provide a glossary of acronyms, e.g.:
->>
->> DF = (Data Fabric ?)
->> CS =
->> MCE =
->> NPS = Nodes per Socket
->> etc.
->>
->>
-> 
-> Hi Randy,
-> 
-> That's a good idea. Should it be in the cover letter, patches, or
-> somewhere else?
 
-Cover letter seems good to me.
-Thanks.
 
--- 
-~Randy
+On 2021-05-11 10:05 a.m., Don Dutile wrote:
+> On 4/8/21 1:01 PM, Logan Gunthorpe wrote:
+>> In order to use upstream_bridge_distance_warn() from a dma_map function,
+>> it must not sleep. However, pci_get_slot() takes the pci_bus_sem so it
+>> might sleep.
+>>
+>> In order to avoid this, try to get the host bridge's device from
+>> bus->self, and if that is not set, just get the first element in the
+>> device list. It should be impossible for the host bridge's device to
+>> go away while references are held on child devices, so the first element
+>> should not be able to change and, thus, this should be safe.
+> Bjorn:
+> Why wouldn't (shouldn't?) the bus->self field be set for a host bridge device?
+> Should this situation be repaired in the host-brige config/setup code elsewhere in the kernel.
+> ... and here, a check-and-fail with info of what doesn't have it setup (another new pci function to do the check & prinfo), so it can point to the offending host-bridge, and thus, the code that needs to be updated?
 
+I've dropped the bus->self thing in v2. Seems bus->self is explicitly
+unset for root bridges. There's remnants in the pci code that used to
+check bus->self to see if the bridge is the root bridge.
+
+I tried setting bus->self with the pci device of the root bridge but
+that just caused my machine not to boot and I didn't dig any further.
+
+Logan
