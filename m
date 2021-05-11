@@ -2,103 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A7137AF97
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7511137AFA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232137AbhEKTwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 15:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37590 "EHLO
+        id S231944AbhEKTwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 15:52:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232027AbhEKTwT (ORCPT
+        with ESMTP id S232117AbhEKTwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 15:52:19 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46063C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:51:13 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so18547351otp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:51:13 -0700 (PDT)
+        Tue, 11 May 2021 15:52:39 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A057DC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:51:31 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id lj11-20020a17090b344bb029015bc3073608so1991743pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:51:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zS+0U7rFCvEdcad2NE4wCvZL55gXsvgUbeBp8zYD6rA=;
-        b=O4cFNgt9Jj3EcdrZLFMSfVjVR2QsWADPFtTkFGaO/Hq9cewBfIRvy9B2vzLjI3iLNU
-         JHDiwolKAbXfr72r6vmXhPc7Dy+NKp+eCF0dhx5UzM3YSdC527kzRmsla33h312V8P6L
-         O8QrhDz5dPQKQ4kjLSWejQ7E8gzkzZuVGeLkQ=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7s7GYOkg/VFYZvmsIsHFtm2LtoGNaveMgAx+B13tn2o=;
+        b=HEvW9E1Gt0n/y0w25cD3LS2n3wE7ttPT4BduZ//nxFWQO2EbNavLt5soWP8M3+XdS8
+         jAI8p9ahLwLZ5NZRCxoUEsva8TsNDkaTS2OXzgdktu6lvnlM+uXU8lolsBPJ4e/9WEME
+         MMwfw3aVvCcM0mOT4ReXDDpCyJ5nNCwT2pPIXofK5qsKAmqcz1qKIEAn7tFEbHKWIw30
+         H/2YpL5T3ymwVdHPAdaudcD7Q0GzbLyIQBaJsSNSkr+TFmlIbyD9kf9nc3YDeCioEuEd
+         Fp/xOmhzM8COe0Lwipy1F2RAJY2XwLVZfYNA8sysmcNUqG4739B4ZJHcV6dZGk+SOk5y
+         An5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zS+0U7rFCvEdcad2NE4wCvZL55gXsvgUbeBp8zYD6rA=;
-        b=ZmrZ4pQKJXpnUCfMhG/ed5tBe63mzxBnAqWmEJAbME+ZuxWDuRJK+LTHSDYEOtB654
-         oPc6u36+bVACsASCLLQSwFPu8NgR+vBawPY//CHchtq7TCONNCBpf46+vVJWIAP/exFv
-         B21nqcQLoVLTYd1vpYGrIewZwK+5ZatUUXZDgrldl4GGav7xgV8Qs9n/cLhC78czW0r1
-         9vYPdzmbehadqKLbk01mZNcpz/Uh0eN1t5kbfyBDfwGztnlQ7z+MhfxJFHN/Mk6GiKeg
-         hlAmJ/qbpSQnGcpCwOCni/PprT7Jd6Eqd5yY5IkmGfiqdrAyDYkmiQyXAowVm4rCQyiY
-         WPYg==
-X-Gm-Message-State: AOAM531/bBfbZwK5M0DfG1/RlghtExroSFggjrv2X2XJ6vCJqa4qnf8L
-        R/5CxomtWl6hjxYg7/IlLeYJeQ==
-X-Google-Smtp-Source: ABdhPJxiHpeaipdbdpy34PypoLh5n3lSHEYF+Cr94pZJvF0c8vInzC168+gnnUw6WnZ+wPeRSgOOYg==
-X-Received: by 2002:a05:6830:33ea:: with SMTP id i10mr27119289otu.212.1620762672684;
-        Tue, 11 May 2021 12:51:12 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id i130sm3481567oif.49.2021.05.11.12.51.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 12:51:12 -0700 (PDT)
-Subject: Re: [PATCH 5.12 000/384] 5.12.3-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210510102014.849075526@linuxfoundation.org>
- <142fd239-2f8a-26d9-68d0-706e90096b66@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <6f3090eb-9a21-6530-ee6b-1f088478774d@linuxfoundation.org>
-Date:   Tue, 11 May 2021 13:51:11 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7s7GYOkg/VFYZvmsIsHFtm2LtoGNaveMgAx+B13tn2o=;
+        b=Det4wIDrhbz2lnKNrwRd3cl9l7xF1LRfSFg7un1QKuDWEv7DqWV3JfnPNbPL+Kc2/i
+         du+7pSD46PMJC27XBwf57zceqASrLJ/a0Eiv5PZLWgIXpGn5+6DilLZw7b/lOH9vso2J
+         AX9pkGW8jKqxpdV+Fl1WK+Xo/YGBwlcxDpCKqnRICIbvkAmBsPfYS5aB/bB0PIG87R2e
+         7ptxQyeTDoS0ZJYC3MxGUhDT9h4SKJG/FQTi8qMYlMkYBdaSTzMgJ7+2SzxAZprmhDtI
+         +RXi8D73An8NhQYeiR70Ck8FewxmnyAUl/v5UZvMccmCVzjRbE7S6AOZzf7hQFSZrpJm
+         Euqg==
+X-Gm-Message-State: AOAM530r7WAnnx1nspqLwWHYHLP0jzOHwL4ONdB34VayBFmTtp9Kk926
+        EbSmfs8DhKsG4+oGY2q+ocfJwg==
+X-Google-Smtp-Source: ABdhPJwfpEURvcQvCfjpqTVQ+3ZSFRm8E4e2jr4zNr34TMdj0QfBI5EkeMlDAV8ZRnvuVfUQzXDmkQ==
+X-Received: by 2002:a17:90a:b382:: with SMTP id e2mr4562295pjr.171.1620762690975;
+        Tue, 11 May 2021 12:51:30 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id q11sm14597218pjq.6.2021.05.11.12.51.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 12:51:30 -0700 (PDT)
+Date:   Tue, 11 May 2021 19:51:26 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v4 6/7] KVM: x86/mmu: Skip rmap operations if rmaps not
+ allocated
+Message-ID: <YJrgPoORnyf9VVvY@google.com>
+References: <20210511171610.170160-1-bgardon@google.com>
+ <20210511171610.170160-7-bgardon@google.com>
 MIME-Version: 1.0
-In-Reply-To: <142fd239-2f8a-26d9-68d0-706e90096b66@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511171610.170160-7-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/21 4:52 PM, Shuah Khan wrote:
-> On 5/10/21 4:16 AM, Greg Kroah-Hartman wrote:
->> This is the start of the stable review cycle for the 5.12.3 release.
->> There are 384 patches in this series, all will be posted as a response
->> to this one.  If anyone has any issues with these being applied, please
->> let me know.
->>
->> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
->> Anything received after that time might be too late.
->>
->> The whole patch series can be found in one patch at:
->>     https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.3-rc1.gz 
->>
->> or in the git tree and branch at:
->>     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git 
->> linux-5.12.y
->> and the diffstat can be found below.
->>
->> thanks,
->>
->> greg k-h
->>
+On Tue, May 11, 2021, Ben Gardon wrote:
+> @@ -1260,9 +1268,12 @@ bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm,
+>  	int i;
+>  	bool write_protected = false;
+>  
+> -	for (i = PG_LEVEL_4K; i <= KVM_MAX_HUGEPAGE_LEVEL; ++i) {
+> -		rmap_head = __gfn_to_rmap(gfn, i, slot);
+> -		write_protected |= __rmap_write_protect(kvm, rmap_head, true);
+> +	if (kvm->arch.memslots_have_rmaps) {
+> +		for (i = PG_LEVEL_4K; i <= KVM_MAX_HUGEPAGE_LEVEL; ++i) {
+> +			rmap_head = __gfn_to_rmap(gfn, i, slot);
+> +			write_protected |= __rmap_write_protect(kvm, rmap_head,
+> +								true);
+
+I vote to let "true" poke out.
+
+> +		}
+>  	}
+>  
+>  	if (is_tdp_mmu_enabled(kvm))
+
+...
+
+> @@ -5440,7 +5455,8 @@ static void kvm_mmu_zap_all_fast(struct kvm *kvm)
+>  	 */
+>  	kvm_reload_remote_mmus(kvm);
+>  
+> -	kvm_zap_obsolete_pages(kvm);
+> +	if (kvm->arch.memslots_have_rmaps)
+> +		kvm_zap_obsolete_pages(kvm);
+
+Hmm, for cases where we're iterating over the list of active_mmu_pages, I would
+prefer to either leave the code as-is or short-circuit the helpers with a more
+explicit:
+
+	if (list_empty(&kvm->arch.active_mmu_pages))
+		return ...;
+
+I'd probably vote for leaving the code as it is; the loop iteration and list_empty
+check in kvm_mmu_commit_zap_page() add a single compare-and-jump in the worst
+case scenario.
+
+In other words, restrict use of memslots_have_rmaps to flows that directly
+walk the rmaps, as opposed to partially overloading memslots_have_rmaps to mean
+"is using legacy MMU".
+
+>  	write_unlock(&kvm->mmu_lock);
+>  
+
+...
+
+> @@ -5681,6 +5702,14 @@ void kvm_mmu_zap_all(struct kvm *kvm)
+>  	int ign;
+>  
+>  	write_lock(&kvm->mmu_lock);
+> +	if (is_tdp_mmu_enabled(kvm))
+> +		kvm_tdp_mmu_zap_all(kvm);
+> +
+> +	if (!kvm->arch.memslots_have_rmaps) {
+> +		write_unlock(&kvm->mmu_lock);
+> +		return;
+
+Another case where falling through to walking active_mmu_pages is perfectly ok.
+
+> +	}
+> +
+>  restart:
+>  	list_for_each_entry_safe(sp, node, &kvm->arch.active_mmu_pages, link) {
+>  		if (WARN_ON(sp->role.invalid))
+> @@ -5693,9 +5722,6 @@ void kvm_mmu_zap_all(struct kvm *kvm)
+>  
+>  	kvm_mmu_commit_zap_page(kvm, &invalid_list);
+>  
+> -	if (is_tdp_mmu_enabled(kvm))
+> -		kvm_tdp_mmu_zap_all(kvm);
+> -
+>  	write_unlock(&kvm->mmu_lock);
+>  }
+>  
+> -- 
+> 2.31.1.607.g51e8a6a459-goog
 > 
-
-5.12.3-rc2 compiled and booted on my test system with
-79fcd446e7e1 ("drm/amdgpu: Fix memory leak")
-reverted. No dmesg regressions.
-
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
