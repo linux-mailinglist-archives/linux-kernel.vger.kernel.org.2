@@ -2,89 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313A537A4AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0B537A4AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhEKKhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 06:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230501AbhEKKhS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 06:37:18 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE3FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 03:36:12 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id m190so15501810pga.2
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 03:36:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=20fPsPA+9WTsD5kDBLLT9Sw3U7rjYbUdTtKCGI1Jfrc=;
-        b=oVsOUcDmTLpDInKQDoadILZs05yBkCofvmJC0No4oK9c3x5SiipZxCeRLQ4T9LPmor
-         cz4qvGaRA1aVn0rwewf2R8vnmioLAeehmmwiXrL5fkU0qphehMgWwJpOUjhih60fEr1z
-         jx5FzqhjVGX8lQA872jQRTqQbJfXsuEo6eK+Be7McJ1fLKuHJKzAcdVpRWWx/8KTSGzx
-         YmN9xfkIWvFYGusKmmaWVl86K5rr4DmnIKdLgoLTmxAO0GVGyU+zt4zq/vhJTludAe1U
-         v0+0ADwvfKzjZv+yuByv678Gg+QNPSsK5swGqw3iBgbCK3riw2gIakb5SZzVsM6NNIct
-         88Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=20fPsPA+9WTsD5kDBLLT9Sw3U7rjYbUdTtKCGI1Jfrc=;
-        b=h4fbXRswq/gZwvGt1iTK/Mgxg8sVij9WN3hdo9cyN3JbFM1rb1KnJWGMxtHg9JtY/I
-         07FSeBTl0JsXZgCS+2hJbeTxwL3QZrdoaWz+B1ziHw0av2MI5DkjUVIRJlmZsek8IPti
-         0Moy9ySPW5qRoPqZiENJ6dmqkQPY947k5YehhXt7vIU5twppp550wMjAEvsbLPpPROG2
-         E/cjYtljL7BaeTv0JxpHICmoBcPCrG0nMO5IUWIsGGl26tWeMmkdgRU3SWn39bv9796Z
-         vfsnV2bTseKrXbFKNaGZzylra3tN4b2zuemPAJ12kjsfCYA95nqnYYFUOJBuiIzvjHDb
-         q5kw==
-X-Gm-Message-State: AOAM532TyTllpH0dVzT8KinFvCzThbuVmAnf5cdEmQweQe2wSal30COU
-        nK6zP8npOLKH6PxLHLG/PXk=
-X-Google-Smtp-Source: ABdhPJyYxgZrkaDVwaUh36J2Xb9WjQDvSyGVixH3JxLQSGI6GUfG+XJHq7ds1b7SyEc1izpg3hUSDw==
-X-Received: by 2002:a63:6f01:: with SMTP id k1mr11212537pgc.59.1620729371560;
-        Tue, 11 May 2021 03:36:11 -0700 (PDT)
-Received: from wuchi.mioffice.cn ([209.9.72.213])
-        by smtp.gmail.com with ESMTPSA id f24sm13947394pfk.45.2021.05.11.03.36.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 03:36:11 -0700 (PDT)
-From:   Chi Wu <wuchi.zero@gmail.com>
-To:     jack@suse.cz
-Cc:     akpm@linux-foundation.org, axboe@fb.com, hcochran@kernelspring.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mszeredi@redhat.com, sedat.dilek@gmail.com, tj@kernel.org,
-        Chi Wu <wuchi.zero@gmail.com>
-Subject: [PATCH v2] mm/page-writeback: Update the comment of Dirty position control
-Date:   Tue, 11 May 2021 18:36:06 +0800
-Message-Id: <20210511103606.3732-1-wuchi.zero@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210511090632.GH24154@quack2.suse.cz>
-References: <20210511090632.GH24154@quack2.suse.cz>
+        id S230393AbhEKKhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 06:37:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229892AbhEKKhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 06:37:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59523615FF;
+        Tue, 11 May 2021 10:36:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620729402;
+        bh=iCwCQzeBxnPwWxyhinRtYJkB1sfSkl6qO8qDvw0ZQO8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XnhL6csMuWFtiWEWUZ4vgXc6NU3TJTkXcKQbgyaFonBegnJxgzy78BcxKJulMxl1f
+         qL/AgUDGdDKpohj+/r7atMB/VhqaaNTCBu5k53DiBW99xXYiWnyoXUKtmDpYZChwmB
+         I1u4kU+j8x2owZrSYWpLDX4ooOOCokiPnCKVy99Iv6DFH8zcVY/BKL4dxvKLz1Ghy8
+         pkZ3LI+h0U6O+CxSffp3O3IG8vB8aiHV6kMf1yIux2+kOiuKV+5NlDT5buDTPUOpCw
+         PafDBow0rVVionHo72Ty2UqbLuh09oEBKW2RYbY9y+CnnPusUaOJI7zp6xZZgEsZvJ
+         G5FZ+RwYA7SdQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Subject: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists allocations
+Date:   Tue, 11 May 2021 13:36:36 +0300
+Message-Id: <c34a864803f9bbd33d3f856a6ba2dd595ab708a7.1620729033.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the value of pos_ratio_polynom() clamp between 0 and
-2LL << RATELIMIT_CALC_SHIFT, the global control line should be
-consistent with it.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Signed-off-by: Chi Wu <wuchi.zero@gmail.com>
+The rdmavt QP has fields that are both needed for the control and data
+path. Such mixed declaration caused to the very specific allocation flow
+with kzalloc_node and SGE list embedded into the struct rvt_qp.
+
+This patch separates QP creation to two: regular memory allocation for
+the control path and specific code for the SGE list, while the access to
+the later is performed through derefenced pointer.
+
+Such pointer and its context are expected to be in the cache, so
+performance difference is expected to be negligible, if any exists.
+
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- mm/page-writeback.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi,
 
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 0062d5c57d41..3882405dc051 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -845,7 +845,7 @@ static long long pos_ratio_polynom(unsigned long setpoint,
-  *     ^ pos_ratio
-  *     |
-  *     |            |<===== global dirty control scope ======>|
-- * 2.0 .............*
-+ * 2.0  * * * * * * *
-  *     |            .*
-  *     |            . *
-  *     |            .   *
+This change is needed to convert QP to core allocation scheme. In that
+scheme QP is allocated outside of the driver and size of such allocation
+is constant and can be calculated at the compile time.
+
+Thanks
+---
+ drivers/infiniband/sw/rdmavt/qp.c | 13 ++++++++-----
+ include/rdma/rdmavt_qp.h          |  2 +-
+ 2 files changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+index 9d13db68283c..4522071fc220 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -1077,7 +1077,7 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 	int err;
+ 	struct rvt_swqe *swq = NULL;
+ 	size_t sz;
+-	size_t sg_list_sz;
++	size_t sg_list_sz = 0;
+ 	struct ib_qp *ret = ERR_PTR(-ENOMEM);
+ 	struct rvt_dev_info *rdi = ib_to_rvt(ibpd->device);
+ 	void *priv = NULL;
+@@ -1125,8 +1125,6 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 		if (!swq)
+ 			return ERR_PTR(-ENOMEM);
+ 
+-		sz = sizeof(*qp);
+-		sg_list_sz = 0;
+ 		if (init_attr->srq) {
+ 			struct rvt_srq *srq = ibsrq_to_rvtsrq(init_attr->srq);
+ 
+@@ -1136,10 +1134,13 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 		} else if (init_attr->cap.max_recv_sge > 1)
+ 			sg_list_sz = sizeof(*qp->r_sg_list) *
+ 				(init_attr->cap.max_recv_sge - 1);
+-		qp = kzalloc_node(sz + sg_list_sz, GFP_KERNEL,
+-				  rdi->dparms.node);
++		qp = kzalloc(sizeof(*qp), GFP_KERNEL);
+ 		if (!qp)
+ 			goto bail_swq;
++		qp->r_sg_list =
++			kzalloc_node(sg_list_sz, GFP_KERNEL, rdi->dparms.node);
++		if (!qp->r_sg_list)
++			goto bail_qp;
+ 		qp->allowed_ops = get_allowed_ops(init_attr->qp_type);
+ 
+ 		RCU_INIT_POINTER(qp->next, NULL);
+@@ -1327,6 +1328,7 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 
+ bail_qp:
+ 	kfree(qp->s_ack_queue);
++	kfree(qp->r_sg_list);
+ 	kfree(qp);
+ 
+ bail_swq:
+@@ -1761,6 +1763,7 @@ int rvt_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ 	kvfree(qp->r_rq.kwq);
+ 	rdi->driver_f.qp_priv_free(rdi, qp);
+ 	kfree(qp->s_ack_queue);
++	kfree(qp->r_sg_list);
+ 	rdma_destroy_ah_attr(&qp->remote_ah_attr);
+ 	rdma_destroy_ah_attr(&qp->alt_ah_attr);
+ 	free_ud_wq_attr(qp);
+diff --git a/include/rdma/rdmavt_qp.h b/include/rdma/rdmavt_qp.h
+index 8275954f5ce6..2e58d5e6ac0e 100644
+--- a/include/rdma/rdmavt_qp.h
++++ b/include/rdma/rdmavt_qp.h
+@@ -444,7 +444,7 @@ struct rvt_qp {
+ 	/*
+ 	 * This sge list MUST be last. Do not add anything below here.
+ 	 */
+-	struct rvt_sge r_sg_list[] /* verified SGEs */
++	struct rvt_sge *r_sg_list /* verified SGEs */
+ 		____cacheline_aligned_in_smp;
+ };
+ 
 -- 
-2.17.1
+2.31.1
 
