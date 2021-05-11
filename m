@@ -2,123 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A36E379BB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7159379BB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhEKAp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 20:45:27 -0400
-Received: from mail-il1-f172.google.com ([209.85.166.172]:37538 "EHLO
-        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbhEKAp1 (ORCPT
+        id S229932AbhEKAw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 20:52:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229628AbhEKAwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 20:45:27 -0400
-Received: by mail-il1-f172.google.com with SMTP id j12so15727971ils.4
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 17:44:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5Sdpg7BKVKHe73lr7vH369AAvO0wDzjl/hPWMLAHmqA=;
-        b=lnvCkkS9IzFFTNTk6l6A8vKHEW5VniMOmSI16kNO9CrMH0sv9yUtXli8gu+ExdDS2I
-         sDw+ds+aD7cPrVYugfimtUx9/giqluCNpI6m4ZkSHefeP1CZ6/On7wG2Ev0CxQYdfzvs
-         4smIx4SxaETsazgdrQLla3i/l6xZvrlGwyhk5buxviG/4LxNl1K0/Cp4ppu8n2ct8mfg
-         Fur6m0unSeqbZKvtr/yCtTLwkhA6WYbNcVS3+4NBtk+9RhZRxGDlEggbY2xH38b//Kxm
-         EiiV4Pijdc8Y4rV8hvV2PEZte8tJV/rdUJvfAFj9PGZZdfbUUlxa5BqjrgFJOCOEgI5I
-         8IEA==
-X-Gm-Message-State: AOAM5317sPApHHfyz7WXtsePo1Vz7YbaubhG12ZeXd/57xRvGTylk9Tm
-        /elklqh+naCY8TJi587lrYQ=
-X-Google-Smtp-Source: ABdhPJyAGMx0vh8Bg0xsTItGzGRKXS2AJoBmW7vqQC+8NI7cmB5+YKCGluM53krE+LmETSQMNh6UTA==
-X-Received: by 2002:a05:6e02:dec:: with SMTP id m12mr23770714ilj.288.1620693860538;
-        Mon, 10 May 2021 17:44:20 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id c2sm9001429ilj.54.2021.05.10.17.44.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 17:44:19 -0700 (PDT)
-Date:   Tue, 11 May 2021 00:44:18 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Oliver Sang <oliver.sang@intel.com>,
-        Pratik Sampat <psampat@linux.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>,
-        "lkp@intel.com" <lkp@intel.com>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "zhengjun.xing@intel.com" <zhengjun.xing@intel.com>
-Subject: Re: [percpu]  ace7e70901:  aim9.sync_disk_rw.ops_per_sec -2.3%
- regression
-Message-ID: <YJnTYicu2TaVqVmi@google.com>
-References: <20210427073448.GD32408@xsang-OptiPlex-9020>
- <YItcfQfZlNZTmQKR@carbon.dhcp.thefacebook.com>
- <40632FBD-8874-4B6C-A945-F2EBC96CF12B@fb.com>
- <20210507030606.GA27263@xsang-OptiPlex-9020>
- <YJV+Vn9eGfIlxDQE@carbon.dhcp.thefacebook.com>
- <YJWQE8AFjyYpsLYA@google.com>
- <YJnRHhK+2AVTMOfh@carbon.DHCP.thefacebook.com>
+        Mon, 10 May 2021 20:52:24 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5C4C061574;
+        Mon, 10 May 2021 17:51:19 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FfK9b6WFfz9sWD;
+        Tue, 11 May 2021 10:51:15 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620694276;
+        bh=jOGKuDETNtGAVGs0iI+kjiRw3gsZUZU63hQA/yrKvN0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=MNMmpGaWjxiagJnRX+5AvR8TBk4H3mBjofXOdeuS0hvKcUvJJATImzoo8Cq7zIzVK
+         pM++jIJd9OGvo7ZbqDHFttjcAajPbisG4vojGUTmARzWLPx8rSEGbZaSseqHznOgKD
+         EWl+yJspssGAb2S8bt35Jhs/wIOoMTt+hS5+KWdfdEkPxwO/L4aZOmDbmsgUZD2EEG
+         MkLKMpqaJOoZgZr8q17h/FNGLdmUJmpazutKRtrxcvvk4lpgv8LoRcJMo6t59dtC06
+         qtydz+QMQQxFfkmXQohW9hL8pwn/E6wKHscM1G+jUtYqjLI6CseX8r6bmxIld11fT9
+         tNjhbGh9pwPjg==
+Date:   Tue, 11 May 2021 10:51:14 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Roman Gushchin <guro@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the cgroup tree
+Message-ID: <20210511105114.55e90534@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJnRHhK+2AVTMOfh@carbon.DHCP.thefacebook.com>
+Content-Type: multipart/signed; boundary="Sig_/62nkJIloVlHuEbj6hgITbXT";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 05:34:38PM -0700, Roman Gushchin wrote:
-> On Fri, May 07, 2021 at 07:08:03PM +0000, Dennis Zhou wrote:
-> > On Fri, May 07, 2021 at 10:52:22AM -0700, Roman Gushchin wrote:
-> > > On Fri, May 07, 2021 at 11:06:06AM +0800, Oliver Sang wrote:
-> > > > hi Roman,
-> > > >  
-> > > > On Thu, May 06, 2021 at 12:54:59AM +0000, Roman Gushchin wrote:
-> > > > > Ping
-> > > > 
-> > > > sorry for late.
-> > > > 
-> > > > the new patch makes the performance a little better but still has
-> > > > 1.9% regression comparing to
-> > > > f183324133 ("percpu: implement partial chunk depopulation")
-> > > 
-> > > Hi Oliver!
-> > > 
-> > > Thank you for testing it!
-> > > 
-> > > Btw, can you, please, confirm that the regression is coming specifically
-> > > from ace7e70901 ("percpu: use reclaim threshold instead of running for every page")?
-> > > I do see *some* regression in my setup, but the data is very noisy, so I'm not sure
-> > > I can confirm it.
-> > > 
-> > > Thanks!
-> > 
-> > Thanks Oliver and Roman. If this is the case, I'll drop the final patch
-> > and just merge up to f183324133 ("percpu: implement partial chunk
-> > depopulation") into for-next as this is v5.14 anyway.
-> 
-> I doubt it's a good idea. I reran the test with some debug added and it looks
-> like it doesn't  trigger any depopulation at all. Everything else looked sane
-> too.
-> 
+--Sig_/62nkJIloVlHuEbj6hgITbXT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Well that's awkward...
+Hi all,
 
-> Dropping a reasonable patch doing a good thing without any understandinding how
-> it affects (or even can affect in theory) some benchmark sounds like a bad idea.
-> We'll never learn this. It could be that the regression is caused my some
-> tiny alignment difference or something like this, so any other change can
-> trigger it too (I can be totally wrong here, but I don't have any better
-> explanation either).
-> 
+After merging the cgroup tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-So I'm not 100% thrilled with the final patch anyway. Particularly the
-lock dancing I'd rather figure something out a little cleaner. I'm going
-to take some time later this week and sort it out. If I can't think of
-anthing better I'll just reapply the final patch.
+In file included from include/linux/string.h:6,
+In file included from include/linux/string.h:6,
+                 from arch/powerpc/include/asm/paca.h:15,
+                 from arch/powerpc/include/asm/current.h:13,
+                 from include/linux/sched.h:12,
+                 from include/linux/cgroup.h:12,
+                 from kernel/cgroup/cgroup-internal.h:5,
+                 from kernel/cgroup/cgroup.c:31:
+kernel/cgroup/cgroup.c: In function 'cgroup_exit':
+kernel/cgroup/cgroup.c:6270:17: error: 'task' undeclared (first use in this=
+ function); did you mean 'tsk'?
+ 6270 |  if (unlikely(!(task->flags & PF_KTHREAD) &&
+      |                 ^~~~
+include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+      |                                          ^
+kernel/cgroup/cgroup.c:6270:17: note: each undeclared identifier is reporte=
+d only once for each function it appears in
+ 6270 |  if (unlikely(!(task->flags & PF_KTHREAD) &&
+      |                 ^~~~
+include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
+      |                                          ^
 
-I've currently merged everything up into the last patch for-5.14. Should
-at least give us some very preliminary testing.
+Caused by commit
 
-> Btw, do we have any similar tests?
-> 
-> Thanks!
+  c740aad01e41 ("cgroup: inline cgroup_task_freeze()")
 
-Thanks,
-Dennis
+I have used the cgroup tree from next-20210510 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/62nkJIloVlHuEbj6hgITbXT
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCZ1QIACgkQAVBC80lX
+0GzbhAgAlOksoCsNs+sNiq5/9jLwp3iPepoCT1u0HD4NprS9cKnPORs3yL5Vk8ST
+GejCJnBj3dtMAYJ3R6A7XKqysEk54XNxGDXxd9cWs+SnlNNulu5PSp4V990ooj5l
+8vvEhJufbUCbe+7LULzAgcg1mZvrIUMQw1FjaZquMlriqZUMtWqe76ZrSEI3yZJ7
+tPqT5CoHD9EEu1lSKDwK8glhFWnco5xRB+y/x9lsRNPKhthcsMDYBkABXJ9+pEqx
+ApFDm7uLsePT/AA5WJ3rJl/wwRCyDdH7UBaN9zjjvAmTsLffk0rHtgVoIscJD7yE
+RSjTZMTb8nh/kk1wB8HkzMydNeIh0g==
+=OYpH
+-----END PGP SIGNATURE-----
+
+--Sig_/62nkJIloVlHuEbj6hgITbXT--
