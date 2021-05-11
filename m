@@ -2,251 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA26B37AB78
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3FE37AB7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231909AbhEKQHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 12:07:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39088 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231875AbhEKQHo (ORCPT
+        id S230315AbhEKQIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 12:08:13 -0400
+Received: from sonic307-15.consmr.mail.ne1.yahoo.com ([66.163.190.38]:35990
+        "EHLO sonic307-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231269AbhEKQIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:07:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620749197;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XlWkZqQiA2f5P4YJIi6pLOwt0E2ferRdHsdF7okprNw=;
-        b=TQ3yA/GBinwqYmKISS29ySeO+37+jjJAjW+Bf7DQXYRUNjdsaJww+R2fn+US9fgOD7jpBn
-        ocTN/a0aYFkGlWztQ7Y1zt5wTSgqRqO1iTKfaWTLcvPrItmi/iFZ91Z5h+SlNdiDaIjYqt
-        qLsK6/tv8TO+fhBDhV52SKRhnXerwT8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-592-cvtx_Gq3PWCfd3WMcpPXKw-1; Tue, 11 May 2021 12:06:33 -0400
-X-MC-Unique: cvtx_Gq3PWCfd3WMcpPXKw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48C60800D62;
-        Tue, 11 May 2021 16:06:31 +0000 (UTC)
-Received: from [10.3.115.19] (ovpn-115-19.phx2.redhat.com [10.3.115.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C5CFA614EB;
-        Tue, 11 May 2021 16:06:28 +0000 (UTC)
-Subject: Re: [PATCH 11/16] iommu/dma: Support PCI P2PDMA pages in dma-iommu
- map_sg
-To:     Logan Gunthorpe <logang@deltatee.com>,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org
-Cc:     Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <20210408170123.8788-1-logang@deltatee.com>
- <20210408170123.8788-12-logang@deltatee.com>
-From:   Don Dutile <ddutile@redhat.com>
-Message-ID: <6003ed3d-5969-4201-3cbb-3bcf84385541@redhat.com>
-Date:   Tue, 11 May 2021 12:06:28 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Tue, 11 May 2021 12:08:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1620749225; bh=Enu/4VpigXahAHzpvfI9ItrovKMhKUZDViLNdG2sehk=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=a5ow1uG09fCmqFCJmKoTbOQYrDWc1D6oDwrxYKzmfyFkLpPRtdlihTquCby5cu/J9qAeXBZnI8nT434BdKmoVe/IyEG7Znjdc7VAGfGJbUAkT8ZKsF4lbJbgcY0TGpZV7Dima+RcQ24chArfwFP+NiR9X98AJDZW/68TQtlbicLD0LnHhiOJo02du0ZQuXnQfnABhiQ+gcmyUss/qJ9FxexDdIP1j0zvH/eNM2Im19GPGszc6LV9+9L2sJOReLa+i0K+0JfMm0+yvk3W1AzwnUTCbyJqxFKl1lWvWWkaXtSxNwdxzmoRMjGLmrb7YetGOWu5bEQrFAPySOhSbnL1MA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1620749225; bh=TQOtRQ9NBbYAokHCm30WRGNpYXPcZ8QiRAY+ajJV9gi=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=VkiyQtFfgapfTZqDcMtr07Q9k2bg2BWgewr1sCx6lcyxVlTVmJ5Aj6rZd4TE6Yar3vNoDdQBawLgY3qbeghLtwPbff+0SrbGP2RAJn0lWzVj91w0OAAbev1G5/MMUaV/v2RvJJIOj6skSC3VrFiPKS5g0UQNXzWY0IdcKtfXlnZYU0RtB1p6FHyOV5EQl+SEfTNOlJZ/LIp7AekrLdbpBGOXjVB4IZ+OX9+MHBVovaS6CJev17K0NhBg9vYNu4NGs3rffaTpFi4fJ//PqCPlJbE0fgEBw1vGtLLPvsb3mTUnbWItjtE8sNVDwCNTDj+NRDaafTf8JBdry9QsWf3G4w==
+X-YMail-OSG: C18H2sIVM1mKT0tUzW5eHo_GOX_F1Z759yWun4_4i56RuNpzJOuBE.phtrQ_3Ba
+ cSmvI4ofoJMduIcfV0YaMt24v3mnEfbVK6cN.0rE_eyghhTmchOjojcjUrltVGlVvWROy7LR2CN.
+ M5kKk0Hfwjd_TV91tGhCsdCjlBq18cnmtXnWuWWsX4.k0SV1H8dbEYrvTDAhVSYqHZB.2gzoHECj
+ CNlJAHhZeuhriLPTMaryx.YBXPq4RRgtnOcNkDz.Y7GUH.u._Hg_5rDF_c6vdIK29Zt_r0vTEMr9
+ dDEd21oPfkha9RRK2NOodyU2QKFm9OTv7wTMB3Cz6MdvP5bIK6JQLeW_E0ek6cp6sJwz9cHkaJod
+ GzqjyPasZYr_ZACk2w3Egg2R_o2zHYSZ4THZbaqxou8Kf3Dbm4Oo1FvmVYaYoNwiyJc8rdbbPAhc
+ vSekgh9E3EFvF.FMkaaG3sk.KZ8qNb6HGdw56ChG.FXbZHIt1rLi_qYj5I8ZR7x1Ry0BjrpPKI57
+ aoXjRLa_kqOkaW4jYrOk874xDvYcD96S2U6K3jYibGS27RzWLd9wTNbgrgsR.a5DqnjlDl02xBq5
+ ywJ90RPI1daHHGn01XLyyad9dwPZ3DXG2uq9Vezf7q6hoLrzNWhc2kxLmG.TgWBtw60pUnEY.B_l
+ O3oWDyxrQaAgTsQLlHIYlUBnppt2KYv3xSUGBWaeRDSLM5vuxePLDc.4LzSuDdx6zdHt9Lxijkzc
+ nlAAtUNdqHTReAa35idDgHfc7Gq48rMdr29WRiezkREaAOXEbJ1qdEKEg_l5bMK_AmJ03xDdwli5
+ 4x.VSO5YN4eidkd9sL3bauKIU4CrymIRhtXmT724WshJLQuGQTMqEO5f3XUBiUbpH6dfobH1QbYV
+ C1lPH8Q6eJEjdbWIn1geyaqxG_YsmeYye0XNcQhf3BjXd25CJsnTFpHB22CfADlGuLa8avHdcWoQ
+ DiCVMuV0EAW5jorcnqP0q_1LprUmeKH6QTDVDxWJ9r58dVS6juJKf58TRHad3uW6VMdyh35SNn5g
+ Wc0i627LzVimc_jdKwRlon_PVIW583lLq8I5N8fv9sbGvLDM6o5VhLqmwDPbLWtw62Pb3_.LAn_c
+ VHK2o3JUvFqAm37QdXZJgo5O_QXVSYabE7pitpf1F6CspiqiHs2EnzRYPi1kQJINIZeSH_rSlK20
+ .VHgTPuMgNaU2OkGdfLUBXk2s58IkcUrYfEzLnpXdRXkMNM9m9RVf45PWcCYpkntcIkKKlaM0W3b
+ jiPqWHDCUnM6So5ukXQsskslx0GB8weWQuDRoAAL73.GLnOnpsXH1f0yh3imLi98HAnM.AxK2xDK
+ 9JeRYruqPCltRvFIaKnlMZ3IaRmofoSLORD3edM.9oF0aLGHIuRuq1XhOr._x5ZlCjYYFcoJYuKv
+ Rv4KP5YhISo2EB7mcZEsnDN7F5P3qURKFGZYBsRj7wX6VnjfpJhrBYVcxFxyj89WW6UrR8w41ysB
+ S1IW7mxTAiPDWDYoZwfvQqWnRmbBSigiT01yU_W_e7udKE7LCTwfQ4laqwlnB6ykPZoBLptAkG0U
+ _m_xtUtSw3_0RUyZUx38oQBJSh01dzT64z8flG2R1ri88QaW.ng3m2M0E0UQuX15KgwyflVeGBIF
+ ArVMmxULRv9JKuztW8mjoY25OheQpaX63sXTS1izCQS7DN8PNYtQ_bSgsupB3x2Uj6xcvKwi.0Px
+ tw_zNyYhEI3muHO5ths8WNWli6eOUbtx0hAa_90P_GfqmDXxu_.DbDFxNkw13BvOXLwkwq9NnBD1
+ SCCJ2FUnpYsITaQLaANu2sUt.mgGspH474obpv_USF.Wbdixmr2FoV0iagb9YqLA6ExZ7owAbPGL
+ WqUNH.FrNUh_2AXGo.6J7vUtxrHv_Fg6TMr_op6PfsyfbUCtOJ5Tep1rr0YcbLcx9zgqZN8Ndh0D
+ Dv3wVHiGZ_LVJ4ILhdqhIwPh93Vi8hnaxxEp5S7mNgTgHU.vKKVyGguKLsGfp0thKUyMuvjsog11
+ nOos3wUoqohsk9p5OCDzzvItYPbhgKJpPKCFJ6sq8gLUAkBMnD2g7oBF1grnOjCj0Z71nr_B30O6
+ SpX1FDQslfhq1oQkIsruGyRxjHlZtBxC5hax3_I.GsCqavimMhRf9QSe24IIZujmk.PTvmS7XWsK
+ YhpcCG1FsAese64BME6UgPHpyHQebbEN0Oy6cIs4LszIapktETzutP7I3Gf_v_nPlMjqR66pBVs1
+ .2VC6IqkEdF03qSjBGHoU8EzaXAO3kvT2WypJABmUxJkhZYLbMYFdmVn6Bj5YNCsFivmA0S.n0oe
+ p738mRXv1SrWIf1QLOB.IWs28BpVw8GHspnmcuZeXHQ5ztnoMb9YKGNLd5eCpKpCcZaPviNd6eQT
+ M7vnYUs2fZrgbiDPz7BdqAgfJzjMn6VxcfWhoZpLgPkXWKypRj9VjycISRm4.skymrmA9CGxvau2
+ X5rW6FIx8jAIzJ13KsAVn2_XRl1RJ34E.x5OC6RznAo1ZOrdlFciw_BHgVDzSO1Gg10mpCUwFkN2
+ 8KLubmQVyaLlyD7_d0SiLMd30qnx4FSZe0faMxEQtGo.hZkqiSOSaX6laJ8xS.F6S3E4Mls17ngz
+ rCSSk9PccRE88VIQEqeK51YDjo2eFnm8UuYJ_A7foY5kKHOnqmUCbHpwTb_PcsoAwutHUbE98.dF
+ l6q_Vi7eexVeI0k37uhH6nGw6ZYt.NWL30ATQJc95I7U0N26ilKteWwwcDtXCXx6keIZHHMMwZ7Z
+ wjnXwD464_scrou3cdW6SmZf50wrnv8U6uQr_bLmDUInd3Wf6a_j3bTFd31pAsgMo_nJJHwKfwe3
+ 1tcqyoLIrW5MVmrJmMI0qCmPBEXoNO93vA51U8zspyJnc9T7BgNVXmyMKXZUuwmzq7E7.wgEvHc6
+ R5na6LeHNY_d5Suuuz_uYLamntoatkqgHFuVl6mte9K1pcHdvPIQZmMhfjGm9LtgNkxqHBhG6jc0
+ .BP6TpuWfeYxpIO3Lk6yb0x0L4ly5rYwB4Y8ip6LKG5bfSxlyrkUBlzjrurYFf5ntDGQN025D
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Tue, 11 May 2021 16:07:05 +0000
+Received: by kubenode575.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID c050a91aeed93f70d3a5ab397ada3264;
+          Tue, 11 May 2021 16:07:01 +0000 (UTC)
+Subject: Re: [syzbot] WARNING in smk_set_cipso (2)
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     jmorris@namei.org, linux-kernel@vger.kernel.org, serge@hallyn.com,
+        linux-security-module@vger.kernel.org,
+        syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>,
+        syzkaller-bugs@googlegroups.com,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <000000000000d06f2605bfc110e4@google.com>
+ <d1d73239-c549-c6c0-5b24-5d701b69e3f1@i-love.sakura.ne.jp>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <9d3b4454-a12c-7578-c079-80338ccfbc2a@schaufler-ca.com>
+Date:   Tue, 11 May 2021 09:07:01 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210408170123.8788-12-logang@deltatee.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <d1d73239-c549-c6c0-5b24-5d701b69e3f1@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Mailer: WebService/1.1.18295 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/16)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/8/21 1:01 PM, Logan Gunthorpe wrote:
-> When a PCI P2PDMA page is seen, set the IOVA length of the segment
-> to zero so that it is not mapped into the IOVA. Then, in finalise_sg(),
-> apply the appropriate bus address to the segment. The IOVA is not
-> created if the scatterlist only consists of P2PDMA pages.
+On 4/12/2021 6:28 AM, Tetsuo Handa wrote:
+> Commit 7ef4c19d245f3dc2 ("smackfs: restrict bytes count in smackfs write
+> functions") missed that count > SMK_CIPSOMAX check applies to only
+> format == SMK_FIXED24_FMT case.
 >
-> Similar to dma-direct, the sg_mark_pci_p2pdma() flag is used to
-> indicate bus address segments. On unmap, P2PDMA segments are skipped
-> over when determining the start and end IOVA addresses.
->
-> With this change, the flags variable in the dma_map_ops is
-> set to DMA_F_PCI_P2PDMA_SUPPORTED to indicate support for
-> P2PDMA pages.
->
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-So, this code prevents use of p2pdma using an IOMMU, which wasn't checked and
-short-circuited by other checks to use dma-direct?
+> Reported-by: syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-So my overall comment to this code & related comments is that it should be sprinkled
-with notes like "doesn't support IOMMU" and / or "TODO" when/if IOMMU is to be supported.
-Or, if IOMMU-based p2pdma isn't supported in these routines directly, where/how they will be supported?
+Added to smack-next. Thank you.
 
 > ---
->   drivers/iommu/dma-iommu.c | 66 ++++++++++++++++++++++++++++++++++-----
->   1 file changed, 58 insertions(+), 8 deletions(-)
+>  security/smack/smackfs.c | 2 ++
+>  1 file changed, 2 insertions(+)
 >
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index af765c813cc8..ef49635f9819 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -20,6 +20,7 @@
->   #include <linux/mm.h>
->   #include <linux/mutex.h>
->   #include <linux/pci.h>
-> +#include <linux/pci-p2pdma.h>
->   #include <linux/swiotlb.h>
->   #include <linux/scatterlist.h>
->   #include <linux/vmalloc.h>
-> @@ -864,6 +865,16 @@ static int __finalise_sg(struct device *dev, struct scatterlist *sg, int nents,
->   		sg_dma_address(s) = DMA_MAPPING_ERROR;
->   		sg_dma_len(s) = 0;
->   
-> +		if (is_pci_p2pdma_page(sg_page(s)) && !s_iova_len) {
-> +			if (i > 0)
-> +				cur = sg_next(cur);
-> +
-> +			pci_p2pdma_map_bus_segment(s, cur);
-> +			count++;
-> +			cur_len = 0;
-> +			continue;
-> +		}
-> +
->   		/*
->   		 * Now fill in the real DMA data. If...
->   		 * - there is a valid output segment to append to
-> @@ -961,10 +972,12 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
->   	struct iova_domain *iovad = &cookie->iovad;
->   	struct scatterlist *s, *prev = NULL;
->   	int prot = dma_info_to_prot(dir, dev_is_dma_coherent(dev), attrs);
-> +	struct dev_pagemap *pgmap = NULL;
-> +	enum pci_p2pdma_map_type map_type;
->   	dma_addr_t iova;
->   	size_t iova_len = 0;
->   	unsigned long mask = dma_get_seg_boundary(dev);
-> -	int i;
-> +	int i, ret = 0;
->   
->   	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
->   	    iommu_deferred_attach(dev, domain))
-> @@ -993,6 +1006,31 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
->   		s_length = iova_align(iovad, s_length + s_iova_off);
->   		s->length = s_length;
->   
-> +		if (is_pci_p2pdma_page(sg_page(s))) {
-> +			if (sg_page(s)->pgmap != pgmap) {
-> +				pgmap = sg_page(s)->pgmap;
-> +				map_type = pci_p2pdma_map_type(pgmap, dev,
-> +							       attrs);
-> +			}
-> +
-> +			switch (map_type) {
-> +			case PCI_P2PDMA_MAP_BUS_ADDR:
-> +				/*
-> +				 * A zero length will be ignored by
-> +				 * iommu_map_sg() and then can be detected
-> +				 * in __finalise_sg() to actually map the
-> +				 * bus address.
-> +				 */
-> +				s->length = 0;
-> +				continue;
-
-> +			case PCI_P2PDMA_MAP_THRU_HOST_BRIDGE:
-> +				break;
-So, this 'short-circuits' the use of the IOMMU, silently?
-This seems ripe for users to enable IOMMU for secure computing reasons, and using/enabling p2pdma,
-and not realizing that it isn't as secure as 1+1=2  appears to be.
-If my understanding is wrong, please point me to the Documentation or code that corrects this mis-understanding.  I could have missed a warning when both are enabled in a past patch set.
-Thanks.
---dd
-> +			default:
-> +				ret = -EREMOTEIO;
-> +				goto out_restore_sg;
-> +			}
-> +		}
-> +
->   		/*
->   		 * Due to the alignment of our single IOVA allocation, we can
->   		 * depend on these assumptions about the segment boundary mask:
-> @@ -1015,6 +1053,9 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
->   		prev = s;
->   	}
->   
-> +	if (!iova_len)
-> +		return __finalise_sg(dev, sg, nents, 0);
-> +
->   	iova = iommu_dma_alloc_iova(domain, iova_len, dma_get_mask(dev), dev);
->   	if (!iova)
->   		goto out_restore_sg;
-> @@ -1032,13 +1073,13 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
->   	iommu_dma_free_iova(cookie, iova, iova_len, NULL);
->   out_restore_sg:
->   	__invalidate_sg(sg, nents);
-> -	return 0;
-> +	return ret;
->   }
->   
->   static void iommu_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
->   		int nents, enum dma_data_direction dir, unsigned long attrs)
->   {
-> -	dma_addr_t start, end;
-> +	dma_addr_t end, start = DMA_MAPPING_ERROR;
->   	struct scatterlist *tmp;
->   	int i;
->   
-> @@ -1054,14 +1095,22 @@ static void iommu_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
->   	 * The scatterlist segments are mapped into a single
->   	 * contiguous IOVA allocation, so this is incredibly easy.
->   	 */
-> -	start = sg_dma_address(sg);
-> -	for_each_sg(sg_next(sg), tmp, nents - 1, i) {
-> +	for_each_sg(sg, tmp, nents, i) {
-> +		if (sg_is_pci_p2pdma(tmp)) {
-> +			sg_unmark_pci_p2pdma(tmp);
-> +			continue;
-> +		}
->   		if (sg_dma_len(tmp) == 0)
->   			break;
-> -		sg = tmp;
-> +
-> +		if (start == DMA_MAPPING_ERROR)
-> +			start = sg_dma_address(tmp);
-> +
-> +		end = sg_dma_address(tmp) + sg_dma_len(tmp);
->   	}
-> -	end = sg_dma_address(sg) + sg_dma_len(sg);
-> -	__iommu_dma_unmap(dev, start, end - start);
-> +
-> +	if (start != DMA_MAPPING_ERROR)
-> +		__iommu_dma_unmap(dev, start, end - start);
->   }
->   
-overall, fiddling with the generic dma-iommu code instead of using a dma-ops-based, p2pdma function that has it carved out and separated/refactored out to be cleaner seems less complicated, but I'm guessing you tried that and it was too complicated to do?
---dd
-
->   static dma_addr_t iommu_dma_map_resource(struct device *dev, phys_addr_t phys,
-> @@ -1254,6 +1303,7 @@ static unsigned long iommu_dma_get_merge_boundary(struct device *dev)
->   }
->   
->   static const struct dma_map_ops iommu_dma_ops = {
-> +	.flags			= DMA_F_PCI_P2PDMA_SUPPORTED,
-wait, it's a const that's always turned on?
-shouldn't the define for this flag be 0 for non-p2pdma configs?
-
->   	.alloc			= iommu_dma_alloc,
->   	.free			= iommu_dma_free,
->   	.alloc_pages		= dma_common_alloc_pages,
-
+> diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
+> index 22ded2c26089..1ad7d0d1ea62 100644
+> --- a/security/smack/smackfs.c
+> +++ b/security/smack/smackfs.c
+> @@ -855,6 +855,8 @@ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
+>  	if (format == SMK_FIXED24_FMT &&
+>  	    (count < SMK_CIPSOMIN || count > SMK_CIPSOMAX))
+>  		return -EINVAL;
+> +	if (count > PAGE_SIZE)
+> +		return -EINVAL;
+>  
+>  	data = memdup_user_nul(buf, count);
+>  	if (IS_ERR(data))
