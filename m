@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCFF379DC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE6A379DD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhEKD27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 23:28:59 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2766 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhEKD2z (ORCPT
+        id S230167AbhEKDbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 23:31:52 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:2621 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229961AbhEKDbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 23:28:55 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FfNZB4klSzmg6j;
-        Tue, 11 May 2021 11:24:18 +0800 (CST)
+        Mon, 10 May 2021 23:31:50 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FfNg36S6xzlcqt;
+        Tue, 11 May 2021 11:28:31 +0800 (CST)
 Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 11 May 2021 11:27:31 +0800
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 11 May 2021 11:30:33 +0800
 From:   Zou Wei <zou_wei@huawei.com>
-To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <djakov@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] interconnect: qcom: Add missing MODULE_DEVICE_TABLE
-Date:   Tue, 11 May 2021 11:44:33 +0800
-Message-ID: <1620704673-104205-1-git-send-email-zou_wei@huawei.com>
+To:     <jacopo@jmondi.org>, <mchehab@kernel.org>
+CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] media: mt9v111: Add missing MODULE_DEVICE_TABLE
+Date:   Tue, 11 May 2021 11:47:36 +0800
+Message-ID: <1620704856-104451-1-git-send-email-zou_wei@huawei.com>
 X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -42,21 +41,21 @@ as an external module.
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- drivers/interconnect/qcom/bcm-voter.c | 1 +
+ drivers/media/i2c/mt9v111.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/interconnect/qcom/bcm-voter.c b/drivers/interconnect/qcom/bcm-voter.c
-index d1591a2..154710d 100644
---- a/drivers/interconnect/qcom/bcm-voter.c
-+++ b/drivers/interconnect/qcom/bcm-voter.c
-@@ -362,6 +362,7 @@ static const struct of_device_id bcm_voter_of_match[] = {
- 	{ .compatible = "qcom,bcm-voter" },
- 	{ }
+diff --git a/drivers/media/i2c/mt9v111.c b/drivers/media/i2c/mt9v111.c
+index 97c7527..f16e632 100644
+--- a/drivers/media/i2c/mt9v111.c
++++ b/drivers/media/i2c/mt9v111.c
+@@ -1260,6 +1260,7 @@ static const struct of_device_id mt9v111_of_match[] = {
+ 	{ .compatible = "aptina,mt9v111", },
+ 	{ /* sentinel */ },
  };
-+MODULE_DEVICE_TABLE(of, bcm_voter_of_match);
++MODULE_DEVICE_TABLE(of, mt9v111_of_match);
  
- static struct platform_driver qcom_icc_bcm_voter_driver = {
- 	.probe = qcom_icc_bcm_voter_probe,
+ static struct i2c_driver mt9v111_driver = {
+ 	.driver = {
 -- 
 2.6.2
 
