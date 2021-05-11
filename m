@@ -2,76 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92F037A9C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2203C37A9CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbhEKOo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:44:56 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:43099 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231643AbhEKOoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:44:55 -0400
-Received: from [IPv6:2601:646:8602:8be1:5181:d6fc:e7cd:279d] ([IPv6:2601:646:8602:8be1:5181:d6fc:e7cd:279d])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14BEhHY22613901
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Tue, 11 May 2021 07:43:19 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14BEhHY22613901
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1620744200;
-        bh=K/2xiRWvPHCpYREHB6EqzzuF6Hzrmm1Cr6+oTwllx3o=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=IBZlSHq6tmUBuRTC+2YuGCCwseyAEsIqdTiDoOXa0/SOB+62yLc7M0fCi8GUBVg0r
-         AfbGqnNDvkUbHlSTLCnjER9bMnVz/HSzlNF/TFWfcSjiJyZOqoB8hGuJnGDXT1K/2/
-         LE2or1CjUR8F3xzLFl0iQ9mOJ7p0O6gYvt/A9t/AQYF6W6QqOW7CUJXyGuTby4PqzA
-         dFkSR+T8RLxNrWj0BnmIq84k/DX/qbRRmfTXVn79vyMO92T1QfEuEIIBkkEFmrTFdP
-         1K93w8o/c6dtpLOZYmKu/kwlSuIqDfBoKjZGqUGBFL8fq1sdfJy/6vLcCDJFTkCUfY
-         opLU/XlTVoeqQ==
-Date:   Tue, 11 May 2021 07:43:07 -0700
-User-Agent: K-9 Mail for Android
-In-Reply-To: <87o8dhfjc8.ffs@nanos.tec.linutronix.de>
-References: <20210511005531.1065536-1-hpa@zytor.com> <20210511005531.1065536-4-hpa@zytor.com> <87o8dhfjc8.ffs@nanos.tec.linutronix.de>
+        id S231956AbhEKOpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:45:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231154AbhEKOpU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:45:20 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABD7C061574;
+        Tue, 11 May 2021 07:44:13 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id b3so10918317plg.11;
+        Tue, 11 May 2021 07:44:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bBC2p5ihKeMf1HGjAdHfxw7d7sie0dBHM2U88fiva74=;
+        b=pikvPPb3zc241TwPQBu/ftn/nF90SMkMFXM9Yfn0ed2jvmIQ1ZSQeLXrtv1lg4j/NS
+         AhVaAsCzk9FpYmzDGDh/Ma2ZlzTWSqJTqmYj+QFQX9/Kur0QszpOupXkwfm4sQ9Msp3f
+         Ds+SFJngqaBD+QHFmcFUbGWxqNqmEyQzd4YQMmHN2Td5CPwfyM2pBXyXVsyZmc9a7R7f
+         CLt1aaAKqj7DkfFu95ygHRx67Uqaqi3xjjcxhMffjl4T1HpW8LBhKK6Or1L9ZFjMPVHB
+         vmbsHKmeVBwaPg5vsrvlB4kQjNnghoFBs5TpS7VJ5g+hNog6Z/dod7mWHlDE8O+qzr7Y
+         TFQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bBC2p5ihKeMf1HGjAdHfxw7d7sie0dBHM2U88fiva74=;
+        b=e/ibRPI3jDEPKCLsmuQHJKgWQ7TJcAfger59o1hrXwP1+2ybFk53C24lAoUqwy2AN0
+         sEvyfeE4VtxKgTc2C+5VAy1TWEsJZ6Mlz101AubkEygScdOxOSzzhMdkA9TxfmzBEWlY
+         +hRYQZ5CzGXCvaoEXDgGkGvBhFx/qMnRAbyJbTU0d6vOZP4Vbc2k3oybloPYYs/yp2+m
+         /5fsTK9blJLkAS4DsLo3BqVMsTwMoax5qOuxQhy2CO6dM9N/G3euLGJV9TjWVi6qr+4l
+         V9lrk5jmWpgGzYs6TnaPos/+RHZeUUjs7sSQPpgc4erCEg/SRSjHykVrkM0ebP+UIHoS
+         rvdA==
+X-Gm-Message-State: AOAM531NP1Wk8JLJ0mYZMgi332GI9KOnJBG+p7h5Gd9llbls2k1h02DI
+        SGq/y6JhQb+PIIS6QoEI0HmQJUbnwdWcySi+oL0cq1u4X1A=
+X-Google-Smtp-Source: ABdhPJw7BO8Pi8gIIgCJtYQyji5hMrwwNMo4n4xlVAAFcT7KACAbMMyAsgd0gFbLpFA7N5JXdn9mTIhUuJVgSRzbKsU=
+X-Received: by 2002:a17:902:b20a:b029:ef:463:365a with SMTP id
+ t10-20020a170902b20ab02900ef0463365amr24194656plr.17.1620744253449; Tue, 11
+ May 2021 07:44:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 3/6] x86/idt: remove address argument to idt_invalidate()
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>
-CC:     Steve Wahl <steve.wahl@hpe.com>, Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <13944C28-B73C-4B2F-95C9-9395A6C21722@zytor.com>
+References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
+ <162072071980.33404.13031284441613044277.b4-ty@kernel.org>
+ <CAHp75Vck5izDB4mTRV5hTaknpx5Bm+OA4rNLVznQxVaEwigBZg@mail.gmail.com>
+ <20210511134706.GI4496@sirena.org.uk> <CAHp75VdPHYEq+Xn5yQ+TyQn5uerc+afcVaHj22OmVzsBW2jcaQ@mail.gmail.com>
+ <CAHp75Vca2KT4kd9zw3ECqym1rRDSg2NNbwRRVVA1L7vyD3VCJQ@mail.gmail.com>
+ <YJqRBIdTlvnsCYsn@smile.fi.intel.com> <20210511142433.GK4496@sirena.org.uk>
+ <CAHp75Vfh4AViMMSm6MKAGP7s_ANOSyHVDj5qG=j5YrLPjH+Y8w@mail.gmail.com> <20210511143807.GL4496@sirena.org.uk>
+In-Reply-To: <20210511143807.GL4496@sirena.org.uk>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 11 May 2021 17:43:57 +0300
+Message-ID: <CAHp75Vc1E2ahkR6zKDT9BT6O5TH6fQPLZHKLTN7M_qqfD=EubA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/14] spi: pxa2xx: Set of cleanups
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Daniel Mack <daniel@zonque.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yup, me bad=2E
-
-On May 11, 2021 7:14:47 AM PDT, Thomas Gleixner <tglx@linutronix=2Ede> wro=
-te:
->On Mon, May 10 2021 at 17:55, H=2E Peter Anvin wrote:
->> diff --git a/arch/x86/kernel/machine_kexec_32=2Ec
->b/arch/x86/kernel/machine_kexec_32=2Ec
->> index 64b00b0d7fe8=2E=2E6ba90f47d8c3 100644
->> --- a/arch/x86/kernel/machine_kexec_32=2Ec
->> +++ b/arch/x86/kernel/machine_kexec_32=2Ec
->> @@ -232,8 +232,8 @@ void machine_kexec(struct kimage *image)
->>  	 * The gdt & idt are now invalid=2E
->>  	 * If you want to load them you must set up your own idt & gdt=2E
->>  	 */
->> -	idt_invalidate(phys_to_virt(0));
->> -	set_gdt(phys_to_virt(0), 0);
->> +	idt_invalidate();
->> +	set_gdt(0, 0);
+On Tue, May 11, 2021 at 5:38 PM Mark Brown <broonie@kernel.org> wrote:
 >
->  (NULL, 0)
+> On Tue, May 11, 2021 at 05:28:13PM +0300, Andy Shevchenko wrote:
+> > On Tue, May 11, 2021 at 5:25 PM Mark Brown <broonie@kernel.org> wrote:
 >
->first argument it a pointer=2E=2E=2E
-> =20
+> > > Please stop.
+>
+> > Okay, what should I do?
+>
+> Nothing.  Just stop sending this out until I've had a chance to handle
+> the current version.
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+Thanks, and sorry for the mess.
+v4 I have sent before had a chance to read your previous email(s).
+
+No more versions this week for sure, and sorry again.
+
+-- 
+With Best Regards,
+Andy Shevchenko
