@@ -2,134 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF61379F8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74413379F8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbhEKGKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 02:10:10 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:2622 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbhEKGKI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 02:10:08 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FfS9k3bqZzklf3;
-        Tue, 11 May 2021 14:06:50 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 11 May
- 2021 14:07:29 +0800
-Subject: Re: [PATCH] f2fs: set file as cold when file defragmentation
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, <daejun7.park@samsung.com>
-CC:     "chao@kernel.org" <chao@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <CGME20210429062005epcms2p352ef77f96ab66cbffe0c0ab6c1b62d8a@epcms2p3>
- <20210429062005epcms2p352ef77f96ab66cbffe0c0ab6c1b62d8a@epcms2p3>
- <3a0ab201-9546-d523-abc7-79df5f637f14@huawei.com>
- <YJN0nTgadoq8vDaG@google.com>
- <bd0fa15b-01c3-9f70-3eb8-ec2b54a0ee8f@huawei.com>
- <YJlHmP/ej8/IsHL3@google.com>
- <6e95edca-4802-7650-4771-5389067935dc@huawei.com>
- <YJoRcIpW1g/OgHZn@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <fc7f1b2b-60ea-eb12-3195-7b3ad0b3adc2@huawei.com>
-Date:   Tue, 11 May 2021 14:07:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <YJoRcIpW1g/OgHZn@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+        id S230247AbhEKGJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 02:09:16 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:32979 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229840AbhEKGJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 02:09:15 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4FfSCC6tq1z9sdc;
+        Tue, 11 May 2021 08:08:07 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id yc6tN5eH3jks; Tue, 11 May 2021 08:08:07 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4FfSCC5vYHz9sdb;
+        Tue, 11 May 2021 08:08:07 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A6C1E8B7A0;
+        Tue, 11 May 2021 08:08:07 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id CSUn8zOMSxbO; Tue, 11 May 2021 08:08:07 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2DFC28B766;
+        Tue, 11 May 2021 08:08:07 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id E5E386492B; Tue, 11 May 2021 06:08:06 +0000 (UTC)
+Message-Id: <f7f4d4e364de6e473da874468b903da6e5d97adc.1620713272.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc: Force inlining of csum_add()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Tue, 11 May 2021 06:08:06 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/11 13:09, Jaegeuk Kim wrote:
-> On 05/11, Chao Yu wrote:
->> On 2021/5/10 22:47, Jaegeuk Kim wrote:
->>> On 05/06, Chao Yu wrote:
->>>> On 2021/5/6 12:46, Jaegeuk Kim wrote:
->>>>> On 05/06, Chao Yu wrote:
->>>>>> On 2021/4/29 14:20, Daejun Park wrote:
->>>>>>> In file defragmentation by ioctl, all data blocks in the file are
->>>>>>> re-written out-of-place. File defragmentation implies user will not update
->>>>>>> and mostly read the file. So before the defragmentation, we set file
->>>>>>> temperature as cold for better block allocation.
->>>>>>
->>>>>> I don't think all fragmented files are cold, e.g. db file.
->>>>>
->>>>> I have a bit different opinion. I think one example would be users want to
->>>>> defragment a file, when the they want to get higher read bandwidth for
->>>>
->>>> Multimedia file was already defined as cold file now via default extension
->>>> list?
->>>
->>> I just gave an example. And default is default.
->>>
->>>>
->>>>> usually multimedia files. That's likely to be cold files. Moreover, I don't
->>>>> think they want to defragment db files which will be fragmented soon?
->>>>
->>>> I guess like db files have less update but more access?
->>>
->>> I think both, and we set it as hot.
->>
->> Then hot and cold bit will set to the same db file after defragmentation?
-> 
-> Do you set cold bit to db files? I mean, generally db is not cold, but hot.
+Commit 328e7e487a46 ("powerpc: force inlining of csum_partial() to
+avoid multiple csum_partial() with GCC10") inlined csum_partial().
 
-I never set cold bit to db files, I mean if we defragment db file which
-has less update and more access, db file may have bot hot and cold bit.
+Now that csum_partial() is inlined, GCC outlines csum_add() when
+called by csum_partial().
 
-To Daejun, may I ask that is Samsung planning to use this defragment ioctl
-in products? what's the user scenario?
+c064fb28 <csum_add>:
+c064fb28:	7c 63 20 14 	addc    r3,r3,r4
+c064fb2c:	7c 63 01 94 	addze   r3,r3
+c064fb30:	4e 80 00 20 	blr
 
-Thanks,
+c0665fb8 <csum_add>:
+c0665fb8:	7c 63 20 14 	addc    r3,r3,r4
+c0665fbc:	7c 63 01 94 	addze   r3,r3
+c0665fc0:	4e 80 00 20 	blr
 
-> 
->>
->> Thanks,
->>
->>>
->>>>
->>>> Thanks,
->>>>
->>>>>
->>>>>>
->>>>>> We have separated interface (via f2fs_xattr_advise_handler, e.g. setfattr -n
->>>>>> "system.advise" -v value) to indicate this file is a hot/cold file, so my
->>>>>> suggestion is after file defragmentation, if you think this file is cold, and
->>>>>> use setxattr() to set it as cold.
->>>>>>
->>>>>> Thanks,
->>>>>>
->>>>>>>
->>>>>>> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
->>>>>>> ---
->>>>>>>      fs/f2fs/file.c | 3 +++
->>>>>>>      1 file changed, 3 insertions(+)
->>>>>>>
->>>>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->>>>>>> index d697c8900fa7..dcac965a05fe 100644
->>>>>>> --- a/fs/f2fs/file.c
->>>>>>> +++ b/fs/f2fs/file.c
->>>>>>> @@ -2669,6 +2669,9 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
->>>>>>>      	map.m_len = pg_end - pg_start;
->>>>>>>      	total = 0;
->>>>>>> +	if (!file_is_cold(inode))
->>>>>>> +		file_set_cold(inode);
->>>>>>> +
->>>>>>>      	while (map.m_lblk < pg_end) {
->>>>>>>      		pgoff_t idx;
->>>>>>>      		int cnt = 0;
->>>>>>>
->>>>> .
->>>>>
->>> .
->>>
-> .
-> 
+c066719c:	7c 9a c0 2e 	lwzx    r4,r26,r24
+c06671a0:	38 60 00 00 	li      r3,0
+c06671a4:	7f 1a c2 14 	add     r24,r26,r24
+c06671a8:	4b ff ee 11 	bl      c0665fb8 <csum_add>
+c06671ac:	80 98 00 04 	lwz     r4,4(r24)
+c06671b0:	4b ff ee 09 	bl      c0665fb8 <csum_add>
+c06671b4:	80 98 00 08 	lwz     r4,8(r24)
+c06671b8:	4b ff ee 01 	bl      c0665fb8 <csum_add>
+c06671bc:	a0 98 00 0c 	lhz     r4,12(r24)
+c06671c0:	4b ff ed f9 	bl      c0665fb8 <csum_add>
+c06671c4:	7c 63 18 f8 	not     r3,r3
+c06671c8:	81 3f 00 68 	lwz     r9,104(r31)
+c06671cc:	81 5f 00 a0 	lwz     r10,160(r31)
+c06671d0:	7d 29 18 14 	addc    r9,r9,r3
+c06671d4:	7d 29 01 94 	addze   r9,r9
+c06671d8:	91 3f 00 68 	stw     r9,104(r31)
+c06671dc:	7d 1a 50 50 	subf    r8,r26,r10
+c06671e0:	83 01 00 10 	lwz     r24,16(r1)
+c06671e4:	83 41 00 18 	lwz     r26,24(r1)
+
+The sum with 0 is useless, should have been skipped.
+And there is even one completely unused instance of csum_add().
+
+In file included from ./include/net/checksum.h:22,
+                 from ./include/linux/skbuff.h:28,
+                 from ./include/linux/icmp.h:16,
+                 from net/ipv6/ip6_tunnel.c:23:
+./arch/powerpc/include/asm/checksum.h: In function '__ip6_tnl_rcv':
+./arch/powerpc/include/asm/checksum.h:94:22: warning: inlining failed in call to 'csum_add': call is unlikely and code size would grow [-Winline]
+   94 | static inline __wsum csum_add(__wsum csum, __wsum addend)
+      |                      ^~~~~~~~
+./arch/powerpc/include/asm/checksum.h:172:31: note: called from here
+  172 |                         sum = csum_add(sum, (__force __wsum)*(const u32 *)buff);
+      |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./arch/powerpc/include/asm/checksum.h:94:22: warning: inlining failed in call to 'csum_add': call is unlikely and code size would grow [-Winline]
+   94 | static inline __wsum csum_add(__wsum csum, __wsum addend)
+      |                      ^~~~~~~~
+./arch/powerpc/include/asm/checksum.h:177:31: note: called from here
+  177 |                         sum = csum_add(sum, (__force __wsum)
+      |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  178 |                                             *(const u32 *)(buff + 4));
+      |                                             ~~~~~~~~~~~~~~~~~~~~~~~~~
+./arch/powerpc/include/asm/checksum.h:94:22: warning: inlining failed in call to 'csum_add': call is unlikely and code size would grow [-Winline]
+   94 | static inline __wsum csum_add(__wsum csum, __wsum addend)
+      |                      ^~~~~~~~
+./arch/powerpc/include/asm/checksum.h:183:31: note: called from here
+  183 |                         sum = csum_add(sum, (__force __wsum)
+      |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  184 |                                             *(const u32 *)(buff + 8));
+      |                                             ~~~~~~~~~~~~~~~~~~~~~~~~~
+./arch/powerpc/include/asm/checksum.h:94:22: warning: inlining failed in call to 'csum_add': call is unlikely and code size would grow [-Winline]
+   94 | static inline __wsum csum_add(__wsum csum, __wsum addend)
+      |                      ^~~~~~~~
+./arch/powerpc/include/asm/checksum.h:186:31: note: called from here
+  186 |                         sum = csum_add(sum, (__force __wsum)
+      |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  187 |                                             *(const u16 *)(buff + 12));
+      |                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Force inlining of csum_add().
+
+     94c:	80 df 00 a0 	lwz     r6,160(r31)
+     950:	7d 28 50 2e 	lwzx    r9,r8,r10
+     954:	7d 48 52 14 	add     r10,r8,r10
+     958:	80 aa 00 04 	lwz     r5,4(r10)
+     95c:	80 ff 00 68 	lwz     r7,104(r31)
+     960:	7d 29 28 14 	addc    r9,r9,r5
+     964:	7d 29 01 94 	addze   r9,r9
+     968:	7d 08 30 50 	subf    r8,r8,r6
+     96c:	80 aa 00 08 	lwz     r5,8(r10)
+     970:	a1 4a 00 0c 	lhz     r10,12(r10)
+     974:	7d 29 28 14 	addc    r9,r9,r5
+     978:	7d 29 01 94 	addze   r9,r9
+     97c:	7d 29 50 14 	addc    r9,r9,r10
+     980:	7d 29 01 94 	addze   r9,r9
+     984:	7d 29 48 f8 	not     r9,r9
+     988:	7c e7 48 14 	addc    r7,r7,r9
+     98c:	7c e7 01 94 	addze   r7,r7
+     990:	90 ff 00 68 	stw     r7,104(r31)
+
+In the non-inlined version, the first sum with 0 was performed.
+Here it is skipped.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/checksum.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/include/asm/checksum.h b/arch/powerpc/include/asm/checksum.h
+index d5da7ddbf0fc..350de8f90250 100644
+--- a/arch/powerpc/include/asm/checksum.h
++++ b/arch/powerpc/include/asm/checksum.h
+@@ -91,7 +91,7 @@ static inline __sum16 csum_tcpudp_magic(__be32 saddr, __be32 daddr, __u32 len,
+ }
+ 
+ #define HAVE_ARCH_CSUM_ADD
+-static inline __wsum csum_add(__wsum csum, __wsum addend)
++static __always_inline __wsum csum_add(__wsum csum, __wsum addend)
+ {
+ #ifdef __powerpc64__
+ 	u64 res = (__force u64)csum;
+-- 
+2.25.0
+
