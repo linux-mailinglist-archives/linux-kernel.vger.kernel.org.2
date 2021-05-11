@@ -2,196 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BCB379C26
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A15379C29
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhEKBjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 21:39:51 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:2620 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbhEKBju (ORCPT
+        id S230381AbhEKBl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 21:41:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230023AbhEKBl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 21:39:50 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FfL9r42TpzkldC;
-        Tue, 11 May 2021 09:36:32 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 11 May
- 2021 09:38:38 +0800
-Subject: Re: [PATCH 3/3] f2fs: compress: fix to assign cc.cluster_idx
- correctly
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
-References: <20210510093032.35466-1-yuchao0@huawei.com>
- <20210510093032.35466-3-yuchao0@huawei.com> <YJlaz20Atq+TUnHu@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <0b1ec8ef-6861-1fe9-16ac-bba6e673659a@huawei.com>
-Date:   Tue, 11 May 2021 09:38:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Mon, 10 May 2021 21:41:28 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F464C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 18:40:23 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id di13so20934970edb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 18:40:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UewUIUnZEU+WLxgt73DD3mXzDpZZk6Udya01I4ZEHrw=;
+        b=kswNC8BfZzTXjrd6CNTModmWLgnAvrz8jFPHApeblmQg6rKJTfpByfO00OR0Pz90U7
+         j1h5wLO98+mXFSkHIGaBBPFlGFIlVgszWA4z5S//jxNs7j6V5k7SvxLs2BACJNEA6cY6
+         DdJk9F38VUmJZBUbe9y0G/3gP+BARMhWvICBTY4L0I+bRubNxCVz0PQMxcRQKAw3iRiO
+         9MY1YMyzrEx57GDbBf8hCIEs3/VeMBEt//BpG/7jKlbyR/3VUWpUVsq//ToDHX33Pe2D
+         UrYTX7tsSokm+E8dtjV5qW0tm9osyXnMLHx2HdZLyQm8oWzBGAc9Z9pL9D7wg9NU6CQ0
+         vTOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UewUIUnZEU+WLxgt73DD3mXzDpZZk6Udya01I4ZEHrw=;
+        b=duTfF7tcUECVlR3S+gTuEJ+5zD4w16eT6qy8OfYvJUBXHpuE9us+2uGbb0WgrLsrYi
+         KKywZGDLdQ6G4gTwdIDHvgGnX6LDw+yP5wxSDEa26q/HlLccBXGfwZ9MIj9WOKTZ/CiJ
+         G5oLy9SDicADk6nX2YafYNzhw16VoMQ8d8hjljpF1W72YJpY91wFp4F/YW1ZpE7UIQ/H
+         GXzX1yPlYmBFkd++RqW3FCL/xFCZmhaHDKXnA3b4t+Z4rljpv/UhtsVGvwy1fRIDhl7e
+         r4XQ0tIyUwfhxh9QeQyl22zO/d+HjdZY39HWAjMTkY9VLF1MObw2tmdhJT/znhtZ9JkG
+         Rdbg==
+X-Gm-Message-State: AOAM5324NSY+cQeb6FYuUMEsXYiAxKGbRddph1dCANl9IC+Hupuv7NG+
+        FcM8ZaNWNZwqzCa38LPPEsekCjHHvFUVoSeaRXM0
+X-Google-Smtp-Source: ABdhPJyiTl7fBwjdXCS+1nwJylc1lzHYHwN8ZdaJRSyBufr+LfV/BQ7QX/iNclrk81EQS7LWDc/1AEQHqAIC14Mt+cY=
+X-Received: by 2002:a05:6402:177c:: with SMTP id da28mr32267501edb.135.1620697221981;
+ Mon, 10 May 2021 18:40:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YJlaz20Atq+TUnHu@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+References: <20210409054841.320-1-hbut_tan@163.com>
+In-Reply-To: <20210409054841.320-1-hbut_tan@163.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 10 May 2021 21:40:11 -0400
+Message-ID: <CAHC9VhT8+DR0jvY8SO=HArhjcTfxsZxaoqy-1ufcOQEcD6qOXQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] selinux:Delete selinux_xfrm_policy_lookup() useless argument
+To:     Zhongjun Tan <hbut_tan@163.com>
+Cc:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, kuba@kernel.org,
+        James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, keescook@chromium.org,
+        gregkh@linuxfoundation.org, ebiederm@xmission.com,
+        kpsingh@google.com, dhowells@redhat.com,
+        christian.brauner@ubuntu.com, zohar@linux.ibm.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        Zhongjun Tan <tanzhongjun@yulong.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/11 0:09, Jaegeuk Kim wrote:
-> On 05/10, Chao Yu wrote:
->> In f2fs_destroy_compress_ctx(), after f2fs_destroy_compress_ctx(),
->> cc.cluster_idx will be cleared w/ NULL_CLUSTER, f2fs_cluster_blocks()
->> may check wrong cluster metadata, fix it.
->>
->> Fixes: 4c8ff7095bef ("f2fs: support data compression")
->> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->> ---
->>   fs/f2fs/compress.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->> index 340815cd0887..30b003447510 100644
->> --- a/fs/f2fs/compress.c
->> +++ b/fs/f2fs/compress.c
->> @@ -1066,6 +1066,8 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
->>   			f2fs_put_rpages(cc);
->>   			f2fs_unlock_rpages(cc, i + 1);
->>   			f2fs_destroy_compress_ctx(cc);
->> +			cc->cluster_idx = index >>
->> +					F2FS_I(cc->inode)->i_log_cluster_size;
-> 
-> I didn't test tho, how about this?
-
-Looks more clean. :)
-
-Thanks,
-
-> 
->>From 904abb77e82ea982f68960148b75d0a12f771c2e Mon Sep 17 00:00:00 2001
-> From: Chao Yu <yuchao0@huawei.com>
-> Date: Mon, 10 May 2021 17:30:32 +0800
-> Subject: [PATCH] f2fs: compress: fix to assign cc.cluster_idx correctly
-> 
-> In f2fs_destroy_compress_ctx(), after f2fs_destroy_compress_ctx(),
-> cc.cluster_idx will be cleared w/ NULL_CLUSTER, f2fs_cluster_blocks()
-> may check wrong cluster metadata, fix it.
-> 
-> Fixes: 4c8ff7095bef ("f2fs: support data compression")
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+On Fri, Apr 9, 2021 at 1:52 AM Zhongjun Tan <hbut_tan@163.com> wrote:
+>
+> From: Zhongjun Tan <tanzhongjun@yulong.com>
+>
+> seliunx_xfrm_policy_lookup() is hooks of security_xfrm_policy_lookup().
+> The dir argument is uselss in security_xfrm_policy_lookup(). So
+> remove the dir argument from selinux_xfrm_policy_lookup() and
+> security_xfrm_policy_lookup().
+>
+> Signed-off-by: Zhongjun Tan <tanzhongjun@yulong.com>
 > ---
->   fs/f2fs/compress.c | 17 +++++++++--------
->   fs/f2fs/data.c     |  6 +++---
->   2 files changed, 12 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> index 79348bc56e35..925a5ca3744a 100644
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -145,13 +145,14 @@ int f2fs_init_compress_ctx(struct compress_ctx *cc)
->   	return cc->rpages ? 0 : -ENOMEM;
->   }
->   
-> -void f2fs_destroy_compress_ctx(struct compress_ctx *cc)
-> +void f2fs_destroy_compress_ctx(struct compress_ctx *cc, bool reuse)
->   {
->   	page_array_free(cc->inode, cc->rpages, cc->cluster_size);
->   	cc->rpages = NULL;
->   	cc->nr_rpages = 0;
->   	cc->nr_cpages = 0;
-> -	cc->cluster_idx = NULL_CLUSTER;
-> +	if (!reuse)
-> +		cc->cluster_idx = NULL_CLUSTER;
->   }
->   
->   void f2fs_compress_ctx_add_page(struct compress_ctx *cc, struct page *page)
-> @@ -1034,7 +1035,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
->   		ret = f2fs_read_multi_pages(cc, &bio, cc->cluster_size,
->   					&last_block_in_bio, false, true);
->   		f2fs_put_rpages(cc);
-> -		f2fs_destroy_compress_ctx(cc);
-> +		f2fs_destroy_compress_ctx(cc, true);
->   		if (ret)
->   			goto out;
->   		if (bio)
-> @@ -1061,7 +1062,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
->   release_and_retry:
->   			f2fs_put_rpages(cc);
->   			f2fs_unlock_rpages(cc, i + 1);
-> -			f2fs_destroy_compress_ctx(cc);
-> +			f2fs_destroy_compress_ctx(cc, true);
->   			goto retry;
->   		}
->   	}
-> @@ -1094,7 +1095,7 @@ static int prepare_compress_overwrite(struct compress_ctx *cc,
->   unlock_pages:
->   	f2fs_put_rpages(cc);
->   	f2fs_unlock_rpages(cc, i);
-> -	f2fs_destroy_compress_ctx(cc);
-> +	f2fs_destroy_compress_ctx(cc, true);
->   out:
->   	return ret;
->   }
-> @@ -1130,7 +1131,7 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
->   		set_cluster_dirty(&cc);
->   
->   	f2fs_put_rpages_wbc(&cc, NULL, false, 1);
-> -	f2fs_destroy_compress_ctx(&cc);
-> +	f2fs_destroy_compress_ctx(&cc, false);
->   
->   	return first_index;
->   }
-> @@ -1350,7 +1351,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
->   	f2fs_put_rpages(cc);
->   	page_array_free(cc->inode, cc->cpages, cc->nr_cpages);
->   	cc->cpages = NULL;
-> -	f2fs_destroy_compress_ctx(cc);
-> +	f2fs_destroy_compress_ctx(cc, false);
->   	return 0;
->   
->   out_destroy_crypt:
-> @@ -1512,7 +1513,7 @@ int f2fs_write_multi_pages(struct compress_ctx *cc,
->   	err = f2fs_write_raw_pages(cc, submitted, wbc, io_type);
->   	f2fs_put_rpages_wbc(cc, wbc, false, 0);
->   destroy_out:
-> -	f2fs_destroy_compress_ctx(cc);
-> +	f2fs_destroy_compress_ctx(cc, false);
->   	return err;
->   }
->   
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 96f1a354f89f..33e56ae84e35 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -2287,7 +2287,7 @@ static int f2fs_mpage_readpages(struct inode *inode,
->   							max_nr_pages,
->   							&last_block_in_bio,
->   							rac != NULL, false);
-> -				f2fs_destroy_compress_ctx(&cc);
-> +				f2fs_destroy_compress_ctx(&cc, false);
->   				if (ret)
->   					goto set_error_page;
->   			}
-> @@ -2332,7 +2332,7 @@ static int f2fs_mpage_readpages(struct inode *inode,
->   							max_nr_pages,
->   							&last_block_in_bio,
->   							rac != NULL, false);
-> -				f2fs_destroy_compress_ctx(&cc);
-> +				f2fs_destroy_compress_ctx(&cc, false);
->   			}
->   		}
->   #endif
-> @@ -3033,7 +3033,7 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
->   		}
->   	}
->   	if (f2fs_compressed_file(inode))
-> -		f2fs_destroy_compress_ctx(&cc);
-> +		f2fs_destroy_compress_ctx(&cc, false);
->   #endif
->   	if (retry) {
->   		index = 0;
-> 
+>  include/linux/lsm_hook_defs.h   | 3 +--
+>  include/linux/security.h        | 4 ++--
+>  net/xfrm/xfrm_policy.c          | 6 ++----
+>  security/security.c             | 4 ++--
+>  security/selinux/include/xfrm.h | 2 +-
+>  security/selinux/xfrm.c         | 2 +-
+>  6 files changed, 9 insertions(+), 12 deletions(-)
+
+Merged into selinux/next, thanks.
+
+-- 
+paul moore
+www.paul-moore.com
