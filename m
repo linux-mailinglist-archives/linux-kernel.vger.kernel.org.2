@@ -2,352 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2D537AD35
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3985037AD43
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231868AbhEKRka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbhEKRk2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:40:28 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F47C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:39:18 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id t18so20987229wry.1
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:39:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4Iip13muq1NYXw8ciJ4gZx7sLT2i59LHm3b1xhb3qro=;
-        b=l0I/l9irc0L33+3w+vShxZyAO9/CKiQR0T+VECzaTKU4TJFiZJMNe0Csx99AWQKMQT
-         GW7fxShroooRhKQ1FFVZuV63BkI25ij7VJ0n78MYAWEbPu5dounOLMpogEsKo7yUJaor
-         jNFx+ClrGCFK3ycq0eJevgyLSsunK9jbkjFY7hr4FwAhlB/S1kSp6X2QWmscwA3Bnqed
-         qpnisUHdd1yLawQxLD7EAukbXIdDimWGCKMpqOJYgECzqnpVLH6TmUzIaDlZiihYQQgp
-         z1DU/uJV9GO16Qmls0Q7TNyRGE5rVkjgFa6+6FtJYkyCBq1/8xdIRcNZEEVS3mcjQpt3
-         36Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4Iip13muq1NYXw8ciJ4gZx7sLT2i59LHm3b1xhb3qro=;
-        b=AWh5UCOVL8kLyYnOqC1NkS7dERKpIahIh2jQ7PGIRf9vHHNCTS65ZdBak7AoGtSv/h
-         saYATrUJzDoYKDw/ieEk3HXz/W82yfHS1EjijlV1NvvAsZavXRsyu2nqNi6avDJXknDH
-         JlYOyhO4mWc54ACJ1dpaMM9BqkS0bhwBzWSA/aNPv1qHnWk8A734aNg4e0tOiBe9wffI
-         EZtb695mM/dsZZEpQAk+VjnPrF16uYJY1Ph9rTglJ9L8Q6qAV1ghh94pJ0MzlTPvdBrw
-         95V2KgyLByHSyuKEiTpGjNAYIHPiZElSS+Ofk71+g9gJK1khqTQxY+Nq1hafAvrd9s71
-         kn6g==
-X-Gm-Message-State: AOAM533JE1uynsKL+RV+jxK26xtko3kRnHCb5mijyp5OKY9FJU1uw6Co
-        9gJMGcNHtfbJvLrKpXTsOPFMbSdxaaDQMJwARNQ=
-X-Google-Smtp-Source: ABdhPJzYMvuNrr+jKZP2j9T/AEwSf1ceIS80ZkuSWU4TS1NzmOCkyDXJZ8gf+jTC3BafXMone2nr6GP2T34Y3clyWJM=
-X-Received: by 2002:a5d:64cf:: with SMTP id f15mr38403209wri.327.1620754757270;
- Tue, 11 May 2021 10:39:17 -0700 (PDT)
+        id S231908AbhEKRoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:44:15 -0400
+Received: from mail-eopbgr760058.outbound.protection.outlook.com ([40.107.76.58]:7870
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231329AbhEKRoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 13:44:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RRMb8nQjot8znzjBWxO7iETPOmlShaSCA0yR7b3Mw88Nbib2mEAGJ3mly67HC/d0mvJtsTZ2Ex4Vngo3cq70Wmu2h/WsZ7Ig/TqvM3kpqe+ThXaDJF44LE3KZAZ2o6B7shelxVXUCLOJwTVmKniQBFHN8GP1e63Eo8b7YPscpoBC7Vx1G7/4c6uo9okQ/hp5p3903BKX3b1MBD2g+M7zW/NOjSIKC0xkGFplEgMXCSVu4MkmpXICm3y3CYb31fd/0+F9Se9eN5m0NLV0EMQN+jbiaEQFpY8YDSyz5lFD/Ck+EjO6mMBQmXmOcHGKbOh+RgSKI9ZAByWm2excIVfTDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ndMvzTiCIR6s01HfJS8Gf4Z21K8UoF4uoy+0RZq3BfA=;
+ b=YzYx4RWr8KkL/lvU9jr4TfDP+RyW0geVfQUX5WPLLkHuQDAHKROnLa6Df+jEskNSZ/OI8H//5cu0ry8vGVE7Hc3fD5r7So0Ax4jsKSJFEVrJnRtcCE/HkLwyHDb4bVJJ9aGSAbqgCQE5K9NbOwQ3MEgJoIBggFCBvCDlJnXc5/JQvsaF5JtN90/M4y5+vQ0o/YV/2R3pUXK1+Ir/ma9jOYoMpAB3hfHDizTZfhEYapk6YLvFmnVcoemvy9GlPJb/YBpRq5H3yseqIvKbDhjR4XYhsT8/MtPVMxlCEX1irt4omXg8PE1k62i++D5FMELNgEe7cH4lKF8brkTeXhvx6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ndMvzTiCIR6s01HfJS8Gf4Z21K8UoF4uoy+0RZq3BfA=;
+ b=ly/NEt3lzkQDcSWCH1wdfJA0kLcT7eHeCa31vIh+/cH2joDjmGJ1Nx/q55yaE3UoN3vOTZTcbxtunHXsPHu2gmS5HJknrgjZd1gbY1kDs6YC1+ZYhPr0KqPj50hIWepqsOX1tj2YGX56CL2Xnbt3WTPu9LxQhjD3EP7qzyS/RgzMkcCF3pL95ylCcfCbB8Ig98oRJn/0gWsNJCfHL/pAMViLPe2D+HQdujl9CeRjVgoBk6I7+QI/jxCG8ZQtNricR3j83WCuElUMEV6AK+iASPagNuU7W0tfWtyvY0MOa1WbFMPSnGovMxa5h2ybDbH72fpuokI9zZxiCoU7VB5SbQ==
+Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
+ header.d=none;linux.alibaba.com; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2860.namprd12.prod.outlook.com (2603:10b6:5:186::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Tue, 11 May
+ 2021 17:43:05 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4108.031; Tue, 11 May 2021
+ 17:43:05 +0000
+Date:   Tue, 11 May 2021 14:43:02 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     yishaih@nvidia.com, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/mlx4: Remove unnessesary check in
+ mlx4_ib_modify_wq()
+Message-ID: <20210511174302.GA1291834@nvidia.com>
+References: <1620382961-69701-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620382961-69701-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BLAPR03CA0072.namprd03.prod.outlook.com
+ (2603:10b6:208:329::17) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20210508195641.397198-1-robdclark@gmail.com> <20210508195641.397198-2-robdclark@gmail.com>
- <YJlb3GO41hiu4pWw@phenom.ffwll.local> <CAF6AEGsGb1jZgRRUqDvf+j+E6pNEtSck=r3xh4VL7FmZMPszBQ@mail.gmail.com>
- <CAKMK7uGPGbOPRtJaiG5oNCDhYQ27+V3bO5Wcgv7C9fqdyp8LeA@mail.gmail.com>
- <CAF6AEGto1PQcEbYeWfXqMatK0z3dW-mpLNVh=VJb=9gwrPfCWg@mail.gmail.com>
- <YJq0YVi4O4zGkb3j@phenom.ffwll.local> <CAF6AEGsMk-wO=3iYbW9rS0FJ7760P++vpPgVMFHR9+Q8sWsXQQ@mail.gmail.com>
- <YJq9M71yiASVKPtJ@phenom.ffwll.local>
-In-Reply-To: <YJq9M71yiASVKPtJ@phenom.ffwll.local>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 11 May 2021 10:42:58 -0700
-Message-ID: <CAF6AEGs1YcRAYAH0TFFS7-RPNDJhvogSACrZp0itzq_RiTBiTA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drm: Fix dirtyfb stalls
-To:     Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BLAPR03CA0072.namprd03.prod.outlook.com (2603:10b6:208:329::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Tue, 11 May 2021 17:43:04 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lgWPO-005Q5D-Tp; Tue, 11 May 2021 14:43:02 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6232f1b1-be80-434e-6aac-08d914a43b2e
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2860:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB2860E10FE3438E3D7A29516BC2539@DM6PR12MB2860.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: L4ynnmJtuMyMZh8F0Ww3S+ltCmiUL0E52XQmRHfTFl1WGHfVBvu6vK//8eRrLgsWxk8nNJGrWYyYlcm+lJewKb0FXeWcnxUMR4O/BBrRA855AM+CYZ/lkZy+WCH7+cll7tvxibj2CjgGdPh9O0Q84SUWLRFwRZt6jxWdhCDfiUO9qxzYQDTInAgzkf53EotHsfRabpWhkFF+Ab3sSefRCDrdIo/IA70xw7701Lv5xsMHE8LXJ0AN2y3REoyP2iNkRU4ovUyIhKGVYA+kQK+wVA3Ef5h0bWr663PnVpg/xKgBghAYXyyVYO+d5lqbNUUsyXP2dTkbnTbEj3o2ZxSOOTzTWPp0ox2h0wrt5qcIMYkbWlqO70NHUZ9L0tiyNsnZ1tThTLr4/GiImCSgNNi/g+4PDPBXr5k4vryPlzMiFHb1C6IxJRXFyT/Zukas0X/Wmy3m9FtRhxZ3ERVMDs1/MF6GDekodngGEyF5pw5AiUEoJpy83yooozR6ptIeIE543bcZIBNn2lRs3GU2dmgffbmdyCj7pzSJupF6JhWiygNxLMkaNuVpZdDuF/QUfb/emq6Uk5otAgBgGbWlE2PWk/oaK14H84xQAJWgHWIKEyI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2616005)(6916009)(38100700002)(4744005)(9746002)(9786002)(426003)(1076003)(66946007)(5660300002)(186003)(2906002)(8676002)(86362001)(4326008)(66476007)(66556008)(498600001)(36756003)(33656002)(8936002)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?jxROgqUQ6ghnvcY/W2oWJdLIW8ASkwsx+QRq9qwIN7qDFfsPFlsoZ8JUyDMC?=
+ =?us-ascii?Q?jGG7A6cp15tUZhjxYeCPR5RxjZhIdWw/pFJXaq3dw5mWJnUAJJx1MjyNFodi?=
+ =?us-ascii?Q?0JrA9nyq7BRVdRgCJZqYyROk+O3OEQHTcNEEo8M59Z6a90jDfXt9KS5ufbJm?=
+ =?us-ascii?Q?GKqt6XiE/o+RlPd7rOGrY8aufCrVdO/ejqjIYJ0GSIvejANGeAtuWCM46M3T?=
+ =?us-ascii?Q?fMv2Jqauyz2k69BMNlOyCpoRq7x3RFFBrteu1BEVy98X5o63kDnQW5goKmIz?=
+ =?us-ascii?Q?tQ4YQDoydyWk9vK0uFR7PQ/hnfBvjVr0m4KDUFEZgleRLeseI4zOIFw9wb2I?=
+ =?us-ascii?Q?RNeKiIRInw+Cwr5B1S4gjlMHOP1ym182tG3QHyJjpDYLp/hLqhprzIm+Wuui?=
+ =?us-ascii?Q?qvMIKlzK4Iy4lZx6Vkg83ZM4gBAn4ZdlGlgYprI5wP8VBfHoumGCzEcNT8yR?=
+ =?us-ascii?Q?3lIYqwxoQjbNYdaz7meZPR/YjoD2QdaxDCQA7Ia2co9yap4HeZQzE6n3itaG?=
+ =?us-ascii?Q?DJ/ipZ1w09Jf4HKXPUb7zW2FCLZNRgoMbrV3jM5pyFPxl0Q1yIu9BUIxOFj5?=
+ =?us-ascii?Q?Sf6L2EHTC6vuvvHpJTTX1RRzxC6p80NOnVfeYnTA/ewMT4aPdmwsizw7eoNp?=
+ =?us-ascii?Q?/LHepn0IBzwUAyP78FVJw3r9kFjFR92v9x0B1mEGQEj/spdMduj8USagSv2Q?=
+ =?us-ascii?Q?Qchy6SeOPMDFKVFsibmFVQwRdjPvZs50ZqZmHpi12+66kDLjovk+CpQAiEFq?=
+ =?us-ascii?Q?n1nxwaxN5LSjLisc28lpLoOAjre5gV72Nu+CI+rf40wYUfT1XuLhjqaFApUk?=
+ =?us-ascii?Q?PaL/UIAwpW2uEny4GHm8lw8jDUCmRxz6DW4zAKXtDUw1RwuOfqe8w0ah7/bc?=
+ =?us-ascii?Q?ARbYnxqz7n7iZLYr1qvjeHblWoBpfaUdivqAIhlGlPHHtZVOlyPO/iCu0ajs?=
+ =?us-ascii?Q?t994oQQuSeuLICZ2JXA9ZXa98GX/+EeWB8Pl+MVRzHC+SLuzQVOF/WLpcRld?=
+ =?us-ascii?Q?R3b4HdUgY753W8KRq3CyuW80bX2h8a7Ff7qTzqhBYwXvck/Xm9UrHE2k79/p?=
+ =?us-ascii?Q?pdugpX4F/vAmrKgTJn2NBptQwN1pr1wLXgHFppXRKM/YjBNWiyi1Rk514o34?=
+ =?us-ascii?Q?MAXg4reBQ8qhFXR8XOvvH6g4Ql14qJCKV6pE4sKg7fl4uld/28f5UmntrsTS?=
+ =?us-ascii?Q?v8GJ2QcQOqP2b9WuE/argeH34Fu5RCfLJP3obTYD+zaWEsx2gKD53Mez3B6Z?=
+ =?us-ascii?Q?CHGdf6Ptky25Pdsz4a94phR7r98AbVoH8/TWqcpwiiXUKhwrWZbf8+nLyH+6?=
+ =?us-ascii?Q?UleSPdpkE/qo+bAbRI375XqO?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6232f1b1-be80-434e-6aac-08d914a43b2e
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 17:43:05.8150
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wJaqpznNsPTs4W/q0RWqq5hxlR+xl0D1Ol40C0qMaamyAQZQWyIforhy35KU7iWE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2860
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 10:21 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Tue, May 11, 2021 at 10:19:57AM -0700, Rob Clark wrote:
-> > On Tue, May 11, 2021 at 9:44 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > >
-> > > On Mon, May 10, 2021 at 12:06:05PM -0700, Rob Clark wrote:
-> > > > On Mon, May 10, 2021 at 10:44 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > > >
-> > > > > On Mon, May 10, 2021 at 6:51 PM Rob Clark <robdclark@gmail.com> wrote:
-> > > > > >
-> > > > > > On Mon, May 10, 2021 at 9:14 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > > > > >
-> > > > > > > On Sat, May 08, 2021 at 12:56:38PM -0700, Rob Clark wrote:
-> > > > > > > > From: Rob Clark <robdclark@chromium.org>
-> > > > > > > >
-> > > > > > > > drm_atomic_helper_dirtyfb() will end up stalling for vblank on "video
-> > > > > > > > mode" type displays, which is pointless and unnecessary.  Add an
-> > > > > > > > optional helper vfunc to determine if a plane is attached to a CRTC
-> > > > > > > > that actually needs dirtyfb, and skip over them.
-> > > > > > > >
-> > > > > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > > > > > >
-> > > > > > > So this is a bit annoying because the idea of all these "remap legacy uapi
-> > > > > > > to atomic constructs" helpers is that they shouldn't need/use anything
-> > > > > > > beyond what userspace also has available. So adding hacks for them feels
-> > > > > > > really bad.
-> > > > > >
-> > > > > > I suppose the root problem is that userspace doesn't know if dirtyfb
-> > > > > > (or similar) is actually required or is a no-op.
-> > > > > >
-> > > > > > But it is perhaps less of a problem because this essentially boils
-> > > > > > down to "x11 vs wayland", and it seems like wayland compositors for
-> > > > > > non-vsync'd rendering just pageflips and throws away extra frames from
-> > > > > > the app?
-> > > > >
-> > > > > Yeah it's about not adequately batching up rendering and syncing with
-> > > > > hw. bare metal x11 is just especially stupid about it :-)
-> > > > >
-> > > > > > > Also I feel like it's not entirely the right thing to do here either.
-> > > > > > > We've had this problem already on the fbcon emulation side (which also
-> > > > > > > shouldn't be able to peek behind the atomic kms uapi curtain), and the fix
-> > > > > > > there was to have a worker which batches up all the updates and avoids any
-> > > > > > > stalls in bad places.
-> > > > > >
-> > > > > > I'm not too worried about fbcon not being able to render faster than
-> > > > > > vblank.  OTOH it is a pretty big problem for x11
-> > > > >
-> > > > > That's why we'd let the worker get ahead at most one dirtyfb. We do
-> > > > > the same with fbcon, which trivially can get ahead of vblank otherwise
-> > > > > (if sometimes flushes each character, so you have to pile them up into
-> > > > > a single update if that's still pending).
-> > > > >
-> > > > > > > Since this is for frontbuffer rendering userspace only we can probably get
-> > > > > > > away with assuming there's only a single fb, so the implementation becomes
-> > > > > > > pretty simple:
-> > > > > > >
-> > > > > > > - 1 worker, and we keep track of a single pending fb
-> > > > > > > - if there's already a dirty fb pending on a different fb, we stall for
-> > > > > > >   the worker to start processing that one already (i.e. the fb we track is
-> > > > > > >   reset to NULL)
-> > > > > > > - if it's pending on the same fb we just toss away all the updates and go
-> > > > > > >   with a full update, since merging the clip rects is too much work :-) I
-> > > > > > >   think there's helpers so you could be slightly more clever and just have
-> > > > > > >   an overall bounding box
-> > > > > >
-> > > > > > This doesn't really fix the problem, you still end up delaying sending
-> > > > > > the next back-buffer to mesa
-> > > > >
-> > > > > With this the dirtyfb would never block. Also glorious frontbuffer
-> > > > > tracking corruption is possible, but that's not the kernel's problem.
-> > > > > So how would anything get held up in userspace.
-> > > >
-> > > > the part about stalling if a dirtyfb is pending was what I was worried
-> > > > about.. but I suppose you meant the worker stalling, rather than
-> > > > userspace stalling (where I had interpreted it the other way around).
-> > > > As soon as userspace needs to stall, you're losing again.
-> > >
-> > > Nah, I did mean userspace stalling, so we can't pile up unlimited amounts
-> > > of dirtyfb request in the kernel.
-> > >
-> > > But also I never expect userspace that uses dirtyfb to actually hit this
-> > > stall point (otherwise we'd need to look at this again). It would really
-> > > be only there as defense against abuse.
-> >
-> > I don't believe modesetting ddx throttles dirtyfb, it (indirectly)
-> > calls this from it's BlockHandler.. so if you do end up blocking after
-> > the N'th dirtyfb, you are still going to end up stalling for vblank,
-> > you are just deferring that for a frame or two..
->
-> Nope, that's not what I mean.
->
-> By default we pile up the updates, so you _never_ stall. The worker then
-> takes the entire update every time it runs and batches them up.
->
-> We _only_ stall when we get a dirtyfb with a different fb. Because that's
-> much harder to pile up, plus frontbuffer rendering userspace uses a single
-> fb across all screens anyway.
->
-> So really I don't expect X to ever stall in it's BlockHandler with this.
+On Fri, May 07, 2021 at 06:22:41PM +0800, Jiapeng Chong wrote:
+> cur_state and new_state are enums and when GCC considers
+> them as unsigned, the conditions are never met.
 
-ok, sorry, I missed the "different fb" part..
+But doesn't gcc consider enums to be 'int' as the standard requires?
 
-but I could see a userspace that uses multiple fb's wanting to do
-front buffer rendering.. although they are probably only going to do
-it on a single display at a time, so maybe that is a bit of an edge
-case
+This change looks really sketchy to me, cur_state and new_state are
+both userspace controlled data. We should not make assumptions about
+the underlying signedness of an enum when validating user data.
 
-> > The thing is, for a push style panel, you don't necessarily have to
-> > wait for "vblank" (because "vblank" isn't necessarily a real thing),
-> > so in that scenario dirtyfb could in theory be fast.  What you want to
-> > do is fundamentally different for push vs pull style displays.
->
-> Yeah, but we'd only stall if userspace does a modeset (which means
-> different fb) and at that point you'll stall anyway a bit. So shouldn't
-> hurt.
->
-> Well you can do frontbuffer rendering even with atomic ioctl. Just don't
-> use dirtyfb.
->
-> But also you really shouldn't use frontbuffer rendering right now, since
-> we don't have the interfaces right now to tell userspace whether it's
-> cmd-mode or something else and what kind of corruption (if any) to expect
-> when they do that.
-
-Compressed formats and front-buffer rendering don't really work out in
-a pleasant way.. minigbm has a usage flag to indicate that the surface
-will be used for front-buffer rendering (and it is a thing we should
-probably port to real gbm).  I think this aspect of it is better
-solved in userspace.
-
-> > > > > > But we could re-work drm_framebuffer_funcs::dirty to operate on a
-> > > > > > per-crtc basis and hoist the loop and check if dirtyfb is needed out
-> > > > > > of drm_atomic_helper_dirtyfb()
-> > > > >
-> > > > > That's still using information that userspace doesn't have, which is a
-> > > > > bit irky. We might as well go with your thing here then.
-> > > >
-> > > > arguably, this is something we should expose to userspace.. for DSI
-> > > > command-mode panels, you probably want to make a different decision
-> > > > with regard to how many buffers in your flip-chain..
-> > > >
-> > > > Possibly we should add/remove the fb_damage_clips property depending
-> > > > on the display type (ie. video/pull vs cmd/push mode)?
-> > >
-> > > I'm not sure whether atomic actually needs this exposed:
-> > > - clients will do full flips for every frame anyway, I've not heard of
-> > >   anyone seriously doing frontbuffer rendering.
-> >
-> > Frontbuffer rendering is actually a thing, for ex. to reduce latency
-> > for stylus (android and CrOS do this.. fortunately AFAICT CrOS never
-> > uses the dirtyfb ioctl.. but as soon as someone has the nice idea to
-> > add that we'd be running into the same problem)
-> >
-> > Possibly one idea is to treat dirty-clip updates similarly to cursor
-> > updates, and let the driver accumulate the updates and then wait until
-> > vblank to apply them
->
-> Yeah that's what I mean. Except implemented cheaper. fbcon code already
-> does it. I think we're seriously talking past each another.
-
-Hmm, well 'state->async_update = true' is a pretty cheap implementation..
-
-BR,
--R
-
-> -Daniel
->
-> >
-> > BR,
-> > -R
-> >
-> > > - transporting the cliprects around and then tossing them if the driver
-> > >   doesn't need them in their flip is probably not a measurable win
-> > >
-> > > But yeah if I'm wrong and we have a need here and it's useful, then
-> > > exposing this to userspace should be done. Meanwhile I think a "offload to
-> > > worker like fbcon" trick for this legacy interface is probabyl the best
-> > > option. Plus it will fix things not just for the case where you don't need
-> > > dirty uploading, it will also fix things for the case where you _do_ need
-> > > dirty uploading (since right now we stall in a few bad places for that I
-> > > think).
-> > > -Daniel
-> > >
-> > > >
-> > > > BR,
-> > > > -R
-> > > >
-> > > > > -Daniel
-> > > > >
-> > > > > > BR,
-> > > > > > -R
-> > > > > >
-> > > > > > >
-> > > > > > > Could probably steal most of the implementation.
-> > > > > > >
-> > > > > > > This approach here feels a tad too much in the hacky area ...
-> > > > > > >
-> > > > > > > Thoughts?
-> > > > > > > -Daniel
-> > > > > > >
-> > > > > > > > ---
-> > > > > > > >  drivers/gpu/drm/drm_damage_helper.c      |  8 ++++++++
-> > > > > > > >  include/drm/drm_modeset_helper_vtables.h | 14 ++++++++++++++
-> > > > > > > >  2 files changed, 22 insertions(+)
-> > > > > > > >
-> > > > > > > > diff --git a/drivers/gpu/drm/drm_damage_helper.c b/drivers/gpu/drm/drm_damage_helper.c
-> > > > > > > > index 3a4126dc2520..a0bed1a2c2dc 100644
-> > > > > > > > --- a/drivers/gpu/drm/drm_damage_helper.c
-> > > > > > > > +++ b/drivers/gpu/drm/drm_damage_helper.c
-> > > > > > > > @@ -211,6 +211,7 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
-> > > > > > > >  retry:
-> > > > > > > >       drm_for_each_plane(plane, fb->dev) {
-> > > > > > > >               struct drm_plane_state *plane_state;
-> > > > > > > > +             struct drm_crtc *crtc;
-> > > > > > > >
-> > > > > > > >               ret = drm_modeset_lock(&plane->mutex, state->acquire_ctx);
-> > > > > > > >               if (ret)
-> > > > > > > > @@ -221,6 +222,13 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
-> > > > > > > >                       continue;
-> > > > > > > >               }
-> > > > > > > >
-> > > > > > > > +             crtc = plane->state->crtc;
-> > > > > > > > +             if (crtc->helper_private->needs_dirtyfb &&
-> > > > > > > > +                             !crtc->helper_private->needs_dirtyfb(crtc)) {
-> > > > > > > > +                     drm_modeset_unlock(&plane->mutex);
-> > > > > > > > +                     continue;
-> > > > > > > > +             }
-> > > > > > > > +
-> > > > > > > >               plane_state = drm_atomic_get_plane_state(state, plane);
-> > > > > > > >               if (IS_ERR(plane_state)) {
-> > > > > > > >                       ret = PTR_ERR(plane_state);
-> > > > > > > > diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
-> > > > > > > > index eb706342861d..afa8ec5754e7 100644
-> > > > > > > > --- a/include/drm/drm_modeset_helper_vtables.h
-> > > > > > > > +++ b/include/drm/drm_modeset_helper_vtables.h
-> > > > > > > > @@ -487,6 +487,20 @@ struct drm_crtc_helper_funcs {
-> > > > > > > >                                    bool in_vblank_irq, int *vpos, int *hpos,
-> > > > > > > >                                    ktime_t *stime, ktime_t *etime,
-> > > > > > > >                                    const struct drm_display_mode *mode);
-> > > > > > > > +
-> > > > > > > > +     /**
-> > > > > > > > +      * @needs_dirtyfb
-> > > > > > > > +      *
-> > > > > > > > +      * Optional callback used by damage helpers to determine if fb_damage_clips
-> > > > > > > > +      * update is needed.
-> > > > > > > > +      *
-> > > > > > > > +      * Returns:
-> > > > > > > > +      *
-> > > > > > > > +      * True if fb_damage_clips update is needed to handle DIRTYFB, False
-> > > > > > > > +      * otherwise.  If this callback is not implemented, then True is
-> > > > > > > > +      * assumed.
-> > > > > > > > +      */
-> > > > > > > > +     bool (*needs_dirtyfb)(struct drm_crtc *crtc);
-> > > > > > > >  };
-> > > > > > > >
-> > > > > > > >  /**
-> > > > > > > > --
-> > > > > > > > 2.30.2
-> > > > > > > >
-> > > > > > >
-> > > > > > > --
-> > > > > > > Daniel Vetter
-> > > > > > > Software Engineer, Intel Corporation
-> > > > > > > http://blog.ffwll.ch
-> > > > >
-> > > > >
-> > > > >
-> > > > > --
-> > > > > Daniel Vetter
-> > > > > Software Engineer, Intel Corporation
-> > > > > http://blog.ffwll.ch
-> > >
-> > > --
-> > > Daniel Vetter
-> > > Software Engineer, Intel Corporation
-> > > http://blog.ffwll.ch
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+Jason
