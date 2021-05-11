@@ -2,43 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC37737A17E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B1637A17F
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhEKIQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 04:16:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33613 "EHLO
+        id S230464AbhEKIQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 04:16:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52353 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229984AbhEKIQs (ORCPT
+        by vger.kernel.org with ESMTP id S230399AbhEKIQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 04:16:48 -0400
+        Tue, 11 May 2021 04:16:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620720942;
+        s=mimecast20190719; t=1620720949;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=W+lkFKosn3ZCBfYs9e8QQUkhp3xYn5E5Z8L39/ayP3I=;
-        b=Cn51nQO2bh2vSSBMLsey8KEzTGkbnhh7gpLu+S04uwdZl101u3jcvnZBjhM4pYn3Y+QM/x
-        IEyoiOdNko/7Raw5HeOZvOCclOY64N5XT6ubc+hDp3SkWJ6bkDYXmkyD174Vt1w3YhX8j3
-        X8eRkuro7zYNuuDYPlvw2aNQuhGqUtA=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ocDukjE+ETfkil4lwgB/1NevCvBsNFpSh9oxdOLOnGs=;
+        b=Ojvp4rx0gN6fJcOONtvqw7Fp9KSijdB5RpRY3g70pbBM3Qd2MCZTlSTgSG59I6/KfcrqVS
+        5uoR3qCP95Ke1+3OfEQfvd/0tLxZOAS57/6Ss4iR/caa9/E2FS5kMveJfGa87J9VazvJrO
+        zcuddoRFg+FKkR7K1EQBx5wk1/PlctQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-592-dnng3bvvN9y7_Rys3tTyBA-1; Tue, 11 May 2021 04:15:40 -0400
-X-MC-Unique: dnng3bvvN9y7_Rys3tTyBA-1
+ us-mta-583-JXL3I89NPKKfdnA3xBJHEg-1; Tue, 11 May 2021 04:15:47 -0400
+X-MC-Unique: JXL3I89NPKKfdnA3xBJHEg-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 29BD31008078;
-        Tue, 11 May 2021 08:15:40 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0261C1008061;
+        Tue, 11 May 2021 08:15:46 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-115-91.ams2.redhat.com [10.36.115.91])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BBD085D6D1;
-        Tue, 11 May 2021 08:15:35 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 752585D6D1;
+        Tue, 11 May 2021 08:15:40 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>
-Subject: [PATCH resend v2 0/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to prefault page tables
-Date:   Tue, 11 May 2021 10:15:29 +0200
-Message-Id: <20210511081534.3507-1-david@redhat.com>
+Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Peter Xu <peterx@redhat.com>
+Subject: [PATCH resend v2 1/5] mm: make variable names for populate_vma_page_range() consistent
+Date:   Tue, 11 May 2021 10:15:30 +0200
+Message-Id: <20210511081534.3507-2-david@redhat.com>
+In-Reply-To: <20210511081534.3507-1-david@redhat.com>
+References: <20210511081534.3507-1-david@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
@@ -46,76 +53,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a resend of v2 because linux-mm seems to have swallowed patch #2.
+Let's make the variable names in the function declaration match the
+variable names used in the definition.
 
-Excessive details on MADV_POPULATE_(READ|WRITE) can be found in patch #2.
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Peter Xu <peterx@redhat.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ mm/internal.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v1 -> v2:
-- "mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to prefault page
-   tables"
--- Renamed patch/series to match what's happening -- prefault page tables
--- Clarified MADV_POPULATE_READ semantics on file holes and that we might
-   want fallocate().
--- Updated/clarified description
--- Dropped -EINVAL and -EBUSY checks
--- Added a comment regarding FOLL_TOUCH and why we don't care that
-   pages will get set dirty when triggering write-faults for now.
--- Reran and extended performance measurements by more fallocate()
-   combinations
-
-RFCv2 -> v1
-- "mm: fix variable name in declaration of populate_vma_page_range()"
--- Added
-- "mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to prefault ..."
--- Fix detection of memory holes when we have to re-lookup the VMA
--- Return -EHWPOISON to user space when we hit HW poisoned pages
--- Make variable names in definition and declaration consistent
-- "MAINTAINERS: add tools/testing/selftests/vm/ to MEMORY MANAGEMENT"
--- Added
-- "selftests/vm: add protection_keys_32 / protection_keys_64 to gitignore"
--- Added
-- "selftests/vm: add test for MADV_POPULATE_(READ|WRITE)"
--- Added
-
-RFC -> RFCv2:
-- Fix re-locking (-> set "locked = 1;")
-- Don't mimic MAP_POPULATE semantics:
---> Explicit READ/WRITE request instead of selecting it automatically,
-    which makes it more generic and better suited for some use cases (e.g., we
-    usually want to prefault shmem writable)
---> Require proper access permissions
-- Introduce and use faultin_vma_page_range()
---> Properly handle HWPOISON pages (FOLL_HWPOISON)
---> Require proper access permissions (!FOLL_FORCE)
-- Let faultin_vma_page_range() check for compatible mappings/permissions
-- Extend patch description and add some performance numbers
-
-David Hildenbrand (5):
-  mm: make variable names for populate_vma_page_range() consistent
-  mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to prefault page
-    tables
-  MAINTAINERS: add tools/testing/selftests/vm/ to MEMORY MANAGEMENT
-  selftests/vm: add protection_keys_32 / protection_keys_64 to gitignore
-  selftests/vm: add test for MADV_POPULATE_(READ|WRITE)
-
- MAINTAINERS                                |   1 +
- arch/alpha/include/uapi/asm/mman.h         |   3 +
- arch/mips/include/uapi/asm/mman.h          |   3 +
- arch/parisc/include/uapi/asm/mman.h        |   3 +
- arch/xtensa/include/uapi/asm/mman.h        |   3 +
- include/uapi/asm-generic/mman-common.h     |   3 +
- mm/gup.c                                   |  58 ++++
- mm/internal.h                              |   5 +-
- mm/madvise.c                               |  66 ++++
- tools/testing/selftests/vm/.gitignore      |   3 +
- tools/testing/selftests/vm/Makefile        |   1 +
- tools/testing/selftests/vm/madv_populate.c | 342 +++++++++++++++++++++
- tools/testing/selftests/vm/run_vmtests.sh  |  16 +
- 13 files changed, 506 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/vm/madv_populate.c
-
-
-base-commit: bf05bf16c76bb44ab5156223e1e58e26dfe30a88
+diff --git a/mm/internal.h b/mm/internal.h
+index cb3c5e0a7799..bbf1c1274983 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -354,7 +354,7 @@ void __vma_unlink_list(struct mm_struct *mm, struct vm_area_struct *vma);
+ 
+ #ifdef CONFIG_MMU
+ extern long populate_vma_page_range(struct vm_area_struct *vma,
+-		unsigned long start, unsigned long end, int *nonblocking);
++		unsigned long start, unsigned long end, int *locked);
+ extern void munlock_vma_pages_range(struct vm_area_struct *vma,
+ 			unsigned long start, unsigned long end);
+ static inline void munlock_vma_pages_all(struct vm_area_struct *vma)
 -- 
 2.30.2
 
