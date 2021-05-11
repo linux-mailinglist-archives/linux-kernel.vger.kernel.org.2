@@ -2,117 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DA737A273
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C4637A27B
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbhEKItT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 04:49:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229995AbhEKItP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 04:49:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7A48611F1;
-        Tue, 11 May 2021 08:48:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620722889;
-        bh=gWeoEHhrz/zhEY+10w21M2EBcdeQNy1sRm5F9WGr5UA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GRbnl0/2UilceH2n3gUWtOCmaykcXN76OP9Ae7Uw23/BrI59NLKtdCzgbxCSOYUSh
-         9GWTEZGaoBaNXA7+PrAnFNeo6jGEmV86hwIH2RowGUMjpM0qFwnTIIVV8p+9HIRDaA
-         Qy2o6qVVMa4I+jMXZyQFTtv6iX36HhyoAqc1ttno6RCFFP+8S+vmuGsu3diUc/sBGz
-         UZsA2jJQ+nMV262Uq5FFWBRcNGenBZSW0jULJYbSB8958oall/Kr+je5ssNgHnp6IR
-         AcdCRzjXaWKlLX7BpeHLO1jKcVZSHwA//b+tQjCvMOb8uBz+fGY4KtW7NBaBWsERgd
-         gueWxqRQ5hC/g==
-Date:   Tue, 11 May 2021 11:48:00 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: arm32: panic in move_freepages (Was [PATCH v2 0/4] arm64: drop
- pfn_valid_within() and simplify pfn_valid())
-Message-ID: <YJpEwF2cGjS5mKma@kernel.org>
-References: <ca5b00bd-1312-0c69-ab69-a1bd749f51b6@huawei.com>
- <YI+XrAg4KOzOyt7c@kernel.org>
- <24b37c01-fc75-d459-6e61-d67e8f0cf043@redhat.com>
- <YI+32ocTbec5Rm4e@kernel.org>
- <82cfbb7f-dd4f-12d8-dc76-847f06172200@huawei.com>
- <b077916e-d3f7-ec6c-8c80-b5b642ee111f@huawei.com>
- <YJUWywpGwOpM8hzo@kernel.org>
- <33c67e13-dc48-9a2f-46d8-a532e17380fb@huawei.com>
- <YJd6QXcmVl+HM4Ob@kernel.org>
- <b91cd653-842b-0e77-5c00-17a0ac9c4b50@huawei.com>
+        id S230511AbhEKIu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 04:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230073AbhEKIu2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 04:50:28 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A5DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 01:49:22 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1lgO4r-0006Pw-1j; Tue, 11 May 2021 10:49:17 +0200
+Message-ID: <776c6e34877537fb1612a8e37e8ebaeae545bb62.camel@pengutronix.de>
+Subject: Re: [bug report] media: allegro: possible NULL pointer dereference.
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Michael Tretter <m.tretter@pengutronix.de>,
+        Yuri Savinykh <s02190703@gse.cs.msu.ru>
+Cc:     ldv-project@linuxtesting.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-media@vger.kernel.org
+Date:   Tue, 11 May 2021 10:49:16 +0200
+In-Reply-To: <20210511072834.GC17882@pengutronix.de>
+References: <20210508160455.86976-1-s02190703@gse.cs.msu.ru>
+         <20210511072834.GC17882@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b91cd653-842b-0e77-5c00-17a0ac9c4b50@huawei.com>
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 11:10:20AM +0800, Kefeng Wang wrote:
->
-> > > The memory is not continuous, see MEMBLOCK:
-> > >   memory size = 0x4c0fffff reserved size = 0x027ef058
-> > >   memory.cnt  = 0xa
-> > >   memory[0x0]    [0x80a00000-0x855fffff], 0x04c00000 bytes flags: 0x0
-> > >   memory[0x1]    [0x86a00000-0x87dfffff], 0x01400000 bytes flags: 0x0
-> > >   memory[0x2]    [0x8bd00000-0x8c4fffff], 0x00800000 bytes flags: 0x0
-> > >   memory[0x3]    [0x8e300000-0x8ecfffff], 0x00a00000 bytes flags: 0x0
-> > >   memory[0x4]    [0x90d00000-0xbfffffff], 0x2f300000 bytes flags: 0x0
-> > >   memory[0x5]    [0xcc000000-0xdc9fffff], 0x10a00000 bytes flags: 0x0
-> > >   memory[0x6]    [0xde700000-0xde9fffff], 0x00300000 bytes flags: 0x0
-> > > ...
-> > > 
-> > > The pfn_range [0xde600,0xde700] => addr_range [0xde600000,0xde700000]
-> > > is not available memory, and we won't create memmap , so with or without
-> > > your patch, we can't see the range in free_memmap(), right?
+Hi Michael,
+
+Am Dienstag, dem 11.05.2021 um 09:28 +0200 schrieb Michael Tretter:
+> Hello Yuri,
+> 
+> On Sat, 08 May 2021 19:04:55 +0300, Yuri Savinykh wrote:
+> > At the moment of enabling irq handling:
 > > 
-> > This is not available memory and we won't see the reange in free_memmap(),
-> > but we still should create memmap for it and that's what my patch tried to
-> > do.
+> > 3166     ret = devm_request_threaded_irq(&pdev->dev, irq,
+> > 3167                     allegro_hardirq,
+> > 3168                     allegro_irq_thread,
+> > 3169                     IRQF_SHARED, dev_name(&pdev->dev), dev);
 > > 
-> > There are a lot of places in core mm that operate on pageblocks and
-> > free_unused_memmap() should make sure that any pageblock has a valid memory
-> > map.
+> > there is still uninitialized field mbox_status of struct allegro_dev *dev.
+> > If an interrupt occurs in the interval between the installation of the
+> > interrupt handler and the initialization of this field, NULL pointer
+> > dereference happens.
 > > 
-> > Currently, that's not the case when SPARSEMEM=y and my patch tried to fix
-> > it.
+> > This field is dereferenced in the handler function without any check:
 > > 
-> > Can you please send log with my patch applied and with the printing of
-> > ranges that are freed in free_unused_memmap() you've used in previous
-> > mails?
+> > 1801 static irqreturn_t allegro_irq_thread(int irq, void *data)
+> > 1802 {
+> > 1803     struct allegro_dev *dev = data;
+> > 1804
+> > 1805     allegro_mbox_notify(dev->mbox_status);
+> > 
+> > 
+> > and then:
+> > 
+> > 752 static void allegro_mbox_notify(struct allegro_mbox *mbox)
+> > 753 {
+> > 754     struct allegro_dev *dev = mbox->dev;
+> > 
+> > The initialization of the mbox_status field happens asynchronously in
+> > allegro_fw_callback() via allegro_mcu_hw_init(). 
+> > 
+> > Is it guaranteed that an interrupt does not occur in this interval?
+> > If it is not, is it better to move interrupt handler installation
+> > after initialization of this field has been completed?
+> 
+> Thanks for the report. The interrupt is triggered by the firmware, which is
+> only loaded in allegro_fw_callback(), and is enabled only after the
+> initialization of mbox_status in allegro_mcu_hw_init():
+> 
+> 3507	allegro_mcu_enable_interrupts(dev)
+> 
+> The interrupt handler is installed in probe(), because that's where all the
+> platform information is retrieved. Unfortunately, at that time, the driver is
+> not able to setup the mailboxes, because the mailbox configuration depends on
+> the firmware and is only known in allegro_fw_callback().
+> 
+> It might be interesting to tie the interrupt more closely to the mailboxes,
+> because it is actually only used to notify the driver about mails in the
+> mailbox, but that's something I have not yet considered worth the effort.
+> 
 
-> with your patch[1] and debug print in free_memmap,
-> ----> free_memmap, start_pfn = 85800,  85800000 end_pfn = 86800, 86800000
-> ----> free_memmap, start_pfn = 8c800,  8c800000 end_pfn = 8e000, 8e000000
-> ----> free_memmap, start_pfn = 8f000,  8f000000 end_pfn = 90000, 90000000
-> ----> free_memmap, start_pfn = dcc00,  dcc00000 end_pfn = de400, de400000
-> ----> free_memmap, start_pfn = dec00,  dec00000 end_pfn = e0000, e0000000
-> ----> free_memmap, start_pfn = e0c00,  e0c00000 end_pfn = e4000, e4000000
-> ----> free_memmap, start_pfn = f7000,  f7000000 end_pfn = f8000, f8000000
+The interrupt is installed with IRQF_SHARED, so your IRQ handler must
+be prepared to be called even if your device did not trigger an IRQ and
+even before your initialization is done, as another device on the same
+IRQ line might trigger the IRQ. In that case you must at least be able
+to return IRQ_NONE from your handler without crashing the kernel.
 
-It seems that freeing of the memory map is suboptimal still because that
-code was not designed for memory layout that has more holes than Swiss
-cheese. 
+Regards,
+Lucas
 
-Still, the range [0xde600,0xde700] is not freed and there should be struct
-pages for this range.
-
-Can you add 
-
-	dump_page(pfn_to_page(0xde600), "");
-
-say, in the end of memblock_free_all()?
- 
--- 
-Sincerely yours,
-Mike.
