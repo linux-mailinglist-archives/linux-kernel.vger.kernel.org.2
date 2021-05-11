@@ -2,99 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B776437A3B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA5B37A3BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbhEKJbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 05:31:52 -0400
-Received: from mail-vk1-f172.google.com ([209.85.221.172]:34655 "EHLO
-        mail-vk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231411AbhEKJbs (ORCPT
+        id S231304AbhEKJeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 05:34:16 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:40172 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231425AbhEKJeN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 05:31:48 -0400
-Received: by mail-vk1-f172.google.com with SMTP id q135so3924995vke.1
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 02:30:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7pIkfcmvEoi96dJ73s7ui/IZYU+awqQi3c8hAfZnptQ=;
-        b=twkIaYZxF+vl+bXkv2ONP57xNBgsNosZlFd9vOt0ikPU866weYI8rOZVCswCqgjvvb
-         v5TqPZ4Np+CsCu86kNhAY2XGd55ZXKJQyQSjbRgCzHCbLBGmcuDkqpA0B8sP2BO34U+6
-         AYNSJ1pTbj6/UgL4SgVX8Ny/jtJBDqWThoZ4nBDjG6jiqvfDAb0EKhd81dTpHW8G/bRF
-         sWrOlwH7A1jzVblumLC7dDfJvQ3QhmfPPeVlEq+B1UmcjLDiqKFfmRCWMnQrdOh1SrWv
-         aObX8PufXe/xEKPOMfhd13iIqfrSRRMdsEamWymb+JfXNxwVwSUOePw6OrzMTGKnZ+NI
-         7A1Q==
-X-Gm-Message-State: AOAM531iszL0fQtxlHgm8q6/SnIrzHxzEmlqWo0n14GXJV2+MLqEs0F8
-        Jt84lktQdpEjDWyXkeTzLtuLR8mLk2KnVyws8UU=
-X-Google-Smtp-Source: ABdhPJzvwIYI6ggGA4K1217DygzIdlDcTLrvim/jgKkff1X/hnWYC0ofnZXPYpoy53uUkM/RprqEuYbZPqCMHkVnEeQ=
-X-Received: by 2002:a1f:5e8c:: with SMTP id s134mr15031910vkb.1.1620725441789;
- Tue, 11 May 2021 02:30:41 -0700 (PDT)
+        Tue, 11 May 2021 05:34:13 -0400
+X-UUID: 6369a36290a84d9790d6a88d60dd1c23-20210511
+X-UUID: 6369a36290a84d9790d6a88d60dd1c23-20210511
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <miles.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 804010250; Tue, 11 May 2021 17:31:17 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 11 May 2021 17:31:15 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 11 May 2021 17:31:15 +0800
+From:   Miles Chen <miles.chen@mediatek.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        Miles Chen <miles.chen@mediatek.com>
+Subject: [PATCH] mm/sparse: fix check_usemap_section_nr warnings
+Date:   Tue, 11 May 2021 17:31:14 +0800
+Message-ID: <20210511093114.15123-1-miles.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20210510093753.40683-1-mark.rutland@arm.com> <20210510093753.40683-33-mark.rutland@arm.com>
-In-Reply-To: <20210510093753.40683-33-mark.rutland@arm.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 11 May 2021 11:30:30 +0200
-Message-ID: <CAMuHMdUw2+2CRr41TqpzH+4MhcOqSXJYBqjmEbFpAWpTW_9TBQ@mail.gmail.com>
-Subject: Re: [PATCH 32/33] locking/atomic: delete !ARCH_ATOMIC remnants
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Brian Cain <bcain@codeaurora.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Chris Zankel <chris@zankel.net>, Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Greentime Hu <green.hu@gmail.com>, Guo Ren <guoren@kernel.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Matt Turner <mattst88@gmail.com>,
-        Michal Simek <monstr@monstr.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nick Hu <nickhu@andestech.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 11:44 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> Now that all architectures implement ARCH_ATOMIC, we can make it
-> mandatory, removing the Kconfig symbol and logic for !ARCH_ATOMIC.
->
-> There should be no functional change as a result of this patch.
->
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+In current implementation of node_data, if CONFIG_NEED_MULTIPLE_NODES=y,
+node_data is allocated by kzmalloc. If CONFIG_NEED_MULTIPLE_NODES=n,
+we use a global variable named "contig_page_data".
 
->  arch/m68k/Kconfig               |    1 -
+If CONFIG_DEBUG_VIRTUAL is not enabled. __pa() can handle both kzalloc and
+symbol cases. But if CONFIG_DEBUG_VIRTUAL is set, we will have the
+"virt_to_phys used for non-linear address" warning when booting.
 
-FWIW
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+To fix it, create a small function to handle both translation.
 
-Gr{oetje,eeting}s,
+Warning message:
+[    0.000000] ------------[ cut here ]------------
+[    0.000000] virt_to_phys used for non-linear address: (____ptrval____) (contig_page_data+0x0/0x1c00)
+[    0.000000] WARNING: CPU: 0 PID: 0 at arch/arm64/mm/physaddr.c:15 __virt_to_phys+0x58/0x68
+[    0.000000] Modules linked in:
+[    0.000000] CPU: 0 PID: 0 Comm: swapper Tainted: G        W         5.13.0-rc1-00074-g1140ab592e2e #3
+[    0.000000] Hardware name: linux,dummy-virt (DT)
+[    0.000000] pstate: 600000c5 (nZCv daIF -PAN -UAO -TCO BTYPE=--)
+[    0.000000] pc : __virt_to_phys+0x58/0x68
+[    0.000000] lr : __virt_to_phys+0x54/0x68
+[    0.000000] sp : ffff800011833e70
+[    0.000000] x29: ffff800011833e70 x28: 00000000418a0018 x27: 0000000000000000
+[    0.000000] x26: 000000000000000a x25: ffff800011b70000 x24: ffff800011b70000
+[    0.000000] x23: fffffc0001c00000 x22: ffff800011b70000 x21: 0000000047ffffb0
+[    0.000000] x20: 0000000000000008 x19: ffff800011b082c0 x18: ffffffffffffffff
+[    0.000000] x17: 0000000000000000 x16: ffff800011833bf9 x15: 0000000000000004
+[    0.000000] x14: 0000000000000fff x13: ffff80001186a548 x12: 0000000000000000
+[    0.000000] x11: 0000000000000000 x10: 00000000ffffffff x9 : 0000000000000000
+[    0.000000] x8 : ffff8000115c9000 x7 : 737520737968705f x6 : ffff800011b62ef8
+[    0.000000] x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000000
+[    0.000000] x2 : 0000000000000000 x1 : ffff80001159585e x0 : 0000000000000058
+[    0.000000] Call trace:
+[    0.000000]  __virt_to_phys+0x58/0x68
+[    0.000000]  check_usemap_section_nr+0x50/0xfc
+[    0.000000]  sparse_init_nid+0x1ac/0x28c
+[    0.000000]  sparse_init+0x1c4/0x1e0
+[    0.000000]  bootmem_init+0x60/0x90
+[    0.000000]  setup_arch+0x184/0x1f0
+[    0.000000]  start_kernel+0x78/0x488
+[    0.000000] ---[ end trace f68728a0d3053b60 ]---
 
-                        Geert
+Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+---
+ mm/sparse.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
+diff --git a/mm/sparse.c b/mm/sparse.c
+index b2ada9dc00cb..55c18aff3e42 100644
+--- a/mm/sparse.c
++++ b/mm/sparse.c
+@@ -344,6 +344,15 @@ size_t mem_section_usage_size(void)
+ 	return sizeof(struct mem_section_usage) + usemap_size();
+ }
+ 
++static inline phys_addr_t pgdat_to_phys(struct pglist_data *pgdat)
++{
++#ifndef CONFIG_NEED_MULTIPLE_NODES
++	return __pa_symbol(pgdat);
++#else
++	return __pa(pgdat);
++#endif
++}
++
+ #ifdef CONFIG_MEMORY_HOTREMOVE
+ static struct mem_section_usage * __init
+ sparse_early_usemaps_alloc_pgdat_section(struct pglist_data *pgdat,
+@@ -362,7 +371,7 @@ sparse_early_usemaps_alloc_pgdat_section(struct pglist_data *pgdat,
+ 	 * from the same section as the pgdat where possible to avoid
+ 	 * this problem.
+ 	 */
+-	goal = __pa(pgdat) & (PAGE_SECTION_MASK << PAGE_SHIFT);
++	goal = pgdat_to_phys(pgdat) & (PAGE_SECTION_MASK << PAGE_SHIFT);
+ 	limit = goal + (1UL << PA_SECTION_SHIFT);
+ 	nid = early_pfn_to_nid(goal >> PAGE_SHIFT);
+ again:
+@@ -390,7 +399,7 @@ static void __init check_usemap_section_nr(int nid,
+ 	}
+ 
+ 	usemap_snr = pfn_to_section_nr(__pa(usage) >> PAGE_SHIFT);
+-	pgdat_snr = pfn_to_section_nr(__pa(pgdat) >> PAGE_SHIFT);
++	pgdat_snr = pfn_to_section_nr(pgdat_to_phys(pgdat) >> PAGE_SHIFT);
+ 	if (usemap_snr == pgdat_snr)
+ 		return;
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.18.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
