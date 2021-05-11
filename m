@@ -2,134 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E62E37AF73
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8563637AF76
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhEKTi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 15:38:56 -0400
-Received: from mail-co1nam11on2047.outbound.protection.outlook.com ([40.107.220.47]:25108
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232215AbhEKTiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 15:38:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RO15RDJhDqQEMhnY8yJ8XtvZsxkyonxVwbuFrCXsC1n1PwPTxDkqhIEPOtIFFGjymwIC5OGYD219e/9bqRWhyoUT5ZUJVrTM4uHbHv4jmIrz1p9ds6IMCFDXX211nOHpmwKWWRDnaAccz7cwgojAw7qYe0Ku4crPQQbqoNf3vWSuO1lcloKZh8Z/33uTaU4KL1Cwx/sCK2oGFCzI/MJBxB1ogA6nD5x2y48WLlWgDP/LWdeRdE+ZaBOzj4ZqbnwzJTUhpoqQ4wzJrYqEW3tV6ae3ll7PV0vDF27HBjI9gVxaBnI4aXv/co2iinoM38wPOcNMTgpZKweCjGA4x4nouQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lag8/Dbtz+iczl2pjPIqjnkF2kocn/ZaOaQ7QlFEASM=;
- b=SWM40F+6LIdjDttPsUJJiHUlCF4kDaKPFIR4TBe7DPjS0+A6wWsuSLxrahCIrhz4dcAvPWpfiH76N7IE0sk38W6WNk9xG6cyqUWMzf8qZQi+wzF+qlCxEOWOExKh8a1Am0WpzUFAVkoUrzgq/dd5Kxoeslu5abaMEgYMwhbxVuaqm3bUPYVE/69NNWued8y1FXOr3Ya36Cr2TU2P/Kg83Zrgtk8C3IrmWdpZXLt8DjnbbfxPFEi8QOs8O23HPz1t7vfSqRt8rtCJKQwuo6bo4q3Op3Z18NHSsGrgo7skwoZLhT7n+Vq7aeRdmQE2SXtnUJPxOJnD2jKzfihThMeoow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lag8/Dbtz+iczl2pjPIqjnkF2kocn/ZaOaQ7QlFEASM=;
- b=AOfng/DYT+obWVERQtLGTyB3FnVWSQFD+y8o6Lqkk1HwZlmQbw1PK/H0v1gvm2wH71f5v4xXB+lAeJ55Pft/pIJdbDGufI8bL99QVbJM7HcNO90Yod2/0j1j3cgcnwFxx+vwimGXDPEZETIlDGRtqJkDPvAXz9Xs6AjewvYGyVHVpqApZKLLtxzc151vSMh5XvjbzO5r2yhkfDMHwclhxmeKgnJLhCR2N9hwNrKlo7vQBfaCvOn6MDfeRd4OfcL96zNKcS1oPhZH3L0QRmUaIrvUFS9Pgr5So3v6omP7yFCMc6iPka6xMBFVdlMdi1H5qRHRAPjaYBdLGaN5xzvJMw==
-Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
- header.d=none;linux.alibaba.com; dmarc=none action=none
- header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3212.namprd12.prod.outlook.com (2603:10b6:5:186::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.26; Tue, 11 May
- 2021 19:37:45 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4108.031; Tue, 11 May 2021
- 19:37:45 +0000
-Date:   Tue, 11 May 2021 16:37:44 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     bvanassche@acm.org, dledford@redhat.com, nathan@kernel.org,
-        ndesaulniers@google.com, linux-rdma@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] ib_srpt: Remove redundant assignment to ret
-Message-ID: <20210511193744.GD1316147@nvidia.com>
-References: <1620296105-121964-1-git-send-email-yang.lee@linux.alibaba.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620296105-121964-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL0PR02CA0114.namprd02.prod.outlook.com
- (2603:10b6:208:35::19) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S232106AbhEKTkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 15:40:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231808AbhEKTkL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 15:40:11 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60BBC061574;
+        Tue, 11 May 2021 12:39:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=eNRIlQQZWCazYaxWhuouwitveyTw50B3VUes/EwHhZ4=; b=LiM+e93c7yw8r/CqMs2gl1vsos
+        FdVU4ovs1ULs8DQN1XWcVtufZq+x54QB1kFCIFh6epSB3XjGfHIfbqmKbeqa1nKFnaAidCg93bW0v
+        6MmN8neM8XMb13hF23AqHPw3PVxiavFLIeMsbOtZK4/gOtztq5H6yqumzFKoWk4hm9eLNw7Py6oom
+        IWTpVXy+Q1DP6C6NmdfdGZp2rNaqBVjzSkZmhCcLNsAUDk8Qw/9dpWBZQInxVY0RULsWYqJ6eK6Ug
+        rtyjiKE6D6Gbz1LhRugEgAHGRTqk1Bg/+87hPtf1mmM1SJ/1NCsIQ0BvvIEfay4nEHjaS6scmwAcf
+        UfBHHgsw==;
+Received: from [2601:1c0:6280:3f0:d7c4:8ab4:31d7:f0ba]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgYDf-009sZV-4j; Tue, 11 May 2021 19:39:03 +0000
+Subject: Re: mmotm 2021-05-10-21-46 uploaded (mm/*)
+To:     akpm@linux-foundation.org, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
+References: <20210511044719.tWGZA2U3A%akpm@linux-foundation.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e50de603-ab1d-72f7-63f5-c1fc92c5c7be@infradead.org>
+Date:   Tue, 11 May 2021 12:39:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR02CA0114.namprd02.prod.outlook.com (2603:10b6:208:35::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25 via Frontend Transport; Tue, 11 May 2021 19:37:45 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lgYCO-005WQe-16; Tue, 11 May 2021 16:37:44 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bb470983-be6b-46c6-1ac7-08d914b44025
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3212:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3212F4A8249C30E9B45F375BC2539@DM6PR12MB3212.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nzOhH06/EQHgfkvx9MzV2T7ac08LN6ml92TE81h7CNWT1NG2ALV8bw8OsugtULD1INGfIEhxcBeJNaDE/sLo/vScp1HHSFfbt/oU15ZGgaaW1usctJL6HELWAIEJgTIGfLZ85J+M+gAau7RYb28p0wiCcXusZeQdol5RunQMxR9/gnEMJgDHWRENi0INcEowFZeZj/GOq4V0tmxATkNE40LFe3pYYNKk29jCI0kzIbBf4vGQlKhZGxDBsAujGkCK+gMVVjGemxbOJBMbvHi/VIGagq36gFe47J67sPxik77iWQkXqt9KXDaug3myAv7tbC6HyRi9XxpwsQO0TL1L9xTTkI+HpDg/evXwsBF4zEFoj8eSlKVE61MMqwn8djq7wzXsMDdtJD8Y5f1cipCednzZ2FnuEpf7p44qlalpqtkrDLgHKpLadKWalzlKBksOG3HZxGl+MMaMcZX+iJa0O4y8n9380NyJ9cB5Y/m/44d7x0hDCA0m8Wo5Wg1WtD93NsNrs2uTGZBOdg32TLGy7c54K7GelaZqtXVVyXb++L5+O/f5ovfXG6scNMJrxOXTJoEH3ntc1HoGNB6zHE7hmezL37d+C2rnienua+AomDc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(346002)(366004)(136003)(33656002)(83380400001)(2906002)(8936002)(4326008)(478600001)(316002)(2616005)(426003)(186003)(66476007)(5660300002)(9786002)(8676002)(66946007)(4744005)(66556008)(86362001)(38100700002)(26005)(6916009)(36756003)(1076003)(9746002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?UvF5u6g9P39B86T52rEodDZBO0xCvl1eFX/qdJNfUIijgfPAxhPJLy8GGhKs?=
- =?us-ascii?Q?dVuU55ovUrdIRKZPgw1tZp6Tm5pBah4XlPXu7wv3we3/Mr8rb2UigChIKCtJ?=
- =?us-ascii?Q?mdiHQP8ZvbElMbtohcurJPRKJLg9/2p/xoWczhyYASuRKXC9Iw/Zek0M4mvH?=
- =?us-ascii?Q?wxduTXptEHcYG5OBcsDZCqh0VX8z2ZIDNBU8aZaJAv7RUpjzXBmjCbVYUIAb?=
- =?us-ascii?Q?w7KWm/y+KhSuOhjnnU3QRNJxb3IEn9T33sh2nEvIfH9GUexBFDoTSfRAH7J8?=
- =?us-ascii?Q?M+ZXzMqEODkEREIstVa+MN76gcL5L7WdcM+57cUU50gef2Aeo5OVJA/ZF4Z5?=
- =?us-ascii?Q?aWFgaF3UXVCqHDZdq0daB8wUEbqx/0pnkq4vRHmInTONyXqPSR+kH93IiX6I?=
- =?us-ascii?Q?6nsP13cLCO4Jdzk+0qsehHyeNhPvr+BH0UTlHHQYNnFpU4QmPHIKdpMiyP4u?=
- =?us-ascii?Q?/hlyZ4Xmu4siZtJAoAbx95aMsqwYGCPJbtD5kprl0Ins2VysrVYCK28j4F6Q?=
- =?us-ascii?Q?QnFERwIltKmykrcywmm1xX3bA/ma+FYD50yuDyeHJKzlH05Jna+V+H984hKU?=
- =?us-ascii?Q?kFggMNtJQKWyu+eJFRGD4j2vp55dEVIeI+BFK4dwtUzvpvRD5vKeSJj6dtdB?=
- =?us-ascii?Q?SJJdiijcYQLRHid3AwvCfJAfjMgFuN6vUr38a89oUuEygFUUTkfUVOBIgQhm?=
- =?us-ascii?Q?KZ3HE60dXkbmOvusgXd1Vc/f4eHk0ZaKXX3RbpuBK5+uUSPfXe1RnXua6Dum?=
- =?us-ascii?Q?s+APZ2ukcLKXUKBuUy6L8k2l7jOA5nzYLKKwPaxA0weAKmzFCO8YxoPI3fwO?=
- =?us-ascii?Q?iTsMkfw4UPmSkx2BIgi3+7iFAGpgx2/oMmQO5N8Mz8UqTk3rq+W0nXZhT4CU?=
- =?us-ascii?Q?5dbLJ/zEQTiU9RubygZXzM0w4NiW3tBQQvdnTSWpazI+pGJGEYCqpmIghzci?=
- =?us-ascii?Q?JJ6yGQa6UUNRXrBm7gKK9lyuLPQKbTVKGgpFLb0foY1oFdjnT1GWRWfAA5nX?=
- =?us-ascii?Q?z8AePGvWq1xNUuzv8RRnyK4WMwG6oag/xYNIIThEabfS541tuII/bckVEUCj?=
- =?us-ascii?Q?2Od3B4XxQ1rxcYZ/+SEw+BirFksHeT/UFmxhP24IjoPN8oI2NzeqDxZXi6Xn?=
- =?us-ascii?Q?SbCszCKga4L+zoNBvOMYwtqWN1CWbU8sNGLAAQEBfqmbNYNWF+1DmV5DJY50?=
- =?us-ascii?Q?cGUD9sO3v5Uusu8t4WqWFS53BSKz3Y0TbfWWRvrS/a3KM4Sm00vN2KHxE74m?=
- =?us-ascii?Q?eTy0NTJDyu7gTf8OQ7yFtdBxsX5T314rcizYaoRNPMzB1zWFpuEbEgiYcyVG?=
- =?us-ascii?Q?Yk/QEYjs0blq6na0nX44BrcL?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb470983-be6b-46c6-1ac7-08d914b44025
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 19:37:45.4187
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZrEcojDKFYMUPuRDK3oVSTWl6HAGZu8eloi26SdcWcWBeejqr+yscDRK47M1ZDGc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3212
+In-Reply-To: <20210511044719.tWGZA2U3A%akpm@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 06:15:05PM +0800, Yang Li wrote:
-> Variable 'ret' is set to -ENOMEM but this value is never read as it is
-> overwritten with a new value later on, hence it is a redundant
-> assignment and can be removed
+On 5/10/21 9:47 PM, akpm@linux-foundation.org wrote:
+> The mm-of-the-moment snapshot 2021-05-10-21-46 has been uploaded to
 > 
-> In 'commit b79fafac70fc ("target: make queue_tm_rsp() return void")'
-> srpt_queue_response() has been changed to return void, so after "goto
-> out", there is no need to return ret.
+>    https://www.ozlabs.org/~akpm/mmotm/
 > 
-> Clean up the following clang-analyzer warning:
+> mmotm-readme.txt says
 > 
-> drivers/infiniband/ulp/srpt/ib_srpt.c:2860:3: warning: Value stored to
-> 'ret' is never read [clang-analyzer-deadcode.DeadStores]
+> README for mm-of-the-moment:
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-> ---
->  drivers/infiniband/ulp/srpt/ib_srpt.c | 1 -
->  1 file changed, 1 deletion(-)
+> https://www.ozlabs.org/~akpm/mmotm/
+> 
+> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+> more than once a week.
+> 
+> You will need quilt to apply these patches to the latest Linus release (5.x
+> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+> https://ozlabs.org/~akpm/mmotm/series
+> 
+> The file broken-out.tar.gz contains two datestamp files: .DATE and
+> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+> followed by the base kernel version against which this patch series is to
+> be applied.
+> 
+> This tree is partially included in linux-next.  To see which patches are
+> included in linux-next, consult the `series' file.  Only the patches
+> within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
+> linux-next.
+> 
+> 
+> A full copy of the full kernel tree with the linux-next and mmotm patches
+> already applied is available through git within an hour of the mmotm
+> release.  Individual mmotm releases are tagged.  The master branch always
+> points to the latest release, so it's constantly rebasing.
+> 
+> 	https://github.com/hnaz/linux-mm
+> 
+> The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
+> contains daily snapshots of the -mm tree.  It is updated more frequently
+> than mmotm, and is untested.
+> 
+> A git copy of this tree is also available at
+> 
+> 	https://github.com/hnaz/linux-mm
 
-Applied to for-next
 
-Thanks,
-Jason
+Lots of various mm/ build errors:
+
+Many of:
+In file included from ../arch/x86/kvm/../../../virt/kvm/kvm_main.c:47:0:
+../include/linux/hugetlb.h:340:30: error: parameter 6 (‘mode’) has incomplete type
+       enum mcopy_atomic_mode mode,
+                              ^~~~
+../include/linux/hugetlb.h:335:19: error: function declaration isn’t a prototype [-Werror=strict-prototypes]
+ static inline int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
+                   ^~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Many of:
+../mm/slab_common.c:754:8: error: array index in initializer exceeds array bounds
+  .name[KMALLOC_RECLAIM] = "kmalloc-rcl-" #__short_size, \
+        ^
+../mm/slab_common.c:766:2: note: in expansion of macro ‘INIT_KMALLOC_INFO’
+  INIT_KMALLOC_INFO(0, 0),
+  ^~~~~~~~~~~~~~~~~
+../mm/slab_common.c:754:8: note: (near initialization for ‘kmalloc_info[0].name’)
+  .name[KMALLOC_RECLAIM] = "kmalloc-rcl-" #__short_size, \
+        ^
+../mm/slab_common.c:766:2: note: in expansion of macro ‘INIT_KMALLOC_INFO’
+  INIT_KMALLOC_INFO(0, 0),
+  ^~~~~~~~~~~~~~~~~
+
+One of:
+In file included from <command-line>:0:0:
+In function ‘__mm_zero_struct_page.isra.96’,
+    inlined from ‘__init_single_page.isra.97’ at ../mm/page_alloc.c:1494:2,
+    inlined from ‘init_unavailable_range.isra.98’ at ../mm/page_alloc.c:6496:3:
+./../include/linux/compiler_types.h:328:38: error: call to ‘__compiletime_assert_253’ declared with attribute error: BUILD_BUG_ON failed: sizeof(struct page) > 80
+  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+                                      ^
+./../include/linux/compiler_types.h:309:4: note: in definition of macro ‘__compiletime_assert’
+    prefix ## suffix();    \
+    ^~~~~~
+./../include/linux/compiler_types.h:328:2: note: in expansion of macro ‘_compiletime_assert’
+  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+  ^~~~~~~~~~~~~~~~~~~
+../include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
+ #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+                                     ^~~~~~~~~~~~~~~~~~
+../include/linux/build_bug.h:50:2: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
+  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+  ^~~~~~~~~~~~~~~~
+../include/linux/mm.h:169:2: note: in expansion of macro ‘BUILD_BUG_ON’
+  BUILD_BUG_ON(sizeof(struct page) > 80);
+  ^~~~~~~~~~~~
+
+
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+
