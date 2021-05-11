@@ -2,64 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF7237A5B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D860737A5C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231442AbhEKL2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 07:28:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230441AbhEKL2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 07:28:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09AC46186A;
-        Tue, 11 May 2021 11:27:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620732456;
-        bh=z4Xwx6G0EVHQsG2p959XEORObr8SXf7pV9nctlXNA38=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q/2hLnrRdI7yIpYKOlx6oYNX3+CUrXGqEwduRCO/0gpW+/1zXlDfWDQd4hzyuPwlF
-         r0WLn9vJ8NiLkfS0W2s66gUqKvXxqtMnCA1NJXWI0oKoVP0BPusXiggYOrCMlyyY49
-         M4ICG5kPKUA+bGELcVrFtq8yAIg5Cy1HkwpX7H2E=
-Date:   Tue, 11 May 2021 13:27:34 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Bixuan Cui <cuibixuan@huawei.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Oliver Neukum <oneukum@suse.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Tianping Fang <tianping.fang@mediatek.com>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        Ikjoon Jang <ikjn@chromium.org>
-Subject: Re: [PATCH] usb: core: hub: fix race condition about TRSMRCY of
- resume
-Message-ID: <YJpqJr/3XEIYrtko@kroah.com>
-References: <20210511101522.34193-1-chunfeng.yun@mediatek.com>
+        id S231489AbhEKLaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 07:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230519AbhEKLaG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 07:30:06 -0400
+Received: from mail.aperture-lab.de (mail.aperture-lab.de [IPv6:2a01:4f8:c2c:665b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E35C061574;
+        Tue, 11 May 2021 04:28:59 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 711293E8F5;
+        Tue, 11 May 2021 13:28:56 +0200 (CEST)
+Date:   Tue, 11 May 2021 13:28:54 +0200
+From:   Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
+To:     The list for a Better Approach To Mobile Ad-hoc
+         Networking <b.a.t.m.a.n@lists.open-mesh.org>
+Cc:     netdev@vger.kernel.org, Roopa Prabhu <roopa@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next v2 09/11] net: bridge: mcast: split multicast router
+ state for IPv4 and IPv6
+Message-ID: <20210511112854.GA2222@otheros>
+References: <20210509194509.10849-1-linus.luessing@c0d3.blue>
+ <20210509194509.10849-10-linus.luessing@c0d3.blue>
+ <f2f1c811-0502-bde4-8ece-e47b3e30dc66@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210511101522.34193-1-chunfeng.yun@mediatek.com>
+In-Reply-To: <f2f1c811-0502-bde4-8ece-e47b3e30dc66@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Last-TLS-Session-Version: TLSv1.2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 06:15:22PM +0800, Chunfeng Yun wrote:
-> This may happen if the port becomes resume status exactly
-> when usb_port_resume() gets port status, it still need provide
-> a TRSMCRY time before access the device.
+On Tue, May 11, 2021 at 12:29:41PM +0300, Nikolay Aleksandrov wrote:
+> [...]
+> > -static void br_multicast_mark_router(struct net_bridge *br,
+> > -				     struct net_bridge_port *port)
+> > +#if IS_ENABLED(CONFIG_IPV6)
+> > +struct hlist_node *
+> > +br_ip6_multicast_get_rport_slot(struct net_bridge *br, struct net_bridge_port *port)
+> > +{
+> > +	struct hlist_node *slot = NULL;
+> > +	struct net_bridge_port *p;
+> > +
+> > +	hlist_for_each_entry(p, &br->ip6_mc_router_list, ip6_rlist) {
+> > +		if ((unsigned long)port >= (unsigned long)p)
+> > +			break;
+> > +		slot = &p->ip6_rlist;
+> > +	}
+> > +
+> > +	return slot;
+> > +}
 > 
-> Reported-by: Tianping Fang <tianping.fang@mediatek.com>
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
->  drivers/usb/core/hub.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> The ip4/ip6 get_rport_slot functions are identical, why not add a list pointer
+> and use one function ?
 
-Does this need to go to any older/stable kernels?  If so, how far back?
+Hi Nikolay,
 
-thanks,
+Thanks for all the feedback and reviewing again! I'll
+remove (most of) the inlines as the router list modifications are
+not in the fast path.
 
-greg k-h
+For the get_rport_slot functions, maybe I'm missing a simple
+solution. Note that "ip6_rlist" in hlist_for_each_entry() is not a
+pointer but will be expanded by the macro. I currently don't see
+how I could solve this with just one hlist_for_each_entry().
+
+Regards, Linus
