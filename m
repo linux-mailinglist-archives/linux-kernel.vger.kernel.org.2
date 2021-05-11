@@ -2,218 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7087637A138
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3378737A13A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbhEKHxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:53:44 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3059 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbhEKHxd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:53:33 -0400
-Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FfVNg53Pnz6wm4T;
-        Tue, 11 May 2021 15:46:27 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 11 May 2021 09:52:24 +0200
-Received: from localhost (10.52.125.126) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 11 May
- 2021 08:52:23 +0100
-Date:   Tue, 11 May 2021 08:50:41 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Luca Ceresoli" <luca@lucaceresoli.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Olivier Moysan" <olivier.moysan@foss.st.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        "Orson Zhai" <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        "Chunyan Zhang" <zhang.lyra@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Odelu Kukatla <okukatla@codeaurora.org>,
-        Alex Elder <elder@kernel.org>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        <linux-clk@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-iio@vger.kernel.org>,
+        id S230429AbhEKHy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:54:26 -0400
+Received: from mail-mw2nam10on2064.outbound.protection.outlook.com ([40.107.94.64]:50240
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229917AbhEKHyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 03:54:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ct1NoeuivRMkdE3UwAV1u8iq/ZmCGNNic65KZhl1RSB/JMsFCIDO2uOs6TOeMazR3lx6TgkAv6rPCdSjP4itjkR5NVwtuRZ/kktzrwND6SKbuSngb40DFnAFPBAr7Ghb1pHEkx3UmnCuT0BNJ945Dfmb/XOj1z9jrtlUI4sIllNDR/HX8PuXrU8PIdfJONUAtch9lqdDZmjpZ1lhlNBCVu932GEphmUvf49Njh+8tvHwnlZc8f+Oja5NXiZVkA9cJhTSfDRQV3eFZhX+XbNwOU6p5U6fwPPZ1wc00JJMIMoluGd0ys0Nx0rmXoxykgxc3F2oMqJsglrU+BX3qp/NmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6jTccCSG1v6NdPO13+pxp2A7JULnoKd4YxjikWkJNQo=;
+ b=hgzS2U/2PhroYcm2lxm6tY8CkZDCoMWNMngbed/DOgLbYU5pHaVR9pWh/P92TBM8g8/3FerujqoEpD+lpCH7g66itvuq/QV5kVv1Obo+6KG6wyKzJwY+YJPg4kjBG4YwcET3M+1GtJ3335fIEO99d6u7N5gyYSfMGz/2W+Env+5bU6a/NvKZ9ZusUEgQzba7bb+iALoJtR1UBCEp6HhIOAonMHzwrjAsS6DKg0ppJByj579LMvj3hkFHMZuZrQ8iARvYS1cXbqLMtoOr38mWT3u4RUyaKGQn0axK0Fnby02J2PG0wL+6/OUWFU3k96T/j6m29bvR+e3VmwWvS574Cw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6jTccCSG1v6NdPO13+pxp2A7JULnoKd4YxjikWkJNQo=;
+ b=Key0pbAk4dKiwQ0x04P0B6JVhxlFJpBrp33o9l6/nxHmnoVynzB/mV/l8rc0nSIYHWTdLteBopZ5GlhtXILhSOWjxXCVza3dPEb3Wh9MdTBvefGg7wj2klgWGcUreyd05CoSbE7R/lgxBnDsoCtPXFqCbbysCVPP6W5ZDNTqFf4=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=synaptics.com;
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com (2603:10b6:408:137::15)
+ by BN3PR03MB2196.namprd03.prod.outlook.com (2a01:111:e400:7bb2::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.27; Tue, 11 May
+ 2021 07:53:18 +0000
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::308b:9168:78:9791]) by BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::308b:9168:78:9791%4]) with mapi id 15.20.4108.031; Tue, 11 May 2021
+ 07:53:18 +0000
+Date:   Tue, 11 May 2021 15:53:08 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Zou Wei <zou_wei@huawei.com>, <mark.rutland@arm.com>,
+        <daniel.lezcano@linaro.org>, <tglx@linutronix.de>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-input@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH] dt-bindings: More removals of type references on common
- properties
-Message-ID: <20210511085041.00000d39@Huawei.com>
-In-Reply-To: <20210510204524.617390-1-robh@kernel.org>
-References: <20210510204524.617390-1-robh@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] clocksource/drivers/arm_arch_timer: Make symbol
+ 'arch_timer_rate1' static
+Message-ID: <20210511155308.0f66b6b0@xhacker.debian>
+In-Reply-To: <87pmxxoi71.wl-maz@kernel.org>
+References: <1620715583-107670-1-git-send-email-zou_wei@huawei.com>
+        <87pmxxoi71.wl-maz@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.125.126]
-X-ClientProxiedBy: lhreml730-chm.china.huawei.com (10.201.108.81) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: BYAPR05CA0106.namprd05.prod.outlook.com
+ (2603:10b6:a03:e0::47) To BN9PR03MB6058.namprd03.prod.outlook.com
+ (2603:10b6:408:137::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by BYAPR05CA0106.namprd05.prod.outlook.com (2603:10b6:a03:e0::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.11 via Frontend Transport; Tue, 11 May 2021 07:53:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3a5466a3-9659-4b0c-cfc5-08d91451d6ea
+X-MS-TrafficTypeDiagnostic: BN3PR03MB2196:
+X-Microsoft-Antispam-PRVS: <BN3PR03MB21968E6411749105B3A93D7FED539@BN3PR03MB2196.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PAtAkgdfEQpcL8LMweMqOLTPwl35cQAmDHJez2v7CQ62EHCLHVsppHNmMQ281j1w8DLSRRReAG/kxCN1LEa4GIETv26t+QNYiqIGuS5vW+g+VHwyJL8VdzkMsycXs47UN9e6Ma0ipRADmztONner6XZlr05x3HFus+bIZ4NBmlUGeYndPO0cWs5XTwpVbiLXL+EKCOSzdHKo5Q+leMQOcjH2NboMP2alVbgMK50W+hLXVYks5yXkQGlo3RkAojyms5OCWDsltIqQyePvWpl2sZz2m1ZYIwndca81/WUuosYh33nf8hoGzR3W6QaYgfGVDRIADBqogoYuaLu+phcTVhcHTPlEpcCSvVjoxSUtRJfAbxaUskOKdHQnBm5BTGLPzVQ8IwUzaBTkUTgcjDiiC7DeG7DK9Af52962rMNj4rLMRiXShpAEZXYRL3+9fKqS5GViZqJ52y9HYPro6mflohIZM+cqKu5cM4L9g0FMh6kJcTBbXRioFheHmGSNVbHPrHYd0RLI1BYXiU9c3SNDkQ5xDAMDoVQfJewmab0YaP9gnXpUvdYSPXjVCx8B6kI76FlZGv5/+o9f3kxlRnlkjqbHhoTm66RQXNhYXwW9mg208Fjp3Td8W/irbYf+bTZMYdU7pVwHFygyhjITEEXlXB0fje3f0WXYUXeHImkgK1c=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR03MB6058.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(39840400004)(136003)(346002)(366004)(66476007)(66946007)(66556008)(956004)(38100700002)(54906003)(8936002)(4326008)(6506007)(316002)(8676002)(6916009)(6666004)(55016002)(478600001)(86362001)(83380400001)(186003)(16526019)(26005)(38350700002)(52116002)(7696005)(9686003)(5660300002)(1076003)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Tdg+TMJye91VXQI4N4BZik3er3/zW/9M0PcKq+cQpDakJ1HBw0ezWhDLu7f4?=
+ =?us-ascii?Q?yJUPRxKk9WG4/bbLGU91/009qnA8Sv02dOLKIIhdTFcYqjOyLAVHnZ+GJXv4?=
+ =?us-ascii?Q?lmrs87nnOzKl+qd0542bhmOsw3WqltcykK3adDxcqcCCECXOHRMuObvoTC60?=
+ =?us-ascii?Q?6scSO3urZtBy90cN+ZvYoWYHO0I674SJrRHBkVHosKrMKSJIUwuzFuQjv4d5?=
+ =?us-ascii?Q?B8GWtcYrPSNU/EESlvi+/tjK5nGrLtNskCjRBJK3Dh8EN3mVIk4rzzIEws2r?=
+ =?us-ascii?Q?i9eSk2d3OV8i8BTv5YGNtFaJ10MFvf+yKsSnxTq3RPF6UmbmhECYSHdO/32T?=
+ =?us-ascii?Q?KWsLRvFoxtLy69HgUIulCTucLRxIYtgLB09ZlVPnWb4H2MJdpV/g9xY0osRn?=
+ =?us-ascii?Q?LlxChnr/5H1jC+DmNI55gs80rKsZKHTrFIk+cFK35qSl59iaveCK63fWUwtU?=
+ =?us-ascii?Q?YO3g6TtQAcDHNcwo3jzToE9ZjMsMQTBX7bpY4pOj5IkpipPcTx+LnSgzrKGJ?=
+ =?us-ascii?Q?GjZFhzDD6MCpe5EUl4WKQBmxGiHhxMw2Q6CuWiFo8s+OZxNP00PeEgZ7fbI2?=
+ =?us-ascii?Q?Kf25oNZCD46cbpcCTHH6EFNX0MlxL/ivNKvZzs05fnEJdL7DjpAWSxiYQ0xt?=
+ =?us-ascii?Q?i+cyBKoiLvJA65WI+AemibMrh+1C1oihBVXlp7XYwWRxODHTlK9Vddd6Jplu?=
+ =?us-ascii?Q?9FHOawAWbUlt1doYuPCLcnEhiLv+7SdOgSTLSjCzGoJfRb429A3qXJfpDTJ1?=
+ =?us-ascii?Q?arPgKidjIqvZvg3jwPSimr7gVXRhCOCKnvSFiHIoXCoP9qbL+oT/zBBZ1Mcg?=
+ =?us-ascii?Q?jrSaSDgm6pIjAAfXh/FbdWWWaH3ynFQ+qm2hmr/oJSNt3tVNP5P0I0rp5/ra?=
+ =?us-ascii?Q?I6s7EyMaDsV4F+7X3jS7t2tFqI8aTdFMkvONLal9SS/HrTb1xvUkeRWbe/sP?=
+ =?us-ascii?Q?R1xAXwihm5SyWl29NtilgdFeX01dD8/1IGogz6aFEdwbREtEaOFWTIag9hTp?=
+ =?us-ascii?Q?mWTea7MdQaH3LL/YMvxXSqLBaiOBWm7tXEsjeN6nDrVTvsGLhIBYnEzgCyQ3?=
+ =?us-ascii?Q?EuO5744BZQ30ewM3YYA+CYAbk/dfVFQj75F9jAvH5TzEPVBLw5iHHDLHiP9n?=
+ =?us-ascii?Q?6rzYte5LuTp5CjOcBfoHfrsM4BHsS8Xm7piaTRdUAXgtRsR5Ijfisxs9Zxcw?=
+ =?us-ascii?Q?yvRTS4HjjEOBW1sTC2pu14MxJIeJKwtRMn2qSq/1NQ97IgPf4EAVllDoRG46?=
+ =?us-ascii?Q?kTtoCEPDwi9R3nN1NZEG24yM0/LVxMD5F80kYqhE9k6Ww8GMxFR7JVG19O1e?=
+ =?us-ascii?Q?cZngdZ6HW3G9EVOjD35/artq?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a5466a3-9659-4b0c-cfc5-08d91451d6ea
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR03MB6058.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 07:53:18.1718
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PP6TiTMCTl6hAxdhQwazsval4iXdMzhxaLxHWUtBxZTwhMvVGy6DQ08raBAP/JGelzIJTY2nclSLppHmnldP+g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN3PR03MB2196
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021 15:45:24 -0500
-Rob Herring <robh@kernel.org> wrote:
+On Tue, 11 May 2021 08:14:42 +0100 Marc Zyngier wrote:
 
-> Users of common properties shouldn't have a type definition as the
-> common schemas already have one. A few new ones slipped in and
-> *-names was missed in the last clean-up pass. Drop all the unnecessary
-> type references in the tree.
-> 
-> A meta-schema update to catch these is pending.
-> 
-> Cc: Luca Ceresoli <luca@lucaceresoli.net>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Olivier Moysan <olivier.moysan@foss.st.com>
-> Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Georgi Djakov <djakov@kernel.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Orson Zhai <orsonzhai@gmail.com>
-> Cc: Baolin Wang <baolin.wang7@gmail.com>
-> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
-> Cc: Odelu Kukatla <okukatla@codeaurora.org>
-> Cc: Alex Elder <elder@kernel.org>
-> Cc: Shengjiu Wang <shengjiu.wang@nxp.com>
-> Cc: linux-clk@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-input@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> ---
->  Documentation/devicetree/bindings/clock/idt,versaclock5.yaml    | 2 --
->  .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml         | 1 -
->  Documentation/devicetree/bindings/input/input.yaml              | 1 -
->  Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml   | 1 -
->  Documentation/devicetree/bindings/net/qcom,ipa.yaml             | 1 -
->  .../devicetree/bindings/power/supply/sc2731-charger.yaml        | 2 +-
->  Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml          | 2 +-
->  7 files changed, 2 insertions(+), 8 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-> index c268debe5b8d..28675b0b80f1 100644
-> --- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-> +++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-> @@ -60,7 +60,6 @@ properties:
->      maxItems: 2
->  
->    idt,xtal-load-femtofarads:
-> -    $ref: /schemas/types.yaml#/definitions/uint32
->      minimum: 9000
->      maximum: 22760
->      description: Optional load capacitor for XTAL1 and XTAL2
-> @@ -84,7 +83,6 @@ patternProperties:
->          enum: [ 1800000, 2500000, 3300000 ]
->        idt,slew-percent:
->          description: The Slew rate control for CMOS single-ended.
-> -        $ref: /schemas/types.yaml#/definitions/uint32
->          enum: [ 80, 85, 90, 100 ]
->  
->  required:
-> diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-> index 6f2398cdc82d..1e7894e524f9 100644
-> --- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-> +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-> @@ -102,7 +102,6 @@ patternProperties:
->  
->        st,adc-channel-names:
->          description: List of single-ended channel names.
-> -        $ref: /schemas/types.yaml#/definitions/string-array
->  
->        st,filter-order:
->          description: |
-> diff --git a/Documentation/devicetree/bindings/input/input.yaml b/Documentation/devicetree/bindings/input/input.yaml
-> index 74244d21d2b3..d41d8743aad4 100644
-> --- a/Documentation/devicetree/bindings/input/input.yaml
-> +++ b/Documentation/devicetree/bindings/input/input.yaml
-> @@ -38,6 +38,5 @@ properties:
->        Duration in seconds which the key should be kept pressed for device to
->        reset automatically. Device with key pressed reset feature can specify
->        this property.
-> -    $ref: /schemas/types.yaml#/definitions/uint32
->  
->  additionalProperties: true
-> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml b/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml
-> index cb6498108b78..36c955965d90 100644
-> --- a/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml
-> +++ b/Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml
-> @@ -92,7 +92,6 @@ properties:
->        this interconnect to send RPMh commands.
->  
->    qcom,bcm-voter-names:
-> -    $ref: /schemas/types.yaml#/definitions/string-array
->      description: |
->        Names for each of the qcom,bcm-voters specified.
->  
-> diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> index 7443490d4cc6..5fe6d3dceb08 100644
-> --- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> +++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> @@ -105,7 +105,6 @@ properties:
->        - description: Whether the IPA clock is enabled (if valid)
->  
->    qcom,smem-state-names:
-> -    $ref: /schemas/types.yaml#/definitions/string-array
->      description: The names of the state bits used for SMP2P output
->      items:
->        - const: ipa-clock-enabled-valid
-> diff --git a/Documentation/devicetree/bindings/power/supply/sc2731-charger.yaml b/Documentation/devicetree/bindings/power/supply/sc2731-charger.yaml
-> index db1aa238cda5..b62c2431f94e 100644
-> --- a/Documentation/devicetree/bindings/power/supply/sc2731-charger.yaml
-> +++ b/Documentation/devicetree/bindings/power/supply/sc2731-charger.yaml
-> @@ -20,7 +20,7 @@ properties:
->      maxItems: 1
->  
->    phys:
-> -    $ref: /schemas/types.yaml#/definitions/phandle
-> +    maxItems: 1
->      description: phandle to the USB phy
->  
->    monitored-battery:
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-> index b4c190bddd84..61802a11baf4 100644
-> --- a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-> +++ b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-> @@ -49,7 +49,7 @@ properties:
->      maxItems: 1
->  
->    memory-region:
-> -    $ref: /schemas/types.yaml#/definitions/phandle
-> +    maxItems: 1
->      description:
->        phandle to a node describing reserved memory (System RAM memory)
->        The M core can't access all the DDR memory space on some platform,
+> 
+> [+ Jisheng Zhang]
+> 
+> On Tue, 11 May 2021 07:46:23 +0100,
+> Zou Wei <zou_wei@huawei.com> wrote:
+> >
+> > The sparse tool complains as follows:
+> >
+> > drivers/clocksource/arm_arch_timer.c:67:5: warning:
+> >  symbol 'arch_timer_rate1' was not declared. Should it be static?
+> >
+> > This symbol is not used outside of arm_arch_timer.c, so marks it
+> > static.  
+> 
+> It is worse than that. This variable is not used *at all*, and has
+> been added by e2bf384d4329 ("clocksource/drivers/arm_arch_timer: Add
+> __ro_after_init and __init"). Not sure how we missed that.
+
+Oops, my mistake. Sorry for that. IIRC, I added the __ro_after_init
+marker, then want to prove the effectiveness of __ro_after_init with
+a new and non-used variable. But later forgot to remove it.
+
+> 
+> Please post a patch removing this variable altogether.
+
+Just sent out a patch to remove this variable.
+
+> 
+> Thanks,
+> 
+>         M.
+> 
+> >
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> > ---
+> >  drivers/clocksource/arm_arch_timer.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+> > index fe1a826..800aaa9 100644
+> > --- a/drivers/clocksource/arm_arch_timer.c
+> > +++ b/drivers/clocksource/arm_arch_timer.c
+> > @@ -64,7 +64,7 @@ struct arch_timer {
+> >  #define to_arch_timer(e) container_of(e, struct arch_timer, evt)
+> >
+> >  static u32 arch_timer_rate __ro_after_init;
+> > -u32 arch_timer_rate1 __ro_after_init;
+> > +static u32 arch_timer_rate1 __ro_after_init;
+> >  static int arch_timer_ppi[ARCH_TIMER_MAX_TIMER_PPI] __ro_after_init;
+> >
+> >  static const char *arch_timer_ppi_names[ARCH_TIMER_MAX_TIMER_PPI] = {
+> > --
+> > 2.6.2
+> >
+> >  
+> 
+> --
+> Without deviation from the norm, progress is not possible.
 
