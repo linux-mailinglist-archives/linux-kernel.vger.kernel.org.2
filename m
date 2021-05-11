@@ -2,225 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE9737A44F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E43437A455
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbhEKKI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 06:08:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:44518 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230146AbhEKKI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 06:08:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A79FF169E;
-        Tue, 11 May 2021 03:07:50 -0700 (PDT)
-Received: from [10.57.81.122] (unknown [10.57.81.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FDA53F719;
-        Tue, 11 May 2021 03:07:47 -0700 (PDT)
-Subject: Re: [RFC PATCH] perf cs-etm: Handle valid-but-zero timestamps
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     Coresight ML <coresight@lists.linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Al Grant <al.grant@arm.com>, branislav.rankov@arm.com,
-        Denis Nikitin <denik@chromium.org>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-perf-users@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210507095814.17933-1-james.clark@arm.com>
- <3926c523-3fdb-66de-8b9c-b68290a5053e@arm.com>
- <CAJ9a7VjAvr9uKYqo9VJhFRB74vt6Jxf0G+Fm2OFm-dxAVdbpsw@mail.gmail.com>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <b4407fb2-c393-9e85-acaa-80b30b4783ec@arm.com>
-Date:   Tue, 11 May 2021 13:07:45 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAJ9a7VjAvr9uKYqo9VJhFRB74vt6Jxf0G+Fm2OFm-dxAVdbpsw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S231317AbhEKKLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 06:11:54 -0400
+Received: from mail-eopbgr750072.outbound.protection.outlook.com ([40.107.75.72]:20558
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231177AbhEKKLw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 06:11:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Gw/RL3xf41y5GwbnYBXy1pTmtQy9tWKxG13IiBoFkrQccESKs1BxRZShef8mzl6GiBe8yNhLXdU/3hMoKidD5WHS1BHWPruki+QNHn7YW/P697QxH3pVHtqMmJhgBgpAmUZEZT6qChx0cwIrv/39xd9GULHDS3N4MKKLBjMYfXkOZRyfD4I5SYM75MDdBWKX/Doclu42UWC4mfyc8rJX71yshU/KBRSSu8DWeQFgQdOuiIVMsC83kgUGaXrmMve3hSAnwmeVDGV7Cw1s60WSzbWi/QZI6cnT/r8s+49lBxd/z1QLOZHuXa1sQhIWTMNKPEyxJz2Xb2kHs9RUv308+w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=chlbYSkEyGfSMsw2T1wWqUMRpPcFjcYHQqYiGyfLowA=;
+ b=Y6REGxI2m0jaq+GaLALzt/YNdXIKPjLcc+Vy4mIIgI/BukjlT/KKR6sxiaYdj7UKbcnGRGjvQQN0XAdQzwXASWWvV760gK9clLgJDvIXd9wCdAmNnubJ8KW3UETjLUvk8z7s7KguzRdTKUdtIpwX/h5IBgN80bJmRDF8SmlN3LLQwvqXei2e+CIgG7eUMEY6G/CVRDmoXzTzhFZ/dNgZNC5OZOc+lq9VYhQZwQWq2T+KrQom4mLi/1/RUYH5ZjPb5u5eqC2vuNJTt4S1UuIDVFkVHycnOcyxsROX1BTpkGDf6SZbAkR/ymuebBLKN5nOiLHC0otnKWJao/qzi8C6pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=chlbYSkEyGfSMsw2T1wWqUMRpPcFjcYHQqYiGyfLowA=;
+ b=BodOTX+4Q0uF4S0nEXYTqIXWhb7uUIsjvKB3oIN5mxuc+A9h32XdT9RZQ/hvFFrWKb8qnxZiBo65kdQTtOJQbvUdL+92lqRzGjTXKDK7xDHGmV42HNAG3BIY+9FWMutXAhgDqYFregFsQ4sQUDft+X3X0OYbbG+UAPpz/kgl3+U=
+Authentication-Results: konsulko.com; dkim=none (message not signed)
+ header.d=none;konsulko.com; dmarc=none action=none header.from=synaptics.com;
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com (2603:10b6:408:137::15)
+ by BN9PR03MB6140.namprd03.prod.outlook.com (2603:10b6:408:11d::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.31; Tue, 11 May
+ 2021 10:10:43 +0000
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::308b:9168:78:9791]) by BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::308b:9168:78:9791%4]) with mapi id 15.20.4108.031; Tue, 11 May 2021
+ 10:10:43 +0000
+Date:   Tue, 11 May 2021 18:10:33 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Vitaly Wool <vitaly.wool@konsulko.com>
+Cc:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] riscv: code patching only works on !XIP_KERNEL
+Message-ID: <20210511181033.580c1eba@xhacker.debian>
+In-Reply-To: <CAM4kBBJqF=AxTu50PF=EshLSyqn0=yeC2dwf4JJj_Grsi_Tccg@mail.gmail.com>
+References: <20210511002838.7b3cb1e7@xhacker>
+        <CAM4kBBJqF=AxTu50PF=EshLSyqn0=yeC2dwf4JJj_Grsi_Tccg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: BYAPR07CA0035.namprd07.prod.outlook.com
+ (2603:10b6:a02:bc::48) To BN9PR03MB6058.namprd03.prod.outlook.com
+ (2603:10b6:408:137::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by BYAPR07CA0035.namprd07.prod.outlook.com (2603:10b6:a02:bc::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Tue, 11 May 2021 10:10:40 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d0794d99-d938-46f9-67bb-08d914650966
+X-MS-TrafficTypeDiagnostic: BN9PR03MB6140:
+X-Microsoft-Antispam-PRVS: <BN9PR03MB6140DB6712221F0F6D0854CAED539@BN9PR03MB6140.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RrjntnvAMncP0lT+wGqzDQFlYhhbPjmEDobQovAMiR/x/rASUC/AK56IGUqbPV7c4JYSp1iyLcDdtSdwZrUUe5TthTxT7k2JIQPs2zSrrSYYzXsl1dRKOG7MXpIUQ6vuUsbeJGyLb/FpsBBCUZDCcyj1+qcOr5wWkJYe5ZCuC9OKyEwO21QT8j/WqIMONSKpPddRS0t6vgqQYiIQWgVNXpN+yhIQhyOzFBooteDxVYuqGR6Wx/aH2p8dF+cW3mWQFvdQAtKFiSU/3sqldyHDbhF0Xvwpw/ioVehVk+5rArSq3V+9n0oSn2URZ6QsQfT8dLVNyS/w+KBvYQsUXRHg42T3pDnut8w+3eLrs2zlZC9SxL9vDKzDnlenTaExl7muRGoL4dZDtJFHCY9i2PF9SjHWDFTbYXtNB2lRfqerPslxE0EolsgHM+JrXcOdt1c15STZaiaHOOQLqy+2aDwU+2NLJXXNnqkAYqFSa55mzvgC/M3CXspAEXRRmHraBogcDvO7VVt1ts6d6dNReMRaEvZ9zxJ34Jo6uvdCbsTfnWpZLssQQvrQU00TUpUwoCDcNWKy15eV39mq18EXW1Eebgc8/fmOBtkserR8Oj1bhYjhY/72hNQTdocaXbLOo5SelrcBtZ1dfzp0wpyIEkPQQBtOG13pTn0a6oSVkaNqzj8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR03MB6058.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(39840400004)(366004)(376002)(396003)(956004)(9686003)(7696005)(53546011)(6506007)(83380400001)(38100700002)(55016002)(2906002)(38350700002)(52116002)(316002)(26005)(66556008)(4326008)(478600001)(66476007)(6666004)(66946007)(86362001)(1076003)(8676002)(186003)(54906003)(16526019)(5660300002)(6916009)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?jnHjzx3kBXGCvn4k0R3absuASyZm2VzDbELGkgOOgsWkuaXkNY2UEKUXcjon?=
+ =?us-ascii?Q?mVGzfrXGxycbxetSgmn24sYX7MxcCZNdW+JHXLpz+8pJHgBYrwdyqgxg6slN?=
+ =?us-ascii?Q?CxNKhXn9aw/nQ33WSGYs/3cRJhYDFgUcGqMb157w1Eh67+dzkswKHU3iTEND?=
+ =?us-ascii?Q?acoE0iQY7MiIUVfrLbad1frjFFfxOJ4uV6LmbkEX7DyqlQg2itNesVpSdXH2?=
+ =?us-ascii?Q?FdiDkUhJ5ABJydetSPuGN1urLJJ9ojL9N5UeP4G14FAHpMaouUiJgHkyegs1?=
+ =?us-ascii?Q?2+Vagv5dvyr8uKY0VdIv9+ehi95aDL/JZnAvFw2iPUcH8bUv3pIb+rKkSMa5?=
+ =?us-ascii?Q?+MygFRmeWn1WE/KRdriy9C19jcspmLUUY7C6ofB2eesU/FBx28VMRQLxwDIK?=
+ =?us-ascii?Q?loeM9OiMk9euJZeeP/kgwH9Jdik0mdsnAil32Uml3vy5fYUxxC12QBPlvKVf?=
+ =?us-ascii?Q?BkBskt5AoscdG+jZ+86RVjartCDLIA5akQthL9fQW9cjmsn3u968tjpFkcWV?=
+ =?us-ascii?Q?nOIQSTNPPnAm58QaSmQNWmJnyjtv6Sa6JlQIWAWOvb/D9Vk/ke0SIOdyBh3W?=
+ =?us-ascii?Q?Bce/tnVz6p3Yz2fWeNO+15TEB3c/Zm09seeHWOc3+ZeGWY3gnWifMv/FkUCs?=
+ =?us-ascii?Q?XECwJCbrN1o+d2LxX8ONwUMiTaIkPeG2vlnvzESSHn19M3sTYX747+yomJZ5?=
+ =?us-ascii?Q?maEAVrlZR1rYZzTifNe6XUc68s6GDG0F9YLDwbcuQym1C6jfd9dsxZa+QvPX?=
+ =?us-ascii?Q?SoRP8MsgY5VRySxB7ZgDkkxzRRz22kBkaTgxoqdr3fiBpW1Vgeh4+V4GkMNT?=
+ =?us-ascii?Q?OE+kdsRcHEdQOYxPpYbh5KOdU8Nibj99z2Dq1SUHHWnhzNtgmh8/vGTaxdEX?=
+ =?us-ascii?Q?AYvQsJKJqn8XohHg854U/k00vd5oHAB4tq60WhNaT5S2lnvLW7TwWxIfP53G?=
+ =?us-ascii?Q?hdkQo5NfTvD/PSq9YR+1dkKtStDzaivBeNRxYMSpg90Iph449536VrbomM+N?=
+ =?us-ascii?Q?fJ5L3LpP+bV5AjuuExiiucTTGsSJZy+jgGgMF/s1zdrN7s9HLJTS816pGK/F?=
+ =?us-ascii?Q?gVIYwuntG/dAwj4vgpPiaDPJ1lTLhIl4S4RE3y/6prIpIjEOx5U4e7COD6Qb?=
+ =?us-ascii?Q?PQ2hGVi7ysSd7vsm4P2JIwRQaA9TyVSz8E/mQvt0f/gVvw0jk1TI/h3rDNbF?=
+ =?us-ascii?Q?fbRCmU75/mTUmlno/hWXN2lbSsImeNnEsca90nrk6lz37kz5Oh/G985WTn8u?=
+ =?us-ascii?Q?My7O8p2q4bIpfgk3vq1SCGGirvyei0QmA3LHOrGu1PgFKiENsl21Yu7fsYLe?=
+ =?us-ascii?Q?o4buLId5v76LX2h2AcR5gLPw?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d0794d99-d938-46f9-67bb-08d914650966
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR03MB6058.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 10:10:43.2560
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1aRagtcTEQao9gxBFMoWg92CNaGbGgAfeAJn0vwJV10uG5Hf3qFx3QzQp82myOmAPEqWFrcTkBmrIRak5OCTFg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR03MB6140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 10 May 2021 20:19:30 +0200 Vitaly Wool <vitaly.wool@konsulko.com> wrote:
 
 
-On 07/05/2021 17:09, Mike Leach wrote:
-> Hi James,
 > 
-> 1) Not sure about this particular target - but previously all 0
-> timestamps have been the result of not enabling a clock or the
-> coresight timestamp generator.
 > 
-> 2) Given that you can synthesise timestamps when all the values are
-> all 0 - does this not imply that they could be synthesised when they
-> are not present at all?
+> On Mon, May 10, 2021 at 6:35 PM Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
+> >
+> > From: Jisheng Zhang <jszhang@kernel.org>
+> >
+> > Some features which need code patching such as KPROBES, DYNAMIC_FTRACE
+> > KGDB can only work on !XIP_KERNEL. Add dependencies for these features
+> > that rely on code patching.  
+> 
+> Since we can define extra RW sections to place some tiny code bits in
 
-Yes they could, perhaps we could change our command line arguments to remove
-recording of timestamps completely. But I think that the auto enabling of
-timestamps for per-cpu mode is only additive so there is no way to disable
-it on the command line.
+I knew this discussion on maillist recently, that's the
+reason why ERRATA_ALTERNATIVE related part isn't touched
 
-Perhaps we could make a change there instead to make the event configuration more flexible.
+> RAM, I would suggest that you hold back this patch for a while.
+> I am not going to support the idea of e. g. compiling KGDB support
+> into a XIP kernel, but disabling the whole HAVE_ARCH_JUMP_LABEL is
+> hardly the way to go.
+> 
 
-There is a similar concept with the --timestamp argument where it has both
-"not set" and "set, but set to false" variables to distinguish between when the user hasn't
-provided anything and when they've provided the negative:
+I'm not sure whether the solution "extra RW sections to place some tiny code
+bits" can work for JUMP_LABEL or not. But obviously, in JUMP_LABEL users
+such as static keys, the patching is taken on the .text section unless
+patching the common implementation kernel/jump_label.c. IMHO it's impossible.
 
-	OPT_BOOLEAN_SET('T', "timestamp", &record.opts.sample_time,
-			&record.opts.sample_time_set,
-
-opts.sample_time is whether timestamps are on or not and
-opts.sample_time_set is whether the user provided any argument, true or false.
+However, I can hold back this patch for a while as you suggested.
 
 Thanks
-James
-
-> 
-> Cheers
-> 
-> Mike
-> 
-> On Fri, 7 May 2021 at 11:02, James Clark <james.clark@arm.com> wrote:
->>
->>
->>
->> On 07/05/2021 12:58, James Clark wrote:
->>> There is an intermittent issue on Trogdor devices that
->>> results in all Coresight timestamps having a value of zero.
->>
->> I've attached a file here that has the issue. From the dump you
->> can see the zero timestamps:
->>
->>         Idx:69; ID:10;  I_TIMESTAMP : Timestamp.; Updated val = 0x0
->>         Idx:71; ID:10;  I_ATOM_F1 : Atom format 1.; E
->>         Idx:72; ID:10;  I_ADDR_S_IS0 : Address, Short, IS0.; Addr=0xFFFFFFE723C65824 ~[0x5824]
->>
->> This doesn't have an impact on decoding as they end up being
->> decoded in file order as in with timeless mode.
->>
->> James
->>
->>> Because zero is currently treated as "not found" rather
->>> than "found but zero", this breaks the decoding flow
->>> when it would otherwise work.
->>>
->>> This patch adds an out parameter and return code so
->>> the difference between zero and non-existent timestamps
->>> can be determined.
->>>
->>> There is also a change to fix an underflow.
->>>
->>> Although this is a workaround, the change is technically
->>> a valid way of writing the cs_etm__etmq_get_timestamp()
->>> function. It could have been written similarly to this
->>> without trying to work around this issue, so it's no less
->>> correct. But, because it's a workaround to a problem
->>> elsewhere, I will submit this as an RFC for feedback.
->>>
->>> This patch applies on top of the "[PATCH v2 0/2] perf
->>> cs-etm: Set time on synthesised samples to preserve ordering"
->>> patchset.
->>>
->>> Co-developed-by: Denis Nikitin <denik@chromium.org>
->>> Signed-off-by: Denis Nikitin <denik@chromium.org>
->>> Signed-off-by: James Clark <james.clark@arm.com>
->>> ---
->>>  .../perf/util/cs-etm-decoder/cs-etm-decoder.c |  5 ++++-
->>>  tools/perf/util/cs-etm.c                      | 22 +++++++++----------
->>>  2 files changed, 15 insertions(+), 12 deletions(-)
->>>
->>> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
->>> index b01d363b9301..947e44413c6e 100644
->>> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
->>> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
->>> @@ -320,7 +320,10 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
->>>        * which instructions started by subtracting the number of instructions
->>>        * executed to the timestamp.
->>>        */
->>> -     packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
->>> +     if (packet_queue->instr_count >= elem->timestamp)
->>> +             packet_queue->cs_timestamp = 0;
->>> +     else
->>> +             packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
->>>       packet_queue->next_cs_timestamp = elem->timestamp;
->>>       packet_queue->instr_count = 0;
->>>
->>> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
->>> index e5c1a1b22a2a..1969921c406a 100644
->>> --- a/tools/perf/util/cs-etm.c
->>> +++ b/tools/perf/util/cs-etm.c
->>> @@ -210,13 +210,14 @@ void cs_etm__etmq_set_traceid_queue_timestamp(struct cs_etm_queue *etmq,
->>>       etmq->pending_timestamp_chan_id = trace_chan_id;
->>>  }
->>>
->>> -static u64 cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
->>> +static int cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
->>> +                                   u64 *timestamp,
->>>                                     u8 *trace_chan_id)
->>>  {
->>>       struct cs_etm_packet_queue *packet_queue;
->>>
->>>       if (!etmq->pending_timestamp_chan_id)
->>> -             return 0;
->>> +             return -ENODATA;
->>>
->>>       if (trace_chan_id)
->>>               *trace_chan_id = etmq->pending_timestamp_chan_id;
->>> @@ -224,13 +225,15 @@ static u64 cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
->>>       packet_queue = cs_etm__etmq_get_packet_queue(etmq,
->>>                                                    etmq->pending_timestamp_chan_id);
->>>       if (!packet_queue)
->>> -             return 0;
->>> +             return -ENODATA;
->>>
->>>       /* Acknowledge pending status */
->>>       etmq->pending_timestamp_chan_id = 0;
->>>
->>>       /* See function cs_etm_decoder__do_{hard|soft}_timestamp() */
->>> -     return packet_queue->cs_timestamp;
->>> +     if (timestamp)
->>> +             *timestamp = packet_queue->cs_timestamp;
->>> +     return 0;
->>>  }
->>>
->>>  static void cs_etm__clear_packet_queue(struct cs_etm_packet_queue *queue)
->>> @@ -864,11 +867,10 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
->>>                * Function cs_etm_decoder__do_{hard|soft}_timestamp() does all
->>>                * the timestamp calculation for us.
->>>                */
->>> -             cs_timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
->>> -
->>> -             /* We found a timestamp, no need to continue. */
->>> -             if (cs_timestamp)
->>> +             if (!cs_etm__etmq_get_timestamp(etmq, &cs_timestamp, &trace_chan_id)) {
->>> +                     /* We found a timestamp, no need to continue. */
->>>                       break;
->>> +             }
->>>
->>>               /*
->>>                * We didn't find a timestamp so empty all the traceid packet
->>> @@ -2286,9 +2288,7 @@ static int cs_etm__process_queues(struct cs_etm_auxtrace *etm)
->>>               if (ret)
->>>                       goto out;
->>>
->>> -             cs_timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
->>> -
->>> -             if (!cs_timestamp) {
->>> +             if (cs_etm__etmq_get_timestamp(etmq, &cs_timestamp, &trace_chan_id)) {
->>>                       /*
->>>                        * Function cs_etm__decode_data_block() returns when
->>>                        * there is no more traces to decode in the current
->>>
-> 
-> 
-> 
