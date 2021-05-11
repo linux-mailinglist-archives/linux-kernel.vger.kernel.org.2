@@ -2,101 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B27F37AE8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8A037AE90
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232080AbhEKSgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:36:19 -0400
-Received: from mga06.intel.com ([134.134.136.31]:42688 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231858AbhEKSgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:36:18 -0400
-IronPort-SDR: VLN+z1pa7BfBiZJFHMOFrVeCfEv5JbOkgdQlsnnA1nGJAlBdL1oVdqZxfGjUtF8HgYMk4kM4vn
- lQB5w4qYtIhA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="260779848"
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="260779848"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 11:35:06 -0700
-IronPort-SDR: 2KWMocZbxX5tyqZAg7OsM0mkEVoJfqigNIZiG7v7OmxmAmJ4UREKqpCUEnT+ESKdjh0nogGOde
- b12AZro4a4Mg==
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="537136995"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.34.147]) ([10.212.34.147])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 11:35:04 -0700
-Subject: Re: [PATCH v26 23/30] x86/cet/shstk: Handle thread shadow stack
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-24-yu-cheng.yu@intel.com> <YJlADyc/9pn8Sjkn@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <a645aefc-632f-b1eb-4f4e-1c5b0f9e75d5@intel.com>
-Date:   Tue, 11 May 2021 11:35:03 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S232019AbhEKShW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231439AbhEKShV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 14:37:21 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966F3C061574;
+        Tue, 11 May 2021 11:36:12 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id t11so29992399lfl.11;
+        Tue, 11 May 2021 11:36:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gwp5GrMLJNGrq/8G5vfZaiCADpEon9ModgzTBM7EDWE=;
+        b=RDXSEPORa0gq10UUn+Jdp12ZwcR7RsAjS+87bbZ1NXeRcfg8KA/AhVU4VwOiq6EVIL
+         O5y5Lo/tm2tOlF3S6kXvQgEHx3ck8M3Qt3Z4DYhv8+xB32ysZ/4IHXvvQXZqK/XFllU2
+         q3ttqtHvpIn7DrESpU6CsVMMkjDN58nQNRon9dQENtWMHe7WsFYZOzgK1xy8GCWq/Zy5
+         84jIepghxdmD2eYrrEAoJwVi1W3NXnP/jMgyGfkHCtMdLiysfnPxmDiSKWEALnDbcuWY
+         CjpjdFW0NdasH0qyjQVo0+j3mS1rl+oRvlRTgSJJKkksH49TQysmaaVq4IdnvZP/k7kp
+         H0lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gwp5GrMLJNGrq/8G5vfZaiCADpEon9ModgzTBM7EDWE=;
+        b=f6Jz44K5U01MbgrRcwSf0LP+1jZ9ermsCW2TA6EzkJjQctwES0rNHpbySiJ3AmmOKW
+         t1hQ6CD7hVtrY7GVuc+VwxHjYUbQMqpx4JxqF2NdKxyztIFeP8RFuupQNPqef9J9Tjah
+         wHLsCeZon7dosSMKK9pwra7yIl1P7uYu0m5Y9SdHFVSfxt+lqUc/16241sSZANIDRGE7
+         4rK61OrIMAKrtzU6XKLSshrSjhPSQk9OBjnTBvdfal5ARRQNQlo0/08qcf1gS2142V01
+         AOzF6eHHEpELjCRAe026FwLRiPL5Gu0IKiGTteluLxJ98kG8RWy5qO/13/2elGJexebs
+         ASLg==
+X-Gm-Message-State: AOAM5325pi8K/j4q6IU7G5DFOFkezMLifTft3Ro6UL/AEh3eqxKq+Wye
+        z2ky0S4irzVoQQHjgDOD7+0OD0JlI7A=
+X-Google-Smtp-Source: ABdhPJwQcmNpbCm2w8w4L7kkGSor24M29XEE5wWRsxakI/+6+fy5q5erqbGBfL4430iGiUcuWY3aPQ==
+X-Received: by 2002:ac2:4ed9:: with SMTP id p25mr21336596lfr.576.1620758170970;
+        Tue, 11 May 2021 11:36:10 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.googlemail.com with ESMTPSA id v12sm3800834ljn.92.2021.05.11.11.36.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 11:36:10 -0700 (PDT)
+Subject: Re: [PATCH v1 2/2] memory: tegra: Enable compile testing for all
+ drivers
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        kernel test robot <lkp@intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20210510213729.7095-3-digetx@gmail.com>
+ <202105112125.VctfC6sX-lkp@intel.com>
+ <dd0b550e-76a0-bfbc-9d6f-5d867812046d@gmail.com>
+ <06addbf3-0090-b76f-65cf-e0c10d284c69@canonical.com>
+ <3ab5d50b-4955-7144-5d1d-d44cb0892d65@gmail.com>
+ <YJrARxhVD7QM/GPv@archlinux-ax161>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <ca2be6d1-5bb4-b44d-f306-cdf1dd369a39@gmail.com>
+Date:   Tue, 11 May 2021 21:36:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YJlADyc/9pn8Sjkn@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <YJrARxhVD7QM/GPv@archlinux-ax161>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/2021 7:15 AM, Borislav Petkov wrote:
-> On Tue, Apr 27, 2021 at 01:43:08PM -0700, Yu-cheng Yu wrote:
->> @@ -181,6 +184,12 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
->>   	if (clone_flags & CLONE_SETTLS)
->>   		ret = set_new_tls(p, tls);
->>   
->> +#ifdef CONFIG_X86_64
+11.05.2021 20:35, Nathan Chancellor пишет:
+> On Tue, May 11, 2021 at 07:00:34PM +0300, Dmitry Osipenko wrote:
+>> 11.05.2021 18:31, Krzysztof Kozlowski пишет:
+>> ...
+>>                                       ~~~~~~~~~~~~~~~~~~~~~^
+>>>>>>> drivers/memory/tegra/tegra124-emc.c:802:26: warning: implicit conversion from 'unsigned long' to 'u32' (aka 'unsigned int') changes value from 18446744071562067985 to 2147483665 [-Wconstant-conversion]
+>>>>>                    emc_ccfifo_writel(emc, EMC_ZQ_CAL_LONG_CMD_DEV0, EMC_ZQ_CAL);
+>>>>>                    ~~~~~~~~~~~~~~~~~      ^~~~~~~~~~~~~~~~~~~~~~~~
+>>>>>    drivers/memory/tegra/tegra124-emc.c:154:36: note: expanded from macro 'EMC_ZQ_CAL_LONG_CMD_DEV0'
+>>>>>            (DRAM_DEV_SEL_0 | EMC_ZQ_CAL_LONG | EMC_ZQ_CAL_CMD)
+>>>>>             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+>>>>>    13 warnings generated.
+>>>>
+>>>> This doesn't look like a useful warning from clang, it should see that
+>>>> the constant value itself isn't truncated, hence it should be a problem
+>>>> of clang. Do you think it's okay to ignore this nonsense?
+>>>
+>>> I admit I also do not see the real issue here. The DRAM_DEV_SEL_0 fits
+>>> in u32 and there is no other bitwise arithmetic than just OR, so why
+>>> clang assumes it can have 32 most signifcant bits toggled on?
+>>>
+>>> +Cc Nathan and Nick,
+>>> Maybe you could shed some light here on this warning?
+>>>
+>>> Dmitry,
+>>> In general you should not ignore it because:
+>>> 1. This breaks allyesconfig with clang on powerpc (or it is one of the
+>>> stoppers),
+>>> 2. We might want in some future to build it with clang.
+>>
+>> I meant to ignore it from the perspective of the memory drivers, i.e. it
+>> likely should be fixed in clang and not worked around in the code. Thank
+>> you for pinging the right people.
 > 
-> IS_ENABLED
+> I do not think this is a bug in clang, gcc warns the same (just not here
+> in this case): https://godbolt.org/z/e9GWobMnd
 > 
->> +	/* Allocate a new shadow stack for pthread */
->> +	if (!ret)
->> +		ret = shstk_setup_thread(p, clone_flags, stack_size);
->> +#endif
->> +
+> DRAM_DEV_SEL_0 and DRAM_DEV_SEL_1 are implicitly signed integers because
+> there is no suffix on the literal 1. DRAM_DEV_SEL_0 is 2 << 30, which
+> can be turned into 1 << 31. That is equal to INT_MAX + 1, which then
+> overflows and becomes INT_MIN (undefined behavior). INT_MIN is then
+> promoted to unsigned long because EMC_ZQ_CAL_LONG and EMC_ZQ_CAL_CMD are
+> unsigned long due to the BIT macro, resulting in the gigantic number
+> that clang reports above.
 > 
-> And why is this addition here...
+> I assume that this driver only runs on hardware where unsigned int is
+> the same size as unsigned long, meaning this problem is merely
+> theoretical?
+
+Yes and no. The driver is built only for ARM32 today, but it's also
+usable on ARM64, we just never got around to enable it for the 64bit
+Tegra132 SoC.
+
+> Regardless, defining DRAM_DEV_SEL_{0,1} with the BIT macro fixes the
+> warning for me and should make everything work as expected.
 > 
->>   	if (!ret && unlikely(test_tsk_thread_flag(current, TIF_IO_BITMAP)))
->>   		io_bitmap_share(p);
-> 
-> ... instead of here?
-> 
-> <---
+> diff --git a/drivers/memory/tegra/tegra124-emc.c b/drivers/memory/tegra/tegra124-emc.c
+> index 5699d909abc2..a21ca8e0841a 100644
+> --- a/drivers/memory/tegra/tegra124-emc.c
+> +++ b/drivers/memory/tegra/tegra124-emc.c
+> @@ -272,8 +272,8 @@
+>  #define EMC_PUTERM_ADJ				0x574
+>  
+>  #define DRAM_DEV_SEL_ALL			0
+> -#define DRAM_DEV_SEL_0				(2 << 30)
+> -#define DRAM_DEV_SEL_1				(1 << 30)
+> +#define DRAM_DEV_SEL_0				BIT(31)
+> +#define DRAM_DEV_SEL_1				BIT(30)
+>  
+>  #define EMC_CFG_POWER_FEATURES_MASK		\
+>  	(EMC_CFG_DYN_SREF | EMC_CFG_DRAM_ACPD | EMC_CFG_DRAM_CLKSTOP_SR | \
 > 
 
-io_bitmap_share() does refcount_inc(&current->thread.io_bitmap->refcnt), 
-and the function won't fail.  However, shadow stack allocation can fail. 
-  So, maybe leave io_bitmap_share() at the end?
+Thank you for the clarification. So it's actually the code which needs
+to be fixed.
 
-Thanks,
-Yu-cheng
+The DRAM_DEV_SEL is a enum, hence I'll add patch in v2 that will make
+the values unsigned.
