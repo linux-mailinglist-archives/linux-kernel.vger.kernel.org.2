@@ -2,167 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AAB537A02E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E92E837A036
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbhEKG6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 02:58:08 -0400
-Received: from mga05.intel.com ([192.55.52.43]:34936 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhEKG6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 02:58:06 -0400
-IronPort-SDR: aCcjjqzoWxWNOjqJ6/+b1LycLkPI0MX9X34ucYooF7nPw9SUgoeCkLVpR0pds+n1DqkT0aw5ED
- lbzEUlkWLxyQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="284858751"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="284858751"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 23:56:58 -0700
-IronPort-SDR: lTiGtF4iiKlRU9B4tNsIxfnwP9/wWixp0OEe0XI9nF45kfoQX5O7UYY48OUurHC2Odg60+HZiW
- /wNbRYg/nytg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="621699609"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga006.fm.intel.com with ESMTP; 10 May 2021 23:56:50 -0700
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>, ashok.raj@intel.com,
-        sanjay.k.kumar@intel.com, jacob.jun.pan@intel.com,
-        kevin.tian@intel.com,
-        Jean-Philippe Brucker <jean-philippe.brucker@arm.com>,
-        yi.l.liu@intel.com, yi.y.sun@intel.com, peterx@redhat.com,
-        tiwei.bie@intel.com, xin.zeng@intel.com,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: Re: [PATCH v8 7/9] vfio/mdev: Add iommu related member in mdev_device
-To:     Jason Gunthorpe <jgg@nvidia.com>, Christoph Hellwig <hch@lst.de>
-References: <20190325013036.18400-1-baolu.lu@linux.intel.com>
- <20190325013036.18400-8-baolu.lu@linux.intel.com>
- <20210406200030.GA425310@nvidia.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <2d6d3c70-0c6f-2430-3982-2705bfe9f5a6@linux.intel.com>
-Date:   Tue, 11 May 2021 14:56:05 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230375AbhEKG7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 02:59:12 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:47814 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230124AbhEKG7L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 02:59:11 -0400
+Received: by mail-io1-f72.google.com with SMTP id q187-20020a6b8ec40000b0290431cccd987fso12312577iod.14
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 23:58:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=WAlEVy0ZMfNVjKlh40M9CEJnUjL9y5ekxYFhQsRtRM8=;
+        b=rdI2AD2fgr6W/HNpBDjymyaC/gx/91wxNA06GDZtc5YTKSajFLmda5/PFE8UZPNBwY
+         NZE7ume7HMTveZrJt6qGZGWDNzKfrlla42JRBw2QirIjzNh0AtKvTIB7Yw9bhuc6Vnk1
+         rjLYofuVDlfEIfuVM0G1HvJISxPB20xLlH6nNNyD0tM2+e1ecrkyimDvNOnlwF8jwfD7
+         mKjlykyurY9ObOhfToJtO05yqFcft4zH5pzVnT2/aIs3np4VThYIQROkYqtcSXMiAdm5
+         bL+ryjMScpwsVD0MTHVzKVpHmQE1bfAWPmmAhe7lPoiMJTxhyIMc/paVu9QW81bK7a6J
+         Le+w==
+X-Gm-Message-State: AOAM531eAiVgl8wGIvztqwzEbdwes86hOAzp38Axqx2TyZyHmQXPqC0X
+        NXBbmBOG0F9WA9peKHBOZ6CwADKlZEOFuBCtvBUYWzvC/yt+
+X-Google-Smtp-Source: ABdhPJy1+7M05LR396Fy+WAxn+ZHCqn77sqp5GoH6r5WKwYW5bJvDqONdE4jmh/SCNdH5aovFYTBZFc/A80DtjSEiAYMyZW+NOLF
 MIME-Version: 1.0
-In-Reply-To: <20210406200030.GA425310@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:de49:: with SMTP id e9mr23983574ilr.132.1620716285105;
+ Mon, 10 May 2021 23:58:05 -0700 (PDT)
+Date:   Mon, 10 May 2021 23:58:05 -0700
+In-Reply-To: <000000000000b304d505bc3e5b3a@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000749f0605c2086a95@google.com>
+Subject: Re: [syzbot] general protection fault in try_to_wake_up (2)
+From:   syzbot <syzbot+b4a81dc8727e513f364d@syzkaller.appspotmail.com>
+To:     alaaemadhossney.ae@gmail.com, asml.silence@gmail.com,
+        axboe@kernel.dk, christian@brauner.io, gregkh@linuxfoundation.org,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        shankarkoli@quadrogen.com, shuah@kernel.org,
+        skhan@linuxfoundation.org, syzkaller-bugs@googlegroups.com,
+        valentina.manea.m@gmail.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+syzbot suspects this issue was fixed by commit:
 
-On 4/7/21 4:00 AM, Jason Gunthorpe wrote:
-> On Mon, Mar 25, 2019 at 09:30:34AM +0800, Lu Baolu wrote:
->> A parent device might create different types of mediated
->> devices. For example, a mediated device could be created
->> by the parent device with full isolation and protection
->> provided by the IOMMU. One usage case could be found on
->> Intel platforms where a mediated device is an assignable
->> subset of a PCI, the DMA requests on behalf of it are all
->> tagged with a PASID. Since IOMMU supports PASID-granular
->> translations (scalable mode in VT-d 3.0), this mediated
->> device could be individually protected and isolated by an
->> IOMMU.
->>
->> This patch adds a new member in the struct mdev_device to
->> indicate that the mediated device represented by mdev could
->> be isolated and protected by attaching a domain to a device
->> represented by mdev->iommu_device. It also adds a helper to
->> add or set the iommu device.
->>
->> * mdev_device->iommu_device
->>    - This, if set, indicates that the mediated device could
->>      be fully isolated and protected by IOMMU via attaching
->>      an iommu domain to this device. If empty, it indicates
->>      using vendor defined isolation, hence bypass IOMMU.
->>
->> * mdev_set/get_iommu_device(dev, iommu_device)
->>    - Set or get the iommu device which represents this mdev
->>      in IOMMU's device scope. Drivers don't need to set the
->>      iommu device if it uses vendor defined isolation.
->>
->> Cc: Ashok Raj <ashok.raj@intel.com>
->> Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>
->> Cc: Kevin Tian <kevin.tian@intel.com>
->> Cc: Liu Yi L <yi.l.liu@intel.com>
->> Suggested-by: Kevin Tian <kevin.tian@intel.com>
->> Suggested-by: Alex Williamson <alex.williamson@redhat.com>
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> Reviewed-by: Jean-Philippe Brucker <jean-philippe.brucker@arm.com>
->> ---
->>   drivers/vfio/mdev/mdev_core.c    | 18 ++++++++++++++++++
->>   drivers/vfio/mdev/mdev_private.h |  1 +
->>   include/linux/mdev.h             | 14 ++++++++++++++
->>   3 files changed, 33 insertions(+)
->>
->> diff --git a/drivers/vfio/mdev/mdev_core.c b/drivers/vfio/mdev/mdev_core.c
->> index b96fedc77ee5..1b6435529166 100644
->> +++ b/drivers/vfio/mdev/mdev_core.c
->> @@ -390,6 +390,24 @@ int mdev_device_remove(struct device *dev, bool force_remove)
->>   	return 0;
->>   }
->>   
->> +int mdev_set_iommu_device(struct device *dev, struct device *iommu_device)
->> +{
->> +	struct mdev_device *mdev = to_mdev_device(dev);
->> +
->> +	mdev->iommu_device = iommu_device;
->> +
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL(mdev_set_iommu_device);
-> 
-> I was looking at these functions when touching the mdev stuff and I
-> have some concerns.
-> 
-> 1) Please don't merge dead code. It is a year later and there is still
->     no in-tree user for any of this. This is not our process. Even
->     worse it was exported so it looks like this dead code is supporting
->     out of tree modules.
-> 
-> 2) Why is this like this? Every struct device already has a connection
->     to the iommu layer and every mdev has a struct device all its own.
-> 
->     Why did we need to add special 'if (mdev)' stuff all over the
->     place? This smells like the same abuse Thomas
->     and I pointed out for the interrupt domains.
-> 
->     After my next series the mdev drivers will have direct access to
->     the vfio_device. So an alternative to using the struct device, or
->     adding 'if mdev' is to add an API to the vfio_device world to
->     inject what iommu configuration is needed from that direction
->     instead of trying to discover it from a struct device.
+commit 363eaa3a450abb4e63bd6e3ad79d1f7a0f717814
+Author: Shuah Khan <skhan@linuxfoundation.org>
+Date:   Tue Mar 30 01:36:51 2021 +0000
 
-Just want to make sure that I understand you correctly.
+    usbip: synchronize event handler with sysfs code paths
 
-We should use the existing IOMMU in-kernel APIs to connect mdev with the
-iommu subsystem, so that the upper lays don't need to use something
-like (if dev_is_mdev) to handle mdev differently. Do I get you
-correctly?
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=114c0579d00000
+start commit:   d4961772 Merge tag 'clk-fixes-for-linus' of git://git.kern..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9320464bf47598bd
+dashboard link: https://syzkaller.appspot.com/bug?extid=b4a81dc8727e513f364d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126d1de9d00000
 
-> 
-> 3) The vfio_bus_is_mdev() and related symbol_get() nonsense in
->     drivers/vfio/vfio_iommu_type1.c has to go, for the same reasons
->     it was not acceptable to do this for the interrupt side either.
+If the result looks correct, please mark the issue as fixed by replying with:
 
-Yes. Agreed. I will look into it.
+#syz fix: usbip: synchronize event handler with sysfs code paths
 
-> 
-> 4) It seems pretty clear to me this will be heavily impacted by the
->     /dev/ioasid discussion. Please consider removing the dead code now.
-> 
-> Basically, please fix this before trying to get idxd mdev merged as
-> the first user.
-> 
-> Jason
-> 
-
-Best regards,
-baolu
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
