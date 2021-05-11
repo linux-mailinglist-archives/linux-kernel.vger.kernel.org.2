@@ -2,112 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE3F37A9F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882CF37A9FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhEKO4V convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 May 2021 10:56:21 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3062 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbhEKO4L (ORCPT
+        id S231825AbhEKO4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:56:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231609AbhEKO4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:56:11 -0400
-Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Ffgf63p4gz6wkjh;
-        Tue, 11 May 2021 22:43:42 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 11 May 2021 16:54:58 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Tue, 11 May 2021 16:54:58 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        "mjg59@google.com" <mjg59@google.com>
-CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        kernel test robot <lkp@intel.com>
-Subject: RE: [PATCH v6 08/11] evm: Allow setxattr() and setattr() for
- unmodified metadata
-Thread-Topic: [PATCH v6 08/11] evm: Allow setxattr() and setattr() for
- unmodified metadata
-Thread-Index: AQHXQaKHvFPvOA7oV0m5qAvk17yFuareOl6AgAAjMeD//+TqAIAAInMw
-Date:   Tue, 11 May 2021 14:54:58 +0000
-Message-ID: <0d0fcd3619e64bb9aaf1656ef066d043@huawei.com>
-References: <20210505112935.1410679-1-roberto.sassu@huawei.com>
-         <20210505113329.1410943-4-roberto.sassu@huawei.com>
-         <735bae46f0772b40ef6ecfb3c6fe0267b3ebbee8.camel@linux.ibm.com>
-         <c281b39bdbaa4b5ab921a2e9cece83b4@huawei.com>
- <1a5d2a37be31f7971374c01ed8e799e003c96f9d.camel@linux.ibm.com>
-In-Reply-To: <1a5d2a37be31f7971374c01ed8e799e003c96f9d.camel@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Tue, 11 May 2021 10:56:43 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38650C06174A;
+        Tue, 11 May 2021 07:55:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=X8lDMzJEEbXETyVQFtFTx8ZhSJFE1TZtWKxi3YFPp0c=; b=toF8HtbtqJXqfoBCRkXfHJJnN
+        bHuW1jFiDft5IunD0UGQxOp6uUWyDaAHqBZF6CUXEWfx5rlZ8ZLAi69tQwZTWenffikWdnQVtQ6zy
+        GTtVzqT2WmStzeRXO7K73YC35ig06Abf41+kuIbfbAuHfBQuM4FU0MOm86aILtvui+M/LrWm+Jp6Q
+        K2bpD0++pRGcaiMqhRJXaxzVhJ8B2aMH0E2BJZeIFl0s1evTfEWXYiT6IH1nBPfQQvtyIWXxalRpX
+        Igi3anwmDEHCdkeG48pYVtgxYqbRLOI6jkH7ptCfZJ3mcI01CCDZIMZtiAftQM9Nii7WgDiOKZfS0
+        e6kvjacKQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43868)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lgTnF-0002nL-Qc; Tue, 11 May 2021 15:55:29 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lgTnF-0001B9-JL; Tue, 11 May 2021 15:55:29 +0100
+Date:   Tue, 11 May 2021 15:55:29 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] arm: Enlarge IO_SPACE_LIMIT needed for some SoC
+Message-ID: <20210511145529.GN1336@shell.armlinux.org.uk>
+References: <20210511021656.17719-1-ansuelsmth@gmail.com>
+ <YJnq3Y3/I1kdV1Ov@casper.infradead.org>
+ <YJnswvYFUjlNS7Fa@Ansuel-xps.localdomain>
+ <CAMj1kXGLihr4gq3iwHy6mLKG4UHWnh5XAgxZDZmnmNPErfJ-bg@mail.gmail.com>
+ <YJp1WYTXHsSAA0ES@Ansuel-xps.localdomain>
+ <CAMj1kXHoc283aHT2EjxyRe8_cTWn_SUGoVLNKJ+40ia8Fppynw@mail.gmail.com>
+ <YJp6mbJRMlN5yFC7@Ansuel-xps.localdomain>
+ <CAMj1kXFDY0Go9yDXAfAiN8pm-q0qGSYaWNw0LVw044ErZ0zKvQ@mail.gmail.com>
+ <YJp9w7FqxO6+SVT6@Ansuel-xps.localdomain>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJp9w7FqxO6+SVT6@Ansuel-xps.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> Sent: Tuesday, May 11, 2021 4:41 PM
-> On Tue, 2021-05-11 at 14:21 +0000, Roberto Sassu wrote:
-> > >
-> > > On Wed, 2021-05-05 at 13:33 +0200, Roberto Sassu wrote:
-> > > > With the patch to allow xattr/attr operations if a portable signature
-> > > > verification fails, cp and tar can copy all xattrs/attrs so that at the
-> > > > end of the process verification succeeds.
-> > > >
-> > > > However, it might happen that the xattrs/attrs are already set to the
-> > > > correct value (taken at signing time) and signature verification succeeds
-> > > > before the copy has completed. For example, an archive might contains
-> files
-> > > > owned by root and the archive is extracted by root.
-> > > >
-> > > > Then, since portable signatures are immutable, all subsequent operations
-> > > > fail (e.g. fchown()), even if the operation is legitimate (does not alter
-> > > > the current value).
-> > > >
-> > > > This patch avoids this problem by reporting successful operation to user
-> > > > space when that operation does not alter the current value of
-> xattrs/attrs.
-> > >
-> > > I must be missing something.  If both the IMA and EVM status flags are
-> > > reset after xattr or attr modification, do we really need to prevent
-> > > any metadata - same or different - changes?  Both evm_protect_xattr()
-> > > and evm_inode_setattr() would need to be modified to allow
-> > > INTEGRITY_PASS_IMMUTABLE.
-> >
-> > yes, given that the IMA and EVM flags are reset, it should not be
-> > a problem to allow changes. However, I think it is useful to keep
-> > the current behavior. For example, it would prevent an accidental
-> > change of the SELinux label during the relabeling process.
+On Tue, May 11, 2021 at 02:51:15PM +0200, Ansuel Smith wrote:
+> On Tue, May 11, 2021 at 02:46:49PM +0200, Ard Biesheuvel wrote:
+> > OK, so the entire second host bridge fails to probe, because there is
+> > no virtual address space left for the I/O window.
+> > 
+> > Just change the 'downstream I/O' window size in the DT to 64k
+> > (0x10000) - I assume the current size (0x100000) is a typo anyway.
 > 
-> I understand we might want to prevent accidental or malicious changes,
-> but that isn't the purpose of this patch set.  The patch description
-> would also need to be updated to reflect the real purpose.
+> Ok, so my fear were right... someone just typo the IO when the dtsi was
+> pushed and was wrong from all that times. Much easier and cleaner
+> solution. 
 
-We would be changing the expectation that metadata changes
-are denied, which was defined with the original patches.
+Great news.
 
-I would prefer to keep the current behavior, but if your suggestion
-is to allow metadata changes, I will modify the patch set.
-
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
-
-> thanks,
-> 
-> Mimi
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
