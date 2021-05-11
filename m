@@ -2,233 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0C6379C34
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A45E379C37
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhEKBoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 21:44:10 -0400
-Received: from mail-vi1eur05on2076.outbound.protection.outlook.com ([40.107.21.76]:54497
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230422AbhEKBoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 21:44:09 -0400
+        id S230405AbhEKBou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 21:44:50 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:43262 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230183AbhEKBot (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 21:44:49 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14B1eAiR152152;
+        Tue, 11 May 2021 01:43:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=corp-2020-01-29;
+ bh=tliQe2nRMAe71U0aVzREst0rCk5Tw0qZN13IYlKOZiA=;
+ b=hvOmLvZ7urAgMSDk6xTUbqTKRDXMXT03xmnZZ0KwDX3luCjgmTy0ljF9/IfqBFaXOk3N
+ CmmL1AFakNxw3xxKz9e2vim3aml698+GE09YPgffiTzcRL+SXqkTW+3MD3+0a3wr6zPP
+ 9U6jvJuDwwic6E8ELsEbkp2+7YIqN0Tb+iJI74WIAEA24W6k1fUjEXLL7TBDKmuF6rAr
+ h59t7uN8ZtPwATBSB9PA/BO2UI5noDFWodcqQmRgVPKe6+hZAALDtgPdrW2nxfpoC/TO
+ SKpOHezIPviFZVr2Gt4AWKrlt/lAL22+3DYaTt5tNFy/aPq9nnCyBm/WdeS+RZw7F7Gq cg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 38e285cbqf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 May 2021 01:43:40 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14B1a0ec033019;
+        Tue, 11 May 2021 01:43:40 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2174.outbound.protection.outlook.com [104.47.58.174])
+        by userp3020.oracle.com with ESMTP id 38e4dt8avm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 May 2021 01:43:40 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AZIbWqwWjrJFtbp6Mcl/s1garVz1A8kROmlyKTEHX5nzz5/x7/RLjXeHuIFQ4qTF8CiL+f8iOAPRJDQxtXEt4PUDdUhZKwzVUfP7kJy1mXOyb6C+KRNgOnwuN+f63KimhnqBTf4vLh1eBJF7boyWoDPFCGSSqsMWXF2qlGlZJlfMKhFAu6M/TH1GEV7bcNUm08B1bbOFP7pJNxK8xNfAjnm6gp2EX94IACmrELj2BZOSy4M0M4eMI1ZiHtMjHCdrGfIpLaicw43dQbOgNVJ7u7L971Nox0FhwJ7oaQXWeKd7fIk0U7reEN1Nc3bECfErrGr5YuML4Xc3I6dGy2Ryvg==
+ b=W0g998HnyRDMnIloDtXIwHQRaRIm+0Mwsgir3XspVBYQyYUkvRB9HH6F2QML1yLlRwJSaUuLhat4b+/0vZyIKJS44c/MJeXgBtnie9o/Hv/Cy1hAAcqkzbuN6f0Qbp1tHq+TPZqd5FNvKS9eNBbBjbN44yiaWK1/xHIBfvbwF+BgUpEfyKNYHMJDYdHW/DQbRW/AkaTwmZeA/XlnWXo+ul8K2ooMR7Os5jZw7opfzZxDUvBRhu+Hnnq1SwSf63gAsZyoY/2RKhY61WN9fwzvMfsFuW1KeJ4gAHTG7gdlNb5D7u1RYh29CWkm4Q4ELgBOdInchnMk4odG0ecHiQ5xlw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=voBiJkojl7diEVf2SeU27/mVR5TTY4geXjj9ge+G41I=;
- b=oIgPzS7h5irfVt502+jKTWunovmMcvfcoy7IdCVmCt9v3jr/U5KH0fSzRHjUz8uY+0HzP3kKxsMoYJ5jweG+rt/O+YSyzQYGxamXnu/CzTx2X20BqaxIF6/SrLMx/CCOlZ6rwQvW+uHmEX1hxm1PfLecIkzfZCk9Pj6GONof7x5l8zgebi+xc47KLJiSBUj/6fnni2wS2//yT484qTcOgv/b3peVkEnsQOoeJwVkFxy67q+1Gu0ttFoZ3nSQN4YqSws0a2LxDLmSyPII49pEPGq2xlYrlvLodKJY+NxLJVZsx5Xi9m8/k0rS+tJZu9euXDs7Dl07qXA7jNPdi844hg==
+ bh=tliQe2nRMAe71U0aVzREst0rCk5Tw0qZN13IYlKOZiA=;
+ b=TtbMHGzcLXvga5ZIY6OOqccfs/q1gsEN08Us5mejBWQiBvlDqEc8j0A5zlW+2lEWH804ujJIpzs1ATGgtWvenxUJp4Tq8KOSi+vA8Oa8SA8lKhPQkk4+GJ45aUf9K9D9fE/DD91giTyU05tnwVAX9tkPtOAebqznW0fJg0vglZB1vyokbxqB/WfSg1FcSc1fgWhp1LCIL5YfuzfAqJftv1unfLoRlIS5HjkF3uKsfeSnzLuy7VD3lKLOSCOXP7E8GhfOMTbWsLvcF9a5tyMkP72uZF0QT7tpOfcaX2BQxaOEGr/i91rmD7W5bjoMfUZLuoXOg68ZUredOXEZ0DuVUg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=voBiJkojl7diEVf2SeU27/mVR5TTY4geXjj9ge+G41I=;
- b=Bz/syoQnLulcnKpqyWUUIGGapN3x5Znmib6VSK9LupG3FncLLmthKwSUmVoOluC9g0vDyQ28Im+45U1VxH7Un7ntRf38r5sx5kF6LOcHnmGdZLKyQyzZzeunrUY0HNEk27ItEefCv710UIFa8Pys6IUWY9fKjtWNqUwTJXG8I4Y=
-Received: from VI1PR04MB5853.eurprd04.prod.outlook.com (2603:10a6:803:e3::25)
- by VE1PR04MB7343.eurprd04.prod.outlook.com (2603:10a6:800:1a2::18) with
+ bh=tliQe2nRMAe71U0aVzREst0rCk5Tw0qZN13IYlKOZiA=;
+ b=CvjYz9ifv0GJuA9ODygdkTytXmA2ktQbDZVIF6WTNPCUzw5RvsVX56x2gZvyS33rjw65CWUDwvjtUlKq59I6fo6mSaXQLcjGJ+/K6vhs9qDvlXSJPGHs6P2sfcf8EZH39aEQveg5Y7F4ywre4qgNhrSUy6HzPyk72hzaSVOAVcA=
+Received: from MWHPR10MB1582.namprd10.prod.outlook.com (2603:10b6:300:22::8)
+ by MWHPR10MB1646.namprd10.prod.outlook.com (2603:10b6:301:7::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Tue, 11 May
- 2021 01:43:01 +0000
-Received: from VI1PR04MB5853.eurprd04.prod.outlook.com
- ([fe80::c830:a7cb:c125:2fb7]) by VI1PR04MB5853.eurprd04.prod.outlook.com
- ([fe80::c830:a7cb:c125:2fb7%6]) with mapi id 15.20.4108.031; Tue, 11 May 2021
- 01:43:01 +0000
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
-        "andrew.smirnov@gmail.com" <andrew.smirnov@gmail.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "kw@linux.com" <kw@linux.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "stefan@agner.ch" <stefan@agner.ch>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.26; Tue, 11 May
+ 2021 01:43:38 +0000
+Received: from MWHPR10MB1582.namprd10.prod.outlook.com
+ ([fe80::353a:1802:6e91:1811]) by MWHPR10MB1582.namprd10.prod.outlook.com
+ ([fe80::353a:1802:6e91:1811%8]) with mapi id 15.20.4108.032; Tue, 11 May 2021
+ 01:43:38 +0000
+From:   Liam Howlett <liam.howlett@oracle.com>
+To:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>
-Subject: RE:  Re: [RESEND v4 2/2] PCI: imx: clear vreg bypass when pcie vph
- voltage is 3v3
-Thread-Topic: Re: [RESEND v4 2/2] PCI: imx: clear vreg bypass when pcie vph
- voltage is 3v3
-Thread-Index: AddGBtI0mvenQ67aQuSaGp0K+HXk/w==
-Date:   Tue, 11 May 2021 01:43:00 +0000
-Message-ID: <VI1PR04MB5853DE4B5F394ED486FCD08B8C539@VI1PR04MB5853.eurprd04.prod.outlook.com>
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     Liam Howlett <liam.howlett@oracle.com>
+Subject: [PATCH] mm/mmap: Use find_vma_intersection() in do_mmap() for overlap
+Thread-Topic: [PATCH] mm/mmap: Use find_vma_intersection() in do_mmap() for
+ overlap
+Thread-Index: AQHXRgcQJBtmOtgs+EmCsyux08q6OA==
+Date:   Tue, 11 May 2021 01:43:38 +0000
+Message-ID: <20210511014328.2902782-1-Liam.Howlett@Oracle.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
+x-mailer: git-send-email 2.30.2
+authentication-results: kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
+x-originating-ip: [23.233.25.87]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 707f5510-4f66-4825-4e77-08d9141e1c98
-x-ms-traffictypediagnostic: VE1PR04MB7343:
+x-ms-office365-filtering-correlation-id: 9e19424a-ab22-479c-175c-08d9141e32b0
+x-ms-traffictypediagnostic: MWHPR10MB1646:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VE1PR04MB7343169B773810E1A4DE2D218C539@VE1PR04MB7343.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-microsoft-antispam-prvs: <MWHPR10MB1646590F4B501993CFFB283DFD539@MWHPR10MB1646.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3631;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hAxIGe6b2J6LyIB67dVr0PHqyUDNh+8tHi0ikFjxYrXlQCA9tpOgtt84LvK4Qx6HqHmd4UMpk54JaLyjatG0MPXUGcz9F40VlK7k6Y+qs4SHc+JrGd7jxbPMNw/ED494JiRU5iko3xLJhD2Z8NxAQNMXq1Jo+FaBOcWhGv0lu9KLiKiABHO0BSARPE6jKrWOtwNVq7y9sVviuTkgaO28GTuiCwXt9E3hpV0W5GZNUYrWsTF/d1YjrRYpKBGlazHgv4hsEwPN4Zyn6DfZxNuUiB7c3KWIJRi7Cuu9tINznxd3SxfN7WB/eLwPsOvDhIYMQbUWlQalXdxgGybvWhtq4ZN3CCWHgrMv2+mzRd7oBS3yIHkvO91N+ynPML+TIul9T7unrBfcWWkHvev/8NvyLtl5V3cqkSlFxXJukam2+c+1yQtEokEBYYxFi8rLUD6ngYWCmxmj97xKd/QwkoYyWWcJcgLe2RZOT7LubGbbPQmCiusESh12Sy90O3EBJneeOu9W/vSVFWvK504oH7FxL9qBfrKyrAm7eAdDloAPlm/guiDPf6QS4l+Cj5AwzquXPJ3qgGcybNsuIQQkjWrhcxC1F9fVRHVHo4ya5U1CmBY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5853.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(376002)(39830400003)(366004)(66946007)(9686003)(76116006)(26005)(316002)(7416002)(4326008)(8676002)(54906003)(33656002)(478600001)(52536014)(64756008)(55016002)(66556008)(66446008)(83380400001)(8936002)(6916009)(6506007)(2906002)(71200400001)(66476007)(122000001)(86362001)(38100700002)(5660300002)(7696005)(186003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?a2iynWHAdCcw222COk3MIhd7Ozyfu2E5p3HuR/QptGp0Y6u+Pd4y1Ohcbt3N?=
- =?us-ascii?Q?2MTrspzbKiFYFtPmTpI/IqRwV9yetff2OmVb5HwKY9txmBHtdoavE+XCRCHR?=
- =?us-ascii?Q?gawSzX3vkzxfsw+BSsaSkDDn18bghr5L5KMnTPkj749MqoOrkT+VFVFV+KLG?=
- =?us-ascii?Q?PK+Sy+jwDM0c69XwFpfKxRoL3sW0LvWZc8GkfGoE1wiQZiB8QzJTsFkRvYiW?=
- =?us-ascii?Q?+KLq4KR/Klxj8vMHmA++onSVmssS/zDQJnI1CKPjI50i15DkwWUx1EbW+/oP?=
- =?us-ascii?Q?QtG8J60RtVXbXRKvfQne8NUPXRGvcejPYTnh97uykPwC1gELxl8AfMA5OY8k?=
- =?us-ascii?Q?XNLX70GBfRiRRR5q5Lm1F9e97t4ZhFMJqxxbQxiijPCTsT7oiTky9zInoQQk?=
- =?us-ascii?Q?GaS2ybOhVqHTHsaFPiwCII3R9xb0dmfXA56hcuvdsJdBI47DxIsJ24dDbnwJ?=
- =?us-ascii?Q?0UtuMhAPQHez6yw7IaxZ184WjkiVeLQ2d9L5vCGVDdccVQhjPrmxBw5mmHsp?=
- =?us-ascii?Q?MZ89arXyu7uzREzONHADa77MwRxj58BYe8YBxlONON5YnIUSXE6WpiI1WoDi?=
- =?us-ascii?Q?gGaHdEYtmF9PysNVUtlM/dTadhHywgWGb7W6hbYZaR7L7dxsPfJzfmhCNdYO?=
- =?us-ascii?Q?g8jzQrl5GEjuFmBBGsOXiMpewH6gdk4gY0exm32XLsBe/OUQXCiREQy5qDZf?=
- =?us-ascii?Q?XNC+nF6fYE+obdnRyBQMAebhtXsQ7m/gpa1GgtDvSm5VRYPa0NTdQHxY2omA?=
- =?us-ascii?Q?aGbZWgukyYOPrdXMcEHMlbVQdM3BUwWK1e0NOze32ZCzTKYnOtWlSyXiuB+U?=
- =?us-ascii?Q?jfcDyccSGsC1WFz+306DiKn+y+bZHhVpYaM/frKSyhzmJpsWsAHT0hZ6Oc7B?=
- =?us-ascii?Q?tVT1lnqlXvKa9ppK+mNBOrHtF9Xrq3DbetfTBKVKTAEchnE7ZH/eY3WCLL9h?=
- =?us-ascii?Q?0V9IXHTpzAxWBxtMR1pIxYa4m0eWWAoq4BBs7gwJbpqIJnamD3Q94hSGQGn9?=
- =?us-ascii?Q?6hYOSK6ISnkGbb+j3YORtf0ac02wOB2t0c/AFtpOCzTf5yXRQmqopM9oEZOg?=
- =?us-ascii?Q?dKTewKf+8q/YNNeB3JPsh5r3oWpH84gk2HBd+cqrYuDgKYV41M7seLnC52wo?=
- =?us-ascii?Q?YPeHKEhwfnEkBrkDlsbYpkoGH7lkvJQZBja0BWcYt7oMFSoqHPF4TF6YiMwN?=
- =?us-ascii?Q?I6MSITU8FEmM//Zb4SyNqXrS6TiK+EzhqsDZQdaPrgXSWK/abyFJUE5NOz4b?=
- =?us-ascii?Q?Nw5dMuTGKQ7J5N1Yn1cMrPj299cI+2Dn5U0sobu0d1opPa0KsUg77E/ImWB9?=
- =?us-ascii?Q?64OG3Z+BFgB1AwjWD5Pyu0Ho?=
-Content-Type: text/plain; charset="us-ascii"
+x-microsoft-antispam-message-info: vNpltm3CdgeHXEvt5rz627cfwmTGD1S80/QHkk244JuQeLaFQrDtK1POOOup8GEODE49Td7StXdA1JO6BjIUH5YrwENEbq7lA1IuezGe8moZ5eVybowWMCgpsJwzu2okq2pGX3+idFZvT9fEkxM9+7M20vJZZROvwpJmS7CmFWKibFXqFUqGVUKfX9ok9HKDK45Votmi9xshHHiOKaQLsq6+wUEmHjZEgtcdqmwBQl9XgOem8PcAtiE4hqivFrAp/VrVpf74EccwQ4RJFsRYTVhQPbVNCZe+foquHguZQEj0YgB83wzj5CXnMk0tz9DQMI3FypMPWf6TkTcmo+zcet2PDajY7j9wU1AGb1Rum8UPJV7MjNMKMKGFbKGZGvbZti6przYAMmkSkQbJdvAH8FOMjEy3sR2edM29DRlyLDDlVB0znj4erm2uFiXvUb3OSNv7zLaR1Nk8EqR11qXE3C8hYFE3DhhrpRkGjbeR6EdXEk3e6BeB2U7xE7zjcfQ3dqvZyUWhFKKkBW0GQhq0b8ua1kVpVGtdgCyzY0NRS+zsf0nch71z/8D7M/PJpyb6gSYkhRtqgDQ58O7dxOeq4LnpsPHjhPixY36e7Jr0G/U=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1582.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(39860400002)(136003)(376002)(346002)(4326008)(83380400001)(66946007)(2616005)(26005)(6512007)(107886003)(66476007)(64756008)(66556008)(71200400001)(44832011)(1076003)(2906002)(66446008)(8676002)(38100700002)(122000001)(316002)(186003)(110136005)(36756003)(6506007)(5660300002)(4744005)(76116006)(478600001)(91956017)(8936002)(6486002)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?d+wyZChoqyLBqdqwmGkM+tdNryLx572veHaZSI4idgAW0/VOVg+hPQ1EZV?=
+ =?iso-8859-1?Q?/7hxsPll7mUpUMkw6CItOTIlCHgnvwr5FODNObdE+K2bIlkkKHnkVKtxJ6?=
+ =?iso-8859-1?Q?Hca0CB8DBFq4yMQR9jboecMBW89KC1HDHyDFjAutfoHkvTYcRPOMTSV2gu?=
+ =?iso-8859-1?Q?3yGtydUNEA6fQ22Sf/BPISp7KDaIrctFKUWRAzEV5yGvu0dK19G3Gu6ZXc?=
+ =?iso-8859-1?Q?dKoMnmZwh5D6Tmm85b+E1yDBtQIfaHnp4DmKSajvEf5NggnfdacFBCOrmK?=
+ =?iso-8859-1?Q?1Rlp3/CuwTpxxoRc7T6DV7W4KxAMZ5bB6mbYJX5/KAl3/CCdcPRhZcZ2L7?=
+ =?iso-8859-1?Q?OK58jcSZ2jU55wLDVnKJ6T/DWKL+etYNK+x7cgh8rF6FFD8kDuBWcUnYow?=
+ =?iso-8859-1?Q?Y59A0TwNJjQXeRNaFEJGCeHGJXSLpW/8wa9+RH3kUbCF69PfgpOT6EHBOF?=
+ =?iso-8859-1?Q?j33EYz9sY31oeONzvgxSTyslwtWNnxMJiCr8UxN1NgpNzZNfx2dVBM9gHI?=
+ =?iso-8859-1?Q?WRohjCOu69bvAni140my5TVFSgRNwtnDCidGFw8YI7u70KbP4RdFP/IWxD?=
+ =?iso-8859-1?Q?HJS/EX9a5l7RLsAg7nW1uF5sgzBuy0jkM0WIh3kslHat8gSLlVLUWljNBc?=
+ =?iso-8859-1?Q?rgjCipFriAXJkG07Tf/jhGkVmIpIjMIQquNR5ww5JuPt8HiBSrFh7suAr4?=
+ =?iso-8859-1?Q?rf6QYQAbp4KFjmVI6jQjCQT3kL6mVsuoKStnWXRJzSVaQ5a4EbVp3e6a3J?=
+ =?iso-8859-1?Q?2JQ/u7gNmWHUmGrSQrdFpPd9gl1MdO93o42XUJYd90k3Kv1LT6ooPEnXjB?=
+ =?iso-8859-1?Q?iJSMkTTLfuIlnPg7W1YC5j3RiHoGrME9mz4kPXFP6gWdYxtoHTpOKfviQj?=
+ =?iso-8859-1?Q?J5gnQ0TZvkc4WOE4LRpPWWgt3lkFiloTmM5w36gyyQyMGYesQm3ZD4w7uw?=
+ =?iso-8859-1?Q?UF/4vUPUB8OYn+/fG4YQATWSd0tg7DY3KbZXLGrjzLntOC/xfX/doF7jpw?=
+ =?iso-8859-1?Q?wxQCxpe/osHbZseW/hHd9CXrCZF0oH4ZGhelDBKPOae8lwClMfOSssY8+o?=
+ =?iso-8859-1?Q?YF2Pipdej1gtwVhaDCmD81oATLnNYrKPigT2QS9U/cHQFqmTVmdt6UrpxS?=
+ =?iso-8859-1?Q?AzaNIpWs0kcQh/XR7dIRsEwMNK3KhEJ5AN77QgmS8ibfxvAB0O6gNLA9CJ?=
+ =?iso-8859-1?Q?OKUZbeotedw0sJC4VMnNbym8LcPpfGltjyDmbK4NgStZVY8wit5fRAMZBP?=
+ =?iso-8859-1?Q?yJkaH/D9Np1RpEVX+PSDc/SZxAF5AYaVKM/g+kF/7xN2vI+1dWHsL8ZNK+?=
+ =?iso-8859-1?Q?wvceE+WleFRt34UgdKYbZa35eGt2WvmyDSNkq0o+OfP99RRM+bf9yagCFC?=
+ =?iso-8859-1?Q?y+WarOhp/j?=
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
+X-OriginatorOrg: oracle.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5853.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 707f5510-4f66-4825-4e77-08d9141e1c98
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2021 01:43:00.9614
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1582.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e19424a-ab22-479c-175c-08d9141e32b0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2021 01:43:38.0921
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EpiZAORpf8QjSTx7IIpReunqyE0tVB5a1wQaYdzNenfDcu9xNs1b5uZwO1uC32iBIeO+g5V9jAo8gLU4/DTKAQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7343
+X-MS-Exchange-CrossTenant-userprincipalname: 4sBELXYXjtlOVWUTL7UJNIL3hpceTNI9t+tc18HpPRJ/br9Cmw9aJCCAFsGiANoAQk/e8ZjqpS6T/oHc7pAoxw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1646
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9980 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ mlxlogscore=999 adultscore=0 spamscore=0 mlxscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105110009
+X-Proofpoint-GUID: L_Tgw6VlEd_VqsZdjhQKfPN-exfkuGOc
+X-Proofpoint-ORIG-GUID: L_Tgw6VlEd_VqsZdjhQKfPN-exfkuGOc
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9980 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ mlxscore=0 bulkscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
+ clxscore=1015 impostorscore=0 phishscore=0 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105110009
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn:
-It seems that the email I replied on May07, is missing.
-Re-send it.
+Using find_vma_intersection() avoids the need for a temporary variable
+and makes the code cleaner.
 
-Best Regards
-Richard Zhu
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+---
+ mm/mmap.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-> -----Original Message-----
-<...>
-> Subject:  Re: [RESEND v4 2/2] PCI: imx: clear vreg bypass when pcie vph
-> voltage is 3v3
-> On Tue, Mar 30, 2021 at 04:08:21PM +0800, Richard Zhu wrote:
-> > Both 1.8v and 3.3v power supplies can be used by i.MX8MQ PCIe PHY.
-> > In default, the PCIE_VPH voltage is suggested to be 1.8v refer to data
-> > sheet. When PCIE_VPH is supplied by 3.3v in the HW schematic design,
-> > the VREG_BYPASS bits of GPR registers should be cleared from default
-> > value 1b'1 to 1b'0. Thus, the internal 3v3 to 1v8 translator would be
-> > turned on.
->=20
-> Maybe something like this?
->=20
->   PCI: imx6: Enable PHY internal regulator when supplied >3V
->=20
->   The i.MX8MQ PCIe PHY needs 1.8V but can by supplied by either a 1.8V
->   or a 3.3V regulator.
->=20
->   The "vph-supply" DT property tells us which external regulator
->   supplies the PHY.  If that regulator supplies anything over 3V,
->   enable the PHY's internal 3.3V-to-1.8V regulator.
->=20
- [Richard Zhu] Hi Bjorn:
-Thanks for your comments.
-vph is the "high-voltage power supply" of the PHY.
-How do you think with the following one with some minor updates?
-
-   PCI: imx6: Enable PHY internal regulator when supplied >3V
-
-   The i.MX8MQ PCIe PHY needs 1.8V in default but can be supplied by
-   either a 1.8V or a 3.3V regulator.
-
-   The "vph-supply" DT property tells us which external regulator
-   supplies the PHY. If that regulator supplies anything over 3V,
-   enable the PHY's internal 3.3V-to-1.8V regulator.
-BR
-Richard
-
-> > Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> > Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
-> > ---
-> >  drivers/pci/controller/dwc/pci-imx6.c | 20 ++++++++++++++++++++
-> >  1 file changed, 20 insertions(+)
-> >
-> > diff --git a/drivers/pci/controller/dwc/pci-imx6.c
-> > b/drivers/pci/controller/dwc/pci-imx6.c
-> > index 853ea8e82952..94b43b4ecca1 100644
-> > --- a/drivers/pci/controller/dwc/pci-imx6.c
-> > +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> > @@ -37,6 +37,7 @@
-> >  #define IMX8MQ_GPR_PCIE_REF_USE_PAD          BIT(9)
-> >  #define IMX8MQ_GPR_PCIE_CLK_REQ_OVERRIDE_EN  BIT(10)
-> >  #define IMX8MQ_GPR_PCIE_CLK_REQ_OVERRIDE     BIT(11)
-> > +#define IMX8MQ_GPR_PCIE_VREG_BYPASS          BIT(12)
-> >  #define IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE  GENMASK(11, 8)
-> >  #define IMX8MQ_PCIE2_BASE_ADDR
-> 0x33c00000
-> >
-> > @@ -80,6 +81,7 @@ struct imx6_pcie {
-> >       u32                     tx_swing_full;
-> >       u32                     tx_swing_low;
-> >       struct regulator        *vpcie;
-> > +     struct regulator        *vph;
-> >       void __iomem            *phy_base;
-> >
-> >       /* power domain for pcie */
-> > @@ -621,6 +623,17 @@ static void imx6_pcie_init_phy(struct imx6_pcie
-> *imx6_pcie)
-> >                                  imx6_pcie_grp_offset(imx6_pcie),
-> >
-> IMX8MQ_GPR_PCIE_REF_USE_PAD,
-> >
-> IMX8MQ_GPR_PCIE_REF_USE_PAD);
-> > +             /*
-> > +              * Regarding the datasheet, the PCIE_VPH is suggested
-> > +              * to be 1.8V. If the PCIE_VPH is supplied by 3.3V, the
-> > +              * VREG_BYPASS should be cleared to zero.
-> > +              */
-> > +             if (imx6_pcie->vph &&
-> > +                 regulator_get_voltage(imx6_pcie->vph) > 3000000)
-> > +                     regmap_update_bits(imx6_pcie->iomuxc_gpr,
-> > +
-> imx6_pcie_grp_offset(imx6_pcie),
-> > +
-> IMX8MQ_GPR_PCIE_VREG_BYPASS,
-> > +                                        0);
-> >               break;
-> >       case IMX7D:
-> >               regmap_update_bits(imx6_pcie->iomuxc_gpr,
-> IOMUXC_GPR12,
-> > @@ -1130,6 +1143,13 @@ static int imx6_pcie_probe(struct
-> platform_device *pdev)
-> >               imx6_pcie->vpcie =3D NULL;
-> >       }
-> >
-> > +     imx6_pcie->vph =3D devm_regulator_get_optional(&pdev->dev,
-> "vph");
-> > +     if (IS_ERR(imx6_pcie->vph)) {
-> > +             if (PTR_ERR(imx6_pcie->vph) !=3D -ENODEV)
-> > +                     return PTR_ERR(imx6_pcie->vph);
-> > +             imx6_pcie->vph =3D NULL;
-> > +     }
-> > +
-> >       platform_set_drvdata(pdev, imx6_pcie);
-> >
-> >       ret =3D imx6_pcie_attach_pd(dev);
-> > --
-> > 2.17.1
-> >
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 1bbb3225c958..016715924529 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1456,9 +1456,7 @@ unsigned long do_mmap(struct file *file, unsigned lon=
+g addr,
+ 		return addr;
+=20
+ 	if (flags & MAP_FIXED_NOREPLACE) {
+-		struct vm_area_struct *vma =3D find_vma(mm, addr);
+-
+-		if (vma && vma->vm_start < addr + len)
++		if (find_vma_intersection(mm, addr, addr + len))
+ 			return -EEXIST;
+ 	}
+=20
+--=20
+2.30.2
