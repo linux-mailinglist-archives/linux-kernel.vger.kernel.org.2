@@ -2,138 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880C137AD18
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D2637AD1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231777AbhEKR23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:28:29 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:42602 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231407AbhEKR2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:28:24 -0400
-Received: from zn.tnic (p200300ec2f0ec70020ab858661d7f414.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:c700:20ab:8586:61d7:f414])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 45B771EC02E6;
-        Tue, 11 May 2021 19:27:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1620754037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=B3r/YO4GVHpZhNHppOEhHaJZiEO73O06Xor7sWfCBJg=;
-        b=HKDtVnk855QV7vLOW2EqBGvdL5dVylFBP/gFe7MQ/dzTxDmYSfXzIJUgwIaTtg3uP4sDEA
-        bb4L3PWBo7/cMO9PJUsEsJL+B1KYVLpRid+IA6r3fXJ/8JNYWOC0NiTgTHaexiAOnvLth0
-        HVYns2auhDoC5XX6KTAeNHrUG+Xtgyo=
-Date:   Tue, 11 May 2021 19:27:13 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Naveen Krishna Chatradhi <nchatrad@amd.com>
-Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
-        Muralidhara M K <muralimk@amd.com>
-Subject: Re: [PATCH 1/3] x86/MCE/AMD, EDAC/mce_amd: Add new SMCA bank types.
-Message-ID: <YJq+ca+kJ4cRl5B8@zn.tnic>
-References: <20210511152538.148084-1-nchatrad@amd.com>
+        id S231789AbhEKR3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231329AbhEKR3k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 13:29:40 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F319C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:28:33 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id e11so12579815ljn.13
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:28:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RrNlIBNi0pzHeAbx2nI9bp+BT2pTo5nJxLzfaP11f6Y=;
+        b=V7LgU5PcP4+3f+tLSMObksyzIebdnSvKK63MWqHO2ODHDAUYSrJRYbFBX2qv/dmyuc
+         4mAZnM/E7KYBqOhy+wIwu0rkfv5GNYJ/fd6cro5o+GfV8aRLEeI0JUMgO6GBjTe5e3r2
+         0oZemDf/7Kj9eSnUYgD+Zcix4Oxo8Fr0IsYTY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RrNlIBNi0pzHeAbx2nI9bp+BT2pTo5nJxLzfaP11f6Y=;
+        b=tR+eB2mG+nVDMlfVz/ClZ9zU8WblI9X3QwZxQJul94MRPAu4AGIaD2Z5fGDluVeFmP
+         Ir8+lRgzQP8TMopSwMxLy54o5yZtQMkAy5+/wXjDp7Ju8DGo1RA1oTA+LUqSpqF/EmTD
+         7gWZP9bshQh7zpCaErBBTL8B4bxLr/uQ24scxSfwpoUboNYvQBlfv2R+7+Pu4gh3iKuF
+         lIlKvMFigVgo52nJ8uFxazPL2C1ldNNKdZw03nupU7hOxtCksImJH8xL1ZPvqxyvHJsy
+         rtEWkA6WE7jQw/ZAtrAETUo5b5tXwUjFW92Pr5bFw97KXPziydrlbOBn5IfT+o/rkf0b
+         RoYw==
+X-Gm-Message-State: AOAM532LTpmGd1esKGmUqFYDqo7rR06Fx28ieNexv42WXlKMGMpLU7HC
+        f3rxgzhaiBKsxKzxZwjgwgdU8TtqSokdtklP
+X-Google-Smtp-Source: ABdhPJw9ljjig87Ar94YpI31jKvzDaeS4TUfwTd7UCrweximY7bsQpxdxFAUP594Pacpc8lf1ibJ2w==
+X-Received: by 2002:a2e:9211:: with SMTP id k17mr26155176ljg.284.1620754111584;
+        Tue, 11 May 2021 10:28:31 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id f18sm2707851lfu.157.2021.05.11.10.28.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 10:28:30 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id b7so26129108ljr.4
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:28:29 -0700 (PDT)
+X-Received: by 2002:a05:651c:33a:: with SMTP id b26mr26092232ljp.220.1620754109305;
+ Tue, 11 May 2021 10:28:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210511152538.148084-1-nchatrad@amd.com>
+References: <20210511165626.GA13720@redhat.com>
+In-Reply-To: <20210511165626.GA13720@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 11 May 2021 10:28:13 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whLqbTNc1T+rHCm-kxbVAuhK3hjo5fOgDVf5-z--x1mvQ@mail.gmail.com>
+Message-ID: <CAHk-=whLqbTNc1T+rHCm-kxbVAuhK3hjo5fOgDVf5-z--x1mvQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND2] ptrace: make ptrace() fail if the tracee changed
+ its pid unexpectedly
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Pedro Alves <palves@redhat.com>,
+        Simon Marchi <simon.marchi@efficios.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 08:55:36PM +0530, Naveen Krishna Chatradhi wrote:
-> diff --git a/arch/x86/kernel/cpu/mce/amd.c b/arch/x86/kernel/cpu/mce/amd.c
-> index e486f96b3cb3..055f3a0acf5e 100644
-> --- a/arch/x86/kernel/cpu/mce/amd.c
-> +++ b/arch/x86/kernel/cpu/mce/amd.c
-> @@ -90,6 +90,7 @@ static struct smca_bank_name smca_names[] = {
->  	[SMCA_CS_V2]	= { "coherent_slave",	"Coherent Slave" },
->  	[SMCA_PIE]	= { "pie",		"Power, Interrupts, etc." },
->  	[SMCA_UMC]	= { "umc",		"Unified Memory Controller" },
-> +	[SMCA_UMC_V2]	= { "umc_v2",		"Unified Memory Controller" },
+On Tue, May 11, 2021 at 9:56 AM Oleg Nesterov <oleg@redhat.com> wrote:
+>
+> This patch makes ptrace() fail in this case until debugger does wait()
+> and consumes PTHREAD_EVENT_EXEC which reports old_pid.
 
-So this is called "umc_v2" but the other V2 FUs's strings are the same.
-Why?
+I'm ok with the patch, just wondering which way it's supposed to come
+to me. Should I just apply it directly?
 
-Also, if you're going to repeat strings, you can just as well group all
-those which are the same this way:
+That said, why this:
 
-	[ SMCA_UMC ... SMCA_UMC_V2 ]    = { "umc",              "Unified Memory Controller" },
+> +       rcu_read_lock();
+> +       pid = task_pid_nr_ns(task, task_active_pid_ns(task->parent));
+> +       rcu_read_unlock();
 
-and do that for all which have V1 and V2.
+I don't see why the RCU read lock would be needed? task_pid_nr_ns()
+does any required locking itself, afaik.
 
-I mean, gcc is smart enough to do that behind the scenes for identical
-strings but you should do that in C too.
+And even if it wasn't, this all happens with siglock held, can
+anything actually change.
 
-> diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
-> index 5dd905a3f30c..5515fd9336b1 100644
-> --- a/drivers/edac/mce_amd.c
-> +++ b/drivers/edac/mce_amd.c
-> @@ -323,6 +323,21 @@ static const char * const smca_umc_mce_desc[] = {
->  	"AES SRAM ECC error",
->  };
->  
-> +static const char * const smca_umc2_mce_desc[] = {
-
-Ok, gcc reuses the identical string pointers from smca_umc_mce_desc[] so
-we should be ok wrt duplication.
-
-> +	"DRAM ECC error",
-> +	"Data poison error",
-> +	"SDP parity error",
-> +	"Reserved",
-> +	"Address/Command parity error",
-> +	"Write data parity error",
-> +	"DCQ SRAM ECC error",
-> +	"Reserved",
-> +	"Read data parity error",
-> +	"Rdb SRAM ECC error",
-> +	"RdRsp SRAM ECC error",
-> +	"LM32 MP errors",
-> +};
-
-...
-
-
-> +static const char * const smca_xgmipcs_mce_desc[] = {
-> +	"DataLossErr",
-> +	"TrainingErr",
-> +	"FlowCtrlAckErr",
-> +	"RxFifoUnderflowErr",
-> +	"RxFifoOverflowErr",
-> +	"CRCErr",
-> +	"BERExceededErr",
-> +	"TxVcidDataErr",
-> +	"ReplayBufParityErr",
-> +	"DataParityErr",
-> +	"ReplayFifoOverflowErr",
-> +	"ReplayFIfoUnderflowErr",
-> +	"ElasticFifoOverflowErr",
-> +	"DeskewErr",
-> +	"FlowCtrlCRCErr",
-> +	"DataStartupLimitErr",
-> +	"FCInitTimeoutErr",
-> +	"RecoveryTimeoutErr",
-> +	"ReadySerialTimeoutErr",
-> +	"ReadySerialAttemptErr",
-> +	"RecoveryAttemptErr",
-> +	"RecoveryRelockAttemptErr",
-> +	"ReplayAttemptErr",
-> +	"SyncHdrErr",
-> +	"TxReplayTimeoutErr",
-> +	"RxReplayTimeoutErr",
-> +	"LinkSubTxTimeoutErr",
-> +	"LinkSubRxTimeoutErr",
-> +	"RxCMDPktErr",
-
-What happened to those and why aren't they proper words like the other
-error descriptions?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+             Linus
