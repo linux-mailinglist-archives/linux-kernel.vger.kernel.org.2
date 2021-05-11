@@ -2,84 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF6637B0D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F43D37B0A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbhEKVcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 17:32:12 -0400
-Received: from elvis.franken.de ([193.175.24.41]:50509 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229784AbhEKVcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 17:32:10 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lgZy2-0004Ah-00; Tue, 11 May 2021 23:31:02 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 5E38BC0E6B; Tue, 11 May 2021 23:13:59 +0200 (CEST)
-Date:   Tue, 11 May 2021 23:13:59 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/2] dt-bindings: gpio: Add devicetree binding for IDT
- 79RC32434 GPIO controller
-Message-ID: <20210511211359.GA19043@alpha.franken.de>
-References: <20210426095426.118356-1-tsbogend@alpha.franken.de>
- <20210426095426.118356-2-tsbogend@alpha.franken.de>
- <CACRpkda7n3VL-EpwdXDxt47azFo8Wkp67-urUy7--3D6TJs7iA@mail.gmail.com>
+        id S229984AbhEKVRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 17:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229714AbhEKVRy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 17:17:54 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E9AC061574;
+        Tue, 11 May 2021 14:16:46 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id m11so14232857lfg.3;
+        Tue, 11 May 2021 14:16:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HoRbP8bMNRAMwrSttIv6A0hR3UMPnaiNX2rizRlD5KQ=;
+        b=e9Rm8umSvdZceUTGJxFSdgg9uoVJwQn1vxJKVUTVSTwDlEnGrTNc+YTaYBVsapveb8
+         2ZthPW00n7lS/ngbOzbvT3eCVvSPlxYImW0/zzgpeSnRjQJ/pIOauwXM+lGMML1tkMn3
+         Jdz82xmEM5CGElwmHbJXZd3qRd6/CUMRiiNASc/jwTLZIm2WkxB0koq6qkg9PetvgW1D
+         +nAvbuC2eDa+UGaOTF19iY1qEtUPu5UBqVf/1MhL5Fk+uuTWygXURiBTSwIBuSTZ+wq+
+         DtTev7+GUOzIkLD9snNj0hR994oABuQFMdHP0HcV9mob1ZSff6TH+TYY+yRhnXwYpDvg
+         +PiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HoRbP8bMNRAMwrSttIv6A0hR3UMPnaiNX2rizRlD5KQ=;
+        b=KieWAzJv2COsBsagnjVoQ8e59GYT0g047Ih6ZZQ20PgOQSXbMDoeAzDb4WYnOloSqy
+         mrFkD/LIK6+ccE4AWQ3LY9Qasf4F8Qil7596C2VNLVmSilVjFXQjA2zCzw9GOQ6HMMr7
+         JfqimBkauabUa9dJqTPNPYya5cRJvkQi0H99iDAqYi44f5AjFNTwH12NN8Alv5HH6I7o
+         xxLhG+f0NdlLxKDz9xBOh56cmRdAdPIJS3c4tRRhcYyW+F/x6tiPdzTBVAsV/crUTDH3
+         QQDtggciDoW1f92mJPycbTgrXrWeEVGEGbp10nYTLhM5y0EIUQsxnu2GwRlJlx2/d7Xs
+         Getg==
+X-Gm-Message-State: AOAM53397ZIJZpzi8ytS+VquPFUcJsIiWxiU0QTOLpbkrpt9o/xXtTZH
+        2oU72h4Q+6a4NpemBqM7pjyebyYsVdU=
+X-Google-Smtp-Source: ABdhPJzDWx/gzX+4FKoJ+MTI5x0Wv9eSBFHHuB69RqaHmAtnwQX9z68lrTCVdQIzFM1PS6JEfU0W3Q==
+X-Received: by 2002:a19:c518:: with SMTP id w24mr22873333lfe.104.1620767804833;
+        Tue, 11 May 2021 14:16:44 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.gmail.com with ESMTPSA id a20sm3882527ljn.94.2021.05.11.14.16.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 14:16:44 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>
+Cc:     linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] cfg80211: Add wiphy_info_once()
+Date:   Wed, 12 May 2021 00:15:48 +0300
+Message-Id: <20210511211549.30571-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkda7n3VL-EpwdXDxt47azFo8Wkp67-urUy7--3D6TJs7iA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 01, 2021 at 02:13:35PM +0200, Linus Walleij wrote:
-> On Mon, Apr 26, 2021 at 11:54 AM Thomas Bogendoerfer
-> <tsbogend@alpha.franken.de> wrote:
-> 
-> > Add YAML devicetree binding for IDT 79RC32434 GPIO controller
-> >
-> > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > ---
-> > Changes in v4:
-> >  - renamed to idt,32434-gpio this time for real
-> 
-> Overall looks good to me.
-> 
-> > +required:
-> (...)
-> > +  - ngpios
-> 
-> Is there a *technical* reason why this is required?
-> 
-> Can't the driver just default to 32 gpios when not specified?
+Add wiphy_info_once() helper that prints info message only once.
 
-sure, I make it optional.
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
 
-> > +  - interrupt-controller
-> > +  - "#interrupt-cells"
-> > +  - interrupts
-> 
-> Why can't interrupt support be made optional?
-> 
-> It is fine if the driver errors out if not provided, but
-> for the bindings this feels optional.
+Changelog:
 
-I'll make them optional.
+v2: - New patch added in v2.
 
-> Or does the thing break unless you handle the IRQs?
+ include/net/cfg80211.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-no, they could be used just as GPIOs.
-
-Thomas.
-
+diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+index 5224f885a99a..3b19e03509b3 100644
+--- a/include/net/cfg80211.h
++++ b/include/net/cfg80211.h
+@@ -8154,6 +8154,8 @@ bool cfg80211_iftype_allowed(struct wiphy *wiphy, enum nl80211_iftype iftype,
+ 	dev_notice(&(wiphy)->dev, format, ##args)
+ #define wiphy_info(wiphy, format, args...)			\
+ 	dev_info(&(wiphy)->dev, format, ##args)
++#define wiphy_info_once(wiphy, format, args...)			\
++	dev_info_once(&(wiphy)->dev, format, ##args)
+ 
+ #define wiphy_err_ratelimited(wiphy, format, args...)		\
+ 	dev_err_ratelimited(&(wiphy)->dev, format, ##args)
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.30.2
+
