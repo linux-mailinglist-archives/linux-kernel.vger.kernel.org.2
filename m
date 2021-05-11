@@ -2,80 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688AA37B2A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 597BF37B2AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhEKXgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:36:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229964AbhEKXgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:36:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6295461931;
-        Tue, 11 May 2021 23:34:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620776098;
-        bh=4Od/no2MnQDMvEZbD970huF63vrfWP+lhs2RT184EVA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i2lrK3OqoyWlCSVcONsajsskCRmxxaoznGkFDFFgWeEPOSjAeyF7kl4e9ahiYPSYk
-         8Y3yMExU7pj4yE4yarIbfrvkaHw9Y7hrI8oTAGEK5voG8cD01pm/NDq9pD9zNjuZZE
-         SeWyU/7WXBtkazE56kpFZOIuF9VN7zHpK1XCgPrY8qnPKGb/Sx+p4JMjKuTatu0cF6
-         fUVpZsguWSw6X3bd5WvCzWKC4a8b/W7T2JYmfYgoR+AEqVLQ6WGTQikUEmi4cf/70a
-         kzalcB78xK9DRw9PUpIXA/cG0Fb8k7autHqllJO7umnCdMESOlEG29GsY6V9/IdrMd
-         nsqgLD8BrGslw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B6C4F5C0DB3; Tue, 11 May 2021 16:34:57 -0700 (PDT)
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
-        ak@linux.intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH v14 clocksource 6/6] clocksource: Print deviation in nanoseconds for unstable case
-Date:   Tue, 11 May 2021 16:34:55 -0700
-Message-Id: <20210511233455.2897068-6-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20210511233403.GA2896757@paulmck-ThinkPad-P17-Gen-1>
-References: <20210511233403.GA2896757@paulmck-ThinkPad-P17-Gen-1>
+        id S229932AbhEKXjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:39:17 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:39842 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhEKXjQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 19:39:16 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14BNTmml132625;
+        Tue, 11 May 2021 23:37:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=irCO4qVBrM4lVCwQYKC+QoX0RJqaChwsrUA4h8A5Qqo=;
+ b=RY9C9vjQeNi3CEArAhRB3IiJ4my6kG0BLxm9IfNaamE9RdH8i5f+nN8EqQyOWphAqrQF
+ FJJBsXDFe4WLdLzwkBrSqA+CoqEMPNAhWH2PaNSZJvVnB7StC4lDQtKU+cH4hopKfG86
+ kkLLxkHxbuOQVuOw1skpx/wYQR9VDDw5kVX4q524To9uCqN15K4Mumaokw3+W4z+NWH0
+ NdegfunNkypw7gr2r0l+lAUJ1GImdEPZCSjihh+yafeLrTpRU74qqVU/CjiHFYbPmGYv
+ 7nO7ZuEkFS627MNRw1y1eczGtIsF7mm30SP9GLNwE4r/gYOAXHC9L2E0br3jvnSVH69y OA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 38dk9ngd8p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 May 2021 23:37:54 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14BNYfMe123177;
+        Tue, 11 May 2021 23:37:53 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46])
+        by aserp3020.oracle.com with ESMTP id 38djfa7752-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 May 2021 23:37:53 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SQfoalej1RPBYf91mJTpvVqadzgkICCP495QHoDxLx7eHr5JLIvc2c8X18zxcx8NS2vqARAgsLkhkUcZ5oU9HGK6vqYg1yGgYd6algiorog/v4yDX7t5+foEzMrtDGyAnP402r+cG96nAFHlL1zczqe9qNk4fP/Q7EH1uBs09f6wGO7S6ntghlFc6MScVsuHtUX+WvGmHIzmJMUgBwFgoy/ZvDNCk+2WMeMuOCnceMY7DZI+XcZyo7/A63pW91nSjQMeXLbN+LZZ8rBvbx6pfZ+gOUdWPZ+zohwnkk3MBOPcYb8y1uW4Y6Q6hTbHeNhvk4rYUH7WVeO0dV1EsdkVYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=irCO4qVBrM4lVCwQYKC+QoX0RJqaChwsrUA4h8A5Qqo=;
+ b=WzUO2Pj8iCpMFeaRU69b3o6PUuegbozSUwgJl5ioawyuQhhyZmNOQU19fosIxvAsCNJ2Zqu0aEWdqN3BJM0qx+CYxcW2/Xhptgg5ETVSCQSgmS19YRaKeLjZxBxdWMDCaanEYLbcD7INfuD/6GjPXISkoDq8tuY43k74+Wf6TY80r9Q385TfFka0deRJft+MA/ZbPQCGjIWrmoRGKiyDeagU9jHZsqS4DxJFPjo3qOcoQD5U/eTE0KFNAU3MLFzqEHROuooni1f5BBHw8HdMspNvOQ0VOCEhMfSmbBRAsC6Ist+X7MVCzcPamGQz8nkj+jcI6lj/tU7WishlzXrg4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=irCO4qVBrM4lVCwQYKC+QoX0RJqaChwsrUA4h8A5Qqo=;
+ b=pP9iJ8s2hgcnXcQxsKpcZwHjp7c3ISaTQHhaK5ck9xka6mGypd/TGvGa5C/WURpXDuL2QDcxfhZ1ox+fTDKImyZDIPjrHgyd2YKLokQ3Uzfv5TEHUFDVnn1cgutMcK2rmyjjDJGZEHfNsSC7LFVBWKEOJgWBoKCIfAhIRCqfzT4=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
+ by BLAPR10MB5203.namprd10.prod.outlook.com (2603:10b6:208:30d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.26; Tue, 11 May
+ 2021 23:37:51 +0000
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::78a3:67d:a8ca:93cf]) by BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::78a3:67d:a8ca:93cf%7]) with mapi id 15.20.4129.025; Tue, 11 May 2021
+ 23:37:51 +0000
+Subject: Re: [PATCH 2/2] xen/swiotlb: check if the swiotlb has already been
+ initialized
+To:     Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org
+Cc:     hch@lst.de, linux-kernel@vger.kernel.org,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>,
+        jgross@suse.com
+References: <20210511174142.12742-2-sstabellini@kernel.org>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Message-ID: <2e5a684b-3c74-5efc-2946-8ca002894ab4@oracle.com>
+Date:   Tue, 11 May 2021 19:37:47 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
+In-Reply-To: <20210511174142.12742-2-sstabellini@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [160.34.89.70]
+X-ClientProxiedBy: SN6PR01CA0014.prod.exchangelabs.com (2603:10b6:805:b6::27)
+ To BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.74.101.70] (160.34.89.70) by SN6PR01CA0014.prod.exchangelabs.com (2603:10b6:805:b6::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Tue, 11 May 2021 23:37:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cec55a77-a621-4bf3-8fe9-08d914d5caac
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5203:
+X-Microsoft-Antispam-PRVS: <BLAPR10MB5203BCD00D78563F0CF982A68A539@BLAPR10MB5203.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1284;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: G5MqafTlTjzjlSDUk6SQtohQAGOm9+0w4W/EgVgYQnHDkGyuzVwvQv/4lBqEKIDB0GpDmgL7OcfS15pD8fJfneatMzEemxXODT/fifR6HXKMINRnmNKVQtXSKwswnZkGRJncLf/GKYd7P86zr+5Rg1SUoIJ0sDr1luG/bv6ZiREw+dbRg7x6KOL7ja8IBJY8u4tQ/83dIf3TTlsurrzZFOaWF7gf0qkJRijcRTbn0S+kKG0jgCHVJC/DwyRShXzmKYSHciGKF6ldis/2/y+9M5FMQX6cUnPL6H4AX2vcYHg0tpP6kNcy9tZ2U5mqWTIfkO9RR601BusroAVXX/a4UoZebGT/ETQslg8P/pyh05C59SnOfpbWzAReDQ8Go8RaY3HWdHyVVmkGuJwwB83OqnPs/RrbeeUbFIehjKbbZab1U5HA8Wix4jCdejA4R8RdEtsVguW/fUmdZzIv272RnERBaHQOZMRiSgJImKJNwwLJmkkmT+dW17VMyCjurs7llFWeRgG+g+LiJnH7MEGxdmWRVNjC2GVkjy8M752kfJo/3dNjHrtWqIX0dhlG3JMiep0AL5LqNazUOJgchg+1Zu/6tdGXrQ/GMDaPIAmEDeiYOxaD3sTVzRN4GBRivwLuIZZCo7zutxZOPB02zvqo8Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(366004)(376002)(346002)(396003)(6666004)(2616005)(16576012)(316002)(83380400001)(38100700002)(478600001)(53546011)(2906002)(86362001)(26005)(8676002)(8936002)(186003)(4744005)(956004)(16526019)(31696002)(5660300002)(36756003)(44832011)(4326008)(66476007)(66556008)(6486002)(31686004)(66946007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?a0pJdzBPc21jWUJPM0p0YmlzZTJmRU1jeHY4VkxZdkNSeHdtekNJd3JCRDBV?=
+ =?utf-8?B?Q1crWmlWdFNFMVZJdTlKQy9zeVNvZzRYdWlGUHV0MG1ZZkhNVFpMajhveDkv?=
+ =?utf-8?B?dHQ3Z3UvMXIvdzhoYUJSWWZZQ2Y3U0JaV1BHOGhtYmVKVDEvWDNIVSs3ZDlv?=
+ =?utf-8?B?T1h6SncyMnFvM3ZZOHhjQTI5MFlBOStibFlwTFpGSkhFOXlaMGgxaHJtZk8y?=
+ =?utf-8?B?cGZqS1VhZUNyQ3hxNGpOZUxLUnpQUFAwVFFjamJsVGMraGZpSk4wa3l0TEsv?=
+ =?utf-8?B?Mm52eHlpdFN5bm5jNFVQbkJBZFMvTWNCU1NFclNTakJSN2dGN3h4T2NzYW50?=
+ =?utf-8?B?TytyKy95S1hqNkZ2M3RHcnByWGFYbXJNMlNzVWpwRDgxbmE1ekpRRzkrc0tH?=
+ =?utf-8?B?TXFickkxMXhMc1kwVnVheUg4SjZremNCclVRQXI2RjlGTHptK2Q0Z2FSU3ZI?=
+ =?utf-8?B?NjRmckVnVTBCNFkvamNOQW9mSURLeWhQbVZpcVhzY1huK2ExLytPQWlvZTdR?=
+ =?utf-8?B?U2J3bUViemluaHJaVDg2ME93S0ZyUStmYkQyc2RiUjdJM3U4allKOG9OUnZo?=
+ =?utf-8?B?TmhUVU5UMTZVQm1BbUl0SjdEaWZ1NjdDS1U2eXEwbEZ5bndINE5OUlVEellO?=
+ =?utf-8?B?MzlTKzE1bVhzK3d5TFlzTmNpbTEvb0pqTzlLZ0tCNzJObDFUMzdvckVlWkM2?=
+ =?utf-8?B?ZnB2VG8zSWVjS0oyS0Z5TWQ3UFYzZ1U0eU1TQm9TRXhNbTRCTFgvRVpUK05X?=
+ =?utf-8?B?T0ltQ2lCNzBraVJ6NFpBcncyMkhqNnJwMXBneHFTSXRHWStlSW54Mjh4Zm5I?=
+ =?utf-8?B?WGRxVHNtNHRYSitHbVJub0YwaU5adDhvZVI2SmZ4SkVnMWFNbUlqclVjS0hM?=
+ =?utf-8?B?ZWUxL3ZJQXJHU0YyaWJEci9DeUVpS2trRm9QaVB5Q3lNVTlvVUhiK3JtU2ht?=
+ =?utf-8?B?Y1lHd1NZd2s2eGVudnJlWlg4MkRyYUFqU2syV0hxOG11ZWhwVThEa3pQelZR?=
+ =?utf-8?B?bER5VFZoeFZrRVdDN09uclRPL1paMTh3NXI0Z09TVVhKTzhabWRqVUhpaFht?=
+ =?utf-8?B?UkJDaGE0eExzY3kzNWdFUXBVRUJ3ZjFsMmc4RnMxcENRK1c0YnZhczUvc2Mv?=
+ =?utf-8?B?Y000Y0RBZXBPVkkxREtwa1JlUXhRZ0xTNURQbDVWRFZhalU5S3BiVDA2UFor?=
+ =?utf-8?B?dG0xVzN1N0dybUpmNDU4NDdMR3NFMFRkcHExRXJWN0ZhV2hrVHA1NS9MQm02?=
+ =?utf-8?B?QVYxVUFET1JGRkEwM3BRaUdkbTZBODFlRXFNWUpzLzhUcHoxVHFQMnBOL0V6?=
+ =?utf-8?B?Unp3SEhZVXhraG9HeTdGbFV3ZTNTKzhVTFkvc0psMStSSXViYWNiWmk3Slpx?=
+ =?utf-8?B?NVdXWlUxMGlSOU9uaW1CMDNuaytRRENZMy9NSFU0emthWUFpbzhoRGRTay82?=
+ =?utf-8?B?amVWWjI0dmFwWGV1UDB0L2ExM3oxYWNIZHRHbWZKa2hoVEpIUGNzSHFiUGow?=
+ =?utf-8?B?MFBZTkl5UDFwdEEraXlJckIwaEp4T1dxRkExMUdjNDhKSnRoMmZqdDNpUHNK?=
+ =?utf-8?B?NDRWelNBRTJ1L3k3Y0k0OGlxWEV1MWUxSkdlc2Nod21wcEUvMkJmV0hWdjY4?=
+ =?utf-8?B?ZkZKcFdReFp6dW93NmJ5azV1UWVyMUYwUHdGOTNXTkJsd1hoVXZDTnpGSEJm?=
+ =?utf-8?B?VHFQeEZwN0t4SlFoS0llRHJLelFUY09KTnBCbEoreHJhQXdkczNSM21VaEZ0?=
+ =?utf-8?Q?MiaLvFGcerii1s6W4q5WdUz/5GRIcAjm5Ac/KZs?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cec55a77-a621-4bf3-8fe9-08d914d5caac
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 23:37:51.3170
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: f/jZDIUll8I0QBETjgtHdFjKDxvEW51dCqPQrGrmWSbXqYohrzzBYfN02cA5zYqziDa1lL8CPNXmTa1yUzGQLdr4rMowPqy9zhQJ/RsonbU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5203
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9981 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ adultscore=0 phishscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105110163
+X-Proofpoint-ORIG-GUID: KWfdH2ZqUXOLnCS__Dkg-fvavUPeYhp-
+X-Proofpoint-GUID: KWfdH2ZqUXOLnCS__Dkg-fvavUPeYhp-
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9981 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 clxscore=1011 bulkscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105110162
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Feng Tang <feng.tang@intel.com>
 
-Currently when an unstable clocksource is detected, the raw counters
-of that clocksource and watchdog will be printed, which can only be
-understood after some math calculation.  So print the existing delta in
-nanoseconds to make it easier for humans to check the results.
+On 5/11/21 1:41 PM, Stefano Stabellini wrote:
+> --- a/drivers/xen/swiotlb-xen.c
+> +++ b/drivers/xen/swiotlb-xen.c
+> @@ -164,6 +164,11 @@ int __ref xen_swiotlb_init(void)
+>  	int rc = -ENOMEM;
+>  	char *start;
+>  
+> +	if (io_tlb_default_mem != NULL) {
+> +		printk(KERN_WARNING "Xen-SWIOTLB: swiotlb buffer already initialized\n");
 
-Signed-off-by: Feng Tang <feng.tang@intel.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/time/clocksource.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index bbe1bcf44ffa..9c45b98e60e2 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -406,10 +406,10 @@ static void clocksource_watchdog(struct timer_list *unused)
- 		if (abs(cs_nsec - wd_nsec) > md) {
- 			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
- 				smp_processor_id(), cs->name);
--			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
--				watchdog->name, wdnow, wdlast, watchdog->mask);
--			pr_warn("                      '%s' cs_now: %llx cs_last: %llx mask: %llx\n",
--				cs->name, csnow, cslast, cs->mask);
-+			pr_warn("                      '%s' wd_nesc: %lld wd_now: %llx wd_last: %llx mask: %llx\n",
-+				watchdog->name, wd_nsec, wdnow, wdlast, watchdog->mask);
-+			pr_warn("                      '%s' cs_nsec: %lld cs_now: %llx cs_last: %llx mask: %llx\n",
-+				cs->name, cs_nsec, csnow, cslast, cs->mask);
- 			if (curr_clocksource == cs)
- 				pr_warn("                      '%s' is current clocksource.\n", cs->name);
- 			else if (curr_clocksource)
--- 
-2.31.1.189.g2e36527f23
+pr_warn().
+
+
+Reviewed-by: Boris Ostrovsky <boris.ostrvsky@oracle.com>
+
 
