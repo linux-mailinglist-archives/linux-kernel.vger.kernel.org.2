@@ -2,83 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378FC379B5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7EF379B60
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhEKAWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 20:22:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbhEKAWd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 20:22:33 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E0EEC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 17:21:28 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id n25so20782369edr.5
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 17:21:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AmqQHamBWKF2KK1CSpJZAYhmnOwKSYe9EM0AwwcGsyc=;
-        b=rN2e1ATHqRN75z5KQ+yHv/lMXSNSgx9nBUQuRsS8KrRtB4hZvYgr1KctWg9kzwkxJ6
-         XMi6NUtDBSCgxCvElvZ8bJ/EJgDE6MZnalHOCZz3H/QvBR87SMiKA3gQ2bjEuK7Kb5kd
-         7Vslgwzq6u/pFxFtfZKGxHWvwPzc5pAXpuqbgCQ4ZDhjrK0qLZDvIdXbb6LaDcwka8sl
-         DUSvpQQYFaGrhzNX2rsrhZyI189Mk5VpL7gFse2gkC2+IfKihWlovslP/dWlJwAGaR+j
-         bQ1RedCTvDeNB0oTQgwzQWlpiwLwrQYjZUHmiQQ5pxx9733C2gJxjvhAsGKTbOeu7qAq
-         GeMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AmqQHamBWKF2KK1CSpJZAYhmnOwKSYe9EM0AwwcGsyc=;
-        b=hRYhakoyjbGGNZgLscTc7H1etf7BxI2XdgMcaT0ZLRbL5vXSuvM9XKUuciVhL7ir+j
-         WKoYZUDHsLMMlvaahdgNDLSxr2de6l9D9Z8eRWZrf8DZzmkHCQ9xon16HK37kuZtEmbX
-         9t0IxRmwdID9avrzH+8Q2f2E+e8hEapo60DBBrxuqy8gE57FhKbRxvRzwazSLvR40JTB
-         9yYwQ3WttwopFli0gJRjpLvueuzTEGhVWdBR2brxKXy2ie8YoMAW0fLiiSaGJ3RhT1JM
-         4SDSk34g/wJwrorGuJjk69utKEnrHmA81dN5OK8SaSkZ3DmLjYKMYJRw/IrvpLdpxsmA
-         a7ag==
-X-Gm-Message-State: AOAM533Rnlr6agJgnTx+rWmGW5g/xyxgLLhwNe0yUIVnCjgQPWJ2eaJB
-        ZKMQ5CqMTMK7fy1LxOlv6IDH9/x2zKD/sOZZDpwtYQ==
-X-Google-Smtp-Source: ABdhPJwS7EtgNJHngxx1EHLzt1kz+EzplmNMev1g9f9ZrSMG3CVqqfmX+TKi9L5fHB1rNgT1QSOAg8lHigumlhf5q58=
-X-Received: by 2002:a05:6402:54e:: with SMTP id i14mr33637872edx.210.1620692486832;
- Mon, 10 May 2021 17:21:26 -0700 (PDT)
+        id S230280AbhEKAWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 20:22:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230163AbhEKAWj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 20:22:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F28A61076;
+        Tue, 11 May 2021 00:21:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620692494;
+        bh=D7+FwB6wNN0y7dvFP+IevrpYhvlfmJwLrmX2r+rCwDE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UCXWIZy4TrRnCP1EkRT4CWaXC+/SMGJWlqplUeXY8l1cA9TOUxiP68X7bOE/vDGYR
+         o/W+bl9Y+919fZU+OUi+73a4GjLMt6iSwefA6Gi1Ng+k/H5xGRtvLLW/pAHodXnh/p
+         0ZteAzCxRFkdWvT4ECp30MtuT2cAqQv8nX+FN+sHQpoaTjNgByqSmJXrw85MtdzQha
+         Pa32btRkDKsWq7ru/sAJXiW0Kb9eWsar9Po7c+y5vDT8gNb+tNwZ9O27xtXJ+JcNw0
+         2HmAj0KklstW+SqSGjyHnp6zw1sgGPfOOywb5k+LUgow8sljxscNyq3qOdexKtlsy5
+         yUnmYDzdDw+iw==
+Date:   Mon, 10 May 2021 17:21:33 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: support iflag change given the mask
+Message-ID: <YJnODYIke6E5i5TY@google.com>
+References: <20210506191347.1242802-1-jaegeuk@kernel.org>
+ <YJlGU+STYD5geyIc@google.com>
+ <YJmznEhGCZTaER0+@gmail.com>
 MIME-Version: 1.0
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <0e7e94d1ee4bae49dfd0dd441dc4f2ab6df76668.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4jPLGs6p0PNZQB6yKB3QDtEcGb234zcgCbJutXxZZEGnA@mail.gmail.com>
- <e8ac31bc-e307-f277-f928-24ebba4cbca7@linux.intel.com> <CAPcyv4iuRdXooQvCzEWd9babzPij4nXpM-z5fai9+SGaeFYswQ@mail.gmail.com>
- <20210511000119.GV4032392@tassilo.jf.intel.com>
-In-Reply-To: <20210511000119.GV4032392@tassilo.jf.intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 10 May 2021 17:21:16 -0700
-Message-ID: <CAPcyv4iwaUmiL-qwxvTxyKatxD+uFza8fvkFQxokHBy=a9=p4A@mail.gmail.com>
-Subject: Re: [RFC v2 14/32] x86/tdx: Handle port I/O
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJmznEhGCZTaER0+@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 5:01 PM Andi Kleen <ak@lin
-[..]
-> > I.e. shouldn't port-io instruction escapes
-> > that would cause #VE be precluded at build-time?
->
-> You mean in objtool? That would seem like overkill for a more theoretical
-> problem.
+On 05/10, Eric Biggers wrote:
+> On Mon, May 10, 2021 at 07:42:27AM -0700, Jaegeuk Kim wrote:
+> > In f2fs_fileattr_set(),
+> > 
+> > 	if (!fa->flags_valid)
+> > 		mask &= FS_COMMON_FL;
+> > 
+> > In this case, we can set supported flags by mask only instead of BUG_ON.
+> > 
+> > /* Flags shared betwen flags/xflags */
+> > 	(FS_SYNC_FL | FS_IMMUTABLE_FL | FS_APPEND_FL | \
+> > 	 FS_NODUMP_FL |	FS_NOATIME_FL | FS_DAX_FL | \
+> > 	 FS_PROJINHERIT_FL)
+> > 
+> > Fixes: 4c5b47997521 ("vfs: add fileattr ops")
+> 
+> Shouldn't it be:
+> 
+> Fixes: 9b1bb01c8ae7 ("f2fs: convert to fileattr")
 
-Oh, sorry, no, I was not implying objtool overkill, just that the
-mainline kernel should not be surprised by spurious instruction usage.
+Heh, thank you. I applied this change in the git. :)
