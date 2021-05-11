@@ -2,109 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B6C37B025
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 237C337B026
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhEKUiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 16:38:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
+        id S230096AbhEKUig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 16:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230011AbhEKUiV (ORCPT
+        with ESMTP id S230011AbhEKUic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 16:38:21 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0982FC061574;
-        Tue, 11 May 2021 13:37:15 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so5224477otc.6;
-        Tue, 11 May 2021 13:37:15 -0700 (PDT)
+        Tue, 11 May 2021 16:38:32 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3BEC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 13:37:22 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id z13so30556545lft.1
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 13:37:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=+1ZHtd+lPI4rsXdxkd6hfQFi/UAS7WL7S9/KvHCS20A=;
-        b=AEuaaAZdU0hWx7AVW/+6SLmKMmIhl/OzXwZrSguL9Xmqa3ztiYjzP69B912u6tDOAU
-         OXHJUvcKEvmU9JlpKTOB9juycvwQLGyQvQO10TbBVP3YWd6NaSr+hEHLMRHe57Qo1ybs
-         +wBHvsEITNo/OF5B12GY0jYfusKectjaPD0wIJ1oqEQOHQjz3WmVHX8tz6PxRRckRwzJ
-         FhNlTCVNz8cJ7KdQ+zVTssluzJT+PxQeb1vSjRLewshpJbTVUDP2C+9sKaIJ8Z5+eKlO
-         CCVbLpAYRXWSryUzfNahTFLxJACedvxrgUMm72oYalfRKlvvgzEDqmu5DlmS0CsMHAnz
-         2DQg==
+        bh=e3jFdsng7MNLqQkqqc30EAOm2kSsehax2jXaaI+7Irg=;
+        b=dKtSPyiDwJGuayW4AO74qQwi1HkhNNYeVjn5SblBn46APoVlDvJt0fkfucnHJlD8dO
+         DB44RmSrSgehmARnU4relLQx/GR50jy5TRwZ2B81kB+j4DXFfTvpOa3YCrYgM+RNyNCw
+         f3zU6Nru5Q2TkVOpHHq/udx/YBYsBushoOSQy+YqRjuTmiPm1nP73DLSPRSmMIYA8FCC
+         Pz70bA3Z2BL3Pg4Iz3A7y50FcWIE4mv1OelEYFX6AH76vrFSBMZ8yMfbz9VLFrKQgScy
+         mN4GnJjofW7ksCNP98FLG9RhH2X5ahAZof3GzMNZAkuighAANX4KXbGJWboiSOvOSxa2
+         GT1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=+1ZHtd+lPI4rsXdxkd6hfQFi/UAS7WL7S9/KvHCS20A=;
-        b=ZgyF0bpYsKeicXlElH8/FJPm+PR20xqCC49VbdgKPV6uAv4LCKmDu3Fzgea/N3QN01
-         1AbIxHBOvVls0mDQJUrMyUCxr7iCxVxfBSIayjJ/SqWBBpvfKxqHDZXLE18DK/iAZIh7
-         t3xHV4+M2Ag+lAIHhikARXWSySzsBfMXUlqcB8JZGJfHA/vLH4eGqtQ56N1dt1Vm5vDW
-         WDKTlf9C5YA/L3PjZOHm/IqBsFx6DRb/vc+obS2IzGezsNJ88E6j1UchYy3bSGdulZ+B
-         xRvSm1KXDa/mATCUJb5VTpaidSh14jLGo85k8I2IkVkNBoIvwsU6BTd9EheVHPFn8s7z
-         ceNw==
-X-Gm-Message-State: AOAM530VeJ0/9pWY80v6kxoFtKThm5ZufWhiKefydC+xXWoFztb03v3L
-        vD9RPaQymgEHxd8Gh6hqLf8=
-X-Google-Smtp-Source: ABdhPJzIsc9mtnzXHYZAOU+N3D3CkxhZB6+aYo10ov63X3MK+gkaclj0qwyDhG3X+hiZu9UEdWtbBg==
-X-Received: by 2002:a05:6830:1657:: with SMTP id h23mr665958otr.136.1620765434476;
-        Tue, 11 May 2021 13:37:14 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u27sm3144188oof.38.2021.05.11.13.37.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e3jFdsng7MNLqQkqqc30EAOm2kSsehax2jXaaI+7Irg=;
+        b=PgiYEYmG4fdRgJQ0054KppsHlTJVHficUEVS3i4z91lTj8XYSs14QeejCYAYIEViKo
+         FE5GJjDmh0o3dc8Xxew0cOTZ12Z4jUkbpC9KKescv4qyXOWQk42EY3f+QfIqKwKc/vsU
+         /8m6v/yZ/ypMZuWnlNEF9oqz+u+R8BNMVsq2YQMrhGYly3EHLg4LO9oQHLLKKzv8nYup
+         yjTxt1kxG4FlepE7fqbauqrz/gPebUejFLc9OyTbiWrydVfC06qdsDOLWsPD5oErCMQY
+         zWPHh2Gq522oT4D3uitG18qE5v4lC4k2of/WA2rVxKu3Now79pUKvR/EICrynvzfNPwR
+         Dt5Q==
+X-Gm-Message-State: AOAM530W8x3L92a0g2iObHR8hIHG47OSARqCEoMeLcf/bc2ZKPoFW6KG
+        PgOHxTOYZ2HKsX4bCoUqkBjWELKSfZAlaA==
+X-Google-Smtp-Source: ABdhPJxX5SEZ/cHaaWrcr5eVJAyamlCH4JvHjp0uFsGruBhnvwfQ/WcYrirUB8Prm5vrXYoMapc92A==
+X-Received: by 2002:a05:6512:3e14:: with SMTP id i20mr21585257lfv.142.1620765441335;
+        Tue, 11 May 2021 13:37:21 -0700 (PDT)
+Received: from localhost.localdomain (h-158-174-22-223.NA.cust.bahnhof.se. [158.174.22.223])
+        by smtp.gmail.com with ESMTPSA id f17sm2701613lfu.215.2021.05.11.13.37.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 13:37:13 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] power: supply: ab8500: Drop unnecessary NULL check after container_of
-Date:   Tue, 11 May 2021 13:37:11 -0700
-Message-Id: <20210511203711.1673001-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.25.1
+        Tue, 11 May 2021 13:37:20 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH] linux/bits.h: Fix compilation error with GENMASK
+Date:   Tue, 11 May 2021 22:37:15 +0200
+Message-Id: <20210511203716.117010-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The result of container_of() operations is never NULL unless the element
-is the first element of the embedded structure, which is not the case here.
-The NULL check is therefore unnecessary and misleading. Remove it.
+GENMASK() has an input check which uses __builtin_choose_expr() to enable
+a compile time sanity check of its inputs if they are known at compile
+time. However, it turns out that __builtin_constant_p() does not always
+return a compile time constant [0]. It was thought this problem was fixed
+with gcc 4.9 [1], but apparently this is not the case [2].
 
-This change was made automatically with the following Coccinelle script.
+Switch to use __is_constexpr() instead which always returns a compile
+time constant, regardless of its inputs.
 
-@@
-type t;
-identifier v;
-statement s;
-@@
+[0]: https://lore.kernel.org/lkml/42b4342b-aefc-a16a-0d43-9f9c0d63ba7a@rasmusvillemoes.dk
+[1]: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=19449
+[2]: https://lore.kernel.org/lkml/1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp
 
-<+...
-(
-  t v = container_of(...);
-|
-  v = container_of(...);
-)
-  ...
-  when != v
-- if (\( !v \| v == NULL \) ) s
-...+>
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- drivers/power/supply/ab8500_charger.c | 3 ---
- 1 file changed, 3 deletions(-)
+Feedback on placing __is_constexpr() in const.h is welcome, at least the
+name is appropriate...
 
-diff --git a/drivers/power/supply/ab8500_charger.c b/drivers/power/supply/ab8500_charger.c
-index a9be10eb2c22..f407cec49aa3 100644
---- a/drivers/power/supply/ab8500_charger.c
-+++ b/drivers/power/supply/ab8500_charger.c
-@@ -3171,9 +3171,6 @@ static int ab8500_charger_usb_notifier_call(struct notifier_block *nb,
- 	enum ab8500_usb_state bm_usb_state;
- 	unsigned mA = *((unsigned *)power);
+ include/linux/bits.h        |  2 +-
+ include/linux/const.h       |  8 ++++++++
+ include/linux/minmax.h      | 10 ++--------
+ tools/include/linux/bits.h  |  2 +-
+ tools/include/linux/const.h |  8 ++++++++
+ 5 files changed, 20 insertions(+), 10 deletions(-)
+
+diff --git a/include/linux/bits.h b/include/linux/bits.h
+index 7f475d59a097..87d112650dfb 100644
+--- a/include/linux/bits.h
++++ b/include/linux/bits.h
+@@ -22,7 +22,7 @@
+ #include <linux/build_bug.h>
+ #define GENMASK_INPUT_CHECK(h, l) \
+ 	(BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+-		__builtin_constant_p((l) > (h)), (l) > (h), 0)))
++		__is_constexpr((l) > (h)), (l) > (h), 0)))
+ #else
+ /*
+  * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
+diff --git a/include/linux/const.h b/include/linux/const.h
+index 81b8aae5a855..435ddd72d2c4 100644
+--- a/include/linux/const.h
++++ b/include/linux/const.h
+@@ -3,4 +3,12 @@
  
--	if (!di)
--		return NOTIFY_DONE;
+ #include <vdso/const.h>
+ 
++/*
++ * This returns a constant expression while determining if an argument is
++ * a constant expression, most importantly without evaluating the argument.
++ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
++ */
++#define __is_constexpr(x) \
++	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
++
+ #endif /* _LINUX_CONST_H */
+diff --git a/include/linux/minmax.h b/include/linux/minmax.h
+index c0f57b0c64d9..5433c08fcc68 100644
+--- a/include/linux/minmax.h
++++ b/include/linux/minmax.h
+@@ -2,6 +2,8 @@
+ #ifndef _LINUX_MINMAX_H
+ #define _LINUX_MINMAX_H
+ 
++#include <linux/const.h>
++
+ /*
+  * min()/max()/clamp() macros must accomplish three things:
+  *
+@@ -17,14 +19,6 @@
+ #define __typecheck(x, y) \
+ 	(!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
+ 
+-/*
+- * This returns a constant expression while determining if an argument is
+- * a constant expression, most importantly without evaluating the argument.
+- * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
+- */
+-#define __is_constexpr(x) \
+-	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
 -
- 	if (event != USB_EVENT_VBUS) {
- 		dev_dbg(di->dev, "not a standard host, returning\n");
- 		return NOTIFY_DONE;
+ #define __no_side_effects(x, y) \
+ 		(__is_constexpr(x) && __is_constexpr(y))
+ 
+diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
+index 7f475d59a097..87d112650dfb 100644
+--- a/tools/include/linux/bits.h
++++ b/tools/include/linux/bits.h
+@@ -22,7 +22,7 @@
+ #include <linux/build_bug.h>
+ #define GENMASK_INPUT_CHECK(h, l) \
+ 	(BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+-		__builtin_constant_p((l) > (h)), (l) > (h), 0)))
++		__is_constexpr((l) > (h)), (l) > (h), 0)))
+ #else
+ /*
+  * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
+diff --git a/tools/include/linux/const.h b/tools/include/linux/const.h
+index 81b8aae5a855..435ddd72d2c4 100644
+--- a/tools/include/linux/const.h
++++ b/tools/include/linux/const.h
+@@ -3,4 +3,12 @@
+ 
+ #include <vdso/const.h>
+ 
++/*
++ * This returns a constant expression while determining if an argument is
++ * a constant expression, most importantly without evaluating the argument.
++ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
++ */
++#define __is_constexpr(x) \
++	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
++
+ #endif /* _LINUX_CONST_H */
 -- 
-2.25.1
+2.31.1
 
