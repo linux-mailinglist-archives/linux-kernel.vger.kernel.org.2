@@ -2,173 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC2B37AA07
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8294037AA11
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231941AbhEKO6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:58:13 -0400
-Received: from mga03.intel.com ([134.134.136.65]:1059 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231604AbhEKO6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:58:12 -0400
-IronPort-SDR: apC16J+4AF0c2a+ZLQMklF7Q9r6o/cV8k/aqDaynICZjdfFdrlf84osuzd9JE8yj5pOLszTKi9
- f9tQLgSWqo2g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="199514448"
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="199514448"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:57:05 -0700
-IronPort-SDR: 8PQcwvpWU6Dh0UpthJR9/VCiXxCuDjTvMOh/WTQFuV/wJApSX5qc5E38iTSMC3V6n/LRYT2qN2
- dP3l2iQdzTCg==
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="468941442"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:57:00 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lgToe-00BTUX-KM; Tue, 11 May 2021 17:56:56 +0300
-Date:   Tue, 11 May 2021 17:56:56 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     JC Kuo <jckuo@nvidia.com>, Joe Perches <joe@perches.com>,
-        Sumit Garg <sumit.garg@linaro.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: Re: [PATCH v1 1/4] lib/vsprintf: Allow to override date and time
- separator
-Message-ID: <YJqbONasNp9BXx9Q@smile.fi.intel.com>
-References: <20210510150413.59356-1-andriy.shevchenko@linux.intel.com>
- <YJqRYNlAu0SfWpb5@alley>
+        id S231777AbhEKPBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 11:01:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34624 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231756AbhEKPBW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 11:01:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620745215;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KQy9BmsInGHBuMYQbKGo4/mFyEJldO4Fzjjuu4/Gw90=;
+        b=NTqcCIqLeCrdtUZwi0XNYSABNPRv9XlVXxJXvLHzU44w+UcGk0NmmlyBH+zcRp/XPFR8v/
+        7Z8fUR31Xc57+X+cjRj714kF9yYNvZiy/x2hl0p5T4WSIOoCMgyOy477i/uAznclmMDJC4
+        pigq1n9ARYSUJYybfLcoND9D5ycjRfs=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-PiZNJMVDPeW3vHFUi9NuNg-1; Tue, 11 May 2021 11:00:11 -0400
+X-MC-Unique: PiZNJMVDPeW3vHFUi9NuNg-1
+Received: by mail-wm1-f69.google.com with SMTP id o10-20020a05600c4fcab029014ae7fdec90so793863wmq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 08:00:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KQy9BmsInGHBuMYQbKGo4/mFyEJldO4Fzjjuu4/Gw90=;
+        b=PWAYIwdVakHlwloiPst0asDdc9RqnUHiUyB7D13hPktVSEQK5vRPsgyp1uj753aWaf
+         QH7WEVD6+RUCTKG23Qzc6xdltwZEAcU5RiIysyETzI4LHRtp9unrKIskZitvxGXozJgr
+         RdNQ6dO00jybOeFSpQMLBu2W+5l2vmAZnUq7V1CdKymSuaqYwL4RjodQEeSbo/I/z9Bo
+         xxu2W9aoFtSRzVAZ/lRfZkFeip0lKm5Lt0NNEFExjqk09OfwpCcciJoqmzCZOxX6tKCR
+         NdpsNUVzb0NylgWZUvgBGQRumYCBKbwciYCxG6XRRvTKZILsOV+EcrM1kCns8WeRxOaE
+         ajMQ==
+X-Gm-Message-State: AOAM533gQvs0jj+9Cxe1TXHbm1zad5cmHklQyd6xeFvhhTkuHI+6/t7T
+        usvvBPjHelYbUJ/9qX98w8cjnl7kMXXquqz6wzTXhxwCJPbjMJ+RqMMqQMeLqSoWBcux8AUHl2y
+        4gL/DttHpJG1garzettWI0tz68xm1GnEZXRhI0WGJ
+X-Received: by 2002:a05:600c:21d5:: with SMTP id x21mr6111952wmj.149.1620745210683;
+        Tue, 11 May 2021 08:00:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwgE6ifBgFWpvncB4Yp/ueaUboNmb37R0/BTIg4dy1wyIvx0+2z3v12HkdeJg8oHTVE/aiLRx0h5iTD71Z5u+Q=
+X-Received: by 2002:a05:600c:21d5:: with SMTP id x21mr6111920wmj.149.1620745210398;
+ Tue, 11 May 2021 08:00:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJqRYNlAu0SfWpb5@alley>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210511140113.1225981-1-agruenba@redhat.com> <YJqQdKmBHz6oEqD1@casper.infradead.org>
+In-Reply-To: <YJqQdKmBHz6oEqD1@casper.infradead.org>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Tue, 11 May 2021 16:59:59 +0200
+Message-ID: <CAHc6FU5LMhLfQO6wj8z0RD1Q3jv0reToP7=LSj5B-e50WYGnkA@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] Trigger retry from fault vm operation
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 04:14:56PM +0200, Petr Mladek wrote:
-> On Mon 2021-05-10 18:04:10, Andy Shevchenko wrote:
-> > ISO 8601 defines 'T' as a separator between date and time. Though,
-> > some ABIs use time and date with ' ' separator instead.
-> > 
-> > Add a flavour to the %pt specifier to override default separator.
+On Tue, May 11, 2021 at 4:34 PM Matthew Wilcox <willy@infradead.org> wrote:
+> On Tue, May 11, 2021 at 04:01:13PM +0200, Andreas Gruenbacher wrote:
+> > we have a locking problem in gfs2 that I don't have a proper solution for, so
+> > I'm looking for suggestions.
+> >
+> > What's happening is that a page fault triggers during a read or write
+> > operation, while we're holding a glock (the cluster-wide gfs2 inode
+> > lock), and the page fault requires another glock.  We can recognize and
+> > handle the case when both glocks are the same, but when the page fault requires
+> > another glock, there is a chance that taking that other glock would deadlock.
+>
+> So we're looking at something like one file on a gfs2 filesystem being
+> mmaped() and then doing read() or write() to another gfs2 file with the
+> mmaped address being the passed to read()/write()?
 
-...
+Yes, those kinds of scenarios. Here's an example that Jan Kara came up with:
 
-> >  	%pt[RT]			YYYY-mm-ddTHH:MM:SS
-> > +	%pt[RT]s		YYYY-mm-dd HH:MM:SS
-> >  	%pt[RT]d		YYYY-mm-dd
-> >  	%pt[RT]t		HH:MM:SS
-> > -	%pt[RT][dt][r]
-> > +	%pt[RT][dt][rs]
-> 
-> Sigh, we do not have clear rules what [xy] means. It might be:
-> 
->       + always use one of them
->       + optionally use one of them
->       + always use any of them
->       + optionally use any of them
-> 
-> %pt[RT][dt][rs] is a great mix:
-> 
->       + R or T is required, the rest is optional
->       + 'd' or 't' can be used but both together are not supported 
->       + any variant of 'r' and 's' is supported including various ordering
-> 
-> Honestly, I do not know about any magic solution that might make it
-> easier to understand these monster modifiers.
-> 
-> Well, what about using the following at least in this case:
-> 
-> 	%pt[RT][dt][r][s]
-> 
-> It might help to understand that both 'r' and 's' can be used at the
-> same time.
+Two independent processes P1, P2. Two files F1, F2, and two mappings M1, M2
+where M1 is a mapping of F1, M2 is a mapping of F2. Now P1 does DIO to F1
+with M2 as a buffer, P2 does DIO to F2 with M1 as a buffer. They can race
+like:
 
-This is the case, yes, thanks for catching it.
+P1                                      P2
+read()                                  read()
+  gfs2_file_read_iter()                   gfs2_file_read_iter()
+    gfs2_file_direct_read()                 gfs2_file_direct_read()
+      locks glock of F1                       locks glock of F2
+      iomap_dio_rw()                          iomap_dio_rw()
+        bio_iov_iter_get_pages()                bio_iov_iter_get_pages()
+          <fault in M2>                           <fault in M1>
+            gfs2_fault()                            gfs2_fault()
+              tries to grab glock of F2               tries to grab glock of F1
 
-> An attempt to distinguishing all the possibilities might be:
-> 
-> 	%pt{RT}[{dt}][r][s]
-> 
-> where [] means that it is optional and {} means one of them must be
-> chosen. But I am not sure if it really makes the life easier. Anyway,
-> this would be for another patch that updates the entire printk-formats.rst.
+With cluster-wide locks, we can obviously end up with distributed
+deadlock scenarios as well, of course.
 
-No, this is not the case, the d and t can go in any combinations: none, d, t,
-dt, or td.
+> Have you looked at iov_iter_fault_in_readable() as a solution to
+> your locking order?  That way, you bring the mmaped page in first
+> (see generic_perform_write()).
 
-> 
-> >  For printing date and time as represented by::
-> >  
-> > @@ -528,6 +529,9 @@ in human readable format.
-> >  By default year will be incremented by 1900 and month by 1.
-> >  Use %pt[RT]r (raw) to suppress this behaviour.
-> >  
-> > +The %pt[RT]s (space) will override ISO 8601 by using ' ' instead of 'T'
-> > +between date and time. It won't have any effect when date or time is omitted.
+Yes. The problem there is that we need to hold the inode glock from
+->iomap_begin to ->iomap_end; that's what guarantees that the mapping
+returned by ->iomap_begin remains valid.
 
-...
+> > When we realize that we may not be able to take the other glock in gfs2_fault,
+> > we need to communicate that to the read or write operation, which will then
+> > drop and re-acquire the "outer" glock and retry.  However, there doesn't seem
+> > to be a good way to do that; we can only indicate that a page fault should fail
+> > by returning VM_FAULT_SIGBUS or similar; that will then be mapped to -EFAULT.
+> > We'd need something like VM_FAULT_RESTART that can be mapped to -EBUSY so that
+> > we can tell the retry case apart from genuine -EFAULT errors.
+>
+> We do have VM_FAULT_RETRY ... does that retry at the wrong level?
 
-> > +	do {
-> > +		switch (fmt[count++]) {
-> > +		case 'r':
-> > +			raw = true;
-> > +			break;
-> > +		case 's':
-> > +			space = true;
-> > +			break;
-> > +		default:
-> > +			found = false;
-> > +			break;
-> > +		}
-> > +	} while (found);
-> >  
-> >  	if (have_d)
-> >  		buf = date_str(buf, end, tm, raw);
-> >  	if (have_d && have_t) {
-> >  		/* Respect ISO 8601 */
-> 
-> The comment is slightly misleding now. What about something like?
-> 
-> 		/* 'T' by ISO 8601. */
-> 
-> Or maybe call the variable: iso_8601, remove the comment, and
-> invert the logic:
+There's also VM_FAULT_NOPAGE, but that only triggers a retry at the VM
+level and doesn't propagate out far enough.
 
-Okay, I will think how to improve, thanks!
+My impression is that VM_FAULT_RETRY is similar to VM_FAULT_NOPAGE
+except that it allows the lock dropping optimization implemented in
+maybe_unlock_mmap_for_io(). That error code can also only be used when
+FAULT_FLAG_ALLOW_RETRY is set it seems. Correct me if I'm getting this
+wrong.
 
-> 		bool iso_8601 = true;
-> 
-> 		case 's':
-> 			iso_8601 = false;
-> 			break;
-> 
-> 		*buf = iso_8601 ? 'T' : ' ';
-> 
-> >  		if (buf < end)
-> > -			*buf = 'T';
-> > +			*buf = space ? ' ' : 'T';
-> >  		buf++;
-> >  	}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Thanks,
+Andreas
 
