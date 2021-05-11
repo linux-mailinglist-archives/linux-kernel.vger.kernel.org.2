@@ -2,122 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB201379F9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C52379FA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhEKGSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 02:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbhEKGSl (ORCPT
+        id S230375AbhEKGTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 02:19:31 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41659 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230271AbhEKGT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 02:18:41 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B98C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 23:17:35 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id p4so15353826pfo.3
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 23:17:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AOOECJmoTbTt+X+zG3enL4M4MkOVVAHjD7IsOUOhMHw=;
-        b=SVxhIJVYyPsi0WU477NLuHvTkRc2820o9pPtL1XxAeaNeVGTp7MpuXxj3wEUSwrbai
-         M0QP2D32BezQok8Wh2Y3jyj1r7++arYeYd0HSSlPluD7UUixDyARN7WwDNBvOjnIKHyg
-         LS5zKannPRJ9tR4Rjsdn/niwTOEbJl+/lQWsknadGb8lTVPjK4Ohjn0+cXXEnsk4JjHU
-         kRdkWytM7tQcstfoo/CxO4PVsQpGECKKiYgdWrjipxdRiUc0SbTKUUAKUvHvGEcTbmeE
-         a+5K2qykZtgGaR4HeNY/80TA+xIFl7hm48VRF/moIJZdtLhz6BpLCOEr1CkMu5nmSOvm
-         Fhpw==
+        Tue, 11 May 2021 02:19:29 -0400
+Received: from mail-ed1-f70.google.com ([209.85.208.70])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <juerg.haefliger@canonical.com>)
+        id 1lgLio-0001yI-6j
+        for linux-kernel@vger.kernel.org; Tue, 11 May 2021 06:18:22 +0000
+Received: by mail-ed1-f70.google.com with SMTP id r19-20020a05640251d3b02903888eb31cafso10348600edd.13
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 23:18:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AOOECJmoTbTt+X+zG3enL4M4MkOVVAHjD7IsOUOhMHw=;
-        b=c87jrqHQDGAGytgyYL/8ifWqb5B9XqIAbeWAtoutPTth0KlrrdVe4QooxYl2e4aTum
-         KdJfUYVKqSX+eyjPAk7X0m4OazzXSUn70/qr+brKGv0M+W5g9q82E0bK8jWg9BjYU3ge
-         lisXho+41ykoUtXdSpcuxqMZcSjTSDRZdwooDg4KKnAmHiNH+e4wpGG3LQdb4MyZanHt
-         0X4KmBYmCSaG4h92kbrOlpg41rUFMgE5zg94Kbupwr0nuSwk4Y/pYHzt0jaPccQfVPc4
-         QbA3Xs4y/PmM3PpISFRKSCqKadOmPjK0xmZocI3W+ZKvDT52Ea4UchkQKk2ny0Ty4+GM
-         gwpg==
-X-Gm-Message-State: AOAM531+blSn0par88Frfdf98HGjsfNp7vY4Gjqo/1uP/1e1LszNiLZa
-        HxJ08rINZJZcU5Y8rpqbZYmQ
-X-Google-Smtp-Source: ABdhPJzt8ycvexQ4T785y94gGLJhJRVCmx1vV+uaIyAW/gudp8rofaxMrPx1rthg/Ri1wzCgZFebXA==
-X-Received: by 2002:a63:4f50:: with SMTP id p16mr28879873pgl.40.1620713854429;
-        Mon, 10 May 2021 23:17:34 -0700 (PDT)
-Received: from thinkpad ([2409:4072:719:5450:3d7b:2d59:40f7:9f7a])
-        by smtp.gmail.com with ESMTPSA id u1sm12770129pgh.80.2021.05.10.23.17.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bbXPgmZrL4Pxh0/t8XE8baUOCONdkg5IyBFSdmqHWjM=;
+        b=Rr1NcPiUi8xP5L3xnRBTmxV1cvcJd2t5JoBmCDJnPdpRf+oGuF0kZ1QZ2zDoa098nA
+         ivEGHOjZcX3MGhRs+NxhplXiB2498B8PLewyYOFj+jv+/TSChlUJMYztwqpcRDlqGUWH
+         3XW5rwR45XOjq8ZFnPsp8XRl3quIH+Sb2HiaScmPZgRSXUCR3aFe/hvr0+g6T2JOjcx/
+         Cqytqrnsv01yizuS1zBSCuPe0e1Fa5e8SE29BlnZv3HoJCV2aSYxkhdxJPk4ioMaOdKJ
+         5yXzEcg3UdjhTanZlk8+kxKp/xGQuySFNhL+2Fb5VC2gFTOxXUxTcGk8OlN1Cnyl9Ppa
+         VcPg==
+X-Gm-Message-State: AOAM531axqT166FM+ixJcjnhAnxZkWuGwl7nDiytN4f4Q++CFzmyd6gt
+        cL7zTo7hei3OiH4appHjrYYIuJMRI2N5EN2E+QiSbqYxqZ2Lags3HKJjnxaPAW/56ZEmSCuP5Fz
+        zoX2BYj7K6aqQsVHnTK0jgwAzOOFYrmzHRtCurFmjNw==
+X-Received: by 2002:a17:906:9246:: with SMTP id c6mr30337748ejx.10.1620713901801;
+        Mon, 10 May 2021 23:18:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxuFUKxnlEC58W09fcC4t8RpefrIfBsHhh1rU2Dzq5wghcRbv5j9OslBqjPeLytqr3YNEzFFg==
+X-Received: by 2002:a17:906:9246:: with SMTP id c6mr30337730ejx.10.1620713901627;
+        Mon, 10 May 2021 23:18:21 -0700 (PDT)
+Received: from gollum.fritz.box ([194.191.244.86])
+        by smtp.gmail.com with ESMTPSA id gn36sm10616136ejc.23.2021.05.10.23.18.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 23:17:33 -0700 (PDT)
-Date:   Tue, 11 May 2021 11:47:28 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Pavel Machek <pavel@denx.de>, bbhatt@codeaurora.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Hemant Kumar <hemantk@codeaurora.org>
-Subject: Re: [PATCH 5.10 002/299] bus: mhi: core: Clear configuration from
- channel context during reset
-Message-ID: <20210511061623.GA8651@thinkpad>
-References: <20210510102004.821838356@linuxfoundation.org>
- <20210510102004.900838842@linuxfoundation.org>
- <20210510205650.GA17966@amd>
+        Mon, 10 May 2021 23:18:21 -0700 (PDT)
+From:   Juerg Haefliger <juerg.haefliger@canonical.com>
+X-Google-Original-From: Juerg Haefliger <juergh@canonical.com>
+To:     wim@linux-watchdog.org, linux@roeck-us.net, joel@jms.id.au,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org
+Cc:     andrew@aj.id.au, linux-kernel@vger.kernel.org,
+        Juerg Haefliger <juergh@canonical.com>
+Subject: [PATCH] watchdog: Use sysfs_emit() and sysfs_emit_at() in "show" functions
+Date:   Tue, 11 May 2021 08:18:12 +0200
+Message-Id: <20210511061812.480172-1-juergh@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210510205650.GA17966@amd>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+Convert sprintf() in sysfs "show" functions to sysfs_emit() and
+sysfs_emit_at() in order to check for buffer overruns in sysfs outputs.
 
-On Mon, May 10, 2021 at 10:56:50PM +0200, Pavel Machek wrote:
-> Hi!
-> 
-> > From: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> > 
-> > commit 47705c08465931923e2f2b506986ca0bdf80380d upstream.
-> > 
-> > When clearing up the channel context after client drivers are
-> > done using channels, the configuration is currently not being
-> > reset entirely. Ensure this is done to appropriately handle
-> > issues where clients unaware of the context state end up calling
-> > functions which expect a context.
-> 
-> > +++ b/drivers/bus/mhi/core/init.c
-> > @@ -544,6 +544,7 @@ void mhi_deinit_chan_ctxt(struct mhi_con
-> > +	u32 tmp;
-> > @@ -554,7 +555,19 @@ void mhi_deinit_chan_ctxt(struct mhi_con
-> ...
-> > +	tmp = chan_ctxt->chcfg;
-> > +	tmp &= ~CHAN_CTX_CHSTATE_MASK;
-> > +	tmp |= (MHI_CH_STATE_DISABLED << CHAN_CTX_CHSTATE_SHIFT);
-> > +	chan_ctxt->chcfg = tmp;
-> > +
-> > +	/* Update to all cores */
-> > +	smp_wmb();
-> >  }
-> 
-> This is really interesting code; author was careful to make sure chcfg
-> is updated atomically, but C compiler is free to undo that. Plus, this
-> will make all kinds of checkers angry.
-> 
-> Does the file need to use READ_ONCE and WRITE_ONCE?
-> 
+Signed-off-by: Juerg Haefliger <juergh@canonical.com>
+---
+ drivers/watchdog/aspeed_wdt.c          |  4 ++--
+ drivers/watchdog/watchdog_dev.c        | 19 ++++++++++---------
+ drivers/watchdog/watchdog_pretimeout.c |  4 ++--
+ drivers/watchdog/ziirave_wdt.c         | 12 +++++++-----
+ 4 files changed, 21 insertions(+), 18 deletions(-)
 
-Thanks for looking into this.
-
-I agree that the order could be mangled between chcfg read & write and
-using READ_ONCE & WRITE_ONCE seems to be a good option.
-
-Bhaumik, can you please submit a patch and tag stable?
-
-Thanks,
-Mani
-
-> Best regards,
-> 								Pavel
-> -- 
-> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
+diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
+index 7e00960651fa..933998e5a9de 100644
+--- a/drivers/watchdog/aspeed_wdt.c
++++ b/drivers/watchdog/aspeed_wdt.c
+@@ -175,8 +175,8 @@ static ssize_t access_cs0_show(struct device *dev,
+ 	struct aspeed_wdt *wdt = dev_get_drvdata(dev);
+ 	u32 status = readl(wdt->base + WDT_TIMEOUT_STATUS);
+ 
+-	return sprintf(buf, "%u\n",
+-		      !(status & WDT_TIMEOUT_STATUS_BOOT_SECONDARY));
++	return sysfs_emit(buf, "%u\n",
++			  !(status & WDT_TIMEOUT_STATUS_BOOT_SECONDARY));
+ }
+ 
+ static ssize_t access_cs0_store(struct device *dev,
+diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+index 2946f3a63110..fe68a97973a5 100644
+--- a/drivers/watchdog/watchdog_dev.c
++++ b/drivers/watchdog/watchdog_dev.c
+@@ -451,7 +451,8 @@ static ssize_t nowayout_show(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct watchdog_device *wdd = dev_get_drvdata(dev);
+ 
+-	return sprintf(buf, "%d\n", !!test_bit(WDOG_NO_WAY_OUT, &wdd->status));
++	return sysfs_emit(buf, "%d\n", !!test_bit(WDOG_NO_WAY_OUT,
++						  &wdd->status));
+ }
+ 
+ static ssize_t nowayout_store(struct device *dev, struct device_attribute *attr,
+@@ -485,7 +486,7 @@ static ssize_t status_show(struct device *dev, struct device_attribute *attr,
+ 	status = watchdog_get_status(wdd);
+ 	mutex_unlock(&wd_data->lock);
+ 
+-	return sprintf(buf, "0x%x\n", status);
++	return sysfs_emit(buf, "0x%x\n", status);
+ }
+ static DEVICE_ATTR_RO(status);
+ 
+@@ -494,7 +495,7 @@ static ssize_t bootstatus_show(struct device *dev,
+ {
+ 	struct watchdog_device *wdd = dev_get_drvdata(dev);
+ 
+-	return sprintf(buf, "%u\n", wdd->bootstatus);
++	return sysfs_emit(buf, "%u\n", wdd->bootstatus);
+ }
+ static DEVICE_ATTR_RO(bootstatus);
+ 
+@@ -510,7 +511,7 @@ static ssize_t timeleft_show(struct device *dev, struct device_attribute *attr,
+ 	status = watchdog_get_timeleft(wdd, &val);
+ 	mutex_unlock(&wd_data->lock);
+ 	if (!status)
+-		status = sprintf(buf, "%u\n", val);
++		status = sysfs_emit(buf, "%u\n", val);
+ 
+ 	return status;
+ }
+@@ -521,7 +522,7 @@ static ssize_t timeout_show(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct watchdog_device *wdd = dev_get_drvdata(dev);
+ 
+-	return sprintf(buf, "%u\n", wdd->timeout);
++	return sysfs_emit(buf, "%u\n", wdd->timeout);
+ }
+ static DEVICE_ATTR_RO(timeout);
+ 
+@@ -530,7 +531,7 @@ static ssize_t pretimeout_show(struct device *dev,
+ {
+ 	struct watchdog_device *wdd = dev_get_drvdata(dev);
+ 
+-	return sprintf(buf, "%u\n", wdd->pretimeout);
++	return sysfs_emit(buf, "%u\n", wdd->pretimeout);
+ }
+ static DEVICE_ATTR_RO(pretimeout);
+ 
+@@ -539,7 +540,7 @@ static ssize_t identity_show(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct watchdog_device *wdd = dev_get_drvdata(dev);
+ 
+-	return sprintf(buf, "%s\n", wdd->info->identity);
++	return sysfs_emit(buf, "%s\n", wdd->info->identity);
+ }
+ static DEVICE_ATTR_RO(identity);
+ 
+@@ -549,9 +550,9 @@ static ssize_t state_show(struct device *dev, struct device_attribute *attr,
+ 	struct watchdog_device *wdd = dev_get_drvdata(dev);
+ 
+ 	if (watchdog_active(wdd))
+-		return sprintf(buf, "active\n");
++		return sysfs_emit(buf, "active\n");
+ 
+-	return sprintf(buf, "inactive\n");
++	return sysfs_emit(buf, "inactive\n");
+ }
+ static DEVICE_ATTR_RO(state);
+ 
+diff --git a/drivers/watchdog/watchdog_pretimeout.c b/drivers/watchdog/watchdog_pretimeout.c
+index 01ca84be240f..7f257c3485cd 100644
+--- a/drivers/watchdog/watchdog_pretimeout.c
++++ b/drivers/watchdog/watchdog_pretimeout.c
+@@ -55,7 +55,7 @@ int watchdog_pretimeout_available_governors_get(char *buf)
+ 	mutex_lock(&governor_lock);
+ 
+ 	list_for_each_entry(priv, &governor_list, entry)
+-		count += sprintf(buf + count, "%s\n", priv->gov->name);
++		count += sysfs_emit_at(buf, count, "%s\n", priv->gov->name);
+ 
+ 	mutex_unlock(&governor_lock);
+ 
+@@ -68,7 +68,7 @@ int watchdog_pretimeout_governor_get(struct watchdog_device *wdd, char *buf)
+ 
+ 	spin_lock_irq(&pretimeout_lock);
+ 	if (wdd->gov)
+-		count = sprintf(buf, "%s\n", wdd->gov->name);
++		count = sysfs_emit(buf, "%s\n", wdd->gov->name);
+ 	spin_unlock_irq(&pretimeout_lock);
+ 
+ 	return count;
+diff --git a/drivers/watchdog/ziirave_wdt.c b/drivers/watchdog/ziirave_wdt.c
+index 4297280807ca..6c9414d09684 100644
+--- a/drivers/watchdog/ziirave_wdt.c
++++ b/drivers/watchdog/ziirave_wdt.c
+@@ -445,8 +445,9 @@ static ssize_t ziirave_wdt_sysfs_show_firm(struct device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = sprintf(buf, ZIIRAVE_FW_VERSION_FMT, w_priv->firmware_rev.major,
+-		      w_priv->firmware_rev.minor);
++	ret = sysfs_emit(buf, ZIIRAVE_FW_VERSION_FMT,
++			 w_priv->firmware_rev.major,
++			 w_priv->firmware_rev.minor);
+ 
+ 	mutex_unlock(&w_priv->sysfs_mutex);
+ 
+@@ -468,8 +469,9 @@ static ssize_t ziirave_wdt_sysfs_show_boot(struct device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = sprintf(buf, ZIIRAVE_BL_VERSION_FMT, w_priv->bootloader_rev.major,
+-		      w_priv->bootloader_rev.minor);
++	ret = sysfs_emit(buf, ZIIRAVE_BL_VERSION_FMT,
++			 w_priv->bootloader_rev.major,
++			 w_priv->bootloader_rev.minor);
+ 
+ 	mutex_unlock(&w_priv->sysfs_mutex);
+ 
+@@ -491,7 +493,7 @@ static ssize_t ziirave_wdt_sysfs_show_reason(struct device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = sprintf(buf, "%s", ziirave_reasons[w_priv->reset_reason]);
++	ret = sysfs_emit(buf, "%s", ziirave_reasons[w_priv->reset_reason]);
+ 
+ 	mutex_unlock(&w_priv->sysfs_mutex);
+ 
+-- 
+2.27.0
 
