@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F3D37A1EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9591D37A1ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231365AbhEKI3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 04:29:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38596 "EHLO mail.kernel.org"
+        id S231332AbhEKI3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 04:29:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231299AbhEKI3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 04:29:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD14061944;
-        Tue, 11 May 2021 08:28:07 +0000 (UTC)
+        id S230338AbhEKI3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 04:29:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9360C61948;
+        Tue, 11 May 2021 08:28:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620721688;
-        bh=7C4N6xhr3iLJ06IpEWXsW6Mhbp8fwEkNVFfMBYJL4Hc=;
+        s=k20201202; t=1620721694;
+        bh=YKWOq5o3HhQKTZsQen7jsuSJsP9ocdlM8lx4R1/2yUs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZMLazoSVLczu9/tZp9358cwQQx7is/gIgfqItfeNED0/l9vyz3WWiixEcRLyRyGF+
-         T4dJGl3TC6MYR0nu5j4D/brT9QowFo6as1cswCpldxk3DsNAWPR2VmE05OgVwTKB9p
-         X9CZmjiEEJF2GTSwGj5M+oGbi4ZTNc0O3Cri0SKGObbNPelFgH8ed6etG1vDHArN5u
-         6OIwtvBnQl2zTW9b9vUDnRjiD98mTgG7mf/QuDFCqMUhApoRJgY9t5UPL4KCZWQX+V
-         KnnIFZuSpqdjLZa0gnX6EVlDWrkE1yUoo+DQ3C2Y0cz7lgwLy2frgqj23OuDiuC8Af
-         ozX8P82HpQMJg==
+        b=bQGjdUAuch3Cp9R2Iagl62AjhX/O584npGj3eJqIIP1e96T7A5KrqT2f9bkbGwV1R
+         eQlnxZOCSe2oOYXhF1c/QnvlOOLjQMEMUnUXbJes4oLIQfLs6uC+W3HlP+itm/iPSi
+         ZJ4mPc6Xk+3J7/szVzvd0H0Le6QxW/6EMNHu86ThW/kR6HHvlGZqkX7fP3wMGhlY2r
+         xveCk0zuPxQ5dr0l6t5V8Xgvp65TUodBrgCPl+auDKuixtOF9h1fzxr2BYmVPPyO40
+         CcSDzU9ten2c4iAS79+gojcCc7gPOci6RPCMMaMd03F+k1F4RwRAwV7oxDv3kLyZHq
+         OlYscbc45RUcA==
 From:   Mark Brown <broonie@kernel.org>
-To:     festevam@gmail.com, alsa-devel@alsa-project.org,
-        Shengjiu Wang <shengjiu.wang@nxp.com>, perex@perex.cz,
-        nicoleotsuka@gmail.com, timur@kernel.org, Xiubo.Lee@gmail.com,
-        tiwai@suse.com
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] ASoC: imx-pcm-rpmsg: Fix warning of incorrect type in assignment
-Date:   Tue, 11 May 2021 09:25:58 +0100
-Message-Id: <162072058169.33157.6496454869060714703.b4-ty@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: codecs: lpass-rx-macro: add missing MODULE_DEVICE_TABLE
+Date:   Tue, 11 May 2021 09:26:00 +0100
+Message-Id: <162072058170.33157.1978725298165946792.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1620268240-1005-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1620268240-1005-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <20210510103844.1532-1-srinivas.kandagatla@linaro.org>
+References: <20210510103844.1532-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,18 +40,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 6 May 2021 10:30:40 +0800, Shengjiu Wang wrote:
-> The format in rpmsg is defained as unsigned char, there is warning
-> when convert snd_pcm_format_t to it.
-> 
-> sound/soc/fsl/imx-pcm-rpmsg.c:164:43: sparse: warning: incorrect type in assignment (different base types)
-> sound/soc/fsl/imx-pcm-rpmsg.c:164:43: sparse:    expected unsigned char format
-> sound/soc/fsl/imx-pcm-rpmsg.c:164:43: sparse:    got restricted snd_pcm_format_t [usertype]
-> sound/soc/fsl/imx-pcm-rpmsg.c:167:43: sparse: warning: incorrect type in assignment (different base types)
-> sound/soc/fsl/imx-pcm-rpmsg.c:167:43: sparse:    expected unsigned char format
-> sound/soc/fsl/imx-pcm-rpmsg.c:167:43: sparse:    got restricted snd_pcm_format_t [usertype]
-> 
-> [...]
+On Mon, 10 May 2021 11:38:44 +0100, Srinivas Kandagatla wrote:
+> Fix module loading by adding missing MODULE_DEVICE_TABLE.
 
 Applied to
 
@@ -62,8 +49,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: imx-pcm-rpmsg: Fix warning of incorrect type in assignment
-      commit: a387040ab401cc114d0b1a7a86431c5ae34b163b
+[1/1] ASoC: codecs: lpass-rx-macro: add missing MODULE_DEVICE_TABLE
+      commit: d4335d058f8430a0ce2b43dab9531f3a3cf9fe2c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
