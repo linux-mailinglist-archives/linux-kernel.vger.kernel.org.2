@@ -2,143 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B1B379D56
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292FA379DD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhEKDFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 23:05:01 -0400
-Received: from mail-eopbgr60087.outbound.protection.outlook.com ([40.107.6.87]:26753
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229736AbhEKDFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 23:05:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FIXqe6OtqE5rjsGOjuClDwoD5JAI5nOSy8W58ovwOBvBncJrpGX5dUU7aJUDxZ+QsXXT9fYrUhcmmC4m7FczF0ZQ5QzgNjMGiYx9AVsa5O7ojNVO14Dfa4r+HrbIldb6yANg3GmU7BXSOpL3AGkPX4P7mhp+ODEZv0Asx+eXZOSrFc4HCm386KLLqwLB910ugco8Jc+TOkyN2MHeoBXHFIoKDIerlDMuF+wv7WAEiIlB8jpKKOxRwFemjGA4r066I+4eOHwpT5OAmZn8c9wgs4vyW116zeSMBHaG+Pt56lzcD7oGSvvXDvTpNqe95uABmnloUaAprF6Jrlk+F33e+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WCNDCRU0T+rg8PLRHW8CUxI5ByJVM+n0Uq7O1pRdyYE=;
- b=GAnDif8vBlDJPv/UQBg3RfZSY7Y8nYRc5DtAlKnz7Fe2JyfjCoAaEHuMsRB7wfdLhrv1UVtqh2pdkY9FDpKUYOjB5mfzXFUKQXWwhZMpFKx2JlUGFUuZn5JsHS0IJhZbZZHQCbZ/kfkILzRVWXAoJ49Inehg3d+7C9DaX9Q68u0iwAE9S/y+7kFAfQZXKDbjgGxupL/ltxqBOFq2/BzoG1FyH1NWPjajs5J2+xU4cYQsQYtQetqTGs7eoFmMJoSyDYrDRhlsGEsbOdu5PGvaK4yzoHJPaNuLqVLW6eCKi0QljVBjMcmftwByHZh8gK6a1xpFyeEs0NdTwmGuvsH5dQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WCNDCRU0T+rg8PLRHW8CUxI5ByJVM+n0Uq7O1pRdyYE=;
- b=jIiqZ8h9Nv+p45JSmSw62Z9U36KEwGlNYLt9mOinThhzE4gNKbSeEHlC7u9Crq8k+j58ypvsa15cx8iyWljlaparwSDbLXXHUhvd0Ea3Z1m/6nmPKplWyAcziCY5vhc6zPNOXJk2N75Y6Xn/lGFXWe73BYhoY/RQZnm/iHWAvUg=
-Authentication-Results: linux-watchdog.org; dkim=none (message not signed)
- header.d=none;linux-watchdog.org; dmarc=none action=none header.from=nxp.com;
-Received: from VE1PR04MB6688.eurprd04.prod.outlook.com (2603:10a6:803:127::25)
- by VI1PR04MB4559.eurprd04.prod.outlook.com (2603:10a6:803:74::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.26; Tue, 11 May
- 2021 03:03:52 +0000
-Received: from VE1PR04MB6688.eurprd04.prod.outlook.com
- ([fe80::de2:8b2:852b:6eca]) by VE1PR04MB6688.eurprd04.prod.outlook.com
- ([fe80::de2:8b2:852b:6eca%7]) with mapi id 15.20.4108.031; Tue, 11 May 2021
- 03:03:52 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     wim@linux-watchdog.org, linux@roeck-us.net, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, festevam@gmail.com
-Cc:     linux-imx@nxp.com, kernel@pengutronix.de,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] watchdog: imx2_wdt: clear WDOG_HW_RUNNING before suspend
-Date:   Tue, 11 May 2021 19:20:32 +0800
-Message-Id: <1620732032-7675-1-git-send-email-yibin.gong@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2P153CA0030.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::17)
- To VE1PR04MB6688.eurprd04.prod.outlook.com (2603:10a6:803:127::25)
+        id S230027AbhEKDde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 23:33:34 -0400
+Received: from mail-lj1-f170.google.com ([209.85.208.170]:37517 "EHLO
+        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229920AbhEKDdc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 23:33:32 -0400
+Received: by mail-lj1-f170.google.com with SMTP id b7so23372647ljr.4
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 20:32:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
+         :in-reply-to:references:mime-version:date:user-agent
+         :content-transfer-encoding;
+        bh=hwCrR3c0tccGbW56M/TTp5VwewXJzihLenrd3Qjv2XQ=;
+        b=WHu8xNLeSNm3B+DH3/6qqQ+iswr3UmjdtLVQWeA7CxIsRORnneyIpSDnCc/ArJwRRw
+         1ZdC5vxsjmFYLpPT6lSgIuELvy3coruP27CCfgX8iHKSY9JA8mZlsWfabGTEsJP/0blb
+         5G9mfLcOKN12wgdosxEQldpY67/azMEZCPO0LmI00I4j4rS6NF+bgqpDAGIM0XlG2RHc
+         sLANOJ6Yq8aZnF0EjeuhliNY2hPsE0HUMk7QTl3PFTOeZ5+m9U7lR8e4zRvC8gqzQY4r
+         ZrtSh0HOFHvQyY1+rLsJqpZbwWWqi/CUYLjsGjXHKFRDxIParufMzdYOX/4RXYA07TNl
+         tfBg==
+X-Gm-Message-State: AOAM533sGwnt8hVE6GMNFSrzOLZSceo91nV52pKnUfjtrLiE9BdHNYmA
+        qjZuHNjTwS2i6JclR2yp/mg=
+X-Google-Smtp-Source: ABdhPJzB2BYNa0UqhjCRB+s4HZOe2xeGWd4g3CP/2p94P2b095FjNQeupWEDc3EnQfml8EjEeKFTJA==
+X-Received: by 2002:a2e:90c2:: with SMTP id o2mr10967012ljg.314.1620703945310;
+        Mon, 10 May 2021 20:32:25 -0700 (PDT)
+Received: from dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
+        by smtp.gmail.com with ESMTPSA id z28sm3515577ljn.31.2021.05.10.20.32.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 20:32:25 -0700 (PDT)
+Message-ID: <978a829103c768a01ed8a1b37ea607ea5fb0ddb0.camel@fi.rohmeurope.com>
+Subject: Re: [PATCH 4/4] extcon: extcon-max8997: Fix IRQ freeing at error
+ path
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reply-To: matti.vaittinen@fi.rohmeurope.com
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <edf3ff4d-8bd7-17cf-0d7c-96b4f704dddd@canonical.com>
+References: <cover.1620633360.git.matti.vaittinen@fi.rohmeurope.com>
+         <9047a741b4c4d97e721ed8b48cc4b434a46acba3.1620633360.git.matti.vaittinen@fi.rohmeurope.com>
+         <edf3ff4d-8bd7-17cf-0d7c-96b4f704dddd@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.66) by SG2P153CA0030.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4150.5 via Frontend Transport; Tue, 11 May 2021 03:03:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8f159e6a-840c-4656-d313-08d9142967b7
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4559:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB45599C2735F7D5A6FF169FBD89539@VI1PR04MB4559.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K1u3ZN0c83PyEmkHX2JIlPkAcT51IkKDhX/ZMOX3roPpTN47/c6Y15sh5uEwVhmiPSMjHCdi/EEK9iaUiQjKyLQG1q9fdwXzwEhvhYwG2Km8vX1J8tWem6ynP4G2H9z9Lpy/VUd7uVKNYzu8f5h0iH+mUM6Grx49QoPimGRalIDm+AQfKXCZOT+kFKZmZ39LfKHLAPSe5O7UUW9jxKo6QS8oCCIj/2qSPk0YYV+YLOHus6OoJdpXeWf05Tz1HsxpVqb+Mja/HVWLqeFwMKd1BT/YzEje2EJSUj8djOdAsXIpRFjXVnG8mUelpe0phCRvw8P/FME+6JUasr79BTcvvt9ABMvk+Q/YyJZHjqVZ+MtDFU6D5utNpOb5pqB3tcpIq1vzQ61KTZ8Eddo8j+E7RW4WT651rSCUk6x6CTMUaPypjgR4vjSX04e21FyN1QPKnCIe3cgdhD/TEx4Dl3feBkDm1J8LI3w+HnWM9n9xXoeOCyJvOltrsyYig2V/trhIMZjolgWl0RzT1sUQDuVQ1eaXc0Ho+El/8HrkcpwlAUuL4v5kX0CaTkHssNWOt/DfsfB3sTK+xWCU/X+cTB/CkYmCRMof0RMYY5ELgDLEpX5og0qv+MjdqVsFdiXmJcLnxD4ZJPBZ6WLVXkdjQSVBWrepqfw8jISWPUKPNcMuWzc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6688.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(136003)(376002)(366004)(8676002)(2616005)(478600001)(83380400001)(316002)(6506007)(16526019)(66476007)(66556008)(8936002)(4326008)(86362001)(186003)(956004)(66946007)(26005)(5660300002)(6512007)(36756003)(52116002)(15650500001)(38100700002)(2906002)(38350700002)(6486002)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?vkJ5g6MNLJeAdNOccl3hakg9Zp8wQ6joe+HtQ4xTWW+W0YGF1hpsX31qpltp?=
- =?us-ascii?Q?4y5idTHOULtih8pH/3DxgU49Nkocv2vO0bUMLd3yWYt2WUEP0tbqO7aM8P4m?=
- =?us-ascii?Q?tW25g3auTGzt0J3YA/z0RUKxzhsWYCUuOan0QeSJBu1boB2bkpBnNxWby+kD?=
- =?us-ascii?Q?UWzRl/D9ckeQI1mjy80V0urE836Qo0EJLDfLZJa3mPtZXtT8OWppWsGgTBrU?=
- =?us-ascii?Q?1UOMo3eHT/R1dXAsb1bcaumB4FLGz3Nz2TcJg8SUryd6Szjvd3FaKnBck2lU?=
- =?us-ascii?Q?E8hws3ZwrFBSHQSVVfDsNdCEi2R7llRttNYoully3qm/7Co15JrEAU1aoFP2?=
- =?us-ascii?Q?XZtc1A+oKTSTedISlQ+BdVSS3I2vT5NkjSBgV5z+8UEkEyiFxP/f2hgEPgXE?=
- =?us-ascii?Q?DYGukCfynTUp/8X0iJ6ga3CvOzkF6zozi5kJvcgahE7KVWC4D6HwjQ4r20pi?=
- =?us-ascii?Q?aRm8YSPaMOPsUcHAbSmO/HDUQtt1mO8SI1z/pQ7IswpyX865auNNToxmHHEo?=
- =?us-ascii?Q?qTGsRr3pfhv4ZH+QRMoZcujIBT+7/bI6ac5LWyoj56iPXTFV2fAGOptNCP9l?=
- =?us-ascii?Q?an2rmH2KhYK7Fxi5SV7e1dbzUMEsvnaowutG07YXY29IuryXQzy3t9S5EPLX?=
- =?us-ascii?Q?LFI9h0PTd11+SgLHlImN1MLsYbrzdJ+l8UKnOXQctplDCx0R3itCNW/biZO5?=
- =?us-ascii?Q?9lQj+NHwnHQdPWMMe/8rdSZkQ3ByX4Ool+cQroaHb59IlL7NonD0AqT3XzAQ?=
- =?us-ascii?Q?S8mV/4DuQH9vVUiGgguPEf87F7R28CQcPv5Z+djShthg+7DchAidQ/Y+bWwW?=
- =?us-ascii?Q?q79ZU1ImPP2pZi80Q1aOrsnBsJvZrVFsDqUgCI3ejcs4OD9ffsPWT9/zjRyH?=
- =?us-ascii?Q?+y7AVGLsTN9apY3bgYDV8MYtqMcI7y/7GY6pwDFnZU5lF5OAsGlYvDQacuy/?=
- =?us-ascii?Q?SbL+iE++QkUdWMO0jQpTJ+KTauc5PF/UfTnVg8yurB11NwX0aUzyt381fHn5?=
- =?us-ascii?Q?9v5ztohUSUJ2ksT3Bj11acXgNUnL53ZI3OXhaEV3khnQYRhOGCJ8dm8RCbCF?=
- =?us-ascii?Q?4dZSAnA1EcFx0zOETPs/DrBohsrZQ55GYWEJyi/8uzK3HDpeoiWY9t6cmi4r?=
- =?us-ascii?Q?BrhPbQHZUH0lf12n+cZFnb8neDwfkzvCOojH5KoB6Q6HPB7AzyB5wj0jgRZe?=
- =?us-ascii?Q?TjqwJKWOmoLyaEBClV0hwx6XAHRxKdSSW6Num8XmmapFmlCY89Ai1FRIyAV7?=
- =?us-ascii?Q?4s2uhpkxpnZWb34Inv0krSq2Kty1X3ngU3RepR0JnA7YQ4kw81/s9daP/qT+?=
- =?us-ascii?Q?U451RQChPIM3QLgJGeT9uLkx?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f159e6a-840c-4656-d313-08d9142967b7
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6688.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 03:03:51.9328
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BML+wBFUe1E9f6WCTHu/Dp+yQ4dAhCuc7Vthvgh+0Uit4XtnxtBbxRW9nsMBikC1Nwca9cermeDnG4LVJjLtOg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4559
+Date:   Tue, 11 May 2021 06:32:20 +0300
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since watchdog_ping_work is not freezable so that it maybe scheduled before
-imx2_wdt_resume where watchdog clock enabled, hence, kernel will hang in
-imx2_wdt_ping without clock, and then watchdog reset happen. Prevent the
-above case by clearing WDOG_HW_RUNNING before suspend, and restore it with
-ping in imx2_wdt_resume.
+Hi Krzysztof,
 
-Signed-off-by: Robin Gong <yibin.gong@nxp.com>
----
- drivers/watchdog/imx2_wdt.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+On Mon, 2021-05-10 at 10:21 -0400, Krzysztof Kozlowski wrote:
+> On 10/05/2021 04:12, Matti Vaittinen wrote:
+> > If reading MAX8997_MUIC_REG_STATUS1 fails at probe the driver exits
+> > without freeing the requested IRQs.
+> 
+> The driver frees IRQ on probe failure, so maybe you meant missing IRQ
+> mapping dispose?
 
-diff --git a/drivers/watchdog/imx2_wdt.c b/drivers/watchdog/imx2_wdt.c
-index b84f80f..d3751e9 100644
---- a/drivers/watchdog/imx2_wdt.c
-+++ b/drivers/watchdog/imx2_wdt.c
-@@ -357,6 +357,13 @@ static int __maybe_unused imx2_wdt_suspend(struct device *dev)
- 		 */
- 		__imx2_wdt_set_timeout(wdog, IMX2_WDT_MAX_TIME);
- 		imx2_wdt_ping(wdog);
-+
-+		/*
-+		 * clear WDOG_HW_RUNNING to prevent watchdog_ping_work running
-+		 * before imx2_wdt_resume where clock enabled, otherwise kernel
-+		 * will hang and watchdog reset happen then.
-+		 */
-+		clear_bit(WDOG_HW_RUNNING, &wdog->status);
- 	}
- 
- 	clk_disable_unprepare(wdev->clk);
-@@ -386,6 +393,7 @@ static int __maybe_unused imx2_wdt_resume(struct device *dev)
- 	if (imx2_wdt_is_running(wdev)) {
- 		imx2_wdt_set_timeout(wdog, wdog->timeout);
- 		imx2_wdt_ping(wdog);
-+		set_bit(WDOG_HW_RUNNING, &wdog->status);
- 	}
- 
- 	return 0;
--- 
-2.7.4
+No. The commit 3e34c8198960 ("extcon: max8997: Avoid forcing UART path
+on drive probe") introduced a return w/o IRQ freeing if reading the
+MAX8997_MUIC_REG_STATUS1 fails at the end of the probe. This is not
+visible in the patch though - as the return is Ok after the IRQs and
+work-queue cancellation are managed by devm.
+
+Best Regards
+	--Matti Vaittinen
 
