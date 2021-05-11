@@ -2,126 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3255437ABCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1138837ABD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 18:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231233AbhEKQYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 12:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231204AbhEKQYG (ORCPT
+        id S231844AbhEKQYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 12:24:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21855 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231445AbhEKQYm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 12:24:06 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9678BC061574;
-        Tue, 11 May 2021 09:22:58 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id j10so29455802lfb.12;
-        Tue, 11 May 2021 09:22:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HwEpM74kdAaM+n3u4jDMRjmIgZKln1Kp9Vng06ofsEs=;
-        b=rnXgd3JdiCQ+1FYDmn0cX7dC/5N/q5R2muzhKp3lI9VL3+JM5N8/t33iIdQKxWp/2e
-         u6aBUUvmIm0hNxJ4/PFItIHBRsk1BtVOeK9xJRoLLjgbmbiwzA7VtGu+8eM3OLPqvSAK
-         wNVeGjFD8rAMKc6DjS+y1dh/02bLsmpKFqPuuN7CzWMOLtCn7qb/qF3UezEs+D+F7kiP
-         zS7Jy2WEdpRt7jVmTTxdzvH1z3QTNNg2UItvNfFcerH2JtYUorcvMuGVbUY9Qzv5/7dF
-         FX2ClBaqVO8p8ipyIn2OyZPtq56nnUO/BqiBIusdj3wO9uM6heB/YNqqQHIcSt4uVFSX
-         hE1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HwEpM74kdAaM+n3u4jDMRjmIgZKln1Kp9Vng06ofsEs=;
-        b=ATdrqGN8S8saqWUbI/DxCNGzdtJ2iSwlxEvR8j5LmJvqF16XjIIroqVnmuy8Lh6eZD
-         lt2RcUwELFX6b1BgiNyKiFGInUb3rQ/BY+DZVqdcdrVgGFlsxEs/PmKKg8e/IwSq14lP
-         orTUajgC/TeNLZgmxOihZg5wjeVl3wIr5XD4eTcbp8Myf77HrOJ0jhKedWzGFOy5Rdku
-         XJgT5WlvgRiBgSLcIVGE3C+WWznMPlDK05phBHOM6wrKhxQ0r+SRlzLrplFf4fSf/ogO
-         Fck9h1Tr1GZ+D9oPBgLcWMJE/DixwYGQFTHKlHR4p4KfcrBuK/sc+QNgJwbDpLjBTJT8
-         GpDQ==
-X-Gm-Message-State: AOAM532c3KYQEu2nEfaA8pad8+gPE4Wc7IHdU/sAiPbG6uneL2tBtjRN
-        t3bbQSOO/bIsYlxw2U4e0DU5ldrJ1nw=
-X-Google-Smtp-Source: ABdhPJwW4sAYZyqRdxyMo2CZgZi+lf7DQCaLrt0nMm85rrXuEdCW3wy9F8tHZaF/tulVwCIEga4FRg==
-X-Received: by 2002:a05:6512:713:: with SMTP id b19mr21194017lfs.125.1620750176989;
-        Tue, 11 May 2021 09:22:56 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.googlemail.com with ESMTPSA id z15sm1828888ljc.84.2021.05.11.09.22.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 09:22:56 -0700 (PDT)
-Subject: Re: [PATCH v1 2/2] memory: tegra: Enable compile testing for all
- drivers
-To:     kernel test robot <lkp@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20210510213729.7095-3-digetx@gmail.com>
- <202105112327.nAMH7lzl-lkp@intel.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <d0b84024-2f91-bc0a-8d3b-ec342ac4812d@gmail.com>
-Date:   Tue, 11 May 2021 19:22:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 11 May 2021 12:24:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620750215;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3M6tTHlyFNKQwbGOtrLH1dHnpAA9L/D3mvAYYkgV538=;
+        b=FM9u6tvbnr1XG/bJM+0T7jmFjWv8pkv5AYKxIAJTnIU32q0TKbO40RdAd1925Ysmd7ED2A
+        bK0jxBzhT42/qRxIjZDSRgOgZgKh598NmuhtK65bMpF5m0Fg46I8nf7v08yzbclYmLNrPA
+        T2J9vB3llJqd1mITRpa2KaecbzG2oVM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-392-e2fb4B8yPWyJlQzkc_nNww-1; Tue, 11 May 2021 12:23:16 -0400
+X-MC-Unique: e2fb4B8yPWyJlQzkc_nNww-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 687B38015D0;
+        Tue, 11 May 2021 16:23:13 +0000 (UTC)
+Received: from [10.3.115.19] (ovpn-115-19.phx2.redhat.com [10.3.115.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 968105DEAD;
+        Tue, 11 May 2021 16:23:10 +0000 (UTC)
+Subject: Re: [PATCH 01/16] PCI/P2PDMA: Pass gfp_mask flags to
+ upstream_bridge_distance_warn()
+To:     Logan Gunthorpe <logang@deltatee.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org
+Cc:     Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+References: <20210408170123.8788-1-logang@deltatee.com>
+ <20210408170123.8788-2-logang@deltatee.com>
+ <d8ac4c84-1e69-d5d6-991a-7de87c569acc@nvidia.com>
+ <a23fdb9c-f653-e766-89e1-98550658724c@redhat.com>
+ <36b86579-da30-0671-26e9-75977a265742@deltatee.com>
+From:   Don Dutile <ddutile@redhat.com>
+Message-ID: <c078b970-7531-8834-e26f-e653e7db4c20@redhat.com>
+Date:   Tue, 11 May 2021 12:23:10 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <202105112327.nAMH7lzl-lkp@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <36b86579-da30-0671-26e9-75977a265742@deltatee.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-11.05.2021 18:43, kernel test robot пишет:
-> Hi Dmitry,
-> 
-> I love your patch! Yet something to improve:
-> 
-> [auto build test ERROR on tegra/for-next]
-> [also build test ERROR on v5.13-rc1 next-20210511]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Dmitry-Osipenko/Enable-compile-testing-for-Tegra-memory-drivers/20210511-053910
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git for-next
-> config: parisc-randconfig-r011-20210511 (attached as .config)
-> compiler: hppa64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/ecd67b1d49eb33c9821130a2b3b896bab395118d
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Dmitry-Osipenko/Enable-compile-testing-for-Tegra-memory-drivers/20210511-053910
->         git checkout ecd67b1d49eb33c9821130a2b3b896bab395118d
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross W=1 ARCH=parisc 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    hppa64-linux-ld: drivers/memory/tegra/tegra20-emc.o: in function `.LC9':
->>> (.data.rel.ro+0x30): undefined reference to `tegra20_clk_set_emc_round_callback'
->    hppa64-linux-ld: drivers/memory/tegra/tegra20-emc.o: in function `.LC52':
->    (.data.rel.ro+0xe0): undefined reference to `tegra20_clk_set_emc_round_callback'
->    hppa64-linux-ld: drivers/memory/tegra/tegra30-emc.o: in function `.LC11':
->>> (.data.rel.ro+0x30): undefined reference to `tegra20_clk_set_emc_round_callback'
->    hppa64-linux-ld: drivers/memory/tegra/tegra30-emc.o: in function `.LC48':
->    (.data.rel.ro+0xd0): undefined reference to `tegra20_clk_set_emc_round_callback'
->    hppa64-linux-ld: drivers/memory/tegra/tegra30-emc.o: in function `.LC60':
->>> (.data.rel.ro+0x118): undefined reference to `tegra20_clk_prepare_emc_mc_same_freq'
->    hppa64-linux-ld: drivers/memory/tegra/tegra124-emc.o: in function `.LC3':
->>> (.data.rel.ro+0x10): undefined reference to `tegra124_clk_set_emc_callbacks'
->    hppa64-linux-ld: drivers/memory/tegra/tegra124-emc.o: in function `.LC55':
->    (.data.rel.ro+0x110): undefined reference to `tegra124_clk_set_emc_callbacks'
-> 
-> Kconfig warnings: (for reference only)
->    WARNING: unmet direct dependencies detected for TEGRA124_CLK_EMC
->    Depends on COMMON_CLK
->    Selected by
->    - TEGRA124_EMC && MEMORY && TEGRA_MC && (ARCH_TEGRA_124_SOC || COMPILE_TEST
+On 5/11/21 12:12 PM, Logan Gunthorpe wrote:
+>
+> On 2021-05-11 10:05 a.m., Don Dutile wrote:
+>> On 5/1/21 11:58 PM, John Hubbard wrote:
+>>> On 4/8/21 10:01 AM, Logan Gunthorpe wrote:
+>>>> In order to call upstream_bridge_distance_warn() from a dma_map function,
+>>>> it must not sleep. The only reason it does sleep is to allocate the seqbuf
+>>>> to print which devices are within the ACS path.
+>>>>
+>>>> Switch the kmalloc call to use a passed in gfp_mask and don't print that
+>>>> message if the buffer fails to be allocated.
+>>>>
+>>>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+>>>> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+>>>> ---
+>>>>    drivers/pci/p2pdma.c | 21 +++++++++++----------
+>>>>    1 file changed, 11 insertions(+), 10 deletions(-)
+>>>>
+>>>> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+>>>> index 196382630363..bd89437faf06 100644
+>>>> --- a/drivers/pci/p2pdma.c
+>>>> +++ b/drivers/pci/p2pdma.c
+>>>> @@ -267,7 +267,7 @@ static int pci_bridge_has_acs_redir(struct pci_dev *pdev)
+>>>>      static void seq_buf_print_bus_devfn(struct seq_buf *buf, struct pci_dev *pdev)
+>>>>    {
+>>>> -    if (!buf)
+>>>> +    if (!buf || !buf->buffer)
+>>> This is not great, sort of from an overall design point of view, even though
+>>> it makes the rest of the patch work. See below for other ideas, that will
+>>> avoid the need for this sort of odd point fix.
+>>>
+>> +1.
+>> In fact, I didn't see how the kmalloc was changed... you refactored the code to pass-in the
+>> GFP_KERNEL that was originally hard-coded into upstream_bridge_distance_warn();
+>> I don't see how that avoided the kmalloc() call.
+>> in fact, I also see you lost a failed kmalloc() check, so it seems to have taken a step back.
+> I've changed this in v2 to just use some memory allocated on the stack.
+> Avoids this argument all together.
+>
+> Logan
+>
+Looking fwd to the v2; again, my apologies for the delay, and the redundancy it's adding to your feedback review & changes.
+-Don
 
-I'll fix these missing stubs in v2.
