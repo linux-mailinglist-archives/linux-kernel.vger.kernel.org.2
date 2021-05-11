@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085BC37B1F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4AB237B1F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhEKW4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 18:56:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36344 "EHLO mail.kernel.org"
+        id S230160AbhEKW43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:56:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230070AbhEKW4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230026AbhEKW4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 18:56:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7527C6191D;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FD3861260;
         Tue, 11 May 2021 22:55:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620773718;
-        bh=7liwfk1tesTs4HZiYfFEJ1nyjgE8X6W4bnix9glgAs0=;
+        bh=mPqbQCgaziZTtDwrZlZxiHfmvMUdtnSq/0nzyrOBqJY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Oo7MCK+nLj9lGzBB9uQDnLrePLHh3qtgAhzBrRv646x7N4PU3QXgqet1dgih4au1/
-         Z0WEGqmYcp53+4HxQdz2tHw3UFfXqS1EbwpFHRGH+Jp7K1tN3JBuAgOZ0p2kzJ41V7
-         RFM4lfWny43x4FYKyOmV5nDJF5k6SfpTvjzzWfOLjiRHxsaHdyLo1S4ftNpbMb/DzL
-         0lY+drFSVQ9CmifIXe30nbFuGdfWCVlp10R7SaPuyc8LYvRZf1oihbEZJoUZuRxkua
-         zF7BsgjHeUNsZ4iskgtfAzjBx/Tggh0V2PIxNiXF+aYGVHiRBfvDrkzGWr8zJeXpfE
-         U6jRFVw5QzqXQ==
+        b=cQYo37ZvtXCDgk4JcV/PMd9q0I088m/SGYoYQs9NOIfiTDjcvyF/2e/o0A/6OlIAH
+         neGX8oYamykRRwyW+9HCJIl1kARYhk/zX6UjH3TnX6Bv7gzXrU0ddmHmZ4vPZvKD7h
+         bEo/Sduo5R20jraGKGkG0+8REAoz6CdXfrqiRr16815VB1hp0Jzn9S7rW6F3hCJ3PZ
+         TwNtBFpK/KbKppFTIq9rjFj7aMzNTwc5mB0nQtWT7wwiptNrrq8t9HNQpoZeRgVHx5
+         PMTr1TCMsQ59Venxr1H285WdV8o1W/HaMinkOYXMG386NFHgBSMOMWXSpBn5T0zyBD
+         yqH7EDX1PvRDQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0645C5C0138; Tue, 11 May 2021 15:55:18 -0700 (PDT)
+        id 08B9D5C014E; Tue, 11 May 2021 15:55:18 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,12 +33,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Zhang Qiang <qiang.zhang@windriver.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 1/7] kvfree_rcu: Release a page cache under memory pressure
-Date:   Tue, 11 May 2021 15:55:10 -0700
-Message-Id: <20210511225516.2893420-1-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 2/7] kvfree_rcu: Use [READ/WRITE]_ONCE() macros to access to nr_bkv_objs
+Date:   Tue, 11 May 2021 15:55:11 -0700
+Message-Id: <20210511225516.2893420-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511225450.GA2893337@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511225450.GA2893337@paulmck-ThinkPad-P17-Gen-1>
@@ -48,225 +47,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qiang <qiang.zhang@windriver.com>
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 
-Add a drain_page_cache() function to drain a per-cpu page cache.
-The reason behind of it is a system can run into a low memory
-condition, in that case a page shrinker can ask for its users
-to free their caches in order to get extra memory available for
-other needs in a system.
+nr_bkv_objs is a count of the objects in the kvfree_rcu page cache.
+Accessing it requires holding the ->lock.  Switch to READ_ONCE() and
+WRITE_ONCE() macros to provide lockless access to this counter.
+This lockless access is used for the shrinker.
 
-When a system hits such condition, a page cache is drained for
-all CPUs in a system. By default a page cache work is delayed
-with 5 seconds interval until a memory pressure disappears, if
-needed it can be changed. See a rcu_delay_page_cache_fill_msec
-module parameter.
-
-Co-developed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../admin-guide/kernel-parameters.txt         |  5 ++
- kernel/rcu/tree.c                             | 82 +++++++++++++++++--
- 2 files changed, 78 insertions(+), 9 deletions(-)
+ kernel/rcu/tree.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index cb89dbdedc46..4405fd32e8ab 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4290,6 +4290,11 @@
- 			whole algorithm to behave better in low memory
- 			condition.
- 
-+	rcutree.rcu_delay_page_cache_fill_msec= [KNL]
-+			Set the page-cache refill delay (in milliseconds)
-+			in response to low-memory conditions.  The range
-+			of permitted values is in the range 0:100000.
-+
- 	rcutree.jiffies_till_first_fqs= [KNL]
- 			Set delay from grace-period initialization to
- 			first attempt to force quiescent states.
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 8e78b2430c16..74d840aa877b 100644
+index 74d840aa877b..676a49ab5b2b 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -186,6 +186,17 @@ module_param(rcu_unlock_delay, int, 0444);
- static int rcu_min_cached_objs = 5;
- module_param(rcu_min_cached_objs, int, 0444);
+@@ -3250,7 +3250,7 @@ get_cached_bnode(struct kfree_rcu_cpu *krcp)
+ 	if (!krcp->nr_bkv_objs)
+ 		return NULL;
  
-+// A page shrinker can ask for pages to be freed to make them
-+// available for other parts of the system. This usually happens
-+// under low memory conditions, and in that case we should also
-+// defer page-cache filling for a short time period.
-+//
-+// The default value is 5 seconds, which is long enough to reduce
-+// interference with the shrinker while it asks other systems to
-+// drain their caches.
-+static int rcu_delay_page_cache_fill_msec = 5000;
-+module_param(rcu_delay_page_cache_fill_msec, int, 0444);
-+
- /* Retrieve RCU kthreads priority for rcutorture */
- int rcu_get_gp_kthreads_prio(void)
- {
-@@ -3171,6 +3182,7 @@ struct kfree_rcu_cpu_work {
-  *	Even though it is lockless an access has to be protected by the
-  *	per-cpu lock.
-  * @page_cache_work: A work to refill the cache when it is empty
-+ * @backoff_page_cache_fill: Delay cache refills
-  * @work_in_progress: Indicates that page_cache_work is running
-  * @hrtimer: A hrtimer for scheduling a page_cache_work
-  * @nr_bkv_objs: number of allocated objects at @bkvcache.
-@@ -3190,7 +3202,8 @@ struct kfree_rcu_cpu {
- 	bool initialized;
- 	int count;
+-	krcp->nr_bkv_objs--;
++	WRITE_ONCE(krcp->nr_bkv_objs, krcp->nr_bkv_objs - 1);
+ 	return (struct kvfree_rcu_bulk_data *)
+ 		llist_del_first(&krcp->bkvcache);
+ }
+@@ -3264,9 +3264,8 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
+ 		return false;
  
--	struct work_struct page_cache_work;
-+	struct delayed_work page_cache_work;
-+	atomic_t backoff_page_cache_fill;
- 	atomic_t work_in_progress;
- 	struct hrtimer hrtimer;
- 
-@@ -3256,6 +3269,26 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
- 
+ 	llist_add((struct llist_node *) bnode, &krcp->bkvcache);
+-	krcp->nr_bkv_objs++;
++	WRITE_ONCE(krcp->nr_bkv_objs, krcp->nr_bkv_objs + 1);
+ 	return true;
+-
  }
  
-+static int
-+drain_page_cache(struct kfree_rcu_cpu *krcp)
-+{
-+	unsigned long flags;
-+	struct llist_node *page_list, *pos, *n;
-+	int freed = 0;
-+
-+	raw_spin_lock_irqsave(&krcp->lock, flags);
-+	page_list = llist_del_all(&krcp->bkvcache);
-+	krcp->nr_bkv_objs = 0;
-+	raw_spin_unlock_irqrestore(&krcp->lock, flags);
-+
-+	llist_for_each_safe(pos, n, page_list) {
-+		free_page((unsigned long)pos);
-+		freed++;
-+	}
-+
-+	return freed;
-+}
-+
- /*
-  * This function is invoked in workqueue context after a grace period.
-  * It frees all the objects queued on ->bhead_free or ->head_free.
-@@ -3446,7 +3479,7 @@ schedule_page_work_fn(struct hrtimer *t)
- 	struct kfree_rcu_cpu *krcp =
- 		container_of(t, struct kfree_rcu_cpu, hrtimer);
+ static int
+@@ -3278,7 +3277,7 @@ drain_page_cache(struct kfree_rcu_cpu *krcp)
  
--	queue_work(system_highpri_wq, &krcp->page_cache_work);
-+	queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, 0);
- 	return HRTIMER_NORESTART;
- }
+ 	raw_spin_lock_irqsave(&krcp->lock, flags);
+ 	page_list = llist_del_all(&krcp->bkvcache);
+-	krcp->nr_bkv_objs = 0;
++	WRITE_ONCE(krcp->nr_bkv_objs, 0);
+ 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
  
-@@ -3455,12 +3488,16 @@ static void fill_page_cache_func(struct work_struct *work)
- 	struct kvfree_rcu_bulk_data *bnode;
- 	struct kfree_rcu_cpu *krcp =
- 		container_of(work, struct kfree_rcu_cpu,
--			page_cache_work);
-+			page_cache_work.work);
- 	unsigned long flags;
-+	int nr_pages;
- 	bool pushed;
- 	int i;
- 
--	for (i = 0; i < rcu_min_cached_objs; i++) {
-+	nr_pages = atomic_read(&krcp->backoff_page_cache_fill) ?
-+		1 : rcu_min_cached_objs;
-+
-+	for (i = 0; i < nr_pages; i++) {
- 		bnode = (struct kvfree_rcu_bulk_data *)
- 			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
- 
-@@ -3477,6 +3514,7 @@ static void fill_page_cache_func(struct work_struct *work)
- 	}
- 
- 	atomic_set(&krcp->work_in_progress, 0);
-+	atomic_set(&krcp->backoff_page_cache_fill, 0);
- }
- 
- static void
-@@ -3484,10 +3522,15 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
- {
- 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
- 			!atomic_xchg(&krcp->work_in_progress, 1)) {
--		hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
--			HRTIMER_MODE_REL);
--		krcp->hrtimer.function = schedule_page_work_fn;
--		hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
-+		if (atomic_read(&krcp->backoff_page_cache_fill)) {
-+			queue_delayed_work(system_wq,
-+				&krcp->page_cache_work,
-+					msecs_to_jiffies(rcu_delay_page_cache_fill_msec));
-+		} else {
-+			hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+			krcp->hrtimer.function = schedule_page_work_fn;
-+			hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
-+		}
- 	}
- }
- 
-@@ -3639,12 +3682,19 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+ 	llist_for_each_safe(pos, n, page_list) {
+@@ -3682,18 +3681,13 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
  {
  	int cpu;
  	unsigned long count = 0;
-+	unsigned long flags;
+-	unsigned long flags;
  
  	/* Snapshot count of all CPUs */
  	for_each_possible_cpu(cpu) {
  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
  
  		count += READ_ONCE(krcp->count);
-+
-+		raw_spin_lock_irqsave(&krcp->lock, flags);
-+		count += krcp->nr_bkv_objs;
-+		raw_spin_unlock_irqrestore(&krcp->lock, flags);
-+
-+		atomic_set(&krcp->backoff_page_cache_fill, 1);
+-
+-		raw_spin_lock_irqsave(&krcp->lock, flags);
+-		count += krcp->nr_bkv_objs;
+-		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+-
++		count += READ_ONCE(krcp->nr_bkv_objs);
+ 		atomic_set(&krcp->backoff_page_cache_fill, 1);
  	}
  
- 	return count;
-@@ -3661,6 +3711,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		count = krcp->count;
-+		count += drain_page_cache(krcp);
-+
- 		raw_spin_lock_irqsave(&krcp->lock, flags);
- 		if (krcp->monitor_todo)
- 			kfree_rcu_drain_unlock(krcp, flags);
-@@ -4687,6 +4739,18 @@ static void __init kfree_rcu_batch_init(void)
- 	int cpu;
- 	int i;
- 
-+	/* Clamp it to [0:100] seconds interval. */
-+	if (rcu_delay_page_cache_fill_msec < 0 ||
-+		rcu_delay_page_cache_fill_msec > 100 * MSEC_PER_SEC) {
-+
-+		rcu_delay_page_cache_fill_msec =
-+			clamp(rcu_delay_page_cache_fill_msec, 0,
-+				(int) (100 * MSEC_PER_SEC));
-+
-+		pr_info("Adjusting rcutree.rcu_delay_page_cache_fill_msec to %d ms.\n",
-+			rcu_delay_page_cache_fill_msec);
-+	}
-+
- 	for_each_possible_cpu(cpu) {
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
-@@ -4696,7 +4760,7 @@ static void __init kfree_rcu_batch_init(void)
- 		}
- 
- 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
--		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
-+		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
- 		krcp->initialized = true;
- 	}
- 	if (register_shrinker(&kfree_rcu_shrinker))
 -- 
 2.31.1.189.g2e36527f23
 
