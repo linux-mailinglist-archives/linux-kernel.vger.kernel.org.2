@@ -2,115 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE161379F78
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BC9379F79
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbhEKGDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 02:03:06 -0400
-Received: from mga17.intel.com ([192.55.52.151]:22072 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230111AbhEKGDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 02:03:05 -0400
-IronPort-SDR: iR+HNJ0aRWVFbGVD/ei9HX5GqEyequfixuQ3Jhwo56hICi3mTEypCETVubsEe2cIFNLPlt3gtp
- QameIhnDb07g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="179626385"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="179626385"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 23:01:58 -0700
-IronPort-SDR: nbPHKOeW38Qyu/1ovsiZtH57Ftv8SGgARty5t7lMCfGB35bhsP9Fcqzijsw0nVDs5mXwbCinrv
- ZwuopUyszJAw==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="624540173"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 23:01:48 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
-        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: [PATCH] soundwire/ASoC: add leading zeroes in peripheral device name
-Date:   Tue, 11 May 2021 14:01:37 +0800
-Message-Id: <20210511060137.29856-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S230322AbhEKGEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 02:04:04 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2618 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230111AbhEKGED (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 02:04:03 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FfS1M0VLwzPwLd;
+        Tue, 11 May 2021 13:59:35 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 11 May
+ 2021 14:02:54 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: avoid null pointer access when handling
+ IPU error
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20210510142804.511265-1-jaegeuk@kernel.org>
+ <9df7d088-3580-122b-60a3-799ea665cfeb@huawei.com>
+ <YJoRCwwRDgEH49/P@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <f26b93fa-ac2d-0fa7-0ef5-5534558b84d7@huawei.com>
+Date:   Tue, 11 May 2021 14:02:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <YJoRCwwRDgEH49/P@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On 2021/5/11 13:07, Jaegeuk Kim wrote:
+> On 05/11, Chao Yu wrote:
+>> On 2021/5/10 22:28, Jaegeuk Kim wrote:
+>>>    Unable to handle kernel NULL pointer dereference at virtual address 000000000000001a
+>>>    pc : f2fs_inplace_write_data+0x144/0x208
+>>>    lr : f2fs_inplace_write_data+0x134/0x208
+>>>    Call trace:
+>>>     f2fs_inplace_write_data+0x144/0x208
+>>>     f2fs_do_write_data_page+0x270/0x770
+>>>     f2fs_write_single_data_page+0x47c/0x830
+>>>     __f2fs_write_data_pages+0x444/0x98c
+>>>     f2fs_write_data_pages.llvm.16514453770497736882+0x2c/0x38
+>>>     do_writepages+0x58/0x118
+>>>     __writeback_single_inode+0x44/0x300
+>>>     writeback_sb_inodes+0x4b8/0x9c8
+>>>     wb_writeback+0x148/0x42c
+>>>     wb_do_writeback+0xc8/0x390
+>>>     wb_workfn+0xb0/0x2f4
+>>>     process_one_work+0x1fc/0x444
+>>>     worker_thread+0x268/0x4b4
+>>>     kthread+0x13c/0x158
+>>>     ret_from_fork+0x10/0x18
+>>>
+>>> Fixes: 955772787667 ("f2fs: drop inplace IO if fs status is abnormal")
+>>
+>> My bad, thanks for fixing this.
+>>
+>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>>> ---
+>>>    fs/f2fs/segment.c | 8 +++++---
+>>>    1 file changed, 5 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>>> index c605415840b5..ae875557d693 100644
+>>> --- a/fs/f2fs/segment.c
+>>> +++ b/fs/f2fs/segment.c
+>>> @@ -3577,9 +3577,11 @@ int f2fs_inplace_write_data(struct f2fs_io_info *fio)
+>>>    	if (fio->bio) {
+>>>    		struct bio *bio = *(fio->bio);
+>>> -		bio->bi_status = BLK_STS_IOERR;
+>>> -		bio_endio(bio);
+>>> -		fio->bio = NULL;
+>>> +		if (bio) {
+>>> +			bio->bi_status = BLK_STS_IOERR;
+>>> +			bio_endio(bio);
+>>> +			fio->bio = NULL;
+>>
+>> fio->bio points a bio assigned in writepages(), so it should reset
+>> that bio to NULL by *(fio->bio) = NULL.
+> 
+> Good timing. I hit other kernel panic, and it seems this is the root cause.
+> Let me give it a try. :)
+> 
+> --- v2 ---
+> 
+>   Unable to handle kernel NULL pointer dereference at virtual address 000000000000001a
+>   pc : f2fs_inplace_write_data+0x144/0x208
+>   lr : f2fs_inplace_write_data+0x134/0x208
+>   Call trace:
+>    f2fs_inplace_write_data+0x144/0x208
+>    f2fs_do_write_data_page+0x270/0x770
+>    f2fs_write_single_data_page+0x47c/0x830
+>    __f2fs_write_data_pages+0x444/0x98c
+>    f2fs_write_data_pages.llvm.16514453770497736882+0x2c/0x38
+>    do_writepages+0x58/0x118
+>    __writeback_single_inode+0x44/0x300
+>    writeback_sb_inodes+0x4b8/0x9c8
+>    wb_writeback+0x148/0x42c
+>    wb_do_writeback+0xc8/0x390
+>    wb_workfn+0xb0/0x2f4
+>    process_one_work+0x1fc/0x444
+>    worker_thread+0x268/0x4b4
+>    kthread+0x13c/0x158
+>    ret_from_fork+0x10/0x18
+> 
+> Fixes: 955772787667 ("f2fs: drop inplace IO if fs status is abnormal")
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 
-We recently added leading zeroes in dev_dbg() messages but forgot to
-do the same for the peripheral device name. Adding leading zeroes
-makes it easier to read manufacturer ID and part ID, e.g.:
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-sdw:0:025d:0700:00
-sdw:0:025d:0711:00
-sdw:1:025d:0700:00
-sdw:1:025d:1308:00
-sdw:2:025d:0700:00
-sdw:2:025d:0701:00
-sdw:3:025d:0700:00
-sdw:3:025d:0715:00
-
-The use of '01x' for link_id and unique_id is intentional to show the
-value range in the code, it's understood it does not actually change
-the format.
-
-To avoid problems with git bisect, the same change needs to be applied
-to the Intel SoundWire machine driver, otherwise the components can't
-be found and the card registration fails.
-
-Tested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/slave.c        | 4 ++--
- sound/soc/intel/boards/sof_sdw.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-index ff01b96c6e56..cc1e0fab5905 100644
---- a/drivers/soundwire/slave.c
-+++ b/drivers/soundwire/slave.c
-@@ -39,12 +39,12 @@ int sdw_slave_add(struct sdw_bus *bus,
- 
- 	if (id->unique_id == SDW_IGNORED_UNIQUE_ID) {
- 		/* name shall be sdw:link:mfg:part:class */
--		dev_set_name(&slave->dev, "sdw:%x:%x:%x:%x",
-+		dev_set_name(&slave->dev, "sdw:%01x:%04x:%04x:%02x",
- 			     bus->link_id, id->mfg_id, id->part_id,
- 			     id->class_id);
- 	} else {
- 		/* name shall be sdw:link:mfg:part:class:unique */
--		dev_set_name(&slave->dev, "sdw:%x:%x:%x:%x:%x",
-+		dev_set_name(&slave->dev, "sdw:%01x:%04x:%04x:%02x:%01x",
- 			     bus->link_id, id->mfg_id, id->part_id,
- 			     id->class_id, id->unique_id);
- 	}
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index ecd3f90f4bbe..8df1e69235cc 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -581,13 +581,13 @@ static int create_codec_dai_name(struct device *dev,
- 		comp_index = i + offset;
- 		if (is_unique_device(link, sdw_version, mfg_id, part_id,
- 				     class_id, i)) {
--			codec_str = "sdw:%x:%x:%x:%x";
-+			codec_str = "sdw:%01x:%04x:%04x:%02x";
- 			codec[comp_index].name =
- 				devm_kasprintf(dev, GFP_KERNEL, codec_str,
- 					       link_id, mfg_id, part_id,
- 					       class_id);
- 		} else {
--			codec_str = "sdw:%x:%x:%x:%x:%x";
-+			codec_str = "sdw:%01x:%04x:%04x:%02x:%01x";
- 			codec[comp_index].name =
- 				devm_kasprintf(dev, GFP_KERNEL, codec_str,
- 					       link_id, mfg_id, part_id,
--- 
-2.17.1
-
+Thanks,
