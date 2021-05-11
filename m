@@ -2,158 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8A037AE90
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2464337AE93
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbhEKShW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbhEKShV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:37:21 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966F3C061574;
-        Tue, 11 May 2021 11:36:12 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id t11so29992399lfl.11;
-        Tue, 11 May 2021 11:36:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gwp5GrMLJNGrq/8G5vfZaiCADpEon9ModgzTBM7EDWE=;
-        b=RDXSEPORa0gq10UUn+Jdp12ZwcR7RsAjS+87bbZ1NXeRcfg8KA/AhVU4VwOiq6EVIL
-         O5y5Lo/tm2tOlF3S6kXvQgEHx3ck8M3Qt3Z4DYhv8+xB32ysZ/4IHXvvQXZqK/XFllU2
-         q3ttqtHvpIn7DrESpU6CsVMMkjDN58nQNRon9dQENtWMHe7WsFYZOzgK1xy8GCWq/Zy5
-         84jIepghxdmD2eYrrEAoJwVi1W3NXnP/jMgyGfkHCtMdLiysfnPxmDiSKWEALnDbcuWY
-         CjpjdFW0NdasH0qyjQVo0+j3mS1rl+oRvlRTgSJJKkksH49TQysmaaVq4IdnvZP/k7kp
-         H0lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gwp5GrMLJNGrq/8G5vfZaiCADpEon9ModgzTBM7EDWE=;
-        b=f6Jz44K5U01MbgrRcwSf0LP+1jZ9ermsCW2TA6EzkJjQctwES0rNHpbySiJ3AmmOKW
-         t1hQ6CD7hVtrY7GVuc+VwxHjYUbQMqpx4JxqF2NdKxyztIFeP8RFuupQNPqef9J9Tjah
-         wHLsCeZon7dosSMKK9pwra7yIl1P7uYu0m5Y9SdHFVSfxt+lqUc/16241sSZANIDRGE7
-         4rK61OrIMAKrtzU6XKLSshrSjhPSQk9OBjnTBvdfal5ARRQNQlo0/08qcf1gS2142V01
-         AOzF6eHHEpELjCRAe026FwLRiPL5Gu0IKiGTteluLxJ98kG8RWy5qO/13/2elGJexebs
-         ASLg==
-X-Gm-Message-State: AOAM5325pi8K/j4q6IU7G5DFOFkezMLifTft3Ro6UL/AEh3eqxKq+Wye
-        z2ky0S4irzVoQQHjgDOD7+0OD0JlI7A=
-X-Google-Smtp-Source: ABdhPJwQcmNpbCm2w8w4L7kkGSor24M29XEE5wWRsxakI/+6+fy5q5erqbGBfL4430iGiUcuWY3aPQ==
-X-Received: by 2002:ac2:4ed9:: with SMTP id p25mr21336596lfr.576.1620758170970;
-        Tue, 11 May 2021 11:36:10 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.googlemail.com with ESMTPSA id v12sm3800834ljn.92.2021.05.11.11.36.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 11:36:10 -0700 (PDT)
-Subject: Re: [PATCH v1 2/2] memory: tegra: Enable compile testing for all
- drivers
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        kernel test robot <lkp@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20210510213729.7095-3-digetx@gmail.com>
- <202105112125.VctfC6sX-lkp@intel.com>
- <dd0b550e-76a0-bfbc-9d6f-5d867812046d@gmail.com>
- <06addbf3-0090-b76f-65cf-e0c10d284c69@canonical.com>
- <3ab5d50b-4955-7144-5d1d-d44cb0892d65@gmail.com>
- <YJrARxhVD7QM/GPv@archlinux-ax161>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <ca2be6d1-5bb4-b44d-f306-cdf1dd369a39@gmail.com>
-Date:   Tue, 11 May 2021 21:36:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232013AbhEKShr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:37:47 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:53906 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231439AbhEKShq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 14:37:46 -0400
+Received: from zn.tnic (p200300ec2f0ec70091f309bcd5e4258d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:c700:91f3:9bc:d5e4:258d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E286B1EC0322;
+        Tue, 11 May 2021 20:36:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1620758198;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=c6kPcub0QkpQg0U8CE4f25GTKDhTcZ3eq43HABvPeEo=;
+        b=j0Y2Z5dhTyvHunNAIadIyNC5wt66gGlhAa+BJH2z3kau3oQovjx4aUPc8KShSTPbD+GOth
+        aPUS06xEp0ZQJfsyUmIgOuNeTh/jbqSu0reKT/zwJtY7Q5/2gpYxrY0+qxbv+zP0eGZl/H
+        ZzjRovtffHuN9syxyf5Hu+9DBS1+DlI=
+Date:   Tue, 11 May 2021 20:36:33 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     bp@suse.de, tglx@linutronix.de, mingo@kernel.org, luto@kernel.org,
+        x86@kernel.org, len.brown@intel.com, dave.hansen@intel.com,
+        hjl.tools@gmail.com, Dave.Martin@arm.com, jannh@google.com,
+        mpe@ellerman.id.au, carlos@redhat.com, tony.luck@intel.com,
+        ravi.v.shankar@intel.com, libc-alpha@sourceware.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 5/6] x86/signal: Detect and prevent an alternate
+ signal stack overflow
+Message-ID: <YJrOsbyYhMndI5jd@zn.tnic>
+References: <20210422044856.27250-1-chang.seok.bae@intel.com>
+ <20210422044856.27250-6-chang.seok.bae@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YJrARxhVD7QM/GPv@archlinux-ax161>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <20210422044856.27250-6-chang.seok.bae@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-11.05.2021 20:35, Nathan Chancellor пишет:
-> On Tue, May 11, 2021 at 07:00:34PM +0300, Dmitry Osipenko wrote:
->> 11.05.2021 18:31, Krzysztof Kozlowski пишет:
->> ...
->>                                       ~~~~~~~~~~~~~~~~~~~~~^
->>>>>>> drivers/memory/tegra/tegra124-emc.c:802:26: warning: implicit conversion from 'unsigned long' to 'u32' (aka 'unsigned int') changes value from 18446744071562067985 to 2147483665 [-Wconstant-conversion]
->>>>>                    emc_ccfifo_writel(emc, EMC_ZQ_CAL_LONG_CMD_DEV0, EMC_ZQ_CAL);
->>>>>                    ~~~~~~~~~~~~~~~~~      ^~~~~~~~~~~~~~~~~~~~~~~~
->>>>>    drivers/memory/tegra/tegra124-emc.c:154:36: note: expanded from macro 'EMC_ZQ_CAL_LONG_CMD_DEV0'
->>>>>            (DRAM_DEV_SEL_0 | EMC_ZQ_CAL_LONG | EMC_ZQ_CAL_CMD)
->>>>>             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
->>>>>    13 warnings generated.
->>>>
->>>> This doesn't look like a useful warning from clang, it should see that
->>>> the constant value itself isn't truncated, hence it should be a problem
->>>> of clang. Do you think it's okay to ignore this nonsense?
->>>
->>> I admit I also do not see the real issue here. The DRAM_DEV_SEL_0 fits
->>> in u32 and there is no other bitwise arithmetic than just OR, so why
->>> clang assumes it can have 32 most signifcant bits toggled on?
->>>
->>> +Cc Nathan and Nick,
->>> Maybe you could shed some light here on this warning?
->>>
->>> Dmitry,
->>> In general you should not ignore it because:
->>> 1. This breaks allyesconfig with clang on powerpc (or it is one of the
->>> stoppers),
->>> 2. We might want in some future to build it with clang.
->>
->> I meant to ignore it from the perspective of the memory drivers, i.e. it
->> likely should be fixed in clang and not worked around in the code. Thank
->> you for pinging the right people.
+On Wed, Apr 21, 2021 at 09:48:55PM -0700, Chang S. Bae wrote:
+> The kernel pushes context on to the userspace stack to prepare for the
+> user's signal handler. When the user has supplied an alternate signal
+> stack, via sigaltstack(2), it is easy for the kernel to verify that the
+> stack size is sufficient for the current hardware context.
 > 
-> I do not think this is a bug in clang, gcc warns the same (just not here
-> in this case): https://godbolt.org/z/e9GWobMnd
-> 
-> DRAM_DEV_SEL_0 and DRAM_DEV_SEL_1 are implicitly signed integers because
-> there is no suffix on the literal 1. DRAM_DEV_SEL_0 is 2 << 30, which
-> can be turned into 1 << 31. That is equal to INT_MAX + 1, which then
-> overflows and becomes INT_MIN (undefined behavior). INT_MIN is then
-> promoted to unsigned long because EMC_ZQ_CAL_LONG and EMC_ZQ_CAL_CMD are
-> unsigned long due to the BIT macro, resulting in the gigantic number
-> that clang reports above.
-> 
-> I assume that this driver only runs on hardware where unsigned int is
-> the same size as unsigned long, meaning this problem is merely
-> theoretical?
+> Check if writing the hardware context to the alternate stack will exceed
+> it's size. If yes, then instead of corrupting user-data and proceeding with
+> the original signal handler, an immediate SIGSEGV signal is delivered.
 
-Yes and no. The driver is built only for ARM32 today, but it's also
-usable on ARM64, we just never got around to enable it for the 64bit
-Tegra132 SoC.
+So I did play with this more and modified
+tools/testing/selftests/sigaltstack/sas.c, see diff at the end. It uses
+MINSIGSTKSZ as the alt stack size and with it, sas.c does:
 
-> Regardless, defining DRAM_DEV_SEL_{0,1} with the BIT macro fixes the
-> warning for me and should make everything work as expected.
-> 
-> diff --git a/drivers/memory/tegra/tegra124-emc.c b/drivers/memory/tegra/tegra124-emc.c
-> index 5699d909abc2..a21ca8e0841a 100644
-> --- a/drivers/memory/tegra/tegra124-emc.c
-> +++ b/drivers/memory/tegra/tegra124-emc.c
-> @@ -272,8 +272,8 @@
->  #define EMC_PUTERM_ADJ				0x574
+# [NOTE]        the stack size is 2048, AT_MINSIGSTKSZ: 3632
+TAP version 13
+1..3
+ok 1 Initial sigaltstack state was SS_DISABLE
+# sstack: 0x7fdc2cbf1000, ss_size: 2048
+# [NOTE]        sigaltstack success
+# [NOTE]        Will mmap user stack
+# [NOTE]        Will getcontext
+# [NOTE]        Will makecontext
+# [NOTE]        Will raise SIGUSR1
+Segmentation fault (core dumped)
+
+and dmesg has:
+
+[ 2245.641230] signal: get_sigframe: nested_altstack: 0, sp: 0x7ffe50a4d9d0, ka->sa.sa_flags: 0xc000004
+[ 2245.641240] signal: get_sigframe: SA_ONSTACK, sas_ss_flags(sp): 0x0
+[ 2245.641243] signal: get_sigframe: sp: 0x7fdc2cbf1800, entering_altstack
+[ 2245.641245] signal: get_sigframe: nested_altstack: 0, entering_altstack: 1, __on_sig_stack: 0
+
+Those are just debugging stuff, ignore them.
+
+[ 2245.641249] signal: sas[8890] overflowed sigaltstack
+
+So we do detect those overflows now.
+
+I clumsily tried to register a SIGSEGV handler with
+
+        act.sa_sigaction = my_sigsegv;
+        sigaction(SIGSEGV, &act, NULL);
+
+but that doesn't fire - task gets killed. Maybe I'm doing it wrong.
+
+> @@ -272,8 +281,15 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+>  	 * If we are on the alternate signal stack and would overflow it, don't.
+>  	 * Return an always-bogus address instead so we will die with SIGSEGV.
+>  	 */
+> -	if (onsigstack && !likely(on_sig_stack(sp)))
+> +	if (unlikely((nested_altstack || entering_altstack) &&
+> +		     !__on_sig_stack(sp))) {
+> +
+> +		if (show_unhandled_signals && printk_ratelimit())
+> +			pr_info("%s[%d] overflowed sigaltstack",
+
+					This needs a "\n" at the end of the
+					string.
+
+> +				current->comm, task_pid_nr(current));
+> +
+>  		return (void __user *)-1L;
+> +	}
 >  
->  #define DRAM_DEV_SEL_ALL			0
-> -#define DRAM_DEV_SEL_0				(2 << 30)
-> -#define DRAM_DEV_SEL_1				(1 << 30)
-> +#define DRAM_DEV_SEL_0				BIT(31)
-> +#define DRAM_DEV_SEL_1				BIT(30)
->  
->  #define EMC_CFG_POWER_FEATURES_MASK		\
->  	(EMC_CFG_DYN_SREF | EMC_CFG_DRAM_ACPD | EMC_CFG_DRAM_CLKSTOP_SR | \
-> 
+>  	/* save i387 and extended state */
+>  	ret = copy_fpstate_to_sigframe(*fpstate, (void __user *)buf_fx, math_size);
 
-Thank you for the clarification. So it's actually the code which needs
-to be fixed.
+---
+diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+index c9c254d5791e..19eb9760e0b5 100644
+--- a/arch/x86/kernel/signal.c
++++ b/arch/x86/kernel/signal.c
+@@ -234,6 +234,12 @@ static unsigned long align_sigframe(unsigned long sp)
+ 	return sp;
+ }
+ 
++#define dbg(fmt, args...)					\
++({								\
++	if (!strcmp(current->comm, "sas"))			\
++		 pr_err("%s: " fmt "\n", __func__, ##args);	\
++})
++
+ static void __user *
+ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 	     void __user **fpstate)
+@@ -250,8 +256,14 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 	if (IS_ENABLED(CONFIG_X86_64))
+ 		sp -= 128;
+ 
++	dbg("nested_altstack: %d, sp: 0x%lx, ka->sa.sa_flags: 0x%lx",
++	    nested_altstack, sp, ka->sa.sa_flags);
++
+ 	/* This is the X/Open sanctioned signal stack switching.  */
+ 	if (ka->sa.sa_flags & SA_ONSTACK) {
++
++		dbg("SA_ONSTACK, sas_ss_flags(sp): 0x%x", sas_ss_flags(sp));
++
+ 		/*
+ 		 * This checks nested_altstack via sas_ss_flags(). Sensible
+ 		 * programs use SS_AUTODISARM, which disables that check, and
+@@ -260,6 +272,7 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 		if (sas_ss_flags(sp) == 0) {
+ 			sp = current->sas_ss_sp + current->sas_ss_size;
+ 			entering_altstack = true;
++			dbg("sp: 0x%lx, entering_altstack", sp);
+ 		}
+ 	} else if (IS_ENABLED(CONFIG_X86_32) &&
+ 		   !nested_altstack &&
+@@ -277,6 +290,9 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 
+ 	sp = align_sigframe(sp - frame_size);
+ 
++	dbg("nested_altstack: %d, entering_altstack: %d, __on_sig_stack: %d",
++	     nested_altstack, entering_altstack, __on_sig_stack(sp));
++
+ 	/*
+ 	 * If we are on the alternate signal stack and would overflow it, don't.
+ 	 * Return an always-bogus address instead so we will die with SIGSEGV.
+diff --git a/tools/testing/selftests/sigaltstack/Makefile b/tools/testing/selftests/sigaltstack/Makefile
+index 3e96d5d47036..b5ac8f9f0c7e 100644
+--- a/tools/testing/selftests/sigaltstack/Makefile
++++ b/tools/testing/selftests/sigaltstack/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-CFLAGS = -Wall
++CFLAGS = -Wall -g
+ TEST_GEN_PROGS = sas
+ 
+ include ../lib.mk
+diff --git a/tools/testing/selftests/sigaltstack/sas.c b/tools/testing/selftests/sigaltstack/sas.c
+index c53b070755b6..f4c4f5418a08 100644
+--- a/tools/testing/selftests/sigaltstack/sas.c
++++ b/tools/testing/selftests/sigaltstack/sas.c
+@@ -39,6 +39,15 @@ struct stk_data {
+ 	int flag;
+ };
+ 
++static char *my_strcpy(char *dest, const char *src)
++{
++	char *tmp = dest;
++
++	while ((*dest++ = *src++) != '\0')
++		/* nothing */;
++	return tmp;
++}
++
+ void my_usr1(int sig, siginfo_t *si, void *u)
+ {
+ 	char *aa;
+@@ -60,7 +69,7 @@ void my_usr1(int sig, siginfo_t *si, void *u)
+ 	aa = alloca(1024);
+ 	assert(aa);
+ 	p = (struct stk_data *)(aa + 512);
+-	strcpy(p->msg, msg);
++	my_strcpy(p->msg, msg);
+ 	p->flag = 1;
+ 	ksft_print_msg("[RUN]\tsignal USR1\n");
+ 	err = sigaltstack(NULL, &stk);
+@@ -101,6 +110,11 @@ void my_usr2(int sig, siginfo_t *si, void *u)
+ 	}
+ }
+ 
++void my_sigsegv(int sig, siginfo_t *si, void *u)
++{
++	ksft_print_msg("[NOTE]\tsignal SEGV\n");
++}
++
+ static void switch_fn(void)
+ {
+ 	ksft_print_msg("[RUN]\tswitched to user ctx\n");
+@@ -115,18 +129,33 @@ int main(void)
+ 	int err;
+ 
+ 	/* Make sure more than the required minimum. */
+-	stack_size = getauxval(AT_MINSIGSTKSZ) + SIGSTKSZ;
+-	ksft_print_msg("[NOTE]\tthe stack size is %lu\n", stack_size);
++//	stack_size = getauxval(AT_MINSIGSTKSZ) + SIGSTKSZ;
++	stack_size = MINSIGSTKSZ;
++	ksft_print_msg("[NOTE]\tthe stack size is %lu, AT_MINSIGSTKSZ: %lu\n",
++			stack_size, getauxval(AT_MINSIGSTKSZ));
+ 
+ 	ksft_print_header();
+ 	ksft_set_plan(3);
+ 
++	/* clear signal set */
+ 	sigemptyset(&act.sa_mask);
++
++	/* a registered stack_t will be used */
+ 	act.sa_flags = SA_ONSTACK | SA_SIGINFO;
++
++	/* SA_SIGINFO means sa_sigaction specifies the signal handler */
+ 	act.sa_sigaction = my_usr1;
++
++	/* change the signal action on SIGUSR1 using @act desc */
+ 	sigaction(SIGUSR1, &act, NULL);
++
++	/* same for SIGUSR2 */
+ 	act.sa_sigaction = my_usr2;
+ 	sigaction(SIGUSR2, &act, NULL);
++
++	act.sa_sigaction = my_sigsegv;
++	sigaction(SIGSEGV, &act, NULL);
++
+ 	sstack = mmap(NULL, stack_size, PROT_READ | PROT_WRITE,
+ 		      MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0);
+ 	if (sstack == MAP_FAILED) {
+@@ -150,6 +179,8 @@ int main(void)
+ 
+ 	stk.ss_sp = sstack;
+ 	stk.ss_size = stack_size;
++	ksft_print_msg("sstack: 0x%lx, ss_size: %d\n", sstack, stack_size);
++
+ 	stk.ss_flags = SS_ONSTACK | SS_AUTODISARM;
+ 	err = sigaltstack(&stk, NULL);
+ 	if (err) {
+@@ -169,21 +200,45 @@ int main(void)
+ 					strerror(errno));
+ 			return EXIT_FAILURE;
+ 		}
++	} else {
++		ksft_print_msg("[NOTE]\tsigaltstack success\n");
+ 	}
+ 
++	ksft_print_msg("[NOTE]\tWill mmap user stack\n");
++
+ 	ustack = mmap(NULL, stack_size, PROT_READ | PROT_WRITE,
+ 		      MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0);
+ 	if (ustack == MAP_FAILED) {
+ 		ksft_exit_fail_msg("mmap() - %s\n", strerror(errno));
+ 		return EXIT_FAILURE;
+ 	}
++
++	ksft_print_msg("[NOTE]\tWill getcontext\n");
++
++	/* init @uc to the currently active context */
+ 	getcontext(&uc);
++
++	/* do not resume to other context when current context terminates */
+ 	uc.uc_link = NULL;
++
++	/* set up the stack to use */
+ 	uc.uc_stack.ss_sp = ustack;
+ 	uc.uc_stack.ss_size = stack_size;
++
++	ksft_print_msg("[NOTE]\tWill makecontext\n");
++
++	/*
++	 * Run @switch_fn when this context is activated with setcontext or
++	 * swapcontext.
++	 */
+ 	makecontext(&uc, switch_fn, 0);
++
++	ksft_print_msg("[NOTE]\tWill raise SIGUSR1\n");
++
+ 	raise(SIGUSR1);
+ 
++	ksft_print_msg("[NOTE]\tWill sigaltstack\n");
++
+ 	err = sigaltstack(NULL, &stk);
+ 	if (err) {
+ 		ksft_exit_fail_msg("sigaltstack() - %s\n", strerror(errno));
 
-The DRAM_DEV_SEL is a enum, hence I'll add patch in v2 that will make
-the values unsigned.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
