@@ -2,120 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC8937A9E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044B437A9E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbhEKOwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbhEKOwk (ORCPT
+        id S231783AbhEKOxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:53:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39289 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231461AbhEKOxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:52:40 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A3DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:51:33 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id c22so2077416ejd.12
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:51:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9kHw7pNQPBdOqfK9M7S599Sb7absGKA5ntaivvMQmEc=;
-        b=l0Aj1l8G2tqpw7hRA4dGCHbFOrXIZiYU2naM9qT3fCkEMGIc0gXlGSAv8a+WQdIAPY
-         ZGV9xQLO3HDfolvdpmkZBDovyF0nTVTrPLC/IYDex1QtrZ/hJvOb1asl0eAEu/HPMI4c
-         SXKdR1Q6XrkIMOQU4RaChHHCvrg7axYULBh24acONkhEXfGIKZCCQNsbe+7PWYGBYmD/
-         Uid2ak7cToXSBBgmMo9AgcvEWSGBe/mLETiEFrUMqet3oqqedVlfqOPeEUKuTlbiK7XF
-         LsVk96OWZsH4/fVQDWbbnSyZSKkeR3rb6wKSQCJl6l+N/OQB52UBi4GquM7UIPrYpd1g
-         5P0A==
+        Tue, 11 May 2021 10:53:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620744723;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sHftXcGxDoMDs0PAy4TpI3nYx8as+/F1eL0Owu3OX60=;
+        b=XtV4tjGHKaPlEdiHAm3f9r2ECBNNb+tkr0bSLhPHnGqSrdw1du3hWkE1uIDplMaAXdnZuo
+        2ujTWw4XH60gX2iuqIr2HgSswDadhvD78BrS8+izWi/OivIBLVAJk09uuyOeGa+P46D/zW
+        Vq6fDKNltMf/do1LB/xwrApcYhdt9Ug=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-A6EfumgFNw2d6tVdiVAXVw-1; Tue, 11 May 2021 10:52:01 -0400
+X-MC-Unique: A6EfumgFNw2d6tVdiVAXVw-1
+Received: by mail-qk1-f200.google.com with SMTP id d15-20020a05620a136fb02902e9e93c69c8so14544461qkl.23
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:52:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9kHw7pNQPBdOqfK9M7S599Sb7absGKA5ntaivvMQmEc=;
-        b=QwDx3ykfOvSUCQuACt0PMc/8tEvm9gFRrBvLjMyCRWIzoMeWt0IaCPDlMRZFyGZA4b
-         ZKWZ+pSyxZdZ9YmduCE8Ti8LQSbSCXK7gIzrtXy1vzzUTACGdxFBuBAXPWMODcBvXGTT
-         mxdYOBe3GykK3+0QUQ3W+YvTSSO6zf8Foa8OKhVceqA3YlAxLNiIKR59WAQoH7lwST4f
-         mPoCsyRU4ROE2fqGFGgmxsmyK9M4nCCuJ13riUeJWGw61Mj9CEEEpB2/1draPB9BoB3z
-         E4bbqxxEozEEixpjkXEMhJl1vVcSMGZXWf8boe8pw3u7XpuhD1b39t03grpH/PhwwhdA
-         Bimg==
-X-Gm-Message-State: AOAM533UHPy3qoGmnv/83WOffJW6cVcuPle9ZRnrfb5MuGzMkI+RtNFS
-        C4Df8ZG/nnxPM/o/t2GQVzrLFpntskD1caAbxMO0
-X-Google-Smtp-Source: ABdhPJxeyUx5yfm5j/7o9DvQcbv6fmcTzE5yKV5g6sTibWQ3azkQDv6Zn7Y6AnXA+45QWeskABmI+kLB7266SZdsetk=
-X-Received: by 2002:a17:906:f283:: with SMTP id gu3mr31849943ejb.91.1620744692432;
- Tue, 11 May 2021 07:51:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sHftXcGxDoMDs0PAy4TpI3nYx8as+/F1eL0Owu3OX60=;
+        b=o+eRHneTFdyP1Qxt6ac5JeUzo+uomMfehjPWWbUwp9OAinrtWymIWJ5WRL1zoxcGfM
+         QSfe7z3tfrZIl6QszvQGYXvkPfbpXz0DBRvoMym6FyqHRydkeG5hB/Gd0dW1PlQDgL7X
+         AeiVQ9/+ACH4TcOZ3fWtU9A+NMIjbzZwJ2ZAYp00F/L4Jo2MGIR8aRYTnUvrgQQzWdAW
+         eqDBLyAaPDVZos/P6y7xiMs2x6VHpNXhIue8ASLAFBLN8WuOzeLZItd6pvtWnSUPUepM
+         zWuxdV1exzzC4ClBAV8zSQhRWgKJ0R8mwBMD7xaY8XsSD6G2YTMY0j2YOI0FpbKmFq2G
+         vLcw==
+X-Gm-Message-State: AOAM531Wtq9XKvRfZ0Y5o4YYLph4QM2Z+JQdwQ7Gf55FOx5yaKVOoTWX
+        natvoDNOngy7K2Po/iE/JyUQgfbIIygl2LWEXlck+nO9Qaew6n2UiXoSEgW2Cr/CMK4Zlwln9XX
+        d6pvzloQ5JK+IJtnhHvs26ehI
+X-Received: by 2002:a37:9a97:: with SMTP id c145mr12168081qke.47.1620744720212;
+        Tue, 11 May 2021 07:52:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxmph64tgTWkLHt+EmIR2ydfHRwt2RU0GH7V2n07ELog+qcaI8BvqVmh+g0pRHpHIzf5JIhhg==
+X-Received: by 2002:a37:9a97:: with SMTP id c145mr12168061qke.47.1620744720034;
+        Tue, 11 May 2021 07:52:00 -0700 (PDT)
+Received: from horse (pool-173-76-174-238.bstnma.fios.verizon.net. [173.76.174.238])
+        by smtp.gmail.com with ESMTPSA id b23sm7927757qtq.0.2021.05.11.07.51.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 07:51:59 -0700 (PDT)
+Date:   Tue, 11 May 2021 10:51:57 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>, kbuild@lists.01.org,
+        lkp@intel.com, kbuild-all@lists.01.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Liu Bo <bo.liu@linux.alibaba.com>,
+        Peng Tao <tao.peng@linux.alibaba.com>
+Subject: Re: [kbuild] fs/fuse/dax.c:113 fuse_setup_one_mapping() warn: should
+ 'start_idx << 21' be a 64 bit type?
+Message-ID: <20210511145157.GB238488@horse>
+References: <202105032112.SJqOaXpO-lkp@intel.com>
+ <CAOssrKcwq_wFc+B72Vvkaai-TgXoZPTJ9fvBu+BzUg4idnFoZw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210423103533.30121-1-zhe.he@windriver.com> <20210423103533.30121-3-zhe.he@windriver.com>
- <CAHC9VhQXawubMsKg2F282k-bJqZFT=vNurZAeAPKLU1ZZpYKeg@mail.gmail.com> <c8493e20-c7fc-67e4-f2cc-81601535f21a@windriver.com>
-In-Reply-To: <c8493e20-c7fc-67e4-f2cc-81601535f21a@windriver.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 11 May 2021 10:51:21 -0400
-Message-ID: <CAHC9VhTEcp0KHHt8fNgEXXUHtL+yJh9MtjEBrnLmT-Oumo-CVA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] audit: Use syscall_get_return_value to get syscall
- return code in audit_syscall_exit
-To:     He Zhe <zhe.he@windriver.com>
-Cc:     oleg@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOssrKcwq_wFc+B72Vvkaai-TgXoZPTJ9fvBu+BzUg4idnFoZw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 11:19 PM He Zhe <zhe.he@windriver.com> wrote:
-> On 5/11/21 6:38 AM, Paul Moore wrote:
-> > On Fri, Apr 23, 2021 at 6:36 AM He Zhe <zhe.he@windriver.com> wrote:
-> >> regs_return_value for some architectures like arm64 simply retrieve
-> >> register value from pt_regs without sign extension in 32-bit compatible
-> >> case and cause audit to have false syscall return code. For example,
-> >> 32-bit -13 would be treated as 4294967283 below.
-> >>
-> >> type=SYSCALL msg=audit(1611110715.887:582): arch=40000028 syscall=322
-> >> success=yes exit=4294967283
-> >>
-> >> We just added proper sign extension in syscall_get_return_value which
-> >> should be used instead.
-> >>
-> >> Signed-off-by: He Zhe <zhe.he@windriver.com>
-> >> ---
-> >> v1 to v2: No change
-> >>
-> >>  include/linux/audit.h | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, May 11, 2021 at 04:21:32PM +0200, Miklos Szeredi wrote:
+> On Mon, May 3, 2021 at 3:27 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
 > >
-> > Perhaps I missed it but did you address the compile error that was
-> > found by the kernel test robot?
->
-> I sent a patch adding syscall_get_return_value for alpha to fix this bot warning.
-> https://lore.kernel.org/lkml/20210426091629.45020-1-zhe.he@windriver.com/
-> which can be found in this mail thread.
-
-At the very least you should respin the patchset with the alpha fix
-included in the patchset; it's a bit messy otherwise.
-
-> >> diff --git a/include/linux/audit.h b/include/linux/audit.h
-> >> index 82b7c1116a85..135adbe22c19 100644
-> >> --- a/include/linux/audit.h
-> >> +++ b/include/linux/audit.h
-> >> @@ -334,7 +334,7 @@ static inline void audit_syscall_exit(void *pt_regs)
-> >>  {
-> >>         if (unlikely(audit_context())) {
-> >>                 int success = is_syscall_success(pt_regs);
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+> > head:   9ccce092fc64d19504fa54de4fd659e279cc92e7
+> > commit: c2d0ad00d948de73c78f05d2b3e5bdfa605035cc virtiofs: implement dax read/write operations
+> > config: i386-randconfig-m031-20210503 (attached as .config)
+> > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 > >
-> > Since we are shifting to use syscall_get_return_value() below, would
-> > it also make sense to shift to using syscall_get_error() here instead
-> > of is_syscall_success()?
->
-> In [PATCH v2 1/3], is_syscall_success calls syscall_get_return_value to take
-> care of the sign extension issue. Keeping using is_syscall_success is to not
-> potentially changing other architectures' behavior.
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> >
+> > New smatch warnings:
+> > fs/fuse/dax.c:113 fuse_setup_one_mapping() warn: should 'start_idx << 21' be a 64 bit type?
+> 
+> Yes.
+> 
+> But does it make any sense to enable virtiofs and/or dax on 32bit
+> guest? We sure aren't testing it, as seen from this bug report.
+> 
+> Vivek, what do you think?
 
-That was only for aarch64, right?  What about all the other
-architectures?  The comment block for syscall_get_return_value()
-advises that syscall_get_error() should be used and that appears to be
-what is done in the ptrace code.
+Hi Miklos,
 
--- 
-paul moore
-www.paul-moore.com
+We sure are not testing it but looks like it is possible to compile it
+on 32 bit systems. 
+
+I can't think of a good reason that why virtiofs DAX should be disabled on 
+32 bit systems. So I sent a patch series to fix this warning here.
+
+https://lore.kernel.org/linux-fsdevel/20210506184304.321645-1-vgoyal@redhat.com/
+
+Thanks
+Vivek
+
