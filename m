@@ -2,149 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8563637AF76
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 908C937AF78
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbhEKTkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 15:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
+        id S232208AbhEKTkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 15:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbhEKTkL (ORCPT
+        with ESMTP id S232141AbhEKTkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 15:40:11 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60BBC061574;
-        Tue, 11 May 2021 12:39:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
-        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
-        bh=eNRIlQQZWCazYaxWhuouwitveyTw50B3VUes/EwHhZ4=; b=LiM+e93c7yw8r/CqMs2gl1vsos
-        FdVU4ovs1ULs8DQN1XWcVtufZq+x54QB1kFCIFh6epSB3XjGfHIfbqmKbeqa1nKFnaAidCg93bW0v
-        6MmN8neM8XMb13hF23AqHPw3PVxiavFLIeMsbOtZK4/gOtztq5H6yqumzFKoWk4hm9eLNw7Py6oom
-        IWTpVXy+Q1DP6C6NmdfdGZp2rNaqBVjzSkZmhCcLNsAUDk8Qw/9dpWBZQInxVY0RULsWYqJ6eK6Ug
-        rtyjiKE6D6Gbz1LhRugEgAHGRTqk1Bg/+87hPtf1mmM1SJ/1NCsIQ0BvvIEfay4nEHjaS6scmwAcf
-        UfBHHgsw==;
-Received: from [2601:1c0:6280:3f0:d7c4:8ab4:31d7:f0ba]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgYDf-009sZV-4j; Tue, 11 May 2021 19:39:03 +0000
-Subject: Re: mmotm 2021-05-10-21-46 uploaded (mm/*)
-To:     akpm@linux-foundation.org, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
-References: <20210511044719.tWGZA2U3A%akpm@linux-foundation.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e50de603-ab1d-72f7-63f5-c1fc92c5c7be@infradead.org>
-Date:   Tue, 11 May 2021 12:39:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 11 May 2021 15:40:17 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22356C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:39:11 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id i14so16509218pgk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:39:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PSahpPiUc5NKlDdMwb0qNt2ijCCQMz01ED1EXmqSDhI=;
+        b=RMj+4EQb/aRuO2A1yJ0dCHholXt9fKvAu8HwhU86akDazzDLxb4yDhKAxxKHGtAhO+
+         86FQBFH5Y82XbqNv6+iL++1iTewno1EvqwwIXvvWpRx8bWjTvpGNEx0udu4iE2NLwe/V
+         /3g4jmcVeyUigddLFMrO/tQkjF4YLDmQLRlAIOZHtnA8BmEjnAPVRda1uuMtc8uaATe6
+         2ROU6OWc2xLskRBiS4CqvEoYoQSwXGQAruOwoI/0Js8tYupLxAyVsTb5I4TFKNQYQBsH
+         O3npy1g2LZ3EXSY1q05D0N072coptdd6Vli/wBMF1lcDClwejZuDN0x3UNJL+Tadd3NY
+         BFWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PSahpPiUc5NKlDdMwb0qNt2ijCCQMz01ED1EXmqSDhI=;
+        b=AJUVG6sU30X5qyCw/rSMfBf/gM08oP3sTn8db5iDYkNfBZIYblEVsq/Ud2GR+i8k/D
+         uPKd2C4/PUQeRsEAG8ylyoXmzBqRvihG4vsRJvR6e0bR+xk5H+NzlDw5TKPSBnwnvfzD
+         mpRmIF1/3NFZ0v3Lvd4MJyawHmnpl2Q3KcpFSvXkKz3bjQ/cwA1EjiWCg+Uh/Ce/sV9N
+         5aiQLnwnv3fgUt31OnmV0MMBYVfnmIfGeI6OnaH5Yii/eqviGESwEjULqSA5KRPBoXy8
+         Ic6xvKjIVMYWWw/f4ADIMy97U3VQ/u4gDOP9+9QLgyNRc6bq6l8i1Pk2+RKqMbENONPp
+         J1GA==
+X-Gm-Message-State: AOAM532W6hvmJbxbYdjeTjliRLXVui8ffS6I/YfJ2/uyikhoEUOVTn8k
+        GO1JBHxizp+9oXU7v5jYzH1tmg==
+X-Google-Smtp-Source: ABdhPJy0QyoG/x4CMUJXHO5sAdjw2fW0Lb6xqTo+sdK0LLlv7pBZXhwhFqStH9BhS91SP8hhdlIYAw==
+X-Received: by 2002:aa7:908c:0:b029:250:b584:a406 with SMTP id i12-20020aa7908c0000b0290250b584a406mr31778622pfa.44.1620761950492;
+        Tue, 11 May 2021 12:39:10 -0700 (PDT)
+Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id i3sm2711436pjv.30.2021.05.11.12.39.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 12:39:09 -0700 (PDT)
+Subject: Re: [PATCH for-5.14/block] blkcg: drop CLONE_IO check in
+ blkcg_can_attach()
+To:     Tejun Heo <tj@kernel.org>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Begunkov <asml.silence@gmail.com>
+References: <YJrTvHbrRDbJjw+S@slm.duckdns.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6f89d141-fc55-a41e-4783-649fbd7e34ee@kernel.dk>
+Date:   Tue, 11 May 2021 13:39:07 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210511044719.tWGZA2U3A%akpm@linux-foundation.org>
+In-Reply-To: <YJrTvHbrRDbJjw+S@slm.duckdns.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/21 9:47 PM, akpm@linux-foundation.org wrote:
-> The mm-of-the-moment snapshot 2021-05-10-21-46 has been uploaded to
+On 5/11/21 12:58 PM, Tejun Heo wrote:
+> blkcg has always rejected to attach if any of the member tasks has shared
+> io_context. The rationale was that io_contexts can be shared across
+> different cgroups making it impossible to define what the appropriate
+> control behavior should be. However, this check causes more problems than it
+> solves:
 > 
->    https://www.ozlabs.org/~akpm/mmotm/
+> * The check prevents controller enable and migrations but not CLONE_IO
+>   itself, which can lead to surprises as the outcome changes depending on
+>   the order of operations.
 > 
-> mmotm-readme.txt says
+> * Sharing within a cgroup is fine but the check can't distinguish that. This
+>   leads to unnecessary conflicts with the recent CLONE_IO usage in io_uring.
 > 
-> README for mm-of-the-moment:
-> 
-> https://www.ozlabs.org/~akpm/mmotm/
-> 
-> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-> more than once a week.
-> 
-> You will need quilt to apply these patches to the latest Linus release (5.x
-> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-> https://ozlabs.org/~akpm/mmotm/series
-> 
-> The file broken-out.tar.gz contains two datestamp files: .DATE and
-> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-> followed by the base kernel version against which this patch series is to
-> be applied.
-> 
-> This tree is partially included in linux-next.  To see which patches are
-> included in linux-next, consult the `series' file.  Only the patches
-> within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
-> linux-next.
-> 
-> 
-> A full copy of the full kernel tree with the linux-next and mmotm patches
-> already applied is available through git within an hour of the mmotm
-> release.  Individual mmotm releases are tagged.  The master branch always
-> points to the latest release, so it's constantly rebasing.
-> 
-> 	https://github.com/hnaz/linux-mm
-> 
-> The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
-> contains daily snapshots of the -mm tree.  It is updated more frequently
-> than mmotm, and is untested.
-> 
-> A git copy of this tree is also available at
-> 
-> 	https://github.com/hnaz/linux-mm
+> io_context sharing doesn't make any difference for rq_qos based controllers
+> and the way it's used is safe as long as tasks aren't migrated dynamically
+> which is the vast majority of use cases. While we can try to make the check
+> more precise to avoid false positives, the added complexity doesn't seem
+> worthwhile. Let's just drop blkcg_can_attach().
 
-
-Lots of various mm/ build errors:
-
-Many of:
-In file included from ../arch/x86/kvm/../../../virt/kvm/kvm_main.c:47:0:
-../include/linux/hugetlb.h:340:30: error: parameter 6 (‘mode’) has incomplete type
-       enum mcopy_atomic_mode mode,
-                              ^~~~
-../include/linux/hugetlb.h:335:19: error: function declaration isn’t a prototype [-Werror=strict-prototypes]
- static inline int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
-                   ^~~~~~~~~~~~~~~~~~~~~~~~
-
-
-Many of:
-../mm/slab_common.c:754:8: error: array index in initializer exceeds array bounds
-  .name[KMALLOC_RECLAIM] = "kmalloc-rcl-" #__short_size, \
-        ^
-../mm/slab_common.c:766:2: note: in expansion of macro ‘INIT_KMALLOC_INFO’
-  INIT_KMALLOC_INFO(0, 0),
-  ^~~~~~~~~~~~~~~~~
-../mm/slab_common.c:754:8: note: (near initialization for ‘kmalloc_info[0].name’)
-  .name[KMALLOC_RECLAIM] = "kmalloc-rcl-" #__short_size, \
-        ^
-../mm/slab_common.c:766:2: note: in expansion of macro ‘INIT_KMALLOC_INFO’
-  INIT_KMALLOC_INFO(0, 0),
-  ^~~~~~~~~~~~~~~~~
-
-One of:
-In file included from <command-line>:0:0:
-In function ‘__mm_zero_struct_page.isra.96’,
-    inlined from ‘__init_single_page.isra.97’ at ../mm/page_alloc.c:1494:2,
-    inlined from ‘init_unavailable_range.isra.98’ at ../mm/page_alloc.c:6496:3:
-./../include/linux/compiler_types.h:328:38: error: call to ‘__compiletime_assert_253’ declared with attribute error: BUILD_BUG_ON failed: sizeof(struct page) > 80
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-                                      ^
-./../include/linux/compiler_types.h:309:4: note: in definition of macro ‘__compiletime_assert’
-    prefix ## suffix();    \
-    ^~~~~~
-./../include/linux/compiler_types.h:328:2: note: in expansion of macro ‘_compiletime_assert’
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-  ^~~~~~~~~~~~~~~~~~~
-../include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
- #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-                                     ^~~~~~~~~~~~~~~~~~
-../include/linux/build_bug.h:50:2: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
-  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-  ^~~~~~~~~~~~~~~~
-../include/linux/mm.h:169:2: note: in expansion of macro ‘BUILD_BUG_ON’
-  BUILD_BUG_ON(sizeof(struct page) > 80);
-  ^~~~~~~~~~~~
-
+Applied, thanks.
 
 -- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Jens Axboe
 
