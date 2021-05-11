@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E07ED379BBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3157379BC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhEKA5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 20:57:11 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:36297 "EHLO
+        id S230124AbhEKA51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 20:57:27 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:45457 "EHLO
         mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229807AbhEKA5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229934AbhEKA5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 10 May 2021 20:57:07 -0400
 Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
         (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14B0tdw92504247
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14B0tdwA2504247
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
         Mon, 10 May 2021 17:55:51 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14B0tdw92504247
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14B0tdwA2504247
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
         s=2021042801; t=1620694551;
-        bh=W5h3PopoE+8MCUpVyxR2cKife06YcaZ4CXNONqZHdV4=;
+        bh=xkymiY+8+CNIxsNAedZC22OCKPl0xAPTK6wwAANss68=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ai6LNybksVsT0hzJ1ck9EuuwIMtWQLolLAf0lvTA+TUWm9iwQmSOOAegL7nEfhm64
-         ARyrBHqzD8GDdSH6tAl0n859Sfn5r6y/65P9ECRcqVL8fliurfU2SzGZD+Kh0kIuVC
-         l7bgc2mdPmEoMB3puxFn0bjGQlzv670tfeYGbUQ04uWzwJjhxHYyzmzb82EZCgemO5
-         UUpbpFdlC/jJAnfJR4dJsiWvov9VdN6E6vV+QPuHIgu1qpDKaOzTDLFtnx5jC8tZel
-         uAUEF1kIder6+2BzNfAfBGFkRantA133pDQJiiplfsg8GbljhAnnzB8Snl2tenO+QF
-         ZmBrr9JbCUlbw==
+        b=g4zQdja8QHTFnL5/D4O+bxSzoMo6fsDRfirHuEUrYDS32Z3kZoiwhT2+5XLiXLLL6
+         aMDRJOQA9uCDjc8lqmzQ23eFSzTSLS3Qq062NUbS4f8r79vpqPTgZHk09SY0j30JR3
+         oRgVE8RvTH07O7p6OofskwgTwbhwkBsWlVw5sK2F3znd62nE6qiUR5aXphG8AgHJXp
+         YJz8zj6Ji3Rn7Frb57TFPiBnp9TtSycMsoeGj8ggCK6158+3z8u0oEQmw/tTpoeYCq
+         NvpRU+ByegS5QW3QwL90ML0Z0nFxN5fK4iqLT6Ld2bo7Diye0tuG34uacW7C3XfZf5
+         i9KDuWZvbyQ4w==
 From:   "H. Peter Anvin" <hpa@zytor.com>
 To:     Ingo Molnar <mingo@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -37,9 +37,9 @@ Cc:     Steve Wahl <steve.wahl@hpe.com>, Mike Travis <mike.travis@hpe.com>,
         Russ Anderson <russ.anderson@hpe.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         "H. Peter Anvin (Intel)" <hpa@zytor.com>
-Subject: [PATCH 4/6] x86/irq: merge common code in DEFINE_IDTENTRY_SYSVEC[_SIMPLE]
-Date:   Mon, 10 May 2021 17:55:29 -0700
-Message-Id: <20210511005531.1065536-5-hpa@zytor.com>
+Subject: [PATCH 5/6] x86/irq: WARN_ONCE() if irq_move_cleanup is called on a pending interrupt
+Date:   Mon, 10 May 2021 17:55:30 -0700
+Message-Id: <20210511005531.1065536-6-hpa@zytor.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210511005531.1065536-1-hpa@zytor.com>
 References: <20210511005531.1065536-1-hpa@zytor.com>
@@ -51,74 +51,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
 
-Move the common code in DEFINE_IDTENTRY_SYSVEC[_SIMPLE] into a common
-macro.
+The current IRQ vector allocation code should be "clean" and never
+issue a IRQ_MOVE_CLEANUP_VECTOR IPI for an interrupt that could still
+be pending. This should make it possible to move it to the "normal"
+system IRQ vector range. This should probably be a three-step process:
 
+1. Introduce this WARN_ONCE() on this event ever occurring.
+2. Move the IRQ_MOVE_CLEANUP_VECTOR to the sysvec range.
+3. Remove the self-IPI hack.
+
+This implements step 1.
+
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
 ---
- arch/x86/include/asm/idtentry.h | 35 ++++++++++++++++++---------------
- 1 file changed, 19 insertions(+), 16 deletions(-)
+ arch/x86/kernel/apic/vector.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index c03a18cac78e..de3727db021a 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -219,6 +219,23 @@ static noinline void __##func(struct pt_regs *regs, u32 vector)
- #define DECLARE_IDTENTRY_SYSVEC(vector, func)				\
- 	DECLARE_IDTENTRY(vector, func)
- 
-+/**
-+ * IDTENTRY_INVOKE_SYSVEC - Common code for system vector IDT entry points
-+ * @what:	What should be called
-+ *
-+ * Common code for DEFINE_IDTENTRY_SYSVEC and _SYSVEC_SIMPLE
-+ */
-+#define IDTENTRY_INVOKE_SYSVEC(what)					\
-+do {									\
-+	irqentry_state_t state = irqentry_enter(regs);			\
-+									\
-+	instrumentation_begin();					\
-+	kvm_set_cpu_l1tf_flush_l1d();					\
-+	what;								\
-+	instrumentation_end();						\
-+	irqentry_exit(regs, state);					\
-+} while (0)								\
-+
- /**
-  * DEFINE_IDTENTRY_SYSVEC - Emit code for system vector IDT entry points
-  * @func:	Function name of the entry point
-@@ -233,13 +250,7 @@ static void __##func(struct pt_regs *regs);				\
- 									\
- __visible noinstr void func(struct pt_regs *regs)			\
- {									\
--	irqentry_state_t state = irqentry_enter(regs);			\
--									\
--	instrumentation_begin();					\
--	kvm_set_cpu_l1tf_flush_l1d();					\
--	run_sysvec_on_irqstack_cond(__##func, regs);			\
--	instrumentation_end();						\
--	irqentry_exit(regs, state);					\
-+	IDTENTRY_INVOKE_SYSVEC(run_sysvec_on_irqstack_cond(__##func, regs)); \
- }									\
- 									\
- static noinline void __##func(struct pt_regs *regs)
-@@ -260,15 +271,7 @@ static __always_inline void __##func(struct pt_regs *regs);		\
- 									\
- __visible noinstr void func(struct pt_regs *regs)			\
- {									\
--	irqentry_state_t state = irqentry_enter(regs);			\
--									\
--	instrumentation_begin();					\
--	__irq_enter_raw();						\
--	kvm_set_cpu_l1tf_flush_l1d();					\
--	__##func (regs);						\
--	__irq_exit_raw();						\
--	instrumentation_end();						\
--	irqentry_exit(regs, state);					\
-+	IDTENTRY_INVOKE_SYSVEC(__irq_enter_raw(); __##func(regs); __irq_exit_raw()); \
- }									\
- 									\
- static __always_inline void __##func(struct pt_regs *regs)
+diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
+index 6dbdc7c22bb7..7ba2982a3585 100644
+--- a/arch/x86/kernel/apic/vector.c
++++ b/arch/x86/kernel/apic/vector.c
+@@ -939,9 +939,14 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_irq_move_cleanup)
+ 		 * to this CPU. IRQ_MOVE_CLEANUP_VECTOR is the lowest
+ 		 * priority external vector, so on return from this
+ 		 * interrupt the device interrupt will happen first.
++		 *
++		 * *** This should never happen with the current IRQ
++		 * cleanup code, so WARN_ONCE() for now, and
++		 * eventually get rid of this hack.
+ 		 */
+ 		irr = apic_read(APIC_IRR + (vector / 32 * 0x10));
+ 		if (irr & (1U << (vector % 32))) {
++			WARN_ONCE(1, "irq_move_cleanup called on still pending interrupt\n");
+ 			apic->send_IPI_self(IRQ_MOVE_CLEANUP_VECTOR);
+ 			continue;
+ 		}
 -- 
 2.31.1
 
