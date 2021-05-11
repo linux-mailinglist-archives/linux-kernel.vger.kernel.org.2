@@ -2,93 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502C437A372
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 492FF37A374
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbhEKJXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 05:23:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230476AbhEKJXE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 05:23:04 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D41CC061574;
-        Tue, 11 May 2021 02:21:57 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id a10-20020a05600c068ab029014dcda1971aso795928wmn.3;
-        Tue, 11 May 2021 02:21:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QHs3slST6breQ8e1T6OEdAIORl5h6uTSklDB+Afab8A=;
-        b=tEakCvylSaNjGNefCOPSz2/gmGGayJZKv31p0dDWoDOeBE/Z1hFLIkRfBt+htnrB0U
-         5AXW5quLjGKEA3WtDniHvKsDq3VufYh3Kk93bCHP73RdgJ4M64LvKk/Xflz9Mst90BrL
-         V+QobveSBy88k522ARbALP6kf4F/fL+2tA2UiypmWkqMM7h6IFaiGFcLN81WP08w3ilO
-         rkiu8ulCh5Zd2OHNARTWTQURfmw0pn1BzRjUpQaBnmctxzyExSyqsn/Z1WH6xEvODhZW
-         88Lu04WzN8hvF8Nxiyrn5+AReSWwk3qGXS04akbB6aZVAv55g/scgpAwCG2OmtvEwy6T
-         5tIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QHs3slST6breQ8e1T6OEdAIORl5h6uTSklDB+Afab8A=;
-        b=h22bpz/xl68BDZPYqYIKNmwnmeIia40bz82iYxNn8W6QG9tFRHTIbWFonmJKR4ONRO
-         Maas6OT0fECFQe3xVxJsjNQN6fu3TAdqrzFtQW+HM/ztQVAUG3+jjZtzjVxZVfUPxQqW
-         J+/McBeaZF3ufHu6y+WLuAh9fRGWg+BI5TMjR9Etc68JhEMQ+ADp2Y159oZJmgXakdu2
-         Kc/mSYd/nDbqJCn2hjdojtq/ALn6c4IZL11iLk9K4U6gn7y6DgtWfA6T5YF/hmPiKTcL
-         lfup8yuG2tObKOdESAHUjwucBAmB0l4t0roFtF+DX4UG5WE0E0cKrWAJAd93FQXtKwlo
-         njYg==
-X-Gm-Message-State: AOAM531/Ai1iLAZq3ks49pp2JG6wh2JvXfqQMtU7m5ZfDkSgGVI8FKJC
-        bU+eDoeLjs7NvbRHTs2ulBs=
-X-Google-Smtp-Source: ABdhPJyLbYD/USAcm+QgpS2nHC1GcZpRbVTk8B+JeoztBVJkcLzaKxfaGRmgXqCylObFU4JPJH3mJA==
-X-Received: by 2002:a7b:c93a:: with SMTP id h26mr4265932wml.107.1620724915677;
-        Tue, 11 May 2021 02:21:55 -0700 (PDT)
-Received: from debian (host-2-98-62-17.as13285.net. [2.98.62.17])
-        by smtp.gmail.com with ESMTPSA id e10sm28019225wrw.20.2021.05.11.02.21.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 02:21:55 -0700 (PDT)
-Date:   Tue, 11 May 2021 10:21:53 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 000/184] 5.4.118-rc1 review
-Message-ID: <YJpMsQqo9FETw9NW@debian>
-References: <20210510101950.200777181@linuxfoundation.org>
+        id S231319AbhEKJYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 05:24:19 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:45216 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230126AbhEKJYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 05:24:17 -0400
+Received: from zn.tnic (p200300ec2f0ec70079cd82bef3234244.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:c700:79cd:82be:f323:4244])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 03AA81EC04DE;
+        Tue, 11 May 2021 11:23:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1620724990;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=2BFJfXAt4RasctGcG7XZvImeLDWYB+zm7FzMoySZHus=;
+        b=Ww1QaJQl377xw7ZOtlWjvHoC8Dgd0+Snh9DpsXI7OhvodVQZktNpt0QVAVcZe4k8CVAsUN
+        +AWstQUXWdbXbrueFkK0CdCKMm6efG7Z9dXFXWTEuFMbVw4q2/HPEldWGfXjt4CzpeLj2V
+        8ZMzByLEDYSDLwEKEFC5UX9VI5APT7s=
+Date:   Tue, 11 May 2021 11:23:05 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
+        pbonzini@redhat.com, mingo@redhat.com, dave.hansen@intel.com,
+        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
+        hpa@zytor.com, tony.luck@intel.com
+Subject: Re: [PATCH Part1 RFC v2 02/20] x86/sev: Save the negotiated GHCB
+ version
+Message-ID: <YJpM+VZaEr68hTwZ@zn.tnic>
+References: <20210430121616.2295-1-brijesh.singh@amd.com>
+ <20210430121616.2295-3-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210510101950.200777181@linuxfoundation.org>
+In-Reply-To: <20210430121616.2295-3-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Mon, May 10, 2021 at 12:18:14PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.118 release.
-> There are 184 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Apr 30, 2021 at 07:15:58AM -0500, Brijesh Singh wrote:
+> The SEV-ES guest calls the sev_es_negotiate_protocol() to negotiate the
+> GHCB protocol version before establishing the GHCB. Cache the negotiated
+> GHCB version so that it can be used later.
 > 
-> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/include/asm/sev.h   |  2 +-
+>  arch/x86/kernel/sev-shared.c | 15 ++++++++++++---
+>  2 files changed, 13 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+> index fa5cd05d3b5b..7ec91b1359df 100644
+> --- a/arch/x86/include/asm/sev.h
+> +++ b/arch/x86/include/asm/sev.h
+> @@ -12,7 +12,7 @@
+>  #include <asm/insn.h>
+>  #include <asm/sev-common.h>
+>  
+> -#define GHCB_PROTO_OUR		0x0001UL
+> +#define GHCB_PROTOCOL_MIN	1ULL
+>  #define GHCB_PROTOCOL_MAX	1ULL
+>  #define GHCB_DEFAULT_USAGE	0ULL
+>  
+> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+> index 6ec8b3bfd76e..48a47540b85f 100644
+> --- a/arch/x86/kernel/sev-shared.c
+> +++ b/arch/x86/kernel/sev-shared.c
+> @@ -14,6 +14,13 @@
+>  #define has_cpuflag(f)	boot_cpu_has(f)
+>  #endif
+>  
+> +/*
+> + * Since feature negotitation related variables are set early in the boot
+> + * process they must reside in the .data section so as not to be zeroed
+> + * out when the .bss section is later cleared.
 
-Build test:
-mips (gcc version 11.1.1 20210430): 65 configs -> no new failure
-arm (gcc version 11.1.1 20210430): 107 configs -> no new failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+  *
+  * GHCB protocol version negotiated with the hypervisor.
+  */
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
+> +static u16 ghcb_version __section(".data") = 0;
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Did you not see this when running checkpatch.pl on your patch?
 
+ERROR: do not initialise statics to 0
+#141: FILE: arch/x86/kernel/sev-shared.c:22:
++static u16 ghcb_version __section(".data") = 0;
 
---
-Regards
-Sudip
+>  static bool __init sev_es_check_cpu_features(void)
+>  {
+>  	if (!has_cpuflag(X86_FEATURE_RDRAND)) {
+> @@ -54,10 +61,12 @@ static bool sev_es_negotiate_protocol(void)
+>  	if (GHCB_MSR_INFO(val) != GHCB_MSR_SEV_INFO_RESP)
+>  		return false;
+>  
+> -	if (GHCB_MSR_PROTO_MAX(val) < GHCB_PROTO_OUR ||
+> -	    GHCB_MSR_PROTO_MIN(val) > GHCB_PROTO_OUR)
+> +	if (GHCB_MSR_PROTO_MAX(val) < GHCB_PROTOCOL_MIN ||
+> +	    GHCB_MSR_PROTO_MIN(val) > GHCB_PROTOCOL_MAX)
+>  		return false;
+>  
+> +	ghcb_version = min_t(size_t, GHCB_MSR_PROTO_MAX(val), GHCB_PROTOCOL_MAX);
+
+How is that even supposed to work? GHCB_PROTOCOL_MAX is 1 so
+ghcb_version will be always 1 when you do min_t() on values one of which
+is 1.
+
+Maybe I'm missing something...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
