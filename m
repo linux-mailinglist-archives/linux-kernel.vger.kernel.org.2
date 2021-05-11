@@ -2,94 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA3837AA47
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F95B37AA4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhEKPKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 11:10:46 -0400
-Received: from mga17.intel.com ([192.55.52.151]:15577 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231646AbhEKPKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 11:10:44 -0400
-IronPort-SDR: 6BLwMu5fiWWSOVqUE7NW3lKqEDp2Gd3vKtJPMXCKVGfzVN1ZhbgNOIBMSFPTtCrR783TyG2xXG
- u5odva6keotA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179727686"
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="179727686"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 08:08:24 -0700
-IronPort-SDR: qcWUS6YAnkI8cK04qriPlYzjT66gmkXiVHtyCqzUgPuFVTHQ77uarh4gDSOoLUDu2GzmnQ/6xT
- OXOsuqaLwhKw==
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="621848341"
-Received: from jamtsfi1-mobl2.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.177.109])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 08:08:23 -0700
-Subject: Re: [RFC v2 14/32] x86/tdx: Handle port I/O
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <0e7e94d1ee4bae49dfd0dd441dc4f2ab6df76668.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4jPLGs6p0PNZQB6yKB3QDtEcGb234zcgCbJutXxZZEGnA@mail.gmail.com>
- <e8ac31bc-e307-f277-f928-24ebba4cbca7@linux.intel.com>
- <CAPcyv4iuRdXooQvCzEWd9babzPij4nXpM-z5fai9+SGaeFYswQ@mail.gmail.com>
- <9f89a317-11fa-d784-87a8-37124891900c@linux.intel.com>
- <CAPcyv4hymb73WZ7QqNsDyKiPzsFdPJF63+MLnOTfJMsQBFvSDg@mail.gmail.com>
- <3059c7d3-8646-2e1a-3c9f-1de67f7ed382@linux.intel.com>
- <609b1182-5629-0727-d174-849c113a3960@intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <abf24e52-3fee-eda1-4606-ea2aa43061d8@linux.intel.com>
-Date:   Tue, 11 May 2021 08:08:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231887AbhEKPKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 11:10:53 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:58638 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231863AbhEKPKw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 11:10:52 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14BF9c8l100508;
+        Tue, 11 May 2021 10:09:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620745778;
+        bh=Dd3BAY4LHeMGt4I7Gn+peV7+TPMSkkQjBljubv2gyC0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=R5VmpG5HumEEfO1DV0oTYVmhrwgz4rCL95Ft5hs4nW3yJU4Vbap9aWo0RjgQVxUD4
+         dk6qsCTYTFRAVqiTc2goyV6KjtZKQmuWXQiir7TCdOBYH2dEo2G/9glZQrgMcUVgfv
+         b3oJdqQuuOFAm3rmRsCS8z2uRrwzstxkbJwQmu7g=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14BF9cJk033955
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 11 May 2021 10:09:38 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 11
+ May 2021 10:09:37 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 11 May 2021 10:09:37 -0500
+Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14BF9WRc090534;
+        Tue, 11 May 2021 10:09:35 -0500
+Subject: Re: [PATCH] arm64: dts: ti: k3-am65|j721e|am64: Map the dma /
+ navigator subsystem via explicit ranges
+To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        <grygorii.strashko@ti.com>
+CC:     <lokeshvutla@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210510145429.8752-1-nm@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <67cc87c4-2ad8-04ab-e583-0b544bcadbce@ti.com>
+Date:   Tue, 11 May 2021 20:39:31 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <609b1182-5629-0727-d174-849c113a3960@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210510145429.8752-1-nm@ti.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 5/11/21 7:39 AM, Dave Hansen wrote:
-> To what you do you refer by "this patch allocates this memory in ASM
-> code"?  Could you point to the specific ASM code that "allocates memory"?
+On 5/10/21 8:24 PM, Nishanth Menon wrote:
+> Instead of using empty ranges property, lets map explicitly the address
+> range that is mapped onto the dma / navigator subsystems (navss/dmss).
+> 
+> This is also exposed via the dtbs_check with dt-schema newer than
+> 2021.03 version by throwing out following:
+> arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml: bus@100000: main-navss:
+> {'type': 'object'} is not allowed for
+> {'compatible': ['simple-mfd'], '#address-cells': [[2]], .....
+> 
+> This has already been correctly done for J7200, however was missed for
+> other k3 SoCs. Fix that oversight.
+> 
+> Signed-off-by: Nishanth Menon <nm@ti.com>
+> ---
+> 
 
-We use 40 bytes in stack for storing the output register values. It is in
-function tdg_inl().
+Acked-by: Vignesh Raghavendra <vigneshr@ti.com>
 
-subq $TDVMCALL_OUTPUT_SIZE, %rsp
-
-+SYM_FUNC_START(tdg_inl)
-+	io_save_registers
-+	/* Set data width to 4 bytes */
-+	mov $4, %rsi
-+1:
-+	mov %rdx, %rcx
-+	/* Set 0 in RDX to select in operation */
-+	mov $0, %rdx
-+	/* Set TDVMCALL function id in RDI */
-+	mov $EXIT_REASON_IO_INSTRUCTION, %rdi
-+	/* Set TDVMCALL type info (0 - Standard, > 0 - vendor) in R10 */
-+	xor %r10, %r10
-+	/* Allocate memory in stack for Output */
-+	subq $TDVMCALL_OUTPUT_SIZE, %rsp
-+	/* Move tdvmcall_output pointer to R9 */
-+	movq %rsp, %r9
-+
-+	call do_tdvmcall
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+> if possible, I'd like to pick this fixup for 5.13 window..
+> 
+>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi        | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-am65-main.dtsi        | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi         | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi       | 4 ++--
+>  arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi | 4 ++--
+>  5 files changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+> index a49e41021573..bb19db04a746 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+> @@ -42,12 +42,12 @@ gic_its: msi-controller@1820000 {
+>  		};
+>  	};
+>  
+> -	dmss: dmss {
+> +	dmss: bus@48000000 {
+>  		compatible = "simple-mfd";
+>  		#address-cells = <2>;
+>  		#size-cells = <2>;
+>  		dma-ranges;
+> -		ranges;
+> +		ranges = <0x00 0x48000000 0x00 0x48000000 0x00 0x06400000>;
+>  
+>  		ti,sci-dev-id = <25>;
+>  
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> index 037f9776c4c8..fea8260d33a8 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> @@ -445,11 +445,11 @@ intr_main_gpio: interrupt-controller@a00000 {
+>  		ti,interrupt-ranges = <0 392 32>;
+>  	};
+>  
+> -	main-navss {
+> +	main_navss: bus@30800000 {
+>  		compatible = "simple-mfd";
+>  		#address-cells = <2>;
+>  		#size-cells = <2>;
+> -		ranges;
+> +		ranges = <0x0 0x30800000 0x0 0x30800000 0x0 0xbc00000>;
+>  		dma-coherent;
+>  		dma-ranges;
+>  
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+> index 0388c02c2203..f5b8ef2f5f77 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+> @@ -116,11 +116,11 @@ adc {
+>  		};
+>  	};
+>  
+> -	mcu-navss {
+> +	mcu_navss: bus@28380000 {
+>  		compatible = "simple-mfd";
+>  		#address-cells = <2>;
+>  		#size-cells = <2>;
+> -		ranges;
+> +		ranges = <0x00 0x28380000 0x00 0x28380000 0x00 0x03880000>;
+>  		dma-coherent;
+>  		dma-ranges;
+>  
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> index 512371e36a30..b2d25af872e2 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> @@ -88,11 +88,11 @@ main_gpio_intr: interrupt-controller@a00000 {
+>  		ti,interrupt-ranges = <8 392 56>;
+>  	};
+>  
+> -	main-navss {
+> +	main_navss: bus@30000000 {
+>  		compatible = "simple-mfd";
+>  		#address-cells = <2>;
+>  		#size-cells = <2>;
+> -		ranges;
+> +		ranges = <0x00 0x30000000 0x00 0x30000000 0x00 0x0c400000>;
+>  		dma-coherent;
+>  		dma-ranges;
+>  
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
+> index ad12a5c9f209..172629fa3c7c 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
+> @@ -250,11 +250,11 @@ adc {
+>  		};
+>  	};
+>  
+> -	mcu-navss {
+> +	mcu_navss: bus@28380000 {
+>  		compatible = "simple-mfd";
+>  		#address-cells = <2>;
+>  		#size-cells = <2>;
+> -		ranges;
+> +		ranges = <0x00 0x28380000 0x00 0x28380000 0x00 0x03880000>;
+>  		dma-coherent;
+>  		dma-ranges;
+>  
+> 
