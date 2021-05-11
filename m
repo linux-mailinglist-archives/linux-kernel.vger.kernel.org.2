@@ -2,186 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9227C37AF89
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A6337AF8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232058AbhEKTsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 15:48:37 -0400
-Received: from mail-bn1nam07on2061.outbound.protection.outlook.com ([40.107.212.61]:17158
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231808AbhEKTsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 15:48:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b84D05Q7ahsb0Blbxif9lTLe3UeUcvaoTi1hqtsRyl4vacjx8u0kFGItXGLrriIJEvhvLHprnvGlhZ3tXJspiTi6S6T9a9uQC2zWq9+UgKxAqVOajQZVriAVeKxFlewqlNdYcl86LYltGyHOqP7D7CyGFUkLdcYm1qmUedJwN+EWB1X0G1+kV48Zizjh2YOIS6oDVgyk8Utp+R85DujNNGTok2++wNMKSOz1u5Iydi/9kJo/Am+KLqdemWCRK6SH98Q6HNVsRmBgcoINIrAXsIQRK1hnPEn2vMZVl0GTiJ4zN1yQodAdnYQZEnbv5u8vi7j+uV/RBuROZcrBUNEZIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R6QAxh+/iRr3oXa2J5WVszT6Ap2DJhJSv1DfY1BudJE=;
- b=RxQG/hRHd85/LR7rWAbK7zastloAxFEvrdEpUaZId+bs6MvQjQOJy2KVMBPRMgCNV/HMrfsxZDf5cP1jqMKSEyeB7sUWufFjIEPQobPNnPsfSmFBvI8AR1BImrCKaqCe85/w4OCii2C0lyYAYD0s+BDr/zzwpqaxAMEtpUuK9HjioITNC9AyhFzvLWGIPVgi3KDCihIRxnkH6wYj1glluxS+gbt8MisIqvN5fQbZPdHaTrt2xKxuR2Q20GPrmVQXcDP6C4Wtjc/FTfFT+BiAUeJ5EH3wWkjDOqwSOMTwU/8Z9LkL9KoYwdt+aDyDhIoLCAR+sV/m6bfDlTcXprKbFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R6QAxh+/iRr3oXa2J5WVszT6Ap2DJhJSv1DfY1BudJE=;
- b=rYtdxKR1gSsWTBHPI+E2K9W80zcPRV/6DlhcGwRl00VOJUEkc7F5flLYYPa7c7BsqaHs6aoj01ieMQVHwpgwhOuA0qEfrSYmIW3eiRQVET8wyaQkaxfIqMxcJUuNBmtj6Ns/fI1nBRSZYAw2at8BqwYApKkW2Zwn1Ux/0Jfyb1CKG0ulmJaeDBUkHCRYoS79pLOx0KgpX+7hpPTPBDV+AF4HE+/eiux8y/+lDnNk7sOqKKy6w2eUzkYit9Qo7+8k0pxs29hh4ZBD0uMj4bwb5CFfHg9dFhq721Y24Wu4CKDW6socNpW4pg9y/ga2bn6xxhLHMwfBBkJlg3R7IkG24g==
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3018.namprd12.prod.outlook.com (2603:10b6:5:118::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24; Tue, 11 May
- 2021 19:47:27 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4108.031; Tue, 11 May 2021
- 19:47:27 +0000
-Date:   Tue, 11 May 2021 16:47:26 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
-        zhangfei.gao@linaro.org, vkoul@kernel.org,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
- flags
-Message-ID: <20210511194726.GP1002214@nvidia.com>
-References: <1620653108-44901-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1620653108-44901-2-git-send-email-jacob.jun.pan@linux.intel.com>
- <20210510233749.GG1002214@nvidia.com>
- <20210510203145.086835cc@jacob-builder>
- <20210511114848.GK1002214@nvidia.com>
- <20210511091452.721e9a03@jacob-builder>
- <20210511163521.GN1002214@nvidia.com>
- <20210511110550.477a434f@jacob-builder>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511110550.477a434f@jacob-builder>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BLAPR03CA0095.namprd03.prod.outlook.com
- (2603:10b6:208:32a::10) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S232093AbhEKTti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 15:49:38 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34426 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231474AbhEKTth (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 15:49:37 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14BJmNqg073029;
+        Tue, 11 May 2021 14:48:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620762503;
+        bh=hzvT5WuMiuQH1Vq1OyjpWEdZemybAFC+dULLzT8TK+0=;
+        h=From:To:CC:Subject:Date;
+        b=DOCgDjfP0U+445UQM1q1uy96lDviDZFl4w690lnILs5h16Vq5RJANgilUTF9fSRyI
+         JEg1R4j6xOvDU8+BIA6uevb4JrsNSLPVnis9cWy0Gsb/2pIajle+xq7unnTqlVZtz8
+         l4D2aqM51uLRJKBExidLzOmBnjitUGtw1/Kypb+U=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14BJmMKE031884
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 11 May 2021 14:48:22 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 11
+ May 2021 14:48:22 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 11 May 2021 14:48:22 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14BJmMTr067209;
+        Tue, 11 May 2021 14:48:22 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     <kristo@kernel.org>, <lokeshvutla@ti.com>
+CC:     <grygorii.strashko@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>
+Subject: [PATCH V2] arm64: dts: ti: k3*: Introduce reg definition for interrupt routers
+Date:   Tue, 11 May 2021 14:48:21 -0500
+Message-ID: <20210511194821.13919-1-nm@ti.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BLAPR03CA0095.namprd03.prod.outlook.com (2603:10b6:208:32a::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Tue, 11 May 2021 19:47:27 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lgYLm-005WbS-7u; Tue, 11 May 2021 16:47:26 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 38c64dd7-99e9-4462-8d38-08d914b59b39
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3018:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB30180C2EF9C0A0788CD141BAC2539@DM6PR12MB3018.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cGtlAZOcDBhZZrk1kBAPj1bz5JpOJPwDYTrh5/QObo79QMyzoT9JPaYZq1U9ye0eFd2MJRd8yI0HC+r+W/+zv4D/39ChFI7WlogtonwK32pK/ed5qGvbGvTasVCYsbqTNJRttEJx2kyWPhF16Srb7pU3ew5yoibBi7F5orEa68JR7Vi953IZdyS1ktOkq3pRh6xLuG0Gcz66jl8hUoAUSsdPUs5Ii27b07rvFL5cMYHfQcJkZ4IWKJPHapfs/rzFZCtpunO/LT69VppHvktP5bbW1WtsrJgtSyidmaD8VkceKDKundCi4ZEZ4dwWRobkuYl2UfmuYqWgQ+O9mNZURVrXGcHczs7Fb6gL/WtPhgn6SQzwtggLmC6MQYXy4y5I7+ivpox+HCdVz+DStdTsSyHjxHGrOJQJfymTUs00WaWU57gx/qJOJRTb6ofD/muhqHZr5HREH9utpDn09YdpEQBlW3fYrx2TwUZVXcGv5gniu16FrZAAoDOt7jDpIBGlyDgsO1e/Pp1Jrz9dl/8XU3rXgBdpAnBKMSstJm00AtePY51BgnJFUwE4e+Ql/2YUg/X8r4CUFa3lfAZDUfsjmNXFuHIi6i7kLnDhyemxGVg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(498600001)(9786002)(9746002)(86362001)(186003)(8936002)(36756003)(7416002)(54906003)(5660300002)(38100700002)(26005)(33656002)(83380400001)(66946007)(66476007)(66556008)(8676002)(2906002)(4326008)(6916009)(1076003)(426003)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?LCVzMU/HPTpxS4qbq4pU7rWmKNHOIBiMnR8wCisAXNABPC0T+HfOHtUO/Ywx?=
- =?us-ascii?Q?GJxgaQgzptTX7mNtLwZjVdJx6eAAUrS17bPdNqJdlmPZOzruacq3Yv/IO+bF?=
- =?us-ascii?Q?Ht054aNwxlo9/8DMrAlX/BK3Uq90c02qmmHqGCq4NYBTMnDwO6/sCShMLwP+?=
- =?us-ascii?Q?SL+btWCQmYiYKVIKX+g+HMU5Yu46Mx94HS5Upg4C9BivCWDN+FGCRZ5vGvHz?=
- =?us-ascii?Q?PyY7XY4kFabfEBoltmHAUKqxu3x2bXSc28VL3DvsfP1uRG8mhG4OaGAmF6I0?=
- =?us-ascii?Q?rDwOmGPhSVxk/cKo18C+ZNArSiXwu4qV4IWR40yDj485w0Dviq3n62+nGecs?=
- =?us-ascii?Q?/qGZs9X3TUJkH/N8KkabdhpneJXJtexcOUMPXj28peBNczUOIvO0R3hbuPi0?=
- =?us-ascii?Q?QH/tceP2cFlmoUbIcW/EGBToeAGkIKLApq/jNwuFAPXtZZYwisQV7lgdXNoB?=
- =?us-ascii?Q?ndF5VQZNJvCYTA460dI6BeY1f70w+w3N61QqUvUBVqkI3w0IUs2K4nh+wvsH?=
- =?us-ascii?Q?wlZJ39nZq/IeJG3y/ecrILokifa/enpBeBW6HI7BOHLlfkUAjFNQXZVps5y7?=
- =?us-ascii?Q?brWzO21qe1Acfi6p41o/6XQz9qPQHm/4fT4cmSHEKraV6aEzW7vrTcBri+ii?=
- =?us-ascii?Q?etA5s7D5Rr3gcDgadmc18NXRII/quOQmOyqiw1oF9WBAJ3rwhmsFlu1y5ZI8?=
- =?us-ascii?Q?HPeWYtjBlNyUWKxOUAWKdM9kqbrAzS58lgXzfKiAf9UlUnrY0hTbi1L7pedW?=
- =?us-ascii?Q?8pD8l0KhCp7BspGO9qdNdS8YaxSpPNzKyf5rBOacI1PG3XT+Dw9h1uHaIgcx?=
- =?us-ascii?Q?G/BTh+OH67g4nv+9bJ6S/eA+bNtqIxFXCP5cDnUPf7Tk0GrfrKyiL/d9PQcn?=
- =?us-ascii?Q?9UW0PvNi9oj7oQ0/DHUr/cfwP0z5XOmVJ61QENJt11yUwewRdgYgrGDQaefg?=
- =?us-ascii?Q?SvG5peqiaXnqyCYN0/bsMWfnx0qNpH2xwFK8YUfkv6J9IxbYp2ALtTsOi5Ws?=
- =?us-ascii?Q?Xi91qFEfxcEJmLnlKFbnvX5CAWLUsualVREJfI6CDfnwspRHbO6PsgeBO8Ff?=
- =?us-ascii?Q?8va4jGCpFPo0RhC+KK9GvQa2dGgVGRS5ZbkRD+PidR+9q/mYkM+5CbfcLqTu?=
- =?us-ascii?Q?kkcueSrVg3UTxdrFdbWL4puiDW5ba1eikKhcjOzZknFfZ0W0SFN+FGUN1+U/?=
- =?us-ascii?Q?08Hij1Ef0p0Mx++detB+SveHdZwOD/Dx4BhnY+fVTEMdUQhasp5re/9j6dmU?=
- =?us-ascii?Q?7RKIWEi+i93k1XnzEhnvQaWLnGaAE+OMT0z8C+oELGLD/voO/9JXw0vL3fWd?=
- =?us-ascii?Q?qsHo0wRQiHe9TqCtGLbB7NIH?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38c64dd7-99e9-4462-8d38-08d914b59b39
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 19:47:27.7530
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vkUtFUpYAHcKX3mRbpeE2MQy6GZiwhkxMVuWbsZSz9zS9ws9Ejdm5657pNW3aWH0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3018
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 11:05:50AM -0700, Jacob Pan wrote:
-> Hi Jason,
-> 
-> On Tue, 11 May 2021 13:35:21 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
-> 
-> > On Tue, May 11, 2021 at 09:14:52AM -0700, Jacob Pan wrote:
-> > 
-> > > > Honestly, I'm not convinced we should have "kernel SVA" at all.. Why
-> > > > does IDXD use normal DMA on the RID for kernel controlled accesses?  
-> > > 
-> > > Using SVA simplifies the work submission, there is no need to do
-> > > map/unmap. Just bind PASID with init_mm, then submit work directly
-> > > either with ENQCMDS (supervisor version of ENQCMD) to a shared
-> > > workqueue or put the supervisor PASID in the descriptor for dedicated
-> > > workqueue.  
-> > 
-> > That is not OK, protable drivers in Linux have to sue dma map/unmap
-> > calls to manage cache coherence. PASID does not opt out of any of
-> > that.
-> > 
-> Let me try to break down your concerns:
-> 1. portability - driver uses DMA APIs can function w/ and w/o IOMMU. is
-> that your concern? But PASID is intrinsically tied with IOMMU and if
-> the drivers are using a generic sva-lib API, why they are not portable?
-> SVA by its definition is to avoid map/unmap every time.
+Interrupt routers are memory mapped peripherals, that are organized
+in our dts bus hierarchy to closely represents the actual hardware
+behavior.
 
-Kernel explicitly does not support this programming model. All DMA is
-explicit and the DMA API hides platform details like IOMMU and CPU
-cache coherences. Just because x86 doesn't care about this doesn't
-make any of it optional.
+However, without explicitly calling out the reg property, using
+2021.03+ dt-schema package, this exposes the following problem with
+dtbs_check:
 
-If you want to do SVA PASID then it also must come with DMA APIs to
-manage the CPU cache coherence that are all NOP's on x86.
+/arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml: bus@100000:
+interrupt-controller0: {'type': 'object'} is not allowed for
+{'compatible': ['ti,sci-intr'], .....
 
-> > I dislike this whole idea a lot. A single driver should not opt itself
-> > out of IOMMU based security "just because"
->
-> Perhaps I missed your point here. This is NOT a single driver, privileged
-> access is a PCIe spec defined feature. We are using IOMMU sva-lib APIs, not
-> sure why it is by-passing.
+Even though we don't use interrupt router directly via memory mapped
+registers and have to use it via the system controller, the hardware
+block is memory mapped, so describe the base address in device tree.
 
-Until today the overal security of the IOMMU configuration is
-controlled by kernel boot parameters set by the sysadmin.
+This is a valid, comprehensive description of hardware and permitted
+by the existing ti,sci-intr schema.
 
-This magic PASID effectively disables all IOMMU security and allows an
-IO device unrestricted access to the entire system memory. This is the
-opposite of what the admin may have specified in the various boot
-options.
+Reviewed-by: Tero Kristo <kristo@kernel.org>
+Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
+Signed-off-by: Nishanth Menon <nm@ti.com>
+---
 
-I don't like it all. Kust because the PCI sig defined this mechanism
-doesn't mean it is mandatory for Linux to use it.
+Changes since v1:
+* updates to register to be consistent (use 0x%08x formatting).
 
-If you want the performance gain of no iommu updates then use RID
-based access and boot flags that have an identity translation for all
-RIDs.
+V1: https://lore.kernel.org/linux-arm-kernel/20210510145508.8994-1-nm@ti.com/
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi        | 3 ++-
+ arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi         | 3 ++-
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi        | 6 ++++--
+ arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi      | 3 ++-
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi       | 6 ++++--
+ arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi | 3 ++-
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi       | 6 ++++--
+ arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi | 3 ++-
+ 8 files changed, 22 insertions(+), 11 deletions(-)
 
-Forcing the system to create an identiy translation in all cases by
-having a single kernel driver create a PASID feels really
-wrong. 
+diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+index b2bcbf23eefd..5075a2143641 100644
+--- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+@@ -373,8 +373,9 @@ main_spi4: spi@20140000 {
+ 		clocks = <&k3_clks 145 0>;
+ 	};
+ 
+-	main_gpio_intr: interrupt-controller0 {
++	main_gpio_intr: interrupt-controller@a00000 {
+ 		compatible = "ti,sci-intr";
++		reg = <0x00 0x00a00000 0x00 0x800>;
+ 		ti,intr-trigger-type = <1>;
+ 		interrupt-controller;
+ 		interrupt-parent = <&gic500>;
+diff --git a/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
+index 99e94dee1bd4..deb19ae5e168 100644
+--- a/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
+@@ -74,8 +74,9 @@ mcu_spi1: spi@4b10000 {
+ 		clocks = <&k3_clks 148 0>;
+ 	};
+ 
+-	mcu_gpio_intr: interrupt-controller1 {
++	mcu_gpio_intr: interrupt-controller@4210000 {
+ 		compatible = "ti,sci-intr";
++		reg = <0x00 0x04210000 0x00 0x200>;
+ 		ti,intr-trigger-type = <1>;
+ 		interrupt-controller;
+ 		interrupt-parent = <&gic500>;
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+index cb340d1b401f..cbdb6331de11 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+@@ -433,8 +433,9 @@ usb1_phy: phy@4110000 {
+ 		#phy-cells = <0>;
+ 	};
+ 
+-	intr_main_gpio: interrupt-controller0 {
++	intr_main_gpio: interrupt-controller@a00000 {
+ 		compatible = "ti,sci-intr";
++		reg = <0x0 0x00a00000 0x0 0x400>;
+ 		ti,intr-trigger-type = <1>;
+ 		interrupt-controller;
+ 		interrupt-parent = <&gic500>;
+@@ -454,8 +455,9 @@ main-navss {
+ 
+ 		ti,sci-dev-id = <118>;
+ 
+-		intr_main_navss: interrupt-controller1 {
++		intr_main_navss: interrupt-controller@310e0000 {
+ 			compatible = "ti,sci-intr";
++			reg = <0x0 0x310e0000 0x0 0x2000>;
+ 			ti,intr-trigger-type = <4>;
+ 			interrupt-controller;
+ 			interrupt-parent = <&gic500>;
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
+index ed42f13e7663..62a18b110c52 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
+@@ -69,8 +69,9 @@ wkup_i2c0: i2c@42120000 {
+ 		power-domains = <&k3_pds 115 TI_SCI_PD_EXCLUSIVE>;
+ 	};
+ 
+-	intr_wkup_gpio: interrupt-controller2 {
++	intr_wkup_gpio: interrupt-controller@42200000 {
+ 		compatible = "ti,sci-intr";
++		reg = <0x42200000 0x200>;
+ 		ti,intr-trigger-type = <1>;
+ 		interrupt-controller;
+ 		interrupt-parent = <&gic500>;
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+index f86c493a44f1..7a6c2054c5ed 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+@@ -68,8 +68,9 @@ gic_its: msi-controller@1820000 {
+ 		};
+ 	};
+ 
+-	main_gpio_intr: interrupt-controller0 {
++	main_gpio_intr: interrupt-controller@a00000 {
+ 		compatible = "ti,sci-intr";
++		reg = <0x00 0x00a00000 0x00 0x800>;
+ 		ti,intr-trigger-type = <1>;
+ 		interrupt-controller;
+ 		interrupt-parent = <&gic500>;
+@@ -86,8 +87,9 @@ main_navss: bus@30000000 {
+ 		ranges = <0x00 0x30000000 0x00 0x30000000 0x00 0x0c400000>;
+ 		ti,sci-dev-id = <199>;
+ 
+-		main_navss_intr: interrupt-controller1 {
++		main_navss_intr: interrupt-controller@310e0000 {
+ 			compatible = "ti,sci-intr";
++			reg = <0x00 0x310e0000 0x00 0x4000>;
+ 			ti,intr-trigger-type = <4>;
+ 			interrupt-controller;
+ 			interrupt-parent = <&gic500>;
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+index 5e74e43822c3..825b9f1931b7 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+@@ -96,8 +96,9 @@ mcu_uart0: serial@40a00000 {
+ 		clock-names = "fclk";
+ 	};
+ 
+-	wkup_gpio_intr: interrupt-controller2 {
++	wkup_gpio_intr: interrupt-controller@42200000 {
+ 		compatible = "ti,sci-intr";
++		reg = <0x00 0x42200000 0x00 0x400>;
+ 		ti,intr-trigger-type = <1>;
+ 		interrupt-controller;
+ 		interrupt-parent = <&gic500>;
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+index c2aa45a3ac79..d5e41f665794 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+@@ -76,8 +76,9 @@ gic_its: msi-controller@1820000 {
+ 		};
+ 	};
+ 
+-	main_gpio_intr: interrupt-controller0 {
++	main_gpio_intr: interrupt-controller@a00000 {
+ 		compatible = "ti,sci-intr";
++		reg = <0x00 0x00a00000 0x00 0x800>;
+ 		ti,intr-trigger-type = <1>;
+ 		interrupt-controller;
+ 		interrupt-parent = <&gic500>;
+@@ -97,8 +98,9 @@ main-navss {
+ 
+ 		ti,sci-dev-id = <199>;
+ 
+-		main_navss_intr: interrupt-controller1 {
++		main_navss_intr: interrupt-controller@310e0000 {
+ 			compatible = "ti,sci-intr";
++			reg = <0x0 0x310e0000 0x0 0x4000>;
+ 			ti,intr-trigger-type = <4>;
+ 			interrupt-controller;
+ 			interrupt-parent = <&gic500>;
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
+index d56e3475aee7..ad12a5c9f209 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
+@@ -96,8 +96,9 @@ mcu_uart0: serial@40a00000 {
+ 		clock-names = "fclk";
+ 	};
+ 
+-	wkup_gpio_intr: interrupt-controller2 {
++	wkup_gpio_intr: interrupt-controller@42200000 {
+ 		compatible = "ti,sci-intr";
++		reg = <0x00 0x42200000 0x00 0x400>;
+ 		ti,intr-trigger-type = <1>;
+ 		interrupt-controller;
+ 		interrupt-parent = <&gic500>;
+-- 
+2.31.0
 
-Especially since there isn't any real gain in functionality or
-performance as it it just exposing the same things the normal DMA API
-would expose.
-
-Jason
