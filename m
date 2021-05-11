@@ -2,111 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E28F37B2C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164B837B2CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhEKXwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhEKXw3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:52:29 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E83C061574;
-        Tue, 11 May 2021 16:51:21 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id gj14so12549048pjb.5;
-        Tue, 11 May 2021 16:51:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jRIv26CWSKa/axySwYhnWGK/F55PS2gCs4qGxABhBpw=;
-        b=L+RUX6/9ROIpoSbjzvEGm1ekokvTeuZ+JzDa6HSJcxTO/mSCsXYwJ/COSTG1Z0EVnZ
-         6kiXLLWlw9KI6ooBoLfKGVRkx+HjklxJHnvk3eh2S8fn0u7/GGGPtvoa1KE2NYfOuq/m
-         VWE3O0n7dl8icmi2YlMLHqwmRcmfFZI6FgNVB9Tx6eKeGP0O1G/FUXeqPxhB0mc6JSwB
-         csH/XJR7v4XPVEDOPu5kuOQme3TKKElywhwvgL+KNOL3dh60t+25DyEWY7zlMkjl9XYu
-         tFlbp0Pl4WepMT0pYc0oo/m8mqbCmZAG2drWXXSyLBYgA4kecCwwMDr1iEhX/Gf0CHlj
-         8SiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jRIv26CWSKa/axySwYhnWGK/F55PS2gCs4qGxABhBpw=;
-        b=H+8FMyYq/785Z0e21fqlPGNjOKZYA9TqNdYtWOQCGsBbyNoe+u3A3hKO1uhFvrPSiE
-         bha5Liwpe/NJD0wcqh4IU67b5S4SwReRnCH4NNqFLwH9YG9Cs/XyIqRRJ0JUMJYuS8o+
-         b11b/xzaOqA3iW6N/P1NCr+7bD4Z2WgexPTpQwIMzlGeeBdcYUvZBzN17b2jmFNoAyQW
-         F8+u7Oe/D+idpssa9ezY3p4QZmz2bDODP8eJ3OBOGtTVLW0AFK8M2HomiF9XAET2bFEX
-         dXJ5B2o1w1Na3KxVOniK3+p4uNomoP0QnIvZTti8gTHyU+2wlSt4TO6cKIrI6pSEUl8u
-         02CQ==
-X-Gm-Message-State: AOAM533gZVOXTEFYhBB+ckfZH6ZRT5RpzGC3hqBcNqDQm2vZZ23J++zW
-        g6NpryWmoGzDDCYZQZnCEF9JpaFVJkKUnj2239tMgg==
-X-Google-Smtp-Source: ABdhPJzhVDdRW0ZRALecZ/6mY1DXiY/a7BhLkd2VMh37ds8bwHGN+H0bwjj042iTbqIjoJTnw/dtBA==
-X-Received: by 2002:a17:90b:508:: with SMTP id r8mr18562120pjz.152.1620777081496;
-        Tue, 11 May 2021 16:51:21 -0700 (PDT)
-Received: from [10.71.15.213] ([111.223.96.126])
-        by smtp.gmail.com with ESMTPSA id q21sm14417935pfl.152.2021.05.11.16.51.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 16:51:21 -0700 (PDT)
-Subject: Re: [PATCH] Remove link to nonexistent rocket driver docs
-To:     Jonathan Corbet <corbet@lwn.net>, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20210511134937.2442291-1-desmondcheongzx@gmail.com>
- <87bl9hdwxt.fsf@meer.lwn.net>
-From:   Desmond Cheong <desmondcheongzx@gmail.com>
-Message-ID: <d58cf981-4162-1756-1e1e-fa9516e35a1d@gmail.com>
-Date:   Tue, 11 May 2021 19:51:17 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230114AbhEKXxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:53:15 -0400
+Received: from ozlabs.org ([203.11.71.1]:40961 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230075AbhEKXxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 19:53:14 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ffvps6xb1z9sWC;
+        Wed, 12 May 2021 09:52:05 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620777126;
+        bh=M7TtSkXxMF0em4ofKmMx4OFSoudGXcoUk7yXJrm2mSw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BR7+Dtm3hOLEbZDwH64Edagaii6JAIUYnvjS53kvxE66ZbH/uUzJTIcBDK6kRRBl/
+         hlN2Om6zfcxNSBirT7+Hu8qJhPs0yKzDqY/RxmrEpOS6VxfL2TIqVbOf0zVkqKTD5H
+         w+OJBWxtlEJG8X/J90FDNwmtPA4FYSxbuTWl0o77dmQ6IdXJzoCFWaEZMY16D/A5/n
+         zKy0PfjPj9zRW5fYSgy1PcOKe9LSPxI07BJUuJqo82R2zNs+JD4vsOzt7D0HBWNQCl
+         94VXzZ8kKwuh99wa7GQFobgmp1z29OQTX5M1Xz+Txwqes7UyPMoBpGjP2eC5eMOHZD
+         /tjlq38aLkyoA==
+Date:   Wed, 12 May 2021 09:52:01 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the net-next tree
+Message-ID: <20210512095201.09323cda@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <87bl9hdwxt.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/hG/om+Wur_o8DNz.SY9kEgL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/21 1:03 pm, Jonathan Corbet wrote:
-> Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com> writes:
-> 
->> Fixes: 3b00b6af7a5b ("tty: rocket, remove the driver")
->> The rocket driver and documentation were removed in this commit, but
->> the corresponding entry in index.rst was not removed.
->>
->> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> 
-> Please note: the "Fixes" tag should be down at the end with your
-> signoff.
-> 
->>   Documentation/driver-api/serial/index.rst | 1 -
->>   1 file changed, 1 deletion(-)
->>
->> diff --git a/Documentation/driver-api/serial/index.rst b/Documentation/driver-api/serial/index.rst
->> index 21351b8c95a4..8f7d7af3b90b 100644
->> --- a/Documentation/driver-api/serial/index.rst
->> +++ b/Documentation/driver-api/serial/index.rst
->> @@ -19,7 +19,6 @@ Serial drivers
->>   
->>       moxa-smartio
->>       n_gsm
->> -    rocket
->>       serial-iso7816
->>       serial-rs485
-> 
-> Otherwise this looks like a good fix.  I've applied it (with Fixes in
-> the right place), thanks.
-> 
-> jon
-> 
+--Sig_/hG/om+Wur_o8DNz.SY9kEgL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the feedback and the amendment, Jon. I will take note in the 
-future.
+Hi all,
 
-Best wishes,
-Desmond
+After merging the net-next tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
+drivers/usb/class/cdc-wdm.c: In function 'wdm_wwan_port_stop':
+drivers/usb/class/cdc-wdm.c:858:2: error: implicit declaration of function =
+'kill_urbs' [-Werror=3Dimplicit-function-declaration]
+  858 |  kill_urbs(desc);
+      |  ^~~~~~~~~
+
+Caused by commit
+
+  cac6fb015f71 ("usb: class: cdc-wdm: WWAN framework integration")
+
+kill_urbs() was removed by commit
+
+  18abf8743674 ("cdc-wdm: untangle a circular dependency between callback a=
+nd softint")
+
+Which is included in v5.13-rc1.
+
+I have used the net-next tree from next-20210511 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/hG/om+Wur_o8DNz.SY9kEgL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCbGKEACgkQAVBC80lX
+0GxU0wgAldBKe6NYy9f9GJkUU0xrTAXAGMJV1AHWS6Zi70FoLXiFe7Rgw6TY9BFb
+4eSzo98zhvCIIEXw7vieH2kjFMb/b+cUPPimOA/FrEz9uUyBtIyAQGLgqdXgLWlA
+nIEtJCivCLLHH/eTEUsya9OJsb1j9oQpGHCtyH7kmIUXsoCn5yBV/XIZ6FjblgpT
+IJHkESuGDmksaZIWNBtT/iH/LBrVoJ/MfW6Q8nRNH3JV0phAViO/048oSdU0sPRH
+9CR2LGiOaSD3xGJ9WD+fFoje6KBV+GKDF01ve7EO9dZyaMDTu48Y6m/xff6zGhge
+SA/aH25cRFA9FTfqP9RuZFWOVK2oYw==
+=Mf9w
+-----END PGP SIGNATURE-----
+
+--Sig_/hG/om+Wur_o8DNz.SY9kEgL--
