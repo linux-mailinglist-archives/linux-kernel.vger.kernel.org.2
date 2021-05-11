@@ -2,107 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7159379BB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B435B379BB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbhEKAw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 20:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhEKAwY (ORCPT
+        id S229973AbhEKAy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 20:54:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38828 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229948AbhEKAy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 20:52:24 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5C4C061574;
-        Mon, 10 May 2021 17:51:19 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Mon, 10 May 2021 20:54:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620694401;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bQ3gkSBPzPzqQG3dgvJ3x0/jyj50xlvHB4Qu61/jDzk=;
+        b=MDAeg4tHtdfYGZu91e1P2NIzyGqcU2GsH/WXYGXYqPKxq05nq4/aHt4kJk+da9F8J4u0Vg
+        MDQaHLJRe09m39aBfUE7JCtKW9O/qz0tVQfdiocNogi3ygssRbeFieK3Bu2XioLmvEpV0s
+        IyJHI7jrCxqCzDYcCOzvmPjvQiMhcb4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-522-WrwrASQEPzGgbYKcXwfZEA-1; Mon, 10 May 2021 20:53:18 -0400
+X-MC-Unique: WrwrASQEPzGgbYKcXwfZEA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FfK9b6WFfz9sWD;
-        Tue, 11 May 2021 10:51:15 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1620694276;
-        bh=jOGKuDETNtGAVGs0iI+kjiRw3gsZUZU63hQA/yrKvN0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=MNMmpGaWjxiagJnRX+5AvR8TBk4H3mBjofXOdeuS0hvKcUvJJATImzoo8Cq7zIzVK
-         pM++jIJd9OGvo7ZbqDHFttjcAajPbisG4vojGUTmARzWLPx8rSEGbZaSseqHznOgKD
-         EWl+yJspssGAb2S8bt35Jhs/wIOoMTt+hS5+KWdfdEkPxwO/L4aZOmDbmsgUZD2EEG
-         MkLKMpqaJOoZgZr8q17h/FNGLdmUJmpazutKRtrxcvvk4lpgv8LoRcJMo6t59dtC06
-         qtydz+QMQQxFfkmXQohW9hL8pwn/E6wKHscM1G+jUtYqjLI6CseX8r6bmxIld11fT9
-         tNjhbGh9pwPjg==
-Date:   Tue, 11 May 2021 10:51:14 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Roman Gushchin <guro@fb.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the cgroup tree
-Message-ID: <20210511105114.55e90534@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F03A4501E1;
+        Tue, 11 May 2021 00:53:16 +0000 (UTC)
+Received: from T590 (ovpn-12-106.pek2.redhat.com [10.72.12.106])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 04BDC60BF1;
+        Tue, 11 May 2021 00:53:03 +0000 (UTC)
+Date:   Tue, 11 May 2021 08:52:58 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kashyap.desai@broadcom.com, chenxiang66@hisilicon.com,
+        yama@redhat.com
+Subject: Re: [PATCH] blk-mq: Use request queue-wide tags for tagset-wide
+ sbitmap
+Message-ID: <YJnVasOcaVU+4+Au@T590>
+References: <1620037333-2495-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/62nkJIloVlHuEbj6hgITbXT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620037333-2495-1-git-send-email-john.garry@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/62nkJIloVlHuEbj6hgITbXT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, May 03, 2021 at 06:22:13PM +0800, John Garry wrote:
+> The tags used for an IO scheduler are currently per hctx.
+> 
+> As such, when q->nr_hw_queues grows, so does the request queue total IO
+> scheduler tag depth.
+> 
+> This may cause problems for SCSI MQ HBAs whose total driver depth is
+> fixed.
+> 
+> Ming and Yanhui report higher CPU usage and lower throughput in scenarios
+> where the fixed total driver tag depth is appreciably lower than the total
+> scheduler tag depth:
+> https://lore.kernel.org/linux-block/440dfcfc-1a2c-bd98-1161-cec4d78c6dfc@huawei.com/T/#mc0d6d4f95275a2743d1c8c3e4dc9ff6c9aa3a76b
+> 
 
-Hi all,
+No difference any more wrt. fio running on scsi_debug with this patch in
+Yanhui's test machine:
 
-After merging the cgroup tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+	modprobe scsi_debug host_max_queue=128 submit_queues=32 virtual_gb=256 delay=1
+vs.
+	modprobe scsi_debug max_queue=128 submit_queues=1 virtual_gb=256 delay=1
 
-In file included from include/linux/string.h:6,
-In file included from include/linux/string.h:6,
-                 from arch/powerpc/include/asm/paca.h:15,
-                 from arch/powerpc/include/asm/current.h:13,
-                 from include/linux/sched.h:12,
-                 from include/linux/cgroup.h:12,
-                 from kernel/cgroup/cgroup-internal.h:5,
-                 from kernel/cgroup/cgroup.c:31:
-kernel/cgroup/cgroup.c: In function 'cgroup_exit':
-kernel/cgroup/cgroup.c:6270:17: error: 'task' undeclared (first use in this=
- function); did you mean 'tsk'?
- 6270 |  if (unlikely(!(task->flags & PF_KTHREAD) &&
-      |                 ^~~~
-include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
-   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
-      |                                          ^
-kernel/cgroup/cgroup.c:6270:17: note: each undeclared identifier is reporte=
-d only once for each function it appears in
- 6270 |  if (unlikely(!(task->flags & PF_KTHREAD) &&
-      |                 ^~~~
-include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
-   78 | # define unlikely(x) __builtin_expect(!!(x), 0)
-      |                                          ^
+Without this patch, the latter's result is 30% higher than the former's.
 
-Caused by commit
+note: scsi_debug's queue depth needs to be updated to 128 for avoiding io hang,
+which is another scsi issue.
 
-  c740aad01e41 ("cgroup: inline cgroup_task_freeze()")
 
-I have used the cgroup tree from next-20210510 for today.
+Thanks, 
+Ming
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/62nkJIloVlHuEbj6hgITbXT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCZ1QIACgkQAVBC80lX
-0GzbhAgAlOksoCsNs+sNiq5/9jLwp3iPepoCT1u0HD4NprS9cKnPORs3yL5Vk8ST
-GejCJnBj3dtMAYJ3R6A7XKqysEk54XNxGDXxd9cWs+SnlNNulu5PSp4V990ooj5l
-8vvEhJufbUCbe+7LULzAgcg1mZvrIUMQw1FjaZquMlriqZUMtWqe76ZrSEI3yZJ7
-tPqT5CoHD9EEu1lSKDwK8glhFWnco5xRB+y/x9lsRNPKhthcsMDYBkABXJ9+pEqx
-ApFDm7uLsePT/AA5WJ3rJl/wwRCyDdH7UBaN9zjjvAmTsLffk0rHtgVoIscJD7yE
-RSjTZMTb8nh/kk1wB8HkzMydNeIh0g==
-=OYpH
------END PGP SIGNATURE-----
-
---Sig_/62nkJIloVlHuEbj6hgITbXT--
