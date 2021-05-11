@@ -2,115 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6008C37A40E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C4C37A411
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231296AbhEKJxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 05:53:44 -0400
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:50855 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230434AbhEKJxg (ORCPT
+        id S231220AbhEKJzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 05:55:06 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:43496 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231189AbhEKJzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 05:53:36 -0400
-Received: by mail-wm1-f52.google.com with SMTP id n84so10786448wma.0;
-        Tue, 11 May 2021 02:52:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RklOnvzK32YLQfMzsNoB451WXrK3neV8tKeIMCPlix0=;
-        b=cpp13s1427dOHaeJw793idhbHOkjz8h/vt3MtQ2Wf4p9AyKNo/JW14SrhpWYkz033B
-         WVdR5Ip62eoeh48pWKAP9LTnnZepV7f2DY214HWzniXwfcn3Erd/NYCxxClR0OEUmVLO
-         xg2Lg4PuYCB9DePsiKQ+gfUZXSIaGRu4MwjE1XTZAdweTeirFi95Iky0XTqh2QjQO3XK
-         BEsuRvj0hpVc0Qa//3zYI4k7MzgWrygaoypXyYUYm5ez3rjSw2ObKrKBCYJksmYN0BAJ
-         RWMWIQCgAwBF9zGxXUbnys7sd8hhLQOk5P0ofNQ25RQdImYIYDE/VDbG6frXwxmdZDec
-         JI+g==
-X-Gm-Message-State: AOAM5311mIMZ5yeDrHTB7GaiV6Cd1vuG2KN2gJTt+RVzSJxmqqZ9h2/r
-        fa6GMCaepXuolITKzXsAGBdFJpwd9Lc=
-X-Google-Smtp-Source: ABdhPJwaQpzAMwrj3Bn/NNytP+SaiZESwQSXt90F2I2+1DtFYCcXg897cvQMnvEaKE2yOIj60GNnbA==
-X-Received: by 2002:a05:600c:3596:: with SMTP id p22mr4493909wmq.34.1620726748906;
-        Tue, 11 May 2021 02:52:28 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id l22sm2904540wmq.28.2021.05.11.02.52.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 02:52:28 -0700 (PDT)
-Date:   Tue, 11 May 2021 09:52:27 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com,
-        gregkh@linuxfoundation.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2] uio_hv_generic: Fix a memory leak in error handling
- paths
-Message-ID: <20210511095227.ggrl3z6otjanwffz@liuwe-devbox-debian-v2>
-References: <4fdaff557deef6f0475d02ba7922ddbaa1ab08a6.1620544055.git.christophe.jaillet@wanadoo.fr>
+        Tue, 11 May 2021 05:55:04 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14B9roQ6110601;
+        Tue, 11 May 2021 04:53:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620726830;
+        bh=z9UAR+/RmS3yDyR1l995bN55sFL4hrr9lxH1F4VEQjY=;
+        h=From:To:CC:Subject:Date;
+        b=cm46Afi4XVnDWcwhl5s9KL0Iy6F6+I+WbF9BVo3ajfVOkywNACexJC4IY0CjjwY2F
+         m4KKWk6m/5xJUWzWYWEkZ7dgRuNhTIgDfaj3A6a2Jq1sSiTzSC9WzFw6fBPZjhT+oY
+         K48yBApcghSnnsqY2vaJFR/QApUSWCRij2ryncGI=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14B9roRt123002
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 11 May 2021 04:53:50 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 11
+ May 2021 04:53:49 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 11 May 2021 04:53:49 -0500
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14B9rfrn089715;
+        Tue, 11 May 2021 04:53:42 -0500
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] arm64: dts: ti: k3-am65: Add support for UHS-I modes in MMCSD1 subsystem
+Date:   Tue, 11 May 2021 15:23:39 +0530
+Message-ID: <20210511095339.16268-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4fdaff557deef6f0475d02ba7922ddbaa1ab08a6.1620544055.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 09, 2021 at 09:13:03AM +0200, Christophe JAILLET wrote:
-> If 'vmbus_establish_gpadl()' fails, the (recv|send)_gpadl will not be
-> updated and 'hv_uio_cleanup()' in the error handling path will not be
-> able to free the corresponding buffer.
-> 
-> In such a case, we need to free the buffer explicitly.
-> 
-> Fixes: cdfa835c6e5e ("uio_hv_generic: defer opening vmbus until first use")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> Before commit cdfa835c6e5e, the 'vfree' were done unconditionally
-> in 'hv_uio_cleanup()'.
-> So, another way for fixing the potential leak is to modify
-> 'hv_uio_cleanup()' and revert to the previous behavior.
-> 
+UHS-I speed modes are supported in AM65 S.R. 2.0 SoC[1].
 
-I think this is cleaner.
+Add support by removing the no-1-8-v tag and including the voltage
+regulator device tree nodes for power cycling.
 
-Stephen, you authored cdfa835c6e5e. What do you think?
+However, the 4 bit interface of AM65 SR 1.0 cannot be supported at 3.3 V or
+1.8 V because of erratas i2025 and i2026 [2]. As the SD card is the primary
+boot mode for development usecases, continue to enable SD card and disable
+UHS-I modes in it to minimize any ageing issues happening because of
+erratas.
 
-Christophe, OOI how did you discover these issues?
+k3-am6528-iot2050-basic and k3-am6548-iot2050-advanced boards use S.R. 1.0
+version of AM65 SoC. Therefore, add no-1-8-v in sdhci1 device tree nodes
+for these boards.
 
-> I don't know the underlying reason for this change so I don't know which is
-> the best way to fix this error handling path. Unless there is a specific
-> reason, changing 'hv_uio_cleanup()' could be better because it would keep
-> the error handling path of the probe cleaner, IMHO.
-> ---
->  drivers/uio/uio_hv_generic.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/uio/uio_hv_generic.c b/drivers/uio/uio_hv_generic.c
-> index 0330ba99730e..eebc399f2cc7 100644
-> --- a/drivers/uio/uio_hv_generic.c
-> +++ b/drivers/uio/uio_hv_generic.c
-> @@ -296,8 +296,10 @@ hv_uio_probe(struct hv_device *dev,
->  
->  	ret = vmbus_establish_gpadl(channel, pdata->recv_buf,
->  				    RECV_BUFFER_SIZE, &pdata->recv_gpadl);
-> -	if (ret)
-> +	if (ret) {
-> +		vfree(pdata->recv_buf);
->  		goto fail_close;
-> +	}
->  
->  	/* put Global Physical Address Label in name */
->  	snprintf(pdata->recv_name, sizeof(pdata->recv_name),
-> @@ -316,8 +318,10 @@ hv_uio_probe(struct hv_device *dev,
->  
->  	ret = vmbus_establish_gpadl(channel, pdata->send_buf,
->  				    SEND_BUFFER_SIZE, &pdata->send_gpadl);
-> -	if (ret)
-> +	if (ret) {
-> +		vfree(pdata->send_buf);
->  		goto fail_close;
-> +	}
->  
->  	snprintf(pdata->send_name, sizeof(pdata->send_name),
->  		 "send:%u", pdata->send_gpadl);
-> -- 
-> 2.30.2
-> 
+[1] - https://www.ti.com/lit/ug/spruid7e/spruid7e.pdf, section 12.3.6.1.1
+[2] - https://www.ti.com/lit/er/sprz452e/sprz452e.pdf
+
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+---
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi      |  1 -
+ .../boot/dts/ti/k3-am6528-iot2050-basic.dts   |  4 +++
+ .../arm64/boot/dts/ti/k3-am654-base-board.dts | 33 +++++++++++++++++++
+ .../dts/ti/k3-am6548-iot2050-advanced.dts     |  4 +++
+ 4 files changed, 41 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+index cb340d1b401f..632f32fce4a1 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+@@ -301,7 +301,6 @@
+ 		ti,otap-del-sel = <0x2>;
+ 		ti,trm-icp = <0x8>;
+ 		dma-coherent;
+-		no-1-8-v;
+ 	};
+ 
+ 	scm_conf: scm-conf@100000 {
+diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts
+index 4f7e3f2a6265..485266960d5f 100644
+--- a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts
++++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts
+@@ -40,6 +40,10 @@
+ 	status = "disabled";
+ };
+ 
++&sdhci1 {
++	no-1-8-v;
++};
++
+ &main_pmx0 {
+ 	main_uart0_pins_default: main-uart0-pins-default {
+ 		pinctrl-single,pins = <
+diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+index 9e87fb313a54..51c594b4dddb 100644
+--- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
++++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+@@ -91,6 +91,38 @@
+ 		#clock-cells = <0>;
+ 		clock-frequency = <24000000>;
+ 	};
++
++	evm_12v0: fixedregulator-evm12v0 {
++		/* main supply */
++		compatible = "regulator-fixed";
++		regulator-name = "evm_12v0";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		regulator-always-on;
++		regulator-boot-on;
++	};
++
++	vcc3v3_io: fixedregulator-vcc3v3io {
++		/* Output of TPS54334 */
++		compatible = "regulator-fixed";
++		regulator-name = "vcc3v3_io";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-always-on;
++		regulator-boot-on;
++		vin-supply = <&evm_12v0>;
++	};
++
++	vdd_mmc1_sd: fixedregulator-sd {
++		compatible = "regulator-fixed";
++		regulator-name = "vdd_mmc1_sd";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		enable-active-high;
++		vin-supply = <&vcc3v3_io>;
++		gpio = <&pca9554 4 GPIO_ACTIVE_HIGH>;
++	};
+ };
+ 
+ &wkup_pmx0 {
+@@ -350,6 +382,7 @@
+  * disable sdhci1
+  */
+ &sdhci1 {
++	vmmc-supply = <&vdd_mmc1_sd>;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&main_mmc1_pins_default>;
+ 	ti,driver-strength-ohm = <50>;
+diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
+index ec9617c13cdb..3643a19b5f33 100644
+--- a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
++++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
+@@ -55,6 +55,10 @@
+ 	disable-wp;
+ };
+ 
++&sdhci1 {
++	no-1-8-v;
++};
++
+ &main_uart0 {
+ 	status = "disabled";
+ };
+-- 
+2.17.1
+
