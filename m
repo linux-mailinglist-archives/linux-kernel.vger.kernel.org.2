@@ -2,85 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9B437ADE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF96537AE05
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbhEKSJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232031AbhEKSJO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:09:14 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712F6C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:08:04 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id c20so8683399qkm.3
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:08:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:mime-version:date:message-id;
-        bh=vEBaMPDbeGK4OReyng8vq7HduxblR5MyAmLuOVT9xzo=;
-        b=ROqP2dNKST6ZsJWYsJO4kWzEG3A8g2vLm/zcRXxzvgJD/6r6TjzJTEgt/2fIQ8v82o
-         j0e9AxWt06o+hSOtygfHu10oJO8U5XvHMOK5ngIsPJSDYlI86sb63H88lOykEhFaCOra
-         XWsLP9mE7hlV5kAgeZfM2gmmaONWO8sGbLspBKUEUhmKCijdSHDrAmP/KxMTtuIvsLZv
-         QhmTWuVOvcKkDMMN8fI0vPXJ+Hv0dLSeuRVeSny2JBQ9tiUX8d7Pp0FbXbBRSFZqWN2f
-         IN4Tv58zWXFoXh8pu5ToSW9UymBbMsXUtcP6UOjJCe3RQkCP9dy7yL/vz9+8bwXfszSd
-         sTPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:mime-version:date
-         :message-id;
-        bh=vEBaMPDbeGK4OReyng8vq7HduxblR5MyAmLuOVT9xzo=;
-        b=jcOOsyYIrSZmySsRsZMfJRmcAk0ifKc88nFcVZ8+MTo673vzlkZeekfw0kCpFSFrc7
-         q9IpQGAu+XpZlygqNNoLcp1CAGLwc3PU8jIMFibrd3ky59ZC6fCMSoucdqDSh0ekqfj+
-         40QN6yG51i7gs8xgVsN7fUVCMbVpYouCwTo0I3ZmQndDVahUY3q9JjojBJevjDAkt70m
-         rEugZzhYkguesFHqtUUWkuG7xBpN4UWJfiBK+cbz7Wa2pWq45wS4VUmxXiRjCPSG7cdp
-         5NUWE78ZZhnCOsvGm3PK9ks1g/evc/L4V+Q2fy5QQJR3QYOAbTxhuEqv+MaL7E4cPLiF
-         PU2w==
-X-Gm-Message-State: AOAM532KFPjrX39wtazqYvJKk3r3PpMnA6lQqNqtPVAeB8119a65bc9Z
-        +LCbL1DFGIkWIlkd4l7PYis9Sw==
-X-Google-Smtp-Source: ABdhPJw8+f+vDt3/jF1Jgp4OM91/UZy4L+G5x7Ty3j+ZNDoSlNd+FCiKApQ49TWz1AK+pyxH1XZpWA==
-X-Received: by 2002:a05:620a:208a:: with SMTP id e10mr24928250qka.112.1620756483669;
-        Tue, 11 May 2021 11:08:03 -0700 (PDT)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id 66sm14852176qkh.54.2021.05.11.11.08.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 11:08:03 -0700 (PDT)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
-cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>
-Subject: next-20210511 - btrfs build failure on arm
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date:   Tue, 11 May 2021 14:08:02 -0400
-Message-ID: <564681.1620756482@turing-police>
+        id S232265AbhEKSJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:09:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51498 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232108AbhEKSJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 14:09:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8E24AAB6D;
+        Tue, 11 May 2021 18:08:16 +0000 (UTC)
+Subject: Re: [PATCH v3] mm, slub: change run-time assertion in kmalloc_index()
+ to compile-time
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>, akpm@linux-foundation.org,
+        iamjoonsoo.kim@lge.com, rientjes@google.com, penberg@kernel.org,
+        cl@linux.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210511173448.GA54466@hyeyoo>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <00093b51-0da0-602e-22c6-cc94af58263a@suse.cz>
+Date:   Tue, 11 May 2021 20:08:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210511173448.GA54466@hyeyoo>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An arm allmodconfig build died with:
+On 5/11/21 7:34 PM, Hyeonggon Yoo wrote:
+> currently when size is not supported by kmalloc_index, compiler will
+> generate a run-time BUG() while compile-time error is also possible,
+> and better. so changed BUG to BUILD_BUG_ON_MSG to make compile-time
+> check possible.
+> 
+> also removed code that allocates more than 32MB because current
+> implementation supports only up to 32MB.
+> 
+> Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 
-ERROR: modpost: "__aeabi_uldivmod" [fs/btrfs/btrfs.ko] undefined!
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Thanks!
 
-Some digging around with nm and looking at the assembler points at:
+> ---
+>  include/linux/slab.h | 7 +++++--
+>  mm/slab_common.c     | 7 +++----
+>  2 files changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index 6d454886bcaf..df1937309df2 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -345,6 +345,9 @@ static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
+>   * 1 =  65 .. 96 bytes
+>   * 2 = 129 .. 192 bytes
+>   * n = 2^(n-1)+1 .. 2^n
+> + *
+> + * Note: there's no need to optimize kmalloc_index because it's evaluated
+> + * in compile-time.
+>   */
+>  static __always_inline unsigned int kmalloc_index(size_t size)
+>  {
+> @@ -381,8 +384,8 @@ static __always_inline unsigned int kmalloc_index(size_t size)
+>  	if (size <=  8 * 1024 * 1024) return 23;
+>  	if (size <=  16 * 1024 * 1024) return 24;
+>  	if (size <=  32 * 1024 * 1024) return 25;
+> -	if (size <=  64 * 1024 * 1024) return 26;
+> -	BUG();
+> +
+> +	BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
+>  
+>  	/* Will never be reached. Needed because the compiler may complain */
+>  	return -1;
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index fe8b68482670..97664bbe8147 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -1192,8 +1192,8 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
+>  
+>  /*
+>   * kmalloc_info[] is to make slub_debug=,kmalloc-xx option work at boot time.
+> - * kmalloc_index() supports up to 2^26=64MB, so the final entry of the table is
+> - * kmalloc-67108864.
+> + * kmalloc_index() supports up to 2^25=32MB, so the final entry of the table is
+> + * kmalloc-32M.
+>   */
+>  const struct kmalloc_info_struct kmalloc_info[] __initconst = {
+>  	INIT_KMALLOC_INFO(0, 0),
+> @@ -1221,8 +1221,7 @@ const struct kmalloc_info_struct kmalloc_info[] __initconst = {
+>  	INIT_KMALLOC_INFO(4194304, 4M),
+>  	INIT_KMALLOC_INFO(8388608, 8M),
+>  	INIT_KMALLOC_INFO(16777216, 16M),
+> -	INIT_KMALLOC_INFO(33554432, 32M),
+> -	INIT_KMALLOC_INFO(67108864, 64M)
+> +	INIT_KMALLOC_INFO(33554432, 32M)
+>  };
+>  
+>  /*
+> 
 
-@ /usr/src/linux-next/fs/btrfs/extent_io.c:2676:        const int nr_bits = (end + 1 - start) / fs_info->sectorsize_bits;
-        adds    r1, r1, #1      @, tmp552, 
-        adc     r0, r0, #0      @, tmp551, 
-        ldr     r3, [r5, #1576] @ tmp2, _47->sectorsize_bits
-        bl      __aeabi_uldivmod                @       
-
-Introduced by this commit:
-
-commit 6512659d8f13015dccfb38a13c6d117d22572019
-Author: Qu Wenruo <wqu@suse.com>
-Date:   Mon May 3 10:08:55 2021 +0800
-
-    btrfs: submit read time repair only for each corrupted sector
-
-Looks like that line could use something from include/linux/math.h
