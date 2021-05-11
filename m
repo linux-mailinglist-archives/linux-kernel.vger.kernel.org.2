@@ -2,54 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 209E7379FA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1D4379F91
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhEKG12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 02:27:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229957AbhEKG1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 02:27:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59CC66128E;
-        Tue, 11 May 2021 06:26:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620714374;
-        bh=UV4fbVgL52REpMq4SBHkMYtTskxfKhM6n65aZENFeQE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hrC+pPxY9XfYL1SCiO31Uaer3bPCA1aSWeXRv2rQcWmU9FnksNiyM3/qum2/hCQeR
-         gz/EzWvr9fKqDq0wOpQZFi7bdKcTGMcfXp2Lm5RlycrkxAW5/Y93qtsrG9rq3uH8du
-         anhnxGnoFVozousFuWEiScfvlXxpY8YMfIOFq2yw=
-Date:   Tue, 11 May 2021 08:26:10 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: xhci: Increase timeout for HC halt
-Message-ID: <YJojglZqVE3vaUxX@kroah.com>
-References: <20210511002933.1612871-1-luzmaximilian@gmail.com>
+        id S230308AbhEKGNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 02:13:30 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2556 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229840AbhEKGNZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 02:13:25 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FfSDx635DzkWPf;
+        Tue, 11 May 2021 14:09:37 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 11 May 2021 14:12:09 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <robh@kernel.org>, <tomeu.vizoso@collabora.com>,
+        <airlied@linux.ie>, <daniel@ffwll.ch>, <steven.price@arm.com>,
+        <alyssa.rosenzweig@collabora.com>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] drm/panfrost: Fix PM reference leak in panfrost_job_hw_submit()
+Date:   Tue, 11 May 2021 14:29:11 +0800
+Message-ID: <1620714551-106976-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511002933.1612871-1-luzmaximilian@gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 02:29:33AM +0200, Maximilian Luz wrote:
-> On some devices (specifically the SC8180x based Surface Pro X with
-> QCOM04A6) HC halt / xhci_halt() times out during boot. Manually binding
-> the xhci-hcd driver at some point later does not exhibit this behavior.
-> To work around this, double XHCI_MAX_HALT_USEC, which also resolves this
-> issue.
-> 
-> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
-> ---
->  drivers/usb/host/xhci-ext-caps.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+pm_runtime_get_sync will increment pm usage counter even it failed.
+Forgetting to putting operation will result in reference leak here.
+Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+counter balanced.
 
-Should this go to stable kernels as well?
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/gpu/drm/panfrost/panfrost_job.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
+diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+index 6003cfe..42d8dbc 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_job.c
++++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+@@ -157,7 +157,7 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
+ 
+ 	panfrost_devfreq_record_busy(&pfdev->pfdevfreq);
+ 
+-	ret = pm_runtime_get_sync(pfdev->dev);
++	ret = pm_runtime_resume_and_get(pfdev->dev);
+ 	if (ret < 0)
+ 		return;
+ 
+-- 
+2.6.2
 
-greg k-h
