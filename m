@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C57B37A488
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFF937A491
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhEKK0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 06:26:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32870 "EHLO mail.kernel.org"
+        id S231459AbhEKK1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 06:27:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231245AbhEKK01 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 06:26:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB9FA61936
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:25:20 +0000 (UTC)
+        id S231340AbhEKK12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 06:27:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29BA26192C
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:26:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620728720;
-        bh=JV3oIYlPRhAEEPVctWNPV/cOycFyYs1Lq6DGChiCd+g=;
+        s=k20201202; t=1620728782;
+        bh=95zZVK7qfIh+tOUiU4moyxlDwWV95Vmvl6IczEmpWaQ=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DmYACPuIeG6DUf3e9aSCRKD4sAXZdKw4RqF6Pp00JLxdMo2YhXtCrwAXNpr/NHMqZ
-         oDldT6x/cS0KPsVlOjNNNacP62Pn/6s4/9Dtr/nMv6QNvTDIfo+1DuXY+Owpv0Oomq
-         t7cH1Ux8nSmob7o/jDbNynCu6GQt5eC2SLSqk9y8EnyptvliHdxwbANdSfFReShuuf
-         ZnW/vrbHs+PASPY+A4JKR+qnEyxPSI/lla+nFpB8wzyuiuCWGgY2lIR1VXMBLaYTJt
-         pT/DL2qD7qzYkzrAvR/290AS6znOUJ3Fs68ZhEpe90J4d0bracvkNvC4Vmj4OI7WXT
-         BWZYO6ccSYXqA==
-Received: by mail-ot1-f42.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso17021804otb.13
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 03:25:20 -0700 (PDT)
-X-Gm-Message-State: AOAM533BX5eOPEvAxWyVDxeYfoWBYJpoDYkxTPpRCU3ZtH0mkKFmP7vD
-        Z1Heq7Nyy+RpEG30GzmnTuFw28IpGA/UIBe7HBQ=
-X-Google-Smtp-Source: ABdhPJytWz1IVkHqKkcpbQyOgm8jLChtkDskRM+4A0ChV/Q2KAjwVVeEAON+ryI7vhB7a9AgJZb69e4AhTOmXsHGZbY=
-X-Received: by 2002:a05:6830:4da:: with SMTP id s26mr25288213otd.77.1620728719935;
- Tue, 11 May 2021 03:25:19 -0700 (PDT)
+        b=jB28dGoEQZhWVX4kG3NoWMrOUOJqKxtGnVTy20zjRDxZSYi5HDoH9X4KG04ToeloA
+         cDtUs47l0amh5owyQHo9Y71oQ4LjdMeLKiJKekCv6EqMBcFAvE6kFY+zLTpnzK2c02
+         7NweGlJAUMef4+eX+40tudEHBQhgb9TWfDjReYJgblgVGGMr9/GmZ/91vitXEd782t
+         g9xjaa2eZafJ5DzGUi2oT6AyQqRubnfU9TEwg5H9ElYCJfxuOahiwURSuGFYl4ZES1
+         rQXX3sG+FHbaG+SB1zpITPkwnC4j3iSe7CdYaT/+XuyT3ovBDEvX1eDXOge37ZUbm5
+         6GXvX4c06Mn7w==
+Received: by mail-ot1-f47.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso17061856otg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 03:26:22 -0700 (PDT)
+X-Gm-Message-State: AOAM533HyY+13MQi9DpLVqSBLVR5wEJgsb5C/LRAHGTgH5C5Etmx5SBW
+        rnLG14elyAXaitk8hbE7bgF2xI/lYdnvvm4p15M=
+X-Google-Smtp-Source: ABdhPJx7OAWZjUg75AH1MONFkX/rKqoEq6W+l0O8JhjgsRoszXYlOPWDD3ytFXdgmlzvdYrIN3iUwS6soQhwbypE0Tw=
+X-Received: by 2002:a9d:7cd8:: with SMTP id r24mr13558179otn.90.1620728781371;
+ Tue, 11 May 2021 03:26:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210511100550.28178-1-rppt@kernel.org> <20210511100550.28178-4-rppt@kernel.org>
-In-Reply-To: <20210511100550.28178-4-rppt@kernel.org>
+References: <20210511100550.28178-1-rppt@kernel.org> <20210511100550.28178-5-rppt@kernel.org>
+In-Reply-To: <20210511100550.28178-5-rppt@kernel.org>
 From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 11 May 2021 12:25:09 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGE=mu4P3sL-2zuGMrV1QwkXJc+-Y4Pj4RV7YEvdTDPzw@mail.gmail.com>
-Message-ID: <CAMj1kXGE=mu4P3sL-2zuGMrV1QwkXJc+-Y4Pj4RV7YEvdTDPzw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] arm64: decouple check whether pfn is in linear map
- from pfn_valid()
+Date:   Tue, 11 May 2021 12:26:10 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXE=XMhr6WB+DUZYN9Fr95azn6t_B7VS3BckMPNTn_ohkg@mail.gmail.com>
+Message-ID: <CAMj1kXE=XMhr6WB+DUZYN9Fr95azn6t_B7VS3BckMPNTn_ohkg@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] arm64: drop pfn_valid_within() and simplify pfn_valid()
 To:     Mike Rapoport <rppt@kernel.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Anshuman Khandual <anshuman.khandual@arm.com>,
@@ -61,133 +60,70 @@ On Tue, 11 May 2021 at 12:06, Mike Rapoport <rppt@kernel.org> wrote:
 >
 > From: Mike Rapoport <rppt@linux.ibm.com>
 >
-> The intended semantics of pfn_valid() is to verify whether there is a
-> struct page for the pfn in question and nothing else.
+> The arm64's version of pfn_valid() differs from the generic because of two
+> reasons:
 >
-> Yet, on arm64 it is used to distinguish memory areas that are mapped in the
-> linear map vs those that require ioremap() to access them.
+> * Parts of the memory map are freed during boot. This makes it necessary to
+>   verify that there is actual physical memory that corresponds to a pfn
+>   which is done by querying memblock.
 >
-> Introduce a dedicated pfn_is_map_memory() wrapper for
-> memblock_is_map_memory() to perform such check and use it where
-> appropriate.
+> * There are NOMAP memory regions. These regions are not mapped in the
+>   linear map and until the previous commit the struct pages representing
+>   these areas had default values.
 >
-> Using a wrapper allows to avoid cyclic include dependencies.
+> As the consequence of absence of the special treatment of NOMAP regions in
+> the memory map it was necessary to use memblock_is_map_memory() in
+> pfn_valid() and to have pfn_valid_within() aliased to pfn_valid() so that
+> generic mm functionality would not treat a NOMAP page as a normal page.
 >
-> While here also update style of pfn_valid() so that both pfn_valid() and
-> pfn_is_map_memory() declarations will be consistent.
+> Since the NOMAP regions are now marked as PageReserved(), pfn walkers and
+> the rest of core mm will treat them as unusable memory and thus
+> pfn_valid_within() is no longer required at all and can be disabled by
+> removing CONFIG_HOLES_IN_ZONE on arm64.
+>
+> pfn_valid() can be slightly simplified by replacing
+> memblock_is_map_memory() with memblock_is_memory().
 >
 > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 > Acked-by: David Hildenbrand <david@redhat.com>
 
 Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
+... and many thanks for cleaning this up.
+
+
 > ---
->  arch/arm64/include/asm/memory.h |  2 +-
->  arch/arm64/include/asm/page.h   |  3 ++-
->  arch/arm64/kvm/mmu.c            |  2 +-
->  arch/arm64/mm/init.c            | 12 ++++++++++++
->  arch/arm64/mm/ioremap.c         |  4 ++--
->  arch/arm64/mm/mmu.c             |  2 +-
->  6 files changed, 19 insertions(+), 6 deletions(-)
+>  arch/arm64/Kconfig   | 3 ---
+>  arch/arm64/mm/init.c | 2 +-
+>  2 files changed, 1 insertion(+), 4 deletions(-)
 >
-> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-> index 87b90dc27a43..9027b7e16c4c 100644
-> --- a/arch/arm64/include/asm/memory.h
-> +++ b/arch/arm64/include/asm/memory.h
-> @@ -369,7 +369,7 @@ static inline void *phys_to_virt(phys_addr_t x)
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 9f1d8566bbf9..d7dc8698cf8e 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1052,9 +1052,6 @@ config NEED_PER_CPU_EMBED_FIRST_CHUNK
+>         def_bool y
+>         depends on NUMA
 >
->  #define virt_addr_valid(addr)  ({                                      \
->         __typeof__(addr) __addr = __tag_reset(addr);                    \
-> -       __is_lm_address(__addr) && pfn_valid(virt_to_pfn(__addr));      \
-> +       __is_lm_address(__addr) && pfn_is_map_memory(virt_to_pfn(__addr));      \
->  })
+> -config HOLES_IN_ZONE
+> -       def_bool y
+> -
+>  source "kernel/Kconfig.hz"
 >
->  void dump_mem_limit(void);
-> diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
-> index 012cffc574e8..75ddfe671393 100644
-> --- a/arch/arm64/include/asm/page.h
-> +++ b/arch/arm64/include/asm/page.h
-> @@ -37,7 +37,8 @@ void copy_highpage(struct page *to, struct page *from);
->
->  typedef struct page *pgtable_t;
->
-> -extern int pfn_valid(unsigned long);
-> +int pfn_valid(unsigned long pfn);
-> +int pfn_is_map_memory(unsigned long pfn);
->
->  #include <asm/memory.h>
->
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index c5d1f3c87dbd..470070073085 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -85,7 +85,7 @@ void kvm_flush_remote_tlbs(struct kvm *kvm)
->
->  static bool kvm_is_device_pfn(unsigned long pfn)
->  {
-> -       return !pfn_valid(pfn);
-> +       return !pfn_is_map_memory(pfn);
->  }
->
->  static void *stage2_memcache_zalloc_page(void *arg)
+>  config ARCH_SPARSEMEM_ENABLE
 > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index 16a2b2b1c54d..798f74f501d5 100644
+> index 798f74f501d5..fb07218da2c0 100644
 > --- a/arch/arm64/mm/init.c
 > +++ b/arch/arm64/mm/init.c
-> @@ -255,6 +255,18 @@ int pfn_valid(unsigned long pfn)
+> @@ -251,7 +251,7 @@ int pfn_valid(unsigned long pfn)
+>         if (!early_section(ms))
+>                 return pfn_section_valid(ms, pfn);
+>
+> -       return memblock_is_map_memory(addr);
+> +       return memblock_is_memory(addr);
 >  }
 >  EXPORT_SYMBOL(pfn_valid);
 >
-> +int pfn_is_map_memory(unsigned long pfn)
-> +{
-> +       phys_addr_t addr = PFN_PHYS(pfn);
-> +
-> +       /* avoid false positives for bogus PFNs, see comment in pfn_valid() */
-> +       if (PHYS_PFN(addr) != pfn)
-> +               return 0;
-> +
-> +       return memblock_is_map_memory(addr);
-> +}
-> +EXPORT_SYMBOL(pfn_is_map_memory);
-> +
->  static phys_addr_t memory_limit = PHYS_ADDR_MAX;
->
->  /*
-> diff --git a/arch/arm64/mm/ioremap.c b/arch/arm64/mm/ioremap.c
-> index b5e83c46b23e..b7c81dacabf0 100644
-> --- a/arch/arm64/mm/ioremap.c
-> +++ b/arch/arm64/mm/ioremap.c
-> @@ -43,7 +43,7 @@ static void __iomem *__ioremap_caller(phys_addr_t phys_addr, size_t size,
->         /*
->          * Don't allow RAM to be mapped.
->          */
-> -       if (WARN_ON(pfn_valid(__phys_to_pfn(phys_addr))))
-> +       if (WARN_ON(pfn_is_map_memory(__phys_to_pfn(phys_addr))))
->                 return NULL;
->
->         area = get_vm_area_caller(size, VM_IOREMAP, caller);
-> @@ -84,7 +84,7 @@ EXPORT_SYMBOL(iounmap);
->  void __iomem *ioremap_cache(phys_addr_t phys_addr, size_t size)
->  {
->         /* For normal memory we already have a cacheable mapping. */
-> -       if (pfn_valid(__phys_to_pfn(phys_addr)))
-> +       if (pfn_is_map_memory(__phys_to_pfn(phys_addr)))
->                 return (void __iomem *)__phys_to_virt(phys_addr);
->
->         return __ioremap_caller(phys_addr, size, __pgprot(PROT_NORMAL),
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index 6dd9369e3ea0..ab5914cebd3c 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -82,7 +82,7 @@ void set_swapper_pgd(pgd_t *pgdp, pgd_t pgd)
->  pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
->                               unsigned long size, pgprot_t vma_prot)
->  {
-> -       if (!pfn_valid(pfn))
-> +       if (!pfn_is_map_memory(pfn))
->                 return pgprot_noncached(vma_prot);
->         else if (file->f_flags & O_SYNC)
->                 return pgprot_writecombine(vma_prot);
 > --
 > 2.28.0
 >
