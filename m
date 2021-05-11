@@ -2,198 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C6C37AD70
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB7F37AD71
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231891AbhEKR53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39538 "EHLO
+        id S231868AbhEKR5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbhEKR5W (ORCPT
+        with ESMTP id S231437AbhEKR5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:57:22 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19E5C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:56:14 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id gj14so12093353pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:56:14 -0700 (PDT)
+        Tue, 11 May 2021 13:57:43 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6594C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:56:36 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id p20so2248138ljj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:56:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OE8q1BG05EipQ/1YaoTFUtsd5Q+5n/JYZoA2VhfSjZU=;
-        b=JhS+rcoDkQIqCU/PlBh5dmly1teXaDDZ4NNTzngHUkSjOcqPmik2eavfBztQGJnkid
-         ZAbGDaTNBSN6Z0MUh6JR41JQxlgcjP95pshxWy5nk0tqEeOoerqY6aMUO1cs9b7+WH4p
-         w/ZQnVrUPbvyMGctuPzObY2GMvlMz8qV0pkSonqbBEl/sxYb+6QQ0kfjEoCEx5a+cg0R
-         ZUjr/6aa0ENfZqLct5o1Ho8tlCg45fKr2wY9E6A4NgPgiiIqewt8NFEKkAdEA19hM8WC
-         BoC9OVHlQyVccMpNu12is+nE768jLMvOD0X5k/kOANjJpFfVkSbO46fmq5y4B9JoLxBy
-         4pzg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SEieUtF82cL+QRqYe/uJoshXeUJzCNwZD1aMuDjUEa8=;
+        b=K0AP15ltFkL8ZDnZI9Icyd51/g6JgY11d8ECI5jXb6AT0Seua97+vUY/LncHtdeFal
+         ruPemTK4YW3vDuSQqezNQNh9bpum/zvk3lMwd2CwetRAU8dWxEtaVoHUgo/wOxxM52Tv
+         i0eubTVMvtqkaFsEVtU6pKUOWSI1WYW3ri3uV1FSG/RnuYBwC7s3/EpjLBk5pcgbSwPS
+         rxbj2LWqxrh+b4M4QYZNS1mM6TO/EwcC3rv8v+09sZI6ThP3cEwp9JvTPRbitarz1akJ
+         m/AYVjtOx3HhTeJH1HvrYENZ3uBLzR9OsQTP9GSVljS2fSUJ3PsPPrXsbjChrvJWHDuQ
+         FOEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OE8q1BG05EipQ/1YaoTFUtsd5Q+5n/JYZoA2VhfSjZU=;
-        b=akrSi1Lg8yqMksULjyo6mkmv2J8ROhUml/BddD6MwCM4FugaUoqr07/VYWcugdyH3/
-         tv/pvOaYsDiucK+fJgtkk2YmA8TPbe4SOoSih57O/3RfGLKrtKYqs++gzomLzWq/KaVZ
-         V2MkhAy3Zp7va0CraY/hYFANAe4gMXiS0zanBFcxG2EdO179sCpSZ9TqKsKE2A4crMXH
-         28kkTHthR+oJUtYkbVibN66jzNCnqavP6CiV+SrJrHrq5nqkG73qp3fIpX/FVesj5t3k
-         1HQbG3StllvvOC+YkmS2/TDCR4NNS0TY7kxp3seUEcTXPTEoa+lQQMszJOzrotPUASfn
-         H7vA==
-X-Gm-Message-State: AOAM530h9UtkuU0ZeQkRnUwOJBVzhtMz5AMORcTMnvJhNHaAsZLp6KIp
-        7USA3PQ8jJSu4ERO3LEBDp3f4g==
-X-Google-Smtp-Source: ABdhPJwKnqsuiVy53IbxV1xe7q0waugKjy+GJJddrAPrI/2uA8Um7W3MTpXxgXhaN+YY1xR3SPyT4w==
-X-Received: by 2002:a17:902:70c2:b029:ee:b4e5:64d5 with SMTP id l2-20020a17090270c2b02900eeb4e564d5mr30266317plt.77.1620755774157;
-        Tue, 11 May 2021 10:56:14 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id o12sm14138270pjr.43.2021.05.11.10.56.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 10:56:13 -0700 (PDT)
-Date:   Tue, 11 May 2021 17:56:09 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v4 2/7] KVM: x86/mmu: Factor out allocating memslot rmap
-Message-ID: <YJrFOXW3mM3WjGT5@google.com>
-References: <20210511171610.170160-1-bgardon@google.com>
- <20210511171610.170160-3-bgardon@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SEieUtF82cL+QRqYe/uJoshXeUJzCNwZD1aMuDjUEa8=;
+        b=eZUSwlisJ8bNjFpV8Ez0SCluMhyBTu7/O33bHyebDVglnONc5PnxoWitus4yNKf8Wt
+         +CoZoDqSp4fG4qe7Ubt9d16ZL8NTVTUmkWyNOmUCPjIDxI7ODYPlCTNY5ZRa10PzmNXR
+         Sn+fy6FG71E8eXMBNIqctAJf3Tx8lHF5RvZChZZa0OdWvcd12vPUMij/pibGmvuZ9wWK
+         EylAccPan73j3PSArQINQF9Wu7EDrAP9WVeiOffM9GRG3rgSlGLao43UHbeG3RwC6ShA
+         s1USxKbjvE/Ia3WKtAGaZJcJsgfJr9rJSQ471nl2u4d7oGGcUkeS0lDXHWCULs90nvrA
+         sRRA==
+X-Gm-Message-State: AOAM533iUUXkE0KAztZ/udsRmlYDRGYTbwHwdmILRZqUxZRXDQjO1Iuz
+        PDoPo2S9G4eA6JzS4Zso9hATtH4o/raiyx31WwWw5A==
+X-Google-Smtp-Source: ABdhPJwtYhYYhXIAD/NLXVq0wePq45fVZGFPLSmGg4DjnyLzaP+TW/VAHCOb2F2LV5JKDLSFMcnVuIehkLvfXsmCdNY=
+X-Received: by 2002:a2e:151e:: with SMTP id s30mr25241212ljd.445.1620755795356;
+ Tue, 11 May 2021 10:56:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511171610.170160-3-bgardon@google.com>
+References: <20210122154600.1722680-1-joel@joelfernandes.org>
+ <YBG0W5PFGtGRCEuB@google.com> <CAKfTPtBqj5A_7QmxhhmkNTc3+VT6+AqWgw1GDYrgy1V5+PJMmQ@mail.gmail.com>
+ <CAEXW_YRrhEfGcLN5yrLJZm6HrB15M_R5xfpMReG2wE2rSmVWdA@mail.gmail.com>
+ <CAKfTPtBvwm9vZb5C=2oTF6N-Ht6Rvip4Lv18yi7O3G8e-_ZWdg@mail.gmail.com>
+ <20210129172727.GA30719@vingu-book> <274d8ae5-8f4d-7662-0e04-2fbc92b416fc@linux.intel.com>
+ <20210324134437.GA17675@vingu-book> <efad4771-c9d1-5103-de9c-0ec5fa78ee24@linux.intel.com>
+ <CAKfTPtDsya_zdUB1ARmoxQs5xWS8o-XrrzyNx5R1iSNrchUXtg@mail.gmail.com>
+ <fc0efe4e-0a81-03b8-08cb-029468c57782@linux.intel.com> <CAKfTPtCKavGWja42NdTmb+95ppG-WxYzoTJMmtgkCQcA-btfBw@mail.gmail.com>
+ <4aa674d9-db49-83d5-356f-a20f9e2a7935@linux.intel.com> <CAKfTPtDJaTr_HR2t=9CQ-9x6keu-qzx6okci92AdW5cJG8J9zg@mail.gmail.com>
+ <2d2294ce-f1d1-f827-754b-4541c1b43be8@linux.intel.com> <ade18978-cd67-6215-28f0-4857c66a99fb@linux.intel.com>
+ <CAKfTPtA8nr-fgt4Nw6XqQyT_TEx4uL3nK-ba0xGfkONO+BPG3Q@mail.gmail.com> <577b0aae-0111-97aa-0c99-c2a2fcfb5e2e@linux.intel.com>
+In-Reply-To: <577b0aae-0111-97aa-0c99-c2a2fcfb5e2e@linux.intel.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 11 May 2021 19:56:23 +0200
+Message-ID: <CAKfTPtC2Lj1O7-CoZd51cUDaB6EWkYVO=jbe4yaHVQE-wASAEQ@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Rate limit calls to update_blocked_averages()
+ for NOHZ
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Dietmar Eggeman <dietmar.eggemann@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021, Ben Gardon wrote:
-> Small refactor to facilitate allocating rmaps for all memslots at once.
-> 
-> No functional change expected.
-> 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->  arch/x86/kvm/x86.c | 39 ++++++++++++++++++++++++++++++---------
->  1 file changed, 30 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 1e1f4f31e586..cc0440b5b35d 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10911,10 +10911,35 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
->  	kvm_page_track_free_memslot(slot);
->  }
->  
-> +static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
-> +			      unsigned long npages)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
-> +		int lpages;
-> +		int level = i + 1;
-> +
-> +		lpages = gfn_to_index(slot->base_gfn + npages - 1,
-> +				      slot->base_gfn, level) + 1;
+On Tue, 11 May 2021 at 19:25, Tim Chen <tim.c.chen@linux.intel.com> wrote:
+>
+>
+>
+> On 5/11/21 8:25 AM, Vincent Guittot wrote:
+> > Hi Tim,
+> >
+> > Sometimes, we want to set this_rq->next_balance backward compared to
+> > its current value. When a CPU is busy, the balance interval is
+> > multiplied by busy_factor which is set to 16 by default. On SMT2 sched
+> > domain level, it means that the interval will be 32ms when busy
+> > instead of 2ms. But if a busy load balance happens just before
+> > becoming idle, the this_rq->next_balance will be set 32ms later
+> > whereas it should go down to 2ms as the CPU is now idle. And this
+> > becomes even worse when you have 128 CPUs at die sched_domain level
+> > because the idle CPU will have to wait 2048ms instead of the correct
+> > 128ms interval.
+> >
+> >>
+> >>  out:
+> >>         /* Move the next balance forward */
+> >> -       if (time_after(this_rq->next_balance, next_balance))
+> >> +       if (time_after(next_balance, this_rq->next_balance))
+> >
+> > The current comparison is correct but next_balance should not be in the past.
+>
+> I understand then the intention is after the update,
+> this_rq->next_balance should have a minimum value of jiffies+1. So
+> we will need
+>
+>  out:
+>         /* Move the next balance forward */
+> +       this_rq->next_balance = max(jiffies+1, this_rq->next_balance);
+>         if (time_after(this_rq->next_balance, next_balance))
+>                 this_rq->next_balance = next_balance;
+>
+> as next_balance computed will be at least jiffies+1 after your fix to
+> update_next_balance(). We still need to take care of the case when
+> this_rq->next_balance <= jiffies.
+>
+> So combining with your suggestion on the fix to update_next_balance(),
+> the fix will be
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 1d75af1ecfb4..2dc471c1511c 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9901,7 +9901,7 @@ update_next_balance(struct sched_domain *sd, unsigned long *next_balance)
+>
+>         /* used by idle balance, so cpu_busy = 0 */
+>         interval = get_sd_balance_interval(sd, 0);
+> -       next = sd->last_balance + interval;
+> +       next = max(jiffies+1, sd->last_balance + interval);
+>
+>         if (time_after(*next_balance, next))
+>                 *next_balance = next;
+> @@ -10681,6 +10681,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>
+>  out:
+>         /* Move the next balance forward */
+> +       this_rq->next_balance = max(jiffies+1, this_rq->next_balance);
+>         if (time_after(this_rq->next_balance, next_balance))
+>                 this_rq->next_balance = next_balance;
+>
+>
+> >
+> > update_next_balance() is only used in newidle_balance() so we could
+> > modify it to  have:
+> >
+> > next = max(jiffies+1, next = sd->last_balance + interval)
+>
+> Is the extra assignment "next = sd->last_balance + interval" needed?
 
-Might as well assign lpages at its declaration, i.e.
+No it's a typo mistake while copy pasting the line
 
-		int lpages = gfn_to_index(slot->base_gfn + npages - 1,
-					  slot->base_gfn, level) + 1;
-> +
-> +		slot->arch.rmap[i] =
-> +			kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
-> +				 GFP_KERNEL_ACCOUNT);
-
-Eh, I don't think avoiding a 3 char overrun is worth splitting across three lines.
-E.g. this is perfectly readable
-
-		slot->arch.rmap[i] = kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
-					      GFP_KERNEL_ACCOUNT);
-
-Alternatively, the rmap size could be captured in a local var, e.g.
-
-	const int sz = sizeof(*slot->arch.rmap[0]);
-
-	...
-
-		slot->arch.rmap[i] = kvcalloc(lpages, sz, GFP_KERNEL_ACCOUNT);
-		if (!slot->arch.rmap[i]) {
-			memslot_rmap_free(slot);
-			return -ENOMEM;
-		}
-
-> +		if (!slot->arch.rmap[i]) {
-> +			memslot_rmap_free(slot);
-> +			return -ENOMEM;
-
-Reaaaally getting into nitpicks, what do you think about changing this to a goto
-with the error handling at the bottom?  Obviously not necessary by any means,
-but for me it makes it easier to see that all rmaps are freed on failure.  My
-eyes skipped over that on the first read through.  E.g.
-
-		if (!slot_arch.rmap[i])
-			goto err;
-	}
-
-	return 0;
-
-err:
-	memslot_rmap_free(slot);
-	return -ENOMEM;
-
-
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
->  				      unsigned long npages)
->  {
->  	int i;
-> +	int r;
-
-Personal preference, for short declarations like this I like putting 'em on a
-single line.
-
->  	/*
->  	 * Clear out the previous array pointers for the KVM_MR_MOVE case.  The
-> @@ -10923,7 +10948,11 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
->  	 */
->  	memset(&slot->arch, 0, sizeof(slot->arch));
->  
-> -	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
-> +	r = memslot_rmap_alloc(slot, npages);
-> +	if (r)
-> +		return r;
-> +
-> +	for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
->  		struct kvm_lpage_info *linfo;
->  		unsigned long ugfn;
->  		int lpages;
-> @@ -10932,14 +10961,6 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
->  		lpages = gfn_to_index(slot->base_gfn + npages - 1,
->  				      slot->base_gfn, level) + 1;
->  
-> -		slot->arch.rmap[i] =
-> -			kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
-> -				 GFP_KERNEL_ACCOUNT);
-> -		if (!slot->arch.rmap[i])
-> -			goto out_free;
-> -		if (i == 0)
-> -			continue;
-> -
->  		linfo = kvcalloc(lpages, sizeof(*linfo), GFP_KERNEL_ACCOUNT);
->  		if (!linfo)
->  			goto out_free;
-> -- 
-> 2.31.1.607.g51e8a6a459-goog
-> 
+> This seems more straight forward:
+>
+> next = max(jiffies+1, sd->last_balance + interval)
+>
+> I will try to get the benchmark folks to do another run with this change.
+> Hopefully I'll get some bandwidth from them soon.
+>
+> Thanks.
+>
+> Tim
+>
