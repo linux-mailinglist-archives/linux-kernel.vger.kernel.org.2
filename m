@@ -2,88 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C62537B19B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB3537B1A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhEKW0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 18:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44000 "EHLO
+        id S229951AbhEKWeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:34:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhEKW0I (ORCPT
+        with ESMTP id S229714AbhEKWeN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 18:26:08 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DE2C061574;
-        Tue, 11 May 2021 15:25:01 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FfstL2MK7z9sVt;
-        Wed, 12 May 2021 08:24:58 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1620771899;
-        bh=eg3dusZ+Nto5rmGgc1s+6T8TBTKlakxJgp0CS+0cmPs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=AuGkIDLtHld9JWQFs/UeMRXz/mk4s8MJow7PsyBN4mz/U5fAyF9oJ4ScJku9OdS+3
-         EHriZIjIbUkP1MGA8V7D90ba9C6R9rZzh91omJdzsl582UuOyf9VxMGRVpA7Uy4kmv
-         0tTuI6LuLWpr0CcVNYOkoVRNLeo68QRWvQRq9s7sXeZrFMGXdj1i4hCdyCGx/DI1jj
-         ah1ugxe0vqbvw3ByMeqKis00AnSWp4s7IXt6Z4gp8O7kizZCeXLaZXF9W9AETQ6HH2
-         z9ePSRz8tVlxOK5B+YQ4SKjFxVkzBQ15l2rPvNg8+2CAODygROjaIbH09VtCosuODI
-         8Kj0xCt1a5yqw==
-Date:   Wed, 12 May 2021 08:24:57 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the spi tree
-Message-ID: <20210512082457.370f3062@canb.auug.org.au>
+        Tue, 11 May 2021 18:34:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C31EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:33:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=x/Z5K3U5WC9FDDIUlCEk/fWAgWuXH3EOg7ra2fe+BOg=; b=mCUcAL5DLLPoSN5JB4sIsU7mVg
+        5bJu0gCKjYPDPr14t8Bg/dzbOxWAuc33h8bxFs4N5dW7VK2NFgUG5ASotRI9Rd8hU2LdZwbIjR1Io
+        75Mf3kj5p1M6NxlyOn3Dp8dpaw7lRhMTvFRHNDTg4/ThrUuwpbmllJ1AE2baNVupXhPMi7rJ5tmpl
+        +7qpYIDgzLiYgh31HSEPPvFpj90wkbxDZ8ChYNEPJhjKXi7lyjTvlYTRzDjAyd9ATKLkI8sVTlSJ4
+        kB1JpnzErLwpO3zzvwZjE0ZsE+7RTHd6BwpO5C9kt0G++aiyOMxQr4G5TccCEoMAzrWN4OiAnXWLC
+        ircPteBQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgavi-007jiU-Lu; Tue, 11 May 2021 22:32:45 +0000
+Date:   Tue, 11 May 2021 23:32:42 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/3] mm/migrate: Add folio_migrate_mapping
+Message-ID: <YJsGCu+zvqSR7WV1@casper.infradead.org>
+References: <20210510232308.1592750-1-willy@infradead.org>
+ <20210510232308.1592750-2-willy@infradead.org>
+ <DD640D43-3101-4291-9882-57A89C74866E@nvidia.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/sKua6nEabQTi=W5Ug.58v5E";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DD640D43-3101-4291-9882-57A89C74866E@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/sKua6nEabQTi=W5Ug.58v5E
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, May 11, 2021 at 06:04:21PM -0400, Zi Yan wrote:
+> On 10 May 2021, at 19:23, Matthew Wilcox (Oracle) wrote:
+> > +++ b/mm/migrate.c
+> > @@ -355,7 +355,7 @@ static int expected_page_refs(struct address_space *mapping, struct page *page)
+> >  	 */
+> >  	expected_count += is_device_private_page(page);
+> >  	if (mapping)
+> > -		expected_count += thp_nr_pages(page) + page_has_private(page);
+> > +		expected_count += compound_nr(page) + page_has_private(page);
+> 
+> Why this change? Is it because you are passing folio->page to expected_page_refs() below
+> and the nr_pages for the folio should be checked with folio_nr_pages() which just returns
+> compound_nr()?
+> 
+> The change seems to imply that folio can be compound page and migrated even when THP is
+> disabled. Is it the case or something else?
 
-Hi all,
+That's exactly right.
 
-In commit
+In general, I don't like to pass &folio->page to functions, but this one
+might be handling device private pages (apparently), and they have bogus
+refcounts, so devmap pages are explicitly disallowed from being folios
+until the refcount problem gets fixed.
 
-  86b1d8ecb5f1 ("spi: tegra114: Fix an error message")
-
-Fixes tag
-
-  Fixes: f333a331ad ("spi/tegra114: add spi driver")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/sKua6nEabQTi=W5Ug.58v5E
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCbBDkACgkQAVBC80lX
-0GwlEgf+Mhb0yB37TQwroNCByA5r5JxqoZgVEIZ4arFFYZE8sRo8In6eQ/D2QGgh
-JBaueFCSs4zr46qIWkEsA8F71RiWuPDNEyTCiMi3H7u1xCmMWA3h0vfVtev7Yo9i
-13iLtt25ovWeHw0V+n7T6H1963QqFoBJ1txT5nmxdmYgCUVCuAjkW0Bks4uFjEMj
-LDyMeoQETxrsK2SlUy0OrDTNiXnfk5ardpHN+Eqm3t4qv+c89zKVZVzL4eq1UMYU
-JPpdPSgsdwbpBluRxge/MpZ2YmBhhzgselxYylF40XwyCkIUATG+lVFz6v04fASp
-MdTC0HRxecUMSoIP44k9zBxYSnyuEA==
-=c/eO
------END PGP SIGNATURE-----
-
---Sig_/sKua6nEabQTi=W5Ug.58v5E--
