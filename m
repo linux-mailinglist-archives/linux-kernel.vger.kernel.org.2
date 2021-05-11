@@ -2,138 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0744A37B210
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A1337B212
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbhEKXDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:03:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41650 "EHLO mail.kernel.org"
+        id S230070AbhEKXDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:03:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhEKXDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:03:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3541561624;
-        Tue, 11 May 2021 23:02:35 +0000 (UTC)
+        id S229996AbhEKXDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 19:03:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 936ED61606;
+        Tue, 11 May 2021 23:02:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620774155;
-        bh=BIKyXFoa74TTi5KNBShiCcyApEkI7I0Isisr4tY8eTs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=V8pmrmEg/hRJTMOS1agePsx4onbtt4kay/0LeUCfitI3vveS/rfSEUxQY5WbM5v66
-         ZeYrz7JsSMd8vGt5vQzNl+pz/YFIbsr/kKCEU9e9rc+qqpp97VHlyZYoJI4IpYKL8b
-         9Gljda93u6s+oD6SKywj6dFoZiHMdvCVTCqtdP2x1W49wFCKKzbpTxefI4oa7eu16Z
-         /VM72FHdfRxDQipx82hG06AGmTAQLyBdCPyltNk5w7jx/oFBkIINcfev7Sk3L3ZGss
-         +Oq2rREBf5DOekyX+hVFe/3YT2T3tEEBkMB/KJdnmzrLOkBaXVYIy+1pH8ESOCiqul
-         OXE+R6F24jz7A==
-Date:   Tue, 11 May 2021 18:02:28 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>, Rajat Jain <rajatxjain@gmail.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Dmitry Torokhov <dtor@google.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        David Laight <David.Laight@aculab.com>
-Subject: Re: [PATCH v2 2/2] pci: Support "removable" attribute for PCI devices
-Message-ID: <20210511230228.GA2429744@bjorn-Precision-5520>
+        s=k20201202; t=1620774164;
+        bh=iwAChxWhGvH/KcZDbPAQ6E0e5/tY6h0oc8fTfC+LBgg=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=pak6OnfsuStfQ8jbJqUkxTPjnZJrzsc579WL1JMKMA5QGUtVVxAIZ3dXmGHX16H39
+         bYbQaKdEm4E8Pm9vv+vhoN5tv4sqp1QGrdpoUnO3zwR0h5HRcUukHb+/k4ClG2rCR7
+         mHNlEDR0QBrysl6QpVrJXI/SEbBKX7gq4qMkoPqJloitetPmfTNNOd9K0eQ0vrqh07
+         L6eDtmHzo+OosGNcnIvx5s+EswpXFwwo9DA6Be3iWxvNaH2cndnt/1mBnNK5mhGrom
+         h30c+8P3NQhH8AQiMxNaOiwsndGvVU6ttn2pEyRrem4OxaI1naXTLV1zQ9QYDwg4ls
+         flA7MZ5f0Wr8w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3EE425C0138; Tue, 11 May 2021 16:02:44 -0700 (PDT)
+Date:   Tue, 11 May 2021 16:02:44 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/10] No-CBs CPU updates for v5.14
+Message-ID: <20210511230244.GA2894061@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACK8Z6GP415hmDUYU74LRrGYKCN4aAXGD-B=ctN8R7P3LnFUrw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 03:15:11PM -0700, Rajat Jain wrote:
-> On Tue, May 11, 2021 at 2:30 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Fri, Apr 23, 2021 at 07:16:31PM -0700, Rajat Jain wrote:
-> > ...
-> > This looks like a good start.  I think it would be useful to have a
-> > more concrete example of how this information will be used.  I know
-> > that use would be in userspace, so an example probably would not be a
-> > kernel patch.  If you have user code published anywhere, that would
-> > help.  Or even a patch to an existing daemon.  Or pointers to how
-> > "removable" is used for USB devices.
-> 
-> Sure, I'll point to some existing user space code (which will be using
-> a similar attribute we are carrying internally).
+Hello!
 
-Great, thanks!
+This series continues work towards runtime switching of CPUs between
+offloaded and not, including a number of cleanups and consolidations:
 
-> > > +     set_pci_dev_removable(dev);
-> >
-> > So this *only* sets the "removable" attribute based on the
-> > ExternalFacingPort or external-facing properties.  I think Oliver and
-> > David were hinting that maybe we should also set it for devices in
-> > hotpluggable slots.  What do you think?
-> 
-> I did think about it. So I have a mixed feeling about this. Primarily
-> because I have seen the use of hotpluggable slots in situations where
-> we wouldn't want to classify the device as removable:
-> 
-> - Using link-state based hotplug as a way to work around unstable PCIe
-> links. I have seen PCIe devices marked as hot-pluggable only to ensure
-> that if the PCIe device falls off PCI bus due to some reason (e.g. due
-> to SI issues or device firmware bugs), the kernel should be able to
-> detect it if it does come back up (remember quick "Link-Down" /
-> "Link-Up" events in succession?).
-> 
-> - Internal hot-pluggable PCI devices. In my past life, I was working
-> on a large system that would have hot-pluggable daughter cards, but
-> those wouldn't be user removable. Also, it is conceivable to have
-> hot-pluggable M.2 slots for PCIe devices such as NVMEs etc, but they
-> may still not be removable by user. I don't think these should be
-> treated as "removable". I was also looking at USB as an example where
-> this originally came from, USB does ensure that only devices that are
-> "user visible" devices are marked as "removable":
-> 
-> 54d3f8c63d69 ("usb: Set device removable state based on ACPI USB data")
-> d35e70d50a06 ("usb: Use hub port data to determine whether a port is removable")
+1.	Use the rcuog CPU's ->nocb_timer, courtesy of Frederic Weisbecker.
 
-IIUC your main concern is consumer platforms where PCI devices would
-be hotplugged via a Thunderbolt or similar cable, and that port
-would be marked as an "ExternalFacingPort" so we'd mark them as
-"removable".
+2.	Revert "timer: Add timer_curr_running()", courtesy of Frederic
+	Weisbecker.
 
-A device in a server hotplug slot would probably *not* be marked as
-"removable".  The same device in an external chassis connected via an
-iPass or similar cable *might* be "removable" depending on whether the
-firmware calls the iPass port an "ExternalFacingPort".
+3.	Directly call __wake_nocb_gp() from bypass timer, courtesy of
+	Frederic Weisbecker.
 
-Does the following capture some of what you're thinking?  Maybe some
-wordsmithed version of it would be useful in a comment and/or commit
-log?
+4.	Allow de-offloading rdp leader, courtesy of Frederic Weisbecker.
 
-  We're mainly concerned with consumer platforms with accessible
-  Thunderbolt ports that are vulnerable to DMA attacks, and we expect
-  those ports to be identified as "ExternalFacingPort".
+5.	Cancel nocb_timer upon nocb_gp wakeup, courtesy of Frederic
+	Weisbecker.
 
-  Devices in traditional hotplug slots are also "removable," but not
-  as vulnerable because these slots are less accessible to users.
+6.	Delete bypass_timer upon nocb_gp wakeup, courtesy of Frederic
+	Weisbecker.
 
-> > I wonder if this (and similar hooks like set_pcie_port_type(),
-> > set_pcie_untrusted(), set_pcie_thunderbolt(), etc) should go *after*
-> > the early fixups so we could use fixups to work around issues?
-> 
-> I agree. We can do that if none of the early fixups actually use the
-> fields set by these functions. I think it should be ok to move
-> set_pcie_untrusted(), set_pcie_thunderbolt(), but I wonder if any
-> early fixups already use the pcie_cap or any other fields set by
-> set_pcie_port_type().
+7.	Only cancel nocb timer if not polling, courtesy of Frederic
+	Weisbecker.
 
-I think you should move the one you're adding
-(set_pci_dev_removable()) and leave the others where they are for now.
+8.	Prepare for fine-grained deferred wakeup, courtesy of Frederic
+	Weisbecker.
 
-No need to expand the scope of your patch; I was just thinking they're
-all basically similar and should ideally be done at similar times.
+9.	Unify timers, courtesy of Frederic Weisbecker.
 
-> > >       /* Early fixups, before probing the BARs */
-> > >       pci_fixup_device(pci_fixup_early, dev);
-> > >
-> > > --
-> > > 2.31.1.498.g6c1eba8ee3d-goog
-> > >
+10.	Fix various typos in comments, courtesy of Ingo Molnar.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/timer.h                                           |    2 
+ b/include/trace/events/rcu.h                                      |    1 
+ b/kernel/rcu/srcutree.c                                           |    4 
+ b/kernel/rcu/sync.c                                               |    4 
+ b/kernel/rcu/tasks.h                                              |    8 
+ b/kernel/rcu/tree.c                                               |    2 
+ b/kernel/rcu/tree.h                                               |    1 
+ b/kernel/rcu/tree_plugin.h                                        |  140 +++++-----
+ b/kernel/time/timer.c                                             |   14 -
+ b/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h |    2 
+ kernel/rcu/tree.c                                                 |    4 
+ kernel/rcu/tree.h                                                 |   10 
+ kernel/rcu/tree_plugin.h                                          |  140 ++++------
+ 13 files changed, 160 insertions(+), 172 deletions(-)
