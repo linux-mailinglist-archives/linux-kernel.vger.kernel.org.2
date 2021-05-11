@@ -2,119 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B25F37AD36
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E6237AD31
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231896AbhEKRkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
+        id S231808AbhEKRj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231459AbhEKRk3 (ORCPT
+        with ESMTP id S231512AbhEKRjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:40:29 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE0CC061574;
-        Tue, 11 May 2021 10:39:18 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id l129so19563752qke.8;
-        Tue, 11 May 2021 10:39:18 -0700 (PDT)
+        Tue, 11 May 2021 13:39:55 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC7DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:38:49 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id h16so3840492pfk.0
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:38:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cBzI0fFJVl7rkeGxSkI1T6aieyqCHfIsXgSNZWy3sII=;
-        b=ZMmEprcMtj68TGu/kofxqBTpQBBblASy5MxIJyZAe1O/39gvjjNl0Uvcz756irQIVR
-         o2TiCjkkMaPqakbvJUAACNYKL/mU7Ycxo68reRSzMvDy1DznH+4F+RM31nUGKN6cLfR3
-         Q6h4PnFhwMyDMcHLRtZz/M4MRU6XkOWwxFgM8ArOFf9AM23Br86g1Pg3xe0pd+mrfcuz
-         gOifHqO2nHPBFc+6Tm2hUT/Ttv4JxCxTQLqF8ehf1rDOwO6yEEU8Iburin7o7zxtUG5K
-         6Aj04Vwp1R81o+L5ullSyt4tXo0wppL+7hiYNiwCUI/VEX4IQNXOniEmUViVnO+aRhJo
-         78fw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FupqfUsY9asJf3WP4K9WVhemFcz2lS+rGky33/1iF+Y=;
+        b=OuO2HEk3F3eO1a3nOlckORBlQgGMVb04Lz4y4c2xcQPPO6DaCHca8dzz0vzMGQWTsk
+         ul1RaMC72uujrqNpQ6nJ8pMXPZjZfc3xzLXKx1K7YFnOLohGSYFT1Nx0Nk8ikwSe336W
+         LB+pk7xcw+cOKExZyot0Ww1Z2VHfYuHgJp7Un2HF0mgFP43RUAmGJS+VniRQEQ7hj4x5
+         k9AgZiuKwUX5Hz3rcSeDiKBvKUP6OZp3KcJSrvE5DnDG6akwcnK+CB44t+MM2mr+fA27
+         gMfveLaqThvOrBqolTGy0twWzgQlopnUM/wehO9rEgE/6NiVavoSg6Ys7SERzzH/1WNZ
+         cu8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cBzI0fFJVl7rkeGxSkI1T6aieyqCHfIsXgSNZWy3sII=;
-        b=JMyRdrmZZ+m/WHZkzBQ5HW17DS+AnV6xp9F7nqT8UH16iigUpqy+4ibKPySJKN7/QU
-         WI42gT7C440QCGUCfoKXWkEUHbHekPl+wiWKZWjWiFYqhW9QBgrLIxNF/5V3a7mSMG0A
-         NCbp/6rbeWCbyjTKo3bIGNFAjXui4WRwXKVL1foZjbjVVKu6XKcTn0R3WhKl68eA4LoY
-         Qf1x8P079xWTg6XMFMkwFKkGt0GdbxKPfCeqB48oeeXA7qgSdLMBNMDFxR4qY7sApPvW
-         dqRLuV2Ywn0piEqyK710HWl0ndor+P+Mf8KWW6sRcvBPUs1Bu9HVeGpTc5IUGb6VsP0x
-         VmQA==
-X-Gm-Message-State: AOAM532/FLJJDTLsxasP4v5BjQUJt1+FUXeTntkdoEQOAQxLckhaohXv
-        ZPLHCCvJV0487AaEAU6QkOJXTTFoLyPEXlWr8A8=
-X-Google-Smtp-Source: ABdhPJzb78m/Bx93OXl1S3XKrRFKVVrRBm8yG+xUh1UMHLfr+s9GXBuPKZBqHAEbxD/rxFj6Q+nS3YIfB1xS7riiesM=
-X-Received: by 2002:a05:620a:158c:: with SMTP id d12mr26777380qkk.127.1620754757565;
- Tue, 11 May 2021 10:39:17 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FupqfUsY9asJf3WP4K9WVhemFcz2lS+rGky33/1iF+Y=;
+        b=nxqF02Aow96B6hQGsKTlW8Yeuez3BJQDpBIEJI3UM/CIz8ZOGcDYhv22AzvmZO2ZLv
+         kjLVBxJ2ASVCJDwMzN57J7imc1CNWsRkDMMabb1fZcYlCrbm7QdUhsDp4G7tPYforph0
+         8m2a6afFo4+fNn9OrbsbMu8Sg+q5TO3HbjTHdHvzYhSLS4NBOhYAuXOxTOKF1VuY7Kmv
+         HfQ2Y7nF98f0znlcnFcLX5fQsYdJHr7bd1tqypH4bGv9KZygO7TTAWw/ovNKwQfH0Lxo
+         B4XwIqtrNuKqe0T0DcO80HszVT0L8ZzlMFn4om0zzv80qhhZGQwHhdZrF1wdkvIjwpEN
+         YvWQ==
+X-Gm-Message-State: AOAM5336sjG+Dzw94XetoGFTwnn6njBV+HSEVODQMZxV4twjVxHrJXvl
+        Hxn2Uf0dejPbkG+eGJyF9VM=
+X-Google-Smtp-Source: ABdhPJzr/jJknX8G3x9Um6i2uXuvM2XUw171TBsK34q+Eg1UjmKiXg3e96WpuU1QjGrbLwb0esAwYQ==
+X-Received: by 2002:a63:5143:: with SMTP id r3mr31584227pgl.346.1620754728669;
+        Tue, 11 May 2021 10:38:48 -0700 (PDT)
+Received: from hyeyoo ([183.99.11.150])
+        by smtp.gmail.com with ESMTPSA id q184sm13963395pfc.208.2021.05.11.10.38.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 10:38:48 -0700 (PDT)
+Date:   Wed, 12 May 2021 02:38:43 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     vbabka@suse.cz, akpm@linux-foundation.org, iamjoonsoo.kim@lge.com,
+        rientjes@google.com, penberg@kernel.org, cl@linux.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm, slub: change run-time assertion in
+ kmalloc_index() to compile-time
+Message-ID: <20210511173843.GA54689@hyeyoo>
+References: <20210511173448.GA54466@hyeyoo>
 MIME-Version: 1.0
-References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
- <1619690903-1138-1-git-send-email-dseok.yi@samsung.com> <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
- <02bf01d74211$0ff4aed0$2fde0c70$@samsung.com> <CA+FuTScC96R5o24c-sbY-CEV4EYOVFepFR85O4uGtCLwOjnzEw@mail.gmail.com>
- <02c801d7421f$65287a90$2f796fb0$@samsung.com> <CA+FuTScUJwqEpYim0hG27k39p_yEyzuW2A8RFKuBndctgKjWZw@mail.gmail.com>
- <001801d742db$68ab8060$3a028120$@samsung.com> <CAF=yD-KtJvyjHgGVwscoQpFX3e+DmQCYeO_HVGwyGAp3ote00A@mail.gmail.com>
- <436dbc62-451b-9b29-178d-9da28f47ef24@huawei.com> <CAF=yD-+d0QYj+812joeuEx1HKPzDyhMpkZP5aP=yNBzrQT5usw@mail.gmail.com>
- <007001d7431a$96281960$c2784c20$@samsung.com> <CAF=yD-L9pxAFoT+c1Xk5YS42ZaJ+YLVQVnV+fvtqn-gLxq9ENg@mail.gmail.com>
- <00c901d74543$57fa3620$07eea260$@samsung.com> <CA+FuTSepShKoXUJo7ELMMJ4La11J6CsZggJWsQ5MB2_uhAi+OQ@mail.gmail.com>
- <CA+FuTSeyuUvKC==Mo7L+u3PS0BQyea+EdLLYjhGFrP7FQZsbEQ@mail.gmail.com> <015101d74602$86442210$92cc6630$@samsung.com>
-In-Reply-To: <015101d74602$86442210$92cc6630$@samsung.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Tue, 11 May 2021 13:38:41 -0400
-Message-ID: <CAF=yD-+ncxKY28h8ch8kcJmSXfqdnBrBELKFBPmfP7RzNsWoTg@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: check for data_len before upgrading mss when 6
- to 4
-To:     Dongseok Yi <dseok.yi@samsung.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511173448.GA54466@hyeyoo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 9:11 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
->
-> On Mon, May 10, 2021 at 09:46:25AM -0400, Willem de Bruijn wrote:
-> > On Mon, May 10, 2021 at 9:19 AM Willem de Bruijn
-> > <willemdebruijn.kernel@gmail.com> wrote:
-> > >
-> > > > > That generates TCP packets with different MSS within the same stream.
-> > > > >
-> > > > > My suggestion remains to just not change MSS at all. But this has to
-> > > > > be a new flag to avoid changing established behavior.
-> > > >
-> > > > I don't understand why the mss size should be kept in GSO step. Will
-> > > > there be any issue with different mss?
-> > >
-> > > This issue has come up before and that has been the feedback from
-> > > TCP experts at one point.
-> > >
-> > > > In general, upgrading mss make sense when 6 to 4. The new flag would be
-> > > > set by user to not change mss. What happened if user does not set the
-> > > > flag? I still think we should fix the issue with a general approach. Or
-> > > > can we remove the skb_increase_gso_size line?
-> > >
-> > > Admins that insert such BPF packets should be aware of these issues.
-> > > And likely be using clamping. This is a known issue.
-> > >
-> > > We arrived that the flag approach in bpf_skb_net_shrink. Extending
-> > > that  to bpf_skb_change_proto would be consistent.
-> >
-> > As for more generic approach: does downgrading to non-TSO by clearing
-> > gso_size work for this edge case?
->
-> It can hit __skb_linearize in validate_xmit_skb and frags will be
-> copied to a linear part. The linear part size can exceed the MTU of
-> skb->dev unexpectedly.
+sorry for being annoying. I noticed that I sent patch in wrong format
+(and wrong subject.) so sent patch v3 again in right format. so the bot
+can pick up the patch.
 
-When does skb_needs_linearize return true here (besides lack of
-scatter-gather support, which would also preclude TSO)?
-
-> I will make another patch with the flag approach.
->
+please let me know if I can help something!
