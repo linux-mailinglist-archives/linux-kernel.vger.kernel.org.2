@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C64C37B1E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F0337B1E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbhEKWyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 18:54:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33934 "EHLO mail.kernel.org"
+        id S230428AbhEKWyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:54:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230320AbhEKWyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230316AbhEKWyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 18:54:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20BC861940;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 144A36193D;
         Tue, 11 May 2021 22:53:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620773587;
-        bh=zqWSt7mdCZDZMSepNpHEhs2zC/B9ca2+lQbeD8jY2xQ=;
+        bh=whIQ3iED4fSPGIJAPepnQBHs4PtIh3o4kkhi3aBaxO0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K2aHEIi7SL+6uOWjff4jm3LYSjJADiD8Sc1Bv4r9pzpgekOusgMeMVCowpoOWUzNS
-         Kwui8/7Qc1cqkMmkOnbgjl83RbBiWBia5QMYNcI+XRITotJY/acJOJTPyZsNQgLR1O
-         wTCL3moRsdFDsN6TKr1AjcfU9ojZozV1w+OgJORxx1vowu971Bddk+73VyyfczBxXr
-         uyN36E1OWJaw2K43CiTeLBSeXZXvQ2+M95/kkXz9K9Li0h8/vbNudxnUgCL+AiLggr
-         J5MBEwHLbtdq/3VEme0VJzuv5B4OJSpCP/8hpiZQoKuMMQqffwSoUeMoYOQyz1b3Fx
-         Uil9gpxqAOB8w==
+        b=NA9rKGsKVz0hYFot2+V6tt8JP7EbP86zvyLwBvXNhqMUfDF2kogDO/lbPKqZVJ7jV
+         XR56jzDHvns0tj5x9xwepZGWAUTYmp2Kqtkx4nJ1TrHOLZeNoNdOx77gnk2NzkKyHJ
+         jMh4BLxkddefwzAeSQKoOXRzEP+mssIunyr2/sywnSbEF2kp9Rfrp9tCPoTN18942V
+         zI6T3zx0AIZzOsO25YecwwiCCKJgjXHiMXQfPd0Z9bDjERZivO4diCJkSyzF0WJQeV
+         mmNnc+SlF7YwZqRm6DMnSMNDJtGKUZvfz2fkaisLngabYo7jWIMjX3GXNcKvML4kGi
+         aRh1vNayuhHaQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 95F5B5C0DE5; Tue, 11 May 2021 15:53:06 -0700 (PDT)
+        id 97A505C0DE7; Tue, 11 May 2021 15:53:06 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,14 +33,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        syzbot+dde0cc33951735441301@syzkaller.appspotmail.com,
-        Matthew Wilcox <willy@infradead.org>,
-        syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: [PATCH tip/core/rcu 08/19] rcu: Reject RCU_LOCKDEP_WARN() false positives
-Date:   Tue, 11 May 2021 15:52:53 -0700
-Message-Id: <20210511225304.2893154-8-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 09/19] rcu: Add quiescent states and boost states to show_rcu_gp_kthreads() output
+Date:   Tue, 11 May 2021 15:52:54 -0700
+Message-Id: <20210511225304.2893154-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511225241.GA2893003@paulmck-ThinkPad-P17-Gen-1>
@@ -50,75 +46,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If another lockdep report runs concurrently with an RCU lockdep report
-from RCU_LOCKDEP_WARN(), the following sequence of events can occur:
+This commit adds each rcu_node structure's ->qsmask and "bBEG" output
+indicating whether: (1) There is a boost kthread, (2) A reader needs
+to be (or is in the process of being) boosted, (3) A reader is blocking
+an expedited grace period, and (4) A reader is blocking a normal grace
+period.  This helps diagnose RCU priority boosting failures.
 
-1.	debug_lockdep_rcu_enabled() sees that lockdep is enabled
-	when called from (say) synchronize_rcu().
-
-2.	Lockdep is disabled by a concurrent lockdep report.
-
-3.	debug_lockdep_rcu_enabled() evaluates its lockdep-expression
-	argument, for example, lock_is_held(&rcu_bh_lock_map).
-
-4.	Because lockdep is now disabled, lock_is_held() plays it safe and
-	returns the constant 1.
-
-5.	But in this case, the constant 1 is not safe, because invoking
-	synchronize_rcu() under rcu_read_lock_bh() is disallowed.
-
-6.	debug_lockdep_rcu_enabled() wrongly invokes lockdep_rcu_suspicious(),
-	resulting in a false-positive splat.
-
-This commit therefore changes RCU_LOCKDEP_WARN() to check
-debug_lockdep_rcu_enabled() after checking the lockdep expression,
-so that any "safe" returns from lock_is_held() are rejected by
-debug_lockdep_rcu_enabled().  This requires memory ordering, which is
-supplied by READ_ONCE(debug_locks).  The resulting volatile accesses
-prevent the compiler from reordering and the fact that only one variable
-is being accessed prevents the underlying hardware from reordering.
-The combination works for IA64, which can reorder reads to the same
-location, but this is defeated by the volatile accesses, which compile
-to load instructions that provide ordering.
-
-Reported-by: syzbot+dde0cc33951735441301@syzkaller.appspotmail.com
-Reported-by: Matthew Wilcox <willy@infradead.org>
-Reported-by: syzbot+88e4f02896967fe1ab0d@syzkaller.appspotmail.com
-Reported-by: Thomas Gleixner <tglx@linutronix.de>
-Suggested-by: Boqun Feng <boqun.feng@gmail.com>
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate.h | 2 +-
- kernel/rcu/update.c      | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.h        |  1 +
+ kernel/rcu/tree_plugin.h |  1 +
+ kernel/rcu/tree_stall.h  | 12 +++++++++---
+ 3 files changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 9455476c5ba2..1199ffd305d1 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -315,7 +315,7 @@ static inline int rcu_read_lock_any_held(void)
- #define RCU_LOCKDEP_WARN(c, s)						\
- 	do {								\
- 		static bool __section(".data.unlikely") __warned;	\
--		if (debug_lockdep_rcu_enabled() && !__warned && (c)) {	\
-+		if ((c) && debug_lockdep_rcu_enabled() && !__warned) {	\
- 			__warned = true;				\
- 			lockdep_rcu_suspicious(__FILE__, __LINE__, s);	\
- 		}							\
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index b95ae86c40a7..dd94a602a6d2 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -277,7 +277,7 @@ EXPORT_SYMBOL_GPL(rcu_callback_map);
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 71821d59d95c..5fd0c443517e 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -115,6 +115,7 @@ struct rcu_node {
+ 				/*  boosting for this rcu_node structure. */
+ 	unsigned int boost_kthread_status;
+ 				/* State of boost_kthread_task for tracing. */
++	unsigned long n_boosts;	/* Number of boosts for this rcu_node structure. */
+ #ifdef CONFIG_RCU_NOCB_CPU
+ 	struct swait_queue_head nocb_gp_wq[2];
+ 				/* Place for rcu_nocb_kthread() to wait GP. */
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 2cbe8f8456e6..ef004cc7101d 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1098,6 +1098,7 @@ static int rcu_boost(struct rcu_node *rnp)
+ 	/* Lock only for side effect: boosts task t's priority. */
+ 	rt_mutex_lock(&rnp->boost_mtx);
+ 	rt_mutex_unlock(&rnp->boost_mtx);  /* Then keep lockdep happy. */
++	rnp->n_boosts++;
  
- noinstr int notrace debug_lockdep_rcu_enabled(void)
- {
--	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && debug_locks &&
-+	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && READ_ONCE(debug_locks) &&
- 	       current->lockdep_recursion == 0;
- }
- EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
+ 	return READ_ONCE(rnp->exp_tasks) != NULL ||
+ 	       READ_ONCE(rnp->boost_tasks) != NULL;
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index a4e2bb3bdce7..c1f83864a18e 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -749,9 +749,15 @@ void show_rcu_gp_kthreads(void)
+ 		if (ULONG_CMP_GE(READ_ONCE(rcu_state.gp_seq),
+ 				 READ_ONCE(rnp->gp_seq_needed)))
+ 			continue;
+-		pr_info("\trcu_node %d:%d ->gp_seq %ld ->gp_seq_needed %ld\n",
+-			rnp->grplo, rnp->grphi, (long)data_race(rnp->gp_seq),
+-			(long)data_race(rnp->gp_seq_needed));
++		pr_info("\trcu_node %d:%d ->gp_seq %ld ->gp_seq_needed %ld ->qsmask %#lx %c%c%c%c ->n_boosts %ld\n",
++			rnp->grplo, rnp->grphi,
++			(long)data_race(rnp->gp_seq), (long)data_race(rnp->gp_seq_needed),
++			data_race(rnp->qsmask),
++			".b"[!!data_race(rnp->boost_kthread_task)],
++			".B"[!!data_race(rnp->boost_tasks)],
++			".E"[!!data_race(rnp->exp_tasks)],
++			".G"[!!data_race(rnp->gp_tasks)],
++			data_race(rnp->n_boosts));
+ 		if (!rcu_is_leaf_node(rnp))
+ 			continue;
+ 		for_each_leaf_node_possible_cpu(rnp, cpu) {
 -- 
 2.31.1.189.g2e36527f23
 
