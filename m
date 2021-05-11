@@ -2,178 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A0137AE2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A5637AE35
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhEKSRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:17:20 -0400
-Received: from mail-pf1-f178.google.com ([209.85.210.178]:33586 "EHLO
-        mail-pf1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbhEKSRU (ORCPT
+        id S232013AbhEKSS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231793AbhEKSS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:17:20 -0400
-Received: by mail-pf1-f178.google.com with SMTP id h16so3915726pfk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:16:13 -0700 (PDT)
+        Tue, 11 May 2021 14:18:27 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDECC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:17:21 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id s9so699792ilp.9
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:17:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vyc4dubnSLD+2BW6PH5UxSFi8txm49CBtKkbTHFdSjc=;
+        b=jQCVdIe9pgUV9koKXqaLjKWuIiMn1YNXIXTPdThrhRpk6e34GBJjPxJN9uMPajlmzN
+         ZD7usNNeDjrGfq0yOPFxxTgRyRzcchcB4Z9tTo5GQj4ayixk1+x09iCZk4rGjDIbInAz
+         kHL0bE03YePZNAJbRcRJEoQSBObgx62vHHqhh1JRfAgzi5ob0T5bEP4VSnxKPWKRgeuP
+         P77IKBOh5RYA4ILQny03ShkO38Gl+18JHF/T3BFoTfXL3igPNsKDnVhRGGzXJvBMjN+f
+         A//hOUXmPr1FlwzLJiR8XIDPJ948gVdA2qk4c7My1JA/MQ+V8TplWjmKanv4LtPVInU6
+         QCvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=b4PMiCif1x3iYDBqI6f5owLmB4HyczaNc9Vt8ePTfoA=;
-        b=PXtWKc2EKBOA1msX/QKI+2i7P/opdLxm0rxDYvXQi4MnwJdJ0pblMao0T+B75LyZzI
-         AKnROlRhExVI+GPeRpH1cLIHfGcbE8RfnfxR4L5Pa9u5WOFKGmGgAzkkyA94vST3HnN8
-         DYKW6UOTfC5NM4ptwrOq285BYOD6fIaYAcNdAaLDwbDmK2TyTYOdDvXGbLQdxx3t6r7U
-         GY2K1QxsVWXV3Rc1TegC3YRRODJqF9wHWLwcvBJWQmpVMqoh4iMFfxfdYLIa7omT6rqu
-         AsWrGpF8axRcJH7WzLuOY+wVlRMdN+miFjgoN+CcO2x7wSfbeVWfdAziAG5UVIs6UXdu
-         Q8Nw==
-X-Gm-Message-State: AOAM532b9eCG5I9fiwsSeYxlQECfNxkxDVF4uGNPgDtiHKmUYKvUl1hA
-        HFoyAMBU3gYOuZ1I1zHNbFs=
-X-Google-Smtp-Source: ABdhPJy/S0xkZUvf9TSn7lSiIEUJMHDcs7G0YskbAUaxpQZW5QBFsAoax93TgUAnoX0w0dLOnSHVnA==
-X-Received: by 2002:a63:5c4c:: with SMTP id n12mr11568471pgm.288.1620756973013;
-        Tue, 11 May 2021 11:16:13 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:57ce:f5c2:eedd:e35? ([2601:647:4802:9070:57ce:f5c2:eedd:e35])
-        by smtp.gmail.com with ESMTPSA id q19sm15729398pfl.171.2021.05.11.11.16.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 11:16:12 -0700 (PDT)
-Subject: Re: [PATCH v2] nvme-tcp: Check if request has started before
- processing it
-To:     Hannes Reinecke <hare@suse.de>, Keith Busch <kbusch@kernel.org>
-Cc:     "Ewan D. Milne" <emilne@redhat.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>
-References: <20210301175601.116405-1-dwagner@suse.de>
- <6b51a989-5551-e243-abda-5872411ec3ff@grimberg.me>
- <20210311094345.ogm2lxqfuszktuhp@beryllium.lan>
- <70af5b02-10c1-ab0b-1dfc-5906216871b4@grimberg.me>
- <2fc7a320c86f75507584453dd2fbd744de5c170d.camel@redhat.com>
- <ed3ccac0-79ed-fe10-89eb-d403820b4c6a@grimberg.me>
- <20210330232813.GA1935968@dhcp-10-100-145-180.wdc.com>
- <756aef10-e693-276f-82ac-514a2832b07f@grimberg.me>
- <492b8393-fc35-f58a-3768-94632a083c93@suse.de>
- <3156c563-94a4-4278-3835-b1f56f71869a@grimberg.me>
- <20210507204052.GA1485586@dhcp-10-100-145-180.wdc.com>
- <7a45dd7f-842b-4282-909b-082b501abcdc@grimberg.me>
- <8a396f94-ac33-6bea-8d70-ded0188eb98a@suse.de>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <1989b8fe-7ef2-2145-75c5-5e938f74014c@grimberg.me>
-Date:   Tue, 11 May 2021 11:16:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vyc4dubnSLD+2BW6PH5UxSFi8txm49CBtKkbTHFdSjc=;
+        b=BkFekdhYTUc31Q7vEz1kYQ7Mf/A1lnE77IqRtpVaT/NTLzhA1Cq6hJgorNqccCky2a
+         sMEZ3jO5ANa8ML3YOsTEHnYltbZBpHWmvksJRs0VIYNsx4m5G95eF5uvWEQhMKIV2NHQ
+         WXQ+UIW5XPvTmGZwjfcqaZs7lhvBSO17fLMonLyKnm6fuwfkaqMDWEHuGOS1rplowE0p
+         IhuHy7/ygx9eCvZIgNfmBlozTWnEPG5RsVw3i269KQvFb1SB1ouASdEBS8iABCIII7eg
+         faDJvoIUmvACLb+/aqkNIPO66MZv3QVvo6DPIPjc4m4eovATzrNbsJPYtEuOV2Ly+J8U
+         +/Pw==
+X-Gm-Message-State: AOAM531AKb/DC1d/Tp74iPAYvGvDYEt/SGSqdrM92eQFMeXpVKK1dory
+        7fsEM2/Xj9tHyjA+UQxwrpgkahceR8H3ypSmhjLRbA==
+X-Google-Smtp-Source: ABdhPJzDRj+2yh+TiNZncGImnXQaKcIW3y3ODWt9QgJlNO06MKiYKAGTwlrWpUAteugvIGCUx/SjYnA8jdNl7+se1SM=
+X-Received: by 2002:a05:6e02:dca:: with SMTP id l10mr27474797ilj.203.1620757040285;
+ Tue, 11 May 2021 11:17:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <8a396f94-ac33-6bea-8d70-ded0188eb98a@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210511171610.170160-1-bgardon@google.com> <20210511171610.170160-3-bgardon@google.com>
+ <YJrFOXW3mM3WjGT5@google.com>
+In-Reply-To: <YJrFOXW3mM3WjGT5@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Tue, 11 May 2021 11:17:09 -0700
+Message-ID: <CANgfPd9ekAidRzAWi-i=7h0pUpoHADSFJdAB5AWAzwm_Uk3dSA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/7] KVM: x86/mmu: Factor out allocating memslot rmap
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 11, 2021 at 10:56 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Tue, May 11, 2021, Ben Gardon wrote:
+> > Small refactor to facilitate allocating rmaps for all memslots at once.
+> >
+> > No functional change expected.
+> >
+> > Signed-off-by: Ben Gardon <bgardon@google.com>
+> > ---
+> >  arch/x86/kvm/x86.c | 39 ++++++++++++++++++++++++++++++---------
+> >  1 file changed, 30 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 1e1f4f31e586..cc0440b5b35d 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -10911,10 +10911,35 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
+> >       kvm_page_track_free_memslot(slot);
+> >  }
+> >
+> > +static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
+> > +                           unsigned long npages)
+> > +{
+> > +     int i;
+> > +
+> > +     for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
+> > +             int lpages;
+> > +             int level = i + 1;
+> > +
+> > +             lpages = gfn_to_index(slot->base_gfn + npages - 1,
+> > +                                   slot->base_gfn, level) + 1;
+>
+> Might as well assign lpages at its declaration, i.e.
+>
+>                 int lpages = gfn_to_index(slot->base_gfn + npages - 1,
+>                                           slot->base_gfn, level) + 1;
 
+I'll do this if I end up sending out a v5.
 
-On 5/9/21 4:30 AM, Hannes Reinecke wrote:
-> On 5/8/21 1:22 AM, Sagi Grimberg wrote:
->>
->>>>> Well, that would require a modification to the CQE specification, no?
->>>>> fmds was not amused when I proposed that :-(
->>>>
->>>> Why would that require a modification to the CQE? it's just using say
->>>> 4 msbits of the command_id to a running sequence...
->>>
->>> I think Hannes was under the impression that the counter proposal wasn't
->>> part of the "command_id". The host can encode whatever it wants in that
->>> value, and the controller just has to return the same value.
->>
->> Yea, maybe something like this?
->> -- 
->> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
->> index e6612971f4eb..7af48827ea56 100644
->> --- a/drivers/nvme/host/core.c
->> +++ b/drivers/nvme/host/core.c
->> @@ -1006,7 +1006,7 @@ blk_status_t nvme_setup_cmd(struct nvme_ns *ns, 
->> struct request *req)
->>                 return BLK_STS_IOERR;
->>         }
->>
->> -       cmd->common.command_id = req->tag;
->> +       cmd->common.command_id = nvme_cid(req);
->>         trace_nvme_setup_cmd(req, cmd);
->>         return ret;
->> }
->> diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
->> index 05f31a2c64bb..96abfb0e2ddd 100644
->> --- a/drivers/nvme/host/nvme.h
->> +++ b/drivers/nvme/host/nvme.h
->> @@ -158,6 +158,7 @@ enum nvme_quirks {
->> struct nvme_request {
->>         struct nvme_command     *cmd;
->>         union nvme_result       result;
->> +       u8                      genctr;
->>         u8                      retries;
->>         u8                      flags;
->>         u16                     status;
->> @@ -497,6 +498,48 @@ struct nvme_ctrl_ops {
->>         int (*get_address)(struct nvme_ctrl *ctrl, char *buf, int size);
->> };
->>
->> +/*
->> + * nvme command_id is constructed as such:
->> + * | xxxx | xxxxxxxxxxxx |
->> + *   gen    request tag
->> + */
->> +#define nvme_cid_install_genctr(gen)           ((gen & 0xf) << 12)
->> +#define nvme_genctr_from_cid(cid)              ((cid & 0xf000) >> 12)
->> +#define nvme_tag_from_cid(cid)                 (cid & 0xfff)
->> +
-> 
-> That is a good idea, but we should ensure to limit the number of 
-> commands a controller can request, too.
+> > +
+> > +             slot->arch.rmap[i] =
+> > +                     kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
+> > +                              GFP_KERNEL_ACCOUNT);
+>
+> Eh, I don't think avoiding a 3 char overrun is worth splitting across three lines.
+> E.g. this is perfectly readable
+>
+>                 slot->arch.rmap[i] = kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
+>                                               GFP_KERNEL_ACCOUNT);
+>
+> Alternatively, the rmap size could be captured in a local var, e.g.
+>
+>         const int sz = sizeof(*slot->arch.rmap[0]);
+>
+>         ...
+>
+>                 slot->arch.rmap[i] = kvcalloc(lpages, sz, GFP_KERNEL_ACCOUNT);
 
-We take the minimum between what the host does vs. what the controller
-supports anyways.
+I like this suggestion. Much nicer. Will incorporate if I send a v5.
 
-> As per spec each controller can support a full 32 bit worth of requests, 
-> and if we limit that arbitrarily from the stack we'll need to cap the 
-> number of requests a controller or fabrics driver can request.
+>                 if (!slot->arch.rmap[i]) {
+>                         memslot_rmap_free(slot);
+>                         return -ENOMEM;
+>                 }
+>
+> > +             if (!slot->arch.rmap[i]) {
+> > +                     memslot_rmap_free(slot);
+> > +                     return -ENOMEM;
+>
+> Reaaaally getting into nitpicks, what do you think about changing this to a goto
+> with the error handling at the bottom?  Obviously not necessary by any means,
+> but for me it makes it easier to see that all rmaps are freed on failure.  My
+> eyes skipped over that on the first read through.  E.g.
+>
+>                 if (!slot_arch.rmap[i])
+>                         goto err;
+>         }
+>
+>         return 0;
+>
+> err:
+>         memslot_rmap_free(slot);
+>         return -ENOMEM;
+>
 
-NVMF_MAX_QUEUE_SIZE is already 1024, you are right that we also need:
---
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 92e03f15c9f6..66a4a7f7c504 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -60,6 +60,7 @@ MODULE_PARM_DESC(sgl_threshold,
-                 "Use SGLs when average request segment size is larger 
-or equal to "
-                 "this size. Use 0 to disable SGLs.");
+Lol, I had a goto in v3, but David Hildenbrand suggested removing it
+and putting the free in the loop. I think I like it more this way too.
 
-+#define NVME_PCI_MAX_QUEUE_SIZE 4096
-  static int io_queue_depth_set(const char *val, const struct 
-kernel_param *kp);
-  static const struct kernel_param_ops io_queue_depth_ops = {
-         .set = io_queue_depth_set,
-@@ -68,7 +69,7 @@ static const struct kernel_param_ops 
-io_queue_depth_ops = {
-
-  static unsigned int io_queue_depth = 1024;
-  module_param_cb(io_queue_depth, &io_queue_depth_ops, &io_queue_depth, 
-0644);
--MODULE_PARM_DESC(io_queue_depth, "set io queue depth, should >= 2");
-+MODULE_PARM_DESC(io_queue_depth, "set io queue depth, should >= 2 and 
-<= 4096");
-
-  static int io_queue_count_set(const char *val, const struct 
-kernel_param *kp)
-  {
-@@ -164,6 +165,9 @@ static int io_queue_depth_set(const char *val, const 
-struct kernel_param *kp)
-         if (ret != 0 || n < 2)
-                 return -EINVAL;
-
-+       if (n > NVME_PCI_MAX_QUEUE_SIZE)
-+               return -EINVAL;
-+
-         return param_set_uint(val, kp);
-  }
-
---
+>
+> > +             }
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+> >                                     unsigned long npages)
+> >  {
+> >       int i;
+> > +     int r;
+>
+> Personal preference, for short declarations like this I like putting 'em on a
+> single line.
+>
+> >       /*
+> >        * Clear out the previous array pointers for the KVM_MR_MOVE case.  The
+> > @@ -10923,7 +10948,11 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+> >        */
+> >       memset(&slot->arch, 0, sizeof(slot->arch));
+> >
+> > -     for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
+> > +     r = memslot_rmap_alloc(slot, npages);
+> > +     if (r)
+> > +             return r;
+> > +
+> > +     for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
+> >               struct kvm_lpage_info *linfo;
+> >               unsigned long ugfn;
+> >               int lpages;
+> > @@ -10932,14 +10961,6 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+> >               lpages = gfn_to_index(slot->base_gfn + npages - 1,
+> >                                     slot->base_gfn, level) + 1;
+> >
+> > -             slot->arch.rmap[i] =
+> > -                     kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
+> > -                              GFP_KERNEL_ACCOUNT);
+> > -             if (!slot->arch.rmap[i])
+> > -                     goto out_free;
+> > -             if (i == 0)
+> > -                     continue;
+> > -
+> >               linfo = kvcalloc(lpages, sizeof(*linfo), GFP_KERNEL_ACCOUNT);
+> >               if (!linfo)
+> >                       goto out_free;
+> > --
+> > 2.31.1.607.g51e8a6a459-goog
+> >
