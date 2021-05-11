@@ -2,24 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BC537AFE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0B737AFDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbhEKUDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 16:03:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230130AbhEKUDN (ORCPT
+        id S230291AbhEKUDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 16:03:24 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:41649 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230035AbhEKUDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 16:03:13 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0966DC061574;
-        Tue, 11 May 2021 13:02:06 -0700 (PDT)
+        Tue, 11 May 2021 16:03:12 -0400
 Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 0778822270;
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 60FA722276;
         Tue, 11 May 2021 22:02:04 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
         t=1620763324;
@@ -27,10 +24,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail20160613
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+rQ+/O26dzW1w2t4ljTQp+H/oyZCpkAzLKavXR6vwAE=;
-        b=sIa6/0q2Y+vJHJieHtCBz0wFVQ20yOjApp8POjbu9Efa1NMzdEWdEIp2c1fOQ+cAK7wQnI
-        2PL/LR835KPaHHpn2MofpKXs9mI1JOCAI4EnKQcv17/n7p0REj1JHLx7fTAA4cHdeb++GF
-        /2iv8heO7f64/62S0YnhntJjICwb2Dg=
+        bh=VZTjCem//lORsrW2aZZoL2zcRsJc/XV9BfrVa5PsRBI=;
+        b=hHxWv6YV92fZn+rC9QP1lob/Jr3OhT3DhKB9PJTedMG8bOi/Ohjpz3W/ufXDDewjVeGvVI
+        q4n7fUlaUOEnv3qgVR/FzDjqb7KZDBRP1mI8Zxc3QlOKFqWx5WVGQPOKn4HXMobUtRF3uA
+        efLbbWb1nSQ5oBUNHfd8FUBfOcRTBR4=
 From:   Michael Walle <michael@walle.cc>
 To:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -39,9 +36,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Fugang Duan <fugang.duan@nxp.com>,
         Philippe Schenker <philippe.schenker@toradex.com>,
         Michael Walle <michael@walle.cc>
-Subject: [PATCH 5/8] serial: fsl_lpuart: remove RTSCTS handling from get_mctrl()
-Date:   Tue, 11 May 2021 22:01:45 +0200
-Message-Id: <20210511200148.11934-6-michael@walle.cc>
+Subject: [PATCH 6/8] serial: fsl_lpuart: remove manual RTSCTS control from 8-bit LPUART
+Date:   Tue, 11 May 2021 22:01:46 +0200
+Message-Id: <20210511200148.11934-7-michael@walle.cc>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210511200148.11934-1-michael@walle.cc>
 References: <20210511200148.11934-1-michael@walle.cc>
@@ -51,41 +48,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrong code in set_mctrl() was already removed in commit 2b30efe2e88a
-("tty: serial: lpuart: Remove unnecessary code from set_mctrl"), but the
-code in get_mctrl() wasn't removed. It will not return the state of the
-RTS or CTS line but whether automatic flow control is enabled, which is
-wrong for the get_mctrl(). Thus remove it.
+The LPUART doesn't have the ability to control the RTS or CTS line
+manually. Instead it will set it automatically when data is send or
+handle it when data is received. Thus drop the wrong code in set_mctrl.
+For the 32 bit version this was already done in the commit 2b30efe2e88a
+("tty: serial: lpuart: Remove unnecessary code from set_mctrl"). Keep
+the 8-bit version in sync and remove it there, too.
 
-Fixes: 2b30efe2e88a ("tty: serial: lpuart: Remove unnecessary code from set_mctrl")
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/tty/serial/fsl_lpuart.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ drivers/tty/serial/fsl_lpuart.c | 28 +---------------------------
+ 1 file changed, 1 insertion(+), 27 deletions(-)
 
 diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
-index 0a578ad31a19..74c04dba02d4 100644
+index 74c04dba02d4..19714047d571 100644
 --- a/drivers/tty/serial/fsl_lpuart.c
 +++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -1418,17 +1418,7 @@ static unsigned int lpuart_get_mctrl(struct uart_port *port)
+@@ -1403,17 +1403,7 @@ static int lpuart32_config_rs485(struct uart_port *port,
  
- static unsigned int lpuart32_get_mctrl(struct uart_port *port)
+ static unsigned int lpuart_get_mctrl(struct uart_port *port)
  {
 -	unsigned int temp = 0;
--	unsigned long reg;
+-	unsigned char reg;
 -
--	reg = lpuart32_read(port, UARTMODIR);
--	if (reg & UARTMODIR_TXCTSE)
+-	reg = readb(port->membase + UARTMODEM);
+-	if (reg & UARTMODEM_TXCTSE)
 -		temp |= TIOCM_CTS;
 -
--	if (reg & UARTMODIR_RXRTSE)
+-	if (reg & UARTMODEM_RXRTSE)
 -		temp |= TIOCM_RTS;
 -
 -	return temp;
 +	return 0;
  }
  
+ static unsigned int lpuart32_get_mctrl(struct uart_port *port)
+@@ -1423,23 +1413,7 @@ static unsigned int lpuart32_get_mctrl(struct uart_port *port)
+ 
  static void lpuart_set_mctrl(struct uart_port *port, unsigned int mctrl)
+ {
+-	unsigned char temp;
+-	struct lpuart_port *sport = container_of(port,
+-				struct lpuart_port, port);
+-
+-	/* Make sure RXRTSE bit is not set when RS485 is enabled */
+-	if (!(sport->port.rs485.flags & SER_RS485_ENABLED)) {
+-		temp = readb(sport->port.membase + UARTMODEM) &
+-			~(UARTMODEM_RXRTSE | UARTMODEM_TXCTSE);
+-
+-		if (mctrl & TIOCM_RTS)
+-			temp |= UARTMODEM_RXRTSE;
+ 
+-		if (mctrl & TIOCM_CTS)
+-			temp |= UARTMODEM_TXCTSE;
+-
+-		writeb(temp, port->membase + UARTMODEM);
+-	}
+ }
+ 
+ static void lpuart32_set_mctrl(struct uart_port *port, unsigned int mctrl)
 -- 
 2.20.1
 
