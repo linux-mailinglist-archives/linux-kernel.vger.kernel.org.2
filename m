@@ -2,84 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607A737A11B
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35DD37A11D
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhEKHrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbhEKHro (ORCPT
+        id S230399AbhEKHsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:48:00 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:42348 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230319AbhEKHr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:47:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE48C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:46:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IH4rmQ69j2Fl6JxxC9cJyX9AxXhBsr98IbbacKhqIvM=; b=qi3xwOZ9HiLAagKybL1W+Ska+8
-        mQlewraGSGeKqo0VAqIASaeP8ohM59EKr/llcnqy9S/NL8ZHHLsDqJRVHCM0DOFGDTrbqD8wch7V2
-        6mtWtUeSnDkDMpU64lw7VJ8ex5OemtdgwzG3zwrJKMTEx4fRxQKnIpcwZV+VhkfCRpPLbGWWF2QMd
-        c4Augr4qMRd8NFfBMzI6y1F/aIUbTB+gNXStldO+c32G8Yt2UbUpNb88/OF03XMi4zOrPFs1ueUPn
-        sfLU/UU4H8EVFfPIubhixea+YB39eOq1pCzUCdO++B7re/x3EIzQaM6BvVw9WNAfN6oNzTKqZzwGq
-        3HlMDWhg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgN5l-0073br-BY; Tue, 11 May 2021 07:46:11 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6A2B99871B5; Tue, 11 May 2021 09:46:05 +0200 (CEST)
-Date:   Tue, 11 May 2021 09:46:05 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, neilb@suse.de,
-        mingo@redhat.com, will@kernel.org, longman@redhat.com,
-        boqun.feng@gmail.com, bigeasy@linutronix.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/17] locking: Add split_lock
-Message-ID: <20210511074605.GC5618@worktop.programming.kicks-ass.net>
-References: <20210409025131.4114078-3-willy@infradead.org>
- <87blaj1sqf.ffs@nanos.tec.linutronix.de>
- <20210412144525.GM2531743@casper.infradead.org>
+        Tue, 11 May 2021 03:47:58 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620719211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4dtVEhCLda8HUeKzIqG51m4PkcfarQ4Ebl7TLDitKBI=;
+        b=3LourMSF7DsaPAHqr0aaZ6BlkdlbV6LqKjrjyfvqoMLqY1XJGOJUPBcuusaM1rMe9Sut1y
+        zOT9Eue0HmJZpL5QrOZ35cMHp0WfFlkVJ8jLp52OnY8B7OYTbbOBmT+ZQ7BoFvBgVUTE2L
+        Ke+arWRAAVz+z+Lv+9VQFisOOBs3IOuEx3WK9Cx+FvbhqFUJfGoHUqQjkqlfg98JzEOqlU
+        P6EMrY6Yfvw9ldiXeWfvLdKjlrhbKlhcqKtdlCATUvSpUFZ/Qi+tgb1bK2bEhx7w9jgmIT
+        Tu+IBEssamCP/1Xz0Y25r9wMyi2i3kra4FPKERzDVn5Ho0IgwqwkkICi58hyrQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620719211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4dtVEhCLda8HUeKzIqG51m4PkcfarQ4Ebl7TLDitKBI=;
+        b=x+fuvGCbSAp/hR3iIE9JNfwIzdafP9EW9cZnnVgnaAxVLdmLmtEdUT0DxHqi1z9/3XijY8
+        fBCXmu4ZweIM55AA==
+To:     Juri Lelli <juri.lelli@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-rt-users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, sassmann@redhat.com
+Subject: Re: [RT] Question about i40e threaded irq
+In-Reply-To: <YJofplWBz8dT7xiw@localhost.localdomain>
+References: <YJofplWBz8dT7xiw@localhost.localdomain>
+Date:   Tue, 11 May 2021 09:46:51 +0200
+Message-ID: <875yzphfv8.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210412144525.GM2531743@casper.infradead.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 03:45:25PM +0100, Matthew Wilcox wrote:
-> On Mon, Apr 12, 2021 at 04:29:28PM +0200, Thomas Gleixner wrote:
-> > is to have a place to stick the lockdep map into. So it's not a lock
-> > construct as the name suggests, it's just auxiliary data when lockdep is
-> > enabled.
-> 
-> That's the implementation _today_, but conceptually, it's a single lock.
-> I was thinking that for non-RT, we could put a qspinlock in there for a
-> thread to spin on if the bit is contended.  It'd need a bit of ingenuity
-> to make sure that a thread unlocking a bitlock made sure that a thread
-> spinning on the qspinlock saw the wakeup, but it should be doable.
+On Tue, May 11 2021 at 08:09, Juri Lelli wrote:
+> My understanding is that rps_trigger_softirq() sneaked in while
+> i40e_msix_clean_rings() threaded irq was running and, since the latter is
+> using napi_schedule_irqoff(), the softnet_data poll_list got eventually
+> corrupted.
+>
+> Now, doing s/napi_schedule_irqoff/napi_schedule/ in the i40e driver seem
+> to cure the problem. I'm not sure that there isn't a more general
+> solution, though. Is it expected that napi_schedule_irqoff users in RT
+> know what they are doing or do we want/need to fix this in a more
+> general way?
 
-queued_write_lock_slowpath() does more or less exactly what you
-describe.
+The straight forward fix it to map napi_schedule_irqoff() to
+napi_schedule() on RT. Fixing this at the driver level is a whack-a-mole
+game.
 
-I just worry about loss of concurrency if we were to do that. Where
-currently we could be spinning on 5 different hash buckets and make
-individual progress, doing what you propose would limit that.
+Thanks,
 
-Imagine having one bit-spinlock taken and another cpu contending, it
-would go into the queue. Then do the same with another bit-spinlock,
-with another two CPUs, the second again goes into that same queue.
-
-So now we have 2 CPUs owning a bit-spinlock, and 2 CPUs stuck in the
-queue. Suppose the second bit-spinlock is released, this would make the
-queue-tail elegible to aquire, but it's stuck behind the queue-head
-which is still waiting for its bit-spinlock. So it'll stay queued and we
-loose concurrency.
-
-Anyway, I think all this is worthwhile just to get bit-spinlock lockdep
-coverage. And it's not like we can't change any of this when/if we get a
-better idea or something.
-
+        tglx
