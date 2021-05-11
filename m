@@ -2,253 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF5837AF87
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9227C37AF89
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232211AbhEKTpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 15:45:00 -0400
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:41937 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231944AbhEKTo7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 15:44:59 -0400
-Received: by mail-ot1-f52.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so12214012oth.8;
-        Tue, 11 May 2021 12:43:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DPdrS3g+68DpKgcVAIujbx2tcmLMhvF/2XxS2mNpU0Q=;
-        b=LUHfknqdAzZ7Gd9JG9lv94cK7ZpgGC973Rid+1wo6TJ1FW5Qa1sN3tUzo7avgdV/pN
-         0eIsGL+QvW6D/re7r+pYGVUSKbEjbXmzHuIxxpXPZxPP5LhWduD8a0uaBnY7JoW4ZJ8Q
-         2Q7uN+eQKz/j2OYni86gvrlkWjpTNA+hKgxqu/IeM+fy4Sdltxq85YmvLHfabWW4Q6SQ
-         rhpQV25rr/Bo4Zlo2HuT2HD2uOIC1Ac8AfissT4aPZa/sFZghubbWe8vqmEXh1h2ABZ3
-         h5Y4ux2UzZcIMsaT/sg2+gWfadFNBd9xlLQxQW9fFZPRCjdOwVLxWP3+yRNdQ0bZW06A
-         Pu4A==
-X-Gm-Message-State: AOAM530W6nRulNn83VwS54yUC0zUf7Ns6XH9V6AVJAFVBtvTj1C/o8Me
-        1I/vtdYUdfXE04nl6YhN8CIHwztHSStt6lnhhcw=
-X-Google-Smtp-Source: ABdhPJwni9lLPtuoei3i/UmiWj7BQ884In5rpM4cCIcL6qihyQEsC9Y7RS1YRtry4qQUTDAt0GZ3B8jm62C7SZLoiNE=
-X-Received: by 2002:a05:6830:55b:: with SMTP id l27mr27258063otb.260.1620762232138;
- Tue, 11 May 2021 12:43:52 -0700 (PDT)
+        id S232058AbhEKTsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 15:48:37 -0400
+Received: from mail-bn1nam07on2061.outbound.protection.outlook.com ([40.107.212.61]:17158
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231808AbhEKTsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 15:48:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b84D05Q7ahsb0Blbxif9lTLe3UeUcvaoTi1hqtsRyl4vacjx8u0kFGItXGLrriIJEvhvLHprnvGlhZ3tXJspiTi6S6T9a9uQC2zWq9+UgKxAqVOajQZVriAVeKxFlewqlNdYcl86LYltGyHOqP7D7CyGFUkLdcYm1qmUedJwN+EWB1X0G1+kV48Zizjh2YOIS6oDVgyk8Utp+R85DujNNGTok2++wNMKSOz1u5Iydi/9kJo/Am+KLqdemWCRK6SH98Q6HNVsRmBgcoINIrAXsIQRK1hnPEn2vMZVl0GTiJ4zN1yQodAdnYQZEnbv5u8vi7j+uV/RBuROZcrBUNEZIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R6QAxh+/iRr3oXa2J5WVszT6Ap2DJhJSv1DfY1BudJE=;
+ b=RxQG/hRHd85/LR7rWAbK7zastloAxFEvrdEpUaZId+bs6MvQjQOJy2KVMBPRMgCNV/HMrfsxZDf5cP1jqMKSEyeB7sUWufFjIEPQobPNnPsfSmFBvI8AR1BImrCKaqCe85/w4OCii2C0lyYAYD0s+BDr/zzwpqaxAMEtpUuK9HjioITNC9AyhFzvLWGIPVgi3KDCihIRxnkH6wYj1glluxS+gbt8MisIqvN5fQbZPdHaTrt2xKxuR2Q20GPrmVQXcDP6C4Wtjc/FTfFT+BiAUeJ5EH3wWkjDOqwSOMTwU/8Z9LkL9KoYwdt+aDyDhIoLCAR+sV/m6bfDlTcXprKbFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R6QAxh+/iRr3oXa2J5WVszT6Ap2DJhJSv1DfY1BudJE=;
+ b=rYtdxKR1gSsWTBHPI+E2K9W80zcPRV/6DlhcGwRl00VOJUEkc7F5flLYYPa7c7BsqaHs6aoj01ieMQVHwpgwhOuA0qEfrSYmIW3eiRQVET8wyaQkaxfIqMxcJUuNBmtj6Ns/fI1nBRSZYAw2at8BqwYApKkW2Zwn1Ux/0Jfyb1CKG0ulmJaeDBUkHCRYoS79pLOx0KgpX+7hpPTPBDV+AF4HE+/eiux8y/+lDnNk7sOqKKy6w2eUzkYit9Qo7+8k0pxs29hh4ZBD0uMj4bwb5CFfHg9dFhq721Y24Wu4CKDW6socNpW4pg9y/ga2bn6xxhLHMwfBBkJlg3R7IkG24g==
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3018.namprd12.prod.outlook.com (2603:10b6:5:118::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24; Tue, 11 May
+ 2021 19:47:27 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4108.031; Tue, 11 May 2021
+ 19:47:27 +0000
+Date:   Tue, 11 May 2021 16:47:26 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
+        zhangfei.gao@linaro.org, vkoul@kernel.org,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
+ flags
+Message-ID: <20210511194726.GP1002214@nvidia.com>
+References: <1620653108-44901-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1620653108-44901-2-git-send-email-jacob.jun.pan@linux.intel.com>
+ <20210510233749.GG1002214@nvidia.com>
+ <20210510203145.086835cc@jacob-builder>
+ <20210511114848.GK1002214@nvidia.com>
+ <20210511091452.721e9a03@jacob-builder>
+ <20210511163521.GN1002214@nvidia.com>
+ <20210511110550.477a434f@jacob-builder>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511110550.477a434f@jacob-builder>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BLAPR03CA0095.namprd03.prod.outlook.com
+ (2603:10b6:208:32a::10) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <3c88cf35-6725-1bfa-9e1e-8e9d69147e3b@hisilicon.com>
- <d16058fc-9876-f6a3-d5e8-ff06b5193f2c@intel.com> <2149723.iZASKD2KPV@kreacher>
- <CAGETcx-tRh45ZJzmbGvHay1htnjeE-EZc3CG9P3=qFfi75owHA@mail.gmail.com>
-In-Reply-To: <CAGETcx-tRh45ZJzmbGvHay1htnjeE-EZc3CG9P3=qFfi75owHA@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 11 May 2021 21:43:40 +0200
-Message-ID: <CAJZ5v0iBV2n0yuvhYEzLPTZFuq-O1SpdK_BmLgXz7qrcNKe-gg@mail.gmail.com>
-Subject: Re: Qestion about device link
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "chenxiang (M)" <chenxiang66@hisilicon.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BLAPR03CA0095.namprd03.prod.outlook.com (2603:10b6:208:32a::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Tue, 11 May 2021 19:47:27 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lgYLm-005WbS-7u; Tue, 11 May 2021 16:47:26 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 38c64dd7-99e9-4462-8d38-08d914b59b39
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3018:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB30180C2EF9C0A0788CD141BAC2539@DM6PR12MB3018.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cGtlAZOcDBhZZrk1kBAPj1bz5JpOJPwDYTrh5/QObo79QMyzoT9JPaYZq1U9ye0eFd2MJRd8yI0HC+r+W/+zv4D/39ChFI7WlogtonwK32pK/ed5qGvbGvTasVCYsbqTNJRttEJx2kyWPhF16Srb7pU3ew5yoibBi7F5orEa68JR7Vi953IZdyS1ktOkq3pRh6xLuG0Gcz66jl8hUoAUSsdPUs5Ii27b07rvFL5cMYHfQcJkZ4IWKJPHapfs/rzFZCtpunO/LT69VppHvktP5bbW1WtsrJgtSyidmaD8VkceKDKundCi4ZEZ4dwWRobkuYl2UfmuYqWgQ+O9mNZURVrXGcHczs7Fb6gL/WtPhgn6SQzwtggLmC6MQYXy4y5I7+ivpox+HCdVz+DStdTsSyHjxHGrOJQJfymTUs00WaWU57gx/qJOJRTb6ofD/muhqHZr5HREH9utpDn09YdpEQBlW3fYrx2TwUZVXcGv5gniu16FrZAAoDOt7jDpIBGlyDgsO1e/Pp1Jrz9dl/8XU3rXgBdpAnBKMSstJm00AtePY51BgnJFUwE4e+Ql/2YUg/X8r4CUFa3lfAZDUfsjmNXFuHIi6i7kLnDhyemxGVg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(498600001)(9786002)(9746002)(86362001)(186003)(8936002)(36756003)(7416002)(54906003)(5660300002)(38100700002)(26005)(33656002)(83380400001)(66946007)(66476007)(66556008)(8676002)(2906002)(4326008)(6916009)(1076003)(426003)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?LCVzMU/HPTpxS4qbq4pU7rWmKNHOIBiMnR8wCisAXNABPC0T+HfOHtUO/Ywx?=
+ =?us-ascii?Q?GJxgaQgzptTX7mNtLwZjVdJx6eAAUrS17bPdNqJdlmPZOzruacq3Yv/IO+bF?=
+ =?us-ascii?Q?Ht054aNwxlo9/8DMrAlX/BK3Uq90c02qmmHqGCq4NYBTMnDwO6/sCShMLwP+?=
+ =?us-ascii?Q?SL+btWCQmYiYKVIKX+g+HMU5Yu46Mx94HS5Upg4C9BivCWDN+FGCRZ5vGvHz?=
+ =?us-ascii?Q?PyY7XY4kFabfEBoltmHAUKqxu3x2bXSc28VL3DvsfP1uRG8mhG4OaGAmF6I0?=
+ =?us-ascii?Q?rDwOmGPhSVxk/cKo18C+ZNArSiXwu4qV4IWR40yDj485w0Dviq3n62+nGecs?=
+ =?us-ascii?Q?/qGZs9X3TUJkH/N8KkabdhpneJXJtexcOUMPXj28peBNczUOIvO0R3hbuPi0?=
+ =?us-ascii?Q?QH/tceP2cFlmoUbIcW/EGBToeAGkIKLApq/jNwuFAPXtZZYwisQV7lgdXNoB?=
+ =?us-ascii?Q?ndF5VQZNJvCYTA460dI6BeY1f70w+w3N61QqUvUBVqkI3w0IUs2K4nh+wvsH?=
+ =?us-ascii?Q?wlZJ39nZq/IeJG3y/ecrILokifa/enpBeBW6HI7BOHLlfkUAjFNQXZVps5y7?=
+ =?us-ascii?Q?brWzO21qe1Acfi6p41o/6XQz9qPQHm/4fT4cmSHEKraV6aEzW7vrTcBri+ii?=
+ =?us-ascii?Q?etA5s7D5Rr3gcDgadmc18NXRII/quOQmOyqiw1oF9WBAJ3rwhmsFlu1y5ZI8?=
+ =?us-ascii?Q?HPeWYtjBlNyUWKxOUAWKdM9kqbrAzS58lgXzfKiAf9UlUnrY0hTbi1L7pedW?=
+ =?us-ascii?Q?8pD8l0KhCp7BspGO9qdNdS8YaxSpPNzKyf5rBOacI1PG3XT+Dw9h1uHaIgcx?=
+ =?us-ascii?Q?G/BTh+OH67g4nv+9bJ6S/eA+bNtqIxFXCP5cDnUPf7Tk0GrfrKyiL/d9PQcn?=
+ =?us-ascii?Q?9UW0PvNi9oj7oQ0/DHUr/cfwP0z5XOmVJ61QENJt11yUwewRdgYgrGDQaefg?=
+ =?us-ascii?Q?SvG5peqiaXnqyCYN0/bsMWfnx0qNpH2xwFK8YUfkv6J9IxbYp2ALtTsOi5Ws?=
+ =?us-ascii?Q?Xi91qFEfxcEJmLnlKFbnvX5CAWLUsualVREJfI6CDfnwspRHbO6PsgeBO8Ff?=
+ =?us-ascii?Q?8va4jGCpFPo0RhC+KK9GvQa2dGgVGRS5ZbkRD+PidR+9q/mYkM+5CbfcLqTu?=
+ =?us-ascii?Q?kkcueSrVg3UTxdrFdbWL4puiDW5ba1eikKhcjOzZknFfZ0W0SFN+FGUN1+U/?=
+ =?us-ascii?Q?08Hij1Ef0p0Mx++detB+SveHdZwOD/Dx4BhnY+fVTEMdUQhasp5re/9j6dmU?=
+ =?us-ascii?Q?7RKIWEi+i93k1XnzEhnvQaWLnGaAE+OMT0z8C+oELGLD/voO/9JXw0vL3fWd?=
+ =?us-ascii?Q?qsHo0wRQiHe9TqCtGLbB7NIH?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 38c64dd7-99e9-4462-8d38-08d914b59b39
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 19:47:27.7530
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vkUtFUpYAHcKX3mRbpeE2MQy6GZiwhkxMVuWbsZSz9zS9ws9Ejdm5657pNW3aWH0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3018
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 9:24 PM Saravana Kannan <saravanak@google.com> wrote:
+On Tue, May 11, 2021 at 11:05:50AM -0700, Jacob Pan wrote:
+> Hi Jason,
+> 
+> On Tue, 11 May 2021 13:35:21 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+> 
+> > On Tue, May 11, 2021 at 09:14:52AM -0700, Jacob Pan wrote:
+> > 
+> > > > Honestly, I'm not convinced we should have "kernel SVA" at all.. Why
+> > > > does IDXD use normal DMA on the RID for kernel controlled accesses?  
+> > > 
+> > > Using SVA simplifies the work submission, there is no need to do
+> > > map/unmap. Just bind PASID with init_mm, then submit work directly
+> > > either with ENQCMDS (supervisor version of ENQCMD) to a shared
+> > > workqueue or put the supervisor PASID in the descriptor for dedicated
+> > > workqueue.  
+> > 
+> > That is not OK, protable drivers in Linux have to sue dma map/unmap
+> > calls to manage cache coherence. PASID does not opt out of any of
+> > that.
+> > 
+> Let me try to break down your concerns:
+> 1. portability - driver uses DMA APIs can function w/ and w/o IOMMU. is
+> that your concern? But PASID is intrinsically tied with IOMMU and if
+> the drivers are using a generic sva-lib API, why they are not portable?
+> SVA by its definition is to avoid map/unmap every time.
+
+Kernel explicitly does not support this programming model. All DMA is
+explicit and the DMA API hides platform details like IOMMU and CPU
+cache coherences. Just because x86 doesn't care about this doesn't
+make any of it optional.
+
+If you want to do SVA PASID then it also must come with DMA APIs to
+manage the CPU cache coherence that are all NOP's on x86.
+
+> > I dislike this whole idea a lot. A single driver should not opt itself
+> > out of IOMMU based security "just because"
 >
-> On Tue, May 11, 2021 at 12:16 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> >
-> > On Tuesday, May 11, 2021 4:39:31 PM CEST Rafael J. Wysocki wrote:
-> > > On 5/11/2021 5:59 AM, chenxiang (M) wrote:
-> > > > Hi Rafael and other guys,
-> > > >
-> > > > I am trying to add a device link between scsi_host->shost_gendev and
-> > > > hisi_hba->dev to support runtime PM for hisi_hba driver
-> > > >
-> > > > (as it supports runtime PM for scsi host in some scenarios such as
-> > > > error handler etc, we can avoid to do them again if adding a
-> > > >
-> > > > device link between scsi_host->shost_gendev and hisi_hba->dev) as
-> > > > follows (hisi_sas driver is under directory drivers/scsi/hisi_sas):
-> > > >
-> > > > device_link_add(&shost->shost_gendev, hisi_hba->dev,
-> > > > DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE)
-> > > >
-> > > > We have a full test on it, and it works well except when rmmod the
-> > > > driver, some call trace occurs as follows:
-> > > >
-> > > > [root@localhost ~]# rmmod hisi_sas_v3_hw
-> > > > [  105.377944] BUG: scheduling while atomic: kworker/113:1/811/0x00000201
-> > > > [  105.384469] Modules linked in: bluetooth rfkill ib_isert
-> > > > iscsi_target_mod ib_ipoib ib_umad iptable_filter vfio_iommu_type1
-> > > > vfio_pci vfio_virqfd vfio rpcrdma ib_is                         er
-> > > > libiscsi scsi_transport_iscsi crct10dif_ce sbsa_gwdt hns_roce_hw_v2
-> > > > hisi_sec2 hisi_hpre hisi_zip hisi_qm uacce spi_hisi_sfc_v3xx
-> > > > hisi_trng_v2 rng_core hisi_uncore                         _hha_pmu
-> > > > hisi_uncore_ddrc_pmu hisi_uncore_l3c_pmu spi_dw_mmio hisi_uncore_pmu
-> > > > hns3 hclge hnae3 hisi_sas_v3_hw(-) hisi_sas_main libsas
-> > > > [  105.424841] CPU: 113 PID: 811 Comm: kworker/113:1 Kdump: loaded
-> > > > Tainted: G        W         5.12.0-rc1+ #1
-> > > > [  105.434454] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS
-> > > > 2280-V2 CS V5.B143.01 04/22/2021
-> > > > [  105.443287] Workqueue: rcu_gp srcu_invoke_callbacks
-> > > > [  105.448154] Call trace:
-> > > > [  105.450593]  dump_backtrace+0x0/0x1a4
-> > > > [  105.454245]  show_stack+0x24/0x40
-> > > > [  105.457548]  dump_stack+0xc8/0x104
-> > > > [  105.460939]  __schedule_bug+0x68/0x80
-> > > > [  105.464590]  __schedule+0x73c/0x77c
-> > > > [  105.465700] BUG: scheduling while atomic: kworker/96:1/791/0x00000201
-> > > > [  105.468066]  schedule+0x7c/0x110
-> > > > [  105.468068]  schedule_timeout+0x194/0x1d4
-> > > > [  105.474490] Modules linked in:
-> > > > [  105.477692]  wait_for_completion+0x8c/0x12c
-> > > > [  105.477695]  rcu_barrier+0x1e0/0x2fc
-> > > > [  105.477697]  scsi_host_dev_release+0x50/0xf0
-> > > > [  105.477701]  device_release+0x40/0xa0
-> > > > [  105.477704]  kobject_put+0xac/0x100
-> > > > [  105.477707]  __device_link_free_srcu+0x50/0x74
-> > > > [  105.477709]  srcu_invoke_callbacks+0x108/0x1a4
-> > > > [  105.484743]  process_one_work+0x1dc/0x48c
-> > > > [  105.492468]  worker_thread+0x7c/0x464
-> > > > [  105.492471]  kthread+0x168/0x16c
-> > > > [  105.492473]  ret_from_fork+0x10/0x18
-> > > > ...
-> > > >
-> > > > After analyse the process, we find that it will
-> > > > device_del(&shost->gendev) in function scsi_remove_host() and then
-> > > >
-> > > > put_device(&shost->shost_gendev) in function scsi_host_put() when
-> > > > removing the driver, if there is a link between shost and hisi_hba->dev,
-> > > >
-> > > > it will try to delete the link in device_del(), and also will
-> > > > call_srcu(__device_link_free_srcu) to put_device() link->consumer and
-> > > > supplier.
-> > > >
-> > > > But if put device() for shost_gendev in device_link_free() is later
-> > > > than in scsi_host_put(), it will call scsi_host_dev_release() in
-> > > >
-> > > > srcu_invoke_callbacks() while it is atomic and there are scheduling in
-> > > > scsi_host_dev_release(),
-> > > >
-> > > > so it reports the BUG "scheduling while atomic:...".
-> > > >
-> > > > thread 1                                                   thread2
-> > > > hisi_sas_v3_remove
-> > > >     ...
-> > > >     sas_remove_host()
-> > > >         ...
-> > > >         scsi_remove_host()
-> > > >             ...
-> > > >             device_del(&shost->shost_gendev)
-> > > >                 ...
-> > > >                 device_link_purge()
-> > > >                     __device_link_del()
-> > > >                         device_unregister(&link->link_dev)
-> > > >                             devlink_dev_release
-> > > > call_srcu(__device_link_free_srcu)    ----------->
-> > > > srcu_invoke_callbacks  (atomic)
-> > > >         __device_link_free_srcu
-> > > >     ...
-> > > >     scsi_host_put()
-> > > >         put_device(&shost->shost_gendev) (ref = 1)
-> > > >                 device_link_free()
-> > > >                               put_device(link->consumer)
-> > > > //shost->gendev ref = 0
-> > > >                                           ...
-> > > >                                           scsi_host_dev_release
-> > > >                                                       ...
-> > > > rcu_barrier
-> > > > kthread_stop()
-> > > >
-> > > >
-> > > > We can check kref of shost->shost_gendev to make sure scsi_host_put()
-> > > > to release scsi host device in LLDD driver to avoid the issue,
-> > > >
-> > > > but it seems be a common issue:  function __device_link_free_srcu
-> > > > calls put_device() for consumer and supplier,
-> > > >
-> > > > but if it's ref =0 at that time and there are scheduling or sleep in
-> > > > dev_release, it may have the issue.
-> > > >
-> > > > Do you have any idea about the issue?
-> > > >
-> > > Yes, this is a general issue.
-> > >
-> > > If I'm not mistaken, it can be addressed by further deferring the
-> > > device_link_free() invocation through a workqueue.
-> > >
-> > > Let me cut a patch doing this.
-> >
-> > Please test the patch below and let me know if it works for you.
-> >
-> > ---
-> >  drivers/base/core.c    |   18 ++++++++++++++++--
-> >  include/linux/device.h |    5 ++++-
-> >  2 files changed, 20 insertions(+), 3 deletions(-)
-> >
-> > Index: linux-pm/drivers/base/core.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/base/core.c
-> > +++ linux-pm/drivers/base/core.c
-> > @@ -455,16 +455,30 @@ static void device_link_free(struct devi
-> >  }
-> >
-> >  #ifdef CONFIG_SRCU
-> > +static void __device_link_free_fn(struct work_struct *work)
-> > +{
-> > +       device_link_free(container_of(work, struct device_link, srcu.work));
-> > +}
-> > +
-> >  static void __device_link_free_srcu(struct rcu_head *rhead)
-> >  {
-> > -       device_link_free(container_of(rhead, struct device_link, rcu_head));
-> > +       struct device_link *link = container_of(rhead, struct device_link,
-> > +                                               srcu.rhead);
-> > +       struct work_struct *work = &link->srcu.work;
-> > +
-> > +       /*
-> > +        * Because device_link_free() may sleep in some cases, schedule the
-> > +        * execution of it instead of invoking it directly.
-> > +        */
-> > +       INIT_WORK(work, __device_link_free_fn);
-> > +       schedule_work(work);
-> >  }
-> >
-> >  static void devlink_dev_release(struct device *dev)
-> >  {
-> >         struct device_link *link = to_devlink(dev);
-> >
-> > -       call_srcu(&device_links_srcu, &link->rcu_head, __device_link_free_srcu);
-> > +       call_srcu(&device_links_srcu, &link->srcu.rhead, __device_link_free_srcu);
-> >  }
-> >  #else
-> >  static void devlink_dev_release(struct device *dev)
-> > Index: linux-pm/include/linux/device.h
-> > ===================================================================
-> > --- linux-pm.orig/include/linux/device.h
-> > +++ linux-pm/include/linux/device.h
-> > @@ -584,7 +584,10 @@ struct device_link {
-> >         refcount_t rpm_active;
-> >         struct kref kref;
-> >  #ifdef CONFIG_SRCU
-> > -       struct rcu_head rcu_head;
-> > +       union {
-> > +               struct rcu_head rhead;
-> > +               struct work_struct work;
-> > +       } srcu;
->
-> I'll do the actual review on a more final patch? I see you are trying
-> to save space, but is this worth the readability reduction?
+> Perhaps I missed your point here. This is NOT a single driver, privileged
+> access is a PCIe spec defined feature. We are using IOMMU sva-lib APIs, not
+> sure why it is by-passing.
 
-Well, is this so much less readable?
+Until today the overal security of the IOMMU configuration is
+controlled by kernel boot parameters set by the sysadmin.
 
-Anyway, because we have a whole struct device in there now, the size
-difference probably doesn't matter.
+This magic PASID effectively disables all IOMMU security and allows an
+IO device unrestricted access to the entire system memory. This is the
+opposite of what the admin may have specified in the various boot
+options.
 
-Also it is not particularly useful to do the entire unregistration
-under the device links write lock, so the device_unregister() in
-__device_link_del() could be delegated to a workqueue and run from
-there, so the whole call_rcu() dance could be avoided.
+I don't like it all. Kust because the PCI sig defined this mechanism
+doesn't mean it is mandatory for Linux to use it.
 
-Which would be a better fix IMO, but let's see if this one works.
+If you want the performance gain of no iommu updates then use RID
+based access and boot flags that have an identity translation for all
+RIDs.
+
+Forcing the system to create an identiy translation in all cases by
+having a single kernel driver create a PASID feels really
+wrong. 
+
+Especially since there isn't any real gain in functionality or
+performance as it it just exposing the same things the normal DMA API
+would expose.
+
+Jason
