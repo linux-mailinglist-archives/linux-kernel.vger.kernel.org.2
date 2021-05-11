@@ -2,179 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30822379CF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 04:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C258379CF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 04:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhEKCbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 22:31:03 -0400
-Received: from mga07.intel.com ([134.134.136.100]:23183 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229684AbhEKCbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 22:31:02 -0400
-IronPort-SDR: Y4ujkhTrdb82Fl3lcXq/dOlyTNO1maNwqKvAxVLKbcwRRa5mBYJGXVsGrdicsHipYx5Wqk+VGk
- m6LqjRYSdYSA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="263267537"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="263267537"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 19:29:56 -0700
-IronPort-SDR: JSiajLRu7fumkHuyPqtApzVDLYKtwJwjuqA9tAqgyCqqce0VhFGUmoMhAo5Y37lDyNgpqSU7C2
- bA1+1dfUjRQA==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="609321258"
-Received: from kcmorris-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.213.165.53])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 19:29:55 -0700
-Subject: Re: [RFC v2 14/32] x86/tdx: Handle port I/O
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <0e7e94d1ee4bae49dfd0dd441dc4f2ab6df76668.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4jPLGs6p0PNZQB6yKB3QDtEcGb234zcgCbJutXxZZEGnA@mail.gmail.com>
- <e8ac31bc-e307-f277-f928-24ebba4cbca7@linux.intel.com>
- <CAPcyv4iuRdXooQvCzEWd9babzPij4nXpM-z5fai9+SGaeFYswQ@mail.gmail.com>
- <9f89a317-11fa-d784-87a8-37124891900c@linux.intel.com>
- <CAPcyv4hymb73WZ7QqNsDyKiPzsFdPJF63+MLnOTfJMsQBFvSDg@mail.gmail.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <3059c7d3-8646-2e1a-3c9f-1de67f7ed382@linux.intel.com>
-Date:   Mon, 10 May 2021 19:29:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229952AbhEKCdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 22:33:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229628AbhEKCdo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 22:33:44 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36A3C061574;
+        Mon, 10 May 2021 19:32:37 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id v12so18499823wrq.6;
+        Mon, 10 May 2021 19:32:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/+vS3STyzsuRrA5ULZ0b5xvOuXc+zqUV+MLKt6AlCR0=;
+        b=q+7H9pPng+5qxH0InZN+bqanKx3JKfp4yajEtsnA88mdvmVXtVD+ZoPO4vcQGyroY6
+         GCwceu/0iqIJ0eZkoGaqcQnFx+KRtw8WcV1y4j2hEjoMLNNoflYovNXY0HVT+2iHIiv4
+         4DCPxiJoUc7eHMeKdhZ234W/CuwDF5fu2yODwMnkYq5RLRaJTnAYSIUhQBetUeP5klxf
+         8qqBc1SU2zbBsAonHf4ZXrJ+iti0DglydM1/VwKayh1Ub0uZoxo4Ehw2RKWYDR58+DR1
+         bESrLIIX6FaebxiIy31D47XLtrnjbRzBAjMVaDOwbk3VU7cpZg5NG5t5Zf+lyR66PswT
+         4Awg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/+vS3STyzsuRrA5ULZ0b5xvOuXc+zqUV+MLKt6AlCR0=;
+        b=VrUf19A6kzUmwXCVjv7fLlLAqR2M+q0tC+N8fOw9ZTWybksvcdiRYdG0io+Ae6eFCG
+         NF11ptnuYAUVDqHRMFsjk3UGOUzMAu5/EX8dgp1LWyIu5BjQ6H+tl4Eq/tuEyq/c8nY/
+         nloLlGXxbu/5bqG9oyEXabdaF2N+v/uoGmnq2S0SX1WKwMWYKLa+dBD57iB8ZxsRX8Ct
+         JOPtpHEs1uY/MyEvZ6yqd6IF1cCwKfBUb4Kq4u6Iz45IS8lpuMAKaa+45/SKAHELJTsK
+         3ADfrmHCjcrmf8a2tlomWfUfzxe/xkRty0fw/R0D9htJq4a67JpXb4s44yb+9toBp5cU
+         XInA==
+X-Gm-Message-State: AOAM530RvbxWgDFr2Qu/IIZ/MmWC0vsVLW27kXox7HXhXaEl8t522b0k
+        9DZdRU4aN4+/zNTDC/mAd0E=
+X-Google-Smtp-Source: ABdhPJxPjt1eyqE/Zfj1O2V+poyu98BDQTYs0vA0tz9komJip5ET1xFqdGfAWbqxzhfhEtALlQt+uA==
+X-Received: by 2002:a5d:6d81:: with SMTP id l1mr34477639wrs.17.1620700356668;
+        Mon, 10 May 2021 19:32:36 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
+        by smtp.gmail.com with ESMTPSA id z6sm21597526wmf.9.2021.05.10.19.32.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 19:32:36 -0700 (PDT)
+Date:   Tue, 11 May 2021 04:32:34 +0200
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm: Enlarge IO_SPACE_LIMIT needed for some SoC
+Message-ID: <YJnswvYFUjlNS7Fa@Ansuel-xps.localdomain>
+References: <20210511021656.17719-1-ansuelsmth@gmail.com>
+ <YJnq3Y3/I1kdV1Ov@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4hymb73WZ7QqNsDyKiPzsFdPJF63+MLnOTfJMsQBFvSDg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJnq3Y3/I1kdV1Ov@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/10/21 6:07 PM, Dan Williams wrote:
-> On Mon, May 10, 2021 at 5:30 PM Kuppuswamy, Sathyanarayanan
-> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
-> [..]
->> It is mainly used by functions like __tdx_hypercall(),__tdx_hypercall_vendor_kvm()
->> and tdx_in{b,w,l}.
->>
->> u64 __tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15,
->>                       struct tdx_hypercall_output *out);
->> u64 __tdx_hypercall_vendor_kvm(u64 fn, u64 r12, u64 r13, u64 r14,
->>                                  u64 r15, struct tdx_hypercall_output *out);
->>
->> struct tdx_hypercall_output {
->>           u64 r11;
->>           u64 r12;
->>           u64 r13;
->>           u64 r14;
->>           u64 r15;
->> };
+On Tue, May 11, 2021 at 03:24:29AM +0100, Matthew Wilcox wrote:
+> On Tue, May 11, 2021 at 04:16:54AM +0200, Ansuel Smith wrote:
+> > Ipq8064 SoC requires larger IO_SPACE_LIMIT on second and third pci port.
 > 
-> Why is this by register name and not something like:
-> 
-> struct tdx_hypercall_payload {
->    u64 data[5];
-> };
-> 
-> ...because the code in this patch is reading the payload out of a
-> stack relative offset, not r11.
+> Do you really?  I mean, yes, theoretically, I understand it, the
+> hardware supports 64kB of I/O port space per root port.  But I/O
+> port space is rather deprecated these days.  My laptop has precisely
+> two devices with I/O ports, one with 64 bytes and the other with 32
+> bytes.  Would you really suffer by allocating 16kB of I/O port
+> space to each root port?
 
-Since this patch allocates this memory in ASM code, we read it via
-offset. If you see other use cases in tdx.c, you will notice the use
-of register names.
+We were talking about this in the other wrong patch. I also think this
+much space looks wrong. The current ipq806x dts have this space so it's
+actually broken from a long time. The only reason pci worked before was
+because the pci driver didn't actually check if the settings were right.
+New kernel introduced more checks and this problem showed up. (to be
+more precise, the pci port are commonly used by the ath10k wifi and the
+second ath10k wifi fails to init because of this problem)
+If you can give me any hint on how to check if the space can be reduced
+I would be very happy to investigate it.
+In the driver I notice that the max buffer is set to 2k, could be this a
+hint?
 
-static void tdg_handle_cpuid(struct pt_regs *regs)
-{
-         u64 ret;
-         struct tdx_hypercall_output out = {0};
-
-         ret = __tdx_hypercall(EXIT_REASON_CPUID, regs->ax,
-                               regs->cx, 0, 0, &out);
-
-         WARN_ON(ret);
-
-         regs->ax = out.r12;
-         regs->bx = out.r13;
-         regs->cx = out.r14;
-         regs->dx = out.r15;
-}
-
-static u64 tdg_read_msr_safe(unsigned int msr, int *err)
-{
-         u64 ret;
-         struct tdx_hypercall_output out = {0};
-
-         WARN_ON_ONCE(tdg_is_context_switched_msr(msr));
-
-         /*
-          * Since CSTAR MSR is not used by Intel CPUs as SYSCALL
-          * instruction, just ignore it. Even raising TDVMCALL
-          * will lead to same result.
-          */
-         if (msr == MSR_CSTAR)
-                 return 0;
-
-         ret = __tdx_hypercall(EXIT_REASON_MSR_READ, msr, 0, 0, 0, &out);
-
-         *err = ret ? -EIO : 0;
-
-         return out.r11;
-}
-
-
-> 
->>
->>
->> Functions like __tdx_hypercall() and __tdx_hypercall_vendor_kvm() are used
->> by TDX guest to request services (like RDMSR, WRMSR,GetQuote, etc) from VMM
->> using TDCALL instruction. do_tdx_hypercall() is the helper function (in
->> tdcall.S) which actually implements this ABI.
->>
->> As per current ABI, VMM will use registers R11-R15 to share the output
->> values with the guest.
-> 
-> Which ABI,
-
-TDCALL ABI (see sections 3.1 to 3.12 and look for Output Operands in each TDVMCALL variant).
-
-https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-guest-hypervisor-communication-interface.pdf
-
-  __tdx_hypercall_vendor_kvm()? The code is putting the
-> payload on the stack, so I'm not sure what ABI you are referring to?
-> 
-> 
->> So we have defined the structure
->> struct tdx_hypercall_output to group all output registers and make it easier
->> to share it with users of the TDCALLs. This is Linux defined structure.
->>
->> If there are any changes in TDCALL ABI for VMM, we might have to extend
->> this structure to accommodate new output register changes.  So if we
->> define TDVMCALL_OUTPUT_SIZE as 40, we will have modify this value for
->> any future struct tdx_hypercall_output changes. So to avoid it, we have
->> allocated double the size.
->>
->> May be I should define it as,
->>
->> #define TDVMCALL_OUTPUT_SIZE            sizeof(struct tdx_hypercall_output)
-> 
-> An arrangement like that seems more reasonable than a seemingly
-> arbitrary number and an ominous warning about things that may happen
-> in the future.
-
-I will use the above format.
-
-> 
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
