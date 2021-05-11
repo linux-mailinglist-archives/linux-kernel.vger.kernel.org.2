@@ -2,118 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F448379CE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 04:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E1F379CE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 04:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbhEKCXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 22:23:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230417AbhEKCXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 22:23:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7F0E6162B;
-        Tue, 11 May 2021 02:22:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620699749;
-        bh=J49dWfDtr/uMNE/FC4yL9V1Co9tZspE5lpR1SyxOHjI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TpsjRagjADiC1FUuy2fCOnZL1eoYMaycgp44lLT/0ugp4Uc5b87Vkf3z/PfxXLpOL
-         SFN+wNCjPzeLCpDHm7nzLJphs9OcP5SQxNEMrMnulAyt6qBCwLwJZ8CfHoVfENkHye
-         5aXeThsD/0k+BqOdfIBgCn7ZJlcSr09FrpAPRDiTamBvEnLpeKRqMJnGs2tiKy3aBN
-         nQT1/qwbinEV4GMBBx44UqtYZ9Q1v4Io4MVybbSOCzst+47PhWr4Ot9W4+rKpHYDFA
-         S0etXL9L21PVGOFJQlqVHqrBPrjAi4diWzGJ+j9Dub0KCyhR/IFSc31cwfXuRMm2PK
-         Wct5kJPnW0gvw==
-Date:   Tue, 11 May 2021 10:22:23 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, catalin.marinas@arm.com,
-        will@kernel.org, bjorn.andersson@linaro.org, krzk@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/4] arm64: dts: imx8mq-nitrogen: add USB HOST support
-Message-ID: <20210511022222.GB3425@dragon>
-References: <20210331232356.2204476-1-adrien.grassein@gmail.com>
- <20210331232356.2204476-3-adrien.grassein@gmail.com>
+        id S230523AbhEKCZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 22:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230417AbhEKCZE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 22:25:04 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9A1C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 19:23:57 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id l10-20020a17090a850ab0290155b06f6267so418799pjn.5
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 19:23:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LEnjyPPeB6lvEBpPeWNCTITVj6tamqcoGqJcOIK5Qp4=;
+        b=KR2reNxL/sbflBFkWnnBu+sgMkVV93lU9doeUNOnFJF3KAkUX7sP/KByjvH/HCa59a
+         OUOh9iFkpcJ4NBJF53E6XIeQTyIgOm9Gdc3SdewCI4leNSPFQxBKiL8Q8fGyWdlLAp+v
+         R5XRszq02yz5+sCAx49Cg3SXSQz/ekgqXMLFdkmHB2M0a4kz4D0KjEHhVYQSa5nWdfol
+         KrTaHaHrKGjo4vRot9Mq7rz1RJ7NVOA5L+9L/Gj2AFB163tt1la+KDqmthpxh1X9/GA5
+         HEHak07eYEk2ygLvmtLytTIaBdTDGPgtWnKxAr2UAqgYa47JIBqxj46HxHtfSoNrN8BK
+         Rc7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LEnjyPPeB6lvEBpPeWNCTITVj6tamqcoGqJcOIK5Qp4=;
+        b=E27LRctvfS/U21LTuiw/1ZxDUzQTIyixU+0hq5s7Z8rO5zFH9AooxQYvQ+Nvyln591
+         OW7qOh1npRIaWvaqvB8buEIoZGR0PW9HsPbtouEKJS0SkWwubLXrWtu8CkKKvrSP7L0C
+         G7ny2G30O0il80CeDLt7Zz0LY3rEd7d9fEW5zjVhtS2AevyIDYWU1M4yRR6NHI1yoAvB
+         3eOoONRqzkrqEJ6gW4pHTAMAYDORzS1PC9JUXSnsT02ekuGpvXmsrBjqbmSZ2SijRoKU
+         r1WsHzVXQiy3uwe1l4+jy01H/hqFMhdXYPgfymQDq16NfV8w7+FElwmXDF8w43ImRIcL
+         rEOA==
+X-Gm-Message-State: AOAM533/Q47hNw5lpRsgmi77W5/bG4xXXEVyIrsEsvy8t97oG5JDbMwf
+        c51yDyl8kWZ3ZIHaZuzTn0E=
+X-Google-Smtp-Source: ABdhPJzpOl5GUcKUw9u3zbEX0ghWK308O6Yu2PMXk99BNW5s0Jl5zlbAaKlAxHFBD9BnoJkewmZk1w==
+X-Received: by 2002:a17:90a:450e:: with SMTP id u14mr31629260pjg.194.1620699835919;
+        Mon, 10 May 2021 19:23:55 -0700 (PDT)
+Received: from hyeyoo ([183.99.11.150])
+        by smtp.gmail.com with ESMTPSA id q24sm9502273pgk.32.2021.05.10.19.23.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 19:23:55 -0700 (PDT)
+Date:   Tue, 11 May 2021 11:23:50 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kernel/locking: make __down_common use flags previously
+ saved
+Message-ID: <20210511022350.GA97228@hyeyoo>
+References: <20210424142823.3896-1-42.hyeyoo@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210331232356.2204476-3-adrien.grassein@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210424142823.3896-1-42.hyeyoo@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 01:23:54AM +0200, Adrien Grassein wrote:
-> Add the description for the USB host port.
-> This port is linked to a resettable USB HUB so handle
-> this reset signal with a GPIO hog.
-> 
-> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> ---
->  .../boot/dts/freescale/imx8mq-nitrogen.dts    | 30 +++++++++++++++++++
->  1 file changed, 30 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts b/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
-> index b46f45a82be1..04992cbba56e 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dts
-> @@ -102,6 +102,14 @@ ethphy0: ethernet-phy@4 {
->  	};
->  };
->  
-> +&gpio1 {
-> +	usb-host-reset-hog {
-> +		gpio-hog;
-> +		gpios = <14 GPIO_ACTIVE_HIGH>;
-> +		output-high;
-> +	};
-> +};
-> +
->  &i2c1 {
->  	clock-frequency = <400000>;
->  	pinctrl-names = "default";
-> @@ -213,6 +221,22 @@ &usb3_phy0 {
->  	status = "okay";
->  };
->  
-> +&usb_dwc3_1 {
-> +	dr_mode = "host";
-> +	status = "okay";
-> +};
-> +
-> +/*
-> + * On this board, USB host is connected to a resettable hub.
-> + * The reset signal is connected to the GPIO <&gpio1 14 GPIO_ACTIVE_LOW>.
-> + * You need to activate it in the bootloader or in the userspace.
-> + */
-> +&usb3_phy1 {
-> +	status = "okay";
+Hello, is there someone?
 
-We usually end property list with 'status'.
-
-Shawn
-
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usb3_1>;
-> +};
-> +
->  &usdhc1 {
->  	assigned-clocks = <&clk IMX8MQ_CLK_USDHC1>;
->  	assigned-clock-rates = <400000000>;
-> @@ -388,6 +412,12 @@ MX8MQ_IOMUXC_GPIO1_IO13_USB1_OTG_OC		0x16
->  		>;
->  	};
->  
-> +	pinctrl_usb3_1: usb3-1grp {
-> +		fsl,pins = <
-> +			MX8MQ_IOMUXC_GPIO1_IO14_GPIO1_IO14		0x16
-> +		>;
-> +	};
-> +
->  	pinctrl_usdhc1: usdhc1grp {
->  		fsl,pins = <
->  			MX8MQ_IOMUXC_SD1_CLK_USDHC1_CLK			0x83
-> -- 
-> 2.25.1
-> 
+can you tell me if my approach was wrong, or Can I improve anything?
+it was weird to me that __down_common disable / restores regardless of flag
+that was previously saved
