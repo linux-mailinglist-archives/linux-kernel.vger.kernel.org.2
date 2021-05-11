@@ -2,124 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C35379D36
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 04:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261CD379D3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 04:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhEKC7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 22:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhEKC7c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 22:59:32 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6840BC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 19:58:27 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id l10-20020a17090a850ab0290155b06f6267so456381pjn.5
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 19:58:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JxJR04Xv/YnMAFrcHyESkEXBblvroZPD5TgFitfVkoo=;
-        b=RbexxldZUVymd2P/sIJDv9SMCoq8cD1CsFLOcLwfXYxm4mtn7+1MJlPRjvy9LM1mBe
-         ZqxuadNDV8Tg01bppw8VAYW8pmg4peKpLWe727NAwtxDpN7+5gfUp7wIHmlhe3wJ0py9
-         FL0kQOiaKnzDcmer8y7tk4eExkKRwXIvKZhh8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JxJR04Xv/YnMAFrcHyESkEXBblvroZPD5TgFitfVkoo=;
-        b=bgg49H87S2ZEx93eYYrGvJpkhH7W6cyzn6eccj7SrvIRQDwYp6nzjCct5EfGyaj7Uv
-         kouzuaUVrvDp8H63h7SQ1MIigYXh3aINjeQ2zuP6QKc5Z+twbcdfKKd0j9mhm482RgjM
-         n5YFqEWrkXUFhZjB/93horbPpZ3sRF0HnjSoM+7Zvl4p0qxXxyIk2EhFgpldgaa1HbGx
-         VZ/kjhPGxDZ0k5/Pyo27CdhDtn9Tkkp3Bhlnlf5gB0JPHHlgZ9o8BpcXfCW+0ykY83gz
-         ub8jXUZ3X0SQe10VI6V0vb98pRycNScATBj9h2DykGmQeVLFp++z3K9ft6Y9ytxlfHOR
-         ze+A==
-X-Gm-Message-State: AOAM530Dr8hFTyJdiiYK5qfBQ0Hf87mOP9Bbd6G2HLK+6YOZUgMnC+eG
-        jOzhsXmPuRTJ2FuFhXjZz5njmw==
-X-Google-Smtp-Source: ABdhPJxGpaEYEQ8LdJwF/HG9Ge5TJm/JyLjBconC0tYKDE8GaFJBFM5l9yLUI84vgByVcsUsovFSIQ==
-X-Received: by 2002:a17:90a:df0b:: with SMTP id gp11mr13701357pjb.4.1620701906855;
-        Mon, 10 May 2021 19:58:26 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e6sm12099160pfd.219.2021.05.10.19.58.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 19:58:26 -0700 (PDT)
-Date:   Mon, 10 May 2021 19:58:25 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Maxime Coquelin <maxime.coquelin@redhat.com>
-Cc:     alex.williamson@redhat.com, jmorris@namei.org, dhowells@redhat.com,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, kvm@vger.kernel.org,
-        mjg59@srcf.ucam.org, cohuck@redhat.com
-Subject: Re: [PATCH] vfio: Lock down no-IOMMU mode when kernel is locked down
-Message-ID: <202105101955.933F66A@keescook>
-References: <20210506091859.6961-1-maxime.coquelin@redhat.com>
+        id S230096AbhEKDA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 23:00:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47692 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229586AbhEKDA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 23:00:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4402161409;
+        Tue, 11 May 2021 02:59:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620701962;
+        bh=D98gr128iCknJvrYh3HPBX/ArmUrzeHsUO9oS/+HIxA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LFnOdH/XTxr483Gjd5sa6LOfticp+DoM1ZEN/nEUjEmtIw7KE7jDXp+vI3fhNRVs7
+         1RuAK0dozfloep7HNIwDx2c9BP8yGzdy/JG1SIWxUPxKjYAiVmiAzt/RLdYShKnhkh
+         1hQj9a6Rhd18xxThdRAZwgs0RHmWZIEiS3DWenOtu2k2g6euRwlSxQ7seBxbRp7L38
+         a8RFOrOgP6rYWT5EYp54SXQyNzqevFv4JCXghAV9GGC7IwwZu6b8p9N9aTcfrc72WG
+         wEd5P9IswBv7VcD3gwAJ2ycYJX2d9aZbBmhxfcLKX1nUTNIFMlK5i+RS+IhEZn+8ka
+         u38HC8B7lHhKw==
+Date:   Tue, 11 May 2021 10:59:11 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Clark Wang <xiaoning.wang@nxp.com>
+Cc:     aisheng.dong@nxp.com, robh+dt@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 05/18] ARM64: dts: imx8: add the missing lpi2c ipg
+ clock
+Message-ID: <20210511025911.GF3425@dragon>
+References: <20210406113306.2633595-1-xiaoning.wang@nxp.com>
+ <20210406113306.2633595-6-xiaoning.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210506091859.6961-1-maxime.coquelin@redhat.com>
+In-Reply-To: <20210406113306.2633595-6-xiaoning.wang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 11:18:59AM +0200, Maxime Coquelin wrote:
-> When no-IOMMU mode is enabled, VFIO is as unsafe as accessing
-> the PCI BARs via the device's sysfs, which is locked down when
-> the kernel is locked down.
+On Tue, Apr 06, 2021 at 07:32:53PM +0800, Clark Wang wrote:
+> The lpi2c driver has add the missing ipg clock.
+> So add the ipg clock here for all lpi2c nodes.
 > 
-> Indeed, it is possible for an attacker to craft DMA requests
-> to modify kernel's code or leak secrets stored in the kernel,
-> since the device is not isolated by an IOMMU.
-> 
-> This patch introduces a new integrity lockdown reason for the
-> unsafe VFIO no-iommu mode.
-> 
-> Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
+> Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
+
+Historically, we use 'arm64: dts: ...' as subject prefix for arm64 DTS
+patch, and 'ARM: dts: ...' for arm.
+
+Shawn
+
 > ---
->  drivers/vfio/vfio.c      | 13 +++++++++----
->  include/linux/security.h |  1 +
->  security/security.c      |  1 +
->  3 files changed, 11 insertions(+), 4 deletions(-)
+> V2 changes:
+>  - New patch added in V2
+> ---
+>  .../arm64/boot/dts/freescale/imx8-ss-dma.dtsi | 24 ++++++++++++-------
+>  1 file changed, 16 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
-> index 5e631c359ef2..fe466d6ea5d8 100644
-> --- a/drivers/vfio/vfio.c
-> +++ b/drivers/vfio/vfio.c
-> @@ -25,6 +25,7 @@
->  #include <linux/pci.h>
->  #include <linux/rwsem.h>
->  #include <linux/sched.h>
-> +#include <linux/security.h>
->  #include <linux/slab.h>
->  #include <linux/stat.h>
->  #include <linux/string.h>
-> @@ -165,7 +166,8 @@ static void *vfio_noiommu_open(unsigned long arg)
->  {
->  	if (arg != VFIO_NOIOMMU_IOMMU)
->  		return ERR_PTR(-EINVAL);
-> -	if (!capable(CAP_SYS_RAWIO))
-> +	if (!capable(CAP_SYS_RAWIO) ||
-> +			security_locked_down(LOCKDOWN_VFIO_NOIOMMU))
-
-The LSM hook check should come before the capable() check to avoid
-setting PF_SUPERPRIV if capable() passes and the LSM doesn't.
-
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index 06f7c50ce77f..f29388180fab 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -120,6 +120,7 @@ enum lockdown_reason {
->  	LOCKDOWN_MMIOTRACE,
->  	LOCKDOWN_DEBUGFS,
->  	LOCKDOWN_XMON_WR,
-> +	LOCKDOWN_VFIO_NOIOMMU,
->  	LOCKDOWN_INTEGRITY_MAX,
->  	LOCKDOWN_KCORE,
->  	LOCKDOWN_KPROBES,
-
-Is the security threat specific to VFIO? (i.e. could other interfaces
-want a similar thing, such that naming this VFIO doesn't make sense?
-
--- 
-Kees Cook
+> diff --git a/arch/arm64/boot/dts/freescale/imx8-ss-dma.dtsi b/arch/arm64/boot/dts/freescale/imx8-ss-dma.dtsi
+> index 960a802b8b6e..b5ed12a06538 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8-ss-dma.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8-ss-dma.dtsi
+> @@ -111,8 +111,10 @@ uart3_lpcg: clock-controller@5a490000 {
+>  	i2c0: i2c@5a800000 {
+>  		reg = <0x5a800000 0x4000>;
+>  		interrupts = <GIC_SPI 220 IRQ_TYPE_LEVEL_HIGH>;
+> -		clocks = <&i2c0_lpcg IMX_LPCG_CLK_0>;
+> -		clock-names = "per";
+> +		interrupt-parent = <&gic>;
+> +		clocks = <&i2c0_lpcg IMX_LPCG_CLK_0>,
+> +			 <&i2c0_lpcg IMX_LPCG_CLK_4>;
+> +		clock-names = "per", "ipg";
+>  		assigned-clocks = <&clk IMX_SC_R_I2C_0 IMX_SC_PM_CLK_PER>;
+>  		assigned-clock-rates = <24000000>;
+>  		power-domains = <&pd IMX_SC_R_I2C_0>;
+> @@ -122,8 +124,10 @@ i2c0: i2c@5a800000 {
+>  	i2c1: i2c@5a810000 {
+>  		reg = <0x5a810000 0x4000>;
+>  		interrupts = <GIC_SPI 221 IRQ_TYPE_LEVEL_HIGH>;
+> -		clocks = <&i2c1_lpcg IMX_LPCG_CLK_0>;
+> -		clock-names = "per";
+> +		interrupt-parent = <&gic>;
+> +		clocks = <&i2c1_lpcg IMX_LPCG_CLK_0>,
+> +			 <&i2c1_lpcg IMX_LPCG_CLK_4>;
+> +		clock-names = "per", "ipg";
+>  		assigned-clocks = <&clk IMX_SC_R_I2C_1 IMX_SC_PM_CLK_PER>;
+>  		assigned-clock-rates = <24000000>;
+>  		power-domains = <&pd IMX_SC_R_I2C_1>;
+> @@ -133,8 +137,10 @@ i2c1: i2c@5a810000 {
+>  	i2c2: i2c@5a820000 {
+>  		reg = <0x5a820000 0x4000>;
+>  		interrupts = <GIC_SPI 222 IRQ_TYPE_LEVEL_HIGH>;
+> -		clocks = <&i2c2_lpcg IMX_LPCG_CLK_0>;
+> -		clock-names = "per";
+> +		interrupt-parent = <&gic>;
+> +		clocks = <&i2c2_lpcg IMX_LPCG_CLK_0>,
+> +			 <&i2c2_lpcg IMX_LPCG_CLK_4>;
+> +		clock-names = "per", "ipg";
+>  		assigned-clocks = <&clk IMX_SC_R_I2C_2 IMX_SC_PM_CLK_PER>;
+>  		assigned-clock-rates = <24000000>;
+>  		power-domains = <&pd IMX_SC_R_I2C_2>;
+> @@ -144,8 +150,10 @@ i2c2: i2c@5a820000 {
+>  	i2c3: i2c@5a830000 {
+>  		reg = <0x5a830000 0x4000>;
+>  		interrupts = <GIC_SPI 223 IRQ_TYPE_LEVEL_HIGH>;
+> -		clocks = <&i2c3_lpcg IMX_LPCG_CLK_0>;
+> -		clock-names = "per";
+> +		interrupt-parent = <&gic>;
+> +		clocks = <&i2c3_lpcg IMX_LPCG_CLK_0>,
+> +			 <&i2c3_lpcg IMX_LPCG_CLK_4>;
+> +		clock-names = "per", "ipg";
+>  		assigned-clocks = <&clk IMX_SC_R_I2C_3 IMX_SC_PM_CLK_PER>;
+>  		assigned-clock-rates = <24000000>;
+>  		power-domains = <&pd IMX_SC_R_I2C_3>;
+> -- 
+> 2.25.1
+> 
