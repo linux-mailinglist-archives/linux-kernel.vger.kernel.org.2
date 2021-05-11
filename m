@@ -2,158 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B2137B0CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDE737B0D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhEKVb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 17:31:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229784AbhEKVbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 17:31:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E3B061919;
-        Tue, 11 May 2021 21:30:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620768649;
-        bh=ZqExC12JpkhpWz/CkibWvB0TO3ks/bAKORvyV1kk7HA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Pnd5g0Eo7h+9XqH3dSvC9FF40a74EIu55uNt/vkGYHiV8sT/hGqOwL3dpt3uZl+xM
-         nUOEwYUtR5BkuuEBSDosOrKrjA5iju9qfS9S7Dq6gYUwIf3uswbOnLjHzUH39fWgc2
-         xwQpOtoJ0uepO3kwsOF+v80jAfh5HPgupXGaULmGztv3Fv2oXfFX9xdl3dGWaSk5vB
-         6inU1PEivqnunT2e88QnXE5/x/qdziTLsBisTyJqCWnlZvh7MJwCUdO6WCNOqMDWJE
-         vqMJhhcVfmGF1U5MYJr/32/AmCQ9k+pAe+CZmEWzZC1ddKD09rM8Pmk+mz05NPNj4S
-         Mtz5Vb4wtnlfA==
-Date:   Tue, 11 May 2021 16:30:47 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-usb@vger.kernel.org, Rajat Jain <rajatxjain@gmail.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Dmitry Torokhov <dtor@google.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        David Laight <David.Laight@ACULAB.COM>
-Subject: Re: [PATCH v2 2/2] pci: Support "removable" attribute for PCI devices
-Message-ID: <20210511213047.GA2417208@bjorn-Precision-5520>
+        id S229932AbhEKVda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 17:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhEKVd2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 17:33:28 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25380C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 14:32:21 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id g24so12397673pji.4
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 14:32:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=oPUPwzBZh9t0vu/KaAlmyWD0blG9DprxJ8AItVStOX0=;
+        b=u/O7hLkKI8FSZqZIZLw54oDZaPrODM7HDojqemH3hNRSHPR407bRmHJAR49t458ZZ9
+         31JH8wc/21oLfwbRHqhukJ8dmsQhyKNtLcmZIStIEtlRRGGXVTZFzBIliBTWDMPKMaK9
+         eBtxI9ctBp0b1hbzSDh0PKfZVQ4auAP2UqOxAVLsfzd55M+Kdt085Ulm3OmpA42yMaw3
+         qRVJDCryKn8bvKrWdgNe6GjdgMISzyyEWhGXuK81Ij6xVZEeDkNr6FnLyp751bFXkmYB
+         ypVP7JD/MCrUsdDuLON8zJyRr8piNbNKg3LHgY4lJV/sKPlQuVCO5Yl803f5FWX8jhFY
+         40YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oPUPwzBZh9t0vu/KaAlmyWD0blG9DprxJ8AItVStOX0=;
+        b=c0R9RJO/IPQT2KP5k+IWHcsEIl7EsMK6kOA8ZFMwNvCts9lClDWwv427X8PkJ/7lrL
+         We3UcNukLg609rcwLELt2SamiBGLBjG6MnExhSm/HUJS9L316ZxC5OJTF/zEp/2eeluu
+         XAQqaM8yLxiM5Op9hqM4yajrqr85vKm0Qnd0wZYtW4vtuXM4D/SRNag/J/5L0IZcWQA0
+         nq48g49evgQBeM8jhdnHVrEM7JpniofhlmXE61UiP4sMcVYNo1dkf2kbmIi6YtGl1DGB
+         NRHe3fKW8TPuYdc34y1SIbtFGgztd74rcqy0cvv7fMYBcL8mzYNAkigO6FB7d22DXYy2
+         DKqg==
+X-Gm-Message-State: AOAM533Q9PFlYd3R1345ifVMfs7J+4O/Jcu4VGsm0C/Z3+7P/NC2XbNp
+        gMdlfuVt0o2AsBcYQy9Xvdc=
+X-Google-Smtp-Source: ABdhPJyAi710RgSjMQ5qa8NLHIwaS4g6CWIMwDcmoX2NFZp0KU/sAeM5cu9ixZxPX3IkrxhsTno4Nw==
+X-Received: by 2002:a17:90a:590d:: with SMTP id k13mr37992539pji.68.1620768740534;
+        Tue, 11 May 2021 14:32:20 -0700 (PDT)
+Received: from tong-desktop.local ([2601:647:4200:13:c47f:5a44:d296:3f16])
+        by smtp.googlemail.com with ESMTPSA id f12sm13709116pfv.155.2021.05.11.14.32.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 14:32:20 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tong Zhang <ztong0001@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] misc: alcor_pci: fix null-ptr-deref when there is no PCI bridge
+Date:   Tue, 11 May 2021 17:29:38 -0400
+Message-Id: <20210511212937.1269191-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <YJrFib6BD8JcX3DM@kroah.com>
+References: <YJrFib6BD8JcX3DM@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210424021631.1972022-2-rajatja@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Oliver, David]
+Device might be attached to root complex directly. In this case,
+bus->self(bridge) will be NULL, so we'd better check before use it
 
-Please update the subject line, e.g.,
+[    1.246492] BUG: kernel NULL pointer dereference, address: 00000000000000c0
+[    1.248731] RIP: 0010:pci_read_config_byte+0x5/0x40
+[    1.253998] Call Trace:
+[    1.254131]  ? alcor_pci_find_cap_offset.isra.0+0x3a/0x100 [alcor_pci]
+[    1.254476]  alcor_pci_probe+0x169/0x2d5 [alcor_pci]
 
-  PCI: Add sysfs "removable" attribute
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Co-Developed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+v2: check before calling alcor_pci_find_cap_offset()
 
-On Fri, Apr 23, 2021 at 07:16:31PM -0700, Rajat Jain wrote:
-> Export the already available info, to the userspace via the
-> device core, so that userspace can implement whatever policies it
-> wants to, for external removable devices.
+ drivers/misc/cardreader/alcor_pci.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I know it's not strictly part of *this* patch, but I think we should
-connect the dots a little here, something like this:
+diff --git a/drivers/misc/cardreader/alcor_pci.c b/drivers/misc/cardreader/alcor_pci.c
+index cd402c89189e..175c6b06f7aa 100644
+--- a/drivers/misc/cardreader/alcor_pci.c
++++ b/drivers/misc/cardreader/alcor_pci.c
+@@ -139,6 +139,9 @@ static void alcor_pci_init_check_aspm(struct alcor_pci_priv *priv)
+ 	u32 val32;
+ 
+ 	priv->pdev_cap_off    = alcor_pci_find_cap_offset(priv, priv->pdev);
++
++	if (!priv->parent_pdev)
++		return;
+ 	priv->parent_cap_off = alcor_pci_find_cap_offset(priv,
+ 							 priv->parent_pdev);
+ 
+-- 
+2.25.1
 
-  PCI: Add sysfs "removable" attribute
-
-  A PCI device is "external_facing" if it's a Root Port with the ACPI
-  "ExternalFacingPort" property or if it has the DT "external-facing"
-  property.  We consider everything downstream from such a device to
-  be removable.
-
-  Set pci_dev_type.supports_removable so the device core exposes the
-  "removable" file in sysfs, and tell the device core about removable
-  devices.
-
-Wrap to fill 75 columns.
-
-> Signed-off-by: Rajat Jain <rajatja@google.com>
-
-This looks like a good start.  I think it would be useful to have a
-more concrete example of how this information will be used.  I know
-that use would be in userspace, so an example probably would not be a
-kernel patch.  If you have user code published anywhere, that would
-help.  Or even a patch to an existing daemon.  Or pointers to how
-"removable" is used for USB devices.
-
-> ---
-> v2: Add documentation
-> 
->  Documentation/ABI/testing/sysfs-devices-removable |  3 ++-
->  drivers/pci/pci-sysfs.c                           |  1 +
->  drivers/pci/probe.c                               | 12 ++++++++++++
->  3 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-devices-removable b/Documentation/ABI/testing/sysfs-devices-removable
-> index e13dddd547b5..daac4f007619 100644
-> --- a/Documentation/ABI/testing/sysfs-devices-removable
-> +++ b/Documentation/ABI/testing/sysfs-devices-removable
-> @@ -14,4 +14,5 @@ Description:
->  
->  		Currently this is only supported by USB (which infers the
->  		information from a combination of hub descriptor bits and
-> -		platform-specific data such as ACPI).
-> +		platform-specific data such as ACPI) and PCI (which gets this
-> +		from ACPI / device tree).
-> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> index f8afd54ca3e1..9302f0076e73 100644
-> --- a/drivers/pci/pci-sysfs.c
-> +++ b/drivers/pci/pci-sysfs.c
-> @@ -1582,4 +1582,5 @@ static const struct attribute_group *pci_dev_attr_groups[] = {
->  
->  const struct device_type pci_dev_type = {
->  	.groups = pci_dev_attr_groups,
-> +	.supports_removable = true,
->  };
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 953f15abc850..d1cceee62e1b 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -1575,6 +1575,16 @@ static void set_pcie_untrusted(struct pci_dev *dev)
->  		dev->untrusted = true;
->  }
->  
-> +static void set_pci_dev_removable(struct pci_dev *dev)
-
-Maybe just "pci_set_removable()"?  These "set_pci*" functions look a
-little weird.
-
-> +{
-> +	struct pci_dev *parent = pci_upstream_bridge(dev);
-> +	if (parent &&
-> +	    (parent->external_facing || dev_is_removable(&parent->dev)))
-> +		dev_set_removable(&dev->dev, DEVICE_REMOVABLE);
-> +	else
-> +		dev_set_removable(&dev->dev, DEVICE_FIXED);
-> +}
-> +
->  /**
->   * pci_ext_cfg_is_aliased - Is ext config space just an alias of std config?
->   * @dev: PCI device
-> @@ -1819,6 +1829,8 @@ int pci_setup_device(struct pci_dev *dev)
->  	/* "Unknown power state" */
->  	dev->current_state = PCI_UNKNOWN;
->  
-> +	set_pci_dev_removable(dev);
-
-So this *only* sets the "removable" attribute based on the
-ExternalFacingPort or external-facing properties.  I think Oliver and
-David were hinting that maybe we should also set it for devices in
-hotpluggable slots.  What do you think?
-
-I wonder if this (and similar hooks like set_pcie_port_type(),
-set_pcie_untrusted(), set_pcie_thunderbolt(), etc) should go *after*
-the early fixups so we could use fixups to work around issues?
-
->  	/* Early fixups, before probing the BARs */
->  	pci_fixup_device(pci_fixup_early, dev);
->  
-> -- 
-> 2.31.1.498.g6c1eba8ee3d-goog
-> 
