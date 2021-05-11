@@ -2,523 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47FF37A193
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C19A37A198
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbhEKIRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 04:17:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37474 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230473AbhEKIRs (ORCPT
+        id S230386AbhEKITi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 04:19:38 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:57427 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230157AbhEKITh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 04:17:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620721002;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dLd2jFmyAv8PWEgrP1PmR2Fwcs+q67L/hXPeC7/MiWQ=;
-        b=ZJI5BYhNx0YzqHxw7U/fVLL7eIXS6TjJCJ6gZUEG3Da+II+A8d7VhlWBdGy8Pri9DsyIxS
-        A5HKU6NuOhGn2A9kjUqCntIwhHejp1Ha/sKnXsu0AQlGUCGumxwaFE54L2fSlZXRjvMvoD
-        T6EnSz6KEk96LF3X44AmYgX15L+XQko=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-409-02aNQ_t-PXah-S4ydI7oXg-1; Tue, 11 May 2021 04:16:38 -0400
-X-MC-Unique: 02aNQ_t-PXah-S4ydI7oXg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A915D1008064;
-        Tue, 11 May 2021 08:16:34 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-115-91.ams2.redhat.com [10.36.115.91])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 349F95D6D1;
-        Tue, 11 May 2021 08:16:14 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Xu <peterx@redhat.com>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        Shuah Khan <shuah@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>
-Subject: [PATCH resend v2 5/5] selftests/vm: add test for MADV_POPULATE_(READ|WRITE)
-Date:   Tue, 11 May 2021 10:15:34 +0200
-Message-Id: <20210511081534.3507-6-david@redhat.com>
-In-Reply-To: <20210511081534.3507-1-david@redhat.com>
-References: <20210511081534.3507-1-david@redhat.com>
+        Tue, 11 May 2021 04:19:37 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 40025580E43;
+        Tue, 11 May 2021 04:18:28 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 11 May 2021 04:18:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=W3psH/2qgATwtINm37wUxNWcRwQ
+        rHkL1ZPkquwyesfk=; b=n7N2rQXFXg1fjlMT0vhGhUG/nS1KRz1suiGnqUh7UBB
+        jrN8jx39VE3aoo9xssTLcayDcvTxja1ZrIWKjUWci8gaZp489iYLbVQ3qKH7WDNt
+        hR/WB1KETo2D4SxbkhSZ9IQ9Vw5SLiUWqyjBRVvye4m9owZ+wG1ZH0aqep492quq
+        jTm5WMsYMvdlhI2XUlDgUsxqAS60y7q6LL18Gh9G3bonVV3JUMAyRmdvKdxeOxKf
+        GrNiOqc7ELFd6staIPI8rdmLDATLxo4K33DfzZHt70WYAIlafKvW5oKZibY/3YiU
+        5WP2SrZeCj7u/SllC+MOnvfNd8RsitRtMmLYvs7sR1Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=W3psH/
+        2qgATwtINm37wUxNWcRwQrHkL1ZPkquwyesfk=; b=Gw24brRJ/8OYpN+talOvn2
+        GYkZJjFL+Zdhe1/+Xej9W5BFVFVsPRQNpGtcuB1kKr1XPvrc8TruuFKnDxTBsqwx
+        RFvOTHKMKsZBCDQcT89cD+AzEz8GZwo0aDlERcDOUiHDf3Y9PHc1mSTqpIyo01Hi
+        x872EUdNXkyEGojaXh0kSPbso9RiyKIwAfTcJDhw1dLns17W1XukzoaOqCImWKuV
+        iMwm4aK93WgTus9UaIAYMLZ4uzfbGpa5vI6RzePDck4VKuNVIuqBCxJU3LZnbjUu
+        +5jQGilyxfxDjab5GPMFfN1rcz76yvj31sBZe8yO4z15GP/4dd8QtI7lnwT+90vQ
+        ==
+X-ME-Sender: <xms:0j2aYJG0Qb30edIe3sYX8-AN26rA-rn_Fj_4OUWh56l9n57dVYCVnQ>
+    <xme:0j2aYOVD1hiqp1hygbJGI6zyJzppIE6U2xOoh7c6g-U1HeqOVVtmzefUH4iciiu6w
+    jpdFDOtrFzdbpSrgLY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehtddgtddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:0j2aYLL-tjgckFbHWAybgrug0nA1oVwWXEJdSeci_-RJxCvEFRE6Uw>
+    <xmx:0j2aYPHJufuaH8Ck-i6-nMQ94iQypBu8UeMkAP2iq9cVysz8luPAPQ>
+    <xmx:0j2aYPVF-X3cOl2Y9Jrb4yMLb-m9QQXbZwGRoxmEDskoY0fZmalhHg>
+    <xmx:1D2aYLr3yjQRA0Ff7s2_Q4n2QuxCkbHAGvk4q5goZ7KrXjPpgBtF7A>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Tue, 11 May 2021 04:18:26 -0400 (EDT)
+Date:   Tue, 11 May 2021 10:18:23 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Chukun Pan <amadeus@jmu.edu.cn>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-sunxi@lists.linux.dev,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, regressions@lists.linux.dev
+Subject: Re: [PATCH 1/2] arm64: dts: allwinner: h5: Add NanoPi R1S H5 support
+Message-ID: <20210511081823.mmcrliomwtetcirx@gilmour>
+References: <20210503142905.21468-1-amadeus@jmu.edu.cn>
+ <CA+G9fYsRZswjeDZj1hiGDu5HZ+jYCVsOOL6MAzEb=LVfQ1_NpA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6z5yg7iwrnly6v2y"
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYsRZswjeDZj1hiGDu5HZ+jYCVsOOL6MAzEb=LVfQ1_NpA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's add a simple test for MADV_POPULATE_READ and MADV_POPULATE_WRITE,
-verifying some error handling, that population works, and that softdirty
-tracking works as expected. For now, limit the test to private anonymous
-memory.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Jann Horn <jannh@google.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: Michael S. Tsirkin <mst@redhat.com>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: linux-arch@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Cc: Linux API <linux-api@vger.kernel.org>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- tools/testing/selftests/vm/.gitignore      |   1 +
- tools/testing/selftests/vm/Makefile        |   1 +
- tools/testing/selftests/vm/madv_populate.c | 342 +++++++++++++++++++++
- tools/testing/selftests/vm/run_vmtests.sh  |  16 +
- 4 files changed, 360 insertions(+)
- create mode 100644 tools/testing/selftests/vm/madv_populate.c
+--6z5yg7iwrnly6v2y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/tools/testing/selftests/vm/.gitignore b/tools/testing/selftests/vm/.gitignore
-index b4fc0148360e..c9a5dd1adf7d 100644
---- a/tools/testing/selftests/vm/.gitignore
-+++ b/tools/testing/selftests/vm/.gitignore
-@@ -24,3 +24,4 @@ hmm-tests
- local_config.*
- protection_keys_32
- protection_keys_64
-+madv_populate
-diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
-index 8b0cd421ebd3..04b6650c1924 100644
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -42,6 +42,7 @@ TEST_GEN_FILES += on-fault-limit
- TEST_GEN_FILES += thuge-gen
- TEST_GEN_FILES += transhuge-stress
- TEST_GEN_FILES += userfaultfd
-+TEST_GEN_FILES += madv_populate
- 
- ifeq ($(MACHINE),x86_64)
- CAN_BUILD_I386 := $(shell ./../x86/check_cc.sh $(CC) ../x86/trivial_32bit_program.c -m32)
-diff --git a/tools/testing/selftests/vm/madv_populate.c b/tools/testing/selftests/vm/madv_populate.c
-new file mode 100644
-index 000000000000..b959e4ebdad4
---- /dev/null
-+++ b/tools/testing/selftests/vm/madv_populate.c
-@@ -0,0 +1,342 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * MADV_POPULATE_READ and MADV_POPULATE_WRITE tests
-+ *
-+ * Copyright 2021, Red Hat, Inc.
-+ *
-+ * Author(s): David Hildenbrand <david@redhat.com>
-+ */
-+#define _GNU_SOURCE
-+#include <stdlib.h>
-+#include <string.h>
-+#include <stdbool.h>
-+#include <stdint.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <sys/mman.h>
-+
-+#include "../kselftest.h"
-+
-+#if defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE)
-+
-+/*
-+ * For now, we're using 2 MiB of private anonymous memory for all tests.
-+ */
-+#define SIZE (2 * 1024 * 1024)
-+
-+static size_t pagesize;
-+
-+static uint64_t pagemap_get_entry(int fd, char *start)
-+{
-+	const unsigned long pfn = (unsigned long)start / pagesize;
-+	uint64_t entry;
-+	int ret;
-+
-+	ret = pread(fd, &entry, sizeof(entry), pfn * sizeof(entry));
-+	if (ret != sizeof(entry))
-+		ksft_exit_fail_msg("reading pagemap failed\n");
-+	return entry;
-+}
-+
-+static bool pagemap_is_populated(int fd, char *start)
-+{
-+	uint64_t entry = pagemap_get_entry(fd, start);
-+
-+	/* Present or swapped. */
-+	return entry & 0xc000000000000000ull;
-+}
-+
-+static bool pagemap_is_softdirty(int fd, char *start)
-+{
-+	uint64_t entry = pagemap_get_entry(fd, start);
-+
-+	return entry & 0x0080000000000000ull;
-+}
-+
-+static void sense_support(void)
-+{
-+	char *addr;
-+	int ret;
-+
-+	addr = mmap(0, pagesize, PROT_READ | PROT_WRITE,
-+		    MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-+	if (!addr)
-+		ksft_exit_fail_msg("mmap failed\n");
-+
-+	ret = madvise(addr, pagesize, MADV_POPULATE_READ);
-+	if (ret)
-+		ksft_exit_skip("MADV_POPULATE_READ is not available\n");
-+
-+	ret = madvise(addr, pagesize, MADV_POPULATE_WRITE);
-+	if (ret)
-+		ksft_exit_skip("MADV_POPULATE_WRITE is not available\n");
-+
-+	munmap(addr, pagesize);
-+}
-+
-+static void test_prot_read(void)
-+{
-+	char *addr;
-+	int ret;
-+
-+	ksft_print_msg("[RUN] %s\n", __func__);
-+
-+	addr = mmap(0, SIZE, PROT_READ, MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-+	if (addr == MAP_FAILED)
-+		ksft_exit_fail_msg("mmap failed\n");
-+
-+	ret = madvise(addr, SIZE, MADV_POPULATE_READ);
-+	ksft_test_result(!ret, "MADV_POPULATE_READ with PROT_READ\n");
-+
-+	ret = madvise(addr, SIZE, MADV_POPULATE_WRITE);
-+	ksft_test_result(ret == -1 && errno == EINVAL,
-+			 "MADV_POPULATE_WRITE with PROT_READ\n");
-+
-+	munmap(addr, SIZE);
-+}
-+
-+static void test_prot_write(void)
-+{
-+	char *addr;
-+	int ret;
-+
-+	ksft_print_msg("[RUN] %s\n", __func__);
-+
-+	addr = mmap(0, SIZE, PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-+	if (addr == MAP_FAILED)
-+		ksft_exit_fail_msg("mmap failed\n");
-+
-+	ret = madvise(addr, SIZE, MADV_POPULATE_READ);
-+	ksft_test_result(ret == -1 && errno == EINVAL,
-+			 "MADV_POPULATE_READ with PROT_WRITE\n");
-+
-+	ret = madvise(addr, SIZE, MADV_POPULATE_WRITE);
-+	ksft_test_result(!ret, "MADV_POPULATE_WRITE with PROT_WRITE\n");
-+
-+	munmap(addr, SIZE);
-+}
-+
-+static void test_holes(void)
-+{
-+	char *addr;
-+	int ret;
-+
-+	ksft_print_msg("[RUN] %s\n", __func__);
-+
-+	addr = mmap(0, SIZE, PROT_READ | PROT_WRITE,
-+		    MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-+	if (addr == MAP_FAILED)
-+		ksft_exit_fail_msg("mmap failed\n");
-+	ret = munmap(addr + pagesize, pagesize);
-+	if (ret)
-+		ksft_exit_fail_msg("munmap failed\n");
-+
-+	/* Hole in the middle */
-+	ret = madvise(addr, SIZE, MADV_POPULATE_READ);
-+	ksft_test_result(ret == -1 && errno == ENOMEM,
-+			 "MADV_POPULATE_READ with holes in the middle\n");
-+	ret = madvise(addr, SIZE, MADV_POPULATE_WRITE);
-+	ksft_test_result(ret == -1 && errno == ENOMEM,
-+			 "MADV_POPULATE_WRITE with holes in the middle\n");
-+
-+	/* Hole at end */
-+	ret = madvise(addr, 2 * pagesize, MADV_POPULATE_READ);
-+	ksft_test_result(ret == -1 && errno == ENOMEM,
-+			 "MADV_POPULATE_READ with holes at the end\n");
-+	ret = madvise(addr, 2 * pagesize, MADV_POPULATE_WRITE);
-+	ksft_test_result(ret == -1 && errno == ENOMEM,
-+			 "MADV_POPULATE_WRITE with holes at the end\n");
-+
-+	/* Hole at beginning */
-+	ret = madvise(addr + pagesize, pagesize, MADV_POPULATE_READ);
-+	ksft_test_result(ret == -1 && errno == ENOMEM,
-+			 "MADV_POPULATE_READ with holes at the beginning\n");
-+	ret = madvise(addr + pagesize, pagesize, MADV_POPULATE_WRITE);
-+	ksft_test_result(ret == -1 && errno == ENOMEM,
-+			 "MADV_POPULATE_WRITE with holes at the beginning\n");
-+
-+	munmap(addr, SIZE);
-+}
-+
-+static bool range_is_populated(char *start, ssize_t size)
-+{
-+	int fd = open("/proc/self/pagemap", O_RDONLY);
-+	bool ret = true;
-+
-+	if (fd < 0)
-+		ksft_exit_fail_msg("opening pagemap failed\n");
-+	for (; size > 0 && ret; size -= pagesize, start += pagesize)
-+		if (!pagemap_is_populated(fd, start))
-+			ret = false;
-+	close(fd);
-+	return ret;
-+}
-+
-+static bool range_is_not_populated(char *start, ssize_t size)
-+{
-+	int fd = open("/proc/self/pagemap", O_RDONLY);
-+	bool ret = true;
-+
-+	if (fd < 0)
-+		ksft_exit_fail_msg("opening pagemap failed\n");
-+	for (; size > 0 && ret; size -= pagesize, start += pagesize)
-+		if (pagemap_is_populated(fd, start))
-+			ret = false;
-+	close(fd);
-+	return ret;
-+}
-+
-+static void test_populate_read(void)
-+{
-+	char *addr;
-+	int ret;
-+
-+	ksft_print_msg("[RUN] %s\n", __func__);
-+
-+	addr = mmap(0, SIZE, PROT_READ | PROT_WRITE,
-+		    MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-+	if (addr == MAP_FAILED)
-+		ksft_exit_fail_msg("mmap failed\n");
-+	ksft_test_result(range_is_not_populated(addr, SIZE),
-+			 "range initially not populated\n");
-+
-+	ret = madvise(addr, SIZE, MADV_POPULATE_READ);
-+	ksft_test_result(!ret, "MADV_POPULATE_READ\n");
-+	ksft_test_result(range_is_populated(addr, SIZE),
-+			 "range is populated\n");
-+
-+	munmap(addr, SIZE);
-+}
-+
-+static void test_populate_write(void)
-+{
-+	char *addr;
-+	int ret;
-+
-+	ksft_print_msg("[RUN] %s\n", __func__);
-+
-+	addr = mmap(0, SIZE, PROT_READ | PROT_WRITE,
-+		    MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-+	if (addr == MAP_FAILED)
-+		ksft_exit_fail_msg("mmap failed\n");
-+	ksft_test_result(range_is_not_populated(addr, SIZE),
-+			 "range initially not populated\n");
-+
-+	ret = madvise(addr, SIZE, MADV_POPULATE_WRITE);
-+	ksft_test_result(!ret, "MADV_POPULATE_WRITE\n");
-+	ksft_test_result(range_is_populated(addr, SIZE),
-+			 "range is populated\n");
-+
-+	munmap(addr, SIZE);
-+}
-+
-+static bool range_is_softdirty(char *start, ssize_t size)
-+{
-+	int fd = open("/proc/self/pagemap", O_RDONLY);
-+	bool ret = true;
-+
-+	if (fd < 0)
-+		ksft_exit_fail_msg("opening pagemap failed\n");
-+	for (; size > 0 && ret; size -= pagesize, start += pagesize)
-+		if (!pagemap_is_softdirty(fd, start))
-+			ret = false;
-+	close(fd);
-+	return ret;
-+}
-+
-+static bool range_is_not_softdirty(char *start, ssize_t size)
-+{
-+	int fd = open("/proc/self/pagemap", O_RDONLY);
-+	bool ret = true;
-+
-+	if (fd < 0)
-+		ksft_exit_fail_msg("opening pagemap failed\n");
-+	for (; size > 0 && ret; size -= pagesize, start += pagesize)
-+		if (pagemap_is_softdirty(fd, start))
-+			ret = false;
-+	close(fd);
-+	return ret;
-+}
-+
-+static void clear_softdirty(void)
-+{
-+	int fd = open("/proc/self/clear_refs", O_WRONLY);
-+	const char *ctrl = "4";
-+	int ret;
-+
-+	if (fd < 0)
-+		ksft_exit_fail_msg("opening clear_refs failed\n");
-+	ret = write(fd, ctrl, strlen(ctrl));
-+	if (ret != strlen(ctrl))
-+		ksft_exit_fail_msg("writing clear_refs failed\n");
-+	close(fd);
-+}
-+
-+static void test_softdirty(void)
-+{
-+	char *addr;
-+	int ret;
-+
-+	ksft_print_msg("[RUN] %s\n", __func__);
-+
-+	addr = mmap(0, SIZE, PROT_READ | PROT_WRITE,
-+		    MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-+	if (addr == MAP_FAILED)
-+		ksft_exit_fail_msg("mmap failed\n");
-+
-+	/* Clear any softdirty bits. */
-+	clear_softdirty();
-+	ksft_test_result(range_is_not_softdirty(addr, SIZE),
-+			 "range is not softdirty\n");
-+
-+	/* Populating READ should set softdirty. */
-+	ret = madvise(addr, SIZE, MADV_POPULATE_READ);
-+	ksft_test_result(!ret, "MADV_POPULATE_READ\n");
-+	ksft_test_result(range_is_not_softdirty(addr, SIZE),
-+			 "range is not softdirty\n");
-+
-+	/* Populating WRITE should set softdirty. */
-+	ret = madvise(addr, SIZE, MADV_POPULATE_WRITE);
-+	ksft_test_result(!ret, "MADV_POPULATE_WRITE\n");
-+	ksft_test_result(range_is_softdirty(addr, SIZE),
-+			 "range is softdirty\n");
-+
-+	munmap(addr, SIZE);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int err;
-+
-+	pagesize = getpagesize();
-+
-+	ksft_print_header();
-+	ksft_set_plan(21);
-+
-+	sense_support();
-+	test_prot_read();
-+	test_prot_write();
-+	test_holes();
-+	test_populate_read();
-+	test_populate_write();
-+	test_softdirty();
-+
-+	err = ksft_get_fail_cnt();
-+	if (err)
-+		ksft_exit_fail_msg("%d out of %d tests failed\n",
-+				   err, ksft_test_num());
-+	return ksft_exit_pass();
-+}
-+
-+#else /* defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE) */
-+
-+#warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
-+
-+int main(int argc, char **argv)
-+{
-+	ksft_print_header();
-+	ksft_exit_skip("MADV_POPULATE_READ or MADV_POPULATE_WRITE not defined\n");
-+}
-+
-+#endif /* defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE) */
-diff --git a/tools/testing/selftests/vm/run_vmtests.sh b/tools/testing/selftests/vm/run_vmtests.sh
-index e953f3cd9664..955782d138ab 100755
---- a/tools/testing/selftests/vm/run_vmtests.sh
-+++ b/tools/testing/selftests/vm/run_vmtests.sh
-@@ -346,4 +346,20 @@ else
- 	exitcode=1
- fi
- 
-+echo "--------------------------------------------------------"
-+echo "running MADV_POPULATE_READ and MADV_POPULATE_WRITE tests"
-+echo "--------------------------------------------------------"
-+./madv_populate
-+ret_val=$?
-+
-+if [ $ret_val -eq 0 ]; then
-+	echo "[PASS]"
-+elif [ $ret_val -eq $ksft_skip ]; then
-+	echo "[SKIP]"
-+	exitcode=$ksft_skip
-+else
-+	echo "[FAIL]"
-+	exitcode=1
-+fi
-+
- exit $exitcode
--- 
-2.30.2
+Hi,
 
+On Tue, May 11, 2021 at 10:51:28AM +0530, Naresh Kamboju wrote:
+> On Mon, 3 May 2021 at 20:09, Chukun Pan <amadeus@jmu.edu.cn> wrote:
+> >
+> > The NanoPi R1S H5 is a open source board made by FriendlyElec.
+> > It has the following features:
+> >
+> > - Allwinner H5, Quad-core Cortex-A53
+> > - 512MB DDR3 RAM
+> > - 10/100/1000M Ethernet x 2
+> > - RTL8189ETV WiFi 802.11b/g/n
+> > - USB 2.0 host port (A)
+> > - MicroSD Slot
+> > - Serial Debug Port
+> > - 5V 2A DC power-supply
+> >
+> > Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
+>=20
+> Linux next tag next-20210511 arm64 build failed due to this error.
+>=20
+> Error: /builds/linux/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-r1s-h=
+5.dts:35.15-16
+> syntax error
+> FATAL ERROR: Unable to parse input tree
+> make[3]: *** [/builds/linux/scripts/Makefile.lib:365:
+> arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-r1s-h5.dtb] Error 1
+> make[3]: Target '__build' not remade because of errors.
+>=20
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+>=20
+> #regzb introduced: 7c9dbeda744f ("arm64: dts: allwinner: h5: Add
+> NanoPi R1S H5 support")
+
+Thanks, I dropped the patch.
+Chukun, please resend it once it's fixed
+
+Maxime
+
+--6z5yg7iwrnly6v2y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYJo9zwAKCRDj7w1vZxhR
+xe67AQCUYlXoGcwJHLhh68hRF0ylL5Pt4GTchOLKtWcp6i7AkQEA7TgGLlf2l4S6
+htRJVKBQZSxCAzqukoXw9M0lRZRnzAA=
+=ToBG
+-----END PGP SIGNATURE-----
+
+--6z5yg7iwrnly6v2y--
