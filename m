@@ -2,345 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D4E37AABB
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2DC37AAC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231812AbhEKPcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 11:32:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56010 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231700AbhEKPcY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 11:32:24 -0400
-Received: from mail-vk1-f197.google.com ([209.85.221.197])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lgULs-0000CH-Tc
-        for linux-kernel@vger.kernel.org; Tue, 11 May 2021 15:31:17 +0000
-Received: by mail-vk1-f197.google.com with SMTP id r85-20020a1fc1580000b02901f918091a78so1614980vkf.6
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 08:31:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4+KMSSJfs6285aprQFfxRR2fhyW9Dgy1161xUmoMREg=;
-        b=SmrwUtlvHAgqY2pD5J6RhEjM9oN8T3OPUDDK2KJQZrLZizqcaOjkPxzUFjncrAWxkm
-         V/9qTW2z3q24u5uXjM6CGJ1fXq7zS+mrQseA1QKCXaTYZS44MqLExkyuOEH6VZKQPo+5
-         5YoCb2oVkbZHYV1HnD8QU/Nj3PeqNOgAcUBxlBVZNAiWnAsFTwuOO5pI/HpowAxr0OGz
-         J5hxg9Lnv+ke+VrCxZfcJKv3ztRHTyCdiTehLu2p33oCp1dtql5R7O49YZoTkb6lfk1F
-         xukL09of+Xc35CxZ1GJ0l3EPOpRfluO0+yClPKWUdeMnpUs6FPedRtdzzvzNQEg+TFbL
-         mVaQ==
-X-Gm-Message-State: AOAM533UtP6irPhSfgpq0yP5HrVkAi8BZM2k4oCRdOE8WIIC8d0fFaKG
-        aBGChSq1Q4krtrepkfqT2iaH+SGE5PCyx5lvF2Q+so6/hJmlkOZ01ayZrpLZOtjLIf1SAVHLhZI
-        pXG1psR898/DwVQTjuYoOYI7x7u9twkQo1LMBs9jFvg==
-X-Received: by 2002:a67:ec12:: with SMTP id d18mr25988790vso.7.1620747075097;
-        Tue, 11 May 2021 08:31:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyqDMUs/v0Xcwl5Yvx5QCtahvd9WLnq4NjrGuWgs1ozarszbCqEF8zbb9jxtEiIz0fE2jKJbA==
-X-Received: by 2002:a67:ec12:: with SMTP id d18mr25988754vso.7.1620747074830;
-        Tue, 11 May 2021 08:31:14 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.48.3])
-        by smtp.gmail.com with ESMTPSA id o5sm2281864vke.32.2021.05.11.08.31.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 08:31:14 -0700 (PDT)
-Subject: Re: [PATCH v1 2/2] memory: tegra: Enable compile testing for all
- drivers
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20210510213729.7095-3-digetx@gmail.com>
- <202105112125.VctfC6sX-lkp@intel.com>
- <dd0b550e-76a0-bfbc-9d6f-5d867812046d@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <06addbf3-0090-b76f-65cf-e0c10d284c69@canonical.com>
-Date:   Tue, 11 May 2021 11:31:03 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231789AbhEKPfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 11:35:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231609AbhEKPe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 11:34:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B017C6191C;
+        Tue, 11 May 2021 15:33:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620747232;
+        bh=0ycZJyo5rPknGQbcP1uAKYtdIN0dctFP9qaEHA1Lmtk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZjsrZAwbc/lBKJzT5Qnk9hhA7hlNe9/+wsYAaQ2hCTHDuuS714UHT6/PWDkPLtFVN
+         PGNsYrLkQZQ1njQMFNmrF+rY39q/TgojalbAiTiTFUb8PZp5nbjHm2FQrAyGecNVnb
+         EFjtdDxosV0WEHHZtJzjScukgd4H65tzu8ct8/DgkOWVpEXiQRX93jUgit8bPoBFw8
+         4UaZJ8n36ZGgLFTGYdVNhCLgSUAdMe+PK32kf2pkJ+5uBrTdO+Lm2MfL5TkWLGYyuF
+         UzXOSq495Yh6kMMp2pjKebGAlUkklNesbZGSBbHQ6dUDDZshlwFG4FA61TEF9kzj8H
+         s2J+Xs12uTA1Q==
+Received: by mail-qk1-f176.google.com with SMTP id 76so19114845qkn.13;
+        Tue, 11 May 2021 08:33:52 -0700 (PDT)
+X-Gm-Message-State: AOAM531i5nLTX5InfGMpwo1rUGeWyOyKyHeWQrLpkLuNcifHdLcedA5Z
+        I08mCcw4lGzUvuJ5zWyZX8uM0ETDp4xHgr3I5A==
+X-Google-Smtp-Source: ABdhPJzgBwoKu9MHPdLj91APOY8pzFmxS2DLOE3Q2ktzZ0fUiNWOhbcxKfUo1JHMW7OvuM894BUmNNo5VnEbhOJ8/vY=
+X-Received: by 2002:a37:6116:: with SMTP id v22mr14616810qkb.464.1620747229748;
+ Tue, 11 May 2021 08:33:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <dd0b550e-76a0-bfbc-9d6f-5d867812046d@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210507004047.4454-1-chris.packham@alliedtelesis.co.nz>
+ <20210507004047.4454-2-chris.packham@alliedtelesis.co.nz> <20210507214936.GA2944698@robh.at.kernel.org>
+ <c5d6f8d0-9b8a-b3bf-b7c3-884f03f7ecee@alliedtelesis.co.nz>
+In-Reply-To: <c5d6f8d0-9b8a-b3bf-b7c3-884f03f7ecee@alliedtelesis.co.nz>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 11 May 2021 10:33:37 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKaeubNxYwGNOJYv=VcwR_6NzwkXnQ4DjOwXDudEmZ2Rg@mail.gmail.com>
+Message-ID: <CAL_JsqKaeubNxYwGNOJYv=VcwR_6NzwkXnQ4DjOwXDudEmZ2Rg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: i2c: mpc: Add fsl,i2c-erratum-a004447 flag
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc:     "wsa@kernel.org" <wsa@kernel.org>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/05/2021 11:17, Dmitry Osipenko wrote:
-> 11.05.2021 16:58, kernel test robot пишет:
->> Hi Dmitry,
->>
->> I love your patch! Perhaps something to improve:
->>
->> [auto build test WARNING on tegra/for-next]
->> [also build test WARNING on v5.13-rc1 next-20210511]
->> [If your patch is applied to the wrong git tree, kindly drop us a note.
->> And when submitting patch, we suggest to use '--base' as documented in
->> https://git-scm.com/docs/git-format-patch]
->>
->> url:    https://github.com/0day-ci/linux/commits/Dmitry-Osipenko/Enable-compile-testing-for-Tegra-memory-drivers/20210511-053910
->> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git for-next
->> config: powerpc-randconfig-r032-20210511 (attached as .config)
->> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project a0fed635fe1701470062495a6ffee1c608f3f1bc)
->> reproduce (this is a W=1 build):
->>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>         chmod +x ~/bin/make.cross
->>         # install powerpc cross compiling tool for clang build
->>         # apt-get install binutils-powerpc-linux-gnu
->>         # https://github.com/0day-ci/linux/commit/ecd67b1d49eb33c9821130a2b3b896bab395118d
->>         git remote add linux-review https://github.com/0day-ci/linux
->>         git fetch --no-tags linux-review Dmitry-Osipenko/Enable-compile-testing-for-Tegra-memory-drivers/20210511-053910
->>         git checkout ecd67b1d49eb33c9821130a2b3b896bab395118d
->>         # save the attached .config to linux build tree
->>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=powerpc 
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All warnings (new ones prefixed by >>):
->>
->>    __do_insb
->>    ^
->>    arch/powerpc/include/asm/io.h:556:56: note: expanded from macro '__do_insb'
->>    #define __do_insb(p, b, n)      readsb((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->>                                           ~~~~~~~~~~~~~~~~~~~~~^
->>    In file included from drivers/memory/tegra/tegra30-emc.c:18:
->>    In file included from include/linux/interrupt.h:11:
->>    In file included from include/linux/hardirq.h:10:
->>    In file included from arch/powerpc/include/asm/hardirq.h:6:
->>    In file included from include/linux/irq.h:20:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/powerpc/include/asm/io.h:619:
->>    arch/powerpc/include/asm/io-defs.h:45:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>    DEF_PCI_AC_NORET(insw, (unsigned long p, void *b, unsigned long c),
->>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                    __do_##name al;                                 \
->>                    ^~~~~~~~~~~~~~
->>    <scratch space>:211:1: note: expanded from here
->>    __do_insw
->>    ^
->>    arch/powerpc/include/asm/io.h:557:56: note: expanded from macro '__do_insw'
->>    #define __do_insw(p, b, n)      readsw((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->>                                           ~~~~~~~~~~~~~~~~~~~~~^
->>    In file included from drivers/memory/tegra/tegra30-emc.c:18:
->>    In file included from include/linux/interrupt.h:11:
->>    In file included from include/linux/hardirq.h:10:
->>    In file included from arch/powerpc/include/asm/hardirq.h:6:
->>    In file included from include/linux/irq.h:20:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/powerpc/include/asm/io.h:619:
->>    arch/powerpc/include/asm/io-defs.h:47:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>    DEF_PCI_AC_NORET(insl, (unsigned long p, void *b, unsigned long c),
->>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                    __do_##name al;                                 \
->>                    ^~~~~~~~~~~~~~
->>    <scratch space>:213:1: note: expanded from here
->>    __do_insl
->>    ^
->>    arch/powerpc/include/asm/io.h:558:56: note: expanded from macro '__do_insl'
->>    #define __do_insl(p, b, n)      readsl((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->>                                           ~~~~~~~~~~~~~~~~~~~~~^
->>    In file included from drivers/memory/tegra/tegra30-emc.c:18:
->>    In file included from include/linux/interrupt.h:11:
->>    In file included from include/linux/hardirq.h:10:
->>    In file included from arch/powerpc/include/asm/hardirq.h:6:
->>    In file included from include/linux/irq.h:20:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/powerpc/include/asm/io.h:619:
->>    arch/powerpc/include/asm/io-defs.h:49:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>    DEF_PCI_AC_NORET(outsb, (unsigned long p, const void *b, unsigned long c),
->>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                    __do_##name al;                                 \
->>                    ^~~~~~~~~~~~~~
->>    <scratch space>:215:1: note: expanded from here
->>    __do_outsb
->>    ^
->>    arch/powerpc/include/asm/io.h:559:58: note: expanded from macro '__do_outsb'
->>    #define __do_outsb(p, b, n)     writesb((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->>                                            ~~~~~~~~~~~~~~~~~~~~~^
->>    In file included from drivers/memory/tegra/tegra30-emc.c:18:
->>    In file included from include/linux/interrupt.h:11:
->>    In file included from include/linux/hardirq.h:10:
->>    In file included from arch/powerpc/include/asm/hardirq.h:6:
->>    In file included from include/linux/irq.h:20:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/powerpc/include/asm/io.h:619:
->>    arch/powerpc/include/asm/io-defs.h:51:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>    DEF_PCI_AC_NORET(outsw, (unsigned long p, const void *b, unsigned long c),
->>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                    __do_##name al;                                 \
->>                    ^~~~~~~~~~~~~~
->>    <scratch space>:217:1: note: expanded from here
->>    __do_outsw
->>    ^
->>    arch/powerpc/include/asm/io.h:560:58: note: expanded from macro '__do_outsw'
->>    #define __do_outsw(p, b, n)     writesw((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->>                                            ~~~~~~~~~~~~~~~~~~~~~^
->>    In file included from drivers/memory/tegra/tegra30-emc.c:18:
->>    In file included from include/linux/interrupt.h:11:
->>    In file included from include/linux/hardirq.h:10:
->>    In file included from arch/powerpc/include/asm/hardirq.h:6:
->>    In file included from include/linux/irq.h:20:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/powerpc/include/asm/io.h:619:
->>    arch/powerpc/include/asm/io-defs.h:53:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>    DEF_PCI_AC_NORET(outsl, (unsigned long p, const void *b, unsigned long c),
->>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                    __do_##name al;                                 \
->>                    ^~~~~~~~~~~~~~
->>    <scratch space>:219:1: note: expanded from here
->>    __do_outsl
->>    ^
->>    arch/powerpc/include/asm/io.h:561:58: note: expanded from macro '__do_outsl'
->>    #define __do_outsl(p, b, n)     writesl((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->>                                            ~~~~~~~~~~~~~~~~~~~~~^
->>>> drivers/memory/tegra/tegra30-emc.c:757:18: warning: implicit conversion from 'unsigned long' to 'u32' (aka 'unsigned int') changes value from 18446744071562067985 to 2147483665 [-Wconstant-conversion]
->>                    writel_relaxed(EMC_ZQ_CAL_LONG_CMD_DEV0,
->>                    ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
->>    drivers/memory/tegra/tegra30-emc.c:161:36: note: expanded from macro 'EMC_ZQ_CAL_LONG_CMD_DEV0'
->>            (DRAM_DEV_SEL_0 | EMC_ZQ_CAL_LONG | EMC_ZQ_CAL_CMD)
->>                                              ^
->>    arch/powerpc/include/asm/io.h:679:40: note: expanded from macro 'writel_relaxed'
->>    #define writel_relaxed(v, addr) writel(v, addr)
->>                                    ~~~~~~ ^
->>    13 warnings generated.
->> --
->>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                    __do_##name al;                                 \
->>                    ^~~~~~~~~~~~~~
->>    <scratch space>:203:1: note: expanded from here
->>    __do_outl
->>    ^
->>    arch/powerpc/include/asm/io.h:537:62: note: expanded from macro '__do_outl'
->>    #define __do_outl(val, port)    writel(val,(PCI_IO_ADDR)_IO_BASE+port);
->>                                               ~~~~~~~~~~~~~~~~~~~~~^
->>    In file included from drivers/memory/tegra/tegra124-emc.c:16:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/powerpc/include/asm/io.h:619:
->>    arch/powerpc/include/asm/io-defs.h:43:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>    DEF_PCI_AC_NORET(insb, (unsigned long p, void *b, unsigned long c),
->>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                    __do_##name al;                                 \
->>                    ^~~~~~~~~~~~~~
->>    <scratch space>:217:1: note: expanded from here
->>    __do_insb
->>    ^
->>    arch/powerpc/include/asm/io.h:556:56: note: expanded from macro '__do_insb'
->>    #define __do_insb(p, b, n)      readsb((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->>                                           ~~~~~~~~~~~~~~~~~~~~~^
->>    In file included from drivers/memory/tegra/tegra124-emc.c:16:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/powerpc/include/asm/io.h:619:
->>    arch/powerpc/include/asm/io-defs.h:45:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>    DEF_PCI_AC_NORET(insw, (unsigned long p, void *b, unsigned long c),
->>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                    __do_##name al;                                 \
->>                    ^~~~~~~~~~~~~~
->>    <scratch space>:219:1: note: expanded from here
->>    __do_insw
->>    ^
->>    arch/powerpc/include/asm/io.h:557:56: note: expanded from macro '__do_insw'
->>    #define __do_insw(p, b, n)      readsw((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->>                                           ~~~~~~~~~~~~~~~~~~~~~^
->>    In file included from drivers/memory/tegra/tegra124-emc.c:16:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/powerpc/include/asm/io.h:619:
->>    arch/powerpc/include/asm/io-defs.h:47:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>    DEF_PCI_AC_NORET(insl, (unsigned long p, void *b, unsigned long c),
->>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                    __do_##name al;                                 \
->>                    ^~~~~~~~~~~~~~
->>    <scratch space>:221:1: note: expanded from here
->>    __do_insl
->>    ^
->>    arch/powerpc/include/asm/io.h:558:56: note: expanded from macro '__do_insl'
->>    #define __do_insl(p, b, n)      readsl((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->>                                           ~~~~~~~~~~~~~~~~~~~~~^
->>    In file included from drivers/memory/tegra/tegra124-emc.c:16:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/powerpc/include/asm/io.h:619:
->>    arch/powerpc/include/asm/io-defs.h:49:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>    DEF_PCI_AC_NORET(outsb, (unsigned long p, const void *b, unsigned long c),
->>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                    __do_##name al;                                 \
->>                    ^~~~~~~~~~~~~~
->>    <scratch space>:223:1: note: expanded from here
->>    __do_outsb
->>    ^
->>    arch/powerpc/include/asm/io.h:559:58: note: expanded from macro '__do_outsb'
->>    #define __do_outsb(p, b, n)     writesb((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->>                                            ~~~~~~~~~~~~~~~~~~~~~^
->>    In file included from drivers/memory/tegra/tegra124-emc.c:16:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/powerpc/include/asm/io.h:619:
->>    arch/powerpc/include/asm/io-defs.h:51:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>    DEF_PCI_AC_NORET(outsw, (unsigned long p, const void *b, unsigned long c),
->>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                    __do_##name al;                                 \
->>                    ^~~~~~~~~~~~~~
->>    <scratch space>:225:1: note: expanded from here
->>    __do_outsw
->>    ^
->>    arch/powerpc/include/asm/io.h:560:58: note: expanded from macro '__do_outsw'
->>    #define __do_outsw(p, b, n)     writesw((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->>                                            ~~~~~~~~~~~~~~~~~~~~~^
->>    In file included from drivers/memory/tegra/tegra124-emc.c:16:
->>    In file included from include/linux/io.h:13:
->>    In file included from arch/powerpc/include/asm/io.h:619:
->>    arch/powerpc/include/asm/io-defs.h:53:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>    DEF_PCI_AC_NORET(outsl, (unsigned long p, const void *b, unsigned long c),
->>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                    __do_##name al;                                 \
->>                    ^~~~~~~~~~~~~~
->>    <scratch space>:227:1: note: expanded from here
->>    __do_outsl
->>    ^
->>    arch/powerpc/include/asm/io.h:561:58: note: expanded from macro '__do_outsl'
->>    #define __do_outsl(p, b, n)     writesl((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->>                                            ~~~~~~~~~~~~~~~~~~~~~^
->>>> drivers/memory/tegra/tegra124-emc.c:802:26: warning: implicit conversion from 'unsigned long' to 'u32' (aka 'unsigned int') changes value from 18446744071562067985 to 2147483665 [-Wconstant-conversion]
->>                    emc_ccfifo_writel(emc, EMC_ZQ_CAL_LONG_CMD_DEV0, EMC_ZQ_CAL);
->>                    ~~~~~~~~~~~~~~~~~      ^~~~~~~~~~~~~~~~~~~~~~~~
->>    drivers/memory/tegra/tegra124-emc.c:154:36: note: expanded from macro 'EMC_ZQ_CAL_LONG_CMD_DEV0'
->>            (DRAM_DEV_SEL_0 | EMC_ZQ_CAL_LONG | EMC_ZQ_CAL_CMD)
->>             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
->>    13 warnings generated.
-> 
-> This doesn't look like a useful warning from clang, it should see that
-> the constant value itself isn't truncated, hence it should be a problem
-> of clang. Do you think it's okay to ignore this nonsense?
+On Sun, May 9, 2021 at 4:08 PM Chris Packham
+<Chris.Packham@alliedtelesis.co.nz> wrote:
+>
+>
+> On 8/05/21 9:49 am, Rob Herring wrote:
+> > On Fri, May 07, 2021 at 12:40:45PM +1200, Chris Packham wrote:
+> >> Document the fsl,i2c-erratum-a004447 flag which indicates the presence
+> >> of an i2c erratum on some QorIQ SoCs.
+> >>
+> >> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> >> ---
+> >>   Documentation/devicetree/bindings/i2c/i2c-mpc.yaml | 7 +++++++
+> >>   1 file changed, 7 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml b/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
+> >> index 7b553d559c83..98c6fcf7bf26 100644
+> >> --- a/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
+> >> +++ b/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
+> >> @@ -46,6 +46,13 @@ properties:
+> >>       description: |
+> >>         I2C bus timeout in microseconds
+> >>
+> >> +  fsl,i2c-erratum-a004447:
+> >> +    $ref: /schemas/types.yaml#/definitions/flag
+> >> +    description: |
+> >> +      Indicates the presence of QorIQ erratum A-004447, which
+> >> +      says that the standard i2c recovery scheme mechanism does
+> >> +      not work and an alternate implementation is needed.
+> > The problem with adding a property for an errata is you have to update
+> > the dtb. If you use the compatible string, then only an OS update is
+> > needed. That assumes you have specific enough compatible strings.
+>
+> I was following the style of the existing fsl,usb-erratum-a007792 or
+> fsl,erratum-a008585 properties. But that's not really a compelling reason.
+>
+> The existing compatible string is "fsl-i2c" and it's used by pretty much
+> every powerpc QorIQ SoC. There are some specific compatible strings in
+> the driver for some of the older mpc SoCs. A more specific compatible
+> string will work although determining which ones are affected might be a
+> bit troublesome. That we know of the P2041 and P1010 are affected but I
+> suspect there may be more. One disadvantage of using the compatible
+> string is that as affected SoCs are identified we'll have to update the
+> driver to know that SoC is affected and update the dtb to use it. With
+> the property we'd just have to update the dtb.
 
-I admit I also do not see the real issue here. The DRAM_DEV_SEL_0 fits
-in u32 and there is no other bitwise arithmetic than just OR, so why
-clang assumes it can have 32 most signifcant bits toggled on?
+If you don't have specific compatibles in the dtb already, then it's
+mute as the point was to avoid the dtb update.
 
-+Cc Nathan and Nick,
-Maybe you could shed some light here on this warning?
+> I'm not too fussed either way so if that's a hard NACK on the property I
+> can send a version that uses compatible strings instead.
 
-Dmitry,
-In general you should not ignore it because:
-1. This breaks allyesconfig with clang on powerpc (or it is one of the
-stoppers),
-2. We might want in some future to build it with clang.
+Acked-by: Rob Herring <robh@kernel.org>
 
-
-Best regards,
-Krzysztof
+You could still add compatibles for the next time...
