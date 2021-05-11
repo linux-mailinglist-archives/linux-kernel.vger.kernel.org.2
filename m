@@ -2,163 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F7A37A44B
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE9737A44F
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhEKKIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 06:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231204AbhEKKH7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 06:07:59 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B570C061574;
-        Tue, 11 May 2021 03:06:52 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id v12so19500819wrq.6;
-        Tue, 11 May 2021 03:06:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c2WVbfAVqJcL+REqbX0YpO9uYgKY9glSk3kcY+TpGLg=;
-        b=CLuDvEpM3aoLoo6URBinpv+XxdSvKbVEhi+rM3DXkpBb1On2rr2Rc5Ryydipxns/7W
-         J/BihtFNpBMPDUZXQpXLUQyuC+2M18/GY49sw6Mdg3kRFUGKPw6a8wP8DoKxDtlkU0Vv
-         k7rbsUTq9iGHsSkGjUxRzg2NUdhyP3ZsCcdBygYutaKqVyAbn/Y5osGGsawJ8RvtNQrE
-         p4XT4Q0oXppYPkKSSamfZz5tXbricf2cdPRkB8VgWlQb/ew4grrt0n6+NC+PEbsv5+XP
-         MQjmWnV6HFdrZc4EXQpqgMuAMM/rnpW9JNhKaKgpMqh2FtvFo+UNoFvFsTgNj+mk86oQ
-         iq3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c2WVbfAVqJcL+REqbX0YpO9uYgKY9glSk3kcY+TpGLg=;
-        b=cSGhgKfsIlnrW6N4dMNwL6403YO3GHPvysmq6s6Nh7XdFEzJwPsiUWyWHzfn+52CbH
-         G9gdFbfysrFrLdFOSpUYHpojAuuLMe6orDXc+wYcK8iHMyozlHLm7eHIkupSKnDy8OOL
-         V/NmM4Y159k0KPSg3lryEAMtYWZR0fpPxQlblQRsrxT4mDpCtNePt+ZggMB/7hNH/9u4
-         +lNmD20A2XpSkZFdQlTJ9PkxVSD6GGO/gnyZdcnDmCJlo9oqV5/32y1BUuTF+FnKAmzV
-         bpmeAS+ctAEGnsu6iRmT9bb73ox0XW6VjA8Cmcw5wSfWp2XMAhZXGyPVNZlEMrFnXFIG
-         b0yw==
-X-Gm-Message-State: AOAM5321JyRyKRjFG/lLWIQbKrqV7KMehHyKUQ0kbocgug4Xg4mQwldb
-        tp1wDX0vDbU/xW09BNyZO3E=
-X-Google-Smtp-Source: ABdhPJwhqZ4PpItyOqNGBZqT+MmWAkofsgKBZYJ9WwZj2DQHPHW3XZY472j3ptZBh1MvZIHYlBJS5A==
-X-Received: by 2002:adf:f7d2:: with SMTP id a18mr38324156wrq.198.1620727610765;
-        Tue, 11 May 2021 03:06:50 -0700 (PDT)
-Received: from michael-VirtualBox.xsight.ent (cbl217-132-244-50.bb.netvision.net.il. [217.132.244.50])
-        by smtp.googlemail.com with ESMTPSA id 61sm30079581wrm.52.2021.05.11.03.06.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 03:06:50 -0700 (PDT)
-From:   Michael Zaidman <michael.zaidman@gmail.com>
-To:     trix@redhat.com, jikos@kernel.org, benjamin.tissoires@redhat.com
-Cc:     linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Michael Zaidman <michael.zaidman@gmail.com>
-Subject: [PATCH v3] HID: ft260: improve error handling of ft260_hid_feature_report_get()
-Date:   Tue, 11 May 2021 13:06:34 +0300
-Message-Id: <20210511100634.16278-1-michael.zaidman@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S231377AbhEKKI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 06:08:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:44518 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230146AbhEKKI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 06:08:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A79FF169E;
+        Tue, 11 May 2021 03:07:50 -0700 (PDT)
+Received: from [10.57.81.122] (unknown [10.57.81.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FDA53F719;
+        Tue, 11 May 2021 03:07:47 -0700 (PDT)
+Subject: Re: [RFC PATCH] perf cs-etm: Handle valid-but-zero timestamps
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     Coresight ML <coresight@lists.linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Al Grant <al.grant@arm.com>, branislav.rankov@arm.com,
+        Denis Nikitin <denik@chromium.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-perf-users@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210507095814.17933-1-james.clark@arm.com>
+ <3926c523-3fdb-66de-8b9c-b68290a5053e@arm.com>
+ <CAJ9a7VjAvr9uKYqo9VJhFRB74vt6Jxf0G+Fm2OFm-dxAVdbpsw@mail.gmail.com>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <b4407fb2-c393-9e85-acaa-80b30b4783ec@arm.com>
+Date:   Tue, 11 May 2021 13:07:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJ9a7VjAvr9uKYqo9VJhFRB74vt6Jxf0G+Fm2OFm-dxAVdbpsw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
 
-The ft260_hid_feature_report_get() checks if the return size matches
-the requested size. But the function can also fail with at least -ENOMEM.
-Add the < 0 checks.
 
-In ft260_hid_feature_report_get(), do not do the memcpy to the caller's
-buffer if there is an error.
+On 07/05/2021 17:09, Mike Leach wrote:
+> Hi James,
+> 
+> 1) Not sure about this particular target - but previously all 0
+> timestamps have been the result of not enabling a clock or the
+> coresight timestamp generator.
+> 
+> 2) Given that you can synthesise timestamps when all the values are
+> all 0 - does this not imply that they could be synthesised when they
+> are not present at all?
 
-Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
-Signed-off-by: Tom Rix <trix@redhat.com>
+Yes they could, perhaps we could change our command line arguments to remove
+recording of timestamps completely. But I think that the auto enabling of
+timestamps for per-cpu mode is only additive so there is no way to disable
+it on the command line.
 
----
-v3   Simplify and optimize the changes
----
-v2:  add unlikely()'s for error conditions
----
+Perhaps we could make a change there instead to make the event configuration more flexible.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
----
- drivers/hid/hid-ft260.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+There is a similar concept with the --timestamp argument where it has both
+"not set" and "set, but set to false" variables to distinguish between when the user hasn't
+provided anything and when they've provided the negative:
 
-diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
-index 047aa85a7c83..7f4cb823129e 100644
---- a/drivers/hid/hid-ft260.c
-+++ b/drivers/hid/hid-ft260.c
-@@ -249,7 +249,10 @@ static int ft260_hid_feature_report_get(struct hid_device *hdev,
- 
- 	ret = hid_hw_raw_request(hdev, report_id, buf, len, HID_FEATURE_REPORT,
- 				 HID_REQ_GET_REPORT);
--	memcpy(data, buf, len);
-+	if (likely(ret == len))
-+		memcpy(data, buf, len);
-+	else if (ret >= 0)
-+		ret = -EIO;
- 	kfree(buf);
- 	return ret;
- }
-@@ -298,7 +301,7 @@ static int ft260_xfer_status(struct ft260_device *dev)
- 
- 	ret = ft260_hid_feature_report_get(hdev, FT260_I2C_STATUS,
- 					   (u8 *)&report, sizeof(report));
--	if (ret < 0) {
-+	if (unlikely(ret < 0)) {
- 		hid_err(hdev, "failed to retrieve status: %d\n", ret);
- 		return ret;
- 	}
-@@ -720,10 +723,9 @@ static int ft260_get_system_config(struct hid_device *hdev,
- 
- 	ret = ft260_hid_feature_report_get(hdev, FT260_SYSTEM_SETTINGS,
- 					   (u8 *)cfg, len);
--	if (ret != len) {
-+	if (ret < 0) {
- 		hid_err(hdev, "failed to retrieve system status\n");
--		if (ret >= 0)
--			return -EIO;
-+		return ret;
- 	}
- 	return 0;
- }
-@@ -776,8 +778,8 @@ static int ft260_byte_show(struct hid_device *hdev, int id, u8 *cfg, int len,
- 	int ret;
- 
- 	ret = ft260_hid_feature_report_get(hdev, id, cfg, len);
--	if (ret != len && ret >= 0)
--		return -EIO;
-+	if (ret < 0)
-+		return ret;
- 
- 	return scnprintf(buf, PAGE_SIZE, "%hi\n", *field);
- }
-@@ -788,8 +790,8 @@ static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
- 	int ret;
- 
- 	ret = ft260_hid_feature_report_get(hdev, id, cfg, len);
--	if (ret != len && ret >= 0)
--		return -EIO;
-+	if (ret < 0)
-+		return ret;
- 
- 	return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
- }
-@@ -940,10 +942,8 @@ static int ft260_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 
- 	ret = ft260_hid_feature_report_get(hdev, FT260_CHIP_VERSION,
- 					   (u8 *)&version, sizeof(version));
--	if (ret != sizeof(version)) {
-+	if (ret < 0) {
- 		hid_err(hdev, "failed to retrieve chip version\n");
--		if (ret >= 0)
--			ret = -EIO;
- 		goto err_hid_close;
- 	}
- 
--- 
-2.25.1
+	OPT_BOOLEAN_SET('T', "timestamp", &record.opts.sample_time,
+			&record.opts.sample_time_set,
 
+opts.sample_time is whether timestamps are on or not and
+opts.sample_time_set is whether the user provided any argument, true or false.
+
+Thanks
+James
+
+> 
+> Cheers
+> 
+> Mike
+> 
+> On Fri, 7 May 2021 at 11:02, James Clark <james.clark@arm.com> wrote:
+>>
+>>
+>>
+>> On 07/05/2021 12:58, James Clark wrote:
+>>> There is an intermittent issue on Trogdor devices that
+>>> results in all Coresight timestamps having a value of zero.
+>>
+>> I've attached a file here that has the issue. From the dump you
+>> can see the zero timestamps:
+>>
+>>         Idx:69; ID:10;  I_TIMESTAMP : Timestamp.; Updated val = 0x0
+>>         Idx:71; ID:10;  I_ATOM_F1 : Atom format 1.; E
+>>         Idx:72; ID:10;  I_ADDR_S_IS0 : Address, Short, IS0.; Addr=0xFFFFFFE723C65824 ~[0x5824]
+>>
+>> This doesn't have an impact on decoding as they end up being
+>> decoded in file order as in with timeless mode.
+>>
+>> James
+>>
+>>> Because zero is currently treated as "not found" rather
+>>> than "found but zero", this breaks the decoding flow
+>>> when it would otherwise work.
+>>>
+>>> This patch adds an out parameter and return code so
+>>> the difference between zero and non-existent timestamps
+>>> can be determined.
+>>>
+>>> There is also a change to fix an underflow.
+>>>
+>>> Although this is a workaround, the change is technically
+>>> a valid way of writing the cs_etm__etmq_get_timestamp()
+>>> function. It could have been written similarly to this
+>>> without trying to work around this issue, so it's no less
+>>> correct. But, because it's a workaround to a problem
+>>> elsewhere, I will submit this as an RFC for feedback.
+>>>
+>>> This patch applies on top of the "[PATCH v2 0/2] perf
+>>> cs-etm: Set time on synthesised samples to preserve ordering"
+>>> patchset.
+>>>
+>>> Co-developed-by: Denis Nikitin <denik@chromium.org>
+>>> Signed-off-by: Denis Nikitin <denik@chromium.org>
+>>> Signed-off-by: James Clark <james.clark@arm.com>
+>>> ---
+>>>  .../perf/util/cs-etm-decoder/cs-etm-decoder.c |  5 ++++-
+>>>  tools/perf/util/cs-etm.c                      | 22 +++++++++----------
+>>>  2 files changed, 15 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+>>> index b01d363b9301..947e44413c6e 100644
+>>> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+>>> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+>>> @@ -320,7 +320,10 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
+>>>        * which instructions started by subtracting the number of instructions
+>>>        * executed to the timestamp.
+>>>        */
+>>> -     packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
+>>> +     if (packet_queue->instr_count >= elem->timestamp)
+>>> +             packet_queue->cs_timestamp = 0;
+>>> +     else
+>>> +             packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
+>>>       packet_queue->next_cs_timestamp = elem->timestamp;
+>>>       packet_queue->instr_count = 0;
+>>>
+>>> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+>>> index e5c1a1b22a2a..1969921c406a 100644
+>>> --- a/tools/perf/util/cs-etm.c
+>>> +++ b/tools/perf/util/cs-etm.c
+>>> @@ -210,13 +210,14 @@ void cs_etm__etmq_set_traceid_queue_timestamp(struct cs_etm_queue *etmq,
+>>>       etmq->pending_timestamp_chan_id = trace_chan_id;
+>>>  }
+>>>
+>>> -static u64 cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
+>>> +static int cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
+>>> +                                   u64 *timestamp,
+>>>                                     u8 *trace_chan_id)
+>>>  {
+>>>       struct cs_etm_packet_queue *packet_queue;
+>>>
+>>>       if (!etmq->pending_timestamp_chan_id)
+>>> -             return 0;
+>>> +             return -ENODATA;
+>>>
+>>>       if (trace_chan_id)
+>>>               *trace_chan_id = etmq->pending_timestamp_chan_id;
+>>> @@ -224,13 +225,15 @@ static u64 cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
+>>>       packet_queue = cs_etm__etmq_get_packet_queue(etmq,
+>>>                                                    etmq->pending_timestamp_chan_id);
+>>>       if (!packet_queue)
+>>> -             return 0;
+>>> +             return -ENODATA;
+>>>
+>>>       /* Acknowledge pending status */
+>>>       etmq->pending_timestamp_chan_id = 0;
+>>>
+>>>       /* See function cs_etm_decoder__do_{hard|soft}_timestamp() */
+>>> -     return packet_queue->cs_timestamp;
+>>> +     if (timestamp)
+>>> +             *timestamp = packet_queue->cs_timestamp;
+>>> +     return 0;
+>>>  }
+>>>
+>>>  static void cs_etm__clear_packet_queue(struct cs_etm_packet_queue *queue)
+>>> @@ -864,11 +867,10 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
+>>>                * Function cs_etm_decoder__do_{hard|soft}_timestamp() does all
+>>>                * the timestamp calculation for us.
+>>>                */
+>>> -             cs_timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
+>>> -
+>>> -             /* We found a timestamp, no need to continue. */
+>>> -             if (cs_timestamp)
+>>> +             if (!cs_etm__etmq_get_timestamp(etmq, &cs_timestamp, &trace_chan_id)) {
+>>> +                     /* We found a timestamp, no need to continue. */
+>>>                       break;
+>>> +             }
+>>>
+>>>               /*
+>>>                * We didn't find a timestamp so empty all the traceid packet
+>>> @@ -2286,9 +2288,7 @@ static int cs_etm__process_queues(struct cs_etm_auxtrace *etm)
+>>>               if (ret)
+>>>                       goto out;
+>>>
+>>> -             cs_timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
+>>> -
+>>> -             if (!cs_timestamp) {
+>>> +             if (cs_etm__etmq_get_timestamp(etmq, &cs_timestamp, &trace_chan_id)) {
+>>>                       /*
+>>>                        * Function cs_etm__decode_data_block() returns when
+>>>                        * there is no more traces to decode in the current
+>>>
+> 
+> 
+> 
