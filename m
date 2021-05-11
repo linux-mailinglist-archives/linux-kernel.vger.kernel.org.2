@@ -2,126 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FA437B10C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B4C37B10A
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 23:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhEKVwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 17:52:04 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:34205 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229637AbhEKVvh (ORCPT
+        id S230167AbhEKVwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 17:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhEKVwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 17:51:37 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 411CF179C;
-        Tue, 11 May 2021 17:50:16 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 11 May 2021 17:50:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=iTB27FskG3qCZ/2+bDx/QlZWQqb
-        cFgHZ/tiyid5nlZI=; b=7wOTtwaBCKi2Ph3V7Bp4qMNOOqG+9iAw7K2WYx0ZMY2
-        1DJxVEVwVrm/LLM6oNsp07CN/qc76Y3WgW5m0N4XKnLYzv6JyTWWiDo3iONQT3z4
-        FrTsdhnCwS1a2AyHoRbt8AkaX7GEZFBKyXd1VK3stqcR/TYac1qKew+mVG0yj+ox
-        2Y0TfZ6nQTn7ntugviIRC/z5HmmzHdtR0JOmvo2TsWOGIeZxHtKWPSx+ylG72eCj
-        IRiMjThdighylcMGhbs/obPyynJWta2Ac8tsGBUrYWP7296Kl9dS65bV5gCO9d1L
-        WKiSiHlDsucoM2IzKXJZ4l6d/M60tJa4dZmIIegsKzg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=iTB27F
-        skG3qCZ/2+bDx/QlZWQqbcFgHZ/tiyid5nlZI=; b=gfRlOifrWLAtiISTbrk8TX
-        MhLuJ0GVYscP6MPJVvVP9NbMBg7jLtyka6pVCQ/Hq8y6tgrYrxDGoYjO/QnGKPw8
-        DcBuZPw5pWPiTvMGeFvfHi0VZpqoraH5cfs0YawHI1gHJc9++EmGjhas/sXltSjL
-        jinfgoV7vdqXpqUut7ZUFLGvmcxTT/diAVUlSFIUhviJrpiAs4ov9ILXFrxPRcQ4
-        HWJPmMJ8i+prsdypFG7Y7XVCEu9dJmV+dc6okplURcuxFbJtpGcb86MRLBbGQ6QK
-        BsfF8aDj8B8qrLLeFdRbrFFFdYiB53mpz4/b0G98EzV6EBC/NgtIQPV8SZY/QMcA
-        ==
-X-ME-Sender: <xms:F_yaYJ-IXBmopj3q39YpU_7Svquf8PwQTGtLVz6eNjzlo-pGmK6hJw>
-    <xme:F_yaYNshrwshbFYUDXGK4l9Pl_I8Kz-ZuMB2KE3w2wICM5avCvDrWf104GgOMXrQW
-    8XMI_Kt0h6p5OTkBbY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehuddgtddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
-    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpeegkeefjeegkedtjefgfeduleekueetjeeghffhuefgffefleehgeeifedv
-    gfethfenucfkphepuddvkedruddtjedrvdeguddrudejieenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehthigthhhosehthigthhhordhpihii
-    iigr
-X-ME-Proxy: <xmx:F_yaYHCEQGkr_49ALjrWzFHv2hSaMaKUdLRbow1YEX4KV7kzdUHAJg>
-    <xmx:F_yaYNdvmEOUAzcYtgn52UB95jJAO1NUa2K3yckU3_49t7fCmQOnmA>
-    <xmx:F_yaYOOM2oQxNCLYH5EUNRG4bg5cK3XqmgIWYiUNK7XUgXkm6OaxVA>
-    <xmx:F_yaYNfYYL_nrzbe4OnTWDVsHzie_VwKWLYMSbVxc-S49DBtcFBUbg>
-Received: from cisco (unknown [128.107.241.176])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Tue, 11 May 2021 17:50:12 -0400 (EDT)
-Date:   Tue, 11 May 2021 15:50:10 -0600
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     Sargun Dhillon <sargun@sargun.me>
-Cc:     Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>,
-        Andy Lutomirski <luto@kernel.org>,
-        Rodrigo Campos <rodrigo@kinvolk.io>,
-        Mauricio =?iso-8859-1?Q?V=E1squez?= Bernal 
-        <mauricio@kinvolk.io>, Giuseppe Scrivano <gscrivan@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH 3/4] seccomp: Support atomic "addfd + send reply"
-Message-ID: <20210511215010.GB1964106@cisco>
-References: <20210502001851.3346-1-sargun@sargun.me>
- <20210502001851.3346-4-sargun@sargun.me>
+        Tue, 11 May 2021 17:52:14 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A560AC061574;
+        Tue, 11 May 2021 14:51:02 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ffs770PQxz9sWB;
+        Wed, 12 May 2021 07:50:58 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620769859;
+        bh=od4h2PGWQFMzYvvwxJucYgVHgo1iQMpW5/aSXTDIzWo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GGFQRBS9rlIj93urezSWF/XtWB+PnZxN5BquBggjT8KeEE6m0mjOpsGCxI1QsOte6
+         to4jlGrYpAeVLzDa2r9D/rQA6ghWBRuxbVZyyHWFWSuvdTEG9GoWv7aJHi5EMuSMk5
+         AF3DJn1v/ih0YvWXOGH1gI1w9ZfH2jaNqxKbripiOOiZToZ+q3lQ4yIxWU34lbSyyl
+         1tBsLnp8mJClslXcxo6tZP1X17EzPA2osgGTTK34VFbLupmEM1BYQaEYIrlSRAgZQE
+         cjNmyrhhoQemUXHPgOVYMGkkMZVtdzHToehP3UwYZPnWOYfFG9LH6cS01rdwSiOaZr
+         IIoxHtteJfYYA==
+Date:   Wed, 12 May 2021 07:50:55 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the soundwire tree
+Message-ID: <20210512075055.69047ec0@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210502001851.3346-4-sargun@sargun.me>
+Content-Type: multipart/signed; boundary="Sig_/b6a5BK8LoePKHE/k5jx0o1I";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/b6a5BK8LoePKHE/k5jx0o1I
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, May 01, 2021 at 05:18:50PM -0700, Sargun Dhillon wrote:
+Hi all,
 
-[snip]
+In commit
 
-> Other patches in this series add a way to block signals when a syscall
-> is put to wait by seccomp.
+  f136f3279d85 ("soundwire: qcom: fix handling of qcom,ports-block-pack-mod=
+e")
 
-I guess we can drop this bit from the message if the series is split.
+Fixes tag
 
-> The struct seccomp_notif_resp, used when doing SECCOMP_IOCTL_NOTIF_SEND
-> ioctl() to send a response to the target, has three more fields that we
-> don't allow to set when doing the addfd ioctl() to also return. The
-> reasons to disallow each field are:
->  * val: This will be set to the new allocated fd. No point taking it
->    from userspace in this case.
->  * error: If this is non-zero, the value is ignored. Therefore,
->    it is pointless in this case as we want to return the value.
->  * flags: The only flag is to let userspace continue to execute the
->    syscall. This seems pointless, as we want the syscall to return the
->    allocated fd.
-> 
-> This is why those fields are not possible to set when using this new
-> flag.
+  Fixes: 5943e4fb14e3 ("soundwire: qcom: check of_property_read status")
 
-I don't quite understand this; you don't need a NOTIF_SEND at all
-with the way this currently works, right?
+has these problem(s):
 
-> @@ -1113,7 +1136,7 @@ static int seccomp_do_user_notification(int this_syscall,
->  						 struct seccomp_kaddfd, list);
->  		/* Check if we were woken up by a addfd message */
->  		if (addfd)
-> -			seccomp_handle_addfd(addfd);
-> +			seccomp_handle_addfd(addfd, &n);
->  
->  	}  while (n.state != SECCOMP_NOTIFY_REPLIED);
->  
+  - Target SHA1 does not exist
 
-This while() bit is introduced in the previous patch, can we fold this
-deletion into that somehow?
+Maybe you meant
 
-Thanks,
+Fixes: a5943e4fb14e ("soundwire: qcom: check of_property_read status")
 
-Tycho
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/b6a5BK8LoePKHE/k5jx0o1I
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCa/D8ACgkQAVBC80lX
+0Gxr6gf9EgnY5GiazmqsHZJgdIa35GWaSFKNcd3WcKaTNsXh3K3X7gZ/ow2jyI4V
+D1YEkueYyDcRK9AgXXjPCbiv0RJLAOiNHx3CJ4pEeyu/PM59rOvbWpKqUVZALqCS
+UPbcuIts1LwV3ztjfpiDVpgcCXNxQdwlkRXG2IVJ9PJsi5yR6kHZ7VHGPXOhxfcz
+76Cyq3PdEO+ZLNb4Wuho9wDcbnzqNIz28imjh3SdyqwGXiVQQYgoXYVq9mC7WkGi
+aByOd6iXlOxtXsmcw9z/beuYscMByON9le91m9+bnR7BOpjp/3E9QZRC+wAHKInJ
+6lYgwwsbN01Oevjv9dC/1EzKySwujQ==
+=kbxm
+-----END PGP SIGNATURE-----
+
+--Sig_/b6a5BK8LoePKHE/k5jx0o1I--
