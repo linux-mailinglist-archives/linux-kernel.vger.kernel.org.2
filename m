@@ -2,210 +2,394 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D1A37AF42
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED9437AF45
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232229AbhEKTW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 15:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231454AbhEKTW0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 15:22:26 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8EDC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:21:19 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id b21so11347195plz.0
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 12:21:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dwK1U82Cni7ccV8S1qKjUSfRYwWW4lzwAOYn1poHEnE=;
-        b=sk3YhdkvbA1SaAdIaY8XtPgZhzp5if6gZsVktrwmAlk4vLeKRaEFZ2/W4c0un4F7UB
-         tXU+wh+T3Y26bvGyaf7YPFO1K7fVKMii3WeUSzGmNGzackuEcPZ9HceQtkH7s0pkEcqI
-         Rw2mociqQnqqQUnxyhk/6Huo+4PFEwz8eoHxhEBvdGuFKzeEU/ex/J8y9t6R3GHCEpsN
-         H4lNRUzfNr4i0FKldtxKaQfG9Ln0aCwNlYvh7Jdeyy9G8ErsTyOUaonJ9dVHY8Im3ajf
-         p3AjV79Q6qS/cHBj4GdQ/UqRIRHiid+4w7MFYk3b7kAXhcpz5QG7BnVc/IbF9PaVPJoH
-         /hyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dwK1U82Cni7ccV8S1qKjUSfRYwWW4lzwAOYn1poHEnE=;
-        b=nErOGOkXSF8aP04RwRY7gl9JKTfG6ntA8vzv1gJAAguO7WsjQEHiorHjxDff5FvwN/
-         igLwK+GN4Djd9GT7iVJJxvg8qoaEOez3Hx+cwsyV/eercZGNBq7yKlJhHZaaIPojMqWR
-         R30W0wg50FA1HhhHmviqP/UC/nNwPYT5Bv/esmofP3vYIW5TLFEuyJV5uiOiafsxPeba
-         zqyfVTeR2oyPhQEUheD9CYX7865a3Oj1qmVj8RqEYUSKZcam0VGcymTdfVfWRJAm+vog
-         JWvj+stjhyzDJmIdqR42HGg69LYJV2EdK4tQw2m4ZvcmFvYgqzMo6G/LJbmWU+PWRx5b
-         SdHg==
-X-Gm-Message-State: AOAM532/MIhbn5pTpE9mwDBQvwosTjlFWlhFCYl0sl+vA9sPKwTrSl+m
-        70SaRVGaH5Hcge64ZZpFRVVL7A==
-X-Google-Smtp-Source: ABdhPJyCjbzdu6FoOm6qq9I9+ePVjPU+YpEnduGAknmNzx6r90OcHhE5yoFSVfwkkq/7z1nix8WXMg==
-X-Received: by 2002:a17:90b:508:: with SMTP id r8mr17514714pjz.152.1620760878491;
-        Tue, 11 May 2021 12:21:18 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id h4sm3008782pjc.12.2021.05.11.12.21.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 12:21:17 -0700 (PDT)
-Date:   Tue, 11 May 2021 19:21:14 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v4 4/7] KVM: mmu: Add slots_arch_lock for memslot arch
- fields
-Message-ID: <YJrZKkW9Cb9t+fU5@google.com>
-References: <20210511171610.170160-1-bgardon@google.com>
- <20210511171610.170160-5-bgardon@google.com>
+        id S232262AbhEKTXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 15:23:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232060AbhEKTXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 15:23:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16666616EA;
+        Tue, 11 May 2021 19:22:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620760924;
+        bh=RfAHJkAN5yf5bPipmM9SUEd3amhb2kzTxYmIRtWCdKA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=n4LwSqZPK84X9XKEdRC7BURWTYOvpGRbvdWM4s0xqKUrF2aMUHOkm2wraYwHbbxce
+         ni6FW9bl9GhNqfDSjd/YJg1yBqWZvU2FmSYPDLFN4D6M/TLjZtdasfoFptgXRtrmbY
+         5to8iHgrT0ot2EanHMp2hJpZ7UMrTMTzXFm8FqlvwUMPJir+K61w5eNsTeBNkO6PbH
+         fgWJbLQ06QFS/q2+ExBUY6GEgSv4s8RxZuTPm9ovEplfhl7f9W5oAu73v8BBdzRY6a
+         Zh0IdXuyQvW6XlfttNzQes3d2s9Yco3jehoCUT79M4DiWDlgcDC/4uixP90VFU6bT1
+         MquO3Iz9MiMdA==
+Date:   Tue, 11 May 2021 14:22:02 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Rajat Jain <rajatja@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-usb@vger.kernel.org, rajatxjain@gmail.com,
+        jsbarnes@google.com, dtor@google.com
+Subject: Re: [PATCH v2 1/2] driver core: Move the "removable" attribute from
+ USB to core
+Message-ID: <20210511192202.GA2388133@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210511171610.170160-5-bgardon@google.com>
+In-Reply-To: <20210424021631.1972022-1-rajatja@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021, Ben Gardon wrote:
-> Add a new lock to protect the arch-specific fields of memslots if they
-> need to be modified in a kvm->srcu read critical section. A future
-> commit will use this lock to lazily allocate memslot rmaps for x86.
-> 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
+On Fri, Apr 23, 2021 at 07:16:30PM -0700, Rajat Jain wrote:
+> Move the "removable" attribute from USB to core in order to allow
+> it to be supported by other subsystem / buses. Individual buses
+> that want to support this attribute can opt-in by setting the
+> supports_removable flag, and then populating the removable property
+> of the device while enumerating it. The ABI for the attribute remains
+> unchanged.
+
+Thanks for confirming that the sysfs ABI is unchanged -- it wasn't
+obvious to me from the doc descriptions below that the "removable"
+file appears in the exact same place it did before.
+
+Wrap above to fill 75 columns.
+
+> Signed-off-by: Rajat Jain <rajatja@google.com>
+
+Looks reasonable to me.  Trivial comments below.
+
+Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
+
 > ---
->  include/linux/kvm_host.h |  9 +++++++++
->  virt/kvm/kvm_main.c      | 31 ++++++++++++++++++++++++++-----
->  2 files changed, 35 insertions(+), 5 deletions(-)
+> v2: Add documentation
 > 
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 8895b95b6a22..2d5e797fbb08 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -472,6 +472,15 @@ struct kvm {
->  #endif /* KVM_HAVE_MMU_RWLOCK */
+>  Documentation/ABI/testing/sysfs-bus-usb       | 11 ------
+>  .../ABI/testing/sysfs-devices-removable       | 17 +++++++++
+>  drivers/base/core.c                           | 28 +++++++++++++++
+>  drivers/usb/core/hub.c                        |  8 ++---
+>  drivers/usb/core/sysfs.c                      | 24 -------------
+>  drivers/usb/core/usb.c                        |  1 +
+>  include/linux/device.h                        | 36 +++++++++++++++++++
+>  include/linux/usb.h                           |  7 ----
+>  8 files changed, 86 insertions(+), 46 deletions(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-devices-removable
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-usb b/Documentation/ABI/testing/sysfs-bus-usb
+> index bf2c1968525f..73eb23bc1f34 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-usb
+> +++ b/Documentation/ABI/testing/sysfs-bus-usb
+> @@ -154,17 +154,6 @@ Description:
+>  		files hold a string value (enable or disable) indicating whether
+>  		or not USB3 hardware LPM U1 or U2 is enabled for the device.
 >  
->  	struct mutex slots_lock;
-> +
-> +	/*
-> +	 * Protects the arch-specific fields of struct kvm_memory_slots in
-> +	 * use by the VM. To be used under the slots_lock (above) or in a
-> +	 * kvm->srcu read cirtical section where acquiring the slots_lock
-> +	 * would lead to deadlock with the synchronize_srcu in
-> +	 * install_new_memslots.
-> +	 */
-> +	struct mutex slots_arch_lock;
->  	struct mm_struct *mm; /* userspace tied to this vm */
->  	struct kvm_memslots __rcu *memslots[KVM_ADDRESS_SPACE_NUM];
->  	struct kvm_vcpu *vcpus[KVM_MAX_VCPUS];
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 9e106742b388..5c40d83754b1 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -908,6 +908,7 @@ static struct kvm *kvm_create_vm(unsigned long type)
->  	mutex_init(&kvm->lock);
->  	mutex_init(&kvm->irq_lock);
->  	mutex_init(&kvm->slots_lock);
-> +	mutex_init(&kvm->slots_arch_lock);
->  	INIT_LIST_HEAD(&kvm->devices);
->  
->  	BUILD_BUG_ON(KVM_MEM_SLOTS_NUM > SHRT_MAX);
-> @@ -1280,6 +1281,10 @@ static struct kvm_memslots *install_new_memslots(struct kvm *kvm,
->  	slots->generation = gen | KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS;
->  
->  	rcu_assign_pointer(kvm->memslots[as_id], slots);
-> +
-> +	/* Acquired in kvm_set_memslot. */
-> +	mutex_unlock(&kvm->slots_arch_lock);
-> +
->  	synchronize_srcu_expedited(&kvm->srcu);
->  
->  	/*
-> @@ -1351,6 +1356,9 @@ static int kvm_set_memslot(struct kvm *kvm,
->  	struct kvm_memslots *slots;
->  	int r;
->  
-> +	/* Released in install_new_memslots. */
+> -What:		/sys/bus/usb/devices/.../removable
+> -Date:		February 2012
+> -Contact:	Matthew Garrett <mjg@redhat.com>
+> -Description:
+> -		Some information about whether a given USB device is
+> -		physically fixed to the platform can be inferred from a
+> -		combination of hub descriptor bits and platform-specific data
+> -		such as ACPI. This file will read either "removable" or
+> -		"fixed" if the information is available, and "unknown"
+> -		otherwise.
+> -
+>  What:		/sys/bus/usb/devices/.../ltm_capable
+>  Date:		July 2012
+>  Contact:	Sarah Sharp <sarah.a.sharp@linux.intel.com>
+> diff --git a/Documentation/ABI/testing/sysfs-devices-removable b/Documentation/ABI/testing/sysfs-devices-removable
+> new file mode 100644
+> index 000000000000..e13dddd547b5
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-devices-removable
+> @@ -0,0 +1,17 @@
+> +What:		/sys/devices/.../removable
+> +Date:		Apr 2021
+> +Contact:	Matthew Garrett <mjg@redhat.com>,
+> +		Rajat Jain <rajatja@google.com>
+> +Description:
+> +		Information about whether a given device is physically fixed to
+> +		the platform. This is determined by the device's subsystem in a
+> +		bus / platform specific way. This attribute is only present for
 
-This needs a much more comprehensive comment, either here or above the declaration
-of slots_arch_lock.  I can't find anything that explicitly states the the lock
-must be held from the time the previous memslots are duplicated/copied until the
-new memslots are set.  Without that information, the rules/expecations are not
-clear.
+s/platform specific/platform-specific/
 
-> +	mutex_lock(&kvm->slots_arch_lock);
+> +		buses that can support determining such information:
 > +
->  	slots = kvm_dup_memslots(__kvm_memslots(kvm, as_id), change);
->  	if (!slots)
->  		return -ENOMEM;
-
-Fails to drop slots_arch_lock.
-
-> @@ -1364,10 +1372,9 @@ static int kvm_set_memslot(struct kvm *kvm,
->  		slot->flags |= KVM_MEMSLOT_INVALID;
+> +		"removable": The device is external / removable from the system.
+> +		"fixed":     The device is internal / fixed to the system.
+> +		"unknown":   The information is unavailable.
+> +
+> +		Currently this is only supported by USB (which infers the
+> +		information from a combination of hub descriptor bits and
+> +		platform-specific data such as ACPI).
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index f29839382f81..b8ae4cc52805 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -2327,6 +2327,25 @@ static ssize_t online_store(struct device *dev, struct device_attribute *attr,
+>  }
+>  static DEVICE_ATTR_RW(online);
 >  
->  		/*
-> -		 * We can re-use the old memslots, the only difference from the
-> -		 * newly installed memslots is the invalid flag, which will get
-> -		 * dropped by update_memslots anyway.  We'll also revert to the
-> -		 * old memslots if preparing the new memory region fails.
-> +		 * We can re-use the memory from the old memslots.
-> +		 * It will be overwritten with a copy of the new memslots
-> +		 * after reacquiring the slots_arch_lock below.
->  		 */
->  		slots = install_new_memslots(kvm, as_id, slots);
->  
-> @@ -1379,6 +1386,17 @@ static int kvm_set_memslot(struct kvm *kvm,
->  		 *	- kvm_is_visible_gfn (mmu_check_root)
->  		 */
->  		kvm_arch_flush_shadow_memslot(kvm, slot);
+> +static ssize_t removable_show(struct device *dev, struct device_attribute *attr,
+> +			      char *buf)
+> +{
+> +	const char *state;
 > +
-> +		/* Released in install_new_memslots. */
-> +		mutex_lock(&kvm->slots_arch_lock);
+> +	switch (dev->removable) {
+> +	case DEVICE_REMOVABLE:
+> +		state = "removable";
+> +		break;
+> +	case DEVICE_FIXED:
+> +		state = "fixed";
+> +		break;
+> +	default:
+> +		state = "unknown";
+> +	}
+> +	return sprintf(buf, "%s\n", state);
+
+Maybe sysfs_emit()?
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/filesystems/sysfs.rst?id=v5.12#n246
+
+Ironically, the example below the admonition to use sysfs_emit() still
+uses scnprintf() :)
+
+> +}
+> +static DEVICE_ATTR_RO(removable);
 > +
-> +		/*
-> +		 * The arch-specific fields of the memslots could have changed
-> +		 * between releasing the slots_arch_lock in
-> +		 * install_new_memslots and here, so get a fresh copy of the
-> +		 * slots.
-> +		 */
-> +		kvm_copy_memslots(__kvm_memslots(kvm, as_id), slots);
-
-Ow.  This is feedback for a previous patch, but kvm_copy_memslots() absolutely
-needs to swap the order of params to match memcpy(), i.e. @to is first, @from is
-second.
-
+>  int device_add_groups(struct device *dev, const struct attribute_group **groups)
+>  {
+>  	return sysfs_create_groups(&dev->kobj, groups);
+> @@ -2504,8 +2523,16 @@ static int device_add_attrs(struct device *dev)
+>  			goto err_remove_dev_online;
 >  	}
 >  
->  	r = kvm_arch_prepare_memory_region(kvm, new, mem, change);
-> @@ -1394,8 +1412,11 @@ static int kvm_set_memslot(struct kvm *kvm,
+> +	if (type && type->supports_removable) {
+> +		error = device_create_file(dev, &dev_attr_removable);
+> +		if (error)
+> +			goto err_remove_dev_waiting_for_supplier;
+> +	}
+> +
 >  	return 0;
 >  
->  out_slots:
-> -	if (change == KVM_MR_DELETE || change == KVM_MR_MOVE)
-> +	if (change == KVM_MR_DELETE || change == KVM_MR_MOVE) {
-> +		slot = id_to_memslot(slots, old->id);
-> +		slot->flags &= ~KVM_MEMSLOT_INVALID;
->  		slots = install_new_memslots(kvm, as_id, slots);
-> +	}
-
-Fails to drop slots_arch_lock if kvm_arch_prepare_memory_region() fails for
-anything other than DELETE and MOVE.
-
-I really, really don't like dropping the lock in install_new_memslots().  Unlocking
-bugs aside, IMO it makes it quite difficult to understand exactly what
-slots_arch_lock protects.  Unfortunately I'm just whining at this point since I
-don't have a better idea :-(
-
->  	kvfree(slots);
->  	return r;
+> + err_remove_dev_waiting_for_supplier:
+> +	device_remove_file(dev, &dev_attr_waiting_for_supplier);
+>   err_remove_dev_online:
+>  	device_remove_file(dev, &dev_attr_online);
+>   err_remove_dev_groups:
+> @@ -2525,6 +2552,7 @@ static void device_remove_attrs(struct device *dev)
+>  	struct class *class = dev->class;
+>  	const struct device_type *type = dev->type;
+>  
+> +	device_remove_file(dev, &dev_attr_removable);
+>  	device_remove_file(dev, &dev_attr_waiting_for_supplier);
+>  	device_remove_file(dev, &dev_attr_online);
+>  	device_remove_groups(dev, dev->groups);
+> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+> index 7f71218cc1e5..500e5648de04 100644
+> --- a/drivers/usb/core/hub.c
+> +++ b/drivers/usb/core/hub.c
+> @@ -2442,11 +2442,11 @@ static void set_usb_port_removable(struct usb_device *udev)
+>  	 */
+>  	switch (hub->ports[udev->portnum - 1]->connect_type) {
+>  	case USB_PORT_CONNECT_TYPE_HOT_PLUG:
+> -		udev->removable = USB_DEVICE_REMOVABLE;
+> +		dev_set_removable(&udev->dev, DEVICE_REMOVABLE);
+>  		return;
+>  	case USB_PORT_CONNECT_TYPE_HARD_WIRED:
+>  	case USB_PORT_NOT_USED:
+> -		udev->removable = USB_DEVICE_FIXED;
+> +		dev_set_removable(&udev->dev, DEVICE_FIXED);
+>  		return;
+>  	default:
+>  		break;
+> @@ -2471,9 +2471,9 @@ static void set_usb_port_removable(struct usb_device *udev)
+>  	}
+>  
+>  	if (removable)
+> -		udev->removable = USB_DEVICE_REMOVABLE;
+> +		dev_set_removable(&udev->dev, DEVICE_REMOVABLE);
+>  	else
+> -		udev->removable = USB_DEVICE_FIXED;
+> +		dev_set_removable(&udev->dev, DEVICE_FIXED);
+>  
 >  }
+>  
+> diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
+> index d85699bee671..e8ff3afdf7af 100644
+> --- a/drivers/usb/core/sysfs.c
+> +++ b/drivers/usb/core/sysfs.c
+> @@ -298,29 +298,6 @@ static ssize_t urbnum_show(struct device *dev, struct device_attribute *attr,
+>  }
+>  static DEVICE_ATTR_RO(urbnum);
+>  
+> -static ssize_t removable_show(struct device *dev, struct device_attribute *attr,
+> -			      char *buf)
+> -{
+> -	struct usb_device *udev;
+> -	char *state;
+> -
+> -	udev = to_usb_device(dev);
+> -
+> -	switch (udev->removable) {
+> -	case USB_DEVICE_REMOVABLE:
+> -		state = "removable";
+> -		break;
+> -	case USB_DEVICE_FIXED:
+> -		state = "fixed";
+> -		break;
+> -	default:
+> -		state = "unknown";
+> -	}
+> -
+> -	return sprintf(buf, "%s\n", state);
+> -}
+> -static DEVICE_ATTR_RO(removable);
+> -
+>  static ssize_t ltm_capable_show(struct device *dev,
+>  				struct device_attribute *attr, char *buf)
+>  {
+> @@ -825,7 +802,6 @@ static struct attribute *dev_attrs[] = {
+>  	&dev_attr_avoid_reset_quirk.attr,
+>  	&dev_attr_authorized.attr,
+>  	&dev_attr_remove.attr,
+> -	&dev_attr_removable.attr,
+>  	&dev_attr_ltm_capable.attr,
+>  #ifdef CONFIG_OF
+>  	&dev_attr_devspec.attr,
+> diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
+> index a566bb494e24..5a0f73a28196 100644
+> --- a/drivers/usb/core/usb.c
+> +++ b/drivers/usb/core/usb.c
+> @@ -523,6 +523,7 @@ struct device_type usb_device_type = {
+>  #ifdef CONFIG_PM
+>  	.pm =		&usb_device_pm_ops,
+>  #endif
+> +	.supports_removable = true,
+>  };
+>  
+>  
+> diff --git a/include/linux/device.h b/include/linux/device.h
+> index ba660731bd25..d6442b811607 100644
+> --- a/include/linux/device.h
+> +++ b/include/linux/device.h
+> @@ -93,6 +93,12 @@ struct device_type {
+>  	void (*release)(struct device *dev);
+>  
+>  	const struct dev_pm_ops *pm;
+> +
+> +	/*
+> +	 * Determines whether the subsystem supports classifying the devices of
+> +	 * this type into removable vs fixed.
+> +	 */
+
+Doesn't really match comment style in rest of the file.  Seems pretty
+self-explanatory, maybe doesn't even need a comment, or perhaps a
+short comment like this:
+
+	bool supports_removable:1;  /* subsystem supplies info */
+
+> +	bool supports_removable;
+
+Most boolean structure members in this file are bitfields, e.g.,
+"bool offline:1".
+
+>  };
+>  
+>  /* interface for exporting device attributes */
+> @@ -350,6 +356,19 @@ enum dl_dev_state {
+>  	DL_DEV_UNBINDING,
+>  };
+>  
+> +/**
+> + * enum device_removable - Whether the device is removable. The criteria for a
+> + * device to be classified as removable, is determined by its subsystem or bus.
+
+s/removable,/removable/
+
+Or maybe drop the whole "The criteria ..." sentence?  Not sure it adds
+much useful info.
+
+> + * @DEVICE_REMOVABLE_UNKNOWN:  Device location is Unknown (default).
+> + * @DEVICE_REMOVABLE: Device is removable by the user.
+> + * @DEVICE_FIXED: Device is not removable by the user.
+> + */
+> +enum device_removable {
+> +	DEVICE_REMOVABLE_UNKNOWN = 0,
+> +	DEVICE_REMOVABLE,
+> +	DEVICE_FIXED,
+> +};
+> +
+>  /**
+>   * struct dev_links_info - Device data related to device links.
+>   * @suppliers: List of links to supplier devices.
+> @@ -431,6 +450,9 @@ struct dev_links_info {
+>   * 		device (i.e. the bus driver that discovered the device).
+>   * @iommu_group: IOMMU group the device belongs to.
+>   * @iommu:	Per device generic IOMMU runtime data
+> + * @removable:  Whether the device can be removed from the system. This
+> + *              should be set by the subsystem / bus driver that discovered
+> + *              the device.
+>   *
+>   * @offline_disabled: If set, the device is permanently online.
+>   * @offline:	Set after successful invocation of bus type's .offline().
+> @@ -541,6 +563,8 @@ struct device {
+>  	struct iommu_group	*iommu_group;
+>  	struct dev_iommu	*iommu;
+>  
+> +	enum device_removable	removable;
+> +
+>  	bool			offline_disabled:1;
+>  	bool			offline:1;
+>  	bool			of_node_reused:1;
+> @@ -778,6 +802,18 @@ static inline bool dev_has_sync_state(struct device *dev)
+>  	return false;
+>  }
+>  
+> +static inline void dev_set_removable(struct device *dev,
+> +				     enum device_removable removable)
+> +{
+> +	dev->removable = removable;
+> +}
+> +
+> +static inline bool dev_is_removable(struct device *dev)
+> +{
+> +	return dev && dev->type && dev->type->supports_removable
+> +	    && dev->removable == DEVICE_REMOVABLE;
+> +}
+> +
+>  /*
+>   * High level routines for use by the bus drivers
+>   */
+> diff --git a/include/linux/usb.h b/include/linux/usb.h
+> index d6a41841b93e..0bbb9e8b18c7 100644
+> --- a/include/linux/usb.h
+> +++ b/include/linux/usb.h
+> @@ -473,12 +473,6 @@ struct usb_dev_state;
+>  
+>  struct usb_tt;
+>  
+> -enum usb_device_removable {
+> -	USB_DEVICE_REMOVABLE_UNKNOWN = 0,
+> -	USB_DEVICE_REMOVABLE,
+> -	USB_DEVICE_FIXED,
+> -};
+> -
+>  enum usb_port_connect_type {
+>  	USB_PORT_CONNECT_TYPE_UNKNOWN = 0,
+>  	USB_PORT_CONNECT_TYPE_HOT_PLUG,
+> @@ -701,7 +695,6 @@ struct usb_device {
+>  #endif
+>  	struct wusb_dev *wusb_dev;
+>  	int slot_id;
+> -	enum usb_device_removable removable;
+>  	struct usb2_lpm_parameters l1_params;
+>  	struct usb3_lpm_parameters u1_params;
+>  	struct usb3_lpm_parameters u2_params;
 > -- 
-> 2.31.1.607.g51e8a6a459-goog
+> 2.31.1.498.g6c1eba8ee3d-goog
 > 
