@@ -2,121 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA32B37B251
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DCB137B270
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbhEKXOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:14:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48182 "EHLO mail.kernel.org"
+        id S229948AbhEKXYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:24:09 -0400
+Received: from gate.crashing.org ([63.228.1.57]:37194 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230349AbhEKXNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:13:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A29AD61970;
-        Tue, 11 May 2021 23:12:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620774745;
-        bh=HUeol4gFdWksleT74+GMDrTPrwvwDRevaKoSi42xkG0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=axaYhOU0RJ8fivPYyVtVQtkDU2Mu67r8Sq8ybTSwtUvrdj/2Ip/2u+tOryZORcqnv
-         tQBJmbRh/9xs76HAZ6UDuMyubm/M9Yot+Aj/PETAzDXWHmkYortus6dpOqAwGHxgFo
-         WeN6k8R1S6ctyVIr6UYMYTOuyrCWHOXZ1IKBOhvW9pKzykN9oB8Oo9bf6v165/bYm2
-         2X9UW9R6J4NidvvYwrkBOwLJLzhnW1GQFWAOdt1ulbUrIR14GP+OJE592LbFMfEKFP
-         9FsKXuXnQuL2f6HA1sx4lqrnFafL7jEGbz7/kAj/XgaCJ4OzqzkwJcEZqGxw6NYJ+R
-         vrqaooWBPOpEA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9925A5C0EBF; Tue, 11 May 2021 16:12:24 -0700 (PDT)
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 26/26] rcu: Don't penalize priority boosting when there is nothing to boost
-Date:   Tue, 11 May 2021 16:12:23 -0700
-Message-Id: <20210511231223.2895398-26-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
-References: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229714AbhEKXYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 19:24:08 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 14BNGbGN018678;
+        Tue, 11 May 2021 18:16:37 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 14BNGZlW018677;
+        Tue, 11 May 2021 18:16:35 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Tue, 11 May 2021 18:16:35 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        clang-built-linux@googlegroups.com, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH kernel v2] powerpc/makefile: Do not redefine $(CPP) for preprocessor
+Message-ID: <20210511231635.GR10366@gate.crashing.org>
+References: <20210511044812.267965-1-aik@ozlabs.ru> <20210511112019.GK10366@gate.crashing.org> <1795b9efa40.27bb.1ca38dd7e845b990cd13d431eb58563d@ozlabs.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1795b9efa40.27bb.1ca38dd7e845b990cd13d431eb58563d@ozlabs.ru>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RCU priority boosting cannot do anything unless there is at least one
-task blocking the current RCU grace period that was preempted within
-the RCU read-side critical section that it still resides in.  However,
-the current rcu_torture_boost_failed() code will count this as an RCU
-priority-boosting failure if there were no CPUs blocking the current
-grace period.  This situation can happen (for example) if the last CPU
-blocking the current grace period was subjected to vCPU preemption,
-which is always a risk for rcutorture guest OSes.
+On Tue, May 11, 2021 at 11:30:17PM +1000, Alexey Kardashevskiy wrote:
+> >In any case, please mention the reasoning (and the fact that you are
+> >removing these flags!) in the commit message.  Thanks!
+> 
+> but i did mention this, the last paragraph... they are duplicated.
 
-This commit therefore causes rcu_torture_boost_failed() to refrain from
-reporting failure unless there is at least one task blocking the current
-RCU grace period that was preempted within the RCU read-side critical
-section that it still resides in.
+Oh!  I completely missed those few lines.  Sorry for that :-(
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree_stall.h | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+To compensate a bit:
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 8bde1b53b0c9..65302518e006 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -723,6 +723,10 @@ static void check_cpu_stall(struct rcu_data *rdp)
-  * count this as an RCU priority boosting failure.  A return of true says
-  * RCU priority boosting is to blame, and false says otherwise.  If false
-  * is returned, the first of the CPUs to blame is stored through cpup.
-+ * If there was no CPU blocking the current grace period, but also nothing
-+ * in need of being boosted, *cpup is set to -1.  This can happen in case
-+ * of vCPU preemption while the last CPU is reporting its quiscent state,
-+ * for example.
-  *
-  * If cpup is NULL, then a lockless quick check is carried out, suitable
-  * for high-rate usage.  On the other hand, if cpup is non-NULL, each
-@@ -730,18 +734,25 @@ static void check_cpu_stall(struct rcu_data *rdp)
-  */
- bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
- {
-+	bool atb = false;
- 	int cpu;
- 	unsigned long flags;
- 	struct rcu_node *rnp;
- 
- 	rcu_for_each_leaf_node(rnp) {
- 		if (!cpup) {
--			if (READ_ONCE(rnp->qsmask))
-+			if (READ_ONCE(rnp->qsmask)) {
- 				return false;
--			else
-+			} else {
-+				if (READ_ONCE(rnp->gp_tasks))
-+					atb = true;
- 				continue;
-+			}
- 		}
-+		*cpup = -1;
- 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
-+		if (rnp->gp_tasks)
-+			atb = true;
- 		if (!rnp->qsmask) {
- 			// No CPUs without quiescent states for this rnp.
- 			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-@@ -758,7 +769,7 @@ bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	}
- 	// Can't blame CPUs, so must blame RCU priority boosting.
--	return true;
-+	return atb;
- }
- EXPORT_SYMBOL_GPL(rcu_check_boost_fail);
- 
--- 
-2.31.1.189.g2e36527f23
+> It still puzzles me why we need -C
+> (preserve comments in the preprocessor output) flag here.
 
+It is so that a human can look at the output and read it.  Comments are
+very significant to human readers :-)
+
+
+Segher
