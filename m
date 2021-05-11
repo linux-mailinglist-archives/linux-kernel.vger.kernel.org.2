@@ -2,114 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E305B37A6C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF44537A6CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbhEKMfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 08:35:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230475AbhEKMfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 08:35:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3BE16190A;
-        Tue, 11 May 2021 12:34:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620736470;
-        bh=n+jSmGNQbhjtny2vTOSU0U5rOWM5+bi641fvtQxXXbE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ENjFrDtflR7X8+9+kXKiEToh7QqEjvV6UEUoFO01UfneHCBiV6CkrH/qV8yoPbBYQ
-         uaGMRg2dgjmUgcD4UibaT9/4Rpo/TOPHwTJh8jkcB4L7Q3M1ZoclHmU/EEV7sEGS27
-         Wa9FySRvxHiI6f/JDvMA+dAh8yn4g9og8kWqrMlsNLSj3l/BtINs9sednTc1RvI/Lo
-         b+/26+g4lEuJvcPIkUU/6BCJTMcfvZsYSFY2LMuQ7ErYQ0xm2G96mf1UjV+DdF1wb7
-         F4lMM9cDUpZrDS4GHSwup6/fb0iRl/xHyi5zE+F3W2s8wOxExWv9eDxKMB4yMkMEYf
-         2UXPyLTRUhdFg==
-Date:   Tue, 11 May 2021 15:34:26 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Haakon Bugge <haakon.bugge@oracle.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
- allocations
-Message-ID: <YJp50nw6JD3ptVDp@unreal>
-References: <c34a864803f9bbd33d3f856a6ba2dd595ab708a7.1620729033.git.leonro@nvidia.com>
- <F62CF3D3-E605-4CBA-B171-5BB98594C658@oracle.com>
+        id S231598AbhEKMf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 08:35:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37255 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231569AbhEKMfx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 08:35:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620736485;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2QPkbbSWG9Bctna+DKSZ7C9IAc+76gV5dRWVuVO49Zw=;
+        b=bSxXhSwd0IwJ8cLn5jFduOeN4+4V8b/WRJIldKxNewiT58etnN5ZPGtoPbaM7NPMkdxODW
+        21EZnqGelAIdWiPhLuPWCATMQgL/ybOUeJCm+HBAK0bxUgjuswLy0C+fGfh2DI2wqj0KaF
+        aW+CF5zkzO8ygXYpLOr6QDB+2zfQqSM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-130-K4tGLFgBMwSuO3t-yg36EA-1; Tue, 11 May 2021 08:34:43 -0400
+X-MC-Unique: K4tGLFgBMwSuO3t-yg36EA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A299B803620;
+        Tue, 11 May 2021 12:34:42 +0000 (UTC)
+Received: from starship (unknown [10.40.194.86])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B122D5D6D1;
+        Tue, 11 May 2021 12:34:39 +0000 (UTC)
+Message-ID: <fe160df2233486073031ea0ffbde20a7d16f9601.camel@redhat.com>
+Subject: Re: [PATCH 14/15] KVM: x86: Tie Intel and AMD behavior for
+ MSR_TSC_AUX to guest CPU model
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Jim Mattson <jmattson@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Reiji Watanabe <reijiw@google.com>
+Date:   Tue, 11 May 2021 15:34:38 +0300
+In-Reply-To: <CALMp9eSzy6gEvZe2s-MGe3cM047iKNoGidHDkm63=01sfgSyjg@mail.gmail.com>
+References: <20210504171734.1434054-1-seanjc@google.com>
+         <20210504171734.1434054-15-seanjc@google.com>
+         <7e75b44c0477a7fb87f83962e4ea2ed7337c37e5.camel@redhat.com>
+         <YJlkT0kJ241gYgVw@google.com>
+         <CALMp9eSzy6gEvZe2s-MGe3cM047iKNoGidHDkm63=01sfgSyjg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <F62CF3D3-E605-4CBA-B171-5BB98594C658@oracle.com>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 10:59:52AM +0000, Haakon Bugge wrote:
+On Mon, 2021-05-10 at 10:11 -0700, Jim Mattson wrote:
+> On Mon, May 10, 2021 at 9:50 AM Sean Christopherson <seanjc@google.com> wrote:
+> > On Mon, May 10, 2021, Maxim Levitsky wrote:
+> > > On Tue, 2021-05-04 at 10:17 -0700, Sean Christopherson wrote:
+> > > > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> > > > index de921935e8de..6c7c6a303cc5 100644
+> > > > --- a/arch/x86/kvm/svm/svm.c
+> > > > +++ b/arch/x86/kvm/svm/svm.c
+> > > > @@ -2663,12 +2663,6 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+> > > >                     msr_info->data |= (u64)svm->sysenter_esp_hi << 32;
+> > > >             break;
+> > > >     case MSR_TSC_AUX:
+> > > > -           if (tsc_aux_uret_slot < 0)
+> > > > -                   return 1;
+> > > > -           if (!msr_info->host_initiated &&
+> > > Not related to this patch, but I do wonder why do we need
+> > > to always allow writing this msr if done by the host,
+> > > since if neither RDTSPC nor RDPID are supported, the guest
+> > > won't be able to read this msr at all.
+> > 
+> > It's an ordering thing and not specific to MSR_TSC_AUX.  Exempting host userspace
+> > from guest CPUID checks allows userspace to set MSR state, e.g. during migration,
+> > before setting the guest CPUID model.
 > 
-> 
-> > On 11 May 2021, at 12:36, Leon Romanovsky <leon@kernel.org> wrote:
-> > 
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > The rdmavt QP has fields that are both needed for the control and data
-> > path. Such mixed declaration caused to the very specific allocation flow
-> > with kzalloc_node and SGE list embedded into the struct rvt_qp.
-> > 
-> > This patch separates QP creation to two: regular memory allocation for
-> > the control path and specific code for the SGE list, while the access to
-> > the later is performed through derefenced pointer.
-> > 
-> > Such pointer and its context are expected to be in the cache, so
-> > performance difference is expected to be negligible, if any exists.
-> > 
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> > Hi,
-> > 
-> > This change is needed to convert QP to core allocation scheme. In that
-> > scheme QP is allocated outside of the driver and size of such allocation
-> > is constant and can be calculated at the compile time.
-> > 
-> > Thanks
-> > ---
-> > drivers/infiniband/sw/rdmavt/qp.c | 13 ++++++++-----
-> > include/rdma/rdmavt_qp.h          |  2 +-
-> > 2 files changed, 9 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
-> > index 9d13db68283c..4522071fc220 100644
-> > --- a/drivers/infiniband/sw/rdmavt/qp.c
-> > +++ b/drivers/infiniband/sw/rdmavt/qp.c
-> > @@ -1077,7 +1077,7 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
-> > 	int err;
-> > 	struct rvt_swqe *swq = NULL;
-> > 	size_t sz;
-> > -	size_t sg_list_sz;
-> > +	size_t sg_list_sz = 0;
-> > 	struct ib_qp *ret = ERR_PTR(-ENOMEM);
-> > 	struct rvt_dev_info *rdi = ib_to_rvt(ibpd->device);
-> > 	void *priv = NULL;
-> > @@ -1125,8 +1125,6 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
-> > 		if (!swq)
-> > 			return ERR_PTR(-ENOMEM);
-> > 
-> > -		sz = sizeof(*qp);
-> > -		sg_list_sz = 0;
-> > 		if (init_attr->srq) {
-> > 			struct rvt_srq *srq = ibsrq_to_rvtsrq(init_attr->srq);
-> > 
-> > @@ -1136,10 +1134,13 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
-> > 		} else if (init_attr->cap.max_recv_sge > 1)
-> > 			sg_list_sz = sizeof(*qp->r_sg_list) *
-> > 				(init_attr->cap.max_recv_sge - 1);
-> > -		qp = kzalloc_node(sz + sg_list_sz, GFP_KERNEL,
-> > -				  rdi->dparms.node);
-> > +		qp = kzalloc(sizeof(*qp), GFP_KERNEL);
-> 
-> Why not kzalloc_node() here?
+> I thought the rule was that if an MSR was enumerated by
+> KVM_GET_MSR_INDEX_LIST, then KVM had to accept legal writes from the
+> host. The only "ordering thing" is that KVM_GET_MSR_INDEX_LIST is a
+> device ioctl, so it can't take guest CPUID information into account.
 
-The idea is to delete this kzalloc later in next patch, because all
-drivers are doing same thing "qp = kzalloc(sizeof(*qp), GFP_KERNEL);".
+This makes sense.
 
-Thanks
+Thanks!
+Best regards,
+	Maxim Levitsky
+> 
+> > > > -               !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
+> > > > -               !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
+> > > > -                   return 1;
+> > > >             msr_info->data = svm->tsc_aux;
+> > > >             break;
+> > > >     /*
+
+
