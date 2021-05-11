@@ -2,328 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C716237AA75
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F5D37AA77
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbhEKPSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 11:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbhEKPST (ORCPT
+        id S231826AbhEKPSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 11:18:52 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:48958 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231704AbhEKPSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 11:18:19 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9028C061574;
-        Tue, 11 May 2021 08:17:11 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id c3so29187353lfs.7;
-        Tue, 11 May 2021 08:17:11 -0700 (PDT)
+        Tue, 11 May 2021 11:18:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1620746265; x=1652282265;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=x6pBh7dZr5mqi1oeEMiNKRy3kppJz0eAW+L+MRWrJYo=;
+  b=PO0rBwaUAwbJtZCiZ1FL3bFQFdiyC2v0WKVlOQNw/d+EibVEebChqUgo
+   dkGMsLt40/u0ZVxrjDZXMEqMVyTYNNP4o9cbmQHPHSvVNw8uiliqWle7R
+   ogX/JlSgEdjNrrYxDeKCBpOnf9fBjudI9IMmAi4Ba7iDmNiO8IxaaL5BF
+   xNH+7dYeqjoBinund/IMSUTvrZZNWDze/ie8l2ngQF2/olSQ7RDLX/y7K
+   vJZ5WnZvXsNgA0C6coKLkfxxNWnktq8XlRZokONaFx6nyjDrq3+CWPnxE
+   BpBCfKZvcM9JE8J3OurV3L0MEQtRrWdktwGAU16NF06arZaMt1nMrC5eP
+   Q==;
+IronPort-SDR: ISiBKsk8fV2it29FYXbbE/Ge250a5XOz2OXvqCaP7/FDrsYteGySWDR+1zY4apUymcxBxh4gWG
+ J+53075M6Gz7BHwNHEPsu1ejlMPRuwrWzBGX41QgZ4kHJmnOutXW4OJRlyi6iVhjFOEQm+02Z6
+ Q+b0w7k34pJO8lhNy2Q+7ZrczPpHF+iSDmdrKDfIIuBOqw0Ke6Wt33kwF6e6YhlZphgBDv/XMO
+ 6vC5pWAWBf88PkYdXPwdSPUDoHF25/ZgqdJqg3lJ6Sczdk1ALnHdiRtI6LylGRw5qj07+kTSCN
+ Uig=
+X-IronPort-AV: E=Sophos;i="5.82,291,1613458800"; 
+   d="scan'208";a="120680397"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 May 2021 08:17:42 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 11 May 2021 08:17:40 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2
+ via Frontend Transport; Tue, 11 May 2021 08:17:40 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fm+QL9/8WqVJUJiylv9FG8n+OG9oqkpq1BLmGok2Od5xR0jUhjAJj4Aotj+8mZp3wkNJDNvelIEe3RWDVHE4QDzdm6niDB9I+PPU1AXQ3fUxsPd6ygjPiPYzRM/05Pk4sidZTRaAXuREqGLN7+hLPT2MVXQwu+gPwWT00VdJGHslvezUDs5bwqGJBPW7FYK/woO8JStcQ5NgA1uaeDzunx/eGIQiLY5u/Gt1MGYsgAX2WVPWPMdArydO68OMY3n14IoPvQagPXKE/KMS5pPkmNbO9UGHLIis5ujGpNdrW8Tt36Z0V2+ynWTJDc/a6j4+86bfeM9+Pmk17FQg5gOWBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x6pBh7dZr5mqi1oeEMiNKRy3kppJz0eAW+L+MRWrJYo=;
+ b=bK+ApY8x67G9LPVUOzdswOqiWwYAH9WqCalcaA9bNshZlMjyEl4D6Axqa54iIMBMI7/jPMJyZSfD2yX931uIFBeix8HtBJv2uxc3n+u6yQDc/8dgLFZqGsRuz+xP9Z2CBfeOO1unES+yOO7PyXVIuCi3Sl8yuIc0sGEKwSdKK5TUbswwcczS3IU8zjcPN9LK3aCat3GWT6t2eGd5w2PQ8f6Pb0GmqevAzp7OHs/inl1Xwv4pSYzz92bl0YUInwhIYCex3phakKkl1jHgPL3Q+NfyEjxrwl6PpTngmuZP9f871ISJPDoCacfAJRf1Smd1k8TFd14FxQpMvY1Vq+6YaA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l0+Py+3CSfNlV3pR44naNix1unXeingMcJ67NIXwY+s=;
-        b=KvmvfOGCxA5R95WsJ7wQo1T7SFztdufpvwNa0wqh0a2VAR9KELBm2fXiKtVjucIons
-         qyceviM5GU6KDbiZCKyxbZdEXMiui+5ZdDs0lSC1pPJrH1ZYSabTHoqrUpjdpCOUn5wj
-         crJI6WoKbj17Pp/DjlEWpEhGGitpDdUaVnIubOD9vxarDIxBavzhJ/sjpHdA9LL6LKfT
-         ckWXMjC1ptTnnkPwIYjLWfFivMW8v0WACxHFMfoXCcjDWKFxXLiiw+iUOQS26W4Keb9O
-         Brvr7ke36/ZqKSjJsILolqmmZFIef8JojRRxW2T3IQc9VkcFMNsA25UqyRZswAAN9yvi
-         BDWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=l0+Py+3CSfNlV3pR44naNix1unXeingMcJ67NIXwY+s=;
-        b=RcqzOiPHgU5mH7a4wgVq3u+Tg4unwK2rnUS9e87Rk6kAXRZj5PDS2j0FOImyG8AMhC
-         VqQop8/BvX/7xJzEcvvA6Rg34lMdwUmy0IoyqUR/AqZi4gsQUMpGPYfksxf75ubGEZ4K
-         fdc0lGIFEEaDGG1DlvawsJkE4bcJpqLr4EaGGkwnIopGY5vn0/7Ko1oJQysek6Ekl4zc
-         yq2GJDkcBMreG4UzQcR6+7f/uEV6aKiIJCFZYDZtjkGAdcwmsmLtJIVp2dzQucCmP0JZ
-         COMhQlV6IdNrC5R1zLaeNwZVw8dyH7FqhJ4cRbuWRfKPrKnAOvEXUz3FutbYBFOPQ2qX
-         XN1A==
-X-Gm-Message-State: AOAM5302xcj7ZeFI5PEKS06DmcKXZBSv314jfQW+4baIxT1YIA1vHQK+
-        iDEgr4Vx2SZbIsppPAePSfSKSM3qY6E=
-X-Google-Smtp-Source: ABdhPJyXhN6Oluf0OSbovpK7KCmU9QCVIYigxkbbwdonQZFsw+d5xv8p+sw5yqXIED599YuCBkNwpA==
-X-Received: by 2002:a05:6512:3f04:: with SMTP id y4mr22107926lfa.458.1620746229956;
-        Tue, 11 May 2021 08:17:09 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.googlemail.com with ESMTPSA id j14sm2657790lfc.47.2021.05.11.08.17.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 08:17:09 -0700 (PDT)
-Subject: Re: [PATCH v1 2/2] memory: tegra: Enable compile testing for all
- drivers
-To:     kernel test robot <lkp@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20210510213729.7095-3-digetx@gmail.com>
- <202105112125.VctfC6sX-lkp@intel.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <dd0b550e-76a0-bfbc-9d6f-5d867812046d@gmail.com>
-Date:   Tue, 11 May 2021 18:17:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <202105112125.VctfC6sX-lkp@intel.com>
-Content-Type: text/plain; charset=utf-8
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x6pBh7dZr5mqi1oeEMiNKRy3kppJz0eAW+L+MRWrJYo=;
+ b=j75U18RvTOpCvTnLie+tqTgHksB6MJewW7IbTRFGegUgYOc4EMpxDaz1re7ycCvseipJAy5k35NiAwMESC/ezPJw8F9sD/NtgeNGg7opvc11WNKJvgnjyZZj2M6bSFKfICZqtushIemZv/Q35bFYdIMTQWRrlcRgx/ZRM9E1G9g=
+Received: from BYAPR11MB3254.namprd11.prod.outlook.com (2603:10b6:a03:7c::19)
+ by BYAPR11MB3816.namprd11.prod.outlook.com (2603:10b6:a03:f8::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24; Tue, 11 May
+ 2021 15:17:39 +0000
+Received: from BYAPR11MB3254.namprd11.prod.outlook.com
+ ([fe80::6c10:a3fe:3cd1:54c0]) by BYAPR11MB3254.namprd11.prod.outlook.com
+ ([fe80::6c10:a3fe:3cd1:54c0%4]) with mapi id 15.20.4108.031; Tue, 11 May 2021
+ 15:17:39 +0000
+From:   <Codrin.Ciubotariu@microchip.com>
+To:     <Eugen.Hristev@microchip.com>, <robh+dt@kernel.org>,
+        <Nicolas.Ferre@microchip.com>
+CC:     <alexandre.belloni@bootlin.com>, <Ludovic.Desroches@microchip.com>,
+        <soc@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <Claudiu.Beznea@microchip.com>
+Subject: Re: [PATCH 2/4] ARM: dts: at91: add sama7g5 SoC DT and sama7g5-ek
+Thread-Topic: [PATCH 2/4] ARM: dts: at91: add sama7g5 SoC DT and sama7g5-ek
+Thread-Index: AQHXQ1WBJ3OL0TN3Tk6rA7yEdnXREareauMA
+Date:   Tue, 11 May 2021 15:17:39 +0000
+Message-ID: <69db39fe-e969-f637-7226-5cb63fc477c5@microchip.com>
+References: <20210507152655.182558-1-eugen.hristev@microchip.com>
+ <20210507152655.182558-2-eugen.hristev@microchip.com>
+In-Reply-To: <20210507152655.182558-2-eugen.hristev@microchip.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+authentication-results: microchip.com; dkim=none (message not signed)
+ header.d=none;microchip.com; dmarc=none action=none
+ header.from=microchip.com;
+x-originating-ip: [2a02:2f0f:910b:600:faed:b4c6:b74:cc75]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 07450609-a45b-4813-70dd-08d9148fea77
+x-ms-traffictypediagnostic: BYAPR11MB3816:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR11MB3816DE4D2FF127217470826CE7539@BYAPR11MB3816.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2150;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: eleEx5vSAsEHSpz1XU6sLGuNinpJwuq6VXLRkFpen1M7M5XsqyW7TtA4yzxKHTRqpSYVR4XrfjKAQFKmrO+EHpmrhyE3E7EVny0FZHDadibvvUNG4Z3CNnTAfgxB0XaxmR1oGFKZ2OW1ZgF56PDs2z4cJ619v0/M8CeH/6T+ItqgpUphHZr5Cs8vvy52PrFtukCC/sKcucWNym14ajWPVDLHYH29w+dbzoF7iPtp+YctuzZ8OTC+ef1IL5byYIEK4nF5pgACyCnB2VEoWqmyYSbQCeovj1c48TzspyBFuXVbpIHgVMq7CShft9A+JNMnTKx7UnYtzoum6TOaWYrx0qWcnbZm+2sM/V9bJJ0UJo7Zi99qWKnIkJ6UGkKWo/VsRV+zAs1YfLkjD0OsnWPypaxJCGmH9dgXykku6Ehs6hx1VsncjkwmI8gehGIsiuQ9YrVat6SfmRUlr80mc8b2VzFfDXEPTT+6idFxGCE+R0gZL5vTutIybKO+/QfpvUi5WdJ5C8udOoVD+oqjxdfv9c/ncoV6aZGteZ+F5cxl/TNVzadME9LqLHKeBP715CYJQX5fzBk8lkkjr6W2FmMRWCdjHoITTO5g38/Vs/I3ERP9vlvWjqkD2oT+XWgX91deH2M9FLNy+PEN8af4A/5ZkPcKduSS8aKSv3OTnzGidMxVIZZwnHoPpRGgdGWxhNnx
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3254.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(136003)(366004)(346002)(39860400002)(66946007)(36756003)(71200400001)(31686004)(5660300002)(2906002)(76116006)(66556008)(64756008)(66476007)(6486002)(6636002)(122000001)(110136005)(54906003)(91956017)(316002)(38100700002)(6506007)(107886003)(66446008)(31696002)(478600001)(186003)(8676002)(86362001)(4326008)(8936002)(6512007)(558084003)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?YWtoMmxIaUx4aVA5NmJ0eS94dzlxK2QrTVlHMGhRMjdkM3V0ajhGVmRZeXgv?=
+ =?utf-8?B?cjROY3RYYmdzMHRQTmRnQXprd2s1M214d2FJQUtDNzJOZkNEYlVPNnZNV1d3?=
+ =?utf-8?B?cnErbmZXMnd6UjZaaE5QOHZVVUxMcUh1N09xb1RueUMzUWdRd1dqaTV2Z01F?=
+ =?utf-8?B?Um9HZnhJTEs3SjhBNEhhQkxmZVRCV1NoUGR2ZmZ6SThaVG5aMjM2QlVFSUsv?=
+ =?utf-8?B?Y1V1ZTdPRzZFTUU4bjVlV0FxZGtWbW9CV1NZclNxV21hWDN1aC9laFVmZGpz?=
+ =?utf-8?B?S0ZlTmExUmp6ajdKRXA3MDYwOG9Jd1hPSmNpc3V6RXpQY1BESExyaDNDZnB0?=
+ =?utf-8?B?RGVyYnVBeTUrL08yQ1Mxc3lIZE10cVdxalZFOEoxdEYxOEs5d24yVkI1TzU1?=
+ =?utf-8?B?SkZUMHlLSGlmb2YyZGxqSlg5SjJ0M05tVU5naUtkUDhMYy9uNkwwK0ZXblVn?=
+ =?utf-8?B?VmhFNk5ISmhwNUFoYnhXdDdRRWZiQmNpZDJCY1JmSU5aRGwvNnUxTFR4RmFW?=
+ =?utf-8?B?MmdEdWVUZmxCTDFoc0VxUnRpbmpqQ2haam9uME9hMVVGczZESm5lK1RwRkFK?=
+ =?utf-8?B?NFVTL3crVW55S3ZHTmJFVVk0YUFkQTJ5dDdUK0FzcXAvb09OTjI5WEhUclRZ?=
+ =?utf-8?B?ZEd6T0NRZXRvb3ZLTXJWVlNZVTBLMlNMUEIxSzZISWxmV1dDOFR5eHFjeVBI?=
+ =?utf-8?B?Y3U3NmZIeStHQmVyZVJYSkQ3TDdJcWlVa3h3T25NVERCTDhtVXR4d00vZzV2?=
+ =?utf-8?B?MzBVdC9uRnVuakVoVVoxOW1yeXo2V3lhYk1WU1lidkxMdUdZcEtTb2QweWkv?=
+ =?utf-8?B?elk3NXRySkxuYzVyS0VnaDcreG56ODdKd2pMYVprMk5KYU5xUVZvelg2TXdy?=
+ =?utf-8?B?NWtUR0x4R1ZlRXpoNWEwbHpjU25kSXFxemJxNTZ2NTBWelpxbkJHTHpYdE5P?=
+ =?utf-8?B?NGVIREo3RnJNSlZVWFEzQllzZTBEdVVVSDhQeDBFZUpTRXo4aG1oU2s5SzFz?=
+ =?utf-8?B?aUc3cWg5Y1h3QkdocFlPbjRtTmgzQThKQTZSeFFGSVEwbVpKdlR0QzJheE1M?=
+ =?utf-8?B?TGZPMnNiMXJ1b1dBeVZhR3ZmdXNmMFpTMUNJNUwreHZoTGhjZk1pVnNvWkFa?=
+ =?utf-8?B?Nm54aHo3L25zV2ZtYmxGZDR5NnNvN1lyK1diY1RaZGE2TDRsc3VaSjhjek5V?=
+ =?utf-8?B?U2lNWGI5RjRncy9RYUZMZXZ2MnB4MVlFeDA5NVk5Z3ZMUFhSaVRCQ09PVnJx?=
+ =?utf-8?B?cHluOG9wa3VTL282RXZkM3luYnFmNWc1aEhxaHlick9IaWhWNlB3Q1BtZ3Iv?=
+ =?utf-8?B?SkpyRTRkVFhLVUNVUEJ2dWNLeTI0Z0htN1l0dVRLTWpmVkNFaks4S0s1WG5X?=
+ =?utf-8?B?NGNqbCtsbnhTaFVtN3lzcldPY0pwNkF1M09CMGpTU3VVTkdtK1FwRnhNMzQr?=
+ =?utf-8?B?VjI2QUFZSHZLSWFLakNaZHo3Z0FDM1hTNjVmb2t1OSs1Wjlmc1A5SXM5NndC?=
+ =?utf-8?B?R2REcnIzSzdPT1Q1YnM4eXo1dVZiWnl6S21IY2JsZ1JGUUwvNGtJWFpXQTNM?=
+ =?utf-8?B?VDFNNWlBRVRHQXpQVzgrUWk5Z2ZURUFwQkFMSVpBN1lmd0NGOWpndTRCSkcz?=
+ =?utf-8?B?dkJFNkgycTU0cldPdmN5SURoai9aNDBoZlh3YUtEd1FlSk9tbmQzSTdrN0Nn?=
+ =?utf-8?B?NlZhMlpDaStKbHlTclIvVzZkUVdzS2ZuajV4Q2NmQ2F2MVdZd1MrLzR3bXc5?=
+ =?utf-8?B?QUluNkErQnRqMEppdSt3YVNxQjg5bnZDQWhsVzl2NCt0RzlFTWZvdUovUndZ?=
+ =?utf-8?Q?IlxL7q4fPMzKRdx9XHbWhR0OyOKDLsWOTjNK0=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <72E3DAFF8639BF4D9A8BE46BD7829A07@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3254.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07450609-a45b-4813-70dd-08d9148fea77
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2021 15:17:39.4721
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9PidwcSE8hMc40VMleCiiSM/jIkQq+oCsZUViSfmk3zesjI1i1J6l5cHVRW8XbLhNBa3DW2Raa1KT3ucZkBCxrvn1+8+PKRc8/BwiJyajh4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3816
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-11.05.2021 16:58, kernel test robot пишет:
-> Hi Dmitry,
-> 
-> I love your patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on tegra/for-next]
-> [also build test WARNING on v5.13-rc1 next-20210511]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Dmitry-Osipenko/Enable-compile-testing-for-Tegra-memory-drivers/20210511-053910
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git for-next
-> config: powerpc-randconfig-r032-20210511 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project a0fed635fe1701470062495a6ffee1c608f3f1bc)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install powerpc cross compiling tool for clang build
->         # apt-get install binutils-powerpc-linux-gnu
->         # https://github.com/0day-ci/linux/commit/ecd67b1d49eb33c9821130a2b3b896bab395118d
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Dmitry-Osipenko/Enable-compile-testing-for-Tegra-memory-drivers/20210511-053910
->         git checkout ecd67b1d49eb33c9821130a2b3b896bab395118d
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=powerpc 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    __do_insb
->    ^
->    arch/powerpc/include/asm/io.h:556:56: note: expanded from macro '__do_insb'
->    #define __do_insb(p, b, n)      readsb((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->                                           ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/memory/tegra/tegra30-emc.c:18:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from arch/powerpc/include/asm/hardirq.h:6:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:45:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(insw, (unsigned long p, void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:211:1: note: expanded from here
->    __do_insw
->    ^
->    arch/powerpc/include/asm/io.h:557:56: note: expanded from macro '__do_insw'
->    #define __do_insw(p, b, n)      readsw((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->                                           ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/memory/tegra/tegra30-emc.c:18:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from arch/powerpc/include/asm/hardirq.h:6:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:47:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(insl, (unsigned long p, void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:213:1: note: expanded from here
->    __do_insl
->    ^
->    arch/powerpc/include/asm/io.h:558:56: note: expanded from macro '__do_insl'
->    #define __do_insl(p, b, n)      readsl((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->                                           ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/memory/tegra/tegra30-emc.c:18:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from arch/powerpc/include/asm/hardirq.h:6:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:49:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(outsb, (unsigned long p, const void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:215:1: note: expanded from here
->    __do_outsb
->    ^
->    arch/powerpc/include/asm/io.h:559:58: note: expanded from macro '__do_outsb'
->    #define __do_outsb(p, b, n)     writesb((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->                                            ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/memory/tegra/tegra30-emc.c:18:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from arch/powerpc/include/asm/hardirq.h:6:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:51:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(outsw, (unsigned long p, const void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:217:1: note: expanded from here
->    __do_outsw
->    ^
->    arch/powerpc/include/asm/io.h:560:58: note: expanded from macro '__do_outsw'
->    #define __do_outsw(p, b, n)     writesw((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->                                            ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/memory/tegra/tegra30-emc.c:18:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from arch/powerpc/include/asm/hardirq.h:6:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:53:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(outsl, (unsigned long p, const void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:219:1: note: expanded from here
->    __do_outsl
->    ^
->    arch/powerpc/include/asm/io.h:561:58: note: expanded from macro '__do_outsl'
->    #define __do_outsl(p, b, n)     writesl((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->                                            ~~~~~~~~~~~~~~~~~~~~~^
->>> drivers/memory/tegra/tegra30-emc.c:757:18: warning: implicit conversion from 'unsigned long' to 'u32' (aka 'unsigned int') changes value from 18446744071562067985 to 2147483665 [-Wconstant-conversion]
->                    writel_relaxed(EMC_ZQ_CAL_LONG_CMD_DEV0,
->                    ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
->    drivers/memory/tegra/tegra30-emc.c:161:36: note: expanded from macro 'EMC_ZQ_CAL_LONG_CMD_DEV0'
->            (DRAM_DEV_SEL_0 | EMC_ZQ_CAL_LONG | EMC_ZQ_CAL_CMD)
->                                              ^
->    arch/powerpc/include/asm/io.h:679:40: note: expanded from macro 'writel_relaxed'
->    #define writel_relaxed(v, addr) writel(v, addr)
->                                    ~~~~~~ ^
->    13 warnings generated.
-> --
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:203:1: note: expanded from here
->    __do_outl
->    ^
->    arch/powerpc/include/asm/io.h:537:62: note: expanded from macro '__do_outl'
->    #define __do_outl(val, port)    writel(val,(PCI_IO_ADDR)_IO_BASE+port);
->                                               ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/memory/tegra/tegra124-emc.c:16:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:43:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(insb, (unsigned long p, void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:217:1: note: expanded from here
->    __do_insb
->    ^
->    arch/powerpc/include/asm/io.h:556:56: note: expanded from macro '__do_insb'
->    #define __do_insb(p, b, n)      readsb((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->                                           ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/memory/tegra/tegra124-emc.c:16:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:45:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(insw, (unsigned long p, void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:219:1: note: expanded from here
->    __do_insw
->    ^
->    arch/powerpc/include/asm/io.h:557:56: note: expanded from macro '__do_insw'
->    #define __do_insw(p, b, n)      readsw((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->                                           ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/memory/tegra/tegra124-emc.c:16:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:47:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(insl, (unsigned long p, void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:221:1: note: expanded from here
->    __do_insl
->    ^
->    arch/powerpc/include/asm/io.h:558:56: note: expanded from macro '__do_insl'
->    #define __do_insl(p, b, n)      readsl((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->                                           ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/memory/tegra/tegra124-emc.c:16:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:49:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(outsb, (unsigned long p, const void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:223:1: note: expanded from here
->    __do_outsb
->    ^
->    arch/powerpc/include/asm/io.h:559:58: note: expanded from macro '__do_outsb'
->    #define __do_outsb(p, b, n)     writesb((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->                                            ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/memory/tegra/tegra124-emc.c:16:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:51:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(outsw, (unsigned long p, const void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:225:1: note: expanded from here
->    __do_outsw
->    ^
->    arch/powerpc/include/asm/io.h:560:58: note: expanded from macro '__do_outsw'
->    #define __do_outsw(p, b, n)     writesw((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->                                            ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/memory/tegra/tegra124-emc.c:16:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:53:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(outsl, (unsigned long p, const void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:227:1: note: expanded from here
->    __do_outsl
->    ^
->    arch/powerpc/include/asm/io.h:561:58: note: expanded from macro '__do_outsl'
->    #define __do_outsl(p, b, n)     writesl((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->                                            ~~~~~~~~~~~~~~~~~~~~~^
->>> drivers/memory/tegra/tegra124-emc.c:802:26: warning: implicit conversion from 'unsigned long' to 'u32' (aka 'unsigned int') changes value from 18446744071562067985 to 2147483665 [-Wconstant-conversion]
->                    emc_ccfifo_writel(emc, EMC_ZQ_CAL_LONG_CMD_DEV0, EMC_ZQ_CAL);
->                    ~~~~~~~~~~~~~~~~~      ^~~~~~~~~~~~~~~~~~~~~~~~
->    drivers/memory/tegra/tegra124-emc.c:154:36: note: expanded from macro 'EMC_ZQ_CAL_LONG_CMD_DEV0'
->            (DRAM_DEV_SEL_0 | EMC_ZQ_CAL_LONG | EMC_ZQ_CAL_CMD)
->             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
->    13 warnings generated.
-
-This doesn't look like a useful warning from clang, it should see that
-the constant value itself isn't truncated, hence it should be a problem
-of clang. Do you think it's okay to ignore this nonsense?
+DQo+ICsjZGVmaW5lIFBJTl9QQzE2CQkJODANCj4gKyNkZWZpbmUgUElOX1BDMTZfX0dQSU8JCQlQ
+SU5NVVhfUElOKFBJTl9QQzE2LCAwLCAwKQ0KPiArI2RlZmluZSBQSU5fUEMxNl9fSTJTTUNDX0RP
+VVQyCQlQSU5NVVhfUElOKFBJTl9QQzE2LCAxLCAxKQ0KDQpUaGlzIG9uZSBzaG91bGQgYmUgUElO
+X1BDMTZfX0kyU01DQzFfRE9VVDINCg0KQmVzdCByZWdhcmRzLA0KQ29kcmluDQo=
