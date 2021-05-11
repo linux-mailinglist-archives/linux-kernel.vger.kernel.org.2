@@ -2,110 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5E5379D2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 04:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C35379D36
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 04:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhEKCyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 22:54:11 -0400
-Received: from mga03.intel.com ([134.134.136.65]:8275 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230034AbhEKCyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 22:54:05 -0400
-IronPort-SDR: 1+SOHC33RwjVc1u/tZH7FJSQsp4lgbbWZAtX/Q1Y0MqykmzZzO8aD1yPbdy/xox7sEtzGeqZbz
- 3pbKSNjDH9qg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="199392463"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="199392463"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 19:52:59 -0700
-IronPort-SDR: a+LmUs2pnZ3NWKyOeSYzMi/t/Df9BoWLcrqScvL0XZf5gG1VytkbFj1TPq1XCvFReO7mdS77gO
- kn6QP3tlBz7w==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="436428063"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 19:52:56 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: [RESEND PATCH] soundwire: cadence_master: always set CMD_ACCEPT
-Date:   Tue, 11 May 2021 10:52:47 +0800
-Message-Id: <20210511025247.25339-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S229968AbhEKC7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 22:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhEKC7c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 22:59:32 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6840BC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 19:58:27 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id l10-20020a17090a850ab0290155b06f6267so456381pjn.5
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 19:58:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JxJR04Xv/YnMAFrcHyESkEXBblvroZPD5TgFitfVkoo=;
+        b=RbexxldZUVymd2P/sIJDv9SMCoq8cD1CsFLOcLwfXYxm4mtn7+1MJlPRjvy9LM1mBe
+         ZqxuadNDV8Tg01bppw8VAYW8pmg4peKpLWe727NAwtxDpN7+5gfUp7wIHmlhe3wJ0py9
+         FL0kQOiaKnzDcmer8y7tk4eExkKRwXIvKZhh8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JxJR04Xv/YnMAFrcHyESkEXBblvroZPD5TgFitfVkoo=;
+        b=bgg49H87S2ZEx93eYYrGvJpkhH7W6cyzn6eccj7SrvIRQDwYp6nzjCct5EfGyaj7Uv
+         kouzuaUVrvDp8H63h7SQ1MIigYXh3aINjeQ2zuP6QKc5Z+twbcdfKKd0j9mhm482RgjM
+         n5YFqEWrkXUFhZjB/93horbPpZ3sRF0HnjSoM+7Zvl4p0qxXxyIk2EhFgpldgaa1HbGx
+         VZ/kjhPGxDZ0k5/Pyo27CdhDtn9Tkkp3Bhlnlf5gB0JPHHlgZ9o8BpcXfCW+0ykY83gz
+         ub8jXUZ3X0SQe10VI6V0vb98pRycNScATBj9h2DykGmQeVLFp++z3K9ft6Y9ytxlfHOR
+         ze+A==
+X-Gm-Message-State: AOAM530Dr8hFTyJdiiYK5qfBQ0Hf87mOP9Bbd6G2HLK+6YOZUgMnC+eG
+        jOzhsXmPuRTJ2FuFhXjZz5njmw==
+X-Google-Smtp-Source: ABdhPJxGpaEYEQ8LdJwF/HG9Ge5TJm/JyLjBconC0tYKDE8GaFJBFM5l9yLUI84vgByVcsUsovFSIQ==
+X-Received: by 2002:a17:90a:df0b:: with SMTP id gp11mr13701357pjb.4.1620701906855;
+        Mon, 10 May 2021 19:58:26 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id e6sm12099160pfd.219.2021.05.10.19.58.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 19:58:26 -0700 (PDT)
+Date:   Mon, 10 May 2021 19:58:25 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Maxime Coquelin <maxime.coquelin@redhat.com>
+Cc:     alex.williamson@redhat.com, jmorris@namei.org, dhowells@redhat.com,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, kvm@vger.kernel.org,
+        mjg59@srcf.ucam.org, cohuck@redhat.com
+Subject: Re: [PATCH] vfio: Lock down no-IOMMU mode when kernel is locked down
+Message-ID: <202105101955.933F66A@keescook>
+References: <20210506091859.6961-1-maxime.coquelin@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210506091859.6961-1-maxime.coquelin@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Thu, May 06, 2021 at 11:18:59AM +0200, Maxime Coquelin wrote:
+> When no-IOMMU mode is enabled, VFIO is as unsafe as accessing
+> the PCI BARs via the device's sysfs, which is locked down when
+> the kernel is locked down.
+> 
+> Indeed, it is possible for an attacker to craft DMA requests
+> to modify kernel's code or leak secrets stored in the kernel,
+> since the device is not isolated by an IOMMU.
+> 
+> This patch introduces a new integrity lockdown reason for the
+> unsafe VFIO no-iommu mode.
+> 
+> Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
+> ---
+>  drivers/vfio/vfio.c      | 13 +++++++++----
+>  include/linux/security.h |  1 +
+>  security/security.c      |  1 +
+>  3 files changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+> index 5e631c359ef2..fe466d6ea5d8 100644
+> --- a/drivers/vfio/vfio.c
+> +++ b/drivers/vfio/vfio.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/pci.h>
+>  #include <linux/rwsem.h>
+>  #include <linux/sched.h>
+> +#include <linux/security.h>
+>  #include <linux/slab.h>
+>  #include <linux/stat.h>
+>  #include <linux/string.h>
+> @@ -165,7 +166,8 @@ static void *vfio_noiommu_open(unsigned long arg)
+>  {
+>  	if (arg != VFIO_NOIOMMU_IOMMU)
+>  		return ERR_PTR(-EINVAL);
+> -	if (!capable(CAP_SYS_RAWIO))
+> +	if (!capable(CAP_SYS_RAWIO) ||
+> +			security_locked_down(LOCKDOWN_VFIO_NOIOMMU))
 
-The Cadence IP can be configured in two different ways to deal with
-CMD_IGNORED replies to broadcast commands. The CMD_ACCEPT bitfield
-controls whether the command is discarded or if the IP proceeds with
-the change (typically a bank switch or clock stop command).
+The LSM hook check should come before the capable() check to avoid
+setting PF_SUPERPRIV if capable() passes and the LSM doesn't.
 
-The existing code seems to be inconsistent:
-a) For some historical reason, we set this CMD_ACCEPT bitfield during
-the initialization, but we don't during a resume from a clock-stoppped
-state.
-b) In addition, the loop used in the clock-stop sequence is quite
-racy, it's possible that a device has lost sync but it's still tagged
-as ATTACHED.
-c) If somehow a Device loses sync and is unable to ack a broadcast
-command, we do not have an error handling mechanism anyways. The IP
-should go ahead and let the Device regain sync at a later time.
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index 06f7c50ce77f..f29388180fab 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -120,6 +120,7 @@ enum lockdown_reason {
+>  	LOCKDOWN_MMIOTRACE,
+>  	LOCKDOWN_DEBUGFS,
+>  	LOCKDOWN_XMON_WR,
+> +	LOCKDOWN_VFIO_NOIOMMU,
+>  	LOCKDOWN_INTEGRITY_MAX,
+>  	LOCKDOWN_KCORE,
+>  	LOCKDOWN_KPROBES,
 
-Make sure the CMD_ACCEPT bit is always set.
+Is the security threat specific to VFIO? (i.e. could other interfaces
+want a similar thing, such that naming this VFIO doesn't make sense?
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/cadence_master.c | 21 ++-------------------
- 1 file changed, 2 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 192dac10f0c2..25950422b085 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -1428,20 +1428,6 @@ int sdw_cdns_clock_stop(struct sdw_cdns *cdns, bool block_wake)
- 		}
- 	}
- 
--	/*
--	 * This CMD_ACCEPT should be used when there are no devices
--	 * attached on the link when entering clock stop mode. If this is
--	 * not set and there is a broadcast write then the command ignored
--	 * will be treated as a failure
--	 */
--	if (!slave_present)
--		cdns_updatel(cdns, CDNS_MCP_CONTROL,
--			     CDNS_MCP_CONTROL_CMD_ACCEPT,
--			     CDNS_MCP_CONTROL_CMD_ACCEPT);
--	else
--		cdns_updatel(cdns, CDNS_MCP_CONTROL,
--			     CDNS_MCP_CONTROL_CMD_ACCEPT, 0);
--
- 	/* commit changes */
- 	ret = cdns_config_update(cdns);
- 	if (ret < 0) {
-@@ -1508,11 +1494,8 @@ int sdw_cdns_clock_restart(struct sdw_cdns *cdns, bool bus_reset)
- 	cdns_updatel(cdns, CDNS_MCP_CONTROL,
- 		     CDNS_MCP_CONTROL_BLOCK_WAKEUP, 0);
- 
--	/*
--	 * clear CMD_ACCEPT so that the command ignored
--	 * will be treated as a failure during a broadcast write
--	 */
--	cdns_updatel(cdns, CDNS_MCP_CONTROL, CDNS_MCP_CONTROL_CMD_ACCEPT, 0);
-+	cdns_updatel(cdns, CDNS_MCP_CONTROL, CDNS_MCP_CONTROL_CMD_ACCEPT,
-+		     CDNS_MCP_CONTROL_CMD_ACCEPT);
- 
- 	if (!bus_reset) {
- 
 -- 
-2.17.1
-
+Kees Cook
