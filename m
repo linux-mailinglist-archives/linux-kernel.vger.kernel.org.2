@@ -2,70 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E1F379CE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 04:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A12B379CEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 04:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhEKCZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 22:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
+        id S229932AbhEKC0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 22:26:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230417AbhEKCZE (ORCPT
+        with ESMTP id S229628AbhEKC0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 22:25:04 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9A1C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 19:23:57 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id l10-20020a17090a850ab0290155b06f6267so418799pjn.5
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 19:23:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LEnjyPPeB6lvEBpPeWNCTITVj6tamqcoGqJcOIK5Qp4=;
-        b=KR2reNxL/sbflBFkWnnBu+sgMkVV93lU9doeUNOnFJF3KAkUX7sP/KByjvH/HCa59a
-         OUOh9iFkpcJ4NBJF53E6XIeQTyIgOm9Gdc3SdewCI4leNSPFQxBKiL8Q8fGyWdlLAp+v
-         R5XRszq02yz5+sCAx49Cg3SXSQz/ekgqXMLFdkmHB2M0a4kz4D0KjEHhVYQSa5nWdfol
-         KrTaHaHrKGjo4vRot9Mq7rz1RJ7NVOA5L+9L/Gj2AFB163tt1la+KDqmthpxh1X9/GA5
-         HEHak07eYEk2ygLvmtLytTIaBdTDGPgtWnKxAr2UAqgYa47JIBqxj46HxHtfSoNrN8BK
-         Rc7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LEnjyPPeB6lvEBpPeWNCTITVj6tamqcoGqJcOIK5Qp4=;
-        b=E27LRctvfS/U21LTuiw/1ZxDUzQTIyixU+0hq5s7Z8rO5zFH9AooxQYvQ+Nvyln591
-         OW7qOh1npRIaWvaqvB8buEIoZGR0PW9HsPbtouEKJS0SkWwubLXrWtu8CkKKvrSP7L0C
-         G7ny2G30O0il80CeDLt7Zz0LY3rEd7d9fEW5zjVhtS2AevyIDYWU1M4yRR6NHI1yoAvB
-         3eOoONRqzkrqEJ6gW4pHTAMAYDORzS1PC9JUXSnsT02ekuGpvXmsrBjqbmSZ2SijRoKU
-         r1WsHzVXQiy3uwe1l4+jy01H/hqFMhdXYPgfymQDq16NfV8w7+FElwmXDF8w43ImRIcL
-         rEOA==
-X-Gm-Message-State: AOAM533/Q47hNw5lpRsgmi77W5/bG4xXXEVyIrsEsvy8t97oG5JDbMwf
-        c51yDyl8kWZ3ZIHaZuzTn0E=
-X-Google-Smtp-Source: ABdhPJzpOl5GUcKUw9u3zbEX0ghWK308O6Yu2PMXk99BNW5s0Jl5zlbAaKlAxHFBD9BnoJkewmZk1w==
-X-Received: by 2002:a17:90a:450e:: with SMTP id u14mr31629260pjg.194.1620699835919;
-        Mon, 10 May 2021 19:23:55 -0700 (PDT)
-Received: from hyeyoo ([183.99.11.150])
-        by smtp.gmail.com with ESMTPSA id q24sm9502273pgk.32.2021.05.10.19.23.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 19:23:55 -0700 (PDT)
-Date:   Tue, 11 May 2021 11:23:50 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kernel/locking: make __down_common use flags previously
- saved
-Message-ID: <20210511022350.GA97228@hyeyoo>
-References: <20210424142823.3896-1-42.hyeyoo@gmail.com>
+        Mon, 10 May 2021 22:26:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0579DC061574;
+        Mon, 10 May 2021 19:25:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jVPeJnrx2zqwNR8mCLQ7BVg9Lcz/Fm736vaduJbaIE0=; b=Nami1P+T3Zn4n9qQb2ZvmclFpY
+        HsJKTCvoz85s5tPxQFxjiuRsVOTIW3GLlv4DlyuldZ6eQYFaJjpOGYfV+v6zhyW9fKcpm1QHBo0D9
+        uSm7zWq3c2GQpnSLmGTz2dym98GlozGdvQRe1ogR/gSleqoaL0G9X/ynt37K164yvye1l/vn8GH+J
+        LRzrHJVh/34DqchMPr7g1dIHStjHNialUpxxspT3V9CA/ULs75RH7xQaNak0vsGEk3/yBRU05juNe
+        y7Gw9MsedHem0WYYNqkvr/mNTOYglMp4PuO4EDp3vT6BViIXb3zqhZlDmoXzIvqVMkAhXJOVPmeA8
+        neHWW9+w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgI4T-006oN9-SW; Tue, 11 May 2021 02:24:40 +0000
+Date:   Tue, 11 May 2021 03:24:29 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm: Enlarge IO_SPACE_LIMIT needed for some SoC
+Message-ID: <YJnq3Y3/I1kdV1Ov@casper.infradead.org>
+References: <20210511021656.17719-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210424142823.3896-1-42.hyeyoo@gmail.com>
+In-Reply-To: <20210511021656.17719-1-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, is there someone?
+On Tue, May 11, 2021 at 04:16:54AM +0200, Ansuel Smith wrote:
+> Ipq8064 SoC requires larger IO_SPACE_LIMIT on second and third pci port.
 
-can you tell me if my approach was wrong, or Can I improve anything?
-it was weird to me that __down_common disable / restores regardless of flag
-that was previously saved
+Do you really?  I mean, yes, theoretically, I understand it, the
+hardware supports 64kB of I/O port space per root port.  But I/O
+port space is rather deprecated these days.  My laptop has precisely
+two devices with I/O ports, one with 64 bytes and the other with 32
+bytes.  Would you really suffer by allocating 16kB of I/O port
+space to each root port?
