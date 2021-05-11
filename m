@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B5C379BC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B0D379BC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 02:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbhEKA5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 20:57:30 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:37761 "EHLO
+        id S230184AbhEKA5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 20:57:20 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:55531 "EHLO
         mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229980AbhEKA5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 20:57:08 -0400
+        id S229925AbhEKA5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 20:57:07 -0400
 Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
         (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14B0tdw72504247
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14B0tdw82504247
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Mon, 10 May 2021 17:55:49 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14B0tdw72504247
+        Mon, 10 May 2021 17:55:50 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14B0tdw82504247
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
         s=2021042801; t=1620694550;
-        bh=b6Pm9Da93G0mktOYEh8EcyhbJDM2lkg5wM5WXiBhdNI=;
+        bh=Ckez2BGMzJzZas4BtzTmwHHAtQVyx9WKBJPNFkDqe7s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rcB5SuUCHDgtERvY7bJD/p5UE2Vpq4lD77CI8JAk3sXZuvyduuSn4cRIozXHoH1gv
-         Z2o/RS+nKuViHw0Jf7vj964208LUZbzFT896zDVu9f4P0D4TCeX5G9aTD/Up9RoyR7
-         qQ1nTTQVmCfJGY3uUKy1t8L/11KKv+3wi/I5Bk/MpmV75UtugJP6equQCdQl4TqjIQ
-         dCFenuElH9ZRVVnBKkvck3qvBcXHl/Xp3K3MMGJVWNLrTkMdJ+QiRIdAJgKdZziEFN
-         XuUDIZRjuo7naWzXPsjrlFPAovMguC/tYbYK7vjxPG6BSD0VGL4W4Nc8joLSe4k/FT
-         asO+iIMI7Q/rg==
+        b=ZvYTfn+Z+HFq5K73Xl2pnagqYNqyGtsV93J2gw/htJbn48qvClETPS+XNwLEuoUIX
+         XYhtPKcUZbfFUf/M9odQrc5rEVH2ayq5HMY0K7JlRVyxiGKhjfbQCf3UN3xbA1hKA3
+         mzOjYR7EwXkWWApAVBKxFzmWTSXpTpevlwVFkDVCshUGl9gLjAMWUZwncdquYmjNN6
+         2iDJBmGoiXd4v4cJhJfHfuNhEhMyw1bN+N8AfYQktZ3nAi/xNOaywFMJFCCAty7WV+
+         dlhjRON0mh5mG7d9mUqqTQknbPfZZO/6njD/6mC5Qyl//IMvWAup7R58VDyNaermT6
+         pUrbQ8XZg/6pA==
 From:   "H. Peter Anvin" <hpa@zytor.com>
 To:     Ingo Molnar <mingo@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -37,9 +37,9 @@ Cc:     Steve Wahl <steve.wahl@hpe.com>, Mike Travis <mike.travis@hpe.com>,
         Russ Anderson <russ.anderson@hpe.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         "H. Peter Anvin (Intel)" <hpa@zytor.com>
-Subject: [PATCH 2/6] x86/irqvector: add NR_EXTERNAL_VECTORS and NR_SYSTEM_VECTORS
-Date:   Mon, 10 May 2021 17:55:27 -0700
-Message-Id: <20210511005531.1065536-3-hpa@zytor.com>
+Subject: [PATCH 3/6] x86/idt: remove address argument to idt_invalidate()
+Date:   Mon, 10 May 2021 17:55:28 -0700
+Message-Id: <20210511005531.1065536-4-hpa@zytor.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210511005531.1065536-1-hpa@zytor.com>
 References: <20210511005531.1065536-1-hpa@zytor.com>
@@ -51,68 +51,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
 
-Add defines for the number of external vectors and number of system
-vectors instead of requiring the use of (FIRST_SYSTEM_VECTOR -
-FIRST_EXTERNAL_VECTOR) and (NR_VECTORS - FIRST_SYSTEM_VECTOR)
-respectively.
+There is no reason to specify any specific address to
+idt_invalidate(). It looks mostly like an artifact of unifying code
+done differently by accident.
 
 Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
 ---
- arch/x86/include/asm/idtentry.h          | 4 ++--
- arch/x86/include/asm/irq_vectors.h       | 3 +++
- tools/arch/x86/include/asm/irq_vectors.h | 3 +++
- 3 files changed, 8 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/desc.h        | 2 +-
+ arch/x86/kernel/idt.c              | 5 ++---
+ arch/x86/kernel/machine_kexec_32.c | 4 ++--
+ arch/x86/kernel/reboot.c           | 2 +-
+ 4 files changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 73d45b0dfff2..c03a18cac78e 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -504,7 +504,7 @@ __visible noinstr void func(struct pt_regs *regs,			\
- 	.align 8
- SYM_CODE_START(irq_entries_start)
-     vector=FIRST_EXTERNAL_VECTOR
--    .rept (FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
-+    .rept NR_EXTERNAL_VECTORS
- 	UNWIND_HINT_IRET_REGS
- 0 :
- 	.byte	0x6a, vector
-@@ -520,7 +520,7 @@ SYM_CODE_END(irq_entries_start)
- 	.align 8
- SYM_CODE_START(spurious_entries_start)
-     vector=FIRST_SYSTEM_VECTOR
--    .rept (NR_VECTORS - FIRST_SYSTEM_VECTOR)
-+    .rept NR_SYSTEM_VECTORS
- 	UNWIND_HINT_IRET_REGS
- 0 :
- 	.byte	0x6a, vector
-diff --git a/arch/x86/include/asm/irq_vectors.h b/arch/x86/include/asm/irq_vectors.h
-index 889f8b1b5b7f..d2ef35927770 100644
---- a/arch/x86/include/asm/irq_vectors.h
-+++ b/arch/x86/include/asm/irq_vectors.h
-@@ -114,6 +114,9 @@
- #define FIRST_SYSTEM_VECTOR		NR_VECTORS
+diff --git a/arch/x86/include/asm/desc.h b/arch/x86/include/asm/desc.h
+index 476082a83d1c..b8429ae50b71 100644
+--- a/arch/x86/include/asm/desc.h
++++ b/arch/x86/include/asm/desc.h
+@@ -427,6 +427,6 @@ static inline void idt_setup_early_pf(void) { }
+ static inline void idt_setup_ist_traps(void) { }
  #endif
  
-+#define NR_EXTERNAL_VECTORS		(FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
-+#define NR_SYSTEM_VECTORS		(NR_VECTORS - FIRST_SYSTEM_VECTOR)
-+
- /*
-  * Size the maximum number of interrupts.
-  *
-diff --git a/tools/arch/x86/include/asm/irq_vectors.h b/tools/arch/x86/include/asm/irq_vectors.h
-index 889f8b1b5b7f..d2ef35927770 100644
---- a/tools/arch/x86/include/asm/irq_vectors.h
-+++ b/tools/arch/x86/include/asm/irq_vectors.h
-@@ -114,6 +114,9 @@
- #define FIRST_SYSTEM_VECTOR		NR_VECTORS
- #endif
+-extern void idt_invalidate(void *addr);
++extern void idt_invalidate(void);
  
-+#define NR_EXTERNAL_VECTORS		(FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
-+#define NR_SYSTEM_VECTORS		(NR_VECTORS - FIRST_SYSTEM_VECTOR)
-+
- /*
-  * Size the maximum number of interrupts.
-  *
+ #endif /* _ASM_X86_DESC_H */
+diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
+index d552f177eca0..17f824462f5e 100644
+--- a/arch/x86/kernel/idt.c
++++ b/arch/x86/kernel/idt.c
+@@ -331,11 +331,10 @@ void __init idt_setup_early_handler(void)
+ 
+ /**
+  * idt_invalidate - Invalidate interrupt descriptor table
+- * @addr:	The virtual address of the 'invalid' IDT
+  */
+-void idt_invalidate(void *addr)
++void idt_invalidate(void)
+ {
+-	struct desc_ptr idt = { .address = (unsigned long) addr, .size = 0 };
++	struct desc_ptr idt = { .address = 0, .size = 0 };
+ 
+ 	load_idt(&idt);
+ }
+diff --git a/arch/x86/kernel/machine_kexec_32.c b/arch/x86/kernel/machine_kexec_32.c
+index 64b00b0d7fe8..6ba90f47d8c3 100644
+--- a/arch/x86/kernel/machine_kexec_32.c
++++ b/arch/x86/kernel/machine_kexec_32.c
+@@ -232,8 +232,8 @@ void machine_kexec(struct kimage *image)
+ 	 * The gdt & idt are now invalid.
+ 	 * If you want to load them you must set up your own idt & gdt.
+ 	 */
+-	idt_invalidate(phys_to_virt(0));
+-	set_gdt(phys_to_virt(0), 0);
++	idt_invalidate();
++	set_gdt(0, 0);
+ 
+ 	/* now call it */
+ 	image->start = relocate_kernel_ptr((unsigned long)image->head,
+diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+index b29657b76e3f..ebfb91108232 100644
+--- a/arch/x86/kernel/reboot.c
++++ b/arch/x86/kernel/reboot.c
+@@ -669,7 +669,7 @@ static void native_machine_emergency_restart(void)
+ 			break;
+ 
+ 		case BOOT_TRIPLE:
+-			idt_invalidate(NULL);
++			idt_invalidate();
+ 			__asm__ __volatile__("int3");
+ 
+ 			/* We're probably dead after this, but... */
 -- 
 2.31.1
 
