@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1133C37B243
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB32E37B247
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbhEKXNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:13:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48034 "EHLO mail.kernel.org"
+        id S230213AbhEKXN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:13:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230181AbhEKXNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230184AbhEKXNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 19:13:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0429E61939;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18E2C6193B;
         Tue, 11 May 2021 23:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620774745;
-        bh=Uog1S7WsBIrXCS25dIIcDb0EkZFYMMhyP3nVexwVKdA=;
+        bh=wjk2s4YWaQbHPJvGdZeE0p7NCLjpy5t270Td5bLn5HQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O0jnAK7hDZXvaQfW4HESvTU5etQXYONLTAOkVPVU0Fag2R0WI4yObopx/Uo+6ea+0
-         7KId74lCbJKTLhN6O4Zkx+C7rXW2e5713rr/4yHNZTTqPkgwSC4gZv6w/rFbekUXmQ
-         fhQuHfFbJKE3Ijw50eAWjvxV/ZYzaCrPnBt1gOkkTciHW5+i1LSJV/3bRaA34cvJzY
-         BB3BB78AnCII6+eaFaZLe5VrwQj22DNp6XYR8x96Cat+JIUoq6pwPLJREW5EGDj/VX
-         MKdy11mHXiajGhlDNmqo4nQ2ctsuAnc7fpKbuT8lovxA+PwmaAsNp4xk703+gIGkKE
-         uLZM55snjGa7A==
+        b=MEhGZStO7e+QfQf5Rq56lBL6zq6oXkV4iszoL4pZe6pLpCVfCzIdeescho2kHQQHO
+         98PfzfAaYMJdo2nxrS3NxvtmxvtRQj1H2h9yjACq6VZylhkXrtPGb7+o1ZmliynX9s
+         hkrcZh16abYZimpi+t0rdCCO8WiceargmYe3/0v6RjjkokxsQvM5acJ3l1mFbN/SqA
+         JRB6DAniJJMqnvWtBCyt8jvVk3hIPlCwV4S3nzRIIQkq7oLOKQil8y/oAsLwk87Jbh
+         /6Ur+P16sDoDv3xux47DKax6+DWbjpVeJAP+HKa/gLHtr2A7pWjXnEZ1KYoS73wk4X
+         f9Ggs3NEPpXng==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7B92B5C0DEA; Tue, 11 May 2021 16:12:24 -0700 (PDT)
+        id 7D4E05C0DF3; Tue, 11 May 2021 16:12:24 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 10/26] torture: Abstract end-of-run summary
-Date:   Tue, 11 May 2021 16:12:07 -0700
-Message-Id: <20210511231223.2895398-10-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 11/26] torture: Make kvm.sh use abstracted kvm-end-run-stats.sh
+Date:   Tue, 11 May 2021 16:12:08 -0700
+Message-Id: <20210511231223.2895398-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
 References: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
@@ -46,89 +46,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit abstractst the end-of-run summary from kvm-again.sh, and,
-while in the area, brings its format into line with that of kvm.sh.
+This commit reduces duplicate code by making kvm.sh use the new
+kvm-end-run-stats.sh script rather than taking its historical approach
+of open-coding it.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/kvm-again.sh     | 11 ++---
- .../rcutorture/bin/kvm-end-run-stats.sh       | 40 +++++++++++++++++++
- 2 files changed, 43 insertions(+), 8 deletions(-)
- create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-end-run-stats.sh
+ tools/testing/selftests/rcutorture/bin/kvm.sh | 16 +---------------
+ 1 file changed, 1 insertion(+), 15 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-again.sh b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-index b74bb4343ab9..d8c8483c46f1 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-@@ -143,6 +143,8 @@ then
- 	usage
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index 3bd523a33700..fab3bd9cf9d1 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -550,20 +550,7 @@ END {
+ 	if (ncpus != 0)
+ 		dump(first, i, batchnum);
+ }' >> $T/script
+-
+-cat << '___EOF___' >> $T/script
+-echo | tee -a $TORTURE_RESDIR/log
+-echo | tee -a $TORTURE_RESDIR/log
+-echo " --- `date` Test summary:" | tee -a $TORTURE_RESDIR/log
+-___EOF___
+-cat << ___EOF___ >> $T/script
+-echo Results directory: $resdir/$ds | tee -a $resdir/$ds/log
+-kcsan-collapse.sh $resdir/$ds | tee -a $resdir/$ds/log
+-kvm-recheck.sh $resdir/$ds > $T/kvm-recheck.sh.out 2>&1
+-___EOF___
+-echo 'ret=$?' >> $T/script
+-echo "cat $T/kvm-recheck.sh.out | tee -a $resdir/$ds/log" >> $T/script
+-echo 'exit $ret' >> $T/script
++echo kvm-end-run-stats.sh "$resdir/$ds" "$starttime" >> $T/script
+ 
+ # Extract the tests and their batches from the script.
+ egrep 'Start batch|Starting build\.' $T/script | grep -v ">>" |
+@@ -627,7 +614,6 @@ else
+ 	cp $T/batches $resdir/$ds/batches
+ 	cp $T/scenarios $resdir/$ds/scenarios
+ 	echo '#' cpus=$cpus >> $resdir/$ds/batches
+-	echo " --- Done at `date` (`get_starttime_duration $starttime`) exitcode $ret" | tee -a $resdir/$ds/log
+ 	exit $ret
  fi
- rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out,vmlinux} "$rundir"/log
-+touch "$rundir/log"
-+echo $scriptname $args | tee -a "$rundir/log"
- echo $oldrun > "$rundir/re-run"
- if ! test -d "$rundir/../../bin"
- then
-@@ -178,12 +180,5 @@ then
- 	echo ---- Dryrun complete, directory: $rundir | tee -a "$rundir/log"
- else
- 	( cd "$rundir"; sh $T/runbatches.sh )
--	kcsan-collapse.sh "$rundir" | tee -a "$rundir/log"
--	echo | tee -a "$rundir/log"
--	echo ---- Results directory: $rundir | tee -a "$rundir/log"
--	kvm-recheck.sh "$rundir" > $T/kvm-recheck.sh.out 2>&1
--	ret=$?
--	cat $T/kvm-recheck.sh.out | tee -a "$rundir/log"
--	echo " --- Done at `date` (`get_starttime_duration $starttime`) exitcode $ret" | tee -a "$rundir/log"
--	exit $ret
-+	kvm-end-run-stats.sh "$rundir" "$starttime"
- fi
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-end-run-stats.sh b/tools/testing/selftests/rcutorture/bin/kvm-end-run-stats.sh
-new file mode 100755
-index 000000000000..e4a00779b8c6
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-end-run-stats.sh
-@@ -0,0 +1,40 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0+
-+#
-+# Check the status of the specified run.
-+#
-+# Usage: kvm-end-run-stats.sh /path/to/run starttime
-+#
-+# Copyright (C) 2021 Facebook, Inc.
-+#
-+# Authors: Paul E. McKenney <paulmck@kernel.org>
-+
-+# scriptname=$0
-+# args="$*"
-+rundir="$1"
-+if ! test -d "$rundir"
-+then
-+	echo kvm-end-run-stats.sh: Specified run directory does not exist: $rundir
-+	exit 1
-+fi
-+
-+T=${TMPDIR-/tmp}/kvm-end-run-stats.sh.$$
-+trap 'rm -rf $T' 0
-+mkdir $T
-+
-+KVM="`pwd`/tools/testing/selftests/rcutorture"; export KVM
-+PATH=${KVM}/bin:$PATH; export PATH
-+. functions.sh
-+default_starttime="`get_starttime`"
-+starttime="${2-default_starttime}"
-+
-+echo | tee -a "$rundir/log"
-+echo | tee -a "$rundir/log"
-+echo " --- `date` Test summary:" | tee -a "$rundir/log"
-+echo Results directory: $rundir | tee -a "$rundir/log"
-+kcsan-collapse.sh "$rundir" | tee -a "$rundir/log"
-+kvm-recheck.sh "$rundir" > $T/kvm-recheck.sh.out 2>&1
-+ret=$?
-+cat $T/kvm-recheck.sh.out | tee -a "$rundir/log"
-+echo " --- Done at `date` (`get_starttime_duration $starttime`) exitcode $ret" | tee -a "$rundir/log"
-+exit $ret
+ 
 -- 
 2.31.1.189.g2e36527f23
 
