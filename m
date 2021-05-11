@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8C737A829
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEFA37A830
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 15:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhEKNyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 09:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbhEKNyE (ORCPT
+        id S231653AbhEKNym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 09:54:42 -0400
+Received: from mail2.protonmail.ch ([185.70.40.22]:17802 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231599AbhEKNyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 09:54:04 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A7AC061574;
-        Tue, 11 May 2021 06:52:57 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id i5so11043269pgm.0;
-        Tue, 11 May 2021 06:52:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CD4qa8FyAT6mL+EEYGbyY0wBygRbxbqBvXVGfdE2Evk=;
-        b=rkV2ifSy2lgtlbUuIgsoXLgXbRczYROMcDPWDUkJztxrvOZBBmI1hMd1/9aFfI7jtW
-         Kjr8ljJDkO86QZrT/UZ/xc1c37fBOm4FaAjy94m+mZRJ1m/lf02CHIu+5tAPqQuPoeEg
-         cGcukqqcyQ/wWa0tN7rrtVS50I3UX2tK3+sLpMPdrhiLTg1UWWlf9XePKCvZCfsl1Vqq
-         jiXznX0W2LWVsB1Z8u/cva4Ky8LMdejJYKNYFM21INGSj3SnSEvFz5Q3aYkeKHkeB8pU
-         5VADP4sstpdIkF/dacfeYAwC4Xidv4U6n5fhLj9B4ryRrEwv/gqCKkFnEC85eMBX4VSD
-         Htjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CD4qa8FyAT6mL+EEYGbyY0wBygRbxbqBvXVGfdE2Evk=;
-        b=FFOx1DsNdBrNYVEt+RTiTY0UG4VO7giR+69mTlJux3rORi8dHUa/ks0xUum08S73gN
-         NYn1Vj973GI9tKoYILnHhh7dhnb80PXysPsFeZ6FNiVKG0rLbJ+EAYxkqa9ZqjgDFcvU
-         GPCexA6oHhJn55cnWhc+Q/HtN0QxYeb05sgMxbkiQG3s6W+qnXYq6zAhlK5C8cOVlhIC
-         Ig+w8AjQVTufO4L2tWQF3tvyBowu20wBFMttToodyrIJMs1nR/ZMSWCi2MVcp7NLxLTN
-         Uvkny1kpwPRN9hC/FqCASvD5jGA/cVB0LvamkOhHjMW8P/sKr1d9O83ztNvukJ/foMsi
-         xT3Q==
-X-Gm-Message-State: AOAM531vRaGqjWLpnLsTV9SNtkaDmvQKG3Y7SUpsXl+hprZM87/SKpdj
-        VcAOLwmjgS7etefe2lOgPFnBW8Gq0hUMQXcaz7Q=
-X-Google-Smtp-Source: ABdhPJwnOIQ3nc4MPpWcwjkvu2Scafr7CXpFjmL7/aVxuFKV7X1yh5DoeflKHx9vByTnLfY9SeLH8ybUmya74kme7gs=
-X-Received: by 2002:a62:528e:0:b029:1f5:c5ee:a487 with SMTP id
- g136-20020a62528e0000b02901f5c5eea487mr29900674pfb.7.1620741176603; Tue, 11
- May 2021 06:52:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
- <162072071980.33404.13031284441613044277.b4-ty@kernel.org>
- <CAHp75Vck5izDB4mTRV5hTaknpx5Bm+OA4rNLVznQxVaEwigBZg@mail.gmail.com> <20210511134706.GI4496@sirena.org.uk>
-In-Reply-To: <20210511134706.GI4496@sirena.org.uk>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 11 May 2021 16:52:40 +0300
-Message-ID: <CAHp75VdPHYEq+Xn5yQ+TyQn5uerc+afcVaHj22OmVzsBW2jcaQ@mail.gmail.com>
-Subject: Re: [PATCH v2 00/14] spi: pxa2xx: Set of cleanups
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
+        Tue, 11 May 2021 09:54:37 -0400
+Date:   Tue, 11 May 2021 13:53:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1620741209; bh=jI9W9Blj/Z2qjs3mmYq2tUWMQe2pKTQ81XNwCTvedF4=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=bmoJ+2g9V7Dr5u4+mbx7+VWWI+VbNHXRu4+Pl5zJLxdO8By602YaZnUhpNrhCPfuf
+         sbGhHBahrMkDSDYReFAPMkFqjPE4x8cpaOrhYQFoA7Pi1+JJpqo2n3DHog4Fh835IC
+         SwuVMUMGEUTEyCy9h6K2k7Z4cDonsp1kjOs5B/RUpmFc3r7Ss/JE9LUqblCbvvDEXx
+         X5UcOUlKsJbrg/1ok2jCKdAkre6tcBWjrhWXBXIkhyoJ08J+Lla6ZGEPrALMFwxfe2
+         LE2Q2pde3JcBQWvSUEPsRbmeMTCpqwnoDjzV6LAHmwvfrzXiUkzv2GjOwBGQhfzl1p
+         apSpWWjgxYVgA==
+To:     Yury Norov <yury.norov@gmail.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Daniel Mack <daniel@zonque.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Richard Weinberger <richard@nod.at>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Will Deacon <will@kernel.org>, Yogesh Lal <ylal@codeaurora.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH] all: remove GENERIC_FIND_FIRST_BIT
+Message-ID: <20210511134551.18721-1-alobakin@pm.me>
+In-Reply-To: <20210510233421.18684-1-yury.norov@gmail.com>
+References: <20210510233421.18684-1-yury.norov@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 4:47 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, May 11, 2021 at 03:28:18PM +0300, Andy Shevchenko wrote:
-> > On Tue, May 11, 2021 at 11:27 AM Mark Brown <broonie@kernel.org> wrote:
->
-> > > On Fri, 23 Apr 2021 21:24:27 +0300, Andy Shevchenko wrote:
-> > > > Set of cleanups here and there related to the SPI PXA2xx driver.
-> > > > On top of them, adding the special type for Intel Merrifield.
->
-> > > [07/14] spi: pxa2xx: Introduce int_stop_and_reset() helper
-> > >         (no commit info)
->
-> > The above patches are effectively missed.
-> > Anything to fix in your scripts / my patches?
->
-> Like I said, patch 7 didn't apply so you should check and resend.
+From: Yury Norov <yury.norov@gmail.com>
+Date: Mon, 10 May 2021 16:34:21 -0700
 
-I didn't get it. I have effectively rebased the entire series and resend as v2.
+> In the 5.12 cycle we enabled the GENERIC_FIND_FIRST_BIT config option
+> for ARM64 and MIPS. It increased performance and shrunk .text size; and
+> so far I didn't receive any negative feedback on the change.
+>
+> https://lore.kernel.org/linux-arch/20210225135700.1381396-1-yury.norov@gm=
+ail.com/
+>
+> I think it's time to make all architectures use find_{first,last}_bit()
+> unconditionally and remove the corresponding config option.
+>
+> This patch doesn't introduce functional changes for arc, arm64, mips,
+> s390 and x86 because they already enable GENERIC_FIND_FIRST_BIT. There
+> will be no changes for arm because it implements find_{first,last}_bit
+> in arch code. For other architectures I expect improvement both in
+> performance and .text size.
+>
+> It would be great if people with an access to real hardware would share
+> the output of bloat-o-meter and lib/find_bit_benchmark.
+>
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> ---
+>  arch/arc/Kconfig                  |  1 -
+>  arch/arm64/Kconfig                |  1 -
+>  arch/mips/Kconfig                 |  1 -
 
-I can speculate that your scripts have a bug since they might try v1
-as well (as far as I can see they usually send a confirmation of
-application for all versions of the series in question).
+MIPS bit:
 
-Sorry, but I do not see an issue.
+Reviewed-by: Alexander Lobakin <alobakin@pm.me>
+Tested-by: Alexander Lobakin <alobakin@pm.me>
 
--- 
-With Best Regards,
-Andy Shevchenko
+>  arch/s390/Kconfig                 |  1 -
+>  arch/x86/Kconfig                  |  1 -
+>  arch/x86/um/Kconfig               |  1 -
+>  include/asm-generic/bitops/find.h | 12 ------------
+>  lib/Kconfig                       |  3 ---
+>  8 files changed, 21 deletions(-)
+
+Thanks,
+Al
+
