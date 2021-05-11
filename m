@@ -2,76 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215EB37A722
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25CA37A724
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbhEKMxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 08:53:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56462 "EHLO mail.kernel.org"
+        id S231750AbhEKMyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 08:54:08 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:35194 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231362AbhEKMxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 08:53:46 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 335E56191A;
-        Tue, 11 May 2021 12:52:37 +0000 (UTC)
-Date:   Tue, 11 May 2021 08:52:35 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Stephen Boyd' <swboyd@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baoquan He <bhe@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Young <dyoung@redhat.com>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Ingo Molnar <mingo@redhat.com>, Jessica Yu <jeyu@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Rasmus Villemoes" <linux@rasmusvillemoes.dk>,
-        Sasha Levin <sashal@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vivek Goyal <vgoyal@redhat.com>, Will Deacon <will@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        peter enderborg <peter.enderborg@sony.com>
-Subject: Re: [PATCH v6 00/13] Add build ID to stacktraces
-Message-ID: <20210511085235.09bc38a7@gandalf.local.home>
-In-Reply-To: <b30f6d396edf4db5974a2b90364b6314@AcuMS.aculab.com>
-References: <20210511003845.2429846-1-swboyd@chromium.org>
-        <b30f6d396edf4db5974a2b90364b6314@AcuMS.aculab.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231329AbhEKMyH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 08:54:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=aSOix/5MbzOgdJO/NKPINzOhzg7QH2L15KpaGIaxB0Q=; b=xFeALSAqFIoet+pjU+nimUvk3+
+        DsYSH++pwzLulo9kTSNazq1fqPJkPRtHIOO2F1vOdI8iRdMe3jphdrbXBkhL1XKbkMvMmb43Ktii3
+        FmWZNNcIukx4ohwBGDjKP8hstbukOzeaAUDuooeI4JM3qwkzQ6gGYTJI1T9xhQYbZeuY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lgRsg-003kIz-DE; Tue, 11 May 2021 14:52:58 +0200
+Date:   Tue, 11 May 2021 14:52:58 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>, kernel@pengutronix.de,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+        Fabio Estevam <festevam@gmail.com>,
+        David Jander <david@protonic.nl>,
+        Russell King <linux@armlinux.org.uk>,
+        Philippe Schenker <philippe.schenker@toradex.com>
+Subject: Re: [PATCH v3 7/7] ARM: imx7d: remove Atheros AR8031 PHY fixup
+Message-ID: <YJp+KpCXy9qF+uy2@lunn.ch>
+References: <20210511043735.30557-1-o.rempel@pengutronix.de>
+ <20210511043735.30557-8-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511043735.30557-8-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 12:36:06 +0000
-David Laight <David.Laight@ACULAB.COM> wrote:
-
-> >  x1 : ffffff93fef15788 x0 : ffffffe3622352e0
-> >  Call trace:
-> >   lkdtm_WARNING+0x28/0x30 [lkdtm ed5019fdf5e53be37cb1ba7899292d7e143b259e]
-> >   direct_entry+0x16c/0x1b4 [lkdtm ed5019fdf5e53be37cb1ba7899292d7e143b259e]
-> >   full_proxy_write+0x74/0xa4  
+On Tue, May 11, 2021 at 06:37:35AM +0200, Oleksij Rempel wrote:
+> This fixup configures the IO voltage and disables the SmartEEE
+> functionality.
 > 
-> Is there any way to get it to print each module ID only once?
+> If this patch breaks your system, enable AT803X_PHY driver and configure
+> the PHY by the device tree:
+> 
+> 	phy-connection-type = "rgmii-id";
+> 	ethernet-phy@X {
+> 		reg = <0xX>;
+> 
+> 		qca,smarteee-tw-us-1g = <24>;
+> 
+> 		vddio-supply = <&vddh>;
+> 
+> 		vddio: vddio-regulator {
+> 			regulator-name = "VDDIO";
+> 			regulator-min-microvolt = <1800000>;
+> 			regulator-max-microvolt = <1800000>;
+> 		};
+> 
+> 		vddh: vddh-regulator {
+> 			regulator-name = "VDDH";
+> 		};
+> 	};
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-If there's a trivial way to do that, then perhaps it should be done, but for
-now, this patch series isn't as obnoxious as the previous versions. It only
-affects stack traces, and I'm fine with that.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
--- Steve
+    Andrew
