@@ -2,113 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32CA37A0CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F9937A0D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhEKH3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhEKH3s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:29:48 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E557C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:28:42 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mtr@pengutronix.de>)
-        id 1lgMom-0005Yq-51; Tue, 11 May 2021 09:28:36 +0200
-Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <mtr@pengutronix.de>)
-        id 1lgMok-0007xy-4w; Tue, 11 May 2021 09:28:34 +0200
-Date:   Tue, 11 May 2021 09:28:34 +0200
-From:   Michael Tretter <m.tretter@pengutronix.de>
-To:     Yuri Savinykh <s02190703@gse.cs.msu.ru>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-Subject: Re: [bug report] media: allegro: possible NULL pointer dereference.
-Message-ID: <20210511072834.GC17882@pengutronix.de>
-Mail-Followup-To: Michael Tretter <m.tretter@pengutronix.de>,
-        Yuri Savinykh <s02190703@gse.cs.msu.ru>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-References: <20210508160455.86976-1-s02190703@gse.cs.msu.ru>
+        id S230443AbhEKHaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:30:12 -0400
+Received: from mga14.intel.com ([192.55.52.115]:2345 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230343AbhEKHaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 03:30:09 -0400
+IronPort-SDR: 2a3sua9LSu5UwqCjj3ECqz0JxdHpWprz7vk3wu+76mZAE3VaVUd8Tf5nNJDeQbQN00E0eMWMIL
+ ukBx0dYAWnHw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="199055536"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="199055536"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 00:29:02 -0700
+IronPort-SDR: C7OJU3FJBXjmJjf42PenthZldjvEx+Zg3fDBLwRehBrErTcGWOYpmfYxyezuSaufd/62hw6QOP
+ TN732OV4sUpw==
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="392204982"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 00:28:54 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1lgMp0-00BNQ4-HI; Tue, 11 May 2021 10:28:50 +0300
+Date:   Tue, 11 May 2021 10:28:50 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Yury Norov <yury.norov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux-SH <linux-sh@vger.kernel.org>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH 11/12] tools: sync lib/find_bit implementation
+Message-ID: <YJoyMrqRtB3GSAny@smile.fi.intel.com>
+References: <20210401003153.97325-1-yury.norov@gmail.com>
+ <20210401003153.97325-12-yury.norov@gmail.com>
+ <1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp>
+ <CAHp75Vea0Y_LfWC7LNDoDZqO4t+SVHV5HZMzErfyMPoBAjjk1g@mail.gmail.com>
+ <YJm5Dpo+RspbAtye@rikard>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210508160455.86976-1-s02190703@gse.cs.msu.ru>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:08:13 up 82 days, 10:32, 91 users,  load average: 0.08, 0.27,
- 0.27
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: mtr@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <YJm5Dpo+RspbAtye@rikard>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Yuri,
+On Tue, May 11, 2021 at 12:51:58AM +0200, Rikard Falkeborn wrote:
+> On Mon, May 10, 2021 at 06:44:44PM +0300, Andy Shevchenko wrote:
 
-On Sat, 08 May 2021 19:04:55 +0300, Yuri Savinykh wrote:
-> At the moment of enabling irq handling:
-> 
-> 3166     ret = devm_request_threaded_irq(&pdev->dev, irq,
-> 3167                     allegro_hardirq,
-> 3168                     allegro_irq_thread,
-> 3169                     IRQF_SHARED, dev_name(&pdev->dev), dev);
-> 
-> there is still uninitialized field mbox_status of struct allegro_dev *dev.
-> If an interrupt occurs in the interval between the installation of the
-> interrupt handler and the initialization of this field, NULL pointer
-> dereference happens.
-> 
-> This field is dereferenced in the handler function without any check:
-> 
-> 1801 static irqreturn_t allegro_irq_thread(int irq, void *data)
-> 1802 {
-> 1803     struct allegro_dev *dev = data;
-> 1804
-> 1805     allegro_mbox_notify(dev->mbox_status);
-> 
-> 
-> and then:
-> 
-> 752 static void allegro_mbox_notify(struct allegro_mbox *mbox)
-> 753 {
-> 754     struct allegro_dev *dev = mbox->dev;
-> 
-> The initialization of the mbox_status field happens asynchronously in
-> allegro_fw_callback() via allegro_mcu_hw_init(). 
-> 
-> Is it guaranteed that an interrupt does not occur in this interval?
-> If it is not, is it better to move interrupt handler installation
-> after initialization of this field has been completed?
+...
 
-Thanks for the report. The interrupt is triggered by the firmware, which is
-only loaded in allegro_fw_callback(), and is enabled only after the
-initialization of mbox_status in allegro_mcu_hw_init():
+> Does the following work for you? For simplicity, I copied__is_constexpr from
+> include/linux/minmax.h (which isn't available in tools/). A proper patch
+> would reuse __is_constexpr (possibly refactoring it to a separate
+> header since bits.h including minmax.h for that only seems smelly)
 
-3507	allegro_mcu_enable_interrupts(dev)
+I think we need to have it in something like compiler.h (top level). Under
+'top level' I meant something with the function as of compiler.h but with
+Linuxisms rather than compiler attributes or so.
 
-The interrupt handler is installed in probe(), because that's where all the
-platform information is retrieved. Unfortunately, at that time, the driver is
-not able to setup the mailboxes, because the mailbox configuration depends on
-the firmware and is only known in allegro_fw_callback().
+Separate header for the (single) macro is too much...
 
-It might be interesting to tie the interrupt more closely to the mailboxes,
-because it is actually only used to notify the driver about mails in the
-mailbox, but that's something I have not yet considered worth the effort.
+> and fix
+> bits.h in the kernel header as well, to keep the files in sync.
 
-Michael
+Right.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
