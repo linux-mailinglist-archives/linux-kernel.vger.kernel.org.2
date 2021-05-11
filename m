@@ -2,99 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0581A37A5D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7DD37A5D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231478AbhEKLfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 07:35:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbhEKLft (ORCPT
+        id S231462AbhEKLd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 07:33:28 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:2631 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231426AbhEKLd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 07:35:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD2FC061574;
-        Tue, 11 May 2021 04:34:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=z8xth38edps4ercvMCzw87sEignsU1bmAbE1Z2XXkMo=; b=r18c6FH0bQlv+AXcu0qPDkQona
-        PXwtIcOpBUP1r4eVHMQB3L78lthcIk6qHQUiMQjk3W02GsVW2ZeNweBq0TZtHsg5hAp++wAiMV/Ho
-        pkICVhaXwD+crN3+Y9QH7WJ/VZgYoqBgPQHc3/HWXVJAGw/0ihmNrfQxJN4WIPZy94FYQ4amC1o74
-        j8w6Lz+ulFThH5AYXrzmlHJQWi/6DCD3l7T3D0RA0Oozo0xLVEcHs/zFaCOeu4OUtO1vw8Z97o1Mc
-        f3agHWPGUZHWXdtpriIJwfAbejid0l7FwMjQRM15W0Xr4MpubxUQr+WTOQ1ALhseL37gBUN25xoJb
-        Tmgdk/lQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgQeL-007EFh-Po; Tue, 11 May 2021 11:34:13 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     davem@davemloft.net, kuba@kernel.org, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: [PATCH] udp: Switch the order of arguments to copy_linear_skb
-Date:   Tue, 11 May 2021 12:34:00 +0100
-Message-Id: <20210511113400.1722975-1-willy@infradead.org>
-X-Mailer: git-send-email 2.30.2
+        Tue, 11 May 2021 07:33:26 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FfbLl3s1DzldBn;
+        Tue, 11 May 2021 19:30:07 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Tue, 11 May 2021
+ 19:32:12 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-block@vger.kernel.org>
+CC:     <justin@coraid.com>, <axboe@kernel.dk>
+Subject: [PATCH -next] aoe: remove unnecessary mutex_init()
+Date:   Tue, 11 May 2021 19:34:40 +0800
+Message-ID: <20210511113440.3772053-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All other skb functions use (off, len); this is the only one which
-uses (len, off).  Make it consistent.
+The mutex ktio_spawn_lock is initialized statically.
+It is unnecessary to initialize by mutex_init().
 
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- include/net/udp.h | 2 +-
- net/ipv4/udp.c    | 2 +-
- net/ipv6/udp.c    | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/block/aoe/aoecmd.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/include/net/udp.h b/include/net/udp.h
-index 360df454356c..c4a7a4c56e75 100644
---- a/include/net/udp.h
-+++ b/include/net/udp.h
-@@ -392,7 +392,7 @@ static inline bool udp_skb_is_linear(struct sk_buff *skb)
- }
- #endif
+diff --git a/drivers/block/aoe/aoecmd.c b/drivers/block/aoe/aoecmd.c
+index ecd77897a761..588889bea7c3 100644
+--- a/drivers/block/aoe/aoecmd.c
++++ b/drivers/block/aoe/aoecmd.c
+@@ -1701,8 +1701,6 @@ aoecmd_init(void)
+ 		goto ktiowq_fail;
+ 	}
  
--static inline int copy_linear_skb(struct sk_buff *skb, int len, int off,
-+static inline int copy_linear_skb(struct sk_buff *skb, int off, int len,
- 				  struct iov_iter *to)
- {
- 	int n;
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 15f5504adf5b..783c466e6071 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -1859,7 +1859,7 @@ int udp_recvmsg(struct sock *sk, struct msghdr *msg, size_t len, int noblock,
- 
- 	if (checksum_valid || udp_skb_csum_unnecessary(skb)) {
- 		if (udp_skb_is_linear(skb))
--			err = copy_linear_skb(skb, copied, off, &msg->msg_iter);
-+			err = copy_linear_skb(skb, off, copied, &msg->msg_iter);
- 		else
- 			err = skb_copy_datagram_msg(skb, off, msg, copied);
- 	} else {
-diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-index 199b080d418a..24b202dd370e 100644
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -369,7 +369,7 @@ int udpv6_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
- 
- 	if (checksum_valid || udp_skb_csum_unnecessary(skb)) {
- 		if (udp_skb_is_linear(skb))
--			err = copy_linear_skb(skb, copied, off, &msg->msg_iter);
-+			err = copy_linear_skb(skb, off, copied, &msg->msg_iter);
- 		else
- 			err = skb_copy_datagram_msg(skb, off, msg, copied);
- 	} else {
+-	mutex_init(&ktio_spawn_lock);
+-
+ 	for (i = 0; i < ncpus; i++) {
+ 		INIT_LIST_HEAD(&iocq[i].head);
+ 		spin_lock_init(&iocq[i].lock);
 -- 
-2.30.2
+2.25.1
 
