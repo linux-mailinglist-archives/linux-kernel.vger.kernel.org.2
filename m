@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9079937A1D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B847437A1D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhEKI2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 04:28:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36986 "EHLO mail.kernel.org"
+        id S230483AbhEKI2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 04:28:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230338AbhEKI2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 04:28:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1804761107;
-        Tue, 11 May 2021 08:27:16 +0000 (UTC)
+        id S231175AbhEKI21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 04:28:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 041D9613CF;
+        Tue, 11 May 2021 08:27:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620721637;
-        bh=33gomDD/LsBo48p0ujPwB4ZMY/SnqXxbXoNeyGfnFI4=;
+        s=k20201202; t=1620721640;
+        bh=xngQb/H4l+AEBkqcLavgTosOEueZ5/zsF+zrSKV7Dgc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bdE/vh5PnP+PAfw4nvR7MEgcOZNojCP8xPCQwpfMvSb2W5v06mjRzjofihhr+gOZv
-         0+l5Jcj+3awOtJyl7DjlbbV6pYLBfs3gpuB1bLtLR7QG55jV6Va2L8FtNDvB2jBLdu
-         OnFpL8QXLwRyH5mLbHk9l7PmwLlnteL/54YHPE59W39pWzFm4G4TgZSxTeiTQ0sgye
-         3K8KBBh0cadamAJSWcxhhybugCKsJW+goZBuUQZJ+pWcLw7lW+scqZdgQ3ygiO8RC5
-         AP9RandUf5806Rxs/va3aQgNIcxxg7E3Ecb4Vux5WapGj8am+TCEYyx9/tPHMwdrHG
-         sGvFwsC2sKCog==
+        b=MpeVf7eM5Bw86VyLLtpJS/EzrV+z1CuisGU4pqCPhSzfyQwx+2vmFl97LtcdOR58n
+         sAeYbCkaWytBq7W2leR5GoOZ9YtwL7dYQjW1T21W6mgRkIq4MWDYVNRgo56x7SRKgW
+         gFAwrnokQcQT4L19scu+9dIBZt+4UVnjvEk9PYW7PEpK9vv2agccColEYMVUaQVpCV
+         yJFY0IRRx/s5rXLz1oQDP4AsMH4NNyfthVdZF5X4OxPw2EGPOnHS/N9kGPqqmwPOX6
+         Dxl5SfP6q3I/Ushb6l+sdpCX5BTFiQTrO3LPt50m1/2wgu8iFbYWDSh0g7/cA81Xrz
+         qBezT8U+L800w==
 From:   Mark Brown <broonie@kernel.org>
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     Mark Brown <broonie@kernel.org>,
+To:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bartosz Dudziak <bartosz.dudziak@snejp.pl>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Guodong Xu <guodong.xu@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: hi6421v600: Remove unneeded *pmic from struct hi6421_spmi_reg_info
-Date:   Tue, 11 May 2021 09:25:41 +0100
-Message-Id: <162072067395.33366.7122964867023650977.b4-ty@kernel.org>
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kathiravan T <kathirav@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: regulator: qcom: Document PM8226 smd regulator
+Date:   Tue, 11 May 2021 09:25:42 +0100
+Message-Id: <162072067395.33366.7650476255510624158.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210430085555.1127994-1-axel.lin@ingics.com>
-References: <20210430085555.1127994-1-axel.lin@ingics.com>
+In-Reply-To: <20210502115304.8570-1-bartosz.dudziak@snejp.pl>
+References: <20210502115304.8570-1-bartosz.dudziak@snejp.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,10 +46,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Apr 2021 16:55:55 +0800, Axel Lin wrote:
-> Use rdev->regmap instead of pmic->regmap.
-> With this change, hi6421_spmi_regulator_disable can be removed and use
-> regulator_disable_regmap instead.
+On Sun, 2 May 2021 13:53:03 +0200, Bartosz Dudziak wrote:
+> Document the PM8226 SMD-RPM regulator entry.
 
 Applied to
 
@@ -54,8 +55,10 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: hi6421v600: Remove unneeded *pmic from struct hi6421_spmi_reg_info
-      commit: 4446e6f3bd5c97c312833b445d0eb2ea638c7e98
+[1/2] dt-bindings: regulator: qcom: Document PM8226 smd regulator
+      commit: 00c8b0b1e6e1314bb57aab6438fbc2803c637d9d
+[2/2] regulator: qcom_smd: Add PM8226 regulator support
+      commit: 8c816d56a2a4e757bb121d1af4c04f47ac0572d3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
