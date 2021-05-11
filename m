@@ -2,51 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1A6379DD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9539B379DCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhEKDcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 23:32:06 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2767 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbhEKDcF (ORCPT
+        id S229900AbhEKDbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 23:31:35 -0400
+Received: from gateway33.websitewelcome.com ([192.185.146.130]:26044 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229465AbhEKDbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 23:32:05 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FfNf12fRMzmg6f;
-        Tue, 11 May 2021 11:27:37 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 11 May
- 2021 11:30:52 +0800
-Subject: Re: [PATCH 2/2] erofs: update documentation about data compression
-To:     Gao Xiang <xiang@kernel.org>, <linux-erofs@lists.ozlabs.org>
-CC:     LKML <linux-kernel@vger.kernel.org>
-References: <20210510162506.28637-1-xiang@kernel.org>
- <20210510162506.28637-2-xiang@kernel.org>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <460ee99a-2e1c-df90-c0e9-6a58764bd49f@huawei.com>
-Date:   Tue, 11 May 2021 11:30:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Mon, 10 May 2021 23:31:33 -0400
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id ECDE9481AE5
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 22:30:26 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id gJ6Il2HJNAEP6gJ6Il2uR9; Mon, 10 May 2021 22:30:26 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=0T6q/WobVSrKEX00/Jpr82hwjxlRylETOPsQdVzHh0U=; b=azPwngBrgVv9uGzfbKYrK7WYeN
+        rqjxV33JsNrLRV4thGTP0bOxTEo5Jq5gzt9Rb1TNw3HzVjpYYmFVXVxOYTX4y7HN22dXVU450TyT4
+        K6g8M77ESL80DooqTvhHCnOnw3MJSci2kaNnhoZP8mjr4z5fjCo5gWA92071Q7QrRb0BNI2V7nUZ2
+        nX1F1GVjji1GNoXjWbiCPqaenViXmifiFHkRwzOGK4lPVfZIysy02Mro2czEz8odvhFgKAh8vipU8
+        PjT4R+mhEOSwHmhKlyzblS+huuEIfSpls6bVrGqM3324iYMmS9ytSpGfCN8y3in6KgIjhnpCzi0J0
+        DVolRIoQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:43694 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lgJ6F-003Pgb-Gu; Mon, 10 May 2021 22:30:23 -0500
+Subject: Re: [PATCH v3][next] scsi: aacraid: Replace one-element array with
+ flexible-array member
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210421185611.GA105224@embeddedor>
+ <162070348784.27567.4297596089347883095.b4-ty@oracle.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <65719db1-b1ec-8466-5f39-27af16d8a701@embeddedor.com>
+Date:   Mon, 10 May 2021 22:30:54 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210510162506.28637-2-xiang@kernel.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <162070348784.27567.4297596089347883095.b4-ty@oracle.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lgJ6F-003Pgb-Gu
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:43694
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 6
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/11 0:25, Gao Xiang wrote:
-> Add more description about (NON)HEAD lclusters, and the new big
-> pcluster feature.
+
+
+On 5/10/21 22:25, Martin K. Petersen wrote:
+> On Wed, 21 Apr 2021 13:56:11 -0500, Gustavo A. R. Silva wrote:
 > 
-> Signed-off-by: Gao Xiang <xiang@kernel.org>
+>> There is a regular need in the kernel to provide a way to declare having
+>> a dynamically sized set of trailing elements in a structure. Kernel code
+>> should always use “flexible array members”[1] for these cases. The older
+>> style of one-element or zero-length arrays should no longer be used[2].
+>>
+>> Refactor the code according to the use of a flexible-array member in
+>> struct aac_raw_io2 instead of one-element array, and use the
+>> struct_size() helper.
+>>
+>> [...]
+> 
+> Applied to 5.14/scsi-queue, thanks!
+> 
+> [1/1] scsi: aacraid: Replace one-element array with flexible-array member
+>       https://git.kernel.org/mkp/scsi/c/39107e8577ad
 
-Good job!
+Awesome. :)
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Thanks, Martin.
+--
+Gustavo
 
-Thanks,
