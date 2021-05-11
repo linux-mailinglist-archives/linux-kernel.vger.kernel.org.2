@@ -2,129 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E63379BD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F0D379BD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhEKBHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 21:07:06 -0400
-Received: from mga06.intel.com ([134.134.136.31]:26887 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229628AbhEKBHF (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 21:07:05 -0400
-IronPort-SDR: nbTtxPO4RufAUq5mrGrFwKdcuQgMk5pPOhtipduQ8L4yiaTnCuynnCtUh0dCo58k6s7fADbO84
- RQST5NY9ZRKA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="260589852"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="260589852"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 18:05:59 -0700
-IronPort-SDR: cn6mZp9Rq541Qwp1ArrKZ0No10NFgU3COA0DaWzvJRZdlZe4/calH5eNDb0d6rgoE+s9a7sZ4U
- M4Hd63/TVPJg==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="436394540"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.82]) ([10.238.4.82])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 18:05:57 -0700
-Subject: Re: [PATCH v2 1/3] perf header: Support HYBRID_TOPOLOGY feature
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210507035230.3079-1-yao.jin@linux.intel.com>
- <20210507035230.3079-2-yao.jin@linux.intel.com> <YJkxF8bycH8+w+N+@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <1a6a4580-598a-6774-74c1-58c04c2d3ad2@linux.intel.com>
-Date:   Tue, 11 May 2021 09:05:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230096AbhEKBI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 21:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229980AbhEKBIY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 21:08:24 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D16C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 18:07:18 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id y26so20864678eds.4
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 18:07:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z0A7p7l5UlP8ih6gnzpDJkXYmkZR04hOiCwPZ3G9az8=;
+        b=uNSvNZJ7I2aVfpuVnun3OImfHtqcBraJYnFx2nsnhRGMPyAzddwShYZHnuadmC6aIU
+         nNUWuPVfJtb8RLVOV3qAVaSzECkFXifsQv/AyDgs9vCD6L5qlONknM7gqhrmPe64NU3H
+         Vu7UEFN/qlbDfqNNeTyOmeRIb3jTtqZMGdweHDJWq1ex5XT0Snz+bPwGlz/3bt0seiT0
+         rtnPut1QJxc1F2+w+ya2bNlsCyXQ8smids2fYh/4YGZQ+7E2TULcEkTqddHuXUgCgBqn
+         HCN99OdaEvBRD9LFY0EtM75OlkIE8bmBQ372e0HpKHvPwTdFG9XDHl/JViawCgegLh8U
+         Qhbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z0A7p7l5UlP8ih6gnzpDJkXYmkZR04hOiCwPZ3G9az8=;
+        b=ila9gQ7LMnyvY+5nmvYV0owYPhPKGHxzd4anRJ/RjRBWTtHCIF3CXJ5MOPob4IxtAz
+         8g2g4yNu57ePT5CNDCw38R/piYx45XHxITzgmy9A8ar4Zb5kQVzdyp3ecRkYvP6d/r6q
+         oclWiyZhqPvGQYKlqawqSP1GYiEa7QdIIfqEq/AciNHo2DQcBIN1MTS1U7cWCZEA8MPG
+         jD182YDED3U9mjiCtmX0nYj7xz5T+cw+hUKZKktiKmSmaaJiJJAh9bklJCyFFKRN/icT
+         KduCB/KBIgsUSNnPUMNNNQv1OEcx+02Pq5gTbPCTevrAykG6yBEIREEGqZl2LFAgr/J3
+         +pyw==
+X-Gm-Message-State: AOAM5305/WxJs8MMVPMhhgbztR8EvcuM8WxB6/ZsGeaQNzmEUq8+JZ3j
+        atVL0kbimq+IegjFNZFo0D19fLgUqczFWtnABBdP2w==
+X-Google-Smtp-Source: ABdhPJxYbgRMZM0H/Wq57eZV/1LKPdxOJPhErfwz6aDX58ob9rzKsdOdOvKGYPeQl6GBbnbbziXAVRIxt/P+O5srP20=
+X-Received: by 2002:a50:ff13:: with SMTP id a19mr32734675edu.300.1620695237437;
+ Mon, 10 May 2021 18:07:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YJkxF8bycH8+w+N+@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <0e7e94d1ee4bae49dfd0dd441dc4f2ab6df76668.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4jPLGs6p0PNZQB6yKB3QDtEcGb234zcgCbJutXxZZEGnA@mail.gmail.com>
+ <e8ac31bc-e307-f277-f928-24ebba4cbca7@linux.intel.com> <CAPcyv4iuRdXooQvCzEWd9babzPij4nXpM-z5fai9+SGaeFYswQ@mail.gmail.com>
+ <9f89a317-11fa-d784-87a8-37124891900c@linux.intel.com>
+In-Reply-To: <9f89a317-11fa-d784-87a8-37124891900c@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 10 May 2021 18:07:06 -0700
+Message-ID: <CAPcyv4hymb73WZ7QqNsDyKiPzsFdPJF63+MLnOTfJMsQBFvSDg@mail.gmail.com>
+Subject: Re: [RFC v2 14/32] x86/tdx: Handle port I/O
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+On Mon, May 10, 2021 at 5:30 PM Kuppuswamy, Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+[..]
+> It is mainly used by functions like __tdx_hypercall(),__tdx_hypercall_vendor_kvm()
+> and tdx_in{b,w,l}.
+>
+> u64 __tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15,
+>                      struct tdx_hypercall_output *out);
+> u64 __tdx_hypercall_vendor_kvm(u64 fn, u64 r12, u64 r13, u64 r14,
+>                                 u64 r15, struct tdx_hypercall_output *out);
+>
+> struct tdx_hypercall_output {
+>          u64 r11;
+>          u64 r12;
+>          u64 r13;
+>          u64 r14;
+>          u64 r15;
+> };
 
-On 5/10/2021 9:11 PM, Jiri Olsa wrote:
-> On Fri, May 07, 2021 at 11:52:28AM +0800, Jin Yao wrote:
->> It would be useful to let user know the hybrid topology.
->> Adding HYBRID_TOPOLOGY feature in header to indicate the
->> core cpus and the atom cpus.
->>
->> With this patch,
->>
->> For the perf.data generated on hybrid platform,
->> reports the hybrid cpu list.
->>
->>    root@otcpl-adl-s-2:~# perf report --header-only -I
->>    ...
->>    # hybrid cpu system:
->>    # cpu_core cpu list : 0-15
->>    # cpu_atom cpu list : 16-23
->>
->> For the perf.data generated on non-hybrid platform,
->> reports the message that HYBRID_TOPOLOGY is missing.
->>
->>    root@kbl-ppc:~# perf report --header-only -I
->>    ...
->>    # missing features: TRACING_DATA BRANCH_STACK GROUP_DESC AUXTRACE STAT CLOCKID DIR_FORMAT COMPRESSED CLOCK_DATA HYBRID_TOPOLOGY
->>
->> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
->> ---
->>   .../Documentation/perf.data-file-format.txt   | 14 +++
->>   tools/perf/util/cputopo.c                     | 80 +++++++++++++++++
->>   tools/perf/util/cputopo.h                     | 13 +++
->>   tools/perf/util/env.c                         |  6 ++
->>   tools/perf/util/env.h                         |  7 ++
->>   tools/perf/util/header.c                      | 87 +++++++++++++++++++
->>   tools/perf/util/header.h                      |  1 +
->>   tools/perf/util/pmu-hybrid.h                  | 11 +++
->>   8 files changed, 219 insertions(+)
->>
->> diff --git a/tools/perf/Documentation/perf.data-file-format.txt b/tools/perf/Documentation/perf.data-file-format.txt
->> index 9ee96640744e..d9d82ca8aeb7 100644
->> --- a/tools/perf/Documentation/perf.data-file-format.txt
->> +++ b/tools/perf/Documentation/perf.data-file-format.txt
->> @@ -402,6 +402,20 @@ struct {
->>   	u64 clockid_time_ns;
->>   };
->>   
->> +	HEADER_HYBRID_TOPOLOGY = 30,
->> +
->> +Indicate the hybrid CPUs. The format of data is as below.
->> +
->> +struct {
->> +	char *pmu_name;
->> +	char *cpus;
->> +};
-> 
-> this is missing the nr count, should be like:
-> 
-> struct {
-> 	u32 nr;
-> 	struct {
-> 	     char *pmu_name;
-> 	     char *cpus;
-> 	} [nr]
-> }
-> 
-> jirka
-> 
+Why is this by register name and not something like:
 
-Yes, we should say the format of data is:
+struct tdx_hypercall_payload {
+  u64 data[5];
+};
 
-struct {
-	u32 nr;
-	struct {
-		char *pmu_name;
-		char *cpus;
-	} [nr]
-}
+...because the code in this patch is reading the payload out of a
+stack relative offset, not r11.
 
-I will update 'perf.data-file-format.txt' in v3.
+>
+>
+> Functions like __tdx_hypercall() and __tdx_hypercall_vendor_kvm() are used
+> by TDX guest to request services (like RDMSR, WRMSR,GetQuote, etc) from VMM
+> using TDCALL instruction. do_tdx_hypercall() is the helper function (in
+> tdcall.S) which actually implements this ABI.
+>
+> As per current ABI, VMM will use registers R11-R15 to share the output
+> values with the guest.
 
-Thanks
-Jin Yao
+Which ABI, __tdx_hypercall_vendor_kvm()? The code is putting the
+payload on the stack, so I'm not sure what ABI you are referring to?
+
+
+> So we have defined the structure
+> struct tdx_hypercall_output to group all output registers and make it easier
+> to share it with users of the TDCALLs. This is Linux defined structure.
+>
+> If there are any changes in TDCALL ABI for VMM, we might have to extend
+> this structure to accommodate new output register changes.  So if we
+> define TDVMCALL_OUTPUT_SIZE as 40, we will have modify this value for
+> any future struct tdx_hypercall_output changes. So to avoid it, we have
+> allocated double the size.
+>
+> May be I should define it as,
+>
+> #define TDVMCALL_OUTPUT_SIZE            sizeof(struct tdx_hypercall_output)
+
+An arrangement like that seems more reasonable than a seemingly
+arbitrary number and an ominous warning about things that may happen
+in the future.
