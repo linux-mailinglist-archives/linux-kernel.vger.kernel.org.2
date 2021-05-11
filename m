@@ -2,70 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B7437B29C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05EA537B2A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbhEKXeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:34:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55362 "EHLO mail.kernel.org"
+        id S229980AbhEKXfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:35:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230018AbhEKXeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:34:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id A8E3361932;
-        Tue, 11 May 2021 23:33:10 +0000 (UTC)
+        id S229637AbhEKXfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 19:35:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F0B8616E9;
+        Tue, 11 May 2021 23:34:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620775990;
-        bh=oJ3l4wlzf7QBL5jHf7APnaJatjUe/MBghkI25GjTwgo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=qBsWqG9UP6inu2TCX4d+QYgGdNvFvL7TF7dOgfv+hyEy6+t5BLO1Htwb8gEn1ljVE
-         OeSdrNh22EDcpUNG1GQNokpeRr0eXywy5vcC06k5Lys3hqUTYbEAv6BdyVoK5wy+cX
-         9U6Z3mT5PHt4lBJGeNFXlmlAMfpBPwVNs/+m5PPCYN5s3CNlTN7Xxon8UFnuX6Uviq
-         J3DtLlIIJA68fEUNE8fn0MxU5cssuwuzduoqTKIDZb/ko5jW6GoDfBPivwWCnbDDWl
-         SD7J3CTjGYvXvxFfpHeDPoi7z3ylMI/uLln83aCSn/S9kEQ4kl7835RZj34dcpoNtn
-         +FLCFx0gIvhfw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A2AF560A02;
-        Tue, 11 May 2021 23:33:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1620776043;
+        bh=WD528Agg7VGrOYn03h4Z6TA71NLmXei3z328pw81tE4=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=m+tkdmXikMB48NnOtFo6Ua2cNUfAihft8x/dLfCBnpTNYsAR4X0jgRgBmrzXHK4MW
+         ikyaCj7IDKbt1SsZwACgTNAByKH6bDxCgmQQ2src9Xt4DAz6LWOKTH0E+ohT8OXP9i
+         hgb3RUWl4vX9F7RlG6CeZ22M8/T/RLlkbTIcUdrOTD6QplBX7YNm4qPdTRL0saYDSt
+         g+c7MtO28cl+2ZhHRMPfeaeS8Dxd+OgRzel1F+1mEmBB1tC8yp2uVjjD423yGTB61y
+         nYy6L+w5fQZGtOELQys4ZSE//RG+zG1lPehiH0xHW2db7fvK6bpFpDaI0cDsA70XE3
+         +YyRi97hfI57Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 234A15C0138; Tue, 11 May 2021 16:34:03 -0700 (PDT)
+Date:   Tue, 11 May 2021 16:34:03 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com, feng.tang@intel.com, zhengjun.xing@intel.com
+Subject: [PATCH v14 clocksource 0/5] Do not mark clocks unstable due to
+ delays for v5.14
+Message-ID: <20210511233403.GA2896757@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net/sched: taprio: Drop unnecessary NULL check after
- container_of
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162077599066.17752.10688844250342653861.git-patchwork-notify@kernel.org>
-Date:   Tue, 11 May 2021 23:33:10 +0000
-References: <20210511205449.1676407-1-linux@roeck-us.net>
-In-Reply-To: <20210511205449.1676407-1-linux@roeck-us.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hello!
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+If there is a sufficient delay between reading the watchdog clock and the
+clock under test, the clock under test will be marked unstable through no
+fault of its own.  This series checks for this, doing limited retries
+to get a good set of clock reads.  If the clock is marked unstable
+and is marked as being per-CPU, cross-CPU synchronization is checked.
+This series also provides a clocksource-watchdog-test kernel module that
+tests this new ability of distinguishing delay-induced clock skew from
+true clock skew.
 
-On Tue, 11 May 2021 13:54:49 -0700 you wrote:
-> The rcu_head pointer passed to taprio_free_sched_cb is never NULL.
-> That means that the result of container_of() operations on it is also
-> never NULL, even though rcu_head is the first element of the structure
-> embedding it. On top of that, it is misleading to perform a NULL check
-> on the result of container_of() because the position of the contained
-> element could change, which would make the check invalid. Remove the
-> unnecessary NULL check.
-> 
-> [...]
+Note that "sufficient delay" can be provided by SMIs, NMIs, and of course
+vCPU preemption.
 
-Here is the summary with links:
-  - net/sched: taprio: Drop unnecessary NULL check after container_of
-    https://git.kernel.org/netdev/net-next/c/faa5f5da809b
+The patches in this series are as follows:
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+1.	Retry clock read if long delays detected.
 
+2.	Check per-CPU clock synchronization when marked unstable.
 
+3.	Limit number of CPUs checked for clock synchronization.
+
+4.	Reduce clocksource-skew threshold for TSC.
+
+5.	Provide kernel module to test clocksource watchdog.
+
+6.	Print deviation in nanoseconds for unstable case, courtesy of
+	Feng Tang.
+
+Changes since v13:
+
+o	Forward-port to v5.13-rc1.
+
+o	Add patch 6 from Feng Tang.
+
+Changes since v12, based on feedback from kernel test robot and Stephen
+Rothwell:
+
+o	Export clocksource_verify_percpu().
+
+Link: https://lore.kernel.org/lkml/20210501003204.GA2447938@paulmck-ThinkPad-P17-Gen-1/
+
+Changes since v11, based on feedback from Thomas Gleixner:
+
+o	Remove the fault-injection code from clocksource.c.
+
+o	Create a kernel/time/clocksource-wdtest.c kernel module that
+	creates its own clocksource structures and injects delays
+	as part of their ->read() functions.
+
+o	Make this kernel module splat upon error, for example, when
+	a clocksource is not marked unstable but should have been.
+
+o	Apply a couple more "Link:" fields to all patches.
+
+Changes since v10 based on feedback from Thomas Gleixner, Feng Tang,
+and Andi Kleen:
+
+o	Add an uncertainty_margin field to the clocksource structure to
+	allow skew cutoffs to be tailored to the pair of clocksources
+	that the watchdog is comparing.
+
+o	Manually initialize this uncertainty_margin field for
+	clocksource_tsc_early and clocksource_jiffies, thus avoiding
+	the need for special-case code to allow for the unusually
+	large skews inherent to these clocksources.
+
+Changes since v9:
+
+o	Forgive tsc_early drift, based on feedback from Feng Tang; Xing,
+	Zhengjun; and Thomas Gleixner.
+
+o	Improve CPU selection for clock-synchronization checking.
+
+Link: https://lore.kernel.org/lkml/20210419045155.GA596058@paulmck-ThinkPad-P17-Gen-1/
+
+Changes since v8, based on Thomas Gleixner feedback:
+
+o	Reduced clock-skew threshold to 200us and delay limit to 50us.
+
+o	Split out a cs_watchdog_read() function.
+
+o	Removed the pointless CLOCK_SOURCE_VERIFY_PERCPU from kvm_clock.
+
+o	Initialized cs_nsec_max and cs_nsec_min to avoid firsttime checks.
+
+Link: https://lore.kernel.org/lkml/20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1/
+
+Changes since v7, based on Thomas Gleixner feedback:
+
+o	Fix embarrassing git-format-patch operator error.
+
+o	Merge pairwise clock-desynchronization checking into the checking
+	of per-CPU clock synchronization when marked unstable.
+
+o	Do selective per-CPU checking rather than blindly checking all
+	CPUs.  Provide a clocksource.verify_n_cpus kernel boot parameter
+	to control this behavior, with the value -1 choosing the old
+	check-all-CPUs behavior.  The default is to randomly check 8 CPUs.
+
+o	Fix the clock-desynchronization checking to avoid a potential
+	use-after-free error for dynamically allocated clocksource
+	structures.
+
+o	Remove redundance "wdagain_nsec < 0" from clocksource_watchdog()
+	clocksource skew checking.
+
+o	Update commit logs and do code-style updates.
+
+Link: https://lore.kernel.org/lkml/20210106004013.GA11179@paulmck-ThinkPad-P72/
+
+Changes since v5:
+
+o	Rebased to v5.12-rc5.
+
+Changes since v4:
+
+o	Rebased to v5.12-rc1.
+
+Changes since v3:
+
+o	Rebased to v5.11.
+
+o	Apply Randy Dunlap feedback.
+
+Changes since v2:
+
+o	Rebased to v5.11-rc6.
+
+o	Updated Cc: list.
+
+Changes since v1:
+
+o	Applied feedback from Rik van Riel.
+
+o	Rebased to v5.11-rc3.
+
+o	Stripped "RFC" from the subject lines.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.txt   |   16 +
+ arch/x86/kernel/tsc.c                             |    1 
+ b/Documentation/admin-guide/kernel-parameters.txt |    6 
+ b/arch/x86/kernel/tsc.c                           |    3 
+ b/include/linux/clocksource.h                     |    2 
+ b/kernel/time/Makefile                            |    1 
+ b/kernel/time/clocksource-wdtest.c                |  202 ++++++++++++++++++++++
+ b/kernel/time/clocksource.c                       |   52 +++++
+ b/kernel/time/jiffies.c                           |   15 -
+ b/lib/Kconfig.debug                               |   12 +
+ include/linux/clocksource.h                       |    6 
+ kernel/time/clocksource.c                         |  202 +++++++++++++++++++---
+ 12 files changed, 482 insertions(+), 36 deletions(-)
