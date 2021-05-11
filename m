@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D43B379D5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 874EC379D60
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbhEKDHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 23:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhEKDHD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 23:07:03 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BD3C061574;
-        Mon, 10 May 2021 20:05:57 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id c3so17696719oic.8;
-        Mon, 10 May 2021 20:05:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JnHqVVEfRTu9JkoWKbT89biz9F5E98u3YQefU6ToVJs=;
-        b=IHDqgZVX8rwjXdiEQWd77E0h7YLUDnGNSHmDHPDRPX8+EMCxTkKC32U3k1YJVV9YxG
-         MmGR6aoMgrHvHafjfpNZD83B6pCe51ND0t91/NvETI/VJANZADGzAzrBKtGgW4GzwTUZ
-         69CLIp2DHIK0Y/yp254IPIM/FWsL0jyTqZYif2IncazNeCpBQ9szradgdIFLUTDdw1+d
-         0588UdAxo41V/3Rsikw6uwKVD5/2d9s0iANQ9emxlvgAAmmAdulVHvRFyc07a4JW7kgv
-         YAGKQGMkvxZRo096wDGq5R+ad347kHBUF81JA56pnZBK8axyoeqmYv37PL0BUwCEzWqv
-         x8sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JnHqVVEfRTu9JkoWKbT89biz9F5E98u3YQefU6ToVJs=;
-        b=MK2PCJQAILwBi5SBS7qP9clIynLp288iz0IfABTrnwbflOi7qkg4c0gSXMKAW2rktY
-         hwJzdIEs1kIBeV29jlT13VMp2ZEGzAMjvLSgmprYr1XRAhgj9lXn7B5Mvzdrv+uum5Sm
-         BGQEIMVWupoEmQcp2IaSqNoD4IoTKvLqI0qhWMpnDBiXUGBWV9l5ZAYzlxL58P40GPTO
-         CwLuWUBergWSFCNQcpOn4gVnEsRCLWFICnjIrTc1c3ZgXstp4KqE9nq5Sh8kSTByHJFJ
-         IJ6YvfEAjGh2e7x0IBqyhtlb6Wqf+QNGiW1Ompk44VK6yMdwUGkMPIjQWddUnhS1F7bP
-         VTtw==
-X-Gm-Message-State: AOAM533rDKjbo/rdCvmeV4ogrjKF5MwCqRwSmIpFsFQOY3WwOxurYE5H
-        Zj4jcdwX9y2mteAKPr3C5EK4zmlxnvBmjg==
-X-Google-Smtp-Source: ABdhPJzrxBcF+IhTlgsq620YFfreAbh7Vmr1yslK2IAm/T1PEFwxTfAN3W5RsdH60tzMIFwGNzGMcQ==
-X-Received: by 2002:aca:d493:: with SMTP id l141mr1855190oig.51.1620702357025;
-        Mon, 10 May 2021 20:05:57 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.33])
-        by smtp.googlemail.com with ESMTPSA id z4sm3473871otq.65.2021.05.10.20.05.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 May 2021 20:05:56 -0700 (PDT)
-Subject: Re: [PATCH] net/ipv4/ip_fragment:fix missing Flags reserved bit set
- in iphdr
-To:     meijusan <meijusan@163.com>, Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210506145905.3884-1-meijusan@163.com>
- <20210507155900.43cd8200@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <1368d6c3.bd1.1795900a467.Coremail.meijusan@163.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <28dfa69f-2844-29c4-5405-421520711196@gmail.com>
-Date:   Mon, 10 May 2021 21:05:54 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        id S230070AbhEKDIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 23:08:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229465AbhEKDIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 23:08:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABDA161004;
+        Tue, 11 May 2021 03:07:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620702424;
+        bh=Dl3YW3teGKKFwFsnU3XVBmdwvV1e/pCsXI5071YVVyQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XnG6NjRjzEzULKYDV1rv2mRoLTS+f/rA9knulz6KAyV1swYFgVP60BcaFdwnWFL31
+         ZOMx5Lm9D/UULcMDGtumOIX8Rv5tBlipj0zYZG7FfMNx0wkUSIK8MsTh+Uf4etyu02
+         zP4op0Rr3EAgBAKH9Cc6SUrlui9pQvvBh9xx9rTvUHbjBaGErzYwobNljvLmggyqZV
+         JlqI4NmHRZifq2toZti97R6wqtyl2F+WxUSPRMHg7U3alHdHbe144EPwJLxRkOHXoK
+         UELbt+Dq6i2P9kmB0SsmJtqm0D46ipidWgnYxCdmhqywemJA9FvE8XlgN4Z866srmD
+         wKnGBQX0WaVqg==
+Date:   Tue, 11 May 2021 11:06:59 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Kornel Duleba <mindal@semihalf.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, leoyang.li@nxp.com,
+        robh+dt@kernel.org, mw@semihalf.com, tn@semihalf.com,
+        upstream@semihalf.com
+Subject: Re: [PATCH] arm64: dts: fsl-ls1028a: Correct ECAM PCIE window ranges
+Message-ID: <20210511030658.GG3425@dragon>
+References: <20210407123438.224551-1-mindal@semihalf.com>
 MIME-Version: 1.0
-In-Reply-To: <1368d6c3.bd1.1795900a467.Coremail.meijusan@163.com>
-Content-Type: text/plain; charset=gbk
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407123438.224551-1-mindal@semihalf.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/21 7:18 PM, meijusan wrote:
-> 
-> At 2021-05-08 06:59:00, "Jakub Kicinski" <kuba@kernel.org> wrote:
->> On Thu,  6 May 2021 22:59:05 +0800 meijusan wrote:
->>> ip frag with the iphdr flags reserved bit set,via router,ip frag reasm or
->>> fragment,causing the reserved bit is reset to zero.
->>>
->>> Keep reserved bit set is not modified in ip frag  defrag or fragment.
->>>
->>> Signed-off-by: meijusan <meijusan@163.com>
->>
->> Could you please provide more background on why we'd want to do this?
-> 
->> Preferably with references to relevant (non-April Fools' Day) RFCs.
-> 
-> [background]
-> the Simple network usage scenarios: the one PC software<--->linux router(L3)/linux bridege(L2,bridge-nf-call-iptables)<--->the other PC software
-> 1)the PC software send the ip packet with the iphdr flags reserved bit is set, when ip packet(not fragments ) via the one linux router/linux bridge,and the iphdr flags reserved bit is not modified;
-> 2)but the ip fragments via router,the linux IP reassembly or fragmentation ,causing the reserved bit is reset to zero,Which leads to The other PC software depending on the reserved bit set  process the Packet failed.
-> [rfc]
-> RFC791
-> Bit 0: reserved, must be zero
-> RFC3514
-> Introduction This bit , but The scene seems different from us£¬we expect Keep reserved bit set is not modified when forward the linux router
-> 
-> 
-> 
-> 
-> 
++ Claudiu
 
-Why process the packet at all? If a reserved bit must be 0 and it is
-not, drop the packet.
+On Wed, Apr 07, 2021 at 02:34:38PM +0200, Kornel Duleba wrote:
+> Currently all PCIE windows point to bus address 0x0, which does not match
+> the values obtained from hardware during EA.
+> Replace those values with CPU addresses, since in reality we
+> have a 1:1 mapping between the two.
+> 
+> Signed-off-by: Kornel Duleba <mindal@semihalf.com>
+
+Claudiu,
+
+Do you have any comment on this?
+
+Shawn
+
+> ---
+>  arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> index 262fbad8f0ec..85c62a6fabb6 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> @@ -994,19 +994,19 @@ pcie@1f0000000 { /* Integrated Endpoint Root Complex */
+>  			msi-map = <0 &its 0x17 0xe>;
+>  			iommu-map = <0 &smmu 0x17 0xe>;
+>  				  /* PF0-6 BAR0 - non-prefetchable memory */
+> -			ranges = <0x82000000 0x0 0x00000000  0x1 0xf8000000  0x0 0x160000
+> +			ranges = <0x82000000 0x1 0xf8000000  0x1 0xf8000000  0x0 0x160000
+>  				  /* PF0-6 BAR2 - prefetchable memory */
+> -				  0xc2000000 0x0 0x00000000  0x1 0xf8160000  0x0 0x070000
+> +				  0xc2000000 0x1 0xf8160000  0x1 0xf8160000  0x0 0x070000
+>  				  /* PF0: VF0-1 BAR0 - non-prefetchable memory */
+> -				  0x82000000 0x0 0x00000000  0x1 0xf81d0000  0x0 0x020000
+> +				  0x82000000 0x1 0xf81d0000  0x1 0xf81d0000  0x0 0x020000
+>  				  /* PF0: VF0-1 BAR2 - prefetchable memory */
+> -				  0xc2000000 0x0 0x00000000  0x1 0xf81f0000  0x0 0x020000
+> +				  0xc2000000 0x1 0xf81f0000  0x1 0xf81f0000  0x0 0x020000
+>  				  /* PF1: VF0-1 BAR0 - non-prefetchable memory */
+> -				  0x82000000 0x0 0x00000000  0x1 0xf8210000  0x0 0x020000
+> +				  0x82000000 0x1 0xf8210000  0x1 0xf8210000  0x0 0x020000
+>  				  /* PF1: VF0-1 BAR2 - prefetchable memory */
+> -				  0xc2000000 0x0 0x00000000  0x1 0xf8230000  0x0 0x020000
+> +				  0xc2000000 0x1 0xf8230000  0x1 0xf8230000  0x0 0x020000
+>  				  /* BAR4 (PF5) - non-prefetchable memory */
+> -				  0x82000000 0x0 0x00000000  0x1 0xfc000000  0x0 0x400000>;
+> +				  0x82000000 0x1 0xfc000000  0x1 0xfc000000  0x0 0x400000>;
+>  
+>  			enetc_port0: ethernet@0,0 {
+>  				compatible = "fsl,enetc";
+> -- 
+> 2.31.1
+> 
