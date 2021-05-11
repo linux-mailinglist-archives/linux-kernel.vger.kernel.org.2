@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3E5379C42
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A938A379C47
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhEKBs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 21:48:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51611 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229736AbhEKBs4 (ORCPT
+        id S230420AbhEKBuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 21:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230334AbhEKBun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 21:48:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620697670;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qE7Cs7117lYWLJD4CigwEwHnctBSgoDI1H0pJNx0a/k=;
-        b=fjPRraSWQHwMo0nIZbdsoAN/Wk1A5DyQSNYl71mGuhiUwZOeRiMOCnNHGaNxkghSzQTq2e
-        yXBDyi+Ng/l/wq38PsQPwyM63XZj4IQNwMqlEIgBX4PcfEEZbbM4304il7jq0goF83rigs
-        mekB0HL22Y7LKCAuzzXIkAhpW+lkC7A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-9Aj2Zn0wPkmWVUNN3vdpVg-1; Mon, 10 May 2021 21:47:49 -0400
-X-MC-Unique: 9Aj2Zn0wPkmWVUNN3vdpVg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 548BD801AE3;
-        Tue, 11 May 2021 01:47:47 +0000 (UTC)
-Received: from T590 (ovpn-12-106.pek2.redhat.com [10.72.12.106])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 393F360C17;
-        Tue, 11 May 2021 01:47:38 +0000 (UTC)
-Date:   Tue, 11 May 2021 09:47:34 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Douglas Gilbert <dgilbert@interlog.com>
-Cc:     John Garry <john.garry@huawei.com>, axboe@kernel.dk,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, kashyap.desai@broadcom.com,
-        chenxiang66@hisilicon.com, yama@redhat.com
-Subject: Re: [PATCH] blk-mq: Use request queue-wide tags for tagset-wide
- sbitmap
-Message-ID: <YJniNq6LYqiLFIlP@T590>
-References: <1620037333-2495-1-git-send-email-john.garry@huawei.com>
- <YJnVasOcaVU+4+Au@T590>
- <0faa2ad6-4ae9-02b2-2f34-cf58f1e23c5b@interlog.com>
+        Mon, 10 May 2021 21:50:43 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EFD3C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 18:49:36 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id y26so20944727eds.4
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 18:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GC+jcwYuSlGwJ2d485mepP4KelpwOyaTe94c08xajfQ=;
+        b=xZeeTRD1Py3Ep5O8bkGrjjCbMORAPBblaI9SG5G7RNQvcwF81lU7VKMHEEx/RZbbis
+         H+eTlm5BQh3XW4suI5xn6He5ui1geRSvdmxGw4kDXGHZMKzThcUNQBrc+QPsOjF7ecNi
+         X3Ks+DVHKy+IDRyoi+WPFcJLy86hLZar9QnLg9lHmteELQIN38+03VEyGnZOpOfUBFEr
+         iibOmzhCeqDu4tLZCsCNDGf622ynCiSOu+5B6xFKtD7kxriPKDFGNwFqs8a/FQOAV/PT
+         eoJMf0C+Q7LrtUzVpQk4L8TK50IWSjEPOjPhbzqV2bBicMp2n2Ty6nLRMnISFyJfAxqm
+         huCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GC+jcwYuSlGwJ2d485mepP4KelpwOyaTe94c08xajfQ=;
+        b=YovvBN/1yTjVB3Ff9IvGgj+w1HNcmHzEf572fUKTbepJL7cr+Gsyl0b7fZNwz+r2Yf
+         hgMAT/NGxJlsfFx8JBNGoRBwmLVKYoa2g4nK4NnvisQnwYBf6HOFLoBR7JMPYVc+lcV1
+         mJN0MX4oWDkCzcBLbZgoVF+XmkLI+1hgBxPOPjOnXYlXoj7ITCaNVPCRGTWTNjyCl1Km
+         Q5yThEfeBlTytTK0VKJToHYVydIGLB4iUN1efn9sp2nolFaHPyh0EEH7EXTcNiS8oY4r
+         WcUvD5g95f1XigvGh1zK9SXasUukoFIdFffPDmfR8x5cjognUBmky1Url1t5UnswDlQA
+         GMLQ==
+X-Gm-Message-State: AOAM530Vbj86LF3xa8yOyEAlJdSqw+pS39BxAq3hGU/R+BdlGBdu0Qj4
+        LSJTTypyNU8nF0Gl/+QfoPONgQVfUSyOQdUrvR8P
+X-Google-Smtp-Source: ABdhPJwjVnamGG/jYjAW0Ym/j+pyybJ9iee8648B3crpa2HR6Of28omAtKhJZFw8AuC+pWNa7k/q/lNaLnMvtk51mew=
+X-Received: by 2002:aa7:de9a:: with SMTP id j26mr10088284edv.269.1620697775288;
+ Mon, 10 May 2021 18:49:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0faa2ad6-4ae9-02b2-2f34-cf58f1e23c5b@interlog.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <1619604015-117734-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1619604015-117734-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 10 May 2021 21:49:24 -0400
+Message-ID: <CAHC9VhSxDoxnKrw+bZQ18YVMm56ajza4wzFv=3L3SZf7qd5QgA@mail.gmail.com>
+Subject: Re: [PATCH] selinux: Remove redundant assignment to rc
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 09:35:01PM -0400, Douglas Gilbert wrote:
-> On 2021-05-10 8:52 p.m., Ming Lei wrote:
-> > On Mon, May 03, 2021 at 06:22:13PM +0800, John Garry wrote:
-> > > The tags used for an IO scheduler are currently per hctx.
-> > > 
-> > > As such, when q->nr_hw_queues grows, so does the request queue total IO
-> > > scheduler tag depth.
-> > > 
-> > > This may cause problems for SCSI MQ HBAs whose total driver depth is
-> > > fixed.
-> > > 
-> > > Ming and Yanhui report higher CPU usage and lower throughput in scenarios
-> > > where the fixed total driver tag depth is appreciably lower than the total
-> > > scheduler tag depth:
-> > > https://lore.kernel.org/linux-block/440dfcfc-1a2c-bd98-1161-cec4d78c6dfc@huawei.com/T/#mc0d6d4f95275a2743d1c8c3e4dc9ff6c9aa3a76b
-> > > 
-> > 
-> > No difference any more wrt. fio running on scsi_debug with this patch in
-> > Yanhui's test machine:
-> > 
-> > 	modprobe scsi_debug host_max_queue=128 submit_queues=32 virtual_gb=256 delay=1
-> > vs.
-> > 	modprobe scsi_debug max_queue=128 submit_queues=1 virtual_gb=256 delay=1
-> > 
-> > Without this patch, the latter's result is 30% higher than the former's.
-> > 
-> > note: scsi_debug's queue depth needs to be updated to 128 for avoiding io hang,
-> > which is another scsi issue.
-> 
-> "scsi_debug: Fix cmd_per_lun, set to max_queue" made it into lk 5.13.0-rc1 as
-> commit fc09acb7de31badb2ea9e85d21e071be1a5736e4 . Is this the issue you are
-> referring to, or is there a separate issue in the wider scsi stack?
+On Wed, Apr 28, 2021 at 6:00 AM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
+>
+> Variable rc is set to '-EINVAL' but this value is never read as
+> it is overwritten or not used later on, hence it is a redundant
+> assignment and can be removed.
+>
+> Cleans up the following clang-analyzer warning:
+>
+> security/selinux/ss/services.c:2103:3: warning: Value stored to 'rc' is
+> never read [clang-analyzer-deadcode.DeadStores].
+>
+> security/selinux/ss/services.c:2079:2: warning: Value stored to 'rc' is
+> never read [clang-analyzer-deadcode.DeadStores].
+>
+> security/selinux/ss/services.c:2071:2: warning: Value stored to 'rc' is
+> never read [clang-analyzer-deadcode.DeadStores].
+>
+> security/selinux/ss/services.c:2062:2: warning: Value stored to 'rc' is
+> never read [clang-analyzer-deadcode.DeadStores].
+>
+> security/selinux/ss/policydb.c:2592:3: warning: Value stored to 'rc' is
+> never read [clang-analyzer-deadcode.DeadStores].
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  security/selinux/ss/policydb.c | 1 -
+>  security/selinux/ss/services.c | 4 ----
+>  2 files changed, 5 deletions(-)
 
-OK, that is it, then it isn't necessary to update scsi_debug's queue
-depth for the test.
+Merged into selinux/next, thanks.
 
-
-Thanks,
-Ming
-
+-- 
+paul moore
+www.paul-moore.com
