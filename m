@@ -2,657 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0DE379F15
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 07:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCD2379F18
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 07:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhEKFXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 01:23:00 -0400
-Received: from mga02.intel.com ([134.134.136.20]:39764 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230019AbhEKFW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 01:22:56 -0400
-IronPort-SDR: Xiy6NwizAX9k+IBc1+k/xntYomrEABbKfIOxFHV7T1eTDHbKuS9LXGTh1Pn+9g95f8f4tapITQ
- +/YqKbaRWylg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="186494400"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="186494400"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 22:21:44 -0700
-IronPort-SDR: qhoNwo3M/xBoVkVuo8AcLXC5WOmXMFoaqPhTPvIm0hzqmMFUAgd3zgBsaKJQp1n44Q+Q6+Nr2s
- Gih+ukEHpqTQ==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="434179768"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 22:21:41 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: [PATCH v4] soundwire: intel: move to auxiliary bus
-Date:   Tue, 11 May 2021 13:21:32 +0800
-Message-Id: <20210511052132.28150-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S230306AbhEKFXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 01:23:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230252AbhEKFXa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 01:23:30 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34D1C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 22:22:22 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso16535272otm.4
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 22:22:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=1XYo/HH08xj1HbCG0QyRSLOCzZ3tgzrX+Sqs15Va+8g=;
+        b=E6rFtJRbG+dAnqTEZhIOQA12ebJrYBaa84KcAWCbtejuM56Hr7s+KkcQi+lcNP7odQ
+         xavNkxUgUazOv+LtElBePp5d4+SXjHRiAR3QtmP1Wr2c6AdmujRRVYzw3xdI+T4t+zqC
+         ei10I8KDBH7Ob7E7WwbH4/HU/5XvrraaDvyHQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=1XYo/HH08xj1HbCG0QyRSLOCzZ3tgzrX+Sqs15Va+8g=;
+        b=hBjyK1is1cwGse89rp/DblpFhI7DIycQC/2JXscCgMb3Prgz0uxcvwBcH3tq8c0pvr
+         2BuAeKn4jLQFiLfTs+9VBpScXO4K3abqs+7XcFWhcMopf1ITRYkgqEFe+GEpeMkD7Yow
+         q6glY9v5o9lFi3anwzu2Ru+8F1IQthbqXj5zO8v/SKcJYfEh6z6HII9TH/bE9pVrvk5y
+         vsy6ocklduyBVMPdeuB+TiIYyAeCpqk0UcOxZNjp2fdTCBD2PC3oi1u+AU+qeZRnjhO3
+         cEPgWqgb+SxJxFS1VdgUl+AjoRBrtoIBO4aQuyKXQXYoIubY1SiokQiCPV8tdZyvQSPv
+         Jsow==
+X-Gm-Message-State: AOAM531CfRxx1gblZybl2a8lG8O1KYOh2Uttif5uVMjvQm1f7iv8dN0C
+        tlxW5QugdSdJWbxe9V3lzemwuMG7kmzVCMTHqtzHhg==
+X-Google-Smtp-Source: ABdhPJy8D3AkEO7Rc/9a8rsCucdMVNPYVvuTKW5AD5jeNWw9ldBq6C1BFBpWSPmw8mdZ9Szx1p2QYuOaNOxG4kkypeo=
+X-Received: by 2002:a9d:1ea9:: with SMTP id n38mr25358780otn.233.1620710541992;
+ Mon, 10 May 2021 22:22:21 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 10 May 2021 22:22:21 -0700
+MIME-Version: 1.0
+In-Reply-To: <20210511041930.592483-2-bjorn.andersson@linaro.org>
+References: <20210511041930.592483-1-bjorn.andersson@linaro.org> <20210511041930.592483-2-bjorn.andersson@linaro.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 10 May 2021 22:22:21 -0700
+Message-ID: <CAE-0n50qWuny_1oYEMSZ+cfmCvnumk_UTPxUvZ-3wWdgOCioNA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] phy: qcom: Introduce new eDP PHY driver
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, sbillaka@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Quoting Bjorn Andersson (2021-05-10 21:19:30)
+> Many recent Qualcomm platforms comes with native DP and eDP support.
+> This consists of a controller int he MDSS and a QMP-like PHY.
+>
+> While similar to the well known QMP block, the eDP PHY only has TX lanes
+> and the programming sequences are slightly different. Rather than
+> continuing the trend of parameterize the QMP driver to pieces, this
+> introduces the support as a new driver.
 
-Now that the auxiliary_bus exists, there's no reason to use platform
-devices as children of a PCI device any longer.
+Thank you for not slamming it into the same mega driver.
 
-This patch refactors the code by extending a basic auxiliary device
-with Intel link-specific structures that need to be passed between
-controller and link levels. This refactoring is much cleaner with no
-need for cross-pointers between device and link structures.
+>
+> The registration of link and pixel clocks are borrowed from the QMP
+> driver. The non-DP link frequencies are omitted for now.
 
-Note that the auxiliary bus API has separate init and add steps, which
-requires more attention in the error unwinding paths. The main loop
-needs to deal with kfree() and auxiliary_device_uninit() for the
-current iteration before jumping to the common label which releases
-everything allocated in prior iterations.
+Can we make some library code for "DP" stuff in qmp that the two can
+call to share the logic?
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
-v2:
- - add link_dev_register for all kzalloc, device_init, and device_add.
-v3:
- - Modify the function description of sdw_intel_probe() which was
-   missing in previous version.
-v4:
- - Move intel_link_dev_unregister(ldev) before pm_runtime_put_noidle(
-   ldev->link_res.dev) to fix use-after-free reported by KASAN.
----
- drivers/soundwire/Kconfig           |   1 +
- drivers/soundwire/intel.c           |  56 ++++---
- drivers/soundwire/intel.h           |  14 +-
- drivers/soundwire/intel_init.c      | 232 +++++++++++++++++++---------
- include/linux/soundwire/sdw_intel.h |   6 +-
- 5 files changed, 202 insertions(+), 107 deletions(-)
+>
+> The eDP PHY is very similar to the dedicated (non-USB) DP PHY, but only
+> the prior is supported for now.
+>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  drivers/phy/qualcomm/Kconfig        |  10 +
+>  drivers/phy/qualcomm/Makefile       |   1 +
+>  drivers/phy/qualcomm/phy-qcom-edp.c | 750 ++++++++++++++++++++++++++++
+>  3 files changed, 761 insertions(+)
+>  create mode 100644 drivers/phy/qualcomm/phy-qcom-edp.c
+>
+> diff --git a/drivers/phy/qualcomm/Kconfig b/drivers/phy/qualcomm/Kconfig
+> index 7f6fcb8ec5ba..13ae6f4f3112 100644
+> --- a/drivers/phy/qualcomm/Kconfig
+> +++ b/drivers/phy/qualcomm/Kconfig
+> @@ -114,3 +114,13 @@ config PHY_QCOM_IPQ806X_USB
+>           This option enables support for the Synopsis PHYs present inside the
+>           Qualcomm USB3.0 DWC3 controller on ipq806x SoC. This driver supports
+>           both HS and SS PHY controllers.
+> +
+> +config PHY_QCOM_EDP
 
-diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
-index 016e74230bb7..2b7795233282 100644
---- a/drivers/soundwire/Kconfig
-+++ b/drivers/soundwire/Kconfig
-@@ -25,6 +25,7 @@ config SOUNDWIRE_INTEL
- 	tristate "Intel SoundWire Master driver"
- 	select SOUNDWIRE_CADENCE
- 	select SOUNDWIRE_GENERIC_ALLOCATION
-+	select AUXILIARY_BUS
- 	depends on ACPI && SND_SOC
- 	help
- 	  SoundWire Intel Master driver.
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index fd95f94630b1..c11e3d8cd308 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -11,7 +11,7 @@
- #include <linux/module.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
--#include <linux/platform_device.h>
-+#include <linux/auxiliary_bus.h>
- #include <sound/pcm_params.h>
- #include <linux/pm_runtime.h>
- #include <sound/soc.h>
-@@ -1327,11 +1327,14 @@ static int intel_init(struct sdw_intel *sdw)
- }
- 
- /*
-- * probe and init
-+ * probe and init (aux_dev_id argument is required by function prototype but not used)
-  */
--static int intel_master_probe(struct platform_device *pdev)
-+static int intel_link_probe(struct auxiliary_device *auxdev,
-+			    const struct auxiliary_device_id *aux_dev_id)
-+
- {
--	struct device *dev = &pdev->dev;
-+	struct device *dev = &auxdev->dev;
-+	struct sdw_intel_link_dev *ldev = auxiliary_dev_to_sdw_intel_link_dev(auxdev);
- 	struct sdw_intel *sdw;
- 	struct sdw_cdns *cdns;
- 	struct sdw_bus *bus;
-@@ -1344,14 +1347,14 @@ static int intel_master_probe(struct platform_device *pdev)
- 	cdns = &sdw->cdns;
- 	bus = &cdns->bus;
- 
--	sdw->instance = pdev->id;
--	sdw->link_res = dev_get_platdata(dev);
-+	sdw->instance = auxdev->id;
-+	sdw->link_res = &ldev->link_res;
- 	cdns->dev = dev;
- 	cdns->registers = sdw->link_res->registers;
- 	cdns->instance = sdw->instance;
- 	cdns->msg_count = 0;
- 
--	bus->link_id = pdev->id;
-+	bus->link_id = auxdev->id;
- 
- 	sdw_cdns_probe(cdns);
- 
-@@ -1384,10 +1387,10 @@ static int intel_master_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--int intel_master_startup(struct platform_device *pdev)
-+int intel_link_startup(struct auxiliary_device *auxdev)
- {
- 	struct sdw_cdns_stream_config config;
--	struct device *dev = &pdev->dev;
-+	struct device *dev = &auxdev->dev;
- 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
- 	struct sdw_intel *sdw = cdns_to_intel(cdns);
- 	struct sdw_bus *bus = &cdns->bus;
-@@ -1524,9 +1527,9 @@ int intel_master_startup(struct platform_device *pdev)
- 	return ret;
- }
- 
--static int intel_master_remove(struct platform_device *pdev)
-+static void intel_link_remove(struct auxiliary_device *auxdev)
- {
--	struct device *dev = &pdev->dev;
-+	struct device *dev = &auxdev->dev;
- 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
- 	struct sdw_intel *sdw = cdns_to_intel(cdns);
- 	struct sdw_bus *bus = &cdns->bus;
-@@ -1542,19 +1545,17 @@ static int intel_master_remove(struct platform_device *pdev)
- 		snd_soc_unregister_component(dev);
- 	}
- 	sdw_bus_master_delete(bus);
--
--	return 0;
- }
- 
--int intel_master_process_wakeen_event(struct platform_device *pdev)
-+int intel_link_process_wakeen_event(struct auxiliary_device *auxdev)
- {
--	struct device *dev = &pdev->dev;
-+	struct device *dev = &auxdev->dev;
- 	struct sdw_intel *sdw;
- 	struct sdw_bus *bus;
- 	void __iomem *shim;
- 	u16 wake_sts;
- 
--	sdw = platform_get_drvdata(pdev);
-+	sdw = dev_get_drvdata(dev);
- 	bus = &sdw->cdns.bus;
- 
- 	if (bus->prop.hw_disabled) {
-@@ -1976,17 +1977,22 @@ static const struct dev_pm_ops intel_pm = {
- 	SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, NULL)
- };
- 
--static struct platform_driver sdw_intel_drv = {
--	.probe = intel_master_probe,
--	.remove = intel_master_remove,
-+static const struct auxiliary_device_id intel_link_id_table[] = {
-+	{ .name = "soundwire_intel.link" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(auxiliary, intel_link_id_table);
-+
-+static struct auxiliary_driver sdw_intel_drv = {
-+	.probe = intel_link_probe,
-+	.remove = intel_link_remove,
- 	.driver = {
--		.name = "intel-sdw",
-+		/* auxiliary_driver_register() sets .name to be the modname */
- 		.pm = &intel_pm,
--	}
-+	},
-+	.id_table = intel_link_id_table
- };
--
--module_platform_driver(sdw_intel_drv);
-+module_auxiliary_driver(sdw_intel_drv);
- 
- MODULE_LICENSE("Dual BSD/GPL");
--MODULE_ALIAS("platform:intel-sdw");
--MODULE_DESCRIPTION("Intel Soundwire Master Driver");
-+MODULE_DESCRIPTION("Intel Soundwire Link Driver");
-diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-index 06bac8ba14e9..0b47b148da3f 100644
---- a/drivers/soundwire/intel.h
-+++ b/drivers/soundwire/intel.h
-@@ -7,7 +7,6 @@
- /**
-  * struct sdw_intel_link_res - Soundwire Intel link resource structure,
-  * typically populated by the controller driver.
-- * @pdev: platform_device
-  * @mmio_base: mmio base of SoundWire registers
-  * @registers: Link IO registers base
-  * @shim: Audio shim pointer
-@@ -23,7 +22,6 @@
-  * @list: used to walk-through all masters exposed by the same controller
-  */
- struct sdw_intel_link_res {
--	struct platform_device *pdev;
- 	void __iomem *mmio_base; /* not strictly needed, useful for debug */
- 	void __iomem *registers;
- 	void __iomem *shim;
-@@ -48,7 +46,15 @@ struct sdw_intel {
- #endif
- };
- 
--int intel_master_startup(struct platform_device *pdev);
--int intel_master_process_wakeen_event(struct platform_device *pdev);
-+int intel_link_startup(struct auxiliary_device *auxdev);
-+int intel_link_process_wakeen_event(struct auxiliary_device *auxdev);
-+
-+struct sdw_intel_link_dev {
-+	struct auxiliary_device auxdev;
-+	struct sdw_intel_link_res link_res;
-+};
-+
-+#define auxiliary_dev_to_sdw_intel_link_dev(auxiliary_dev) \
-+	container_of(auxiliary_dev, struct sdw_intel_link_dev, auxdev)
- 
- #endif /* __SDW_INTEL_LOCAL_H */
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index 30ce95ec2d70..9e283bef53d2 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -12,7 +12,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/module.h>
--#include <linux/platform_device.h>
-+#include <linux/auxiliary_bus.h>
- #include <linux/pm_runtime.h>
- #include <linux/soundwire/sdw_intel.h>
- #include "cadence_master.h"
-@@ -24,28 +24,108 @@
- #define SDW_LINK_BASE		0x30000
- #define SDW_LINK_SIZE		0x10000
- 
-+static void intel_link_dev_release(struct device *dev)
-+{
-+	struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
-+	struct sdw_intel_link_dev *ldev = auxiliary_dev_to_sdw_intel_link_dev(auxdev);
-+
-+	kfree(ldev);
-+}
-+
-+/* alloc, init and add link devices */
-+static struct sdw_intel_link_dev *intel_link_dev_register(struct sdw_intel_res *res,
-+							  struct sdw_intel_ctx *ctx,
-+							  struct fwnode_handle *fwnode,
-+							  const char *name,
-+							  int link_id)
-+{
-+	struct sdw_intel_link_dev *ldev;
-+	struct sdw_intel_link_res *link;
-+	struct auxiliary_device *auxdev;
-+	int ret;
-+
-+	ldev = kzalloc(sizeof(*ldev), GFP_KERNEL);
-+	if (!ldev)
-+		return ERR_PTR(-ENOMEM);
-+
-+	auxdev = &ldev->auxdev;
-+	auxdev->name = name;
-+	auxdev->dev.parent = res->parent;
-+	auxdev->dev.fwnode = fwnode;
-+	auxdev->dev.release = intel_link_dev_release;
-+
-+	/* we don't use an IDA since we already have a link ID */
-+	auxdev->id = link_id;
-+
-+	/*
-+	 * keep a handle on the allocated memory, to be used in all other functions.
-+	 * Since the same pattern is used to skip links that are not enabled, there is
-+	 * no need to check if ctx->ldev[i] is NULL later on.
-+	 */
-+	ctx->ldev[link_id] = ldev;
-+
-+	/* Add link information used in the driver probe */
-+	link = &ldev->link_res;
-+	link->mmio_base = res->mmio_base;
-+	link->registers = res->mmio_base + SDW_LINK_BASE
-+		+ (SDW_LINK_SIZE * link_id);
-+	link->shim = res->mmio_base + SDW_SHIM_BASE;
-+	link->alh = res->mmio_base + SDW_ALH_BASE;
-+
-+	link->ops = res->ops;
-+	link->dev = res->dev;
-+
-+	link->clock_stop_quirks = res->clock_stop_quirks;
-+	link->shim_lock = &ctx->shim_lock;
-+	link->shim_mask = &ctx->shim_mask;
-+	link->link_mask = ctx->link_mask;
-+
-+	/* now follow the two-step init/add sequence */
-+	ret = auxiliary_device_init(auxdev);
-+	if (ret < 0) {
-+		dev_err(res->parent, "failed to initialize link dev %s link_id %d\n",
-+			name, link_id);
-+		kfree(ldev);
-+		return ERR_PTR(ret);
-+	}
-+
-+	ret = auxiliary_device_add(&ldev->auxdev);
-+	if (ret < 0) {
-+		dev_err(res->parent, "failed to add link dev %s link_id %d\n",
-+			ldev->auxdev.name, link_id);
-+		/* ldev will be freed with the put_device() and .release sequence */
-+		auxiliary_device_uninit(&ldev->auxdev);
-+		return ERR_PTR(ret);
-+	}
-+
-+	return ldev;
-+}
-+
-+static void intel_link_dev_unregister(struct sdw_intel_link_dev *ldev)
-+{
-+	auxiliary_device_delete(&ldev->auxdev);
-+	auxiliary_device_uninit(&ldev->auxdev);
-+}
-+
- static int sdw_intel_cleanup(struct sdw_intel_ctx *ctx)
- {
--	struct sdw_intel_link_res *link = ctx->links;
-+	struct sdw_intel_link_dev *ldev;
- 	u32 link_mask;
- 	int i;
- 
--	if (!link)
--		return 0;
--
- 	link_mask = ctx->link_mask;
- 
--	for (i = 0; i < ctx->count; i++, link++) {
-+	for (i = 0; i < ctx->count; i++) {
- 		if (!(link_mask & BIT(i)))
- 			continue;
- 
--		if (link->pdev) {
--			pm_runtime_disable(&link->pdev->dev);
--			platform_device_unregister(link->pdev);
--		}
-+		ldev = ctx->ldev[i];
- 
--		if (!link->clock_stop_quirks)
--			pm_runtime_put_noidle(link->dev);
-+		pm_runtime_disable(&ldev->auxdev.dev);
-+		if (!ldev->link_res.clock_stop_quirks)
-+			pm_runtime_put_noidle(ldev->link_res.dev);
-+
-+		intel_link_dev_unregister(ldev);
- 	}
- 
- 	return 0;
-@@ -91,9 +171,8 @@ EXPORT_SYMBOL_NS(sdw_intel_thread, SOUNDWIRE_INTEL_INIT);
- static struct sdw_intel_ctx
- *sdw_intel_probe_controller(struct sdw_intel_res *res)
- {
--	struct platform_device_info pdevinfo;
--	struct platform_device *pdev;
- 	struct sdw_intel_link_res *link;
-+	struct sdw_intel_link_dev *ldev;
- 	struct sdw_intel_ctx *ctx;
- 	struct acpi_device *adev;
- 	struct sdw_slave *slave;
-@@ -116,67 +195,60 @@ static struct sdw_intel_ctx
- 	count = res->count;
- 	dev_dbg(&adev->dev, "Creating %d SDW Link devices\n", count);
- 
--	ctx = devm_kzalloc(&adev->dev, sizeof(*ctx), GFP_KERNEL);
-+	/*
-+	 * we need to alloc/free memory manually and can't use devm:
-+	 * this routine may be called from a workqueue, and not from
-+	 * the parent .probe.
-+	 * If devm_ was used, the memory might never be freed on errors.
-+	 */
-+	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
- 		return NULL;
- 
- 	ctx->count = count;
--	ctx->links = devm_kcalloc(&adev->dev, ctx->count,
--				  sizeof(*ctx->links), GFP_KERNEL);
--	if (!ctx->links)
-+
-+	/*
-+	 * allocate the array of pointers. The link-specific data is allocated
-+	 * as part of the first loop below and released with the auxiliary_device_uninit().
-+	 * If some links are disabled, the link pointer will remain NULL. Given that the
-+	 * number of links is small, this is simpler than using a list to keep track of links.
-+	 */
-+	ctx->ldev = kcalloc(ctx->count, sizeof(*ctx->ldev), GFP_KERNEL);
-+	if (!ctx->ldev) {
-+		kfree(ctx);
- 		return NULL;
-+	}
- 
--	ctx->count = count;
- 	ctx->mmio_base = res->mmio_base;
- 	ctx->link_mask = res->link_mask;
- 	ctx->handle = res->handle;
- 	mutex_init(&ctx->shim_lock);
- 
--	link = ctx->links;
- 	link_mask = ctx->link_mask;
- 
- 	INIT_LIST_HEAD(&ctx->link_list);
- 
--	/* Create SDW Master devices */
--	for (i = 0; i < count; i++, link++) {
--		if (!(link_mask & BIT(i))) {
--			dev_dbg(&adev->dev,
--				"Link %d masked, will not be enabled\n", i);
-+	for (i = 0; i < count; i++) {
-+		if (!(link_mask & BIT(i)))
- 			continue;
--		}
- 
--		link->mmio_base = res->mmio_base;
--		link->registers = res->mmio_base + SDW_LINK_BASE
--			+ (SDW_LINK_SIZE * i);
--		link->shim = res->mmio_base + SDW_SHIM_BASE;
--		link->alh = res->mmio_base + SDW_ALH_BASE;
--
--		link->ops = res->ops;
--		link->dev = res->dev;
--
--		link->clock_stop_quirks = res->clock_stop_quirks;
--		link->shim_lock = &ctx->shim_lock;
--		link->shim_mask = &ctx->shim_mask;
--		link->link_mask = link_mask;
--
--		memset(&pdevinfo, 0, sizeof(pdevinfo));
--
--		pdevinfo.parent = res->parent;
--		pdevinfo.name = "intel-sdw";
--		pdevinfo.id = i;
--		pdevinfo.fwnode = acpi_fwnode_handle(adev);
--		pdevinfo.data = link;
--		pdevinfo.size_data = sizeof(*link);
--
--		pdev = platform_device_register_full(&pdevinfo);
--		if (IS_ERR(pdev)) {
--			dev_err(&adev->dev,
--				"platform device creation failed: %ld\n",
--				PTR_ERR(pdev));
-+		/*
-+		 * init and add a device for each link
-+		 *
-+		 * The name of the device will be soundwire_intel.link.[i],
-+		 * with the "soundwire_intel" module prefix automatically added
-+		 * by the auxiliary bus core.
-+		 */
-+		ldev = intel_link_dev_register(res,
-+					       ctx,
-+					       acpi_fwnode_handle(adev),
-+					       "link",
-+					       i);
-+		if (IS_ERR(ldev))
- 			goto err;
--		}
--		link->pdev = pdev;
--		link->cdns = platform_get_drvdata(pdev);
-+
-+		link = &ldev->link_res;
-+		link->cdns = dev_get_drvdata(&ldev->auxdev.dev);
- 
- 		if (!link->cdns) {
- 			dev_err(&adev->dev, "failed to get link->cdns\n");
-@@ -194,8 +266,7 @@ static struct sdw_intel_ctx
- 			num_slaves++;
- 	}
- 
--	ctx->ids = devm_kcalloc(&adev->dev, num_slaves,
--				sizeof(*ctx->ids), GFP_KERNEL);
-+	ctx->ids = kcalloc(num_slaves, sizeof(*ctx->ids), GFP_KERNEL);
- 	if (!ctx->ids)
- 		goto err;
- 
-@@ -213,8 +284,14 @@ static struct sdw_intel_ctx
- 	return ctx;
- 
- err:
--	ctx->count = i;
--	sdw_intel_cleanup(ctx);
-+	while (i--) {
-+		if (!(link_mask & BIT(i)))
-+			continue;
-+		ldev = ctx->ldev[i];
-+		intel_link_dev_unregister(ldev);
-+	}
-+	kfree(ctx->ldev);
-+	kfree(ctx);
- 	return NULL;
- }
- 
-@@ -222,7 +299,7 @@ static int
- sdw_intel_startup_controller(struct sdw_intel_ctx *ctx)
- {
- 	struct acpi_device *adev;
--	struct sdw_intel_link_res *link;
-+	struct sdw_intel_link_dev *ldev;
- 	u32 caps;
- 	u32 link_mask;
- 	int i;
-@@ -241,27 +318,28 @@ sdw_intel_startup_controller(struct sdw_intel_ctx *ctx)
- 		return -EINVAL;
- 	}
- 
--	if (!ctx->links)
-+	if (!ctx->ldev)
- 		return -EINVAL;
- 
--	link = ctx->links;
- 	link_mask = ctx->link_mask;
- 
- 	/* Startup SDW Master devices */
--	for (i = 0; i < ctx->count; i++, link++) {
-+	for (i = 0; i < ctx->count; i++) {
- 		if (!(link_mask & BIT(i)))
- 			continue;
- 
--		intel_master_startup(link->pdev);
-+		ldev = ctx->ldev[i];
- 
--		if (!link->clock_stop_quirks) {
-+		intel_link_startup(&ldev->auxdev);
-+
-+		if (!ldev->link_res.clock_stop_quirks) {
- 			/*
- 			 * we need to prevent the parent PCI device
- 			 * from entering pm_runtime suspend, so that
- 			 * power rails to the SoundWire IP are not
- 			 * turned off.
- 			 */
--			pm_runtime_get_noresume(link->dev);
-+			pm_runtime_get_noresume(ldev->link_res.dev);
- 		}
- 	}
- 
-@@ -272,8 +350,8 @@ sdw_intel_startup_controller(struct sdw_intel_ctx *ctx)
-  * sdw_intel_probe() - SoundWire Intel probe routine
-  * @res: resource data
-  *
-- * This registers a platform device for each Master handled by the controller,
-- * and SoundWire Master and Slave devices will be created by the platform
-+ * This registers an auxiliary device for each Master handled by the controller,
-+ * and SoundWire Master and Slave devices will be created by the auxiliary
-  * device probe. All the information necessary is stored in the context, and
-  * the res argument pointer can be freed after this step.
-  * This function will be called after sdw_intel_acpi_scan() by SOF probe.
-@@ -306,27 +384,31 @@ EXPORT_SYMBOL_NS(sdw_intel_startup, SOUNDWIRE_INTEL_INIT);
- void sdw_intel_exit(struct sdw_intel_ctx *ctx)
- {
- 	sdw_intel_cleanup(ctx);
-+	kfree(ctx->ids);
-+	kfree(ctx->ldev);
-+	kfree(ctx);
- }
- EXPORT_SYMBOL_NS(sdw_intel_exit, SOUNDWIRE_INTEL_INIT);
- 
- void sdw_intel_process_wakeen_event(struct sdw_intel_ctx *ctx)
- {
--	struct sdw_intel_link_res *link;
-+	struct sdw_intel_link_dev *ldev;
- 	u32 link_mask;
- 	int i;
- 
--	if (!ctx->links)
-+	if (!ctx->ldev)
- 		return;
- 
--	link = ctx->links;
- 	link_mask = ctx->link_mask;
- 
- 	/* Startup SDW Master devices */
--	for (i = 0; i < ctx->count; i++, link++) {
-+	for (i = 0; i < ctx->count; i++) {
- 		if (!(link_mask & BIT(i)))
- 			continue;
- 
--		intel_master_process_wakeen_event(link->pdev);
-+		ldev = ctx->ldev[i];
-+
-+		intel_link_process_wakeen_event(&ldev->auxdev);
- 	}
- }
- EXPORT_SYMBOL_NS(sdw_intel_process_wakeen_event, SOUNDWIRE_INTEL_INIT);
-diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index 3a5446ac014a..1ebea7764011 100644
---- a/include/linux/soundwire/sdw_intel.h
-+++ b/include/linux/soundwire/sdw_intel.h
-@@ -58,7 +58,7 @@ struct sdw_intel_acpi_info {
- 	u32 link_mask;
- };
- 
--struct sdw_intel_link_res;
-+struct sdw_intel_link_dev;
- 
- /* Intel clock-stop/pm_runtime quirk definitions */
- 
-@@ -109,7 +109,7 @@ struct sdw_intel_slave_id {
-  * Controller
-  * @num_slaves: total number of devices exposed across all enabled links
-  * @handle: ACPI parent handle
-- * @links: information for each link (controller-specific and kept
-+ * @ldev: information for each link (controller-specific and kept
-  * opaque here)
-  * @ids: array of slave_id, representing Slaves exposed across all enabled
-  * links
-@@ -123,7 +123,7 @@ struct sdw_intel_ctx {
- 	u32 link_mask;
- 	int num_slaves;
- 	acpi_handle handle;
--	struct sdw_intel_link_res *links;
-+	struct sdw_intel_link_dev **ldev;
- 	struct sdw_intel_slave_id *ids;
- 	struct list_head link_list;
- 	struct mutex shim_lock; /* lock for access to shared SHIM registers */
--- 
-2.17.1
+Can this come somewhere alphabet sorted?
 
+> +       tristate "Qualcomm eDP PHY driver"
+> +       depends on ARCH_QCOM || COMPILE_TEST
+
+I wonder if this could be pulled up above for the whole file.
+
+> +       depends on OF
+> +       depends on COMMON_CLK
+> +       select GENERIC_PHY
+> +       help
+> +         Enable this driver to support the Qualcomm eDP PHY found in various
+> +         Qualcomm chipsets.
+> diff --git a/drivers/phy/qualcomm/Makefile b/drivers/phy/qualcomm/Makefile
+> index 47acbd7daa3a..1afd0882dbcc 100644
+> --- a/drivers/phy/qualcomm/Makefile
+> +++ b/drivers/phy/qualcomm/Makefile
+> @@ -12,3 +12,4 @@ obj-$(CONFIG_PHY_QCOM_USB_HS_28NM)    += phy-qcom-usb-hs-28nm.o
+>  obj-$(CONFIG_PHY_QCOM_USB_SS)          += phy-qcom-usb-ss.o
+>  obj-$(CONFIG_PHY_QCOM_USB_SNPS_FEMTO_V2)+= phy-qcom-snps-femto-v2.o
+>  obj-$(CONFIG_PHY_QCOM_IPQ806X_USB)             += phy-qcom-ipq806x-usb.o
+> +obj-$(CONFIG_PHY_QCOM_EDP)             += phy-qcom-edp.o
+
+Also alphabet sorted instead of tacked onto the end?
+
+> diff --git a/drivers/phy/qualcomm/phy-qcom-edp.c b/drivers/phy/qualcomm/phy-qcom-edp.c
+> new file mode 100644
+> index 000000000000..ff0508e49548
+> --- /dev/null
+> +++ b/drivers/phy/qualcomm/phy-qcom-edp.c
+> @@ -0,0 +1,750 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2017, 2020, The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2021, Linaro Ltd.
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/delay.h>
+> +#include <linux/err.h>
+> +#include <linux/io.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of_address.h>
+> +#include <linux/phy/phy.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <linux/reset.h>
+> +#include <linux/slab.h>
+> +
+> +#include <dt-bindings/phy/phy.h>
+> +
+> +#define DP_PHY_PD_CTL_PWRDN                    0x001
+> +#define DP_PHY_PD_CTL_PSR_PWRDN                        0x002
+> +#define DP_PHY_PD_CTL_AUX_PWRDN                        0x004
+> +#define DP_PHY_PD_CTL_LANE_0_1_PWRDN           0x008
+> +#define DP_PHY_PD_CTL_LANE_2_3_PWRDN           0x010
+> +#define DP_PHY_PD_CTL_PLL_PWRDN                        0x020
+> +#define DP_PHY_PD_CTL_DP_CLAMP_EN              0x040
+> +
+> +#define DP_PHY_CFG                              0x0010
+> +#define DP_PHY_CFG_1                            0x0014
+> +#define DP_PHY_PD_CTL                           0x001C
+> +#define DP_PHY_MODE                             0x0020
+> +
+> +#define DP_PHY_AUX_CFG0                                0x0020
+> +#define DP_PHY_AUX_CFG1                                0x0024
+> +#define DP_PHY_AUX_CFG2                                0x0028
+> +#define DP_PHY_AUX_CFG3                                0x002c
+> +#define DP_PHY_AUX_CFG4                                0x0030
+> +#define DP_PHY_AUX_CFG5                                0x0034
+> +#define DP_PHY_AUX_CFG6                                0x0038
+> +#define DP_PHY_AUX_CFG7                                0x003c
+> +#define DP_PHY_AUX_CFG8                                0x0040
+> +#define DP_PHY_AUX_CFG9                                0x0044
+> +
+> +#define DP_PHY_VCO_DIV                          0x0074
+> +#define DP_PHY_TX0_TX1_LANE_CTL                 0x007C
+> +#define DP_PHY_TX2_TX3_LANE_CTL                 0x00A0
+> +
+> +#define DP_PHY_SPARE0                           0x00CC
+> +#define DP_PHY_STATUS                           0x00E0
+> +
+> +/* Tx registers */
+> +#define TXn_CLKBUF_ENABLE                       0x0000
+> +#define TXn_TX_EMP_POST1_LVL                    0x0004
+> +
+> +#define TXn_TX_DRV_LVL                          0x0014
+> +#define TXn_TX_DRV_LVL_OFFSET                   0x0018
+> +#define TXn_RESET_TSYNC_EN                      0x001C
+> +//#define TXn_PRE_STALL_LDO_BOOST_EN            0x0020
+> +#define TXn_LDO_CONFIG                          0x0084
+> +#define TXn_TX_BAND                             0x0028
+> +#define TXn_INTERFACE_SELECT                    0x0024
+> +
+> +#define TXn_RES_CODE_LANE_OFFSET_TX0            0x0044
+> +#define TXn_RES_CODE_LANE_OFFSET_TX1            0x0048
+> +//#define TXn_RES_CODE_LANE_OFFSET_RX           0x0040
+> +
+> +#define TXn_TRANSCEIVER_BIAS_EN                 0x0054
+> +#define TXn_HIGHZ_DRVR_EN                       0x0058
+> +#define TXn_TX_POL_INV                          0x005C
+> +#define TXn_PARRATE_REC_DETECT_IDLE_EN          0x0060
+> +#define TXn_LANE_MODE_1                         0x0064
+> +
+> +#define TXn_TRAN_DRVR_EMP_EN                    0x0078
+> +//#define TXn_TX_INTERFACE_MODE                 0x00BC
+
+Future work? Maybe add a TODO?
+
+> +
+> +#define TXn_VMODE_CTRL1                         0x007C
+> +
+> +/* PLL register offset */
+> +#define QSERDES_COM_BG_TIMER                    0x000C
+> +#define QSERDES_COM_BIAS_EN_CLKBUFLR_EN         0x0044
+> +#define QSERDES_COM_CLK_ENABLE1                 0x0048
+> +#define QSERDES_COM_SYS_CLK_CTRL                0x004C
+[..]
+> +static int qcom_edp_clks_register(struct qcom_edp *edp, struct device_node *np)
+> +{
+> +       struct clk_init_data init = { };
+> +       int ret;
+> +
+> +       init.ops = &qcom_edp_dp_link_clk_ops;
+> +       init.name = "edp_phy_pll_link_clk";
+> +       edp->dp_link_hw.init = &init;
+> +       ret = devm_clk_hw_register(edp->dev, &edp->dp_link_hw);
+> +       if (ret)
+> +               return ret;
+> +
+> +       init.ops = &qcom_edp_dp_pixel_clk_ops;
+> +       init.name = "edp_phy_pll_vco_div_clk";
+> +       edp->dp_pixel_hw.init = &init;
+> +       ret = devm_clk_hw_register(edp->dev, &edp->dp_pixel_hw);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret = of_clk_add_hw_provider(np, qcom_edp_dp_clks_hw_get, edp);
+> +       if (ret)
+> +               return ret;
+> +
+> +       /*
+> +        * Roll a devm action because the clock provider is the child node, but
+
+Is it still a child node?
+
+> +        * the child node is not actually a device.
+> +        */
+> +       ret = devm_add_action(edp->dev, phy_clk_release_provider, np);
+> +       if (ret)
+> +               phy_clk_release_provider(np);
+> +
+> +       return ret;
+> +}
+> +
