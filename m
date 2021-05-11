@@ -2,140 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C4D37AB28
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F1E37AB27
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231860AbhEKPx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 11:53:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231783AbhEKPxy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231944AbhEKPx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 11:53:59 -0400
+Received: from mga02.intel.com ([134.134.136.20]:21768 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231764AbhEKPxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 11 May 2021 11:53:54 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC9FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 08:52:47 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id s20so24983695ejr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 08:52:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DdK1IEs3eqo+hBsOtkECll5WP9PsnhV8TlKhxE3dq/I=;
-        b=z4q41CDYBsfG99gUIBz4qoWmhaIzt02/3aja4FahQ/wKfLjDrFDC6KlAYcrXiOhPPc
-         N7laQrcSrnLDR+jl4iNd9aQG0S/HLrBx+SV336S4TclJ/eFPPc+Ky07zmeM1lDVI0O0Q
-         v8ZjHcRTdQ49FYjhLeGFPEGX2RonjkA4z3Wbvrf3ORdfY9rE6RxM8sZbJpPtqIIzsM8U
-         CE+AtsAiFERUXzAR5d8GoMJyHKiD5Fd6K0NqoVCikDoi7D8ZVaj4z19giOLGIAAcCjXV
-         soe8yi1JKQQdwEkeOKgwUaavAvRbmBpNv+KjkQ0+dUmTtV4hN6yJU53ct0HcPGaZlU9Y
-         AAGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DdK1IEs3eqo+hBsOtkECll5WP9PsnhV8TlKhxE3dq/I=;
-        b=SFQMhonIF+mACZbY1cF65bMbGni/8albfM3rW1CX8aebdgxfWuu8BGdelScKn4dO7B
-         u6Le+OqYIYJD3CYihCNPbt5GBsES5+5hO7C8+vXnykYJFbshLjIb7AgXJ3kev4M9GqZm
-         r89PP8whFVKZHOG+c7OdI2VgZAJJ+QPiTCkyKg7CwJmnJz42MR6fiJoExxQMjCJW8wt1
-         wRhdliD7/HRrxn+Hob3RA9PMxAzXmrSLxSzBzjrRA324usxAb+QnJQdkosuYaLciUx1J
-         HtjXVu1QVxzLTGEYPNZkwGSdvKJAStUothMHOmdrT5Dd1uSJC6lEvZ4iKcZYlWWdV/c6
-         0AjA==
-X-Gm-Message-State: AOAM531x70sAdrP4fP0hKHP9+BxiyjGK31jNwYZWSN/UgwCglEX06IHi
-        6FSPz9ap04Iw06Rxg7wE2OHi7FcJXZMyZlpKZqvq
-X-Google-Smtp-Source: ABdhPJwXdR3PN2nJSGasJfpB5PTCWMNGLNeCcSzPHvc0Lz9sPMStjkc5n2qXBaDNEi5247vUklIg6wzBDktOSIM58ro=
-X-Received: by 2002:a17:907:10d8:: with SMTP id rv24mr32304965ejb.542.1620748366074;
- Tue, 11 May 2021 08:52:46 -0700 (PDT)
+IronPort-SDR: CdA/CeACSiTvlqb5ePMGvJSVZ6oVIAk6xnSY9LgqMr/iqx16lnw8yGTwfhepMl9pJHB/ojKYRd
+ 3UoXNQuDRwYQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="186611066"
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
+   d="scan'208";a="186611066"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 08:52:44 -0700
+IronPort-SDR: WE8qhOsKVmDOaVNf4taofiisTfVuocFI5boy3ekZvCq94mKOng3ZklGTKjKgMQmc/bmnZj+mkN
+ a4WmZKIoWbJQ==
+X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
+   d="scan'208";a="434610762"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.131.161]) ([10.212.131.161])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 08:52:43 -0700
+Subject: Re: [RFC v2 16/32] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <d6ca05720290060e909c1f4d12858f900f1be0e7.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4jGmhkrd+Zr4RNcZ5qfXkYO-416Bw2_idVbrgij41yvYg@mail.gmail.com>
+ <0e577692-101e-38f7-ebe2-2e7222016a9f@linux.intel.com>
+ <CAPcyv4jLMA=jehxdFi=A-xtjSRQ_v7XxSVYrZPAU3XKC39qWRA@mail.gmail.com>
+ <43e0a5cc-721a-04f1-50b6-b1319da10bac@intel.com>
+ <CAPcyv4gEROpgvf+3Drgso1O6ENQ=2xBoKHqC6d4fWvdDNVSNjA@mail.gmail.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <01b0e007-6af6-ca2e-2a0d-7ff4ca2a2927@linux.intel.com>
+Date:   Tue, 11 May 2021 08:52:42 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <604ceafd516b0785fea120f552d6336054d196af.1620414949.git.rgb@redhat.com>
- <7ee601c2-4009-b354-1899-3c8f582bf6ae@schaufler-ca.com> <20210508015443.GA447005@madcap2.tricolour.ca>
- <242f107a-3b74-c1c2-abd6-b3f369170023@schaufler-ca.com> <CAHC9VhQdV93G5N_BKsxuDCtFbm9-xvAkve02t5sGOi9Mam2Wtg@mail.gmail.com>
- <195ac224-00fa-b1be-40c8-97e823796262@schaufler-ca.com> <CAHC9VhTPQ-LoqUYJ4HGsFF-sAXR+mYqGga7TxRZOG7BUD-55FQ@mail.gmail.com>
- <cf7de129-b801-3f0c-64d6-c58d61fd4c84@schaufler-ca.com>
-In-Reply-To: <cf7de129-b801-3f0c-64d6-c58d61fd4c84@schaufler-ca.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 11 May 2021 11:52:35 -0400
-Message-ID: <CAHC9VhS0GU-aE1MkR51VxE7=9s=iDWU2j3=TfmKW1Q6C+jJyxQ@mail.gmail.com>
-Subject: Re: [PATCH V1] audit: log xattr args not covered by syscall record
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Richard Guy Briggs <rgb@redhat.com>, linux-api@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAPcyv4gEROpgvf+3Drgso1O6ENQ=2xBoKHqC6d4fWvdDNVSNjA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 10:00 AM Casey Schaufler <casey@schaufler-ca.com> w=
-rote:
-> On 5/10/2021 6:28 PM, Paul Moore wrote:
-> > On Mon, May 10, 2021 at 8:37 PM Casey Schaufler <casey@schaufler-ca.com=
-> wrote:
-> >> On 5/10/2021 4:52 PM, Paul Moore wrote:
-> >>> On Mon, May 10, 2021 at 12:30 PM Casey Schaufler <casey@schaufler-ca.=
-com> wrote:
-> >>>> On 5/7/2021 6:54 PM, Richard Guy Briggs wrote:
-> >>>>> On 2021-05-07 14:03, Casey Schaufler wrote:
-> >>>>>> On 5/7/2021 12:55 PM, Richard Guy Briggs wrote:
-> >>>>>>> The *setxattr syscalls take 5 arguments.  The SYSCALL record only=
- lists
-> >>>>>>> four arguments and only lists pointers of string values.  The xat=
-tr name
-> >>>>>>> string, value string and flags (5th arg) are needed by audit give=
-n the
-> >>>>>>> syscall's main purpose.
-> >>>>>>>
-> >>>>>>> Add the auxiliary record AUDIT_XATTR (1336) to record the details=
- not
-> >>>>>>> available in the SYSCALL record including the name string, value =
-string
-> >>>>>>> and flags.
-> >>>>>>>
-> >>>>>>> Notes about field names:
-> >>>>>>> - name is too generic, use xattr precedent from ima
-> >>>>>>> - val is already generic value field name
-> >>>>>>> - flags used by mmap, xflags new name
-> >>>>>>>
-> >>>>>>> Sample event with new record:
-> >>>>>>> type=3DPROCTITLE msg=3Daudit(05/07/2021 12:58:42.176:189) : proct=
-itle=3Dfilecap /tmp/ls dac_override
-> >>>>>>> type=3DPATH msg=3Daudit(05/07/2021 12:58:42.176:189) : item=3D0 n=
-ame=3D(null) inode=3D25 dev=3D00:1e mode=3Dfile,755 ouid=3Droot ogid=3Droot=
- rdev=3D00:00 obj=3Dunconfined_u:object_r:user_tmp_t:s0 nametype=3DNORMAL c=
-ap_fp=3Dnone cap_fi=3Dnone cap_fe=3D0 cap_fver=3D0 cap_frootid=3D0
-> >>>>>>> type=3DCWD msg=3Daudit(05/07/2021 12:58:42.176:189) : cwd=3D/root
-> >>>>>>> type=3DXATTR msg=3Daudit(05/07/2021 12:58:42.176:189) : xattr=3D"=
-security.capability" val=3D01 xflags=3D0x0
-> >>>>>> Would it be sensible to break out the namespace from the attribute=
-?
-> >>>>>>
-> >>>>>>      attrspace=3D"security" attrname=3D"capability"
-> >>>>> Do xattrs always follow this nomenclature?  Or only the ones we car=
-e
-> >>>>> about?
-> >>>> Xattrs always have a namespace (man 7 xattr) of "user", "trusted",
-> >>>> "system" or "security". It's possible that additional namespaces wil=
-l
-> >>>> be created in the future, although it seems unlikely given that only
-> >>>> "security" is widely used today.
-> >>> Why should audit care about separating the name into two distinct
-> >>> fields, e.g. "attrspace" and "attrname", instead of just a single
-> >>> "xattr" field with a value that follows the "namespace.attribute"
-> >>> format that is commonly seen by userspace?
-> >> I asked if it would be sensible. I don't much care myself.
-> > I was *asking* a question - why would we want separate fields?  I
-> > guess I thought there might be some reason for asking if it was
-> > sensible; if not, I think I'd rather see it as a single field.
->
-> I thought that it might make searching records easier, but I'm
-> not the expert on that. One might filter on attrspace=3Dsecurity then
-> look at the attrname values. But that bikeshed can be either color.
 
-Yeah, understood.  My concern was that the xattr name (minus the
-namespace) by itself isn't really useful; similar argument with just
-the namespace.  If you are going to do a string match filter it really
-shouldn't matter too much either way.
+> The 'default' case in this 'switch' prints the exit reason and faults,
+> can't that also trigger a backtrace that dumps the exception stack and
+> the faulting instruction? In other words shouldn't this just fail with
+> a common way to provide better debug on any unhandled #VE and not try
+> to continue running past something that "can't" happen?
 
---=20
-paul moore
-www.paul-moore.com
+It will use the #GP common code which will do all the backtracing etc.
+
+We didn't think we would need anything else than what #GP already does.
+
+-Andi
+
+
