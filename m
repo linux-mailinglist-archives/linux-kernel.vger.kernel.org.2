@@ -2,116 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7767337AB09
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB24F37AB12
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbhEKPrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 11:47:08 -0400
-Received: from mga14.intel.com ([192.55.52.115]:39567 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231609AbhEKPrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 11:47:07 -0400
-IronPort-SDR: UqRopF9PLnL8UwDb4zFCKZFizL4mIQX5ABCtfRH3hu1XGATsXTIzrwCSB73vhA1Odk3qZcPOiI
- BPIjUekUgG1w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="199153702"
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="199153702"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 08:44:46 -0700
-IronPort-SDR: kq+jxxawXhCLptVXQ9mZou/2fRhixjbX3/B/y6kfcB8n3C7Sbx0kFA3XuzBA9rI/kKfPcPyEJP
- FZDBJLsRLLog==
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="537075628"
-Received: from unknown (HELO [10.251.0.45]) ([10.251.0.45])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 08:44:46 -0700
-Subject: Re: [RFC v2 16/32] x86/tdx: Handle MWAIT, MONITOR and WBINVD
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <d6ca05720290060e909c1f4d12858f900f1be0e7.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4jGmhkrd+Zr4RNcZ5qfXkYO-416Bw2_idVbrgij41yvYg@mail.gmail.com>
- <0e577692-101e-38f7-ebe2-2e7222016a9f@linux.intel.com>
- <CAPcyv4jLMA=jehxdFi=A-xtjSRQ_v7XxSVYrZPAU3XKC39qWRA@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <43e0a5cc-721a-04f1-50b6-b1319da10bac@intel.com>
-Date:   Tue, 11 May 2021 08:44:43 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231896AbhEKPsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 11:48:30 -0400
+Received: from gateway31.websitewelcome.com ([192.185.144.219]:17801 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231764AbhEKPs2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 11:48:28 -0400
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id 24A4FB4F24
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:47:21 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id gUbRlTWInMGeEgUbRlZCCa; Tue, 11 May 2021 10:47:21 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=yrKbsil82zCAxQuZY1OThc7wmAtbltQ61jU84SGfZXQ=; b=WEvR8kT1FCLBV+5H+YlDRzcbvV
+        RI+K8QsFpjKASN7BLxRiFHGT1bahl9kVNBMBmAwGmfdbXptsfc14blEOBMC40nDbWdlKUckmE+6G2
+        5W98vTlftaSqwddSmwCepePNtak6u9sHP+/64and8cZWvzpHXQB1B/oiucsoD02kn9lh5mvSQN1Mb
+        7ttdUjSI3HGyXyQZG83cOVY6tWcC7wFIq3+KHd0hgd1bS65qm9squMwjrVqI1TnDo+qa0oR63r+WZ
+        mmk6m4GiaEnoBFKZf9oXXAfmUSPQFy5dNBfISy4lSnnVck6gONm8RKgGLwOIL/Xn7fjUrr8Bjy6hy
+        4r3hHWKQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:59008 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lgUbO-000TAh-Nm; Tue, 11 May 2021 10:47:18 -0500
+Subject: Re: [PATCH][next] media: siano: Fix multiple out-of-bounds warnings
+ in smscore_load_firmware_family2()
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210311021947.GA129388@embeddedor>
+ <b0e46b46-db9a-7e3d-cadb-e3855c68373e@embeddedor.com>
+ <3936c005-0b53-bdae-d5ba-07f68eac628d@embeddedor.com>
+Message-ID: <63338f6d-f21f-e249-ac0f-02cb5d4f68c6@embeddedor.com>
+Date:   Tue, 11 May 2021 10:47:50 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4jLMA=jehxdFi=A-xtjSRQ_v7XxSVYrZPAU3XKC39qWRA@mail.gmail.com>
+In-Reply-To: <3936c005-0b53-bdae-d5ba-07f68eac628d@embeddedor.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lgUbO-000TAh-Nm
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:59008
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 29
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 8:37 AM, Dan Williams wrote:
->> I disagree. We already spent a lot of cycles on this. WBINVD makes never
->> sense in current TDX and all the code will be disabled.
-> Why not just drop the patch if it continues to cause people to spend
-> cycles on it and it addresses a problem that will never happen?
 
-If someone calls WBINVD, we have a bug.  Not a little bug, either.  It
-probably means there's some horribly confused kernel code that's now
-facing broken cache coherency.  To me, it's a textbook place to use
-BUG_ON().
+By the way, we are about to be able to globally enable -Warray-bounds and,
+these are the last out-of-bounds warnings in linux-next.
 
-This also doesn't "address" the problem, it just helps produce a more
-coherent warning message.  It's why we have OOPS messages in the page
-fault handler: it never makes any sense to dereference a NULL pointer,
-yet we have code to make debugging them easier.  It's well worth the ~20
-lines of code that this costs us for ease of debugging.
+Thanks
+--
+Gustavo
+
+On 5/11/21 10:18, Gustavo A. R. Silva wrote:
+> Hi all,
+> 
+> Friendly ping (second one): who can take this, please?
+> 
+> Thanks
+> --
+> Gustavo
+> 
+> On 3/26/21 11:30, Gustavo A. R. Silva wrote:
+>> Hi all,
+>>
+>> Friendly ping: who can take this, please?
+>>
+>> Thanks
+>> --
+>> Gustavo
+>>
+>> On 3/10/21 20:19, Gustavo A. R. Silva wrote:
+>>> Rename struct sms_msg_data4 to sms_msg_data5 and increase the size of
+>>> its msg_data array from 4 to 5 elements. Notice that at some point
+>>> the 5th element of msg_data is being accessed in function
+>>> smscore_load_firmware_family2():
+>>>
+>>> 1006                 trigger_msg->msg_data[4] = 4; /* Task ID */
+>>>
+>>> Also, there is no need for the object _trigger_msg_ of type struct
+>>> sms_msg_data *, when _msg_ can be used, directly. Notice that msg_data
+>>> in struct sms_msg_data is a one-element array, which causes multiple
+>>> out-of-bounds warnings when accessing beyond its first element
+>>> in function smscore_load_firmware_family2():
+>>>
+>>>  992                 struct sms_msg_data *trigger_msg =                                                  
+>>>  993                         (struct sms_msg_data *) msg;                                                
+>>>  994                                                                                                     
+>>>  995                 pr_debug("sending MSG_SMS_SWDOWNLOAD_TRIGGER_REQ\n");                               
+>>>  996                 SMS_INIT_MSG(&msg->x_msg_header,                                                    
+>>>  997                                 MSG_SMS_SWDOWNLOAD_TRIGGER_REQ,                                     
+>>>  998                                 sizeof(struct sms_msg_hdr) +                                        
+>>>  999                                 sizeof(u32) * 5);                                                   
+>>> 1000                                                                                                     
+>>> 1001                 trigger_msg->msg_data[0] = firmware->start_address;                                 
+>>> 1002                                         /* Entry point */                                           
+>>> 1003                 trigger_msg->msg_data[1] = 6; /* Priority */                                        
+>>> 1004                 trigger_msg->msg_data[2] = 0x200; /* Stack size */                                  
+>>> 1005                 trigger_msg->msg_data[3] = 0; /* Parameter */                                       
+>>> 1006                 trigger_msg->msg_data[4] = 4; /* Task ID */ 
+>>>
+>>> even when enough dynamic memory is allocated for _msg_:
+>>>
+>>>  929         /* PAGE_SIZE buffer shall be enough and dma aligned */
+>>>  930         msg = kmalloc(PAGE_SIZE, GFP_KERNEL | coredev->gfp_buf_flags);
+>>>
+>>> but as _msg_ is casted to (struct sms_msg_data *):
+>>>
+>>>  992                 struct sms_msg_data *trigger_msg =
+>>>  993                         (struct sms_msg_data *) msg;
+>>>
+>>> the out-of-bounds warnings are actually valid and should be addressed.
+>>>
+>>> Fix this by declaring object _msg_ of type struct sms_msg_data5 *,
+>>> which contains a 5-elements array, instead of just 4. And use
+>>> _msg_ directly, instead of creating object trigger_msg.
+>>>
+>>> This helps with the ongoing efforts to enable -Warray-bounds by fixing
+>>> the following warnings:
+>>>
+>>>   CC [M]  drivers/media/common/siano/smscoreapi.o
+>>> drivers/media/common/siano/smscoreapi.c: In function ‘smscore_load_firmware_family2’:
+>>> drivers/media/common/siano/smscoreapi.c:1003:24: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>>  1003 |   trigger_msg->msg_data[1] = 6; /* Priority */
+>>>       |   ~~~~~~~~~~~~~~~~~~~~~^~~
+>>> In file included from drivers/media/common/siano/smscoreapi.c:12:
+>>> drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+>>>   619 |  u32 msg_data[1];
+>>>       |      ^~~~~~~~
+>>> drivers/media/common/siano/smscoreapi.c:1004:24: warning: array subscript 2 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>>  1004 |   trigger_msg->msg_data[2] = 0x200; /* Stack size */
+>>>       |   ~~~~~~~~~~~~~~~~~~~~~^~~
+>>> In file included from drivers/media/common/siano/smscoreapi.c:12:
+>>> drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+>>>   619 |  u32 msg_data[1];
+>>>       |      ^~~~~~~~
+>>> drivers/media/common/siano/smscoreapi.c:1005:24: warning: array subscript 3 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>>  1005 |   trigger_msg->msg_data[3] = 0; /* Parameter */
+>>>       |   ~~~~~~~~~~~~~~~~~~~~~^~~
+>>> In file included from drivers/media/common/siano/smscoreapi.c:12:
+>>> drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+>>>   619 |  u32 msg_data[1];
+>>>       |      ^~~~~~~~
+>>> drivers/media/common/siano/smscoreapi.c:1006:24: warning: array subscript 4 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>>  1006 |   trigger_msg->msg_data[4] = 4; /* Task ID */
+>>>       |   ~~~~~~~~~~~~~~~~~~~~~^~~
+>>> In file included from drivers/media/common/siano/smscoreapi.c:12:
+>>> drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+>>>   619 |  u32 msg_data[1];
+>>>       |      ^~~~~~~~
+>>>
+>>> Fixes: 018b0c6f8acb ("[media] siano: make load firmware logic to work with newer firmwares")
+>>> Co-developed-by: Kees Cook <keescook@chromium.org>
+>>> Signed-off-by: Kees Cook <keescook@chromium.org>
+>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>> ---
+>>>  drivers/media/common/siano/smscoreapi.c | 22 +++++++++-------------
+>>>  drivers/media/common/siano/smscoreapi.h |  4 ++--
+>>>  2 files changed, 11 insertions(+), 15 deletions(-)
+>>>
+>>> diff --git a/drivers/media/common/siano/smscoreapi.c b/drivers/media/common/siano/smscoreapi.c
+>>> index 410cc3ac6f94..bceaf91faa15 100644
+>>> --- a/drivers/media/common/siano/smscoreapi.c
+>>> +++ b/drivers/media/common/siano/smscoreapi.c
+>>> @@ -908,7 +908,7 @@ static int smscore_load_firmware_family2(struct smscore_device_t *coredev,
+>>>  					 void *buffer, size_t size)
+>>>  {
+>>>  	struct sms_firmware *firmware = (struct sms_firmware *) buffer;
+>>> -	struct sms_msg_data4 *msg;
+>>> +	struct sms_msg_data5 *msg;
+>>>  	u32 mem_address,  calc_checksum = 0;
+>>>  	u32 i, *ptr;
+>>>  	u8 *payload = firmware->payload;
+>>> @@ -989,24 +989,20 @@ static int smscore_load_firmware_family2(struct smscore_device_t *coredev,
+>>>  		goto exit_fw_download;
+>>>  
+>>>  	if (coredev->mode == DEVICE_MODE_NONE) {
+>>> -		struct sms_msg_data *trigger_msg =
+>>> -			(struct sms_msg_data *) msg;
+>>> -
+>>>  		pr_debug("sending MSG_SMS_SWDOWNLOAD_TRIGGER_REQ\n");
+>>>  		SMS_INIT_MSG(&msg->x_msg_header,
+>>>  				MSG_SMS_SWDOWNLOAD_TRIGGER_REQ,
+>>> -				sizeof(struct sms_msg_hdr) +
+>>> -				sizeof(u32) * 5);
+>>> +				sizeof(*msg));
+>>>  
+>>> -		trigger_msg->msg_data[0] = firmware->start_address;
+>>> +		msg->msg_data[0] = firmware->start_address;
+>>>  					/* Entry point */
+>>> -		trigger_msg->msg_data[1] = 6; /* Priority */
+>>> -		trigger_msg->msg_data[2] = 0x200; /* Stack size */
+>>> -		trigger_msg->msg_data[3] = 0; /* Parameter */
+>>> -		trigger_msg->msg_data[4] = 4; /* Task ID */
+>>> +		msg->msg_data[1] = 6; /* Priority */
+>>> +		msg->msg_data[2] = 0x200; /* Stack size */
+>>> +		msg->msg_data[3] = 0; /* Parameter */
+>>> +		msg->msg_data[4] = 4; /* Task ID */
+>>>  
+>>> -		rc = smscore_sendrequest_and_wait(coredev, trigger_msg,
+>>> -					trigger_msg->x_msg_header.msg_length,
+>>> +		rc = smscore_sendrequest_and_wait(coredev, msg,
+>>> +					msg->x_msg_header.msg_length,
+>>>  					&coredev->trigger_done);
+>>>  	} else {
+>>>  		SMS_INIT_MSG(&msg->x_msg_header, MSG_SW_RELOAD_EXEC_REQ,
+>>> diff --git a/drivers/media/common/siano/smscoreapi.h b/drivers/media/common/siano/smscoreapi.h
+>>> index 4a6b9f4c44ac..f8789ee0d554 100644
+>>> --- a/drivers/media/common/siano/smscoreapi.h
+>>> +++ b/drivers/media/common/siano/smscoreapi.h
+>>> @@ -624,9 +624,9 @@ struct sms_msg_data2 {
+>>>  	u32 msg_data[2];
+>>>  };
+>>>  
+>>> -struct sms_msg_data4 {
+>>> +struct sms_msg_data5 {
+>>>  	struct sms_msg_hdr x_msg_header;
+>>> -	u32 msg_data[4];
+>>> +	u32 msg_data[5];
+>>>  };
+>>>  
+>>>  struct sms_data_download {
+>>>
