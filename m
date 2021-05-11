@@ -2,730 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A325937B1CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7C937B1C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 00:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhEKWxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 18:53:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230011AbhEKWxk (ORCPT
+        id S230035AbhEKWxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 18:53:31 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:41691 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhEKWx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 18:53:40 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2745DC0613ED
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:52:32 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id t2-20020a17090ae502b029015b0fbfbc50so18359pjy.3
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:52:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=epcI1/ipHi7F2p3CB+9/iRMvr3HxQg7qmMcr0/9jxcg=;
-        b=WO2GDUPnVN5UD4KgP9B5FEfGT0lP2AbCQ3SOXDzg1/OzGV/xyq0kqXGyL44fv7MB+w
-         Ah3bOJJuH2r0BTPJHKiDN3ogUM0M7la18NJqLLCDInzSIWUiF86bVEGULm/q+fCx7PbD
-         9SdYBblcmOKra8eaSgE/2XBBDNdkjHz2uWja4=
+        Tue, 11 May 2021 18:53:29 -0400
+Received: by mail-io1-f70.google.com with SMTP id e18-20020a5d92520000b02903c332995d1eso14075509iol.8
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 15:52:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=epcI1/ipHi7F2p3CB+9/iRMvr3HxQg7qmMcr0/9jxcg=;
-        b=XHOVpHzCe2Opjsa3KuTykP6PdG9BI1dsTjcpj+eoERNtpZMhlUg5HL55umGMjikvND
-         hSfRLZKdOzPc094aLm5NHckLthptKAjv/9wcDS3CfCb1wOcj3TGMOhJXbPEI7YESO9ax
-         fTCXO98hLt1vt0MVQJj2UKGbgtOkwmSuKqfSQAJ2V3W8W34JGBVttIBDyBYDnzzBkVEX
-         sNln+aUz0R0GhviCZD0p4/zm7yHuohaHYOCUF2seNoTvN5tkA42vdtViy49ovgWUSXMm
-         vfdH3hv8+IMvySKiIwhKpUox+LsaY3yezVMS/tTbxYakZT1OIJaoSPgyTeDdamCmTuo/
-         n2SA==
-X-Gm-Message-State: AOAM530YHG0m3IYSaoedLs4DgMVLPJ7Xw04w21uF7h/ixGDDjc194Kjp
-        W/o7pCVm9/NbKt6EIk/56+5qdQ==
-X-Google-Smtp-Source: ABdhPJzviSzPw8DHPSWfKSBlhSs70+HDnfc2IZuZnH+dcN6HRqcj6pIpU9EtMMcwm7LCjQVzxHDJ0A==
-X-Received: by 2002:a17:902:864a:b029:ec:a5e0:6373 with SMTP id y10-20020a170902864ab02900eca5e06373mr32454622plt.48.1620773551525;
-        Tue, 11 May 2021 15:52:31 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:f1d7:673a:456e:c653])
-        by smtp.gmail.com with UTF8SMTPSA id j2sm2814440pji.34.2021.05.11.15.52.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 15:52:31 -0700 (PDT)
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     Michal Simek <michal.simek@xilinx.com>, devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-usb@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
-        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH v10 2/5] USB: misc: Add onboard_usb_hub driver
-Date:   Tue, 11 May 2021 15:52:20 -0700
-Message-Id: <20210511155152.v10.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-In-Reply-To: <20210511225223.550762-1-mka@chromium.org>
-References: <20210511225223.550762-1-mka@chromium.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=iFvBW93H3GxUz4ol2a9eUiJ+8eQ+nf3gAZme2mIPX/E=;
+        b=gb6FV+w1D/mElkWJKLrw/jPTjCl5ElCxye+KCLGl+hNQQBJyECMEG9O79RAQf6tOHu
+         8drl591b5OiBBrTNniIZ3FxX0QygLOexioxkM4YUrcjI6Cv8oIHdNAm8faaRMBfN2Zhb
+         b8F/1LZFWB865SNZg5fW1HW1PLG0a5ocftzRCK4ttg3kCloIVt6eSNRPP1QmsQCaZEXt
+         XWevcJZFYY8XS6Moj9h67mwIqfgiUdNGnM77LDohactzSPHckPJbtkVzpJdoVlgC0Led
+         2NWEBbIs1Gy0R3yGIaK7V6uwZpilRTO0QBoCMKJ/lEm/Zehotc7TpLH2EPwv1+TZh/MR
+         icpw==
+X-Gm-Message-State: AOAM532l8yDjfoXxpYSIrpYGHkZCBPvT7Oq7TGPQjCxb96SDNle8dHyp
+        eZzbcfA+6s6PEPflYD779EzeStkKVLBkuXSg1IBKqYNAfzfh
+X-Google-Smtp-Source: ABdhPJzWUIhx2Xap9qjWbL8cjYSMk3mpxrzNRcBcbhmz9E5r4oCmfTDrNWlBQ9nf/6/iZ1JoOfu9HvuGnPOpNFXaggg9bAMIvKY4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:2c02:: with SMTP id t2mr28306034ile.233.1620773541828;
+ Tue, 11 May 2021 15:52:21 -0700 (PDT)
+Date:   Tue, 11 May 2021 15:52:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000038de1d05c215bf23@google.com>
+Subject: [syzbot] KASAN: out-of-bounds Read in i801_isr
+From:   syzbot <syzbot+b4d3fd1dfd53e90afd79@syzkaller.appspotmail.com>
+To:     jdelvare@suse.com, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The main issue this driver addresses is that a USB hub needs to be
-powered before it can be discovered. For discrete onboard hubs (an
-example for such a hub is the Realtek RTS5411) this is often solved
-by supplying the hub with an 'always-on' regulator, which is kind
-of a hack. Some onboard hubs may require further initialization
-steps, like changing the state of a GPIO or enabling a clock, which
-requires even more hacks. This driver creates a platform device
-representing the hub which performs the necessary initialization.
-Currently it only supports switching on a single regulator, support
-for multiple regulators or other actions can be added as needed.
-Different initialization sequences can be supported based on the
-compatible string.
+Hello,
 
-Besides performing the initialization the driver can be configured
-to power the hub off during system suspend. This can help to extend
-battery life on battery powered devices which have no requirements
-to keep the hub powered during suspend. The driver can also be
-configured to leave the hub powered when a wakeup capable USB device
-is connected when suspending, and power it off otherwise.
+syzbot found the following issue on:
 
-Technically the driver consists of two drivers, the platform driver
-described above and a very thin USB driver that subclasses the
-generic driver. The purpose of this driver is to provide the platform
-driver with the USB devices corresponding to the hub(s) (a hub
-controller may provide multiple 'logical' hubs, e.g. one to support
-USB 2.0 and another for USB 3.x).
+HEAD commit:    e1381380 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10be778ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5adab0bdee099d7a
+dashboard link: https://syzkaller.appspot.com/bug?extid=b4d3fd1dfd53e90afd79
+userspace arch: i386
 
-Note: the driver currently only works with hubs connected directly
-to a root hub, but it could be extended to support other
-configurations if needed.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Co-developed-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
-Signed-off-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b4d3fd1dfd53e90afd79@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: out-of-bounds in i801_isr_byte_done drivers/i2c/busses/i2c-i801.c:608 [inline]
+BUG: KASAN: out-of-bounds in i801_isr drivers/i2c/busses/i2c-i801.c:668 [inline]
+BUG: KASAN: out-of-bounds in i801_isr+0xc70/0xd60 drivers/i2c/busses/i2c-i801.c:649
+Read of size 1 at addr ffffc90004237d68 by task systemd-udevd/5027
+
+CPU: 2 PID: 5027 Comm: systemd-udevd Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5/0x2f8 mm/kasan/report.c:232
+ __kasan_report mm/kasan/report.c:399 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
+ i801_isr_byte_done drivers/i2c/busses/i2c-i801.c:608 [inline]
+ i801_isr drivers/i2c/busses/i2c-i801.c:668 [inline]
+ i801_isr+0xc70/0xd60 drivers/i2c/busses/i2c-i801.c:649
+ __handle_irq_event_percpu+0x303/0x8f0 kernel/irq/handle.c:156
+ handle_irq_event_percpu kernel/irq/handle.c:196 [inline]
+ handle_irq_event+0x102/0x290 kernel/irq/handle.c:213
+ handle_fasteoi_irq+0x22f/0x9f0 kernel/irq/chip.c:714
+ generic_handle_irq_desc include/linux/irqdesc.h:158 [inline]
+ handle_irq arch/x86/kernel/irq.c:231 [inline]
+ __common_interrupt+0x9e/0x200 arch/x86/kernel/irq.c:250
+ common_interrupt+0x4c/0xd0 arch/x86/kernel/irq.c:240
+ asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:623
+RIP: 0010:__do_softirq+0x196/0x9f6 kernel/softirq.c:331
+Code: 00 48 01 f0 48 89 44 24 18 48 c7 c7 80 39 6a 89 e8 7f 8d c6 ff 65 66 c7 05 35 46 c3 76 00 00 e8 00 df 39 f8 fb b8 ff ff ff ff <48> c7 c3 c0 a0 c0 8b 41 0f bc c5 41 89 c7 41 83 c7 01 75 47 e9 d2
+RSP: 0018:ffffc90000550f78 EFLAGS: 00000216
+RAX: 00000000ffffffff RBX: ffff888018491c40 RCX: 1ffffffff1b8be19
+RDX: 0000000000000000 RSI: 0000000000000100 RDI: 0000000000000000
+RBP: ffff888011159c40 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff8179e0c8 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000200 R14: 0000000000000000 R15: 0000000000000000
+ invoke_softirq kernel/softirq.c:221 [inline]
+ __irq_exit_rcu kernel/softirq.c:422 [inline]
+ irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
+ sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
+RIP: 0010:check_kcov_mode kernel/kcov.c:163 [inline]
+RIP: 0010:__sanitizer_cov_trace_pc+0x7/0x60 kernel/kcov.c:197
+Code: ff ff b9 ff ff ff ff ba 08 00 00 00 4d 8b 03 48 0f bd ca 49 8b 45 00 48 63 c9 e9 64 ff ff ff 0f 1f 40 00 65 8b 05 49 fe 8d 7e <89> c1 48 8b 34 24 81 e1 00 01 00 00 65 48 8b 14 25 00 f0 01 00 a9
+RSP: 0018:ffffc90009ff7868 EFLAGS: 00000283
+RAX: 0000000080000000 RBX: 0000000000000004 RCX: ffff888018491c40
+RDX: 0000000000000000 RSI: ffff888018491c40 RDI: 0000000000000003
+RBP: ffff8880143aa100 R08: 0000000000000000 R09: 0000000000000004
+R10: ffffffff8392c68a R11: 0000000000000010 R12: 0000000000000002
+R13: 00000000000003e4 R14: dffffc0000000000 R15: 0000000000000000
+ tomoyo_domain_quota_is_ok+0x2f1/0x550 security/tomoyo/util.c:1093
+ tomoyo_supervisor+0x2f2/0xf00 security/tomoyo/common.c:2089
+ tomoyo_audit_path_log security/tomoyo/file.c:168 [inline]
+ tomoyo_path_permission security/tomoyo/file.c:587 [inline]
+ tomoyo_path_permission+0x270/0x3a0 security/tomoyo/file.c:573
+ tomoyo_path_perm+0x2f0/0x400 security/tomoyo/file.c:838
+ security_inode_getattr+0xcf/0x140 security/security.c:1288
+ vfs_getattr fs/stat.c:131 [inline]
+ vfs_statx+0x164/0x390 fs/stat.c:199
+ vfs_fstatat fs/stat.c:217 [inline]
+ vfs_lstat include/linux/fs.h:3240 [inline]
+ __do_sys_newlstat+0x91/0x110 fs/stat.c:372
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fc3c1a88335
+Code: 69 db 2b 00 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 83 ff 01 48 89 f0 77 30 48 89 c7 48 89 d6 b8 06 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 03 f3 c3 90 48 8b 15 31 db 2b 00 f7 d8 64 89
+RSP: 002b:00007ffd4b6fa5c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000006
+RAX: ffffffffffffffda RBX: 0000558fa852a210 RCX: 00007fc3c1a88335
+RDX: 00007ffd4b6fa600 RSI: 00007ffd4b6fa600 RDI: 0000558fa8529210
+RBP: 00007ffd4b6fa6c0 R08: 00007fc3c1d472c8 R09: 0000000000001010
+R10: 0000000000000020 R11: 0000000000000246 R12: 0000558fa8529210
+R13: 0000558fa852923a R14: 0000558fa8501ed1 R15: 0000558fa8501eda
+
+
+Memory state around the buggy address:
+ ffffc90004237c00: f2 f2 f2 00 00 f3 f3 00 00 00 00 00 00 00 00 00
+ ffffc90004237c80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffffc90004237d00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                                          ^
+ ffffc90004237d80: 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1
+ ffffc90004237e00: 00 f2 f2 f2 00 00 00 00 00 00 00 00 00 00 00 f3
+==================================================================
+
+
 ---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Changes in v10:
-- always use of_is_onboard_usb_hub() stub unless ONBOARD_USB_HUB=y/m
-
-Changes in v9:
-- none
-
-Changes in v8:
-- none
-
-Changes in v7:
-- don't declare stub for of_is_onboard_usb_hub() when
-  CONFIG_COMPILE_TEST is defined
-
-Changes in v6:
-- use 'companion-hub' to locate the platform device, instead of
-  scanning through the nodes of the parent
-- added ABI documentation for 'always_powered_in_suspend'
-- sysfs_emit() instead of sprintf() in always_powered_in_suspend_show()
-- register sysfs attribute through driver.dev_groups
-- evaluate return value of driver_attach() in _probe()
-- use dev_warn() instead of WARN_ON() in _probe()
-- include 'onboard_hub.h'
-
-Changes in v5:
-- the platform device is now instantiated from the same DT node
-  as the 'primary' USB hub device
-  - use the USB compatible strings for the platform device
-  - refactored _find_onboard_hub() to search the parents child
-    nodes for a platform device with a matching compatible string
-  - added exported function of_is_onboard_usb_hub() to allow other
-    drivers (like xhci_plat) to check if one of their child DT nodes
-    is a supported hub
-- use late suspend to make sure info about wakeup enabled descendants
-  is updated
-- call driver_attach() for the USB driver in onboard_hub_probe() to
-  make sure the driver is re-attached after the device_release_driver()
-  calls in onboard_hub_remove()
-- renamed sysfs attribute 'power_off_in_suspend' to
-  'always_powered_in_suspend'
-- added sysfs symlinks between platform device and USB devices
-- marked 'onboard_hub_pm_ops' as __maybe_unused
-- removed 'realtek' compatible string which is not needed at this
-  point
-- fix log for regulator_disable() failure
-
-Changes in v4:
-- updated Kconfig documentation
-- changed the loop in onboard_hub_remove() to release the hub lock
-  before unbinding the USB device and make self deadlock prevention
-  less clunky
-- fixed return value in onboard_hub_usbdev_probe()
-- added entry to MAINTAINERS file
-
-Changes in v3:
-- updated the commit message
-- updated description in Kconfig
-- remove include of 'core/usb.h'
-- use 'is_powered_on' flag instead of 'has_wakeup_capable_descendants'
-- added 'going_away' flag to struct onboard_hub
-  - don't allow adding new USB devices when the platform device is going away
-  - don't bother with deleting the list item in onboard_hub_remove_usbdev()
-    when the platform device is going away
-- don't assume in onboard_hub_suspend() that all USB hub devices are
-  connected to the same controller
-- removed unnecessary devm_kfree() from onboard_hub_remove_usbdev()
-- fixed error handling in onboard_hub_remove_usbdev()
-- use kstrtobool() instead of strtobool() in power_off_in_suspend_store()
-- unbind USB devices in onboard_hub_remove() to avoid dangling references
-  to the platform device
-- moved put_device() for platform device to _find_onboard_hub()
-- changed return value of onboard_hub_remove_usbdev() to void
-- evaluate return value of onboard_hub_add_usbdev()
-- register 'power_off_in_suspend' as managed device attribute
-- use USB_DEVICE macro instead manual initialization
-- add unwinding to onboard_hub_init()
-- updated MODULE_DESCRIPTION
-- use module_init() instead of device_initcall()
-
-Changes in v2:
-- check wakeup enabled state of the USB controller instead of
-  using 'wakeup-source' property
-- use sysfs attribute instead of DT property to determine if
-  the hub should be powered off at all during system suspend
-- added missing brace in onboard_hub_suspend()
-- updated commit message
-- use pm_ptr for pm_ops as suggested by Alan
-
-Changes in v1:
-- renamed the driver to 'onboard_usb_hub'
-- single file for platform and USB driver
-- USB hub devices register with the platform device
-  - the DT includes a phandle of the platform device
-- the platform device now controls when power is turned off
-- the USB driver became a very thin subclass of the generic USB
-  driver
-- enabled autosuspend support
-
- .../sysfs-bus-platform-onboard-usb-hub        |   8 +
- MAINTAINERS                                   |   7 +
- drivers/usb/misc/Kconfig                      |  17 +
- drivers/usb/misc/Makefile                     |   1 +
- drivers/usb/misc/onboard_usb_hub.c            | 415 ++++++++++++++++++
- include/linux/usb/onboard_hub.h               |  15 +
- 6 files changed, 463 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-hub
- create mode 100644 drivers/usb/misc/onboard_usb_hub.c
- create mode 100644 include/linux/usb/onboard_hub.h
-
-diff --git a/Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-hub b/Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-hub
-new file mode 100644
-index 000000000000..e981d83648e6
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-hub
-@@ -0,0 +1,8 @@
-+What:		/sys/bus/platform/devices/<dev>/always_powered_in_suspend
-+Date:		March 2021
-+KernelVersion:	5.13
-+Contact:	Matthias Kaehlcke <matthias@kaehlcke.net>
-+		linux-usb@vger.kernel.org
-+Description:
-+		(RW) Controls whether the USB hub remains always powered
-+		during system suspend or not.
-\ No newline at end of file
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d92f85ca831d..882ae6e378c5 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13297,6 +13297,13 @@ S:	Maintained
- T:	git git://linuxtv.org/media_tree.git
- F:	drivers/media/i2c/ov9734.c
- 
-+ONBOARD USB HUB DRIVER
-+M:	Matthias Kaehlcke <mka@chromium.org>
-+L:	linux-usb@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-+F:	drivers/usb/misc/onboard_usb_hub.c
-+
- ONENAND FLASH DRIVER
- M:	Kyungmin Park <kyungmin.park@samsung.com>
- L:	linux-mtd@lists.infradead.org
-diff --git a/drivers/usb/misc/Kconfig b/drivers/usb/misc/Kconfig
-index 8f1144359012..f534269fbb20 100644
---- a/drivers/usb/misc/Kconfig
-+++ b/drivers/usb/misc/Kconfig
-@@ -284,3 +284,20 @@ config BRCM_USB_PINMAP
- 	  This option enables support for remapping some USB external
- 	  signals, which are typically on dedicated pins on the chip,
- 	  to any gpio.
-+
-+config USB_ONBOARD_HUB
-+	tristate "Onboard USB hub support"
-+	depends on OF || COMPILE_TEST
-+	help
-+	  Say Y here if you want to support discrete onboard USB hubs that
-+	  don't require an additional control bus for initialization, but
-+	  need some nontrivial form of initialization, such as enabling a
-+	  power regulator. An example for such a hub is the Realtek
-+	  RTS5411.
-+
-+	  The driver can be configured to turn off the power of the hub
-+	  during system suspend. This may reduce power consumption while
-+	  the system is suspended.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called onboard_usb_hub.
-diff --git a/drivers/usb/misc/Makefile b/drivers/usb/misc/Makefile
-index 5f4e598573ab..2c5aec6f1b26 100644
---- a/drivers/usb/misc/Makefile
-+++ b/drivers/usb/misc/Makefile
-@@ -32,3 +32,4 @@ obj-$(CONFIG_USB_CHAOSKEY)		+= chaoskey.o
- obj-$(CONFIG_USB_SISUSBVGA)		+= sisusbvga/
- obj-$(CONFIG_USB_LINK_LAYER_TEST)	+= lvstest.o
- obj-$(CONFIG_BRCM_USB_PINMAP)		+= brcmstb-usb-pinmap.o
-+obj-$(CONFIG_USB_ONBOARD_HUB)		+= onboard_usb_hub.o
-diff --git a/drivers/usb/misc/onboard_usb_hub.c b/drivers/usb/misc/onboard_usb_hub.c
-new file mode 100644
-index 000000000000..db926699a5ec
---- /dev/null
-+++ b/drivers/usb/misc/onboard_usb_hub.c
-@@ -0,0 +1,415 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ *  Driver for onboard USB hubs
-+ *
-+ * Copyright (c) 2020, Google LLC
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/suspend.h>
-+#include <linux/sysfs.h>
-+#include <linux/usb.h>
-+#include <linux/usb/hcd.h>
-+#include <linux/usb/onboard_hub.h>
-+
-+static struct usb_device_driver onboard_hub_usbdev_driver;
-+
-+/************************** Platform driver **************************/
-+
-+struct udev_node {
-+	struct usb_device *udev;
-+	struct list_head list;
-+};
-+
-+struct onboard_hub {
-+	struct regulator *vdd;
-+	struct device *dev;
-+	bool always_powered_in_suspend;
-+	bool is_powered_on;
-+	bool going_away;
-+	struct list_head udev_list;
-+	struct mutex lock;
-+};
-+
-+static int onboard_hub_power_on(struct onboard_hub *hub)
-+{
-+	int err;
-+
-+	err = regulator_enable(hub->vdd);
-+	if (err) {
-+		dev_err(hub->dev, "failed to enable regulator: %d\n", err);
-+		return err;
-+	}
-+
-+	hub->is_powered_on = true;
-+
-+	return 0;
-+}
-+
-+static int onboard_hub_power_off(struct onboard_hub *hub)
-+{
-+	int err;
-+
-+	err = regulator_disable(hub->vdd);
-+	if (err) {
-+		dev_err(hub->dev, "failed to disable regulator: %d\n", err);
-+		return err;
-+	}
-+
-+	hub->is_powered_on = false;
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused onboard_hub_suspend(struct device *dev)
-+{
-+	struct onboard_hub *hub = dev_get_drvdata(dev);
-+	struct udev_node *node;
-+	bool power_off;
-+	int rc = 0;
-+
-+	if (hub->always_powered_in_suspend)
-+		return 0;
-+
-+	power_off = true;
-+
-+	mutex_lock(&hub->lock);
-+
-+	list_for_each_entry(node, &hub->udev_list, list) {
-+		if (!device_may_wakeup(node->udev->bus->controller))
-+			continue;
-+
-+		if (usb_wakeup_enabled_descendants(node->udev)) {
-+			power_off = false;
-+			break;
-+		}
-+	}
-+
-+	mutex_unlock(&hub->lock);
-+
-+	if (power_off)
-+		rc = onboard_hub_power_off(hub);
-+
-+	return rc;
-+}
-+
-+static int __maybe_unused onboard_hub_resume(struct device *dev)
-+{
-+	struct onboard_hub *hub = dev_get_drvdata(dev);
-+	int rc = 0;
-+
-+	if (!hub->is_powered_on)
-+		rc = onboard_hub_power_on(hub);
-+
-+	return rc;
-+}
-+
-+static int onboard_hub_add_usbdev(struct onboard_hub *hub, struct usb_device *udev)
-+{
-+	struct udev_node *node;
-+	char link_name[64];
-+	int ret = 0;
-+
-+	mutex_lock(&hub->lock);
-+
-+	if (hub->going_away) {
-+		ret = -EINVAL;
-+		goto unlock;
-+	}
-+
-+	node = devm_kzalloc(hub->dev, sizeof(*node), GFP_KERNEL);
-+	if (!node) {
-+		ret = -ENOMEM;
-+		goto unlock;
-+	}
-+
-+	node->udev = udev;
-+
-+	list_add(&node->list, &hub->udev_list);
-+
-+	snprintf(link_name, sizeof(link_name), "usb_dev.%s", dev_name(&udev->dev));
-+	WARN_ON(sysfs_create_link(&hub->dev->kobj, &udev->dev.kobj, link_name));
-+
-+unlock:
-+	mutex_unlock(&hub->lock);
-+
-+	return ret;
-+}
-+
-+static void onboard_hub_remove_usbdev(struct onboard_hub *hub, struct usb_device *udev)
-+{
-+	struct udev_node *node;
-+	char link_name[64];
-+
-+	snprintf(link_name, sizeof(link_name), "usb_dev.%s", dev_name(&udev->dev));
-+	sysfs_remove_link(&hub->dev->kobj, link_name);
-+
-+	mutex_lock(&hub->lock);
-+
-+	list_for_each_entry(node, &hub->udev_list, list) {
-+		if (node->udev == udev) {
-+			list_del(&node->list);
-+			break;
-+		}
-+	}
-+
-+	mutex_unlock(&hub->lock);
-+}
-+
-+static ssize_t always_powered_in_suspend_show(struct device *dev, struct device_attribute *attr,
-+			   char *buf)
-+{
-+	struct onboard_hub *hub = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%d\n", hub->always_powered_in_suspend);
-+}
-+
-+static ssize_t always_powered_in_suspend_store(struct device *dev, struct device_attribute *attr,
-+			    const char *buf, size_t count)
-+{
-+	struct onboard_hub *hub = dev_get_drvdata(dev);
-+	bool val;
-+	int ret;
-+
-+	ret = kstrtobool(buf, &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	hub->always_powered_in_suspend = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(always_powered_in_suspend);
-+
-+static struct attribute *onboard_hub_attrs[] = {
-+	&dev_attr_always_powered_in_suspend.attr,
-+	NULL,
-+};
-+ATTRIBUTE_GROUPS(onboard_hub);
-+
-+static int onboard_hub_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct onboard_hub *hub;
-+	int err;
-+
-+	hub = devm_kzalloc(dev, sizeof(*hub), GFP_KERNEL);
-+	if (!hub)
-+		return -ENOMEM;
-+
-+	hub->vdd = devm_regulator_get(dev, "vdd");
-+	if (IS_ERR(hub->vdd))
-+		return PTR_ERR(hub->vdd);
-+
-+	hub->dev = dev;
-+	mutex_init(&hub->lock);
-+	INIT_LIST_HEAD(&hub->udev_list);
-+
-+	dev_set_drvdata(dev, hub);
-+
-+	err = onboard_hub_power_on(hub);
-+	if (err)
-+		return err;
-+
-+	/*
-+	 * The USB driver might have been detached from the USB devices by
-+	 * onboard_hub_remove(), make sure to re-attach it if needed.
-+	 */
-+	err = driver_attach(&onboard_hub_usbdev_driver.drvwrap.driver);
-+	if (err) {
-+		onboard_hub_power_off(hub);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static int onboard_hub_remove(struct platform_device *pdev)
-+{
-+	struct onboard_hub *hub = dev_get_drvdata(&pdev->dev);
-+	struct udev_node *node;
-+	struct usb_device *udev;
-+
-+	hub->going_away = true;
-+
-+	mutex_lock(&hub->lock);
-+
-+	/* unbind the USB devices to avoid dangling references to this device */
-+	while (!list_empty(&hub->udev_list)) {
-+		node = list_first_entry(&hub->udev_list, struct udev_node, list);
-+		udev = node->udev;
-+
-+		/*
-+		 * Unbinding the driver will call onboard_hub_remove_usbdev(),
-+		 * which acquires hub->lock.  We must release the lock first.
-+		 */
-+		get_device(&udev->dev);
-+		mutex_unlock(&hub->lock);
-+		device_release_driver(&udev->dev);
-+		put_device(&udev->dev);
-+		mutex_lock(&hub->lock);
-+	}
-+
-+	mutex_unlock(&hub->lock);
-+
-+	return onboard_hub_power_off(hub);
-+}
-+
-+static const struct of_device_id onboard_hub_match[] = {
-+	{ .compatible = "usbbda,411" },
-+	{ .compatible = "usbbda,5411" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, onboard_hub_match);
-+
-+bool of_is_onboard_usb_hub(const struct device_node *np)
-+{
-+	return !!of_match_node(onboard_hub_match, np);
-+}
-+EXPORT_SYMBOL_GPL(of_is_onboard_usb_hub);
-+
-+static const struct dev_pm_ops __maybe_unused onboard_hub_pm_ops = {
-+	SET_LATE_SYSTEM_SLEEP_PM_OPS(onboard_hub_suspend, onboard_hub_resume)
-+};
-+
-+static struct platform_driver onboard_hub_driver = {
-+	.probe = onboard_hub_probe,
-+	.remove = onboard_hub_remove,
-+
-+	.driver = {
-+		.name = "onboard-usb-hub",
-+		.of_match_table = onboard_hub_match,
-+		.pm = pm_ptr(&onboard_hub_pm_ops),
-+		.dev_groups = onboard_hub_groups,
-+	},
-+};
-+
-+/************************** USB driver **************************/
-+
-+#define VENDOR_ID_REALTEK	0x0bda
-+
-+/*
-+ * Returns the onboard_hub platform device that is associated with the USB
-+ * device passed as parameter.
-+ */
-+static struct onboard_hub *_find_onboard_hub(struct device *dev)
-+{
-+	struct platform_device *pdev;
-+	struct device_node *np;
-+	phandle ph;
-+
-+	pdev = of_find_device_by_node(dev->of_node);
-+	if (!pdev) {
-+		if (of_property_read_u32(dev->of_node, "companion-hub", &ph)) {
-+			dev_err(dev, "failed to read 'companion-hub' property\n");
-+			return ERR_PTR(-EINVAL);
-+		}
-+
-+		np = of_find_node_by_phandle(ph);
-+		if (!np) {
-+			dev_err(dev, "failed to find device node for companion hub\n");
-+			return ERR_PTR(-EINVAL);
-+		}
-+
-+		pdev = of_find_device_by_node(np);
-+		of_node_put(np);
-+
-+		if (!pdev)
-+			return ERR_PTR(-EPROBE_DEFER);
-+	}
-+
-+	put_device(&pdev->dev);
-+
-+	return dev_get_drvdata(&pdev->dev);
-+}
-+
-+static int onboard_hub_usbdev_probe(struct usb_device *udev)
-+{
-+	struct device *dev = &udev->dev;
-+	struct onboard_hub *hub;
-+	int err;
-+
-+	/* ignore supported hubs without device tree node */
-+	if (!dev->of_node)
-+		return -ENODEV;
-+
-+	hub = _find_onboard_hub(dev);
-+	if (IS_ERR(hub))
-+		return PTR_ERR(hub);
-+
-+	dev_set_drvdata(dev, hub);
-+
-+	err = onboard_hub_add_usbdev(hub, udev);
-+	if (err)
-+		return err;
-+
-+	err = sysfs_create_link(&udev->dev.kobj, &hub->dev->kobj, "onboard_hub_dev");
-+	if (err)
-+		dev_warn(&udev->dev, "failed to create symlink to platform device: %d\n", err);
-+
-+	return 0;
-+}
-+
-+static void onboard_hub_usbdev_disconnect(struct usb_device *udev)
-+{
-+	struct onboard_hub *hub = dev_get_drvdata(&udev->dev);
-+
-+	sysfs_remove_link(&udev->dev.kobj, "onboard_hub_dev");
-+
-+	onboard_hub_remove_usbdev(hub, udev);
-+}
-+
-+static const struct usb_device_id onboard_hub_id_table[] = {
-+	{ USB_DEVICE(VENDOR_ID_REALTEK, 0x0411) }, /* RTS5411 USB 3.0 */
-+	{ USB_DEVICE(VENDOR_ID_REALTEK, 0x5411) }, /* RTS5411 USB 2.0 */
-+	{},
-+};
-+
-+MODULE_DEVICE_TABLE(usb, onboard_hub_id_table);
-+
-+static struct usb_device_driver onboard_hub_usbdev_driver = {
-+
-+	.name = "onboard-usb-hub",
-+	.probe = onboard_hub_usbdev_probe,
-+	.disconnect = onboard_hub_usbdev_disconnect,
-+	.generic_subclass = 1,
-+	.supports_autosuspend =	1,
-+	.id_table = onboard_hub_id_table,
-+};
-+
-+/************************** Driver (de)registration **************************/
-+
-+static int __init onboard_hub_init(void)
-+{
-+	int ret;
-+
-+	ret = platform_driver_register(&onboard_hub_driver);
-+	if (ret)
-+		return ret;
-+
-+	ret = usb_register_device_driver(&onboard_hub_usbdev_driver, THIS_MODULE);
-+	if (ret)
-+		platform_driver_unregister(&onboard_hub_driver);
-+
-+	return ret;
-+}
-+module_init(onboard_hub_init);
-+
-+static void __exit onboard_hub_exit(void)
-+{
-+	usb_deregister_device_driver(&onboard_hub_usbdev_driver);
-+	platform_driver_unregister(&onboard_hub_driver);
-+}
-+module_exit(onboard_hub_exit);
-+
-+MODULE_AUTHOR("Matthias Kaehlcke <mka@chromium.org>");
-+MODULE_DESCRIPTION("Driver for discrete onboard USB hubs");
-+MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/usb/onboard_hub.h b/include/linux/usb/onboard_hub.h
-new file mode 100644
-index 000000000000..9be52dfae653
---- /dev/null
-+++ b/include/linux/usb/onboard_hub.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __LINUX_USB_ONBOARD_HUB_H
-+#define __LINUX_USB_ONBOARD_HUB_H
-+
-+#ifdef CONFIG_USB_ONBOARD_HUB
-+bool of_is_onboard_usb_hub(const struct device_node *np);
-+#else
-+static inline bool of_is_onboard_usb_hub(const struct device_node *np)
-+{
-+	return false;
-+}
-+#endif
-+
-+#endif /* __LINUX_USB_ONBOARD_HUB_H */
--- 
-2.31.1.607.g51e8a6a459-goog
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
