@@ -2,59 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A0937A635
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B2137A638
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbhEKMDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 08:03:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40480 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230225AbhEKMDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 08:03:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 058E4ADCE;
-        Tue, 11 May 2021 12:02:37 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8E6F9DA96D; Tue, 11 May 2021 14:00:07 +0200 (CEST)
-Date:   Tue, 11 May 2021 14:00:07 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: linux-next: Tree for May 11 (btrfs)
-Message-ID: <20210511120007.GI7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>
-References: <20210511133551.09bfd39c@canb.auug.org.au>
- <56cef5d3-cfb4-abe2-1cbc-f146b720396c@infradead.org>
+        id S231472AbhEKME3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 08:04:29 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:2443 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230225AbhEKME0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 08:04:26 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Ffc1z0277zCqvN;
+        Tue, 11 May 2021 20:00:39 +0800 (CST)
+Received: from [10.174.178.208] (10.174.178.208) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 11 May 2021 20:03:14 +0800
+Subject: Re: [PATCH 5.4 000/184] 5.4.118-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210510101950.200777181@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <53da0289-04a3-f79f-ed45-5278a853f9f8@huawei.com>
+Date:   Tue, 11 May 2021 20:03:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56cef5d3-cfb4-abe2-1cbc-f146b720396c@infradead.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210510101950.200777181@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 10:13:17PM -0700, Randy Dunlap wrote:
-> On 5/10/21 8:35 PM, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > Changes since 20210510:
-> > 
-> 
-> on i386:
-> 
-> ld: fs/btrfs/extent_io.o: in function `btrfs_submit_read_repair':
-> extent_io.c:(.text+0x624f): undefined reference to `__udivdi3'
 
-Thanks for the report, will be fixed in the next for-next snapshot.
+
+On 2021/5/10 18:18, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.118 release.
+> There are 184 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.118-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+Tested on arm64 and x86 for 5.4.118-rc1,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.4.y
+Version: 5.4.118-rc1
+Commit: eb078a943f9777461b67e3f61b4b6376593eb08c
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8476
+passed: 8476
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8476
+passed: 8476
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
