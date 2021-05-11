@@ -2,109 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B87637AFF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F84237AFFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 22:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbhEKULS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 16:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
+        id S229945AbhEKUOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 16:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbhEKULQ (ORCPT
+        with ESMTP id S229921AbhEKUOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 16:11:16 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED42CC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 13:10:09 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id z18so7780074plg.8
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 13:10:09 -0700 (PDT)
+        Tue, 11 May 2021 16:14:09 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8315AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 13:13:01 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso18558038otb.13
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 13:13:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9hsJp/8M+c794Pqj/BGqU0TDUiLA1/EXUU62NU+MuI8=;
-        b=QWxVvsHJmxi2i0/v0yvXGA/rYmebcRITSfU78PEVWzxzZQj5NH4W2zx4Ow2aldvIOZ
-         RF+Pp01gjiTBsL4GN8iYTGXpT6Tk8/q5bZuVXfvEMLhACIa26lseUWufR0uXgI5csmYZ
-         qPaYTvBEgra7SDs/9ygersTwFvS7PngkczxI2jgG8p5lKZFWvqGWB5EBUmZ7KdIZywut
-         7YKlRIiPop3urGUH1d28rki8FOxWFo1xJl/93w/+LUlRj7ZnFAX/x6i1e8t8bFnPZg9V
-         sinN/l4I+RBvPQvUwtxvn/l4MRno77sXlDk/dibPowkeifpBrMli9ad0UZzE7+2l8L5s
-         PjTA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2M7i3OM3TdmABjLPSIXD1SsZiaIt0flPM1PcqwkFM0E=;
+        b=G+o2VLn5iC77L6jgX4A3gjrnUa/7lSk6dn3BJVzLYlnp66WKm+DQVEKYdI2vIZpSQD
+         w45MOJtLvVStmHQ6SBGetYuXiR/6bnAcRFr5UVNSqajnf9W5E1IC4eOBODzDos+kaTDw
+         4kuG0P6cB56+mzkG0a1Xt5ERhW7FW8sM/TM2dF8x4EahEjGw5S1fQKJc4Wm2bCLR2P+6
+         dP+mWrkOvxuirk/I71UUwNSPZk09NLNg7FOnD6/1rab8rPc6Zjn7t94X+Nqe6V6lMsOQ
+         WHbShZl8FEH2MrOWZHCivMU9ZQNCZ41UsqPYOnnLiT4zF+9cb5W9Xo4xbvDrfW4LuwUX
+         iTAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9hsJp/8M+c794Pqj/BGqU0TDUiLA1/EXUU62NU+MuI8=;
-        b=Z7FvAKs2eF4fW62XFAuVoJP+dWOh2UioMIY8t5xDfoEzsyfqoajqZ1mqGCimNJed+U
-         D/ae0mLnTY64nN8uAWst2z5lZRhqNTOhzyXkx4iZRM3CLKABfTLiN47fmF1igC9SBxVi
-         p/AFtV+hbh6ez+sxwANH3gAk3Kw4U5aj4CqUJc19jZsY1W7re1Rmg9A+A628TjS4lPFR
-         Koz/QEpY0BNOceMsvGI+sW3P0CAFyJTo4V+92PZ5Ld7A6Rxalku3nVSDEFnOVtRelvpI
-         vPbf9+2HCKPgPmFAEyhQs8KeTilBxsdJBnQ2UqB/PP+ntBVcGbtqfFZfSwHyVVIVA8cq
-         aokg==
-X-Gm-Message-State: AOAM5309elMyUS/nHV9RTs7Cb/jlLebwjIHzTdM2wz3VEkVyD1l/bFPf
-        w/X8jwDTenTxzq475AHNGuSUKg==
-X-Google-Smtp-Source: ABdhPJwy09jfy7yLVMouNyu5hwQFqzdeaXW6xbEDwmbX67gFS2cIgwJGT3bwVeejCDmtI2vaIRbYFA==
-X-Received: by 2002:a17:902:70c5:b029:ec:9a57:9cc8 with SMTP id l5-20020a17090270c5b02900ec9a579cc8mr31856628plt.73.1620763809212;
-        Tue, 11 May 2021 13:10:09 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id s14sm1396567pjp.16.2021.05.11.13.10.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 13:10:08 -0700 (PDT)
-Date:   Tue, 11 May 2021 20:10:05 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Reiji Watanabe <reijiw@google.com>
-Subject: Re: [PATCH 08/15] KVM: VMX: Configure list of user return MSRs at
- module init
-Message-ID: <YJrkndzXzUOXsZYJ@google.com>
-References: <20210504171734.1434054-1-seanjc@google.com>
- <20210504171734.1434054-9-seanjc@google.com>
- <db161b4dd7286870db5adb9324e4941f0dc3f098.camel@redhat.com>
- <YJlNsvKoFIKI2V/V@google.com>
- <9cf65a1d7b96c69077779d7a11777004d0bce6c9.camel@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2M7i3OM3TdmABjLPSIXD1SsZiaIt0flPM1PcqwkFM0E=;
+        b=EBPZ0l0Kp0FcKyyH1fKgyiY0Ct2XYwb2mFfYGQlzo3QWhYnPUd07cUZjwl8+p6y+/1
+         Zxt9PitHBrhwiDo9ZUzxthixiqjVDRCAukA7ut58XsnQ9UpzSy/wAv0iEJvOYnEbnQXY
+         TB5kMvZpD8Xnxaysb07kuKM2nAePbL3W63Ui0sRr4v1Dno5Yv3Mn803SM7H98KIDYiXn
+         AN3ElO2obmyLLA958+Cbw/JWOhq9/4QiQemcQTxk3NEl0uxQq0sZsEryg7aZ04nVLAug
+         76tKxg236Mj1DRJ/8Efo9gNJP3psO1atckeLphz9Vs2fybdfF3SDia2CFpGJe4UQ45Vx
+         lCcw==
+X-Gm-Message-State: AOAM531jtxplcEGk2KWb1BJHzTfdiqNkgAv6rUzgeW2lQMW797ClohMG
+        m5g0iICbDaGJVh4vagYT1fOAFk+XZNZnsMvY2is=
+X-Google-Smtp-Source: ABdhPJwXPwvyfRjsMHTY09QJKdISxNGiHPrjAi1z0b0hOgpy/pkpSRj0Ad3aZhG6x0gkMazxZywXYzfkdlPcQTrKsr8=
+X-Received: by 2002:a9d:74c6:: with SMTP id a6mr11846574otl.132.1620763980927;
+ Tue, 11 May 2021 13:13:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9cf65a1d7b96c69077779d7a11777004d0bce6c9.camel@redhat.com>
+References: <20210430045656.577395-1-kai.heng.feng@canonical.com> <CAAd53p4fLYXB0z7OQOmAS_BkACARTrrfRf+QwWd3MYQhk5oFTw@mail.gmail.com>
+In-Reply-To: <CAAd53p4fLYXB0z7OQOmAS_BkACARTrrfRf+QwWd3MYQhk5oFTw@mail.gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 11 May 2021 16:12:49 -0400
+Message-ID: <CADnq5_OVQv2K_30uWN7qwUsGVWD7bc7qAs-s_TL-m8NLCDSkOw@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/radeon/dpm: Disable sclk switching on Oland when
+ two 4K 60Hz monitors are connected
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021, Maxim Levitsky wrote:
-> On Mon, 2021-05-10 at 15:13 +0000, Sean Christopherson wrote:
-> > On Mon, May 10, 2021, Maxim Levitsky wrote:
-> > > On Tue, 2021-05-04 at 10:17 -0700, Sean Christopherson wrote:
-> > > > @@ -6929,18 +6942,10 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
-> > > >  			goto free_vpid;
-> > > >  	}
-> > > >  
-> > > > -	BUILD_BUG_ON(ARRAY_SIZE(vmx_uret_msrs_list) != MAX_NR_USER_RETURN_MSRS);
-> > > > +	for (i = 0; i < vmx_nr_uret_msrs; ++i) {
-> > > > +		vmx->guest_uret_msrs[i].data = 0;
-> > > >  
-> > > > -	for (i = 0; i < ARRAY_SIZE(vmx_uret_msrs_list); ++i) {
-> > > > -		u32 index = vmx_uret_msrs_list[i];
-> > > > -		int j = vmx->nr_uret_msrs;
-> > > > -
-> > > > -		if (kvm_probe_user_return_msr(index))
-> > > > -			continue;
-> > > > -
-> > > > -		vmx->guest_uret_msrs[j].slot = i;
-> > > I don't see anything initalizing the .slot after this patch.
-> > > Now this code is removed later which masks this bug, 
-> > > but for the bisect sake, I think that this patch 
-> > > should still be fixed.
-> > 
-> > Egad, indeed it's broken.  I'll retest the whole series to verify the other
-> > patches will bisect cleanly.
-> > 
-> > Nice catch!
-> > 
-> Thanks!
+On Mon, May 10, 2021 at 11:33 PM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> On Fri, Apr 30, 2021 at 12:57 PM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
+> >
+> > Screen flickers rapidly when two 4K 60Hz monitors are in use. This issue
+> > doesn't happen when one monitor is 4K 60Hz (pixelclock 594MHz) and
+> > another one is 4K 30Hz (pixelclock 297MHz).
+> >
+> > The issue is gone after setting "power_dpm_force_performance_level" to
+> > "high". Following the indication, we found that the issue occurs when
+> > sclk is too low.
+> >
+> > So resolve the issue by disabling sclk switching when there are two
+> > monitors requires high pixelclock (> 297MHz).
+> >
+> > v2:
+> >  - Only apply the fix to Oland.
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>
+> A gentle ping...
 
-Unfortunately this made it's way to Linus before I could fix my goof.  Fingers
-crossed no one is unfortunate enough to land on this while bisecting...
+Applied.  Thanks for the reminder.
+
+Alex
+
+
+>
+> > ---
+> >  drivers/gpu/drm/radeon/radeon.h    | 1 +
+> >  drivers/gpu/drm/radeon/radeon_pm.c | 8 ++++++++
+> >  drivers/gpu/drm/radeon/si_dpm.c    | 3 +++
+> >  3 files changed, 12 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/radeon.h
+> > index 42281fce552e6..56ed5634cebef 100644
+> > --- a/drivers/gpu/drm/radeon/radeon.h
+> > +++ b/drivers/gpu/drm/radeon/radeon.h
+> > @@ -1549,6 +1549,7 @@ struct radeon_dpm {
+> >         void                    *priv;
+> >         u32                     new_active_crtcs;
+> >         int                     new_active_crtc_count;
+> > +       int                     high_pixelclock_count;
+> >         u32                     current_active_crtcs;
+> >         int                     current_active_crtc_count;
+> >         bool single_display;
+> > diff --git a/drivers/gpu/drm/radeon/radeon_pm.c b/drivers/gpu/drm/radeon/radeon_pm.c
+> > index 0c1950f4e146f..3861c0b98fcf3 100644
+> > --- a/drivers/gpu/drm/radeon/radeon_pm.c
+> > +++ b/drivers/gpu/drm/radeon/radeon_pm.c
+> > @@ -1767,6 +1767,7 @@ static void radeon_pm_compute_clocks_dpm(struct radeon_device *rdev)
+> >         struct drm_device *ddev = rdev->ddev;
+> >         struct drm_crtc *crtc;
+> >         struct radeon_crtc *radeon_crtc;
+> > +       struct radeon_connector *radeon_connector;
+> >
+> >         if (!rdev->pm.dpm_enabled)
+> >                 return;
+> > @@ -1776,6 +1777,7 @@ static void radeon_pm_compute_clocks_dpm(struct radeon_device *rdev)
+> >         /* update active crtc counts */
+> >         rdev->pm.dpm.new_active_crtcs = 0;
+> >         rdev->pm.dpm.new_active_crtc_count = 0;
+> > +       rdev->pm.dpm.high_pixelclock_count = 0;
+> >         if (rdev->num_crtc && rdev->mode_info.mode_config_initialized) {
+> >                 list_for_each_entry(crtc,
+> >                                     &ddev->mode_config.crtc_list, head) {
+> > @@ -1783,6 +1785,12 @@ static void radeon_pm_compute_clocks_dpm(struct radeon_device *rdev)
+> >                         if (crtc->enabled) {
+> >                                 rdev->pm.dpm.new_active_crtcs |= (1 << radeon_crtc->crtc_id);
+> >                                 rdev->pm.dpm.new_active_crtc_count++;
+> > +                               if (!radeon_crtc->connector)
+> > +                                       continue;
+> > +
+> > +                               radeon_connector = to_radeon_connector(radeon_crtc->connector);
+> > +                               if (radeon_connector->pixelclock_for_modeset > 297000)
+> > +                                       rdev->pm.dpm.high_pixelclock_count++;
+> >                         }
+> >                 }
+> >         }
+> > diff --git a/drivers/gpu/drm/radeon/si_dpm.c b/drivers/gpu/drm/radeon/si_dpm.c
+> > index 9186095518047..3cc2b96a7f368 100644
+> > --- a/drivers/gpu/drm/radeon/si_dpm.c
+> > +++ b/drivers/gpu/drm/radeon/si_dpm.c
+> > @@ -2979,6 +2979,9 @@ static void si_apply_state_adjust_rules(struct radeon_device *rdev,
+> >                     (rdev->pdev->device == 0x6605)) {
+> >                         max_sclk = 75000;
+> >                 }
+> > +
+> > +               if (rdev->pm.dpm.high_pixelclock_count > 1)
+> > +                       disable_sclk_switching = true;
+> >         }
+> >
+> >         if (rps->vce_active) {
+> > --
+> > 2.30.2
+> >
