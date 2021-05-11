@@ -2,84 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DEA37A67A
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3F537A67F
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 14:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbhEKMXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 08:23:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33498 "EHLO mail.kernel.org"
+        id S231540AbhEKMYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 08:24:41 -0400
+Received: from mga06.intel.com ([134.134.136.31]:12233 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230475AbhEKMXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 08:23:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A26D36188B;
-        Tue, 11 May 2021 12:22:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620735758;
-        bh=X8uCfoXChvJt+A61wxP97/Duyh0eA1PLMqEuUrFJZmg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kJNvb65uBKAwOunAlm64YwGcjt1VsoXbJy7plw3KN8BZIhu/GAbs2Fl3KVDzaVqzu
-         ze5l3e1Dxv/AJywjnglBXsRa0Z3pMhx3HaRkeN87wDOi6l3jvl+k3Iexdyk4lT19sI
-         K80HKSDNG8inxdjNi5qjzlOT6H9lcX+F1pDaydJMfh+uw+iv0nXCEFUgyyrXjbgOVZ
-         lmBJJWF8/x981ZJeq6QGro7mgMQSDtrspB7WRnm8Dwk6XHqqjNFrFZXkoHzwZiCcTV
-         NFELAoINlYkqFY0KXTVUEg2lUwumP393QaOU/SAzwiHN9Z0b7vF8qjdTTg41vudYZg
-         ZIqUhrCi9nUKg==
-Date:   Tue, 11 May 2021 17:52:34 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: Re: [RESEND PATCH 0/4] soundwire: only use CLOCK_STOP_MODE0 and
- handle -ENODATA errors in clock stop/start sequences
-Message-ID: <YJp3CvCLt/xWDxgr@vkoul-mobl.Dlink>
-References: <20210511030048.25622-1-yung-chuan.liao@linux.intel.com>
+        id S230475AbhEKMYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 08:24:36 -0400
+IronPort-SDR: pXP3nI/pQdI0FubtSdfjhHMctdIV/2ECJUumK8eM3sr5Mv2zpp9AaEHFoSJNw+0hk8YtTW1iJ8
+ XUnO5t3a/WIA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="260689422"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="260689422"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 05:23:29 -0700
+IronPort-SDR: T5Aa5jTGUmndWECq5KkOSf64HkMW3PPabHL46jAP1+1FPhDpBTHibBjXKxZVC0UZrRVrqlMw6X
+ rDqmHNZb5ndQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="399292177"
+Received: from lkp-server01.sh.intel.com (HELO f375d57c4ed4) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 11 May 2021 05:23:28 -0700
+Received: from kbuild by f375d57c4ed4 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lgRQ8-0000hE-4k; Tue, 11 May 2021 12:23:28 +0000
+Date:   Tue, 11 May 2021 20:22:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:lkmm] BUILD SUCCESS d25fba0e34742f19b5ca307c60c4d260ca5a754a
+Message-ID: <609a7720.MGwlD0jchIc/71eu%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511030048.25622-1-yung-chuan.liao@linux.intel.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-05-21, 11:00, Bard Liao wrote:
-> Existing devices and implementations only support the required
-> CLOCK_STOP_MODE0. All the code related to CLOCK_STOP_MODE1 has not
-> been tested and is highly questionable, with a clear confusion between
-> CLOCK_STOP_MODE1 and the simple clock stop state machine.
-> 
-> This patch removes all usages of CLOCK_STOP_MODE1 - which has no
-> impact on any solution - and fixes the use of the simple clock stop
-> state machine. The resulting code should be a lot more symmetrical and
-> easier to maintain.
-> 
-> Note that CLOCK_STOP_MODE1 is not supported in the SoundWire Device
-> Class specification so it's rather unlikely that we need to re-add
-> this mode later.
-> 
-> If a device lost sync and can no longer ACK a command, it may not be
-> able to enter a lower-power state but it will still be able to resync
-> when the clock restarts. In those cases, we want to continue with the
-> clock stop sequence.
-> 
-> This patch modifies the behavior during clock stop sequences to only
-> log errors unrelated to -ENODATA/Command_Ignored. The flow is also
-> modified so that loops continue to prepare/deprepare other devices
-> even when one seems to have lost sync.
-> 
-> When resuming the clocks, all issues are logged with a dev_warn(),
-> previously only some of them were checked. This is the only part that
-> now differs between the clock stop entry and clock stop exit
-> sequences: while we don't want to stop the suspend flow, we do want
-> information on potential issues while resuming, as they may have
-> ripple effects.
-> 
-> For consistency the log messages are also modified to be unique and
-> self-explanatory. Errors in sdw_slave_clk_stop_callback() were
-> removed, they are now handled in the caller.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git lkmm
+branch HEAD: d25fba0e34742f19b5ca307c60c4d260ca5a754a  tools/memory-model: Fix smp_mb__after_spinlock() spelling
 
-Applied, thanks
+elapsed time: 728m
 
--- 
-~Vinod
+configs tested: 110
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+arm                            qcom_defconfig
+sh                          urquell_defconfig
+arm                          exynos_defconfig
+sparc                       sparc32_defconfig
+riscv                             allnoconfig
+arc                                 defconfig
+riscv                            alldefconfig
+arm                         lpc32xx_defconfig
+mips                      maltaaprp_defconfig
+sh                     magicpanelr2_defconfig
+sh                          polaris_defconfig
+sparc                            allyesconfig
+mips                     loongson1c_defconfig
+mips                       capcella_defconfig
+arm                           sunxi_defconfig
+powerpc                 mpc836x_rdk_defconfig
+powerpc                      chrp32_defconfig
+arm                         s3c6400_defconfig
+um                             i386_defconfig
+arc                        nsim_700_defconfig
+arm                             ezx_defconfig
+arm                          pxa3xx_defconfig
+powerpc                 mpc834x_itx_defconfig
+mips                     decstation_defconfig
+i386                                defconfig
+arm                        magician_defconfig
+powerpc                 mpc85xx_cds_defconfig
+sh                          kfr2r09_defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                          rb532_defconfig
+mips                           ci20_defconfig
+arc                     nsimosci_hs_defconfig
+riscv                    nommu_k210_defconfig
+mips                           rs90_defconfig
+powerpc                    gamecube_defconfig
+sh                     sh7710voipgw_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210511
+i386                 randconfig-a001-20210511
+i386                 randconfig-a005-20210511
+i386                 randconfig-a004-20210511
+i386                 randconfig-a002-20210511
+i386                 randconfig-a006-20210511
+x86_64               randconfig-a012-20210511
+x86_64               randconfig-a015-20210511
+x86_64               randconfig-a011-20210511
+x86_64               randconfig-a013-20210511
+x86_64               randconfig-a016-20210511
+x86_64               randconfig-a014-20210511
+x86_64               randconfig-a003-20210510
+x86_64               randconfig-a004-20210510
+x86_64               randconfig-a001-20210510
+x86_64               randconfig-a005-20210510
+x86_64               randconfig-a002-20210510
+x86_64               randconfig-a006-20210510
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a003-20210511
+x86_64               randconfig-a004-20210511
+x86_64               randconfig-a001-20210511
+x86_64               randconfig-a005-20210511
+x86_64               randconfig-a002-20210511
+x86_64               randconfig-a006-20210511
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
