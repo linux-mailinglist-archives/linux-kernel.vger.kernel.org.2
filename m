@@ -2,92 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22DA737A090
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7765D37A094
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbhEKHTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:19:14 -0400
-Received: from mga17.intel.com ([192.55.52.151]:27686 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhEKHTL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:19:11 -0400
-IronPort-SDR: gyt+xFQ7QfTSFTYOfXD9F2WzKtkcseSA+vI7HuVzkhMjzua6RseHPE6bUySKcYaAzdJtHK/CIk
- 5pWlJszAygfQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="179639124"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="179639124"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 00:18:04 -0700
-IronPort-SDR: NFs2EGgwrUQTeLLZhJRoctJWp6RIxj1y2dI2PoRkDIihvJrMUEc5yeuYZRmyRYJ3sDkbVul2+T
- NzKypVJfKwrw==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="391298212"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 00:18:03 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lgMeW-00BNIS-Tl; Tue, 11 May 2021 10:18:00 +0300
-Date:   Tue, 11 May 2021 10:18:00 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Rodolfo Giometti <giometti@enneenne.com>
-Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-Subject: Re: [PATCH v1 1/1] pps: clients: parport: Switch to use
- module_parport_driver()
-Message-ID: <YJovqMqJj3mBeRE8@smile.fi.intel.com>
-References: <20210510141302.56654-1-andriy.shevchenko@linux.intel.com>
- <77c821e1-adc7-4088-0dcb-da65ba7a39a2@enneenne.com>
+        id S230338AbhEKHTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhEKHTm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 03:19:42 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86798C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:18:36 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id t4so28312138ejo.0
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 00:18:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=42nRc1RoYbJhNJdFtPlhV0Uv4mwluFFOOWJNQT2V7xw=;
+        b=iI1qpxJCMqx98GwvYhhavvuWFXAHqnZu78ocNVP23PAUS3z5/sd13wKarQoym3J1nL
+         myo+991CNDs7udnQlhycuhf4VOVwYx10KVNY3N4FDS6fSw1xjd3MKT4GkipgO9XCEbiW
+         yIqXpJj8CIphjXB1vYtDr1mYjgchtnWIq4kFvjmjPJKWhEGslnXNlHRjfTOUDiVO4gBq
+         wOHigDkDyE9z3Pviil8GOi6+uT1YGiPbaEbKu4cx0Zg8mKBpefZX3syZQ/6CbRMCsk5b
+         oTnFV0yKvuQJgDD+eY/kBolWjXVkukZgS27c+VQ4Sc6V7jIWhxLt3E1F/zuV3SAT20JS
+         uIZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=42nRc1RoYbJhNJdFtPlhV0Uv4mwluFFOOWJNQT2V7xw=;
+        b=p1+8ECoCUZXt1oStg9RBYS92B2mEuYYrpue8pH9xKHYBc0L9vPurCgLe6Kdbt9O8Fd
+         PvFJhX9mQynckfbjK9MAgf+mhye3cb/TtUHHaCzIDjmdpvq+gRfpcj3grAuX8bua6y8i
+         OFTYwTAFqsWF/R0n4iceSTExUA++pntF7pHA2REJZ9gV/UQ75AxteW9AdQYtY3aGgnsX
+         z79ZgCn3E24P2V8wnLuayhv+e1G9w1wPurMXgeENtWH3T06+jbWDQRl4XQId3sxHRUxC
+         xaO2laLPmeMqt4bnFlvDR8lRTWbyyI+Cl+nzEw/e7pajMTKRwaIjY027Gzo4aKxgnmEB
+         aEqg==
+X-Gm-Message-State: AOAM533WOHy3z9BSDXFOqg406ESjQR7lCeEIXI/oTPrhkTg4tRgf9KJB
+        cigd5wKv8VDj1eooRlakc1mZww==
+X-Google-Smtp-Source: ABdhPJzlvKdO7Bp+YdLp+TiUkg1H68x4BQ7NVjZ9JuPeP23VFDaV5pngvVsxp//vCrtBBhhDTJGUIQ==
+X-Received: by 2002:a17:906:3646:: with SMTP id r6mr30014424ejb.43.1620717515236;
+        Tue, 11 May 2021 00:18:35 -0700 (PDT)
+Received: from neptune.. ([188.27.131.122])
+        by smtp.gmail.com with ESMTPSA id i6sm13871558eds.83.2021.05.11.00.18.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 00:18:34 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, Jonathan.Cameron@huawei.com,
+        alexandru.tachici@analog.com, linux@deviqon.com,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH v2 00/12] ad_sigma_delta: convert all drivers to device-managed
+Date:   Tue, 11 May 2021 10:18:19 +0300
+Message-Id: <20210511071831.576145-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <77c821e1-adc7-4088-0dcb-da65ba7a39a2@enneenne.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 09:05:00AM +0200, Rodolfo Giometti wrote:
-> On 10/05/21 16:13, Andy Shevchenko wrote:
-> > Switch to use module_parport_driver() to reduce boilerplate code.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> >  drivers/pps/clients/pps_parport.c | 42 ++++++-------------------------
-> >  1 file changed, 8 insertions(+), 34 deletions(-)
-> > 
-> > diff --git a/drivers/pps/clients/pps_parport.c b/drivers/pps/clients/pps_parport.c
-> > index 7a41fb7b0dec..42f93d4c6ee3 100644
-> > --- a/drivers/pps/clients/pps_parport.c
-> > +++ b/drivers/pps/clients/pps_parport.c
-> > @@ -22,8 +22,6 @@
-> >  #include <linux/parport.h>
-> >  #include <linux/pps_kernel.h>
-> >  
-> > -#define DRVDESC "parallel port PPS client"
-> > -
-> >  /* module parameters */
-> >  
-> >  #define CLEAR_WAIT_MAX		100
-> > @@ -138,6 +136,12 @@ static void parport_attach(struct parport *port)
-> >  		.dev		= NULL
-> >  	};
-> >  
-> > +	if (clear_wait > CLEAR_WAIT_MAX) {
-> > +		pr_err("clear_wait value should be not greater then %d\n",
-> > +		       CLEAR_WAIT_MAX);
-> > +		return;
-> > +	}
-> > +
-> 
-> Why do you need to do so? Maybe a comment would be welcomed.
+Well, for lack of a better title that's what this series does.
+It merges Jonathan's patches from:
+  * https://lore.kernel.org/linux-iio/20210508182319.488551-1-jic23@kernel.org/
+    Patch 3/3 was a polished a bit with my comments from that review and also
+    to use the devm_ad_sd_setup_buffer_and_trigger() function.
+  * https://lore.kernel.org/linux-iio/20210509114118.660422-1-jic23@kernel.org/
+    Added only to base the conversion to devm_
 
-It's in original code, I just moved it to ->probe().
+The AD Sigma Delta family of ADC drivers share a lot of the logic in the
+ad_sigma_delta lib-driver.
 
-What comment do you want to have here, because original code has no comment (I
-think in any case it's out of scope of this change, but may be prepended or
-appended to the series)?
+This set introduces a devm_ad_sd_setup_buffer_and_trigger() call, which
+aims to replace the 'ad_sd_{setup,cleanup}_buffer_and_trigger()' pair.
+
+This helps with converting the AD7780, AD7791, AD7793 and AD7192
+drivers use be fully converted to device-managed functions.
+
+Changelog v1 -> v2:
+* https://lore.kernel.org/linux-iio/20210510125523.1271237-1-aardelean@deviqon.com/
+* add my S-o-b tags on all patches; with @deviqon.com email
+  - Note: I'm a little unsure about the correctness of these tags; there
+    are a few mixed-in, with Reviewed-by & Signed-off-by; I'm fine if
+    Jonathan tweaks these as needed;
+* added patch 'iio: adc: ad7192: handle zero Avdd regulator value as error'
+* all Fixes patches should be now at the beginning of the series
+
+Alexandru Ardelean (8):
+  iio: adc: ad7192: handle zero Avdd regulator value as error
+  iio: adc: ad_sigma_delta: introduct
+    devm_ad_sd_setup_buffer_and_trigger()
+  iio: adc: ad7793: convert to device-managed functions
+  iio: adc: ad7791: convert to device-managed functions
+  iio: adc: ad7780: convert to device-managed functions
+  iio: adc: ad7192: use devm_clk_get_optional() for mclk
+  iio: adc: ad7192: convert to device-managed functions
+  iio: adc: ad_sigma_delta: remove
+    ad_sd_{setup,cleanup}_buffer_and_trigger()
+
+Jonathan Cameron (4):
+  iio: adc: ad7124: Fix missbalanced regulator enable / disable on
+    error.
+  iio: adc: ad7124: Fix potential overflow due to non sequential channel
+    numbers
+  iio: adc: ad7192: Avoid disabling a clock that was never enabled.
+  iio: adc: ad7124: Use devm_ managed calls for all of probe() + drop
+    remove()
+
+ drivers/iio/adc/ad7124.c               | 84 ++++++++++-------------
+ drivers/iio/adc/ad7192.c               | 94 ++++++++++++--------------
+ drivers/iio/adc/ad7780.c               | 38 +++--------
+ drivers/iio/adc/ad7791.c               | 44 ++++--------
+ drivers/iio/adc/ad7793.c               | 53 ++++-----------
+ drivers/iio/adc/ad_sigma_delta.c       | 82 ++++++++--------------
+ include/linux/iio/adc/ad_sigma_delta.h |  4 +-
+ 7 files changed, 145 insertions(+), 254 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.31.1
 
