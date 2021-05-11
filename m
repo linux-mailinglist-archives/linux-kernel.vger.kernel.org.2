@@ -2,115 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0546237A25E
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1558637A261
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhEKInb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 04:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbhEKInZ (ORCPT
+        id S230505AbhEKInu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 04:43:50 -0400
+Received: from mail-vs1-f50.google.com ([209.85.217.50]:45644 "EHLO
+        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231126AbhEKInj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 04:43:25 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D094BC061574;
-        Tue, 11 May 2021 01:42:16 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id d11so19232106wrw.8;
-        Tue, 11 May 2021 01:42:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tXnJhPK1FADLbH/EXZbWk8gnh9IOj/tx9NT7IBJWZIg=;
-        b=cZVO/0otPsNR8D5c/CorG0TW2rkM2F3cpMnryKGBxXaM2nYoIYZU02rmneGXH0r76/
-         uC7wefZNl2FuJ6dtFChNP0CHzagAMvZME+5zDmFpHoKchxSn7Xb2zmP/F7SnFSQLZLFU
-         t1sbth+J9W/jLgcp6eJUt2foIjPR7aY0/zet/IP/E8K+ALWVSMsZNYn6LcEa6vJaoQAJ
-         cz23MRoBdi5aHzREPXdmyudVinP5UfVC7q05U98QPdy7vNQnrWzZgmi2km8X7NK2rs55
-         h37/mlV4Fs4E1QAA03h6BhmGvhkBmJJmLuAfgfqN+KIkXaPoTyOSiLOxP8xhkGlGib8T
-         BNsA==
+        Tue, 11 May 2021 04:43:39 -0400
+Received: by mail-vs1-f50.google.com with SMTP id x188so4225007vsx.12;
+        Tue, 11 May 2021 01:42:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tXnJhPK1FADLbH/EXZbWk8gnh9IOj/tx9NT7IBJWZIg=;
-        b=asSzgTV2ZIVUOtAc+epEVOqJLX6lE8A34bmRXAd7hCTw/3IjB9uKpQz8Kg0WYsPoQa
-         2X32tDSWgXUNrITiluD7tSyzMNxPsxHcJnZXHPCqcklBZKlSuid9ySwhnoCzIeOcFAoC
-         HEVTzuBYCL9YZCq2ex2giZGpAaIf3uXbA90d8NP3ITNPyVdmRBQ+QRzwbcY9JmWJBMdq
-         abPvmr0shbgNEioRoXvbdpyJjg4dX0IF0iyFtYeHiZ9wTWPbHFTT0r5oj5L92yAkWPs8
-         YOD2bSqZqdrW7FrUo2+vfkVRQbyfeBV8+qWvA74prUo5NEZvEPVyWMNAVLN7RkAIDo2C
-         1Few==
-X-Gm-Message-State: AOAM533mLADq/Re/YSoG6tD/X9lFtqvT2gNEawZXDbOtE7elYXnQF8r7
-        v07SDJB9VjWAAv0QjQW3TTRPzxO47PQ=
-X-Google-Smtp-Source: ABdhPJxNFN20cSoAE51Czy+t07NtQS6C9XwX+cxq/GdVWJa1NPpp9tblZl5ezqNBt1VicIAE1skkAw==
-X-Received: by 2002:a05:6000:1051:: with SMTP id c17mr35528000wrx.43.1620722535379;
-        Tue, 11 May 2021 01:42:15 -0700 (PDT)
-Received: from [192.168.2.202] (p5487be9d.dip0.t-ipconnect.de. [84.135.190.157])
-        by smtp.gmail.com with ESMTPSA id f3sm25952628wrp.7.2021.05.11.01.42.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 01:42:14 -0700 (PDT)
-Subject: Re: [PATCH] usb: xhci: Increase timeout for HC halt
-To:     Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Mathias Nyman <mathias.nyman@intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210511002933.1612871-1-luzmaximilian@gmail.com>
- <828bf140-1be6-9d92-1598-bfdf689bbdae@linux.intel.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <c1b24d1a-497d-a303-7b54-e1d65402f08c@gmail.com>
-Date:   Tue, 11 May 2021 10:42:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yzRdx62Sq3AaDnhd51+rCUJyJIfzNZKgNx2jthkjD/E=;
+        b=UmzsMKflBIc0YxXMZLC4EpFQPhAbEb6MOQ0fP5lK/n5NvPeqgRETZ0Vji7njkaI8Pr
+         v3JIfJcBPiLOXLdT7CITzCpxVGvGyUUY4lvtD6tplcNp9tY1ocI0hcZyuLCpVXX3JmdM
+         hgDpSJw6ltlajJ2iYIJX8mbtBiWZ2v+ihtWr/bbJkyZ9WzyIrpFweNuwPiSLyiWb6jB6
+         tio0JhRBLbKj33+ErYtJPDfAqqEuAL95wLyBCSyYR2gjMFmPgXMSYqtgmn1Pe7JbiQ40
+         sn4G2HvkDJRxJQEyEEPfn6aS1T9Jj9iyCsziWBknvkbAmAF03bj2YW7pY62q9nsvrnZw
+         JLpQ==
+X-Gm-Message-State: AOAM533lZVGZqGkhGkqG5E2EKagCZE7/hRWdWX87dqg3gI/75wR0v/Js
+        XEG1gRyBDzy3EqDq0tXP1QAtjf/RZfwWx3yY2L4=
+X-Google-Smtp-Source: ABdhPJxidzMgN+SIFQ8O4Pmyfgrc3FjU9fVcUqfJeBTcd/MTQvdGjLXfxIWnE3wqGu11LDO+cBZsOZvFeZQ6Fc7RGVA=
+X-Received: by 2002:a67:8745:: with SMTP id j66mr24922894vsd.18.1620722552807;
+ Tue, 11 May 2021 01:42:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <828bf140-1be6-9d92-1598-bfdf689bbdae@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1617016509.git.gustavo.pimentel@synopsys.com> <daa1efe23850e77d6807dc3f371728fc0b7548b8.1617016509.git.gustavo.pimentel@synopsys.com>
+In-Reply-To: <daa1efe23850e77d6807dc3f371728fc0b7548b8.1617016509.git.gustavo.pimentel@synopsys.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 11 May 2021 10:42:21 +0200
+Message-ID: <CAMuHMdWvMpZ35Y-8k1ZOJeD53HyUoWLbzgZa_OMGCq3FOCf19w@mail.gmail.com>
+Subject: Re: [PATCH v10 1/4] misc: Add Synopsys DesignWare xData IP driver
+To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 9:19 AM, Mathias Nyman wrote:
-> On 11.5.2021 3.29, Maximilian Luz wrote:
->> On some devices (specifically the SC8180x based Surface Pro X with
->> QCOM04A6) HC halt / xhci_halt() times out during boot. Manually binding
->> the xhci-hcd driver at some point later does not exhibit this behavior.
->> To work around this, double XHCI_MAX_HALT_USEC, which also resolves this
->> issue.
->>
->> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
->> ---
->>   drivers/usb/host/xhci-ext-caps.h | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/usb/host/xhci-ext-caps.h b/drivers/usb/host/xhci-ext-caps.h
->> index fa59b242cd51..fb591e41cd50 100644
->> --- a/drivers/usb/host/xhci-ext-caps.h
->> +++ b/drivers/usb/host/xhci-ext-caps.h
->> @@ -7,8 +7,8 @@
->>    * Author: Sarah Sharp
->>    * Some code borrowed from the Linux EHCI driver.
->>    */
->> -/* Up to 16 ms to halt an HC */
->> -#define XHCI_MAX_HALT_USEC	(16*1000)
->> +/* Up to 32 ms to halt an HC */
->> +#define XHCI_MAX_HALT_USEC	(32 * 1000)
-> 
-> xHCI spec has a 16ms limit stated in several places, for example section 5.4.1
-> "xHC is forced to halt within 16 ms. of software clearing the R/S bit to ‘0’,
-> irrespective of any queued Transfer or Command Ring activity"
+Hi Gustavo,
 
-Right, thanks, I wasn't aware of this.
+On Mon, Mar 29, 2021 at 1:19 PM Gustavo Pimentel
+<Gustavo.Pimentel@synopsys.com> wrote:
+> Add Synopsys DesignWare xData IP driver. This driver enables/disables
+> the PCI traffic generator module pertain to the Synopsys DesignWare
+> prototype.
+>
+> Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
 
-> To make sure hosts work we could increase it to 32, but comment could be
-> changed to make sure it doean't get optimized back to 16 ms later.
-> 
-> How about:
-> /* HC should halt within 16 ms, but use 32 ms as some in reality take longer */
-> 
-> If that's ok I can take this and modify the comment
+Thanks for your patch, which is now commit e8a30eef6ef6da49 ("misc: Add
+Synopsys DesignWare xData IP driver") in v5.13-rc1.
 
-That makes sense, yes. Please feel free to change that comment as you wish.
+> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+> index f532c59..e6af9ff 100644
+> --- a/drivers/misc/Kconfig
+> +++ b/drivers/misc/Kconfig
+> @@ -402,6 +402,16 @@ config SRAM
+>  config SRAM_EXEC
+>         bool
+>
+> +config DW_XDATA_PCIE
+> +       depends on PCI
+> +       tristate "Synopsys DesignWare xData PCIe driver"
+> +       help
+> +         This driver allows controlling Synopsys DesignWare PCIe traffic
+> +         generator IP also known as xData, present in Synopsys DesignWare
+> +         PCIe Endpoint prototype.
 
-Regards,
-Max
+Hence shouldn't this depend on PCIE_DW_EP, and perhaps be moved to
+drivers/pcie/?
+Or is that a driver for a different Synopsys DesignWare PCIe Endpoint?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
