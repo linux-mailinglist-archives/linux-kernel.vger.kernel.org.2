@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD2537A86C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C41937A878
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbhEKOGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231495AbhEKOGl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:06:41 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8060BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:05:35 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id cl24-20020a17090af698b0290157efd14899so1418798pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:05:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F6C96BnUjzIKHMXU8FhTF6bd4nvV1EC4XjYBGgerihA=;
-        b=npVKAVHlOmPd8BVHhVi/K7iS8P34pC0gwciP67rKlRPI4/SVxRQUwOqJk+5BOBn4M5
-         JgGoOB6X+lWjgvMHLjz1klefyi0vKhVPU96ehGHb/ziJzUVuCXMCOseKuhiWUWk528Xl
-         V1Va/cJRxRTLS1kMdDU4T5eWDzv2irdnuZRZo4ctcNVTRZpLfJE5KW9dqwCyvIZEgcQl
-         JcSiXRSMlok5x5IlUvq8Lk7K8DF0MF5oLXUuCif1H/Gl/9PN4TvHn3jKIwKgltimyqL9
-         pNmuYedoEjkCwuIMoAJwvc0VdKai/tdhLuhuOmOCHfV1+S2AmAr5SOQVUfx1seSaM3VV
-         LBJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F6C96BnUjzIKHMXU8FhTF6bd4nvV1EC4XjYBGgerihA=;
-        b=gysHbZk3KSahUxXg1fnoyhQEt+9PG2CV2zfCFTa63c8cvTjq4KuUODBZNp0XZ0QlXG
-         /XRk7J5+r+LpwzWzPPEUN7KXCP1697K0SUaB/y6VGExuzizqwlZBpXNw0ucG5/Agraiz
-         9IFSQrYWnrF6O5s9RTzT/YEE/Qvr6t4kzvNd3AZncWI/zCZ1wpnfGS1DWOW9Pk+Kyz/z
-         HxA/4UmR3Y24EAShoQKyVN6dbAtbSOW0RY3g6t5wy0vVFyMT+4M/m0m5KCn66Kt6bHxb
-         GoxARiVMo9Dq3HiGkKRdDl8IIuOGruFVZc+KNCdeG4jTEZewojNSOjcpKjbaM3Ld2zNb
-         XUOw==
-X-Gm-Message-State: AOAM531fv7ahupmUYKVUxA8Woka/YuyLqXDIWr4zbcpN2gyJypaRra2u
-        SOR21gUjV/t4r9LTVeCu8+LSD7dNmOhVw9rG
-X-Google-Smtp-Source: ABdhPJycMKvNLE9fQM62HgNzki4LcfjOwjfwOyN4lSdnu3uEUCefHL6LDOKH7CZWXCKIKks5KvUTng==
-X-Received: by 2002:a17:902:9345:b029:e7:4853:ff5f with SMTP id g5-20020a1709029345b02900e74853ff5fmr30010897plp.74.1620741934815;
-        Tue, 11 May 2021 07:05:34 -0700 (PDT)
-Received: from localhost.localdomain ([49.37.4.176])
-        by smtp.gmail.com with ESMTPSA id g6sm13972872pfr.213.2021.05.11.07.05.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 07:05:34 -0700 (PDT)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     joe@perches.com
-Cc:     linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>
-Subject: [PATCH v2] checkpatch: auto detect codespell dictionary path
-Date:   Tue, 11 May 2021 19:35:22 +0530
-Message-Id: <20210511140522.3253-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S231703AbhEKOIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:08:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:48478 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231661AbhEKOIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:08:20 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9FB2E101E;
+        Tue, 11 May 2021 07:07:13 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.29.91])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1BB9C3F718;
+        Tue, 11 May 2021 07:07:10 -0700 (PDT)
+Date:   Tue, 11 May 2021 15:07:08 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/mm: Remove [PUD|PMD]_TABLE_BIT from [pud|pmd]_bad()
+Message-ID: <20210511140708.GC8933@C02TD0UTHF1T.local>
+References: <1620644871-26280-1-git-send-email-anshuman.khandual@arm.com>
+ <20210510144337.GA92897@C02TD0UTHF1T.local>
+ <4a36d7b7-6b27-31cc-d701-ebe3c6e4946e@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4a36d7b7-6b27-31cc-d701-ebe3c6e4946e@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The codespell dictionary was moved from
-`/usr/share/codespell/dictionary.txt` to data/dictionary.txt
-under the codespell_lib installation directory.
+On Tue, May 11, 2021 at 09:21:46AM +0530, Anshuman Khandual wrote:
+> 
+> On 5/10/21 8:13 PM, Mark Rutland wrote:
+> > On Mon, May 10, 2021 at 04:37:51PM +0530, Anshuman Khandual wrote:
+> >> Semantics wise, [pud|pmd]_bad() have always implied that a given [PUD|PMD]
+> >> entry does not have a pointer to the next level page table. This had been
+> >> made clear in the commit a1c76574f345 ("arm64: mm: use *_sect to check for
+> >> section maps"). Hence explicitly check for a table entry rather than just
+> >> testing a single bit. This basically redefines [pud|pmd]_bad() in terms of
+> >> [pud|pmd]_table() making the semantics clear.
+> >>
+> >> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> >> Cc: Will Deacon <will@kernel.org>
+> >> Cc: Mark Rutland <mark.rutland@arm.com>
+> >> Cc: linux-arm-kernel@lists.infradead.org
+> >> Cc: linux-kernel@vger.kernel.org
+> >> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > 
+> > I have no strong feelings either way, so: 
+> > 
+> > Acked-by: Mark Rutland <mark.rutland@arm.com>
+> > 
+> > ... that said, I think that the "bad" naming is unclear and misleading,
+> > and it'd be really nice if we could clean that up treewide with
+> > something clearer than "bad".
+> 
+> Agreed, the name is misleading.
+> 
+> > It does seem that would roughly fit p??_leaf() if we had
+> 
+> But what if the platform does not support huge page aka leaf mapping
+> at the given level ? Also a non table i.e bad entry might not always
+> mean a leaf/section/huge page mapping, it could simply imply that the
+> entry is not just pointing to next level and might be just in an bad
+> intermediate or invalid state.
 
-Checkpatch still uses a default absolute path for it which will
-no longer work on new codespell installations unless the path
-is specified through --codespellfile.
+Ah, so that's also covering swap entries, too? It's not entirely clear
+to me what "bad intermediate or invalid state" means, because I assume
+it's not arbitrary junk or this wouldn't be sound genrally.
 
-Detect the codespell dictionary path dynamically during
-runtime if the default path or the user provided dictionary
-path does not exist.
+I had assumed it was only covering *valid* non-table entries.
 
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
----
+> > p??_clear_leaf() and p??_none_or_clear_leaf() helpers.
+> 
+> Could you please elaborate how these new helpers might help define
+> pxx_bad() ?
 
-Changes in v2:
-- Check the external command return code to handle the case
-  when codespell isn't installed.
-- Use python to invoke the interpreter rather than python3
+This was based on my (evidently wrong) prior understanding above.
 
- scripts/checkpatch.pl | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 23697a6b1eaa..4b1994bb443e 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -889,6 +889,13 @@ if (open(my $spelling, '<', $spelling_file)) {
- }
- 
- if ($codespell) {
-+	if (! -e "$codespellfile" && which("python") ne "" &&
-+	    `python -c "import sys; print(sys.version_info.major)"` >= "3") {
-+		my $output = `python -c "import codespell_lib; print(codespell_lib.__file__);" 2>/dev/null`;
-+		if ($? == 0) {
-+			$codespellfile = dirname($output) . "/data/dictionary.txt";
-+		}
-+	}
- 	if (open(my $spelling, '<', $codespellfile)) {
- 		while (<$spelling>) {
- 			my $line = $_;
--- 
-2.28.0
-
+Thanks,
+Mark.
