@@ -2,147 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A5C37A266
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D5E37A26E
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbhEKIpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 04:45:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229995AbhEKIp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 04:45:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E82A616EC;
-        Tue, 11 May 2021 08:44:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620722661;
-        bh=xEiioIKEggYsi6Ybd6NdEUUdijVlS/WSIIQ209kfXF0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZJ0nTuRxzGyV+6Zb3RLmMJc0n+Ps4MHUHPvGK52o8Exo0zEE5t0PQJdqwZCaiNLE4
-         a57gwxndPMOs7NstJh3fjhEW21XN781008/r+EyF1s/beIgztLNHvbeMbyrpdik4Yd
-         19Wh41kIXs3Ofka3Xig+//LsFas9XKvur6rkuoSLtiLSH7WzyJIytlt53g+EnMauzF
-         4X3Ky8zMFydC/vzEJ9r67g/J/JJrTW1zzYfKxbZqWbFY3VM7bqLVgsHhXUr6Yx9eD4
-         ViItM4gcgtQcuBKMKh5+7Ai96dDUldrxJ3KGfvkrVn9QauDpcZQIuxdzNwdmbjFZTG
-         BgGAHjRmeGfew==
-From:   Gao Xiang <xiang@kernel.org>
-To:     linux-erofs@lists.ozlabs.org, Chao Yu <yuchao0@huawei.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Gao Xiang <xiang@kernel.org>
-Subject: [PATCH v1.1 2/2] erofs: update documentation about data compression
-Date:   Tue, 11 May 2021 16:44:14 +0800
-Message-Id: <20210511084414.21305-1-xiang@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210510162506.28637-2-xiang@kernel.org>
-References: <20210510162506.28637-2-xiang@kernel.org>
+        id S230473AbhEKIrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 04:47:13 -0400
+Received: from smtpcmd04132.aruba.it ([62.149.158.132]:60676 "EHLO
+        smtpcmd04132.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229995AbhEKIrL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 04:47:11 -0400
+Received: from [192.168.1.128] ([79.0.204.227])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id gO1ilD32p8ee9gO1ilkC9D; Tue, 11 May 2021 10:46:03 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1620722763; bh=VrcFfeCqXiyL7uHhi7RWskqk8AeHeKM0dqu0fazsd3I=;
+        h=Subject:To:From:Date:MIME-Version:Content-Type;
+        b=W7+msTdKCHphaGm/wEO+b0QbBe9xj/LjfLPIXoDAULT1ov7p4I42jNEAsK1TS7ANH
+         0PqWKulJOHqGCkdZ37FFcnZYipO7rRmwRN7zCg3S5NU5jWSWiDUL/uaJYDN44sPvUz
+         m//dN7YSTD/2x3piP7bwtlFnW+2hzikPCODE6fhc3mJUl1ugL/ymrmbSQK0e/e2S2Z
+         t3mpUABOZr6XoAI/Qpv1iHYaXMvwM//mlVy5WRIUhQVA4RbRcGZI9bik1sEGH55IkV
+         c1BrLM6bKen/IuO1b2ZpmJedtanhNPhWINiQ2JmNF9ctbwxutMz2eh7dbz91Pky+bx
+         Btfy/tdKKRCBQ==
+Subject: Re: [PATCH v1 1/1] pps: clients: parport: Switch to use
+ module_parport_driver()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        Alexander Gordeev <lasaine@lvk.cs.msu.su>
+References: <20210510141302.56654-1-andriy.shevchenko@linux.intel.com>
+ <77c821e1-adc7-4088-0dcb-da65ba7a39a2@enneenne.com>
+ <YJovqMqJj3mBeRE8@smile.fi.intel.com>
+ <55aeec09-63c7-7d1a-13c9-cd8f4b7dc1f9@enneenne.com>
+ <YJo3LoDSqr18YiNh@smile.fi.intel.com>
+From:   Rodolfo Giometti <giometti@enneenne.com>
+Message-ID: <04e6d0e4-4ef1-b27b-0b10-7e57280d5c9f@enneenne.com>
+Date:   Tue, 11 May 2021 10:46:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YJo3LoDSqr18YiNh@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfKUVCFIGy1WBpDb339Mjdgk+I7Lu/gLyP5gDugHEdjzs4X/2u8t65frrAKXnvVVACIlibyOtVqwzLgtQWytjToy6EPxWHf7gT/SMxE8sFTpU6OFoK/nd
+ EAuGmf1vQAnrf/7OgNIgeIRbJK6nfFkllQ3vHbi/9ihkFLFdObdhLeVAF20hqB9JNjE3qXuM+7yRlFbzThKcmaVHeYmMFssrDMonMAcgWQIgjMLo5mE2OfeF
+ uDpilNFTDL5b3ms0Qa1r/BZRzKs5+U3keOdpENmJCvUyzqu0Mwz5KRto8TgHdu5qdJerwp9VMCzTX1MqPZVq2w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add more description about (NON)HEAD lclusters, and the new big
-pcluster feature.
+On 11/05/21 09:50, Andy Shevchenko wrote:
+> On Tue, May 11, 2021 at 09:26:36AM +0200, Rodolfo Giometti wrote:
+>> On 11/05/21 09:18, Andy Shevchenko wrote:
+>>> On Tue, May 11, 2021 at 09:05:00AM +0200, Rodolfo Giometti wrote:
+>>>> On 10/05/21 16:13, Andy Shevchenko wrote:
+>>>>> Switch to use module_parport_driver() to reduce boilerplate code.
+>>>>>
+>>>>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>>>> ---
+>>>>>  drivers/pps/clients/pps_parport.c | 42 ++++++-------------------------
+>>>>>  1 file changed, 8 insertions(+), 34 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/pps/clients/pps_parport.c b/drivers/pps/clients/pps_parport.c
+>>>>> index 7a41fb7b0dec..42f93d4c6ee3 100644
+>>>>> --- a/drivers/pps/clients/pps_parport.c
+>>>>> +++ b/drivers/pps/clients/pps_parport.c
+>>>>> @@ -22,8 +22,6 @@
+>>>>>  #include <linux/parport.h>
+>>>>>  #include <linux/pps_kernel.h>
+>>>>>  
+>>>>> -#define DRVDESC "parallel port PPS client"
+>>>>> -
+>>>>>  /* module parameters */
+>>>>>  
+>>>>>  #define CLEAR_WAIT_MAX		100
+>>>>> @@ -138,6 +136,12 @@ static void parport_attach(struct parport *port)
+>>>>>  		.dev		= NULL
+>>>>>  	};
+>>>>>  
+>>>>> +	if (clear_wait > CLEAR_WAIT_MAX) {
+>>>>> +		pr_err("clear_wait value should be not greater then %d\n",
+>>>>> +		       CLEAR_WAIT_MAX);
+>>>>> +		return;
+>>>>> +	}
+>>>>> +
+>>>>
+>>>> Why do you need to do so? Maybe a comment would be welcomed.
+>>>
+>>> It's in original code, I just moved it to ->probe().
+>>>
+>>> What comment do you want to have here, because original code has no comment (I
+>>> think in any case it's out of scope of this change, but may be prepended or
+>>> appended to the series)?
+>>
+>> Mmm... these functions can be called at different times, so I don't know if we
+>> can just move the code safely.
+> 
+> I do not see any issue here. TL;DR: it won't be worse, but might even give an
+> improvement.
+> 
+> Before it prevented to module to be initialized,
+> now one may amend this at run time. the downside is that now it will require
+> module removal and inserting versus just two attempts of inserting in a row.
+> 
+> For the built-in case it shouldn't change much (but if
+> /sys/module/.../parameters/... is writable for this, then it will allow to do
+> the similar trick as above, so extending functionality with the flexibility,
+> means direct improvement).
+> 
+> Okay, permissions are 0 there, I don't remember what it means, maybe the
+> parameter won't be available under /sysfs at all, but again, it won't change
+> the functional behaviour, the downside is the memory consumed by the 'built-in'
+> code at run time.
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Gao Xiang <xiang@kernel.org>
----
-changes since v1:
- - update "a pcluster with 1" to "a lcluster-sized pcluster
-   (without CBLKCNT)"
+OK, I see. If so it's OK for me:
 
- Documentation/filesystems/erofs.rst | 68 +++++++++++++++++++++--------
- 1 file changed, 49 insertions(+), 19 deletions(-)
+Acked-by: Rodolfo Giometti <giometti@enneenne.com>
 
-diff --git a/Documentation/filesystems/erofs.rst b/Documentation/filesystems/erofs.rst
-index 869b183ff215..43550c5d0fc6 100644
---- a/Documentation/filesystems/erofs.rst
-+++ b/Documentation/filesystems/erofs.rst
-@@ -50,8 +50,8 @@ Here is the main features of EROFS:
- 
-  - Support POSIX.1e ACLs by using xattrs;
- 
-- - Support transparent file compression as an option:
--   LZ4 algorithm with 4 KB fixed-sized output compression for high performance.
-+ - Support transparent data compression as an option:
-+   LZ4 algorithm with the fixed-sized output compression for high performance.
- 
- The following git tree provides the file system user-space tools under
- development (ex, formatting tool mkfs.erofs):
-@@ -210,10 +210,21 @@ Note that apart from the offset of the first filename, nameoff0 also indicates
- the total number of directory entries in this block since it is no need to
- introduce another on-disk field at all.
- 
--Compression
-------------
--Currently, EROFS supports 4KB fixed-sized output transparent file compression,
--as illustrated below::
-+Data compression
-+----------------
-+EROFS implements LZ4 fixed-sized output compression which generates fixed-sized
-+compressed data blocks from variable-sized input in contrast to other existing
-+fixed-sized input solutions. Relatively higher compression ratios can be gotten
-+by using fixed-sized output compression since nowadays popular data compression
-+algorithms are mostly LZ77-based and such fixed-sized output approach can be
-+benefited from the historical dictionary (aka. sliding window).
-+
-+In details, original (uncompressed) data is turned into several variable-sized
-+extents and in the meanwhile, compressed into physical clusters (pclusters).
-+In order to record each variable-sized extent, logical clusters (lclusters) are
-+introduced as the basic unit of compress indexes to indicate whether a new
-+extent is generated within the range (HEAD) or not (NONHEAD). Lclusters are now
-+fixed in block size, as illustrated below::
- 
-           |<-    variable-sized extent    ->|<-       VLE         ->|
-         clusterofs                        clusterofs              clusterofs
-@@ -222,18 +233,37 @@ as illustrated below::
-  ... |    .         |              |        .     |              |  .   ...
-  ____|____._________|______________|________.___ _|______________|__.________
-      |-> lcluster <-|-> lcluster <-|-> lcluster <-|-> lcluster <-|
--          size           size           size           size   .             .
--           .                            .                .              .
--            .                       .               .               .
--             .                   .              .               .
--       _______.______________.______________.______________._________________
-+          (HEAD)        (NONHEAD)       (HEAD)        (NONHEAD)    .
-+           .             CBLKCNT            .                    .
-+            .                               .                  .
-+             .                              .                .
-+       _______._____________________________.______________._________________
-           ... |              |              |              | ...
-        _______|______________|______________|______________|_________________
--              |-> pcluster <-|-> pcluster <-|-> pcluster <-|
--                    size           size           size
--
--Currently each on-disk physical cluster can contain 4KB (un)compressed data
--at most. For each logical cluster, there is a corresponding on-disk index to
--describe its cluster type, physical cluster address, etc.
--
--See "struct z_erofs_vle_decompressed_index" in erofs_fs.h for more details.
-+              |->      big pcluster       <-|-> pcluster <-|
-+
-+A physical cluster can be seen as a container of physical compressed blocks
-+which contains compressed data. Previously, only lcluster-sized (4KB) pclusters
-+were supported. After big pcluster feature is introduced (available since
-+Linux v5.13), pcluster can be a multiple of lcluster size.
-+
-+For each HEAD lcluster, clusterofs is recorded to indicate where a new extent
-+starts and blkaddr is used to seek the compressed data. For each NONHEAD
-+lcluster, delta0 and delta1 are available instead of blkaddr to indicate the
-+distance to its HEAD lcluster and the next HEAD lcluster. A PLAIN lcluster is
-+also a HEAD lcluster except that its data is uncompressed. See the comments
-+around "struct z_erofs_vle_decompressed_index" in erofs_fs.h for more details.
-+
-+If big pcluster is enabled, pcluster size in lclusters needs to be recorded as
-+well. Let the delta0 of the first NONHEAD lcluster store the compressed block
-+count with a special flag as a new called CBLKCNT NONHEAD lcluster. It's easy
-+to understand its delta0 is constantly 1, as illustrated below::
-+
-+   __________________________________________________________
-+  | HEAD |  NONHEAD  | NONHEAD | ... | NONHEAD | HEAD | HEAD |
-+  |__:___|_(CBLKCNT)_|_________|_____|_________|__:___|____:_|
-+     |<----- a big pcluster (with CBLKCNT) ------>|<--  -->|
-+           a lcluster-sized pcluster (without CBLKCNT) ^
-+
-+If another HEAD follows a HEAD lcluster, there is no room to record CBLKCNT,
-+but it's easy to know the size of such pcluster is 1 lcluster as well.
 -- 
-2.20.1
-
+GNU/Linux Solutions                  e-mail: giometti@enneenne.com
+Linux Device Driver                          giometti@linux.it
+Embedded Systems                     phone:  +39 349 2432127
+UNIX programming                     skype:  rodolfo.giometti
