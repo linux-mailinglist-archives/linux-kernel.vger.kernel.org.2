@@ -2,100 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 662D037A9F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE3F37A9F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbhEKOzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:55:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231684AbhEKOzj (ORCPT
+        id S231851AbhEKO4V convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 11 May 2021 10:56:21 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3062 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231643AbhEKO4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:55:39 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C421C061574;
-        Tue, 11 May 2021 07:54:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=4msCzCUsyxau2TU6VXE1qeMg6CinUsxc6jRiNjbi3tc=; b=OzYPs8WpahnCaMws+AN28mbvA
-        WjnznZcTPMVdwjPvEKihdw6zgH7SLO7wzAXCE6ufQWl6bX3pPQZ373uGIo3n5IVd9rVdYFjnFZ5x/
-        l+d7OD2KFlXq+xhfiLYrr1pagReW3+RRKfa31wOqsYOHwk9i0r34zhZUqQ27eHP4k+wwoO5pzQhix
-        r6zd8eOvb6uGNQuhzGUfG0tI3CQAjMQaLmAG5V0nXGR6jbrFaLXcc1vs4p+srl0ZWhdE20+3tC5Zr
-        4i1xAJ1ola9Ldrnk4u76Mrq6fSFhPfFEzXKnZqezrYh2KXKJzeRqwxecTbyjVRV3kMXeCEYqVFX4q
-        a49bb9VdA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43866)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lgTm6-0002mh-Tl; Tue, 11 May 2021 15:54:18 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lgTm4-0001Am-E1; Tue, 11 May 2021 15:54:16 +0100
-Date:   Tue, 11 May 2021 15:54:16 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] arm: Enlarge IO_SPACE_LIMIT needed for some SoC
-Message-ID: <20210511145416.GM1336@shell.armlinux.org.uk>
-References: <20210511021656.17719-1-ansuelsmth@gmail.com>
- <YJnq3Y3/I1kdV1Ov@casper.infradead.org>
- <YJnswvYFUjlNS7Fa@Ansuel-xps.localdomain>
- <CAMj1kXGLihr4gq3iwHy6mLKG4UHWnh5XAgxZDZmnmNPErfJ-bg@mail.gmail.com>
- <YJp1WYTXHsSAA0ES@Ansuel-xps.localdomain>
+        Tue, 11 May 2021 10:56:11 -0400
+Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Ffgf63p4gz6wkjh;
+        Tue, 11 May 2021 22:43:42 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 11 May 2021 16:54:58 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Tue, 11 May 2021 16:54:58 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        "mjg59@google.com" <mjg59@google.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        kernel test robot <lkp@intel.com>
+Subject: RE: [PATCH v6 08/11] evm: Allow setxattr() and setattr() for
+ unmodified metadata
+Thread-Topic: [PATCH v6 08/11] evm: Allow setxattr() and setattr() for
+ unmodified metadata
+Thread-Index: AQHXQaKHvFPvOA7oV0m5qAvk17yFuareOl6AgAAjMeD//+TqAIAAInMw
+Date:   Tue, 11 May 2021 14:54:58 +0000
+Message-ID: <0d0fcd3619e64bb9aaf1656ef066d043@huawei.com>
+References: <20210505112935.1410679-1-roberto.sassu@huawei.com>
+         <20210505113329.1410943-4-roberto.sassu@huawei.com>
+         <735bae46f0772b40ef6ecfb3c6fe0267b3ebbee8.camel@linux.ibm.com>
+         <c281b39bdbaa4b5ab921a2e9cece83b4@huawei.com>
+ <1a5d2a37be31f7971374c01ed8e799e003c96f9d.camel@linux.ibm.com>
+In-Reply-To: <1a5d2a37be31f7971374c01ed8e799e003c96f9d.camel@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJp1WYTXHsSAA0ES@Ansuel-xps.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 02:15:21PM +0200, Ansuel Smith wrote:
-> 0000:01:00.0 Network controller: Qualcomm Atheros QCA9984 802.11ac Wave 2 Wireless Network Adapter
->         Subsystem: Qualcomm Atheros Device cafe
->         Device tree node: /sys/firmware/devicetree/base/soc/pci@1b500000/bridge@0,0/wifi@1,0
->         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr+ Stepping- SERR+ FastB2B- DisINTx+
->         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
->         Latency: 0, Cache Line Size: 64 bytes
->         Interrupt: pin A routed to IRQ 53
->         Region 0: Memory at 08000000 (64-bit, non-prefetchable) [size=2M]
+> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> Sent: Tuesday, May 11, 2021 4:41 PM
+> On Tue, 2021-05-11 at 14:21 +0000, Roberto Sassu wrote:
+> > >
+> > > On Wed, 2021-05-05 at 13:33 +0200, Roberto Sassu wrote:
+> > > > With the patch to allow xattr/attr operations if a portable signature
+> > > > verification fails, cp and tar can copy all xattrs/attrs so that at the
+> > > > end of the process verification succeeds.
+> > > >
+> > > > However, it might happen that the xattrs/attrs are already set to the
+> > > > correct value (taken at signing time) and signature verification succeeds
+> > > > before the copy has completed. For example, an archive might contains
+> files
+> > > > owned by root and the archive is extracted by root.
+> > > >
+> > > > Then, since portable signatures are immutable, all subsequent operations
+> > > > fail (e.g. fchown()), even if the operation is legitimate (does not alter
+> > > > the current value).
+> > > >
+> > > > This patch avoids this problem by reporting successful operation to user
+> > > > space when that operation does not alter the current value of
+> xattrs/attrs.
+> > >
+> > > I must be missing something.  If both the IMA and EVM status flags are
+> > > reset after xattr or attr modification, do we really need to prevent
+> > > any metadata - same or different - changes?  Both evm_protect_xattr()
+> > > and evm_inode_setattr() would need to be modified to allow
+> > > INTEGRITY_PASS_IMMUTABLE.
+> >
+> > yes, given that the IMA and EVM flags are reset, it should not be
+> > a problem to allow changes. However, I think it is useful to keep
+> > the current behavior. For example, it would prevent an accidental
+> > change of the SELinux label during the relabeling process.
+> 
+> I understand we might want to prevent accidental or malicious changes,
+> but that isn't the purpose of this patch set.  The patch description
+> would also need to be updated to reflect the real purpose.
 
-It seems this Atheros device does not make any use of I/O, so this
-device should be fine.
+We would be changing the expectation that metadata changes
+are denied, which was defined with the original patches.
 
-> 0001:01:00.0 Network controller: Qualcomm Atheros QCA9984 802.11ac Wave 2 Wireless Network Adapter
->         Subsystem: Qualcomm Atheros Device cafe
->         Device tree node: /sys/firmware/devicetree/base/soc/pci@1b700000/bridge@0,0/wifi@1,0
->         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr+ Stepping- SERR+ FastB2B- DisINTx+
->         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
->         Latency: 0, Cache Line Size: 64 bytes
->         Interrupt: pin A routed to IRQ 54
->         Region 0: Memory at 2e000000 (64-bit, non-prefetchable) [size=2M]
+I would prefer to keep the current behavior, but if your suggestion
+is to allow metadata changes, I will modify the patch set.
 
-This device also seems to not make use of any I/O.
+Roberto
 
-I don't see any reason probing of these two drivers should fail if
-there is no or reduced I/O space.
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
 
-Please can you share the kernel messages so we can see exactly what is
-failing and how?
+> thanks,
+> 
+> Mimi
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
