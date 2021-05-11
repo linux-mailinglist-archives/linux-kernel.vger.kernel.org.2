@@ -2,133 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E636537AAAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19D0537AAA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbhEKP1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 11:27:34 -0400
-Received: from mail-eopbgr760085.outbound.protection.outlook.com ([40.107.76.85]:28000
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231950AbhEKP1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 11:27:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S4tnRIJyeZ11+R2cBNRO5FGrXHbEGnjGI4+xjbq/24PzeAW20rx7RWBn4o6HT0mnJXwXD0aeXBCA/wBJMvQQqs3coJ9d2pefleQKKoYHwYVyPSEIAyD7Im6F2hXUb024LYYKa1k0nJlNZBbOdr6sQbbrqhTpAnGynHvM3TCEroYoB3QKHnRvH/Cf4KXfYIjWOuUqJtdUX3sVx4YJzAnsLANGPDcj1HKKsdHqqmK0Lefi/g9KfoSgg+x4SetUPuwxVr38/Qj3qVBvK7GXCmqUFaUPsQjxjRmgNQN9ksR17CtDhUrvboDTu9YHlJvx7aVJKk+tTOX8FBln5azp9skCLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n13QHWFd4cXBsdN4n/Zwor2nh2BRbP9K1UEwCNHpk1I=;
- b=CYZPF7hdrGqLun/Ot72DZTFoxw/xgFrXzjW6sXlSTFSPpvop/aHeymPamdEi4Kq7UTYTFWds8i2EMlnDtgA+05FjbeNdZJKc4htYrtbNVSvXE8kBLKhlhrNwg3CBFWQuzIWaK95WeeiD+5eZs+JEEA7tkb7e9RCa3C/90KQjmBBgvlcsLjSYjEy4h4m245Lp1EImSTQ4PK7h5/R53TqV5CO2bhvtyzluTp8S5higDdYWiJB13OYpKsojrCXrfgG5vO5PCe6sCD98dNt7ARgTcPL8mEhAymoRTaWJsQfM7TJjiwLK7ctJ27isc8Q0jy3YiJYDU/rdj8uXfI+rLw+ddw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n13QHWFd4cXBsdN4n/Zwor2nh2BRbP9K1UEwCNHpk1I=;
- b=rN9pJIfeWTH1fPfqTMlWxC93m5Yv6Ywz+M0umSO12lpMhyd4vpIRywQ8Pm4Z8j1xk8BL+xbvD56Z4cexaefNua9lRXET0oHVSj+T0o4t/TAFFF8pl5BrfG0XP+k5uIdeSBWS5ei1h71KOC+tC7Uf3XRSGZmhKhg470OsKF6try4=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM6PR12MB4388.namprd12.prod.outlook.com (2603:10b6:5:2a9::10)
- by DM6PR12MB4402.namprd12.prod.outlook.com (2603:10b6:5:2a5::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Tue, 11 May
- 2021 15:26:23 +0000
-Received: from DM6PR12MB4388.namprd12.prod.outlook.com
- ([fe80::9030:4dbb:df11:c961]) by DM6PR12MB4388.namprd12.prod.outlook.com
- ([fe80::9030:4dbb:df11:c961%5]) with mapi id 15.20.4108.032; Tue, 11 May 2021
- 15:26:23 +0000
-From:   Naveen Krishna Chatradhi <nchatrad@amd.com>
-To:     linux-edac@vger.kernel.org, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, bp@alien8.de, mingo@redhat.com,
-        mchehab@kernel.org, Mukul Joshi <mukul.joshi@amd.com>
-Subject: [PATCH 3/3] x86/mce: Add MCE priority for Accelerator devices
-Date:   Tue, 11 May 2021 20:55:38 +0530
-Message-Id: <20210511152538.148084-3-nchatrad@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210511152538.148084-1-nchatrad@amd.com>
-References: <20210511152538.148084-1-nchatrad@amd.com>
-Content-Type: text/plain
-X-Originating-IP: [165.204.156.251]
-X-ClientProxiedBy: MA1PR0101CA0004.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:21::14) To DM6PR12MB4388.namprd12.prod.outlook.com
- (2603:10b6:5:2a9::10)
+        id S231947AbhEKP1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 11:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231779AbhEKP1V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 11:27:21 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE76C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 08:26:13 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id y9so25626742ljn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 08:26:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EmAdyX2bJ52mem7X3IUBM6JVZGsCmdvevL4wJ9wmn84=;
+        b=aFSAIinW7rDDz4KQKb7r1nP3+RGYkuVF6PtfMP8j7gPrWPCMfEUaXVX8aFUsGoZYDn
+         8RyJM8uJKKpTxTFTXKN2sU6Zw16rGuTX20NmhTb3ec3Q5EP9XWR0fSj/4dpQtiNmyhVN
+         XMqJ348E7fHXKw4lEUMhSOH0sYeD759m/K1C5u6rxESFY7xb/EvYhoDn7Xs4VVOu5Evy
+         wfdTB887bAouholoExJLwVJ1HmZFWwYmTP07lRivue/u/z0fuSEjYZ1kd86rMMWxSpyU
+         VMiYBfavg/vHqstbaAHXt30f1qyzTiLwARuXHlLfHchVIjq8UWiG/WZJ/YPKYe13bbmW
+         gw/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EmAdyX2bJ52mem7X3IUBM6JVZGsCmdvevL4wJ9wmn84=;
+        b=LLb+eXdvhWvMd4h42btF9cWhwbAaphprytX/5kjqJfOWyYzrELHOsuPDWWdpC8zPuf
+         Z8Nj7n7sSsP6zKBm6nPjjwcmpx9tH64NwoHruj6Inr9ZaIH7DYvyFMxxAFY2KxfGCUBD
+         zD+BL2hc91GinMwVHw0pAbVL/sEBAhKf+lJhdAsv9WhSHBXJI8dHXJ+up4UHt/50BdTB
+         g+XkZ8RsZ4TKISM/NjYXD4DELXXzNDDjxo8v08as+6oKVYxI5YcvWrI8WEnUOA4CkRui
+         vyvQF12RMLbR1Kv26ktJmUiZ+k+KL4FXEnMS3wK0SevM4mKx+iwTKHPT2CH+Bn62wzoE
+         5a+w==
+X-Gm-Message-State: AOAM5302TcPzt4DPHmRVXIeTjm8irVCTvZ/9FE0n8ArYdLLI9Q5H0el6
+        wfF6nPs2s2LDfkOmlxPW0F5RYlwUxojGJ3GJw7mm7Q==
+X-Google-Smtp-Source: ABdhPJwQY4A08YH92xvcWq6PYYiWV5jplsqt6NaXcSe2muW6f0/DBQ3LzT1+EVJDevPs0EKqQeSxHSDEGVtPvjjvS1k=
+X-Received: by 2002:a2e:9bd7:: with SMTP id w23mr24367028ljj.401.1620746771589;
+ Tue, 11 May 2021 08:26:11 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from milan-ETHANOL-X.amd.com (165.204.156.251) by MA1PR0101CA0004.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:21::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Tue, 11 May 2021 15:26:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8a100149-e4f5-4c1c-23ea-08d914912245
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4402:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4402D991FAEF142436C56116E8539@DM6PR12MB4402.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: k8bGy4C9oeLwNYhxws0jeajF8mn9PX5LKz1QVEI4HA/eev0T03phJLykcpHji8SDJEwNJjBU7D9nbxU5TCuQ1iHYeBiha/sonM5n17Mw5FiWvJWK/+fWRkmDe9IieF+dDhYT1p7ppOMTp30Mj1g6nynMjBRh4gi54lgBKsxZAFTzvlol52/C45y/MvwBi4pzn7sKGUk4w0yotIAd/D5L+5bUubjlVTPGzbjcO34ma3X9kIHlP1jTlFqkx7FwuiQ5n1peBY1SHs6UFCOsBTApdD7749KngVV1AdM40jIOjn/oDlVo2IcnL/X4QtpiyZz0BBlTXD98aCRywmiKCz0U0TR4ec2v0gQOojuliScNfW+dyT/OCyKrRVL96Ps95t42a+n9mnw9dYlIxndJ0vBp/waDiMxX0IVMbzNfRWdZ0fzabkdGaVvy81xXsM7UHrFNDyYsBPrri00nWe1dAy9OSDxDk//OFrR65TZ7IcrDCKPp2rK/dClsZV3sirk9sHPsz4Pq8Ii6T7T5sIabBjyo1MwR4MxCUHVzMAGjujhaGBYXlekaR/6X9yNpxPXw1uwG9JLfV0+9JVjrfHN3kzKg5Ou01Sz+snbOgAfuwNExxxX0Z9TMNzy1mvgCVzI4oIBhNUXfgev0vkcSuYGrOpmsa7KCgEXph7FBpsuIUBIa+M0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4388.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(346002)(396003)(366004)(136003)(2616005)(66946007)(4326008)(1076003)(316002)(83380400001)(2906002)(6486002)(52116002)(7696005)(6666004)(16526019)(186003)(8936002)(8676002)(478600001)(26005)(4744005)(956004)(5660300002)(36756003)(38100700002)(66476007)(38350700002)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?WkY465O/woPVEwQ0rzx1V5sIdQ1UL8/Iig7yeyORLynhGj7VtlvqAv7BrQei?=
- =?us-ascii?Q?dHUPJzlkrhqEI7qMbuOlT18EYbOyL0q3gmlbMb+5uJZM0k6MQGTWYHiyLP8L?=
- =?us-ascii?Q?to0ClDX9ND1uF+Do17z90djIzgXs0Ax8omCJJvbdR5+3m0OYli88kJbMnjSw?=
- =?us-ascii?Q?4EtYfPssGAPd5Vt9Ytijg8gKVix5DmB1YkNY4+L9Xs9HKlTwCevtYFwQgROq?=
- =?us-ascii?Q?OYjPh6fpF8zaK7IIOyhmxeaFGmZmaNIOU84FjNT/lz/di5BiNjnC4ZM7TBWV?=
- =?us-ascii?Q?9ALXOnMb8Dosa2RRjIovijjdugcjOzZA4IWgkLr9EYFGjqoiWTxI5+p1jUDU?=
- =?us-ascii?Q?Nnzjfnx5ADTz0VSkqoFV9gh7mbGOYRXB38lF3iblXTiWjzJbSlP0gNIR1UV0?=
- =?us-ascii?Q?W6Ujca/4FHX2Apz/CeAA2i1wBKRN/ES3GczZcRwYxXUXKifyFOeSNrPtySK2?=
- =?us-ascii?Q?qBE9VLQUXkuJDUwWX4jXspNqop2htiHrQ8vXL+sAluKcNz4XifF/CBrUY7Gj?=
- =?us-ascii?Q?Z5FZHo3VtY6Cn+Mth0feGPj1FNhjMJ9ZlArP1neHWskzfe3d2OisRrkO71Kx?=
- =?us-ascii?Q?NxEeoKE0FfGlyHLmcSrA361XHdE2cfc3XbMVdbk5VogIvLLyZAytaxpCzRnT?=
- =?us-ascii?Q?TGvU3CQuw6FBn3GtYuvAZJ/rutUgNE63DBNZUVps8ri5FLk4ZH31qj/uGd4q?=
- =?us-ascii?Q?pWI24hdQURzlEe60xkSgVufOGFZ8v3Xar1bmiYaoETHET0OOl4Z3eD9fh0oC?=
- =?us-ascii?Q?CKVVFZK+CXMgQ0hY4I5U1x6n2FegJTN9yn5F+g9txGMJZKhsIRU5zDy+vPgT?=
- =?us-ascii?Q?JH0Hj9PRmXBXHn2NwwbLDuaDFjBYZfCluUIjgfLhUetRDMA6gAJJoEUfGhEP?=
- =?us-ascii?Q?Bm0fCYd/yeM63uKaz0b4HbJlebPP9yg1iIj0MndVtmAz0XV/7EbwtmT9hOIO?=
- =?us-ascii?Q?DrLCu52nUe502DEo3omGFJ6GHsvB7FKUx3WdkHWsgAztmhYfMSyG3vqqiE6A?=
- =?us-ascii?Q?6iw+Xrzx2Bihw1q0xmu8C0B+ocwt6QQZ4gSmyK7efQpJPOrVnYDIEzR0ILLZ?=
- =?us-ascii?Q?1qslhBa8KNFZ+IrWV0Db+pJk7aQ9zK+3zqnugsdJjQbG0M6rKi6MOJBBbe9c?=
- =?us-ascii?Q?bRyD9fx2hxzNMjxepG3o31WC11zHbxL9PIM0vsylxPcuNj/uGpvozkSyzH9/?=
- =?us-ascii?Q?dLVrJ/xgpjWqJ+x6qF4CKk1UCyTA82ZDue+X7U8p8+DZ6Hr2fIJfYqG/dDz2?=
- =?us-ascii?Q?89RbxBkTJZbLWY8QJQacqL9pZXEWoZvRyPi+EBntk+C8RPzbnzGnsKq9FClN?=
- =?us-ascii?Q?A8gkA4C2YNVVF9iBUtjKz4iu?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a100149-e4f5-4c1c-23ea-08d914912245
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4388.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 15:26:23.1298
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ge79aHlKdLc+sXKtjvDLb6YK0YkETab85NQNuE9sC8MXgbguMxKvpEstTkEq/kpBOxdfC3JiGq2HPAIXSQaCPw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4402
+References: <20210122154600.1722680-1-joel@joelfernandes.org>
+ <YAsjOqmo7TEeXjoj@google.com> <CAKfTPtBWoRuwwkaqQKNgHTnQBE4fevyYqEoeGc5RpCsBbOS1sQ@mail.gmail.com>
+ <YBG0W5PFGtGRCEuB@google.com> <CAKfTPtBqj5A_7QmxhhmkNTc3+VT6+AqWgw1GDYrgy1V5+PJMmQ@mail.gmail.com>
+ <CAEXW_YRrhEfGcLN5yrLJZm6HrB15M_R5xfpMReG2wE2rSmVWdA@mail.gmail.com>
+ <CAKfTPtBvwm9vZb5C=2oTF6N-Ht6Rvip4Lv18yi7O3G8e-_ZWdg@mail.gmail.com>
+ <20210129172727.GA30719@vingu-book> <274d8ae5-8f4d-7662-0e04-2fbc92b416fc@linux.intel.com>
+ <20210324134437.GA17675@vingu-book> <efad4771-c9d1-5103-de9c-0ec5fa78ee24@linux.intel.com>
+ <CAKfTPtDsya_zdUB1ARmoxQs5xWS8o-XrrzyNx5R1iSNrchUXtg@mail.gmail.com>
+ <fc0efe4e-0a81-03b8-08cb-029468c57782@linux.intel.com> <CAKfTPtCKavGWja42NdTmb+95ppG-WxYzoTJMmtgkCQcA-btfBw@mail.gmail.com>
+ <4aa674d9-db49-83d5-356f-a20f9e2a7935@linux.intel.com> <CAKfTPtDJaTr_HR2t=9CQ-9x6keu-qzx6okci92AdW5cJG8J9zg@mail.gmail.com>
+ <2d2294ce-f1d1-f827-754b-4541c1b43be8@linux.intel.com> <ade18978-cd67-6215-28f0-4857c66a99fb@linux.intel.com>
+In-Reply-To: <ade18978-cd67-6215-28f0-4857c66a99fb@linux.intel.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 11 May 2021 17:25:59 +0200
+Message-ID: <CAKfTPtA8nr-fgt4Nw6XqQyT_TEx4uL3nK-ba0xGfkONO+BPG3Q@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Rate limit calls to update_blocked_averages()
+ for NOHZ
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Dietmar Eggeman <dietmar.eggemann@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mukul Joshi <mukul.joshi@amd.com>
+Hi Tim,
 
-Create a new MCE priority for accelerator devices on the
-notifier chain. On some future AMD platforms, GPU devices
-will process MCE errors and work as error detection
-devices.
+On Mon, 10 May 2021 at 23:59, Tim Chen <tim.c.chen@linux.intel.com> wrote:
+>
+>
+>
+> On 4/9/21 10:59 AM, Tim Chen wrote:
+>
+> >>>     11.602 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb739
+> >>>     11.624 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+> >>>     11.642 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+> >>>     11.645 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+> >>>     11.977 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+> >>>     12.003 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+> >>>     12.015 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+> >>>     12.043 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+> >>>     12.567 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73a
+> >>>     13.856 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73b
+> >>>     13.910 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+> >>>     14.003 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+> >>>     14.159 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+> >>>     14.203 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+> >>>     14.223 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+> >>>     14.301 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+> >>>     14.504 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73c
+>
+> >> I don't know exactly what you track with "next_balance=" in
+> >
+> > It is the rq->next_balance value as we enter the newidle_balance function.
+> >
+> >> probe:newidle_balance but it always starts with the same value
+> >> 0x1004fb76c in the future to finish with a value 0x1004fb731 in the
+> >> past.
+> >
+> > This indeed is odd as the next_balance should move forward and not backward.
+>
+>
+> Vincent,
+>
+> I found a bug in newidle_balance() that moved the next balance time
+> backward.  I fixed it in patch 1 below.  This corrects the
+> next_balance time update and we now have proper load balance rate limiting.
+>
+> After putting in the other two changes previously discussed with you (patch 2 and 3 below),
+> I see very good improvement (about +5%) in the database workload I was investigating.
+> The costly update_blocked_averages() function is called much less frequently and consumed
+> only 0.2% of cpu cycles instead of 2.6% before the changes.
 
-Signed-off-by: Mukul Joshi <mukul.joshi@amd.com>
-Reviewed-by: John Clements <John.Clements@amd.com>
-Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
----
- arch/x86/include/asm/mce.h | 1 +
- 1 file changed, 1 insertion(+)
+That's a good news
 
-diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
-index 8cbe7221a253..849f10a8602d 100644
---- a/arch/x86/include/asm/mce.h
-+++ b/arch/x86/include/asm/mce.h
-@@ -173,6 +173,7 @@ enum mce_notifier_prios {
- 	MCE_PRIO_LOWEST,
- 	MCE_PRIO_MCELOG,
- 	MCE_PRIO_EDAC,
-+	MCE_PRIO_ACCEL,
- 	MCE_PRIO_NFIT,
- 	MCE_PRIO_EXTLOG,
- 	MCE_PRIO_UC,
--- 
-2.17.1
+>
+> Including all three patches here together for easier review.  The patches
+> apply to the tip tree's sched/core branch.
+>
+> Thanks.
+>
+> Tim
+>
+> --->8---
+>
+> From 848eb8f45b53b45cacf70022c98f632daabefe77 Mon Sep 17 00:00:00 2001
+> Message-Id: <848eb8f45b53b45cacf70022c98f632daabefe77.1620677280.git.tim.c.chen@linux.intel.com>
+> From: Tim Chen <tim.c.chen@linux.intel.com>
+> Date: Fri, 7 May 2021 14:19:47 -0700
+> Subject: [PATCH 1/3] sched: Fix rq->next_balance time going backward
+>
+> In traces on newidle_balance(), this_rq->next_balance
+> time goes backward from time to time, e.g.
+>
+> 11.602 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb739
+> 11.624 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+> 13.856 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73b
+> 13.910 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+> 14.637 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73c
+> 14.666 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
+>
+> This was due to newidle_balance() updated this_rq->next_balance
+> to an earlier time than its current value. The real intention
+> was to make sure next_balance move this_rq->next_balance forward
+> in its update:
 
+Sometimes, we want to set this_rq->next_balance backward compared to
+its current value. When a CPU is busy, the balance interval is
+multiplied by busy_factor which is set to 16 by default. On SMT2 sched
+domain level, it means that the interval will be 32ms when busy
+instead of 2ms. But if a busy load balance happens just before
+becoming idle, the this_rq->next_balance will be set 32ms later
+whereas it should go down to 2ms as the CPU is now idle. And this
+becomes even worse when you have 128 CPUs at die sched_domain level
+because the idle CPU will have to wait 2048ms instead of the correct
+128ms interval.
+
+>
+> out:
+>         /* Move the next balance forward */
+>         if (time_after(this_rq->next_balance, next_balance))
+>                 this_rq->next_balance = next_balance;
+>
+> The actual outcome was moving this_rq->next_balance backward,
+> in the wrong direction.
+
+As explained above, this is intentional.
+You are facing a situation where the load balance of sched_domain
+level has not run for a while and last_balance is quite old and
+generates a next_balance still in the past.
+
+typically:
+
+CPU is busy
+CPU runs busy LB at time T so last_balance = T
+And next LB  will not happen before T+16*Interval
+At time T+15*Interval, CPU enters idle
+newidle_balance updates next_balance to last_balance+Interval which is
+in the past
+
+>
+> Fix the incorrect check on next_balance causing the problem.
+>
+> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+> ---
+>  kernel/sched/fair.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 1d75af1ecfb4..b0b5698b2184 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10681,7 +10681,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>
+>  out:
+>         /* Move the next balance forward */
+> -       if (time_after(this_rq->next_balance, next_balance))
+> +       if (time_after(next_balance, this_rq->next_balance))
+
+The current comparison is correct but next_balance should not be in the past.
+
+update_next_balance() is only used in newidle_balance() so we could
+modify it to  have:
+
+next = max(jiffies+1, next = sd->last_balance + interval)
+
+
+>                 this_rq->next_balance = next_balance;
+>
+>         if (pulled_task)
+> --
+> 2.20.1
+>
+>
+> From f2c9af4af6438ad79076e1a664003dc01ad4fdf0 Mon Sep 17 00:00:00 2001
+> Message-Id: <f2c9af4af6438ad79076e1a664003dc01ad4fdf0.1620677280.git.tim.c.chen@linux.intel.com>
+> In-Reply-To: <848eb8f45b53b45cacf70022c98f632daabefe77.1620677280.git.tim.c.chen@linux.intel.com>
+> References: <848eb8f45b53b45cacf70022c98f632daabefe77.1620677280.git.tim.c.chen@linux.intel.com>
+> From: Vincent Guittot <vincent.guittot@linaro.org>
+> Date: Fri, 7 May 2021 14:38:10 -0700
+> Subject: [PATCH 2/3] sched: Skip update_blocked_averages if we are defering
+>  load balance
+>
+> In newidle_balance(), the scheduler skips load balance to the new idle cpu when sd is this_rq and when
+>
+>    this_rq->avg_idle < sd->max_newidle_lb_cost
+>
+> Doing a costly call to update_blocked_averages() will
+> not be useful and simply adds overhead when this condition is true.
+>
+> Check the condition early in newidle_balance() to skip update_blocked_averages()
+> when possible.
+>
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+> ---
+>  kernel/sched/fair.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index b0b5698b2184..f828b75488a0 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10612,17 +10612,20 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>          */
+>         rq_unpin_lock(this_rq, rf);
+>
+> +       rcu_read_lock();
+> +       sd = rcu_dereference_check_sched_domain(this_rq->sd);
+> +
+>         if (this_rq->avg_idle < sysctl_sched_migration_cost ||
+> -           !READ_ONCE(this_rq->rd->overload)) {
+> +           !READ_ONCE(this_rq->rd->overload) ||
+> +           (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
+>
+> -               rcu_read_lock();
+> -               sd = rcu_dereference_check_sched_domain(this_rq->sd);
+>                 if (sd)
+>                         update_next_balance(sd, &next_balance);
+>                 rcu_read_unlock();
+>
+>                 goto out;
+>         }
+> +       rcu_read_unlock();
+>
+>         raw_spin_unlock(&this_rq->lock);
+>
+> --
+> 2.20.1
+>
+>
+> From c45d13c6156c3cdc340ef3ba523b8750642a9c50 Mon Sep 17 00:00:00 2001
+> Message-Id: <c45d13c6156c3cdc340ef3ba523b8750642a9c50.1620677280.git.tim.c.chen@linux.intel.com>
+> In-Reply-To: <848eb8f45b53b45cacf70022c98f632daabefe77.1620677280.git.tim.c.chen@linux.intel.com>
+> References: <848eb8f45b53b45cacf70022c98f632daabefe77.1620677280.git.tim.c.chen@linux.intel.com>
+> From: Tim Chen <tim.c.chen@linux.intel.com>
+> Date: Fri, 7 May 2021 14:54:54 -0700
+> Subject: [PATCH 3/3] sched: Rate limit load balance in newidle_balance()
+>
+> Currently newidle_balance() could do load balancng even if the cpu is not
+> due for a load balance.  Make newidle_balance() check the next_balance
+> time on the cpu's runqueue so it defers load balancing if it is not
+> due for its load balance.
+>
+> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+> ---
+>  kernel/sched/fair.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index f828b75488a0..8e00e1fdd6e0 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10617,6 +10617,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>
+>         if (this_rq->avg_idle < sysctl_sched_migration_cost ||
+>             !READ_ONCE(this_rq->rd->overload) ||
+> +           time_before(jiffies, this_rq->next_balance) ||
+>             (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
+>
+>                 if (sd)
+> --
+> 2.20.1
+>
