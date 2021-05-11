@@ -2,64 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608E037ACCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F1637ACD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhEKROK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231230AbhEKROI (ORCPT
+        id S231887AbhEKRP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:15:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26122 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231874AbhEKRPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:14:08 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AEACC061574;
-        Tue, 11 May 2021 10:13:00 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id b15so4966321plh.10;
-        Tue, 11 May 2021 10:13:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kVJO4CtbzHc/3Ro3BSgADxEw84V62g2+OdcoUzH6GiI=;
-        b=dftaaVBblw+mN/KC61iYpD4fFGNbLIwvr+HDQNMZJc8D3bgkronqax0OWTqdLV0XS3
-         6ul1Y7h2pk5uMOqn5RK6ldd2wZTTixUCZSEf95Wh0aVgsdO7y0d9SXuvVr4hf5ahzn+D
-         DfUVHanJP2UWZfE4E5AAhMq2hVkOHqcL1vmvftXySeaFW5myViD8gGYRAOU5B9gySW9D
-         ACMNWde0b+mGZUDfPUfPpMnEYW2/G/Co/Uupq2it0Yp8rGKX8If0zhikcz/mvGL62mtP
-         Dz+nBO8NQhek5KaCncup8pC+jbqdm+xPTx2TgLVzOGMInSqYFoYiOkVvOhKQuxlq2dz/
-         /SLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kVJO4CtbzHc/3Ro3BSgADxEw84V62g2+OdcoUzH6GiI=;
-        b=YZynoNoh6ngTFbSFqmZLW9xyx68RtFPFEj9ejD0wqkSaNBAJ1pE17hUQp281xtyh4L
-         3dFTFGYWmeCT4WCE7DVb5MUQKFCsjwBMJ+kEc5T1WKgXTHo/BtfD5MX1RXW0WpixIbtk
-         DUtqNw8WRMt1SqKHqpdLBn84iMTMh5w72CEb0Eg9ituTE0XjICs0QcHcjGXtTCpi7SpL
-         bzX7qXkqUqcK2V17etlFiCwchiCrAIn3rlb6OkrSRd3g6DVAZsn5KFKPAcn2C9zQYK8S
-         rYwIFltYwG3w+cOBN2ukSwCLATBXk7dASPdyI1c6uY96YwxDpe+iLJGQjPcAsNekuYnW
-         dSOg==
-X-Gm-Message-State: AOAM532H26ufNizFgZg1JT7CN6YpyY9ZQWUTx/e2zbG66ZZ+v+zCv9q8
-        2IxTA+xqb9drRPNcoWFjoQK07yVnXfrpWfTJpNAEkxbkqTSO/Q==
-X-Google-Smtp-Source: ABdhPJwApODesd0pw/Xj/4HKXp0/LTIINOWceNHveLRqte1CWC0QT3iPRv5CH3UfgRjHPPuhdmTelKPMxM3vm0TrejQ=
-X-Received: by 2002:a17:90a:e2cb:: with SMTP id fr11mr2181276pjb.56.1620753180192;
- Tue, 11 May 2021 10:13:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <000000000000cc615405c13e4dfe@google.com> <00000000000086605105c1d201bc@google.com>
-In-Reply-To: <00000000000086605105c1d201bc@google.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Tue, 11 May 2021 10:12:49 -0700
-Message-ID: <CAM_iQpU4Jh8bONSZTYT8du48xM=Eg3rrrQEBSBxhsWc+bXyC8Q@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in nfc_llcp_put_ssap
-To:     syzbot <syzbot+e4689b43d2ed2ed63611@syzkaller.appspotmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        Tue, 11 May 2021 13:15:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620753256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8AaaXxsESTBnzMWVw6jgpxF3Zkg6NquN/G3+2kSw2A0=;
+        b=D4r+GGUGCqG8YJR4VRWKfJsvU1hFSnWa4SFjIhdJIN0LSCudgq2WkVbiw74YaC42eHffZQ
+        yuMDeSqL+WZfgxy1AqnTONLmHwhBuYeEnLEj0M9vcAaU1gZ3Cg5QlKa+Y/I5+jwkrLKBQa
+        uiBLCl3YSD7vTmb/v5+x3FUqfo+PS0M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-519-7k1Z6Js6OtyIa3jJRem1QQ-1; Tue, 11 May 2021 13:14:12 -0400
+X-MC-Unique: 7k1Z6Js6OtyIa3jJRem1QQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F3AC800D55;
+        Tue, 11 May 2021 17:14:10 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.3.128.45])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7244261094;
+        Tue, 11 May 2021 17:13:59 +0000 (UTC)
+Date:   Tue, 11 May 2021 13:13:56 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Eric Paris <eparis@redhat.com>, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH v3 1/3] audit: replace magic audit syscall class numbers
+ with macros
+Message-ID: <20210511171356.GN3141668@madcap2.tricolour.ca>
+References: <cover.1619811762.git.rgb@redhat.com>
+ <bda073f2a8b11000ef40cf8b965305409ee88f44.1619811762.git.rgb@redhat.com>
+ <CAHC9VhShi4u26h5OsahveQDNxO_uZ+KgzGOYEp5W7w6foA-uKg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhShi4u26h5OsahveQDNxO_uZ+KgzGOYEp5W7w6foA-uKg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz fix: net/nfc: fix use-after-free llcp_sock_bind/connect
+On 2021-05-10 21:23, Paul Moore wrote:
+> On Fri, Apr 30, 2021 at 4:36 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> >
+> > Replace audit syscall class magic numbers with macros.
+> >
+> > This required putting the macros into new header file
+> > include/linux/auditscm.h since the syscall macros were included for both 64
+> > bit and 32 bit in any compat code, causing redefinition warnings.
+> 
+> The ifndef/define didn't protect against redeclaration?  Huh.  Maybe
+> I'm not thinking about this correctly, or the arch specific code is
+> doing something wonky ...
+> 
+> Regardless, assuming that it is necessary, I would prefer if we called
+> it auditsc.h instead of auditscm.h; the latter makes me think of
+> sockets and not syscalls.
+
+The "m" was for "macros", since there are auditsc bits in audit.h as
+well, but I have no significant objection.
+
+> > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> > ---
+> >  MAINTAINERS                        |  1 +
+> >  arch/alpha/kernel/audit.c          |  8 ++++----
+> >  arch/ia64/kernel/audit.c           |  8 ++++----
+> >  arch/parisc/kernel/audit.c         |  8 ++++----
+> >  arch/parisc/kernel/compat_audit.c  |  9 +++++----
+> >  arch/powerpc/kernel/audit.c        | 10 +++++-----
+> >  arch/powerpc/kernel/compat_audit.c | 11 ++++++-----
+> >  arch/s390/kernel/audit.c           | 10 +++++-----
+> >  arch/s390/kernel/compat_audit.c    | 11 ++++++-----
+> >  arch/sparc/kernel/audit.c          | 10 +++++-----
+> >  arch/sparc/kernel/compat_audit.c   | 11 ++++++-----
+> >  arch/x86/ia32/audit.c              | 11 ++++++-----
+> >  arch/x86/kernel/audit_64.c         |  8 ++++----
+> >  include/linux/audit.h              |  1 +
+> >  include/linux/auditscm.h           | 23 +++++++++++++++++++++++
+> >  kernel/auditsc.c                   | 12 ++++++------
+> >  lib/audit.c                        | 10 +++++-----
+> >  lib/compat_audit.c                 | 11 ++++++-----
+> >  18 files changed, 102 insertions(+), 71 deletions(-)
+> >  create mode 100644 include/linux/auditscm.h
+> 
+> ...
+> 
+> > diff --git a/include/linux/auditscm.h b/include/linux/auditscm.h
+> > new file mode 100644
+> > index 000000000000..1c4f0ead5931
+> > --- /dev/null
+> > +++ b/include/linux/auditscm.h
+> > @@ -0,0 +1,23 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> > +/* auditscm.h -- Auditing support syscall macros
+> > + *
+> > + * Copyright 2021 Red Hat Inc., Durham, North Carolina.
+> > + * All Rights Reserved.
+> > + *
+> > + * Author: Richard Guy Briggs <rgb@redhat.com>
+> > + */
+> > +#ifndef _LINUX_AUDITSCM_H_
+> > +#define _LINUX_AUDITSCM_H_
+> > +
+> > +enum auditsc_class_t {
+> > +       AUDITSC_NATIVE = 0,
+> > +       AUDITSC_COMPAT,
+> > +       AUDITSC_OPEN,
+> > +       AUDITSC_OPENAT,
+> > +       AUDITSC_SOCKETCALL,
+> > +       AUDITSC_EXECVE,
+> > +
+> > +       AUDITSC_NVALS /* count */
+> > +};
+> > +
+> > +#endif
+> 
+> -- 
+> paul moore
+> www.paul-moore.com
+> 
+
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
+
