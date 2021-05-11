@@ -2,217 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8652637AF29
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A9337AF2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 21:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232197AbhEKTOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 15:14:55 -0400
-Received: from mga12.intel.com ([192.55.52.136]:64361 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231454AbhEKTOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 15:14:54 -0400
-IronPort-SDR: l8YZfYsSZvD2XVP3gBgfHMZg1NBgxXRs55GjFDOOdMXtULs5ANJNz8AiFdmVatFgQ+hp9582Bb
- 32ncXcGLRfNA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179119775"
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="179119775"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 12:13:45 -0700
-IronPort-SDR: DmE+R1y/IxualhIKBmCcmjLws8UZvO71Y4XiyENx6K/aOVIc3oTOTLCIjlm9tN8iB0Fs0R7RWD
- O6O+GUrQJC1w==
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="436804966"
-Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.129.50]) ([10.249.129.50])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 12:13:42 -0700
-Subject: Re: Question about device link//Re: Qestion about device link
-To:     Saravana Kannan <saravanak@google.com>,
-        "chenxiang (M)" <chenxiang66@hisilicon.com>
-Cc:     John Garry <john.garry@huawei.com>, linuxarm@huawei.com,
-        linux-scsi@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <3c88cf35-6725-1bfa-9e1e-8e9d69147e3b@hisilicon.com>
- <2e69efb9-a563-251f-2161-5546324a9587@hisilicon.com>
- <CAGETcx9FLixotMcyJmCATSoz7aB2VbYSr8o5jyM5HDd9-6LaYQ@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
- 173, 80-298 Gdansk
-Message-ID: <11749ea2-777c-e200-9c5a-eab531c7e69a@intel.com>
-Date:   Tue, 11 May 2021 21:13:40 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <CAGETcx9FLixotMcyJmCATSoz7aB2VbYSr8o5jyM5HDd9-6LaYQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S232128AbhEKTQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 15:16:22 -0400
+Received: from mail-mw2nam08on2120.outbound.protection.outlook.com ([40.107.101.120]:51840
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231454AbhEKTQV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 15:16:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KWwnV2rvIn1YRfDcsXPgc/SamKI6z1eDmuaFJRxU5W8ZQLphTF3Gl3o/MX0cBQUB3zC2QsgNixcYpCz1V2UU/TOtm30Be6BQKKfrzmVYGc2bztFtzwFqyPoI3xq+j2X2BkLsSyiEWC/+faflxdcoQ4gX9hkoZPzXrMHr4WSIFUhaL8j42uwbe1jF6mzeRKMT4P/xeq6L0qEF4u3t5kiauuHGPR25ykzqvlQsSbMEJgqZff20Wcn1T66oXwf+f5f93aPqLbfZhLUwVBJmg92nDs09DWkKCXGQdnZiZLWh4Uo18bPr/l0NOj3xFHwOTlr3ClmzzBLRZcCHHJW7k0s8fg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=08jqDY940hwffB+DY6lE3W5UMvjr5uO/NR547GLuunI=;
+ b=gwOYL32FcFmgvDidqyGhUIPRyweJKHClqG/BzFB9ST6/NOIIt8zSk4v4TZ/8y0JoKuLuUojBYbHY6SCzR8UxmENfZx077cmz7Zm4cuFZlHKx7QZ6BhxGBNFyc0wd4EFe90RQ0NIZBuS3jBlDIwQECY+pEvlIPtYrrc80j02DuNJOrnbu8JzpS5qmc+9y96CwRN42+Ig/R0KW6gZK1f4XwyQpmPiOm/PvQYM5jBngIYGSywxOSh2pHjsQXd8p6jmrEN96DGOZwjopOGT5iluLtl7Vo6nlLcyw5DsWnGaz4OJLbiOnFyHxo2zt80URIFK4uWFaYUwn/6zXoXsO9jHS3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=08jqDY940hwffB+DY6lE3W5UMvjr5uO/NR547GLuunI=;
+ b=JLN+8lz0+IoYDycg1bvxBO/1bs8w7IwQ8xA7IJ4TZVvpDQcn6qcKnOahUTL8KWuXwkKYjCjyRCZAxx3ZKSb+c0+iel2Oe6n2Wt4dSi1VYOqzYd07etK8RN5p/rKAf0S5i6imjsYg8rGbLqu1W4ASHmgzvqgqQpStYLMFLeGkqsDBxm6M/yQRU7FJbi5qfHd9GL/0ICKlgCML7+U4c1+5l6sIQbD/6KXTgDY4wJcy9OiDn+uEV4R8k8qAxemJomXjycdwPfrypqNhJvUMcj0roI+K/ijCavb4zItRO835RqEgR8AGJX+LdPmBiYA8UvUJGiOSt+UaFd117bNUvP9eHQ==
+Received: from BYAPR01MB3816.prod.exchangelabs.com (2603:10b6:a02:88::20) by
+ BY5PR01MB5649.prod.exchangelabs.com (2603:10b6:a03:1a4::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4129.25; Tue, 11 May 2021 19:15:10 +0000
+Received: from BYAPR01MB3816.prod.exchangelabs.com
+ ([fe80::d145:208f:691f:1ba4]) by BYAPR01MB3816.prod.exchangelabs.com
+ ([fe80::d145:208f:691f:1ba4%6]) with mapi id 15.20.4108.031; Tue, 11 May 2021
+ 19:15:10 +0000
+From:   "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Haakon Bugge <haakon.bugge@oracle.com>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
+ allocations
+Thread-Topic: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
+ allocations
+Thread-Index: AQHXRlGKOHE6QFLZoEWMq90D8Um/dareHOYAgAAabACAAG80IA==
+Date:   Tue, 11 May 2021 19:15:09 +0000
+Message-ID: <BYAPR01MB3816D1F9DC81BBB1FA5DF293F2539@BYAPR01MB3816.prod.exchangelabs.com>
+References: <c34a864803f9bbd33d3f856a6ba2dd595ab708a7.1620729033.git.leonro@nvidia.com>
+ <F62CF3D3-E605-4CBA-B171-5BB98594C658@oracle.com> <YJp50nw6JD3ptVDp@unreal>
+In-Reply-To: <YJp50nw6JD3ptVDp@unreal>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none
+ header.from=cornelisnetworks.com;
+x-originating-ip: [70.15.25.19]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 07123bbe-f825-4009-50a7-08d914b11865
+x-ms-traffictypediagnostic: BY5PR01MB5649:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR01MB5649EBB3948A5B4A58A65CF6F2539@BY5PR01MB5649.prod.exchangelabs.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qCSdHOZWwRv3WmgZu7aIQJPDZG/uBX9isjg3+hu1xjpvnuaUDW1QLqUIWgfqwp4M2szBYQUTJDnSs0pdYSvmYTivD9QGm9yMo2MF1kFpD1icLQXyW6Q4LYzLkKXnEREih0SUch1AHCZolqx9u5AD+b1S9gAa7ziLjXAzRf2YPOIWqkWhslrqpqY81GKqtoYLHk8txwxxINqV/zemhPuoTScWFs4L1oOCtz5T+PFQjfSDMyNDG9vpqTZtA83kAB2tzma+WZ3ltQbtPJo52f5hLd+vkhTZ9sLqhC6AKvDFyhffmKvPaUg8Go8E4j41rwHk0UE8lxq5Q/DsqKQ1PO6szk8Mdg6G8bA5/E8rBfW+L5cgkf4fRf0LvuvkI3mbnDM7409yT90fhf1aQzzswaHypughPqm2YlraA5Hz+74ykk4/9cepzKW7+dssq9oxMMRtrbfOJaDVfUOAIg1glDgVF/a3BFWd6XewUOphg3a9M9j2DFxlksN8Z2/VfxQY8XmL51/BDAt6ce3x3Q1EqsvMyekyJ/iucX1JhvISDTRgRDXV9ZzXNYsmdxzA5P5uXMcvwHhyDxhSOQ7OaYIhZaqi5dZASLHtCARjyrrcJ8tMWwU=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB3816.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39840400004)(346002)(396003)(376002)(366004)(8676002)(54906003)(110136005)(55016002)(316002)(9686003)(478600001)(186003)(4744005)(2906002)(4326008)(52536014)(6506007)(7696005)(8936002)(26005)(5660300002)(76116006)(122000001)(38100700002)(86362001)(33656002)(64756008)(71200400001)(66446008)(66556008)(66946007)(66476007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?yw0irdRry1WFLqxmvIiZSG3glNZ69W0zUgZ7IW4xNte3Jf/h0fca0ves7URA?=
+ =?us-ascii?Q?3j01TdMcw2exkv1J927GoyA3Tb2xjFXbtrQU3IBkGmwxMrHJmYGN3dED8e7V?=
+ =?us-ascii?Q?wEeI/8IXAU1k52iRTZlemtYVbcR45Veu6hdmdVHOaS2lkITTdtIBFeco0MUP?=
+ =?us-ascii?Q?5YbKKXdH0ax6FlvpA75kPEqgFCRlgjQ90Q/vTYfmei2JzVa7lsJ9d4CPBXW5?=
+ =?us-ascii?Q?Ci3fcagB6VhkSrYT7tZ/BM5ehsqLbgMRE7kaYw9eixQ09BNVWZXer0s+w0Tb?=
+ =?us-ascii?Q?kgcbbqhLkWAkC0uIEKuLLZpexxj7puZhy4Qr5XGA/y7CMh5ty4Xu+gQV6rIf?=
+ =?us-ascii?Q?azv23vlhI65Lm7rN49h04088oEoUAo1lI0yS/6DUkjC7DELA1z7zByq7ePlR?=
+ =?us-ascii?Q?jSddAXBWDBJ/g4WuXdFneUJYi6LaqmWrYo0mL3e/Ah7G9Qe0EMmy1F+lW2wk?=
+ =?us-ascii?Q?GQLbgvbpZT5GkUQRamEJ+3Rxt8b+loavAEU85omTe4e8tTjEFfjth321/X8Z?=
+ =?us-ascii?Q?65hOz0c+85v/CvNqmN83yHg5Z4WV6J4UunapzFJ+A4gS5eZrSxwK/9VVQWmR?=
+ =?us-ascii?Q?Ew3UmLO0INBXSU2dZG9tY9PpMyQMmv2uUE6dWowd7srBmp6oLkEas36FGTqm?=
+ =?us-ascii?Q?oQ1ZgaLMd70eHsf+cQoGvglErHDMB8gSYaEs+32telyYYUA3vy0CtqoMZpqY?=
+ =?us-ascii?Q?esI5B8XUT9qVMVEKWWGMFJ+xxhURK5ZlTeHLJTMtyeLICxHM7UfD3MZYcxaK?=
+ =?us-ascii?Q?qqGy32qoLvv9P/2oi0O0WTYPUSUua1VwV9O77cZ0RhxO/5kal0EGHoRcsvpX?=
+ =?us-ascii?Q?abHcnN4V+g7XfgEunTcThSCXFH4elP+8xmPwXIWl00U2a9jMnhrppXoIyT32?=
+ =?us-ascii?Q?M+uJw0e/O3RuHwXvtfFzIsqiOede7yvTWBzOjwhWVzbSNMLI6o4oVYlhJG+P?=
+ =?us-ascii?Q?BKVrXy2OHB4LOqki2UM7iCyNmBUwwj/vqfmc2T8NH9EL6nRdMabDjc2kvFFY?=
+ =?us-ascii?Q?adV9Wr24603Mfdyz0j8Zfbj+iG7BzJYAtkl09TlV5/Lb7NXhFhxmzvfsktvc?=
+ =?us-ascii?Q?laKMt+BGyvtYRXiTjsVMMkloc/nTT0HK3BmG4fePI5ELPiGC2wQDGdcukymx?=
+ =?us-ascii?Q?R/i5jP0wT5SyC9nGCLZBidVH0KBVmNpyKVzm8Ww9ifi2uGNdbgaLRSahS9Vb?=
+ =?us-ascii?Q?xLGRZvKY3mI8c0gnZKeVYy9KTJQWzja76CQt2DQzh8hIAG524ZquDeH/HRpC?=
+ =?us-ascii?Q?spMDo21m4PN9eoV+djmoSQzaQuCGawEbBjySk1u+JmJ8HyNnNK2tqemX44au?=
+ =?us-ascii?Q?Egw=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR01MB3816.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07123bbe-f825-4009-50a7-08d914b11865
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2021 19:15:09.7057
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0qW32sDGl46Wp4YbP4p7DEROsvQX94nf6vVza+SaenKQQs1bqr2kWFimIgMwJLytYW8wTMtWwtNkpfQTfuyMc+m8LYocbDg2fXqd5qeLN/h0A73P4K9idZ1CIMvlh6KZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR01MB5649
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/2021 8:23 PM, Saravana Kannan wrote:
-> On Tue, May 11, 2021 at 3:42 AM chenxiang (M) <chenxiang66@hisilicon.com> wrote:
->> Re-edit the non-aligned flowchart and add CC to Greg-KH and Saravanna.
->>
->>
->> 在 2021/5/11 11:59, chenxiang (M) 写道:
->>> Hi Rafael and other guys,
->>>
->>> I am trying to add a device link between scsi_host->shost_gendev and
->>> hisi_hba->dev to support runtime PM for hisi_hba driver
->>>
->>> (as it supports runtime PM for scsi host in some scenarios such as
->>> error handler etc, we can avoid to do them again if adding a
->>>
->>> device link between scsi_host->shost_gendev and hisi_hba->dev) as
->>> follows (hisi_sas driver is under directory drivers/scsi/hisi_sas):
->>>
->>> device_link_add(&shost->shost_gendev, hisi_hba->dev,
->>> DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE)
->>>
->>> We have a full test on it, and it works well except when rmmod the
->>> driver, some call trace occurs as follows:
->>>
->>> [root@localhost ~]# rmmod hisi_sas_v3_hw
->>> [  105.377944] BUG: scheduling while atomic: kworker/113:1/811/0x00000201
->>> [  105.384469] Modules linked in: bluetooth rfkill ib_isert
->>> iscsi_target_mod ib_ipoib ib_umad iptable_filter vfio_iommu_type1
->>> vfio_pci vfio_virqfd vfio rpcrdma ib_is                         er
->>> libiscsi scsi_transport_iscsi crct10dif_ce sbsa_gwdt hns_roce_hw_v2
->>> hisi_sec2 hisi_hpre hisi_zip hisi_qm uacce spi_hisi_sfc_v3xx
->>> hisi_trng_v2 rng_core hisi_uncore                         _hha_pmu
->>> hisi_uncore_ddrc_pmu hisi_uncore_l3c_pmu spi_dw_mmio hisi_uncore_pmu
->>> hns3 hclge hnae3 hisi_sas_v3_hw(-) hisi_sas_main libsas
->>> [  105.424841] CPU: 113 PID: 811 Comm: kworker/113:1 Kdump: loaded
->>> Tainted: G        W         5.12.0-rc1+ #1
->>> [  105.434454] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS
->>> 2280-V2 CS V5.B143.01 04/22/2021
->>> [  105.443287] Workqueue: rcu_gp srcu_invoke_callbacks
->>> [  105.448154] Call trace:
->>> [  105.450593]  dump_backtrace+0x0/0x1a4
->>> [  105.454245]  show_stack+0x24/0x40
->>> [  105.457548]  dump_stack+0xc8/0x104
->>> [  105.460939]  __schedule_bug+0x68/0x80
->>> [  105.464590]  __schedule+0x73c/0x77c
->>> [  105.465700] BUG: scheduling while atomic: kworker/96:1/791/0x00000201
->>> [  105.468066]  schedule+0x7c/0x110
->>> [  105.468068]  schedule_timeout+0x194/0x1d4
->>> [  105.474490] Modules linked in:
->>> [  105.477692]  wait_for_completion+0x8c/0x12c
->>> [  105.477695]  rcu_barrier+0x1e0/0x2fc
->>> [  105.477697]  scsi_host_dev_release+0x50/0xf0
->>> [  105.477701]  device_release+0x40/0xa0
->>> [  105.477704]  kobject_put+0xac/0x100
->>> [  105.477707]  __device_link_free_srcu+0x50/0x74
->>> [  105.477709]  srcu_invoke_callbacks+0x108/0x1a4
->>> [  105.484743]  process_one_work+0x1dc/0x48c
->>> [  105.492468]  worker_thread+0x7c/0x464
->>> [  105.492471]  kthread+0x168/0x16c
->>> [  105.492473]  ret_from_fork+0x10/0x18
->>> ...
->>>
->>> After analyse the process, we find that it will
->>> device_del(&shost->gendev) in function scsi_remove_host() and then
->>>
->>> put_device(&shost->shost_gendev) in function scsi_host_put() when
->>> removing the driver, if there is a link between shost and hisi_hba->dev,
->>>
->>> it will try to delete the link in device_del(), and also will
->>> call_srcu(__device_link_free_srcu) to put_device() link->consumer and
->>> supplier.
->>>
->>> But if put device() for shost_gendev in device_link_free() is later
->>> than in scsi_host_put(), it will call scsi_host_dev_release() in
->>>
->>> srcu_invoke_callbacks() while it is atomic and there are scheduling in
->>> scsi_host_dev_release(),
->>>
->>> so it reports the BUG "scheduling while atomic:...".
->>>
->>> thread 1                                                   thread2
->>> hisi_sas_v3_remove
->>>      ...
->>>      sas_remove_host()
->>>          ...
->>>          scsi_remove_host()
->>>              ...
->>>              device_del(&shost->shost_gendev)
->>>                  ...
->>>                  device_link_purge()
->>>                      __device_link_del()
->>>                          device_unregister(&link->link_dev)
->>>                              devlink_dev_release
->>> call_srcu(__device_link_free_srcu)    ----------->
->>> srcu_invoke_callbacks  (atomic)
->>>          __device_link_free_srcu
->>>      ...
->>>      scsi_host_put()
->>>          put_device(&shost->shost_gendev) (ref = 1)
->>>                  device_link_free()
->>>                                put_device(link->consumer)
->>> //shost->gendev ref = 0
->>>                                            ...
->>>                                            scsi_host_dev_release
->>>                                                        ...
->>> rcu_barrier
->>> kthread_stop()
->> Re-edit the non-aligned flowchart
->>       thread 1 thread 2
->>       hisi_sas_v3_remove()
->>               ...
->>               sas_remove_host()
->>                       ...
->>                       device_del(&shost->shost_gendev)
->>                               ...
->>                               device_link_purge()
->>                                       __device_link_del()
->> device_unregister(&link->link_dev)
->> devlink_dev_release
->> call_srcu(__device_link_free_srcu)    ----------->
->> srcu_invoke_callbacks  (atomic)
->>               __device_link_free_srcu()
->>               ...
->>               scsi_host_put()
->>                       put_device(&shost->shost_gendev) (ref = 1)
->>                           device_link_free()
->>                                       put_device(link->consumer)
->> //shost->gendev ref = 0
->>                                                   ...
->> scsi_host_dev_release()
->>                                                               ...
->> rcu_barrier()
->> kthread_stop()
->>
->>>
->>> We can check kref of shost->shost_gendev to make sure scsi_host_put()
->>> to release scsi host device in LLDD driver to avoid the issue,
->>>
->>> but it seems be a common issue:  function __device_link_free_srcu
->>> calls put_device() for consumer and supplier,
->>>
->>> but if it's ref =0 at that time and there are scheduling or sleep in
->>> dev_release, it may have the issue.
->>>
->>> Do you have any idea about the issue?
-> Another report for the same issue.
-> https://lore.kernel.org/lkml/CAGETcx80xSZ8d4JbZqiSz4L0VNtL+HCnFCS2u3F9aNC0QQoQjg@mail.gmail.com/
->
-> I don't have enough context yet about the need for SRCU (I haven't
-> read up all the runtime PM code), but this is a real issue that needs
-> to be solved.
->
-> Dirty/terrible hack is to kick off another work to do the
-> put_device().
+> >
+> > Why not kzalloc_node() here?
 
-I wouldn't call it dirty or terrible, but it may just be the thing that 
-needs to be done here.
+I agree here.
 
+Other allocations that have been promoted to the core have lost the node at=
+tribute in the allocation.
 
-> But is there any SRCU option that'll try to do the
-> release in a non-atomic context?
+For the rdmavt based drivers and especially with the QP, there are performa=
+nce implications.
 
-No, the callbacks are run from a softirq if I'm not mistaken.
+I have no issue moving the allocation, as long as the node centric allocati=
+on is preserved.
 
-Thanks!
+I will test the patch to make sure there is nothing else lurking.
+
+Mike
+=20
 
 
