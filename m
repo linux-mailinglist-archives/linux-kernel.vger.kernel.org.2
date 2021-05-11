@@ -2,109 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7EAF37B2B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B729537B2BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhEKXlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:41:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230075AbhEKXlK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:41:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEB36616ED;
-        Tue, 11 May 2021 23:40:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1620776402;
-        bh=StGQ4zZ+sG3aVDQn1MpkpljgXREKqD6fxuaBEDSUudw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hLUpIpjSxwdX1nAVP+N0LVLY1lMcui+/l5k4s7PPY993iDcrCDJiORv58ridgFjWj
-         wF7Xs+ficCdWvf9n3xE8QH0AX1CndZ8jg99pk6I8kkslLGbrhvNIDIvE8Ao0cNHD9I
-         umVQBDkgO0C86yyC8U/o7/4epynrz7QOojArhONg=
-Date:   Tue, 11 May 2021 16:40:01 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v4 4/4] arm64: drop pfn_valid_within() and simplify
- pfn_valid()
-Message-Id: <20210511164001.7e905659fdbb8a5e190d303a@linux-foundation.org>
-In-Reply-To: <20210511100550.28178-5-rppt@kernel.org>
-References: <20210511100550.28178-1-rppt@kernel.org>
-        <20210511100550.28178-5-rppt@kernel.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230126AbhEKXl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:41:56 -0400
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:52466 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229848AbhEKXlz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 19:41:55 -0400
+Received: from dread.disaster.area (pa49-179-143-157.pa.nsw.optusnet.com.au [49.179.143.157])
+        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id ADB8A1082A9;
+        Wed, 12 May 2021 09:40:43 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lgbzV-00EYIv-Js; Wed, 12 May 2021 09:40:41 +1000
+Date:   Wed, 12 May 2021 09:40:41 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     willy@infradead.org, akpm@linux-foundation.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com, shakeelb@google.com,
+        guro@fb.com, shy828301@gmail.com, alexs@kernel.org,
+        richard.weiyang@gmail.com, trond.myklebust@hammerspace.com,
+        anna.schumaker@netapp.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, zhengqi.arch@bytedance.com,
+        duanxiongchun@bytedance.com, fam.zheng@bytedance.com
+Subject: Re: [PATCH 10/17] fs: introduce alloc_inode_sb() to allocate
+ filesystems specific inode
+Message-ID: <20210511234041.GP1872259@dread.disaster.area>
+References: <20210511104647.604-1-songmuchun@bytedance.com>
+ <20210511104647.604-11-songmuchun@bytedance.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511104647.604-11-songmuchun@bytedance.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0
+        a=I9rzhn+0hBG9LkCzAun3+g==:117 a=I9rzhn+0hBG9LkCzAun3+g==:17
+        a=kj9zAlcOel0A:10 a=5FLXtPjwQuUA:10 a=7-415B0cAAAA:8
+        a=eDM3njHHF8h-SXrJDeMA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 13:05:50 +0300 Mike Rapoport <rppt@kernel.org> wrote:
+On Tue, May 11, 2021 at 06:46:40PM +0800, Muchun Song wrote:
+> The allocated inode cache will be added into its memcg lru list later,
+> but we do not allocate list_lru in the later patch. So the caller should
+> call kmem_cache_alloc_lru() to allocate inode and related list_lru.
+> Introduce alloc_inode_sb() to do that and convert all inodes allocation
+> to it.
 
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> The arm64's version of pfn_valid() differs from the generic because of two
-> reasons:
-> 
-> * Parts of the memory map are freed during boot. This makes it necessary to
->   verify that there is actual physical memory that corresponds to a pfn
->   which is done by querying memblock.
-> 
-> * There are NOMAP memory regions. These regions are not mapped in the
->   linear map and until the previous commit the struct pages representing
->   these areas had default values.
-> 
-> As the consequence of absence of the special treatment of NOMAP regions in
-> the memory map it was necessary to use memblock_is_map_memory() in
-> pfn_valid() and to have pfn_valid_within() aliased to pfn_valid() so that
-> generic mm functionality would not treat a NOMAP page as a normal page.
-> 
-> Since the NOMAP regions are now marked as PageReserved(), pfn walkers and
-> the rest of core mm will treat them as unusable memory and thus
-> pfn_valid_within() is no longer required at all and can be disabled by
-> removing CONFIG_HOLES_IN_ZONE on arm64.
-> 
-> pfn_valid() can be slightly simplified by replacing
-> memblock_is_map_memory() with memblock_is_memory().
-> 
-> ...
->
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1052,9 +1052,6 @@ config NEED_PER_CPU_EMBED_FIRST_CHUNK
->  	def_bool y
->  	depends on NUMA
+FWIW, this probably needs a documentation update to mention that
+inodes should always be allocated through alloc_inode_sb() rather
+than kmem_cache_alloc(). It's a "** mandatory **" requirement as per
+Documentation/filesytems/porting.rst.
+
+Also,
+
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index c3c88fdb9b2a..d8d5d4eb68d6 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -41,6 +41,7 @@
+>  #include <linux/stddef.h>
+>  #include <linux/mount.h>
+>  #include <linux/cred.h>
+> +#include <linux/slab.h>
 >  
-> -config HOLES_IN_ZONE
-> -	def_bool y
-> -
->  source "kernel/Kconfig.hz"
+>  #include <asm/byteorder.h>
+>  #include <uapi/linux/fs.h>
+> @@ -3200,6 +3201,12 @@ extern void free_inode_nonrcu(struct inode *inode);
+>  extern int should_remove_suid(struct dentry *);
+>  extern int file_remove_privs(struct file *);
 >  
->  config ARCH_SPARSEMEM_ENABLE
+> +static inline void *
+> +alloc_inode_sb(struct super_block *sb, struct kmem_cache *cache, gfp_t gfp)
+> +{
+> +	return kmem_cache_alloc_lru(cache, &sb->s_inode_lru, gfp);
+> +}
+> +
 
-https://lkml.kernel.org/r/20210417075946.181402-1-wangkefeng.wang@huawei.com
-already did this, so I simply dropped that hunk?  And I don't think the
-changelog needs updating for this?
+This really needs a kerneldoc comment explaining that it must be
+used for allocating inodes to set up the inode reclaim context
+correctly....
 
+/me wonders if we should add a BUG_ON() check in inode_init_always()
+to capture filesystems that don't call through
+kmem_cache_alloc_lru() for inodes?
 
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index 798f74f501d5..fb07218da2c0 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -251,7 +251,7 @@ int pfn_valid(unsigned long pfn)
->  	if (!early_section(ms))
->  		return pfn_section_valid(ms, pfn);
->  
-> -	return memblock_is_map_memory(addr);
-> +	return memblock_is_memory(addr);
->  }
->  EXPORT_SYMBOL(pfn_valid);
+Cheers,
 
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
