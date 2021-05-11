@@ -2,129 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D9D379BE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C742A379BEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 03:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbhEKBQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 21:16:38 -0400
-Received: from mga04.intel.com ([192.55.52.120]:8317 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229920AbhEKBQg (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 21:16:36 -0400
-IronPort-SDR: ZxmTUo5/SdwjWQVzsUhN5M6ow+HFzDQU5bgzHYTHTNiSKefhzWMJyRUHcJr2xt73BJXBUKg3qP
- oPtDt+Hwiszg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="197343482"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="197343482"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 18:15:31 -0700
-IronPort-SDR: rLv7jY/3kBuzYMTV3rx0id8R76ZofJs8fvOdYemXecoT5NHN0gChnNr9eiQiiL5ILvDVWdBjjK
- POTa+QcP0bdA==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="436397817"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.82]) ([10.238.4.82])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 18:15:28 -0700
-Subject: Re: [PATCH v1 2/2] perf header: Support hybrid CPU_PMU_CAPS
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210430074602.3028-1-yao.jin@linux.intel.com>
- <20210430074602.3028-2-yao.jin@linux.intel.com> <YJFjTCsk9dCd6QP7@krava>
- <c0bd3baa-3209-23f3-7058-c6908434de2d@linux.intel.com>
- <YJPtmyzTEe/IUID4@krava>
- <5cafb729-1dcd-ad4a-507b-1155c16a785e@linux.intel.com>
- <YJkxECvg6clImtOY@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <249153c0-a560-aa78-97a9-039dee5be86b@linux.intel.com>
-Date:   Tue, 11 May 2021 09:15:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230181AbhEKBRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 21:17:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229920AbhEKBRR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 21:17:17 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B838C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 18:16:12 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FfKkH06Vyz9sWq;
+        Tue, 11 May 2021 11:16:06 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1620695769;
+        bh=ZlOYJ/K88RGErXDxsltfMc0YfqZAWgaqHSNl1cnZGC0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=GvhRElQp8+mOHrM1yCGl+p/QoTgqHIp+fRT04XMKu+ylifnof4/W2aVacKpoHGQnH
+         PZdJPfAf3YAXTCa+MmMwsuSGMEeq8+gZmj/wiLhBT16WNuMltL75QwWn1PgK4zo3dO
+         MDRYji2n9cwHYVKGOz/gdIxtYcDPOCmACjl5jrxlEwxwcsNovIh6mEXztay4XdqqiE
+         XjtacZfXZnqsRVkv5gCZl7GShh3zWyXm6hQA4aIEDtb8fB/bTFqefopvLngdZVlj9V
+         /OBfvTVtcLb1cSaFgPniCoiv4HjUtg20M4nzItxIu0PEcm4AKjladm65f257uEAeZ1
+         X1rCEaV399XCQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Segher Boessenkool <segher@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, pmenzel@molgen.mpg.de,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/legacy_serial: Fix UBSAN:
+ array-index-out-of-bounds
+In-Reply-To: <20210510211444.GE10366@gate.crashing.org>
+References: <d5e3c8e66bad3725d7d48d0e45c4b7eb7c02631d.1620455671.git.christophe.leroy@csgroup.eu>
+ <20210510211444.GE10366@gate.crashing.org>
+Date:   Tue, 11 May 2021 11:16:02 +1000
+Message-ID: <87sg2uxe7h.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <YJkxECvg6clImtOY@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+Segher Boessenkool <segher@kernel.crashing.org> writes:
 
-On 5/10/2021 9:11 PM, Jiri Olsa wrote:
-> On Thu, May 06, 2021 at 10:43:39PM +0800, Jin, Yao wrote:
-> 
-> SNIP
-> 
->>>> 'nr of rest pmus', we know that all pmus have been processed.
->>>>
->>>> Otherwise, we have to continue reading data file till we find something
->>>> incorrect and then finally drop the last read data.
->>>
->>> you have the size of the feature data right? I think we use
->>> it in other cases to check if there are more data
->>>
->>
->> The challenge for us is if we need to compatible with the old perf.data
->> which was generated by old perf tool.
->>
->> For the old perf.data, the layout in header is:
->>
->> nr of caps
->> caps string 1
->> caps string 2
->> ...
->> caps string N
->>
->> It doesn't carry with any other fields such as size of caps data.
->>
->> To be compatible with old perf.data, so I have to extend the layout to:
->>
->> nr of caps for pmu 1
->> caps string 1
->> caps string 2
->> ...
->> caps string N
->> name of pmu 1
->> nr of rest pmus
->>
->> nr of caps for pmu2
->> caps string 1
->> caps string 2
->> ...
->> caps string N
->> name of pmu 2
->> nr of rest pmus
->>
->> When the new perf tool detects the string such as "cpu_", it can know that
->> it's the pmu name field in new perf.data, otherwise it's the old perf.data.
-> 
-> what if the cap string starts with 'cpu_' ?
-> 
-
-I just assume the cap string would not have 'cpu_' string. Yes, I agree, that's not a very good 
-solution.
-
-> I think it might be better to create new feature that
-> stores caps for multiple pmus in generic way
+> On Sat, May 08, 2021 at 06:36:21AM +0000, Christophe Leroy wrote:
+>> UBSAN complains when a pointer is calculated with invalid
+>> 'legacy_serial_console' index, allthough the index is verified
+>> before dereferencing the pointer.
 >
+> Addressing like this is UB already.
+>
+> You could just move this:
+>
+>> -	if (legacy_serial_console < 0)
+>> -		return 0;
+>
+> to before
+>
+>> -	struct legacy_serial_info *info = &legacy_serial_infos[legacy_serial_console];
+>> -	struct plat_serial8250_port *port = &legacy_serial_ports[legacy_serial_console];
+>
+> and no other change is necessary.
 
-Yes, creating a new feature in header (such as "HYBRID_CPU_PMU_CAPS") is a better way.
+Yeah I sent a v2 doing that, thanks.
 
->>
->> If we add new field such as "size" to the layout, I'm afraid the new perf
->> tool can not process the old perf.data correctly.
->>
->> If we don't need to support old perf.data, that makes things easy.
-> 
-> we need to
-> 
-
-Yes, we need to. I'm now preparing v3.
-
-Thanks
-Jin Yao
-
-> jirka
-> 
+cheers
