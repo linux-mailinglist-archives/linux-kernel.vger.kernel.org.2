@@ -2,138 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 870D737A06C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E177037A051
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbhEKHNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:13:13 -0400
-Received: from smtpcmd04132.aruba.it ([62.149.158.132]:50155 "EHLO
-        smtpcmd04132.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230268AbhEKHNL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:13:11 -0400
-X-Greylist: delayed 420 seconds by postgrey-1.27 at vger.kernel.org; Tue, 11 May 2021 03:13:11 EDT
-Received: from [192.168.1.128] ([79.0.204.227])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id gMRwlAtSu8ee9gMRxliGkB; Tue, 11 May 2021 09:05:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1620716704; bh=c/Km+mdUICAL7NmRB1mqs9sU9/yeFUfBCQg6JYdl0R8=;
-        h=Subject:To:From:Date:MIME-Version:Content-Type;
-        b=aLhpRX+ySwqOn2uJHCL3ntlqQ3rUrk+y6EjiTB0uuUZjVvOQqHs6ZZJ4XNXlpDJeN
-         QJGJrDUBlWbZc7L0+10tXNEhBPtXU4UT6gw31QtNa4mKTsFBAqGXnF2lXD325V9lcm
-         O9odkeqwIAoVOJbMSYtDWDf2Oifj970kKoiF3RqV/lqCLIWgZkfq5n9xzLCwOHYMXA
-         TEqOwjeySBVJfEJ9WK3h1/g849pw0osFtvbE1vBXanqGI+0UYCqoC+jD68KlPsf+7O
-         TjqcLdoogPsfS+FVNYFQHuSDudVGCQwEQzaBeQTrIStF/bTYiKsRjQdElXJJRoRMDX
-         k957OpthJWACA==
-Subject: Re: [PATCH v1 1/1] pps: clients: parport: Switch to use
- module_parport_driver()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org
-References: <20210510141302.56654-1-andriy.shevchenko@linux.intel.com>
-From:   Rodolfo Giometti <giometti@enneenne.com>
-Message-ID: <77c821e1-adc7-4088-0dcb-da65ba7a39a2@enneenne.com>
-Date:   Tue, 11 May 2021 09:05:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230384AbhEKHID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:08:03 -0400
+Received: from mga02.intel.com ([134.134.136.20]:46811 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230124AbhEKHIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 03:08:01 -0400
+IronPort-SDR: bUV9DEyqdeaDPe/I80/8vPDjCiXSr5ri8ADzlvUKetNzzCvoNmKafFmqrhltGiB7l0IhOXnwqo
+ UjuOdzo3fXfQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="186509564"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="186509564"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 00:06:52 -0700
+IronPort-SDR: l/DNnVZ1UyLOFlRAG2CLSSQJAU7n5Sp1GuZbQtCaWkzunBTtWncPMaLXi7Q34L0gue6QArcp8r
+ VkJLFzp3FXcw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="536849445"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 11 May 2021 00:06:49 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 11 May 2021 10:06:49 +0300
+Date:   Tue, 11 May 2021 10:06:49 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, badhri@google.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] usb: typec: tcpm: Fix wrong handling for
+ Not_Supported in VDM AMS
+Message-ID: <YJotCZU9TYg+EVrG@kuha.fi.intel.com>
+References: <20210507062300.1945009-1-kyletso@google.com>
+ <20210507062300.1945009-3-kyletso@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210510141302.56654-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfMRIVLhQEkv5QOCWXRTcfb/hiKOZx+nfEeQCZBN9R8WCuSJ+0TNtD6CstuIiM6VC/WNUFD7pDyUtGha+beRaJ5MbMax1xA+/xWBw8CBNOM0BjXGIx3yy
- Fr+d/Q2OhG1ObFy56/NXETWlPL8BxSzWVRsCBTVNYoQrultNpHAR2YZEfD5Iad7cgG5iHj+V3E7qcjtG2jdbiAsseeeOkCNgStf6O19rkel/yXqucoKkO4gL
- mabAbvu0W1Ftl0uUH96OeLUSriL45vZ28KY5O89DVbo=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210507062300.1945009-3-kyletso@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/05/21 16:13, Andy Shevchenko wrote:
-> Switch to use module_parport_driver() to reduce boilerplate code.
+On Fri, May 07, 2021 at 02:23:00PM +0800, Kyle Tso wrote:
+> Not_Supported Message is acceptable in VDM AMS. Redirect the VDM state
+> machine to VDM_STATE_DONE when receiving Not_Supported and finish the
+> VDM AMS.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Also, after the loop in vdm_state_machine_work, add more conditions of
+> VDM states to clear the vdm_sm_running flag because those are all
+> stopping states when leaving the loop.
+> 
+> In addition, finish the VDM AMS if the port partner responds BUSY.
+> 
+> Fixes: 8dea75e11380 ("usb: typec: tcpm: Protocol Error handling")
+> Fixes: 8d3a0578ad1a ("usb: typec: tcpm: Respond Wait if VDM state machine is running")
+> Signed-off-by: Kyle Tso <kyletso@google.com>
+
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
 > ---
->  drivers/pps/clients/pps_parport.c | 42 ++++++-------------------------
->  1 file changed, 8 insertions(+), 34 deletions(-)
+> Changes since v2:
+> - no changes
 > 
-> diff --git a/drivers/pps/clients/pps_parport.c b/drivers/pps/clients/pps_parport.c
-> index 7a41fb7b0dec..42f93d4c6ee3 100644
-> --- a/drivers/pps/clients/pps_parport.c
-> +++ b/drivers/pps/clients/pps_parport.c
-> @@ -22,8 +22,6 @@
->  #include <linux/parport.h>
->  #include <linux/pps_kernel.h>
->  
-> -#define DRVDESC "parallel port PPS client"
-> -
->  /* module parameters */
->  
->  #define CLEAR_WAIT_MAX		100
-> @@ -138,6 +136,12 @@ static void parport_attach(struct parport *port)
->  		.dev		= NULL
->  	};
->  
-> +	if (clear_wait > CLEAR_WAIT_MAX) {
-> +		pr_err("clear_wait value should be not greater then %d\n",
-> +		       CLEAR_WAIT_MAX);
-> +		return;
-> +	}
-> +
-
-Why do you need to do so? Maybe a comment would be welcomed.
-
->  	device = kzalloc(sizeof(struct pps_client_pp), GFP_KERNEL);
->  	if (!device) {
->  		pr_err("memory allocation failed, not attaching\n");
-> @@ -214,38 +218,8 @@ static struct parport_driver pps_parport_driver = {
->  	.detach = parport_detach,
->  	.devmodel = true,
->  };
-> -
-> -/* module staff */
-> -
-> -static int __init pps_parport_init(void)
-> -{
-> -	int ret;
-> -
-> -	pr_info(DRVDESC "\n");
-> -
-> -	if (clear_wait > CLEAR_WAIT_MAX) {
-> -		pr_err("clear_wait value should be not greater"
-> -				" then %d\n", CLEAR_WAIT_MAX);
-> -		return -EINVAL;
-> -	}
-> -
-> -	ret = parport_register_driver(&pps_parport_driver);
-> -	if (ret) {
-> -		pr_err("unable to register with parport\n");
-> -		return ret;
-> -	}
-> -
-> -	return  0;
-> -}
-> -
-> -static void __exit pps_parport_exit(void)
-> -{
-> -	parport_unregister_driver(&pps_parport_driver);
-> -}
-> -
-> -module_init(pps_parport_init);
-> -module_exit(pps_parport_exit);
-> +module_parport_driver(pps_parport_driver);
->  
->  MODULE_AUTHOR("Alexander Gordeev <lasaine@lvk.cs.msu.su>");
-> -MODULE_DESCRIPTION(DRVDESC);
-> +MODULE_DESCRIPTION("parallel port PPS client");
->  MODULE_LICENSE("GPL");
+>  drivers/usb/typec/tcpm/tcpm.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
 > 
-
-Ciao,
-
-Rodolfo
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 07a449f0e8fa..bf97db232f09 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -1897,7 +1897,6 @@ static void vdm_run_state_machine(struct tcpm_port *port)
+>  
+>  			if (res < 0) {
+>  				port->vdm_state = VDM_STATE_ERR_BUSY;
+> -				port->vdm_sm_running = false;
+>  				return;
+>  			}
+>  		}
+> @@ -1913,6 +1912,7 @@ static void vdm_run_state_machine(struct tcpm_port *port)
+>  		port->vdo_data[0] = port->vdo_retry;
+>  		port->vdo_count = 1;
+>  		port->vdm_state = VDM_STATE_READY;
+> +		tcpm_ams_finish(port);
+>  		break;
+>  	case VDM_STATE_BUSY:
+>  		port->vdm_state = VDM_STATE_ERR_TMOUT;
+> @@ -1978,7 +1978,7 @@ static void vdm_state_machine_work(struct kthread_work *work)
+>  		 port->vdm_state != VDM_STATE_BUSY &&
+>  		 port->vdm_state != VDM_STATE_SEND_MESSAGE);
+>  
+> -	if (port->vdm_state == VDM_STATE_ERR_TMOUT)
+> +	if (port->vdm_state < VDM_STATE_READY)
+>  		port->vdm_sm_running = false;
+>  
+>  	mutex_unlock(&port->lock);
+> @@ -2569,6 +2569,16 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+>  			port->sink_cap_done = true;
+>  			tcpm_set_state(port, ready_state(port), 0);
+>  			break;
+> +		case SRC_READY:
+> +		case SNK_READY:
+> +			if (port->vdm_state > VDM_STATE_READY) {
+> +				port->vdm_state = VDM_STATE_DONE;
+> +				if (tcpm_vdm_ams(port))
+> +					tcpm_ams_finish(port);
+> +				mod_vdm_delayed_work(port, 0);
+> +				break;
+> +			}
+> +			fallthrough;
+>  		default:
+>  			tcpm_pd_handle_state(port,
+>  					     port->pwr_role == TYPEC_SOURCE ?
+> -- 
+> 2.31.1.527.g47e6f16901-goog
 
 -- 
-GNU/Linux Solutions                  e-mail: giometti@enneenne.com
-Linux Device Driver                          giometti@linux.it
-Embedded Systems                     phone:  +39 349 2432127
-UNIX programming                     skype:  rodolfo.giometti
+heikki
