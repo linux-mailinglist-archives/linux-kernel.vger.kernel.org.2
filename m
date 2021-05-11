@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23AFE37A1E3
+	by mail.lfdr.de (Postfix) with ESMTP id 7126737A1E4
 	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbhEKI3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 04:29:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37998 "EHLO mail.kernel.org"
+        id S230500AbhEKI3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 04:29:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230338AbhEKI2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 04:28:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31A296147E;
-        Tue, 11 May 2021 08:27:47 +0000 (UTC)
+        id S230519AbhEKI25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 04:28:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 400DD613C3;
+        Tue, 11 May 2021 08:27:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620721667;
-        bh=l8Z/OzCfeWsNmqmpOZGd1liyMDpNo7gr8CIy6SCuWuI=;
+        s=k20201202; t=1620721670;
+        bh=h3vnEgAyBU0stZMPX8DMF3+dsDL6cOb6KoeTnUb88bE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GggvETJ49ghxR3jGggzJ6p0bycd1w39dMmZ8r0464V/YAjOVjLugxBEg0pbx3NErg
-         xgXpyHzFVlxdtoUmkYJIUt625ivDU8vxPgj49BZJkhxEHgtvTF+AgAqmWi9UOKTb3S
-         SNTXlGD0RK5UeKscWvKKaYLBZZoZQWx6mGp2srF6uqpZdssFeNUN06VfQLHh0g7BKW
-         Er2hyoNNPzF6i6L08ICk8J0Xp07+l2OH5x+Kb/SiHES3bj8aeYZAg1sSC0bayHi7bq
-         kdjnbYpQzAZy1tml+3e2hmcRhEnNEjOfdIo4L7w9RsvLtvOl5C8clIlXCQC6fIj8jo
-         uEPyQwLeLwRLg==
+        b=NN57Sn+VQ3zGHzG2B57+k5HVHnZiJtl+ScnT+23ghenHrk7orXm/3lCoZ7pCNKlKm
+         hSFQcx8O7Uk2612Bm/9cjWHnTQi2+bMOFqW5WK6Qa8wcbwUbH3Zzva+56yWatKVNjf
+         OEHEi+FWfpxt8DBX3t3BQDnYNiWgeUeRSAseWYI3nb2/6JxK+Yi8hWLbO4MrcjSXmc
+         y4AvE0QpPnuM3uefzRfwllUdv32UZ/N6or76K/9eHTKhQ9zuf1q2Y0Z0GOXG4PXZhe
+         d0uuMHGVo1VYfD/qoMunxIG4RoCuvfrmG7YsvaNvA6Nk0dqi9Gl702MdKH3cIrgcsX
+         JWT6nK/NkYNXA==
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, srinivas.kandagatla@linaro.org,
-        perex@perex.cz, bgoswami@codeaurora.org, trix@redhat.com,
-        tiwai@suse.com
+To:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        paul@crapouillou.net, Tang Bin <tangbin@cmss.chinamobile.com>
 Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH v2] ASoC: codecs: lpass-wsa-macro: handle unexpected input
-Date:   Tue, 11 May 2021 09:25:51 +0100
-Message-Id: <162072058168.33157.3176018576144440940.b4-ty@kernel.org>
+        alsa-devel@alsa-project.org,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: Re: [PATCH] ASoc: Fix unused define in jz4740-i2s.h
+Date:   Tue, 11 May 2021 09:25:52 +0100
+Message-Id: <162072058169.33157.15479595461412836048.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210430142117.3272772-1-trix@redhat.com>
-References: <20210430142117.3272772-1-trix@redhat.com>
+In-Reply-To: <20210506131833.27420-1-tangbin@cmss.chinamobile.com>
+References: <20210506131833.27420-1-tangbin@cmss.chinamobile.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,16 +42,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Apr 2021 07:21:17 -0700, trix@redhat.com wrote:
-> Static analysis reports this problem
-> 
-> lpass-wsa-macro.c:1732:6: warning: Array subscript is undefined
->         if (wsa->ec_hq[ec_tx]) {
->             ^~~~~~~~~~~~~~~~~
-> 
-> The happens because 'ec_tx' is never initialized and there is
-> no default in switch statement that sets ec_tx.  Add a default
-> case that returns an error before the array is accessed.
+On Thu, 6 May 2021 21:18:33 +0800, Tang Bin wrote:
+> Delete unused define of JZ4740_I2S_BIT_CLK, because it is unused
+> in any files.
 
 Applied to
 
@@ -59,8 +52,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: lpass-wsa-macro: handle unexpected input
-      commit: 58f01c7fc81baced84f237554d56847e17b5d730
+[1/1] ASoc: Fix unused define in jz4740-i2s.h
+      commit: 37c881cd18f428b08cf46c5a9d67cfd2db2c4a32
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
