@@ -2,96 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D2637AD1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A6737AD2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 19:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhEKR3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 13:29:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbhEKR3k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 13:29:40 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F319C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:28:33 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id e11so12579815ljn.13
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:28:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RrNlIBNi0pzHeAbx2nI9bp+BT2pTo5nJxLzfaP11f6Y=;
-        b=V7LgU5PcP4+3f+tLSMObksyzIebdnSvKK63MWqHO2ODHDAUYSrJRYbFBX2qv/dmyuc
-         4mAZnM/E7KYBqOhy+wIwu0rkfv5GNYJ/fd6cro5o+GfV8aRLEeI0JUMgO6GBjTe5e3r2
-         0oZemDf/7Kj9eSnUYgD+Zcix4Oxo8Fr0IsYTY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RrNlIBNi0pzHeAbx2nI9bp+BT2pTo5nJxLzfaP11f6Y=;
-        b=tR+eB2mG+nVDMlfVz/ClZ9zU8WblI9X3QwZxQJul94MRPAu4AGIaD2Z5fGDluVeFmP
-         Ir8+lRgzQP8TMopSwMxLy54o5yZtQMkAy5+/wXjDp7Ju8DGo1RA1oTA+LUqSpqF/EmTD
-         7gWZP9bshQh7zpCaErBBTL8B4bxLr/uQ24scxSfwpoUboNYvQBlfv2R+7+Pu4gh3iKuF
-         lIlKvMFigVgo52nJ8uFxazPL2C1ldNNKdZw03nupU7hOxtCksImJH8xL1ZPvqxyvHJsy
-         rtEWkA6WE7jQw/ZAtrAETUo5b5tXwUjFW92Pr5bFw97KXPziydrlbOBn5IfT+o/rkf0b
-         RoYw==
-X-Gm-Message-State: AOAM532LTpmGd1esKGmUqFYDqo7rR06Fx28ieNexv42WXlKMGMpLU7HC
-        f3rxgzhaiBKsxKzxZwjgwgdU8TtqSokdtklP
-X-Google-Smtp-Source: ABdhPJw9ljjig87Ar94YpI31jKvzDaeS4TUfwTd7UCrweximY7bsQpxdxFAUP594Pacpc8lf1ibJ2w==
-X-Received: by 2002:a2e:9211:: with SMTP id k17mr26155176ljg.284.1620754111584;
-        Tue, 11 May 2021 10:28:31 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id f18sm2707851lfu.157.2021.05.11.10.28.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 10:28:30 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id b7so26129108ljr.4
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:28:29 -0700 (PDT)
-X-Received: by 2002:a05:651c:33a:: with SMTP id b26mr26092232ljp.220.1620754109305;
- Tue, 11 May 2021 10:28:29 -0700 (PDT)
+        id S231825AbhEKRjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 13:39:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231517AbhEKRjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 13:39:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EEC561363;
+        Tue, 11 May 2021 17:38:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620754683;
+        bh=ws7c32By7Yah23i6ZVsT0SmTg7GkCW7FLFsyG2F4VNg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=vO7CVKFfeQFQbPaeCgw07/oV0kuv2Y5z4N4aNF7/8E5QL/zAerIqmSu+I+hCZAsUh
+         /rAOmSjxIMEERyM9HJ3jK7JV4niV6IIHv16cWini7+YVLWd3pTvRdx+cy2jZgJSuwZ
+         pyHg4Fc4ZnMsgRKsG90TfFwsZ7KFZurs+0R+BHlgWUt2C+du+n0E0RF4AC+pbdnhqd
+         kRJluRDuQCuwkCn8+qfw5fiANU3V8NyFu584iU8wdlCGcWq6QOLzSJ3Tm6Y4rh9kwg
+         9qgmqH4/RvWX3PPNrAUC53fNNh6Q29JSoJXG5jLo45cZbOGqmNrGmDUh7A+zkRooYm
+         JH93LwdOgGTxA==
+From:   Mark Brown <broonie@kernel.org>
+To:     tytso@mit.edu
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH] random: Document add_hwgenerator_randomness() with other input functions
+Date:   Tue, 11 May 2021 18:29:45 +0100
+Message-Id: <20210511172945.9137-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210511165626.GA13720@redhat.com>
-In-Reply-To: <20210511165626.GA13720@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 11 May 2021 10:28:13 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whLqbTNc1T+rHCm-kxbVAuhK3hjo5fOgDVf5-z--x1mvQ@mail.gmail.com>
-Message-ID: <CAHk-=whLqbTNc1T+rHCm-kxbVAuhK3hjo5fOgDVf5-z--x1mvQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND2] ptrace: make ptrace() fail if the tracee changed
- its pid unexpectedly
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Pedro Alves <palves@redhat.com>,
-        Simon Marchi <simon.marchi@efficios.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Patch-Hashes: v=1; h=sha256; i=hpfB/Fev0ElGAV6LAJtaW15TSyFeBveuDgewjphaBoA=; m=LEzWeJzwAfBLT8UOBAkDOF8NlIKUhb/roLorr18qc+k=; p=g8Hjiwl8JBuD8/Sb0q/D00vkl4KlHYD6ijgJCLHbo7o=; g=8071162e9aea1d2280a5fa789a80c7735472fa77
+X-Patch-Sig: m=pgp; i=broonie@kernel.org; s=0xC3F436CA30F5D8EB; b=iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCavogACgkQJNaLcl1Uh9Dstgf/e8Q 7dF+5CEn4z+xrQNFVejiEos5XtPg78euFORPYI/IKyM9vkCveLvSIiJaIdmDmVCEQ9/jOfUmAx16W Tb38QKjfw8OauNF9lqxHE+CV5AfIIVgOPRgX2pOj5w94vWx3PTCfFMoPRn+Ev3OBEkeuBpr8Kq1gU zbgg973pYvYS0b0A4zKmsKW7Q7iz8WvCUDog9cwboPdZPfKq9r2ajuF0KrUVeLzpxajTfhIU0BJc4 09VgIf8gPrwLiH/lwZbN9LDF4ycy37L/qByKpnHpUzv4aHVOo5YugGcN8X3Y6qo++BRpM1COcDDqH xSG3wvTl/Mj3A7/Hk/1hylG3tZ4MESQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 9:56 AM Oleg Nesterov <oleg@redhat.com> wrote:
->
-> This patch makes ptrace() fail in this case until debugger does wait()
-> and consumes PTHREAD_EVENT_EXEC which reports old_pid.
+The section at the top of random.c which documents the input functions
+available does not document add_hwgenerator_randomness() which might lead
+a reader to overlook it. Add a brief note about it.
 
-I'm ok with the patch, just wondering which way it's supposed to come
-to me. Should I just apply it directly?
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ drivers/char/random.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-That said, why this:
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 605969ed0f96..456a4f43d935 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -228,6 +228,14 @@
+  * particular randomness source.  They do this by keeping track of the
+  * first and second order deltas of the event timings.
+  *
++ * There is also an interface for true hardware RNGs:
++ *
++ *	void add_hwgenerator_randomness(const char *buffer, size_t count,
++ *				size_t entropy);
++ *
++ * This will credit entropy as specified by the caller, if the entropy
++ * pool is full it will block until more entropy is needed.
++ *
+  * Ensuring unpredictability at system startup
+  * ============================================
+  *
+-- 
+2.20.1
 
-> +       rcu_read_lock();
-> +       pid = task_pid_nr_ns(task, task_active_pid_ns(task->parent));
-> +       rcu_read_unlock();
-
-I don't see why the RCU read lock would be needed? task_pid_nr_ns()
-does any required locking itself, afaik.
-
-And even if it wasn't, this all happens with siglock held, can
-anything actually change.
-
-             Linus
