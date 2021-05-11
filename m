@@ -2,489 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4320C37AA70
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C716237AA75
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231796AbhEKPRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 11:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59686 "EHLO
+        id S231808AbhEKPSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 11:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231754AbhEKPRx (ORCPT
+        with ESMTP id S231743AbhEKPST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 11:17:53 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20494C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 08:16:47 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso17808902otm.4
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 08:16:47 -0700 (PDT)
+        Tue, 11 May 2021 11:18:19 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9028C061574;
+        Tue, 11 May 2021 08:17:11 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id c3so29187353lfs.7;
+        Tue, 11 May 2021 08:17:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7S0Iy823Yq6qWCGxwTgey0iigvdTpN7LX4Di9VNt948=;
-        b=tMg1K+tN2+/BGsEsubKnuthpz91OBRqGK+dahGkpOfK7w5dyqVMN+NmiLdzq+jxsbk
-         q/mG5ZewRDKSuVKM3gvXpoJjdYDAYrUx1yFJPh8ss9mutlgTqXdyWoBE2jL90ZetF+Mw
-         Ie3VFA5B7I5ZpmUI2Ubi+Opra65VBhNUSwyVagr4O/RKyH16Cx+0wjOEXPYx2WBhCnWN
-         9IxBViPDTiK8+Bzzo1IgxhybcTylrNeNMJF2+Vz8MorMWiv3984dE9FSdWa4013ZO38/
-         ZqS2aIhoNbzN17h4v4BuT1i2fF3inZOtcsMwWeYrYNBmy0CwF74hbRBYIFJA8iX01oeu
-         XNig==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=l0+Py+3CSfNlV3pR44naNix1unXeingMcJ67NIXwY+s=;
+        b=KvmvfOGCxA5R95WsJ7wQo1T7SFztdufpvwNa0wqh0a2VAR9KELBm2fXiKtVjucIons
+         qyceviM5GU6KDbiZCKyxbZdEXMiui+5ZdDs0lSC1pPJrH1ZYSabTHoqrUpjdpCOUn5wj
+         crJI6WoKbj17Pp/DjlEWpEhGGitpDdUaVnIubOD9vxarDIxBavzhJ/sjpHdA9LL6LKfT
+         ckWXMjC1ptTnnkPwIYjLWfFivMW8v0WACxHFMfoXCcjDWKFxXLiiw+iUOQS26W4Keb9O
+         Brvr7ke36/ZqKSjJsILolqmmZFIef8JojRRxW2T3IQc9VkcFMNsA25UqyRZswAAN9yvi
+         BDWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7S0Iy823Yq6qWCGxwTgey0iigvdTpN7LX4Di9VNt948=;
-        b=qRDxdOCinjNIx8M+bze2ay5SQyYTI9rmIXTiRTqLQyaLXpJF+bZbx6dacSsFsttseK
-         2L+ic2E09YFy9Amo3sTIGw03gDF4AOwl/G3JK2z7SuywPZmsLVeXJl/pu5NIS/trRP1Z
-         OjkU3JwXc7VavZHDmN4d0wWFFKJH/TJW1HOVAU6F4UQbt/FgzKTJftMu5OuI8mz8zLKi
-         Z6xNQMKfatrqLXCHaL6GvTlL1CWY1zcWzByvNC5e52Csy/fcZeYXLs2p06YAO7AS3YmD
-         wRGtsPetX3ruuQHGK3ZUCNrFpJTOLWEAIq9JHVIDnuoxcIuBaQdScFoCB57Bn714SzeI
-         HkDw==
-X-Gm-Message-State: AOAM532bimLaP5tyGRcgK8IfP1dcuMEHTGEn6mbv2D4DywW2l86dxAyL
-        atpD5Br9AXBRtIudzIAlaYqaMJL6NxGGfCG9PlymCQ==
-X-Google-Smtp-Source: ABdhPJx4DUl6xRZvbKK6BR3s79qq9yVaTejZZHJ3gfrvtaJw5+LtdcLjRZgKHIZMBdPzVLFCDPMc3Rg/cUMhMdxxae8=
-X-Received: by 2002:a9d:7a54:: with SMTP id z20mr11699965otm.17.1620746206182;
- Tue, 11 May 2021 08:16:46 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=l0+Py+3CSfNlV3pR44naNix1unXeingMcJ67NIXwY+s=;
+        b=RcqzOiPHgU5mH7a4wgVq3u+Tg4unwK2rnUS9e87Rk6kAXRZj5PDS2j0FOImyG8AMhC
+         VqQop8/BvX/7xJzEcvvA6Rg34lMdwUmy0IoyqUR/AqZi4gsQUMpGPYfksxf75ubGEZ4K
+         fdc0lGIFEEaDGG1DlvawsJkE4bcJpqLr4EaGGkwnIopGY5vn0/7Ko1oJQysek6Ekl4zc
+         yq2GJDkcBMreG4UzQcR6+7f/uEV6aKiIJCFZYDZtjkGAdcwmsmLtJIVp2dzQucCmP0JZ
+         COMhQlV6IdNrC5R1zLaeNwZVw8dyH7FqhJ4cRbuWRfKPrKnAOvEXUz3FutbYBFOPQ2qX
+         XN1A==
+X-Gm-Message-State: AOAM5302xcj7ZeFI5PEKS06DmcKXZBSv314jfQW+4baIxT1YIA1vHQK+
+        iDEgr4Vx2SZbIsppPAePSfSKSM3qY6E=
+X-Google-Smtp-Source: ABdhPJyXhN6Oluf0OSbovpK7KCmU9QCVIYigxkbbwdonQZFsw+d5xv8p+sw5yqXIED599YuCBkNwpA==
+X-Received: by 2002:a05:6512:3f04:: with SMTP id y4mr22107926lfa.458.1620746229956;
+        Tue, 11 May 2021 08:17:09 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.googlemail.com with ESMTPSA id j14sm2657790lfc.47.2021.05.11.08.17.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 08:17:09 -0700 (PDT)
+Subject: Re: [PATCH v1 2/2] memory: tegra: Enable compile testing for all
+ drivers
+To:     kernel test robot <lkp@intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20210510213729.7095-3-digetx@gmail.com>
+ <202105112125.VctfC6sX-lkp@intel.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <dd0b550e-76a0-bfbc-9d6f-5d867812046d@gmail.com>
+Date:   Tue, 11 May 2021 18:17:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210511150734.3492-1-glittao@gmail.com> <20210511150734.3492-2-glittao@gmail.com>
-In-Reply-To: <20210511150734.3492-2-glittao@gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 11 May 2021 17:16:33 +0200
-Message-ID: <CANpmjNNnS5FgPnNkGWG2ae_ybsr=Wa_bzNba7RruOM+1kgOzfw@mail.gmail.com>
-Subject: Re: [PATCH v5 2/3] mm/slub, kunit: add a KUnit test for SLUB
- debugging functionality
-To:     Oliver Glitta <glittao@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <202105112125.VctfC6sX-lkp@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 at 17:07, <glittao@gmail.com> wrote:
-> From: Oliver Glitta <glittao@gmail.com>
->
-> SLUB has resiliency_test() function which is hidden behind #ifdef
-> SLUB_RESILIENCY_TEST that is not part of Kconfig, so nobody
-> runs it. KUnit should be a proper replacement for it.
->
-> Try changing byte in redzone after allocation and changing
-> pointer to next free node, first byte, 50th byte and redzone
-> byte. Check if validation finds errors.
->
-> There are several differences from the original resiliency test:
-> Tests create own caches with known state instead of corrupting
-> shared kmalloc caches.
->
-> The corruption of freepointer uses correct offset, the original
-> resiliency test got broken with freepointer changes.
->
-> Scratch changing random byte test, because it does not have
-> meaning in this form where we need deterministic results.
->
-> Add new option CONFIG_SLUB_KUNIT_TEST in Kconfig.
-> Tests next_pointer, first_word and clobber_50th_byte do not run
-> with KASAN option on. Because the test deliberately modifies non-allocated
-> objects.
->
-> Use kunit_resource to count errors in cache and silence bug reports.
-> Count error whenever slab_bug() or slab_fix() is called or when
-> the count of pages is wrong.
->
-> Signed-off-by: Oliver Glitta <glittao@gmail.com>
-
-I think I had already reviewed v4, and the changes here are fine:
-
-Reviewed-by: Marco Elver <elver@google.com>
-
-Others who had reviewed/acked v4, probably need to re-ack/review.
-Note, I think if you addressed the comments and didn't change much
-else, you can typically carry the acks/reviews, unless the other
-person changed their mind explicitly.
-
-> ---
-> Changes since v4
-> Use two tests with KASAN dependency.
-> Remove setting current test during init and exit.
->
-> Changes since v3
->
-> Use kunit_resource to silence bug reports and count errors suggested by
-> Marco Elver.
-> Make the test depends on !KASAN thanks to report from the kernel test robot.
->
-> Changes since v2
->
-> Use bit operation & instead of logical && as reported by kernel test
-> robot and Dan Carpenter
->
-> Changes since v1
->
-> Conversion from kselftest to KUnit test suggested by Marco Elver.
-> Error silencing.
-> Error counting improvements.
->
->  lib/Kconfig.debug |  12 ++++
->  lib/Makefile      |   1 +
->  lib/slub_kunit.c  | 155 ++++++++++++++++++++++++++++++++++++++++++++++
->  mm/slab.h         |   1 +
->  mm/slub.c         |  46 +++++++++++++-
->  5 files changed, 212 insertions(+), 3 deletions(-)
->  create mode 100644 lib/slub_kunit.c
->
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 678c13967580..7723f58a9394 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -2429,6 +2429,18 @@ config BITS_TEST
->
->           If unsure, say N.
->
-> +config SLUB_KUNIT_TEST
-> +       tristate "KUnit test for SLUB cache error detection" if !KUNIT_ALL_TESTS
-> +       depends on SLUB_DEBUG && KUNIT
-> +       default KUNIT_ALL_TESTS
-> +       help
-> +         This builds SLUB allocator unit test.
-> +         Tests SLUB cache debugging functionality.
-> +         For more information on KUnit and unit tests in general please refer
-> +         to the KUnit documentation in Documentation/dev-tools/kunit/.
-> +
-> +         If unsure, say N.
-> +
->  config TEST_UDELAY
->         tristate "udelay test driver"
->         help
-> diff --git a/lib/Makefile b/lib/Makefile
-> index e11cfc18b6c0..386215dcb0a0 100644
-> --- a/lib/Makefile
-> +++ b/lib/Makefile
-> @@ -353,5 +353,6 @@ obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
->  obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
->  obj-$(CONFIG_BITS_TEST) += test_bits.o
->  obj-$(CONFIG_CMDLINE_KUNIT_TEST) += cmdline_kunit.o
-> +obj-$(CONFIG_SLUB_KUNIT_TEST) += slub_kunit.o
->
->  obj-$(CONFIG_GENERIC_LIB_DEVMEM_IS_ALLOWED) += devmem_is_allowed.o
-> diff --git a/lib/slub_kunit.c b/lib/slub_kunit.c
-> new file mode 100644
-> index 000000000000..f28965f64ef6
-> --- /dev/null
-> +++ b/lib/slub_kunit.c
-> @@ -0,0 +1,155 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <kunit/test.h>
-> +#include <linux/mm.h>
-> +#include <linux/slab.h>
-> +#include <linux/module.h>
-> +#include <linux/kernel.h>
-> +#include "../mm/slab.h"
-> +
-> +static struct kunit_resource resource;
-> +static int slab_errors;
-> +
-> +static void test_clobber_zone(struct kunit *test)
-> +{
-> +       struct kmem_cache *s = kmem_cache_create("TestSlub_RZ_alloc", 64, 0,
-> +                               SLAB_RED_ZONE, NULL);
-> +       u8 *p = kmem_cache_alloc(s, GFP_KERNEL);
-> +
-> +       kasan_disable_current();
-> +       p[64] = 0x12;
-> +
-> +       validate_slab_cache(s);
-> +       KUNIT_EXPECT_EQ(test, 2, slab_errors);
-> +
-> +       kasan_enable_current();
-> +       kmem_cache_free(s, p);
-> +       kmem_cache_destroy(s);
-> +}
-> +
-> +#ifndef CONFIG_KASAN
-> +static void test_next_pointer(struct kunit *test)
-> +{
-> +       struct kmem_cache *s = kmem_cache_create("TestSlub_next_ptr_free", 64, 0,
-> +                               SLAB_POISON, NULL);
-> +       u8 *p = kmem_cache_alloc(s, GFP_KERNEL);
-> +       unsigned long tmp;
-> +       unsigned long *ptr_addr;
-> +
-> +       kmem_cache_free(s, p);
-> +
-> +       ptr_addr = (unsigned long *)(p + s->offset);
-> +       tmp = *ptr_addr;
-> +       p[s->offset] = 0x12;
-> +
-> +       /*
-> +        * Expecting three errors.
-> +        * One for the corrupted freechain and the other one for the wrong
-> +        * count of objects in use. The third error is fixing broken cache.
-> +        */
-> +       validate_slab_cache(s);
-> +       KUNIT_EXPECT_EQ(test, 3, slab_errors);
-> +
-> +       /*
-> +        * Try to repair corrupted freepointer.
-> +        * Still expecting two errors. The first for the wrong count
-> +        * of objects in use.
-> +        * The second error is for fixing broken cache.
-> +        */
-> +       *ptr_addr = tmp;
-> +       slab_errors = 0;
-> +
-> +       validate_slab_cache(s);
-> +       KUNIT_EXPECT_EQ(test, 2, slab_errors);
-> +
-> +       /*
-> +        * Previous validation repaired the count of objects in use.
-> +        * Now expecting no error.
-> +        */
-> +       slab_errors = 0;
-> +       validate_slab_cache(s);
-> +       KUNIT_EXPECT_EQ(test, 0, slab_errors);
-> +
-> +       kmem_cache_destroy(s);
-> +}
-> +
-> +static void test_first_word(struct kunit *test)
-> +{
-> +       struct kmem_cache *s = kmem_cache_create("TestSlub_1th_word_free", 64, 0,
-> +                               SLAB_POISON, NULL);
-> +       u8 *p = kmem_cache_alloc(s, GFP_KERNEL);
-> +
-> +       kmem_cache_free(s, p);
-> +       *p = 0x78;
-> +
-> +       validate_slab_cache(s);
-> +       KUNIT_EXPECT_EQ(test, 2, slab_errors);
-> +
-> +       kmem_cache_destroy(s);
-> +}
-> +
-> +static void test_clobber_50th_byte(struct kunit *test)
-> +{
-> +       struct kmem_cache *s = kmem_cache_create("TestSlub_50th_word_free", 64, 0,
-> +                               SLAB_POISON, NULL);
-> +       u8 *p = kmem_cache_alloc(s, GFP_KERNEL);
-> +
-> +       kmem_cache_free(s, p);
-> +       p[50] = 0x9a;
-> +
-> +       validate_slab_cache(s);
-> +       KUNIT_EXPECT_EQ(test, 2, slab_errors);
-> +
-> +       kmem_cache_destroy(s);
-> +}
-> +#endif
-> +
-> +static void test_clobber_redzone_free(struct kunit *test)
-> +{
-> +       struct kmem_cache *s = kmem_cache_create("TestSlub_RZ_free", 64, 0,
-> +                               SLAB_RED_ZONE, NULL);
-> +       u8 *p = kmem_cache_alloc(s, GFP_KERNEL);
-> +
-> +       kasan_disable_current();
-> +       kmem_cache_free(s, p);
-> +       p[64] = 0xab;
-> +
-> +       validate_slab_cache(s);
-> +       KUNIT_EXPECT_EQ(test, 2, slab_errors);
-> +
-> +       kasan_enable_current();
-> +       kmem_cache_destroy(s);
-> +}
-> +
-> +static int test_init(struct kunit *test)
-> +{
-> +       slab_errors = 0;
-> +
-> +       kunit_add_named_resource(test, NULL, NULL, &resource,
-> +                                       "slab_errors", &slab_errors);
-> +       return 0;
-> +}
-> +
-> +static void test_exit(struct kunit *test) {}
-
-Does removing test_exit() and not setting it below work?
-
-> +static struct kunit_case test_cases[] = {
-> +       KUNIT_CASE(test_clobber_zone),
-> +
-> +#ifndef CONFIG_KASAN
-> +       KUNIT_CASE(test_next_pointer),
-> +       KUNIT_CASE(test_first_word),
-> +       KUNIT_CASE(test_clobber_50th_byte),
-> +#endif
-> +
-> +       KUNIT_CASE(test_clobber_redzone_free),
-> +       {}
-
-This is better, and tells us which tests exactly were the ones causing
-problems with KASAN.
-
-
-> +};
-> +
-> +static struct kunit_suite test_suite = {
-> +       .name = "slub_test",
-> +       .init = test_init,
-> +       .exit = test_exit,
-> +       .test_cases = test_cases,
-> +};
-> +kunit_test_suite(test_suite);
-> +
-> +MODULE_LICENSE("GPL");
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 18c1927cd196..9b690fa44cae 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -215,6 +215,7 @@ DECLARE_STATIC_KEY_TRUE(slub_debug_enabled);
->  DECLARE_STATIC_KEY_FALSE(slub_debug_enabled);
->  #endif
->  extern void print_tracking(struct kmem_cache *s, void *object);
-> +long validate_slab_cache(struct kmem_cache *s);
->  #else
->  static inline void print_tracking(struct kmem_cache *s, void *object)
->  {
-> diff --git a/mm/slub.c b/mm/slub.c
-> index feda53ae62ba..985fd6ef033c 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -35,6 +35,7 @@
->  #include <linux/prefetch.h>
->  #include <linux/memcontrol.h>
->  #include <linux/random.h>
-> +#include <kunit/test.h>
->
->  #include <trace/events/kmem.h>
->
-> @@ -447,6 +448,26 @@ static inline bool cmpxchg_double_slab(struct kmem_cache *s, struct page *page,
->  static unsigned long object_map[BITS_TO_LONGS(MAX_OBJS_PER_PAGE)];
->  static DEFINE_SPINLOCK(object_map_lock);
->
-> +#if IS_ENABLED(CONFIG_KUNIT)
-> +static bool slab_add_kunit_errors(void)
-> +{
-> +       struct kunit_resource *resource;
-> +
-> +       if (likely(!current->kunit_test))
-> +               return false;
-> +
-> +       resource = kunit_find_named_resource(current->kunit_test, "slab_errors");
-> +       if (!resource)
-> +               return false;
-> +
-> +       (*(int *)resource->data)++;
-> +       kunit_put_resource(resource);
-> +       return true;
-> +}
-> +#else
-> +static inline bool slab_add_kunit_errors(void) { return false; }
-> +#endif
-> +
->  /*
->   * Determine a map of object in use on a page.
->   *
-> @@ -677,6 +698,9 @@ static void slab_fix(struct kmem_cache *s, char *fmt, ...)
->         struct va_format vaf;
->         va_list args;
->
-> +       if (slab_add_kunit_errors())
-> +               return;
-> +
->         va_start(args, fmt);
->         vaf.fmt = fmt;
->         vaf.va = &args;
-> @@ -740,6 +764,9 @@ static void print_trailer(struct kmem_cache *s, struct page *page, u8 *p)
->  void object_err(struct kmem_cache *s, struct page *page,
->                         u8 *object, char *reason)
->  {
-> +       if (slab_add_kunit_errors())
-> +               return;
-> +
->         slab_bug(s, "%s", reason);
->         print_trailer(s, page, object);
->  }
-> @@ -750,6 +777,9 @@ static __printf(3, 4) void slab_err(struct kmem_cache *s, struct page *page,
->         va_list args;
->         char buf[100];
->
-> +       if (slab_add_kunit_errors())
-> +               return;
-> +
->         va_start(args, fmt);
->         vsnprintf(buf, sizeof(buf), fmt, args);
->         va_end(args);
-> @@ -799,12 +829,16 @@ static int check_bytes_and_report(struct kmem_cache *s, struct page *page,
->         while (end > fault && end[-1] == value)
->                 end--;
->
-> +       if (slab_add_kunit_errors())
-> +               goto skip_bug_print;
-> +
->         slab_bug(s, "%s overwritten", what);
->         pr_err("0x%p-0x%p @offset=%tu. First byte 0x%x instead of 0x%x\n",
->                                         fault, end - 1, fault - addr,
->                                         fault[0], value);
->         print_trailer(s, page, object);
->
-> +skip_bug_print:
->         restore_bytes(s, what, value, fault, end);
->         return 0;
->  }
-> @@ -4662,9 +4696,11 @@ static int validate_slab_node(struct kmem_cache *s,
->                 validate_slab(s, page);
->                 count++;
->         }
-> -       if (count != n->nr_partial)
-> +       if (count != n->nr_partial) {
->                 pr_err("SLUB %s: %ld partial slabs counted but counter=%ld\n",
->                        s->name, count, n->nr_partial);
-> +               slab_add_kunit_errors();
-> +       }
->
->         if (!(s->flags & SLAB_STORE_USER))
->                 goto out;
-> @@ -4673,16 +4709,18 @@ static int validate_slab_node(struct kmem_cache *s,
->                 validate_slab(s, page);
->                 count++;
->         }
-> -       if (count != atomic_long_read(&n->nr_slabs))
-> +       if (count != atomic_long_read(&n->nr_slabs)) {
->                 pr_err("SLUB: %s %ld slabs counted but counter=%ld\n",
->                        s->name, count, atomic_long_read(&n->nr_slabs));
-> +               slab_add_kunit_errors();
-> +       }
->
->  out:
->         spin_unlock_irqrestore(&n->list_lock, flags);
->         return count;
->  }
->
-> -static long validate_slab_cache(struct kmem_cache *s)
-> +long validate_slab_cache(struct kmem_cache *s)
->  {
->         int node;
->         unsigned long count = 0;
-> @@ -4694,6 +4732,8 @@ static long validate_slab_cache(struct kmem_cache *s)
->
->         return count;
->  }
-> +EXPORT_SYMBOL(validate_slab_cache);
-> +
->  /*
->   * Generate lists of code addresses where slabcache objects are allocated
->   * and freed.
+11.05.2021 16:58, kernel test robot пишет:
+> Hi Dmitry,
+> 
+> I love your patch! Perhaps something to improve:
+> 
+> [auto build test WARNING on tegra/for-next]
+> [also build test WARNING on v5.13-rc1 next-20210511]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Dmitry-Osipenko/Enable-compile-testing-for-Tegra-memory-drivers/20210511-053910
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git for-next
+> config: powerpc-randconfig-r032-20210511 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project a0fed635fe1701470062495a6ffee1c608f3f1bc)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install powerpc cross compiling tool for clang build
+>         # apt-get install binutils-powerpc-linux-gnu
+>         # https://github.com/0day-ci/linux/commit/ecd67b1d49eb33c9821130a2b3b896bab395118d
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Dmitry-Osipenko/Enable-compile-testing-for-Tegra-memory-drivers/20210511-053910
+>         git checkout ecd67b1d49eb33c9821130a2b3b896bab395118d
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=powerpc 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    __do_insb
+>    ^
+>    arch/powerpc/include/asm/io.h:556:56: note: expanded from macro '__do_insb'
+>    #define __do_insb(p, b, n)      readsb((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
+>                                           ~~~~~~~~~~~~~~~~~~~~~^
+>    In file included from drivers/memory/tegra/tegra30-emc.c:18:
+>    In file included from include/linux/interrupt.h:11:
+>    In file included from include/linux/hardirq.h:10:
+>    In file included from arch/powerpc/include/asm/hardirq.h:6:
+>    In file included from include/linux/irq.h:20:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/powerpc/include/asm/io.h:619:
+>    arch/powerpc/include/asm/io-defs.h:45:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>    DEF_PCI_AC_NORET(insw, (unsigned long p, void *b, unsigned long c),
+>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>                    __do_##name al;                                 \
+>                    ^~~~~~~~~~~~~~
+>    <scratch space>:211:1: note: expanded from here
+>    __do_insw
+>    ^
+>    arch/powerpc/include/asm/io.h:557:56: note: expanded from macro '__do_insw'
+>    #define __do_insw(p, b, n)      readsw((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
+>                                           ~~~~~~~~~~~~~~~~~~~~~^
+>    In file included from drivers/memory/tegra/tegra30-emc.c:18:
+>    In file included from include/linux/interrupt.h:11:
+>    In file included from include/linux/hardirq.h:10:
+>    In file included from arch/powerpc/include/asm/hardirq.h:6:
+>    In file included from include/linux/irq.h:20:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/powerpc/include/asm/io.h:619:
+>    arch/powerpc/include/asm/io-defs.h:47:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>    DEF_PCI_AC_NORET(insl, (unsigned long p, void *b, unsigned long c),
+>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>                    __do_##name al;                                 \
+>                    ^~~~~~~~~~~~~~
+>    <scratch space>:213:1: note: expanded from here
+>    __do_insl
+>    ^
+>    arch/powerpc/include/asm/io.h:558:56: note: expanded from macro '__do_insl'
+>    #define __do_insl(p, b, n)      readsl((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
+>                                           ~~~~~~~~~~~~~~~~~~~~~^
+>    In file included from drivers/memory/tegra/tegra30-emc.c:18:
+>    In file included from include/linux/interrupt.h:11:
+>    In file included from include/linux/hardirq.h:10:
+>    In file included from arch/powerpc/include/asm/hardirq.h:6:
+>    In file included from include/linux/irq.h:20:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/powerpc/include/asm/io.h:619:
+>    arch/powerpc/include/asm/io-defs.h:49:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>    DEF_PCI_AC_NORET(outsb, (unsigned long p, const void *b, unsigned long c),
+>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>                    __do_##name al;                                 \
+>                    ^~~~~~~~~~~~~~
+>    <scratch space>:215:1: note: expanded from here
+>    __do_outsb
+>    ^
+>    arch/powerpc/include/asm/io.h:559:58: note: expanded from macro '__do_outsb'
+>    #define __do_outsb(p, b, n)     writesb((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
+>                                            ~~~~~~~~~~~~~~~~~~~~~^
+>    In file included from drivers/memory/tegra/tegra30-emc.c:18:
+>    In file included from include/linux/interrupt.h:11:
+>    In file included from include/linux/hardirq.h:10:
+>    In file included from arch/powerpc/include/asm/hardirq.h:6:
+>    In file included from include/linux/irq.h:20:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/powerpc/include/asm/io.h:619:
+>    arch/powerpc/include/asm/io-defs.h:51:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>    DEF_PCI_AC_NORET(outsw, (unsigned long p, const void *b, unsigned long c),
+>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>                    __do_##name al;                                 \
+>                    ^~~~~~~~~~~~~~
+>    <scratch space>:217:1: note: expanded from here
+>    __do_outsw
+>    ^
+>    arch/powerpc/include/asm/io.h:560:58: note: expanded from macro '__do_outsw'
+>    #define __do_outsw(p, b, n)     writesw((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
+>                                            ~~~~~~~~~~~~~~~~~~~~~^
+>    In file included from drivers/memory/tegra/tegra30-emc.c:18:
+>    In file included from include/linux/interrupt.h:11:
+>    In file included from include/linux/hardirq.h:10:
+>    In file included from arch/powerpc/include/asm/hardirq.h:6:
+>    In file included from include/linux/irq.h:20:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/powerpc/include/asm/io.h:619:
+>    arch/powerpc/include/asm/io-defs.h:53:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>    DEF_PCI_AC_NORET(outsl, (unsigned long p, const void *b, unsigned long c),
+>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>                    __do_##name al;                                 \
+>                    ^~~~~~~~~~~~~~
+>    <scratch space>:219:1: note: expanded from here
+>    __do_outsl
+>    ^
+>    arch/powerpc/include/asm/io.h:561:58: note: expanded from macro '__do_outsl'
+>    #define __do_outsl(p, b, n)     writesl((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
+>                                            ~~~~~~~~~~~~~~~~~~~~~^
+>>> drivers/memory/tegra/tegra30-emc.c:757:18: warning: implicit conversion from 'unsigned long' to 'u32' (aka 'unsigned int') changes value from 18446744071562067985 to 2147483665 [-Wconstant-conversion]
+>                    writel_relaxed(EMC_ZQ_CAL_LONG_CMD_DEV0,
+>                    ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
+>    drivers/memory/tegra/tegra30-emc.c:161:36: note: expanded from macro 'EMC_ZQ_CAL_LONG_CMD_DEV0'
+>            (DRAM_DEV_SEL_0 | EMC_ZQ_CAL_LONG | EMC_ZQ_CAL_CMD)
+>                                              ^
+>    arch/powerpc/include/asm/io.h:679:40: note: expanded from macro 'writel_relaxed'
+>    #define writel_relaxed(v, addr) writel(v, addr)
+>                                    ~~~~~~ ^
+>    13 warnings generated.
 > --
-> 2.31.1.272.g89b43f80a5
->
+>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>                    __do_##name al;                                 \
+>                    ^~~~~~~~~~~~~~
+>    <scratch space>:203:1: note: expanded from here
+>    __do_outl
+>    ^
+>    arch/powerpc/include/asm/io.h:537:62: note: expanded from macro '__do_outl'
+>    #define __do_outl(val, port)    writel(val,(PCI_IO_ADDR)_IO_BASE+port);
+>                                               ~~~~~~~~~~~~~~~~~~~~~^
+>    In file included from drivers/memory/tegra/tegra124-emc.c:16:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/powerpc/include/asm/io.h:619:
+>    arch/powerpc/include/asm/io-defs.h:43:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>    DEF_PCI_AC_NORET(insb, (unsigned long p, void *b, unsigned long c),
+>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>                    __do_##name al;                                 \
+>                    ^~~~~~~~~~~~~~
+>    <scratch space>:217:1: note: expanded from here
+>    __do_insb
+>    ^
+>    arch/powerpc/include/asm/io.h:556:56: note: expanded from macro '__do_insb'
+>    #define __do_insb(p, b, n)      readsb((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
+>                                           ~~~~~~~~~~~~~~~~~~~~~^
+>    In file included from drivers/memory/tegra/tegra124-emc.c:16:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/powerpc/include/asm/io.h:619:
+>    arch/powerpc/include/asm/io-defs.h:45:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>    DEF_PCI_AC_NORET(insw, (unsigned long p, void *b, unsigned long c),
+>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>                    __do_##name al;                                 \
+>                    ^~~~~~~~~~~~~~
+>    <scratch space>:219:1: note: expanded from here
+>    __do_insw
+>    ^
+>    arch/powerpc/include/asm/io.h:557:56: note: expanded from macro '__do_insw'
+>    #define __do_insw(p, b, n)      readsw((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
+>                                           ~~~~~~~~~~~~~~~~~~~~~^
+>    In file included from drivers/memory/tegra/tegra124-emc.c:16:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/powerpc/include/asm/io.h:619:
+>    arch/powerpc/include/asm/io-defs.h:47:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>    DEF_PCI_AC_NORET(insl, (unsigned long p, void *b, unsigned long c),
+>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>                    __do_##name al;                                 \
+>                    ^~~~~~~~~~~~~~
+>    <scratch space>:221:1: note: expanded from here
+>    __do_insl
+>    ^
+>    arch/powerpc/include/asm/io.h:558:56: note: expanded from macro '__do_insl'
+>    #define __do_insl(p, b, n)      readsl((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
+>                                           ~~~~~~~~~~~~~~~~~~~~~^
+>    In file included from drivers/memory/tegra/tegra124-emc.c:16:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/powerpc/include/asm/io.h:619:
+>    arch/powerpc/include/asm/io-defs.h:49:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>    DEF_PCI_AC_NORET(outsb, (unsigned long p, const void *b, unsigned long c),
+>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>                    __do_##name al;                                 \
+>                    ^~~~~~~~~~~~~~
+>    <scratch space>:223:1: note: expanded from here
+>    __do_outsb
+>    ^
+>    arch/powerpc/include/asm/io.h:559:58: note: expanded from macro '__do_outsb'
+>    #define __do_outsb(p, b, n)     writesb((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
+>                                            ~~~~~~~~~~~~~~~~~~~~~^
+>    In file included from drivers/memory/tegra/tegra124-emc.c:16:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/powerpc/include/asm/io.h:619:
+>    arch/powerpc/include/asm/io-defs.h:51:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>    DEF_PCI_AC_NORET(outsw, (unsigned long p, const void *b, unsigned long c),
+>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>                    __do_##name al;                                 \
+>                    ^~~~~~~~~~~~~~
+>    <scratch space>:225:1: note: expanded from here
+>    __do_outsw
+>    ^
+>    arch/powerpc/include/asm/io.h:560:58: note: expanded from macro '__do_outsw'
+>    #define __do_outsw(p, b, n)     writesw((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
+>                                            ~~~~~~~~~~~~~~~~~~~~~^
+>    In file included from drivers/memory/tegra/tegra124-emc.c:16:
+>    In file included from include/linux/io.h:13:
+>    In file included from arch/powerpc/include/asm/io.h:619:
+>    arch/powerpc/include/asm/io-defs.h:53:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>    DEF_PCI_AC_NORET(outsl, (unsigned long p, const void *b, unsigned long c),
+>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>                    __do_##name al;                                 \
+>                    ^~~~~~~~~~~~~~
+>    <scratch space>:227:1: note: expanded from here
+>    __do_outsl
+>    ^
+>    arch/powerpc/include/asm/io.h:561:58: note: expanded from macro '__do_outsl'
+>    #define __do_outsl(p, b, n)     writesl((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
+>                                            ~~~~~~~~~~~~~~~~~~~~~^
+>>> drivers/memory/tegra/tegra124-emc.c:802:26: warning: implicit conversion from 'unsigned long' to 'u32' (aka 'unsigned int') changes value from 18446744071562067985 to 2147483665 [-Wconstant-conversion]
+>                    emc_ccfifo_writel(emc, EMC_ZQ_CAL_LONG_CMD_DEV0, EMC_ZQ_CAL);
+>                    ~~~~~~~~~~~~~~~~~      ^~~~~~~~~~~~~~~~~~~~~~~~
+>    drivers/memory/tegra/tegra124-emc.c:154:36: note: expanded from macro 'EMC_ZQ_CAL_LONG_CMD_DEV0'
+>            (DRAM_DEV_SEL_0 | EMC_ZQ_CAL_LONG | EMC_ZQ_CAL_CMD)
+>             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+>    13 warnings generated.
+
+This doesn't look like a useful warning from clang, it should see that
+the constant value itself isn't truncated, hence it should be a problem
+of clang. Do you think it's okay to ignore this nonsense?
