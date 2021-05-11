@@ -2,161 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829FE37AEAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D7B37AEB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232056AbhEKSvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:51:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29983 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231825AbhEKSvh (ORCPT
+        id S231997AbhEKSw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231329AbhEKSw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:51:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620759030;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3sGuDkwY1rpAMVCQJVmhxPq9zjMod4hGpJJ6eXBTmJw=;
-        b=PMWoLHRK/uq3ae2wG3xTAHtRTS/nwPsmx+LcaWrSaKbdUoe9OAp9bvp0cXrwDcEnAQ39Qs
-        eXYfE/nO9U/NkfQiwZI30FDtlPwpBPsaSIW46pEoWsPqJdcPgFGFiT84Y1DQKIkkh1wrdL
-        +H2OHYB/VWpBZq+WoH3JVr1w4YzYW80=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-280-wJc_w8FvMFOfP0IN4Jn3vw-1; Tue, 11 May 2021 14:50:26 -0400
-X-MC-Unique: wJc_w8FvMFOfP0IN4Jn3vw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9BF5B8015DB;
-        Tue, 11 May 2021 18:50:24 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.3.128.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 525D42C14A;
-        Tue, 11 May 2021 18:50:13 +0000 (UTC)
-Date:   Tue, 11 May 2021 14:50:11 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Paris <eparis@redhat.com>, x86@kernel.org,
-        linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH v3 1/3] audit: replace magic audit syscall class numbers
- with macros
-Message-ID: <20210511185011.GP3141668@madcap2.tricolour.ca>
-References: <cover.1619811762.git.rgb@redhat.com>
- <bda073f2a8b11000ef40cf8b965305409ee88f44.1619811762.git.rgb@redhat.com>
- <CAHC9VhShi4u26h5OsahveQDNxO_uZ+KgzGOYEp5W7w6foA-uKg@mail.gmail.com>
+        Tue, 11 May 2021 14:52:28 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C8BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:51:21 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id i7so11698366ioa.12
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 11:51:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=7sTUPuFc66ybePyVc1BipkRA9wzdceMEI5lxpFNGBTY=;
+        b=Ejt6pYdhRRT/Y99OtH6AqvCn+KURqUFlvSmqQYYC6RQ6BuuQljq3uRuLepMpaUyF2O
+         q5H+LqUdg0JzK9dJcSVcRe5CZIuLe1ExMHs9WDYbHFnwjPeu60302dqMM9Vga1EM+lNQ
+         uiLjx9PijnJNal5gs9NqFR2fU/Afuk+UFubRaGO9H5dg/h7BIkAja45+pIIsETAxhG28
+         6cvcu+yFJO4Yyv8Lgdc7vhXV+379QExU+vqoSYrsN0eN43JNav3jcBGoUIwwKTQbvlyf
+         vBMaUxQbIm0LErKcUxIxqNTz2LkWP493xXiAwywvTYA5rSXSdi3O70ohUDLCx92+iVi/
+         Sctg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7sTUPuFc66ybePyVc1BipkRA9wzdceMEI5lxpFNGBTY=;
+        b=mJqYkhkoXWqZGQunIEUgl/xZB/JMTiTLUhAiTm1LJSmU+yA8NZDMSY2o+6345xaARJ
+         cKgfaAM0iPa1JcSIFBgj7KIYd77yfDXd+dU34OiL4+t7fjiwjifS/9tpSc4S9UNwiTOu
+         sn5QcxoGHt2mponvrD8qGdBsJHTauPRduUxAhGWQGlCVQ6p2Fop9eAMrumyzDBlksYeK
+         tT665TUriOBLy74P68kSOThbZdoQG0C39/FySKfF0HNfzEO7Nezu+/Py2Mxty9uMyigL
+         C5W4mhxsc67IG2hHiJXdhzP7h25nzTuoUWL9E+Ns6hffmJPYPrpGMYvioQlnduRpiPZe
+         HSyQ==
+X-Gm-Message-State: AOAM530INK5YRZdg/393MWeEMx3LL8iQKt0PsfKLRt1nxq42PlPUGIwd
+        RUqcuRr0967hBIQceQ62F7I=
+X-Google-Smtp-Source: ABdhPJzfp/aDRmoziPojTcrdukG+4wgAm6I/Yg15+Asnz8wLXjxY1VrZGxPuvnMMl1uFWN2iXZsHYg==
+X-Received: by 2002:a02:bb98:: with SMTP id g24mr28108373jan.19.1620759080669;
+        Tue, 11 May 2021 11:51:20 -0700 (PDT)
+Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
+        by smtp.googlemail.com with ESMTPSA id t10sm405096ils.36.2021.05.11.11.51.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 11:51:20 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     Jason Baron <jbaron@akamai.com>, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Jim Cromie <jim.cromie@gmail.com>
+Subject: [RFC PATCH v5 01/28] dyndbg: avoid calling dyndbg_emit_prefix when it has no work
+Date:   Tue, 11 May 2021 12:50:30 -0600
+Message-Id: <20210511185057.3815777-2-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210511185057.3815777-1-jim.cromie@gmail.com>
+References: <20210511185057.3815777-1-jim.cromie@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhShi4u26h5OsahveQDNxO_uZ+KgzGOYEp5W7w6foA-uKg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-10 21:23, Paul Moore wrote:
-> On Fri, Apr 30, 2021 at 4:36 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> >
-> > Replace audit syscall class magic numbers with macros.
-> >
-> > This required putting the macros into new header file
-> > include/linux/auditscm.h since the syscall macros were included for both 64
-> > bit and 32 bit in any compat code, causing redefinition warnings.
-> 
-> The ifndef/define didn't protect against redeclaration?  Huh.  Maybe
-> I'm not thinking about this correctly, or the arch specific code is
-> doing something wonky ...
+Wrap function in a static-inline one, which checks flags to avoid
+calling the function unnecessarily.
 
-I had a chat with Arnd about it in IRC upstream and started digging
-deeper and it got quite messy.  As seen from the cover letter, audit.h
-pulled in a chain of things which weren't entirely unreasonable given it
-was compiling compat support in with native support by default.  I
-suppose I could have defined _ASM_X86_UNISTD_64_H to prevent it from
-being added, but that would be ugly on a generated file, have caused a
-failure elsewhere and would need to be done for each compat file.  I
-thought of defining CONFIG_X86_32 in arch/x86/ia32/audit.c but that
-would cause other problems.  This was the cleanest solution.  Otherwise
-I leave them as magic numbers like in V1.
+And hoist its output-buffer initialization to the grand-caller, which
+is already allocating the buffer on the stack, and can trivially
+initialize it too.
 
-> Regardless, assuming that it is necessary, I would prefer if we called
-> it auditsc.h instead of auditscm.h; the latter makes me think of
-> sockets and not syscalls.
-> 
-> > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> > ---
-> >  MAINTAINERS                        |  1 +
-> >  arch/alpha/kernel/audit.c          |  8 ++++----
-> >  arch/ia64/kernel/audit.c           |  8 ++++----
-> >  arch/parisc/kernel/audit.c         |  8 ++++----
-> >  arch/parisc/kernel/compat_audit.c  |  9 +++++----
-> >  arch/powerpc/kernel/audit.c        | 10 +++++-----
-> >  arch/powerpc/kernel/compat_audit.c | 11 ++++++-----
-> >  arch/s390/kernel/audit.c           | 10 +++++-----
-> >  arch/s390/kernel/compat_audit.c    | 11 ++++++-----
-> >  arch/sparc/kernel/audit.c          | 10 +++++-----
-> >  arch/sparc/kernel/compat_audit.c   | 11 ++++++-----
-> >  arch/x86/ia32/audit.c              | 11 ++++++-----
-> >  arch/x86/kernel/audit_64.c         |  8 ++++----
-> >  include/linux/audit.h              |  1 +
-> >  include/linux/auditscm.h           | 23 +++++++++++++++++++++++
-> >  kernel/auditsc.c                   | 12 ++++++------
-> >  lib/audit.c                        | 10 +++++-----
-> >  lib/compat_audit.c                 | 11 ++++++-----
-> >  18 files changed, 102 insertions(+), 71 deletions(-)
-> >  create mode 100644 include/linux/auditscm.h
-> 
-> ...
-> 
-> > diff --git a/include/linux/auditscm.h b/include/linux/auditscm.h
-> > new file mode 100644
-> > index 000000000000..1c4f0ead5931
-> > --- /dev/null
-> > +++ b/include/linux/auditscm.h
-> > @@ -0,0 +1,23 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> > +/* auditscm.h -- Auditing support syscall macros
-> > + *
-> > + * Copyright 2021 Red Hat Inc., Durham, North Carolina.
-> > + * All Rights Reserved.
-> > + *
-> > + * Author: Richard Guy Briggs <rgb@redhat.com>
-> > + */
-> > +#ifndef _LINUX_AUDITSCM_H_
-> > +#define _LINUX_AUDITSCM_H_
-> > +
-> > +enum auditsc_class_t {
-> > +       AUDITSC_NATIVE = 0,
-> > +       AUDITSC_COMPAT,
-> > +       AUDITSC_OPEN,
-> > +       AUDITSC_OPENAT,
-> > +       AUDITSC_SOCKETCALL,
-> > +       AUDITSC_EXECVE,
-> > +
-> > +       AUDITSC_NVALS /* count */
-> > +};
-> > +
-> > +#endif
-> 
-> -- 
-> paul moore
-> www.paul-moore.com
-> 
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+---
+ include/linux/dynamic_debug.h |  5 +++++
+ lib/dynamic_debug.c           | 19 ++++++++++++-------
+ 2 files changed, 17 insertions(+), 7 deletions(-)
 
-- RGB
-
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
+index a57ee75342cf..dce631e678dd 100644
+--- a/include/linux/dynamic_debug.h
++++ b/include/linux/dynamic_debug.h
+@@ -32,6 +32,11 @@ struct _ddebug {
+ #define _DPRINTK_FLAGS_INCL_FUNCNAME	(1<<2)
+ #define _DPRINTK_FLAGS_INCL_LINENO	(1<<3)
+ #define _DPRINTK_FLAGS_INCL_TID		(1<<4)
++
++#define _DPRINTK_FLAGS_INCL_ANY		\
++	(_DPRINTK_FLAGS_INCL_MODNAME | _DPRINTK_FLAGS_INCL_FUNCNAME |\
++	 _DPRINTK_FLAGS_INCL_LINENO  | _DPRINTK_FLAGS_INCL_TID)
++
+ #if defined DEBUG
+ #define _DPRINTK_FLAGS_DEFAULT _DPRINTK_FLAGS_PRINT
+ #else
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index c70d6347afa2..ede4a491ee87 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -586,13 +586,11 @@ static int remaining(int wrote)
+ 	return 0;
+ }
+ 
+-static char *dynamic_emit_prefix(const struct _ddebug *desc, char *buf)
++static char *__dynamic_emit_prefix(const struct _ddebug *desc, char *buf)
+ {
+ 	int pos_after_tid;
+ 	int pos = 0;
+ 
+-	*buf = '\0';
+-
+ 	if (desc->flags & _DPRINTK_FLAGS_INCL_TID) {
+ 		if (in_interrupt())
+ 			pos += snprintf(buf + pos, remaining(pos), "<intr> ");
+@@ -618,11 +616,18 @@ static char *dynamic_emit_prefix(const struct _ddebug *desc, char *buf)
+ 	return buf;
+ }
+ 
++static inline char *dynamic_emit_prefix(struct _ddebug *desc, char *buf)
++{
++	if (unlikely(desc->flags & _DPRINTK_FLAGS_INCL_ANY))
++		return __dynamic_emit_prefix(desc, buf);
++	return buf;
++}
++
+ void __dynamic_pr_debug(struct _ddebug *descriptor, const char *fmt, ...)
+ {
+ 	va_list args;
+ 	struct va_format vaf;
+-	char buf[PREFIX_SIZE];
++	char buf[PREFIX_SIZE] = "";
+ 
+ 	BUG_ON(!descriptor);
+ 	BUG_ON(!fmt);
+@@ -655,7 +660,7 @@ void __dynamic_dev_dbg(struct _ddebug *descriptor,
+ 	if (!dev) {
+ 		printk(KERN_DEBUG "(NULL device *): %pV", &vaf);
+ 	} else {
+-		char buf[PREFIX_SIZE];
++		char buf[PREFIX_SIZE] = "";
+ 
+ 		dev_printk_emit(LOGLEVEL_DEBUG, dev, "%s%s %s: %pV",
+ 				dynamic_emit_prefix(descriptor, buf),
+@@ -684,7 +689,7 @@ void __dynamic_netdev_dbg(struct _ddebug *descriptor,
+ 	vaf.va = &args;
+ 
+ 	if (dev && dev->dev.parent) {
+-		char buf[PREFIX_SIZE];
++		char buf[PREFIX_SIZE] = "";
+ 
+ 		dev_printk_emit(LOGLEVEL_DEBUG, dev->dev.parent,
+ 				"%s%s %s %s%s: %pV",
+@@ -720,7 +725,7 @@ void __dynamic_ibdev_dbg(struct _ddebug *descriptor,
+ 	vaf.va = &args;
+ 
+ 	if (ibdev && ibdev->dev.parent) {
+-		char buf[PREFIX_SIZE];
++		char buf[PREFIX_SIZE] = "";
+ 
+ 		dev_printk_emit(LOGLEVEL_DEBUG, ibdev->dev.parent,
+ 				"%s%s %s %s: %pV",
+-- 
+2.31.1
 
