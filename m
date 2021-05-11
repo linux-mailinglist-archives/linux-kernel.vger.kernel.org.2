@@ -2,103 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62E0379DEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4D8379DF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbhEKDqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 23:46:06 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2768 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhEKDqD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 23:46:03 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FfNy762Z9zmg73;
-        Tue, 11 May 2021 11:41:35 +0800 (CST)
-Received: from [127.0.0.1] (10.69.38.196) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Tue, 11 May 2021
- 11:44:49 +0800
-Subject: Re: [Question] Indefinitely block in the host when remove the PF
- driver
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        <qemu-devel@nongnu.org>
-CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        Linuxarm <linuxarm@huawei.com>
-References: <c9466e2c-385d-8298-d03c-80dcfc359f52@hisilicon.com>
- <20210430082940.4b0e0397@redhat.com>
-From:   Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <c09fed39-bde5-b7a9-d945-79ef85260e5a@hisilicon.com>
-Date:   Tue, 11 May 2021 11:44:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S229980AbhEKDwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 23:52:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:40754 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229465AbhEKDwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 10 May 2021 23:52:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 75F0A1688;
+        Mon, 10 May 2021 20:51:03 -0700 (PDT)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC7BD3F718;
+        Mon, 10 May 2021 20:51:01 -0700 (PDT)
+Subject: Re: [PATCH] arm64/mm: Remove [PUD|PMD]_TABLE_BIT from [pud|pmd]_bad()
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+References: <1620644871-26280-1-git-send-email-anshuman.khandual@arm.com>
+ <20210510144337.GA92897@C02TD0UTHF1T.local>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <4a36d7b7-6b27-31cc-d701-ebe3c6e4946e@arm.com>
+Date:   Tue, 11 May 2021 09:21:46 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210430082940.4b0e0397@redhat.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210510144337.GA92897@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.38.196]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ +qemu-devel ]
 
-On 2021/4/30 22:29, Alex Williamson wrote:
-> On Fri, 30 Apr 2021 15:57:47 +0800
-> Yicong Yang <yangyicong@hisilicon.com> wrote:
+On 5/10/21 8:13 PM, Mark Rutland wrote:
+> On Mon, May 10, 2021 at 04:37:51PM +0530, Anshuman Khandual wrote:
+>> Semantics wise, [pud|pmd]_bad() have always implied that a given [PUD|PMD]
+>> entry does not have a pointer to the next level page table. This had been
+>> made clear in the commit a1c76574f345 ("arm64: mm: use *_sect to check for
+>> section maps"). Hence explicitly check for a table entry rather than just
+>> testing a single bit. This basically redefines [pud|pmd]_bad() in terms of
+>> [pud|pmd]_table() making the semantics clear.
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 > 
->> When I try to remove the PF driver in the host, the process will be blocked
->> if the related VF of the device is added in the Qemu as an iEP.
->>
->> here's what I got in the host:
->>
->> [root@localhost 0000:75:00.0]# rmmod hisi_zip
->> [99760.571352] vfio-pci 0000:75:00.1: Relaying device request to user (#0)
->> [99862.992099] vfio-pci 0000:75:00.1: Relaying device request to user (#10)
->> [...]
->>
->> and in the Qemu:
->>
->> estuary:/$ lspci -tv
->> -[0000:00]-+-00.0  Device 1b36:0008
->>            +-01.0  Device 1af4:1000
->>            +-02.0  Device 1af4:1009
->>            \-03.0  Device 19e5:a251 <----- the related VF device
->> estuary:/$ qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
->> qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
->> qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
->> qemu-system-aarch64: warning: vfio 0000:75:00.1: Bus 'pcie.0' does not support hotplugging
->> [...]
->>
->> The rmmod process will be blocked until I kill the Qemu process. That's the only way if I
->> want to end the rmmod.
->>
->> So my question is: is such block reasonable? If the VF devcie is occupied or doesn't
->> support hotplug in the Qemu, shouldn't we fail the rmmod and return something like -EBUSY
->> rather than make the host blocked indefinitely?
+> I have no strong feelings either way, so: 
 > 
-> Where would we return -EBUSY?  pci_driver.remove() returns void.
-> Without blocking, I think our only option would be to kill the user
-> process.
->  
-
-yes. the remove() callback of pci_driver doesn't provide a way to abort the process.
-
->> Add the VF under a pcie root port will avoid this. Is it encouraged to always
->> add the VF under a pcie root port rather than directly add it as an iEP?
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
 > 
-> Releasing a device via the vfio request interrupt is always a
-> cooperative process currently, the VM needs to be configured such that
-> the device is capable of being unplugged and the guest needs to respond
-> to the ejection request.  Thanks,
+> ... that said, I think that the "bad" naming is unclear and misleading,
+> and it'd be really nice if we could clean that up treewide with
+> something clearer than "bad".
+
+Agreed, the name is misleading.
+
 > 
+> It does seem that would roughly fit p??_leaf() if we had
 
-Does it make sense to abort the VM creation and give some warnings if user try to
-pass a vfio pci device to the Qemu and doesn't attach it to a hotpluggable
-bridge? Currently I think there isn't such a mechanism in Qemu.
+But what if the platform does not support huge page aka leaf mapping
+at the given level ? Also a non table i.e bad entry might not always
+mean a leaf/section/huge page mapping, it could simply imply that the
+entry is not just pointing to next level and might be just in an bad
+intermediate or invalid state.
 
-Thanks,
-Yicong
+> p??_clear_leaf() and p??_none_or_clear_leaf() helpers.
 
+Could you please elaborate how these new helpers might help define
+pxx_bad() ?
+
+> 
+> Thanks,
+> Mark.
+> 
+>> ---
+>> This applies on v5.13-rc1.
+>>
+>>  arch/arm64/include/asm/pgtable.h | 5 ++---
+>>  1 file changed, 2 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+>> index 25f5c04b43ce..69f8183bef29 100644
+>> --- a/arch/arm64/include/asm/pgtable.h
+>> +++ b/arch/arm64/include/asm/pgtable.h
+>> @@ -509,13 +509,12 @@ extern pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
+>>  
+>>  #define pmd_none(pmd)		(!pmd_val(pmd))
+>>  
+>> -#define pmd_bad(pmd)		(!(pmd_val(pmd) & PMD_TABLE_BIT))
+>> -
+>>  #define pmd_table(pmd)		((pmd_val(pmd) & PMD_TYPE_MASK) == \
+>>  				 PMD_TYPE_TABLE)
+>>  #define pmd_sect(pmd)		((pmd_val(pmd) & PMD_TYPE_MASK) == \
+>>  				 PMD_TYPE_SECT)
+>>  #define pmd_leaf(pmd)		pmd_sect(pmd)
+>> +#define pmd_bad(pmd)		(!pmd_table(pmd))
+>>  
+>>  #define pmd_leaf_size(pmd)	(pmd_cont(pmd) ? CONT_PMD_SIZE : PMD_SIZE)
+>>  #define pte_leaf_size(pte)	(pte_cont(pte) ? CONT_PTE_SIZE : PAGE_SIZE)
+>> @@ -602,7 +601,7 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
+>>  	pr_err("%s:%d: bad pmd %016llx.\n", __FILE__, __LINE__, pmd_val(e))
+>>  
+>>  #define pud_none(pud)		(!pud_val(pud))
+>> -#define pud_bad(pud)		(!(pud_val(pud) & PUD_TABLE_BIT))
+>> +#define pud_bad(pud)		(!pud_table(pud))
+>>  #define pud_present(pud)	pte_present(pud_pte(pud))
+>>  #define pud_leaf(pud)		pud_sect(pud)
+>>  #define pud_valid(pud)		pte_valid(pud_pte(pud))
+>> -- 
+>> 2.20.1
+>>
