@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC0037B228
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB31137B22A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbhEKXI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:08:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45114 "EHLO mail.kernel.org"
+        id S230186AbhEKXI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:08:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhEKXI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:08:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF15061624;
-        Tue, 11 May 2021 23:07:20 +0000 (UTC)
+        id S229736AbhEKXIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 19:08:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 39B6161624;
+        Tue, 11 May 2021 23:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620774440;
-        bh=yzKPT+7LtDzUJiDRdgdlRvVzoGZDchUlGAgsxE7hcEc=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=qhW7gBt495rh+Mkjzq6Ezn2Gw+T5ah9bcw1Ytra1YZw+z3DaEEFVpwprKIsPLR41T
-         XYqC8iKqrq9EetDqSlmRDbHclnZ1uKk7MQk64gO3jUjVul4LbpALi2rH+Izti3YK0X
-         xPDHV8hIT6x09in8tcq9MsY4CDiqn7K1VlAFROCcPOaoi9gi4Y7w3oSGPJFi/WLgtu
-         bqukGt5j5w4AiVKJQPFp8YENyH8/kQSlzLu/ywi94hQxhh3s1FSu0rGQ4BmPrwDJLp
-         tDLcqW746qE9Pxgxc04vMwxKHjil+sBXvg5YJHszO1E+TGL7TT6LMUc/a+5VfnwCTt
-         WP/BTnjHoQbNg==
+        s=k20201202; t=1620774468;
+        bh=0G1IOLWTiKY5Csh1SI3Ny5X7AfG0EfwDXqnowWwhwl8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Khiv9h2F7LGVWlQ1Mrfoye9m3Vn8DGgCcEneWhj7deT4enV+TL6D5AfOOCycVzvs7
+         Ya0j6Dkkjbo9iO84b/KFo8Aayvwgk1ej6F1QMZZu9Qcgddm/JI7fjcvj7waLqjUXoP
+         uEtI/EJLLHi+N6wbV+4v7IuAKQyM7+vjoj+OENUItKqS67BIzrBAGyFoOnVVzdUbjI
+         IP1YEov7/quPHv3JSEYvV6RFiSrgggkyAyq/zG1P0KpYjlzWzJ2387xVlpxGnhW0kH
+         x1R8HsjNbyJ6HfT9aUsl0hrH/KHBhOM2ZChz+elBI5Ce7U2/CZGmsCe3wQSfzfAtOx
+         9n1mXtGqg6A4w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6283F5C0138; Tue, 11 May 2021 16:07:20 -0700 (PDT)
-Date:   Tue, 11 May 2021 16:07:20 -0700
+        id DA43A5C0138; Tue, 11 May 2021 16:07:47 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,47 +32,81 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH tip/core/rcu 0/6] SRCU updates for v5.14
-Message-ID: <20210511230720.GA2894512@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        oleg@redhat.com, joel@joelfernandes.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 1/6] srcu: Remove superfluous sdp->srcu_lock_count zero filling
+Date:   Tue, 11 May 2021 16:07:40 -0700
+Message-Id: <20210511230745.2894650-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20210511230720.GA2894512@paulmck-ThinkPad-P17-Gen-1>
+References: <20210511230720.GA2894512@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+From: Frederic Weisbecker <frederic@kernel.org>
 
-This series provides some updates for SRCU, all courtesy of Frederic
-Weisbecker.
+Because alloc_percpu() zeroes out the allocated memory, there is no need
+to zero-fill newly allocated per-CPU memory.  This commit therefore removes
+the loop zeroing the ->srcu_lock_count and ->srcu_unlock_count arrays
+from init_srcu_struct_nodes().  This is the only use of that function's
+is_static parameter, which this commit also removes.
 
-1.	Remove superfluous sdp->srcu_lock_count zero filling.
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/srcutree.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-2.	Remove superfluous ssp initialization for early callbacks.
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index e26547b34ad3..3414aff2a4b0 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -80,7 +80,7 @@ do {									\
+  * srcu_read_unlock() running against them.  So if the is_static parameter
+  * is set, don't initialize ->srcu_lock_count[] and ->srcu_unlock_count[].
+  */
+-static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
++static void init_srcu_struct_nodes(struct srcu_struct *ssp)
+ {
+ 	int cpu;
+ 	int i;
+@@ -148,14 +148,6 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
+ 		timer_setup(&sdp->delay_work, srcu_delay_timer, 0);
+ 		sdp->ssp = ssp;
+ 		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+-		if (is_static)
+-			continue;
+-
+-		/* Dynamically allocated, better be no srcu_read_locks()! */
+-		for (i = 0; i < ARRAY_SIZE(sdp->srcu_lock_count); i++) {
+-			sdp->srcu_lock_count[i] = 0;
+-			sdp->srcu_unlock_count[i] = 0;
+-		}
+ 	}
+ }
+ 
+@@ -179,7 +171,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+ 		ssp->sda = alloc_percpu(struct srcu_data);
+ 	if (!ssp->sda)
+ 		return -ENOMEM;
+-	init_srcu_struct_nodes(ssp, is_static);
++	init_srcu_struct_nodes(ssp);
+ 	ssp->srcu_gp_seq_needed_exp = 0;
+ 	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
+ 	smp_store_release(&ssp->srcu_gp_seq_needed, 0); /* Init done. */
+-- 
+2.31.1.189.g2e36527f23
 
-3.	Unconditionally embed struct lockdep_map.
-
-4.	Initialize SRCU after timers.
-
-5.	Fix broken node geometry after early ssp init.
-
-6.	Early test SRCU polling start.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/include/linux/srcu.h     |    6 ++++++
- b/include/linux/srcutree.h |    2 --
- b/init/main.c              |    2 ++
- b/kernel/rcu/rcu.h         |    6 ------
- b/kernel/rcu/srcutree.c    |   12 ++----------
- b/kernel/rcu/tiny.c        |    1 -
- b/kernel/rcu/tree.c        |    1 -
- b/kernel/rcu/update.c      |    6 +++++-
- kernel/rcu/rcu.h           |    2 ++
- kernel/rcu/srcutree.c      |    9 ++++++++-
- kernel/rcu/tree.c          |   16 +++++++++++++++-
- 11 files changed, 40 insertions(+), 23 deletions(-)
