@@ -2,246 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D12837A60A
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD8937A60E
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 13:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231538AbhEKLuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 07:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231518AbhEKLuA (ORCPT
+        id S231519AbhEKLvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 07:51:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36494 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231349AbhEKLvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 07:50:00 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C55C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 04:48:53 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id j10so28150974lfb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 04:48:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OxdoaKPOQuUdKzkVcLxQZyyXBdgyHiRS3tUGaZINUts=;
-        b=pu5+cwzEKuzc6EKXsqJ7EaWSkxB7rCn6gNQ30VMCpZCLAPn9ir6RnzaGipRTyxVm+K
-         pSnBAdAG4NNgwEkwdQTxjhsKwtxFqJ99SznjFTuhezxvdIHgaI6BBv3p+8p0XsHszG+V
-         RQaHASxm9Et0cxJy0qUKzFBFViubxluBaNVVg45aQybB/7wIbjaw1IMMvZVohB06z+O9
-         3s8uL1JLKzVYvB1RZkPBju2l4gzFHKeK2tL7LkbfaYQ8lrlvI566AMHvwhvFVbRBso9Z
-         tDguC2zPMdW7HGa4bDpl5xh98LNl9ydjJwxQSDPvWhWqmX6vFAPsI2/5z5P21MbGsP3t
-         13iA==
+        Tue, 11 May 2021 07:51:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620733794;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Whe2b92U5kVUdePQM03i2VZtj34sQh+BU4V01/Bvg3E=;
+        b=VkPze8a7NurXWz0J9+8kLQhMoCl+0Ry0K05/ZLJI121IZXILcW/GkLcK2lp5giQOMGWGIn
+        M0UpGRSxElOQFoD8dalCblY0+fJK00L8VCTLBPgjcrpMD+HfGGXZblt93M0KR7o0OzgJsJ
+        eAMmLjClIC6GT9ZbrGn5G3MyV2jtNfY=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-123-9lNXVnCwNeioJen_qtZaOg-1; Tue, 11 May 2021 07:49:52 -0400
+X-MC-Unique: 9lNXVnCwNeioJen_qtZaOg-1
+Received: by mail-ed1-f70.google.com with SMTP id f8-20020a0564020688b029038840895df2so10808385edy.17
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 04:49:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OxdoaKPOQuUdKzkVcLxQZyyXBdgyHiRS3tUGaZINUts=;
-        b=XAwn/BUHzD4T/+zgiXLLKW2wg1olk7BoCXOgyPZWq89hfdysnqi9AmzdoQ4Y277beQ
-         lvyC+Wtu/3aFQhTkY4CzMkN7Y/6qj2giaOfS1CfuS5YGVGdQCE6+5kccMkXJklopIFb0
-         0fOSpras+lqKdC3/0AP8htHU4ob29FEDzor7u7/Tc1NcAPtClQdBp9PZoQ/GHKN3ghTZ
-         1RYncUXRlaOxFZPeAt4jjIvke4ixdZxi+oA+RUeEbl5mnTtWGXFALbfhet0g733iLhaW
-         ASamkLKs+B+BdSuGdE/0uhNQ1zEydJWWQcICvYFbkyhtJAtp5ismOXAAALB5FtW0kXfi
-         PIIQ==
-X-Gm-Message-State: AOAM533URk/suo0R8GvG6tAZScl++/Int4ER3loOD5x39Ve64WWHlP6R
-        6yNG9SpHsDNOvjqi066vMS0W6w==
-X-Google-Smtp-Source: ABdhPJydVEzMQLCZSWLjQHEgnr+jpAeuIOL0TV29D90uqoPSgdYZuwn5zByK9Fy6Y0UQztu1N5pypA==
-X-Received: by 2002:a05:6512:b8e:: with SMTP id b14mr20299532lfv.404.1620733732151;
-        Tue, 11 May 2021 04:48:52 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id x19sm2604242lfa.22.2021.05.11.04.48.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 04:48:51 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 40BD0102615; Tue, 11 May 2021 14:48:52 +0300 (+03)
-Date:   Tue, 11 May 2021 14:48:52 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Whe2b92U5kVUdePQM03i2VZtj34sQh+BU4V01/Bvg3E=;
+        b=gAbyB/F6yI0Z6l7nX1vrmu6sVtBNycLnwhfR0Blk+yWgqlMPo4Cuw/epeX7HOh5frI
+         nY2WOMcpDoAYcOiMHpca67qe7JfRaX9zII7RKaweOZcECXxc55+sBuliyjCafjytk0+V
+         1k2qehj49c0OcZ51/QYrr+q+1FGbMB6xK7uqylUfTm1kAdbHXQWU1jbkL7DpJiDfHiEZ
+         8BhVQnEDp9bVp6K9KaE6iGAQrars+RvE2YnyZhmIwhzTfLySGNzFt/YoAmw3JDRiXpep
+         JhdbB7WXmpwsxDkplIUrTd++BafLsJTdXzCn2JsECyY7YL3aelsMQ/Cc5CnPnyMkZdtj
+         lJlw==
+X-Gm-Message-State: AOAM531HNZVVk8lK7/M8vp7dcboCn8TBWdJVyx8sVONJN5lCJ2MSu6Ws
+        JKA8dD69AVomsakhzNdz8gmSYNst2XxNPD+xlfhGAwdLFgFCWg2ypOGYCbPs98YiV1l3SPFiF7N
+        QFYos0ynLBd+Ie3LfWGiGOvhQ
+X-Received: by 2002:aa7:de9a:: with SMTP id j26mr12841043edv.269.1620733790994;
+        Tue, 11 May 2021 04:49:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwmeheoEiAUz7JXTmSswmLDu6dIzr51ECVbWaudHXxtlJjyJapE6PTe02zhoXKtSgdILGE4/g==
+X-Received: by 2002:aa7:de9a:: with SMTP id j26mr12841029edv.269.1620733790810;
+        Tue, 11 May 2021 04:49:50 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id t22sm14281817edw.29.2021.05.11.04.49.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 04:49:50 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: hp_accel: Avoid invoking _INI to speed up
+ resume
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, mgross@linux.intel.com
+Cc:     Eric Piel <eric.piel@tremplin-utc.net>,
         Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v26 30/30] mm: Introduce PROT_SHADOW_STACK for shadow
- stack
-Message-ID: <20210511114852.5wm6a5z72xjlqc4c@box>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-31-yu-cheng.yu@intel.com>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:X86 PLATFORM DRIVERS" 
+        <platform-driver-x86@vger.kernel.org>
+References: <20210430060736.590321-1-kai.heng.feng@canonical.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <37304def-9131-c6ff-896d-1062970a0236@redhat.com>
+Date:   Tue, 11 May 2021 13:49:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210427204315.24153-31-yu-cheng.yu@intel.com>
+In-Reply-To: <20210430060736.590321-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 01:43:15PM -0700, Yu-cheng Yu wrote:
-> There are three possible options to create a shadow stack allocation API:
-> an arch_prctl, a new syscall, or adding PROT_SHADOW_STACK to mmap() and
-> mprotect().  Each has its advantages and compromises.
+Hi,
+
+On 4/30/21 8:07 AM, Kai-Heng Feng wrote:
+> hp_accel can take almost two seconds to resume on some HP laptops.
 > 
-> An arch_prctl() is the least intrusive.  However, the existing x86
-> arch_prctl() takes only two parameters.  Multiple parameters must be
-> passed in a memory buffer.  There is a proposal to pass more parameters in
-> registers [1], but no active discussion on that.
+> The bottleneck is on evaluating _INI, which is only needed to run once.
 > 
-> A new syscall minimizes compatibility issues and offers an extensible frame
-> work to other architectures, but this will likely result in some overlap of
-> mmap()/mprotect().
+> Resolve the issue by only invoking _INI when it's necessary. Namely, on
+> probe and on hibernation restore.
 > 
-> The introduction of PROT_SHADOW_STACK to mmap()/mprotect() takes advantage
-> of existing APIs.  The x86-specific PROT_SHADOW_STACK is translated to
-> VM_SHADOW_STACK and a shadow stack mapping is created without reinventing
-> the wheel.  There are potential pitfalls though.  The most obvious one
-> would be using this as a bypass to shadow stack protection.  However, the
-> attacker would have to get to the syscall first.
-> 
-> [1] https://lore.kernel.org/lkml/20200828121624.108243-1-hjl.tools@gmail.com/
-> 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+
+Thank you I've added this to my review-hans branch.
+I'll also add this to my fixes branch and include it in
+a future pdx86 fixes pull-req for Linus for 5.13.
+
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
 > ---
-> v26:
-> - Change PROT_SHSTK to PROT_SHADOW_STACK.
-> - Remove (vm_flags & VM_SHARED) check, since it is covered by
->   !vma_is_anonymous().
+>  drivers/misc/lis3lv02d/lis3lv02d.h |  1 +
+>  drivers/platform/x86/hp_accel.c    | 22 +++++++++++++++++++++-
+>  2 files changed, 22 insertions(+), 1 deletion(-)
 > 
-> v24:
-> - Update arch_calc_vm_prot_bits(), leave PROT* checking to
->   arch_validate_prot().
-> - Update arch_validate_prot(), leave vma flags checking to
->   arch_validate_flags().
-> - Add arch_validate_flags().
-> 
->  arch/x86/include/asm/mman.h      | 60 +++++++++++++++++++++++++++++++-
->  arch/x86/include/uapi/asm/mman.h |  2 ++
->  include/linux/mm.h               |  1 +
->  3 files changed, 62 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/mman.h b/arch/x86/include/asm/mman.h
-> index 629f6c81263a..fbb90f1b02c0 100644
-> --- a/arch/x86/include/asm/mman.h
-> +++ b/arch/x86/include/asm/mman.h
-> @@ -20,11 +20,69 @@
->  		((vm_flags) & VM_PKEY_BIT2 ? _PAGE_PKEY_BIT2 : 0) |	\
->  		((vm_flags) & VM_PKEY_BIT3 ? _PAGE_PKEY_BIT3 : 0))
->  
-> -#define arch_calc_vm_prot_bits(prot, key) (		\
-> +#define pkey_vm_prot_bits(prot, key) (			\
->  		((key) & 0x1 ? VM_PKEY_BIT0 : 0) |      \
->  		((key) & 0x2 ? VM_PKEY_BIT1 : 0) |      \
->  		((key) & 0x4 ? VM_PKEY_BIT2 : 0) |      \
->  		((key) & 0x8 ? VM_PKEY_BIT3 : 0))
-> +#else
-> +#define pkey_vm_prot_bits(prot, key) (0)
->  #endif
->  
-> +static inline unsigned long arch_calc_vm_prot_bits(unsigned long prot,
-> +						   unsigned long pkey)
-> +{
-> +	unsigned long vm_prot_bits = pkey_vm_prot_bits(prot, pkey);
+> diff --git a/drivers/misc/lis3lv02d/lis3lv02d.h b/drivers/misc/lis3lv02d/lis3lv02d.h
+> index c394c0b08519a..7ac788fae1b86 100644
+> --- a/drivers/misc/lis3lv02d/lis3lv02d.h
+> +++ b/drivers/misc/lis3lv02d/lis3lv02d.h
+> @@ -271,6 +271,7 @@ struct lis3lv02d {
+>  	int			regs_size;
+>  	u8                      *reg_cache;
+>  	bool			regs_stored;
+> +	bool			init_required;
+>  	u8                      odr_mask;  /* ODR bit mask */
+>  	u8			whoami;    /* indicates measurement precision */
+>  	s16 (*read_data) (struct lis3lv02d *lis3, int reg);
+> diff --git a/drivers/platform/x86/hp_accel.c b/drivers/platform/x86/hp_accel.c
+> index 799cbe2ffcf36..8c0867bda8280 100644
+> --- a/drivers/platform/x86/hp_accel.c
+> +++ b/drivers/platform/x86/hp_accel.c
+> @@ -88,6 +88,9 @@ MODULE_DEVICE_TABLE(acpi, lis3lv02d_device_ids);
+>  static int lis3lv02d_acpi_init(struct lis3lv02d *lis3)
+>  {
+>  	struct acpi_device *dev = lis3->bus_priv;
+> +	if (!lis3->init_required)
+> +		return 0;
 > +
-> +	if (prot & PROT_SHADOW_STACK)
-> +		vm_prot_bits |= VM_SHADOW_STACK;
-> +
-> +	return vm_prot_bits;
+>  	if (acpi_evaluate_object(dev->handle, METHOD_NAME__INI,
+>  				 NULL, NULL) != AE_OK)
+>  		return -EINVAL;
+> @@ -356,6 +359,7 @@ static int lis3lv02d_add(struct acpi_device *device)
+>  	}
+>  
+>  	/* call the core layer do its init */
+> +	lis3_dev.init_required = true;
+>  	ret = lis3lv02d_init_device(&lis3_dev);
+>  	if (ret)
+>  		return ret;
+> @@ -403,11 +407,27 @@ static int lis3lv02d_suspend(struct device *dev)
+>  
+>  static int lis3lv02d_resume(struct device *dev)
+>  {
+> +	lis3_dev.init_required = false;
+> +	lis3lv02d_poweron(&lis3_dev);
+> +	return 0;
 > +}
 > +
-> +#define arch_calc_vm_prot_bits(prot, pkey) arch_calc_vm_prot_bits(prot, pkey)
-> +
-> +#ifdef CONFIG_X86_SHADOW_STACK
-> +static inline bool arch_validate_prot(unsigned long prot, unsigned long addr)
+> +static int lis3lv02d_restore(struct device *dev)
 > +{
-> +	unsigned long valid = PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM |
-> +			      PROT_SHADOW_STACK;
-> +
-> +	if (prot & ~valid)
-> +		return false;
-> +
-> +	if (prot & PROT_SHADOW_STACK) {
-> +		if (!current->thread.cet.shstk_size)
-> +			return false;
-> +
-> +		/*
-> +		 * A shadow stack mapping is indirectly writable by only
-> +		 * the CALL and WRUSS instructions, but not other write
-> +		 * instructions).  PROT_SHADOW_STACK and PROT_WRITE are
-> +		 * mutually exclusive.
-> +		 */
-> +		if (prot & PROT_WRITE)
-> +			return false;
-> +	}
-> +
-> +	return true;
-> +}
-> +
-> +#define arch_validate_prot arch_validate_prot
-> +
-> +static inline bool arch_validate_flags(struct vm_area_struct *vma, unsigned long vm_flags)
-> +{
-> +	/*
-> +	 * Shadow stack must be anonymous and not shared.
-> +	 */
-> +	if ((vm_flags & VM_SHADOW_STACK) && !vma_is_anonymous(vma))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
-> +#define arch_validate_flags(vma, vm_flags) arch_validate_flags(vma, vm_flags)
-> +
-> +#endif /* CONFIG_X86_SHADOW_STACK */
-> +
->  #endif /* _ASM_X86_MMAN_H */
-> diff --git a/arch/x86/include/uapi/asm/mman.h b/arch/x86/include/uapi/asm/mman.h
-> index f28fa4acaeaf..4c36b263cf0a 100644
-> --- a/arch/x86/include/uapi/asm/mman.h
-> +++ b/arch/x86/include/uapi/asm/mman.h
-> @@ -4,6 +4,8 @@
+> +	lis3_dev.init_required = true;
+>  	lis3lv02d_poweron(&lis3_dev);
+>  	return 0;
+>  }
 >  
->  #define MAP_32BIT	0x40		/* only give out 32bit addresses */
->  
-> +#define PROT_SHADOW_STACK	0x10	/* shadow stack pages */
+> -static SIMPLE_DEV_PM_OPS(hp_accel_pm, lis3lv02d_suspend, lis3lv02d_resume);
+> +static const struct dev_pm_ops hp_accel_pm = {
+> +	.suspend = lis3lv02d_suspend,
+> +	.resume = lis3lv02d_resume,
+> +	.freeze = lis3lv02d_suspend,
+> +	.thaw = lis3lv02d_resume,
+> +	.poweroff = lis3lv02d_suspend,
+> +	.restore = lis3lv02d_restore,
+> +};
 > +
->  #include <asm-generic/mman.h>
->  
->  #endif /* _UAPI_ASM_X86_MMAN_H */
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 1ccec5cc399b..9a7652eea207 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -342,6 +342,7 @@ extern unsigned int kobjsize(const void *objp);
->  
->  #if defined(CONFIG_X86)
->  # define VM_PAT		VM_ARCH_1	/* PAT reserves whole VMA at once (x86) */
-> +# define VM_ARCH_CLEAR	VM_SHADOW_STACK
+>  #define HP_ACCEL_PM (&hp_accel_pm)
+>  #else
+>  #define HP_ACCEL_PM NULL
+> 
 
-Nit: you can put VM_SHADOW_STACK directly into VM_FLAGS_CLEAR. It's
-already conditinal on the feature enabled and VM_NONE otherwise.
-
-Up to you.
-
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-
--- 
- Kirill A. Shutemov
