@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E993837A43C
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F286A37A440
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhEKKHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 06:07:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41734 "EHLO mail.kernel.org"
+        id S231361AbhEKKHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 06:07:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230146AbhEKKHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 06:07:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F60861360;
-        Tue, 11 May 2021 10:05:54 +0000 (UTC)
+        id S230146AbhEKKHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 06:07:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6326C61925;
+        Tue, 11 May 2021 10:05:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620727558;
-        bh=RlNaQugaThbhHxZD0Bx4H5Pc9CrWxAqv0CUHIawYkSk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GmY0r1IkW3ZeGuFPesJIUk10G0bmFN6ceybj46DtgYlzYIMqRRPbswUKdNL2jBhnW
-         l/ZvckzitBi4O5D1xMtId10RQRWtXmuPJLUMCooqUixyjZ+ggFmUWAhjBsNaCElc9T
-         8wGcvvublT2SaDT1c2KzMw4yGHJjHtzf0/joh0h/IYIYiAZXdKtEjzbQlET6xexDL2
-         o7etoJtcP0gOwdCLxDTBw00jI+Plg4iKtTu7BUlIIKrx87a1VRUXOjiwz8C0FoMU2E
-         Ld0dMkYL/WSB7Z03xxLA93T3VBfMtc6LT4gd27sv43Kgy32Oz/AIIeG+V3yk7vWNyV
-         ERDgF+e43XDbg==
+        s=k20201202; t=1620727563;
+        bh=LE00JXn6JpyvcSFw6kRi1i0Orit+XbdWVHE/yEogFnA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=DyQ3OZvSpvBGY8GWhx+paJ4GHTInjnncZyvBdLrzCeKw+tVJD/bre4JHwued/V+XH
+         TrQwMGnvKv4QIh1VTrIT2Tui+R1GRR1oW0XGi5NylsraCRFzTSID4lWjqzWgaUKmIb
+         pgnutv8LqAga8qZgOwP5UgZPNwT4TkuUMdV2/vsZNoX9x7qzae9FZVULOHeSq4MVJh
+         Md+dGyBByx6uf+FfwitOYmGNcjWr//k6PF79Wkn3PglNUW0td2CnHm3N4gnEy0o3DY
+         0zLd/vZ+ezusbAInkkIU3sYTQSvObfmfWj+9N9MzhUVstJoyabmNpnl+dPMXOOD43M
+         oYcU4Kocv97RA==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
@@ -36,10 +36,12 @@ Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
         Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org
-Subject: [PATCH v4 0/4] arm64: drop pfn_valid_within() and simplify pfn_valid()
-Date:   Tue, 11 May 2021 13:05:46 +0300
-Message-Id: <20210511100550.28178-1-rppt@kernel.org>
+Subject: [PATCH v4 1/4] include/linux/mmzone.h: add documentation for pfn_valid()
+Date:   Tue, 11 May 2021 13:05:47 +0300
+Message-Id: <20210511100550.28178-2-rppt@kernel.org>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20210511100550.28178-1-rppt@kernel.org>
+References: <20210511100550.28178-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -48,65 +50,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-Hi,
+Add comment describing the semantics of pfn_valid() that clarifies that
+pfn_valid() only checks for availability of a memory map entry (i.e. struct
+page) for a PFN rather than availability of usable memory backing that PFN.
 
-These patches aim to remove CONFIG_HOLES_IN_ZONE and essentially hardwire
-pfn_valid_within() to 1. 
+The most "generic" version of pfn_valid() used by the configurations with
+SPARSEMEM enabled resides in include/linux/mmzone.h so this is the most
+suitable place for documentation about semantics of pfn_valid().
 
-The idea is to mark NOMAP pages as reserved in the memory map and restore
-the intended semantics of pfn_valid() to designate availability of struct
-page for a pfn.
+Suggested-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+ include/linux/mmzone.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-With this the core mm will be able to cope with the fact that it cannot use
-NOMAP pages and the holes created by NOMAP ranges within MAX_ORDER blocks
-will be treated correctly even without the need for pfn_valid_within.
-
-The patches are boot tested on qemu-system-aarch64.
-
-I beleive it would be best to route these via mmotm tree.
-
-v4:
-* rebase on v5.13-rc1
-
-v3: Link: https://lore.kernel.org/lkml/20210422061902.21614-1-rppt@kernel.org
-* Fix minor issues found by Anshuman
-* Freshen up the declaration of pfn_valid() to make it consistent with
-  pfn_is_map_memory()
-* Add more Acked-by and Reviewed-by tags, thanks Anshuman and David
-
-v2: Link: https://lore.kernel.org/lkml/20210421065108.1987-1-rppt@kernel.org
-* Add check for PFN overflow in pfn_is_map_memory()
-* Add Acked-by and Reviewed-by tags, thanks David.
-
-v1: Link: https://lore.kernel.org/lkml/20210420090925.7457-1-rppt@kernel.org
-* Add comment about the semantics of pfn_valid() as Anshuman suggested
-* Extend comments about MEMBLOCK_NOMAP, per Anshuman
-* Use pfn_is_map_memory() name for the exported wrapper for
-  memblock_is_map_memory(). It is still local to arch/arm64 in the end
-  because of header dependency issues.
-
-rfc: Link: https://lore.kernel.org/lkml/20210407172607.8812-1-rppt@kernel.org
-
-Mike Rapoport (4):
-  include/linux/mmzone.h: add documentation for pfn_valid()
-  memblock: update initialization of reserved pages
-  arm64: decouple check whether pfn is in linear map from pfn_valid()
-  arm64: drop pfn_valid_within() and simplify pfn_valid()
-
- arch/arm64/Kconfig              |  3 ---
- arch/arm64/include/asm/memory.h |  2 +-
- arch/arm64/include/asm/page.h   |  3 ++-
- arch/arm64/kvm/mmu.c            |  2 +-
- arch/arm64/mm/init.c            | 14 +++++++++++++-
- arch/arm64/mm/ioremap.c         |  4 ++--
- arch/arm64/mm/mmu.c             |  2 +-
- include/linux/memblock.h        |  4 +++-
- include/linux/mmzone.h          | 11 +++++++++++
- mm/memblock.c                   | 28 ++++++++++++++++++++++++++--
- 10 files changed, 60 insertions(+), 13 deletions(-)
-
-
-base-commit: 6efb943b8616ec53a5e444193dccf1af9ad627b5
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 0d53eba1c383..e5945ca24df7 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -1427,6 +1427,17 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+ #endif
+ 
+ #ifndef CONFIG_HAVE_ARCH_PFN_VALID
++/**
++ * pfn_valid - check if there is a valid memory map entry for a PFN
++ * @pfn: the page frame number to check
++ *
++ * Check if there is a valid memory map entry aka struct page for the @pfn.
++ * Note, that availability of the memory map entry does not imply that
++ * there is actual usable memory at that @pfn. The struct page may
++ * represent a hole or an unusable page frame.
++ *
++ * Return: 1 for PFNs that have memory map entries and 0 otherwise
++ */
+ static inline int pfn_valid(unsigned long pfn)
+ {
+ 	struct mem_section *ms;
 -- 
 2.28.0
 
