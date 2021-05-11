@@ -2,37 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9591D37A1ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F8737A1EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 10:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbhEKI3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 04:29:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38758 "EHLO mail.kernel.org"
+        id S231341AbhEKI3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 04:29:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230338AbhEKI3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 04:29:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9360C61948;
-        Tue, 11 May 2021 08:28:13 +0000 (UTC)
+        id S231249AbhEKI30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 04:29:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D68361943;
+        Tue, 11 May 2021 08:28:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620721694;
-        bh=YKWOq5o3HhQKTZsQen7jsuSJsP9ocdlM8lx4R1/2yUs=;
+        s=k20201202; t=1620721700;
+        bh=4cFqGgBdAbBe0GybCv/aBA0bJnpRTZe4yHbphP7wiXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bQGjdUAuch3Cp9R2Iagl62AjhX/O584npGj3eJqIIP1e96T7A5KrqT2f9bkbGwV1R
-         eQlnxZOCSe2oOYXhF1c/QnvlOOLjQMEMUnUXbJes4oLIQfLs6uC+W3HlP+itm/iPSi
-         ZJ4mPc6Xk+3J7/szVzvd0H0Le6QxW/6EMNHu86ThW/kR6HHvlGZqkX7fP3wMGhlY2r
-         xveCk0zuPxQ5dr0l6t5V8Xgvp65TUodBrgCPl+auDKuixtOF9h1fzxr2BYmVPPyO40
-         CcSDzU9ten2c4iAS79+gojcCc7gPOci6RPCMMaMd03F+k1F4RwRAwV7oxDv3kLyZHq
-         OlYscbc45RUcA==
+        b=jynQ+wBdyHTV4wColpT3K+33k7SQI3CioTON0DCXJwQJEViOyc3uRkuJJJDqAWREz
+         fg4ZP7cLfys3Ae0ECK6wNl1odn36jCmHpiMw6HXFfreWLli2uzQgJgR7y1KIjgzAD6
+         +BEIFhfv3rSAAV2d3vW05YqHK406NVllKk1lY7qh+il6+07D+dcnRdsjLno5mmMQ0x
+         O58cDdY303fXyULGaX+b3IZn5GMYtmJ+2vkkbSQPbu0QvkFY8J3P+m4gIgnpDEA+Io
+         Ys76PY5EDXTJ2nwRImeke+iug2nQcDtJeYhRchHqOTuv+qPmlTw0XRxeELQFkGhYw2
+         ceWbH3NKRodZg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ASoC: codecs: lpass-rx-macro: add missing MODULE_DEVICE_TABLE
-Date:   Tue, 11 May 2021 09:26:00 +0100
-Message-Id: <162072058170.33157.1978725298165946792.b4-ty@kernel.org>
+To:     Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-sunxi@lists.linux.dev
+Subject: Re: (subset) [PATCH v3 0/7] PinePhone BT audio bringup
+Date:   Tue, 11 May 2021 09:26:02 +0100
+Message-Id: <162072058168.33157.16217732000222184745.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210510103844.1532-1-srinivas.kandagatla@linaro.org>
-References: <20210510103844.1532-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20210430035859.3487-1-samuel@sholland.org>
+References: <20210430035859.3487-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,8 +45,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021 11:38:44 +0100, Srinivas Kandagatla wrote:
-> Fix module loading by adding missing MODULE_DEVICE_TABLE.
+On Thu, 29 Apr 2021 22:58:52 -0500, Samuel Holland wrote:
+> This series uses the additional DAIs added to the sun8i-codec driver to
+> add hardware routing for BT SCO (headset) audio on the PinePhone.
+> 
+> The BT audio connection is represented by the "dummy" bt-sco codec. The
+> connection to the Quectel EG-25G modem via AIF2 works as well, but I do
+> not include it here because there is no appropriate codec driver in
+> tree. We have been using an out-of-tree "dummy" codec driver for the
+> modem similar to bt-sco, and I'm not sure if such a driver would be
+> desired upstream.
+> 
+> [...]
 
 Applied to
 
@@ -49,8 +64,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: lpass-rx-macro: add missing MODULE_DEVICE_TABLE
-      commit: d4335d058f8430a0ce2b43dab9531f3a3cf9fe2c
+[1/7] ASoC: dt-bindings: sun8i-codec: Increase #sound-dai-cells
+      commit: 880e007f15a31f446b9e1713720c6ae5a539f3f4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
