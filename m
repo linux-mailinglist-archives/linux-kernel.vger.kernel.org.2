@@ -2,136 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E2637AB1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F9237AB23
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 17:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231961AbhEKPul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 11:50:41 -0400
-Received: from gateway22.websitewelcome.com ([192.185.47.100]:30118 "EHLO
-        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231852AbhEKPuj (ORCPT
+        id S231867AbhEKPvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 11:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231561AbhEKPvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 11:50:39 -0400
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway22.websitewelcome.com (Postfix) with ESMTP id 5BF52413FF
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 10:49:31 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id gUdXlg0M48uM0gUdXl10aT; Tue, 11 May 2021 10:49:31 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=du7TLirKJwuRndTVgzHHBCMXvT6lZMGk+j6j2JK4ikk=; b=jVO4W/UG3fiHMDSm9xE8Ra87k3
-        +cgQgqzxJVZdYJVsdqhpoh0FUWz2VDu+NJczDnC8WrpoxH++yGLWMSWG3vY3L4TwcEYXqt/VYGwfS
-        Iq31krhyN9/zwtnmsYa6hR2l5qrGI5RbO2Mobfbn1y34LKFCKc6D5eLAQx35mV97uY/wAYMkfgXsp
-        VBABL308IUxeJpnKvlfvfqVxAxxg9F58lw2s/1Y7rEoPe1aUmq+ePxI3C45k6ughER11G8y7I7zE2
-        mWTQsmaxiHyhKmUDzHzrf4wrxEimMLhzUQ83BNifaZvm0BwlnDyKzNINSGViHnLXpKpL1nFECJa15
-        lAWA6ndQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:59016 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lgUdS-000VgQ-Ji; Tue, 11 May 2021 10:49:26 -0500
-Subject: Re: [Intel-wired-lan] [PATCH][next] ixgbe: Fix out-bounds warning in
- ixgbe_host_interface_command()
-To:     "Switzer, David" <david.switzer@intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-References: <20210413190345.GA304933@embeddedor>
- <MW3PR11MB47483A28574E9F2C5517D3C5EB589@MW3PR11MB4748.namprd11.prod.outlook.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <b0749fb9-ff4e-3237-e2f7-b97255545eb0@embeddedor.com>
-Date:   Tue, 11 May 2021 10:49:55 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 11 May 2021 11:51:47 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F263FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 08:50:40 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id c22so23450734edn.7
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 08:50:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YH6YgAVkTiXbdfOcXF2vDZOin/cgaMlrHhCUoByOUzM=;
+        b=KAVJuYtXoVccS7Mz6+WwXrwBzBNXVBJiXvHcQFoDhJKBjMBnBuHojuygaSnyjBFh2J
+         juvXeZVJwPDRy+v2a+HBWLFfu29TOD989MaKVyZz7XHcJ3O1A+Sq/ZsrpqhPqO/vtNRs
+         tJZM/jFTyvjuzNJj8uIiI+6Kk760+lBL2FSbujpXDN7b+nWSdhwY+pFNdwhyfj5J9ham
+         7/I4tKLzDZSH0mCw0oAdxkvaK8TYCEKmaKeJTfHtZBbJ4C8xUaObZxvd7rsKV6EQlFSQ
+         bFExTo11KTR4WHN2uubvLiG/0eTzRbmZatHF7ZTdlD1HfviACmmHmsQPpJuo+LdICeQt
+         dgbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YH6YgAVkTiXbdfOcXF2vDZOin/cgaMlrHhCUoByOUzM=;
+        b=DAHdEYt/kq6DJzdmQvZbAzSAPoMnuO/MzmCm342s7QFjoJ+tJQZE3k8/QsWuD7xij0
+         pS6KVhkipIf+lhSJiVKcrG07/m4N0Q1SQM71XWZohOYsUYm3paF1Cfv8rcfBMmmDaDX6
+         JbIu1CurL5iA0wJojNabpPHY60mjZoWRT7T1Ms2JWuPV6G3oPkIr6UpFGU3vALpiJoSS
+         Iv47tRCrDaUMWhHY03+TGIyCI8lhi0Ggq9ZF/8Seo4xdQH0iA7Qg9UigRAzHq6SJtXwm
+         QEuDudMs951O35fqLUsJP/UOQFlQzjvFS4HegqEbAPMUZwFlcJgtEFcEnOOtQ6Y8mmZM
+         cUcg==
+X-Gm-Message-State: AOAM53199i6mbXi9YzHkj0iOCzrwT3rBkUse0CS4MZ9pKBLGGpovxL6D
+        iI7kzjfSaBZ+VBpAEAYZR2KyHSKmnA4imp8aUlSJqg==
+X-Google-Smtp-Source: ABdhPJxOYtRFndI12nE8eH+qHElDO270/uoKY+1bJzD1DPvDmH+0jqCQqkMrfS0r0UZK3DgA/+LD12UEaft2TeZhjZ4=
+X-Received: by 2002:a50:f0d6:: with SMTP id a22mr37973492edm.354.1620748239760;
+ Tue, 11 May 2021 08:50:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <MW3PR11MB47483A28574E9F2C5517D3C5EB589@MW3PR11MB4748.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lgUdS-000VgQ-Ji
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:59016
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 39
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <d6ca05720290060e909c1f4d12858f900f1be0e7.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4jGmhkrd+Zr4RNcZ5qfXkYO-416Bw2_idVbrgij41yvYg@mail.gmail.com>
+ <0e577692-101e-38f7-ebe2-2e7222016a9f@linux.intel.com> <CAPcyv4jLMA=jehxdFi=A-xtjSRQ_v7XxSVYrZPAU3XKC39qWRA@mail.gmail.com>
+ <43e0a5cc-721a-04f1-50b6-b1319da10bac@intel.com>
+In-Reply-To: <43e0a5cc-721a-04f1-50b6-b1319da10bac@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 11 May 2021 08:50:29 -0700
+Message-ID: <CAPcyv4gEROpgvf+3Drgso1O6ENQ=2xBoKHqC6d4fWvdDNVSNjA@mail.gmail.com>
+Subject: Re: [RFC v2 16/32] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Tue, May 11, 2021 at 8:45 AM Dave Hansen <dave.hansen@intel.com> wrote:
+>
+> On 5/11/21 8:37 AM, Dan Williams wrote:
+> >> I disagree. We already spent a lot of cycles on this. WBINVD makes never
+> >> sense in current TDX and all the code will be disabled.
+> > Why not just drop the patch if it continues to cause people to spend
+> > cycles on it and it addresses a problem that will never happen?
+>
+> If someone calls WBINVD, we have a bug.  Not a little bug, either.  It
+> probably means there's some horribly confused kernel code that's now
+> facing broken cache coherency.  To me, it's a textbook place to use
+> BUG_ON().
+>
+> This also doesn't "address" the problem, it just helps produce a more
+> coherent warning message.  It's why we have OOPS messages in the page
+> fault handler: it never makes any sense to dereference a NULL pointer,
+> yet we have code to make debugging them easier.  It's well worth the ~20
+> lines of code that this costs us for ease of debugging.
 
-On 5/6/21 02:25, Switzer, David wrote:
-> 
->> -----Original Message-----
->> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
->> Gustavo A. R. Silva
->> Sent: Tuesday, April 13, 2021 12:04 PM
->> To: Brandeburg, Jesse <jesse.brandeburg@intel.com>; Nguyen, Anthony L
->> <anthony.l.nguyen@intel.com>; David S. Miller <davem@davemloft.net>; Jakub
->> Kicinski <kuba@kernel.org>
->> Cc: Kees Cook <keescook@chromium.org>; netdev@vger.kernel.org; linux-
->> kernel@vger.kernel.org; Gustavo A. R. Silva <gustavoars@kernel.org>; intel-
->> wired-lan@lists.osuosl.org; linux-hardening@vger.kernel.org
->> Subject: [Intel-wired-lan] [PATCH][next] ixgbe: Fix out-bounds warning in
->> ixgbe_host_interface_command()
->>
->> Replace union with a couple of pointers in order to fix the following out-of-
->> bounds warning:
->>
->>  CC [M]  drivers/net/ethernet/intel/ixgbe/ixgbe_common.o
->> drivers/net/ethernet/intel/ixgbe/ixgbe_common.c: In function
->> ‘ixgbe_host_interface_command’:
->> drivers/net/ethernet/intel/ixgbe/ixgbe_common.c:3729:13: warning: array
->> subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-
->> bounds]
->> 3729 |   bp->u32arr[bi] = IXGBE_READ_REG_ARRAY(hw, IXGBE_FLEX_MNG, bi);
->>      |   ~~~~~~~~~~^~~~
->> drivers/net/ethernet/intel/ixgbe/ixgbe_common.c:3682:7: note: while
->> referencing ‘u32arr’
->> 3682 |   u32 u32arr[1];
->>      |       ^~~~~~
->>
->> This helps with the ongoing efforts to globally enable -Warray-bounds.
->>
->> Link: https://github.com/KSPP/linux/issues/109
->> Co-developed-by: Kees Cook <keescook@chromium.org>
->> Signed-off-by: Kees Cook <keescook@chromium.org>
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->> drivers/net/ethernet/intel/ixgbe/ixgbe_common.c | 16 +++++++---------
->> 1 file changed, 7 insertions(+), 9 deletions(-)
->>
-> Tested-by: Dave Switzer <david.switzer@intel.com>
-
-Thanks for this, Dave. :)
-
-By the way, we are about to be able to globally enable -Warray-bounds and,
-this is one of the last out-of-bounds warnings in linux-next.
-
-Thanks
---
-Gustavo
+The 'default' case in this 'switch' prints the exit reason and faults,
+can't that also trigger a backtrace that dumps the exception stack and
+the faulting instruction? In other words shouldn't this just fail with
+a common way to provide better debug on any unhandled #VE and not try
+to continue running past something that "can't" happen?
