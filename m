@@ -2,94 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F9937A0D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4314E37A0D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 09:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbhEKHaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 03:30:12 -0400
-Received: from mga14.intel.com ([192.55.52.115]:2345 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230343AbhEKHaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 03:30:09 -0400
-IronPort-SDR: 2a3sua9LSu5UwqCjj3ECqz0JxdHpWprz7vk3wu+76mZAE3VaVUd8Tf5nNJDeQbQN00E0eMWMIL
- ukBx0dYAWnHw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="199055536"
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="199055536"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 00:29:02 -0700
-IronPort-SDR: C7OJU3FJBXjmJjf42PenthZldjvEx+Zg3fDBLwRehBrErTcGWOYpmfYxyezuSaufd/62hw6QOP
- TN732OV4sUpw==
-X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
-   d="scan'208";a="392204982"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 00:28:54 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1lgMp0-00BNQ4-HI; Tue, 11 May 2021 10:28:50 +0300
-Date:   Tue, 11 May 2021 10:28:50 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Yury Norov <yury.norov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux-SH <linux-sh@vger.kernel.org>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 11/12] tools: sync lib/find_bit implementation
-Message-ID: <YJoyMrqRtB3GSAny@smile.fi.intel.com>
-References: <20210401003153.97325-1-yury.norov@gmail.com>
- <20210401003153.97325-12-yury.norov@gmail.com>
- <1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp>
- <CAHp75Vea0Y_LfWC7LNDoDZqO4t+SVHV5HZMzErfyMPoBAjjk1g@mail.gmail.com>
- <YJm5Dpo+RspbAtye@rikard>
+        id S230130AbhEKHdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 03:33:13 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:45122 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229637AbhEKHdM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 03:33:12 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14B75CWW134387;
+        Tue, 11 May 2021 03:31:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=MIqjaZO00c7j96e3E5odnRjvjW8XfjRSMn2eBpvgxrI=;
+ b=tgbhQ4QXHblEWshgsoq+Jv1TJ2u+55ZDak+wVdyyunnmPTBuhZPKXpmN+k/6bL+3iOLK
+ nDbEFhwqhDmRJBtNZ03UKul3/RCez04esu5jc/vjXwE0fx/AnxUNIS3H7amAvy/2mH1C
+ SU8Eiji68W2SDnUBzSumiCasjaGqDnSD9i/mWld7IpQb9m5EXvod1uMM2j2MX1usL4yL
+ cIyiHQkWbGvhci/P2LThmi0enb8VV0npBN4dBeBfGXFggE/mlgLfD7E1u9eJ84etYJFd
+ K5kJ5qUDHekG9yg1FLLryV9fvuysH/0u8IUgNxyrzqNoK6X1u6Uv+BwFGb57ifDTVPaZ OA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38fm1tag1h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 11 May 2021 03:31:42 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14B7MW0a004054;
+        Tue, 11 May 2021 07:31:40 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 38dhwh9gyt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 11 May 2021 07:31:40 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14B7VcbM33030500
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 May 2021 07:31:38 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 01AED4C05C;
+        Tue, 11 May 2021 07:31:38 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A71774C07E;
+        Tue, 11 May 2021 07:31:37 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.34.120])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 11 May 2021 07:31:37 +0000 (GMT)
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org
+Cc:     nathanl@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Subject: [PATCH v2] ppc64/numa: consider the max numa node for migratable LPAR
+Date:   Tue, 11 May 2021 09:31:36 +0200
+Message-Id: <20210511073136.17795-1-ldufour@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJm5Dpo+RspbAtye@rikard>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 3N0Xa6K1QIt-ipkp-Nt-4r7gxQiD8Eoy
+X-Proofpoint-GUID: 3N0Xa6K1QIt-ipkp-Nt-4r7gxQiD8Eoy
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-11_02:2021-05-10,2021-05-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 mlxscore=0 suspectscore=0 clxscore=1015 lowpriorityscore=0
+ mlxlogscore=999 spamscore=0 impostorscore=0 adultscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105110053
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 12:51:58AM +0200, Rikard Falkeborn wrote:
-> On Mon, May 10, 2021 at 06:44:44PM +0300, Andy Shevchenko wrote:
+When a LPAR is migratable, we should consider the maximum possible NUMA
+node instead the number of NUMA node from the actual system.
 
-...
+The DT property 'ibm,current-associativity-domains' is defining the maximum
+number of nodes the LPAR can see when running on that box. But if the LPAR
+is being migrated on another box, it may seen up to the nodes defined by
+'ibm,max-associativity-domains'. So if a LPAR is migratable, that value
+should be used.
 
-> Does the following work for you? For simplicity, I copied__is_constexpr from
-> include/linux/minmax.h (which isn't available in tools/). A proper patch
-> would reuse __is_constexpr (possibly refactoring it to a separate
-> header since bits.h including minmax.h for that only seems smelly)
+Unfortunately, there is no easy way to know if a LPAR is migratable or
+not. The hypervisor is exporting the property 'ibm,migratable-partition' in
+the case it set to migrate partition, but that would not mean that the
+current partition is migratable.
 
-I think we need to have it in something like compiler.h (top level). Under
-'top level' I meant something with the function as of compiler.h but with
-Linuxisms rather than compiler attributes or so.
+Without this patch, when a LPAR is started on a 2 nodes box and then
+migrated to a 3 nodes box, the hypervisor may spread the LPAR's CPUs on the
+3rd node. In that case if a CPU from that 3rd node is added to the LPAR, it
+will be wrongly assigned to the node because the kernel has been set to use
+up to 2 nodes (the configuration of the departure node). With this patch
+applies, the CPU is correctly added to the 3rd node.
 
-Separate header for the (single) macro is too much...
+Fixes: f9f130ff2ec9 ("powerpc/numa: Detect support for coregroup")
+Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+---
+V2: Address Srikar's comments
+ - Fix the commit message
+ - Use pr_info instead printk(KERN_INFO..)
+---
+ arch/powerpc/mm/numa.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-> and fix
-> bits.h in the kernel header as well, to keep the files in sync.
-
-Right.
-
+diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
+index f2bf98bdcea2..094a1076fd1f 100644
+--- a/arch/powerpc/mm/numa.c
++++ b/arch/powerpc/mm/numa.c
+@@ -893,7 +893,7 @@ static void __init setup_node_data(int nid, u64 start_pfn, u64 end_pfn)
+ static void __init find_possible_nodes(void)
+ {
+ 	struct device_node *rtas;
+-	const __be32 *domains;
++	const __be32 *domains = NULL;
+ 	int prop_length, max_nodes;
+ 	u32 i;
+ 
+@@ -909,9 +909,14 @@ static void __init find_possible_nodes(void)
+ 	 * it doesn't exist, then fallback on ibm,max-associativity-domains.
+ 	 * Current denotes what the platform can support compared to max
+ 	 * which denotes what the Hypervisor can support.
++	 *
++	 * If the LPAR is migratable, new nodes might be activated after a LPM,
++	 * so we should consider the max number in that case.
+ 	 */
+-	domains = of_get_property(rtas, "ibm,current-associativity-domains",
+-					&prop_length);
++	if (!of_get_property(of_root, "ibm,migratable-partition", NULL))
++		domains = of_get_property(rtas,
++					  "ibm,current-associativity-domains",
++					  &prop_length);
+ 	if (!domains) {
+ 		domains = of_get_property(rtas, "ibm,max-associativity-domains",
+ 					&prop_length);
+@@ -920,6 +925,8 @@ static void __init find_possible_nodes(void)
+ 	}
+ 
+ 	max_nodes = of_read_number(&domains[min_common_depth], 1);
++	pr_info("Partition configured for %d NUMA nodes.\n", max_nodes);
++
+ 	for (i = 0; i < max_nodes; i++) {
+ 		if (!node_possible(i))
+ 			node_set(i, node_possible_map);
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.31.1
 
