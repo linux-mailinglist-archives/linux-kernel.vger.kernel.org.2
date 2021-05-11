@@ -2,31 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1D4379F91
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD3B379FA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 08:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbhEKGNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 02:13:30 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2556 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbhEKGNZ (ORCPT
+        id S230351AbhEKGVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 02:21:34 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:2439 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229957AbhEKGVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 02:13:25 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FfSDx635DzkWPf;
-        Tue, 11 May 2021 14:09:37 +0800 (CST)
+        Tue, 11 May 2021 02:21:32 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FfSQH67CMzCr4w;
+        Tue, 11 May 2021 14:17:43 +0800 (CST)
 Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 11 May 2021 14:12:09 +0800
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 11 May 2021 14:20:12 +0800
 From:   Zou Wei <zou_wei@huawei.com>
-To:     <robh@kernel.org>, <tomeu.vizoso@collabora.com>,
-        <airlied@linux.ie>, <daniel@ffwll.ch>, <steven.price@arm.com>,
-        <alyssa.rosenzweig@collabora.com>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+To:     <wangzhou1@hisilicon.com>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] drm/panfrost: Fix PM reference leak in panfrost_job_hw_submit()
-Date:   Tue, 11 May 2021 14:29:11 +0800
-Message-ID: <1620714551-106976-1-git-send-email-zou_wei@huawei.com>
+Subject: [PATCH -next] crypto: hisilicon -: switch to memdup_user_nul()
+Date:   Tue, 11 May 2021 14:37:11 +0800
+Message-ID: <1620715031-107265-1-git-send-email-zou_wei@huawei.com>
 X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -36,30 +35,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync will increment pm usage counter even it failed.
-Forgetting to putting operation will result in reference leak here.
-Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-counter balanced.
+Use memdup_user_nul() helper instead of open-coding to
+simplify the code.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- drivers/gpu/drm/panfrost/panfrost_job.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/hisilicon/qm.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
-index 6003cfe..42d8dbc 100644
---- a/drivers/gpu/drm/panfrost/panfrost_job.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_job.c
-@@ -157,7 +157,7 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
+diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+index ce439a0..83a5d30 100644
+--- a/drivers/crypto/hisilicon/qm.c
++++ b/drivers/crypto/hisilicon/qm.c
+@@ -1570,17 +1570,10 @@ static ssize_t qm_cmd_write(struct file *filp, const char __user *buffer,
+ 	if (count > QM_DBG_WRITE_LEN)
+ 		return -ENOSPC;
  
- 	panfrost_devfreq_record_busy(&pfdev->pfdevfreq);
+-	cmd_buf = kzalloc(count + 1, GFP_KERNEL);
+-	if (!cmd_buf)
++	cmd_buf = memdup_user_nul(buffer, count);
++	if (IS_ERR(cmd_buf))
+ 		return -ENOMEM;
  
--	ret = pm_runtime_get_sync(pfdev->dev);
-+	ret = pm_runtime_resume_and_get(pfdev->dev);
- 	if (ret < 0)
- 		return;
- 
+-	if (copy_from_user(cmd_buf, buffer, count)) {
+-		kfree(cmd_buf);
+-		return -EFAULT;
+-	}
+-
+-	cmd_buf[count] = '\0';
+-
+ 	cmd_buf_tmp = strchr(cmd_buf, '\n');
+ 	if (cmd_buf_tmp) {
+ 		*cmd_buf_tmp = '\0';
 -- 
 2.6.2
 
