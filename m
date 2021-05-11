@@ -2,56 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E0537A422
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9C137A423
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbhEKJ6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 05:58:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54268 "EHLO mx2.suse.de"
+        id S231255AbhEKJ7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 05:59:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:44170 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231355AbhEKJ6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 05:58:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BC2C4B009;
-        Tue, 11 May 2021 09:56:55 +0000 (UTC)
-Date:   Tue, 11 May 2021 11:56:53 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Xu <peterx@redhat.com>
-Subject: Re: [PATCH resend v2 1/5] mm: make variable names for
- populate_vma_page_range() consistent
-Message-ID: <YJpU5ed/Luez9bd6@localhost.localdomain>
-References: <20210511081534.3507-1-david@redhat.com>
- <20210511081534.3507-2-david@redhat.com>
- <YJpUURBQkNd74Ytx@localhost.localdomain>
+        id S229935AbhEKJ7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 05:59:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A9044168F;
+        Tue, 11 May 2021 02:57:57 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.29.91])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6E9103F719;
+        Tue, 11 May 2021 02:57:40 -0700 (PDT)
+Date:   Tue, 11 May 2021 10:57:37 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-kernel@vger.kernel.org, will@kernel.org,
+        boqun.feng@gmail.com, peterz@infradead.org
+Cc:     aou@eecs.berkeley.edu, arnd@arndb.de, bcain@codeaurora.org,
+        benh@kernel.crashing.org, chris@zankel.net, dalias@libc.org,
+        davem@davemloft.net, deanbo422@gmail.com, deller@gmx.de,
+        geert@linux-m68k.org, green.hu@gmail.com, guoren@kernel.org,
+        ink@jurassic.park.msu.ru, James.Bottomley@HansenPartnership.com,
+        jcmvbkbc@gmail.com, jonas@southpole.se, ley.foon.tan@intel.com,
+        linux@armlinux.org.uk, mattst88@gmail.com, monstr@monstr.eu,
+        mpe@ellerman.id.au, nickhu@andestech.com, palmer@dabbelt.com,
+        paulus@samba.org, paul.walmsley@sifive.com, rth@twiddle.net,
+        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
+        tsbogend@alpha.franken.de, vgupta@synopsys.com,
+        ysato@users.sourceforge.jp
+Subject: Re: [PATCH 27/33] locking/atomic: powerpc: move to ARCH_ATOMIC
+Message-ID: <20210511095737.GC6152@C02TD0UTHF1T.local>
+References: <20210510093753.40683-1-mark.rutland@arm.com>
+ <20210510093753.40683-28-mark.rutland@arm.com>
+ <20210511091621.GA6152@C02TD0UTHF1T.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJpUURBQkNd74Ytx@localhost.localdomain>
+In-Reply-To: <20210511091621.GA6152@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 11:54:25AM +0200, Oscar Salvador wrote:
-> On Tue, May 11, 2021 at 10:15:30AM +0200, David Hildenbrand wrote:
-> > Let's make the variable names in the function declaration match the
-> > variable names used in the definition.
+On Tue, May 11, 2021 at 10:16:21AM +0100, Mark Rutland wrote:
+> On Mon, May 10, 2021 at 10:37:47AM +0100, Mark Rutland wrote:
+> > We'd like all architectures to convert to ARCH_ATOMIC, as once all
+> > architectures are converted it will be possible to make significant
+> > cleanups to the atomics headers, and this will make it much easier to
+> > generically enable atomic functionality (e.g. debug logic in the
+> > instrumented wrappers).
 > > 
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Michal Hocko <mhocko@suse.com>
-> > Cc: Oscar Salvador <osalvador@suse.de>
-> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > Cc: Peter Xu <peterx@redhat.com>
-> > Signed-off-by: David Hildenbrand <david@redhat.com>
+> > As a step towards that, this patch migrates powerpc to ARCH_ATOMIC. The
+> > arch code provides arch_{atomic,atomic64,xchg,cmpxchg}*(), and common
+> > code wraps these with optional instrumentation to provide the regular
+> > functions.
+> > 
+> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > Cc: Michael Ellerman <mpe@ellerman.id.au>
+> > Cc: Paul Mackerras <paulus@samba.org>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Will Deacon <will@kernel.org>
+> > ---
+> >  arch/powerpc/Kconfig               |   1 +
+> >  arch/powerpc/include/asm/atomic.h  | 140 +++++++++++++++++++------------------
+> >  arch/powerpc/include/asm/cmpxchg.h |  30 ++++----
+> >  3 files changed, 89 insertions(+), 82 deletions(-)
 > 
-> Reviewed-by: Oscar Salvador <osalvador@sude.de>
+> The kbuild test robot spotted a couple of bits I'd got wrong; I've noted
+> those below (and both are now fixed in my kernel.org branch).
+> 
+> >  static __always_inline bool
+> > -atomic_try_cmpxchg_lock(atomic_t *v, int *old, int new)
+> > +arch_atomic_try_cmpxchg_lock(atomic_t *v, int *old, int new)
+> 
+> Since this isn't part of the core atomic API, and is used directly by
+> powerpc's spinlock implementation, this should have stayed as-is (or we
+> should use the `arch_` prefix consitently and update the spinlock code).
+> 
+> I've dropped the `arch_` prefix for now.
 
-Fat fingers, s/sude/suse/
+On second thought (and having hit a similar issue on m68k), I've added
+the `arch_` prefix and updated the caller, to more clearly separate the
+common atomic API and the arch-specific bits.
 
--- 
-Oscar Salvador
-SUSE L3
+Thanks,
+Mark.
