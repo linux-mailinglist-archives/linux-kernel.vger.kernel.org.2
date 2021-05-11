@@ -2,81 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718E6379D61
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B64379D65
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 05:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhEKDKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 10 May 2021 23:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhEKDKP (ORCPT
+        id S230023AbhEKDKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 10 May 2021 23:10:51 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:17679 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229465AbhEKDKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 10 May 2021 23:10:15 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E815C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 20:09:09 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id j12so8688666pgh.7
-        for <linux-kernel@vger.kernel.org>; Mon, 10 May 2021 20:09:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vDycCYZUMZTRqclL05OsIOu92QLf1/h6CaOCTWyUtQo=;
-        b=Dhn/BhszXa2kmPxmeAjJZYOD5Q7FN+5J43AnvUof7WBdQWttlGaEwkvQQgWAjXaE9u
-         qJOZ/yX1ulX4HuW7ajZ6GdoCulDHmG8cQswpAnl3+iJL8DOgHsVLW1YyYB4LYdGJZNwM
-         AcMlHdcxwlaDuwr0hSzgL6r2fUoWKQ/77/FmOpBUh49HQv/HDBJmTIoO5nqiqGYhn9zb
-         ywTZkmiylk4imwnye5wkH+Sp5f92j9gZCLkOTO97qVPSmpbMp8Ei60l4a+1k+LDg+b9T
-         Ki3KkwIZB6ZLy124T1rtAfmH9ZUwN7k1Uj6aql+DKdQae9U7Q0dML4K8qQvKwamwtO78
-         Cf0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vDycCYZUMZTRqclL05OsIOu92QLf1/h6CaOCTWyUtQo=;
-        b=kgXzl90uTUcHDAqPkvswT7PA5QX7akpLVP89VqrcDAjE2526GS76d7LPSiixyNquVH
-         xXDeEIeSFNBNDkHqyZBI8x3IYosQ35oAkzdI3aghOQxkPrEYtym/Y3l6Z1WH0W9w/d+x
-         q3FpSBNV8Dx5BjzOszPO0uOFqudfHGmBxn1XxWo8xOTLRbfpwp808ue+SxCQXu1oGDuC
-         49ZoKq7UvogCZVa5uth6blrEP7usxFxBZ8AZgt3PpM19S8Cn4I4E45YUCNWxwuEfnF0d
-         dnCPp+DH7aTPw9uQZc05aSN2ghpa5XkFDA/OYt2/NRNomtfxzm2iVpDRkkhS1U2NNLgg
-         f8Aw==
-X-Gm-Message-State: AOAM53066/zY3zgBBvJ7MnWZQ5h32/WkmIzK/Ympqjb6qRRQ79cpRcNE
-        YdakQyXy20OhY/y/n5yW5oY=
-X-Google-Smtp-Source: ABdhPJxISlNL5PKuFc7Rg+E15Siv9zOgzobxSxMwxXxHlu7yfVRnn/rquLYu7UIk06fA7eJDL9CrNw==
-X-Received: by 2002:a62:1c0c:0:b029:2b7:6dd2:adb3 with SMTP id c12-20020a621c0c0000b02902b76dd2adb3mr12703106pfc.44.1620702548963;
-        Mon, 10 May 2021 20:09:08 -0700 (PDT)
-Received: from hyeyoo ([183.99.11.150])
-        by smtp.gmail.com with ESMTPSA id 33sm12156742pgq.21.2021.05.10.20.09.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 20:09:08 -0700 (PDT)
-Date:   Tue, 11 May 2021 12:09:03 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Christoph Lameter <cl@gentwo.de>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: kmalloc_index: make compiler break when size is
- not supported
-Message-ID: <20210511030903.GA105690@hyeyoo>
-References: <20210508221328.7338-1-42.hyeyoo@gmail.com>
- <YJccjBMBiwLqFrB8@casper.infradead.org>
- <CAB=+i9QyxOu_1QDfX5QA=pOxxnRURPnwd2Y0EbhoO1u0e=irBA@mail.gmail.com>
- <c305ec02-a7d6-dd0c-bfee-e5b571d9ca9a@suse.cz>
- <20210510135857.GA3594@hyeyoo>
- <9d0ffe49-a2e2-6c81-377b-4c8d2147dff8@suse.cz>
- <20210510150230.GA74915@hyeyoo>
- <alpine.DEB.2.22.394.2105101714170.749526@gentwo.de>
+        Mon, 10 May 2021 23:10:48 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AqeOPpaHk4VAK9c6upLqEAMeALOsnbusQ8zAX?=
+ =?us-ascii?q?P0AYc3Jom6uj5qSTdZUgpHjJYVkqOE3I9ertBEDiewK4yXcW2/hzAV7KZmCP0w?=
+ =?us-ascii?q?HEEGgI1+rfKlPbdBEWjtQtt5uIbZIOc+HYPBxri9rg+gmkH5IFyNmDyqqhguDT?=
+ =?us-ascii?q?1B5WPHhXQpAl/wFkERyaD0EzYAFHAKAyHJ2a6tECiCGnfR0sH7yGL0hAT+7evM?=
+ =?us-ascii?q?fKiZ6jRRYHAiQs4A6IgSjtyJOSKWn/4isj?=
+X-IronPort-AV: E=Sophos;i="5.82,290,1613404800"; 
+   d="scan'208";a="108110504"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 11 May 2021 11:09:40 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 7E1904D0BA79;
+        Tue, 11 May 2021 11:09:36 +0800 (CST)
+Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Tue, 11 May 2021 11:09:35 +0800
+Received: from irides.mr.mr.mr (10.167.225.141) by
+ G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Tue, 11 May 2021 11:09:35 +0800
+From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-fsdevel@vger.kernel.org>
+CC:     <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <willy@infradead.org>, <viro@zeniv.linux.org.uk>,
+        <david@fromorbit.com>, <hch@lst.de>, <rgoldwyn@suse.de>
+Subject: [PATCH v5 0/7] fsdax,xfs: Add reflink&dedupe support for fsdax
+Date:   Tue, 11 May 2021 11:09:26 +0800
+Message-ID: <20210511030933.3080921-1-ruansy.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2105101714170.749526@gentwo.de>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 7E1904D0BA79.A04B1
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 05:15:23PM +0200, Christoph Lameter wrote:
-> I guess this needs to be reviewed and tested by the users of architectures
-> that can use large MAXORDER pages such as powerpc and Itanium.
+This patchset is attempt to add CoW support for fsdax, and take XFS,
+which has both reflink and fsdax feature, as an example.
 
-as Vlastimil Babka said, I think it's fine too. because
-KMALLOC_SHIFT_HIGH can't be bigger than 25 regardless of MAX_ORDER
+Changes from V4:
+ - Fix the mistake of breaking dax layout for two inodes
+ - Add CONFIG_FS_DAX judgement for fsdax code in remap_range.c
+ - Fix other small problems and mistakes
+
+Changes from V3:
+ - Take out the first 3 patches as a cleanup patchset[1], which has been
+    sent yesterday.
+ - Fix usage of code in dax_iomap_cow_copy()
+ - Add comments for macro definitions
+ - Fix other code style problems and mistakes
+
+One of the key mechanism need to be implemented in fsdax is CoW.  Copy
+the data from srcmap before we actually write data to the destance
+iomap.  And we just copy range in which data won't be changed.
+
+Another mechanism is range comparison.  In page cache case, readpage()
+is used to load data on disk to page cache in order to be able to
+compare data.  In fsdax case, readpage() does not work.  So, we need
+another compare data with direct access support.
+
+With the two mechanisms implemented in fsdax, we are able to make reflink
+and fsdax work together in XFS.
+
+Some of the patches are picked up from Goldwyn's patchset.  I made some
+changes to adapt to this patchset.
+
+
+(Rebased on v5.13-rc1 and patchset[1])
+[1]: https://lkml.org/lkml/2021/4/22/575
+
+Shiyang Ruan (7):
+  fsdax: Introduce dax_iomap_cow_copy()
+  fsdax: Replace mmap entry in case of CoW
+  fsdax: Add dax_iomap_cow_copy() for dax_iomap_zero
+  iomap: Introduce iomap_apply2() for operations on two files
+  fsdax: Dedup file range to use a compare function
+  fs/xfs: Handle CoW for fsdax write() path
+  fs/xfs: Add dax dedupe support
+
+ fs/dax.c               | 206 +++++++++++++++++++++++++++++++++++------
+ fs/iomap/apply.c       |  52 +++++++++++
+ fs/iomap/buffered-io.c |   2 +-
+ fs/remap_range.c       |  57 ++++++++++--
+ fs/xfs/xfs_bmap_util.c |   3 +-
+ fs/xfs/xfs_file.c      |  11 +--
+ fs/xfs/xfs_inode.c     |  66 ++++++++++++-
+ fs/xfs/xfs_inode.h     |   1 +
+ fs/xfs/xfs_iomap.c     |  61 +++++++++++-
+ fs/xfs/xfs_iomap.h     |   4 +
+ fs/xfs/xfs_iops.c      |   7 +-
+ fs/xfs/xfs_reflink.c   |  15 +--
+ include/linux/dax.h    |   7 +-
+ include/linux/fs.h     |  12 ++-
+ include/linux/iomap.h  |   7 +-
+ 15 files changed, 449 insertions(+), 62 deletions(-)
+
+-- 
+2.31.1
+
+
+
