@@ -2,112 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B53837A448
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F7A37A44B
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 12:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231476AbhEKKH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 06:07:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231432AbhEKKHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 06:07:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F138E61939;
-        Tue, 11 May 2021 10:06:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620727575;
-        bh=SlugFhiHPFE6544Op5mwYlOkGJajxXxh97whxO6/BpA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HYDF4IQVMwKctvrPMNf95/Pi4DLD45vn6Bg51bGOwMZencaGiwj43fkKPQm08bIwu
-         DW9MDtK5hN9JDa0rWQ4zWqCsuTlu+Wl7qkZwUObbIm+xN9ndU6m3MiOMBDRowd5d6S
-         1k/2vv/YoYPPXlm2tyD6M2BU4/wVFX7FOfcb9nU9G4F3berrlBwG0srn9nJ6Wc9AQK
-         WZiOsUaUxrSlRrqmQvV2ieZsfBfn5FxYmLPBoAsLStxaRckXJR7h7yUFFU3K28jFWe
-         c1+klc10Szz9z2s/c0OcwmBRJkQQKgKUR+dVkXDmqrq2kPmqZKUDXTSNMgnIkcUpjc
-         X5xLsM/+3/ZVg==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v4 4/4] arm64: drop pfn_valid_within() and simplify pfn_valid()
-Date:   Tue, 11 May 2021 13:05:50 +0300
-Message-Id: <20210511100550.28178-5-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210511100550.28178-1-rppt@kernel.org>
-References: <20210511100550.28178-1-rppt@kernel.org>
+        id S231461AbhEKKIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 06:08:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231204AbhEKKH7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 06:07:59 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B570C061574;
+        Tue, 11 May 2021 03:06:52 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id v12so19500819wrq.6;
+        Tue, 11 May 2021 03:06:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c2WVbfAVqJcL+REqbX0YpO9uYgKY9glSk3kcY+TpGLg=;
+        b=CLuDvEpM3aoLoo6URBinpv+XxdSvKbVEhi+rM3DXkpBb1On2rr2Rc5Ryydipxns/7W
+         J/BihtFNpBMPDUZXQpXLUQyuC+2M18/GY49sw6Mdg3kRFUGKPw6a8wP8DoKxDtlkU0Vv
+         k7rbsUTq9iGHsSkGjUxRzg2NUdhyP3ZsCcdBygYutaKqVyAbn/Y5osGGsawJ8RvtNQrE
+         p4XT4Q0oXppYPkKSSamfZz5tXbricf2cdPRkB8VgWlQb/ew4grrt0n6+NC+PEbsv5+XP
+         MQjmWnV6HFdrZc4EXQpqgMuAMM/rnpW9JNhKaKgpMqh2FtvFo+UNoFvFsTgNj+mk86oQ
+         iq3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c2WVbfAVqJcL+REqbX0YpO9uYgKY9glSk3kcY+TpGLg=;
+        b=cSGhgKfsIlnrW6N4dMNwL6403YO3GHPvysmq6s6Nh7XdFEzJwPsiUWyWHzfn+52CbH
+         G9gdFbfysrFrLdFOSpUYHpojAuuLMe6orDXc+wYcK8iHMyozlHLm7eHIkupSKnDy8OOL
+         V/NmM4Y159k0KPSg3lryEAMtYWZR0fpPxQlblQRsrxT4mDpCtNePt+ZggMB/7hNH/9u4
+         +lNmD20A2XpSkZFdQlTJ9PkxVSD6GGO/gnyZdcnDmCJlo9oqV5/32y1BUuTF+FnKAmzV
+         bpmeAS+ctAEGnsu6iRmT9bb73ox0XW6VjA8Cmcw5wSfWp2XMAhZXGyPVNZlEMrFnXFIG
+         b0yw==
+X-Gm-Message-State: AOAM5321JyRyKRjFG/lLWIQbKrqV7KMehHyKUQ0kbocgug4Xg4mQwldb
+        tp1wDX0vDbU/xW09BNyZO3E=
+X-Google-Smtp-Source: ABdhPJwhqZ4PpItyOqNGBZqT+MmWAkofsgKBZYJ9WwZj2DQHPHW3XZY472j3ptZBh1MvZIHYlBJS5A==
+X-Received: by 2002:adf:f7d2:: with SMTP id a18mr38324156wrq.198.1620727610765;
+        Tue, 11 May 2021 03:06:50 -0700 (PDT)
+Received: from michael-VirtualBox.xsight.ent (cbl217-132-244-50.bb.netvision.net.il. [217.132.244.50])
+        by smtp.googlemail.com with ESMTPSA id 61sm30079581wrm.52.2021.05.11.03.06.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 03:06:50 -0700 (PDT)
+From:   Michael Zaidman <michael.zaidman@gmail.com>
+To:     trix@redhat.com, jikos@kernel.org, benjamin.tissoires@redhat.com
+Cc:     linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Michael Zaidman <michael.zaidman@gmail.com>
+Subject: [PATCH v3] HID: ft260: improve error handling of ft260_hid_feature_report_get()
+Date:   Tue, 11 May 2021 13:06:34 +0300
+Message-Id: <20210511100634.16278-1-michael.zaidman@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
 
-The arm64's version of pfn_valid() differs from the generic because of two
-reasons:
+The ft260_hid_feature_report_get() checks if the return size matches
+the requested size. But the function can also fail with at least -ENOMEM.
+Add the < 0 checks.
 
-* Parts of the memory map are freed during boot. This makes it necessary to
-  verify that there is actual physical memory that corresponds to a pfn
-  which is done by querying memblock.
+In ft260_hid_feature_report_get(), do not do the memcpy to the caller's
+buffer if there is an error.
 
-* There are NOMAP memory regions. These regions are not mapped in the
-  linear map and until the previous commit the struct pages representing
-  these areas had default values.
+Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
+Signed-off-by: Tom Rix <trix@redhat.com>
 
-As the consequence of absence of the special treatment of NOMAP regions in
-the memory map it was necessary to use memblock_is_map_memory() in
-pfn_valid() and to have pfn_valid_within() aliased to pfn_valid() so that
-generic mm functionality would not treat a NOMAP page as a normal page.
-
-Since the NOMAP regions are now marked as PageReserved(), pfn walkers and
-the rest of core mm will treat them as unusable memory and thus
-pfn_valid_within() is no longer required at all and can be disabled by
-removing CONFIG_HOLES_IN_ZONE on arm64.
-
-pfn_valid() can be slightly simplified by replacing
-memblock_is_map_memory() with memblock_is_memory().
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Acked-by: David Hildenbrand <david@redhat.com>
 ---
- arch/arm64/Kconfig   | 3 ---
- arch/arm64/mm/init.c | 2 +-
- 2 files changed, 1 insertion(+), 4 deletions(-)
+v3   Simplify and optimize the changes
+---
+v2:  add unlikely()'s for error conditions
+---
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 9f1d8566bbf9..d7dc8698cf8e 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1052,9 +1052,6 @@ config NEED_PER_CPU_EMBED_FIRST_CHUNK
- 	def_bool y
- 	depends on NUMA
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
+---
+ drivers/hid/hid-ft260.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
+index 047aa85a7c83..7f4cb823129e 100644
+--- a/drivers/hid/hid-ft260.c
++++ b/drivers/hid/hid-ft260.c
+@@ -249,7 +249,10 @@ static int ft260_hid_feature_report_get(struct hid_device *hdev,
  
--config HOLES_IN_ZONE
--	def_bool y
--
- source "kernel/Kconfig.hz"
- 
- config ARCH_SPARSEMEM_ENABLE
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 798f74f501d5..fb07218da2c0 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -251,7 +251,7 @@ int pfn_valid(unsigned long pfn)
- 	if (!early_section(ms))
- 		return pfn_section_valid(ms, pfn);
- 
--	return memblock_is_map_memory(addr);
-+	return memblock_is_memory(addr);
+ 	ret = hid_hw_raw_request(hdev, report_id, buf, len, HID_FEATURE_REPORT,
+ 				 HID_REQ_GET_REPORT);
+-	memcpy(data, buf, len);
++	if (likely(ret == len))
++		memcpy(data, buf, len);
++	else if (ret >= 0)
++		ret = -EIO;
+ 	kfree(buf);
+ 	return ret;
  }
- EXPORT_SYMBOL(pfn_valid);
+@@ -298,7 +301,7 @@ static int ft260_xfer_status(struct ft260_device *dev)
+ 
+ 	ret = ft260_hid_feature_report_get(hdev, FT260_I2C_STATUS,
+ 					   (u8 *)&report, sizeof(report));
+-	if (ret < 0) {
++	if (unlikely(ret < 0)) {
+ 		hid_err(hdev, "failed to retrieve status: %d\n", ret);
+ 		return ret;
+ 	}
+@@ -720,10 +723,9 @@ static int ft260_get_system_config(struct hid_device *hdev,
+ 
+ 	ret = ft260_hid_feature_report_get(hdev, FT260_SYSTEM_SETTINGS,
+ 					   (u8 *)cfg, len);
+-	if (ret != len) {
++	if (ret < 0) {
+ 		hid_err(hdev, "failed to retrieve system status\n");
+-		if (ret >= 0)
+-			return -EIO;
++		return ret;
+ 	}
+ 	return 0;
+ }
+@@ -776,8 +778,8 @@ static int ft260_byte_show(struct hid_device *hdev, int id, u8 *cfg, int len,
+ 	int ret;
+ 
+ 	ret = ft260_hid_feature_report_get(hdev, id, cfg, len);
+-	if (ret != len && ret >= 0)
+-		return -EIO;
++	if (ret < 0)
++		return ret;
+ 
+ 	return scnprintf(buf, PAGE_SIZE, "%hi\n", *field);
+ }
+@@ -788,8 +790,8 @@ static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
+ 	int ret;
+ 
+ 	ret = ft260_hid_feature_report_get(hdev, id, cfg, len);
+-	if (ret != len && ret >= 0)
+-		return -EIO;
++	if (ret < 0)
++		return ret;
+ 
+ 	return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
+ }
+@@ -940,10 +942,8 @@ static int ft260_probe(struct hid_device *hdev, const struct hid_device_id *id)
+ 
+ 	ret = ft260_hid_feature_report_get(hdev, FT260_CHIP_VERSION,
+ 					   (u8 *)&version, sizeof(version));
+-	if (ret != sizeof(version)) {
++	if (ret < 0) {
+ 		hid_err(hdev, "failed to retrieve chip version\n");
+-		if (ret >= 0)
+-			ret = -EIO;
+ 		goto err_hid_close;
+ 	}
  
 -- 
-2.28.0
+2.25.1
 
