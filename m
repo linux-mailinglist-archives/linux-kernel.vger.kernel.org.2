@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1DE37A8D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14A4137A8E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbhEKOSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:18:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60024 "EHLO mx2.suse.de"
+        id S231836AbhEKOSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:18:51 -0400
+Received: from mga05.intel.com ([192.55.52.43]:26618 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231634AbhEKOSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:18:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1620742615; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rSjMZQsPrsPF/ua9LWX6ZnQ0hSbJwsZWpSXRVeSGoc4=;
-        b=VNg+YXHAB3GGKG1mZy4l4l4pSKCKxUJ6xN3mOewccCaPWoqKGuEMvltW5WPcOq7RBg/BNl
-        7a7OBTuHGRodbx+ktQM9IeDOMVJNrK/AGO5mLH9ZQYv+LD9f0gdKjCoAOWSwiHnlGTNV6Y
-        Y6plfj5QLr/rIQf2ZaGJuuHWkx+LQR8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9296BB03C;
-        Tue, 11 May 2021 14:16:55 +0000 (UTC)
-Date:   Tue, 11 May 2021 16:16:55 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     JC Kuo <jckuo@nvidia.com>, Joe Perches <joe@perches.com>,
-        Sumit Garg <sumit.garg@linaro.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: Re: [PATCH v1 4/4] usb: host: xhci-tegra: Switch to use %ptTs
-Message-ID: <YJqR11LtIoPiDBSl@alley>
-References: <20210510150413.59356-1-andriy.shevchenko@linux.intel.com>
- <20210510150413.59356-4-andriy.shevchenko@linux.intel.com>
+        id S231864AbhEKOSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 10:18:40 -0400
+IronPort-SDR: SbP5atqwA4LBQcTG4p1mK+/qKETFcMmS7Cv3q+dgnQWnmzCCXAdVw2HjrG75XmRADEL0aAeqNm
+ dkSspI9r/zkw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="284942941"
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="284942941"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 07:17:10 -0700
+IronPort-SDR: kEyNBkIFqeMJtec6hWX8jf1qFI1k0McLtuBKIm6ufMJrwmXAZZoBeZtrSRtJYyznwMutc6EVwg
+ L0Ix+Bme+KXw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,290,1613462400"; 
+   d="scan'208";a="455031948"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 11 May 2021 07:17:06 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 5071514B; Tue, 11 May 2021 17:17:27 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v3 0/8] spi: pxa2xx: Set of cleanups
+Date:   Tue, 11 May 2021 17:17:17 +0300
+Message-Id: <20210511141725.32097-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210510150413.59356-4-andriy.shevchenko@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-05-10 18:04:13, Andy Shevchenko wrote:
-> Use %ptTs instead of open coded variant to print contents
-> of time64_t type in human readable form.
-> 
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Jonathan Hunter <jonathanh@nvidia.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Set of cleanups here and there related to the SPI PXA2xx driver.
+On top of them, adding the special type for Intel Merrifield.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+In v4:
+- dropped applied patches
 
-Best Regards,
-Petr
+In v3:
+- rebased on top of v5.13-rc1 and/or spi/for-5,14
+
+In v2:
+- cover letter (Mark)
+- drop moving the header in patch 5 (Mark)
+
+
+Andy Shevchenko (8):
+  spi: pxa2xx: Reuse int_error_stop() in pxa2xx_spi_slave_abort()
+  spi: pxa2xx: Use pxa_ssp_enable()/pxa_ssp_disable() in the driver
+  spi: pxa2xx: Extract pxa2xx_spi_update() helper
+  spi: pxa2xx: Extract clear_SSCR1_bits() helper
+  spi: pxa2xx: Extract read_SSSR_bits() helper
+  spi: pxa2xx: Constify struct driver_data parameter
+  spi: pxa2xx: Introduce special type for Merrifield SPIs
+  spi: Convert to use predefined time multipliers
+
+ drivers/spi/spi-pxa2xx-dma.c |  17 ++--
+ drivers/spi/spi-pxa2xx-pci.c |   2 +-
+ drivers/spi/spi-pxa2xx.c     | 147 ++++++++++++++++++-----------------
+ drivers/spi/spi-pxa2xx.h     |  16 +++-
+ drivers/spi/spi.c            |  41 ++++++----
+ include/linux/pxa2xx_ssp.h   |  32 ++++++++
+ sound/soc/pxa/pxa-ssp.c      |  16 ----
+ 7 files changed, 156 insertions(+), 115 deletions(-)
+
+-- 
+2.30.2
+
