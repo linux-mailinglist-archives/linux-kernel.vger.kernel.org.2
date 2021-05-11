@@ -2,173 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE1B37B21E
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5FD937B223
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbhEKXFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:05:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230104AbhEKXEq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:04:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EEB886193E;
-        Tue, 11 May 2021 23:03:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620774219;
-        bh=pnNo0+6CoC3Y3VXKvc+NLxvvGAuYk+/zPk5hHwrQLjg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FIfzuatAT8Xw2hgW3CytMy5KGg37mk0YMO9MsuH347B5BfOpxfMzu1mWlXhQPf67x
-         gpCpCiAqNVgP0IDumgls5MQfLcsygU5phEBnNXiLzIOufJcV7gm7ODyPD+NtlkFRbh
-         82d9EBr4VXNxJuee3fcEEQW3VLsORfmCTOqbvXxfgWLrk1q+8N9+vAb6njgzRAePBX
-         OrUWdxjy8EL6VMXW8itFK+2Ov5+AtHzkJsZ1ouFzgv29DeerbkE0KayFOql5d0LzrR
-         aecv5VAeMFeEuNQcCnFtLNy8WwlJ8LYso1V7gg9J74InJwewl4EyyU/33vfueqZVd6
-         u8z2q8c4/M/HQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 673325C0DE5; Tue, 11 May 2021 16:03:38 -0700 (PDT)
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 08/10] rcu/nocb: Prepare for fine-grained deferred wakeup
-Date:   Tue, 11 May 2021 16:03:34 -0700
-Message-Id: <20210511230336.2894314-8-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20210511230244.GA2894061@paulmck-ThinkPad-P17-Gen-1>
-References: <20210511230244.GA2894061@paulmck-ThinkPad-P17-Gen-1>
+        id S230154AbhEKXGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 19:06:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhEKXGy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 19:06:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19443C061574;
+        Tue, 11 May 2021 16:05:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=p90x9jEmQHND6fT7ufpXCKutOlzP8zjwAk/wUNBLalg=; b=U8SozuRvdhbYdNEKn+H/SqM6pR
+        j31ruaTHW/AhJl8hSkM10yLKM/b8XqCa+aX4G4eg/6/vQgo69mxwNtIgiRtJD6tKQIqE51zXxGi8Z
+        tku0eiD1yfoSJ3xNwIHV7++0vuQCFPCwgUCChBv0MiuvqKHF7Mr0q/vvyNKHGqIn353bMZRdKn1j4
+        be2BJYeT+JMlhnupBDlT2ANFfIVAm/8F5SPL56ujiiIjfI/d7/6QFhF513bG3Sker7cv3uyaJw3Zq
+        VjDRbgxhEa+9DiIqXBs7XFLrhLuXtM5l6LDr1m0SjRMj5CepfvilFtDf9b474sw7eYytMm1aoCqxz
+        4sQhcsvQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgbPa-007l6k-Jc; Tue, 11 May 2021 23:03:42 +0000
+Date:   Wed, 12 May 2021 00:03:34 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     akpm@linux-foundation.org, ziy@nvidia.com,
+        william.kucharski@oracle.com, yang.shi@linux.alibaba.com,
+        aneesh.kumar@linux.ibm.com, rcampbell@nvidia.com,
+        songliubraving@fb.com, kirill.shutemov@linux.intel.com,
+        riel@surriel.com, hannes@cmpxchg.org, minchan@kernel.org,
+        hughd@google.com, adobriyan@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] mm/huge_memory.c: use page->deferred_list
+Message-ID: <YJsNRtg5IcMY7V/F@casper.infradead.org>
+References: <20210511134857.1581273-1-linmiaohe@huawei.com>
+ <20210511134857.1581273-3-linmiaohe@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511134857.1581273-3-linmiaohe@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+On Tue, May 11, 2021 at 09:48:54PM +0800, Miaohe Lin wrote:
+> Now that we can represent the location of ->deferred_list instead of
+> ->mapping + ->index, make use of it to improve readability.
+> 
+> Reviewed-by: Yang Shi <shy828301@gmail.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  mm/huge_memory.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 63ed6b25deaa..76ca1eb2a223 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2868,7 +2868,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
+>  	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+>  	/* Take pin on all head pages to avoid freeing them under us */
+>  	list_for_each_safe(pos, next, &ds_queue->split_queue) {
+> -		page = list_entry((void *)pos, struct page, mapping);
+> +		page = list_entry((void *)pos, struct page, deferred_list);
+>  		page = compound_head(page);
 
-Tuning the deferred wakeup level must be done from a safe wakeup
-point. Currently those sites are:
+This is an equivalent transformation, but it doesn't really go far
+enough.  I think you want something like this:
 
-* ->nocb_timer
-* user/idle/guest entry
-* CPU down
-* softirq/rcuc
+	struct page *page, *next;
 
-All of these sites perform the wake up for both RCU_NOCB_WAKE and
-RCU_NOCB_WAKE_FORCE.
-
-In order to merge ->nocb_timer and ->nocb_bypass_timer together, we plan
-to add a new RCU_NOCB_WAKE_BYPASS that really should be deferred until
-a timer fires so that we don't wake up the NOCB-gp kthread too early.
-
-To prepare for that, this commit specifies the per-callsite wakeup
-level/limit.
-
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-[ paulmck: Fix non-NOCB rcu_nocb_need_deferred_wakeup() definition. ]
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree.c        |  2 +-
- kernel/rcu/tree.h        |  2 +-
- kernel/rcu/tree_plugin.h | 17 +++++++++--------
- 3 files changed, 11 insertions(+), 10 deletions(-)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 8e78b2430c16..5f1545aab9ed 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3911,7 +3911,7 @@ static int rcu_pending(int user)
- 	check_cpu_stall(rdp);
- 
- 	/* Does this CPU need a deferred NOCB wakeup? */
--	if (rcu_nocb_need_deferred_wakeup(rdp))
-+	if (rcu_nocb_need_deferred_wakeup(rdp, RCU_NOCB_WAKE))
- 		return 1;
- 
- 	/* Is this a nohz_full CPU in userspace or idle?  (Ignore RCU if so.) */
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index b280a843bd2c..2510e86265c1 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -433,7 +433,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 				bool *was_alldone, unsigned long flags);
- static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_empty,
- 				 unsigned long flags);
--static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp);
-+static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp, int level);
- static bool do_nocb_deferred_wakeup(struct rcu_data *rdp);
- static void rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp);
- static void rcu_spawn_cpu_nocb_kthread(int cpu);
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index db28e3123f32..e2e5e4968f43 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2352,13 +2352,14 @@ static int rcu_nocb_cb_kthread(void *arg)
- }
- 
- /* Is a deferred wakeup of rcu_nocb_kthread() required? */
--static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp)
-+static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp, int level)
- {
--	return READ_ONCE(rdp->nocb_defer_wakeup) > RCU_NOCB_WAKE_NOT;
-+	return READ_ONCE(rdp->nocb_defer_wakeup) >= level;
- }
- 
- /* Do a deferred wakeup of rcu_nocb_kthread(). */
--static bool do_nocb_deferred_wakeup_common(struct rcu_data *rdp)
-+static bool do_nocb_deferred_wakeup_common(struct rcu_data *rdp,
-+					   int level)
- {
- 	unsigned long flags;
- 	int ndw;
-@@ -2367,7 +2368,7 @@ static bool do_nocb_deferred_wakeup_common(struct rcu_data *rdp)
- 
- 	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
- 
--	if (!rcu_nocb_need_deferred_wakeup(rdp_gp)) {
-+	if (!rcu_nocb_need_deferred_wakeup(rdp_gp, level)) {
- 		raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
- 		return false;
- 	}
-@@ -2384,7 +2385,7 @@ static void do_nocb_deferred_wakeup_timer(struct timer_list *t)
- {
- 	struct rcu_data *rdp = from_timer(rdp, t, nocb_timer);
- 
--	do_nocb_deferred_wakeup_common(rdp);
-+	do_nocb_deferred_wakeup_common(rdp, RCU_NOCB_WAKE);
- }
- 
- /*
-@@ -2397,8 +2398,8 @@ static bool do_nocb_deferred_wakeup(struct rcu_data *rdp)
- 	if (!rdp->nocb_gp_rdp)
- 		return false;
- 
--	if (rcu_nocb_need_deferred_wakeup(rdp->nocb_gp_rdp))
--		return do_nocb_deferred_wakeup_common(rdp);
-+	if (rcu_nocb_need_deferred_wakeup(rdp->nocb_gp_rdp, RCU_NOCB_WAKE))
-+		return do_nocb_deferred_wakeup_common(rdp, RCU_NOCB_WAKE);
- 	return false;
- }
- 
-@@ -2939,7 +2940,7 @@ static void __init rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp)
- {
- }
- 
--static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp)
-+static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp, int level)
- {
- 	return false;
- }
--- 
-2.31.1.189.g2e36527f23
+	list_for_each_entry_safe(page, next, &ds_queue->split_queue,
+							deferred_list) {
+		struct page *head = page - 1;
+		... then use head throughout ...
+	}
 
