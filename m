@@ -2,135 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845FF37A981
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E60937A994
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbhEKOhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50372 "EHLO
+        id S231869AbhEKOjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231920AbhEKOhF (ORCPT
+        with ESMTP id S231652AbhEKOjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:37:05 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E87BC06138F
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:35:58 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id v22so14329136oic.2
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:35:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:references:from:cc:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ETXAFKWQdH8/eG9YgJ2MyXQqUI4w0G+a8+7kidOetNw=;
-        b=D+8UcMkB2GUwjj2F27jdDoxAVAL9rdC9MdMoJFlDBNeHzfe67XWP/sw3xSweHhjvu0
-         L7zFyh43n9/fy4cUZSlUsyNvNqDkT2TqDuEFXFN77WQ7UwdcaxgaJydbt2h0Tqt9neqT
-         2ljICDLxSDdscBg19eDiJRfFGl65YBejwUIvU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:cc:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ETXAFKWQdH8/eG9YgJ2MyXQqUI4w0G+a8+7kidOetNw=;
-        b=MBtDw720zDxQ2cx7/MjS2E3yomDyafQ1f0MQ1f/t96Yro1eahWmveSDXQFzG5aKcba
-         5BqC7JpM9tTsDI7PA22b9482c8Izj+5HL/kLWXYsfWP1qhzX3yioOmdQp6sndLOEhnjm
-         GkeKqx5ak/xSi4uxtCUyDdaTSD3VEyQ8mgDScS9W4Tf4hd80d7nV0UDVTwuyB3iaypvg
-         q2B4LhbGnCX4dUJwm4LYxsegOL1ojEdtQToyWAd/v6NeI68JW6lC4usVu2v/yhSdap31
-         sfBXKSPhf0WOKmXduRfmsR1O/XH+4VZhJZlu0REBqwChGpL5nhJaA67XXASfFYkUf5i+
-         2lxg==
-X-Gm-Message-State: AOAM5328N4oYOyRUSNTVvhJc7jYzuk2XYINzHxUr2za4hUPjJbw5zCPs
-        DFIJA9pG1ja1+voYzM3spKOdMg==
-X-Google-Smtp-Source: ABdhPJyvp7T0CdewBKkqMXtDA5ThSmqkKCGgPnZJ05uagz+Vq5z9FBuvh4nrA0ZkdxuooO6UIklVPg==
-X-Received: by 2002:aca:53d8:: with SMTP id h207mr3883260oib.177.1620743757147;
-        Tue, 11 May 2021 07:35:57 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id 2sm3341540ota.67.2021.05.11.07.35.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 07:35:56 -0700 (PDT)
-Subject: Re: [PATCH v3 1/1] kernel.h: Split out panic and oops helpers
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <20210511074137.33666-1-andriy.shevchenko@linux.intel.com>
-From:   Alex Elder <elder@ieee.org>
-Cc:     linux-xtensa@linux-xtensa.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-clk@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-hyperv@vger.kernel.org,
-        coresight@lists.linaro.org, linux-leds@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-staging@lists.linux.dev, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-arch@vger.kernel.org,
-        kexec@lists.infradead.org, rcu@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, xen-devel@lists.xenproject.org
-Message-ID: <c6fa5d2c-84e2-2046-19f0-66cf5dd72077@ieee.org>
-Date:   Tue, 11 May 2021 09:35:54 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 11 May 2021 10:39:41 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC6CC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:38:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=DiD4PYOAZotxD7EMjb8IDN4lhvwYB03jaL8Cc5l1R6Q=; b=GRda7b/YKuTLA3kQQ1V0ii2hF
+        Vyr6MijmBwewwfRTyzYiQxUAsPAC/QcBrBGj9xz4yIKXo3jqbvwSedLcSoL/WsYTGiKTYA/1UYNlN
+        kFTpld5NAFtSs/RlTtlL8ZjORLV7y2PFEq8Y4vKlS6dDXkhZnTny1yMxdVK7clS5rNR5t1RXp1VY5
+        7MKTlR95RtFiKxl9YqQODD7AooNO/8L2H9Z63zSwtLc1UyRr2W6xedkoPVaRUZIaLDxwAHsf8QQVS
+        gLwnXqczqH2yttPwo5HB+pkN4TM2Yihapy9uVY2p4Gx3O0j6K4ZmvOPN6FLvbDx1clByY0qGT3kdE
+        JawHGxubA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43860)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lgTWI-0002jF-NN; Tue, 11 May 2021 15:37:58 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lgTWD-00019C-4d; Tue, 11 May 2021 15:37:53 +0100
+Date:   Tue, 11 May 2021 15:37:53 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hailong Liu <carver4lio@163.com>,
+        Changbin Du <changbin.du@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: mark prepare_page_table as __init
+Message-ID: <20210511143752.GK1336@shell.armlinux.org.uk>
+References: <20210511090318.478586-1-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210511074137.33666-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511090318.478586-1-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 2:41 AM, Andy Shevchenko wrote:
-> kernel.h is being used as a dump for all kinds of stuff for a long time.
-> Here is the attempt to start cleaning it up by splitting out panic and
-> oops helpers.
+On Tue, May 11, 2021 at 11:03:13AM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> There are several purposes of doing this:
-> - dropping dependency in bug.h
-> - dropping a loop by moving out panic_notifier.h
-> - unload kernel.h from something which has its own domain
+> In some configurations when building with gcc-11, prepare_page_table
+> does not get inline, which causes a build time warning for a section
+> mismatch:
 > 
-> At the same time convert users tree-wide to use new headers, although
-> for the time being include new header back to kernel.h to avoid twisted
-> indirected includes for existing users.
+> WARNING: modpost: vmlinux.o(.text.unlikely+0xce8): Section mismatch in reference from the function prepare_page_table() to the (unknown reference) .init.data:(unknown)
+> The function prepare_page_table() references
+> the (unknown reference) __initdata (unknown).
+> This is often because prepare_page_table lacks a __initdata
+> annotation or the annotation of (unknown) is wrong.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-> Acked-by: Corey Minyard <cminyard@mvista.com>
-> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Wei Liu <wei.liu@kernel.org>
-> Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Co-developed-by: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> Acked-by: Sebastian Reichel <sre@kernel.org>
-> Acked-by: Luis Chamberlain <mcgrof@kernel.org>
-> Acked-by: Stephen Boyd <sboyd@kernel.org>
-> Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Acked-by: Helge Deller <deller@gmx.de> # parisc
-> ---
-> v3: rebased on top of v5.13-rc1, collected a few more tags
-> 
-> Note WRT Andrew's SoB tag above: I have added it since part of the cases
-> I took from him. Andrew, feel free to amend or tell me how you want me
-> to do.
-> 
+> Mark the function as __init to avoid the warning regardless of the
+> inlining.
 
-Acked-by: Alex Elder <elder@kernel.org>
+I think if we're doing this, it would probably also be a good idea to
+drop the "inline" as well, and just let the compiler decide?
 
-. . .
-
-> diff --git a/drivers/net/ipa/ipa_smp2p.c b/drivers/net/ipa/ipa_smp2p.c
-> index a5f7a79a1923..34b68dc43886 100644
-> --- a/drivers/net/ipa/ipa_smp2p.c
-> +++ b/drivers/net/ipa/ipa_smp2p.c
-> @@ -8,6 +8,7 @@
->   #include <linux/device.h>
->   #include <linux/interrupt.h>
->   #include <linux/notifier.h>
-> +#include <linux/panic_notifier.h>
->   #include <linux/soc/qcom/smem.h>
->   #include <linux/soc/qcom/smem_state.h>
->   
-
-. . .
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
