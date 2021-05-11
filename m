@@ -2,110 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3154837A9D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8397337A9DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 16:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhEKOt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 10:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbhEKOt6 (ORCPT
+        id S231902AbhEKOvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 10:51:41 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:45855 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231681AbhEKOva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 10:49:58 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDB3C061574;
-        Tue, 11 May 2021 07:48:50 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id j26so19538174edf.9;
-        Tue, 11 May 2021 07:48:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EnXg6Kh16FhklatDAvmNh/kvk7jA2VwWCKHJwBrPgEI=;
-        b=KjBr6w4Svz3OfDzOH34kdTnM4yU4Tuh/vR+P/XX7L+oBcwVUto0HT4Xh0YYpjQDVsh
-         rSADgtm6apdD9p1FwJ1uGRmh5Fl6jJMaLi/xQFQLVLgMNP4W40AIq6n30DnixAzmbtgH
-         gxmmd8vwtEx0A396fOrXJ+BNxuMnuTUg+hOy/skPgLnGmf3QmXMsYMY2wPiR1+DLDVPJ
-         ZspkCtDVCxti+//8LJih7IWM+bM0KB7eHFLwlzI5EPmcdfeRZbZR74nwNv39/tNbQlFw
-         /oVhPn6FfetXSgnne2e2ufpjWR00bZO9SQmWayOeyRN9pX8D8pfPHyyGrwUPV5Y2LoW4
-         4+4w==
+        Tue, 11 May 2021 10:51:30 -0400
+Received: by mail-il1-f197.google.com with SMTP id l13-20020a92d8cd0000b02901bb0166907aso4632588ilo.12
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 07:50:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EnXg6Kh16FhklatDAvmNh/kvk7jA2VwWCKHJwBrPgEI=;
-        b=fXh54plrdieZitG1DmL+GaAQo+KEkL/LFGaDdczzARYhyLLKVLX1o8piiVk4k3TLgK
-         f3pgkUVyU4wDCubnfSy9gDqAp6/BwYFP8hj0m6HcORzpQuzKi167QhV6E1lFe2GvkCX1
-         lglwcQ/AKpxYtqrYbyl9Bl9DurL1gD2h8L94xAIk6bc1sD8HJiI2ksrJKD6WwMARyFUD
-         HVYAt2PQBFcRLLCAmqDyR3zeDDGIL5IiGQBqpXT/3o587BNDYgl6C11Jssw8cInA6gzk
-         A6Y+AUU7rx+Fw6590Scip1z0G/L5l77evET6RlMgF7uHboEpVJKH2uPir0DdxGSWJ43B
-         Bf7w==
-X-Gm-Message-State: AOAM5335NXGxOc4dTYj6+dl/pwr8/+EzT9NOSDibFPnpbN+n2kMVuGad
-        xMj77MehCvnBa0xef0L+FxqXDtHa3F8TOkqfQEU=
-X-Google-Smtp-Source: ABdhPJzQFyLz4ZFpSUNk38OWbNw2oSVem0pBtecySCljHXX+NjBW06/tp7bhL/h4Rqn+kDO2lkA1VKhl3Fp6Hd8G4iw=
-X-Received: by 2002:a05:6402:310a:: with SMTP id dc10mr36794847edb.38.1620744529500;
- Tue, 11 May 2021 07:48:49 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=WK0rCpddaIotUh6/rcU63RftGn9uHXAHck5F5PO4UIw=;
+        b=tO0JRCkoAwocjfHRGAtZvXCzRjJ8CROAWsLLgysbK5DTkVC5uF0OWacxDryalq2Km+
+         T/qRFOhMlbeubWuoIV3z3hTT4dZ2MUc1PaGGkVTywGdrFZHpPch4GSgYpuIGHhxvN3V6
+         pKAViRUrQ9Jedwa6tnd/9Y5uGtdajNv9jujFGaQNfbusD1+Q8/ffOMCoDjFbyi8FaWuP
+         xd/xoSMmi9PYeRVH3PiLe0W+KgpoPvQ48E+JRgS8UAb9Mwt2/51q9SsOOkIh6hapNMLm
+         eaN28iMZIUC/Znp4CbZEW7HiGi41MW6/iqiKroahYensOfpb9ZV61bZ4jy4LxGCodGF9
+         O5zw==
+X-Gm-Message-State: AOAM532OwjmHWBKhhFDFVbjGR/fEOKa0Y/s5u5BRU+QewSXzkb/PZqOI
+        Am7mqYyj/sKwuo7ZS8Np/Jrk4ZH3CxnWiTvr54M67rurY12v
+X-Google-Smtp-Source: ABdhPJyCL0dFpyleG/qWV9b3J/9KXy6CKUPoLxGnpVYfWnwmYvKoUVhLaud8brcZUdWwZzsFhyxueGKja33l+ZN1tCNiT+bbv168
 MIME-Version: 1.0
-References: <20210406013344.124255-1-aford173@gmail.com> <20210511024604.GE3425@dragon>
- <CAHCN7xLFpL=9BF9M5gUA6sMhc2ZZMNz+GP0OLmLfpJAWdD7W-w@mail.gmail.com> <VE1PR04MB6688CD4AA4826EEEBBA2651689539@VE1PR04MB6688.eurprd04.prod.outlook.com>
-In-Reply-To: <VE1PR04MB6688CD4AA4826EEEBBA2651689539@VE1PR04MB6688.eurprd04.prod.outlook.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Tue, 11 May 2021 09:48:38 -0500
-Message-ID: <CAHCN7xJ5Hq6bRpEgE8Pi9VbQ_Kejy-sgKQsJ93pQEG3U_Wsu=Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm64: dts: imx8mn: Add spba1 bus
-To:     Robin Gong <yibin.gong@nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a05:6e02:1142:: with SMTP id o2mr14052018ill.9.1620744623524;
+ Tue, 11 May 2021 07:50:23 -0700 (PDT)
+Date:   Tue, 11 May 2021 07:50:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008ea13f05c20f0390@google.com>
+Subject: [syzbot] WARNING in input_unregister_device
+From:   syzbot <syzbot+96f19ddb26662d2cd6f5@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, rafael@kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 7:20 AM Robin Gong <yibin.gong@nxp.com> wrote:
->
-> On 2021/05/11 18:45 Adam Ford <aford173@gmail.com> wrote:
-> > > Also may I ask if you have a real use case for this bus node?
-> >
-> > The reference manual shows the SPBA bus tells the DMA controller which
-> > peripherals are associated with it.  Nearly all the i.MX boards use this.  The
-> > boards I support have Bluetooth devices connected to a UART running high
-> > speeds, and if the DMA driver isn't loaded, I can see a performance change.
-> Compare PIO with DMA on UART, but not w/o this  'spba bus node ' patch?
->
-> > In fact, if the DMA firmware isn't loaded, I often get transfer errors.
-> UART use SDMA ROM firmware instead of RAM firmware, so it should work
-> even without sdma RAM firmware loaded.  Still curious what really happen in
-> your board without this patch.
+Hello,
 
-What I am seeing is that at times, the HCI UART loading before the DMA
-firmware is loaded.
+syzbot found the following issue on:
 
-[   10.582037] Bluetooth: HCI UART driver ver 2.3
-[   10.586867] Bluetooth: HCI UART protocol H4 registered
-[   10.593566] imx-sdma 30bd0000.dma-controller: sdma firmware not ready!
-[   10.594548] Bluetooth: HCI UART protocol Broadcom registered
-[   10.600108] imx-uart 30860000.serial: We cannot prepare for the RX slave dma!
+HEAD commit:    83a9d2a0 usb: isp1760: hcd: refactor mempool config and se..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=10275a63d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a73b8d06863cd18d
+dashboard link: https://syzkaller.appspot.com/bug?extid=96f19ddb26662d2cd6f5
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12126d2dd00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=109ea9b3d00000
 
-When I get the above message, the bluetooth chip I have throws
-timeouts and does not function.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+96f19ddb26662d2cd6f5@syzkaller.appspotmail.com
 
-[   10.615090] imx-sdma 302c0000.dma-controller: loaded firmware 4.5
+usb 1-1: USB disconnect, device number 46
+------------[ cut here ]------------
+add_uevent_var: buffer size too small
+WARNING: CPU: 0 PID: 2210 at lib/kobject_uevent.c:671 add_uevent_var+0x311/0x380 lib/kobject_uevent.c:671
+Modules linked in:
+CPU: 0 PID: 2210 Comm: kworker/0:2 Not tainted 5.12.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+RIP: 0010:add_uevent_var+0x311/0x380 lib/kobject_uevent.c:671
+Code: 48 c7 c7 60 70 21 86 e8 54 ed 7e 03 0f 0b 41 bd f4 ff ff ff e9 55 ff ff ff e8 6b 4d 37 ff 48 c7 c7 00 71 21 86 e8 36 ed 7e 03 <0f> 0b 41 bd f4 ff ff ff e9 37 ff ff ff 4c 89 ee 48 c7 c7 40 1e d6
+RSP: 0018:ffffc90006c7f2d0 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffff88811c1ca000 RCX: 0000000000000000
+RDX: ffff88810f073680 RSI: ffffffff812a3e73 RDI: fffff52000d8fe4c
+RBP: ffffc90006c7f3c0 R08: 0000000000000001 R09: 0000000000000000
+R10: ffffffff814b72cb R11: 0000000000000000 R12: 1ffff92000d8fe5d
+R13: 00000000000007de R14: ffff88811c1ca218 R15: 00000000000007de
+FS:  0000000000000000(0000) GS:ffff8881f6a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000560185d39040 CR3: 000000011042d000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ kobject_uevent_env+0xdda/0x1650 lib/kobject_uevent.c:605
+ device_del+0x7eb/0xd40 drivers/base/core.c:3517
+ input_unregister_device+0xb4/0xf0 drivers/input/input.c:2379
+ hidinput_disconnect+0x15e/0x3d0 drivers/hid/hid-input.c:2013
+ hid_disconnect+0x13f/0x1a0 drivers/hid/hid-core.c:2029
+ hid_hw_stop+0x12/0x70 drivers/hid/hid-core.c:2076
+ ms_remove+0x12/0x90 drivers/hid/hid-microsoft.c:409
+ hid_device_remove+0xed/0x240 drivers/hid/hid-core.c:2317
+ __device_release_driver+0x3bd/0x6f0 drivers/base/dd.c:1181
+ device_release_driver_internal drivers/base/dd.c:1212 [inline]
+ device_release_driver+0x26/0x40 drivers/base/dd.c:1235
+ bus_remove_device+0x2eb/0x5a0 drivers/base/bus.c:533
+ device_del+0x502/0xd40 drivers/base/core.c:3507
+ hid_remove_device drivers/hid/hid-core.c:2488 [inline]
+ hid_destroy_device+0xe1/0x150 drivers/hid/hid-core.c:2507
+ usbhid_disconnect+0x9f/0xe0 drivers/hid/usbhid/hid-core.c:1436
+ usb_unbind_interface+0x1d8/0x8d0 drivers/usb/core/driver.c:458
+ __device_release_driver+0x3bd/0x6f0 drivers/base/dd.c:1181
+ device_release_driver_internal drivers/base/dd.c:1212 [inline]
+ device_release_driver+0x26/0x40 drivers/base/dd.c:1235
+ bus_remove_device+0x2eb/0x5a0 drivers/base/bus.c:533
+ device_del+0x502/0xd40 drivers/base/core.c:3507
+ usb_disable_device+0x35b/0x7b0 drivers/usb/core/message.c:1413
+ usb_disconnect.cold+0x27d/0x791 drivers/usb/core/hub.c:2219
+ hub_port_connect drivers/usb/core/hub.c:5127 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5416 [inline]
+ port_event drivers/usb/core/hub.c:5562 [inline]
+ hub_event+0x1c9c/0x4320 drivers/usb/core/hub.c:5644
+ process_one_work+0x98d/0x1580 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x38c/0x460 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-Once the firmware is loaded, I can unload the HCI Uart driver and
-re-load Bluetooth works again.
 
-Based on that, I've been having my system delay the loading of the
-Bluetooth modules until after the firmware is loaded, but this tells
-me there is a relationship between the DMA and UART.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-adam
->
->
->
->
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
