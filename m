@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E1A37ADAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 844A537ADCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231981AbhEKSEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:04:40 -0400
-Received: from mga05.intel.com ([192.55.52.43]:45780 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231986AbhEKSEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:04:34 -0400
-IronPort-SDR: sfmUPHTs5/oLzavXjLv9Ek2zEdHBnuywOZoV5VW/6dkiMdWDMJLvrvuqLdLKSuYbw+6nXZirH0
- MXbvFvrMiI5Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="285003719"
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="285003719"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 11:03:25 -0700
-IronPort-SDR: igI2hkMwhTJNky0TneHIeis9ZrKM8EdQlPu6AwIr9M00XUdSZvHFazf4kP/W4pKIyGlBPfy9kc
- v0A5mF9aN18w==
-X-IronPort-AV: E=Sophos;i="5.82,291,1613462400"; 
-   d="scan'208";a="436779964"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 11:03:25 -0700
-Date:   Tue, 11 May 2021 11:05:50 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
-        zhangfei.gao@linaro.org, vkoul@kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
- flags
-Message-ID: <20210511110550.477a434f@jacob-builder>
-In-Reply-To: <20210511163521.GN1002214@nvidia.com>
-References: <1620653108-44901-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1620653108-44901-2-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20210510233749.GG1002214@nvidia.com>
-        <20210510203145.086835cc@jacob-builder>
-        <20210511114848.GK1002214@nvidia.com>
-        <20210511091452.721e9a03@jacob-builder>
-        <20210511163521.GN1002214@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S231992AbhEKSH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:07:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31379 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231462AbhEKSH5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 14:07:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620756410;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=USTqRYanuUHDJqRaoZLu8zaZBUsx9OAiBJ2fe+smg+A=;
+        b=Hppjy0JoddzxKgd6DiG6e4sHzUpYDmK/jUlS4qyHzAQNgPGuCkjQDSLFBrWCkBm/sSIs5t
+        3SV0aZV9NKhXMhKqeYowgQ2u+3MeG/gjbLWheyYWv/GrOQlEhT7AojjZ1apM4xsqlffX+v
+        fZ9W25/YS9qgOe+RTJibDUMMvb+oHwE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-509-3Xs3_rFcNle9Hw53x2hC4Q-1; Tue, 11 May 2021 14:06:46 -0400
+X-MC-Unique: 3Xs3_rFcNle9Hw53x2hC4Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 738D0106BB29;
+        Tue, 11 May 2021 18:06:39 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.124])
+        by smtp.corp.redhat.com (Postfix) with SMTP id BDF3A9CA0;
+        Tue, 11 May 2021 18:06:29 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 11 May 2021 20:06:38 +0200 (CEST)
+Date:   Tue, 11 May 2021 20:06:28 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Pedro Alves <palves@redhat.com>,
+        Simon Marchi <simon.marchi@efficios.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RESEND2] ptrace: make ptrace() fail if the tracee changed
+ its pid unexpectedly
+Message-ID: <20210511180627.GB14488@redhat.com>
+References: <20210511165626.GA13720@redhat.com>
+ <CAHk-=whLqbTNc1T+rHCm-kxbVAuhK3hjo5fOgDVf5-z--x1mvQ@mail.gmail.com>
+ <20210511175341.GA14488@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511175341.GA14488@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+On 05/11, Oleg Nesterov wrote:
+>
+> On 05/11, Linus Torvalds wrote:
+>
+> > That said, why this:
+> >
+> > > +       rcu_read_lock();
+> > > +       pid = task_pid_nr_ns(task, task_active_pid_ns(task->parent));
+> > > +       rcu_read_unlock();
+> >
+> > I don't see why the RCU read lock would be needed? task_pid_nr_ns()
+> > does any required locking itself, afaik.
+> >
+> > And even if it wasn't, this all happens with siglock held, can
+> > anything actually change.
+>
+> ... and with tasklist_lock held.
+>
+> Hmm. Linus, I am shy to admit I can't answer immediately, I'll recheck
+> tomorrow after sleep. But it seems you are right.
 
-On Tue, 11 May 2021 13:35:21 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+most probably to protect task->parent, not sure, this was 6 month ago...
+but in this case we can use "current". I'll recheck.
 
-> On Tue, May 11, 2021 at 09:14:52AM -0700, Jacob Pan wrote:
-> 
-> > > Honestly, I'm not convinced we should have "kernel SVA" at all.. Why
-> > > does IDXD use normal DMA on the RID for kernel controlled accesses?  
-> > 
-> > Using SVA simplifies the work submission, there is no need to do
-> > map/unmap. Just bind PASID with init_mm, then submit work directly
-> > either with ENQCMDS (supervisor version of ENQCMD) to a shared
-> > workqueue or put the supervisor PASID in the descriptor for dedicated
-> > workqueue.  
-> 
-> That is not OK, protable drivers in Linux have to sue dma map/unmap
-> calls to manage cache coherence. PASID does not opt out of any of
-> that.
-> 
-Let me try to break down your concerns:
-1. portability - driver uses DMA APIs can function w/ and w/o IOMMU. is
-that your concern? But PASID is intrinsically tied with IOMMU and if
-the drivers are using a generic sva-lib API, why they are not portable?
-SVA by its definition is to avoid map/unmap every time.
+> Thanks!
 
-2. cache coherence - as you suggested if we name the flag "direct_map",
-there is no mapping change, then there is no need for mmu_notifier like tlb
-flush calls, right? it is caller's responsibility to make sure vmalloc are
-not used.
+Oleg.
 
-> I dislike this whole idea a lot. A single driver should not opt itself
-> out of IOMMU based security "just because"
-> 
-Perhaps I missed your point here. This is NOT a single driver, privileged
-access is a PCIe spec defined feature. We are using IOMMU sva-lib APIs, not
-sure why it is by-passing.
-
-Perhaps we should add check for struct pci_dev->untrusted && rciep to
-address security?
-
-> Jason
-
-
-Thanks,
-
-Jacob
