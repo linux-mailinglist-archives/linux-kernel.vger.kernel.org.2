@@ -2,106 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA2137AE52
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53EA237AE55
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 20:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232117AbhEKSWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 14:22:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232019AbhEKSVz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 14:21:55 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E1AAC061574;
-        Tue, 11 May 2021 11:20:48 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id o6-20020a05600c4fc6b029015ec06d5269so1758099wmq.0;
-        Tue, 11 May 2021 11:20:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DXAhBfbLQ+Z6qa68rOJY6vHkUQpdl/o/mBrv046HmPE=;
-        b=aN9uGxsVCwSGaaMATi9By/8HDdoqPOl0q3lr3cIzdtbfu/G/eNywekhLkna127VCEt
-         tZE3NE6TAu9KsM/jlbwp3k1l/Tme4wHoarmv/dBahLYoiZ4Z3UHRSmlNrfJq1Be+F7mC
-         Crr01OCpUEiz2VLgF3B7HVTViQXg3r0iBnHVsBsvQKMB6n3W4pGIX7NE0STtN7flNZO0
-         OL4jN4QzJ3SYcRtQcy15+SLA61tzqOf4IziNuXew0YgLKH82KFCEAu9WytWtAqgrnQ7q
-         CBeL309KqrkyZh16Vomg8ESDCKwEHHxpLujOcfZxjnV8ukFV/EkHkorJ07kzxGlVkwol
-         8E7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DXAhBfbLQ+Z6qa68rOJY6vHkUQpdl/o/mBrv046HmPE=;
-        b=d1rndeaMIlnhuyPBa0yczMhYr89DczuAEArd2zBsbYttsu4ibFwqfy95UHFY8cpfHD
-         GPrFFxsnanYShQuHPznoHAaA6zSA+UJNeT4t/zeRqMMiUlPZ/i4TSH+i3RPUnpg+tVGy
-         Gb5oYD3/4eS3C9ex3OdMkp4+icDs1ko12eDjd+UP+8pW2e+bz5atKtA6uHyKEurMLiAc
-         56Gb1f/QeWVT3H6puBipGt1/OoH4K6lNrR+1TOneiDNK1tQEHoxPjh/doAidT0XXx6Qw
-         JYVX45ERB9nFs+v52+Pq/OAhWr3yoyA9sN8tag2Mz8Lhr3gxRgc0GnHZtK0ve8ebC2Bl
-         xQoQ==
-X-Gm-Message-State: AOAM532i1cAGNzLAR3/fuvX0BYeEof4lLiFEDUO4JqXpLsbygO4RwX9Q
-        z09UprtmmGspR7pigaH2WOE=
-X-Google-Smtp-Source: ABdhPJxV18DCIwXmjWUt0yrboA4C4tGwbySkgdDTrM7UyarjQvbbUVLI4Dd1XWDU8CIePuUZeXs8pA==
-X-Received: by 2002:a05:600c:4f04:: with SMTP id l4mr33852177wmq.18.1620757247138;
-        Tue, 11 May 2021 11:20:47 -0700 (PDT)
-Received: from localhost.localdomain ([94.73.38.147])
-        by smtp.gmail.com with ESMTPSA id d15sm28012133wrw.71.2021.05.11.11.20.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 11:20:46 -0700 (PDT)
-From:   =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
-To:     jikos@kernel.org
-Cc:     benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
-Subject: [PATCH 5/5] HID: magicmouse: report battery status
-Date:   Tue, 11 May 2021 20:20:23 +0200
-Message-Id: <20210511182023.730524-5-jose.exposito89@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210511182023.730524-1-jose.exposito89@gmail.com>
-References: <20210511182023.730524-1-jose.exposito89@gmail.com>
+        id S232024AbhEKSXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 14:23:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231551AbhEKSXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 14:23:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE7A061264;
+        Tue, 11 May 2021 18:22:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620757333;
+        bh=tY+DyOll1ID/TuAyNQeRTBvujHiXuMnT1EX9dNVopOU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=rgcnNHeORTWT88XTjG1nd4GNQzBeflXwWnjsz8OY82TwfyD89+nxc3AJx4FvRhtOD
+         aq29tJLug6y1YGFk6AdezQawlyV2VceaMsLW5scbyOQ/L9meItMYJq8evVz7l2c6l5
+         6daMhFue1L1dtd1i7OKwBjV6HIb5joug9yCPy2OUC7Kpf0PzPpwo50C47MkVAM/27F
+         sCRapmd208Q24uhO8tHtPG8AmcfJ6LBrCFLClYkYp8/YyedZdnDrdu/orJMC897HQ1
+         +X0DCP9NawUZUSFGh32+tvETO7PJ0sWWWOnLvja4BytxRmeMFH0a6eCtR5wSeZ0F+/
+         WMIdXCTPg3LCQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v1 1/1] spi: Switch to signed types for *_native_cs SPI controller fields
+Date:   Tue, 11 May 2021 19:21:23 +0100
+Message-Id: <162075727216.18180.15052614228876859060.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210510131242.49455-1-andriy.shevchenko@linux.intel.com>
+References: <20210510131242.49455-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Report the battery charging status for the Apple Magic Mouse 2
-and the Apple Magic Trackpad 2.
+On Mon, 10 May 2021 16:12:42 +0300, Andy Shevchenko wrote:
+> While fixing undefined behaviour the commit f60d7270c8a3 ("spi: Avoid
+> undefined behaviour when counting unused native CSs") missed the case
+> when all CSs are GPIOs and thus unused_native_cs will be evaluated to
+> -1 in unsigned representation. This will falsely trigger a condition
+> in the spi_get_gpio_descs().
+> 
+> Switch to signed types for *_native_cs SPI controller fields to fix above.
 
-Signed-off-by: José Expósito <jose.exposito89@gmail.com>
----
- drivers/hid/hid-magicmouse.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Applied to
 
-diff --git a/drivers/hid/hid-magicmouse.c b/drivers/hid/hid-magicmouse.c
-index 53e8a10f0551..4085b6698f2c 100644
---- a/drivers/hid/hid-magicmouse.c
-+++ b/drivers/hid/hid-magicmouse.c
-@@ -155,6 +155,7 @@ static enum power_supply_property magicmouse_ps_props[] = {
- 	POWER_SUPPLY_PROP_PRESENT,
- 	POWER_SUPPLY_PROP_SCOPE,
- 	POWER_SUPPLY_PROP_CAPACITY,
-+	POWER_SUPPLY_PROP_STATUS,
- };
- 
- static bool magicmouse_can_report_battery(struct magicmouse_sc *msc)
-@@ -229,6 +230,15 @@ static int magicmouse_battery_get_property(struct power_supply *psy,
- 
- 		val->intval = msc->battery.capacity;
- 		break;
-+	case POWER_SUPPLY_PROP_STATUS:
-+		if (msc->input->id.vendor == BT_VENDOR_ID_APPLE) {
-+			val->intval = POWER_SUPPLY_STATUS_DISCHARGING;
-+		} else { /* USB_VENDOR_ID_APPLE */
-+			val->intval = (msc->battery.capacity == 100) ?
-+				      POWER_SUPPLY_STATUS_FULL :
-+				      POWER_SUPPLY_STATUS_CHARGING;
-+		}
-+		break;
- 	default:
- 		ret = -EINVAL;
- 		break;
--- 
-2.25.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
+Thanks!
+
+[1/1] spi: Switch to signed types for *_native_cs SPI controller fields
+      commit: 35f3f8504c3b60a1ae5576e178b27fc0ddd6157d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
