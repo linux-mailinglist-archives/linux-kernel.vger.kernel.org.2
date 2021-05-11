@@ -2,100 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6947637A3C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D24037A3C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 11 May 2021 11:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231279AbhEKJhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 05:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230427AbhEKJhK (ORCPT
+        id S231377AbhEKJhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 05:37:37 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:43620 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231224AbhEKJh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 05:37:10 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BEF7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 02:36:04 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0ec70079cd82bef3234244.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:c700:79cd:82be:f323:4244])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 740DE1EC0523;
-        Tue, 11 May 2021 11:36:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1620725761;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=F7VxGCtxqOa5Uaq8/CVpfggBErw2DOeXqO+Qk8G4uYU=;
-        b=kCiLX+qWCIE9DmOWmD2vOMkS8u1N1iOnViJVyAqlmlv12k52rSr9m3JcN39XVGWUjpKID0
-        2tXfFE2NCcTiyfL2UFdEwyEpMt9/GaZ1ayxGK7E4IXPJF8CMaTurNEKkGOvbin4Ltur95d
-        jWhLxSRGD+V5VtGSsz8O4h9x6t+T2R8=
-Date:   Tue, 11 May 2021 11:35:57 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v2 28/32] x86/tdx: Make pages shared in ioremap()
-Message-ID: <YJpP/S8MajKNhBl4@zn.tnic>
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <eaaa692ce1ed897f66f864bbfa2df8683768d79e.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <b884067a-19d6-105f-9f8c-28feb3b43446@intel.com>
- <312879fb-d201-a16d-2568-150152044c54@linux.intel.com>
- <797c95bf-9516-8aee-59d0-f5259d77bb75@linux.intel.com>
- <5b4b4fc0-aaa8-3407-6602-537d59572bc1@intel.com>
- <YJm5QY8omAvdpBO9@google.com>
+        Tue, 11 May 2021 05:37:28 -0400
+Received: by mail-wr1-f48.google.com with SMTP id s8so19430824wrw.10;
+        Tue, 11 May 2021 02:36:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lKvDqLFt4pSvW/UjUfuGxRK9wnc82UFlNv4lfSox3SQ=;
+        b=TuyL4C/k18fwrHfpsEM15BqzMjJ0K5QlHBgddl7GgePT54vrlRCE2nCbfrp28DynJR
+         HemxwqOyXkaHDiXWD6vtKozmUPiKKVitfk5QTnI7HbGG8/ZamX9hBETmnocFfRYsiees
+         OQYm22RW55dKFChV4bhJQNQtx+uojImviXyFei47WYhRph0xULgJswc/Jt+Noag+PCTO
+         H3+eu0796nKRCz9bTv3QhZpFB8SBfOoX3HHH0WdP0+a/RMQn8KxXilqARFq5jXhv6No8
+         NCFFBbwIj5lTnBYisaTXhXWLfjObEnkY6agLOBnlwYX+rtBaCgGjt/MCSOhhWRhCtdEG
+         LfeA==
+X-Gm-Message-State: AOAM532DLtNOevsO8HRlaDCnKVllYRCRJRpKVDhe4Over0VqWhnF9aiG
+        FQIIppJKVloRUhs4UC7yvjo=
+X-Google-Smtp-Source: ABdhPJzoPFT2EMMBDiIncbIHfUAbvXVf3ZD01iti4VHoAS+8gLGYEXHj0HcWmLvh5qXK2Pv0JB5KYg==
+X-Received: by 2002:a5d:400f:: with SMTP id n15mr32595880wrp.274.1620725780762;
+        Tue, 11 May 2021 02:36:20 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id e17sm1256536wme.9.2021.05.11.02.36.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 02:36:20 -0700 (PDT)
+Date:   Tue, 11 May 2021 09:36:18 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        linux-kernel@vger.kernel.org, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
+        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, mikelley@microsoft.com
+Subject: Re: [PATCH v2] scsi: storvsc: Use blk_mq_unique_tag() to generate
+ requestIDs
+Message-ID: <20210511093618.fqcbno4iuvhnl66g@liuwe-devbox-debian-v2>
+References: <20210510210841.370472-1-parri.andrea@gmail.com>
+ <yq1k0o6ez1h.fsf@ca-mkp.ca.oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJm5QY8omAvdpBO9@google.com>
+In-Reply-To: <yq1k0o6ez1h.fsf@ca-mkp.ca.oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 10:52:49PM +0000, Sean Christopherson wrote:
-> I can't find the thread offhand, but Boris proposed something along the lines of
-> cpu_has(), but specific to a given flavor of protected guest.  IIRC, it was
-> sev_guest_has(SEV_ES) or something like that.
+On Mon, May 10, 2021 at 11:22:25PM -0400, Martin K. Petersen wrote:
 > 
-> I 100% agree that we should have actual feature bits somewhere for the various
-> protected guest flavors.
+> Andrea,
+> 
+> > Use blk_mq_unique_tag() to generate requestIDs for StorVSC, avoiding
+> > all issues with allocating enough entries in the VMbus requestor.
+> 
+> Dropped v1 from the SCSI staging tree. OK with this change going through
+> hv if that is easier.
+> 
+> Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
 
-Preach brother! :)
+Thanks Martin.
 
-/me goes and greps mailboxes...
-
-ah, do you mean this, per chance:
-
-https://lore.kernel.org/kvm/20210421144402.GB5004@zn.tnic/
-
-?
-
-And yes, this has "sev" in the name and dhansen makes sense to me in
-wishing to unify all the protected guest feature queries under a common
-name. And then depending on the vendor, that common name will call the
-respective vendor's helper to answer the protected guest aspect asked
-about.
-
-This way, generic code will call
-
-	protected_guest_has()
-
-or so and be nicely abstracted away from the underlying implementation.
-
-Hohumm, yap, sounds nice to me.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> 
+> -- 
+> Martin K. Petersen	Oracle Linux Engineering
