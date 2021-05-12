@@ -2,162 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED2937C039
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF50237C03A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbhELOeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbhELOe3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:34:29 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07228C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:33:21 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id s6so27297523edu.10
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:33:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v8nnd2ujlB60GPiA1lPsUn5BttskeOt6aee1p1TS5NI=;
-        b=Wpp5b+dJz7p84pYFu61NJPWS4c2Iy94l38MMIIrcvuSyboDZb8mrAauO3NExSxNvxO
-         gxIiCahmDKdGGZLEachs9sYewc/p5Ffh5QD8PfCExLjZ9o4ms/CuLM7muZKbmq6kgAmz
-         DoReFAC9jIdpFjCoLD9tthT3L7CPfVDbJoDVUq2838G0Gl0SWXxLGu/Q7nMpaNyPR1dX
-         1WWj5jqBeK0ZE76jprusRBgJ7gBIiGpZR8ajL4z4CQwT65uNBW2DDzDoEBCWOkLiTKpl
-         uGDnqh2B7/aQwFYH5XPtPD83rkFQSovCQU+TH3bz/2A1RT2m5FZvOUqeeKwShBXTC5kg
-         wGgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v8nnd2ujlB60GPiA1lPsUn5BttskeOt6aee1p1TS5NI=;
-        b=lFrymaZLHA3ahfj1/MruMOejXj9YqpeHt3BRjBKOsWPlfkCVcT0bS/4VzNlQbJ+xAz
-         Q+XXGTaJGpJurWzR1bXrlWsbv+dwkdCeKnqK3J7imbyRp0+ecsQfLuNGZdsik3EXp0VA
-         CGPb7d0bftu/DtIcK7OC2MqZ0QiUJFiuiYh0mjrwys6kRJXf4ZAM0+yT6WmdsZT7cD6+
-         HEnEU60txiwEtmZ+VMGpIs/klfUH996lo7cikfJ8mLyUctrVArO02d3t484Wi6lY6hMQ
-         yOWF00bMsRbCHyS7zOh2GjwyvOsy4IonMSNwD4MShmrOnxeJ93KOvaFbF1CJ5E5l1lgi
-         uBjA==
-X-Gm-Message-State: AOAM5311TLIzuXj9vK9OHG3vf3X1FAsmlwDe3f44Wvckwpi/Jq1NoUmt
-        ffpBBU5gIuZyLp+QQQVLU5zMwMxvIJv0nQ==
-X-Google-Smtp-Source: ABdhPJzInUulmO9exKABBz7owEwSBxpmyErqaWsAb1FxTHkBIKeHrTmU5ddGsSUIEwpo+I3PBxFuAA==
-X-Received: by 2002:aa7:c7d5:: with SMTP id o21mr44134734eds.166.1620829998603;
-        Wed, 12 May 2021 07:33:18 -0700 (PDT)
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
-        by smtp.gmail.com with ESMTPSA id wn14sm14517068ejb.28.2021.05.12.07.33.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 May 2021 07:33:17 -0700 (PDT)
-Received: by mail-wr1-f53.google.com with SMTP id l14so23858236wrx.5
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:33:17 -0700 (PDT)
-X-Received: by 2002:a05:6000:1787:: with SMTP id e7mr45453515wrg.12.1620829996861;
- Wed, 12 May 2021 07:33:16 -0700 (PDT)
+        id S230483AbhELOfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:35:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34394 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230370AbhELOfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 10:35:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0D24EADD7;
+        Wed, 12 May 2021 14:33:51 +0000 (UTC)
+To:     Andrew Morton <akpm@linux-foundation.org>, glittao@gmail.com
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, "Paul E . McKenney" <paulmck@kernel.org>
+References: <20210414163434.4376-1-glittao@gmail.com>
+ <20210509214603.d2a5faaa3fe0d71c3517cb36@linux-foundation.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm/slub: use stackdepot to save stack trace in objects
+Message-ID: <f9dd0692-e490-56ce-3cd8-b99aea559e79@suse.cz>
+Date:   Wed, 12 May 2021 16:33:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210511044253.469034-1-yuri.benditovich@daynix.com>
- <20210511044253.469034-3-yuri.benditovich@daynix.com> <CA+FuTSdfA6sT68AJNpa=VPBdwRFHvEY+=C-B_mS=y=WMpTyc=Q@mail.gmail.com>
- <CAOEp5OcV-YmPFoewuCHg=ADFQ4BmVL5ioMgh3qVjUGk9mauejg@mail.gmail.com>
-In-Reply-To: <CAOEp5OcV-YmPFoewuCHg=ADFQ4BmVL5ioMgh3qVjUGk9mauejg@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Wed, 12 May 2021 10:32:39 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSes20+KKhnNFHyOa_E0dp-RgUNFRj-YLHvjpqqL75zDXQ@mail.gmail.com>
-Message-ID: <CA+FuTSes20+KKhnNFHyOa_E0dp-RgUNFRj-YLHvjpqqL75zDXQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] virtio-net: add support of UDP segmentation (USO) on
- the host
-To:     Yuri Benditovich <yuri.benditovich@daynix.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        Yan Vugenfirer <yan@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210509214603.d2a5faaa3fe0d71c3517cb36@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 2:10 AM Yuri Benditovich
-<yuri.benditovich@daynix.com> wrote:
->
-> On Tue, May 11, 2021 at 8:48 PM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > On Tue, May 11, 2021 at 12:43 AM Yuri Benditovich
-> > <yuri.benditovich@daynix.com> wrote:
-> > >
-> > > Large UDP packet provided by the guest with GSO type set to
-> > > VIRTIO_NET_HDR_GSO_UDP_L4 will be divided to several UDP
-> > > packets according to the gso_size field.
-> > >
-> > > Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
-> > > ---
-> > >  include/linux/virtio_net.h | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
-> > > index b465f8f3e554..4ecf9a1ca912 100644
-> > > --- a/include/linux/virtio_net.h
-> > > +++ b/include/linux/virtio_net.h
-> > > @@ -51,6 +51,11 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
-> > >                         ip_proto = IPPROTO_UDP;
-> > >                         thlen = sizeof(struct udphdr);
-> > >                         break;
-> > > +               case VIRTIO_NET_HDR_GSO_UDP_L4:
-> > > +                       gso_type = SKB_GSO_UDP_L4;
-> > > +                       ip_proto = IPPROTO_UDP;
-> > > +                       thlen = sizeof(struct udphdr);
-> > > +                       break;
-> >
-> > If adding a new VIRTIO_NET_HDR type I suggest adding separate IPv4 and
-> > IPv6 variants, analogous to VIRTIO_NET_HDR_GSO_TCPV[46]. To avoid
-> > having to infer protocol again, as for UDP fragmentation offload (the
-> > retry case below this code).
->
-> Thank you for denoting this important point of distinguishing between v4 and v6.
-> Let's try to take a deeper look to see what is the correct thing to do
-> and please correct me if I'm wrong:
-> 1. For USO we do not need to guess the protocol as it is used with
-> VIRTIO_NET_HDR_F_NEEDS_CSUM (unlike UFO)
+On 5/10/21 6:46 AM, Andrew Morton wrote:
+> On Wed, 14 Apr 2021 18:34:34 +0200 glittao@gmail.com wrote:
+> 
+>> Many stack traces are similar so there are many similar arrays.
+>> Stackdepot saves each unique stack only once.
+>> 
+>> Replace field addrs in struct track with depot_stack_handle_t handle.
+>> Use stackdepot to save stack trace.
+>> 
+>> The benefits are smaller memory overhead and possibility to aggregate
+>> per-cache statistics in the future using the stackdepot handle
+>> instead of matching stacks manually.
+> 
+> Which tree was this prepared against?  5.12's kmem_obj_info() is
+> significantly different from the version you were working on.
 
-Enforcing that is a good start. We should also enforce that
-skb->protocol is initialized to one of htons(ETH_P_IP) or
-htons(ETH_P_IPV6), so that it does not have to be inferred by parsing.
+It was based on -next at the time of submission, which contained patch in Paul's
+tree that expands kmem_obj_info to print also free call stack [1] so that also
+needs to be switched to stackdepot to work.
 
-These requirements were not enforced for previous values, and cannot
-be introduced afterwards, which has led to have to add that extra code
-to handle these obscure edge cases.
+> Please take a look, redo, retest and resend?  Thanks.
 
-I agree that with well behaved configurations, the need for separate
-_V4 and _V6 variants is not needed.
+I expected [1] to be in 5.13-rc1, but as Paul explained to me, it's queued for
+5.14. So if we (Oliver) rebase on current -next, can you queue it in the section
+of mmotm series that goes after -next?
 
-> and the USO packets
-> transmitted by the guest are under the same clause as both
-> VIRTIO_NET_HDR_GSO_TCP, i.e. under if (hdr->flags &
-> VIRTIO_NET_HDR_F_NEEDS_CSUM) {
-> 2. If we even define VIRTIO_NET_HDR_GSO_UDPv4_L4 and
-> VIRTIO_NET_HDR_GSO_UDPv6_L4 - both will be translated to
-> SKB_GSO_UDP_L4, so this information is immediately lost (the code will
-> look like:
-> case VIRTIO_NET_HDR_GSO_UDP4_L4: case VIRTIO_NET_HDR_GSO_UDP6_L4
->     gso_type = SKB_GSO_UDP;
->
-> 3. When we will define the respective guest features (like
-> VIRTIO_NET_F_HOST_USO4 VIRTIO_NET_F_HOST_USO6) we will need to
-> recreate the virtio_net header from the skb when both v4 and v6 have
-> the same SKB_GSO_UDP_L4, (see virtio_net_hdr_from_skb) and I'm not
-> sure whether somebody needs the exact v4 or v6 information on guest RX
-> path.
+Vlastimil
 
-FWIW, it is good to keep in mind that virtio_net_hdr is also used
-outside virtio, in both ingress and egress paths.
-
-> 4. What is completely correct is that when we will start working with
-> the guest RX path we will need to define something like NETIF_F_USO4
-> and NETIF_F_USO6 and configure them according to exact guest offload
-> capabilities.
-> Do you agree?
-
-I don't immediately see the need for advertising this device feature
-on a per-protocol basis. Can you elaborate?
+[1]
+https://lore.kernel.org/linux-arm-kernel/1615891032-29160-2-git-send-email-maninder1.s@samsung.com/
