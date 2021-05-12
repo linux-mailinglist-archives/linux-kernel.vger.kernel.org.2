@@ -2,231 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B71B37B703
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC69537B6F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhELHmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 03:42:13 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:20137 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbhELHmK (ORCPT
+        id S230026AbhELHf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 03:35:29 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15492 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229850AbhELHf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 03:42:10 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210512074101epoutp03dfa987830f6797bb82c8277acb91d964~_QcxI0pri0618906189epoutp03K
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:41:01 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210512074101epoutp03dfa987830f6797bb82c8277acb91d964~_QcxI0pri0618906189epoutp03K
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1620805261;
-        bh=/5P0zVOAr68kzqqUZDGocRqA+7GX6RlmDAKCV49cpCk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eRABht2Ied/mguI2cXG+XDo3vV02UFSBWijay+Kz92oUV/E0p5QQczmK4ROJxiyV6
-         ktqqhjL66RVsy/T0hKpk6hFKm57Um6+0Flv5fOeIqtxLgTg5gMqCGEVJB+Uf8V5dLM
-         0F/F4BSmr+CWnnqlPO7/UbO7+3bbGvPNJcyXAPfI=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20210512074100epcas2p3572a8172bad93d908359a3aa657982e8~_QcwE-Iui2163021630epcas2p3Y;
-        Wed, 12 May 2021 07:41:00 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.187]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4Fg6Cv0S4cz4x9Px; Wed, 12 May
-        2021 07:40:59 +0000 (GMT)
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CF.C0.09433.A868B906; Wed, 12 May 2021 16:40:58 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210512074058epcas2p35536c27bdfafaa6431e164c142007f96~_QcuIN9se0074500745epcas2p3q;
-        Wed, 12 May 2021 07:40:58 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210512074058epsmtrp1e8697b5bad8f956032fdf36cf7c5d626~_QcuHVWhm2316423164epsmtrp1N;
-        Wed, 12 May 2021 07:40:58 +0000 (GMT)
-X-AuditID: b6c32a47-f61ff700000024d9-a5-609b868a27a5
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        33.8A.08163.A868B906; Wed, 12 May 2021 16:40:58 +0900 (KST)
-Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210512074058epsmtip25071f1599a52de422c0db1bc8ecd4f91~_Qct615bx0633106331epsmtip26;
-        Wed, 12 May 2021 07:40:58 +0000 (GMT)
-From:   Dongseok Yi <dseok.yi@samsung.com>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Dongseok Yi <dseok.yi@samsung.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v3] bpf: check for BPF_F_ADJ_ROOM_FIXED_GSO when
- bpf_skb_change_proto
-Date:   Wed, 12 May 2021 16:27:33 +0900
-Message-Id: <1620804453-57566-1-git-send-email-dseok.yi@samsung.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620714998-120657-1-git-send-email-dseok.yi@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplk+LIzCtJLcpLzFFi42LZdljTXLerbXaCwbEHOhbff89mtvjy8za7
-        xecjx9ksFi/8xmwx53wLi8WVaX8YLZp2rGCyePHhCaPF8329TBYXtvWxWlzeNYfN4tgCMYuf
-        h88wWyz+uQGoYskMRgd+jy0rbzJ5TGx+x+6xc9Zddo+uG5eYPTat6mTz6NuyitHj8ya5APao
-        HJuM1MSU1CKF1Lzk/JTMvHRbJe/geOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoLuVFMoS
-        c0qBQgGJxcVK+nY2RfmlJakKGfnFJbZKqQUpOQWGhgV6xYm5xaV56XrJ+blWhgYGRqZAlQk5
-        GX8bFrAUvJOtuL2uja2B8YN4FyMnh4SAiUT3k6fsXYxcHEICOxgl1j1/yQzhfGKUmP36F1Tm
-        M6PEg++zWGFaPt35DZXYBZRYPQ+q5QejxK0N39hAqtgENCT2v3sB1iEiYCax8cgNFpAiZoHH
-        zBI9e5azgCSEBRIkpqw8zAxiswioSpx494Kpi5GDg1fARWLWnDyIbXISN891gpVwCrhJdM08
-        ADZHQmAqh8S2zs/sEEUuEocWbWGGsIUlXh3fAhWXknjZ38YOMlNCoF6itTsGoreHUeLKvics
-        EDXGErOetTOC1DALaEqs36UPUa4sceQWWAWzAJ9Ex+G/UFN4JTrahCBMJYmJX+IhZkhIvDg5
-        GWqeh8SXU42skBCZySixe0MzywRGuVkI8xcwMq5iFEstKM5NTy02KjBGjrBNjOB0qeW+g3HG
-        2w96hxiZOBgPMUpwMCuJ8IolzU4Q4k1JrKxKLcqPLyrNSS0+xGgKDLmJzFKiyfnAhJ1XEm9o
-        amRmZmBpamFqZmShJM77M7UuQUggPbEkNTs1tSC1CKaPiYNTqoFpk/2zdCfHg2zPefOb+dav
-        P72rxO3KIT2rQ8wpUxX/WC3fsSz9z/e1601nHBSdbcbgyff17JUXZ2axy6vKN7eyTus02BP/
-        /mE49/Z9eyo41BSMbJyXpTl+5b4lJO2lr+MpuGx7TNuLO09ljK9/rT13TvaWwN55cdrfLkzh
-        e5Sk63+ms/HAxUOHm+2vcf7777j7n8lSgWonNY8iRsdI/ZLz1+7wuVXOvPliXm8xl6q9Rv8q
-        wZsF8m3P5JlKnHd2VU6fu17cvWPthDsVK8OfiM+UOOzZkuffWjzrq9ib7V/j+Nzb1SMq9TrU
-        YuqUPfp7vBKdBPU7/8lt2a6xxPqQkGbjMVcTJZ5Pc78KdBxedFGJpTgj0VCLuag4EQCaBI06
-        IAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGLMWRmVeSWpSXmKPExsWy7bCSvG5X2+wEg4sLeC2+/57NbPHl5212
-        i89HjrNZLF74jdlizvkWFosr0/4wWjTtWMFk8eLDE0aL5/t6mSwubOtjtbi8aw6bxbEFYhY/
-        D59htlj8cwNQxZIZjA78HltW3mTymNj8jt1j56y77B5dNy4xe2xa1cnm0bdlFaPH501yAexR
-        XDYpqTmZZalF+nYJXBl/GxawFLyTrbi9ro2tgfGDeBcjJ4eEgInEpzu/2bsYuTiEBHYwShw5
-        9Y2xi5EDKCEhsWuzK0SNsMT9liOsEDXfGCX23Z7GDpJgE9CQ2P/uBSuILSJgJrHxyA0WkCJm
-        gY/MEkevvWUCSQgLxEnMX3yGBcRmEVCVOPHuBRPIAl4BF4lZc/IgFshJ3DzXyQxicwq4SXTN
-        PMACUiIk4Cpx9wjTBEa+BYwMqxglUwuKc9Nziw0LjPJSy/WKE3OLS/PS9ZLzczcxgoNaS2sH
-        455VH/QOMTJxMB5ilOBgVhLhFUuanSDEm5JYWZValB9fVJqTWnyIUZqDRUmc90LXyXghgfTE
-        ktTs1NSC1CKYLBMHp1QDk937nNPZ4TYex9Z67zPY6qfzS5Jh0a2VEc2qV1rauY6+VvLYUai3
-        RvWtZPb8+Q7R9+PdFgn/uxDSsc/m3MRVa4pZec7EGJt8tnkjOov7a/hl5lqG2/V2KW5iq/Z+
-        dXwXwmoVkR1v78744GHv+r2dHI2MO9d6l1pNif87/W1M5fruLUUtDiYPtBTv7t2q1RY39d7+
-        BHlgeAT9t7VsSPw7d9uHZv2UpLyz82XP58ft0rsY8TuRy16FQV/ia/bdCnk27VU/C/+0/db0
-        XXRfJFXq+6l917urHoqY6V7km1Vt17X2W/fOaPblE56n/WLRi5vgKnnsyxp7J+f1rHfYX34P
-        c6lOk3g1c5Wh/YYASy4lluKMREMt5qLiRABxpG712QIAAA==
-X-CMS-MailID: 20210512074058epcas2p35536c27bdfafaa6431e164c142007f96
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210512074058epcas2p35536c27bdfafaa6431e164c142007f96
-References: <1620714998-120657-1-git-send-email-dseok.yi@samsung.com>
-        <CGME20210512074058epcas2p35536c27bdfafaa6431e164c142007f96@epcas2p3.samsung.com>
+        Wed, 12 May 2021 03:35:27 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14C7XgkA116740;
+        Wed, 12 May 2021 03:34:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=8RxozYUmHbciTCPsdI2xx6ZwNkaTrcx5gcPNgxcEk0o=;
+ b=TpIdg57MewPAG1xmXJIUB4b4YMeBjcW7/XLoBr8wDlySdF5Gbvlnnu+pRxFVdJUExj4I
+ othCsnCAM0rVf5IRNBPRNvNHsXd/bOIB+entalPvJ/KZDKFtsfME9hEsUTtGOJlMXn9f
+ CyXuIE8x/00Vo48bPBBfKD25WhJFX9i9fgkqHWLGWTcu2lUYogQnjHwpmkbDfe4Pzmmh
+ VLW7ADm6ERGhSKoYGo9Qxt0H9D9QSl8r7S9pBTfVqfN7eZYsm6fEkvVTRV/RwFVxHFeE
+ AceoVQU/tVcf+EbqkhefksYwcvajvRsvGAOKSFNW5HuqNQaAd+Lo7EDAQkI/IXI3jz7j mQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38ga7f8vmu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 May 2021 03:34:05 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14C7XqNE117366;
+        Wed, 12 May 2021 03:34:05 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38ga7f8vky-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 May 2021 03:34:04 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14C7X9fZ001985;
+        Wed, 12 May 2021 07:34:02 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma02fra.de.ibm.com with ESMTP id 38dj9893pu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 May 2021 07:34:02 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14C7XX2K28442910
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 12 May 2021 07:33:33 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 15AF2AE055;
+        Wed, 12 May 2021 07:34:00 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9BC2CAE04D;
+        Wed, 12 May 2021 07:33:58 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.39.4])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 12 May 2021 07:33:58 +0000 (GMT)
+Date:   Wed, 12 May 2021 10:33:56 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH v4 0/4] arm64: drop pfn_valid_within() and simplify
+ pfn_valid()
+Message-ID: <YJuE5O8nWNc1TGZ6@linux.ibm.com>
+References: <20210511100550.28178-1-rppt@kernel.org>
+ <CAMj1kXFHLkmgZKEb8BtgGt6GQ93Qd+yv6NtiCvtgX0ex9wSeyw@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXFHLkmgZKEb8BtgGt6GQ93Qd+yv6NtiCvtgX0ex9wSeyw@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: xaFvPDmB3qDdufrQ1oVBdCcS20frTO-N
+X-Proofpoint-ORIG-GUID: H5s5JzP0-t3y1SHp24KJ228bqWiUmp9w
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-12_03:2021-05-11,2021-05-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
+ malwarescore=0 mlxscore=0 clxscore=1011 suspectscore=0 mlxlogscore=999
+ impostorscore=0 lowpriorityscore=0 spamscore=0 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105120053
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the forwarding path GRO -> BPF 6 to 4 -> GSO for TCP traffic, the
-coalesced packet payload can be > MSS, but < MSS + 20.
-bpf_skb_proto_6_to_4 will upgrade the MSS and it can be > the payload
-length. After then tcp_gso_segment checks for the payload length if it
-is <= MSS. The condition is causing the packet to be dropped.
+On Wed, May 12, 2021 at 09:00:02AM +0200, Ard Biesheuvel wrote:
+> On Tue, 11 May 2021 at 12:05, Mike Rapoport <rppt@kernel.org> wrote:
+> >
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> >
+> > Hi,
+> >
+> > These patches aim to remove CONFIG_HOLES_IN_ZONE and essentially hardwire
+> > pfn_valid_within() to 1.
+> >
+> > The idea is to mark NOMAP pages as reserved in the memory map and restore
+> > the intended semantics of pfn_valid() to designate availability of struct
+> > page for a pfn.
+> >
+> > With this the core mm will be able to cope with the fact that it cannot use
+> > NOMAP pages and the holes created by NOMAP ranges within MAX_ORDER blocks
+> > will be treated correctly even without the need for pfn_valid_within.
+> >
+> > The patches are boot tested on qemu-system-aarch64.
+> >
+> 
+> Did you use EFI boot when testing this? The memory map is much more
+> fragmented in that case, so this would be a good data point.
 
-tcp_gso_segment():
-        [...]
-        mss = skb_shinfo(skb)->gso_size;
-        if (unlikely(skb->len <= mss))
-                goto out;
-        [...]
+Right, something like this:
 
-Allow to upgrade/downgrade MSS only when BPF_F_ADJ_ROOM_FIXED_GSO is
-not set.
+[    0.000000] Early memory node ranges                                         
+[    0.000000]   node   0: [mem 0x0000000040000000-0x00000000ffffbfff]          
+[    0.000000]   node   0: [mem 0x00000000ffffc000-0x00000000ffffffff]          
+[    0.000000]   node   0: [mem 0x0000000100000000-0x00000004386fffff]          
+[    0.000000]   node   0: [mem 0x0000000438700000-0x000000043899ffff]          
+[    0.000000]   node   0: [mem 0x00000004389a0000-0x00000004389bffff]          
+[    0.000000]   node   0: [mem 0x00000004389c0000-0x0000000438b5ffff]          
+[    0.000000]   node   0: [mem 0x0000000438b60000-0x000000043be3ffff]          
+[    0.000000]   node   0: [mem 0x000000043be40000-0x000000043becffff]          
+[    0.000000]   node   0: [mem 0x000000043bed0000-0x000000043bedffff]          
+[    0.000000]   node   0: [mem 0x000000043bee0000-0x000000043bffffff]          
+[    0.000000]   node   0: [mem 0x000000043c000000-0x000000043fffffff]          
 
-Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
----
- net/core/filter.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+This is a pity really, because I don't see a fundamental reason for those
+tiny holes all over the place. 
 
-v2:
-per Willem de Bruijn request,
-checked the flag instead of a generic approach.
+I know that EFI/ACPI mandates "IO style" memory access for those regions,
+but I fail to get why...
+ 
+> > I beleive it would be best to route these via mmotm tree.
+> >
+> > v4:
+> > * rebase on v5.13-rc1
+> >
+> > v3: Link: https://lore.kernel.org/lkml/20210422061902.21614-1-rppt@kernel.org
+> > * Fix minor issues found by Anshuman
+> > * Freshen up the declaration of pfn_valid() to make it consistent with
+> >   pfn_is_map_memory()
+> > * Add more Acked-by and Reviewed-by tags, thanks Anshuman and David
+> >
+> > v2: Link: https://lore.kernel.org/lkml/20210421065108.1987-1-rppt@kernel.org
+> > * Add check for PFN overflow in pfn_is_map_memory()
+> > * Add Acked-by and Reviewed-by tags, thanks David.
+> >
+> > v1: Link: https://lore.kernel.org/lkml/20210420090925.7457-1-rppt@kernel.org
+> > * Add comment about the semantics of pfn_valid() as Anshuman suggested
+> > * Extend comments about MEMBLOCK_NOMAP, per Anshuman
+> > * Use pfn_is_map_memory() name for the exported wrapper for
+> >   memblock_is_map_memory(). It is still local to arch/arm64 in the end
+> >   because of header dependency issues.
+> >
+> > rfc: Link: https://lore.kernel.org/lkml/20210407172607.8812-1-rppt@kernel.org
+> >
+> > Mike Rapoport (4):
+> >   include/linux/mmzone.h: add documentation for pfn_valid()
+> >   memblock: update initialization of reserved pages
+> >   arm64: decouple check whether pfn is in linear map from pfn_valid()
+> >   arm64: drop pfn_valid_within() and simplify pfn_valid()
+> >
+> >  arch/arm64/Kconfig              |  3 ---
+> >  arch/arm64/include/asm/memory.h |  2 +-
+> >  arch/arm64/include/asm/page.h   |  3 ++-
+> >  arch/arm64/kvm/mmu.c            |  2 +-
+> >  arch/arm64/mm/init.c            | 14 +++++++++++++-
+> >  arch/arm64/mm/ioremap.c         |  4 ++--
+> >  arch/arm64/mm/mmu.c             |  2 +-
+> >  include/linux/memblock.h        |  4 +++-
+> >  include/linux/mmzone.h          | 11 +++++++++++
+> >  mm/memblock.c                   | 28 ++++++++++++++++++++++++++--
+> >  10 files changed, 60 insertions(+), 13 deletions(-)
+> >
+> >
+> > base-commit: 6efb943b8616ec53a5e444193dccf1af9ad627b5
+> > --
+> > 2.28.0
+> >
 
-v3:
-per Willem de Bruijn request,
-moved to bpf-next, supported for both 6_to_4 and 4_to_6.
-
-diff --git a/net/core/filter.c b/net/core/filter.c
-index cae56d0..582ac19 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3235,7 +3235,7 @@ static int bpf_skb_net_hdr_pop(struct sk_buff *skb, u32 off, u32 len)
- 	return ret;
- }
- 
--static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
-+static int bpf_skb_proto_4_to_6(struct sk_buff *skb, u64 flags)
- {
- 	const u32 len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr);
- 	u32 off = skb_mac_header_len(skb);
-@@ -3264,7 +3264,9 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
- 		}
- 
- 		/* Due to IPv6 header, MSS needs to be downgraded. */
--		skb_decrease_gso_size(shinfo, len_diff);
-+		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
-+			skb_decrease_gso_size(shinfo, len_diff);
-+
- 		/* Header must be checked, and gso_segs recomputed. */
- 		shinfo->gso_type |= SKB_GSO_DODGY;
- 		shinfo->gso_segs = 0;
-@@ -3276,7 +3278,7 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
- 	return 0;
- }
- 
--static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
-+static int bpf_skb_proto_6_to_4(struct sk_buff *skb, u64 flags)
- {
- 	const u32 len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr);
- 	u32 off = skb_mac_header_len(skb);
-@@ -3305,7 +3307,9 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
- 		}
- 
- 		/* Due to IPv4 header, MSS can be upgraded. */
--		skb_increase_gso_size(shinfo, len_diff);
-+		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
-+			skb_increase_gso_size(shinfo, len_diff);
-+
- 		/* Header must be checked, and gso_segs recomputed. */
- 		shinfo->gso_type |= SKB_GSO_DODGY;
- 		shinfo->gso_segs = 0;
-@@ -3317,17 +3321,17 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
- 	return 0;
- }
- 
--static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto)
-+static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto, u64 flags)
- {
- 	__be16 from_proto = skb->protocol;
- 
- 	if (from_proto == htons(ETH_P_IP) &&
- 	      to_proto == htons(ETH_P_IPV6))
--		return bpf_skb_proto_4_to_6(skb);
-+		return bpf_skb_proto_4_to_6(skb, flags);
- 
- 	if (from_proto == htons(ETH_P_IPV6) &&
- 	      to_proto == htons(ETH_P_IP))
--		return bpf_skb_proto_6_to_4(skb);
-+		return bpf_skb_proto_6_to_4(skb, flags);
- 
- 	return -ENOTSUPP;
- }
-@@ -3337,7 +3341,7 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
- {
- 	int ret;
- 
--	if (unlikely(flags))
-+	if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO)))
- 		return -EINVAL;
- 
- 	/* General idea is that this helper does the basic groundwork
-@@ -3357,7 +3361,7 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
- 	 * that. For offloads, we mark packet as dodgy, so that headers
- 	 * need to be verified first.
- 	 */
--	ret = bpf_skb_proto_xlat(skb, proto);
-+	ret = bpf_skb_proto_xlat(skb, proto, flags);
- 	bpf_compute_data_pointers(skb);
- 	return ret;
- }
 -- 
-2.7.4
-
+Sincerely yours,
+Mike.
