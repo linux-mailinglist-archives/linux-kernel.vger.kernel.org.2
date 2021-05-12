@@ -2,117 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC71137EB9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8ED37EBA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381555AbhELTeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349894AbhELRqx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:46:53 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D066EC061761
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:45:00 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id i9so28369229lfe.13
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:45:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EnLmte8GJt9Bb4Yd8FS7Fvu9RWF8YS8wdhW8/1E4zQQ=;
-        b=FdGhpYQR9EJbOPTteKhrCj0ZG6s92OcG2YCJlMUtFF5hCaG7UqrDHELczhFojbbgqn
-         eAVv4deyYW5mjRHjJLMGvedL/b+KVwQ9YyO9MQiIvn/VBLfyDaQh4frsubScc4vnJSPr
-         M5j7oAfrCStdWjsg9Zhj6FJ0qVw/yVCYo6lqo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EnLmte8GJt9Bb4Yd8FS7Fvu9RWF8YS8wdhW8/1E4zQQ=;
-        b=TWqxw7GF+rzFMkJ0saA8XSxdtlkAvGlASciQyVa2XEK86BSHERNHN8guiMrkV4kUCR
-         KS2B/zFxvll1LYcnsqMhm77XnMZll0J4kgnab0y1VeDcaGHZaaJQ+vGBnMWRBjnrsP0q
-         PDwB0kROgYFg2Cb5XuDY5IzsHVx/wQGMnp96aIVY41icoYxUY8JqqiTttkf0CpFocDy/
-         eWS34n4u/GDfOr6ySBQxbJfVrK+aZIyWeqNRjyfqG824Z82ezBPJ7CdrZ5CpS4ae5OlU
-         l+bXy4SEL3OdovA+s24/O5jYEEt87VcmXtW5VFwYDJHk/D78Q3pznR7e9G68Y+9nUoiB
-         YmDw==
-X-Gm-Message-State: AOAM5319LU23hNffFeYzaV7z6aNesT7zklu4wLcrE5vQe8LPHiVAMlx+
-        z1GU3ZE04p/M+J++Qz/6b5Y9rhJDNW3eWQPg
-X-Google-Smtp-Source: ABdhPJz+Dqd7UilXhcs/qWlnkAlYyigHiorOuXkFa1UIz9e08pgLuYebZGdnxrkjy5BE9rQZf7pGog==
-X-Received: by 2002:ac2:4ed9:: with SMTP id p25mr24955187lfr.576.1620841498735;
-        Wed, 12 May 2021 10:44:58 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id z18sm34090lft.57.2021.05.12.10.44.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 May 2021 10:44:57 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id z9so34909698lfu.8
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:44:57 -0700 (PDT)
-X-Received: by 2002:a19:4cd7:: with SMTP id z206mr11366696lfa.487.1620841496852;
- Wed, 12 May 2021 10:44:56 -0700 (PDT)
+        id S1381574AbhELTeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:34:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349713AbhELRqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 13:46:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D1F9613DF;
+        Wed, 12 May 2021 17:45:05 +0000 (UTC)
+Date:   Wed, 12 May 2021 18:45:03 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v11 2/6] arm64: kvm: Introduce MTE VM feature
+Message-ID: <20210512174502.GC12391@arm.com>
+References: <20210416154309.22129-1-steven.price@arm.com>
+ <20210416154309.22129-3-steven.price@arm.com>
+ <20210428170705.GB4022@arm.com>
+ <c3293d47-a5f2-ea4a-6730-f5cae26d8a7e@arm.com>
+ <YJGHApOCXl811VK3@arm.com>
+ <329286e8-a8f3-ea1a-1802-58813255a4a5@arm.com>
+ <20210507182538.GF26528@arm.com>
+ <20210510183506.GA10910@arm.com>
+ <c891d4eb-b388-1658-8c8a-e76477062463@arm.com>
 MIME-Version: 1.0
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de> <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
- <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
- <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
- <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
- <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk> <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
- <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
- <8735v3jujv.ffs@nanos.tec.linutronix.de> <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
- <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org> <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
- <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk> <17471c9fec18765449ef3a5a4cddc23561b97f52.camel@trillion01.com>
-In-Reply-To: <17471c9fec18765449ef3a5a4cddc23561b97f52.camel@trillion01.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 12 May 2021 10:44:40 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whoJCocFsQ7+Sqq=dkuzHE+RXxvRdd4ZvyYqnsKBqsKAA@mail.gmail.com>
-Message-ID: <CAHk-=whoJCocFsQ7+Sqq=dkuzHE+RXxvRdd4ZvyYqnsKBqsKAA@mail.gmail.com>
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
- registers for io_threads
-To:     Olivier Langlois <olivier@trillion01.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Stefan Metzmacher <metze@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c891d4eb-b388-1658-8c8a-e76477062463@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 9:24 PM Olivier Langlois <olivier@trillion01.com> wrote:
->
-> I have reported an issue that I have with a user process using io_uring
-> where when it core dumps, the dump fails to be generated.
-> https://github.com/axboe/liburing/issues/346
+On Wed, May 12, 2021 at 04:46:48PM +0100, Steven Price wrote:
+> On 10/05/2021 19:35, Catalin Marinas wrote:
+> > On Fri, May 07, 2021 at 07:25:39PM +0100, Catalin Marinas wrote:
+> > > On Thu, May 06, 2021 at 05:15:25PM +0100, Steven Price wrote:
+> > > > On 04/05/2021 18:40, Catalin Marinas wrote:
+> > > > > On Thu, Apr 29, 2021 at 05:06:41PM +0100, Steven Price wrote:
+> > > > > > Given the changes to set_pte_at() which means that tags are restored from
+> > > > > > swap even if !PROT_MTE, the only race I can see remaining is the creation of
+> > > > > > new PROT_MTE mappings. As you mention an attempt to change mappings in the
+> > > > > > VMM memory space should involve a mmu notifier call which I think serialises
+> > > > > > this. So the remaining issue is doing this in a separate address space.
+> > > > > > 
+> > > > > > So I guess the potential problem is:
+> > > > > > 
+> > > > > >    * allocate memory MAP_SHARED but !PROT_MTE
+> > > > > >    * fork()
+> > > > > >    * VM causes a fault in parent address space
+> > > > > >    * child does a mprotect(PROT_MTE)
+> > > > > > 
+> > > > > > With the last two potentially racing. Sadly I can't see a good way of
+> > > > > > handling that.
+[...]
+> > Options:
+> > 
+> > 1. Change the mte_sync_tags() code path to set the flag after clearing
+> >     and avoid reading stale tags. We document that mprotect() on
+> >     MAP_SHARED may lead to tag loss. Maybe we can intercept this in the
+> >     arch code and return an error.
+> 
+> This is the best option I've come up with so far - but it's not a good
+> one! We can replace the set_bit() with a test_and_set_bit() to catch the
+> race after it has occurred - but I'm not sure what we can do about it
+> then (we've already wiped the data). Returning an error doesn't seem
+> particularly useful at that point, a message in dmesg is about the best
+> I can come up with.
 
-I suspect most kernel developers don't have github notifications
-enabled. I know I have them disabled because it would be *way* too
-noisy not to.
+What I meant about intercepting is on something like
+arch_validate_flags() to prevent VM_SHARED and VM_MTE together but only
+for mprotect(), not mmap(). However, arch_validate_flags() is currently
+called on both mmap() and mprotect() paths.
 
-But maybe Jens does for that libiouring part.
+We can't do much in set_pte_at() to prevent the race with only a single
+bit.
 
-> Pavel did comment to my report and he did point out this thread as
-> possibly a related issue.
+> > 2. Figure out some other locking in the core code. However, if
+> >     mprotect() in one process can race with a handle_pte_fault() in
+> >     another, on the same shared mapping, it's not trivial.
+> >     filemap_map_pages() would take the page lock before calling
+> >     do_set_pte(), so mprotect() would need the same page lock.
+> 
+> I can't see how this is going to work without harming the performance of
+> non-MTE work. Ultimately we're trying to add some sort of locking for
+> two (mostly) unrelated processes doing page table operations, which will
+> hurt scalability.
 
-I don't think this is related. The gdb confusion wouldn't affect core
-dump generation.
+Another option is to have an arch callback to force re-faulting on the
+pte. That means we don't populate it back after the invalidation in the
+change_protection() path. We could do this only if the new pte is tagged
+and the page doesn't have PG_mte_tagged. The faulting path takes the
+page lock IIUC.
 
-I don't see why a core-dump shouldn't work from an IO thread these
-days - the signal struct and synchronization should all be the same as
-for a regular user thread.
+Well, at least for stage 1, I haven't thought much about stage 2.
 
-That said, I do wonder if we should avoid generating core dumps from
-the IO worker thread itself. The IO thread itself should never get a
-SIGSEGV/SIGBUS anyway, it should have been turned into -EFAULT.
+> > 3. Use another PG_arch_3 bit as a lock to spin on in the arch code (i.e.
+> >     set it around the other PG_arch_* bit setting).
+> 
+> This is certainly tempting, although sadly the existing
+> wait_on_page_bit() is sleeping - so this would either be a literal spin,
+> or we'd need to implement a new non-sleeping wait mechanism.
 
-So maybe the
+Yeah, it would have to be a custom spinning mechanism, something like:
 
-                if (current->flags & PF_IO_WORKER)
-                        goto out;
+	/* lock the page */
+	while (test_and_set_bit(PG_arch_3, &page->flags))
+		smp_cond_load_relaxed(&page->flags, !(VAL & PG_arch_3));
+	...
+	/* unlock the page */
+	clear_bit(PG_arch_3, &page->flags);
 
-in kernel/signal.c should be moved up above the do_coredump() logic regardless.
+> 4. Sledgehammer locking in mte_sync_page_tags(), add a spinlock only for
+> the MTE case where we have to sync tags (see below). What the actual
+> performance impact of this is I've no idea. It could certainly be bad
+> if there are a lot of pages with MTE enabled, which sadly is exactly
+> the case if KVM is used with MTE :(
+> 
+> --->8----
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index 0d320c060ebe..389ad40256f6 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -25,23 +25,33 @@
+>  u64 gcr_kernel_excl __ro_after_init;
+>  static bool report_fault_once = true;
+> +static spinlock_t tag_sync_lock;
+>  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap,
+>  			       bool pte_is_tagged)
+>  {
+>  	pte_t old_pte = READ_ONCE(*ptep);
+> +	if (!is_swap_pte(old_pte) && !pte_is_tagged)
+> +		return;
+> +
+> +	spin_lock_irqsave(&tag_sync_lock, flags);
+> +
+> +	/* Recheck with the lock held */
+> +	if (test_bit(PG_mte_tagged, &page->flags))
+> +		goto out;
 
-Jens, have you played with core-dumping when there are active io_uring
-threads? There's a test-program in that github issue report..
+Can we skip the lock if the page already has the PG_mte_tagged set?
+That's assuming that we set the flag only after clearing the tags. The
+normal case where mprotect() is called on a page already mapped with
+PROT_MTE would not be affected.
 
-              Linus
+-- 
+Catalin
