@@ -2,150 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CE137B7A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5743A37B7AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhELIQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 04:16:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbhELIQt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:16:49 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01EE2C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 01:15:41 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id m12so33714346eja.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 01:15:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ofYbiesQgwQaEexlewrml7cRxApQkWB2Nx460iDcnyo=;
-        b=cHIOWKyzF0AfFHiktnENLignESiqbB75M/2S8bNYGwb4UmCWst1kzfVRtHWBUILKXs
-         c7eSZ9hehTk8NLHKdrT9XYNXDarjEYNKlTulZQDt9ENuebCRNglJRbSanTXy8bx1NlVm
-         YW7PRTEc6U7mjbRYuKiT9exW6nbvZazhgiCk4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ofYbiesQgwQaEexlewrml7cRxApQkWB2Nx460iDcnyo=;
-        b=icn4k/NniZdk1G5uWTHlGH0ozqlgWkZ/J1fUPn1GU+3z0JBG9bOBSNaoPvwgMfVfoi
-         Lcvo4IOhGQG4AQ8+WZWKelNQHrl3xk2KWTeBpixCZxc2P1WJIbyXQwIJoimoRtqB5C/Y
-         1KcXrThl64tfPS9OlQGM7RoKpLoVyLAnHBjnPPTyR3XukZegUPts1ZG286MNhdmZ29cv
-         x00YxoQE0VYkkDs6v5y6LXNTWvVbtyjB8GccrroZZajRZA1Wr6weSQhm6bexvt+C8pSH
-         JBtGAq2GT0Os7S0qNg8zk4h3QtqJNTd7JO8iViT2RyZV9dLiA9eohRZIr0O74lHDfpVw
-         57rg==
-X-Gm-Message-State: AOAM530dzLl2nXtWTrGzDCLdIMuzHeI0bI7gfoLu5BIY0G2gy+AULXAe
-        qEEv7/N9mgeq4eKqMB/HckcCpg==
-X-Google-Smtp-Source: ABdhPJzRky2jZTiXS/jGvK3y0xATQ4vtskLl8aSJ36xGqYFwRVDIZS1+rKVRogxxKQkuc5o4q2jaog==
-X-Received: by 2002:a17:906:f42:: with SMTP id h2mr37200326ejj.317.1620807339603;
-        Wed, 12 May 2021 01:15:39 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id um28sm13885567ejb.63.2021.05.12.01.15.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 May 2021 01:15:39 -0700 (PDT)
-Subject: Re: [PATCH 11/12] tools: sync lib/find_bit implementation
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux-SH <linux-sh@vger.kernel.org>,
-        Alexey Klimov <aklimov@redhat.com>,
-        David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-References: <20210401003153.97325-1-yury.norov@gmail.com>
- <20210401003153.97325-12-yury.norov@gmail.com>
- <1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp>
- <CAHp75Vea0Y_LfWC7LNDoDZqO4t+SVHV5HZMzErfyMPoBAjjk1g@mail.gmail.com>
- <YJm5Dpo+RspbAtye@rikard> <YJoyMrqRtB3GSAny@smile.fi.intel.com>
- <YJpePAHS3EDw6PK1@rikard>
- <151de51e-9302-1f59-407a-e0d68bbaf11c@i-love.sakura.ne.jp>
- <YJrrJhvwq7RUvDXD@rikard>
- <CAK8P3a02qNHcksJ8DahHgLtbM9ZOydGjE3__3GoxgJFiWrAT0w@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <030ae370-967c-22d4-56f8-cb0435be7540@rasmusvillemoes.dk>
-Date:   Wed, 12 May 2021 10:15:37 +0200
+        id S230361AbhELIRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:17:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47662 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230026AbhELIRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 04:17:23 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1620807374; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HUnpVbCTH5F/KaAkcNn6xVOQ+wt0J3foWrNjYt7Xy1M=;
+        b=ko8BTsU8R5AwA61qHaGbyvzizA43/2TtbuzmyRvINFFrF2qpY0VhNPBDrNFe4b/xcc1YP3
+        5QS3x5de9lwJjLcE6xxfi6lYW/S3SVxuGlktB40/kvOXvkAhxsWT18Chw9LU42k4Go1czg
+        xGlrt4OUjue+X3ZR8cnemyPBVnvSp6c=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6EE87AED6;
+        Wed, 12 May 2021 08:16:14 +0000 (UTC)
+Subject: Re: [PATCH 3/6] x86/sev-es: Use __put_user()/__get_user
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Joerg Roedel' <joro@8bytes.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Hyunwook Baek <baekhw@google.com>
+Cc:     Joerg Roedel <jroedel@suse.de>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+References: <20210512075445.18935-1-joro@8bytes.org>
+ <20210512075445.18935-4-joro@8bytes.org>
+ <0496626f018d4d27a8034a4822170222@AcuMS.aculab.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <fcb2c501-70ca-1a54-4a75-8ab05c21ee30@suse.com>
+Date:   Wed, 12 May 2021 10:16:12 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a02qNHcksJ8DahHgLtbM9ZOydGjE3__3GoxgJFiWrAT0w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <0496626f018d4d27a8034a4822170222@AcuMS.aculab.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="XAwr03qss2a103tN7AL7D4OXOkbO2QD54"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/05/2021 09.48, Arnd Bergmann wrote:
-> On Tue, May 11, 2021 at 10:39 PM Rikard Falkeborn
-> <rikard.falkeborn@gmail.com> wrote:
->> On Tue, May 11, 2021 at 08:53:53PM +0900, Tetsuo Handa wrote:
-> 
->>> #define GENMASK_INPUT_CHECK(h, l) \
->>>      (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
->>>           __builtin_constant_p((l) > (h)), (l) > (h), 0)))
->>>
->>> __GENMASK() does not need "h" and "l" being a constant.
->>>
->>> Yes, small_const_nbits(size) in find_next_bit() can guarantee that "size" is a
->>> constant and hence "h" argument in GENMASK_INPUT_CHECK() call is also a constant.
->>> But nothing can guarantee that "offset" is a constant, and hence nothing can
->>> guarantee that "l" argument in GENMASK_INPUT_CHECK() call is also a constant.
->>>
->>> Then, how can (l) > (h) in __builtin_constant_p((l) > (h)) be evaluated at build time
->>> if either l or h (i.e. "offset" and "size - 1" in find_next_bit()) lacks a guarantee of
->>> being a constant?
->>>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--XAwr03qss2a103tN7AL7D4OXOkbO2QD54
+Content-Type: multipart/mixed; boundary="XvCYu7ZLldBYN7eNFsrtwbZr0ILzAAdo3";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: David Laight <David.Laight@ACULAB.COM>, 'Joerg Roedel' <joro@8bytes.org>,
+ "x86@kernel.org" <x86@kernel.org>, Hyunwook Baek <baekhw@google.com>
+Cc: Joerg Roedel <jroedel@suse.de>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ "hpa@zytor.com" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ Peter Zijlstra <peterz@infradead.org>, Jiri Slaby <jslaby@suse.cz>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Tom Lendacky <thomas.lendacky@amd.com>, Kees Cook <keescook@chromium.org>,
+ David Rientjes <rientjes@google.com>, Cfir Cohen <cfir@google.com>,
+ Erdem Aktas <erdemaktas@google.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mike Stunes <mstunes@vmware.com>, Sean Christopherson <seanjc@google.com>,
+ Martin Radev <martin.b.radev@gmail.com>,
+ Arvind Sankar <nivedita@alum.mit.edu>,
+ "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "virtualization@lists.linux-foundation.org"
+ <virtualization@lists.linux-foundation.org>
+Message-ID: <fcb2c501-70ca-1a54-4a75-8ab05c21ee30@suse.com>
+Subject: Re: [PATCH 3/6] x86/sev-es: Use __put_user()/__get_user
+References: <20210512075445.18935-1-joro@8bytes.org>
+ <20210512075445.18935-4-joro@8bytes.org>
+ <0496626f018d4d27a8034a4822170222@AcuMS.aculab.com>
+In-Reply-To: <0496626f018d4d27a8034a4822170222@AcuMS.aculab.com>
+
+--XvCYu7ZLldBYN7eNFsrtwbZr0ILzAAdo3
+Content-Type: multipart/mixed;
+ boundary="------------D9FF4C828E20416E9A72DEE6"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------D9FF4C828E20416E9A72DEE6
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 12.05.21 10:04, David Laight wrote:
+> From: Joerg
+>> Sent: 12 May 2021 08:55
 >>
->> So the idea is that if (l > h) is constant, __builtin_constant_p should
->> evaluate that, and if it is not it should use zero instead as input to
->> __builtin_chose_expr(). This works with non-const inputs in many other
->> places in the kernel, but apparently in this case with a certain
->> compiler, it doesn't so I guess we need to work around it.
-> 
-> I have a vague memory that __builtin_constant_p() inside of
-> __builtin_choose_expr()
-> always evaluates to false because of the order in which the compiler processes
-> those: If constant-folding only happens after __builtin_choose_expr(), then
-> __builtin_constant_p() has to be false.
+>> From: Joerg Roedel <jroedel@suse.de>
+>>
+>> The put_user() and get_user() functions do checks on the address which=
+ is
+>> passed to them. They check whether the address is actually a user-spac=
+e
+>> address and whether its fine to access it. They also call might_fault(=
+)
+>> to indicate that they could fault and possibly sleep.
+>>
+>> All of these checks are neither wanted nor required in the #VC excepti=
+on
+>> handler, which can be invoked from almost any context and also for MMI=
+O
+>> instructions from kernel space on kernel memory. All the #VC handler
+>> wants to know is whether a fault happened when the access was tried.
+>>
+>> This is provided by __put_user()/__get_user(), which just do the acces=
+s
+>> no matter what.
+>=20
+> That can't be right at all.
+> __put/get_user() are only valid on user addresses and will try to
+> fault in a missing page - so can sleep.
+>=20
+> At best this is abused the calls.
 
-It's more complicated than that. __builtin_constant_p on something which
-is a bona-fide Integer Constant Expression (ICE) gets folded early to a
-1. And then it turns out that such a __builtin_constant_p() that folds
-early to a 1 can be "stronger" than a literal 1, in the sense that when
-used as the controlling expression of a ?: with nonsense in the false
-branch, the former is OK but the latter fails:
+You want something like xen_safe_[read|write]_ulong().
 
-https://lore.kernel.org/lkml/c68a0f46-346c-70a0-a9b8-31747888f05f@rasmusvillemoes.dk/
 
-Now what happens when the argument to __builtin_constant_p is not an ICE
-is a lot more complicated. The argument _may_ be so obviously
-non-constant that it can be folded early to a 0, hence still be suitable
-as first argument to __b_c_e. But it is also possible that the compiler
-leaves it unevaluated, in the "hope" that a later optimization stage
-could prove the argument constant. And that's the case where __b_c_e
-will then break, because that can't be left unevaluated for very long -
-the very _type_ of the result depends on which branch is chosen.
+Juergen
 
-tl;dr: there's no "order in which the compiler processes those", __b_c_p
-can get evaluated (folded) early, before __b_c_e inspects it, or be left
-for later stages.
+--------------D9FF4C828E20416E9A72DEE6
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 
-Rasmus
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------D9FF4C828E20416E9A72DEE6--
+
+--XvCYu7ZLldBYN7eNFsrtwbZr0ILzAAdo3--
+
+--XAwr03qss2a103tN7AL7D4OXOkbO2QD54
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmCbjswFAwAAAAAACgkQsN6d1ii/Ey/+
+tQf/Xw/5BQ/WCvzCYqlHFxcqFgqgCYIzwwVO14DHHCtcqaspLA8x7JC2i/HFe6G0aHu9umdXtLf2
+wLUWX1i7DQRoI66pE1SZi4V8kpgmKd4/LjB1Dtsmo//hs3wL310hratO/vMbp/dYfF92jzBnRUhH
+RrcPo/Mk9hiB8qn+5b0Z7/NfBqY2uwrv5bxDzopJmC4Wq3/CETP5cFqOGMhdawfp1CjzoJN9aLZO
+BsrEm7yitvFLUN571j25VdjFilLJdCAtqcoQT2r/tSiZltGc6k+JpbHvqtCo2RuFLhboMvO3A9RZ
+Q7H1jRUk1KWe2tnEAFECz+0NjZj17fgRLd/oaIz8jQ==
+=vWa2
+-----END PGP SIGNATURE-----
+
+--XAwr03qss2a103tN7AL7D4OXOkbO2QD54--
