@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5572137C460
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A0C37C1E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233086AbhELPar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:30:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49670 "EHLO mail.kernel.org"
+        id S232195AbhELPFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:05:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233822AbhELPPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:15:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB56F61438;
-        Wed, 12 May 2021 15:04:44 +0000 (UTC)
+        id S232909AbhELPBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:01:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10D1B61448;
+        Wed, 12 May 2021 14:57:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620831885;
-        bh=VY8Aomw5wmF0rJecknmZ/mqcekwjy0L7Rzf1rujeWnA=;
+        s=korg; t=1620831449;
+        bh=euAvQqRAydLYOfIuMIfqLts9gqgzEk58V4ivr5XI0IU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=frfial9MQUU1qgEcou16sqe8aTzAVgWzrZdkZnGyWBhcJyc6DxzfRgaqNyEmTIARm
-         +a/ZxuG95KVx6spVIAdM2hGFZH1kT5tFIm8SanZ9YmVgsSsDHbEmL8KJA79DpbBjXB
-         8vQURvkmi7VANx8yADKlumD0rRkPDVG0/4SqME5c=
+        b=znx/Qi6Ve1Q0KrMNkwQnFYmOPqdMGXB+IyCmPVzVIks0Y3BVvbF7EPISJRCnOsU2N
+         iqhv0hOW67AplAhQMYI8gUFVuyrvM2TD4QdpGpCh5V9Yx/KvdgHJWP1UBMhKTEpWrM
+         J/tSgOQJfg8bz80yTPe66kzmh3EVunORYHa2XNi4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.10 054/530] ipw2x00: potential buffer overflow in libipw_wx_set_encodeext()
-Date:   Wed, 12 May 2021 16:42:44 +0200
-Message-Id: <20210512144821.513660725@linuxfoundation.org>
+        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 080/244] arm64: dts: qcom: sm8150: fix number of pins in gpio-ranges
+Date:   Wed, 12 May 2021 16:47:31 +0200
+Message-Id: <20210512144745.592831640@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
-References: <20210512144819.664462530@linuxfoundation.org>
+In-Reply-To: <20210512144743.039977287@linuxfoundation.org>
+References: <20210512144743.039977287@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Shawn Guo <shawn.guo@linaro.org>
 
-commit 260a9ad9446723d4063ed802989758852809714d upstream.
+[ Upstream commit de3abdf3d15c6e7f456e2de3f9da78f3a31414cc ]
 
-The "ext->key_len" is a u16 that comes from the user.  If it's over
-SCM_KEY_LEN (32) that could lead to memory corruption.
+The last cell of 'gpio-ranges' should be number of GPIO pins, and in
+case of qcom platform it should match msm_pinctrl_soc_data.ngpio rather
+than msm_pinctrl_soc_data.ngpio - 1.
 
-Fixes: e0d369d1d969 ("[PATCH] ieee82011: Added WE-18 support to default wireless extension handler")
-Cc: stable@vger.kernel.org
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Stanislav Yakovlev <stas.yakovlev@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/YHaoA1i+8uT4ir4h@mwanda
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This fixes the problem that when the last GPIO pin in the range is
+configured with the following call sequence, it always fails with
+-EPROBE_DEFER.
+
+    pinctrl_gpio_set_config()
+        pinctrl_get_device_gpio_range()
+            pinctrl_match_gpio_range()
+
+Fixes: e13c6d144fa0 ("arm64: dts: qcom: sm8150: Add base dts file")
+Cc: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Link: https://lore.kernel.org/r/20210303033106.549-3-shawn.guo@linaro.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/ipw2x00/libipw_wx.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/qcom/sm8150.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/wireless/intel/ipw2x00/libipw_wx.c
-+++ b/drivers/net/wireless/intel/ipw2x00/libipw_wx.c
-@@ -633,8 +633,10 @@ int libipw_wx_set_encodeext(struct libip
- 	}
- 
- 	if (ext->alg != IW_ENCODE_ALG_NONE) {
--		memcpy(sec.keys[idx], ext->key, ext->key_len);
--		sec.key_sizes[idx] = ext->key_len;
-+		int key_len = clamp_val(ext->key_len, 0, SCM_KEY_LEN);
-+
-+		memcpy(sec.keys[idx], ext->key, key_len);
-+		sec.key_sizes[idx] = key_len;
- 		sec.flags |= (1 << idx);
- 		if (ext->alg == IW_ENCODE_ALG_WEP) {
- 			sec.encode_alg[idx] = SEC_ALG_WEP;
+diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+index 8f23fcadecb8..9573da378826 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+@@ -336,7 +336,7 @@
+ 			      <0x0 0x03D00000 0x0 0x300000>;
+ 			reg-names = "west", "east", "north", "south";
+ 			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+-			gpio-ranges = <&tlmm 0 0 175>;
++			gpio-ranges = <&tlmm 0 0 176>;
+ 			gpio-controller;
+ 			#gpio-cells = <2>;
+ 			interrupt-controller;
+-- 
+2.30.2
+
 
 
