@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC15C37B3B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F88337B3B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhELB4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 21:56:05 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2707 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbhELB4F (ORCPT
+        id S229968AbhELB6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 21:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229848AbhELB6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 21:56:05 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FfyTX06myz1BHsG;
-        Wed, 12 May 2021 09:52:16 +0800 (CST)
-Received: from [10.174.178.208] (10.174.178.208) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 12 May 2021 09:54:50 +0800
-Subject: Re: [PATCH 5.10 000/299] 5.10.36-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210510102004.821838356@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <3e03e4e6-dac2-aa17-f1df-0f407de0a1f5@huawei.com>
-Date:   Wed, 12 May 2021 09:54:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 11 May 2021 21:58:21 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDE1C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 18:57:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=FaWqp1Iu45pPcSZvbOJXdBQ3cO35b4TFeSVOdKvKBJ4=; b=bIiBhZZEExfGoRThWP/BxLrzRA
+        ZlfeXeJ5nUlRWwagKPt3bNK1V8e4/AS/b2PiiSitgcSAoMRN00JGQB3a+NjaMHj066JdOQFyp+KLg
+        2i4xg+hUixefLDJsfK3gWBlEpZI9LIca2mIIod5zX9aSxov3Vp1Z3NKsG5kZR1n6wti1bJ7vyym5d
+        qImemEs1OBS28x7x9nqTKL9Mk3XnGFVs5jzXz0/PHLmVYvRQ50GdAC3gx0wfCrDvOQFw1tgt56puR
+        3YzrIdXDAcp732gK/836QZ7unUiB92WYMOe0BnTnh2352Jknq2Xxb7WDld4scaCn0bE9MJ4vavlTn
+        Lg9JmNSA==;
+Received: from [2601:1c0:6280:3f0:d7c4:8ab4:31d7:f0ba]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lge7I-00A2gL-Dx; Wed, 12 May 2021 01:56:52 +0000
+Subject: Re: [PATCH] um: add 2 missing libs to fix various build errors
+To:     Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        Alexei Starovoitov <ast@kernel.org>, kbuild-all@lists.01.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-um@lists.infradead.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Johannes Berg <johannes.berg@intel.com>
+References: <20210404182044.9918-1-rdunlap@infradead.org>
+ <9f7eeb70-8ddc-fb04-a378-5f1e80d485e6@infradead.org>
+ <74a0ba94-9a22-b7a4-3c1b-596ddbaa856e@cambridgegreys.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <2a2ddf5b-3d08-1a13-94c8-ae2ca0e6444b@infradead.org>
+Date:   Tue, 11 May 2021 18:56:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210510102004.821838356@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <74a0ba94-9a22-b7a4-3c1b-596ddbaa856e@cambridgegreys.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 4/9/21 10:28 PM, Anton Ivanov wrote:
+> On 10/04/2021 05:13, Randy Dunlap wrote:
+>> On 4/4/21 11:20 AM, Randy Dunlap wrote:
 
 
-On 2021/5/10 18:16, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.36 release.
-> There are 299 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+[snip]
+
+>>
+>> There are still some build errors in 2 object files:
+>>
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x8): undefined reference to `X86_FEATURE_XMM2'
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x15): undefined reference to `X86_FEATURE_XMM2'
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x22): undefined reference to `X86_FEATURE_XMM'
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x2f): undefined reference to `X86_FEATURE_XMM'
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x3c): undefined reference to `X86_FEATURE_XMM'
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x49): undefined reference to `X86_FEATURE_XMM'
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x56): undefined reference to `X86_FEATURE_XMM'
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x63): more undefined references to `X86_FEATURE_XMM' follow
+>>
+>> and
+>>
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x8): undefined reference to `X86_FEATURE_XMM2'
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x15): undefined reference to `X86_FEATURE_XMM2'
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x22): undefined reference to `X86_FEATURE_XMM'
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x2f): undefined reference to `X86_FEATURE_XMM'
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x3c): undefined reference to `X86_FEATURE_XMM'
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x49): undefined reference to `X86_FEATURE_XMM'
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x56): undefined reference to `X86_FEATURE_XMM'
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x63): undefined reference to `X86_FEATURE_XMM2'
+>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x70): undefined reference to `X86_FEATURE_XMM2'
+>>
+>> I don't know what to do about these or what is causing them (other than
+>> "alternatives").
 > 
-> Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
-> Anything received after that time might be too late.
+> I have a patch in the queue which should fix these - it "steals" the bug/feature definitions from the x86 tree.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.36-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> A
 
-Tested on arm64 and x86 for 5.10.36-rc1,
+Hi Anton,
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.36-rc1
-Commit: 4edc8f7e8676bbfdec9d67dc6b90ec72fd3bacaa
-Compiler: gcc version 7.3.0 (GCC)
+Can you post (repost) the patch for these or point me to it
+on a mailing list, please?
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8476
-passed: 8476
-failed: 0
-timeout: 0
---------------------------------------------------------------------
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8476
-passed: 8476
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+thanks.
+-- 
+~Randy
 
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
