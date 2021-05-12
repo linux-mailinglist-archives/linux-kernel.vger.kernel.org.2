@@ -2,74 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 617E337B8F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5548937B8F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhELJTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 05:19:00 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:34805 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229968AbhELJS6 (ORCPT
+        id S230247AbhELJTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 05:19:24 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:46676 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229968AbhELJTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 05:18:58 -0400
-Received: from [185.56.157.72] (port=41428 helo=[192.168.101.73])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1lgl01-0008BZ-OV; Wed, 12 May 2021 11:17:49 +0200
-Subject: Re: [PATCH 1/3] mfd: lp87565: fix typo in define names
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210219223910.1831-1-luca@lucaceresoli.net>
- <20210308140440.GH4931@dell>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <365cc875-e1de-0a81-6163-007f574779d3@lucaceresoli.net>
-Date:   Wed, 12 May 2021 11:17:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210308140440.GH4931@dell>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+        Wed, 12 May 2021 05:19:23 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R291e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UYdurAx_1620811081;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UYdurAx_1620811081)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 12 May 2021 17:18:02 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     jlbec@evilplan.org
+Cc:     hch@lst.de, nathan@kernel.org, ndesaulniers@google.com,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] configfs: Remove redundant initialization of 'len'
+Date:   Wed, 12 May 2021 17:17:59 +0800
+Message-Id: <1620811079-105280-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+variable 'len' is being initialized however
+this value is never read as 'len' is assigned a new
+value in if statement. Remove the redundant assignment.
+At the same time, adjust the declarations order of
+variables to keep the "upside-down x-mas tree" look of them.
 
-On 08/03/21 15:04, Lee Jones wrote:
-> On Fri, 19 Feb 2021, Luca Ceresoli wrote:
-> 
->> "GOIO" should be "GPIO" here.
->>
->> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
->> ---
->>  drivers/gpio/gpio-lp87565.c |  6 +++---
->>  include/linux/mfd/lp87565.h | 28 ++++++++++++++--------------
->>  2 files changed, 17 insertions(+), 17 deletions(-)
-> 
-> For my own reference (apply this as-is to your sign-off block):
-> 
->   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+Cleans up clang warning:
+fs/configfs/file.c:147:10: warning: Value stored to 'len' during its
+initialization is never read [clang-analyzer-deadcode.DeadStores]
 
-Gentle ping on patches 1 and 3. Both have at least an ack and are fairly
-trivial. Both apply cleanly on current master.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: 'commit fa60ce2cb450 ("treewide: remove editor modelines and cruft")'
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ fs/configfs/file.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks.
+diff --git a/fs/configfs/file.c b/fs/configfs/file.c
+index e26060d..1551b3d 100644
+--- a/fs/configfs/file.c
++++ b/fs/configfs/file.c
+@@ -141,10 +141,10 @@ static int fill_read_buffer(struct file *file, struct configfs_buffer *buffer)
+ configfs_read_bin_file(struct file *file, char __user *buf,
+ 		       size_t count, loff_t *ppos)
+ {
+-	struct configfs_fragment *frag = to_frag(file);
+ 	struct configfs_buffer *buffer = file->private_data;
++	struct configfs_fragment *frag = to_frag(file);
+ 	ssize_t retval = 0;
+-	ssize_t len = min_t(size_t, count, PAGE_SIZE);
++	ssize_t len;
+ 
+ 	mutex_lock(&buffer->mutex);
+ 
 -- 
-Luca
+1.8.3.1
+
