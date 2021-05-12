@@ -2,47 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896E337EEE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A81B37EEE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232409AbhELWVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 18:21:01 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:51887 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1387802AbhELWKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 18:10:46 -0400
-Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14CM9D8K2844555
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Wed, 12 May 2021 15:09:14 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14CM9D8K2844555
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1620857354;
-        bh=tkwPeG2CvNXmxpgODLd6wDhM+YhWJn9cKsnKBH4qgEg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=XTqtH4VhAhp5lHa5yBIq6ObWL9qhThr0jLsFquf7m0l+42VXD6vTQx9q/IdOzRN8d
-         P10KujfKJVR4dgJP2Yd2cNDCqHMZefaj8cLFCTQi9iG3OZu/b2xCf1wy54/M5QA5oe
-         iKkbxs0BtMMmRhiYQpZtJQC4rQWLgnLZ6BiQNZAtr3Pn1suxbgxmLUKemtSABoBZ8K
-         GS3Mh7Gfh4UX+oh4efkUac7II8jaTpDVSTfNCC0pDU41b+r+Ia8EzQFAGGWc+cvlRL
-         fUjQd9+XSYHeZkmpv+eoBWxr8+gggHg7iu4sVcayZ+JPSI4X7Y/VV+l3JsPkLa12sr
-         aW7GWFpIcTleg==
-Subject: Re: [RFC v2 PATCH 7/7] x86/entry: use int for syscall number; handle
- all invalid syscall nrs
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <871racf928.ffs@nanos.tec.linutronix.de>
- <60495dd3-ea68-4db3-47ad-b7b45796bf76@zytor.com>
- <87o8dfer7k.ffs@nanos.tec.linutronix.de>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <b0ca952a-fd82-7833-ac82-ea8ecad48b53@zytor.com>
-Date:   Wed, 12 May 2021 15:09:08 -0700
+        id S234659AbhELWZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 18:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1443349AbhELWR5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 18:17:57 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F439C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 15:11:42 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id j20so21451147ilo.10
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 15:11:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wd5poDVqqrt844UWauNsfektEm86G6CzkvN9l1L/+qE=;
+        b=Uh6yk/qxYZm2SBcb/PJlFqKOLmH6dqqG7aeGF/hA2fp6m8BdpRcTbGuRIYpiDgNbPe
+         JeXWJN/Ifjb85TxO0tnPZy6PZQecl1TJ4IgJcWt5EHeFAymTX4Hv3OckiooYL3c1Xb0p
+         REcNqah+qDjXAmG+NWOgQ94QaYqCVoSftFvaE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wd5poDVqqrt844UWauNsfektEm86G6CzkvN9l1L/+qE=;
+        b=IMiAlIykBuGzdP03KDrFb1GbXKOK8hBNZe7+4WWLivViSIS9NMBT9KmSdWvFiy5POs
+         kF9O4W2nBCADf7ZrCzKm9VeRmrZaRGhNOjuZ9QLE4ewWcWsXy4oKYYOYpOS0EOn0ZWqV
+         GXc5Qj4M9wD0O93SPkf3J8pwrOEMWahYuUUXs+k21SXtQa2bqJ/LKJfTh01tVUhPTLuq
+         1F5eEnoNKgEDUL35TIZLtRVM9D++mKBVTAnufo0oouLCR2ibKE5RwB9+I6RtsDcu9vpQ
+         cuXhBAzNXtlrSxnPIh996FwRgdSSPdCibPVsORULNELm5Ldqb2G/ISmhsRA51U/VpMb3
+         63kA==
+X-Gm-Message-State: AOAM532VbMncOd70POSaL8/YKO6WlU6HpUoYnOicBDKlPpgnXprjAMxj
+        syjUrwgFpQXOwHqpSX3xMrT/rA==
+X-Google-Smtp-Source: ABdhPJxH0KVtyh+mxdvprNA0Najz8wcViLeYtRPadRLv1ni4smpV17PexyYtLqBwZaQkqsd9cVaEKQ==
+X-Received: by 2002:a05:6e02:e0a:: with SMTP id a10mr31320571ilk.271.1620857501471;
+        Wed, 12 May 2021 15:11:41 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id o6sm443432ioa.21.2021.05.12.15.11.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 May 2021 15:11:41 -0700 (PDT)
+Subject: Re: [PATCH 5.12 000/677] 5.12.4-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210512144837.204217980@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <e23f72a7-080b-56c4-dc1d-3c24190c0d66@linuxfoundation.org>
+Date:   Wed, 12 May 2021 16:11:40 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <87o8dfer7k.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -50,28 +69,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/21 11:34 AM, Thomas Gleixner wrote:
->>
->> That is intentional, as (again) system calls are int.
+On 5/12/21 8:40 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.4 release.
+> There are 677 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> They are 'int' kernel internally, but _NOT_ at the user space visible
-> side. Again: man syscall
+> Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
+> Anything received after that time might be too late.
 > 
->      syscall(long number,...);
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.4-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
 > 
-> So that results in a user ABI change.
+> thanks,
 > 
->> As stated in my reply to Ingo, I'll clean the various descriptions and
->> try to capture the discussion better.
-> 
-> If we agree to go there then this wants to be a seperate commit which
-> does nothing else than changing this behaviour.
+> greg k-h
 > 
 
-Good idea.
+Compiled and booted on my test system. No dmesg regressions.
 
-As far as this being a user ABI change, this is actually a revert to the 
-original x86-64 ABI; see my message to Ingo.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-	-hpa
-
+thanks,
+-- Shuah
