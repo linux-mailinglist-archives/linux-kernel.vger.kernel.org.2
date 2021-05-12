@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A0C37C1E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225DD37C1AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbhELPFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:05:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58406 "EHLO mail.kernel.org"
+        id S232075AbhELPC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:02:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232909AbhELPBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:01:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10D1B61448;
-        Wed, 12 May 2021 14:57:28 +0000 (UTC)
+        id S232392AbhELO6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 10:58:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A977361428;
+        Wed, 12 May 2021 14:56:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620831449;
-        bh=euAvQqRAydLYOfIuMIfqLts9gqgzEk58V4ivr5XI0IU=;
+        s=korg; t=1620831386;
+        bh=hB8834CskBelJMSiRGcdXM6fqJppP3UrNwyif2u7mAQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=znx/Qi6Ve1Q0KrMNkwQnFYmOPqdMGXB+IyCmPVzVIks0Y3BVvbF7EPISJRCnOsU2N
-         iqhv0hOW67AplAhQMYI8gUFVuyrvM2TD4QdpGpCh5V9Yx/KvdgHJWP1UBMhKTEpWrM
-         J/tSgOQJfg8bz80yTPe66kzmh3EVunORYHa2XNi4=
+        b=KiAvOyiRMnt7sQFVK1fUK3ELTZuWvupEy73irBNw+XUcbvr9fyuEZ0U7bYfUOzW0Y
+         pPJHg/mKtRdIRg0p8hAXL7w7SQP+RJSoal+h6U6py5H/JMpTOA/makTGQfXuoGAKAf
+         0K4TC2aDrK36Uoz27aMkWQ8vOLt7yKjEAyz4nrXc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org,
+        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 080/244] arm64: dts: qcom: sm8150: fix number of pins in gpio-ranges
-Date:   Wed, 12 May 2021 16:47:31 +0200
-Message-Id: <20210512144745.592831640@linuxfoundation.org>
+Subject: [PATCH 5.4 082/244] arm64: dts: renesas: r8a77980: Fix vin4-7 endpoint binding
+Date:   Wed, 12 May 2021 16:47:33 +0200
+Message-Id: <20210512144745.656832582@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144743.039977287@linuxfoundation.org>
 References: <20210512144743.039977287@linuxfoundation.org>
@@ -41,45 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
 
-[ Upstream commit de3abdf3d15c6e7f456e2de3f9da78f3a31414cc ]
+[ Upstream commit c8aebc1346522d3569690867ce3996642ad52e01 ]
 
-The last cell of 'gpio-ranges' should be number of GPIO pins, and in
-case of qcom platform it should match msm_pinctrl_soc_data.ngpio rather
-than msm_pinctrl_soc_data.ngpio - 1.
+This fixes the bindings in media framework:
+The CSI40 is endpoint number 2
+The CSI41 is endpoint number 3
 
-This fixes the problem that when the last GPIO pin in the range is
-configured with the following call sequence, it always fails with
--EPROBE_DEFER.
-
-    pinctrl_gpio_set_config()
-        pinctrl_get_device_gpio_range()
-            pinctrl_match_gpio_range()
-
-Fixes: e13c6d144fa0 ("arm64: dts: qcom: sm8150: Add base dts file")
-Cc: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Link: https://lore.kernel.org/r/20210303033106.549-3-shawn.guo@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Link: https://lore.kernel.org/r/20210312174735.2118212-1-niklas.soderlund+renesas@ragnatech.se
+Fixes: 3182aa4e0bf4d0ee ("arm64: dts: renesas: r8a77980: add CSI2/VIN support")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sm8150.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/renesas/r8a77980.dtsi | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index 8f23fcadecb8..9573da378826 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -336,7 +336,7 @@
- 			      <0x0 0x03D00000 0x0 0x300000>;
- 			reg-names = "west", "east", "north", "south";
- 			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
--			gpio-ranges = <&tlmm 0 0 175>;
-+			gpio-ranges = <&tlmm 0 0 176>;
- 			gpio-controller;
- 			#gpio-cells = <2>;
- 			interrupt-controller;
+diff --git a/arch/arm64/boot/dts/renesas/r8a77980.dtsi b/arch/arm64/boot/dts/renesas/r8a77980.dtsi
+index e81cd83b138b..4b9d4f1bbe01 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77980.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a77980.dtsi
+@@ -990,8 +990,8 @@
+ 
+ 					reg = <1>;
+ 
+-					vin4csi41: endpoint@2 {
+-						reg = <2>;
++					vin4csi41: endpoint@3 {
++						reg = <3>;
+ 						remote-endpoint = <&csi41vin4>;
+ 					};
+ 				};
+@@ -1018,8 +1018,8 @@
+ 
+ 					reg = <1>;
+ 
+-					vin5csi41: endpoint@2 {
+-						reg = <2>;
++					vin5csi41: endpoint@3 {
++						reg = <3>;
+ 						remote-endpoint = <&csi41vin5>;
+ 					};
+ 				};
+@@ -1046,8 +1046,8 @@
+ 
+ 					reg = <1>;
+ 
+-					vin6csi41: endpoint@2 {
+-						reg = <2>;
++					vin6csi41: endpoint@3 {
++						reg = <3>;
+ 						remote-endpoint = <&csi41vin6>;
+ 					};
+ 				};
+@@ -1074,8 +1074,8 @@
+ 
+ 					reg = <1>;
+ 
+-					vin7csi41: endpoint@2 {
+-						reg = <2>;
++					vin7csi41: endpoint@3 {
++						reg = <3>;
+ 						remote-endpoint = <&csi41vin7>;
+ 					};
+ 				};
 -- 
 2.30.2
 
