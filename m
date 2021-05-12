@@ -2,80 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CED737D22B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF9137D19D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352954AbhELSGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:06:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241544AbhELQ1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:27:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BF0E61A14;
-        Wed, 12 May 2021 15:53:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620834838;
-        bh=N016NWgkukjszQxuR/Ofv+KdWercgaEVuGtmzHviWyo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X5Cdg4r8O9CTyFW0SZFaL9lRd52w/VAOm0W3w/7gomx1x4zSjmFLNuzS0E38Jlu3J
-         WlfuucToIrQZqnZjO0y19g+ZpkE7oUZd4xpaE1d2RtY/oIzqZ56PFaLhCPPabKlXr/
-         JldbdFvCB2K22Ts1uWzkH0uhmY5x9M2nmQQJk46JPa/XHd/nNoyifhVUp/csJEfLo4
-         Vo0Xzjyb0CjdiWc9TjxZ8gB0KZXorXV5278qf7x0QnTc15exOoEjFKd61jVLNyx49M
-         vKzG0dtFp491CtiKZMq8it5xQaw+9YRc5OQsTB6zmZsFFMEkpQ5q70rdJXkhxbHHC0
-         MJJ673GPmnxhg==
-Date:   Wed, 12 May 2021 16:53:18 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Zou Wei <zou_wei@huawei.com>, cezary.rojewski@intel.com,
-        liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com,
-        perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
-        kai.vehmanen@linux.intel.com, brent.lu@intel.com,
-        ranjani.sridharan@linux.intel.com, yong.zhi@intel.com,
-        dharageswari.r@intel.com, sathyanarayana.nujella@intel.com,
-        fred.oh@linux.intel.com, tzungbi@google.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] ASoC: intel/boards: add missing MODULE_DEVICE_TABLE
-Message-ID: <20210512155318.GA54562@sirena.org.uk>
-References: <1620791647-16024-1-git-send-email-zou_wei@huawei.com>
- <50fa973b-aa9f-ccb4-8020-9d38a63e2c30@linux.intel.com>
+        id S240909AbhELR7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240882AbhELQZt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:25:49 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D7DC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:53:58 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id l70so3791719pga.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:53:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ICPdyZXgRBAbj7CZwz12a51xwM2NvcuqGhPg+kKEs68=;
+        b=WRfFMP8FAsXBX5doVKGofdL4hb9UH5YmwTfiLq95ByKa23qd3+NlfzCD4APred1OVl
+         e5Osg5WZjJEzzVSCNIb9r3z5Ym6/oFncGsbIdZJ3QCrERONT0jd6R8+2Bov4gauJkCXW
+         J0aW3nKrF5JSqEgVYmttYuCDAVj931OYBP0j2hTU1aL1tGcyLWS8gLShmWRStwS1na5o
+         3okqXLK+JpT799BWDzOECK3EQs93AGs75PHemQSdFdbeKsTHXcP+gZJ3TemNEqun8iZz
+         3Iw4VMgY+5U0JtMH09eCDrP8REfrbxi6PTgcRrpa/zMt8ZHH9DhS7h5v8EZS2LTToCRB
+         Mb5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ICPdyZXgRBAbj7CZwz12a51xwM2NvcuqGhPg+kKEs68=;
+        b=O0/u319mEzrJ18N1j984yqZai9dIqw//10RUcpc67b2Pk5Y4vFXGFdZ8ctrzrl1dPK
+         lzXpMN0Bv1RSz2s4p3CEEBUpVZTcJoh6EWgIUogzKAip947FDWvfI6RFlD8O8QoTks5S
+         6JFhZoK86xWydiMdwFnsr1eDoAhkP7CDnm6gR/BYQYkA0KOy+WlH58F//qTaIGOYneSb
+         I4dKR1vVl7AfNHZmqkmjqtciYk12rpXKk5CZqAAZhDwy+zcdRa7HR8pzDME9fUo0OLXa
+         Tyt2W2olEnJPE3UqqrgZQzkaN0gqAVHl3cm2Q8rRhBSv8VD8uyynkE7LilYkczR1rES0
+         gM0A==
+X-Gm-Message-State: AOAM5317ldY2ZekQm9lGC7EF6QAW2BL7fOdX08N7J8NW/Re9yr8WDsEa
+        nK+SFXwBqZTgBJBU5uel+53tSw==
+X-Google-Smtp-Source: ABdhPJxjjVYaIi+t31QOtss36tD43pS9VcAHQRx7BwGpSbz1EiFLY3aY+wnVwNvTaLIhrmMl549xTg==
+X-Received: by 2002:aa7:8194:0:b029:2aa:db3a:4c1d with SMTP id g20-20020aa781940000b02902aadb3a4c1dmr27280097pfi.58.1620834838027;
+        Wed, 12 May 2021 08:53:58 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id v17sm213521pfi.188.2021.05.12.08.53.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 08:53:57 -0700 (PDT)
+Date:   Wed, 12 May 2021 15:53:53 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2 26/32] x86/mm: Move force_dma_unencrypted() to common
+ code
+Message-ID: <YJv6EWJmDYQL4Eqt@google.com>
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <7c5adf75d69ea327b22b404b7c37b29712d73640.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <5536639a-918d-de8d-ff32-934a13902a03@intel.com>
+ <d04e5992-8800-a8df-99de-4dbb40e45d09@linux.intel.com>
+ <bbcb688c-5aa0-eeb1-192a-45edaccc2f32@intel.com>
+ <20210512130821.7r2rtzcyjltecun7@box.shutemov.name>
+ <e8886298-83fa-212e-ab3a-5e5b21a7ab6c@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <50fa973b-aa9f-ccb4-8020-9d38a63e2c30@linux.intel.com>
-X-Cookie: They just buzzed and buzzed...buzzed.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <e8886298-83fa-212e-ab3a-5e5b21a7ab6c@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 12, 2021, Dave Hansen wrote:
+> On 5/12/21 6:08 AM, Kirill A. Shutemov wrote:
+> >> That's not an excuse to have a bunch of AMD (or Intel) feature-specific
+> >> code in a file named "common".  I'd make an attempt to keep them
+> >> separate and then call into the two separate functions *from* the common
+> >> function.
+> > But why? What good does the additional level of inderection brings?
+> > 
+> > It's like saying arch/x86/kernel/cpu/common.c shouldn't have anything AMD
+> > or Intel specific. If a function can cover both vendors I don't see a
+> > point for additinal complexity.
+> 
+> Because the code is already separate.  You're actually going to some
+> trouble to move the SEV-specific code and then combine it with the
+> TDX-specific code.
+> 
+> Anyway, please just give it a shot.  Should take all of ten minutes.  If
+> it doesn't work out in practice, fine.  You'll have a good paragraph for
+> the changelog.
 
---/04w6evG8XlLl3ft
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, May 12, 2021 at 08:41:43AM -0500, Pierre-Louis Bossart wrote:
-
-> I wonder if this MODULE_DEVICE_TABLE generates the alias automatically,
-> which would make the existing ones added manually at the end of the files
-> unnecessary? If that was the case, then we should remove those MODULE_ALIAS
-> as well, no?
-
-Yes, you shouldn't need the MODULE_ALIAS stuff there.
-
---/04w6evG8XlLl3ft
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCb+e0ACgkQJNaLcl1U
-h9C94Qf/R8x4USWufxkjE/vfZi6GbULEc2gbk+fdtzu/4PUfiZ/ZLBWQalz/259s
-VFG4tL+IaGU0dgVPODTSMazVCHHXdd3hxXGK5JYtzRv1NGPfi7IHLZmKkzw9yQv+
-bAELKl0QB7JXnYXWp8xeKQPZXoUBng5TNESh4qL/vBbEzHNgEA9mvmYP/Uh1cXFc
-oosiFoCLmhxxHGFhQwE5mDapqqF4RhRzDaq6paFvGzuGYIrhd6I4YHccJ1cOaRhP
-QbikYG9KjKDZUqz8iPfTvVKV+uRuhvXaEfwLPkXPrLs1oQ8syyn/eEAgTw8/kzNL
-Izn00HcKd3k0Pdq19CJGrDDzdhIJjg==
-=WJu8
------END PGP SIGNATURE-----
-
---/04w6evG8XlLl3ft--
+Or maybe wait to see how Boris' propose protected_guest_has() pans out?  E.g. if
+we can do "protected_guest_has(MEMORY_ENCRYPTION)" or whatever, then the truly
+common bits could be placed into common.c without any vendor-specific logic.
