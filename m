@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605A237CC69
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E78B37CC1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238271AbhELQox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:44:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40104 "EHLO mail.kernel.org"
+        id S243063AbhELQkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:40:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235092AbhELPmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:42:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F207061C7E;
-        Wed, 12 May 2021 15:21:59 +0000 (UTC)
+        id S236888AbhELPrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:47:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2452E61C99;
+        Wed, 12 May 2021 15:23:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620832920;
-        bh=xjaeZgvVccnUH8lmZHPqvRR4jcGYSCBKPzA8UIS/aJ8=;
+        s=korg; t=1620833033;
+        bh=Ou5baM93maEufZ1Up8/JrftESuCW3fNu8L4LME2rSRQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=elTVdodZx+cbemF2M6yZsknxMUxraiu1gNhSPk3NzxZPT5uig/DRN6PvsAeebOqnW
-         3kGy8LG53YidFhjEMyB334NBU3YkSgqWjSLv7SKPA9i8xSfNBlWzPQAnC1bJCBAQ/a
-         nQJQ/rtcWpxed5kZaQH8v/GbHHAGYo0VURotDGGQ=
+        b=RJznjfTFkrFqZ1qGelI9octwrpxqXuZULps/Q5suPGOv5DLnITvStV1aAjZbb0odn
+         /4pb5ip2HJqkJDgf0J1rc2qX7zImar+Q0d9MtQZrq6zm2e04fF8eUhQCZHz0YyQWN1
+         PI9z7CZUZSyu6M3zXNa5exTqHNywGa8XGykrmo28=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vadym Kochan <vkochan@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Brijesh Singh <brijesh.singh@amd.com>,
+        Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 475/530] net: marvell: prestera: fix port event handling on init
-Date:   Wed, 12 May 2021 16:49:45 +0200
-Message-Id: <20210512144835.367998633@linuxfoundation.org>
+Subject: [PATCH 5.10 478/530] crypto: ccp: Detect and reject "invalid" addresses destined for PSP
+Date:   Wed, 12 May 2021 16:49:48 +0200
+Message-Id: <20210512144835.468166158@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
 References: <20210512144819.664462530@linuxfoundation.org>
@@ -40,96 +44,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadym Kochan <vkochan@marvell.com>
+From: Sean Christopherson <seanjc@google.com>
 
-[ Upstream commit 333980481b99edb24ebd5d1a53af70a15d9146de ]
+[ Upstream commit 74c1f1366eb7714b8b211554f6c5cee315ff3fbc ]
 
-For some reason there might be a crash during ports creation if port
-events are handling at the same time  because fw may send initial
-port event with down state.
+Explicitly reject using pointers that are not virt_to_phys() friendly
+as the source for SEV commands that are sent to the PSP.  The PSP works
+with physical addresses, and __pa()/virt_to_phys() will not return the
+correct address in these cases, e.g. for a vmalloc'd pointer.  At best,
+the bogus address will cause the command to fail, and at worst lead to
+system instability.
 
-The crash points to cancel_delayed_work() which is called when port went
-is down.  Currently I did not find out the real cause of the issue, so
-fixed it by cancel port stats work only if previous port's state was up
-& runnig.
+While it's unlikely that callers will deliberately use a bad pointer for
+SEV buffers, a caller can easily use a vmalloc'd pointer unknowingly when
+running with CONFIG_VMAP_STACK=y as it's not obvious that putting the
+command buffers on the stack would be bad.  The command buffers are
+relative  small and easily fit on the stack, and the APIs to do not
+document that the incoming pointer must be a physically contiguous,
+__pa() friendly pointer.
 
-The following is the crash which can be triggered:
-
-[   28.311104] Unable to handle kernel paging request at virtual address
-000071775f776600
-[   28.319097] Mem abort info:
-[   28.321914]   ESR = 0x96000004
-[   28.324996]   EC = 0x25: DABT (current EL), IL = 32 bits
-[   28.330350]   SET = 0, FnV = 0
-[   28.333430]   EA = 0, S1PTW = 0
-[   28.336597] Data abort info:
-[   28.339499]   ISV = 0, ISS = 0x00000004
-[   28.343362]   CM = 0, WnR = 0
-[   28.346354] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000100bf7000
-[   28.352842] [000071775f776600] pgd=0000000000000000,
-p4d=0000000000000000
-[   28.359695] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-[   28.365310] Modules linked in: prestera_pci(+) prestera
-uio_pdrv_genirq
-[   28.372005] CPU: 0 PID: 1291 Comm: kworker/0:1H Not tainted
-5.11.0-rc4 #1
-[   28.378846] Hardware name: DNI AmazonGo1 A7040 board (DT)
-[   28.384283] Workqueue: prestera_fw_wq prestera_fw_evt_work_fn
-[prestera_pci]
-[   28.391413] pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
-[   28.397468] pc : get_work_pool+0x48/0x60
-[   28.401442] lr : try_to_grab_pending+0x6c/0x1b0
-[   28.406018] sp : ffff80001391bc60
-[   28.409358] x29: ffff80001391bc60 x28: 0000000000000000
-[   28.414725] x27: ffff000104fc8b40 x26: ffff80001127de88
-[   28.420089] x25: 0000000000000000 x24: ffff000106119760
-[   28.425452] x23: ffff00010775dd60 x22: ffff00010567e000
-[   28.430814] x21: 0000000000000000 x20: ffff80001391bcb0
-[   28.436175] x19: ffff00010775deb8 x18: 00000000000000c0
-[   28.441537] x17: 0000000000000000 x16: 000000008d9b0e88
-[   28.446898] x15: 0000000000000001 x14: 00000000000002ba
-[   28.452261] x13: 80a3002c00000002 x12: 00000000000005f4
-[   28.457622] x11: 0000000000000030 x10: 000000000000000c
-[   28.462985] x9 : 000000000000000c x8 : 0000000000000030
-[   28.468346] x7 : ffff800014400000 x6 : ffff000106119758
-[   28.473708] x5 : 0000000000000003 x4 : ffff00010775dc60
-[   28.479068] x3 : 0000000000000000 x2 : 0000000000000060
-[   28.484429] x1 : 000071775f776600 x0 : ffff00010775deb8
-[   28.489791] Call trace:
-[   28.492259]  get_work_pool+0x48/0x60
-[   28.495874]  cancel_delayed_work+0x38/0xb0
-[   28.500011]  prestera_port_handle_event+0x90/0xa0 [prestera]
-[   28.505743]  prestera_evt_recv+0x98/0xe0 [prestera]
-[   28.510683]  prestera_fw_evt_work_fn+0x180/0x228 [prestera_pci]
-[   28.516660]  process_one_work+0x1e8/0x360
-[   28.520710]  worker_thread+0x44/0x480
-[   28.524412]  kthread+0x154/0x160
-[   28.527670]  ret_from_fork+0x10/0x38
-[   28.531290] Code: a8c17bfd d50323bf d65f03c0 9278dc21 (f9400020)
-[   28.537429] ---[ end trace 5eced933df3a080b ]---
-
-Fixes: 501ef3066c89 ("net: marvell: prestera: Add driver for Prestera family ASIC devices")
-Signed-off-by: Vadym Kochan <vkochan@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: Borislav Petkov <bp@suse.de>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Fixes: 200664d5237f ("crypto: ccp: Add Secure Encrypted Virtualization (SEV) command support")
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210406224952.4177376-3-seanjc@google.com>
+Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/prestera/prestera_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/crypto/ccp/sev-dev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera_main.c b/drivers/net/ethernet/marvell/prestera/prestera_main.c
-index da4b286d1337..feb69fcd908e 100644
---- a/drivers/net/ethernet/marvell/prestera/prestera_main.c
-+++ b/drivers/net/ethernet/marvell/prestera/prestera_main.c
-@@ -436,7 +436,8 @@ static void prestera_port_handle_event(struct prestera_switch *sw,
- 			netif_carrier_on(port->dev);
- 			if (!delayed_work_pending(caching_dw))
- 				queue_delayed_work(prestera_wq, caching_dw, 0);
--		} else {
-+		} else if (netif_running(port->dev) &&
-+			   netif_carrier_ok(port->dev)) {
- 			netif_carrier_off(port->dev);
- 			if (delayed_work_pending(caching_dw))
- 				cancel_delayed_work(caching_dw);
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index 476113e12489..5b82ba7acc7c 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -149,6 +149,9 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+ 
+ 	sev = psp->sev_data;
+ 
++	if (data && WARN_ON_ONCE(!virt_addr_valid(data)))
++		return -EINVAL;
++
+ 	/* Get the physical address of the command buffer */
+ 	phys_lsb = data ? lower_32_bits(__psp_pa(data)) : 0;
+ 	phys_msb = data ? upper_32_bits(__psp_pa(data)) : 0;
 -- 
 2.30.2
 
