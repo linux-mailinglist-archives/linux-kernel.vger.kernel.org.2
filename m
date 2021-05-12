@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F5A37D5A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 129F137D5A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359250AbhELSwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:52:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60668 "EHLO mail.kernel.org"
+        id S1359324AbhELSwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:52:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243894AbhELQmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:42:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F328961C50;
-        Wed, 12 May 2021 16:07:55 +0000 (UTC)
+        id S243909AbhELQmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:42:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C62BB61C49;
+        Wed, 12 May 2021 16:08:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835676;
-        bh=SenCBhSS6IYwrXZeMOIFRbqTOuuBeY2nmthpq/qtgCk=;
+        s=korg; t=1620835701;
+        bh=gXq2paFHLFWG4gwQI7A79iLmPT74ZRQipM90epusL2U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nfOOmSLszoRQZY3rCwGOxvgH5mZpRnVJ4qhBcEsyzevcG90MvoUJFVXEzI75yml3M
-         bY5HwrZjbcflqpOwnALiws/5IidsL9G47/z8p/vvWKPOU0sVTlTO9JrRe3oZgfHLqb
-         fJvo2YPsaiG+Rkj+Gt11kBH1aAiTxm5GjuD1FYKo=
+        b=D88JtsuNKhfzVZuwqZwfnmru6qQ/7AeF9GKlRBpPRIoO58DSBGubGjT4AgKqzCr9A
+         QUByf8KFtzt5ICjxPiGPgGAt2sECPD6OInvVBggLUVXN5Z61cEZopqAsLcLujA5s0F
+         1dQq38UMyDmX1XHZhKzEhueCgXkWk7MEvX59hJJM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vishakha Channapattan <vishakhavc@google.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Igor Pylypiv <ipylypiv@google.com>,
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 413/677] scsi: pm80xx: Increase timeout for pm80xx mpi_uninit_check()
-Date:   Wed, 12 May 2021 16:47:39 +0200
-Message-Id: <20210512144851.065994600@linuxfoundation.org>
+Subject: [PATCH 5.12 415/677] scsi: ufs: ufshcd-pltfrm: Fix deferred probing
+Date:   Wed, 12 May 2021 16:47:41 +0200
+Message-Id: <20210512144851.129195520@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -43,46 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Igor Pylypiv <ipylypiv@google.com>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit 3f744a14f331f56703a9d74e86520db045f11831 ]
+[ Upstream commit 339c9b63cc7ce779ce45c675bf709cb58b807fc3 ]
 
-The mpi_uninit_check() takes longer for inbound doorbell register to be
-cleared. Increase the timeout substantially so that the driver does not
-fail to load.
+The driver overrides the error codes returned by platform_get_irq() to
+-ENODEV, so if it returns -EPROBE_DEFER, the driver would fail the probe
+permanently instead of the deferred probing.  Propagate the error code
+upstream as it should have been done from the start...
 
-Previously, the inbound doorbell wait time was mistakenly increased in the
-mpi_init_check() instead of mpi_uninit_check(). It is okay to leave the
-mpi_init_check() wait time as-is as these are timeout values and if there
-is a failure, waiting longer is not an issue.
-
-Link: https://lore.kernel.org/r/20210406180534.1924345-2-ipylypiv@google.com
-Fixes: e90e236250e9 ("scsi: pm80xx: Increase timeout for pm80xx mpi_uninit_check")
-Reviewed-by: Vishakha Channapattan <vishakhavc@google.com>
-Acked-by: Jack Wang <jinpu.wang@ionos.com>
-Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
+Link: https://lore.kernel.org/r/420364ca-614a-45e3-4e35-0e0653c7bc53@omprussia.ru
+Fixes: 2953f850c3b8 ("[SCSI] ufs: use devres functions for ufshcd")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/pm8001/pm80xx_hwi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/ufs/ufshcd-pltfrm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c b/drivers/scsi/pm8001/pm80xx_hwi.c
-index 84315560e8e1..c6b0834e3806 100644
---- a/drivers/scsi/pm8001/pm80xx_hwi.c
-+++ b/drivers/scsi/pm8001/pm80xx_hwi.c
-@@ -1502,9 +1502,9 @@ static int mpi_uninit_check(struct pm8001_hba_info *pm8001_ha)
+diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
+index 1a69949a4ea1..b56d9b4e5f03 100644
+--- a/drivers/scsi/ufs/ufshcd-pltfrm.c
++++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
+@@ -377,7 +377,7 @@ int ufshcd_pltfrm_init(struct platform_device *pdev,
  
- 	/* wait until Inbound DoorBell Clear Register toggled */
- 	if (IS_SPCV_12G(pm8001_ha->pdev)) {
--		max_wait_count = 4 * 1000 * 1000;/* 4 sec */
-+		max_wait_count = 30 * 1000 * 1000; /* 30 sec */
- 	} else {
--		max_wait_count = 2 * 1000 * 1000;/* 2 sec */
-+		max_wait_count = 15 * 1000 * 1000; /* 15 sec */
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+-		err = -ENODEV;
++		err = irq;
+ 		goto out;
  	}
- 	do {
- 		udelay(1);
+ 
 -- 
 2.30.2
 
