@@ -2,73 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA97B37B515
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 06:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A46937B51B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 06:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbhELEee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 00:34:34 -0400
-Received: from mga12.intel.com ([192.55.52.136]:60318 "EHLO mga12.intel.com"
+        id S230011AbhELEsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 00:48:52 -0400
+Received: from mga12.intel.com ([192.55.52.136]:61438 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229495AbhELEeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 00:34:31 -0400
-IronPort-SDR: PfhrmUqD8nFzuo0hE4rkGJEjNQ2lyOHAv+5ySRjQY6jTe74RY2D/vlkPxQhwmf+IYeK7vpnNja
- hkQbPvSHUsnA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179208021"
+        id S229495AbhELEsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 00:48:50 -0400
+IronPort-SDR: lm5mruyCjAlZqTVgzWpdSsTzOyC6YCzGB8DaNBHbu+lOyy9ggQAzCOZH4Wv1ZvOlOUFbzbFcMH
+ iIjOqbtQ8OlA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179210148"
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="179210148"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 21:47:41 -0700
+IronPort-SDR: 53J1wazrS1QReixwdHkkxnR6h55hKjKPB+/AHJbpqmNp4e/76VbGCJhC1SNjmVaypT58hu5x5h
+ SX50P3VhkV8A==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,292,1613462400"; 
-   d="scan'208";a="179208021"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 21:33:09 -0700
-IronPort-SDR: RCPktbMKXdjBDiFM0tCFqDGuWRg2m71kCWer1MSW/vBx9OmjHNn/iIq2qaHSiTSl3SAuxq0fuM
- kuvkY/SQGNeg==
-X-IronPort-AV: E=Sophos;i="5.82,292,1613462400"; 
-   d="scan'208";a="471301741"
-Received: from maizhanx-mobl.ccr.corp.intel.com ([10.249.168.160])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 19:41:30 -0700
-Message-ID: <4754266321f71d4910c2a6167e92fea6a1462813.camel@intel.com>
-Subject: Re: [PATCH v2] ACPI: PM: Add ACPI ID of Alder Lake Fan
-From:   Zhang Rui <rui.zhang@intel.com>
-To:     Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>, rjw@rjwysocki.net,
-        lenb@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     srinivas.pandruvada@linux.intel.com
-Date:   Wed, 12 May 2021 10:41:27 +0800
-In-Reply-To: <20210511180142.28472-1-sumeet.r.pawnikar@intel.com>
-References: <20210511180142.28472-1-sumeet.r.pawnikar@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
+   d="scan'208";a="622109218"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga006.fm.intel.com with ESMTP; 11 May 2021 20:21:05 -0700
+Cc:     baolu.lu@linux.intel.com,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
+        yuzenghui@huawei.com, lushenming@huawei.com
+Subject: Re: [RFC PATCH v4 01/13] iommu: Introduce dirty log tracking
+ framework
+To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yi Sun <yi.y.sun@linux.intel.com>,
+        Tian Kevin <kevin.tian@intel.com>
+References: <20210507102211.8836-1-zhukeqian1@huawei.com>
+ <20210507102211.8836-2-zhukeqian1@huawei.com>
+ <efc2d868-28ba-8ed9-1d6b-610b67d671b5@linux.intel.com>
+ <18ac787a-179e-71f7-728b-c43feda80a16@huawei.com>
+ <55fda826-9ab6-a3a0-b17e-a4d4879f00bc@linux.intel.com>
+ <a8df289a-47c2-c193-cd6f-8415f68b900f@huawei.com>
+ <f47e90c6-f3c4-b28f-a810-e03afe79e62d@linux.intel.com>
+ <60182a35-e151-7150-3708-4e58dd8e78da@huawei.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <36cc7267-6aa3-db54-b08c-c2dfc0bbacb6@linux.intel.com>
+Date:   Wed, 12 May 2021 11:20:18 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <60182a35-e151-7150-3708-4e58dd8e78da@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-05-11 at 23:31 +0530, Sumeet Pawnikar wrote:
-> Add a new unique fan ACPI device ID for Alder Lake to
-> support it in acpi_dev_pm_attach() function.
+On 5/11/21 3:40 PM, Keqian Zhu wrote:
+>> For upper layers, before starting page tracking, they check the
+>> dirty_page_trackable attribution of the domain and start it only it's
+>> capable. Once the page tracking is switched on the vendor iommu driver
+>> (or iommu core) should block further device attach/detach operations
+>> until page tracking is stopped.
+> But when a domain becomes capable after detaching a device, the upper layer
+> still needs to query it and enable dirty log for it...
 > 
-> Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
-
-Acked-by: Zhang Rui <rui.zhang@intel.com>
-
-thanks,
-rui
-> ---
-> v1-->v2 : Fixed commit header typo APCI with ACPI.
+> To make things coordinated, maybe the upper layer can register a notifier,
+> when the domain's capability change, the upper layer do not need to query, instead
+> they just need to realize a callback, and do their specific policy in the callback.
+> What do you think?
 > 
->  drivers/acpi/device_pm.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
-> index 16c0fe8a72a7..d260bc1f3e6e 100644
-> --- a/drivers/acpi/device_pm.c
-> +++ b/drivers/acpi/device_pm.c
-> @@ -1313,6 +1313,7 @@ int acpi_dev_pm_attach(struct device *dev, bool
-> power_on)
->  		{"PNP0C0B", }, /* Generic ACPI fan */
->  		{"INT3404", }, /* Fan */
->  		{"INTC1044", }, /* Fan for Tiger Lake generation */
-> +		{"INTC1048", }, /* Fan for Alder Lake generation */
->  		{}
->  	};
->  	struct acpi_device *adev = ACPI_COMPANION(dev);
 
+That might be an option. But why not checking domain's attribution every
+time a new tracking period is about to start?
+
+Best regards,
+baolu
