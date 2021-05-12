@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8009137EACA
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 568A737EAD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235313AbhELTLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:11:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35790 "EHLO mail.kernel.org"
+        id S244463AbhELTM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:12:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238179AbhELQon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:44:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D05D761E58;
-        Wed, 12 May 2021 16:14:21 +0000 (UTC)
+        id S238256AbhELQow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:44:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48AD761E69;
+        Wed, 12 May 2021 16:14:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620836062;
-        bh=2BCJQ+VUR7iOEqZ1PQf3CXIRJpkqowem3R3r7vfhMas=;
+        s=korg; t=1620836064;
+        bh=cBtYXJ/ed3+R8re53TUA0HqSCkwS+TTEGW/GYTTRJEk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GONura17zWA7p6pyEwzhXxHhhC8DjpUp6xPQhn5gJzIz918RqrhPsvyw29Rx+Nwm9
-         9Rq/VYmV62e+4PCLhUJ+40W4HUBmOLaCHmuBaSxELArjxDODj9cpQtF5IIuKtxYK/8
-         ANsUgE82u9lXhlLRRRUnfdqlOPD6/eRy/VAI5Knw=
+        b=kuoW0UNTawfTG42kzF4H8o/l1sDZzDG0U9ABxWBtVcvc1MZ2DMxaGAg7feSQxuqm6
+         x09qOjnTijlZqbVgqnlqBSO8XAIEzexYVzV4xRiQz9CpwU9aH4zh44QzequzRtPIbI
+         6eQB3fyUYFKc+BjeMo9RZUqH7VO3CmVJerW6iiHY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        stable@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
         Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 593/677] i2c: sh7760: fix IRQ error path
-Date:   Wed, 12 May 2021 16:50:39 +0200
-Message-Id: <20210512144857.081407040@linuxfoundation.org>
+Subject: [PATCH 5.12 594/677] i2c: mediatek: Fix wrong dma sync flag
+Date:   Wed, 12 May 2021 16:50:40 +0200
+Message-Id: <20210512144857.113236658@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -39,36 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+From: Qii Wang <qii.wang@mediatek.com>
 
-[ Upstream commit 92dfb27240fea2776f61c5422472cb6defca7767 ]
+[ Upstream commit 3186b880447ad3cc9b6487fa626a71d64b831524 ]
 
-While adding the invalid IRQ check after calling platform_get_irq(),
-I managed to overlook that the driver has a complex error path in its
-probe() method, thus a simple *return* couldn't be used.  Use a proper
-*goto* instead!
+The right flag is apdma_sync when apdma remove hand-shake signel.
 
-Fixes: e5b2e3e74201 ("i2c: sh7760: add IRQ check")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Fixes: 05f6f7271a38 ("i2c: mediatek: Fix apdma and i2c hand-shake timeout")
+Signed-off-by: Qii Wang <qii.wang@mediatek.com>
 Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-sh7760.c | 2 +-
+ drivers/i2c/busses/i2c-mt65xx.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-sh7760.c b/drivers/i2c/busses/i2c-sh7760.c
-index c79c9f542c5a..319d1fa617c8 100644
---- a/drivers/i2c/busses/i2c-sh7760.c
-+++ b/drivers/i2c/busses/i2c-sh7760.c
-@@ -473,7 +473,7 @@ static int sh7760_i2c_probe(struct platform_device *pdev)
+diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+index 2ffd2f354d0a..86f70c751319 100644
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -479,7 +479,7 @@ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
+ {
+ 	u16 control_reg;
  
- 	ret = platform_get_irq(pdev, 0);
- 	if (ret < 0)
--		return ret;
-+		goto out3;
- 	id->irq = ret;
- 
- 	id->adap.nr = pdev->id;
+-	if (i2c->dev_comp->dma_sync) {
++	if (i2c->dev_comp->apdma_sync) {
+ 		writel(I2C_DMA_WARM_RST, i2c->pdmabase + OFFSET_RST);
+ 		udelay(10);
+ 		writel(I2C_DMA_CLR_FLAG, i2c->pdmabase + OFFSET_RST);
 -- 
 2.30.2
 
