@@ -2,111 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613B137B717
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F16B37B719
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhELHvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 03:51:07 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:50065 "EHLO
+        id S230153AbhELHwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 03:52:05 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:50985 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhELHvF (ORCPT
+        with ESMTP id S229850AbhELHwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 03:51:05 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MFKX3-1lihhK34Pp-00Fnda; Wed, 12 May 2021 09:49:55 +0200
-Received: by mail-oi1-f178.google.com with SMTP id x15so7731063oic.13;
-        Wed, 12 May 2021 00:49:55 -0700 (PDT)
-X-Gm-Message-State: AOAM5332yO5fBiTf58nzSnzrGM13tnnVMVvXp+6Vm9GXPnge8Fqoosq0
-        bwic36wCqdqkwYZXa/BM5jt9yIG2rb9ootp5+kU=
-X-Google-Smtp-Source: ABdhPJxd0lpfpoLIqJOw+6SPCO8QED3/X3t9JAR8I4sQlku1WpueQz6KE4WIiLlRxouPNnwly1mFxvEEQ4Zrg7KWp+o=
-X-Received: by 2002:aca:f587:: with SMTP id t129mr25234423oih.84.1620805794260;
- Wed, 12 May 2021 00:49:54 -0700 (PDT)
+        Wed, 12 May 2021 03:52:04 -0400
+Received: from mail-wr1-f49.google.com ([209.85.221.49]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MNKqC-1lrGPF0aJm-00Opx3 for <linux-kernel@vger.kernel.org>; Wed, 12 May
+ 2021 09:50:55 +0200
+Received: by mail-wr1-f49.google.com with SMTP id d11so22578045wrw.8
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 00:50:55 -0700 (PDT)
+X-Gm-Message-State: AOAM532uwhXvg0hFJMV5cd6+YJLFK15aW7ezBjtvDIvrnDYAaMEy34hW
+        SAauR+24663RWodOywstNCyNyw9+H0igDwsbNvw=
+X-Google-Smtp-Source: ABdhPJzm9hGc6GFO+ktghBbYuOPr2K5dzQRME7cq8HnEoH7pqFRJ5zO5mfv9O5dbJVmJs6K3958/WPdA/jfdunKpoW8=
+X-Received: by 2002:a5d:6a52:: with SMTP id t18mr45023093wrw.361.1620805854855;
+ Wed, 12 May 2021 00:50:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210401003153.97325-1-yury.norov@gmail.com> <20210401003153.97325-12-yury.norov@gmail.com>
- <1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp>
- <CAHp75Vea0Y_LfWC7LNDoDZqO4t+SVHV5HZMzErfyMPoBAjjk1g@mail.gmail.com>
- <YJm5Dpo+RspbAtye@rikard> <YJoyMrqRtB3GSAny@smile.fi.intel.com>
- <YJpePAHS3EDw6PK1@rikard> <151de51e-9302-1f59-407a-e0d68bbaf11c@i-love.sakura.ne.jp>
- <YJrrJhvwq7RUvDXD@rikard>
-In-Reply-To: <YJrrJhvwq7RUvDXD@rikard>
+References: <20210510093753.40683-1-mark.rutland@arm.com> <CAK8P3a0pO=Jqbd503Kx-H_S1AzikcPjHT5=40ACZuxSF3dUFNQ@mail.gmail.com>
+ <20210511092701.GB6152@C02TD0UTHF1T.local> <YJuDtid8/IrajZ5T@hirez.programming.kicks-ass.net>
+In-Reply-To: <YJuDtid8/IrajZ5T@hirez.programming.kicks-ass.net>
 From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 12 May 2021 09:48:57 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a02qNHcksJ8DahHgLtbM9ZOydGjE3__3GoxgJFiWrAT0w@mail.gmail.com>
-Message-ID: <CAK8P3a02qNHcksJ8DahHgLtbM9ZOydGjE3__3GoxgJFiWrAT0w@mail.gmail.com>
-Subject: Re: [PATCH 11/12] tools: sync lib/find_bit implementation
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Yury Norov <yury.norov@gmail.com>,
+Date:   Wed, 12 May 2021 09:49:57 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2gY88guguWAP-oPXBEZRPSxn_x6zkA-yNduT82a4s0sQ@mail.gmail.com>
+Message-ID: <CAK8P3a2gY88guguWAP-oPXBEZRPSxn_x6zkA-yNduT82a4s0sQ@mail.gmail.com>
+Subject: Re: [PATCH 00/33] locking/atomic: convert all architectures to ARCH_ATOMIC
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux-SH <linux-sh@vger.kernel.org>,
-        Alexey Klimov <aklimov@redhat.com>,
-        David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Brian Cain <bcain@codeaurora.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Chris Zankel <chris@zankel.net>, Rich Felker <dalias@libc.org>,
+        David Miller <davem@davemloft.net>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Helge Deller <deller@gmx.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Greentime Hu <green.hu@gmail.com>, Guo Ren <guoren@kernel.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Matt Turner <mattst88@gmail.com>,
+        Michal Simek <monstr@monstr.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nick Hu <nickhu@andestech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vineet Gupta <vgupta@synopsys.com>,
         Yoshinori Sato <ysato@users.sourceforge.jp>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:fhzWoOc1Vad7Gk0f0i3YZQTK7+oA8uzLV3sSW2zE6I47Ody7IvG
- S0rZhdcOmArhLGlKkN1ijeiTQrZ8WMMZFefLsOAMnFJrJeQPFlDraXdgRyMU3S/pxOXZe0g
- BsfNnWJgJOSMWKh2ZovFD7lypwLsYydBp2uw2L+vSc66ZfZckw/BZ8xsWEtKjxfaPba8u3J
- l08CRvBFmJL2LQvms5Cwg==
+X-Provags-ID: V03:K1:gY6U1MxbJRHXYGLmlkcHDrPyE+dzd0Npk0Hoxnxjb7ZdlSFEwJe
+ Xe0RFj/FR6v3KJocKHo/Ewm/xO+bJFDttzRk9A8mUlC9lo2cDR8tz1c/jfrTAb4/V9Bht8N
+ R3tX8fxBP72ULYSO1ilF1JUWxvd+p0t6CzXMeEXKMEhCEQ/IE0CX7r3YFFFICXm1r+tZDpf
+ t3+KRQTwGvHdhpaV7WLGg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:KK/dcYhHyco=:CAyYNaS8gDrjoZWnGW4SWq
- E8AaGhybFNBdvJxiR+GRumjv3VKz0jhJNfW4HndiWyssPH49ibo1CZcxYtq/anY0PEZeaO/Jp
- g9My9IpOds7tbz9kPb47eWFiXdgLHh89RUzMUECtIZXLiGNnsa52/LlKDnt3sOcjq9prq6KUL
- Iw2khn48hpKRmKf54LMEUa3+AQDBiF8L+nWjneAH3TM2CBFnQaJSDLIzmgYAHhanqpSdFXoa7
- IqhLX1qpkIScny65UVA05L3HmHmY3t3bxoFFCJWYCX4gOU+10pGWjU0wj5EkSLqd3oi3cpJPw
- JkR6bF2FPHWBMkjgU55RExNZHI8RvwW/1hjOMOtYUFjKqz5LkjxdCEnQZxXftg0aUUGdKascV
- sj/twLz9OZtizPljvAz0YiP6DqWDlqZWQGLC51/kFpE7dSYbyEpNXpVUt9jncgxvWURNFFYf9
- 6ES0kgyxQtuon2CtZQKkA9demAPU7ac1cuCt51tw5JQEEvARHI8/k5F0UP3jcsqsH2HPJmYvk
- ke5jjaQ5xzWPNZqleeBgGM=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JH9usKpvIrs=:yh4TBwc3REZPJAdh25+O2h
+ 9IR1McBjp8Ivz4a+V15lGnNG3dMeIOlpKv9AaBrs0cGvOYycK6Er5153wbw3wQAa1EKgVAwqm
+ 30q2cSdVScRpZyG4VRitzpSTsSpqaImdC8iTK5yKRCiutrGj3e7KEIlY++DMiM2J28vzTkZWo
+ 6m/kkTHMHF2N7yCWty9UginwToq88EVURmHHfnuGTHvJQCF7y+oizH5XymAf/obsIMnUM4lDk
+ FYlYjsGQ7X3FVhhjx+niHlWuvm+JP566So+5pCpX7e2strzv9lDleg4aq8MHNxtjN9MvoVQLB
+ 45KyAk3sb11dvN7PSOjuhV+2GLwzlGh6vh9rJGghMRlBMsX0GscvpVKClXrf7JNAdO8mwQIUx
+ wlLOoK+Zd3QevgU9QYfO5gCB/kxu2OiJ1j2+GXHQsFLZ8iSx2ZFMtzCUHisC1ToG2IrknRCcw
+ vURWbq8J+QQMbzLQFcsfhHJG04zUuIRSHY68ZATsa9iajfOHSRTA0JQeqUSq7fp4sO19SbNUN
+ Y6CMtsTyZAmH56dRTcSQd8IbTpJyRxZitEiazU6j1bnaJYzdWyoLe+xo75q8luEjxJoH2gfiA
+ o5itJ/lHzxHqSX6rC2vq7I3QPBLKJzH0hvrzu2i6IxW4QPZ5Fg0XTlYPaEecwbWam49v9oadJ
+ LWpw=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 10:39 PM Rikard Falkeborn
-<rikard.falkeborn@gmail.com> wrote:
-> On Tue, May 11, 2021 at 08:53:53PM +0900, Tetsuo Handa wrote:
-
-> > #define GENMASK_INPUT_CHECK(h, l) \
-> >      (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-> >           __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+On Wed, May 12, 2021 at 9:28 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> On Tue, May 11, 2021 at 10:27:01AM +0100, Mark Rutland wrote:
+> > > I'm happy to put this into the asm-generic tree once you have
+> > > collected enough Acks.
 > >
-> > __GENMASK() does not need "h" and "l" being a constant.
+> > Great! Going via asm-generic sounds good to me. The kbuild test robot
+> > has found a few issues, so I'll probably have a v2 with those fixed and
+> > some acks accumulated.
 > >
-> > Yes, small_const_nbits(size) in find_next_bit() can guarantee that "size" is a
-> > constant and hence "h" argument in GENMASK_INPUT_CHECK() call is also a constant.
-> > But nothing can guarantee that "offset" is a constant, and hence nothing can
-> > guarantee that "l" argument in GENMASK_INPUT_CHECK() call is also a constant.
-> >
-> > Then, how can (l) > (h) in __builtin_constant_p((l) > (h)) be evaluated at build time
-> > if either l or h (i.e. "offset" and "size - 1" in find_next_bit()) lacks a guarantee of
-> > being a constant?
-> >
+> > Peter, does that make sense to you, or did you have reasons to want this
+> > to go via tip?
 >
-> So the idea is that if (l > h) is constant, __builtin_constant_p should
-> evaluate that, and if it is not it should use zero instead as input to
-> __builtin_chose_expr(). This works with non-const inputs in many other
-> places in the kernel, but apparently in this case with a certain
-> compiler, it doesn't so I guess we need to work around it.
+> I was expecting this to to through tip/locking/core, and I think I
+> briefly talked to arnd about that on IRC, but whatever works I suppose.
 
-I have a vague memory that __builtin_constant_p() inside of
-__builtin_choose_expr()
-always evaluates to false because of the order in which the compiler processes
-those: If constant-folding only happens after __builtin_choose_expr(), then
-__builtin_constant_p() has to be false.
+Yes, that's fine with me if it helps you.
 
-        Arnd
+      Arnd
