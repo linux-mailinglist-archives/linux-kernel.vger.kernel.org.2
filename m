@@ -2,99 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A43C37EFE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD4F37EFE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350335AbhELXgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 19:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35592 "EHLO
+        id S231241AbhELXgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 19:36:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350615AbhELXHv (ORCPT
+        with ESMTP id S1376728AbhELXKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 19:07:51 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEC5C061247
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 16:00:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=Wus+uDq6d9uOGlWVOipz3i3wnOeWL+33/iETe3h8tcc=; b=ffUTIErUC5IZUdOlJ3vOqCBqhk
-        wHm7f4vgLkydNAewoQ76SuyeYYaWxWaAIAIe6KlnnWihVIE3M8pQJuom6mxN5IiF/uP6lF9LiapyM
-        IZtJ4X2TCH2DY5anX7fULW05A2SYyKWUwefczteBvLgb0bwret+oxhaAS2g3uLv6bFY4DTsuUhWaN
-        rI+Spq5q/JL2EVhv4o1Nbfr4l+xU88XYlPefAQ8kWsR9L8oTzTCg1A/u28cxMtAo5rokQyV01y000
-        6/PrRwHnAkWDPbPT9eh/rbel80T//w9PNYVtZ9uHVpCoXV27Lfcq4e8nAuRaqOI6G4dAHfbCYj6LW
-        KO7xhdXA==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgxq3-00AtXk-Os; Wed, 12 May 2021 23:00:23 +0000
-Subject: Re: [PATCH v2] init: Print out unknown kernel parameters
-To:     Andrew Halaney <ahalaney@redhat.com>, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Borislav Petkov <bp@suse.de>
-References: <20210511211009.42259-1-ahalaney@redhat.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <cbd3c07e-9dae-44b2-761e-653bd8d0e930@infradead.org>
-Date:   Wed, 12 May 2021 16:00:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Wed, 12 May 2021 19:10:12 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17657C061362
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 16:06:30 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id h21so14771909qtu.5
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 16:06:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fSA6VzsIwmfQzLcNKI8LXXgzEauW/SKmRsgvPavPb1Q=;
+        b=lSgJwqGGYIigKbhvNgOo5aPNIj7rMjm2SPJFubN+7K5mKdrR8GO1Rx/jKYWJGfq9fU
+         mfRcpFg5O5xuwz+8NbUAIi8oOfNXfuIwEAe9Ec90tSZH3w4F1LQhC+PZeUn9tmlgj7t+
+         3CCB0o28l3U+PQuZ6jE+ex/et0/sYpu/Y5o4RFFgqjHOx4/9zCJINGJANaQLBJqroAoZ
+         MJ3my72/dxeWIVJNdVhzDYdeWkDdTpxo37cTQhTn7SsJgtHH8mDnkTBQgYjwira3xoGu
+         Wg4SvmXPoNv7oAcUifXU6/Xv+t0YXcyY37NdoOT2VjUqJIadDe0IgrAAUWxSC+TcXwc0
+         wteA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fSA6VzsIwmfQzLcNKI8LXXgzEauW/SKmRsgvPavPb1Q=;
+        b=Djp+16/R3c5LaXygFroC2Rp9TJWyjImIEkNEHNL613FwO9JTh0bg4XqBUR7RrF0xBU
+         JxanhAHkR7Ae8REscgj3FJPSMAas0Jt63RyymoiO8zzSgrDZ0k05Y0bQSsMUjIW3NwA9
+         z2XLxftCETx4o6THJg9kik3mS3f78VzpToFsLktduAz0lopBcG/OlI7d3o7i5ugE3oGV
+         3Mu5zBUaiY+oHL1exugsLxtk459xBsCvyfaMwiP5d4YNP0xUfsUZtwUeD8zIWQjHqv5d
+         xJy+cdb8ua6IrYpvMSMSl4e1606Nc/W3R0/94tu/HxZFiPyVfEud/gsdFk3eVSTQbVXb
+         bykA==
+X-Gm-Message-State: AOAM533JE4VOJQIYFIZG+Jrh5B8CYiG0ovo6gocyif6m6hbDnQz2lFZJ
+        +A9kSTizxFoBvkw33nov62IUHN6Ub9aXamU9rH3OMQ==
+X-Google-Smtp-Source: ABdhPJwNY+3a9n8mvM9DQXFuQkiS1A43uoxqFXSgOGsLEv6At8EWBnkk+1fje3jZYNb2xSA8jH5nPvQV2HkOUdp/aYg=
+X-Received: by 2002:ac8:7d14:: with SMTP id g20mr16022130qtb.298.1620860789269;
+ Wed, 12 May 2021 16:06:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210511211009.42259-1-ahalaney@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210511041852.592295-1-bjorn.andersson@linaro.org> <20210511041852.592295-3-bjorn.andersson@linaro.org>
+In-Reply-To: <20210511041852.592295-3-bjorn.andersson@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 13 May 2021 02:06:18 +0300
+Message-ID: <CAA8EJpqQ3TV3VkYs8f3w0fmM_ZBW9gHB3P8ErzHe6SiKf3-aGg@mail.gmail.com>
+Subject: Re: [PATCH 2/4] drm/msm/dpu: Clear boot loader configured data paths
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 2:10 PM, Andrew Halaney wrote:
-> It is easy to foobar setting a kernel parameter on the command line
-> without realizing it, there's not much output that you can use to
-> assess what the kernel did with that parameter by default.
-> 
-> Make it a little more explicit which parameters on the command line
-> _looked_ like a valid parameter for the kernel, but did not match
-> anything and ultimately got tossed to init. This is very similar to the
-> unknown parameter message received when loading a module.
-> 
-> This assumes the parameters are processed in a normal fashion, some
-> parameters (dyndbg= for example) don't register their
-> parameter with the rest of the kernel's parameters, and therefore
-> always show up in this list (and are also given to init - like the
-> rest of this list).
-> 
-> Another example is BOOT_IMAGE= is highlighted as an offender, which it
-> technically is, but is passed by LILO and GRUB so most systems will see
-> that complaint.
-> 
-> An example output where "foobared" and "unrecognized" are intentionally
-> invalid parameters:
-> 
->   Kernel command line: BOOT_IMAGE=/boot/vmlinuz-5.12-dirty debug log_buf_len=4M foobared unrecognized=foo
->   Unknown command line parameters: foobared BOOT_IMAGE=/boot/vmlinuz-5.12-dirty unrecognized=foo
+On Tue, 11 May 2021 at 07:18, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> It's typical for the bootloader to configure CTL_0 for the boot splash
+> or EFIFB, but for non-DSI use cases the DPU driver tend to pick another
+> CTL and the system might end up with two configured data paths producing
+> data on the same INTF - with resulting graphical artifacts.
+>
+> Naturally the end goal would be to inherit the bootloader's
+> configuration and provide the user with a glitch free handover from the
+> boot configuration to a running DPU.
+> But such effort will affect clocks, regulators, power-domains etc, so in
+> the meantime this patch simply disables all INTFs and clear all
+> configured data paths, to avoid the graphical artifacts.
 
-Hi Andrew,
-What order is the list of unknown command line parameters listed in?
+Good idea. We'd have to be careful to test this with interfaces in command mode.
 
-
-> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-> Suggested-by: Borislav Petkov <bp@suse.de>
-> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
-> 
-> It's my first time sending a v2 via email, please let me know if I've
-> messed that up in anyway. I decided it wasn't worth the effort to do
-> "autocorrect" functionality Borislav was pondering about, feel free to
-> disagree on that if you have a strong opinion.
-> 
-> v2: make output on a single line, make function static and __init,
->     include example output in commit message
-> 
->  init/main.c | 42 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 42 insertions(+)
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c |  4 +++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c    |  2 ++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c     | 36 ++++++++++++++++++++++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h     |  8 +++++
+>  4 files changed, 50 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> index 2d4645e01ebf..7aba27c1055a 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> @@ -349,9 +349,13 @@ static void dpu_hw_ctl_clear_all_blendstages(struct dpu_hw_ctl *ctx)
+>                 DPU_REG_WRITE(c, CTL_LAYER_EXT(LM_0 + i), 0);
+>                 DPU_REG_WRITE(c, CTL_LAYER_EXT2(LM_0 + i), 0);
+>                 DPU_REG_WRITE(c, CTL_LAYER_EXT3(LM_0 + i), 0);
+> +
+> +               ctx->pending_flush_mask |= dpu_hw_ctl_get_bitmask_mixer(ctx, LM_0 + i);
+>         }
+>
+>         DPU_REG_WRITE(c, CTL_FETCH_PIPE_ACTIVE, 0);
+> +
+> +       ctx->pending_flush_mask |= CTL_FLUSH_MASK_CTL;
+>  }
+>
+>  static void dpu_hw_ctl_setup_blendstage(struct dpu_hw_ctl *ctx,
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> index 88e9cc38c13b..8b01cb660381 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> @@ -970,6 +970,8 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
+>
+>         dpu_kms->rm_init = true;
+>
+> +       dpu_rm_clear_boot_config(&dpu_kms->rm, dpu_kms->catalog);
+> +
+>         dpu_kms->hw_mdp = dpu_hw_mdptop_init(MDP_TOP, dpu_kms->mmio,
+>                                              dpu_kms->catalog);
+>         if (IS_ERR(dpu_kms->hw_mdp)) {
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> index fd2d104f0a91..2cf47084482f 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> @@ -4,6 +4,7 @@
+>   */
+>
+>  #define pr_fmt(fmt)    "[drm:%s] " fmt, __func__
+> +#include <linux/delay.h>
+>  #include "dpu_kms.h"
+>  #include "dpu_hw_lm.h"
+>  #include "dpu_hw_ctl.h"
+> @@ -229,6 +230,41 @@ int dpu_rm_init(struct dpu_rm *rm,
+>         return rc ? rc : -EFAULT;
+>  }
+>
+> +void dpu_rm_clear_boot_config(struct dpu_rm *rm, struct dpu_mdss_cfg *cat)
+> +{
+> +       struct dpu_hw_intf *intf;
+> +       struct dpu_hw_ctl *ctl;
+> +       int i;
+> +
+> +       for (i = INTF_0; i < INTF_MAX; i++) {
+> +               if (!rm->intf_blks[i - INTF_0])
+> +                       continue;
+> +
+> +               DPU_DEBUG("disabling intf%d timing engine\n", i - INTF_0);
+> +
+> +               intf = to_dpu_hw_intf(rm->intf_blks[i - INTF_0]);
+> +               intf->ops.enable_timing(intf, 0);
+> +       }
+> +
+> +       /*
+> +        * Wait one frame for the INTF timing engine to stop, and then wait one
+> +        * more frame, per the documentation.
+> +        */
+> +       msleep(32);
+> +
+> +       for (i = CTL_0; i < CTL_MAX; i++) {
+> +               if (!rm->ctl_blks[i - CTL_0])
+> +                       continue;
+> +
+> +               DPU_DEBUG("clearing ctl%d layer configuration\n", i - CTL_0);
+> +
+> +               ctl = to_dpu_hw_ctl(rm->ctl_blks[i - CTL_0]);
+> +               ctl->ops.clear_all_blendstages(ctl);
+> +               ctl->ops.trigger_flush(ctl);
+> +               ctl->ops.trigger_start(ctl);
+> +       }
+> +}
+> +
+>  static bool _dpu_rm_needs_split_display(const struct msm_display_topology *top)
+>  {
+>         return top->num_intf > 1;
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
+> index 1f12c8d5b8aa..53cd649614a3 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
+> @@ -88,5 +88,13 @@ void dpu_rm_release(struct dpu_global_state *global_state,
+>  int dpu_rm_get_assigned_resources(struct dpu_rm *rm,
+>         struct dpu_global_state *global_state, uint32_t enc_id,
+>         enum dpu_hw_blk_type type, struct dpu_hw_blk **blks, int blks_size);
+> +
+> +/**
+> + * dpu_rm_clear_boot_config() - Tear down any data paths configured by boot
+> + * @rm: DPU Resource Manger handle
+> + * @cat: Pointer to hardware catalog
+> + */
+> +void dpu_rm_clear_boot_config(struct dpu_rm *rm, struct dpu_mdss_cfg *cat);
+> +
+>  #endif /* __DPU_RM_H__ */
+>
+> --
+> 2.29.2
+>
 
 
-Thanks.
 -- 
-~Randy
-
+With best wishes
+Dmitry
