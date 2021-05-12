@@ -2,86 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026F337C162
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F6537C0B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbhELO7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:59:30 -0400
-Received: from mga18.intel.com ([134.134.136.126]:15118 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232414AbhELO5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:57:02 -0400
-IronPort-SDR: uaOZ/puAhYJgVZIEZ+xsJzaQg61kZ6dyiNbcIDzFtK2lvMoCeXKjNY1o2svF3D4bLNHP3jLOCY
- VOaNSWLsLS7w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187149182"
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="scan'208";a="187149182"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 07:55:53 -0700
-IronPort-SDR: y4XUhU0pegKxNxb89n7z7Bf29Yzf14vRHiMZ4O646DK9SEWCCG4uQ0E3S6PMT8BSmn1rbdAffC
- vt8x+x4qcwZg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="scan'208";a="400143970"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga007.fm.intel.com with ESMTP; 12 May 2021 07:55:52 -0700
-Date:   Wed, 12 May 2021 22:50:41 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Tom Rix <trix@redhat.com>
-Subject: Re: [PATCH] MAINTAINERS: De-duplicate INTEL MAX 10 BMC MFD DRIVER
- entry
-Message-ID: <20210512145041.GA906580@yilunxu-OptiPlex-7050>
-References: <20210510183056.810753-1-j.neuschaefer@gmx.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210510183056.810753-1-j.neuschaefer@gmx.net>
+        id S231131AbhELOwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:52:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42490 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230280AbhELOwv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 10:52:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620831102;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
+        bh=G8AWSw11u17dQBdvULhp73HhnBRcOeZB2YF9KJWMyVQ=;
+        b=AivApFb29Ggb7mPkQyNvf8eLB0Elz9Ye3oI5GlgbLQPmSyKROk5MSuMEn4ciFJMbQ5uiy3
+        YoX8uYzKl73ovTqfcnIUegN4CH1VYZ/s+CWTki363MGbbbf6dQaQCRqRLC5eMudtHf1riz
+        oEI1S/WG57+r3WY8dDcuobVXRCu3itI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-200-EmdDmx-MPtiutLZs9mxugg-1; Wed, 12 May 2021 10:51:40 -0400
+X-MC-Unique: EmdDmx-MPtiutLZs9mxugg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3738A19251A2;
+        Wed, 12 May 2021 14:51:38 +0000 (UTC)
+Received: from llong.com (ovpn-118-19.rdu2.redhat.com [10.10.118.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E193BE71F;
+        Wed, 12 May 2021 14:51:31 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Waiman Long <longman@redhat.com>
+Subject: [PATCH v5 2/3] mm: memcg/slab: Create a new set of kmalloc-cg-<n> caches
+Date:   Wed, 12 May 2021 10:51:07 -0400
+Message-Id: <20210512145107.6208-1-longman@redhat.com>
+In-Reply-To: <20210505200610.13943-1-longman@redhat.com>
+References: <20210505200610.13943-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's good to me.
+There are currently two problems in the way the objcg pointer array
+(memcg_data) in the page structure is being allocated and freed.
 
-Hi Lee:
+On its allocation, it is possible that the allocated objcg pointer
+array comes from the same slab that requires memory accounting. If this
+happens, the slab will never become empty again as there is at least
+one object left (the obj_cgroup array) in the slab.
 
-Could you help submit this fix?
+When it is freed, the objcg pointer array object may be the last one
+in its slab and hence causes kfree() to be called again. With the
+right workload, the slab cache may be set up in a way that allows the
+recursive kfree() calling loop to nest deep enough to cause a kernel
+stack overflow and panic the system.
 
-Thanks,
-Yilun
+One way to solve this problem is to split the kmalloc-<n> caches
+(KMALLOC_NORMAL) into two separate sets - a new set of kmalloc-<n>
+(KMALLOC_NORMAL) caches for unaccounted objects only and a new set of
+kmalloc-cg-<n> (KMALLOC_CGROUP) caches for accounted objects only. All
+the other caches can still allow a mix of accounted and unaccounted
+objects.
 
-On Mon, May 10, 2021 at 08:30:56PM +0200, Jonathan Neuschäfer wrote:
-> Xu Yilin's patch "MAINTAINERS: Add entry for Intel MAX 10 mfd driver"
-> was applied twice, resulting in a duplicate entry. De-duplicate it.
-> 
-> Fixes: 58d91f1c1701d ("MAINTAINERS: Add entry for Intel MAX 10 mfd driver")
-> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
-> ---
->  MAINTAINERS | 10 ----------
->  1 file changed, 10 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index bd7aff0c120f2..7d6e44b9f4664 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -9299,16 +9299,6 @@ F:	drivers/hwmon/intel-m10-bmc-hwmon.c
->  F:	drivers/mfd/intel-m10-bmc.c
->  F:	include/linux/mfd/intel-m10-bmc.h
-> 
-> -INTEL MAX 10 BMC MFD DRIVER
-> -M:	Xu Yilun <yilun.xu@intel.com>
-> -R:	Tom Rix <trix@redhat.com>
-> -S:	Maintained
-> -F:	Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
-> -F:	Documentation/hwmon/intel-m10-bmc-hwmon.rst
-> -F:	drivers/hwmon/intel-m10-bmc-hwmon.c
-> -F:	drivers/mfd/intel-m10-bmc.c
-> -F:	include/linux/mfd/intel-m10-bmc.h
-> -
->  INTEL MENLOW THERMAL DRIVER
->  M:	Sujith Thomas <sujith.thomas@intel.com>
->  L:	platform-driver-x86@vger.kernel.org
-> --
-> 2.30.2
+With this change, all the objcg pointer array objects will come from
+KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
+both the recursive kfree() problem and non-freeable slab problem are
+gone.
+
+Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer have
+mixed accounted and unaccounted objects, this will slightly reduce the
+number of objcg pointer arrays that need to be allocated and save a bit
+of memory. On the other hand, creating a new set of kmalloc caches does
+have the effect of reducing cache utilization. So it is properly a wash.
+
+The new KMALLOC_CGROUP is added between KMALLOC_NORMAL and
+KMALLOC_RECLAIM so that the first for loop in create_kmalloc_caches()
+will include the newly added caches without change.
+
+Signed-off-by: Waiman Long <longman@redhat.com>
+Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+---
+ include/linux/slab.h | 42 +++++++++++++++++++++++++++++++++---------
+ mm/slab_common.c     | 25 +++++++++++++++++--------
+ 2 files changed, 50 insertions(+), 17 deletions(-)
+
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index 0c97d788762c..aa7f6c222a60 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -305,9 +305,21 @@ static inline void __check_heap_object(const void *ptr, unsigned long n,
+ /*
+  * Whenever changing this, take care of that kmalloc_type() and
+  * create_kmalloc_caches() still work as intended.
++ *
++ * KMALLOC_NORMAL can contain only unaccounted objects whereas KMALLOC_CGROUP
++ * is for accounted but unreclaimable and non-dma objects. All the other
++ * kmem caches can have both accounted and unaccounted objects.
+  */
+ enum kmalloc_cache_type {
+ 	KMALLOC_NORMAL = 0,
++#ifndef CONFIG_ZONE_DMA
++	KMALLOC_DMA = KMALLOC_NORMAL,
++#endif
++#ifndef CONFIG_MEMCG_KMEM
++	KMALLOC_CGROUP = KMALLOC_NORMAL,
++#else
++	KMALLOC_CGROUP,
++#endif
+ 	KMALLOC_RECLAIM,
+ #ifdef CONFIG_ZONE_DMA
+ 	KMALLOC_DMA,
+@@ -319,24 +331,36 @@ enum kmalloc_cache_type {
+ extern struct kmem_cache *
+ kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1];
+ 
++/*
++ * Define gfp bits that should not be set for KMALLOC_NORMAL.
++ */
++#define KMALLOC_NOT_NORMAL_BITS					\
++	(__GFP_RECLAIMABLE |					\
++	(IS_ENABLED(CONFIG_ZONE_DMA)   ? __GFP_DMA : 0) |	\
++	(IS_ENABLED(CONFIG_MEMCG_KMEM) ? __GFP_ACCOUNT : 0))
++
+ static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
+ {
+-#ifdef CONFIG_ZONE_DMA
+ 	/*
+ 	 * The most common case is KMALLOC_NORMAL, so test for it
+-	 * with a single branch for both flags.
++	 * with a single branch for all the relevant flags.
+ 	 */
+-	if (likely((flags & (__GFP_DMA | __GFP_RECLAIMABLE)) == 0))
++	if (likely((flags & KMALLOC_NOT_NORMAL_BITS) == 0))
+ 		return KMALLOC_NORMAL;
+ 
+ 	/*
+-	 * At least one of the flags has to be set. If both are, __GFP_DMA
+-	 * is more important.
++	 * At least one of the flags has to be set. Their priorities in
++	 * decreasing order are:
++	 *  1) __GFP_DMA
++	 *  2) __GFP_RECLAIMABLE
++	 *  3) __GFP_ACCOUNT
+ 	 */
+-	return flags & __GFP_DMA ? KMALLOC_DMA : KMALLOC_RECLAIM;
+-#else
+-	return flags & __GFP_RECLAIMABLE ? KMALLOC_RECLAIM : KMALLOC_NORMAL;
+-#endif
++	if (IS_ENABLED(CONFIG_ZONE_DMA) && (flags & __GFP_DMA))
++		return KMALLOC_DMA;
++	if (!IS_ENABLED(CONFIG_MEMCG_KMEM) || (flags & __GFP_RECLAIMABLE))
++		return KMALLOC_RECLAIM;
++	else
++		return KMALLOC_CGROUP;
+ }
+ 
+ /*
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index f8833d3e5d47..bbaf41a7c77e 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -727,21 +727,25 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
+ }
+ 
+ #ifdef CONFIG_ZONE_DMA
+-#define INIT_KMALLOC_INFO(__size, __short_size)			\
+-{								\
+-	.name[KMALLOC_NORMAL]  = "kmalloc-" #__short_size,	\
+-	.name[KMALLOC_RECLAIM] = "kmalloc-rcl-" #__short_size,	\
+-	.name[KMALLOC_DMA]     = "dma-kmalloc-" #__short_size,	\
+-	.size = __size,						\
+-}
++#define KMALLOC_DMA_NAME(sz)	.name[KMALLOC_DMA] = "dma-kmalloc-" #sz,
++#else
++#define KMALLOC_DMA_NAME(sz)
++#endif
++
++#ifdef CONFIG_MEMCG_KMEM
++#define KMALLOC_CGROUP_NAME(sz)	.name[KMALLOC_CGROUP] = "kmalloc-cg-" #sz,
+ #else
++#define KMALLOC_CGROUP_NAME(sz)
++#endif
++
+ #define INIT_KMALLOC_INFO(__size, __short_size)			\
+ {								\
+ 	.name[KMALLOC_NORMAL]  = "kmalloc-" #__short_size,	\
+ 	.name[KMALLOC_RECLAIM] = "kmalloc-rcl-" #__short_size,	\
++	KMALLOC_CGROUP_NAME(__short_size)			\
++	KMALLOC_DMA_NAME(__short_size)				\
+ 	.size = __size,						\
+ }
+-#endif
+ 
+ /*
+  * kmalloc_info[] is to make slub_debug=,kmalloc-xx option work at boot time.
+@@ -830,6 +834,8 @@ new_kmalloc_cache(int idx, enum kmalloc_cache_type type, slab_flags_t flags)
+ {
+ 	if (type == KMALLOC_RECLAIM)
+ 		flags |= SLAB_RECLAIM_ACCOUNT;
++	else if (IS_ENABLED(CONFIG_MEMCG_KMEM) && (type == KMALLOC_CGROUP))
++		flags |= SLAB_ACCOUNT;
+ 
+ 	kmalloc_caches[type][idx] = create_kmalloc_cache(
+ 					kmalloc_info[idx].name[type],
+@@ -847,6 +853,9 @@ void __init create_kmalloc_caches(slab_flags_t flags)
+ 	int i;
+ 	enum kmalloc_cache_type type;
+ 
++	/*
++	 * Including KMALLOC_CGROUP if CONFIG_MEMCG_KMEM defined
++	 */
+ 	for (type = KMALLOC_NORMAL; type <= KMALLOC_RECLAIM; type++) {
+ 		for (i = KMALLOC_SHIFT_LOW; i <= KMALLOC_SHIFT_HIGH; i++) {
+ 			if (!kmalloc_caches[type][i])
+-- 
+2.18.1
+
