@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5765837C843
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1D337C845
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238911AbhELQGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:06:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37004 "EHLO mail.kernel.org"
+        id S238960AbhELQGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:06:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234982AbhELP0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:26:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C86E619EE;
-        Wed, 12 May 2021 15:11:13 +0000 (UTC)
+        id S235466AbhELP2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:28:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EBFB61452;
+        Wed, 12 May 2021 15:13:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620832273;
-        bh=E8NAsm444CS1PX3bfV1zlCkMeo/zNbsFaO2va+Kysok=;
+        s=korg; t=1620832383;
+        bh=tGCX8tslhtr2FUexM+5GSfcEhS4W6t6okDswa7G7v7E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xCrt48424wwknvTogbzMdX/xhUCpXE63n1q9zM3NL3gatsj4zAv58sCXbrXb3cv+E
-         fjbxNVTcN/YB++oVrEsDCVHlmnuYHGkZyOC9wvsodNinsJJKI0pMMHzcijvGdOE5Zg
-         JoEkDDVaS8rXJ5c7RqKpMq6FwpeIS0BZJpowLpu4=
+        b=ewf8tshwMnkl/fnSKPa81kF8rXoDs8VanReB1dR9u8NNI4nlGWTrNLiTt+2OGUrx4
+         wJb/vBQnmW5w1kOreKrL8ptxSihT3uLL2N6GiVNImGwu3clmNpQXZi+b62SvT358RE
+         SgMiKMoYc0vGtloG73LrXgYlWieL0w7OJypKkVWU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 211/530] staging: fwserial: fix TIOCSSERIAL implementation
-Date:   Wed, 12 May 2021 16:45:21 +0200
-Message-Id: <20210512144826.781072131@linuxfoundation.org>
+Subject: [PATCH 5.10 223/530] PM: runtime: Replace inline function pm_runtime_callbacks_present()
+Date:   Wed, 12 May 2021 16:45:33 +0200
+Message-Id: <20210512144827.161657470@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
 References: <20210512144819.664462530@linuxfoundation.org>
@@ -39,47 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit a7eaaa9d1032e68669bb479496087ba8fc155ab6 ]
+[ Upstream commit 953c1fd96b1a70bcbbfb10973c2126eba8d891c7 ]
 
-TIOCSSERIAL is a horrid, underspecified, legacy interface which for most
-serial devices is only useful for setting the close_delay and
-closing_wait parameters.
+Commit 9a7875461fd0 ("PM: runtime: Replace pm_runtime_callbacks_present()")
+forgot to change the inline version.
 
-A non-privileged user has only ever been able to set the since long
-deprecated ASYNC_SPD flags and trying to change any other *supported*
-feature should result in -EPERM being returned. Setting the current
-values for any supported features should return success.
-
-Fix the fwserial implementation which was returning -EPERM also for a
-privileged user when trying to change certain unsupported parameters,
-and instead return success consistently.
-
-Fixes: 7355ba3445f2 ("staging: fwserial: Add TTY-over-Firewire serial driver")
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210407102334.32361-4-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 9a7875461fd0 ("PM: runtime: Replace pm_runtime_callbacks_present()")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/fwserial/fwserial.c | 4 ----
- 1 file changed, 4 deletions(-)
+ include/linux/pm_runtime.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/fwserial/fwserial.c b/drivers/staging/fwserial/fwserial.c
-index 440d11423812..2888b80a2c1a 100644
---- a/drivers/staging/fwserial/fwserial.c
-+++ b/drivers/staging/fwserial/fwserial.c
-@@ -1234,10 +1234,6 @@ static int set_serial_info(struct tty_struct *tty,
- 	struct fwtty_port *port = tty->driver_data;
- 	unsigned int cdelay;
+diff --git a/include/linux/pm_runtime.h b/include/linux/pm_runtime.h
+index b492ae00cc90..6c08a085367b 100644
+--- a/include/linux/pm_runtime.h
++++ b/include/linux/pm_runtime.h
+@@ -265,7 +265,7 @@ static inline void pm_runtime_no_callbacks(struct device *dev) {}
+ static inline void pm_runtime_irq_safe(struct device *dev) {}
+ static inline bool pm_runtime_is_irq_safe(struct device *dev) { return false; }
  
--	if (ss->irq != 0 || ss->port != 0 || ss->custom_divisor != 0 ||
--	    ss->baud_base != 400000000)
--		return -EPERM;
--
- 	cdelay = msecs_to_jiffies(ss->close_delay * 10);
- 
- 	mutex_lock(&port->port.mutex);
+-static inline bool pm_runtime_callbacks_present(struct device *dev) { return false; }
++static inline bool pm_runtime_has_no_callbacks(struct device *dev) { return false; }
+ static inline void pm_runtime_mark_last_busy(struct device *dev) {}
+ static inline void __pm_runtime_use_autosuspend(struct device *dev,
+ 						bool use) {}
 -- 
 2.30.2
 
