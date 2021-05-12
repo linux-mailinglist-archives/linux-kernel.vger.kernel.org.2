@@ -2,63 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A2C37C3D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2170237C3FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231802AbhELPW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:22:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37700 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232157AbhELPKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:10:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9741AAF80;
-        Wed, 12 May 2021 15:09:31 +0000 (UTC)
-Subject: Re: [PATCH v1 4/8] block: move disk unregistration work from
- del_gendisk() to a helper
-To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk
-Cc:     bvanassche@acm.org, ming.lei@redhat.com, hch@infradead.org,
-        jack@suse.cz, osandov@fb.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210512064629.13899-1-mcgrof@kernel.org>
- <20210512064629.13899-5-mcgrof@kernel.org>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <282ddaaf-eee9-3b50-2b70-6cdba33a1931@suse.de>
-Date:   Wed, 12 May 2021 17:09:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S234916AbhELPZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:25:55 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:48577 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233381AbhELPMq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:12:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1620832299; x=1652368299;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=HKr3J8IhS0dTtfoFa0Dujjg1idj5c2M2ekOtri5Eo0A=;
+  b=tbCPyRd4dLXIVPbrObtI2l5kCXm8YwcJyqCXMyYk5pPrjjuFIZ7TVvfE
+   tUlrfLeSTSN5cPNVfBBe6Crgo1UegGlgAoEq8bSEx1aejtUwK5TAjNHUZ
+   psvPHZSm9gsWKAbCPWsjU/dgOm2t17DyGnQZbpKc76LwssxWi6TCIC6dr
+   o=;
+X-IronPort-AV: E=Sophos;i="5.82,293,1613433600"; 
+   d="scan'208";a="111783246"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 12 May 2021 15:11:31 +0000
+Received: from EX13MTAUEB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id 5B57FA1C13;
+        Wed, 12 May 2021 15:11:27 +0000 (UTC)
+Received: from EX13D08UEB003.ant.amazon.com (10.43.60.11) by
+ EX13MTAUEB001.ant.amazon.com (10.43.60.129) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 12 May 2021 15:11:26 +0000
+Received: from EX13MTAUEB002.ant.amazon.com (10.43.60.12) by
+ EX13D08UEB003.ant.amazon.com (10.43.60.11) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 12 May 2021 15:11:26 +0000
+Received: from uae075a0dfd4c51.ant.amazon.com (10.106.82.24) by
+ mail-relay.amazon.com (10.43.60.234) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Wed, 12 May 2021 15:11:24 +0000
+From:   Ilias Stamatis <ilstam@amazon.com>
+To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <pbonzini@redhat.com>
+CC:     <mlevitsk@redhat.com>, <seanjc@google.com>, <vkuznets@redhat.com>,
+        <wanpengli@tencent.com>, <jmattson@google.com>, <joro@8bytes.org>,
+        <zamsden@gmail.com>, <mtosatti@redhat.com>, <dwmw@amazon.co.uk>,
+        <ilstam@amazon.com>
+Subject: [PATCH v2 00/10] KVM: Implement nested TSC scaling
+Date:   Wed, 12 May 2021 16:09:35 +0100
+Message-ID: <20210512150945.4591-1-ilstam@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210512064629.13899-5-mcgrof@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/21 8:46 AM, Luis Chamberlain wrote:
-> There is quite a bit of code on del_gendisk() which relates to
-> unregistering the disk, using register_disk() as an counter.
-> Move all this code into a helper instead of re-writing our own,
-> which we'll need later to handle errors on add_disk().
-> 
-> Since disk unregistrationa also deals with parition unregistration,
-> provide a halper for that as well, as we'll later need this when
-> adding error handling for add_disk().
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->   block/genhd.c | 56 +++++++++++++++++++++++++++++----------------------
->   1 file changed, 32 insertions(+), 24 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+KVM currently supports hardware-assisted TSC scaling but only for L1;
+the feature is not exposed to nested guests. This patch series adds
+support for nested TSC scaling and allows both L1 and L2 to be scaled
+with different scaling factors. That is achieved by "merging" the 01 and
+02 values together.
 
-Cheers,
+Most of the logic in this series is implemented in common code (by doing
+the necessary restructurings), however the patches add support for VMX
+only. Adding support for SVM should be easy at this point and Maxim
+Levitsky has volunteered to do this (thanks!).
 
-Hannes
+Changelog:
+v2:
+  - Applied most (all?) of Maxim's feedback
+  - Added a mul_s64_u64_shr function in math64.h
+  - Added a separate kvm_scale_tsc_l1 function instead of passing an
+    argument to kvm_scale_tsc
+  - Implemented the 02 fields calculations in common code
+  - Moved all of write_l1_tsc_offset's logic to common code
+  - Added a check for whether the TSC is stable in patch 10
+  - Used a random L1 factor and a negative offset in patch 10
+
+Ilias Stamatis (10):
+  math64.h: Add mul_s64_u64_shr()
+  KVM: X86: Store L1's TSC scaling ratio in 'struct kvm_vcpu_arch'
+  KVM: X86: Add kvm_scale_tsc_l1() and kvm_compute_tsc_offset_l1()
+  KVM: VMX: Add a TSC multiplier field in VMCS12
+  KVM: X86: Add functions for retrieving L2 TSC fields from common code
+  KVM: X86: Add functions that calculate the 02 TSC offset and
+    multiplier
+  KVM: X86: Move write_l1_tsc_offset() logic to common code and rename
+    it
+  KVM: VMX: Set the TSC offset and multiplier on nested entry and exit
+  KVM: VMX: Expose TSC scaling to L2
+  KVM: selftests: x86: Add vmx_nested_tsc_scaling_test
+
+ arch/x86/include/asm/kvm-x86-ops.h            |   4 +-
+ arch/x86/include/asm/kvm_host.h               |  13 +-
+ arch/x86/kvm/svm/svm.c                        |  29 ++-
+ arch/x86/kvm/vmx/nested.c                     |  19 +-
+ arch/x86/kvm/vmx/vmcs12.c                     |   1 +
+ arch/x86/kvm/vmx/vmcs12.h                     |   4 +-
+ arch/x86/kvm/vmx/vmx.c                        |  42 +--
+ arch/x86/kvm/x86.c                            |  93 +++++--
+ include/linux/math64.h                        |  19 ++
+ tools/testing/selftests/kvm/.gitignore        |   1 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../kvm/x86_64/vmx_nested_tsc_scaling_test.c  | 242 ++++++++++++++++++
+ 12 files changed, 409 insertions(+), 59 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/vmx_nested_tsc_scaling_test.c
+
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+2.17.1
+
