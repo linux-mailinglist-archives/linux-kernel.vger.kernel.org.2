@@ -2,63 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F55137B4A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8BF37B4C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbhELDlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 23:41:35 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2564 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbhELDle (ORCPT
+        id S230095AbhELD6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 23:58:36 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5102 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229951AbhELD6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 23:41:34 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fg0qF5NQzzwSQd;
-        Wed, 12 May 2021 11:37:45 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 12 May 2021 11:40:15 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <thierry.reding@gmail.com>, <u.kleine-koenig@pengutronix.de>,
-        <lee.jones@linaro.org>
-CC:     <linux-pwm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] pwm: img: Fix PM reference leak in img_pwm_enable()
-Date:   Wed, 12 May 2021 11:57:17 +0800
-Message-ID: <1620791837-16138-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Tue, 11 May 2021 23:58:34 -0400
+Received: from dggeml711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fg1C546M8zYh2Q;
+        Wed, 12 May 2021 11:54:57 +0800 (CST)
+Received: from dggemi760-chm.china.huawei.com (10.1.198.146) by
+ dggeml711-chm.china.huawei.com (10.3.17.122) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 12 May 2021 11:57:25 +0800
+Received: from [10.67.101.248] (10.67.101.248) by
+ dggemi760-chm.china.huawei.com (10.1.198.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 12 May 2021 11:57:24 +0800
+Subject: Re: [PATCH v2 0/8] crypto: hisilicon/hpre - fix coding style
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+References: <1620790471-16621-1-git-send-email-tanghui20@huawei.com>
+CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
+From:   Hui Tang <tanghui20@huawei.com>
+Message-ID: <0be7d995-f5c9-5c04-7bbb-75c49d1f260e@huawei.com>
+Date:   Wed, 12 May 2021 11:57:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
+In-Reply-To: <1620790471-16621-1-git-send-email-tanghui20@huawei.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.101.248]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggemi760-chm.china.huawei.com (10.1.198.146)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync will increment pm usage counter even it failed.
-Forgetting to putting operation will result in reference leak here.
-Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-counter balanced.
+Sorry, please ignore this patchset,
+there is a problem with my email, I will resend.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/pwm/pwm-img.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
-index cc37054..11b16ec 100644
---- a/drivers/pwm/pwm-img.c
-+++ b/drivers/pwm/pwm-img.c
-@@ -156,7 +156,7 @@ static int img_pwm_enable(struct pwm_chip *chip, struct pwm_device *pwm)
- 	struct img_pwm_chip *pwm_chip = to_img_pwm_chip(chip);
- 	int ret;
- 
--	ret = pm_runtime_get_sync(chip->dev);
-+	ret = pm_runtime_resume_and_get(chip->dev);
- 	if (ret < 0)
- 		return ret;
- 
--- 
-2.6.2
-
+On 2021/5/12 11:34, Hui Tang wrote:
+> This patchset fix coding style, as follows:
+>
+> Hui Tang (8):
+>   crypto: hisilicon/hpre - the macro 'HPRE_ADDR' expands
+>   crypto: hisilicon/hpre - init a structure member each line
+>   crypto: hisilicon/hpre - replace macro with inline function
+>   crypto: hisilicon/hpre - remove the macro of 'HPRE_DEV'
+>   crypto: hisilicon/hpre - delete rudundant initialization
+>   crypto: hisilicon/hpre - use 'GENMASK' to generate mask value
+>   crypto: hisilicon/hpre - delete rudundant macro definition
+>   crypto: hisilicon/hpre - add 'default' for switch statement
+>
+> v1 -> v2: fix build warnings reported by kernel test robot.
+>
+>  drivers/crypto/hisilicon/hpre/hpre_crypto.c |  67 ++++++------
+>  drivers/crypto/hisilicon/hpre/hpre_main.c   | 157 +++++++++++++++++-----------
+>  2 files changed, 128 insertions(+), 96 deletions(-)
+>
+> --
+> 2.8.1
+>
+> .
+>
