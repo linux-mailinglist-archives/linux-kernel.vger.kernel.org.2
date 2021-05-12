@@ -2,131 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F36E37B6C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEF537B6C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhELHUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 03:20:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50061 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229627AbhELHUy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 03:20:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620803986;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=K+VHnoXmzL0V36eoMMI4uRNuUvcDK3sLNlx3DJAoh68=;
-        b=d7N2jeqK/vaByb+9oEZfa0saT8J1OYEQPiMEq9UXVh5DzdKDJRnCT46VonvyPf8WzV695B
-        MVAzmXnyYb0wyu+C6D8iWVefr44iDI1G05R61W9uBpTQuN599Z7K95n2Qwmzbf7ygwnO/7
-        uhNmPK5ROylzjAADxaS9iqUamWb1r7o=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-I7MsvZItN5-tbz8a020a2g-1; Wed, 12 May 2021 03:19:43 -0400
-X-MC-Unique: I7MsvZItN5-tbz8a020a2g-1
-Received: by mail-wm1-f71.google.com with SMTP id u126-20020a1c60840000b029013f6df1cd5bso2703825wmb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 00:19:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=K+VHnoXmzL0V36eoMMI4uRNuUvcDK3sLNlx3DJAoh68=;
-        b=bSGQNvM5TJCoyUs61xsySlg/ot9sbgmTQ4p8z3SRgyAnfjdvAs4sWXbo61/6x3fJRU
-         wvV7l8ignoT18HwckE6qyd271uF5NZsCLWEF4blRxj24Y5ZWa4tIbHieUkgS1Jw3m9Se
-         F0OWQ6W71P4zJkXDr/b9kpxUblj7Y4ujMLqnEoY9i5/QPowCnuCa4DzlkrShjvevSBuc
-         oLSTN15UpwS9T2fuvr//dQTSRZzuP6THrdFfU1ADkGzIUOWDHcs95OkcGVqk/yfHQzJz
-         myDOb5azVHrp/C0aqyMwe4tN8jhHj+lEXpXyVWYpBXhHX+0iE6ao5hS1mVkMOoL17IGb
-         qeIw==
-X-Gm-Message-State: AOAM533t7kxfjG01xGf9NraiAcU4EJxdal6GSweBb1jbG5I6AzzO3grb
-        fp8YiFsL0I2zdM99AIcsX8OgV9GM4Gn0+ZoWIzdKES9Gb3sKHd7UhZimjVx3mTUwUOd20/GYs6h
-        5Wus4Kv2vkGNN1lNxeu0/37gx
-X-Received: by 2002:a1c:4cc:: with SMTP id 195mr3078062wme.175.1620803982214;
-        Wed, 12 May 2021 00:19:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxY/o0g2hhuZvqaLWNsiHYVNGcmjq+++Iud184YRTrOS4kfvVHYDQbthz0S+m81ofMn6KIPyw==
-X-Received: by 2002:a1c:4cc:: with SMTP id 195mr3078050wme.175.1620803982073;
-        Wed, 12 May 2021 00:19:42 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id b7sm29710099wri.83.2021.05.12.00.19.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 00:19:41 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH 5/7] KVM: nVMX: Reset eVMCS clean fields data from
- prepare_vmcs02()
-In-Reply-To: <YJqxmJg0HajlfDa/@google.com>
-References: <20210511111956.1555830-1-vkuznets@redhat.com>
- <20210511111956.1555830-6-vkuznets@redhat.com>
- <YJqxmJg0HajlfDa/@google.com>
-Date:   Wed, 12 May 2021 09:19:40 +0200
-Message-ID: <87bl9gwh9v.fsf@vitty.brq.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S230190AbhELHV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 03:21:29 -0400
+Received: from mail.thorsis.com ([92.198.35.195]:60660 "EHLO mail.thorsis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230166AbhELHV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 03:21:27 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.thorsis.com (Postfix) with ESMTP id 15FABF6A;
+        Wed, 12 May 2021 09:20:17 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
+Received: from mail.thorsis.com ([127.0.0.1])
+        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id AYe52KTAIS14; Wed, 12 May 2021 09:20:17 +0200 (CEST)
+Received: by mail.thorsis.com (Postfix, from userid 109)
+        id E8D32119D; Wed, 12 May 2021 09:20:16 +0200 (CEST)
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
+        NO_RELAYS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.2
+X-Spam-Report: * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0000]
+        *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
+        *      blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [URIs: microchip.com]
+        * -0.0 NO_RELAYS Informational: message was not relayed via SMTP
+        * -0.0 NO_RECEIVED Informational: message has no Received headers
+Date:   Wed, 12 May 2021 09:19:54 +0200
+From:   Alexander Dahl <ada@thorsis.com>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-usb@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Al Cooper <alcooperx@gmail.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v10 0/5] USB: misc: Add onboard_usb_hub driver
+Message-ID: <YJuBmlPSaJlyVuzW@ada-deb-carambola.ifak-system.com>
+Mail-Followup-To: Matthias Kaehlcke <mka@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>, devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>, linux-usb@vger.kernel.org,
+        Peter Chen <peter.chen@kernel.org>, linux-kernel@vger.kernel.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bastien Nocera <hadess@hadess.net>, Al Cooper <alcooperx@gmail.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org
+References: <20210511225223.550762-1-mka@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511225223.550762-1-mka@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+Hello Matthias,
 
-> On Tue, May 11, 2021, Vitaly Kuznetsov wrote:
->> When nested state migration happens during L1's execution, it
->> is incorrect to modify eVMCS as it is L1 who 'owns' it at the moment.
->> At lease genuine Hyper-v seems to not be very happy when 'clean fields'
->> data changes underneath it.
->> 
->> 'Clean fields' data is used in KVM twice: by copy_enlightened_to_vmcs12()
->> and prepare_vmcs02_rare() so we can reset it from prepare_vmcs02() instead.
->> 
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> ---
->>  arch/x86/kvm/vmx/nested.c | 9 ++++++---
->>  1 file changed, 6 insertions(+), 3 deletions(-)
->> 
->> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
->> index 3257a2291693..1661e2e19560 100644
->> --- a/arch/x86/kvm/vmx/nested.c
->> +++ b/arch/x86/kvm/vmx/nested.c
->> @@ -2090,9 +2090,6 @@ void nested_sync_vmcs12_to_shadow(struct kvm_vcpu *vcpu)
->>  
->>  	if (vmx->nested.hv_evmcs) {
->>  		copy_vmcs12_to_enlightened(vmx);
->> -		/* All fields are clean */
->> -		vmx->nested.hv_evmcs->hv_clean_fields |=
->> -			HV_VMX_ENLIGHTENED_CLEAN_FIELD_ALL;
->>  	} else {
->>  		copy_vmcs12_to_shadow(vmx);
->>  	}
->
-> Looks like this makes both paths single lines, i.e. the curly braces can be
-> dropped.
->
+just a curious informal question, see below.
 
-Yea, I've noticed that but I wasn't exactly sure the benefit of removing
-one line here overwhelms the pain of needing an extra step while doing
-code archeology with 'git blame' :-) Will drop on v2.
+Am Tue, May 11, 2021 at 03:52:18PM -0700 schrieb Matthias Kaehlcke:
+> This series adds:
+> - the onboard_usb_hub_driver
+> - glue in the xhci-plat driver to create the onboard_usb_hub
+>   platform device if needed
+> - a device tree binding for the Realtek RTS5411 USB hub controller
+> - device tree changes that add RTS5411 entries for the QCA SC7180
+>   based boards trogdor and lazor
+> - a couple of stubs for platform device functions to avoid
+>   unresolved symbols with certain kernel configs
+> 
+> The main issue the driver addresses is that a USB hub needs to be
+> powered before it can be discovered. For discrete onboard hubs (an
+> example for such a hub is the Realtek RTS5411) this is often solved
+> by supplying the hub with an 'always-on' regulator, which is kind
+> of a hack. Some onboard hubs may require further initialization
+> steps, like changing the state of a GPIO or enabling a clock, which
+> requires even more hacks. This driver creates a platform device
+> representing the hub which performs the necessary initialization.
+> Currently it only supports switching on a single regulator, support
+> for multiple regulators or other actions can be added as needed.
+> Different initialization sequences can be supported based on the
+> compatible string.
 
->> @@ -2636,6 +2633,12 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
->>  
->>  	kvm_rsp_write(vcpu, vmcs12->guest_rsp);
->>  	kvm_rip_write(vcpu, vmcs12->guest_rip);
->> +
->> +	/* Mark all fields as clean so L1 hypervisor can set what's dirty */
->> +	if (hv_evmcs)
->> +		vmx->nested.hv_evmcs->hv_clean_fields |=
->> +			HV_VMX_ENLIGHTENED_CLEAN_FIELD_ALL;
->> +
->>  	return 0;
->>  }
->>  
->> -- 
->> 2.30.2
->> 
->
+This sounds like it would be useful for other hub controllers as well?
+For example, would the Microchip USB3503 (former SMSC,
+drivers/usb/misc/usb3503.c, [1]) fall into this category? That chip is
+used on the "Cubietech Cubietruck Plus" for example.
 
--- 
-Vitaly
+> Besides performing the initialization the driver can be configured
+> to power the hub off during system suspend. This can help to extend
+> battery life on battery powered devices which have no requirements
+> to keep the hub powered during suspend. The driver can also be
+> configured to leave the hub powered when a wakeup capable USB device
+> is connected when suspending, and power it off otherwise.
 
+Sounds interesting.
+
+Greets
+Alex
+
+[1] https://www.microchip.com/wwwproducts/en/USB3503
+
+> Changes in v10:
+> - always use of_is_onboard_usb_hub() stub unless ONBOARD_USB_HUB=y/m
+> - keep 'regulator-boot-on' property for pp3300_hub
+> 
+> Changes in v9:
+> - added dependency on ONBOARD_USB_HUB (or !!ONBOARD_USB_HUB) to
+>   USB_PLATFORM_XHCI
+> 
+> Changes in v7:
+> - updated DT binding
+> - series rebased on qcom/arm64-for-5.13
+> 
+> Changes in v6:
+> - updated summary
+> 
+> Changes in v5:
+> - cover letter added
+> 
+> Matthias Kaehlcke (5):
+>   dt-bindings: usb: Add binding for Realtek RTS5411 hub controller
+>   USB: misc: Add onboard_usb_hub driver
+>   of/platform: Add stubs for of_platform_device_create/destroy()
+>   usb: host: xhci-plat: Create platform device for onboard hubs in
+>     probe()
+>   arm64: dts: qcom: sc7180-trogdor: Add nodes for onboard USB hub
+> 
+>  .../sysfs-bus-platform-onboard-usb-hub        |   8 +
+>  .../bindings/usb/realtek,rts5411.yaml         |  62 +++
+>  MAINTAINERS                                   |   7 +
+>  .../boot/dts/qcom/sc7180-trogdor-lazor-r0.dts |  19 +-
+>  .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts |  11 +-
+>  .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts |  19 +-
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  |  19 +-
+>  drivers/usb/host/Kconfig                      |   1 +
+>  drivers/usb/host/xhci-plat.c                  |  16 +
+>  drivers/usb/misc/Kconfig                      |  17 +
+>  drivers/usb/misc/Makefile                     |   1 +
+>  drivers/usb/misc/onboard_usb_hub.c            | 415 ++++++++++++++++++
+>  include/linux/of_platform.h                   |  22 +-
+>  include/linux/usb/hcd.h                       |   2 +
+>  include/linux/usb/onboard_hub.h               |  15 +
+>  15 files changed, 600 insertions(+), 34 deletions(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-platform-onboard-usb-hub
+>  create mode 100644 Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
+>  create mode 100644 drivers/usb/misc/onboard_usb_hub.c
+>  create mode 100644 include/linux/usb/onboard_hub.h
+> 
+> -- 
+> 2.31.1.607.g51e8a6a459-goog
+> 
