@@ -2,180 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A3937B365
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EAD137B366
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhELBWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 21:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhELBWN (ORCPT
+        id S230070AbhELBWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 21:22:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34483 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229848AbhELBWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 21:22:13 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FFFC061574;
-        Tue, 11 May 2021 18:21:06 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id a11so20066008ioo.0;
-        Tue, 11 May 2021 18:21:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=xHB79h3azR5FeMjEmcCPhDImC0Y4yGYd2UePCCok+Yk=;
-        b=hs/+cVBOSW7PlZMHmRTOYtJtIVu2rlvGv3R47l+DA3AbIoaiucWINPHfjHAAyjym9u
-         BjGpDfu/6UyTVd4e1XzviXRMJVcb0nyCdoXsFMm+TEM6nbcqUM5kiwD7JVWUsx9MctsO
-         dDY3fLp/owMmpcsocQ77AdmL5cD4Ea83Eu8b3Mv7Qn29ponki2kJBTkCKvKG/Mc2AiYQ
-         Jw982PkGrYGyRK6vApFSPbsuDYkkuTolnOQ3Ie2hBjgXkGozPwZhnpj4Z2Duo/Ak4xpB
-         LwaqBvzybfjCup79ycD/p2J1kZrZUpuoH0V6jm7F4aflxMCQke49ech3V0OMnbg456Bc
-         BCQQ==
+        Tue, 11 May 2021 21:22:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620782505;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WQBTeUOnJxVvQe5cf+H0ezJO8F9KLJswaFRFl5Rl3ks=;
+        b=Vv7aQf6xuFrd1yhWsTsgrpImiOmL9LnuIYA+0PTU5KybmWs50pgiiOcz+EgG9XJG2BAYwM
+        I2ENqEfoRaJFvJegaoSigjgktk1bpBrX3hwY4FxITNI28b15IA5aHNmlGXz/CNRZAf03wo
+        nvqX7Q6jJBFNjMvYj0OS3JqS6Vmirnk=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-378-ORK0akqUMDWX0x-8AyKt9Q-1; Tue, 11 May 2021 21:21:42 -0400
+X-MC-Unique: ORK0akqUMDWX0x-8AyKt9Q-1
+Received: by mail-pg1-f198.google.com with SMTP id k9-20020a63d1090000b029021091ebb84cso12701321pgg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 18:21:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=xHB79h3azR5FeMjEmcCPhDImC0Y4yGYd2UePCCok+Yk=;
-        b=s2YfHIqYpFaPDIpxSxtdQqb8ILVVEVXYKjdWP4AeutEQROpX830B22K4lxfpLZdO4O
-         4Ne0cWpmMF7nYcbh64lcl6mGSrVxwtmM1TfZaFCFB3VlTmrU0uV5qM1UTDF6r/Vkwmis
-         Vbd0AGr3TGrW+/FAlL6GDfWyKdRCD906prKQDpwQNr+tAwNL66Nfc/ck+CzuModj5bUe
-         esavTKg2x9hS3f1G7wLFwFP92m17u0oqdV+uQ1D9gIBZ813YVSEFJp0SPDYdxhJbOST3
-         0LCp+2X18P5WocFh9Acd2Gb1ZfaWBxwu8WraMAA6J4etb2GsjWmLkIft77bW8YB+SP6s
-         /EzQ==
-X-Gm-Message-State: AOAM533ThI/pYjHXnwTffYTI6/u3HEN2vz8v6oT+ulg/vybX9YHKGNuq
-        7W1t9RUbBBev5c5+nvM0Np3kx3vtGAzPGGSNcCw=
-X-Google-Smtp-Source: ABdhPJxlHtrpYE70KZn4ngNfhszJFq6xOhz4O+aQO+XlpdIGNgIvqx4Xqm3oplcbM9d5K88ia2JaumE452mFYHvZHLE=
-X-Received: by 2002:a02:970c:: with SMTP id x12mr2948729jai.21.1620782466199;
- Tue, 11 May 2021 18:21:06 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=WQBTeUOnJxVvQe5cf+H0ezJO8F9KLJswaFRFl5Rl3ks=;
+        b=Q6vs6A78Y+fbuU3ttPaFvBX3pEO5kbChcvx4rPzhYR8b5IsWnTOf6lQ16x9rCJQ91H
+         X5yS4D35Vzw/ccceaW8jQHyoc38lbKNl5z81SOdb4nzIDJ/Xq6dqlbARU2T6jv3B6KH7
+         YxAhkpIN4LT5U0yrDXpuGVflLhCUjelSkv/gOoYM/XVDN9XUBSLFt4ksWLEaCn55ge/7
+         HUAtmpLuuXX73pQ7RXaG443bjKl3RD2JIkhqWIqj454w/z/UZUUSPa5rzAsrblzK8ku7
+         h4eSco9G6Kyp64JlmNuLESsBxVFhwhPpavIR6AWr5yKjBVYZobWshAw86EwfjGWC8J/i
+         boSw==
+X-Gm-Message-State: AOAM530LvsYsL3MDnh8gbOWzdeBOB02G5P0q8oXOptrGOGZDsz3cO/Mn
+        NsN16rv+455j4oh1UB0or9AUC0qKfRm5VMwZcI+zmM564n8BbXTbLSMPT7RJnuFg7AzpozHzZcD
+        VvfbhiKD5f9hNN4kpHrHeGHIe
+X-Received: by 2002:a65:62d7:: with SMTP id m23mr33812946pgv.244.1620782501822;
+        Tue, 11 May 2021 18:21:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzjIxWtZRQoYRS6HSFMlqpYwjeopoTbiSUnpPPoiu9LAwL9NQs+qfYYo/83LXGoLG2nOAsGDQ==
+X-Received: by 2002:a65:62d7:: with SMTP id m23mr33812932pgv.244.1620782501503;
+        Tue, 11 May 2021 18:21:41 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id gm17sm14533127pjb.11.2021.05.11.18.21.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 18:21:40 -0700 (PDT)
+Subject: Re: [PATCH 1/4] virtio-net: add definitions for host USO feature
+To:     Yuri Benditovich <yuri.benditovich@daynix.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        Yan Vugenfirer <yan@daynix.com>
+References: <20210511044253.469034-1-yuri.benditovich@daynix.com>
+ <20210511044253.469034-2-yuri.benditovich@daynix.com>
+ <40938c20-5851-089b-c3c0-074bbd636970@redhat.com>
+ <CAOEp5OdgYtP+W1thGsTGnvEPWrJ02s1HemskQpnMTUyYbsX4jQ@mail.gmail.com>
+ <CACGkMEuk3-iP+AxsvhT16t+5dXXtVMGoWPovM=Msm0kvo3LR2Q@mail.gmail.com>
+ <CAOEp5OfAEb4=C7GK_EJvJnoTTk-ebdg0RygShPwbn3O67ucQ2Q@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <b6ccd865-deec-47e1-df19-c10fd8ee107f@redhat.com>
+Date:   Wed, 12 May 2021 09:21:31 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210424021631.1972022-1-rajatja@google.com> <20210512010049.GA89346@rocinante.localdomain>
-In-Reply-To: <20210512010049.GA89346@rocinante.localdomain>
-Reply-To: rajatxjain@gmail.com
-From:   Rajat Jain <rajatxjain@gmail.com>
-Date:   Tue, 11 May 2021 18:20:55 -0700
-Message-ID: <CAA93t1ohAFM1U2xTvbd1J1dUCaZwh6GYNGib_AM0J7+qHwSf1A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] driver core: Move the "removable" attribute from
- USB to core
-To:     =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>
-Cc:     Rajat Jain <rajatja@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>, linux-usb@vger.kernel.org,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Dmitry Torokhov <dtor@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAOEp5OfAEb4=C7GK_EJvJnoTTk-ebdg0RygShPwbn3O67ucQ2Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
 
-Thanks a lot for your comments. Please see inline.
+在 2021/5/11 下午5:21, Yuri Benditovich 写道:
+> On Tue, May 11, 2021 at 11:24 AM Jason Wang <jasowang@redhat.com> wrote:
+>> On Tue, May 11, 2021 at 4:12 PM Yuri Benditovich
+>> <yuri.benditovich@daynix.com> wrote:
+>>> On Tue, May 11, 2021 at 9:47 AM Jason Wang <jasowang@redhat.com> wrote:
+>>>>
+>>>> 在 2021/5/11 下午12:42, Yuri Benditovich 写道:
+>>>>> Define feature bit and GSO type according to the VIRTIO
+>>>>> specification.
+>>>>>
+>>>>> Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
+>>>>> ---
+>>>>>    include/uapi/linux/virtio_net.h | 2 ++
+>>>>>    1 file changed, 2 insertions(+)
+>>>>>
+>>>>> diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
+>>>>> index 3f55a4215f11..a556ac735d7f 100644
+>>>>> --- a/include/uapi/linux/virtio_net.h
+>>>>> +++ b/include/uapi/linux/virtio_net.h
+>>>>> @@ -57,6 +57,7 @@
+>>>>>                                         * Steering */
+>>>>>    #define VIRTIO_NET_F_CTRL_MAC_ADDR 23       /* Set MAC address */
+>>>>>
+>>>>> +#define VIRTIO_NET_F_HOST_USO     56 /* Host can handle USO packets */
+>>> This is the virtio-net feature
+>> Right, I miss this part.
+>>
+>>>>>    #define VIRTIO_NET_F_HASH_REPORT  57        /* Supports hash report */
+>>>>>    #define VIRTIO_NET_F_RSS      60    /* Supports RSS RX steering */
+>>>>>    #define VIRTIO_NET_F_RSC_EXT          61    /* extended coalescing info */
+>>>>> @@ -130,6 +131,7 @@ struct virtio_net_hdr_v1 {
+>>>>>    #define VIRTIO_NET_HDR_GSO_TCPV4    1       /* GSO frame, IPv4 TCP (TSO) */
+>>>>>    #define VIRTIO_NET_HDR_GSO_UDP              3       /* GSO frame, IPv4 UDP (UFO) */
+>>>>>    #define VIRTIO_NET_HDR_GSO_TCPV6    4       /* GSO frame, IPv6 TCP */
+>>>>> +#define VIRTIO_NET_HDR_GSO_UDP_L4    5       /* GSO frame, IPv4 UDP (USO) */
+>>> This is respective GSO type
+>>>
+>>>>
+>>>> This is the gso_type not the feature actually.
+>>>>
+>>>> I wonder what's the reason for not
+>>>>
+>>>> 1) introducing a dedicated virtio-net feature bit for this
+>>>> (VIRTIO_NET_F_GUEST_GSO_UDP_L4.
+>>> This series is not for GUEST's feature, it is only for host feature.
+>>>
+>>>> 2) toggle the NETIF_F_GSO_UDP_L4  feature for tuntap based on the
+>>>> negotiated feature.
+>>> The NETIF_F_GSO_UDP_L4 would be required for the guest RX path.
+>>> The guest TX path does not require any flags to be propagated, it only
+>>> allows the guest to transmit large UDP packets and have them
+>>> automatically splitted.
+>>> (This is similar to HOST_UFO but does packet segmentation instead of
+>>> fragmentation. GUEST_UFO indeed requires a respective NETIF flag, as
+>>> it is unclear whether the guest is capable of receiving such packets).
+>> So I think it's better to implement TX/RX in the same series unless
+>> there's something missed:
+>>
+>> For Guest TX, NETIF_F_GSO_UDP_L4 needs to be enabled in the guest
+>> virtio-net only when VIRTIO_NET_F_HOST_USO is negotiated.
+> I understand that this is what should be done when this feature will
+> be added to Linux virtio-net driver.
+> But at the moment we do not have enough resources to work on it.
+> Currently we have a clear use case and ability to test in on Windows guest.
+> Respective QEMU changes are pending for kernel patches, current
+> reference is https://github.com/daynix/qemu/tree/uso
 
-On Tue, May 11, 2021 at 6:00 PM Krzysztof Wilczy=C5=84ski <kw@linux.com> wr=
-ote:
->
-> Hi Rajat,
->
-> I have few questions below, but to add in advance, I might be confusing
-> the role that "type->supports_removable" and "dev->removable" plays
-> here, and if so then I apologise.
->
-> [...]
-> > @@ -2504,8 +2523,16 @@ static int device_add_attrs(struct device *dev)
-> >                       goto err_remove_dev_online;
-> >       }
-> >
-> > +     if (type && type->supports_removable) {
-> > +             error =3D device_create_file(dev, &dev_attr_removable);
-> > +             if (error)
-> > +                     goto err_remove_dev_waiting_for_supplier;
-> > +     }
-> > +
-> >       return 0;
->
-> Would a check for "dev->removable =3D=3D DEVICE_REMOVABLE" here be more
-> appropriate?
->
-> Unless you wanted to add sysfs objects when the device hints that it has
-> a notion of being removable even though it might be set to "unknown" or
-> "fixed" (if that state is at all possible then), and in which case using
-> the dev_is_removable() helper would also not be an option since it does
-> a more complex check internally.
->
-> Technically, you could always add this sysfs object (similarly to what
-> USB core did) as it would then show the correct state depending on
-> "dev->removable".
->
-> Also, I suppose, it's not possible for a device to have
-> "supports_removable" set to true, but "removable" would be different
-> than "DEVICE_REMOVABLE", correct?
 
-No, that is not true.
+This looks fine but as replied in another thread.
 
-device_type->supports_removable=3D1 indicates that the bus / subsystem
-is capable of differentiating between removable and fixed devices.
-It's essentially describing a capability of the bus / subsystem. This
-flag needs to be true for a subsystem for any it's devices'
-dev->removable field to be considered meaningful.
+We can test both TX and RX with Linux guests simply:
 
-OTOH, the dev->removable =3D> indicates the location of the device IF
-device_type->supports location is true. Yes, it can be fixed /
-removable / unknown (whatever the bus decides) if the
-device_type->supports_location is true.
+We can just use 2 VMs, and let one VM send GSO_UDP_L4 packet to another, 
+then both tx and rx in both guest (virtio-net) and host (virtio-net) are 
+tested?
 
-One of my primary considerations was also that the existing UAPI for
-the USB's "removable" attribute shouldn't be changed. Currently, it
-exists for all USB devices, so I think the current code / check is OK.
-
->
-> [...]
-> > +enum device_removable {
-> > +     DEVICE_REMOVABLE_UNKNOWN =3D 0,
-> > +     DEVICE_REMOVABLE,
-> > +     DEVICE_FIXED,
-> > +};
->
-> I know this was moved from the USB core, but I personally find it
-> a little bit awkward to read, would something like that be acceptable?
->
-> enum device_removable {
->         DEVICE_STATE_UNKNOWN =3D 0,
->         DEVICE_STATE_REMOVABLE,
->         DEVICE_STATE_FIXED,
-> };
->
-> The addition of state to the name follows the removable_show() function
-> where the local variable is called "state", and I think it makes sense
-> to call this as such.  What do you think?
-
-I think I made a mistake by using the "state" as the local variable
-there. I will change it to "location". I'm happy to change the enums
-above to DEVICE_LOCATION_REMOVABLE* etc if there is a wider consensus
-on this. IMHO, the current shorter one also looks OK.
-
->
-> > +static inline bool dev_is_removable(struct device *dev)
-> > +{
-> > +     return dev && dev->type && dev->type->supports_removable
-> > +         && dev->removable =3D=3D DEVICE_REMOVABLE;
-> > +}
->
-> Similarly to my question about - would a simple check to see if
-> "dev->removable" is set to "DEVICE_REMOVABLE" here be enough?
-
-No, as I mentioned above, the dev->removable field should be
-considered meaningful only if device_type->supports_location is true.
-So the check for supports_removable is needed here.
-
-Please feel free to send me more thoughts.
-
-Thanks & Best Regards,
-
-Rajat
+Thanks
 
 
 >
-> Krzysztof
+>> For guest RX, NETIF_F_GSO_UDP_L4 needs to be enabled on the host
+>> tuntap only when VIRTIO_NET_F_GUEST_USO is neogiated.
+> Currently we are not able to use guest RX UDP GSO.
+> In order to do that we at least should be able to build our Windows
+> drivers with the most updated driver development kit (2004+).
+> At the moment we can't, this task is in a plan but can take several
+> months. So we do not have a test/use case with Windows VM.
+>
+>
+>> Thanks
+>>
+>>>> Thanks
+>>>>
+>>>>
+>>>>>    #define VIRTIO_NET_HDR_GSO_ECN              0x80    /* TCP has ECN set */
+>>>>>        __u8 gso_type;
+>>>>>        __virtio16 hdr_len;     /* Ethernet + IP + tcp/udp hdrs */
+
