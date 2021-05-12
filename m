@@ -2,211 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0A237CBA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5EE437C7F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243317AbhELQhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:37:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236669AbhELPpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:45:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34C28619AA;
-        Wed, 12 May 2021 15:23:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620833006;
-        bh=W3bwydBl5k+p1eKw9jpSFsVTU7bgK/zUQurr2RLzWFA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iYxXtCR6Ipf8wsmRAXrP2t+AQL0aax703CcTxmBBLKBjTFlRsFyK9hN1xCvPWelYR
-         xG0uzbsulDtKzwCz79o9P4/8dc9Jbmk6J3DTDCtH3LlVnzQ7esHpscl+rwek2co7wR
-         0wQbwMiBK+uIJaKZXLxyFfR8PUpHdfEvU096hERo=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 510/530] net: bridge: mcast: fix broken length + header check for MRDv6 Adv.
-Date:   Wed, 12 May 2021 16:50:20 +0200
-Message-Id: <20210512144836.522955248@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
-References: <20210512144819.664462530@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S236407AbhELQD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:03:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235540AbhELP21 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:28:27 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110DAC0611CC
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:11:10 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id h4so23971106wrt.12
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:11:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=W4XgYJ8+mVcGs+SfB2znlX/BtQuwWvv6RmitvV0I9Us=;
+        b=ill6EvDGlsrM18q3cJsbpVTXryJwQRW6hgBDs2vy9rngryYawBom2xFCOKD3fOamO2
+         AyxmpxqNCBLPiEZWmtd+bZKDW2qr2z9FVA7peUW4SrLuvRM4xga0GXaTp9hAIzbSzOnX
+         spX6mEbGactsUGVCCX35iL08puJpeHAW3cVGBAhz/qQ3YWk7mDIMKM6tqgF04i5mXEeR
+         lS4Nca9zlQ05j+jQ39eokkiGUxIni4r8DdgvzgICUGC1dZJSlDV1xQiYMeN0aRFKJ+dy
+         8Bs6rQJJhpSaCb+qvToXn9NG6g/icdLH5zqFFIO1YHYHQlD1CDVELW1hAQDAMS386Lag
+         Wlcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=W4XgYJ8+mVcGs+SfB2znlX/BtQuwWvv6RmitvV0I9Us=;
+        b=o+A0LwT86Q4kf4kioy7SMjerX9hImq8zl8NauUpkXOIXaswiDFP7o5KozBc3sZK5Dp
+         3NofEnPSrBg4CMmShpD0LWnIzH8C7vJEuPGkY8MLGv8Z0+2c35jOvOXKJ/BhwIqzPoyx
+         tQCVqUUA3PvqWItMlWvq3RQOtph2gjQ9dvIvtCGQFrcdJoepTDXQcUK9+OhqocDLSqQy
+         ZyIn+Bdc2+bitBO8uqFo30aIsmdcXgj7+2XTYMq/QI1lQHoelxd2MjJhmy0jhWAmQbXW
+         gO73k3u1Zjjb9SzG7hKCPVqmTknlKyUZymG9WqCkH7obvTdJITUvDixSJkerRl/5rb6D
+         wTQg==
+X-Gm-Message-State: AOAM532ugSMzJkge8ozpXBc2LygCCrZ9VImTFzDSkIJXW1GUvKIlLqAk
+        Pa1t51JE1aYWuF8jDgnbG5j/z0EjYF4iJg==
+X-Google-Smtp-Source: ABdhPJwohaeGeQcb6BDOkXEhXQQTdwLBIcHRW6ytEUym4yqXARME4CLJyos9DGAAn7I3yqDtZnlyXw==
+X-Received: by 2002:adf:9c8e:: with SMTP id d14mr46741550wre.140.1620832269287;
+        Wed, 12 May 2021 08:11:09 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:1412:ffb:31a1:6c9d? ([2a01:e34:ed2f:f020:1412:ffb:31a1:6c9d])
+        by smtp.googlemail.com with ESMTPSA id q12sm31540104wrx.17.2021.05.12.08.11.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 May 2021 08:11:08 -0700 (PDT)
+Subject: Re: [linux-nfc] [PATCH 1/2] MAINTAINERS: nfc: add Krzysztof Kozlowski
+ as maintainer
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     linux-nfc@lists.01.org
+References: <20210512144319.30852-1-krzysztof.kozlowski@canonical.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <961dc9c5-0eb0-586c-5e70-b21ca2f8e6f3@linaro.org>
+Date:   Wed, 12 May 2021 17:11:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20210512144319.30852-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Lüssing <linus.luessing@c0d3.blue>
+On 12/05/2021 16:43, Krzysztof Kozlowski wrote:
+> The NFC subsystem is orphaned.  I am happy to spend some cycles to
+> review the patches, send pull requests and in general keep the NFC
+> subsystem running.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> 
+> ---
+> 
+> I admit I don't have big experience in NFC part but this will be nice
+> opportunity to learn something new. 
 
-[ Upstream commit 99014088156cd78867d19514a0bc771c4b86b93b ]
+NFC has been lost in the limbos since a while. Good to see someone
+volunteering to take care of it.
 
-The IPv6 Multicast Router Advertisements parsing has the following two
-issues:
+May I suggest to create a simple nfc reading program in the 'tools'
+directory (could be a training exercise ;)
 
-For one thing, ICMPv6 MRD Advertisements are smaller than ICMPv6 MLD
-messages (ICMPv6 MRD Adv.: 8 bytes vs. ICMPv6 MLDv1/2: >= 24 bytes,
-assuming MLDv2 Reports with at least one multicast address entry).
-When ipv6_mc_check_mld_msg() tries to parse an Multicast Router
-Advertisement its MLD length check will fail - and it will wrongly
-return -EINVAL, even if we have a valid MRD Advertisement. With the
-returned -EINVAL the bridge code will assume a broken packet and will
-wrongly discard it, potentially leading to multicast packet loss towards
-multicast routers.
 
-The second issue is the MRD header parsing in
-br_ip6_multicast_mrd_rcv(): It wrongly checks for an ICMPv6 header
-immediately after the IPv6 header (IPv6 next header type). However
-according to RFC4286, section 2 all MRD messages contain a Router Alert
-option (just like MLD). So instead there is an IPv6 Hop-by-Hop option
-for the Router Alert between the IPv6 and ICMPv6 header, again leading
-to the bridge wrongly discarding Multicast Router Advertisements.
+> I am already maintainer of few
+> other parts: memory controller drivers, Samsung ARM/ARM64 SoC and some
+> drviers.  I have a kernel.org account and my GPG key is:
+> https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git/tree/keys/1B93437D3B41629B.asc
+> 
+> Best regards,
+> Krzysztof
+> ---
+>  MAINTAINERS | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index cc81667e8bab..adc6cbe29f78 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -12899,8 +12899,9 @@ F:	include/uapi/linux/nexthop.h
+>  F:	net/ipv4/nexthop.c
+>  
+>  NFC SUBSYSTEM
+> +M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>  L:	netdev@vger.kernel.org
+> -S:	Orphan
+> +S:	Maintained
+>  F:	Documentation/devicetree/bindings/net/nfc/
+>  F:	drivers/nfc/
+>  F:	include/linux/platform_data/nfcmrvl.h
 
-To fix these two issues, introduce a new return value -ENODATA to
-ipv6_mc_check_mld() to indicate a valid ICMPv6 packet with a hop-by-hop
-option which is not an MLD but potentially an MRD packet. This also
-simplifies further parsing in the bridge code, as ipv6_mc_check_mld()
-already fully checks the ICMPv6 header and hop-by-hop option.
 
-These issues were found and fixed with the help of the mrdisc tool
-(https://github.com/troglobit/mrdisc).
 
-Fixes: 4b3087c7e37f ("bridge: Snoop Multicast Router Advertisements")
-Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- include/net/addrconf.h    |  1 -
- net/bridge/br_multicast.c | 33 ++++++++-------------------------
- net/ipv6/mcast_snoop.c    | 12 +++++++-----
- 3 files changed, 15 insertions(+), 31 deletions(-)
 
-diff --git a/include/net/addrconf.h b/include/net/addrconf.h
-index 18f783dcd55f..78ea3e332688 100644
---- a/include/net/addrconf.h
-+++ b/include/net/addrconf.h
-@@ -233,7 +233,6 @@ void ipv6_mc_unmap(struct inet6_dev *idev);
- void ipv6_mc_remap(struct inet6_dev *idev);
- void ipv6_mc_init_dev(struct inet6_dev *idev);
- void ipv6_mc_destroy_dev(struct inet6_dev *idev);
--int ipv6_mc_check_icmpv6(struct sk_buff *skb);
- int ipv6_mc_check_mld(struct sk_buff *skb);
- void addrconf_dad_failure(struct sk_buff *skb, struct inet6_ifaddr *ifp);
- 
-diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
-index 54cb82a69056..5015ece7adf7 100644
---- a/net/bridge/br_multicast.c
-+++ b/net/bridge/br_multicast.c
-@@ -3070,25 +3070,14 @@ static int br_multicast_ipv4_rcv(struct net_bridge *br,
- }
- 
- #if IS_ENABLED(CONFIG_IPV6)
--static int br_ip6_multicast_mrd_rcv(struct net_bridge *br,
--				    struct net_bridge_port *port,
--				    struct sk_buff *skb)
-+static void br_ip6_multicast_mrd_rcv(struct net_bridge *br,
-+				     struct net_bridge_port *port,
-+				     struct sk_buff *skb)
- {
--	int ret;
--
--	if (ipv6_hdr(skb)->nexthdr != IPPROTO_ICMPV6)
--		return -ENOMSG;
--
--	ret = ipv6_mc_check_icmpv6(skb);
--	if (ret < 0)
--		return ret;
--
- 	if (icmp6_hdr(skb)->icmp6_type != ICMPV6_MRDISC_ADV)
--		return -ENOMSG;
-+		return;
- 
- 	br_multicast_mark_router(br, port);
--
--	return 0;
- }
- 
- static int br_multicast_ipv6_rcv(struct net_bridge *br,
-@@ -3102,18 +3091,12 @@ static int br_multicast_ipv6_rcv(struct net_bridge *br,
- 
- 	err = ipv6_mc_check_mld(skb);
- 
--	if (err == -ENOMSG) {
-+	if (err == -ENOMSG || err == -ENODATA) {
- 		if (!ipv6_addr_is_ll_all_nodes(&ipv6_hdr(skb)->daddr))
- 			BR_INPUT_SKB_CB(skb)->mrouters_only = 1;
--
--		if (ipv6_addr_is_all_snoopers(&ipv6_hdr(skb)->daddr)) {
--			err = br_ip6_multicast_mrd_rcv(br, port, skb);
--
--			if (err < 0 && err != -ENOMSG) {
--				br_multicast_err_count(br, port, skb->protocol);
--				return err;
--			}
--		}
-+		if (err == -ENODATA &&
-+		    ipv6_addr_is_all_snoopers(&ipv6_hdr(skb)->daddr))
-+			br_ip6_multicast_mrd_rcv(br, port, skb);
- 
- 		return 0;
- 	} else if (err < 0) {
-diff --git a/net/ipv6/mcast_snoop.c b/net/ipv6/mcast_snoop.c
-index d3d6b6a66e5f..04d5fcdfa6e0 100644
---- a/net/ipv6/mcast_snoop.c
-+++ b/net/ipv6/mcast_snoop.c
-@@ -109,7 +109,7 @@ static int ipv6_mc_check_mld_msg(struct sk_buff *skb)
- 	struct mld_msg *mld;
- 
- 	if (!ipv6_mc_may_pull(skb, len))
--		return -EINVAL;
-+		return -ENODATA;
- 
- 	mld = (struct mld_msg *)skb_transport_header(skb);
- 
-@@ -122,7 +122,7 @@ static int ipv6_mc_check_mld_msg(struct sk_buff *skb)
- 	case ICMPV6_MGM_QUERY:
- 		return ipv6_mc_check_mld_query(skb);
- 	default:
--		return -ENOMSG;
-+		return -ENODATA;
- 	}
- }
- 
-@@ -131,7 +131,7 @@ static inline __sum16 ipv6_mc_validate_checksum(struct sk_buff *skb)
- 	return skb_checksum_validate(skb, IPPROTO_ICMPV6, ip6_compute_pseudo);
- }
- 
--int ipv6_mc_check_icmpv6(struct sk_buff *skb)
-+static int ipv6_mc_check_icmpv6(struct sk_buff *skb)
- {
- 	unsigned int len = skb_transport_offset(skb) + sizeof(struct icmp6hdr);
- 	unsigned int transport_len = ipv6_transport_len(skb);
-@@ -150,7 +150,6 @@ int ipv6_mc_check_icmpv6(struct sk_buff *skb)
- 
- 	return 0;
- }
--EXPORT_SYMBOL(ipv6_mc_check_icmpv6);
- 
- /**
-  * ipv6_mc_check_mld - checks whether this is a sane MLD packet
-@@ -161,7 +160,10 @@ EXPORT_SYMBOL(ipv6_mc_check_icmpv6);
-  *
-  * -EINVAL: A broken packet was detected, i.e. it violates some internet
-  *  standard
-- * -ENOMSG: IP header validation succeeded but it is not an MLD packet.
-+ * -ENOMSG: IP header validation succeeded but it is not an ICMPv6 packet
-+ *  with a hop-by-hop option.
-+ * -ENODATA: IP+ICMPv6 header with hop-by-hop option validation succeeded
-+ *  but it is not an MLD packet.
-  * -ENOMEM: A memory allocation failure happened.
-  *
-  * Caller needs to set the skb network header and free any returned skb if it
 -- 
-2.30.2
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-
-
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
