@@ -2,81 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FA537BE2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6298137BE30
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhELNZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 09:25:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbhELNZZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 09:25:25 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F734C061760;
-        Wed, 12 May 2021 06:24:15 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id i9so27148277lfe.13;
-        Wed, 12 May 2021 06:24:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FNt+NOcWM8X1QJ7llYMoCnrfDlcGrj2tEmZi8pUq7O8=;
-        b=qOWvRvG7tzgimbdfyTHQ7s8eJVvPGW7eBJMyIZ2evsp1iXImlG/8vtJfM53xv/cm4W
-         UlRZbYkQnMWZHJx0+mxlQR43MIK+DaaJYHnUH0+3sZu1KMjg88ipdKn/maaJAt9e2aZB
-         put/LJunWg1p9PS9HCLQYJFPrT6xIojlyc2UV+Bcx3TT0JyhdG07K58MjdkFoEJUE1JL
-         m6ewPsZN4Z00WjRyLBrJhBaugQfsgdcoXLLyzyMH57tTWbERketJlQRXtuTIY5QCXqu/
-         lgqTpYTXBigYquhBLNt+L/NWXGXlutO3n+dpZ6XvQ1/X3jd4FzQxfgHCv7rNgzmbWcNV
-         RmmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FNt+NOcWM8X1QJ7llYMoCnrfDlcGrj2tEmZi8pUq7O8=;
-        b=ftOyKMsfSeMCVKxEA+1vJvY9TXdY51ezVbOFA6t5+ttYLmdBEFykFk3o9/OeNyRcdW
-         54orqh4nO+OAp0GEGMZgxEts1YOcVD8ZqR8Yq8LSxuf2KzwOUJHDzJnEAEEECbd6REKq
-         F8r9oxstZXwKT1vWeNnzWEl8Y+HrQMeneNCVin4TnuydePJfD5BGw5my60jRVTkVPk0I
-         83eVZIM+iw4yz0DaSVurDJl7yevtJmg0Zh16byl9kFep3RyasfHQS7muQvKb4u6v7Qx9
-         chTN7hKqNkruUDimDAJL7jefAYgHi2J9lTscd2zivFILzvWijnNZi42SonuD6StVZV9Y
-         WW6Q==
-X-Gm-Message-State: AOAM533YXwmr7eRL2hy/skzS4HI+Xlxwrakl3/k1EE1moQ24MqlNy9KO
-        dkU0Oxivai/ZH3gSJ6bKlkZa5PVxTtDPFwS4+Ns=
-X-Google-Smtp-Source: ABdhPJzPH/WVZDS5OucEds1xF3JzYycwl3MbagkYpZIqK8/hfDllSm5c2ngzuBI8JvgJM5di53AUtl/mY/I4aDjZq9Q=
-X-Received: by 2002:a19:c391:: with SMTP id t139mr26232562lff.295.1620825854210;
- Wed, 12 May 2021 06:24:14 -0700 (PDT)
+        id S231126AbhELNZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 09:25:36 -0400
+Received: from mga12.intel.com ([192.55.52.136]:12642 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230452AbhELNZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 09:25:34 -0400
+IronPort-SDR: Nu+QsXIE7qdmqG/fTUk6Cgwn7D0wNwqq6IHOISjz4ht5hWl6w8vqxqY4YiSofqgh4hl1aDl1k2
+ TRblAWEjDKrQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179295096"
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="179295096"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 06:24:19 -0700
+IronPort-SDR: g5AGXqEVqXD86+BSNrf0+aPS2nAh12n9UL131agrsM+8vWFTN8KzEJ8zRdtoSZicQoVVyN5LbM
+ B3JHV7Vr5/bg==
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="400105510"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.126.19]) ([10.209.126.19])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 06:24:18 -0700
+Subject: Re: [RFC v2 01/32] x86/paravirt: Introduce CONFIG_PARAVIRT_XL
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <4f8c9559dd04d8e8485c419c5ebc9471613f7928.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YIhKXcNuinL0ar0O@zn.tnic> <f62354fe-e202-ad38-5466-03e79954f757@suse.com>
+ <a24884ac-452e-751f-fb3e-82b3a9978ed1@linux.intel.com>
+ <41463493-48bb-0e69-dcb2-3072e2ddf208@suse.com>
+ <YJvVwXqGZWrXWPvP@hirez.programming.kicks-ass.net>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <f1ae9d97-a23e-d902-4ddb-6ec7b5d8cb91@linux.intel.com>
+Date:   Wed, 12 May 2021 06:24:17 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <1620813510-31079-1-git-send-email-michal.vokac@ysoft.com>
-In-Reply-To: <1620813510-31079-1-git-send-email-michal.vokac@ysoft.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 12 May 2021 10:24:03 -0300
-Message-ID: <CAOMZO5D-UxVbFZRfrHrv83R8Q=O4Rs1YkCzoF152ou=oU+=baQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND] ARM: dts: imx6dl-yapp4: Use aliases to set custom
- MMC device indexes
-To:     =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YJvVwXqGZWrXWPvP@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 6:58 AM Michal Vok=C3=A1=C4=8D <michal.vokac@ysoft.=
-com> wrote:
->
-> Until commit fa2d0aa96941 ("mmc: core: Allow setting slot index via
-> device tree alias") was introduced, our usdhc3 and usdhc4 devices
-> were enumerated as mmc0 and mmc1. The mmc1 device is used to boot/update
-> the board and its name must be fixed.
->
-> With the referenced commit, aliases from imx6qdl.dtsi took effect.
-> Override the aliases to get back the original device indexes.
->
-> Signed-off-by: Michal Vok=C3=A1=C4=8D <michal.vokac@ysoft.com>
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+On 5/12/2021 6:18 AM, Peter Zijlstra wrote:
+> On Mon, May 10, 2021 at 05:56:05PM +0200, Juergen Gross wrote:
+>
+>> No. We have PARAVIRT_XXL for Xen PV guests, and we have PARAVIRT for
+>> other hypervisor's guests, supporting basically the TLB flush operations
+>> and time related operations only. Adding the halt related operations to
+>> PARAVIRT wouldn't break anything.
+> Also, I don't think anything modern should actually ever hit any of the
+> HLT instructions, most everything should end up at an MWAIT.
+>
+> Still, do we wants to give arch_safe_halt() and halt() the
+> PVOP_ALT_VCALL0() treatment?
+
+ From performance reasons it's pointless to patch. HLT (and MWAIT) are 
+so slow anyways that using patching or an indirect pointer is completely 
+in the noise. So I would use whatever is cleanest in the code.
+
+-Andi
+
+
+
