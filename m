@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2880037BA81
+	by mail.lfdr.de (Postfix) with ESMTP id 7135B37BA82
 	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 12:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231280AbhELKab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 06:30:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50400 "EHLO
+        id S231196AbhELKaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 06:30:35 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50472 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbhELK3f (ORCPT
+        with ESMTP id S230377AbhELK3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 06:29:35 -0400
-Date:   Wed, 12 May 2021 10:28:26 -0000
+        Wed, 12 May 2021 06:29:36 -0400
+Date:   Wed, 12 May 2021 10:28:27 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1620815307;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -20,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zaLQFGoBLR+f9fxjgVrbgslGly5IPRQ5uCOOldB2Ho8=;
-        b=aKNpHJFAIok0/TNZ+xaC4US9OQFob+9IODO/QxHSI4/BodMCuafvPiDEfhgKABHgj8v7Mp
-        3Y0/7lX/8I5kW9Caai5N+2MbkoW6+uNJ2xVWlHe8Ssb4Ha97wR4up4avPOFzJHEOeeNXQG
-        Vq2J8jr5wK2IaSJ6CUEWGHN0NheZPIlNHp56iJ8iyYrgaMCH/pYXvj3AzM5PYXMj0ZeKDF
-        fu5+hhxJa9sz5Tcu2TS8XHTsOfhcwNvLmOxA1tPw165JLGwyW21kf5ExFpsi+CMrQyPYQh
-        L+ZOELtcoMEYuDVrVvcI+k9iUs9rcIzKpkWv1lbR80N4lXLjSYUTtISlkf4row==
+        bh=3E+sO8rFvr8nBjHvufSes3a7sxX4XuC/9fOdzZucTl8=;
+        b=wuuEzAl+HzhliehLrXWNuGfedDShq6usm1yN2Y1xZcUNg0gPohaBbE8RRiLm+d+J5Kk+DU
+        dcj14yehvg9r9coM7Gb5KVhNeE6kAaaQSquWxOuoNTAA2PmZSiDjLkMq+UmfHxhCI4WbVl
+        yiGC2lQ7d4B7Jh1LGBx2ZiLvYhJMH5PRTKq4PRWeI1++gQshz7CkvSEYXjwNEYkBcCxRUs
+        qIPVX92Gi+dce3ji6ZK6qukP3+iM2dk6iM8bT2A+knp2qU8wHmUeugSTCLPJFrMvVK+qqx
+        uMRaJ1OnUFj7eTI812KYEj9fS6SGTMLDAtoN2QA2IjVjWg6JwHFlmVVPH2mxLQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1620815307;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,23 +33,23 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zaLQFGoBLR+f9fxjgVrbgslGly5IPRQ5uCOOldB2Ho8=;
-        b=Lbfnx3dZWG/vnAUn3/Iuvi73gskGvyYoo+XVcoMKioJKePG6aP288iueWa/qCyXme7MoVS
-        HLqfw7YOLiaWUzBQ==
+        bh=3E+sO8rFvr8nBjHvufSes3a7sxX4XuC/9fOdzZucTl8=;
+        b=CZnQaSupONi2+FC7z2Oyu0DbFKlLD6mirmOGywaqWduYP+RdPW07O22seDz+sGZfoh7o43
+        SZY6rxrROU9QZzBQ==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Core-wide rq->lock
+Subject: [tip: sched/core] sched: Prepare for Core-wide rq->lock
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Don Hiatt <dhiatt@digitalocean.com>,
         Hongyu Ning <hongyu.ning@linux.intel.com>,
         Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <YJUNfzSgptjX7tG6@hirez.programming.kicks-ass.net>
-References: <YJUNfzSgptjX7tG6@hirez.programming.kicks-ass.net>
+In-Reply-To: <BIm@hirez.programming.kicks-ass.net>
+References: <BIm@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Message-ID: <162081530662.29796.18273095135192979351.tip-bot2@tip-bot2>
+Message-ID: <162081530701.29796.1117391153445499337.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,360 +60,209 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     9edeaea1bc452372718837ed2ba775811baf1ba1
-Gitweb:        https://git.kernel.org/tip/9edeaea1bc452372718837ed2ba775811baf1ba1
+Commit-ID:     d66f1b06b5b438cd20ba3664b8eef1f9c79e84bf
+Gitweb:        https://git.kernel.org/tip/d66f1b06b5b438cd20ba3664b8eef1f9c79e84bf
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Tue, 17 Nov 2020 18:19:34 -05:00
+AuthorDate:    Tue, 02 Mar 2021 12:16:48 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 12 May 2021 11:43:27 +02:00
+CommitterDate: Wed, 12 May 2021 11:43:26 +02:00
 
-sched: Core-wide rq->lock
+sched: Prepare for Core-wide rq->lock
 
-Introduce the basic infrastructure to have a core wide rq->lock.
+When switching on core-sched, CPUs need to agree which lock to use for
+their RQ.
 
-This relies on the rq->__lock order being in increasing CPU number
-(inside a core). It is also constrained to SMT8 per lockdep (and
-SMT256 per preempt_count).
+The new rule will be that rq->core_enabled will be toggled while
+holding all rq->__locks that belong to a core. This means we need to
+double check the rq->core_enabled value after each lock acquire and
+retry if it changed.
 
-Luckily SMT8 is the max supported SMT count for Linux (Mips, Sparc and
-Power are known to have this).
+This also has implications for those sites that take multiple RQ
+locks, they need to be careful that the second lock doesn't end up
+being the first lock.
+
+Verify the lock pointer after acquiring the first lock, because if
+they're on the same core, holding any of the rq->__lock instances will
+pin the core state.
+
+While there, change the rq->__lock order to CPU number, instead of rq
+address, this greatly simplifies the next patch.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Tested-by: Don Hiatt <dhiatt@digitalocean.com>
 Tested-by: Hongyu Ning <hongyu.ning@linux.intel.com>
 Tested-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/YJUNfzSgptjX7tG6@hirez.programming.kicks-ass.net
+Link: https://lkml.kernel.org/r/YJUNY0dmrJMD/BIm@hirez.programming.kicks-ass.net
 ---
- kernel/Kconfig.preempt |   6 +-
- kernel/sched/core.c    | 164 +++++++++++++++++++++++++++++++++++++++-
- kernel/sched/sched.h   |  58 ++++++++++++++-
- 3 files changed, 224 insertions(+), 4 deletions(-)
+ kernel/sched/core.c  | 48 +++++++++++++++++++++++++++++++++++++++++--
+ kernel/sched/sched.h | 48 +++++++++++++++----------------------------
+ 2 files changed, 63 insertions(+), 33 deletions(-)
 
-diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
-index 4160173..ea1e333 100644
---- a/kernel/Kconfig.preempt
-+++ b/kernel/Kconfig.preempt
-@@ -99,3 +99,9 @@ config PREEMPT_DYNAMIC
- 
- 	  Interesting if you want the same pre-built kernel should be used for
- 	  both Server and Desktop workloads.
-+
-+config SCHED_CORE
-+	bool "Core Scheduling for SMT"
-+	default y
-+	depends on SCHED_SMT
-+
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 8bd2f12..384b793 100644
+index 5e6f5f5..8bd2f12 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -84,6 +84,108 @@ unsigned int sysctl_sched_rt_period = 1000000;
+@@ -186,12 +186,37 @@ int sysctl_sched_rt_runtime = 950000;
  
- __read_mostly int scheduler_running;
- 
-+#ifdef CONFIG_SCHED_CORE
-+
-+DEFINE_STATIC_KEY_FALSE(__sched_core_enabled);
-+
-+/*
-+ * Magic required such that:
-+ *
-+ *	raw_spin_rq_lock(rq);
-+ *	...
-+ *	raw_spin_rq_unlock(rq);
-+ *
-+ * ends up locking and unlocking the _same_ lock, and all CPUs
-+ * always agree on what rq has what lock.
-+ *
-+ * XXX entirely possible to selectively enable cores, don't bother for now.
-+ */
-+
-+static DEFINE_MUTEX(sched_core_mutex);
-+static int sched_core_count;
-+static struct cpumask sched_core_mask;
-+
-+static void __sched_core_flip(bool enabled)
-+{
-+	int cpu, t, i;
-+
-+	cpus_read_lock();
-+
-+	/*
-+	 * Toggle the online cores, one by one.
-+	 */
-+	cpumask_copy(&sched_core_mask, cpu_online_mask);
-+	for_each_cpu(cpu, &sched_core_mask) {
-+		const struct cpumask *smt_mask = cpu_smt_mask(cpu);
-+
-+		i = 0;
-+		local_irq_disable();
-+		for_each_cpu(t, smt_mask) {
-+			/* supports up to SMT8 */
-+			raw_spin_lock_nested(&cpu_rq(t)->__lock, i++);
-+		}
-+
-+		for_each_cpu(t, smt_mask)
-+			cpu_rq(t)->core_enabled = enabled;
-+
-+		for_each_cpu(t, smt_mask)
-+			raw_spin_unlock(&cpu_rq(t)->__lock);
-+		local_irq_enable();
-+
-+		cpumask_andnot(&sched_core_mask, &sched_core_mask, smt_mask);
-+	}
-+
-+	/*
-+	 * Toggle the offline CPUs.
-+	 */
-+	cpumask_copy(&sched_core_mask, cpu_possible_mask);
-+	cpumask_andnot(&sched_core_mask, &sched_core_mask, cpu_online_mask);
-+
-+	for_each_cpu(cpu, &sched_core_mask)
-+		cpu_rq(cpu)->core_enabled = enabled;
-+
-+	cpus_read_unlock();
-+}
-+
-+static void __sched_core_enable(void)
-+{
-+	// XXX verify there are no cookie tasks (yet)
-+
-+	static_branch_enable(&__sched_core_enabled);
-+	/*
-+	 * Ensure all previous instances of raw_spin_rq_*lock() have finished
-+	 * and future ones will observe !sched_core_disabled().
-+	 */
-+	synchronize_rcu();
-+	__sched_core_flip(true);
-+}
-+
-+static void __sched_core_disable(void)
-+{
-+	// XXX verify there are no cookie tasks (left)
-+
-+	__sched_core_flip(false);
-+	static_branch_disable(&__sched_core_enabled);
-+}
-+
-+void sched_core_get(void)
-+{
-+	mutex_lock(&sched_core_mutex);
-+	if (!sched_core_count++)
-+		__sched_core_enable();
-+	mutex_unlock(&sched_core_mutex);
-+}
-+
-+void sched_core_put(void)
-+{
-+	mutex_lock(&sched_core_mutex);
-+	if (!--sched_core_count)
-+		__sched_core_disable();
-+	mutex_unlock(&sched_core_mutex);
-+}
-+
-+#endif /* CONFIG_SCHED_CORE */
-+
- /*
-  * part of the period that we allow rt tasks to run in us.
-  * default: 0.95s
-@@ -188,16 +290,23 @@ void raw_spin_rq_lock_nested(struct rq *rq, int subclass)
+ void raw_spin_rq_lock_nested(struct rq *rq, int subclass)
  {
- 	raw_spinlock_t *lock;
- 
-+	/* Matches synchronize_rcu() in __sched_core_enable() */
-+	preempt_disable();
- 	if (sched_core_disabled()) {
- 		raw_spin_lock_nested(&rq->__lock, subclass);
-+		/* preempt_count *MUST* be > 1 */
-+		preempt_enable_no_resched();
- 		return;
- 	}
- 
- 	for (;;) {
- 		lock = rq_lockp(rq);
- 		raw_spin_lock_nested(lock, subclass);
--		if (likely(lock == rq_lockp(rq)))
-+		if (likely(lock == rq_lockp(rq))) {
-+			/* preempt_count *MUST* be > 1 */
-+			preempt_enable_no_resched();
- 			return;
-+		}
- 		raw_spin_unlock(lock);
- 	}
- }
-@@ -207,14 +316,21 @@ bool raw_spin_rq_trylock(struct rq *rq)
- 	raw_spinlock_t *lock;
- 	bool ret;
- 
--	if (sched_core_disabled())
--		return raw_spin_trylock(&rq->__lock);
-+	/* Matches synchronize_rcu() in __sched_core_enable() */
-+	preempt_disable();
+-	raw_spin_lock_nested(rq_lockp(rq), subclass);
++	raw_spinlock_t *lock;
++
 +	if (sched_core_disabled()) {
-+		ret = raw_spin_trylock(&rq->__lock);
-+		preempt_enable();
-+		return ret;
++		raw_spin_lock_nested(&rq->__lock, subclass);
++		return;
 +	}
- 
- 	for (;;) {
- 		lock = rq_lockp(rq);
- 		ret = raw_spin_trylock(lock);
--		if (!ret || (likely(lock == rq_lockp(rq))))
-+		if (!ret || (likely(lock == rq_lockp(rq)))) {
-+			preempt_enable();
- 			return ret;
-+		}
- 		raw_spin_unlock(lock);
- 	}
- }
-@@ -5041,6 +5157,40 @@ restart:
- 	BUG();
- }
- 
-+#ifdef CONFIG_SCHED_CORE
 +
-+static inline void sched_core_cpu_starting(unsigned int cpu)
++	for (;;) {
++		lock = rq_lockp(rq);
++		raw_spin_lock_nested(lock, subclass);
++		if (likely(lock == rq_lockp(rq)))
++			return;
++		raw_spin_unlock(lock);
++	}
+ }
+ 
+ bool raw_spin_rq_trylock(struct rq *rq)
+ {
+-	return raw_spin_trylock(rq_lockp(rq));
++	raw_spinlock_t *lock;
++	bool ret;
++
++	if (sched_core_disabled())
++		return raw_spin_trylock(&rq->__lock);
++
++	for (;;) {
++		lock = rq_lockp(rq);
++		ret = raw_spin_trylock(lock);
++		if (!ret || (likely(lock == rq_lockp(rq))))
++			return ret;
++		raw_spin_unlock(lock);
++	}
+ }
+ 
+ void raw_spin_rq_unlock(struct rq *rq)
+@@ -199,6 +224,25 @@ void raw_spin_rq_unlock(struct rq *rq)
+ 	raw_spin_unlock(rq_lockp(rq));
+ }
+ 
++#ifdef CONFIG_SMP
++/*
++ * double_rq_lock - safely lock two runqueues
++ */
++void double_rq_lock(struct rq *rq1, struct rq *rq2)
 +{
-+	const struct cpumask *smt_mask = cpu_smt_mask(cpu);
-+	struct rq *rq, *core_rq = NULL;
-+	int i;
++	lockdep_assert_irqs_disabled();
 +
-+	core_rq = cpu_rq(cpu)->core;
++	if (rq_order_less(rq2, rq1))
++		swap(rq1, rq2);
 +
-+	if (!core_rq) {
-+		for_each_cpu(i, smt_mask) {
-+			rq = cpu_rq(i);
-+			if (rq->core && rq->core == rq)
-+				core_rq = rq;
-+		}
++	raw_spin_rq_lock(rq1);
++	if (rq_lockp(rq1) == rq_lockp(rq2))
++		return;
 +
-+		if (!core_rq)
-+			core_rq = cpu_rq(cpu);
-+
-+		for_each_cpu(i, smt_mask) {
-+			rq = cpu_rq(i);
-+
-+			WARN_ON_ONCE(rq->core && rq->core != core_rq);
-+			rq->core = core_rq;
-+		}
-+	}
++	raw_spin_rq_lock_nested(rq2, SINGLE_DEPTH_NESTING);
 +}
-+#else /* !CONFIG_SCHED_CORE */
-+
-+static inline void sched_core_cpu_starting(unsigned int cpu) {}
-+
-+#endif /* CONFIG_SCHED_CORE */
++#endif
 +
  /*
-  * __schedule() is the main scheduler function.
-  *
-@@ -8006,6 +8156,7 @@ static void sched_rq_cpu_starting(unsigned int cpu)
- 
- int sched_cpu_starting(unsigned int cpu)
- {
-+	sched_core_cpu_starting(cpu);
- 	sched_rq_cpu_starting(cpu);
- 	sched_tick_start(cpu);
- 	return 0;
-@@ -8290,6 +8441,11 @@ void __init sched_init(void)
- #endif /* CONFIG_SMP */
- 		hrtick_rq_init(rq);
- 		atomic_set(&rq->nr_iowait, 0);
-+
-+#ifdef CONFIG_SCHED_CORE
-+		rq->core = NULL;
-+		rq->core_enabled = 0;
-+#endif
- 	}
- 
- 	set_load_weight(&init_task, false);
+  * __task_rq_lock - lock the rq @p resides on.
+  */
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index f8bd5c8..29418b8 100644
+index dbabf28..f8bd5c8 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -1075,6 +1075,12 @@ struct rq {
- #endif
- 	unsigned int		push_busy;
- 	struct cpu_stop_work	push_work;
-+
-+#ifdef CONFIG_SCHED_CORE
-+	/* per rq */
-+	struct rq		*core;
-+	unsigned int		core_enabled;
-+#endif
- };
- 
- #ifdef CONFIG_FAIR_GROUP_SCHED
-@@ -1113,6 +1119,35 @@ static inline bool is_migration_disabled(struct task_struct *p)
+@@ -1113,6 +1113,11 @@ static inline bool is_migration_disabled(struct task_struct *p)
  #endif
  }
  
-+#ifdef CONFIG_SCHED_CORE
-+
-+DECLARE_STATIC_KEY_FALSE(__sched_core_enabled);
-+
-+static inline bool sched_core_enabled(struct rq *rq)
-+{
-+	return static_branch_unlikely(&__sched_core_enabled) && rq->core_enabled;
-+}
-+
 +static inline bool sched_core_disabled(void)
 +{
-+	return !static_branch_unlikely(&__sched_core_enabled);
++	return true;
 +}
 +
-+static inline raw_spinlock_t *rq_lockp(struct rq *rq)
-+{
-+	if (sched_core_enabled(rq))
-+		return &rq->core->__lock;
-+
-+	return &rq->__lock;
-+}
-+
-+#else /* !CONFIG_SCHED_CORE */
-+
-+static inline bool sched_core_enabled(struct rq *rq)
-+{
-+	return false;
-+}
-+
- static inline bool sched_core_disabled(void)
+ static inline raw_spinlock_t *rq_lockp(struct rq *rq)
  {
- 	return true;
-@@ -1123,6 +1158,8 @@ static inline raw_spinlock_t *rq_lockp(struct rq *rq)
  	return &rq->__lock;
+@@ -2231,10 +2236,17 @@ unsigned long arch_scale_freq_capacity(int cpu)
+ }
+ #endif
+ 
++
+ #ifdef CONFIG_SMP
+-#ifdef CONFIG_PREEMPTION
+ 
+-static inline void double_rq_lock(struct rq *rq1, struct rq *rq2);
++static inline bool rq_order_less(struct rq *rq1, struct rq *rq2)
++{
++	return rq1->cpu < rq2->cpu;
++}
++
++extern void double_rq_lock(struct rq *rq1, struct rq *rq2);
++
++#ifdef CONFIG_PREEMPTION
+ 
+ /*
+  * fair double_lock_balance: Safely acquires both rq->locks in a fair
+@@ -2274,14 +2286,13 @@ static inline int _double_lock_balance(struct rq *this_rq, struct rq *busiest)
+ 	if (likely(raw_spin_rq_trylock(busiest)))
+ 		return 0;
+ 
+-	if (rq_lockp(busiest) >= rq_lockp(this_rq)) {
++	if (rq_order_less(this_rq, busiest)) {
+ 		raw_spin_rq_lock_nested(busiest, SINGLE_DEPTH_NESTING);
+ 		return 0;
+ 	}
+ 
+ 	raw_spin_rq_unlock(this_rq);
+-	raw_spin_rq_lock(busiest);
+-	raw_spin_rq_lock_nested(this_rq, SINGLE_DEPTH_NESTING);
++	double_rq_lock(this_rq, busiest);
+ 
+ 	return 1;
+ }
+@@ -2334,31 +2345,6 @@ static inline void double_raw_lock(raw_spinlock_t *l1, raw_spinlock_t *l2)
  }
  
-+#endif /* CONFIG_SCHED_CORE */
-+
- static inline void lockdep_assert_rq_held(struct rq *rq)
+ /*
+- * double_rq_lock - safely lock two runqueues
+- *
+- * Note this does not disable interrupts like task_rq_lock,
+- * you need to do so manually before calling.
+- */
+-static inline void double_rq_lock(struct rq *rq1, struct rq *rq2)
+-	__acquires(rq1->lock)
+-	__acquires(rq2->lock)
+-{
+-	BUG_ON(!irqs_disabled());
+-	if (rq_lockp(rq1) == rq_lockp(rq2)) {
+-		raw_spin_rq_lock(rq1);
+-		__acquire(rq2->lock);	/* Fake it out ;) */
+-	} else {
+-		if (rq_lockp(rq1) < rq_lockp(rq2)) {
+-			raw_spin_rq_lock(rq1);
+-			raw_spin_rq_lock_nested(rq2, SINGLE_DEPTH_NESTING);
+-		} else {
+-			raw_spin_rq_lock(rq2);
+-			raw_spin_rq_lock_nested(rq1, SINGLE_DEPTH_NESTING);
+-		}
+-	}
+-}
+-
+-/*
+  * double_rq_unlock - safely unlock two runqueues
+  *
+  * Note this does not restore interrupts like task_rq_unlock,
+@@ -2368,11 +2354,11 @@ static inline void double_rq_unlock(struct rq *rq1, struct rq *rq2)
+ 	__releases(rq1->lock)
+ 	__releases(rq2->lock)
  {
- 	lockdep_assert_held(rq_lockp(rq));
-@@ -2241,6 +2278,27 @@ unsigned long arch_scale_freq_capacity(int cpu)
- 
- static inline bool rq_order_less(struct rq *rq1, struct rq *rq2)
- {
-+#ifdef CONFIG_SCHED_CORE
-+	/*
-+	 * In order to not have {0,2},{1,3} turn into into an AB-BA,
-+	 * order by core-id first and cpu-id second.
-+	 *
-+	 * Notably:
-+	 *
-+	 *	double_rq_lock(0,3); will take core-0, core-1 lock
-+	 *	double_rq_lock(1,2); will take core-1, core-0 lock
-+	 *
-+	 * when only cpu-id is considered.
-+	 */
-+	if (rq1->core->cpu < rq2->core->cpu)
-+		return true;
-+	if (rq1->core->cpu > rq2->core->cpu)
-+		return false;
-+
-+	/*
-+	 * __sched_core_flip() relies on SMT having cpu-id lock order.
-+	 */
-+#endif
- 	return rq1->cpu < rq2->cpu;
+-	raw_spin_rq_unlock(rq1);
+ 	if (rq_lockp(rq1) != rq_lockp(rq2))
+ 		raw_spin_rq_unlock(rq2);
+ 	else
+ 		__release(rq2->lock);
++	raw_spin_rq_unlock(rq1);
  }
  
+ extern void set_rq_online (struct rq *rq);
