@@ -2,99 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4225D37ED41
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E855137ED43
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385901AbhELUQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:16:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378924AbhELTSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 15:18:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE320613EE;
-        Wed, 12 May 2021 19:17:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620847027;
-        bh=vTMq9ZCTPIJ2uJNu6RKADW8q+ip6eYhDylHbUOhPidI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K6cT6CSJOQNJOETbfQE6pjZBxVxmXOXSfuDkf+uIg0ynziDtiz5AR/Bi+dWbvdgKM
-         TlLTBDOlGsLhuEXrjMI5OGAiBGLA+03EUBgW6OWt8u5WvhD8b+Q561uD1tHe08gGNg
-         17lO0zpEbF8uJatw+Po4g1kk5dZ/XnGbgix3cGE/4yt8f1/YxDyJf/5fRAGP+rpU0I
-         oWIbteN8CDdzpgBpmFB5g6CvHcwEZotsOXsIFD8bgZr+R4TXybQjnLKQZZoPgRzsFn
-         tGhrD67DHuY+zs7pou38CP8VP5K2cq+NVIBDo3QX/dLaYByi9IwcFyfJcIn+x823Bi
-         3wJvsw7MdIbYA==
-Date:   Wed, 12 May 2021 22:17:04 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] selftests/sgx: Migrate to kselftest harness
-Message-ID: <YJwpsEJVQ1joWgX3@kernel.org>
-References: <20210508035648.18176-1-jarkko@kernel.org>
- <20210508035648.18176-2-jarkko@kernel.org>
- <960f1cd8-d805-8ed8-6af0-eed1f49e3c65@intel.com>
- <YJsrDc34d2vbc+At@kernel.org>
- <0b68cf8e-994d-3c85-cb93-5701722d9336@intel.com>
+        id S1385938AbhELURJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:17:09 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53452 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244950AbhELTVT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 15:21:19 -0400
+Date:   Wed, 12 May 2021 19:20:06 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620847209;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W9CqgNt7a1291GXPjc3CSNz5tckZZ3tHmPuyScdCQVA=;
+        b=IsROUS4APyxfYGG36ohjTCkBKPAA183IAUN/J/cqgAGeoEqrUTRFXXMi7eKjbKGpnql6lw
+        qZ60CkzNab9ewMamLVcO+YAJJR3Yl1IgFki9C/g2odJjpal6can8bv0QkH8iuT1MoJP2UH
+        EvpUiFSPgY2GhygJiI9W6Elo+L8/t37Rtj1pE9pC2EZSAxFWxG/oRYT3kNTqA5SSKOWZkj
+        lHas+hIelFUMb0S20o5A+ErHusQcwTDLA2/TaavSeBXSqN0scSoYvU3nceYlJhjGIsk3lK
+        HFwUyTzLFxsaff2B1Ujze14RDXinxuzhEASIOWCf90bxYwGxChCmxsADbfDCvQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620847209;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W9CqgNt7a1291GXPjc3CSNz5tckZZ3tHmPuyScdCQVA=;
+        b=pcvKKGaGHByclnWR7utJ6ofzRBTl971ZR+JNGialqF9K6Y4d7xSxUwdOGu8UeUzLw4bW1+
+        8cdHDtNQhAlIysAA==
+From:   "tip-bot2 for Huang Rui" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] x86, sched: Fix the AMD CPPC maximum performance
+ value on certain AMD Ryzen generations
+Cc:     Jason Bagavatsingham <jason.bagavatsingham@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>, Ingo Molnar <mingo@kernel.org>,
+        stable@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210425073451.2557394-1-ray.huang@amd.com>
+References: <20210425073451.2557394-1-ray.huang@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0b68cf8e-994d-3c85-cb93-5701722d9336@intel.com>
+Message-ID: <162084720697.29796.16642711613957963140.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 08:56:03AM -0700, Reinette Chatre wrote:
-> Hi Jarkko,
-> 
-> On 5/11/2021 6:10 PM, Jarkko Sakkinen wrote:
-> > On Tue, May 11, 2021 at 11:42:49AM -0700, Reinette Chatre wrote:
-> > > Hi Jarkko,
-> > > 
-> > > On 5/7/2021 8:56 PM, Jarkko Sakkinen wrote:
-> > > > Migrate to kselftest harness. Use a fixture test with enclave initialized
-> > > > and de-initialized for each of the existing three tests, in other words:
-> > > > 
-> > > > 1. One FIXTURE() for managing the enclave life-cycle.
-> > > > 2. Three TEST_F()'s, one for each test case.
-> > > 
-> > > These changes make it easier to add tests and I think it is a valuable
-> > > addition.
-> > > 
-> > > > 
-> > > > This gives a leaps better reporting than before. Here's an example
-> > > > transcript:
-> > > > 
-> > > > TAP version 13
-> > > > 1..3
-> > > > 0x0000000000000000 0x0000000000002000 0x03
-> > > > 0x0000000000002000 0x0000000000001000 0x05
-> > > > 0x0000000000003000 0x0000000000003000 0x03
-> > > > ok 1 enclave.unclobbered_vdso
-> > > > 0x0000000000000000 0x0000000000002000 0x03
-> > > > 0x0000000000002000 0x0000000000001000 0x05
-> > > > 0x0000000000003000 0x0000000000003000 0x03
-> > > > ok 2 enclave.clobbered_vdso
-> > > > 0x0000000000000000 0x0000000000002000 0x03
-> > > > 0x0000000000002000 0x0000000000001000 0x05
-> > > > 0x0000000000003000 0x0000000000003000 0x03
-> > > > ok 3 enclave.clobbered_vdso_and_user_function
-> > > > 
-> > > 
-> > > The output claims to conform to TAP13 but it does not seem as though all of
-> > > the output conforms to TAP13. I assume such output would confuse automated
-> > > systems.
-> > 
-> > You mean
-> > 
-> > 0x0000000000000000 0x0000000000002000 0x03
-> > 0x0000000000002000 0x0000000000001000 0x05
-> > 0x0000000000003000 0x0000000000003000 0x03
-> > 
-> > ?
-> 
-> Yes
+The following commit has been merged into the sched/urgent branch of tip:
 
-Thanks, just sanity checking :-)
+Commit-ID:     337fb3130c29ef5ea3bbcd45e6589b7be6deeb4d
+Gitweb:        https://git.kernel.org/tip/337fb3130c29ef5ea3bbcd45e6589b7be6d=
+eeb4d
+Author:        Huang Rui <ray.huang@amd.com>
+AuthorDate:    Sun, 25 Apr 2021 15:34:51 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 12 May 2021 21:14:08 +02:00
 
-/Jarkko
+x86, sched: Fix the AMD CPPC maximum performance value on certain AMD Ryzen g=
+enerations
+
+Some AMD Ryzen generations has different calculation method on maximum
+performance. 255 is not for all ASICs, some specific generations should use 1=
+66
+as the maximum performance. Otherwise, it will report incorrect frequency val=
+ue
+like below:
+
+  ~ =E2=86=92 lscpu | grep MHz
+  CPU MHz:                         3400.000
+  CPU max MHz:                     7228.3198
+  CPU min MHz:                     2200.0000
+
+[ mingo: Tidied up whitespace use. ]
+
+Fixes: 41ea667227ba ("x86, sched: Calculate frequency invariance for AMD syst=
+ems")
+Fixes: 3c55e94c0ade ("cpufreq: ACPI: Extend frequency tables to cover boost f=
+requencies")
+Reported-by: Jason Bagavatsingham <jason.bagavatsingham@gmail.com>
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Huang Rui <ray.huang@amd.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Tested-by: Jason Bagavatsingham <jason.bagavatsingham@gmail.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210425073451.2557394-1-ray.huang@amd.com
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=3D211791
+---
+ arch/x86/include/asm/processor.h |  2 ++
+ arch/x86/kernel/cpu/amd.c        | 16 ++++++++++++++++
+ arch/x86/kernel/smpboot.c        |  2 +-
+ drivers/cpufreq/acpi-cpufreq.c   |  6 +++++-
+ 4 files changed, 24 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processo=
+r.h
+index 154321d..556b2b1 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -787,8 +787,10 @@ DECLARE_PER_CPU(u64, msr_misc_features_shadow);
+=20
+ #ifdef CONFIG_CPU_SUP_AMD
+ extern u32 amd_get_nodes_per_socket(void);
++extern u32 amd_get_highest_perf(void);
+ #else
+ static inline u32 amd_get_nodes_per_socket(void)	{ return 0; }
++static inline u32 amd_get_highest_perf(void)		{ return 0; }
+ #endif
+=20
+ static inline uint32_t hypervisor_cpuid_base(const char *sig, uint32_t leave=
+s)
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 2d11384..109d2c7 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -1165,3 +1165,19 @@ void set_dr_addr_mask(unsigned long mask, int dr)
+ 		break;
+ 	}
+ }
++
++u32 amd_get_highest_perf(void)
++{
++	struct cpuinfo_x86 *c =3D &boot_cpu_data;
++
++	if (c->x86 =3D=3D 0x17 && ((c->x86_model >=3D 0x30 && c->x86_model < 0x40) =
+||
++			       (c->x86_model >=3D 0x70 && c->x86_model < 0x80)))
++		return 166;
++
++	if (c->x86 =3D=3D 0x19 && ((c->x86_model >=3D 0x20 && c->x86_model < 0x30) =
+||
++			       (c->x86_model >=3D 0x40 && c->x86_model < 0x70)))
++		return 166;
++
++	return 225;
++}
++EXPORT_SYMBOL_GPL(amd_get_highest_perf);
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 0ad5214..7770245 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -2043,7 +2043,7 @@ static bool amd_set_max_freq_ratio(void)
+ 		return false;
+ 	}
+=20
+-	highest_perf =3D perf_caps.highest_perf;
++	highest_perf =3D amd_get_highest_perf();
+ 	nominal_perf =3D perf_caps.nominal_perf;
+=20
+ 	if (!highest_perf || !nominal_perf) {
+diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
+index d1bbc16..7e74504 100644
+--- a/drivers/cpufreq/acpi-cpufreq.c
++++ b/drivers/cpufreq/acpi-cpufreq.c
+@@ -646,7 +646,11 @@ static u64 get_max_boost_ratio(unsigned int cpu)
+ 		return 0;
+ 	}
+=20
+-	highest_perf =3D perf_caps.highest_perf;
++	if (boot_cpu_data.x86_vendor =3D=3D X86_VENDOR_AMD)
++		highest_perf =3D amd_get_highest_perf();
++	else
++		highest_perf =3D perf_caps.highest_perf;
++
+ 	nominal_perf =3D perf_caps.nominal_perf;
+=20
+ 	if (!highest_perf || !nominal_perf) {
