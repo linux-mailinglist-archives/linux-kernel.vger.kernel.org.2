@@ -2,152 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663C537B436
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A523037B43A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhELCoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 22:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbhELCoh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 22:44:37 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E31CC061763;
-        Tue, 11 May 2021 19:43:30 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id w22so7099858oiw.9;
-        Tue, 11 May 2021 19:43:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jiFXw0djjJoh6U5BPJwzizmPY29AVsMjgO4iqC1nUPc=;
-        b=SVp23lzqVA+XUl5i76vOZyM8rl+ajveVK61N2LBOTHRk75uvk9Wt8kB/2nir0m2NCq
-         aPXmE1/DxBoxgnVAAuYnyNMcN3ZtU1M9g4a6f6h9XURr80cXTv4FdpCsPv/upH5t9+vp
-         qPjbyhkfwBHxxU0RkOH6wB8LimzXwnAPUXQnFEMC3ee/2vCsypSrgUzl0qD+7OG9FjXe
-         wwdTEXQ6pnOqzqa3/XAINjHY3n7eLj93DRuXu88ofc8qnS23xOVlLVFjHlGZM4SvdFVO
-         YFx/CJS2COabTMY/LSavmoV0LjaQVFaXuhXLmqaKM+AwvTBDkDOCZCNgHGZ8sKq2LZmx
-         dgVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jiFXw0djjJoh6U5BPJwzizmPY29AVsMjgO4iqC1nUPc=;
-        b=fzVvKLho3AkV9dHQJKSRr1jo2Jm7cnTlZfiqPl+N8ni+aFml4Op/B9t4tsGTGRkIp6
-         Ld2yVpABORVwao6ZCHdzpA8KRYXNAFW3Cdkpwj6c/eXbidNoh06hSsHCF5VRDkxBIdIj
-         RRs0v+9M5gfbhwYhvTkKBRXEtmfWe0yZmpeXJ13b/IOcnG1oWKxEHUFxhiiCsyyg0Oms
-         KD0/2WZwbZO95KiDm4q0qRxICFbr0tnP2xzhlePfbXjr4zODe7Ua1+Q2EUEvaDnyhwR8
-         Egf3q2q0Wnfyxm8v9jQXZRZ1R99psbhgILvZQUhK73HwjypKqcTAL937faRvnLzP/ZDM
-         iYNw==
-X-Gm-Message-State: AOAM532m6lG8re37UVqYFS1d0wwkOpbdXlU4ReEOYIqsNVHsd6L896KO
-        a0/Hhaf+QtwqAmtDmdF6GKSOgRS5tD3BTJgjkfk=
-X-Google-Smtp-Source: ABdhPJzvibUVZXLXUlvNTMe/9ojiBltyI639HptwJYY0KtqjTv9dj8CnsFVyD5qD95iVH9unX6iGskwDi7QtCz/dC8k=
-X-Received: by 2002:aca:aa12:: with SMTP id t18mr1920871oie.141.1620787409603;
- Tue, 11 May 2021 19:43:29 -0700 (PDT)
+        id S230118AbhELCpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 22:45:21 -0400
+Received: from mail-vi1eur05on2072.outbound.protection.outlook.com ([40.107.21.72]:55840
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229952AbhELCpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 22:45:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fjE+k0mKv3bcdH2zs/rjk46W21wGTImCjnH13j91NJC0c3gJWHvqTUpceM3VjSG+YU55FMWd7AWayQHkO5GiZzciGIPfVs+ZwB5lBg7Wejrh5i/D9jGfZNXFzSM2++/l22vNgXJ6tG9OoEZ5JgG+kQMZVKDXl/nl5P8Ks7J4eL1kvwbt9oVLpKGfFH+w9w6DVfd+JEq6dZC45XXxkrbjYKXP27/yTYKlTozlJIj295k0MWFhxsqNofkRC/joKZdHnXwDGAQ9WVmjPWcScloTTktjx54vBpuzN4Vh4fPH5NG8k3/NXFcnK2qiaxLof3YFAAVULS6LdrMY1YBiSZU7PQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GxC4J3J2n2lcwpKAo4ZHoImXghP447nS0zt/HXuafIo=;
+ b=WIKfWgBntfDwYNTpuIwKsl6uQwHAmEmUBWtGZV/yQYxt6uiVe2qyYP6uAJbk2VAqZXq2BttmH7QWoNUsDascgZ5DbsaLFMuGYaz8whC8+O0ZvvSZm0Ww/PDZbP13NPbV9j3r+SQV/8cEHLdlVW/IFDMfNjuBaNtgGhq40mDgjq6GLpxbpHxmcT8ZDHyd93Muz00Adx8HYGr6KcbSLWlEozgi5hRnJ9HxFzJgU9uCRwiQj+bGUoCMu0MELM9lKqcdxWCj8a5dw5NP1qF4i2MYgqL9NExe2vGMGB0m56vzzeZ6Qmiboxq44RDeHqnDEhRLS2Aoq0vDMbjBEG4tGW+B1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GxC4J3J2n2lcwpKAo4ZHoImXghP447nS0zt/HXuafIo=;
+ b=On8wEefg15gslXMhTvI3OqDmJIVTVX5CVnYNcfFVjt1GvKUyC4Mg4X5GRoNr8IBbGFmk0NoGmAr8wHSCPA+k56Q/ZTrQbwbiGzeREICrUrLJ7fn1p59A7f24AhpXyobiUzPX/WcotH8tCfjpmdS4DDmLL0s80Hk3j6U0cgNy7Ok=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB8PR04MB5884.eurprd04.prod.outlook.com (2603:10a6:10:b0::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Wed, 12 May
+ 2021 02:44:10 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3400:b139:f681:c8cf]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3400:b139:f681:c8cf%9]) with mapi id 15.20.4129.025; Wed, 12 May 2021
+ 02:44:09 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net 0/2] net: fixes for fec driver
+Date:   Wed, 12 May 2021 10:43:58 +0800
+Message-Id: <20210512024400.19041-1-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SG2PR03CA0095.apcprd03.prod.outlook.com
+ (2603:1096:4:7c::23) To DB8PR04MB6795.eurprd04.prod.outlook.com
+ (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-References: <1620466310-8428-1-git-send-email-wanpengli@tencent.com>
- <1620466310-8428-2-git-send-email-wanpengli@tencent.com> <YJr6v+hfMJxI2iAn@google.com>
-In-Reply-To: <YJr6v+hfMJxI2iAn@google.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Wed, 12 May 2021 10:43:18 +0800
-Message-ID: <CANRm+Czbc9AX3=Qj7dDCENyWj27drWniimZLnyKd9=--Ag8F+g@mail.gmail.com>
-Subject: Re: [PATCH 2/3] KVM: X86: Bail out of direct yield in case of
- undercomitted scenarios
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SG2PR03CA0095.apcprd03.prod.outlook.com (2603:1096:4:7c::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.12 via Frontend Transport; Wed, 12 May 2021 02:44:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 70e2fb77-d1b0-473e-574c-08d914efd18f
+X-MS-TrafficTypeDiagnostic: DB8PR04MB5884:
+X-Microsoft-Antispam-PRVS: <DB8PR04MB5884A31FE222DF2630F0A88BE6529@DB8PR04MB5884.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JH+XcvZEdAeVv6m07pNR7e1Y6y++rY/ojVKE0AcPfWetOS9trWfm3s69/QivwctpAWuEaAEBhCJ8Yh06sAgFnzUAYiqM/9qQ8aWQgphbRAUDRWYI9446Ut6Hfzs6j35tQngGcDURmE07N6yu2f8PjoSdgONpn1r4WX8hb01nURE+GpkWOxo1xLJHaivo+dtOS2lhYgzKCiRqIqLYDfmj+nH/LMF+NJAlkfjjaoYgjNhneAHSEUu7OUtLuamxmqxI2xneT4X/u6hR2rWR7q4AcsB0tHSXjCRCCVBX81ic/Ny3OhRl4cpV/8Pgl8oObFGvQM67M118r2lxqR5jv/A9fEwlbBm3MSwqYpem3S1dxhB3kCb4V/aVC5dwsMKLcoB7qwp20rpz/p+/at+SqCDlL9FhQOIWg6W0a0Ic2dn4I60GxyANuabQdFdPQ5OpczQbrqPvmh74SKaa6UGRmgE71R5SOfsZxSbQgPaDYyRt9nGoegO1xlTvtAyDJAUYRXGqCMO3x0zXLDFoOt+HJYL92Vls+U/FG5SvNqB2rPBJKGol1jh/Lq9BuYlcsTEqkeZbvFn4A1jO3iqL/MLrHEBv4JnPJuKWmraSB7D96PypjgfGW3ug1H+QS6nzoql3tRi205J2PHiUUkBl56e15teRunARwce0ml2GkwN8pfYF2WKMG1s81hdLhdeTZgSyfQBp
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(39860400002)(396003)(346002)(366004)(478600001)(2616005)(52116002)(8936002)(5660300002)(86362001)(956004)(4326008)(66476007)(66556008)(8676002)(66946007)(6666004)(558084003)(1076003)(83380400001)(6486002)(186003)(6512007)(16526019)(6506007)(26005)(316002)(36756003)(2906002)(38350700002)(38100700002)(69590400013);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?hXRA+2i2mBEGMVPuneY+SqqkJJYqRjveUkUSpF7pVrzjmH2JaGUPsdHiL+9N?=
+ =?us-ascii?Q?3gNB8pNOd+aUkte7JukhzfLbIjoMvNk/74XhfMJwV+z8/3OvXNRC34lY6mxq?=
+ =?us-ascii?Q?78qEkTnE0RVZceM9JrLNaXEKf9w6XDWNxJB9TtuWIpEtLjW0LSqo5G1xk5ZI?=
+ =?us-ascii?Q?0a/TiXNxRBu2x37NRn3DxYLECHZKXtyspS99wccoNhtRc6A566SUYBkmVswN?=
+ =?us-ascii?Q?3+xnnlCBGJm3avqG3zJdaKjVlnFx3yTjWUe/xGoRJjn0D4PEuPEbacJJWtMo?=
+ =?us-ascii?Q?iWp9BIIYL07eiSqJqiFbnim4rUi+TxEQs8/klZ5I79/oKlb0mAg/5zxQwoU5?=
+ =?us-ascii?Q?C1v1CUUlFkMkrqY/f+eq2ULO/ATv2wgQcp2v4DibYddEWdwrWyYSCKkEoT4/?=
+ =?us-ascii?Q?qJpPdnlVFIjg8uae6FOCENJ8euBBmkKqe5Z+KDuL5426zwVP50GkQAxIFvJz?=
+ =?us-ascii?Q?/4AQAsmF5E+wxyzs3+vb4+q0WEgKYJYiuNqiU2p9HTrcFUmPEIE/jCo0knm3?=
+ =?us-ascii?Q?E2gmFsb6gReur1bpIh2Ap/NAB24SPG6y8CnjyWlazL3n3xadLKcs+H9NVW/V?=
+ =?us-ascii?Q?BGgsprqSKv1zWTj4v+CYw+0spW9DGvZh3Ug1ai23Y1Qpry5slHsv+jb9xYbd?=
+ =?us-ascii?Q?IuxgVWPqAWaBKEipJUnRqyn/Rn3Qi8WgebZkDK8cjoS7utEbWSZUOmRkTj3E?=
+ =?us-ascii?Q?4Cup4RkH8qL341KxKpn+lZXTXS3xS/Qg+mdn2NvTinHoNiOEha8P7UatO/7T?=
+ =?us-ascii?Q?V5xwdhffDGFW4GhxT+QiD21LHOjlr7a56GdmnN6jHp1F0vx/5OsNW2CIjRAD?=
+ =?us-ascii?Q?e5LEnMyEKmLp+of8LuyqGvArd0ShApdVv6j5V85/AcDaMiqDzBkGJF8/P/uT?=
+ =?us-ascii?Q?w+LfcgmMzbai+0Teb1hxugCX+Vd1r1lXYycasd60c0grYgnVERj6xsmjp5Ky?=
+ =?us-ascii?Q?rNj4jvshj/x1ijL3gZZpxqWfRYX7jr58cBYgarE+bywDzAReS4RUTSvL80/k?=
+ =?us-ascii?Q?gZ/dLh0eEU9bspoH0IhDUKTAdW/B/Jj1+YyUZLIy4ZCajXPR7buzY1w6/oAO?=
+ =?us-ascii?Q?v2PmBM9nmwfO+Sfh5EeqzP9kY5p/Jh/XMVO2e0TKSLn73qNoQd2Gk5egaAoy?=
+ =?us-ascii?Q?+muFSADwt6e4LfPSHqwto6aVyTBKS5B9pZDnVXGF+wj1o+Lj3iYl8msjADm8?=
+ =?us-ascii?Q?12t2O57O+GfyU2+3JiptANgR6MxOwzHDGI38CmrgxM3nwmSW3LHx4leFjFGP?=
+ =?us-ascii?Q?4HcfNU9GDdsf9+y7q3qZRMUPhCGntxTdxNW9kRmD2tO1laA5jk0RdRfqnrEh?=
+ =?us-ascii?Q?k/2SEex6y1Kq/zys3of2JyOx?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 70e2fb77-d1b0-473e-574c-08d914efd18f
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2021 02:44:09.7965
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ePTjGX0tK2ukfLFBTZf0UTfgvCGxVuIa6xyAziLQ0sIQmHW7yoZcMFkSMFR+owcdhCM6Yf5CrSyUaqmOr3tMwA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5884
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 May 2021 at 05:44, Sean Christopherson <seanjc@google.com> wrote:
->
-> On Sat, May 08, 2021, Wanpeng Li wrote:
-> > From: Wanpeng Li <wanpengli@tencent.com>
-> >
-> > In case of undercomitted scenarios, vCPU can get scheduling easily,
-> > kvm_vcpu_yield_to adds extra overhead, we can observe a lot of race
-> > between vcpu->ready is true and yield fails due to p->state is
-> > TASK_RUNNING. Let's bail out is such scenarios by checking the length
-> > of current cpu runqueue.
-> >
-> > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> > ---
-> >  arch/x86/kvm/x86.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 5bd550e..c0244a6 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -8358,6 +8358,9 @@ static void kvm_sched_yield(struct kvm_vcpu *vcpu, unsigned long dest_id)
-> >       struct kvm_vcpu *target = NULL;
-> >       struct kvm_apic_map *map;
-> >
-> > +     if (single_task_running())
-> > +             goto no_yield;
-> > +
->
-> Hmm, could we push the result of kvm_sched_yield() down into the guest?
-> Currently the guest bails after the first attempt, which is perfect for this
-> scenario, but it seems like it would make sense to keep trying to yield if there
-> are multiple preempted vCPUs and
+Two small fixes for fec driver.
 
-It can have a race in case of sustain yield if there are multiple
-preempted vCPUs , the vCPU which you intend to yield may have already
-completed to handle IPI and be preempted now when the yielded sender
-is scheduled again and checks the next preempted candidate.
+Fugang Duan (2):
+  net: fec: fix the potential memory leak in fec_enet_init()
+  net: fec: add defer probe for of_get_mac_address
 
-> the "problem" was with the target.  E.g.
+ drivers/net/ethernet/freescale/fec_main.c | 24 ++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
-At the beginning of kvm_sched_yield() we can just get the run queue
-length of the source, it can be treated as a hint of under-committed
-instead of guarantee of accuracy.
+-- 
+2.17.1
 
->
->         /*
->          * Make sure other vCPUs get a chance to run if they need to.  Yield at
->          * most once, and stop trying to yield if the VMM says yielding isn't
->          * going to happen.
->          */
->         for_each_cpu(cpu, mask) {
->                 if (vcpu_is_preempted(cpu)) {
->                         r = kvm_hypercall1(KVM_HC_SCHED_YIELD,
->                                            per_cpu(x86_cpu_to_apicid, cpu));
->                         if (r != -EBUSY)
->                                 break;
->                 }
->         }
->
->
-> Unrelated to this patch, but it's the first time I've really looked at the guest
-> side of directed yield...
->
-> Wouldn't it also make sense for the guest side to hook .send_call_func_single_ipi?
-
-reschedule ipi is called by .smp_send_reschedule hook, there are a lot
-of researches intend to accelerate idle vCPU reactivation, my original
-attemption is to boost synchronization primitive, I believe we need a
-lot of benchmarkings to consider inter-VM fairness and performance
-benefit for  hooks .send_call_func_single_ipi and
-.smp_send_reschedule.
-
->
-> >       vcpu->stat.directed_yield_attempted++;
->
-> Shouldn't directed_yield_attempted be incremented in this case?  It doesn't seem
-> fundamentally different than the case where the target was scheduled in between
-> the guest's check and the host's processing of the yield request.  In both
-> instances, the guest did indeed attempt to yield.
-
-Yes, it should be treated as attempted, I move it above the counting
-because this patch helps improve successful ratio in under-committed
-scenarios and easily shows me how much failure ratio leaves over. I
-can move it after the counting in the next version.
-
-    Wanpeng
