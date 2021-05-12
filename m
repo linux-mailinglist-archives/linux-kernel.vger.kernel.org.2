@@ -2,117 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F44C37ED1A
+	by mail.lfdr.de (Postfix) with ESMTP id 7C47737ED1B
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241628AbhELUL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:11:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1359257AbhELSws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 14:52:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B6FC61352;
-        Wed, 12 May 2021 18:51:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620845499;
-        bh=esyNIqLM2hxd3zsko2LcEGzWyYBhGjlifPE6DrQzHug=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DBvc3Jdm4WyzVMxhwu+0okQPF8brTGe1zcyV8E2uLxJZyaOUTAq70YJwjRXJWAz0T
-         nEdwGpiL4LP30Sni+n9Qb0AOwTSk+e6EYR2NLMDzZuz3NRl5hj8RCiMFnDSWSiaKQE
-         SgDI1pwZuRgIbLkpFr4ooag1nWsNHQM+DZ94ATQQ=
-Date:   Wed, 12 May 2021 20:51:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhuacai@kernel.org>
-Subject: Re: [PATCH 5.12 000/677] 5.12.4-rc1 review
-Message-ID: <YJwjuJrYiyS/eeR8@kroah.com>
-References: <20210512144837.204217980@linuxfoundation.org>
- <CA+G9fYufHvM+C=39gtk5CF-r4sYYpRkQFGsmKrkdQcXj_XKFag@mail.gmail.com>
- <YJwW2bNXGZw5kmpo@kroah.com>
- <CA+G9fYvbe9L=3uJk2+5fR_e2-fnw=UXSDRnHh+u3nMFeOjOwjg@mail.gmail.com>
+        id S1344232AbhELULi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:11:38 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:38536 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359392AbhELSxJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 14:53:09 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14CIpvs7080736;
+        Wed, 12 May 2021 13:51:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620845517;
+        bh=tWCMQzEXhGWDWI00VNLAIexogbcia7fJbpiQJ2NdxYA=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=GyAr6tdWCAYbrF4i7+J4PF8J4XnATZMTizktPdZVCLhXN7uvpdRdl6F1DpLkkrcJc
+         Ja7TRDGh00azZWjfC4zROkpDlfX7B7aHAbaIT6rOtvhNTiVs+pbJ/H7b9cROJZpedJ
+         d8ty919AhgcN5pmUQBv8RQEqh8SfBkasbAplkK70=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14CIpvJo128998
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 12 May 2021 13:51:57 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 12
+ May 2021 13:51:57 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 12 May 2021 13:51:57 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14CIpvWA036988;
+        Wed, 12 May 2021 13:51:57 -0500
+Date:   Wed, 12 May 2021 13:51:57 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [PATCH 1/4] arm64: dts: ti: k3-j721e-main: Fix external refclk
+ input to SERDES
+Message-ID: <20210512185157.q5sr2xqf3w5igfte@imagines>
+References: <20210512151209.27560-1-kishon@ti.com>
+ <20210512151209.27560-2-kishon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYvbe9L=3uJk2+5fR_e2-fnw=UXSDRnHh+u3nMFeOjOwjg@mail.gmail.com>
+In-Reply-To: <20210512151209.27560-2-kishon@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 12:18:32AM +0530, Naresh Kamboju wrote:
-> On Wed, 12 May 2021 at 23:26, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, May 12, 2021 at 10:53:04PM +0530, Naresh Kamboju wrote:
-> > > On Wed, 12 May 2021 at 21:27, Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > This is the start of the stable review cycle for the 5.12.4 release.
-> > > > There are 677 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > >
-> > > > Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
-> > > > Anything received after that time might be too late.
-> > > >
-> > > > The whole patch series can be found in one patch at:
-> > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.4-rc1.gz
-> > > > or in the git tree and branch at:
-> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> > > > and the diffstat can be found below.
-> > > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
-> > >
-> > >
-> > > MIPS Clang build regression detected.
-> > > MIPS gcc-10,9 and 8 build PASS.
-> > >
-> > > > Maciej W. Rozycki <macro@orcam.me.uk>
-> > > >     MIPS: Reinstate platform `__div64_32' handler
-> > >
-> > > mips clang build breaks on stable rc 5.4 .. 5.12 due to below warnings / errors
-> > >  - mips (defconfig) with clang-12
-> > >  - mips (tinyconfig) with clang-12
-> > >  - mips (allnoconfig) with clang-12
-> > >
-> > > make --silent --keep-going --jobs=8
-> > > O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=mips
-> > > CROSS_COMPILE=mips-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-> > > clang'
-> > > kernel/time/hrtimer.c:318:2: error: couldn't allocate output register
-> > > for constraint 'x'
-> > >         do_div(tmp, (u32) div);
-> > >         ^
-> > > include/asm-generic/div64.h:243:11: note: expanded from macro 'do_div'
-> > >                 __rem = __div64_32(&(n), __base);       \
-> > >                         ^
-> > > arch/mips/include/asm/div64.h:74:11: note: expanded from macro '__div64_32'
-> > >                 __asm__("divu   $0, %z1, %z2"                           \
-> > >                         ^
-> > > 1 error generated.
-> >
-> > Does this also show up in Linus's tree?  The same MIPS patch is there as
-> > well from what I can tell.
+On 20:42-20210512, Kishon Vijay Abraham I wrote:
+> Rename the external refclk inputs to the SERDES from
+> dummy_cmn_refclk/dummy_cmn_refclk1 to cmn_refclk/cmn_refclk1
+> respectively. Also move the external refclk DT nodes outside the
+> cbass_main DT node. Since in j721e common processor board, only the
+> cmn_refclk1 is connected to 100MHz clock, fix the clock frequency.
 > 
-> No.
-> Linus's tree builds MIPS clang successfully.
+> Fixes: afd094ebe69f ("arm64: dts: ti: k3-j721e-main: Add WIZ and SERDES PHY nodes")
 
-Ick, ok, I'll go drop this and let a MIPS developer send us the correct
-thing.
+Assume we want this part of 5.13 fixes?
 
-thanks!
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  .../dts/ti/k3-j721e-common-proc-board.dts     |  4 ++
+>  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 58 ++++++++++---------
+>  2 files changed, 34 insertions(+), 28 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> index 60764366e22b..86f7ab511ee8 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> @@ -635,6 +635,10 @@
+>  	status = "disabled";
+>  };
+>  
+> +&cmn_refclk1 {
+> +	clock-frequency = <100000000>;
+> +};
+> +
+>  &serdes0 {
+>  	serdes0_pcie_link: link@0 {
+>  		reg = <0>;
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> index c2aa45a3ac79..002a0c1520ee 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> @@ -8,6 +8,20 @@
+>  #include <dt-bindings/mux/mux.h>
+>  #include <dt-bindings/mux/ti-serdes.h>
+>  
+> +/ {
+> +	cmn_refclk: cmn-refclk {
+> +		#clock-cells = <0>;
+> +		compatible = "fixed-clock";
+> +		clock-frequency = <0>;
+> +	};
+> +
+> +	cmn_refclk1: cmn-refclk1 {
 
-greg k-h
+Just curious: why cant we use the standard nodenames with clock?
+> +		#clock-cells = <0>;
+> +		compatible = "fixed-clock";
+> +		clock-frequency = <0>;
+> +	};
+> +};
+> +
+>  &cbass_main {
+>  	msmc_ram: sram@70000000 {
+>  		compatible = "mmio-sram";
+> @@ -336,24 +350,12 @@
+>  		pinctrl-single,function-mask = <0xffffffff>;
+>  	};
+>  
+> -	dummy_cmn_refclk: dummy-cmn-refclk {
+> -		#clock-cells = <0>;
+> -		compatible = "fixed-clock";
+> -		clock-frequency = <100000000>;
+> -	};
+> -
+> -	dummy_cmn_refclk1: dummy-cmn-refclk1 {
+> -		#clock-cells = <0>;
+> -		compatible = "fixed-clock";
+> -		clock-frequency = <100000000>;
+> -	};
+> -
+>  	serdes_wiz0: wiz@5000000 {
+>  		compatible = "ti,j721e-wiz-16g";
+>  		#address-cells = <1>;
+>  		#size-cells = <1>;
+>  		power-domains = <&k3_pds 292 TI_SCI_PD_EXCLUSIVE>;
+> -		clocks = <&k3_clks 292 5>, <&k3_clks 292 11>, <&dummy_cmn_refclk>;
+> +		clocks = <&k3_clks 292 5>, <&k3_clks 292 11>, <&cmn_refclk>;
+>  		clock-names = "fck", "core_ref_clk", "ext_ref_clk";
+>  		assigned-clocks = <&k3_clks 292 11>, <&k3_clks 292 0>;
+>  		assigned-clock-parents = <&k3_clks 292 15>, <&k3_clks 292 4>;
+> @@ -362,21 +364,21 @@
+>  		ranges = <0x5000000 0x0 0x5000000 0x10000>;
+>  
+>  		wiz0_pll0_refclk: pll0-refclk {
+> -			clocks = <&k3_clks 292 11>, <&dummy_cmn_refclk>;
+> +			clocks = <&k3_clks 292 11>, <&cmn_refclk>;
+>  			#clock-cells = <0>;
+>  			assigned-clocks = <&wiz0_pll0_refclk>;
+>  			assigned-clock-parents = <&k3_clks 292 11>;
+>  		};
+>  
+>  		wiz0_pll1_refclk: pll1-refclk {
+> -			clocks = <&k3_clks 292 0>, <&dummy_cmn_refclk1>;
+> +			clocks = <&k3_clks 292 0>, <&cmn_refclk1>;
+>  			#clock-cells = <0>;
+>  			assigned-clocks = <&wiz0_pll1_refclk>;
+>  			assigned-clock-parents = <&k3_clks 292 0>;
+>  		};
+>  
+>  		wiz0_refclk_dig: refclk-dig {
+> -			clocks = <&k3_clks 292 11>, <&k3_clks 292 0>, <&dummy_cmn_refclk>, <&dummy_cmn_refclk1>;
+> +			clocks = <&k3_clks 292 11>, <&k3_clks 292 0>, <&cmn_refclk>, <&cmn_refclk1>;
+>  			#clock-cells = <0>;
+>  			assigned-clocks = <&wiz0_refclk_dig>;
+>  			assigned-clock-parents = <&k3_clks 292 11>;
+> @@ -410,7 +412,7 @@
+>  		#address-cells = <1>;
+>  		#size-cells = <1>;
+>  		power-domains = <&k3_pds 293 TI_SCI_PD_EXCLUSIVE>;
+> -		clocks = <&k3_clks 293 5>, <&k3_clks 293 13>, <&dummy_cmn_refclk>;
+> +		clocks = <&k3_clks 293 5>, <&k3_clks 293 13>, <&cmn_refclk>;
+>  		clock-names = "fck", "core_ref_clk", "ext_ref_clk";
+>  		assigned-clocks = <&k3_clks 293 13>, <&k3_clks 293 0>;
+>  		assigned-clock-parents = <&k3_clks 293 17>, <&k3_clks 293 4>;
+> @@ -419,21 +421,21 @@
+>  		ranges = <0x5010000 0x0 0x5010000 0x10000>;
+>  
+>  		wiz1_pll0_refclk: pll0-refclk {
+> -			clocks = <&k3_clks 293 13>, <&dummy_cmn_refclk>;
+> +			clocks = <&k3_clks 293 13>, <&cmn_refclk>;
+>  			#clock-cells = <0>;
+>  			assigned-clocks = <&wiz1_pll0_refclk>;
+>  			assigned-clock-parents = <&k3_clks 293 13>;
+>  		};
+>  
+>  		wiz1_pll1_refclk: pll1-refclk {
+> -			clocks = <&k3_clks 293 0>, <&dummy_cmn_refclk1>;
+> +			clocks = <&k3_clks 293 0>, <&cmn_refclk1>;
+>  			#clock-cells = <0>;
+>  			assigned-clocks = <&wiz1_pll1_refclk>;
+>  			assigned-clock-parents = <&k3_clks 293 0>;
+>  		};
+>  
+>  		wiz1_refclk_dig: refclk-dig {
+> -			clocks = <&k3_clks 293 13>, <&k3_clks 293 0>, <&dummy_cmn_refclk>, <&dummy_cmn_refclk1>;
+> +			clocks = <&k3_clks 293 13>, <&k3_clks 293 0>, <&cmn_refclk>, <&cmn_refclk1>;
+>  			#clock-cells = <0>;
+>  			assigned-clocks = <&wiz1_refclk_dig>;
+>  			assigned-clock-parents = <&k3_clks 293 13>;
+> @@ -467,7 +469,7 @@
+>  		#address-cells = <1>;
+>  		#size-cells = <1>;
+>  		power-domains = <&k3_pds 294 TI_SCI_PD_EXCLUSIVE>;
+> -		clocks = <&k3_clks 294 5>, <&k3_clks 294 11>, <&dummy_cmn_refclk>;
+> +		clocks = <&k3_clks 294 5>, <&k3_clks 294 11>, <&cmn_refclk>;
+>  		clock-names = "fck", "core_ref_clk", "ext_ref_clk";
+>  		assigned-clocks = <&k3_clks 294 11>, <&k3_clks 294 0>;
+>  		assigned-clock-parents = <&k3_clks 294 15>, <&k3_clks 294 4>;
+> @@ -476,21 +478,21 @@
+>  		ranges = <0x5020000 0x0 0x5020000 0x10000>;
+>  
+>  		wiz2_pll0_refclk: pll0-refclk {
+> -			clocks = <&k3_clks 294 11>, <&dummy_cmn_refclk>;
+> +			clocks = <&k3_clks 294 11>, <&cmn_refclk>;
+>  			#clock-cells = <0>;
+>  			assigned-clocks = <&wiz2_pll0_refclk>;
+>  			assigned-clock-parents = <&k3_clks 294 11>;
+>  		};
+>  
+>  		wiz2_pll1_refclk: pll1-refclk {
+> -			clocks = <&k3_clks 294 0>, <&dummy_cmn_refclk1>;
+> +			clocks = <&k3_clks 294 0>, <&cmn_refclk1>;
+>  			#clock-cells = <0>;
+>  			assigned-clocks = <&wiz2_pll1_refclk>;
+>  			assigned-clock-parents = <&k3_clks 294 0>;
+>  		};
+>  
+>  		wiz2_refclk_dig: refclk-dig {
+> -			clocks = <&k3_clks 294 11>, <&k3_clks 294 0>, <&dummy_cmn_refclk>, <&dummy_cmn_refclk1>;
+> +			clocks = <&k3_clks 294 11>, <&k3_clks 294 0>, <&cmn_refclk>, <&cmn_refclk1>;
+>  			#clock-cells = <0>;
+>  			assigned-clocks = <&wiz2_refclk_dig>;
+>  			assigned-clock-parents = <&k3_clks 294 11>;
+> @@ -524,7 +526,7 @@
+>  		#address-cells = <1>;
+>  		#size-cells = <1>;
+>  		power-domains = <&k3_pds 295 TI_SCI_PD_EXCLUSIVE>;
+> -		clocks = <&k3_clks 295 5>, <&k3_clks 295 9>, <&dummy_cmn_refclk>;
+> +		clocks = <&k3_clks 295 5>, <&k3_clks 295 9>, <&cmn_refclk>;
+>  		clock-names = "fck", "core_ref_clk", "ext_ref_clk";
+>  		assigned-clocks = <&k3_clks 295 9>, <&k3_clks 295 0>;
+>  		assigned-clock-parents = <&k3_clks 295 13>, <&k3_clks 295 4>;
+> @@ -533,21 +535,21 @@
+>  		ranges = <0x5030000 0x0 0x5030000 0x10000>;
+>  
+>  		wiz3_pll0_refclk: pll0-refclk {
+> -			clocks = <&k3_clks 295 9>, <&dummy_cmn_refclk>;
+> +			clocks = <&k3_clks 295 9>, <&cmn_refclk>;
+>  			#clock-cells = <0>;
+>  			assigned-clocks = <&wiz3_pll0_refclk>;
+>  			assigned-clock-parents = <&k3_clks 295 9>;
+>  		};
+>  
+>  		wiz3_pll1_refclk: pll1-refclk {
+> -			clocks = <&k3_clks 295 0>, <&dummy_cmn_refclk1>;
+> +			clocks = <&k3_clks 295 0>, <&cmn_refclk1>;
+>  			#clock-cells = <0>;
+>  			assigned-clocks = <&wiz3_pll1_refclk>;
+>  			assigned-clock-parents = <&k3_clks 295 0>;
+>  		};
+>  
+>  		wiz3_refclk_dig: refclk-dig {
+> -			clocks = <&k3_clks 295 9>, <&k3_clks 295 0>, <&dummy_cmn_refclk>, <&dummy_cmn_refclk1>;
+> +			clocks = <&k3_clks 295 9>, <&k3_clks 295 0>, <&cmn_refclk>, <&cmn_refclk1>;
+>  			#clock-cells = <0>;
+>  			assigned-clocks = <&wiz3_refclk_dig>;
+>  			assigned-clock-parents = <&k3_clks 295 9>;
+> -- 
+> 2.17.1
+> 
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
