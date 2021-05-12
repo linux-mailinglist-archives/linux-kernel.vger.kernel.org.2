@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D4937CC71
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605A237CC69
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239530AbhELQpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:45:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56786 "EHLO mail.kernel.org"
+        id S238271AbhELQox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:44:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234910AbhELPmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:42:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BD7761C7F;
-        Wed, 12 May 2021 15:21:47 +0000 (UTC)
+        id S235092AbhELPmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:42:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F207061C7E;
+        Wed, 12 May 2021 15:21:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620832908;
-        bh=SNDeB7Z6P2MY6QJujyykjpUFebnKf0w2LNOHf3T2JXw=;
+        s=korg; t=1620832920;
+        bh=xjaeZgvVccnUH8lmZHPqvRR4jcGYSCBKPzA8UIS/aJ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Af2nKqjTnG0aWFswibCat5q6LPFcQuz5GCwnSs8dPwT2HF28x98xdVcc/MRwXEtMB
-         XB2PzzlbUKkK+cryvEM7PxZyMhYSXKb3m2iDaiO97ieedTDudxcELlGc1ZUksCwPZh
-         RfYrfFp1o2H4KQjS8mjcXjNTlwOm127nfjlin+ws=
+        b=elTVdodZx+cbemF2M6yZsknxMUxraiu1gNhSPk3NzxZPT5uig/DRN6PvsAeebOqnW
+         3kGy8LG53YidFhjEMyB334NBU3YkSgqWjSLv7SKPA9i8xSfNBlWzPQAnC1bJCBAQ/a
+         nQJQ/rtcWpxed5kZaQH8v/GbHHAGYo0VURotDGGQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Vadym Kochan <vkochan@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 470/530] RDMA/cxgb4: add missing qpid increment
-Date:   Wed, 12 May 2021 16:49:40 +0200
-Message-Id: <20210512144835.209877155@linuxfoundation.org>
+Subject: [PATCH 5.10 475/530] net: marvell: prestera: fix port event handling on init
+Date:   Wed, 12 May 2021 16:49:45 +0200
+Message-Id: <20210512144835.367998633@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
 References: <20210512144819.664462530@linuxfoundation.org>
@@ -40,37 +40,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Potnuri Bharat Teja <bharat@chelsio.com>
+From: Vadym Kochan <vkochan@marvell.com>
 
-[ Upstream commit 3a6684385928d00b29acac7658a5ae1f2a44494c ]
+[ Upstream commit 333980481b99edb24ebd5d1a53af70a15d9146de ]
 
-missing qpid increment leads to skipping few qpids while allocating QP.
-This eventually leads to adapter running out of qpids after establishing
-fewer connections than it actually supports.
-Current patch increments the qpid correctly.
+For some reason there might be a crash during ports creation if port
+events are handling at the same time  because fw may send initial
+port event with down state.
 
-Fixes: cfdda9d76436 ("RDMA/cxgb4: Add driver for Chelsio T4 RNIC")
-Link: https://lore.kernel.org/r/20210415151422.9139-1-bharat@chelsio.com
-Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+The crash points to cancel_delayed_work() which is called when port went
+is down.  Currently I did not find out the real cause of the issue, so
+fixed it by cancel port stats work only if previous port's state was up
+& runnig.
+
+The following is the crash which can be triggered:
+
+[   28.311104] Unable to handle kernel paging request at virtual address
+000071775f776600
+[   28.319097] Mem abort info:
+[   28.321914]   ESR = 0x96000004
+[   28.324996]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   28.330350]   SET = 0, FnV = 0
+[   28.333430]   EA = 0, S1PTW = 0
+[   28.336597] Data abort info:
+[   28.339499]   ISV = 0, ISS = 0x00000004
+[   28.343362]   CM = 0, WnR = 0
+[   28.346354] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000100bf7000
+[   28.352842] [000071775f776600] pgd=0000000000000000,
+p4d=0000000000000000
+[   28.359695] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+[   28.365310] Modules linked in: prestera_pci(+) prestera
+uio_pdrv_genirq
+[   28.372005] CPU: 0 PID: 1291 Comm: kworker/0:1H Not tainted
+5.11.0-rc4 #1
+[   28.378846] Hardware name: DNI AmazonGo1 A7040 board (DT)
+[   28.384283] Workqueue: prestera_fw_wq prestera_fw_evt_work_fn
+[prestera_pci]
+[   28.391413] pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
+[   28.397468] pc : get_work_pool+0x48/0x60
+[   28.401442] lr : try_to_grab_pending+0x6c/0x1b0
+[   28.406018] sp : ffff80001391bc60
+[   28.409358] x29: ffff80001391bc60 x28: 0000000000000000
+[   28.414725] x27: ffff000104fc8b40 x26: ffff80001127de88
+[   28.420089] x25: 0000000000000000 x24: ffff000106119760
+[   28.425452] x23: ffff00010775dd60 x22: ffff00010567e000
+[   28.430814] x21: 0000000000000000 x20: ffff80001391bcb0
+[   28.436175] x19: ffff00010775deb8 x18: 00000000000000c0
+[   28.441537] x17: 0000000000000000 x16: 000000008d9b0e88
+[   28.446898] x15: 0000000000000001 x14: 00000000000002ba
+[   28.452261] x13: 80a3002c00000002 x12: 00000000000005f4
+[   28.457622] x11: 0000000000000030 x10: 000000000000000c
+[   28.462985] x9 : 000000000000000c x8 : 0000000000000030
+[   28.468346] x7 : ffff800014400000 x6 : ffff000106119758
+[   28.473708] x5 : 0000000000000003 x4 : ffff00010775dc60
+[   28.479068] x3 : 0000000000000000 x2 : 0000000000000060
+[   28.484429] x1 : 000071775f776600 x0 : ffff00010775deb8
+[   28.489791] Call trace:
+[   28.492259]  get_work_pool+0x48/0x60
+[   28.495874]  cancel_delayed_work+0x38/0xb0
+[   28.500011]  prestera_port_handle_event+0x90/0xa0 [prestera]
+[   28.505743]  prestera_evt_recv+0x98/0xe0 [prestera]
+[   28.510683]  prestera_fw_evt_work_fn+0x180/0x228 [prestera_pci]
+[   28.516660]  process_one_work+0x1e8/0x360
+[   28.520710]  worker_thread+0x44/0x480
+[   28.524412]  kthread+0x154/0x160
+[   28.527670]  ret_from_fork+0x10/0x38
+[   28.531290] Code: a8c17bfd d50323bf d65f03c0 9278dc21 (f9400020)
+[   28.537429] ---[ end trace 5eced933df3a080b ]---
+
+Fixes: 501ef3066c89 ("net: marvell: prestera: Add driver for Prestera family ASIC devices")
+Signed-off-by: Vadym Kochan <vkochan@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/cxgb4/resource.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/marvell/prestera/prestera_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/resource.c b/drivers/infiniband/hw/cxgb4/resource.c
-index 5c95c789f302..e800e8e8bed5 100644
---- a/drivers/infiniband/hw/cxgb4/resource.c
-+++ b/drivers/infiniband/hw/cxgb4/resource.c
-@@ -216,7 +216,7 @@ u32 c4iw_get_qpid(struct c4iw_rdev *rdev, struct c4iw_dev_ucontext *uctx)
- 			goto out;
- 		entry->qid = qid;
- 		list_add_tail(&entry->entry, &uctx->cqids);
--		for (i = qid; i & rdev->qpmask; i++) {
-+		for (i = qid + 1; i & rdev->qpmask; i++) {
- 			entry = kmalloc(sizeof(*entry), GFP_KERNEL);
- 			if (!entry)
- 				goto out;
+diff --git a/drivers/net/ethernet/marvell/prestera/prestera_main.c b/drivers/net/ethernet/marvell/prestera/prestera_main.c
+index da4b286d1337..feb69fcd908e 100644
+--- a/drivers/net/ethernet/marvell/prestera/prestera_main.c
++++ b/drivers/net/ethernet/marvell/prestera/prestera_main.c
+@@ -436,7 +436,8 @@ static void prestera_port_handle_event(struct prestera_switch *sw,
+ 			netif_carrier_on(port->dev);
+ 			if (!delayed_work_pending(caching_dw))
+ 				queue_delayed_work(prestera_wq, caching_dw, 0);
+-		} else {
++		} else if (netif_running(port->dev) &&
++			   netif_carrier_ok(port->dev)) {
+ 			netif_carrier_off(port->dev);
+ 			if (delayed_work_pending(caching_dw))
+ 				cancel_delayed_work(caching_dw);
 -- 
 2.30.2
 
