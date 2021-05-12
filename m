@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2143537CC0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813F637CBB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242030AbhELQkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:40:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41538 "EHLO mail.kernel.org"
+        id S235272AbhELQhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:37:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236879AbhELPrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:47:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB33961C9B;
-        Wed, 12 May 2021 15:23:50 +0000 (UTC)
+        id S236665AbhELPpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:45:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0F34619A7;
+        Wed, 12 May 2021 15:23:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620833031;
-        bh=PNu7+jadj9x9BmJTVziJwL/PZSEIZ6YdtI/TsPT2bJQ=;
+        s=korg; t=1620833004;
+        bh=Wz1vQYGjMtqr2LWXbeUWRRYsqD4GG77I2JGVxe91OnU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AddP0M3RV53MPbdcgPhklB4m1LzbIfOnupv1+nQI1wUVKz2eCmlUS5/P+BC/AAP8o
-         PAIkyaPmAtYoufXsT3kP7N5No7eUBD06dC+LAJ+LDil8oQhuBhj1VkQ4+mJrz4Chi/
-         1bEjRybkGVz0lh86bC7uYIWMHkRLuYyPkv3/SXc8=
+        b=V3E77AaDPhaAxQhhtNg8bFUoUq6ApTzh2BUmSGGYRcDh9mkV7g1mfHPvNIAwuzTyE
+         RwXpA5YsZXekhZ21PYx4E3To191ZJW3Rj93mJKEVwsHwSCGBWnaQ2GPJos9sJOwEjg
+         LFGDUDw5j31vHvn/zaNTDQ6tHpIBmhnQmE14U3gA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 487/530] ath10k: Fix a use after free in ath10k_htc_send_bundle
-Date:   Wed, 12 May 2021 16:49:57 +0200
-Message-Id: <20210512144835.763338058@linuxfoundation.org>
+Subject: [PATCH 5.10 509/530] RDMA/bnxt_re: Fix a double free in bnxt_qplib_alloc_res
+Date:   Wed, 12 May 2021 16:50:19 +0200
+Message-Id: <20210512144836.490247199@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
 References: <20210512144819.664462530@linuxfoundation.org>
@@ -42,35 +44,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit 8392df5d7e0b6a7d21440da1fc259f9938f4dec3 ]
+[ Upstream commit 34b39efa5ae82fc0ad0acc27653c12a56328dbbe ]
 
-In ath10k_htc_send_bundle, the bundle_skb could be freed by
-dev_kfree_skb_any(bundle_skb). But the bundle_skb is used later
-by bundle_skb->len.
+In bnxt_qplib_alloc_res, it calls bnxt_qplib_alloc_dpi_tbl().  Inside
+bnxt_qplib_alloc_dpi_tbl, dpit->dbr_bar_reg_iomem is freed via
+pci_iounmap() in unmap_io error branch. After the callee returns err code,
+bnxt_qplib_alloc_res calls
+bnxt_qplib_free_res()->bnxt_qplib_free_dpi_tbl() in the fail branch. Then
+dpit->dbr_bar_reg_iomem is freed in the second time by pci_iounmap().
 
-As skb_len = bundle_skb->len, my patch replaces bundle_skb->len to
-skb_len after the bundle_skb was freed.
+My patch set dpit->dbr_bar_reg_iomem to NULL after it is freed by
+pci_iounmap() in the first time, to avoid the double free.
 
-Fixes: c8334512f3dd1 ("ath10k: add htt TX bundle for sdio")
+Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
+Link: https://lore.kernel.org/r/20210426140614.6722-1-lyl2019@mail.ustc.edu.cn
 Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210329120154.8963-1-lyl2019@mail.ustc.edu.cn
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Acked-by: Devesh Sharma <devesh.sharma@broadcom.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/htc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/bnxt_re/qplib_res.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 31df6dd04bf6..540dd59112a5 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -665,7 +665,7 @@ static int ath10k_htc_send_bundle(struct ath10k_htc_ep *ep,
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+index fa7878336100..3ca47004b752 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+@@ -854,6 +854,7 @@ static int bnxt_qplib_alloc_dpi_tbl(struct bnxt_qplib_res     *res,
  
- 	ath10k_dbg(ar, ATH10K_DBG_HTC,
- 		   "bundle tx status %d eid %d req count %d count %d len %d\n",
--		   ret, ep->eid, skb_queue_len(&ep->tx_req_head), cn, bundle_skb->len);
-+		   ret, ep->eid, skb_queue_len(&ep->tx_req_head), cn, skb_len);
- 	return ret;
+ unmap_io:
+ 	pci_iounmap(res->pdev, dpit->dbr_bar_reg_iomem);
++	dpit->dbr_bar_reg_iomem = NULL;
+ 	return -ENOMEM;
  }
  
 -- 
