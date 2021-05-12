@@ -2,128 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD3D37EB90
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FF637EB91
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381246AbhELTds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46268 "EHLO
+        id S1381270AbhELTdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348246AbhELRfr (ORCPT
+        with ESMTP id S1348659AbhELRiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:35:47 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CA4C061358;
-        Wed, 12 May 2021 10:33:21 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id n3so725776plf.7;
-        Wed, 12 May 2021 10:33:21 -0700 (PDT)
+        Wed, 12 May 2021 13:38:13 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D201C06134F;
+        Wed, 12 May 2021 10:35:24 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id c3so34885575lfs.7;
+        Wed, 12 May 2021 10:35:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K/Pm8uY+AjoJVI9OqoE7C7bqpQJBmCJUql194cT1sRI=;
-        b=YQCkngmEgnmJH8laOgr5SiRh1EjFYL3bZw6APsX8Ws8qgT0glcuzLp80bmFu4yqWbt
-         Bg77zKgSEAJ3CU0HoirVKmeAY5KCEaU1x+TJUFFZyvrfoed6kXVUfpFueyjWNuN9ok4L
-         YPB1nNk3FFFX182+gyX7v6z4zltqNb8enccvRrUZ6YVlzdzShZfV36TrxaYQmMVUzxJF
-         utlM/oC7Cb/9voUmN+Ou7Z59XfxJOZvG1zVR+MwWMAHYXQspt1IeThGMlrZRukkW7deQ
-         obD6cxWnZMRItH13f490p/Ca2Da/vZM/NlQiKWdxDmaHkA09EHyMql1GIqBxgLBrHVyN
-         n+Wg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SL8Vz3P5FcAwM0uKF7teunvsKj7fDkcA6NLzQS7Lox0=;
+        b=mphJ03+KSklxNDPlvb+6V2HqwFj2Oizj8BQxZavsyL992pzRXN8UtOraQozdCGlU94
+         Hw3DvdinB1h59kvxWLxJnyLkG6p13evafd6/SuvAM++DTWGoLICdcojZfiJMWu25IELO
+         P1BLSDD+Zgfo41l36s6OfuWeZAlECNR40UpQxMX6yzfzO/69wxnAarp51r7+adZkxG9N
+         lw6pwvwmFE/F14VfFSabbzh6tCu82FLUQit4g6T94thqowVpMUuPVSvM0RbRQccii19K
+         3lZyVpPA1QiP5xe5N0GGljqrxAKdFySj6vQglyrbQ6bJbqbIkGr1HoDhnR0uO97adj6M
+         2nlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K/Pm8uY+AjoJVI9OqoE7C7bqpQJBmCJUql194cT1sRI=;
-        b=rdRXk7Lp/jOHTA31xiden3CRaYG7p1qz/lLwycy4m05s0vpsLIEGiB/OPfCkkTVSAr
-         wv9LX4NKfa7Jyme/yndx2mA9I/ai22bJJup0IWUzuJuvXfTuC2mery7BQNWQmXQlCqb1
-         ckaV/rfM7R1njtz0EIVhhCe4JrlsRLgB6bBP81omyU49ktq7gZup/WpMg6RYz1xFC0RP
-         ECUva8K8KOlpkwlf3JQCQYDKIm2vh+bgLpEF7RMss+NlOVhLAyenzWdwvYUqWnijF2ZD
-         ncWqi4M70Nfj0m021mUGNnJKmo3kGX+g0ELSZWzazFOYDygtV641I67C7Byy7kkvy7Kw
-         g0hQ==
-X-Gm-Message-State: AOAM530IvBbNhpk9SL2wjTifVF8fW2XSXlFuWDQL/jWG6lty97HUnCrZ
-        pW/YFJEjfwCvYyfFUybXxQzBrG9acIY5GFWF5/A=
-X-Google-Smtp-Source: ABdhPJwTXd7T2dzSEPTNfRmvseSk41y6zLPIAEHJ+5CYjpYUtwD/xFC07w0jHDeQdr1S8pcozwocecMj1CYFjkUkB5A=
-X-Received: by 2002:a17:90b:1c10:: with SMTP id oc16mr7425665pjb.86.1620840800569;
- Wed, 12 May 2021 10:33:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SL8Vz3P5FcAwM0uKF7teunvsKj7fDkcA6NLzQS7Lox0=;
+        b=GKann4e5yxAFbOX/NlOJUsubNhWRaaolL/g6Acr9tWMOeN5gwErqQyUcmO7iTyFMBm
+         sgebvgavyS/DvqIoU9e0kcWR1J0NNqf3av/+ugsiUY1BD3ZfnNlKMVv38sg2oHvzsQ1o
+         x5o8Tunh7YNZ7NkkdlflbHJMdzgY1+stL4CVwbhwrbUx2BIJuzfSzP0ALjtf+3jdt79x
+         qiLcInYd0871Jwcwsqv4sMIdtf4XKJL0uAOM21liXtHLCmlOSZbo0lRMmR/PjmHai4QK
+         CoO2qCa9TBds3IQ03YU84tF3Q6oIXDbnhtCJeTmbw7hYVwbvTeg+AihY5SGQx1GRZP4l
+         MtqA==
+X-Gm-Message-State: AOAM533yLksdBL1v7Vd2IwbUUJXcQn80gLqgdDR9ZOR9F0IvLcIVBlNK
+        iJgShFw0zkgqDfoVa+EJ4X+vXXwaQ8tHOw==
+X-Google-Smtp-Source: ABdhPJztD+uOthbE6U92lOgMG6ERMq4tIxiYgYGisfq6iKKCxyLvXiyplKjYmgXdIQXFpiQxrR+W8g==
+X-Received: by 2002:a05:6512:3b9e:: with SMTP id g30mr13913003lfv.247.1620840922869;
+        Wed, 12 May 2021 10:35:22 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
+        by smtp.gmail.com with ESMTPSA id 6sm30292lfz.189.2021.05.12.10.35.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 10:35:22 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Eduardo Valentin <edubezval@gmail.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] media: radio: si4713: constify static struct v4l2_ioctl_ops
+Date:   Wed, 12 May 2021 19:35:14 +0200
+Message-Id: <20210512173514.16813-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210510095649.3302835-1-andy.shevchenko@gmail.com>
-In-Reply-To: <20210510095649.3302835-1-andy.shevchenko@gmail.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Wed, 12 May 2021 20:33:09 +0300
-Message-ID: <CA+U=DsoX1kTy-NwNFPajWMZnJT+cY9MocSGpgTggmhgXrhXREg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] iio: dac: ad5770r: Put fwnode in error case during ->probe()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Alexandru Tachici <alexandru.tachici@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 12:59 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> device_for_each_child_node() bumps a reference counting of a returned variable.
-> We have to balance it whenever we return to the caller.
+The only usage of radio_si4713_ioctl_ops is to assign its address to the
+ioctl_ops field in the video_device struct, which is a pointer to const.
+Make it const to allow the compiler to put it in read-only memory.
 
-This feels like the device_for_each_child_node() [and the of_node
-variant] iterator[s] need[s] some re-design to account for how easy it
-is to slip stuff by.
-But that's something quite out of this scope.
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ drivers/media/radio/si4713/radio-platform-si4713.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+diff --git a/drivers/media/radio/si4713/radio-platform-si4713.c b/drivers/media/radio/si4713/radio-platform-si4713.c
+index a7dfe5f55c18..433f9642786d 100644
+--- a/drivers/media/radio/si4713/radio-platform-si4713.c
++++ b/drivers/media/radio/si4713/radio-platform-si4713.c
+@@ -110,7 +110,7 @@ static long radio_si4713_default(struct file *file, void *p,
+ 					  ioctl, cmd, arg);
+ }
+ 
+-static struct v4l2_ioctl_ops radio_si4713_ioctl_ops = {
++static const struct v4l2_ioctl_ops radio_si4713_ioctl_ops = {
+ 	.vidioc_querycap	= radio_si4713_querycap,
+ 	.vidioc_g_modulator	= radio_si4713_g_modulator,
+ 	.vidioc_s_modulator	= radio_si4713_s_modulator,
+-- 
+2.31.1
 
->
-> Fixes: cbbb819837f6 ("iio: dac: ad5770r: Add AD5770R support")
-> Cc: Alexandru Tachici <alexandru.tachici@analog.com>
-> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> ---
->  drivers/iio/dac/ad5770r.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/iio/dac/ad5770r.c b/drivers/iio/dac/ad5770r.c
-> index 7ab2ccf90863..8107f7bbbe3c 100644
-> --- a/drivers/iio/dac/ad5770r.c
-> +++ b/drivers/iio/dac/ad5770r.c
-> @@ -524,23 +524,29 @@ static int ad5770r_channel_config(struct ad5770r_state *st)
->         device_for_each_child_node(&st->spi->dev, child) {
->                 ret = fwnode_property_read_u32(child, "num", &num);
->                 if (ret)
-> -                       return ret;
-> -               if (num >= AD5770R_MAX_CHANNELS)
-> -                       return -EINVAL;
-> +                       goto err_child_out;
-> +               if (num >= AD5770R_MAX_CHANNELS) {
-> +                       ret = -EINVAL;
-> +                       goto err_child_out;
-> +               }
->
->                 ret = fwnode_property_read_u32_array(child,
->                                                      "adi,range-microamp",
->                                                      tmp, 2);
->                 if (ret)
-> -                       return ret;
-> +                       goto err_child_out;
->
->                 min = tmp[0] / 1000;
->                 max = tmp[1] / 1000;
->                 ret = ad5770r_store_output_range(st, min, max, num);
->                 if (ret)
-> -                       return ret;
-> +                       goto err_child_out;
->         }
->
-> +       return 0;
-> +
-> +err_child_out:
-> +       fwnode_handle_put(child);
->         return ret;
->  }
->
-> --
-> 2.31.1
->
