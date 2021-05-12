@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5278337EBAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12DEC37EBAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381779AbhELTfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50466 "EHLO
+        id S1381814AbhELTfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350994AbhELRw6 (ORCPT
+        with ESMTP id S1351069AbhELRxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:52:58 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF4AC061357
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:50:09 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id b25so36190172eju.5
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:50:09 -0700 (PDT)
+        Wed, 12 May 2021 13:53:16 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D932C061358
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:50:10 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id l1so236057ejb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:50:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=deviqon.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=b3CIlvHXWAL8LnevCxF+tYL0znrNNdyr/u/1pI8y5A4=;
-        b=qXCVU1pOC3NzaTJp9gtolMr27NxdPQPD44yJNa++uNdTnbUbh7ROvboXmUiRoIY863
-         Pmj++blx5+aTL5eYpceb2RQqLPyFCX9Hxe+OSd1hdjIzo/6B+noo7zTyLZ6IANatMsUk
-         o9KvvT0qdHCyKD7L9+c8BZXRUNOx5ukwp90c4N9oF6P01xGhqIt0VeKuKgBlJq931RsY
-         CswmQnyuXgOMCzhTD8jISNOZOR0kyY4OsLzOj1P0cs0T3RTazIaOJmJA64yJ/N4C7jnk
-         8yE9iHlGTz/PopQayK/trOQpSF70T/dK1UkqQ7M80FeA2hFD20qAEP1jBZPV5cmT45nK
-         8czA==
+        bh=jHJAupFk4VVa7z8ctgtedCHBJAEpOSwdi50lGjIjnM8=;
+        b=e10xmBpzys9TdMzE0pnZOOkSfhsx/x+C1dbrHUZpxwE97NttSHDWv5JMPPQzRHCKmf
+         5q3wJ5nmq/nooxGb8mVQgNDjWMrYDglBaVpSrsIn1rcHqC7bLMzlUR1K9d0aSDaxANMN
+         8MDIr7L9W2Ama2Do4uMchWdz1vBpNeascHyKnkr+5S7TktkVwvza3oJPN4QniW+C8qwR
+         Wjp3K0jHkZj1hY/NMOCCNUhtWCUzcQbP79tBqyTCMXocF1iEwztNhOFlG8jKbQQwdcqP
+         4+sEdxNOOqJsRF7tO+rQ/ykf2Fq0Xko9BUwyAfKDYTRVewT8XpjtFLoU9WjFDFSLyjo8
+         aOTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=b3CIlvHXWAL8LnevCxF+tYL0znrNNdyr/u/1pI8y5A4=;
-        b=sVQfUOe49GmhxdDoGPLrD2Xc5qyqH8T63y/urdN+Nmr0LABmpwuDqnQB+RAI8QsXD5
-         1WIW+3zcgtSdJ+dBBFS/xsVrH5aMqTQj1Z4L8jRHrbg0fE3Ljy68XseS2JY5/nrOUjK6
-         kJ6Z+25SSKDPY5qipRKjpP5YvwvRRYBm5jmHNiQQ0ne/bvXO5yel6g1fRVIOS2FxfGt+
-         8wUN4AgYD/ucAir5ph2KBJ8tRMIUCpkCJnzqphjHn54zVsrsEyL7/CYPMoVsONvv3uvG
-         N1IjUay1nKCOBB7ZVs9e0keY+Gp9RseXg4sKFeR2YqfyfN+i9xk2+oQyiQzFAxI0Ntq8
-         NtaQ==
-X-Gm-Message-State: AOAM533G+F7CMzk7E7rtYCbLUONu6dQOWuA4biOTpPUyG6+O/oj8gjTy
-        h0/wbE54W2ac7h7Z6P6SZlm14w==
-X-Google-Smtp-Source: ABdhPJxRWOy3CH7rmQIcbkRp4vckxVLhFK/2r4beXIvZ6wPCagZSzLrH0C79YI4iqL1HRTFXCJ5ecA==
-X-Received: by 2002:a17:906:29ce:: with SMTP id y14mr38621527eje.189.1620841808068;
-        Wed, 12 May 2021 10:50:08 -0700 (PDT)
+        bh=jHJAupFk4VVa7z8ctgtedCHBJAEpOSwdi50lGjIjnM8=;
+        b=pBGh7m398zVeanohy4H63kN8jLwNzcr0RzeQ72oi5Y6eztUJWlOJqtolbAnvr3hKlr
+         uwu5+DT4SzliadXQVg8WngMfShv2StTl+H8qIUJWa89Px0Ed2++/sO6mU9CMVngTKnUE
+         QrhWBntn8w7rGRWjZrgQFn4RyUI/msls5V/clmlElhLdIEk+mKuztvE4TpP7u/yuU+PG
+         vlZyzgs6c+6SFPgFAeSeyrIuNpJIR2g4ObSRvLf87cUAjiXGuz88RR2CFqVdRYRgFKnh
+         fKHumIrFE3Q0gvIcW8SIVAoVNZiPEno7aB3CQ2sWjZWJyXC6xZRD8IGy26hP44Ta5L4Z
+         WISg==
+X-Gm-Message-State: AOAM532q7qsxqNaitCJAPzcQb71zSnL3xirSe/3wt+PGOfvc57VdQ8Jo
+        dbH5B0meJeKpdvA/xhvWL9GFOw==
+X-Google-Smtp-Source: ABdhPJz0FTn0J+EeturXDq+YOEJGN9aS96/Ktldul8oQ4CJTzbrcu1fjcrwMYKn+fa9fVKlSBehKIg==
+X-Received: by 2002:a17:907:e89:: with SMTP id ho9mr37611483ejc.5.1620841809218;
+        Wed, 12 May 2021 10:50:09 -0700 (PDT)
 Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id r16sm338058edq.87.2021.05.12.10.50.07
+        by smtp.gmail.com with ESMTPSA id r16sm338058edq.87.2021.05.12.10.50.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 10:50:07 -0700 (PDT)
+        Wed, 12 May 2021 10:50:08 -0700 (PDT)
 From:   Alexandru Ardelean <aardelean@deviqon.com>
 To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     jic23@kernel.org, Jonathan.Cameron@huawei.com,
         alexandru.tachici@analog.com, linux@deviqon.com,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
         Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH v3 11/12] iio: adc: ad7124: Use devm_ managed calls for all of probe() + drop remove()
-Date:   Wed, 12 May 2021 20:49:13 +0300
-Message-Id: <20210512174914.10549-12-aardelean@deviqon.com>
+Subject: [PATCH v3 12/12] iio: adc: ad_sigma_delta: remove ad_sd_{setup,cleanup}_buffer_and_trigger()
+Date:   Wed, 12 May 2021 20:49:14 +0300
+Message-Id: <20210512174914.10549-13-aardelean@deviqon.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512174914.10549-1-aardelean@deviqon.com>
 References: <20210512174914.10549-1-aardelean@deviqon.com>
@@ -66,112 +65,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Since all AD Sigma-Delta drivers now use the
+devm_ad_sd_setup_buffer_and_trigger() function, we can remove the old
+ad_sd_{setup,cleanup}_buffer_and_trigger() functions.
 
-As not many steps were not already devm_ managed, use
-devm_add_action_or_reset() to handle the rest.
+This way we can discourage new drivers that use the ad_sigma_delta
+lib-driver to use these (older functions).
 
-This also uses the new devm_ad_sd_setup_buffer_and_trigger() function.
-
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 ---
- drivers/iio/adc/ad7124.c | 48 +++++++++++++---------------------------
- 1 file changed, 15 insertions(+), 33 deletions(-)
+ drivers/iio/adc/ad_sigma_delta.c       | 86 --------------------------
+ include/linux/iio/adc/ad_sigma_delta.h |  3 -
+ 2 files changed, 89 deletions(-)
 
-diff --git a/drivers/iio/adc/ad7124.c b/drivers/iio/adc/ad7124.c
-index a27db78ea13e..e45c600fccc0 100644
---- a/drivers/iio/adc/ad7124.c
-+++ b/drivers/iio/adc/ad7124.c
-@@ -862,6 +862,11 @@ static void ad7124_reg_disable(void *r)
- 	regulator_disable(r);
- }
+diff --git a/drivers/iio/adc/ad_sigma_delta.c b/drivers/iio/adc/ad_sigma_delta.c
+index d5801a47be07..1d652d9b2f5c 100644
+--- a/drivers/iio/adc/ad_sigma_delta.c
++++ b/drivers/iio/adc/ad_sigma_delta.c
+@@ -470,49 +470,6 @@ EXPORT_SYMBOL_GPL(ad_sd_validate_trigger);
+ static const struct iio_trigger_ops ad_sd_trigger_ops = {
+ };
  
-+static void ad7124_clk_disable(void *c)
-+{
-+	clk_disable_unprepare(c);
-+}
-+
- static int ad7124_probe(struct spi_device *spi)
- {
- 	const struct ad7124_chip_info *info;
-@@ -883,8 +888,6 @@ static int ad7124_probe(struct spi_device *spi)
- 
- 	ad_sd_init(&st->sd, indio_dev, spi, &ad7124_sigma_delta_info);
- 
--	spi_set_drvdata(spi, indio_dev);
+-static int ad_sd_probe_trigger(struct iio_dev *indio_dev)
+-{
+-	struct ad_sigma_delta *sigma_delta = iio_device_get_drvdata(indio_dev);
+-	int ret;
 -
- 	indio_dev->name = st->chip_info->name;
- 	indio_dev->modes = INDIO_DIRECT_MODE;
- 	indio_dev->info = &ad7124_info;
-@@ -922,48 +925,28 @@ static int ad7124_probe(struct spi_device *spi)
- 	if (ret < 0)
- 		return ret;
- 
-+	ret = devm_add_action_or_reset(&spi->dev, ad7124_clk_disable, st->mclk);
-+	if (ret)
-+		return ret;
-+
- 	ret = ad7124_soft_reset(st);
- 	if (ret < 0)
--		goto error_clk_disable_unprepare;
-+		return ret;
- 
- 	ret = ad7124_check_chip_id(st);
- 	if (ret)
--		goto error_clk_disable_unprepare;
-+		return ret;
- 
- 	ret = ad7124_setup(st);
- 	if (ret < 0)
--		goto error_clk_disable_unprepare;
-+		return ret;
- 
--	ret = ad_sd_setup_buffer_and_trigger(indio_dev);
-+	ret = devm_ad_sd_setup_buffer_and_trigger(&spi->dev, indio_dev);
- 	if (ret < 0)
--		goto error_clk_disable_unprepare;
--
--	ret = iio_device_register(indio_dev);
--	if (ret < 0) {
--		dev_err(&spi->dev, "Failed to register iio device\n");
--		goto error_remove_trigger;
+-	sigma_delta->trig = iio_trigger_alloc(&sigma_delta->spi->dev,
+-					      "%s-dev%d", indio_dev->name,
+-					      iio_device_id(indio_dev));
+-	if (sigma_delta->trig == NULL) {
+-		ret = -ENOMEM;
+-		goto error_ret;
 -	}
+-	sigma_delta->trig->ops = &ad_sd_trigger_ops;
+-	init_completion(&sigma_delta->completion);
+-
+-	sigma_delta->irq_dis = true;
+-	ret = request_irq(sigma_delta->spi->irq,
+-			  ad_sd_data_rdy_trig_poll,
+-			  sigma_delta->info->irq_flags | IRQF_NO_AUTOEN,
+-			  indio_dev->name,
+-			  sigma_delta);
+-	if (ret)
+-		goto error_free_trig;
+-
+-	iio_trigger_set_drvdata(sigma_delta->trig, sigma_delta);
+-
+-	ret = iio_trigger_register(sigma_delta->trig);
+-	if (ret)
+-		goto error_free_irq;
+-
+-	/* select default trigger */
+-	indio_dev->trig = iio_trigger_get(sigma_delta->trig);
 -
 -	return 0;
 -
--error_remove_trigger:
--	ad_sd_cleanup_buffer_and_trigger(indio_dev);
--error_clk_disable_unprepare:
--	clk_disable_unprepare(st->mclk);
--
+-error_free_irq:
+-	free_irq(sigma_delta->spi->irq, sigma_delta);
+-error_free_trig:
+-	iio_trigger_free(sigma_delta->trig);
+-error_ret:
 -	return ret;
 -}
 -
--static int ad7124_remove(struct spi_device *spi)
--{
--	struct iio_dev *indio_dev = spi_get_drvdata(spi);
--	struct ad7124_state *st = iio_priv(indio_dev);
-+		return ret;
- 
--	iio_device_unregister(indio_dev);
--	ad_sd_cleanup_buffer_and_trigger(indio_dev);
--	clk_disable_unprepare(st->mclk);
-+	return devm_iio_device_register(&spi->dev, indio_dev);
- 
--	return 0;
+ static int devm_ad_sd_probe_trigger(struct device *dev, struct iio_dev *indio_dev)
+ {
+ 	struct ad_sigma_delta *sigma_delta = iio_device_get_drvdata(indio_dev);
+@@ -553,49 +510,6 @@ static int devm_ad_sd_probe_trigger(struct device *dev, struct iio_dev *indio_de
+ 	return 0;
  }
  
- static const struct of_device_id ad7124_of_match[] = {
-@@ -981,7 +964,6 @@ static struct spi_driver ad71124_driver = {
- 		.of_match_table = ad7124_of_match,
- 	},
- 	.probe = ad7124_probe,
--	.remove	= ad7124_remove,
- };
- module_spi_driver(ad71124_driver);
+-static void ad_sd_remove_trigger(struct iio_dev *indio_dev)
+-{
+-	struct ad_sigma_delta *sigma_delta = iio_device_get_drvdata(indio_dev);
+-
+-	iio_trigger_unregister(sigma_delta->trig);
+-	free_irq(sigma_delta->spi->irq, sigma_delta);
+-	iio_trigger_free(sigma_delta->trig);
+-}
+-
+-/**
+- * ad_sd_setup_buffer_and_trigger() -
+- * @indio_dev: The IIO device
+- */
+-int ad_sd_setup_buffer_and_trigger(struct iio_dev *indio_dev)
+-{
+-	int ret;
+-
+-	ret = iio_triggered_buffer_setup(indio_dev, &iio_pollfunc_store_time,
+-			&ad_sd_trigger_handler, &ad_sd_buffer_setup_ops);
+-	if (ret)
+-		return ret;
+-
+-	ret = ad_sd_probe_trigger(indio_dev);
+-	if (ret) {
+-		iio_triggered_buffer_cleanup(indio_dev);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(ad_sd_setup_buffer_and_trigger);
+-
+-/**
+- * ad_sd_cleanup_buffer_and_trigger() -
+- * @indio_dev: The IIO device
+- */
+-void ad_sd_cleanup_buffer_and_trigger(struct iio_dev *indio_dev)
+-{
+-	ad_sd_remove_trigger(indio_dev);
+-	iio_triggered_buffer_cleanup(indio_dev);
+-}
+-EXPORT_SYMBOL_GPL(ad_sd_cleanup_buffer_and_trigger);
+-
+ /**
+  * devm_ad_sd_setup_buffer_and_trigger() - Device-managed buffer & trigger setup
+  * @dev: Device object to which to bind the life-time of the resources attached
+diff --git a/include/linux/iio/adc/ad_sigma_delta.h b/include/linux/iio/adc/ad_sigma_delta.h
+index be81ad39fb7a..c525fd51652f 100644
+--- a/include/linux/iio/adc/ad_sigma_delta.h
++++ b/include/linux/iio/adc/ad_sigma_delta.h
+@@ -133,9 +133,6 @@ int ad_sd_calibrate_all(struct ad_sigma_delta *sigma_delta,
+ int ad_sd_init(struct ad_sigma_delta *sigma_delta, struct iio_dev *indio_dev,
+ 	struct spi_device *spi, const struct ad_sigma_delta_info *info);
  
+-int ad_sd_setup_buffer_and_trigger(struct iio_dev *indio_dev);
+-void ad_sd_cleanup_buffer_and_trigger(struct iio_dev *indio_dev);
+-
+ int devm_ad_sd_setup_buffer_and_trigger(struct device *dev, struct iio_dev *indio_dev);
+ 
+ int ad_sd_validate_trigger(struct iio_dev *indio_dev, struct iio_trigger *trig);
 -- 
 2.31.1
 
