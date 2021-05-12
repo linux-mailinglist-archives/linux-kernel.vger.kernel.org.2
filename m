@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89E837ECD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F20137ECD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384571AbhELUBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:01:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45162 "EHLO mail.kernel.org"
+        id S1381309AbhELUBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:01:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355650AbhELS26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1355652AbhELS26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 14:28:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8401E61413;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F15C613FB;
         Wed, 12 May 2021 18:27:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620844069;
-        bh=+nquWZndN1aE3ASNE8akUAlwQVxp/0FBTEaXYM2bZrE=;
+        bh=MM0CqeSkHwAV3YroUCw4vgYKKdVO10PGjsqK32KIwy4=;
         h=From:To:Cc:Subject:Date:From;
-        b=r6/3iACNNKAJZ8f6u9CGIVZpek7u2YOmLU3fo+gJokXIvxmmgMMArAJu6EjTDzjg1
-         fZFOzd4sx6NTZ4HACzW+3Ja1ttoOfILrWXX9TFEgS4aQcd9DPaN6TbSTUoqC9uRxAv
-         r5kdoqM5UjOnU9Z/fzfZJ1fRpv0Q26YXtMG4iLomAEUpho82nqHL8tk8T0ePpjnGBQ
-         TSCapkOJZMGxxXmK+FLI0X3rCgSguSMTvWDAMzIsWlna1F31fU1CIq070ozXJF5UCS
-         U5RLjAb664V4xQ6DW/PK5FMDqkiuVophgqCsqnx+f31Y5fgKi1wNfUWTm20y/mWbg3
-         pNV9+rb9eTrlw==
+        b=Uz+ipe6Z7RPh/1pTMFzjEQ3a9Zkya83tJDLNRiYPbf2h0hwRXKSfCrP4U6fYwn+ip
+         MKbDKSEPv1nIZI25CgILE9gOWYSmOhejJzUJqwpqFJGjlSBcLejNrrsi32hakU7UAD
+         2ZkvZywFoR4T8c5Mg4MPgNkfhLLlhPUKGIULtoRwpCMXe3Z5ZO3quRvly+gkvmR5BZ
+         WXBd1mVIAy0tw0JRGc2lPsd8deIFkjk5fX+6A8CdB3yQN+mFFN6JuyE4xbXIyyzoI+
+         E3niS6EazJYloUEcojdmkW2bHv+pb0BOpnDmmkjBWv3zNYtCzHjRyjZsL+1GDrn/VN
+         q3vaSlsPFWLdg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 042D25C0333; Wed, 12 May 2021 11:27:49 -0700 (PDT)
+        id 060755C0360; Wed, 12 May 2021 11:27:49 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,46 +33,50 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 2/4] rcu-tasks: Add block comment laying out RCU Rude design
-Date:   Wed, 12 May 2021 11:27:45 -0700
-Message-Id: <20210512182747.3445812-3-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [PATCH tip/core/rcu 3/4] rcu-tasks: Make ksoftirqd provide RCU Tasks quiescent states
+Date:   Wed, 12 May 2021 11:27:46 -0700
+Message-Id: <20210512182747.3445812-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds a block comment that gives a high-level overview of
-how RCU Rude grace periods progress.  It also gives an overview of the
-memory ordering.
+Heavy networking load can cause a CPU to execute continuously and
+indefinitely within ksoftirqd, in which case there will be no voluntary
+task switches and thus no RCU-tasks quiescent states.  This commit
+therefore causes the exiting rcu_softirq_qs() to provide an RCU-tasks
+quiescent state.
 
+This of course means that __do_softirq() and its callers cannot be
+invoked from within a tracing trampoline.
+
+Reported-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Tested-by: Toke Høiland-Jørgensen <toke@redhat.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- kernel/rcu/tasks.h | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 94d2c2c7f0ab..d6aa352cd705 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -645,8 +645,13 @@ void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
- // passing an empty function to schedule_on_each_cpu().  This approach
- // provides an asynchronous call_rcu_tasks_rude() API and batching
- // of concurrent calls to the synchronous synchronize_rcu_rude() API.
--// This sends IPIs far and wide and induces otherwise unnecessary context
--// switches on all online CPUs, whether idle or not.
-+// This invokes schedule_on_each_cpu() in order to send IPIs far and wide
-+// and induces otherwise unnecessary context switches on all online CPUs,
-+// whether idle or not.
-+//
-+// Callback handling is provided by the rcu_tasks_kthread() function.
-+//
-+// Ordering is provided by the scheduler's context-switch code.
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 8e78b2430c16..f4daa4e60b14 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -242,6 +242,7 @@ void rcu_softirq_qs(void)
+ {
+ 	rcu_qs();
+ 	rcu_preempt_deferred_qs(current);
++	rcu_tasks_qs(current, false);
+ }
  
- // Empty function to allow workqueues to force a context switch.
- static void rcu_tasks_be_rude(struct work_struct *work)
+ /*
 -- 
 2.31.1.189.g2e36527f23
 
