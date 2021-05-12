@@ -2,146 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417E137EB1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC81E37EB64
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379357AbhELTTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:19:30 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44644 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S244523AbhELQup (ORCPT
+        id S1379167AbhELT3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:29:53 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:56545 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244684AbhELQvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:50:45 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14CGYg9a113720;
-        Wed, 12 May 2021 12:49:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=KSAPkTFz0r19hIytJwB2GjWjANMg1ISP7wajH462VWA=;
- b=SCnvg4TzkmQ+6uonPhlUCMX2jlUBfaJtwZmlYzwC2wX0p+U0Z2OLbEu2MUHoyOYFLUr+
- M4csxtkb+tVO/Bg0+w949USefX/9XoEivq0kRt5zruhT2n2ASi9AUumg9kAHHJrrX6PA
- wT/MnSGbh8HLl3Y5hASke3Z30ezwGmt4KyLeVZZiL+jG9AjgiTqEthXrfovbjB6L0w+E
- m7WW/HvK5TzWrM5RO/PLGCI4PwK+DRPZMV3gCPyaN2qBZwF4ljpKV00M6T+6M7gLZzMS
- +xXCm4y7S55ewRUKBUwAjhiIrEVX/F8wgXfkiX8D2FQmaHF8tKKu9Jvn8tD+J1VkwjWp fQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38ghy2hrfg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 May 2021 12:49:29 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14CGZ9MI115877;
-        Wed, 12 May 2021 12:49:29 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38ghy2hret-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 May 2021 12:49:29 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14CGnJ4F021355;
-        Wed, 12 May 2021 16:49:27 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 38dj98aade-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 May 2021 16:49:27 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14CGnO4D45023548
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 12 May 2021 16:49:24 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 86AFC42372;
-        Wed, 12 May 2021 16:49:24 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EB68842373;
-        Wed, 12 May 2021 16:49:23 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.73.206])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 12 May 2021 16:49:23 +0000 (GMT)
-Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove callback
-To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
-        stable@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>
-References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <834f95f8-c1ca-17da-b709-69d5c55e8fcd@de.ibm.com>
-Date:   Wed, 12 May 2021 18:49:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Wed, 12 May 2021 12:51:04 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id F118D5C0107;
+        Wed, 12 May 2021 12:49:54 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 12 May 2021 12:49:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=animalcreek.com;
+         h=date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=xX4sK0wP630sSX/gWoDeLZV/D7e
+        lv2JgtfxTDJe3BMs=; b=bUcYWO2o4IU/HZu8Nx3PZDJkz7Y2B58VgCQwd8YZOiP
+        xjOUlspn6JYTzA+j4AMZbLl7LWBH1aCBawhP4CoFskkYzzJDBTRTF9O50GiFnmTr
+        FmhFYsmr29jxJB5t4L8p9Ap0PmJF2k1GKk0Qtp68X62GfxSVIHvEmpaXn+yN+zD+
+        30m5TefoXWJguthFki3QGQLP92gafVA/4II7+fogjKaahX+XSgpGcBIs75+YMRa+
+        fpa7nAESevUxEy/HNDbbgC36+ZvDrCaLYHaUf7jYoMMOpyJKe4aPmVuLxHtyqNhp
+        nGrpHfhbkQMGBsMqqbqwMQlfqXm/ZAx2SHY2+86bOtw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=xX4sK0
+        wP630sSX/gWoDeLZV/D7elv2JgtfxTDJe3BMs=; b=RP82s1NAHJlrm7tOxVnzUF
+        xAVeQsAu8XJODM+/202CEtH/s9fuhej707Feq3PgIOrKy95ItEywnj87FG6aOpwZ
+        WmRrMe4U3qzlyE3CBE4SI4fDFFYoXPVW+X1y3v1sUlKoBCtbP0gPoihZK4CMso0x
+        pW2bEcZetZHZa5qSL+vn7CsebQvJb8Om3/WwAemPMaVu0I2lSXcfzk7mB7GzFWBf
+        kzh0Xc4WfDXNY/KY7oZrTk9MPIwb0+uFJDJ4/CImKVhvb52m+BXtntV1XmFYxnnD
+        b2KGedLynDpCVgge1779V5iKs2dlBQEa1eFyfzYKMvsnazCpkTK7J8Yc96Lh3Ldg
+        ==
+X-ME-Sender: <xms:MQecYOYfrnDLiz0a6DDfBFZbm1tviQLOeDza3YMe0wpMkL25P-VKvg>
+    <xme:MQecYBZVyo77YpWoipLn1APqz_PaJNNRpZKM3XECzYVFwvBPsqFLa-KOcez5Z_30E
+    j32TmwSbkLXsiirXg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehvddguddtudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujghosehttdertddttddvnecuhfhrohhmpeforghr
+    khcuifhrvggvrhcuoehmghhrvggvrhesrghnihhmrghltghrvggvkhdrtghomheqnecugg
+    ftrfgrthhtvghrnhepudejleegjeelgeelveekkedvveduhfetueeitdelhedtudelledv
+    ieffhfdvhedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepjedtrdduje
+    dvrdefvddrvddukeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpehmghhrvggvrhesrghnihhmrghltghrvggvkhdrtghomh
+X-ME-Proxy: <xmx:MQecYI9WQBAtvhRJHUtT_07hb5slooMvk9S9KfwkBi_jQNobxA9rvw>
+    <xmx:MQecYArB4Mun0qt-KAOgwKo9w7Dn1ulqUlfBmNan7amrSqo0JhZeOg>
+    <xmx:MQecYJrxnJkQiBC_1fnUOC0dfvJJImyMlqcXzuV8jST8E756ChFWxA>
+    <xmx:MgecYKkw73FAAko-V6zsw6Ohoqj7w3ndO6R1LVD_rJPRwUwI4mzhOA>
+Received: from blue.animalcreek.com (ip70-172-32-218.ph.ph.cox.net [70.172.32.218])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Wed, 12 May 2021 12:49:53 -0400 (EDT)
+Received: by blue.animalcreek.com (Postfix, from userid 1000)
+        id 98144136008B; Wed, 12 May 2021 09:49:52 -0700 (MST)
+Date:   Wed, 12 May 2021 09:49:52 -0700
+From:   Mark Greer <mgreer@animalcreek.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfc@lists.01.org
+Subject: Re: [linux-nfc] Re: [PATCH 1/2] MAINTAINERS: nfc: add Krzysztof
+ Kozlowski as maintainer
+Message-ID: <20210512164952.GA222094@animalcreek.com>
+References: <20210512144319.30852-1-krzysztof.kozlowski@canonical.com>
+ <961dc9c5-0eb0-586c-5e70-b21ca2f8e6f3@linaro.org>
+ <d498c949-3b1e-edaa-81ed-60573cfb6ee9@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210510214837.359717-1-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: XmYRU7UqZaQFb980xrp-qzfwD8aYDKXH
-X-Proofpoint-ORIG-GUID: bort9dkKKEBHY1AtuudoK0dv5_liwnku
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-12_09:2021-05-12,2021-05-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
- priorityscore=1501 impostorscore=0 suspectscore=0 mlxscore=0
- malwarescore=0 bulkscore=0 lowpriorityscore=0 spamscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105120105
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d498c949-3b1e-edaa-81ed-60573cfb6ee9@canonical.com>
+Organization: Animal Creek Technologies, Inc.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.05.21 23:48, Tony Krowiak wrote:
-> The mdev remove callback for the vfio_ap device driver bails out with
-> -EBUSY if the mdev is in use by a KVM guest. The intended purpose was
-> to prevent the mdev from being removed while in use; however, returning a
-> non-zero rc does not prevent removal. This could result in a memory leak
-> of the resources allocated when the mdev was created. In addition, the
-> KVM guest will still have access to the AP devices assigned to the mdev
-> even though the mdev no longer exists.
+On Wed, May 12, 2021 at 11:43:13AM -0400, Krzysztof Kozlowski wrote:
+> On 12/05/2021 11:11, Daniel Lezcano wrote:
+> > On 12/05/2021 16:43, Krzysztof Kozlowski wrote:
+> >> The NFC subsystem is orphaned.  I am happy to spend some cycles to
+> >> review the patches, send pull requests and in general keep the NFC
+> >> subsystem running.
+> >>
+> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> >>
+> >> ---
+> >>
+> >> I admit I don't have big experience in NFC part but this will be nice
+> >> opportunity to learn something new. 
+> > 
+> > NFC has been lost in the limbos since a while. Good to see someone
+> > volunteering to take care of it.
+> > 
+> > May I suggest to create a simple nfc reading program in the 'tools'
+> > directory (could be a training exercise ;)
+> > 
 > 
-> To prevent this scenario, cleanup will be done - including unplugging the
-> AP adapters, domains and control domains - regardless of whether the mdev
-> is in use by a KVM guest or not.
-> 
-> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Tony Krowiak <akrowiak@stny.rr.com>
+> Noted, thanks. I also need to get a simple hardware dongle for this....
 
-applied to the internal s390 tree. Lets give it some days of testing coverage of
-CI and others.
+Krzysztof, the NFC portion of the kernel has a counterpart in userspace
+called neard.  I'm supposed to be maintaining it but I have next to no
+time to do so.  If you have spare cycles, any help would be appreciated.
 
-Vasily, can you add this for the s390/fixes branch early next week if nothing
-goes wrong?
+Anyway, in neard, there are some simple test scripts (python2 - I/we need
+to update to python3).  The current home of neard is:
 
-> ---
->   drivers/s390/crypto/vfio_ap_ops.c | 13 ++-----------
->   1 file changed, 2 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index b2c7e10dfdcd..f90c9103dac2 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -26,6 +26,7 @@
->   
->   static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev);
->   static struct vfio_ap_queue *vfio_ap_find_queue(int apqn);
-> +static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev);
->   
->   static int match_apqn(struct device *dev, const void *data)
->   {
-> @@ -366,17 +367,7 @@ static int vfio_ap_mdev_remove(struct mdev_device *mdev)
->   	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->   
->   	mutex_lock(&matrix_dev->lock);
-> -
-> -	/*
-> -	 * If the KVM pointer is in flux or the guest is running, disallow
-> -	 * un-assignment of control domain.
-> -	 */
-> -	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
-> -		mutex_unlock(&matrix_dev->lock);
-> -		return -EBUSY;
-> -	}
-> -
-> -	vfio_ap_mdev_reset_queues(mdev);
-> +	vfio_ap_mdev_unset_kvm(matrix_mdev);
->   	list_del(&matrix_mdev->node);
->   	kfree(matrix_mdev);
->   	mdev_set_drvdata(mdev, NULL);
-> 
+git://git.kernel.org/pub/scm/network/nfc/neard.git
+
+Mark
+--
