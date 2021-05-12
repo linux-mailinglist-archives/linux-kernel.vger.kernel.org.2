@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A7F37D161
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75F537D149
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351201AbhELRyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:54:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35964 "EHLO mail.kernel.org"
+        id S1350698AbhELRv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:51:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237745AbhELQYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:24:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BAD4619B1;
-        Wed, 12 May 2021 15:47:55 +0000 (UTC)
+        id S236057AbhELQU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:20:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBA4761075;
+        Wed, 12 May 2021 15:46:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620834476;
-        bh=SHgL87Fqqus74sID+k6cGRA9Yz8SA8JOMh1QVIuAZc4=;
+        s=korg; t=1620834393;
+        bh=cBtYXJ/ed3+R8re53TUA0HqSCkwS+TTEGW/GYTTRJEk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=epTBl9azULha7G0lA1m3JvZxmXYE8kAusJiUjIQf3dEqjvkgMe13xZNQ6d9AO/+x3
-         0zor2JBnAi18ZweGqVe/aZUpR6FldTlrV/v3007yX363aKy9AvQSi/zoXbSyIWmrGz
-         /1ZSzL0NZHYLOakx0Vw+lqD0FlImVO91X+kX0K3g=
+        b=BCQH26SKuH0I/iyZvMKtliXavxol8W08SWKigjL2WaH6t8CIt5QNHispMO9Mc0j4p
+         YCyaX0OzJbRQPYQ0pU8r/CkAgWHfj/WyfFIYa330HIW6B+SIootxVT1DKzQXMCbZkZ
+         s+T5L6hpOdZkZs+/c6/41Jy7ND6BrIDTxoBx8lQk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 524/601] wlcore: fix overlapping snprintf arguments in debugfs
-Date:   Wed, 12 May 2021 16:50:01 +0200
-Message-Id: <20210512144845.112361052@linuxfoundation.org>
+        stable@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 526/601] i2c: mediatek: Fix wrong dma sync flag
+Date:   Wed, 12 May 2021 16:50:03 +0200
+Message-Id: <20210512144845.175955869@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
 References: <20210512144827.811958675@linuxfoundation.org>
@@ -40,94 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Qii Wang <qii.wang@mediatek.com>
 
-[ Upstream commit 7b0e2c4f6be3ec68bf807c84e985e81c21404cd1 ]
+[ Upstream commit 3186b880447ad3cc9b6487fa626a71d64b831524 ]
 
-gcc complains about undefined behavior in calling snprintf()
-with the same buffer as input and output:
+The right flag is apdma_sync when apdma remove hand-shake signel.
 
-drivers/net/wireless/ti/wl18xx/debugfs.c: In function 'diversity_num_of_packets_per_ant_read':
-drivers/net/wireless/ti/wl18xx/../wlcore/debugfs.h:86:3: error: 'snprintf' argument 4 overlaps destination object 'buf' [-Werror=restrict]
-   86 |   snprintf(buf, sizeof(buf), "%s[%d] = %d\n",  \
-      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   87 |     buf, i, stats->sub.name[i]);   \
-      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ti/wl18xx/debugfs.c:24:2: note: in expansion of macro 'DEBUGFS_FWSTATS_FILE_ARRAY'
-   24 |  DEBUGFS_FWSTATS_FILE_ARRAY(a, b, c, wl18xx_acx_statistics)
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ti/wl18xx/debugfs.c:159:1: note: in expansion of macro 'WL18XX_DEBUGFS_FWSTATS_FILE_ARRAY'
-  159 | WL18XX_DEBUGFS_FWSTATS_FILE_ARRAY(diversity, num_of_packets_per_ant,
-
-There are probably other ways of handling the debugfs file, without
-using on-stack buffers, but a simple workaround here is to remember the
-current position in the buffer and just keep printing in there.
-
-Fixes: bcca1bbdd412 ("wlcore: add debugfs macro to help print fw statistics arrays")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210323125723.1961432-1-arnd@kernel.org
+Fixes: 05f6f7271a38 ("i2c: mediatek: Fix apdma and i2c hand-shake timeout")
+Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ti/wlcore/boot.c    | 13 ++++++++-----
- drivers/net/wireless/ti/wlcore/debugfs.h |  7 ++++---
- 2 files changed, 12 insertions(+), 8 deletions(-)
+ drivers/i2c/busses/i2c-mt65xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ti/wlcore/boot.c b/drivers/net/wireless/ti/wlcore/boot.c
-index e14d88e558f0..85abd0a2d1c9 100644
---- a/drivers/net/wireless/ti/wlcore/boot.c
-+++ b/drivers/net/wireless/ti/wlcore/boot.c
-@@ -72,6 +72,7 @@ static int wlcore_validate_fw_ver(struct wl1271 *wl)
- 	unsigned int *min_ver = (wl->fw_type == WL12XX_FW_TYPE_MULTI) ?
- 		wl->min_mr_fw_ver : wl->min_sr_fw_ver;
- 	char min_fw_str[32] = "";
-+	int off = 0;
- 	int i;
+diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+index 2ffd2f354d0a..86f70c751319 100644
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -479,7 +479,7 @@ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
+ {
+ 	u16 control_reg;
  
- 	/* the chip must be exactly equal */
-@@ -105,13 +106,15 @@ static int wlcore_validate_fw_ver(struct wl1271 *wl)
- 	return 0;
- 
- fail:
--	for (i = 0; i < NUM_FW_VER; i++)
-+	for (i = 0; i < NUM_FW_VER && off < sizeof(min_fw_str); i++)
- 		if (min_ver[i] == WLCORE_FW_VER_IGNORE)
--			snprintf(min_fw_str, sizeof(min_fw_str),
--				  "%s*.", min_fw_str);
-+			off += snprintf(min_fw_str + off,
-+					sizeof(min_fw_str) - off,
-+					"*.");
- 		else
--			snprintf(min_fw_str, sizeof(min_fw_str),
--				  "%s%u.", min_fw_str, min_ver[i]);
-+			off += snprintf(min_fw_str + off,
-+					sizeof(min_fw_str) - off,
-+					"%u.", min_ver[i]);
- 
- 	wl1271_error("Your WiFi FW version (%u.%u.%u.%u.%u) is invalid.\n"
- 		     "Please use at least FW %s\n"
-diff --git a/drivers/net/wireless/ti/wlcore/debugfs.h b/drivers/net/wireless/ti/wlcore/debugfs.h
-index b143293e694f..715edfa5f89f 100644
---- a/drivers/net/wireless/ti/wlcore/debugfs.h
-+++ b/drivers/net/wireless/ti/wlcore/debugfs.h
-@@ -78,13 +78,14 @@ static ssize_t sub## _ ##name## _read(struct file *file,		\
- 	struct wl1271 *wl = file->private_data;				\
- 	struct struct_type *stats = wl->stats.fw_stats;			\
- 	char buf[DEBUGFS_FORMAT_BUFFER_SIZE] = "";			\
-+	int pos = 0;							\
- 	int i;								\
- 									\
- 	wl1271_debugfs_update_stats(wl);				\
- 									\
--	for (i = 0; i < len; i++)					\
--		snprintf(buf, sizeof(buf), "%s[%d] = %d\n",		\
--			 buf, i, stats->sub.name[i]);			\
-+	for (i = 0; i < len && pos < sizeof(buf); i++)			\
-+		pos += snprintf(buf + pos, sizeof(buf),			\
-+			 "[%d] = %d\n", i, stats->sub.name[i]);		\
- 									\
- 	return wl1271_format_buffer(userbuf, count, ppos, "%s", buf);	\
- }									\
+-	if (i2c->dev_comp->dma_sync) {
++	if (i2c->dev_comp->apdma_sync) {
+ 		writel(I2C_DMA_WARM_RST, i2c->pdmabase + OFFSET_RST);
+ 		udelay(10);
+ 		writel(I2C_DMA_CLR_FLAG, i2c->pdmabase + OFFSET_RST);
 -- 
 2.30.2
 
