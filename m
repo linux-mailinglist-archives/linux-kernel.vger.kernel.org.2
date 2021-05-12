@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325F437D232
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3DF37D32A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353095AbhELSG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:06:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43950 "EHLO mail.kernel.org"
+        id S1354651AbhELSSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:18:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241569AbhELQ1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:27:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A1E461A13;
-        Wed, 12 May 2021 15:54:09 +0000 (UTC)
+        id S237880AbhELQ2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:28:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33D7C61461;
+        Wed, 12 May 2021 15:56:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620834849;
-        bh=R4wTKQ0YFjwYNyattlZQ1c75MroXM4RY9p9Y5WHrNpU=;
+        s=korg; t=1620834961;
+        bh=feGBGZ6G839HD36t7DZkDVprzfXHcdWXVlp4ZpSeKbo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bRhd+auUdQXwQGPtbdYWEZ2y19uECeiOr9BiTWxLiZPeG/SZ71MAz+WBTpRRhh86y
-         4x2WlNUhl1+urrJwCtioXYWx43iYfmqjvMqbQUkrGERdiG9i2jO4DlPdfmJKJcpUTc
-         j1MoFa3ScHZkLLbdSHV8boFwiwzUl4ooPNcwb+Uc=
+        b=ZKqoLKPHW+4PZyLBQZsHUzHWn1JFmiD1P+Gmmtic2eohgzKoABEU2ezh4+6ySob2Q
+         eXUrs+l7T+bFbQfg0yFcpWEQ3JG9+I2pqzMjhweCimpDKEwpWp51WBav4uE7hpNCa8
+         mTUVNGDFBNKK7tmkwJBKc5nHw08sQC2THVLreRsw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joao Martins <joao.m.martins@oracle.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Sean Christopherson <seanjc@google.com>,
+        stable@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.12 107/677] KVM: x86/xen: Drop RAX[63:32] when processing hypercall
-Date:   Wed, 12 May 2021 16:42:33 +0200
-Message-Id: <20210512144840.778755308@linuxfoundation.org>
+Subject: [PATCH 5.12 108/677] KVM: X86: Fix failure to boost kernel lock holder candidate in SEV-ES guests
+Date:   Wed, 12 May 2021 16:42:34 +0200
+Message-Id: <20210512144840.811548808@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -41,38 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Wanpeng Li <wanpengli@tencent.com>
 
-commit 6b48fd4cb206485c357420d91ea766ef81b20dc3 upstream.
+commit b86bb11e3a79ac0db9a6786b1fe80f74321cb076 upstream.
 
-Truncate RAX to 32 bits, i.e. consume EAX, when retrieving the hypecall
-index for a Xen hypercall.  Per Xen documentation[*], the index is EAX
-when the vCPU is not in 64-bit mode.
+Commit f1c6366e3043 ("KVM: SVM: Add required changes to support intercepts under
+SEV-ES") prevents hypervisor accesses guest register state when the guest is
+running under SEV-ES. The initial value of vcpu->arch.guest_state_protected
+is false, it will not be updated in preemption notifiers after this commit which
+means that the kernel spinlock lock holder will always be skipped to boost. Let's
+fix it by always treating preempted is in the guest kernel mode, false positive
+is better than skip completely.
 
-[*] http://xenbits.xenproject.org/docs/sphinx-unstable/guest-guide/x86/hypercall-abi.html
-
-Fixes: 23200b7a30de ("KVM: x86/xen: intercept xen hypercalls if enabled")
-Cc: Joao Martins <joao.m.martins@oracle.com>
-Cc: David Woodhouse <dwmw@amazon.co.uk>
+Fixes: f1c6366e3043 (KVM: SVM: Add required changes to support intercepts under SEV-ES)
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+Message-Id: <1619080459-30032-1-git-send-email-wanpengli@tencent.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210422022128.3464144-8-seanjc@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/xen.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/x86.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/arch/x86/kvm/xen.c
-+++ b/arch/x86/kvm/xen.c
-@@ -673,7 +673,7 @@ int kvm_xen_hypercall(struct kvm_vcpu *v
- 	bool longmode;
- 	u64 input, params[6];
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -11020,6 +11020,9 @@ bool kvm_arch_dy_runnable(struct kvm_vcp
  
--	input = (u64)kvm_register_read(vcpu, VCPU_REGS_RAX);
-+	input = (u64)kvm_register_readl(vcpu, VCPU_REGS_RAX);
+ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
+ {
++	if (vcpu->arch.guest_state_protected)
++		return true;
++
+ 	return vcpu->arch.preempted_in_kernel;
+ }
  
- 	/* Hyper-V hypercalls get bit 31 set in EAX */
- 	if ((input & 0x80000000) &&
 
 
