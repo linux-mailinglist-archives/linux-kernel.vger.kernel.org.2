@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9536B37D22A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAD637D22E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352943AbhELSGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:06:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43696 "EHLO mail.kernel.org"
+        id S1353028AbhELSGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:06:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241541AbhELQ1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241543AbhELQ1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 12:27:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6985661A0F;
-        Wed, 12 May 2021 15:53:56 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D855161A24;
+        Wed, 12 May 2021 15:53:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620834836;
-        bh=yybfWFtVTdlHdv1eR5tICYCLLZSte9bFJt6Qdx5xAUY=;
+        s=korg; t=1620834839;
+        bh=Y7qFrPwaTehrK6r+27CjiQ6TfRytRSMftu+HhrOVxUc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F9TzmbmgNvg02kByUO0/15EZX/J/s8/0xj10TASS2ZicFvDMzeoCkMOKN0FavPeMc
-         +oq02U6aFmu1fXOIVOGHQ0qg4VvnYrQon0/mMoHbIjIjkH8FekQFw8Trh+/qHWDBvb
-         +V4fNuXg5548DMxovVQvxBOoCri6csoT5jGj66D0=
+        b=uRYtrQhqGjtSusG967iWe7Oc+kwnYHHZLtdUyc7j0Latk8Pd1rTPCbrTGAvzz8OLv
+         ettXyHZN4L38u/b5I3jveoWUFyT1jG8g64nNsS/gQTYJUMSYECrVrsI/duHLX0OLHK
+         nHLtswDCPIPAYabWkhJRWIhU4V85UQBcWDs6aqs0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        stable@vger.kernel.org, Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
         David Hildenbrand <david@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 5.12 102/677] s390: fix detection of vector enhancements facility 1 vs. vector packed decimal facility
-Date:   Wed, 12 May 2021 16:42:28 +0200
-Message-Id: <20210512144840.614098863@linuxfoundation.org>
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: [PATCH 5.12 103/677] KVM: s390: VSIE: fix MVPG handling for prefixing and MSO
+Date:   Wed, 12 May 2021 16:42:29 +0200
+Message-Id: <20210512144840.644784211@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -43,51 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Hildenbrand <david@redhat.com>
+From: Claudio Imbrenda <imbrenda@linux.ibm.com>
 
-commit b208108638c4bd3215792415944467c36f5dfd97 upstream.
+commit c3171e94cc1cdcc3229565244112e869f052b8d9 upstream.
 
-The PoP documents:
-	134: The vector packed decimal facility is installed in the
-	     z/Architecture architectural mode. When bit 134 is
-	     one, bit 129 is also one.
-	135: The vector enhancements facility 1 is installed in
-	     the z/Architecture architectural mode. When bit 135
-	     is one, bit 129 is also one.
+Prefixing needs to be applied to the guest real address to translate it
+into a guest absolute address.
 
-Looks like we confuse the vector enhancements facility 1 ("EXT") with the
-Vector packed decimal facility ("BCD"). Let's fix the facility checks.
+The value of MSO needs to be added to a guest-absolute address in order to
+obtain the host-virtual.
 
-Detected while working on QEMU/tcg z14 support and only unlocking
-the vector enhancements facility 1, but not the vector packed decimal
-facility.
-
-Fixes: 2583b848cad0 ("s390: report new vector facilities")
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
-Link: https://lore.kernel.org/r/20210503121244.25232-1-david@redhat.com
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Fixes: bdf7509bbefa ("s390/kvm: VSIE: correctly handle MVPG when in VSIE")
+Reported-by: Janosch Frank <frankja@linux.ibm.com>
+Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210322140559.500716-3-imbrenda@linux.ibm.com
+[borntraeger@de.ibm.com simplify mso]
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/kernel/setup.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/s390/kvm/vsie.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/arch/s390/kernel/setup.c
-+++ b/arch/s390/kernel/setup.c
-@@ -937,9 +937,9 @@ static int __init setup_hwcaps(void)
- 	if (MACHINE_HAS_VX) {
- 		elf_hwcap |= HWCAP_S390_VXRS;
- 		if (test_facility(134))
--			elf_hwcap |= HWCAP_S390_VXRS_EXT;
--		if (test_facility(135))
- 			elf_hwcap |= HWCAP_S390_VXRS_BCD;
-+		if (test_facility(135))
-+			elf_hwcap |= HWCAP_S390_VXRS_EXT;
- 		if (test_facility(148))
- 			elf_hwcap |= HWCAP_S390_VXRS_EXT2;
- 		if (test_facility(152))
+--- a/arch/s390/kvm/vsie.c
++++ b/arch/s390/kvm/vsie.c
+@@ -1002,7 +1002,7 @@ static u64 vsie_get_register(struct kvm_
+ static int vsie_handle_mvpg(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+ {
+ 	struct kvm_s390_sie_block *scb_s = &vsie_page->scb_s;
+-	unsigned long pei_dest, pei_src, src, dest, mask;
++	unsigned long pei_dest, pei_src, src, dest, mask, prefix;
+ 	u64 *pei_block = &vsie_page->scb_o->mcic;
+ 	int edat, rc_dest, rc_src;
+ 	union ctlreg0 cr0;
+@@ -1010,9 +1010,12 @@ static int vsie_handle_mvpg(struct kvm_v
+ 	cr0.val = vcpu->arch.sie_block->gcr[0];
+ 	edat = cr0.edat && test_kvm_facility(vcpu->kvm, 8);
+ 	mask = _kvm_s390_logical_to_effective(&scb_s->gpsw, PAGE_MASK);
++	prefix = scb_s->prefix << GUEST_PREFIX_SHIFT;
+ 
+ 	dest = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 20) & mask;
++	dest = _kvm_s390_real_to_abs(prefix, dest) + scb_s->mso;
+ 	src = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 16) & mask;
++	src = _kvm_s390_real_to_abs(prefix, src) + scb_s->mso;
+ 
+ 	rc_dest = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, dest, &pei_dest);
+ 	rc_src = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, src, &pei_src);
 
 
