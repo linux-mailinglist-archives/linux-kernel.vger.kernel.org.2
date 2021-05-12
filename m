@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD0137C955
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6084037C95F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240313AbhELQRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:17:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51290 "EHLO mail.kernel.org"
+        id S240574AbhELQSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:18:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234879AbhELPeu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:34:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E86561971;
-        Wed, 12 May 2021 15:17:29 +0000 (UTC)
+        id S235091AbhELPfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:35:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 455F961C3E;
+        Wed, 12 May 2021 15:17:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620832649;
-        bh=udW/PLZ5iZPSNRhPqLGSKInIoq9dtLr6gVmuhkHoe3k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Uw346nuZgdXAjMrtIW7Wl1wjoU/XEuK3mQaevlbO7TxfuHuON94vksTuQ6X2qc0p8
-         NTXevC0ntw3PztvtTBceiK3fJcsYNfPixJLctn1nIY69kb2bP/Km8unlNGpPwhhoTF
-         bAt2eXWwnZ3SO4PHibR+soP14e0UTAMrhZehMK8mhXgGJ+PGbDrOGmqxnUL6nlCC8x
-         osG7SL+Ph2Rpa5dRHSTwDfOLbsW1gFlQ4RFYWeHprAnP+sV+m77qSk6CxDcUzcW9cL
-         lMZE+/p9gvmn+QsXu+ESR8SVVuH/lVVDzaMx/E2VudSrZqxhgTexr4YvmT+mN6HIj/
-         tlo9UYdVcKagA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lgqc8-0005RE-54; Wed, 12 May 2021 17:17:32 +0200
-Date:   Wed, 12 May 2021 17:17:32 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 245/530] tty: actually undefine superseded ASYNC
- flags
-Message-ID: <YJvxjC5qyyRmLSyB@hovoldconsulting.com>
-References: <20210512144819.664462530@linuxfoundation.org>
- <20210512144827.885941093@linuxfoundation.org>
+        s=k20201202; t=1620832672;
+        bh=zB2G4t5ozyJ72g68BGRplKf2lQRTS6CtRvJ7FVX3NWE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DBjrvZcbfODq6o/u3ovhcKp34o3mQ/2g2kqOKbw7rqi0UbJcuDmNkgLMMy0M05dFs
+         mwfV7fdqIvkaHvs5FkFIxP3pQ5mW2wuelKsM0Zg1XI928MZ1g6hDtwlC/lZ6mTYtDn
+         L0yXyxJPdKzjgMXD6Vs/vdQOXuvQV+DBBKSwRDhM/LlZ9x9/DV6Qnq7MjBym4Ue3He
+         LklNFflnfSaW1SCikrvqRJriPDliUiNhIaGm2pb/3nXItDzT/4/obeOPpO0NPN/v0m
+         Pwish5sD0axq4vDEIuCSUJZyKrnPcy3P6Nd30IKN+fHXybC5E+QSyK+xdLgaNeWw/l
+         +EUyGcBOd8VUw==
+Date:   Wed, 12 May 2021 17:17:41 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Mali DP Maintainers <malidp@foss.arm.com>,
+        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH v2 00/40] Use ASCII subset instead of UTF-8 alternate
+ symbols
+Message-ID: <20210512171741.2870bcbc@coco.lan>
+In-Reply-To: <YJvi1L2ss5Tfi+My@mit.edu>
+References: <cover.1620823573.git.mchehab+huawei@kernel.org>
+        <YJvi1L2ss5Tfi+My@mit.edu>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512144827.885941093@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 04:45:55PM +0200, Greg Kroah-Hartman wrote:
-> From: Johan Hovold <johan@kernel.org>
-> 
-> [ Upstream commit d09845e98a05850a8094ea8fd6dd09a8e6824fff ]
-> 
-> Some kernel-internal ASYNC flags have been superseded by tty-port flags
-> and should no longer be used by kernel drivers.
-> 
-> Fix the misspelled "__KERNEL__" compile guards which failed their sole
-> purpose to break out-of-tree drivers that have not yet been updated.
-> 
-> Fixes: 5c0517fefc92 ("tty: core: Undefine ASYNC_* flags superceded by TTY_PORT* flags")
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> Link: https://lore.kernel.org/r/20210407095208.31838-2-johan@kernel.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+Em Wed, 12 May 2021 10:14:44 -0400
+"Theodore Ts'o" <tytso@mit.edu> escreveu:
 
-I don't think this should be backported to any stable tree and the
-stable tag was left out on purpose.
+> On Wed, May 12, 2021 at 02:50:04PM +0200, Mauro Carvalho Chehab wrote:
+> > v2:
+> > - removed EM/EN DASH conversion from this patchset; =20
+>=20
+> Are you still thinking about doing the
+>=20
+> EN DASH --> "--"
+> EM DASH --> "---"
+>=20
+> conversion? =20
 
-> ---
->  include/uapi/linux/tty_flags.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/uapi/linux/tty_flags.h b/include/uapi/linux/tty_flags.h
-> index 900a32e63424..6a3ac496a56c 100644
-> --- a/include/uapi/linux/tty_flags.h
-> +++ b/include/uapi/linux/tty_flags.h
-> @@ -39,7 +39,7 @@
->   * WARNING: These flags are no longer used and have been superceded by the
->   *	    TTY_PORT_ flags in the iflags field (and not userspace-visible)
->   */
-> -#ifndef _KERNEL_
-> +#ifndef __KERNEL__
->  #define ASYNCB_INITIALIZED	31 /* Serial port was initialized */
->  #define ASYNCB_SUSPENDED	30 /* Serial port is suspended */
->  #define ASYNCB_NORMAL_ACTIVE	29 /* Normal device is active */
-> @@ -81,7 +81,7 @@
->  #define ASYNC_SPD_WARP		(ASYNC_SPD_HI|ASYNC_SPD_SHI)
->  #define ASYNC_SPD_MASK		(ASYNC_SPD_HI|ASYNC_SPD_VHI|ASYNC_SPD_SHI)
->  
-> -#ifndef _KERNEL_
-> +#ifndef __KERNEL__
->  /* These flags are no longer used (and were always masked from userspace) */
->  #define ASYNC_INITIALIZED	(1U << ASYNCB_INITIALIZED)
->  #define ASYNC_NORMAL_ACTIVE	(1U << ASYNCB_NORMAL_ACTIVE)
+Yes, but I intend to submit it on a separate patch series, probably after
+having this one merged. Let's first cleanup the large part of the=20
+conversion-generated UTF-8 char noise ;-)
 
-Johan
+> That's not going to change what the documentation will
+> look like in the HTML and PDF output forms, and I think it would make
+> life easier for people are reading and editing the Documentation/*
+> files in text form.
+
+Agreed. I'm also considering to add a couple of cases of this char:
+
+	- U+2026 ('=E2=80=A6'): HORIZONTAL ELLIPSIS
+
+As Sphinx also replaces "..." into HORIZONTAL ELLIPSIS.
+
+-
+
+Anyway, I'm opting to submitting those in separate because it seems
+that at least some maintainers added EM/EN DASH intentionally.
+
+So, it may generate case-per-case discussions.
+
+Also, IMO, at least a couple of EN/EM DASH cases would be better served=20
+with a single hyphen.
+
+Thanks,
+Mauro
