@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A44C937CDF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3971137CEE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245294AbhELQ7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:59:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37076 "EHLO mail.kernel.org"
+        id S1344508AbhELRHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:07:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237754AbhELP4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:56:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE85E61927;
-        Wed, 12 May 2021 15:28:30 +0000 (UTC)
+        id S237823AbhELP40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:56:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5343A61C1F;
+        Wed, 12 May 2021 15:28:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620833311;
-        bh=h59MSIG9erklP9in9YiIPm0y8p9QmQYL0ytDECAvG+0=;
+        s=korg; t=1620833313;
+        bh=NwwKEXoPlv+sAELIGDJSvIB9gGK5FXp1H0JLpLvCksg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M9Vj+CXGqQJtHV3BMVrf0vROUHM/IiGhEdqNfWeDkVvmhURJop8KHHA6al/wxtX0E
-         15UBpXManVVwTPUrpQbJXRnlW0aWSS4BJkWTfu5hMNHVuABv9hxQBQzISJCZPa+B0H
-         VfcmgGU4rlOr28ntI/t34DtVwLSCU8fsIws8enw8=
+        b=FT9Wcm6ffe045E+hCUTyieEPOjYqa/T23oB1P7pNiMrwLk5K1dirYB0LEuGGnAC+z
+         Re7+nzUHmENVATgdndRRj1e+IUFo9J4vsWi4EhzxBm6Q3glt3IJ0waFSuUdIMNQEcY
+         M7Kslv2+4r1Y+OsXxAD4tjJeHE8rJ/oa0O5Syc8s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Babu Moger <babu.moger@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.11 098/601] KVM: x86: Remove emulators broken checks on CR0/CR3/CR4 loads
-Date:   Wed, 12 May 2021 16:42:55 +0200
-Message-Id: <20210512144831.053626965@linuxfoundation.org>
+Subject: [PATCH 5.11 099/601] KVM: nSVM: Set the shadow root level to the TDP level for nested NPT
+Date:   Wed, 12 May 2021 16:42:56 +0200
+Message-Id: <20210512144831.094006360@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
 References: <20210512144827.811958675@linuxfoundation.org>
@@ -42,130 +41,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sean Christopherson <seanjc@google.com>
 
-commit d0fe7b6404408835ed60232cb3bf28324b2f95db upstream.
+commit a3322d5cd87fef5ec0037fd1b14068a533f9a60f upstream.
 
-Remove the emulator's checks for illegal CR0, CR3, and CR4 values, as
-the checks are redundant, outdated, and in the case of SEV's C-bit,
-broken.  The emulator manually calculates MAXPHYADDR from CPUID and
-neglects to mask off the C-bit.  For all other checks, kvm_set_cr*() are
-a superset of the emulator checks, e.g. see CR4.LA57.
+Override the shadow root level in the MMU context when configuring
+NPT for shadowing nested NPT.  The level is always tied to the TDP level
+of the host, not whatever level the guest happens to be using.
 
-Fixes: a780a3ea6282 ("KVM: X86: Fix reserved bits check for MOV to CR3")
-Cc: Babu Moger <babu.moger@amd.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210422022128.3464144-2-seanjc@google.com>
+Fixes: 096586fda522 ("KVM: nSVM: Correctly set the shadow NPT root level in its MMU role")
 Cc: stable@vger.kernel.org
-[Unify check_cr_read and check_cr_write. - Paolo]
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210305011101.3597423-2-seanjc@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/emulate.c |   80 +------------------------------------------------
- 1 file changed, 3 insertions(+), 77 deletions(-)
+ arch/x86/kvm/mmu/mmu.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -4220,7 +4220,7 @@ static bool valid_cr(int nr)
- 	}
- }
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4630,12 +4630,17 @@ void kvm_init_shadow_npt_mmu(struct kvm_
+ 	struct kvm_mmu *context = &vcpu->arch.guest_mmu;
+ 	union kvm_mmu_role new_role = kvm_calc_shadow_npt_root_page_role(vcpu);
  
--static int check_cr_read(struct x86_emulate_ctxt *ctxt)
-+static int check_cr_access(struct x86_emulate_ctxt *ctxt)
- {
- 	if (!valid_cr(ctxt->modrm_reg))
- 		return emulate_ud(ctxt);
-@@ -4228,80 +4228,6 @@ static int check_cr_read(struct x86_emul
- 	return X86EMUL_CONTINUE;
- }
+-	context->shadow_root_level = new_role.base.level;
+-
+ 	__kvm_mmu_new_pgd(vcpu, nested_cr3, new_role.base, false, false);
  
--static int check_cr_write(struct x86_emulate_ctxt *ctxt)
--{
--	u64 new_val = ctxt->src.val64;
--	int cr = ctxt->modrm_reg;
--	u64 efer = 0;
--
--	static u64 cr_reserved_bits[] = {
--		0xffffffff00000000ULL,
--		0, 0, 0, /* CR3 checked later */
--		CR4_RESERVED_BITS,
--		0, 0, 0,
--		CR8_RESERVED_BITS,
--	};
--
--	if (!valid_cr(cr))
--		return emulate_ud(ctxt);
--
--	if (new_val & cr_reserved_bits[cr])
--		return emulate_gp(ctxt, 0);
--
--	switch (cr) {
--	case 0: {
--		u64 cr4;
--		if (((new_val & X86_CR0_PG) && !(new_val & X86_CR0_PE)) ||
--		    ((new_val & X86_CR0_NW) && !(new_val & X86_CR0_CD)))
--			return emulate_gp(ctxt, 0);
--
--		cr4 = ctxt->ops->get_cr(ctxt, 4);
--		ctxt->ops->get_msr(ctxt, MSR_EFER, &efer);
--
--		if ((new_val & X86_CR0_PG) && (efer & EFER_LME) &&
--		    !(cr4 & X86_CR4_PAE))
--			return emulate_gp(ctxt, 0);
--
--		break;
--		}
--	case 3: {
--		u64 rsvd = 0;
--
--		ctxt->ops->get_msr(ctxt, MSR_EFER, &efer);
--		if (efer & EFER_LMA) {
--			u64 maxphyaddr;
--			u32 eax, ebx, ecx, edx;
--
--			eax = 0x80000008;
--			ecx = 0;
--			if (ctxt->ops->get_cpuid(ctxt, &eax, &ebx, &ecx,
--						 &edx, true))
--				maxphyaddr = eax & 0xff;
--			else
--				maxphyaddr = 36;
--			rsvd = rsvd_bits(maxphyaddr, 63);
--			if (ctxt->ops->get_cr(ctxt, 4) & X86_CR4_PCIDE)
--				rsvd &= ~X86_CR3_PCID_NOFLUSH;
--		}
--
--		if (new_val & rsvd)
--			return emulate_gp(ctxt, 0);
--
--		break;
--		}
--	case 4: {
--		ctxt->ops->get_msr(ctxt, MSR_EFER, &efer);
--
--		if ((efer & EFER_LMA) && !(new_val & X86_CR4_PAE))
--			return emulate_gp(ctxt, 0);
--
--		break;
--		}
--	}
--
--	return X86EMUL_CONTINUE;
--}
--
- static int check_dr7_gd(struct x86_emulate_ctxt *ctxt)
- {
- 	unsigned long dr7;
-@@ -4841,10 +4767,10 @@ static const struct opcode twobyte_table
- 	D(ImplicitOps | ModRM | SrcMem | NoAccess), /* 8 * reserved NOP */
- 	D(ImplicitOps | ModRM | SrcMem | NoAccess), /* NOP + 7 * reserved NOP */
- 	/* 0x20 - 0x2F */
--	DIP(ModRM | DstMem | Priv | Op3264 | NoMod, cr_read, check_cr_read),
-+	DIP(ModRM | DstMem | Priv | Op3264 | NoMod, cr_read, check_cr_access),
- 	DIP(ModRM | DstMem | Priv | Op3264 | NoMod, dr_read, check_dr_read),
- 	IIP(ModRM | SrcMem | Priv | Op3264 | NoMod, em_cr_write, cr_write,
--						check_cr_write),
-+						check_cr_access),
- 	IIP(ModRM | SrcMem | Priv | Op3264 | NoMod, em_dr_write, dr_write,
- 						check_dr_write),
- 	N, N, N, N,
+-	if (new_role.as_u64 != context->mmu_role.as_u64)
++	if (new_role.as_u64 != context->mmu_role.as_u64) {
+ 		shadow_mmu_init_context(vcpu, context, cr0, cr4, efer, new_role);
++
++		/*
++		 * Override the level set by the common init helper, nested TDP
++		 * always uses the host's TDP configuration.
++		 */
++		context->shadow_root_level = new_role.base.level;
++	}
+ }
+ EXPORT_SYMBOL_GPL(kvm_init_shadow_npt_mmu);
+ 
 
 
