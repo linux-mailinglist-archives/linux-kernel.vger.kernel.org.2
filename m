@@ -2,63 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED4137B627
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A034937B614
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhELGbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 02:31:43 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2791 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbhELGb2 (ORCPT
+        id S229996AbhELGaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 02:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbhELGaB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 02:31:28 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fg4ZS3wR7zmgKt;
-        Wed, 12 May 2021 14:26:56 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 12 May 2021 14:30:11 +0800
-From:   Hui Tang <tanghui20@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 8/8] crypto: hisilicon/hpre - add 'default' for switch statement
-Date:   Wed, 12 May 2021 14:27:11 +0800
-Message-ID: <1620800831-53346-9-git-send-email-tanghui20@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1620800831-53346-1-git-send-email-tanghui20@huawei.com>
-References: <1620800831-53346-1-git-send-email-tanghui20@huawei.com>
+        Wed, 12 May 2021 02:30:01 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC05EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 23:28:53 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id x17so7131545vsc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 23:28:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4UwPaiMvT71jZjZxQi+bCQNJCogOTLRNHtxmsH4BW50=;
+        b=d7RU5qCrJDkEmIQMPHye1G5TVdNusfGm+NTUX5fTO4/eJOtrKm4FvEy+/5f94acZyl
+         IuIdA/BinCUwI0yZUpfGK1vzwW1P7K4I4xMVqdf6iHuh97Jgn/mQ/TKVDZ3OBeyAJ32f
+         g/rhQijVOHTYqFy2et4D1inpQO/415khcRiAWo+pxnUG3wtEMi3vmD2Fiwx7Ip77IHOn
+         /X2K3X4ouu+cV27gxCg1ySUFMxsVTiuDZ0tO1T7oj5Onl7fVpoKCsVuzAkYn/tF/S3ii
+         DQDYTv/kJGNpHFZNWAfctmz80ByQgXxzAjUAfQG5y+KMsGroeFkY4/T8H4JDFp0hg1Ga
+         2H/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4UwPaiMvT71jZjZxQi+bCQNJCogOTLRNHtxmsH4BW50=;
+        b=LyYyaS4TYZ11lht6wWAkcCEkfDOxUE9LmYwQ3MxeBZwLHhAVNKB3xIoFjhLXz766JT
+         f2cwu3aZb1jCxUrMDvqqdae2iddF32tbYbAYSvHYK9041dSRavudiZFUm8oS8WhPlRob
+         miGqIeIY0YhqoNXnCyaqGQyxq7rrlDPT9tukaP02SmHfx6cURTTK2yB1O2/RZUJ3DzXv
+         hOHMV6yxHwvhQaYYgPK8LDc6F6cc/k1Fw3No4MeqlrKHNbUFupiAB/kkQ0rWNrfqVWbY
+         dWxYtFrGkDMfvBqf6zDDJdnIg/iHoeMQja6wZx2sDS5MwbCVbCoat8nGWHC/vSeOp0Ii
+         iDMg==
+X-Gm-Message-State: AOAM531aXULlJDIIkKgNCeT5todwDiXJv+40sGPhHqC7aYWmUx7kyqHf
+        OxTA0BIenwf0t+dyWceC1Lt+36wZDUOP3XAm+nvqaw==
+X-Google-Smtp-Source: ABdhPJxETzUBunSy7yLPByflWEIZ1igjsdrbkBYLFIdko5atRxzG9ECM7P7kgvmTAvzYG75JZq6WnS4SM0uOEIUWB6Y=
+X-Received: by 2002:a67:db91:: with SMTP id f17mr30048675vsk.47.1620800932800;
+ Tue, 11 May 2021 23:28:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+References: <20210511071831.576145-1-aardelean@deviqon.com>
+ <20210511071831.576145-5-aardelean@deviqon.com> <20210511151323.30832207@jic23-huawei>
+In-Reply-To: <20210511151323.30832207@jic23-huawei>
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+Date:   Wed, 12 May 2021 09:28:41 +0300
+Message-ID: <CAASAkobRBr9i+Jz3d7AMk9SDyHP-nOn413-ZjBX3nmQ5jSZQ-A@mail.gmail.com>
+Subject: Re: [PATCH v2 04/12] iio: adc: ad7192: handle zero Avdd regulator
+ value as error
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        alexandru.tachici@analog.com, linux@deviqon.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return error immediately if it goto 'default' path.
+On Tue, 11 May 2021 at 17:12, Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Tue, 11 May 2021 10:18:23 +0300
+> Alexandru Ardelean <aardelean@deviqon.com> wrote:
+>
+> > This change fixes a corner-case, where the returned voltage is actually
+> > zero. This is also what patch ab0afa65bbc7 ("staging: iio: adc: ad7192:
+> > fail probe on get_voltage") was trying to do.
+> >
+> > But as Jonathan pointed out, a zero-value would signal that the probe has
+> > succeeded, putting the driver is a semi-initialized state.
+> >
+> > Fixes: ab0afa65bbc7 ("staging: iio: adc: ad7192: fail probe on get_voltage")
+> > Cc: Alexandru Tachici <alexandru.tachici@analog.com>
+> > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+>
+> Given that voltage_uv == 1 would result in a situation no worse than
+> for voltage_uv == 0 perhaps we should just change the following condition to
+>
+> if (voltage_uv >= 0)  ?
 
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
----
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+hmmm, you're right;
+i think had some narrow vision about this;
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index fb8e9c0..b4b12dc 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -617,9 +617,9 @@ static int hpre_is_dh_params_length_valid(unsigned int key_sz)
- 	case _HPRE_DH_GRP15:
- 	case _HPRE_DH_GRP16:
- 		return 0;
-+	default:
-+		return -EINVAL;
- 	}
--
--	return -EINVAL;
- }
- 
- static int hpre_dh_set_params(struct hpre_ctx *ctx, struct dh *params)
--- 
-2.8.1
+will send a v3
 
+>
+> Jonathan
+>
+> > ---
+> >  drivers/iio/adc/ad7192.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
+> > index d3be67aa0522..79df54e0dc96 100644
+> > --- a/drivers/iio/adc/ad7192.c
+> > +++ b/drivers/iio/adc/ad7192.c
+> > @@ -950,6 +950,11 @@ static int ad7192_probe(struct spi_device *spi)
+> >       }
+> >
+> >       voltage_uv = regulator_get_voltage(st->avdd);
+> > +     if (voltage_uv == 0) {
+> > +             ret = -EINVAL;
+> > +             dev_err(&spi->dev, "Zero value provided for AVdd supply\n");
+> > +             goto error_disable_avdd;
+> > +     }
+> >
+> >       if (voltage_uv > 0) {
+> >               st->int_vref_mv = voltage_uv / 1000;
+>
