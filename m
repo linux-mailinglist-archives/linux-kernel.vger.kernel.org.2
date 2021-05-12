@@ -2,85 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B20F37EECC
+	by mail.lfdr.de (Postfix) with ESMTP id 6335B37EECD
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443072AbhELWQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 18:16:02 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:55002 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1391745AbhELVbd (ORCPT
+        id S1443103AbhELWQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 18:16:20 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41838 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1391828AbhELVcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 17:31:33 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 466111C0B80; Wed, 12 May 2021 23:30:14 +0200 (CEST)
-Date:   Wed, 12 May 2021 23:30:13 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/530] 5.10.37-rc1 review
-Message-ID: <20210512213013.GB30312@duo.ucw.cz>
-References: <20210512144819.664462530@linuxfoundation.org>
+        Wed, 12 May 2021 17:32:23 -0400
+Received: from mail-vs1-f69.google.com ([209.85.217.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lgwRe-0001wD-2h
+        for linux-kernel@vger.kernel.org; Wed, 12 May 2021 21:31:06 +0000
+Received: by mail-vs1-f69.google.com with SMTP id e4-20020a67e1840000b029022845c93b42so11403468vsl.5
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 14:31:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=THR7nK7kAwdY9rO/aRV1zRGsF5kUDEhRB1tNMwQV0/s=;
+        b=AT2h1TysMzo7ckFO5ROzV9gkGX8wDqV41gBsTe3lciOB/zFEyCTEIKNRmZ7/R1Nssm
+         n/fHE2DU9OyxnNkNTsvDyv7jTLz0DQBDcrEwjygN3F3xBH3xVbaQqlN3j/otIF9kbI8r
+         uAPez+4IGK4ktar5n8mydJ6dnasjtogHb4/Q++aI9/B/HTB2MPAztr5rdm/BTFScSq8x
+         NKsyehrKdvVPTqd+XCN32dwxZ8Vj+1OGR0VtOxGqHZo+wIHiUi8gEtyUAIJjowJy58ad
+         uy/ROOuZKXhi+Vd79UCW1f9CSD48ejU66je5UNMtvfz2xQhmMS9IbEXH/Ec16ex+5QZ+
+         96eQ==
+X-Gm-Message-State: AOAM5336xZazUPMCrxTzW1PqZ0ilPK8I3nTpIwoyExJ6AX5jwnBIr5aI
+        So/0949jpP18py0hwVBjhE9wu6ci7zwIv7ljvvILn8nGRnGC+KJwH0aPCw/txt99Zow6GXItvRz
+        FCfTpzXG5FnYcuB9C0EKm2C4xBPKydOUSZXakFg/esQ==
+X-Received: by 2002:a67:bc5:: with SMTP id 188mr33039893vsl.50.1620855065114;
+        Wed, 12 May 2021 14:31:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxpqUE6lvffKGeZjMFpQf4nrDaZgY5JFbTilGc9Kdj2kbIfwyy7wHTLB+4d0jgEZKDZulELow==
+X-Received: by 2002:a67:bc5:: with SMTP id 188mr33039870vsl.50.1620855064870;
+        Wed, 12 May 2021 14:31:04 -0700 (PDT)
+Received: from [192.168.1.4] ([45.237.48.5])
+        by smtp.gmail.com with ESMTPSA id k4sm153957vkk.27.2021.05.12.14.31.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 May 2021 14:31:04 -0700 (PDT)
+Subject: Re: [PATCH 1/2] MAINTAINERS: nfc: add Krzysztof Kozlowski as
+ maintainer
+To:     "David S. Miller" <davem@davemloft.net>, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfc@lists.01.org
+References: <20210512144319.30852-1-krzysztof.kozlowski@canonical.com>
+ <162085441038.10928.7471974213298679002.git-patchwork-notify@kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <c23ad421-2d8a-16c7-9297-e0df04062a8e@canonical.com>
+Date:   Wed, 12 May 2021 17:31:02 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="98e8jtXdkpgskNou"
-Content-Disposition: inline
-In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <162085441038.10928.7471974213298679002.git-patchwork-notify@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/05/2021 17:20, patchwork-bot+netdevbpf@kernel.org wrote:
+> Hello:
+> 
+> This series was applied to netdev/net.git (refs/heads/master):
+> 
+> On Wed, 12 May 2021 10:43:18 -0400 you wrote:
+>> The NFC subsystem is orphaned.  I am happy to spend some cycles to
+>> review the patches, send pull requests and in general keep the NFC
+>> subsystem running.
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>>
+>>
+>> [...]
+> 
+> Here is the summary with links:
+>   - [1/2] MAINTAINERS: nfc: add Krzysztof Kozlowski as maintainer
+>     https://git.kernel.org/netdev/net/c/8aa5713d8b2c
+>   - [2/2] MAINTAINERS: nfc: include linux-nfc mailing list
+>     https://git.kernel.org/netdev/net/c/4a64541f2ceb
 
---98e8jtXdkpgskNou
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
+Hi David and Jakub,
 
-> This is the start of the stable review cycle for the 5.10.37 release.
-> There are 530 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-                                                                           =
-                    =20
-CIP testing did not find any problems here:                                =
-                    =20
-                                                                           =
-                    =20
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.4.y               =20
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.19.y              =20
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-5.10.y              =20
-                                                                           =
-                    =20
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>                              =
-                    =20
-                                                                           =
-                    =20
-Best regards,                                                              =
-                    =20
-                                                                Pavel      =
-                    =20
+Thanks for taking the patches above. Can you share your view (or point
+me to the docs) about maintenance process you would like to have?
 
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+For example:
+1. Do you expect pull requests or only reviews?
+2. Shall I update anything on patchwork (or pwbot will take care about
+it entirely)?
+https://patchwork.kernel.org/project/netdevbpf/list/
 
---98e8jtXdkpgskNou
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYJxI5QAKCRAw5/Bqldv6
-8plKAKC0qKvkGUqvrGfcKg1FIqe7dcLergCeKlYNmX16uhWgwldCgpMpwhiT1Bw=
-=i/v7
------END PGP SIGNATURE-----
-
---98e8jtXdkpgskNou--
+Best regards,
+Krzysztof
