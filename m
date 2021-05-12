@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7166237D307
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBDC237D19E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352742AbhELSPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:15:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42394 "EHLO mail.kernel.org"
+        id S241534AbhELR7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:59:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240818AbhELQZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:25:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAA0E61CAB;
-        Wed, 12 May 2021 15:48:32 +0000 (UTC)
+        id S240890AbhELQZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:25:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E012761CAF;
+        Wed, 12 May 2021 15:48:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620834513;
-        bh=n+AlIZTnt6xoCymPDcnfpVGdh1ubkYkDSmHe4NPqy7U=;
+        s=korg; t=1620834520;
+        bh=5C+HoE2l5GtqQ9GnIElGTvNUCbmQS4vhj3dATuGp+Xs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OJVUktWZkPZq20hNJfhPlUiMpKIEktVQrqh96nUsJCUF4pycwm0W7op9B6tVZ9b/U
-         nCc+ulNpks46YUpkpTWXnbuGgJKpXlyrXdUooTbgdF0AX5VnVmKBNfjCT6TcNS8PuF
-         yvMuxwGq0COydagILRqDgr1tK4iTPtiBCzVCettY=
+        b=TooTyjasp/a6P4nfMnc1voz/MkEcsZ9ojwwxdcozgBIvi3OrLwT1WLzm6StQuGPp+
+         CSsvpvfHNm9aAFJ6HfP1eSTad/HNDiW1xyu5a8hT7vxVA0xZM0P12rQtmARxYCx3/Q
+         VC8L8L8fI+CtV8SY/rTXFpYVJcJ0Ws3fJaUhBVSs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Lorenz Bauer <lmb@cloudflare.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 574/601] net:emac/emac-mac: Fix a use after free in emac_mac_tx_buf_send
-Date:   Wed, 12 May 2021 16:50:51 +0200
-Message-Id: <20210512144846.748983322@linuxfoundation.org>
+Subject: [PATCH 5.11 577/601] selftests/bpf: Fix core_reloc test runner
+Date:   Wed, 12 May 2021 16:50:54 +0200
+Message-Id: <20210512144846.851356559@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
 References: <20210512144827.811958675@linuxfoundation.org>
@@ -40,51 +41,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Andrii Nakryiko <andrii@kernel.org>
 
-[ Upstream commit 6d72e7c767acbbdd44ebc7d89c6690b405b32b57 ]
+[ Upstream commit bede0ebf0be87e9678103486a77f39e0334c6791 ]
 
-In emac_mac_tx_buf_send, it calls emac_tx_fill_tpd(..,skb,..).
-If some error happens in emac_tx_fill_tpd(), the skb will be freed via
-dev_kfree_skb(skb) in error branch of emac_tx_fill_tpd().
-But the freed skb is still used via skb->len by netdev_sent_queue(,skb->len).
+Fix failed tests checks in core_reloc test runner, which allowed failing tests
+to pass quietly. Also add extra check to make sure that expected to fail test cases with
+invalid names are caught as test failure anyway, as this is not an expected
+failure mode. Also fix mislabeled probed vs direct bitfield test cases.
 
-As i observed that emac_tx_fill_tpd() haven't modified the value of skb->len,
-thus my patch assigns skb->len to 'len' before the possible free and
-use 'len' instead of skb->len later.
-
-Fixes: b9b17debc69d2 ("net: emac: emac gigabit ethernet controller driver")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 124a892d1c41 ("selftests/bpf: Test TYPE_EXISTS and TYPE_SIZE CO-RE relocations")
+Reported-by: Lorenz Bauer <lmb@cloudflare.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Lorenz Bauer <lmb@cloudflare.com>
+Link: https://lore.kernel.org/bpf/20210426192949.416837-6-andrii@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qualcomm/emac/emac-mac.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/core_reloc.c     | 20 +++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/qualcomm/emac/emac-mac.c b/drivers/net/ethernet/qualcomm/emac/emac-mac.c
-index 117188e3c7de..87b8c032195d 100644
---- a/drivers/net/ethernet/qualcomm/emac/emac-mac.c
-+++ b/drivers/net/ethernet/qualcomm/emac/emac-mac.c
-@@ -1437,6 +1437,7 @@ netdev_tx_t emac_mac_tx_buf_send(struct emac_adapter *adpt,
- {
- 	struct emac_tpd tpd;
- 	u32 prod_idx;
-+	int len;
+diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+index cd3ba54a1f68..4b517d76257d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
++++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+@@ -217,7 +217,7 @@ static int duration = 0;
  
- 	memset(&tpd, 0, sizeof(tpd));
+ #define BITFIELDS_CASE(name, ...) {					\
+ 	BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_probed.o",	\
+-			      "direct:", name),				\
++			      "probed:", name),				\
+ 	.input = STRUCT_TO_CHAR_PTR(core_reloc_##name) __VA_ARGS__,	\
+ 	.input_len = sizeof(struct core_reloc_##name),			\
+ 	.output = STRUCT_TO_CHAR_PTR(core_reloc_bitfields_output)	\
+@@ -225,7 +225,7 @@ static int duration = 0;
+ 	.output_len = sizeof(struct core_reloc_bitfields_output),	\
+ }, {									\
+ 	BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_direct.o",	\
+-			      "probed:", name),				\
++			      "direct:", name),				\
+ 	.input = STRUCT_TO_CHAR_PTR(core_reloc_##name) __VA_ARGS__,	\
+ 	.input_len = sizeof(struct core_reloc_##name),			\
+ 	.output = STRUCT_TO_CHAR_PTR(core_reloc_bitfields_output)	\
+@@ -545,8 +545,7 @@ static struct core_reloc_test_case test_cases[] = {
+ 	ARRAYS_ERR_CASE(arrays___err_too_small),
+ 	ARRAYS_ERR_CASE(arrays___err_too_shallow),
+ 	ARRAYS_ERR_CASE(arrays___err_non_array),
+-	ARRAYS_ERR_CASE(arrays___err_wrong_val_type1),
+-	ARRAYS_ERR_CASE(arrays___err_wrong_val_type2),
++	ARRAYS_ERR_CASE(arrays___err_wrong_val_type),
+ 	ARRAYS_ERR_CASE(arrays___err_bad_zero_sz_arr),
  
-@@ -1456,9 +1457,10 @@ netdev_tx_t emac_mac_tx_buf_send(struct emac_adapter *adpt,
- 	if (skb_network_offset(skb) != ETH_HLEN)
- 		TPD_TYP_SET(&tpd, 1);
+ 	/* enum/ptr/int handling scenarios */
+@@ -864,13 +863,20 @@ void test_core_reloc(void)
+ 			  "prog '%s' not found\n", probe_name))
+ 			goto cleanup;
  
-+	len = skb->len;
- 	emac_tx_fill_tpd(adpt, tx_q, skb, &tpd);
++
++		if (test_case->btf_src_file) {
++			err = access(test_case->btf_src_file, R_OK);
++			if (!ASSERT_OK(err, "btf_src_file"))
++				goto cleanup;
++		}
++
+ 		load_attr.obj = obj;
+ 		load_attr.log_level = 0;
+ 		load_attr.target_btf_path = test_case->btf_src_file;
+ 		err = bpf_object__load_xattr(&load_attr);
+ 		if (err) {
+ 			if (!test_case->fails)
+-				CHECK(false, "obj_load", "failed to load prog '%s': %d\n", probe_name, err);
++				ASSERT_OK(err, "obj_load");
+ 			goto cleanup;
+ 		}
  
--	netdev_sent_queue(adpt->netdev, skb->len);
-+	netdev_sent_queue(adpt->netdev, len);
+@@ -909,10 +915,8 @@ void test_core_reloc(void)
+ 			goto cleanup;
+ 		}
  
- 	/* Make sure the are enough free descriptors to hold one
- 	 * maximum-sized SKB.  We need one desc for each fragment,
+-		if (test_case->fails) {
+-			CHECK(false, "obj_load_fail", "should fail to load prog '%s'\n", probe_name);
++		if (!ASSERT_FALSE(test_case->fails, "obj_load_should_fail"))
+ 			goto cleanup;
+-		}
+ 
+ 		equal = memcmp(data->out, test_case->output,
+ 			       test_case->output_len) == 0;
 -- 
 2.30.2
 
