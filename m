@@ -2,98 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF43437C3DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1210437C3FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233509AbhELPWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:22:35 -0400
-Received: from mail-pl1-f173.google.com ([209.85.214.173]:39554 "EHLO
-        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233014AbhELPLU (ORCPT
+        id S235004AbhELP0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:26:17 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:48194 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233048AbhELPNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:11:20 -0400
-Received: by mail-pl1-f173.google.com with SMTP id t4so12676970plc.6;
-        Wed, 12 May 2021 08:10:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BwlAcWjHLEGW8q4tl6UMuNqODn3koBWdsl/iJrhI8NU=;
-        b=aS3sRmJEpEf6fy6CkRadppSiofCotjrZjJ7eWZWtQI5pUhMnDRnjS0pi+Df6VcNx7Y
-         mGYRFW5ro+604sbBKX1X+aD7goU3FAwaYuYbcg7Cc7WexkxSNBTYssohDPhTxzdofQhR
-         G/+71X5D3NF5TrpVPA7+/cWWtWq0jcciH5mg1iWm5yRmiGoXpac0jB8C4tu6CxYDWzau
-         TbzscURdhqL9WM2RIXC2uJBEqtm9NbHPASTQBovpZ6WCcl0Ssr7uUFu6sddUFmWoGrJo
-         25ptR0zaWU8RaD1Rk456qhfrUS+Iv6GofDCvmGLn++RV6YaX8srwxRuujFpYpXcf3u6g
-         a+hg==
-X-Gm-Message-State: AOAM530k6TllvWnzyx2QqmnNC5+DpXMFPf/Z7d5+bYS2qTYnd1m8ZR9R
-        oSEU5vTwpX/FlY8VFehd0EQ=
-X-Google-Smtp-Source: ABdhPJx/iRn+/dJum5GCAO7YVBsG6yCkGrsc0dlNuvgR7ugT3cpGgAm3N3u7jV0YExizVBBgqWQuvg==
-X-Received: by 2002:a17:90a:be0c:: with SMTP id a12mr2128473pjs.130.1620832209609;
-        Wed, 12 May 2021 08:10:09 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id q7sm150489pfq.172.2021.05.12.08.10.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 08:10:08 -0700 (PDT)
-Date:   Wed, 12 May 2021 08:10:07 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Nava kishore Manne <nava.manne@xilinx.com>
-Cc:     robh+dt@kernel.org, michal.simek@xilinx.com, mdf@kernel.org,
-        trix@redhat.com, arnd@arndb.de, rajan.vaja@xilinx.com,
-        gregkh@linuxfoundation.org, amit.sunil.dhamne@xilinx.com,
-        tejas.patel@xilinx.com, zou_wei@huawei.com,
-        lakshmi.sai.krishna.potthuri@xilinx.com, ravi.patel@xilinx.com,
-        iwamatsu@nigauri.org, wendy.liang@xilinx.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
-        git@xilinx.com, chinnikishore369@gmail.com
-Subject: Re: [PATCH v5 0/4]Add Bitstream configuration support for Versal
-Message-ID: <YJvvz2ov8HrwshR9@epycbox.lan>
-References: <20210512125042.30973-1-nava.manne@xilinx.com>
+        Wed, 12 May 2021 11:13:25 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14CFCE2v129854;
+        Wed, 12 May 2021 10:12:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620832334;
+        bh=qi5Ns5oRWTnDzjxalcc0I/ZyX4zWj/tWFnUwv3DR9hk=;
+        h=From:To:CC:Subject:Date;
+        b=E7jJjfMkZUxL0fk+GrxXG0mtqa9futgXbRWk9pH8RKRCXUt3ivqhCalC6EymPKyQs
+         uk3Dp/VkAYjID0XIRWI0bXB+9vWDiqk1Iq454uQXc4rG1HX9OgHmkDy+j9oOAIgAJu
+         JyFbqg58s+cCLwRZaikfnEG0XcH2COjTj7snTkdk=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14CFCEYI094427
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 12 May 2021 10:12:14 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 12
+ May 2021 10:12:14 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 12 May 2021 10:12:14 -0500
+Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14CFCAIm005491;
+        Wed, 12 May 2021 10:12:10 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: [PATCH 0/4] J721E: Use external clock in EVM for SERDES
+Date:   Wed, 12 May 2021 20:42:05 +0530
+Message-ID: <20210512151209.27560-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512125042.30973-1-nava.manne@xilinx.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 06:20:38PM +0530, Nava kishore Manne wrote:
-> This series Adds FPGA manager driver support for Xilinx Versal SoC.
-> it uses the firmware interface to configure the programmable logic.
-> 
-> Changes for v4:
->                 -Rebase the patch series on linux-next.
->                 https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> 
-> Changes for v5:
-> 		-Updated binding doc's.
-> 
-> Appana Durga Kedareswara rao (1):
->   dt-bindings: fpga: Add binding doc for versal fpga manager
-> 
-> Nava kishore Manne (3):
->   drivers: firmware: Add PDI load API support
->   dt-bindings: firmware: Add bindings for xilinx firmware
->   fpga: versal-fpga: Add versal fpga manager driver
-> 
->  .../firmware/xilinx/xlnx,zynqmp-firmware.yaml |  66 ++++++++++
->  .../bindings/fpga/xlnx,versal-fpga.yaml       |  33 +++++
->  drivers/firmware/xilinx/zynqmp.c              |  17 +++
->  drivers/fpga/Kconfig                          |   9 ++
->  drivers/fpga/Makefile                         |   1 +
->  drivers/fpga/versal-fpga.c                    | 117 ++++++++++++++++++
->  include/linux/firmware/xlnx-zynqmp.h          |  10 ++
->  7 files changed, 253 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
->  create mode 100644 Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
->  create mode 100644 drivers/fpga/versal-fpga.c
-> 
-> -- 
-> 2.17.1
-> 
+J721E EVM has clock generator that feeds both to the SERDES and to the
+PCIe slot present in the EVM. In order to use common reference clock on
+either side of the link, configure SERDES to use external reference
+clock.
 
-Series looks good to me.
+Previously SERDES used internal reference clock and the attached device
+used clock from clock generator in the EVM.
 
-Will wait for Rob's Acked-by before applying.
+Kishon Vijay Abraham I (4):
+  arm64: dts: ti: k3-j721e-main: Fix external refclk input to SERDES
+  arm64: dts: ti: k3-j721e-main: Add #clock-cells property to serdes DT
+    node
+  arm64: dts: ti: k3-j721e-common-proc-board: Use external clock for
+    SERDES
+  arm64: dts: ti: k3-j721e-common-proc-board: Re-name "link" name as
+    "phy"
 
-- Moritz
+ .../dts/ti/k3-j721e-common-proc-board.dts     | 52 ++++++++++++-
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 78 ++++++++++---------
+ 2 files changed, 90 insertions(+), 40 deletions(-)
+
+-- 
+2.17.1
+
