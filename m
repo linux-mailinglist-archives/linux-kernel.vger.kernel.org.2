@@ -2,171 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9BE37D51E
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40F137D53B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357465AbhELSiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:38:46 -0400
-Received: from gateway32.websitewelcome.com ([192.185.145.101]:25371 "EHLO
-        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237719AbhELQim (ORCPT
+        id S1357777AbhELSlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:41:13 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63656 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S243327AbhELQk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:38:42 -0400
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway32.websitewelcome.com (Postfix) with ESMTP id 69E797A4C7
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 11:37:25 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id grrRlFSSQPkftgrrRlDwUG; Wed, 12 May 2021 11:37:25 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Kyq9KuIG2zdCKlIloTSlN2gRTDBH/PRFSECmIEkdnb8=; b=uIijnBcYYSjbO3LEu5TWaSRHNf
-        4FvxoJSrD2IeDRCmFaFhY717HPT7GnS3cIVs8BgycE23xI1ztnDwX+3KLZRyTiTcsNGUV+LFGb1/m
-        +RGJK8bF/7lvliMuV1xuwB0SASlEXYG/H7uwfqqeXFN3/yBUyfVV79lzP91ydnujlDjfjOedwiENe
-        UviQHapORxa6CFHOni3fDtXLZc2e+sWqDxZmkmIi/2FqOSwdT5596P0gTqW/2eSrbNtRorJo8bAe/
-        emsRSbsTRFr6ZUsfHqsvH0Bl6SIENTJ/NHzpOyXvvF60sDJ/UQC5oZ03AQtLJCiiyM+0sE/llYSAQ
-        PH8BuUWQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:52952 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lgrrN-003Xfo-Rz; Wed, 12 May 2021 11:37:21 -0500
-Subject: Re: [PATCH][next] media: venus: hfi_msgs.h: Replace one-element
- arrays with flexible-array members
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210211001044.GA69612@embeddedor>
- <bf31beab-dc36-23e9-757f-9729be59f7b2@embeddedor.com>
- <de8538ad-48d8-7a3c-af4f-ab31ee2da761@linaro.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <f63824ee-fc8b-25cf-f3c2-c7b3947b8076@embeddedor.com>
-Date:   Wed, 12 May 2021 11:37:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 12 May 2021 12:40:27 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14CGXvTv080047;
+        Wed, 12 May 2021 12:38:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=KpwEyGoPjDUEM6nsUOz34TyLmBlksLIsyVzf/xObjiw=;
+ b=UVdVbSj5UbTNgQGCrof3qtzIXovp4r0aUyvHuoNGgCSHSN80OBaL9U8tXeU44MrsgVT1
+ tW8T+yPwLW1tWFdqIf4BjF24Z6VTjpCJytRpVHm/LX1UoyQUL8zMsQASPKEsehcPXPjV
+ YhEj5RGDHhR5OlDgFEetk6RsMaVdoSCdYHmIWhDo28dlGG8+m07iC9ZvqXemYUbG++ih
+ wn+T+u3jdMU5mfm0jLljCAglwsaDGB/3I6t2RtuWTgTMqU9r3+cTIVomrecAtjyzVnc6
+ WcYljzI2jIIUNPbW1UVWyrV49BPYWtcuWwMGfd4UUY5kMpaSrimGhNEKpJz8WcrZAAi8 0A== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38ghx3hfs4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 May 2021 12:38:46 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14CGXAhg012041;
+        Wed, 12 May 2021 16:38:45 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma02fra.de.ibm.com with ESMTP id 38dj9898ma-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 May 2021 16:38:44 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14CGcF2f37421500
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 12 May 2021 16:38:15 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA56FAE0F4;
+        Wed, 12 May 2021 16:38:41 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 83DF0AE0EF;
+        Wed, 12 May 2021 16:38:38 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.199.40.5])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 12 May 2021 16:38:38 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
+Cc:     maddy@linux.vnet.ibm.com, santosh@fossix.org,
+        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
+        dan.j.williams@intel.com, ira.weiny@intel.com,
+        atrajeev@linux.vnet.ibm.com, kjain@linux.ibm.com,
+        peterz@infradead.org, tglx@linutronix.de
+Subject: [RFC 0/4] Add perf interface to expose nvdimm performance stats
+Date:   Wed, 12 May 2021 22:08:20 +0530
+Message-Id: <20210512163824.255370-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-In-Reply-To: <de8538ad-48d8-7a3c-af4f-ab31ee2da761@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lgrrN-003Xfo-Rz
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:52952
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 8
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: tp5c3rAEQvtdJhfKf-iB3p_7q0MoJnI3
+X-Proofpoint-ORIG-GUID: tp5c3rAEQvtdJhfKf-iB3p_7q0MoJnI3
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-12_09:2021-05-12,2021-05-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ suspectscore=0 phishscore=0 mlxscore=0 priorityscore=1501 malwarescore=0
+ mlxlogscore=957 lowpriorityscore=0 clxscore=1015 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105120105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Patchset adds performance stats reporting support for nvdimm.
+Added interface includes support for a pmu register function and
+callbacks to be used by arch/platform specific drivers.
+User could use standard perf tool to access perf events exposed via pmu.
 
+Patchset adds a structure called nvdimm_pmu which can
+be used to add platform specific data like supported event list and
+callbacks to pmu functions like event_init/add/delete/read.
 
-On 5/12/21 06:39, Stanimir Varbanov wrote:
-> Hi,
-> 
-> On 5/11/21 6:46 PM, Gustavo A. R. Silva wrote:
->> Hi all,
->>
->> Friendly ping:
->>
->> We are about to be able to globally enable -Warray-bounds and, these are one of
->> the last out-of-bounds warnings in linux-next.
->>
->> Could someone take this, please?
-> 
-> This one introduces regressions, so I cannot take it. It needs some more
-> work.
+Patchset includes an implements the to expose IBM pseries platform nmem*
+device performance stats using this interface.
 
-Please, share with me the errors or warnings you see with this. So, I can
-have an idea of what is going on. Unfortunately, I don't have access to the
-test suite or hardware to test this.
+Result from power9 pseries lpar with 2 nvdimm device:
+command:# perf list nmem
+  nmem0/cchrhcnt/                                    [Kernel PMU event]
+  nmem0/cchwhcnt/                                    [Kernel PMU event]
+  nmem0/critrscu/                                    [Kernel PMU event]
+  nmem0/ctlresct/                                    [Kernel PMU event]
+  nmem0/ctlrestm/                                    [Kernel PMU event]
+  nmem0/fastwcnt/                                    [Kernel PMU event]
+  nmem0/hostlcnt/                                    [Kernel PMU event]
+  nmem0/hostldur/                                    [Kernel PMU event]
+  nmem0/hostscnt/                                    [Kernel PMU event]
+  nmem0/hostsdur/                                    [Kernel PMU event]
+  nmem0/medrcnt/                                     [Kernel PMU event]
+  nmem0/medrdur/                                     [Kernel PMU event]
+  nmem0/medwcnt/                                     [Kernel PMU event]
+  nmem0/medwdur/                                     [Kernel PMU event]
+  nmem0/memlife/                                     [Kernel PMU event]
+  nmem0/noopstat/                                    [Kernel PMU event]
+  nmem0/ponsecs/                                     [Kernel PMU event]
+  nmem1/cchrhcnt/                                    [Kernel PMU event]
+  nmem1/cchwhcnt/                                    [Kernel PMU event]
+  nmem1/critrscu/                                    [Kernel PMU event]
+  ...
+  nmem1/noopstat/                                    [Kernel PMU event]
+  nmem1/ponsecs/                                     [Kernel PMU event]
 
-Thanks!
---
-Gustavo
+Patch1:
+        Introduces the nvdimm_pmu structure, common function for pmu
+        register along with callback routine check.
+Pacth2
+        Add code in arch/powerpc/platform/pseries/papr_scm.c to expose
+        nmem* pmu. It fills in the nvdimm_pmu structure with event attrs
+        and event callback functions and then registers the pmu by adding
+        callback to register_nvdimm_pmu.
+Patch3:
+        Sysfs documentation patch
+Patch4:
+        Adds cpuhotplug support.
 
+Kajol Jain (4):
+  drivers/nvdimm: Add perf interface to expose nvdimm performance stats
+  powerpc/papr_scm: Add perf interface support
+  powerpc/papr_scm: Document papr_scm sysfs event format entries
+  powerpc/papr_scm: Add cpu hotplug support for nvdimm pmu device
 
+ Documentation/ABI/testing/sysfs-bus-papr-pmem |  31 ++
+ arch/powerpc/include/asm/device.h             |   5 +
+ arch/powerpc/platforms/pseries/papr_scm.c     | 346 +++++++++++++++++-
+ drivers/nvdimm/Makefile                       |   1 +
+ drivers/nvdimm/nd_perf.c                      | 111 ++++++
+ include/linux/nd.h                            |  31 ++
+ 6 files changed, 524 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/nvdimm/nd_perf.c
 
->>
->> Thanks
->> --
->> Gustavo
->>
->> On 2/10/21 18:10, Gustavo A. R. Silva wrote:
->>> There is a regular need in the kernel to provide a way to declare having
->>> a dynamically sized set of trailing elements in a structure. Kernel code
->>> should always use “flexible array members”[1] for these cases. The older
->>> style of one-element or zero-length arrays should no longer be used[2].
->>>
->>> Use flexible-array members in struct hfi_msg_sys_property_info_pkt and
->>> hfi_msg_session_property_info_pkt instead of one-element arrays.
->>>
->>> Also, this helps with the ongoing efforts to enable -Warray-bounds by
->>> fixing the following warnings:
->>>
->>>   CC [M]  drivers/media/platform/qcom/venus/hfi_msgs.o
->>> drivers/media/platform/qcom/venus/hfi_msgs.c: In function ‘hfi_sys_property_info’:
->>> drivers/media/platform/qcom/venus/hfi_msgs.c:246:35: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
->>>   246 |  if (req_bytes < 128 || !pkt->data[1] || pkt->num_properties > 1)
->>>       |                          ~~~~~~~~~^~~
->>> drivers/media/platform/qcom/venus/hfi_msgs.c: In function ‘hfi_session_prop_info’:
->>> drivers/media/platform/qcom/venus/hfi_msgs.c:342:62: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
->>>   342 |  if (!req_bytes || req_bytes % sizeof(*buf_req) || !pkt->data[1])
->>>       |                                                     ~~~~~~~~~^~~
->>>
->>> [1] https://en.wikipedia.org/wiki/Flexible_array_member
->>> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
->>>
->>> Link: https://github.com/KSPP/linux/issues/79
->>> Link: https://github.com/KSPP/linux/issues/109
->>> Build-tested-by: <lkp@intel.com>
->>> Link: https://lore.kernel.org/lkml/6023dd80.MmTeFf8SzwX0iK7%2F%25lkp@intel.com/
->>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>> ---
->>>  drivers/media/platform/qcom/venus/hfi_msgs.h | 4 ++--
->>>  1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.h b/drivers/media/platform/qcom/venus/hfi_msgs.h
->>> index 526d9f5b487b..e2d2ccfbdd24 100644
->>> --- a/drivers/media/platform/qcom/venus/hfi_msgs.h
->>> +++ b/drivers/media/platform/qcom/venus/hfi_msgs.h
->>> @@ -113,7 +113,7 @@ struct hfi_msg_sys_ping_ack_pkt {
->>>  struct hfi_msg_sys_property_info_pkt {
->>>  	struct hfi_pkt_hdr hdr;
->>>  	u32 num_properties;
->>> -	u32 data[1];
->>> +	u32 data[];
->>>  };
->>>  
->>>  struct hfi_msg_session_load_resources_done_pkt {
->>> @@ -233,7 +233,7 @@ struct hfi_msg_session_parse_sequence_header_done_pkt {
->>>  struct hfi_msg_session_property_info_pkt {
->>>  	struct hfi_session_hdr_pkt shdr;
->>>  	u32 num_properties;
->>> -	u32 data[1];
->>> +	u32 data[];
->>>  };
->>>  
->>>  struct hfi_msg_session_release_resources_done_pkt {
->>>
-> 
+-- 
+2.27.0
+
