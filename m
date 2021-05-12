@@ -2,135 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8012537B8B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 750E137B8B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbhELI4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 04:56:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49360 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230114AbhELI4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:56:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7B65EAF65;
-        Wed, 12 May 2021 08:55:26 +0000 (UTC)
-Date:   Wed, 12 May 2021 10:55:22 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] mm,hwpoison: make get_hwpoison_page call
- get_any_page()
-Message-ID: <20210512085522.GB14726@linux>
-References: <20210511151016.2310627-1-nao.horiguchi@gmail.com>
- <20210511151016.2310627-3-nao.horiguchi@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511151016.2310627-3-nao.horiguchi@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S230463AbhELI6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:58:18 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:36007 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230114AbhELI6R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 04:58:17 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UYdpUu2_1620809826;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UYdpUu2_1620809826)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 12 May 2021 16:57:08 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     hdegoede@redhat.com
+Cc:     stuart.w.hayes@gmail.com, mgross@linux.intel.com,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH v2] platform/x86: drop unneeded assignment in host_control_smi()
+Date:   Wed, 12 May 2021 16:57:05 +0800
+Message-Id: <1620809825-84105-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 12:10:16AM +0900, Naoya Horiguchi wrote:
-> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> 
-> Now __get_hwpoison_page() could return -EBUSY in a race condition,
-> so it's helpful to handle it by retrying.  We already have retry
-> logic, so make get_hwpoison_page() call get_any_page() when called
-> from memory_failure().
+Making '==' operation with ESM_STATUS_CMD_UNSUCCESSFUL directly
+after calling the function inb() is more efficient, so assignment
+to 'cmd_status' is redundant.
 
-As I stated in your previous patch, I think you should start returning -EBUSY
-from this patch onwards.
+Eliminate the following clang_analyzer warning:
+drivers/platform/x86/dell/dcdbas.c:397:11: warning: Although the value
+stored to 'cmd_status' is used in the enclosing expression, the value
+is never actually read from 'cmd_status'
 
->  static int get_any_page(struct page *p, unsigned long flags)
->  {
->  	int ret = 0, pass = 0;
-> @@ -1152,50 +1136,76 @@ static int get_any_page(struct page *p, unsigned long flags)
->  		count_increased = true;
->  
->  try_again:
-> -	if (!count_increased && !__get_hwpoison_page(p)) {
-> -		if (page_count(p)) {
-> -			/* We raced with an allocation, retry. */
-> -			if (pass++ < 3)
-> -				goto try_again;
-> -			ret = -EBUSY;
-> -		} else if (!PageHuge(p) && !is_free_buddy_page(p)) {
-> -			/* We raced with put_page, retry. */
-> -			if (pass++ < 3)
-> -				goto try_again;
-> -			ret = -EIO;
-> +	if (!count_increased) {
-> +		ret = __get_hwpoison_page(p);
-> +		if (!ret) {
-> +			if (page_count(p)) {
-> +				/* We raced with an allocation, retry. */
-> +				if (pass++ < 3)
-> +					goto try_again;
-> +				ret = -EBUSY;
-> +			} else if (!PageHuge(p) && !is_free_buddy_page(p)) {
-> +				/* We raced with put_page, retry. */
-> +				if (pass++ < 3)
-> +					goto try_again;
-> +				ret = -EIO;
-> +			}
-> +			goto out;
->  		}
-> +	}
+No functional change.
 
-I think this can be improved.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
 
-We cannot have -EBUSY unless we come from __get_hwpoison_page() (!count_increased),
-so I think a much more natural approach would be to stuff the hunk below in there,
-and then place the other stuff in an else, so something like:
+Change in v2
+--According to Hans's suggestion, store the inb() value into the s8.
+https://lore.kernel.org/patchwork/patch/1419026/
 
-        if (!count_increased) {
-                ret = __get_hwpoison_page(p);
-                if (!ret) {
-                        if (page_count(p)) {
-                                /* We raced with an allocation, retry. */
-                                if (pass++ < 3)
-                                        goto try_again;
-                                ret = -EBUSY;
-                        } else if (!PageHuge(p) && !is_free_buddy_page(p)) {
-                                /* We raced with put_page, retry. */
-                                if (pass++ < 3)
-                                        goto try_again;
-                                ret = -EIO;
-                        }
-                        goto out;
-                } else if (ret == -EBUSY) {
-			/* We raced with freeing huge page to buddy, retry. */
-			if (pass++ < 3)
-				goto try_again;
-		}
-        } else {
-		/* We do already have a refcount for this page, see if we can
-		 * handle it.
-		 */
-		if (PageHuge(p) || PageLRU(p) || __PageMovable(p)) {
-			ret = 1;
-		} else {
-			/* A page we cannot handle. Check...
-		}
-	}
+ drivers/platform/x86/dell/dcdbas.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Other than that, looks good to me.
-
-> +
-> +	if (ret == -EBUSY) {
-> +		/* We raced with freeing huge page to buddy, retry. */
-> +		if (pass++ < 3)
-> +			goto try_again;
-
+diff --git a/drivers/platform/x86/dell/dcdbas.c b/drivers/platform/x86/dell/dcdbas.c
+index d513a59..28447c1 100644
+--- a/drivers/platform/x86/dell/dcdbas.c
++++ b/drivers/platform/x86/dell/dcdbas.c
+@@ -394,8 +394,7 @@ static int host_control_smi(void)
+ 
+ 		/* wait a few to see if it executed */
+ 		num_ticks = TIMEOUT_USEC_SHORT_SEMA_BLOCKING;
+-		while ((cmd_status = inb(PCAT_APM_STATUS_PORT))
+-		       == ESM_STATUS_CMD_UNSUCCESSFUL) {
++		while ((s8)inb(PCAT_APM_STATUS_PORT) == ESM_STATUS_CMD_UNSUCCESSFUL) {
+ 			num_ticks--;
+ 			if (num_ticks == EXPIRED_TIMER)
+ 				return -ETIME;
 -- 
-Oscar Salvador
-SUSE L3
+1.8.3.1
+
