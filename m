@@ -2,128 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FAD37B570
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6307D37B540
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhELFZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 01:25:30 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:53856 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbhELFZ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 01:25:29 -0400
-X-Greylist: delayed 3587 seconds by postgrey-1.27 at vger.kernel.org; Wed, 12 May 2021 01:25:29 EDT
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:53822 helo=[192.168.1.177])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1lggQD-00008a-LO; Wed, 12 May 2021 00:24:33 -0400
-Message-ID: <17471c9fec18765449ef3a5a4cddc23561b97f52.camel@trillion01.com>
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
- registers for io_threads
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stefan Metzmacher <metze@samba.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Date:   Wed, 12 May 2021 00:24:32 -0400
-In-Reply-To: <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk>
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
-         <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
-         <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
-         <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
-         <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
-         <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk>
-         <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
-         <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
-         <8735v3jujv.ffs@nanos.tec.linutronix.de>
-         <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
-         <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org>
-         <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
-         <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+        id S230137AbhELFCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 01:02:15 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:45509 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230013AbhELFCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 01:02:13 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Fg2gJ1Tsxz9sf0;
+        Wed, 12 May 2021 07:01:00 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 2NGru9eSrYYU; Wed, 12 May 2021 07:01:00 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Fg2gH5GsTz9sdw;
+        Wed, 12 May 2021 07:00:59 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6BB158B7D6;
+        Wed, 12 May 2021 07:00:59 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id shoquJmNXJ0F; Wed, 12 May 2021 07:00:59 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E915F8B769;
+        Wed, 12 May 2021 07:00:58 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id BED3D64164; Wed, 12 May 2021 05:00:58 +0000 (UTC)
+Message-Id: <f4633ac6a7da2f22f31a04a89e0a7026bb78b15b.1620795204.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1620795204.git.christophe.leroy@csgroup.eu>
+References: <cover.1620795204.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 1/5] mm/hugetlb: Change parameters of arch_make_huge_pte()
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>
+Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sparclinux@vger.kernel.org, linux-mm@kvack.org
+Date:   Wed, 12 May 2021 05:00:58 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-03 at 20:50 -0600, Jens Axboe wrote:
-> 
-> I tested the below, which is the two combined, with a case that
-> deliberately has two types of io threads - one for SQPOLL submission,
-> and one that was created due to async work being needed. gdb attaches
-> just fine to the creator, with a slight complaint:
-> 
-> Attaching to process 370
-> [New LWP 371]
-> [New LWP 372]
-> Error while reading shared library symbols for
-> /usr/lib/libpthread.so.0:
-> Cannot find user-level thread for LWP 372: generic error
-> 0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 () from
-> /usr/lib/libc.so.6
-> (gdb) info threads
->   Id   Target Id             Frame 
-> * 1    LWP 370 "io_uring"    0x00007f1a74675125 in
-> clock_nanosleep@GLIBC_2.2.5 ()
->    from /usr/lib/libc.so.6
->   2    LWP 371 "iou-sqp-370" 0x00007f1a746a7a9d in syscall () from
-> /usr/lib/libc.so.6
->   3    LWP 372 "io_uring"    0x00007f1a74675125 in
-> clock_nanosleep@GLIBC_2.2.5 ()
->    from /usr/lib/libc.so.6
-> 
-> (gdb) thread 2
-> [Switching to thread 2 (LWP 371)]
-> #0  0x00007f1a746a7a9d in syscall () from /usr/lib/libc.so.6
-> (gdb) bt
-> #0  0x00007f1a746a7a9d in syscall () from /usr/lib/libc.so.6
-> Backtrace stopped: Cannot access memory at address 0x0
-> 
-> (gdb) thread 1
-> [Switching to thread 1 (LWP 370)]
-> #0  0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 () from
-> /usr/lib/libc.so.6
-> (gdb) bt
-> #0  0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 () from
-> /usr/lib/libc.so.6
-> #1  0x00007f1a7467a357 in nanosleep () from /usr/lib/libc.so.6
-> #2  0x00007f1a7467a28e in sleep () from /usr/lib/libc.so.6
-> #3  0x000055bd41e929ba in main (argc=<optimized out>, argv=<optimized
-> out>)
->     at t/io_uring.c:658
-> 
-> which looks very reasonable to me - no backtraces for the io threads,
-> and
-> no arch complaints.
-> 
-I have reported an issue that I have with a user process using io_uring
-where when it core dumps, the dump fails to be generated.
-https://github.com/axboe/liburing/issues/346
+At the time being, arch_make_huge_pte() has the following prototype:
 
-Pavel did comment to my report and he did point out this thread as
-possibly a related issue.
+  pte_t arch_make_huge_pte(pte_t entry, struct vm_area_struct *vma,
+			   struct page *page, int writable);
 
-I'm far from being 100% convinced that Stefan patch can help but I am
-going to give it a try and report back here if it does help.
+vma is used to get the pages shift or size.
+vma is also used on Sparc to get vm_flags.
+page is not used.
+writable is not used.
 
-Greetings,
-Olivier
+In order to use this function without a vma, replace vma by shift
+and flags. Also remove the used parameters.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
+---
+ arch/arm64/include/asm/hugetlb.h                 | 3 +--
+ arch/arm64/mm/hugetlbpage.c                      | 5 ++---
+ arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h | 5 ++---
+ arch/sparc/include/asm/pgtable_64.h              | 3 +--
+ arch/sparc/mm/hugetlbpage.c                      | 6 ++----
+ include/linux/hugetlb.h                          | 4 ++--
+ mm/hugetlb.c                                     | 6 ++++--
+ mm/migrate.c                                     | 4 +++-
+ 8 files changed, 17 insertions(+), 19 deletions(-)
+
+diff --git a/arch/arm64/include/asm/hugetlb.h b/arch/arm64/include/asm/hugetlb.h
+index 5abf91e3494c..1242f71937f8 100644
+--- a/arch/arm64/include/asm/hugetlb.h
++++ b/arch/arm64/include/asm/hugetlb.h
+@@ -23,8 +23,7 @@ static inline void arch_clear_hugepage_flags(struct page *page)
+ }
+ #define arch_clear_hugepage_flags arch_clear_hugepage_flags
+ 
+-extern pte_t arch_make_huge_pte(pte_t entry, struct vm_area_struct *vma,
+-				struct page *page, int writable);
++pte_t arch_make_huge_pte(pte_t entry, unsigned int shift, vm_flags_t flags);
+ #define arch_make_huge_pte arch_make_huge_pte
+ #define __HAVE_ARCH_HUGE_SET_HUGE_PTE_AT
+ extern void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
+diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
+index 58987a98e179..23505fc35324 100644
+--- a/arch/arm64/mm/hugetlbpage.c
++++ b/arch/arm64/mm/hugetlbpage.c
+@@ -339,10 +339,9 @@ pte_t *huge_pte_offset(struct mm_struct *mm,
+ 	return NULL;
+ }
+ 
+-pte_t arch_make_huge_pte(pte_t entry, struct vm_area_struct *vma,
+-			 struct page *page, int writable)
++pte_t arch_make_huge_pte(pte_t entry, unsigned int shift, vm_flags_t flags)
+ {
+-	size_t pagesize = huge_page_size(hstate_vma(vma));
++	size_t pagesize = 1UL << shift;
+ 
+ 	if (pagesize == CONT_PTE_SIZE) {
+ 		entry = pte_mkcont(entry);
+diff --git a/arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h b/arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h
+index 39be9aea86db..64b6c608eca4 100644
+--- a/arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h
++++ b/arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h
+@@ -66,10 +66,9 @@ static inline void huge_ptep_set_wrprotect(struct mm_struct *mm,
+ }
+ 
+ #ifdef CONFIG_PPC_4K_PAGES
+-static inline pte_t arch_make_huge_pte(pte_t entry, struct vm_area_struct *vma,
+-				       struct page *page, int writable)
++static inline pte_t arch_make_huge_pte(pte_t entry, unsigned int shift, vm_flags_t flags)
+ {
+-	size_t size = huge_page_size(hstate_vma(vma));
++	size_t size = 1UL << shift;
+ 
+ 	if (size == SZ_16K)
+ 		return __pte(pte_val(entry) & ~_PAGE_HUGE);
+diff --git a/arch/sparc/include/asm/pgtable_64.h b/arch/sparc/include/asm/pgtable_64.h
+index 550d3904de65..2cd80a0a9795 100644
+--- a/arch/sparc/include/asm/pgtable_64.h
++++ b/arch/sparc/include/asm/pgtable_64.h
+@@ -377,8 +377,7 @@ static inline pgprot_t pgprot_noncached(pgprot_t prot)
+ #define pgprot_noncached pgprot_noncached
+ 
+ #if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+-extern pte_t arch_make_huge_pte(pte_t entry, struct vm_area_struct *vma,
+-				struct page *page, int writable);
++pte_t arch_make_huge_pte(pte_t entry, unsigned int shift, vm_flags_t flags);
+ #define arch_make_huge_pte arch_make_huge_pte
+ static inline unsigned long __pte_default_huge_mask(void)
+ {
+diff --git a/arch/sparc/mm/hugetlbpage.c b/arch/sparc/mm/hugetlbpage.c
+index 04d8790f6c32..0f49fada2093 100644
+--- a/arch/sparc/mm/hugetlbpage.c
++++ b/arch/sparc/mm/hugetlbpage.c
+@@ -177,10 +177,8 @@ static pte_t hugepage_shift_to_tte(pte_t entry, unsigned int shift)
+ 		return sun4u_hugepage_shift_to_tte(entry, shift);
+ }
+ 
+-pte_t arch_make_huge_pte(pte_t entry, struct vm_area_struct *vma,
+-			 struct page *page, int writeable)
++pte_t arch_make_huge_pte(pte_t entry, unsigned int shift, vm_flags_t flags)
+ {
+-	unsigned int shift = huge_page_shift(hstate_vma(vma));
+ 	pte_t pte;
+ 
+ 	pte = hugepage_shift_to_tte(entry, shift);
+@@ -188,7 +186,7 @@ pte_t arch_make_huge_pte(pte_t entry, struct vm_area_struct *vma,
+ #ifdef CONFIG_SPARC64
+ 	/* If this vma has ADI enabled on it, turn on TTE.mcd
+ 	 */
+-	if (vma->vm_flags & VM_SPARC_ADI)
++	if (flags & VM_SPARC_ADI)
+ 		return pte_mkmcd(pte);
+ 	else
+ 		return pte_mknotmcd(pte);
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index b92f25ccef58..24f47981c166 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -710,8 +710,8 @@ static inline void arch_clear_hugepage_flags(struct page *page) { }
+ #endif
+ 
+ #ifndef arch_make_huge_pte
+-static inline pte_t arch_make_huge_pte(pte_t entry, struct vm_area_struct *vma,
+-				       struct page *page, int writable)
++static inline pte_t arch_make_huge_pte(pte_t entry, unsigned int shift,
++				       vm_flags_t flags)
+ {
+ 	return entry;
+ }
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 3db405dea3dc..396285b16dd8 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3856,6 +3856,7 @@ static pte_t make_huge_pte(struct vm_area_struct *vma, struct page *page,
+ 				int writable)
+ {
+ 	pte_t entry;
++	unsigned int shift = huge_page_shift(hstate_vma(vma));
+ 
+ 	if (writable) {
+ 		entry = huge_pte_mkwrite(huge_pte_mkdirty(mk_huge_pte(page,
+@@ -3866,7 +3867,7 @@ static pte_t make_huge_pte(struct vm_area_struct *vma, struct page *page,
+ 	}
+ 	entry = pte_mkyoung(entry);
+ 	entry = pte_mkhuge(entry);
+-	entry = arch_make_huge_pte(entry, vma, page, writable);
++	entry = arch_make_huge_pte(entry, shift, vma->vm_flags);
+ 
+ 	return entry;
+ }
+@@ -5250,10 +5251,11 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
+ 		}
+ 		if (!huge_pte_none(pte)) {
+ 			pte_t old_pte;
++			unsigned int shift = huge_page_shift(hstate_vma(vma));
+ 
+ 			old_pte = huge_ptep_modify_prot_start(vma, address, ptep);
+ 			pte = pte_mkhuge(huge_pte_modify(old_pte, newprot));
+-			pte = arch_make_huge_pte(pte, vma, NULL, 0);
++			pte = arch_make_huge_pte(pte, shift, vma->vm_flags);
+ 			huge_ptep_modify_prot_commit(vma, address, ptep, old_pte, pte);
+ 			pages++;
+ 		}
+diff --git a/mm/migrate.c b/mm/migrate.c
+index b234c3f3acb7..49ee64cd2ff3 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -226,8 +226,10 @@ static bool remove_migration_pte(struct page *page, struct vm_area_struct *vma,
+ 
+ #ifdef CONFIG_HUGETLB_PAGE
+ 		if (PageHuge(new)) {
++			unsigned int shift = huge_page_shift(hstate_vma(vma));
++
+ 			pte = pte_mkhuge(pte);
+-			pte = arch_make_huge_pte(pte, vma, new, 0);
++			pte = arch_make_huge_pte(pte, shift, vma->vm_flags);
+ 			set_huge_pte_at(vma->vm_mm, pvmw.address, pvmw.pte, pte);
+ 			if (PageAnon(new))
+ 				hugepage_add_anon_rmap(new, vma, pvmw.address);
+-- 
+2.25.0
 
