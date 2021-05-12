@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E0637B9D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6406E37B9DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 12:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhELKAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 06:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57886 "EHLO
+        id S230185AbhELKBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 06:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhELKAe (ORCPT
+        with ESMTP id S230126AbhELKB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 06:00:34 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2501C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:59:26 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so2183537wmk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:59:26 -0700 (PDT)
+        Wed, 12 May 2021 06:01:29 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86814C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 03:00:19 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id a4so22994929wrr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 03:00:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Xv66uSypjir4jy5I6sEQsec6QT2ejT+lfOXgIGsNm/4=;
-        b=YOW03NWqE16Y6IBJ+DPy98eDm2LqEsTemChzKWpn1VcvfZ7pCtR9naHEhbV8HmYOAy
-         n9yNQ+4Hpal+NIgUSGWfyxKdQ44jWOOR7757EKyjjMGKWEtXMFk+W+d7NvzXyjV0Kx/B
-         Chq+U3i/U4er3iGw397pxjLksy6DG9c3j/2r9NCT1EtCQdHbjJQ8V7Lbn4t7lBli5jaY
-         hzSMIX+5+mTHFm07z48MYPnuy0+QQCHIVIve3YuezrYOMppUJqwdv85EJARs9r5LSRHh
-         IT+v9wIuToPGhRBvtJ1afYZs3lAJbF1LRWp32eMA4BgkuQOCtCs6iDy49i5EXC+jwsLS
-         HenQ==
+        bh=O63fhjrh635Pm4YVs66HU6aLxfZXACRn4svm/z9Akc0=;
+        b=AwlDOATUMJLF/cjHvvkLHE32YnqlEmop2gVO7w2+Boj9NfQ0B5poZcQ27AyTjaBQv0
+         aPjLDhTfDYqJEBSkkY2l7Hcfr711OCj+nf9+heiq+ongkyqGDSFej4UPy9W8XntrTWZm
+         yiXoOPDaiiT9gzEFPIerWZg+Kt/ELczCdYKg1X81ChQ0qZaWF4erYam3MRXdo7SFy0T9
+         jlXWweVXgLZTLpizHQfu/o4qeJ9LgM6mSI6Z3QQipdJoXD5ZenCSBFSk2OxGJi9BbqdY
+         PHUdddfOV9/oZ6fQ3kx/ejwNGGwPpChEK+2C3o76WDoAytVbmtOWr5jRtuil+rnKr+Gr
+         wMcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=Xv66uSypjir4jy5I6sEQsec6QT2ejT+lfOXgIGsNm/4=;
-        b=lOAF5ftA3PhxP9x4LFy4phUKevCIhw2JKqLP3ZgWCCgV2NpA3J7B5PHl4wdE8fS32d
-         SH7BBBrtIuov8yeBNapxnxG0E3rvF4d/k/wikv/CWAHP4cJtfuznNWLkMqWUDTJV1zVd
-         i0yB7nDcwNq/PsFBoxopHrDgDauyfCS3u1D9MDfLlgtuDFXNd0zGS7YgsbHCho3Ivd+w
-         ia8EI9njb/Qh9NkX3mYwNSq4xzmNHuWKx0YVPAGgWz9FFxSY+PHOYQzdqLU1F0s0SpOe
-         EB5tZol4nvpRu2/1UBYDrAUkw14ETUcozaZyGGVMGsGj+bVS3/mAUf0tZvHnOwknQ03F
-         /+Qg==
-X-Gm-Message-State: AOAM530Zbv99GRXSmRUDAdxHEclpRnaEiABgVk5fUExo9ULtlV/9P7Mv
-        9TywSKGy2hEMG8yxUMPuq0lzNRMU8h60Pw==
-X-Google-Smtp-Source: ABdhPJyJ6fTwNwBxiKk/rB2t7DwtSsKLCKdlawNQfqUi2UqyOq4m86muCEXW3J52lt3SwEnYuPOwxA==
-X-Received: by 2002:a05:600c:1907:: with SMTP id j7mr37178513wmq.158.1620813565641;
-        Wed, 12 May 2021 02:59:25 -0700 (PDT)
+        bh=O63fhjrh635Pm4YVs66HU6aLxfZXACRn4svm/z9Akc0=;
+        b=pdvQmEgcve0Ra6FKTZq0oL/pW4KT1tLSqSNmD2xXup5fpB+JZXTvAK89ihOG6xx+Rz
+         7GErZ7oA0Gi+BmqHLjbJHUPLdqyGJl8acZ8zwp+lFoP2BTbWxj5PlqUz6O7Eafc8wd48
+         JouHgtXxjb6TTwgeB7o1YILhB5Vpy3wnyW9JQKzNK/H2wpTI+FJcU+KTdZrdqJEMq83g
+         qDGRcqVVXOLKsxrtn7SZbDXaowsFPnRgfH1ZPJjCiZ2/4iBGKDxetGd+b5BR82RhUkmt
+         kmGtzkta2Yd5Spi8xNfHI4n73ERZSfCScC8yzOLCl1PUg2bzD0Djj4jt/tn4jM3A0UNu
+         0bvQ==
+X-Gm-Message-State: AOAM531aO7rqGm8XRoazN3dW5xe+tm8Aw86RU5hqVxBwyClIVxkULKCU
+        n8vwCcF7wbNvaiM0mTlOp7fYTg==
+X-Google-Smtp-Source: ABdhPJxCU30glz7EhHtvH40nBEvzUf7yYhMtRMhf2CiZC73YENs1F565EBPiLyagOcLCyWmrH/m33w==
+X-Received: by 2002:adf:a35a:: with SMTP id d26mr1999921wrb.147.1620813618275;
+        Wed, 12 May 2021 03:00:18 -0700 (PDT)
 Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id v20sm26793277wmj.15.2021.05.12.02.59.24
+        by smtp.gmail.com with ESMTPSA id a15sm33423895wrx.9.2021.05.12.03.00.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 02:59:25 -0700 (PDT)
-Date:   Wed, 12 May 2021 10:59:23 +0100
+        Wed, 12 May 2021 03:00:17 -0700 (PDT)
+Date:   Wed, 12 May 2021 11:00:16 +0100
 From:   Lee Jones <lee.jones@linaro.org>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        Mark Brown <broonie@kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH 1/3] mfd: lp87565: fix typo in define names
-Message-ID: <20210512095923.GC805368@dell>
+Message-ID: <20210512100016.GD805368@dell>
 References: <20210219223910.1831-1-luca@lucaceresoli.net>
- <20210308140440.GH4931@dell>
- <365cc875-e1de-0a81-6163-007f574779d3@lucaceresoli.net>
+ <CAMpxmJVzShDO7b1i_KiTdu9DGexNmgR2oA241H9=mht0iYMBqg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <365cc875-e1de-0a81-6163-007f574779d3@lucaceresoli.net>
+In-Reply-To: <CAMpxmJVzShDO7b1i_KiTdu9DGexNmgR2oA241H9=mht0iYMBqg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 May 2021, Luca Ceresoli wrote:
+On Mon, 08 Mar 2021, Bartosz Golaszewski wrote:
 
-> Hi,
+> On Fri, Feb 19, 2021 at 11:39 PM Luca Ceresoli <luca@lucaceresoli.net> wrote:
+> >
+> > "GOIO" should be "GPIO" here.
+> >
+> > Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> > ---
 > 
-> On 08/03/21 15:04, Lee Jones wrote:
-> > On Fri, 19 Feb 2021, Luca Ceresoli wrote:
-> > 
-> >> "GOIO" should be "GPIO" here.
-> >>
-> >> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
-> >> ---
-> >>  drivers/gpio/gpio-lp87565.c |  6 +++---
-> >>  include/linux/mfd/lp87565.h | 28 ++++++++++++++--------------
-> >>  2 files changed, 17 insertions(+), 17 deletions(-)
-> > 
-> > For my own reference (apply this as-is to your sign-off block):
-> > 
-> >   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> For GPIO part:
 > 
-> Gentle ping on patches 1 and 3. Both have at least an ack and are fairly
-> trivial. Both apply cleanly on current master.
+> Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-I'll take care of these this time, but in future, if you don't receive
-further responses for ~2 weeks, you should collect all of the Acks and
-submit a [RESEND].
+Do you require a pull-request from an immutable branch?
+
+Or can I just take these as-is?
 
 -- 
 Lee Jones [李琼斯]
