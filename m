@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3532537EA51
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DA637EA56
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377002AbhELS4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:56:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35834 "EHLO mail.kernel.org"
+        id S243553AbhELS4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:56:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244197AbhELQmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:42:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5373461C71;
-        Wed, 12 May 2021 16:11:27 +0000 (UTC)
+        id S244275AbhELQmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:42:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E485061D40;
+        Wed, 12 May 2021 16:12:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835887;
-        bh=mDMXlIFEngb3Uj/DykP8JSnHilYmwXjGmg3Kup2eyPY=;
+        s=korg; t=1620835935;
+        bh=MpxhMahEBC0yECHXFSyoHxnv6tvQx/d3vzPZM1xILo0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MEKFf2ihB5bkXPB8JypphdwLDU8K8PKpyDd2gXHy4Uz9/TtiDJsDTHSL6kBnf/FG/
-         lOb1r6fhrnmkdzKwzzQ/UBI99LNrMYTFbqYb5H+R/LSnXxYsjLrOQwt+lX8KNo1AGY
-         RHfYnO0Xh/dO8o/4DX5/WIOmy+Ar7BEa0NAnEKA0=
+        b=Nbi44OfWvX0mXSpp+zcvQvbA/OkJhvyaxZJKvqyjlZyONtX7th1pEL/LfqktMfxmn
+         rJSKs9LVoM/IlTH/7sznB8ZHvvyXChfgYmL4pbEzU1MTgenBG0h3kGFZEyb/uytAbX
+         1NVNbW8ZpVsIifDoeSZec7T4VleWD9l80LxbQF1o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
         Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 523/677] mt76: mt7615: fix memory leak in mt7615_coredump_work
-Date:   Wed, 12 May 2021 16:49:29 +0200
-Message-Id: <20210512144854.762647775@linuxfoundation.org>
+Subject: [PATCH 5.12 526/677] mt76: mt7921: fix stats register definitions
+Date:   Wed, 12 May 2021 16:49:32 +0200
+Message-Id: <20210512144854.862501953@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -41,36 +41,144 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit 49cc85059a2cb656f96ff3693f891e8fe8f669a9 ]
+[ Upstream commit f76e9019913bffee0e49b096068e6f6b12f9b0e0 ]
 
-Similar to the issue fixed in mt7921_coredump_work, fix a possible memory
-leak in mt7615_coredump_work routine.
+Fix register definitions for mac80211 stats reporting.
+Move mib counter reset to mt7921_get_stats routine.
 
-Fixes: d2bf7959d9c0f ("mt76: mt7663: introduce coredump support")
+Fixes: 163f4d22c118d ("mt76: mt7921: add MAC support")
 Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7615/mac.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ .../net/wireless/mediatek/mt76/mt7921/mac.c   | 31 ++++++-------------
+ .../net/wireless/mediatek/mt76/mt7921/main.c  |  6 ++++
+ .../wireless/mediatek/mt76/mt7921/mt7921.h    | 10 +++---
+ .../net/wireless/mediatek/mt76/mt7921/regs.h  | 15 ++++++---
+ 4 files changed, 31 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
-index 1abfd58e8f49..b313442b2d9e 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
-@@ -2308,8 +2308,10 @@ void mt7615_coredump_work(struct work_struct *work)
- 			break;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
+index b4388a290753..a6d2a25b3495 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
+@@ -1318,31 +1318,20 @@ mt7921_mac_update_mib_stats(struct mt7921_phy *phy)
+ 	struct mib_stats *mib = &phy->mib;
+ 	int i, aggr0 = 0, aggr1;
  
- 		skb_pull(skb, sizeof(struct mt7615_mcu_rxd));
--		if (data + skb->len - dump > MT76_CONNAC_COREDUMP_SZ)
--			break;
-+		if (data + skb->len - dump > MT76_CONNAC_COREDUMP_SZ) {
-+			dev_kfree_skb(skb);
-+			continue;
-+		}
+-	memset(mib, 0, sizeof(*mib));
+-
+-	mib->fcs_err_cnt = mt76_get_field(dev, MT_MIB_SDR3(0),
+-					  MT_MIB_SDR3_FCS_ERR_MASK);
++	mib->fcs_err_cnt += mt76_get_field(dev, MT_MIB_SDR3(0),
++					   MT_MIB_SDR3_FCS_ERR_MASK);
++	mib->ack_fail_cnt += mt76_get_field(dev, MT_MIB_MB_BSDR3(0),
++					    MT_MIB_ACK_FAIL_COUNT_MASK);
++	mib->ba_miss_cnt += mt76_get_field(dev, MT_MIB_MB_BSDR2(0),
++					   MT_MIB_BA_FAIL_COUNT_MASK);
++	mib->rts_cnt += mt76_get_field(dev, MT_MIB_MB_BSDR0(0),
++				       MT_MIB_RTS_COUNT_MASK);
++	mib->rts_retries_cnt += mt76_get_field(dev, MT_MIB_MB_BSDR1(0),
++					       MT_MIB_RTS_FAIL_COUNT_MASK);
  
- 		memcpy(data, skb->data, skb->len);
- 		data += skb->len;
+ 	for (i = 0, aggr1 = aggr0 + 4; i < 4; i++) {
+ 		u32 val, val2;
+ 
+-		val = mt76_rr(dev, MT_MIB_MB_SDR1(0, i));
+-
+-		val2 = FIELD_GET(MT_MIB_ACK_FAIL_COUNT_MASK, val);
+-		if (val2 > mib->ack_fail_cnt)
+-			mib->ack_fail_cnt = val2;
+-
+-		val2 = FIELD_GET(MT_MIB_BA_MISS_COUNT_MASK, val);
+-		if (val2 > mib->ba_miss_cnt)
+-			mib->ba_miss_cnt = val2;
+-
+-		val = mt76_rr(dev, MT_MIB_MB_SDR0(0, i));
+-		val2 = FIELD_GET(MT_MIB_RTS_RETRIES_COUNT_MASK, val);
+-		if (val2 > mib->rts_retries_cnt) {
+-			mib->rts_cnt = FIELD_GET(MT_MIB_RTS_COUNT_MASK, val);
+-			mib->rts_retries_cnt = val2;
+-		}
+-
+ 		val = mt76_rr(dev, MT_TX_AGG_CNT(0, i));
+ 		val2 = mt76_rr(dev, MT_TX_AGG_CNT2(0, i));
+ 
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/main.c b/drivers/net/wireless/mediatek/mt76/mt7921/main.c
+index 729f6c42cdde..3566059e5704 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/main.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/main.c
+@@ -814,11 +814,17 @@ mt7921_get_stats(struct ieee80211_hw *hw,
+ 	struct mt7921_phy *phy = mt7921_hw_phy(hw);
+ 	struct mib_stats *mib = &phy->mib;
+ 
++	mt7921_mutex_acquire(phy->dev);
++
+ 	stats->dot11RTSSuccessCount = mib->rts_cnt;
+ 	stats->dot11RTSFailureCount = mib->rts_retries_cnt;
+ 	stats->dot11FCSErrorCount = mib->fcs_err_cnt;
+ 	stats->dot11ACKFailureCount = mib->ack_fail_cnt;
+ 
++	memset(mib, 0, sizeof(*mib));
++
++	mt7921_mutex_release(phy->dev);
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mt7921.h b/drivers/net/wireless/mediatek/mt76/mt7921/mt7921.h
+index 46e6aeec35ae..2979d06ee0ad 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/mt7921.h
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/mt7921.h
+@@ -102,11 +102,11 @@ struct mt7921_vif {
+ };
+ 
+ struct mib_stats {
+-	u16 ack_fail_cnt;
+-	u16 fcs_err_cnt;
+-	u16 rts_cnt;
+-	u16 rts_retries_cnt;
+-	u16 ba_miss_cnt;
++	u32 ack_fail_cnt;
++	u32 fcs_err_cnt;
++	u32 rts_cnt;
++	u32 rts_retries_cnt;
++	u32 ba_miss_cnt;
+ };
+ 
+ struct mt7921_phy {
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/regs.h b/drivers/net/wireless/mediatek/mt76/mt7921/regs.h
+index 11d5aa44ae7b..2dd2e628b776 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/regs.h
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/regs.h
+@@ -96,8 +96,8 @@
+ #define MT_WF_MIB_BASE(_band)		((_band) ? 0xa4800 : 0x24800)
+ #define MT_WF_MIB(_band, ofs)		(MT_WF_MIB_BASE(_band) + (ofs))
+ 
+-#define MT_MIB_SDR3(_band)		MT_WF_MIB(_band, 0x014)
+-#define MT_MIB_SDR3_FCS_ERR_MASK	GENMASK(15, 0)
++#define MT_MIB_SDR3(_band)		MT_WF_MIB(_band, 0x698)
++#define MT_MIB_SDR3_FCS_ERR_MASK	GENMASK(31, 16)
+ 
+ #define MT_MIB_SDR9(_band)		MT_WF_MIB(_band, 0x02c)
+ #define MT_MIB_SDR9_BUSY_MASK		GENMASK(23, 0)
+@@ -121,9 +121,14 @@
+ #define MT_MIB_RTS_RETRIES_COUNT_MASK	GENMASK(31, 16)
+ #define MT_MIB_RTS_COUNT_MASK		GENMASK(15, 0)
+ 
+-#define MT_MIB_MB_SDR1(_band, n)	MT_WF_MIB(_band, 0x104 + ((n) << 4))
+-#define MT_MIB_BA_MISS_COUNT_MASK	GENMASK(15, 0)
+-#define MT_MIB_ACK_FAIL_COUNT_MASK	GENMASK(31, 16)
++#define MT_MIB_MB_BSDR0(_band)		MT_WF_MIB(_band, 0x688)
++#define MT_MIB_RTS_COUNT_MASK		GENMASK(15, 0)
++#define MT_MIB_MB_BSDR1(_band)		MT_WF_MIB(_band, 0x690)
++#define MT_MIB_RTS_FAIL_COUNT_MASK	GENMASK(15, 0)
++#define MT_MIB_MB_BSDR2(_band)		MT_WF_MIB(_band, 0x518)
++#define MT_MIB_BA_FAIL_COUNT_MASK	GENMASK(15, 0)
++#define MT_MIB_MB_BSDR3(_band)		MT_WF_MIB(_band, 0x520)
++#define MT_MIB_ACK_FAIL_COUNT_MASK	GENMASK(15, 0)
+ 
+ #define MT_MIB_MB_SDR2(_band, n)	MT_WF_MIB(_band, 0x108 + ((n) << 4))
+ #define MT_MIB_FRAME_RETRIES_COUNT_MASK	GENMASK(15, 0)
 -- 
 2.30.2
 
