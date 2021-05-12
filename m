@@ -2,77 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A43137BBFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EACBC37BC02
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhELLlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 07:41:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48012 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230293AbhELLlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 07:41:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E8690B048;
-        Wed, 12 May 2021 11:40:38 +0000 (UTC)
-Date:   Wed, 12 May 2021 12:40:35 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@kernel.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        bsingharora@gmail.com, pbonzini@redhat.com, maz@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        riel@surriel.com, hannes@cmpxchg.org,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 7/6] delayacct: Add sysctl to enable at runtime
-Message-ID: <20210512114035.GH3672@suse.de>
-References: <20210505105940.190490250@infradead.org>
- <YJkhebGJAywaZowX@hirez.programming.kicks-ass.net>
+        id S230184AbhELLnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 07:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230037AbhELLnk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 07:43:40 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDA8C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:42:32 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id m9so30361797ybm.3
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:42:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eilI8uf7yE4YJkIfTryb8TKzxxfc/G7BjXHs27nl4o8=;
+        b=r+pGipL72wot2acHAHtYA7Zjx7wc8vqcwn6a/AKeeqJRileScQhMAs1yJvpMzLNVUX
+         L0075pL7ygo2mCZHMIw2r/tmW8R+lRVo7Ab5MsbqywfFXGzWZ6X5Dc5DP+wtbEJ9t2tm
+         lPNjpb/2ZlyeqYBlWjJo4WoHLaIsEPzOP/R2KDTUTaotnoBUvYJZ1AiNKAYb9MVE5u/N
+         HTdPCGf8qMyCOMeAlGtUfty52ZT4v3Tz5HctL3E4VNq5G91y7OasSA+wkBVdjyvrZEmH
+         T8etEFf4GfFMn2MfeQgAOZXsPnvEmwgylc1VaTtP6UIveR7xCjLtSzSzjyTaAsGai9OO
+         bKVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eilI8uf7yE4YJkIfTryb8TKzxxfc/G7BjXHs27nl4o8=;
+        b=H+1gBT849JImTAQcDe/8zGMD4i2uxW2vvl8iu67rQnS8E55dnqgyMbEf9a+Hn6lDpB
+         KqopW2xtXdmcIUHY2Yby2xoYkP+ahnnwOYOPSw5dccDSt+splpJzVEF1ENPYnYfhOX8r
+         rRlLHhvSfhsgDKUs/zlpMP57I8Au9uJzRAzpAGc8ak+eZWWeF3b8FpMpzI/usZBAhus/
+         dcvfFQ9PSUOe0S0jH7Xh8PKY4itGyzHnnK8MXF/Qc5K1COZyv8g6caoryR1hIBGH4m4f
+         IJj/6oKhd9nytX/G7BQde8i9Ejq2giYcIkmLxQTlQOulpODtpq4Uv4CP8mhU4JE4gvgi
+         9p5Q==
+X-Gm-Message-State: AOAM531vuHV6lhm+jxViWlDMVEy4532UQy+lNDJpVlw9aY/wrhEMai72
+        KZllk0ppRHpXti6/l/3Yhstq1tUxFCpL3nNmow9kBg==
+X-Google-Smtp-Source: ABdhPJyp2eDEepl1vx7Ei3PheStHyNWy67v8RCZpHAO09ffVQvOwbAcKn0MvPxz7Xly7KN2pwFPa8/3J772OGLt4pig=
+X-Received: by 2002:a25:9d86:: with SMTP id v6mr45845552ybp.366.1620819751872;
+ Wed, 12 May 2021 04:42:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <YJkhebGJAywaZowX@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210510195252.12512-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210510195252.12512-1-andriy.shevchenko@linux.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 12 May 2021 13:42:21 +0200
+Message-ID: <CAMpxmJUvSUKrAmDyDjHYWQ8M5EC9740KwWm2qK-65Ab5HneO8A@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] gpio: mockup: Switch to use gpiochip_get_desc()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 02:05:13PM +0200, Peter Zijlstra wrote:
-> 
-> Just like sched_schedstats, allow runtime enabling (and disabling) of
-> delayacct. This is useful if one forgot to add the delayacct boot time
-> option.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+On Mon, May 10, 2021 at 9:52 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> Switch to use gpiochip_get_desc() helper.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  Documentation/accounting/delay-accounting.rst |    6 ++--
->  kernel/delayacct.c                            |   36 ++++++++++++++++++++++++--
->  kernel/sysctl.c                               |   12 ++++++++
->  3 files changed, 50 insertions(+), 4 deletions(-)
-> 
+>  drivers/gpio/gpio-mockup.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
+> index d7e73876a3b9..0a9d746a0fe0 100644
+> --- a/drivers/gpio/gpio-mockup.c
+> +++ b/drivers/gpio/gpio-mockup.c
+> @@ -144,12 +144,9 @@ static void gpio_mockup_set_multiple(struct gpio_chip *gc,
+>  static int gpio_mockup_apply_pull(struct gpio_mockup_chip *chip,
+>                                   unsigned int offset, int value)
+>  {
+> +       struct gpio_chip *gc = &chip->gc;
+> +       struct gpio_desc *desc = gpiochip_get_desc(gc, offset);
+>         int curr, irq, irq_type, ret = 0;
+> -       struct gpio_desc *desc;
+> -       struct gpio_chip *gc;
+> -
+> -       gc = &chip->gc;
+> -       desc = &gc->gpiodev->descs[offset];
+>
+>         mutex_lock(&chip->lock);
+>
+> @@ -369,7 +366,7 @@ static void gpio_mockup_debugfs_setup(struct device *dev,
+>
+>                 priv->chip = chip;
+>                 priv->offset = i;
+> -               priv->desc = &gc->gpiodev->descs[i];
+> +               priv->desc = gpiochip_get_desc(gc, i);
+>
+>                 debugfs_create_file(name, 0200, chip->dbg_dir, priv,
+>                                     &gpio_mockup_debugfs_ops);
+> --
+> 2.30.2
+>
 
-Update sysctl/kernel.rst?
+Patch applied, thanks!
 
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index 1d56a6b73a4e..5d9193bd8d27 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -1087,6 +1087,13 @@ Model available). If your platform happens to meet the
- requirements for EAS but you do not want to use it, change
- this value to 0.
- 
-+sched_delayacct
-+===============
-+
-+Enables/disables task delay accounting (see
-+:doc:`accounting/delay-accounting.rst`). Enabling this feature incurs
-+a small amount of overhead in the scheduler but is useful for debugging
-+and performance tuning. It is required by some tools such as iotop.
- 
- sched_schedstats
- ================
-
--- 
-Mel Gorman
-SUSE Labs
+Bartosz
