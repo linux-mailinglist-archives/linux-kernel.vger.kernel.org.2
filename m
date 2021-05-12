@@ -2,100 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0637F37B45C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 008FC37B462
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbhELDCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 23:02:20 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:2448 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbhELDCQ (ORCPT
+        id S230023AbhELDMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 23:12:10 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2056 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229951AbhELDMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 23:02:16 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Ffzxv3PLgzCrPN;
-        Wed, 12 May 2021 10:58:27 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 12 May 2021 11:01:02 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     <willy@infradead.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 3/3] mm/debug: Check page poisoned firstly in dump_page()
-Date:   Wed, 12 May 2021 11:10:57 +0800
-Message-ID: <20210512031057.13580-3-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210512031057.13580-1-wangkefeng.wang@huawei.com>
-References: <20210512031057.13580-1-wangkefeng.wang@huawei.com>
+        Tue, 11 May 2021 23:12:08 -0400
+Received: from dggemx753-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fg07S59LVzWf2b;
+        Wed, 12 May 2021 11:06:44 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by
+ dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 12 May 2021 11:10:59 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: avoid swapon failure by giving a warning
+ first
+From:   Chao Yu <yuchao0@huawei.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+CC:     kernel test robot <oliver.sang@intel.com>
+References: <20210511214337.2857522-1-jaegeuk@kernel.org>
+ <925bff47-de32-76b8-041d-0aad4fec0d54@huawei.com>
+Message-ID: <d02116f5-8c3f-ff06-9f97-857ec5f07e4d@huawei.com>
+Date:   Wed, 12 May 2021 11:10:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
+In-Reply-To: <925bff47-de32-76b8-041d-0aad4fec0d54@huawei.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-ClientProxiedBy: dggemx704-chm.china.huawei.com (10.1.199.51) To
+ dggemx753-chm.china.huawei.com (10.0.44.37)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If page is poisoned, it will crash when we call some page related
-functions, so must check whether the page is poisoned or not firstly.
+On 2021/5/12 9:28, Chao Yu wrote:
+> On 2021/5/12 5:43, Jaegeuk Kim wrote:
+>> The final solution can be migrating blocks to form a section-aligned file
+>> internally. Meanwhile, let's ask users to do that when preparing the swap
+>> file initially like:
+>> 1) create()
+>> 2) ioctl(F2FS_IOC_SET_PIN_FILE)
+>> 3) fallocate()
+> 
+> Let me take a look how to migrate unaligned swapfile during swapon(). :)
+> 
+>>
+>> Reported-by: kernel test robot <oliver.sang@intel.com>
+>> Fixes: 36e4d95891ed ("f2fs: check if swapfile is section-alligned")
+>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> 
+> Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-Fixes: 6197ab984b41 ("mm: improve dump_page() for compound pages")
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- mm/debug.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+Wait, shouldn't this cover check_swap_activate_fast() as well?
 
-diff --git a/mm/debug.c b/mm/debug.c
-index 84cdcd0f7bd3..cf84cd9df527 100644
---- a/mm/debug.c
-+++ b/mm/debug.c
-@@ -44,20 +44,19 @@ const struct trace_print_flags vmaflag_names[] = {
- 
- static void __dump_page(struct page *page, const char *reason)
- {
--	struct page *head = compound_head(page);
-+	struct page *head = NULL;
- 	struct address_space *mapping;
--	bool page_poisoned = PagePoisoned(page);
--	bool compound = PageCompound(page);
-+	bool compound;
- 	/*
- 	 * Accessing the pageblock without the zone lock. It could change to
- 	 * "isolate" again in the meantime, but since we are just dumping the
- 	 * state for debugging, it should be fine to accept a bit of
- 	 * inaccuracy here due to racing.
- 	 */
--	bool page_cma = is_migrate_cma_page(page);
-+	bool page_cma;
- 	int mapcount;
- 	char *type = "";
--
-+	bool page_poisoned = PagePoisoned(page);
- 	/*
- 	 * If struct page is poisoned don't access Page*() functions as that
- 	 * leads to recursive loop. Page*() check for poisoned pages, and calls
-@@ -68,6 +67,10 @@ static void __dump_page(struct page *page, const char *reason)
- 		goto hex_only;
- 	}
- 
-+	head = compound_head(page);
-+	page_poisoned = PagePoisoned(page);
-+	page_cma = is_migrate_cma_page(page);
-+
- 	if (page < head || (page >= head + MAX_ORDER_NR_PAGES)) {
- 		/*
- 		 * Corrupt page, so we cannot call page_mapping. Instead, do a
-@@ -178,7 +181,7 @@ static void __dump_page(struct page *page, const char *reason)
- 	print_hex_dump(KERN_WARNING, "raw: ", DUMP_PREFIX_NONE, 32,
- 			sizeof(unsigned long), page,
- 			sizeof(struct page), false);
--	if (head != page)
-+	if (head && head != page)
- 		print_hex_dump(KERN_WARNING, "head: ", DUMP_PREFIX_NONE, 32,
- 			sizeof(unsigned long), head,
- 			sizeof(struct page), false);
--- 
-2.26.2
+Thanks,
 
+> 
+> Thanks,
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> .
+> 
