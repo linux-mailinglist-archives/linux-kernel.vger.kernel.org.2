@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A486A37EA41
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6916637EA47
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376767AbhELSz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:55:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36542 "EHLO mail.kernel.org"
+        id S1376833AbhELSzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:55:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244145AbhELQmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:42:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACD8061D22;
-        Wed, 12 May 2021 16:11:03 +0000 (UTC)
+        id S244172AbhELQmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:42:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2D9A61D2B;
+        Wed, 12 May 2021 16:11:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835864;
-        bh=JxeUoRHKjT/emeqGlZUaSljOXNtfFEVtz3mTPoyzYoQ=;
+        s=korg; t=1620835871;
+        bh=HY7ds3IpRoEPZ0vW0xxrFY624nifUApG+QFhdkKW46Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rzn3FtMOfZ0EFFsmJpDj9/AdTs4Tjl26sOlNrw57N7vz0GXWsUhKEF7OQOlnqKwl7
-         Db0aeAsCo9hCYKqW0TZYqRC7uQKJ3akmbaCpAoG5s/VV1LgZPDiEDO+o5LI1PiUG28
-         1haifeCogIpg6GTfsdp5A4shqN/1oqTVEaIj5o5o=
+        b=S6fCpqFEWPFlfiQke3Susiz+BQI1OlE75y414nlF1zkTGyydefHfsTZwxxA32KQw5
+         6wi9pz9clR9qkrdOMlxuW2ipDAYRYhkiG6DEGBI2oYi0pJwZo8Q53dgJksPLOz5YOD
+         ypAWnrGs69Lg+vLECD1jAFx6YUxpBHTX9GDFi3kM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 515/677] rtw88: Fix an error code in rtw_debugfs_set_rsvd_page()
-Date:   Wed, 12 May 2021 16:49:21 +0200
-Message-Id: <20210512144854.498660821@linuxfoundation.org>
+Subject: [PATCH 5.12 517/677] mt76: mt7615: fix tx skb dma unmap
+Date:   Wed, 12 May 2021 16:49:23 +0200
+Message-Id: <20210512144854.561266425@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -40,36 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Felix Fietkau <nbd@nbd.name>
 
-[ Upstream commit c9eaee0c2ec6b1002044fb698cdfb5d9ef4ed28c ]
+[ Upstream commit ebee7885bb12a8fe2c2f9bac87dbd87a05b645f9 ]
 
-The sscanf() function returns the number of matches (0 or 1 in this
-case).  It doesn't return error codes.  We should return -EINVAL if the
-string is invalid
+The first pointer in the txp needs to be unmapped as well, otherwise it will
+leak DMA mapping entries
 
-Fixes: c376c1fc87b7 ("rtw88: add h2c command in debugfs")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/YE8nmatMDBDDWkjq@mwanda
+Fixes: 27d5c528a7ca ("mt76: fix double DMA unmap of the first buffer on 7615/7915")
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/realtek/rtw88/debug.c | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt7615/mac.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/realtek/rtw88/debug.c b/drivers/net/wireless/realtek/rtw88/debug.c
-index 948cb79050ea..e7d51ac9b689 100644
---- a/drivers/net/wireless/realtek/rtw88/debug.c
-+++ b/drivers/net/wireless/realtek/rtw88/debug.c
-@@ -270,7 +270,7 @@ static ssize_t rtw_debugfs_set_rsvd_page(struct file *filp,
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
+index 62cbca5f3be4..1abfd58e8f49 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
+@@ -690,7 +690,7 @@ mt7615_txp_skb_unmap_fw(struct mt76_dev *dev, struct mt7615_fw_txp *txp)
+ {
+ 	int i;
  
- 	if (num != 2) {
- 		rtw_warn(rtwdev, "invalid arguments\n");
--		return num;
-+		return -EINVAL;
- 	}
- 
- 	debugfs_priv->rsvd_page.page_offset = offset;
+-	for (i = 1; i < txp->nbuf; i++)
++	for (i = 0; i < txp->nbuf; i++)
+ 		dma_unmap_single(dev->dev, le32_to_cpu(txp->buf[i]),
+ 				 le16_to_cpu(txp->len[i]), DMA_TO_DEVICE);
+ }
 -- 
 2.30.2
 
