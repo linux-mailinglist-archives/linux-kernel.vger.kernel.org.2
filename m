@@ -2,128 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDE137ED22
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2014D37ED24
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345207AbhELUNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:13:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47028 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240297AbhELS7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 14:59:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 601FAB234;
-        Wed, 12 May 2021 18:58:26 +0000 (UTC)
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210512150008.52f92c26@canb.auug.org.au>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <cd78f43d-f6fe-3a5a-51a6-629c800c989d@suse.de>
-Date:   Wed, 12 May 2021 20:58:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S1378724AbhELUNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:13:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23340 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1358100AbhELTB6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 15:01:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620846048;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d53AbpPViI4JdynXerclhzEEmPydKOif4FE1CyxwmVU=;
+        b=YspWzzhPSNCw+X8NtTkUW6MGyfYB96FFhc0tSNmdcht1d5beQrGaW9k66301INeeX8zjSy
+        ZaKoTm5tpnBdD1hGVZu+cTvv642g1eG7p2ehJ4QmFbXi7BVt8M1ahsu9L51L/10KCMdGBS
+        t3KOXkG6lG8SoURVhrljmOnUEii0NbU=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-306-cmE8Cfw0PxKFVicWz81XIg-1; Wed, 12 May 2021 15:00:46 -0400
+X-MC-Unique: cmE8Cfw0PxKFVicWz81XIg-1
+Received: by mail-qt1-f198.google.com with SMTP id 1-20020aed31010000b029019d1c685840so16436334qtg.3
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 12:00:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d53AbpPViI4JdynXerclhzEEmPydKOif4FE1CyxwmVU=;
+        b=MsQxVVXpj207EH0+olC3IF4r5iM6jlcLkOb0l/1mD8rWTcrnZc0f8inwpGPytkTRhg
+         0815pTzmPsXchlu7Lki8JcRnpHYLOhJFBqWiXNaMaLsoCZoWLQsv7TuiDtSFx5rayKHF
+         lUBt1wr85soWt8374AwU1tAytIs2TIhpaBGXsHxAwH13eF4XPnOWaNbPnS65iQW8Lz7q
+         tMbpGy8uXUgH8YXgFNQdJfDKEoCd9LGU67mUix8TsJpUN+ZqRga/XsaHghHGoKLvWZs3
+         cHrzpWZhK0DQxVOCpoAQ3fCRS+uF9OqzkqZwnR/eOMPQOtKuRM6ilglaHAbn5w8L2ZD+
+         00SA==
+X-Gm-Message-State: AOAM530vsptYC9zMYDtlowP6Yhmhu3zpRNK8NH54m67FKO31NYuUPNs2
+        jkUVTfhhRhyAVFMqJxAQeeE4w8jABwR1X76dRe4SWhMXLCNrirD3upgszOcjIRhDfqkYnQ9hvjt
+        6o2z5Y3aBzKsvRu3poOzzVRCR
+X-Received: by 2002:aed:2042:: with SMTP id 60mr34700051qta.340.1620846046370;
+        Wed, 12 May 2021 12:00:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzmcJlBZya5mSUMViEWt5ZmzkALpWvP+VOIznXl35RkE9MfVT3YMtKtz/5oOIWhLL9CObR9gQ==
+X-Received: by 2002:aed:2042:: with SMTP id 60mr34700005qta.340.1620846046057;
+        Wed, 12 May 2021 12:00:46 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
+        by smtp.gmail.com with ESMTPSA id t203sm693005qke.83.2021.05.12.12.00.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 12:00:41 -0700 (PDT)
+Date:   Wed, 12 May 2021 15:00:39 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Hugh Dickins <hughd@google.com>
+Cc:     Nadav Amit <nadav.amit@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>
+Subject: Re: [PATCH v2 00/24] userfaultfd-wp: Support shmem and hugetlbfs
+Message-ID: <YJwl1wNM18trv7px@t490s>
+References: <20210427161317.50682-1-peterx@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210512150008.52f92c26@canb.auug.org.au>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="IHccIF0pV30AwrZzWPpCRksT7qa3mIH4t"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210427161317.50682-1-peterx@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---IHccIF0pV30AwrZzWPpCRksT7qa3mIH4t
-Content-Type: multipart/mixed; boundary="hbz5z8zrXybGy2BoF2y40SKGd77obFYHR";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Stephen Rothwell <sfr@canb.auug.org.au>,
- Daniel Vetter <daniel.vetter@ffwll.ch>,
- Intel Graphics <intel-gfx@lists.freedesktop.org>,
- DRI <dri-devel@lists.freedesktop.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Next Mailing List <linux-next@vger.kernel.org>
-Message-ID: <cd78f43d-f6fe-3a5a-51a6-629c800c989d@suse.de>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-References: <20210512150008.52f92c26@canb.auug.org.au>
-In-Reply-To: <20210512150008.52f92c26@canb.auug.org.au>
+On Tue, Apr 27, 2021 at 12:12:53PM -0400, Peter Xu wrote:
+> This is v2 of uffd-wp shmem & hugetlbfs support, which completes uffd-wp as a
+> kernel full feature, as it only supports anonymous before this series.
 
---hbz5z8zrXybGy2BoF2y40SKGd77obFYHR
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Ping..
 
-Hi
+Thinking about a repost, as this series shouldn't be able to apply after we've
+got more relevant patches into -mm.  E.g., the full minor fault, and also some
+small stuff like pagemap, as we need one more patch to support shmem/hugetlbfs
+too.
 
-Am 12.05.21 um 07:00 schrieb Stephen Rothwell:
-> Hi all,
->=20
-> After merging the drm-misc tree, today's linux-next build (powerpc
-> allyesconfig) failed like this:
->=20
-> drivers/gpu/drm/nouveau/nouveau_connector.c: In function 'nouveau_conne=
-ctor_of_detect':
-> drivers/gpu/drm/nouveau/nouveau_connector.c:463:59: error: 'struct drm_=
-device' has no member named 'pdev'; did you mean 'dev'?
->    463 |  struct device_node *cn, *dn =3D pci_device_to_OF_node(dev->pd=
-ev);
->        |                                                           ^~~~=
+Hugh, haven't received any further comment from you on shmem side (or on the
+general idea).  It would be great to still have some of your input.
 
->        |                                                           dev
->=20
-> Caused by commit
->=20
->    b347e04452ff ("drm: Remove pdev field from struct drm_device")
->=20
-> I have reverted that commit for today.
->=20
+Let me know if you prefer to read a fresh new version otherwise.
 
-Thanks for reporting. pdev is gone, but the references are sometimes=20
-hard to find. You may want to undo the revert and try the fix at [1].=20
-The patch should hit drm-misc-next ASAP.
+Thanks!
 
-Best regards
-Thomas
+-- 
+Peter Xu
 
-[1]=20
-https://lore.kernel.org/dri-devel/20210512185527.26050-1-tzimmermann@suse=
-=2Ede/T/#u
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=FCrnberg, Germany
-(HRB 36809, AG N=FCrnberg)
-Gesch=E4ftsf=FChrer: Felix Imend=F6rffer
-
-
---hbz5z8zrXybGy2BoF2y40SKGd77obFYHR--
-
---IHccIF0pV30AwrZzWPpCRksT7qa3mIH4t
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCcJVEFAwAAAAAACgkQlh/E3EQov+As
-aw//Vz7cdDpG3xG+uaiBpUBDrnlvOak/RhJe7Xf6rOYUd1rQ93KMkHHIYPU8XejQX8aNCilgbFrv
-yah+gkKZN0aKC5l3rtrn4GcXeauFobtZoTBvtoKxiTUqZVqGVD8x10gXa7Y5wARGcoKqAmmIC/tz
-PQD57hYFtFn6twCFjonyUY6KdylXehsDsGmHKfLk33jcHNBOk1GVD/E0glbijmWaIyaixo5ugWYN
-+hV79IWMEg+x6qZ99sJdW+N5yh2dbK73nMiC1iOJ9ZxRXL5x/HpwL/HVEi9nsaTuw16/1JW7pKUM
-TFJ+4jRAzzQPD+2RjDt3l1j2dk7uX66x8KQ4fqw6mR8U1R++6YfoZsyeB0aPzcngJSjuDdfvLQ1Q
-95r54qdipJHGtgEjECe4l0tg90lLZGBbWmcFIg3WO0OmE4I9xnsyNRD7HxZRgCa4HPvPdQYQpHaZ
-e5Lus87TLacMMpRqlMiIAD09WnMTWrokT39E+B3ADVrr/7y0QFzc85edSc0xpjolg9SDXUUXi0JR
-AjuoUoncC0Khbe0CpDMxR3fr3YYVz5OtzbXveAglxi9Zl56oielaDNLcahTMx8ZtGf64ZTFObXKi
-YLWM/kEZyperhNzReT0W86CdLdEY7oFua3q87GiPgBtXWHJ9EoQhB59wv6VkPdYEBI9mr5SnZhsN
-CJM=
-=aTeR
------END PGP SIGNATURE-----
-
---IHccIF0pV30AwrZzWPpCRksT7qa3mIH4t--
