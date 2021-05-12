@@ -2,77 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B69137C180
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8121D37C098
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhELPAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:00:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231808AbhELO6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:58:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E90D6142E;
-        Wed, 12 May 2021 14:56:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620831364;
-        bh=t+BE1w70P5dw0RNscBJwi1jRhfwEN6KENCimwH/w+Og=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1l1rooTS8zoiQaEgp9qhou2T5w7JoCJnu9ozh19kPd0YCF7nuKWA2YcXU5CFC6SEP
-         4wFT4j6c+K1a+qdKdnPe+PH9jMMtAQj7oEGnLLkWEmZvJ8htldzXOZb87hlMm4QMAs
-         YDcEeTWdd7i0qgPMdu/N+rTdnv2L5THYF0GcOFkg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabian Vogt <fabian@ritter-vogt.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 091/244] fotg210-udc: Remove a dubious condition leading to fotg210_done
-Date:   Wed, 12 May 2021 16:47:42 +0200
-Message-Id: <20210512144745.931841283@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210512144743.039977287@linuxfoundation.org>
-References: <20210512144743.039977287@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S231216AbhELOs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:48:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230202AbhELOs5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 10:48:57 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051E9C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:47:49 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id t11so840992pjm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:47:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ETqsrv1jzN5EGAkkcRRQ5nZ0wEonlAPtIWyZWxP7xo8=;
+        b=ltDzcLn0aP1VqK+owmm2BBYuZjyYqFObprD+vA5zzaBLfAgFSS08UcKeoPRvXx515h
+         GGhwxc2TdR2zqp775HMciphgccxbGrWEXw7ow0QuIh3ngYWxTu4T2DEabcUYUC/NPeme
+         yfKaHsca86gr9XVJSIjnZcUKU5+TePpF0QrgDaVLp4FJYFgF9Z7vskF9Kl7OCGMoDV0W
+         OJnQjttpYnde4dE8BY90udSI+UQz/QsBG68CruD4qM8LNYwLA1kv+seKQTzwwbH8WHBD
+         FAODLdtFz9wXcxxxt5gZ6FuPz/cjRrRv5dvPCqZCPUuQTTP6GGRF1gJrXd9FvpnhnULW
+         3j5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ETqsrv1jzN5EGAkkcRRQ5nZ0wEonlAPtIWyZWxP7xo8=;
+        b=FkXsY9VyCBUK1ZEiaMvGc7nKpkR7u+MiznsXhtvaLZjTb8ujZSy7DxJU2KCUvqeuVd
+         /KSJBZhzF2jRQOq2eKlutbpgC22UiZ0cSljhEZxMYldYWDZAY+ruuoaiow6zvGFsvOrL
+         6uRi2oJ4m9BwHWg825BikIaxxjKDccGR8SJgaGXOql+GIij7OIR2P2ap0EYj8iR75mZZ
+         8HVpAkh67gAK8ou41N2W6be9mMwtXscRyQ5N8iKQW0Q7scdl0SWQE/pMD+9d5dkcm9GR
+         guaGauMJ33WxEsZVwawQmmf3r5AQXK0rHPJMTgs3Q1xUCt8xEgze5ah9lZOXey9FINOn
+         w/VA==
+X-Gm-Message-State: AOAM533MNBwT5buWhkuVMYDCJ0zxS1kTO0JQlePMrrRNpwoV+nceWksJ
+        L/KDOdOoNDJEFqSDAL/uetc=
+X-Google-Smtp-Source: ABdhPJwv951ishoPEC4jhNH4EaSWywMEJopdfEnqAZ3ngx2xh6hzO6ZeGJEvW+tsTj8ESVWGDemzow==
+X-Received: by 2002:a17:902:d213:b029:ed:35bb:271b with SMTP id t19-20020a170902d213b02900ed35bb271bmr35526994ply.71.1620830868593;
+        Wed, 12 May 2021 07:47:48 -0700 (PDT)
+Received: from wuchi.mioffice.cn ([43.224.245.180])
+        by smtp.gmail.com with ESMTPSA id v130sm127786pfc.25.2021.05.12.07.47.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 07:47:48 -0700 (PDT)
+From:   Chi Wu <wuchi.zero@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     axboe@fb.com, hcochran@kernelspring.com, jack@suse.cz,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mszeredi@redhat.com, sedat.dilek@gmail.com, tj@kernel.org,
+        Chi Wu <wuchi.zero@gmail.com>
+Subject: [PATCH] mm/page-writeback: Use __this_cpu_inc() in account_page_dirtied()
+Date:   Wed, 12 May 2021 22:47:42 +0800
+Message-Id: <20210512144742.4764-1-wuchi.zero@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabian Vogt <fabian@ritter-vogt.de>
+As account_page_dirtied() was always protected by xa_lock_irqsave(),
+so using __this_cpu_inc() is better.
 
-[ Upstream commit c7f755b243494d6043aadcd9a2989cb157958b95 ]
-
-When the EP0 IN request was not completed but less than a packet sent,
-it would complete the request successfully. That doesn't make sense
-and can't really happen as fotg210_start_dma always sends
-min(length, maxpkt) bytes.
-
-Fixes: b84a8dee23fd ("usb: gadget: add Faraday fotg210_udc driver")
-Signed-off-by: Fabian Vogt <fabian@ritter-vogt.de>
-Link: https://lore.kernel.org/r/20210324141115.9384-4-fabian@ritter-vogt.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Chi Wu <wuchi.zero@gmail.com>
 ---
- drivers/usb/gadget/udc/fotg210-udc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ mm/page-writeback.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/udc/fotg210-udc.c b/drivers/usb/gadget/udc/fotg210-udc.c
-index 7abd56ad29bc..b2c75c8ca3d7 100644
---- a/drivers/usb/gadget/udc/fotg210-udc.c
-+++ b/drivers/usb/gadget/udc/fotg210-udc.c
-@@ -379,8 +379,7 @@ static void fotg210_ep0_queue(struct fotg210_ep *ep,
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index 0062d5c57d41..e3901d0d329e 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2436,7 +2436,7 @@ void account_page_dirtied(struct page *page, struct address_space *mapping)
+ 		inc_wb_stat(wb, WB_DIRTIED);
+ 		task_io_account_write(PAGE_SIZE);
+ 		current->nr_dirtied++;
+-		this_cpu_inc(bdp_ratelimits);
++		__this_cpu_inc(bdp_ratelimits);
+ 
+ 		mem_cgroup_track_foreign_dirty(page, wb);
  	}
- 	if (ep->dir_in) { /* if IN */
- 		fotg210_start_dma(ep, req);
--		if ((req->req.length == req->req.actual) ||
--		    (req->req.actual < ep->ep.maxpacket))
-+		if (req->req.length == req->req.actual)
- 			fotg210_done(ep, req, 0);
- 	} else { /* OUT */
- 		u32 value = ioread32(ep->fotg210->reg + FOTG210_DMISGR0);
 -- 
-2.30.2
-
-
+2.17.1
 
