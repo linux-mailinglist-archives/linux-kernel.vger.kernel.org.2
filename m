@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A509537CF4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6478437D02E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345784AbhELRMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:12:05 -0400
-Received: from mga14.intel.com ([192.55.52.115]:26999 "EHLO mga14.intel.com"
+        id S1347871AbhELRaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:30:06 -0400
+Received: from mga06.intel.com ([134.134.136.31]:33009 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234968AbhELP7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:59:10 -0400
-IronPort-SDR: pLiOtG720/dNYE6CwHAkTfBwHCMhjyP+Mtim7V1graiSk3/Y2bvq6uR30Qlrw611BIZX10H2h6
- uSE2GK72Q5zQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="199418608"
+        id S233543AbhELQBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:01:36 -0400
+IronPort-SDR: p8M7x7PHqSmbqOWFK76rdyuuUNMge6AZ2Kxu9smrdKllK5cLuJqpGwxtv0bIo+giYiM+323IEn
+ GuZk9bDMRVHg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="260991951"
 X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="scan'208";a="199418608"
+   d="scan'208";a="260991951"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 08:57:57 -0700
-IronPort-SDR: bHBR6UUMf+KOk0QqXsDmTT1fo+HsrbG4ADlD8Ch2i1wEbb2LBXwXtYDN2kovAK2/0eFr7qJeLz
- HrOXs9WA1pHw==
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 08:59:40 -0700
+IronPort-SDR: uFih82oNkOSZHPt46lEwinAqdk4PGmQ3NWbLu1ol8Ttwv35DdXSGDD5voj2T5vP24jCfj8NwPM
+ mSMDSvhP5X8A==
 X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="scan'208";a="622557569"
+   d="scan'208";a="622561252"
 Received: from purnend1-mobl1.amr.corp.intel.com (HELO [10.209.123.133]) ([10.209.123.133])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 08:57:56 -0700
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 08:59:38 -0700
 Subject: Re: [PATCH 3/6] x86/sev-es: Use __put_user()/__get_user
-To:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
-        Hyunwook Baek <baekhw@google.com>
-Cc:     Joerg Roedel <jroedel@suse.de>, stable@vger.kernel.org,
-        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+To:     'Joerg Roedel' <joro@8bytes.org>,
+        David Laight <David.Laight@aculab.com>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        Hyunwook Baek <baekhw@google.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Jiri Slaby <jslaby@suse.cz>,
@@ -44,10 +47,15 @@ Cc:     Joerg Roedel <jroedel@suse.de>, stable@vger.kernel.org,
         Sean Christopherson <seanjc@google.com>,
         Martin Radev <martin.b.radev@gmail.com>,
         Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
 References: <20210512075445.18935-1-joro@8bytes.org>
  <20210512075445.18935-4-joro@8bytes.org>
+ <0496626f018d4d27a8034a4822170222@AcuMS.aculab.com>
+ <YJuTzhSp2XAJIYlv@8bytes.org>
 From:   Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -92,35 +100,24 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
  ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
  z5cecg==
-Message-ID: <9282239c-138c-7226-88d3-a5611d11cccd@intel.com>
-Date:   Wed, 12 May 2021 08:57:53 -0700
+Message-ID: <52d51917-4a58-f760-6fb7-80b5759231e6@intel.com>
+Date:   Wed, 12 May 2021 08:59:39 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210512075445.18935-4-joro@8bytes.org>
+In-Reply-To: <YJuTzhSp2XAJIYlv@8bytes.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/21 12:54 AM, Joerg Roedel wrote:
-> The put_user() and get_user() functions do checks on the address which is
-> passed to them. They check whether the address is actually a user-space
-> address and whether its fine to access it. They also call might_fault()
-> to indicate that they could fault and possibly sleep.
-> 
-> All of these checks are neither wanted nor required in the #VC exception
-> handler, which can be invoked from almost any context and also for MMIO
-> instructions from kernel space on kernel memory. All the #VC handler
-> wants to know is whether a fault happened when the access was tried.
-> 
-> This is provided by __put_user()/__get_user(), which just do the access
-> no matter what.
+On 5/12/21 1:37 AM, 'Joerg Roedel' wrote:
+> I also thought about adding page_fault_disable()/page_fault_enable()
+> calls, but being in atomic context is enough according to the
+> faulthandler_disabled() implementation.
 
-The changelog _helps_, but using a "user" function to handle kernel MMIO
-for its error handling properties seems like it's begging for a comment.
-
-__put_user() also seems to have fun stuff like __chk_user_ptr().  It all
-seems sketchy to me.
+That would be nice to add to a comment:
+page_fault_disable()/page_fault_enable() are not needed because of the
+context this must be called in.
