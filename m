@@ -2,110 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562DD37B2E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 02:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB4F37B2E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 02:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhELADV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 20:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37874 "EHLO
+        id S230137AbhELADs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 20:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbhELADU (ORCPT
+        with ESMTP id S229934AbhELADr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 20:03:20 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E85C061574;
-        Tue, 11 May 2021 17:02:13 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id h9-20020a4a94090000b02901f9d4f64172so4583571ooi.5;
-        Tue, 11 May 2021 17:02:13 -0700 (PDT)
+        Tue, 11 May 2021 20:03:47 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB640C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 17:02:40 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id t11so31080794lfl.11
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 17:02:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=KNr65iV0ydSb6KWIC4+XbRnV1TP02oNLnyMxFYz+vSk=;
-        b=Fb0H96Vss8faMT+Q3ACe1H6L9YzhreOK5Zbk+iJolwhxJkIgtcloStW/jfq0Z2KzMm
-         ElLLhfBrlBWPyBzLEKuWFbDRvMfpbeqqm9yyqp848mRq/983cwS0q2nOM7fku7dafN83
-         pzvPbxB1zjCsC4MyzO4a8dwcxtaPOvgUhPJNJsXCf2o7WN47Ve0zpS8yFFJIf5zLdAd4
-         fvDpeROP0sf0t3x9GlwT+5eQ9RUAIeAdg34Q/Dsw52xClJ54QVSgrrnFG1MZITlRhZ5j
-         OgEkTAp8bdYqNJZWR45PcLXcxw7T/NJAjvjHF3u+F+/f8qJNHlRReeKbclvXTMerAxjX
-         SV5Q==
+        bh=32gqo5zV+RGURV86mp7uR8bqTCYhZqWaxrh2ZcUwp+Q=;
+        b=CCsH611G4x21fZfVYf0v8Uqz26dKRwG2KiRnW8DZ9z/vsVBoHqWJw6zP1N41FBHhYN
+         zuDuzFqwXcYoNkcjP815gHThFTedy/Ch4f3inR1yWh9tefwvO5/Eic6epkuRMmqHwjgg
+         zDAs5fkh6LnrUa4Q3fIy3ETxyxF8nfeW2RSbXJMVP79bgmfePYKIvYl4m9TdwO3FoXoj
+         shtmxO29me0yaSlh5vAUHMAHp2ZKEAp5eX5gl79Jh+ZmG4hfo4xC8bWYk4LRhpBhlVrt
+         kBKnwO4Nr8wl6pLw/vYtbm8C3yFsVH66K5up5BUm8+b52GDJK3jHhMQ4wVMG8KWFRsR9
+         2J+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KNr65iV0ydSb6KWIC4+XbRnV1TP02oNLnyMxFYz+vSk=;
-        b=DjgjYWaIBeuiTTJgB8fLUG3IEjdQqzf7jKmyABs/wKVDX8fBETAlb+DTo30RkV/pW6
-         7Nnd1jOtgqP2ocz7zMzU0yN+kblU/dMqWynMuteudakKVkt6ha05yTcLkzL44uoBYhJn
-         RG1HwSTA5Iu6RCF0hqGei+tR6dRIDJ59hv4Ix5yfNk/t+KmZYo/8rxlHoiTK99l3kpSE
-         jO4GW08IN2MZbCBfziQxAShsMDBR4nhwt1TGcyloEs/QohGl7B9lB0D1ngTb/6b6JaI9
-         pRsn4pJ/nq1bN20oLKECq1bt6ZF46aoRylB/2OsE0wBgfQ7tAvfAq1EkTGMKPPVNAbOB
-         gMbg==
-X-Gm-Message-State: AOAM531FYWrM+uIPZkytbo/B4T9UxObyfTi317P6YwcxInuGxLdSQQ4A
-        FozJ0B3LG3njlTHIgZOaUx4/IiK+Xddx5XXhRER0d6qomX8=
-X-Google-Smtp-Source: ABdhPJzjN2WktcSN6/IyxNyB3/zoq61qk4K0zYIEQL8Y7IEzhRbREvcSwCCWhS03WvYQ7HMAQZtNmkvsMdwAZx39giQ=
-X-Received: by 2002:a4a:8706:: with SMTP id z6mr7736545ooh.41.1620777732651;
- Tue, 11 May 2021 17:02:12 -0700 (PDT)
+        bh=32gqo5zV+RGURV86mp7uR8bqTCYhZqWaxrh2ZcUwp+Q=;
+        b=T72KI4nH7ggbqDcD/XjyIx/AOpkDVWEBIun5ox+a/IsWJLlAp9m8hCjqKMeBiaMo2Y
+         30hoWtSq4xZPcTTNQTOVnXp4LTiuVYNl2dkyvrm027pWVEkqhl2O/4qLyB41Jxq2H5Pc
+         QS4+JgVz/bqN2KRIgDFNKWHoDrTevFBskqsBSHZ7wWSrxT+JR4tM6knwrHXP2gxoaaYY
+         CBf/f25n370Fzz9CDaOXZJfFOSfRH8a/HM0EcpjLFKKxY4ynYvTRXXUBs1p+4d2w8SG8
+         jr7hsEUjDNkISr0mwP3R/seYoqWEXaIEzIMvTj3FrpBt1yaGC+aFEixkpdq8p7n4Wwkt
+         MV3g==
+X-Gm-Message-State: AOAM530HELW30UVWptRdyfusl1yghNCw23M9XUOIS6OEQDJNPgoYDaX7
+        2c0JvJs93w8H/ujBSiQvi3pAjwylxc02PxSGPQ4cxA==
+X-Google-Smtp-Source: ABdhPJxJNKIzcTydfcq8l3OfDTW2Wj6PJ/9Mn6Z6QIIXygEekNyz/PbnPGOaYen0QceGgB3TPOcJbv29YXy9zAIuXc0=
+X-Received: by 2002:a05:6512:2190:: with SMTP id b16mr22322694lft.122.1620777758826;
+ Tue, 11 May 2021 17:02:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <1620466310-8428-1-git-send-email-wanpengli@tencent.com>
-In-Reply-To: <1620466310-8428-1-git-send-email-wanpengli@tencent.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Wed, 12 May 2021 08:02:02 +0800
-Message-ID: <CANRm+Cwq9F+yBTy8By0VgX3aA1NeVn0COAoRnYLr0jXe6QMOWA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] KVM: PPC: Book3S HV: exit halt polling on
- need_resched() as well
-To:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Ben Segall <bsegall@google.com>,
-        Venkatesh Srinivas <venkateshs@chromium.org>,
-        David Matlack <dmatlack@google.com>
+References: <CACK8Z6GP415hmDUYU74LRrGYKCN4aAXGD-B=ctN8R7P3LnFUrw@mail.gmail.com>
+ <20210511230228.GA2429744@bjorn-Precision-5520>
+In-Reply-To: <20210511230228.GA2429744@bjorn-Precision-5520>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Tue, 11 May 2021 17:02:02 -0700
+Message-ID: <CACK8Z6GEJt4_XMzJuT4LXdW9VToRZzGTn3QowTpdZaUDv5osjA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] pci: Support "removable" attribute for PCI devices
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>, Rajat Jain <rajatxjain@gmail.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Dmitry Torokhov <dtor@google.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        David Laight <David.Laight@aculab.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc more guys,
-On Sat, 8 May 2021 at 17:32, Wanpeng Li <kernellwp@gmail.com> wrote:
+On Tue, May 11, 2021 at 4:02 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
 >
-> From: Wanpeng Li <wanpengli@tencent.com>
+> On Tue, May 11, 2021 at 03:15:11PM -0700, Rajat Jain wrote:
+> > On Tue, May 11, 2021 at 2:30 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > On Fri, Apr 23, 2021 at 07:16:31PM -0700, Rajat Jain wrote:
+> > > ...
+> > > This looks like a good start.  I think it would be useful to have a
+> > > more concrete example of how this information will be used.  I know
+> > > that use would be in userspace, so an example probably would not be a
+> > > kernel patch.  If you have user code published anywhere, that would
+> > > help.  Or even a patch to an existing daemon.  Or pointers to how
+> > > "removable" is used for USB devices.
+> >
+> > Sure, I'll point to some existing user space code (which will be using
+> > a similar attribute we are carrying internally).
 >
-> Inspired by commit 262de4102c7bb8 (kvm: exit halt polling on need_resched()
-> as well), due to PPC implements an arch specific halt polling logic, we should
-> add the need_resched() checking there as well.
+> Great, thanks!
 >
+> > > > +     set_pci_dev_removable(dev);
+> > >
+> > > So this *only* sets the "removable" attribute based on the
+> > > ExternalFacingPort or external-facing properties.  I think Oliver and
+> > > David were hinting that maybe we should also set it for devices in
+> > > hotpluggable slots.  What do you think?
+> >
+> > I did think about it. So I have a mixed feeling about this. Primarily
+> > because I have seen the use of hotpluggable slots in situations where
+> > we wouldn't want to classify the device as removable:
+> >
+> > - Using link-state based hotplug as a way to work around unstable PCIe
+> > links. I have seen PCIe devices marked as hot-pluggable only to ensure
+> > that if the PCIe device falls off PCI bus due to some reason (e.g. due
+> > to SI issues or device firmware bugs), the kernel should be able to
+> > detect it if it does come back up (remember quick "Link-Down" /
+> > "Link-Up" events in succession?).
+> >
+> > - Internal hot-pluggable PCI devices. In my past life, I was working
+> > on a large system that would have hot-pluggable daughter cards, but
+> > those wouldn't be user removable. Also, it is conceivable to have
+> > hot-pluggable M.2 slots for PCIe devices such as NVMEs etc, but they
+> > may still not be removable by user. I don't think these should be
+> > treated as "removable". I was also looking at USB as an example where
+> > this originally came from, USB does ensure that only devices that are
+> > "user visible" devices are marked as "removable":
+> >
+> > 54d3f8c63d69 ("usb: Set device removable state based on ACPI USB data")
+> > d35e70d50a06 ("usb: Use hub port data to determine whether a port is removable")
+>
+> IIUC your main concern is consumer platforms where PCI devices would
+> be hotplugged via a Thunderbolt or similar cable, and that port
+> would be marked as an "ExternalFacingPort" so we'd mark them as
+> "removable".
 
-Update the patch description:
+Yes.
 
-Inspired by commit 262de4102c7bb8 (kvm: exit halt polling on need_resched()
-as well), CFS_BANDWIDTH throttling will use resched_task() when there is just
-one task to get the task to block. It was likely allowing VMs to overrun their
-quota when halt polling. Due to PPC implements an arch specific halt polling
-logic, we should add the need_resched() checking there as well.
+>
+> A device in a server hotplug slot would probably *not* be marked as
+> "removable".  The same device in an external chassis connected via an
+> iPass or similar cable *might* be "removable" depending on whether the
+> firmware calls the iPass port an "ExternalFacingPort".
 
-> Cc: Paul Mackerras <paulus@ozlabs.org>
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
->  arch/powerpc/kvm/book3s_hv.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+Yes.
+
 >
-> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-> index 28a80d2..6199397 100644
-> --- a/arch/powerpc/kvm/book3s_hv.c
-> +++ b/arch/powerpc/kvm/book3s_hv.c
-> @@ -3936,7 +3936,8 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
->                                 break;
->                         }
->                         cur = ktime_get();
-> -               } while (single_task_running() && ktime_before(cur, stop));
-> +               } while (single_task_running() && !need_resched() &&
-> +                        ktime_before(cur, stop));
+> Does the following capture some of what you're thinking?  Maybe some
+> wordsmithed version of it would be useful in a comment and/or commit
+> log?
+
+Yes, you captured my thoughts perfectly. I shall update the commit log
+and / or provide comments to reflect this.
+
 >
->                 spin_lock(&vc->lock);
->                 vc->vcore_state = VCORE_INACTIVE;
-> --
-> 2.7.4
+>   We're mainly concerned with consumer platforms with accessible
+>   Thunderbolt ports that are vulnerable to DMA attacks, and we expect
+>   those ports to be identified as "ExternalFacingPort".
 >
+>   Devices in traditional hotplug slots are also "removable," but not
+>   as vulnerable because these slots are less accessible to users.
+>
+> > > I wonder if this (and similar hooks like set_pcie_port_type(),
+> > > set_pcie_untrusted(), set_pcie_thunderbolt(), etc) should go *after*
+> > > the early fixups so we could use fixups to work around issues?
+> >
+> > I agree. We can do that if none of the early fixups actually use the
+> > fields set by these functions. I think it should be ok to move
+> > set_pcie_untrusted(), set_pcie_thunderbolt(), but I wonder if any
+> > early fixups already use the pcie_cap or any other fields set by
+> > set_pcie_port_type().
+>
+> I think you should move the one you're adding
+> (set_pci_dev_removable()) and leave the others where they are for now.
+
+Ack, will do.
+
+Thanks,
+
+Rajat
+
+>
+> No need to expand the scope of your patch; I was just thinking they're
+> all basically similar and should ideally be done at similar times.
+>
+> > > >       /* Early fixups, before probing the BARs */
+> > > >       pci_fixup_device(pci_fixup_early, dev);
+> > > >
+> > > > --
+> > > > 2.31.1.498.g6c1eba8ee3d-goog
+> > > >
