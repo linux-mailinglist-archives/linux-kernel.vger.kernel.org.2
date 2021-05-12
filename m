@@ -2,101 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE06C37ECFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C62237ED1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382185AbhELUFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:05:01 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53358 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359013AbhELSvS (ORCPT
+        id S1344419AbhELUML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:12:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359638AbhELSxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 14:51:18 -0400
-Date:   Wed, 12 May 2021 18:50:08 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620845408;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EAuL4nmFY+LmjTtabIjR72OWQw2n26sliznKKiS66yc=;
-        b=BHwn0Qib9w5XMCa1NzUC3FFq59qR0BDY5AIyQWOmwYCR4WDqIO0YvRmH05vdj6vdX2vqSj
-        vvjvoSmJ5jqDSla8TMNhaW4zJFkaXYvNc+v4blLxnxOtG7tu34sxqPAa//SALoP806vQ5s
-        2K+m1cPXEGP32XGKRr8qz5SmZft4Wvb8wIe9TDdT0ssK5IQ9Sn+1eV17WvD5hCcB/3CJxg
-        9Za7R69yvlbQjF1m9Z8ZDyswJtbIZljytwVkzkjtgs/wYnWKX+cCjj3l+4qHeGwnl+272h
-        23n24QhrI00MEexMeO+UOmg7rBa7qJa+XEKf5G+LmaKWwWxmZPuk7AaiDcn3qg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620845408;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EAuL4nmFY+LmjTtabIjR72OWQw2n26sliznKKiS66yc=;
-        b=wK81E32W29sUNAmWZq9d0dk3uBninYVITYdDkQQoXApMdh45wqmnSTMq1XFo7Ug+FyP5sm
-        x2m1bN8AiTQeTeAw==
-From:   tip-bot2 for =?utf-8?q?Andr=C3=A9?= Almeida 
-        <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] selftests: futex: Correctly include headers dirs
-Cc:     andrealmeid@collabora.com, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210427135328.11013-2-andrealmeid@collabora.com>
-References: <20210427135328.11013-2-andrealmeid@collabora.com>
+        Wed, 12 May 2021 14:53:43 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33154C06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 11:50:42 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso20693622ots.10
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 11:50:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=L7DlZ5NyTwLk7rVfxKjK+qgzyH7WbDEj7IFbwXV5/ko=;
+        b=W5ENh4vHkaVFcb5NO44g5Hjz7X+WFAaPID+EfPoYkTag44QDfGmgs5sj6vKBYWQte6
+         z7q8dQceV/9w0LOqAbkxm5FOwSOuXkZsgRNRl+CU7nya3U6oEjbixXUn69Kb2DrzZ3vp
+         H29bJR8RUzo0tnd6lsUnojame717iZdO3/NFk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=L7DlZ5NyTwLk7rVfxKjK+qgzyH7WbDEj7IFbwXV5/ko=;
+        b=d9IUcdDnvYQXPxP7m5qOM+BJ6acEDTQAd/65lLHYqqA9wd9ZzzapQE7uzD9lV/iG+N
+         HaQPjfUGyR0FWlVQWNg8ODfAqWxty8NhM4esIrylSMVS6heqP71F6zFLfxqix3GSelr9
+         esm7oB1aoyDuPM8UV6KvPZjwhrUkUWyIX3Idu0K42mzS8DGOLFDj8MsL+tKFXm3M09eV
+         qCw0F0YJC5a3zeUYz5lFOzfJPKRFzCrA0shF2k6Sfd+sIPANIOXSix2D12an8jnfIY4s
+         NazHsbc9B07Pl05QbJMiJ6rZdKfaRsJEhRZCpXk/hFd3vKlkXPN0VYfPjl0RrY3iWWtL
+         ytcg==
+X-Gm-Message-State: AOAM5319lrUFgYu+/e5puHsyBf8OZyDGIx5xEwX8IcsdcOMsPLOk7rtb
+        j3pXzABWIqKtw4wgbZKvoMDqy1cazhBnO+fBPcS1ZA==
+X-Google-Smtp-Source: ABdhPJzIipDkUQDMHFojJ3nyYAssT6+br/EGKtgrhlZUKlZMGCZyBx8bfbd3zJEFcJcLl9lzwKJvetiEr+/fDpmYsEo=
+X-Received: by 2002:a9d:425:: with SMTP id 34mr32079004otc.25.1620845441618;
+ Wed, 12 May 2021 11:50:41 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 12 May 2021 11:50:41 -0700
 MIME-Version: 1.0
-Message-ID: <162084540802.29796.2191659704209594178.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1620840558-28684-1-git-send-email-khsieh@codeaurora.org>
+References: <1620840558-28684-1-git-send-email-khsieh@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 12 May 2021 11:50:41 -0700
+Message-ID: <CAE-0n517Xkj=-m=gYv-FkpWGP+xC=ht8pRTtr5V8CKdrNtq9gQ@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/msm/dp: handle irq_hpd with sink_count = 0 correctly
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
+        vkoul@kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+Quoting Kuogee Hsieh (2021-05-12 10:29:18)
+> irq_hpd interrupt should be handled after dongle plugged in and
+> before dongle unplugged. Hence irq_hpd interrupt is enabled at
+> the end of the plugin handle and disabled at the beginning of
+> unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
+> handled same as the dongle unplugged which tears down the mainlink
+> and disables the phy. This patch fixes this problem by only tearing
+> down the mainlink but keeping phy enabled at irq_hpd with
+> sink_count = 0 handle so that next irq_hpe with sink_count =1 can be
+> handled by setup mainlink only.
+>
+> Changes in v2:
+> -- add ctrl->phy_Power_count
+>
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_catalog.c |  5 +--
+>  drivers/gpu/drm/msm/dp/dp_ctrl.c    | 83 ++++++++++++++++++++++++++++++++++---
+>  drivers/gpu/drm/msm/dp/dp_ctrl.h    |  2 +
+>  drivers/gpu/drm/msm/dp/dp_display.c | 46 +++++++++++++++-----
+>  4 files changed, 118 insertions(+), 18 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
+> index b1a9b1b..f4f53f2 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_catalog.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+> @@ -582,10 +582,9 @@ void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog)
+>
+>         u32 reftimer = dp_read_aux(catalog, REG_DP_DP_HPD_REFTIMER);
+>
+> -       /* enable HPD interrupts */
+> +       /* enable HPD plug and unplug interrupts */
+>         dp_catalog_hpd_config_intr(dp_catalog,
+> -               DP_DP_HPD_PLUG_INT_MASK | DP_DP_IRQ_HPD_INT_MASK
+> -               | DP_DP_HPD_UNPLUG_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
+> +               DP_DP_HPD_PLUG_INT_MASK | DP_DP_HPD_UNPLUG_INT_MASK, true);
+>
+>         /* Configure REFTIMER and enable it */
+>         reftimer |= DP_DP_HPD_REFTIMER_ENABLE;
+> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> index 8d59eb9..b5bed5f 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> @@ -77,6 +77,8 @@ struct dp_ctrl_private {
+>         struct dp_parser *parser;
+>         struct dp_catalog *catalog;
+>
+> +       int phy_power_count;
 
-Commit-ID:     c7d84e7ff5a651d186a6ec41361c4f07acc2fb9c
-Gitweb:        https://git.kernel.org/tip/c7d84e7ff5a651d186a6ec41361c4f07acc=
-2fb9c
-Author:        Andr=C3=A9 Almeida <andrealmeid@collabora.com>
-AuthorDate:    Tue, 27 Apr 2021 10:53:27 -03:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 12 May 2021 20:44:58 +02:00
-
-selftests: futex: Correctly include headers dirs
-
-When building selftests, the build system will install uapi linux
-headers at usr/include in kernel source's root directory. When building
-with a different output folder, the headers will be installed at
-kselftests/usr/include.
-
-Add both paths so we can build the tests using up-to-date headers.
-
-Currently, this is uncommon to happen since it's rare to find a
-build system with an outdated futex header, but it happens
-when testing new futex operations.
-
-Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@collabora.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210427135328.11013-2-andrealmeid@collabora.=
-com
----
- tools/testing/selftests/futex/functional/Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/futex/functional/Makefile b/tools/testin=
-g/selftests/futex/functional/Makefile
-index 2320782..1d2b3b2 100644
---- a/tools/testing/selftests/futex/functional/Makefile
-+++ b/tools/testing/selftests/futex/functional/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
--INCLUDES :=3D -I../include -I../../
-+INCLUDES :=3D -I../include -I../../ -I../../../../../usr/include/ \
-+	-I$(KBUILD_OUTPUT)/kselftest/usr/include
- CFLAGS :=3D $(CFLAGS) -g -O2 -Wall -D_GNU_SOURCE -pthread $(INCLUDES)
- LDLIBS :=3D -lpthread -lrt
-=20
+This is still redundant. Please restructure the code to call the power
+on/off function in one place and the init/exit function in another so
+that we don't have to reference count it.
