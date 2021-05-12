@@ -2,282 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4DF37EEBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D87137EEC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240475AbhELWIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 18:08:30 -0400
-Received: from mail-bn1nam07on2085.outbound.protection.outlook.com ([40.107.212.85]:35463
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1389646AbhELVCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 17:02:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MAnxhyqReTeHTy/+ZqlWw2PyjSzhfRSgAFInPTQOF+ZwCcw8qZzteR4lIKIgsWWU7kCK2lhtIGYfrGdDs1dyDHKyn4fExBYUbvjSWxWiKl6tNAg1NsWxoKixIbA0jC5kXyJIJVFjXY7NKIB6JhFbRpR7EEEpr1wAJmXdvih1ZyTaLkjf17qTOM4DFSDKrM3CTT06bt03ZrkZqZGNCEfspG4NQ0xFgf+G6euhfGipa2lTzr4WArv12+bX16DnQnJ8Npvhb9X6tYoe3OQJxtsBRaKdlhgYnx5R3imIjlVa+/F/IcjZ91K2eso7VR7KgdfV4knFDRLQ+GtL9BXXsZKJpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DnMEVH8nU7MJt9UodI7MnWs/p7ZqDcNX7F9qyiOmCKI=;
- b=BQUCQeoZ0yhaYF7WQY93GA5uIqmQuc6PYAlAYu6SIcWQLDSCbjBLLWN9X9xMtb3/fDoEeb5NhRSJGX7l4IM0RdtzA81rCfWrTe5bmlgjejbbdYhJDIZ5nsLUetxIrSMr2Xjo+BRQ41c2i51cRVZi1sCwv/7VCodVqmsxDex6Nm1KgFCJZhbVoThnR4M0kM4SODX2RqjtXDWS1j54Bn3cKwINvATOfA2+DEIk0QK/YksqXn29Wd+Mlov9/F4W1LO6Wh3z1hFJQFt1KxVleQihwoHGdwAuvysUKE+VWz+BDKfhgNw1xmJWlEiih2GBbXRuoa31DRnSrx8ah6x5NTpLKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DnMEVH8nU7MJt9UodI7MnWs/p7ZqDcNX7F9qyiOmCKI=;
- b=DYGUPfhYRtzg5MGaD7qeNXVJ1Fig0kpKFTHQcznEaECAqKVMlh1xz5yUVOJ1zCKvwA8t3QULZwt9srqWFOi748NBoEl+UYrClqzETPd4wiLEwf5jNmGtuQX6H8c0hz7jPyENfuF4PKNM6CW5Z/MHJwFk0OQ02HTraXeby++LIys=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=amd.com;
-Received: from DM5PR12MB4679.namprd12.prod.outlook.com (2603:10b6:4:a2::37) by
- DM5PR12MB1834.namprd12.prod.outlook.com (2603:10b6:3:10a::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4108.29; Wed, 12 May 2021 21:00:33 +0000
-Received: from DM5PR12MB4679.namprd12.prod.outlook.com
- ([fe80::b5bc:c121:c4e9:d4ea]) by DM5PR12MB4679.namprd12.prod.outlook.com
- ([fe80::b5bc:c121:c4e9:d4ea%6]) with mapi id 15.20.4129.026; Wed, 12 May 2021
- 21:00:33 +0000
-From:   Nikola Cornij <nikola.cornij@amd.com>
-To:     amd-gfx@lists.freedesktop.org
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Mikita Lipski <mikita.lipski@amd.com>,
-        Eryk Brol <eryk.brol@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Nikola Cornij <nikola.cornij@amd.com>,
-        Wayne Lin <Wayne.Lin@amd.com>, Chris Park <Chris.Park@amd.com>,
-        Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>, Imre Deak <imre.deak@intel.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Ramalingam C <ramalingam.c@intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Lee Shawn C <shawn.c.lee@intel.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Dave Airlie <airlied@redhat.com>,
-        James Jones <jajones@nvidia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@intel.com>
-Subject: [PATCH v2 1/1] drm/dp_mst: Use kHz as link rate units when settig source max link caps at init
-Date:   Wed, 12 May 2021 17:00:11 -0400
-Message-Id: <20210512210011.8425-2-nikola.cornij@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210512210011.8425-1-nikola.cornij@amd.com>
-References: <20210512210011.8425-1-nikola.cornij@amd.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [165.204.55.250]
-X-ClientProxiedBy: YT1PR01CA0110.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2c::19) To DM5PR12MB4679.namprd12.prod.outlook.com
- (2603:10b6:4:a2::37)
+        id S1442634AbhELWL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 18:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1390242AbhELVFU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 17:05:20 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DB6C06138E;
+        Wed, 12 May 2021 14:03:58 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id h4so35748776lfv.0;
+        Wed, 12 May 2021 14:03:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IYCcqhA4jjPs/ANEIfCfO///pYaMA2YdDaIjqCycNn4=;
+        b=O9VfHIuYU7eXbYs8Xx8Cy2cOa6L5uhV8BFh/ym4dLtFd8+ejjhr6FjUObFYjD5cbVG
+         teyF9UNlPoD/sty318Xa566r1rKKE0T8XSz4zD9js7wZCq4vKPwX6D/xvl41YzAT4DbS
+         wjsVZKDZYlxKKWSsPEpKOt0cSe4TYjkxl0Iuwh5Yd+sJUw2lT8X3cFfPTfcGB357ISRT
+         YZcV8o40VpqoLSBRwMyBgaZDqhf2Cniul3s7pG0ENijf8y/oDKnQezL/VijNWpeDsi+g
+         PUMSkXhrc6nBQzB2b5CzIobOHmAMN16Xdj59BsRNCHiE4PedDzD7ECqOxGpJJGA/T9XF
+         eBVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IYCcqhA4jjPs/ANEIfCfO///pYaMA2YdDaIjqCycNn4=;
+        b=aZbwqMay4nmqjuy/ZQ8C4sImpoKDslmgJXOqyHN5eN4UgxnbWn0elMRKDuNL9u33o9
+         9rm8txfDQMxJuw9GRMmMPToZ9Ez8ODvDbuxH9RcigmGxdv3ij/HY97SaTpOo1/wBiAmM
+         QWZSf4ossimppdl0LzqHTkgxfgVwVvWu2QNWSrBtiSEYYwf07wEvllbHwj3a9YAtuTv8
+         J762vezI0djCQDn4x1heZBxVScFrB0bMqJ9BfqKnSHAKgCjDTKfO7EXO4Rbq3mB2gvMF
+         T8WkKDSf2HvjUoZ4B/Fq0bS/LXqEAuWLaXKv+fuKCYYfk4/O7+fTh7kO/vjIIAgxAV6v
+         wq1w==
+X-Gm-Message-State: AOAM533RRBjZxcJe+niG0l6nlJmKfPnupHbyI5lmhMlMiwEFjYRE6+wm
+        UTj4uRqREqIB1EbHyyr4E80=
+X-Google-Smtp-Source: ABdhPJzSmADJBLkBvSUbSMC7Y8hBJz476Fp0YVx1KR4TnQxnDvbd0iY4geDWfVhSr4ikUJbaaFscLg==
+X-Received: by 2002:a05:6512:ba8:: with SMTP id b40mr25271323lfv.285.1620853437148;
+        Wed, 12 May 2021 14:03:57 -0700 (PDT)
+Received: from xws.localdomain ([37.58.58.229])
+        by smtp.gmail.com with ESMTPSA id q27sm77183lfd.266.2021.05.12.14.03.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 14:03:56 -0700 (PDT)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Sachi King <nakato@nakato.io>
+Subject: [PATCH] pinctrl/amd: Add device HID for new AMD GPIO controller
+Date:   Wed, 12 May 2021 23:03:16 +0200
+Message-Id: <20210512210316.1982416-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ubuntu.localdomain (165.204.55.250) by YT1PR01CA0110.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2c::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.31 via Frontend Transport; Wed, 12 May 2021 21:00:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d04f29d5-b994-4c96-1d5f-08d91588fb7e
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1834:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB18347887052E7C5000EEF323EE529@DM5PR12MB1834.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AKUCMa/u/qYJsjnv6YRsGdsi41tarAKx1X8pL7XQDGYz2rxFFZK4FgvoB5zXqfbTIIyY8mgXXjbccBFNZtlcshUXyr+JDH2X1Ug5jZoEwUfKwRcEYgb1iwc5R+qRMZ4bdDx6pmKt1+Q0M+/xSUW73piFht4VnDbG9geucqrmfh95NewkSyC7HQqkLZPubdj+o/WNaVr3uuKPwOIoBPSUVxdKd6v5aKTJSVjOJyUif1Gg2oPdTxxxV/eFV6SzVFbJYHl+BnUPWK84TXzVh473/75T9TSoeJziYznhwYM4EOUC0fMZyY5zMFaAMtNxRGTkUhzT4FcLhcizTLezPhSb8Enk+MTijgwisLeUqGYyoGupURh8F9dL2OQGyYciWLCgMMRdjlzqo5CzdxfxZyk2lrSa77E3S7mvtPA2xz2b4FW7WBcM+ZaSiOFW89nPdmveoXRuc07U5v8wiKx5kOsWLuClXMyecA2Qn23Mep8fXf1oVfMbGzEvI0bpdgZ1gqARpr6yCOv/YzjjeTjCqm3K5fOjx1B5J9VPyUgrSKFl6S3++uwBH4Ht8A6Z9syS+UhsbczqgCEwMWJbSXryBbX3xz31Fz8LZEuyUUgurlAsnl/ixgmRsC3LdqNolCdd+7ayoIFeeycWvA+YkNcLhI0wkQEbzVGE5Budpw2uIwGxkyw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB4679.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(39860400002)(346002)(366004)(136003)(66946007)(6512007)(66556008)(54906003)(2906002)(83380400001)(66476007)(7416002)(44832011)(316002)(1076003)(86362001)(478600001)(36756003)(16526019)(4326008)(52116002)(186003)(38350700002)(6506007)(6916009)(38100700002)(8936002)(6666004)(956004)(8676002)(5660300002)(26005)(2616005)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Pm75K95tNkBBwmWhs2R/RvNRRDqAN3FLINFWNPIncux0VkqRwsp88cz54smM?=
- =?us-ascii?Q?4XTYmr2A01x1+Fn5k+4FstPHP5j6hU0mhJ4dyGBsPJwXnR/1WhjUeK5DM2iR?=
- =?us-ascii?Q?s2wOAhPi0t8qqLpskoSRsx9CAGmdavJNrQN7Lh8Kq3gGm3fjGBHUWKC48l6h?=
- =?us-ascii?Q?0wZ1+67lwopZzGphEeZdYn8DbjNUTUh4bS+HrH8ugL9NX9aMLU+cQoRe9j60?=
- =?us-ascii?Q?2/MwaechfDT9QZywWhNzoV6FAXTxeKBO2BmHE7c1//+7UlKlPpDV+3E66IFn?=
- =?us-ascii?Q?bYSaNvw/MWMOF8zJ6ifY6N+Lj+zDCqJ2zivOmJTY0wnCnp+URTcbYtNHevXQ?=
- =?us-ascii?Q?5+D0tCxK6TuLslNImgFLJiIEorbKwtISeUJOKSXyBoGGmrvlIREvgRX4y4L6?=
- =?us-ascii?Q?IkguddF+m9l0W9tSpVbVk9G4TmX2oxVhXDf9BXiYfdJ+HUOgZl6J5lHkYd5h?=
- =?us-ascii?Q?/wDFZcLS9oX7072Dqpo4N4zYQPTxZTCuVb9R6NnTr1NX5lELEB7qmUU49eT8?=
- =?us-ascii?Q?C2mJKZjH7kftefaU881hNC4FOuVXfQ++zb/Z4LZ8I3vKvKx+lh6ms9FrWCj1?=
- =?us-ascii?Q?Y5pjPmLBrRm36F9uI+UHFFHaMmJD+1jaJ2CrKUvZ1swwM1yH22aU3m8pwOLu?=
- =?us-ascii?Q?Gkcmjha5vyJ+Ou+uApJxoaa35wsExyq9h/1sMTn0H51w1NrqiukxOM7Csoio?=
- =?us-ascii?Q?X+etnpT6UGuQRSuVTECXm0GUxAPB1CK6qjl4Fy+yysNYmqKnA5EBeIcFs86D?=
- =?us-ascii?Q?M8I0ByawnE9Nmsr0n+YvwvI11+wpj1/bPTo0K1pdxsDjLOtFO4VrqrOdmzk8?=
- =?us-ascii?Q?l3W+sWpxYW9vSRLpkGv22bBnuGPIx0yS8grS0qAArUvtGK1inXTOPqzqvx0U?=
- =?us-ascii?Q?Bys2avWWHF1GUCu7S73v4Np3G/z1Ny5XB83/ArA0oHUFcZNqBDb4tOrmbweT?=
- =?us-ascii?Q?YOndOsT76TbngCo7Zk2CkDW6Zn8v2uGApOdvoQAk0b4QSHuYJXsIQy8h8XpW?=
- =?us-ascii?Q?11vfTDLMbmat9lag0MPjnclGVuznk1seL6/qG5rTXWuKFm/XVZEdPV1VXw52?=
- =?us-ascii?Q?7Cd79tWYlniLZ520KEAML7wU/SkRSJM8FSr1kOA31PiWEN14P2Xt6oMescv+?=
- =?us-ascii?Q?llUb77hDedsNvh2JZ6mQoAsSlOV9mKSq48f1r/3yRZrHYpLLJgQVvBd6iqbB?=
- =?us-ascii?Q?EGgaA3QxgbYIvT2zST4Hhsj5yg72tu3hKQpgsXW38dIwm8ks9nhwK1UBPUuQ?=
- =?us-ascii?Q?43Wu+ABr7HM2CL9A4ZRg2OPkpiWQu1/citQeV3BS1eH5m2gkF+R35TPBqTLx?=
- =?us-ascii?Q?rnV7iYVmdFy8Y6SCo1bwjicQ?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d04f29d5-b994-4c96-1d5f-08d91588fb7e
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB4679.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2021 21:00:33.0436
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: loSnYW2BMMhxrkwXE84NoZpltAakoFPf0vWIlpENta9jubFfE7yvhdm7h92jZlOgoaOwfL2Pbutpx0KUgYVCGg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1834
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[why]
-Link rate in kHz is what is eventually required to calculate the link
-bandwidth, which makes kHz a more generic unit. This should also make
-forward-compatibility with new DP standards easier.
+Add device HID AMDI0031 to the AMD GPIO controller driver match table.
+This controller can be found on Microsoft Surface Laptop 4 devices and
+seems similar enough that we can just copy the existing AMDI0030 entry.
 
-[how]
-- Replace 'link rate DPCD code' with 'link rate in kHz' when used with
-drm_dp_mst_topology_mgr_init()
-- Add/remove related DPCD code conversion from/to kHz where applicable
-
-Signed-off-by: Nikola Cornij <nikola.cornij@amd.com>
-Acked-by: Jani Nikula <jani.nikula@intel.com>
+Cc: <stable@vger.kernel.org> # 5.10+
+Tested-by: Sachi King <nakato@nakato.io>
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
 ---
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c   | 4 ++--
- drivers/gpu/drm/drm_dp_mst_topology.c                     | 8 ++++----
- drivers/gpu/drm/i915/display/intel_dp_mst.c               | 4 ++--
- drivers/gpu/drm/nouveau/dispnv50/disp.c                   | 5 +++--
- drivers/gpu/drm/radeon/radeon_dp_mst.c                    | 2 +-
- include/drm/drm_dp_mst_helper.h                           | 8 ++++----
- 6 files changed, 16 insertions(+), 15 deletions(-)
+ drivers/pinctrl/pinctrl-amd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-index 4a0c24ce5f7d..f78dd021f591 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-@@ -458,8 +458,8 @@ void amdgpu_dm_initialize_dp_connector(struct amdgpu_display_manager *dm,
- 		&aconnector->dm_dp_aux.aux,
- 		16,
- 		4,
--		(u8)max_link_enc_cap.lane_count,
--		(u8)max_link_enc_cap.link_rate,
-+		max_link_enc_cap.lane_count,
-+		drm_dp_bw_code_to_link_rate(max_link_enc_cap.link_rate),
- 		aconnector->connector_id);
- 
- 	drm_connector_attach_dp_subconnector_property(&aconnector->base);
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index 54604633e65c..32b7f8983b94 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -3722,9 +3722,9 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
- 		}
- 
- 		lane_count = min_t(int, mgr->dpcd[2] & DP_MAX_LANE_COUNT_MASK, mgr->max_lane_count);
--		link_rate = min_t(int, mgr->dpcd[1], mgr->max_link_rate);
-+		link_rate = min_t(int, drm_dp_bw_code_to_link_rate(mgr->dpcd[1]), mgr->max_link_rate);
- 		mgr->pbn_div = drm_dp_get_vc_payload_bw(mgr,
--							drm_dp_bw_code_to_link_rate(link_rate),
-+							link_rate,
- 							lane_count);
- 		if (mgr->pbn_div == 0) {
- 			ret = -EINVAL;
-@@ -5454,7 +5454,7 @@ EXPORT_SYMBOL(drm_atomic_get_mst_topology_state);
-  * @max_dpcd_transaction_bytes: hw specific DPCD transaction limit
-  * @max_payloads: maximum number of payloads this GPU can source
-  * @max_lane_count: maximum number of lanes this GPU supports
-- * @max_link_rate: maximum link rate this GPU supports, units as in DPCD
-+ * @max_link_rate: maximum link rate per lane this GPU supports in kHz
-  * @conn_base_id: the connector object ID the MST device is connected to.
-  *
-  * Return 0 for success, or negative error code on failure
-@@ -5462,7 +5462,7 @@ EXPORT_SYMBOL(drm_atomic_get_mst_topology_state);
- int drm_dp_mst_topology_mgr_init(struct drm_dp_mst_topology_mgr *mgr,
- 				 struct drm_device *dev, struct drm_dp_aux *aux,
- 				 int max_dpcd_transaction_bytes, int max_payloads,
--				 u8 max_lane_count, u8 max_link_rate,
-+				 int max_lane_count, int max_link_rate,
- 				 int conn_base_id)
- {
- 	struct drm_dp_mst_topology_state *mst_state;
-diff --git a/drivers/gpu/drm/i915/display/intel_dp_mst.c b/drivers/gpu/drm/i915/display/intel_dp_mst.c
-index f608c0cb98f4..26f65445bc8a 100644
---- a/drivers/gpu/drm/i915/display/intel_dp_mst.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp_mst.c
-@@ -960,8 +960,8 @@ intel_dp_mst_encoder_init(struct intel_digital_port *dig_port, int conn_base_id)
- 	intel_dp_create_fake_mst_encoders(dig_port);
- 	ret = drm_dp_mst_topology_mgr_init(&intel_dp->mst_mgr, &i915->drm,
- 					   &intel_dp->aux, 16, 3,
--					   (u8)dig_port->max_lanes,
--					   drm_dp_link_rate_to_bw_code(max_source_rate),
-+					   dig_port->max_lanes,
-+					   max_source_rate,
- 					   conn_base_id);
- 	if (ret)
- 		return ret;
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-index c46d0374b6e6..f949767698fc 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-@@ -1617,8 +1617,9 @@ nv50_mstm_new(struct nouveau_encoder *outp, struct drm_dp_aux *aux, int aux_max,
- 	mstm->mgr.cbs = &nv50_mstm;
- 
- 	ret = drm_dp_mst_topology_mgr_init(&mstm->mgr, dev, aux, aux_max,
--					   (u8)max_payloads, outp->dcb->dpconf.link_nr,
--					   (u8)outp->dcb->dpconf.link_bw, conn_base_id);
-+					   max_payloads, outp->dcb->dpconf.link_nr,
-+					   drm_dp_bw_code_to_link_rate(outp->dcb->dpconf.link_bw),
-+					   conn_base_id);
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/gpu/drm/radeon/radeon_dp_mst.c b/drivers/gpu/drm/radeon/radeon_dp_mst.c
-index 13072c2a6502..ec867fa880a4 100644
---- a/drivers/gpu/drm/radeon/radeon_dp_mst.c
-+++ b/drivers/gpu/drm/radeon/radeon_dp_mst.c
-@@ -642,7 +642,7 @@ radeon_dp_mst_init(struct radeon_connector *radeon_connector)
- 	radeon_connector->mst_mgr.cbs = &mst_cbs;
- 	return drm_dp_mst_topology_mgr_init(&radeon_connector->mst_mgr, dev,
- 					    &radeon_connector->ddc_bus->aux, 16, 6,
--					    4, (u8)max_link_rate,
-+					    4, drm_dp_bw_code_to_link_rate(max_link_rate),
- 					    radeon_connector->base.base.id);
- }
- 
-diff --git a/include/drm/drm_dp_mst_helper.h b/include/drm/drm_dp_mst_helper.h
-index c87a829b6498..ddb9231d0309 100644
---- a/include/drm/drm_dp_mst_helper.h
-+++ b/include/drm/drm_dp_mst_helper.h
-@@ -596,11 +596,11 @@ struct drm_dp_mst_topology_mgr {
- 	/**
- 	 * @max_lane_count: maximum number of lanes the GPU can drive.
- 	 */
--	u8 max_lane_count;
-+	int max_lane_count;
- 	/**
--	 * @max_link_rate: maximum link rate per lane GPU can output.
-+	 * @max_link_rate: maximum link rate per lane GPU can output, in kHz.
- 	 */
--	u8 max_link_rate;
-+	int max_link_rate;
- 	/**
- 	 * @conn_base_id: DRM connector ID this mgr is connected to. Only used
- 	 * to build the MST connector path value.
-@@ -774,7 +774,7 @@ int drm_dp_mst_topology_mgr_init(struct drm_dp_mst_topology_mgr *mgr,
- 				 struct drm_device *dev, struct drm_dp_aux *aux,
- 				 int max_dpcd_transaction_bytes,
- 				 int max_payloads,
--				 u8 max_lane_count, u8 max_link_rate,
-+				 int max_lane_count, int max_link_rate,
- 				 int conn_base_id);
- 
- void drm_dp_mst_topology_mgr_destroy(struct drm_dp_mst_topology_mgr *mgr);
+diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
+index 2d4acf21117c..c5950a3b4e4c 100644
+--- a/drivers/pinctrl/pinctrl-amd.c
++++ b/drivers/pinctrl/pinctrl-amd.c
+@@ -991,6 +991,7 @@ static int amd_gpio_remove(struct platform_device *pdev)
+ static const struct acpi_device_id amd_gpio_acpi_match[] = {
+ 	{ "AMD0030", 0 },
+ 	{ "AMDI0030", 0},
++	{ "AMDI0031", 0},
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(acpi, amd_gpio_acpi_match);
 -- 
-2.25.1
+2.31.1
 
