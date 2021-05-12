@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4121E37EA4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFDF37EA3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376901AbhELS4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:56:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35814 "EHLO mail.kernel.org"
+        id S1376663AbhELSzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:55:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244210AbhELQmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:42:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF8A561C73;
-        Wed, 12 May 2021 16:11:44 +0000 (UTC)
+        id S244102AbhELQmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:42:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F75661D1D;
+        Wed, 12 May 2021 16:10:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835905;
-        bh=F2Xbx4ZbDCbVce8wwywteEk5TPUIk/G3oAtbYB1YHAM=;
+        s=korg; t=1620835839;
+        bh=AWduXJg6FgG0c+arjJooAVgmGUR5qA93G1hB7ewf7CQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=otLpmZnFq273eXUkKuPC7g5Tsw/VDoYcEG0iK/291DOhjgC+3GUlclOM0m9MljawF
-         uBKHzSQjFyC8kS8BqSXLqBY3RGW7lSyEq95UTH1OHF9OjZ0i35JQvhhH/rUjpWB4ci
-         Ghoc5m/GbE14AfeikYnXSmEzlyPVtf1tqqCpyEwM=
+        b=xCOwU58dww34whxnNYi14AsGOYK/bBiNwmGiXXYcg8RE08rzvBdA/5zaEb6ieuG3+
+         CWPAx0TwUX0NLEyNyOLSNcdP5DeyPcWRyyIQLJJftGhyAdMXA+/zUG4V2fLzDJR21l
+         YBzpSb9fZGawwuwKWsOJ1Gd80EHcrSO4lf4t/h1o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 486/677] RDMA/core: Fix corrupted SL on passive side
-Date:   Wed, 12 May 2021 16:48:52 +0200
-Message-Id: <20210512144853.525636321@linuxfoundation.org>
+Subject: [PATCH 5.12 488/677] net: hns3: Limiting the scope of vector_ring_chain variable
+Date:   Wed, 12 May 2021 16:48:54 +0200
+Message-Id: <20210512144853.597154700@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -41,50 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Håkon Bugge <haakon.bugge@oracle.com>
+From: Salil Mehta <salil.mehta@huawei.com>
 
-[ Upstream commit 194f64a3cad3ab9e381e996a13089de3215d1887 ]
+[ Upstream commit d392ecd1bc29ae15b0e284d5f732c2d36f244271 ]
 
-On RoCE systems, a CM REQ contains a Primary Hop Limit > 1 and Primary
-Subnet Local is zero.
+Limiting the scope of the variable vector_ring_chain to the block where it
+is used.
 
-In cm_req_handler(), the cm_process_routed_req() function is called. Since
-the Primary Subnet Local value is zero in the request, and since this is
-RoCE (Primary Local LID is permissive), the following statement will be
-executed:
-
-      IBA_SET(CM_REQ_PRIMARY_SL, req_msg, wc->sl);
-
-This corrupts SL in req_msg if it was different from zero. In other words,
-a request to setup a connection using an SL != zero, will not be honored,
-and a connection using SL zero will be created instead.
-
-Fixed by not calling cm_process_routed_req() on RoCE systems, the
-cm_process_route_req() is only for IB anyhow.
-
-Fixes: 3971c9f6dbf2 ("IB/cm: Add interim support for routed paths")
-Link: https://lore.kernel.org/r/1616420132-31005-1-git-send-email-haakon.bugge@oracle.com
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 424eb834a9be ("net: hns3: Unified HNS3 {VF|PF} Ethernet Driver for hip08 SoC")
+Signed-off-by: Salil Mehta <salil.mehta@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/cm.c | 3 ++-
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 3d194bb60840..6adbaea358ae 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -2138,7 +2138,8 @@ static int cm_req_handler(struct cm_work *work)
- 		goto destroy;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+index bf4302a5cf95..65752f363f43 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -3704,7 +3704,6 @@ static void hns3_nic_set_cpumask(struct hns3_nic_priv *priv)
+ 
+ static int hns3_nic_init_vector_data(struct hns3_nic_priv *priv)
+ {
+-	struct hnae3_ring_chain_node vector_ring_chain;
+ 	struct hnae3_handle *h = priv->ae_handle;
+ 	struct hns3_enet_tqp_vector *tqp_vector;
+ 	int ret;
+@@ -3736,6 +3735,8 @@ static int hns3_nic_init_vector_data(struct hns3_nic_priv *priv)
  	}
  
--	cm_process_routed_req(req_msg, work->mad_recv_wc->wc);
-+	if (cm_id_priv->av.ah_attr.type != RDMA_AH_ATTR_TYPE_ROCE)
-+		cm_process_routed_req(req_msg, work->mad_recv_wc->wc);
+ 	for (i = 0; i < priv->vector_num; i++) {
++		struct hnae3_ring_chain_node vector_ring_chain;
++
+ 		tqp_vector = &priv->tqp_vector[i];
  
- 	memset(&work->path[0], 0, sizeof(work->path[0]));
- 	if (cm_req_has_alt_path(req_msg))
+ 		tqp_vector->rx_group.total_bytes = 0;
 -- 
 2.30.2
 
