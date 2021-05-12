@@ -2,135 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DD037B38B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2106B37B391
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbhELBcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 21:32:21 -0400
-Received: from mail-ed1-f54.google.com ([209.85.208.54]:39710 "EHLO
-        mail-ed1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbhELBcQ (ORCPT
+        id S230124AbhELBeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 21:34:07 -0400
+Received: from office2.cesnet.cz ([195.113.144.244]:52914 "EHLO
+        office2.cesnet.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229736AbhELBd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 21:32:16 -0400
-Received: by mail-ed1-f54.google.com with SMTP id g14so25127129edy.6;
-        Tue, 11 May 2021 18:31:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fu9dr07tUrhZL/WE8RSa90SkTQUI7KqZiD+NnVvcBNI=;
-        b=EaoJJAnVVq6mIBQd1C40I2iQRLzYXwwot0CkZmkrEv9Uofa+kR2t9FDKcrgg8l6XRj
-         Rb1ItU5BV556NUlYJaaG/RTYrgx36A0jnym1rpAenKpdUEAy7A3nySyF1L/Tkbx1oNbb
-         cZZRyMxSxI4b1VwzMK1OCHoAyNglePBjuw7TZTc8HPBiv5fO12/T1YxL6ZqRcF27nKrm
-         WsiK53lJQZvOyTraU3OoOGkp02MvYkY/rqPQR+OO7nZsTHDbPX8klUbeBB2Bhx7uNtcA
-         jJOAk/V7hWp/RZGHO+iTOeqVpEhWWIqjxhJhyantGSAzDQFmkN9Z/meZk3tZZsfkue/G
-         Y97A==
-X-Gm-Message-State: AOAM532rWdCmltBx3BopSbmQUYrSSCkx0OyyXFp7SXB0lsjyXxWnHa2D
-        ajwzWXggDkxkdxOpsAdfwchojNU68Qhzy9VX
-X-Google-Smtp-Source: ABdhPJzAdcv0Bb9731uLtmAWjJy47qC/e5oW2m31UeiNPkzIOCOa2RJXFmF94wgb+JQYfKm2KcK1BQ==
-X-Received: by 2002:a05:6402:1807:: with SMTP id g7mr39398970edy.335.1620783067881;
-        Tue, 11 May 2021 18:31:07 -0700 (PDT)
-Received: from localhost ([2a02:8308:387:c900:a7b5:b859:9449:c07b])
-        by smtp.gmail.com with ESMTPSA id o3sm16416033edr.84.2021.05.11.18.31.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 May 2021 18:31:07 -0700 (PDT)
-From:   =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>
+        Tue, 11 May 2021 21:33:58 -0400
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by office2.cesnet.cz (Postfix) with ESMTPSA id 63AB840006D;
+        Wed, 12 May 2021 03:32:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cesnet.cz;
+        s=office2-2020; t=1620783169;
+        bh=w189rxaxl4GMoBpdnK0cz61dSo3IEnt3oBnjZejbp0Y=;
+        h=References:In-Reply-To:From:Date:Subject:To;
+        b=OBwzECTGZnO0W8dupKHQEpGXq93y74+CwBbV5jNZDGuo1ZsoZ7mvNIHH7DYJRnsVy
+         UpskvqOzo3m7DilRGkJcMxh4RNuo5L3KHPH43xgRUrSOPloTMZ/qg3+U3T3OBFcoaO
+         nuS3WUZ/5lCRiGD7dzPksFXnsLsmMyBrvLTRiTNLm+2ajmKZcSvoKrI5R//kWNo/vY
+         4ThTBR/YCcrzellBsv3BaFTs0iRvVHTNI7wxec2U3/n9l22eOJ8U/znpwZgrpwAd1G
+         51fRTyesxJEOncUnjdv+xFOLCRwwJjcFDveNLESADqetU5hl+8UCYxdOOojzGVZmpc
+         HA5fB7k0EUb3g==
+Received: by mail-pl1-f174.google.com with SMTP id z18so8116771plg.8;
+        Tue, 11 May 2021 18:32:49 -0700 (PDT)
+X-Gm-Message-State: AOAM5324jf6yH+H5ZYxfwP/HdqWLRpJ2HztO8/8UJdMYELx1eqIQF46a
+        ivZ8SScxT/mzxbAVyl0MUMEtvNz6pxkSf9iMDGU=
+X-Google-Smtp-Source: ABdhPJzzZkzAI/4EPDLK4HMhoAI6OrY06rFrdrHlDR6tKL+eDWa3QZlXMfOUcLqoD6WBd13rd61w94O77W++gbTEZiw=
+X-Received: by 2002:a17:902:b408:b029:ec:e879:bbd8 with SMTP id
+ x8-20020a170902b408b02900ece879bbd8mr33058518plr.65.1620783167785; Tue, 11
+ May 2021 18:32:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210512013052.903297-1-kubernat@cesnet.cz> <20210512013052.903297-2-kubernat@cesnet.cz>
+In-Reply-To: <20210512013052.903297-2-kubernat@cesnet.cz>
+From:   =?UTF-8?B?VsOhY2xhdiBLdWJlcm7DoXQ=?= <kubernat@cesnet.cz>
+Date:   Wed, 12 May 2021 03:32:36 +0200
+X-Gmail-Original-Message-ID: <CABKa3noSQVtAp3Ath9=PNh2cDLgq8n8w2gudwWJerD5YQx5WMA@mail.gmail.com>
+Message-ID: <CABKa3noSQVtAp3Ath9=PNh2cDLgq8n8w2gudwWJerD5YQx5WMA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/5] hwmon: (max31790) Fix and split pwm*_enable
 To:     Jean Delvare <jdelvare@suse.com>,
         Guenter Roeck <linux@roeck-us.net>,
         Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>
-Subject: [PATCH v5 5/5] hwmon: (max31790) Update documentation
-Date:   Wed, 12 May 2021 03:30:51 +0200
-Message-Id: <20210512013052.903297-5-kubernat@cesnet.cz>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210512013052.903297-1-kubernat@cesnet.cz>
-References: <20210512013052.903297-1-kubernat@cesnet.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The conditions for fan fault and its connection to the PWM mode are now
-documented.
+Hello,
 
-The pwm_rate_of_change and fan_window are now mentioned. According to
-our testing with Sunon PF36281BX-000U-S99, these values are crucial in
-how RPM mode works and how long it takes for the RPM to stabilize. For
-example, setting 5000 RPM (the fan goes up to 23000), the
-pwm_rate_of_change needed to be changed to the lowest possible value,
-otherwise the chip would just go from pwm 0 to pwm 60 back and forth and
-never achieving 5000 RPM (and also signaling fan fault). Based on this
-testing, we found out that the pwm_rate_of_change and fan_window values
-need to be changed manually by the user, based on the user's exact fan
-configuration.
+I have updated the code and got rid of the "fullspeed" mode as
+requested. Let me know what you think.
 
-Signed-off-by: Václav Kubernát <kubernat@cesnet.cz>
----
- Documentation/hwmon/max31790.rst | 41 +++++++++++++++++++++++++++++++-
- 1 file changed, 40 insertions(+), 1 deletion(-)
+Thanks
+V=C3=A1clav
 
-diff --git a/Documentation/hwmon/max31790.rst b/Documentation/hwmon/max31790.rst
-index 35afa5f0395a..e70aae9f71a2 100644
---- a/Documentation/hwmon/max31790.rst
-+++ b/Documentation/hwmon/max31790.rst
-@@ -30,6 +30,44 @@ monitoring and control of fan RPM as well as detection of fan failure.
- Six pins are dedicated tachometer inputs. Any of the six PWM outputs can
- also be configured to serve as tachometer inputs.
- 
-+About pwm[1-6]_enable
-+---------------------
-+0 - full-speed
-+    The chip doesn't have a specific way to set "full speed", so setting
-+    pwm[1-6]_enable to 0 is just "set PWM mode with 255 duty cycle".
-+1 - PWM mode
-+    Fan speed is controlled by writing a value to pwm[1-6].
-+2 - RPM mode
-+    Fan speed is controlled by writing a value to fan[1-6]_target.
-+
-+About fan[1-6]_fault
-+--------------------
-+In PWM (or full-speed) mode, if the input RPM goes below what is set
-+in fan[1-6]_target, fan[1-6]_fault gets set to 1. In other words,
-+fan[1-6]_target works as the minimum input RPM before a fan fault goes off.
-+
-+In RPM mode, fan fault is set when the fan spins "too slowly" (exact
-+conditions are in the datasheet). RPM mode depends on four variables:
-+    target_speed:        This is set by fan[1-6]_target.
-+    speed_range:         This is set automatically when setting target_speed
-+                         or manually by fan[1-12]_div.
-+    pwm_rate_of_change:  NOT set by the driver.
-+    fan_window:          NOT set by the driver.
-+
-+The last two values are not set by the driver, because there's no generic way to
-+compute them. You should set them manually through i2c (in the bootloader for
-+example). Check the datasheet for details.
-+
-+The fan fault value latches, to reset it, set a value to pwm[1-6]
-+or fan[1-6]_target.
-+
-+About fan[1-12]_div
-+-------------------
-+This value affects the measurable range of the chip. The driver sets this value
-+automatically in RPM based on fan[1-6]_target. In PWM mode, you should set this
-+value manually based on the details from the datasheet. Setting the speed range
-+is disabled while in RPM mode to prevent overwriting the automatically
-+calculated value.
- 
- Sysfs entries
- -------------
-@@ -39,7 +77,8 @@ fan[1-12]_enable   RW  enable fan speed monitoring
- fan[1-12]_input    RO  fan tachometer speed in RPM
- fan[1-12]_fault    RO  fan experienced fault
- fan[1-12]_div      RW  set the measurable speed range, not available in RPM mode
--fan[1-6]_target    RW  desired fan speed in RPM
-+fan[1-6]_target    RW  RPM mode = desired fan speed
-+                       PWM mode = minimum fan speed until fault
- pwm[1-6]_enable    RW  regulator mode, 0=no control, sets 0% PWM,
- 				       1=manual (pwm) mode,
- 				       2=rpm mode
--- 
-2.31.1
-
+st 12. 5. 2021 v 3:31 odes=C3=ADlatel V=C3=A1clav Kubern=C3=A1t <kubernat@c=
+esnet.cz> napsal:
+>
+> In the old code, pwm*_enable does two things. Firstly, it sets whether
+> the chip should run in PWM or RPM mode. Secondly, it tells the chip
+> whether it should monitor fan RPM. However, these two settings aren't
+> tied together, so they shouldn't be set with a single value. In the new
+> code, fan*_enable now controls fan RPM monitoring (pwm*_enable no longer
+> controls that).
+>
+> According to the sysfs hwmon documentation, pwm*_enable has three
+> possible values, 0 for "no control / full-speed", 1 for manual mode, and
+> 2+ for automatic. The old code works fine for 1 and 2, but 0 only
+> differs from 1 in that it just turns off fan speed monitoring. The chip
+> actually does have a way to turn off fan controls (and only monitor),
+> and what that does is that it sets PWM to 0% duty cycle. In the new
+> code, 0 in pwm*_enable turns off the "control" feature of the chip.
+>
+> These two changes are closely connected together, mainly because the
+> detection of the pwm*_enable value depended on whether fan speed
+> monitoring is enabled (which is now controlled as written in the first
+> paragraph).
+>
+> Signed-off-by: V=C3=A1clav Kubern=C3=A1t <kubernat@cesnet.cz>
+> ---
+>  Documentation/hwmon/max31790.rst | 10 ++--
+>  drivers/hwmon/max31790.c         | 78 +++++++++++++++++++++-----------
+>  2 files changed, 58 insertions(+), 30 deletions(-)
+>
+> diff --git a/Documentation/hwmon/max31790.rst b/Documentation/hwmon/max31=
+790.rst
+> index f301385d8cef..d2ac4e926905 100644
+> --- a/Documentation/hwmon/max31790.rst
+> +++ b/Documentation/hwmon/max31790.rst
+> @@ -34,10 +34,14 @@ also be configured to serve as tachometer inputs.
+>  Sysfs entries
+>  -------------
+>
+> -=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D =3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D =3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +fan[1-12]_enable   RW  enable fan speed monitoring
+>  fan[1-12]_input    RO  fan tachometer speed in RPM
+>  fan[1-12]_fault    RO  fan experienced fault
+>  fan[1-6]_target    RW  desired fan speed in RPM
+> -pwm[1-6]_enable    RW  regulator mode, 0=3Ddisabled, 1=3Dmanual mode, 2=
+=3Drpm mode
+> +pwm[1-6]_enable    RW  regulator mode, 0=3Dno control, sets 0% PWM,
+> +                                      1=3Dmanual (pwm) mode,
+> +                                      2=3Drpm mode
+> +                       setting rpm mode sets fan*_enable to 1
+>  pwm[1-6]           RW  fan target duty cycle (0-255)
+> -=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D =3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D =3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
+> index e3765ce4444a..5d4c551df010 100644
+> --- a/drivers/hwmon/max31790.c
+> +++ b/drivers/hwmon/max31790.c
+> @@ -30,6 +30,7 @@
+>  #define MAX31790_FAN_CFG_RPM_MODE      0x80
+>  #define MAX31790_FAN_CFG_TACH_INPUT_EN 0x08
+>  #define MAX31790_FAN_CFG_TACH_INPUT    0x01
+> +#define MAX31790_FAN_CFG_CTRL_MON      0x10
+>
+>  /* Fan Dynamics register bits */
+>  #define MAX31790_FAN_DYN_SR_SHIFT      5
+> @@ -191,6 +192,9 @@ static int max31790_read_fan(struct device *dev, u32 =
+attr, int channel,
+>                 else
+>                         *val =3D !!(fault & (1 << channel));
+>                 return 0;
+> +       case hwmon_fan_enable:
+> +               *val =3D !!(data->fan_config[channel] & MAX31790_FAN_CFG_=
+TACH_INPUT_EN);
+> +               return 0;
+>         default:
+>                 return -EOPNOTSUPP;
+>         }
+> @@ -233,6 +237,15 @@ static int max31790_write_fan(struct device *dev, u3=
+2 attr, int channel,
+>                                      MAX31790_REG_TARGET_COUNT(channel),
+>                                      target_count);
+>                 break;
+> +       case hwmon_fan_enable:
+> +               if (val =3D=3D 0)
+> +                       data->fan_config[channel] &=3D ~MAX31790_FAN_CFG_=
+TACH_INPUT_EN;
+> +               else
+> +                       data->fan_config[channel] |=3D MAX31790_FAN_CFG_T=
+ACH_INPUT_EN;
+> +               err =3D regmap_write(regmap,
+> +                                  MAX31790_REG_FAN_CONFIG(channel),
+> +                                  data->fan_config[channel]);
+> +               break;
+>         default:
+>                 err =3D -EOPNOTSUPP;
+>                 break;
+> @@ -260,6 +273,11 @@ static umode_t max31790_fan_is_visible(const void *_=
+data, u32 attr, int channel)
+>                     !(fan_config & MAX31790_FAN_CFG_TACH_INPUT))
+>                         return 0644;
+>                 return 0;
+> +       case hwmon_fan_enable:
+> +               if (channel < NR_CHANNEL ||
+> +                   (fan_config & MAX31790_FAN_CFG_TACH_INPUT))
+> +                       return 0644;
+> +               return 0;
+>         default:
+>                 return 0;
+>         }
+> @@ -281,12 +299,12 @@ static int max31790_read_pwm(struct device *dev, u3=
+2 attr, int channel,
+>                 *val =3D read >> 8;
+>                 return 0;
+>         case hwmon_pwm_enable:
+> -               if (data->fan_config[channel] & MAX31790_FAN_CFG_RPM_MODE=
+)
+> +               if (data->fan_config[channel] & MAX31790_FAN_CFG_CTRL_MON=
+)
+> +                       *val =3D 0;
+> +               else if (data->fan_config[channel] & MAX31790_FAN_CFG_RPM=
+_MODE)
+>                         *val =3D 2;
+> -               else if (data->fan_config[channel] & MAX31790_FAN_CFG_TAC=
+H_INPUT_EN)
+> +               else
+>                         *val =3D 1;
+> -               else
+> -                       *val =3D 0;
+>                 return 0;
+>         default:
+>                 return -EOPNOTSUPP;
+> @@ -298,35 +316,41 @@ static int max31790_write_pwm(struct device *dev, u=
+32 attr, int channel,
+>  {
+>         struct max31790_data *data =3D dev_get_drvdata(dev);
+>         struct regmap *regmap =3D data->regmap;
+> -       u8 fan_config;
+> +       u8 fan_config =3D data->fan_config[channel];
+>         int err =3D 0;
+>
+>         mutex_lock(&data->update_lock);
+>
+>         switch (attr) {
+>         case hwmon_pwm_input:
+> -               if (val < 0 || val > 255) {
+> +               if (fan_config & MAX31790_FAN_CFG_CTRL_MON || val < 0 || =
+val > 255) {
+>                         err =3D -EINVAL;
+>                         break;
+>                 }
+> +
+>                 err =3D write_reg_word(regmap, MAX31790_REG_PWMOUT(channe=
+l), val << 8);
+>                 break;
+>         case hwmon_pwm_enable:
+>                 fan_config =3D data->fan_config[channel];
+> -               if (val =3D=3D 0) {
+> -                       fan_config &=3D ~(MAX31790_FAN_CFG_TACH_INPUT_EN =
+|
+> -                                       MAX31790_FAN_CFG_RPM_MODE);
+> -               } else if (val =3D=3D 1) {
+> -                       fan_config =3D (fan_config |
+> -                                     MAX31790_FAN_CFG_TACH_INPUT_EN) &
+> -                                    ~MAX31790_FAN_CFG_RPM_MODE;
+> +               if (val =3D=3D 0)
+> +                       fan_config |=3D MAX31790_FAN_CFG_CTRL_MON;
+> +               else if (val =3D=3D 1) {
+> +                       fan_config &=3D ~(MAX31790_FAN_CFG_RPM_MODE | MAX=
+31790_FAN_CFG_CTRL_MON);
+>                 } else if (val =3D=3D 2) {
+> -                       fan_config |=3D MAX31790_FAN_CFG_TACH_INPUT_EN |
+> -                                     MAX31790_FAN_CFG_RPM_MODE;
+> +                       fan_config &=3D ~(MAX31790_FAN_CFG_CTRL_MON);
+> +                       fan_config |=3D MAX31790_FAN_CFG_RPM_MODE;
+>                 } else {
+>                         err =3D -EINVAL;
+>                         break;
+>                 }
+> +
+> +               /*
+> +                * RPM mode implies enabled TACH input, so enable it in R=
+PM
+> +                * mode.
+> +                */
+> +               if (val =3D=3D 2)
+> +                       fan_config |=3D MAX31790_FAN_CFG_TACH_INPUT_EN;
+> +
+>                 data->fan_config[channel] =3D fan_config;
+>                 err =3D regmap_write(regmap,
+>                                    MAX31790_REG_FAN_CONFIG(channel),
+> @@ -400,18 +424,18 @@ static umode_t max31790_is_visible(const void *data=
+,
+>
+>  static const struct hwmon_channel_info *max31790_info[] =3D {
+>         HWMON_CHANNEL_INFO(fan,
+> -                          HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT=
+,
+> -                          HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT=
+,
+> -                          HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT=
+,
+> -                          HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT=
+,
+> -                          HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT=
+,
+> -                          HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT=
+,
+> -                          HWMON_F_INPUT | HWMON_F_FAULT,
+> -                          HWMON_F_INPUT | HWMON_F_FAULT,
+> -                          HWMON_F_INPUT | HWMON_F_FAULT,
+> -                          HWMON_F_INPUT | HWMON_F_FAULT,
+> -                          HWMON_F_INPUT | HWMON_F_FAULT,
+> -                          HWMON_F_INPUT | HWMON_F_FAULT),
+> +                          HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_TARGE=
+T | HWMON_F_FAULT,
+> +                          HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_TARGE=
+T | HWMON_F_FAULT,
+> +                          HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_TARGE=
+T | HWMON_F_FAULT,
+> +                          HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_TARGE=
+T | HWMON_F_FAULT,
+> +                          HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_TARGE=
+T | HWMON_F_FAULT,
+> +                          HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_TARGE=
+T | HWMON_F_FAULT,
+> +                          HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_FAULT=
+,
+> +                          HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_FAULT=
+,
+> +                          HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_FAULT=
+,
+> +                          HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_FAULT=
+,
+> +                          HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_FAULT=
+,
+> +                          HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_FAULT=
+),
+>         HWMON_CHANNEL_INFO(pwm,
+>                            HWMON_PWM_INPUT | HWMON_PWM_ENABLE,
+>                            HWMON_PWM_INPUT | HWMON_PWM_ENABLE,
+> --
+> 2.31.1
+>
