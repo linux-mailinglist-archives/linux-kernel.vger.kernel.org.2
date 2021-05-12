@@ -2,80 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BFC37B6D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2A437B6D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhELH1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 03:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbhELH1Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 03:27:16 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4733C061574;
-        Wed, 12 May 2021 00:26:08 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0bb800f5aafbba26918162.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:b800:f5aa:fbba:2691:8162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DC3501EC047F;
-        Wed, 12 May 2021 09:26:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1620804366;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=XX7BymnssuDQenSuxH91S0T/FnRTEBAOK/1gKgHXGXk=;
-        b=ldy07QIG2M6aYy1egamwXG50LfBbBb8j4mi+gP/S8UtULX9ALbQ+5ertfar+bp34CRdc+J
-        Z3QVmX6AG1ZWVxE8xDZttj/drZQHsSsltKiVKcGmx4EWQE7r40/hb8WDaOPl7/s7GK+bkA
-        sJGgFjxHn2sA6cs3fNeucwbZaKmzhJo=
-Date:   Wed, 12 May 2021 09:26:02 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Joshi, Mukul" <Mukul.Joshi@amd.com>
-Cc:     "Chatradhi, Naveen Krishna" <NaveenKrishna.Chatradhi@amd.com>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>
-Subject: Re: [PATCH 2/3] x86/MCE/AMD: Helper function to check UMC v2
-Message-ID: <YJuDClvyHl8mSHzp@zn.tnic>
-References: <20210511152538.148084-1-nchatrad@amd.com>
- <20210511152538.148084-2-nchatrad@amd.com>
- <YJrAOXEcyUvs/WvY@zn.tnic>
- <DM4PR12MB5263B138C38827A692411634EE529@DM4PR12MB5263.namprd12.prod.outlook.com>
+        id S230178AbhELH15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 03:27:57 -0400
+Received: from verein.lst.de ([213.95.11.211]:40119 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229850AbhELH14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 03:27:56 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 90F4A67373; Wed, 12 May 2021 09:26:45 +0200 (CEST)
+Date:   Wed, 12 May 2021 09:26:45 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Stefano Stabellini <sstabellini@kernel.org>
+Cc:     xen-devel@lists.xenproject.org, hch@lst.de,
+        linux-kernel@vger.kernel.org,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] xen/arm64: do not set SWIOTLB_NO_FORCE when
+ swiotlb is required
+Message-ID: <20210512072645.GA22396@lst.de>
+References: <20210511174142.12742-1-sstabellini@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM4PR12MB5263B138C38827A692411634EE529@DM4PR12MB5263.namprd12.prod.outlook.com>
+In-Reply-To: <20210511174142.12742-1-sstabellini@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mukul,
+> -int xen_swiotlb_detect(void)
+> -{
+> -	if (!xen_domain())
+> -		return 0;
+> -	if (xen_feature(XENFEAT_direct_mapped))
+> -		return 1;
+> -	/* legacy case */
+> -	if (!xen_feature(XENFEAT_not_direct_mapped) && xen_initial_domain())
+> -		return 1;
+> -	return 0;
+> -}
 
-On Wed, May 12, 2021 at 01:40:54AM +0000, Joshi, Mukul wrote:
-> [AMD Official Use Only - Internal Distribution Only]
-
-first of all, please do not top-post.
-
-> Thanks for the review comments.
-> I will update the Subject line and send out an updated patch.
-
-Ok.
-
-> In the meantime, here is the link to where the changes in Patch 2 and 3 are being used:
-> https://lists.freedesktop.org/archives/amd-gfx/2021-May/063423.html
-
-Yes, in the future, please Cc x86@kernel.org too when you're
-using/exporting facilities to be used by other subsystems.
-
-I'll try to reply to that patch through lore.kernel.org now.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+I think this move should be a separate prep patch.
