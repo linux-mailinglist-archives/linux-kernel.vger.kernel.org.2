@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F2637EDA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C20137EDA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387930AbhELUlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:41:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386849AbhELUWY (ORCPT
+        id S1387883AbhELUkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:40:33 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39052 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1386840AbhELUWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 16:22:24 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C814C061353
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 13:20:15 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id j19so18198734qtp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 13:20:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dUIJstx/27xJVJz6QvCNOVh0gIQL6FYmLOnlZbT26JY=;
-        b=gHtfhdTydYQykUTziTudHgN3fY5eRaL0TRbmCbpE/HyutC8I7eMRHymRr0f/F94N/q
-         mDhKFMgyHunn8V1UvTp453K69fOaVBWqmCxPSLAyvQBRnujT00a2RCjMQqcord9iYI9Q
-         DgikAWPXqoLdPCm2cv9GuFTKyablXEAcS6dUKsUy8GWTFTzqtR+lFSIXcchBFuJDQTVI
-         ee8VsLYjNhW5H51afxzp73EcbEhAQcRk4mzK5s5t9C3K0XzrgmEseLbPZyS+KQLhr9bY
-         BjzOCT1RSNrq+EE6oo05Z8m91yxppvW0iTyMG477mdxXC9iH8S5l7W/m/r4E2bupSKHU
-         ER9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dUIJstx/27xJVJz6QvCNOVh0gIQL6FYmLOnlZbT26JY=;
-        b=t/OUEkhlXdB9RBa2dLt8BT35jCXzaKHrLUygSqqCa5DdhA1GFdga/VYNYcjWR1c1uP
-         LZaChGducifSe9ULaxXDoY0/6inQt2UdRp3DqP2dvVAFdtsTZyZEEc5kaMsU5Zp1aoXf
-         UH0fQIWrZhQewQp3U49RpKHlgPFgjXw2xMAzhmfM8IXGb8Cn3RSpC8mFRYH1eD9L4T8q
-         X17qat7PFtzvJKwLXWDL/zCfrflEkfQq1BVHXCmkP9el6cTo/Ggy7NlrpvY8WFaMECw8
-         WqZZNngRssFBN9N5BFn+CbpMjzBPiyoY15IJbJHRPRdjc3Pk/6ixGqU9CuY8jXD37Myq
-         g5VQ==
-X-Gm-Message-State: AOAM533Dm7Qb1vVpSe6pyJHkMNgfWt6P+PkIyoMCoQ/FUQ9aBqV4UA4X
-        kwMQal3Yr0lxbX9Zf1tqF4CuOz6FONZof6bu3dAN0Q==
-X-Google-Smtp-Source: ABdhPJxtMXLhHYJuWiY0OsXg1Vwzw0RC9z7My1doZmIhPaMmNZmmtY48fMAiP4xOY5Y5j5Fi2FbfcrWCKiwFMmKBvys=
-X-Received: by 2002:a05:622a:114:: with SMTP id u20mr34729020qtw.317.1620850814080;
- Wed, 12 May 2021 13:20:14 -0700 (PDT)
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lgvLx-000DTY-Em; Wed, 12 May 2021 22:21:09 +0200
+Received: from [85.7.101.30] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lgvLx-000Mnz-8N; Wed, 12 May 2021 22:21:09 +0200
+Subject: Re: linux-next: Tree for May 12 (arch/x86/net/bpf_jit_comp32.o)
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+References: <20210512175623.2687ac6f@canb.auug.org.au>
+ <08f677a5-7634-b5d2-a532-ea6d3f35200c@infradead.org>
+ <daf46ee7-1a18-9d5a-c3b3-7fc55ec23b30@iogearbox.net>
+ <751025d2-9c46-a4b9-4f54-fbe5fa7a2564@infradead.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <e11480b2-a057-9621-74ba-6e3e4fc1b306@iogearbox.net>
+Date:   Wed, 12 May 2021 22:21:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20210422120459.447350175@infradead.org> <20210422123308.980003687@infradead.org>
- <CAEXW_YTHZF69YHD-r=ST97sagjnxEDy6492nDKaaJtkKMoQN9Q@mail.gmail.com>
- <3dbce4ff-44ed-73ca-2ea1-97b126dd664e@oracle.com> <CAEXW_YSX79vR9hdkjKcf08uZk85xhC8nOnesf8s6Cvp2kqKoFA@mail.gmail.com>
- <2b4ae2b4-62e5-96be-ddae-b261139842c1@oracle.com> <YJuadFpNsfHu6n0Y@hirez.programming.kicks-ass.net>
-In-Reply-To: <YJuadFpNsfHu6n0Y@hirez.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Wed, 12 May 2021 13:20:02 -0700
-Message-ID: <CABk29NsMtsMvvVLbq7fGR0EMLZ9soFKGnE-SeectjWLym6YGcg@mail.gmail.com>
-Subject: Re: [PATCH 17/19] sched: Inherit task cookie on fork()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Chris Hyser <chris.hyser@oracle.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Glexiner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <751025d2-9c46-a4b9-4f54-fbe5fa7a2564@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26168/Wed May 12 13:07:33 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 2:05 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> Right, I need a Champion that actually cares about cgroups and has
-> use-cases to go argue with TJ on this. I've proposed code that I think
-> has sane semantics, but I'm not in a position to argue for it, given I
-> think a world without cgroups is a better world :-)))
+On 5/12/21 9:26 PM, Randy Dunlap wrote:
+> On 5/12/21 11:53 AM, Daniel Borkmann wrote:
+>> On 5/12/21 8:01 PM, Randy Dunlap wrote:
+>>> On 5/12/21 12:56 AM, Stephen Rothwell wrote:
+>>> on i386:
+>>>
+>>> ld: arch/x86/net/bpf_jit_comp32.o: in function `do_jit':
+>>> bpf_jit_comp32.c:(.text+0x28c9): undefined reference to `__bpf_call_base'
+>>> ld: arch/x86/net/bpf_jit_comp32.o: in function `bpf_int_jit_compile':
+>>> bpf_jit_comp32.c:(.text+0x3694): undefined reference to `bpf_jit_blind_constants'
+>>> ld: bpf_jit_comp32.c:(.text+0x3719): undefined reference to `bpf_jit_binary_free'
+>>> ld: bpf_jit_comp32.c:(.text+0x3745): undefined reference to `bpf_jit_binary_alloc'
+>>> ld: bpf_jit_comp32.c:(.text+0x37d3): undefined reference to `bpf_jit_prog_release_other'
+>>> ld: kernel/extable.o: in function `search_exception_tables':
+>>> extable.c:(.text+0x42): undefined reference to `search_bpf_extables'
+>>> ld: kernel/extable.o: in function `kernel_text_address':
+>>> extable.c:(.text+0xee): undefined reference to `is_bpf_text_address'
+>>> ld: kernel/kallsyms.o: in function `kallsyms_lookup_size_offset':
+>>> kallsyms.c:(.text+0x254): undefined reference to `__bpf_address_lookup'
+>>> ld: kernel/kallsyms.o: in function `kallsyms_lookup_buildid':
+>>> kallsyms.c:(.text+0x2ee): undefined reference to `__bpf_address_lookup'
+>>
+>> Thanks for reporting, could you double check the following diff:
+>>
+>> diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
+>> index 26b591e23f16..bd04f4a44c01 100644
+>> --- a/kernel/bpf/Kconfig
+>> +++ b/kernel/bpf/Kconfig
+>> @@ -37,6 +37,7 @@ config BPF_SYSCALL
+>>
+>> config BPF_JIT
+>>      bool "Enable BPF Just In Time compiler"
+>> +    depends on BPF
+>>      depends on HAVE_CBPF_JIT || HAVE_EBPF_JIT
+>>      depends on MODULES
+>>      help
+> 
+> That's good. Thanks.
 
-Not sure if Tejun has any thoughts on
-http://lkml.kernel.org/r/CABk29NtahuW6UERvRdK5v8My_MfPsoESDKXUjGdvaQcHOJEMvg@mail.gmail.com.
-
-We're looking at using the prctl interface with one of our main
-internal users of core scheduling. As an example, suppose we have a
-management process that wants to make tasks A and B share a cookie:
-- Spawn a new thread m, which then does the following, and exits.
-- PR_SCHED_CORE_CREATE for just its own PID
-- PR_SCHED_CORE_SHARE_TO A
-- PR_SCHED_CORE_SHARE_TO B
-
-That seems to work ok; I'll follow up if there are any pain points
-that aren't easily addressed with the prctl interface.
+Thanks, pushed fix to bpf tree.
