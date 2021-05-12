@@ -2,28 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313C337B44D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B0E37B452
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbhELCwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 22:52:22 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2563 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbhELCwV (ORCPT
+        id S230026AbhELC4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 22:56:41 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2781 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229932AbhELC4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 22:52:21 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FfzkR6181zwScW;
-        Wed, 12 May 2021 10:48:31 +0800 (CST)
+        Tue, 11 May 2021 22:56:40 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Ffzpd5TyCzmftX;
+        Wed, 12 May 2021 10:52:09 +0800 (CST)
 Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 12 May 2021 10:51:05 +0800
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 12 May 2021 10:55:24 +0800
 From:   Zou Wei <zou_wei@huawei.com>
-To:     <krzysztof.kozlowski@canonical.com>
-CC:     <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] memory: da8xx-ddrctl: add missing MODULE_DEVICE_TABLE
-Date:   Wed, 12 May 2021 11:08:07 +0800
-Message-ID: <1620788887-14812-1-git-send-email-zou_wei@huawei.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <pierre-louis.bossart@linux.intel.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] ASoC: sti-sas: add missing MODULE_DEVICE_TABLE
+Date:   Wed, 12 May 2021 11:12:25 +0800
+Message-ID: <1620789145-14936-1-git-send-email-zou_wei@huawei.com>
 X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -40,21 +42,21 @@ as an external module.
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- drivers/memory/da8xx-ddrctl.c | 1 +
+ sound/soc/codecs/sti-sas.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/memory/da8xx-ddrctl.c b/drivers/memory/da8xx-ddrctl.c
-index 872addd..7a51932 100644
---- a/drivers/memory/da8xx-ddrctl.c
-+++ b/drivers/memory/da8xx-ddrctl.c
-@@ -153,6 +153,7 @@ static const struct of_device_id da8xx_ddrctl_of_match[] = {
- 	{ .compatible = "ti,da850-ddr-controller", },
- 	{ },
+diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
+index ffdf7e5..82a24e3 100644
+--- a/sound/soc/codecs/sti-sas.c
++++ b/sound/soc/codecs/sti-sas.c
+@@ -408,6 +408,7 @@ static const struct of_device_id sti_sas_dev_match[] = {
+ 	},
+ 	{},
  };
-+MODULE_DEVICE_TABLE(of, da8xx_ddrctl_of_match);
++MODULE_DEVICE_TABLE(of, sti_sas_dev_match);
  
- static struct platform_driver da8xx_ddrctl_driver = {
- 	.probe = da8xx_ddrctl_probe,
+ static int sti_sas_driver_probe(struct platform_device *pdev)
+ {
 -- 
 2.6.2
 
