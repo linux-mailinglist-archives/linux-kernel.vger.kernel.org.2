@@ -2,148 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87C637B35D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7FB637B360
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhELBSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 21:18:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33398 "EHLO mail.kernel.org"
+        id S229984AbhELBU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 21:20:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229736AbhELBSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 21:18:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E71546190A;
-        Wed, 12 May 2021 01:17:40 +0000 (UTC)
+        id S229736AbhELBU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 21:20:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD78861002;
+        Wed, 12 May 2021 01:19:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620782261;
-        bh=AktYlWaGr7394zUc1f2j8uMtJ2qB+r/wzZ9wf6oV66A=;
+        s=k20201202; t=1620782359;
+        bh=mY19LPLeJ5R4ZXUBmKxvee5mTkZMWOs5YxEaXsA9M5o=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aXn3fA5z7lcFlHNq1K5/lrzPmAD4sLs35bFf0SBCjrNayldftQjrT0yMGdZ9jQq7F
-         Lr7SWwMfvPyNfrLLwbcyF/fwWuvF/EfY4rc9r6Hs68jBirIPket2YspjOpdUpOgDqI
-         pK1NsJbJWQkOvlFyi2jLNj2RM51OLpGxKCoyWluGMjbz/OVgU8bTlKF7A6rtiT4+/g
-         VX08CYFx0KjL6KXquUC60FYGdbaqhL4q0QpGSkWCKiGzDHisrPw5HDpg1Kcoo9GqIb
-         LaGghtXdwbM0jSUmwh0hsgrS3H4ojO07YsoZ3fMlbl3M8eOaw+xDoQWNOBmFIu3xXe
-         Erw86DXRC0NeQ==
-Date:   Tue, 11 May 2021 18:17:38 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, viro@zeniv.linux.org.uk, david@fromorbit.com,
-        hch@lst.de, rgoldwyn@suse.de,
-        Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: Re: [PATCH v5 3/7] fsdax: Add dax_iomap_cow_copy() for dax_iomap_zero
-Message-ID: <20210512011738.GT8582@magnolia>
-References: <20210511030933.3080921-1-ruansy.fnst@fujitsu.com>
- <20210511030933.3080921-4-ruansy.fnst@fujitsu.com>
+        b=hu4f/XrKnjc5mk9X/HR24vZ0TZG8qEkvvYf66vQZ6F1/Inmc0svpj5mSqQTM+o1Bq
+         HsP/H/hkO6mOlFdU0w/Fy5p7qBOf6kGsygnx2A6Zr0EVNuRWrIitD8Zy/4x6L16F0l
+         aQlIm1oWhhZt1O2AXprOCRsHMKtXe/e6dcA875JCt+MaQLDZhjEx4idjzfHPx0OcuW
+         ABKlMfAU+12IW8fBEN3Zr6c+OpaxpfebhxUtZeCR0II0nTjqDWtLRCp4jIIYw/eQn9
+         i3f3fPeAWs8brS4/MS9+49lkUZcg4qnApbNTPAtCx8VxaeQVKBz1QCMKQzt4HLzlA9
+         BeYiIq0GYK1zA==
+Date:   Wed, 12 May 2021 04:19:16 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     =?utf-8?B?5Lmx55+z?= <zhangliguang@linux.alibaba.com>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tpm_tis_spi: set default probe function if device id not
+ match
+Message-ID: <YJstFJYd9GTW6J9s@kernel.org>
+References: <20210507145255.44033-1-zhangliguang@linux.alibaba.com>
+ <YJXxDzougt3ZC01q@kernel.org>
+ <e74fd54f-1700-4b06-a320-c0e257666565@linux.alibaba.com>
+ <YJhIcIXMFj/LcYwu@kernel.org>
+ <0ec3ed60-6967-c14a-d1f3-0ff80c9d5003@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210511030933.3080921-4-ruansy.fnst@fujitsu.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0ec3ed60-6967-c14a-d1f3-0ff80c9d5003@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 11:09:29AM +0800, Shiyang Ruan wrote:
-> Punch hole on a reflinked file needs dax_copy_edge() too.  Otherwise,
-> data in not aligned area will be not correct.  So, add the srcmap to
-> dax_iomap_zero() and replace memset() as dax_copy_edge().
+On Wed, May 12, 2021 at 09:07:56AM +0800, 乱石 wrote:
+> 在 2021/5/10 4:39, Jarkko Sakkinen 写道:
+> > On Sat, May 08, 2021 at 10:46:57AM +0800, 乱石 wrote:
+> > > Hi,
+> > > 
+> > > 在 2021/5/8 10:01, Jarkko Sakkinen 写道:
+> > > > On Fri, May 07, 2021 at 10:52:55PM +0800, Liguang Zhang wrote:
+> > > > > In DSDT table, TPM _CID was SMO0768, and no _HID definition. After a
+> > > > > kernel upgrade from 4.19 to 5.10, TPM probe function was changed which
+> > > > > causes device probe fails. In order to make newer kernel to be
+> > > > > compatible with the older acpi definition, it would be best set default
+> > > > > probe function.
+> > > > > 
+> > > > > Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
+> > > > > ---
+> > > > >    drivers/char/tpm/tpm_tis_spi_main.c | 12 ++++++++----
+> > > > >    1 file changed, 8 insertions(+), 4 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/char/tpm/tpm_tis_spi_main.c b/drivers/char/tpm/tpm_tis_spi_main.c
+> > > > > index 3856f6ebcb34..da632a582621 100644
+> > > > > --- a/drivers/char/tpm/tpm_tis_spi_main.c
+> > > > > +++ b/drivers/char/tpm/tpm_tis_spi_main.c
+> > > > > @@ -240,10 +240,14 @@ static int tpm_tis_spi_driver_probe(struct spi_device *spi)
+> > > > >    	tpm_tis_spi_probe_func probe_func;
+> > > > >    	probe_func = of_device_get_match_data(&spi->dev);
+> > > > > -	if (!probe_func && spi_dev_id)
+> > > > > -		probe_func = (tpm_tis_spi_probe_func)spi_dev_id->driver_data;
+> > > > > -	if (!probe_func)
+> > > > > -		return -ENODEV;
+> > > > > +	if (!probe_func) {
+> > > > > +		if (spi_dev_id) {
+> > > > > +			probe_func = (tpm_tis_spi_probe_func)spi_dev_id->driver_data;
+> > > > > +			if (!probe_func)
+> > > > > +				return -ENODEV;
+> > > > Perhaps also hear fallback to tpm_tis_spi_probe?
+> > > 
+> > > Yes, I do not think of a good way. Do you have any suggestions?
+> > So, I just think that when you have this part:
+> > 
+> > 
+> > if (!probe_func) {
+> > 	if (spi_dev_id) {
+> >                  probe_func = (tpm_tis_spi_probe_func)spi_dev_id->driver_data;
+> >                  if (!probe_func)
+> >                          return -ENODEV;
+> > 
+> > Why in here would not you also want to fallback to tpm_tis_spi_probe?
 > 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
->  fs/dax.c               | 25 +++++++++++++++----------
->  fs/iomap/buffered-io.c |  2 +-
->  include/linux/dax.h    |  3 ++-
->  3 files changed, 18 insertions(+), 12 deletions(-)
-> 
-> diff --git a/fs/dax.c b/fs/dax.c
-> index ef0e564e7904..ee9d28a79bfb 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -1186,7 +1186,8 @@ static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
->  }
->  #endif /* CONFIG_FS_DAX_PMD */
->  
-> -s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
-> +s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap,
-> +		struct iomap *srcmap)
->  {
->  	sector_t sector = iomap_sector(iomap, pos & PAGE_MASK);
->  	pgoff_t pgoff;
-> @@ -1208,19 +1209,23 @@ s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
->  
->  	if (page_aligned)
->  		rc = dax_zero_page_range(iomap->dax_dev, pgoff, 1);
-> -	else
-> +	else {
->  		rc = dax_direct_access(iomap->dax_dev, pgoff, 1, &kaddr, NULL);
-> -	if (rc < 0) {
-> -		dax_read_unlock(id);
-> -		return rc;
-> -	}
-> -
-> -	if (!page_aligned) {
-> -		memset(kaddr + offset, 0, size);
-> +		if (rc < 0)
-> +			goto out;
-> +		if (iomap->addr != srcmap->addr) {
+> Sorry to trouble you, do you have a good way to resolve the compatible
+> problem caused by kernel update (4.19 -> 5.10) ?
 
-Why isn't this "if (srcmap->type != IOMAP_HOLE)" ?
+I think I'll take this as it is.
 
-I suppose it has the same effect, since @iomap should never be a hole
-and we should never have a @srcmap that's the same as @iomap, but
-still, we use IOMAP_HOLE checks in most other parts of fs/iomap/.
+I'll apply it to my tree and take it as part of next pr.
 
-Other than that, the logic looks decent to me.
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
---D
-
-> +			rc = dax_iomap_cow_copy(offset, size, PAGE_SIZE, srcmap,
-> +						kaddr);
-> +			if (rc < 0)
-> +				goto out;
-> +		} else
-> +			memset(kaddr + offset, 0, size);
->  		dax_flush(iomap->dax_dev, kaddr + offset, size);
->  	}
-> +
-> +out:
->  	dax_read_unlock(id);
-> -	return size;
-> +	return rc < 0 ? rc : size;
->  }
->  
->  static loff_t
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index f2cd2034a87b..2734955ea67f 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -933,7 +933,7 @@ static loff_t iomap_zero_range_actor(struct inode *inode, loff_t pos,
->  		s64 bytes;
->  
->  		if (IS_DAX(inode))
-> -			bytes = dax_iomap_zero(pos, length, iomap);
-> +			bytes = dax_iomap_zero(pos, length, iomap, srcmap);
->  		else
->  			bytes = iomap_zero(inode, pos, length, iomap, srcmap);
->  		if (bytes < 0)
-> diff --git a/include/linux/dax.h b/include/linux/dax.h
-> index b52f084aa643..3275e01ed33d 100644
-> --- a/include/linux/dax.h
-> +++ b/include/linux/dax.h
-> @@ -237,7 +237,8 @@ vm_fault_t dax_finish_sync_fault(struct vm_fault *vmf,
->  int dax_delete_mapping_entry(struct address_space *mapping, pgoff_t index);
->  int dax_invalidate_mapping_entry_sync(struct address_space *mapping,
->  				      pgoff_t index);
-> -s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap);
-> +s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap,
-> +		struct iomap *srcmap);
->  static inline bool dax_mapping(struct address_space *mapping)
->  {
->  	return mapping->host && IS_DAX(mapping->host);
-> -- 
-> 2.31.1
-> 
-> 
-> 
+/Jarkko
