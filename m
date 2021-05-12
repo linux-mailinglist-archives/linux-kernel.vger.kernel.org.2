@@ -2,106 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C2337ED4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4E537ED47
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386132AbhELUTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381218AbhELTdq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 15:33:46 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFD2C061760;
-        Wed, 12 May 2021 12:26:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=LHg4QUj5UkmNjZ90ZWWzvd65Yq2JWCT78FpIYI4LQ20=; b=fnUNWfD3iiuAeVKX3ZVuYcF/z8
-        qF1eDicZVrUDZDt6/BmbAPQCqqPgkQlAxmFUFs3AxjUxK4usArXTnbazf7HbwcZ0f56C6b3hS6jNK
-        krjmT7Xt74OrAP2MD+hYUf4BIMq6xECmTGvBCQqFd1kp0xolVYgrALedajmCKaMk1RJ1Z62wqZol6
-        SckgUULmPTz0u0Qeo8DLSL4/nIJuNyDwUTToCcuqugdXwdOjZ4klcjWg3yKC9UperQvU+hobf47Xw
-        63lv9/QZfl/I5s99cqlrmTh7s57OYOqFb6bUKxurD4S4x3cX3imSdNF4KT29DX7HvNJ0UVcRVnN8d
-        LjllBMPg==;
-Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.253])
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lguUn-00AlF6-1D; Wed, 12 May 2021 19:26:13 +0000
-Subject: Re: linux-next: Tree for May 12 (arch/x86/net/bpf_jit_comp32.o)
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-References: <20210512175623.2687ac6f@canb.auug.org.au>
- <08f677a5-7634-b5d2-a532-ea6d3f35200c@infradead.org>
- <daf46ee7-1a18-9d5a-c3b3-7fc55ec23b30@iogearbox.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <751025d2-9c46-a4b9-4f54-fbe5fa7a2564@infradead.org>
-Date:   Wed, 12 May 2021 12:26:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S1386056AbhELUTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:19:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344556AbhELT1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 15:27:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5662B61182;
+        Wed, 12 May 2021 19:26:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620847586;
+        bh=eSoV/aEdtGCTeb6pk9JF8nSRnnQKGfJnLa3hlfVjizI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=X3V5fF5vJksEMhr77Xb85Auo544MmaQBjg8SUN7lpgMyXOTuHEc1rxQBDDBLMNBPF
+         5Zz8kirXFIw/H4g+ITOXROVgwkeZxpxSWhsJ8JVJ7kOQCLOvz86LBHW6bvdbzp5keE
+         ugzWNgslBfw9jDdbqUULpVFmX+5iNBvRZQRGBvi+8Jj7Ka9Qh72YQiRXuu4fwxD8qZ
+         KqXcaAgRTEJ/E1R94jip92fD4OVOGh32a7HJ57+arn+ThbwMC5zyOyqtjWdKrN7kMC
+         gMN4UyMnKdgavVqSSmEcSkqgh83qYp1AjeFJ1rudTqkywEkYTV9ZZWzk5bOrAod9X0
+         u4GvfvuURq/Ng==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id F14D45C0379; Wed, 12 May 2021 12:26:25 -0700 (PDT)
+Date:   Wed, 12 May 2021 12:26:25 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH tip/core/rcu 10/10] rcu: Fix various typos in comments
+Message-ID: <20210512192625.GV975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210511230244.GA2894061@paulmck-ThinkPad-P17-Gen-1>
+ <20210511230336.2894314-10-paulmck@kernel.org>
+ <YJwdFeb825Nzhpo2@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <daf46ee7-1a18-9d5a-c3b3-7fc55ec23b30@iogearbox.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJwdFeb825Nzhpo2@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/21 11:53 AM, Daniel Borkmann wrote:
-> Hi Randy,
+On Wed, May 12, 2021 at 08:23:17PM +0200, Ingo Molnar wrote:
 > 
-> On 5/12/21 8:01 PM, Randy Dunlap wrote:
->> On 5/12/21 12:56 AM, Stephen Rothwell wrote:
->>> Hi all,
->>>
->>> Changes since 20210511:
->>>
->>
->> on i386:
->>
->> ld: arch/x86/net/bpf_jit_comp32.o: in function `do_jit':
->> bpf_jit_comp32.c:(.text+0x28c9): undefined reference to `__bpf_call_base'
->> ld: arch/x86/net/bpf_jit_comp32.o: in function `bpf_int_jit_compile':
->> bpf_jit_comp32.c:(.text+0x3694): undefined reference to `bpf_jit_blind_constants'
->> ld: bpf_jit_comp32.c:(.text+0x3719): undefined reference to `bpf_jit_binary_free'
->> ld: bpf_jit_comp32.c:(.text+0x3745): undefined reference to `bpf_jit_binary_alloc'
->> ld: bpf_jit_comp32.c:(.text+0x37d3): undefined reference to `bpf_jit_prog_release_other'
->> ld: kernel/extable.o: in function `search_exception_tables':
->> extable.c:(.text+0x42): undefined reference to `search_bpf_extables'
->> ld: kernel/extable.o: in function `kernel_text_address':
->> extable.c:(.text+0xee): undefined reference to `is_bpf_text_address'
->> ld: kernel/kallsyms.o: in function `kallsyms_lookup_size_offset':
->> kallsyms.c:(.text+0x254): undefined reference to `__bpf_address_lookup'
->> ld: kernel/kallsyms.o: in function `kallsyms_lookup_buildid':
->> kallsyms.c:(.text+0x2ee): undefined reference to `__bpf_address_lookup'
+> * Paul E. McKenney <paulmck@kernel.org> wrote:
 > 
-> Thanks for reporting, could you double check the following diff:
+> > From: Ingo Molnar <mingo@kernel.org>
+> > 
+> > Fix ~12 single-word typos in RCU code comments.
+> > 
+> > [ paulmck: Apply feedback from Randy Dunlap. ]
+> > Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+> > Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >  kernel/rcu/srcutree.c                                     | 4 ++--
+> >  kernel/rcu/sync.c                                         | 4 ++--
+> >  kernel/rcu/tasks.h                                        | 8 ++++----
+> >  kernel/rcu/tree.c                                         | 4 ++--
+> >  kernel/rcu/tree.h                                         | 2 +-
+> >  kernel/rcu/tree_plugin.h                                  | 2 +-
+> >  .../selftests/rcutorture/formal/srcu-cbmc/src/locks.h     | 2 +-
+> >  7 files changed, 13 insertions(+), 13 deletions(-)
 > 
-> diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-> index 26b591e23f16..bd04f4a44c01 100644
-> --- a/kernel/bpf/Kconfig
-> +++ b/kernel/bpf/Kconfig
-> @@ -37,6 +37,7 @@ config BPF_SYSCALL
+> There's one more I missed.
+
+Good eyes, and I have folded this in, thank you!
+
+							Thanx, Paul
+
+> Thanks,
 > 
-> config BPF_JIT
->     bool "Enable BPF Just In Time compiler"
-> +    depends on BPF
->     depends on HAVE_CBPF_JIT || HAVE_EBPF_JIT
->     depends on MODULES
->     help
-
-That's good. Thanks.
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-
--- 
-~Randy
-
+> 	Ingo
+> 
+> Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> ---
+>  kernel/rcu/tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 60ad78560be3..a7dd763a70c3 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3848,7 +3848,7 @@ EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu);
+>   *
+>   * If a full RCU grace period has elapsed since the earlier call from
+>   * which oldstate was obtained, return @true, otherwise return @false.
+> - * If @false is returned, it is the caller's responsibilty to invoke this
+> + * If @false is returned, it is the caller's responsibility to invoke this
+>   * function later on until it does return @true.  Alternatively, the caller
+>   * can explicitly wait for a grace period, for example, by passing @oldstate
+>   * to cond_synchronize_rcu() or by directly invoking synchronize_rcu().
+> 
