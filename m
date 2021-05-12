@@ -2,84 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E57537B575
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107D137B577
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhELF2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 01:28:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229626AbhELF2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 01:28:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0ABD26187E;
-        Wed, 12 May 2021 05:27:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620797249;
-        bh=RkvocLfL9s9Nf9etoyzdRt+PlG3yiOaKcr0S6ZVeI0g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LsalKg8RipUCRCVYOnvn/R/JjaQN6jllYXB9njqGr+G9gL4kMx2TKQbdUKzSblVw3
-         ZbFgcqr5476sWGbbsJRvfPQ/smgym1Ddxk/lNWjRzvi/8tBMfrMjKiSJroTOEeTdzq
-         01N9HTC2OI1ZLMmUBEqETA9NY5KXTlE7S/8NsAzbGobjZk75L16bB2aswSZ6piUrT2
-         h6hgpwoPCDJ11ZdFS6GiSQuaTUb40p5XuyznnCQDMAN1suX3gm/BVTERswReOj3lSi
-         FIOpZ2LQVJquTfFCXCv7FYd5nbdAUwYEZ4s5ljVNf8wVuiTjik98qdVo3cOr75wtK4
-         EcU3q8D2H/xDg==
-Date:   Wed, 12 May 2021 10:57:26 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/dp: handle irq_hpd with sink_count = 0 correctly
-Message-ID: <YJtnPt63yK4zP3O1@vkoul-mobl.Dlink>
-References: <1620251521-29999-1-git-send-email-khsieh@codeaurora.org>
- <CAE-0n50HUo0tm22xX+j8H-u+EDH+wBrdEvM68p-X3EyR8S_u3Q@mail.gmail.com>
+        id S230075AbhELF3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 01:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhELF3R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 01:29:17 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F63C061574;
+        Tue, 11 May 2021 22:28:09 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fg3Gb2Bcsz9sWQ;
+        Wed, 12 May 2021 15:28:07 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620797287;
+        bh=/5RHAlccoesPiuluK0zBVuYXX3yfB6o1Q+YUTE2t7Iw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=bcMfL+7r4cxFnfIU0ozLdouT99NW0bObe3cuX2+b8iYGZ0JFozy9O4kiFx7haOd+E
+         uERckQwL+zX/FLDPK+5AfCxFT/baatdD++Lg8dpsftbWz87Dnk2wQqos/zvA0iRpbz
+         pnf8bGp+UPnAav2C4STXJX9Kr1gxn/kgCwZUEHzG6viG1Y790N+XJdpeRjdSUk0v0N
+         c1jrMh2Wykpvy+szkl0jHND1oSca0b1gt+VBy0ovhYqfhUydD8MH6tzZWBO2gHRhmR
+         2hpDhriBl0VhAUx4MaK9ZLON+vPyQQ7TvDebJVJijN3HydU3ApcdAaGZmqqkdwl1vP
+         nL9nr8FEk0vsg==
+Date:   Wed, 12 May 2021 15:28:06 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Waiman Long <longman@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the akpm-current tree
+Message-ID: <20210512152806.2492ca42@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAE-0n50HUo0tm22xX+j8H-u+EDH+wBrdEvM68p-X3EyR8S_u3Q@mail.gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/F1zt0=n+hJuHVee60HCOrOk";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-05-21, 11:15, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2021-05-05 14:52:01)
-> > @@ -1414,6 +1416,10 @@ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
-> >         phy = dp_io->phy;
-> >
-> >         dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
-> > +
-> > +       if (phy->power_count)
-> > +               phy_power_off(phy);
-> > +
-> >         phy_exit(phy);
-> >
-> >         DRM_DEBUG_DP("Host deinitialized successfully\n");
-> > @@ -1445,7 +1451,6 @@ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
-> >
-> >         dp_catalog_ctrl_mainlink_ctrl(ctrl->catalog, false);
-> >         opts_dp->lanes = ctrl->link->link_params.num_lanes;
-> > -       phy_configure(phy, &dp_io->phy_opts);
-> >         /*
-> >          * Disable and re-enable the mainlink clock since the
-> >          * link clock might have been adjusted as part of the
-> > @@ -1456,9 +1461,13 @@ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
-> >                 DRM_ERROR("Failed to disable clocks. ret=%d\n", ret);
-> >                 return ret;
-> >         }
-> > -       phy_power_off(phy);
-> > -       /* hw recommended delay before re-enabling clocks */
-> > -       msleep(20);
-> > +
-> > +       if (phy->power_count) {
-> 
-> I don't believe members of 'phy' are supposed to be looked at by various
-> phy consumer drivers. Vinod, is that right?
+--Sig_/F1zt0=n+hJuHVee60HCOrOk
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-That is correct, we should not be doing that. And IMO this code is
-redundant, the phy core will check power_count and invoke drivers
-.power_off accordingly, so should be removed...
+Hi all,
 
-Thanks
--- 
-~Vinod
+As Randy also reported ...
+
+After merging the akpm-current tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
+
+mm/slab_common.c:764:8: error: array index in initializer exceeds array bou=
+nds
+  764 |  .name[KMALLOC_RECLAIM] =3D "kmalloc-rcl-" #__short_size, \
+      |        ^~~~~~~~~~~~~~~
+mm/slab_common.c:776:2: note: in expansion of macro 'INIT_KMALLOC_INFO'
+  776 |  INIT_KMALLOC_INFO(0, 0),
+      |  ^~~~~~~~~~~~~~~~~
+mm/slab_common.c:756:39: error: array index in initializer exceeds array bo=
+unds
+  756 | #define KMALLOC_CGROUP_NAME(sz) .name[KMALLOC_CGROUP] =3D "kmalloc-=
+cg-" #sz,
+      |                                       ^~~~~~~~~~~~~~
+mm/slab_common.c:765:2: note: in expansion of macro 'KMALLOC_CGROUP_NAME'
+  765 |  KMALLOC_CGROUP_NAME(__short_size)   \
+      |  ^~~~~~~~~~~~~~~~~~~
+
+and more
+
+Caused by commits
+
+  4d57437a3d3c ("mm: memcg/slab: create a new set of kmalloc-cg-<n> caches")
+  0727bf117622 ("mm: memcg/slab: don't create kmalloc-cg caches with cgroup=
+.memory=3Dnokmem")
+  d795c307bd3a ("mm: memcg/slab: disable cache merging for KMALLOC_NORMAL c=
+aches")
+
+At least they are the commits I have reverted to fix this.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/F1zt0=n+hJuHVee60HCOrOk
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCbZ2YACgkQAVBC80lX
+0Gys6wf4q4v3gIUr32wQ5QvVCfhjPGG+HTPGYErMAvMAeBrt9t72Xrn0zmtFFowu
+f4TEJUL9MMnThgZQjIMmRuONQsDhtg+JTbQfkqFvYVvnkCD4sm8tfQiViac92kcU
+otBsHCls4sebH8Rqm2RoKnr4LjoHIAMZUeFECGoi321OlI+UoburmkFRsJ1V8l2h
+EfEibsKolqkGZFmZ48REnIHSzewRtCTMrJLcNPlVocRLRpgneqPsD8Bs/Z9sHVpd
+phcZjLWPXzqVJZimPwMcNM6rzhkfQzyG9rdwqcsgxYd0jwMNVZziz9nXbvfhBpxJ
+ugp/olpEsCxNf6R/+8yiQnyLUOnh
+=eFg8
+-----END PGP SIGNATURE-----
+
+--Sig_/F1zt0=n+hJuHVee60HCOrOk--
