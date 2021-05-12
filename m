@@ -2,112 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2657C37B86F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92DC637B886
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231272AbhELItD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 04:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231229AbhELIs7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:48:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC16C061760;
-        Wed, 12 May 2021 01:47:51 -0700 (PDT)
-Date:   Wed, 12 May 2021 08:47:49 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620809270;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uHOHowTuaqG6fAqphFm6F8HCmnXnEYLwnGR3WdQvKe4=;
-        b=ywYg5bIl/5JaNTi0zJhxjvPaXSPVBtDu/CzG7liL1DOafFaGTOvM+f7AA9tt3jojtVxuyz
-        1kUfEpQxPgL8FKIt0wAequBXT0pcc461iusLjj7QLTzhGXtApPRnTauSdQU3Y/8fJuquLg
-        XA5jpnbhVAXBRyV/ADO6I/9eaE6ziLhBwiWvTz4V13U/AgweciXWzaXNhYPwvcZyypoLOv
-        TIHcLHp5u6Fc+AoiL/90I0AevYXX8rwErTfOl5SJ8fU/a46TsdJ4kjybI+skwZl5R3lF4M
-        AcRiB2AhtJQ2A17Ys20fRJYKMA1EWJjebpvYsKzzcNbjRs+R1DFqExQFasE9eQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620809270;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uHOHowTuaqG6fAqphFm6F8HCmnXnEYLwnGR3WdQvKe4=;
-        b=iP2Rx1ycPGYJvACeopEvT4fbhLLVECRi3xa8jkuBK250ls34d5C27z1e8FzINWmgwAvNte
-        c1nIL3JQVEcc3ODA==
-From:   "tip-bot2 for Gautham R. Shenoy" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched/fair: Fix clearing of has_idle_cores flag
- in select_idle_cpu()
-Cc:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Mel Gorman <mgorman@techsingularity.net>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <1620746169-13996-1-git-send-email-ego@linux.vnet.ibm.com>
-References: <1620746169-13996-1-git-send-email-ego@linux.vnet.ibm.com>
+        id S230367AbhELIvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:51:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230037AbhELIvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 04:51:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 924C9613EE;
+        Wed, 12 May 2021 08:49:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620809393;
+        bh=sgr4pNVw9LZJjQw+GkyhASsiZHhfZWrLikxWIMHCsn4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZOW50uQs1gRUsEJun6YIPTU8TIOp6yLAW0uYrfmgcM3mToFw0h9o5cJ11HhF4Bbbc
+         S1BzZCT69mLeYapKbC/kYIlNiGR+C2HWiq5CUMc4xpcCz+xAkk47MqNfmo5opApv4Z
+         Xfn8Yqi52DKB++75+74vfJ/1stVIjDBTbjJcONLLMW8zRQtuFNjSohVkM98MuAo3XX
+         lEer2ClcqD1kYgn2++x4XQw1Vz+w4zMPYewBi7C3uYC8GRu6/kjNA8Y3hoXNrgY4eN
+         /TBJK6Ya19+L9k7Ludpl8ARfk9/KwUqirU1KqYNgFqGAKUogRM1DUhKLkKLumvpNH7
+         Obe1zDcCCuexw==
+Date:   Wed, 12 May 2021 10:49:46 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Michael Walle <michael@walle.cc>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 12/53] docs: driver-api: avoid using UTF-8 chars
+Message-ID: <20210512104946.2fb26eeb@coco.lan>
+In-Reply-To: <CAHp75Vegsb-+fVppv3C7Jp0a=mEGAh2pchX=Cr5ZvOMFt+G73Q@mail.gmail.com>
+References: <cover.1620641727.git.mchehab+huawei@kernel.org>
+        <77e554fee3df340349bc80e7adb8deb255df235f.1620641727.git.mchehab+huawei@kernel.org>
+        <CAHp75Vegsb-+fVppv3C7Jp0a=mEGAh2pchX=Cr5ZvOMFt+G73Q@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Message-ID: <162080926950.29796.5635598249768970052.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+Em Mon, 10 May 2021 14:05:12 +0300
+Andy Shevchenko <andy.shevchenko@gmail.com> escreveu:
 
-Commit-ID:     02dbb7246c5bbbbe1607ebdc546ba5c454a664b1
-Gitweb:        https://git.kernel.org/tip/02dbb7246c5bbbbe1607ebdc546ba5c454a664b1
-Author:        Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-AuthorDate:    Tue, 11 May 2021 20:46:09 +05:30
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 12 May 2021 10:41:28 +02:00
+> On Monday, May 10, 2021, Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> wrote:
+>=20
+> > While UTF-8 characters can be used at the Linux documentation,
+> > the best is to use them only when ASCII doesn't offer a good replacemen=
+t.
+> > So, replace the occurences of the following UTF-8 characters:
+> >
+> >         - U+00a0 (' '): NO-BREAK SPACE
+> >         - U+2014 ('=E2=80=94'): EM DASH =20
+>=20
+>=20
+> Strictly speaking the EM Dash equivalent is =E2=80=98--=E2=80=98.
 
-sched/fair: Fix clearing of has_idle_cores flag in select_idle_cpu()
+Yes, EM DASH is equivalent to multiple '-'.
 
-In commit:
+Sphinx (and other similar tools) use those rules:
 
-  9fe1f127b913 ("sched/fair: Merge select_idle_core/cpu()")
+	-- is equivalent to EN DASH;
+	--- is equivalent to EM DASH
 
-in select_idle_cpu(), we check if an idle core is present in the LLC
-of the target CPU via the flag "has_idle_cores". We look for the idle
-core in select_idle_cores(). If select_idle_cores() isn't able to find
-an idle core/CPU, we need to unset the has_idle_cores flag in the LLC
-of the target to prevent other CPUs from going down this route.
+Anyway, I'll change this on a next spin.
 
-However, the current code is unsetting it in the LLC of the current
-CPU instead of the target CPU. This patch fixes this issue.
+>=20
+>=20
+> >
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  Documentation/driver-api/index.rst | 2 +-
+> >  Documentation/driver-api/ioctl.rst | 8 ++++----
+> >  2 files changed, 5 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/Documentation/driver-api/index.rst
+> > b/Documentation/driver-api/index.rst
+> > index f5a3207aa7fa..29eb9230b7a9 100644
+> > --- a/Documentation/driver-api/index.rst
+> > +++ b/Documentation/driver-api/index.rst
+> > @@ -4,7 +4,7 @@ The Linux driver implementer's API guide
+> >
+> >  The kernel offers a wide variety of interfaces to support the developm=
+ent
+> >  of device drivers.  This document is an only somewhat organized collec=
+tion
+> > -of some of those interfaces =E2=80=94 it will hopefully get better ove=
+r time!  The
+> > +of some of those interfaces - it will hopefully get better over time! =
+ The
+> >  available subsections can be seen below.
+> >
+> >  .. class:: toc-title
+> > diff --git a/Documentation/driver-api/ioctl.rst
+> > b/Documentation/driver-api/ioctl.rst
+> > index c455db0e1627..5b76e765827d 100644
+> > --- a/Documentation/driver-api/ioctl.rst
+> > +++ b/Documentation/driver-api/ioctl.rst
+> > @@ -25,9 +25,9 @@ ioctl commands that follow modern conventions: ``_IO`=
+`,
+> > ``_IOR``,
+> >  with the correct parameters:
+> >
+> >  _IO/_IOR/_IOW/_IOWR
+> > -   The macro name specifies how the argument will be used.  It may be a
+> > +   The macro name specifies how the argument will be used.  It may be a
+> >     pointer to data to be passed into the kernel (_IOW), out of the ker=
+nel
+> > -   (_IOR), or both (_IOWR).  _IO can indicate either commands with no
+> > +   (_IOR), or both (_IOWR).  _IO can indicate either commands with no
+> >     argument or those passing an integer value instead of a pointer.
+> >     It is recommended to only use _IO for commands without arguments,
+> >     and use pointers for passing data.
+> > @@ -200,10 +200,10 @@ cause an information leak, which can be used to
+> > defeat kernel address
+> >  space layout randomization (KASLR), helping in an attack.
+> >
+> >  For this reason (and for compat support) it is best to avoid any
+> > -implicit padding in data structures.  Where there is implicit padding
+> > +implicit padding in data structures.  Where there is implicit padding
+> >  in an existing structure, kernel drivers must be careful to fully
+> >  initialize an instance of the structure before copying it to user
+> > -space.  This is usually done by calling memset() before assigning to
+> > +space.  This is usually done by calling memset() before assigning to
+> >  individual members.
+> >
+> >  Subsystem abstractions
+> > --
+> > 2.30.2
+> >
+> > =20
+>=20
 
-Fixes: 9fe1f127b913 ("sched/fair: Merge select_idle_core/cpu()")
-Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
-Link: https://lore.kernel.org/r/1620746169-13996-1-git-send-email-ego@linux.vnet.ibm.com
----
- kernel/sched/fair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 20aa234..3248e24 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6217,7 +6217,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool 
- 	}
- 
- 	if (has_idle_core)
--		set_idle_cores(this, false);
-+		set_idle_cores(target, false);
- 
- 	if (sched_feat(SIS_PROP) && !has_idle_core) {
- 		time = cpu_clock(this) - time;
+
+Thanks,
+Mauro
