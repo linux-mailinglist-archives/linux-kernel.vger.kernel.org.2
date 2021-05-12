@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2819B37C719
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCAD37C72F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234333AbhELP6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:58:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40490 "EHLO mail.kernel.org"
+        id S235135AbhELP7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:59:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235458AbhELP2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:28:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAB6961C20;
-        Wed, 12 May 2021 15:13:00 +0000 (UTC)
+        id S235470AbhELP2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:28:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8422A616E9;
+        Wed, 12 May 2021 15:13:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620832381;
-        bh=Vzc7tGSAr1z6+iSgLvZ/TNMDpea323OpeKIft7ZbDag=;
+        s=korg; t=1620832386;
+        bh=ZrJuf0WmWqv/z9BfJRKW0goRXdZM2t4UcJi7iijX3Po=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MTJNME39jxYonNGoJ1xgZAM+AHdGLX3RnbEORo4GS2Gu041vmmspgjSs9V3LOO1T7
-         xugk2U8YXQfa94fDALnwUMFntKHJk/6VBZj3cJQeVASkPsh89r28BRb4OpsUpn4M6q
-         DLuss/IcEvCXvSzhAocEOW+zue6nQC/K0VfWNAi8=
+        b=zpodMjriul8Cls4sF84i0ewOlLioWfyTrWj4IHJnmCXGBAGwTW0hLTc7gPJl+Z9u3
+         IgIWy0Msw1i7fDIf/2dq3G5HxHkmD2SPIOtex6JZRsN/H2JsAk+9oO8JN35aVgC5u0
+         6abyltQ5JaS6oRuHnAF344qemenyY4lC+cRoAD1g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        He Ying <heying24@huawei.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 222/530] soc: qcom: mdt_loader: Detect truncated read of segments
-Date:   Wed, 12 May 2021 16:45:32 +0200
-Message-Id: <20210512144827.128000067@linuxfoundation.org>
+Subject: [PATCH 5.10 224/530] cpuidle: Fix ARM_QCOM_SPM_CPUIDLE configuration
+Date:   Wed, 12 May 2021 16:45:34 +0200
+Message-Id: <20210512144827.195677629@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
 References: <20210512144819.664462530@linuxfoundation.org>
@@ -40,46 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+From: He Ying <heying24@huawei.com>
 
-[ Upstream commit 0648c55e3a21ccd816e99b6600d6199fbf39d23a ]
+[ Upstream commit 498ba2a8a2756694b6f3888857426dbc8a5e6b6c ]
 
-Given that no validation of how much data the firmware loader read in
-for a given segment truncated segment files would best case result in a
-hash verification failure, without any indication of what went wrong.
+When CONFIG_ARM_QCOM_SPM_CPUIDLE is y and CONFIG_MMU is not set,
+compiling errors are encountered as follows:
 
-Improve this by validating that the firmware loader did return the
-amount of data requested.
+drivers/cpuidle/cpuidle-qcom-spm.o: In function `spm_dev_probe':
+cpuidle-qcom-spm.c:(.text+0x140): undefined reference to `cpu_resume_arm'
+cpuidle-qcom-spm.c:(.text+0x148): undefined reference to `cpu_resume_arm'
 
-Fixes: 445c2410a449 ("soc: qcom: mdt_loader: Use request_firmware_into_buf()")
-Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
-Link: https://lore.kernel.org/r/20210107232526.716989-1-bjorn.andersson@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Note that cpu_resume_arm is defined when MMU is set. So, add dependency
+on MMU in ARM_QCOM_SPM_CPUIDLE configuration.
+
+Fixes: a871be6b8eee ("cpuidle: Convert Qualcomm SPM driver to a generic CPUidle driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: He Ying <heying24@huawei.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210406123328.92904-1-heying24@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/mdt_loader.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/cpuidle/Kconfig.arm | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/qcom/mdt_loader.c b/drivers/soc/qcom/mdt_loader.c
-index 2ddaee5ef9cc..eba7f76f9d61 100644
---- a/drivers/soc/qcom/mdt_loader.c
-+++ b/drivers/soc/qcom/mdt_loader.c
-@@ -261,6 +261,15 @@ static int __qcom_mdt_load(struct device *dev, const struct firmware *fw,
- 				break;
- 			}
+diff --git a/drivers/cpuidle/Kconfig.arm b/drivers/cpuidle/Kconfig.arm
+index 0844fadc4be8..334f83e56120 100644
+--- a/drivers/cpuidle/Kconfig.arm
++++ b/drivers/cpuidle/Kconfig.arm
+@@ -107,7 +107,7 @@ config ARM_TEGRA_CPUIDLE
  
-+			if (seg_fw->size != phdr->p_filesz) {
-+				dev_err(dev,
-+					"failed to load segment %d from truncated file %s\n",
-+					i, fw_name);
-+				release_firmware(seg_fw);
-+				ret = -EINVAL;
-+				break;
-+			}
-+
- 			release_firmware(seg_fw);
- 		}
- 
+ config ARM_QCOM_SPM_CPUIDLE
+ 	bool "CPU Idle Driver for Qualcomm Subsystem Power Manager (SPM)"
+-	depends on (ARCH_QCOM || COMPILE_TEST) && !ARM64
++	depends on (ARCH_QCOM || COMPILE_TEST) && !ARM64 && MMU
+ 	select ARM_CPU_SUSPEND
+ 	select CPU_IDLE_MULTIPLE_DRIVERS
+ 	select DT_IDLE_STATES
 -- 
 2.30.2
 
