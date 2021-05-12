@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C7437EA7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334CE37EA77
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358328AbhELTCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:02:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35814 "EHLO mail.kernel.org"
+        id S1357662AbhELTBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:01:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243925AbhELQmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:42:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A745F61C4D;
-        Wed, 12 May 2021 16:08:26 +0000 (UTC)
+        id S243823AbhELQmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:42:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C2CC61C33;
+        Wed, 12 May 2021 16:07:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835707;
-        bh=5IUdzg3mU8Qx4DC/vAHUfwIBiPaBeLagFUwYjLkCvaA=;
+        s=korg; t=1620835638;
+        bh=tnJX1l8jRiRtaX6462V+RErCI71lvTwRCeV06saBMAk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aC3BHIodrdx0EpdBdWUm2NyGdlHPj8OYyM+02QaxqhpUfSWEhUghIygV4Z8eekmGf
-         OXoerr7Bt2ZirosvByynlwI6pOSnGhX8C9PPoLpYL+JDnNo7P9cPX4qglFYEd7ZbQ5
-         FfQ/3S2NjcRIb/yTVFyAKUWu+0lfaCBuAKVJVypU=
+        b=CdPkO8lHMcpD+OqFvGiu7OD3TY1YbormyhpZ85U5YAJWpLt2gjNFD6jOi6nDNUL/t
+         giiXiOOeGnTByPXGEIKoCVE/+rTT7eoLY1GEjPjbUJ3HTC2ps+a3O5h0znufdLtfD+
+         Nj9T5PZkcZCnABkFcWBTHGKN0Rxu1KwnK/Z/qiv4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 417/677] scsi: jazz_esp: Add IRQ check
-Date:   Wed, 12 May 2021 16:47:43 +0200
-Message-Id: <20210512144851.194130626@linuxfoundation.org>
+Subject: [PATCH 5.12 426/677] media: cedrus: Fix H265 status definitions
+Date:   Wed, 12 May 2021 16:47:52 +0200
+Message-Id: <20210512144851.497527053@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -40,39 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+From: Jernej Skrabec <jernej.skrabec@siol.net>
 
-[ Upstream commit 38fca15c29db6ed06e894ac194502633e2a7d1fb ]
+[ Upstream commit 147d211cc9b4d753148d1640a1758b25edfbf437 ]
 
-The driver neglects to check the result of platform_get_irq()'s call and
-blithely passes the negative error codes to request_irq() (which takes
-*unsigned* IRQ #), causing it to fail with -EINVAL, overriding the real
-error code.  Stop calling request_irq() with the invalid IRQ #s.
+Some of the H265 status flags are wrong. Redefine them to corespond to
+Allwinner CedarC open source userspace library. Only one of these flags
+is actually used and new value also matches value used in libvdpau-sunxi
+library, which is proven to be working.
 
-Link: https://lore.kernel.org/r/594aa9ae-2215-49f6-f73c-33bd38989912@omprussia.ru
-Fixes: 352e921f0dd4 ("[SCSI] jazz_esp: converted to use esp_core")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Note that wrong (old) value in right circumstances (in combination with
+another H265 decoding bug) causes driver lock up. With this fix decoding
+is still broken (green output) but at least driver doesn't lock up.
+
+Fixes: 86caab29da78 ("media: cedrus: Add HEVC/H.265 decoding support")
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/jazz_esp.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../staging/media/sunxi/cedrus/cedrus_regs.h    | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/scsi/jazz_esp.c b/drivers/scsi/jazz_esp.c
-index f0ed6863cc70..60a88a95a8e2 100644
---- a/drivers/scsi/jazz_esp.c
-+++ b/drivers/scsi/jazz_esp.c
-@@ -143,7 +143,9 @@ static int esp_jazz_probe(struct platform_device *dev)
- 	if (!esp->command_block)
- 		goto fail_unmap_regs;
- 
--	host->irq = platform_get_irq(dev, 0);
-+	host->irq = err = platform_get_irq(dev, 0);
-+	if (err < 0)
-+		goto fail_unmap_command_block;
- 	err = request_irq(host->irq, scsi_esp_intr, IRQF_SHARED, "ESP", esp);
- 	if (err < 0)
- 		goto fail_unmap_command_block;
+diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_regs.h b/drivers/staging/media/sunxi/cedrus/cedrus_regs.h
+index 7718c561823f..92ace87c1c7d 100644
+--- a/drivers/staging/media/sunxi/cedrus/cedrus_regs.h
++++ b/drivers/staging/media/sunxi/cedrus/cedrus_regs.h
+@@ -443,16 +443,17 @@
+ #define VE_DEC_H265_STATUS_STCD_BUSY		BIT(21)
+ #define VE_DEC_H265_STATUS_WB_BUSY		BIT(20)
+ #define VE_DEC_H265_STATUS_BS_DMA_BUSY		BIT(19)
+-#define VE_DEC_H265_STATUS_IQIT_BUSY		BIT(18)
++#define VE_DEC_H265_STATUS_IT_BUSY		BIT(18)
+ #define VE_DEC_H265_STATUS_INTER_BUSY		BIT(17)
+ #define VE_DEC_H265_STATUS_MORE_DATA		BIT(16)
+-#define VE_DEC_H265_STATUS_VLD_BUSY		BIT(14)
+-#define VE_DEC_H265_STATUS_DEBLOCKING_BUSY	BIT(13)
+-#define VE_DEC_H265_STATUS_DEBLOCKING_DRAM_BUSY	BIT(12)
+-#define VE_DEC_H265_STATUS_INTRA_BUSY		BIT(11)
+-#define VE_DEC_H265_STATUS_SAO_BUSY		BIT(10)
+-#define VE_DEC_H265_STATUS_MVP_BUSY		BIT(9)
+-#define VE_DEC_H265_STATUS_SWDEC_BUSY		BIT(8)
++#define VE_DEC_H265_STATUS_DBLK_BUSY		BIT(15)
++#define VE_DEC_H265_STATUS_IREC_BUSY		BIT(14)
++#define VE_DEC_H265_STATUS_INTRA_BUSY		BIT(13)
++#define VE_DEC_H265_STATUS_MCRI_BUSY		BIT(12)
++#define VE_DEC_H265_STATUS_IQIT_BUSY		BIT(11)
++#define VE_DEC_H265_STATUS_MVP_BUSY		BIT(10)
++#define VE_DEC_H265_STATUS_IS_BUSY		BIT(9)
++#define VE_DEC_H265_STATUS_VLD_BUSY		BIT(8)
+ #define VE_DEC_H265_STATUS_OVER_TIME		BIT(3)
+ #define VE_DEC_H265_STATUS_VLD_DATA_REQ		BIT(2)
+ #define VE_DEC_H265_STATUS_ERROR		BIT(1)
 -- 
 2.30.2
 
