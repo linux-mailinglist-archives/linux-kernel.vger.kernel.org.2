@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD06037EA7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BFB37EA89
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359098AbhELTCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:02:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35690 "EHLO mail.kernel.org"
+        id S1377092AbhELTCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:02:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244083AbhELQmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244088AbhELQmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 12:42:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C836361C6F;
-        Wed, 12 May 2021 16:10:21 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEF5161D19;
+        Wed, 12 May 2021 16:10:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835822;
-        bh=uFzse4yyDJgE5qIn6NDkV/QkeInMD7ekJ8/HvF6kFQ4=;
+        s=korg; t=1620835830;
+        bh=lQI7nZyD8L1FBdaemg1F1R2/IPDdlqJ+SZQAtWGrxOU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aCWTiZsfURzKBEMo1nd4Q/FY0OxYIg2OgH5kWKTrEYvrPhsGWbeTadhfsMBI+S+j1
-         5Lb/i08LcCRCqwJHWcn73nuhjHjYnfLqw2VXS23NBfTYwyer6xiH7+scx3/qaGqK4y
-         RSMOG4IYDnOd3ghzK0cAmUuMHpJFN8F4fxZNKK+A=
+        b=xU2FcCp4E//JlGBEA3yUd21z4/ge3Yq7Sh074Mk23tBjtKzKopVYUi1r8+dPRGHil
+         +hrGrgw0fFNxiNSkGP0BcqlSHPwu4T4pqtmH50xqTLOJLv/bdTHsQ5wCgsPYfAzDZb
+         uGaiQ5jLcdsISa2uSYF8o8zQtBlFxU1yVg2m/B9A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 499/677] HID: lenovo: Fix lenovo_led_set_tp10ubkbd() error handling
-Date:   Wed, 12 May 2021 16:49:05 +0200
-Message-Id: <20210512144853.958542124@linuxfoundation.org>
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 502/677] KVM: arm64: Initialize VCPU mdcr_el2 before loading it
+Date:   Wed, 12 May 2021 16:49:08 +0200
+Message-Id: <20210512144854.063606056@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -41,125 +40,209 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Alexandru Elisei <alexandru.elisei@arm.com>
 
-[ Upstream commit 658d04e6eb6be1601ae95d7bee92bbf4096cdc1e ]
+[ Upstream commit 263d6287da1433aba11c5b4046388f2cdf49675c ]
 
-Fix the following issues with lenovo_led_set_tp10ubkbd() error handling:
+When a VCPU is created, the kvm_vcpu struct is initialized to zero in
+kvm_vm_ioctl_create_vcpu(). On VHE systems, the first time
+vcpu.arch.mdcr_el2 is loaded on hardware is in vcpu_load(), before it is
+set to a sensible value in kvm_arm_setup_debug() later in the run loop. The
+result is that KVM executes for a short time with MDCR_EL2 set to zero.
 
-1. On success hid_hw_raw_request() returns the number of bytes sent.
-   So we should check for (ret != 3) rather then for (ret != 0).
+This has several unintended consequences:
 
-2. Actually propagate errors to the caller.
+* Setting MDCR_EL2.HPMN to 0 is constrained unpredictable according to ARM
+  DDI 0487G.a, page D13-3820. The behavior specified by the architecture
+  in this case is for the PE to behave as if MDCR_EL2.HPMN is set to a
+  value less than or equal to PMCR_EL0.N, which means that an unknown
+  number of counters are now disabled by MDCR_EL2.HPME, which is zero.
 
-3. Since the LEDs are part of an USB keyboard-dock the mute LEDs can go
-   away at any time. Don't log an error when ret == -ENODEV and set the
-   LED_HW_PLUGGABLE flag to avoid errors getting logged when the USB gets
-   disconnected.
+* The host configuration for the other debug features controlled by
+  MDCR_EL2 is temporarily lost. This has been harmless so far, as Linux
+  doesn't use the other fields, but that might change in the future.
 
-Fixes: bc04b37ea0ec ("HID: lenovo: Add ThinkPad 10 Ultrabook Keyboard support")
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Let's avoid both issues by initializing the VCPU's mdcr_el2 field in
+kvm_vcpu_vcpu_first_run_init(), thus making sure that the MDCR_EL2 register
+has a consistent value after each vcpu_load().
+
+Fixes: d5a21bcc2995 ("KVM: arm64: Move common VHE/non-VHE trap config in separate functions")
+Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210407144857.199746-3-alexandru.elisei@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-lenovo.c | 29 +++++++++++++++++++++--------
- 1 file changed, 21 insertions(+), 8 deletions(-)
+ arch/arm64/include/asm/kvm_host.h |  1 +
+ arch/arm64/kvm/arm.c              |  2 +
+ arch/arm64/kvm/debug.c            | 88 +++++++++++++++++++++----------
+ 3 files changed, 63 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/hid/hid-lenovo.c b/drivers/hid/hid-lenovo.c
-index 4dc5e5f932ed..ee175ab54281 100644
---- a/drivers/hid/hid-lenovo.c
-+++ b/drivers/hid/hid-lenovo.c
-@@ -62,8 +62,8 @@ struct lenovo_drvdata {
- #define TP10UBKBD_LED_OFF		1
- #define TP10UBKBD_LED_ON		2
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 3d10e6527f7d..858c2fcfc043 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -713,6 +713,7 @@ static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu) {}
+ static inline void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu) {}
  
--static void lenovo_led_set_tp10ubkbd(struct hid_device *hdev, u8 led_code,
--				     enum led_brightness value)
-+static int lenovo_led_set_tp10ubkbd(struct hid_device *hdev, u8 led_code,
-+				    enum led_brightness value)
- {
- 	struct lenovo_drvdata *data = hid_get_drvdata(hdev);
- 	int ret;
-@@ -75,10 +75,18 @@ static void lenovo_led_set_tp10ubkbd(struct hid_device *hdev, u8 led_code,
- 	data->led_report[2] = value ? TP10UBKBD_LED_ON : TP10UBKBD_LED_OFF;
- 	ret = hid_hw_raw_request(hdev, data->led_report[0], data->led_report, 3,
- 				 HID_OUTPUT_REPORT, HID_REQ_SET_REPORT);
--	if (ret)
--		hid_err(hdev, "Set LED output report error: %d\n", ret);
-+	if (ret != 3) {
-+		if (ret != -ENODEV)
-+			hid_err(hdev, "Set LED output report error: %d\n", ret);
-+
-+		ret = ret < 0 ? ret : -EIO;
-+	} else {
-+		ret = 0;
-+	}
+ void kvm_arm_init_debug(void);
++void kvm_arm_vcpu_init_debug(struct kvm_vcpu *vcpu);
+ void kvm_arm_setup_debug(struct kvm_vcpu *vcpu);
+ void kvm_arm_clear_debug(struct kvm_vcpu *vcpu);
+ void kvm_arm_reset_debug_ptr(struct kvm_vcpu *vcpu);
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 85261015ce5d..84b5f79c9eab 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -580,6 +580,8 @@ static int kvm_vcpu_first_run_init(struct kvm_vcpu *vcpu)
  
- 	mutex_unlock(&data->led_report_mutex);
+ 	vcpu->arch.has_run_once = true;
+ 
++	kvm_arm_vcpu_init_debug(vcpu);
 +
-+	return ret;
+ 	if (likely(irqchip_in_kernel(kvm))) {
+ 		/*
+ 		 * Map the VGIC hardware resources before running a vcpu the
+diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
+index dbc890511631..2484b2cca74b 100644
+--- a/arch/arm64/kvm/debug.c
++++ b/arch/arm64/kvm/debug.c
+@@ -68,6 +68,64 @@ void kvm_arm_init_debug(void)
+ 	__this_cpu_write(mdcr_el2, kvm_call_hyp_ret(__kvm_get_mdcr_el2));
  }
  
- static void lenovo_tp10ubkbd_sync_fn_lock(struct work_struct *work)
-@@ -349,7 +357,7 @@ static ssize_t attr_fn_lock_store(struct device *dev,
++/**
++ * kvm_arm_setup_mdcr_el2 - configure vcpu mdcr_el2 value
++ *
++ * @vcpu:	the vcpu pointer
++ *
++ * This ensures we will trap access to:
++ *  - Performance monitors (MDCR_EL2_TPM/MDCR_EL2_TPMCR)
++ *  - Debug ROM Address (MDCR_EL2_TDRA)
++ *  - OS related registers (MDCR_EL2_TDOSA)
++ *  - Statistical profiler (MDCR_EL2_TPMS/MDCR_EL2_E2PB)
++ *  - Self-hosted Trace Filter controls (MDCR_EL2_TTRF)
++ */
++static void kvm_arm_setup_mdcr_el2(struct kvm_vcpu *vcpu)
++{
++	/*
++	 * This also clears MDCR_EL2_E2PB_MASK to disable guest access
++	 * to the profiling buffer.
++	 */
++	vcpu->arch.mdcr_el2 = __this_cpu_read(mdcr_el2) & MDCR_EL2_HPMN_MASK;
++	vcpu->arch.mdcr_el2 |= (MDCR_EL2_TPM |
++				MDCR_EL2_TPMS |
++				MDCR_EL2_TTRF |
++				MDCR_EL2_TPMCR |
++				MDCR_EL2_TDRA |
++				MDCR_EL2_TDOSA);
++
++	/* Is the VM being debugged by userspace? */
++	if (vcpu->guest_debug)
++		/* Route all software debug exceptions to EL2 */
++		vcpu->arch.mdcr_el2 |= MDCR_EL2_TDE;
++
++	/*
++	 * Trap debug register access when one of the following is true:
++	 *  - Userspace is using the hardware to debug the guest
++	 *  (KVM_GUESTDBG_USE_HW is set).
++	 *  - The guest is not using debug (KVM_ARM64_DEBUG_DIRTY is clear).
++	 */
++	if ((vcpu->guest_debug & KVM_GUESTDBG_USE_HW) ||
++	    !(vcpu->arch.flags & KVM_ARM64_DEBUG_DIRTY))
++		vcpu->arch.mdcr_el2 |= MDCR_EL2_TDA;
++
++	trace_kvm_arm_set_dreg32("MDCR_EL2", vcpu->arch.mdcr_el2);
++}
++
++/**
++ * kvm_arm_vcpu_init_debug - setup vcpu debug traps
++ *
++ * @vcpu:	the vcpu pointer
++ *
++ * Set vcpu initial mdcr_el2 value.
++ */
++void kvm_arm_vcpu_init_debug(struct kvm_vcpu *vcpu)
++{
++	preempt_disable();
++	kvm_arm_setup_mdcr_el2(vcpu);
++	preempt_enable();
++}
++
+ /**
+  * kvm_arm_reset_debug_ptr - reset the debug ptr to point to the vcpu state
+  */
+@@ -83,13 +141,7 @@ void kvm_arm_reset_debug_ptr(struct kvm_vcpu *vcpu)
+  * @vcpu:	the vcpu pointer
+  *
+  * This is called before each entry into the hypervisor to setup any
+- * debug related registers. Currently this just ensures we will trap
+- * access to:
+- *  - Performance monitors (MDCR_EL2_TPM/MDCR_EL2_TPMCR)
+- *  - Debug ROM Address (MDCR_EL2_TDRA)
+- *  - OS related registers (MDCR_EL2_TDOSA)
+- *  - Statistical profiler (MDCR_EL2_TPMS/MDCR_EL2_E2PB)
+- *  - Self-hosted Trace Filter controls (MDCR_EL2_TTRF)
++ * debug related registers.
+  *
+  * Additionally, KVM only traps guest accesses to the debug registers if
+  * the guest is not actively using them (see the KVM_ARM64_DEBUG_DIRTY
+@@ -101,28 +153,14 @@ void kvm_arm_reset_debug_ptr(struct kvm_vcpu *vcpu)
+ 
+ void kvm_arm_setup_debug(struct kvm_vcpu *vcpu)
  {
- 	struct hid_device *hdev = to_hid_device(dev);
- 	struct lenovo_drvdata *data = hid_get_drvdata(hdev);
--	int value;
-+	int value, ret;
+-	bool trap_debug = !(vcpu->arch.flags & KVM_ARM64_DEBUG_DIRTY);
+ 	unsigned long mdscr, orig_mdcr_el2 = vcpu->arch.mdcr_el2;
  
- 	if (kstrtoint(buf, 10, &value))
- 		return -EINVAL;
-@@ -364,7 +372,9 @@ static ssize_t attr_fn_lock_store(struct device *dev,
- 		lenovo_features_set_cptkbd(hdev);
- 		break;
- 	case USB_DEVICE_ID_LENOVO_TP10UBKBD:
--		lenovo_led_set_tp10ubkbd(hdev, TP10UBKBD_FN_LOCK_LED, value);
-+		ret = lenovo_led_set_tp10ubkbd(hdev, TP10UBKBD_FN_LOCK_LED, value);
-+		if (ret)
-+			return ret;
- 		break;
- 	}
+ 	trace_kvm_arm_setup_debug(vcpu, vcpu->guest_debug);
  
-@@ -785,6 +795,7 @@ static int lenovo_led_brightness_set(struct led_classdev *led_cdev,
- 	struct lenovo_drvdata *data_pointer = hid_get_drvdata(hdev);
- 	u8 tp10ubkbd_led[] = { TP10UBKBD_MUTE_LED, TP10UBKBD_MICMUTE_LED };
- 	int led_nr = 0;
-+	int ret = 0;
+-	/*
+-	 * This also clears MDCR_EL2_E2PB_MASK to disable guest access
+-	 * to the profiling buffer.
+-	 */
+-	vcpu->arch.mdcr_el2 = __this_cpu_read(mdcr_el2) & MDCR_EL2_HPMN_MASK;
+-	vcpu->arch.mdcr_el2 |= (MDCR_EL2_TPM |
+-				MDCR_EL2_TPMS |
+-				MDCR_EL2_TTRF |
+-				MDCR_EL2_TPMCR |
+-				MDCR_EL2_TDRA |
+-				MDCR_EL2_TDOSA);
++	kvm_arm_setup_mdcr_el2(vcpu);
  
- 	if (led_cdev == &data_pointer->led_micmute)
- 		led_nr = 1;
-@@ -799,11 +810,11 @@ static int lenovo_led_brightness_set(struct led_classdev *led_cdev,
- 		lenovo_led_set_tpkbd(hdev);
- 		break;
- 	case USB_DEVICE_ID_LENOVO_TP10UBKBD:
--		lenovo_led_set_tp10ubkbd(hdev, tp10ubkbd_led[led_nr], value);
-+		ret = lenovo_led_set_tp10ubkbd(hdev, tp10ubkbd_led[led_nr], value);
- 		break;
- 	}
+ 	/* Is Guest debugging in effect? */
+ 	if (vcpu->guest_debug) {
+-		/* Route all software debug exceptions to EL2 */
+-		vcpu->arch.mdcr_el2 |= MDCR_EL2_TDE;
+-
+ 		/* Save guest debug state */
+ 		save_guest_debug_regs(vcpu);
  
--	return 0;
-+	return ret;
+@@ -176,7 +214,6 @@ void kvm_arm_setup_debug(struct kvm_vcpu *vcpu)
+ 
+ 			vcpu->arch.debug_ptr = &vcpu->arch.external_debug_state;
+ 			vcpu->arch.flags |= KVM_ARM64_DEBUG_DIRTY;
+-			trap_debug = true;
+ 
+ 			trace_kvm_arm_set_regset("BKPTS", get_num_brps(),
+ 						&vcpu->arch.debug_ptr->dbg_bcr[0],
+@@ -191,10 +228,6 @@ void kvm_arm_setup_debug(struct kvm_vcpu *vcpu)
+ 	BUG_ON(!vcpu->guest_debug &&
+ 		vcpu->arch.debug_ptr != &vcpu->arch.vcpu_debug_state);
+ 
+-	/* Trap debug register access */
+-	if (trap_debug)
+-		vcpu->arch.mdcr_el2 |= MDCR_EL2_TDA;
+-
+ 	/* If KDE or MDE are set, perform a full save/restore cycle. */
+ 	if (vcpu_read_sys_reg(vcpu, MDSCR_EL1) & (DBG_MDSCR_KDE | DBG_MDSCR_MDE))
+ 		vcpu->arch.flags |= KVM_ARM64_DEBUG_DIRTY;
+@@ -203,7 +236,6 @@ void kvm_arm_setup_debug(struct kvm_vcpu *vcpu)
+ 	if (has_vhe() && orig_mdcr_el2 != vcpu->arch.mdcr_el2)
+ 		write_sysreg(vcpu->arch.mdcr_el2, mdcr_el2);
+ 
+-	trace_kvm_arm_set_dreg32("MDCR_EL2", vcpu->arch.mdcr_el2);
+ 	trace_kvm_arm_set_dreg32("MDSCR_EL1", vcpu_read_sys_reg(vcpu, MDSCR_EL1));
  }
  
- static int lenovo_register_leds(struct hid_device *hdev)
-@@ -825,6 +836,7 @@ static int lenovo_register_leds(struct hid_device *hdev)
- 	data->led_mute.name = name_mute;
- 	data->led_mute.brightness_get = lenovo_led_brightness_get;
- 	data->led_mute.brightness_set_blocking = lenovo_led_brightness_set;
-+	data->led_mute.flags = LED_HW_PLUGGABLE;
- 	data->led_mute.dev = &hdev->dev;
- 	ret = led_classdev_register(&hdev->dev, &data->led_mute);
- 	if (ret < 0)
-@@ -833,6 +845,7 @@ static int lenovo_register_leds(struct hid_device *hdev)
- 	data->led_micmute.name = name_micm;
- 	data->led_micmute.brightness_get = lenovo_led_brightness_get;
- 	data->led_micmute.brightness_set_blocking = lenovo_led_brightness_set;
-+	data->led_micmute.flags = LED_HW_PLUGGABLE;
- 	data->led_micmute.dev = &hdev->dev;
- 	ret = led_classdev_register(&hdev->dev, &data->led_micmute);
- 	if (ret < 0) {
 -- 
 2.30.2
 
