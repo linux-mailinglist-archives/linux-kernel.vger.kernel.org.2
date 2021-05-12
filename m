@@ -2,142 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1715237B64D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF34737B654
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhELGo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 02:44:29 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3730 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbhELGoV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 02:44:21 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fg4sF0CF9zmftm;
-        Wed, 12 May 2021 14:39:45 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 12 May 2021 14:43:00 +0800
-From:   Hui Tang <tanghui20@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/3] crypto: ecdh - add test suite for NIST P384
-Date:   Wed, 12 May 2021 14:40:02 +0800
-Message-ID: <1620801602-49287-4-git-send-email-tanghui20@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1620801602-49287-1-git-send-email-tanghui20@huawei.com>
-References: <1620801602-49287-1-git-send-email-tanghui20@huawei.com>
+        id S229776AbhELGqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 02:46:44 -0400
+Received: from mga02.intel.com ([134.134.136.20]:27652 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229580AbhELGqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 02:46:40 -0400
+IronPort-SDR: +RGGDsfjlf9B4Mkv02sQeVUrCwZiHUkPF3qcVry2kMX0YrV5yijJRd0B3Sf/Mcm7Iz9tK21eQh
+ Hi5wSVicoNFA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="186766408"
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="186766408"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 23:45:18 -0700
+IronPort-SDR: Mr3TRUPpSvEHoNhG9TuJWJVY4Ky1OcWmkCaLmvCBTSbhjuIRKC/YSNN+FYi/Sj6S1ME9yciJOf
+ LjG6s6JugrVA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="537496288"
+Received: from allen-box.sh.intel.com ([10.239.159.128])
+  by fmsmga001.fm.intel.com with ESMTP; 11 May 2021 23:45:15 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Cc:     ashok.raj@intel.com, kevin.tian@intel.com, jacob.jun.pan@intel.com,
+        yi.l.liu@intel.com, sanjay.k.kumar@intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: [RESEND PATACH 1/1] iommu/vt-d: Use user privilege for RID2PASID translation
+Date:   Wed, 12 May 2021 14:44:26 +0800
+Message-Id: <20210512064426.3440915-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add test vector params for NIST P384, add test vector for
-NIST P384 on vector of tests.
+When first-level page tables are used for IOVA translation, we use user
+privilege by setting U/S bit in the page table entry. This is to make it
+consistent with the second level translation, where the U/S enforcement
+is not available. Clear the SRE (Supervisor Request Enable) field in the
+pasid table entry of RID2PASID so that requests requesting the supervisor
+privilege are blocked and treated as DMA remapping faults.
 
-Vector param from:
-https://datatracker.ietf.org/doc/html/rfc5903#section-3.1
-
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
+Suggested-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+Fixes: b802d070a52a1 ("iommu/vt-d: Use iova over first level")
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 ---
- crypto/testmgr.c |  7 +++++++
- crypto/testmgr.h | 61 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 68 insertions(+)
+ drivers/iommu/intel/iommu.c | 7 +++++--
+ drivers/iommu/intel/pasid.c | 3 ++-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 10c5b3b..e79cbf6 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -4915,6 +4915,13 @@ static const struct alg_test_desc alg_test_descs[] = {
- 			.kpp = __VECS(ecdh_p256_tv_template)
- 		}
- 	}, {
-+		.alg = "ecdh-nist-p384",
-+		.test = alg_test_kpp,
-+		.fips_allowed = 1,
-+		.suite = {
-+			.kpp = __VECS(ecdh_p384_tv_template)
-+		}
-+	}, {
- 		.alg = "ecdsa-nist-p192",
- 		.test = alg_test_akcipher,
- 		.suite = {
-diff --git a/crypto/testmgr.h b/crypto/testmgr.h
-index aead75d..3d74b518 100644
---- a/crypto/testmgr.h
-+++ b/crypto/testmgr.h
-@@ -2814,6 +2814,67 @@ static const struct kpp_testvec ecdh_p256_tv_template[] = {
- };
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index 708f430af1c4..f1742da42478 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -2525,9 +2525,9 @@ static int domain_setup_first_level(struct intel_iommu *iommu,
+ 				    struct device *dev,
+ 				    u32 pasid)
+ {
+-	int flags = PASID_FLAG_SUPERVISOR_MODE;
+ 	struct dma_pte *pgd = domain->pgd;
+ 	int agaw, level;
++	int flags = 0;
  
- /*
-+ * NIST P384 test vectors from RFC5903
-+ */
-+static const struct kpp_testvec ecdh_p384_tv_template[] = {
-+	{
-+	.secret =
-+#ifdef __LITTLE_ENDIAN
-+	"\x02\x00" /* type */
-+	"\x36\x00" /* len */
-+	"\x30\x00" /* key_size */
-+#else
-+	"\x00\x02" /* type */
-+	"\x00\x36" /* len */
-+	"\x00\x30" /* key_size */
-+#endif
-+	"\x09\x9F\x3C\x70\x34\xD4\xA2\xC6"
-+	"\x99\x88\x4D\x73\xA3\x75\xA6\x7F"
-+	"\x76\x24\xEF\x7C\x6B\x3C\x0F\x16"
-+	"\x06\x47\xB6\x74\x14\xDC\xE6\x55"
-+	"\xE3\x5B\x53\x80\x41\xE6\x49\xEE"
-+	"\x3F\xAE\xF8\x96\x78\x3A\xB1\x94",
-+	.b_public =
-+	"\xE5\x58\xDB\xEF\x53\xEE\xCD\xE3"
-+	"\xD3\xFC\xCF\xC1\xAE\xA0\x8A\x89"
-+	"\xA9\x87\x47\x5D\x12\xFD\x95\x0D"
-+	"\x83\xCF\xA4\x17\x32\xBC\x50\x9D"
-+	"\x0D\x1A\xC4\x3A\x03\x36\xDE\xF9"
-+	"\x6F\xDA\x41\xD0\x77\x4A\x35\x71"
-+	"\xDC\xFB\xEC\x7A\xAC\xF3\x19\x64"
-+	"\x72\x16\x9E\x83\x84\x30\x36\x7F"
-+	"\x66\xEE\xBE\x3C\x6E\x70\xC4\x16"
-+	"\xDD\x5F\x0C\x68\x75\x9D\xD1\xFF"
-+	"\xF8\x3F\xA4\x01\x42\x20\x9D\xFF"
-+	"\x5E\xAA\xD9\x6D\xB9\xE6\x38\x6C",
-+	.expected_a_public =
-+	"\x66\x78\x42\xD7\xD1\x80\xAC\x2C"
-+	"\xDE\x6F\x74\xF3\x75\x51\xF5\x57"
-+	"\x55\xC7\x64\x5C\x20\xEF\x73\xE3"
-+	"\x16\x34\xFE\x72\xB4\xC5\x5E\xE6"
-+	"\xDE\x3A\xC8\x08\xAC\xB4\xBD\xB4"
-+	"\xC8\x87\x32\xAE\xE9\x5F\x41\xAA"
-+	"\x94\x82\xED\x1F\xC0\xEE\xB9\xCA"
-+	"\xFC\x49\x84\x62\x5C\xCF\xC2\x3F"
-+	"\x65\x03\x21\x49\xE0\xE1\x44\xAD"
-+	"\xA0\x24\x18\x15\x35\xA0\xF3\x8E"
-+	"\xEB\x9F\xCF\xF3\xC2\xC9\x47\xDA"
-+	"\xE6\x9B\x4C\x63\x45\x73\xA8\x1C",
-+	.expected_ss =
-+	"\x11\x18\x73\x31\xC2\x79\x96\x2D"
-+	"\x93\xD6\x04\x24\x3F\xD5\x92\xCB"
-+	"\x9D\x0A\x92\x6F\x42\x2E\x47\x18"
-+	"\x75\x21\x28\x7E\x71\x56\xC5\xC4"
-+	"\xD6\x03\x13\x55\x69\xB9\xE9\xD0"
-+	"\x9C\xF5\xD4\xA2\x70\xF5\x97\x46",
-+	.secret_size = 54,
-+	.b_public_size = 96,
-+	.expected_a_public_size = 96,
-+	.expected_ss_size = 48
-+	}
-+};
-+
-+/*
-  * MD4 test vectors from RFC1320
-  */
- static const struct hash_testvec md4_tv_template[] = {
+ 	/*
+ 	 * Skip top levels of page tables for iommu which has
+@@ -2543,7 +2543,10 @@ static int domain_setup_first_level(struct intel_iommu *iommu,
+ 	if (level != 4 && level != 5)
+ 		return -EINVAL;
+ 
+-	flags |= (level == 5) ? PASID_FLAG_FL5LP : 0;
++	if (pasid != PASID_RID2PASID)
++		flags |= PASID_FLAG_SUPERVISOR_MODE;
++	if (level == 5)
++		flags |= PASID_FLAG_FL5LP;
+ 
+ 	if (domain->domain.type == IOMMU_DOMAIN_UNMANAGED)
+ 		flags |= PASID_FLAG_PAGE_SNOOP;
+diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
+index 72646bafc52f..72dc84821dad 100644
+--- a/drivers/iommu/intel/pasid.c
++++ b/drivers/iommu/intel/pasid.c
+@@ -699,7 +699,8 @@ int intel_pasid_setup_second_level(struct intel_iommu *iommu,
+ 	 * Since it is a second level only translation setup, we should
+ 	 * set SRE bit as well (addresses are expected to be GPAs).
+ 	 */
+-	pasid_set_sre(pte);
++	if (pasid != PASID_RID2PASID)
++		pasid_set_sre(pte);
+ 	pasid_set_present(pte);
+ 	pasid_flush_caches(iommu, pte, pasid, did);
+ 
 -- 
-2.8.1
+2.25.1
 
