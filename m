@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA5537BA89
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 12:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DC637BA8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 12:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbhELKar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 06:30:47 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50550 "EHLO
+        id S231383AbhELKaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 06:30:52 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50476 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230415AbhELK3j (ORCPT
+        with ESMTP id S230428AbhELK3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 06:29:39 -0400
-Date:   Wed, 12 May 2021 10:28:29 -0000
+Date:   Wed, 12 May 2021 10:28:30 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620815310;
+        s=2020; t=1620815311;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1cDvnlLgJnlpX5hGJ8jiKNhhEhx6z82lpjP5ic7YRPM=;
-        b=JSRdQkZylpbTjfkr/+WSehyDheEzUJgc5IQau6Wjb78L8DpwQskcO2peFna/Fn+oZ4qXmX
-        MMWHsQby2K699jAx2uQcYiD//j8suZFYiUmvuIqtd6T2vJGGWMwjunRTGEuW8TEvTirK3U
-        db+TCN7HoWFH9VjSmKUxsXRXqPs+MUbKKfQTw7hdfCJLGWwFGmRjAlqrDMDln3XRAEgNQh
-        BkpdiMpHmZboR+ZhpJvwmHxhwWK/rKJ76IniNsBc6k/k+QJNKGPSTwbMf8TSeoEryqSetB
-        zVUokTvtKCaznFnU1RCgzkZVushTfbXK9IUZ0S4JkrVtvUTS26TDXP4fY7XjZg==
+        bh=0dFrpruQBtZTtww53DzNxGZKV1fvvuV4CSh0TZuxxZ0=;
+        b=SQVmo4LvzFAiFMj0xzoQsrN8NLlhmqz9DpEyf5Lw7vn0tzRvnakEc15x9KyHWi99NGRv2x
+        Zc9AFpzchXHGDlD2ivin4gH2j2s0Rc4dT2HuxKovlKcZaAvqJsUHZYvCDnQBE7dKKxIkYh
+        LOpVCM5kVTlG5WiGzx6xkTPAbk9a73CRvLIzqJOf4QU5GNCFeFOHhj73HamM5Vo7N4LWXc
+        RT41UUFqyf7BYlk/rrFvScdmtbOxQQsfmqNsLwlNFtChX/OD7enPnp3Lw9+4s68UtBntra
+        w0Dqif8teEkphGfMt6UIreOrFtZqmXmJOsc+2MN1qGEYsxpUtt/gsOuZ9Ljvdg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620815310;
+        s=2020e; t=1620815311;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1cDvnlLgJnlpX5hGJ8jiKNhhEhx6z82lpjP5ic7YRPM=;
-        b=rmEqycGfCRUbXFGTKIMUsZzy7lq/3zXSo/Y3UODI2W7Mr2LiGLuq9AqfhEpMDkMtPcDPUG
-        3pvgF3iH7XPOt/Cg==
+        bh=0dFrpruQBtZTtww53DzNxGZKV1fvvuV4CSh0TZuxxZ0=;
+        b=xQcrIp/1c6TYlYj1ojbY1AypjIoZlyCQYqfWQHr3XxXSVabe+uru5mE2a1j3p4IpOLfoOP
+        SfKYacJ1BycbuUCw==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] delayacct: Add static_branch in scheduler hooks
+Subject: [tip: sched/core] sched: Simplify sched_info_on()
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
         Johannes Weiner <hannes@cmpxchg.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210505111525.248028369@infradead.org>
-References: <20210505111525.248028369@infradead.org>
+In-Reply-To: <20210505111525.121458839@infradead.org>
+References: <20210505111525.121458839@infradead.org>
 MIME-Version: 1.0
-Message-ID: <162081530948.29796.14722409380598313239.tip-bot2@tip-bot2>
+Message-ID: <162081531041.29796.6076928259537596264.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,81 +60,166 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     eee4d9fee2544389e5ce5697ed92db67c86d7a9f
-Gitweb:        https://git.kernel.org/tip/eee4d9fee2544389e5ce5697ed92db67c86d7a9f
+Commit-ID:     c5895d3f06cbb80ccb311f1dcb37074651030cb6
+Gitweb:        https://git.kernel.org/tip/c5895d3f06cbb80ccb311f1dcb37074651030cb6
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Tue, 04 May 2021 22:43:36 +02:00
+AuthorDate:    Tue, 04 May 2021 22:43:42 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 12 May 2021 11:43:25 +02:00
+CommitterDate: Wed, 12 May 2021 11:43:24 +02:00
 
-delayacct: Add static_branch in scheduler hooks
+sched: Simplify sched_info_on()
 
-Cheaper when delayacct is disabled.
+The situation around sched_info is somewhat complicated, it is used by
+sched_stats and delayacct and, indirectly, kvm.
+
+If SCHEDSTATS=Y (but disabled by default) sched_info_on() is
+unconditionally true -- this is the case for all distro kernel configs
+I checked.
+
+If for some reason SCHEDSTATS=N, but TASK_DELAY_ACCT=Y, then
+sched_info_on() can return false when delayacct is disabled,
+presumably because there would be no other users left; except kvm is.
+
+Instead of complicating matters further by accurately accounting
+sched_stat and kvm state, simply unconditionally enable when
+SCHED_INFO=Y, matching the common distro case.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Balbir Singh <bsingharora@gmail.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Link: https://lkml.kernel.org/r/20210505111525.248028369@infradead.org
+Link: https://lkml.kernel.org/r/20210505111525.121458839@infradead.org
 ---
- include/linux/delayacct.h | 8 ++++++++
- kernel/delayacct.c        | 3 +++
- 2 files changed, 11 insertions(+)
+ include/linux/sched/stat.h | 10 ++--------
+ kernel/delayacct.c         |  1 +-
+ kernel/sched/stats.h       | 37 ++++++++++---------------------------
+ 3 files changed, 12 insertions(+), 36 deletions(-)
 
-diff --git a/include/linux/delayacct.h b/include/linux/delayacct.h
-index 21651f9..57fefa5 100644
---- a/include/linux/delayacct.h
-+++ b/include/linux/delayacct.h
-@@ -58,8 +58,10 @@ struct task_delay_info {
+diff --git a/include/linux/sched/stat.h b/include/linux/sched/stat.h
+index 5682864..939c3ec 100644
+--- a/include/linux/sched/stat.h
++++ b/include/linux/sched/stat.h
+@@ -3,6 +3,7 @@
+ #define _LINUX_SCHED_STAT_H
  
- #include <linux/sched.h>
- #include <linux/slab.h>
-+#include <linux/jump_label.h>
+ #include <linux/percpu.h>
++#include <linux/kconfig.h>
  
- #ifdef CONFIG_TASK_DELAY_ACCT
-+DECLARE_STATIC_KEY_TRUE(delayacct_key);
- extern int delayacct_on;	/* Delay accounting turned on/off */
- extern struct kmem_cache *delayacct_cache;
- extern void delayacct_init(void);
-@@ -114,6 +116,9 @@ static inline void delayacct_tsk_free(struct task_struct *tsk)
+ /*
+  * Various counters maintained by the scheduler and fork(),
+@@ -23,14 +24,7 @@ extern unsigned long nr_iowait_cpu(int cpu);
  
- static inline void delayacct_blkio_start(void)
+ static inline int sched_info_on(void)
  {
-+	if (!static_branch_likely(&delayacct_key))
-+		return;
-+
- 	delayacct_set_flag(current, DELAYACCT_PF_BLKIO);
- 	if (current->delays)
- 		__delayacct_blkio_start();
-@@ -121,6 +126,9 @@ static inline void delayacct_blkio_start(void)
- 
- static inline void delayacct_blkio_end(struct task_struct *p)
- {
-+	if (!static_branch_likely(&delayacct_key))
-+		return;
-+
- 	if (p->delays)
- 		__delayacct_blkio_end(p);
- 	delayacct_clear_flag(p, DELAYACCT_PF_BLKIO);
-diff --git a/kernel/delayacct.c b/kernel/delayacct.c
-index 3a0b910..63012fd 100644
---- a/kernel/delayacct.c
-+++ b/kernel/delayacct.c
-@@ -14,6 +14,7 @@
- #include <linux/delayacct.h>
- #include <linux/module.h>
- 
-+DEFINE_STATIC_KEY_TRUE(delayacct_key);
- int delayacct_on __read_mostly = 1;	/* Delay accounting turned on/off */
- struct kmem_cache *delayacct_cache;
- 
-@@ -28,6 +29,8 @@ void delayacct_init(void)
- {
- 	delayacct_cache = KMEM_CACHE(task_delay_info, SLAB_PANIC|SLAB_ACCOUNT);
- 	delayacct_tsk_init(&init_task);
-+	if (!delayacct_on)
-+		static_branch_disable(&delayacct_key);
+-#ifdef CONFIG_SCHEDSTATS
+-	return 1;
+-#elif defined(CONFIG_TASK_DELAY_ACCT)
+-	extern int delayacct_on;
+-	return delayacct_on;
+-#else
+-	return 0;
+-#endif
++	return IS_ENABLED(CONFIG_SCHED_INFO);
  }
  
- void __delayacct_tsk_init(struct task_struct *tsk)
+ #ifdef CONFIG_SCHEDSTATS
+diff --git a/kernel/delayacct.c b/kernel/delayacct.c
+index 3fe7cd5..3a0b910 100644
+--- a/kernel/delayacct.c
++++ b/kernel/delayacct.c
+@@ -15,7 +15,6 @@
+ #include <linux/module.h>
+ 
+ int delayacct_on __read_mostly = 1;	/* Delay accounting turned on/off */
+-EXPORT_SYMBOL_GPL(delayacct_on);
+ struct kmem_cache *delayacct_cache;
+ 
+ static int __init delayacct_setup_disable(char *str)
+diff --git a/kernel/sched/stats.h b/kernel/sched/stats.h
+index ee7da12..33ffd41 100644
+--- a/kernel/sched/stats.h
++++ b/kernel/sched/stats.h
+@@ -150,11 +150,6 @@ static inline void psi_sched_switch(struct task_struct *prev,
+ #endif /* CONFIG_PSI */
+ 
+ #ifdef CONFIG_SCHED_INFO
+-static inline void sched_info_reset_dequeued(struct task_struct *t)
+-{
+-	t->sched_info.last_queued = 0;
+-}
+-
+ /*
+  * We are interested in knowing how long it was from the *first* time a
+  * task was queued to the time that it finally hit a CPU, we call this routine
+@@ -163,13 +158,12 @@ static inline void sched_info_reset_dequeued(struct task_struct *t)
+  */
+ static inline void sched_info_dequeue(struct rq *rq, struct task_struct *t)
+ {
+-	unsigned long long now = rq_clock(rq), delta = 0;
++	unsigned long long delta = 0;
+ 
+-	if (sched_info_on()) {
+-		if (t->sched_info.last_queued)
+-			delta = now - t->sched_info.last_queued;
++	if (t->sched_info.last_queued) {
++		delta = rq_clock(rq) - t->sched_info.last_queued;
++		t->sched_info.last_queued = 0;
+ 	}
+-	sched_info_reset_dequeued(t);
+ 	t->sched_info.run_delay += delta;
+ 
+ 	rq_sched_info_dequeue(rq, delta);
+@@ -184,9 +178,10 @@ static void sched_info_arrive(struct rq *rq, struct task_struct *t)
+ {
+ 	unsigned long long now = rq_clock(rq), delta = 0;
+ 
+-	if (t->sched_info.last_queued)
++	if (t->sched_info.last_queued) {
+ 		delta = now - t->sched_info.last_queued;
+-	sched_info_reset_dequeued(t);
++		t->sched_info.last_queued = 0;
++	}
+ 	t->sched_info.run_delay += delta;
+ 	t->sched_info.last_arrival = now;
+ 	t->sched_info.pcount++;
+@@ -201,10 +196,8 @@ static void sched_info_arrive(struct rq *rq, struct task_struct *t)
+  */
+ static inline void sched_info_enqueue(struct rq *rq, struct task_struct *t)
+ {
+-	if (sched_info_on()) {
+-		if (!t->sched_info.last_queued)
+-			t->sched_info.last_queued = rq_clock(rq);
+-	}
++	if (!t->sched_info.last_queued)
++		t->sched_info.last_queued = rq_clock(rq);
+ }
+ 
+ /*
+@@ -231,7 +224,7 @@ static inline void sched_info_depart(struct rq *rq, struct task_struct *t)
+  * the idle task.)  We are only called when prev != next.
+  */
+ static inline void
+-__sched_info_switch(struct rq *rq, struct task_struct *prev, struct task_struct *next)
++sched_info_switch(struct rq *rq, struct task_struct *prev, struct task_struct *next)
+ {
+ 	/*
+ 	 * prev now departs the CPU.  It's not interesting to record
+@@ -245,18 +238,8 @@ __sched_info_switch(struct rq *rq, struct task_struct *prev, struct task_struct 
+ 		sched_info_arrive(rq, next);
+ }
+ 
+-static inline void
+-sched_info_switch(struct rq *rq, struct task_struct *prev, struct task_struct *next)
+-{
+-	if (sched_info_on())
+-		__sched_info_switch(rq, prev, next);
+-}
+-
+ #else /* !CONFIG_SCHED_INFO: */
+ # define sched_info_enqueue(rq, t)	do { } while (0)
+-# define sched_info_reset_dequeued(t)	do { } while (0)
+ # define sched_info_dequeue(rq, t)	do { } while (0)
+-# define sched_info_depart(rq, t)	do { } while (0)
+-# define sched_info_arrive(rq, next)	do { } while (0)
+ # define sched_info_switch(rq, t, next)	do { } while (0)
+ #endif /* CONFIG_SCHED_INFO */
