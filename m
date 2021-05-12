@@ -2,91 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A2C37B7A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CE137B7A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhELIPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 04:15:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229968AbhELIPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:15:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DD40613C0;
-        Wed, 12 May 2021 08:14:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620807276;
-        bh=NpIFlszRtKWRCTyCPgKhgBzC2KWJNOHscSYvFzJ1CcM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gcHovoQQ2+ccEfVf0QZz6L1Z9eyxVOZqPyh/OWDH/9HlxcWhr0asX/mnwSelJQv3j
-         uRKdfk4dCN9VDJUUi9cQFDPJFLC5MOEZRgYDu7876eKnzMfx96tuY+AOBQhgNXgRqq
-         O0VkKLyeiCsapUUwVIpD0e55mK9h8jCrf4pkR3QBTmjOohZWcyIyGvXp02+6lNPIAl
-         Xcqacc/pA8b87BkY6j4R3Rv2gvFl/hM2E7N5ksHXOGn5OnjJ5IHB53gYO7+cYg4saO
-         B4NHdM7WUwiskhlPuAhbfHHXB3YNA1jiSkUMAla6fcevqt/aquFbf+nHF58yEcYKq0
-         JhH3Y7aIkNSgg==
-Date:   Wed, 12 May 2021 10:14:32 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     David Gow <davidgow@google.com>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Daniel Latypov <dlatypov@google.com>,
-        Marco Elver <elver@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 39/53] docs: dev-tools: testing-overview.rst: avoid
- using UTF-8 chars
-Message-ID: <20210512101432.32f91125@coco.lan>
-In-Reply-To: <CABVgOSn67XkxasNeMvcs-ciL8F8zmMEVoZMNqf8xRdUg1heX_g@mail.gmail.com>
-References: <cover.1620641727.git.mchehab+huawei@kernel.org>
-        <1591224255d095d14ff3bc2bf4e7796dcc55c77d.1620641727.git.mchehab+huawei@kernel.org>
-        <CABVgOSn67XkxasNeMvcs-ciL8F8zmMEVoZMNqf8xRdUg1heX_g@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S230326AbhELIQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:16:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230026AbhELIQt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 04:16:49 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01EE2C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 01:15:41 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id m12so33714346eja.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 01:15:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ofYbiesQgwQaEexlewrml7cRxApQkWB2Nx460iDcnyo=;
+        b=cHIOWKyzF0AfFHiktnENLignESiqbB75M/2S8bNYGwb4UmCWst1kzfVRtHWBUILKXs
+         c7eSZ9hehTk8NLHKdrT9XYNXDarjEYNKlTulZQDt9ENuebCRNglJRbSanTXy8bx1NlVm
+         YW7PRTEc6U7mjbRYuKiT9exW6nbvZazhgiCk4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ofYbiesQgwQaEexlewrml7cRxApQkWB2Nx460iDcnyo=;
+        b=icn4k/NniZdk1G5uWTHlGH0ozqlgWkZ/J1fUPn1GU+3z0JBG9bOBSNaoPvwgMfVfoi
+         Lcvo4IOhGQG4AQ8+WZWKelNQHrl3xk2KWTeBpixCZxc2P1WJIbyXQwIJoimoRtqB5C/Y
+         1KcXrThl64tfPS9OlQGM7RoKpLoVyLAnHBjnPPTyR3XukZegUPts1ZG286MNhdmZ29cv
+         x00YxoQE0VYkkDs6v5y6LXNTWvVbtyjB8GccrroZZajRZA1Wr6weSQhm6bexvt+C8pSH
+         JBtGAq2GT0Os7S0qNg8zk4h3QtqJNTd7JO8iViT2RyZV9dLiA9eohRZIr0O74lHDfpVw
+         57rg==
+X-Gm-Message-State: AOAM530dzLl2nXtWTrGzDCLdIMuzHeI0bI7gfoLu5BIY0G2gy+AULXAe
+        qEEv7/N9mgeq4eKqMB/HckcCpg==
+X-Google-Smtp-Source: ABdhPJzRky2jZTiXS/jGvK3y0xATQ4vtskLl8aSJ36xGqYFwRVDIZS1+rKVRogxxKQkuc5o4q2jaog==
+X-Received: by 2002:a17:906:f42:: with SMTP id h2mr37200326ejj.317.1620807339603;
+        Wed, 12 May 2021 01:15:39 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id um28sm13885567ejb.63.2021.05.12.01.15.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 May 2021 01:15:39 -0700 (PDT)
+Subject: Re: [PATCH 11/12] tools: sync lib/find_bit implementation
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux-SH <linux-sh@vger.kernel.org>,
+        Alexey Klimov <aklimov@redhat.com>,
+        David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+References: <20210401003153.97325-1-yury.norov@gmail.com>
+ <20210401003153.97325-12-yury.norov@gmail.com>
+ <1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp>
+ <CAHp75Vea0Y_LfWC7LNDoDZqO4t+SVHV5HZMzErfyMPoBAjjk1g@mail.gmail.com>
+ <YJm5Dpo+RspbAtye@rikard> <YJoyMrqRtB3GSAny@smile.fi.intel.com>
+ <YJpePAHS3EDw6PK1@rikard>
+ <151de51e-9302-1f59-407a-e0d68bbaf11c@i-love.sakura.ne.jp>
+ <YJrrJhvwq7RUvDXD@rikard>
+ <CAK8P3a02qNHcksJ8DahHgLtbM9ZOydGjE3__3GoxgJFiWrAT0w@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <030ae370-967c-22d4-56f8-cb0435be7540@rasmusvillemoes.dk>
+Date:   Wed, 12 May 2021 10:15:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAK8P3a02qNHcksJ8DahHgLtbM9ZOydGjE3__3GoxgJFiWrAT0w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 11 May 2021 07:35:29 +0800
-David Gow <davidgow@google.com> escreveu:
+On 12/05/2021 09.48, Arnd Bergmann wrote:
+> On Tue, May 11, 2021 at 10:39 PM Rikard Falkeborn
+> <rikard.falkeborn@gmail.com> wrote:
+>> On Tue, May 11, 2021 at 08:53:53PM +0900, Tetsuo Handa wrote:
+> 
+>>> #define GENMASK_INPUT_CHECK(h, l) \
+>>>      (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+>>>           __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+>>>
+>>> __GENMASK() does not need "h" and "l" being a constant.
+>>>
+>>> Yes, small_const_nbits(size) in find_next_bit() can guarantee that "size" is a
+>>> constant and hence "h" argument in GENMASK_INPUT_CHECK() call is also a constant.
+>>> But nothing can guarantee that "offset" is a constant, and hence nothing can
+>>> guarantee that "l" argument in GENMASK_INPUT_CHECK() call is also a constant.
+>>>
+>>> Then, how can (l) > (h) in __builtin_constant_p((l) > (h)) be evaluated at build time
+>>> if either l or h (i.e. "offset" and "size - 1" in find_next_bit()) lacks a guarantee of
+>>> being a constant?
+>>>
+>>
+>> So the idea is that if (l > h) is constant, __builtin_constant_p should
+>> evaluate that, and if it is not it should use zero instead as input to
+>> __builtin_chose_expr(). This works with non-const inputs in many other
+>> places in the kernel, but apparently in this case with a certain
+>> compiler, it doesn't so I guess we need to work around it.
+> 
+> I have a vague memory that __builtin_constant_p() inside of
+> __builtin_choose_expr()
+> always evaluates to false because of the order in which the compiler processes
+> those: If constant-folding only happens after __builtin_choose_expr(), then
+> __builtin_constant_p() has to be false.
 
-> On Mon, May 10, 2021 at 6:27 PM Mauro Carvalho Chehab
-> <mchehab+huawei@kernel.org> wrote:
-> >
-> > While UTF-8 characters can be used at the Linux documentation,
-> > the best is to use them only when ASCII doesn't offer a good replacemen=
-t.
-> > So, replace the occurences of the following UTF-8 characters:
-> >
-> >         - U+2014 ('=E2=80=94'): EM DASH
-> >
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > --- =20
->=20
-> Oh dear, I do have a habit of overusing em-dashes. I've no problem in
-> theory with exchanging them for an ASCII approximation.
-> I suppose there's a reason it's the one dash to rule them all: :-)
-> https://twitter.com/FakeUnicode/status/727888721312260096/photo/1
+It's more complicated than that. __builtin_constant_p on something which
+is a bona-fide Integer Constant Expression (ICE) gets folded early to a
+1. And then it turns out that such a __builtin_constant_p() that folds
+early to a 1 can be "stronger" than a literal 1, in the sense that when
+used as the controlling expression of a ?: with nonsense in the false
+branch, the former is OK but the latter fails:
 
-No, there's no such rule, although there's a preference to keep
-the texts easy to edit/read as text files[1]. The main rationale for
-this series is that the conversion from other formats to ReST ended
-introducing a lot of UTF-8 noise.
+https://lore.kernel.org/lkml/c68a0f46-346c-70a0-a9b8-31747888f05f@rasmusvillemoes.dk/
 
-[1] IMO, the best is to use UTF-8 characters for symbols that
-    aren't properly represented in ASCII, like Latin accents,
-    Greek letters, etc.
+Now what happens when the argument to __builtin_constant_p is not an ICE
+is a lot more complicated. The argument _may_ be so obviously
+non-constant that it can be folded early to a 0, hence still be suitable
+as first argument to __b_c_e. But it is also possible that the compiler
+leaves it unevaluated, in the "hope" that a later optimization stage
+could prove the argument constant. And that's the case where __b_c_e
+will then break, because that can't be left unevaluated for very long -
+the very _type_ of the result depends on which branch is chosen.
 
-In the specific case of dashes, you can use:
+tl;dr: there's no "order in which the compiler processes those", __b_c_p
+can get evaluated (folded) early, before __b_c_e inspects it, or be left
+for later stages.
 
-	"--" for EN DASH
-	"---" for EM DASH
-
-Those will automatically be translated by Sphinx when building=20
-the docs. Using ASCII there usually makes life simpler for
-developers whose editors can't easily type EN/EM DASH.
-
-Btw, Sphinx will also replace commas to curly commas
-automatically on its output (except for literal blocks).
-
-Thanks,
-Mauro
+Rasmus
