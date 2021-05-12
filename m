@@ -2,95 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CD237B857
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FFF237B862
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbhELIsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 04:48:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49455 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231255AbhELIrt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:47:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620809201;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=o2vKHOZEryLEQCCxZtV6KAbvFC9hG/G6U3+3Dopo/KU=;
-        b=QiP3sgGx2cENwz8KGF8AxskYueXXCG1IwvNuoMQR3QYDZ/EnoDGpwfqiOq6V+87XhmXkFP
-        Pe2/zdVLeaA95YFhE7WlGZicEgq1z4/+nQfS8zAD/Y3G/Ztzv/8RQRI+4911//Gy8dUgWI
-        ro3Zebuc1oiUEv72dCpHbyLnOg1Xk/k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-85-5rYu9DHWPXSwdi5nERih_A-1; Wed, 12 May 2021 04:46:39 -0400
-X-MC-Unique: 5rYu9DHWPXSwdi5nERih_A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C1F21007467;
-        Wed, 12 May 2021 08:46:38 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.193.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 41A02BA6F;
-        Wed, 12 May 2021 08:46:32 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     linux-hyperv@vger.kernel.org
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Mohammed Gamal <mgamal@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] clocksource/drivers/hyper-v: Re-enable VDSO_CLOCKMODE_HVCLOCK on X86
-Date:   Wed, 12 May 2021 10:46:30 +0200
-Message-Id: <20210512084630.1662011-1-vkuznets@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        id S230431AbhELIsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:48:42 -0400
+Received: from mga12.intel.com ([192.55.52.136]:57960 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230338AbhELIsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 04:48:40 -0400
+IronPort-SDR: uzZ/J5O/2u7U/B9VibOUFy6GXnWLk+718gBMHOFU1FNACf5FsRlf3DDB8SJInMkR3tgqm1muXD
+ S8LgsFKce5AA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179246740"
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="179246740"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 01:47:28 -0700
+IronPort-SDR: IQsEYqQMi49x9kRgS8IBVb7ABTPpLXR6ze4CRWBeyZU/NThAVF9Gs490rA3kXDQhNRjZnrDYOa
+ IW3w9CA01wYg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="435106387"
+Received: from bspteam04.iind.intel.com ([10.106.46.142])
+  by fmsmga008.fm.intel.com with ESMTP; 12 May 2021 01:47:25 -0700
+From:   shruthi.sanil@intel.com
+To:     wim@linux-watchdog.org, linux@roeck-us.net,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     andriy.shevchenko@linux.intel.com, kris.pan@linux.intel.com,
+        mgross@linux.intel.com, srikanth.thokala@intel.com,
+        lakshmi.bai.raja.subramanian@intel.com,
+        mallikarjunappa.sangannavar@intel.com, shruthi.sanil@intel.com
+Subject: [PATCH 00/10] Intel Keem Bay WDT bug fixes
+Date:   Wed, 12 May 2021 14:17:14 +0530
+Message-Id: <20210512084724.14634-1-shruthi.sanil@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mohammed reports (https://bugzilla.kernel.org/show_bug.cgi?id=213029)
-the commit e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO
-differences inline") broke vDSO on x86. The problem appears to be that
-VDSO_CLOCKMODE_HVCLOCK is an enum value in 'enum vdso_clock_mode' and
-'#ifdef VDSO_CLOCKMODE_HVCLOCK' branch evaluates to false (it is not
-a define). Replace it with CONFIG_X86 as it is the only arch which
-has this mode currently.
+From: Shruthi Sanil <shruthi.sanil@intel.com>
 
-Reported-by: Mohammed Gamal <mgamal@redhat.com>
-Fixes: e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO differences inline")
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- drivers/clocksource/hyperv_timer.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The series of patches include the below bug fixes
+in the Intel Keem Bay watchdog timer driver:
 
-diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
-index 977fd05ac35f..e17421f5e47d 100644
---- a/drivers/clocksource/hyperv_timer.c
-+++ b/drivers/clocksource/hyperv_timer.c
-@@ -419,7 +419,7 @@ static void resume_hv_clock_tsc(struct clocksource *arg)
- 	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr);
- }
- 
--#ifdef VDSO_CLOCKMODE_HVCLOCK
-+#ifdef CONFIG_X86
- static int hv_cs_enable(struct clocksource *cs)
- {
- 	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
-@@ -435,7 +435,7 @@ static struct clocksource hyperv_cs_tsc = {
- 	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
- 	.suspend= suspend_hv_clock_tsc,
- 	.resume	= resume_hv_clock_tsc,
--#ifdef VDSO_CLOCKMODE_HVCLOCK
-+#ifdef CONFIG_X86
- 	.enable = hv_cs_enable,
- 	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
- #else
+Patch 1/10:
+- Update WDT pre-timeout during the initialization
+  The pretimeout register has a default reset value. Hence
+  when a smaller WDT timeout is set which would be lesser than the
+  default pretimeout, the system behaves abnormally, starts
+  triggering the pretimeout interrupt even when the WDT is
+  not enabled, most of the times leading to system crash.
+  Hence an update in the pre-timeout is also required for the
+  default timeout that is being configured.
+
+Patch 2/10:
+- Upadate WDT pretimeout for every update in timeout
+  The pre-timeout value to be programmed to the register has to be
+  calculated and updated for every change in the timeout value.
+  Else the threshold time wouldn't be calculated to its
+  corresponding timeout.
+
+Patch 3/10:
+- Update pretimeout to 0 in the TH ISR
+  The pretimeout has to be updated to 0 during the ISR of the
+  ThresHold interrupt. Else the TH interrupt would be triggerred for
+  every tick until the timeout.
+
+Patch 4/10:
+- Clear either the TO or TH interrupt bit
+  During the interrupt service routine of the TimeOut interrupt and
+  the ThresHold interrupt, the respective interrupt clear bit
+  have to be cleared and not both.
+
+Patch 5/10:
+- Remove timeout update in the WDT start function
+  Removed set timeout from the start WDT function. There is a function
+  defined to set the timeout. Hence no need to set the timeout again in
+  start function as the timeout would have been already updated
+  before calling the start/enable.
+
+Patch 6/10:
+- Removed timeout update in the TO ISR
+  In the TO ISR removed updating the Timeout value because
+  its not serving any purpose as the timer would have already expired
+  and the system would be rebooting.
+
+Patch 7/10:
+- Update the check in keembay_wdt_resume()
+  Corrected the typo in the function keembay_wdt_resume, we need to
+  enable the WDT if it is disabled/not active.
+
+Patch 8/10:
+- MACRO for WDT enable and disable values
+  Introduced MACRO's for WDT enable and disable values for better readability
+
+Patch 9/10:
+- WDT SMC handler MACRO name update
+  Updated the WDT SMC handler MACRO name to make it clear that its
+  a ARM SMC handler that helps in clearing the WDT interrupt bit.
+
+Patch 10/10:
+- Typo corrections and other blank operations
+  Corrected typos, aligned the tabs and added new lines
+  wherever required for better readability
+
+Shruthi Sanil (10):
+  watchdog: keembay: Update WDT pre-timeout during the initialization
+  watchdog: keembay: Upadate WDT pretimeout for every update in timeout
+  watchdog: keembay: Update pretimeout to zero in the TH ISR
+  watchdog: keembay: Clear either the TO or TH interrupt bit
+  watchdog: keembay: Remove timeout update in the WDT start function
+  watchdog: keembay: Removed timeout update in the TO ISR
+  watchdog: keembay: Update the check in keembay_wdt_resume()
+  watchdog: keembay: MACRO for WDT enable and disable values
+  watchdog: keembay: WDT SMC handler MACRO name update
+  watchdog: keembay: Typo corrections and other blank operations
+
+ drivers/watchdog/keembay_wdt.c | 36 ++++++++++++++++++++++------------
+ 1 file changed, 23 insertions(+), 13 deletions(-)
+
+
+base-commit: 88b06399c9c766c283e070b022b5ceafa4f63f19
 -- 
-2.31.1
+2.17.1
 
