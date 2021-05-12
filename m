@@ -2,136 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4737637EB8F
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD3D37EB90
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381220AbhELTdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:33:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46408 "EHLO
+        id S1381246AbhELTds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242882AbhELRfD (ORCPT
+        with ESMTP id S1348246AbhELRfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:35:03 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EB1C06134E
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:31:08 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id p17so12852715plf.12
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:31:08 -0700 (PDT)
+        Wed, 12 May 2021 13:35:47 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CA4C061358;
+        Wed, 12 May 2021 10:33:21 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id n3so725776plf.7;
+        Wed, 12 May 2021 10:33:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jQ1izlrVGOhPAXdn9/aplXdHdgbZMkL/hHrij75+k+Q=;
-        b=a4DNmUDUNPSavKGBm5teXTf27JxGyXaVA19FtMli56IbhkY9lFuV+rJqzokIoTEuwj
-         F49XgNCm3V3M5/9KmyOKYrZZYrD8M0sxKPi5CWvV+66QLiQRD1dTK6hnpF6oOnX3KdYl
-         KuYf/BxHq4xPZ5ZcOpdXGVy7p+OIZAgc99rCcjvCYvgDQxe5GvZg2Mt/NNQY/q+08vQ0
-         Hl+rCDHoUA2rv75AAhQoZLZWwV1kC9ZJJDMDoQ/lYVk1QpsvMjeAuI4uQV90enBsC69c
-         FUK56tmkLe8UkPGpZbmL7IVKUmI0tUBnEDrhm26gFC5GF7vWR9q72Rtv/k6SpUDPgwUW
-         EuZQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K/Pm8uY+AjoJVI9OqoE7C7bqpQJBmCJUql194cT1sRI=;
+        b=YQCkngmEgnmJH8laOgr5SiRh1EjFYL3bZw6APsX8Ws8qgT0glcuzLp80bmFu4yqWbt
+         Bg77zKgSEAJ3CU0HoirVKmeAY5KCEaU1x+TJUFFZyvrfoed6kXVUfpFueyjWNuN9ok4L
+         YPB1nNk3FFFX182+gyX7v6z4zltqNb8enccvRrUZ6YVlzdzShZfV36TrxaYQmMVUzxJF
+         utlM/oC7Cb/9voUmN+Ou7Z59XfxJOZvG1zVR+MwWMAHYXQspt1IeThGMlrZRukkW7deQ
+         obD6cxWnZMRItH13f490p/Ca2Da/vZM/NlQiKWdxDmaHkA09EHyMql1GIqBxgLBrHVyN
+         n+Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jQ1izlrVGOhPAXdn9/aplXdHdgbZMkL/hHrij75+k+Q=;
-        b=iNmYSKwrQLz7qSQKVyewS4z7zHaZh+GsYM4v99NhWu3onaAYbbf6sHmfncc0wgEIFT
-         H9lHrQJK3lJfsLGIzp67J5B78MUcHOZtly+yttoCnONYShXwzdIFoOHZvGa8oyoANDMd
-         h2/Tyt7ILMGUuIkcEJlEg2VQpdECGSbsXdEadabbGD6WtlWylZAvsW4q95OFjEy2fzx0
-         oIenmV5/V/G0R+lND+8mjeJKZxJL5YZSZL9H1+MRDA8CQv/9/nTY3WXhcU2B3pvCS1Ai
-         aAo/vV8nAqTWA2XTlx7s3/VybJxeR9K8P3x0NWxluGzaCdpx2QmwN8CJ5FDvPrZ9I1Rv
-         NgZg==
-X-Gm-Message-State: AOAM532pStvjosjUFCkfE0c3W+tjLgFtYkRuPNv2PZBkSrea1Jd3NYjl
-        bxbsgIY4k0jOkMraQil3QCDHpQ==
-X-Google-Smtp-Source: ABdhPJz/4rNTvkI1wMpdg6OUFlsFjzwopUXYcEfBvzxbgvGH5sNB0scPThabFLbqW1Veig+/7/0g+A==
-X-Received: by 2002:a17:90a:5207:: with SMTP id v7mr11942175pjh.87.1620840667721;
-        Wed, 12 May 2021 10:31:07 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id t15sm369192pgh.33.2021.05.12.10.31.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 10:31:07 -0700 (PDT)
-Date:   Wed, 12 May 2021 17:31:03 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Hyunwook Baek <baekhw@google.com>,
-        Joerg Roedel <jroedel@suse.de>, stable@vger.kernel.org,
-        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 2/6] x86/sev-es: Forward page-faults which happen during
- emulation
-Message-ID: <YJwQ1xsiDtv3LkBe@google.com>
-References: <20210512075445.18935-1-joro@8bytes.org>
- <20210512075445.18935-3-joro@8bytes.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K/Pm8uY+AjoJVI9OqoE7C7bqpQJBmCJUql194cT1sRI=;
+        b=rdRXk7Lp/jOHTA31xiden3CRaYG7p1qz/lLwycy4m05s0vpsLIEGiB/OPfCkkTVSAr
+         wv9LX4NKfa7Jyme/yndx2mA9I/ai22bJJup0IWUzuJuvXfTuC2mery7BQNWQmXQlCqb1
+         ckaV/rfM7R1njtz0EIVhhCe4JrlsRLgB6bBP81omyU49ktq7gZup/WpMg6RYz1xFC0RP
+         ECUva8K8KOlpkwlf3JQCQYDKIm2vh+bgLpEF7RMss+NlOVhLAyenzWdwvYUqWnijF2ZD
+         ncWqi4M70Nfj0m021mUGNnJKmo3kGX+g0ELSZWzazFOYDygtV641I67C7Byy7kkvy7Kw
+         g0hQ==
+X-Gm-Message-State: AOAM530IvBbNhpk9SL2wjTifVF8fW2XSXlFuWDQL/jWG6lty97HUnCrZ
+        pW/YFJEjfwCvYyfFUybXxQzBrG9acIY5GFWF5/A=
+X-Google-Smtp-Source: ABdhPJwTXd7T2dzSEPTNfRmvseSk41y6zLPIAEHJ+5CYjpYUtwD/xFC07w0jHDeQdr1S8pcozwocecMj1CYFjkUkB5A=
+X-Received: by 2002:a17:90b:1c10:: with SMTP id oc16mr7425665pjb.86.1620840800569;
+ Wed, 12 May 2021 10:33:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512075445.18935-3-joro@8bytes.org>
+References: <20210510095649.3302835-1-andy.shevchenko@gmail.com>
+In-Reply-To: <20210510095649.3302835-1-andy.shevchenko@gmail.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Wed, 12 May 2021 20:33:09 +0300
+Message-ID: <CA+U=DsoX1kTy-NwNFPajWMZnJT+cY9MocSGpgTggmhgXrhXREg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] iio: dac: ad5770r: Put fwnode in error case during ->probe()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Alexandru Tachici <alexandru.tachici@analog.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
-> 
-> When emulating guest instructions for MMIO or IOIO accesses the #VC
-> handler might get a page-fault and will not be able to complete. Forward
-> the page-fault in this case to the correct handler instead of killing
-> the machine.
-> 
-> Fixes: 0786138c78e7 ("x86/sev-es: Add a Runtime #VC Exception Handler")
-> Cc: stable@vger.kernel.org # v5.10+
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+On Mon, May 10, 2021 at 12:59 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> device_for_each_child_node() bumps a reference counting of a returned variable.
+> We have to balance it whenever we return to the caller.
+
+This feels like the device_for_each_child_node() [and the of_node
+variant] iterator[s] need[s] some re-design to account for how easy it
+is to slip stuff by.
+But that's something quite out of this scope.
+
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+
+>
+> Fixes: cbbb819837f6 ("iio: dac: ad5770r: Add AD5770R support")
+> Cc: Alexandru Tachici <alexandru.tachici@analog.com>
+> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 > ---
->  arch/x86/kernel/sev.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index c49270c7669e..6530a844eb61 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -1265,6 +1265,10 @@ static __always_inline void vc_forward_exception(struct es_em_ctxt *ctxt)
->  	case X86_TRAP_UD:
->  		exc_invalid_op(ctxt->regs);
->  		break;
-> +	case X86_TRAP_PF:
-> +		write_cr2(ctxt->fi.cr2);
-> +		exc_page_fault(ctxt->regs, error_code);
-> +		break;
-
-This got me looking at the flows that "inject" #PF, and I'm pretty sure there
-are bugs in __vc_decode_user_insn() + insn_get_effective_ip().
-
-Problem #1: __vc_decode_user_insn() assumes a #PF if insn_fetch_from_user_inatomic()
-fails, but the majority of failure cases in insn_get_seg_base() are #GPs, not #PF.
-
-	res = insn_fetch_from_user_inatomic(ctxt->regs, buffer);
-	if (!res) {
-		ctxt->fi.vector     = X86_TRAP_PF;
-		ctxt->fi.error_code = X86_PF_INSTR | X86_PF_USER;
-		ctxt->fi.cr2        = ctxt->regs->ip;
-		return ES_EXCEPTION;
-	}
-
-Problem #2: Using '0' as an error code means a legitimate effective IP of '0'
-will be misinterpreted as a failure.  Practically speaking, I highly doubt anyone
-will ever actually run code at address 0, but it's technically possible.  The
-most robust approach would be to pass a pointer to @ip and return an actual error
-code.  Using a non-canonical magic value might also work, but that could run afoul
-of future shenanigans like LAM.
-
-	ip = insn_get_effective_ip(regs);
-	if (!ip)
-		return 0;
+>  drivers/iio/dac/ad5770r.c | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/iio/dac/ad5770r.c b/drivers/iio/dac/ad5770r.c
+> index 7ab2ccf90863..8107f7bbbe3c 100644
+> --- a/drivers/iio/dac/ad5770r.c
+> +++ b/drivers/iio/dac/ad5770r.c
+> @@ -524,23 +524,29 @@ static int ad5770r_channel_config(struct ad5770r_state *st)
+>         device_for_each_child_node(&st->spi->dev, child) {
+>                 ret = fwnode_property_read_u32(child, "num", &num);
+>                 if (ret)
+> -                       return ret;
+> -               if (num >= AD5770R_MAX_CHANNELS)
+> -                       return -EINVAL;
+> +                       goto err_child_out;
+> +               if (num >= AD5770R_MAX_CHANNELS) {
+> +                       ret = -EINVAL;
+> +                       goto err_child_out;
+> +               }
+>
+>                 ret = fwnode_property_read_u32_array(child,
+>                                                      "adi,range-microamp",
+>                                                      tmp, 2);
+>                 if (ret)
+> -                       return ret;
+> +                       goto err_child_out;
+>
+>                 min = tmp[0] / 1000;
+>                 max = tmp[1] / 1000;
+>                 ret = ad5770r_store_output_range(st, min, max, num);
+>                 if (ret)
+> -                       return ret;
+> +                       goto err_child_out;
+>         }
+>
+> +       return 0;
+> +
+> +err_child_out:
+> +       fwnode_handle_put(child);
+>         return ret;
+>  }
+>
+> --
+> 2.31.1
+>
