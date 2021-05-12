@@ -2,314 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EE637B97F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D6037B983
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbhELJrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 05:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhELJrc (ORCPT
+        id S230157AbhELJrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 05:47:43 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:37537 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbhELJri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 05:47:32 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DDBC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:46:24 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id h4so32887593lfv.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=UTRP9W3DEBcVT+DNyrLGorO1aWE0wr79U4YNb/sEr88=;
-        b=Tobg/HwCejdmVJtT9riwTrELsR+KxRPiAyTzL5Hei34O/TmMDIneiXJSwKQAVabbjI
-         hhoDpf26PlqSSgFKjVnsuDdKHzavjgRqoT4NE9XAlyEJBjm4frVGBeOumk5zXd/7SrVX
-         0F/YSZ1jHiwqFFY9VC+pxI3yE3/md8bRSc0d7zplqWwu5YFOPi+uXLjKR0FQ0qXL3ZVT
-         zGcx1eORkiBi68Sf/gyy7HrdYut3BfrVpmVv24ji0prPEpnkrJaSOaSf+yeBOyiQzQFH
-         rmhaq4GVfVauCP+UmCz2aD+UuA0DPehY8fuxZ92xSRy9HOFKCAXUhsHoQLB+9HvBRxGp
-         r5Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=UTRP9W3DEBcVT+DNyrLGorO1aWE0wr79U4YNb/sEr88=;
-        b=aYiKzJhXZfz5oo7UuHw7tWzr9fZyD9ZhoPZ+MWk83uvRFCiFAw/QjFdUs0I/HS2q74
-         JxmEWfBon7liyhXjiSVItMgQv9GKhFE1HedwTqs00QgMZugZNLcXQki5smAeEpaFlGip
-         X5YQdb9PMXlrl06rlAAROQVWkHjwyXbl5lGwtyPMLH93eROoTwLr+QckZSfYPK6bCZFj
-         3goEvTHczRfvWzT+hf6Qk0NhnNQOfuwFLVlEpY0dfabGjDq5hsUJx9e4mRXXaUUmnqHT
-         m1AedHHHFMeuN40PqIE56UMYwTAsJ4QTG+0JYoajAQ9m2IGrr5yOSf/rZX9IPlEaHPSt
-         FX4g==
-X-Gm-Message-State: AOAM531MRE2Ts4aFCHtQS/JYV7uieObHVLSgj8JnuItzGaZLiJ5yQZ7K
-        zwZ7qXDy0fG1bpu+L2+y58A=
-X-Google-Smtp-Source: ABdhPJy5+cU1uYWURgeU0XWz89XSUMz+AgVTEVmslstJsUSkDYUfwB4bEB1kRwOwnrZylA75c+gVGQ==
-X-Received: by 2002:a19:c512:: with SMTP id w18mr24201034lfe.428.1620812783233;
-        Wed, 12 May 2021 02:46:23 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id h19sm2930207lfc.56.2021.05.12.02.46.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 02:46:22 -0700 (PDT)
-Date:   Wed, 12 May 2021 12:46:19 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH 1/2] drm: Fix dirtyfb stalls
-Message-ID: <20210512124619.3fba5b9b@eldfell>
-In-Reply-To: <YJuVbRNGSCkYYD7U@phenom.ffwll.local>
-References: <20210508195641.397198-1-robdclark@gmail.com>
-        <20210508195641.397198-2-robdclark@gmail.com>
-        <YJlb3GO41hiu4pWw@phenom.ffwll.local>
-        <CAF6AEGsGb1jZgRRUqDvf+j+E6pNEtSck=r3xh4VL7FmZMPszBQ@mail.gmail.com>
-        <CAKMK7uGPGbOPRtJaiG5oNCDhYQ27+V3bO5Wcgv7C9fqdyp8LeA@mail.gmail.com>
-        <CAF6AEGto1PQcEbYeWfXqMatK0z3dW-mpLNVh=VJb=9gwrPfCWg@mail.gmail.com>
-        <YJq0YVi4O4zGkb3j@phenom.ffwll.local>
-        <20210512112330.0130a62a@eldfell>
-        <YJuVbRNGSCkYYD7U@phenom.ffwll.local>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 12 May 2021 05:47:38 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id DB76A22256;
+        Wed, 12 May 2021 11:46:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1620812788;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UPiA4uNIpFpQdD08qj9dWESieTJar/iY+6FBgxQ3wjk=;
+        b=EXy4zz/xsosBJZhZ/mwyYtS7zSQl6Ft5qFIUQng4g7J+u1eRB6SE9y5LLpEcrrBHcMUve4
+        Zi3dyf764Jw4S/I5vgfpqFFAhHM78RGikKnMm63ouAT+emKxzq+AUofMvYaYXAkGCm4e5W
+        B6e2dDxsz0qnRYdPO8ilyyPV5JpJLRo=
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/+osi.ekD5RBkw66jYfIoG/Y"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 12 May 2021 11:46:28 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Angelo Dureghello <angelo.dureghello@timesys.com>,
+        Fugang Duan <fugang.duan@nxp.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>
+Subject: Re: [PATCH 4/8] serial: fsl_lpuart: handle break and make sysrq work
+In-Reply-To: <YJugS4fiUBgPvIS6@hovoldconsulting.com>
+References: <20210511200148.11934-1-michael@walle.cc>
+ <20210511200148.11934-5-michael@walle.cc>
+ <YJugS4fiUBgPvIS6@hovoldconsulting.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <e3e5ad179483508d02305f26fd20800a@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+osi.ekD5RBkw66jYfIoG/Y
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Am 2021-05-12 11:30, schrieb Johan Hovold:
+> On Tue, May 11, 2021 at 10:01:44PM +0200, Michael Walle wrote:
+>> Although there is already (broken) sysrq characters handling, a break
+>> condition was never detected. There is also a possible deadlock 
+>> because
+>> we might call handle_sysrq() while still holding the port lock.
+> 
+> Where's the possible deadlock?
 
-On Wed, 12 May 2021 10:44:29 +0200
-Daniel Vetter <daniel@ffwll.ch> wrote:
-
-> On Wed, May 12, 2021 at 11:23:30AM +0300, Pekka Paalanen wrote:
-> > On Tue, 11 May 2021 18:44:17 +0200
-> > Daniel Vetter <daniel@ffwll.ch> wrote:
-> >  =20
-> > > On Mon, May 10, 2021 at 12:06:05PM -0700, Rob Clark wrote: =20
-> > > > On Mon, May 10, 2021 at 10:44 AM Daniel Vetter <daniel@ffwll.ch> wr=
-ote:   =20
-> > > > >
-> > > > > On Mon, May 10, 2021 at 6:51 PM Rob Clark <robdclark@gmail.com> w=
-rote:   =20
-> > > > > >
-> > > > > > On Mon, May 10, 2021 at 9:14 AM Daniel Vetter <daniel@ffwll.ch>=
- wrote:   =20
-> > > > > > >
-> > > > > > > On Sat, May 08, 2021 at 12:56:38PM -0700, Rob Clark wrote:   =
-=20
-> > > > > > > > From: Rob Clark <robdclark@chromium.org>
-> > > > > > > >
-> > > > > > > > drm_atomic_helper_dirtyfb() will end up stalling for vblank=
- on "video
-> > > > > > > > mode" type displays, which is pointless and unnecessary.  A=
-dd an
-> > > > > > > > optional helper vfunc to determine if a plane is attached t=
-o a CRTC
-> > > > > > > > that actually needs dirtyfb, and skip over them.
-> > > > > > > >
-> > > > > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>   =20
-> > > > > > >
-> > > > > > > So this is a bit annoying because the idea of all these "rema=
-p legacy uapi
-> > > > > > > to atomic constructs" helpers is that they shouldn't need/use=
- anything
-> > > > > > > beyond what userspace also has available. So adding hacks for=
- them feels
-> > > > > > > really bad.   =20
-> > > > > >
-> > > > > > I suppose the root problem is that userspace doesn't know if di=
-rtyfb
-> > > > > > (or similar) is actually required or is a no-op.
-> > > > > >
-> > > > > > But it is perhaps less of a problem because this essentially bo=
-ils
-> > > > > > down to "x11 vs wayland", and it seems like wayland compositors=
- for
-> > > > > > non-vsync'd rendering just pageflips and throws away extra fram=
-es from
-> > > > > > the app?   =20
-> > > > >
-> > > > > Yeah it's about not adequately batching up rendering and syncing =
-with
-> > > > > hw. bare metal x11 is just especially stupid about it :-)
-> > > > >   =20
-> > > > > > > Also I feel like it's not entirely the right thing to do here=
- either.
-> > > > > > > We've had this problem already on the fbcon emulation side (w=
-hich also
-> > > > > > > shouldn't be able to peek behind the atomic kms uapi curtain)=
-, and the fix
-> > > > > > > there was to have a worker which batches up all the updates a=
-nd avoids any
-> > > > > > > stalls in bad places.   =20
-> > > > > >
-> > > > > > I'm not too worried about fbcon not being able to render faster=
- than
-> > > > > > vblank.  OTOH it is a pretty big problem for x11   =20
-> > > > >
-> > > > > That's why we'd let the worker get ahead at most one dirtyfb. We =
-do
-> > > > > the same with fbcon, which trivially can get ahead of vblank othe=
-rwise
-> > > > > (if sometimes flushes each character, so you have to pile them up=
- into
-> > > > > a single update if that's still pending).
-> > > > >   =20
-> > > > > > > Since this is for frontbuffer rendering userspace only we can=
- probably get
-> > > > > > > away with assuming there's only a single fb, so the implement=
-ation becomes
-> > > > > > > pretty simple:
-> > > > > > >
-> > > > > > > - 1 worker, and we keep track of a single pending fb
-> > > > > > > - if there's already a dirty fb pending on a different fb, we=
- stall for
-> > > > > > >   the worker to start processing that one already (i.e. the f=
-b we track is
-> > > > > > >   reset to NULL)
-> > > > > > > - if it's pending on the same fb we just toss away all the up=
-dates and go
-> > > > > > >   with a full update, since merging the clip rects is too muc=
-h work :-) I
-> > > > > > >   think there's helpers so you could be slightly more clever =
-and just have
-> > > > > > >   an overall bounding box   =20
-> > > > > >
-> > > > > > This doesn't really fix the problem, you still end up delaying =
-sending
-> > > > > > the next back-buffer to mesa   =20
-> > > > >
-> > > > > With this the dirtyfb would never block. Also glorious frontbuffer
-> > > > > tracking corruption is possible, but that's not the kernel's prob=
-lem.
-> > > > > So how would anything get held up in userspace.   =20
-> > > >=20
-> > > > the part about stalling if a dirtyfb is pending was what I was worr=
-ied
-> > > > about.. but I suppose you meant the worker stalling, rather than
-> > > > userspace stalling (where I had interpreted it the other way around=
-).
-> > > > As soon as userspace needs to stall, you're losing again.   =20
-> > >=20
-> > > Nah, I did mean userspace stalling, so we can't pile up unlimited amo=
-unts
-> > > of dirtyfb request in the kernel.
-> > >=20
-> > > But also I never expect userspace that uses dirtyfb to actually hit t=
-his
-> > > stall point (otherwise we'd need to look at this again). It would rea=
-lly
-> > > be only there as defense against abuse.
-> > >  =20
-> > > > > > But we could re-work drm_framebuffer_funcs::dirty to operate on=
- a
-> > > > > > per-crtc basis and hoist the loop and check if dirtyfb is neede=
-d out
-> > > > > > of drm_atomic_helper_dirtyfb()   =20
-> > > > >
-> > > > > That's still using information that userspace doesn't have, which=
- is a
-> > > > > bit irky. We might as well go with your thing here then.   =20
-> > > >=20
-> > > > arguably, this is something we should expose to userspace.. for DSI
-> > > > command-mode panels, you probably want to make a different decision
-> > > > with regard to how many buffers in your flip-chain..
-> > > >=20
-> > > > Possibly we should add/remove the fb_damage_clips property depending
-> > > > on the display type (ie. video/pull vs cmd/push mode)?   =20
-> > >=20
-> > > I'm not sure whether atomic actually needs this exposed:
-> > > - clients will do full flips for every frame anyway, I've not heard of
-> > >   anyone seriously doing frontbuffer rendering. =20
-> >=20
-> > That may or may not be changing, depending on whether the DRM drivers
-> > will actually support tearing flips. There has been a huge amount of
-> > debate for needing tearing for Wayland [1], and while I haven't really
-> > joined that discussion, using front-buffer rendering (blits) to work
-> > around the driver inability to flip-tear might be something some people
-> > will want. =20
->=20
-> Uh pls dont, dirtyfb does a full atomic commit on atomic drivers
-> underneath it.
-
-You keep saying dirtyfb, but I still didn't understand if you mean
-literally *only* the legacy DirtyFB ioctl, or does it include
-FB_DAMAGE_CLIPS in atomic too?
-
-I suppose you mean only the legacy ioctl.
-
-> > Personally, what I do agree with is that "tear if late from intended
-> > vblank" is a feature that will be needed when VRR cannot be used.
-> > However, I would also argue that multiple tearing updates per refresh
-> > cycle is not a good idea, and I know people disagree with this because
-> > practically all relevant games are using a naive main loop that makes
-> > multi-tearing necessary for good input response.
-> >=20
-> > I'm not quite sure where this leaves the KMS UAPI usage patterns. Maybe
-> > this matters, maybe not?
-> >=20
-> > Does it make a difference between using legacy DirtyFB vs. atomic
-> > FB_DAMAGE_CLIPS property?
-> >=20
-> > Also mind that Wayland compositors would be dynamically switching
-> > between "normal flips" and "tearing updates" depending on the
-> > scenegraph. This switch should not be considered a "mode set".
-> >=20
-> > [1] https://gitlab.freedesktop.org/wayland/wayland-protocols/-/merge_re=
-quests/65 =20
->=20
-> I think what you want is two things:
-> - some indication that frontbuffer rendering "works", for some value of
->   that (which should probably be "doesn't require dirtyfb")
->=20
-> - tearing flips support. This needs driver support
-
-A "tear if late" functionality in the kernel would be really nice too,
-but can probably be worked around with high resolution timers in
-userspace and just-in-time atomic tearing flips. Although those flips
-would need to be tearing always, because timers that close to vblank are
-going to race with vblank.
-
-> If you don't have either, pls don't try to emulate something using
-> frontbuffer rendering and dirtyfb, because that will make it really,
-> really awkward for the kernel to know what exactly userspace wants to do.
-> Overloading existing interfaces with new meaning just we can really=20
-> and it happens to work on the one platform we tested is really not a good
-> idea.
-
-Alright, I'll spread the word if I catch people trying that.
-
-I didn't even understand that using DirtyFB at all would put "new
-meaning" to it. I mean, if you do front-buffer rendering, you must use
-DirtyFB or FB_DAMAGE_CLIPS on atomic to make sure it actually goes
-anywhere, right?
+[   17.866874] ======================================================
+[   17.866876] WARNING: possible circular locking dependency detected
+[   17.866878] 5.13.0-rc1-next-20210511+ #555 Not tainted
+[   17.866880] ------------------------------------------------------
+[   17.866882] sl28-variant.sh/1934 is trying to acquire lock:
+[   17.866884] ffff800011d16a00 (console_owner){-.-.}-{0:0}, at: 
+console_unlock+0x1c0/0x660
+[   17.866892]
+[   17.866893] but task is already holding lock:
+[   17.866895] ffff0020026ea098 (&port_lock_key){-.-.}-{2:2}, at: 
+lpuart32_int+0x1b0/0x7c8
+[   17.866902]
+[   17.866904] which lock already depends on the new lock.
+[   17.866906]
+[   17.866907]
+[   17.866909] the existing dependency chain (in reverse order) is:
+[   17.866910]
+[   17.866912] -> #1 (&port_lock_key){-.-.}-{2:2}:
+[   17.866918]        _raw_spin_lock_irqsave+0x80/0xd0
+[   17.866920]        lpuart32_console_write+0x214/0x2b8
+[   17.866922]        console_unlock+0x404/0x660
+[   17.866924]        register_console+0x170/0x2a8
+[   17.866925]        uart_add_one_port+0x464/0x478
+[   17.866927]        lpuart_probe+0x218/0x3a8
+[   17.866928]        platform_probe+0x70/0xe0
+[   17.866930]        really_probe+0xec/0x3c0
+[   17.866931]        driver_probe_device+0x6c/0xd0
+[   17.866933]        device_driver_attach+0x7c/0x88
+[   17.866935]        __driver_attach+0x6c/0xf8
+[   17.866936]        bus_for_each_dev+0x7c/0xd0
+[   17.866938]        driver_attach+0x2c/0x38
+[   17.866939]        bus_add_driver+0x194/0x1f8
+[   17.866941]        driver_register+0x6c/0x128
+[   17.866943]        __platform_driver_register+0x30/0x40
+[   17.866944]        lpuart_serial_init+0x44/0x6c
+[   17.866946]        do_one_initcall+0x90/0x470
+[   17.866948]        kernel_init_freeable+0x2d4/0x344
+[   17.866949]        kernel_init+0x1c/0x120
+[   17.866951]        ret_from_fork+0x10/0x30
+[   17.866952]
+[   17.866953] -> #0 (console_owner){-.-.}-{0:0}:
+[   17.866959]        __lock_acquire+0xf60/0x17e8
+[   17.866961]        lock_acquire+0x138/0x4c0
+[   17.866963]        console_unlock+0x224/0x660
+[   17.866964]        vprintk_emit+0x11c/0x338
+[   17.866966]        vprintk_default+0x40/0x50
+[   17.866967]        vprintk+0xfc/0x320
+[   17.866969]        printk+0x6c/0x90
+[   17.866970]        __handle_sysrq+0x16c/0x1d8
+[   17.866972]        handle_sysrq+0x2c/0x48
+[   17.866973]        lpuart32_int+0x70c/0x7c8
+[   17.866975]        __handle_irq_event_percpu+0xcc/0x430
+[   17.866977]        handle_irq_event_percpu+0x40/0x98
+[   17.866978]        handle_irq_event+0x50/0x100
+[   17.866980]        handle_fasteoi_irq+0xc0/0x178
+[   17.866981]        generic_handle_irq+0x38/0x50
+[   17.866983]        __handle_domain_irq+0x6c/0xc8
+[   17.866985]        gic_handle_irq+0xdc/0x340
+[   17.866986]        el1_irq+0xb8/0x150
+[   17.866988]        arch_local_irq_restore+0x8/0x20
+[   17.866989]        page_add_file_rmap+0x24/0x1f8
+[   17.866991]        do_set_pte+0xd4/0x1a0
+[   17.866992]        filemap_map_pages+0x358/0x590
+[   17.866994]        __handle_mm_fault+0xbc0/0xdd0
+[   17.866995]        handle_mm_fault+0x170/0x3e0
+[   17.866997]        do_page_fault+0x1e8/0x448
+[   17.866998]        do_translation_fault+0x60/0x70
+[   17.867000]        do_mem_abort+0x48/0xb8
+[   17.867001]        el0_da+0x44/0x80
+[   17.867002]        el0_sync_handler+0x68/0xb8
+[   17.867004]        el0_sync+0x178/0x180
+[   17.867005]
+[   17.867007] other info that might help us debug this:
+[   17.867008]
+[   17.867009]  Possible unsafe locking scenario:
+[   17.867011]
+[   17.867012]        CPU0                    CPU1
+[   17.867013]        ----                    ----
+[   17.867015]   lock(&port_lock_key);
+[   17.867019]                                lock(console_owner);
+[   17.867023]                                lock(&port_lock_key);
+[   17.867027]   lock(console_owner);
+[   17.867030]
+[   17.867031]  *** DEADLOCK ***
+[   17.867033]
+[   17.867034] 7 locks held by sl28-variant.sh/1934:
+[   17.867035]  #0: ffff002003a37b08 (&mm->mmap_lock){++++}-{3:3}, at: 
+do_page_fault+0x180/0x448
+[   17.867043]  #1: ffff800011d87660 (rcu_read_lock){....}-{1:2}, at: 
+filemap_map_pages+0x8/0x590
+[   17.867051]  #2: ffff0020048d8318 (ptlock_ptr(page)){+.+.}-{2:2}, at: 
+filemap_map_pages+0x27c/0x590
+[   17.867059]  #3: ffff800011d87660 (rcu_read_lock){....}-{1:2}, at: 
+lock_page_memcg+0x8/0x1d8
+[   17.867067]  #4: ffff0020026ea098 (&port_lock_key){-.-.}-{2:2}, at: 
+lpuart32_int+0x1b0/0x7c8
+[   17.867074]  #5: ffff800011d87660 (rcu_read_lock){....}-{1:2}, at: 
+__handle_sysrq+0x8/0x1d8
+[   17.867082]  #6: ffff800011d168a0 (console_lock){+.+.}-{0:0}, at: 
+vprintk_emit+0x114/0x338
 
 
-Thanks,
-pq
+> First, as you point out above the driver currently doesn't detect 
+> breaks
+> so the sysrq handler is never called and there's no risk for deadlocks
+> in the console code.
 
---Sig_/+osi.ekD5RBkw66jYfIoG/Y
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+But this commit introduces it? Therefore, I don't get your point.
 
------BEGIN PGP SIGNATURE-----
+> Second, the driver's console implementation explicitly handles being
+> called recursively so would not deadlock after you start detecting
+> breaks either.
 
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmCbo+sACgkQI1/ltBGq
-qqccsA/9EikRFWnviIH8pRt8K+WdgN2z8rZMbR3OJf/v6ChNpUrCHjBCJJ9MULrc
-WbyVpvb+dyv2fUi2Yc4r4gLMWa95xQkZ/MhIvjWv9tKnlkUbogkyBhi0PxuctmUL
-4uAxw+rQ8+46ICDKZ+q4TF1ZKocAhlQAmF25MDZVaTgWTIcXbSOLZZ+okT0coi3b
-UTKSQIZ/VyH7fz91Jknsds8imGcpmvmJr57HHv/EW8QTqU3hdJbcIly1oYKvT7Dt
-8oBSj5rcvy79bFStiWKcd1M/cUhM01esoKU2UzLZAhzH657oQmo3ECMXzHtcC0do
-LuRR/xxvLvcKJILtP4w6sDdryDbdCIWOj8CARfOmEDZnPleBDGN2dQ1mbI2bCWoh
-udWHlywYV/hcJbLBA1ySu/51YCqzHBQnkvjQDEDYSfhhg5mBz0+YDYD3kRCd+tZH
-tixFk77yEzb2NQnVHlj7drJj+FCzhF6PU0HcOIq26JzGGculTqigkz4WFrBjBC60
-+rnB5uZpMDtAU/v9RGzvUBdTuHiBxyJJSTxQMcLkEDgrtq8le7IIPW9io8Thx+K7
-CV8+x2vYOVQCTNmJT+6gFDaBb9caZJ7fupzdNwRFozEHJxTYWsm3Kwh5Bid3PDpr
-g8h8kebrdjKYNQ8XxRTr+FUfdpWD40Mg9PO6kfWVIfmYUdqUecw=
-=Bjrg
------END PGP SIGNATURE-----
+See above. Or there is something wrong with the lock debugging.
 
---Sig_/+osi.ekD5RBkw66jYfIoG/Y--
+>> Add support for break detection and use the proper
+>> uart_unlock_and_check_sysrq() to defer calling handle_sysrq().
+
+-michael
