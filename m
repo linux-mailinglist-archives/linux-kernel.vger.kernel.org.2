@@ -2,85 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9E937D180
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B06D37CF54
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348760AbhELR7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:59:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240907AbhELQZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:25:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 717A061DA1;
-        Wed, 12 May 2021 15:48:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620834527;
-        bh=Wz1vQYGjMtqr2LWXbeUWRRYsqD4GG77I2JGVxe91OnU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uazgRasje54gwJVkrEOZIuTVIr/xz/egi0M/BWQaka5kTjA6EWABijplPZ5VvQQTN
-         3mZkfg6+q8PzRYqtsJUGEE1YhjYAxGOYZeJZABX7PEqnaEFM7wxvQn4cMKBk8GT1aZ
-         FAzgOSrn2FJNTTQIpt+X64te672b2CoN9lVDsGnM=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 580/601] RDMA/bnxt_re: Fix a double free in bnxt_qplib_alloc_res
-Date:   Wed, 12 May 2021 16:50:57 +0200
-Message-Id: <20210512144846.949463341@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
-References: <20210512144827.811958675@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1345912AbhELRMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235280AbhELP7Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:59:24 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A18DC08C5E6
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:31:01 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id c22so27562863edn.7
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:31:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=foMbcJ9t/jw1PCF1w8ZLUJQPw4LhtMPOdZ9n9vc+2JY=;
+        b=OSx+Ho0M1jKEBkXetkktVDTXudOBNAtPrBVu1YzuVKuTEL1/sS15FPlFFafNV89tco
+         NJmlEchhll3j8ZSNq0vnDjLSrR6IeXopJ2aWzzibU3P5McgiEBSg5oZxObnFBtfCd5Q5
+         MUSFdOM78SjxcxNUdfhiDx2preN2CamXZg+uo8TvF38qyhemUE1xaDY9JJhz31VE0hBq
+         K1KZmg8t3QdmgxzE860qpEhIS/YHtJ8T9mMzATy5C+kQxhq8AwfncXGJMrwPI8/zAtdk
+         vL28ba67Her9n6wZeYU5P+AljnG59cHjN91Wp36UCB8Yy//g85zmJIMFF4CgTUdtadqX
+         dP0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=foMbcJ9t/jw1PCF1w8ZLUJQPw4LhtMPOdZ9n9vc+2JY=;
+        b=hXkBENZs4BDiBeqBQ5saLNbpL5y88rdCx4yPJyxF1MJSN8/Q84Oi/xQU/XNW2A4VXh
+         soja1RwLQxn1IK4Y5luBdxijDwpWG4tFs+PhvsJNfn52Q9xL0r/Id7SeXIQIZBoo2w5S
+         Quy/SjVsTu22Iggs8Jy8flvlBbDNh6XH4JospjTrTd/PY1TnT2MFsUV0jlpFVRfml6kE
+         FS0ZX7AkBDrcyg3Pg9H68mXY0RmRdt18YLivJocW+elxyQ2uKgpKdPw4rcTAy+XVpVSS
+         h/rXkaWx3dauc6i8VBSX8bHSwlPXWDe6J5fZDXo4nSlMwlUfet6A9E+Mv32vAwVx0viP
+         vouA==
+X-Gm-Message-State: AOAM531Ef9c2I2CQWbF1Sc+ubhDkkiMkmR1nbDB/Zfsg1ZrcSW+YoTAP
+        sZCwapdbra9mtCObmyRTW6drfg==
+X-Google-Smtp-Source: ABdhPJz7r5xZBOfByReNbNmN+wJFbb276iWLe5bA39oV+ikWetjEf06uCnPbDSA7ak1z9EzB+Nvgyw==
+X-Received: by 2002:aa7:d3c2:: with SMTP id o2mr44159494edr.111.1620833460097;
+        Wed, 12 May 2021 08:31:00 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id di7sm68216edb.34.2021.05.12.08.30.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 08:30:59 -0700 (PDT)
+Date:   Wed, 12 May 2021 17:30:42 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Bixuan Cui <cuibixuan@huawei.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH -next] iommu/virtio: Add missing MODULE_DEVICE_TABLE
+Message-ID: <YJv0osddxKqlFUyT@myrica>
+References: <20210508031451.53493-1-cuibixuan@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210508031451.53493-1-cuibixuan@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+On Sat, May 08, 2021 at 11:14:51AM +0800, Bixuan Cui wrote:
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
 
-[ Upstream commit 34b39efa5ae82fc0ad0acc27653c12a56328dbbe ]
+Fixes: fa4afd78ea12 ("iommu/virtio: Build virtio-iommu as module")
+Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
 
-In bnxt_qplib_alloc_res, it calls bnxt_qplib_alloc_dpi_tbl().  Inside
-bnxt_qplib_alloc_dpi_tbl, dpit->dbr_bar_reg_iomem is freed via
-pci_iounmap() in unmap_io error branch. After the callee returns err code,
-bnxt_qplib_alloc_res calls
-bnxt_qplib_free_res()->bnxt_qplib_free_dpi_tbl() in the fail branch. Then
-dpit->dbr_bar_reg_iomem is freed in the second time by pci_iounmap().
-
-My patch set dpit->dbr_bar_reg_iomem to NULL after it is freed by
-pci_iounmap() in the first time, to avoid the double free.
-
-Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-Link: https://lore.kernel.org/r/20210426140614.6722-1-lyl2019@mail.ustc.edu.cn
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Acked-by: Devesh Sharma <devesh.sharma@broadcom.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/infiniband/hw/bnxt_re/qplib_res.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-index fa7878336100..3ca47004b752 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-@@ -854,6 +854,7 @@ static int bnxt_qplib_alloc_dpi_tbl(struct bnxt_qplib_res     *res,
- 
- unmap_io:
- 	pci_iounmap(res->pdev, dpit->dbr_bar_reg_iomem);
-+	dpit->dbr_bar_reg_iomem = NULL;
- 	return -ENOMEM;
- }
- 
--- 
-2.30.2
-
-
-
+> ---
+>  drivers/iommu/virtio-iommu.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+> index 7c02481a81b4..c6e5ee4d9cef 100644
+> --- a/drivers/iommu/virtio-iommu.c
+> +++ b/drivers/iommu/virtio-iommu.c
+> @@ -1136,6 +1136,7 @@ static struct virtio_device_id id_table[] = {
+>  	{ VIRTIO_ID_IOMMU, VIRTIO_DEV_ANY_ID },
+>  	{ 0 },
+>  };
+> +MODULE_DEVICE_TABLE(virtio, id_table);
+>  
+>  static struct virtio_driver virtio_iommu_drv = {
+>  	.driver.name		= KBUILD_MODNAME,
+> 
