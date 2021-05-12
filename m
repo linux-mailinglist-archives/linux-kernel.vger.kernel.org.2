@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D07A37D4A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3AD37D473
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355182AbhELS1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:27:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54972 "EHLO mail.kernel.org"
+        id S242871AbhELSX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:23:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242286AbhELQeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:34:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71F7561CB5;
-        Wed, 12 May 2021 15:59:09 +0000 (UTC)
+        id S241944AbhELQbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:31:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5774613CA;
+        Wed, 12 May 2021 15:57:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835150;
-        bh=Fhfyz8opL3zqIOOAwHks1RGCX8Huwe+QPutvFkocZic=;
+        s=korg; t=1620835070;
+        bh=A38VFvWmYSj0SLnAsoPGcE8Q1jHONBxoI11gNWREpFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BA+40oHmAh7x0xW1Yg8P3XQbtn6VS28Q3ynM49wazCFL0CJV86IDljaNz853LNtyp
-         R8SVVJ1mbSmJftEL60Is+okU1RxhxBnxUhzS8NMVBxv6VUUSyot+tfWHM+MDZSnvvG
-         jHlbemblq+Sd682S8kBw/QEif0Rtm80uMFDa5HHY=
+        b=Pn3X5WTioADeSdAPknmUbXB7WBeeYdkQpT3QwW6d3hl9LbSbzT08wQjZJ6NAcHVny
+         S5pAiiuZJgircF2EjlniP++OPlPGr4tEzTDsAiTElxmE/8lU3wdaEqdVJ0zeHqOu+5
+         /D/miEJqAuK5XE5EJKkQf0LvmQxhEWoW6McAIDWc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 193/677] arm64: dts: qcom: sm8350: Fix level triggered PMU interrupt polarity
-Date:   Wed, 12 May 2021 16:43:59 +0200
-Message-Id: <20210512144843.662568725@linuxfoundation.org>
+Subject: [PATCH 5.12 197/677] arm64: dts: qcom: sm8150: fix number of pins in gpio-ranges
+Date:   Wed, 12 May 2021 16:44:03 +0200
+Message-Id: <20210512144843.796287073@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -41,35 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+From: Shawn Guo <shawn.guo@linaro.org>
 
-[ Upstream commit 794d3e309e44c99158d0166b1717f297341cf3ab ]
+[ Upstream commit de3abdf3d15c6e7f456e2de3f9da78f3a31414cc ]
 
-As per interrupt documentation for SM8350 SoC, the polarity
-for level triggered PMU interrupt is low, fix this.
+The last cell of 'gpio-ranges' should be number of GPIO pins, and in
+case of qcom platform it should match msm_pinctrl_soc_data.ngpio rather
+than msm_pinctrl_soc_data.ngpio - 1.
 
-Fixes: b7e8f433a673 ("arm64: dts: qcom: Add basic devicetree support for SM8350 SoC")
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Link: https://lore.kernel.org/r/ca57409198477f7815e32a6a7467dcdc9b93dc4f.1613468366.git.saiprakash.ranjan@codeaurora.org
+This fixes the problem that when the last GPIO pin in the range is
+configured with the following call sequence, it always fails with
+-EPROBE_DEFER.
+
+    pinctrl_gpio_set_config()
+        pinctrl_get_device_gpio_range()
+            pinctrl_match_gpio_range()
+
+Fixes: e13c6d144fa0 ("arm64: dts: qcom: sm8150: Add base dts file")
+Cc: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Link: https://lore.kernel.org/r/20210303033106.549-3-shawn.guo@linaro.org
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sm8350.dtsi | 2 +-
+ arch/arm64/boot/dts/qcom/sm8150.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-index 5ef460458f5c..e8bf3f95c674 100644
---- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-@@ -153,7 +153,7 @@
- 
- 	pmu {
- 		compatible = "arm,armv8-pmuv3";
--		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
-+		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
- 	};
- 
- 	psci {
+diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+index e5bb17bc2f46..778613d3410b 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+@@ -914,7 +914,7 @@
+ 			      <0x0 0x03D00000 0x0 0x300000>;
+ 			reg-names = "west", "east", "north", "south";
+ 			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+-			gpio-ranges = <&tlmm 0 0 175>;
++			gpio-ranges = <&tlmm 0 0 176>;
+ 			gpio-controller;
+ 			#gpio-cells = <2>;
+ 			interrupt-controller;
 -- 
 2.30.2
 
