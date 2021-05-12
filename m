@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560A337EA3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD7837EA42
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376715AbhELSzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:55:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33484 "EHLO mail.kernel.org"
+        id S1376783AbhELSzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:55:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244120AbhELQmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:42:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0C0761D12;
-        Wed, 12 May 2021 16:10:53 +0000 (UTC)
+        id S244142AbhELQmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:42:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 453AB61D21;
+        Wed, 12 May 2021 16:11:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835854;
-        bh=bAgG67EXBWeNXfIAaWjuWrwMcAGrJEMjXJZkQL7WAZQ=;
+        s=korg; t=1620835861;
+        bh=BpuHsBdiHvsOm/9xUEuqFgOyCw9YBAgPRnHErjHQwGM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pbo6l5+s61cCIsSVMPm7kBEfd5RkQY/0RyvQGh3ekvUPfy7Yvl9Q79r4d/+SDnpEs
-         upUELK/jcS+jtwWm9A8o1SFvBeFtGSeb/x9jWskV54u6tIt4o5KFTvGYcBFibKPaV7
-         SKZmgWceCEUM9LznsbWowtnK5eE4RhwRMmE1pmYc=
+        b=yDeSlJLpvuHVZdOmMyjo0G9iebxYMLv+iPHdEuVT6snalOkPkZiTAoai3RWbDX680
+         8RFPCUPPQcz+lj1oENm0ob2Loadj2glUNjM3Ee2qDpHDZeIXe+zbLj+ekmhuxYusYn
+         pEVaN09ywL9FIKhnFh5dac8FklcorOiT2gt9uw4g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Brian Foster <bfoster@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 511/677] mac80211: bail out if cipher schemes are invalid
-Date:   Wed, 12 May 2021 16:49:17 +0200
-Message-Id: <20210512144854.367419701@linuxfoundation.org>
+Subject: [PATCH 5.12 514/677] xfs: fix return of uninitialized value in variable error
+Date:   Wed, 12 May 2021 16:49:20 +0200
+Message-Id: <20210512144854.464702591@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -39,42 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit db878e27a98106a70315d264cc92230d84009e72 ]
+[ Upstream commit 3b6dd9a9aeeada19d0c820ff68e979243a888bb6 ]
 
-If any of the cipher schemes specified by the driver are invalid, bail
-out and fail the registration rather than just warning.  Otherwise, we
-might later crash when we try to use the invalid cipher scheme, e.g.
-if the hdr_len is (significantly) less than the pn_offs + pn_len, we'd
-have an out-of-bounds access in RX validation.
+A previous commit removed a call to xfs_attr3_leaf_read that
+assigned an error return code to variable error. We now have
+a few early error return paths to label 'out' that return
+error if error is set; however error now is uninitialized
+so potentially garbage is being returned.  Fix this by setting
+error to zero to restore the original behaviour where error
+was zero at the label 'restart'.
 
-Fixes: 2475b1cc0d52 ("mac80211: add generic cipher scheme support")
-Link: https://lore.kernel.org/r/20210408143149.38a3a13a1b19.I6b7f5790fa0958ed8049cf02ac2a535c61e9bc96@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: 07120f1abdff ("xfs: Add xfs_has_attr and subroutines")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Signed-off-by: Darrick J. Wong <djwong@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/main.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ fs/xfs/libxfs/xfs_attr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/mac80211/main.c b/net/mac80211/main.c
-index 1b9c82616606..0331f3a3c40e 100644
---- a/net/mac80211/main.c
-+++ b/net/mac80211/main.c
-@@ -1141,8 +1141,11 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
- 	if (local->hw.wiphy->max_scan_ie_len)
- 		local->hw.wiphy->max_scan_ie_len -= local->scan_ies_len;
- 
--	WARN_ON(!ieee80211_cs_list_valid(local->hw.cipher_schemes,
--					 local->hw.n_cipher_schemes));
-+	if (WARN_ON(!ieee80211_cs_list_valid(local->hw.cipher_schemes,
-+					     local->hw.n_cipher_schemes))) {
-+		result = -EINVAL;
-+		goto fail_workqueue;
-+	}
- 
- 	result = ieee80211_init_cipher_suites(local);
- 	if (result < 0)
+diff --git a/fs/xfs/libxfs/xfs_attr.c b/fs/xfs/libxfs/xfs_attr.c
+index 472b3039eabb..902e5f7e6642 100644
+--- a/fs/xfs/libxfs/xfs_attr.c
++++ b/fs/xfs/libxfs/xfs_attr.c
+@@ -928,6 +928,7 @@ restart:
+ 	 * Search to see if name already exists, and get back a pointer
+ 	 * to where it should go.
+ 	 */
++	error = 0;
+ 	retval = xfs_attr_node_hasname(args, &state);
+ 	if (retval != -ENOATTR && retval != -EEXIST)
+ 		goto out;
 -- 
 2.30.2
 
