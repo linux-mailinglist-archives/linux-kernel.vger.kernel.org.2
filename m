@@ -2,90 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC0637B423
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51FFC37B428
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbhELCWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 22:22:47 -0400
-Received: from mga18.intel.com ([134.134.136.126]:33619 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229934AbhELCWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 22:22:47 -0400
-IronPort-SDR: jzWAovs4DqC0qOiY/Fi+E+VHXzVC8KICwRbu0wOIfpiQC3CIlJxKAvycG4kxqMxTbKXYyIvvuA
- h8O4hvuvf5Pg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="187032625"
-X-IronPort-AV: E=Sophos;i="5.82,292,1613462400"; 
-   d="scan'208";a="187032625"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 19:21:39 -0700
-IronPort-SDR: Il00NeK2IBjFWolNL/9XJdOpXFlaBE0h0sJYaE7ukiG1sN97HbEggiL0Tz2hLktZAcYwbXbQEK
- SJcAyq82l+oA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,292,1613462400"; 
-   d="scan'208";a="436971462"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by orsmga008.jf.intel.com with ESMTP; 11 May 2021 19:21:36 -0700
-Date:   Wed, 12 May 2021 10:21:36 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
-        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
-        neeraju@codeaurora.org, ak@linux.intel.com, zhengjun.xing@intel.com
-Subject: Re: [PATCH v14 clocksource 6/6] clocksource: Print deviation in
- nanoseconds for unstable case
-Message-ID: <20210512022136.GC78351@shbuild999.sh.intel.com>
-References: <20210511233403.GA2896757@paulmck-ThinkPad-P17-Gen-1>
- <20210511233455.2897068-6-paulmck@kernel.org>
+        id S230002AbhELC1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 22:27:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229932AbhELC1J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 22:27:09 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187F1C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 19:26:01 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id t21so11770700plo.2
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 19:26:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NFXf1SUAkReC3MtaV1k9mib3TBX01qLYNs8RqJ8r1VY=;
+        b=WDry/cE9LcDDsvZONla927KdK58kdOq5cMvJBpA/+C5Roqpjz/q/YVsY9EPXO1hhfr
+         K5wljKBiFwRzt19KANN0iSIz1JSgxbM1OGBwg4wa3rYfw3xFn6/zmE1hmjPB4jCpCQNH
+         qgw/AdJ0gSIPx9mIWLjg3MP7RbYX1IU3BnB3U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NFXf1SUAkReC3MtaV1k9mib3TBX01qLYNs8RqJ8r1VY=;
+        b=IGPL0seHoMEJP+xDUHQdO5uJ8FSXcIG7wniG7FllDScEbpDgJbXKx06GucuSIFNmC8
+         hFJyZVfooo8wIYms1mJxNHXdJKDusyJ/zZJCBVnDa7KYg1qsdapdjLWxjJoYf3+3RqIE
+         W6tiL8GQgN2eiDY78meV9Hb+va4SLrqE2yDbQCakyJyBwv9AuTGKaoDOnxeD846aKece
+         QPRsaDhorHI22DAB/BdszMjNnmsldAMzy2GNN8dMq3U9hLuJIb80sMH77Hn9MCnig1rK
+         wclrHtbAdaNYZ4TF8M5Nbjd3nYKeXe4Q+iWpZjggak4CEJflrzAFlctBtkArfwvoRaEs
+         v5Tw==
+X-Gm-Message-State: AOAM533d+Fwq/jAeodC+0rpQkdIDYlIkIVeqPjT72xZlM6YUDQQKAfGW
+        8ef1FD5OV/p8OgeRcQUpDXkptQ==
+X-Google-Smtp-Source: ABdhPJxZh9XbVa0O5QvQA3ScydCZHBQ1k/eVLELOoCUCninL/YfEiRK9LcXbyUUwaKWXqBq1ffFctw==
+X-Received: by 2002:a17:902:b183:b029:ee:ff72:f580 with SMTP id s3-20020a170902b183b02900eeff72f580mr29650246plr.26.1620786360149;
+        Tue, 11 May 2021 19:26:00 -0700 (PDT)
+Received: from evanbenn1.syd.corp.google.com ([2401:fa00:9:15:83b5:4bca:90bf:147c])
+        by smtp.gmail.com with ESMTPSA id t10sm11716797pfq.68.2021.05.11.19.25.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 19:25:59 -0700 (PDT)
+From:   Evan Benn <evanbenn@chromium.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Julia Lawall <Julia.Lawall@lip6.fr>,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Evan Benn <evanbenn@chromium.org>
+Subject: [PATCH v4] drivers/clocksource/mediatek: Ack and disable interrupts on suspend
+Date:   Wed, 12 May 2021 12:25:44 +1000
+Message-Id: <20210512122528.v4.1.I1d9917047de06715da16e1620759f703fcfdcbcb@changeid>
+X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511233455.2897068-6-paulmck@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 04:34:55PM -0700, Paul E. McKenney wrote:
-> From: Feng Tang <feng.tang@intel.com>
-> 
-> Currently when an unstable clocksource is detected, the raw counters
-> of that clocksource and watchdog will be printed, which can only be
-> understood after some math calculation.  So print the existing delta in
-> nanoseconds to make it easier for humans to check the results.
-> 
-> Signed-off-by: Feng Tang <feng.tang@intel.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  kernel/time/clocksource.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-> index bbe1bcf44ffa..9c45b98e60e2 100644
-> --- a/kernel/time/clocksource.c
-> +++ b/kernel/time/clocksource.c
-> @@ -406,10 +406,10 @@ static void clocksource_watchdog(struct timer_list *unused)
->  		if (abs(cs_nsec - wd_nsec) > md) {
->  			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
->  				smp_processor_id(), cs->name);
-> -			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
-> -				watchdog->name, wdnow, wdlast, watchdog->mask);
-> -			pr_warn("                      '%s' cs_now: %llx cs_last: %llx mask: %llx\n",
-> -				cs->name, csnow, cslast, cs->mask);
-> +			pr_warn("                      '%s' wd_nesc: %lld wd_now: %llx wd_last: %llx mask: %llx\n",
+Interrupts are disabled during suspend before this driver disables its
+timers. ARM trusted firmware will abort suspend if the timer irq is
+pending, so ack and disable the timer interrupt during suspend.
 
-There is a typo in the message, 'wd_nesc' should be 'wd_nsec' , 
-sorry for that.
+Signed-off-by: Evan Benn <evanbenn@chromium.org>
+---
 
-Thanks,
-Feng
+Changes in v4:
+Fix the comment style.
 
+Changes in v3:
+Move the ACK from the shutdown to the suspend function.
 
-> +				watchdog->name, wd_nsec, wdnow, wdlast, watchdog->mask);
-> +			pr_warn("                      '%s' cs_nsec: %lld cs_now: %llx cs_last: %llx mask: %llx\n",
-> +				cs->name, cs_nsec, csnow, cslast, cs->mask);
->  			if (curr_clocksource == cs)
->  				pr_warn("                      '%s' is current clocksource.\n", cs->name);
->  			else if (curr_clocksource)
-> -- 
-> 2.31.1.189.g2e36527f23
+Changes in v2:
+Remove the patch that splits the drivers into 2 files.
+
+ drivers/clocksource/timer-mediatek.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/drivers/clocksource/timer-mediatek.c b/drivers/clocksource/timer-mediatek.c
+index 9318edcd8963..ab63b95e414f 100644
+--- a/drivers/clocksource/timer-mediatek.c
++++ b/drivers/clocksource/timer-mediatek.c
+@@ -241,6 +241,28 @@ static void mtk_gpt_enable_irq(struct timer_of *to, u8 timer)
+ 	       timer_of_base(to) + GPT_IRQ_EN_REG);
+ }
+ 
++static void mtk_gpt_resume(struct clock_event_device *clk)
++{
++	struct timer_of *to = to_timer_of(clk);
++
++	mtk_gpt_enable_irq(to, TIMER_CLK_EVT);
++}
++
++static void mtk_gpt_suspend(struct clock_event_device *clk)
++{
++	struct timer_of *to = to_timer_of(clk);
++
++	/* Disable all interrupts */
++	writel(0x0, timer_of_base(to) + GPT_IRQ_EN_REG);
++
++	/*
++	 * This is called with interrupts disabled,
++	 * so we need to ack any interrupt that is pending
++	 * or for example ATF will prevent a suspend from completing.
++	 */
++	writel(0x3f, timer_of_base(to) + GPT_IRQ_ACK_REG);
++}
++
+ static struct timer_of to = {
+ 	.flags = TIMER_OF_IRQ | TIMER_OF_BASE | TIMER_OF_CLOCK,
+ 
+@@ -286,6 +308,8 @@ static int __init mtk_gpt_init(struct device_node *node)
+ 	to.clkevt.set_state_oneshot = mtk_gpt_clkevt_shutdown;
+ 	to.clkevt.tick_resume = mtk_gpt_clkevt_shutdown;
+ 	to.clkevt.set_next_event = mtk_gpt_clkevt_next_event;
++	to.clkevt.suspend = mtk_gpt_suspend;
++	to.clkevt.resume = mtk_gpt_resume;
+ 	to.of_irq.handler = mtk_gpt_interrupt;
+ 
+ 	ret = timer_of_init(node, &to);
+-- 
+2.31.1.607.g51e8a6a459-goog
+
