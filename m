@@ -2,101 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9954B37ECCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 119D737ECCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343883AbhELT7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:59:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55128 "EHLO mail.kernel.org"
+        id S1344014AbhELUAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:00:00 -0400
+Received: from mga12.intel.com ([192.55.52.136]:39791 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353350AbhELSLW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 14:11:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50AA661454;
-        Wed, 12 May 2021 18:06:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620842773;
-        bh=jRKlhqwjmPf3x/hXRdH1taxBiqw3u6f7H+MQnP5qJaw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nSkDRYBAAzNNQ7auhY0FxtL7bIGa7bqDXFXiNw4BDDcfxvidDKxsSfuRGZX3wQdU1
-         KlOdn4B4bFr9zy6pocOvIqKTc/m/WPJpmoAApD932YbFhGv/rYBQnykMDTvwnUHd77
-         /YOzBUDWmkucRBu5lK8Qqr2JCkvzOFBJZlXZ/dKT6EROqGODnFxaQuN3+Hcj8OBBEE
-         r5wzp4diYk6i4s/PqxF5ZNIWaEbkV5B8L4ZbLi4ZBTQrllthHbKY/1vaVhco9owYZi
-         IZEU92NJhZJnogWxZ9qtPbRDqmO4e+TtcjmkjjEsPNtZZl5UPkFhzePIaH5wTugY3k
-         qXuAtUn7gnLLw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hui Wang <hui.wang@canonical.com>, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 4.4 4/4] ALSA: hda: generic: change the DAC ctl name for LO+SPK or LO+HP
-Date:   Wed, 12 May 2021 14:06:03 -0400
-Message-Id: <20210512180604.666144-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210512180604.666144-1-sashal@kernel.org>
-References: <20210512180604.666144-1-sashal@kernel.org>
+        id S1353798AbhELSMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 14:12:46 -0400
+IronPort-SDR: H0malZIzDX5+FdQ+i+zPMqYXiGSUcC4Cj0zDvZnGDi80nto/HcpKEnu+8LGbofuiLHA8U/LdS/
+ OcRU7D4VWq3w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="179368067"
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="179368067"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 11:11:36 -0700
+IronPort-SDR: cBYKzJw1qCwlG20Y/VdCFTcIS9oozhCEOIajXljuTpIpTsJqrVo3rG/oUJVa9+y1OvESq8FZ2Y
+ /NvlUqvG3tXg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="625524898"
+Received: from lkp-server01.sh.intel.com (HELO 1e931876798f) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 12 May 2021 11:11:35 -0700
+Received: from kbuild by 1e931876798f with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lgtKY-0000Qd-Oz; Wed, 12 May 2021 18:11:34 +0000
+Date:   Thu, 13 May 2021 02:11:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:timers/urgent] BUILD SUCCESS
+ e09784a8a751e539dffc94d43bc917b0ac1e934a
+Message-ID: <609c1a51.KFZMcvP3Fs1Iq3KM%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/urgent
+branch HEAD: e09784a8a751e539dffc94d43bc917b0ac1e934a  alarmtimer: Check RTC features instead of ops
 
-[ Upstream commit f48652bbe3ae62ba2835a396b7e01f063e51c4cd ]
+elapsed time: 735m
 
-Without this change, the DAC ctl's name could be changed only when
-the machine has both Speaker and Headphone, but we met some machines
-which only has Lineout and Headhpone, and the Lineout and Headphone
-share the Audio Mixer0 and DAC0, the ctl's name is set to "Front".
+configs tested: 141
+configs skipped: 2
 
-On most of machines, the "Front" is used for Speaker only or Lineout
-only, but on this machine it is shared by Lineout and Headphone,
-This introduces an issue in the pipewire and pulseaudio, suppose users
-want the Headphone to be on and the Speaker/Lineout to be off, they
-could turn off the "Front", this works on most of the machines, but on
-this machine, the "Front" couldn't be turned off otherwise the
-headphone will be off too. Here we do some change to let the ctl's
-name change to "Headphone+LO" on this machine, and pipewire and
-pulseaudio already could handle "Headphone+LO" and "Speaker+LO".
-(https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/747)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-BugLink: http://bugs.launchpad.net/bugs/804178
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20210504073917.22406-1-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                         tb0287_defconfig
+m68k                          sun3x_defconfig
+mips                          rb532_defconfig
+arm                      jornada720_defconfig
+arm                          imote2_defconfig
+um                               allmodconfig
+sh                          landisk_defconfig
+arm                         at91_dt_defconfig
+powerpc                     tqm8555_defconfig
+powerpc                 mpc836x_mds_defconfig
+openrisc                  or1klitex_defconfig
+m68k                          amiga_defconfig
+mips                           xway_defconfig
+sh                           se7712_defconfig
+arm                          collie_defconfig
+powerpc                     ppa8548_defconfig
+powerpc                      obs600_defconfig
+mips                     decstation_defconfig
+arm                           sunxi_defconfig
+powerpc                    sam440ep_defconfig
+mips                           jazz_defconfig
+powerpc                        warp_defconfig
+s390                       zfcpdump_defconfig
+xtensa                         virt_defconfig
+sh                        sh7763rdp_defconfig
+csky                                defconfig
+arm                        mini2440_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                    socrates_defconfig
+arm                         s5pv210_defconfig
+arm                        magician_defconfig
+arm                         mv78xx0_defconfig
+arm                       aspeed_g4_defconfig
+mips                      malta_kvm_defconfig
+parisc                generic-32bit_defconfig
+powerpc                     sequoia_defconfig
+sh                           se7619_defconfig
+riscv                    nommu_k210_defconfig
+powerpc                     powernv_defconfig
+arc                            hsdk_defconfig
+arm                          iop32x_defconfig
+mips                        workpad_defconfig
+arm                         bcm2835_defconfig
+arm                        spear6xx_defconfig
+sh                          rsk7264_defconfig
+powerpc                       holly_defconfig
+mips                         mpc30x_defconfig
+mips                  decstation_64_defconfig
+mips                           ip27_defconfig
+ia64                                defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                        keystone_defconfig
+parisc                           alldefconfig
+powerpc                        fsp2_defconfig
+m68k                       m5275evb_defconfig
+xtensa                          iss_defconfig
+powerpc                 mpc834x_mds_defconfig
+h8300                     edosk2674_defconfig
+arm                         lpc18xx_defconfig
+arm                       mainstone_defconfig
+sparc64                             defconfig
+sh                            hp6xx_defconfig
+arm                         shannon_defconfig
+powerpc                    ge_imp3a_defconfig
+sh                            titan_defconfig
+sh                   sh7770_generic_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20210512
+x86_64               randconfig-a004-20210512
+x86_64               randconfig-a001-20210512
+x86_64               randconfig-a005-20210512
+x86_64               randconfig-a002-20210512
+x86_64               randconfig-a006-20210512
+i386                 randconfig-a003-20210512
+i386                 randconfig-a001-20210512
+i386                 randconfig-a005-20210512
+i386                 randconfig-a004-20210512
+i386                 randconfig-a002-20210512
+i386                 randconfig-a006-20210512
+i386                 randconfig-a016-20210512
+i386                 randconfig-a014-20210512
+i386                 randconfig-a011-20210512
+i386                 randconfig-a015-20210512
+i386                 randconfig-a012-20210512
+i386                 randconfig-a013-20210512
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a015-20210512
+x86_64               randconfig-a012-20210512
+x86_64               randconfig-a011-20210512
+x86_64               randconfig-a013-20210512
+x86_64               randconfig-a016-20210512
+x86_64               randconfig-a014-20210512
+
 ---
- sound/pci/hda/hda_generic.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
-
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index dcefb12557f1..7fed8d1bb79c 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -1182,11 +1182,17 @@ static const char *get_line_out_pfx(struct hda_codec *codec, int ch,
- 		*index = ch;
- 		return "Headphone";
- 	case AUTO_PIN_LINE_OUT:
--		/* This deals with the case where we have two DACs and
--		 * one LO, one HP and one Speaker */
--		if (!ch && cfg->speaker_outs && cfg->hp_outs) {
--			bool hp_lo_shared = !path_has_mixer(codec, spec->hp_paths[0], ctl_type);
--			bool spk_lo_shared = !path_has_mixer(codec, spec->speaker_paths[0], ctl_type);
-+		/* This deals with the case where one HP or one Speaker or
-+		 * one HP + one Speaker need to share the DAC with LO
-+		 */
-+		if (!ch) {
-+			bool hp_lo_shared = false, spk_lo_shared = false;
-+
-+			if (cfg->speaker_outs)
-+				spk_lo_shared = !path_has_mixer(codec,
-+								spec->speaker_paths[0],	ctl_type);
-+			if (cfg->hp_outs)
-+				hp_lo_shared = !path_has_mixer(codec, spec->hp_paths[0], ctl_type);
- 			if (hp_lo_shared && spk_lo_shared)
- 				return spec->vmaster_mute.hook ? "PCM" : "Master";
- 			if (hp_lo_shared)
--- 
-2.30.2
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
