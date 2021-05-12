@@ -2,87 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017B937B56F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4416C37B572
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhELFWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 01:22:11 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:33980 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229952AbhELFWK (ORCPT
+        id S230104AbhELFZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 01:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhELFZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 01:22:10 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14C5KkTK026681;
-        Wed, 12 May 2021 07:20:46 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=hGYOG/xhcibzUoGBQ1ZJJS1rCb/Qy1K1fuUyBHsk+us=;
- b=n13KkgbD0MhRQAk1nQhEvRggprg+QCn+pJhX1cdoBn2SYZ51Jibq0188U6WxgwT7gz5b
- 4G1DKPvnBdfpkeG7BpjqKedETm5bXv5lITynhZih4olzWUZNK1tWCrHELxtGxlXZVkP+
- gYmtWqziPJ61R/vKP1xHfY1ZQVZWio1qlrEW4S/iCTXaDZP8CGnJaLvZBw0NY9PvxFix
- r/eNXQnoJMO3tC+GPzDheWPdwp0LaNzrBzeuhwl9Zm91AK8Sn/0hHND53b8WCmnbR+jf
- zFQQHm/HXXFh6kq+CyCOdqMvurghD3mo2GxkQ4QBc9VbpeqVztetivnv7i+5dhuUgqSd gw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38fggpfpcy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 May 2021 07:20:46 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E45BE10002A;
-        Wed, 12 May 2021 07:20:42 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D562520A077;
-        Wed, 12 May 2021 07:20:42 +0200 (CEST)
-Received: from localhost (10.75.127.46) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 12 May 2021 07:20:42
- +0200
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     <broonie@kernel.org>, <amelie.delaunay@foss.st.com>
-CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>,
-        <alain.volmat@foss.st.com>
-Subject: [PATCH] MAINTAINERS: Add Alain Volmat as STM32 SPI maintainer
-Date:   Wed, 12 May 2021 07:20:42 +0200
-Message-ID: <1620796842-23546-1-git-send-email-alain.volmat@foss.st.com>
-X-Mailer: git-send-email 2.7.4
+        Wed, 12 May 2021 01:25:53 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDC5C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 22:24:45 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id j75so21202574oih.10
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 22:24:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZeJYl1+SkmdxkoBaspquNgXaarFia8TUxupmsd/+gVY=;
+        b=vSKokEZ0qBlDZ8rMW/UFs7iLnVRflh5NB5KSfw8/+oz5/uYilhkmom4C8op6R/S4RM
+         lwnZILjuXTKGDZo7DRUwEGneUq97o1WR49Z43p/oa9a++jbckLL0v4idWzPmq+V+75Bk
+         jjPrdFqAEBzi7QnKjSbfSJZOu53czSSZTsBB7FE7a8aNfxS6ULsyQ00E2wrwewSR2Wke
+         Lh5KFpd0Es3mwmYaHvNXWZMfjEOrHHNTrLTVxkqOjsTVRZ/SJbdegn2Xls6mYbF8otDJ
+         yv+z35Ly+KybVA9UMM/B+RSk8IzUXoipGLkIH1T+MlZpH6gQAx+qYb8qQA29pk8bJzFZ
+         rbQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZeJYl1+SkmdxkoBaspquNgXaarFia8TUxupmsd/+gVY=;
+        b=rVB2FwwTgxw9pHMRQO34gjQdHMSsZwLf/3y/mU/AvQD0ugydgpqQaGnoDYP0OqXy+J
+         Hz+v2Hyq0Rm5YlVZyZo09j60qCikFW/Z2FxqBMnw5EkVvnXfKOrZrR45fkti36oHMz9d
+         Bvhgt+fW0NxeUNtD/vxPBzP4sMWJ3NvYZy4xq2JTh0UoWDtdVR4T3PSK3L7WXap0TanT
+         r/G7kDj2MrfSJ6xpugdaaFvOZU59QVl+iCfGDSoUore9TfORDzJR7BKtOZ0uiEzIbIDt
+         Y0ztjMksi5/EpGfHAp3+Y9zFiX+zsFpIk4piheSz1fqGHJACAMbUVcgfkjynMyYMVIl0
+         fixQ==
+X-Gm-Message-State: AOAM533vS+SdCFHc9GZC5JiUVlEiHaXj7lvIl27ACFHJi+fTYGM5uBTV
+        v19NSwATm5np0OjKijCAx5//ZL8iVZsn2pmxxXCKIA==
+X-Google-Smtp-Source: ABdhPJw6BZ1VhOhVPS0LkL38VPvvrWeVNG5WgUiq59oyadcpfJGC5zw/TctLV44J44xfy5EW/DD6ucJaGG7+iMGciUA=
+X-Received: by 2002:aca:ad06:: with SMTP id w6mr6316750oie.54.1620797085238;
+ Tue, 11 May 2021 22:24:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-12_01:2021-05-11,2021-05-12 signatures=0
+References: <20210511044253.469034-1-yuri.benditovich@daynix.com>
+ <20210511044253.469034-5-yuri.benditovich@daynix.com> <eb8c4984-f0cc-74ee-537f-fc60deaaaa73@redhat.com>
+ <CAOEp5OdrCDPx4ijLcEOm=Wxma6hc=nyqw4Xm6bggBxvgtR0tbg@mail.gmail.com> <89759261-3a72-df6c-7a81-b7a48abfad44@redhat.com>
+In-Reply-To: <89759261-3a72-df6c-7a81-b7a48abfad44@redhat.com>
+From:   Yuri Benditovich <yuri.benditovich@daynix.com>
+Date:   Wed, 12 May 2021 08:24:33 +0300
+Message-ID: <CAOEp5Ocm9Q69Fv=oeyCs01F9J4nCTPiOPpw9_BRZ0WnF+LtEFQ@mail.gmail.com>
+Subject: Re: [PATCH 4/4] tun: indicate support for USO feature
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        Yan Vugenfirer <yan@daynix.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Alain Volmat as STM32 SPI maintainer.
+On Wed, May 12, 2021 at 4:33 AM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> =E5=9C=A8 2021/5/11 =E4=B8=8B=E5=8D=884:33, Yuri Benditovich =E5=86=99=E9=
+=81=93:
+> > On Tue, May 11, 2021 at 9:50 AM Jason Wang <jasowang@redhat.com> wrote:
+> >>
+> >> =E5=9C=A8 2021/5/11 =E4=B8=8B=E5=8D=8812:42, Yuri Benditovich =E5=86=
+=99=E9=81=93:
+> >>> Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
+> >>> ---
+> >>>    drivers/net/tun.c | 2 +-
+> >>>    1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> >>> index 84f832806313..a35054f9d941 100644
+> >>> --- a/drivers/net/tun.c
+> >>> +++ b/drivers/net/tun.c
+> >>> @@ -2812,7 +2812,7 @@ static int set_offload(struct tun_struct *tun, =
+unsigned long arg)
+> >>>                        arg &=3D ~(TUN_F_TSO4|TUN_F_TSO6);
+> >>>                }
+> >>>
+> >>> -             arg &=3D ~TUN_F_UFO;
+> >>> +             arg &=3D ~(TUN_F_UFO|TUN_F_USO);
+> >>
+> >> It looks to me kernel doesn't use "USO", so TUN_F_UDP_GSO_L4 is a bett=
+er
+> >> name for this
+> > No problem, I can change it in v2
+> >
+> >   and I guess we should toggle NETIF_F_UDP_GSO_l4 here?
+> >
+> > No, we do not, because this indicates only the fact that the guest can
+> > send large UDP packets and have them splitted to UDP segments.
+>
+>
+> Actually the reverse. The set_offload() controls the tuntap TX path
+> (guest RX path).
 
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+The set_offloads does 2 things:
+1. At the initialization time qemu probes set_offload(something) to
+check which features are supported by TAP/TUN.
+2. Later it configures the guest RX path according to guest's needs/capabil=
+ities
+Typical initialization sequence is (in case the QEMU supports USO feature):
+TAP/TUN set offload 11 (probe for UFO support)
+TAP/TUN set offload 21 (probe for USO support)
+TAP/TUN set offload 0
+...
+TAP/TUN set offload 7 (configuration of offloads according to GUEST feature=
+s)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index de412b9813eb..3d98375ea6f0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16981,6 +16981,12 @@ L:	linux-i2c@vger.kernel.org
- S:	Maintained
- F:	drivers/i2c/busses/i2c-stm32*
- 
-+ST STM32 SPI DRIVER
-+M:	Alain Volmat <alain.volmat@foss.st.com>
-+L:	linux-spi@vger.kernel.org
-+S:	Maintained
-+F:	drivers/spi/spi-stm32.c
-+
- ST VL53L0X ToF RANGER(I2C) IIO DRIVER
- M:	Song Qiang <songqiang1304521@gmail.com>
- L:	linux-iio@vger.kernel.org
--- 
-2.7.4
+This series of patches is for VIRTIO_NET_F_HOST_USO only, virtio-net
+features like VIRTIO_NET_F_GUEST_USO_(4/6/whatever) are not defined in
+the spec yet.
 
+>
+> When VIRTIO_NET_F_GUEST_XXX was not negotiated, the corresponding netdev
+> features needs to be disabled. When host tries to send those packets to
+> guest, it needs to do software segmentation.
+>
+> See virtio_net_apply_guest_offloads().
+>
+> There's currently no way (or not need) to prevent tuntap from receiving
+> GSO packets.
+>
+> Thanks
+>
+>
+> >
+> >> And how about macvtap?
+> > We will check how to do that for macvtap. We will send a separate
+> > patch for macvtap or ask for advice.
+> >
+> >> Thanks
+> >>
+> >>
+> >>>        }
+> >>>
+> >>>        /* This gives the user a way to test for new features in futur=
+e by
+>
