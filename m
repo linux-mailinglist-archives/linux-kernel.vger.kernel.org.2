@@ -2,169 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E072037BF6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4452137BF6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbhELOLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbhELOLJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:11:09 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF9DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:10:00 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id g38so30877564ybi.12
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:10:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZMqb9pDlPkxQxt7DO3JSQX2FDPEZa9Tg1uyg9iwkb3w=;
-        b=OV7yj3NQQdF7FlfLdQEdonq710miiphHYoEQVNeNZ/aiBaF4QduqoFFT+PXWILPjkX
-         3lLKurAgxyUo4GVwvrLvBheX30QVU+hvIwSwo0XJOk9i6RCZk2lFYq4cfVn8gyMZcCpj
-         0FRw/iy/24u2PDncsePYn6l0Rj8jfq5YN5I2LIey4wp0seVSlh2HD5eVdLyVPNxYGaz9
-         i4ClNAwgNx1rLyC2Au/6hAjL1MYoriYfm4dd70BhFeDJnXG2VxqDvFekWkaKcfju6DmF
-         TOUNPilaGx7Sod94c+dOHZgvHtrzjtHLOlD6Rx6V+8gI/3vJGfZI4gD2mjvfjOheQiCC
-         qqcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZMqb9pDlPkxQxt7DO3JSQX2FDPEZa9Tg1uyg9iwkb3w=;
-        b=OMGDYtCFR6pg6W7RHdepk9AXAIm1yp4QKcPS8VK0SmLoTYIlETezTeygj8wA64oTBr
-         YFhFEpNkLrJrqDbYzSBdMbzOI/VU3athfezizmxwrOM/RZf5JM1/XPNFtUCA8MiAB6sn
-         VPdgkdsZihkuXggUq4VckpCqACGbZmrPgPuWMntHi8/UGAhi28xLagVOhrxI+Ry8JIS6
-         ds95Q9cLd/Mg8a8TY/7pQWkA/YUlQOtf0qIoaL0lMgYMh7yIUxOWyebxsB/jHwRe19Bw
-         Uuu/GKYA0KrriUZju32vaWM3Z6kwDxzOvXW8tpC+FCzdV+96RKxupmHtSr9GM3LZcwcm
-         +OSQ==
-X-Gm-Message-State: AOAM5308kb0NLPsazHbj7+2wukO7p5vDrT2YQR4ygMN0w3In5sxFRY5Q
-        mBjySTVmZyqTIkNMOzkmu5lD0mOonAcCUXnUmsYlRQ==
-X-Google-Smtp-Source: ABdhPJxHpb6RWithEu2vmhMDoaI9be2NUJek9rc1e/+bPZxqSoTLthtREkjsSfQchD2N3oC1udEzZ0LIqBewSkPZWUI=
-X-Received: by 2002:a25:7ac5:: with SMTP id v188mr27529673ybc.132.1620828599169;
- Wed, 12 May 2021 07:09:59 -0700 (PDT)
+        id S231295AbhELOLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:11:24 -0400
+Received: from mga14.intel.com ([192.55.52.115]:16915 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230494AbhELOLK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 10:11:10 -0400
+IronPort-SDR: RZVmWhFVZgUaVGoR126Qb7HKmcIfglT/rUFLFodKYfSibp96YiGD+/+VLhnjHrCAcOb7icyHyd
+ ntSDwzGiYwyA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="199392373"
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="199392373"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 07:10:02 -0700
+IronPort-SDR: MwK393zN0NXsGH9v371DsExp1Duy8q4dd45lXpmIecRhhmWCN5FkdKFOFlybpNy9cooSAeIanX
+ TBndhYy0A4jg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="437218966"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga008.jf.intel.com with ESMTP; 12 May 2021 07:10:02 -0700
+Received: from [10.209.99.183] (kliang2-MOBL.ccr.corp.intel.com [10.209.99.183])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 9C484580342;
+        Wed, 12 May 2021 07:10:00 -0700 (PDT)
+Subject: Re: [PATCH V6] perf: Reset the dirty counter to prevent the leak for
+ an RDPMC task
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Rob Herring <robh@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Stephane Eranian <eranian@google.com>,
+        Namhyung Kim <namhyung@kernel.org>
+References: <1619115952-155809-1-git-send-email-kan.liang@linux.intel.com>
+ <20210510191811.GA21560@worktop.programming.kicks-ass.net>
+ <CAL_JsqKeVoBL6cn6CGUW17jnf8B+4aHKeyRdceaGCiKzsUsZwg@mail.gmail.com>
+ <bbe76d64-f6ff-29eb-9f62-2d4f934463e3@linux.intel.com>
+ <CAL_JsqJrrqbHbMXEpy++nGzZ5JD=mm4O2xPgL8g1MUXAQGk=Jw@mail.gmail.com>
+ <f390aa11-e475-9d9d-9384-959a7ed32fd6@linux.intel.com>
+ <YJuFW08p8dsKc/wN@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <03fff406-3050-57dc-1f17-0f5630e810af@linux.intel.com>
+Date:   Wed, 12 May 2021 10:09:59 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
- <20210511133118.15012-3-mcroce@linux.microsoft.com> <fa93976a-3460-0f7f-7af4-e78bfe55900a@gmail.com>
- <YJuk3o6CezbVrT+P@apalos.home>
-In-Reply-To: <YJuk3o6CezbVrT+P@apalos.home>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 12 May 2021 16:09:47 +0200
-Message-ID: <CANn89iLkq0zcbVeRRPGfeb5ZRcnz+e7dR1BCj-RGehNYE1Hzkw@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 2/4] page_pool: Allow drivers to hint on SKB recycling
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YJuFW08p8dsKc/wN@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 11:50 AM Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
->
-> [...]
-> > > Since we added an extra argument on __skb_frag_unref() to handle
-> > > recycling, update the current users of the function with that.
-> >
-> > This part could be done with a preliminary patch, only adding this
-> > extra boolean, this would keep the 'complex' patch smaller.
->
-> Sure
->
-> [...]
-> > >  #include <linux/uaccess.h>
-> > >  #include <trace/events/skb.h>
-> > > @@ -645,6 +648,11 @@ static void skb_free_head(struct sk_buff *skb)
-> > >  {
-> > >     unsigned char *head = skb->head;
-> > >
-> > > +#if IS_BUILTIN(CONFIG_PAGE_POOL)
-> >
-> > Why IS_BUILTIN() ?
->
-> No reason, we'll replace it with an ifdef
->
-> >
-> > PAGE_POOL is either y or n
-> >
-> > IS_ENABLED() would look better, since we use IS_BUILTIN() for the cases where a module might be used.
-> >
-> > Or simply #ifdef CONFIG_PAGE_POOL
-> >
-> > > +   if (skb->pp_recycle && page_pool_return_skb_page(head))
-> >
-> > This probably should be attempted only in the (skb->head_frag) case ?
->
-> I think the extra check makes sense.
 
-What do you mean here ?
 
->
-> >
-> > Also this patch misses pskb_expand_head()
->
-> I am not sure I am following. Misses what? pskb_expand_head() will either
-> call skb_release_data() or skb_free_head(), which would either recycle or
-> unmap the buffer for us (depending on the page refcnt)
+On 5/12/2021 3:35 AM, Peter Zijlstra wrote:
+> On Tue, May 11, 2021 at 05:42:54PM -0400, Liang, Kan wrote:
+>> diff --git a/kernel/events/core.c b/kernel/events/core.c
+>> index 1574b70..8216acc 100644
+>> --- a/kernel/events/core.c
+>> +++ b/kernel/events/core.c
+>> @@ -3851,7 +3851,7 @@ static void perf_event_context_sched_in(struct
+>> perf_event_context *ctx,
+>>   		cpu_ctx_sched_out(cpuctx, EVENT_FLEXIBLE);
+>>   	perf_event_sched_in(cpuctx, ctx, task);
+>>
+>> -	if (cpuctx->sched_cb_usage && pmu->sched_task)
+>> +	if (pmu->sched_task && (cpuctx->sched_cb_usage ||
+>> atomic_read(&pmu->sched_cb_usages)))
+>>   		pmu->sched_task(cpuctx->task_ctx, true);
+> 
+> Aside from the obvious whitespace issues; I think this should work.
+> 
 
- pskb_expand_head() allocates a new skb->head, from slab.
+Thanks. The whitespace should be caused by the copy/paste. I will fix it 
+in the V7.
 
-We should clear skb->pp_recycle for consistency of the skb->head_frag
-clearing we perform there.
+I did more tests. For some cases, I can still observe the dirty counter 
+for the first RDPMC read. I think we still have to clear the dirty 
+counters in the x86_pmu_event_mapped() for the first RDPMC read.
+I have to disable the the interrupts to prevent the preemption.
 
-But then, I now realize you use skb->pp_recycle bit for both skb->head
-and fragments,
-and rely on this PP_SIGNATURE thing (I note that patch 1 changelog
-does not describe why a random page will _not_ have this signature by
-bad luck)
 
-Please document/describe which struct page fields are aliased with
-page->signature ?
+  static void x86_pmu_event_mapped(struct perf_event *event, struct 
+mm_struct *mm)
+  {
++	unsigned long flags;
++
+  	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+  		return;
 
-Thanks !
+  	/*
++	 * Enable sched_task() for the RDPMC task,
++	 * and clear the existing dirty counters.
++	 */
++	if (x86_pmu.sched_task && event->hw.target) {
++		atomic_inc(&event->pmu->sched_cb_usages);
++		local_irq_save(flags);
++		x86_pmu_clear_dirty_counters();
++		local_irq_restore(flags);
++	}
++
++	/*
+  	 * This function relies on not being called concurrently in two
+  	 * tasks in the same mm.  Otherwise one task could observe
+  	 * perf_rdpmc_allowed > 1 and return all the way back to
+
+Thanks,
+Kan
