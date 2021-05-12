@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C931637ED45
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6B337ED4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385978AbhELURY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:17:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
+        id S1386112AbhELUTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:19:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344415AbhELT0K (ORCPT
+        with ESMTP id S1381016AbhELTdM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 15:26:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E519BC0612F3;
-        Wed, 12 May 2021 12:20:17 -0700 (PDT)
-Date:   Wed, 12 May 2021 19:20:14 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620847216;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cb+EFrrtpjJzNhmminVgptr9jigBUSkSdRX9KgHd31Y=;
-        b=Q8rlsGtqEXoqUVsu5keVYKsYDSYTgvvQqsUm7QOf0DwuZD9PC936vtTMKOcnqbHDqf0K9i
-        EQXs+E3LF5uLbYG4n4ylPio6Nrge/xWPTZZd6eFAcvGl0aBRGJp3VYA2LAQTDwx2PA/xgB
-        VvXPHrF7RDQIHDbF8q5MEHRUq7tpHlSGP1/rCryj+c9rjvhjFWqWoTM5V85sDesJS4ilnu
-        LmBHxezwDridp6VYG/9HbqkUJJhpFKlp+0bSBZ1T6O2Mr/RGdHMARGSeamCndJEFQUva0K
-        kUJrX9bx0ABmL8Crz5H8mJTzhlZ92mcvVsnME4xncgkWqzNQZZt9r38VtcIQSg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620847216;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cb+EFrrtpjJzNhmminVgptr9jigBUSkSdRX9KgHd31Y=;
-        b=w0zJDVIWQHAcKXJkBqEnPjL8RJ082AoxMMHPw5gEVKhppUFGn6PHggquPvtw8JbVWCGpe3
-        LAHcSODg0cIrRDAA==
-From:   "tip-bot2 for Vasily Gorbik" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/urgent] objtool: Fix elf_create_undef_symbol() endianness
-Cc:     Vasily Gorbik <gor@linux.ibm.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>, x86@kernel.org,
+        Wed, 12 May 2021 15:33:12 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DA8C061374;
+        Wed, 12 May 2021 12:24:54 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id t193so6411893pgb.4;
+        Wed, 12 May 2021 12:24:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6Sm0tlDzDYGI8SetZLYGafgnhr+P2zJ6LJDeo4pSrGc=;
+        b=W3Ka0EnP6nk9NWThSJEDnC32NbOsw6HwZRxS9FxCao6dGRR8Ifo0/4QtqTzGrBGYDm
+         NayDsiz+p3oC7l5majf0yLxp1kX9SEq0tsgP6dWTlBFnWzaOinh4C/wZf9D24+V97Q5B
+         xfkcbsUJdSmr4YE94M1ln9B7SFJgLdtSQC+93Up1n22BobdPWRvHJuHQTYadIChvHPa2
+         wCyngXrT34iuNKe3mWOxhoEbz0g8dkGz0UCWJwioQanPeDhZlx5z2Xcbplh0opPNB7hw
+         Tlu1FbC1FOU7P09e1IaqJYGutRAFO6iTXM/1cL6LlcqydZ7ZbxBCerMa0z0tS7z8GUjj
+         qkBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6Sm0tlDzDYGI8SetZLYGafgnhr+P2zJ6LJDeo4pSrGc=;
+        b=Jhg+XQumOamxx8vJsjQlllxQ96yG9fg3t/bRS8kJZATrKyErYttPLHBK4VnqX+It7J
+         Etw8RoW4zc2/L2wEt0cnOrTTs2nqAnmb/iDRgpoU2jd3cSN4a6VFpw2DUzSZs1l1zGPA
+         bTDeBd9O/wGuzZa4vGIL1Q2lsP/LBwf+LbeST8m0MKWsC2vCnYgxOpz2LkYAdX4VfXGj
+         bG/5TnFDWq9n+KfNTkZkanGyfJFbL1NySEq0RqXOo79iAAXq/TF9Utam59cRCH57xzkg
+         NhiXLzJok2HRiNGBOrgKCKp7vHKSbZQ23Q7jjI08rcfsPaEON1iJTV1Sh0ULsryFx8+j
+         uMog==
+X-Gm-Message-State: AOAM5324hDqvA/ekDKrBDbFzVU31wT88npDQ59/yczsZIqORWqpQqsv/
+        K1ykq5j0DhUfBDFC2VfT/h14fpiLJC8=
+X-Google-Smtp-Source: ABdhPJxT+RsAbSyMt7Vx8ONS0PRPKC7fjwoJHM5zS+H66DyP6j64NIkKWD/4UssgWMyMYDSybLV2BQ==
+X-Received: by 2002:aa7:9a41:0:b029:28e:761b:4bb7 with SMTP id x1-20020aa79a410000b029028e761b4bb7mr37507534pfj.48.1620847493271;
+        Wed, 12 May 2021 12:24:53 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id h1sm459447pfo.200.2021.05.12.12.24.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 May 2021 12:24:52 -0700 (PDT)
+Subject: Re: [PATCH 5.4 000/244] 5.4.119-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3Cpatch-1=2Ethread-6c9df9=2Egit-d39264656387=2Eyou?=
- =?utf-8?q?r-ad-here=2Ecall-01620841104-ext-2554=40work=2Ehours=3E?=
-References: =?utf-8?q?=3Cpatch-1=2Ethread-6c9df9=2Egit-d39264656387=2Eyour?=
- =?utf-8?q?-ad-here=2Ecall-01620841104-ext-2554=40work=2Ehours=3E?=
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210512144743.039977287@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <46013820-0114-790a-d453-f12f2203230e@gmail.com>
+Date:   Wed, 12 May 2021 12:24:51 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.1
 MIME-Version: 1.0
-Message-ID: <162084721448.29796.15690350160125636721.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210512144743.039977287@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the objtool/urgent branch of tip:
 
-Commit-ID:     46c7405df7de8deb97229eacebcee96d61415f3f
-Gitweb:        https://git.kernel.org/tip/46c7405df7de8deb97229eacebcee96d61415f3f
-Author:        Vasily Gorbik <gor@linux.ibm.com>
-AuthorDate:    Wed, 12 May 2021 19:42:10 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 12 May 2021 21:16:53 +02:00
 
-objtool: Fix elf_create_undef_symbol() endianness
+On 5/12/2021 7:46 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.119 release.
+> There are 244 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.119-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Currently x86 cross-compilation fails on big endian system with:
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-  x86_64-cross-ld: init/main.o: invalid string offset 488112128 >= 6229 for section `.strtab'
-
-Mark new ELF data in elf_create_undef_symbol() as symbol, so that libelf
-does endianness handling correctly.
-
-Fixes: 2f2f7e47f052 ("objtool: Add elf_create_undef_symbol()")
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Link: https://lore.kernel.org/r/patch-1.thread-6c9df9.git-d39264656387.your-ad-here.call-01620841104-ext-2554@work.hours
----
- tools/objtool/elf.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index d08f5f3..743c2e9 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -762,6 +762,7 @@ struct symbol *elf_create_undef_symbol(struct elf *elf, const char *name)
- 	data->d_buf = &sym->sym;
- 	data->d_size = sizeof(sym->sym);
- 	data->d_align = 1;
-+	data->d_type = ELF_T_SYM;
- 
- 	sym->idx = symtab->len / sizeof(sym->sym);
- 
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
