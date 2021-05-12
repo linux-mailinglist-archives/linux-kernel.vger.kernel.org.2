@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BFDF37EA3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D717C37EA50
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376663AbhELSzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:55:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33526 "EHLO mail.kernel.org"
+        id S1376986AbhELS4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:56:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244102AbhELQmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:42:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F75661D1D;
-        Wed, 12 May 2021 16:10:39 +0000 (UTC)
+        id S244198AbhELQmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:42:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BAD606199D;
+        Wed, 12 May 2021 16:11:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835839;
-        bh=AWduXJg6FgG0c+arjJooAVgmGUR5qA93G1hB7ewf7CQ=;
+        s=korg; t=1620835890;
+        bh=ZkNnhDdYRKgPo70GAuUss3s4JuiLHL0OX7tSWQUt6ng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xCOwU58dww34whxnNYi14AsGOYK/bBiNwmGiXXYcg8RE08rzvBdA/5zaEb6ieuG3+
-         CWPAx0TwUX0NLEyNyOLSNcdP5DeyPcWRyyIQLJJftGhyAdMXA+/zUG4V2fLzDJR21l
-         YBzpSb9fZGawwuwKWsOJ1Gd80EHcrSO4lf4t/h1o=
+        b=Zi6ssDXT9fqRn1yx/6qU150ZVLxkNUo/KMOtx/kkgP7eSGPyj9FtcjeO8wTAwJ6dT
+         GfryfH5rtYs4Ec7EP2dIQj7VvjEx5W0Kng0Nse6SAiObXmwwer2xsMwQQmrVwQ2QWl
+         yh1WhrGAAOv+nI4sgPJNyOzP5YNDRZLLy0ynk5OY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 488/677] net: hns3: Limiting the scope of vector_ring_chain variable
-Date:   Wed, 12 May 2021 16:48:54 +0200
-Message-Id: <20210512144853.597154700@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Wensheng <wangwensheng4@huawei.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 490/677] KVM: arm64: Fix error return code in init_hyp_mode()
+Date:   Wed, 12 May 2021 16:48:56 +0200
+Message-Id: <20210512144853.664086829@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -40,42 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Salil Mehta <salil.mehta@huawei.com>
+From: Wang Wensheng <wangwensheng4@huawei.com>
 
-[ Upstream commit d392ecd1bc29ae15b0e284d5f732c2d36f244271 ]
+[ Upstream commit 52b9e265d22bccc5843e167da76ab119874e2883 ]
 
-Limiting the scope of the variable vector_ring_chain to the block where it
-is used.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Fixes: 424eb834a9be ("net: hns3: Unified HNS3 {VF|PF} Ethernet Driver for hip08 SoC")
-Signed-off-by: Salil Mehta <salil.mehta@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: eeeee7193df0 ("KVM: arm64: Bootstrap PSCI SMC handler in nVHE EL2")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210406121759.5407-1-wangwensheng4@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm64/kvm/arm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index bf4302a5cf95..65752f363f43 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -3704,7 +3704,6 @@ static void hns3_nic_set_cpumask(struct hns3_nic_priv *priv)
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 7f06ba76698d..85261015ce5d 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -1808,8 +1808,10 @@ static int init_hyp_mode(void)
+ 	if (is_protected_kvm_enabled()) {
+ 		init_cpu_logical_map();
  
- static int hns3_nic_init_vector_data(struct hns3_nic_priv *priv)
- {
--	struct hnae3_ring_chain_node vector_ring_chain;
- 	struct hnae3_handle *h = priv->ae_handle;
- 	struct hns3_enet_tqp_vector *tqp_vector;
- 	int ret;
-@@ -3736,6 +3735,8 @@ static int hns3_nic_init_vector_data(struct hns3_nic_priv *priv)
+-		if (!init_psci_relay())
++		if (!init_psci_relay()) {
++			err = -ENODEV;
+ 			goto out_err;
++		}
  	}
  
- 	for (i = 0; i < priv->vector_num; i++) {
-+		struct hnae3_ring_chain_node vector_ring_chain;
-+
- 		tqp_vector = &priv->tqp_vector[i];
- 
- 		tqp_vector->rx_group.total_bytes = 0;
+ 	return 0;
 -- 
 2.30.2
 
