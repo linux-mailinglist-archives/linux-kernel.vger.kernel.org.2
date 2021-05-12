@@ -2,161 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3F537B63A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA5237B63D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhELGhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 02:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40242 "EHLO
+        id S230198AbhELGkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 02:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhELGhf (ORCPT
+        with ESMTP id S229626AbhELGkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 02:37:35 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A279C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 23:36:27 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id j10so6255101ejb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 23:36:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nevGWaMjb5PeAfV1/F7svJNtl2lKO/LKnPavtCONiAI=;
-        b=HPpOr4WJvmIPXKYS68buFhoAp5Li17j7jKX7/p4MM8Jdc8zp3Afy+9QrHlxyMLkqIl
-         W0fRFCLAdUeZBL3gi7PbgBPQ2F0hcFhKcEsEbfTfQvBERFdKM/18nGInFsl/X0bSoMrR
-         nR9pIlJU1StFIq8JAetJztmRo3A6V63sHQnOOaWpliocMXgE0ELlocl9ycD4j9pn7JFr
-         3n0uEjA7UdCX+6oI3KKWzREefFEM0X5ZRtOwXAlMHKHKa1Cb2PUkuaNhhHeMUmQctqYU
-         ZdY5BRWrjlO0ZlELbBdtQu9YnCkrzUMTOZOQtTedilA/k5K62kSLy1DVIUepVg5shp51
-         ItYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nevGWaMjb5PeAfV1/F7svJNtl2lKO/LKnPavtCONiAI=;
-        b=SHdStRwyVNiy9C6bEaGayHvrVlZm9OWHwjJKBdDunM5yH0TtAcc7RH04eiL1qUnyk7
-         eYw4o9mkpHBFtnQ8f1/OL55ZjRpCX+3vQ5Q51czpW0sPZiTuOc+imRn0r+V4JHIC6s3S
-         uRDJJqlW47lAbwcFqjL8eG0SttOMFaMcyMlrUfzwql6nC5njb5uZCunY8iVbZFF8cJ1D
-         wuViB4zV2I5FVPDD/xIEmeDFUnFQE27RXjP1gjWmP1cFyPUcMHSaSqkjQGri+udN60gc
-         f/VnDo12N8EePizq4rhwzWyX+tH1BsQvjbUpruoUxvdhfBxF/jpxGXFkyiP3ImoRNgwp
-         S6bA==
-X-Gm-Message-State: AOAM532CihGxXCdEkpSQ9HZclUwRCl5RUKwpDiOS8RYUph54CoW6uXF9
-        /JcVg/DpRnBVpbk12Qwxl/dZJnhMMVV5Pg1VZ2r3Yg==
-X-Google-Smtp-Source: ABdhPJxCxoEotHYSk6jU/Ap34pv984lwVWKfA4gMFHe/bD7fPEXF/C3Wo4s41aCcPA/bHiQZsSq+DtoYOWuPDgIL8kQ=
-X-Received: by 2002:a17:906:bc8e:: with SMTP id lv14mr35741607ejb.418.1620801386118;
- Tue, 11 May 2021 23:36:26 -0700 (PDT)
+        Wed, 12 May 2021 02:40:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0726C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 23:39:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qT8iDHBtgV77fF8gHSSRJsweWuoLwMxssud1SQ+sMFw=; b=ekg1E450CgRxJwrigDD4HIGXvy
+        qTLJcWMI7uNPCzwaWsYYZF/KX0n2Euqn1nzZ8/r3VogDq44psgbEO5tjSxh25+ixKgYQqfeO1nHb8
+        hNsnEjGZyXAWFndfUAd/TDMgtXwovpIXfh1ahU9khrB8jQ/bQlEXYRkiQNMXWk41ULbwH1hjsBQUV
+        X4a9KsTuYG/ix1dW2e7d+x9efrRhnwZd1yyzfTRSyXa+3BfvYk3DBa0FDiS849nDIE/JEdiCD0ctD
+        3Eg1wbBhKB1LxgX3bphe3vXT+rykAg0mfG5Qc5xG5C6lHZkAuoYgqn5sVobKMp2bSZ1Oi8K0fDshc
+        0WfcCPuQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgiV2-0081QQ-2F; Wed, 12 May 2021 06:37:54 +0000
+Date:   Wed, 12 May 2021 07:37:40 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
+        zhangfei.gao@linaro.org, vkoul@kernel.org,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
+ flags
+Message-ID: <YJt3tGlzFK3b4E82@infradead.org>
+References: <1620653108-44901-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1620653108-44901-2-git-send-email-jacob.jun.pan@linux.intel.com>
+ <20210510233749.GG1002214@nvidia.com>
+ <20210510203145.086835cc@jacob-builder>
+ <20210511114848.GK1002214@nvidia.com>
+ <20210511091452.721e9a03@jacob-builder>
+ <20210511163521.GN1002214@nvidia.com>
+ <20210511110550.477a434f@jacob-builder>
+ <20210511194726.GP1002214@nvidia.com>
 MIME-Version: 1.0
-References: <162042787450.1202325.5718541949681409566.stgit@dwillia2-desk3.amr.corp.intel.com>
- <162042791852.1202325.8197739881935753009.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20210510162121.000042be@Huawei.com>
-In-Reply-To: <20210510162121.000042be@Huawei.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 11 May 2021 23:36:15 -0700
-Message-ID: <CAPcyv4jyGDYbwz1h3z3N-vEVXyYOu7Cbf+hnzWDQk+dOWHgZmQ@mail.gmail.com>
-Subject: Re: [PATCH 7/8] cxl/port: Introduce cxl_port objects
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511194726.GP1002214@nvidia.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 8:23 AM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Fri, 7 May 2021 15:51:58 -0700
-> Dan Williams <dan.j.williams@intel.com> wrote:
->
-> > Once the cxl_root is established then other ports in the hierarchy can
-> > be attached. The cxl_port object, unlike cxl_root that is associated
-> > with host bridges, is associated with PCIe Root Ports or PCIe Switch
-> > Ports. Add cxl_port instances for all PCIe Root Ports in an ACPI0016
-> > host bridge. The cxl_port instances for PCIe Switch Ports are not
-> > included here as those are to be modeled as another service device
-> > registered on the pcie_port_bus_type.
-> >
-> > A sample sysfs topology for a single-host-bridge with
-> > single-PCIe/CXL-port follows:
-> >
-> > /sys/bus/cxl/devices/root0
-> > =E2=94=9C=E2=94=80=E2=94=80 address_space0
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 devtype
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 end
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 start
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 supports_ram
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 supports_type2
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 supports_type3
-> > =E2=94=82   =E2=94=94=E2=94=80=E2=94=80 uevent
-> > =E2=94=9C=E2=94=80=E2=94=80 address_space1
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 devtype
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 end
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 start
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 supports_pmem
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 supports_type2
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 supports_type3
-> > =E2=94=82   =E2=94=94=E2=94=80=E2=94=80 uevent
-> > =E2=94=9C=E2=94=80=E2=94=80 devtype
-> > =E2=94=9C=E2=94=80=E2=94=80 port1
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 devtype
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 host -> ../../../../LNXSYSTM:00=
-/LNXSYBUS:00/ACPI0016:00
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 port2
-> > =E2=94=82   =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 devtype
-> > =E2=94=82   =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 host -> ../../../..=
-/../pci0000:34/0000:34:00.0
-> > =E2=94=82   =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../=
-../../../../bus/cxl
-> > =E2=94=82   =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 target_id
-> > =E2=94=82   =E2=94=82   =E2=94=94=E2=94=80=E2=94=80 uevent
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../bus=
-/cxl
-> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 target_id
-> > =E2=94=82   =E2=94=94=E2=94=80=E2=94=80 uevent
-> > =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../bus/cxl
-> > =E2=94=9C=E2=94=80=E2=94=80 target_id
-> > =E2=94=94=E2=94=80=E2=94=80 uevent
-> >
-> > In this listing the system-wide-singleton root0 has 2 address spaces, 1
-> > PMEM and 1 RAM. Those address spaces are accessed through port1 which
-> > represents the upstream port of an ACPI0016 host-bridge. A
-> > multi-host-bridge system would have other ports as peers to port1 to
-> > additionally decode root level address spaces. Port2 in this diagram
-> > represents the single downstream port of the host-bridge. Were it to be
-> > a multi-ported-host-bridge there would be peers / siblings of port2 wit=
-h
-> > port1 as their common ancestor.
->
-> I guess it would be a pain to emulate a system that actually had
-> multiple ports at the last level. Pity as would have made your
-> explanation here a little easier to follow.
->
+On Tue, May 11, 2021 at 04:47:26PM -0300, Jason Gunthorpe wrote:
+> > Let me try to break down your concerns:
+> > 1. portability - driver uses DMA APIs can function w/ and w/o IOMMU. is
+> > that your concern? But PASID is intrinsically tied with IOMMU and if
+> > the drivers are using a generic sva-lib API, why they are not portable?
+> > SVA by its definition is to avoid map/unmap every time.
+> 
+> Kernel explicitly does not support this programming model. All DMA is
+> explicit and the DMA API hides platform details like IOMMU and CPU
+> cache coherences. Just because x86 doesn't care about this doesn't
+> make any of it optional.
 
-A pain in QEMU, but maybe not with a mocked implementation similar to
-what gets injected for the nvdimm "nfit_test". I'll take a look.
+Exactly.
 
-> > The rationale for this port hierarchy is to be able to walk the HDM
-> > decoder register sets that each port implements. Additionally it
-> > provides a representation of host-bridge interleave which will be
-> > necessary for follow-on work that adds CXL region devices.
-> >
-> > The details in the /sys/bus/cxl hierarchy that are not suitable to be
-> > represented in the /sys/bus/pci hierarchy are:
-> > - memory address spaces that are interleaved across host bridges
-> > - common sub-device functionality represented by CXL component + device
-> >   registers (enumerated via DVSEC or platform firmware (ACPI CEDT)).
->
-> I'm sold :)
+> If you want to do SVA PASID then it also must come with DMA APIs to
+> manage the CPU cache coherence that are all NOP's on x86.
 
-Thanks for the vote of confidence. It sounded like Bjorn was sold too
-at the end of our last thread... I'll Cc him on this patch directly in
-the resend.
-
->
-> >
-> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
->
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-Thanks for the review Jonathan, appreciate it.
+Yes.  And we have plenty of precende where an IOMMU is in "bypass" mode
+to allow access to all memory and then uses the simple dma-direct case.
