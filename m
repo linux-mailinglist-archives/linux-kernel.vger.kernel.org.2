@@ -2,134 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B474337C0B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B7437C0B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbhELOvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:51:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45806 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231460AbhELOvF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:51:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620830997;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/g/HcRWJK0OnvZH6C7dQC3u45Y7+3wQdH9PWZ/XlGkA=;
-        b=aLqC8bzv3FXUfyPJh58sDNqNmeNwX/frjZeYHCfME/p9xOcqPF9iHENQfCf6zkHoOwbulJ
-        4Gmr4BjGMoMYvXs1K5VnLBDNWRtEvZJWBYq22uHlqB0hEvLUIOJEe/vuLwu/84qJjRKwBI
-        pD3KnttfngzuJ6ogOZSYun+o1E0NKnQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-43-QQ8YxaF4PgCqJW1Ti-ivgA-1; Wed, 12 May 2021 10:49:52 -0400
-X-MC-Unique: QQ8YxaF4PgCqJW1Ti-ivgA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 088C91074657;
-        Wed, 12 May 2021 14:49:51 +0000 (UTC)
-Received: from localhost (ovpn-114-114.ams2.redhat.com [10.36.114.114])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B41C660657;
-        Wed, 12 May 2021 14:49:45 +0000 (UTC)
-Date:   Wed, 12 May 2021 15:49:44 +0100
-From:   "Richard W.M. Jones" <rjones@redhat.com>
-To:     Shachar Sharon <synarete@gmail.com>
-Cc:     miklos@szeredi.hu, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, eblake@redhat.com,
-        libguestfs@redhat.com
-Subject: Re: [PATCH v2] fuse: Allow fallocate(FALLOC_FL_ZERO_RANGE)
-Message-ID: <20210512144944.GY26415@redhat.com>
-References: <20210512103704.3505086-1-rjones@redhat.com>
- <20210512103704.3505086-2-rjones@redhat.com>
- <YJvlyiTR7LVM4q1n@lpc>
+        id S231513AbhELOv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:51:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47096 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231622AbhELOvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 10:51:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7D923B17B;
+        Wed, 12 May 2021 14:50:07 +0000 (UTC)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Enzo Matsumiya <ematsumiya@suse.com>
+Subject: [PATCH v3] nvmet: Reset ns->file when open fails
+Date:   Wed, 12 May 2021 16:50:05 +0200
+Message-Id: <20210512145005.103653-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YJvlyiTR7LVM4q1n@lpc>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 05:27:22PM +0300, Shachar Sharon wrote:
-> On Wed, May 12, 2021 at 11:37:04AM +0100, Richard W.M. Jones wrote:
-> >libnbd's nbdfuse utility would like to translate fallocate zero
-> >requests into NBD_CMD_WRITE_ZEROES.  Currently the fuse module filters
-> >these out, returning -EOPNOTSUPP.  This commit treats these almost the
-> >same way as FALLOC_FL_PUNCH_HOLE except not calling
-> >truncate_pagecache_range.
-> >
-> Why don't you call 'truncate_pagecache_range' ?
+Reset the ns->file value to NULL also in the error case in
+nvmet_file_ns_enable().
 
-Very good point.  I just assumed that it would only be useful when
-hole-punching, but now I actually read the description of the function
-I see we need it.
+The ns->file variable points either to file object or contains the
+error code after the filp_open() call. This can lead to following
+problem:
 
-Also looking at other filesystems that also support FALLOC_FL_ZERO_RANGE:
+When the user first setups an invalid file backend and tries to enable
+the ns, it will fail. Then the user switches over to a bdev backend
+and enables successfully the ns. The first received I/O will crash the
+system because the IO backend is chosen based on the ns->file value:
 
-  ext4_zero_range -> calls truncate_pagecache_range
-  f2fs_zero_range -> calls it
-  xfs -> calls it indirectly
-  btrfs_zero_range -> does not call it (?)
+static u16 nvmet_parse_io_cmd(struct nvmet_req *req)
+{
+	[...]
 
-I'll add this, and retest everything.
+	if (req->ns->file)
+		return nvmet_file_parse_io_cmd(req);
 
-> >A way to test this is with the following script:
+	return nvmet_bdev_parse_io_cmd(req);
+}
 
-In my next version I'll also address this script which is rather
-long-winded.  I think there's an easier way for people to test this:
+Reported-by: Enzo Matsumiya <ematsumiya@suse.com>
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
 
-> >--------------------
-> > #!/bin/bash
-> > # Requires fuse >= 3, nbdkit >= 1.8, and latest nbdfuse from
-> > # https://gitlab.com/nbdkit/libnbd/-/tree/master/fuse
-> > set -e
-> > set -x
-> >
-> > export output=$PWD/output
-> > rm -f test.img $output
-> >
-> > # Create an nbdkit instance that prints the NBD requests seen.
-> > nbdkit sh - <<'EOF'
-> > case "$1" in
-> >   get_size) echo 1M ;;
-> >   can_write|can_trim|can_zero|can_fast_zero) ;;
-> >   pread) echo "$@" >>$output; dd if=/dev/zero count=$3 iflag=count_bytes ;;
-> >   pwrite) echo "$@" >>$output; cat >/dev/null ;;
-> >   trim|zero) echo "$@" >>$output ;;
-> >   *) exit 2 ;;
-> > esac
-[etc]
-> >diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> >index 09ef2a4d25ed..22e8e88c78d4 100644
-> >--- a/fs/fuse/file.c
-> >+++ b/fs/fuse/file.c
-> >@@ -2907,11 +2907,13 @@ static long fuse_file_fallocate(struct file *file, int mode, loff_t offset,
-> >	};
-> >	int err;
-> >	bool lock_inode = !(mode & FALLOC_FL_KEEP_SIZE) ||
-> >-			   (mode & FALLOC_FL_PUNCH_HOLE);
-> >+			   (mode & FALLOC_FL_PUNCH_HOLE) ||
-> >+			   (mode & FALLOC_FL_ZERO_RANGE);
-> To stay aligned with existing code style, consider:
-> -			   (mode & FALLOC_FL_PUNCH_HOLE);
-> +»      »       »          (mode & (FALLOC_FL_PUNCH_HOLE |
-> +»      »       »       »           FALLOC_FL_ZERO_RANGE));
+changes v3:
+  - removed the hunk from version 1 which I
+    copied over adding the changes notes...
 
-Good idea.
+changes v2:
+  - fix types mixup
+    Reported-by: kernel test robot <lkp@intel.com
 
-Thanks for the quick review.
+We saw the backtrace with following (test) configuration:
 
-Rich.
+ nt00:/var/crash/2021-03-22-16:13 # nvmetcli ls /
+ o- / ......................................................................................................................... [...]
+   o- hosts ................................................................................................................... [...]
+   o- ports ................................................................................................................... [...]
+   | o- 1 .................................................. [trtype=tcp, traddr=192.168.0.134, trsvcid=4420, inline_data_size=16384]
+   |   o- ana_groups .......................................................................................................... [...]
+   |   | o- 1 ..................................................................................................... [state=optimized]
+   |   o- referrals ........................................................................................................... [...]
+   |   o- subsystems .......................................................................................................... [...]
+   |     o- nqn.2014-08.org.nvmexpress:NVMf:uuid:44e52e4f-791e-4d37-a718-ff010ba82e5c ......................................... [...]
+   o- subsystems .............................................................................................................. [...]
+     o- nqn.2014-08.org.nvmexpress:NVMf:uuid:44e52e4f-791e-4d37-a718-ff010ba82e5c  [version=1.3, allow_any=1, serial=6e91a39f356a26ee]
+       o- allowed_hosts ....................................................................................................... [...]
+       o- namespaces .......................................................................................................... [...]
+         o- 1 ...................................... [path=/dev/nvme0n1, uuid=1c681585-01ec-48db-b772-9d103c8d47a3, grpid=1, enabled]
 
+
+ nvmet: creating controller 2 for subsystem nqn.2014-08.org.nvmexpress:NVMf:uuid:44e52e4f-791e-4d37-a718-ff010ba82e5c for NQN nqn.2014-08.org.nvmexpress:uuid:9b9f4d56-59f6-cbf6-2e26-969777c12e5f.
+ BUG: kernel NULL pointer dereference, address: 0000000000000012
+ #PF: supervisor read access in kernel mode
+ #PF: error_code(0x0000) - not-present page
+ PGD 0 P4D 0
+ Oops: 0000 [#1] SMP PTI
+ CPU: 1 PID: 444 Comm: kworker/1:1H Kdump: loaded Tainted: G               X    5.3.18-24.52-default #1 SLE15-SP2
+ Hardware name: VMware, Inc. VMware7,1/440BX Desktop Reference Platform, BIOS VMW71.00V.15401161.B64.2001021853 01/02/2020
+ Workqueue: nvmet_tcp_wq nvmet_tcp_io_work [nvmet_tcp]
+ RIP: 0010:nvmet_file_submit_bvec+0x3f/0x130 [nvmet]
+ Code: 00 53 44 89 c5 48 89 fb 48 83 ec 30 48 8b 77 20 65 48 8b 04 25 28 00 00 00 48 89 44 24 28 31 c0 48 8b 07 48 8b 76 50 80 38 01 <48> 8b 76 28 0f 84 c6 00 00 00 4c 8b 6e 20 31 f6 49 89 c8 48 89 d1
+ RSP: 0018:ffffa111c0353c98 EFLAGS: 00010202
+ RAX: ffff8bf7069d7f30 RBX: ffff8bf706a00008 RCX: 0000000000001000
+ RDX: 0000000000000001 RSI: ffffffffffffffea RDI: ffff8bf706a00008
+ RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+ R10: 0000000000000000 R11: 0000000000000100 R12: ffff8bf706a000c0
+ R13: 0000000000000000 R14: 0000000000000000 R15: ffff8bf706a00008
+ FS:  0000000000000000(0000) GS:ffff8bf73fc80000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000012 CR3: 000000012a394001 CR4: 00000000003606e0
+ Call Trace:
+  nvmet_file_execute_io+0x1ae/0x270 [nvmet]
+  nvmet_tcp_try_recv_pdu+0x364/0x710 [nvmet_tcp]
+  ? __switch_to_asm+0x40/0x70
+  ? __switch_to_asm+0x34/0x70
+  ? __switch_to_asm+0x40/0x70
+  ? __switch_to_asm+0x34/0x70
+  ? __switch_to_asm+0x40/0x70
+  ? __switch_to_asm+0x34/0x70
+  nvmet_tcp_io_work+0x6d/0xa90 [nvmet_tcp]
+  process_one_work+0x1f4/0x3e0
+  worker_thread+0x2d/0x3e0
+  ? process_one_work+0x3e0/0x3e0
+  kthread+0x10d/0x130
+  ? kthread_park+0xa0/0xa0
+  ret_from_fork+0x35/0x40
+ Modules linked in: nvme_fabrics nvmet_tcp nvmet configfs af_packet ip_set nfnetlink iscsi_ibft iscsi_boot_sysfs rfkill x_tables bpfilter vmw_vsock_vmci_transport vsock fuse nls_iso8859_1 nls_cp437 vfat fat intel_rapl_msr intel_rapl_common sb_edac crc32_pclmul ghash_clmulni_intel aesni_intel aes_x86_64 crypto_simd cryptd nvme glue_helper nvme_core joydev pcspkr vmw_balloon vmxnet3 button ac i2c_piix4 vmw_vmci btrfs libcrc32c xor hid_generic raid6_pq usbhid sr_mod cdrom sd_mod ata_generic vmwgfx drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops ttm ata_piix ehci_pci drm crc32c_intel uhci_hcd serio_raw ahci libahci ehci_hcd vmw_pvscsi usbcore libata sg dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua scsi_mod efivarfs [last unloaded: ip_tables]
+ Supported: Yes, External
+ CR2: 0000000000000012
+
+Enzo was not able reproduce it reliable so we can't really say if the
+patch fixes the crash he saw. But I figured ns->file should be set
+back to NULL.
+
+ drivers/nvme/target/io-cmd-file.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/nvme/target/io-cmd-file.c b/drivers/nvme/target/io-cmd-file.c
+index 715d4376c997..7fdbdc496597 100644
+--- a/drivers/nvme/target/io-cmd-file.c
++++ b/drivers/nvme/target/io-cmd-file.c
+@@ -49,9 +49,11 @@ int nvmet_file_ns_enable(struct nvmet_ns *ns)
+ 
+ 	ns->file = filp_open(ns->device_path, flags, 0);
+ 	if (IS_ERR(ns->file)) {
+-		pr_err("failed to open file %s: (%ld)\n",
+-				ns->device_path, PTR_ERR(ns->file));
+-		return PTR_ERR(ns->file);
++		ret = PTR_ERR(ns->file);
++		pr_err("failed to open file %s: (%d)\n",
++			ns->device_path, ret);
++		ns->file = NULL;
++		return ret;
+ 	}
+ 
+ 	ret = nvmet_file_ns_revalidate(ns);
 -- 
-Richard Jones, Virtualization Group, Red Hat http://people.redhat.com/~rjones
-Read my programming and virtualization blog: http://rwmj.wordpress.com
-libguestfs lets you edit virtual machines.  Supports shell scripting,
-bindings from many languages.  http://libguestfs.org
+2.29.2
 
