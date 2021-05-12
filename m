@@ -2,154 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70CE37B6B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2AB37B6BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhELHQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 03:16:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38009 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229996AbhELHQJ (ORCPT
+        id S230154AbhELHR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 03:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229850AbhELHRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 03:16:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620803701;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AXFTE7PJi+lvpeYy5c9eIvb8OVfNqNtGNLIpDwSvSsI=;
-        b=C+M32w6C/sZGuOZlYxaAIvXAVoEOZMDPQQpMk+EOt8SJeQLXubfwQWsgnZ1FQBj6oNl8r0
-        v224HGkj9cIuyKoI+q3xMSmYR/WtuTJreHyfCtYlB77ma+MBxv1BRqodCU5k5t5sL4Vqny
-        xe1Cy2TY5cYYIg14fPqlRhdbfU7/lRM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-294-tQmnMLlGPhmNTlxuOR0FIA-1; Wed, 12 May 2021 03:14:59 -0400
-X-MC-Unique: tQmnMLlGPhmNTlxuOR0FIA-1
-Received: by mail-wm1-f71.google.com with SMTP id o18-20020a1ca5120000b02901333a56d46eso286586wme.8
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 00:14:59 -0700 (PDT)
+        Wed, 12 May 2021 03:17:25 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9C9C061574;
+        Wed, 12 May 2021 00:16:17 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id p20so4340700ljj.8;
+        Wed, 12 May 2021 00:16:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AwjeWzlPG2g5R+sdmU5M5sb7j3swoy8IxQdEsMvbG4Q=;
+        b=uCv4YBESQQQmcSlke+/ZnTw1MWxd4lYlbdQCcK/E3D362iuX8reUFZ3rM6y3a1lx8U
+         j+/deS+1QDnaa3dD/OZVSVG7RNeapw0DW5ielpoKkjTKbbJKW6b5yAMP71i6qJuAuPxe
+         CMusQC6VujXGI7mMyZ2ap+OTFweuLT9OhwMFqu09uFqKBc481SaBwjI6T8OvtHv7D4GJ
+         hmZLoBuhzdeM/KwODW7byoJTugwFd8WMtyi1RPPRrUuPjcBuCa25drVWs6cW7lF4dVlz
+         vTV58mlOLcMb8d5B6xjh4CHHZhjPikH1H5nZ6y3EHnQ0QnxaPR4RDOqg8Y5Quikg5yG9
+         cJyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=AXFTE7PJi+lvpeYy5c9eIvb8OVfNqNtGNLIpDwSvSsI=;
-        b=LeaviZYUdbS4byMzv7ax/6uS9Zjxb33t3K7rBURG47IPoHWWeOrPCu2PSVHz0w+cTO
-         e3JQLgurXm+rgX2mPngQx4B4Zjglkm30x2L1btaQiGPjNratGvcc17PDnDVQZhoSQ/7D
-         cu748MjHQJrHEhyoBUNU9PW8j89tN7M0lh48miivjpDteUCL2OM1Kx5nbO/+o6YxLgVj
-         Iy5nGTvOlDjVW242c+c/AqIokiLCtW7jeJ7zhT6gmmEDma6FhBnx1vpEZ9I48MFU8dNi
-         IdlUxfWQ/xh9cE0nPhOTm5v2DzLUuPbbBIgvt/ECl/OwQliLxY/AVfzANiuKtGrUEdGs
-         bL+g==
-X-Gm-Message-State: AOAM531GEt4cxvVJw/eqnfSGe3xf1ByzjKXN8xVzHaLWQi5KKexcF0oS
-        m5tHl6cJnYoYStCyON5RLuDXSYDXu13RbXOlyWkecrBIT08Z5otqu8TczOdUaM7UBP+iKDLYSf5
-        xtGTkNBewJIHIfBsQ/O/bevem
-X-Received: by 2002:adf:e8c4:: with SMTP id k4mr43671525wrn.262.1620803698463;
-        Wed, 12 May 2021 00:14:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw8+TpIL+jbLqGy87WoayUMJGUDPjdx9/HH0UWUN15jKA6+I25Ud6sP1w0JPnCCEngQeZpc9A==
-X-Received: by 2002:adf:e8c4:: with SMTP id k4mr43671513wrn.262.1620803698277;
-        Wed, 12 May 2021 00:14:58 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id r7sm23718330wmq.18.2021.05.12.00.14.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 00:14:57 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH 3/7] KVM: nVMX: Ignore 'hv_clean_fields' data when eVMCS
- data is copied in vmx_get_nested_state()
-In-Reply-To: <YJqytyu7+Q7+bqeG@google.com>
-References: <20210511111956.1555830-1-vkuznets@redhat.com>
- <20210511111956.1555830-4-vkuznets@redhat.com>
- <YJqytyu7+Q7+bqeG@google.com>
-Date:   Wed, 12 May 2021 09:14:56 +0200
-Message-ID: <87eeecwhhr.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AwjeWzlPG2g5R+sdmU5M5sb7j3swoy8IxQdEsMvbG4Q=;
+        b=LtOxfwGos9ySkbvDy3Dkbopg8lorvuqqARV9MdVMF1PhFO1VsoB37amYQaWHzmkTe+
+         ND0nb3T29FNWX7o+uWPajCa2aOvtPo/WaX4GBQW7e9XXjXhju2zzwdo2x/yfqWwqiBma
+         2IfvcxKAXUafh1gu6M1Bp66l7IcMxu7MZ5AvFMl/ZbC7BgW7sRZ0uHtZf6G3sxHC03BZ
+         ugfh2fhDkIKCCLKQ4FHKChNNqyNApZeSbgLqZnvefj45/vRtZ4dTuCP0Sq+ADqTb5uga
+         FH34nUTk290nPQkEIkKuvo6wK8F+vRFArNn61E8XcmdxVQwjkzE5O87i+pJnGcFGYHeK
+         QD1Q==
+X-Gm-Message-State: AOAM530aYXBolO6Wh1A9xIH1vzlZnsXyetCelj9GBT/8yFSCpcVQOf7Y
+        qRUdQvp0fppZmYmqdKS4KgSbVemWR5yV/yclphQzix2d3nUV/w==
+X-Google-Smtp-Source: ABdhPJzwbF45068sOKuVbS99RuyNasIiO4Bu8vGIxmyAYguPlecABZY6BfxGYP/E+Hlv3/Y2M2tvvzz5avozG52uMTo=
+X-Received: by 2002:a05:651c:224:: with SMTP id z4mr26981747ljn.457.1620803775316;
+ Wed, 12 May 2021 00:16:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <162077975380.14498.11347675368470436331.stgit@web.messagingengine.com>
+ <YJtz6mmgPIwEQNgD@kroah.com>
+In-Reply-To: <YJtz6mmgPIwEQNgD@kroah.com>
+From:   Fox Chen <foxhlchen@gmail.com>
+Date:   Wed, 12 May 2021 15:16:01 +0800
+Message-ID: <CAC2o3D+28g67vbNOaVxuF0OfE0RjFGHVwAcA_3t1AAS_b_EnPg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] kernfs: proposed locking and concurrency improvement
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ian Kent <raven@themaw.net>, Tejun Heo <tj@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+On Wed, May 12, 2021 at 2:21 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, May 12, 2021 at 08:38:35AM +0800, Ian Kent wrote:
+> > There have been a few instances of contention on the kernfs_mutex during
+> > path walks, a case on very large IBM systems seen by myself, a report by
+> > Brice Goglin and followed up by Fox Chen, and I've since seen a couple
+> > of other reports by CoreOS users.
+> >
+> > The common thread is a large number of kernfs path walks leading to
+> > slowness of path walks due to kernfs_mutex contention.
+> >
+> > The problem being that changes to the VFS over some time have increased
+> > it's concurrency capabilities to an extent that kernfs's use of a mutex
+> > is no longer appropriate. There's also an issue of walks for non-existent
+> > paths causing contention if there are quite a few of them which is a less
+> > common problem.
+> >
+> > This patch series is relatively straight forward.
+> >
+> > All it does is add the ability to take advantage of VFS negative dentry
+> > caching to avoid needless dentry alloc/free cycles for lookups of paths
+> > that don't exit and change the kernfs_mutex to a read/write semaphore.
+> >
+> > The patch that tried to stay in VFS rcu-walk mode during path walks has
+> > been dropped for two reasons. First, it doesn't actually give very much
+> > improvement and, second, if there's a place where mistakes could go
+> > unnoticed it would be in that path. This makes the patch series simpler
+> > to review and reduces the likelihood of problems going unnoticed and
+> > popping up later.
+> >
+> > The patch to use a revision to identify if a directory has changed has
+> > also been dropped. If the directory has changed the dentry revision
+> > needs to be updated to avoid subsequent rb tree searches and after
+> > changing to use a read/write semaphore the update also requires a lock.
+> > But the d_lock is the only lock available at this point which might
+> > itself be contended.
+> >
+> > Changes since v3:
+> > - remove unneeded indirection when referencing the super block.
+> > - check if inode attribute update is actually needed.
+> >
+> > Changes since v2:
+> > - actually fix the inode attribute update locking.
+> > - drop the patch that tried to stay in rcu-walk mode.
+> > - drop the use a revision to identify if a directory has changed patch.
+> >
+> > Changes since v1:
+> > - fix locking in .permission() and .getattr() by re-factoring the attribute
+> >   handling code.
+> > ---
+> >
+> > Ian Kent (5):
+> >       kernfs: move revalidate to be near lookup
+> >       kernfs: use VFS negative dentry caching
+> >       kernfs: switch kernfs to use an rwsem
+> >       kernfs: use i_lock to protect concurrent inode updates
+> >       kernfs: add kernfs_need_inode_refresh()
+> >
+> >
+> >  fs/kernfs/dir.c             | 170 ++++++++++++++++++++----------------
+> >  fs/kernfs/file.c            |   4 +-
+> >  fs/kernfs/inode.c           |  45 ++++++++--
+> >  fs/kernfs/kernfs-internal.h |   5 +-
+> >  fs/kernfs/mount.c           |  12 +--
+> >  fs/kernfs/symlink.c         |   4 +-
+> >  include/linux/kernfs.h      |   2 +-
+> >  7 files changed, 147 insertions(+), 95 deletions(-)
+> >
+> > --
+> > Ian
+> >
+>
+> Any benchmark numbers that you ran that are better/worse with this patch
+> series?  That woul dbe good to know, otherwise you aren't changing
+> functionality here, so why would we take these changes?  :)
 
-> On Tue, May 11, 2021, Vitaly Kuznetsov wrote:
->> 'Clean fields' data from enlightened VMCS is only valid upon vmentry: L1
->> hypervisor is not obliged to keep it up-to-date while it is mangling L2's
->> state, KVM_GET_NESTED_STATE request may come at a wrong moment when actual
->> eVMCS changes are unsynchronized with 'hv_clean_fields'. As upon migration
->> VMCS12 is used as a source of ultimate truce, we must make sure we pick all
->> the changes to eVMCS and thus 'clean fields' data must be ignored.
->> 
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> ---
->>  arch/x86/kvm/vmx/nested.c | 43 +++++++++++++++++++++++----------------
->>  1 file changed, 25 insertions(+), 18 deletions(-)
->> 
->> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
->> index ea2869d8b823..7970a16ee6b1 100644
->> --- a/arch/x86/kvm/vmx/nested.c
->> +++ b/arch/x86/kvm/vmx/nested.c
->> @@ -1607,16 +1607,23 @@ static void copy_vmcs12_to_shadow(struct vcpu_vmx *vmx)
->>  	vmcs_load(vmx->loaded_vmcs->vmcs);
->>  }
->>  
->> -static int copy_enlightened_to_vmcs12(struct vcpu_vmx *vmx)
->> +static int copy_enlightened_to_vmcs12(struct vcpu_vmx *vmx, bool from_vmentry)
->>  {
->>  	struct vmcs12 *vmcs12 = vmx->nested.cached_vmcs12;
->>  	struct hv_enlightened_vmcs *evmcs = vmx->nested.hv_evmcs;
->> +	u32 hv_clean_fields;
->>  
->>  	/* HV_VMX_ENLIGHTENED_CLEAN_FIELD_NONE */
->>  	vmcs12->tpr_threshold = evmcs->tpr_threshold;
->>  	vmcs12->guest_rip = evmcs->guest_rip;
->>  
->> -	if (unlikely(!(evmcs->hv_clean_fields &
->> +	/* Clean fields data can only be trusted upon vmentry */
->> +	if (likely(from_vmentry))
->> +		hv_clean_fields = evmcs->hv_clean_fields;
->> +	else
->> +		hv_clean_fields = 0;
->
-> ...
->
->> @@ -3503,7 +3510,7 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
->>  		return nested_vmx_failInvalid(vcpu);
->>  
->>  	if (vmx->nested.hv_evmcs) {
->> -		copy_enlightened_to_vmcs12(vmx);
->> +		copy_enlightened_to_vmcs12(vmx, true);
->
-> Rather than pass a bool, what about having the caller explicitly specify the
-> clean fields?  Then the migration path can have a comment about needing to
-> assume all fields are dirty, and the normal path would be self-documenting.
-> E.g. with evmcs captured in a local var:
->
-> 	if (evmcs) {
-> 		copy_enlightened_to_vmcs12(vmx, evmcs->hv_clean_fields);
-> 	} else if (...) {
-> 	}
->
+Let me run it on my benchmark and bring back the result to you.
 
-I like the idea, thanks! Will incorporate into v2.
-
->>  		/* Enlightened VMCS doesn't have launch state */
->>  		vmcs12->launch_state = !launch;
->>  	} else if (enable_shadow_vmcs) {
->> @@ -6136,7 +6143,7 @@ static int vmx_get_nested_state(struct kvm_vcpu *vcpu,
->>  		copy_vmcs02_to_vmcs12_rare(vcpu, get_vmcs12(vcpu));
->>  		if (!vmx->nested.need_vmcs12_to_shadow_sync) {
->>  			if (vmx->nested.hv_evmcs)
->> -				copy_enlightened_to_vmcs12(vmx);
->> +				copy_enlightened_to_vmcs12(vmx, false);
->>  			else if (enable_shadow_vmcs)
->>  				copy_shadow_to_vmcs12(vmx);
->>  		}
->> -- 
->> 2.30.2
->> 
+> thanks,
 >
+> greg k-h
 
--- 
-Vitaly
 
+thanks,
+fox
