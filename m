@@ -2,102 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF34737B654
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0977537B62E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbhELGqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 02:46:44 -0400
-Received: from mga02.intel.com ([134.134.136.20]:27652 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229580AbhELGqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 02:46:40 -0400
-IronPort-SDR: +RGGDsfjlf9B4Mkv02sQeVUrCwZiHUkPF3qcVry2kMX0YrV5yijJRd0B3Sf/Mcm7Iz9tK21eQh
- Hi5wSVicoNFA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="186766408"
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="scan'208";a="186766408"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 23:45:18 -0700
-IronPort-SDR: Mr3TRUPpSvEHoNhG9TuJWJVY4Ky1OcWmkCaLmvCBTSbhjuIRKC/YSNN+FYi/Sj6S1ME9yciJOf
- LjG6s6JugrVA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="scan'208";a="537496288"
-Received: from allen-box.sh.intel.com ([10.239.159.128])
-  by fmsmga001.fm.intel.com with ESMTP; 11 May 2021 23:45:15 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     ashok.raj@intel.com, kevin.tian@intel.com, jacob.jun.pan@intel.com,
-        yi.l.liu@intel.com, sanjay.k.kumar@intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [RESEND PATACH 1/1] iommu/vt-d: Use user privilege for RID2PASID translation
-Date:   Wed, 12 May 2021 14:44:26 +0800
-Message-Id: <20210512064426.3440915-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S230070AbhELGdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 02:33:37 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3726 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbhELGdf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 02:33:35 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fg4cw6GYkzmgKX;
+        Wed, 12 May 2021 14:29:04 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 12 May 2021 14:32:16 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <kabel@kernel.org>, <pavel@ucw.cz>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] leds: turris-omnia: add missing MODULE_DEVICE_TABLE
+Date:   Wed, 12 May 2021 14:49:18 +0800
+Message-ID: <1620802158-19377-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When first-level page tables are used for IOVA translation, we use user
-privilege by setting U/S bit in the page table entry. This is to make it
-consistent with the second level translation, where the U/S enforcement
-is not available. Clear the SRE (Supervisor Request Enable) field in the
-pasid table entry of RID2PASID so that requests requesting the supervisor
-privilege are blocked and treated as DMA remapping faults.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Suggested-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Fixes: b802d070a52a1 ("iommu/vt-d: Use iova over first level")
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- drivers/iommu/intel/iommu.c | 7 +++++--
- drivers/iommu/intel/pasid.c | 3 ++-
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ drivers/leds/leds-turris-omnia.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 708f430af1c4..f1742da42478 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2525,9 +2525,9 @@ static int domain_setup_first_level(struct intel_iommu *iommu,
- 				    struct device *dev,
- 				    u32 pasid)
- {
--	int flags = PASID_FLAG_SUPERVISOR_MODE;
- 	struct dma_pte *pgd = domain->pgd;
- 	int agaw, level;
-+	int flags = 0;
+diff --git a/drivers/leds/leds-turris-omnia.c b/drivers/leds/leds-turris-omnia.c
+index 2f9a289..1adfed1 100644
+--- a/drivers/leds/leds-turris-omnia.c
++++ b/drivers/leds/leds-turris-omnia.c
+@@ -274,6 +274,7 @@ static const struct i2c_device_id omnia_id[] = {
+ 	{ "omnia", 0 },
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(i2c, omnia_id);
  
- 	/*
- 	 * Skip top levels of page tables for iommu which has
-@@ -2543,7 +2543,10 @@ static int domain_setup_first_level(struct intel_iommu *iommu,
- 	if (level != 4 && level != 5)
- 		return -EINVAL;
- 
--	flags |= (level == 5) ? PASID_FLAG_FL5LP : 0;
-+	if (pasid != PASID_RID2PASID)
-+		flags |= PASID_FLAG_SUPERVISOR_MODE;
-+	if (level == 5)
-+		flags |= PASID_FLAG_FL5LP;
- 
- 	if (domain->domain.type == IOMMU_DOMAIN_UNMANAGED)
- 		flags |= PASID_FLAG_PAGE_SNOOP;
-diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-index 72646bafc52f..72dc84821dad 100644
---- a/drivers/iommu/intel/pasid.c
-+++ b/drivers/iommu/intel/pasid.c
-@@ -699,7 +699,8 @@ int intel_pasid_setup_second_level(struct intel_iommu *iommu,
- 	 * Since it is a second level only translation setup, we should
- 	 * set SRE bit as well (addresses are expected to be GPAs).
- 	 */
--	pasid_set_sre(pte);
-+	if (pasid != PASID_RID2PASID)
-+		pasid_set_sre(pte);
- 	pasid_set_present(pte);
- 	pasid_flush_caches(iommu, pte, pasid, did);
- 
+ static struct i2c_driver omnia_leds_driver = {
+ 	.probe		= omnia_leds_probe,
 -- 
-2.25.1
+2.6.2
 
