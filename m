@@ -2,106 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D35237BC98
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6A837BC9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232532AbhELMff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232520AbhELMfc (ORCPT
+        id S232571AbhELMf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:35:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20623 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232493AbhELMf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 08:35:32 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A81CC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 05:34:21 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id y124-20020a1c32820000b029010c93864955so1312430wmy.5
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 05:34:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=L3AMrfm7KzdYjAx0MG/kXRzLEqn5TfDInWeiOnoS8A0=;
-        b=wGwwVglhSHA1nu0sddt1O78EWcwn6fB5M95MBU2mYu8yxjZWRmVl4Xk2W/HBVliIQ+
-         VqbqZ4D3hgvRwEI1eQ0SgoEs1oOuTGok3UPrOy9fE4HVc/V0LQd182Ehxjlb7M/vBxJZ
-         1RejYqLqgKbdZ0/pTt6wEMHd7BbvNQfmn8aBdO+FGkEvHNyA9co4wkELQmNPARhE1beW
-         7DK+sIGytXjOYdOJ7HhZNAMAAGxlGbDm3fMt3ulRHEjA9g6MXUa/2FfQ2FELIpeebL8E
-         ythDkvX3BJoH9pQYp67RthOVD/w/EfKqEQnDXyxRkx3Brks5/3IgR1ibdRT56edbosyD
-         Ukpg==
+        Wed, 12 May 2021 08:35:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620822889;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=plE+nL+ct6AZIIPoxz1my01jPeDymgnbPjG0iiRllwM=;
+        b=eLkDWng3XltHm+v/4dek193edElz1kauXcwMAe27S25Q4hdnRPsWQrW/OZv+X8jQyE2zwz
+        KnMUSCE0+W8OMC3PiC35kaOO5+EYRCova8GlVJDAzb2srF9PM4isknrOZRP5WpdLcakjwa
+        cXt7/hyVcaJheyG4DXUGj1OHa4eC9B4=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-379-YfBkDSxPOPq6jWv4bzNZMA-1; Wed, 12 May 2021 08:34:47 -0400
+X-MC-Unique: YfBkDSxPOPq6jWv4bzNZMA-1
+Received: by mail-qk1-f200.google.com with SMTP id 4-20020a370d040000b02902fa09aa4ad4so8676988qkn.11
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 05:34:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=L3AMrfm7KzdYjAx0MG/kXRzLEqn5TfDInWeiOnoS8A0=;
-        b=IdLbVxERW5cdcvNb3h3SU9F4cnO18eVnBW409oweMRBz4/9QVHlvDsqIvZdDrQSpoV
-         uwjvf4C5pu7/1b/46M+SckmrTOztvWyXPSjzPshrVxj/rhfdlUwIatIihgByGoNphdRo
-         YCebYMBKLvaj4EgyDd74ml0+v8yMSMzhw03fksXEii7upK0wtQZsR2fvw4QU1IW/Iqmx
-         1UpPoQW3vRN3gfrTCnXq2U20WjdeLQfvWp64YGNekNEWwaqr4cznm8niyUlBJgSvJVvo
-         KOynscefrG3cU03fGzNHJB3bjIDMwUePe03TfV6TiuooJrJbgMNUi0HxV9ITmD+lV/nt
-         73IA==
-X-Gm-Message-State: AOAM530p2xve57UsyUaqINP8brjHSBXnkcG93ZOMuHbtOxvCzgqMC9tA
-        RFipOUrRvOPXwdW2fBL8QOK4vA==
-X-Google-Smtp-Source: ABdhPJxaogDe/xKEAVJSwlt6+D1vz2gSm4YwiHq4FwR/U+34LWOpQZ6ZvVIPkXLGy3PggDAnBF3Vyw==
-X-Received: by 2002:a7b:cbc2:: with SMTP id n2mr38803203wmi.69.1620822860514;
-        Wed, 12 May 2021 05:34:20 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id j10sm30643193wrt.32.2021.05.12.05.34.19
+        bh=plE+nL+ct6AZIIPoxz1my01jPeDymgnbPjG0iiRllwM=;
+        b=Ycrp9hWCV+tznITQdt2zbin/ZxL516uobnTalBZ9uJE5z6BnvxtHyrp66srlccxxD8
+         fD/YrOV99ijqUSsP+4uhjktNja0ddnbjl3RpEM+zdYWtc9lz+y3N5Yk3S8t0XTeBG2Hm
+         Az64kLVi+zjasxohMtsTDg7n3CAJbadsK8xDpGiA3f7qpiu/CF+RVQ566G1QXZIFWgBx
+         2UVu4Ct2wfFcqOvX5RtBUV/Kzf1sf1ul8TyTpt3OK98yt+WnJTU4v9hgy6J0Z1VzbOC+
+         zTZE0CIe4LCZFU+qkLe6EDOVcP6A6COLRxQ6+tkNWPhdvW0KNFIZSinS96JPG3nFO1M4
+         NzBg==
+X-Gm-Message-State: AOAM532O/yaTj9cUKHGkxcZqCVkm4WRl/W6x6ZMBV/+k4X8VkG+tZXHU
+        CEFzHq3Dg8JfORhBlnEGGF1PFMEKA6CzYP9Q46ilcPwT4Yoeo4VbFqLQQ4yyU3/bHEQBJw/SNUe
+        HxSVqHON6UjuDztB+iNXsdM2N
+X-Received: by 2002:a05:622a:341:: with SMTP id r1mr4583017qtw.307.1620822885103;
+        Wed, 12 May 2021 05:34:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx2tlaCkwmNfDKEriLu1NRRZo0A8kzyXZX8X8GFPBiFplx0v0baUwXe1hl/5JNdu3ems/5eWw==
+X-Received: by 2002:a05:622a:341:: with SMTP id r1mr4582983qtw.307.1620822884723;
+        Wed, 12 May 2021 05:34:44 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
+        by smtp.gmail.com with ESMTPSA id o189sm15923330qkd.60.2021.05.12.05.34.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 05:34:20 -0700 (PDT)
-Date:   Wed, 12 May 2021 12:34:17 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        stable <stable@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        KarimAllah Ahmed <karahmed@amazon.de>,
-        Android Kernel Team <kernel-team@android.com>,
-        Architecture Mailman List <boot-architecture@lists.linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [v5.4 stable] arm: stm32: Regression observed on "no-map"
- reserved memory region
-Message-ID: <YJvLSbGh0YPRo0S2@google.com>
-References: <001f8550-b625-17d2-85a6-98a483557c70@foss.st.com>
- <CAL_Jsq+LUPZFhXd+j-xM67rZB=pvEvZM+1sfckip0Lqq02PkZQ@mail.gmail.com>
- <CAMj1kXE2Mgr9CsAMnKXff+96xhDaE5OLeNhypHvpN815vZGZhQ@mail.gmail.com>
- <d7f9607a-9fcb-7ba2-6e39-03030da2deb0@gmail.com>
- <YH/ixPnHMxNo08mJ@google.com>
- <cc8f96a4-6c85-b869-d3cf-5dc543982054@gmail.com>
- <YIFzMkW+tXonTf0K@google.com>
- <ad90b2bb-0fab-9f06-28dd-038e8005490b@foss.st.com>
- <YJkGSb72aKg6ScGo@google.com>
- <e1da4a98-7521-518f-f85a-51e9c58b1fc3@foss.st.com>
+        Wed, 12 May 2021 05:34:44 -0700 (PDT)
+Date:   Wed, 12 May 2021 08:34:42 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, John Hubbard <jhubbard@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jann Horn <jannh@google.com>, Jason Gunthorpe <jgg@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH v2 3/3] mm: gup: pack has_pinned in MMF_HAS_PINNED
+Message-ID: <YJvLYmEunXKNHMdX@t490s>
+References: <20210507150553.208763-1-peterx@redhat.com>
+ <20210507150553.208763-4-peterx@redhat.com>
+ <CAMuHMdUe-P=8qoUBnNa4gx2Dg4YvcfLqnBJvRqp9FNLw55fsPQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <e1da4a98-7521-518f-f85a-51e9c58b1fc3@foss.st.com>
+In-Reply-To: <CAMuHMdUe-P=8qoUBnNa4gx2Dg4YvcfLqnBJvRqp9FNLw55fsPQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 12 May 2021 at 12:55:53 (+0200), Alexandre TORGUE wrote:
-> We saw that patches [1] and [2] cause issue on stable version (at least for
-> 5.4). As you said issue can be seen with above device tree and check in
-> /proc/iomem than gpu_reserved region is taken by the kernel as "System RAM".
+On Wed, May 12, 2021 at 11:49:05AM +0200, Geert Uytterhoeven wrote:
+> Hi Peter, Andrea,
+
+Hi, Geert, Naresh,
+
+(Adding Naresh too since Naresh reported the same issue at the meantime)
+
 > 
-> On v5.10 stream there are no issues seen taking patches [1]&[2] and the
-> reason is linked to patches [3]&[4] which have been introduced in v5.10.0.
-> Reverting them give me the same behavior than on stable version.
+> On Fri, May 7, 2021 at 7:26 PM Peter Xu <peterx@redhat.com> wrote:
+> > From: Andrea Arcangeli <aarcange@redhat.com>
+> >
+> > has_pinned 32bit can be packed in the MMF_HAS_PINNED bit as a noop
+> > cleanup.
+> >
+> > Any atomic_inc/dec to the mm cacheline shared by all threads in
+> > pin-fast would reintroduce a loss of SMP scalability to pin-fast, so
+> > there's no future potential usefulness to keep an atomic in the mm for
+> > this.
+> >
+> > set_bit(MMF_HAS_PINNED) will be theoretically a bit slower than
+> > WRITE_ONCE (atomic_set is equivalent to WRITE_ONCE), but the set_bit
+> > (just like atomic_set after this commit) has to be still issued only
+> > once per "mm", so the difference between the two will be lost in the
+> > noise.
+> >
+> > will-it-scale "mmap2" shows no change in performance with enterprise
+> > config as expected.
+> >
+> > will-it-scale "pin_fast" retains the > 4000% SMP scalability
+> > performance improvement against upstream as expected.
+> >
+> > This is a noop as far as overall performance and SMP scalability are
+> > concerned.
+> >
+> > Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
+> > [peterx: Fix build for task_mmu.c, introduce mm_set_has_pinned_flag, fix
+> >  comment here and there]
+> > Signed-off-by: Peter Xu <peterx@redhat.com>
+> 
+> Thanks for your patch, which is now in linux-next.
+> 
+> > diff --git a/mm/gup.c b/mm/gup.c
+> > index 9933bc5c2eff2..bb130723a6717 100644
+> > --- a/mm/gup.c
+> > +++ b/mm/gup.c
+> > @@ -1270,6 +1270,17 @@ int fixup_user_fault(struct mm_struct *mm,
+> >  }
+> >  EXPORT_SYMBOL_GPL(fixup_user_fault);
+> >
+> > +/*
+> > + * Set the MMF_HAS_PINNED if not set yet; after set it'll be there for the mm's
+> > + * lifecycle.  Avoid setting the bit unless necessary, or it might cause write
+> > + * cache bouncing on large SMP machines for concurrent pinned gups.
+> > + */
+> > +static inline void mm_set_has_pinned_flag(unsigned long *mm_flags)
+> > +{
+> > +       if (!test_bit(MMF_HAS_PINNED, mm_flags))
+> > +               set_bit(MMF_HAS_PINNED, mm_flags);
+> > +}
+> > +
+> >  /*
+> >   * Please note that this function, unlike __get_user_pages will not
+> >   * return 0 for nr_pages > 0 without FOLL_NOWAIT
+> > @@ -1292,8 +1303,8 @@ static __always_inline long __get_user_pages_locked(struct mm_struct *mm,
+> >                 BUG_ON(*locked != 1);
+> >         }
+> >
+> > -       if ((flags & FOLL_PIN) && !atomic_read(&mm->has_pinned))
+> > -               atomic_set(&mm->has_pinned, 1);
+> > +       if (flags & FOLL_PIN)
+> > +               mm_set_has_pinned_flag(&mm->flags);
+> >
+> >         /*
+> >          * FOLL_PIN and FOLL_GET are mutually exclusive. Traditional behavior
+> > @@ -2617,8 +2628,8 @@ static int internal_get_user_pages_fast(unsigned long start,
+> >                                        FOLL_FAST_ONLY)))
+> >                 return -EINVAL;
+> >
+> > -       if ((gup_flags & FOLL_PIN) && !atomic_read(&current->mm->has_pinned))
+> > -               atomic_set(&current->mm->has_pinned, 1);
+> > +       if (gup_flags & FOLL_PIN)
+> > +               mm_set_has_pinned_flag(&current->mm->flags);
+> 
+> noreply@ellerman.id.au reports:
+> 
+>     FAILED linux-next/m5272c3_defconfig/m68k-gcc8 Wed May 12, 19:30
+>     http://kisskb.ellerman.id.au/kisskb/buildresult/14543658/
+>     Commit:   Add linux-next specific files for 20210512
+>           ec85c95b0c90a17413901b018e8ade7b9eae7cad
+>     Compiler: m68k-linux-gcc (GCC) 8.1.0 / GNU ld (GNU Binutils) 2.30
+> 
+>     mm/gup.c:2698:3: error: implicit declaration of function
+> 'mm_set_has_pinned_flag'; did you mean 'set_tsk_thread_flag'?
+> [-Werror=implicit-function-declaration]
+> 
+> It's definition is inside the #ifdef CONFIG_MMU section, but the last
+> user isn't.
 
-Thanks for confirming. Given that the patches were not really fixes, I
-think reverting is still the best option. I've sent reverts to -stable
-for 5.4 and prior:
+Indeed that's wrong and I replied to the mm-commit email but not here to fix
+this up yesterday:
 
-https://lore.kernel.org/stable/20210512122853.3243417-1-qperret@google.com/
+https://lore.kernel.org/mm-commits/20210511220029.m6tGcxUIw%25akpm@linux-foundation.org/
 
-Cheers,
-Quentin
+I'll remember to reply to the thread next time. Sorry for that!
+
+-- 
+Peter Xu
+
