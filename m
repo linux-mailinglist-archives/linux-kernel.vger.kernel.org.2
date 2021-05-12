@@ -2,160 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B88E37CAD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BBB37C93C
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236590AbhELQcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233613AbhELPlK (ORCPT
+        id S239791AbhELQQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:16:01 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33218 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234162AbhELPcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:41:10 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141B8C034625
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:19:03 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id pf4-20020a17090b1d84b029015ccffe0f2eso440458pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:19:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wQuM+8vl8RXXi53GN0Bxev1KdO1+AOXUsVXjVxgXMEU=;
-        b=Gk8wYyrGJM70yGgKGKycvu8PnplDnEkH+5OEJt1C22vqGyiKdmOFlPZPA4wckvHBET
-         axKUrRx6NchuLk8scPXGEtyWZbrMUjktcZzI6IZPZASxILpdMBJY9viFlOVfgQP+1ofj
-         8ivalJAblF5A9U1KeFVPm+l1DehzV8utNI6wKbpOuN7sn4EZN8l3nmYK2Ha5b48ec5bb
-         PkHE+RTHRPw+V6q8eeejDJZEcjybkgbXPBTAM2+IDQN41aZzgX59kh/WAZuc3y+C8UdB
-         J2rzs7xhcqLwFjt6Y8n8OyNF+VMCIidkgeRuEkVzMx5kEVTsP34xSAFxgk40tFKJQiJ0
-         dlug==
+        Wed, 12 May 2021 11:32:16 -0400
+Received: from mail-wr1-f69.google.com ([209.85.221.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <dimitri.ledkov@canonical.com>)
+        id 1lgqpG-0000rf-M0
+        for linux-kernel@vger.kernel.org; Wed, 12 May 2021 15:31:06 +0000
+Received: by mail-wr1-f69.google.com with SMTP id a5-20020a5d6ca50000b029011035a261adso220912wra.17
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:31:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wQuM+8vl8RXXi53GN0Bxev1KdO1+AOXUsVXjVxgXMEU=;
-        b=UYEMP3R4jt2UlcCn87PXEeffAy1HKftM31+1xTo4DGKGCVieOLXrt+M/civ4Kza6Yb
-         FMio9eYNRP6b6GJ+IzEBRGXmNKRsylsgLbCdqjYhT3gu2iOzYujbfTpAdyn/Cwrm9iXi
-         JP/0/Him5AqSFivixO9+1qZ+MdgL/0YT02QHWpxA3/J0utUAWgKnu+aSe7//ss/HfBVN
-         LfMaSDMXPUQU5q0oLxwk2IrNiM9dati9cgg/Zi7FQ/4JXDdgHQnZMDCw9XbENgNX1ENZ
-         fSbpUzTQZg75Eh1+MmaG19+FASA8YUZZmKkYVpwhcmdfKLwTPpnlwxieYAFJCT3/X+1T
-         ApHA==
-X-Gm-Message-State: AOAM532jdIx1ud56C3K/LnzapXcnvxBRArl89XNnZmngXqvnD78AupPu
-        x3TTDXaLYFuQqSOrRdC6tdYoXg==
-X-Google-Smtp-Source: ABdhPJxh8LL59gW6hhs773DJVJAXhM8iujV6qd8DtWRXyM/hNNcnsGmWDL4gazXHGRThy8NlUzuz3Q==
-X-Received: by 2002:a17:90a:4503:: with SMTP id u3mr41532313pjg.214.1620832742442;
-        Wed, 12 May 2021 08:19:02 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id m3sm174335pfh.174.2021.05.12.08.19.01
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fZI9VWslQbAkaL9+aHE2bKwdaoPdjTN0bkodyxaVHrI=;
+        b=O3dAfYt5h+dmNOlSqo6xqICpy9Kx1sBWI9K3FDNnk1fPbadYfwGa8epzqYdZk2LRlZ
+         h0/atqe5P5vR0JonnIINQOsdc3r2EvypjwUlmNojI20Qoc0pFUrm/Hcv6VrY87/Ojr1e
+         yzs5+AHbkxQ/T+DwKwCdsPkVTV97TP542KzbzK6ENVXalTS5hXAmR8qmHriaLX/Cw2q4
+         rO7ioPc8FPO5nk2SHaZz6VkzTZt6t8d0Hp77c78VQ/wJ8rKHtHz6SC+zxkJymuT29HlH
+         Q512YsDk9H4LCZIhGhtv3Kglk5pzuchSHhfZeo7qAlZO+/zeqXpDQq0J4RjeFWE19qdm
+         +OzQ==
+X-Gm-Message-State: AOAM532m4QmdS2CuQ9flaajNwxHJDL00n3QPIh66m9Hn9grIT5ALYW3A
+        XYXRDiCyi540CjVR2rTZc+qU9LbvSOtDptF9tLj6j/yBEGKtEBF6qj2wHQBagFflg20IxqT2BrJ
+        eE+0lVaCt95bOE58AhzYMQO23NA+99/prJnkfJfnGnw==
+X-Received: by 2002:adf:e947:: with SMTP id m7mr47459869wrn.70.1620833465047;
+        Wed, 12 May 2021 08:31:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwo53elL32JG7xaTmhg1ws1K3bI1DUcpZXe8E1r6krk8pxvSGElDVeDAzJWgiXjHolsOTLYAw==
+X-Received: by 2002:adf:e947:: with SMTP id m7mr47459838wrn.70.1620833464799;
+        Wed, 12 May 2021 08:31:04 -0700 (PDT)
+Received: from localhost ([2a01:4b00:85fd:d700:8f2c:460b:dbba:6128])
+        by smtp.gmail.com with ESMTPSA id c16sm4576031wrn.92.2021.05.12.08.31.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 08:19:01 -0700 (PDT)
-Date:   Wed, 12 May 2021 15:18:58 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Xu, Like" <like.xu@intel.com>
-Cc:     Venkatesh Srinivas <venkateshs@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
-        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        Yao Yuan <yuan.yao@intel.com>,
-        Like Xu <like.xu@linux.intel.com>
-Subject: Re: [PATCH v6 04/16] KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit
- when vPMU is enabled
-Message-ID: <YJvx4tr2iXo4bQ/d@google.com>
-References: <20210511024214.280733-1-like.xu@linux.intel.com>
- <20210511024214.280733-5-like.xu@linux.intel.com>
- <CAA0tLErUFPnZ=SL82bLe8Ddf5rFu2Pdv5xE0aq4A91mzn9=ABA@mail.gmail.com>
- <ead61a83-1534-a8a6-13ee-646898a6d1a9@intel.com>
+        Wed, 12 May 2021 08:31:03 -0700 (PDT)
+From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
+        keyrings@vger.kernel.org, Eric Snowberg <eric.snowberg@oracle.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: [PATCH] integrity: Load mokx certs from the EFI MOK config table
+Date:   Wed, 12 May 2021 16:31:00 +0100
+Message-Id: <20210512153100.285169-1-dimitri.ledkov@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ead61a83-1534-a8a6-13ee-646898a6d1a9@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021, Xu, Like wrote:
-> Hi Venkatesh Srinivas,
-> 
-> On 2021/5/12 9:58, Venkatesh Srinivas wrote:
-> > On 5/10/21, Like Xu <like.xu@linux.intel.com> wrote:
-> > > On Intel platforms, the software can use the IA32_MISC_ENABLE[7] bit to
-> > > detect whether the processor supports performance monitoring facility.
-> > > 
-> > > It depends on the PMU is enabled for the guest, and a software write
-> > > operation to this available bit will be ignored.
-> > Is the behavior that writes to IA32_MISC_ENABLE[7] are ignored (rather than #GP)
-> > documented someplace?
-> 
-> The bit[7] behavior of the real hardware on the native host is quite
-> suspicious.
+Refactor load_moklist_certs() to load either MokListRT into db, or
+MokListXRT into dbx. Call load_moklist_certs() twice - first to load
+mokx certs into dbx, then mok certs into db.
 
-Ugh.  Can you file an SDM bug to get the wording and accessibility updated?  The
-current phrasing is a mess:
+This thus now attempts to load mokx certs via the EFI MOKvar config
+table first, and if that fails, via the EFI variable. Previously mokx
+certs were only loaded via the EFI variable. Which fails when
+MokListXRT is large. Instead of large MokListXRT variable, only
+MokListXRT{1,2,3} are available which are not loaded. This is the case
+with Ubuntu's 15.4 based shim. This patch is required to address
+CVE-2020-26541 when certificates are revoked via MokListXRT.
 
-  Performance Monitoring Available (R)
-  1 = Performance monitoring enabled.
-  0 = Performance monitoring disabled.
+Fixes: ebd9c2ae369a ("integrity: Load mokx variables into the blacklist keyring")
 
-The (R) is ambiguous because most other entries that are read-only use (RO), and
-the "enabled vs. disabled" implies the bit is writable and really does control
-the PMU.  But on my Haswell system, it's read-only.  Assuming the bit is supposed
-to be a read-only "PMU supported bit", the SDM should be:
+Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+cc: keyrings@vger.kernel.org
+cc: Eric Snowberg <eric.snowberg@oracle.com>
+cc: Jarkko Sakkinen <jarkko@kernel.org>
+cc: David Woodhouse <dwmw2@infradead.org>
+cc: David Howells <dhowells@redhat.com>
+---
+ security/integrity/platform_certs/load_uefi.c | 74 ++++++++++---------
+ 1 file changed, 40 insertions(+), 34 deletions(-)
 
-  Performance Monitoring Available (RO)
-  1 = Performance monitoring supported.
-  0 = Performance monitoring not supported.
+diff --git a/security/integrity/platform_certs/load_uefi.c b/security/integrity/platform_certs/load_uefi.c
+index f290f78c3f30..f4b913ec76e4 100644
+--- a/security/integrity/platform_certs/load_uefi.c
++++ b/security/integrity/platform_certs/load_uefi.c
+@@ -66,17 +66,18 @@ static __init void *get_cert_list(efi_char16_t *name, efi_guid_t *guid,
+ }
+ 
+ /*
+- * load_moklist_certs() - Load MokList certs
++ * load_moklist_certs() - Load Mok(X)List certs
++ * @load_db: Load MokListRT into db when true; MokListXRT into dbx when false
+  *
+- * Load the certs contained in the UEFI MokListRT database into the
+- * platform trusted keyring.
++ * Load the certs contained in the UEFI MokList(X)RT database into the
++ * platform trusted/denied keyring.
+  *
+  * This routine checks the EFI MOK config table first. If and only if
+- * that fails, this routine uses the MokListRT ordinary UEFI variable.
++ * that fails, this routine uses the MokList(X)RT ordinary UEFI variable.
+  *
+  * Return:	Status
+  */
+-static int __init load_moklist_certs(void)
++static int __init load_moklist_certs(const bool load_db)
+ {
+ 	struct efi_mokvar_table_entry *mokvar_entry;
+ 	efi_guid_t mok_var = EFI_SHIM_LOCK_GUID;
+@@ -84,41 +85,55 @@ static int __init load_moklist_certs(void)
+ 	unsigned long moksize;
+ 	efi_status_t status;
+ 	int rc;
++	const char *mokvar_name = "MokListRT";
++	/* Should be const, but get_cert_list() doesn't have it as const yet */
++	efi_char16_t *efivar_name = L"MokListRT";
++	const char *parse_mokvar_name = "UEFI:MokListRT (MOKvar table)";
++	const char *parse_efivar_name = "UEFI:MokListRT";
++	efi_element_handler_t (*get_handler_for_guid)(const efi_guid_t *) = get_handler_for_db;
++
++	if (!load_db) {
++		mokvar_name = "MokListXRT";
++		efivar_name = L"MokListXRT";
++		parse_mokvar_name = "UEFI:MokListXRT (MOKvar table)";
++		parse_efivar_name = "UEFI:MokListXRT";
++		get_handler_for_guid = get_handler_for_dbx;
++	}
+ 
+ 	/* First try to load certs from the EFI MOKvar config table.
+ 	 * It's not an error if the MOKvar config table doesn't exist
+ 	 * or the MokListRT entry is not found in it.
+ 	 */
+-	mokvar_entry = efi_mokvar_entry_find("MokListRT");
++	mokvar_entry = efi_mokvar_entry_find(mokvar_name);
+ 	if (mokvar_entry) {
+-		rc = parse_efi_signature_list("UEFI:MokListRT (MOKvar table)",
++		rc = parse_efi_signature_list(parse_mokvar_name,
+ 					      mokvar_entry->data,
+ 					      mokvar_entry->data_size,
+-					      get_handler_for_db);
++					      get_handler_for_guid);
+ 		/* All done if that worked. */
+ 		if (!rc)
+ 			return rc;
+ 
+-		pr_err("Couldn't parse MokListRT signatures from EFI MOKvar config table: %d\n",
+-		       rc);
++		pr_err("Couldn't parse %s signatures from EFI MOKvar config table: %d\n",
++		       mokvar_name, rc);
+ 	}
+ 
+ 	/* Get MokListRT. It might not exist, so it isn't an error
+ 	 * if we can't get it.
+ 	 */
+-	mok = get_cert_list(L"MokListRT", &mok_var, &moksize, &status);
++	mok = get_cert_list(efivar_name, &mok_var, &moksize, &status);
+ 	if (mok) {
+-		rc = parse_efi_signature_list("UEFI:MokListRT",
+-					      mok, moksize, get_handler_for_db);
++		rc = parse_efi_signature_list(parse_efivar_name,
++					      mok, moksize, get_handler_for_guid);
+ 		kfree(mok);
+ 		if (rc)
+-			pr_err("Couldn't parse MokListRT signatures: %d\n", rc);
++			pr_err("Couldn't parse %s signatures: %d\n", mokvar_name, rc);
+ 		return rc;
+ 	}
+ 	if (status == EFI_NOT_FOUND)
+-		pr_debug("MokListRT variable wasn't found\n");
++		pr_debug("%s variable wasn't found\n", mokvar_name);
+ 	else
+-		pr_info("Couldn't get UEFI MokListRT\n");
++		pr_info("Couldn't get UEFI %s\n", mokvar_name);
+ 	return 0;
+ }
+ 
+@@ -132,9 +147,8 @@ static int __init load_moklist_certs(void)
+ static int __init load_uefi_certs(void)
+ {
+ 	efi_guid_t secure_var = EFI_IMAGE_SECURITY_DATABASE_GUID;
+-	efi_guid_t mok_var = EFI_SHIM_LOCK_GUID;
+-	void *db = NULL, *dbx = NULL, *mokx = NULL;
+-	unsigned long dbsize = 0, dbxsize = 0, mokxsize = 0;
++	void *db = NULL, *dbx = NULL;
++	unsigned long dbsize = 0, dbxsize = 0;
+ 	efi_status_t status;
+ 	int rc = 0;
+ 
+@@ -176,23 +190,15 @@ static int __init load_uefi_certs(void)
+ 		kfree(dbx);
+ 	}
+ 
+-	mokx = get_cert_list(L"MokListXRT", &mok_var, &mokxsize, &status);
+-	if (!mokx) {
+-		if (status == EFI_NOT_FOUND)
+-			pr_debug("mokx variable wasn't found\n");
+-		else
+-			pr_info("Couldn't get mokx list\n");
+-	} else {
+-		rc = parse_efi_signature_list("UEFI:MokListXRT",
+-					      mokx, mokxsize,
+-					      get_handler_for_dbx);
+-		if (rc)
+-			pr_err("Couldn't parse mokx signatures %d\n", rc);
+-		kfree(mokx);
+-	}
++	/* Load the MokListXRT certs */
++	rc = load_moklist_certs(false);
++	if (rc)
++		pr_err("Couldn't parse mokx signatures: %d\n", rc);
+ 
+ 	/* Load the MokListRT certs */
+-	rc = load_moklist_certs();
++	rc = load_moklist_certs(true);
++	if (rc)
++		pr_err("Couldn't parse mok signatures: %d\n", rc);
+ 
+ 	return rc;
+ }
+-- 
+2.27.0
 
-And please update the changelog to explain the "why" of whatever the behavior
-ends up being.  The "what" is obvious from the code.
-
-> To keep the semantics consistent and simple, we propose ignoring write
-> operation in the virtualized world, since whether or not to expose PMU is
-> configured by the hypervisor user space and not by the guest side.
-
-Making up our own architectural behavior because it's convient is not a good
-idea.
-
-> > > diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-> > > index 9efc1a6b8693..d9dbebe03cae 100644
-> > > --- a/arch/x86/kvm/vmx/pmu_intel.c
-> > > +++ b/arch/x86/kvm/vmx/pmu_intel.c
-> > > @@ -488,6 +488,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
-> > >   	if (!pmu->version)
-> > >   		return;
-> > > 
-> > > +	vcpu->arch.ia32_misc_enable_msr |= MSR_IA32_MISC_ENABLE_EMON;
-
-Hmm, normally I would say overwriting the guest's value is a bad idea, but if
-the bit really is a read-only "PMU supported" bit, then this is the correct
-behavior, albeit weird if userspace does a late CPUID update (though that's
-weird no matter what).
-
-> > >   	perf_get_x86_pmu_capability(&x86_pmu);
-> > > 
-> > >   	pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
-> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > > index 5bd550eaf683..abe3ea69078c 100644
-> > > --- a/arch/x86/kvm/x86.c
-> > > +++ b/arch/x86/kvm/x86.c
-> > > @@ -3211,6 +3211,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct
-> > > msr_data *msr_info)
-> > >   		}
-> > >   		break;
-> > >   	case MSR_IA32_MISC_ENABLE:
-> > > +		data &= ~MSR_IA32_MISC_ENABLE_EMON;
-
-However, this is not.  If it's a read-only bit, then toggling the bit should
-cause a #GP.
-
-> > >   		if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT)
-> > > &&
-> > >   		    ((vcpu->arch.ia32_misc_enable_msr ^ data) &
-> > > MSR_IA32_MISC_ENABLE_MWAIT)) {
-> > >   			if (!guest_cpuid_has(vcpu, X86_FEATURE_XMM3))
-> > > --
