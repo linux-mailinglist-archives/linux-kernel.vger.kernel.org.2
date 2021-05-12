@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8716237BD74
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D3237BD0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233673AbhELM4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:56:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53208 "EHLO mail.kernel.org"
+        id S231783AbhELMxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:53:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231665AbhELMxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 08:53:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A87E6192C;
-        Wed, 12 May 2021 12:51:43 +0000 (UTC)
+        id S231289AbhELMwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 08:52:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D2AB61177;
+        Wed, 12 May 2021 12:51:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620823903;
-        bh=a2ciNHKQtdy9yKU7hgq+HbZ1G3BlRKUgnhBsmHQl52Q=;
+        s=k20201202; t=1620823902;
+        bh=9ZrdEXP9uF/1gywNsqqqNVwR7m3JOM+kWEVqticTO7o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FhOgSFeSes/0Y4VigsXGqH46I33Iif1FNXc8PCR5FWAYIq0aY0AQAYxB6d7q+zxvC
-         4DOh6Y8pnik83uGrWspdaaxkO4jSqtSMz0TZb4X7jZrjjP8f8gCiyBPHoiSnU90yRH
-         XsnVdToIuqUqOUVE4H3QO3Dir5vCd/GOpoMJIPSuVV6iTLGfo0e8oeg1gJXnocgLYn
-         vaIhea9QJyjaUZu5Xlj5XDt6ogA2nqcr1rko0GAlYrAJDunmW9okqoJS7V0kzOBk7I
-         ONys0cf7Fihlp2kOAHTRMuPFFpb9uFDj+FaOoUDJOqmk2n81eKk5Hj5zTswx7rFr7r
-         65GtdzwtYbRwQ==
+        b=a8R6KfiuBdkQUoal0yj23vXyClXR3ungJ8ExFyoxj9nWavV4zFy9WoEJ850DV7/UM
+         j6XWVapuxbuqoeKQb3FQsbdxndsLJrGr0gxvdSg2+m6764hmfhdEZmG1T5CO7GpDY/
+         CP3pyQPXBLYY2w+tLFJ3CcZvq3vPlna3eNrZcUwrwOXniO6cTZXoMCwGetzvauhOJu
+         a+l0np8gLr9oVAXowGJkN/951Xhv8DulMigdYNQh++VorgPtTDDzbXRD/SrxYhx2IN
+         DwDJPhsLR7/MdRBU7X1OU1Lmg2BQcmF3EwUj4jVgDx5pCvqvWg3ma5NDE7q6TMAnNf
+         e8niC4hc1yA/w==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lgoKy-0018hB-9I; Wed, 12 May 2021 14:51:40 +0200
+        id 1lgoKy-0018hF-AH; Wed, 12 May 2021 14:51:40 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, Leo Yan <leo.yan@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 06/40] docs: trace: coresight: coresight-etm4x-reference.rst: Use ASCII subset instead of UTF-8 alternate symbols
-Date:   Wed, 12 May 2021 14:50:10 +0200
-Message-Id: <14c34b8034d4916c5f81c59b6c7f28d622a84bb4.1620823573.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 07/40] docs: driver-api: ioctl.rst: Use ASCII subset instead of UTF-8 alternate symbols
+Date:   Wed, 12 May 2021 14:50:11 +0200
+Message-Id: <5cf0219649d914d5657adcc7fcda64e59f1aec12.1620823573.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620823573.git.mchehab+huawei@kernel.org>
 References: <cover.1620823573.git.mchehab+huawei@kernel.org>
@@ -65,90 +60,41 @@ Also, Sphinx already do such conversion automatically outside literal blocks:
 So, replace the occurences of the following UTF-8 characters:
 
 	- U+00a0 (' '): NO-BREAK SPACE
-	- U+2018 ('‘'): LEFT SINGLE QUOTATION MARK
-	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../coresight/coresight-etm4x-reference.rst      | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ Documentation/driver-api/ioctl.rst | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/trace/coresight/coresight-etm4x-reference.rst b/Documentation/trace/coresight/coresight-etm4x-reference.rst
-index b64d9a9c79df..e8ddfc144d9a 100644
---- a/Documentation/trace/coresight/coresight-etm4x-reference.rst
-+++ b/Documentation/trace/coresight/coresight-etm4x-reference.rst
-@@ -15,14 +15,14 @@ Root: ``/sys/bus/coresight/devices/etm<N>``
+diff --git a/Documentation/driver-api/ioctl.rst b/Documentation/driver-api/ioctl.rst
+index c455db0e1627..5b76e765827d 100644
+--- a/Documentation/driver-api/ioctl.rst
++++ b/Documentation/driver-api/ioctl.rst
+@@ -25,9 +25,9 @@ ioctl commands that follow modern conventions: ``_IO``, ``_IOR``,
+ with the correct parameters:
  
- The following paragraphs explain the association between sysfs files and the
- ETMv4 registers that they effect. Note the register names are given without
--the ‘TRC’ prefix.
-+the 'TRC' prefix.
+ _IO/_IOR/_IOW/_IOWR
+-   The macro name specifies how the argument will be used.  It may be a
++   The macro name specifies how the argument will be used.  It may be a
+    pointer to data to be passed into the kernel (_IOW), out of the kernel
+-   (_IOR), or both (_IOWR).  _IO can indicate either commands with no
++   (_IOR), or both (_IOWR).  _IO can indicate either commands with no
+    argument or those passing an integer value instead of a pointer.
+    It is recommended to only use _IO for commands without arguments,
+    and use pointers for passing data.
+@@ -200,10 +200,10 @@ cause an information leak, which can be used to defeat kernel address
+ space layout randomization (KASLR), helping in an attack.
  
- ----
+ For this reason (and for compat support) it is best to avoid any
+-implicit padding in data structures.  Where there is implicit padding
++implicit padding in data structures.  Where there is implicit padding
+ in an existing structure, kernel drivers must be careful to fully
+ initialize an instance of the structure before copying it to user
+-space.  This is usually done by calling memset() before assigning to
++space.  This is usually done by calling memset() before assigning to
+ individual members.
  
- :File:            ``mode`` (rw)
- :Trace Registers: {CONFIGR + others}
- :Notes:
--    Bit select trace features. See ‘mode’ section below. Bits
-+    Bit select trace features. See 'mode' section below. Bits
-     in this will cause equivalent programming of trace config and
-     other registers to enable the features requested.
- 
-@@ -89,7 +89,7 @@ the ‘TRC’ prefix.
- :Notes:
-     Pair of addresses for a range selected by addr_idx. Include
-     / exclude according to the optional parameter, or if omitted
--    uses the current ‘mode’ setting. Select comparator range in
-+    uses the current 'mode' setting. Select comparator range in
-     control register. Error if index is odd value.
- 
- :Depends: ``mode, addr_idx``
-@@ -277,7 +277,7 @@ the ‘TRC’ prefix.
- :Trace Registers: VICTLR{23:20}
- :Notes:
-     Program non-secure exception level filters. Set / clear NS
--    exception filter bits. Setting ‘1’ excludes trace from the
-+    exception filter bits. Setting '1' excludes trace from the
-     exception level.
- 
- :Syntax:
-@@ -427,7 +427,7 @@ the ‘TRC’ prefix.
- :Syntax:
-     ``echo idx > vmid_idx``
- 
--    Where idx <  numvmidc
-+    Where idx <  numvmidc
- 
- ----
- 
-@@ -628,7 +628,7 @@ the reset parameter::
- 
- 
- 
--The ‘mode’ sysfs parameter.
-+The 'mode' sysfs parameter.
- ---------------------------
- 
- This is a bitfield selection parameter that sets the overall trace mode for the
-@@ -696,7 +696,7 @@ Bit assignments shown below:-
-     ETM_MODE_QELEM(val)
- 
- **description:**
--    ‘val’ determines level of Q element support enabled if
-+    'val' determines level of Q element support enabled if
-     implemented by the ETM [IDR0]
- 
- 
-@@ -780,7 +780,7 @@ Bit assignments shown below:-
- ----
- 
- *Note a)* On startup the ETM is programmed to trace the complete address space
--using address range comparator 0. ‘mode’ bits 30 / 31 modify this setting to
-+using address range comparator 0. 'mode' bits 30 / 31 modify this setting to
- set EL exclude bits for NS state in either user space (EL0) or kernel space
- (EL1) in the address range comparator. (the default setting excludes all
- secure EL, and NS EL2)
+ Subsystem abstractions
 -- 
 2.30.2
 
