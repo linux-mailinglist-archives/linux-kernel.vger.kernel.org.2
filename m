@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E701737B7A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A2C37B7A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhELINp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 04:13:45 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:37469 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230328AbhELINm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:13:42 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-24-Mu4ZH7yROfqaElxRZepFWA-1; Wed, 12 May 2021 09:12:32 +0100
-X-MC-Unique: Mu4ZH7yROfqaElxRZepFWA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 12 May 2021 09:12:30 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Wed, 12 May 2021 09:12:30 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Borislav Petkov' <bp@alien8.de>,
-        "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Eugene Syromiatnikov" <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        id S230289AbhELIPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:15:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33804 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229968AbhELIPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 04:15:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DD40613C0;
+        Wed, 12 May 2021 08:14:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620807276;
+        bh=NpIFlszRtKWRCTyCPgKhgBzC2KWJNOHscSYvFzJ1CcM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gcHovoQQ2+ccEfVf0QZz6L1Z9eyxVOZqPyh/OWDH/9HlxcWhr0asX/mnwSelJQv3j
+         uRKdfk4dCN9VDJUUi9cQFDPJFLC5MOEZRgYDu7876eKnzMfx96tuY+AOBQhgNXgRqq
+         O0VkKLyeiCsapUUwVIpD0e55mK9h8jCrf4pkR3QBTmjOohZWcyIyGvXp02+6lNPIAl
+         Xcqacc/pA8b87BkY6j4R3Rv2gvFl/hM2E7N5ksHXOGn5OnjJ5IHB53gYO7+cYg4saO
+         B4NHdM7WUwiskhlPuAhbfHHXB3YNA1jiSkUMAla6fcevqt/aquFbf+nHF58yEcYKq0
+         JhH3Y7aIkNSgg==
+Date:   Wed, 12 May 2021 10:14:32 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     David Gow <davidgow@google.com>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        "Weijiang Yang" <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        "Haitao Huang" <haitao.huang@intel.com>
-Subject: RE: [PATCH v26 23/30] x86/cet/shstk: Handle thread shadow stack
-Thread-Topic: [PATCH v26 23/30] x86/cet/shstk: Handle thread shadow stack
-Thread-Index: AQHXRoh6HV4c4+Eb3km5gqBECdAPb6rff7ZQ
-Date:   Wed, 12 May 2021 08:12:29 +0000
-Message-ID: <e22d3116efef4e25a45fc6b58d5622ef@AcuMS.aculab.com>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-24-yu-cheng.yu@intel.com> <YJlADyc/9pn8Sjkn@zn.tnic>
- <89598d32-4bf8-b989-ee77-5b4b55a138a9@intel.com> <YJq6VZ/XMAtfkrMc@zn.tnic>
-In-Reply-To: <YJq6VZ/XMAtfkrMc@zn.tnic>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Daniel Latypov <dlatypov@google.com>,
+        Marco Elver <elver@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 39/53] docs: dev-tools: testing-overview.rst: avoid
+ using UTF-8 chars
+Message-ID: <20210512101432.32f91125@coco.lan>
+In-Reply-To: <CABVgOSn67XkxasNeMvcs-ciL8F8zmMEVoZMNqf8xRdUg1heX_g@mail.gmail.com>
+References: <cover.1620641727.git.mchehab+huawei@kernel.org>
+        <1591224255d095d14ff3bc2bf4e7796dcc55c77d.1620641727.git.mchehab+huawei@kernel.org>
+        <CABVgOSn67XkxasNeMvcs-ciL8F8zmMEVoZMNqf8xRdUg1heX_g@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQm9yaXNsYXYgUGV0a292DQo+IFNlbnQ6IDExIE1heSAyMDIxIDE4OjEwDQo+IA0KPiBP
-biBNb24sIE1heSAxMCwgMjAyMSBhdCAwMzo1Nzo1NlBNIC0wNzAwLCBZdSwgWXUtY2hlbmcgd3Jv
-dGU6DQo+ID4gU28gdGhpcyBzdHJ1Y3Qgd2lsbCBiZToNCj4gPg0KPiA+IHN0cnVjdCB0aHJlYWRf
-c2hzdGsgew0KPiA+IAl1NjQgc2hzdGtfYmFzZTsNCj4gPiAJdTY0IHNoc3RrX3NpemU7DQo+ID4g
-CXU2NCBsb2NrZWQ6MTsNCj4gPiAJdTY0IGlidDoxOw0KDQpObyBwb2ludCBpbiBiaXQgZmllbGRz
-Pw0KDQo+ID4gfTsNCj4gPg0KPiA+IE9rPw0KPiANCj4gUHJldHR5IG11Y2guDQo+IA0KPiBZb3Ug
-Y2FuIGV2ZW4gcmVtb3ZlIHRoZSAic2hzdGtfIiBmcm9tIHRoZSBtZW1iZXJzIGFuZCB3aGVuIHlv
-dSBjYWxsIHRoZQ0KPiBwb2ludGVyICJzaHN0ayIsIGFjY2Vzc2luZyB0aGUgbWVtYmVycyB3aWxs
-IHJlYWQNCj4gDQo+IAlzaHN0ay0+YmFzZQ0KPiAJc2hzdGstPnNpemUNCj4gCS4uLg0KPiANCj4g
-YW5kIGFsbCBpcyBvcmdhbmljIGFuZCByZWFkYWJsZSA6KQ0KDQpBbmQgZW50aXJlbHkgbm90IGdy
-ZXBwYWJsZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJh
-bWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0
-cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+Em Tue, 11 May 2021 07:35:29 +0800
+David Gow <davidgow@google.com> escreveu:
 
+> On Mon, May 10, 2021 at 6:27 PM Mauro Carvalho Chehab
+> <mchehab+huawei@kernel.org> wrote:
+> >
+> > While UTF-8 characters can be used at the Linux documentation,
+> > the best is to use them only when ASCII doesn't offer a good replacemen=
+t.
+> > So, replace the occurences of the following UTF-8 characters:
+> >
+> >         - U+2014 ('=E2=80=94'): EM DASH
+> >
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > --- =20
+>=20
+> Oh dear, I do have a habit of overusing em-dashes. I've no problem in
+> theory with exchanging them for an ASCII approximation.
+> I suppose there's a reason it's the one dash to rule them all: :-)
+> https://twitter.com/FakeUnicode/status/727888721312260096/photo/1
+
+No, there's no such rule, although there's a preference to keep
+the texts easy to edit/read as text files[1]. The main rationale for
+this series is that the conversion from other formats to ReST ended
+introducing a lot of UTF-8 noise.
+
+[1] IMO, the best is to use UTF-8 characters for symbols that
+    aren't properly represented in ASCII, like Latin accents,
+    Greek letters, etc.
+
+In the specific case of dashes, you can use:
+
+	"--" for EN DASH
+	"---" for EM DASH
+
+Those will automatically be translated by Sphinx when building=20
+the docs. Using ASCII there usually makes life simpler for
+developers whose editors can't easily type EN/EM DASH.
+
+Btw, Sphinx will also replace commas to curly commas
+automatically on its output (except for literal blocks).
+
+Thanks,
+Mauro
