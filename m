@@ -2,85 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D695937B9A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 138B737B9A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhELJvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 05:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55722 "EHLO
+        id S230307AbhELJvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 05:51:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbhELJvS (ORCPT
+        with ESMTP id S230114AbhELJvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 05:51:18 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BEDC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:50:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BRFBW43fgtHv4ucSXHHlezy38Womgpx7pRY+Lyjlhnk=; b=U/oG3qIwGMJ4zSIjL+hP9N5akz
-        HBz2BbQi2DRXwUkCtfWVGl83GLhrKfXY3326xR7CSn45eOdYMF6cFuMy1fqwJDrmXrw8mXAsMMTeW
-        YAngOWF7DRp0ucmdiE49Ygt/iUbhXoYSvQJWho8FSC+qqasF/E00ezZgQh9NP+JylJwe3xyEjt8Kp
-        yGDGGAm+lmVHKrEtnNVhPs8bIsxZ5uVonU2MTiWzeP4Xq1yoehQpJ0nb/fx9wNd///lDEfbxIfvw7
-        c5xzxGvMNZYEd+htTbljyX8tQXBktzB2Jhckcxj+ikfLHpl9tvrVRS440g74+v6S2dm8w+NeRhLO8
-        hGiUXGgQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lglVG-002TGZ-LP; Wed, 12 May 2021 09:50:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8693230026A;
-        Wed, 12 May 2021 11:50:05 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 702942040BF7C; Wed, 12 May 2021 11:50:05 +0200 (CEST)
-Date:   Wed, 12 May 2021 11:50:05 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/asm: Simplify __smp_mb() definition
-Message-ID: <YJukzRPyN7XbLlTd@hirez.programming.kicks-ass.net>
-References: <20210512093310.5635-1-bp@alien8.de>
+        Wed, 12 May 2021 05:51:39 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B118C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:50:30 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id s6so26264847edu.10
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:50:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1GGUsVMHLE+IZgAeaNUaXpWdQucmX1IJ1U87o5AWB8s=;
+        b=dsXi6+0LX4t+9I7MTbwVdtOk7zzsArKhSuULaxCvj2iBGrnDe01i5L5qyCHksIqOuR
+         F3x3O2sul75deZpTuwJvVwAzK/1QfZs86ltV4Owx4R91a2hQf5ySMECYMDxMyJOcnYCK
+         E4Bz5qj6B2d8U4FkikUs12sVmL7ry4l8jNa7ZxLgs32nJW90DgsjE1yd7zVFFVuOU3uD
+         cLNdUfVI1ZeWsVG5lngJwX8wDr4oJ6CzitK4be65XHK9dMrAwFE/IyPoFlsFbD9hcqEG
+         k6TMbIA0GDSRitCYZ5rfQGxfqvGzfFE4n1DFMRP9o09pVMJiKWKQRFwIJKImH36cwFAA
+         h4Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1GGUsVMHLE+IZgAeaNUaXpWdQucmX1IJ1U87o5AWB8s=;
+        b=km60aLyrycTPlWK6rWHaBjRE+O8Y5oAfhbFHK5/zhC+gmSVpcMDwq8AZ7FFWy83D7H
+         Ltl6MiEQ/iQyO8EWI8Rn+i9Zoe4FVAZuHyN794yR3uNWj4nLEggkTx2RsepJkVsz/Ezd
+         nDAVEVMJZ6//8/ewMsZ+U8DiQAq1SasbjHsp3rhY2da+Ktiyx64JhsbRTek170k3Tndz
+         Ot0qoyI0spOOpBiYP0bOtY0XayFpbN/aXa4DViOtjeKd9dR15kT9yLFY7ttuVacWC9lO
+         CWe1e9XaB09fLP5oTnovkIZ3ij3E47bPZN02pKdh0bWAjly9zYy8kTsIwPjT1Px+jIJD
+         JEAw==
+X-Gm-Message-State: AOAM532grsStABf6xeLNNbutcj868bPSlHn7aZCtbE0iCYP6SzvsE5u/
+        EhihOMjDw4JZeCRnLnkFi4zBlw==
+X-Google-Smtp-Source: ABdhPJzmDSQCoBfSxpSFssN4vIeMUeoO4am9Wp3h0Kx3M7Nxh9kHKvhHuJYFuHxshsy6Fd+kEGp0lw==
+X-Received: by 2002:aa7:cd83:: with SMTP id x3mr41440462edv.373.1620813029119;
+        Wed, 12 May 2021 02:50:29 -0700 (PDT)
+Received: from apalos.home ([94.69.77.156])
+        by smtp.gmail.com with ESMTPSA id lr15sm13734709ejb.107.2021.05.12.02.50.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 02:50:28 -0700 (PDT)
+Date:   Wed, 12 May 2021 12:50:22 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: Re: [PATCH net-next v4 2/4] page_pool: Allow drivers to hint on SKB
+ recycling
+Message-ID: <YJuk3o6CezbVrT+P@apalos.home>
+References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
+ <20210511133118.15012-3-mcroce@linux.microsoft.com>
+ <fa93976a-3460-0f7f-7af4-e78bfe55900a@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210512093310.5635-1-bp@alien8.de>
+In-Reply-To: <fa93976a-3460-0f7f-7af4-e78bfe55900a@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 11:33:10AM +0200, Borislav Petkov wrote:
-> From: Borislav Petkov <bp@suse.de>
+[...]
+> > Since we added an extra argument on __skb_frag_unref() to handle
+> > recycling, update the current users of the function with that.
 > 
-> Drop the bitness ifdeffery in favor of using the rSP register
-> specification for 32 and 64 bit depending on the build.
-> 
-> No functional changes.
-> 
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> ---
->  arch/x86/include/asm/barrier.h | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
-> index 4819d5e5a335..3ba772a69cc8 100644
-> --- a/arch/x86/include/asm/barrier.h
-> +++ b/arch/x86/include/asm/barrier.h
-> @@ -54,11 +54,8 @@ static inline unsigned long array_index_mask_nospec(unsigned long index,
->  #define dma_rmb()	barrier()
->  #define dma_wmb()	barrier()
->  
-> -#ifdef CONFIG_X86_32
-> -#define __smp_mb()	asm volatile("lock; addl $0,-4(%%esp)" ::: "memory", "cc")
-> -#else
-> -#define __smp_mb()	asm volatile("lock; addl $0,-4(%%rsp)" ::: "memory", "cc")
-> -#endif
-> +#define __smp_mb()	asm volatile("lock; addl $0,-4(%%" _ASM_SP ")" ::: "memory", "cc")
-> +
->  #define __smp_rmb()	dma_rmb()
->  #define __smp_wmb()	barrier()
->  #define __smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
+> This part could be done with a preliminary patch, only adding this
+> extra boolean, this would keep the 'complex' patch smaller.
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Sure 
+
+[...]
+> >  #include <linux/uaccess.h>
+> >  #include <trace/events/skb.h>
+> > @@ -645,6 +648,11 @@ static void skb_free_head(struct sk_buff *skb)
+> >  {
+> >  	unsigned char *head = skb->head;
+> >  
+> > +#if IS_BUILTIN(CONFIG_PAGE_POOL)
+> 
+> Why IS_BUILTIN() ? 
+
+No reason, we'll replace it with an ifdef
+
+> 
+> PAGE_POOL is either y or n
+> 
+> IS_ENABLED() would look better, since we use IS_BUILTIN() for the cases where a module might be used.
+> 
+> Or simply #ifdef CONFIG_PAGE_POOL
+> 
+> > +	if (skb->pp_recycle && page_pool_return_skb_page(head))
+> 
+> This probably should be attempted only in the (skb->head_frag) case ?
+
+I think the extra check makes sense.
+
+> 
+> Also this patch misses pskb_expand_head()
+
+I am not sure I am following. Misses what? pskb_expand_head() will either
+call skb_release_data() or skb_free_head(), which would either recycle or
+unmap the buffer for us (depending on the page refcnt)
+
+[...]
+
+Thanks
+/Ilias
