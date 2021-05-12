@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296EF37B68C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F62637B68D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhELHFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 03:05:24 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:2636 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhELHFY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 03:05:24 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fg5Lz70RMzld5G;
-        Wed, 12 May 2021 15:02:03 +0800 (CST)
-Received: from [10.174.178.208] (10.174.178.208) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 12 May 2021 15:04:07 +0800
-Subject: Re: [PATCH -next] crypto: hisilicon -: switch to memdup_user_nul()
-To:     Zhou Wang <wangzhou1@hisilicon.com>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1620715031-107265-1-git-send-email-zou_wei@huawei.com>
- <c3bfff60-5e78-c0b0-797b-499c70da0ff2@hisilicon.com>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <04aa944f-c07c-1263-a17d-ac647725e2b9@huawei.com>
-Date:   Wed, 12 May 2021 15:04:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S230169AbhELHG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 03:06:28 -0400
+Received: from mga09.intel.com ([134.134.136.24]:25761 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229626AbhELHGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 03:06:25 -0400
+IronPort-SDR: cTzSLAS4r/lirUMcxD1F/fvTS82+QhGT3rqg3G+B5V1Y7ARr1cfcb98uPC7fuCkaHMZfUF8FS0
+ b0BNS2Nvk+Sw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="199692727"
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="199692727"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 00:05:16 -0700
+IronPort-SDR: xNTaDUQC4qr8uwbmMVTq+jb6mwNY80ju4g1kFNfVCI+VvbMlpGq8fSsxYfdjzXmv0lAeRt2xT7
+ DRfkbUk2DBCA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="455448336"
+Received: from allen-box.sh.intel.com ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 12 May 2021 00:05:12 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Cc:     ashok.raj@intel.com, kevin.tian@intel.com, jacob.jun.pan@intel.com,
+        yi.l.liu@intel.com, sanjay.k.kumar@intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH 1/1] iommu/vt-d: Support asynchronous IOMMU nested capabilities
+Date:   Wed, 12 May 2021 15:04:21 +0800
+Message-Id: <20210512070421.3472857-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <c3bfff60-5e78-c0b0-797b-499c70da0ff2@hisilicon.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Current VT-d implementation supports nested translation only if all
+underlying IOMMUs support the nested capability. This is unnecessary
+as the upper layer is allowed to create different containers and set
+them with different type of iommu backend. The IOMMU driver needs to
+guarantee that devices attached to a nested mode iommu_domain should
+support nested capabilility.
 
-Sorry for the mistake, I will send v2 soon.
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+---
+ drivers/iommu/intel/iommu.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
-On 2021/5/11 15:07, Zhou Wang wrote:
-> On 2021/5/11 14:37, Zou Wei wrote:
->> Use memdup_user_nul() helper instead of open-coding to
->> simplify the code.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Zou Wei <zou_wei@huawei.com>
->> ---
->>   drivers/crypto/hisilicon/qm.c | 11 ++---------
->>   1 file changed, 2 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
->> index ce439a0..83a5d30 100644
->> --- a/drivers/crypto/hisilicon/qm.c
->> +++ b/drivers/crypto/hisilicon/qm.c
->> @@ -1570,17 +1570,10 @@ static ssize_t qm_cmd_write(struct file *filp, const char __user *buffer,
->>   	if (count > QM_DBG_WRITE_LEN)
->>   		return -ENOSPC;
->>   
->> -	cmd_buf = kzalloc(count + 1, GFP_KERNEL);
->> -	if (!cmd_buf)
->> +	cmd_buf = memdup_user_nul(buffer, count);
->> +	if (IS_ERR(cmd_buf))
->>   		return -ENOMEM;
->>   
->> -	if (copy_from_user(cmd_buf, buffer, count)) {
->> -		kfree(cmd_buf);
->> -		return -EFAULT;
->> -	}
->> -
->> -	cmd_buf[count] = '\0';
->> -
->>   	cmd_buf_tmp = strchr(cmd_buf, '\n');
->>   	if (cmd_buf_tmp) {
->>   		*cmd_buf_tmp = '\0';
->>
-> 
-> It is fine to me, thanks!
-> 
-> BTW, normally we use crypto: hisilicon - switch to memdup_user_nul() as the subject line,
-> just like other patches :)
-> 
-> .
-> 
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index f1742da42478..1cd4840e6f9f 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -4755,6 +4755,13 @@ static int prepare_domain_attach_device(struct iommu_domain *domain,
+ 	if (!iommu)
+ 		return -ENODEV;
+ 
++	if ((dmar_domain->flags & DOMAIN_FLAG_NESTING_MODE) &&
++	    !ecap_nest(iommu->ecap)) {
++		dev_err(dev, "%s: iommu not support nested translation\n",
++			iommu->name);
++		return -EINVAL;
++	}
++
+ 	/* check if this iommu agaw is sufficient for max mapped address */
+ 	addr_width = agaw_to_width(iommu->agaw);
+ 	if (addr_width > cap_mgaw(iommu->cap))
+@@ -5451,11 +5458,21 @@ static int
+ intel_iommu_enable_nesting(struct iommu_domain *domain)
+ {
+ 	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
++	struct dmar_drhd_unit *drhd;
++	struct intel_iommu *iommu;
++	bool has_nesting = false;
+ 	unsigned long flags;
+-	int ret = -ENODEV;
++	int ret = -EINVAL;
++
++	for_each_active_iommu(iommu, drhd)
++		if (ecap_nest(iommu->ecap))
++			has_nesting = true;
++
++	if (!has_nesting)
++		return -ENODEV;
+ 
+ 	spin_lock_irqsave(&device_domain_lock, flags);
+-	if (nested_mode_support() && list_empty(&dmar_domain->devices)) {
++	if (list_empty(&dmar_domain->devices)) {
+ 		dmar_domain->flags |= DOMAIN_FLAG_NESTING_MODE;
+ 		dmar_domain->flags &= ~DOMAIN_FLAG_USE_FIRST_LEVEL;
+ 		ret = 0;
+-- 
+2.25.1
+
