@@ -2,269 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B79037BBBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195B837BBBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbhELL2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 07:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhELL2I (ORCPT
+        id S230183AbhELL25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 07:28:57 -0400
+Received: from h4.fbrelay.privateemail.com ([131.153.2.45]:46253 "EHLO
+        h4.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230019AbhELL24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 07:28:08 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1405C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:26:59 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id f1so4390316edt.4
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:26:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sW3jMCftDfiFtBgZttGt05xUZb6de8CfShosPvhcNg8=;
-        b=Ct/bixgpdm8CwXOzW7AiVcDbDzPjEfU8A77D9J6D6jlIx5sqJwfho3+XVoMriZhDLL
-         O6hzC/4bxdM9imU5OShWs00D1DM+NMZcDp1ys3mUsVXewPv390xPrkLPWGCgeuNFDfM4
-         HfyLLiCIi4twItp7eqqLlO7quZdXDxY7NBh9t+1POIxaXX/ohNSJG91ti9OA+xst7AqR
-         xO8ErxgVWmtDupIyr202+s1wTsZPgss0vfZpYHHMVaIXAfzZmIc1l6vEpafIchFirIcz
-         di6LD2V8fA8xYqJpIwt5S+4ncv9b1lAzD8HZ7iUOD6ccrD3IdyG8vp8YOBivakI+wE4q
-         N8hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sW3jMCftDfiFtBgZttGt05xUZb6de8CfShosPvhcNg8=;
-        b=ajZhjgYlZgOnF+hfPFC4a/5uI3a4Mh+HS2R+fwAsHJbU/PyhBCnt3diwQXIZAup9rf
-         C83JtfEfK3ihjWhyXJ6au5ktqjiQkp10vOPTUlWI1hP3k8w3gyQumsJJkGsVB0Ap8+PQ
-         ZgI2HsB+5eGNRNdMSYfuXQ2dzm3injaQAvApTo3Z18vc+EXkxPQsCPjTKcbjZMirxmOQ
-         2F/P/4/NbiaA2srHeAar34tGEs3ywi0guCj9D/PrHWFKl9WzOv2AOfHcF0fWfDVau5RI
-         Tk4scE0CyoLPfeahTKHZ/acI5CH4e0OzJuMYJoIXZX+bKXQK+2n4knOF2rWklyU4dXU/
-         7AQg==
-X-Gm-Message-State: AOAM530xY19ibrucMzsL3DYWjzbgjLWb/L+KaKffabYSU/xZbMF7D4+z
-        ixqW/36LN2RK/OUUKvPAUtEx2Q==
-X-Google-Smtp-Source: ABdhPJz55jMl6b3k9QurAc7BVgcHwv7YgqQ++RMJeBNkrqx9UgSpqH44KgrXr2cMoU4nLdFb7ybC8A==
-X-Received: by 2002:aa7:d41a:: with SMTP id z26mr44229923edq.54.1620818818509;
-        Wed, 12 May 2021 04:26:58 -0700 (PDT)
-Received: from [192.168.1.14] ([195.24.90.54])
-        by smtp.googlemail.com with ESMTPSA id e19sm16703339edv.10.2021.05.12.04.26.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 May 2021 04:26:58 -0700 (PDT)
-Subject: Re: [PATCH] dt-bindings: media: venus: Add sc7280 dt schema
-To:     Dikshita Agarwal <dikshita@codeaurora.org>, andy.gross@linaro.org,
-        david.brown@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com,
-        devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org
-References: <1619432515-9060-1-git-send-email-dikshita@codeaurora.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <f40aa304-2717-4a0b-00ee-e2ca222042e6@linaro.org>
-Date:   Wed, 12 May 2021 14:26:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 12 May 2021 07:28:56 -0400
+Received: from MTA-07-4.privateemail.com (mta-07.privateemail.com [198.54.127.57])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h3.fbrelay.privateemail.com (Postfix) with ESMTPS id 0FDCB8081D;
+        Wed, 12 May 2021 07:27:48 -0400 (EDT)
+Received: from MTA-07.privateemail.com (localhost [127.0.0.1])
+        by MTA-07.privateemail.com (Postfix) with ESMTP id 177A26004D;
+        Wed, 12 May 2021 07:27:47 -0400 (EDT)
+Received: from hal-station.. (unknown [10.20.151.208])
+        by MTA-07.privateemail.com (Postfix) with ESMTPA id 6551960051;
+        Wed, 12 May 2021 07:27:46 -0400 (EDT)
+From:   Hamza Mahfooz <someguy@effective-light.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Renninger <trenn@suse.com>, Shuah Khan <shuah@kernel.org>,
+        linux-pm@vger.kernel.org,
+        Hamza Mahfooz <someguy@effective-light.com>,
+        Janakarajan Natarajan <Janakarajan.Natarajan@amd.com>
+Subject: [PATCH 1/2] cpupower: implement the multi-cpu monitoring of programs
+Date:   Wed, 12 May 2021 07:26:57 -0400
+Message-Id: <20210512112658.89965-1-someguy@effective-light.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <1619432515-9060-1-git-send-email-dikshita@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If we look inside cpupower/ToDo, the current 6th point makes mention of
+a method to implement multi-cpu monitoring without introducing noise to
+the tested program itself.
 
+Suggested-by: Janakarajan Natarajan <Janakarajan.Natarajan@amd.com>
+Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+---
+ .../utils/idle_monitor/cpupower-monitor.c     | 28 +++++++++++++------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
 
-On 4/26/21 1:21 PM, Dikshita Agarwal wrote:
-> Add a schema description for the venus video encoder/decoder on the sc7280.
-> 
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> ---
->  .../bindings/media/qcom,sc7280-venus.yaml          | 158 +++++++++++++++++++++
->  1 file changed, 158 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-> new file mode 100644
-> index 0000000..a258d97
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
-> @@ -0,0 +1,158 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/media/qcom,sc7280-venus.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Qualcomm Venus video encode and decode accelerators
-> +
-> +maintainers:
-> +  - Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> +
-> +description: |
-> +  The Venus IP is a video encode and decode accelerator present
-
-Maybe we can mention that this is Venus Iris2 IP?
-
-> +  on Qualcomm platforms
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,sc7280-venus
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    minItems: 2
-> +    maxItems: 3
-> +
-> +  power-domain-names:
-> +    minItems: 2
-> +    maxItems: 3
-> +    items:
-> +      - const: venus
-> +      - const: vcodec0
-
-The sm8250 (the same Iris2 IP) has one more MX power domain, I guess we
-should have it here too?
-
-> +
-> +  clocks:
-> +    maxItems: 5
-> +
-> +  clock-names:
-> +    items:
-> +      - const: core_clk
-> +      - const: video_cc_mvsc_ctl_axi
-> +      - const: iface_clk
-> +      - const: vcodec_clk
-> +      - const: video_cc_mvs0_ctl_axi
-
-I'd suggest following names:
-	core
-	bus
-	iface
-	vcodec_core
-	vcodec_bus
-
-> +
-> +  iommus:
-> +    maxItems: 2
-> +
-> +  memory-region:
-> +    maxItems: 1
-> +
-> +  interconnects:
-> +    maxItems: 2
-> +
-> +  interconnect-names:
-> +    items:
-> +      - const: cpu-cfg
-> +      - const: video-mem
-> +
-> +  video-decoder:
-> +    type: object
-> +
-> +    properties:
-> +      compatible:
-> +        const: venus-decoder
-> +
-> +    required:
-> +      - compatible
-> +
-> +    additionalProperties: false
-> +
-> +  video-encoder:
-> +    type: object
-> +
-> +    properties:
-> +      compatible:
-> +        const: venus-encoder
-> +
-> +    required:
-> +      - compatible
-> +
-> +    additionalProperties: false
-> +
-> +  video-firmware:
-> +    type: object
-> +
-> +    description: |
-> +      Firmware subnode is needed when the platform does not
-> +      have TrustZone.
-> +
-> +    properties:
-> +      iommus:
-> +        maxItems: 1
-> +
-> +    required:
-> +      - iommus
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - power-domains
-> +  - power-domain-names
-> +  - clocks
-> +  - clock-names
-> +  - iommus
-> +  - memory-region
-> +  - video-decoder
-> +  - video-encoder
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +        #include <dt-bindings/clock/qcom,videocc-sc7280.h>
-> +
-> +        venus: video-codec@aa00000 {
-> +                compatible = "qcom,sc7280-venus";
-> +                reg = <0x0aa00000 0xd0600>;
-> +                interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +                clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
-> +                         <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
-> +                         <&videocc VIDEO_CC_VENUS_AHB_CLK>,
-> +                         <&videocc VIDEO_CC_MVS0_CORE_CLK>,
-> +                         <&videocc VIDEO_CC_MVS0_AXI_CLK>;
-> +                clock-names = "core_clk", "video_cc_mvsc_ctl_axi",
-> +                              "iface_clk", "vcodec_clk",
-> +                              "video_cc_mvs0_ctl_axi";
-> +
-> +                power-domains = <&videocc MVSC_GDSC>,
-> +                                <&videocc MVS0_GDSC>;
-> +                power-domain-names = "venus", "vcodec0";
-> +
-> +                interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>
-> +                                <&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
-> +                interconnect-names = "cpu-cfg", "video-mem";
-
-Do we have sc7280 interconnect binding somewhere?
-
-> +
-> +                iommus = <&apps_smmu 0x2180 0x20>,
-> +                         <&apps_smmu 0x2184 0x20>;
-> +
-> +                memory-region = <&video_mem>;
-> +
-> +                video-decoder {
-> +                        compatible = "venus-decoder";
-> +                };
-> +
-> +                video-encoder {
-> +                        compatible = "venus-encoder";
-> +                };
-> +
-> +                video-firmware {
-> +                        iommus = <&apps_smmu 0x21a2 0x0>;
-> +                };
-> +        };
-> 
-
+diff --git a/tools/power/cpupower/utils/idle_monitor/cpupower-monitor.c b/tools/power/cpupower/utils/idle_monitor/cpupower-monitor.c
+index 7c77045fef52..5fc9b38be4e5 100644
+--- a/tools/power/cpupower/utils/idle_monitor/cpupower-monitor.c
++++ b/tools/power/cpupower/utils/idle_monitor/cpupower-monitor.c
+@@ -278,7 +278,7 @@ void list_monitors(void)
+ 	}
+ }
+ 
+-int fork_it(char **argv)
++int fork_it(int cpu, char **argv)
+ {
+ 	int status;
+ 	unsigned int num;
+@@ -315,9 +315,9 @@ int fork_it(char **argv)
+ 
+ 	timediff = timespec_diff_us(start, end);
+ 	if (WIFEXITED(status))
+-		printf(_("%s took %.5f seconds and exited with status %d\n"),
+-			argv[0], timediff / (1000.0 * 1000),
+-			WEXITSTATUS(status));
++		printf(_("cpu %d: %s took %.5f seconds and exited with status %d\n"),
++			cpu, argv[0],
++			timediff / (1000.0 * 1000), WEXITSTATUS(status));
+ 	return 0;
+ }
+ 
+@@ -388,7 +388,8 @@ int cmd_monitor(int argc, char **argv)
+ {
+ 	unsigned int num;
+ 	struct cpuidle_monitor *test_mon;
+-	int cpu;
++	int cpu, status;
++	pid_t child_pid;
+ 
+ 	cmdline(argc, argv);
+ 	cpu_count = get_cpu_topology(&cpu_top);
+@@ -440,10 +441,21 @@ int cmd_monitor(int argc, char **argv)
+ 	/*
+ 	 * if any params left, it must be a command to fork
+ 	 */
+-	if (argc - optind)
+-		fork_it(argv + optind);
+-	else
++	if (argc - optind) {
++		for (cpu = 0; cpu < cpu_count; cpu++) {
++			child_pid = fork();
++			if (!child_pid) {
++				bind_cpu(cpu);
++				fork_it(cpu, argv + optind);
++				exit(EXIT_SUCCESS);
++			} else if (waitpid(child_pid, &status, 0) == -1) {
++				perror("waitpid");
++				exit(EXIT_FAILURE);
++			}
++		}
++	} else {
+ 		do_interval_measure(interval);
++	}
+ 
+ 	/* ToDo: Topology parsing needs fixing first to do
+ 	   this more generically */
 -- 
-regards,
-Stan
+2.31.1
+
