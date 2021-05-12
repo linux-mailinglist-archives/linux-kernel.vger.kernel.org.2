@@ -2,89 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93BF37EFDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8774537EFDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348723AbhELXeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 19:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349910AbhELWtt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 18:49:49 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9726FC061243;
-        Wed, 12 May 2021 15:40:06 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FgV9F6glfz9s1l;
-        Thu, 13 May 2021 08:40:01 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1620859202;
-        bh=Navsh3UkHyNKtYmqFDF2NfsG/JY/pBhTfFzjx8SufpI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Dy+WWJKabZVQJkIWX+TqQbcG229a4mw7fDBsadcdglRTa9GeaJL5k7JRTaqw79QVU
-         7f0TnwaAr7Q+2GBe9ZILAcgabR2i7o1IeS1RFb8P2BGWc7iopJ24/W4ir2eFfZqNZj
-         NGYbc3YGpOQBt4JRS7DySJe7Vhf8UnyrlxystuTff34wVxN6AFouvcDbG2oo+jr8No
-         b9eiPSJNQ8DXeuECBZg8q+Td51VvdAERNqwYcIt9MnUIfR1i9Ev435X/UQXf+k0cbY
-         fKm+RDK0iuz8UMvgpR8l318ZM3W7OBF1I2xY+WZ5RbcPJlhcyGQF9PZplw4XAJHkiT
-         HSxEbFskd+VoA==
-Date:   Thu, 13 May 2021 08:40:00 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the sound-asoc tree
-Message-ID: <20210513084000.4af670f7@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/bdJ0x63OQ2JbiYRGOutlyRT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1347160AbhELXdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 19:33:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349876AbhELWtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 18:49:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 079E6613D6;
+        Wed, 12 May 2021 22:48:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620859718;
+        bh=SDBULz4jCvnH5Z4Ja5vns5dF7gyGVPBY5srIj3LeNLg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=lwaWVzA0cyVppM8TSEVVhJY4FR4uj5/eQC1ZM1hYJ1ob2G0B83s6ycOXJ0re8fS/u
+         StBcNhn+sARlZdlVykcRVHu/Y80iF4yxoJ+7sESKTMKmi/yMk/lMbnhmeSFakOh/Eb
+         TL0siYwRnVvgmpG5tvk3G2E2ungiCcDatQNblXQ2TwQIe0D8i2boV2HYOulY34Z/mK
+         hF0KkTUYpWj9HSQKYXl54bjF8YaWvXXZjSRo3EI8bIUybyjvmilCJszTIVbbvq/Eam
+         mmmYRjRdVxBgrEN5f4qcrCM5FYuNVNpwqAyxf3stY36iEdvNmidoJ/hGBK5mpZ9wFH
+         UkZJbWaIiY+Kw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E6FB3609D2;
+        Wed, 12 May 2021 22:48:37 +0000 (UTC)
+Subject: Re: [GIT PULL] TPM DEVICE DRIVER changes for v5.13-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YJw8J1icU49X/Wo9@kernel.org>
+References: <YJw8J1icU49X/Wo9@kernel.org>
+X-PR-Tracked-List-Id: <linux-integrity.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YJw8J1icU49X/Wo9@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/ tags/tpmdd-next-v5.13-rc2
+X-PR-Tracked-Commit-Id: 1df83992d977355177810c2b711afc30546c81ce
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 8d02490ccdde9aef1ca57d5c87f8c20c2d6b1f5e
+Message-Id: <162085971788.12307.13441010475019966764.pr-tracker-bot@kernel.org>
+Date:   Wed, 12 May 2021 22:48:37 +0000
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        jmorris@namei.org, dhowells@redhat.com, peterhuewe@gmx.de,
+        zohar@linux.ibm.com, jejb@linux.ibm.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/bdJ0x63OQ2JbiYRGOutlyRT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The pull request you sent on Wed, 12 May 2021 23:35:51 +0300:
 
-Hi all,
+> git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/ tags/tpmdd-next-v5.13-rc2
 
-In commit
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/8d02490ccdde9aef1ca57d5c87f8c20c2d6b1f5e
 
-  ad839121dd4c ("ASoC: SOF: Intel: hda: fix index used in inner loop")
+Thank you!
 
-Fixes tag
-
-  Fixes: 6f5d506d7ff1dq ('ASoC: SOF: Intel: SoundWire: refine ACPI match')
-
-has these problem(s):
-
-  - missing space between the SHA1 and the subject
-
-Actually, there is a trailing 'q' on the SHA1.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/bdJ0x63OQ2JbiYRGOutlyRT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCcWUAACgkQAVBC80lX
-0Gx4DAf8CZfKIOmQc9cNqckYDSoC71PE4HQ3bnLmSCBq0+Nz4FinkBXVTLBhfqbR
-brsk9hdXBO9MHRUYXob5wCt2v9Eecu7Vviqll+sYkpLDvL7DGQfHErvxy4TJRus7
-vo6BuN8G4EDOFpLXHT1osVh8rwAisqk4HRGJOtUQGtlFd3c7wQKvT0Hqhh6vVV5W
-2iZRyoFbwT/X4YInrm7qwkuBDQtIuEZkZyLYthaTkl7uWQuuGoP1A8ZRz9Aw6HYm
-lJCijXWVWj4rkMdVpCNdjYDNMzt08RQE18JB0SAAnnQNQ3XSjKPGeZFx/Nyd8Twu
-DgJhIKJqm+J9JhbvtRxBCPmlkqXsgg==
-=12eT
------END PGP SIGNATURE-----
-
---Sig_/bdJ0x63OQ2JbiYRGOutlyRT--
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
