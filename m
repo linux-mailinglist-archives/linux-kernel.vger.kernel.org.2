@@ -2,116 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A278737BC91
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C494137BC94
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232362AbhELMcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:32:47 -0400
-Received: from smtp.bonedaddy.net ([45.33.94.42]:32960 "EHLO
-        smtp.bonedaddy.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232350AbhELMcq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 08:32:46 -0400
-X-Greylist: delayed 447 seconds by postgrey-1.27 at vger.kernel.org; Wed, 12 May 2021 08:32:45 EDT
-Received: from [192.168.1.209] (n49-190-168-235.per1.wa.optusnet.com.au [49.190.168.235])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pabs3@bonedaddy.net)
-        by smtp.bonedaddy.net (Postfix) with ESMTPSA id D3DD9180043;
-        Wed, 12 May 2021 08:24:43 -0400 (EDT)
-Authentication-Results: smtp.bonedaddy.net; dmarc=fail (p=none dis=none) header.from=bonedaddy.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bonedaddy.net;
-        s=mail; t=1620822289;
-        bh=Y+OR1Cp/4WVuJF9ZRWmV7Y1lH7u4fHsASKa2u+zdctc=;
-        h=Subject:From:To:Cc:In-Reply-To:References:Date;
-        b=EvbvDlrg68v3KcnDddoysHB5R8QHRMdd3OICAoXh1TAvVAOBUIov3lwaWd+njm0ct
-         s1HSTEGvy6uwnG604uYl3HwIlaujTRq3Lh8zti1peuJOLVRdn7MwmKvuls9qmuFbp1
-         bbne7tmFoiRGGz8wruDdUm8xok6Qb07VUA15MXfe1W242wKyyLrv+Od2CersVRRIJM
-         Y0gC/PhsvY7D1gOmEtq3IWVrlmIM+WEYn44B7Ed269R8oEqJo6A5hqnAhQQnUinqq7
-         S9NzYb0kTR+oPG2gf/NqrxH8yigf9YBOG+p4E2dp1p+hiwbQ6nDFLtvs8eg+C8EH00
-         59527nn9YXsWA==
-Message-ID: <9524e77d054f380e4711eaf68344ebba2d1271be.camel@bonedaddy.net>
-Subject: Re: [PATCH 0/6] sched,delayacct: Some cleanups
-From:   Paul Wise <pabs3@bonedaddy.net>
-To:     Mel Gorman <mgorman@suse.de>, Balbir Singh <bsingharora@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        mingo@kernel.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        pbonzini@redhat.com, maz@kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, riel@surriel.com, hannes@cmpxchg.org
-In-Reply-To: <20210512113419.GF3672@suse.de>
-References: <20210505105940.190490250@infradead.org>
-         <20210505222940.GA4236@balbir-desktop>
-         <YJOzUAg30LZWSHcI@hirez.programming.kicks-ass.net>
-         <20210507123810.GB4236@balbir-desktop> <20210512113419.GF3672@suse.de>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-Uj4PyxtEQbiiT89g6vh3"
-Date:   Wed, 12 May 2021 20:23:51 +0800
+        id S232504AbhELMfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:35:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232486AbhELMfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 08:35:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03B6761041;
+        Wed, 12 May 2021 12:34:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620822846;
+        bh=X8/54ommkyt5Go8X5+Hbcai9kTbma//sxP0eeZHH9Y4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=izWxN+DPeGXYA+WjUt7F+MRI/ifjvWJNi0kifRDQpFZ2uL7iqGN+u8AiOhr0qGpLd
+         OHRhsurkYh/6pGrTjaR4/BE0ssTkAWS1IIpRPg17rKVGf/bW3Ml0uzGbp+vUG6TPCm
+         UzV4tDfi7Fx3LT7yzpzc5zerW2jS8ALCe+eMweTfDBFBj3PEhq7MCIamWzeC3Ym+jT
+         wvlAuzpplWD18jsS52u4g95rngN3AMvzvJpfqswP7JczyoZ2Mu9atwX4hcoRq4zOu3
+         9satxjZIDpmoR7jkJlqb3UO25bnkFOonsXL7J5l6uLHBly7B40eNS50jm9K97gG1tF
+         XQkrCrtdlIoCA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: [PATCH v3] tools/nolibc: Implement msleep()
+Date:   Wed, 12 May 2021 13:32:15 +0100
+Message-Id: <20210512123215.42321-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-User-Agent: Evolution 3.40.1-1 
+X-Patch-Hashes: v=1; h=sha256; i=WROh5SBSWd//p/Sxtx1sSZhXRJr/pNHGmfIOZDLA1ME=; m=DsG0GUH5Pq7W2vv4GT6Z0e1qoDZBWwgUNihInvr8Y2M=; p=Uq9qwA09rFw9e6qEJ6WyyeNvYSBC/dhgo3azkyzvnSk=; g=e3987dff811e06d2d493f10034fbb8ea59bf6b54
+X-Patch-Sig: m=pgp; i=broonie@kernel.org; s=0xC3F436CA30F5D8EB; b=iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCbyKMACgkQJNaLcl1Uh9AmaQf+Jyb p6eNIv2My43VvhLuaHv2Tmn2YF6niS1fMW5y1HbkjBD4CXtVFnJm4Q2hLMaUcBUlJ+QMQEGRJ8l+4 HtAYBOEIIRwHxOMp+hFWTZWtdZnXLTBQr5YWGQEaxug1NeUJGSloB+oFF+kMsl1SX6i3j18XoE23I SSxVX1E9ELWfckjHputFGuvMXXeTnZHOyh0FiMiySEpoRhxj4AGD9gkExmca5WEJws29XK24OOURZ IcBXoUGtMgWQonBkhB94AA5aaaJ5hXm+O/T+oJqi4d6wzoAWOhf5D5UxJXdo54NaP5BeIyGPUiB9f k4u29hmUMltyIHVaNdmbRf0nS689Dfw==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Allow users to implement shorter delays than a full second by implementing
+msleep().
 
---=-Uj4PyxtEQbiiT89g6vh3
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+v3:
+ - Return the number of milliseconds remaining if the delay does not
+   complete.
+v2:
+ - Support delays of more than a second.
+ - Return the number of seconds remaining if the delay does not
+   complete.
 
-On Wed, 2021-05-12 at 12:34 +0100, Mel Gorman wrote:
+ tools/include/nolibc/nolibc.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-> Alternatively, I've added Paul Wise to the cc who is the latest
-> committer to iotop.=C2=A0 Maybe he knows who could add/commit a check for
-> sysctl.sched_delayacct and if it exists then check if it's 1 and display
-> an error suggesting corrective action (add delayacct to the kernel comman=
-d
-> line or sysctl sched.sched_delayacct=3D1). iotop appears to be in mainten=
-ance
-> mode but gets occasional commits even if it has not had a new version
-> since 2013 so maybe it could get a 0.7 tag if such a check was added.
-
-I am able to commit to the iotop repository but I don't have permission
-from the author to make releases nor do I have access to the website.
-
-I am happy to apply any patches anyone has for iotop and upload the
-result to Debian, or I'll be willing to write patches to cope with
-changes in Linux behaviour, if given a succinct explanation of what
-changes are needed in iotop, once the Linux changes are fully merged.
-
-As well as the Python iotop implementation, there is one written in C=20
-with more features, so please also file an issue or pull request there.
-Please note that I don't have commit access to that repository though.
-
-https://github.com/Tomas-M/iotop
-
---=20
-bye,
-pabs
-
-https://bonedaddy.net/pabs3/
-
---=-Uj4PyxtEQbiiT89g6vh3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEYQsotVz8/kXqG1Y7MRa6Xp/6aaMFAmCbyNcACgkQMRa6Xp/6
-aaN5RA/8C/BUKG210CJqpxGy7oVPI/iv6zRYnmlv6xNjnvtQspLDNa0YGHMFbdZt
-2V5t+fwenyVOzbxsxIHjC0x9Wz0Iqu6bl3ayTzafAVUAj/8wcD8adkRF81lMmm91
-eW75CqcnClTwuYk+AkrHGAgz+kPMa0mpqykwpycDYbKKAIx1BWPAqaQkfXf5WT/A
-w9EkT9aM/2Qo41TM8iVGzXvIZKLSbnBIkGh4qHnasE9uQ4nXsV3/hiOEcfFkR8Lj
-m+GypVb6f973XuvWSR0zbgcCxsCKPDn2OH99My5N8U3OdsaQGR8sUxl8+iD/UnJU
-k20mvZbhvuQheATgjVGSzEQbeepQJ1LV/A0lsr/vsI5tEJgPtnQ8NmgQOdAqngFU
-xs+8CbOGMSb4Z5WJhb5BpyCwuWSZUvF6OFQ+FvTSuRlyTMDNMf0YHme+m02NK8/Q
-7bQqmuLZXNYRVYO3aLwmvvcYlMVbRQaf5EPS4wyDKfmYG2IooLOI1nv6WqfZEOqo
-m2ynkyKCqVNanXg0NHWhWqw5XRLOpNQW7sYks3UzSPOB8B55irUqyfu4l91px5rm
-NKoWJckb9Fh+iqWknWwaOzoi/CsKV2qCBm2wDOo/ha3mRQC/pKUKagijilRYzWdr
-kwdFkZdGM9sWovE+CeBw/aGoPEGgNP9AkJnntqRMjzfl2FrF8JY=
-=7Xv6
------END PGP SIGNATURE-----
-
---=-Uj4PyxtEQbiiT89g6vh3--
+diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
+index 8b7a9830dd22..ba6b6f1ad846 100644
+--- a/tools/include/nolibc/nolibc.h
++++ b/tools/include/nolibc/nolibc.h
+@@ -2243,6 +2243,19 @@ unsigned int sleep(unsigned int seconds)
+ 		return 0;
+ }
+ 
++static __attribute__((unused))
++int msleep(unsigned int msecs)
++{
++	struct timeval my_timeval = { msecs / 1000, (msecs % 1000) * 1000 };
++
++	if (sys_select(0, 0, 0, 0, &my_timeval) < 0)
++		return (my_timeval.tv_sec * 1000) +
++			(my_timeval.tv_usec / 1000) +
++			!!(my_timeval.tv_usec % 1000);
++	else
++		return 0;
++}
++
+ static __attribute__((unused))
+ int stat(const char *path, struct stat *buf)
+ {
+-- 
+2.20.1
 
