@@ -2,108 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92DC37EEC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65D037EEB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442586AbhELWLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 18:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1390032AbhELVEk (ORCPT
+        id S1348271AbhELWFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 18:05:31 -0400
+Received: from www62.your-server.de ([213.133.104.62]:46736 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241781AbhELU63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 17:04:40 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2BCC0610E5
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 13:57:02 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id k127so23642916qkc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 13:57:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=fUmgKpvM3TjwZN8rVbl/N4SL7bVVAib9UaaWICf1ILY=;
-        b=FHpF2OM+ci2rPHyJS+qWdbL0Aj9VeLmpZozeDD1oCaI3xemzonLoJFHsV3Up/zcOMz
-         ROdUXXeN2BMpaoa7nAhSXFctB02ZyewGnnLzEDHxOrZQeouFNbBrYrJDuyVYBNhJPHvu
-         71wY6YzwejXNOqUHCqByMglYVAhrrGh2XqfmWc74MW+qGcagRALNmRT96QoX/qosuc9D
-         4tJjyxgjryzxMzWzvJYBWFMn/FY+GGTzisnarhc4Ca0zkBU+W0bDI9dbtA05ex4c27jf
-         3mEaMWYah1snwm4cQ1scQn77yIE+t3GGT9yp0l9cf4uADyxuPIp8+JRkVcJqIi+zo9WE
-         NuDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fUmgKpvM3TjwZN8rVbl/N4SL7bVVAib9UaaWICf1ILY=;
-        b=jUbaZEm9I+z+u6BrOKLKdXdw96gcX/cEi8hDcsPiyhRiT9dVpV45q6Y9e1ZT6lNJ5N
-         XLd3btPHO1aasoqxrRLkjlCGNjs+UJkI41/zugPvO0k7Ct6XKL5xkEyLlqQy82yOTBmX
-         FNP5t1vjZBAC7vAsQc8bUqX9uh8cvGzuszGGQSe8Ui0/Gu6upiK3D5r2EvxFaOJAshvi
-         5ine5mgZ7Y5ujM88UpDwS2t43INHiXoS7fD7Uev/yjnLMv2Ue3uKXxCOz26c9+M8q//7
-         CibNuxJr0vCYh6tnVyZPMO5giKtaxLV2fS5a5tD4ZRmF56OXjdxGqBxKM2UVJ9fKvsNA
-         sQRA==
-X-Gm-Message-State: AOAM532rfrSZUwjmO0Ml5hFdezenQYrw0mJQ/NxTODW0m9rqyrK9Fhy3
-        07Xm1Q0VF40tAWnQipOw0egVaw==
-X-Google-Smtp-Source: ABdhPJzY5dLOqY/MyBJw6D0GtpD0+Wwnyh8zcY6kSOe6AwquwAjt2P4UmnSjxJXKA4s/sMFCnFWlvw==
-X-Received: by 2002:a37:a4c6:: with SMTP id n189mr30270865qke.221.1620853021523;
-        Wed, 12 May 2021 13:57:01 -0700 (PDT)
-Received: from [172.19.131.127] ([8.46.72.121])
-        by smtp.gmail.com with ESMTPSA id l6sm889767qkk.130.2021.05.12.13.56.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 May 2021 13:57:01 -0700 (PDT)
-Subject: Re: [syzbot] WARNING in io_link_timeout_fn
-To:     syzbot <syzbot+5a864149dd970b546223@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-References: <0000000000004d849405c227da64@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <bb6f7045-863c-ca86-3925-7d65dc90d5b7@kernel.dk>
-Date:   Wed, 12 May 2021 14:56:44 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 12 May 2021 16:58:29 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lgvuQ-000FjQ-J8; Wed, 12 May 2021 22:56:46 +0200
+Received: from [85.7.101.30] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lgvuQ-000Rj0-9d; Wed, 12 May 2021 22:56:46 +0200
+Subject: Re: [PATCH bpf-next] bpf: arm64: Replace STACK_ALIGN() with
+ round_up() to align stack size
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1620651119-5663-1-git-send-email-yangtiezhu@loongson.cn>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c1f5d54e-333f-733b-5806-498f2b4e3d5a@iogearbox.net>
+Date:   Wed, 12 May 2021 22:56:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <0000000000004d849405c227da64@google.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1620651119-5663-1-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26168/Wed May 12 13:07:33 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/21 2:28 PM, syzbot wrote:
-> Hello,
+On 5/10/21 2:51 PM, Tiezhu Yang wrote:
+> Use the common function round_up() directly to show the align size
+> explicitly, the function STACK_ALIGN() is needless, remove it.
 > 
-> syzbot found the following issue on:
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>   arch/arm64/net/bpf_jit_comp.c | 5 +----
+>   1 file changed, 1 insertion(+), 4 deletions(-)
 > 
-> HEAD commit:    88b06399 Merge tag 'for-5.13-rc1-part2-tag' of git://git.k..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13c0d265d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=807beec6b4d66bf1
-> dashboard link: https://syzkaller.appspot.com/bug?extid=5a864149dd970b546223
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10436223d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1715208bd00000
-> 
-> The issue was bisected to:
-> 
-> commit 91f245d5d5de0802428a478802ec051f7de2f5d6
-> Author: Jens Axboe <axboe@kernel.dk>
-> Date:   Tue Feb 9 20:48:50 2021 +0000
-> 
->     io_uring: enable kmemcg account for io_uring requests
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index f7b1948..81c380f 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -178,9 +178,6 @@ static bool is_addsub_imm(u32 imm)
+>   	return !(imm & ~0xfff) || !(imm & ~0xfff000);
+>   }
+>   
+> -/* Stack must be multiples of 16B */
+> -#define STACK_ALIGN(sz) (((sz) + 15) & ~15)
+> -
+>   /* Tail call offset to jump into */
+>   #if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL)
+>   #define PROLOGUE_OFFSET 8
+> @@ -255,7 +252,7 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+>   			emit(A64_BTI_J, ctx);
+>   	}
+>   
+> -	ctx->stack_size = STACK_ALIGN(prog->aux->stack_depth);
+> +	ctx->stack_size = round_up(prog->aux->stack_depth, 16);
+>   
 
-Don't think that's right...
-
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=144fbb23d00000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=164fbb23d00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=124fbb23d00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+5a864149dd970b546223@syzkaller.appspotmail.com
-> Fixes: 91f245d5d5de ("io_uring: enable kmemcg account for io_uring requests")
-
-I think this one is already fixed:
-
-#syz test: git://git.kernel.dk/linux-block.git io_uring-5.13
-
--- 
-Jens Axboe
-
+Applied, thanks! (I retained the comment wrt stack requirement to have it explicitly stated.)
