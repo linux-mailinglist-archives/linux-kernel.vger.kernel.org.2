@@ -2,80 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E16037BC0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 008E837BC19
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbhELLtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 07:49:09 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55341 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhELLtH (ORCPT
+        id S230217AbhELL5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 07:57:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230145AbhELL5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 07:49:07 -0400
-Received: from mail-vs1-f72.google.com ([209.85.217.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lgnLL-0007XC-37
-        for linux-kernel@vger.kernel.org; Wed, 12 May 2021 11:47:59 +0000
-Received: by mail-vs1-f72.google.com with SMTP id f5-20020a67e0850000b0290226ef8b7beaso11025898vsl.17
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:47:59 -0700 (PDT)
+        Wed, 12 May 2021 07:57:04 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE62C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:55:56 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id l7so30316682ybf.8
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:55:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aNPb1/57+5ny+pvaCXDmUs3FXsI3utW5iRWUWfHbabI=;
+        b=FJOxExQtPoHD1RHrcjDEaob9dDt5Wqym1gYzphjMrHEqE7740cdgfWxvY6SuIznd5U
+         wR5gtt6cBZLJEz+HFUJjc2Yz/Oqk21pcVTj+LAw7p3BhiX4sCYMvMCOadI9TkbHOGlxM
+         YbT+zSSe/ADP4ZnULjhsLHvDLLLpnCKI9RUbtKoP9Jy9jvvhR56GKL+fjc7+4nEFNuaS
+         gzEQ176lPHqGBITWds8rFjX1VPANHo4Xkn6fSsM5k4DaOFnpZvNieqdCo67W19wdX2D2
+         a9HhQTiAq+Q0z/dZB91FbR3b93UwqaJEi7/FMJ7yIBkejWfK6K+lImMJ5IE9VaRrskcG
+         DcdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sN7PtoHpAWooHK+Hak2qRw9IZrK7ofjQa8fGIcLObj0=;
-        b=tw40slnYYwROM/NLgV6AVMskcQSRsefW8N6f+++NMFQRGNIWHQxvAw3ThMGP4RNtLs
-         lpg01mZeC/EZsIZTD2/q6aUCpCTlzxA6bwMWdN+kVjeJktwRla45O6rESBLd5y4+pzil
-         uaQzwNf91KyIGTTjAOAZBUBtOkZS30+6ES5/0Xw6m13Y3i+BGrNl7fLoRb1OlYnp7NlD
-         vBp893JAT8tFcnMKjJmO7Pfi9qN1suepkSOASVN2ECe0lyVo9L4c4zDHy8+9cA7KwN0+
-         +LlpVSzQxEhneAZwUjkN5BZxpyfXIgeZPwqt5bl3RGf9I1UIaJXNQ2wVRc2+YOnAfHcu
-         DP5w==
-X-Gm-Message-State: AOAM533GhsMdtPsm6hQ6vHeOPRzjzDXy5cD+R3wRVnl+/UUTfCd+MTpX
-        J5vFcoutMBYXUxvBPeo4YUO0jS9QOG4nmYDZ2T5qUH8abW9CcJMFLUUJvat18v6REnTnD3bhpjJ
-        f+0GtGW/gs6JZjwvzpCI05ybVvrdO+g85MZFyVbIsTw==
-X-Received: by 2002:a67:f711:: with SMTP id m17mr30783347vso.48.1620820077541;
-        Wed, 12 May 2021 04:47:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwksI2M5eF6imGkWUMuv300ZLIoqSlW1tFTiuy4A0nPCinGiT3xU2/fyB/FUwODB95ZTVpBBw==
-X-Received: by 2002:a67:f711:: with SMTP id m17mr30783336vso.48.1620820077401;
-        Wed, 12 May 2021 04:47:57 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.48.6])
-        by smtp.gmail.com with ESMTPSA id h129sm2811832vkb.36.2021.05.12.04.47.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 May 2021 04:47:56 -0700 (PDT)
-Subject: Re: [PATCH -next] memory: da8xx-ddrctl: add missing
- MODULE_DEVICE_TABLE
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     linux-kernel@vger.kernel.org
-References: <1620788887-14812-1-git-send-email-zou_wei@huawei.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <ddb6a020-1a76-c91c-23d3-754641cb3af0@canonical.com>
-Date:   Wed, 12 May 2021 07:47:56 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aNPb1/57+5ny+pvaCXDmUs3FXsI3utW5iRWUWfHbabI=;
+        b=IHkQh83rVoPI4p7A8O1b3XqAV8v1cLCEc1mXemnv5thNTkT+6Yre9X4bNIO4rUCtlL
+         sRTT+JG5heYjDjs4TBcs5husg5TQuYw8JrrMEMer++RjojbEvVnqUlU83KJ0QWq9RjA1
+         NknMVBERwTXczZ3R9BpsgUjtAQ6QRKuf9CJIE17TC0PGrbfhNqQFIHFbfHrWcVbVMS4W
+         JlE5CWXoZ3V1/gCGWaIquNWUxwCrrhLRnjNQ4ND5chbRGGUVmzYHKBxvS8piGhv1t+Xs
+         eB7xeCIDbdTxoopHAoTRrYdK2XdnZmQv4MV5Kpkb0V5wbk4c0MqJtKFiaB4/wSzdjkyb
+         oQ3A==
+X-Gm-Message-State: AOAM531fxkkEYEsCTBlcAzvh0ZVUlBtDXTTh63CQ8XGlZ1FdsV3FfNFs
+        q7BD46ubxE/fPzLd4cjNPutb1CucBN+nYADejg9R1w==
+X-Google-Smtp-Source: ABdhPJwZcRGvQGKt99glxvdWCFBLUljr0pyP1dW5k8kK5RnI0ZS+M4PeURiB/d1gE4Dtw3oxk/386eXqpaAuWByMSqY=
+X-Received: by 2002:a25:238c:: with SMTP id j134mr18215223ybj.302.1620820555592;
+ Wed, 12 May 2021 04:55:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1620788887-14812-1-git-send-email-zou_wei@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210510194633.11943-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210510194633.11943-1-andriy.shevchenko@linux.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 12 May 2021 13:55:44 +0200
+Message-ID: <CAMpxmJU0vreXf-5bEwk07oDdvOLP4rU507_Q-W3=CDQ43s+W5g@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] gpio: xilinx: convert to use bitmap API
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/05/2021 23:08, Zou Wei wrote:
-> This patch adds missing MODULE_DEVICE_TABLE definition which generates
-> correct modalias for automatic loading of this driver when it is built
-> as an external module.
+On Mon, May 10, 2021 at 9:46 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> The change in the series has been inspired by [1], which, I think,
+> can be improved. Here I present the view how it may be done.
+>
+> [1]: cover.1617380819.git.syednwaris@gmail.com
+>
+> In v2:
+> - folding followup fix into patch 4
+> - added Tested-by (Srinivas)
+> - added Ack (Yuri)
+> - added Rb (Michal)
+> - rebased on top of v5.13-rc1
+>
+> Andy Shevchenko (5):
+>   bitmap: Make bitmap_remap() and bitmap_bitremap() available to users
+>   gpio: xilinx: Correct kernel doc for xgpio_probe()
+>   gpio: xilinx: Introduce xgpio_read_chan() / xgpio_write_chan()
+>   gpio: xilinx: Switch to use bitmap APIs
+>   gpio: xilinx: No need to disable IRQs in the handler
+>
+>  drivers/gpio/gpio-xilinx.c | 385 +++++++++++++++++++------------------
+>  lib/bitmap.c               |   5 +-
+>  2 files changed, 198 insertions(+), 192 deletions(-)
+>
+> --
+> 2.30.2
+>
 
-Thanks for the patch. Can you confirm that driver can be built as module?
+Series applied, thanks a lot!
 
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-
-Please make the reports public. This is open source work and public
-collaboration.
-
-
-Best regards,
-Krzysztof
+Bartosz
