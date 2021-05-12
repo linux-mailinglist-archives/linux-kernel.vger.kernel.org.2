@@ -2,73 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45D637BB64
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 659BE37BB66
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbhELLB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 07:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhELLB4 (ORCPT
+        id S230182AbhELLC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 07:02:26 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:45314 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230035AbhELLCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 07:01:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF2FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:00:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+2JqDURQ4NfYeJG41cbfu5+yywBSW9JE5vYZt2sYJm8=; b=gY2AFbr23XMuHDYQfvAsDNHHIJ
-        1wwg00mKczf72UDNWCKzlr+2UttqeaQciFFEHXEEcdAEOorpg/uSU4szstKBYs40mc8UH3bxR7nNo
-        GCK/c+AG7eaAa1oXowuc+glaDe7ntBl80J8ko61DOGABbRup6JzFbYWXd/NGJ1SC7myj+QD22wSnO
-        4IdeufEWe9fYTgKGiWk9E/DBRhqlgp8jzAoxcTL+2heD238cJSrgrNQMu0LEkw5EIYy+oKiMJiMaQ
-        v2NOPkv3KWodz3p11R7R2sQC2iefo+HENV+w018Jt/TCY3zXwdPEd2uaAkCJIw/OvCnim/2p1R2Hi
-        fZrq6Eiw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgmb1-008CXB-Oc; Wed, 12 May 2021 11:00:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 01D79300242;
-        Wed, 12 May 2021 13:00:06 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D65B820B5CA9B; Wed, 12 May 2021 13:00:06 +0200 (CEST)
-Date:   Wed, 12 May 2021 13:00:06 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org, tglx@linutronix.de,
-        bristot@redhat.com, yejune.deng@gmail.com
-Subject: Re: [PATCH 0/2] sched: Address idle task vs pcpu kthread checks
-Message-ID: <YJu1NpMt3BcLYGHh@hirez.programming.kicks-ass.net>
-References: <20210510151024.2448573-1-valentin.schneider@arm.com>
+        Wed, 12 May 2021 07:02:16 -0400
+Received: from [185.56.157.72] (port=41908 helo=[192.168.101.73])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1lgmbz-000Duk-43; Wed, 12 May 2021 13:01:07 +0200
+Subject: Re: [PATCH 1/3] mfd: lp87565: fix typo in define names
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210219223910.1831-1-luca@lucaceresoli.net>
+ <20210308140440.GH4931@dell>
+ <365cc875-e1de-0a81-6163-007f574779d3@lucaceresoli.net>
+ <20210512095923.GC805368@dell>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <b2262d71-c0be-9c8c-5b3c-bec76aaa6f4e@lucaceresoli.net>
+Date:   Wed, 12 May 2021 13:01:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210510151024.2448573-1-valentin.schneider@arm.com>
+In-Reply-To: <20210512095923.GC805368@dell>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 04:10:22PM +0100, Valentin Schneider wrote:
-> Note: I remember seeing some patch(es) from Peter tackling this exact
-> problem, but I couldn't find them again.
+Hi Lee,
 
-Found it (by accident), yours is nicer though :-)
-
-> Valentin Schneider (1):
->   sched: Make the idle task quack like a per-CPU kthread
+On 12/05/21 11:59, Lee Jones wrote:
+> On Wed, 12 May 2021, Luca Ceresoli wrote:
 > 
-> Yejune Deng (1):
->   lib/smp_processor_id: Use is_percpu_thread() instead of
->     nr_cpus_allowed
+>> Hi,
+>>
+>> On 08/03/21 15:04, Lee Jones wrote:
+>>> On Fri, 19 Feb 2021, Luca Ceresoli wrote:
+>>>
+>>>> "GOIO" should be "GPIO" here.
+>>>>
+>>>> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+>>>> ---
+>>>>  drivers/gpio/gpio-lp87565.c |  6 +++---
+>>>>  include/linux/mfd/lp87565.h | 28 ++++++++++++++--------------
+>>>>  2 files changed, 17 insertions(+), 17 deletions(-)
+>>>
+>>> For my own reference (apply this as-is to your sign-off block):
+>>>
+>>>   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+>>
+>> Gentle ping on patches 1 and 3. Both have at least an ack and are fairly
+>> trivial. Both apply cleanly on current master.
 > 
->  include/linux/kthread.h |  2 ++
->  kernel/kthread.c        | 30 ++++++++++++++++++------------
->  kernel/sched/core.c     | 21 +++++++++++++++------
->  lib/smp_processor_id.c  |  6 +-----
->  4 files changed, 36 insertions(+), 23 deletions(-)
+> I'll take care of these this time, but in future, if you don't receive
+> further responses for ~2 weeks, you should collect all of the Acks and
+> submit a [RESEND].
 
-Thanks!
+Apologies, I'll try to remember next time. Thanks for taking care of them.
+
+-- 
+Luca
