@@ -2,171 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AE937B47A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3D237B47F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhELDZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 23:25:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26872 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229994AbhELDZZ (ORCPT
+        id S230135AbhELD0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 23:26:12 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2784 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229951AbhELD0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 23:25:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620789858;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=83RC2qtc5cEihhWItsXrcoyXmMoP0cw+w8BGnKZsq/4=;
-        b=WDCphuP01ynz1MmB44EN6CcUA2lgJSbzjatgSb6FG4+j65ni/pJDe0Mktwz1/TNK6Za0y5
-        KhFpjOWO5FHOPwZ0AB3h8caC9FP/ugIbgYHRuXj0M4/7BuLtq11d/lUQK9B9MB3KKnfJQz
-        dXaZHWlzvamivzeesalJYmdiRkh939c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-506-L_Rd4dvCOzqELtSY7GHHIA-1; Tue, 11 May 2021 23:24:14 -0400
-X-MC-Unique: L_Rd4dvCOzqELtSY7GHHIA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EDF651883522;
-        Wed, 12 May 2021 03:24:12 +0000 (UTC)
-Received: from T590 (ovpn-12-110.pek2.redhat.com [10.72.12.110])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 648725D9D7;
-        Wed, 12 May 2021 03:24:04 +0000 (UTC)
-Date:   Wed, 12 May 2021 11:23:59 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Gulam Mohamed <gulam.mohamed@oracle.com>
-Cc:     viro@zeniv.linux.org.uk, axboe@kernel.dk,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hch@lst.de,
-        martin.petersen@oracle.com, junxiao.bi@oracle.com
-Subject: Re: [PATCH V1 1/1] Fix race between iscsi logout and systemd-udevd
-Message-ID: <YJtKT7rLi2CFqDsV@T590>
-References: <20210511181558.380764-1-gulam.mohamed@oracle.com>
+        Tue, 11 May 2021 23:26:11 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fg0Sg5ww5zmg51;
+        Wed, 12 May 2021 11:21:39 +0800 (CST)
+Received: from [127.0.0.1] (10.40.193.166) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Wed, 12 May 2021
+ 11:24:54 +0800
+Subject: Re: Qestion about device link
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+References: <3c88cf35-6725-1bfa-9e1e-8e9d69147e3b@hisilicon.com>
+ <d16058fc-9876-f6a3-d5e8-ff06b5193f2c@intel.com>
+ <2149723.iZASKD2KPV@kreacher>
+CC:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        John Garry <john.garry@huawei.com>, <linuxarm@huawei.com>,
+        <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>
+From:   "chenxiang (M)" <chenxiang66@hisilicon.com>
+Message-ID: <1c1cd889-7e6f-79f7-2650-cd181abc56b2@hisilicon.com>
+Date:   Wed, 12 May 2021 11:24:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511181558.380764-1-gulam.mohamed@oracle.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <2149723.iZASKD2KPV@kreacher>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.40.193.166]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 06:15:58PM +0000, Gulam Mohamed wrote:
-> Problem description:
-> 
-> During the kernel patching, customer was switching between the iscsi
-> disks. To switch between the iscsi disks, it was logging out the
-> currently connected iscsi disk and then logging in to the new iscsi
-> disk. This was being done using a script. Customer was also using the
-> "parted" command in the script to list the partition details just
-> before the iscsi logout. This usage of "parted" command was creating
-> an issue and we were seeing stale links of the
-> disks in /sys/class/block.
-> 
-> Analysis:
-> 
-> As part of iscsi logout, the partitions and the disk will be removed
-> in the function del_gendisk() which is done through a kworker. The
-> parted command, used to list the partitions, will open the disk in
-> RW mode which results in systemd-udevd re-reading the partitions. The
-> ioctl used to re-read partitions is BLKRRPART. This will trigger the
-> rescanning of partitions which will also delete and re-add the
-> partitions. So, both iscsi logout processing (through kworker) and the
-> "parted" command (through systemd-udevd) will be involved in
-> add/delete of partitions. In our case, the following sequence of
-> operations happened (the iscsi device is /dev/sdb with partition sdb1):
-> 
-> 1. sdb1 was removed by PARTED
-> 2. kworker, as part of iscsi logout, couldn't remove sdb1 as it was
->    already removed by PARTED
-> 3. sdb1 was added by parted
-> 4. sdb was NOW removed as part of iscsi logout (the last part of the
->    device removal after remoing the partitions)
-> 
-> Since the symlink /sys/class/block/sdb1 points to
-> /sys/class/devices/platform/hostx/sessionx/targetx:x/block/sdb/sdb1
-> and since sdb is already removed, the symlink /sys/class/block/sdb1
-> will be orphan and stale. So, this stale link is a result of the race
-> condition in kernel between the systemd-udevd and iscsi-logout
-> processing as described above. We were able to reproduce this even
-> with latest upstream kernel.
-> 
-> Fix:
-> 
-> While Dropping/Adding partitions as part of BLKRRPART ioctl, take the
-> read lock for "bdev_lookup_sem" to sync with del_gendisk().
-> 
-> Signed-off-by: Gulam Mohamed <gulam.mohamed@oracle.com>
+Hi Rafael,
+
+
+在 2021/5/12 3:16, Rafael J. Wysocki 写道:
+> On Tuesday, May 11, 2021 4:39:31 PM CEST Rafael J. Wysocki wrote:
+>> On 5/11/2021 5:59 AM, chenxiang (M) wrote:
+>>> Hi Rafael and other guys,
+>>>
+>>> I am trying to add a device link between scsi_host->shost_gendev and
+>>> hisi_hba->dev to support runtime PM for hisi_hba driver
+>>>
+>>> (as it supports runtime PM for scsi host in some scenarios such as
+>>> error handler etc, we can avoid to do them again if adding a
+>>>
+>>> device link between scsi_host->shost_gendev and hisi_hba->dev) as
+>>> follows (hisi_sas driver is under directory drivers/scsi/hisi_sas):
+>>>
+>>> device_link_add(&shost->shost_gendev, hisi_hba->dev,
+>>> DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE)
+>>>
+>>> We have a full test on it, and it works well except when rmmod the
+>>> driver, some call trace occurs as follows:
+>>>
+>>> [root@localhost ~]# rmmod hisi_sas_v3_hw
+>>> [  105.377944] BUG: scheduling while atomic: kworker/113:1/811/0x00000201
+>>> [  105.384469] Modules linked in: bluetooth rfkill ib_isert
+>>> iscsi_target_mod ib_ipoib ib_umad iptable_filter vfio_iommu_type1
+>>> vfio_pci vfio_virqfd vfio rpcrdma ib_is                         er
+>>> libiscsi scsi_transport_iscsi crct10dif_ce sbsa_gwdt hns_roce_hw_v2
+>>> hisi_sec2 hisi_hpre hisi_zip hisi_qm uacce spi_hisi_sfc_v3xx
+>>> hisi_trng_v2 rng_core hisi_uncore                         _hha_pmu
+>>> hisi_uncore_ddrc_pmu hisi_uncore_l3c_pmu spi_dw_mmio hisi_uncore_pmu
+>>> hns3 hclge hnae3 hisi_sas_v3_hw(-) hisi_sas_main libsas
+>>> [  105.424841] CPU: 113 PID: 811 Comm: kworker/113:1 Kdump: loaded
+>>> Tainted: G        W         5.12.0-rc1+ #1
+>>> [  105.434454] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS
+>>> 2280-V2 CS V5.B143.01 04/22/2021
+>>> [  105.443287] Workqueue: rcu_gp srcu_invoke_callbacks
+>>> [  105.448154] Call trace:
+>>> [  105.450593]  dump_backtrace+0x0/0x1a4
+>>> [  105.454245]  show_stack+0x24/0x40
+>>> [  105.457548]  dump_stack+0xc8/0x104
+>>> [  105.460939]  __schedule_bug+0x68/0x80
+>>> [  105.464590]  __schedule+0x73c/0x77c
+>>> [  105.465700] BUG: scheduling while atomic: kworker/96:1/791/0x00000201
+>>> [  105.468066]  schedule+0x7c/0x110
+>>> [  105.468068]  schedule_timeout+0x194/0x1d4
+>>> [  105.474490] Modules linked in:
+>>> [  105.477692]  wait_for_completion+0x8c/0x12c
+>>> [  105.477695]  rcu_barrier+0x1e0/0x2fc
+>>> [  105.477697]  scsi_host_dev_release+0x50/0xf0
+>>> [  105.477701]  device_release+0x40/0xa0
+>>> [  105.477704]  kobject_put+0xac/0x100
+>>> [  105.477707]  __device_link_free_srcu+0x50/0x74
+>>> [  105.477709]  srcu_invoke_callbacks+0x108/0x1a4
+>>> [  105.484743]  process_one_work+0x1dc/0x48c
+>>> [  105.492468]  worker_thread+0x7c/0x464
+>>> [  105.492471]  kthread+0x168/0x16c
+>>> [  105.492473]  ret_from_fork+0x10/0x18
+>>> ...
+>>>
+>>> After analyse the process, we find that it will
+>>> device_del(&shost->gendev) in function scsi_remove_host() and then
+>>>
+>>> put_device(&shost->shost_gendev) in function scsi_host_put() when
+>>> removing the driver, if there is a link between shost and hisi_hba->dev,
+>>>
+>>> it will try to delete the link in device_del(), and also will
+>>> call_srcu(__device_link_free_srcu) to put_device() link->consumer and
+>>> supplier.
+>>>
+>>> But if put device() for shost_gendev in device_link_free() is later
+>>> than in scsi_host_put(), it will call scsi_host_dev_release() in
+>>>
+>>> srcu_invoke_callbacks() while it is atomic and there are scheduling in
+>>> scsi_host_dev_release(),
+>>>
+>>> so it reports the BUG "scheduling while atomic:...".
+>>>
+>>> thread 1                                                   thread2
+>>> hisi_sas_v3_remove
+>>>      ...
+>>>      sas_remove_host()
+>>>          ...
+>>>          scsi_remove_host()
+>>>              ...
+>>>              device_del(&shost->shost_gendev)
+>>>                  ...
+>>>                  device_link_purge()
+>>>                      __device_link_del()
+>>>                          device_unregister(&link->link_dev)
+>>>                              devlink_dev_release
+>>> call_srcu(__device_link_free_srcu)    ----------->
+>>> srcu_invoke_callbacks  (atomic)
+>>>          __device_link_free_srcu
+>>>      ...
+>>>      scsi_host_put()
+>>>          put_device(&shost->shost_gendev) (ref = 1)
+>>>                  device_link_free()
+>>>                                put_device(link->consumer)
+>>> //shost->gendev ref = 0
+>>>                                            ...
+>>>                                            scsi_host_dev_release
+>>>                                                        ...
+>>> rcu_barrier
+>>> kthread_stop()
+>>>
+>>>
+>>> We can check kref of shost->shost_gendev to make sure scsi_host_put()
+>>> to release scsi host device in LLDD driver to avoid the issue,
+>>>
+>>> but it seems be a common issue:  function __device_link_free_srcu
+>>> calls put_device() for consumer and supplier,
+>>>
+>>> but if it's ref =0 at that time and there are scheduling or sleep in
+>>> dev_release, it may have the issue.
+>>>
+>>> Do you have any idea about the issue?
+>>>
+>> Yes, this is a general issue.
+>>
+>> If I'm not mistaken, it can be addressed by further deferring the
+>> device_link_free() invocation through a workqueue.
+>>
+>> Let me cut a patch doing this.
+> Please test the patch below and let me know if it works for you.
+
+I have a test on the patch, and it solves my issue.
+
+
+>
 > ---
->  fs/block_dev.c | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index 09d6f7229db9..e903a7edfd63 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -1245,9 +1245,17 @@ int bdev_disk_changed(struct block_device *bdev, bool invalidate)
->  	lockdep_assert_held(&bdev->bd_mutex);
->  
->  rescan:
-> +	down_read(&bdev_lookup_sem);
-> +	if (!(disk->flags & GENHD_FL_UP)) {
-> +		up_read(&bdev_lookup_sem);
-> +		return -ENXIO;
-> +	}
+>   drivers/base/core.c    |   18 ++++++++++++++++--
+>   include/linux/device.h |    5 ++++-
+>   2 files changed, 20 insertions(+), 3 deletions(-)
+>
+> Index: linux-pm/drivers/base/core.c
+> ===================================================================
+> --- linux-pm.orig/drivers/base/core.c
+> +++ linux-pm/drivers/base/core.c
+> @@ -455,16 +455,30 @@ static void device_link_free(struct devi
+>   }
+>   
+>   #ifdef CONFIG_SRCU
+> +static void __device_link_free_fn(struct work_struct *work)
+> +{
+> +	device_link_free(container_of(work, struct device_link, srcu.work));
+> +}
+> +
+>   static void __device_link_free_srcu(struct rcu_head *rhead)
+>   {
+> -	device_link_free(container_of(rhead, struct device_link, rcu_head));
+> +	struct device_link *link = container_of(rhead, struct device_link,
+> +						srcu.rhead);
+> +	struct work_struct *work = &link->srcu.work;
+> +
+> +	/*
+> +	 * Because device_link_free() may sleep in some cases, schedule the
+> +	 * execution of it instead of invoking it directly.
+> +	 */
+> +	INIT_WORK(work, __device_link_free_fn);
+> +	schedule_work(work);
+>   }
+>   
+>   static void devlink_dev_release(struct device *dev)
+>   {
+>   	struct device_link *link = to_devlink(dev);
+>   
+> -	call_srcu(&device_links_srcu, &link->rcu_head, __device_link_free_srcu);
+> +	call_srcu(&device_links_srcu, &link->srcu.rhead, __device_link_free_srcu);
+>   }
+>   #else
+>   static void devlink_dev_release(struct device *dev)
+> Index: linux-pm/include/linux/device.h
+> ===================================================================
+> --- linux-pm.orig/include/linux/device.h
+> +++ linux-pm/include/linux/device.h
+> @@ -584,7 +584,10 @@ struct device_link {
+>   	refcount_t rpm_active;
+>   	struct kref kref;
+>   #ifdef CONFIG_SRCU
+> -	struct rcu_head rcu_head;
+> +	union {
+> +		struct rcu_head rhead;
+> +		struct work_struct work;
+> +	} srcu;
+>   #endif
+>   	bool supplier_preactivated; /* Owned by consumer probe. */
+>   };
+>
+>
+>
+>
+> .
+>
 
-This way might cause deadlock:
-
-1) code path BLKRRPART:
-	mutex_lock(bdev->bd_mutex)
-	down_read(&bdev_lookup_sem);
-
-2) del_gendisk():
-	down_write(&bdev_lookup_sem);
-	mutex_lock(&disk->part0->bd_mutex);
-
-Given GENHD_FL_UP is only checked when opening one bdev, and
-fsync_bdev() and __invalidate_device() needn't to open bdev, so
-the following way may work for your issue:
-
-
-diff --git a/block/genhd.c b/block/genhd.c
-index 39ca97b0edc6..5eb27995d4ab 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -617,6 +617,7 @@ void del_gendisk(struct gendisk *disk)
- 
- 	mutex_lock(&disk->part0->bd_mutex);
- 	blk_drop_partitions(disk);
-+	disk->flags &= ~GENHD_FL_UP;
- 	mutex_unlock(&disk->part0->bd_mutex);
- 
- 	fsync_bdev(disk->part0);
-@@ -629,7 +630,6 @@ void del_gendisk(struct gendisk *disk)
- 	remove_inode_hash(disk->part0->bd_inode);
- 
- 	set_capacity(disk, 0);
--	disk->flags &= ~GENHD_FL_UP;
- 	up_write(&bdev_lookup_sem);
- 
- 	if (!(disk->flags & GENHD_FL_HIDDEN)) {
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index b8abccd03e5d..06b70b8e3f67 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -1245,6 +1245,8 @@ int bdev_disk_changed(struct block_device *bdev, bool invalidate)
- 	lockdep_assert_held(&bdev->bd_mutex);
- 
- rescan:
-+	if(!(disk->flags & GENHD_FL_UP))
-+		return -ENXIO;
- 	if (bdev->bd_part_count)
- 		return -EBUSY;
- 	sync_blockdev(bdev);
-
-
-
-Thanks,
-Ming
 
