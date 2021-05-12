@@ -2,152 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF1C37ECDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9063837ECD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384621AbhELUBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355850AbhELS3Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 14:29:24 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E46C061760;
-        Wed, 12 May 2021 11:26:24 -0700 (PDT)
-Date:   Wed, 12 May 2021 18:26:22 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620843983;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=AWD3mej6+YH1TsbEsjmBeiMwRHlC/JaiyzjcGBD0EsM=;
-        b=gwzpUIFkSNGaaTqvuoNt/GFEuoNckR14ypb/RBoWW4R6lYackRDmDkevtpOioGuIJB3vn6
-        aapUoIzQJFPVHCB7VyoQm0OhOCJ4tiYjAAowH4Gl+2ozf50Q2m4501TqYLvJ1XAJ7roiXe
-        JwG8gLJpGrJk2xHYaD1yUFZW2A1pKdHJOGAb2T+GqrUlKkvHVZplCACwrSRPcoKMvpqExj
-        yimcKDCDkPy5d+Ck4uPB5uIWC9kmCHD8a0Syc/Jjao/FNUE8tk60zZNKF4TzYO785va50e
-        33JO8veWtUPHh1UJHo62GfWg8aBf42mVnPIKjLXSHXi4vwuZ1X8GxMQ36XU3cQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620843983;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=AWD3mej6+YH1TsbEsjmBeiMwRHlC/JaiyzjcGBD0EsM=;
-        b=MMqR+gtusJw7Eimwc3HhrAm+tFi2JwoYK79o/jQ6NIyTsjsV1cCVvzWrTp493w0A8buAjn
-        JJH3gecx9kuIkEBA==
-From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86: Fix leftover comment typos
-Cc:     Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        id S1384553AbhELUBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:01:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355653AbhELS26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 14:28:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A27461412;
+        Wed, 12 May 2021 18:27:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620844069;
+        bh=NeA2ZA+zZivqWnB/DeB4W2Mu4E4V82Z7NupYtGJe37U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=E28K7XvmpJP4XFqw8+zdisVpcEZxM/SeUco9W6giH3i2XZZRGxdvHBCcpiExAMBcE
+         N1YbzJRxbOk1i3sJqDpNfvBy4L+RLfUF+V40ULBqCcjFXCooe6kIV58XM0sM6xY6DM
+         6NQVxbtNwzG4iqaAQ+pgZqIybegetLFFZKqniofRMHP4xBiQAoET6/tBZqPK2xB5o1
+         dXQ3SkTpgk2nB6CaGIqIiBQTxuPGyyvCa3CW/Yh3LO/4McnLtJblSIgeJkJ5xkuN3O
+         7O40QKI9J79K9kEfoEvinc76DYFDrvr/pKJ0XRqLbJukfE2bIFrgTckgxriJ03ql9T
+         Xo9Grj+wzsGHw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 00ED75C00DC; Wed, 12 May 2021 11:27:48 -0700 (PDT)
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/4] Tasks-RCU updates for v5.14
+Date:   Wed, 12 May 2021 11:27:43 -0700
+Message-Id: <20210512182747.3445812-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 MIME-Version: 1.0
-Message-ID: <162084398226.29796.274994682161914739.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
 
-Commit-ID:     c43426334b3169b6c9e6855483aa7384ff09fd33
-Gitweb:        https://git.kernel.org/tip/c43426334b3169b6c9e6855483aa7384ff09fd33
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Wed, 12 May 2021 19:58:31 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 12 May 2021 20:00:51 +02:00
+Hello!
 
-x86: Fix leftover comment typos
+This series provides Tasks-RCU updates.  I am resending this as an
+experiment in the use of the "git send-email" command's "--compose"
+command-line argument, which some of yesterday's patch serieses indicate
+that I should be using.  :-/
 
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
----
- arch/x86/hyperv/hv_init.c             | 2 +-
- arch/x86/include/asm/sgx.h            | 2 +-
- arch/x86/include/asm/stackprotector.h | 2 +-
- arch/x86/kernel/kprobes/core.c        | 2 +-
- arch/x86/kvm/mmu/mmu.c                | 2 +-
- arch/x86/kvm/mmu/tdp_mmu.c            | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
+1.	rcu-tasks: Add block comment laying out RCU Tasks design.
 
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index bb0ae4b..256ad0e 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -623,7 +623,7 @@ bool hv_query_ext_cap(u64 cap_query)
- 	 * output parameter to the hypercall below and so it should be
- 	 * compatible with 'virt_to_phys'. Which means, it's address should be
- 	 * directly mapped. Use 'static' to keep it compatible; stack variables
--	 * can be virtually mapped, making them imcompatible with
-+	 * can be virtually mapped, making them incompatible with
- 	 * 'virt_to_phys'.
- 	 * Hypercall input/output addresses should also be 8-byte aligned.
- 	 */
-diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
-index 9c31e0e..05f3e21 100644
---- a/arch/x86/include/asm/sgx.h
-+++ b/arch/x86/include/asm/sgx.h
-@@ -13,7 +13,7 @@
- /*
-  * This file contains both data structures defined by SGX architecture and Linux
-  * defined software data structures and functions.  The two should not be mixed
-- * together for better readibility.  The architectural definitions come first.
-+ * together for better readability.  The architectural definitions come first.
-  */
- 
- /* The SGX specific CPUID function. */
-diff --git a/arch/x86/include/asm/stackprotector.h b/arch/x86/include/asm/stackprotector.h
-index b6ffe58..24a8d6c 100644
---- a/arch/x86/include/asm/stackprotector.h
-+++ b/arch/x86/include/asm/stackprotector.h
-@@ -11,7 +11,7 @@
-  * The same segment is shared by percpu area and stack canary.  On
-  * x86_64, percpu symbols are zero based and %gs (64-bit) points to the
-  * base of percpu area.  The first occupant of the percpu area is always
-- * fixed_percpu_data which contains stack_canary at the approproate
-+ * fixed_percpu_data which contains stack_canary at the appropriate
-  * offset.  On x86_32, the stack canary is just a regular percpu
-  * variable.
-  *
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index d3d6554..7c4d073 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -674,7 +674,7 @@ static int prepare_emulation(struct kprobe *p, struct insn *insn)
- 			break;
- 
- 		if (insn->addr_bytes != sizeof(unsigned long))
--			return -EOPNOTSUPP;	/* Don't support differnt size */
-+			return -EOPNOTSUPP;	/* Don't support different size */
- 		if (X86_MODRM_MOD(opcode) != 3)
- 			return -EOPNOTSUPP;	/* TODO: support memory addressing */
- 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 0144c40..5e60b00 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2374,7 +2374,7 @@ static int make_mmu_pages_available(struct kvm_vcpu *vcpu)
- 	 * page is available, while the caller may end up allocating as many as
- 	 * four pages, e.g. for PAE roots or for 5-level paging.  Temporarily
- 	 * exceeding the (arbitrary by default) limit will not harm the host,
--	 * being too agressive may unnecessarily kill the guest, and getting an
-+	 * being too aggressive may unnecessarily kill the guest, and getting an
- 	 * exact count is far more trouble than it's worth, especially in the
- 	 * page fault paths.
- 	 */
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 95eeb5a..e09cb1f 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -1017,7 +1017,7 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
- 
- 		if (!is_shadow_present_pte(iter.old_spte)) {
- 			/*
--			 * If SPTE has been forzen by another thread, just
-+			 * If SPTE has been frozen by another thread, just
- 			 * give up and retry, avoiding unnecessary page table
- 			 * allocation and free.
- 			 */
+2.	rcu-tasks: Add block comment laying out RCU Rude design.
+
+3.	rcu-tasks: Make ksoftirqd provide RCU Tasks quiescent states.
+
+4.	tasks-rcu: Make show_rcu_tasks_gp_kthreads() be static inline.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/kernel/rcu/rcu.h   |    4 ++++
+ b/kernel/rcu/tasks.h |   40 ++++++++++++++++++++++++++++++++++++++++
+ b/kernel/rcu/tree.c  |    1 +
+ kernel/rcu/tasks.h   |   10 +++++++---
+ 4 files changed, 52 insertions(+), 3 deletions(-)
+
