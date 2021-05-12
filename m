@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225DD37C1AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 791DA37C1B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232075AbhELPC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:02:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45520 "EHLO mail.kernel.org"
+        id S231389AbhELPDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:03:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232392AbhELO6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:58:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A977361428;
-        Wed, 12 May 2021 14:56:25 +0000 (UTC)
+        id S232161AbhELPAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:00:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A11B61434;
+        Wed, 12 May 2021 14:56:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620831386;
-        bh=hB8834CskBelJMSiRGcdXM6fqJppP3UrNwyif2u7mAQ=;
+        s=korg; t=1620831414;
+        bh=g0pt6+vqRylFc4VYWkBWA/2XzDJrouTWCBn+Dnr+JFM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KiAvOyiRMnt7sQFVK1fUK3ELTZuWvupEy73irBNw+XUcbvr9fyuEZ0U7bYfUOzW0Y
-         pPJHg/mKtRdIRg0p8hAXL7w7SQP+RJSoal+h6U6py5H/JMpTOA/makTGQfXuoGAKAf
-         0K4TC2aDrK36Uoz27aMkWQ8vOLt7yKjEAyz4nrXc=
+        b=WcOM/bwL3QU8R2YSC+g84ucHLV62fh/15JcLyNaqButgMldlpTkg9EwWJ0OPvEvu5
+         NgmKuhg+9CBgN30AfY9jZM+M9a4vFmJC1VN2wy/0NxquYrQDrdGJMwMWuObVNL1Mo4
+         kkg0W8C2gKzrEcny4gFOSvE+lLwCiyJQoeaKZ7j0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        stable@vger.kernel.org, Otavio Pontes <otavio.pontes@intel.com>,
+        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 082/244] arm64: dts: renesas: r8a77980: Fix vin4-7 endpoint binding
-Date:   Wed, 12 May 2021 16:47:33 +0200
-Message-Id: <20210512144745.656832582@linuxfoundation.org>
+Subject: [PATCH 5.4 083/244] x86/microcode: Check for offline CPUs before requesting new microcode
+Date:   Wed, 12 May 2021 16:47:34 +0200
+Message-Id: <20210512144745.689336894@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144743.039977287@linuxfoundation.org>
 References: <20210512144743.039977287@linuxfoundation.org>
@@ -43,73 +41,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
+From: Otavio Pontes <otavio.pontes@intel.com>
 
-[ Upstream commit c8aebc1346522d3569690867ce3996642ad52e01 ]
+[ Upstream commit 7189b3c11903667808029ec9766a6e96de5012a5 ]
 
-This fixes the bindings in media framework:
-The CSI40 is endpoint number 2
-The CSI41 is endpoint number 3
+Currently, the late microcode loading mechanism checks whether any CPUs
+are offlined, and, in such a case, aborts the load attempt.
 
-Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Link: https://lore.kernel.org/r/20210312174735.2118212-1-niklas.soderlund+renesas@ragnatech.se
-Fixes: 3182aa4e0bf4d0ee ("arm64: dts: renesas: r8a77980: add CSI2/VIN support")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+However, this must be done before the kernel caches new microcode from
+the filesystem. Otherwise, when offlined CPUs are onlined later, those
+cores are going to be updated through the CPU hotplug notifier callback
+with the new microcode, while CPUs previously onine will continue to run
+with the older microcode.
+
+For example:
+
+Turn off one core (2 threads):
+
+  echo 0 > /sys/devices/system/cpu/cpu3/online
+  echo 0 > /sys/devices/system/cpu/cpu1/online
+
+Install the ucode fails because a primary SMT thread is offline:
+
+  cp intel-ucode/06-8e-09 /lib/firmware/intel-ucode/
+  echo 1 > /sys/devices/system/cpu/microcode/reload
+  bash: echo: write error: Invalid argument
+
+Turn the core back on
+
+  echo 1 > /sys/devices/system/cpu/cpu3/online
+  echo 1 > /sys/devices/system/cpu/cpu1/online
+  cat /proc/cpuinfo |grep microcode
+  microcode : 0x30
+  microcode : 0xde
+  microcode : 0x30
+  microcode : 0xde
+
+The rationale for why the update is aborted when at least one primary
+thread is offline is because even if that thread is soft-offlined
+and idle, it will still have to participate in broadcasted MCE's
+synchronization dance or enter SMM, and in both examples it will execute
+instructions so it better have the same microcode revision as the other
+cores.
+
+ [ bp: Heavily edit and extend commit message with the reasoning behind all
+   this. ]
+
+Fixes: 30ec26da9967 ("x86/microcode: Do not upload microcode if CPUs are offline")
+Signed-off-by: Otavio Pontes <otavio.pontes@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Acked-by: Ashok Raj <ashok.raj@intel.com>
+Link: https://lkml.kernel.org/r/20210319165515.9240-2-otavio.pontes@intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/renesas/r8a77980.dtsi | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ arch/x86/kernel/cpu/microcode/core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a77980.dtsi b/arch/arm64/boot/dts/renesas/r8a77980.dtsi
-index e81cd83b138b..4b9d4f1bbe01 100644
---- a/arch/arm64/boot/dts/renesas/r8a77980.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a77980.dtsi
-@@ -990,8 +990,8 @@
+diff --git a/arch/x86/kernel/cpu/microcode/core.c b/arch/x86/kernel/cpu/microcode/core.c
+index cb0fdcaf1415..4a4198b806b4 100644
+--- a/arch/x86/kernel/cpu/microcode/core.c
++++ b/arch/x86/kernel/cpu/microcode/core.c
+@@ -626,16 +626,16 @@ static ssize_t reload_store(struct device *dev,
+ 	if (val != 1)
+ 		return size;
  
- 					reg = <1>;
+-	tmp_ret = microcode_ops->request_microcode_fw(bsp, &microcode_pdev->dev, true);
+-	if (tmp_ret != UCODE_NEW)
+-		return size;
+-
+ 	get_online_cpus();
  
--					vin4csi41: endpoint@2 {
--						reg = <2>;
-+					vin4csi41: endpoint@3 {
-+						reg = <3>;
- 						remote-endpoint = <&csi41vin4>;
- 					};
- 				};
-@@ -1018,8 +1018,8 @@
+ 	ret = check_online_cpus();
+ 	if (ret)
+ 		goto put;
  
- 					reg = <1>;
- 
--					vin5csi41: endpoint@2 {
--						reg = <2>;
-+					vin5csi41: endpoint@3 {
-+						reg = <3>;
- 						remote-endpoint = <&csi41vin5>;
- 					};
- 				};
-@@ -1046,8 +1046,8 @@
- 
- 					reg = <1>;
- 
--					vin6csi41: endpoint@2 {
--						reg = <2>;
-+					vin6csi41: endpoint@3 {
-+						reg = <3>;
- 						remote-endpoint = <&csi41vin6>;
- 					};
- 				};
-@@ -1074,8 +1074,8 @@
- 
- 					reg = <1>;
- 
--					vin7csi41: endpoint@2 {
--						reg = <2>;
-+					vin7csi41: endpoint@3 {
-+						reg = <3>;
- 						remote-endpoint = <&csi41vin7>;
- 					};
- 				};
++	tmp_ret = microcode_ops->request_microcode_fw(bsp, &microcode_pdev->dev, true);
++	if (tmp_ret != UCODE_NEW)
++		goto put;
++
+ 	mutex_lock(&microcode_mutex);
+ 	ret = microcode_reload_late();
+ 	mutex_unlock(&microcode_mutex);
 -- 
 2.30.2
 
