@@ -2,170 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C037F37CAC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B88E37CAD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234273AbhELQcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:32:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48930 "EHLO
+        id S236590AbhELQcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231533AbhELPlF (ORCPT
+        with ESMTP id S233613AbhELPlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:41:05 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD100C0611B8;
-        Wed, 12 May 2021 08:18:59 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id b21so11648627pft.10;
-        Wed, 12 May 2021 08:18:59 -0700 (PDT)
+        Wed, 12 May 2021 11:41:10 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141B8C034625
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:19:03 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id pf4-20020a17090b1d84b029015ccffe0f2eso440458pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:19:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=a6yni3wO/CDK9/OPIkBzIDQnVsSJgamlGmLbl5o+phI=;
-        b=JY5FLWkT3Dcyau3tunzWkrbXvM0JQMMUsGM5XTXnHJXF1EBvnhjffXkY2T6zH+C4UX
-         wCfy3r/lWzw4nPKLjlE8myGIfCUKFWKESEDFJIeT7XcfIt9BFdvWqLNA9I0o8gbA116q
-         qFXMAOEpXXW4nX62eH9UScBfKDApFDZgwPb4R1siBRie6KKVNcB/hw6ufSsOeTt+RKP3
-         i88X5fF41Oy74bj98TqzFjN/wfk8cP+Wu31UgOwvIF2uOeW+PZLvt5+7ZjOm8Q3fowuQ
-         AuiaBfWI7fY8I5F2leuGW5tL9AKo1z+5l15dJf9ddR4AqG3XkMYr9VxAOPmXVDHfTzFf
-         Rngw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wQuM+8vl8RXXi53GN0Bxev1KdO1+AOXUsVXjVxgXMEU=;
+        b=Gk8wYyrGJM70yGgKGKycvu8PnplDnEkH+5OEJt1C22vqGyiKdmOFlPZPA4wckvHBET
+         axKUrRx6NchuLk8scPXGEtyWZbrMUjktcZzI6IZPZASxILpdMBJY9viFlOVfgQP+1ofj
+         8ivalJAblF5A9U1KeFVPm+l1DehzV8utNI6wKbpOuN7sn4EZN8l3nmYK2Ha5b48ec5bb
+         PkHE+RTHRPw+V6q8eeejDJZEcjybkgbXPBTAM2+IDQN41aZzgX59kh/WAZuc3y+C8UdB
+         J2rzs7xhcqLwFjt6Y8n8OyNF+VMCIidkgeRuEkVzMx5kEVTsP34xSAFxgk40tFKJQiJ0
+         dlug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=a6yni3wO/CDK9/OPIkBzIDQnVsSJgamlGmLbl5o+phI=;
-        b=KYl8iGIx1gdyH8u8251hpd06s+RJIoYUAiyskmEYXxy4h8p11QQU3U6/nIqRQQBNIW
-         I5CCKEq2N2C4lKllCNW/7/8hEHrDWSN5z9oFhWdZHATasBrul10mPYFSH/ZGxRfqFmOP
-         HGdH0Inf6dxYQCoMi/btWaswpSOTUMF0YOr7XLmPsEMSFF2KmkfQR8xUjnYJLz8/i3lr
-         BZvmopLnh1FIMs8f3GPfUJCl0XKfQhDoxSssrY23CoE2NDd4hACOXhuassSd2sM1sIU4
-         ocA6YD+KQJion6oQ0xYHzv4ekEFBoon3w1olrTCNlOTQYilRfXLtFPf9TMwCaxZK6AIv
-         d6CA==
-X-Gm-Message-State: AOAM5306RmyBrJQZdhUojp2cOZHOf0oPV+xnAcWbu0CaxM/mPKlFS8Ib
-        En5wpx59EFnASV2QRiYV+g==
-X-Google-Smtp-Source: ABdhPJzepVE5kbSE8vmoRD0QugGE+S9C+e7/rhBMoLyoSHwKPl6nviBcXX6DLLXjaQpUARYXbekERA==
-X-Received: by 2002:aa7:8198:0:b029:274:8a92:51b5 with SMTP id g24-20020aa781980000b02902748a9251b5mr36404964pfi.5.1620832739374;
-        Wed, 12 May 2021 08:18:59 -0700 (PDT)
-Received: from vultr.guest ([107.191.53.97])
-        by smtp.gmail.com with ESMTPSA id e3sm134018pjd.18.2021.05.12.08.18.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 12 May 2021 08:18:59 -0700 (PDT)
-From:   Zheyu Ma <zheyuma97@gmail.com>
-To:     mchehab@kernel.org
-Cc:     akpm@linux-foundation.org, rppt@kernel.org, zheyuma97@gmail.com,
-        christophe.jaillet@wanadoo.fr, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] media: bt8xx: Fix a missing check bug in bt878_probe
-Date:   Wed, 12 May 2021 15:18:36 +0000
-Message-Id: <1620832716-24253-1-git-send-email-zheyuma97@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wQuM+8vl8RXXi53GN0Bxev1KdO1+AOXUsVXjVxgXMEU=;
+        b=UYEMP3R4jt2UlcCn87PXEeffAy1HKftM31+1xTo4DGKGCVieOLXrt+M/civ4Kza6Yb
+         FMio9eYNRP6b6GJ+IzEBRGXmNKRsylsgLbCdqjYhT3gu2iOzYujbfTpAdyn/Cwrm9iXi
+         JP/0/Him5AqSFivixO9+1qZ+MdgL/0YT02QHWpxA3/J0utUAWgKnu+aSe7//ss/HfBVN
+         LfMaSDMXPUQU5q0oLxwk2IrNiM9dati9cgg/Zi7FQ/4JXDdgHQnZMDCw9XbENgNX1ENZ
+         fSbpUzTQZg75Eh1+MmaG19+FASA8YUZZmKkYVpwhcmdfKLwTPpnlwxieYAFJCT3/X+1T
+         ApHA==
+X-Gm-Message-State: AOAM532jdIx1ud56C3K/LnzapXcnvxBRArl89XNnZmngXqvnD78AupPu
+        x3TTDXaLYFuQqSOrRdC6tdYoXg==
+X-Google-Smtp-Source: ABdhPJxh8LL59gW6hhs773DJVJAXhM8iujV6qd8DtWRXyM/hNNcnsGmWDL4gazXHGRThy8NlUzuz3Q==
+X-Received: by 2002:a17:90a:4503:: with SMTP id u3mr41532313pjg.214.1620832742442;
+        Wed, 12 May 2021 08:19:02 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id m3sm174335pfh.174.2021.05.12.08.19.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 08:19:01 -0700 (PDT)
+Date:   Wed, 12 May 2021 15:18:58 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Xu, Like" <like.xu@intel.com>
+Cc:     Venkatesh Srinivas <venkateshs@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        Yao Yuan <yuan.yao@intel.com>,
+        Like Xu <like.xu@linux.intel.com>
+Subject: Re: [PATCH v6 04/16] KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit
+ when vPMU is enabled
+Message-ID: <YJvx4tr2iXo4bQ/d@google.com>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <20210511024214.280733-5-like.xu@linux.intel.com>
+ <CAA0tLErUFPnZ=SL82bLe8Ddf5rFu2Pdv5xE0aq4A91mzn9=ABA@mail.gmail.com>
+ <ead61a83-1534-a8a6-13ee-646898a6d1a9@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ead61a83-1534-a8a6-13ee-646898a6d1a9@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In 'bt878_irq', the driver calls 'tasklet_schedule', but this tasklet is
-set in 'dvb_bt8xx_load_card' of another driver 'dvb-bt8xx'.
-However, this two drivers are separate. The user may not load the
-'dvb-bt8xx' driver when loading the 'bt8xx' driver, that is, the tasklet
-has not been initialized when 'tasklet_schedule' is called, so it is
-necessary to check whether the tasklet is initialized in 'bt878_probe'.
+On Wed, May 12, 2021, Xu, Like wrote:
+> Hi Venkatesh Srinivas,
+> 
+> On 2021/5/12 9:58, Venkatesh Srinivas wrote:
+> > On 5/10/21, Like Xu <like.xu@linux.intel.com> wrote:
+> > > On Intel platforms, the software can use the IA32_MISC_ENABLE[7] bit to
+> > > detect whether the processor supports performance monitoring facility.
+> > > 
+> > > It depends on the PMU is enabled for the guest, and a software write
+> > > operation to this available bit will be ignored.
+> > Is the behavior that writes to IA32_MISC_ENABLE[7] are ignored (rather than #GP)
+> > documented someplace?
+> 
+> The bit[7] behavior of the real hardware on the native host is quite
+> suspicious.
 
-Fix this by adding a check at the end of bt878_probe.
+Ugh.  Can you file an SDM bug to get the wording and accessibility updated?  The
+current phrasing is a mess:
 
-The KASAN's report reveals it:
+  Performance Monitoring Available (R)
+  1 = Performance monitoring enabled.
+  0 = Performance monitoring disabled.
 
-BUG: unable to handle kernel NULL pointer dereference at 0000000000000000
-PGD 800000006aab2067 P4D 800000006aab2067 PUD 6b2ea067 PMD 0
-Oops: 0010 [#1] PREEMPT SMP KASAN PTI
-CPU: 2 PID: 8724 Comm: syz-executor.0 Not tainted 4.19.177-
-gdba4159c14ef-dirty #40
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-
-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:          (null)
-Code: Bad RIP value.
-RSP: 0018:ffff88806c287ea0 EFLAGS: 00010246
-RAX: fffffbfff1b01774 RBX: dffffc0000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 1ffffffff1b01775 RDI: 0000000000000000
-RBP: ffff88806c287f00 R08: fffffbfff1b01774 R09: fffffbfff1b01774
-R10: 0000000000000001 R11: fffffbfff1b01773 R12: 0000000000000000
-R13: ffff88806c29f530 R14: ffffffff8d80bb88 R15: ffffffff8d80bb90
-FS:  00007f6b550e6700(0000) GS:ffff88806c280000(0000) knlGS:
-0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 000000005ec98000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- tasklet_action_common.isra.17+0x141/0x420 kernel/softirq.c:522
- tasklet_action+0x50/0x70 kernel/softirq.c:540
- __do_softirq+0x224/0x92c kernel/softirq.c:292
- invoke_softirq kernel/softirq.c:372 [inline]
- irq_exit+0x15a/0x180 kernel/softirq.c:412
- exiting_irq arch/x86/include/asm/apic.h:535 [inline]
- do_IRQ+0x123/0x1e0 arch/x86/kernel/irq.c:260
- common_interrupt+0xf/0xf arch/x86/entry/entry_64.S:670
- </IRQ>
-RIP: 0010:__do_sys_interrupt kernel/sys.c:2593 [inline]
-RIP: 0010:__se_sys_interrupt kernel/sys.c:2584 [inline]
-RIP: 0010:__x64_sys_interrupt+0x5b/0x80 kernel/sys.c:2584
-Code: ba 00 04 00 00 48 c7 c7 c0 99 31 8c e8 ae 76 5e 01 48 85 c0 75 21 e8
-14 ae 24 00 48 c7 c3 c0 99 31 8c b8 0c 00 00 00 0f 01 c1 <31> db e8 fe ad
-24 00 48 89 d8 5b 5d c3 48 c7 c3 ea ff ff ff eb ec
-RSP: 0018:ffff888054167f10 EFLAGS: 00000212 ORIG_RAX: ffffffffffffffde
-RAX: 000000000000000c RBX: ffffffff8c3199c0 RCX: ffffc90001ca6000
-RDX: 000000000000001a RSI: ffffffff813478fc RDI: ffffffff8c319dc0
-RBP: ffff888054167f18 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000080 R11: fffffbfff18633b7 R12: ffff888054167f58
-R13: ffff88805f638000 R14: 0000000000000000 R15: 0000000000000000
- do_syscall_64+0xb0/0x4e0 arch/x86/entry/common.c:293
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x4692a9
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48 89 f7
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff
-ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f6b550e5c48 EFLAGS: 00000246 ORIG_RAX: 000000000000014f
-RAX: ffffffffffffffda RBX: 000000000077bf60 RCX: 00000000004692a9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000140
-RBP: 00000000004cf7eb R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000077bf60
-R13: 0000000000000000 R14: 000000000077bf60 R15: 00007fff55a1dca0
-Modules linked in:
-Dumping ftrace buffer:
-   (ftrace buffer empty)
-CR2: 0000000000000000
----[ end trace 68e5849c3f77cbb6 ]---
-RIP: 0010:          (null)
-Code: Bad RIP value.
-RSP: 0018:ffff88806c287ea0 EFLAGS: 00010246
-RAX: fffffbfff1b01774 RBX: dffffc0000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 1ffffffff1b01775 RDI: 0000000000000000
-RBP: ffff88806c287f00 R08: fffffbfff1b01774 R09: fffffbfff1b01774
-R10: 0000000000000001 R11: fffffbfff1b01773 R12: 0000000000000000
-R13: ffff88806c29f530 R14: ffffffff8d80bb88 R15: ffffffff8d80bb90
-FS:  00007f6b550e6700(0000) GS:ffff88806c280000(0000) knlGS:
-0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 000000005ec98000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+The (R) is ambiguous because most other entries that are read-only use (RO), and
+the "enabled vs. disabled" implies the bit is writable and really does control
+the PMU.  But on my Haswell system, it's read-only.  Assuming the bit is supposed
+to be a read-only "PMU supported bit", the SDM should be:
 
-Reported-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
----
- drivers/media/pci/bt8xx/bt878.c | 3 +++
- 1 file changed, 3 insertions(+)
+  Performance Monitoring Available (RO)
+  1 = Performance monitoring supported.
+  0 = Performance monitoring not supported.
 
-diff --git a/drivers/media/pci/bt8xx/bt878.c b/drivers/media/pci/bt8xx/bt878.c
-index 78dd35c9b65d..db35bc319bc6 100644
---- a/drivers/media/pci/bt8xx/bt878.c
-+++ b/drivers/media/pci/bt8xx/bt878.c
-@@ -477,6 +477,9 @@ static int bt878_probe(struct pci_dev *dev, const struct pci_device_id *pci_id)
- 	btwrite(0, BT878_AINT_MASK);
- 	bt878_num++;
- 
-+	if (!bt->tasklet.func)
-+		tasklet_disable(&bt->tasklet);
-+
- 	return 0;
- 
-       fail2:
--- 
-2.17.1
+And please update the changelog to explain the "why" of whatever the behavior
+ends up being.  The "what" is obvious from the code.
 
+> To keep the semantics consistent and simple, we propose ignoring write
+> operation in the virtualized world, since whether or not to expose PMU is
+> configured by the hypervisor user space and not by the guest side.
+
+Making up our own architectural behavior because it's convient is not a good
+idea.
+
+> > > diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> > > index 9efc1a6b8693..d9dbebe03cae 100644
+> > > --- a/arch/x86/kvm/vmx/pmu_intel.c
+> > > +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> > > @@ -488,6 +488,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
+> > >   	if (!pmu->version)
+> > >   		return;
+> > > 
+> > > +	vcpu->arch.ia32_misc_enable_msr |= MSR_IA32_MISC_ENABLE_EMON;
+
+Hmm, normally I would say overwriting the guest's value is a bad idea, but if
+the bit really is a read-only "PMU supported" bit, then this is the correct
+behavior, albeit weird if userspace does a late CPUID update (though that's
+weird no matter what).
+
+> > >   	perf_get_x86_pmu_capability(&x86_pmu);
+> > > 
+> > >   	pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
+> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > > index 5bd550eaf683..abe3ea69078c 100644
+> > > --- a/arch/x86/kvm/x86.c
+> > > +++ b/arch/x86/kvm/x86.c
+> > > @@ -3211,6 +3211,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct
+> > > msr_data *msr_info)
+> > >   		}
+> > >   		break;
+> > >   	case MSR_IA32_MISC_ENABLE:
+> > > +		data &= ~MSR_IA32_MISC_ENABLE_EMON;
+
+However, this is not.  If it's a read-only bit, then toggling the bit should
+cause a #GP.
+
+> > >   		if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT)
+> > > &&
+> > >   		    ((vcpu->arch.ia32_misc_enable_msr ^ data) &
+> > > MSR_IA32_MISC_ENABLE_MWAIT)) {
+> > >   			if (!guest_cpuid_has(vcpu, X86_FEATURE_XMM3))
+> > > --
