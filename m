@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1144537CEDD
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFAA537CE17
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241422AbhELRHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:07:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38412 "EHLO mail.kernel.org"
+        id S1343804AbhELQ7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:59:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237826AbhELP40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:56:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 349CA61A46;
-        Wed, 12 May 2021 15:28:36 +0000 (UTC)
+        id S237839AbhELP41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:56:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F4BB61C20;
+        Wed, 12 May 2021 15:28:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620833316;
-        bh=P/QaBq8t1m55nTsYH2jMmhNCNl80guSkd6XnRdh561Y=;
+        s=korg; t=1620833319;
+        bh=iPWMtOqSOEUZ+knKNQb2opfs8ZhuF2ad8nP3569KvG4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NVxsTJQ6xQXpyTrBGzw+IXEfuKjVPNjS6BWwPkr/MujNC/D/bknweP9+w3hRVxWbo
-         7hwQji2OF6lpKf4iG+gWwVTlhb6KGncXG2ILPVygPGP9QYbiX/plHWQ0iwKOSQJWQE
-         MOarqwFlRnDoKd/sNWsoNeA2x9qJBpljGDtXcukA=
+        b=fPqdEFrFtwl0f/wqd1rdCLvjqXZRCcu6dlXrHXcx0UCOXClJan5sKjfHdeNq2z8FA
+         6YV3cZZ9duZzzEXgpCyB7L5PFjifH7aLR/C+hIaxgDcCbl7GJWxEZSZpGDYUs3CxcX
+         gS3Yalrypr/4zjAQjngyit7EBFRkCWi0JE9n1IeY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Tom Lendacky <thomas.lendacky@amd.com>,
         Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.11 100/601] KVM: SVM: Dont strip the C-bit from CR2 on #PF interception
-Date:   Wed, 12 May 2021 16:42:57 +0200
-Message-Id: <20210512144831.131474621@linuxfoundation.org>
+Subject: [PATCH 5.11 101/601] KVM: SVM: Use online_vcpus, not created_vcpus, to iterate over vCPUs
+Date:   Wed, 12 May 2021 16:42:58 +0200
+Message-Id: <20210512144831.162797653@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
 References: <20210512144827.811958675@linuxfoundation.org>
@@ -43,33 +43,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sean Christopherson <seanjc@google.com>
 
-commit 6d1b867d045699d6ce0dfa0ef35d1b87dd36db56 upstream.
+commit c36b16d29f3af5f32fc1b2a3401bf48f71cabee1 upstream.
 
-Don't strip the C-bit from the faulting address on an intercepted #PF,
-the address is a virtual address, not a physical address.
+Use the kvm_for_each_vcpu() helper to iterate over vCPUs when encrypting
+VMSAs for SEV, which effectively switches to use online_vcpus instead of
+created_vcpus.  This fixes a possible null-pointer dereference as
+created_vcpus does not guarantee a vCPU exists, since it is updated at
+the very beginning of KVM_CREATE_VCPU.  created_vcpus exists to allow the
+bulk of vCPU creation to run in parallel, while still correctly
+restricting the max number of max vCPUs.
 
-Fixes: 0ede79e13224 ("KVM: SVM: Clear C-bit from the page fault address")
+Fixes: ad73109ae7ec ("KVM: SVM: Provide support to launch and run an SEV-ES guest")
 Cc: stable@vger.kernel.org
 Cc: Brijesh Singh <brijesh.singh@amd.com>
 Cc: Tom Lendacky <thomas.lendacky@amd.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210305011101.3597423-13-seanjc@google.com>
+Message-Id: <20210331031936.2495277-2-seanjc@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/svm/svm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/svm/sev.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1888,7 +1888,7 @@ static void svm_set_dr7(struct kvm_vcpu
- 
- static int pf_interception(struct vcpu_svm *svm)
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -563,6 +563,7 @@ static int sev_launch_update_vmsa(struct
  {
--	u64 fault_address = __sme_clr(svm->vmcb->control.exit_info_2);
-+	u64 fault_address = svm->vmcb->control.exit_info_2;
- 	u64 error_code = svm->vmcb->control.exit_info_1;
+ 	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+ 	struct sev_data_launch_update_vmsa *vmsa;
++	struct kvm_vcpu *vcpu;
+ 	int i, ret;
  
- 	return kvm_handle_page_fault(&svm->vcpu, error_code, fault_address,
+ 	if (!sev_es_guest(kvm))
+@@ -572,8 +573,8 @@ static int sev_launch_update_vmsa(struct
+ 	if (!vmsa)
+ 		return -ENOMEM;
+ 
+-	for (i = 0; i < kvm->created_vcpus; i++) {
+-		struct vcpu_svm *svm = to_svm(kvm->vcpus[i]);
++	kvm_for_each_vcpu(i, vcpu, kvm) {
++		struct vcpu_svm *svm = to_svm(vcpu);
+ 
+ 		/* Perform some pre-encryption checks against the VMSA */
+ 		ret = sev_es_sync_vmsa(svm);
 
 
