@@ -2,44 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2976837EB7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2803C37EB79
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380596AbhELTcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:32:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47142 "EHLO mail.kernel.org"
+        id S1380570AbhELTcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:32:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239597AbhELRIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236403AbhELRIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 13:08:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43602613BE;
-        Wed, 12 May 2021 17:05:52 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C8F6613A9;
+        Wed, 12 May 2021 17:05:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620839152;
-        bh=37b6sYm47fj9tJA5pTEY7KlL0GHnz0MhaTe/CechS7Y=;
+        s=k20201202; t=1620839155;
+        bh=VzxBT94nToLkx0ahHMWShZ90PbCWTBEmjUklc4r41LI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XcSm6+p3hy+PvvTg8/wLohTQBoLS8yJlYN2iqkYRmpImlZ3XtsOcp53Fji26Y2ADc
-         NeTkQwIrSzD7TGVcWTASkL3BrSZ0qscMK3ddoS3V38aaGoVfmOPVIhhFjtjBPC6mRz
-         R56qyynzQmbMlLhwGpHL1TO8JAZMOvGqQ+8xJ2X2KPvfCN+j6ntN3e/C/1KvXJqA2y
-         u0+AeBDZM7xPdN3eZV61vkwLnt3SWeqAExhc9+j4MLTURbSIcokksQG5ZOAPPd1++c
-         I/v6HfSdBLofCKWfQg5U2cejU7c5FovHIPw74c9Z8RA5z6s64reHKzTTNgN4LqI2Iq
-         QIpBw30ZAQDJQ==
+        b=WycaM/cIP85Uy61AfmmjNsmzgyhD94oL9G6r+1jJFOsa5EEazWYFhNjxbbBWBNYK3
+         5h/C4TGPbUogJ6FYDs6UsYkag7JQd44DoUApGzkCUTdDTKg72mUke4ebgGlpCyETM2
+         Nwhm51WtWt3+F4NsyC8TeVrucFYyXUwP0ZLdkQ6thM6NwrZqTOxpz3KuYMhaiF1F+1
+         OuBO+px9lfC+N7H0uvb+sKbTtpsfkDCIaVTtuTD4ygovtSSpjS8ImXBEapxAbP/XSC
+         FmPoZ//144UZ9YwWlxmylFHZIoEmd5Gspenfp/SKqKezC2Nx/ny0mGLM8k/lB7H2gM
+         Y0l7xGOof5m2w==
 From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
+To:     Simon Trimmer <simont@opensource.cirrus.com>
 Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        clang-built-linux@googlegroups.com,
-        kernel test robot <lkp@intel.com>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH] Revert "ASoC: q6dsp: q6afe: remove unneeded dead-store initialization"
-Date:   Wed, 12 May 2021 18:04:46 +0100
-Message-Id: <162083892845.44734.12776647391535930277.b4-ty@kernel.org>
+        patches@opensource.cirrus.com, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: wm_adsp: mark more data structures with the const qualifier
+Date:   Wed, 12 May 2021 18:04:47 +0100
+Message-Id: <162083892846.44734.3319712782666419395.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210511190306.2418917-1-nathan@kernel.org>
-References: <20210511190306.2418917-1-nathan@kernel.org>
+In-Reply-To: <20210511171459.270169-1-simont@opensource.cirrus.com>
+References: <20210511171459.270169-1-simont@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,16 +40,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 12:03:06 -0700, Nathan Chancellor wrote:
-> This reverts commit 5f1b95d08de712327e452d082a50fded435ec884.
+On Tue, 11 May 2021 18:14:59 +0100, Simon Trimmer wrote:
+> The callback structures and memory region type table can be marked as
+> const as they will not change during use.
 > 
-> The warnings that commit 5f1b95d08de7 ("ASoC: q6dsp: q6afe: remove
-> unneeded dead-store initialization") was trying to fix were already
-> fixed in commit 12900bacb4f3 ("ASoC: qcom: q6afe: remove useless
-> assignments"). With both commits in the tree, port_id is uninitialized,
-> as pointed out by clang:
-> 
-> [...]
+> Fix checkpatch warning against wm_adsp_find_region function by moving
+> const keyword to form the 'static const struct' pattern.
 
 Applied to
 
@@ -64,8 +53,8 @@ Applied to
 
 Thanks!
 
-[1/1] Revert "ASoC: q6dsp: q6afe: remove unneeded dead-store initialization"
-      commit: 9b7493468fa7eeef2e86b8c646c0535c00eed3e2
+[1/1] ASoC: wm_adsp: mark more data structures with the const qualifier
+      commit: 130dbe04d42817b62577a48346837122a00e794f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
