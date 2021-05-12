@@ -2,84 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E62D37C231
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FE537C2ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbhELPHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:07:41 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:32914 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232137AbhELPC7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:02:59 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14CF1md7004871;
-        Wed, 12 May 2021 10:01:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620831708;
-        bh=WsCcrwsfJHhmpda0+kd21jCuESY8O0g3v5Ya0BM7gzw=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=bI4P+PMZIyzbFtvmJgfx3n+vBqGGmUNaGDq+OkQsr/BlfGh4MxcunVrxbDC/URr8l
-         Nm3BUWYxhWxbhxwWHIY5AnsgA/uj57BBhMDGSkJN/waHBcBfRuKsxD+6eyM4GN8x4e
-         b/EUqvs/wxe+yPPWYI4o/6SzG4O7P55qLnPo7t1I=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14CF1mO4123824
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 12 May 2021 10:01:48 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 12
- May 2021 10:01:47 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 12 May 2021 10:01:47 -0500
-Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14CF19FC119262;
-        Wed, 12 May 2021 10:01:42 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>, <a-govindraju@ti.com>
-Subject: [PATCH 5/5] arm64: dts: ti: k3-am642-sk: Disable PCIe
-Date:   Wed, 12 May 2021 20:31:07 +0530
-Message-ID: <20210512150107.26793-6-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210512150107.26793-1-kishon@ti.com>
-References: <20210512150107.26793-1-kishon@ti.com>
+        id S234404AbhELPQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:16:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233001AbhELPHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:07:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 272C261447;
+        Wed, 12 May 2021 15:01:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620831684;
+        bh=eVJIJPQRut7K9Tu8mkfXxVF3G+ycqC5k1sE42YbMqek=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c/0LG8JRxfEogycKZwPikQR2FSRaY8mYTVNlj0kpvzGT4vBoJazp+qHlrCrKRiYyS
+         szXytK/8Kd2+8YxKYesZ2j+TTsP1xWg+l7Ljb+6oUhgWb59z4iOmC7yIR1MmgNA2BG
+         WiDhShGGqolDFtrTLlToBMa9r8Bp1h5JDg+ZI3B7CfZlj8Q15rKIHL4WRoEk8d8YZs
+         lND2A3hZlX0yZgZGuAY06l5+/BYeaaclG55FuVDCoYB//vIYbfcDNfUD2N7Mv+PPwm
+         ebd115sfs2YX9WF5Sw8Lf+XpOFHPx4jJPV+18kiJ2yDnoNiOhPRfd3Bll6z9GfsFuz
+         CcG+OwV8n7Z9g==
+Date:   Wed, 12 May 2021 17:01:18 +0200
+From:   "wsa@kernel.org" <wsa@kernel.org>
+To:     Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc:     "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "Chris.Packham@alliedtelesis.co.nz" 
+        <Chris.Packham@alliedtelesis.co.nz>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 0/4] P2040/P2041 i2c recovery erratum
+Message-ID: <20210512150118.GA1004@ninjato>
+References: <20210511212052.27242-1-chris.packham@alliedtelesis.co.nz>
+ <b90f48cfdc31af08190e7a8eaa71b7bd488fcbaa.camel@infinera.com>
+ <ec3cdcc8-5869-9e7d-30c0-59ff4ec67a58@alliedtelesis.co.nz>
+ <4e96247275d559bab133d6c318276fa6be4d7be0.camel@infinera.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pWyiEgJYm5f9v55/"
+Content-Disposition: inline
+In-Reply-To: <4e96247275d559bab133d6c318276fa6be4d7be0.camel@infinera.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AM642-SK has no PCIe slot. Disable it here.
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- arch/arm64/boot/dts/ti/k3-am642-sk.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
+--pWyiEgJYm5f9v55/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-index 056c1b2df559..3b7859aae074 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-@@ -371,3 +371,11 @@
- &mailbox0_cluster7 {
- 	status = "disabled";
- };
-+
-+&pcie0_rc {
-+	status = "disabled";
-+};
-+
-+&pcie0_ep {
-+	status = "disabled";
-+};
--- 
-2.17.1
 
+> > I've been doing my recent work with a P2040 and prior to that I did tes=
+t=20
+> > out the recovery on a T2081 (which isn't documented to have this=20
+> > erratum) when I was re-working the driver. The "new" recovery actually=
+=20
+> > seems better but I don't have a reliably faulty i2c device so that's=20
+> > only based on me writing some code to manually trigger the recovery=20
+> > (using the snippet below) and observing it with an oscilloscope.
+>=20
+> You don't need a faulty device, just an aborted I2C read/write op.
+
+If you can wire GPIOs to the bus, you can use the I2C fault injector:
+
+	Documentation/i2c/gpio-fault-injection.rst
+
+There are already two "incomplete transfer" injectors.
+
+
+--pWyiEgJYm5f9v55/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCb7boACgkQFA3kzBSg
+KbZ2cA/6ArsdZ8oeQnb4ZdE6P2n/iEJan1gFTBse4voG84wLXndcRs9ylZRRy6gU
+kn+ZRsP8i3eRyJrYHd4a5s9IAfxYlOplIm6VvNLQRe7sMsjNkIxYdCQPwqUA02wy
+1jrYOPhAFBnggzP6k5eTtvnf2k9yuma2hJtvu3tzaBs8x0eSx/LEu+K74mPFTkys
+nmRI2IbgXxkhLw9eVP652bqPkX/kkT2oiABwMw9m9m2qv4Ce/VflEYPq/Ie+9gIt
+ktbAg/E9UlGMQMzhPZQ0trOdstvXU3U7gD9RoCSnJiUjJaDM2iBtWfM07V86Pptf
+VOKjbWR2POER3llDyDxdkNVW1bUFh38zprWRkDfQd9pD+F63pTrcwo+iKwST0Lc0
+BLGWw1OElr3IaXHSI/bCMtgpUQxplq5unc/+bXydd/DvIw1X0/f0dJMihjbHDYy1
+fXa1Ac7plZGHxEdrt4wRLimgjoA/A0eOC1Ixkoc7pKylUjAdOlA7mC7O5tcJ2fg9
+p0CuWascBRY/F+UEAtI10Fc9E5q/uLrmmWUPtIvivm+wQx8frIeZS002yeArsvvR
++J4NQRv9VPbg+sgDxtX2AHJZnGsKJ22+htHkHE4RfkiNUYEzjNgYwAjd+Fu/cMOw
+0tj3LuG1uhYsmHwVwdLC2/MwNh3qVGL1/rbp5aFICBDcF6EZ5D0=
+=ar4h
+-----END PGP SIGNATURE-----
+
+--pWyiEgJYm5f9v55/--
