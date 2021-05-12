@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF60837CF86
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0542237CF7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345820AbhELRMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:12:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47426 "EHLO mail.kernel.org"
+        id S1345379AbhELRKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:10:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235226AbhELP7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:59:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 666C561969;
-        Wed, 12 May 2021 15:32:05 +0000 (UTC)
+        id S238238AbhELP5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:57:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB65F61CB5;
+        Wed, 12 May 2021 15:31:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620833525;
-        bh=vb9rVOJ1HtcPAzLADRmjhcbEds3cmyQX5JJ3uQjpkGM=;
+        s=korg; t=1620833473;
+        bh=u4W7i3gyZnl0bLRQ1VqTxnjfjIG6nemVpNOiekuPU4E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0aj9KU6IjlXHUabfL4veQVWuVzpdBe1ha6lkxDxqU320mn47wkuwrkTxFMTssbxNG
-         UZVfiaW9w1THAgC3AHevQY9q6WjKgxkATC8uQwFVKI1CVxs720Dwrz7+7l0+h+UTz4
-         d/lZm9WtT3z4L32QArLYx19cyW546BY9kkvxEETs=
+        b=sorKC+1hpcMiW4A/NydBxpSDp3s8z2Da0O5FiLGp3G/OxlvZT/XaCQWjRTjc4e4b7
+         87fVv7D0qXSbAvjpmw3S6K2yR0qOPeYwuRdl6jIyQorJAizkYY4PU3N1y3awMOJ30b
+         HVfk1+ji8KlZ4DuLIrEva6Gp6NURMTPfer501yeE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Erwan Le Ray <erwan.leray@foss.st.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        stable@vger.kernel.org,
+        "David E. Box" <david.e.box@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 150/601] serial: stm32: fix a deadlock condition with wakeup event
-Date:   Wed, 12 May 2021 16:43:47 +0200
-Message-Id: <20210512144832.752475094@linuxfoundation.org>
+Subject: [PATCH 5.11 163/601] mfd: intel_pmt: Fix nuisance messages and handling of disabled capabilities
+Date:   Wed, 12 May 2021 16:44:00 +0200
+Message-Id: <20210512144833.203413012@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
 References: <20210512144827.811958675@linuxfoundation.org>
@@ -40,117 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Erwan Le Ray <erwan.leray@foss.st.com>
+From: David E. Box <david.e.box@linux.intel.com>
 
-[ Upstream commit ad7676812437a00a4c6be155fc17926069f99084 ]
+[ Upstream commit a1a5c1c3df282dc122508a17500317266ef19e46 ]
 
-Deadlock issue is seen when enabling CONFIG_PROVE_LOCKING=Y, and uart
-console as wakeup source. Deadlock occurs when resuming from low power
-mode if system is waked up via usart console.
-The deadlock is triggered 100% when also disabling console suspend prior
-to go to suspend.
+Some products will be available that have PMT capabilities that are not
+supported. Remove the warnings in this instance to avoid nuisance messages
+and confusion.
 
-Simplified call stack, deadlock condition:
-- stm32_console_write <-- spin_lock already held
-- print_circular_bug
-- pm_wakeup_dev_event <-- triggers lockdep as seen above
-- stm32_receive_chars
-- stm32_interrupt <-- wakeup via uart console, takes the lock
+Also return an error code for capabilities that are disabled by quirk to
+prevent them from keeping the driver loaded if only disabled capabilities
+are found.
 
-So, revisit spin_lock in stm32-usart driver:
-- there is no need to hold the lock to access ICR (atomic clear of status
-  flags)
-- only hold the lock inside stm32_receive_chars() routine (no need to
-  call pm_wakeup_dev_event with lock held)
-- keep stm32_transmit_chars() routine called with lock held
-
-Fixes: 48a6092fb41f ("serial: stm32-usart: Add STM32 USART Driver")
-Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Link: https://lore.kernel.org/r/20210304162308.8984-6-erwan.leray@foss.st.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 4f8217d5b0ca ("mfd: Intel Platform Monitoring Technology support")
+Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/stm32-usart.c | 27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
+ drivers/mfd/intel_pmt.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 91a33ec4dbb4..5ae3841a4a08 100644
---- a/drivers/tty/serial/stm32-usart.c
-+++ b/drivers/tty/serial/stm32-usart.c
-@@ -213,13 +213,18 @@ static void stm32_usart_receive_chars(struct uart_port *port, bool threaded)
- 	struct tty_port *tport = &port->state->port;
- 	struct stm32_port *stm32_port = to_stm32_port(port);
- 	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
--	unsigned long c;
-+	unsigned long c, flags;
- 	u32 sr;
- 	char flag;
- 
- 	if (irqd_is_wakeup_set(irq_get_irq_data(port->irq)))
- 		pm_wakeup_event(tport->tty->dev, 0);
- 
-+	if (threaded)
-+		spin_lock_irqsave(&port->lock, flags);
-+	else
-+		spin_lock(&port->lock);
-+
- 	while (stm32_usart_pending_rx(port, &sr, &stm32_port->last_res,
- 				      threaded)) {
- 		sr |= USART_SR_DUMMY_RX;
-@@ -275,9 +280,12 @@ static void stm32_usart_receive_chars(struct uart_port *port, bool threaded)
- 		uart_insert_char(port, sr, USART_SR_ORE, c, flag);
+diff --git a/drivers/mfd/intel_pmt.c b/drivers/mfd/intel_pmt.c
+index 744b230cdcca..65da2b17a204 100644
+--- a/drivers/mfd/intel_pmt.c
++++ b/drivers/mfd/intel_pmt.c
+@@ -79,19 +79,18 @@ static int pmt_add_dev(struct pci_dev *pdev, struct intel_dvsec_header *header,
+ 	case DVSEC_INTEL_ID_WATCHER:
+ 		if (quirks & PMT_QUIRK_NO_WATCHER) {
+ 			dev_info(dev, "Watcher not supported\n");
+-			return 0;
++			return -EINVAL;
+ 		}
+ 		name = "pmt_watcher";
+ 		break;
+ 	case DVSEC_INTEL_ID_CRASHLOG:
+ 		if (quirks & PMT_QUIRK_NO_CRASHLOG) {
+ 			dev_info(dev, "Crashlog not supported\n");
+-			return 0;
++			return -EINVAL;
+ 		}
+ 		name = "pmt_crashlog";
+ 		break;
+ 	default:
+-		dev_err(dev, "Unrecognized PMT capability: %d\n", id);
+ 		return -EINVAL;
  	}
  
--	spin_unlock(&port->lock);
-+	if (threaded)
-+		spin_unlock_irqrestore(&port->lock, flags);
-+	else
-+		spin_unlock(&port->lock);
-+
- 	tty_flip_buffer_push(tport);
--	spin_lock(&port->lock);
- }
+@@ -174,12 +173,8 @@ static int pmt_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		header.offset = INTEL_DVSEC_TABLE_OFFSET(table);
  
- static void stm32_usart_tx_dma_complete(void *arg)
-@@ -458,8 +466,6 @@ static irqreturn_t stm32_usart_interrupt(int irq, void *ptr)
- 	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 	u32 sr;
+ 		ret = pmt_add_dev(pdev, &header, quirks);
+-		if (ret) {
+-			dev_warn(&pdev->dev,
+-				 "Failed to add device for DVSEC id %d\n",
+-				 header.id);
++		if (ret)
+ 			continue;
+-		}
  
--	spin_lock(&port->lock);
--
- 	sr = readl_relaxed(port->membase + ofs->isr);
- 
- 	if ((sr & USART_SR_RTOF) && ofs->icr != UNDEF_REG)
-@@ -473,10 +479,11 @@ static irqreturn_t stm32_usart_interrupt(int irq, void *ptr)
- 	if ((sr & USART_SR_RXNE) && !(stm32_port->rx_ch))
- 		stm32_usart_receive_chars(port, false);
- 
--	if ((sr & USART_SR_TXE) && !(stm32_port->tx_ch))
-+	if ((sr & USART_SR_TXE) && !(stm32_port->tx_ch)) {
-+		spin_lock(&port->lock);
- 		stm32_usart_transmit_chars(port);
--
--	spin_unlock(&port->lock);
-+		spin_unlock(&port->lock);
-+	}
- 
- 	if (stm32_port->rx_ch)
- 		return IRQ_WAKE_THREAD;
-@@ -489,13 +496,9 @@ static irqreturn_t stm32_usart_threaded_interrupt(int irq, void *ptr)
- 	struct uart_port *port = ptr;
- 	struct stm32_port *stm32_port = to_stm32_port(port);
- 
--	spin_lock(&port->lock);
--
- 	if (stm32_port->rx_ch)
- 		stm32_usart_receive_chars(port, true);
- 
--	spin_unlock(&port->lock);
--
- 	return IRQ_HANDLED;
- }
- 
+ 		found_devices = true;
+ 	} while (true);
 -- 
 2.30.2
 
