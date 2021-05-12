@@ -2,102 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF3137EFD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C93BF37EFDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232704AbhELX3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 19:29:05 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:38850 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233109AbhELWjP (ORCPT
+        id S1348723AbhELXeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 19:34:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349910AbhELWtt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 18:39:15 -0400
-Received: by mail-io1-f72.google.com with SMTP id i13-20020a5e9e0d0000b029042f7925649eso16716698ioq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 15:38:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=szSoE56UMB+c1bsbG7AHkdeB3bUPiZNML4nbMj0xf7k=;
-        b=KQNwyMc5qDsT7XwVQI9+Jvq3/+mMhhkekF1FOn/8ERcTVrA289LPdqO1N4nhD1c0Kt
-         BGzLqpQ+U1dAvBadE282GKaCzn5jFxoD/VP+a87LmwFNvP2MbiytI5pbG5KTeByD4g20
-         +Th1eysZfRzXMw1C3IyrlsgNderEApJjOm9zG6EZBC+/KcA9hOIHTlcf+Rz479VoxNEv
-         16brgOFAGcGFkG7yZw60A9uylSVkZ+VhLaHIx7c6VC3IuDEGXk1j9iaXhKRHYfdsOvfZ
-         yb16iO4PeKbBgLpWmMLoKY+wMNhvkznyuro3dqYSeL3anXkDCsYXqWmxfpir5al4cOUn
-         /tBg==
-X-Gm-Message-State: AOAM533R1+cANr4IggXa7Mg/Zw2xWQtr/FqfT+nelWoIq8uhFG0CQQYu
-        UwCDzSI3qDumIJEp/eH1tFTIJphBZgXkMg1T3MZrm6wHjOJn
-X-Google-Smtp-Source: ABdhPJzxevMuTplD1GvxOTx2u+5lJtiB/EjXttUrvM9GBeIdAqpgMghNdUj/rGvNOQ4y7MrkYTkgUxtaTiSylYxqo+2Y8AA+++Gy
+        Wed, 12 May 2021 18:49:49 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9726FC061243;
+        Wed, 12 May 2021 15:40:06 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FgV9F6glfz9s1l;
+        Thu, 13 May 2021 08:40:01 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620859202;
+        bh=Navsh3UkHyNKtYmqFDF2NfsG/JY/pBhTfFzjx8SufpI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Dy+WWJKabZVQJkIWX+TqQbcG229a4mw7fDBsadcdglRTa9GeaJL5k7JRTaqw79QVU
+         7f0TnwaAr7Q+2GBe9ZILAcgabR2i7o1IeS1RFb8P2BGWc7iopJ24/W4ir2eFfZqNZj
+         NGYbc3YGpOQBt4JRS7DySJe7Vhf8UnyrlxystuTff34wVxN6AFouvcDbG2oo+jr8No
+         b9eiPSJNQ8DXeuECBZg8q+Td51VvdAERNqwYcIt9MnUIfR1i9Ev435X/UQXf+k0cbY
+         fKm+RDK0iuz8UMvgpR8l318ZM3W7OBF1I2xY+WZ5RbcPJlhcyGQF9PZplw4XAJHkiT
+         HSxEbFskd+VoA==
+Date:   Thu, 13 May 2021 08:40:00 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the sound-asoc tree
+Message-ID: <20210513084000.4af670f7@canb.auug.org.au>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:13d0:: with SMTP id v16mr3591842ilj.168.1620859086249;
- Wed, 12 May 2021 15:38:06 -0700 (PDT)
-Date:   Wed, 12 May 2021 15:38:06 -0700
-In-Reply-To: <bb6f7045-863c-ca86-3925-7d65dc90d5b7@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000011220705c229aa98@google.com>
-Subject: Re: [syzbot] WARNING in io_link_timeout_fn
-From:   syzbot <syzbot+5a864149dd970b546223@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/bdJ0x63OQ2JbiYRGOutlyRT";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+--Sig_/bdJ0x63OQ2JbiYRGOutlyRT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in io_req_complete_failed
+Hi all,
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 10153 at fs/io_uring.c:1505 req_ref_put_and_test fs/io_uring.c:1505 [inline]
-WARNING: CPU: 0 PID: 10153 at fs/io_uring.c:1505 io_put_req fs/io_uring.c:2171 [inline]
-WARNING: CPU: 0 PID: 10153 at fs/io_uring.c:1505 io_req_complete_failed+0x2ee/0x5a0 fs/io_uring.c:1649
-Modules linked in:
-CPU: 1 PID: 10153 Comm: syz-executor.3 Not tainted 5.12.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:req_ref_put_and_test fs/io_uring.c:1505 [inline]
-RIP: 0010:io_put_req fs/io_uring.c:2171 [inline]
-RIP: 0010:io_req_complete_failed+0x2ee/0x5a0 fs/io_uring.c:1649
-Code: 58 bd da ff be 01 00 00 00 4c 89 f7 e8 5b 78 fe ff e9 09 fe ff ff e8 f1 32 97 ff 4c 89 ef e8 a9 fd 65 ff eb cb e8 e2 32 97 ff <0f> 0b e9 c8 fd ff ff 4c 89 f7 e8 23 0b db ff e9 3c fd ff ff 4c 89
-RSP: 0018:ffffc9000afbfd10 EFLAGS: 00010293
+In commit
 
-RAX: 0000000000000000 RBX: 000000000000007f RCX: 0000000000000000
-RDX: ffff88801f5e0000 RSI: ffffffff81dd35ae RDI: 0000000000000003
-RBP: ffff888043314dc0 R08: 000000000000007f R09: ffff888043314e1f
-R10: ffffffff81dd3374 R11: 000000000000000f R12: ffffffffffffffea
-R13: ffff888043314e1c R14: ffff888043314e18 R15: 00000000ffffffea
-FS:  00007fac1b577700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f04f797dd40 CR3: 0000000012dfb000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __io_queue_sqe+0x61e/0x10f0 fs/io_uring.c:6440
- __io_req_task_submit+0x103/0x120 fs/io_uring.c:2037
- __tctx_task_work fs/io_uring.c:1908 [inline]
- tctx_task_work+0x24e/0x550 fs/io_uring.c:1922
- task_work_run+0xdd/0x1a0 kernel/task_work.c:161
- tracehook_notify_signal include/linux/tracehook.h:212 [inline]
- handle_signal_work kernel/entry/common.c:145 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x24a/0x280 kernel/entry/common.c:208
- __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
- do_syscall_64+0x47/0xb0 arch/x86/entry/common.c:57
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+  ad839121dd4c ("ASoC: SOF: Intel: hda: fix index used in inner loop")
 
+Fixes tag
 
-Tested on:
+  Fixes: 6f5d506d7ff1dq ('ASoC: SOF: Intel: SoundWire: refine ACPI match')
 
-commit:         a298232e io_uring: fix link timeout refs
-git tree:       git://git.kernel.dk/linux-block.git io_uring-5.13
-console output: https://syzkaller.appspot.com/x/log.txt?x=15f82965d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ae2e6c63d6410fd3
-dashboard link: https://syzkaller.appspot.com/bug?extid=5a864149dd970b546223
-compiler:       
+has these problem(s):
 
+  - missing space between the SHA1 and the subject
+
+Actually, there is a trailing 'q' on the SHA1.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/bdJ0x63OQ2JbiYRGOutlyRT
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCcWUAACgkQAVBC80lX
+0Gx4DAf8CZfKIOmQc9cNqckYDSoC71PE4HQ3bnLmSCBq0+Nz4FinkBXVTLBhfqbR
+brsk9hdXBO9MHRUYXob5wCt2v9Eecu7Vviqll+sYkpLDvL7DGQfHErvxy4TJRus7
+vo6BuN8G4EDOFpLXHT1osVh8rwAisqk4HRGJOtUQGtlFd3c7wQKvT0Hqhh6vVV5W
+2iZRyoFbwT/X4YInrm7qwkuBDQtIuEZkZyLYthaTkl7uWQuuGoP1A8ZRz9Aw6HYm
+lJCijXWVWj4rkMdVpCNdjYDNMzt08RQE18JB0SAAnnQNQ3XSjKPGeZFx/Nyd8Twu
+DgJhIKJqm+J9JhbvtRxBCPmlkqXsgg==
+=12eT
+-----END PGP SIGNATURE-----
+
+--Sig_/bdJ0x63OQ2JbiYRGOutlyRT--
