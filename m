@@ -2,85 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8121D37C098
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B474337C0B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhELOs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbhELOs5 (ORCPT
+        id S231707AbhELOvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:51:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45806 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231460AbhELOvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:48:57 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051E9C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:47:49 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id t11so840992pjm.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=ETqsrv1jzN5EGAkkcRRQ5nZ0wEonlAPtIWyZWxP7xo8=;
-        b=ltDzcLn0aP1VqK+owmm2BBYuZjyYqFObprD+vA5zzaBLfAgFSS08UcKeoPRvXx515h
-         GGhwxc2TdR2zqp775HMciphgccxbGrWEXw7ow0QuIh3ngYWxTu4T2DEabcUYUC/NPeme
-         yfKaHsca86gr9XVJSIjnZcUKU5+TePpF0QrgDaVLp4FJYFgF9Z7vskF9Kl7OCGMoDV0W
-         OJnQjttpYnde4dE8BY90udSI+UQz/QsBG68CruD4qM8LNYwLA1kv+seKQTzwwbH8WHBD
-         FAODLdtFz9wXcxxxt5gZ6FuPz/cjRrRv5dvPCqZCPUuQTTP6GGRF1gJrXd9FvpnhnULW
-         3j5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ETqsrv1jzN5EGAkkcRRQ5nZ0wEonlAPtIWyZWxP7xo8=;
-        b=FkXsY9VyCBUK1ZEiaMvGc7nKpkR7u+MiznsXhtvaLZjTb8ujZSy7DxJU2KCUvqeuVd
-         /KSJBZhzF2jRQOq2eKlutbpgC22UiZ0cSljhEZxMYldYWDZAY+ruuoaiow6zvGFsvOrL
-         6uRi2oJ4m9BwHWg825BikIaxxjKDccGR8SJgaGXOql+GIij7OIR2P2ap0EYj8iR75mZZ
-         8HVpAkh67gAK8ou41N2W6be9mMwtXscRyQ5N8iKQW0Q7scdl0SWQE/pMD+9d5dkcm9GR
-         guaGauMJ33WxEsZVwawQmmf3r5AQXK0rHPJMTgs3Q1xUCt8xEgze5ah9lZOXey9FINOn
-         w/VA==
-X-Gm-Message-State: AOAM533MNBwT5buWhkuVMYDCJ0zxS1kTO0JQlePMrrRNpwoV+nceWksJ
-        L/KDOdOoNDJEFqSDAL/uetc=
-X-Google-Smtp-Source: ABdhPJwv951ishoPEC4jhNH4EaSWywMEJopdfEnqAZ3ngx2xh6hzO6ZeGJEvW+tsTj8ESVWGDemzow==
-X-Received: by 2002:a17:902:d213:b029:ed:35bb:271b with SMTP id t19-20020a170902d213b02900ed35bb271bmr35526994ply.71.1620830868593;
-        Wed, 12 May 2021 07:47:48 -0700 (PDT)
-Received: from wuchi.mioffice.cn ([43.224.245.180])
-        by smtp.gmail.com with ESMTPSA id v130sm127786pfc.25.2021.05.12.07.47.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 07:47:48 -0700 (PDT)
-From:   Chi Wu <wuchi.zero@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     axboe@fb.com, hcochran@kernelspring.com, jack@suse.cz,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mszeredi@redhat.com, sedat.dilek@gmail.com, tj@kernel.org,
-        Chi Wu <wuchi.zero@gmail.com>
-Subject: [PATCH] mm/page-writeback: Use __this_cpu_inc() in account_page_dirtied()
-Date:   Wed, 12 May 2021 22:47:42 +0800
-Message-Id: <20210512144742.4764-1-wuchi.zero@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 12 May 2021 10:51:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620830997;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/g/HcRWJK0OnvZH6C7dQC3u45Y7+3wQdH9PWZ/XlGkA=;
+        b=aLqC8bzv3FXUfyPJh58sDNqNmeNwX/frjZeYHCfME/p9xOcqPF9iHENQfCf6zkHoOwbulJ
+        4Gmr4BjGMoMYvXs1K5VnLBDNWRtEvZJWBYq22uHlqB0hEvLUIOJEe/vuLwu/84qJjRKwBI
+        pD3KnttfngzuJ6ogOZSYun+o1E0NKnQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-43-QQ8YxaF4PgCqJW1Ti-ivgA-1; Wed, 12 May 2021 10:49:52 -0400
+X-MC-Unique: QQ8YxaF4PgCqJW1Ti-ivgA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 088C91074657;
+        Wed, 12 May 2021 14:49:51 +0000 (UTC)
+Received: from localhost (ovpn-114-114.ams2.redhat.com [10.36.114.114])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B41C660657;
+        Wed, 12 May 2021 14:49:45 +0000 (UTC)
+Date:   Wed, 12 May 2021 15:49:44 +0100
+From:   "Richard W.M. Jones" <rjones@redhat.com>
+To:     Shachar Sharon <synarete@gmail.com>
+Cc:     miklos@szeredi.hu, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, eblake@redhat.com,
+        libguestfs@redhat.com
+Subject: Re: [PATCH v2] fuse: Allow fallocate(FALLOC_FL_ZERO_RANGE)
+Message-ID: <20210512144944.GY26415@redhat.com>
+References: <20210512103704.3505086-1-rjones@redhat.com>
+ <20210512103704.3505086-2-rjones@redhat.com>
+ <YJvlyiTR7LVM4q1n@lpc>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YJvlyiTR7LVM4q1n@lpc>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As account_page_dirtied() was always protected by xa_lock_irqsave(),
-so using __this_cpu_inc() is better.
+On Wed, May 12, 2021 at 05:27:22PM +0300, Shachar Sharon wrote:
+> On Wed, May 12, 2021 at 11:37:04AM +0100, Richard W.M. Jones wrote:
+> >libnbd's nbdfuse utility would like to translate fallocate zero
+> >requests into NBD_CMD_WRITE_ZEROES.  Currently the fuse module filters
+> >these out, returning -EOPNOTSUPP.  This commit treats these almost the
+> >same way as FALLOC_FL_PUNCH_HOLE except not calling
+> >truncate_pagecache_range.
+> >
+> Why don't you call 'truncate_pagecache_range' ?
 
-Signed-off-by: Chi Wu <wuchi.zero@gmail.com>
----
- mm/page-writeback.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Very good point.  I just assumed that it would only be useful when
+hole-punching, but now I actually read the description of the function
+I see we need it.
 
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 0062d5c57d41..e3901d0d329e 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -2436,7 +2436,7 @@ void account_page_dirtied(struct page *page, struct address_space *mapping)
- 		inc_wb_stat(wb, WB_DIRTIED);
- 		task_io_account_write(PAGE_SIZE);
- 		current->nr_dirtied++;
--		this_cpu_inc(bdp_ratelimits);
-+		__this_cpu_inc(bdp_ratelimits);
- 
- 		mem_cgroup_track_foreign_dirty(page, wb);
- 	}
+Also looking at other filesystems that also support FALLOC_FL_ZERO_RANGE:
+
+  ext4_zero_range -> calls truncate_pagecache_range
+  f2fs_zero_range -> calls it
+  xfs -> calls it indirectly
+  btrfs_zero_range -> does not call it (?)
+
+I'll add this, and retest everything.
+
+> >A way to test this is with the following script:
+
+In my next version I'll also address this script which is rather
+long-winded.  I think there's an easier way for people to test this:
+
+> >--------------------
+> > #!/bin/bash
+> > # Requires fuse >= 3, nbdkit >= 1.8, and latest nbdfuse from
+> > # https://gitlab.com/nbdkit/libnbd/-/tree/master/fuse
+> > set -e
+> > set -x
+> >
+> > export output=$PWD/output
+> > rm -f test.img $output
+> >
+> > # Create an nbdkit instance that prints the NBD requests seen.
+> > nbdkit sh - <<'EOF'
+> > case "$1" in
+> >   get_size) echo 1M ;;
+> >   can_write|can_trim|can_zero|can_fast_zero) ;;
+> >   pread) echo "$@" >>$output; dd if=/dev/zero count=$3 iflag=count_bytes ;;
+> >   pwrite) echo "$@" >>$output; cat >/dev/null ;;
+> >   trim|zero) echo "$@" >>$output ;;
+> >   *) exit 2 ;;
+> > esac
+[etc]
+> >diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+> >index 09ef2a4d25ed..22e8e88c78d4 100644
+> >--- a/fs/fuse/file.c
+> >+++ b/fs/fuse/file.c
+> >@@ -2907,11 +2907,13 @@ static long fuse_file_fallocate(struct file *file, int mode, loff_t offset,
+> >	};
+> >	int err;
+> >	bool lock_inode = !(mode & FALLOC_FL_KEEP_SIZE) ||
+> >-			   (mode & FALLOC_FL_PUNCH_HOLE);
+> >+			   (mode & FALLOC_FL_PUNCH_HOLE) ||
+> >+			   (mode & FALLOC_FL_ZERO_RANGE);
+> To stay aligned with existing code style, consider:
+> -			   (mode & FALLOC_FL_PUNCH_HOLE);
+> +»      »       »          (mode & (FALLOC_FL_PUNCH_HOLE |
+> +»      »       »       »           FALLOC_FL_ZERO_RANGE));
+
+Good idea.
+
+Thanks for the quick review.
+
+Rich.
+
 -- 
-2.17.1
+Richard Jones, Virtualization Group, Red Hat http://people.redhat.com/~rjones
+Read my programming and virtualization blog: http://rwmj.wordpress.com
+libguestfs lets you edit virtual machines.  Supports shell scripting,
+bindings from many languages.  http://libguestfs.org
 
