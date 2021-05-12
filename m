@@ -2,82 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83B937B812
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D970E37B81B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhELIei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 04:34:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59100 "EHLO mx2.suse.de"
+        id S230501AbhELIgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:36:13 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:38339 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230211AbhELIeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:34:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DD62FAFA9;
-        Wed, 12 May 2021 08:33:28 +0000 (UTC)
-Date:   Wed, 12 May 2021 10:33:24 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] mm,hwpoison: fix race with compound page
- allocation
-Message-ID: <20210512083319.GA14726@linux>
-References: <20210511151016.2310627-1-nao.horiguchi@gmail.com>
- <20210511151016.2310627-2-nao.horiguchi@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511151016.2310627-2-nao.horiguchi@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S230492AbhELIgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 04:36:12 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Fg7QH0vHyz9sf6;
+        Wed, 12 May 2021 10:35:03 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 1cAt37AtaJyU; Wed, 12 May 2021 10:35:03 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Fg7QG749kz9sf5;
+        Wed, 12 May 2021 10:35:02 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A73DE8B7DB;
+        Wed, 12 May 2021 10:35:02 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id YJEX-0lh7vAL; Wed, 12 May 2021 10:35:02 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 619538B7D9;
+        Wed, 12 May 2021 10:35:02 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 2FCC1641A1; Wed, 12 May 2021 08:35:02 +0000 (UTC)
+Message-Id: <e457f345843aa36c6f9ef8e6cb988428ae908df5.1620808468.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH 1/5] powerpc/kuap: Force inlining of all first level KUAP
+ helpers.
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed, 12 May 2021 08:35:02 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 12:10:15AM +0900, Naoya Horiguchi wrote:
-> @@ -1095,30 +1095,43 @@ static int __get_hwpoison_page(struct page *page)
->  {
->  	struct page *head = compound_head(page);
->  
-> -	if (!PageHuge(head) && PageTransHuge(head)) {
-> -		/*
-> -		 * Non anonymous thp exists only in allocation/free time. We
-> -		 * can't handle such a case correctly, so let's give it up.
-> -		 * This should be better than triggering BUG_ON when kernel
-> -		 * tries to touch the "partially handled" page.
-> -		 */
-> -		if (!PageAnon(head)) {
-> -			pr_err("Memory failure: %#lx: non anonymous thp\n",
-> -				page_to_pfn(page));
-> -			return 0;
-> +	if (PageCompound(page)) {
-> +		if (PageSlab(page)) {
-> +			return get_page_unless_zero(page);
-> +		} else if (PageHuge(head)) {
-> +			int ret = 0;
-> +
-> +			spin_lock(&hugetlb_lock);
-> +			if (!PageHuge(head))
-> +				ret = -EBUSY;
-> +			else if (HPageFreed(head) || HPageMigratable(head))
-> +				ret = get_page_unless_zero(head);
-> +			spin_unlock(&hugetlb_lock);
-> +			return ret;
+All KUAP helpers defined in asm/kup.h are single line functions
+that should be inlined. But on book3s/32 build, we get many
+instances of <prevent_write_to_user.constprop.0>.
 
-Uhm, I am having a hard time with that -EBUSY.
-At this stage, we expect __get_hwpoison_page() to either return true or false,
-depending on whether it could grab a page's refcount or not. Returning -EBUSY
-here seems wrong (plus it is inconsistent with the comment above the function).
-It might be useful for the latter patch, I do not know as I yet have to check
-that one, but if anything, let us stay consistent here in this one.
-So, if hugetlb vanished under us, let us return "we could not grab the
-refcount". Does it make sense?
+Force inlining of those helpers.
 
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/kup.h | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/kup.h b/arch/powerpc/include/asm/kup.h
+index ec96232529ac..a35ded8bedcd 100644
+--- a/arch/powerpc/include/asm/kup.h
++++ b/arch/powerpc/include/asm/kup.h
+@@ -96,51 +96,51 @@ static __always_inline void setup_kup(void)
+ 	setup_kuap(disable_kuap);
+ }
+ 
+-static inline void allow_read_from_user(const void __user *from, unsigned long size)
++static __always_inline void allow_read_from_user(const void __user *from, unsigned long size)
+ {
+ 	barrier_nospec();
+ 	allow_user_access(NULL, from, size, KUAP_READ);
+ }
+ 
+-static inline void allow_write_to_user(void __user *to, unsigned long size)
++static __always_inline void allow_write_to_user(void __user *to, unsigned long size)
+ {
+ 	allow_user_access(to, NULL, size, KUAP_WRITE);
+ }
+ 
+-static inline void allow_read_write_user(void __user *to, const void __user *from,
+-					 unsigned long size)
++static __always_inline void allow_read_write_user(void __user *to, const void __user *from,
++						  unsigned long size)
+ {
+ 	barrier_nospec();
+ 	allow_user_access(to, from, size, KUAP_READ_WRITE);
+ }
+ 
+-static inline void prevent_read_from_user(const void __user *from, unsigned long size)
++static __always_inline void prevent_read_from_user(const void __user *from, unsigned long size)
+ {
+ 	prevent_user_access(NULL, from, size, KUAP_READ);
+ }
+ 
+-static inline void prevent_write_to_user(void __user *to, unsigned long size)
++static __always_inline void prevent_write_to_user(void __user *to, unsigned long size)
+ {
+ 	prevent_user_access(to, NULL, size, KUAP_WRITE);
+ }
+ 
+-static inline void prevent_read_write_user(void __user *to, const void __user *from,
+-					   unsigned long size)
++static __always_inline void prevent_read_write_user(void __user *to, const void __user *from,
++						    unsigned long size)
+ {
+ 	prevent_user_access(to, from, size, KUAP_READ_WRITE);
+ }
+ 
+-static inline void prevent_current_access_user(void)
++static __always_inline void prevent_current_access_user(void)
+ {
+ 	prevent_user_access(NULL, NULL, ~0UL, KUAP_CURRENT);
+ }
+ 
+-static inline void prevent_current_read_from_user(void)
++static __always_inline void prevent_current_read_from_user(void)
+ {
+ 	prevent_user_access(NULL, NULL, ~0UL, KUAP_CURRENT_READ);
+ }
+ 
+-static inline void prevent_current_write_to_user(void)
++static __always_inline void prevent_current_write_to_user(void)
+ {
+ 	prevent_user_access(NULL, NULL, ~0UL, KUAP_CURRENT_WRITE);
+ }
 -- 
-Oscar Salvador
-SUSE L3
+2.25.0
+
