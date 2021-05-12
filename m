@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829D937CB26
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 177A137CB15
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242412AbhELQer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:34:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40102 "EHLO mail.kernel.org"
+        id S242351AbhELQeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:34:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235085AbhELPmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:42:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C4BB61C83;
-        Wed, 12 May 2021 15:21:57 +0000 (UTC)
+        id S235113AbhELPm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:42:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68FDA61480;
+        Wed, 12 May 2021 15:22:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620832918;
-        bh=KZsc5yZIuWsrYya7OjS5DggjPvs/sLXeDrdmYlchDik=;
+        s=korg; t=1620832922;
+        bh=0mvuS6A5KBQSa4AckEgc5G1V/9ZhHey/tSU60/VdNLk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GWld0aafaePn+u+XIZsCvPj4efTYYQiOgLVbhjaEOXKfi4QJ9DbXU4I4mhr7mf6E6
-         MyojpOBx+1NbdXkcvsmqeHj7sq+HQ0XHGEQXL/yFxiXvKCJf35+5r7P8UXNvAqIDB/
-         FI+mpR2UzERjv5pikzuGGAPhNWuWukTbF/MAbWr4=
+        b=n5tiEn7TEgDogAVyxHZWA0D+qXJGQr7eQMz+piP7f7n6h199Oa5WExdp0ggokPCQn
+         9MyNSCwPY+q6IC+eKz2Tsw8NKV7/7H0orsyZ9DAlyyjzdFbyvv/HYPATao/YClywUM
+         vt2LvCzLIwgOl+Mhq3K9IbGjksYrTLR35P3tuzZg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+24452624fc4c571eedd9@syzkaller.appspotmail.com
-Subject: [PATCH 5.10 474/530] vsock/virtio: free queued packets when closing socket
-Date:   Wed, 12 May 2021 16:49:44 +0200
-Message-Id: <20210512144835.334768477@linuxfoundation.org>
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 476/530] net: davinci_emac: Fix incorrect masking of tx and rx error channel
+Date:   Wed, 12 May 2021 16:49:46 +0200
+Message-Id: <20210512144835.404069626@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
 References: <20210512144819.664462530@linuxfoundation.org>
@@ -41,92 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Garzarella <sgarzare@redhat.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 8432b8114957235f42e070a16118a7f750de9d39 ]
+[ Upstream commit d83b8aa5207d81f9f6daec9888390f079cc5db3f ]
 
-As reported by syzbot [1], there is a memory leak while closing the
-socket. We partially solved this issue with commit ac03046ece2b
-("vsock/virtio: free packets during the socket release"), but we
-forgot to drain the RX queue when the socket is definitely closed by
-the scheduled work.
+The bit-masks used for the TXERRCH and RXERRCH (tx and rx error channels)
+are incorrect and always lead to a zero result. The mask values are
+currently the incorrect post-right shifted values, fix this by setting
+them to the currect values.
 
-To avoid future issues, let's use the new virtio_transport_remove_sock()
-to drain the RX queue before removing the socket from the af_vsock lists
-calling vsock_remove_sock().
+(I double checked these against the TMS320TCI6482 data sheet, section
+5.30, page 127 to ensure I had the correct mask values for the TXERRCH
+and RXERRCH fields in the MACSTATUS register).
 
-[1] https://syzkaller.appspot.com/bug?extid=24452624fc4c571eedd9
-
-Fixes: ac03046ece2b ("vsock/virtio: free packets during the socket release")
-Reported-and-tested-by: syzbot+24452624fc4c571eedd9@syzkaller.appspotmail.com
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Addresses-Coverity: ("Operands don't affect result")
+Fixes: a6286ee630f6 ("net: Add TI DaVinci EMAC driver")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/vmw_vsock/virtio_transport_common.c | 28 +++++++++++++++++--------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+ drivers/net/ethernet/ti/davinci_emac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
-index e4370b1b7494..902cb6dd710b 100644
---- a/net/vmw_vsock/virtio_transport_common.c
-+++ b/net/vmw_vsock/virtio_transport_common.c
-@@ -733,6 +733,23 @@ static int virtio_transport_reset_no_sock(const struct virtio_transport *t,
- 	return t->send_pkt(reply);
- }
+diff --git a/drivers/net/ethernet/ti/davinci_emac.c b/drivers/net/ethernet/ti/davinci_emac.c
+index c7031e1960d4..03055c96f076 100644
+--- a/drivers/net/ethernet/ti/davinci_emac.c
++++ b/drivers/net/ethernet/ti/davinci_emac.c
+@@ -169,11 +169,11 @@ static const char emac_version_string[] = "TI DaVinci EMAC Linux v6.1";
+ /* EMAC mac_status register */
+ #define EMAC_MACSTATUS_TXERRCODE_MASK	(0xF00000)
+ #define EMAC_MACSTATUS_TXERRCODE_SHIFT	(20)
+-#define EMAC_MACSTATUS_TXERRCH_MASK	(0x7)
++#define EMAC_MACSTATUS_TXERRCH_MASK	(0x70000)
+ #define EMAC_MACSTATUS_TXERRCH_SHIFT	(16)
+ #define EMAC_MACSTATUS_RXERRCODE_MASK	(0xF000)
+ #define EMAC_MACSTATUS_RXERRCODE_SHIFT	(12)
+-#define EMAC_MACSTATUS_RXERRCH_MASK	(0x7)
++#define EMAC_MACSTATUS_RXERRCH_MASK	(0x700)
+ #define EMAC_MACSTATUS_RXERRCH_SHIFT	(8)
  
-+/* This function should be called with sk_lock held and SOCK_DONE set */
-+static void virtio_transport_remove_sock(struct vsock_sock *vsk)
-+{
-+	struct virtio_vsock_sock *vvs = vsk->trans;
-+	struct virtio_vsock_pkt *pkt, *tmp;
-+
-+	/* We don't need to take rx_lock, as the socket is closing and we are
-+	 * removing it.
-+	 */
-+	list_for_each_entry_safe(pkt, tmp, &vvs->rx_queue, list) {
-+		list_del(&pkt->list);
-+		virtio_transport_free_pkt(pkt);
-+	}
-+
-+	vsock_remove_sock(vsk);
-+}
-+
- static void virtio_transport_wait_close(struct sock *sk, long timeout)
- {
- 	if (timeout) {
-@@ -765,7 +782,7 @@ static void virtio_transport_do_close(struct vsock_sock *vsk,
- 	    (!cancel_timeout || cancel_delayed_work(&vsk->close_work))) {
- 		vsk->close_work_scheduled = false;
- 
--		vsock_remove_sock(vsk);
-+		virtio_transport_remove_sock(vsk);
- 
- 		/* Release refcnt obtained when we scheduled the timeout */
- 		sock_put(sk);
-@@ -828,22 +845,15 @@ static bool virtio_transport_close(struct vsock_sock *vsk)
- 
- void virtio_transport_release(struct vsock_sock *vsk)
- {
--	struct virtio_vsock_sock *vvs = vsk->trans;
--	struct virtio_vsock_pkt *pkt, *tmp;
- 	struct sock *sk = &vsk->sk;
- 	bool remove_sock = true;
- 
- 	if (sk->sk_type == SOCK_STREAM)
- 		remove_sock = virtio_transport_close(vsk);
- 
--	list_for_each_entry_safe(pkt, tmp, &vvs->rx_queue, list) {
--		list_del(&pkt->list);
--		virtio_transport_free_pkt(pkt);
--	}
--
- 	if (remove_sock) {
- 		sock_set_flag(sk, SOCK_DONE);
--		vsock_remove_sock(vsk);
-+		virtio_transport_remove_sock(vsk);
- 	}
- }
- EXPORT_SYMBOL_GPL(virtio_transport_release);
+ /* EMAC RX register masks */
 -- 
 2.30.2
 
