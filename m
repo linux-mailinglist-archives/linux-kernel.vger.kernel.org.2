@@ -2,189 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770EA37BBB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B79037BBBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhELLWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 07:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48014 "EHLO
+        id S230149AbhELL2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 07:28:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230037AbhELLWo (ORCPT
+        with ESMTP id S230019AbhELL2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 07:22:44 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C13C061574;
-        Wed, 12 May 2021 04:21:35 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id w3so34443151ejc.4;
-        Wed, 12 May 2021 04:21:35 -0700 (PDT)
+        Wed, 12 May 2021 07:28:08 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1405C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:26:59 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id f1so4390316edt.4
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:26:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MHzreHuweH97osIdaXwbfq/+CLsH9zkDVNipBCZFdw8=;
-        b=NN/KgV2Yh68bcHPu0DFZE2mIb6JkHVqGKhAM1BUUN9OSI2tKsPy7+/pKdP/8RFjjsO
-         NI8z+Y3I4XH1zMeAGEE0xhb+TxvqljEC1q1KY7PYUQ1LguKqtiw+o2AJ7Z4uDNwzHqF4
-         SXvKIvfGFOjok6OAzc91MG/r4bSq35o07qdcq3ZXr99+GsoCJBqk7oFQ0iVIGVj5ko+m
-         G7EIbWkftBHrAGk9rmr9zfdvOTA3TZPUlb7eFwjuI0+HllDUP/tqyK/VH7ygrg/eaPeO
-         D1280JzzEJeNi3TPoVsHjXPrybb4p9vHccTqfgp7hJh9lb+tDH5ZpWag7eO1xY2kCG6t
-         eZxQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sW3jMCftDfiFtBgZttGt05xUZb6de8CfShosPvhcNg8=;
+        b=Ct/bixgpdm8CwXOzW7AiVcDbDzPjEfU8A77D9J6D6jlIx5sqJwfho3+XVoMriZhDLL
+         O6hzC/4bxdM9imU5OShWs00D1DM+NMZcDp1ys3mUsVXewPv390xPrkLPWGCgeuNFDfM4
+         HfyLLiCIi4twItp7eqqLlO7quZdXDxY7NBh9t+1POIxaXX/ohNSJG91ti9OA+xst7AqR
+         xO8ErxgVWmtDupIyr202+s1wTsZPgss0vfZpYHHMVaIXAfzZmIc1l6vEpafIchFirIcz
+         di6LD2V8fA8xYqJpIwt5S+4ncv9b1lAzD8HZ7iUOD6ccrD3IdyG8vp8YOBivakI+wE4q
+         N8hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=MHzreHuweH97osIdaXwbfq/+CLsH9zkDVNipBCZFdw8=;
-        b=jtxFhybpST1BNuNg3f997SYyqrmBvM21cZvRi6ic/lp4iAYZ0H7p+kB8xulVMEVHzI
-         9gCRxeEukughCoo6hIoqNeVr5CvFQLz32HemJfa7ntE4T/XV6Fq5nO/YclJ7WKfXgOml
-         je8ZJJ7LgMdQvtLCsGvn/5VmRFiRMl69g8AdKCU9Ak399dco8E3FUngKlgR5zjBFQkA0
-         HtYcL9XrJm/erp34x1VcWa3EPZV/IDCLnQok0WKwI2S1xaTb79giF6zakl6rx4faf08t
-         lpw7Wn8OUZRbWu+1UcyNLfq2u9Rcst1E0WXAKQCYGn2JoOrLxubqtG5DQ7KapYI2+OKN
-         HJ/Q==
-X-Gm-Message-State: AOAM530CfWlJyq0XDIziuv89WOdkGmIZeA7DHnd0LZppP4EtmmRRzYRX
-        qXTagAZ57boGDC9vX7pq0SdYsCYC/uuXYQ==
-X-Google-Smtp-Source: ABdhPJwGNuBiiVAKjqaj/eiwSGpnSYkfNx81epAAbGKk5DYCb8fuTybvOZb+uEo84xR+OYNQLp8ddg==
-X-Received: by 2002:a17:907:11db:: with SMTP id va27mr36365589ejb.174.1620818493453;
-        Wed, 12 May 2021 04:21:33 -0700 (PDT)
-Received: from localhost.localdomain (93-103-18-160.static.t-2.net. [93.103.18.160])
-        by smtp.gmail.com with ESMTPSA id w6sm11763192edc.25.2021.05.12.04.21.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 04:21:33 -0700 (PDT)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH] KVM: SVM/VMX: Use %rax instead of %__ASM_AX within CONFIG_X86_64
-Date:   Wed, 12 May 2021 13:21:15 +0200
-Message-Id: <20210512112115.70048-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        bh=sW3jMCftDfiFtBgZttGt05xUZb6de8CfShosPvhcNg8=;
+        b=ajZhjgYlZgOnF+hfPFC4a/5uI3a4Mh+HS2R+fwAsHJbU/PyhBCnt3diwQXIZAup9rf
+         C83JtfEfK3ihjWhyXJ6au5ktqjiQkp10vOPTUlWI1hP3k8w3gyQumsJJkGsVB0Ap8+PQ
+         ZgI2HsB+5eGNRNdMSYfuXQ2dzm3injaQAvApTo3Z18vc+EXkxPQsCPjTKcbjZMirxmOQ
+         2F/P/4/NbiaA2srHeAar34tGEs3ywi0guCj9D/PrHWFKl9WzOv2AOfHcF0fWfDVau5RI
+         Tk4scE0CyoLPfeahTKHZ/acI5CH4e0OzJuMYJoIXZX+bKXQK+2n4knOF2rWklyU4dXU/
+         7AQg==
+X-Gm-Message-State: AOAM530xY19ibrucMzsL3DYWjzbgjLWb/L+KaKffabYSU/xZbMF7D4+z
+        ixqW/36LN2RK/OUUKvPAUtEx2Q==
+X-Google-Smtp-Source: ABdhPJz55jMl6b3k9QurAc7BVgcHwv7YgqQ++RMJeBNkrqx9UgSpqH44KgrXr2cMoU4nLdFb7ybC8A==
+X-Received: by 2002:aa7:d41a:: with SMTP id z26mr44229923edq.54.1620818818509;
+        Wed, 12 May 2021 04:26:58 -0700 (PDT)
+Received: from [192.168.1.14] ([195.24.90.54])
+        by smtp.googlemail.com with ESMTPSA id e19sm16703339edv.10.2021.05.12.04.26.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 May 2021 04:26:58 -0700 (PDT)
+Subject: Re: [PATCH] dt-bindings: media: venus: Add sc7280 dt schema
+To:     Dikshita Agarwal <dikshita@codeaurora.org>, andy.gross@linaro.org,
+        david.brown@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com,
+        devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org
+References: <1619432515-9060-1-git-send-email-dikshita@codeaurora.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <f40aa304-2717-4a0b-00ee-e2ca222042e6@linaro.org>
+Date:   Wed, 12 May 2021 14:26:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1619432515-9060-1-git-send-email-dikshita@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to use %__ASM_AX within CONFIG_X86_64. The macro
-will always expand to %rax.
 
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
----
- arch/x86/kvm/svm/vmenter.S | 44 +++++++++++++++++++-------------------
- arch/x86/kvm/vmx/vmenter.S | 32 +++++++++++++--------------
- 2 files changed, 38 insertions(+), 38 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/vmenter.S b/arch/x86/kvm/svm/vmenter.S
-index 4fa17df123cd..844b558bb021 100644
---- a/arch/x86/kvm/svm/vmenter.S
-+++ b/arch/x86/kvm/svm/vmenter.S
-@@ -64,14 +64,14 @@ SYM_FUNC_START(__svm_vcpu_run)
- 	mov VCPU_RSI(%_ASM_AX), %_ASM_SI
- 	mov VCPU_RDI(%_ASM_AX), %_ASM_DI
- #ifdef CONFIG_X86_64
--	mov VCPU_R8 (%_ASM_AX),  %r8
--	mov VCPU_R9 (%_ASM_AX),  %r9
--	mov VCPU_R10(%_ASM_AX), %r10
--	mov VCPU_R11(%_ASM_AX), %r11
--	mov VCPU_R12(%_ASM_AX), %r12
--	mov VCPU_R13(%_ASM_AX), %r13
--	mov VCPU_R14(%_ASM_AX), %r14
--	mov VCPU_R15(%_ASM_AX), %r15
-+	mov VCPU_R8 (%rax),  %r8
-+	mov VCPU_R9 (%rax),  %r9
-+	mov VCPU_R10(%rax), %r10
-+	mov VCPU_R11(%rax), %r11
-+	mov VCPU_R12(%rax), %r12
-+	mov VCPU_R13(%rax), %r13
-+	mov VCPU_R14(%rax), %r14
-+	mov VCPU_R15(%rax), %r15
- #endif
- 
- 	/* "POP" @vmcb to RAX. */
-@@ -93,21 +93,21 @@ SYM_FUNC_START(__svm_vcpu_run)
- 	pop %_ASM_AX
- 
- 	/* Save all guest registers.  */
--	mov %_ASM_CX,   VCPU_RCX(%_ASM_AX)
--	mov %_ASM_DX,   VCPU_RDX(%_ASM_AX)
--	mov %_ASM_BX,   VCPU_RBX(%_ASM_AX)
--	mov %_ASM_BP,   VCPU_RBP(%_ASM_AX)
--	mov %_ASM_SI,   VCPU_RSI(%_ASM_AX)
--	mov %_ASM_DI,   VCPU_RDI(%_ASM_AX)
-+	mov %_ASM_CX, VCPU_RCX(%_ASM_AX)
-+	mov %_ASM_DX, VCPU_RDX(%_ASM_AX)
-+	mov %_ASM_BX, VCPU_RBX(%_ASM_AX)
-+	mov %_ASM_BP, VCPU_RBP(%_ASM_AX)
-+	mov %_ASM_SI, VCPU_RSI(%_ASM_AX)
-+	mov %_ASM_DI, VCPU_RDI(%_ASM_AX)
- #ifdef CONFIG_X86_64
--	mov %r8,  VCPU_R8 (%_ASM_AX)
--	mov %r9,  VCPU_R9 (%_ASM_AX)
--	mov %r10, VCPU_R10(%_ASM_AX)
--	mov %r11, VCPU_R11(%_ASM_AX)
--	mov %r12, VCPU_R12(%_ASM_AX)
--	mov %r13, VCPU_R13(%_ASM_AX)
--	mov %r14, VCPU_R14(%_ASM_AX)
--	mov %r15, VCPU_R15(%_ASM_AX)
-+	mov %r8,  VCPU_R8 (%rax)
-+	mov %r9,  VCPU_R9 (%rax)
-+	mov %r10, VCPU_R10(%rax)
-+	mov %r11, VCPU_R11(%rax)
-+	mov %r12, VCPU_R12(%rax)
-+	mov %r13, VCPU_R13(%rax)
-+	mov %r14, VCPU_R14(%rax)
-+	mov %r15, VCPU_R15(%rax)
- #endif
- 
- 	/*
-diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
-index 3a6461694fc2..9273709e4800 100644
---- a/arch/x86/kvm/vmx/vmenter.S
-+++ b/arch/x86/kvm/vmx/vmenter.S
-@@ -142,14 +142,14 @@ SYM_FUNC_START(__vmx_vcpu_run)
- 	mov VCPU_RSI(%_ASM_AX), %_ASM_SI
- 	mov VCPU_RDI(%_ASM_AX), %_ASM_DI
- #ifdef CONFIG_X86_64
--	mov VCPU_R8 (%_ASM_AX),  %r8
--	mov VCPU_R9 (%_ASM_AX),  %r9
--	mov VCPU_R10(%_ASM_AX), %r10
--	mov VCPU_R11(%_ASM_AX), %r11
--	mov VCPU_R12(%_ASM_AX), %r12
--	mov VCPU_R13(%_ASM_AX), %r13
--	mov VCPU_R14(%_ASM_AX), %r14
--	mov VCPU_R15(%_ASM_AX), %r15
-+	mov VCPU_R8 (%rax),  %r8
-+	mov VCPU_R9 (%rax),  %r9
-+	mov VCPU_R10(%rax), %r10
-+	mov VCPU_R11(%rax), %r11
-+	mov VCPU_R12(%rax), %r12
-+	mov VCPU_R13(%rax), %r13
-+	mov VCPU_R14(%rax), %r14
-+	mov VCPU_R15(%rax), %r15
- #endif
- 	/* Load guest RAX.  This kills the @regs pointer! */
- 	mov VCPU_RAX(%_ASM_AX), %_ASM_AX
-@@ -175,14 +175,14 @@ SYM_FUNC_START(__vmx_vcpu_run)
- 	mov %_ASM_SI, VCPU_RSI(%_ASM_AX)
- 	mov %_ASM_DI, VCPU_RDI(%_ASM_AX)
- #ifdef CONFIG_X86_64
--	mov %r8,  VCPU_R8 (%_ASM_AX)
--	mov %r9,  VCPU_R9 (%_ASM_AX)
--	mov %r10, VCPU_R10(%_ASM_AX)
--	mov %r11, VCPU_R11(%_ASM_AX)
--	mov %r12, VCPU_R12(%_ASM_AX)
--	mov %r13, VCPU_R13(%_ASM_AX)
--	mov %r14, VCPU_R14(%_ASM_AX)
--	mov %r15, VCPU_R15(%_ASM_AX)
-+	mov %r8,  VCPU_R8 (%rax)
-+	mov %r9,  VCPU_R9 (%rax)
-+	mov %r10, VCPU_R10(%rax)
-+	mov %r11, VCPU_R11(%rax)
-+	mov %r12, VCPU_R12(%rax)
-+	mov %r13, VCPU_R13(%rax)
-+	mov %r14, VCPU_R14(%rax)
-+	mov %r15, VCPU_R15(%rax)
- #endif
- 
- 	/* Clear RAX to indicate VM-Exit (as opposed to VM-Fail). */
+On 4/26/21 1:21 PM, Dikshita Agarwal wrote:
+> Add a schema description for the venus video encoder/decoder on the sc7280.
+> 
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> ---
+>  .../bindings/media/qcom,sc7280-venus.yaml          | 158 +++++++++++++++++++++
+>  1 file changed, 158 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+> new file mode 100644
+> index 0000000..a258d97
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/qcom,sc7280-venus.yaml
+> @@ -0,0 +1,158 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/media/qcom,sc7280-venus.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Qualcomm Venus video encode and decode accelerators
+> +
+> +maintainers:
+> +  - Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> +
+> +description: |
+> +  The Venus IP is a video encode and decode accelerator present
+
+Maybe we can mention that this is Venus Iris2 IP?
+
+> +  on Qualcomm platforms
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,sc7280-venus
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    minItems: 2
+> +    maxItems: 3
+> +
+> +  power-domain-names:
+> +    minItems: 2
+> +    maxItems: 3
+> +    items:
+> +      - const: venus
+> +      - const: vcodec0
+
+The sm8250 (the same Iris2 IP) has one more MX power domain, I guess we
+should have it here too?
+
+> +
+> +  clocks:
+> +    maxItems: 5
+> +
+> +  clock-names:
+> +    items:
+> +      - const: core_clk
+> +      - const: video_cc_mvsc_ctl_axi
+> +      - const: iface_clk
+> +      - const: vcodec_clk
+> +      - const: video_cc_mvs0_ctl_axi
+
+I'd suggest following names:
+	core
+	bus
+	iface
+	vcodec_core
+	vcodec_bus
+
+> +
+> +  iommus:
+> +    maxItems: 2
+> +
+> +  memory-region:
+> +    maxItems: 1
+> +
+> +  interconnects:
+> +    maxItems: 2
+> +
+> +  interconnect-names:
+> +    items:
+> +      - const: cpu-cfg
+> +      - const: video-mem
+> +
+> +  video-decoder:
+> +    type: object
+> +
+> +    properties:
+> +      compatible:
+> +        const: venus-decoder
+> +
+> +    required:
+> +      - compatible
+> +
+> +    additionalProperties: false
+> +
+> +  video-encoder:
+> +    type: object
+> +
+> +    properties:
+> +      compatible:
+> +        const: venus-encoder
+> +
+> +    required:
+> +      - compatible
+> +
+> +    additionalProperties: false
+> +
+> +  video-firmware:
+> +    type: object
+> +
+> +    description: |
+> +      Firmware subnode is needed when the platform does not
+> +      have TrustZone.
+> +
+> +    properties:
+> +      iommus:
+> +        maxItems: 1
+> +
+> +    required:
+> +      - iommus
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - power-domains
+> +  - power-domain-names
+> +  - clocks
+> +  - clock-names
+> +  - iommus
+> +  - memory-region
+> +  - video-decoder
+> +  - video-encoder
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +        #include <dt-bindings/clock/qcom,videocc-sc7280.h>
+> +
+> +        venus: video-codec@aa00000 {
+> +                compatible = "qcom,sc7280-venus";
+> +                reg = <0x0aa00000 0xd0600>;
+> +                interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +                clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
+> +                         <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
+> +                         <&videocc VIDEO_CC_VENUS_AHB_CLK>,
+> +                         <&videocc VIDEO_CC_MVS0_CORE_CLK>,
+> +                         <&videocc VIDEO_CC_MVS0_AXI_CLK>;
+> +                clock-names = "core_clk", "video_cc_mvsc_ctl_axi",
+> +                              "iface_clk", "vcodec_clk",
+> +                              "video_cc_mvs0_ctl_axi";
+> +
+> +                power-domains = <&videocc MVSC_GDSC>,
+> +                                <&videocc MVS0_GDSC>;
+> +                power-domain-names = "venus", "vcodec0";
+> +
+> +                interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>
+> +                                <&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
+> +                interconnect-names = "cpu-cfg", "video-mem";
+
+Do we have sc7280 interconnect binding somewhere?
+
+> +
+> +                iommus = <&apps_smmu 0x2180 0x20>,
+> +                         <&apps_smmu 0x2184 0x20>;
+> +
+> +                memory-region = <&video_mem>;
+> +
+> +                video-decoder {
+> +                        compatible = "venus-decoder";
+> +                };
+> +
+> +                video-encoder {
+> +                        compatible = "venus-encoder";
+> +                };
+> +
+> +                video-firmware {
+> +                        iommus = <&apps_smmu 0x21a2 0x0>;
+> +                };
+> +        };
+> 
+
 -- 
-2.31.1
-
+regards,
+Stan
