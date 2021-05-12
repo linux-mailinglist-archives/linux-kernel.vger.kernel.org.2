@@ -2,77 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D50F37EB6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C01237EB68
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380272AbhELTaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344607AbhELRCG (ORCPT
+        id S1380187AbhELTaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:30:30 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:40279 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233495AbhELQz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:02:06 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B834EC061348
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 09:54:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1JP4F+Z9+TEOr0TNcfdbm6Mnb1AommIz0iuHgy4wIgg=; b=ozvazW/OivZjzHfhztUO7Vh79y
-        +cMUKNxfW6aohgg2DRwMyadT/ggbxJ4ENcHNY/4vE22QX9TNy43WLrgdkbUCPO9kh8JSuzdpuVXjF
-        sVDR8AJ8jZUVXFuAnGaC9KtcUz6gHRk3uGnV/+2znI1DXu/saAVJuSLZZjddIjSdtrgWIalarFWm/
-        gA94+HU19Lv0x4rVNpmX7dfjV5OPpXzZQTf+vXBkgORipr9djg9/47+I0ohteMt4XKsiqgbicCRwF
-        zGVlY9mdU2N68XgLDW+IogRRa0co7Y7j0RGn+wa557RQUOE9B1HGYMsLQFWRcDKIWVp4uLktpEzbV
-        vtj2ok4g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgs7s-003OE0-BP; Wed, 12 May 2021 16:54:24 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8B1C33001E1;
-        Wed, 12 May 2021 18:54:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7907528B39B05; Wed, 12 May 2021 18:54:19 +0200 (CEST)
-Date:   Wed, 12 May 2021 18:54:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Leo Yan <leo.yan@linaro.org>, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] locking/lockdep: Correct calling tracepoints
-Message-ID: <YJwIO4h9FaRdrC0o@hirez.programming.kicks-ass.net>
-References: <20210512120937.90211-1-leo.yan@linaro.org>
- <YJvL+IvlTtoNv2c7@hirez.programming.kicks-ass.net>
- <20210512093202.5fca1259@gandalf.local.home>
- <YJvgreWRNgkloeuh@hirez.programming.kicks-ass.net>
- <20210512111439.5f80f707@gandalf.local.home>
+        Wed, 12 May 2021 12:55:57 -0400
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 6487B24000C;
+        Wed, 12 May 2021 16:54:42 +0000 (UTC)
+Date:   Wed, 12 May 2021 18:54:42 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Edmundo Carmona Antoranz <eantoranz@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        cw00.choi@samsung.com, b.zolnierkie@samsung.com,
+        a.zummo@towertech.it, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] rtc: max77686: Remove some dead code
+Message-ID: <YJwIUm/UPsIwVkaA@piout.net>
+References: <a6b23ee8d3ea78f62d3fda0b53aa273718f14c6d.1620452523.git.christophe.jaillet@wanadoo.fr>
+ <CAOc6etaUPtJqoH9DBDE72nDW7s7iEZHnaJRpKx9zFow02WOZig@mail.gmail.com>
+ <9f34ebcd-0c17-cd7f-eb08-52c6c3dc7b03@wanadoo.fr>
+ <CAOc6etYwTvVPnoB3BQfuQEikvsCwSs9AqBWnLFrs9zQ0pJGp1A@mail.gmail.com>
+ <YJhO0cEqpbJAdv7s@piout.net>
+ <219efcc7-ca05-a7d1-5943-d34a42f0d49f@canonical.com>
+ <YJv+mMRcOuTJxLuk@piout.net>
+ <9b48e433-4e0b-7334-028d-d700e0cdbff0@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210512111439.5f80f707@gandalf.local.home>
+In-Reply-To: <9b48e433-4e0b-7334-028d-d700e0cdbff0@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 11:14:39AM -0400, Steven Rostedt wrote:
-> On Wed, 12 May 2021 16:05:33 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > Thing is, if you look at the list copy:
+On 12/05/2021 12:24:26-0400, Krzysztof Kozlowski wrote:
+> On 12/05/2021 12:13, Alexandre Belloni wrote:
+> > On 10/05/2021 08:20:52-0400, Krzysztof Kozlowski wrote:
+> >> On 09/05/2021 17:06, Alexandre Belloni wrote:
+> >>> On 08/05/2021 18:06:03-0600, Edmundo Carmona Antoranz wrote:
+> >>>> On Sat, May 8, 2021 at 10:59 AM Christophe JAILLET
+> >>>> <christophe.jaillet@wanadoo.fr> wrote:
+> >>>>>
+> >>>>>>
+> >>>>>> Following the recent conversations, I think it might make sense to do
+> >>>>>> dev_err(&pdev->dev, "Failed to register RTC device: %pe\n", info->rtc_dev);
+> >>>>>>
+> >>>>>> Is that right?
+> >>>>>>
+> >>>>>
+> >>>>> Yes, it is right, but it should be done in another patch.
+> >>>>>
+> >>>>> Would you like to give it a try?
+> >>>>>
+> >>>> Sure, I'll have the patch ready to send it when I see yours on next.
+> >>>
+> >>> Does it make sense to print anything at all? Who would use the output?
+> >>> Is anyone actually going to read it?
+> >>
+> >> If the RTC core does not print the message, it should be
+> >> dev_err_probe().  However the first is recently preferred - RTC core
+> >> should do it for all drivers.  I find such error messages useful - helps
+> >> easily spotting regressions via dmesg -l err.
+> >>
 > > 
-> >   https://lore.kernel.org/lkml/20200821085348.782688941@infradead.org/
-> > 
-> > things were okay. I suspect there was a conflict at some point and
-> > resolution got it backwards because the hunks are so similar and I never
-> > noticed :/
+> > The only error path that will not print a message by default (it is
+> > dev_dbg) is when rtc-ops is NULL which I don't expect would regress
+> > anyway.
 > 
-> Was this a git merge issue or a quilt merge issue ?
+> Then the message in the driver is useless and could be removed.
+> 
+> > A better way to remove the dead code would be to switch to
+> > devm_rtc_allocate_device/devm_rtc_register_device. And even better would
+> > be to take that opportunity to set range_min and range_max ;)
+> > 
+> 
+> The driver already uses devm_rtc_device_register() so I think I don't
+> follow that part.
 
-Probably quilt, I never do anything like that with git.
+devm_rtc_device_register is different from devm_rtc_register_device.
+
+> 
+> Best regards,
+> Krzysztof
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
