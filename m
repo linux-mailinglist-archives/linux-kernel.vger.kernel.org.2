@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 129F137D5A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4FA37D5A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359324AbhELSwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:52:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35798 "EHLO mail.kernel.org"
+        id S1359307AbhELSwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:52:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243909AbhELQmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:42:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C62BB61C49;
-        Wed, 12 May 2021 16:08:20 +0000 (UTC)
+        id S243916AbhELQmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:42:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A5CC61C54;
+        Wed, 12 May 2021 16:08:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835701;
-        bh=gXq2paFHLFWG4gwQI7A79iLmPT74ZRQipM90epusL2U=;
+        s=korg; t=1620835709;
+        bh=Ne5oA7d1Uhqff9qRZmUNN7hPZ4CMU6mywHgVFg+3m1A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D88JtsuNKhfzVZuwqZwfnmru6qQ/7AeF9GKlRBpPRIoO58DSBGubGjT4AgKqzCr9A
-         QUByf8KFtzt5ICjxPiGPgGAt2sECPD6OInvVBggLUVXN5Z61cEZopqAsLcLujA5s0F
-         1dQq38UMyDmX1XHZhKzEhueCgXkWk7MEvX59hJJM=
+        b=Onx5fvWcHkCCYm/jiE3vc03wzjamYqpr1NdbvRo/0GRYTpUNyfpM+seUNRabw2KqP
+         NgPyveNROVxCjr1PQn4MshnOgWM86hCafph7Ee1oPV+10ZeTq7vOKOmMBOx370o02V
+         1JNR8v2BhFrV+wA55FLkOuK8+p2cDh/LsvgrA+Fc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 415/677] scsi: ufs: ufshcd-pltfrm: Fix deferred probing
-Date:   Wed, 12 May 2021 16:47:41 +0200
-Message-Id: <20210512144851.129195520@linuxfoundation.org>
+Subject: [PATCH 5.12 418/677] scsi: sun3x_esp: Add IRQ check
+Date:   Wed, 12 May 2021 16:47:44 +0200
+Message-Id: <20210512144851.225343758@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -42,35 +42,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit 339c9b63cc7ce779ce45c675bf709cb58b807fc3 ]
+[ Upstream commit 14b321380eb333c82853d7d612d0995f05f88fdc ]
 
-The driver overrides the error codes returned by platform_get_irq() to
--ENODEV, so if it returns -EPROBE_DEFER, the driver would fail the probe
-permanently instead of the deferred probing.  Propagate the error code
-upstream as it should have been done from the start...
+The driver neglects to check the result of platform_get_irq()'s call and
+blithely passes the negative error codes to request_irq() (which takes
+*unsigned* IRQ #), causing it to fail with -EINVAL, overriding the real
+error code.  Stop calling request_irq() with the invalid IRQ #s.
 
-Link: https://lore.kernel.org/r/420364ca-614a-45e3-4e35-0e0653c7bc53@omprussia.ru
-Fixes: 2953f850c3b8 ("[SCSI] ufs: use devres functions for ufshcd")
+Link: https://lore.kernel.org/r/363eb4c8-a3bf-4dc9-2a9e-90f349030a15@omprussia.ru
+Fixes: 0bb67f181834 ("[SCSI] sun3x_esp: convert to esp_scsi")
 Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd-pltfrm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/sun3x_esp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
-index 1a69949a4ea1..b56d9b4e5f03 100644
---- a/drivers/scsi/ufs/ufshcd-pltfrm.c
-+++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
-@@ -377,7 +377,7 @@ int ufshcd_pltfrm_init(struct platform_device *pdev,
+diff --git a/drivers/scsi/sun3x_esp.c b/drivers/scsi/sun3x_esp.c
+index 7de82f2c9757..d3489ac7ab28 100644
+--- a/drivers/scsi/sun3x_esp.c
++++ b/drivers/scsi/sun3x_esp.c
+@@ -206,7 +206,9 @@ static int esp_sun3x_probe(struct platform_device *dev)
+ 	if (!esp->command_block)
+ 		goto fail_unmap_regs_dma;
  
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
--		err = -ENODEV;
-+		err = irq;
- 		goto out;
- 	}
- 
+-	host->irq = platform_get_irq(dev, 0);
++	host->irq = err = platform_get_irq(dev, 0);
++	if (err < 0)
++		goto fail_unmap_command_block;
+ 	err = request_irq(host->irq, scsi_esp_intr, IRQF_SHARED,
+ 			  "SUN3X ESP", esp);
+ 	if (err < 0)
 -- 
 2.30.2
 
