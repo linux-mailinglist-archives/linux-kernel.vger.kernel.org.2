@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9FE37BE29
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD3A37BE2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhELNY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 09:24:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47266 "EHLO
+        id S230396AbhELNZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 09:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbhELNYz (ORCPT
+        with ESMTP id S230217AbhELNY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 09:24:55 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43CDDC061574;
-        Wed, 12 May 2021 06:23:46 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id g4so4282994lfv.6;
-        Wed, 12 May 2021 06:23:46 -0700 (PDT)
+        Wed, 12 May 2021 09:24:58 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A59C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 06:23:49 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id c22so27037136edn.7
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 06:23:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=UuBV4uLIY16BB/CHxGODGGp61xNMvkfPENTuvxVTdkk=;
-        b=uiGxSqNxJJrpz7GTmlRq/NbSzwB4uH8Tjq3PRLWWVDe3BSpItIug9xDR8EF/klRzJn
-         2z1zWF3wtGPPj4yuuW3HKrZxZTrkCP7Q0Q3Nfv4zP57TokTtSZ9kQNuCO9hbujFdVxRG
-         4WcjEzOd4OnyAqdEt0oOgrsSIYgnLxvYPWFnKHZqByG3hFBTft11zmXM968zjo20eA2D
-         PpFqxDRfjHflUBDp4Izq1saKGIL8qIqO1hF+HPESfgW2GVD1zb21we/JbWHI3uuOr/ai
-         ICgOjTnatMWMiJ8ywModPPxP6ItlHX+lzpPLe7+KuIQs/tEW9QNGB4rleRlOz8cEAIoL
-         i+Xg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WDuOE4hxyl+w9T0BI4QiDAhIFt9uxZ9MZCrO+XA/Yd4=;
+        b=FpCS/0lXHHZ7RoXBm4tdc3Xol6a6x97nIaoZIjOOI392pAoAAWT9FyYFdPfO0veqr8
+         chZxLABHHcr0JSDDyomf8QNsyHBTNoIjyYMs0QIRD/neCeNETKsgUSkju2yQq/yW1lUg
+         CrZhkPxTWvz9uc/xkiCesvBUBd771dp9s6MWmrqm449BkyQ2t2sLMY48pspMRcnPf56k
+         8FfUtuT8gK2VuN0j978vmuUJbjbfSsW0YpK6gMlrK2JTaP2czwn/JTCfYEJMM87YsUiy
+         f0ntpxPYWODv+lHVyf40ejLwSkzjnRRE4h7IK1ESoKLp2gafG9rEX8l4PqjAneVB2TqC
+         Qp9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UuBV4uLIY16BB/CHxGODGGp61xNMvkfPENTuvxVTdkk=;
-        b=bI2KrgjVGoVaafoHnj7Ax+FYzAYLRnNCDolB9D6Lu8WyKrZcxWOq0Fxol28TXsSsBX
-         IzMktviGsO1PWjLERfUFyF9WRGa9BUhS83oyGC6G3LRSJMGqWICu6uKInIqzyOt7C28o
-         s+YLNuCwjpReVbEHJeXVQo/5Ov/WjXqYwF8zffEXOAWWuZ6b+frL4ajBZ4zNYhLeb82p
-         ikjWk97oeUmlHRDJZ+W49YVvJkEpP6tN/dp3uBo/TV35UbgYDmpl3nl9Ta44YZuo/b1S
-         a2SH66DjqvGzw+S9XeRfpRyf8XYFxVSBMSp0hddGOpWslNBTTKauUQb4N1EMiizoINDq
-         oP6w==
-X-Gm-Message-State: AOAM530B7Jq20YUF8Q1fVl31s6Ee136NjPxbgyX0jiHThSS+nklgt/WF
-        fnKCstLMCtca3LjCtVYWYmz9k5KZAgVlcVTsDKFCHeBN04d09A==
-X-Google-Smtp-Source: ABdhPJycsjPGP9WIn9DGLod8wKr7WNsNDyvK7h5mzvO1LEViGaHIcVNFcktqMD0gjNXFc9Rb2Ujg0FYpNVhBtUB1VrE=
-X-Received: by 2002:a05:6512:1031:: with SMTP id r17mr24823516lfr.583.1620825824792;
- Wed, 12 May 2021 06:23:44 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WDuOE4hxyl+w9T0BI4QiDAhIFt9uxZ9MZCrO+XA/Yd4=;
+        b=cmTMsqWEObhSDPYWN6ttSmFwEAHhWz+bVgI51gOeN/X4zxhv7jI5Dvl43jvXTDHI71
+         zurc3J1XthNFAh4LxU4LAt+WetmTXAXIjwMzzi2bU7Y+71Uubt0BIqDF+njFIlLht7Z2
+         gplkzicK4rz2CKIL0HQlFin/AKeZl1ne/5kjOPfY7JfZHCX9hI4TE/vG5QEmlHUCeJsM
+         vX1kgexUzSgh+iAzflN8d9tO3BQs+O+aKZYrz/p6YsF9JrdpnIJBF0HQorKLDxVHr2ew
+         ifvAfY5FGsMdBKcW/ST4OK3KMhBCVx45tajgpVQQsUwdmoFc/en8dEmyLtgo32UqITJi
+         iEvg==
+X-Gm-Message-State: AOAM530vjBt13ZZKl9cBiEq+PD4LWf+v/v9h9xTM6f9X2C4EzSAk3Ucj
+        qOP29GXQjSaWkEUkN8ARAMo=
+X-Google-Smtp-Source: ABdhPJwMeB/7DY1qX1ZEwFh6DzieWTT2XT3NqPkx2Ps8oG9ewPol1cQKIlvKELjbTchJczrjVLcFXw==
+X-Received: by 2002:a05:6402:40c:: with SMTP id q12mr10713169edv.0.1620825828531;
+        Wed, 12 May 2021 06:23:48 -0700 (PDT)
+Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
+        by smtp.gmail.com with ESMTPSA id yw9sm2881705ejb.91.2021.05.12.06.23.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 06:23:48 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev (open list:STAGING SUBSYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v2 0/2] Remove set but unused variables
+Date:   Wed, 12 May 2021 15:23:42 +0200
+Message-Id: <20210512132344.30225-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <1620813392-30933-1-git-send-email-michal.vokac@ysoft.com>
-In-Reply-To: <1620813392-30933-1-git-send-email-michal.vokac@ysoft.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 12 May 2021 10:23:33 -0300
-Message-ID: <CAOMZO5DH3FLXbX5RTRY_gM3uJ8MY=q6ovSOh5L3vD03YGPgDYA@mail.gmail.com>
-Subject: Re: [PATCH RESEND] ARM: dts: imx6dl-yapp4: Fix RGMII connection to
- QCA8334 switch
-To:     =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 6:56 AM Michal Vok=C3=A1=C4=8D <michal.vokac@ysoft.=
-com> wrote:
->
-> The FEC does not have a PHY so it should not have a phy-handle. It is
-> connected to the switch at RGMII level so we need a fixed-link sub-node
-> on both ends.
->
-> This was not a problem until the qca8k.c driver was converted to PHYLINK
-> by commit b3591c2a3661 ("net: dsa: qca8k: Switch to PHYLINK instead of
-> PHYLIB"). That commit revealed the FEC configuration was not correct.
->
-> Fixes: 87489ec3a77f ("ARM: dts: imx: Add Y Soft IOTA Draco, Hydra and Urs=
-a boards")
-> Cc: stable@vger.kernel.org
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Michal Vok=C3=A1=C4=8D <michal.vokac@ysoft.com>
+Removed set but unused variables from HalPhyRf_8723B.c. Patch 1/2 removes
+variables detected by GCC while compiling for x86_64. Patch 2/2 removes
+variables detected by the kernel test robot while building for PowerPC.
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Fabio M. De Francesco (2):
+  staging: rtl8723bs: hal: Remove two set but unused variables
+  staging: rtl8723bs: hal: Remove set but unused variables
+
+ drivers/staging/rtl8723bs/hal/HalPhyRf_8723B.c | 18 +-----------------
+ 1 file changed, 1 insertion(+), 17 deletions(-)
+
+-- 
+2.31.1
+
