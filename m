@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5617337B689
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 296EF37B68C
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhELHEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 03:04:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229627AbhELHEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 03:04:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 456C161289;
-        Wed, 12 May 2021 07:03:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620802996;
-        bh=iUBD/U+nLN+h/hvAp8X9UtIAIcPumBbY0yRDv4Ky7FI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FIE1ZlhZWjvF0yx+OJ/kzFm0svM7pv9OhNyTWJ0XmSt3U89fhRj4UcSrJpPQphqfJ
-         KcEDfj5SfoIYnudPMJTlMYo6wyH3xWLxiE9lYv52LFwIfth3aUeg59qheZp5SkrHup
-         +sYDMRC1tPqmLgr7JIR96sjVcgG0fVhLFhK0GaZg=
-Date:   Wed, 12 May 2021 09:03:14 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Connor Davis <connojdavis@gmail.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] usb: xhci: Notify xen when DbC is unsafe to use
-Message-ID: <YJt9su1k67KEFh6K@kroah.com>
-References: <cover.1620776161.git.connojdavis@gmail.com>
- <2af7e7b8d569e94ab9c48039040ca69a8d52c89d.1620776161.git.connojdavis@gmail.com>
+        id S230137AbhELHFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 03:05:24 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:2636 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhELHFY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 03:05:24 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fg5Lz70RMzld5G;
+        Wed, 12 May 2021 15:02:03 +0800 (CST)
+Received: from [10.174.178.208] (10.174.178.208) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 12 May 2021 15:04:07 +0800
+Subject: Re: [PATCH -next] crypto: hisilicon -: switch to memdup_user_nul()
+To:     Zhou Wang <wangzhou1@hisilicon.com>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1620715031-107265-1-git-send-email-zou_wei@huawei.com>
+ <c3bfff60-5e78-c0b0-797b-499c70da0ff2@hisilicon.com>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <04aa944f-c07c-1263-a17d-ac647725e2b9@huawei.com>
+Date:   Wed, 12 May 2021 15:04:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2af7e7b8d569e94ab9c48039040ca69a8d52c89d.1620776161.git.connojdavis@gmail.com>
+In-Reply-To: <c3bfff60-5e78-c0b0-797b-499c70da0ff2@hisilicon.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 06:18:21PM -0600, Connor Davis wrote:
-> When running as a dom0 guest on Xen, check if the USB3 debug
-> capability is enabled before xHCI reset, suspend, and resume. If it
-> is, call xen_dbgp_reset_prep() to notify Xen that it is unsafe to touch
-> MMIO registers until the next xen_dbgp_external_startup().
-> 
-> This notification allows Xen to avoid undefined behavior resulting
-> from MMIO access when the host controller's CNR bit is set or when
-> the device transitions to D3hot.
-> 
-> Signed-off-by: Connor Davis <connojdavis@gmail.com>
-> ---
->  drivers/usb/host/xhci-dbgcap.h |  6 ++++
->  drivers/usb/host/xhci.c        | 57 ++++++++++++++++++++++++++++++++++
->  drivers/usb/host/xhci.h        |  1 +
->  3 files changed, 64 insertions(+)
-> 
-> diff --git a/drivers/usb/host/xhci-dbgcap.h b/drivers/usb/host/xhci-dbgcap.h
-> index c70b78d504eb..24784b82a840 100644
-> --- a/drivers/usb/host/xhci-dbgcap.h
-> +++ b/drivers/usb/host/xhci-dbgcap.h
-> @@ -227,4 +227,10 @@ static inline int xhci_dbc_resume(struct xhci_hcd *xhci)
->  	return 0;
->  }
->  #endif /* CONFIG_USB_XHCI_DBGCAP */
-> +
-> +#ifdef CONFIG_XEN_DOM0
-> +int xen_dbgp_reset_prep(struct usb_hcd *hcd);
-> +int xen_dbgp_external_startup(struct usb_hcd *hcd);
-> +#endif /* CONFIG_XEN_DOM0 */
-> +
->  #endif /* __LINUX_XHCI_DBGCAP_H */
-> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-> index ca9385d22f68..afe44169183f 100644
-> --- a/drivers/usb/host/xhci.c
-> +++ b/drivers/usb/host/xhci.c
-> @@ -37,6 +37,57 @@ static unsigned long long quirks;
->  module_param(quirks, ullong, S_IRUGO);
->  MODULE_PARM_DESC(quirks, "Bit flags for quirks to be enabled as default");
-> 
-> +#ifdef CONFIG_XEN_DOM0
-> +#include <xen/xen.h>
+Hi,
 
-<snip>
+Sorry for the mistake, I will send v2 soon.
 
-Can't this #ifdef stuff go into a .h file?
-
-thanks,
-
-greg k-h
+On 2021/5/11 15:07, Zhou Wang wrote:
+> On 2021/5/11 14:37, Zou Wei wrote:
+>> Use memdup_user_nul() helper instead of open-coding to
+>> simplify the code.
+>>
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+>> ---
+>>   drivers/crypto/hisilicon/qm.c | 11 ++---------
+>>   1 file changed, 2 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+>> index ce439a0..83a5d30 100644
+>> --- a/drivers/crypto/hisilicon/qm.c
+>> +++ b/drivers/crypto/hisilicon/qm.c
+>> @@ -1570,17 +1570,10 @@ static ssize_t qm_cmd_write(struct file *filp, const char __user *buffer,
+>>   	if (count > QM_DBG_WRITE_LEN)
+>>   		return -ENOSPC;
+>>   
+>> -	cmd_buf = kzalloc(count + 1, GFP_KERNEL);
+>> -	if (!cmd_buf)
+>> +	cmd_buf = memdup_user_nul(buffer, count);
+>> +	if (IS_ERR(cmd_buf))
+>>   		return -ENOMEM;
+>>   
+>> -	if (copy_from_user(cmd_buf, buffer, count)) {
+>> -		kfree(cmd_buf);
+>> -		return -EFAULT;
+>> -	}
+>> -
+>> -	cmd_buf[count] = '\0';
+>> -
+>>   	cmd_buf_tmp = strchr(cmd_buf, '\n');
+>>   	if (cmd_buf_tmp) {
+>>   		*cmd_buf_tmp = '\0';
+>>
+> 
+> It is fine to me, thanks!
+> 
+> BTW, normally we use crypto: hisilicon - switch to memdup_user_nul() as the subject line,
+> just like other patches :)
+> 
+> .
+> 
