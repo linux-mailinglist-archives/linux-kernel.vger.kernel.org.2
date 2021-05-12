@@ -2,78 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A0237EECA
+	by mail.lfdr.de (Postfix) with ESMTP id C578637EECB
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443013AbhELWPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 18:15:31 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:42257 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346282AbhELVYG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 17:24:06 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 24ABAFF803;
-        Wed, 12 May 2021 21:22:38 +0000 (UTC)
-Date:   Wed, 12 May 2021 23:22:37 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Edmundo Carmona Antoranz <eantoranz@gmail.com>,
-        cw00.choi@samsung.com, b.zolnierkie@samsung.com,
-        a.zummo@towertech.it, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] rtc: max77686: Remove some dead code
-Message-ID: <YJxHHWvzppGHUbCW@piout.net>
-References: <a6b23ee8d3ea78f62d3fda0b53aa273718f14c6d.1620452523.git.christophe.jaillet@wanadoo.fr>
- <CAOc6etaUPtJqoH9DBDE72nDW7s7iEZHnaJRpKx9zFow02WOZig@mail.gmail.com>
- <9f34ebcd-0c17-cd7f-eb08-52c6c3dc7b03@wanadoo.fr>
- <CAOc6etYwTvVPnoB3BQfuQEikvsCwSs9AqBWnLFrs9zQ0pJGp1A@mail.gmail.com>
- <YJhO0cEqpbJAdv7s@piout.net>
- <219efcc7-ca05-a7d1-5943-d34a42f0d49f@canonical.com>
- <YJv+mMRcOuTJxLuk@piout.net>
- <9535976d-1029-3668-4be4-c09068ccf84c@wanadoo.fr>
+        id S1443026AbhELWPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 18:15:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1391721AbhELVat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 17:30:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E08C613B5;
+        Wed, 12 May 2021 21:29:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620854979;
+        bh=NJiYq8O1tWN0uhyFbIsznz9WLdKwSXYXjkFgfE2Ir90=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=LcrriKRxoXHzRiwpmWbqT571U+xRdEIZ3UBG/Bwh1L+eu5nhWolHL9mqx3Te6aIL8
+         S6HhQTLNFNFzYVLVrOx1D5xT4e/yTg9rHQQnSIL35SgqC09BxQwv1rEk9aJ6MOeyeF
+         jLW/NTMheTE8/ZzGqcfHJaeSUHqLtOWCXKtxZfPwpi+vSr7iylc7HFhvGhy1YOlZoR
+         P9UOmEbOp3seMe5P0DNJQt96Olui5WAfzEBMZMUHDqI5p1YtwmU8tJmEWUMcq1TwQW
+         Qt/W1Vy6V7y0vpv2lGSivb1dGs6Y0JfhmuyfUz0h/dupYuayVWc3diQKXi6cMhExlf
+         7arpZt6fKIuEw==
+Date:   Wed, 12 May 2021 16:29:38 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Subject: Re: [PATCH v2 31/40] docs: PCI: acpi-info.rst: Use ASCII subset
+ instead of UTF-8 alternate symbols
+Message-ID: <20210512212938.GA2516413@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <9535976d-1029-3668-4be4-c09068ccf84c@wanadoo.fr>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7fd9d4360a3d0f761b169b95d9997f4f5d06319c.1620823573.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/05/2021 22:02:17+0200, Christophe JAILLET wrote:
-> > The only error path that will not print a message by default (it is
-> > dev_dbg) is when rtc-ops is NULL which I don't expect would regress
-> > anyway.
-> > 
-> > A better way to remove the dead code would be to switch to
-> > devm_rtc_allocate_device/devm_rtc_register_device.
-> 
-> I don't follow you here.
-> Isn't devm_rtc_device_register = devm_rtc_allocate_device +
-> devm_rtc_register_device?
-> 
-> What would be the benefit for switch to the latter?
-> 
+1) The subject line convention in Documentation/PCI has been
+"Documentation: PCI: ...", but that is a little wordy, and if you want
+to start a wider convention of "docs: PCI: ..." I'm OK with that.
 
-The immediate benefit is that this solve a possible but very unlikely
-race condition around the character device removal when probe ultimately
-fails. The other benefit is that I won't have to do it later to handle
-the modern features.
+2) IMO, including the filename ("acpi-info.rst") in the subject is not
+really all that interesting.  In fact, I'd be fine with doing this
+sort of mechanical conversion with a patch per directory or even a
+single patch for *all* of Documentation/.
 
+On Wed, May 12, 2021 at 02:50:35PM +0200, Mauro Carvalho Chehab wrote:
+> The conversion tools used during DocBook/LaTeX/Markdown->ReST conversion
+> and some automatic rules which exists on certain text editors like
+> LibreOffice turned ASCII characters into some UTF-8 alternatives that
+> are better displayed on html and PDF.
 > 
-> > And even better would
-> > be to take that opportunity to set range_min and range_max ;)
+> While it is OK to use UTF-8 characters in Linux, it is better to
+> use the ASCII subset instead of using an UTF-8 equivalent character
+> as it makes life easier for tools like grep, and are easier to edit
+> with the some commonly used text/source code editors.
 > 
-> Maybe, but this goes beyond my knowledge.
-> I'll let someone else propose a patch for it.
+> Also, Sphinx already do such conversion automatically outside literal blocks:
+>    https://docutils.sourceforge.io/docs/user/smartquotes.html
 > 
-> CJ
+> So, replace the occurences of the following UTF-8 characters:
 > 
+> 	- U+00a0 (' '): NO-BREAK SPACE
+> 	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
+> 
+> Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Yes, this is annoying.  Thanks for doing this.
+
+I noticed a few other anomalies.  If you want to keep this series as
+just a mechanical thing and leave the things below for later, I'm OK
+with that, too.
+
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
+> ---
+>  Documentation/PCI/acpi-info.rst | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/Documentation/PCI/acpi-info.rst b/Documentation/PCI/acpi-info.rst
+> index 060217081c79..30d0fc85dd8e 100644
+> --- a/Documentation/PCI/acpi-info.rst
+> +++ b/Documentation/PCI/acpi-info.rst
+> @@ -22,9 +22,9 @@ or if the device has INTx interrupts connected by platform interrupt
+>  controllers and a _PRT is needed to describe those connections.
+>  
+>  ACPI resource description is done via _CRS objects of devices in the ACPI
+> -namespace [2].   The _CRS is like a generalized PCI BAR: the OS can read
+> +namespace [2].   The _CRS is like a generalized PCI BAR: the OS can read
+
+s/   The _CRS/  The _CRS/
+
+Remove one of the spaces at the end of this sentence.  One space is
+OK, two is the convention in this file, and three is way too many :)
+
+> @@ -66,7 +66,7 @@ the PNP0A03/PNP0A08 device itself.  The workaround was to describe the
+>  bridge registers (including ECAM space) in PNP0C02 catch-all devices [6].
+>  With the exception of ECAM, the bridge register space is device-specific
+>  anyway, so the generic PNP0A03/PNP0A08 driver (pci_root.c) has no need to
+> -know about it.  
+> +know about it.  
+
+Remove all the whitespace at the end of this line.
+
+Bjorn
