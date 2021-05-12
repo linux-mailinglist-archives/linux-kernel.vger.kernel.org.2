@@ -2,156 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1169537EC4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A923437EC4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383619AbhELTxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353016AbhELSGk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 14:06:40 -0400
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2261C061344;
-        Wed, 12 May 2021 11:04:14 -0700 (PDT)
-Received: by mail-vk1-xa34.google.com with SMTP id l124so4877686vkh.7;
-        Wed, 12 May 2021 11:04:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d6PyBDz5Hz+HLZJQx9m2fhDjeQhvfMXZj/HKgsByeXo=;
-        b=EwWfS3nUxUd6F4Hza9Wih48U/DhHt7dkvd7SLfXZB9AGGY0vfd4pqFrdusmN8cEYyS
-         lQKD0SvIknzYN1dLg9K0qeIpr0aJTt96qaYa6V4J/wf4mjLc7k/lK18/sRp6PhSws5dv
-         r14mRXobZqw+H/tl/bTwJK1xulWqG1EF93+eSdX519DzA3USBFSPV3TRhpryr/imW6/h
-         IWEqrrl1Wlc5lDzEUm25bGumfYBqVBftmsSBUcMiOFXjEvh3NzJaGQVLR8+NzPj8bhpr
-         mLyRO8xnT7z4aaJ9s2rAEczBml/s9ZWy6r7SvVTO0mFtUSciYzUZLTWk7D1GcQbJdi3a
-         CZFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d6PyBDz5Hz+HLZJQx9m2fhDjeQhvfMXZj/HKgsByeXo=;
-        b=FICTEHw+dI4MVkehfttBwt7859WgoZR71tvf924gYIJl4v44TJr4k4yGz7a1IIvBYT
-         5R5DLcALZmqinI7+vLKcB/rWBXKQe0YBPwXl4dn4wynYsYUYhMRtLsc6jBpeu9IUX9qt
-         xZJkFYyJ8c/aFRC+Kf4ejdEVgF3NunRk50/izw8Dj8ybey0TvSXomFixi8LAi5KMlAox
-         oZKrkeuWMGMn7U/Juzmzx7gUk81SKGQNKbQVH4cwhe4DetU8SXFAXy88OaJBdxV06O/W
-         U2e4WmjEFvSWNBGFpdFC/0N43U00wMWVtvzPindH1FVStgnyZrgFo0TPp29tFngbw8xV
-         Oxew==
-X-Gm-Message-State: AOAM530Z3YfLqwLBQFjajtXDHVMNa/SsFXJgsLnqfFwPJ/FZnbC79yWY
-        rQxCDnt3obiX1IYuEfm94z5QoW4LVuf+CFH3qJs=
-X-Google-Smtp-Source: ABdhPJzu/KIleZZfDrE9427pC4pMWBUduSAchOxtS5+3xBoN5DZNk5IQG0YwqS/XFE66PwTAAAZ4EwHDIAjCHjv9kbA=
-X-Received: by 2002:a1f:20c9:: with SMTP id g192mr4453848vkg.8.1620842654032;
- Wed, 12 May 2021 11:04:14 -0700 (PDT)
+        id S1383585AbhELTxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:53:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352992AbhELSGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 14:06:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C14C61452;
+        Wed, 12 May 2021 18:04:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620842656;
+        bh=GoRF33lxi4Sv6gTiTfm+CXnbmD2PPLK6dO2vDYEaNyA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=K7Rs4hV30GcRGyI+8mPKPXuJaMf5QIudQDSbOhfDjW0gVdWbJdk2HNSZH62ytshBF
+         QYSMsZ8VSMzDz+zDVLusrm0k+nYtdTVKPyz3TVs8lOFopRy4/EDfxELEqXcAVV4H6H
+         Zap1qMH4tSUL1Qo8Zn7XRTL2mIKVemzdBzaumN04Pu390b2SmBIplh4TryEXoWl/X/
+         WmYRN8hZx0LlP7hjL5xu7DA8AunWQtFuXhMElnN01emNKKV+pNMt2pkHpzfKKc2ZH0
+         aMR70yLWEhJyYZPVFnD4L4DKCdfPynS//iMW/Gmc+LMD7Wp3GOYNBFgLTk0Q1dGhml
+         68qufqB7D8z+A==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     "louis.wang" <liang26812@gmail.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 04/23] ARM: 9066/1: ftrace: pause/unpause function graph tracer in cpu_suspend()
+Date:   Wed, 12 May 2021 14:03:48 -0400
+Message-Id: <20210512180408.665338-4-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210512180408.665338-1-sashal@kernel.org>
+References: <20210512180408.665338-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20210511185057.3815777-1-jim.cromie@gmail.com>
- <20210511185057.3815777-18-jim.cromie@gmail.com> <CAMj1kXGLKJ19oThbXPhboHzCHfX_oZscxRHn6M7s4jt9Gk8SEA@mail.gmail.com>
-In-Reply-To: <CAMj1kXGLKJ19oThbXPhboHzCHfX_oZscxRHn6M7s4jt9Gk8SEA@mail.gmail.com>
-From:   jim.cromie@gmail.com
-Date:   Wed, 12 May 2021 12:03:47 -0600
-Message-ID: <CAJfuBxz+vW_aT=ZVM+UgDxDxwph4D+MKB6r518J9vk2YopX+KA@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 17/28] dyndbg: prevent build bugs via -DNO_DYNAMIC_DEBUG_TABLE
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bill Wendling <morbo@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joerg Roedel <jroedel@suse.de>, Nick Terrell <terrelln@fb.com>,
-        Dave Young <dyoung@redhat.com>,
-        Pingfan Liu <kernelfans@gmail.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:SPARC + UltraSPARC (sparc/sparc64)" 
-        <sparclinux@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kbuild test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 8:55 AM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Tue, 11 May 2021 at 20:51, Jim Cromie <jim.cromie@gmail.com> wrote:
-> >
-> > The next patch adds DEFINE_DYNAMIC_DEBUG_TABLE(), which broke several
-> > subtrees, including efi, vdso, and some of arch/*/boot/compressed,
-> > with various relocation errors, iirc.
-> >
-> > Avoid those problems by adding a define to suppress the "transparent"
-> > DEFINE_DYNAMIC_DEBUG_TABLE() invocation.  I found the x86 problems
-> > myself, lkp@intel.com found arm & sparc problems, and may yet find
-> > others.
-> >
->
-> Given that I was only cc'ed on this patch in isolation, would you mind
-> adding more clarification here? What is DEFINE_DYNAMIC_DEBUG_TABLE()
-> supposed to do, and why is it breaking standalone binaries?
->
->
+From: "louis.wang" <liang26812@gmail.com>
 
-hi Ard,
+[ Upstream commit 8252ca87c7a2111502ee13994956f8c309faad7f ]
 
-the thread starts here:
-https://lore.kernel.org/linux-mm/20210511185057.3815777-1-jim.cromie@gmail.com/
+Enabling function_graph tracer on ARM causes kernel panic, because the
+function graph tracer updates the "return address" of a function in order
+to insert a trace callback on function exit, it saves the function's
+original return address in a return trace stack, but cpu_suspend() may not
+return through the normal return path.
 
-the _TABLE macro derives from DEFINE_DYNAMIC_DEBUG_METADATA,
-which puts private static struct _ddebug's in section("__dyndbg")
-the _TABLE macro populates a different section(".gnu.linkonce.dyndbg"),
-which is then placed by linker script at the start of the section.
+cpu_suspend() will resume directly via the cpu_resume path, but the return
+trace stack has been set-up by the subfunctions of cpu_suspend(), which
+makes the "return address" inconsistent with cpu_suspend().
 
-ISTM that the new section might be whats breaking things.
-And maybe that the vmlinux linker script isnt involved.
-so the storage the _TABLE wants to define is unbound
-(and unused, since there are no pr_debugs)
-I did see relocation errors somewhere...
+This patch refers to Commit de818bd4522c40ea02a81b387d2fa86f989c9623
+("arm64: kernel: pause/unpause function graph tracer in cpu_suspend()"),
 
-This is my 1st time doing something creative with the linker
+fixes the issue by pausing/resuming the function graph tracer on the thread
+executing cpu_suspend(), so that the function graph tracer state is kept
+consistent across functions that enter power down states and never return
+by effectively disabling graph tracer while they are executing.
 
+Signed-off-by: louis.wang <liang26812@gmail.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm/kernel/suspend.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-As to larger purpose, I'll try to restate the patchset mission:
+diff --git a/arch/arm/kernel/suspend.c b/arch/arm/kernel/suspend.c
+index d08099269e35..e126386fb78a 100644
+--- a/arch/arm/kernel/suspend.c
++++ b/arch/arm/kernel/suspend.c
+@@ -1,4 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
++#include <linux/ftrace.h>
+ #include <linux/init.h>
+ #include <linux/slab.h>
+ #include <linux/mm_types.h>
+@@ -26,6 +27,13 @@ int cpu_suspend(unsigned long arg, int (*fn)(unsigned long))
+ 	if (!idmap_pgd)
+ 		return -EINVAL;
+ 
++	/*
++	 * Function graph tracer state gets incosistent when the kernel
++	 * calls functions that never return (aka suspend finishers) hence
++	 * disable graph tracing during their execution.
++	 */
++	pause_graph_tracing();
++
+ 	/*
+ 	 * Provide a temporary page table with an identity mapping for
+ 	 * the MMU-enable code, required for resuming.  On successful
+@@ -33,6 +41,9 @@ int cpu_suspend(unsigned long arg, int (*fn)(unsigned long))
+ 	 * back to the correct page tables.
+ 	 */
+ 	ret = __cpu_suspend(arg, fn, __mpidr);
++
++	unpause_graph_tracing();
++
+ 	if (ret == 0) {
+ 		cpu_switch_mm(mm->pgd, mm);
+ 		local_flush_bp_all();
+@@ -46,7 +57,13 @@ int cpu_suspend(unsigned long arg, int (*fn)(unsigned long))
+ int cpu_suspend(unsigned long arg, int (*fn)(unsigned long))
+ {
+ 	u32 __mpidr = cpu_logical_map(smp_processor_id());
+-	return __cpu_suspend(arg, fn, __mpidr);
++	int ret;
++
++	pause_graph_tracing();
++	ret = __cpu_suspend(arg, fn, __mpidr);
++	unpause_graph_tracing();
++
++	return ret;
+ }
+ #define	idmap_pgd	NULL
+ #endif
+-- 
+2.30.2
 
-theres ~45kb savings possible by compressing the highly redundant data (~70kb)
- which decorates pr_debug messages.
-
-1 - split the compressible/decoration columns to a different
-section|block, for block compression
-      this adds temporary .site pointer from _ddebug -> _ddebug_site
-
-2 -  change code so !site is safe.
-
-
-_TABLEs only real job is to provide a header record, at the beginning
-of the section/array,
-for a single .site pointer to the _dyndbg_sites section added in 1.
-Because the header has a fixed offset from any pr_debug in the vector,
-all pr_debugs can use the headers copy of .site, and dont need their own.
-specialize & unionize
-
-So it allows to drop the temporary pointer, restoring memory size
-parity with master.
-And we then have the _dyndbg_sites  section, full of redundant data,
-ready to compress.
-
-suppression with -DNO_DYNAMIC_DEBUG was a workaround, didnt think
-about it afterwards
-
-does this clarify ?
-
-
-thanks
-Jim
